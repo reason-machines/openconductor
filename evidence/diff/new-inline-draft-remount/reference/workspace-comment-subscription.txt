@@ -1,0 +1,1 @@
+function q7t(t){const e=z.c(2);let s;return e[0]!==t?(s=n=>({data:n.commentsByWorkspace[t],error:n.error,isLoading:n.isLoading}),e[0]=t,e[1]=s):s=e[1],tt(zn.store,yn(s))}

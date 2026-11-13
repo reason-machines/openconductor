@@ -85,7 +85,16 @@ export function dateBucket(lastActiveAt: number, now: number = Date.now()): Date
  * units and drops " ago" (`SS`, `BPt`); this applies the same thresholds.
  */
 export function shortRelativeTime(at: number, now: number = Date.now()): string {
-  const minutes = Math.round((now - Math.min(at, now)) / 60000);
+  const start = new Date(Math.min(at, now));
+  const end = new Date(now);
+  const [startOffset, endOffset] = [start, end].map((date) => {
+    const utc = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(),
+      date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds()));
+    utc.setUTCFullYear(date.getFullYear());
+    return date.getTime() - utc.getTime();
+  });
+  const seconds = Math.trunc((now - start.getTime()) / 1000);
+  const minutes = Math.round((seconds - (endOffset - startOffset) / 1000) / 60);
   if (minutes < 1) return "now";
   if (minutes < 45) return `${minutes}m`;
   if (minutes < 90) return "1h";
@@ -105,9 +114,14 @@ export function shortRelativeTime(at: number, now: number = Date.now()): string 
 function monthsBetween(from: number, to: number): number {
   const a = new Date(from);
   const b = new Date(to);
-  let months = (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
-  if (b.getDate() < a.getDate()) months -= 1;
-  return Math.max(0, months);
+  const months = (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
+  if (months < 1) return 0;
+  const monthEnd = new Date(to);
+  monthEnd.setMonth(monthEnd.getMonth() + 1, 0);
+  const fullLastMonth = months === 1 && b.getDate() === monthEnd.getDate() && to > from;
+  if (b.getMonth() === 1 && b.getDate() > 27) b.setDate(30);
+  b.setMonth(b.getMonth() - months);
+  return months - Number(b.getTime() < a.getTime() && !fullLastMonth);
 }
 
 /** The time a row sorts and groups by: the latest activity, else creation. */
@@ -201,13 +215,14 @@ export interface HomeGroup {
 }
 
 /** Repositories that have at least one workspace (the project filter's choices, `je`). */
-export function reposWithWorkspaces(repos: readonly Repo[]): Repo[] {
-  return repos.filter((r) => r.workspaces.length > 0);
+export function reposWithWorkspaces(repos: readonly Repo[], archivedRows: readonly ArchivedWorkspace[] = []): Repo[] {
+  const archivedRepoIds = new Set(archivedRows.map((row) => row.repoId));
+  return repos.filter((r) => r.workspaces.length > 0 || archivedRepoIds.has(r.id));
 }
 
 /** The project filter only shows when more than one project has workspaces. */
-export function showProjectFilter(repos: readonly Repo[]): boolean {
-  return reposWithWorkspaces(repos).length > 1;
+export function showProjectFilter(repos: readonly Repo[], archivedRows: readonly ArchivedWorkspace[] = []): boolean {
+  return reposWithWorkspaces(repos, archivedRows).length > 1;
 }
 
 /** "In all projects", "In tide-web" or "In 2 projects". */
@@ -258,6 +273,7 @@ export function homeRows(
     if (filters.projects.length > 0 && !filters.projects.includes(repo.id)) continue;
     const title = workspaceLabel({
       name: workspace.name,
+      workspaceName: workspace.workspaceName,
       branch: workspace.branch,
       prTitle: workspace.prTitle,
       userSetWorkspaceName: workspace.userSetWorkspaceName,
@@ -272,7 +288,7 @@ export function homeRows(
     const matches = matchWorkspace(query, {
       name: row.title,
       branch: row.workspace.branch,
-      directory: row.workspace.name,
+      directory: row.workspace.directoryName ?? row.workspace.name,
       repo: row.repo.name,
       number,
       prNumber: row.workspace.pr?.number,

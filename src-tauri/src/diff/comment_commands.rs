@@ -62,7 +62,12 @@ impl From<store::DiffComment> for CommentDto {
             // Rows written by the reference app may leave these NULL.
             state: match c.state {
                 Some(State::Sent) => "sent",
-                _ => "pending",
+                Some(State::Draft) => "draft",
+                Some(State::ReadyForReview) => "ready_for_review",
+                Some(State::Reviewed) => "reviewed",
+                Some(State::Hidden) => "hidden",
+                Some(State::Superseded) => "superseded",
+                Some(State::Pending) | None => "pending",
             },
             location: match (file_level, c.location) {
                 (true, _) => "file",
@@ -175,6 +180,40 @@ pub async fn diff_comment_edit(
         .map_err(err)
 }
 
+#[derive(Debug, Deserialize)]
+pub struct CommentAnchorInput {
+    id: String,
+    line_number: i64,
+    end_line_number: Option<i64>,
+}
+
+#[tauri::command]
+pub async fn diff_comments_update_anchors(
+    db: Managed<'_, Db>,
+    workspace_id: String,
+    updates: Vec<CommentAnchorInput>,
+) -> Result<(), String> {
+    if updates
+        .iter()
+        .any(|u| u.line_number < 1 || u.end_line_number.is_some_and(|end| end < u.line_number))
+    {
+        return Err("invalid comment anchor".into());
+    }
+    for update in updates {
+        store::update_anchor(
+            &db.0,
+            &workspace_id,
+            &update.id,
+            update.line_number,
+            update.end_line_number,
+            now_ms(),
+        )
+        .await
+        .map_err(err)?;
+    }
+    Ok(())
+}
+
 /// Deleting a thread's root deletes its replies too.
 #[tauri::command]
 pub async fn diff_comment_delete(db: Managed<'_, Db>, id: String) -> Result<u64, String> {
@@ -197,6 +236,17 @@ pub async fn diff_comment_resolve(
 #[tauri::command]
 pub async fn diff_comments_mark_sent(db: Managed<'_, Db>, ids: Vec<String>) -> Result<u64, String> {
     store::mark_sent(&db.0, &ids, now_ms()).await.map_err(err)
+}
+
+#[tauri::command]
+pub async fn diff_comments_mark_reviewed(
+    db: Managed<'_, Db>,
+    workspace_id: String,
+    ids: Vec<String>,
+) -> Result<u64, String> {
+    store::mark_reviewed(&db.0, &workspace_id, &ids, now_ms())
+        .await
+        .map_err(err)
 }
 
 /// What a GitHub comment sync did.

@@ -158,7 +158,7 @@ test("clone Browse remains enabled while its captured request is unresolved", as
   } finally { view.dispose(); }
 });
 
-test("pending clone keeps its submit guard, progress and recent controls", async () => {
+test("pending clone keeps its submit guard and progress with recent selection enabled", async () => {
   const view = await fixture();
   try {
     await view.start();
@@ -167,7 +167,7 @@ test("pending clone keeps its submit guard, progress and recent controls", async
     view.log("Receiving objects");
     assert.match(view.rendered(), /Receiving objects/);
     assert.match(view.rendered(), /Cloning/);
-    assert.equal(view.recent().props.disabled, true);
+    assert.notEqual(view.recent().props.disabled, true);
   } finally { view.dispose(); }
 });
 

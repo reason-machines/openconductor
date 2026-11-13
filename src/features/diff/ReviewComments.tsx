@@ -11,18 +11,21 @@
 // suggested changes, Resolve (on GitHub) and Delete (here only, as Conductor
 // does); they cannot be edited or replied to. Comments on the PR itself are
 // listed from the Changes toolbar, so no file has to be open.
-import { useCallback, useEffect, useId, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { openUrl } from "../../backend";
 import { DialogFrame } from "../../components/DialogFrame";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { commentStoreFor } from "./commentsApi.ts";
 import {
   bodyParts,
+  commentAnchorUpdates,
+  type CommentAnchorPositions,
   canDeleteComment,
   commentAttachment,
   commentSource,
   commentTags,
   fileThreads,
+  fileCommentCounts,
   isRemoteThread,
   newLocalComment,
   hasPendingComments,
@@ -39,7 +42,7 @@ import {
 } from "./comments.ts";
 import type { ComposerAttach } from "./chatAttachment.ts";
 import { CommentMarkdown } from "./commentMarkdown.ts";
-import type { GithubSyncReport } from "./commentStore.ts";
+import { subscribeReviewComments, type GithubSyncReport } from "./commentStore.ts";
 import "../chat/chat.css";
 import "./comments-github.css";
 import { revealLine, type LineAnchor, type LineRange } from "./FileDiffView";
@@ -69,9 +72,12 @@ const GITHUB_SYNC_MS = 120_000;
 
 const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? "" : "s"}`;
 
-function Composer({ initial = "", placeholder, submitLabel, onSubmit, onCancel }: { initial?: string; placeholder?: string; submitLabel: string; onSubmit: (body: string) => void; onCancel: () => void }) {
-  const [text, setText] = useState(initial);
+function Composer({ initial = "", edit, placeholder, submitLabel, onSubmit, onCancel }: { initial?: string; edit?: { text: string; onChange: (body: string) => void }; placeholder?: string; submitLabel: string; onSubmit: (body: string) => void; onCancel: () => void }) {
+  const [localText, setLocalText] = useState(initial);
+  const text = edit?.text ?? localText;
+  const setText = edit?.onChange ?? setLocalText;
   const [discardOpen, setDiscardOpen] = useState(false);
+  const composing = useRef(false);
   const dialogId = useId();
   const cancel = () => {
     const dirty = initial === "" ? text.trim() !== "" : text !== initial;
@@ -92,7 +98,11 @@ function Composer({ initial = "", placeholder, submitLabel, onSubmit, onCancel }
         value={text}
         placeholder={placeholder}
         onChange={(e) => setText(e.target.value)}
+        onCompositionStart={() => { composing.current = true; }}
+        onCompositionEnd={() => { composing.current = false; }}
+        onBlur={() => { composing.current = false; }}
         onKeyDown={(e) => {
+          if (composing.current || e.nativeEvent?.isComposing || e.keyCode === 229 || e.which === 229) return;
           if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
             e.preventDefault();
             submit();
@@ -165,10 +175,41 @@ function GithubCommentAuthor({ c }: { c: DiffComment }) {
   );
 }
 
+type CommentIdentity = Pick<DiffComment, "workspace_id" | "id">;
+const commentEditDrafts = new Map<string, string>();
+const commentEditListeners = new Set<() => void>();
+const commentEditKey = (comment: CommentIdentity) => JSON.stringify([comment.workspace_id, comment.id]);
+const notifyCommentEdit = () => commentEditListeners.forEach((listener) => listener());
+const subscribeCommentEdit = (listener: () => void) => {
+  commentEditListeners.add(listener);
+  return () => { commentEditListeners.delete(listener); };
+};
+
+function useCommentEditDraft(comment: CommentIdentity): string | undefined {
+  const key = commentEditKey(comment);
+  return useSyncExternalStore(subscribeCommentEdit, () => commentEditDrafts.get(key), () => undefined);
+}
+
+function startCommentEdit(comment: CommentIdentity & Pick<DiffComment, "body">): void {
+  const key = commentEditKey(comment);
+  if (commentEditDrafts.has(key)) return;
+  commentEditDrafts.set(key, comment.body);
+  notifyCommentEdit();
+}
+
+function updateCommentEdit(comment: CommentIdentity, body: string): void {
+  commentEditDrafts.set(commentEditKey(comment), body);
+  notifyCommentEdit();
+}
+
+function discardCommentEdit(comment: CommentIdentity): void {
+  if (commentEditDrafts.delete(commentEditKey(comment))) notifyCommentEdit();
+}
+
 function CommentItem({ c, ops }: { c: DiffComment; ops: Ops }) {
-  const [editing, setEditing] = useState(false);
+  const draft = useCommentEditDraft(c);
   const source = commentSource(c);
-  if (editing) return <Composer initial={c.body} submitLabel="Save" onCancel={() => setEditing(false)} onSubmit={(b) => void ops.edit(c, b).then((ok) => ok && setEditing(false))} />;
+  if (draft !== undefined) return <Composer initial={c.body} edit={{ text: draft, onChange: (body) => updateCommentEdit(c, body) }} submitLabel="Save" onCancel={() => discardCommentEdit(c)} onSubmit={(b) => void ops.edit(c, b).then((ok) => ok && discardCommentEdit(c))} />;
   return (
     <div className="oc-comment">
       <div className="oc-comment-meta">
@@ -191,7 +232,7 @@ function CommentItem({ c, ops }: { c: DiffComment; ops: Ops }) {
           </a>
         )}
         {source === "user-local" && (
-          <button className="oc-link" onClick={() => setEditing(true)}>
+          <button className="oc-link" onClick={() => startCommentEdit(c)}>
             Edit
           </button>
         )}
@@ -281,7 +322,7 @@ function ThreadView({ thread, ops, focused }: { thread: Thread; ops: Ops; focuse
   );
 }
 
-type Composing = LineRange & { path: string };
+type Composing = LineRange & { path: string; workspaceId: string; id: string; body: string };
 
 /** Conductor's toasts for review comments. */
 export type Notify = (kind: "info" | "error", message: string) => void;
@@ -323,20 +364,28 @@ function PrComments({ threads, prNumber, ops }: { threads: Thread[]; prNumber: n
  */
 export function useReviewComments(workspaceId: string, chat: ChatBridge & ComposerAttach, reveal?: (path: string) => void, workspacePath: string | null = null, notify?: Notify) {
   const store = useMemo(() => commentStoreFor(workspaceId, workspacePath), [workspaceId, workspacePath]);
-  const [stored, setStored] = useState<DiffComment[]>([]);
+  const [storedByWorkspace, setStoredByWorkspace] = useState<Partial<Record<string, DiffComment[]>>>({});
+  const stored = storedByWorkspace[workspaceId] ?? [];
+  const setStored = useCallback((comments: DiffComment[]) => {
+    setStoredByWorkspace((current) => ({ ...current, [workspaceId]: comments }));
+  }, [workspaceId]);
   const [files, setFiles] = useState<FileDiff[]>([]);
-  const [composing, setComposing] = useState<Composing | null>(null);
+  const [newDrafts, setComposing] = useState<Composing[]>([]);
+  const submittingDrafts = useRef(new Set<string>());
+  const composing = newDrafts.filter((draft) => draft.workspaceId === workspaceId);
   const [focused, setFocused] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [github, setGithub] = useState<{ report?: GithubSyncReport; error?: string }>({});
 
-  const reload = useCallback(() => store.list().then(setStored, (e: unknown) => setError(String(e))), [store]);
+  const reload = useCallback(() => store.list().then(setStored, (e: unknown) => setError(String(e))), [store, setStored]);
   useEffect(() => {
     setStored([]);
-    setComposing(null);
+    setComposing([]);
     setFocused(null);
     void reload();
   }, [reload]);
+
+  useEffect(() => subscribeReviewComments(workspaceId, () => { void reload(); }), [workspaceId, reload]);
 
   // Pull the PR's GitHub comments when the workspace opens and every couple of minutes after.
   useEffect(() => {
@@ -376,16 +425,14 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
 
   const comments = useMemo(() => refreshOutdated(stored, files), [stored, files]);
   const threads = useMemo(() => threadsOf(comments), [comments]);
-  const ready = pendingForAgent(comments);
+  const ready = pendingForAgent(comments).filter((comment) => !chat.commentIds?.has(comment.id));
+  const commentCounts = useMemo(() => fileCommentCounts(stored), [stored]);
 
   // One attachment per comment, as Conductor's addReviewCommentToComposer does.
   const toChat = (cs: DiffComment[]) => {
     if (cs.length === 0) return Promise.resolve(false);
-    for (const c of cs) chat.attach(commentAttachment(c));
-    return run(store.markSent(cs.map((c) => c.id))).then((ok) => {
-      if (!ok) notify?.("error", cs.length === 1 ? "Failed to add comment to chat" : "Failed to add comments to chat");
-      return ok;
-    });
+    for (const c of cs) if (!chat.commentIds?.has(c.id)) chat.attach(commentAttachment(c));
+    return Promise.resolve(true);
   };
 
   const resolveOnGithub = store.resolveOnGithub;
@@ -408,7 +455,10 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
           }),
         ),
       ),
-    edit: (c, body) => run(store.edit(c.id, body)),
+    edit: (c, body) => run(store.edit(c.id, body).catch((e: unknown) => {
+      notify?.("error", `Failed to save comment: ${e instanceof Error ? e.message : String(e)}`);
+      throw e;
+    })),
     remove: (c) => run(store.remove(c.id)),
     resolve: (t, resolved) => run(store.resolve(threadKey(t.root), resolved)),
     // Conductor: "Comment resolved on GitHub", or "Failed to resolve comment: <reason>".
@@ -453,9 +503,20 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
     "diff.previousComment": () => goToComment(-1),
   });
 
-  const onLineClick = (file: FileDiff, range: LineRange) => setComposing({ path: file.path, ...range });
+  const onLineClick = (file: FileDiff, range: LineRange) => {
+    const next = { path: file.path, ...range, workspaceId, id: crypto.randomUUID(), body: "" };
+    setComposing((current) => {
+      const existing = current.find((draft) => draft.workspaceId === workspaceId && draft.path === file.path && draft.side === range.side && draft.start === range.start && draft.line === range.line);
+      const retained = current.filter((draft) => draft.workspaceId === workspaceId && draft.body !== "" && draft.id !== existing?.id);
+      return [...retained, existing ?? next];
+    });
+  };
+  const discardNewDraft = (draft: Composing) => setComposing((current) => current.filter((value) => value.id !== draft.id || value.body !== draft.body));
   // The composer's lines stay highlighted in the file until it is saved or cancelled.
-  const commentRange = (file: FileDiff): LineRange | null => (composing?.path === file.path ? { side: composing.side, start: composing.start, line: composing.line } : null);
+  const commentRange = (file: FileDiff): LineRange | null => {
+    const draft = composing.slice().reverse().find((value) => value.path === file.path);
+    return draft ? { side: draft.side, start: draft.start, line: draft.line } : null;
+  };
 
   // Lines with something rendered under them: each thread's last line, and the open composer.
   const anchors = (file: FileDiff): LineAnchor[] => {
@@ -463,15 +524,26 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
     for (const t of threads) {
       if (t.root.file_path !== file.path || t.root.file_level) continue;
       const a = { side: sideOf(t.root), line: t.root.end_line_number ?? t.root.line_number };
-      out.set(`${a.side}:${a.line}`, a);
+      const key = `${a.side}:${a.line}`;
+      const existing = out.get(key);
+      out.set(key, { ...a, commentIds: [...(existing?.commentIds ?? []), t.root.id, ...t.replies.map((c) => c.id)] });
     }
-    if (composing?.path === file.path) out.set(`${composing.side}:${composing.line}`, { side: composing.side, line: composing.line });
+    for (const draft of composing) {
+      if (draft.path !== file.path) continue;
+      const key = `${draft.side}:${draft.line}`;
+      if (!out.has(key)) out.set(key, { side: draft.side, line: draft.line });
+    }
     return [...out.values()];
+  };
+
+  const persistAnchors = (file: FileDiff, positions: CommentAnchorPositions) => {
+    const updates = commentAnchorUpdates(stored, file.path, positions);
+    if (updates.length > 0) void run(store.updateAnchors(updates));
   };
 
   const annotations = (file: FileDiff, anchor: LineAnchor): ReactNode => {
     const here = threadsAt(threads, file.path, anchor.side, anchor.line);
-    const draft = composing?.path === file.path && composing.side === anchor.side && composing.line === anchor.line ? composing : null;
+    const draft = composing.slice().reverse().find((value) => value.path === file.path && value.side === anchor.side && value.line === anchor.line);
     if (here.length === 0 && !draft) return null;
     return (
       <div className="oc-threads">
@@ -480,14 +552,21 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
         ))}
         {draft && (
           <Composer
+            key={draft.id}
+            edit={{ text: draft.body, onChange: (body) => setComposing((current) => current.map((value) => value.id === draft.id ? { ...value, body } : value)) }}
             placeholder="Leave a comment for the agent…"
             submitLabel="Comment"
-            onCancel={() => setComposing(null)}
-            onSubmit={(body) =>
-              void run(store.add(newLocalComment({ id: crypto.randomUUID(), workspaceId, filePath: file.path, side: anchor.side, start: draft.start, end: anchor.line, body, now: Date.now() }))).then(
-                (ok) => ok && setComposing(null),
-              )
-            }
+            onCancel={() => discardNewDraft(draft)}
+            onSubmit={async (body) => {
+              if (submittingDrafts.current.has(draft.id)) return;
+              submittingDrafts.current.add(draft.id);
+              try {
+                const ok = await run(store.add(newLocalComment({ id: crypto.randomUUID(), workspaceId, filePath: file.path, side: anchor.side, start: draft.start, end: anchor.line, body, now: Date.now() })));
+                if (ok) discardNewDraft(draft);
+              } finally {
+                submittingDrafts.current.delete(draft.id);
+              }
+            }}
           />
         )}
       </div>
@@ -560,5 +639,5 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
   const hasPending = hasPendingComments(comments);
   const addAllToChat = () => void toChat(ready);
 
-  return { onLineClick, commentRange, anchors, annotations, notes, actions, onLoaded, hasPending, addAllToChat };
+  return { onLineClick, commentRange, anchors, annotations, persistAnchors, notes, actions, onLoaded, hasPending, addAllToChat, commentCounts };
 }

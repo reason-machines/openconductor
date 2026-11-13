@@ -33,6 +33,7 @@ export interface ReasonTool {
   kind: string;
   status: "pending" | "running" | "completed" | "failed";
   output: string | null;
+  rawResult?: unknown;
   diffs: { path: ReasonPath; oldText: string | null; newText: string }[];
   locations: ReasonPath[];
   /** The provider's own tool name (Claude Code's "Grep", ...), when it reports one. */
@@ -117,6 +118,7 @@ function message(state: ReasonChatState, turnId: string, id: string, role: ChatM
 export interface PromptAttachment {
   name: string;
   text: string;
+  commentId?: string;
 }
 
 /** Line the transcript shows for an attachment; the agent gets the file itself. */
@@ -224,7 +226,7 @@ function toolInput(t: ReasonTool): unknown {
 }
 
 /** Blocks after applying one content payload to the assistant message. */
-function withContent(blocks: Block[], p: ReasonPayload): Block[] {
+function withContent(blocks: Block[], p: ReasonPayload, now: Date): Block[] {
   const last = blocks[blocks.length - 1];
   switch (p.type) {
     case "text":
@@ -236,7 +238,9 @@ function withContent(blocks: Block[], p: ReasonPayload): Block[] {
     case "tool": {
       const use: Block = { type: "tool_use", id: p.id, name: p.title || p.kind, input: toolInput(p) };
       const done = p.status === "completed" || p.status === "failed";
-      const result: Block = { type: "tool_result", toolUseId: p.id, content: p.output ?? "", isError: p.status === "failed" };
+      const previous = blocks.find((b) => b.type === "tool_result" && b.toolUseId === p.id);
+      const resultCreatedAt = previous?.type === "tool_result" ? previous.resultCreatedAt : now.toISOString();
+      const result: Block = { type: "tool_result", toolUseId: p.id, content: p.output ?? "", ...(p.rawResult !== undefined ? { rawResult: p.rawResult } : {}), isError: p.status === "failed", ...(resultCreatedAt !== undefined ? { resultCreatedAt } : {}) };
       const out = blocks.filter((b) => !(b.type === "tool_result" && b.toolUseId === p.id)).map((b) => (b.type === "tool_use" && b.id === p.id ? use : b));
       if (!out.includes(use)) out.push(use);
       if (done) out.splice(out.indexOf(use) + 1, 0, result);
@@ -280,7 +284,7 @@ export function applyReasonPayload(state: ReasonChatState, p: ReasonPayload, now
       const turn = state.open[state.open.length - 1];
       if (!turn) return { state, events: [] };
       const prev = turn.assistant ?? message(state, turn.turnId, `${turn.turnId}:assistant`, "assistant", [], now);
-      const assistant = { ...prev, blocks: withContent(prev.blocks, p) };
+      const assistant = { ...prev, blocks: withContent(prev.blocks, p, now) };
       const open = [...state.open.slice(0, -1), { ...turn, assistant }];
       return { state: { ...state, open }, events: hasReply(assistant.blocks) ? [{ type: "upsert", message: assistant }] : [] };
     }

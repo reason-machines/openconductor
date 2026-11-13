@@ -47,7 +47,8 @@ the bundle is run by the checker.
 The macOS CI job compiles the ARM64 macOS 15 target, signs it, and reads back
 the signature. It never invokes the resulting executable. It uses no secrets,
 guest files, restore images, or provider credentials. No runner binary is
-installed or published.
+installed or invoked. Successful main builds retain the signed bundle in the
+separate inert archive described below.
 
 ### Inert CI identity receipts
 
@@ -63,8 +64,33 @@ self-consistency check without running it. That check is not authentication.
 `receipt.json` retains #931's schema. `build.json` records source, workflow,
 run/attempt/job, toolchain observations and the receipt-byte digest. Neither
 self-authenticates. SDK/compiler strings are diagnostics, not hermetic-build proof.
-Only two bounded JSON files are uploaded. The ephemeral signed executable is not
-retained by this artifact; a rebuild is not proven to have identical bytes.
+This receipt artifact still contains only two bounded JSON files. The separate
+bundle artifact retains the exact post-sign executable rather than rebuilding it.
+
+### Retained signed bundle
+
+The same main-only compile/sign producer accepts `--ci-bundle-archive` alongside
+`--ci-receipt-dir`. It verifies the signed candidate against the existing receipt,
+then writes a new, bounded ZIP outside the checkout. It never runs the executable.
+The separate artifact is named `oc-qa-vm-bundle-<run-id>-<attempt>` and contains
+`bundle.zip`. The existing JSON-only artifact and its parser are unchanged. PR
+builds publish neither artifact. Both artifacts expire after seven days.
+
+The inner ZIP contains exactly the receipt, build manifest, bundle Info.plist,
+CodeResources and signed executable. It preserves executable mode 0755 and
+standalone regular-file modes. `inspect_retained_bundle` reads those five members
+in memory without extraction. It rejects missing bytes, duplicate or extra paths,
+links, unsafe modes, oversized input, a different selected source or build ID,
+and executable bytes that differ from the receipt. The build manifest must bind
+the exact receipt bytes. The producer rechecks signatures and all input snapshots
+before writing a new output file. Existing output files are never overwritten.
+
+The archive inspection establishes byte retention and self-consistency only. It
+does not authenticate an artifact service, cryptographically verify a retained
+signature, preserve atomic integrity through later execution, or grant admission.
+Synthetic archives test retention and rejection behavior, not macOS signing or
+confinement. Actual signed-output retention requires the automatic main producer
+and readback of its retained artifact.
 
 `tools/native_qa_vm_receipt.py` exposes `ApprovedBuild` and
 `consume_ci_receipt(selection, reader)`. Selection must independently pin numeric
@@ -79,15 +105,40 @@ self-reported authentication, wrong/stale identities, links, executable payloads
 duplicate members/keys, manifest disagreement and observed mutations refuse.
 There is no latest-successful or candidate-derived fallback.
 
-**No production authenticated broker is implemented.** A Python reader subclass is
-an integration boundary, not proof of authentication. Current mediated Actions
-metadata lacks required authoritative fields, including numeric repository linkage
-and the service archive digest. A real consumer must refuse until a supported
-trusted integration supplies them. Synthetic readers prove policy only. The result
-contains exact receipt bytes and selected evidence IDs, never a launch permit.
-The caller must retain the same-build signed candidate through a separately
-authorized channel and compare the returned build ID when using #931's checker.
-No artifact download, candidate acquisition or native verification is wired here.
+`tools/native_qa_vm_github.py` implements the read-only `GitHubReader`. Its
+`ApprovedGitHubBuild` adds an independently selected numeric producer job ID,
+bundle artifact ID and SHA-256 of the reviewed workflow bytes to `ApprovedBuild`.
+The caller must review that workflow to establish the `compile-sign` key and its
+unique fixed job name. The reader fetches the pinned workflow content and checks
+both its Git blob identity and the approved SHA-256. It never selects a latest
+build or derives approval from downloaded receipts.
+
+Every API request is a GET to an exact selected path at `api.github.com`. The
+caller supplies a credential directly; no environment lookup or CLI is provided.
+Only the selected artifact ZIP endpoint may redirect once to GitHub
+`productionresultssa<N>.blob.core.windows.net` storage. That request receives no
+GitHub credential, and no further redirect is followed. Other storage origins
+refuse until reviewed. Responses are bounded while reading, and transport errors
+do not expose credentials, response bodies or signed URLs.
+
+GitHub artifact REST metadata has no `run_attempt` or producer job ID. The reader
+checks service repository/run/head linkage and immutable artifact IDs, then
+requires artifact creation and update timestamps inside the independently
+selected numeric producer job's successful exact-attempt lifetime. The approved
+workflow digest establishes that job's producer behavior. Names or receipt
+claims alone never establish attempt linkage. Missing job attempt, source,
+timestamps, service size or digest refuses. This relies on GitHub's service
+metadata and the reviewed producer, not a separate artifact attestation.
+
+`consume_bundle()` checks the original receipt artifact, the service digest of
+the separate bundle artifact, its sole bounded `bundle.zip`, and all five inner
+members. It compares the retained receipt bytes with the independently consumed
+receipt artifact and returns the exact inner archive without extraction. It
+rereads run, job and artifact identity before returning. Synthetic HTTP fixtures
+exercise this reader without real authentication or signing. Live authenticated
+reader consumption remains unverified until exercised through an authorized
+integration. The result is byte/provenance evidence, never a launch permit.
+Retained-signature verification and native execution are not wired here.
 Snapshots detect observed changes, not all transient swaps. Atomic verify-to-launch
 integrity, effective confinement and native admission remain unproved.
 

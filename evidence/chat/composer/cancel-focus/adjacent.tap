@@ -1,0 +1,332 @@
+(node:94) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:101) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: nonzero caret on the first visual line focuses the last queue row
+ok 1 - nonzero caret on the first visual line focuses the last queue row
+  ---
+  duration_ms: 253.089028
+  type: 'test'
+  ...
+# Subtest: empty editor focuses the last queue row without consulting layout
+ok 2 - empty editor focuses the last queue row without consulting layout
+  ---
+  duration_ms: 79.790197
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with later soft-wrapped visual line in the first paragraph
+ok 3 - Up leaves queue focus untouched with later soft-wrapped visual line in the first paragraph
+  ---
+  duration_ms: 70.083637
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with a false layout result at linear offset zero
+ok 4 - Up leaves queue focus untouched with a false layout result at linear offset zero
+  ---
+  duration_ms: 50.573368
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with line after a hard break
+ok 5 - Up leaves queue focus untouched with line after a hard break
+  ---
+  duration_ms: 47.328313
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with second paragraph even when layout returns true
+ok 6 - Up leaves queue focus untouched with second paragraph even when layout returns true
+  ---
+  duration_ms: 50.559231
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with noncollapsed selection
+ok 7 - Up leaves queue focus untouched with noncollapsed selection
+  ---
+  duration_ms: 41.825455
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with Shift modifier
+ok 8 - Up leaves queue focus untouched with Shift modifier
+  ---
+  duration_ms: 40.060752
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with Meta modifier
+ok 9 - Up leaves queue focus untouched with Meta modifier
+  ---
+  duration_ms: 42.925404
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with Control modifier
+ok 10 - Up leaves queue focus untouched with Control modifier
+  ---
+  duration_ms: 38.845274
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with Alt modifier
+ok 11 - Up leaves queue focus untouched with Alt modifier
+  ---
+  duration_ms: 39.241528
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with IME event
+ok 12 - Up leaves queue focus untouched with IME event
+  ---
+  duration_ms: 33.323325
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with IME editor state
+ok 13 - Up leaves queue focus untouched with IME editor state
+  ---
+  duration_ms: 37.311507
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with IME key code 229
+ok 14 - Up leaves queue focus untouched with IME key code 229
+  ---
+  duration_ms: 37.455131
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with no queue
+ok 15 - Up leaves queue focus untouched with no queue
+  ---
+  duration_ms: 36.244587
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with queue edit mode
+ok 16 - Up leaves queue focus untouched with queue edit mode
+  ---
+  duration_ms: 38.132439
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with missing last row
+ok 17 - Up leaves queue focus untouched with missing last row
+  ---
+  duration_ms: 37.592072
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with another key
+ok 18 - Up leaves queue focus untouched with another key
+  ---
+  duration_ms: 32.775466
+  type: 'test'
+  ...
+# Subtest: slash suggestion navigation takes precedence over queue focus
+ok 19 - slash suggestion navigation takes precedence over queue focus
+  ---
+  duration_ms: 36.702531
+  type: 'test'
+  ...
+# Subtest: mention suggestion navigation takes precedence over queue focus
+ok 20 - mention suggestion navigation takes precedence over queue focus
+  ---
+  duration_ms: 35.039371
+  type: 'test'
+  ...
+# (node:109) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: an empty composer with nothing waiting can minimize; whitespace counts as empty
+ok 21 - an empty composer with nothing waiting can minimize; whitespace counts as empty
+  ---
+  duration_ms: 0.687793
+  type: 'test'
+  ...
+# Subtest: text, an attachment, an approval or a plan keep it full size
+ok 22 - text, an attachment, an approval or a plan keep it full size
+  ---
+  duration_ms: 0.123965
+  type: 'test'
+  ...
+# Subtest: the ⌘L hint shows only while unfocused, empty and the model picker is closed
+ok 23 - the ⌘L hint shows only while unfocused, empty and the model picker is closed
+  ---
+  duration_ms: 0.122171
+  type: 'test'
+  ...
+# Subtest: it starts minimized only on a content tab with an empty composer, without animation
+ok 24 - it starts minimized only on a content tab with an empty composer, without animation
+  ---
+  duration_ms: 1.149965
+  type: 'test'
+  ...
+# Subtest: switching tabs snaps to the tab's state without animating
+ok 25 - switching tabs snaps to the tab's state without animating
+  ---
+  duration_ms: 0.148814
+  type: 'test'
+  ...
+# Subtest: typing (no longer empty) expands it with animation; emptying it again does not minimize
+ok 26 - typing (no longer empty) expands it with animation; emptying it again does not minimize
+  ---
+  duration_ms: 0.171291
+  type: 'test'
+  ...
+# Subtest: focus or a click expands it with animation
+ok 27 - focus or a click expands it with animation
+  ---
+  duration_ms: 0.112962
+  type: 'test'
+  ...
+# Subtest: a scroll in the content tab minimizes it, but not within 500 ms of an expand
+ok 28 - a scroll in the content tab minimizes it, but not within 500 ms of an expand
+  ---
+  duration_ms: 0.128169
+  type: 'test'
+  ...
+# (node:117) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ctrl+ArrowUp leaves the Composer's queue focus untouched
+ok 29 - Ctrl+ArrowUp leaves the Composer's queue focus untouched
+  ---
+  duration_ms: 166.378366
+  type: 'test'
+  ...
+# Subtest: unmodified ArrowUp at the start focuses the last queued row
+ok 30 - unmodified ArrowUp at the start focuses the last queued row
+  ---
+  duration_ms: 75.850029
+  type: 'test'
+  ...
+# Subtest: shiftKey+ArrowUp does not take queue focus
+ok 31 - shiftKey+ArrowUp does not take queue focus
+  ---
+  duration_ms: 56.972058
+  type: 'test'
+  ...
+# Subtest: metaKey+ArrowUp does not take queue focus
+ok 32 - metaKey+ArrowUp does not take queue focus
+  ---
+  duration_ms: 40.254902
+  type: 'test'
+  ...
+# Subtest: altKey+ArrowUp does not take queue focus
+ok 33 - altKey+ArrowUp does not take queue focus
+  ---
+  duration_ms: 39.812272
+  type: 'test'
+  ...
+# Subtest: ArrowUp preserves focus with non-start caret
+ok 34 - ArrowUp preserves focus with non-start caret
+  ---
+  duration_ms: 33.506245
+  type: 'test'
+  ...
+# Subtest: ArrowUp preserves focus with empty queue
+ok 35 - ArrowUp preserves focus with empty queue
+  ---
+  duration_ms: 39.633725
+  type: 'test'
+  ...
+# (node:125) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: built-in /add-dir Enter opens the existing directory picker without sending
+ok 36 - built-in /add-dir Enter opens the existing directory picker without sending
+  ---
+  duration_ms: 196.297049
+  type: 'test'
+  ...
+# Subtest: built-in /add-dir Tab opens the existing directory picker without sending
+ok 37 - built-in /add-dir Tab opens the existing directory picker without sending
+  ---
+  duration_ms: 81.626654
+  type: 'test'
+  ...
+# Subtest: built-in /add-dir menu choice opens the existing directory picker without sending
+ok 38 - built-in /add-dir menu choice opens the existing directory picker without sending
+  ---
+  duration_ms: 59.541006
+  type: 'test'
+  ...
+# Subtest: directory selection preserves suffix text and attachments
+ok 39 - directory selection preserves suffix text and attachments
+  ---
+  duration_ms: 50.477723
+  type: 'test'
+  ...
+# Subtest: directory selection retains adjacent file node identity and complete attributes
+ok 40 - directory selection retains adjacent file node identity and complete attributes
+  ---
+  duration_ms: 45.041377
+  type: 'test'
+  ...
+# Subtest: agent keeps ordinary bounded insertion rather than opening directories
+ok 41 - agent keeps ordinary bounded insertion rather than opening directories
+  ---
+  duration_ms: 56.477261
+  type: 'test'
+  ...
+# Subtest: skill keeps ordinary bounded insertion rather than opening directories
+ok 42 - skill keeps ordinary bounded insertion rather than opening directories
+  ---
+  duration_ms: 37.491166
+  type: 'test'
+  ...
+# Subtest: Plan and Fast selection remain bounded text insertion, not immediate actions
+ok 43 - Plan and Fast selection remain bounded text insertion, not immediate actions
+  ---
+  duration_ms: 70.214793
+  type: 'test'
+  ...
+# Subtest: stale, nonempty and composing live selections cannot edit or open directories
+ok 44 - stale, nonempty and composing live selections cannot edit or open directories
+  ---
+  duration_ms: 90.689753
+  type: 'test'
+  ...
+# Subtest: built-in /mcp-status Enter opens status without sending
+ok 45 - built-in /mcp-status Enter opens status without sending
+  ---
+  duration_ms: 34.005606
+  type: 'test'
+  ...
+# Subtest: built-in /mcp-status Tab opens status without sending
+ok 46 - built-in /mcp-status Tab opens status without sending
+  ---
+  duration_ms: 31.776546
+  type: 'test'
+  ...
+# Subtest: built-in /mcp-status menu choice opens status without sending
+ok 47 - built-in /mcp-status menu choice opens status without sending
+  ---
+  duration_ms: 30.360482
+  type: 'test'
+  ...
+# Subtest: MCP status rejects stale, nonempty and composing selections
+ok 48 - MCP status rejects stale, nonempty and composing selections
+  ---
+  duration_ms: 95.633912
+  type: 'test'
+  ...
+# Subtest: MCP show_mcp_status without immediate capability preserves bounded insertion
+ok 49 - MCP show_mcp_status without immediate capability preserves bounded insertion
+  ---
+  duration_ms: 27.068719
+  type: 'test'
+  ...
+# Subtest: MCP agent without immediate capability preserves bounded insertion
+ok 50 - MCP agent without immediate capability preserves bounded insertion
+  ---
+  duration_ms: 28.589904
+  type: 'test'
+  ...
+# Subtest: MCP skill without immediate capability preserves bounded insertion
+ok 51 - MCP skill without immediate capability preserves bounded insertion
+  ---
+  duration_ms: 28.956042
+  type: 'test'
+  ...
+# Subtest: missing directory capability preserves ordinary text completion
+ok 52 - missing directory capability preserves ordinary text completion
+  ---
+  duration_ms: 25.148747
+  type: 'test'
+  ...
+1..52
+# tests 52
+# suites 0
+# pass 52
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3875.349758

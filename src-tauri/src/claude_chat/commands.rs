@@ -30,6 +30,10 @@ pub struct ClaudeChats {
 }
 
 impl ClaudeChats {
+    pub fn busy(&self, app: &AppHandle, chat_id: &str) -> bool {
+        self.runner(app).busy(&format!("{chat_id}:claude"))
+    }
+
     fn runner(&self, app: &AppHandle) -> Arc<ClaudeRunner> {
         self.runner
             .get_or_init(|| {
@@ -109,13 +113,22 @@ pub async fn claude_prompt(
     turn: Option<TurnArg>,
     workspace_id: Option<String>,
     options: Option<ChatOptions>,
+    on_handoff: tauri::ipc::Channel<()>,
 ) -> Result<Value, String> {
-    let options = options.unwrap_or_default();
+    let mut options = options.unwrap_or_default();
+    let logical_id = crate::local_plan_mode::logical_chat_id(&chat_id).to_owned();
+    let gate = app.state::<crate::local_plan_mode::LocalPlanModes>().gate(&logical_id);
+    let mode_lease = gate.lock_owned().await;
+    let settings = app.state::<SettingsService>().get().map_err(|e| e.to_string())?;
+    let db = app.state::<crate::db::Db>();
+    let mode = crate::local_plan_mode::load(&db.0, &logical_id, settings.models.default_plan_mode).await?;
+    options.permission_mode = Some(crate::local_plan_mode::claude_permission(mode, settings.tool_approvals_enabled));
     let runner = state.runner(&app);
     let cwd = state.cwds.lock().unwrap().get(&chat_id).cloned();
     // Stop also covers the database lookup before dispatch.
     runner.expect_prompt(&chat_id);
-    let directories = if let Some(id) = workspace_id {
+    drop(mode_lease);
+    let directories: Result<Vec<PathBuf>, String> = async { if let Some(id) = workspace_id {
         let db = app.state::<crate::db::Db>();
         let source = openconductor_db::workspaces::get(&db.0, &id).await.map_err(|e| e.to_string())?
             .ok_or_else(|| "The source workspace no longer exists.".to_string())?;
@@ -128,8 +141,12 @@ pub async fn claude_prompt(
         if paths.iter().any(|path| !path.is_absolute()) {
             return Err("Saved workspace links contain a non-local directory.".into());
         }
-        paths
-    } else { Vec::new() };
+        Ok(paths)
+    } else { Ok(Vec::new()) } }.await;
+    let directories = match directories {
+        Ok(paths) => paths,
+        Err(error) => { runner.abandon_prompt(&chat_id); return Err(error); }
+    };
     let (end, changes) = tauri::async_runtime::spawn_blocking(move || {
         let target = match (&cwd, &turn) {
             (Some(workspace), Some(turn)) => Some(TurnTarget {
@@ -139,7 +156,17 @@ pub async fn claude_prompt(
             }),
             _ => None,
         };
-        around_turn(target, || runner.prompt_with_options(&chat_id, &text, &directories, &options))
+        around_turn(target, || {
+            runner.prompt_with_handoff(
+                &chat_id,
+                &text,
+                &directories,
+                &options,
+                Some(Box::new(move || {
+                    let _ = on_handoff.send(());
+                })),
+            )
+        })
     })
     .await
     .map_err(|e| e.to_string())?;
@@ -160,7 +187,7 @@ pub fn claude_cancel(app: AppHandle, state: State<'_, ClaudeChats>, chat_id: Str
 /// `{ kind: "plan", approved, feedback? }` for a plan, `{ kind: "answers",
 /// answers }` for questions, or `{ kind: "cancel" }`.
 #[tauri::command]
-pub fn claude_respond(
+pub async fn claude_respond(
     app: AppHandle,
     state: State<'_, ClaudeChats>,
     chat_id: String,
@@ -168,5 +195,21 @@ pub fn claude_respond(
     answer: Value,
 ) -> Result<(), String> {
     let answer = Answer::from_json(&answer)?;
-    state.runner(&app).respond(&chat_id, &id, &answer)
+    let logical_id = crate::local_plan_mode::logical_chat_id(&chat_id);
+    let gate = app.state::<crate::local_plan_mode::LocalPlanModes>().gate(logical_id);
+    let _mode_lease = gate.lock_owned().await;
+    let runner = state.runner(&app);
+    let approved = runner.approves_plan(&chat_id, &id, &answer);
+    let db = app.state::<crate::db::Db>();
+    let previous = if approved {
+        let previous = crate::local_plan_mode::load(&db.0, logical_id, false).await?;
+        crate::local_plan_mode::save(&db.0, logical_id, openconductor_db::sessions::PermissionMode::Default).await?;
+        Some(previous)
+    } else { None };
+    if let Err(error) = runner.respond(&chat_id, &id, &answer) {
+        if let Some(previous) = previous { crate::local_plan_mode::save(&db.0, logical_id, previous).await?; }
+        return Err(error);
+    }
+    if approved { crate::local_plan_mode::emit(&app, logical_id, openconductor_db::sessions::PermissionMode::Default); }
+    Ok(())
 }

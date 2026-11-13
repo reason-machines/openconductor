@@ -35,6 +35,7 @@ import { queuedUserDraft, submittedUserPrompt, type SentUserContentV1, type User
 import { FileMentionMenu } from "./FileMentionMenu.tsx";
 import { ArrowUpIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
 import type { ComposerMinimize } from "./useComposerMinimize.ts";
+import type { PlanModeControl } from "./useLocalPlanMode.ts";
 import "./queue.css";
 import "./composer.css";
 
@@ -51,7 +52,8 @@ export interface ComposerProps {
   queue: ChatQueue;
   canSteer: boolean;
   followUpMode?: FollowUpMode;
-  onSubmit: (input: UserPrompt, mode: SendMode) => void;
+  /** Async callbacks own draft clearing after acceptance and handle delivery errors. */
+  onSubmit: (input: UserPrompt, mode: SendMode) => void | Promise<void>;
   /** False when the owner clears only after asynchronous delivery succeeds. */
   clearOnSubmit?: boolean;
   onStop: () => void;
@@ -63,7 +65,9 @@ export interface ComposerProps {
   /** Takes files the user attaches; without it the "+" menu has no Add attachment. */
   onAttachFiles?: (files: File[]) => void;
   onLinkWorkspaces?: () => void;
+  onMcpStatus?: () => void;
   onAttachTerminalOutput?: () => void;
+  planMode?: PlanModeControl;
   /** The model picker (or another agent's picker), at the box's bottom left. */
   picker?: ReactNode;
   /** More pickers after it (an agent's access mode), in the same row. */
@@ -96,7 +100,9 @@ export function Composer({
   workspacePath,
   onAttachFiles,
   onLinkWorkspaces,
+  onMcpStatus,
   onAttachTerminalOutput,
+  planMode,
   picker,
   controls,
   slashCommands = [],
@@ -187,7 +193,15 @@ export function Composer({
     const current = box.selection();
     const range = composerSlashRange(current.text, current.start, current.end);
     if (!range || range.start !== slash.start || range.end !== slash.end || range.query !== slash.query) return;
-    if (!box.replaceRange(range, `${command.insert ?? `/${command.name}`} `)) return;
+    if (command.effect === "pick_linked_directory" && onLinkWorkspaces) {
+      if (!box.deleteRange(range)) return;
+      setSlashDismissed(slashKey);
+      onLinkWorkspaces();
+    } else if (command.effect === "show_mcp_status" && onMcpStatus) {
+      if (!box.deleteRange(range)) return;
+      setSlashDismissed(slashKey);
+      onMcpStatus();
+    } else if (!box.replaceRange(range, `${command.insert ?? `/${command.name}`} `)) return;
     setSlashIndex(0);
   }
 
@@ -199,12 +213,17 @@ export function Composer({
       setDraft("");
       return;
     }
-    onSubmit(input, working ? mode(opposite) : "queue");
+    const pending = onSubmit(input, working ? mode(opposite) : "queue");
+    if (pending) return;
     if (clearOnSubmit) setDraft("");
   }
 
   useKeybindings({
-    "chat.cancel": () => (working ? onStop() : false),
+    "chat.cancel": () => {
+      if (!working) return false;
+      onStop();
+      inputRef.current?.focus();
+    },
     "chat.addAttachment": () => (onAttachFiles ? fileInput.current?.click() : false),
     "chat.focus": () => {
       const box = inputRef.current;
@@ -233,7 +252,10 @@ export function Composer({
   /** Moves focus to a queued row or back to the message box. */
   function focus(target: QueueFocus) {
     if (target === "composer") return inputRef.current?.focus();
-    queueRef.current?.querySelector<HTMLElement>(`li[data-id="${CSS.escape(target.row)}"]`)?.focus();
+    const row = queueRef.current?.querySelector<HTMLElement>(`li[data-id="${CSS.escape(target.row)}"]`);
+    if (!row) return false;
+    row.focus();
+    return true;
   }
 
   function onKeyDown(e: globalThis.KeyboardEvent) {
@@ -241,15 +263,17 @@ export function Composer({
     const hit = (id: string) => keys(id).some((s) => matchesEvent(s, ev));
     if (ev.isComposing) return;
     const plain = !e.shiftKey && !e.metaKey && !e.altKey && !e.ctrlKey;
-    if (mentionOpen && plain && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+    if (mentionOpen && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
       e.preventDefault();
+      e.stopPropagation();
       setMentionIndex((mentionFocus + (e.key === "ArrowDown" ? 1 : mentionMatches.length - 1)) % mentionMatches.length);
       return;
     }
-    if (mentionOpen && plain && (e.key === "Enter" || e.key === "Tab")) {
+    if (mentionOpen && (e.key === "Enter" || e.key === "Tab")) {
       const selected = mentionMatches[mentionFocus];
       if (selected) {
         e.preventDefault();
+        e.stopPropagation();
         pickMention(selected);
       }
       return;
@@ -260,14 +284,16 @@ export function Composer({
       setMentionDismissed(mentionKey);
       return;
     }
-    if (slashOpen && plain && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+    if (slashOpen && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
       e.preventDefault();
+      e.stopPropagation();
       const n = slashMatches.length;
       setSlashIndex((slashFocus + (e.key === "ArrowDown" ? 1 : n - 1)) % n);
       return;
     }
-    if (slashOpen && plain && (e.key === "Enter" || e.key === "Tab")) {
+    if (slashOpen && (e.key === "Enter" || e.key === "Tab")) {
       e.preventDefault();
+      e.stopPropagation();
       pickCommand(slashMatches[slashFocus]!.command);
       return;
     }
@@ -277,11 +303,13 @@ export function Composer({
       setSlashDismissed(slashKey);
       return;
     }
-    // ↑ with the caret at the very start goes to the last queued message.
-    const current = inputRef.current?.selection();
-    if (e.key === "ArrowUp" && !e.shiftKey && !e.metaKey && !e.ctrlKey && !e.altKey && current?.start === 0 && current.end === 0 && queue.items.length > 0 && queue.editingId === null) {
-      e.preventDefault();
-      focus({ row: queue.items[queue.items.length - 1].id });
+    const box = inputRef.current;
+    const current = box?.selection();
+    if (e.key === "ArrowUp" && plain && queue.items.length > 0 && queue.editingId === null && (box?.atTop?.() ?? (current?.start === 0 && current.end === 0))) {
+      if (focus({ row: queue.items[queue.items.length - 1].id })) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
     } else if (hit("chat.cancel") && working) {
       e.preventDefault();
       onStop();
@@ -372,7 +400,7 @@ export function Composer({
           </div>
           <div className="oc-composer-right" onClick={(e) => e.stopPropagation()}>
             <span className="oc-composer-fade">
-              <AddMenu hint={hint("chat.addAttachment")} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} onLinkWorkspaces={onLinkWorkspaces} />
+              <AddMenu hint={hint("chat.addAttachment")} planHint={hint("chat.togglePlanMode")} planMode={planMode} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} onLinkWorkspaces={onLinkWorkspaces} />
             </span>
             {showFocusPill && minimized ? focusPill(true) : null}
             {onAttachFiles ? (
@@ -417,11 +445,11 @@ export function Composer({
   );
 }
 
-function AddMenu({ hint, onAddAttachment, onLinkWorkspaces }: { hint: string; onAddAttachment?: () => void; onLinkWorkspaces?: () => void }) {
+function AddMenu({ hint, planHint, planMode, onAddAttachment, onLinkWorkspaces }: { hint: string; planHint: string; planMode?: PlanModeControl; onAddAttachment?: () => void; onLinkWorkspaces?: () => void }) {
   const [open, setOpen] = useState(false);
   const popup = usePresence(open);
   const ref = useRef<HTMLSpanElement>(null);
-  if (!onAddAttachment && !onLinkWorkspaces) return null;
+  if (!onAddAttachment && !onLinkWorkspaces && !planMode) return null;
   return (
     <span
       className="oc-add-menu"
@@ -458,6 +486,11 @@ function AddMenu({ hint, onAddAttachment, onLinkWorkspaces }: { hint: string; on
           </button> : null}
           {onLinkWorkspaces ? <button type="button" role="menuitem" className="oc-menu-item" onClick={() => { setOpen(false); onLinkWorkspaces(); }}>
             <PlusIcon size={16} /><span className="oc-menu-item-label">Link workspaces</span>
+          </button> : null}
+          {planMode ? <button type="button" role="menuitem" className="oc-menu-item" disabled={planMode.disabled} title={planMode.disabled ? "Wait for the current Claude Code turn to end" : undefined} onClick={() => { setOpen(false); planMode.onToggle(); }}>
+            <svg className={planMode.isPlanMode ? "oc-plan-active" : undefined} width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3M9 12l3 3L22 5" /></svg>
+            <span className={`oc-menu-item-label${planMode.isPlanMode ? " oc-plan-active" : ""}`}>{planMode.isPlanMode ? "Exit plan mode" : "Plan mode"}</span>
+            <span className="oc-kbd-hint">{planHint}</span>
           </button> : null}
         </div>
       ) : null}

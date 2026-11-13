@@ -1,0 +1,14 @@
+{
+  "status": "PRE_QUALIFIED_RED_TYPECHECK_REPAIR; PRODUCT_UNCHANGED; NEW_HOSTED_BASELINE_REQUIRED",
+  "initial_published_head": "b690ca1aa7b6a9d51e708affff23cb9a96861a89",
+  "failure_job": "https://github.com/reason-machines/openconductor/actions/runs/43137099541/job/130914947665",
+  "failure": "TS18046 at test line95: production.opensByDefault is of type unknown",
+  "cause": "assert.equal(typeof export, function) checks runtime type but does not narrow the unknown export for TypeScript",
+  "only_test_change": "assert.equal(typeof production.opensByDefault, \"function\") becomes assert.ok(typeof production.opensByDefault === \"function\")",
+  "original_test_sha256": "fda98fbf25946d1a56c60c735829f578b4cebbd0391beae977c8ed358070e274",
+  "repaired_test_sha256": "5e4784b0a627a43010eb3200022f19e6eec257f0d43995e20fdd99a0e127cdbd",
+  "repaired_test_blob": "4e76ae2a0c18815fc05bc84d9c25360a517d42d1",
+  "unchanged": "all five inputs, normalization, loader/module selection, parent state, behavioral assertions, controls, retained references and production bytes",
+  "gate": "Original head has a harness typecheck failure, not qualified product RED. Require exactly two named fallback failures and three passing controls on this repaired baseline before product correction. Keep repaired test and original inputs frozen through GREEN.",
+  "local_tests_build": "NOT_RUN"
+}

@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { once } from "node:events";
+import { get } from "node:http";
+import { createAgentBinaryReleaseFixture } from "../../tools/e2e/agent-binary-release-fixture.mjs";
 import { finishStartup, waitForSetup } from "./startup.mjs";
 import { WebDriver } from "./webdriver.mjs";
 
@@ -142,6 +145,63 @@ test("a stalled setup request is cancelled at the setup deadline", async (t) => 
 test("shell startup failures remain failures after setup", async (t) => {
   const { wd } = fixture(t, [{ onboarding: true }, { app: true, startup: "error" }]);
   await assert.rejects(finishStartup(wd), /app startup failed/);
+});
+
+function binaryResponse(server) {
+  return new Promise((resolve, reject) => {
+    get(`http://127.0.0.1:${server.address().port}/claude`, (res) => {
+      res.resume();
+      res.on("end", () => resolve(res.statusCode));
+      res.on("error", reject);
+    }).on("error", reject);
+  });
+}
+
+async function binaryReleaseFixture(t) {
+  const release = createAgentBinaryReleaseFixture(Buffer.from("fixture binary"));
+  await new Promise((resolve) => release.server.listen(0, "127.0.0.1", resolve));
+  t.after(() => {
+    release.server.closeAllConnections();
+    release.server.close();
+  });
+  return release;
+}
+
+test("binary auto-retry's first 404 waits until the post-reload observer is ready", async (t) => {
+  const release = await binaryReleaseFixture(t);
+  let response;
+  let observerReady = false;
+  let readyWhenAnswered;
+  await release.holdFailuresUntil(async () => {
+    const request = once(release.server, "request");
+    response = binaryResponse(release.server).then((status) => {
+      readyWhenAnswered = observerReady;
+      return status;
+    });
+    const [, res] = await request;
+    assert.equal(res.writableEnded, false, "the release fixture must hold its response while startup is unfinished");
+    assert.equal(release.requests[0].finished, false);
+    observerReady = true;
+  });
+  assert.equal(await response, 404);
+  assert.equal(readyWhenAnswered, true, "a fast 404 must not start the retry countdown during startup");
+  assert.equal(await binaryResponse(release.server), 404);
+  assert.equal(await binaryResponse(release.server), 404);
+  assert.equal(release.requests.length, 3, "all three original failure attempts still reach the same HTTP fixture");
+  assert.ok(release.requests.every((request) => request.finished && request.status === 404));
+});
+
+test("binary release responses are released when startup throws", async (t) => {
+  const release = await binaryReleaseFixture(t);
+  let response;
+  await assert.rejects(release.holdFailuresUntil(async () => {
+    const request = once(release.server, "request");
+    response = binaryResponse(release.server);
+    await request;
+    throw new Error("startup failed");
+  }), /startup failed/);
+  assert.equal(await response, 404);
+  assert.equal(await binaryResponse(release.server), 404, "a later request cannot inherit an abandoned startup barrier");
 });
 
 test("a stuck installer has a bounded diagnostic timeout", async (t) => {

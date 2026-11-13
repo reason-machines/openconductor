@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 import type { Repo } from "../../state/types";
 import * as repoIcon from "../../state/repoIcon.ts";
 import { searchEmoji } from "../../components/repoEmoji.ts";
+import * as persistence from "../../lib/persistence/producer.ts";
 
 const dependencies = createRequire(import.meta.url);
 const React = dependencies("react");
@@ -31,6 +32,7 @@ function load(path: string, imports: Record<string, unknown>, suffix = "") {
     exports,
     require(name: string) {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      if (name === "../../lib/persistence/producer.ts") return persistence;
       if (name in imports) return imports[name];
       throw new Error(`Unexpected repository icon popup dependency: ${name}`);
     },
@@ -68,6 +70,7 @@ function fixture(globalDialog = false, icon: string | null = null) {
     useRepoFavicon() { throw new Error("Unexpected favicon I/O in settings popup regression"); },
   };
   const picker = load("src/components/RepoIconDialog.tsx", {
+    "../backend": { openUrl() { throw new Error("Unexpected URL launch in settings popup regression"); } },
     "../state/repoIcon": repoIcon,
     "./Dialogs": modal,
     "./Icons": icons,

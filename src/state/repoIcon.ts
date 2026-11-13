@@ -57,10 +57,12 @@ export function uploadMimeType(fileName: string): string | undefined {
 
 /** Canvas side and drawn size for an image of `w` x `h`: longest side scaled to at most 128, centered. */
 export function fitIcon(w: number, h: number): { canvas: number; width: number; height: number; x: number; y: number } {
-  const longest = Math.max(w, h) || UPLOAD_ICON_SIZE;
+  const sourceWidth = w || UPLOAD_ICON_SIZE;
+  const sourceHeight = h || UPLOAD_ICON_SIZE;
+  const longest = Math.max(sourceWidth, sourceHeight);
   const canvas = Math.min(UPLOAD_ICON_SIZE, longest);
   const scale = canvas / longest;
-  const width = Math.max(1, Math.round((w || longest) * scale));
-  const height = Math.max(1, Math.round((h || longest) * scale));
-  return { canvas, width, height, x: Math.round((canvas - width) / 2), y: Math.round((canvas - height) / 2) };
+  const width = Math.max(1, Math.round(sourceWidth * scale));
+  const height = Math.max(1, Math.round(sourceHeight * scale));
+  return { canvas, width, height, x: (canvas - width) / 2, y: (canvas - height) / 2 };
 }

@@ -1,6 +1,6 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ConfigSyncDialog } from "./ConfigSyncDialog";
-import { openUrl } from "../backend";
+import { checkFullDiskAccess, openUrl } from "../backend";
 import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { currentSendKeyMode, effectiveShortcuts, type Overrides } from "../keybindings/overrides";
 import type { SendKeyMode } from "../keybindings/registry";
@@ -11,7 +11,8 @@ import { SETTINGS_CHANGED } from "./appearance";
 import { setAppPref } from "./appPrefs";
 import { chooseSendKey } from "./composerSettings";
 import { withField } from "./model";
-import { enumPref, withEnumPref } from "./prefs";
+import { notificationPermissionGranted } from "./notificationPermission";
+import { boolPref, enumPref, withBoolPref, withEnumPref } from "./prefs";
 import { GeneralAppPrefRows } from "./rows/AppPrefRows";
 import { playCompletionSound, SOUND_OPTIONS } from "./sound";
 import type { Settings, SoundType } from "./types";
@@ -20,6 +21,7 @@ import { useSettingsOverrideStore } from "./useSettingsOverrideStore";
 interface Props {
   settings: Settings;
   save: (next: Settings) => void | Promise<boolean>;
+  notify?: (kind: "error" | "info", message: string) => void;
 }
 
 /** Conductor's `aga`: System Settings › Privacy & Security › Full Disk Access. */
@@ -34,9 +36,12 @@ const shortcutGlyphs = (commandId: string, overrides: Overrides) => effectiveSho
  * organizations (`hideInPersonalOrganizations`), which is every OpenConductor
  * user, so it is not listed.
  */
-export function GeneralPage({ settings, save }: Props) {
+export function GeneralPage({ settings, save, notify }: Props) {
+  const latestSettings = useRef(settings);
+  latestSettings.current = settings;
   const g = settings.general;
   const [syncOpen, setSyncOpen] = useState(false);
+  const fullDiskAccess = useFullDiskAccessStatus();
   const { overrides } = useKeybindingOverrides();
   const followUp = enumPref(settings, "default_message_send_mode");
   return (
@@ -70,10 +75,28 @@ export function GeneralPage({ settings, save }: Props) {
         <Toggle
           label="Agent notifications"
           checked={g.send_native_notification}
-          onChange={(on) => save(withField(settings, "general", "send_native_notification", on))}
+          onChange={async (on) => {
+            if (on && !await notificationPermissionGranted()) {
+              notify?.("error", "Notification permission not granted");
+              return;
+            }
+            await save(withField(latestSettings.current, "general", "send_native_notification", on));
+          }}
         />
       </Row>
-      <PrefSwitchRow settings={settings} save={save} pref="mention_notifications_enabled" label="@ notifications" help="Get notified when a teammate mentions you." />
+      <Row label="@ notifications" help="Get notified when a teammate mentions you.">
+        <Toggle
+          label="@ notifications"
+          checked={boolPref(settings, "mention_notifications_enabled")}
+          onChange={async (on) => {
+            if (on && !await notificationPermissionGranted()) {
+              notify?.("error", "Notification permission not granted");
+              return;
+            }
+            await save(withBoolPref(latestSettings.current, "mention_notifications_enabled", on));
+          }}
+        />
+      </Row>
       <Row label="Completion sound" help="Choose what plays when AI finishes working in a chat.">
         <span className="settings-inline">
           <Select<SoundType>
@@ -89,12 +112,14 @@ export function GeneralPage({ settings, save }: Props) {
           </button>
         </span>
       </Row>
-      <ButtonRow
-        label="Full disk access permissions"
-        help="To let agents work without repeated folder permission prompts."
-        button="Open System Settings"
-        onClick={() => void openUrl(FULL_DISK_ACCESS_URL).catch(() => undefined)}
-      />
+      <Row label="Full disk access permissions" help="To let agents work without repeated folder permission prompts.">
+        <span className="settings-inline" style={{ gap: 12 }}>
+          {fullDiskAccess === true && <span style={{ color: "var(--s-muted)", fontSize: 14 }}>Granted</span>}
+          <button type="button" className="btn settings-outline" onClick={() => void openUrl(FULL_DISK_ACCESS_URL).catch(() => notify?.("error", "Couldn't open System Settings. Go to Privacy & Security > Full Disk Access to grant it manually."))}>
+            Open System Settings
+          </button>
+        </span>
+      </Row>
       <PrefSwitchRow settings={settings} save={save} pref="auto_convert_long_text" label="Auto-convert long text" help="Convert pasted text over 5000 characters into text attachments" />
       <PrefSwitchRow
         settings={settings}
@@ -131,7 +156,7 @@ export function GeneralPage({ settings, save }: Props) {
         label="Show MCP status in chat"
         help="Show a per-session MCP server status indicator in the composer."
       />
-      <GeneralAppPrefRows />
+      <GeneralAppPrefRows overrides={overrides} />
       <ButtonRow
         label="Sync agent configs"
         help="Copy skills, slash commands, and MCP servers between Claude Code and Codex."
@@ -139,9 +164,43 @@ export function GeneralPage({ settings, save }: Props) {
         icon={<SyncIcon />}
         onClick={() => setSyncOpen(true)}
       />
-      {syncOpen && <ConfigSyncDialog onClose={() => setSyncOpen(false)} />}
+      {syncOpen && <ConfigSyncDialog onClose={() => setSyncOpen(false)} notify={notify} />}
     </div>
   );
+}
+
+/** Renderer status only: the native check and its error fallback are fail-open. */
+function useFullDiskAccessStatus(): boolean | undefined {
+  const [granted, setGranted] = useState<boolean>();
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.addEventListener !== "function") return;
+    let active = true;
+    let revision = 0;
+    let timer: number | undefined;
+    const refresh = async () => {
+      const current = ++revision;
+      window.clearTimeout(timer);
+      let next: boolean;
+      try {
+        next = await checkFullDiskAccess();
+      } catch (error) {
+        console.error("check_full_disk_access failed:", error);
+        next = true;
+      }
+      if (!active || current !== revision) return;
+      setGranted(next);
+      if (next === false) timer = window.setTimeout(() => void refresh(), 5000);
+    };
+    const onFocus = () => void refresh();
+    window.addEventListener("focus", onFocus);
+    void refresh();
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, []);
+  return granted;
 }
 
 /**

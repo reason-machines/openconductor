@@ -91,6 +91,7 @@ async function fixture(input: Selection) {
   let scrollbackOff = 0;
   class Screen {
     element = new EventTarget();
+    unicode = { activeVersion: "6" };
     disposed = 0;
     options: Record<string, unknown>;
     readonly nativeCopy = (event: Event) => {
@@ -146,6 +147,7 @@ async function fixture(input: Selection) {
       if (name === "react" || name === "react/jsx-runtime") return deps(name);
       if (name === "@xterm/xterm") return { Terminal: Screen };
       if (name === "@xterm/addon-fit") return { FitAddon: class { fit() {} } };
+      if (name === "@xterm/addon-unicode11") return { Unicode11Addon: class {} };
       if (name === "@tauri-apps/api/core") return {
         invoke: () => { throw new Error("Copy must not invoke native APIs"); }, isTauri: () => true, Channel: class {},
       };

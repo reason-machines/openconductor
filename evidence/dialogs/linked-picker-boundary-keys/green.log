@@ -1,0 +1,74 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: End then Enter toggles the final workspace, not the previously selected workspace
+ok 1 - End then Enter toggles the final workspace, not the previously selected workspace
+  ---
+  duration_ms: 1.816485
+  type: 'test'
+  ...
+# Subtest: Home then Enter selects Browse without prematurely opening it
+ok 2 - Home then Enter selects Browse without prematurely opening it
+  ---
+  duration_ms: 0.195819
+  type: 'test'
+  ...
+# Subtest: End accounts for existing directory rows before workspace rows
+ok 3 - End accounts for existing directory rows before workspace rows
+  ---
+  duration_ms: 0.11732
+  type: 'test'
+  ...
+# Subtest: End selects the final directory when no workspace matches the search
+ok 4 - End selects the final directory when no workspace matches the search
+  ---
+  duration_ms: 0.179492
+  type: 'test'
+  ...
+# Subtest: Home and End safely select Browse when it is the only result
+ok 5 - Home and End safely select Browse when it is the only result
+  ---
+  duration_ms: 32.192308
+  type: 'test'
+  ...
+# Subtest: isComposing keeps navigation and activation inert
+ok 6 - isComposing keeps navigation and activation inert
+  ---
+  duration_ms: 0.176773
+  type: 'test'
+  ...
+# Subtest: defaultPrevented keeps navigation and activation inert
+ok 7 - defaultPrevented keeps navigation and activation inert
+  ---
+  duration_ms: 0.14489
+  type: 'test'
+  ...
+# Subtest: ordinary arrow navigation still wraps both ends
+ok 8 - ordinary arrow navigation still wraps both ends
+  ---
+  duration_ms: 0.123953
+  type: 'test'
+  ...
+# Subtest: ordinary Enter still activates the selected workspace
+ok 9 - ordinary Enter still activates the selected workspace
+  ---
+  duration_ms: 0.289956
+  type: 'test'
+  ...
+# Subtest: unrelated editing keys neither navigate nor activate
+ok 10 - unrelated editing keys neither navigate nor activate
+  ---
+  duration_ms: 0.323671
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2080.062451

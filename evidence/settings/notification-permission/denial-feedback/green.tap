@@ -1,0 +1,62 @@
+(node:53) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:60) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted notification denial feedback: disable bypasses denied permission
+ok 1 - mounted notification denial feedback: disable bypasses denied permission
+  ---
+  duration_ms: 919.317742
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: already granted enables without feedback
+ok 2 - mounted notification denial feedback: already granted enables without feedback
+  ---
+  duration_ms: 274.437282
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: native grant enables without feedback
+ok 3 - mounted notification denial feedback: native grant enables without feedback
+  ---
+  duration_ms: 189.046725
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: granted request enables without feedback
+ok 4 - mounted notification denial feedback: granted request enables without feedback
+  ---
+  duration_ms: 212.063237
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: denied request reports one error and writes nothing
+ok 5 - mounted notification denial feedback: denied request reports one error and writes nothing
+  ---
+  duration_ms: 145.030499
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: previously denied reports one error and writes nothing
+ok 6 - mounted notification denial feedback: previously denied reports one error and writes nothing
+  ---
+  duration_ms: 246.382501
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: pending denial is silent until settlement
+ok 7 - mounted notification denial feedback: pending denial is silent until settlement
+  ---
+  duration_ms: 171.44001
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: pending grant preserves latest settings without feedback
+ok 8 - mounted notification denial feedback: pending grant preserves latest settings without feedback
+  ---
+  duration_ms: 134.543271
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3459.783468

@@ -1,0 +1,309 @@
+{
+  "format": "claude-signed-out-refresh-source-v1",
+  "producer": "Conductor Rebuild",
+  "default_branch_head": "fc5215e8b6e7fd5e12767155fdbb9d0bcc1e82f1",
+  "source_attachment": {
+    "attachment_id": "078ccf87-1bdc-43a9-b085-ea94babc5839",
+    "bytes": 21493760,
+    "sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084"
+  },
+  "assets": [
+    {
+      "key": "renderer",
+      "path": ".rea-work/retained-reference/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    {
+      "key": "index",
+      "path": ".rea-work/retained-reference/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  ],
+  "rea": {
+    "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "rea_limit": "Original semantic renderer analysis exhausted heap. Read-only extraction from retained shipped original bytes. No reference JavaScript executed.",
+    "parent_archive": {
+      "path": ".rea-work/dart-eligibility/dart-source-closure.tar.gz",
+      "bytes": 6226760,
+      "sha256": "29557fbf62c37076841230dbaf9d9e2de7a77aa02b974ce3a1f8bb552d241fd6",
+      "originals_verified_equal": true
+    }
+  },
+  "display_packet_sha256": "ac297b3f9b416db46573e44abf680ed8251765eb784349f74b61cfa2ab963ca5",
+  "producer_packet_sha256": "32d9e30da5b4fca9d1aa2b07c0464dd695f2c98dcdad50884968bad29c4702f2",
+  "spans": [
+    {
+      "name": "jpa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10619879,
+        10624045
+      ],
+      "bytes": 4166,
+      "sha256": "f339bdf9702ca236ab96391682eeccb54f05f999690c91e2717e43f25d01535f",
+      "literal": "function jpa(t){const e=ne.c(83),{repoContext:n}=t;let i;e[0]!==n?(i=Ozi(n),e[0]=n,e[1]=i):i=e[1];const r=i,{data:o}=Dzi(n);let a;e[2]!==o?(a=o===void 0?{}:o,e[2]=o,e[3]=a):a=e[3];const c=a,u=dxe(\"claude_provider\",n),d=dxe(\"claude_executable_path\",n),h=dxe(\"chrome_mode_enabled\",n)===\"true\",m=_0(),g=c.ANTHROPIC_API_KEY??\"\";let _;e[4]!==g?(_=g.trim(),e[4]=g,e[5]=_):_=e[5];const v=_!==\"\",x=u===\"custom\",w=NDt(),E=p9r(),k=E.mutate;let I;e[6]!==k?(I=()=>{k()},e[6]=k,e[7]=I):I=e[7];let R;e[8]!==g||e[9]!==u||e[10]!==k?(R=[g,u,k],e[8]=g,e[9]=u,e[10]=k,e[11]=R):R=e[11],$.useEffect(I,R);const O=w.data?.status;let D;e[12]!==m||e[13]!==n?(D=()=>{m.invalidateQueries({queryKey:bGt.sharedLocal(n)}).fireAndForget(),m.invalidateQueries({queryKey:[\"envVars\",\"shared\",\"local\"]}).fireAndForget()},e[12]=m,e[13]=n,e[14]=D):D=e[14];const P=D;let L;e[15]!==P||e[16]!==r?(L=async ke=>{if(ke===\"apikey\"){await iS.updateSetting(\"claude_provider\",\"custom\",r);const Se=await f$i();if(Se?.trim()){if(!await _Z(zo,{key:\"ANTHROPIC_API_KEY\",scope:\"shared\",context:\"local\",value:Se.trim(),target:r}))return;P(),kt.success(\"API key imported from env\")}}else await iS.updateSetting(\"claude_provider\",\"default\",r)},e[15]=P,e[16]=r,e[17]=L):L=e[17];const B=L;let F;e[18]!==P||e[19]!==r?(F={envKey:\"ANTHROPIC_API_KEY\",providerSettingKey:\"claude_provider\",settingsTarget:r,invalidateSharedEnv:P},e[18]=P,e[19]=r,e[20]=F):F=e[20];const{handleSaveApiKey:H,handleRemoveApiKey:U}=Lzi(F),[z,G]=$.useState(null),K=z??(x?\"apikey\":\"cli\");let X,Q;e[21]!==z||e[22]!==x?(X=()=>{z===(x?\"apikey\":\"cli\")&&G(null)},Q=[z,x],e[21]=z,e[22]=x,e[23]=X,e[24]=Q):(X=e[23],Q=e[24]),$.useEffect(X,Q);const J=n!==void 0&&K===\"apikey\"&&v;let te,Z,se,ce,ae,de,ue,pe;if(e[25]!==O||e[26]!==d||e[27]!==K||e[28]!==B||e[29]!==v||e[30]!==J||e[31]!==P||e[32]!==k||e[33]!==n){const Se=(J?{apiKeySource:\"repository settings\",apiProvider:\"firstParty\"}:void 0)??Mpa({accountInfo:O,mode:K});let De;e[42]!==J||e[43]!==P||e[44]!==k?(De=()=>{if(J){P();return}k()},e[42]=J,e[43]=P,e[44]=k,e[45]=De):De=e[45],se=De,Z=K===\"apikey\"?v?\"Could not verify the configured API key\":\"No Anthropic API key configured\":\"CLI not authenticated\",ue=\"space-y-6\";let je;e[46]!==B?(je=Le=>{G(Le),B(Le).catch(()=>G(null)).fireAndForget()},e[46]=B,e[47]=je):je=e[47];let Ne;e[48]!==K||e[49]!==je?(Ne=p.jsx(wzi,{value:K,modes:Pzi,onChange:je}),e[48]=K,e[49]=je,e[50]=Ne):Ne=e[50],e[51]!==n||e[52]!==Ne?(pe=p.jsx(Al,{settingKey:\"claude_provider\",repoScope:n,title:void 0,className:\"border-t-0 pt-0\",children:Ne}),e[51]=n,e[52]=Ne,e[53]=pe):pe=e[53],te=t$i,ce=Se!==void 0,ae=Se,de=Se?Yki(Se,K,d?!1:void 0):[],e[25]=O,e[26]=d,e[27]=K,e[28]=B,e[29]=v,e[30]=J,e[31]=P,e[32]=k,e[33]=n,e[34]=te,e[35]=Z,e[36]=se,e[37]=ce,e[38]=ae,e[39]=de,e[40]=ue,e[41]=pe}else te=e[34],Z=e[35],se=e[36],ce=e[37],ae=e[38],de=e[39],ue=e[40],pe=e[41];let be;e[54]!==w.isLoading||e[55]!==J||e[56]!==E.isPending?(be=Cpa({hasScopedApiKeyAuth:J,queryIsLoading:w.isLoading,refreshIsPending:E.isPending}),e[54]=w.isLoading,e[55]=J,e[56]=E.isPending,e[57]=be):be=e[57];const he=!J&&E.isPending;let ge;e[58]!==te||e[59]!==Z||e[60]!==se||e[61]!==ce||e[62]!==ae||e[63]!==de||e[64]!==be||e[65]!==he?(ge=p.jsx(te,{isAuthenticated:ce,accountInfo:ae,infoRows:de,isLoading:be,onRefresh:se,isRefreshing:he,notConnectedMessage:Z}),e[58]=te,e[59]=Z,e[60]=se,e[61]=ce,e[62]=ae,e[63]=de,e[64]=be,e[65]=he,e[66]=ge):ge=e[66];let ve;e[67]!==g||e[68]!==K||e[69]!==U||e[70]!==H||e[71]!==se?(ve=p.jsx(\"div\",{className:\"min-h-10\",children:K===\"apikey\"?p.jsx(YWt,{label:\"Anthropic API key\",configuredKey:g,getKeyUrl:\"https://console.anthropic.com/settings/keys\",onSave:H,onRemove:U}):p.jsx(Met,{onRefresh:se,loginCommand:\"/login\",loginCommandLabel:\"claude /login\",cliName:\"claude\",runFromBundledBin:!0})}),e[67]=g,e[68]=K,e[69]=U,e[70]=H,e[71]=se,e[72]=ve):ve=e[72];let ye;e[73]!==h||e[74]!==n||e[75]!==r?(ye=p.jsx(Rpa,{chromeModeEnabled:h,repoContext:n,settingsTarget:r}),e[73]=h,e[74]=n,e[75]=r,e[76]=ye):ye=e[76];let xe;return e[77]!==ue||e[78]!==pe||e[79]!==ge||e[80]!==ve||e[81]!==ye?(xe=p.jsxs(\"div\",{className:ue,children:[pe,ge,ve,ye]}),e[77]=ue,e[78]=pe,e[79]=ge,e[80]=ve,e[81]=ye,e[82]=xe):xe=e[82],xe}"
+    },
+    {
+      "name": "t$i",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10247644,
+        10248914
+      ],
+      "utf16_half_open": [
+        10202045,
+        10203315
+      ],
+      "bytes": 1270,
+      "sha256": "b412b9c78f327ab3cb1c28bcaf3c41da921c78dabc0b93756573b0f923e07868",
+      "literal": "function t$i(t){const e=ne.c(22),{isAuthenticated:n,accountInfo:i,infoRows:r,isLoading:o,onRefresh:a,isRefreshing:c,notConnectedMessage:u,detail:d}=t,h=i!=null;if(o&&!h){let E;e[0]===Symbol.for(\"react.memo_cache_sentinel\")?(E=p.jsx(\"p\",{className:\"text-sm text-muted-foreground\",children:\"Checking login status...\"}),e[0]=E):E=e[0];let k;return e[1]!==c||e[2]!==a?(k=p.jsx(\"div\",{className:\"space-y-3\",children:p.jsxs(\"div\",{className:\"flex items-center justify-between gap-3\",children:[E,p.jsx(EZn,{onRefresh:a,isRefreshing:c})]})}),e[1]=c,e[2]=a,e[3]=k):k=e[3],k}let m;e[4]!==n||e[5]!==u?(m=n?p.jsx(e$i,{}):p.jsx(Qla,{message:u}),e[4]=n,e[5]=u,e[6]=m):m=e[6];let g;e[7]!==c||e[8]!==a?(g=p.jsx(EZn,{onRefresh:a,isRefreshing:c}),e[7]=c,e[8]=a,e[9]=g):g=e[9];let _;e[10]!==m||e[11]!==g?(_=p.jsxs(\"div\",{className:\"flex items-center justify-between gap-3\",children:[m,g]}),e[10]=m,e[11]=g,e[12]=_):_=e[12];let v;e[13]!==d?(v=d!==void 0&&p.jsx(\"p\",{className:\"break-words text-xs text-muted-foreground\",children:d}),e[13]=d,e[14]=v):v=e[14];let x;e[15]!==r||e[16]!==n?(x=n&&p.jsx(Kla,{rows:r}),e[15]=r,e[16]=n,e[17]=x):x=e[17];let w;return e[18]!==_||e[19]!==v||e[20]!==x?(w=p.jsxs(\"div\",{className:\"space-y-3\",children:[_,v,x]}),e[18]=_,e[19]=v,e[20]=x,e[21]=w):w=e[21],w}"
+    },
+    {
+      "name": "EZn",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10247268,
+        10247644
+      ],
+      "utf16_half_open": [
+        10201669,
+        10202045
+      ],
+      "bytes": 376,
+      "sha256": "8ce506a42ed2df61f1c44a50577c144d76b23aa5a37d3842046ab2f98afae697",
+      "literal": "function EZn(t){const e=ne.c(6),{onRefresh:n,isRefreshing:i}=t,r=i===!0,o=`mr-1 size-3 ${i?\"animate-spin\":\"\"}`;let a;e[0]!==o?(a=p.jsx(iv,{className:o}),e[0]=o,e[1]=a):a=e[1];let c;return e[2]!==n||e[3]!==r||e[4]!==a?(c=p.jsxs(tt,{type:\"button\",variant:\"ghost\",size:\"sm\",onClick:n,disabled:r,className:\"h-7 px-2\",children:[a,\"Refresh\"]}),e[2]=n,e[3]=r,e[4]=a,e[5]=c):c=e[5],c}"
+    },
+    {
+      "name": "Cpa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10614662,
+        10614753
+      ],
+      "utf16_half_open": [
+        10568928,
+        10569019
+      ],
+      "bytes": 91,
+      "sha256": "3e7e26e7c0a050de0ee7a3001416ab14611e3007441f8138bd368a93306cd445",
+      "literal": "function Cpa({hasScopedApiKeyAuth:t,queryIsLoading:e,refreshIsPending:n}){return!t&&(e||n)}"
+    },
+    {
+      "name": "Ppa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10619593,
+        10619719
+      ],
+      "utf16_half_open": [
+        10573859,
+        10573985
+      ],
+      "bytes": 126,
+      "sha256": "4bc4bbcb5ae4d8767a22be2aaab0bc0327bc0be9aa5240a3ec0e6152d5c8c3a0",
+      "literal": "function Ppa(t){return t?.subscriptionType!==void 0&&t.subscriptionType!==null||t?.tokenSource!==void 0&&t.tokenSource!==null}"
+    },
+    {
+      "name": "Lpa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10619719,
+        10619790
+      ],
+      "utf16_half_open": [
+        10573985,
+        10574056
+      ],
+      "bytes": 71,
+      "sha256": "dd7198bd6132e82c1cbe0987774d806266e7f00e3d50888a04749d1ab3572484",
+      "literal": "function Lpa(t){return t?.apiKeySource!==void 0&&t.apiKeySource!==null}"
+    },
+    {
+      "name": "Mpa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10619790,
+        10619879
+      ],
+      "utf16_half_open": [
+        10574056,
+        10574145
+      ],
+      "bytes": 89,
+      "sha256": "5ac0061d00d19580e3846c6edb584f5d940ed652909c99dac2f54ec3d6f19f69",
+      "literal": "function Mpa({accountInfo:t,mode:e}){return e===\"apikey\"?Lpa(t)?t:void 0:Ppa(t)?t:void 0}"
+    },
+    {
+      "name": "wPt",
+      "asset": "index",
+      "utf8_half_open": [
+        3027764,
+        3028293
+      ],
+      "utf16_half_open": [
+        3027270,
+        3027799
+      ],
+      "bytes": 529,
+      "sha256": "adcb12d7353f525f90348ccccda431d20383e2b830f6c5e1b6a499c71e8173c5",
+      "literal": "function wPt(t){const e=z.c(13);let s;e[0]!==t?(s=t===void 0?{}:t,e[0]=t,e[1]=s):s=e[1];const{authTarget:n,enabled:r,refetchInterval:i,verificationMode:o}=s,a=r===void 0?!0:r,c=o===void 0?\"status\":o;let l;e[2]!==n||e[3]!==c?(l=Jhe.authInfo(n,c),e[2]=n,e[3]=c,e[4]=l):l=e[4];let u;e[5]!==n||e[6]!==c?(u=()=>Zhe(n,c),e[5]=n,e[6]=c,e[7]=u):u=e[7];let d;return e[8]!==a||e[9]!==i||e[10]!==l||e[11]!==u?(d={queryKey:l,queryFn:u,enabled:a,refetchInterval:i,refetchOnWindowFocus:!1},e[8]=a,e[9]=i,e[10]=l,e[11]=u,e[12]=d):d=e[12],$t(d)}"
+    },
+    {
+      "name": "C7t",
+      "asset": "index",
+      "utf8_half_open": [
+        3028293,
+        3028775
+      ],
+      "utf16_half_open": [
+        3027799,
+        3028281
+      ],
+      "bytes": 482,
+      "sha256": "78219e74926828aa6124edc18890263bafda6d607172a0821e57293f25902e26",
+      "literal": "function C7t(t){const e=z.c(12);let s;e[0]!==t?(s={},e[0]=t,e[1]=s):s=e[1];const{authTarget:n,verificationMode:r}=s,i=r===void 0?\"status\":r;let o;e[2]!==i?(o=[\"refreshClaudeAuthInfo\",i],e[2]=i,e[3]=o):o=e[3];const a=o;let c,l;e[4]!==n||e[5]!==i?(c=()=>Zhe(n,i),l=d=>{Ye.setQueryData(Jhe.authInfo(n,i),d)},e[4]=n,e[5]=i,e[6]=c,e[7]=l):(c=e[6],l=e[7]);let u;return e[8]!==a||e[9]!==c||e[10]!==l?(u={mutationKey:a,mutationFn:c,onSuccess:l},e[8]=a,e[9]=c,e[10]=l,e[11]=u):u=e[11],Be(u)}"
+    },
+    {
+      "name": "Zhe",
+      "asset": "index",
+      "utf8_half_open": [
+        3027297,
+        3027586
+      ],
+      "utf16_half_open": [
+        3026803,
+        3027092
+      ],
+      "bytes": 289,
+      "sha256": "00fc396abd2ac82c0863abf7ed5e1e11f2937d37fb3f6d22942bc5ea79adf556",
+      "literal": "async function Zhe(t,e=\"status\"){return t&&t.workspaceHost!==M?{status:(await fe.cloud.authenticateClaude({baseUrl:t.workspaceHost.hostingServerUrl,id:`claude-auth:${t.localWorkspaceId}`,localWorkspaceId:t.localWorkspaceId})).accountInfo}:await Xhe.getClaudeAuthInfo({verificationMode:e})}"
+    },
+    {
+      "name": "Xhe-Jhe-binding",
+      "asset": "index",
+      "utf8_half_open": [
+        3027092,
+        3027297
+      ],
+      "utf16_half_open": [
+        3026598,
+        3026803
+      ],
+      "bytes": 205,
+      "sha256": "bd2de2c88fe7a42beed33630b4d81b12af2954634f834fdecfa33790ff951356",
+      "literal": "const Xhe=new _Pt,Jhe={authInfo:(t,e=\"status\")=>t&&t.workspaceHost!==M?[\"claude-auth-info\",\"cloud\",t.localWorkspaceId,t.workspaceHost.hostingServerUrl,t.workspaceHost.vmId]:[\"claude-auth-info\",\"local\",e]};"
+    },
+    {
+      "name": "import-NDt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        59405,
+        59414
+      ],
+      "utf16_half_open": [
+        59405,
+        59414
+      ],
+      "bytes": 9,
+      "sha256": "accddb207fe358e57d0429f4ff7046698d7984669622a10f070ac7436a8f7cd4",
+      "literal": "jz as NDt"
+    },
+    {
+      "name": "import-p9r",
+      "asset": "renderer",
+      "utf8_half_open": [
+        63514,
+        63523
+      ],
+      "utf16_half_open": [
+        63514,
+        63523
+      ],
+      "bytes": 9,
+      "sha256": "02e56b8bc4cd2fe5e656b31870a4e6b2d8e2479a73316e9e120281f48e30c985",
+      "literal": "q0 as p9r"
+    },
+    {
+      "name": "export-wPt",
+      "asset": "index",
+      "utf8_half_open": [
+        3486320,
+        3486329
+      ],
+      "utf16_half_open": [
+        3485784,
+        3485793
+      ],
+      "bytes": 9,
+      "sha256": "81294922e17db1803921f39de78ed86a4ac91dd1c3be20a42f4cf5557c366faa",
+      "literal": "wPt as jz"
+    },
+    {
+      "name": "export-C7t",
+      "asset": "index",
+      "utf8_half_open": [
+        3490169,
+        3490178
+      ],
+      "utf16_half_open": [
+        3489633,
+        3489642
+      ],
+      "bytes": 9,
+      "sha256": "dac64737e8c49226128a27bdbb0fe9ac7ac9584b7810d6dde2201224d581214e",
+      "literal": "C7t as q0"
+    },
+    {
+      "name": "getClaudeAuthInfo",
+      "asset": "index",
+      "utf8_half_open": [
+        3023154,
+        3024468
+      ],
+      "utf16_half_open": [
+        3022660,
+        3023974
+      ],
+      "bytes": 1314,
+      "sha256": "7eae9ba93843f1f0c54566747a7b7e2a5fbcf26415f5bc76ed3861d7cad7f4ff",
+      "literal": "async getClaudeAuthInfo({verificationMode:e=\"status\"}={}){const s=await Vl();try{const n=await this.getInitOptions({workingDir:s,host:M,skipGitHubAuth:!0}),r=n.claudeExecutablePath||`${s}/claude`,i=n.claudeEnvVars?Q$e(n.claudeEnvVars):{};if(e===\"live\"){Y.info(\"Attempting claudeAuth via live CLI prompt probe\");const c=await Ce({command:[`cd ${ce(s)}`,`export MAX_THINKING_TOKENS=${ce(\"0\")}`,\"unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN\",..._y(i),yPt({executablePath:r,env:i})].join(\" && \"),host:M}),l=vPt(c.stdout);return c.code!==0||l.isError?{status:void 0,error:[l.parseError?`Failed to parse Claude auth probe output: ${l.parseError}`:void 0,c.stderr.trim()||void 0,c.stdout.trim()||void 0].filter(Boolean).join(`\n`)||`Claude auth probe failed with code ${c.code}`}:{status:{subscriptionType:\"authenticated\"}}}Y.info(\"Attempting claudeAuth via cached CLI status\",{verificationMode:e});const o=await Ce({command:[\"unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN\",..._y(i),`${ce(r)} auth status --json`].join(\" && \"),host:M}),a=mPt(o.stdout);return o.code!==0&&a.error?{status:void 0,error:o.stderr.trim()||a.error||`Claude auth status failed with code ${o.code}`}:{status:a.status,error:a.error}}catch(n){return Y.error(\"Failed to get auth info:\",n),{status:void 0,error:n instanceof Error?n.message:String(n)}}}"
+    },
+    {
+      "name": "mPt-status-parser",
+      "asset": "index",
+      "utf8_half_open": [
+        3017443,
+        3018112
+      ],
+      "utf16_half_open": [
+        3016949,
+        3017618
+      ],
+      "bytes": 669,
+      "sha256": "f49fbdfee5cb32b3fd2d7c3d04ad50c2e5a56e67c368294b8c9a02a48298e668",
+      "literal": "function mPt(t){let e;try{e=JSON.parse(t.trim()||\"{}\")}catch(o){return{error:o instanceof Error?`Failed to parse Claude auth status: ${o.message}`:`Failed to parse Claude auth status: ${String(o)}`}}const s=uPt.safeParse(e);if(!s.success)return{error:`Claude auth status returned an unexpected payload: ${s.error.message}`};const n=s.data;if(!n.loggedIn)return{status:void 0};const r=n.authMethod,i=r===\"apiKey\"||r===\"api_key\";return{status:{email:n.email??void 0,organization:n.orgName??n.organization??void 0,subscriptionType:n.subscriptionType??void 0,tokenSource:i?void 0:r??void 0,apiKeySource:n.apiKeySource??(i?r:void 0),apiProvider:gPt(n.apiProvider??void 0)}}}"
+    }
+  ],
+  "source_chain": [
+    "jpa local CLI mode uses Cpa(queryIsLoading || refreshIsPending), independent of existing query data.",
+    "Mpa/Ppa selects undefined accountInfo when CLI has no subscriptionType or tokenSource.",
+    "t$i displays Checking login status... while loading with no selected accountInfo.",
+    "wPt/C7t imports and exports join local status query and refresh mutation to Zhe → Xhe.getClaudeAuthInfo.",
+    "getClaudeAuthInfo returns the parsed cached CLI status; mPt returns status undefined for loggedIn:false."
+  ],
+  "candidate": "ClaudeTab checking={loading && !provider} suppresses this state after an earlier successful signed-out response retained a nonnull ProviderStatus.",
+  "scope": [
+    "src/settings/agents/ClaudeTab.tsx checking prop only",
+    "tests/chat-search/claudeSignedOutRefresh.dom.test.mjs",
+    "evidence/settings/claude-signed-out-refresh"
+  ],
+  "boundaries": {
+    "reference_javascript_executed": false,
+    "behavioral_baseline": "NOT RUN; ordinary automatic hosted DOM baseline required before product edit",
+    "native_installed_app_provider_login": "NOT RUN",
+    "credentials": "Not accessed",
+    "rea_gap": "Retained inherited semantic renderer analysis exhausted heap; verified literal extraction from original app asset bytes instead."
+  }
+}

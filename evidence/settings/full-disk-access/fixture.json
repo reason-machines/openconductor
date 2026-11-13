@@ -1,0 +1,53 @@
+[
+  {
+    "id": "initial-pending",
+    "boundary": "pending",
+    "expected_granted_labels": 0
+  },
+  {
+    "id": "granted",
+    "boundary": true,
+    "expected_granted_labels": 1,
+    "expected_poll_interval_ms": false
+  },
+  {
+    "id": "not-granted",
+    "boundary": false,
+    "expected_granted_labels": 0,
+    "expected_poll_interval_ms": 5000
+  },
+  {
+    "id": "query-error-fallback",
+    "boundary": "reject",
+    "expected_granted_labels": 1,
+    "expected_poll_interval_ms": false
+  },
+  {
+    "id": "poll-after-not-granted",
+    "boundary": [
+      false,
+      true
+    ],
+    "expected_granted_label_counts": [
+      0,
+      1
+    ]
+  },
+  {
+    "id": "window-focus-recheck",
+    "boundary": [
+      true,
+      false
+    ],
+    "expected_granted_label_counts": [
+      1,
+      0
+    ]
+  },
+  {
+    "id": "open-system-settings",
+    "action": "click-button",
+    "expected_url": "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles",
+    "expected_settings_writes": 0
+  }
+]

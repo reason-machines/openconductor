@@ -1,0 +1,1 @@
+async function wBt(t,e){const n=await Kc({command:`${OGe(e)}${t}`,host:gn});if(n.code!==0){const i=n.stderr||n.stdout||`exit code ${n.code}`;throw new Error(i)}}

@@ -1,0 +1,57 @@
+{
+  "author": "Conductor Rebuild",
+  "date": "2026-11-12",
+  "computer_id": "212eb2a5-e87b-4b2d-9797-78cfa6a9902c",
+  "computer_name": "Cloud computer 355",
+  "execution": "Reason Cloud Linux; ordinary sequential check slot only",
+  "capacity_at": "2026-11-12T09:25:33Z",
+  "available_memory_mib": 8044,
+  "available_disk_gib": 40,
+  "load_average": [
+    4.82,
+    3.39,
+    2.17
+  ],
+  "cpu_observation": "top sampled 100% idle; earlier shared CPU pressure notice; no persistent Session jobs found",
+  "prefix_before_restore": "Absent, no existing lock or node_modules",
+  "node": "v22.23.4",
+  "npm": "10.9.9",
+  "baseline_checkout": "a5add3c72adc3a5b15e355d9699bd7ec0a29a28e",
+  "checked_main": "5d182b1e374d1b8b2676b17da59c45b6e74834f8",
+  "baseline": {
+    "result": "EXPECTED_FAIL",
+    "failed": 6,
+    "passed_controls": 3,
+    "exit": 1
+  },
+  "candidate": {
+    "result": "PASS",
+    "passed": 9,
+    "exit": 0
+  },
+  "existing_key_link": {
+    "result": "PASS",
+    "passed": 4,
+    "exit": 0
+  },
+  "signed_out_refresh": {
+    "result": "PASS",
+    "passed": 10,
+    "exit": 0
+  },
+  "frozen_fixture_integrity": "PASS before/after",
+  "slot_released_at": "2026-11-12T09:30:33Z",
+  "real_credentials_native_clipboard_browser_app_provider_login_E2E_package": "NOT_RUN",
+  "local_full_project_typecheck_build": "NOT_RUN",
+  "candidate_kit_sha256": "e29c172d7e80263dbc1a020d0b6dd6c02e6471b7e09b4e2f1c1fbbf2a91e1b77",
+  "transcript_sha256": {
+    "red.tap": "caeb7b82b5fea9408ea596a2e7126064d2fdd2690582574b6c49d8ebfeb6b0c1",
+    "green.tap": "40bd865b389996f6a09b144cf4747dc148381e199d05b2ed1edd85b53239555a",
+    "adjacent-key-link.tap": "54926bebd5bd5b8ca799631417b75cc58bcdceb8d252a5671376e2de7686708c",
+    "adjacent-refresh.tap": "7b0b3b28037ebbaf0795406a099a3c15ab0992a083c1598a118df22df48757dc",
+    "dependency-restore.log": "10eaee626b2f9b3af28b5d7924229b964cb31b54a22ea28c8919055c97416b1a",
+    "dependency-package.json": "3fa4866decbdb972083b725c141262ea8007d3c171a8c4ee326b5ef9fea86969",
+    "dependency-lock.json": "c57fa8cbe7dc0d078a29fff52c82700779047e890e381abd081b820aa0090796"
+  },
+  "transcript_processing": "Checkout paths shortened to <checkout>/; trailing blank-line whitespace removed. Assertion content and results unchanged."
+}

@@ -1052,10 +1052,15 @@ async function emptyDiffCloseFixture(initialLoad: WorkspaceDiff["load"] = { stat
     }
     throw new Error(`Missing workspace declaration: ${name}`);
   };
-  const from = statements.indexOf(declaration("activeReview"));
+  const from = statements.indexOf(declaration("activeTab"));
   const to = statements.indexOf(declaration("prNumber"));
   assert.ok(from >= 0 && to > from);
-  const activeOwner = statements.slice(from, to).map((node: { getText(): string }) => node.getText()).join("\n");
+  const activeOwner = [
+    declaration("activeReview"),
+    declaration("showFile"),
+    declaration("showBrowser"),
+    ...statements.slice(from, to),
+  ].map((node: { getText(): string }) => node.getText()).join("\n");
   let tabJSX = "";
   function findTab(node: { getText(): string; tagName?: { getText(): string } }) {
     if (ts.isJsxSelfClosingElement(node) && node.tagName?.getText() === "DiffTab") {

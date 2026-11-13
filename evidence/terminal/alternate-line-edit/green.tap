@@ -1,0 +1,188 @@
+(node:52) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: line start passes through alternate buffer 47 without injected readline bytes
+ok 1 - line start passes through alternate buffer 47 without injected readline bytes
+  ---
+  duration_ms: 438.755391
+  type: 'test'
+  ...
+# Subtest: line end passes through alternate buffer 47 without injected readline bytes
+ok 2 - line end passes through alternate buffer 47 without injected readline bytes
+  ---
+  duration_ms: 10.388688
+  type: 'test'
+  ...
+# Subtest: delete line passes through alternate buffer 47 without injected readline bytes
+ok 3 - delete line passes through alternate buffer 47 without injected readline bytes
+  ---
+  duration_ms: 9.107003
+  type: 'test'
+  ...
+# Subtest: word left passes through alternate buffer 47 without injected readline bytes
+ok 4 - word left passes through alternate buffer 47 without injected readline bytes
+  ---
+  duration_ms: 9.798702
+  type: 'test'
+  ...
+# Subtest: word right passes through alternate buffer 47 without injected readline bytes
+ok 5 - word right passes through alternate buffer 47 without injected readline bytes
+  ---
+  duration_ms: 16.1445
+  type: 'test'
+  ...
+# Subtest: insert-newline still precedes the alternate-buffer 47 guard
+ok 6 - insert-newline still precedes the alternate-buffer 47 guard
+  ---
+  duration_ms: 7.794604
+  type: 'test'
+  ...
+# Subtest: line start passes through alternate buffer 1047 without injected readline bytes
+ok 7 - line start passes through alternate buffer 1047 without injected readline bytes
+  ---
+  duration_ms: 8.585108
+  type: 'test'
+  ...
+# Subtest: line end passes through alternate buffer 1047 without injected readline bytes
+ok 8 - line end passes through alternate buffer 1047 without injected readline bytes
+  ---
+  duration_ms: 8.491845
+  type: 'test'
+  ...
+# Subtest: delete line passes through alternate buffer 1047 without injected readline bytes
+ok 9 - delete line passes through alternate buffer 1047 without injected readline bytes
+  ---
+  duration_ms: 9.169738
+  type: 'test'
+  ...
+# Subtest: word left passes through alternate buffer 1047 without injected readline bytes
+ok 10 - word left passes through alternate buffer 1047 without injected readline bytes
+  ---
+  duration_ms: 9.364044
+  type: 'test'
+  ...
+# Subtest: word right passes through alternate buffer 1047 without injected readline bytes
+ok 11 - word right passes through alternate buffer 1047 without injected readline bytes
+  ---
+  duration_ms: 8.144749
+  type: 'test'
+  ...
+# Subtest: insert-newline still precedes the alternate-buffer 1047 guard
+ok 12 - insert-newline still precedes the alternate-buffer 1047 guard
+  ---
+  duration_ms: 7.624026
+  type: 'test'
+  ...
+# Subtest: line start passes through alternate buffer 1049 without injected readline bytes
+ok 13 - line start passes through alternate buffer 1049 without injected readline bytes
+  ---
+  duration_ms: 8.918146
+  type: 'test'
+  ...
+# Subtest: line end passes through alternate buffer 1049 without injected readline bytes
+ok 14 - line end passes through alternate buffer 1049 without injected readline bytes
+  ---
+  duration_ms: 8.812739
+  type: 'test'
+  ...
+# Subtest: delete line passes through alternate buffer 1049 without injected readline bytes
+ok 15 - delete line passes through alternate buffer 1049 without injected readline bytes
+  ---
+  duration_ms: 16.394085
+  type: 'test'
+  ...
+# Subtest: word left passes through alternate buffer 1049 without injected readline bytes
+ok 16 - word left passes through alternate buffer 1049 without injected readline bytes
+  ---
+  duration_ms: 7.601603
+  type: 'test'
+  ...
+# Subtest: word right passes through alternate buffer 1049 without injected readline bytes
+ok 17 - word right passes through alternate buffer 1049 without injected readline bytes
+  ---
+  duration_ms: 8.479163
+  type: 'test'
+  ...
+# Subtest: insert-newline still precedes the alternate-buffer 1049 guard
+ok 18 - insert-newline still precedes the alternate-buffer 1049 guard
+  ---
+  duration_ms: 8.226295
+  type: 'test'
+  ...
+# Subtest: line start still sends its exact readline bytes in the normal buffer
+ok 19 - line start still sends its exact readline bytes in the normal buffer
+  ---
+  duration_ms: 7.142851
+  type: 'test'
+  ...
+# Subtest: line end still sends its exact readline bytes in the normal buffer
+ok 20 - line end still sends its exact readline bytes in the normal buffer
+  ---
+  duration_ms: 6.973364
+  type: 'test'
+  ...
+# Subtest: delete line still sends its exact readline bytes in the normal buffer
+ok 21 - delete line still sends its exact readline bytes in the normal buffer
+  ---
+  duration_ms: 7.021617
+  type: 'test'
+  ...
+# Subtest: word left still sends its exact readline bytes in the normal buffer
+ok 22 - word left still sends its exact readline bytes in the normal buffer
+  ---
+  duration_ms: 7.289271
+  type: 'test'
+  ...
+# Subtest: word right still sends its exact readline bytes in the normal buffer
+ok 23 - word right still sends its exact readline bytes in the normal buffer
+  ---
+  duration_ms: 7.352312
+  type: 'test'
+  ...
+# Subtest: leaving the alternate buffer restores all normal line-edit commands
+ok 24 - leaving the alternate buffer restores all normal line-edit commands
+  ---
+  duration_ms: 9.43193
+  type: 'test'
+  ...
+# Subtest: alternate-buffer keyup never injects readline bytes
+ok 25 - alternate-buffer keyup never injects readline bytes
+  ---
+  duration_ms: 11.927855
+  type: 'test'
+  ...
+# Subtest: ordinary alternate-buffer input still passes through
+ok 26 - ordinary alternate-buffer input still passes through
+  ---
+  duration_ms: 16.180927
+  type: 'test'
+  ...
+# Subtest: Find remains available in the alternate buffer
+ok 27 - Find remains available in the alternate buffer
+  ---
+  duration_ms: 7.552262
+  type: 'test'
+  ...
+# Subtest: new-tab remains available in the alternate buffer
+ok 28 - new-tab remains available in the alternate buffer
+  ---
+  duration_ms: 8.89276
+  type: 'test'
+  ...
+# Subtest: an alternate sibling does not suppress normal-buffer line editing
+ok 29 - an alternate sibling does not suppress normal-buffer line editing
+  ---
+  duration_ms: 9.450747
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1084.887417

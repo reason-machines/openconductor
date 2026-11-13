@@ -1,0 +1,99 @@
+2026-11-12T06:32:56.1886205Z ok 1330 - turn-file preview shows its error unavailable state without stale diff text
+2026-11-12T06:32:56.1886521Z   ---
+2026-11-12T06:32:56.1886741Z   duration_ms: 178.85759
+2026-11-12T06:32:56.1886957Z   type: 'test'
+2026-11-12T06:32:56.1887233Z   ...
+2026-11-12T06:32:56.3864614Z # Subtest: turn-file preview names a saved snapshot that is too large without losing navigation
+2026-11-12T06:32:56.3907319Z not ok 1331 - turn-file preview names a saved snapshot that is too large without losing navigation
+2026-11-12T06:32:56.3934960Z   ---
+2026-11-12T06:32:56.3995211Z   duration_ms: 151.988928
+2026-11-12T06:32:56.4024971Z   type: 'test'
+2026-11-12T06:32:56.4045589Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/turnFilePreview.test.ts:219:1'
+2026-11-12T06:32:56.4065046Z   failureType: 'testCodeFailure'
+2026-11-12T06:32:56.4065635Z   error: |-
+2026-11-12T06:32:56.4072053Z     The input did not match the regular expression /File too large to preview/. Input:
+2026-11-12T06:32:56.4072567Z     
+2026-11-12T06:32:56.4072983Z     'first.ts+2-1src/first.tsNo diff available1+0 more+0-0'
+2026-11-12T06:32:56.4073377Z     
+2026-11-12T06:32:56.4073684Z   code: 'ERR_ASSERTION'
+2026-11-12T06:32:56.4074173Z   name: 'AssertionError'
+2026-11-12T06:32:56.4082799Z   expected:
+2026-11-12T06:32:56.4083261Z   actual: 'first.ts+2-1src/first.tsNo diff available1+0 more+0-0'
+2026-11-12T06:32:56.4083764Z   operator: 'match'
+2026-11-12T06:32:56.4084213Z   stack: |-
+2026-11-12T06:32:56.4084912Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/turnFilePreview.test.ts:225:12)
+2026-11-12T06:32:56.4085649Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T06:32:56.4086204Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T06:32:56.4086655Z   ...
+2026-11-12T06:32:56.6190750Z # Subtest: turn-file preview renders only the requested file from a response
+2026-11-12T06:32:56.6205482Z ok 1332 - turn-file preview renders only the requested file from a response
+2026-11-12T06:32:56.6206120Z   ---
+2026-11-12T06:32:56.6206661Z   duration_ms: 212.058318
+2026-11-12T06:32:56.6207088Z   type: 'test'
+2026-11-12T06:32:56.6207439Z   ...
+2026-11-12T06:32:56.7798455Z # Subtest: turn-file preview ignores a stale response after changing turn
+2026-11-12T06:32:56.7812371Z ok 1333 - turn-file preview ignores a stale response after changing turn
+2026-11-12T06:32:56.7812830Z   ---
+2026-11-12T06:32:56.7813295Z   duration_ms: 215.779175
+2026-11-12T06:32:56.7813901Z   type: 'test'
+2026-11-12T06:32:56.7814394Z   ...
+2026-11-12T06:32:56.9170519Z # Subtest: turn-file preview ignores a stale response after changing session
+2026-11-12T06:32:56.9184992Z ok 1334 - turn-file preview ignores a stale response after changing session
+2026-11-12T06:32:56.9196320Z   ---
+2026-11-12T06:32:56.9224479Z   duration_ms: 163.645049
+2026-11-12T06:32:56.9254569Z   type: 'test'
+2026-11-12T06:32:56.9258825Z   ...
+2026-11-12T06:32:57.0966002Z # Subtest: turn-file preview ignores a stale response after changing worktree
+2026-11-12T06:32:57.0985382Z ok 1335 - turn-file preview ignores a stale response after changing worktree
+2026-11-12T06:32:57.1015048Z   ---
+2026-11-12T06:32:57.1045640Z   duration_ms: 154.490377
+2026-11-12T06:32:57.1054818Z   type: 'test'
+2026-11-12T06:32:57.1074984Z   ...
+2026-11-12T06:32:57.2713850Z # Subtest: turn-file preview ignores a stale response after changing path
+2026-11-12T06:32:57.2716914Z ok 1336 - turn-file preview ignores a stale response after changing path
+2026-11-12T06:32:57.2717653Z   ---
+2026-11-12T06:32:57.2718015Z   duration_ms: 162.49065
+2026-11-12T06:32:57.2718394Z   type: 'test'
+2026-11-12T06:32:57.2718738Z   ...
+2026-11-12T06:32:57.4064164Z # Subtest: turn-file preview discards an in-flight result after close or unmount
+2026-11-12T06:32:57.4068508Z ok 1337 - turn-file preview discards an in-flight result after close or unmount
+2026-11-12T06:32:57.4069237Z   ---
+2026-11-12T06:32:57.4069592Z   duration_ms: 174.043575
+2026-11-12T06:32:57.4069975Z   type: 'test'
+2026-11-12T06:32:57.4070311Z   ...
+2026-11-12T06:32:57.5655958Z # Subtest: footer chip glyphs, counts, order, compact layout and three-at-a-time reveal remain intact
+2026-11-12T06:32:57.5685567Z ok 1338 - footer chip glyphs, counts, order, compact layout and three-at-a-time reveal remain intact
+2026-11-12T06:32:57.5720601Z   ---
+2026-11-12T06:32:57.5724683Z   duration_ms: 152.227413
+2026-11-12T06:32:57.5725208Z   type: 'test'
+2026-11-12T06:32:57.5725529Z   ...
+2026-11-12T06:32:57.7018007Z # Subtest: footer preserves no-files behavior before any preview
+2026-11-12T06:32:57.7021030Z ok 1339 - footer preserves no-files behavior before any preview
+2026-11-12T06:32:57.7021504Z   ---
+2026-11-12T06:32:57.7021834Z   duration_ms: 139.174275
+2026-11-12T06:32:57.7022196Z   type: 'test'
+2026-11-12T06:32:57.7022503Z   ...
+2026-11-12T06:32:57.7024747Z # Subtest: footer preserves ordinary click behavior before any preview
+2026-11-12T06:32:57.7030392Z ok 1340 - footer preserves ordinary click behavior before any preview
+2026-11-12T06:32:57.7039079Z   ---
+2026-11-12T06:32:57.7055101Z   duration_ms: 137.538556
+2026-11-12T06:32:57.7055548Z   type: 'test'
+2026-11-12T06:32:57.7055878Z   ...
+2026-11-12T06:32:57.7652982Z # Subtest: trigger copy is Conductor's
+2026-11-12T06:32:57.7705570Z ok 1341 - trigger copy is Conductor's
+2026-11-12T06:32:57.7709301Z   ---
+2026-11-12T06:32:57.7709760Z   duration_ms: 0.562183
+2026-11-12T06:32:57.7710250Z   type: 'test'
+2026-11-12T06:32:57.7710548Z   ...
+2026-11-12T06:32:57.7710999Z # Subtest: items come in Conductor's order with its labels and icons
+2026-11-12T06:32:57.7711575Z ok 1342 - items come in Conductor's order with its labels and icons
+2026-11-12T06:32:57.7711994Z   ---
+2026-11-12T06:32:57.7712289Z   duration_ms: 0.537876
+2026-11-12T06:32:57.7712617Z   type: 'test'
+2026-11-12T06:32:57.7712903Z   ...
+2026-11-12T06:32:57.7713382Z # Subtest: each item shows only when its feature is offered; none hides the trigger
+2026-11-12T06:32:57.7714177Z ok 1343 - each item shows only when its feature is offered; none hides the trigger
+2026-11-12T06:32:57.7714629Z   ---
+2026-11-12T06:32:57.7714915Z   duration_ms: 0.157055
+2026-11-12T06:32:57.7715245Z   type: 'test'
+2026-11-12T06:32:57.7715545Z   ...

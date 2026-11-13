@@ -1,0 +1,70 @@
+{
+  "author": "Conductor Rebuild",
+  "main_sha_checked": "bc2a476d70d0b731be243f0422d99013a96d39f3",
+  "artifact": {
+    "name": "Conductor 0.87.6 decoded assets/renderApp-D_fmY7hW.js",
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "bytes": 11600457
+  },
+  "provenance": {
+    "retained_rea_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "manifest": "evidence/frontend/tauri-assets-manifest.json",
+    "parse_status": "skipped",
+    "known_gap": "Owned JavaScript worker exhausted its heap. Compiled bundle spans were inspected as inert text, not an REA-generated call graph. No new REA call or target execution."
+  },
+  "retained_packet_sha256": "ccfd20d9e24774f2fa3c1e307a44420ad5fc6215d4974efea53d1c9cb8dce599",
+  "coordinate_units": "zero-based, end-exclusive UTF-8 bytes in the retained renderer",
+  "original_fragments": [
+    {
+      "name": "jI",
+      "utf8_bytes": [
+        8679149,
+        8679618
+      ],
+      "sha256_utf8": "40e810b2620ea443e976963f31301fc084579d72ab362c6df674cbfa15446230",
+      "compiled_javascript": "jI=$.useMemo(()=>{const ln=new Set,$r=c1.map(hr=>({id:hr.name,label:hr.name,display:hr.name,command:hr,isSkill:!1})).filter(hr=>ln.has(hr.id)?!1:(ln.add(hr.id),!0));for(const hr of $s){const Ns=`skill:${hr.name}|${nde(hr.path)}`;ln.has(Ns)||(ln.add(Ns),$r.push({id:Ns,label:hr.displayName??hr.name,display:hr.displayName??hr.name,command:{name:hr.displayName??hr.name,description:hr.description,argumentHint:\"\",supportedAgents:[bt]},isSkill:!0}))}return $r},[c1,$s,bt])"
+    },
+    {
+      "name": "slash selection",
+      "utf8_bytes": [
+        8680979,
+        8681314
+      ],
+      "sha256_utf8": "6dc566389a19cb497ae73c76776c1c0a24fc4b6097635dc4d60c810b5ed68885",
+      "compiled_javascript": "{char:\"/\",query:z6,renderItem:(ln,$r,hr)=>uRt(ln)?FNi({item:ln,focused:hr}):null,onSelect:(ln,$r,hr)=>{const Ns=String(hr.id);if(MNi(Ns)){BNi(ln,$r,hr);return}const Oa=Yl(Ns);if(Oa&&hmo.has(Oa.effect)){ln.chain().focus().deleteRange($r).run(),ua(Oa);return}const Vf=hr.label??Ns;ln.chain().focus().insertContentAt($r,`/${Vf} `).run()}}"
+    },
+    {
+      "name": "BNi",
+      "utf8_bytes": [
+        8651020,
+        8651089
+      ],
+      "sha256_utf8": "5b44c4d29f93d2c7a52c5f06447fadd0437f5c45b93913da403a1b860eb1b12b",
+      "compiled_javascript": "function BNi(t,e,n){nce(t,e,{id:n.id,label:n.label??n.id,char:\"§\"})}"
+    },
+    {
+      "name": "eki+nce",
+      "utf8_bytes": [
+        7577223,
+        7577469
+      ],
+      "sha256_utf8": "3198a3457355d763883142817edc17bfe1a02795cafb1d41fce0a38da5a1f866",
+      "compiled_javascript": "function eki({id:t,label:e,char:n,isDirectory:i}){return[{type:\"mention\",attrs:{id:t,label:e,mentionSuggestionChar:n,...i===void 0?{}:{isDirectory:i}}},{type:\"text\",text:\" \"}]}function nce(t,e,n){t.chain().focus().insertContentAt(e,eki(n)).run()}"
+    }
+  ],
+  "current_main_sha256": {
+    "src/features/chat/slashCommands.ts": "4f6c2586872a1275a8b983cd29b08ea4b54562e9432e90c40000350341887a50",
+    "src/features/chat/slashCompletions.ts": "71bf297030997fab9c43afa908653c32910904c277d5742a25e7e07666f6ed0f",
+    "src/features/chat/Composer.tsx": "56e355bcb7dcb53a90560a30e5a85f19497c7a67429729325ebf34fd17cf0960",
+    "src/features/chat/codexChat.ts": "4738720032f34e180dc281a689083821b6dec5178a4b76462d54587c18493877",
+    "src-tauri/src/agent/codex_rpc.rs": "1e492ba3ade6f1f1ce745a66c3d0b95060019aeab22683b6bc9f3d1e0b02fe94"
+  },
+  "assertions_passed": 17,
+  "finding": "Original selection retains a name-and-path ID. Checked OpenConductor insertion loses the path; the send converter resolves a bare name to the first matching skill.",
+  "design_choice": "Carry a picked Codex skill through the existing supported [$name](path/SKILL.md) prompt grammar. This is not a claim that Conductor uses that draft representation.",
+  "limits": [
+    "Retained source only, not target execution or semantic recovery.",
+    "REA skipped renderer parsing after its worker exhausted the heap; exact compiled spans were inspected as inert data.",
+    "No browser, server, native app, provider, pill visual, whitespace-path grammar, installed build, or deployment verification."
+  ]
+}

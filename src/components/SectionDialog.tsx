@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Modal } from "./Dialogs";
 import { searchSectionEmoji } from "./sectionEmoji";
 
@@ -20,6 +20,11 @@ export function SectionDialog({ data, onSubmit, onClose }: Props) {
   const [emoji, setEmoji] = useState<string | undefined>(data.mode === "edit" ? data.emoji : undefined);
   const [picking, setPicking] = useState(false);
   const [emojiQuery, setEmojiQuery] = useState("");
+  const composing = useRef(false);
+  const compositionEndTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => {
+    if (compositionEndTimer.current !== undefined) clearTimeout(compositionEndTimer.current);
+  }, []);
   const emojiChoices = searchSectionEmoji(emojiQuery);
   const trimmed = name.trim();
   const submit = () => {
@@ -29,7 +34,25 @@ export function SectionDialog({ data, onSubmit, onClose }: Props) {
   };
   return (
     <Modal title={creating ? "New section" : "Edit section"} onClose={onClose}>
-      <div className="modal-body section-dialog">
+      <div
+        className="modal-body section-dialog"
+        onCompositionStart={() => {
+          clearTimeout(compositionEndTimer.current);
+          compositionEndTimer.current = undefined;
+          composing.current = true;
+        }}
+        onCompositionEnd={() => {
+          clearTimeout(compositionEndTimer.current);
+          const delay = typeof CSS !== "undefined" && CSS.supports?.("-webkit-backdrop-filter:none") ? 5 : 0;
+          compositionEndTimer.current = setTimeout(() => {
+            compositionEndTimer.current = undefined;
+            composing.current = false;
+          }, delay);
+        }}
+        onKeyDownCapture={(event) => {
+          if (event.key === "Escape" && composing.current) event.stopPropagation();
+        }}
+      >
         <div className="section-dialog-row">
           <button
             type="button"
@@ -46,6 +69,8 @@ export function SectionDialog({ data, onSubmit, onClose }: Props) {
             value={name}
             autoFocus
             autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
             spellCheck={false}
             onFocus={(e) => e.currentTarget.select()}
             onChange={(e) => setName(e.target.value)}

@@ -29,6 +29,7 @@ import {
 } from "../home/allWorkspaces";
 import { listArchivedWorkspaces, onArchiveEvent, type ArchivedWorkspace } from "../workspace/archive";
 import { effectiveShortcuts } from "../keybindings/overrides";
+import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { useWorkspaceAgentStatus } from "../features/chat/useWorkspaceSession";
 import { homeStatus, rowGitStatus, rowStatusColor, rowStatusLabel, showsActivityStatus } from "../state/rowStatus";
 import { RowStatusIcon } from "./RowStatusIcon";
@@ -237,6 +238,7 @@ function Row({
 }
 
 export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch, onCreateWorkspace }: Props) {
+  const { overrides } = useKeybindingOverrides();
   const [query, setQuery] = useState("");
   const repoIds = useMemo(() => new Set(repos.map((r) => r.id)), [repos]);
   const [filters, setFiltersState] = useState<HomeFilters>(() => loadFilters(repoIds));
@@ -252,13 +254,9 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
 
   useEffect(() => setLimit(PAGE_SIZE), [query, filters]);
 
-  // Archived workspaces are not in the sidebar state; read them from
-  // conductor.db when the archive filter shows them, and again after an
-  // archive or unarchive changes the repos.
+  // Project choices include archived-only repositories even while archived rows are hidden.
   const [archivedRows, setArchivedRows] = useState<ArchivedWorkspace[]>([]);
-  const showsArchived = filters.archiveFilter !== "active";
   useEffect(() => {
-    if (!showsArchived) return;
     let live = true;
     listArchivedWorkspaces().then(
       (rows) => live && setArchivedRows(rows),
@@ -267,7 +265,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
     return () => {
       live = false;
     };
-  }, [showsArchived, repos]);
+  }, [repos]);
 
   const rows = useMemo(() => homeRows(repos, filters, query, archivedRows), [repos, filters, query, archivedRows]);
   const shown = rows.slice(0, limit);
@@ -275,7 +273,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
   const groups = groupByDate(shown, now);
   const flat = groups.flatMap((g) => g.rows.map((row) => ({ row, key: `${g.bucket}:${row.workspace.id}` })));
   const activeIndex = Math.max(0, flat.findIndex((entry) => entry.key === activeKey));
-  const projectChoices = reposWithWorkspaces(repos);
+  const projectChoices = reposWithWorkspaces(repos, archivedRows);
   const empty = emptyAction(repos, filters);
 
   useEffect(() => setActiveKey(flat[activeIndex]?.key), [activeIndex, flat]);
@@ -296,7 +294,17 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
       : dispatch({ type: "select", selection: { kind: "workspace", repoId: row.repo.id, workspaceId: row.workspace.id } });
 
   const onSearchKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (flat.length === 0) return;
+    if (e.defaultPrevented || e.nativeEvent?.isComposing || e.keyCode === 229) return;
+    if (e.key === "Home" || e.key === "End" || (e.metaKey && (e.key === "ArrowUp" || e.key === "ArrowDown"))) {
+      e.preventDefault();
+      const entry = flat[e.key === "Home" || e.key === "ArrowUp" ? 0 : flat.length - 1];
+      if (entry) setActiveKey(entry.key);
+      return;
+    }
+    if (flat.length === 0) {
+      if (e.key === "Enter") e.preventDefault();
+      return;
+    }
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setActiveKey(flat[Math.min(activeIndex + 1, flat.length - 1)].key);
@@ -310,7 +318,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
     }
   };
 
-  const toggleHint = effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or ");
+  const toggleHint = effectiveShortcuts("view.toggleLeftSidebar", overrides).map(glyphs).join(" or ");
   let index = -1;
 
   return (
@@ -346,7 +354,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
                 onKeyDown={onSearchKey}
               />
             </label>
-            {showProjectFilter(repos) && (
+            {showProjectFilter(repos, archivedRows) && (
               <Menu ariaLabel="Projects" label={projectFilterLabel(repos, filters.projects)} icon={<FolderIcon size={14} />}>
                 {() => (
                   <>

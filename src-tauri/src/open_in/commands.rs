@@ -1,9 +1,9 @@
 //! IPC for the Open button: which apps to offer, and opening a folder in one.
 
-use std::path::Path;
+use std::path::{Component, Path, PathBuf};
 use std::process::Command;
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use super::{available_apps, find, icon, IconType, Roots};
 
@@ -99,21 +99,259 @@ fn run_alacritty(program: &str, args: &[String]) -> Result<super::AlacrittyExit,
         .map_err(|error| format!("{program}: {error}"))
 }
 
-/// JS: `invoke("open_in_app", { appId, path })`: opens the workspace folder
-/// `path` in the app, or one file in it (the All files tree).
+fn wezterm_output(
+    program: &str,
+    args: &[String],
+    cli_path: Option<&std::ffi::OsStr>,
+) -> Result<std::process::Output, String> {
+    let mut command = Command::new(program);
+    command.args(args);
+    if let Some(path) = cli_path {
+        command.env("PATH", path);
+    }
+    command.output().map_err(|error| format!("{program}: {error}"))
+}
+
+fn open_wezterm_folder(dir: &Path) -> Result<(), String> {
+    let inherited_path = std::env::var_os("PATH");
+    let home = std::env::var_os("HOME");
+    let path = super::wezterm_search_path(inherited_path.as_deref(), home.as_deref())?;
+    let dir = dir.to_string_lossy().into_owned();
+    let spawn = wezterm_output(
+        "wezterm",
+        &["cli".into(), "spawn".into(), "--cwd".into(), dir.clone()],
+        Some(&path),
+    )?;
+    if spawn.status.success() {
+        wezterm_output("open", &["-a".into(), "WezTerm".into()], None)?;
+        return Ok(());
+    }
+    let start = wezterm_output(
+        "open",
+        &[
+            "-a".into(),
+            "WezTerm".into(),
+            "--args".into(),
+            "start".into(),
+            "--cwd".into(),
+            dir.clone(),
+        ],
+        Some(&path),
+    )?;
+    if start.status.success() {
+        return Ok(());
+    }
+    let folder = wezterm_output(
+        "open",
+        &["-a".into(), "WezTerm".into(), dir],
+        Some(&path),
+    )?;
+    if folder.status.success() {
+        return Ok(());
+    }
+    let stderr = String::from_utf8_lossy(&folder.stderr).into_owned();
+    let stdout = String::from_utf8_lossy(&folder.stdout).into_owned();
+    Err(if !stderr.is_empty() {
+        stderr
+    } else if !stdout.is_empty() {
+        stdout
+    } else {
+        format!("exit code {}", folder.status.code().unwrap_or(-1))
+    })
+}
+
+fn run_kaleidoscope_folder(dir: &Path) -> Result<(), String> {
+    let probe = Command::new("git")
+        .arg("-C")
+        .arg(dir)
+        .args(["diff", "--quiet", "HEAD"])
+        .output()
+        .map_err(|error| format!("git: {error}"))?;
+    let mut path = std::env::var_os("PATH").unwrap_or_default();
+    path.push(":/Applications/Kaleidoscope.app/Contents/MacOS:");
+    path.push(std::env::var_os("HOME").unwrap_or_default());
+    path.push("/Applications/Kaleidoscope.app/Contents/MacOS");
+    if probe.status.code() == Some(1) {
+        let difftool = Command::new("git")
+            .arg("-C")
+            .arg(dir)
+            .args([
+                "-c",
+                "difftool.ksdiff.cmd=ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"",
+                "difftool",
+                "--tool=ksdiff",
+                "--no-prompt",
+                "HEAD",
+            ])
+            .env("PATH", &path)
+            .output()
+            .map_err(|error| format!("git: {error}"))?;
+        if difftool.status.success() {
+            return Ok(());
+        }
+    }
+    let out = Command::new("open")
+        .args(["-a", "Kaleidoscope"])
+        .arg(dir)
+        .env("PATH", &path)
+        .output()
+        .map_err(|error| format!("open: {error}"))?;
+    if out.status.success() {
+        return Ok(());
+    }
+    let stderr = String::from_utf8_lossy(&out.stderr).into_owned();
+    let stdout = String::from_utf8_lossy(&out.stdout).into_owned();
+    Err(if !stderr.is_empty() {
+        stderr
+    } else if !stdout.is_empty() {
+        stdout
+    } else {
+        format!("exit code {}", out.status.code().unwrap_or(-1))
+    })
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FileContext {
+    workspace_path: PathBuf,
+}
+
+fn deleted_finder_parent(target: &Path, context: &FileContext) -> Option<PathBuf> {
+    let root = &context.workspace_path;
+    if !root.is_absolute()
+        || !root.is_dir()
+        || root.components().any(|part| matches!(part, Component::ParentDir))
+        || !matches!(target.symlink_metadata(), Err(error) if error.kind() == std::io::ErrorKind::NotFound)
+    {
+        return None;
+    }
+    let relative = target.strip_prefix(root).ok()?;
+    if !relative.components().all(|part| matches!(part, Component::Normal(_))) {
+        return None;
+    }
+    let mut current = root.to_path_buf();
+    for part in relative.components() {
+        current.push(part.as_os_str());
+        match current.symlink_metadata() {
+            Ok(metadata) if metadata.file_type().is_symlink() => return None,
+            Ok(_) => {}
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => break,
+            Err(_) => return None,
+        }
+    }
+    target.parent().map(Path::to_path_buf)
+}
+
+fn vscode_search_path(
+    path: Option<&std::ffi::OsStr>,
+    home: Option<&std::ffi::OsStr>,
+) -> Result<std::ffi::OsString, String> {
+    let mut dirs: Vec<PathBuf> = path.into_iter().flat_map(std::env::split_paths).collect();
+    dirs.push(PathBuf::from("/Applications/Visual Studio Code.app/Contents/Resources/app/bin"));
+    if let Some(home) = home {
+        dirs.push(Path::new(home).join("Applications/Visual Studio Code.app/Contents/Resources/app/bin"));
+    }
+    std::env::join_paths(dirs).map_err(|error| error.to_string())
+}
+
+fn run_vscode_file(
+    workspace: &Path,
+    target: &Path,
+    cli_path: &std::ffi::OsStr,
+    fallback: impl FnOnce() -> Result<(), String>,
+) -> Result<(), String> {
+    let output = Command::new("code")
+        .arg(workspace)
+        .arg("--goto")
+        .arg(target)
+        .env("PATH", cli_path)
+        .output()
+        .map_err(|error| format!("code: {error}"))?;
+    if output.status.success() {
+        Ok(())
+    } else {
+        fallback()
+    }
+}
+
+fn vscode_workspace(target: &Path, context: &FileContext) -> Option<PathBuf> {
+    let root = &context.workspace_path;
+    if !root.is_absolute()
+        || !root.symlink_metadata().ok()?.is_dir()
+        || root.components().any(|part| matches!(part, Component::ParentDir))
+    {
+        return None;
+    }
+    let relative = target.strip_prefix(root).ok()?;
+    if relative.as_os_str().is_empty()
+        || !relative.components().all(|part| matches!(part, Component::Normal(_)))
+    {
+        return None;
+    }
+    let mut current = root.to_path_buf();
+    for part in relative.components() {
+        current.push(part.as_os_str());
+        if current.symlink_metadata().ok()?.file_type().is_symlink() {
+            return None;
+        }
+    }
+    if !target.canonicalize().ok()?.starts_with(root.canonicalize().ok()?) {
+        return None;
+    }
+    Some(root.clone())
+}
+
+/// Opens an existing folder or file. A missing Finder file may open its
+/// immediate parent when explicit file context bounds it to a workspace.
 #[tauri::command]
-pub async fn open_in_app(app_id: String, path: String) -> Result<(), String> {
+pub async fn open_in_app(
+    app_id: String,
+    path: String,
+    file_context: Option<FileContext>,
+) -> Result<(), String> {
     let app = find(&app_id).ok_or_else(|| format!("Unknown app: {app_id}"))?;
     let target = Path::new(&path);
-    if !target.is_absolute() || !(target.is_dir() || target.is_file()) {
-        return Err(format!("Not a folder or file: {path}"));
+    let invalid = || format!("Not a folder or file: {path}");
+    if !target.is_absolute() {
+        return Err(invalid());
     }
     let is_file = target.is_file();
-    let dir = target.to_path_buf();
+    let dir = if is_file || target.is_dir() {
+        target.to_path_buf()
+    } else if app.id == "finder" {
+        file_context
+            .as_ref()
+            .and_then(|context| deleted_finder_parent(target, context))
+            .ok_or_else(invalid)?
+    } else {
+        return Err(invalid());
+    };
+    let workspace = if app.id == "vscode" && is_file {
+        file_context
+            .as_ref()
+            .map(|context| {
+                vscode_workspace(target, context)
+                    .ok_or_else(|| format!("Invalid VS Code workspace context for: {path}"))
+            })
+            .transpose()?
+    } else {
+        None
+    };
     tauri::async_runtime::spawn_blocking(move || {
         if cfg!(target_os = "macos") {
-            if app.id == "alacritty" && !is_file {
+            if let Some(workspace) = workspace {
+                let inherited_path = std::env::var_os("PATH");
+                let home = std::env::var_os("HOME");
+                let cli_path = vscode_search_path(inherited_path.as_deref(), home.as_deref())?;
+                run_vscode_file(&workspace, &dir, &cli_path, || {
+                    super::run_macos_open(app, &dir, is_file, run)
+                })
+            } else if app.id == "alacritty" && !is_file {
                 super::run_alacritty_folder(&dir, run_alacritty)
+            } else if app.id == "kaleidoscope" && !is_file {
+                run_kaleidoscope_folder(&dir)
+            } else if app.id == "wezterm" && !is_file {
+                open_wezterm_folder(&dir)
             } else {
                 super::run_macos_open(app, &dir, is_file, run)
             }
@@ -133,6 +371,65 @@ pub async fn open_in_app(app_id: String, path: String) -> Result<(), String> {
     })
     .await
     .map_err(|e| e.to_string())?
+}
+
+#[cfg(all(test, target_os = "macos"))]
+#[path = "vscode_workspace_context_safety.rs"]
+mod vscode_workspace_context_safety;
+
+#[cfg(all(test, unix))]
+mod finder_context_tests {
+    use super::{deleted_finder_parent, FileContext};
+    use std::fs;
+    use std::os::unix::fs::symlink;
+    use std::path::{Path, PathBuf};
+
+    struct Fixture(PathBuf);
+
+    impl Drop for Fixture {
+        fn drop(&mut self) {
+            let _ = fs::remove_dir_all(&self.0);
+        }
+    }
+
+    fn workspace() -> (Fixture, FileContext) {
+        let root = std::env::temp_dir().join(format!("oc-finder-context-{}", uuid::Uuid::new_v4()));
+        let workspace_path = root.join("workspace");
+        fs::create_dir_all(workspace_path.join("src")).unwrap();
+        (Fixture(root), FileContext { workspace_path })
+    }
+
+    #[test]
+    fn fallback_stays_inside_an_existing_absolute_workspace() {
+        let (fixture, context) = workspace();
+        for path in [
+            fixture.0.join("other/gone.ts"),
+            fixture.0.join("workspace-sibling/gone.ts"),
+            context.workspace_path.join("../other/gone.ts"),
+        ] {
+            assert_eq!(deleted_finder_parent(&path, &context), None);
+        }
+        assert_eq!(
+            deleted_finder_parent(Path::new("src/gone.ts"), &context),
+            None,
+        );
+        let absent = FileContext { workspace_path: fixture.0.join("absent") };
+        assert_eq!(deleted_finder_parent(&absent.workspace_path.join("gone.ts"), &absent), None);
+        let relative = FileContext { workspace_path: PathBuf::from("workspace") };
+        assert_eq!(deleted_finder_parent(Path::new("workspace/gone.ts"), &relative), None);
+    }
+
+    #[test]
+    fn fallback_refuses_symlinked_parents_and_broken_leaf_links() {
+        let (fixture, context) = workspace();
+        let outside = fixture.0.join("outside");
+        fs::create_dir(&outside).unwrap();
+        symlink(&outside, context.workspace_path.join("link")).unwrap();
+        symlink(outside.join("absent.ts"), context.workspace_path.join("broken.ts")).unwrap();
+        for path in ["link/gone.ts", "broken.ts"] {
+            assert_eq!(deleted_finder_parent(&context.workspace_path.join(path), &context), None);
+        }
+    }
 }
 
 #[cfg(all(test, unix))]

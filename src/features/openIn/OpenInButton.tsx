@@ -22,6 +22,7 @@ interface Props {
    * `size: "icon"` beside settings paths. It registers no shortcuts.
    */
   variant?: "split" | "icon";
+  showShortcutHint?: boolean;
 }
 
 /** The app's own icon with Conductor's hairline frame, else its kind's glyph. */
@@ -60,7 +61,7 @@ export function useInstalledApps(): OpenInApp[] | null {
   return apps;
 }
 
-export function OpenInButton({ path, notify, variant = "split" }: Props) {
+export function OpenInButton({ path, notify, variant = "split", showShortcutHint = true }: Props) {
   const split = variant === "split";
   const installed = useInstalledApps();
   const apps = installed ?? [];
@@ -107,7 +108,7 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
   useKeybindings(
     Object.fromEntries(
       Array.from({ length: NUMBERED_ROWS }, (_, i) => {
-        const row = open ? rows[i] : undefined;
+        const row = split && open ? rows[i] : undefined;
         return [`menu.selectItem${i + 1}`, row && (() => (close(), row()))];
       }),
     ),
@@ -132,11 +133,12 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
       wrap.current?.querySelector<HTMLElement>(".oi-chevron")?.focus();
       return;
     }
-    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+    if (e.defaultPrevented || (e.key !== "ArrowDown" && e.key !== "ArrowUp")) return;
     const items = Array.from(menu.current?.querySelectorAll<HTMLElement>('[role="menuitem"]:not([disabled])') ?? []);
     const at = items.indexOf(document.activeElement as HTMLElement);
     if (at < 0) return;
     e.preventDefault();
+    e.stopPropagation();
     items[(at + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length]?.focus();
   };
 
@@ -187,8 +189,8 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
                   <span className="oi-row-label">{a.name}</span>
                 </span>
                 <span className="oi-row-end">
-                  {a.id === defaultId && openKeyText && <span className="oi-row-kbd">{openKeyText}</span>}
-                  {numbers.apps[i] !== undefined && <span className="oi-row-num">{numbers.apps[i]}</span>}
+                  {showShortcutHint && a.id === defaultId && openKeyText && <span className="oi-row-kbd">{openKeyText}</span>}
+                  {split && numbers.apps[i] !== undefined && <span className="oi-row-num">{numbers.apps[i]}</span>}
                 </span>
               </button>
             ))
@@ -200,7 +202,7 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
               </span>
               <span className="oi-row-label">Copy path</span>
             </span>
-            {numbers.copyPath !== undefined && (
+            {split && numbers.copyPath !== undefined && (
               <span className="oi-row-end">
                 <span className="oi-row-num">{numbers.copyPath}</span>
               </span>

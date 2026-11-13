@@ -1,0 +1,1 @@
+["env", "-u", "DIFF_WORKSPACE_READ_REF", "nice", "-n", "19", "timeout", "--kill-after=5s", "210s", "node", "--max-old-space-size=768", "--test", "--test-concurrency=1", "src/features/diff/fileCommentCountLifecycle.test.ts", "src/features/chat/reviewCommentHandoff.test.ts", "src/features/chat/desktopReviewHandoff.test.ts"]

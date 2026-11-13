@@ -37,6 +37,7 @@ async function fixture(projects: string[] = []) {
     "../features/chat/useWorkspaceSession": { useWorkspaceAgentStatus: () => "idle" },
     "../settings/useStatusMatrix": { useStatusMatrix: () => false },
     "../settings/useBoolPref": { useBoolPref: () => false },
+    "../keybindings/KeybindingsProvider": { useKeybindingOverrides: () => ({ overrides: {} }) },
     "../keybindings/overrides": { effectiveShortcuts: () => [] },
     "../keybindings/shortcut": { glyphs: () => "" },
     "../workspace/archive": { listArchivedWorkspaces: async () => [], onArchiveEvent: () => () => {} },

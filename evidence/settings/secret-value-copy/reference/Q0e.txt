@@ -1,0 +1,1 @@
+async function Q0e(t,e){await it("plugin:clipboard-manager|write_text",{label:e?.label,text:t})}

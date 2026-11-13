@@ -1,0 +1,109 @@
+{
+  "id": "SAME15-KALEIDOSCOPE-WORKSPACE-V1",
+  "owner": "15faf4d8-d257-49ef-874d-8008c5c78aaf",
+  "checked_main": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "native_subject_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+  "retained_rea_evidence": "ev_338577609e67c31212d529d59606e90597850528ea9a2f9559d23a4876c960d1",
+  "source_kind": "Retained REA bounded-slice lineage, manually hash-joined to shipped renderer. Not runtime observation or automatic call-graph proof.",
+  "source_spans": [
+    {
+      "role": "uD",
+      "path": "../alacritty/source-v1/original-uD.txt",
+      "byte_range": [
+        2674155,
+        2678698
+      ],
+      "bytes": 4543,
+      "sha256": "272d373e491a760dacfb797c5abe1cc969360b93bfb37b26976f01b7317cea0f"
+    },
+    {
+      "role": "I8",
+      "path": "../alacritty/source-v1/original-I8.txt",
+      "byte_range": [
+        2672569,
+        2672728
+      ],
+      "bytes": 159,
+      "sha256": "8625ac2e383db210166d30d1499410ceb0047cced53cecc2c31fd7f742273a91"
+    },
+    {
+      "role": "o4e",
+      "path": "../alacritty/source-v1/original-o4e.txt",
+      "byte_range": [
+        2673055,
+        2673178
+      ],
+      "bytes": 123,
+      "sha256": "d19d25adf90c32c81a43f0292ba9cc05d7d838c8a855a00befe9a993cac5f418"
+    },
+    {
+      "role": "OGe",
+      "path": "../alacritty/source-v1/original-OGe.txt",
+      "byte_range": [
+        2672421,
+        2672569
+      ],
+      "bytes": 148,
+      "sha256": "db9b2dcb6aa84255fa1cac05cf8ab38e03f6d7ccc69e3b1e66627d96216424ad"
+    },
+    {
+      "role": "ICi",
+      "path": "../alacritty/source-v1/original-ICi.txt",
+      "byte_range": [
+        7306771,
+        7310204
+      ],
+      "bytes": 3433,
+      "sha256": "57c76b8d88d0d77ebaa532d58de89dbbe1e7ff447f7d110729af9f18d438989a"
+    },
+    {
+      "role": "P9",
+      "path": "../alacritty/source-v1/original-P9.txt",
+      "byte_range": [
+        2689481,
+        2697526
+      ],
+      "bytes": 8045,
+      "sha256": "bf2bd3507c56618ed2d218f4c6efe656926ed3d4a523f8fd16ce5cffd153aede"
+    },
+    {
+      "role": "wBt",
+      "path": "reference/original-wBt.txt",
+      "byte_range": [
+        2672894,
+        2673055
+      ],
+      "bytes": 161,
+      "sha256": "4af88172b9e62b8a4f08b311676618d1d26aef4a7d653b660a5f0735bce82f79"
+    },
+    {
+      "role": "catalog",
+      "path": "reference/original-catalog.txt",
+      "byte_range": [
+        572367,
+        572516
+      ],
+      "bytes": 149,
+      "sha256": "b7fed1003656b616a564f5f4da7eca26aab9b4cd62b690baebc6b8e264c1ec26"
+    }
+  ],
+  "fixture_sha256": "4f3db0f8e7a8ce17854325bde5552fe3b02d25f10ad591ab21307af147ff0dcd",
+  "baseline_status": "HOSTED_BEHAVIORAL_RED; eight macOS assertion failures, 1008 passed, one ignored; no local Node/native/browser execution",
+  "baseline_head": "f04e48283a38fa6b85c232dbc1326ecfbdb53659",
+  "baseline_job": "https://github.com/reason-machines/openconductor/actions/runs/43043772414/job/130602219408",
+  "candidate_status": "HOSTED_BEHAVIORAL_GREEN_PENDING; fixture remains byte-identical",
+  "fixture_entrypoint": "commands::open_in_app on macOS, with isolated temporary executable shims",
+  "originals_retained": true,
+  "runtime_queue_admission": false,
+  "excluded": [
+    "file targets",
+    "all other launchers",
+    "cloud UI",
+    "native/window/menu invocation",
+    "ICON15",
+    "Move12",
+    "M11",
+    "Settings49"
+  ]
+}

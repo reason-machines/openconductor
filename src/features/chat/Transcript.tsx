@@ -29,10 +29,12 @@ import type { UserPrompt } from "./userContent.ts";
 import { userMessageCopyText } from "./userMessageCopy.ts";
 import { useBoolPref } from "../../settings/useBoolPref.ts";
 import { assistantDisplayText } from "./assistantText.ts";
+import { TranscriptSearch } from "./TranscriptSearch.tsx";
 import "./chat.css";
 
 export interface TranscriptProps {
   transcript: ChatTranscript;
+  searchEnabled?: boolean;
   /** "Keep tool calls expanded" setting. */
   expandToolsByDefault?: boolean;
   /** "Don't collapse tool calls" setting: summary rows stay open. */
@@ -65,8 +67,25 @@ export interface TranscriptProps {
   notify?: MarkdownOptions["notify"];
 }
 
+const toolDisclosure = (() => {
+  let expanded: ReadonlyMap<string, boolean> = new Map();
+  const listeners = new Set<() => void>();
+  return {
+    getSnapshot: () => expanded,
+    subscribe(listener: () => void) {
+      listeners.add(listener);
+      return () => { listeners.delete(listener); };
+    },
+    toggle(id: string, defaultOpen: boolean) {
+      expanded = new Map(expanded).set(id, !isToolExpanded(id, expanded, defaultOpen));
+      for (const listener of listeners) listener();
+    },
+  };
+})();
+
 export function Transcript({
   transcript,
+  searchEnabled = false,
   expandToolsByDefault = false,
   dontCollapseToolCalls = false,
   onRetry,
@@ -88,8 +107,8 @@ export function Transcript({
   const day = useSyncExternalStore(clock.subscribe, clock.getSnapshot, clock.getSnapshot);
   const rows = useMemo(() => foldAgentRows(buildRows(transcript), transcript.activeTurn), [transcript]);
   const turns = useMemo(() => groupTurns(rows), [rows]);
-  const [toggled, setToggled] = useState<ReadonlyMap<string, boolean>>(new Map());
-  const toggleTool = (id: string, defaultOpen = false) => setToggled((prev) => new Map(prev).set(id, !isToolExpanded(id, prev, expandToolsByDefault || defaultOpen)));
+  const toggled = useSyncExternalStore(toolDisclosure.subscribe, toolDisclosure.getSnapshot, toolDisclosure.getSnapshot);
+  const toggleTool = (id: string, defaultOpen = false) => toolDisclosure.toggle(id, expandToolsByDefault || defaultOpen);
   const [summaries, setSummaries] = useState<ReadonlyMap<string, "expanded" | "collapsed">>(new Map());
   const ctx: RowContext = {
     stripAbsolutelyRight,
@@ -107,6 +126,7 @@ export function Transcript({
     workspacePath,
     onOpenFile,
     now: () => day,
+    toolNow: now,
     onForkToNewTab,
     onForkToNewWorkspace,
     forkDisabled,
@@ -115,8 +135,7 @@ export function Transcript({
     notify,
   };
 
-  return (
-    <LinkMenuNotify.Provider value={notify}>
+  const content = (
       <div className="transcript">
         {turns.map((turn) => {
           const footer = turn.rows.find((r): r is TurnEndRow => r.kind === "turn_end");
@@ -132,8 +151,10 @@ export function Transcript({
           );
         })}
       </div>
-    </LinkMenuNotify.Provider>
   );
+  return <LinkMenuNotify.Provider value={notify}>
+    {searchEnabled ? <TranscriptSearch transcript={transcript}>{content}</TranscriptSearch> : content}
+  </LinkMenuNotify.Provider>;
 }
 
 type TurnEndRow = Extract<DisplayRow, { kind: "turn_end" }>;
@@ -175,6 +196,7 @@ interface RowContext {
   workspacePath?: string;
   onOpenFile?: (path: string) => void;
   now: () => number;
+  toolNow: () => number;
   notify?: TranscriptProps["notify"];
   onForkToNewTab?: (turnId: string) => void;
   onForkToNewWorkspace?: (turnId: string) => void;
@@ -371,6 +393,9 @@ function Part({ partKey, part, preview = false, group, ctx }: { partKey: string;
             tool={call.tool}
             status={call.status}
             result={call.result}
+            rawResult={call.rawResult}
+            resultCreatedAt={call.resultCreatedAt}
+            now={ctx.toolNow}
             isError={call.status === "error"}
             open={ctx.isOpen(call.id, opensByDefault(call.tool))}
             onToggle={() => ctx.onToggle(call.id, opensByDefault(call.tool))}

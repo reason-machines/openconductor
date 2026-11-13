@@ -26,7 +26,7 @@ use std::time::Duration;
 use serde_json::Value;
 
 use crate::agent::claude_stream::{ClaudeEvent, PermissionDecision};
-use crate::agent::{ClaudeLaunch, ClaudeSession, SessionEvent};
+use crate::agent::{ClaudeLaunch, ClaudeSession, PermissionMode, SessionEvent};
 use crate::reason_acp::provider::{ProviderEvent, Sink, TurnEnd};
 
 use super::interact::{self, Answer};
@@ -42,6 +42,20 @@ const STDERR_TAIL: usize = 20;
 pub struct ChatOptions {
     pub model: Option<String>,
     pub effort: Option<String>,
+    #[serde(rename = "fastMode")]
+    pub fast_mode: Option<bool>,
+    pub permission_mode: Option<PermissionMode>,
+}
+
+impl ChatOptions {
+    fn apply_fast_mode(&self, settings: &mut Option<Value>) -> Result<(), String> {
+        let Some(fast) = self.fast_mode else { return Ok(()); };
+        let object = settings.get_or_insert_with(|| serde_json::json!({}))
+            .as_object_mut()
+            .ok_or("Claude Code launch settings must be an object to apply Fast mode.")?;
+        object.insert("fastMode".into(), Value::Bool(fast));
+        Ok(())
+    }
 }
 
 struct Live {
@@ -119,6 +133,26 @@ impl ClaudeRunner {
         }
     }
 
+    pub fn busy(&self, chat_id: &str) -> bool {
+        self.chats.lock().unwrap().get(chat_id).is_some_and(|chat| {
+            chat.expected || chat.live.as_ref().is_some_and(|live| !live.state.lock().unwrap().waiting.is_empty())
+        })
+    }
+
+    pub fn approves_plan(&self, chat_id: &str, id: &str, answer: &Answer) -> bool {
+        if !matches!(answer, Answer::Plan { approved: true, .. }) { return false; }
+        self.chats.lock().unwrap().get(chat_id).and_then(|chat| chat.live.as_ref()).is_some_and(|live| {
+            live.state.lock().unwrap().asks.get(id).is_some_and(|(tool, _)| tool == "ExitPlanMode")
+        })
+    }
+
+    pub fn abandon_prompt(&self, chat_id: &str) {
+        if let Some(chat) = self.chats.lock().unwrap().get_mut(chat_id) {
+            chat.expected = false;
+            chat.stopped_before_send = false;
+        }
+    }
+
     /// Announces a prompt about to be sent (after the turn's start
     /// checkpoint), so a Stop before it is sent still stops it.
     pub fn expect_prompt(&self, chat_id: &str) {
@@ -145,6 +179,17 @@ impl ClaudeRunner {
         text: &str,
         directories: &[PathBuf],
         options: &ChatOptions,
+    ) -> TurnEnd {
+        self.prompt_with_handoff(chat_id, text, directories, options, None)
+    }
+
+    pub fn prompt_with_handoff(
+        &self,
+        chat_id: &str,
+        text: &str,
+        directories: &[PathBuf],
+        options: &ChatOptions,
+        on_handoff: Option<Box<dyn FnOnce() + Send>>,
     ) -> TurnEnd {
         let rx = {
             let mut chats = self.chats.lock().unwrap();
@@ -176,6 +221,9 @@ impl ClaudeRunner {
                     chat_id,
                     format!("Could not send the message to Claude Code: {e}"),
                 );
+            }
+            if let Some(on_handoff) = on_handoff {
+                on_handoff();
             }
             rx
         };
@@ -300,7 +348,7 @@ impl ClaudeRunner {
                     return Ok(());
                 }
                 if !st.waiting.is_empty() {
-                    return Err("Wait for the current Claude Code turn to end before changing model or effort.".into());
+                    return Err("Wait for the current Claude Code turn to end before changing model, effort, Fast or Plan mode.".into());
                 }
             }
             if let Some(id) = st.mapper.session_id() {
@@ -316,6 +364,8 @@ impl ClaudeRunner {
         launch.add_dirs = directories.to_vec();
         launch.model = options.model.clone();
         launch.effort = options.effort.clone();
+        options.apply_fast_mode(&mut launch.settings)?;
+        if let Some(mode) = options.permission_mode { launch.permission_mode = mode; }
         let mut session = ClaudeSession::spawn(&launch)
             .map_err(|e| format!("Could not start Claude Code: {e}"))?;
         let events = session.take_events();

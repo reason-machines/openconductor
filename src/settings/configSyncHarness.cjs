@@ -12,7 +12,7 @@ const sourceRoot = resolve(process.env.CONFIG_SYNC_SOURCE_ROOT ?? repository);
 const inert = () => null;
 
 function mount(options = {}) {
-  const calls = { reads: 0, writes: [], boundaries: [] };
+  const calls = { reads: 0, writes: [], boundaries: [], notifications: [] };
   const modules = new Map();
   const empty = () => ({ ccToCodex: [], codexToCc: [], error: null });
   const diff = {
@@ -31,6 +31,7 @@ function mount(options = {}) {
     "./appearance": { SETTINGS_CHANGED: "settings-changed" },
     "./appPrefs": { setAppPref: blocked("setAppPref") },
     "./composerSettings": { chooseSendKey: blocked("chooseSendKey") },
+    "./notificationPermission": { notificationPermissionGranted: blocked("notificationPermissionGranted") },
     "./model": { withField: blocked("withField") },
     "./prefs": { enumPref: () => "steering", withEnumPref: blocked("withEnumPref"), boolPref: () => false },
     "./rows/AppPrefRows": { GeneralAppPrefRows: inert },
@@ -77,6 +78,7 @@ function mount(options = {}) {
   let renderer;
   act(() => { renderer = create(React.createElement(GeneralPage, {
     settings: { general: { sound_type: "none", send_native_notification: false } }, save: blocked("save"),
+    notify: (kind, message) => calls.notifications.push({ kind, message }),
   })); });
   return {
     calls, diff,

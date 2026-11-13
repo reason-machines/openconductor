@@ -199,6 +199,7 @@ impl TurnMapper {
                 ToolStatus::Completed
             };
             row.output = Some(result_text(&block["content"]));
+            row.raw_result = Some(block["content"].clone());
             out.push(ProviderEvent::Agent(AgentEvent::Tool(Box::new(
                 row.clone(),
             ))));
@@ -283,6 +284,7 @@ fn tool_row(id: &str, name: &str, input: &Value, cwd: &Path) -> ToolRow {
         kind: tool_kind(name).to_owned(),
         status: ToolStatus::Running,
         output: None,
+        raw_result: None,
         diffs,
         locations,
         tool_name: Some(name.to_owned()),

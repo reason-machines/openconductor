@@ -1,0 +1,67 @@
+import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { test } from "node:test";
+
+const root = fileURLToPath(new URL("../../../", import.meta.url));
+const fixture = fileURLToPath(new URL("../../../evidence/settings/agent-tab-keyboard/agentTabsKeyboard.dom.test.mjs", import.meta.url));
+const expectedCases = [
+  "only the selected reason tab participates in Tab order",
+  "only the selected claude tab participates in Tab order",
+  "only the selected codex tab participates in Tab order",
+  "ArrowRight moves focus and automatically activates claude from reason",
+  "ArrowLeft moves focus and automatically activates claude from codex",
+  "ArrowRight moves focus and automatically activates reason from codex",
+  "ArrowLeft moves focus and automatically activates codex from reason",
+  "Home moves focus and automatically activates reason from codex",
+  "End moves focus and automatically activates codex from reason",
+  "focusing another tab activates its panel and route",
+  "clicking another tab still activates its panel and route",
+  "shiftKey leaves tab navigation to its existing owner",
+  "altKey leaves tab navigation to its existing owner",
+  "ctrlKey leaves tab navigation to its existing owner",
+  "metaKey leaves tab navigation to its existing owner",
+  "ArrowUp is not consumed by the horizontal tab row",
+  "ArrowDown is not consumed by the horizontal tab row",
+  "Tab is not consumed by the horizontal tab row",
+  "Escape still reaches settings.close through the real global dispatcher",
+  "Home at the reason boundary preserves focus without consuming the event",
+  "End at the codex boundary preserves focus without consuming the event",
+  "a route change updates the sole tab stop without stealing focus from elsewhere",
+];
+
+test("Agents tabs pass the unchanged 22-case keyboard and focus fixture", { timeout: 120_000 }, (context) => {
+  assert.equal(createHash("sha256").update(readFileSync(fixture)).digest("hex"), "833644d93d3c45c4846800c2d923540ff53c57b22d2aa1f53aaf99dbc1789d51");
+  const domPrefix = process.env.ONBOARDING_DOM_DEPS;
+  assert.ok(domPrefix, "K1 requires the existing isolated jsdom@26.1.0 prefix in ONBOARDING_DOM_DEPS; no install, fallback, or skip is permitted");
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  const result = spawnSync(process.execPath, ["--test", "--test-concurrency=1", "--test-reporter=tap", fixture], {
+    cwd: root,
+    env: {
+      ...env,
+      NODE_ENV: "development",
+      NODE_OPTIONS: "--max-old-space-size=768",
+      ONBOARDING_DOM_DEPS: domPrefix,
+      AGENT_TABS_SOURCE_ROOT: root,
+    },
+    encoding: "utf8",
+    timeout: 115_000,
+    killSignal: "SIGKILL",
+    maxBuffer: 4 * 1024 * 1024,
+  });
+  assert.ifError(result.error);
+  assert.equal(result.signal, null, result.stdout + result.stderr);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  for (const [name, expected] of Object.entries({ tests: 22, pass: 22, fail: 0, cancelled: 0, skipped: 0, todo: 0 })) {
+    const matches = [...result.stdout.matchAll(new RegExp(`^# ${name} (\\d+)$`, "gm"))];
+    assert.equal(matches.length, 1, `Missing or ambiguous TAP summary for ${name}`);
+    assert.equal(Number(matches[0][1]), expected);
+  }
+  assert.match(result.stdout, /^1\.\.22$/m);
+  assert.deepEqual([...result.stdout.matchAll(/^ok \d+ - (.+)$/gm)].map((match) => match[1]), expectedCases);
+  assert.doesNotMatch(result.stdout, /^not ok /m);
+  context.diagnostic(result.stdout);
+});

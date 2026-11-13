@@ -1,0 +1,56 @@
+2026-11-11T15:40:02.0785160Z # Subtest: Home prevents Enter on an empty source list without activating a workspace
+2026-11-11T15:40:02.0839504Z not ok 110 - Home prevents Enter on an empty source list without activating a workspace
+2026-11-11T15:40:02.0863828Z   ---
+2026-11-11T15:40:02.0912610Z   duration_ms: 252.236457
+2026-11-11T15:40:02.0915746Z   type: 'test'
+2026-11-11T15:40:02.0916656Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeEmptyEnter.test.ts:114:1'
+2026-11-11T15:40:02.0917577Z   failureType: 'testCodeFailure'
+2026-11-11T15:40:02.0925212Z   error: |-
+2026-11-11T15:40:02.0925744Z     empty-source Enter must be prevented
+2026-11-11T15:40:02.0926255Z
+2026-11-11T15:40:02.0926644Z     false !== true
+2026-11-11T15:40:02.0927066Z
+2026-11-11T15:40:02.0927457Z   code: 'ERR_ASSERTION'
+2026-11-11T15:40:02.0927912Z   name: 'AssertionError'
+2026-11-11T15:40:02.0928367Z   expected: true
+2026-11-11T15:40:02.0928771Z   actual: false
+2026-11-11T15:40:02.0929192Z   operator: 'strictEqual'
+2026-11-11T15:40:02.0929650Z   stack: |-
+2026-11-11T15:40:02.0930576Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeEmptyEnter.test.ts:120:12)
+2026-11-11T15:40:02.0931633Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T15:40:02.0932450Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-11T15:40:02.0933106Z   ...
+2026-11-11T15:40:02.0934058Z # Subtest: Home prevents Enter after filtering a populated list to zero without activating a workspace
+2026-11-11T15:40:02.0935183Z not ok 111 - Home prevents Enter after filtering a populated list to zero without activating a workspace
+2026-11-11T15:40:02.0935914Z   ---
+2026-11-11T15:40:02.0936323Z   duration_ms: 155.643147
+2026-11-11T15:40:02.0936770Z   type: 'test'
+2026-11-11T15:40:02.0937544Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeEmptyEnter.test.ts:124:1'
+2026-11-11T15:40:02.0938340Z   failureType: 'testCodeFailure'
+2026-11-11T15:40:02.0939198Z   error: |-
+2026-11-11T15:40:02.0939728Z     zero-result Enter must be prevented
+2026-11-11T15:40:02.0940246Z
+2026-11-11T15:40:02.0940621Z     false !== true
+2026-11-11T15:40:02.0941005Z
+2026-11-11T15:40:02.0941411Z   code: 'ERR_ASSERTION'
+2026-11-11T15:40:02.0941865Z   name: 'AssertionError'
+2026-11-11T15:40:02.0942320Z   expected: true
+2026-11-11T15:40:02.0942736Z   actual: false
+2026-11-11T15:40:02.0943154Z   operator: 'strictEqual'
+2026-11-11T15:40:02.0944061Z   stack: |-
+2026-11-11T15:40:02.0944959Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeEmptyEnter.test.ts:132:12)
+2026-11-11T15:40:02.0945988Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T15:40:02.0946765Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T15:40:02.0947430Z   ...
+2026-11-11T15:40:02.0948162Z # Subtest: Home prevents nonempty Enter and activates the selected workspace exactly once
+2026-11-11T15:40:02.0949153Z ok 112 - Home prevents nonempty Enter and activates the selected workspace exactly once
+2026-11-11T15:40:02.0950001Z   ---
+2026-11-11T15:40:02.0950417Z   duration_ms: 87.78329
+2026-11-11T15:40:02.0950876Z   type: 'test'
+2026-11-11T15:40:02.0951280Z   ...
+2026-11-11T15:40:02.0952030Z # Subtest: Home leaves an unrelated empty-list character key unprevented without activation
+2026-11-11T15:40:02.0953055Z ok 113 - Home leaves an unrelated empty-list character key unprevented without activation
+2026-11-11T15:40:02.0953925Z   ---
+2026-11-11T15:40:02.0954328Z   duration_ms: 91.852624
+2026-11-11T15:40:02.0954753Z   type: 'test'
+2026-11-11T15:40:02.0955134Z   ...

@@ -79,15 +79,18 @@ mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
 pub mod diff;
 pub mod draft_attachments;
+mod full_disk_access;
 pub mod github_repo;
 pub mod local_account;
 pub mod menu;
 mod model_catalog;
 pub mod pr;
 mod local_storage_commands;
+mod local_plan_mode;
 mod onboarding_commands;
 mod native_qa;
 mod native_qa_cache;
+pub mod visual_qa_profile;
 pub mod open_in;
 pub mod project;
 pub mod quick_open;
@@ -285,7 +288,8 @@ fn updater_plugin<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R, tauri_pl
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     native_qa::reject_release_request();
-    let context = native_qa::before_startup(tauri::generate_context!());
+    let context = visual_qa_profile::before_startup(tauri::generate_context!());
+    let context = native_qa::before_startup(context);
     let builder = native_qa::guard_builder(tauri::Builder::default());
     // Conductor is macOS-only; elsewhere keep Tauri's no-menu default.
     #[cfg(target_os = "macos")]
@@ -377,6 +381,7 @@ pub fn run() {
             app.manage(codex_chat::CodexChats::with_binaries(binaries));
             app.manage(codex_account::CodexLogins::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
+            app.manage(local_plan_mode::LocalPlanModes::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
             // Appearance keys Conductor keeps in conductor.db live in its settings table.
@@ -411,6 +416,7 @@ pub fn run() {
             root_path_commands::repo_workspaces_path,
             root_path_commands::change_conductor_root,
             app_info,
+            full_disk_access::check_full_disk_access,
             open_devtools,
             inspect_project_folder,
             branch_prefix_settings,
@@ -476,9 +482,11 @@ pub fn run() {
             diff::comment_commands::diff_comments_list,
             diff::comment_commands::diff_comment_add,
             diff::comment_commands::diff_comment_edit,
+            diff::comment_commands::diff_comments_update_anchors,
             diff::comment_commands::diff_comment_delete,
             diff::comment_commands::diff_comment_resolve,
             diff::comment_commands::diff_comments_mark_sent,
+            diff::comment_commands::diff_comments_mark_reviewed,
             turn_checkpoint_commands::checkpoint_turn_changes,
             diff::comment_commands::diff_comments_sync_github,
             diff::comment_commands::diff_comment_resolve_github,
@@ -512,6 +520,7 @@ pub fn run() {
             codex_chat::codex_cli_path,
             codex_chat::codex_open_chat,
             codex_chat::codex_prompt,
+            codex_chat::codex_mcp_status,
             codex_chat::codex_cancel,
             codex_chat::codex_answer,
             codex_chat::codex_respond,
@@ -522,6 +531,8 @@ pub fn run() {
             agent_settings_commands::favorite_models_replace,
             config_sync_commands::config_sync_diff,
             config_sync_commands::config_sync_apply,
+            local_plan_mode::local_plan_mode_get,
+            local_plan_mode::local_plan_mode_set,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
             claude_chat::commands::claude_cancel,
@@ -614,6 +625,8 @@ pub fn run() {
             scripts::run_script_stop,
             scripts::run_script_status,
             scripts::run_script_output,
+            scripts::run_script_write,
+            scripts::run_script_resize,
             scripts::run_script_preview_env,
             scripts::archive_script_run,
             scripts::auto_run_after_setup_get,

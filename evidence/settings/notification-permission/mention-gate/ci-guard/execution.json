@@ -1,0 +1,72 @@
+{
+  "producer": "Conductor Rebuild",
+  "request": "6238a3c9",
+  "grant_message": "09a5dc6b-8484-4575-b6a9-92148b1bcad1",
+  "checked_main": "2ffcb278ff76c92716e98c5f9de6f90b49027b39",
+  "phases": {
+    "fda-baseline": {
+      "command": "NODE_OPTIONS=--max-old-space-size=1024 nice -n19 timeout --kill-after=5s 180s node --experimental-strip-types --test --test-concurrency=1 src/settings/fullDiskAccess.test.ts",
+      "exit": 1,
+      "started_at": "2026-11-12T16:45:51Z",
+      "ended_at": "2026-11-12T16:45:52Z"
+    },
+    "python-baseline": {
+      "command": "NODE_OPTIONS=--max-old-space-size=1024 nice -n19 timeout --kill-after=5s 180s python3 evidence/settings/full-disk-access/notification_guard_test.py",
+      "exit": 1,
+      "started_at": "2026-11-12T16:46:01Z",
+      "ended_at": "2026-11-12T16:46:01Z"
+    },
+    "fda-green": {
+      "command": "NODE_OPTIONS=--max-old-space-size=1024 nice -n19 timeout --kill-after=5s 180s node --experimental-strip-types --test --test-concurrency=1 src/settings/fullDiskAccess.test.ts",
+      "exit": 0,
+      "started_at": "2026-11-12T16:46:34Z",
+      "ended_at": "2026-11-12T16:46:55Z"
+    },
+    "python-green": {
+      "command": "NODE_OPTIONS=--max-old-space-size=1024 nice -n19 timeout --kill-after=5s 180s python3 evidence/settings/full-disk-access/notification_guard_test.py",
+      "exit": 0,
+      "started_at": "2026-11-12T16:47:02Z",
+      "ended_at": "2026-11-12T16:47:02Z"
+    },
+    "mention": {
+      "command": "NODE_OPTIONS=--max-old-space-size=1024 NOTIFICATION_DEPS=\"$PWD\" NOTIFICATION_SOURCE_ROOT=\"$PWD\" nice -n19 timeout --kill-after=5s 180s node --test --test-concurrency=1 evidence/settings/notification-permission/mention-gate/replay.test.cjs",
+      "exit": 0,
+      "started_at": "2026-11-12T16:47:27Z",
+      "ended_at": "2026-11-12T16:47:34Z"
+    },
+    "adjacent": {
+      "command": "NODE_OPTIONS=--max-old-space-size=1024 NOTIFICATION_DEPS=\"$PWD\" NOTIFICATION_SOURCE_ROOT=\"$PWD\" nice -n19 timeout --kill-after=5s 180s node --test --test-concurrency=1 evidence/settings/notification-permission/replay/notificationGate.test.cjs evidence/settings/notification-permission/replay/concurrentSettings.test.cjs evidence/settings/notification-permission/denial-feedback/replay.test.cjs",
+      "exit": 0,
+      "started_at": "2026-11-12T16:47:34Z",
+      "ended_at": "2026-11-12T16:47:43Z"
+    },
+    "typecheck": {
+      "command": "NODE_OPTIONS=--max-old-space-size=1024 nice -n19 timeout --kill-after=5s 180s node node_modules/typescript/bin/tsc --noEmit",
+      "exit": 0,
+      "started_at": "2026-11-12T16:47:44Z",
+      "ended_at": "2026-11-12T16:48:29Z"
+    }
+  },
+  "changed_files": [
+    "evidence/settings/full-disk-access/notification_guard_test.py",
+    "evidence/settings/full-disk-access/verify.py",
+    "src/settings/fullDiskAccess.test.ts"
+  ],
+  "preserved_before_pins": 54,
+  "wrapper_migration": {
+    "only_change": "Ran 6 tests -> Ran 9 tests",
+    "byte_identical": false,
+    "all_other_bytes_match_original": true,
+    "original_sha256": "e1491655c10d91a5da9d73335852f6311c3412e8d7286c9ee3242c3b2a9ee855",
+    "corrected_sha256": "201c66f1c256124c6c1ad59e08b444386085ce29c50da9d75ccfd1d8770bc526"
+  },
+  "python_migration": "Original six tests expanded independently over Agent and mention rows; three additive tests reject ungated rollback, wrong preference and extra row content. Original bytes preserved.",
+  "baseline_interpretation": "FDA wrapper two failing and two passing; Python6 four failures and two errors. These reproduce the hosted guard incompatibility, not new product RED.",
+  "green_interpretation": "FDA wrapper4 pass including preserved FDA7 baseline2PASS/5intendedFAIL and candidate7PASS; Python9PASS; frozen mention8PASS; adjacent16PASS; tscPASS.",
+  "product_changes_this_continuation": false,
+  "install": "NOT_RUN",
+  "native": "NOT_RUN",
+  "package": "NOT_RUN",
+  "visual": "NOT_RUN",
+  "finished_at": "2026-11-12T16:49:17.650590+00:00"
+}

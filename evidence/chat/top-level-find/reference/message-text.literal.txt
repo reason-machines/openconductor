@@ -1,0 +1,2 @@
+function kRt(t){const e=[];switch(t.type){case"user":if(typeof t.message.content=="string"){e.push(t.message.content);break}for(const n of t.message.content)n.type==="text"&&e.push(n.text);break;case"assistant":for(const n of t.message.content)n.type==="text"&&e.push(n.text);break}return e.join(`
+`)}

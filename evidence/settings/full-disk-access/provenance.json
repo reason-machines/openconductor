@@ -1,0 +1,31 @@
+{
+  "producer": "Conductor Rebuild",
+  "baseline_sha": "f73d7c30489bd09fbdeb78a812bc10a6bcfad21a",
+  "baseline_file_sha256": "28c970954afb645658f5be693189e3a49f2e52efc8510c309f419a0a3dad21e8",
+  "original_archive_sha256": "ca4d61e4a56322c88fa6aa8e810f16d30838467ba462249245944e8429a65c6d",
+  "fixture_sha256": "1480a537fd6b946ba99b5e3a0e30a9f7ccee94cd619d78095c4897390f6e68af",
+  "frozen_files": {
+    "evidence/settings/notification-permission/baseline.tap": "1e28431aac1d041ee0a060d262bab72ac9281b510ce37f9594d702a211cb63ec",
+    "evidence/settings/notification-permission/candidate.tap": "d989d150eb383327fedccf788bb7d6374081360f4d55bbea45b7d8f58cfe70a6",
+    "evidence/settings/notification-permission/concurrent-settings/candidate.tap": "37855c30b31a1390cc0568bce6cd179a622702e345e0a440dff242196e5d45ef",
+    "evidence/settings/notification-permission/concurrent-settings/proof.json": "62022a3b92fd116493a9baff98f6840863648e6107efe4dd3a83c55665b705da",
+    "evidence/settings/notification-permission/concurrent-settings/stale-snapshot-mutant.tap": "de86eb6ef3b84c58780cdfb16dcd27d46c725ba0925e32a489338d6dbb9f98ca",
+    "evidence/settings/notification-permission/provenance.json": "c8baae985802876dbc4d3346230ca2aaada19ce74e206c3b47217380789ce2e6",
+    "evidence/settings/notification-permission/reference/Aue.txt": "2037d2021997cb793acd2f0e0e5daf171ca08592ef58fbf38818573d33984b64",
+    "evidence/settings/notification-permission/reference/Iue.txt": "ce05ab5befc00c528bee19cce2b921523f91e553c46977dfd2b9aee3cb93fe5c",
+    "evidence/settings/notification-permission/reference/index-aliases.txt": "93290979f356cd2bfb879b962062fdaade7538c550c3a10c14499bc129be1cd7",
+    "evidence/settings/notification-permission/reference/mei.txt": "5104c0c6c9868e5d8da6ddb26b27651e98435b9902dc3d0d273dbbf466cd8389",
+    "evidence/settings/notification-permission/reference/renderer-aliases.txt": "c66a54103cbbbfaeb857622d38cfd4320d77f3d8b463df83658d0ec3c3b05d90",
+    "evidence/settings/notification-permission/reference/row-notifications_enabled.txt": "4965cde19a68de4c3be483c704f7d69f4d29cc2593a976b10c359183f7680af0",
+    "evidence/settings/notification-permission/reference/zzt.txt": "3bb6444572e19413ce557687caf9a59062d49858951c4a129a03e62d6d1fd577",
+    "evidence/settings/notification-permission/replay/concurrentSettings.test.cjs": "1eaa36d4a960910a76dcaac91dde73c753cf27bbe3f18c9445d0c5d8795ae251",
+    "evidence/settings/notification-permission/replay/fixture.json": "d27729fbf1c3df418708a3fcbb4ac2977cf71ea2e5c1dcea02250e46f4aa6140",
+    "evidence/settings/notification-permission/replay/notificationGate.test.cjs": "815f2e5cf14044e64dbda174cd44a9f68028251434ef2aa38d84296f620d3c1d",
+    "evidence/settings/notification-permission/wrapper.tap": "29a1273f23e392c11d0710f22281ed4712041824c297e576efe8845b99e49cfb",
+    "src/settings/configSyncHarness.cjs": "0b91715b67adbb76345f2ce2aa5ec0c131c8cd8c5542eca55f071096999565e3",
+    "src/settings/notificationConcurrentSettings.test.ts": "c698429597b4dbd06b3c2f1b36c625466a8e4403f5cbf307f4d880d2b8145282",
+    "src/settings/notificationPermission.test.ts": "9f12f9f274d6ac60c5de85cfe26deb4db148c7458e45b5f5b260b374b1e4d976",
+    "src/settings/notificationPermission.ts": "7756bc9b75adc9de0dcb474945dc154392b8405654e4d395ba839ed4a73afd44"
+  },
+  "initial_inspection_sha": "57e3d6982095aa563bf31bac47efbd984214fe9a"
+}
