@@ -245,6 +245,8 @@ pub struct WorkspaceRow {
     /// The workspace's open chat tabs besides its main chat, oldest first:
     /// they come back after a restart with their unread, as Conductor's do.
     pub chat_tabs: Vec<ChatTabRow>,
+    /// Retained UI chats for transcript attachments, including hidden tabs.
+    pub transcript_chats: Vec<ChatTabRow>,
     pub primary_chat_id: String,
     pub active_session_id: Option<String>,
     /// The main chat's own title once the user renamed it (`sessions::main_chat_titles`);
@@ -304,6 +306,30 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
             title: t.title,
         });
     }
+    let mut transcript_chats: std::collections::HashMap<String, Vec<ChatTabRow>> =
+        std::collections::HashMap::new();
+    for session in sessions::list(pool).await? {
+        let Some(workspace_id) = session.workspace_id else {
+            continue;
+        };
+        if session.id.ends_with(":claude")
+            || !(session.id == workspace_id
+                || session.id.starts_with(&format!("{workspace_id}:review:"))
+                || session.id.starts_with(&format!("{workspace_id}:chat:")))
+        {
+            continue;
+        }
+        transcript_chats
+            .entry(workspace_id)
+            .or_default()
+            .push(ChatTabRow {
+                id: session.id,
+                title: session.title,
+            });
+    }
+    for chats in transcript_chats.values_mut() {
+        chats.sort_by(|a, b| a.id.cmp(&b.id));
+    }
     let mut titles: std::collections::HashMap<String, String> = sessions::main_chat_titles(pool)
         .await?
         .into_iter()
@@ -333,6 +359,7 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 unread: w.unread,
                 unread_chats: unread.remove(&w.local_id).unwrap_or_default(),
                 chat_tabs,
+                transcript_chats: transcript_chats.remove(&w.local_id).unwrap_or_default(),
                 chat_title,
                 primary_chat_id,
                 active_session_id,

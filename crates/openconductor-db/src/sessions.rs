@@ -664,9 +664,10 @@ pub async fn open_tab(
     now: &str,
 ) -> Result<()> {
     sqlx::query(
-        "INSERT INTO sessions (id, workspace_id, title, is_hidden, created_at, updated_at) \
-         VALUES (?, ?, ?, 0, ?, ?) ON CONFLICT(id) DO UPDATE SET is_hidden = 0, title = excluded.title, \
-         workspace_id = COALESCE(sessions.workspace_id, excluded.workspace_id)",
+        "INSERT INTO sessions (id, workspace_id, title, status, is_hidden, created_at, updated_at) \
+         VALUES (?, ?, ?, 'idle', 0, ?, ?) ON CONFLICT(id) DO UPDATE SET is_hidden = 0, title = excluded.title, \
+         workspace_id = COALESCE(sessions.workspace_id, excluded.workspace_id), \
+         status = COALESCE(sessions.status, 'idle')",
     )
     .bind(id)
     .bind(workspace_id)

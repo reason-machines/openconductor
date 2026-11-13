@@ -449,6 +449,15 @@ function AddMenu({ hint, planHint, planMode, onAddAttachment, onLinkWorkspaces }
   const [open, setOpen] = useState(false);
   const popup = usePresence(open);
   const ref = useRef<HTMLSpanElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const focusEdge = useRef<"first" | "last" | null>(null);
+  const menuItems = () => Array.from(ref.current?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]:not(:disabled)') ?? []);
+  useLayoutEffect(() => {
+    if (!open || focusEdge.current === null) return;
+    const items = menuItems();
+    (focusEdge.current === "first" ? items[0] : items[items.length - 1])?.focus();
+    focusEdge.current = null;
+  }, [open]);
   if (!onAddAttachment && !onLinkWorkspaces && !planMode) return null;
   return (
     <span
@@ -458,14 +467,36 @@ function AddMenu({ hint, planHint, planMode, onAddAttachment, onLinkWorkspaces }
         if (!ref.current?.contains(e.relatedTarget as Node)) setOpen(false);
       }}
       onKeyDown={(e) => {
-        if (e.key === "Escape" && open) {
+        if (e.nativeEvent?.isComposing) return;
+        const arrow = e.key === "ArrowDown" || e.key === "ArrowUp";
+        if (arrow || (open && (e.key === "Home" || e.key === "End"))) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!open) {
+            focusEdge.current = e.key === "ArrowDown" ? "first" : "last";
+            setOpen(true);
+          } else {
+            const items = menuItems();
+            if (items.length === 0) return;
+            const current = items.findIndex((item) => item === e.target);
+            let next = current + (e.key === "ArrowDown" ? 1 : -1);
+            if (e.key === "Home") next = 0;
+            else if (e.key === "End" || (current === -1 && e.key === "ArrowUp")) next = items.length - 1;
+            items[(next + items.length) % items.length]?.focus();
+          }
+        } else if (e.key === "Escape" && open) {
+          e.preventDefault();
           e.stopPropagation();
           setOpen(false);
+          triggerRef.current?.focus();
         }
       }}
     >
       <Tooltip content={<p>Add attachments and more</p>}>
-        <button type="button" className="oc-icon-btn oc-add-btn" aria-label="Add" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        <button ref={triggerRef} type="button" className="oc-icon-btn oc-add-btn" aria-label="Add" aria-haspopup="menu" aria-expanded={open} onClick={(e) => {
+          if (!open && e?.detail === 0) focusEdge.current = "first";
+          setOpen((o) => !o);
+        }}>
           <PlusIcon size={16} strokeWidth={1.5} />
         </button>
       </Tooltip>
@@ -519,7 +550,8 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
     if (e.target !== e.currentTarget || e.nativeEvent.isComposing) return;
     const ev = e.nativeEvent;
     const hit = (command: QueueCommand) => keys(command).some((s) => matchesEvent(s, ev));
-    const r = queueRowKey(ids, id, e.key, hit, canSteer);
+    const navigationKey = e.metaKey || e.ctrlKey || e.altKey || e.shiftKey ? "" : e.key;
+    const r = queueRowKey(ids, id, navigationKey, hit, canSteer);
     if (!r) return;
     e.preventDefault();
     e.stopPropagation();

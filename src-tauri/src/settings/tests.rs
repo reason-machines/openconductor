@@ -40,6 +40,59 @@ fn missing_theme_uses_dark_without_changing_other_preferences() {
 }
 
 #[test]
+fn completion_sound_catalog_ids_survive_load_save_and_reload() {
+    let path = temp_dir().join(FILE_NAME);
+    for (id, expected) in [
+        ("disabled", SoundType::None),
+        ("default", SoundType::Default),
+        ("choo-choo", SoundType::ChooChoo),
+        ("odysseus-pluck", SoundType::OdysseusPluck),
+        ("fahhhh", SoundType::Fahhhh),
+        ("quack", SoundType::Quack),
+        ("sf-muni-inbound-train-chime", SoundType::SfMuniInboundTrainChime),
+        ("sf-muni-new", SoundType::SfMuniNew),
+        ("nyc-metro-door-chime", SoundType::NycMetroDoorChime),
+        ("nyc-subway-door-chime", SoundType::NycSubwayDoorChime),
+        ("nyc-subway", SoundType::NycSubway),
+        ("paris-metro-chime", SoundType::ParisMetroChime),
+        ("paris-metro-pickpockets", SoundType::ParisMetroPickpockets),
+        ("sncf-jingle", SoundType::SncfJingle),
+    ] {
+        fs::write(
+            &path,
+            format!("[general]\nsound_type = \"{id}\"\nfuture_sound_key = 42\n"),
+        )
+        .unwrap();
+        let settings = load(&path).unwrap();
+        assert_eq!(settings.general.sound_type, expected, "{id}");
+        save(&path, &settings).unwrap();
+        let saved: toml::Value = fs::read_to_string(&path).unwrap().parse().unwrap();
+        assert_eq!(saved["general"]["sound_type"].as_str(), Some(id));
+        assert_eq!(saved["general"]["future_sound_key"].as_integer(), Some(42));
+        assert_eq!(load(&path).unwrap(), settings);
+    }
+}
+
+#[test]
+fn completion_sound_legacy_none_saves_as_disabled() {
+    let path = temp_dir().join(FILE_NAME);
+    fs::write(&path, "[general]\nsound_type = \"none\"\n").unwrap();
+    let settings = load(&path).unwrap();
+    assert_eq!(settings.general.sound_type, SoundType::None);
+    save(&path, &settings).unwrap();
+    let saved: toml::Value = fs::read_to_string(&path).unwrap().parse().unwrap();
+    assert_eq!(saved["general"]["sound_type"].as_str(), Some("disabled"));
+    assert_eq!(load(&path).unwrap(), settings);
+}
+
+#[test]
+fn completion_sound_missing_value_uses_default() {
+    let path = temp_dir().join(FILE_NAME);
+    fs::write(&path, "[general]\n").unwrap();
+    assert_eq!(load(&path).unwrap().general.sound_type, SoundType::Default);
+}
+
+#[test]
 fn explicit_themes_keep_their_value_across_load_save_and_reload() {
     let path = temp_dir().join(FILE_NAME);
     for (name, expected) in [
