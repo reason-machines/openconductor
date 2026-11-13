@@ -1,0 +1,103 @@
+{
+  "current_main": "9a237404bc19caefe3f8473b9aae7ab4bc2439a5",
+  "occurrences": {
+    "renderApp-D_fmY7hW.js": {
+      "melty-theme": [
+        438488,
+        11537461
+      ],
+      "selected-mode": [
+        438666,
+        440824
+      ],
+      "setSelectedMode": [
+        392620,
+        440750,
+        10208654,
+        10889163,
+        10927437
+      ],
+      "zk()": [
+        6087545,
+        6088834,
+        7816739,
+        9393503,
+        9629254,
+        10208673,
+        10215124,
+        10522530,
+        10889182,
+        10927456,
+        11069436,
+        11075542,
+        11140839
+      ]
+    },
+    "index-BGEQ8YjU.js": {
+      "melty-theme": [],
+      "selected-mode": [],
+      "setSelectedMode": [],
+      "zk()": [
+        3080457,
+        3080818,
+        3080921,
+        3081137,
+        3081176
+      ]
+    }
+  },
+  "functions": [
+    {
+      "path": "renderApp-0.txt",
+      "span": [
+        391934,
+        392790
+      ],
+      "sha256": "c2f3e426d1b627b3a1c2bee907a32257ac138e8f34da6953cdb591591a28b775"
+    },
+    {
+      "path": "renderApp-1.txt",
+      "span": [
+        438420,
+        441141
+      ],
+      "sha256": "912758851f2909f18ef515459c17cca86b0d539863d0185885a4d36c5ff6198f"
+    },
+    {
+      "path": "renderApp-2.txt",
+      "span": [
+        10208606,
+        10209734
+      ],
+      "sha256": "a01e78999a7bd1f04f0c1e7298c00cd7d659c79160a145c55516761de6867d0e"
+    },
+    {
+      "path": "renderApp-3.txt",
+      "span": [
+        10889115,
+        10920819
+      ],
+      "sha256": "cd07cfad2d86afe0717c73433656bd3f8d144b8e84dfd2368646ded0f30d1c3e"
+    },
+    {
+      "path": "renderApp-4.txt",
+      "span": [
+        10927278,
+        10931615
+      ],
+      "sha256": "838c50937cf05130b8048b9257caf6191a8080504c734acca196db2c005c1c46"
+    }
+  ],
+  "current_source_same_as_prior_review": {
+    "src/settings/AppearancePage.tsx": "69410dbf00fb25f33614c9190b94637026ba4e363e9d3a347c4871729832f719",
+    "src/settings/types.ts": "6bccb1442bf4fc9fa31c019d0f22f3937327a72fb17fbace2a84b3ca9ee89936",
+    "src/settings/appearance.ts": "6aaae12dcdd99d9772b797beb5bba13dd3a2a751fa5c60a73e72e3e5b77e9251",
+    "src/settings/useSettings.ts": "c1b933e09a3f8bb42dd39136e58b6ce32f14c669f180a1ad09a63cc37cc47211",
+    "src-tauri/src/settings/model.rs": "57f8fe1441d3e1d9af5f38a95fe3f799a1dca1900cdba7038908e6af13caa7f9",
+    "src-tauri/src/settings/mod.rs": "d564dfcf5644a321730f93873836f04d170bdea7e6360ba37308f6e4d6535467",
+    "src-tauri/src/settings/service.rs": "c71ca2038728293779ccc61d76d3a1aa28afe157923ec9e4f3da277e24f5662d",
+    "src/App.tsx": "3dc27eaa48b07ced25b188ebdef219744220a2008176c23709f08983ed226df6",
+    "src/main.tsx": "b1ad5f34cbb74420d946183105a216b809233ac09dab49beeea3c9366db5da80",
+    "src/theme/tokens.css": "6d78f6f09053db08211e122fb44da4e55e8f420480a0f426d1ad08bf70e05afb"
+  }
+}

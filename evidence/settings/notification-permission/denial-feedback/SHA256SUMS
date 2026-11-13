@@ -1,0 +1,3 @@
+bf889b4893515bbc9e6faffeace75f2a21b447b111daac2e903bd9b0a02d896a  evidence/settings/notification-permission/denial-feedback/fixture.json
+6ee781de6643b6748d5be0ea049d3c6eee1ac43e1396cbd99a926e88e342ab32  evidence/settings/notification-permission/denial-feedback/replay.test.cjs
+7869dae2e44dffa13fd0f8710f08e7ff2719bb959aa2d0de182cf902699be9a6  src/settings/notificationDenialFeedback.test.ts

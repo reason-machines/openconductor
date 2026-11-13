@@ -26,10 +26,11 @@ import type { SourceState } from "../workspace/createFrom";
 import { launchDefaults, loadoutPicks, pickLaunch, type LaunchModel, type LaunchPick } from "../workspace/launchModel";
 import { ModelPicker } from "../features/chat/ModelPicker";
 import { openSettingsPage } from "../features/chat/ChatModelPicker";
-import { listFavorites } from "../settings/agents/api";
-import { displayedLoadout, parseFavorites } from "../settings/agents/loadout";
+import { useLoadout } from "../settings/agents/useLoadout";
+import { loadoutChoices } from "../features/chat/loadoutChoices";
+import { saveModelChoice } from "../features/chat/chatModelChoice";
+import { saveAgent } from "../features/chat/agentChoice";
 import { CreateFromPicker } from "./CreateFromPicker";
-import { getSettings } from "../settings/api";
 import type { Settings } from "../settings/types";
 import { modelLabel } from "../settings/models";
 import type { AddRepositoryActions } from "./AddRepositoryMenu";
@@ -56,11 +57,12 @@ export interface CreateWorkspaceComposerProps {
   eyebrowVariant: EyebrowVariant;
   /** The workspace was added (and selected), or the user backed out. */
   onClose: () => void;
-  /** Creation started or settled; the dialog keeps itself open while busy. */
+  /** An accepted launch can dismiss its modal before creation settles. */
+  onLaunchStart?: () => void;
   onBusyChange?: (busy: boolean) => void;
   /** The repo picker's "Add project" menu: Open project, Open GitHub project, Quick start, Recents. */
   addActions: AddRepositoryActions;
-  /** A non-fatal issue while creating the workspace; the workspace still opens. */
+  /** Persistent launch errors and non-fatal workspace creation issues. */
   onWarning: (message: string) => void;
   dispatch: Dispatch<Action>;
   /** The sidebar's sections, for "Create in section". */
@@ -93,6 +95,7 @@ export function CreateWorkspaceComposer({
   githubUsername,
   eyebrowVariant,
   onClose,
+  onLaunchStart,
   onBusyChange,
   addActions,
   onWarning,
@@ -107,8 +110,10 @@ export function CreateWorkspaceComposer({
   sectionsRef.current = sections;
   const [sectionMenuOpen, setSectionMenuOpen] = useState(false);
   const startRepo = repos.find((r) => r.id === initialRepoId) ?? repos[0];
-  const [settings, setSettings] = useState<Settings | null>(null);
-  const [favorites, setFavorites] = useState<LaunchPick[]>([]);
+  const loadout = useLoadout();
+  const settings = loadout?.settings ?? null;
+  const favorites = loadoutPicks(loadout?.slots ?? []);
+  const modelEdited = useRef(false);
   const [draft, setDraft] = useState<CreateDraft>(() =>
     newDraft({ repoId: startRepo?.id ?? null, defaultBranch: startRepo?.defaultBranch ?? "main", cityName: suggestName(startRepo)?.name ?? "", ...launchDefaults(null) }),
   );
@@ -144,24 +149,8 @@ export function CreateWorkspaceComposer({
   }, [repos]);
 
   useEffect(() => {
-    let live = true;
-    getSettings().then(
-      (s) => {
-        if (!live) return;
-        setSettings(s);
-        setDraft((d) => ({ ...d, ...launchDefaults(s) }));
-        // Conductor lists the loadout (slot 1 is the default model) as the picker's favorites.
-        listFavorites().then(
-          (rows) => live && setFavorites(loadoutPicks(displayedLoadout(s, parseFavorites(rows)))),
-          () => live && setFavorites(loadoutPicks(displayedLoadout(s, []))),
-        );
-      },
-      () => undefined,
-    );
-    return () => {
-      live = false;
-    };
-  }, []);
+    if (loadout && !modelEdited.current) setDraft((d) => ({ ...d, ...launchDefaults(loadout.settings, loadout.slots) }));
+  }, [loadout]);
 
   useEffect(() => {
     if (!repo?.path) return setBranchSrc({ status: "ready", items: [{ name: repo?.defaultBranch ?? "main", remote: null, commit: "", isHead: true, committedAt: 0 }] });
@@ -196,6 +185,7 @@ export function CreateWorkspaceComposer({
   }
 
   function chooseLaunch(next: LaunchModel) {
+    modelEdited.current = true;
     setDraft((d) => ({ ...d, ...next }));
   }
 
@@ -209,8 +199,13 @@ export function CreateWorkspaceComposer({
     // The sidebar shows an "Untitled" initializing row in this repo until the workspace is added or fails.
     const pendingId = crypto.randomUUID();
     addPendingLaunch(pendingId, repo.id);
+    let dismissedAtLaunch = false;
     try {
       if (!repo.path) throw new Error("This repository has no local checkout yet.");
+      if (onLaunchStart) {
+        onLaunchStart();
+        dismissedAtLaunch = true;
+      }
       const backendRepo = await ensureRepository(repo.path, repo.id);
       const created = await createWorkspace(toCreateWorkspaceArgs({ ...built.request, repoId: backendRepo.id }));
       send({ type: "created", workspaceId: created.workspace.id });
@@ -229,6 +224,10 @@ export function CreateWorkspaceComposer({
         userSetBranchName: naming.user_set_branch_name,
         number: created.number ?? null,
       };
+      if (draft.agent === "reason" || draft.agent === "claude" || draft.agent === "codex") {
+        saveAgent(id, draft.agent);
+        saveModelChoice(id, { agent: draft.agent, model: draft.model, effort: draft.effort || null });
+      }
       // The first message opens the workspace's first chat session.
       if (firstSession) {
         configureReason(id, sessionConfig(firstSession.model, firstSession.effort));
@@ -240,14 +239,16 @@ export function CreateWorkspaceComposer({
         if (canCreateIn(sectionsRef.current, sectionId)) dispatch({ type: "assignSection", workspaceId: id, sectionId });
         else onWarning(SECTION_ASSIGN_FAILED);
       }
-      onClose();
+      if (!dismissedAtLaunch) onClose();
       // ...and renames a placeholder city workspace after it.
       if (firstSession) {
         const full = { ...ws, status: "idle" as const, diff: { added: 0, removed: 0 }, createdAt: Date.now() };
         void renameAfterFirstMessage(repo, full, firstSession.message, dispatch);
       }
     } catch (err) {
-      send({ type: "create_failed", error: `${FAILED_TO_CREATE}: ${errorText(err)}` });
+      const message = `${FAILED_TO_CREATE}: ${errorText(err)}`;
+      if (dismissedAtLaunch) onWarning(message);
+      else send({ type: "create_failed", error: message });
     } finally {
       removePendingLaunch(pendingId);
     }
@@ -337,7 +338,7 @@ export function CreateWorkspaceComposer({
           disabled={busy}
         />
         <div className="create-card-bar">
-          <CreateModelPicker value={draft} favorites={favorites} settings={settings} disabled={busy} onChange={chooseLaunch} />
+          <CreateModelPicker value={draft} favorites={favorites} slots={loadoutChoices(loadout?.slots ?? [])} settings={settings} disabled={busy} onChange={chooseLaunch} />
           <div className="create-split" role="group" aria-label="Create workspace">
             <button
               type="submit"
@@ -402,11 +403,14 @@ export function CreateWorkspaceComposer({
  * picker (`RNi` inside `Hji`), with the loadout's favorites, "Add models" and
  * "Edit" (Settings › Default models) and the effort submenu, in place of two selects.
  */
-function CreateModelPicker({ value, favorites, settings, disabled, onChange }: { value: LaunchModel; favorites: readonly LaunchPick[]; settings: Settings | null; disabled: boolean; onChange: (next: LaunchModel) => void }) {
+function CreateModelPicker({ value, favorites, slots, settings, disabled, onChange }: { value: LaunchModel; favorites: readonly LaunchPick[]; slots: readonly (import("../features/chat/composerModels").ModelChoice | null)[]; settings: Settings | null; disabled: boolean; onChange: (next: LaunchModel) => void }) {
   return (
     <ModelPicker
-      value={{ model: value.model, effort: value.effort || null }}
+      value={{ model: value.model, effort: value.effort || null, ...(value.agent === "reason" || value.agent === "claude" || value.agent === "codex" ? { agent: value.agent } : {}) }}
       favorites={favorites}
+      loadout={slots}
+      keybindingDialogIds={["dialog"]}
+      itemAgent={(f) => f.agent ?? "reason"}
       itemLabel={(f) => modelLabel(f.model)}
       modelName={modelLabel}
       disabled={disabled}

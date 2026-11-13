@@ -1,0 +1,38 @@
+diff --git a/src-tauri/src/workspace/naming.rs b/src-tauri/src/workspace/naming.rs
+index 8e435e72..1df8e680 100644
+--- a/src-tauri/src/workspace/naming.rs
++++ b/src-tauri/src/workspace/naming.rs
+@@ -4,2 +4,2 @@
+-//! directory name. Branches are `<prefix>/<name>` when a prefix is set,
+-//! otherwise just `<name>`. The word list is our own.
++//! directory name. Branches preserve a custom prefix delimiter, defaulting
++//! to `/` when none is set. The word list is our own.
+@@ -42 +42,3 @@ pub fn branch_for(prefix: Option<&str>, name: &str) -> String {
+-    match prefix.map(|p| p.trim_matches('/')).filter(|p| !p.is_empty()) {
++    match prefix.map(|p| p.trim_start_matches('/')).filter(|p| !p.is_empty()) {
++        Some(p) if p.ends_with('/') => format!("{}/{name}", p.trim_end_matches('/')),
++        Some(p) if p.ends_with(['_', '.', '-']) => format!("{p}{name}"),
+diff --git a/src/workspace/naming.ts b/src/workspace/naming.ts
+index 4e36e56c..dbc10c99 100644
+--- a/src/workspace/naming.ts
++++ b/src/workspace/naming.ts
+@@ -15,2 +15,2 @@
+-// - Branch prefix settings are `branch_prefix_type` and `branch_prefix`;
+-//   a migration appends a trailing slash to stored custom prefixes.
++// - Branch prefix settings are `branch_prefix_type` and `branch_prefix`.
++//   Custom prefixes preserve their chosen delimiter.
+@@ -178,2 +178,2 @@ export interface BranchPrefixSettings {
+- * Resolves the prefix prepended to new branch names: `""` or a value ending in
+- * `/`. Unknown or missing types default to the GitHub username when one is
++ * Resolves the prefix prepended to new branch names. Custom prefixes keep
++ * their delimiter. Unknown or missing types default to the GitHub username when one is
+@@ -184,4 +184,5 @@ export function resolveBranchPrefix(settings: BranchPrefixSettings, githubUserna
+-  let raw = "";
+-  if (type === "none") raw = "";
+-  else if (type === "custom") raw = settings.branch_prefix ?? "";
+-  else raw = githubUsername ?? "";
++  if (type === "custom") {
++    const prefix = settings.branch_prefix?.trim() ?? "";
++    return prefix && !/[/_.-]$/.test(prefix) ? `${prefix}/` : prefix;
++  }
++  const raw = type === "none" ? "" : githubUsername ?? "";

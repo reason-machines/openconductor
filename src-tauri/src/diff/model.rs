@@ -54,6 +54,12 @@ pub struct Hunk {
     pub lines: Vec<DiffLine>,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum FileHideReason {
+    FileTooLarge,
+}
+
 /// The full diff of one file.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct FileDiff {
@@ -65,6 +71,11 @@ pub struct FileDiff {
     pub binary: bool,
     pub additions: u32,
     pub deletions: u32,
+    /// Worktree modification time in Unix milliseconds; absent for historical results.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_modified_time: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hide_reason: Option<FileHideReason>,
     pub hunks: Vec<Hunk>,
 }
 
@@ -77,6 +88,8 @@ impl FileDiff {
             binary: false,
             additions: 0,
             deletions: 0,
+            last_modified_time: None,
+            hide_reason: None,
             hunks: Vec::new(),
         }
     }
@@ -104,6 +117,7 @@ impl FileDiff {
             binary: self.binary,
             additions: self.additions,
             deletions: self.deletions,
+            last_modified_time: self.last_modified_time,
         }
     }
 }
@@ -117,6 +131,8 @@ pub struct FileChange {
     pub binary: bool,
     pub additions: u32,
     pub deletions: u32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_modified_time: Option<i64>,
 }
 
 #[cfg(test)]
@@ -153,6 +169,30 @@ mod tests {
         let s = f.summary();
         assert_eq!((s.additions, s.deletions), (2, 1));
         assert_eq!(s.path, "a.rs");
+    }
+
+    #[test]
+    fn modification_time_is_optional_and_survives_full_and_summary_roundtrip() {
+        let legacy = serde_json::to_value(FileDiff::new("n".into(), FileStatus::Modified)).unwrap();
+        assert!(legacy.get("last_modified_time").is_none());
+        let decoded: FileDiff = serde_json::from_value(legacy.clone()).unwrap();
+        assert!(serde_json::to_value(decoded.summary())
+            .unwrap()
+            .get("last_modified_time")
+            .is_none());
+        for time in [0, -1, 1_700_000_000_124_i64] {
+            let mut json = legacy.clone();
+            json["last_modified_time"] = serde_json::json!(time);
+            let decoded: FileDiff = serde_json::from_value(json).unwrap();
+            assert_eq!(
+                serde_json::to_value(&decoded).unwrap()["last_modified_time"],
+                time
+            );
+            assert_eq!(
+                serde_json::to_value(decoded.summary()).unwrap()["last_modified_time"],
+                time
+            );
+        }
     }
 
     #[test]

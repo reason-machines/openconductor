@@ -1,0 +1,1 @@
+eno=class extends Pd{constructor(t){super(),this._core=this._register(new Gto(t)),this._addonManager=this._register(new Kto),this._publicOptions={...this._core.options};let e=i=>this._core.options[i],n=(i,r)=>{this._checkReadonlyOptions(i),this._core.options[i]=r};for(let i in this._c

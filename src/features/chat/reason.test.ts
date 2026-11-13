@@ -51,7 +51,7 @@ test("an empty successful Reason turn is a retryable failure, not a timestamp-on
   assert.ok(end?.kind === "turn_end");
   assert.equal(end.status, "failed");
   assert.match(end.error ?? "", /no reply/i);
-  assert.equal(end.retryPrompt, "sda");
+  assert.deepEqual(end.retryPrompt, { text: "sda" });
 });
 
 const CHAT = "repo/tokyo";
@@ -152,7 +152,7 @@ test("device_not_found fails the turn with the error, not a reply", () => {
   assert.ok(end.kind === "turn_end");
   assert.equal(end.status, "failed");
   assert.equal(end.error, msg);
-  assert.equal(end.retryPrompt, "hi");
+  assert.deepEqual(end.retryPrompt, { text: "hi" });
 });
 
 test("a follow-up during a turn supersedes it; the end goes to the older turn", () => {
@@ -183,7 +183,8 @@ test("a mid-turn report is attributed to another session, never the user", () =>
 test("Stop ends the turn cancelled with the prompt offered again; a failed call fails it", () => {
   const stopped = run([{ prompt: "long job" }, { type: "turnEnded", end: { outcome: "cancelled" } }]);
   const end = stopped.rows.at(-1)!;
-  assert.ok(end.kind === "turn_end" && end.status === "cancelled" && end.retryPrompt === "long job");
+  assert.ok(end.kind === "turn_end" && end.status === "cancelled");
+  assert.deepEqual(end.retryPrompt, { text: "long job" });
 
   let state = startTurn(reasonChat(CHAT), "hi").state;
   const when = new Date("2026-11-05T10:00:00.000Z");

@@ -16,9 +16,9 @@ This rescore reuses retained captures. It is not a new capture run or a native f
 
 | | Total | Missing | Wrong | Matches | Unverified |
 |---|---:|---:|---:|---:|---:|
-| In scope | 341 | 3 | 48 | 169 | 121 |
+| In scope | 340 | 0 | 48 | 169 | 123 |
 | States | 71 | 0 | 10 | 56 | 5 |
-| Inventory items | 268 | 3 | 38 | 113 | 114 |
+| Inventory items | 267 | 0 | 38 | 113 | 116 |
 | System requirements | 2 | 0 | 0 | 0 | 2 |
 | &nbsp;&nbsp;dialog | 26 | 0 | 3 | 6 | 17 |
 | &nbsp;&nbsp;empty-state | 47 | 0 | 0 | 11 | 36 |
@@ -28,15 +28,26 @@ This rescore reuses retained captures. It is not a new capture run or a native f
 | &nbsp;&nbsp;route | 33 | 0 | 6 | 15 | 12 |
 | &nbsp;&nbsp;select | 10 | 0 | 5 | 2 | 3 |
 | &nbsp;&nbsp;settings-page | 17 | 0 | 4 | 8 | 5 |
-| &nbsp;&nbsp;settings-row | 96 | 3 | 20 | 51 | 22 |
+| &nbsp;&nbsp;settings-row | 95 | 0 | 20 | 51 | 24 |
 | &nbsp;&nbsp;tab | 13 | 0 | 0 | 8 | 5 |
 | &nbsp;&nbsp;toast | 2 | 0 | 0 | 2 | 0 |
 
-Raw retained rows: 983. Excluded rows: 644. The in-scope queue includes two additional system requirements: toast component, placement, timing and look, and the Experimental default-off gate. Both remain unverified.
+Raw retained rows: 983. Excluded rows: 645. The in-scope queue includes two additional system requirements: toast component, placement, timing and look, and the Experimental default-off gate. Both remain unverified.
 
 - 136: Cloud UI not in scope. Existing implementation and raw evidence retained.
 - 268: Unassigned extracted inventory excluded from this main-screen denominator.
 - 240: No dedicated toast observation. Not a missing parity requirement; raw copy assessment retained.
+- 1: Agent removed from OpenConductor (OpenCode, with Cursor, by #635/#639/#640). Raw evidence retained.
+
+## Row corrections
+
+Raw `missing` from the scorer's "copy not shown in any OpenConductor capture" rule only proves the retained OpenConductor capture did not show the row. Where that capture was taken in a state that cannot show the row (another tab, signed out), the gap is withdrawn to unverified until a lane capture of the right state exists. A row for a feature OpenConductor removed by decision is scoped out, not counted as missing. Each corrected row keeps its scorer result as `raw_status` / `raw_why`; a correction never promotes a row to matches. Source: [row-corrections.json](ui-map/row-corrections.json).
+
+| Row | Category | Scored | Now | Evidence |
+|---|---|---|---|---|
+| `settings-row:providers:use-claude-code-with-chrome` | scorer quirk: capture shows another tab | missing | unverified / in-scope | src/settings/agentOptions.ts and src/settings/rows/AgentOptionRows.tsx render the row (chrome_mode_enabled), added by #432; oc-captures.json settings-providers DOM: Reason tab selected, Claude Code tab not opened; evidence/settings/agents-screens/built-agents-claude-options--dark.png (#463): built app showed the row on the Claude Code tab<br>Limits: The #463 built-app capture predates #635/#639 (it still shows Cursor and OpenCode tabs); it is historical, not current-main evidence. No REA visual comparison of the Claude Code tab against Conductor's at current main. |
+| `settings-row:account:sign-out` | scorer quirk: capture in a state that hides the row | missing | unverified / in-scope | src/settings/AccountPage.tsx: Sign out row returns null without a signed-in Reason account, added by #690; oc-captures.json settings-account DOM: "Not signed in"<br>Limits: OpenConductor signs out of Reason (`reason logout`); Conductor's row signs out of a Conductor account. No signed-in lane capture or visual comparison exists. |
+| `settings-row:advanced:opencode-executable-path` | removed by decision | missing | missing / not-required | #640 removed the OpenCode Advanced rows and executable-path override after #635 removed the backend setting; parity/ui-program/ledger.md settings row: Advanced, OpenCode row removed on purpose by #640 |
 
 ## Main-screen verdicts
 
@@ -192,13 +203,13 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 |---|---:|---:|---:|---:|---:|
 | chat | 21 | 0 | 1 | 16 | 4 |
 | git-review | 18 | 0 | 1 | 10 | 7 |
-| onboarding-auth | 10 | 1 | 4 | 1 | 4 |
-| settings | 167 | 2 | 39 | 88 | 38 |
+| onboarding-auth | 10 | 0 | 4 | 1 | 5 |
+| settings | 166 | 0 | 39 | 88 | 39 |
 | shell | 84 | 0 | 3 | 20 | 61 |
 | terminal-scripts | 11 | 0 | 0 | 7 | 4 |
 | workspaces | 30 | 0 | 0 | 27 | 3 |
 
-183 of 268 in-scope items were located in a captured state; 183 have a reference screenshot. Unobserved in-scope items are unverified, not invented missing behavior.
+182 of 267 in-scope items were located in a captured state; 182 have a reference screenshot. Unobserved in-scope items are unverified, not invented missing behavior.
 
 ## How it was measured
 
@@ -419,11 +430,11 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-row:account:enterprise-data-privacy`<br>account › Enterprise data privacy | wrong / in-scope | settings | Enterprise data privacy / Disable features requiring external AI providers, such as AI generated | `` | [settings-account](ui-map/oc/settings-account.png) | host state settings-account is wrong |
 | `settings-row:account:claude-code-tool-approvals`<br>account › Claude Code tool approvals | wrong / in-scope | settings | Claude Code tool approvals / Require manual approval before agents can run tools. | `` | [settings-account](ui-map/oc/settings-account.png) | host state settings-account is wrong |
 | `settings-row:account:codex-tool-approvals`<br>account › Codex tool approvals | wrong / in-scope | settings | Codex tool approvals | `` | [settings-account](ui-map/oc/settings-account.png) | host state settings-account is wrong |
-| `settings-row:account:sign-out`<br>account › Sign out | missing / in-scope | onboarding-auth | Sign out / Sign out of your Conductor account. | `` | [settings-account](ui-map/oc/settings-account.png) | copy not shown in any OpenConductor capture |
+| `settings-row:account:sign-out`<br>account › Sign out | unverified / in-scope | onboarding-auth | Sign out / Sign out of your Conductor account. | `` | [settings-account](ui-map/oc/settings-account.png) | Row exists on main (#690) and, like Conductor's, renders only while signed in. The retained lane capture settings-account runs signed out, so it cannot show this row. Not counted as a match. |
 | `settings-row:advanced:conductor-root-directory`<br>advanced › Conductor root directory | wrong / in-scope | settings | Conductor root directory / Where Conductor stores repositories and workspaces. This should be an  | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
 | `settings-row:advanced:claude-code-executable-path`<br>advanced › Claude Code executable path | wrong / in-scope | settings | Claude Code executable path / Override the bundled Claude Code executable with a custom one. Leave e | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
 | `settings-row:advanced:codex-executable-path`<br>advanced › Codex executable path | wrong / in-scope | settings | Codex executable path / Override the bundled Codex executable with a custom one. Leave empty t | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
-| `settings-row:advanced:opencode-executable-path`<br>advanced › OpenCode executable path | missing / in-scope | settings | OpenCode executable path / Override the bundled OpenCode executable with a custom one. Leave empt | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | copy not shown in any OpenConductor capture |
+| `settings-row:advanced:opencode-executable-path`<br>advanced › OpenCode executable path | missing / not-required | settings | OpenCode executable path / Override the bundled OpenCode executable with a custom one. Leave empt | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | copy not shown in any OpenConductor capture |
 | `settings-row:advanced:ssh-private-key-path`<br>advanced › SSH private key path | wrong / deferred | cloud-org | SSH private key path / Use your own SSH key for cloud workspace access. Leave empty to auto-g | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
 | `settings-row:advanced:remote-execution-mcp`<br>advanced › Remote execution MCP | wrong / in-scope | settings | Remote execution MCP / Let remote agents request approved one-shot commands on this Mac. Each | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
 | `settings-row:advanced:always-allow-local-commands`<br>advanced › Always allow local commands | wrong / in-scope | settings | Always allow local commands / Run local commands from remote agents without asking. Turned on when y | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
@@ -527,7 +538,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-row:appearance:markdown-style`<br>appearance › Markdown Style | wrong / in-scope | settings | Markdown Style / Rendering style for markdown files. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
 | `settings-row:appearance:terminal-font`<br>appearance › Terminal font | wrong / in-scope | settings | Terminal font / Font family and size for the terminal. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
 | `settings-row:appearance:appearance-settings`<br>appearance › Appearance settings | unverified / in-scope | settings | Appearance settings / Theme, typography, color, and editor appearance. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
-| `settings-row:providers:use-claude-code-with-chrome`<br>providers › Use Claude Code with Chrome | missing / in-scope | settings | Use Claude Code with Chrome | `` | [settings-providers](ui-map/oc/settings-providers.png) | copy not shown in any OpenConductor capture |
+| `settings-row:providers:use-claude-code-with-chrome`<br>providers › Use Claude Code with Chrome | unverified / in-scope | settings | Use Claude Code with Chrome | `` | [settings-providers](ui-map/oc/settings-providers.png) | Row exists on main (Settings > Agents > Claude Code tab, #432), but the retained lane capture settings-providers shows the Reason tab, so it cannot show this row. No current lane capture of the Claude Code tab; not counted as a match. |
 | `settings-row:environment:environment-settings`<br>environment › Environment settings | unverified / in-scope | settings | Environment settings / Environment variables, files, and preview URLs. | `` | [settings-environment](ui-map/oc/settings-environment.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
 | `settings-row:scripts:repository-scripts`<br>scripts › Repository scripts | unverified / in-scope | settings | Repository scripts / Setup and run scripts for the selected repository. | `` | [settings-repo-scripts](ui-map/oc/settings-repo-scripts.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
 | `settings-row:terminal:big-terminal-settings`<br>terminal › Big terminal settings | unverified / in-scope | settings | Big terminal settings / Configure the experimental center-pane terminal. | `` | [settings-terminal](ui-map/oc/settings-terminal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |

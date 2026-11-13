@@ -33,6 +33,8 @@ export interface ScriptsConfig {
 export interface RunStatus {
   workspaceId: string;
   scriptId: string;
+  /** Live process identity; absent before spawn and in legacy/browser snapshots. */
+  runId?: string;
   state: RunState;
   /** [exit code, signal] of the last run, once it ended. */
   exit: [number | null, number | null] | null;
@@ -54,7 +56,9 @@ export interface SetupStatus {
 
 export type ScriptEvent =
   | { type: "output"; workspaceId: string; kind: "setup" | "run"; scriptId: string; chunk: string }
-  | ({ type: "setupFinished" } & SetupOutcome);
+  | ({ type: "setupFinished" } & SetupOutcome)
+  | ({ type: "runStarted" } & RunStatus)
+  | ({ type: "runFinished" } & RunStatus);
 
 /** Argument the backend needs to find a workspace's scripts. */
 export interface WorkspaceRef {

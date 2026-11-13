@@ -1,6 +1,6 @@
 // parity:diff.changes-list:ui parity:diff.discard:ui parity:diff.whitespace:ui parity:diff.viewed:ui parity:diff.turn-changes:ui
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
-import { useCallback, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import "./diff.css";
 import { RevertIcon } from "./DiscardDialog";
 import { FileContextMenu } from "./FileContextMenu";
@@ -10,6 +10,7 @@ import { splitPath } from "./FilePathChip";
 import { SearchIcon, XIcon } from "../files/panelIcons";
 import { filterActive, filterChangedFiles } from "./changesFilter";
 import { changeRows, type ChangesView } from "./changesTree.ts";
+import { renameDisplayPath } from "./renameDisplayPath.ts";
 import type { FileDiff, FileStatus } from "./types.ts";
 import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
 
@@ -17,7 +18,9 @@ type Notify = (kind: "info" | "error", message: string) => void;
 export interface ChangesListProps {
   diff: WorkspaceDiff;
   actions?: (files: FileDiff[]) => ReactNode;
+  commentCounts?: ReadonlyMap<string, number>;
   worktree?: string | null;
+  activeFilePath?: string;
   emptyAction?: ReactNode;
   filter?: ChangesFilterState;
   notify?: Notify;
@@ -51,11 +54,26 @@ function copy(text: string, label: string, notify?: Notify) {
   copyText(text).then(() => notify?.("info", `Copied ${label} to clipboard`), () => notify?.("error", "Failed to copy to clipboard"));
 }
 
-export function ChangesList({ diff, actions, worktree, emptyAction, filter, notify, view = "flat", collapsed, toggleDirectory }: ChangesListProps) {
+export function ChangesList({ diff, actions, commentCounts, worktree, activeFilePath, emptyAction, filter, notify, view = "flat", collapsed, toggleDirectory }: ChangesListProps) {
   const { opts, load, files, totals, current } = diff;
   const filtering = filter ? filterActive(filter.open, filter.query) : false;
   const shown = filter ? filterChangedFiles(files, filter.query) : files;
-  const rows = changeRows(shown, view, filter?.query.trim() ? new Set() : collapsed);
+  const rows = changeRows(shown, view, collapsed, diff.isViewed);
+  const fileRows = useRef(new Map<string, HTMLButtonElement>());
+  const lastSelection = useRef<{ worktree: string | null | undefined; path: string | undefined }>({ worktree: undefined, path: undefined });
+  const pendingPath = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    if (lastSelection.current.worktree !== worktree || lastSelection.current.path !== activeFilePath) {
+      lastSelection.current = { worktree, path: activeFilePath };
+      pendingPath.current = activeFilePath;
+    }
+    const path = pendingPath.current;
+    if (path === undefined) return;
+    const row = fileRows.current.get(path);
+    if (!row) return;
+    row.scrollIntoView({ block: "nearest" });
+    pendingPath.current = undefined;
+  }, [worktree, activeFilePath, rows]);
   const [menu, setMenu] = useState<{ path: string; x: number; y: number } | null>(null);
   const closeMenu = useCallback(() => setMenu(null), []);
   const menuFile = menu ? files.find((file) => file.path === menu.path) : undefined;
@@ -67,7 +85,7 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter, noti
       {load.state === "ready" && files.length === 0 && <div className="placeholder small"><p>{diff.turn ? "No changes in selected turn." : typeof opts.scope === "object" ? `No changes in commit ${opts.scope.commitHash.slice(0, 7)}` : opts.scope === "uncommitted" ? "Nothing uncommitted." : "No changes on this branch yet."}</p>{!diff.turn && typeof opts.scope !== "object" && <p className="muted">Changes the agent makes show up here.</p>}{!diff.turn && opts.scope === "all" && emptyAction}</div>}
       {load.state === "ready" && files.length > 0 && filter && filtering && <ChangesFilterRow filter={filter} matchCount={shown.length} totalCount={files.length} />}
       {load.state === "ready" && files.length > 0 && <>
-        {typeof opts.scope !== "object" && <div className="oc-changes-header"><span>{files.length} {files.length === 1 ? "file" : "files"} changed</span><ChangeCounts additions={totals.a} deletions={totals.d} showZero /></div>}
+        {typeof opts.scope !== "object" && files.length > 1 && <div className="oc-changes-header"><span>{files.length} {files.length === 1 ? "file" : "files"} changed</span><ChangeCounts additions={totals.a} deletions={totals.d} showZero /></div>}
         <nav className="oc-changes" aria-label="Changed files" data-view={view}>
           {shown.length === 0 && <div className="oc-changes-nomatch">No files match this filter</div>}
           {rows.map((row, rowIndex) => {
@@ -80,9 +98,9 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter, noti
             const f = row.file;
             return <div key={f.path} className="oc-change-row" style={view === "tree" ? { marginLeft: 8 + row.depth * 12 } : undefined} onContextMenu={(e) => { e.preventDefault(); setMenu({ path: f.path, x: e.clientX, y: e.clientY }); }}>
               {view === "tree" && <TreeGuides depth={row.depth} nextDepth={nextDepth} offset={8 + row.depth * 12} />}
-              <button className={`oc-change${diff.isViewed(f) ? " viewed" : ""}`} aria-current={files[current]?.path === f.path} onClick={() => diff.openPath(f.path)} title={`Open ${f.path}`}>
-                <span className="name">{f.status === "renamed" && f.old_path && <><PathParts path={view === "tree" ? splitPath(f.old_path).fileName : f.old_path} /><span className="oc-change-rename-arrow">→</span></>}<PathParts path={row.name} /></span>
-                <span className="oc-change-meta">{typeof opts.scope !== "object" && diff.uncommittedPaths.has(f.path) && <span className="oc-change-uncommitted">U</span>}<ChangeCounts additions={f.additions} deletions={f.deletions} /><ChangeStatus status={f.status} /></span>
+              <button ref={(row) => { if (row) fileRows.current.set(f.path, row); else fileRows.current.delete(f.path); }} className={`oc-change${diff.isViewed(f) ? " viewed" : ""}`} aria-current={files[current]?.path === f.path} onClick={() => diff.openPath(f.path)} title={`Open ${f.path}`}>
+                <span className="name">{f.status === "renamed" && f.old_path && <><PathParts path={renameDisplayPath({ oldPath: f.old_path, path: f.path, view })} /><span className="oc-change-rename-arrow">→</span></>}<PathParts path={row.name} /></span>
+                <span className="oc-change-meta">{(commentCounts?.get(f.path) ?? 0) > 0 && <span className="oc-change-comment-count" aria-label={`${commentCounts?.get(f.path)} ${commentCounts?.get(f.path) === 1 ? "comment" : "comments"}`}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z" /></svg>{commentCounts?.get(f.path)}</span>}{typeof opts.scope !== "object" && diff.uncommittedPaths.has(f.path) && <span className="oc-change-uncommitted">U</span>}<ChangeCounts additions={f.additions} deletions={f.deletions} /><ChangeStatus status={f.status} /></span>
               </button>
               <span className="oc-change-actions">
                 {diff.canDiscard && <Tooltip content="Discard changes"><button className="rp-icon oc-discard" onClick={() => diff.askDiscard(f)} aria-label={`Discard changes to ${f.path}`}><RevertIcon /></button></Tooltip>}

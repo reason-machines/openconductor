@@ -120,7 +120,7 @@ fn tool_json(r: &ToolRow) -> Value {
         ToolStatus::Completed => "completed",
         ToolStatus::Failed => "failed",
     };
-    json!({
+    let mut v = json!({
         "type": "tool",
         "id": r.id,
         "title": r.title,
@@ -131,7 +131,11 @@ fn tool_json(r: &ToolRow) -> Value {
         "locations": r.locations.iter().map(path_json).collect::<Vec<_>>(),
         "toolName": r.tool_name,
         "rawInput": r.raw_input,
-    })
+    });
+    if let Some(content) = &r.raw_result {
+        v["rawResult"] = content.clone();
+    }
+    v
 }
 
 fn diff_json(d: &Diff) -> Value {

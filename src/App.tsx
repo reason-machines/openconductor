@@ -1,21 +1,27 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { WorkspaceOpenInTarget } from "./palette/fromAppState.ts";
+import { useUpdates } from "./features/updates/useUpdates";
 import { useAppStore } from "./state/store";
 import { useCustomSectionCollapse } from "./state/useCustomSectionCollapse";
 import { ATTACH_FAILED, destroyWorkspaceTerminals, onAttachFailure } from "./features/terminal/session";
 import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { OPEN_ADD_PROJECT_MENU, Sidebar } from "./components/Sidebar";
+import { SectionDialog, type SectionDialogMode } from "./components/SectionDialog";
+import { newId } from "./state/names";
 import { HomeScreen } from "./components/HomeScreen";
 import { SidebarIcon } from "./components/Icons";
 import { titleWithShortcut } from "./components/Tooltip";
 import { effectiveShortcuts } from "./keybindings/overrides";
 import { glyphs } from "./keybindings/shortcut";
 import { SubmitPromptDialog } from "./components/SubmitPromptDialog";
+import { FeedbackDialog } from "./components/FeedbackDialog";
 import { DiagnosticsPage } from "./diagnostics/DiagnosticsPage";
 import { AllWorkspaces } from "./components/AllWorkspaces";
 import { Dashboard } from "./components/Dashboard";
 import "./home.css";
 import { WorkspaceView } from "./components/WorkspaceView";
+import { BrowserPreviewHost } from "./features/browser/BrowserPreview";
 import type { DialogKind } from "./components/Dialogs";
 import { CreateProjectDialog } from "./components/CreateProjectDialog";
 import { OPEN_IN_GITHUB, SUCCESS_TOAST } from "./state/createProject";
@@ -38,7 +44,7 @@ import { RestoreWorkspaceDialog, type RestoreRequest } from "./components/Restor
 import type { Action } from "./state/store";
 import { useInitIssues } from "./workspace/useInitIssues";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
-import { CHANGELOG_URL, DOCS_URL, FEEDBACK_URL } from "./components/helpMenuItems";
+import { CHANGELOG_URL, DOCS_URL } from "./components/helpMenuItems";
 import {
   openInTerminalScript,
   XCODE_LICENSE_COMMAND,
@@ -93,6 +99,20 @@ export default function App() {
     },
     [storeDispatch],
   );
+  const [activeOpenInTarget, setActiveOpenInTarget] = useState<WorkspaceOpenInTarget | null>(null);
+  const registerOpenInTarget = useCallback((target: WorkspaceOpenInTarget) => {
+    setActiveOpenInTarget(target);
+    return () => setActiveOpenInTarget((current) => current === target ? null : current);
+  }, []);
+  const [sectionDialog, setSectionDialog] = useState<SectionDialogMode | null>(null);
+  const submitSection = (mode: SectionDialogMode, value: { name: string; emoji?: string }) => {
+    if (mode.mode === "edit") {
+      dispatch({ type: "editSection", sectionId: mode.sectionId, ...value, onError: () => show("error", "Couldn't edit section") });
+      return;
+    }
+    const section = { id: newId(), ...value, workspaceIds: mode.workspaceIdToMove === undefined ? [] : [mode.workspaceIdToMove] };
+    dispatch({ type: "createSection", section, beforeSectionId: mode.beforeSectionId, onError: () => show("error", "Couldn't create section") });
+  };
   const prefs = useAppPrefs();
   const cloudUI = useBoolPrefState("experimental_cloud_ui");
   useEffect(() => {
@@ -147,7 +167,9 @@ export default function App() {
   // Help › Diagnostics (Conductor's `/diagnostics` route) and Help › Submit a prompt.
   const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
   const [submitPromptOpen, setSubmitPromptOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const { toasts, show, dismiss } = useToasts();
+  useUpdates({ repos: state.repos, startup, notify: show });
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
   // A terminal screen that could not attach (Conductor's "Failed to attach terminal" toast).
@@ -384,7 +406,7 @@ export default function App() {
   useKeybindings({
     "openKeyboardShortcuts": toggleShortcuts,
     "openSettings": openSettings,
-    "sendFeedback": () => void openUrl(FEEDBACK_URL),
+    "sendFeedback": () => setFeedbackOpen(true),
     "toggleTheme": () => void toggleTheme().catch((e) => show("error", errorText(e))),
     "view.zoomIn": () => void changeZoom("in").catch((e) => show("error", errorText(e))),
     "view.zoomOut": () => void changeZoom("out").catch((e) => show("error", errorText(e))),
@@ -418,12 +440,13 @@ export default function App() {
 
   // What the command palette's items run: the same handlers as their shortcuts.
   const paletteCommands: PaletteCommands = {
+    createSection: startup === "ready" ? () => setSectionDialog({ mode: "create" }) : undefined,
     addProject: () => (isSidebarVisible(state) ? window.dispatchEvent(new Event(OPEN_ADD_PROJECT_MENU)) : openProject()),
     toggleTheme: () => void toggleTheme().catch((e) => show("error", errorText(e))),
     toggleLeftSidebar: () => dispatch({ type: "toggleSidebar" }),
     toggleRightSidebar: toggleRightPanel,
     toggleZenMode: () => toggleZenMode(isSidebarVisible(state), dispatch),
-    sendFeedback: () => void openUrl(FEEDBACK_URL),
+    sendFeedback: () => setFeedbackOpen(true),
     submitPrompt: () => setSubmitPromptOpen(true),
     showShortcuts: () => setShortcutsOpen(true),
     openChangelog: () => void openUrl(CHANGELOG_URL),
@@ -465,7 +488,7 @@ export default function App() {
       .catch(() => {});
   }, [show]);
 
-  // The Toaster sits at the same place (second child of this fragment) in both views, so
+  // The Toaster sits at the same place (third child of this fragment) in every view, so
   // opening or closing Settings keeps the toasts mounted: their timers keep running and
   // they do not replay their 400ms slide-in over the page that just opened.
   const toaster = <Toaster toasts={toasts} dismiss={dismiss} />;
@@ -476,6 +499,7 @@ export default function App() {
           <DiagnosticsPage onClose={() => setDiagnosticsOpen(false)} notify={show} />
           {quitDialog}
         </>
+        <BrowserPreviewHost />
         {toaster}
       </>
     );
@@ -505,6 +529,7 @@ export default function App() {
         />
         {quitDialog}
         </>
+        <BrowserPreviewHost />
         {toaster}
       </>
     );
@@ -524,7 +549,7 @@ export default function App() {
         </button>
       )}
       {isSidebarVisible(state) && sidebarWidth.resizer}
-      {isSidebarVisible(state) && <Sidebar state={state} collapsedSections={collapsedSections} onToggleSection={toggleSection} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSubmitPrompt={() => setSubmitPromptOpen(true)} onOpenDiagnostics={() => setDiagnosticsOpen(true)} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} onCreateFrom={(repoId) => openDialog("create", repoId, undefined, true)} onOpenRepoSettings={(repoId) => navigateSettings({ scope: "repo", repoId, section: "misc" })} onRemoveRepository={removeRepositoryFromMenu} />}
+      {isSidebarVisible(state) && <Sidebar state={state} collapsedSections={collapsedSections} onToggleSection={toggleSection} dispatch={dispatch} onOpenDialog={openDialog} onOpenSectionDialog={setSectionDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSendFeedback={() => setFeedbackOpen(true)} onSubmitPrompt={() => setSubmitPromptOpen(true)} onOpenDiagnostics={() => setDiagnosticsOpen(true)} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} onCreateFrom={(repoId) => openDialog("create", repoId, undefined, true)} onOpenRepoSettings={(repoId) => navigateSettings({ scope: "repo", repoId, section: "misc" })} onRemoveRepository={removeRepositoryFromMenu} />}
       <main className="main">
         {createPage ? (
           <CreateWorkspacePage
@@ -547,15 +572,18 @@ export default function App() {
           <ArchivedWorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
         ) : repo && workspace ? (
           <WorkspaceView
+            onOpenInTarget={registerOpenInTarget}
             repo={repo}
             workspace={workspace}
+            sections={state.sections ?? []}
+            onNewSection={(ws) => setSectionDialog({ mode: "create", workspaceIdToMove: ws.id })}
             dispatch={dispatch}
             notify={show}
             hasNextUnread={(selectedChatId) => nextUnreadChat(state, { skipSelected: true, selectedChatId }) !== undefined}
             onNextUnread={() => void openNextUnread(state, dispatch, { skipSelected: true })}
           />
         ) : sel.kind === "home" ? (
-          <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
+          <AllWorkspaces repos={state.repos} loading={startup === "loading"} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
         ) : sel.kind === "routines" && cloudUI === true ? (
           sel.page ? (
             <RoutineEditor
@@ -649,8 +677,17 @@ export default function App() {
         />
       )}
       {submitPromptOpen && <SubmitPromptDialog appVersion={info?.version} platform={info?.platform} onClose={() => setSubmitPromptOpen(false)} />}
+      {feedbackOpen && <FeedbackDialog appVersion={info?.version} platform={info?.platform} onClose={() => setFeedbackOpen(false)} />}
       {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} overrides={overrides} />}
-      <PaletteHost state={state} collapsedSections={collapsedSections} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} commands={paletteCommands} />
+      {sectionDialog && (
+        <SectionDialog
+          key={sectionDialog.mode === "edit" ? sectionDialog.sectionId : `create-${sectionDialog.workspaceIdToMove ?? "empty"}`}
+          data={sectionDialog}
+          onSubmit={(value) => submitSection(sectionDialog, value)}
+          onClose={() => setSectionDialog(null)}
+        />
+      )}
+      <PaletteHost state={state} collapsedSections={collapsedSections} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} commands={paletteCommands} activeOpenInTarget={createPage ? null : activeOpenInTarget} />
       {archiveOverAgents && (
         <ArchiveRunningDialog
           onClose={() => setArchiveOverAgents(null)}
@@ -660,6 +697,7 @@ export default function App() {
       {restoreRequest && <RestoreWorkspaceDialog request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
       {quitDialog}
     </div>
+    <BrowserPreviewHost />
     {toaster}
     </>
   );

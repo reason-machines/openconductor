@@ -1,0 +1,99 @@
+{
+  "author": "Conductor Rebuild",
+  "main": "57e3d6982095aa563bf31bac47efbd984214fe9a",
+  "product_pins": [
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "bytes": 28910,
+      "sha256": "b70433e2b33f176a8f73c273e71a5bca451abcf904ee5646de610a7aad6b5965"
+    },
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "bytes": 9927,
+      "sha256": "f875a66fb8219d768bc69c1c4aa001c3e7b2624359d7a295f775eae1d5186c74"
+    }
+  ],
+  "main_source_pins": [
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "bytes": 28881,
+      "sha256": "18b59bf57630a8012fd7a10cce9008e5084140639d63446966232ee6bab2b5fb"
+    },
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "bytes": 9694,
+      "sha256": "6b1a0b88d90a006eb82d1c098f83097873001aea462d5a521d96e0f90b6ec36c"
+    },
+    {
+      "path": "src/features/chat/composerSchema.ts",
+      "bytes": 2825,
+      "sha256": "f64206351ac2253c2333cb67eaa19e11aee7775c64f885c1c72e374dd5f6b338"
+    },
+    {
+      "path": "src/features/chat/composerDocument.ts",
+      "bytes": 2502,
+      "sha256": "9228c3b05e08c41faffef50363e928d80636eda949003dbac34d197971d1a676"
+    },
+    {
+      "path": "src/features/chat/queue.ts",
+      "bytes": 12974,
+      "sha256": "2fe4c796ec1048ad122ed0a729c40c5480d51b327187e404aff84073cbf89285"
+    },
+    {
+      "path": "src/features/chat/queueKeys.ts",
+      "bytes": 2947,
+      "sha256": "5e0ddfb22b9538056868dce47113fce9445d781b5fa23fe49b96cc2b1492c193"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1901,
+      "sha256": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 221776,
+      "sha256": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1"
+    },
+    {
+      "path": "tsconfig.json",
+      "bytes": 526,
+      "sha256": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5"
+    }
+  ],
+  "historical_results": [
+    {
+      "file": "v2-controls.tap",
+      "bytes": 514,
+      "sha256": "bce6e820ba896ab30917a84818838693235a89449c7ebb8091a20033097b8366"
+    },
+    {
+      "file": "v2-controls-receipt.json.gz",
+      "bytes": 48321,
+      "sha256": "8f8e7fb7efef2076abec6aba82a06b032808cc165ebf3430c986656e6f97c96d",
+      "uncompressed_sha256": "f86ba88af1fc46aac0221b1b6478f07d5284e799496e4cc4c8dbed8c4557a490"
+    },
+    {
+      "file": "v2-candidate.tap",
+      "bytes": 3937,
+      "sha256": "a62e71facab5b84f6ef65f3220f1ccef627d0929f38a07fb23752f32af6a40a7"
+    },
+    {
+      "file": "v2-candidate-receipt.json.gz",
+      "bytes": 50595,
+      "sha256": "d34134f943ac22b24b6a08adbcd11d8738c68d3abd1452c6477d06c1a250353f",
+      "uncompressed_sha256": "2b0bbcb4d9e1b09003ea5998c51db434147c8ea129042216f58b8c4291ef0a1f"
+    }
+  ],
+  "runtime_gates": {
+    "historical_v1": "FAILED 19 passed, 1 mention setup failure",
+    "historical_v2_controls": "PASSED 2/2",
+    "historical_v2_candidate": "PASSED 20/20",
+    "current_main_candidate": "PASSED 20/20 on published3a04378db67472fc3f3bb7444fbac4ba540aa941, containing main31b675fb; exact original V2 fixture; no skips",
+    "regressions": "PASSED 19/19 unchanged composerQueueFocus7 + composerReservedSpace12, exit0/no skips; release16:54:16.905856Z",
+    "typecheck": "LOCAL FAILED: configured 384MiB heap exhausted, exit-6 before TypeScript diagnostics; no retry or narrowed config; standard automatic hosted typecheck pending",
+    "native_parity": "NOT_RUN"
+  },
+  "scope": "Only queue-focus and first-visual-line hunks are transplanted. PLAN1055 Props.onSubmit and async draft-clear handling remain unchanged. Historical manifests and fixture bytes are not repinned.",
+  "current_main_candidate_receipt_sha256": "77cf345aba41d73fda9fde4885bad388253232ba1024895e6e253c5ed9382f05",
+  "configured_typecheck_post_failure_pins": "PASS985source/2313runtime/8055type-manifest; tracked tree unchanged"
+}

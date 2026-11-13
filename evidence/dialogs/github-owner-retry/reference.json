@@ -1,0 +1,73 @@
+{
+  "trust": "Inert retained application source. Never execute. Static evidence, not native/runtime behavior.",
+  "scope": "Complete GitHub owners producer, query wrapper, dialog selection/retry and immediate wrapper. Inert static source only; no reference execution.",
+  "asset_locks": {
+    "index": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+    "renderer": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "retained_receipts": [
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "source_id": "46f1c5bc-06b1-434d-a5da-7254ccce6bc1",
+      "revision": 26194408,
+      "part": "github"
+    }
+  ],
+  "spans": [
+    {
+      "name": "github-dialog",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2028894,
+        2035857
+      ],
+      "bytes": 6963,
+      "sha256": "094b63d901870ac438213f6ba4cf5bd1e4f843736c1ecd2b4fe87421893151d7",
+      "source": "function was(t){const e=ne.c(77),{onSuccess:n}=t,i=ib(sH),r=i?.repoDisplayName??\"\";let o;e[0]!==r?(o=e7t(r),e[0]=r,e[1]=o):o=e[1];const a=o,c=vYe(),[u,d]=$.useState(a),{data:h}=iSe(),m=h>=rI.DONE,{data:g,isLoading:_,error:v,refetch:x}=Ros(),w=g?.owners,E=aa(),[k,I]=$.useState(null);let R;e[2]!==k||e[3]!==w?(R=k&&w?.some(Ue=>Ue.login===k)?k:w?.[0]?.login??\"\",e[2]=k,e[3]=w,e[4]=R):R=e[4];const O=R;let D,P;e[5]!==u?(P=u.trim(),D=e7t(P),e[5]=u,e[6]=D,e[7]=P):(D=e[6],P=e[7]);const L=D;let B;e[8]===Symbol.for(\"react.memo_cache_sentinel\")?(B={wait:300},e[8]=B):B=e[8];const[F]=Kle(L,B);let H;e[9]!==F||e[10]!==O?(H={owner:O,repoName:F},e[9]=F,e[10]=O,e[11]=H):H=e[11];const U=Nos(H),z=!!i?.existingOriginUrl,G=i?.needsGitInit===!0,K=L.length>0&&(L!==F||U.isLoading||U.isFetching),X=U.data?.status===\"available\",Q=U.data?.status===\"taken\",J=P.length>0&&L.length===0,te=!!O&&L.length>0&&!_&&!K&&X&&!U.error;let Z;e[12]!==te||e[13]!==c||e[14]!==i||e[15]!==m||e[16]!==L||e[17]!==n||e[18]!==O?(Z=async()=>{if(!(!i||!O||!te))try{await c.mutateAsync({initializeOnGithub:{owner:O,repoPath:i.path,repositoryName:L,existingOriginUrl:i.existingOriginUrl}}),nr.closeDialog(sH),m||Hue(rI.FIRST_MESSAGE).fireAndForget(),n()}catch(Ue){const We=Ue,Ve=We instanceof Error?We.message:String(We);dv(`Couldn't create GitHub repo: ${Ve}`)}},e[12]=te,e[13]=c,e[14]=i,e[15]=m,e[16]=L,e[17]=n,e[18]=O,e[19]=Z):Z=e[19];const se=Z;let ce;e[20]===Symbol.for(\"react.memo_cache_sentinel\")?(ce=p.jsx(Om,{children:\"Create a private GitHub repo?\"}),e[20]=ce):ce=e[20];let ae;e[21]!==i?.repoDisplayName||e[22]!==z||e[23]!==G?(ae=p.jsxs(Rm,{children:[ce,p.jsx(_2,{children:G?p.jsxs(p.Fragment,{children:[\"Conductor will run\",\" \",p.jsx(\"code\",{className:\"rounded bg-muted px-1 py-0.5 text-xs font-mono\",children:\"git init\"}),\", create a private GitHub repo, add it as \",p.jsx(\"code\",{className:\"rounded bg-muted px-1 py-0.5 text-xs font-mono\",children:\"origin\"}),\", and push the current branch.\"]}):z?p.jsxs(p.Fragment,{children:[p.jsx(\"code\",{className:\"rounded bg-muted px-1 py-0.5 text-xs font-mono\",children:i?.repoDisplayName}),\" \",\"already has a non-GitHub\",\" \",p.jsx(\"code\",{className:\"rounded bg-muted px-1 py-0.5 text-xs font-mono\",children:\"origin\"}),\" \",\"remote. Conductor will rename it to\",\" \",p.jsx(\"code\",{className:\"rounded bg-muted px-1 py-0.5 text-xs font-mono\",children:\"upstream\"}),\", create a private GitHub repo, add it as \",p.jsx(\"code\",{className:\"rounded bg-muted px-1 py-0.5 text-xs font-mono\",children:\"origin\"}),\", and push the current branch.\"]}):p.jsxs(p.Fragment,{children:[p.jsx(\"code\",{className:\"rounded bg-muted px-1 py-0.5 text-xs font-mono\",children:i?.repoDisplayName}),\" \",\"does not have a GitHub remote. Conductor will create a private GitHub repo, add it as\",\" \",p.jsx(\"code\",{className:\"rounded bg-muted px-1 py-0.5 text-xs font-mono\",children:\"origin\"}),\", and push the current branch.\"]})})]}),e[21]=i?.repoDisplayName,e[22]=z,e[23]=G,e[24]=ae):ae=e[24];let de;e[25]===Symbol.for(\"react.memo_cache_sentinel\")?(de=p.jsx(Zu,{htmlFor:\"github-owner\",children:\"Owner\"}),e[25]=de):de=e[25];let ue;e[26]===Symbol.for(\"react.memo_cache_sentinel\")?(ue=p.jsx(Bf,{id:\"github-owner\",\"aria-label\":\"Owner\",className:\"w-full\",children:p.jsx(lh,{placeholder:\"Select an owner\"})}),e[26]=ue):ue=e[26];let pe;e[27]!==w?(pe=w?.map(Eas),e[27]=w,e[28]=pe):pe=e[28];let be;e[29]!==pe?(be=p.jsx($f,{children:pe}),e[29]=pe,e[30]=be):be=e[30];let he;e[31]!==_||e[32]!==O||e[33]!==be?(he=p.jsxs(ah,{value:O,onValueChange:I,disabled:_,children:[ue,be]}),e[31]=_,e[32]=O,e[33]=be,e[34]=he):he=e[34];let ge;e[35]!==E||e[36]!==v||e[37]!==g||e[38]!==x?(ge=v?p.jsxs(\"div\",{className:\"space-y-2\",children:[p.jsx(\"p\",{className:\"text-xs text-destructive\",children:_as(v)}),p.jsxs(\"div\",{className:\"flex items-center gap-2\",children:[p.jsx(tt,{type:\"button\",variant:\"outline\",size:\"sm\",onClick:()=>{x().fireAndForget()},children:\"Try again\"}),p.jsx(tt,{type:\"button\",variant:\"ghost\",size:\"sm\",onClick:()=>{nr.closeDialog(sH),E({to:\"/settings/user/account\"}).fireAndForget()},children:\"Open GitHub settings\"})]})]}):g?.orgsError?p.jsxs(\"div\",{className:\"flex items-center justify-between gap-2\",children:[p.jsx(\"p\",{className:\"text-xs text-muted-foreground\",children:vas(g.orgsError)}),p.jsx(tt,{type:\"button\",variant:\"ghost\",size:\"sm\",className:\"h-7 shrink-0 px-2\",onClick:()=>{x().fireAndForget()},children:\"Try again\"})]}):null,e[35]=E,e[36]=v,e[37]=g,e[38]=x,e[39]=ge):ge=e[39];let ve;e[40]!==he||e[41]!==ge?(ve=p.jsxs(\"div\",{className:\"flex flex-col gap-2\",children:[de,he,ge]}),e[40]=he,e[41]=ge,e[42]=ve):ve=e[42];let ye;e[43]===Symbol.for(\"react.memo_cache_sentinel\")?(ye=p.jsx(Zu,{htmlFor:\"github-repo-name\",children:\"Repository name\"}),e[43]=ye):ye=e[43];let xe;e[44]===Symbol.for(\"react.memo_cache_sentinel\")?(xe=Ue=>d(Ue.target.value),e[44]=xe):xe=e[44];let ke;e[45]!==u?(ke=p.jsx(Qo,{id:\"github-repo-name\",value:u,onChange:xe}),e[45]=u,e[46]=ke):ke=e[46];let Se;e[47]!==L||e[48]!==O?(Se=O&&L?p.jsxs(\"p\",{className:\"text-xs text-muted-foreground\",children:[\"Will create\",\" \",p.jsxs(\"code\",{className:\"rounded bg-muted px-1 py-0.5 font-mono\",children:[O,\"/\",L]})]}):null,e[47]=L,e[48]=O,e[49]=Se):Se=e[49];let De;e[50]!==_||e[51]!==U.error||e[52]!==J||e[53]!==K||e[54]!==X||e[55]!==Q||e[56]!==L||e[57]!==O?(De=_?p.jsx(\"p\",{className:\"text-xs text-muted-foreground\",children:\"Loading GitHub owners...\"}):J?p.jsx(\"p\",{className:\"text-xs text-destructive\",children:\"Repository name must include letters or numbers.\"}):U.error?p.jsx(\"p\",{className:\"text-xs text-destructive\",children:\"Couldn't check repository availability.\"}):K&&O&&L?p.jsx(\"p\",{className:\"text-xs text-muted-foreground\",children:\"Checking repository availability...\"}):Q?p.jsx(\"p\",{className:\"text-xs text-destructive\",children:\"This repository already exists.\"}):X?p.jsx(\"p\",{className:\"text-xs text-muted-foreground\",children:\"Repository name is available.\"}):null,e[50]=_,e[51]=U.error,e[52]=J,e[53]=K,e[54]=X,e[55]=Q,e[56]=L,e[57]=O,e[58]=De):De=e[58];let je;e[59]!==ke||e[60]!==Se||e[61]!==De?(je=p.jsxs(\"div\",{className:\"flex flex-col gap-2\",children:[ye,ke,Se,De]}),e[59]=ke,e[60]=Se,e[61]=De,e[62]=je):je=e[62];let Ne;e[63]!==ve||e[64]!==je?(Ne=p.jsxs(\"div\",{className:\"space-y-4\",children:[ve,je]}),e[63]=ve,e[64]=je,e[65]=Ne):Ne=e[65];let Le;e[66]===Symbol.for(\"react.memo_cache_sentinel\")?(Le=p.jsx(Dm,{onClick:Sas,children:\"Cancel\"}),e[66]=Le):Le=e[66];let ze;e[67]!==se?(ze=Ue=>{Ue.preventDefault(),se().fireAndForget()},e[67]=se,e[68]=ze):ze=e[68];const Ke=c.isPending||!te,Ze=c.isPending?\"Creating...\":G?\"Initialize Git and create repo\":\"Create repo and add project\";let Ye;e[69]!==ze||e[70]!==Ke||e[71]!==Ze?(Ye=p.jsxs(Nm,{children:[Le,p.jsx(Ag,{onClick:ze,disabled:Ke,\"data-primary-action\":!0,children:Ze})]}),e[69]=ze,e[70]=Ke,e[71]=Ze,e[72]=Ye):Ye=e[72];let Qe;return e[73]!==Ne||e[74]!==Ye||e[75]!==ae?(Qe=p.jsxs(p.Fragment,{children:[ae,Ne,Ye]}),e[73]=Ne,e[74]=Ye,e[75]=ae,e[76]=Qe):Qe=e[76],Qe}"
+    },
+    {
+      "name": "Aos",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1981992,
+        1982600
+      ],
+      "bytes": 608,
+      "sha256": "882bd6a4c6981b51f2cad8f722be02e9e26166b85bc4234f0ac47df6103de898",
+      "source": "async function Aos(){const t=await $U({host:gn}),e=await _xe({command:`\"${t}\" api user --jq '.login'`,host:gn,authTarget:\"local\"});if(e.code!==0||!e.stdout.trim())throw new Error(e.stderr||e.stdout||\"Failed to load GitHub user\");const n={login:e.stdout.trim(),type:\"user\"},i=await _xe({command:`\"${t}\" api user/orgs --paginate --jq '.[].login'`,host:gn,authTarget:\"local\"});if(i.code!==0)return{owners:[n],orgsError:i.stderr||i.stdout||\"Failed to load GitHub organizations\"};const r=i.stdout.split(`\n`).map(o=>o.trim()).filter(Boolean).map(o=>({login:o,type:\"org\"}));return{owners:[n,...r],orgsError:void 0}}"
+    },
+    {
+      "name": "Ios",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1982600,
+        1983084
+      ],
+      "bytes": 484,
+      "sha256": "ae056f5cab914700b2e73764dc6a55f25740a5d27719a17fccd5dff24354a6e6",
+      "source": "async function Ios({owner:t,repoName:e}){const n=await $U({host:gn}),i=await _xe({command:`cd / && \"${n}\" repo view ${nl(`${t}/${e}`)} --json name -q .name`,host:gn,authTarget:\"local\"});if(i.code===0)return{status:\"taken\"};const r=`${i.stdout}\n${i.stderr}`.toLowerCase();if(r.includes(\"not found\")||r.includes(\"http 404\")||r.includes(\"could not resolve to a repository\"))return{status:\"available\"};throw new Error(i.stderr||i.stdout||\"Failed to check GitHub repository availability\")}"
+    },
+    {
+      "name": "github-query-consumers",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1983084,
+        1983759
+      ],
+      "bytes": 675,
+      "sha256": "962c2eba835efcff9cbd42ac667849a4ed5a8bf36bb70c110cc3c62839454f28",
+      "source": "const H3i={owners:()=>Fu({queryKey:rLn.owners(),queryFn:Aos,staleTime:t=>t.state.data?.orgsError!==void 0?0:1440*60*1e3,gcTime:1440*60*1e3}),availability:({owner:t,repoName:e})=>Fu({queryKey:rLn.availability(t,e),queryFn:t&&e?()=>Ios({owner:t,repoName:e}):Vo})};function Ros(){const t=ne.c(1);let e;return t[0]===Symbol.for(\"react.memo_cache_sentinel\")?(e=H3i.owners(),t[0]=e):e=t[0],qi(e)}function Nos(t){const e=ne.c(3),{owner:n,repoName:i}=t;let r;return e[0]!==n||e[1]!==i?(r=H3i.availability({owner:n,repoName:i}),e[0]=n,e[1]=i,e[2]=r):r=e[2],qi(r)}function e7t(t){return t.toLowerCase().replace(/[^a-z0-9-]/g,\"-\").replace(/-+/g,\"-\").replace(/^-+|-+$/g,\"\").slice(0,100)}"
+    },
+    {
+      "name": "github-container",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2028481,
+        2028894
+      ],
+      "bytes": 413,
+      "sha256": "885a7fb6ae1c4e36285a2e8b348867f3afdc003adc473e40da5e57a12bfee83b",
+      "source": "function dbi(t){const e=ne.c(8),{onSuccess:n}=t,i=x1(xas);let r;e[0]!==i||e[1]!==n?(r=i?p.jsx(was,{onSuccess:n}):null,e[0]=i,e[1]=n,e[2]=r):r=e[2];let o;e[3]!==r?(o=p.jsx(Im,{children:r}),e[3]=r,e[4]=o):o=e[4];let a;return e[5]!==i||e[6]!==o?(a=p.jsx(Tg,{open:i,onOpenChange:yas,children:o}),e[5]=i,e[6]=o,e[7]=a):a=e[7],a}function yas(t){return!t&&nr.closeDialog(sH)}function xas(t){return t.activeDialogId===sH}"
+    }
+  ]
+}

@@ -1,0 +1,382 @@
+{
+  "author": "Conductor Rebuild",
+  "receipt_id": "2fda73ad-2a71-4858-a398-c3af59b6eba6",
+  "at_utc": "2026-11-12T11:55:36.651668+00:00",
+  "candidate_key": "ordinary-terminal-theme-refresh-1f",
+  "computer_id": "00637189-5c55-416e-b457-ed7419fb739a",
+  "assigned_branch": "reason/openconductor-sol-termin-1f14fa82",
+  "publication_base": "main",
+  "delivery_base_sha": "8e847380955088974ea268690a94581c45791264",
+  "publication_mode": "standalone new PR on existing assigned branch after closed1163 via pr_open; no rebind/reset",
+  "main_checked": "1286465cb69763efaa1367c49fdebc88ab4da86d",
+  "local_head": "4384a6d0aa7e6cd0579e39f603698e07868cfca3",
+  "tracked_tree_matches_main": true,
+  "tracked_worktree_clean": true,
+  "retained_originals_rehashed": [
+    {
+      "artifact": "index",
+      "name": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    },
+    {
+      "artifact": "renderer",
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    }
+  ],
+  "source_spans": [
+    {
+      "symbol": "eSa",
+      "sha256": "7046b53ab7a925101dea1b4ed8aabaf67fe39d6842a9742efb4bf76d502548a4",
+      "bytes": 4517,
+      "utf8_half_open": [
+        11160762,
+        11165279
+      ]
+    },
+    {
+      "symbol": "w9e",
+      "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32",
+      "bytes": 3429,
+      "utf8_half_open": [
+        6919236,
+        6922665
+      ]
+    },
+    {
+      "symbol": "dno",
+      "sha256": "c1caf84211af0d4cdc09cc07d3b7ecfc9b0dde7cbfa84704e5f2ce24109fd318",
+      "bytes": 1719,
+      "utf8_half_open": [
+        6915051,
+        6916770
+      ]
+    },
+    {
+      "symbol": "IJe",
+      "sha256": "ea65e840d4491339eaeeed4beda371d58fc6a87b78fc14e50c6a32ac9915d081",
+      "bytes": 802,
+      "utf8_half_open": [
+        3139253,
+        3140055
+      ]
+    },
+    {
+      "symbol": "n9s",
+      "sha256": "68d11a7db29bee26c56e8a05bade37cf7f66a8ba0a924f1bc5492f49c23a93e5",
+      "bytes": 225,
+      "utf8_half_open": [
+        3140482,
+        3140707
+      ]
+    },
+    {
+      "symbol": "F3",
+      "sha256": "106c7a6024877413de767c03c118b06ab6724d55003afa4fc9b09961d9a2a0d0",
+      "bytes": 297,
+      "utf8_half_open": [
+        3138840,
+        3139137
+      ]
+    },
+    {
+      "symbol": "lno",
+      "sha256": "f0ce60ce9b64bb20c9526c841aec24bf2620c9c8bf1973dd083e218e8f4fd4a5",
+      "bytes": 1125,
+      "utf8_half_open": [
+        6913120,
+        6914245
+      ]
+    },
+    {
+      "symbol": "cno",
+      "sha256": "d256449d670e3c7e000f82530a8d2cfb494986c8559831ac1b2f74a92ed35cd5",
+      "bytes": 385,
+      "utf8_half_open": [
+        6914245,
+        6914630
+      ]
+    },
+    {
+      "symbol": "uno",
+      "sha256": "85acecc59c4b24eb7a08bf143dcdc68903fffba9180d78c83559bfea2f1eb35b",
+      "bytes": 421,
+      "utf8_half_open": [
+        6914630,
+        6915051
+      ]
+    },
+    {
+      "symbol": "$At",
+      "sha256": "5d73083eabd52c3345aad238d153d0fc71dd52040b8084b7d93d8f120180cd14",
+      "bytes": 1719,
+      "utf8_half_open": [
+        6916898,
+        6918617
+      ]
+    },
+    {
+      "symbol": "uVn",
+      "sha256": "ac48251fcbe99909fea8abc6d01ba6234dcb51496f742ee012debc4aa57c5e53",
+      "bytes": 230,
+      "utf8_half_open": [
+        6918617,
+        6918847
+      ]
+    },
+    {
+      "symbol": "W5e",
+      "sha256": "7829aaf4a1fdf9ed7789f958496e3f7f7274f69cfbd31997aeb7ae99de28a881",
+      "bytes": 389,
+      "utf8_half_open": [
+        6918847,
+        6919236
+      ]
+    }
+  ],
+  "static_closure_checks": {
+    "surface_to_subscription": true,
+    "live_theme_refresh": true,
+    "class_observer": true,
+    "warm_attach_refresh": true,
+    "cursor_preserved": true,
+    "css_boundary": true,
+    "create": true,
+    "register": true,
+    "reuse": true,
+    "stale_attach_guard": true,
+    "cursor_lifecycle": true,
+    "detach_without_dispose": true,
+    "destroy_and_unregister": true,
+    "abort_and_clear": true
+  },
+  "current_main_sources": {
+    "src/features/terminal/session.ts": {
+      "sha256": "8f14cb4d0bc1fd9fa9f70fe7383b47d18f28dd65720f6ad15686c24540c8cac0",
+      "bytes": 21492,
+      "unchanged_from_sealed_main": true
+    },
+    "src/settings/appearance.ts": {
+      "sha256": "e258f1f50eee95de3e2cd737ece50ac2edbded97c87c2ae948c2be7fdea235f2",
+      "bytes": 5058,
+      "unchanged_from_sealed_main": true
+    },
+    "src/components/ScriptOutput.tsx": {
+      "sha256": "5cad08e06c913556195df9063354fb2e50a90ee33e39a586ff72cfb747fe544f",
+      "bytes": 7588,
+      "unchanged_from_sealed_main": true
+    },
+    "src/theme/terminalAnsiThemeFixture.ts": {
+      "sha256": "aeca2daed1bbcc44cea8cb9484c503ce8b4a1e196a7aa9462cba214921874edf",
+      "bytes": 1183,
+      "unchanged_from_sealed_main": true
+    },
+    "package-lock.json": {
+      "sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+      "bytes": 222137,
+      "unchanged_from_sealed_main": true
+    }
+  },
+  "fixture_sha256": "f1a6c42fed2eec9552c93f007c79ae9478a425efbcaf216d99634888fe3f6ac1",
+  "fixture_data_sha256": "aeca2daed1bbcc44cea8cb9484c503ce8b4a1e196a7aa9462cba214921874edf",
+  "root_lock_sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+  "fixture_expected_cases": 20,
+  "fixture_behavioral_state": "NOT_RUN",
+  "expected_baseline": {
+    "fail": 16,
+    "pass": 4
+  },
+  "expected_green": {
+    "pass": 20,
+    "fail": 0
+  },
+  "command": "node --test src/features/terminal/ordinaryThemeRefresh.test.ts",
+  "adjacent_command": "node --test --test-concurrency=1 src/features/terminal/alternateClear.test.ts src/features/terminal/alternateLineEdit.test.ts src/features/terminal/bigTerminal.test.ts src/features/terminal/capture.test.ts src/features/terminal/clearRedraw.test.ts src/features/terminal/cursorState.test.ts src/features/terminal/find.test.ts src/features/terminal/font.test.ts src/features/terminal/nonrunningInput.test.ts src/features/terminal/resizeState.test.ts src/features/terminal/restore.test.ts src/features/terminal/scrollback.test.ts src/features/terminal/selectionAddToChat.test.ts src/features/terminal/selectionChatCaller.test.ts src/features/terminal/selectionChatFocus.test.ts src/features/terminal/sessionLineFeed.test.ts src/features/terminal/sessionUnicode.test.ts src/features/terminal/shellIntegration.test.ts src/features/terminal/shortcuts.test.ts src/features/terminal/spawnFailure.test.ts src/features/terminal/startingBody.test.ts src/features/terminal/tabList.test.ts src/features/terminal/terminal.test.ts src/features/terminal/writeQueue.test.ts src/features/terminal/terminalAnsiTheme.test.ts",
+  "adjacent_files": 25,
+  "adjacent_expected_cases": 228,
+  "adjacent_count_basis": "HISTORICAL prediction only, not fresh execution",
+  "adjacent_hashes_unchanged": true,
+  "dependency_direct_count": 40,
+  "dependencies": {
+    "@base-ui/react": {
+      "version": "1.9.0",
+      "lock_metadata_matches": true
+    },
+    "@hello-pangea/dnd": {
+      "version": "18.0.1",
+      "lock_metadata_matches": true
+    },
+    "@pierre/diffs": {
+      "version": "1.6.4",
+      "lock_metadata_matches": true
+    },
+    "@tauri-apps/api": {
+      "version": "2.12.4",
+      "lock_metadata_matches": true
+    },
+    "@tauri-apps/cli": {
+      "version": "2.12.4",
+      "lock_metadata_matches": true
+    },
+    "@tauri-apps/plugin-deep-link": {
+      "version": "2.6.3",
+      "lock_metadata_matches": true
+    },
+    "@tauri-apps/plugin-dialog": {
+      "version": "2.8.4",
+      "lock_metadata_matches": true
+    },
+    "@tiptap/core": {
+      "version": "3.33.0",
+      "lock_metadata_matches": true
+    },
+    "@tiptap/extension-document": {
+      "version": "3.33.0",
+      "lock_metadata_matches": true
+    },
+    "@tiptap/extension-hard-break": {
+      "version": "3.33.0",
+      "lock_metadata_matches": true
+    },
+    "@tiptap/extension-paragraph": {
+      "version": "3.33.0",
+      "lock_metadata_matches": true
+    },
+    "@tiptap/extension-text": {
+      "version": "3.33.0",
+      "lock_metadata_matches": true
+    },
+    "@tiptap/extensions": {
+      "version": "3.33.0",
+      "lock_metadata_matches": true
+    },
+    "@tiptap/pm": {
+      "version": "3.33.0",
+      "lock_metadata_matches": true
+    },
+    "@types/node": {
+      "version": "22.20.5",
+      "lock_metadata_matches": true
+    },
+    "@types/react": {
+      "version": "18.3.31",
+      "lock_metadata_matches": true
+    },
+    "@types/react-dom": {
+      "version": "18.3.7",
+      "lock_metadata_matches": true
+    },
+    "@vitejs/plugin-react": {
+      "version": "4.7.0",
+      "lock_metadata_matches": true
+    },
+    "@xterm/addon-fit": {
+      "version": "0.11.0",
+      "lock_metadata_matches": true
+    },
+    "@xterm/addon-unicode11": {
+      "version": "0.9.0",
+      "lock_metadata_matches": true
+    },
+    "@xterm/xterm": {
+      "version": "6.0.0",
+      "lock_metadata_matches": true
+    },
+    "dompurify": {
+      "version": "3.4.17",
+      "lock_metadata_matches": true
+    },
+    "fuzzysort": {
+      "version": "3.1.0",
+      "lock_metadata_matches": true
+    },
+    "lowlight": {
+      "version": "3.3.0",
+      "lock_metadata_matches": true
+    },
+    "mermaid": {
+      "version": "12.3.0",
+      "lock_metadata_matches": true
+    },
+    "motion": {
+      "version": "12.43.0",
+      "lock_metadata_matches": true
+    },
+    "playwright-core": {
+      "version": "1.64.1",
+      "lock_metadata_matches": true
+    },
+    "react": {
+      "version": "18.3.1",
+      "lock_metadata_matches": true
+    },
+    "react-dom": {
+      "version": "18.3.1",
+      "lock_metadata_matches": true
+    },
+    "react-markdown": {
+      "version": "9.1.0",
+      "lock_metadata_matches": true
+    },
+    "react-test-renderer": {
+      "version": "18.3.1",
+      "lock_metadata_matches": true
+    },
+    "rehype-raw": {
+      "version": "7.0.0",
+      "lock_metadata_matches": true
+    },
+    "rehype-sanitize": {
+      "version": "6.0.0",
+      "lock_metadata_matches": true
+    },
+    "remark-breaks": {
+      "version": "4.0.0",
+      "lock_metadata_matches": true
+    },
+    "remark-gfm": {
+      "version": "4.0.1",
+      "lock_metadata_matches": true
+    },
+    "remark-smartypants": {
+      "version": "3.0.3",
+      "lock_metadata_matches": true
+    },
+    "typescript": {
+      "version": "5.9.3",
+      "lock_metadata_matches": true
+    },
+    "unist-util-visit": {
+      "version": "5.2.0",
+      "lock_metadata_matches": true
+    },
+    "vite": {
+      "version": "5.4.21",
+      "lock_metadata_matches": true
+    },
+    "vscode-material-icons": {
+      "version": "0.1.1",
+      "lock_metadata_matches": true
+    }
+  },
+  "dependency_files_present": {
+    "typescript/lib/typescript.js": true,
+    "@xterm/xterm/lib/xterm.js": true,
+    "@xterm/addon-fit/lib/addon-fit.js": true,
+    "@xterm/addon-unicode11/lib/addon-unicode11.js": true,
+    "react/package.json": true
+  },
+  "cache_root_lock_exact": true,
+  "dependency_limit": "installed package versions/cache integrity metadata matched, not independent whole-package byte validation",
+  "commands_cap_seconds": 120,
+  "optional_commands": [
+    "npm run typecheck",
+    "npm run lint:colors"
+  ],
+  "tests_or_node_or_install_run": false,
+  "product_edits": false,
+  "native_and_rendered_and_attachTab": "NOT_RUN",
+  "992_cut": "EXCLUDED/UNCHANGED"
+}

@@ -1,0 +1,463 @@
+2026-11-11T17:56:42.8894128Z   ...
+2026-11-11T17:56:42.8894730Z # Subtest: xterm keeps one row per 160 bytes
+2026-11-11T17:56:42.8895593Z ok 1872 - xterm keeps one row per 160 bytes
+2026-11-11T17:56:42.8896224Z   ---
+2026-11-11T17:56:42.8896735Z   duration_ms: 0.202858
+2026-11-11T17:56:42.8897276Z   type: 'test'
+2026-11-11T17:56:42.8898015Z   ...
+2026-11-11T17:56:42.8898645Z # Subtest: live terminals hear only real changes
+2026-11-11T17:56:42.8899669Z ok 1873 - live terminals hear only real changes
+2026-11-11T17:56:42.8900321Z   ---
+2026-11-11T17:56:42.8900799Z   duration_ms: 1.143711
+2026-11-11T17:56:42.8901322Z   type: 'test'
+2026-11-11T17:56:42.8901806Z   ...
+2026-11-11T17:56:42.8902837Z # Subtest: actual terminal host exposes selection action only for nonblank text and a target chat
+2026-11-11T17:56:42.8929911Z not ok 1874 - actual terminal host exposes selection action only for nonblank text and a target chat
+2026-11-11T17:56:42.8959231Z   ---
+2026-11-11T17:56:42.8959636Z   duration_ms: 208.985516
+2026-11-11T17:56:42.8989352Z   type: 'test'
+2026-11-11T17:56:42.8990905Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:98:1'
+2026-11-11T17:56:42.8992114Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:42.8992762Z   error: |-
+2026-11-11T17:56:42.8993350Z     Expected values to be strictly equal:
+2026-11-11T17:56:42.8993993Z
+2026-11-11T17:56:42.8994462Z     0 !== 1
+2026-11-11T17:56:42.8994941Z
+2026-11-11T17:56:42.8995405Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:42.8996007Z   name: 'AssertionError'
+2026-11-11T17:56:42.8996583Z   expected: 1
+2026-11-11T17:56:42.8997092Z   actual: 0
+2026-11-11T17:56:42.8997617Z   operator: 'strictEqual'
+2026-11-11T17:56:42.8998189Z   stack: |-
+2026-11-11T17:56:42.9000101Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:103:39)
+2026-11-11T17:56:42.9001668Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:42.9002581Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:42.9003476Z     Test.start (node:internal/test_runner/test:944:17)
+2026-11-11T17:56:42.9004521Z     startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+2026-11-11T17:56:42.9005435Z   ...
+2026-11-11T17:56:42.9006407Z # Subtest: selection request sanitizes ANSI/control bytes and trims without truncation
+2026-11-11T17:56:42.9007866Z not ok 1875 - selection request sanitizes ANSI/control bytes and trims without truncation
+2026-11-11T17:56:42.9009047Z   ---
+2026-11-11T17:56:42.9009737Z   duration_ms: 45.255061
+2026-11-11T17:56:42.9010378Z   type: 'test'
+2026-11-11T17:56:42.9011919Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:110:1'
+2026-11-11T17:56:42.9013274Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:42.9014114Z   error: 'selected terminal exposes Add to chat'
+2026-11-11T17:56:42.9014908Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:42.9015588Z   name: 'AssertionError'
+2026-11-11T17:56:42.9016243Z   expected: true
+2026-11-11T17:56:42.9016842Z   operator: '=='
+2026-11-11T17:56:42.9017437Z   stack: |-
+2026-11-11T17:56:42.9018725Z     Object.click (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:84:14)
+2026-11-11T17:56:42.9021176Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:115:7)
+2026-11-11T17:56:42.9022791Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:42.9023755Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:42.9024898Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T17:56:42.9026049Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T17:56:42.9026980Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T17:56:42.9028158Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-11T17:56:42.9029383Z   ...
+2026-11-11T17:56:42.9030413Z # Subtest: accepted selection clears React action state without clearing xterm selection
+2026-11-11T17:56:42.9031964Z not ok 1876 - accepted selection clears React action state without clearing xterm selection
+2026-11-11T17:56:42.9033004Z   ---
+2026-11-11T17:56:42.9033500Z   duration_ms: 27.397364
+2026-11-11T17:56:42.9034294Z   type: 'test'
+2026-11-11T17:56:42.9035431Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:120:1'
+2026-11-11T17:56:42.9036637Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:42.9037342Z   error: 'selected terminal exposes Add to chat'
+2026-11-11T17:56:42.9038005Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:42.9038668Z   name: 'AssertionError'
+2026-11-11T17:56:42.9039505Z   expected: true
+2026-11-11T17:56:42.9040157Z   operator: '=='
+2026-11-11T17:56:42.9040715Z   stack: |-
+2026-11-11T17:56:42.9041961Z     Object.click (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:84:14)
+2026-11-11T17:56:42.9044067Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:123:46)
+2026-11-11T17:56:42.9045564Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:42.9046429Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:42.9047465Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T17:56:42.9048525Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T17:56:42.9049639Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T17:56:42.9050730Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T17:56:42.9051658Z   ...
+2026-11-11T17:56:42.9052500Z # Subtest: a rejected selection request retains the action for retry
+2026-11-11T17:56:42.9053670Z not ok 1877 - a rejected selection request retains the action for retry
+2026-11-11T17:56:42.9054503Z   ---
+2026-11-11T17:56:42.9055019Z   duration_ms: 46.777889
+2026-11-11T17:56:42.9055593Z   type: 'test'
+2026-11-11T17:56:42.9056832Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:130:1'
+2026-11-11T17:56:42.9058141Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:42.9059176Z   error: 'selected terminal exposes Add to chat'
+2026-11-11T17:56:42.9060003Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:42.9060642Z   name: 'AssertionError'
+2026-11-11T17:56:42.9061276Z   expected: true
+2026-11-11T17:56:42.9061860Z   operator: '=='
+2026-11-11T17:56:42.9062413Z   stack: |-
+2026-11-11T17:56:42.9063681Z     Object.click (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:84:14)
+2026-11-11T17:56:42.9066051Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:133:27)
+2026-11-11T17:56:42.9067576Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:42.9068449Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:42.9069754Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T17:56:42.9070799Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T17:56:42.9071688Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T17:56:42.9072749Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T17:56:42.9073679Z   ...
+2026-11-11T17:56:42.9074663Z # Subtest: selection action uses the current target chat instead of a stale callback
+2026-11-11T17:56:42.9076103Z not ok 1878 - selection action uses the current target chat instead of a stale callback
+2026-11-11T17:56:42.9077183Z   ---
+2026-11-11T17:56:42.9077792Z   duration_ms: 41.96352
+2026-11-11T17:56:42.9078401Z   type: 'test'
+2026-11-11T17:56:42.9079857Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:142:1'
+2026-11-11T17:56:42.9081194Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:42.9081999Z   error: 'selected terminal exposes Add to chat'
+2026-11-11T17:56:42.9082780Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:42.9083411Z   name: 'AssertionError'
+2026-11-11T17:56:42.9084079Z   expected: true
+2026-11-11T17:56:42.9084672Z   operator: '=='
+2026-11-11T17:56:42.9085606Z   stack: |-
+2026-11-11T17:56:42.9086933Z     Object.click (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:84:14)
+2026-11-11T17:56:42.9089381Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:145:52)
+2026-11-11T17:56:42.9090915Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:42.9091815Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:42.9092839Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T17:56:42.9093910Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T17:56:42.9094812Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T17:56:42.9095868Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T17:56:42.9096801Z   ...
+2026-11-11T17:56:42.9097698Z # Subtest: terminal switch and unmount release selection subscriptions
+2026-11-11T17:56:42.9099121Z not ok 1879 - terminal switch and unmount release selection subscriptions
+2026-11-11T17:56:42.9100036Z   ---
+2026-11-11T17:56:42.9100659Z   duration_ms: 24.405238
+2026-11-11T17:56:42.9101271Z   type: 'test'
+2026-11-11T17:56:42.9102487Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:150:1'
+2026-11-11T17:56:42.9103795Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:42.9104432Z   error: |-
+2026-11-11T17:56:42.9105038Z     Expected values to be strictly equal:
+2026-11-11T17:56:42.9105708Z
+2026-11-11T17:56:42.9106192Z     0 !== 1
+2026-11-11T17:56:42.9106688Z
+2026-11-11T17:56:42.9107191Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:42.9107773Z   name: 'AssertionError'
+2026-11-11T17:56:42.9108342Z   expected: 1
+2026-11-11T17:56:42.9109035Z   actual: 0
+2026-11-11T17:56:42.9109608Z   operator: 'strictEqual'
+2026-11-11T17:56:42.9110219Z   stack: |-
+2026-11-11T17:56:42.9111628Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:153:12)
+2026-11-11T17:56:42.9113203Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:42.9114135Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:42.9115213Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T17:56:42.9116545Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T17:56:42.9117521Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T17:56:42.9118599Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T17:56:42.9119819Z   ...
+2026-11-11T17:56:42.9120733Z # Subtest: retained exited terminal output still offers the selection action
+2026-11-11T17:56:42.9122109Z not ok 1880 - retained exited terminal output still offers the selection action
+2026-11-11T17:56:42.9123021Z   ---
+2026-11-11T17:56:42.9123582Z   duration_ms: 14.207596
+2026-11-11T17:56:42.9124218Z   type: 'test'
+2026-11-11T17:56:42.9125440Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:165:1'
+2026-11-11T17:56:42.9126764Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:42.9127561Z   error: 'selected terminal exposes Add to chat'
+2026-11-11T17:56:42.9128320Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:42.9129129Z   name: 'AssertionError'
+2026-11-11T17:56:42.9129768Z   expected: true
+2026-11-11T17:56:42.9130383Z   operator: '=='
+2026-11-11T17:56:42.9130964Z   stack: |-
+2026-11-11T17:56:42.9132255Z     Object.click (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:84:14)
+2026-11-11T17:56:42.9134400Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionAddToChat.test.ts:167:40)
+2026-11-11T17:56:42.9135964Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:42.9136901Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:42.9138279Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T17:56:42.9139616Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T17:56:42.9140529Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T17:56:42.9141582Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T17:56:42.9142590Z   ...
+2026-11-11T17:56:42.9143411Z # Subtest: control-only normalized selection is not emitted
+2026-11-11T17:56:42.9144458Z ok 1881 - control-only normalized selection is not emitted
+2026-11-11T17:56:42.9145238Z   ---
+2026-11-11T17:56:42.9145786Z   duration_ms: 16.404399
+2026-11-11T17:56:42.9146393Z   type: 'test'
+2026-11-11T17:56:42.9146934Z   ...
+2026-11-11T17:56:43.8820463Z # Subtest: actual src/components/WorkspaceView.tsx TerminalHost forwards target-chat selection requests
+2026-11-11T17:56:43.8824620Z not ok 1882 - actual src/components/WorkspaceView.tsx TerminalHost forwards target-chat selection requests
+2026-11-11T17:56:43.8919986Z   ---
+2026-11-11T17:56:43.8949404Z   duration_ms: 237.601086
+2026-11-11T17:56:43.8979307Z   type: 'test'
+2026-11-11T17:56:43.8980461Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:64:3'
+2026-11-11T17:56:43.8991243Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:43.8991877Z   error: |-
+2026-11-11T17:56:43.8992440Z     Expected values to be strictly equal:
+2026-11-11T17:56:43.8993148Z     + actual - expected
+2026-11-11T17:56:43.8993686Z
+2026-11-11T17:56:43.8994148Z     + undefined
+2026-11-11T17:56:43.8994650Z     - 'chat-B'
+2026-11-11T17:56:43.8995107Z
+2026-11-11T17:56:43.8995561Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:43.8996082Z   name: 'AssertionError'
+2026-11-11T17:56:43.8996624Z   expected: 'chat-B'
+2026-11-11T17:56:43.8997125Z   operator: 'strictEqual'
+2026-11-11T17:56:43.8997658Z   stack: |-
+2026-11-11T17:56:43.8999046Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:75:12)
+2026-11-11T17:56:43.9000439Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:43.9001222Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:43.9001990Z     Test.start (node:internal/test_runner/test:944:17)
+2026-11-11T17:56:43.9002901Z     startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+2026-11-11T17:56:43.9003673Z   ...
+2026-11-11T17:56:43.9005158Z # Subtest: actual src/components/WorkspaceView.tsx PanelStrip forwards target-chat selection requests
+2026-11-11T17:56:43.9006712Z not ok 1883 - actual src/components/WorkspaceView.tsx PanelStrip forwards target-chat selection requests
+2026-11-11T17:56:43.9007652Z   ---
+2026-11-11T17:56:43.9008106Z   duration_ms: 151.672036
+2026-11-11T17:56:43.9008624Z   type: 'test'
+2026-11-11T17:56:43.9009839Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:64:3'
+2026-11-11T17:56:43.9010953Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:43.9011519Z   error: |-
+2026-11-11T17:56:43.9012041Z     Expected values to be strictly equal:
+2026-11-11T17:56:43.9012635Z     + actual - expected
+2026-11-11T17:56:43.9013114Z
+2026-11-11T17:56:43.9013545Z     + undefined
+2026-11-11T17:56:43.9013997Z     - 'chat-B'
+2026-11-11T17:56:43.9014430Z
+2026-11-11T17:56:43.9014869Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:43.9015372Z   name: 'AssertionError'
+2026-11-11T17:56:43.9015898Z   expected: 'chat-B'
+2026-11-11T17:56:43.9016417Z   operator: 'strictEqual'
+2026-11-11T17:56:43.9016929Z   stack: |-
+2026-11-11T17:56:43.9018175Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:75:12)
+2026-11-11T17:56:43.9127831Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:43.9165083Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:43.9180853Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T17:56:43.9205539Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T17:56:43.9206231Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T17:56:43.9207085Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-11T17:56:43.9207796Z   ...
+2026-11-11T17:56:43.9208671Z # Subtest: actual src/components/PanelStrip.tsx TerminalHost forwards target-chat selection requests
+2026-11-11T17:56:43.9210319Z not ok 1884 - actual src/components/PanelStrip.tsx TerminalHost forwards target-chat selection requests
+2026-11-11T17:56:43.9211103Z   ---
+2026-11-11T17:56:43.9211443Z   duration_ms: 23.801941
+2026-11-11T17:56:43.9211829Z   type: 'test'
+2026-11-11T17:56:43.9212828Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:64:3'
+2026-11-11T17:56:43.9213842Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:43.9214311Z   error: |-
+2026-11-11T17:56:43.9214759Z     Expected values to be strictly equal:
+2026-11-11T17:56:43.9215286Z     + actual - expected
+2026-11-11T17:56:43.9215667Z
+2026-11-11T17:56:43.9215989Z     + undefined
+2026-11-11T17:56:43.9216335Z     - 'chat-B'
+2026-11-11T17:56:43.9216667Z
+2026-11-11T17:56:43.9216990Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:43.9217408Z   name: 'AssertionError'
+2026-11-11T17:56:43.9217822Z   expected: 'chat-B'
+2026-11-11T17:56:43.9218217Z   operator: 'strictEqual'
+2026-11-11T17:56:43.9218630Z   stack: |-
+2026-11-11T17:56:43.9220016Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:75:12)
+2026-11-11T17:56:43.9221326Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:43.9222033Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:43.9222870Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T17:56:43.9223722Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T17:56:43.9224428Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T17:56:43.9225296Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T17:56:43.9225999Z   ...
+2026-11-11T17:56:43.9226967Z # Subtest: actual selection caller accepts attachment into the target chat and focuses after revealing it
+2026-11-11T17:56:43.9228745Z not ok 1885 - actual selection caller accepts attachment into the target chat and focuses after revealing it
+2026-11-11T17:56:43.9260524Z   ---
+2026-11-11T17:56:43.9260916Z   duration_ms: 55.052612
+2026-11-11T17:56:43.9261335Z   type: 'test'
+2026-11-11T17:56:43.9262349Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:84:1'
+2026-11-11T17:56:43.9263534Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:43.9264365Z   error: 'actual src/components/WorkspaceView.tsx source region exists'
+2026-11-11T17:56:43.9265058Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:43.9265478Z   name: 'AssertionError'
+2026-11-11T17:56:43.9265904Z   expected: true
+2026-11-11T17:56:43.9266275Z   operator: '=='
+2026-11-11T17:56:43.9266625Z   stack: |-
+2026-11-11T17:56:43.9267685Z     findNode (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:24:10)
+2026-11-11T17:56:43.9269741Z     callbackFixture (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:29:20)
+2026-11-11T17:56:43.9271677Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:85:13)
+2026-11-11T17:56:43.9273000Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:43.9273708Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:43.9274579Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T17:56:43.9275444Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T17:56:43.9276180Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T17:56:43.9277341Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T17:56:43.9278048Z   ...
+2026-11-11T17:56:43.9279112Z # Subtest: actual selection caller retains a review-chat target instead of switching to primary
+2026-11-11T17:56:43.9280481Z not ok 1886 - actual selection caller retains a review-chat target instead of switching to primary
+2026-11-11T17:56:43.9281292Z   ---
+2026-11-11T17:56:43.9281645Z   duration_ms: 67.977859
+2026-11-11T17:56:43.9282046Z   type: 'test'
+2026-11-11T17:56:43.9283045Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:94:1'
+2026-11-11T17:56:43.9284209Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:43.9284939Z   error: 'actual src/components/WorkspaceView.tsx source region exists'
+2026-11-11T17:56:43.9285622Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:43.9286038Z   name: 'AssertionError'
+2026-11-11T17:56:43.9286442Z   expected: true
+2026-11-11T17:56:43.9286806Z   operator: '=='
+2026-11-11T17:56:43.9287158Z   stack: |-
+2026-11-11T17:56:43.9288222Z     findNode (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:24:10)
+2026-11-11T17:56:43.9320410Z     callbackFixture (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:29:20)
+2026-11-11T17:56:43.9322448Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:95:13)
+2026-11-11T17:56:43.9323811Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:43.9324533Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:43.9325398Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T17:56:43.9326278Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T17:56:43.9327010Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T17:56:43.9327886Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T17:56:43.9328649Z   ...
+2026-11-11T17:56:43.9329674Z # Subtest: stale session, stale workspace and missing composer cannot accept selection
+2026-11-11T17:56:43.9330923Z not ok 1887 - stale session, stale workspace and missing composer cannot accept selection
+2026-11-11T17:56:43.9331667Z   ---
+2026-11-11T17:56:43.9332025Z   duration_ms: 69.231731
+2026-11-11T17:56:43.9332656Z   type: 'test'
+2026-11-11T17:56:43.9333731Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:102:1'
+2026-11-11T17:56:43.9334838Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:43.9335620Z   error: 'actual src/components/WorkspaceView.tsx source region exists'
+2026-11-11T17:56:43.9336354Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:43.9336831Z   name: 'AssertionError'
+2026-11-11T17:56:43.9337271Z   expected: true
+2026-11-11T17:56:43.9337666Z   operator: '=='
+2026-11-11T17:56:43.9338068Z   stack: |-
+2026-11-11T17:56:43.9339380Z     findNode (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:24:10)
+2026-11-11T17:56:43.9341380Z     callbackFixture (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:29:20)
+2026-11-11T17:56:43.9343394Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:104:15)
+2026-11-11T17:56:43.9344808Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:43.9345555Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:43.9346409Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T17:56:43.9347189Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T17:56:43.9347813Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T17:56:43.9348677Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T17:56:43.9350424Z   ...
+2026-11-11T17:56:43.9351162Z # Subtest: an accepted request cannot focus a later session or workspace
+2026-11-11T17:56:43.9352154Z not ok 1888 - an accepted request cannot focus a later session or workspace
+2026-11-11T17:56:43.9352750Z   ---
+2026-11-11T17:56:43.9353056Z   duration_ms: 42.877639
+2026-11-11T17:56:43.9353405Z   type: 'test'
+2026-11-11T17:56:43.9354312Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:114:1'
+2026-11-11T17:56:43.9355275Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:43.9355933Z   error: 'actual src/components/WorkspaceView.tsx source region exists'
+2026-11-11T17:56:43.9356582Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:43.9356995Z   name: 'AssertionError'
+2026-11-11T17:56:43.9357388Z   expected: true
+2026-11-11T17:56:43.9357740Z   operator: '=='
+2026-11-11T17:56:43.9358084Z   stack: |-
+2026-11-11T17:56:43.9359299Z     findNode (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:24:10)
+2026-11-11T17:56:43.9361139Z     callbackFixture (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:29:20)
+2026-11-11T17:56:43.9362926Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatCaller.test.ts:116:15)
+2026-11-11T17:56:43.9364104Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:43.9364810Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:43.9365758Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T17:56:43.9366655Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T17:56:43.9367422Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T17:56:43.9368346Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T17:56:43.9369596Z   ...
+2026-11-11T17:56:43.9710362Z # Subtest: ordinary actual-editor focus keeps the existing selection and draft unchanged
+2026-11-11T17:56:43.9732895Z ok 1889 - ordinary actual-editor focus keeps the existing selection and draft unchanged
+2026-11-11T17:56:43.9734209Z   ---
+2026-11-11T17:56:43.9734858Z   duration_ms: 231.495254
+2026-11-11T17:56:43.9735527Z   type: 'test'
+2026-11-11T17:56:43.9736124Z   ...
+2026-11-11T17:56:43.9737311Z # Subtest: explicit actual-editor end focus collapses at the end without replacing rich content
+2026-11-11T17:56:43.9739748Z not ok 1890 - explicit actual-editor end focus collapses at the end without replacing rich content
+2026-11-11T17:56:43.9741342Z   ---
+2026-11-11T17:56:43.9741798Z   duration_ms: 104.663179
+2026-11-11T17:56:43.9742252Z   type: 'test'
+2026-11-11T17:56:43.9743297Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatFocus.test.ts:110:1'
+2026-11-11T17:56:43.9744372Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:43.9744841Z   error: |-
+2026-11-11T17:56:43.9745288Z     Expected values to be strictly equal:
+2026-11-11T17:56:43.9745784Z
+2026-11-11T17:56:43.9746107Z     2 !== 25
+2026-11-11T17:56:43.9746448Z
+2026-11-11T17:56:43.9746785Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:43.9747204Z   name: 'AssertionError'
+2026-11-11T17:56:43.9747627Z   expected: 25
+2026-11-11T17:56:43.9747971Z   actual: 2
+2026-11-11T17:56:43.9748326Z   operator: 'strictEqual'
+2026-11-11T17:56:43.9748720Z   stack: |-
+2026-11-11T17:56:43.9750190Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatFocus.test.ts:120:12)
+2026-11-11T17:56:43.9751563Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:43.9752300Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:43.9753184Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T17:56:43.9799617Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T17:56:43.9800443Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T17:56:43.9801399Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-11T17:56:43.9802487Z   ...
+2026-11-11T17:56:43.9803217Z # Subtest: explicit end focus handles an empty actual-editor document
+2026-11-11T17:56:43.9804255Z ok 1891 - explicit end focus handles an empty actual-editor document
+2026-11-11T17:56:43.9804944Z   ---
+2026-11-11T17:56:43.9805309Z   duration_ms: 43.66107
+2026-11-11T17:56:43.9805731Z   type: 'test'
+2026-11-11T17:56:43.9806101Z   ...
+2026-11-11T17:56:43.9807157Z # Subtest: actual ChatPanel focus-at-end bridge uses the mounted editor without draft or attachment mutation
+2026-11-11T17:56:43.9808961Z not ok 1892 - actual ChatPanel focus-at-end bridge uses the mounted editor without draft or attachment mutation
+2026-11-11T17:56:43.9809927Z   ---
+2026-11-11T17:56:43.9810303Z   duration_ms: 147.395258
+2026-11-11T17:56:43.9810734Z   type: 'test'
+2026-11-11T17:56:43.9811791Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatFocus.test.ts:136:1'
+2026-11-11T17:56:43.9812924Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:43.9813393Z   error: |-
+2026-11-11T17:56:43.9813867Z     ChatPanel exposes explicit focus-at-end
+2026-11-11T17:56:43.9814432Z     + actual - expected
+2026-11-11T17:56:43.9814832Z
+2026-11-11T17:56:43.9815180Z     + 'undefined'
+2026-11-11T17:56:43.9815565Z     - 'function'
+2026-11-11T17:56:43.9815923Z
+2026-11-11T17:56:43.9816269Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:43.9816707Z   name: 'AssertionError'
+2026-11-11T17:56:43.9817151Z   expected: 'function'
+2026-11-11T17:56:43.9817566Z   actual: 'undefined'
+2026-11-11T17:56:43.9817992Z   operator: 'strictEqual'
+2026-11-11T17:56:43.9818424Z   stack: |-
+2026-11-11T17:56:43.9820082Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatFocus.test.ts:142:12)
+2026-11-11T17:56:43.9821449Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:43.9822146Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:43.9822996Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T17:56:43.9823850Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T17:56:43.9824562Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T17:56:43.9825407Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T17:56:43.9826110Z   ...
+2026-11-11T17:56:43.9826978Z # Subtest: actual focus-at-end bridge is safe after editor unmount
+2026-11-11T17:56:43.9827954Z not ok 1893 - actual focus-at-end bridge is safe after editor unmount
+2026-11-11T17:56:43.9828598Z   ---
+2026-11-11T17:56:43.9829176Z   duration_ms: 171.122344
+2026-11-11T17:56:43.9829609Z   type: 'test'
+2026-11-11T17:56:43.9830677Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatFocus.test.ts:151:1'
+2026-11-11T17:56:43.9831826Z   failureType: 'testCodeFailure'
+2026-11-11T17:56:43.9832309Z   error: |-
+2026-11-11T17:56:43.9832770Z     Expected values to be strictly equal:
+2026-11-11T17:56:43.9833312Z     + actual - expected
+2026-11-11T17:56:43.9833720Z
+2026-11-11T17:56:43.9834055Z     + 'undefined'
+2026-11-11T17:56:43.9834441Z     - 'function'
+2026-11-11T17:56:43.9834797Z
+2026-11-11T17:56:43.9835145Z   code: 'ERR_ASSERTION'
+2026-11-11T17:56:43.9835582Z   name: 'AssertionError'
+2026-11-11T17:56:43.9836014Z   expected: 'function'
+2026-11-11T17:56:43.9836437Z   actual: 'undefined'
+2026-11-11T17:56:43.9836852Z   operator: 'strictEqual'
+2026-11-11T17:56:43.9837276Z   stack: |-
+2026-11-11T17:56:43.9838511Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/selectionChatFocus.test.ts:155:10)
+2026-11-11T17:56:43.9870149Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T17:56:43.9870884Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T17:56:43.9871739Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T17:56:43.9872878Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T17:56:43.9873584Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T17:56:43.9874414Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T17:56:43.9875133Z   ...
+2026-11-11T17:56:43.9875880Z # Subtest: marks parse as the reference's three kinds; anything else is not a mark
+2026-11-11T17:56:43.9877058Z ok 1894 - marks parse as the reference's three kinds; anything else is not a mark
+2026-11-11T17:56:43.9877794Z   ---
+2026-11-11T17:56:43.9878153Z   duration_ms: 2.358976
+2026-11-11T17:56:43.9878563Z   type: 'test'
+2026-11-11T17:56:43.9892802Z   ...
+2026-11-11T17:56:43.9893654Z # Subtest: marks are stripped from output, ended by BEL or ST, and kept in order
+2026-11-11T17:56:43.9894854Z ok 1895 - marks are stripped from output, ended by BEL or ST, and kept in order
+2026-11-11T17:56:43.9895584Z   ---
+2026-11-11T17:56:43.9895944Z   duration_ms: 0.582115
+2026-11-11T17:56:43.9896373Z   type: 'test'
+2026-11-11T17:56:43.9896744Z   ...
+2026-11-11T17:56:43.9897591Z # Subtest: an unknown or unterminated mark passes through as text, as in the reference
+2026-11-11T17:56:43.9899073Z ok 1896 - an unknown or unterminated mark passes through as text, as in the reference
+2026-11-11T17:56:43.9899867Z   ---
+2026-11-11T17:56:43.9900217Z   duration_ms: 0.422808
+2026-11-11T17:56:43.9900621Z   type: 'test'
+2026-11-11T17:56:43.9900990Z   ...
+2026-11-11T17:56:43.9901858Z # Subtest: a command runs from ProgramStart to CommandDone; the prompt clears the program

@@ -1,0 +1,1 @@
+hVo={hoverPreviews:!1,contextMenu:!0,keyboardShortcuts:!1,dragAndDrop:!1,matchesSendCommand:$Ii},pVo=HIi({reviewLabelsById:new Map,skillDescriptions:new Map,userAvatarsById:new Map}),mVo=t=>t?{workspacePath:t.workspacePath,host:t.host}:void 0,gVo=_v(t=>t.key==="Escape");

@@ -1,0 +1,248 @@
+2026-11-12T03:31:02.2971509Z # Subtest: Grep resource label: inside-workspace-deep-absolute
+2026-11-12T03:31:02.2972404Z not ok 703 - Grep resource label: inside-workspace-deep-absolute
+2026-11-12T03:31:02.2972833Z   ---
+2026-11-12T03:31:02.2973073Z   duration_ms: 441.845259
+2026-11-12T03:31:02.2973359Z   type: 'test'
+2026-11-12T03:31:02.2974008Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:139:3'
+2026-11-12T03:31:02.2974693Z   failureType: 'testCodeFailure'
+2026-11-12T03:31:02.2975027Z   error: |-
+2026-11-12T03:31:02.2975383Z     [redacted-token]
+2026-11-12T03:31:02.2975788Z     + actual - expected
+2026-11-12T03:31:02.2976053Z
+2026-11-12T03:31:02.2976330Z     + 'packages/chat/src/render.ts'
+2026-11-12T03:31:02.2976664Z     - 'src/render.ts'
+2026-11-12T03:31:02.2976917Z
+2026-11-12T03:31:02.2977149Z   code: 'ERR_ASSERTION'
+2026-11-12T03:31:02.2977429Z   name: 'AssertionError'
+2026-11-12T03:31:02.2977741Z   expected: 'src/render.ts'
+2026-11-12T03:31:02.2978100Z   actual: 'packages/chat/src/render.ts'
+2026-11-12T03:31:02.2978444Z   operator: 'strictEqual'
+2026-11-12T03:31:02.2978734Z   stack: |-
+2026-11-12T03:31:02.2979630Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:170:18)
+2026-11-12T03:31:02.2980474Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T03:31:02.2981094Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-12T03:31:02.2981581Z   ...
+2026-11-12T03:31:02.2982012Z # Subtest: Grep resource label: outside-workspace-deep-absolute
+2026-11-12T03:31:02.2982647Z not ok 704 - Grep resource label: outside-workspace-deep-absolute
+2026-11-12T03:31:02.2983070Z   ---
+2026-11-12T03:31:02.2983308Z   duration_ms: 254.750471
+2026-11-12T03:31:02.2983594Z   type: 'test'
+2026-11-12T03:31:02.2984230Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:139:3'
+2026-11-12T03:31:02.2984908Z   failureType: 'testCodeFailure'
+2026-11-12T03:31:02.2985229Z   error: |-
+2026-11-12T03:31:02.2985579Z     [redacted-token]
+2026-11-12T03:31:02.2985980Z     + actual - expected
+2026-11-12T03:31:02.2986236Z
+2026-11-12T03:31:02.2986523Z     + '/external/project/packages/chat'
+2026-11-12T03:31:02.2986859Z     - 'packages/chat'
+2026-11-12T03:31:02.2987345Z
+2026-11-12T03:31:02.2987600Z   code: 'ERR_ASSERTION'
+2026-11-12T03:31:02.2987890Z   name: 'AssertionError'
+2026-11-12T03:31:02.2988181Z   expected: 'packages/chat'
+2026-11-12T03:31:02.2988548Z   actual: '/external/project/packages/chat'
+2026-11-12T03:31:02.2988915Z   operator: 'strictEqual'
+2026-11-12T03:31:02.2989203Z   stack: |-
+2026-11-12T03:31:02.2990083Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:170:18)
+2026-11-12T03:31:02.2990935Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T03:31:02.2991548Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T03:31:02.2992035Z   ...
+2026-11-12T03:31:02.2992387Z # Subtest: Grep resource label: deep-relative
+2026-11-12T03:31:02.2992866Z not ok 705 - Grep resource label: deep-relative
+2026-11-12T03:31:02.2993225Z   ---
+2026-11-12T03:31:02.2993478Z   duration_ms: 116.708165
+2026-11-12T03:31:02.2993769Z   type: 'test'
+2026-11-12T03:31:02.2994412Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:139:3'
+2026-11-12T03:31:02.2995102Z   failureType: 'testCodeFailure'
+2026-11-12T03:31:02.2995408Z   error: |-
+2026-11-12T03:31:02.2995699Z     GREP_RESOURCE_LABEL_deep-relative
+2026-11-12T03:31:02.2996036Z     + actual - expected
+2026-11-12T03:31:02.2996293Z
+2026-11-12T03:31:02.2996534Z     + 'packages/chat/src'
+2026-11-12T03:31:02.2996813Z     - 'chat/src'
+2026-11-12T03:31:02.2997070Z
+2026-11-12T03:31:02.2997303Z   code: 'ERR_ASSERTION'
+2026-11-12T03:31:02.2997579Z   name: 'AssertionError'
+2026-11-12T03:31:02.2998101Z   expected: 'chat/src'
+2026-11-12T03:31:02.2998403Z   actual: 'packages/chat/src'
+2026-11-12T03:31:02.2998721Z   operator: 'strictEqual'
+2026-11-12T03:31:02.2999005Z   stack: |-
+2026-11-12T03:31:02.2999896Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:170:18)
+2026-11-12T03:31:02.3000733Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T03:31:02.3001361Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T03:31:02.3001837Z   ...
+2026-11-12T03:31:02.3002225Z # Subtest: Grep resource label: short-relative-control
+2026-11-12T03:31:02.3002746Z ok 706 - Grep resource label: short-relative-control
+2026-11-12T03:31:02.3003120Z   ---
+2026-11-12T03:31:02.3003352Z   duration_ms: 128.958474
+2026-11-12T03:31:02.3003623Z   type: 'test'
+2026-11-12T03:31:02.3003879Z   ...
+2026-11-12T03:31:02.3004235Z # Subtest: Grep resource label: pathless-control
+2026-11-12T03:31:02.3004717Z ok 707 - Grep resource label: pathless-control
+2026-11-12T03:31:02.3005136Z   ---
+2026-11-12T03:31:02.3005399Z   duration_ms: 106.460394
+2026-11-12T03:31:02.3005685Z   type: 'test'
+2026-11-12T03:31:02.3005923Z   ...
+2026-11-12T03:31:02.3006302Z # Subtest: Grep resource label: ordinary-read-control
+2026-11-12T03:31:02.3006833Z ok 708 - Grep resource label: ordinary-read-control
+2026-11-12T03:31:02.3007204Z   ---
+2026-11-12T03:31:02.3007461Z   duration_ms: 96.020415
+2026-11-12T03:31:02.3007746Z   type: 'test'
+2026-11-12T03:31:02.3007985Z   ...
+2026-11-12T03:31:02.3008305Z # Subtest: Grep resource label: root-slash
+2026-11-12T03:31:02.3008742Z ok 709 - Grep resource label: root-slash
+2026-11-12T03:31:02.3009078Z   ---
+2026-11-12T03:31:02.3009506Z   duration_ms: 93.43922
+2026-11-12T03:31:02.3009795Z   type: 'test'
+2026-11-12T03:31:02.3010031Z   ...
+2026-11-12T03:31:02.3010393Z # Subtest: Grep resource label: leading-slash-pair
+2026-11-12T03:31:02.3010905Z ok 710 - Grep resource label: leading-slash-pair
+2026-11-12T03:31:02.3011277Z   ---
+2026-11-12T03:31:02.3011514Z   duration_ms: 114.224109
+2026-11-12T03:31:02.3011802Z   type: 'test'
+2026-11-12T03:31:02.3012056Z   ...
+2026-11-12T03:31:02.3012458Z # Subtest: Grep resource label: workspace-trailing-slash
+2026-11-12T03:31:02.3013029Z not ok 711 - Grep resource label: workspace-trailing-slash
+2026-11-12T03:31:02.3013664Z   ---
+2026-11-12T03:31:02.3013902Z   duration_ms: 112.189638
+2026-11-12T03:31:02.3014178Z   type: 'test'
+2026-11-12T03:31:02.3014834Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:139:3'
+2026-11-12T03:31:02.3015522Z   failureType: 'testCodeFailure'
+2026-11-12T03:31:02.3015843Z   error: |-
+2026-11-12T03:31:02.3016181Z     [redacted-token]
+2026-11-12T03:31:02.3016551Z
+2026-11-12T03:31:02.3016786Z     '' !== 'repo/'
+2026-11-12T03:31:02.3017032Z
+2026-11-12T03:31:02.3017280Z   code: 'ERR_ASSERTION'
+2026-11-12T03:31:02.3017570Z   name: 'AssertionError'
+2026-11-12T03:31:02.3017866Z   expected: 'repo/'
+2026-11-12T03:31:02.3018140Z   actual: ''
+2026-11-12T03:31:02.3018390Z   operator: 'strictEqual'
+2026-11-12T03:31:02.3018644Z   stack: |-
+2026-11-12T03:31:02.3019585Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:170:18)
+2026-11-12T03:31:02.3020402Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T03:31:02.3020908Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T03:31:02.3021301Z   ...
+2026-11-12T03:31:02.3021683Z # Subtest: Grep resource label: deep-trailing-slash
+2026-11-12T03:31:02.3022150Z not ok 712 - Grep resource label: deep-trailing-slash
+2026-11-12T03:31:02.3022502Z   ---
+2026-11-12T03:31:02.3022735Z   duration_ms: 85.985945
+2026-11-12T03:31:02.3022999Z   type: 'test'
+2026-11-12T03:31:02.3023607Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:139:3'
+2026-11-12T03:31:02.3024656Z   failureType: 'testCodeFailure'
+2026-11-12T03:31:02.3024969Z   error: |-
+2026-11-12T03:31:02.3025264Z     GREP_RESOURCE_LABEL_deep-trailing-slash
+2026-11-12T03:31:02.3025634Z     + actual - expected
+2026-11-12T03:31:02.3025903Z
+2026-11-12T03:31:02.3026133Z     + 'packages/chat/'
+2026-11-12T03:31:02.3026413Z     - 'chat/'
+2026-11-12T03:31:02.3026642Z
+2026-11-12T03:31:02.3026856Z   code: 'ERR_ASSERTION'
+2026-11-12T03:31:02.3027109Z   name: 'AssertionError'
+2026-11-12T03:31:02.3027379Z   expected: 'chat/'
+2026-11-12T03:31:02.3027627Z   actual: 'packages/chat/'
+2026-11-12T03:31:02.3027916Z   operator: 'strictEqual'
+2026-11-12T03:31:02.3028191Z   stack: |-
+2026-11-12T03:31:02.3028926Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:170:18)
+2026-11-12T03:31:02.3029904Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T03:31:02.3030505Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T03:31:02.3030977Z   ...
+2026-11-12T03:31:02.3031359Z # Subtest: Grep resource label: repeated-empty-segment
+2026-11-12T03:31:02.3031914Z not ok 713 - Grep resource label: repeated-empty-segment
+2026-11-12T03:31:02.3032298Z   ---
+2026-11-12T03:31:02.3032535Z   duration_ms: 68.122177
+2026-11-12T03:31:02.3032811Z   type: 'test'
+2026-11-12T03:31:02.3033469Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:139:3'
+2026-11-12T03:31:02.3034170Z   failureType: 'testCodeFailure'
+2026-11-12T03:31:02.3034481Z   error: |-
+2026-11-12T03:31:02.3034811Z     [redacted-token]
+2026-11-12T03:31:02.3035192Z     + actual - expected
+2026-11-12T03:31:02.3035462Z
+2026-11-12T03:31:02.3035699Z     + '/src/file.ts'
+2026-11-12T03:31:02.3035966Z     - 'src/file.ts'
+2026-11-12T03:31:02.3036218Z
+2026-11-12T03:31:02.3036450Z   code: 'ERR_ASSERTION'
+2026-11-12T03:31:02.3036742Z   name: 'AssertionError'
+2026-11-12T03:31:02.3037040Z   expected: 'src/file.ts'
+2026-11-12T03:31:02.3037331Z   actual: '/src/file.ts'
+2026-11-12T03:31:02.3037631Z   operator: 'strictEqual'
+2026-11-12T03:31:02.3037908Z   stack: |-
+2026-11-12T03:31:02.3038670Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:170:18)
+2026-11-12T03:31:02.3039833Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T03:31:02.3040472Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T03:31:02.3040967Z   ...
+2026-11-12T03:31:02.3041358Z # Subtest: Grep resource label: double-trailing-slash
+2026-11-12T03:31:02.3041900Z not ok 714 - Grep resource label: double-trailing-slash
+2026-11-12T03:31:02.3042285Z   ---
+2026-11-12T03:31:02.3042528Z   duration_ms: 56.863897
+2026-11-12T03:31:02.3042817Z   type: 'test'
+2026-11-12T03:31:02.3043480Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:139:3'
+2026-11-12T03:31:02.3044196Z   failureType: 'testCodeFailure'
+2026-11-12T03:31:02.3044515Z   error: |-
+2026-11-12T03:31:02.3044833Z     [redacted-token]
+2026-11-12T03:31:02.3045188Z
+2026-11-12T03:31:02.3045422Z     'chat//' !== '/'
+2026-11-12T03:31:02.3045676Z
+2026-11-12T03:31:02.3045910Z   code: 'ERR_ASSERTION'
+2026-11-12T03:31:02.3046199Z   name: 'AssertionError'
+2026-11-12T03:31:02.3046497Z   expected: '/'
+2026-11-12T03:31:02.3046751Z   actual: 'chat//'
+2026-11-12T03:31:02.3047021Z   operator: 'strictEqual'
+2026-11-12T03:31:02.3047314Z   stack: |-
+2026-11-12T03:31:02.3048081Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:170:18)
+2026-11-12T03:31:02.3048964Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T03:31:02.3049718Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T03:31:02.3050213Z   ...
+2026-11-12T03:31:02.3050564Z # Subtest: Grep resource label: unicode-segments
+2026-11-12T03:31:02.3051232Z not ok 715 - Grep resource label: unicode-segments
+2026-11-12T03:31:02.3051625Z   ---
+2026-11-12T03:31:02.3051875Z   duration_ms: 59.811135
+2026-11-12T03:31:02.3052157Z   type: 'test'
+2026-11-12T03:31:02.3052833Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:139:3'
+2026-11-12T03:31:02.3053508Z   failureType: 'testCodeFailure'
+2026-11-12T03:31:02.3053879Z   error: |-
+2026-11-12T03:31:02.3054181Z     GREP_RESOURCE_LABEL_unicode-segments
+2026-11-12T03:31:02.3054528Z     + actual - expected
+2026-11-12T03:31:02.3054796Z
+2026-11-12T03:31:02.3055307Z     + '工程/组件/文件.ts'
+2026-11-12T03:31:02.3055612Z     - '组件/文件.ts'
+2026-11-12T03:31:02.3055866Z
+2026-11-12T03:31:02.3056115Z   code: 'ERR_ASSERTION'
+2026-11-12T03:31:02.3056397Z   name: 'AssertionError'
+2026-11-12T03:31:02.3056738Z   expected: '组件/文件.ts'
+2026-11-12T03:31:02.3057067Z   actual: '工程/组件/文件.ts'
+2026-11-12T03:31:02.3057344Z   operator: 'strictEqual'
+2026-11-12T03:31:02.3057649Z   stack: |-
+2026-11-12T03:31:02.3058409Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:170:18)
+2026-11-12T03:31:02.3059267Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T03:31:02.3060012Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T03:31:02.3060504Z   ...
+2026-11-12T03:31:02.3060885Z # Subtest: Grep resource label: dot-relative-segments
+2026-11-12T03:31:02.3061408Z not ok 716 - Grep resource label: dot-relative-segments
+2026-11-12T03:31:02.3061792Z   ---
+2026-11-12T03:31:02.3062037Z   duration_ms: 64.144702
+2026-11-12T03:31:02.3062309Z   type: 'test'
+2026-11-12T03:31:02.3062967Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:139:3'
+2026-11-12T03:31:02.3063655Z   failureType: 'testCodeFailure'
+2026-11-12T03:31:02.3063966Z   error: |-
+2026-11-12T03:31:02.3064300Z     [redacted-token]
+2026-11-12T03:31:02.3064669Z     + actual - expected
+2026-11-12T03:31:02.3064937Z
+2026-11-12T03:31:02.3065185Z     + '../packages/chat/src'
+2026-11-12T03:31:02.3065496Z     - 'chat/src'
+2026-11-12T03:31:02.3065744Z
+2026-11-12T03:31:02.3065977Z   code: 'ERR_ASSERTION'
+2026-11-12T03:31:02.3066484Z   name: 'AssertionError'
+2026-11-12T03:31:02.3066782Z   expected: 'chat/src'
+2026-11-12T03:31:02.3067098Z   actual: '../packages/chat/src'
+2026-11-12T03:31:02.3067422Z   operator: 'strictEqual'
+2026-11-12T03:31:02.3067724Z   stack: |-
+2026-11-12T03:31:02.3068484Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/grepResourceLabel.test.ts:170:18)
+2026-11-12T03:31:02.3069486Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T03:31:02.3070128Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T03:31:02.3070617Z   ...
+2026-11-12T03:31:02.3071002Z # Subtest: Grep resource label: backslashes-unchanged
+2026-11-12T03:31:02.3071542Z ok 717 - Grep resource label: backslashes-unchanged
+2026-11-12T03:31:02.3071914Z   ---
+2026-11-12T03:31:02.3072169Z   duration_ms: 65.805653
+2026-11-12T03:31:02.3072465Z   type: 'test'
+2026-11-12T03:31:02.3072714Z   ...

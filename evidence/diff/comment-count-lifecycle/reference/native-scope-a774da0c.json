@@ -1,0 +1,54 @@
+{
+  "kind": "OWNERSHIP_SCOPE_ADDENDUM_NOT_RUNTIME_OR_IMPLEMENTATION",
+  "sender": "13576d11-76fb-4842-aa9b-c398f9ca26f3",
+  "owner": "de6c02f4-4880-4a0d-bf8f-9e3954522753",
+  "coordinator_authorization_message": "226eaa3d-cfc4-4801-95a1-91dfa8efdbba",
+  "checked_main": "a774da0c5b48b95637f3909b4de16a4021ed5e1f",
+  "assigned_head": "456e27e4b7be29f876e517f8ff7702457013e3ab",
+  "authorization": "DE6 owns minimum native accepted/handoff signal at existing commands/provider enqueue, its frontend consumer and lifecycle tests. No provider behavior change. Existing ACC serialization remains.",
+  "reference_evidence": "DE6-reported retained REA executeSession -> vs.query -> $p.query -> Ke.notify(QUERY). Not independently re-observed in this addendum. DE6 retains responsibility for exact evidence pins and semantic equivalence.",
+  "existing_frontend_transfer_receipt": ".ara-state/comment-count-delivery-handoff-a774da0c.json",
+  "native_hunks_available_if_required": [
+    {"path":"src-tauri/src/reason_chat.rs","symbols":["reason_prompt"],"boundary":"Request correlation passed through existing checkpoint/dispatch; command resolution is turn end, not handoff."},
+    {"path":"src-tauri/src/reason_acp/provider.rs","symbols":["ProviderEvent","prompt_expected","run_prompt"],"boundary":"Existing pre-send cancellation ticket, dispatch and event sink; no successful handoff signal currently separated from completion."},
+    {"path":"src-tauri/src/reason_acp/rpc.rs","symbols":["RpcConnection::call","write_line"],"boundary":"call writes and flushes request, then waits for response. Any send-only hook belongs after successful write, not after response. Generic behavior must remain unchanged."},
+    {"path":"src-tauri/src/claude_chat/commands.rs","symbols":["claude_prompt"],"boundary":"Request correlation through existing plan-mode/database/checkpoint gates; resolution is turn end."},
+    {"path":"src-tauri/src/claude_chat/runner.rs","symbols":["prompt_with_options"],"boundary":"Pre-send stopped/ensure_live failures precede send_user. send_user failure retains rejection. Successful send precedes rx.recv turn completion."},
+    {"path":"src-tauri/src/codex_chat.rs","symbols":["codex_prompt","event_json"],"boundary":"Command currently obtains receiver and waits for TurnEnd; event correlation/forwarding only as necessary."},
+    {"path":"src-tauri/src/agent/codex_runner.rs","symbols":["Prompt","send","prompt","begin"],"boundary":"Existing actor enqueue silently discards Sender::send error; optimistic prompt() return is not verified enqueue. Preserve actual cancellation/order semantics."},
+    {"path":"src-tauri/src/agent/codex_session.rs","symbols":["send_request","call","start_turn"],"boundary":"Transport write precedes provider response; start_turn waits for turn/start result. turnStarted is provider evidence, not required sidecar notification evidence."},
+    {"path":"src-tauri/src/reason_acp/wire.rs","symbols":["event_json"],"boundary":"Shared Reason/Claude event encoding, only if selected event design requires it."},
+    {"path":"src-tauri/src/agent/codex_wire.rs","symbols":["Payload"],"boundary":"Codex event encoding only if selected design requires it."}
+  ],
+  "read_only_transport_reference": ["src-tauri/src/agent/claude_session.rs:ClaudeSession::send/send_user"],
+  "frontend_contract_hunks_available_if_required": [
+    "src/features/chat/chatRuntime.ts:PromptRequest/Backend/dispatch/submit and queue-to-request correlation",
+    "src/features/chat/queue.ts:MessageAttachment/QueuedMessage/start-steer effects/retry metadata",
+    "src/features/chat/reason.ts:PromptAttachment/ReasonPayload and only acceptance consumer needed",
+    "src/features/chat/reasonChat.ts:backend listener/prompt adapter",
+    "src/features/chat/claudeChat.ts:backend listener/prompt adapter",
+    "src/features/chat/codexChat.ts:queue dispatch/prompt/event listener",
+    "src/features/chat/codex.ts:CodexPayload only if needed",
+    "Previously transferred WorkspaceView.tsx/composerSession.ts/composerAttachments.ts/diff chatAttachment.ts membership producers"
+  ],
+  "exclusive_same135_hunks_retained": [
+    "src/features/chat/Composer.tsx:four active mention/slash key branches",
+    "src/features/chat/Composer.tsx:registered chat.cancel callback"
+  ],
+  "conflict_status": {
+    "tracked_worktree_and_index_clean": true,
+    "all_listed_shared_files_match_checked_main": true,
+    "whole_tree_matches_checked_main": false,
+    "unrelated_assigned_branch_delta": ["src/components/Sidebar.tsx modified relative to main", "src/components/sidebarEmptyGuidance.test.ts absent relative to main"],
+    "untracked_scratch_and_evidence_retained": true,
+    "product_writes_this_turn": false,
+    "git_diff_check": "PASS"
+  },
+  "limits": [
+    "Transfer covers only necessary producer/consumer/correlation and lifecycle-test hunks, not whole-file blanket ownership.",
+    "Producer transport-write and actor-enqueue sites are candidate code boundaries, not a claim of uniquely proven reference equivalence.",
+    "DE6 must preserve comment identity through queue/retry and distinguish rejection/cancellation before handoff from failed/cancelled turns after handoff.",
+    "Local startTurn, submit void, ComposerSession.send true, awaited native command and provider turnStarted must not substitute for a dedicated proven handoff contract.",
+    "No product changes, tests, Node/import adapter, native/provider execution, browser, build, install, resource sampling, dispatch, new slot, publisher or watcher."
+  ]
+}

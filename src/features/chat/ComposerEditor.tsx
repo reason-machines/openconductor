@@ -12,13 +12,14 @@ import { FileAtom, composerContent, inlineContent, linearDocument, partsFrom } f
 
 export interface ComposerSelection { text: string; start: number; end: number }
 export interface ComposerEditorHandle {
-  focus(): void;
+  focus(position?: "end"): void;
   blur(): void;
   visible(): boolean;
   focused(): boolean;
   composing(): boolean;
+  atTop?(): boolean;
   selection(): ComposerSelection;
-  replaceText(text: string): void;
+  replaceRange(range: { start: number; end: number }, text: string): boolean;
   insertFile(range: { start: number; end: number }, file: { path: string; label: string; directory: boolean }): void;
   deleteRange(range: { start: number; end: number }): boolean;
   newline(): void;
@@ -61,9 +62,22 @@ export function ComposerEditor(props: Props) {
       content: composerContent(current.current.value),
       enableInputRules: false, enablePasteRules: false,
       editorProps: {
-        attributes: { role: "textbox", "aria-label": "Message", "aria-multiline": "true", "data-testid": "composer-input", spellcheck: "false" },
+        attributes: {
+          role: "textbox", "aria-label": "Message", "aria-multiline": "true", "data-testid": "composer-input",
+          spellcheck: "false",
+          autocomplete: "new-password",
+          autocorrect: "off",
+          autocapitalize: "off",
+          writingsuggestions: "false",
+        },
         handleKeyDown: (_view, event) => {
+          if ((event.key === " " || event.code === "Space") && event.ctrlKey && !event.metaKey) {
+            event.preventDefault();
+            event.stopPropagation();
+            return true;
+          }
           if (event.isComposing || editor.view.composing || event.keyCode === 229) return false;
+          if (event.key === "Delete" || event.key === "Backspace") syncSelection();
           current.current.onKeyDown(event);
           return event.defaultPrevented;
         },
@@ -72,7 +86,9 @@ export function ComposerEditor(props: Props) {
           if (current.current.onPasteFiles(event.clipboardData.files)) return true;
           syncSelection();
           const parts = clipboardComposerParts(event.clipboardData.getData(COMPOSER_CLIPBOARD));
+          editor.view.dispatch(closeHistory(editor.state.tr));
           editor.commands.insertContent(parts ? inlineContent(parts) : inlineContent([{ kind: "text", text: event.clipboardData.getData("text/plain").replace(/\r\n?/g, "\n") }]));
+          editor.view.dispatch(closeHistory(editor.state.tr));
           return true;
         },
         handleDOMEvents: {
@@ -129,14 +145,28 @@ export function ComposerEditor(props: Props) {
       return true;
     }
     const handle: ComposerEditorHandle = {
-      focus: () => { editor.view.focus(); },
+      focus: (position) => {
+        if (position === "end") editor.view.dispatch(editor.state.tr.setSelection(TextSelection.atEnd(editor.state.doc)));
+        editor.view.focus();
+      },
       blur: () => { editor.view.dom.blur(); },
       visible: () => editor.view.dom.offsetParent !== null,
       focused: () => editor.isFocused,
       composing: () => editor.view.composing,
+      atTop: () => {
+        const { selection, doc } = editor.state;
+        return editor.isEmpty || (selection.empty && doc.firstChild === selection.$from.parent && editor.view.endOfTextblock("up"));
+      },
       selection: () => snapshot(editor),
-      replaceText: (text) => {
-        editor.chain().focus().setTextSelection({ from: 1, to: editor.state.doc.content.size - 1 }).insertContent(inlineContent([{ kind: "text", text }])).run();
+      replaceRange: (range, text) => {
+        if (editor.view.composing) return false;
+        const { positions } = linearDocument(editor.state.doc);
+        const from = positions[range.start], to = positions[range.end];
+        if (from === undefined || to === undefined || from > to) return false;
+        editor.view.dispatch(closeHistory(editor.state.tr));
+        const replaced = editor.chain().focus().insertContentAt({ from, to }, inlineContent([{ kind: "text", text }])).run();
+        editor.view.dispatch(closeHistory(editor.state.tr));
+        return replaced;
       },
       insertFile: (range, file) => {
         editor.view.dispatch(closeHistory(editor.state.tr));

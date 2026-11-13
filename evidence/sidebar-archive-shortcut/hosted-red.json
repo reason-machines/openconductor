@@ -1,0 +1,101 @@
+{
+  "owner": "Conductor Rebuild",
+  "pr": 1113,
+  "baseline_head": "084472476b3787b5b12bc716384b7ac2d4003ec9",
+  "main_pin": "021aeaa4027770258b4daae127bc829d1575d0ab",
+  "run_id": 43133892679,
+  "fixture_sha256": "8ad78950e3a408f4adbeb432541064156e8ea6c016eeb6d5f5d034fb1ae17187",
+  "verdict": "QUALIFIED_ASSERTION_RED",
+  "failing_remap_cases": 4,
+  "passing_controls": 3,
+  "each_failure": {
+    "code": "ERR_ASSERTION",
+    "actual": "Archive workspace ⌘⇧A",
+    "expected": "Archive workspace ⌘⌥K"
+  },
+  "cases": {
+    "unit": {
+      "job_id": 130904450655,
+      "url": "https://github.com/reason-machines/openconductor/actions/runs/43133892679/job/130904450655",
+      "observed": [
+        {
+          "line": 1883,
+          "text": "2026-11-12T01:21:26.2618707Z ok 278 - Sidebar Archive tooltip: selected row shows the default shortcut"
+        },
+        {
+          "line": 1889,
+          "text": "2026-11-12T01:21:26.2627711Z not ok 279 - Sidebar Archive tooltip: saved remap arriving after mount replaces the default"
+        },
+        {
+          "line": 1914,
+          "text": "2026-11-12T01:21:26.2639732Z not ok 280 - Sidebar Archive tooltip: open selected tooltip updates on a live remap"
+        },
+        {
+          "line": 1939,
+          "text": "2026-11-12T01:21:26.2651055Z not ok 281 - Sidebar Archive tooltip: only the primary saved shortcut is shown"
+        },
+        {
+          "line": 1964,
+          "text": "2026-11-12T01:21:26.2662320Z not ok 282 - Sidebar Archive tooltip: reset restores the default on the same row"
+        },
+        {
+          "line": 1989,
+          "text": "2026-11-12T01:21:26.2674504Z ok 283 - Sidebar Archive tooltip: unselected row omits shortcuts before and after remap"
+        },
+        {
+          "line": 1995,
+          "text": "2026-11-12T01:21:26.2677771Z ok 284 - Sidebar Archive tooltip: archive click keeps its callback and stops propagation"
+        }
+      ]
+    },
+    "build": {
+      "job_id": 130904450653,
+      "url": "https://github.com/reason-machines/openconductor/actions/runs/43133892679/job/130904450653",
+      "observed": [
+        {
+          "line": 1924,
+          "text": "2026-11-12T01:21:58.3234626Z ok 278 - Sidebar Archive tooltip: selected row shows the default shortcut"
+        },
+        {
+          "line": 1930,
+          "text": "2026-11-12T01:21:58.3296583Z not ok 279 - Sidebar Archive tooltip: saved remap arriving after mount replaces the default"
+        },
+        {
+          "line": 1955,
+          "text": "2026-11-12T01:21:58.3359687Z not ok 280 - Sidebar Archive tooltip: open selected tooltip updates on a live remap"
+        },
+        {
+          "line": 1980,
+          "text": "2026-11-12T01:21:58.4231764Z not ok 281 - Sidebar Archive tooltip: only the primary saved shortcut is shown"
+        },
+        {
+          "line": 2005,
+          "text": "2026-11-12T01:21:58.4863047Z not ok 282 - Sidebar Archive tooltip: reset restores the default on the same row"
+        },
+        {
+          "line": 2030,
+          "text": "2026-11-12T01:21:58.5558482Z ok 283 - Sidebar Archive tooltip: unselected row omits shortcuts before and after remap"
+        },
+        {
+          "line": 2036,
+          "text": "2026-11-12T01:21:58.5574326Z ok 284 - Sidebar Archive tooltip: archive click keeps its callback and stops propagation"
+        }
+      ]
+    }
+  },
+  "unit_suite": {
+    "tests": 3230,
+    "pass": 3225,
+    "fail": 5
+  },
+  "other_failure": {
+    "test": "tool disclosure remount: unchanged five-case baseline RED and candidate GREEN",
+    "reason": "Baseline source drifted: src/scripts/api.ts; rebind before freezing, not after RED",
+    "location": "tests/chat-disclosure/proof-loader.mjs:30",
+    "action": "Reported to root for the existing owner; excluded from this tooltip-only change. Every exact-head check still must pass before merge."
+  },
+  "typecheck": "PASS",
+  "mounted_candidate": "PENDING",
+  "native": "NOT_RUN",
+  "visual": "NOT_RUN"
+}

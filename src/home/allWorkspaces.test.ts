@@ -144,7 +144,7 @@ test("project filter shows only with two or more projects that have workspaces",
 
 test("empty list offers Create with no workspaces, Clear filters when filtered", () => {
   assert.equal(emptyAction([], DEFAULT_FILTERS), "create");
-  assert.equal(emptyAction([repo("a", [ws("x", { status: "archived" })])], DEFAULT_FILTERS), "create");
+  assert.equal(emptyAction([repo("a", [ws("x", { status: "archived" })])], DEFAULT_FILTERS), "clear");
   assert.equal(emptyAction([repo("a", [ws("x")])], DEFAULT_FILTERS), "clear");
   assert.equal(emptyAction([repo("a", [ws("x")])], CLEARED_FILTERS), null);
 });

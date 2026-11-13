@@ -12,8 +12,8 @@
 //   the cities and weights below are our own.
 // - The bundle carries Common / Uncommon / Rare / Legendary labels; we use them
 //   as rarity tiers for city names.
-// - Branch prefix settings are `branch_prefix_type` and `branch_prefix`;
-//   a migration appends a trailing slash to stored custom prefixes.
+// - Branch prefix settings are `branch_prefix_type` and `branch_prefix`.
+//   Custom prefixes preserve their chosen delimiter.
 //
 // Everything here is deterministic given an `Rng`, so it is unit tested
 // without a DOM, Tauri or git.
@@ -175,16 +175,17 @@ export interface BranchPrefixSettings {
 }
 
 /**
- * Resolves the prefix prepended to new branch names: `""` or a value ending in
- * `/`. Unknown or missing types default to the GitHub username when one is
+ * Resolves the prefix prepended to new branch names. Custom prefixes keep
+ * their delimiter. Unknown or missing types default to the GitHub username when one is
  * known (our default; the reference app's default is unverified).
  */
 export function resolveBranchPrefix(settings: BranchPrefixSettings, githubUsername?: string | null): string {
   const type = settings.branch_prefix_type ?? "github_username";
-  let raw = "";
-  if (type === "none") raw = "";
-  else if (type === "custom") raw = settings.branch_prefix ?? "";
-  else raw = githubUsername ?? "";
+  if (type === "custom") {
+    const prefix = settings.branch_prefix?.trim() ?? "";
+    return prefix && !/[/_.-]$/.test(prefix) ? `${prefix}/` : prefix;
+  }
+  const raw = type === "none" ? "" : githubUsername ?? "";
   const cleaned = raw
     .trim()
     .split("/")

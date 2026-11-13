@@ -55,12 +55,43 @@ def annotate(row, state=False):
     row["verification"] = "retained capture, not a fresh final review" if row["status"] == "matches" else "observed gap" if observed else "unverified"
 
 
+CORRECTABLE_STATUS = ("unverified",)
+CORRECTABLE_SCOPE = ("not-required",)
+
+
+def apply_corrections(doc):
+    """Apply parity/ui-map/row-corrections.json after scoping.
+
+    A correction can only withdraw a raw gap the retained captures do not
+    prove (status -> unverified) or scope out a row for a recorded decision
+    (scope -> not-required). It never promotes a row to matches, and
+    raw_status / raw_why stay as scored.
+    """
+    rows = {row["id"]: row for row in doc["states"] + doc["items"]}
+    for record in doc.get("row_corrections", {}).get("corrections", []):
+        row = rows.get(record["id"])
+        if row is None:
+            raise ValueError("row correction for unknown row %r" % record["id"])
+        if row["raw_status"] != record["raw_status"]:
+            raise ValueError("row correction for %r expects raw status %r, scored %r" % (record["id"], record["raw_status"], row["raw_status"]))
+        if "status" in record:
+            if record["status"] not in CORRECTABLE_STATUS:
+                raise ValueError("row correction for %r: status may only become %s" % (record["id"], CORRECTABLE_STATUS))
+            row.update(status=record["status"], why=record["why"], verification="unverified")
+        if "scope" in record:
+            if record["scope"] not in CORRECTABLE_SCOPE:
+                raise ValueError("row correction for %r: scope may only become %s" % (record["id"], CORRECTABLE_SCOPE))
+            row.update(scope=record["scope"], scope_reason=record["scope_reason"])
+        row["correction"] = {key: record[key] for key in ("category", "evidence", "limits") if key in record}
+
+
 def rescore(doc):
     doc["raw_summary"] = doc["summary"]
     for row in doc["states"]:
         annotate(row, state=True)
     for row in doc["items"]:
         annotate(row)
+    apply_corrections(doc)
     doc["requirements"] = [{
         "id": "toast-system", "kind": "system", "name": "Toast system", "team": "shell", "scope": "in-scope",
         "scope_reason": "One shared toast system plus main-flow observable toasts, not every extracted error string.",

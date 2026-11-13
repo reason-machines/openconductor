@@ -1,0 +1,113 @@
+{
+  "unit": "ACQ-SIDEBAR-RENAME-COMBINING-MARK-271-09",
+  "producer": "Conductor Rebuild",
+  "current_main": "e752f6cdd53cb235762d8392377c3c608b8b8789",
+  "frozen_packet_sha256": "04aa18a3ae10d1f9a207253af06747818b2625a59bef8765b5156381df697e22",
+  "full_reference_assets": [
+    {
+      "name": "renderer",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    {
+      "name": "shared-index",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  ],
+  "reference_REA": {
+    "renderer_parent_REA": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "shared_index_original_upload": "8461d345-2540-4202-9aa5-a90cd17ad479",
+    "limits": "Exact retained renderer/shared-index bytes used, import/export binding verified. No new real-app acquisition or REA engine invocation."
+  },
+  "reference_spans_verified": 19,
+  "source_checks_verified": 42,
+  "import_export_bindings_verified": 4,
+  "current_source_pins": [
+    {
+      "path": "src/App.tsx",
+      "sha256": "3dc27eaa48b07ced25b188ebdef219744220a2008176c23709f08983ed226df6",
+      "frozen_packet_equal": true
+    },
+    {
+      "path": "src/components/Sidebar.tsx",
+      "sha256": "55beddec18a75938f2f31839b84493a8a12f4d928541cb8b67ecc2080a0199b4",
+      "frozen_packet_equal": true
+    },
+    {
+      "path": "src/components/SidebarWorkspaceRow.tsx",
+      "sha256": "a1e8da72a0e928557600ae57ca64c29d2a1d936a3af267b306a0e17f8ce0f36c",
+      "frozen_packet_equal": true
+    },
+    {
+      "path": "src/components/WorkspaceContextMenu.tsx",
+      "sha256": "b6996128b229fb889cb3b2bd206a6ab1b6d9d58d7d373cf6710abab92c4c33ab",
+      "frozen_packet_equal": true
+    },
+    {
+      "path": "src/components/WorkspaceActionsMenu.tsx",
+      "sha256": "f933371c49393f41e3cd123e1276a669649d5e58a12203f2aba4cd99cbde8cd9",
+      "frozen_packet_equal": true
+    },
+    {
+      "path": "src/components/RenameWorkspaceDialog.tsx",
+      "sha256": "41b221285a9ecd3bea6aff29997c37c64af1c9918671ea547ae8732a12159078",
+      "frozen_packet_equal": true
+    },
+    {
+      "path": "src/state/workspaceRename.ts",
+      "sha256": "9c4a5ad85a7566e26a6ed7c59289bf4de07795cb8bdc171ea7c9ed66e42d20b3",
+      "frozen_packet_equal": true
+    },
+    {
+      "path": "src/state/store.ts",
+      "sha256": "6071be71368fa5a141ded7e6de42398ba86900638fe719fd2e44c296545cde96",
+      "frozen_packet_equal": true
+    },
+    {
+      "path": "src/backend.ts",
+      "sha256": "4b13170fcaffce5d828de400369164e2dfdcc3d3aaa818a3860e0a6e826ce237",
+      "frozen_packet_equal": true
+    },
+    {
+      "path": "src/workspace/api.ts",
+      "sha256": "7ffebf424d3a6cd7e6be0086d8e9dd3e14b6c41b23365f6553bbb03f9e521899",
+      "frozen_packet_equal": true
+    },
+    {
+      "path": "src-tauri/src/sidebar_rename_commands.rs",
+      "sha256": "703767fb60d15dcd8519cded33ec4ac5456f43856bf92de98bff4b6374baec75",
+      "frozen_packet_equal": true
+    }
+  ],
+  "reference_validator": {
+    "utf8_half_open": [
+      1036983,
+      1037032
+    ],
+    "sha256": "fe0ea0fd90c4e4d58c55d35d181fab57cb537e3cb3331d64291d70b6a1a7b601",
+    "body": "const YQe=/^[\\p{Letter}\\p{Number}\\p{Mark}_-]+$/u;"
+  },
+  "witness": {
+    "escaped": "q\\u0301",
+    "codepoints": [
+      "U+0071",
+      "U+0301"
+    ],
+    "NFC_unchanged": true,
+    "second_character_category": "Mn"
+  },
+  "classification": "SOURCE_CANDIDATE_HOSTED_RUST_AND_JS_WITNESS_NOT_RUN",
+  "source_inference": "Reference and frontend permit Letter/Number/Mark; backend uses Rust char.is_alphanumeric without an explicit Mark alternative. q + U0301 is a candidate that survives NFC. Python Unicode classification is not used as a substitute for actual JS/Rust execution.",
+  "remaining_proof": [
+    "Exact retained JS QQe/XQe validator and actual frontend plan accept the same input.",
+    "Actual Rust valid_directory_name rejects the same input on clean current main.",
+    "After a minimal validator fix, unchanged witness and ordinary/invalid controls pass."
+  ],
+  "limits": [
+    "Static Python only on Reason cloud.",
+    "No Node/Rust/native/browser/install/dispatch/retry executed.",
+    "No test/product/fixture changes; original source bytes and source-pin packet unchanged.",
+    "No observed original or clone native rename/DB/symlink/branch or visual behavior is claimed."
+  ]
+}

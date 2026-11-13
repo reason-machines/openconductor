@@ -28,6 +28,8 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+import { WebDriver } from "../../tests/e2e/webdriver.mjs";
+import { finishStartup } from "../../tests/e2e/startup.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const app = process.argv[2] && resolve(process.argv[2]);
@@ -52,14 +54,16 @@ writeFileSync(join(project, "README.md"), "e2e\n");
 git("add", ".");
 git("-c", "user.name=e2e", "-c", "user.email=e2e@example.com", "commit", "-q", "-m", "init");
 
-// `reason` on PATH is the fake; the app finds it with find_reason_cli.
+// Explicit chat override: the universal installer still ensures the official CLI.
 const bin = join(home, "bin");
 mkdirSync(bin);
 const fake = join(repoRoot, "tools/reason-acp/fake_reason_acp.py");
 writeFileSync(join(bin, "reason"), `#!/bin/sh\nexec python3 "${fake}" "$@"\n`);
 chmodSync(join(bin, "reason"), 0o755);
 
-const env = { ...process.env, HOME: home, PATH: `${bin}:${process.env.PATH}` };
+const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), PATH: `${bin}:${process.env.PATH}` };
+mkdirSync(env.OPENCONDUCTOR_HOME, { recursive: true });
+writeFileSync(join(env.OPENCONDUCTOR_HOME, "settings.toml"), `reason_executable_path = ${JSON.stringify(join(bin, "reason"))}\n`);
 delete env.REASON_CLI;
 // The app data folder (conductor.db, worktrees) must be under the fresh HOME too.
 delete env.XDG_DATA_HOME;
@@ -68,6 +72,7 @@ const driverExited = new Promise((r) => driver.on("exit", r));
 
 const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 const base = "http://127.0.0.1:4444";
+const startup = new WebDriver(base);
 let sessionUrl = null;
 
 async function wd(method, path, body) {
@@ -147,6 +152,7 @@ try {
     capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application: app } } },
   });
   sessionUrl = `${base}/session/${session.sessionId}`;
+  startup.sessionId = session.sessionId;
   // Conductor's reference screenshots are 1440x900; not every driver can resize.
   await wd("POST", "/window/rect", { width: 1440, height: 900 }).then(
     () => pass("window set to 1440x900"),
@@ -170,6 +176,7 @@ try {
   const workspace = seeded.workspace;
   const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
   await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+  await finishStartup(startup);
   await waitFor("the workspace chat composer", () => run("return !!document.querySelector('.composer [contenteditable=true]');"));
   pass("the workspace chat is open");
 

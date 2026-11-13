@@ -1,0 +1,364 @@
+TAP version 13
+# Subtest: comment IME native blocks metaKey Enter
+not ok 1 - comment IME native blocks metaKey Enter
+  ---
+  duration_ms: 11.872788
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:87:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    IME must not submit the comment
+    + actual - expected
+    
+    + [
+    +   '未確定の入力'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: '未確定の入力'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:93:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: comment IME lifecycle blocks metaKey Enter
+not ok 2 - comment IME lifecycle blocks metaKey Enter
+  ---
+  duration_ms: 2.274826
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:87:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    IME must not submit the comment
+    + actual - expected
+    
+    + [
+    +   '未確定の入力'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: '未確定の入力'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:93:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: comment IME keyCode blocks metaKey Enter
+not ok 3 - comment IME keyCode blocks metaKey Enter
+  ---
+  duration_ms: 1.802419
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:87:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    IME must not submit the comment
+    + actual - expected
+    
+    + [
+    +   '未確定の入力'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: '未確定の入力'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:93:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: comment IME which blocks metaKey Enter
+not ok 4 - comment IME which blocks metaKey Enter
+  ---
+  duration_ms: 1.399245
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:87:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    IME must not submit the comment
+    + actual - expected
+    
+    + [
+    +   '未確定の入力'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: '未確定の入力'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:93:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: comment non-IME metaKey Enter saves exact text once
+ok 5 - comment non-IME metaKey Enter saves exact text once
+  ---
+  duration_ms: 1.845824
+  type: 'test'
+  ...
+# Subtest: comment IME native blocks ctrlKey Enter
+not ok 6 - comment IME native blocks ctrlKey Enter
+  ---
+  duration_ms: 1.30775
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:87:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    IME must not submit the comment
+    + actual - expected
+    
+    + [
+    +   '未確定の入力'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: '未確定の入力'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:93:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: comment IME lifecycle blocks ctrlKey Enter
+not ok 7 - comment IME lifecycle blocks ctrlKey Enter
+  ---
+  duration_ms: 1.170447
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:87:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    IME must not submit the comment
+    + actual - expected
+    
+    + [
+    +   '未確定の入力'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: '未確定の入力'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:93:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: comment IME keyCode blocks ctrlKey Enter
+not ok 8 - comment IME keyCode blocks ctrlKey Enter
+  ---
+  duration_ms: 1.240501
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:87:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    IME must not submit the comment
+    + actual - expected
+    
+    + [
+    +   '未確定の入力'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: '未確定の入力'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:93:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: comment IME which blocks ctrlKey Enter
+not ok 9 - comment IME which blocks ctrlKey Enter
+  ---
+  duration_ms: 1.629234
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:87:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    IME must not submit the comment
+    + actual - expected
+    
+    + [
+    +   '未確定の入力'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: '未確定の入力'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:93:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: comment non-IME ctrlKey Enter saves exact text once
+ok 10 - comment non-IME ctrlKey Enter saves exact text once
+  ---
+  duration_ms: 1.215053
+  type: 'test'
+  ...
+# Subtest: comment IME native blocks Escape cancellation
+not ok 11 - comment IME native blocks Escape cancellation
+  ---
+  duration_ms: 1.213701
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:111:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    IME must not cancel the comment
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:115:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: comment IME lifecycle blocks Escape cancellation
+not ok 12 - comment IME lifecycle blocks Escape cancellation
+  ---
+  duration_ms: 0.974438
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:111:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    IME must not cancel the comment
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:115:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: comment IME legacy blocks Escape cancellation
+not ok 13 - comment IME legacy blocks Escape cancellation
+  ---
+  duration_ms: 0.903073
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:111:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    IME must not cancel the comment
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/diff/commentImeSubmit.test.ts:115:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: comment composition end and blur restore normal shortcuts
+ok 14 - comment composition end and blur restore normal shortcuts
+  ---
+  duration_ms: 1.658748
+  type: 'test'
+  ...
+# Subtest: comment blank submit remains disabled after composition
+ok 15 - comment blank submit remains disabled after composition
+  ---
+  duration_ms: 1.09107
+  type: 'test'
+  ...
+# Subtest: comment non-IME Escape still confirms dirty cancellation
+ok 16 - comment non-IME Escape still confirms dirty cancellation
+  ---
+  duration_ms: 1.530008
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 5
+# fail 11
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 441.851142

@@ -13,7 +13,7 @@ use super::api::{self, CreatePrPrompt, LookupRequest, LookupResult};
 use super::gh::{MergeMethod, MergeMethodCache};
 use super::git_state::{read_git_state, GitState};
 use super::header::{header_state, HeaderInputs, HeaderState};
-use super::list::{OpenIssue, OpenPr};
+use super::list::{IssueLinkMetadata, OpenIssue, OpenPr};
 use super::prompt::{
     commit_and_push_prompt, create_pr_prompt, find_pr_template, pull_rebase_enabled,
     resolve_merge_conflicts_prompt, ResolveConflictsRequest,
@@ -53,6 +53,15 @@ pub async fn pr_list_open(repo_path: String) -> Result<Vec<OpenPr>, String> {
 #[tauri::command]
 pub async fn gh_issue_list_open(repo_path: String) -> Result<Vec<OpenIssue>, String> {
     blocking(move || api::list_open_issues(&api::gh_in(&repo_path))).await
+}
+
+/// Authoritative formatter metadata for one selected local-repository GitHub issue.
+#[tauri::command]
+pub async fn gh_issue_link_metadata(
+    repo_path: String,
+    number: u64,
+) -> Result<IssueLinkMetadata, String> {
+    blocking(move || api::issue_link_metadata(&api::gh_in(&repo_path), number)).await
 }
 
 /// Local git state of a workspace checkout, compared with `target_branch`.

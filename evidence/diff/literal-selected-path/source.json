@@ -1,0 +1,77 @@
+{
+  "unit": "DIFF-LITERAL-SELECTED-PATH-DE6",
+  "main": "26f8345401efb021bef2f12b17815eba6c57170c",
+  "source_kind": "retained REA-extracted Conductor 0.87.6 bytes, read as data only",
+  "rea_artifact_evidence_id": "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+  "rea_gap": "Original renderer semantic analysis exhausted its worker heap; retained byte spans are used without executing reference code.",
+  "index": {
+    "bytes": 3493297,
+    "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "spans": [
+    {
+      "name": "Dje",
+      "utf8_half_open": [
+        745066,
+        745267
+      ],
+      "sha256": "88392ed84f6b23e1e2cc94395cbdca46cf6a4ceb6ef8c57a1d6912ef2b181955",
+      "literal": "function Dje({escape:t,filePath:e,fromRef:s,toRef:n,whitespaceArgs:r}){const i=[s,n].filter(a=>a!==void 0).map(t).join(\" \"),o=t(`:(literal)${e}`);return`diff --no-ext-diff --no-color${r} ${i} -- ${o}`}"
+    },
+    {
+      "name": "Fje",
+      "utf8_half_open": [
+        743037,
+        745066
+      ],
+      "sha256": "d438301fe44fa78e1552413b7168c4c51c6dca5fef38ed471fc36bc7a0a92d1e",
+      "literal": "class Fje{constructor(e,s){this.service=e,this.getWorkspaceOrThrow=s}getCommitFileChanges=async({localWorkspaceId:e,commitHash:s})=>{const n=await this.getWorkspaceOrThrow(e);return await Lje({service:this.service,workspace:n,commitHash:s})};getHeadCommit=async({localWorkspaceId:e})=>{const s=await this.getWorkspaceOrThrow(e);return await Nje({service:this.service,workspace:s})};readFileAtRevision=async({localWorkspaceId:e,ref:s,filePath:n})=>{const r=await this.getWorkspaceOrThrow(e),i=this.service.dependencies.shell.shellEscape(`${s}:${n}`),o=await this.service.dependencies.shell.executeGit({cwd:r.workspacePath,host:r.workspaceHost,gitArgs:`show ${i}`});return o.code===0?{status:\"found\",content:o.stdout}:o.code===128?{status:\"missing\"}:{status:\"error\",code:o.code,stderr:o.stderr}};getChangedLineCount=async({localWorkspaceId:e,filePath:s,oldPath:n,fromRef:r,toRef:i})=>{const o=await this.getWorkspaceOrThrow(e),a=this.service.dependencies.shell.shellEscape,c=[r,i].filter(h=>h!==void 0).map(a).join(\" \"),l=[n,s].filter(h=>h!==void 0).map(h=>a(`:(literal)${h}`)).join(\" \"),u=await this.service.dependencies.shell.executeGit({cwd:o.workspacePath,host:o.workspaceHost,gitArgs:`diff --numstat ${c} -- ${l}`});if(u.code!==0)return;let d;for(const h of u.stdout.trim().split(`\n`)){if(!h)continue;const[p,m]=h.split(\"\t\"),v=Number.parseInt(p,10)+Number.parseInt(m,10);if(Number.isNaN(v))return;d=(d??0)+v}return d};getFileDiffPatch=async({localWorkspaceId:e,filePath:s,fileStatus:n,fromRef:r,toRef:i,hideWhitespaceChanges:o})=>{const a=await this.getWorkspaceOrThrow(e),c=this.service.dependencies.shell.shellEscape,l=o?\" --ignore-all-space\":\"\",u=n===\"untracked\"?`diff --no-ext-diff --no-color${l} --no-index -- /dev/null ${c(s)}`:Dje({escape:c,filePath:s,fromRef:r,toRef:i,whitespaceArgs:l}),d=await this.service.dependencies.shell.executeGit({cwd:a.workspacePath,host:a.workspaceHost,gitArgs:u});return d.code===0||n===\"untracked\"&&d.code===1?{status:\"found\",patch:d.stdout}:{status:\"error\",code:d.code,stderr:d.stderr}}}"
+    }
+  ],
+  "baseline_inputs": [
+    {
+      "commit": "26f8345401efb021bef2f12b17815eba6c57170c",
+      "path": "src-tauri/src/diff/git.rs",
+      "sha256": "27ece70af49dec5d47055d56f1140d03043669db11993763d3559c024af4f0fa",
+      "bytes": 22507
+    },
+    {
+      "commit": "26f8345401efb021bef2f12b17815eba6c57170c",
+      "path": "src-tauri/src/diff/git_tests.rs",
+      "sha256": "84a5bcf8061d4585783dbc16bbc19cafbb60fa17b9a00fe0161689ae772dfd8f",
+      "bytes": 24924
+    },
+    {
+      "commit": "26f8345401efb021bef2f12b17815eba6c57170c",
+      "path": "src-tauri/src/diff/commands.rs",
+      "sha256": "45077d028f5cead68779111b9f7828f698c06ad5a7ab3dcf564d2784db3d09f3",
+      "bytes": 2611
+    },
+    {
+      "commit": "26f8345401efb021bef2f12b17815eba6c57170c",
+      "path": "src/features/diff/api.ts",
+      "sha256": "abbc4950ec46258c7cd76c447ce63f5a923b80a9d9313e6c13c2e4a6d02e5c7a",
+      "bytes": 6498
+    },
+    {
+      "commit": "26f8345401efb021bef2f12b17815eba6c57170c",
+      "path": "src/features/diff/useWorkspaceDiff.ts",
+      "sha256": "bcc3188b15702b9e43fae6f8ad2f6681c262aca0b08c6e4e8b06fc6d1437c00f",
+      "bytes": 13761
+    }
+  ],
+  "contract": "A selected filename is literal, not a Git pathspec expression. Dje prefixes tracked patch pathspecs with :(literal). Fje uses an escaped raw filename only for the --no-index filename operand.",
+  "current_gap": "The selected path is appended raw in tracked diff_files, untracked ls-files, turn_diff and revision_diff. A question-mark or bracket filename can include or replace a matching sibling.",
+  "scope": [
+    "src-tauri/src/diff/git.rs selected pathspec sites",
+    "src-tauri/src/diff/literal_path_tests.rs",
+    "src-tauri/src/diff/git_tests.rs test registration only",
+    "evidence/diff/literal-selected-path"
+  ],
+  "limits": [
+    "Static reference contract, not observed Conductor UI",
+    "No native or built-app runtime",
+    "No new rename, path traversal, directory selection, invalid-byte or performance acceptance",
+    "Capacity, deduplication and refresh scheduling remain untouched"
+  ]
+}

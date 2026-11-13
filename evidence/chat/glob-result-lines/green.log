@@ -1,0 +1,184 @@
+(node:53) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:60) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Glob projected block lines: padded
+ok 1 - Glob projected block lines: padded
+  ---
+  duration_ms: 161.775281
+  type: 'test'
+  ...
+# Subtest: Glob projected block lines: interior-blanks
+ok 2 - Glob projected block lines: interior-blanks
+  ---
+  duration_ms: 28.624681
+  type: 'test'
+  ...
+# Subtest: Glob projected block lines: crlf-tabs
+ok 3 - Glob projected block lines: crlf-tabs
+  ---
+  duration_ms: 26.658101
+  type: 'test'
+  ...
+# Subtest: Glob projected block lines: spaces-preserved
+ok 4 - Glob projected block lines: spaces-preserved
+  ---
+  duration_ms: 29.484623
+  type: 'test'
+  ...
+# Subtest: Glob projected block lines: order-duplicates
+ok 5 - Glob projected block lines: order-duplicates
+  ---
+  duration_ms: 17.177582
+  type: 'test'
+  ...
+# Subtest: Glob projected block lines: whitespace-only
+ok 6 - Glob projected block lines: whitespace-only
+  ---
+  duration_ms: 3.242212
+  type: 'test'
+  ...
+# Subtest: Glob projected block lines: internal-tabs
+ok 7 - Glob projected block lines: internal-tabs
+  ---
+  duration_ms: 22.607347
+  type: 'test'
+  ...
+# Subtest: Glob projected block lines: literal-markup
+ok 8 - Glob projected block lines: literal-markup
+  ---
+  duration_ms: 2.554628
+  type: 'test'
+  ...
+# Subtest: Glob no successful body control: empty
+ok 9 - Glob no successful body control: empty
+  ---
+  duration_ms: 26.197044
+  type: 'test'
+  ...
+# Subtest: Glob no successful body control: pending
+ok 10 - Glob no successful body control: pending
+  ---
+  duration_ms: 10.9398
+  type: 'test'
+  ...
+# Subtest: Glob no successful body control: error
+ok 11 - Glob no successful body control: error
+  ---
+  duration_ms: 1.790132
+  type: 'test'
+  ...
+# Subtest: Non-Glob raw result control: ls-raw
+ok 12 - Non-Glob raw result control: ls-raw
+  ---
+  duration_ms: 27.125064
+  type: 'test'
+  ...
+# Subtest: Non-Glob raw result control: grep-raw
+ok 13 - Non-Glob raw result control: grep-raw
+  ---
+  duration_ms: 2.494307
+  type: 'test'
+  ...
+# (node:68) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Grep resource label: inside-workspace-deep-absolute
+ok 14 - Grep resource label: inside-workspace-deep-absolute
+  ---
+  duration_ms: 1921.44249
+  type: 'test'
+  ...
+# Subtest: Grep resource label: outside-workspace-deep-absolute
+ok 15 - Grep resource label: outside-workspace-deep-absolute
+  ---
+  duration_ms: 906.438596
+  type: 'test'
+  ...
+# Subtest: Grep resource label: deep-relative
+ok 16 - Grep resource label: deep-relative
+  ---
+  duration_ms: 678.028025
+  type: 'test'
+  ...
+# Subtest: Grep resource label: short-relative-control
+ok 17 - Grep resource label: short-relative-control
+  ---
+  duration_ms: 839.711893
+  type: 'test'
+  ...
+# Subtest: Grep resource label: pathless-control
+ok 18 - Grep resource label: pathless-control
+  ---
+  duration_ms: 645.997325
+  type: 'test'
+  ...
+# Subtest: Grep resource label: ordinary-read-control
+ok 19 - Grep resource label: ordinary-read-control
+  ---
+  duration_ms: 691.121651
+  type: 'test'
+  ...
+# Subtest: Grep resource label: root-slash
+ok 20 - Grep resource label: root-slash
+  ---
+  duration_ms: 576.298139
+  type: 'test'
+  ...
+# Subtest: Grep resource label: leading-slash-pair
+ok 21 - Grep resource label: leading-slash-pair
+  ---
+  duration_ms: 456.45664
+  type: 'test'
+  ...
+# Subtest: Grep resource label: workspace-trailing-slash
+ok 22 - Grep resource label: workspace-trailing-slash
+  ---
+  duration_ms: 589.282309
+  type: 'test'
+  ...
+# Subtest: Grep resource label: deep-trailing-slash
+ok 23 - Grep resource label: deep-trailing-slash
+  ---
+  duration_ms: 275.695195
+  type: 'test'
+  ...
+# Subtest: Grep resource label: repeated-empty-segment
+ok 24 - Grep resource label: repeated-empty-segment
+  ---
+  duration_ms: 238.735293
+  type: 'test'
+  ...
+# Subtest: Grep resource label: double-trailing-slash
+ok 25 - Grep resource label: double-trailing-slash
+  ---
+  duration_ms: 361.173272
+  type: 'test'
+  ...
+# Subtest: Grep resource label: unicode-segments
+ok 26 - Grep resource label: unicode-segments
+  ---
+  duration_ms: 293.041629
+  type: 'test'
+  ...
+# Subtest: Grep resource label: dot-relative-segments
+ok 27 - Grep resource label: dot-relative-segments
+  ---
+  duration_ms: 400.242777
+  type: 'test'
+  ...
+# Subtest: Grep resource label: backslashes-unchanged
+ok 28 - Grep resource label: backslashes-unchanged
+  ---
+  duration_ms: 524.329552
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19679.376887

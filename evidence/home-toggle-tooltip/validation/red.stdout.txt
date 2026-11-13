@@ -1,0 +1,208 @@
+TAP version 13
+# (node:116) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home sidebar toggle retains its default hint and click action
+not ok 1 - Home sidebar toggle retains its default hint and click action
+  ---
+  duration_ms: 148.158085
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:165:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    hover must render the app tooltip
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    Object.tooltipText (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:130:14)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:169:23)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: mounted Home sidebar hint follows persisted primary and additional shortcuts after hydration
+not ok 2 - mounted Home sidebar hint follows persisted primary and additional shortcuts after hydration
+  ---
+  duration_ms: 54.290495
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:179:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    hover must render the app tooltip
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    Object.tooltipText (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:130:14)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:183:23)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: mounted Home sidebar hint follows live provider changes and reset without parent rerender
+not ok 3 - mounted Home sidebar hint follows live provider changes and reset without parent rerender
+  ---
+  duration_ms: 56.890253
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:189:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    hover must render the app tooltip
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    Object.tooltipText (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:130:14)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:195:23)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Home sidebar hint replaces defaults with a single saved shortcut
+not ok 4 - Home sidebar hint replaces defaults with a single saved shortcut
+  ---
+  duration_ms: 55.544915
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:203:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    hover must render the app tooltip
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    Object.tooltipText (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:130:14)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:208:23)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Home sidebar hint keeps defaults when the persisted setting is malformed
+not ok 5 - Home sidebar hint keeps defaults when the persisted setting is malformed
+  ---
+  duration_ms: 43.352266
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:212:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    hover must render the app tooltip
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    Object.tooltipText (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:130:14)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:217:23)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Home omits the toggle while the sidebar is visible, including after hydration
+ok 6 - Home omits the toggle while the sidebar is visible, including after hydration
+  ---
+  duration_ms: 37.206
+  type: 'test'
+  ...
+# Subtest: Home sidebar toggle has no competing native title
+not ok 7 - Home sidebar toggle has no competing native title
+  ---
+  duration_ms: 32.919027
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:231:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Toggle left sidebar (⌘B or [)'
+    - undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual: 'Toggle left sidebar (⌘B or [)'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:234:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Home sidebar tooltip dismisses on pointer leave
+not ok 8 - Home sidebar tooltip dismisses on pointer leave
+  ---
+  duration_ms: 35.19727
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:239:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    hover must render the app tooltip
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    Object.tooltipText (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:130:14)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:243:23)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Home sidebar tooltip does not open for touch
+ok 9 - Home sidebar tooltip does not open for touch
+  ---
+  duration_ms: 40.990332
+  type: 'test'
+  ...
+# Subtest: Home sidebar tooltip dismisses on Escape
+not ok 10 - Home sidebar tooltip dismisses on Escape
+  ---
+  duration_ms: 24.129583
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:257:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    hover must render the app tooltip
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    Object.tooltipText (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:130:14)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeSidebarHint.test.ts:261:23)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 2
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1264.916699

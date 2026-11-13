@@ -1,0 +1,70 @@
+{
+  "owner": "Conductor Rebuild",
+  "stage": "SOURCE_AND_TEST_PREPARATION_ONLY_NO_PRODUCT_EDITS_OR_RUNTIME",
+  "main_checked": "d745c5259712b49f90ab47ecb2bad674a66c3c89",
+  "source_evidence": {
+    "helper_sha256": "f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab",
+    "codex_page_span": [3659572, 3659963],
+    "tool_schema_spans": [[1731031, 1731247], [3659343, 3659570]],
+    "request_method": "mcpServerStatus/list",
+    "first_params": {},
+    "following_params": {"cursor": "example-cursor"},
+    "terminal_cursor": [null, ""],
+    "example_warning": "All examples and stand-in replies in this preparation are synthetic schema fixtures, not observed provider responses."
+  },
+  "design": {
+    "selected": "One pending status batch owned by the existing Codex worker, returned as a correlated invoke result.",
+    "alternative_rejected": "A generic session response multiplexer duplicates existing buffering and expands transport ownership. Existing call and interrupt already preserve nonmatching replies for next_event.",
+    "caller": "codex_mcp_status(chat_id) obtains an existing runner, enqueues a query, drops its temporary Arc and waits with an absolute deadline.",
+    "worker_state": "Idle or Pending { current_request_id, accumulated_rows, seen_cursors, deadline, result_sender }, scoped to exactly one live process.",
+    "query_errors": ["no live transport", "query already pending", "transport closed", "deadline expired", "RPC rejected", "malformed response", "repeated cursor"],
+    "lifecycle": "Fail and remove Pending on close, shutdown, session replacement, write failure and interrupt Closed/Io. Late replies do not satisfy a new process or request.",
+    "deadline": "Timestamp before command enqueue; one deadline across waiting, pagination and receiver delivery. Recheck Instant after receiver returns, even for an already queued success at zero remaining timeout. Never emit expired rows even if a blocking existing operation buffered them earlier.",
+    "frontend": "A result-driven local dialog with idle/loading/success/error state and request-generation invalidation on close/chat/provider change. Only Codex is enabled in this unit. No rows derived from configuration, tools executed in a turn, Reason org connections or simulated status.",
+    "excluded": ["Claude startup and initialization", "metadata or no-session client creation", "persistent indicator polling", "Reason cloud MCP", "provider credential handoff", "native/provider/E2E execution"]
+  },
+  "strict_decoding": {
+    "required_page_fields": ["data", "nextCursor"],
+    "required_row_fields": ["name", "tools", "authStatus", "serverInfo"],
+    "required_nullable": ["nextCursor", "serverInfo"],
+    "auth_status": ["unsupported", "notLoggedIn", "bearerToken", "oAuth", "unknown"],
+    "tool_optional_nonnullable": ["description", "annotations"],
+    "annotation_optional_booleans": ["readOnly", "destructive", "openWorld"],
+    "tool_null_is_invalid": true,
+    "normalization": "connected iff serverInfo is non-null or at least one actual tool exists; otherwise needs-auth iff notLoggedIn, else failed. Emit name, status, tools; do not forward serverInfo."
+  },
+  "fixture_review": {
+    "status": "SOURCE_REVIEW_ONLY_NOT_EXECUTED",
+    "bootstrap": "hold-until-turn completes the first turn before awaiting another start; otherwise the runner would keep the next prompt queued forever.",
+    "deadline_proof": "buffered-expired emits the status reply during interrupt and delays its own interrupt response across the deadline. A separate direct receiver test must prove rejection of an already-queued result after deadline; the subprocess alone cannot prove receiver delivery semantics.",
+    "lifecycle_proof": "close, interrupt-close and broken-stdin are distinct subprocess fixtures. Runner shutdown/replacement/session-drop and approval/consent/default-answer write-failure assertions must also target the actual production paths, not merely use stdout closure as their proxy.",
+    "fixture_scope": "The script validates MCP request IDs/params, resets its expected cursor after intentionally malformed/repeated pages so retries start a fresh batch, rejects premature interrupts before a delayed turn/started notification, and provides schema variants and consent/approval requests. It is preparation, not a complete regression test suite. All scenarios still require actual assertions and RED/GREEN execution."
+  },
+  "planned_behavior_cases": [
+    {"id": 1, "case": "An unstarted/closed chat query fails without launching a process or emitting a user turn."},
+    {"id": 2, "case": "The first real query writes mcpServerStatus/list with empty params and a unique shared request ID."},
+    {"id": 3, "case": "All pages are accumulated; only nonterminal cursors are sent, and null or empty string stops pagination."},
+    {"id": 4, "case": "Valid empty data yields an empty successful result, never a fabricated server."},
+    {"id": 5, "case": "Non-null server information or an actual tool marks connected; empty notLoggedIn marks needs-auth; all other empty auth states mark failed."},
+    {"id": 6, "case": "Optional tool description and readOnly/destructive/openWorld annotations survive normalization; null optional values are rejected."},
+    {"id": 7, "case": "Missing required-nullable fields, null tool values, unknown auth states and malformed rows/pages reject the query."},
+    {"id": 8, "case": "An RPC error is returned as a query error, not a failed server row or TurnEnded."},
+    {"id": 9, "case": "A wrong response ID cannot complete a pending query; a matching success or error can."},
+    {"id": 10, "case": "A second overlapping query is bounded/rejected without corrupting the first batch."},
+    {"id": 11, "case": "A status response arriving during an existing start_turn call is preserved and resolved afterward; turn notifications remain ordered."},
+    {"id": 12, "case": "A status response arriving during interrupt is preserved; Stop and permission/consent replies continue through the normal owner."},
+    {"id": 13, "case": "Queue delay, pagination delay, a late buffered response and an already-queued result received after deadline cannot produce success; repeated cursors reject. Recheck deadline after receiver delivery."},
+    {"id": 14, "case": "Process close, shutdown, replacement, write failure and interrupt Closed/Io fail pending status; restart cannot adopt old replies."},
+    {"id": 15, "case": "The actual Composer action deletes only a validated unshadowed MCP slash range, opens a result-driven Codex dialog and ignores stale completions; collisions, suffixes, attachments and IME/range guards remain unchanged."}
+  ],
+  "planned_commands_not_run": [
+    "tools/agent/run-rust-tests.sh mcp_status",
+    "tools/agent/run-rust-tests.sh codex_session",
+    "tools/agent/run-rust-tests.sh codex_runner",
+    "node --test --test-concurrency=1 <new frozen local MCP UI regression and existing composer controls>",
+    "npm run typecheck",
+    "npm run build",
+    "git diff --check"
+  ],
+  "verification": "Preparation only. No test result, provider compatibility, visual parity, status-query execution or installed deployment is asserted. Exact test names/commands must be reconciled to the implemented public API before RED/GREEN execution in the existing queue."
+}

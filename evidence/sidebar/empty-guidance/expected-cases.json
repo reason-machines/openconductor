@@ -1,0 +1,94 @@
+{
+  "scope": "Local organization only; zero visible/shared workspaces. No original code execution. Source-inferred expected cases, NOT an executed regression.",
+  "cases": [
+    {
+      "id": "empty-repo-expanded",
+      "repos": [],
+      "groupBy": "repo",
+      "mainCollapsed": false,
+      "referenceMessage": true,
+      "currentSourceMessage": true
+    },
+    {
+      "id": "empty-repo-collapsed",
+      "repos": [],
+      "groupBy": "repo",
+      "mainCollapsed": true,
+      "referenceMessage": true,
+      "currentSourceMessage": false
+    },
+    {
+      "id": "empty-status-expanded",
+      "repos": [],
+      "groupBy": "status",
+      "mainCollapsed": false,
+      "referenceMessage": true,
+      "currentSourceMessage": true
+    },
+    {
+      "id": "empty-status-collapsed",
+      "repos": [],
+      "groupBy": "status",
+      "mainCollapsed": true,
+      "referenceMessage": true,
+      "currentSourceMessage": false
+    },
+    {
+      "id": "one-linked-empty-repo-expanded",
+      "repos": [
+        {
+          "id": "r1",
+          "hidden": false,
+          "workspaces": []
+        }
+      ],
+      "groupBy": "repo",
+      "mainCollapsed": false,
+      "referenceMessage": false,
+      "currentSourceMessage": false
+    },
+    {
+      "id": "one-linked-empty-repo-collapsed",
+      "repos": [
+        {
+          "id": "r1",
+          "hidden": false,
+          "workspaces": []
+        }
+      ],
+      "groupBy": "repo",
+      "mainCollapsed": true,
+      "referenceMessage": false,
+      "currentSourceMessage": false
+    },
+    {
+      "id": "hidden-only-repo",
+      "repos": [
+        {
+          "id": "r1",
+          "hidden": true,
+          "workspaces": []
+        }
+      ],
+      "groupBy": "repo",
+      "mainCollapsed": false,
+      "referenceMessage": false,
+      "currentSourceMessage": false
+    },
+    {
+      "id": "nonmatching-filter-nonempty-repos",
+      "repos": [
+        {
+          "id": "r1",
+          "hidden": false,
+          "workspaces": []
+        }
+      ],
+      "filter": "r2",
+      "groupBy": "repo",
+      "mainCollapsed": false,
+      "referenceMessage": false,
+      "currentSourceMessage": false
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+async function ano(t){await Gyr(`Open this terminal link?
+
+${t}`,{cancelLabel:"Cancel",kind:"warning",okLabel:"Open",title:"Open link?"})&&await vs(t)}

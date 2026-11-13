@@ -17,6 +17,10 @@ The nine `main_screens` verdicts separate retained state evidence from final nat
 
 The ledger owner records merged area evidence in [supplemental-evidence.json](../../parity/ui-program/supplemental-evidence.json). Each record names the PR, merge commit, area, capture lane, evidence source and limits. `source_main_commit` is the reconciled main revision, not an app capture identity. Regeneration copies these records into the reports and links them to the nine main-screen verdicts. It does not replace whole-state scores, add rows to the denominator or promote native final review. Unmerged area reports stay with their owners until the next merged batch.
 
+## Row corrections
+
+[row-corrections.json](../../parity/ui-map/row-corrections.json) corrects scorer results the retained captures do not support, without recapturing. A correction can only withdraw a raw gap to `unverified` (for example, the "copy not shown in any OpenConductor capture" rule firing on a capture of another tab or a signed-out state) or scope a row out as `not-required` for a recorded removal decision. It never promotes a row to `matches`, keeps `raw_status` / `raw_why`, and must name the raw status it expects, so a recapture that changes the row fails the build until the correction is revisited. The map lists every correction with its evidence and limits.
+
 ## Regenerate (one command)
 
 ```bash
@@ -29,7 +33,7 @@ It stops before doing work when `rea`, `tauri-driver`, `xvfb-run`, Chromium, Pil
 
 On a Linux host without `libwebkit2gtk-4.1-dev` (Reason cloud computers), point `SYSROOT` (default `~/sysroot`) at a sysroot with the webkit2gtk-4.1 packages and an `env.sh` that exports the `PKG_CONFIG_*`, `LIBRARY_PATH` and `RUSTFLAGS` for it. The script sources `env.sh` for the build and runs the lane in `bwrap` with `/usr/lib/x86_64-linux-gnu` overlaid by the system's libraries plus only what the sysroot adds, webkit/javascriptcore and the sysroot's `dri` drivers (WebKit finds its helper processes at that compiled-in path; overlaying the whole sysroot fails with `EGL_BAD_PARAMETER`), with `__EGL_VENDOR_LIBRARY_DIRS`/`LIBGL_DRIVERS_PATH` set to match and `$SYSROOT/root/usr/bin` (WebKitWebDriver) on PATH.
 
-Only `parity/ui-map.md`, `parity/ui-map.json` and `parity/ui-map/{inventory,compare,oc-captures,ref-captures,side-by-side}.json` plus `diff/*.jpg` are tracked; `ref/` and `oc/` PNGs stay local.
+Only `parity/ui-map.md`, `parity/ui-map.json` and `parity/ui-map/{inventory,compare,oc-captures,ref-captures,side-by-side,row-corrections}.json` plus `diff/*.jpg` are tracked; `ref/` and `oc/` PNGs stay local.
 
 ## Steps
 

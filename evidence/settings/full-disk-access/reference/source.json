@@ -1,0 +1,126 @@
+{
+  "producer": "Conductor Rebuild",
+  "checked_main": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "reference": "Conductor 0.87.6 real shipped assets retained from the existing REA extraction on Sven m5 max. Static text only, never evaluated.",
+  "assets": {
+    "renderer": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "reference_spans": [
+    {
+      "path": "reference/url-and-poll-interval.txt",
+      "bytes": 93,
+      "sha256": "d293472068eb1d7d9d7eb7bb0303d05cb6e59490428cb392cce2789796029044",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10707086,
+        10707179
+      ]
+    },
+    {
+      "path": "reference/status-query.txt",
+      "bytes": 235,
+      "sha256": "c0d2f15bcbaa6266801f6f5122fd7c58a0a9712d23044ab5f8cb9e6125362bfa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10707179,
+        10707414
+      ]
+    },
+    {
+      "path": "reference/query-hook.txt",
+      "bytes": 183,
+      "sha256": "8d9d650b44028b1c9998beb146130398c639e83874a36cb30338d4247e01a36a",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10707414,
+        10707597
+      ]
+    },
+    {
+      "path": "reference/poll-and-open.txt",
+      "bytes": 83,
+      "sha256": "c3e59c5acce71d63a61d3f76601e86da97fb1745514d8916de5f09dc78e35b2f",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10707597,
+        10707680
+      ]
+    },
+    {
+      "path": "reference/full-disk-row.txt",
+      "bytes": 640,
+      "sha256": "f9693b30620a8fd0663fb02f9e5e6e42f883e68a4eb2acda8282aac7c86e98eb",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10712836,
+        10713476
+      ]
+    },
+    {
+      "path": "reference/zoom-producer.txt",
+      "bytes": 258,
+      "sha256": "40a7ac381360f92c83ce3c8e258417f2fbe62de883122f9978a68c7a63260ad5",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10208213,
+        10208471
+      ]
+    }
+  ],
+  "current_snapshots": [
+    {
+      "path": "current/src__settings__GeneralPage.tsx",
+      "bytes": 9223,
+      "sha256": "21babc4221ce2a05b15205ff06929a91dd30d5a4724474b3058b0f1b4058fded",
+      "repository_path": "src/settings/GeneralPage.tsx"
+    },
+    {
+      "path": "current/src__settings__appearance.ts",
+      "bytes": 4959,
+      "sha256": "6aaae12dcdd99d9772b797beb5bba13dd3a2a751fa5c60a73e72e3e5b77e9251",
+      "repository_path": "src/settings/appearance.ts"
+    },
+    {
+      "path": "current/src__backend.ts",
+      "bytes": 12543,
+      "sha256": "51c24abd1f9b0487ad8e7b9aa0740845b80ce4c3bd3666456ce775ea65cce022",
+      "repository_path": "src/backend.ts"
+    }
+  ],
+  "source_observable": {
+    "input": "General Settings with fullDiskAccessStatus query resolved to true",
+    "reference": "The full-disk-access row renders Granted, next to Open System Settings.",
+    "current": "GeneralPage renders only Open System Settings; no status query or Granted branch.",
+    "qualification": "SOURCE_PRESENTATION_GAP only. Native query implementation and truthful OS status are not established."
+  },
+  "secondary_bounded_comparison": {
+    "app_zoom": "qBi, GBi and xZn agree with current zoomPercent, ZOOM_PERCENTS and zoomStep. Rejected as a defect; this is not runtime parity proof."
+  },
+  "fixture": {
+    "path": "fixture.json",
+    "bytes": 1010,
+    "sha256": "1480a537fd6b946ba99b5e3a0e30a9f7ccee94cd619d78095c4897390f6e68af"
+  },
+  "fixture_status": "PREPARED_NOT_EXECUTED; expected behavior from retained renderer source, not a native status observation",
+  "missing_reference": [
+    "Native definition and return contract of check_full_disk_access, including how the real app determines true/false on macOS and handles unsupported platforms.",
+    "A matching existing OpenConductor safe status query boundary or an owned, source-proven implementation. None named in tracked src/src-tauri at checked_main."
+  ],
+  "ownership": "Ledger reconciliation requested; no product lease claimed and no product writes.",
+  "rea_limits": [
+    "Earlier renderer semantic-analysis heap exhaustion remains historical. This pass used retained bytes only.",
+    "No native or fresh runtime REA capture."
+  ],
+  "checks": {
+    "asset_hashes": "PASS",
+    "six_reference_spans": "PASS",
+    "fresh_main_snapshots": "PASS",
+    "source_reachability_assertions": "PASS",
+    "mounted_RED_GREEN": "NOT_RUN",
+    "native_permission": "NOT_RUN",
+    "visual_parity": "NOT_RUN"
+  },
+  "product_edits": [],
+  "runtime_or_queue_changes": []
+}

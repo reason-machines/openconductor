@@ -1,0 +1,17 @@
+{
+  "stage": "SOURCE_ONLY_UNEXECUTED_HELPER_CORRECTION",
+  "base_candidate_archive_sha256": "c707741a16bca94f3d67cd066cd3e789d1bc50b7fae421c42c7755319fc5c97a",
+  "old_fixture_sha256": "af8719be135313c35a21d71d4d6bb2190b8af77b59e6d366b6f9dc1a340e058f",
+  "new_fixture_sha256": "b026606ec58fc9ee41d96bfb519c558f0435239705ae5643423d94cf4f8e1e94",
+  "new_fixture_bytes": 22804,
+  "scenario_assertion_tail_sha256": "73cbd6ce347f409c66ac122b764ef0db000dd7c23ab6b340d768bc6b4074b71d",
+  "scenario_assertion_tail_bytes": 5450,
+  "scenario_assertion_tail_algorithm": "Raw UTF-8 from the first exact for-agent loop header through EOF, including that header. Original v3 hash excluded its 51-byte header and is retained as historical metadata only.",
+  "all_scenarios_and_assertions_identical": true,
+  "all_12_product_files_byte_identical_to_v2": true,
+  "checked_default_head": "c2041a9273c17e0bbafa4326633002e75e311901",
+  "source_contract": "WorkspaceView raw bridge.send invokes submit with default attached=[]; only normal Composer onSubmit/session.send consumes staged Composer attachments. Both paths pre-exist unchanged on main11a.",
+  "helper_change": "Still invoke raw shell send and assert primary target; verify staged attachment chip; then real mounted editor/form submit consumes the staged attachment. Final original attachment assertion remains unchanged.",
+  "independent_source_confirmation": "be7a40e4 messages 12cb4acd and 1f6d9c52; main11a raw send, ComposerSession and hook-local queued state audited read-only.",
+  "policy": "Sole e1 extended12 admission once; no runtime here; no product changes; stop unexpected failure."
+}

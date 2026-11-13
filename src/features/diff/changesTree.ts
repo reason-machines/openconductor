@@ -6,10 +6,15 @@ export type ChangeRow =
   | { kind: "file"; file: FileDiff; name: string; depth: number }
   | { kind: "directory"; path: string; name: string; depth: number; expanded: boolean; additions: number; deletions: number };
 
-export function changeRows(files: readonly FileDiff[], view: ChangesView, collapsed: ReadonlySet<string>): ChangeRow[] {
+export function changeRows(files: readonly FileDiff[], view: ChangesView, collapsed: ReadonlySet<string>, isViewed: (file: FileDiff) => boolean): ChangeRow[] {
   const byPath = new Map(files.map((file) => [file.path, file]));
   const sorted = [...files].sort((a, b) => a.path.localeCompare(b.path));
-  if (view === "flat") return sorted.map((file) => ({ kind: "file", file, name: file.path, depth: 0 }));
+  if (view === "flat") {
+    const unviewed: FileDiff[] = [];
+    const viewed: FileDiff[] = [];
+    for (const file of sorted) (isViewed(file) ? viewed : unviewed).push(file);
+    return [...unviewed, ...viewed].map((file) => ({ kind: "file", file, name: file.path, depth: 0 }));
+  }
   const result: ChangeRow[] = [];
   const totals = (dir: TreeDir): { additions: number; deletions: number } => {
     const children = dir.dirs.map(totals);

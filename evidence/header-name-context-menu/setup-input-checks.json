@@ -1,0 +1,25 @@
+{
+  "producer": "Conductor Rebuild",
+  "scope": "source-only setup; no Node/app",
+  "checks": [
+    {
+      "id": "missing-prefix",
+      "status": "passed",
+      "writes": "none"
+    },
+    {
+      "id": "tampered-prefix",
+      "status": "passed",
+      "writes": "none"
+    },
+    {
+      "id": "tampered-header",
+      "status": "passed",
+      "writes": "none"
+    },
+    {
+      "id": "existing-output-preserved",
+      "status": "passed"
+    }
+  ]
+}

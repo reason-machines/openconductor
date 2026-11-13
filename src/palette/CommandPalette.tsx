@@ -150,6 +150,9 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     typed.current = true;
   }, [query]);
   useEffect(() => {
+    if (tab !== "workspaces") listRef.current?.scrollTo(0, 0);
+  }, [tab, query]);
+  useEffect(() => {
     listRef.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest" });
   }, [active]);
 
@@ -158,7 +161,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     // Conductor: switch to the Workspaces tab showing archived ones too, and stay open.
     if (item.kind === "action" && item.action.id === VIEW_ARCHIVED_ACTION) {
       changeTab("workspaces");
-      setFiltersState({ ...filters, archiveFilter: "all" });
+      setFiltersState(CLEARED_FILTERS);
       setQuery("");
       return;
     }
@@ -169,6 +172,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
   function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     const cmd = paletteCommandFor(e.nativeEvent, overrides);
     if (cmd === null) return;
+    if ((e.nativeEvent.isComposing || e.keyCode === 229) && cmd !== "close" && cmd !== "next-tab" && cmd !== "prev-tab") return;
     e.preventDefault();
     e.stopPropagation();
     if (cmd === "close") onClose();

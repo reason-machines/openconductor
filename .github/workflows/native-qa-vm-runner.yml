@@ -1,0 +1,81 @@
+name: VM runner source prerequisite
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vm-runner-source-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  portable:
+    name: VM profile pre-construction refusal (portable only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          cc -std=c11 -Wall -Wextra -Werror -pedantic \
+            native-qa-vm-runner/Profile.c native-qa-vm-runner/ProfileTests.c \
+            -o "${RUNNER_TEMP}/vm-profile-tests"
+          "${RUNNER_TEMP}/vm-profile-tests"
+          python3 -W error::ResourceWarning -m unittest tools.test_native_qa_vm_signing tools.test_native_qa_vm_receipt tools.test_native_qa_vm_github -v
+  compile-sign:
+    needs: portable
+    name: VM runner compile and signature readback (no execution)
+    runs-on: macos-15
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile and ad-hoc sign only; never execute runner
+        env:
+          EMIT_CI_RECEIPT: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && github.repository == 'reason-machines/openconductor' }}
+        run: |
+          args=()
+          if [[ "$EMIT_CI_RECEIPT" == true ]]; then
+            args+=(--ci-receipt-dir "$RUNNER_TEMP/oc-vm-receipt"
+              --ci-bundle-archive "$RUNNER_TEMP/oc-vm-bundle/bundle.zip")
+          fi
+          bash scripts/package-native-qa-vm-runner.sh "${args[@]}"
+      - name: Publish inert receipt JSON only
+        id: upload_receipt
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: ${{ success() && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && github.repository == 'reason-machines/openconductor' }}
+        with:
+          name: oc-qa-vm-receipt-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/oc-vm-receipt/receipt.json
+            ${{ runner.temp }}/oc-vm-receipt/build.json
+          retention-days: 7
+          if-no-files-found: error
+          overwrite: false
+      - name: Publish retained signed bundle
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: ${{ success() && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && github.repository == 'reason-machines/openconductor' }}
+        with:
+          name: oc-qa-vm-bundle-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/oc-vm-bundle/bundle.zip
+          retention-days: 7
+          if-no-files-found: error
+          overwrite: false
+      - name: Record artifact service identifiers, not admission
+        if: ${{ success() && steps.upload_receipt.outcome == 'success' }}
+        env:
+          ARTIFACT_ID: ${{ steps.upload_receipt.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload_receipt.outputs.artifact-digest }}
+        run: |
+          printf 'Receipt artifact ID: %s\nService archive SHA-256: %s\nIdentity authentication and native admission remain unverified.\n' \
+            "$ARTIFACT_ID" "$ARTIFACT_DIGEST" >> "$GITHUB_STEP_SUMMARY"

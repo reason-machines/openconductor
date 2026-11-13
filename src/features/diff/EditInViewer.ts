@@ -11,7 +11,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { Editor } from "@pierre/diffs/edit";
 import type { EditorFactory } from "@pierre/diffs/react";
 import { inTauri } from "../../backend";
-import { acknowledgeEditorSave, observeEditorContents, type EditorContents } from "./editorContents.ts";
+import { acknowledgeEditorSave, changeEditorDraft, observeEditorContents, persistEditorDraft, type EditorContents, type EditorDraftState } from "./editorContents.ts";
 export { editableContents } from "./editable.ts";
 
 /** Pierre's editor factory, as Conductor's `bqo` (`(t, o, k) => new Editor(t, o, k)`). */
@@ -32,8 +32,20 @@ export interface FileEdit {
 }
 
 /** Drafts outlive the open file, as Conductor's draft store does: switching files and back keeps the edit. */
-const drafts = new Map<string, string>();
+const draftState: EditorDraftState = { contents: new Map(), pendingSaves: new Map() };
+const drafts = draftState.contents;
 const draftKey = (worktree: string | null, path: string) => `${worktree ?? "sample"}\u0000${path}`;
+const saveTasks = new Map<string, Set<Promise<void>>>();
+
+/** Wait for this target's existing writes before reading a replacement snapshot. */
+export async function waitForFileSaves(worktree: string | null, path: string): Promise<void> {
+  const key = draftKey(worktree, path);
+  let tasks = saveTasks.get(key);
+  while (tasks !== undefined) {
+    await Promise.allSettled([...tasks]);
+    tasks = saveTasks.get(key);
+  }
+}
 
 /** Browser mode (no Tauri): saves land here, so the flow can be tried without a worktree. */
 export const sampleSaves = new Map<string, string>();
@@ -67,18 +79,30 @@ export function useFileEdit(worktree: string | null, path: string, onDisk: strin
   const onChange = useCallback((contents: string) => {
     const { key: k, savedText: s } = latest.current;
     const before = isDirty(drafts.get(k), s);
-    if (contents === s) drafts.delete(k);
-    else drafts.set(k, contents);
+    changeEditorDraft(draftState, k, s, contents);
     if (isDirty(drafts.get(k), s) !== before) rerender((n) => n + 1);
   }, []);
 
   const onSave = useCallback(
     (contents: string) => {
       setError(null);
-      saveFile(worktree, path, contents).then(
+      let finish = () => {};
+      const completion = new Promise<void>((resolve) => { finish = resolve; });
+      let pending = saveTasks.get(key);
+      if (pending === undefined) saveTasks.set(key, (pending = new Set()));
+      pending.add(completion);
+      const owned = pending;
+      void completion.then(() => {
+        owned.delete(completion);
+        if (owned.size === 0 && saveTasks.get(key) === owned) saveTasks.delete(key);
+      });
+      const task = persistEditorDraft(draftState, key, contents, async () => {
+        await saveFile(worktree, path, contents);
+        seen.current = acknowledgeEditorSave(seen.current, key, contents);
+      });
+      void task.then(finish, finish);
+      task.then(
         () => {
-          seen.current = acknowledgeEditorSave(seen.current, key, contents);
-          if (drafts.get(key) === contents) drafts.delete(key);
           rerender((n) => n + 1);
           onSaved?.();
         },

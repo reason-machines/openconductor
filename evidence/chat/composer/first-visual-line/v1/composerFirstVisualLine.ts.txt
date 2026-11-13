@@ -1,0 +1,243 @@
+import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { test } from "node:test";
+import { runInNewContext } from "node:vm";
+import { Editor, type EditorOptions, type JSONContent } from "@tiptap/core";
+import { undoDepth, redoDepth } from "@tiptap/pm/history";
+import * as queue from "./queue.ts";
+import * as queueKeys from "./queueKeys.ts";
+import * as commands from "./slashCommands.ts";
+import * as mentions from "./fileMentions.ts";
+import * as document from "./composerDocument.ts";
+import * as schema from "./composerSchema.ts";
+import * as userContent from "./userContent.ts";
+import * as shortcuts from "../../keybindings/shortcut.ts";
+import { effectiveShortcuts } from "../../keybindings/overrides.ts";
+import type { ComposerEditorHandle } from "./ComposerEditor.tsx";
+
+const dependencies = createRequire(import.meta.url);
+const React = dependencies("react");
+const { act, create } = dependencies("react-test-renderer");
+const ts = dependencies("typescript");
+type KeyFields = Pick<KeyboardEvent, "key" | "code" | "ctrlKey" | "metaKey" | "altKey" | "shiftKey" | "isComposing" | "keyCode">;
+type Key = Event & KeyFields;
+type Handler = (view: unknown, event: Key) => boolean;
+type BoundaryOptions = Pick<EditorOptions, "content" | "extensions"> & {
+  editorProps: { handleKeyDown: Handler };
+  onFocus(): void;
+  onSelectionUpdate(): void;
+};
+
+function javascript(name: string) {
+  const path = `src/features/chat/${name}`;
+  const source = process.env.COMPOSER_FIRST_VISUAL_LINE_SOURCE_REF
+    ? execFileSync("git", ["-c", "gc.auto=0", "show", `${process.env.COMPOSER_FIRST_VISUAL_LINE_SOURCE_REF}:${path}`], { encoding: "utf8" })
+    : readFileSync(path, "utf8");
+  return ts.transpileModule(source, {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
+  }).outputText;
+}
+
+const review: commands.SlashCommand = { name: "review", description: "Review", argumentHint: "", effect: "agent", supportedAgents: ["codex"] };
+const reset: commands.SlashCommand = { ...review, name: "reset" };
+interface Options {
+  draft?: string;
+  caret?: number;
+  end?: number;
+  up?: boolean;
+  queued?: boolean;
+  editing?: boolean;
+  rowPresent?: boolean;
+  composing?: boolean;
+  content?: JSONContent;
+}
+
+function fixture({ draft = "keep this draft", caret = 4, end = caret, up = true, queued = true, editing = false, rowPresent = true, composing = false, content }: Options = {}) {
+  const focused: string[] = [];
+  const geometry: string[] = [];
+  const queries: string[] = [];
+  const instances: EditorBoundary[] = [];
+  class EditorBoundary {
+    core: Editor;
+    view = {
+      composing,
+      dom: { dataset: {}, offsetParent: {}, blur() {} },
+      focus: () => focused.push("composer"),
+      endOfTextblock: (direction: string) => { geometry.push(direction); return up; },
+    };
+    options: BoundaryOptions;
+    constructor(options: BoundaryOptions) {
+      this.options = options;
+      this.core = new Editor({ element: null, content: content ?? options.content, extensions: options.extensions });
+      instances.push(this);
+    }
+    get state() { return this.core.state; }
+    get isEmpty() { return this.core.isEmpty; }
+    get isFocused() { return true; }
+    destroy() { this.core.destroy(); }
+  }
+  const editorExports: Partial<Pick<typeof import("./ComposerEditor"), "ComposerEditor">> = {};
+  runInNewContext(javascript("ComposerEditor.tsx"), {
+    exports: editorExports,
+    require(name: string) {
+      if (name === "@tiptap/core") return { Editor: EditorBoundary };
+      if (["react", "react/jsx-runtime", "@tiptap/extension-document", "@tiptap/extension-paragraph", "@tiptap/extension-text",
+        "@tiptap/extension-hard-break", "@tiptap/extensions", "@tiptap/pm/state", "@tiptap/pm/history"].includes(name)) return dependencies(name);
+      if (name === "./composerDocument.ts") return document;
+      if (name === "./composerSchema.ts") return schema;
+      throw new Error(`Unexpected ComposerEditor dependency: ${name}`);
+    },
+  });
+  const SlashMenu = () => null;
+  const FileMentionMenu = () => null;
+  const composerExports: Partial<Pick<typeof import("./Composer"), "Composer">> = {};
+  runInNewContext(javascript("Composer.tsx"), {
+    exports: composerExports, CSS: { escape: (value: string) => value },
+    require(name: string) {
+      if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      if (name.endsWith(".css")) return {};
+      if (name.endsWith("/Tooltip.tsx")) return { Tooltip: ({ children }: { children: unknown }) => children, ShortcutHint: () => null };
+      if (name.endsWith("/usePresence.ts")) return { usePresence: (open: boolean) => ({ mounted: open, attrs: {} }) };
+      if (name.endsWith("/KeybindingsProvider.tsx")) return { useKeybindingOverrides: () => ({ overrides: {} }), useKeybindings() {} };
+      if (name.endsWith("/overrides.ts")) return { effectiveShortcuts };
+      if (name.endsWith("/shortcut.ts")) return shortcuts;
+      if (name === "./queue.ts") return queue;
+      if (name === "./queueKeys.ts") return queueKeys;
+      if (name === "./slashCommands.ts") return commands;
+      if (name === "./fileMentions.ts") return mentions;
+      if (name === "./composerDocument.ts") return document;
+      if (name === "./userContent.ts") return userContent;
+      if (name === "./ComposerEditor.tsx") return editorExports;
+      if (name === "./SlashMenu.tsx") return { SlashMenu };
+      if (name === "./FileMentionMenu.tsx") return { FileMentionMenu };
+      if (name === "./composerLongPaste.ts") return { longPasteAttachment: () => null };
+      if (name.endsWith("/useBoolPref.ts")) return { useBoolPref: () => false };
+      if (name === "../../backend") return { fuzzyFilterFiles: () => assert.fail("queue navigation must not search files") };
+      if (name === "./composerIcons.tsx") return Object.fromEntries(["ArrowUpIcon", "CornerDownLeftIcon", "PaperclipIcon", "PlusIcon", "StopCircleIcon"].map((key) => [key, () => null]));
+      throw new Error(`Unexpected Composer dependency: ${name}`);
+    },
+  });
+  assert.ok(composerExports.Composer);
+  assert.ok(editorExports.ComposerEditor);
+  const inputRef: { current: ComposerEditorHandle | null } = { current: null };
+  const items = queued ? ["first", "last"].map((id) => ({ id, text: id, attachments: [], createdAt: "2026-11-11T00:00:00Z" })) : [];
+  let renderer: ReturnType<typeof create>;
+  act(() => {
+    renderer = create(React.createElement(composerExports.Composer, {
+      draft, inputRef, setDraft: () => assert.fail("navigation must not emit or replace the draft"),
+      queue: { ...queue.emptyQueue(), status: "working", items, editingId: editing ? "first" : null }, canSteer: false,
+      slashCommands: [review, reset], onAttachTerminalOutput() {}, onLinkWorkspaces() {},
+      onSubmit: () => assert.fail("navigation must not submit"), onStop: () => assert.fail("navigation must not stop"),
+      onQueue: () => assert.fail("navigation must not mutate the queue"),
+    }), { createNodeMock(element: { type: string; props: { className?: string } }) {
+      if (element.type === "div" && element.props.className === "oc-editor-mount") return {};
+      if (element.type !== "ol") return null;
+      return { querySelector(selector: string) {
+        queries.push(selector);
+        return rowPresent ? { focus() { focused.push(selector); } } : null;
+      } };
+    } });
+  });
+  assert.ok(inputRef.current, "full production adapter must publish the editor handle");
+  const instance = instances[instances.length - 1];
+  assert.ok(instance, "full production Composer must mount the actual ComposerEditor");
+  const { core } = instance;
+  const positions = schema.linearDocument(core.state.doc).positions;
+  assert.notEqual(positions[caret], undefined);
+  assert.notEqual(positions[end], undefined);
+  core.commands.setTextSelection({ from: positions[caret], to: positions[end] });
+  act(() => { instance.options.onFocus(); instance.options.onSelectionUpdate(); });
+  focused.length = 0;
+  const before = core.state;
+  const history = { undo: undoDepth(before), redo: redoDepth(before) };
+  return {
+    focused, geometry, queries,
+    menu(kind: "slash" | "mention") { return renderer.root.findByType(kind === "slash" ? SlashMenu : FileMentionMenu).props; },
+    key(fields: Partial<KeyFields> = {}) {
+      const event = Object.assign(new Event("keydown", { bubbles: true, cancelable: true }), {
+        key: "ArrowUp", code: "ArrowUp", ctrlKey: false, metaKey: false, altKey: false, shiftKey: false,
+        isComposing: false, keyCode: 38, ...fields,
+      });
+      let handled = false;
+      act(() => { handled = instance.options.editorProps.handleKeyDown(instance.view, event); });
+      assert.equal(core.state, before, "queue focus must not change the document, selection or transaction state");
+      assert.deepEqual({ undo: undoDepth(core.state), redo: redoDepth(core.state) }, history);
+      return { event, handled };
+    },
+    close() { act(() => renderer.unmount()); assert.equal(inputRef.current, null); },
+  };
+}
+
+test("nonzero caret on the first visual line focuses the last queue row", () => {
+  const view = fixture();
+  try {
+    const { event, handled } = view.key();
+    assert.equal(handled, true, "plain Up at caret 4 on the first visual line must focus the queue");
+    assert.equal(event.defaultPrevented, true);
+    assert.equal(event.cancelBubble, true);
+    assert.deepEqual(view.focused, ['li[data-id="last"]']);
+    assert.deepEqual(view.geometry, ["up"]);
+  } finally { view.close(); }
+});
+
+test("empty editor focuses the last queue row without consulting layout", () => {
+  const view = fixture({ draft: "", caret: 0, up: false });
+  try {
+    assert.equal(view.key().handled, true);
+    assert.deepEqual(view.focused, ['li[data-id="last"]']);
+    assert.deepEqual(view.geometry, []);
+  } finally { view.close(); }
+});
+
+const secondParagraph: JSONContent = { type: "doc", content: [
+  { type: "paragraph", content: [{ type: "text", text: "keep" }] },
+  { type: "paragraph", content: [{ type: "text", text: "this draft" }] },
+] };
+const controls: [string, Options, Partial<KeyFields>, string[]][] = [
+  ["later soft-wrapped visual line in the first paragraph", { up: false }, {}, ["up"]],
+  ["a false layout result at linear offset zero", { caret: 0, up: false }, {}, ["up"]],
+  ["line after a hard break", { draft: "keep\nthis draft", caret: 7, up: false }, {}, ["up"]],
+  ["second paragraph even when layout returns true", { draft: "keep\nthis draft", caret: 7, content: secondParagraph }, {}, []],
+  ["noncollapsed selection", { end: 8 }, {}, []],
+  ["Shift modifier", {}, { shiftKey: true }, []],
+  ["Meta modifier", {}, { metaKey: true }, []],
+  ["Control modifier", {}, { ctrlKey: true }, []],
+  ["Alt modifier", {}, { altKey: true }, []],
+  ["IME event", {}, { isComposing: true }, []],
+  ["IME editor state", { composing: true }, {}, []],
+  ["IME key code 229", {}, { keyCode: 229 }, []],
+  ["no queue", { queued: false }, {}, []],
+  ["queue edit mode", { editing: true }, {}, []],
+  ["missing last row", { rowPresent: false }, {}, ["up"]],
+  ["another key", {}, { key: "ArrowDown", code: "ArrowDown", keyCode: 40 }, []],
+];
+for (const [label, options, fields, geometry] of controls) {
+  test(`Up leaves queue focus untouched with ${label}`, () => {
+    const view = fixture(options);
+    try {
+      const { event, handled } = view.key(fields);
+      assert.equal(handled, false);
+      assert.equal(event.defaultPrevented, false);
+      assert.equal(event.cancelBubble, false);
+      assert.deepEqual(view.focused, []);
+      assert.deepEqual(view.geometry, geometry, "layout must be queried lazily after policy guards");
+    } finally { view.close(); }
+  });
+}
+
+for (const [kind, draft] of [["slash", "/re"], ["mention", "@"]] as const) {
+  test(`${kind} suggestion navigation takes precedence over queue focus`, () => {
+    const view = fixture({ draft, caret: draft.length });
+    try {
+      const before = view.menu(kind);
+      assert.ok(before.matches.length > 1);
+      assert.equal(before.focused, 0);
+      assert.equal(view.key().handled, true);
+      assert.equal(view.menu(kind).focused, before.matches.length - 1);
+      assert.deepEqual(view.focused, []);
+      assert.deepEqual(view.geometry, []);
+    } finally { view.close(); }
+  });
+}

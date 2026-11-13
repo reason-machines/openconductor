@@ -76,6 +76,39 @@ Conductor Rebuild reconciled merged [#757](https://github.com/reason-machines/op
 
 The 341-entry denominator, 169 retained matches, 48 wrong, 3 missing and 121 unverified are unchanged. Every raw/scoped row, exclusion, capture identity/score, observable main-flow toast/system requirement, default-off/native gate distinction and all nine unverified native verdicts are retained. No product/driver edit, Mac input, new capture, preview, dependency install, worker, dispatch/rerun or duplicate E2E watcher occurred. The parent-owned Page is read-only here; canonical source/data is sent to its owner.
 
+## Open in / palette / menus lane, main `8ef5a2bb`, 13 November 2026
+
+Conductor Rebuild reconciled the Open in / palette / global menus SAME15 lane against current main `8ef5a2bb50017a7ccf9aa99fbd5152afeefe33f1`. The earlier source-coverage survey at `d6da482e` is **historical**; main advanced through #1217–#1231 since then. This entry records per-PR acceptance state for the lane only; no other ledger rows, scores, capture identities or E2E counts are changed. This pass performed no Mac launch, no native capture, no install/build, no runner or dispatch.
+
+REA reference retained: renderer `5199d392` / index `b5b01f33` (Conductor 0.87.6, `ev_410f83a5…`). No new capture; retained spans rehashed PASS.
+
+### Merged increments (source → CI green → behavioral)
+
+| PR | Commit | Title | Cloud behavioral | Native |
+|---|---|---|---|---|
+| [#1205](https://github.com/reason-machines/openconductor/pull/1205) | `a66b72e9` | fix(open-in): launch the palette's visible workspace file | NOT_RUN | NOT_RUN |
+| [#1211](https://github.com/reason-machines/openconductor/pull/1211) | `d7595609` | fix(open-in): support icon menu Home and End keys | NOT_RUN | NOT_RUN |
+| [#1217](https://github.com/reason-machines/openconductor/pull/1217) | `6acd4f8f` | fix(scripts): stop only the displayed Run task | NOT_RUN | NOT_RUN |
+| [#1225](https://github.com/reason-machines/openconductor/pull/1225) | `7b46a3b9` | fix(open-in): focus icon menu rows on mouse movement | **12/12 PASS** (Cloud, `262f1915`, Session `15faf4d8`) | NOT_RUN |
+| [#1226](https://github.com/reason-machines/openconductor/pull/1226) | `20d157d0` | fix(keybindings): close workspace tabs from Run and Setup output | NOT_RUN | NOT_RUN |
+
+#1225 behavioral: 12-case pointer fixture (WebKit zero-motion guard, copy/cursor row focus, keyboard continuation, split-row preservation, app/copy click isolation). Source-only Cloud; no Tauri build, no Mac launch, no real Conductor comparison.
+
+### Registered owner: OPEN-IN-SWITCHER-ENTER-POINTER
+
+Publisher `a5387885` holds this unit. Source-qualified at commit `a5387885`; exact frozen-12 fixture preserved. Status: **behavioral NOT_RUN, native NOT_RUN**. Awaiting ACC existing-queue admission for matched local behavioral qualification before PR eligibility. No PR opened; no runner or allocation started by this lane. Switcher entry pointer gate is excluded from merged acceptance count.
+
+### Acceptance summary
+
+- Source-merged: 5 PRs (#1205, #1211, #1217, #1225, #1226); all CI-green at exact head.
+- Behavioral-qualified (Cloud): #1225 only (12/12 PASS).
+- Behavioral-qualified (native): none in this lane.
+- Source-only/unqualified merged: #1205, #1211, #1217, #1226.
+- Registered unmerged: OPEN-IN-SWITCHER-ENTER-POINTER (owner `a5387885`, source-ready, ACC hold).
+- Material unowned gap: none identified at `8ef5a2bb`. Previous `d6da482` survey is historical.
+
+All nine native final-review verdicts remain unverified. No ledger denominator, score or supplemental row is changed.
+
 ## Historical program records
 
 One row per node of Sven's UI audit program. A node is done when its side-by-side image

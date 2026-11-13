@@ -3,6 +3,7 @@
 // user < repository shared < workspace shared < repository local < managed.
 // Edits go to the repository's `.conductor/settings.local.toml`; the shared
 // file is read-only in the app, as in Conductor.
+import { persistenceOwner } from "../lib/persistence/restartPersistence.ts";
 import { invoke } from "@tauri-apps/api/core";
 import type { PreviewUrl, PromptKind } from "./types.ts";
 
@@ -70,13 +71,15 @@ export type RepoLocalKey =
   | `scripts.run.${string}`
   | `environment_variables.${string}`;
 
+const repositoryWrites = persistenceOwner();
+
 export function repoSettingsEffective(repoPath: string, workspacePath?: string): Promise<EffectiveSettings> {
   return invoke<EffectiveSettings>("repo_settings_effective", { repoPath, workspacePath: workspacePath ?? null });
 }
 
 /** Set a key, or clear it with `null`, in the repository local layer. */
 export function repoSettingsSetLocal(repoPath: string, key: RepoLocalKey, value: unknown): Promise<EffectiveSettings> {
-  return invoke<EffectiveSettings>("repo_settings_set_local", { repoPath, key, value });
+  return repositoryWrites.run(() => invoke<EffectiveSettings>("repo_settings_set_local", { repoPath, key, value }), undefined, `${repoPath}:${key}`);
 }
 
 /** Human label of a layer, for "set in ..." hints. */

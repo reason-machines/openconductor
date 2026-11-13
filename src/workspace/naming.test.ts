@@ -86,6 +86,7 @@ test("branch prefix follows branch_prefix_type and branch_prefix", () => {
   assert.equal(resolveBranchPrefix({}, null), "");
   // Stored custom values carry a trailing slash after the migration; both forms work.
   assert.equal(resolveBranchPrefix({ branch_prefix_type: "custom", branch_prefix: "feat/" }), "feat/");
+  assert.equal(resolveBranchPrefix({ branch_prefix_type: "custom", branch_prefix: "myname-/" }), "myname-/");
   assert.equal(resolveBranchPrefix({ branch_prefix_type: "custom", branch_prefix: "team/ui" }), "team/ui/");
   assert.equal(resolveBranchPrefix({ branch_prefix_type: "custom", branch_prefix: "  " }), "");
   assert.equal(applyBranchPrefix("sven/", "oslo"), "sven/oslo");

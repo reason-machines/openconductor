@@ -1,0 +1,84 @@
+{
+  "author": "Conductor Rebuild",
+  "baseline_head": "49bef9ea035d5af5edc3141adeda1c760e2e6849",
+  "workflow_run": 43139187774,
+  "command": "node --test \"src/**/*.test.ts\"",
+  "result": "QUALIFIED_INTENDED_TRANSPORT_RED",
+  "fixture_sha256": "220c5d5c0ac111940680da12102317696021a246a175db963bfe022c98f967bc",
+  "jobs": [
+    {
+      "id": 130921814811,
+      "url": "https://github.com/reason-machines/openconductor/actions/runs/43139187774/job/130921814811",
+      "excerpt": "baseline-unit.log.txt",
+      "log_from_line": 16514,
+      "failures": [
+        {
+          "name": "exited login shells keep local fitting without dispatching resize",
+          "assertion": "A settled matching exit must suppress PTY resize transport",
+          "actual": [
+            {
+              "id": "login-resize-pty",
+              "cols": 112,
+              "rows": 36
+            }
+          ],
+          "expected": []
+        },
+        {
+          "name": "completed then exited login shells keep local fitting without dispatching resize",
+          "assertion": "A settled matching exit must suppress PTY resize transport",
+          "actual": [
+            {
+              "id": "login-resize-pty",
+              "cols": 112,
+              "rows": 36
+            }
+          ],
+          "expected": []
+        }
+      ],
+      "passing_controls": [
+        "running login shells still fit and dispatch resize to their own PTY",
+        "completed but live login shells still fit and dispatch resize to their own PTY",
+        "foreign exit login shells still fit and dispatch resize to their own PTY"
+      ]
+    },
+    {
+      "id": 130921814981,
+      "url": "https://github.com/reason-machines/openconductor/actions/runs/43139187774/job/130921814981",
+      "excerpt": "baseline-build.log.txt",
+      "log_from_line": 16554,
+      "failures": [
+        {
+          "name": "exited login shells keep local fitting without dispatching resize",
+          "assertion": "A settled matching exit must suppress PTY resize transport",
+          "actual": [
+            {
+              "id": "login-resize-pty",
+              "cols": 112,
+              "rows": 36
+            }
+          ],
+          "expected": []
+        },
+        {
+          "name": "completed then exited login shells keep local fitting without dispatching resize",
+          "assertion": "A settled matching exit must suppress PTY resize transport",
+          "actual": [
+            {
+              "id": "login-resize-pty",
+              "cols": 112,
+              "rows": 36
+            }
+          ],
+          "expected": []
+        }
+      ],
+      "passing_controls": [
+        "running login shells still fit and dispatch resize to their own PTY",
+        "completed but live login shells still fit and dispatch resize to their own PTY",
+        "foreign exit login shells still fit and dispatch resize to their own PTY"
+      ]
+    }
+  ]
+}

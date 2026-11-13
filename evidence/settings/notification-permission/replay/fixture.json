@@ -1,0 +1,76 @@
+[
+  {
+    "id": "disable-with-denied-permission",
+    "toggle": false,
+    "browser_permission": "denied",
+    "expected_check_calls": 0,
+    "expected_request_calls": 0,
+    "expected_saved_values": [
+      false
+    ]
+  },
+  {
+    "id": "enable-already-granted",
+    "toggle": true,
+    "browser_permission": "granted",
+    "expected_plugin_check_calls": 0,
+    "expected_request_calls": 0,
+    "expected_saved_values": [
+      true
+    ]
+  },
+  {
+    "id": "enable-default-native-granted",
+    "toggle": true,
+    "browser_permission": "default",
+    "native_is_granted": true,
+    "expected_plugin_check_calls": 1,
+    "expected_request_calls": 0,
+    "expected_saved_values": [
+      true
+    ]
+  },
+  {
+    "id": "enable-default-request-granted",
+    "toggle": true,
+    "browser_permission": "default",
+    "native_is_granted": false,
+    "request_result": "granted",
+    "expected_plugin_check_calls": 1,
+    "expected_request_calls": 1,
+    "expected_saved_values": [
+      true
+    ]
+  },
+  {
+    "id": "enable-default-request-denied",
+    "toggle": true,
+    "browser_permission": "default",
+    "native_is_granted": false,
+    "request_result": "denied",
+    "expected_plugin_check_calls": 1,
+    "expected_request_calls": 1,
+    "expected_saved_values": []
+  },
+  {
+    "id": "enable-denied-request-denied",
+    "toggle": true,
+    "browser_permission": "denied",
+    "request_result": "denied",
+    "expected_plugin_check_calls": 0,
+    "expected_request_calls": 1,
+    "expected_saved_values": []
+  },
+  {
+    "id": "enable-awaits-request-settlement",
+    "toggle": true,
+    "browser_permission": "default",
+    "native_is_granted": false,
+    "request_pending": true,
+    "expected_saved_values_before_resolution": [],
+    "resolve_request": "granted",
+    "expected_saved_values_after_resolution": [
+      true
+    ]
+  }
+]

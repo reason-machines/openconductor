@@ -1,0 +1,93 @@
+{
+  "artifact": "index-BGEQ8YjU.js",
+  "bytes": 3493297,
+  "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+  "manifest": "evidence/frontend/tauri-assets-manifest.json /assets/index-BGEQ8YjU.js",
+  "sourceSession": "https://reasonmachines.com/agents/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b",
+  "messageId": "90704521-77b2-41b4-83de-56399653afe5",
+  "slices": {
+    "export": {
+      "text": "OQt as cV",
+      "utf8": [
+        3481631,
+        3481640
+      ],
+      "utf16": [
+        3481095,
+        3481104
+      ],
+      "sha256": "28964870c42e1ef841cb2d3708a9217b651c1a67b41529729738b80c32576921"
+    },
+    "OQt": {
+      "text": "function OQt(t,e){return GUt(t,{overrides:e})}",
+      "utf8": [
+        3395496,
+        3395542
+      ],
+      "utf16": [
+        3394974,
+        3395020
+      ],
+      "sha256": "519af7ef64da23b68db0d529e2e644e1e28ec629f754fd65dc20abd4c7883562"
+    },
+    "GUt": {
+      "text": "function GUt(t,e){const s=V_[t],[n,...r]=nh(t,e);return{...s,key:n,additionalKeys:r.length>0?r:void 0}}",
+      "utf8": [
+        3395365,
+        3395468
+      ],
+      "utf16": [
+        3394843,
+        3394946
+      ],
+      "sha256": "960560ca020d62330420c933fcca248b9c8a412ff93654edf29b9f5c9febdd8a"
+    },
+    "nh": {
+      "text": "function nh(t,e){const n=(e?.overrides??WUt())[t];if(n!==void 0)return n;const r=V_[t];return[r.key,...r.additionalKeys??[]]}",
+      "utf8": [
+        3393483,
+        3393608
+      ],
+      "utf16": [
+        3392961,
+        3393086
+      ],
+      "sha256": "278fa92a1196832de0fd6002ab85c9e1fcbdcf6455591306c5d094efa4f2fd4b"
+    },
+    "registry": {
+      "text": "toggleCommandPalette:{id:\"toggleCommandPalette\",key:he({key:\"k\",modifiers:Qe}),title:\"Command palette\",configurable:!0,category:\"General\",when:{isGlobal:!0}}",
+      "utf8": [
+        3360756,
+        3360913
+      ],
+      "utf16": [
+        3360234,
+        3360391
+      ],
+      "sha256": "181121bb45d811ec2a2b35aaf6dbc167cf143c1b60ec90f12918e2709b640cdb"
+    }
+  },
+  "rendererLink": {
+    "artifact": "renderApp-D_fmY7hW.js",
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "import": "cV as wYe",
+    "sourceSession": "https://reasonmachines.com/agents/de6c02f4-4880-4a0d-bf8f-9e3954522753",
+    "messageId": "becf80a9-f1b9-49ab-9106-7289ff89c1cd",
+    "registration": "let x;t[3]!==d?(x=()=>{d?nr.closeDialog(Tk):nr.openDialog(Tk)},t[3]=d,t[4]=x):x=t[4],oi(\"toggleCommandPalette\",x);",
+    "utf8": [
+      10927701,
+      10927815
+    ],
+    "utf16": [
+      10881924,
+      10882038
+    ],
+    "sha256Registration": "d5115baf01448b5a744ab5cb259f0918297a258ff532b21b66cc88192431a47b"
+  },
+  "limits": [
+    "Only already-retained static text; no chunk execution, extraction, network, native or application runtime.",
+    "Index export cV is OQt. Renderer local import wYe is distinct from the unrelated index-local wYe.",
+    "GUt copies registry metadata and changes only key/additionalKeys; overrides preserve when:isGlobal.",
+    "Source dispatch tests do not establish browser, native, normal-buffer clearing, backend history or installed-package acceptance."
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "head": "2f47f5301cca61cd6a4cd0a3cb6d02d50a35835f",
+  "commit": null,
+  "workflow": {
+    "run_id": 43157189376,
+    "job_id": 130979743427
+  },
+  "check": null,
+  "job": {
+    "id": 130979743427,
+    "run_id": 43157189376,
+    "name": "Frontend unit tests (node --test)",
+    "status": "completed",
+    "conclusion": "failure",
+    "html_url": "https://github.com/reason-machines/openconductor/actions/runs/43157189376/job/130979743427",
+    "started_at": "2026-11-12T04:48:34Z",
+    "completed_at": "2026-11-12T04:51:25Z",
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1,
+        "started_at": "2026-11-12T04:48:35Z",
+        "completed_at": "2026-11-12T04:48:36Z"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2,
+        "started_at": "2026-11-12T04:48:36Z",
+        "completed_at": "2026-11-12T04:48:43Z"
+      },
+      {
+        "name": "Run actions/setup-node@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3,
+        "started_at": "2026-11-12T04:48:43Z",
+        "completed_at": "2026-11-12T04:48:46Z"
+      },
+      {
+        "name": "Run npm ci",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 4,
+        "started_at": "2026-11-12T04:48:46Z",
+        "completed_at": "2026-11-12T04:48:53Z"
+      },
+      {
+        "name": "Chat top-level find frozen component regression",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 5,
+        "started_at": "2026-11-12T04:48:53Z",
+        "completed_at": "2026-11-12T04:48:54Z"
+      },
+      {
+        "name": "Pure TypeScript modules (Node strips types natively)",
+        "status": "completed",
+        "conclusion": "failure",
+        "number": 6,
+        "started_at": "2026-11-12T04:48:54Z",
+        "completed_at": "2026-11-12T04:51:21Z"
+      },
+      {
+        "name": "Custom branch-prefix unchanged-fixture baseline and candidate replay",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 7,
+        "started_at": "2026-11-12T04:51:21Z",
+        "completed_at": "2026-11-12T04:51:21Z"
+      },
+      {
+        "name": "Script output copy and Unicode unchanged-fixture differential replays",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 8,
+        "started_at": "2026-11-12T04:51:21Z",
+        "completed_at": "2026-11-12T04:51:21Z"
+      },
+      {
+        "name": "Retain script output differential receipts",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 9,
+        "started_at": "2026-11-12T04:51:21Z",
+        "completed_at": "2026-11-12T04:51:21Z"
+      },
+      {
+        "name": "Onboarding persistence and nonblocking startup regressions",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 10,
+        "started_at": "2026-11-12T04:51:21Z",
+        "completed_at": "2026-11-12T04:51:21Z"
+      },
+      {
+        "name": "Post Run actions/setup-node@v4",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 19,
+        "started_at": "2026-11-12T04:51:21Z",
+        "completed_at": "2026-11-12T04:51:21Z"
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 20,
+        "started_at": "2026-11-12T04:51:21Z",
+        "completed_at": "2026-11-12T04:51:21Z"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 21,
+        "started_at": "2026-11-12T04:51:21Z",
+        "completed_at": "2026-11-12T04:51:22Z"
+      }
+    ]
+  },
+  "log": {
+    "available": true,
+    "original_chars": 1451148,
+    "reason": null,
+    "truncated": true,
+    "text": "2026-11-12T04:49:41.0585664Z   ...\n2026-11-12T04:49:41.0586490Z # Subtest: local Fast source control: recognized unsupported Claude haiku-4-5\n2026-11-12T04:49:41.0587839Z ok 760 - local Fast source control: recognized unsupported Claude haiku-4-5\n2026-11-12T04:49:41.0588641Z   ---\n2026-11-12T04:49:41.0589129Z   duration_ms: 0.610797\n2026-11-12T04:49:41.0589665Z   type: 'test'\n2026-11-12T04:49:41.0590165Z   ...\n2026-11-12T04:49:41.0591014Z # Subtest: local Fast carrier claude preserves saved on with model and effort\n2026-11-12T04:49:41.0592450Z not ok 761 - local Fast carrier claude preserves saved on with model and effort\n2026-11-12T04:49:41.0593294Z   ---\n2026-11-12T04:49:41.0593787Z   duration_ms: 4.425858\n2026-11-12T04:49:41.0594324Z   type: 'test'\n2026-11-12T04:49:41.0595366Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/localFastWire.test.ts:20:5'\n2026-11-12T04:49:41.0596465Z   failureType: 'testCodeFailure'\n2026-11-12T04:49:41.0597250Z   error: |-\n2026-11-12T04:49:41.0597987Z     Expected values to be strictly deep-equal:\n2026-11-12T04:49:41.0598786Z     + actual - expected\n2026-11-12T04:49:41.0599463Z     \n2026-11-12T04:49:41.0600053Z       {\n2026-11-12T04:49:41.0600610Z         effort: 'high',\n2026-11-12T04:49:41.0601229Z     -   fastMode: true,\n2026-11-12T04:49:41.0601916Z         model: 'opus-5-1m'\n2026-11-12T04:49:41.0602535Z       }\n2026-11-12T04:49:41.0603074Z     \n2026-11-12T04:49:41.0603649Z   code: 'ERR_ASSERTION'\n2026-11-12T04:49:41.0604281Z   name: 'AssertionError'\n2026-11-12T04:49:41.0604900Z   expected:\n2026-11-12T04:49:41.0605472Z     model: 'opus-5-1m'\n2026-11-12T04:49:41.0606070Z     effort: 'high'\n2026-11-12T04:49:41.0606641Z     fastMode: true\n2026-11-12T04:49:41.0607397Z   actual:\n2026-11-12T04:49:41.0607948Z     model: 'opus-5-1m'\n2026-11-12T04:49:41.0608536Z     effort: 'high'\n2026-11-12T04:49:41.0609141Z   operator: 'deepStrictEqual'\n2026-11-12T04:49:41.0609774Z   stack: |-\n2026-11-12T04:49:41.0611205Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/localFastWire.test.ts:26:14)\n2026-11-12T04:49:41.0612685Z     Test.runInAsyncScope (node:async_hooks:214:14)\n2026-11-12T04:49:41.0613877Z     Test.run (node:internal/test_runner/test:1047:25)\n2026-11-12T04:49:41.0614780Z     Test.start (node:internal/test_runner/test:944:17)\n2026-11-12T04:49:41.0615829Z     startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n2026-11-12T04:49:41.0616717Z   ...\n2026-11-12T04:49:41.0617837Z # Subtest: local Fast carrier claude preserves saved off with model and effort\n2026-11-12T04:49:41.0619208Z not ok 762 - local Fast carrier claude preserves saved off with model and effort\n2026-11-12T04:49:41.0620105Z   ---\n2026-11-12T04:49:41.0620651Z   duration_ms: 0.754106\n2026-11-12T04:49:41.0621242Z   type: 'test'\n2026-11-12T04:49:41.0622341Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/localFastWire.test.ts:20:5'\n2026-11-12T04:49:41.0623540Z   failureType: 'testCodeFailure'\n2026-11-12T04:49:41.0624187Z   error: |-\n2026-11-12T04:49:41.0624895Z     Expected values to be strictly deep-equal:\n2026-11-12T04:49:41.0625696Z     + actual - expected\n2026-11-12T04:49:41.0626284Z     \n2026-11-12T04:49:41.0626808Z       {\n2026-11-12T04:49:41.0627523Z         effort: 'high',\n2026-11-12T04:49:41.0628088Z     -   fastMode: false,\n2026-11-12T04:49:41.0628659Z         model: 'opus-5-1m'\n2026-11-12T04:49:41.0629197Z       }\n2026-11-12T04:49:41.0629660Z     \n2026-11-12T04:49:41.0630133Z   code: 'ERR_ASSERTION'\n2026-11-12T04:49:41.0630693Z   name: 'AssertionError'\n2026-11-12T04:49:41.0631247Z   expected:\n2026-11-12T04:49:41.0631755Z     model: 'opus-5-1m'\n2026-11-12T04:49:41.0632298Z     effort: 'high'\n2026-11-12T04:49:41.0632821Z     fastMode: false\n2026-11-12T04:49:41.0633331Z   actual:\n2026-11-12T04:49:41.0633852Z     model: 'opus-5-1m'\n2026-11-12T04:49:41.0634386Z     effort: 'high'\n2026-11-12T04:49:41.0634938Z   operator: 'deepStrictEqual'\n2026-11-12T04:49:41.0635508Z   stack: |-\n2026-11-12T04:49:41.0636646Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/localFastWire.test.ts:26:14)\n2026-11-12T04:49:41.0638147Z     Test.runInAsyncScope (node:async_hooks:214:14)\n2026-11-12T04:49:41.0638960Z     Test.run (node:internal/test_runner/test:1047:25)\n2026-11-12T04:49:41.0639912Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n2026-11-12T04:49:41.0640972Z     Test.postRun (node:internal/test_runner/test:1173:19)\n2026-11-12T04:49:41.0641836Z     Test.run (node:internal/test_runner/test:1101:12)\n2026-11-12T04:49:41.0643049Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n2026-11-12T04:49:41.0643949Z   ...\n2026-11-12T04:49:41.0644756Z # Subtest: local Fast carrier claude never leaks to the other local agent\n2026-11-12T04:49:41.0645847Z ok 763 - local Fast carrier claude never leaks to the other local agent\n2026-11-12T04:49:41.0646623Z   ---\n2026-11-12T04:49:41.0647304Z   duration_ms: 0.339888\n2026-11-12T04:49:41.0647879Z   type: 'test'\n2026-11-12T04:49:41.0648378Z   ...\n2026-11-12T04:49:41.0649222Z # Subtest: local Fast carrier codex preserves saved on with model and effort\n2026-11-12T04:49:41.0650433Z not ok 764 - local Fast carrier codex preserves saved on with model and effort\n2026-11-12T04:49:41.0651254Z   ---\n2026-11-12T04:49:41.0651759Z   duration_ms: 0.582394\n2026-11-12T04:49:41.0652302Z   type: 'test'\n2026-11-12T04:49:41.0653344Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/localFastWire.test.ts:20:5'\n2026-11-12T04:49:41.0654393Z   failureType: 'testCodeFailure'\n2026-11-12T04:49:41.0654962Z   error: |-\n2026-11-12T04:49:41.0655542Z     Expected values to be strictly deep-equal:\n2026-11-12T04:49:41.0656186Z     + actual - expected\n2026-11-12T04:49:41.0656712Z     \n2026-11-12T04:49:41.0657320Z       {\n2026-11-12T04:49:41.0657811Z         effort: 'high',\n2026-11-12T04:49:41.0658369Z     -   fastMode: true,\n2026-11-12T04:49:41.0658932Z         model: 'gpt-5.4'\n2026-11-12T04:49:41.0659480Z       }\n2026-11-12T04:49:41.0659948Z     \n2026-11-12T04:49:41.0660547Z   code: 'ERR_ASSERTION'\n2026-11-12T04:49:41.0661441Z   name: 'AssertionError'\n2026-11-12T04:49:41.0662062Z   expected:\n2026-11-12T04:49:41.0662564Z     model: 'gpt-5.4'\n2026-11-12T04:49:41.0663113Z     effort: 'high'\n2026-11-12T04:49:41.0663629Z     fastMode: true\n2026-11-12T04:49:41.0664121Z   actual:\n2026-11-12T04:49:41.0664599Z     model: 'gpt-5.4'\n2026-11-12T04:49:41.0665120Z     effort: 'high'\n2026-11-12T04:49:41.0665643Z   operator: 'deepStrictEqual'\n2026-11-12T04:49:41.0666220Z   stack: |-\n2026-11-12T04:49:41.0667618Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/localFastWire.test.ts:26:14)\n2026-11-12T04:49:41.0668913Z     Test.runInAsyncScope (node:async_hooks:214:14)\n2026-11-12T04:49:41.0669737Z     Test.run (node:internal/test_runner/test:1047:25)\n2026-11-12T04:49:41.0670749Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n2026-11-12T04:49:41.0671729Z     Test.postRun (node:internal/test_runner/test:1173:19)\n2026-11-12T04:49:41.0672579Z     Test.run (node:internal/test_runner/test:1101:12)\n2026-11-12T04:49:41.0673606Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-12T04:49:41.0674456Z   ...\n2026-11-12T04:49:41.0675347Z # Subtest: local Fast carrier codex preserves saved off with model and effort\n2026-11-12T04:49:41.0676569Z not ok 765 - local Fast carrier codex preserves saved off with model and effort\n2026-11-12T04:49:41.0677591Z   ---\n2026-11-12T04:49:41.0678119Z   duration_ms: 0.68714\n2026-11-12T04:49:41.0678683Z   type: 'test'\n2026-11-12T04:49:41.0679748Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/localFastWire.test.ts:20:5'\n2026-11-12T04:49:41.0680938Z   failureType: 'testCodeFailure'\n2026-11-12T04:49:41.0681602Z   error: |-\n2026-11-12T04:49:41.0682268Z     Expected values to be strictly deep-equal:\n2026-11-12T04:49:41.0683008Z     + actual - expected\n2026-11-12T04:49:41.0683577Z     \n2026-11-12T04:49:41.0684086Z       {\n2026-11-12T04:49:41.0684636Z         effort: 'high',\n2026-11-12T04:49:41.0685246Z     -   fastMode: false,\n2026-11-12T04:49:41.0685845Z         model: 'gpt-5.4'\n2026-11-12T04:49:41.0686432Z       }\n2026-11-12T04:49:41.0686937Z     \n2026-11-12T04:49:41.0687682Z   code: 'ERR_ASSERTION'\n2026-11-12T04:49:41.0688369Z   name: 'AssertionError'\n2026-11-12T04:49:41.0688967Z   expected:\n2026-11-12T04:49:41.0689510Z     model: 'gpt-5.4'\n2026-11-12T04:49:41.0690092Z     effort: 'high'\n2026-11-12T04:49:41.0690690Z     fastMode: false\n2026-11-12T04:49:41.0691563Z   actual:\n2026-11-12T04:49:41.0692177Z     model: 'gpt-5.4'\n2026-11-12T04:49:41.0692799Z     effort: 'high'\n2026-11-12T04:49:41.0693461Z   operator: 'deepStrictEqual'\n2026-11-12T04:49:41.0694113Z   stack: |-\n2026-11-12T04:49:41.0695375Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/localFastWire.test.ts:26:14)\n2026-11-12T04:49:41.0696828Z     Test.runInAsyncScope (node:async_hooks:214:14)\n2026-11-12T04:49:41.0697974Z     Test.run (node:internal/test_runner/test:1047:25)\n2026-11-12T04:49:41.0699105Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n2026-11-12T04:49:41.0700223Z     Test.postRun (node:internal/test_runner/test:1173:19)\n2026-11-12T04:49:41.0701136Z     Test.run (node:internal/test_runner/test:1101:12)\n2026-11-12T04:49:41.0702202Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-12T04:49:41.0703112Z   ...\n2026-11-12T04:49:41.0704002Z # Subtest: local Fast carrier codex never leaks to the other local agent\n2026-11-12T04:49:41.0705261Z ok 766 - local Fast carrier codex never leaks to the other local agent\n2026-11-12T04:49:41.0706165Z   ---\n2026-11-12T04:49:41.0706754Z   duration_ms: 0.195467\n2026-11-12T04:49:41.0707532Z   type: 'test'\n2026-11-12T04:49:41.0708090Z   ...\n2026-11-12T04:49:41.0709127Z # Subtest: local Fast carrier leaves an explicit Reason choice outside both local adapters\n2026-11-12T04:49:41.0710369Z ok 767 - local Fast carrier leaves an explicit Reason choice outside both local adapters\n2026-11-12T04:49:41.0711382Z   ---\n2026-11-12T04:49:41.0712141Z   duration_ms: 0.33043\n2026-11-12T04:49:41.0712841Z   type: 'test'\n2026-11-12T04:49:41.0791398Z   ...\n2026-11-12T04:49:41.0792560Z # Subtest: local Fast carrier does not invent a choice for an untouched chat\n2026-11-12T04:49:41.0794020Z ok 768 - local Fast carrier does not invent a choice for an untouched chat\n2026-11-12T04:49:41.0812175Z   ---\n2026-11-12T04:49:41.0812805Z   duration_ms: 0.199535\n2026-11-12T04:49:41.0813538Z   type: 'test'\n2026-11-12T04:49:41.0823677Z   ...\n2026-11-12T04:49:41.0824785Z # Subtest: local Fast carrier does not forward a stale enabled flag for an unsupported Claude model\n2026-11-12T04:49:41.0826284Z ok 769 - local Fast carrier does not forward a stale enabled flag for an unsupported Claude model\n2026-11-12T04:49:41.0827572Z   ---\n2026-11-12T04:49:41.0828092Z   duration_ms: 0.637486\n2026-11-12T04:49:41.0828665Z   type: 'test'\n2026-11-12T04:49:41.0829201Z   ...\n2026-11-12T04:49:41.0829983Z # Subtest: late mode reads cannot replace the selected chat's state\n2026-11-12T04:49:41.0831059Z ok 770 - late mode reads cannot replace the selected chat's state\n2026-11-12T04:49:41.0831817Z   ---\n2026-11-12T04:49:41.0832292Z   duration_ms: 163.61052\n2026-11-12T04:49:41.0832829Z   type: 'test'\n2026-11-12T04:49:41.0833316Z   ...\n2026-11-12T04:49:41.0834236Z # Subtest: late mode saves stay bound to their original chat and switchback rehydrates\n2026-11-12T04:49:41.0835573Z ok 771 - late mode saves stay bound to their original chat and switchback rehydrates\n2026-11-12T04:49:41.0836469Z   ---\n2026-11-12T04:49:41.0836981Z   duration_ms: 42.244688\n2026-11-12T04:49:41.0837731Z   type: 'test'\n2026-11-12T04:49:41.0838244Z   ...\n2026-11-12T04:49:41.0839150Z # Subtest: a stale toggle callback cannot mutate a chat after selection changes\n2026-11-12T04:49:41.0840395Z ok 772 - a stale toggle callback cannot mutate a chat after selection changes\n2026-11-12T04:49:41.0841316Z   ---\n2026-11-12T04:49:41.0841831Z   duration_ms: 33.540188\n2026-11-12T04:49:41.0842398Z   type: 'test'\n2026-11-12T04:49:41.0842909Z   ...\n2026-11-12T04:49:41.0843736Z # Subtest: a committed plan exit event outranks an earlier mode read\n2026-11-12T04:49:41.0844828Z ok 773 - a committed plan exit event outranks an earlier mode read\n2026-11-12T04:49:41.0845600Z   ---\n2026-11-12T04:49:41.0846094Z   duration_ms: 32.237894\n2026-11-12T04:49:41.0846636Z   type: 'test'\n2026-11-12T04:49:41.0847282Z   ...\n2026-11-12T04:49:41.0848658Z # Subtest: inline code renders as a code chip and lists as list items\n2026-11-12T04:49:41.0849988Z ok 774 - inline code renders as a code chip and lists as list items\n2026-11-12T04:49:41.0850895Z   ---\n2026-11-12T04:49:41.0851478Z   duration_ms: 33.185653\n2026-11-12T04:49:41.0852142Z   type: 'test'\n2026-11-12T04:49:41.0852745Z   ...\n2026-11-12T04:49:41.0853724Z # Subtest: a fenced block with a known language is highlighted with hljs classes\n2026-11-12T04:49:41.0854979Z ok 775 - a fenced block with a known language is highlighted with hljs classes\n2026-11-12T04:49:41.0855813Z   ---\n2026-11-12T04:49:41.0856342Z   duration_ms: 17.848513\n2026-11-12T04:49:41.0856903Z   type: 'test'\n2026-11-12T04:49:41.0857632Z   ...\n2026-11-12T04:49:41.0858529Z # Subtest: Mermaid keeps a readable copyable source fallback before client rendering\n2026-11-12T04:49:41.0859773Z ok 776 - Mermaid keeps a readable copyable source fallback before client rendering\n2026-11-12T04:49:41.0860586Z   ---\n2026-11-12T04:49:41.0861097Z   duration_ms: 3.072958\n2026-11-12T04:49:41.0861644Z   type: 'test'\n2026-11-12T04:49:41.0862133Z   ...\n2026-11-12T04:49:41.0862961Z # Subtest: partial Mermaid input remains readable during server rendering\n2026-11-12T04:49:41.0864104Z ok 777 - partial Mermaid input remains readable during server rendering\n2026-11-12T04:49:41.0864896Z   ---\n2026-11-12T04:49:41.0865374Z   duration_ms: 1.974346\n2026-11-12T04:49:41.0865900Z   type: 'test'\n2026-11-12T04:49:41.0866382Z   ...\n2026-11-12T04:49:41.0867301Z # Subtest: a fenced block with an unknown language stays plain text\n2026-11-12T04:49:41.0868337Z ok 778 - a fenced block with an unknown language stays plain text\n2026-11-12T04:49:41.0869359Z   ---\n2026-11-12T04:49:41.0869861Z   duration_ms: 2.209959\n2026-11-12T04:49:41.0870583Z   type: 'test'\n2026-11-12T04:49:41.0871125Z   ...\n2026-11-12T04:49:41.0871961Z # Subtest: a one-line fence is still a block (its text ends with a newline)\n2026-11-12T04:49:41.0873062Z ok 779 - a one-line fence is still a block (its text ends with a newline)\n2026-11-12T04:49:41.0873839Z   ---\n2026-11-12T04:49:41.0874339Z   duration_ms: 9.022667\n2026-11-12T04:49:41.0874877Z   type: 'test'\n2026-11-12T04:49:41.0875368Z   ...\n2026-11-12T04:49:41.0876149Z # Subtest: soft line breaks become <br> (remark-breaks), like Conductor\n2026-11-12T04:49:41.0877411Z ok 780 - soft line breaks become <br> (remark-breaks), like Conductor\n2026-11-12T04:49:41.0878246Z   ---\n2026-11-12T04:49:41.0878798Z   duration_ms: 2.477691\n2026-11-12T04:49:41.0879398Z   type: 'test'\n2026-11-12T04:49:41.0879929Z   ...\n2026-11-12T04:49:41.0880701Z # Subtest: GFM tables, strikethrough and autolinks render\n2026-11-12T04:49:41.0881696Z ok 781 - GFM tables, strikethrough and autolinks render\n2026-11-12T04:49:41.0882498Z   ---\n2026-11-12T04:49:41.0883071Z   duration_ms: 10.119626\n2026-11-12T04:49:41.0883668Z   type: 'test'\n2026-11-12T04:49:41.0884200Z   ...\n2026-11-12T04:49:41.0885025Z # Subtest: an inline-code URL becomes a link around the code chip\n2026-11-12T04:49:41.0886115Z ok 782 - an inline-code URL becomes a link around the code chip\n2026-11-12T04:49:41.0886904Z   ---\n2026-11-12T04:49:41.0887689Z   duration_ms: 3.538242\n2026-11-12T04:49:41.0888347Z   type: 'test'\n2026-11-12T04:49:41.0888896Z   ...\n2026-11-12T04:49:41.0889577Z # Subtest: raw HTML is escaped, never rendered\n2026-11-12T04:49:41.0890517Z ok 783 - raw HTML is escaped, never rendered\n2026-11-12T04:49:41.0891224Z   ---\n2026-11-12T04:49:41.0891765Z   duration_ms: 3.900772\n2026-11-12T04:49:41.0892345Z   type: 'test'\n2026-11-12T04:49:41.0892936Z   ...\n2026-11-12T04:49:41.0893663Z # Subtest: javascript: links are neutralised\n2026-11-12T04:49:41.0894518Z ok 784 - javascript: links are neutralised\n2026-11-12T04:49:41.0895202Z   ---\n2026-11-12T04:49:41.0895739Z   duration_ms: 3.775787\n2026-11-12T04:49:41.0896394Z   type: 'test'\n2026-11-12T04:49:41.0896961Z   ...\n2026-11-12T04:49:41.0898079Z # Subtest: plain workspace paths render as file buttons without backticks\n2026-11-12T04:49:41.0899308Z ok 785 - plain workspace paths render as file buttons without backticks\n2026-11-12T04:49:41.0900516Z   ---\n2026-11-12T04:49:41.0901084Z   duration_ms: 2.233643\n2026-11-12T04:49:41.0901647Z   type: 'test'\n2026-11-12T04:49:41.0902128Z   ...\n2026-11-12T04:49:41.0903041Z # Subtest: plain file buttons invoke onOpenFile rather than the external link callback\n2026-11-12T04:49:41.0904300Z ok 786 - plain file buttons invoke onOpenFile rather than the external link callback\n2026-11-12T04:49:41.0905168Z   ---\n2026-11-12T04:49:41.0905671Z   duration_ms: 29.064136\n2026-11-12T04:49:41.0906225Z   type: 'test'\n2026-11-12T04:49:41.0906719Z   ...\n2026-11-12T04:49:41.0907799Z # Subtest: plain file paths keep punctuation and multiple targets in order\n2026-11-12T04:49:41.0909028Z ok 787 - plain file paths keep punctuation and multiple targets in order\n2026-11-12T04:49:41.0909906Z   ---\n2026-11-12T04:49:41.0910528Z   duration_ms: 2.541531\n2026-11-12T04:49:41.0911143Z   type: 'test'\n2026-11-12T04:49:41.0911700Z   ...\n2026-11-12T04:49:41.0912722Z # Subtest: comma-adjacent bare relative paths keep both targets and the comma\n2026-11-12T04:49:41.0913995Z ok 788 - comma-adjacent bare relative paths keep both targets and the comma\n2026-11-12T04:49:41.0914876Z   ---\n2026-11-12T04:49:41.0915426Z   duration_ms: 1.568644\n2026-11-12T04:49:41.0916018Z   type: 'test'\n2026-11-12T04:49:41.0916558Z   ...\n2026-11-12T04:49:41.0917650Z # Subtest: a colon before a bare relative path stays text beside its file button\n2026-11-12T04:49:41.0918892Z ok 789 - a colon before a bare relative path stays text beside its file button\n2026-11-12T04:49:41.0919726Z   ---\n2026-11-12T04:49:41.0920736Z   duration_ms: 1.18283\n2026-11-12T04:49:41.0921409Z   type: 'test'\n2026-11-12T04:49:41.0921987Z   ...\n2026-11-12T04:49:41.0922964Z # Subtest: punctuation-adjacent file buttons invoke ordered file callbacks only\n2026-11-12T04:49:41.0924278Z ok 790 - punctuation-adjacent file buttons invoke ordered file callbacks only\n2026-11-12T04:49:41.0925214Z   ---\n2026-11-12T04:49:41.0925786Z   duration_ms: 2.914821\n2026-11-12T04:49:41.0926393Z   type: 'test'\n2026-11-12T04:49:41.0926978Z   ...\n2026-11-12T04:49:41.0928154Z # Subtest: space and parenthesis delimiters retain ordinary relative file targets\n2026-11-12T04:49:41.0929464Z ok 791 - space and parenthesis delimiters retain ordinary relative file targets\n2026-11-12T04:49:41.0930430Z   ---\n2026-11-12T04:49:41.0931025Z   duration_ms: 1.64078\n2026-11-12T04:49:41.0931668Z   type: 'test'\n2026-11-12T04:49:41.0932259Z   ...",
+    "total_lines": 20865,
+    "from_line": 4858,
+    "line_offset": 0,
+    "next_line": 5169,
+    "next_line_offset": 0
+  }
+}

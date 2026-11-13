@@ -1,0 +1,48 @@
+{
+  "author": "Conductor Rebuild",
+  "checked_main": "f3a52c4aaa59d12e2d0050e2997174be30a59cac",
+  "computer_uuid": "00637189-5c55-416e-b457-ed7419fb739a",
+  "recorded_at": "2026-11-12T10:18:50.779918+00:00",
+  "fixture_sha256_before_and_after": "1b6157500cf020ede46da5477325774f099ce0a47dff52c44560c1be36f4c53c",
+  "dependency_lock_sha256_before_and_after": "33bfaf38a46cedeb4c28f81d702e0a8c44416e3dec55583b9568d8c4a88569db",
+  "exact_pins": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-test-renderer": "18.3.1",
+    "typescript": "5.9.3",
+    "jsdom": "26.1.0",
+    "@testing-library/user-event": "14.6.1",
+    "@testing-library/dom": "10.4.1"
+  },
+  "root_package_sha256": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+  "root_lock_sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+  "root_manifests_and_four_adjacent_fixtures_unchanged": true,
+  "red": {
+    "runs": 1,
+    "exit": 1,
+    "intended_failures": 2,
+    "controls_passed": 4
+  },
+  "green": {
+    "runs": 1,
+    "exit": 0,
+    "passed": 6,
+    "failed": 0
+  },
+  "adjacent_copy": {
+    "runs": 1,
+    "exit": 0,
+    "passed": 9,
+    "failed": 0
+  },
+  "adjacent_key_link": {
+    "runs": 1,
+    "exit": 0,
+    "passed": 4,
+    "failed": 0
+  },
+  "admission": "604d9d6a-e2ea-4a57-acfb-b9f9f442dab1; metadata sequencing accepted ca880f7c-9d9f-49f6-b1c9-200deb7758be",
+  "all_foreground_checks_terminal": true,
+  "native_provider_package_acceptance": "not run / unverified; outside frozen #992 package cut",
+  "refresh_dom_checks": "not admitted; not run"
+}

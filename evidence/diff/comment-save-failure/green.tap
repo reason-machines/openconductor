@@ -1,0 +1,58 @@
+COMMAND: timeout 60s node --test --test-concurrency=1 src/features/diff/commentSaveFailure.test.ts
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: existing-comment Error save rejection notifies once and retains body and draft
+ok 1 - existing-comment Error save rejection notifies once and retains body and draft
+  ---
+  duration_ms: 209.227863
+  type: 'test'
+  ...
+# Subtest: existing-comment string save rejection notifies once and retains body and draft
+ok 2 - existing-comment string save rejection notifies once and retains body and draft
+  ---
+  duration_ms: 74.701248
+  type: 'test'
+  ...
+# Subtest: pending save has no early feedback or dismissal, then notifies once on rejection
+ok 3 - pending save has no early feedback or dismissal, then notifies once on rejection
+  ---
+  duration_ms: 76.492546
+  type: 'test'
+  ...
+# Subtest: successful save persists and closes only the edited draft without failure feedback
+ok 4 - successful save persists and closes only the edited draft without failure feedback
+  ---
+  duration_ms: 60.44372
+  type: 'test'
+  ...
+# Subtest: rejected save followed by successful retry adds no extra notification
+ok 5 - rejected save followed by successful retry adds no extra notification
+  ---
+  duration_ms: 68.89994
+  type: 'test'
+  ...
+# Subtest: dirty cancellation, keep, discard and blank controls never save or notify
+ok 6 - dirty cancellation, keep, discard and blank controls never save or notify
+  ---
+  duration_ms: 70.858917
+  type: 'test'
+  ...
+# Subtest: one failed save neither persists nor clears the other comment's draft
+ok 7 - one failed save neither persists nor clears the other comment's draft
+  ---
+  duration_ms: 61.699681
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 981.070564
+EXIT: 0

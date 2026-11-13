@@ -1,0 +1,782 @@
+{
+  "unit": "ACQ-SIDEBAR-ROW-RENAME-271-07-COMMIT",
+  "producer": "Conductor Rebuild",
+  "current_main": "47ff396804e2f04674c77a9128592555a3433ed9",
+  "classification": "SOURCE_CANDIDATE_PENDING_HOSTED_JS_AND_RUST_WITNESS",
+  "reference_assets": [
+    {
+      "name": "renderer",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    {
+      "name": "shared-index",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  ],
+  "reference_provenance": {
+    "renderer_parent_REA": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "shared_index_original_upload": "8461d345-2540-4202-9aa5-a90cd17ad479",
+    "limits": "Exact retained renderer/shared-index bytes used, import/export binding verified. No new real-app acquisition or REA engine invocation."
+  },
+  "reference_spans": [
+    {
+      "name": "D9e",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7356258,
+        7357851
+      ],
+      "bytes": 1593,
+      "sha256": "6749cd651553318fd3c5bc1df59af226790e3e193e641e0fd4e747e716f78776",
+      "file": "D9e.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "Aao",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7345831,
+        7354118
+      ],
+      "bytes": 8287,
+      "sha256": "9af62d9c3b16d666695a2d79ae20419105797c59f34f41682113acbdd19ca163",
+      "file": "Aao.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "wya",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11050663,
+        11050953
+      ],
+      "bytes": 290,
+      "sha256": "0193a247b83cdf8b14b002120d6ed2198413e455b72927472814731bc50b3d20",
+      "file": "wya.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "Sya",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11050953,
+        11054212
+      ],
+      "bytes": 3259,
+      "sha256": "386b7a5a762fc5650d92c93ac2065b18b5c93d380e29829c3c31399fd761cbf6",
+      "file": "Sya.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "Cya",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11054260,
+        11054301
+      ],
+      "bytes": 41,
+      "sha256": "ca36c775dea159ea81d0a48eeb3b0b5487b0397fb54269bd0c01b005d398b35d",
+      "file": "Cya.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "Eya",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11054212,
+        11054260
+      ],
+      "bytes": 48,
+      "sha256": "1596da969b6be7ba508e366bd2eb439327c71005d782b65d631df918ccb4499a",
+      "file": "Eya.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "Qj",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9940145,
+        9943650
+      ],
+      "bytes": 3505,
+      "sha256": "15ac5f9924551f1ca7ea271fbc562faa0de62d9c97ca7112dd74256e52160121",
+      "file": "Qj.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "identity-handler",
+      "asset": "renderer",
+      "utf8_half_open": [
+        674926,
+        674995
+      ],
+      "bytes": 69,
+      "sha256": "4283e46687b05b8b24d9071e15301030bd57ac48bb3f7b129375606bfeaaca70",
+      "file": "identity-handler.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "NYt",
+      "asset": "shared-index",
+      "utf8_half_open": [
+        3303355,
+        3303486
+      ],
+      "bytes": 131,
+      "sha256": "df9a4a4a9a20a477cac7d59a966f267e2dea2afda6e95cba47306f4d3b748a7a",
+      "file": "NYt.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "QQe",
+      "asset": "shared-index",
+      "utf8_half_open": [
+        1037032,
+        1037165
+      ],
+      "bytes": 133,
+      "sha256": "36bc872ba6b0107ac697918df30ca6b397e377f3c0516b736eef1a1812dc0c05",
+      "file": "QQe.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "XQe",
+      "asset": "shared-index",
+      "utf8_half_open": [
+        1037165,
+        1037307
+      ],
+      "bytes": 142,
+      "sha256": "6df0f811dbdd1ddb6555a4e6a7a41aa1c56c173938e630e22b40068794ddcd97",
+      "file": "XQe.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "RXe",
+      "asset": "shared-index",
+      "utf8_half_open": [
+        1074126,
+        1075070
+      ],
+      "bytes": 944,
+      "sha256": "50544bfdb594475517d954ea63902ce1b7bb3effaef0617766585d6376373f17",
+      "file": "RXe.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "SXe",
+      "asset": "shared-index",
+      "utf8_half_open": [
+        1049859,
+        1051299
+      ],
+      "bytes": 1440,
+      "sha256": "542443cdeb20d7923d76f556261fc1e7929b3814d036c13655e06e620d4defb4",
+      "file": "SXe.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "Tfe",
+      "asset": "shared-index",
+      "utf8_half_open": [
+        3302898,
+        3303355
+      ],
+      "bytes": 457,
+      "sha256": "0c9a5e877be79fc53388cf230139d2d372a3fb23d2e31cefd192456478b5f676",
+      "file": "Tfe.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "JQe",
+      "asset": "shared-index",
+      "utf8_half_open": [
+        1037307,
+        1038343
+      ],
+      "bytes": 1036,
+      "sha256": "a424b55e825ca9737cb8ca1eec58364ac6f6a217a048b7185b3fb6f8126d0a44",
+      "file": "JQe.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "EXe",
+      "asset": "shared-index",
+      "utf8_half_open": [
+        1051789,
+        1052572
+      ],
+      "bytes": 783,
+      "sha256": "5709c95d9095bffd0fbf386993590c8c02a11b88113bde1600475ab3612d637c",
+      "file": "EXe.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "rename-method",
+      "asset": "shared-index",
+      "utf8_half_open": [
+        1063277,
+        1063371
+      ],
+      "bytes": 94,
+      "sha256": "30ca2ed872d25ab86fc0506698901d564397d4bebf8d38751e6e3682cee1c108",
+      "file": "rename-method.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "service-factory",
+      "asset": "shared-index",
+      "utf8_half_open": [
+        3279174,
+        3283769
+      ],
+      "bytes": 4595,
+      "sha256": "8d308c32af4184cf7e5c8e96ad6f9c120f5928567626184bb5482d3555533206",
+      "file": "service-factory.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "service-binding",
+      "asset": "shared-index",
+      "utf8_half_open": [
+        3277919,
+        3277968
+      ],
+      "bytes": 49,
+      "sha256": "b948acbbae73ea8ea2265ee5a199aaf2d3e07a7fc1db295a508f188cf3b58202",
+      "file": "service-binding.txt",
+      "exact_asset_match": true
+    }
+  ],
+  "source_pins": [
+    {
+      "path": "src/App.tsx",
+      "commit": "47ff396804e2f04674c77a9128592555a3433ed9",
+      "bytes": 38825,
+      "sha256": "3dc27eaa48b07ced25b188ebdef219744220a2008176c23709f08983ed226df6",
+      "file": "src__App.tsx"
+    },
+    {
+      "path": "src/components/Sidebar.tsx",
+      "commit": "47ff396804e2f04674c77a9128592555a3433ed9",
+      "bytes": 35324,
+      "sha256": "55beddec18a75938f2f31839b84493a8a12f4d928541cb8b67ecc2080a0199b4",
+      "file": "src__components__Sidebar.tsx"
+    },
+    {
+      "path": "src/components/SidebarWorkspaceRow.tsx",
+      "commit": "47ff396804e2f04674c77a9128592555a3433ed9",
+      "bytes": 12774,
+      "sha256": "a1e8da72a0e928557600ae57ca64c29d2a1d936a3af267b306a0e17f8ce0f36c",
+      "file": "src__components__SidebarWorkspaceRow.tsx"
+    },
+    {
+      "path": "src/components/WorkspaceContextMenu.tsx",
+      "commit": "47ff396804e2f04674c77a9128592555a3433ed9",
+      "bytes": 2404,
+      "sha256": "b6996128b229fb889cb3b2bd206a6ab1b6d9d58d7d373cf6710abab92c4c33ab",
+      "file": "src__components__WorkspaceContextMenu.tsx"
+    },
+    {
+      "path": "src/components/WorkspaceActionsMenu.tsx",
+      "commit": "47ff396804e2f04674c77a9128592555a3433ed9",
+      "bytes": 6054,
+      "sha256": "f933371c49393f41e3cd123e1276a669649d5e58a12203f2aba4cd99cbde8cd9",
+      "file": "src__components__WorkspaceActionsMenu.tsx"
+    },
+    {
+      "path": "src/components/RenameWorkspaceDialog.tsx",
+      "commit": "47ff396804e2f04674c77a9128592555a3433ed9",
+      "bytes": 4944,
+      "sha256": "41b221285a9ecd3bea6aff29997c37c64af1c9918671ea547ae8732a12159078",
+      "file": "src__components__RenameWorkspaceDialog.tsx"
+    },
+    {
+      "path": "src/state/workspaceRename.ts",
+      "commit": "47ff396804e2f04674c77a9128592555a3433ed9",
+      "bytes": 3199,
+      "sha256": "9c4a5ad85a7566e26a6ed7c59289bf4de07795cb8bdc171ea7c9ed66e42d20b3",
+      "file": "src__state__workspaceRename.ts"
+    },
+    {
+      "path": "src/state/store.ts",
+      "commit": "47ff396804e2f04674c77a9128592555a3433ed9",
+      "bytes": 31520,
+      "sha256": "6071be71368fa5a141ded7e6de42398ba86900638fe719fd2e44c296545cde96",
+      "file": "src__state__store.ts"
+    },
+    {
+      "path": "src/backend.ts",
+      "commit": "47ff396804e2f04674c77a9128592555a3433ed9",
+      "bytes": 12743,
+      "sha256": "4b13170fcaffce5d828de400369164e2dfdcc3d3aaa818a3860e0a6e826ce237",
+      "file": "src__backend.ts"
+    },
+    {
+      "path": "src/workspace/api.ts",
+      "commit": "47ff396804e2f04674c77a9128592555a3433ed9",
+      "bytes": 9892,
+      "sha256": "7ffebf424d3a6cd7e6be0086d8e9dd3e14b6c41b23365f6553bbb03f9e521899",
+      "file": "src__workspace__api.ts"
+    },
+    {
+      "path": "src-tauri/src/sidebar_rename_commands.rs",
+      "commit": "47ff396804e2f04674c77a9128592555a3433ed9",
+      "bytes": 6033,
+      "sha256": "703767fb60d15dcd8519cded33ec4ac5456f43856bf92de98bff4b6374baec75",
+      "file": "src-tauri__src__sidebar_rename_commands.rs"
+    }
+  ],
+  "source_checks": [
+    {
+      "name": "original_sidebar_wrapper_menu_same_id",
+      "basis": "Qj",
+      "source": "children:p.jsx(D9e,{localWorkspaceId:i})",
+      "relative_utf8_start": 944,
+      "sha256": "c3801cddbec536f113aba63a2fdee81ff1bd8b1978f82978bf2bfd0815fc925e"
+    },
+    {
+      "name": "original_menu_passes_local_id",
+      "basis": "D9e",
+      "source": "p.jsx(Aao,{localWorkspaceId:n,workspaceId:r.id",
+      "relative_utf8_start": 1135,
+      "sha256": "4d950dba5a1e8165e7ade915cacec55060a0f5af73b0de91e416ffdd1518d0a5"
+    },
+    {
+      "name": "original_Rename_opens_dialog",
+      "basis": "Aao",
+      "source": "onClick:()=>{nr.openDialog(sJ,{localWorkspaceId:n})},children:[p.jsx(Cm,{}),\"Rename\"]",
+      "relative_utf8_start": 6003,
+      "sha256": "715fdfde56a49019d93264295b81d8480787361bac523e30250441ea11e313ec"
+    },
+    {
+      "name": "original_named_dialog_forwards_target",
+      "basis": "wya",
+      "source": "e&&p.jsx(Sya,{localWorkspaceId:e.localWorkspaceId})",
+      "relative_utf8_start": 58,
+      "sha256": "3b7777696208f384a0040009ccf03056ec1cd1989475ad21bc1bd3a3e908dc52"
+    },
+    {
+      "name": "original_dialog_uses_rename_hook",
+      "basis": "Sya",
+      "source": "{localWorkspaceId:n}=t,i=N8r()",
+      "relative_utf8_start": 33,
+      "sha256": "98e0f1aa61ea90bcf2b4765539f6ff893920c94f00ce24f250794728c7600367"
+    },
+    {
+      "name": "original_trim_and_empty_unchanged_close",
+      "basis": "Sya",
+      "source": "const se=x.trim();if(!se||se===v){P();return}",
+      "relative_utf8_start": 1154,
+      "sha256": "5ae8be19f534658d1cffebc721ca0ae442a35b826935443efa287ee9d6b79c09"
+    },
+    {
+      "name": "original_workspace_mutation_awaited",
+      "basis": "Sya",
+      "source": "await i.mutateAsync({localWorkspaceId:n,newWorkspaceName:se,source:\"user\"})",
+      "relative_utf8_start": 1203,
+      "sha256": "444ea77f5cf4ab44d0d74e4c3ebd6d7494d758d5c784d7cea0f811fa63f6700d"
+    },
+    {
+      "name": "original_name_failure_closes_before_branch",
+      "basis": "Sya",
+      "source": "dv(\"Failed to rename workspace\",{description:rc(ce)}),P();return",
+      "relative_utf8_start": 1289,
+      "sha256": "07b224d6a0b161bb990e304d8c90c5e83e017d96c15d6c9b293a10eb910cf033"
+    },
+    {
+      "name": "original_branch_mutation_after_name",
+      "basis": "Sya",
+      "source": "await r.mutateAsync({localWorkspaceId:n,branchName:ce.branchName,oldBranchName:ce.oldBranchName,source:\"user\"})",
+      "relative_utf8_start": 1436,
+      "sha256": "eb905c47de79d5a1de7f1123a9c65116e392c2b5a6e94ab4dc85a53193e37ac7"
+    },
+    {
+      "name": "original_Enter_calls_submit",
+      "basis": "Sya",
+      "source": "se.key===\"Enter\"&&(se.preventDefault(),B().fireAndForget())",
+      "relative_utf8_start": 1712,
+      "sha256": "b45546932ce2c5da948ee38244ca6cf4fee7491228ea289f90aa997d44511419"
+    },
+    {
+      "name": "original_Enter_wrapper_is_identity",
+      "basis": "identity-handler",
+      "source": "function hEe(t){return t}const dBr=hEe,pEe=hEe,_v=hEe",
+      "relative_utf8_start": 0,
+      "sha256": "faf36b3a2f0c03c1fc7b4b427661a95ac4d749e5ecc37588587772d4b28f67ab"
+    },
+    {
+      "name": "original_hook_mutates_Tfe",
+      "basis": "NYt",
+      "source": "e={mutationFn:Tfe}",
+      "relative_utf8_start": 91,
+      "sha256": "ac1e506b11d8cdb8509d3b137ab8d6fb31bf76e0ef211ae4a323fc6bbfe76216"
+    },
+    {
+      "name": "original_Tfe_awaits_store_rename",
+      "basis": "Tfe",
+      "source": "await we.renameWorkspace({localWorkspaceId:t,newWorkspaceName:e,source:s})",
+      "relative_utf8_start": 76,
+      "sha256": "aa04053f72f3055c9eed65833f3460af4a72c8cc9af1df7424a53c369c23f48a"
+    },
+    {
+      "name": "original_service_factory_installs_instance",
+      "basis": "service-factory",
+      "source": "r=RXe(n);return hqe(r),we=r,r}",
+      "relative_utf8_start": 4565,
+      "sha256": "c0aaead1a5b0cb5e511a3873f5bfba1b2e996be9e73e49bf4cf5560566fdcf3e"
+    },
+    {
+      "name": "original_service_factory_constructs_IXe",
+      "basis": "RXe",
+      "source": "return new IXe(t,fKe())",
+      "relative_utf8_start": 16,
+      "sha256": "6e2b482149e30762e0e49f98c138cceb61808ae1ce7e9b727f4aab496c7c0aa8"
+    },
+    {
+      "name": "original_store_serializes_target",
+      "basis": "rename-method",
+      "source": "await this.queueTaskForWorkspace(e.localWorkspaceId,()=>JQe(this,e))",
+      "relative_utf8_start": 25,
+      "sha256": "38ec1f395d534291d9f516f092c680bc62c87b6a6b8e08308f70416bd7cf1a47"
+    },
+    {
+      "name": "original_JQe_reads_selected_workspace",
+      "basis": "JQe",
+      "source": "const r=await t.getWorkspace(e),i=QQe(s),o=r.workspaceName??r.directoryName",
+      "relative_utf8_start": 78,
+      "sha256": "63bb8939d5f996f4232d9047a43a590956c6890fbf3a9263643da11735f1165a"
+    },
+    {
+      "name": "original_JQe_validates_directory",
+      "basis": "JQe",
+      "source": "const a=XQe(i);if(a)throw new Error(a)",
+      "relative_utf8_start": 191,
+      "sha256": "1998e655c351086049469c44043236dc9dd8a35908a2cb79f3e8bab5df96d2f5"
+    },
+    {
+      "name": "original_JQe_stores_display_name_and_user_flag",
+      "basis": "JQe",
+      "source": "const c=s===i?null:s,l=n===\"user\"?1:0",
+      "relative_utf8_start": 230,
+      "sha256": "78c9f8ce43554c195304a0716b05db411e1e2219b1335d9baa196b3da8d9331e"
+    },
+    {
+      "name": "original_JQe_calls_local_server",
+      "basis": "JQe",
+      "source": "else await t.server(r.host).renameWorkspace(d)",
+      "relative_utf8_start": 942,
+      "sha256": "20e520d04bb250551963856b3e23f9c9b43de31016f4162c297c8b2f89812c71"
+    },
+    {
+      "name": "original_local_server_handles_ready_and_setup",
+      "basis": "SXe",
+      "source": "if(s.state===\"ready\"||s.state===\"setting_up\")",
+      "relative_utf8_start": 817,
+      "sha256": "6d84ba4458a79ba711c9e4ee99949321e2015d1aa55d4567435d474f5e9fb823"
+    },
+    {
+      "name": "original_local_server_awaits_record",
+      "basis": "SXe",
+      "source": "await EXe(t,{workspace:s,rename:",
+      "relative_utf8_start": 863,
+      "sha256": "d00e620984662093c10e098ed314f022f679ff661764c14e71102b3cf46c6d68"
+    },
+    {
+      "name": "original_record_updates_name_and_user_flag",
+      "basis": "EXe",
+      "source": "workspace_name = ?,\n             user_set_workspace_name = CASE WHEN ? = 1 THEN 1 ELSE user_set_workspace_name END",
+      "relative_utf8_start": 438,
+      "sha256": "c6858f6d082296ad2b6d472ae96199de0299f9a2824925040400886de108cade"
+    },
+    {
+      "name": "current_sidebar_default_target",
+      "basis": "src/components/Sidebar.tsx",
+      "source": "((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);",
+      "relative_utf8_start": 14039,
+      "sha256": "b3e0f64eee01971319b66a173c40498969287241ecaa0e157df1b30bbfde09a0"
+    },
+    {
+      "name": "current_sidebar_default_rename_used",
+      "basis": "src/components/Sidebar.tsx",
+      "source": "onRename: onRenameWorkspace ?? openRename,",
+      "relative_utf8_start": 15399,
+      "sha256": "2c7e2f2feb4f04419ea1b6bb41b478a22ea6497c893a4d7f8b1c3cdf089806d6"
+    },
+    {
+      "name": "current_row_forwards_rename",
+      "basis": "src/components/SidebarWorkspaceRow.tsx",
+      "source": "onRename={onRename}",
+      "relative_utf8_start": 12596,
+      "sha256": "2056445204ca20152e6b9bc472f5876b9cc7d688098170aca69b4b69e7487b56"
+    },
+    {
+      "name": "current_context_target",
+      "basis": "src/components/WorkspaceContextMenu.tsx",
+      "source": "rename: onRename && (() => onRename(repoId, ws)),",
+      "relative_utf8_start": 1909,
+      "sha256": "0f295abc2f35fe2d3d39a9c188133d44e701f9f21421fedbe90d3eee004b7ed1"
+    },
+    {
+      "name": "current_menu_rename",
+      "basis": "src/components/WorkspaceActionsMenu.tsx",
+      "source": "onSelect={actions.rename}>Rename</MenuItem>",
+      "relative_utf8_start": 5625,
+      "sha256": "7e2ac6920a0d934d52f7f9f9fa90d86cf1bed60eb54f8f6ecfce0a479e290f24"
+    },
+    {
+      "name": "current_submit_trims",
+      "basis": "src/components/RenameWorkspaceDialog.tsx",
+      "source": "const name = value.trim();",
+      "relative_utf8_start": 2352,
+      "sha256": "130d6e2188a2e98f9631b5c054993fee08003e02c9a5aaf90bb620d9de950188"
+    },
+    {
+      "name": "current_empty_unchanged_closes",
+      "basis": "src/components/RenameWorkspaceDialog.tsx",
+      "source": "if (!name || name === initial) return onClose();",
+      "relative_utf8_start": 2383,
+      "sha256": "c6011ded2c33f5ef5895c6cb78c016bdbfe82802d5219adb0e2a59ecb5c1fb4f"
+    },
+    {
+      "name": "current_record_awaited",
+      "basis": "src/components/RenameWorkspaceDialog.tsx",
+      "source": "await renameWorkspaceRecord(ws.id, plan.newDirectoryName, plan.workspaceName);",
+      "relative_utf8_start": 2741,
+      "sha256": "e6740ed52af041e55102a5e640ad8c9db76cac2a660c477577ff3d9dba7dfbc9"
+    },
+    {
+      "name": "current_record_failure_closes",
+      "basis": "src/components/RenameWorkspaceDialog.tsx",
+      "source": "onError(`Failed to rename workspace: ${errorText(e)}`);\n      return onClose();",
+      "relative_utf8_start": 2844,
+      "sha256": "b276ace32fc27f862a246368dd5d906ad70359cd7cccd3293b63feac1a7363bd"
+    },
+    {
+      "name": "current_record_success_dispatches_target",
+      "basis": "src/components/RenameWorkspaceDialog.tsx",
+      "source": "dispatch({ type: \"renameWorkspace\", ...ids, name, userSet: true, keepPlaceholder: true });",
+      "relative_utf8_start": 2934,
+      "sha256": "9878b8de718d5c47eeacb7ead3f85f7395c7b6671642eeb4fbf67cfac3805f8f"
+    },
+    {
+      "name": "current_ids_match_dialog_target",
+      "basis": "src/components/RenameWorkspaceDialog.tsx",
+      "source": "const ids = { repoId, workspaceId: ws.id };",
+      "relative_utf8_start": 2681,
+      "sha256": "999070429ace23a0428500e30218c49cea9544d1349ab65e5f274bda4b036445"
+    },
+    {
+      "name": "current_optional_branch_follows_name",
+      "basis": "src/components/RenameWorkspaceDialog.tsx",
+      "source": "await renameWorkspaceBranch(ws.id, branch);",
+      "relative_utf8_start": 3145,
+      "sha256": "d6127a5115663fb38ea1c1beb43a2e79403c033b282b9edaa9a9422fce13c434"
+    },
+    {
+      "name": "current_record_command",
+      "basis": "src/backend.ts",
+      "source": "await invoke(\"db_rename_workspace\", { workspaceId, newDirectoryName, workspaceName, userSet: true });",
+      "relative_utf8_start": 12376,
+      "sha256": "95a7bbb7474359499271d29521e83dd5ba3731b0f0c6760bcc1b3332f81ba6e3"
+    },
+    {
+      "name": "current_reducer_matches_workspace_id",
+      "basis": "src/state/store.ts",
+      "source": "w.id !== action.workspaceId\n          ? w",
+      "relative_utf8_start": 10547,
+      "sha256": "ebf2fbe038da03f41ee37cf91cbb44759c3045ea098d6932b6d8717d8f07d0bb"
+    },
+    {
+      "name": "current_reducer_matches_repository_id",
+      "basis": "src/state/store.ts",
+      "source": "r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(rename) } : r",
+      "relative_utf8_start": 11059,
+      "sha256": "590f72f358e6a76b58cbcd70d4fe1c39aa10af393459c6352f43de1b5719296e"
+    },
+    {
+      "name": "current_reducer_persists_display_name_flag",
+      "basis": "src/state/store.ts",
+      "source": "...(action.userSet && action.name !== undefined ? { userSetWorkspaceName: true } : {})",
+      "relative_utf8_start": 10811,
+      "sha256": "9b6a7e6758440651ba54ad87fbadbd8eb758495cbd7114b4c1443cf25c12f77d"
+    },
+    {
+      "name": "current_backend_validates_before_naming_record",
+      "basis": "src-tauri/src/sidebar_rename_commands.rs",
+      "source": "if !valid_directory_name(&new_directory_name)",
+      "relative_utf8_start": 1786,
+      "sha256": "78fb9774dc563e6518c40aa21285d26ba6113b8e92defa2c92ac657ba9a89a75"
+    },
+    {
+      "name": "current_backend_records_ready_secondary_name",
+      "basis": "src-tauri/src/sidebar_rename_commands.rs",
+      "source": "if ws.state == \"ready\" || ws.state == \"setting_up\"",
+      "relative_utf8_start": 3473,
+      "sha256": "bff713ff85250cb740b5e8a067d544ec9c90092bc24dfa5de267a3d77a5ac771"
+    },
+    {
+      "name": "current_validator_uses_alphanumeric",
+      "basis": "src-tauri/src/sidebar_rename_commands.rs",
+      "source": ".all(|c| c.is_alphanumeric() || c == '_' || c == '-')",
+      "relative_utf8_start": 1277,
+      "sha256": "fec3d0ec15db085f92102f0eea304595c807f13783733445b18525cbf71673a3"
+    }
+  ],
+  "import_export_bindings": [
+    {
+      "symbol": "N8r",
+      "basis": "renderer-import",
+      "source": "sJ as N8r",
+      "utf8_half_open": [
+        65242,
+        65251
+      ],
+      "sha256": "680a2cbb033fa0ff23288c57b04af12d2333350be23b19891002e271b63cf537"
+    },
+    {
+      "symbol": "N8r",
+      "basis": "shared-export",
+      "source": "NYt as sJ",
+      "utf8_half_open": [
+        3491633,
+        3491642
+      ],
+      "sha256": "f88feefffde7eb6a9bd2054eba29a87eda43ef7375f7c562e29cbbf2e0f64cb5"
+    },
+    {
+      "symbol": "O8r",
+      "basis": "renderer-import",
+      "source": "sK as O8r",
+      "utf8_half_open": [
+        65252,
+        65261
+      ],
+      "sha256": "c35a773bf0d820c7c3d06b26ec48fbcbfcb48ca2aa2498cda351d6f3c1520117"
+    },
+    {
+      "symbol": "O8r",
+      "basis": "shared-export",
+      "source": "the as sK",
+      "utf8_half_open": [
+        3491643,
+        3491652
+      ],
+      "sha256": "2ef6104519e79f3e38157494b971b0d52108ca6dca7557a489a8a61f9f6bdefd"
+    }
+  ],
+  "contract": {
+    "entry": "Reference and clone sidebar workspace Rename menu open a workspace-targeted dialog; no inline editor premise.",
+    "submit": "Trim raw input; empty or unchanged closes; changed valid name reaches selected workspace record before optional branch rename.",
+    "failure": "Record failure reports error and closes before optional branch mutation. Native error presentation not observed.",
+    "selected_target": "Original localWorkspaceId passed through dialog/hook/store queue; clone workspaceId/repoId passed to backend and reducer.",
+    "commit": "Reference local server updates DB names/user-set flag (ready/setup use secondary name); current command records DB then frontend reducer updates display name and flag.",
+    "key_wrapper": "Reference _v is identity alias to hEe, not an IME/defaultPrevented guard. No rename IME fix is justified from this wrapper."
+  },
+  "candidate": {
+    "key": "ACQ-SIDEBAR-RENAME-COMBINING-MARK-271-09",
+    "exact_hunk": "src-tauri/src/sidebar_rename_commands.rs::valid_directory_name",
+    "same_input": {
+      "display_name": "q\u0301",
+      "escaped": "q\\u0301",
+      "codepoints": [
+        "U+0071",
+        "U+0301"
+      ],
+      "NFC_unchanged": true,
+      "mark_category": "Mn",
+      "mark_name": "COMBINING ACUTE ACCENT"
+    },
+    "source_difference": "Reference QQe/XQe and current frontend preserve/allow Unicode Mark; current backend has no explicit Mark alternative beyond char.is_alphanumeric().",
+    "status": "STATIC_CANDIDATE_NOT_RUNTIME_REPRODUCED",
+    "required_next_proof": "Owner-deduped hosted regression proving original JS/source predicate and current frontend plan accept q+U0301 while actual Rust valid_directory_name rejects; normal ASCII/diacritics/invalid-name controls unchanged. No local execution allowed in this inquiry.",
+    "not_claimed": "No assertion that every combining mark is rejected, since some marks have Unicode Alphabetic property. No claim from Python str.isalnum about Rust semantics.",
+    "dedupe": "Sent exact candidate to ledger for workspace-persistence owner794 overlap before any repair or exclusive product hunk."
+  },
+  "execution": {
+    "static_python": "PASS",
+    "product_edits": false,
+    "test_edits": false,
+    "Node": "NOT_RUN",
+    "Rust_runtime": "NOT_RUN",
+    "browser": "NOT_RUN",
+    "native": "NOT_RUN",
+    "hosted_dispatch_retry": "NOT_RUN"
+  },
+  "evidence_missing": [
+    "Hosted direct Unicode witness and controls.",
+    "Original/clone native Enter/Escape/blur sequencing, focus and visual parity.",
+    "Actual DB/symlink effects and optional branch rename against installed clone are unrun; no persistence acceptance claimed."
+  ],
+  "implementation_count": 0,
+  "qualification_main": "524c598b34157483e669167ed1f9032cc02fff18",
+  "frozen_parent_packet_sha256": "04aa18a3ae10d1f9a207253af06747818b2625a59bef8765b5156381df697e22",
+  "current_source_pins": [
+    {
+      "path": "src/App.tsx",
+      "commit": "524c598b34157483e669167ed1f9032cc02fff18",
+      "sha256": "3dc27eaa48b07ced25b188ebdef219744220a2008176c23709f08983ed226df6"
+    },
+    {
+      "path": "src/components/Sidebar.tsx",
+      "commit": "524c598b34157483e669167ed1f9032cc02fff18",
+      "sha256": "55beddec18a75938f2f31839b84493a8a12f4d928541cb8b67ecc2080a0199b4"
+    },
+    {
+      "path": "src/components/SidebarWorkspaceRow.tsx",
+      "commit": "524c598b34157483e669167ed1f9032cc02fff18",
+      "sha256": "a1e8da72a0e928557600ae57ca64c29d2a1d936a3af267b306a0e17f8ce0f36c"
+    },
+    {
+      "path": "src/components/WorkspaceContextMenu.tsx",
+      "commit": "524c598b34157483e669167ed1f9032cc02fff18",
+      "sha256": "b6996128b229fb889cb3b2bd206a6ab1b6d9d58d7d373cf6710abab92c4c33ab"
+    },
+    {
+      "path": "src/components/WorkspaceActionsMenu.tsx",
+      "commit": "524c598b34157483e669167ed1f9032cc02fff18",
+      "sha256": "f933371c49393f41e3cd123e1276a669649d5e58a12203f2aba4cd99cbde8cd9"
+    },
+    {
+      "path": "src/components/RenameWorkspaceDialog.tsx",
+      "commit": "524c598b34157483e669167ed1f9032cc02fff18",
+      "sha256": "41b221285a9ecd3bea6aff29997c37c64af1c9918671ea547ae8732a12159078"
+    },
+    {
+      "path": "src/state/workspaceRename.ts",
+      "commit": "524c598b34157483e669167ed1f9032cc02fff18",
+      "sha256": "9c4a5ad85a7566e26a6ed7c59289bf4de07795cb8bdc171ea7c9ed66e42d20b3"
+    },
+    {
+      "path": "src/state/store.ts",
+      "commit": "524c598b34157483e669167ed1f9032cc02fff18",
+      "sha256": "6071be71368fa5a141ded7e6de42398ba86900638fe719fd2e44c296545cde96"
+    },
+    {
+      "path": "src/backend.ts",
+      "commit": "524c598b34157483e669167ed1f9032cc02fff18",
+      "sha256": "4b13170fcaffce5d828de400369164e2dfdcc3d3aaa818a3860e0a6e826ce237"
+    },
+    {
+      "path": "src/workspace/api.ts",
+      "commit": "524c598b34157483e669167ed1f9032cc02fff18",
+      "sha256": "7ffebf424d3a6cd7e6be0086d8e9dd3e14b6c41b23365f6553bbb03f9e521899"
+    },
+    {
+      "path": "src-tauri/src/sidebar_rename_commands.rs",
+      "commit": "524c598b34157483e669167ed1f9032cc02fff18",
+      "sha256": "703767fb60d15dcd8519cded33ec4ac5456f43856bf92de98bff4b6374baec75"
+    }
+  ],
+  "validator_declaration": {
+    "asset": "shared-index",
+    "utf8_half_open": [
+      1036983,
+      1037032
+    ],
+    "sha256": "fe0ea0fd90c4e4d58c55d35d181fab57cb537e3cb3331d64291d70b6a1a7b601",
+    "file": "YQe.txt"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "kind": "original-byte-and-e2e-expectation-reconciliation",
+  "main_checked": "6ea86f222815a43ab12355eee2afbdcd981b2164",
+  "candidate_head": "f5084edfb80edb2f3dca71d9e786fea3f1230e92",
+  "source_archive_sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+  "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "spans": [
+    {
+      "name": "jpa",
+      "sha256": "f339bdf9702ca236ab96391682eeccb54f05f999690c91e2717e43f25d01535f",
+      "matched_original": true
+    },
+    {
+      "name": "Met",
+      "sha256": "e8ff33ba929c09102a235ff68ef6db78a6e0d9c66db5c85df6496c13b2e3ffde",
+      "matched_original": true
+    },
+    {
+      "name": "Mpa",
+      "sha256": "5ac0061d00d19580e3846c6edb584f5d940ed652909c99dac2f54ec3d6f19f69",
+      "matched_original": true
+    },
+    {
+      "name": "Ppa",
+      "sha256": "4bc4bbcb5ae4d8767a22be2aaab0bc0327bc0be9aa5240a3ec0e6152d5c8c3a0",
+      "matched_original": true
+    }
+  ],
+  "frozen_four_case_fixture_sha256": "ba44c1b9f7fe7ec83f7e663ec63923f07423d26098e7a4037ccd763ad44aef70",
+  "fixture_and_product_source_unchanged": true,
+  "hosted_failure": {
+    "job_id": 130623616642,
+    "run_id": 43049843580,
+    "step": "Claude Code chat e2e (stand-in claude, each auth mode)",
+    "assertion": "no login prompt",
+    "line": 263,
+    "setup_and_app_build": "PASS",
+    "import_chat_turn": "PASS",
+    "codex_stand_in_step": "PASS",
+    "old_visibility_assertion": "FAIL"
+  },
+  "e2e_correction": "require exactly one enabled idle Run claude /login button in connected CLI; no login button in API-key mode; no terminal in either mode",
+  "corrected_e2e_result": "PENDING_HOSTED_CI",
+  "native_provider_real_IPC": "NOT_RUN",
+  "local_Node_Rust_browser_provider_execution": "NOT_RUN"
+}

@@ -39,6 +39,19 @@ fn finds_the_first_executable_on_path_then_the_install_folder() {
 }
 
 #[test]
+fn ensured_install_wins_over_a_stale_path_copy() {
+    let root = temp_dir("managed-first");
+    let home = root.join("home");
+    let stale = root.join("path");
+    script(&stale, "", 0o755);
+    let managed = script(&home.join(".local/bin"), "", 0o755);
+    assert_eq!(
+        find_reason_cli(Some(stale.as_os_str()), Some(&home)),
+        Some(managed)
+    );
+}
+
+#[test]
 fn args_put_workspace_before_acp_and_accept_defaults() {
     let cfg = LaunchConfig::new("/usr/local/bin/reason").unwrap();
     assert_eq!(cfg.args(), ["acp", "-y"]);

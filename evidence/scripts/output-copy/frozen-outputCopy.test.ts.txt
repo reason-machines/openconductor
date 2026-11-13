@@ -1,0 +1,237 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { dirname, resolve } from "node:path";
+import test from "node:test";
+import { runInNewContext } from "node:vm";
+import type { ReactElement } from "react";
+import type { ScriptOutput } from "../components/ScriptOutput";
+
+const deps = createRequire(new URL("../../package.json", import.meta.url));
+const React: typeof import("react") = deps("react");
+const ts: typeof import("typescript") = deps("typescript");
+type Renderer = { unmount: () => void };
+const { create, act }: {
+  create: (element: ReactElement, options: { createNodeMock: () => unknown }) => Renderer;
+  act: (callback: () => void | Promise<void>) => Promise<void>;
+} = deps("react-test-renderer");
+type Exports = Record<string, unknown>;
+const sourceModules = new Map<string, { exports: Exports }>();
+
+function loadXterm(id: string): Exports {
+  assert.match(id, /^(browser|common|vs)\//, "confined xterm source module");
+  assert.ok(!id.split("/").includes(".."), "no path escape");
+  const cached = sourceModules.get(id);
+  if (cached) return cached.exports;
+  const path = resolve("node_modules/@xterm/xterm/src", `${id}.ts`);
+  const module = { exports: {} };
+  sourceModules.set(id, module);
+  const output = ts.transpileModule(readFileSync(path, "utf8"), {
+    fileName: path,
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021,
+      experimentalDecorators: true,
+    },
+  }).outputText;
+  const require = (name: string) => {
+    const next = name.startsWith(".")
+      ? resolve(dirname(path), name).slice(resolve("node_modules/@xterm/xterm/src").length + 1).replace(/\\/g, "/")
+      : name;
+    return loadXterm(next);
+  };
+  runInNewContext(`(function(require,module,exports){${output}\n})`, {
+    console, process, setTimeout, clearTimeout, setInterval, clearInterval,
+    queueMicrotask, performance,
+  }, { filename: path })(require, module, module.exports);
+  return module.exports;
+}
+
+const { BufferLine } = loadXterm("common/buffer/BufferLine");
+const { Buffer: XtermBuffer } = loadXterm("common/buffer/Buffer");
+const { SelectionService, SelectionMode } = loadXterm("browser/services/SelectionService");
+const { copyHandler } = loadXterm("browser/Clipboard");
+assert.equal(typeof BufferLine, "function");
+assert.equal(typeof XtermBuffer, "function");
+assert.equal(typeof SelectionService, "function");
+assert.equal(typeof copyHandler, "function");
+assert.ok(SelectionMode && typeof SelectionMode === "object");
+
+type Selection = { lines: string[]; start?: [number, number]; end?: [number, number] };
+type BufferRow = { set: (index: number, cell: [number, string, number, number]) => void };
+function selectionService(input: Selection) {
+  assert.ok(typeof BufferLine === "function" && typeof XtermBuffer === "function" && typeof SelectionService === "function");
+  const rows = input.lines.map((text) => {
+    const line: BufferRow = Reflect.construct(BufferLine, [Math.max(text.length, 1)]);
+    Array.from(text).forEach((character, index) => { line.set(index, [0, character, 1, character.codePointAt(0) ?? 0]); });
+    return line;
+  });
+  const buffer = Object.create(XtermBuffer.prototype, { lines: { value: { get: (index: number) => rows[index] } } });
+  return Object.create(SelectionService.prototype, {
+    _model: { value: { finalSelectionStart: input.start, finalSelectionEnd: input.end } },
+    _activeSelectionMode: { value: Reflect.get(SelectionMode, "NORMAL") },
+    _bufferService: { value: { buffer } },
+  });
+}
+
+class CopyEvent extends Event {
+  constructor(public clipboardData: { setData: (type: string, text: string) => void } | null) {
+    super("copy", { bubbles: true, cancelable: true });
+  }
+}
+
+async function fixture(input: Selection) {
+  const screens: Screen[] = [];
+  const selection = selectionService(input);
+  let fontOff = 0;
+  let scrollbackOff = 0;
+  class Screen {
+    element = new EventTarget();
+    disposed = 0;
+    options: Record<string, unknown>;
+    readonly nativeCopy = (event: Event) => {
+      if (this.getSelection()) Reflect.apply(copyHandler, undefined, [event, selection]);
+    };
+    constructor(options: Record<string, unknown>) { this.options = options; screens.push(this); }
+    loadAddon() {}
+    open() { this.element.addEventListener("copy", this.nativeCopy); }
+    write() {}
+    focus() {}
+    getSelection(): string {
+      const result: unknown = Reflect.get(selection, "selectionText");
+      assert.equal(typeof result, "string");
+      assert.ok(typeof result === "string");
+      return result;
+    }
+    dispose() { this.disposed++; this.element.removeEventListener("copy", this.nativeCopy); }
+  }
+  const host = Object.assign(new EventTarget(), { clientWidth: 800, clientHeight: 400, contains: () => false });
+  const inert = () => {};
+  class Observer { observe() {} disconnect() {} }
+  const boundaries: Record<string, unknown> = {
+    "src/features/terminal/font": {
+      currentTerminalFont: () => ({ family: "monospace", size: 12 }),
+      onTerminalFont: () => () => { fontOff++; }, TERMINAL_LINE_HEIGHT: 1.2,
+    },
+    "src/features/terminal/scrollback": { currentScrollbackRows: () => 2000, onScrollbackRows: () => () => { scrollbackOff++; } },
+    "src/features/terminal/FindBar": { FindBar: () => null, useBufferFind: () => ({ open: inert }) },
+    "src/keybindings/KeybindingsProvider": { useKeybindings: inert },
+    "src/keybindings/dispatcher": { PRIORITY: { TERMINAL: 1 } },
+    "src/state/createProject": { STEP: {}, targetPath: inert },
+    "src/settings/appPrefs": { getAppPrefs: inert, loadAppPrefs: inert, setAppPref: inert },
+  };
+  const sourceFiles: Record<string, string> = {
+    "src/components/ScriptOutput": "src/components/ScriptOutput.tsx",
+    "src/scripts/output": "src/scripts/output.ts",
+    "src/backend": "src/backend.ts",
+    "@tauri-apps/plugin-dialog": "node_modules/@tauri-apps/plugin-dialog/dist-js/index.js",
+  };
+  const modules = new Map<string, { exports: Exports & { ScriptOutput?: typeof ScriptOutput } }>();
+  function load(file: string) {
+    const cached = modules.get(file);
+    if (cached) return cached.exports;
+    const path = sourceFiles[file];
+    assert.ok(path, `Unexpected production dependency: ${file}`);
+    const module: { exports: Exports & { ScriptOutput?: typeof ScriptOutput } } = { exports: {} };
+    modules.set(file, module);
+    const output = ts.transpileModule(readFileSync(path, "utf8"), {
+      fileName: path,
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021, jsx: ts.JsxEmit.ReactJSX },
+    }).outputText;
+    const require = (name: string): unknown => {
+      if (name === "react" || name === "react/jsx-runtime") return deps(name);
+      if (name === "@xterm/xterm") return { Terminal: Screen };
+      if (name === "@xterm/addon-fit") return { FitAddon: class { fit() {} } };
+      if (name === "@tauri-apps/api/core") return {
+        invoke: () => { throw new Error("Copy must not invoke native APIs"); }, isTauri: () => true, Channel: class {},
+      };
+      if (name === "@tauri-apps/plugin-dialog") return load(name);
+      if (name.endsWith(".css")) return {};
+      assert.ok(name.startsWith("."), `Unexpected package: ${name}`);
+      const relative = resolve(dirname(path), name).slice(process.cwd().length + 1).replace(/\\/g, "/").replace(/\.tsx?$/, "");
+      return Object.prototype.hasOwnProperty.call(boundaries, relative) ? boundaries[relative] : load(relative);
+    };
+    runInNewContext(`(function(require,module,exports){${output}\n})`, {
+      console, URL, document: { documentElement: {}, activeElement: null },
+      getComputedStyle: () => ({ getPropertyValue: () => "" }), ResizeObserver: Observer, MutationObserver: Observer,
+    }, { filename: path })(require, module, module.exports);
+    return module.exports;
+  }
+  const { ScriptOutput: Component } = load("src/components/ScriptOutput");
+  assert.ok(Component);
+  let renderer: Renderer;
+  await act(async () => { renderer = create(React.createElement(Component, { output: "output\n" }), { createNodeMock: () => host }); });
+  assert.equal(screens.length, 1);
+  function copy(options: { outside?: boolean; clipboard?: boolean; seed?: string } = {}) {
+    const payload = new Map<string, string>([["text/plain", options.seed ?? "unchanged"]]);
+    const event = new CopyEvent(options.clipboard === false ? null : { setData: (type, text) => { payload.set(type, text); } });
+    (options.outside ? host : screens[0].element).dispatchEvent(event);
+    return { text: payload.get("text/plain"), prevented: event.defaultPrevented };
+  }
+  return {
+    copy, raw: () => screens[0].getSelection(), close: () => act(async () => { renderer.unmount(); }),
+    cleanup: () => ({ terminal: screens[0].disposed, font: fontOff, scrollback: scrollbackOff }),
+  };
+}
+
+test("copy trims a selection ending in spaces before later terminal text", async () => {
+  const f = await fixture({ lines: ["alpha   beta"], start: [0, 0], end: [8, 0] });
+  try {
+    assert.equal(f.raw(), "alpha   ", "real xterm selection retains the selected spaces");
+    assert.deepEqual(f.copy(), { text: "alpha", prevented: true });
+  } finally { await f.close(); }
+});
+
+test("copy trims each selected line without removing indentation or internal spacing", async () => {
+  const f = await fixture({ lines: ["  first   ", "inner  words  later"], start: [0, 0], end: [14, 1] });
+  try {
+    assert.equal(f.raw(), "  first   \ninner  words  ");
+    assert.deepEqual(f.copy(), { text: "  first\ninner  words", prevented: true });
+  } finally { await f.close(); }
+});
+
+test("copying only selected spaces produces an empty plain-text value", async () => {
+  const f = await fixture({ lines: ["   later"], start: [0, 0], end: [3, 0] });
+  try {
+    assert.equal(f.raw(), "   ");
+    assert.deepEqual(f.copy(), { text: "", prevented: true });
+  } finally { await f.close(); }
+});
+
+test("copy preserves selected blank lines rather than trimming the complete selection", async () => {
+  const f = await fixture({ lines: ["first  ", "  ", "last"], start: [0, 0], end: [0, 2] });
+  try {
+    assert.equal(f.raw(), "first  \n  \n");
+    assert.deepEqual(f.copy(), { text: "first\n\n", prevented: true });
+  } finally { await f.close(); }
+});
+
+test("copy keeps leading and internal spaces when no line ends in whitespace", async () => {
+  const f = await fixture({ lines: ["  inner  words tail"], start: [0, 0], end: [14, 0] });
+  try { assert.deepEqual(f.copy(), { text: "  inner  words", prevented: true }); }
+  finally { await f.close(); }
+});
+
+test("a collapsed terminal selection leaves clipboard contents and the default action alone", async () => {
+  const f = await fixture({ lines: ["alpha"], start: [2, 0], end: [2, 0] });
+  try { assert.deepEqual(f.copy(), { text: "unchanged", prevented: false }); }
+  finally { await f.close(); }
+});
+
+test("copy outside the terminal is not intercepted", async () => {
+  const f = await fixture({ lines: ["alpha   beta"], start: [0, 0], end: [8, 0] });
+  try { assert.deepEqual(f.copy({ outside: true }), { text: "unchanged", prevented: false }); }
+  finally { await f.close(); }
+});
+
+test("copy without clipboard data does not throw", async () => {
+  const f = await fixture({ lines: ["alpha   beta"], start: [0, 0], end: [8, 0] });
+  try { assert.deepEqual(f.copy({ clipboard: false }), { text: "unchanged", prevented: true }); }
+  finally { await f.close(); }
+});
+
+test("unmount leaves an old terminal unable to rewrite a later copy event", async () => {
+  const f = await fixture({ lines: ["alpha   beta"], start: [0, 0], end: [8, 0] });
+  await f.close();
+  assert.deepEqual(f.copy(), { text: "unchanged", prevented: false });
+  assert.deepEqual(f.cleanup(), { terminal: 1, font: 1, scrollback: 1 });
+});
