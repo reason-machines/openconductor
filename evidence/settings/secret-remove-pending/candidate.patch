@@ -1,0 +1,34 @@
+--- a/src/settings/agents/kit.tsx
++++ b/src/settings/agents/kit.tsx
+@@ -174,6 +174,7 @@
+   const { label, configured, hint, reveal, onSave, onDelete, getKeyUrl } = props;
+   const [editing, setEditing] = useState(false);
+   const [shown, setShown] = useState<string | null>(null);
++  const [removing, setRemoving] = useState(false);
+   const [busy, setBusy] = useState(false);
+   const [error, setError] = useState<string | null>(null);
+   const [copyFeedback, setCopyFeedback] = useState<"copied" | "failed" | null>(null);
+@@ -262,8 +263,21 @@
+           <button type="button" className="ag-btn ag-ghost ag-icon" aria-label={`Edit ${label}`} disabled={busy} onClick={() => (setShown(null), setEditing(true))}>
+             <PencilIcon size={16} />
+           </button>
+-          <button type="button" className="ag-btn ag-ghost ag-icon" aria-label={`Remove ${label}`} disabled={busy} onClick={() => run("remove", onDelete)}>
+-            <TrashIcon size={16} />
++          <button type="button" className="ag-btn ag-ghost ag-icon" aria-label={`Remove ${label}`} disabled={busy} onClick={() => run("remove", async () => {
++            setRemoving(true);
++            try {
++              await onDelete();
++            } finally {
++              setRemoving(false);
++            }
++          })}>
++            {removing ? (
++              <svg className="sb-ws-loader" width={16} height={16} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" style={{ width: 16, height: 16, border: 0, borderRadius: 0, flexShrink: 0 }}>
++                <circle cx="3" cy="8" r="1.5" />
++                <circle cx="8" cy="8" r="1.5" />
++                <circle cx="13" cy="8" r="1.5" />
++              </svg>
++            ) : <TrashIcon size={16} />}
+           </button>
+         </div>
+       </div>

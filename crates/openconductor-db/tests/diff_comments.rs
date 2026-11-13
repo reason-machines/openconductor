@@ -502,7 +502,7 @@ async fn prompt_handoff_reference_states_round_trip_without_collapsing_to_pendin
             .await
             .unwrap();
     }
-    let rows = diff_comments::list(&pool, "w").await.unwrap();
+    let rows = diff_comments::list_for_workspace(&pool, "w").await.unwrap();
     assert_eq!(rows.len(), 6);
     assert!(rows.iter().any(|row| row.state == Some(State::Draft)));
     assert!(rows
