@@ -1,0 +1,603 @@
+{
+  "candidate": "CHAT.TODOREAD-NONMIXED-HEADER",
+  "status": "SOURCE_PREP_UNRUN",
+  "checked_main": "a66b72e9fc3790a0c93ac614a901da727929c5d9",
+  "validation_prerequisite": {
+    "body22_archive_sha256": "88ef09dbaa7a777ce605556b72b2738e56489e0a8d479e1da2730eb98bea04c9",
+    "baseline_ToolRows_sha256": "07f7906977075245cb068907c19ee3e0c98b110720aadda95ac8436a74dee078",
+    "rule": "Body22-only validated/main selection required before any header baseline; not current-main behavior."
+  },
+  "cases": [
+    {
+      "id": "read-active-legacy-output",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Inspect configuration",
+          "status": "in_progress"
+        }
+      ],
+      "expected_headers": [
+        {
+          "left": "Todo started",
+          "right": "1. Inspect configuration"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": true,
+      "output": "[{\"content\": \"Inspect configuration\", \"status\": \"in_progress\"}]"
+    },
+    {
+      "id": "read-active-wrapped-raw-string",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Read settings",
+          "status": "in_progress"
+        }
+      ],
+      "expected_headers": [
+        {
+          "left": "Todo started",
+          "right": "1. Read settings"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": true,
+      "output": "Todos:\n[{\"content\": \"Read settings\", \"status\": \"in_progress\"}]\nEnd",
+      "rawResult": "Todos:\n[{\"content\": \"Read settings\", \"status\": \"in_progress\"}]\nEnd"
+    },
+    {
+      "id": "read-active-original-index",
+      "name": "TodoRead",
+      "input": {
+        "todos": [
+          {
+            "content": "STALE INPUT",
+            "status": "completed"
+          }
+        ]
+      },
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Waiting",
+          "status": "pending"
+        },
+        {
+          "content": "Review mapping",
+          "status": "in_progress"
+        }
+      ],
+      "expected_headers": [
+        {
+          "left": "Todo started",
+          "right": "2. Review mapping"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": true,
+      "output": "",
+      "rawResult": [
+        {
+          "content": "Waiting",
+          "status": "pending"
+        },
+        {
+          "content": "Review mapping",
+          "status": "in_progress"
+        }
+      ]
+    },
+    {
+      "id": "read-first-active-among-several",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "First active",
+          "status": "in_progress"
+        },
+        {
+          "content": "Second active",
+          "status": "in_progress"
+        }
+      ],
+      "expected_headers": [
+        {
+          "left": "Todo started",
+          "right": "1. First active"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": true,
+      "output": "",
+      "rawResult": [
+        {
+          "content": "First active",
+          "status": "in_progress"
+        },
+        {
+          "content": "Second active",
+          "status": "in_progress"
+        }
+      ]
+    },
+    {
+      "id": "read-empty-active-content-fallback",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "",
+          "status": "in_progress"
+        }
+      ],
+      "expected_headers": [
+        {
+          "left": "Todo started",
+          "right": "1. todo"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": true,
+      "output": "",
+      "rawResult": [
+        {
+          "content": "",
+          "status": "in_progress"
+        }
+      ]
+    },
+    {
+      "id": "read-active-unicode-and-newline",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Réviser 配置\nsecond line",
+          "status": "in_progress"
+        }
+      ],
+      "expected_headers": [
+        {
+          "left": "Todo started",
+          "right": "1. Réviser 配置\nsecond line"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": true,
+      "output": "Todos:\n[{\"content\": \"Réviser 配置\\nsecond line\", \"status\": \"in_progress\"}]\nEnd",
+      "rawResult": "Todos:\n[{\"content\": \"Réviser 配置\\nsecond line\", \"status\": \"in_progress\"}]\nEnd"
+    },
+    {
+      "id": "read-all-completed-singular",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Done",
+          "status": "completed"
+        }
+      ],
+      "expected_headers": [
+        {
+          "left": "Todo list completed",
+          "right": "1 todo"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": true,
+      "output": "",
+      "rawResult": [
+        {
+          "content": "Done",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "id": "read-all-completed-plural",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "One",
+          "status": "completed"
+        },
+        {
+          "content": "Two",
+          "status": "completed"
+        }
+      ],
+      "expected_headers": [
+        {
+          "left": "Todo list completed",
+          "right": "2 todos"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": true,
+      "output": "",
+      "rawResult": [
+        {
+          "content": "One",
+          "status": "completed"
+        },
+        {
+          "content": "Two",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "id": "read-pending-singular",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Next",
+          "status": "pending"
+        }
+      ],
+      "expected_headers": [
+        {
+          "left": "Todo list created",
+          "right": "1 todo"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": true,
+      "output": "",
+      "rawResult": [
+        {
+          "content": "Next",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "read-pending-plural",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "First",
+          "status": "pending"
+        },
+        {
+          "content": "Second",
+          "status": "pending"
+        }
+      ],
+      "expected_headers": [
+        {
+          "left": "Todo list created",
+          "right": "2 todos"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": true,
+      "output": "",
+      "rawResult": [
+        {
+          "content": "First",
+          "status": "pending"
+        },
+        {
+          "content": "Second",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "read-partial-completion-without-active",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Finished",
+          "status": "completed"
+        },
+        {
+          "content": "Waiting",
+          "status": "pending"
+        }
+      ],
+      "expected_headers": [
+        {
+          "left": "Todo completed",
+          "right": "2 todos"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": true,
+      "output": "",
+      "rawResult": [
+        {
+          "content": "Finished",
+          "status": "completed"
+        },
+        {
+          "content": "Waiting",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "read-failed-returned-active",
+      "name": "TodoRead",
+      "input": {},
+      "isError": true,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Still active",
+          "status": "in_progress"
+        }
+      ],
+      "expected_headers": [
+        {
+          "left": "Todo started",
+          "right": "1. Still active"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": true,
+      "output": "",
+      "rawResult": [
+        {
+          "content": "Still active",
+          "status": "in_progress"
+        }
+      ]
+    },
+    {
+      "id": "control-read-mixed-first-header",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Done",
+          "status": "completed"
+        },
+        {
+          "content": "Working",
+          "status": "in_progress"
+        }
+      ],
+      "expected_headers": [
+        {
+          "left": "Todo completed",
+          "right": "1/2 completed"
+        }
+      ],
+      "header_prefix_only": true,
+      "predicted_header_failure_NOT_MEASURED": false,
+      "output": "",
+      "rawResult": [
+        {
+          "content": "Done",
+          "status": "completed"
+        },
+        {
+          "content": "Working",
+          "status": "in_progress"
+        }
+      ]
+    },
+    {
+      "id": "control-read-empty",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [],
+      "expected_headers": [
+        {
+          "left": "Update todos"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": false,
+      "output": "",
+      "rawResult": []
+    },
+    {
+      "id": "control-read-missing-result-over-stale-input",
+      "name": "TodoRead",
+      "input": {
+        "todos": [
+          {
+            "content": "STALE INPUT",
+            "status": "in_progress"
+          }
+        ]
+      },
+      "isError": false,
+      "running": false,
+      "expected_todos": [],
+      "expected_headers": [
+        {
+          "left": "Update todos"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": false
+    },
+    {
+      "id": "control-read-running-over-stale-input",
+      "name": "TodoRead",
+      "input": {
+        "todos": [
+          {
+            "content": "STALE INPUT",
+            "status": "pending"
+          }
+        ]
+      },
+      "isError": false,
+      "running": true,
+      "expected_todos": [],
+      "expected_headers": [
+        {
+          "left": "Update todos"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": false
+    },
+    {
+      "id": "control-read-malformed-string",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [],
+      "expected_headers": [
+        {
+          "left": "Update todos"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": false,
+      "output": "[]",
+      "rawResult": "Todos: [broken]"
+    },
+    {
+      "id": "control-write-active",
+      "name": "TodoWrite",
+      "input": {
+        "todos": [
+          {
+            "content": "Unchanged write",
+            "status": "in_progress"
+          }
+        ]
+      },
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Unchanged write",
+          "status": "in_progress"
+        }
+      ],
+      "expected_headers": [
+        {
+          "left": "Update todos",
+          "right": "0/1 completed"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": false,
+      "output": "[]",
+      "rawResult": []
+    },
+    {
+      "id": "control-write-all-completed",
+      "name": "TodoWrite",
+      "input": {
+        "todos": [
+          {
+            "content": "Unchanged done",
+            "status": "completed"
+          }
+        ]
+      },
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Unchanged done",
+          "status": "completed"
+        }
+      ],
+      "expected_headers": [
+        {
+          "left": "Update todos",
+          "right": "1/1 completed"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": false,
+      "output": "[]",
+      "rawResult": []
+    },
+    {
+      "id": "control-write-mixed",
+      "name": "TodoWrite",
+      "input": {
+        "todos": [
+          {
+            "content": "Done",
+            "status": "completed"
+          },
+          {
+            "content": "Doing",
+            "status": "in_progress"
+          },
+          {
+            "content": "Next",
+            "status": "pending"
+          }
+        ]
+      },
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Done",
+          "status": "completed"
+        },
+        {
+          "content": "Doing",
+          "status": "in_progress"
+        },
+        {
+          "content": "Next",
+          "status": "pending"
+        }
+      ],
+      "expected_headers": [
+        {
+          "left": "Todo completed",
+          "right": "1/3 completed"
+        },
+        {
+          "left": "Todo started",
+          "right": "2. Doing"
+        }
+      ],
+      "header_prefix_only": false,
+      "predicted_header_failure_NOT_MEASURED": false,
+      "output": "[]",
+      "rawResult": []
+    }
+  ]
+}

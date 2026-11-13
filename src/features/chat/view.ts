@@ -63,7 +63,7 @@ export type RowView =
     };
 
 interface ToolResult {
-  content: string;
+  content: string | undefined;
   rawResult?: unknown;
   isError: boolean;
   resultCreatedAt?: string;
@@ -108,7 +108,7 @@ function assistantRow(message: ChatMessage, results: Map<string, ToolResult>, fa
         tools.forEach((tool, j) => {
           const id = j === 0 ? b.id : `${b.id}#${j}`;
           const hidden = tool.name === "collab__wait" || (tool.name === "collab__closeAgent" && !failedTools?.has(b.id));
-          parts.push({ kind: "tool", ...(hidden ? { hidden: true } : {}), call: { id, name: tool.name, input: b.input, tool, status, ...(r ? { result: r.content, rawResult: r.rawResult, ...(r.resultCreatedAt !== undefined ? { resultCreatedAt: r.resultCreatedAt } : {}) } : {}) } });
+          parts.push({ kind: "tool", ...(hidden ? { hidden: true } : {}), call: { id, name: tool.name, input: b.input, tool, status, ...(r ? { ...(r.content !== undefined ? { result: r.content } : {}), rawResult: r.rawResult, ...(r.resultCreatedAt !== undefined ? { resultCreatedAt: r.resultCreatedAt } : {}) } : {}) } });
         });
         break;
       }

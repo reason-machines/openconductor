@@ -322,7 +322,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
                         onKeyDown={(e) => onEffortOptionKey(e, index)}
                         onClick={() => {
                           onChange({ ...value, effort: o.value });
-                          setOpen(false);
+                          setEffortOpen(false);
                         }}
                       >
                         <span>{o.label}</span>

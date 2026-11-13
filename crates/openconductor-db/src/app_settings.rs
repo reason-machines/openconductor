@@ -139,6 +139,23 @@ pub mod keys {
     /// Experimental "Dashboard": the sidebar's Dashboard row and the
     /// `/dashboard` board; unset means off (`_z.dashboard_enabled = "false"`).
     pub const DASHBOARD_ENABLED: &str = "dashboard_enabled";
+
+    // One-time migration completion flags. The reference sets each once after
+    // the corresponding migration runs; callers check with `get` and set with
+    // `set(pool, key, "true")`. All are non-deprecated (no `fileKey`).
+
+    /// Set to `"true"` after user settings migrate from the `settings` table
+    /// rows to the file-backed `~/.conductor/settings.toml` format.
+    pub const FILE_BACKED_SETTINGS_MIGRATION_COMPLETE: &str =
+        "file_backed_settings_migration_complete";
+    /// Set to `"true"` after each repo's `.conductor/conductor.json` config
+    /// is migrated to the v2 `.conductor/settings.toml` layout.
+    pub const REPO_CONDUCTOR_CONFIG_FILE_MIGRATION_V2_COMPLETE: &str =
+        "repo_conductor_config_file_migration_v2_complete";
+    /// Set to `"true"` after each repo's legacy custom-prompt file is
+    /// migrated to the prompts section of `.conductor/settings.toml`.
+    pub const REPO_CUSTOM_PROMPT_FILE_MIGRATION_COMPLETE: &str =
+        "repo_custom_prompt_file_migration_complete";
 }
 
 #[cfg(test)]

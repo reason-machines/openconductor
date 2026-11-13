@@ -267,5 +267,5 @@ jobs:
         run: |
           echo "Onboarding source commit: $(git rev-parse HEAD)"
           node --check tests/onboarding-strict-effects.test.mjs
-          node --test --test-reporter=tap tests/onboarding-effects.test.mjs tests/onboarding-strict-effects.test.mjs tests/onboarding-media.test.mjs
-          node --test --test-reporter=tap tests/chat-search/*.dom.test.mjs
+          node --test --test-reporter=tap tests/onboarding-effects.test.mjs tests/onboarding-strict-effects.test.mjs tests/onboarding-media.test.mjs tests/onboarding-selected-slide.test.mjs
+          node --test --test-reporter=tap tests/chat-search/*.dom.test.mjs evidence/chat/recent-closed-chat/recentClosedChatEligibility.test.mjs

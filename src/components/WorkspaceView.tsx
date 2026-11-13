@@ -183,7 +183,7 @@ interface ChatPanelProps extends Props {
   openFile?: (path: string) => void;
   /** Opens a forked chat tab on `config` with `draft` in its composer; returns its chat id. */
   forkToNewTab: (title: string, config: ConfigChoice[], draft: { text: string; attachments: TextAttachment[] }) => string;
-  /** Every chat tab of the workspace (its own chat and the review and fork tabs), for the empty chat's transcript chips. */
+  /** Retained chats and live tabs of this workspace for transcript attachments. */
   chatTabs: readonly { chatId: string; title: string }[];
 }
 
@@ -1243,6 +1243,12 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
   useKeybindings({ "git.pull": pullLatest.shortcut }, PRIORITY.HIGH);
   loaded.current = review.onLoaded;
   const reviews = useReviewChats(repo, workspace, setMainTab);
+  const transcriptChats = [...new Map([
+    ...(workspace.transcriptChats ?? []),
+    { id: primaryId, title: workspace.chatTitle ?? workspace.name },
+    ...reviews.tabs.map((r) => ({ id: r.chatId, title: r.title })),
+  ].map((c) => [c.id, c])).values()];
+  const retainTranscriptChats = () => dispatch({ type: "retainTranscriptChats", repoId: repo.id, workspaceId: workspace.id, chats: transcriptChats });
   // The workspace's own chat plus its review, fork and new chats count toward Conductor's tab limit.
   const openChatTabs = 1 + reviews.tabs.length;
   const newChat = () => {
@@ -1255,7 +1261,10 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
     if (isChatUnread(workspace, chatId)) dispatch({ type: "setChatUnread", repoId: repo.id, workspaceId: workspace.id, chatId, unread: false, at: Date.now() });
     clearManuallyUnread(chatId);
     const tab = reviews.tabs.find((r) => r.chatId === chatId);
-    if (tab) pushClosedTab(workspace.id, { kind: "chat", tab });
+    if (tab) {
+      pushClosedTab(workspace.id, { kind: "chat", tab });
+      retainTranscriptChats();
+    }
     reviews.close(chatId);
     if (mainTab === chatId) setMainTab(chatAfterClose(workspace.id, chatId, ["chat", ...reviews.tabs.map((r) => r.chatId)]) ?? "chat");
   };
@@ -1523,6 +1532,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
           notify={notify}
           chatId={activeReview?.chatId ?? primaryId}
           onClearLocal={(sourceId, replacement) => {
+            retainTranscriptChats();
             const title = reviews.replaceLocal(sourceId, replacement);
             dispatch({ type: "replaceLocalChat", repoId: repo.id, workspaceId: workspace.id, sourceId, chatId: replacement.chatId, primaryChatId: replacement.primaryChatId, title });
             if (displayedWorkspace.current === workspace.id) setMainTab(tabOfChat(replacement.primaryChatId, replacement.chatId));
@@ -1535,7 +1545,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
           // Conductor hides the button once the workspace's PR is merged (g1o's `hidden`, `mIo` isMerged).
           onNextUnread={!prBase?.merged && hasNextUnread?.(selectedChat) ? onNextUnread : undefined}
           forkToNewTab={reviews.fork}
-          chatTabs={[{ chatId: primaryId, title: workspace.chatTitle ?? workspace.name }, ...reviews.tabs.map((r) => ({ chatId: r.chatId, title: r.title }))]}
+          chatTabs={transcriptChats.map((c) => ({ chatId: c.id, title: c.title }))}
           content={
             showFile && fileTarget && workspace.path ? (
               <MarkdownFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} />

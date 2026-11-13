@@ -185,6 +185,11 @@ pub async fn get(pool: &SqlitePool, id: &str) -> Result<Option<DiffComment>> {
 }
 
 /// Every comment in a workspace, oldest first.
+pub async fn list(pool: &SqlitePool, workspace_id: &str) -> Result<Vec<DiffComment>> {
+    list_for_workspace(pool, workspace_id).await
+}
+
+/// Every comment in a workspace, oldest first.
 pub async fn list_for_workspace(pool: &SqlitePool, workspace_id: &str) -> Result<Vec<DiffComment>> {
     let sql = format!(
         "SELECT {COLUMNS} FROM diff_comments WHERE workspace_id = ? ORDER BY created_at, id"

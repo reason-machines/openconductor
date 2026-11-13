@@ -217,6 +217,7 @@ fn prompt_effort(
 
 /// Runs one prompt (after any still queued); events arrive meanwhile.
 /// Without a picked model or effort, the Codex thinking level from settings is used.
+#[allow(clippy::too_many_arguments)]
 #[tauri::command]
 pub async fn codex_prompt<R: Runtime>(
     app: AppHandle<R>,

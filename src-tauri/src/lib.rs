@@ -66,6 +66,12 @@ async fn workspace_read_markdown(repo: String, path: String) -> Result<String, S
         .await
         .map_err(|e| format!("File read task failed: {e}"))?
 }
+#[tauri::command]
+async fn workspace_read_text(repo: String, path: String) -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(move || workspace_file::read_text(std::path::Path::new(&repo), &path))
+        .await
+        .map_err(|e| format!("File read task failed: {e}"))?
+}
 mod recent_local_repos_commands;
 mod sidebar_repo_commands;
 mod repo_misc_commands;
@@ -410,6 +416,7 @@ pub fn run() {
         .manage(app_quit::QuitHandler::default())
         .invoke_handler(tauri::generate_handler![
             workspace_read_markdown,
+            workspace_read_text,
             app_quit::set_quit_handler_ready,
             app_quit::quit_app,
             root_path_commands::get_conductor_root,
@@ -492,6 +499,7 @@ pub fn run() {
             diff::comment_commands::diff_comment_resolve_github,
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
+            quick_open::commands::grep_workspace,
             reason_chat::reason_cli_path,
             reason_chat::reason_cli_ensure_current,
             reason_chat::reason_account_status,

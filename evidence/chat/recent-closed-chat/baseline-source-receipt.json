@@ -1,0 +1,1227 @@
+{
+  "author": "Conductor Rebuild",
+  "phase": "baseline",
+  "baseline_main": "53eaf50ba4811a96fce1f8c2026e2abb442b5ba6",
+  "checks_passed": 303,
+  "fixture_sha256": "e05ce56a4a6a726de870f7f1a8e9ec6aace8e13242db64f1f475be9f24bee547",
+  "status": "STATIC_PASS_ONLY",
+  "checks": [
+    {
+      "check": "original asset: renderApp-D_fmY7hW.js",
+      "passed": true
+    },
+    {
+      "check": "original span: empty-state full caller",
+      "passed": true
+    },
+    {
+      "check": "original span: first-state predicate",
+      "passed": true
+    },
+    {
+      "check": "original span: recent transcripts full caller",
+      "passed": true
+    },
+    {
+      "check": "original span: recent hook import",
+      "passed": true
+    },
+    {
+      "check": "original span: hide mutation import",
+      "passed": true
+    },
+    {
+      "check": "original span: legacy close callback",
+      "passed": true
+    },
+    {
+      "check": "original span: legacy close-hook binding",
+      "passed": true
+    },
+    {
+      "check": "original span: grouped close-hook binding",
+      "passed": true
+    },
+    {
+      "check": "original span: grouped close callback",
+      "passed": true
+    },
+    {
+      "check": "original asset: index-BGEQ8YjU.js",
+      "passed": true
+    },
+    {
+      "check": "original span: all-workspace session hook",
+      "passed": true
+    },
+    {
+      "check": "original span: visible and hidden query definitions",
+      "passed": true
+    },
+    {
+      "check": "original span: visible and hidden hook bindings",
+      "passed": true
+    },
+    {
+      "check": "original span: workspace database loader",
+      "passed": true
+    },
+    {
+      "check": "original span: stored-session decoder",
+      "passed": true
+    },
+    {
+      "check": "original span: visible selector",
+      "passed": true
+    },
+    {
+      "check": "original span: session close mutation",
+      "passed": true
+    },
+    {
+      "check": "original span: local/cloud close guard",
+      "passed": true
+    },
+    {
+      "check": "original span: close hook",
+      "passed": true
+    },
+    {
+      "check": "original span: hide backend operation",
+      "passed": true
+    },
+    {
+      "check": "original span: cached-workspace loader",
+      "passed": true
+    },
+    {
+      "check": "original span: query-state workspace selectors",
+      "passed": true
+    },
+    {
+      "check": "original span: all-session hook export",
+      "passed": true
+    },
+    {
+      "check": "original span: hide mutation export",
+      "passed": true
+    },
+    {
+      "check": "original span: service hide dispatch",
+      "passed": true
+    },
+    {
+      "check": "original span: query-state selectors",
+      "passed": true
+    },
+    {
+      "check": "frozen five-case fixture",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: .github/workflows/ci.yml",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: crates/openconductor-db/src/chat_messages.rs",
+      "passed": true
+    },
+    {
+      "check": "worktree source: crates/openconductor-db/src/chat_messages.rs",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: crates/openconductor-db/src/sessions.rs",
+      "passed": true
+    },
+    {
+      "check": "worktree source: crates/openconductor-db/src/sessions.rs",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: crates/openconductor-db/tests/sessions.rs",
+      "passed": true
+    },
+    {
+      "check": "worktree source: crates/openconductor-db/tests/sessions.rs",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: evidence/sqlite/sessions-messages-attachments-queries.md",
+      "passed": true
+    },
+    {
+      "check": "worktree source: evidence/sqlite/sessions-messages-attachments-queries.md",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: package.json",
+      "passed": true
+    },
+    {
+      "check": "worktree source: package.json",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/components/WorkspaceView.tsx",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/components/WorkspaceView.tsx",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/ChatEmptyState.tsx",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/ChatEmptyState.tsx",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/Composer.tsx",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/Composer.tsx",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/agentBinaries.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/agentBinaries.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/agentChoice.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/agentChoice.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/agentSignIn.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/agentSignIn.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/agents.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/agents.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/chatAgentChoice.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/chatAgentChoice.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/chatEmptyState.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/chatEmptyState.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/chatModel.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/chatModel.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/chatModelChoice.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/chatModelChoice.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/chatTabs.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/chatTabs.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/checkpoints.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/checkpoints.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/closedTabs.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/closedTabs.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/codex.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/codex.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/codexConsent.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/codexConsent.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/composerAttachments.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/composerAttachments.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/composerDocument.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/composerDocument.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/composerLongPaste.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/composerLongPaste.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/composerMinimize.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/composerMinimize.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/composerModels.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/composerModels.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/composerSession.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/composerSession.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/composerSlashRange.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/composerSlashRange.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/composerTerminal.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/composerTerminal.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/fileMentions.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/fileMentions.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/fork.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/fork.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/loadoutChoices.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/loadoutChoices.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/localClear.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/localClear.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/planHandoff.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/planHandoff.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/queue.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/queue.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/queueKeys.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/queueKeys.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/reason.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/reason.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/reasonModels.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/reasonModels.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/recentTranscriptIdentity.test.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/recentTranscriptIdentity.test.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/reducer.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/reducer.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/slashCommands.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/slashCommands.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/types.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/types.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/useLocalPlanMode.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/useLocalPlanMode.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/useWorkspaceSession.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/useWorkspaceSession.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/userContent.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/userContent.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/workspaceLinks.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/workspaceLinks.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/chat/workspaceLocalClear.test.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/chat/workspaceLocalClear.test.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/diff/ReviewButton.tsx",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/diff/ReviewButton.tsx",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/diff/changesFilter.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/diff/changesFilter.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/diff/changesPresentation.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/diff/changesPresentation.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/diff/changesTree.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/diff/changesTree.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/diff/chatAttachment.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/diff/chatAttachment.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/diff/codeThemes.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/diff/codeThemes.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/diff/conductorCodeTheme.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/diff/conductorCodeTheme.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/diff/review.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/diff/review.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/diff/target.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/diff/target.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/diff/turnChangesCache.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/diff/turnChangesCache.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/diff/types.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/diff/types.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/diff/useChangesPresentation.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/diff/useChangesPresentation.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/draft-attachments/api.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/draft-attachments/api.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/draft-attachments/staging.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/draft-attachments/staging.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/files/fileView.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/files/fileView.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/files/tree.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/files/tree.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/openIn/apps.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/openIn/apps.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/pr/checks/api.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/pr/checks/api.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/pr/checks/checks.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/pr/checks/checks.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/pr/checks/demo.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/pr/checks/demo.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/pr/checks/fixErrors.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/pr/checks/fixErrors.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/pr/prSettings.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/pr/prSettings.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/pr/rowPr.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/pr/rowPr.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/pr/shortcuts.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/pr/shortcuts.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/pr/types.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/pr/types.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/terminal/bigTerminal.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/terminal/bigTerminal.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/terminal/shellIntegration.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/terminal/shellIntegration.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/features/terminal/tabs.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/features/terminal/tabs.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/home/createFirstWorkspace.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/home/createFirstWorkspace.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/home/firstWorkspace.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/home/firstWorkspace.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/home/sidebarGroupBy.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/home/sidebarGroupBy.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/home/sidebarSort.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/home/sidebarSort.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/keybindings/dispatcher.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/keybindings/dispatcher.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/keybindings/fuzzy.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/keybindings/fuzzy.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/keybindings/types.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/keybindings/types.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/lib/local-storage/client.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/lib/local-storage/client.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/lib/local-storage/composerDrafts.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/lib/local-storage/composerDrafts.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/lib/local-storage/index.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/lib/local-storage/index.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/lib/local-storage/memory.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/lib/local-storage/memory.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/lib/local-storage/subsystems.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/lib/local-storage/subsystems.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/palette/gitPanelActions.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/palette/gitPanelActions.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/palette/search/model.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/palette/search/model.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/palette/search/score.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/palette/search/score.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/scripts/api.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/scripts/api.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/scripts/model.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/scripts/model.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/scripts/setupPrompt.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/scripts/setupPrompt.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/settings/agents/loadout.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/settings/agents/loadout.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/settings/models.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/settings/models.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/settings/reasonPalette.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/settings/reasonPalette.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/settings/repoSettings.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/settings/repoSettings.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/settings/types.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/settings/types.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/spotlight/quickOpen.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/spotlight/quickOpen.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/spotlight/recentFiles.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/spotlight/recentFiles.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/addRepo.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/addRepo.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/autoUnread.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/autoUnread.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/chatTabUnread.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/chatTabUnread.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/chatUnread.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/chatUnread.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/names.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/names.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/navigationSections.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/navigationSections.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/nextUnread.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/nextUnread.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/openChat.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/openChat.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/persisted.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/persisted.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/repoOrder.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/repoOrder.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/rowStatus.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/rowStatus.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/selectors.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/selectors.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/sidebarOrder.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/sidebarOrder.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/sidebarPersist.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/sidebarPersist.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/store.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/store.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/types.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/types.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/workspaceSessions.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/workspaceSessions.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/state/workspaceStatus.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/state/workspaceStatus.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/theme/conductorCode.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/theme/conductorCode.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/theme/palettes.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/theme/palettes.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/workspace/api.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/workspace/api.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/workspace/archivedList.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/workspace/archivedList.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/workspace/createFlow.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/workspace/createFlow.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/workspace/createFrom.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/workspace/createFrom.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/workspace/initIssues.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/workspace/initIssues.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/workspace/link.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/workspace/link.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/workspace/naming.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/workspace/naming.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/workspace/setupWatch.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/workspace/setupWatch.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src/workspace/upstream.ts",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src/workspace/upstream.ts",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src-tauri/src/db.rs",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src-tauri/src/db.rs",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src-tauri/src/lib.rs",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src-tauri/src/lib.rs",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src-tauri/src/persistence/mod.rs",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src-tauri/src/persistence/mod.rs",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src-tauri/src/persistence/tests.rs",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src-tauri/src/persistence_commands.rs",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src-tauri/src/persistence_commands.rs",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src-tauri/src/session_status_commands.rs",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src-tauri/src/session_status_commands.rs",
+      "passed": true
+    },
+    {
+      "check": "baseline pin: src-tauri/src/sidebar_workspace_commands.rs",
+      "passed": true
+    },
+    {
+      "check": "worktree source: src-tauri/src/sidebar_workspace_commands.rs",
+      "passed": true
+    },
+    {
+      "check": "real Popover dependency remains imported",
+      "passed": true
+    },
+    {
+      "check": "pinned installed primitive",
+      "passed": true
+    },
+    {
+      "check": "catalog stays a separate proposed field before RED",
+      "passed": true
+    }
+  ],
+  "not_run": [
+    "JavaScript parsing/React/DOM",
+    "Rust DB/DTO execution",
+    "browser/native/provider/installation"
+  ]
+}

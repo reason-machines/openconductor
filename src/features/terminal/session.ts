@@ -419,6 +419,7 @@ async function spawnTerminal(id: string, terminal: Live): Promise<void> {
         void ptyResize(id, terminal.term.cols, terminal.term.rows).catch(() => {});
       }
     });
+    if (live.get(id) !== terminal) void ptyKill(id).catch(() => {});
   } catch (error) {
     if (live.get(id) === terminal) {
       terminal.term.options.disableStdin = true;

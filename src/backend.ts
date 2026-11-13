@@ -210,6 +210,49 @@ export async function fuzzyFilterFiles(workspacePath: string, query: string, exc
   return invoke<FileMatch[]>("fuzzy_filter_files", { workspacePath, query, excludeDirectories });
 }
 
+// Workspace content search (Rust `grep_workspace`).
+// REA evidence: index-BGEQ8YjU.js bytes 2265460-2266400 (Tmt / grepWorkspace).
+
+/** One character range within a matching line (UTF-8 byte offsets). */
+export interface GrepSubmatch {
+  start: number;
+  end: number;
+}
+
+/** One line that matched a workspace grep query. */
+export interface GrepMatch {
+  relative_path: string;
+  line_number: number;
+  line_text: string;
+  submatches: GrepSubmatch[];
+}
+
+/** Return value of `grepWorkspace`. */
+export interface GrepResult {
+  matches: GrepMatch[];
+  truncated: boolean;
+  files_searched: number;
+}
+
+/**
+ * Search file contents in `workspacePath` for `query` (Rust `grep_workspace`).
+ * Returns an empty result outside Tauri (no demo data for content search).
+ */
+export async function grepWorkspace(
+  workspacePath: string,
+  query: string,
+  options: { isRegex?: boolean; caseSensitive?: boolean; wholeWord?: boolean } = {},
+): Promise<GrepResult> {
+  if (!inTauri()) return { matches: [], truncated: false, files_searched: 0 };
+  return invoke<GrepResult>("grep_workspace", {
+    workspacePath,
+    query,
+    isRegex: options.isRegex,
+    caseSensitive: options.caseSensitive,
+    wholeWord: options.wholeWord,
+  });
+}
+
 // Clone dialog helpers (evidence/screens/clone-dialog.md). Outside Tauri they
 // return demo data so the dialog can be tried in a browser.
 
