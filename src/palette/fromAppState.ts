@@ -81,12 +81,13 @@ export function stepWorkspace(state: AppState, delta: 1 | -1): WorkspaceRef | un
  * for a local user. Left out: Team and Routines (cloud organisations), Passport and
  * Check for updates (no OpenConductor counterpart yet), and the
  * workspace actions OpenConductor cannot run from here (Search in files, Show notes,
- * Link issue, Move to section and the PR actions).
+ * Link issue and the PR actions).
  */
 export const PALETTE_ACTIONS: readonly ActionEntry[] = [
   // Workspace actions: only while a workspace is open.
   { id: "quick-open", title: "File picker", group: "workspace-actions", bindingId: "nav.quickOpen", icon: "file", keywords: ["quick", "open", "file", "search", "find", "picker"] },
   { id: "copy-url", title: "Copy URL", group: "workspace-actions", bindingId: "workspace.copyLink", icon: "link", keywords: ["copy", "url", "link", "share", "workspace"] },
+  { id: "move-to-section", title: "Move to section", group: "workspace-actions", keywords: ["move", "to", "section", "organize", "workspace"] },
   { id: "archive-workspace", title: "Archive workspace", group: "workspace-actions", bindingId: "workspace.archive", icon: "archive", keywords: ["archive", "current", "workspace"] },
   // Actions.
   { id: "new-workspace", title: "Create workspace", group: "actions", bindingId: "workspace.create", icon: "plus", keywords: ["new", "workspace", "create", "create workspace"] },
@@ -196,6 +197,14 @@ export function paletteDataFromState(
         const workspace = state.repos.find((r) => r.id === sel.repoId)?.workspaces.find((w) => w.id === sel.workspaceId)
           ?? (state.archivedOpen?.workspace.id === sel.workspaceId ? state.archivedOpen.workspace : undefined);
         return workspace !== undefined;
+      }
+      if (a.id === "move-to-section") {
+        const sel = state.selection;
+        if (sel.kind !== "workspace") return false;
+        const inRepos = state.repos.find((r) => r.id === sel.repoId)?.workspaces.find((w) => w.id === sel.workspaceId);
+        const inArchived = state.archivedOpen?.workspace.id === sel.workspaceId && state.archivedOpen.repoId === sel.repoId
+          ? state.archivedOpen.workspace : undefined;
+        return (inRepos ?? inArchived) !== undefined;
       }
       return true;
     }), ...openInActions],
