@@ -4,8 +4,9 @@
 
 import type { CodeTheme } from "../features/diff/codeThemes.ts";
 import type { PaletteId } from "../theme/palettes.ts";
+import type { SoundType } from "./sound";
 export type Theme = "system" | "light" | "dark";
-export type SoundType = "default" | "none";
+export type { SoundType } from "./sound";
 export type BranchPrefixType = "github_username" | "custom" | "none";
 /** Codex reasoning effort; Conductor's levels plus our earlier `minimal`. */
 export type ThinkingLevel = "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max" | "ultra";

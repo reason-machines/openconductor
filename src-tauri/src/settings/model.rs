@@ -204,11 +204,24 @@ pub enum Theme {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
+#[serde(rename_all = "kebab-case")]
 pub enum SoundType {
     #[default]
     Default,
+    #[serde(rename = "disabled", alias = "none")]
     None,
+    ChooChoo,
+    OdysseusPluck,
+    Fahhhh,
+    Quack,
+    SfMuniInboundTrainChime,
+    SfMuniNew,
+    NycMetroDoorChime,
+    NycSubwayDoorChime,
+    NycSubway,
+    ParisMetroChime,
+    ParisMetroPickpockets,
+    SncfJingle,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

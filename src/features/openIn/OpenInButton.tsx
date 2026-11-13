@@ -1,5 +1,5 @@
 import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent as ReactMouseEvent } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
 import { PRIORITY } from "../../keybindings/dispatcher.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider";
@@ -147,6 +147,12 @@ export function OpenInButton({ path, notify, variant = "split", showShortcutHint
     items[next]?.focus();
   };
 
+  const onRowMouseMove = (e: ReactMouseEvent<HTMLButtonElement>) => {
+    if (!open) return;
+    if (typeof CSS !== "undefined" && CSS.supports?.("-webkit-backdrop-filter:none") && e.movementX === 0 && e.movementY === 0) return;
+    if (document.activeElement !== e.currentTarget) e.currentTarget.focus({ preventScroll: true });
+  };
+
   const mainLabel = defaultApp ? `Open in ${defaultApp.name}` : "Open in...";
   return (
     <div className={split ? "oi" : "oi oi-icon"} ref={wrap} data-testid={split ? "open-in" : undefined}>
@@ -188,7 +194,7 @@ export function OpenInButton({ path, notify, variant = "split", showShortcutHint
             <div className="oi-menu-note">No apps available</div>
           ) : (
             apps.map((a, i) => (
-              <button key={a.id} type="button" role="menuitem" className="oi-row" data-app={a.id} onClick={() => (close(), void openIn(a.id))}>
+              <button key={a.id} type="button" role="menuitem" className="oi-row" data-app={a.id} onMouseMove={split ? undefined : onRowMouseMove} onClick={() => (close(), void openIn(a.id))}>
                 <span className="oi-row-main">
                   <AppIcon app={a} size={14} />
                   <span className="oi-row-label">{a.name}</span>
@@ -200,7 +206,7 @@ export function OpenInButton({ path, notify, variant = "split", showShortcutHint
               </button>
             ))
           )}
-          <button type="button" role="menuitem" className="oi-row" data-app="copy-path" onClick={() => (close(), void copyPath())}>
+          <button type="button" role="menuitem" className="oi-row" data-app="copy-path" onMouseMove={split ? undefined : onRowMouseMove} onClick={() => (close(), void copyPath())}>
             <span className="oi-row-main">
               <span className="oi-app-glyph" aria-hidden>
                 <CopyIcon size={14} />

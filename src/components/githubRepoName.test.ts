@@ -140,7 +140,9 @@ test("GitHub private repo normalizes a valid name and blocks repeated pending su
     assert.equal(view.input()["aria-invalid"], false);
     assert.equal(view.submitDisabled(), false);
     await view.submit();
-    assert.equal(view.input().disabled, true);
+    // Conductor does not disable the name input during a pending creation (census github-name-pending-census-6013);
+    // the already-captured repositoryName argument is unaffected by later edits.
+    assert.equal(view.input().disabled, undefined, "name input is not disabled while creation is pending");
     assert.equal(view.submitDisabled(), true);
     await view.submit();
     assert.deepEqual(view.creations, [{ owner: "me", repoPath: "/synthetic/project", repositoryName: "my-notes" }]);
