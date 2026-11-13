@@ -92,6 +92,8 @@
 .oc-file-chip { box-sizing: border-box; height: 20px; display: inline-flex; vertical-align: baseline; align-items: center; gap: 8px; padding: 0 6px; border: 1px solid var(--oc-c-border); border-radius: 3px; background: var(--bg); font-size: 14px; line-height: 18px; white-space: nowrap; user-select: all; }
 .oc-file-chip img { display: inline-block; flex: none; }
 .oc-file-chip.ProseMirror-selectednode { outline: 1px solid var(--oc-c-ring); }
+.oc-file-chip-remove { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 14px; height: 14px; margin: 0 -2px 0 0; padding: 0; border: none; border-radius: 2px; background: none; color: inherit; font-size: 13px; line-height: 1; cursor: pointer; opacity: 0.45; user-select: none; }
+.oc-file-chip-remove:hover { opacity: 1; background: color-mix(in srgb, currentColor 12%, transparent); }
 
 /* "⌘L to focus": absolute top-2 right-1 text-xs text-faint bg-muted rounded-full px-2 py-1. */
 .oc-focus-pill {

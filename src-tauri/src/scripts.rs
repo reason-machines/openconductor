@@ -23,7 +23,7 @@ pub fn service(app: &AppHandle) -> ScriptService {
         .map(std::path::PathBuf::from)
         .unwrap_or_default();
     let emitter = app.clone();
-    // DB pool captured into the event closure to persist setup outcomes.
+    // DB pool captured; persists setup outcome (path + state) on SetupFinished so the transcript survives a restart.
     let pool = app.state::<crate::db::Db>().0.clone();
     let service = ScriptService::new(
         home.join(".conductor"),
