@@ -34,6 +34,7 @@ import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
 import { ComposerAttachmentChip } from "../features/chat/ComposerAttachmentChip.tsx";
 import { McpStatusDialog } from "../features/chat/McpStatusDialog.tsx";
+import { LinkIssueDialog } from "../features/chat/LinkIssueDialog.tsx";
 import type { ComposerEditorHandle } from "../features/chat/ComposerEditor.tsx";
 import { appendComposerText } from "../features/chat/composerDocument.ts";
 import { withSentAttachmentDisplay, type UserPrompt } from "../features/chat/userContent.ts";
@@ -149,6 +150,8 @@ interface WorkspaceViewProps extends Props {
   sections: readonly NavSection[];
   onNewSection: (workspace: Workspace) => void;
   onOpenInTarget?: OpenInTargetPublisher;
+  /** Navigates to Settings › Personal › Account (for the Linear connect prompt). */
+  onOpenAccountSettings?: () => void;
 }
 
 // In the desktop app the workspace's own chat runs the agent picked in the
@@ -171,6 +174,8 @@ interface ChatPanelProps extends Props {
   /** The workspace id for the workspace's own chat, or a review chat's id. */
   chatId: string;
   onClearLocal: (sourceId: string, replacement: LocalChatReplacement) => void;
+  /** Navigates to Settings › Personal › Account (for the Linear connect prompt in LinkIssueDialog). */
+  onOpenAccountSettings?: () => void;
   /** Set for a review chat. */
   review?: ReviewTab;
   bridge: MutableRefObject<ShownChatBridge | null>;
@@ -225,7 +230,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
 /** What the chat panel shows: Codex's approvals and consent requests, or the permission requests of Reason and Claude Code. */
 type ChatView = Omit<ChatSnapshot, "permissions"> & { permissions?: readonly PermissionPrompt[]; approvals?: CodexApproval[]; consents?: CodexConsent[] };
 
-function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, content, onRunningChange, openTurnFile, openFile, onNextUnread, forkToNewTab, chatTabs, onClearLocal }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, content, onRunningChange, openTurnFile, openFile, onNextUnread, forkToNewTab, chatTabs, onClearLocal, onOpenAccountSettings }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const [linkRepos, setLinkRepos] = useState<Repo[] | null>(null);
@@ -296,6 +301,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   const inputRef = useRef<ComposerEditorHandle>(null);
   const [mcpStatusChat, setMcpStatusChat] = useState<string | null>(null);
   useEffect(() => setMcpStatusChat(null), [chatId, agentId]);
+  const [linkIssueOpen, setLinkIssueOpen] = useState(false);
   const running = transcript.activeTurn !== null;
   const planMode = useLocalPlanMode(chatId, workspace.id, agentId === "claude", workspace.status === "archived" || running || queue.status !== "idle" || queue.items.length > 0 || permissions.length > 0, setAttachError);
   const slashCommands = useMemo(
@@ -303,6 +309,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     [agentId, reported, planMode?.isPlanMode, fastMode?.isFastMode],
   );
   useKeybindings({ "chat.togglePlanMode": planMode ? () => planMode.onToggle() : undefined });
+  useKeybindings({ "chat.linkLinear": () => { setLinkIssueOpen(true); } });
   // Only the workspace's own chat counts as the agent working; a review chat does not.
   useEffect(() => {
     if (main) onRunningChange?.(running);
@@ -662,6 +669,14 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         onClose={() => { linkRequest.current++; setLinkRepos(null); }}
       /> : null}
       {agentId === "codex" && mcpStatusChat === chatId ? <McpStatusDialog key={chatId} chatId={chatId} onClose={() => setMcpStatusChat(null)} /> : null}
+      {linkIssueOpen ? (
+        <LinkIssueDialog
+          repoPath={workspace.path ?? null}
+          onSelect={(attachment) => setAttachments((list) => addAttachment(list, attachment))}
+          onOpenAccountSettings={() => { onOpenAccountSettings?.(); }}
+          onClose={() => setLinkIssueOpen(false)}
+        />
+      ) : null}
       <AgentBinaryBanner agent={binaryAgentFor(agentId)} />
       {toolApproval ? (
         <div className="composer-wrap">
@@ -1038,7 +1053,7 @@ function TargetChip({ target, open, setOpen, repo, variant = "header" }: { targe
   );
 }
 
-export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onNewSection, onNextUnread, hasNextUnread, onOpenInTarget }: WorkspaceViewProps) {
+export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onNewSection, onNextUnread, hasNextUnread, onOpenInTarget, onOpenAccountSettings }: WorkspaceViewProps) {
   const primaryId = workspace.primaryChatId ?? workspace.id;
   const openInOwnerKey = JSON.stringify([repo.id, workspace.id, workspace.path ?? null]);
   const [openInCommittedOwner, setOpenInCommittedOwner] = useState(openInOwnerKey);
@@ -1468,7 +1483,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
       <header className="ws-header" data-tauri-drag-region="deep">
         <div className="ws-title">
           <RepoHeaderMenu repo={repo} onError={(message) => notify?.("error", message)} />
-          <span className="crumb-sep">/</span>
+          <span className="crumb-sep">›</span>
           <WorkspaceNameHeader
             key={workspace.id}
             repoId={repo.id}
@@ -1545,6 +1560,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
           onNextUnread={!prBase?.merged && hasNextUnread?.(selectedChat) ? onNextUnread : undefined}
           forkToNewTab={reviews.fork}
           chatTabs={transcriptChats.map((c) => ({ chatId: c.id, title: c.title }))}
+          onOpenAccountSettings={onOpenAccountSettings}
           content={
             showFile && fileTarget && workspace.path ? (
               <MarkdownFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} />

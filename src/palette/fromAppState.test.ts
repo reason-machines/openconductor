@@ -123,9 +123,12 @@ for (const loaded of [false, true]) {
     const data = paletteDataFromState(source, [workspace.id, "b"], archived);
     assert.equal(data.activeWorkspaceId, workspace.id);
     assert.deepEqual(data.recentWorkspaceIds, loaded ? [workspace.id, "b"] : ["b"]);
+    // These actions require gitPanelWorkspace (non-archived path), so they are correctly absent
+    // for an archived selection too; exclude them from the parity check.
+    const gitPanelGated = new Set(["archive-workspace", "quick-open", "search-in-files", "create-pull-request", "fix-errors"]);
     assert.deepEqual(
-      data.actions.filter((a) => a.id !== "archive-workspace" && a.id !== "quick-open").map((a) => a.id),
-      paletteDataFromState(state, []).actions.filter((a) => a.id !== "archive-workspace" && a.id !== "quick-open").map((a) => a.id),
+      data.actions.filter((a) => !gitPanelGated.has(a.id)).map((a) => a.id),
+      paletteDataFromState(state, []).actions.filter((a) => !gitPanelGated.has(a.id)).map((a) => a.id),
     );
     for (const tab of ["all", "actions"] as const) {
       for (const query of ["", "archive"]) {

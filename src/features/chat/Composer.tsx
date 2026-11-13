@@ -143,6 +143,9 @@ export function Composer({
 
   const slash = focused ? composerSlashRange(selection.text, selection.start, selection.end) : null;
   const query = slash?.query ?? null;
+  useLayoutEffect(() => {
+    setSlashIndex(0);
+  }, [query]);
   const slashKey = slash ? `${slash.start}:${slash.end}:${slash.query}` : null;
   const slashMatches = useMemo(() => (query === null || slashKey === slashDismissed ? [] : matchCommands(slashCommands, query)), [query, slashKey, slashDismissed, slashCommands]);
   const slashOpen = slashMatches.length > 0;

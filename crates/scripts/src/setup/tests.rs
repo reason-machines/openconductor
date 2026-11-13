@@ -175,6 +175,93 @@ fn interruption_wins_over_a_zero_exit_and_keeps_completed_work() {
     assert_eq!(mgr.outcome("completed"), Some(completed));
 }
 
+// --- restore ---
+
+#[test]
+fn restore_preloads_outcome_and_log() {
+    let tmp = tempfile::tempdir().unwrap();
+    let log_dir = tmp.path().join("logs");
+    fs::create_dir_all(&log_dir).unwrap();
+
+    // Write a log file as the previous run would have.
+    let log_path = log_dir.join("conductor-setup-w1.log");
+    fs::write(&log_path, "npm ci\r\ndone\r\n").unwrap();
+
+    let mgr = SetupManager::new(&log_dir);
+
+    // Before restore: idle.
+    assert_eq!(mgr.state("w1"), SetupState::Idle);
+    assert!(mgr.outcome("w1").is_none());
+
+    mgr.restore("w1", SetupState::Completed, log_path.clone());
+
+    // After restore: completed, transcript readable.
+    assert_eq!(mgr.state("w1"), SetupState::Completed);
+    let outcome = mgr.outcome("w1").expect("outcome after restore");
+    assert_eq!(outcome.state, SetupState::Completed);
+    assert_eq!(outcome.exit_code, None, "exit_code is not persisted");
+    assert_eq!(outcome.log, "npm ci\r\ndone\r\n");
+    assert_eq!(outcome.log_path, log_path);
+    assert_eq!(mgr.log("w1").as_deref(), Some("npm ci\r\ndone\r\n"));
+}
+
+#[test]
+fn restore_failed_and_cancelled_states() {
+    let tmp = tempfile::tempdir().unwrap();
+    let log_dir = tmp.path().join("logs");
+    fs::create_dir_all(&log_dir).unwrap();
+
+    let mgr = SetupManager::new(&log_dir);
+
+    // Failed state.
+    let path = log_dir.join("conductor-setup-fail.log");
+    fs::write(&path, "error: oops\r\n").unwrap();
+    mgr.restore("fail", SetupState::Failed, path.clone());
+    assert_eq!(mgr.state("fail"), SetupState::Failed);
+    assert_eq!(mgr.outcome("fail").unwrap().log, "error: oops\r\n");
+
+    // Cancelled state.
+    let path2 = log_dir.join("conductor-setup-cancelled.log");
+    fs::write(&path2, "partial\r\n").unwrap();
+    mgr.restore("cancelled", SetupState::Cancelled, path2);
+    assert_eq!(mgr.state("cancelled"), SetupState::Cancelled);
+}
+
+#[test]
+fn restore_missing_log_gives_empty_string() {
+    let tmp = tempfile::tempdir().unwrap();
+    let mgr = SetupManager::new(tmp.path());
+    // Log file does not exist — restore should not panic.
+    mgr.restore(
+        "w2",
+        SetupState::Completed,
+        tmp.path().join("conductor-setup-w2.log"),
+    );
+    assert_eq!(mgr.state("w2"), SetupState::Completed);
+    assert_eq!(mgr.log("w2").as_deref(), Some(""), "missing log → empty");
+}
+
+#[test]
+fn restore_does_not_overwrite_running_setup() {
+    let tmp = tempfile::tempdir().unwrap();
+    let mgr = SetupManager::new(tmp.path().join("logs"));
+    let s = spec(tmp.path(), "trap 'exit 0' TERM; echo ready; while :; do sleep 0.1; done");
+    let (tx, rx) = std::sync::mpsc::channel();
+    mgr.start("w3", &s, None, Box::new(move |o| tx.send(o).unwrap()))
+        .unwrap();
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while !mgr.log("w3").unwrap_or_default().contains("ready") {
+        assert!(Instant::now() < deadline);
+        thread::sleep(Duration::from_millis(10));
+    }
+    // Attempt to restore over the live process.
+    mgr.restore("w3", SetupState::Completed, tmp.path().join("old.log"));
+    // State must still be Running.
+    assert_eq!(mgr.state("w3"), SetupState::Running);
+    mgr.interrupt_all();
+    let _ = rx.recv_timeout(Duration::from_secs(5));
+}
+
 #[test]
 fn spawn_failure_and_interruption_are_failures() {
     let tmp = tempfile::tempdir().unwrap();
