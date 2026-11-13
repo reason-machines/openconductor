@@ -41,6 +41,8 @@ export type SessionStatus = (typeof SESSION_STATUS_ORDER)[number];
 /** The PR fields the row status reads (Conductor's `DXo` selector). */
 export interface RowPr {
   number: number;
+  /** GitHub HTML URL for the pull request (e.g. https://github.com/owner/repo/pull/42). */
+  url?: string;
   isMerged: boolean;
   isDraft: boolean;
   inMergeQueue: boolean;
@@ -89,7 +91,7 @@ const FROM_SESSION: Partial<Record<SessionStatus, RowStatus>> = {
 const openPr = (pr: RowPr | null | undefined): pr is RowPr => Boolean(pr?.number) && !pr!.isMerged;
 
 /** `RXo`: GitHub would let the viewer merge now. */
-function readyToMerge(pr: RowPr | null | undefined, optionalChecksBlock: boolean): boolean {
+export function readyToMerge(pr: RowPr | null | undefined, optionalChecksBlock: boolean): boolean {
   if (!openPr(pr) || pr.isDraft || pr.viewerCanMerge === false) return false;
   if (pr.mergeState === "CLEAN") return true;
   if (pr.mergeState !== "UNSTABLE") return false;
