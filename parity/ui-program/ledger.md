@@ -580,3 +580,81 @@ All 21 native behavioral checks remain unverified by the sole native executor (E
 ### Unowned implementable diff/files source gap
 
 **None** at `67be967f6`. The only REA-proven missing feature (`grep_workspace`) requires native Ghidra analysis before implementation. All other diff/files behaviors are either implemented or outside source reach of this lane. The 21 native items above are the concrete handoff to the sole native executor.
+
+## Program reconciliation, main `cc837e7c`, 13 November 2026
+
+Conductor Rebuild reconciled all active builder lane outcomes against current main `cc837e7cbf65f7b28cd65afc8869c0c18fda83b4`. No Mac launch, native capture, install, build or new runner. Static source-sweep and owner-report cross-check only.
+
+### Settings lane: source-complete at `cc837e7c`
+
+Owner: Session `49e3976d`. Three PRs merged; settings lane is now **source-complete**. Native acceptance remains NOT_RUN.
+
+| PR | Commit | Title | CI | Native |
+|---|---|---|---|---|
+| [#1230](https://github.com/reason-machines/openconductor/pull/1230) | (prior head) | fix(settings): full-disk-access owner resolution | green | NOT_RUN |
+| [#1233](https://github.com/reason-machines/openconductor/pull/1233) | (prior head) | fix(settings): settings-owner prior reconciliation | green | NOT_RUN |
+| [#1242](https://github.com/reason-machines/openconductor/pull/1242) | `cc837e7c` | feat(settings): wire caffeinate consumer to prevent sleep while agents work | **PASS** (Frontend typecheck+build + Evidence tools compile, exact head `f6252cce6`) | NOT_RUN |
+
+Note: `cc837e7c` is the confirmed merge commit for #1242 only. #1233's merge commit is not independently verified from owner report; treat as source-merged only.
+
+**Native caffeinate acceptance (NOT_RUN, ACC/E1 owned):**
+1. Caffeinate enabled + agent working → `caffeinate -i` process present
+2. Caffeinate disabled + agent working → `caffeinate -i` absent
+3. Battery ≤10% on battery → inhibitor stops regardless of setting
+4. All agents idle → inhibitor cancelled / not restarted
+
+No ACC behavioral admission has been performed. Sole native executor E1 (`e1e2b6b9`) remains PROVIDER_LIMIT_BLOCKED from last attempt; no retry authorized.
+
+### Package #1782 dispatched at `cc837e7c`
+
+Owner: `992a715e`. Run `43397108022` dispatched at `cc837e7c`, covering 26 fixes. Artifact verification pending with sole package owner. Do not label proven or accept as native-qualified until owner confirms artifact digest and ancestry.
+
+Previous proven package: #1781 artifact `14022467827`, HEAD `db2216e1`, 25 fixes, digest `sha256:f951b9f3eeda884fde7649f10da45cc8c99d1cb669fb958592c34d072ffbb287`.
+
+### Palette / menus: #1260 CI in_progress at `44c777f2`
+
+Owner: `15faf4d8`. PR [#1260](https://github.com/reason-machines/openconductor/pull/1260) `feat(palette): add Move to section workspace action`. Earlier failure at head `7d42b0e0` is **historical**. Current head `44c777f2`:
+- Evidence tools compile: **PASSED**
+- Frontend typecheck + build: **in_progress** (run `43396573885`)
+- Rust/Tauri checks: 5 skipped (expected)
+- No conflict; no required review
+
+Owner retains subscription and all-green merge. Package owner `992a715e` has event watch `cd11e0dc` armed for this merge. MOVE-TO-SECTION-PALETTE behavioral and native acceptance remain NOT_RUN, ACC serialized.
+
+### Diff lane: #1259 owner confirmed and fix in progress
+
+Owner: Session `6013adf2`. PR [#1259](https://github.com/reason-machines/openconductor/pull/1259) `fix(diff): wire editor.openSearch to pass ⌘F through`.
+
+Root cause confirmed: original commit `15894f56` added `useKeybindings({"editor.openSearch": () => false})` to the Code inner component in `FileDiffView.tsx`. This was unnecessary — the dispatcher passes ⌘F through naturally with no live handler needed — and broke 10 tests: 9× `pointerCancel.test.ts` (mock missing `useKeybindings`) and 1× `viewed.test.ts` (listener count 3≠1).
+
+Fix commit `25358baa`: removes the `useKeybindings` call and import alias; adds inline comment documenting pass-through behavior.
+- Local: `pointerCancel` 74/74 PASS, `viewed` 0 failures
+- CI running on head `25358baa`; merge queued once green
+
+No duplicate builder active. Package owner notified by owner `6013adf2`.
+
+### Composer lane: source-parity complete at `8e847380`
+
+Owner: Session `13576d11`. Source-parity verdict confirmed at checked main `8e847380955088974ea268690a94581c45791264`: **all 18 REA-proven composer/agent-controls gaps are merged** through #1253. No unmerged source-qualified gap remains.
+
+**Post-file-picker editor focus (observation prerequisite only):** Conductor's ITO calls `de()` after `W9` (focus request post-chooser close); OpenConductor lacks an explicit focus request after the file picker closes. Default chooser behavior on this path is unobserved. This is recorded as an **observation prerequisite**, not a confirmed bug or implementation assignment. No PR opened; no runner dispatched.
+
+Native/browser acceptance for all composer items: NOT_RUN, ACC/E1 owned (queue: #1240, #1244, #1251, #1253). E1 PROVIDER_LIMIT_BLOCKED from last attempt; no retry authorized.
+
+### Serialized ACC/E1 native queue (all NOT_RUN)
+
+| Feature | Cases | Source |
+|---|---|---|
+| Composer queue-nav (#1240) | unverified | `9923d277` |
+| Composer pointer-hover (#1244) | unverified | `9ba7c05b` |
+| Composer caret-end (#1251) | unverified | `04720aed` |
+| Composer hover-popup (#1253) | unverified | `db2216e1` |
+| Section primary-action (#1246) | 20 cases | `7ef6cef0` |
+| Queue edit caret (#1251) | 3 cases | `04720aed` |
+| Settings caffeinate (#1242) | 4 cases | `cc837e7c` |
+| Diff/files (all items) | 21 items | various |
+| Interrupted-badge (#859) | 3 cases | `67be967f` |
+| Palette MOVE-TO-SECTION | M01–M09 | awaiting #1260 merge |
+| OPEN-IN-SWITCHER-ENTER-POINTER | 12 cases (frozen) | `a5387885` |
+
+E1 (`e1e2b6b9`) PROVIDER_LIMIT_BLOCKED — last attempt `b372fe10` returned no_output. Sign-in `64baa6b6` likewise PROVIDER_LIMIT_BLOCKED — last attempt `c088e4f6` returned no_output. Neither retried.
