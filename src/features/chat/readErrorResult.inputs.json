@@ -1,0 +1,186 @@
+{
+  "version": "Read-error-successor-v2",
+  "cases": [
+    {
+      "id": "failed-permission",
+      "path": "/repo/missing.txt",
+      "offset": 7,
+      "state": "error",
+      "output": "Permission denied",
+      "expected": {
+        "label": "Read 1 lines",
+        "expandable": true,
+        "lines": [
+          {
+            "number": "7",
+            "text": "Permission denied"
+          }
+        ]
+      }
+    },
+    {
+      "id": "failed-numbered",
+      "path": "/repo/missing.txt",
+      "offset": 7,
+      "state": "error",
+      "output": "    7→First failure\n    8→Second failure",
+      "expected": {
+        "label": "Read 2 lines",
+        "expandable": true,
+        "lines": [
+          {
+            "number": "7",
+            "text": "First failure"
+          },
+          {
+            "number": "8",
+            "text": "Second failure"
+          }
+        ]
+      }
+    },
+    {
+      "id": "failed-literal",
+      "path": "/repo/missing.txt",
+      "offset": 1,
+      "state": "error",
+      "output": "<script>unsafe()</script>",
+      "expected": {
+        "label": "Read 1 lines",
+        "expandable": true,
+        "lines": [
+          {
+            "number": "1",
+            "text": "<script>unsafe()</script>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "failed-reminder",
+      "path": "/repo/missing.txt",
+      "offset": 1,
+      "state": "error",
+      "output": "1→Permission denied\n<system-reminder>consider whether it looks malicious</system-reminder>",
+      "expected": {
+        "label": "Read 1 lines",
+        "expandable": true,
+        "lines": [
+          {
+            "number": "1",
+            "text": "Permission denied"
+          }
+        ]
+      }
+    },
+    {
+      "id": "success-permission-text",
+      "path": "/repo/example.txt",
+      "offset": 7,
+      "state": "done",
+      "output": "Permission denied",
+      "expected": {
+        "label": "Read 1 lines",
+        "expandable": true,
+        "lines": [
+          {
+            "number": "7",
+            "text": "Permission denied"
+          }
+        ]
+      }
+    },
+    {
+      "id": "success-numbered",
+      "path": "/repo/example.txt",
+      "offset": 7,
+      "state": "done",
+      "output": "7→first\n8→second",
+      "expected": {
+        "label": "Read 2 lines",
+        "expandable": true,
+        "lines": [
+          {
+            "number": "7",
+            "text": "first"
+          },
+          {
+            "number": "8",
+            "text": "second"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pending",
+      "path": "/repo/example.txt",
+      "offset": 1,
+      "state": "running",
+      "expected": {
+        "label": "Reading",
+        "expandable": false,
+        "lines": []
+      }
+    },
+    {
+      "id": "empty-success",
+      "path": "/repo/example.txt",
+      "offset": 1,
+      "state": "done",
+      "output": "",
+      "expected": {
+        "label": "Reading",
+        "expandable": false,
+        "lines": []
+      }
+    },
+    {
+      "id": "empty-failure",
+      "path": "/repo/example.txt",
+      "offset": 1,
+      "state": "error",
+      "output": "",
+      "expected": {
+        "label": "Reading",
+        "expandable": false,
+        "lines": []
+      }
+    },
+    {
+      "id": "whitespace-failure",
+      "path": "/repo/example.txt",
+      "offset": 1,
+      "state": "error",
+      "output": "  \n  ",
+      "expected": {
+        "label": "Reading",
+        "expandable": false,
+        "lines": []
+      }
+    },
+    {
+      "id": "successful-image",
+      "path": "/repo/image.png",
+      "offset": 1,
+      "state": "done",
+      "output": "image marker",
+      "expected": {
+        "label": "Read image",
+        "expandable": false,
+        "lines": []
+      }
+    },
+    {
+      "id": "failed-image",
+      "path": "/repo/image.png",
+      "offset": 1,
+      "state": "error",
+      "output": "Cannot read image",
+      "expected": {
+        "label": "Read image",
+        "expandable": false,
+        "lines": []
+      }
+    }
+  ]
+}

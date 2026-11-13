@@ -215,12 +215,28 @@ test("Read syntax keeps markup literal and badge navigation does not expand or c
 });
 
 for (const read of [{ output: "" }, { output: "Permission denied", error: true }]) {
-  test(`Read ${read.error ? "error" : "empty result"} retains its non-content header`, async () => {
+  test(read.error ? "Read error exposes its retained result text" : "Read empty result retains its non-content header", async () => {
     const view = await fixture(read);
     try {
-      assert.equal(view.header().props["aria-expanded"], undefined);
-      assert.equal(view.header().props.onClick, undefined);
-      assert.deepEqual(view.lines(), []);
+      if (read.error) {
+        assert.equal(view.header().props["aria-expanded"], false);
+        assert.equal(typeof view.header().props.onClick, "function");
+        assert.equal(text(view.one((node) => hasClass(node, "oc-tool-left"))), "Read 1 lines");
+        assert.equal(view.one((node) => hasClass(node, "oc-tool")).props["data-status"], "error");
+        await view.toggle();
+        assert.equal(view.header().props["aria-expanded"], true);
+        assert.deepEqual(view.lines().map((line) => ({ number: text(line.children[0]!), text: text(code(line)) })), [{ number: "7", text: "Permission denied" }]);
+        assert.equal(view.all((node) => hasClass(node, "oc-error-chip")).length, 0);
+        await view.toggle();
+        assert.equal(view.header().props["aria-expanded"], false);
+        assert.deepEqual(view.lines(), []);
+        await view.toggle();
+        assert.deepEqual(view.lines().map((line) => text(code(line))), ["Permission denied"]);
+      } else {
+        assert.equal(view.header().props["aria-expanded"], undefined);
+        assert.equal(view.header().props.onClick, undefined);
+        assert.deepEqual(view.lines(), []);
+      }
     } finally { await view.close(); }
   });
 }
