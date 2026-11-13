@@ -1468,7 +1468,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
       <header className="ws-header" data-tauri-drag-region="deep">
         <div className="ws-title">
           <RepoHeaderMenu repo={repo} onError={(message) => notify?.("error", message)} />
-          <span className="crumb-sep">/</span>
+          <span className="crumb-sep">›</span>
           <WorkspaceNameHeader
             key={workspace.id}
             repoId={repo.id}

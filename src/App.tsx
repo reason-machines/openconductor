@@ -105,6 +105,8 @@ export default function App() {
     return () => setActiveOpenInTarget((current) => current === target ? null : current);
   }, []);
   const [sectionDialog, setSectionDialog] = useState<SectionDialogMode | null>(null);
+  /** Set when the section dialog was opened from the palette move-to-section flow; on close, reopen the palette. */
+  const paletteSectionWorkspaceRef = useRef<string | null>(null);
   const submitSection = (mode: SectionDialogMode, value: { name: string; emoji?: string }) => {
     if (mode.mode === "edit") {
       dispatch({ type: "editSection", sectionId: mode.sectionId, ...value, onError: () => show("error", "Couldn't edit section") });
@@ -441,6 +443,10 @@ export default function App() {
   // What the command palette's items run: the same handlers as their shortcuts.
   const paletteCommands: PaletteCommands = {
     createSection: startup === "ready" ? () => setSectionDialog({ mode: "create" }) : undefined,
+    createSectionWithWorkspace: startup === "ready" ? (workspaceId: string) => {
+      paletteSectionWorkspaceRef.current = workspaceId;
+      setSectionDialog({ mode: "create", workspaceIdToMove: workspaceId });
+    } : undefined,
     addProject: () => (isSidebarVisible(state) ? window.dispatchEvent(new Event(OPEN_ADD_PROJECT_MENU)) : openProject()),
     toggleTheme: () => void toggleTheme().catch((e) => show("error", errorText(e))),
     toggleLeftSidebar: () => dispatch({ type: "toggleSidebar" }),
@@ -684,7 +690,13 @@ export default function App() {
           key={sectionDialog.mode === "edit" ? sectionDialog.sectionId : `create-${sectionDialog.workspaceIdToMove ?? "empty"}`}
           data={sectionDialog}
           onSubmit={(value) => submitSection(sectionDialog, value)}
-          onClose={() => setSectionDialog(null)}
+          onClose={() => {
+            setSectionDialog(null);
+            if (paletteSectionWorkspaceRef.current !== null) {
+              paletteSectionWorkspaceRef.current = null;
+              setPaletteOpen(true);
+            }
+          }}
         />
       )}
       <PaletteHost state={state} collapsedSections={collapsedSections} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} commands={paletteCommands} activeOpenInTarget={createPage ? null : activeOpenInTarget} />

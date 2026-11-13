@@ -676,3 +676,35 @@ Owner retains subscription and merge-on-green. No duplicate builder.
 Owner: `15faf4d8`. The in_progress CI result recorded in r1092 resolved: **Frontend typecheck + build FAILED with 12 test failures** at head `44c777f2`. Coordinator has sent palette owner explicit correction/fix instruction. Owner retains sole ownership; no duplicate builder.
 
 MOVE-TO-SECTION-PALETTE behavioral and native acceptance remain NOT_RUN, ACC serialized. Package event watch `cd11e0dc` (owner `992a715e`) remains armed for the eventual all-green merge.
+
+## Program reconciliation r1131, main `a36188938d`, 13 November 2026
+
+### #1276 merged — scripts lane SOURCE_EXHAUSTED
+
+Owner: Session `6013adf2`. PR [#1276](https://github.com/reason-machines/openconductor/pull/1276) `feat(scripts): persist and restore setup transcript across app restarts` merged at `050c55676`. Lane: **SOURCE_EXHAUSTED**. Browser/native NOT_RUN. Note: exact Conductor persistence mechanism (DB vs filesystem vs key path) REA UNPROVEN — merged on best-effort source match; not confirmed as native behavioral parity.
+
+### #1268 merged — settings lane closed
+
+Owner: Session `49e3976d`. PR [#1268](https://github.com/reason-machines/openconductor/pull/1268) `feat(settings): custom SoundSelect with group-logo rendering (iga/sga/rga)` merged squash `a36188938d`. 2 CI checks passed (Frontend typecheck+build, Evidence tools compile), 5 skipped (platform gates). Settings lane: **SOURCE_COMPLETE**, closed. Native logo rendering: NOT_RUN — requires macOS Tauri app; E1 PROVIDER_LIMIT_BLOCKED.
+
+### Package run #1787 dispatched
+
+Owner: `992a715e`. Run id `43412568764` dispatched at `a36188938d` (33 fixes). Artifact follow-up armed at owner. Do not duplicate dispatch.
+
+### All source lanes exhausted
+
+| Session | Surface | Status | Note |
+|---|---|---|---|
+| `6013adf2` | scripts/dialogs | SOURCE_EXHAUSTED | Idle |
+| `49e3976d` | settings | SOURCE_COMPLETE | Closed |
+| `27102e36` | Home/sidebar | SOURCE_EXHAUSTED | 5-item native packet queued E1 |
+| `be7a40e4` | chat | SOURCE_EXHAUSTED | at `86748725` |
+| `13576d11` | composer | SOURCE_EXHAUSTED | at `8e847380` |
+| `de6c02f4` | diff/files | SOURCE_EXHAUSTED | #1275 merged; Q-01–Q-32 E1-owned |
+| `1f14fa82` | terminal/scripts | SOURCE_EXHAUSTED | local 2.3% historical; cloud-org excluded |
+
+**Unowned ready REA-proven source gaps: NONE.** Program is at the acceptance bottleneck. No work invented to fill idle lanes.
+
+Active builders: `15faf4d8` (#1271 open + PICK-ISSUES-DIALOG), `992a715e` (package #1787).
+
+E1 (`e1e2b6b9`) PROVIDER_LIMIT_BLOCKED — no retry authorized absent confirmed reset.
