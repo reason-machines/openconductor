@@ -9,3 +9,6 @@ test-results/
 .native-proof/
 src-tauri/resources/bin/
 __pycache__/
+# REA session working directories (reproducible build artifacts)
+.rea-work/
+.ara-state/
