@@ -104,6 +104,7 @@ pub fn claude_open_chat(
 /// checkpointed before and after it, as for Reason chats
 /// (`crate::reason_chat::reason_prompt`). Resolves with the turn's end
 /// (`{ outcome, message?, turnChanges? }`).
+#[allow(clippy::too_many_arguments)]
 #[tauri::command]
 pub async fn claude_prompt(
     app: AppHandle,
