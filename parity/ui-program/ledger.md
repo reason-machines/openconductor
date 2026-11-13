@@ -1093,3 +1093,46 @@ Native PTY/IPC/rendering/geometry and quit/relaunch persistence: **NOT_RUN** (E1
 - **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
 - **Native acceptance:** ALL frozen (E1 BLOCKED, sole executor, no retry)
 - **Program bottleneck:** E1 quota reset + CONFIG-SYNC ACC admission in parallel
+
+---
+
+## Program reconciliation r1142 at main `8e847380`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**#1281 merged** — squash `8e847380` (docs(scripts): NOTES, `1f14fa82`). Terminal lane CLOSED.
+
+**Carried gaps (not new claims):**
+- Native PTY/IPC, startup cancellation (#1232), late-spawn orphan disposal (#1239): **NOT_RUN** (E1 BLOCKED — sole executor, no retry)
+- `setup_log_path` Rust write path: **NOT_RUN** (Rust CI skipped on all branches; requires native macOS Tauri build)
+- Scripts settings side-by-side + shared env pipeline native exercise: **NOT_RUN**
+- Create-dialog detection / scripts.rs delegation: owned by `6013adf2` (dialogs lane)
+
+No new source work invented. Terminal lane SOURCE_EXHAUSTED.
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG ongoing |
+| Terminal | `1f14fa82` | CLOSED — #1281 merged |
+| Packaging | `992a715e` | CLOSED — artifact confirmed |
+| CONFIG-SYNC gap | `6013adf2` | #1283 CI_PENDING |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — sole executor, no retry |
+| All other lanes | — | SOURCE_EXHAUSTED |
+
+### Serialized cloud runtime queue
+
+- **Slot 1:** #1280 CI await → merge (`ddfc6518`)
+- **Slot 2:** PICK-ISSUES-DIALOG (`15faf4d8`)
+- **Slot 3:** #1283 CONFIG-SYNC CI await → merge (`6013adf2`)
+
+### State
+
+- **Unowned cloud gap: NONE**
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native REA only)
+- **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen (E1 BLOCKED, sole executor, no retry)
+- **Program bottleneck:** E1 quota reset + CONFIG-SYNC ACC admission in parallel
