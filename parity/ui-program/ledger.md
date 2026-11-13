@@ -1503,3 +1503,55 @@ Owner: Conductor Rebuild (Session `ddfc6518`).
 - **ACC E2E:** `43428348880` on `bf9f31fc61` in_progress (ACC owns); next run due on `428f58826`. Native 39 NOT_RUN.
 - **Native acceptance:** ALL frozen — E1 BLOCKED (provider-limit), sole executor, no retry, no second executor
 - **Program bottleneck:** E1 provider limit (native acceptance); env-entry crash root cause UNKNOWN
+
+---
+
+## Program reconciliation r1149 at main `31e6764d6`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Corrections from r1148
+
+**SAME271-HEADER-NAME-MENU stale packet removed:** Home owner `27102e36` confirms this gap was already closed by #1041 and #1178. The prior "blocked" annotation reflected an outdated packet that had drifted from the landed implementation — not an outstanding gap. Removed from actionable queue; native NOT_RUN record preserved.
+
+**Composer (`13576d11`) source-exhausted** at `428f5882650d`. All implemented composer/agent-controls items shipped; browser/native acceptance NOT_RUN retained.
+
+### Events recorded
+
+**#1290 merged `31e6764d6`** (`13576d11`) — fix(chat): show 3 turn-change chips before overflow, not 2. REA evidence `evidence/diff/turn-changes.md:60-62`. 12/12 unit tests RED before → GREEN after; CI passed, owner confirmed merge. Browser/native acceptance: **NOT_RUN**.
+
+**Home/sidebar lane SOURCE_EXHAUSTED** (`27102e36`) — owner verified source at `91e87d9d`: 706/706 JS tests pass, Rust Unicode rename tests pass. No remaining REA-proven unimplemented cloud-assignable gaps in this lane.
+
+**Unowned gap query for `27102e36`:** No distinct unowned REA-proven implementable cloud gap exists. All implemented cloud lanes are source-exhausted or already owned: ws.search-in-files-dialog (`de6c02f4`), PICK-ISSUES-DIALOG (`15faf4d8`). WORKSPACE-GREP is cloud-unassignable (Ghidra/native only). Settings env-crash requires E1 native reproduction. No work invented.
+
+**ACC E2E run `43428348880`** on `bf9f31fc61`: attempt 2 `in_progress` per ACC report (13:22Z); codex-chat job PASS, reason-chat in_progress. ACC queues next run on `428f58826` (post-#1280) once complete; `31e6764d6` is now main. Native 39 NOT_RUN.
+
+**E1 `e1e2b6b9`:** Provider-limit no_output — sole native executor, no retry, no second executor. All native acceptance remains NOT_RUN.
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG in-progress; source-exhausted after. Browser/native NOT_RUN |
+| Chat / composer | `13576d11` | #1284, #1288, #1290 merged. Lane SOURCE_EXHAUSTED. Browser/native NOT_RUN |
+| Diff / files | `de6c02f4` | #1285 merged `0ba8b008a`. ws.search-in-files-dialog REA extraction in-progress. Native NOT_RUN |
+| Home / sidebar | `27102e36` | #1286 merged. Source-exhausted at `91e87d9d`. Native NOT_RUN. Lane SOURCE_EXHAUSTED |
+| Settings | `49e3976d` | Browser PASS (fixture). Env crash: UNRESOLVED, UNKNOWN cause, no log retrieved. NOT actively investigating. Native ALL NOT_RUN |
+| CONFIG-SYNC | `6013adf2` | #1283 merged `04a96d018`. Lane SOURCE_EXHAUSTED |
+| Terminal | `1f14fa82` | CLOSED — #1281 merged `8e847380` |
+| Packaging | `992a715e` | CLOSED — artifact confirmed |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — sole executor, latest attempt no_output, no retry, no second executor |
+
+### Serialized cloud runtime queue
+
+1. **ws.search-in-files-dialog REA extraction** (`de6c02f4`)
+2. **PICK-ISSUES-DIALOG** (`15faf4d8`)
+3. Settings env-crash — awaits native reproduction via E1
+
+### State
+
+- **Unowned cloud gaps: NONE** — all implemented cloud lanes source-exhausted or owned; `27102e36` available, no unowned gap to assign
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native only)
+- **ACC E2E:** `43428348880` on `bf9f31fc61` attempt 2 in_progress; next run due on `31e6764d6`. Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen — E1 BLOCKED (provider-limit), sole executor, no retry, no second executor
+- **Program bottleneck:** E1 provider limit (native acceptance); env-entry crash root cause UNKNOWN; `27102e36` available but no assignable gap
