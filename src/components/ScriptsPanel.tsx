@@ -331,7 +331,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const toggleRun = () => {
     if (showSpotlight) {
       if (!spotButton.disabled) void toggleSpotlightRun(spotMine ? "stop" : "start");
-    } else if (!button.disabled) void act(() => (button.action === "stop" ? api.stopRun(wsId, null) : startScript(shown)));
+    } else if (!button.disabled) void act(() => (button.action === "stop" ? api.stopRun(wsId, shown) : startScript(shown)));
   };
   // workspace.toggleRun (⌘R), as Conductor's terminal panel binds it (renderApp-D_fmY7hW.js
   // offset ~7,141,947): with a run task and the workspace ready, show the Run tab, then stop

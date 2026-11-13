@@ -229,7 +229,7 @@ jobs:
         run: |
           npm install --prefix "$ONBOARDING_DOM_DEPS" --cache "$RUNNER_TEMP/onboarding-dom-cache" \
             --ignore-scripts --no-audit --no-fund --package-lock=false --save-exact \
-            react@18.3.1 react-dom@18.3.1 typescript@5.9.3 jsdom@26.1.0
+            react@18.3.1 react-dom@18.3.1 typescript@5.9.3 jsdom@26.1.0 @testing-library/user-event@14.6.1
       - name: Pure TypeScript modules (Node strips types natively)
         env:
           NODE_ENV: development
@@ -267,5 +267,5 @@ jobs:
         run: |
           echo "Onboarding source commit: $(git rev-parse HEAD)"
           node --check tests/onboarding-strict-effects.test.mjs
-          node --test --test-reporter=tap tests/onboarding-effects.test.mjs tests/onboarding-strict-effects.test.mjs tests/onboarding-selected-slide.test.mjs
+          node --test --test-reporter=tap tests/onboarding-effects.test.mjs tests/onboarding-strict-effects.test.mjs tests/onboarding-media.test.mjs
           node --test --test-reporter=tap tests/chat-search/*.dom.test.mjs

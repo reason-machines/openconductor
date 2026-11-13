@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "115s",
+    "nice",
+    "-n",
+    "19",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs"
+  ],
+  "environment_overrides": {
+    "NODE_ENV": "development",
+    "NODE_OPTIONS": "--max-old-space-size=768",
+    "AGENT_TABS_SOURCE_ROOT": "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo",
+    "ONBOARDING_DOM_DEPS": "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/open-in-escape64/proposal-v2/dom-deps"
+  },
+  "fixture_sha256": "1b71c9d3a01ff6661914b6867f4dc1e5f2a269d7e898ec82c652f427c29cca87",
+  "inspector_sha256": "d70c42346c29cdfa805816bc97f262043316a5569f3bd68b19d807fa02e76b43"
+}

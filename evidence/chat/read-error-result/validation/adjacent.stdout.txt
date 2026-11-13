@@ -1,0 +1,684 @@
+TAP version 13
+# (node:183) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude Code, Reason and Codex give Conductor the same tool calls for one turn
+ok 1 - Claude Code, Reason and Codex give Conductor the same tool calls for one turn
+  ---
+  duration_ms: 3.219462
+  type: 'test'
+  ...
+# Subtest: Codex: the shell wrapper is dropped and single command actions become Read/Grep/LS (Conductor's Kst)
+ok 2 - Codex: the shell wrapper is dropped and single command actions become Read/Grep/LS (Conductor's Kst)
+  ---
+  duration_ms: 0.355158
+  type: 'test'
+  ...
+# Subtest: Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)
+ok 3 - Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)
+  ---
+  duration_ms: 0.25828
+  type: 'test'
+  ...
+# Subtest: Codex: MCP tool calls are mcp__server__tool with their arguments
+ok 4 - Codex: MCP tool calls are mcp__server__tool with their arguments
+  ---
+  duration_ms: 0.305236
+  type: 'test'
+  ...
+# Subtest: Reason: a tool with no Claude Code counterpart keeps its title for Conductor's generic row
+ok 5 - Reason: a tool with no Claude Code counterpart keeps its title for Conductor's generic row
+  ---
+  duration_ms: 0.176838
+  type: 'test'
+  ...
+# Subtest: row text: Read lines, Grep matches, generic summary
+ok 6 - row text: Read lines, Grep matches, generic summary
+  ---
+  duration_ms: 1.095282
+  type: 'test'
+  ...
+# Subtest: line counts follow a line diff
+ok 7 - line counts follow a line diff
+  ---
+  duration_ms: 0.225307
+  type: 'test'
+  ...
+# Subtest: every kind in Conductor's registry resolves by name or prefix (D1o, P1o)
+ok 8 - every kind in Conductor's registry resolves by name or prefix (D1o, P1o)
+  ---
+  duration_ms: 0.306161
+  type: 'test'
+  ...
+# Subtest: Skill and SlashCommand labels (_po, Cpo)
+ok 9 - Skill and SlashCommand labels (_po, Cpo)
+  ---
+  duration_ms: 0.346226
+  type: 'test'
+  ...
+# Subtest: a sub-agent row needs a type other than general-purpose (bpo vs Ypo)
+ok 10 - a sub-agent row needs a type other than general-purpose (bpo vs Ypo)
+  ---
+  duration_ms: 0.42328
+  type: 'test'
+  ...
+# Subtest: AskUserQuestion results (Tpo)
+ok 11 - AskUserQuestion results (Tpo)
+  ---
+  duration_ms: 0.411335
+  type: 'test'
+  ...
+# Subtest: task results parse from JSON and from Claude Code's text (epo, jki)
+ok 12 - task results parse from JSON and from Claude Code's text (epo, jki)
+  ---
+  duration_ms: 1.04319
+  type: 'test'
+  ...
+# Subtest: terminal output, background status and file names (Dpo, R0o, xZe)
+ok 13 - terminal output, background status and file names (Dpo, R0o, xZe)
+  ---
+  duration_ms: 0.281209
+  type: 'test'
+  ...
+# Subtest: swarm messages and wake-ups (qpo, Spo)
+ok 14 - swarm messages and wake-ups (qpo, Spo)
+  ---
+  duration_ms: 0.292117
+  type: 'test'
+  ...
+# Subtest: Codex collaboration calls (_0o)
+ok 15 - Codex collaboration calls (_0o)
+  ---
+  duration_ms: 0.628703
+  type: 'test'
+  ...
+# (node:191) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tool disclosure source roots: live dependency changes leave the historical baseline untouched
+ok 16 - tool disclosure source roots: live dependency changes leave the historical baseline untouched
+  ---
+  duration_ms: 41.963517
+  type: 'test'
+  ...
+# Subtest: tool disclosure remount: unchanged five-case baseline RED and candidate GREEN
+not ok 17 - tool disclosure remount: unchanged five-case baseline RED and candidate GREEN
+  ---
+  duration_ms: 55.41649
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/2cffb89c-e163-42df-b108-b84e96058f53/repo/src/features/chat/disclosureRemount.test.ts:97:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Candidate source differs from current Git blob: src/features/chat/ToolRows.tsx
+    + actual - expected
+    
+    + '04d792887b1e9031fcc2537aa51b2545f31e1909'
+    - '82816491b093398a655262ac88e83efffc6d12c9'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '82816491b093398a655262ac88e83efffc6d12c9'
+  actual: '04d792887b1e9031fcc2537aa51b2545f31e1909'
+  operator: 'strictEqual'
+  stack: |-
+    verifyCandidateSources (file:///home/runner/.reason/workspace/sessions/2cffb89c-e163-42df-b108-b84e96058f53/repo/src/features/chat/disclosureRemount.test.ts:67:12)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/2cffb89c-e163-42df-b108-b84e96058f53/repo/src/features/chat/disclosureRemount.test.ts:106:28)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# (node:200) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: generated-image disclosure: plain-explanation
+ok 18 - generated-image disclosure: plain-explanation
+  ---
+  duration_ms: 294.781764
+  type: 'test'
+  ...
+# Subtest: generated-image disclosure: unsupported-svg
+ok 19 - generated-image disclosure: unsupported-svg
+  ---
+  duration_ms: 143.931263
+  type: 'test'
+  ...
+# Subtest: generated-image disclosure: recognized-png
+ok 20 - generated-image disclosure: recognized-png
+  ---
+  duration_ms: 105.094319
+  type: 'test'
+  ...
+# Subtest: generated-image disclosure: pending-no-result
+ok 21 - generated-image disclosure: pending-no-result
+  ---
+  duration_ms: 144.719715
+  type: 'test'
+  ...
+# Subtest: generated-image disclosure: read-still-collapsible
+ok 22 - generated-image disclosure: read-still-collapsible
+  ---
+  duration_ms: 74.676087
+  type: 'test'
+  ...
+# (node:208) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Read image disclosure gate: image-png
+ok 23 - Read image disclosure gate: image-png
+  ---
+  duration_ms: 18.08248
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: image-jpg
+ok 24 - Read image disclosure gate: image-jpg
+  ---
+  duration_ms: 1.981852
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: image-jpeg
+ok 25 - Read image disclosure gate: image-jpeg
+  ---
+  duration_ms: 1.655205
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: image-gif
+ok 26 - Read image disclosure gate: image-gif
+  ---
+  duration_ms: 1.427511
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: image-webp
+ok 27 - Read image disclosure gate: image-webp
+  ---
+  duration_ms: 1.840803
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: image-tif
+ok 28 - Read image disclosure gate: image-tif
+  ---
+  duration_ms: 1.392562
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: image-tiff
+ok 29 - Read image disclosure gate: image-tiff
+  ---
+  duration_ms: 1.23477
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: image-avif
+ok 30 - Read image disclosure gate: image-avif
+  ---
+  duration_ms: 1.40217
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: image-bmp
+ok 31 - Read image disclosure gate: image-bmp
+  ---
+  duration_ms: 1.940816
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: image-uppercase
+ok 32 - Read image disclosure gate: image-uppercase
+  ---
+  duration_ms: 2.151502
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: image-mixedcase
+ok 33 - Read image disclosure gate: image-mixedcase
+  ---
+  duration_ms: 1.32243
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: bare-registry-key
+ok 34 - Read image disclosure gate: bare-registry-key
+  ---
+  duration_ms: 1.202312
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: not-registry-svg
+ok 35 - Read image disclosure gate: not-registry-svg
+  ---
+  duration_ms: 5.002467
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: not-registry-ico
+ok 36 - Read image disclosure gate: not-registry-ico
+  ---
+  duration_ms: 2.915982
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: not-registry-heic
+ok 37 - Read image disclosure gate: not-registry-heic
+  ---
+  duration_ms: 3.104559
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: not-registry-pdf
+ok 38 - Read image disclosure gate: not-registry-pdf
+  ---
+  duration_ms: 3.032731
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: no-extension
+ok 39 - Read image disclosure gate: no-extension
+  ---
+  duration_ms: 7.386227
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: empty-path
+ok 40 - Read image disclosure gate: empty-path
+  ---
+  duration_ms: 2.151401
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: last-extension-only
+ok 41 - Read image disclosure gate: last-extension-only
+  ---
+  duration_ms: 2.811542
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: image-directory
+ok 42 - Read image disclosure gate: image-directory
+  ---
+  duration_ms: 2.569957
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: no-query-stripping
+ok 43 - Read image disclosure gate: no-query-stripping
+  ---
+  duration_ms: 2.543085
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: no-inherited-constructor
+ok 44 - Read image disclosure gate: no-inherited-constructor
+  ---
+  duration_ms: 2.396234
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: no-inherited-toString
+ok 45 - Read image disclosure gate: no-inherited-toString
+  ---
+  duration_ms: 2.47463
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: pending-image
+ok 46 - Read image disclosure gate: pending-image
+  ---
+  duration_ms: 1.105252
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: empty-image
+ok 47 - Read image disclosure gate: empty-image
+  ---
+  duration_ms: 1.270633
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: failed-image
+ok 48 - Read image disclosure gate: failed-image
+  ---
+  duration_ms: 0.915808
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: failed-text
+ok 49 - Read image disclosure gate: failed-text
+  ---
+  duration_ms: 2.237737
+  type: 'test'
+  ...
+# Subtest: Read image disclosure gate: whitespace-image
+ok 50 - Read image disclosure gate: whitespace-image
+  ---
+  duration_ms: 0.984627
+  type: 'test'
+  ...
+# (node:216) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary Claude Read opens highlighted TypeScript with exact cleaned text and offset numbers
+ok 51 - ordinary Claude Read opens highlighted TypeScript with exact cleaned text and offset numbers
+  ---
+  duration_ms: 270.682908
+  type: 'test'
+  ...
+# Subtest: ordinary Read .js uses canonical javascript syntax
+ok 52 - ordinary Read .js uses canonical javascript syntax
+  ---
+  duration_ms: 148.245592
+  type: 'test'
+  ...
+# Subtest: ordinary Read .jsx uses canonical javascript syntax
+ok 53 - ordinary Read .jsx uses canonical javascript syntax
+  ---
+  duration_ms: 80.582945
+  type: 'test'
+  ...
+# Subtest: ordinary Read .ts uses canonical typescript syntax
+ok 54 - ordinary Read .ts uses canonical typescript syntax
+  ---
+  duration_ms: 66.583435
+  type: 'test'
+  ...
+# Subtest: ordinary Read .tsx uses canonical typescript syntax
+ok 55 - ordinary Read .tsx uses canonical typescript syntax
+  ---
+  duration_ms: 66.922934
+  type: 'test'
+  ...
+# Subtest: ordinary Read .TSX uses canonical typescript syntax
+ok 56 - ordinary Read .TSX uses canonical typescript syntax
+  ---
+  duration_ms: 82.243401
+  type: 'test'
+  ...
+# Subtest: ordinary Read .py uses canonical python syntax
+ok 57 - ordinary Read .py uses canonical python syntax
+  ---
+  duration_ms: 74.806166
+  type: 'test'
+  ...
+# Subtest: ordinary Read .rs uses canonical rust syntax
+ok 58 - ordinary Read .rs uses canonical rust syntax
+  ---
+  duration_ms: 54.422011
+  type: 'test'
+  ...
+# Subtest: ordinary Read .json uses canonical json syntax
+ok 59 - ordinary Read .json uses canonical json syntax
+  ---
+  duration_ms: 56.465386
+  type: 'test'
+  ...
+# Subtest: ordinary Read .yml uses canonical yaml syntax
+ok 60 - ordinary Read .yml uses canonical yaml syntax
+  ---
+  duration_ms: 54.078035
+  type: 'test'
+  ...
+# Subtest: ordinary Read .yaml uses canonical yaml syntax
+ok 61 - ordinary Read .yaml uses canonical yaml syntax
+  ---
+  duration_ms: 48.774457
+  type: 'test'
+  ...
+# Subtest: ordinary Read .css uses canonical css syntax
+ok 62 - ordinary Read .css uses canonical css syntax
+  ---
+  duration_ms: 70.349036
+  type: 'test'
+  ...
+# Subtest: ordinary Read .html uses canonical html syntax
+ok 63 - ordinary Read .html uses canonical html syntax
+  ---
+  duration_ms: 49.272011
+  type: 'test'
+  ...
+# Subtest: ordinary Read .htm uses canonical html syntax
+ok 64 - ordinary Read .htm uses canonical html syntax
+  ---
+  duration_ms: 45.827744
+  type: 'test'
+  ...
+# Subtest: ordinary Read .xml uses canonical xml syntax
+ok 65 - ordinary Read .xml uses canonical xml syntax
+  ---
+  duration_ms: 51.62515
+  type: 'test'
+  ...
+# Subtest: ordinary Read .sh uses canonical bash syntax
+ok 66 - ordinary Read .sh uses canonical bash syntax
+  ---
+  duration_ms: 46.856655
+  type: 'test'
+  ...
+# Subtest: ordinary Read .bash uses canonical bash syntax
+ok 67 - ordinary Read .bash uses canonical bash syntax
+  ---
+  duration_ms: 40.995873
+  type: 'test'
+  ...
+# Subtest: Read unmapped path "/repo/README" keeps literal text without guessed syntax
+ok 68 - Read unmapped path "/repo/README" keeps literal text without guessed syntax
+  ---
+  duration_ms: 45.728257
+  type: 'test'
+  ...
+# Subtest: Read unmapped path "/repo/example.unknown" keeps literal text without guessed syntax
+ok 69 - Read unmapped path "/repo/example.unknown" keeps literal text without guessed syntax
+  ---
+  duration_ms: 47.597647
+  type: 'test'
+  ...
+# Subtest: Read unmapped path "/repo/example.go" keeps literal text without guessed syntax
+ok 70 - Read unmapped path "/repo/example.go" keeps literal text without guessed syntax
+  ---
+  duration_ms: 43.399134
+  type: 'test'
+  ...
+# Subtest: Read unmapped path "/repo/example.dart" keeps literal text without guessed syntax
+ok 71 - Read unmapped path "/repo/example.dart" keeps literal text without guessed syntax
+  ---
+  duration_ms: 62.357273
+  type: 'test'
+  ...
+# Subtest: Read unmapped path "" keeps literal text without guessed syntax
+ok 72 - Read unmapped path "" keeps literal text without guessed syntax
+  ---
+  duration_ms: 41.906519
+  type: 'test'
+  ...
+# Subtest: Read highlights each result line independently rather than carrying comment state
+ok 73 - Read highlights each result line independently rather than carrying comment state
+  ---
+  duration_ms: 44.15479
+  type: 'test'
+  ...
+# Subtest: Read applies the highlight cutoff to each line, not their combined result
+ok 74 - Read applies the highlight cutoff to each line, not their combined result
+  ---
+  duration_ms: 45.511508
+  type: 'test'
+  ...
+# Subtest: Read highlights a line at the cutoff but leaves an overlong line plain without suppressing its neighbor
+ok 75 - Read highlights a line at the cutoff but leaves an overlong line plain without suppressing its neighbor
+  ---
+  duration_ms: 43.266878
+  type: 'test'
+  ...
+# Subtest: Read syntax keeps markup literal and badge navigation does not expand or collapse the row
+ok 76 - Read syntax keeps markup literal and badge navigation does not expand or collapse the row
+  ---
+  duration_ms: 41.087603
+  type: 'test'
+  ...
+# Subtest: Read empty result retains its non-content header
+ok 77 - Read empty result retains its non-content header
+  ---
+  duration_ms: 39.046218
+  type: 'test'
+  ...
+# Subtest: Read error exposes its retained result text
+ok 78 - Read error exposes its retained result text
+  ---
+  duration_ms: 40.712154
+  type: 'test'
+  ...
+# (node:224) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Edit exact read-before-write failure shows only the retry explanation
+ok 79 - Edit exact read-before-write failure shows only the retry explanation
+  ---
+  duration_ms: 259.434647
+  type: 'test'
+  ...
+# Subtest: Edit embedded read-before-write failure shows only the retry explanation
+ok 80 - Edit embedded read-before-write failure shows only the retry explanation
+  ---
+  duration_ms: 129.690978
+  type: 'test'
+  ...
+# Subtest: Edit ordinary error keeps its independent disclosure and raw text
+ok 81 - Edit ordinary error keeps its independent disclosure and raw text
+  ---
+  duration_ms: 72.243451
+  type: 'test'
+  ...
+# Subtest: Edit case near miss error keeps its independent disclosure and raw text
+ok 82 - Edit case near miss error keeps its independent disclosure and raw text
+  ---
+  duration_ms: 65.274693
+  type: 'test'
+  ...
+# Subtest: Edit punctuation near miss error keeps its independent disclosure and raw text
+ok 83 - Edit punctuation near miss error keeps its independent disclosure and raw text
+  ---
+  duration_ms: 59.946728
+  type: 'test'
+  ...
+# Subtest: Edit successful matching result does not add an error or retry explanation
+ok 84 - Edit successful matching result does not add an error or retry explanation
+  ---
+  duration_ms: 68.639802
+  type: 'test'
+  ...
+# Subtest: Edit empty failed result does not add an error or retry explanation
+ok 85 - Edit empty failed result does not add an error or retry explanation
+  ---
+  duration_ms: 50.315208
+  type: 'test'
+  ...
+# Subtest: Edit same mounted error survives trigger to generic to trigger without changing hook order
+ok 86 - Edit same mounted error survives trigger to generic to trigger without changing hook order
+  ---
+  duration_ms: 54.941878
+  type: 'test'
+  ...
+# Subtest: Write exact read-before-write failure shows only the retry explanation
+ok 87 - Write exact read-before-write failure shows only the retry explanation
+  ---
+  duration_ms: 50.370437
+  type: 'test'
+  ...
+# Subtest: Write embedded read-before-write failure shows only the retry explanation
+ok 88 - Write embedded read-before-write failure shows only the retry explanation
+  ---
+  duration_ms: 48.829083
+  type: 'test'
+  ...
+# Subtest: Write ordinary error keeps its independent disclosure and raw text
+ok 89 - Write ordinary error keeps its independent disclosure and raw text
+  ---
+  duration_ms: 45.628878
+  type: 'test'
+  ...
+# Subtest: Write case near miss error keeps its independent disclosure and raw text
+ok 90 - Write case near miss error keeps its independent disclosure and raw text
+  ---
+  duration_ms: 45.078125
+  type: 'test'
+  ...
+# Subtest: Write punctuation near miss error keeps its independent disclosure and raw text
+ok 91 - Write punctuation near miss error keeps its independent disclosure and raw text
+  ---
+  duration_ms: 46.316931
+  type: 'test'
+  ...
+# Subtest: Write successful matching result does not add an error or retry explanation
+ok 92 - Write successful matching result does not add an error or retry explanation
+  ---
+  duration_ms: 63.167399
+  type: 'test'
+  ...
+# Subtest: Write empty failed result does not add an error or retry explanation
+ok 93 - Write empty failed result does not add an error or retry explanation
+  ---
+  duration_ms: 45.583039
+  type: 'test'
+  ...
+# Subtest: Write same mounted error survives trigger to generic to trigger without changing hook order
+ok 94 - Write same mounted error survives trigger to generic to trigger without changing hook order
+  ---
+  duration_ms: 49.995642
+  type: 'test'
+  ...
+# (node:232) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Write 0 UTF-16 units initially shows at most 2000, with controls only above the limit
+ok 95 - Write 0 UTF-16 units initially shows at most 2000, with controls only above the limit
+  ---
+  duration_ms: 256.274742
+  type: 'test'
+  ...
+# Subtest: Write 1999 UTF-16 units initially shows at most 2000, with controls only above the limit
+ok 96 - Write 1999 UTF-16 units initially shows at most 2000, with controls only above the limit
+  ---
+  duration_ms: 213.302219
+  type: 'test'
+  ...
+# Subtest: Write 2000 UTF-16 units initially shows at most 2000, with controls only above the limit
+ok 97 - Write 2000 UTF-16 units initially shows at most 2000, with controls only above the limit
+  ---
+  duration_ms: 86.777649
+  type: 'test'
+  ...
+# Subtest: Write 2001 UTF-16 units initially shows at most 2000, with controls only above the limit
+ok 98 - Write 2001 UTF-16 units initially shows at most 2000, with controls only above the limit
+  ---
+  duration_ms: 64.332654
+  type: 'test'
+  ...
+# Subtest: Write Show more reveals the full raw body and Show less restores the initial prefix
+ok 99 - Write Show more reveals the full raw body and Show less restores the initial prefix
+  ---
+  duration_ms: 62.945512
+  type: 'test'
+  ...
+# Subtest: Write line count always uses the complete original input, including hidden and trailing lines
+ok 100 - Write line count always uses the complete original input, including hidden and trailing lines
+  ---
+  duration_ms: 72.377255
+  type: 'test'
+  ...
+# Subtest: Write preserves literal plus/minus markers instead of treating them as diff prefixes
+ok 101 - Write preserves literal plus/minus markers instead of treating them as diff prefixes
+  ---
+  duration_ms: 50.620582
+  type: 'test'
+  ...
+# Subtest: Write disclosure slices UTF-16 units, including an astral character crossing unit 2000
+ok 102 - Write disclosure slices UTF-16 units, including an astral character crossing unit 2000
+  ---
+  duration_ms: 56.443678
+  type: 'test'
+  ...
+# Subtest: Write expansion is row-local and survives closing and reopening its outer shell
+ok 103 - Write expansion is row-local and survives closing and reopening its outer shell
+  ---
+  duration_ms: 69.149533
+  type: 'test'
+  ...
+# Subtest: Write starts collapsed when requested and keeps badge navigation without an immediate preview
+ok 104 - Write starts collapsed when requested and keeps badge navigation without an immediate preview
+  ---
+  duration_ms: 53.818669
+  type: 'test'
+  ...
+# Subtest: failed Write retains an independent expandable error without losing disclosure state
+ok 105 - failed Write retains an independent expandable error without losing disclosure state
+  ---
+  duration_ms: 47.643254
+  type: 'test'
+  ...
+# Subtest: Read, Edit and MultiEdit keep their own body contracts without Write disclosure controls
+ok 106 - Read, Edit and MultiEdit keep their own body contracts without Write disclosure controls
+  ---
+  duration_ms: 65.693247
+  type: 'test'
+  ...
+1..106
+# tests 106
+# suites 0
+# pass 105
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8093.675716
