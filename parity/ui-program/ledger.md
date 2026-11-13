@@ -1348,3 +1348,48 @@ Owner: Conductor Rebuild (Session `ddfc6518`).
 - **ACC E2E:** PASS at `e963fb31`. Run `43422109496` on `8f62e6e3` in progress (ACC owns watch). Native 39 NOT_RUN.
 - **Native acceptance:** ALL frozen — E1 BLOCKED, sole executor, no retry, no second executor
 - **Program bottleneck:** E1 quota reset (native) + #1283/#1284 CI + env crash root cause
+
+---
+
+## Program reconciliation r1146 at main `0ba8b008`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**#1283 CONFIG-SYNC merged `5887a2835`** — all final-head checks passed. `6013adf2` retains post-merge verification. **Caffeinate diagnosis corrected:** earlier `CAFFEINATE_MISSING_EFFECT_WORKING` output was an intentional RED baseline asserted by the outer test; the current-mode run was cancelled by CI due to a newer push, not because of a product failure. Prior inference that an intervening main commit fixed a startup race is **removed**. No caffeinate product defect is established. Native behavior still NOT_RUN.
+
+**#1288 (composer AddMenu Link Issue, `13576d11`)** — head `f7d9a504`, `Frontend typecheck + build` pending. `13576d11` retains subscription and merge ownership. Relationship to #1284: #1284 fixes 14→16 chat row correctness; #1288 adds missing Link Issue button — different scopes, both live. Browser/native NOT_RUN.
+
+**Settings (`49e3976d`) — investigation concluded:** Source inspection found no JS defect in `AddVariableDialog`. No crash log and no native reproduction are available. Env-entry crash remains **UNRESOLVED**, cause **UNKNOWN**; timing-race attribution is unproven and is not recorded as a cause. Isolated SVG asset rendering verified on standalone page (not live-app/native fidelity). Settings lane is **not actively investigating**; reproduction requires E1 native access. Settings parity is not complete from source inspection alone; native acceptance NOT_RUN.
+
+**ws.search-in-files-dialog — REA extraction assigned to `de6c02f4`** — bounded read of retained `renderApp-D_fmY7hW.js` (SHA-256 `5199d392`) to locate `_Se` and document UX contract. No second native executor, no retry of E1.
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG in-progress |
+| Chat / composer | `13576d11` | #1288 CI_PENDING + COMPOSER-ADD-MENU-LINK-ISSUE in-progress |
+| Terminal | `1f14fa82` | CLOSED — #1281 merged `8e847380` |
+| Settings | `49e3976d` | Browser PASS (fixture). Env crash: UNRESOLVED, UNKNOWN cause, NOT actively investigating. Native ALL NOT_RUN |
+| Diff / files | `de6c02f4` | SOURCE_EXHAUSTED. ws.search-in-files-dialog REA extraction assigned |
+| CONFIG-SYNC | `6013adf2` | MERGED `5887a2835`. Caffeinate: prior defect inference removed — intentional RED baseline. Native NOT_RUN |
+| Packaging | `992a715e` | CLOSED |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — sole executor, no retry, no second executor |
+
+### Serialized cloud runtime queue
+
+1. **#1280** CI await on `fd33c282` → merge (`ddfc6518`)
+2. **#1288** CI await on `f7d9a504` → merge (`13576d11`)
+3. **PICK-ISSUES-DIALOG** (`15faf4d8`)
+4. **ws.search-in-files-dialog REA extraction** (`de6c02f4`)
+5. Settings env-crash — awaits native reproduction via E1
+
+### State
+
+- **Unowned cloud gaps: NONE**
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native only)
+- **ACC E2E:** `43422109496` on `8f62e6e3` — ACC owns watch. All native 39+ NOT_RUN
+- **Native acceptance:** ALL frozen — E1 BLOCKED, sole executor, no retry, no second executor
+- **Program bottleneck:** E1 quota reset (native) + #1280 CI + env crash root cause
