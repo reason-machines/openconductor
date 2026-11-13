@@ -923,7 +923,83 @@ PICK-ISSUES-DIALOG work by `15faf4d8`: status per last report — ongoing. No du
 
 ### State
 
-- **Source gaps: NONE.** All lanes SOURCE_EXHAUSTED; confirmed from existing ledger, no work invented.
-- **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures, not current-main native parity). Native 39 NOT_RUN.
-- **Native acceptance (39 items + settings IPC):** E1 provider quota confirmed reset (Sven, standing guidance). Native Settings acceptance reassigned to `49e3976d` — settings.toml persistence, native file pickers, Tauri IPC (all 5 panels), macOS rendering; remains NOT_RUN until evidence returns. E1 available for non-Settings native items on request.
-- **Program bottleneck:** Native acceptance in progress under `49e3976d`; evidence awaited.
+- **Source gaps: NONE claimed in r1137/r1138 — CORRECTED in r1139 below.**
+- **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
+- **Native acceptance:** E1 PROVIDER_LIMIT_BLOCKED at 11:21Z Nov 13 (coordinator direct observation; supersedes 07:00Z Nov 11 standing guidance). Native Settings reassignment to `49e3976d` REVERTED — was not an executed authorization. Sole native executor remains E1. All native items frozen.
+- **Program bottleneck:** E1 quota reset required. No retry authorized until confirmed.
+
+---
+
+## Program reconciliation r1138 at main `33ae5f4f5`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**#1278 merged** — `c189ea62` (docs ledger r1131). Subscription closed.
+
+**#1279 merged** — `33ae5f4f` (35 packaging/repair fixes, `7e1889e6`). Package run #1789 (`43418374262`) dispatched by `992a715e`; artifact pending, owned by `992a715e` — no duplicate dispatch.
+
+**Native Settings acceptance reassignment** — `dcaa6e78` authorized reassignment from E1 (`e1e2b6b9`) to `49e3976d`. E1 retains all non-Settings native items (Q-01–Q-32). Native Settings (settings.toml persistence, file pickers, Tauri IPC × 5 tabs, macOS rendering) remains NOT_RUN pending `49e3976d` evidence. **No parallel native activity created by prior coordination prose; sole native executor E1 preserved for non-Settings scope.**
+
+**#1280 in-progress** — head `c57788d`; 5 skipped, 2 in-progress (`Frontend typecheck + build`, `Evidence tools compile`). Will merge on green.
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG ongoing |
+| Packaging artifact | `992a715e` | Run #1789 pending artifact proof |
+| Native Settings acceptance | `49e3976d` | Assigned; NOT_RUN |
+| Native behavioral Q-01–Q-32 | E1 `e1e2b6b9` | Quota reset confirmed; available on request |
+| All other lanes | — | SOURCE_EXHAUSTED |
+
+---
+
+## Program reconciliation r1139 at main `33ae5f4f5`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`). Substantive correction to r1137/r1138.
+
+### Corrections
+
+**E1 PROVIDER_LIMIT_BLOCKED** — coordinator (`dcaa6e78`) reports latest E1 attempt failed provider usage at 11:21Z Nov 13. This is more recent than the 07:00Z Nov 11 quota-reset standing guidance. E1 is BLOCKED. No retry authorized.
+
+**Native Settings reassignment REVERTED** — `dcaa6e78` confirms the prior prose claiming reassignment to `49e3976d` was not an executed authorization. Sole native executor remains E1 (`e1e2b6b9`). `49e3976d` is browser-only. All native acceptance (Settings IPC + Q-01–Q-32 diff/files/composer/palette items) frozen until E1 quota resets.
+
+**#1280 merged** — squash `541c9e4c`, docs(ledger) r1138. All 7 checks passed (2 green, 5 skipped).
+
+### Substantive unowned REA-proven gaps
+
+**1. CONFIG-SYNC-PENDING-SELECTION** (dialogs lane)
+- **REA basis:** `ConfigSyncDialog.tsx` lines 90/107 disable category/item checkboxes when `state.kind !== "ready"`. REA-verified Conductor behavior: selection remains editable during `syncing`; only empty categories stay disabled.
+- **Status:** Unowned. Candidate patch at `evidence/dialogs/config-sync-pending-selection/candidate.patch` exists (confirmed readable). 20-case fixture `configSyncPendingSelection.test.ts` prepared and outside automatic test discovery.
+- **Gate:** Requires ACC behavioral admission (baseline RED → fix GREEN) before PR eligibility.
+- **Assignment:** `6013adf2` (dialogs/scripts, idle, SOURCE_EXHAUSTED on prior scope) is the natural assignee. Work: apply patch → run baseline RED → run fix GREEN locally → submit for ACC queue admission.
+
+**2. WORKSPACE-GREP** (diff/files lane)
+- **REA basis:** `grep_workspace` Tauri command present in Conductor 0.87.6 artifact (`0ba55751`). Absent from both `src/backend.ts` and `src-tauri/src/` on current main.
+- **Status:** Unimplementable from source alone. Requires Ghidra binding of the Rust `#[tauri::command]` handler (native REA access). NOT assignable to a cloud-only builder.
+
+### Lane / owner table (corrected)
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG ongoing |
+| Packaging artifact | `992a715e` | Run #1789 pending artifact proof |
+| Dialogs (CONFIG-SYNC) | `6013adf2` | IDLE — assignable to CONFIG-SYNC-PENDING-SELECTION |
+| Native (all items) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED (11:21Z). No retry. |
+| 49e3976d | Settings browser | BROWSER_PASS; native assignment REVERTED |
+
+### Serialized cloud runtime queue
+
+- **Active:** PICK-ISSUES-DIALOG (`15faf4d8`), Package #1789 artifact (`992a715e`)
+- **Ready for assignment:** CONFIG-SYNC-PENDING-SELECTION → `6013adf2` (apply patch, ACC queue)
+- **Blocked native:** All ACC/E1 queue items frozen (E1 PROVIDER_LIMIT_BLOCKED)
+
+### State
+
+- **Substantive unowned source gap: 1** — CONFIG-SYNC-PENDING-SELECTION, assignable to `6013adf2`.
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (requires Ghidra native REA).
+- **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen. E1 BLOCKED (11:21Z). No retry authorized until confirmed reset.
+- **Program bottleneck:** E1 quota reset required for native acceptance. One cloud source gap (CONFIG-SYNC) refillable now.
