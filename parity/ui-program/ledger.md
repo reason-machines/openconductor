@@ -925,5 +925,5 @@ PICK-ISSUES-DIALOG work by `15faf4d8`: status per last report — ongoing. No du
 
 - **Source gaps: NONE.** All lanes SOURCE_EXHAUSTED; confirmed from existing ledger, no work invented.
 - **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures, not current-main native parity). Native 39 NOT_RUN.
-- **Native acceptance (39 items + settings IPC):** Sole executor E1 PROVIDER_LIMIT_BLOCKED — no retry authorized. First-priority handoff on E1 recovery: settings native persistence / file pickers / rendering.
-- **Program bottleneck:** E1 provider reset required before native acceptance can proceed.
+- **Native acceptance (39 items + settings IPC):** E1 provider quota confirmed reset (Sven, standing guidance). Native Settings acceptance reassigned to `49e3976d` — settings.toml persistence, native file pickers, Tauri IPC (all 5 panels), macOS rendering; remains NOT_RUN until evidence returns. E1 available for non-Settings native items on request.
+- **Program bottleneck:** Native acceptance in progress under `49e3976d`; evidence awaited.
