@@ -59,16 +59,21 @@ export function MoveToSection({
 
   return (
     <div className="palette-move-section-wrapper">
-      <button
-        className="palette-section-back-btn"
-        aria-label="Back to commands"
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={onBack}
-      >
-        <ConductorIcon name="arrow-left" size={14} />
-        <span>Commands</span>
-      </button>
+      <div className="palette-move-section-header">
+        <button
+          className="palette-section-back-btn"
+          aria-label="Back to commands"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={onBack}
+        >
+          <ConductorIcon name="arrow-left" size={14} />
+        </button>
+        <span className="palette-section-title">Move to section</span>
+      </div>
       <div className="palette-list" id="palette-list" role="listbox">
+        {query.length > 0 && items.length === 0 && (
+          <div className="palette-section-empty">No matching sections</div>
+        )}
         {items.map((item, i) => {
           if (item.kind === "section") {
             const isCurrent = item.section.id === currentSectionId;

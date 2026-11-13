@@ -861,6 +861,68 @@ All evidence directories in `evidence/diff/` and `evidence/files/` cross-checked
 
 **None** at `8416fc30d`. The 32 native behavioral items (Q-01–Q-32) remain with the sole native executor (E1). The `wrap_lines` settings-DB gap is settings-lane owned.
 
+## Diff/files fresh audit at main `8f62e6e3d`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `de6c02f4`). No Mac launch, native capture, install, build or runner. Static source-sweep against 17 new commits since r1131 (`a36188938d` → `8f62e6e3d`). REA artifact SHA-256 unchanged from prior entries.
+
+### New commits since r1131 touching diff/files scope
+
+| Commit | PR | Title | Diff/files impact |
+|---|---|---|---|
+| `8f44c4f1f` | [#1271](https://github.com/reason-machines/openconductor/pull/1271) | feat(palette): add REA-proven missing workspace actions | `src/state/rowStatus.ts` exports `readyToMerge` (no diff-viewer impact); palette adds `search-in-files` with `searchInFiles: undefined` gate |
+
+All other 16 commits touch chat, scripts, settings, palette CSS, or docs — zero diff/files source files changed.
+
+### Evidence directory sweep (all evidence/diff/ and evidence/files/ dirs)
+
+All 20+ evidence directories cross-checked against main `8f62e6e3d`. Previously unreviewed items confirmed implemented:
+
+| Evidence dir | Confirmed via |
+|---|---|
+| `rename-origin.md` | `src/features/diff/renameDisplayPath.ts` (#969) |
+| `viewed-scope-retention.md` | `src/features/diff/viewed.ts` (#936) |
+| `refresh-status/` | `src/features/diff/refreshStatus.test.ts` (#1001) |
+| `whole-file-refresh/` | `src/features/diff/wholeFileRefresh.test.ts` (#995) |
+| `comment-ime-submit/` | `ReviewComments.tsx:80–105` IME guard |
+| `comments-github.md` | `ReviewComments.tsx:71` GITHUB_SYNC_MS, `src/features/diff/githubComments.test.ts` |
+| `comments-to-chat.md` | `src/features/diff/commentMarkdown.ts`, `commentAttachment`, `chatAttachment.ts` |
+| `moved-comment-anchors/` | `src/features/diff/movedCommentAnchors.test.ts`, `commentsApi.ts:27` |
+| `workspace-comment-read-isolation/` | `src/features/diff/workspaceCommentReadIsolation.test.ts` (#1198) |
+| `large-file-placeholder/` | `FileDiffView.tsx:262` `hide_reason === "file_too_large"` |
+| `literal-selected-path/` | `src-tauri/src/diff/literal_path_tests.rs` |
+| `empty-diff-close.md` | `emptyLoadStates.test.ts:190–199`, `viewed.test.ts:1214,1226` |
+| `comment-navigation.md` | `src/features/diff/CommentNav.tsx` |
+| `copy-whitespace.md` | `src/features/diff/copyFile.ts:34` additions/deletions eligibility |
+| `turn-changes.md` | `src/features/diff/turnChangesCache.ts`, `useTurnChanges.ts` |
+
+### New REA evidence gap — search-in-files dialog
+
+**Gap identifier:** `ws.search-in-files-dialog` (new, not previously recorded).
+
+**What is known from retained source:**
+
+- Conductor's `renderApp-D_fmY7hW.js` palette handler (complete source in `evidence/settings/theme-default/reachability/renderApp-3.txt`) contains: `else if(Gn==="search-in-files"){if(!Tr)return;nr.openDialog(_Se)}`
+- `_Se` is a dialog constant. `nr.openDialog(bSe)` is used for quick-open; `nr.openDialog(_Se)` is for search-in-files. They are distinct dialogs.
+- The keybinding is `meta+shift+f` → `nav.searchInFiles` (from `evidence/keybindings/keybindings.json`).
+- The Tauri IPC contract (`grep_workspace`) is fully documented in `evidence/files/grep-workspace/REA.md` and implemented in #1257.
+
+**What is NOT known:**
+
+- The layout and UI of `_Se`: number of fields, field types (query input, regex toggle, case-sensitive toggle, whole-word toggle), result display format (file tree vs flat list, line previews, match count), scroll/pagination, empty/error states.
+- The byte range of `_Se` and its component definition in the retained `renderApp-D_fmY7hW.js`.
+
+**REA extraction needed:**
+
+Target: retained `renderApp-D_fmY7hW.js`, SHA-256 `5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde`, 11,600,457 bytes. The `_Se` constant appears in the palette handler source above; its definition is in the same bundle at an unknown offset. A bounded Python read near `bSe` (the quick-open dialog constant, whose offset is similarly unknown from the available evidence) would likely locate `_Se`. REA `trace-javascript-semantics` on the retained `ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367` has incomplete renderer coverage (heap exhaustion) so cannot be used directly.
+
+**OpenConductor current state:**
+
+`App.tsx:468` has `searchInFiles: undefined`. `PaletteHost.tsx:127` filters out `search-in-files` when `commands.searchInFiles` is absent (same gate pattern as `create-section`). The palette entry is visible in the action list but suppressed from selection until a dialog implementation lands. This is the intentional design from #1271.
+
+### Conclusion
+
+**SOURCE_EXHAUSTED at `8f62e6e3d`.** No unowned implementable diff/files source gap exists beyond the search-in-files dialog, which is blocked by REA evidence gap `ws.search-in-files-dialog`. The 32 native behavioral items (Q-01–Q-32) remain with sole native executor E1. Priority acceptance cases for E1: Q-17 (submit-pending gate), Q-16 (inline draft remount), Q-19 (comment count badge), Q-01 (selected-row scroll), Q-02 (flat list viewed ordering).
+
 ---
 
 ## Program reconciliation r1137 at main `c189ea62`, 13 November 2026
