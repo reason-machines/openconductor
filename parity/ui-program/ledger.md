@@ -76,17 +76,17 @@ Conductor Rebuild reconciled merged [#757](https://github.com/reason-machines/op
 
 The 341-entry denominator, 169 retained matches, 48 wrong, 3 missing and 121 unverified are unchanged. Every raw/scoped row, exclusion, capture identity/score, observable main-flow toast/system requirement, default-off/native gate distinction and all nine unverified native verdicts are retained. No product/driver edit, Mac input, new capture, preview, dependency install, worker, dispatch/rerun or duplicate E2E watcher occurred. The parent-owned Page is read-only here; canonical source/data is sent to its owner.
 
-## Open in / palette / menus lane, main `8ef5a2bb`, 13 November 2026
+## Open in / palette / menus lane, main `320255a7`, 13 November 2026
 
-Conductor Rebuild reconciled the Open in / palette / global menus SAME15 lane against current main `8ef5a2bb50017a7ccf9aa99fbd5152afeefe33f1`. The earlier source-coverage survey at `d6da482e` is **historical**; main advanced through #1217–#1231 since then. This entry records per-PR acceptance state for the lane only; no other ledger rows, scores, capture identities or E2E counts are changed. This pass performed no Mac launch, no native capture, no install/build, no runner or dispatch.
+Conductor Rebuild reconciled remaining acceptance gaps in the Open in / palette / global menus SAME15 lane against current main `320255a797765393813a6acb2a613ad12eb489b5`. The two commits since the prior entry (`8ef5a2bb`) are docs-only (#1235) and terminal lane (#1232); neither touches Open in, palette or menus source. The prior source-coverage survey at `8ef5a2bb` is **still materially current** for in-scope source. No new unowned implementable gap was found. This pass performed no Mac launch, no native capture, no install/build, no runner or dispatch.
 
-REA reference retained: renderer `5199d392` / index `b5b01f33` (Conductor 0.87.6, `ev_410f83a5…`). No new capture; retained spans rehashed PASS.
+REA reference retained: renderer `5199d392` / index `b5b01f33` (Conductor 0.87.6, `ev_410f83a5…`). No new capture.
 
 ### Merged increments (source → CI green → behavioral)
 
 | PR | Commit | Title | Cloud behavioral | Native |
 |---|---|---|---|---|
-| [#1205](https://github.com/reason-machines/openconductor/pull/1205) | `a66b72e9` | fix(open-in): launch the palette's visible workspace file | NOT_RUN | NOT_RUN |
+| [#1205](https://github.com/reason-machines/openconductor/pull/1205) | `a66b72e9` | fix(open-in): launch the palette’s visible workspace file | NOT_RUN | NOT_RUN |
 | [#1211](https://github.com/reason-machines/openconductor/pull/1211) | `d7595609` | fix(open-in): support icon menu Home and End keys | NOT_RUN | NOT_RUN |
 | [#1217](https://github.com/reason-machines/openconductor/pull/1217) | `6acd4f8f` | fix(scripts): stop only the displayed Run task | NOT_RUN | NOT_RUN |
 | [#1225](https://github.com/reason-machines/openconductor/pull/1225) | `7b46a3b9` | fix(open-in): focus icon menu rows on mouse movement | **12/12 PASS** (Cloud, `262f1915`, Session `15faf4d8`) | NOT_RUN |
@@ -98,17 +98,30 @@ REA reference retained: renderer `5199d392` / index `b5b01f33` (Conductor 0.87.6
 
 Publisher `a5387885` holds this unit. Source-qualified at commit `a5387885`; exact frozen-12 fixture preserved. Status: **behavioral NOT_RUN, native NOT_RUN**. Awaiting ACC existing-queue admission for matched local behavioral qualification before PR eligibility. No PR opened; no runner or allocation started by this lane. Switcher entry pointer gate is excluded from merged acceptance count.
 
-### Acceptance summary
+### Remaining gap: MOVE-TO-SECTION-PALETTE
+
+Owner: Conductor Rebuild / SAME15 (Session `15faf4d8`). REA-proven gap — Conductor’s compiled palette (`renderApp:5199d392`, spans `palette-5`, `palette-7`, `palette-8`) exposes a `Move to section` workspace action (`Jba` sub-view, `commandPalette.previousTab` wiring, `localWorkspaceId`/`sectionKey` props) that `workspacePaletteData` in `fromAppState.ts` explicitly omits (comment: “left out: workspace actions OpenConductor cannot run from here”).
+
+Source pin drift `f3a52c4a` → `320255a7`: five affected files carry orthogonal changes (open-in types in `fromAppState.ts`, `activeOpenInTarget` prop in `PaletteHost.tsx`, minor refactor in `CommandPalette.tsx`, lifecycle update in `App.tsx`, persistence layer in `store.ts`). Gap contract holds at current main: `workspacePaletteData` returns no `move-to-section` entry; the `Jba` sub-view and `commandPalette.previousTab` → move-section path do not exist in OpenConductor. Preserved fixture: `moveToSection.test.ts.preserved` (SHA `93c3c03f`), 9 cases M01–M09 covering item exposure, section sub-view, dispatch, unpin and new-section return wiring.
+
+Status: **source-requalified (orthogonal drift confirmed at `320255a7`), behavioral NOT_RUN, native NOT_RUN**. Requires ACC behavioral admission before PR eligibility. No runner started.
+
+### Remaining gap: SECTION-PRIMARY-ACTION-6013
+
+No publisher assigned. Source candidate prepared: `section-primary-action-6013/candidate.patch` (SHA `09c4cd16`), V3 optional-forwarding boundary in `SectionDialog` / `Modal`, 20-case frozen fixture. Status: **source-only candidate, behavioral NOT_RUN, native NOT_RUN**. Requires ACC direct admission for behavioral execution before PR eligibility. No runner started.
+
+### Acceptance summary at `320255a7`
 
 - Source-merged: 5 PRs (#1205, #1211, #1217, #1225, #1226); all CI-green at exact head.
 - Behavioral-qualified (Cloud): #1225 only (12/12 PASS).
 - Behavioral-qualified (native): none in this lane.
 - Source-only/unqualified merged: #1205, #1211, #1217, #1226.
-- Registered unmerged: OPEN-IN-SWITCHER-ENTER-POINTER (owner `a5387885`, source-ready, ACC hold).
-- Material unowned gap: none identified at `8ef5a2bb`. Previous `d6da482` survey is historical.
+- Registered unmerged (external owner, ACC hold): OPEN-IN-SWITCHER-ENTER-POINTER (`a5387885`).
+- Registered unmerged (this owner, ACC hold): MOVE-TO-SECTION-PALETTE (source-requalified, orthogonal drift confirmed).
+- Unassigned source candidate (ACC hold): SECTION-PRIMARY-ACTION-6013.
+- Unowned implementable gap: **none** at `320255a7`.
 
 All nine native final-review verdicts remain unverified. No ledger denominator, score or supplemental row is changed.
-
 ## Historical program records
 
 One row per node of Sven's UI audit program. A node is done when its side-by-side image
