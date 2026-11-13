@@ -25,6 +25,7 @@ export const MAX_INLINE_TEXT_BYTES = 512 * 1024;
 export interface ComposerAttachment extends TextAttachment {
   /** Shown on the chip; `name` when absent. */
   label?: string;
+  preview?: "text";
   /** A staged file: its workspace-relative path (`.context/attachments/…`), which is also its `name`. */
   staged?: string;
 }
@@ -42,6 +43,7 @@ export function restoreComposerAttachments(values: readonly unknown[]): Composer
     return [{
       name: value.name,
       text: value.text,
+      ...("preview" in value && value.preview === "text" ? { preview: "text" } : {}),
       ...(commentId !== undefined ? { commentId } : {}),
       ...(label !== undefined ? { label } : {}),
       ...(staged !== undefined ? { staged } : {}),

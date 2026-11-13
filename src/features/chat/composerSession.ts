@@ -1,7 +1,7 @@
 import { WriteBarrier, type WriteAcknowledgment } from "../../lib/persistence/owner.ts";
 import { registerPersistenceOwner } from "../../lib/persistence/restartPersistence.ts";
 import type { ComposerDrafts } from "../../lib/local-storage/composerDrafts.ts";
-import { attachmentPath, promptText, randomDir, rejectReason, restoreComposerAttachments, type ComposerAttachment } from "./composerAttachments.ts";
+import { attachmentPath, inlineText, promptText, randomDir, rejectReason, restoreComposerAttachments, type ComposerAttachment } from "./composerAttachments.ts";
 
 type DraftStore = Pick<ComposerDrafts, "load" | "save" | "clear">;
 type Update<T> = T | ((current: T) => T);
@@ -134,7 +134,8 @@ export class ComposerSession {
           const bytes = new Uint8Array(await file.arrayBuffer());
           const path = attachmentPath(file.name, randomDir());
           if (write) await write(path, bytes);
-          this.setAttachments((list) => [...list, { name: path, label: file.name, text: promptText(bytes, path), ...(write ? { staged: path } : {}) }]);
+          const text = inlineText(bytes);
+          this.setAttachments((list) => [...list, { name: path, label: file.name, text: text ?? promptText(bytes, path), ...(text === null ? {} : { preview: "text" }), ...(write ? { staged: path } : {}) }]);
         } catch (error) {
           this.publish({ error: `Failed to attach ${file.name}: ${error instanceof Error ? error.message : String(error)}. Please retry.` });
         }

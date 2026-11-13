@@ -12,6 +12,7 @@ import { overridesRaw, withOverridesRaw } from "./settings/keybindingOverrides";
 import { installContextMenuGuard } from "./lib/nativeContextMenu";
 import { installConsoleCapture } from "./diagnostics/consoleLog";
 import { agentBinaryStore } from "./features/chat/agentBinaryStore";
+import { startCaffeinateConsumer } from "./settings/caffeinateConsumer";
 import "./fonts.css";
 import "./theme/tokens.css";
 import "./styles.css";
@@ -36,6 +37,8 @@ installConsoleCapture();
 installContextMenuGuard();
 // Conductor starts its AgentBinaryStore at launch (renderApp `hRa`): failed downloads retry right away.
 void agentBinaryStore.initialize();
+// Conductor's dAa: prevent sleep while agents are working (caffeinate_while_agents_running pref).
+void startCaffeinateConsumer();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

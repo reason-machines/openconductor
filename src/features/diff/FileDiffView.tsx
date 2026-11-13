@@ -156,6 +156,10 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
     return "accept" as const;
   }, [observeAnchors]);
   const { overrides } = useKeybindingOverrides();
+  // editor.openSearch (⌘F, registry.ts) passes through without a useKeybindings handler:
+  // the dispatcher only prevents default when a handler returns a truthy value; with no live
+  // handler registered for this command, dispatch() returns {kind:'pass'} and Pierre's own
+  // "cmdOrCtrl+f": "openSearchPanel" keymap entry opens the search panel natively.
   const onKeyDown = (e: React.KeyboardEvent) => {
     // Only the save shortcut: other keys belong to the editor, CommentNav and the comment box.
     if (!editing || !effectiveShortcuts("editor.saveFile", overrides).some((s) => matchesEvent(s, e.nativeEvent))) return;
