@@ -107,7 +107,6 @@ pub fn claude_open_chat(
 #[tauri::command]
 pub async fn claude_prompt(
     app: AppHandle,
-    state: State<'_, ClaudeChats>,
     chat_id: String,
     text: String,
     turn: Option<TurnArg>,
@@ -123,6 +122,7 @@ pub async fn claude_prompt(
     let db = app.state::<crate::db::Db>();
     let mode = crate::local_plan_mode::load(&db.0, &logical_id, settings.models.default_plan_mode).await?;
     options.permission_mode = Some(crate::local_plan_mode::claude_permission(mode, settings.tool_approvals_enabled));
+    let state = app.state::<ClaudeChats>();
     let runner = state.runner(&app);
     let cwd = state.cwds.lock().unwrap().get(&chat_id).cloned();
     // Stop also covers the database lookup before dispatch.
