@@ -90,6 +90,7 @@ function nativeBoundary({ rows, battery, enabled, delayedRegistration }) {
         };
         case "check_full_disk_access": return true;
         case "app_info": return { name: "OpenConductor", version: "0.1.0", platform: "macos" };
+        case "plugin:updater|check": return null; // no update available in test environment
         case "session_statuses": return [...sessions.values()]
           .filter(row => row.status !== "idle" && (args.includeHidden === true || !row.isHidden))
           .map(({ chatId, workspaceId, status }) => ({ chatId, workspaceId, status }));

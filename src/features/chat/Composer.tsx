@@ -550,7 +550,8 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
     if (e.target !== e.currentTarget || e.nativeEvent.isComposing) return;
     const ev = e.nativeEvent;
     const hit = (command: QueueCommand) => keys(command).some((s) => matchesEvent(s, ev));
-    const r = queueRowKey(ids, id, e.key, hit, canSteer);
+    const navigationKey = e.metaKey || e.ctrlKey || e.altKey || e.shiftKey ? "" : e.key;
+    const r = queueRowKey(ids, id, navigationKey, hit, canSteer);
     if (!r) return;
     e.preventDefault();
     e.stopPropagation();
@@ -654,7 +655,7 @@ function QueueRow({ id, text, userContent, attachmentNames, first, last, editing
   useLayoutEffect(() => {
     if (!editing) return;
     setValue(queuedUserDraft({ text, userContent }));
-    editor.current?.focus();
+    queueMicrotask(() => { editor.current?.focus("end"); });
   }, [editing, text, userContent]);
   if (editing) {
     return (

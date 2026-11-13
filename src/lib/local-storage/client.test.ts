@@ -19,7 +19,7 @@ function clock() {
   return () => new Date((t += 1000)).toISOString();
 }
 
-test("the 10 subsystems have the reference names, files and limits", () => {
+test("the 11 subsystems have the reference names, files and limits", () => {
   const MiB = 1024 * 1024;
   assert.deepEqual(
     SUBSYSTEMS.map((s) => [subsystemStoreFileName(s.name), s.sizeLimit]),
@@ -29,6 +29,7 @@ test("the 10 subsystems have the reference names, files and limits", () => {
       ["local-storage.subsystem.composer-drafts.json", 5 * MiB],
       ["local-storage.subsystem.dispatcher-state.json", 1 * MiB],
       ["local-storage.subsystem.model-picker-configs-v1.json", 64 * 1024],
+      ["local-storage.subsystem.opencode-model-discovery-v1.json", 4 * MiB],
       ["local-storage.subsystem.pre-workspace-completions-v1.json", 5 * MiB],
       ["local-storage.subsystem.route-user-state.json", 5 * MiB],
       ["local-storage.subsystem.run-script-history.json", 5 * MiB],

@@ -499,6 +499,7 @@ pub fn run() {
             diff::comment_commands::diff_comment_resolve_github,
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
+            quick_open::commands::grep_workspace,
             reason_chat::reason_cli_path,
             reason_chat::reason_cli_ensure_current,
             reason_chat::reason_account_status,

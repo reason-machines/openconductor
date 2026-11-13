@@ -76,10 +76,11 @@ let seq = 0;
 export class CaffeinateConsumer {
   private settings: Settings | null = null;
   private batteryState: BatteryState | undefined;
-  private sessionStatuses: Map<string, string> = new Map();
+  private readonly sessionStatuses = new Map<string, string>();
   private stopStatusUnsubscribe: (() => void) | null = null;
   private stopBatteryPolling: (() => void) | null = null;
   private pendingId: string | undefined;
+  private readonly exitedIds = new Set<string>();
   private started = false;
 
   updateSettings(settings: Settings): void {
@@ -111,7 +112,7 @@ export class CaffeinateConsumer {
     if (!this.started) return;
     this.batteryState = batteryState;
     let active = true;
-    // Hydrate from all sessions including hidden (Conductor's `dAa` reads every stored row).
+    // Hydrate from all sessions including hidden ones (Conductor reads every stored row).
     invoke<Array<{ chatId: string; status: string }> | null>("session_statuses", { includeHidden: true })
       .then((rows) => {
         if (!active) return;
@@ -119,7 +120,7 @@ export class CaffeinateConsumer {
         this.updateDesiredState();
       })
       .catch(() => { if (active) this.updateDesiredState(); });
-    // Subscribe to all session-status events (includes hidden sessions; chatRuntime filters those out).
+    // Track all future session-status events including hidden sessions.
     const listenerPromise = listen<{ chatId: string; workspaceId: string | null; status: string }>(
       "session-status",
       (e) => {
@@ -133,7 +134,7 @@ export class CaffeinateConsumer {
       listenerPromise.then((unlisten) => unlisten()).catch(() => undefined);
     };
     this.stopBatteryPolling = this.startBatteryPolling();
-    // updateDesiredState is called once the session_statuses hydration resolves above.
+    // updateDesiredState is called once session_statuses hydration resolves above.
   }
 
   private startBatteryPolling(): () => void {
@@ -195,6 +196,7 @@ export class CaffeinateConsumer {
   }
 
   private onCaffeinateExit(id: string): void {
+    this.exitedIds.add(id);
     if (this.pendingId === id) {
       this.pendingId = undefined;
       if (this.started && this.shouldCaffeinateWithoutBattery() && !this.isLowBattery()) {
@@ -219,6 +221,7 @@ export class CaffeinateConsumer {
    */
   private async tryCancelRepeatedly(id: string): Promise<void> {
     for (let attempt = 0; attempt < 200; attempt++) {
+      if (this.exitedIds.has(id)) return;
       const acknowledged = await invoke<boolean>("cancel_shell_command", { id }).catch(() => true);
       if (acknowledged) return;
       await new Promise<void>((resolve) => setTimeout(resolve, 50));

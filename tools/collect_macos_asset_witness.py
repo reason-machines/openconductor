@@ -84,8 +84,10 @@ def source_records(root, source_commit):
 def asset_records(root, profile):
     selected = []
     directories = [root / "dist"]
-    directories += sorted((root / f"src-tauri/target/{profile}/build").glob("*/out/tauri-codegen-assets"))
-    require(len(directories) > 1, "original tauri-codegen-assets required")
+    # Tauri v1 places generated assets in src-tauri/target/<profile>/build/*/out/tauri-codegen-assets.
+    # Tauri v2 changed the codegen output: this directory is not created for Tauri v2 projects.
+    # Use rglob to find any tauri-codegen-assets directories at any depth; none is fine (Tauri v2).
+    directories += sorted((root / f"src-tauri/target/{profile}/build").rglob("tauri-codegen-assets"))
     origins = []
     for index, directory in enumerate(directories):
         require(directory.is_dir() and not directory.is_symlink(), f"asset directory missing: {directory}")

@@ -94,12 +94,14 @@ class WitnessTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "source bytes differ"):
             self.run_collect()
 
-    def test_rejects_missing_codegen(self):
+    def test_succeeds_without_codegen_tauri_v2(self):
+        # Tauri v2 does not create tauri-codegen-assets directories.  The
+        # collector must succeed with only the dist directory in that case.
         self.cache_js.unlink()
         self.cache_map.unlink()
         self.cache_js.parent.rmdir()
-        with self.assertRaisesRegex(ValueError, "original tauri-codegen-assets"):
-            self.run_collect()
+        result = self.run_collect()
+        self.assertEqual(result["original_files"], 2)  # dist js + map only
 
     def test_rejects_missing_maps(self):
         self.dist_map.unlink()
