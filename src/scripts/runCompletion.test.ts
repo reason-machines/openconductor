@@ -259,7 +259,7 @@ test("actual Run panel ignores queued output delivery from a retired workspace s
   assert.equal(f.hasButton("Open http://localhost:5399/stale"), false);
 });
 
-test("actual Run panel displays a busy Dev admitted after the picked Test finishes and Stop keeps the pick", async (t) => {
+test("actual Run panel stops only the displayed busy Dev and keeps the picked Test", async (t) => {
   const f = await fixture();
   t.after(f.close);
   await f.menu("Test");
@@ -277,7 +277,7 @@ test("actual Run panel displays a busy Dev admitted after the picked Test finish
   assert.ok(f.hasButton("Run Test"), "stopping the displayed task preserves the original pick");
   assert.match(f.output(), /test final output 0/);
   assert.deepEqual(f.commands.map((command) => [command.name, command.args.scriptId]), [
-    ["run_script_start", "test"], ["run_script_stop", null],
+    ["run_script_start", "test"], ["run_script_stop", "dev"],
   ]);
 });
 

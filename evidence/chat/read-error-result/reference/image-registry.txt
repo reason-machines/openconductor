@@ -1,0 +1,1 @@
+ile={png:"image/png",jpg:"image/jpeg",jpeg:"image/jpeg",gif:"image/gif",webp:"image/webp",tif:"image/tiff",tiff:"image/tiff",avif:"image/avif",bmp:"image/bmp"}
