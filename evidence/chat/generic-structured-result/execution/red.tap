@@ -1,0 +1,312 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: generic structured result disclosure: toolsearch-text-block-array
+not ok 1 - generic structured result disclosure: toolsearch-text-block-array
+  ---
+  duration_ms: 27.701892
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:80:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'catalog A\ncatalog B'
+    -   '[\n' +
+    -     '  {\n' +
+    -     '    "type": "text",\n' +
+    -     '    "text": "catalog A"\n' +
+    -     '  },\n' +
+    -     '  {\n' +
+    -     '    "type": "text",\n' +
+    -     '    "text": "catalog B"\n' +
+    -     '  }\n' +
+    -     ']'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: |-
+      [
+        {
+          "type": "text",
+          "text": "catalog A"
+        },
+        {
+          "type": "text",
+          "text": "catalog B"
+        }
+      ]
+  actual:
+    0: |-
+      catalog A
+      catalog B
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertBody (file:///home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:137:14)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:158:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: generic structured result disclosure: toolsearch-object-content
+not ok 2 - generic structured result disclosure: toolsearch-object-content
+  ---
+  duration_ms: 6.709796
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:80:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   '{"tools":["inspect"],"count":1}'
+    -   '{\n  "tools": [\n    "inspect"\n  ],\n  "count": 1\n}'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: |-
+      {
+        "tools": [
+          "inspect"
+        ],
+        "count": 1
+      }
+  actual:
+    0: '{"tools":["inspect"],"count":1}'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertBody (file:///home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:137:14)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:158:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: generic structured result disclosure: monitor-nontext-array
+not ok 3 - generic structured result disclosure: monitor-nontext-array
+  ---
+  duration_ms: 6.18714
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:80:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   '[\n' +
+    -     '  {\n' +
+    -     '    "type": "resource",\n' +
+    -     '    "resource": {\n' +
+    -     '      "uri": "local://compile",\n' +
+    -     '      "state": "ready"\n' +
+    -     '    }\n' +
+    -     '  }\n' +
+    -     ']'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: |-
+      [
+        {
+          "type": "resource",
+          "resource": {
+            "uri": "local://compile",
+            "state": "ready"
+          }
+        }
+      ]
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertBody (file:///home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:137:14)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:158:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: generic structured result disclosure: toolsearch-empty-array-without-input
+not ok 4 - generic structured result disclosure: toolsearch-empty-array-without-input
+  ---
+  duration_ms: 2.921634
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:80:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:155:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: generic structured result disclosure: monitor-error-array
+not ok 5 - generic structured result disclosure: monitor-error-array
+  ---
+  duration_ms: 4.046909
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:80:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'command stopped'
+    -   '[\n  {\n    "type": "text",\n    "text": "command stopped"\n  }\n]'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: |-
+      [
+        {
+          "type": "text",
+          "text": "command stopped"
+        }
+      ]
+  actual:
+    0: 'command stopped'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertBody (file:///home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:137:14)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:158:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: generic structured result disclosure: toolsearch-falsy-zero
+not ok 6 - generic structured result disclosure: toolsearch-falsy-zero
+  ---
+  duration_ms: 6.730069
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:80:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   '0'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: '0'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertBody (file:///home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:137:14)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:158:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: generic structured result disclosure: toolsearch-falsy-false
+not ok 7 - generic structured result disclosure: toolsearch-falsy-false
+  ---
+  duration_ms: 5.013499
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:80:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'false'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'false'
+  operator: 'deepStrictEqual'
+  stack: |-
+    assertBody (file:///home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:137:14)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/2f0b2c5c-6101-4811-837b-2fe508403482/repo/src/features/chat/genericStructuredResult.test.ts:158:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: generic structured result disclosure: numeric-looking-raw-string
+ok 8 - generic structured result disclosure: numeric-looking-raw-string
+  ---
+  duration_ms: 4.161751
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: json-looking-raw-string
+ok 9 - generic structured result disclosure: json-looking-raw-string
+  ---
+  duration_ms: 23.406087
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: legacy-no-raw-result
+ok 10 - generic structured result disclosure: legacy-no-raw-result
+  ---
+  duration_ms: 7.148149
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: pending-no-input
+ok 11 - generic structured result disclosure: pending-no-input
+  ---
+  duration_ms: 1.668829
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: falsy-null-no-input
+ok 12 - generic structured result disclosure: falsy-null-no-input
+  ---
+  duration_ms: 1.474963
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: empty-raw-string-no-input
+ok 13 - generic structured result disclosure: empty-raw-string-no-input
+  ---
+  duration_ms: 2.530222
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: excluded-mcp-consumer
+ok 14 - generic structured result disclosure: excluded-mcp-consumer
+  ---
+  duration_ms: 7.518876
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: excluded-node-repl-consumer
+ok 15 - generic structured result disclosure: excluded-node-repl-consumer
+  ---
+  duration_ms: 5.350902
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: plain-string-truncation-boundary
+ok 16 - generic structured result disclosure: plain-string-truncation-boundary
+  ---
+  duration_ms: 27.677398
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 9
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1459.21537

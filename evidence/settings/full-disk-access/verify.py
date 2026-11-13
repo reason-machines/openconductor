@@ -15,15 +15,33 @@ def digest(path):
 def verify_notification_block(page, baseline):
     assert hashlib.sha256(baseline.encode()).hexdigest() == '28c970954afb645658f5be693189e3a49f2e52efc8510c309f419a0a3dad21e8'
     start = '      <Row label="Agent notifications"'
-    stop = '      <PrefSwitchRow settings={settings} save={save} pref="mention_notifications_enabled"'
+    stop = '      <Row label="Completion sound"'
     baseline_block = baseline[baseline.index(start):baseline.index(stop)]
     old = '            if (on && !await notificationPermissionGranted()) return;'
     new = '''            if (on && !await notificationPermissionGranted()) {
               notify?.("error", "Notification permission not granted");
               return;
             }'''
+    original_mention = '      <PrefSwitchRow settings={settings} save={save} pref="mention_notifications_enabled" label="@ notifications" help="Get notified when a teammate mentions you." />\n'
+    gated_mention = '''      <Row label="@ notifications" help="Get notified when a teammate mentions you.">
+        <Toggle
+          label="@ notifications"
+          checked={boolPref(settings, "mention_notifications_enabled")}
+          onChange={async (on) => {
+            if (on && !await notificationPermissionGranted()) {
+              notify?.("error", "Notification permission not granted");
+              return;
+            }
+            await save(withBoolPref(latestSettings.current, "mention_notifications_enabled", on));
+          }}
+        />
+      </Row>
+'''
     assert baseline_block.count(old) == 1
-    assert page[page.index(start):page.index(stop)] == baseline_block.replace(old, new, 1)
+    assert baseline_block.count(original_mention) == 1
+    expected = baseline_block.replace(old, new, 1).replace(original_mention, gated_mention, 1)
+    assert page.count(start) == 1 and page.count(stop) == 1
+    assert page[page.index(start):page.index(stop)] == expected
 
 
 def verify_config_sync_harness(harness, expected):
