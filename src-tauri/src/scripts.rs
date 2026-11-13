@@ -9,38 +9,46 @@ use oc_scripts::service::{ScriptEvent, ScriptService, WorkspaceRef};
 use oc_scripts::setup::{SetupOutcome, SetupState};
 use serde::Serialize;
 use tauri::{AppHandle, Emitter, State};
+// openconductor_db is a direct dependency of this crate (Cargo.toml) so we can
+// reference workspaces::update_setup_log and SqlitePool without going through tauri state.
 
 /// Event name the frontend listens on.
 pub const EVENT: &str = "scripts://event";
 
 /// Build the service; events go to every window.
+/// Also persists the log path and outcome state to the database when setup
+/// finishes, so the transcript survives a restart.
 pub fn service(app: &AppHandle) -> ScriptService {
     let home = std::env::var_os("HOME")
         .map(std::path::PathBuf::from)
         .unwrap_or_default();
     let emitter = app.clone();
-    // Persist setup_log_path (evidence/run-scripts/NOTES.md "Execution":
-    // `workspaces.setup_log_path` holds the transcript path after setup ends).
+    // DB pool captured; persists setup outcome (path + state) on SetupFinished so the transcript survives a restart.
     let pool = app.state::<crate::db::Db>().0.clone();
     let service = ScriptService::new(
         home.join(".conductor"),
         std::env::temp_dir(),
         std::sync::Arc::new(move |event: ScriptEvent| {
             if let ScriptEvent::SetupFinished(ref outcome) = event {
-                let pool = pool.clone();
-                let workspace_id = outcome.workspace_id.clone();
+                let (pool, workspace_id) = (pool.clone(), outcome.workspace_id.clone());
                 let log_path = outcome.log_path.to_string_lossy().into_owned();
+                let state_str = match outcome.state {
+                    SetupState::Completed => "completed",
+                    SetupState::Failed => "failed",
+                    SetupState::Cancelled => "cancelled",
+                    _ => "failed",
+                };
+                let state_str = state_str.to_string();
                 tauri::async_runtime::spawn(async move {
-                    if let Err(e) = openconductor_db::workspaces::set_setup_log_path(
+                    if let Err(e) = openconductor_db::workspaces::update_setup_log(
                         &pool,
                         &workspace_id,
                         &log_path,
+                        &state_str,
                     )
                     .await
                     {
-                        eprintln!(
-                            "scripts: could not persist setup_log_path for {workspace_id}: {e}"
-                        );
+                        eprintln!("Could not persist setup log for {workspace_id}: {e}");
                     }
                 });
             }
@@ -51,6 +59,39 @@ pub fn service(app: &AppHandle) -> ScriptService {
     // user settings file as the user layer.
     service.set_settings_env(crate::settings::effective::script_env_hook());
     service
+}
+
+/// At app startup, restore every workspace whose setup outcome was persisted
+/// so the Setup tab shows the previous run's transcript without re-running setup.
+pub async fn restore_setup_transcripts(
+    pool: &openconductor_db::SqlitePool,
+    scripts: &ScriptService,
+) {
+    let workspaces = match openconductor_db::workspaces::list(pool).await {
+        Ok(ws) => ws,
+        Err(e) => {
+            eprintln!("Could not list workspaces for setup restore: {e}");
+            return;
+        }
+    };
+    for w in workspaces {
+        let (path, state_str) = match (
+            w.workspace.setup_log_path,
+            w.workspace.setup_log_state,
+        ) {
+            (Some(p), Some(s)) => (p, s),
+            _ => continue,
+        };
+        let state = match state_str.as_str() {
+            "completed" => SetupState::Completed,
+            "failed" => SetupState::Failed,
+            "cancelled" => SetupState::Cancelled,
+            _ => continue, // unknown value from an older schema version
+        };
+        scripts
+            .setup
+            .restore(&w.workspace.local_id, state, std::path::PathBuf::from(path));
+    }
 }
 
 #[derive(Debug, Clone, Serialize)]

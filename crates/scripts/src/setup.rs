@@ -227,6 +227,33 @@ impl SetupManager {
         }
     }
 
+    /// Restore a finished setup run from a persisted log file and state so the Setup
+    /// tab shows the previous transcript after a restart.  Called at app startup for
+    /// every workspace whose `setup_log_state` column is non-null.  A live running
+    /// setup is never replaced.  Missing or unreadable log files are represented as
+    /// an empty string; `exit_code` is not persisted and is left as `None`.
+    pub fn restore(&self, workspace_id: &str, state: SetupState, log_path: PathBuf) {
+        // Only finished states are valid restore targets.
+        debug_assert!(!matches!(state, SetupState::Idle | SetupState::Running));
+        let log = fs::read_to_string(&log_path).unwrap_or_default();
+        let outcome = SetupOutcome {
+            workspace_id: workspace_id.to_string(),
+            state,
+            exit_code: None, // not persisted; unknown after restart
+            log_path,
+            log,
+        };
+        let mut entries = self.lock();
+        let entry = entries.entry(workspace_id.to_string()).or_default();
+        // A live process takes precedence over a restored snapshot.
+        if entry.state == Some(SetupState::Running) {
+            return;
+        }
+        entry.state = Some(state);
+        entry.process = None;
+        entry.outcome = Some(outcome);
+    }
+
     /// Record a setup that was running when the app quit (found on next start).
     pub fn mark_interrupted(&self, workspace_id: &str) -> SetupOutcome {
         let outcome = SetupOutcome {
