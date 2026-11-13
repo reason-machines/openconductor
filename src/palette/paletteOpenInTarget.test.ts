@@ -46,6 +46,7 @@ async function fixture(target: WorkspaceOpenInTarget | null = null, state: AppSt
   const exports: Partial<typeof import("./PaletteHost")> = {};
   evaluate("./PaletteHost.tsx", {
     "./CommandPalette.tsx": { CommandPalette: (props: PaletteProps) => { palette = props; return null; } },
+    "./MoveToSection.tsx": { MoveToSection: inert, sectionItems: () => [] },
     "../keybindings/KeybindingsProvider.tsx": { useKeybindings: noop },
     "./fromAppState.ts": adapter,
     "../settings/searchIndex": { buildSearchIndex: () => [] },

@@ -123,6 +123,7 @@ function actualHost(observe: (props: PaletteProps) => void = noop) {
     "../components/Toast": { Toaster: inert, useToasts: () => ({ toasts: [], show: forbidden, dismiss: noop }) },
     "../components/ConductorIcon": { ConductorIcon: inert },
     "./gitPanelActions.ts": { GIT_PANEL_ACTIONS, requestGitPanelAction: forbidden },
+    "./MoveToSection.tsx": { MoveToSection: inert, sectionItems: () => [] },
   };
   evaluate("./PaletteHost.tsx", imports, exports);
   assert.ok(exports.PaletteHost);
