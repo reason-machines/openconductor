@@ -1042,3 +1042,54 @@ WORKSPACE-GREP: cloud-unassignable (requires native REA Ghidra binding).
 - **Cloud-unassignable: 1** — WORKSPACE-GREP
 - **Native acceptance:** ALL frozen (E1 BLOCKED)
 - **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
+
+---
+
+## Program reconciliation r1141 at main `33ae5f4f5`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**Terminal lane ancestry confirmed** (`992a715e`):
+| PR | Squash SHA | Feature | In #1789 at `33ae5f4f`? |
+|---|---|---|---|
+| #1232 | `20d157d08faac0646a555aba22ff915a2fc7d8d8` | fix(keybindings): close workspace tabs from Run/Setup output | ✓ ancestor |
+| #1239 | `e586c968d8b958e6c90034d10551c7482d7e7bcc` | fix(terminal): late-spawn orphan disposal | ✓ ancestor |
+| #1273 | `c4991f1b7eac220e6292911edcf2951dc001a6ba` | feat(scripts): setup_log_path persistence | ✓ ancestor |
+
+Native PTY/IPC/rendering/geometry and quit/relaunch persistence: **NOT_RUN** (E1 BLOCKED). Terminal owner `1f14fa82` owns #1281 merge (`34b72ce5`, docs-only); do not duplicate.
+
+**Package #1789 artifact confirmed** (also from `992a715e`): artifact `14032753489`, sha256 `bc4ac5b254cb39f347a93c5443c3f00c28b13222a37b8001ce8d1751fcab90eb`, 109 MB, expires 2026-11-20. #1232/#1239/#1273 all included. Packaging closed; native NOT_RUN.
+
+**Native executor:** E1 (`e1e2b6b9`) sole executor, quota exhausted (11:21Z). No weekly quota inference or provider-routing decision from this single failure; routing managed automatically. Sole native ownership preserved; no second native executor. `15faf4d8` NEVER_HELD Settings native acceptance (confirmed by `15faf4d8` directly).
+
+**CONFIG-SYNC-PENDING-SELECTION:** Assigned to `6013adf2`. Full source packet (candidate patch + test + commands + REA lineage) sent to `6013adf2` (queued). `6013adf2` confirmed receiving the assignment. Work: apply patch, run baseline RED then candidate GREEN, submit for ACC queue. No product change applied yet; not in ACC queue yet.
+
+**#1280 (#1281):** `1f14fa82` owns #1281 merge. `ddfc6518` owns #1280 merge. #1280 CI: `Frontend typecheck + build` in_progress on latest head; `Evidence tools compile` passed. Will merge on green (subscribed).
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG ongoing |
+| Terminal | `1f14fa82` | #1281 merge (docs-only, `34b72ce5`) |
+| Packaging | `992a715e` | CLOSED |
+| CONFIG-SYNC gap | `6013adf2` | ASSIGNED — packet sent, ACC admission pending |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — no retry |
+| All other lanes | — | SOURCE_EXHAUSTED |
+
+### Serialized cloud runtime queue
+
+- **Slot 1:** #1280 CI await → merge (`ddfc6518`)
+- **Slot 2:** #1281 merge (`1f14fa82`)
+- **Slot 3:** PICK-ISSUES-DIALOG (`15faf4d8`)
+- **Slot 4:** CONFIG-SYNC-PENDING-SELECTION ACC admission (`6013adf2`, Mac not required)
+
+### State
+
+- **Unowned cloud gap: NONE** — CONFIG-SYNC assigned to `6013adf2`
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native REA only)
+- **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen (E1 BLOCKED, sole executor, no retry)
+- **Program bottleneck:** E1 quota reset + CONFIG-SYNC ACC admission in parallel
