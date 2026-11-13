@@ -44,5 +44,5 @@ test("owner load errors are classified as SAML, scope, auth, or generic", () => 
   assert.match(ownersErrorMessage("Resource protected by organization SAML enforcement"), /SAML/);
   assert.match(ownersErrorMessage("missing required scope 'read:user'"), /scope/);
   assert.match(ownersErrorMessage("To get started with GitHub CLI, please run:  gh auth login"), /not signed in/);
-  assert.equal(ownersErrorMessage("timeout"), "Couldn't load GitHub owners: timeout");
+  assert.equal(ownersErrorMessage("timeout"), "Couldn't load your GitHub accounts.");
 });
