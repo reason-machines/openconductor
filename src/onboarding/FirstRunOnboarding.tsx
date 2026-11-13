@@ -1,14 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import { AppMark } from "../components/AppMark";
 import { EXIT_LABEL, nextSlideId, SLIDES, type Slide } from "./firstRun";
 import { SignUp, type SignUpProps } from "./SignIn";
 import "./onboarding.css";
 import type { AgentKind } from "../settings/types";
-
-/** How long a slide shows before the next one (the reference advances when its video ends). */
-export const SLIDE_MS = 8000;
-const TICK_MS = 100;
 
 /**
  * The first-run onboarding screen (renderApp `wBi` @10151895 around `Aoa`
@@ -27,20 +23,10 @@ export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue:
   const select = useCallback((id: Slide["id"]) => {
     setCurrent(id);
   }, []);
-  const next = useCallback(() => select(nextSlideId(current)), [current, select]);
-
-  // Progress runs 0-100% per slide, then the next slide starts (the video's onEnded).
-  const started = useRef(Date.now());
-  useEffect(() => {
-    started.current = Date.now();
+  const next = useCallback(() => {
+    setCurrent((id) => nextSlideId(id));
     setProgress(0);
-    const t = window.setInterval(() => {
-      const pct = Math.min(100, ((Date.now() - started.current) / SLIDE_MS) * 100);
-      setProgress(pct);
-      if (pct >= 100) setCurrent((id) => nextSlideId(id));
-    }, TICK_MS);
-    return () => window.clearInterval(t);
-  }, [current]);
+  }, []);
 
   useKeybindings({
     "onboarding.continue": () => {
@@ -86,7 +72,22 @@ export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue:
           <div className="onb-right" data-tauri-drag-region>
             <div className="onb-media">
               <div className="onb-frame" aria-hidden="true">
-                <span className="onb-frame-title">{slide.title}</span>
+                <video
+                  key={slide.id}
+                  className="onb-video"
+                  src={slide.src}
+                  autoPlay
+                  muted
+                  playsInline
+                  preload="auto"
+                  onLoadedData={() => setProgress(0)}
+                  onTimeUpdate={({ currentTarget: media }) => {
+                    if (Number.isFinite(media.currentTime) && Number.isFinite(media.duration) && media.duration > 0) {
+                      setProgress(Math.max(0, Math.min(100, (media.currentTime / media.duration) * 100)));
+                    }
+                  }}
+                  onEnded={next}
+                />
               </div>
               <div className="onb-progress" role="progressbar" aria-label="Slide progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)}>
                 <div key={slide.id} className="onb-progress-fill" style={{ width: `${progress}%` }} />

@@ -1,0 +1,1 @@
+function BUt({updates:t}){return rU.updateMany({updates:t})}

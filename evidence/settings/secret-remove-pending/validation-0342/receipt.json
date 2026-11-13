@@ -1,0 +1,164 @@
+{
+  "author": "Conductor Rebuild",
+  "token": "ACC_64_REMOVE4_20261113T0342",
+  "actual_start": "2026-11-13T03:47:50.175113+00:00",
+  "driver_start": "2026-11-13T03:51:03.817556+00:00",
+  "status": "FAILED_STOP_NO_RETRY",
+  "phases": [
+    {
+      "name": "red",
+      "start": "2026-11-13T03:51:03.889207+00:00",
+      "cap_seconds": 90,
+      "grace_seconds": 5,
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/settings/agents/secretRemovePending.test.ts"
+      ],
+      "env_nonsecret": {
+        "NODE_ENV": "development",
+        "NODE_OPTIONS": "--max-old-space-size=768",
+        "SECRET_REMOVE_SOURCE_FILE": "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/src/settings/agents/kit.tsx"
+      },
+      "stdout": "red.stdout.txt",
+      "stderr": "red.stderr.txt",
+      "pgid": 112,
+      "end": "2026-11-13T03:51:05.007861+00:00",
+      "elapsed_seconds": 1.1184383279978647,
+      "exit_code": 1,
+      "stdout_sha256": "75b7d1f4f981995dea4a8c27923966a01303f073a96a6c717d935191b2bd9733",
+      "stderr_sha256": "4dda6d280055087efda245496cb56191f4c2cfdec6825f0fabb322c874db6d69"
+    },
+    {
+      "name": "green",
+      "start": "2026-11-13T03:51:05.011658+00:00",
+      "cap_seconds": 90,
+      "grace_seconds": 5,
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/settings/agents/secretRemovePending.test.ts"
+      ],
+      "env_nonsecret": {
+        "NODE_ENV": "development",
+        "NODE_OPTIONS": "--max-old-space-size=768",
+        "SECRET_REMOVE_SOURCE_FILE": "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/src/settings/agents/kit.tsx"
+      },
+      "stdout": "green.stdout.txt",
+      "stderr": "green.stderr.txt",
+      "pgid": 129,
+      "end": "2026-11-13T03:51:05.929562+00:00",
+      "elapsed_seconds": 0.9175719179984299,
+      "exit_code": 1,
+      "stdout_sha256": "b6c058623a657a84068a7468b9cdfc1a101a2b3f079a7acd5c247d8a3d04aee6",
+      "stderr_sha256": "a2b616a7bfc38842ec11af3bc9cb1ef091e8677904e4c8ff58019696d03de692"
+    }
+  ],
+  "predicted_cases": [
+    "Anthropic API key Remove shows pending feedback until success settles",
+    "Anthropic API key Remove shows pending feedback until failure settles",
+    "OpenAI API key Remove shows pending feedback until success settles",
+    "OpenAI API key Remove shows pending feedback until failure settles"
+  ],
+  "predicted_red": "Exactly 4 ERR_ASSERTION failures: pending Remove needs its own working indicator; actual 0 expected 1",
+  "rss": "NOT_SAMPLED; no complete process-tree peak RSS claim",
+  "reveal_remote_head": "f7f5decf7b2f119ee8537cf125edcf5c323c1867",
+  "native_package_provider_credentials": "NOT_RUN",
+  "source_end": "2026-11-13T03:51:03.882528+00:00",
+  "source_elapsed_seconds": 193.7074110507965,
+  "source_cap_seconds": 300,
+  "qualified_head": "cf1c22b683ac97f0e46b37c913284dce0fd75a24",
+  "qualified_tree": "c24ce4a5cb46849a44468c6bedf43bea5ddc08b2",
+  "qualified_main": "1aa3b6814e8a45116cf2f8d562b05d747993655b",
+  "actual_kit_sha256": "3d308bbec4c3874b4f54b41d9fafcc2c2b8c411ee9c470788f5de4dd16beb7c6",
+  "actual_kit_blob": "c9cba9edc064e4c8a4ffc0bad4bff2e76374c04f",
+  "known_reveal_reverse_sha256": "ef11588cdd58193d684a912eefd0b543e15bf3a238ba4f48b2762fd4969bec6f",
+  "semantic_remove_leaf": "UNCHANGED; all other bytes exact",
+  "input_sha256": {
+    "src/settings/agents/kit.tsx": "3d308bbec4c3874b4f54b41d9fafcc2c2b8c411ee9c470788f5de4dd16beb7c6",
+    "src/settings/agents/kitModel.ts": "be6a94abe11962ca756be5733b946f7b5d34acafc567db937a8e1ce688352937",
+    "src/settings/agents/icons.tsx": "c9f2647fdc104fe25ebcd4227d3765e0dd2fe1c990a816700063dc6f28da3e24",
+    "src/settings/agents/ClaudeTab.tsx": "6680823c5f7a08e1953177f17898eef2ecd7ff5c1ce4018eda27235b46b66e7c",
+    "src/settings/agents/CodexTab.tsx": "a2a0fe9222f36dc2dcdbf3c49f9d1835a20466b1dab22457c6e03d615b3d6332",
+    "src/settings/agents/ReasonTab.tsx": "12b1aeffa55130338828028331fe9aada7f6596affda65d98392dfd560e56f6e",
+    "src/settings/agents/secretEditorKeyLink.test.ts": "37a6e0de84b4ecacfa31ff59467158eacc01f4c23ce75957f2d47676fe053686",
+    "src/settings/agents/agents.css": "5a5782488458b385aa106b4120dbad9fdc73633848037c740312d3330c5de7a6",
+    "src/features/chat/ResetChatDialog.tsx": "b8604094ea0d412fda7d36d9faa33774fe5e7c9e128e95d9bcf3aad4dcb0cdf5",
+    "src/styles.css": "39e0d91146ab47ef9cc1962dc4e27afb351466b715992391fd1a5da881e193eb",
+    "src/components/pendingWorkspaceRow.css": "3ff46e80e33840f1576133d7c2f96bf353090c210c3536d2494d78648b1f8026"
+  },
+  "adjacent_sha256": {
+    "src/settings/agents/secretRevealLabel.test.ts": "8db2461a8d82202cf3d9804803530ec604cb52d469fad90430ae9124e776cac3",
+    "src/settings/agents/secretEditorKeyLink.test.ts": "37a6e0de84b4ecacfa31ff59467158eacc01f4c23ce75957f2d47676fe053686",
+    "src/settings/agents/kitModel.test.ts": "c0395304a83a792ef7ddc85c27a294c280fab87b52919dbbeebddd1c90207c2d"
+  },
+  "root_versions": {
+    "react": {
+      "version": "18.3.1",
+      "sha256": "d4e68a5c96babb20cad1daafea8b78822eae45b341552cf5418d06a5304fa64c"
+    },
+    "react-dom": {
+      "version": "18.3.1",
+      "sha256": "d2f29e31bd48b833e48cd7bbf41f192e8ee4ff8da249fdbe10d4ac4114b8b12e"
+    },
+    "react-test-renderer": {
+      "version": "18.3.1",
+      "sha256": "e3b09e5a62e134d5241b520715de45b63ff3568ccbbeeeb70601607c3136c811"
+    },
+    "typescript": {
+      "version": "5.9.3",
+      "sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    }
+  },
+  "setup": "NOT_NEEDED; matching own root reused",
+  "fixture_sha256": "d2b4030ff178c115fcd5bfbad3e8a1c4090e6c7337b9fb956661fdd6dae4e0aa",
+  "patch_sha256": "16786423fa3d1f61434b562d230047c504ee5116a9f92d174d651c72a78a84dc",
+  "driver_sha256": "1c25fa671e280390f325b64adf4a964834cb7a0f2ed122165e6ed6f9ea5e9466",
+  "red_classification": {
+    "phase": "red",
+    "classification": "QUALIFYING_RED",
+    "exit_code": 1,
+    "summary": {
+      "tests": 4,
+      "pass": 0,
+      "fail": 4,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "failures": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "raw_tap_sha256": "75b7d1f4f981995dea4a8c27923966a01303f073a96a6c717d935191b2bd9733",
+    "inspector_driver_sha256": "1c25fa671e280390f325b64adf4a964834cb7a0f2ed122165e6ed6f9ea5e9466"
+  },
+  "candidate_kit_sha256": "cf7c9f2f790a76f234735ebd0d0b0b7672d1da04ac0fc8d3790ed8009164f783",
+  "error": "Unexpected green exit 1",
+  "terminal": "2026-11-13T03:51:05.930426+00:00",
+  "inclusive_elapsed_seconds": 195.75532507896423,
+  "candidate_restored": true,
+  "fixture_inactive": true,
+  "own_process_groups_absent": true,
+  "groups_remaining": [],
+  "cleanup_elapsed_seconds": 0.00031304359436035156,
+  "release": "EXPLICIT_RELEASE"
+}

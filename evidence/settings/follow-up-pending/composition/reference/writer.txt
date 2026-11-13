@@ -1,0 +1,1 @@
+function gee({key:t,value:e}){return ee.updateSetting(t,e)}

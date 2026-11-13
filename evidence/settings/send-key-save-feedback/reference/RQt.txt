@@ -1,0 +1,1 @@
+function RQt({messageSendKey:t}){const e=zl[t],s=[];for(const n of K_)s.push({commandId:n,shortcuts:e[n]});return BUt({updates:s}).then(async n=>n?await gu?.writeLegacyMessageSendKey?.(t)??!0:!1)}
