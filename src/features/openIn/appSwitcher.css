@@ -25,5 +25,5 @@
 .oi-switcher-close { display: flex; align-items: center; justify-content: center; width: 76px; height: 76px; border-radius: 18px; border: 1px solid color-mix(in srgb, var(--text) 4%, transparent); background: var(--surface-muted); color: color-mix(in srgb, var(--muted) 60%, transparent); }
 .oi-switcher-button[aria-pressed="true"] .oi-switcher-close { border-color: color-mix(in srgb, var(--text) 10%, transparent); color: var(--muted); }
 .oi-switcher-label { position: absolute; bottom: 6px; transform: translateX(-50%); font-size: 12px; font-weight: 400; letter-spacing: -0.01em; white-space: nowrap; pointer-events: none; }
-@keyframes oi-switcher-in { from { opacity: 0; scale: .95; } to { opacity: 1; scale: 1; } }
+@keyframes oi-switcher-in { from { opacity: 0; scale: .95; pointer-events: none; } to { opacity: 1; scale: 1; pointer-events: none; } }
 @media (prefers-reduced-motion: reduce) { .oi-switcher { animation: none; } }
