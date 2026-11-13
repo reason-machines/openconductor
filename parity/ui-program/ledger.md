@@ -1650,3 +1650,23 @@ Owner: Conductor Rebuild (Session `ddfc6518`).
 - **Native acceptance:** ALL frozen — E1 PROVIDER_LIMIT_BLOCKED, sole executor, no retry, no second executor
 - **Unowned cloud gaps: NONE**
 - **Program bottleneck:** E1 provider limit blocks native acceptance and settings env-crash root cause
+
+## Program reconciliation r1155 at main `0b71c069`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**ACC E2E run `43441462165` PASS** (`f562de4e37`) — reason-chat and codex-chat jobs both success. Completed 14:29Z. Green streak 5. ACC (`acc3b5c5`) sole owner.
+
+**E1 native blocker confirmed** — attempt `869269cf-6660-4e16-8e7a-aa4446213882` produced no output: PROVIDER_LIMIT_BLOCKED. Explicit recovery: do not retry, no second executor. User informed.
+
+**#1293 merged `0b71c069`** — ledger docs r1153–r1154 delivered to main. Docs/ledger only; no production deployment.
+
+### State
+
+- **Program state: SOURCE_COMPLETE** — all implementable cloud lanes exhausted. Remaining: native acceptance (E1 blocked), final review pass
+- **ACC E2E:** `43441462165` on `f562de4e37` PASS, streak 5. Next run on `0b71c069` TBD (ACC dispatch).
+- **Native acceptance:** ALL frozen — E1 PROVIDER_LIMIT_BLOCKED confirmed, sole executor, no retry, no second executor
+- **Unowned cloud gaps: NONE**
+- **Program bottleneck:** E1 provider limit blocks native acceptance and settings env-crash root cause
