@@ -1,0 +1,128 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { resolve } from "node:path";
+import { test } from "node:test";
+import { runInNewContext } from "node:vm";
+
+const sourceRoot = resolve(process.env.SECRET_REMOVE_SOURCE_ROOT ?? ".");
+const dependencies = createRequire(resolve(sourceRoot, "package.json"));
+const React = dependencies("react");
+const { act, create } = dependencies("react-test-renderer");
+const ts = dependencies("typescript");
+
+type SecretProps = Parameters<typeof import("./kit").SecretRow>[0];
+type RenderNode = { type: unknown; props: { className?: string; width?: number; height?: number; "aria-hidden"?: string } };
+
+function deferred() {
+  let fulfill: () => void = () => { throw new Error("Uninitialized promise"); };
+  let reject: (error: Error) => void = () => { throw new Error("Uninitialized promise"); };
+  const promise = new Promise<void>((yes, no) => { fulfill = yes; reject = no; });
+  return { promise, fulfill, reject };
+}
+
+function fixture(label: string) {
+  const pending = deferred();
+  const calls: string[] = [];
+  const forbiddenCalls: string[] = [];
+  const forbidden = (name: string) => () => {
+    forbiddenCalls.push(name);
+    throw new Error(`Unexpected external action: ${name}`);
+  };
+  const allowed = new Set(["src/settings/agents/kit.tsx", "src/settings/agents/kitModel.ts", "src/settings/agents/icons.tsx"]);
+  const modules = new Map<string, { exports: Record<string, unknown> }>();
+  function load(path: string): Record<string, unknown> {
+    assert.ok(allowed.has(path), `Unexpected source path: ${path}`);
+    const cached = modules.get(path);
+    if (cached) return cached.exports;
+    const filename = path === "src/settings/agents/kit.tsx" && process.env.SECRET_REMOVE_SOURCE_FILE
+      ? resolve(process.env.SECRET_REMOVE_SOURCE_FILE)
+      : resolve(sourceRoot, path);
+    const compiled = ts.transpileModule(readFileSync(filename, "utf8"), {
+      fileName: filename,
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
+      reportDiagnostics: true,
+    });
+    assert.deepEqual(compiled.diagnostics?.filter((diagnostic: { category: number }) => diagnostic.category === ts.DiagnosticCategory.Error), []);
+    const module = { exports: {} };
+    modules.set(path, module);
+    const require = (name: string) => {
+      if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      if (name === "./icons") return load("src/settings/agents/icons.tsx");
+      if (name === "./kitModel") return load("src/settings/agents/kitModel.ts");
+      if (name === "./kit.css") return {};
+      if (name === "../../components/ReasonMark") return { ReasonMark: forbidden("ReasonMark") };
+      if (name === "../../backend") return { openUrl: forbidden("openUrl") };
+      if (["../../components/Icons", "../../components/Toast", "../../features/openIn/OpenInButton", "../../features/openIn/apps", "../appPrefs", "./parts", "../rows/AgentOptionRows"].includes(name)) {
+        return new Proxy({}, { get: (_target, key) => forbidden(String(key)) });
+      }
+      throw new Error(`Unexpected source dependency: ${name}`);
+    };
+    runInNewContext(`(function(require, module, exports) {\n${compiled.outputText}\n})`, { Error }, { filename })(require, module, module.exports);
+    return module.exports;
+  }
+  const { SecretRow } = load("src/settings/agents/kit.tsx");
+  assert.equal(typeof SecretRow, "function");
+  const props: SecretProps = {
+    label,
+    configured: true,
+    hint: "fixture-hint",
+    onDelete: async () => { calls.push("remove"); await pending.promise; },
+    onSave: forbidden("onSave"),
+    reveal: forbidden("reveal"),
+  };
+  let renderer: ReturnType<typeof create>;
+  act(() => { renderer = create(React.createElement(SecretRow, props)); });
+  const remove = () => renderer.root.findByProps({ "aria-label": `Remove ${label}` });
+  return {
+    pending,
+    calls,
+    remove,
+    indicators: () => remove().findAll((node: RenderNode) => node.type === "svg" && node.props.className === "sb-ws-loader"),
+    errors: () => renderer.root.findAllByProps({ className: "ag-error" }),
+    async beginRemove() {
+      await act(async () => { remove().props.onClick(); });
+    },
+    async settle(outcome: "success" | "failure") {
+      await act(async () => {
+        if (outcome === "failure") pending.reject(new Error("synthetic removal failure"));
+        else pending.fulfill();
+      });
+    },
+    async close() {
+      pending.fulfill();
+      await act(async () => { await pending.promise.catch(() => undefined); });
+      act(() => { renderer.unmount(); });
+      assert.deepEqual(forbiddenCalls, [], "No backend, native, provider, URL, clipboard or real credential action may execute");
+    },
+  };
+}
+
+for (const label of ["Anthropic API key", "OpenAI API key"]) {
+  for (const outcome of ["success", "failure"] as const) {
+    test(`${label} Remove shows pending feedback until ${outcome} settles`, async () => {
+      const view = fixture(label);
+      try {
+        assert.equal(view.indicators().length, 0);
+        assert.equal(view.remove().props.disabled, false);
+        await view.beginRemove();
+        assert.deepEqual(view.calls, ["remove"]);
+        assert.equal(view.indicators().length, 1, "pending Remove needs its own working indicator");
+        const indicator = view.indicators()[0];
+        assert.equal(indicator.props.width, 16);
+        assert.equal(indicator.props.height, 16);
+        assert.equal(indicator.props["aria-hidden"], "true");
+        assert.equal(view.remove().props.disabled, true);
+        assert.equal(view.remove().props["aria-label"], `Remove ${label}`);
+        await view.settle(outcome);
+        assert.equal(view.indicators().length, 0);
+        assert.equal(view.remove().props.disabled, false);
+        assert.equal(view.errors().length, outcome === "failure" ? 1 : 0);
+        if (outcome === "failure") {
+          assert.equal(view.errors()[0].children.join(""), `Failed to remove ${label}: synthetic removal failure`);
+        }
+        assert.deepEqual(view.calls, ["remove"]);
+      } finally { await view.close(); }
+    });
+  }
+}
