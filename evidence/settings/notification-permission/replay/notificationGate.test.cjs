@@ -41,6 +41,7 @@ function mount(c) {
     './composerSettings': { chooseSendKey: forbidden('chooseSendKey') },
     './rows/AppPrefRows': { GeneralAppPrefRows: inert },
     './sound': { SOUND_OPTIONS: [{ value: 'none', label: 'None' }], playCompletionSound: forbidden('playCompletionSound') },
+    './SoundSelect': { SoundSelect: inert },
     './useSettingsOverrideStore': { useSettingsOverrideStore: () => ({ updateMany: forbidden('updateMany') }) },
     '@tauri-apps/api/core': {
       async invoke(command) {

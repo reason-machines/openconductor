@@ -682,7 +682,13 @@ export const flows = [
       });
       const keyField = 'input[aria-label="Anthropic API key"]';
       await wd.waitFor("the Anthropic API key field", async () => (await wd.findAll(keyField)).length === 1);
-      const status = await textsOf(wd, '[data-testid="agent-auth-status"]');
+      // After switching to API key mode the status div may briefly be in a
+      // loading state that does not render data-testid="agent-auth-status";
+      // wait for it to settle before reading.
+      const status = await wd.waitFor("the API key mode status line", async () => {
+        const s = await textsOf(wd, '[data-testid="agent-auth-status"]');
+        return s.length > 0 ? s : null;
+      }, 10000);
       if (!status[0]?.includes("No Anthropic API key configured")) throw new Error(`status line ${JSON.stringify(status)}`);
       // Save a key: the row masks it to its last four characters; the eye
       // shows the whole key only on request, the trash removes it.
@@ -693,8 +699,9 @@ export const flows = [
       const secret = () => wd.execute("return document.querySelector('[data-testid=\"secret-value\"]')?.textContent ?? null;", []);
       await wd.waitFor("the masked key", async () => (await secret()) === "••••••••bAAA");
       await wd.waitFor("Connected", async () => (await textsOf(wd, '[data-testid="agent-auth-status"]'))[0]?.includes("Connected"));
-      if ((await wd.execute("return document.body.textContent.includes(arguments[0]);", [key]))) throw new Error("the key is on the page before Show");
-      await wd.click((await wd.findAll('button[aria-label="Show Anthropic API key"]'))[0]);
+      if ((await wd.execute("return document.body.textContent.includes(arguments[0]);", [key]))) throw new Error("the key is on the page before Reveal");
+      await wd.waitFor("the Reveal Anthropic API key button", async () => (await wd.findAll('button[aria-label="Reveal Anthropic API key"]')).length === 1);
+      await wd.click((await wd.findAll('button[aria-label="Reveal Anthropic API key"]'))[0]);
       await wd.waitFor("the revealed key", async () => (await secret()) === key);
       await wd.click((await wd.findAll('button[aria-label="Hide Anthropic API key"]'))[0]);
       await wd.waitFor("the key masked again", async () => (await secret()) === "••••••••bAAA");

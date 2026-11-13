@@ -404,6 +404,12 @@ pub fn run() {
             let spotlight = spotlight_commands::service(app.handle());
             scripts.set_auto_run_spotlight(spotlight::auto_run::hook(spotlight.clone()));
             app.manage(scripts);
+            // Restore persisted setup transcripts so the Setup tab shows the
+            // previous run's transcript after a restart without re-running setup.
+            tauri::async_runtime::block_on(scripts::restore_setup_transcripts(
+                &app.state::<db::Db>().0,
+                app.state::<oc_scripts::service::ScriptService>().inner(),
+            ));
             app.manage(spotlight);
             spawn_push_upstream_backfill(app.handle().clone());
             // tauri.conf.json leaves the main window to us (`"create": false`) so it can be
