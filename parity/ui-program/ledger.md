@@ -1241,3 +1241,48 @@ Voided:
 - **ACC E2E:** PASS at `e963fb31` (stand-ins). Run `43422109496` on `8f62e6e3` in progress. Native 39 NOT_RUN.
 - **Native acceptance:** ALL frozen — E1 BLOCKED, sole executor, no retry, no second executor
 - **Program bottleneck:** E1 quota reset (native) + #1283 CI (CONFIG-SYNC) + env crash root cause
+
+---
+
+## Program reconciliation r1145 at main `8e847380`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**#1284 open (`13576d11`)** — chat session fix for #1270 (squash `86748725` identical tree to parent, missing two hunks). 14/16 RED on main `8f62e6e3` → 16/16 GREEN after patch. `13576d11` retains merge ownership and post-merge main verification. Browser/native acceptance: **NOT_RUN** (ACC hold). CI_PENDING.
+
+**COMPOSER-ADD-MENU-LINK-ISSUE-135-01 assigned to `13576d11`** — AddMenu missing 'Link Issue' (⌘I) button in Composer.tsx. REA evidence: `evidence/chat/composer/composer--plus-menu--dark.png` shows Conductor AddMenu with Add attachment, Link Issue ⌘I, Link workspaces, Plan mode. OpenConductor has no `onLinkIssue` prop or button. Fix: add `onLinkIssue` prop to Composer and AddMenu, add button with `CircleDotIcon` and `linkIssueHint`, pass `onLinkIssue={()=>setLinkIssueOpen(true)}` from WorkspaceView. Not in any open PR. `13576d11` holds sole ownership; gap is not in the closed list.
+
+**Menus `15faf4d8`** — PICK-ISSUES-DIALOG in-progress; lane occupied. No gap injection needed.
+
+**#1280** — `Frontend typecheck + build` in_progress on `49ca70d1` (run `43423562281`), `Evidence tools compile` passed. Merge queued on green. This r1145 commit supersedes head.
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG in-progress |
+| Chat / composer | `13576d11` | #1284 CI_PENDING + COMPOSER-ADD-MENU-LINK-ISSUE assigned |
+| Terminal | `1f14fa82` | CLOSED — #1281 merged `8e847380` |
+| Settings | `49e3976d` | Browser PASS (fixture). Native: ALL NOT_RUN. Env crash unresolved, source investigation active |
+| Packaging | `992a715e` | CLOSED — artifact confirmed |
+| CONFIG-SYNC | `6013adf2` | #1283 CI_PENDING + caffeinate investigation |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — sole executor, no retry |
+
+### Serialized cloud runtime queue
+
+1. #1280 CI await → merge (`ddfc6518`)
+2. #1283 CONFIG-SYNC CI await → merge (`6013adf2`)
+3. #1284 chat fix CI await → merge (`13576d11`)
+4. COMPOSER-ADD-MENU-LINK-ISSUE (`13576d11`)
+5. PICK-ISSUES-DIALOG (`15faf4d8`)
+6. Settings env-crash source investigation (`49e3976d`)
+
+### State
+
+- **Unowned cloud gaps: NONE** — COMPOSER-ADD-MENU-LINK-ISSUE assigned to `13576d11`
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native only)
+- **ACC E2E:** PASS at `e963fb31`. Run `43422109496` on `8f62e6e3` in progress (ACC owns watch). Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen — E1 BLOCKED, sole executor, no retry, no second executor
+- **Program bottleneck:** E1 quota reset (native) + #1283/#1284 CI + env crash root cause
