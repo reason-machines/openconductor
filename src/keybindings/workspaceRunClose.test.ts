@@ -31,7 +31,10 @@ const compiled = ts.transpileModule(calls.join(";\n"), {
 
 type Surface = "run" | "setup" | "panel-terminal" | "center-terminal" | "chat";
 class FocusedElement {
-  constructor(readonly surface: Surface) {}
+  readonly surface: Surface;
+  constructor(surface: Surface) {
+    this.surface = surface;
+  }
   closest(selector: string): FocusedElement | null {
     if (selector === "[data-terminal]") return this.surface === "chat" ? null : this;
     if (selector === ".script-output") return this.surface === "run" || this.surface === "setup" ? this : null;

@@ -15,13 +15,13 @@ OpenConductor's Run and Setup output has both `data-terminal` and `.script-outpu
 
 ## Source qualification
 
-Main fetched for publication at `c79a81086c3a0e5ba81f1a9a53ec63a4f4dde7ba` has the same WorkspaceView bytes as the retained baseline. [Source binding](source-binding.json) records exact source, patch, fixture, and lock identities. The applied product equals the frozen candidate, and the tracked test equals the frozen fixture. SHA-256 readback and `git diff --check` passed on Reason Cloud. These are source checks, not behavioral tests.
+Main fetched for publication at `c79a81086c3a0e5ba81f1a9a53ec63a4f4dde7ba` has the same WorkspaceView bytes as the retained baseline. [Source binding](source-binding.json) records exact source, patch, fixture, and lock identities. The applied product equals the frozen candidate. The tracked test preserves all nine frozen criteria, with the Node 22 compatibility amendment described below. SHA-256 readback and `git diff --check` passed on Reason Cloud. These are source checks, not behavioral tests.
 
 The original [composition receipt](composition.json) checks both application orders with each composer packet and every order with both. All ten orders passed with identical final bytes. This is retained source-only evidence from main `6e1c5e9d`, not a new behavioral run. The current WorkspaceView baseline is byte-identical. Composer caller187 and draft-preview-r2 originals remain untouched. Active-file PR #1205 already exists on main and is not reapplied.
 
 ## Nine regression criteria
 
-The unchanged fixture executes the actual WorkspaceView registrations through the real binding resolver and dispatcher, with modeled focus and close effects.
+The fixture executes the actual WorkspaceView registrations through the real binding resolver and dispatcher, with modeled focus and close effects.
 
 1. Run output Command-W closes the displayed changes tab.
 2. Setup output Command-W closes the displayed changes tab.
@@ -33,7 +33,9 @@ The unchanged fixture executes the actual WorkspaceView registrations through th
 8. Reopen stays disabled in terminal output.
 9. Nonterminal reopen still reaches the existing consumer.
 
-The original nine-case source is preserved as [an exact-byte fixture](workspaceRunClose.original.ts.txt) and copied unchanged to [the executable regression](../../../src/keybindings/workspaceRunClose.test.ts). Validation is pending the existing serialized ACC admission. No test, typecheck, install, build, browser, package, or native execution is credited by source qualification. Automatic pull-request CI is allowed; no manual workflow dispatch is requested.
+The original nine-case source is preserved as [an exact-byte fixture](workspaceRunClose.original.ts.txt). The [executable regression](../../../src/keybindings/workspaceRunClose.test.ts) replaces only its TypeScript parameter property with a declared readonly field and constructor assignment. Node 22 strip-only mode rejects the original constructor before any case executes. All nine assertions, modeled effects, and production source are unchanged. The source binding records both fixture identities.
+
+[Initial CI on head afb4e33](https://github.com/reason-machines/openconductor/actions/runs/43371911451/job/131709372815) passed typecheck, but the suite failed with `ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX` at `workspaceRunClose.test.ts:34` (4,155 tests passed and one test file failed). Corrected-head CI is pending. Local validation still awaits the existing serialized ACC admission. No local test, typecheck, install, build, browser, package, or native execution is credited by source qualification. Automatic pull-request CI is allowed; no manual workflow dispatch is requested.
 
 The existing qualification request retains one unchanged-lock setup, matched baseline/candidate runs of the nine-case fixture, adjacent keybinding controls, and actual-checkout typecheck. Dependencies are currently absent. These commands are **not run** in this source-publication pass:
 
