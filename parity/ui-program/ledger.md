@@ -1455,3 +1455,51 @@ Owner: Conductor Rebuild (Session `ddfc6518`).
 - **ACC E2E:** PASS at `8f62e6e3` (run `43422109496`, streak 3, browser only). Admission for newer main pending #1280 merge. Native 39 NOT_RUN.
 - **Native acceptance:** ALL frozen — E1 BLOCKED (provider-limit), sole executor, no retry, no second executor
 - **Program bottleneck:** E1 provider limit (native acceptance); #1280 CI on `021be42b`
+
+---
+
+## Program reconciliation r1148 at main `428f58826`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**#1280 merged `428f58826`** (`ddfc6518`) — docs(ledger): program reconciliation r1137 at main c189ea62. All final-head checks passed on `3d018ee4c` (`Frontend typecheck + build` and `Evidence tools compile` both success). Subscription follow-up `77b979bf` cancelled.
+
+**#1283 squash SHA authoritative:** `04a96d018` (direct owner `6013adf2` report). Prior `5887a2835` reference retired.
+
+**#1290 open, CI in_progress** (`13576d11`) — fix(chat): footer shows 3 file chips before overflow instead of 2 (regression). REA evidence `evidence/diff/turn-changes.md:60-62`. 12/12 unit tests RED before → GREEN after. Owner retains merge follow-through. Browser/native acceptance: NOT_RUN.
+
+**ACC E2E run `43428348880`** dispatched on `bf9f31fc61` (pre-#1280 main); ACC (`acc3b5c5`) sole owner, `in_progress` at time of this record. New main `428f58826` includes #1280 diff-revisit changes; ACC to run on `428f58826` after `43428348880` completes. Native 39 NOT_RUN.
+
+**E1 `e1e2b6b9`:** Provider-limit no_output — sole native executor, no retry, no second executor. All native acceptance remains NOT_RUN.
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|
+---|
+| Menus / palette | `15faf4d8` | #1282, #1287 merged — PICK-ISSUES-DIALOG in-progress; source-exhausted after |
+| Chat / composer | `13576d11` | #1284, #1288 merged. #1290 CI in_progress. Browser/native NOT_RUN |
+| Diff / files | `de6c02f4` | #1285 merged `0ba8b008a`. ws.search-in-files-dialog REA extraction in-progress. Native NOT_RUN |
+| Sidebar | `27102e36` | #1286 merged `0c71d9962` (setting_up opacity). Native NOT_RUN |
+| Settings | `49e3976d` | Browser PASS (fixture). Env crash: UNRESOLVED, UNKNOWN cause, no crash log retrieved, Tao hypothesis only. NOT actively investigating. Native ALL NOT_RUN |
+| CONFIG-SYNC | `6013adf2` | #1283 merged `04a96d018`. Caffeinate: no product defect; ENOSPC environment hazard noted. Native NOT_RUN. Lane SOURCE_EXHAUSTED |
+| Terminal | `1f14fa82` | CLOSED — #1281 merged `8e847380` |
+| Packaging | `992a715e` | CLOSED — artifact confirmed |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — sole executor, latest attempt no_output, no retry, no second executor |
+
+### Serialized cloud runtime queue
+
+1. **#1290** CI await → merge (`13576d11`)
+2. **ws.search-in-files-dialog REA extraction** (`de6c02f4`)
+3. **PICK-ISSUES-DIALOG** (`15faf4d8`)
+4. Settings env-crash — awaits native reproduction via E1
+
+### State
+
+- **Unowned cloud gaps: NONE**
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native only)
+- **ACC E2E:** `43428348880` on `bf9f31fc61` in_progress (ACC owns); next run due on `428f58826`. Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen — E1 BLOCKED (provider-limit), sole executor, no retry, no second executor
+- **Program bottleneck:** E1 provider limit (native acceptance); env-entry crash root cause UNKNOWN
