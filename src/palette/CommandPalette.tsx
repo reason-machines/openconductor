@@ -7,6 +7,7 @@ import { workspaceNumberLabel } from "../state/workspaceNumber.ts";
 import { VIEW_ARCHIVED_ACTION } from "./fromAppState.ts";
 import type { ArchiveFilter, ArchivedWorkspace } from "../workspace/archivedList.ts";
 import type { Repo } from "../state/types.ts";
+import { MoveToSection, sectionItems, type MoveToSectionProps } from "./MoveToSection.tsx";
 import { loadFilters, saveFilters, CLEARED_FILTERS, type HomeFilters, type HomeRow } from "../home/allWorkspaces.ts";
 import { showClearFilters, workspacesTabRows } from "./workspacesTab.ts";
 import { WorkspaceFilters, WorkspaceRow } from "./WorkspacesTab.tsx";
@@ -25,6 +26,14 @@ export interface CommandPaletteProps {
   initialTab?: PaletteTab;
   /** Experimental "Show workspace numbers": W-<n> before each workspace's name. */
   showWorkspaceNumbers?: boolean;
+  /**
+   * When set, the palette replaces its list with the section picker sub-view.
+   * `sectionKey` gates the display (a stable key PaletteHost sets when entering section mode).
+   * `localWorkspaceId` must equal `data.activeWorkspaceId` for the sub-view to stay visible.
+   */
+  moveToSection?: MoveToSectionProps;
+  sectionKey?: string;
+  localWorkspaceId?: string;
   /**
    * "Archived workspaces" filter the Workspaces tab opens with, without saving it;
    * otherwise it opens with the filters saved by Home's All workspaces, which it shares.
@@ -111,7 +120,7 @@ function ResultWorkspaceRow({ item, showNumber }: { item: Extract<ResultItem, { 
   );
 }
 
-export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter, repos = [], archived = [], showWorkspaceNumbers = false, onSelect, settingIcon, actionIcon, onClose }: CommandPaletteProps) {
+export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter, repos = [], archived = [], showWorkspaceNumbers = false, onSelect, settingIcon, actionIcon, onClose, moveToSection, sectionKey, localWorkspaceId }: CommandPaletteProps) {
   const [tab, setTab] = useState<PaletteTab>(initialTab);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(initialTab === "workspaces" ? -1 : 0);
@@ -126,6 +135,16 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
   const listRef = useRef<HTMLDivElement>(null);
   const motionRef = useDialogMotion<HTMLDivElement>();
   const now = Date.now();
+
+  /* Section sub-view: visible when sectionKey is set and the workspace hasn't changed. */
+  const inSectionMode =
+    sectionKey !== undefined &&
+    localWorkspaceId !== undefined &&
+    localWorkspaceId === data.activeWorkspaceId &&
+    moveToSection !== undefined;
+  const sectionFlatItems = inSectionMode && moveToSection
+    ? sectionItems(moveToSection.sections, moveToSection.workspaceId, query)
+    : [];
 
   const wsRows = useMemo(() => workspacesTabRows(repos, filters, query, archived), [repos, filters, query, archived]);
   const groups = useMemo(() => (tab === "workspaces" ? [] : buildResults(tab, query, data)), [tab, query, data]);
@@ -156,8 +175,29 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     listRef.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest" });
   }, [active]);
 
+  function chooseSectionAt(i: number) {
+    if (!moveToSection) return;
+    const item = sectionFlatItems[i];
+    if (!item) return;
+    if (item.kind === "section") {
+      const isCurrent = moveToSection.sections
+        .find((s) => s.workspaceIds.includes(moveToSection.workspaceId))?.id === item.section.id;
+      if (!isCurrent) moveToSection.onMove(item.section.id);
+    } else if (item.kind === "new") {
+      moveToSection.onNewSection();
+    } else if (item.kind === "remove") {
+      moveToSection.onMove(null);
+    }
+  }
+
   function choose(item: ResultItem | undefined) {
     if (!item) return;
+    // Move to section: enter the section picker sub-view without dismissing.
+    if (item.kind === "action" && item.action.id === "move-to-section") {
+      setQuery("");
+      onSelect(item);
+      return;
+    }
     // Conductor: switch to the Workspaces tab showing archived ones too, and stay open.
     if (item.kind === "action" && item.action.id === VIEW_ARCHIVED_ACTION) {
       changeTab("workspaces");
@@ -170,11 +210,29 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    /* Section sub-view: Backspace on empty query goes back to commands. */
+    if (inSectionMode && moveToSection && e.key === "Backspace" && query === "") {
+      e.preventDefault();
+      e.stopPropagation();
+      moveToSection.onBack();
+      return;
+    }
     const cmd = paletteCommandFor(e.nativeEvent, overrides);
     if (cmd === null) return;
     if ((e.nativeEvent.isComposing || e.keyCode === 229) && cmd !== "close" && cmd !== "next-tab" && cmd !== "prev-tab") return;
     e.preventDefault();
     e.stopPropagation();
+    if (inSectionMode && moveToSection) {
+      /* In section sub-view: Escape and previousTab go back; Enter selects; arrow keys navigate. */
+      if (cmd === "close" || cmd === "prev-tab") {
+        moveToSection.onBack();
+      } else if (cmd === "select") {
+        chooseSectionAt(active);
+      } else {
+        setActive((a) => moveActive(a, sectionFlatItems.length, cmd));
+      }
+      return;
+    }
     if (cmd === "close") onClose();
     else if (cmd === "select") choose(flat[active]);
     else if (cmd === "next-tab" || cmd === "prev-tab") changeTab(cycleTab(tab, cmd === "next-tab" ? 1 : -1, showProjects));
@@ -197,7 +255,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
             autoFocus
             spellCheck={false}
             autoComplete="off"
-            placeholder={placeholderFor(tab)}
+            placeholder={inSectionMode ? "Filter sections…" : placeholderFor(tab)}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={onKeyDown}
@@ -206,7 +264,18 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
             aria-controls="palette-list"
           />
         </div>
-        <div className="palette-tabs">
+        {inSectionMode && moveToSection ? (
+          <MoveToSection
+            workspaceId={moveToSection.workspaceId}
+            sections={moveToSection.sections}
+            query={query}
+            active={active}
+            onActive={setActive}
+            onSelectAt={chooseSectionAt}
+            onBack={moveToSection.onBack}
+          />
+        ) : null}
+        {!inSectionMode && <div className="palette-tabs">
           <div className="palette-tablist" role="tablist">
             {tabs.map((t) => (
               <button
@@ -222,8 +291,8 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
             ))}
           </div>
           {tab === "workspaces" && <WorkspaceFilters repos={repos} filters={filters} onChange={setFilters} />}
-        </div>
-        <div className="palette-list" id="palette-list" role="listbox" ref={listRef} data-tab={tab}>
+        </div>}
+        {!inSectionMode && <div className="palette-list" id="palette-list" role="listbox" ref={listRef} data-tab={tab}>
           {tab === "workspaces" ? (
             flat.length === 0 ? (
               <div className="palette-ws-empty">
@@ -307,7 +376,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
               ))}
             </>
           )}
-        </div>
+        </div>}
       </div>
     </div>
   );

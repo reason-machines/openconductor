@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type Dispatch } from "react";
+import { useEffect, useMemo, useRef, useState, type Dispatch } from "react";
 import type { Action } from "../state/store";
 import type { AppState } from "../state/types";
 import type { DialogKind } from "../components/Dialogs";
@@ -6,6 +6,7 @@ import { CommandPalette } from "./CommandPalette.tsx";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import type { CommandHandlers } from "../keybindings/bind.ts";
 import { workspacePaletteData, paletteSettings, shortcutOrder, sidebarOrder, stepWorkspace, paletteOpenInRequest, type WorkspaceOpenInTarget, type WorkspaceRef } from "./fromAppState.ts";
+import type { MoveToSectionProps } from "./MoveToSection.tsx";
 import { buildSearchIndex } from "../settings/searchIndex";
 import { settingsGroups } from "../settings/pages";
 import { AGENT_SEARCH_TABS, scrollToRow, searchIcon } from "../settings/SettingsView";
@@ -42,6 +43,7 @@ interface Props {
 /** App-shell commands available to the palette's actions. */
 export interface PaletteCommands {
   createSection?: () => void;
+  createSectionWithWorkspace?: (workspaceId: string) => void;
   addProject: () => void;
   toggleTheme: () => void;
   toggleLeftSidebar: () => void;
@@ -59,6 +61,9 @@ export interface PaletteCommands {
 
 /** Owns the palette's open state, recent workspaces and the app's global shortcuts. */
 export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, onOpenProject, open, onOpenChange, commands, activeOpenInTarget }: Props) {
+  const [sectionWorkspaceId, setSectionWorkspaceId] = useState<string | undefined>(undefined);
+  const sectionKeyRef = useRef(0);
+  const [sectionKey, setSectionKey] = useState<string | undefined>(undefined);
   const [recents, setRecents] = useState<readonly string[]>(loadRecentWorkspaceIds);
   const [lastWorkspaceRoute, setLastWorkspaceRoute] = useState(loadLastWorkspaceRoute);
   const sel = state.selection;
@@ -102,7 +107,10 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
   const { toasts, show, dismiss } = useToasts();
   const data = useMemo(() => {
     const entries = workspacePaletteData(state, recents, archived, settingEntries, apps ?? [], prefs.default_open_in);
-    return commands.createSection ? entries : { ...entries, actions: entries.actions.filter((entry) => entry.id !== "create-section") };
+    if (!commands.createSection) {
+      return { ...entries, actions: entries.actions.filter((entry) => entry.id !== "create-section" && entry.id !== "move-to-section") };
+    }
+    return entries;
   }, [state, recents, archived, settingEntries, apps, prefs.default_open_in, commands.createSection]);
   const archivedById = (id: string) => archived.find((a) => a.id === id);
   const showWorkspaceNumbers = useBoolPref("experimental_show_workspace_numbers");
@@ -164,6 +172,14 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
       const target = repo && preferredProjectWorkspace(repo, recents);
       if (repo && target) go({ repoId: repo.id, workspace: target });
       else if (repo) dispatch({ type: "newWorkspace", repoId: repo.id });
+    } else if (item.kind === "action" && item.action.id === "move-to-section") {
+      const workspaceId = data.activeWorkspaceId;
+      if (workspaceId) {
+        sectionKeyRef.current += 1;
+        setSectionWorkspaceId(workspaceId);
+        setSectionKey(String(sectionKeyRef.current));
+      }
+      return; /* Stay open — do not close the palette. */
     } else if (item.kind === "action") {
       const app = apps?.find((a) => item.action.id === `open-in-${a.id}`);
       const repo = sel.kind === "workspace" ? state.repos.find((r) => r.id === sel.repoId) : undefined;
@@ -204,6 +220,23 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
       showWorkspaceNumbers={showWorkspaceNumbers}
       onSelect={onSelect}
       settingIcon={settingIcon}
+      sectionKey={sectionKey}
+      localWorkspaceId={sectionWorkspaceId}
+      moveToSection={sectionWorkspaceId !== undefined ? {
+        workspaceId: sectionWorkspaceId,
+        sections: state.sections ?? [],
+        onMove(sectionId) {
+          dispatch({ type: "assignSection", workspaceId: sectionWorkspaceId, sectionId });
+        },
+        onNewSection() {
+          onOpenChange(false);
+          commands.createSectionWithWorkspace?.(sectionWorkspaceId);
+        },
+        onBack() {
+          setSectionWorkspaceId(undefined);
+          setSectionKey(undefined);
+        },
+      } satisfies MoveToSectionProps : undefined}
       actionIcon={(id) => {
         if (id === "show-all-files") return <ConductorIcon name="list-tree" size={16} />;
         if (id === "show-changes" || id === "show-uncommitted-changes") return <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2Z" /><path d="M14 2v5a1 1 0 0 0 1 1h5M9 13h6M12 10v6M9 19h6" /></svg>;
