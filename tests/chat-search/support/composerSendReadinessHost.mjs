@@ -98,7 +98,7 @@ export async function fixture({ working = false, canSteer = false, followUpMode 
     } },
   };
   const modules = new Map();
-  const actualTsx = new Set(['src/components/WorkspaceView', 'src/features/chat/Composer', 'src/features/chat/ComposerEditor']);
+  const actualTsx = new Set(['src/components/WorkspaceView', 'src/features/chat/Composer', 'src/features/chat/ComposerEditor', 'src/features/chat/ComposerAttachmentChip']);
   function load(path) {
     const key = path.slice(repo.length + 1).replace(/\.(tsx?|css)$/, '');
     imports.push(key);

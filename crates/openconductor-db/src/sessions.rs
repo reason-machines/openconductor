@@ -301,7 +301,7 @@ pub async fn replace_local(
     sqlx::query("INSERT OR IGNORE INTO sessions (id, workspace_id, created_at, updated_at) VALUES (?, ?, ?, ?)")
         .bind(source_id).bind(workspace_id).bind(&replacement.now).bind(&replacement.now)
         .execute(&mut *tx).await?;
-    sqlx::query("UPDATE sessions SET is_hidden = 1 WHERE id = ? OR id = ?")
+    sqlx::query("UPDATE sessions SET is_hidden = 1, title = NULL WHERE id = ? OR id = ?")
         .bind(source_id)
         .bind(alias)
         .execute(&mut *tx)

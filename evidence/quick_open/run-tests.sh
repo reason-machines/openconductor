@@ -32,6 +32,7 @@ ignore = "0.4.25"
 nucleo-matcher = "=0.3.1"
 unicode-segmentation = "1.10"
 serde = { version = "1", features = ["derive"] }
+regex = "1"
 
 [dev-dependencies]
 serde_json = "1"
