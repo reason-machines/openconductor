@@ -682,7 +682,13 @@ export const flows = [
       });
       const keyField = 'input[aria-label="Anthropic API key"]';
       await wd.waitFor("the Anthropic API key field", async () => (await wd.findAll(keyField)).length === 1);
-      const status = await textsOf(wd, '[data-testid="agent-auth-status"]');
+      // After switching to API key mode the status div may briefly be in a
+      // loading state that does not render data-testid="agent-auth-status";
+      // wait for it to settle before reading.
+      const status = await wd.waitFor("the API key mode status line", async () => {
+        const s = await textsOf(wd, '[data-testid="agent-auth-status"]');
+        return s.length > 0 ? s : null;
+      }, 10000);
       if (!status[0]?.includes("No Anthropic API key configured")) throw new Error(`status line ${JSON.stringify(status)}`);
       // Save a key: the row masks it to its last four characters; the eye
       // shows the whole key only on request, the trash removes it.

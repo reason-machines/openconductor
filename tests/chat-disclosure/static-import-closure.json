@@ -156,6 +156,7 @@
     "src/features/browser/BrowserPreview",
     "src/features/chat/AgentBinaryBanner",
     "src/features/chat/ChatModelPicker",
+    "src/features/chat/ComposerAttachmentChip",
     "src/features/chat/ChatSignInCard",
     "src/features/chat/CodexConsentCard",
     "src/features/chat/FileMentionMenu",
