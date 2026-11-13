@@ -509,3 +509,19 @@ cold and warm, against Conductor 0.87.6; full numbers, filmstrips and commands i
 2. `inspect-analysis-view` documents only `{inputJson}`; no way to search an evidence bundle for a symbol.
 3. `capture-browser-scenario` forces reduced motion and has no per-frame sampling (as in #605), so
    timing came from frame logs and the Xvfb recording; the native Conductor window was not measured.
+
+## Dialogs lane reconciliation, main `327277f40`, 13 November 2026
+
+Conductor Rebuild reconciled all `evidence/dialogs/` directories against current main `327277f40f4c97e77a8f5fc91e9fd32e1b7f3f73`. No Mac launch, native capture, install, build, runner or dispatch. Static fixture-SHA and product-source sweep only.
+
+### Gaps verified already on main
+
+All previously-evidenced dialogs product corrections are present on main: `clone-url-text-correction`, `clone-pending-inputs`, `clone-basename-normalization`, `clone-recent-pending-selection`, `section-name-input`, `section-write-errors`, `section-composition-escape`, `create-project-pending-controls`, `linked-picker-boundary-keys`, `picker-location`, `rename-branch-pending`, `reset-chat-focus`, `reset-chat-dismissal`, `reset-chat-pending-indicator`, `quit-focus`, `quit-dismissal`, `github-owner-retry`, `github-repo-dismissal`, `github-fallback-integration`, `github-name-empty`, `github-orgs-fallback-source`, `github-owner-fallback-source`, `remove-pending-dismissal`, `restore-pending-dismissal`, `submit-prompt-rejection`, `workspace-launch-close`, `rename-chat-focus`, `rename-chat-lifecycle`.
+
+### Remaining unimplemented dialogs source candidate: CONFIG-SYNC-PENDING-SELECTION
+
+Owner: Conductor Rebuild (this Session). `ConfigSyncDialog.tsx` lines 90 and 107 disable category and item checkboxes when `state.kind !== "ready"`, blocking selection during `syncing`. REA-verified Conductor behavior: selection stays editable while syncing; only empty categories remain disabled. Candidate patch at `evidence/dialogs/config-sync-pending-selection/candidate.patch`. The 20-case fixture `configSyncPendingSelection.test.ts` is prepared and outside automatic test discovery. **Requires ACC direct behavioral admission** (baseline RED then candidate GREEN) before PR eligibility. No runner started; no product change applied here.
+
+### Unowned implementable dialogs gap
+
+**None** at `327277f40`. All remaining dialogs source candidates require ACC behavioral admission before PR eligibility.
