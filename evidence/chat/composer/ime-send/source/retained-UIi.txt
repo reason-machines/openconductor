@@ -1,0 +1,1 @@
+const UIi={workspaceLinks:V5o,interactionCapabilities:cHt,loadPathImage:X5o,reportPreviewError:t=>{Bt.error("Failed to load composer mention preview",t)}};
