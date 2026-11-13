@@ -150,7 +150,9 @@ pub async fn codex_open_chat<R: Runtime>(
     // shell's PATH (agent_launch.rs).
     let mut launch = settings.codex_launch(&cwd)?;
     // Per-turn requests carry effort and Fast; process overrides would mask explicit off.
-    launch.config.retain(|(key, _)| key != "model_reasoning_effort" && key != "service_tier");
+    launch
+        .config
+        .retain(|(key, _)| key != "model_reasoning_effort" && key != "service_tier");
     let launch_app = app.clone();
     launch.executable = tauri::async_runtime::spawn_blocking(move || {
         crate::agent_launch::launch(&launch_app, Agent::Codex)
@@ -167,7 +169,13 @@ pub async fn codex_open_chat<R: Runtime>(
             model: None,
             policy: policy.unwrap_or_else(default_policy),
             developer_instructions: None,
-            fast_mode: Some(settings.get().map_err(|e| e.to_string())?.models.default_fast_mode),
+            fast_mode: Some(
+                settings
+                    .get()
+                    .map_err(|e| e.to_string())?
+                    .models
+                    .default_fast_mode,
+            ),
         },
         resume: thread_id,
         client_name: "openconductor".into(),
@@ -177,7 +185,11 @@ pub async fn codex_open_chat<R: Runtime>(
     if crate::e2e::enabled() {
         crate::e2e::log_event(
             "codex-open",
-            &open_policy_event(&chat_id, policy, OpenPolicyDecision::NewRunner(config.thread.policy)),
+            &open_policy_event(
+                &chat_id,
+                policy,
+                OpenPolicyDecision::NewRunner(config.thread.policy),
+            ),
         );
     }
     let chat = chat_id.clone();
@@ -196,7 +208,11 @@ fn prompt_effort(
     effort: Option<String>,
     default_effort: impl FnOnce() -> Option<String>,
 ) -> Option<String> {
-    if model.is_some() { effort } else { effort.or_else(default_effort) }
+    if model.is_some() {
+        effort
+    } else {
+        effort.or_else(default_effort)
+    }
 }
 
 /// Runs one prompt (after any still queued); events arrive meanwhile.
@@ -300,10 +316,28 @@ mod tests {
 
     #[test]
     fn picked_model_effort_does_not_inherit_app_defaults() {
-        assert_eq!(prompt_effort(Some("dynamic-model"), None, || panic!("explicit model must not read default effort")), None);
-        assert_eq!(prompt_effort(Some("dynamic-model"), Some("high".into()), || panic!("explicit effort must not read defaults")), Some("high".into()));
-        assert_eq!(prompt_effort(None, Some("low".into()), || panic!("explicit effort must not read defaults")), Some("low".into()));
-        assert_eq!(prompt_effort(None, None, || Some("medium".into())), Some("medium".into()));
+        assert_eq!(
+            prompt_effort(Some("dynamic-model"), None, || panic!(
+                "explicit model must not read default effort"
+            )),
+            None
+        );
+        assert_eq!(
+            prompt_effort(Some("dynamic-model"), Some("high".into()), || panic!(
+                "explicit effort must not read defaults"
+            )),
+            Some("high".into())
+        );
+        assert_eq!(
+            prompt_effort(None, Some("low".into()), || panic!(
+                "explicit effort must not read defaults"
+            )),
+            Some("low".into())
+        );
+        assert_eq!(
+            prompt_effort(None, None, || Some("medium".into())),
+            Some("medium".into())
+        );
     }
 
     #[test]
@@ -340,7 +374,11 @@ mod tests {
     #[test]
     fn new_runner_policy_event_distinguishes_missing_and_inherited_policy() {
         assert_eq!(
-            open_policy_event("ws-1", None, OpenPolicyDecision::NewRunner(default_policy())),
+            open_policy_event(
+                "ws-1",
+                None,
+                OpenPolicyDecision::NewRunner(default_policy())
+            ),
             serde_json::json!({
                 "chatId": "ws-1",
                 "incomingPolicy": null,
@@ -349,7 +387,11 @@ mod tests {
             })
         );
         assert_eq!(
-            open_policy_event("ws-1", Some(CodexPolicy::inherit()), OpenPolicyDecision::NewRunner(CodexPolicy::inherit())),
+            open_policy_event(
+                "ws-1",
+                Some(CodexPolicy::inherit()),
+                OpenPolicyDecision::NewRunner(CodexPolicy::inherit())
+            ),
             serde_json::json!({
                 "chatId": "ws-1",
                 "incomingPolicy": {},
@@ -361,7 +403,13 @@ mod tests {
 
     #[test]
     fn existing_runner_policy_event_does_not_claim_its_retained_policy() {
-        for incoming in [None, Some(CodexPolicy::new(ApprovalPolicy::OnRequest, SandboxMode::ReadOnly))] {
+        for incoming in [
+            None,
+            Some(CodexPolicy::new(
+                ApprovalPolicy::OnRequest,
+                SandboxMode::ReadOnly,
+            )),
+        ] {
             assert_eq!(
                 open_policy_event("ws-1", incoming, OpenPolicyDecision::ExistingRunner),
                 serde_json::json!({
