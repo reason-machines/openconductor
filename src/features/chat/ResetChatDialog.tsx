@@ -101,6 +101,13 @@ export function ResetChatDialog({ loadChangedCount, onConfirm, onClose }: Props)
             Cancel
           </button>
           <button type="button" className="oc-alert-btn oc-alert-destructive" data-primary-action onClick={confirm} disabled={busy} title="Reset (⌘↵)">
+            {busy && (
+              <svg className="sb-ws-loader" width={16} height={16} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" style={{ width: 16, height: 16, border: 0, borderRadius: 0, flexShrink: 0 }}>
+                <circle cx="3" cy="8" r="1.5" />
+                <circle cx="8" cy="8" r="1.5" />
+                <circle cx="13" cy="8" r="1.5" />
+              </svg>
+            )}
             {busy ? "Resetting..." : "Reset"} {busy ? null : (
               // Conductor: `ml-2 inline-flex items-center opacity-60` with "⌘" and its 12px Enter icon (`gf`).
               <span className="oc-alert-kbd">

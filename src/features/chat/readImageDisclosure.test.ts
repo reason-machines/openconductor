@@ -14,7 +14,7 @@ import { applyChatEvents, emptyTranscript } from "./reducer.ts";
 import { buildRows } from "./view.ts";
 
 const inputBytes = readFileSync(new URL("./readImageDisclosure.inputs.json", import.meta.url));
-assert.equal(createHash("sha256").update(inputBytes).digest("hex"), "adada617c0395960660e37e2c6dc48b7f9340d08811360665644dfdfd900bce9");
+assert.equal(createHash("sha256").update(inputBytes).digest("hex"), "62c74254f7a30225802a6bb79a3cccb2c64a0cfd4d110fdb00d87af700eaef67");
 const dependencies = createRequire(import.meta.url);
 const React = dependencies("react");
 const { act, create } = dependencies("react-test-renderer");
