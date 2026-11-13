@@ -1,8 +1,8 @@
 // parity:diff.turn-changes:ui
 // In a finished turn's footer row, after the time and actions: one chip per
 // file the turn changed, with its line counts. Clicking a chip opens that
-// file's diff scoped to the turn. Up to 3 files all show; past that the first 2
-// show and a "+N more" button (with the rest's line totals, tooltip "Show 3
+// file's diff scoped to the turn. Up to 3 files all show; past that the first 3
+// show and a "+N more" button (with the rest's line totals, tooltip "Show N
 // more changed files") reveals 3 more per click on their own line
 // (Conductor's `vDo`, evidence/chat/README.md and evidence/diff/turn-changes.md).
 import { useState } from "react";

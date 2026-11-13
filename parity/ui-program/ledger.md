@@ -1615,3 +1615,20 @@ Owner: Conductor Rebuild (Session `ddfc6518`).
 - **Native acceptance:** ALL frozen — E1 PROVIDER_LIMIT_BLOCKED, sole executor, no retry, no second executor
 - **Program state: SOURCE_COMPLETE** — all implementable cloud lanes exhausted. Remaining: native acceptance (E1 blocked), ACC E2E on current main, final review pass
 - **Program bottleneck:** E1 provider limit blocks native acceptance and settings env-crash root cause
+
+## Program reconciliation r1153 at main `f562de4e37`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**#1291 merged `f562de4e37`** — ledger docs reconciliation r1148–r1152 delivered to main. Docs/ledger only; no production deployment.
+
+**Main is now `f562de4e37`** — ACC E2E next run due on this SHA (not `c4d68825`).
+
+### State (unchanged from r1152 except main SHA)
+
+- **Program state: SOURCE_COMPLETE** — all implementable cloud lanes exhausted. Remaining: native acceptance (E1 blocked), ACC E2E on `f562de4e37`, final review pass
+- **ACC E2E:** `43428348880` on `bf9f31fc61` attempt 2 subscription active (ACC owns); next run due on `f562de4e37`. Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen — E1 PROVIDER_LIMIT_BLOCKED, sole executor, no retry, no second executor
+- **Program bottleneck:** E1 provider limit blocks native acceptance and settings env-crash root cause
