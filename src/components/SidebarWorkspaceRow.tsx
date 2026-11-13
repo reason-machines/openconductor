@@ -114,6 +114,7 @@ export function SidebarWorkspaceRow({ workspace: ws, repoBadge, targetBranch, ha
         type="button"
         className="sb-ws"
         data-testid="left-sidebar-workspace-item"
+        data-setup-active={ws.state === "setting_up" || undefined}
         data-active={active || undefined}
         data-unread={isWorkspaceUnread(ws) || undefined}
         data-pinned={typeof ws.pinnedAt === "number" || undefined}

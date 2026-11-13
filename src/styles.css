@@ -131,6 +131,8 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .sb-ws-list { display: flex; flex-direction: column; gap: 4px; }
 .sb-ws { display: flex; align-items: center; gap: 6px; width: calc(100% - 2px); min-width: 0; padding: 8px 6px 8px 20px; border-radius: 6px; text-align: left; color: var(--sidebar-foreground); cursor: pointer; }
 .sb-ws:hover, .sb-ws[data-active] { background: var(--sidebar-accent); }
+/* Conductor's `wFi` applies opacity-50 (`ue = I && "opacity-50"`, isSetupActive = state==setting_up). */
+.sb-ws[data-setup-active] { opacity: 0.5; }
 /* Conductor's row is a group: hovering anywhere on it (the Archive button included) highlights it,
    fades the diff stat and shows Archive at the right end (iea: absolute inset-y-0 right-1, invisible group-hover:visible). */
 .sb-ws-row { position: relative; display: flex; min-width: 0; }

@@ -278,14 +278,14 @@ test("footer chip glyphs, counts, order, compact layout and three-at-a-time reve
   const view = await fixture(Array.from({ length: 7 }, (_, i) => change({ path: `src/file-${i}.ts`, additions: i + 1, deletions: i })));
   try {
     assert.equal(view.requests.length, 0);
-    assert.equal(view.buttons().length, 2);
-    assert.deepEqual(view.buttons().map((node) => text(node).split("+")[0]), ["file-0.ts", "file-1.ts"]);
+    assert.equal(view.buttons().length, 3);
+    assert.deepEqual(view.buttons().map((node) => text(node).split("+")[0]), ["file-0.ts", "file-1.ts", "file-2.ts"]);
     assert.match(text(view.buttons()[0]), /\+1-0$/);
     assert.ok(view.all((node) => node.type === "svg").length >= 3, "file glyphs and reveal icon remain present");
     const more = view.all((node) => node.type === "button" && node.props.title === "Show 3 more changed files")[0];
     assert.ok(more);
     await view.event(more, "onClick");
-    assert.equal(view.buttons().length, 5);
+    assert.equal(view.buttons().length, 6);
     assert.equal(view.all((node) => node.props.className === "chat-turn-changes-more revealed").length, 1);
     const group = view.all((node) => node.props.role === "group" && node.props["aria-label"] === "Files changed in this turn")[0];
     assert.equal(group.props.className, "chat-turn-changes revealed");
