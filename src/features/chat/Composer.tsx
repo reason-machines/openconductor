@@ -61,6 +61,7 @@ export interface ComposerProps {
   /** Files going out with the next message, shown above the message box. */
   attachments?: ReactNode;
   hasAttachments?: boolean;
+  onEditorInteraction?: () => void;
   workspacePath?: string;
   /** Takes files the user attaches; without it the "+" menu has no Add attachment. */
   onAttachFiles?: (files: File[]) => void;
@@ -97,6 +98,7 @@ export function Composer({
   onQueue,
   attachments,
   hasAttachments = false,
+  onEditorInteraction,
   workspacePath,
   onAttachFiles,
   onLinkWorkspaces,
@@ -388,6 +390,7 @@ export function Composer({
                 minimize?.expand();
               }}
               onBlur={() => setFocused(false)}
+              onInteraction={onEditorInteraction}
               onKeyDown={onKeyDown}
               onPasteFiles={takeFiles}
             />

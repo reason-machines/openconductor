@@ -35,6 +35,7 @@ interface Props {
   onFocus(): void;
   onBlur(): void;
   onPasteFiles(files: FileList): boolean;
+  onInteraction?(): void;
 }
 
 function snapshot(editor: Editor): ComposerSelection {
@@ -111,7 +112,8 @@ export function ComposerEditor(props: Props) {
       },
       onSelectionUpdate: emitSelection,
       onFocus: () => { current.current.onFocus(); emitSelection(); },
-      onBlur: () => current.current.onBlur(),
+      onTransaction: () => current.current.onInteraction?.(),
+      onBlur: () => { current.current.onBlur(); current.current.onInteraction?.(); },
     });
     instance.current = editor;
     function updateAttributes() {
