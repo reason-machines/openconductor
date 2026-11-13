@@ -549,7 +549,19 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
       );
     }
     case "todo": {
-      const todos = Array.isArray(input.todos) ? (input.todos as Record<string, unknown>[]) : [];
+      let todoSource: unknown = input.todos;
+      if (name === "TodoRead") {
+        todoSource = rawResult === undefined ? result : rawResult;
+        if (typeof todoSource === "string") {
+          const match = todoSource.match(/\[[\s\S]*\]/);
+          try {
+            todoSource = match ? JSON.parse(match[0]) : [];
+          } catch {
+            todoSource = [];
+          }
+        }
+      }
+      const todos = Array.isArray(todoSource) ? (todoSource as Record<string, unknown>[]) : [];
       const done = todos.filter((t) => t.status === "completed").length;
       const activeIndex = todos.findIndex((t) => t.status === "in_progress");
       const active = todos[activeIndex];
