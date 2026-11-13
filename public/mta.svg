@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 32" fill="white">
+  <!-- NYC MTA wordmark (compact sans-serif style) -->
+  <path d="M2 8h4l4 10 4-10h4v16h-3V14l-4 10h-2l-4-10v10H2V8z"/>
+  <rect x="20" y="8" width="12" height="3"/>
+  <rect x="24" y="8" width="4" height="16"/>
+  <path d="M36 8h12v3h-4v13h-4V11h-4V8z"/>
+</svg>
