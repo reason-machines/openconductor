@@ -1,0 +1,205 @@
+{
+  "candidate": "CHAT.COLLAB-TOOL-VISIBILITY",
+  "checked_main": "85194324762be7c00ba8d092c4e00bdb564f1ac4",
+  "status": "SOURCE_QUALIFIED_ACCEPTANCE_PREPARED_BEHAVIOR_UNRUN",
+  "author": "Conductor Rebuild",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "recorded_app": "Conductor 0.87.6",
+  "rea_limits": "Historical semantic renderer analysis exhausted heap and skipped renderer. Retained shipped bytes/static joins only. No current installed identity or semantic rerun.",
+  "assets": {
+    "index-BGEQ8YjU.js": {
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    },
+    "renderApp-D_fmY7hW.js": {
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    }
+  },
+  "spans": {
+    "na": {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1148057,
+        1148224
+      ],
+      "sha256": "7673a785165ce3c671210fa21a1e1a0a836ccda502ece16b01fe4cc93d6b87bb"
+    },
+    "Fa": {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1148224,
+        1148305
+      ],
+      "sha256": "26475e8ddf9c5f5292ca8e385429f41b1893267e4599b2fef7055b93f51a7407"
+    },
+    "btt": {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1148305,
+        1148415
+      ],
+      "sha256": "6831a23f1c59e1c76445797aba43b4a075878a9750733048e5e3b7f8bd434e0a"
+    },
+    "uie": {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1148415,
+        1148596
+      ],
+      "sha256": "bba1207f3241d3cd24b8e70dceafa842f7d2b327961299151c9692888053b34e"
+    },
+    "bB": {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1152714,
+        1153123
+      ],
+      "sha256": "e7f1f75c7784f033a2be1c38499d83c69b2f64cdd628faf26c33d3781132ba0c"
+    },
+    "pie": {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1153123,
+        1153287
+      ],
+      "sha256": "77cf0f21c109c6b1cac5294cbfddda01782195633b56070cb0e03a002e8fde3e"
+    },
+    "Ntt": {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1153287,
+        1153746
+      ],
+      "sha256": "cd443cbf5241aaaaeeffb3075040bf244c9c0755b2a6885a2c5337057738650a"
+    },
+    "_jt": {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1153746,
+        1154246
+      ],
+      "sha256": "1806109603caa218b2bc48dac7cb3ed18126790e4ec12f8d3bd578b765e17964"
+    },
+    "ont": {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1282459,
+        1283139
+      ],
+      "sha256": "fe76f0eb59b5f934b9b99e53d8fb4c3768919c9efbec4f4b5285314ccc134285"
+    },
+    "ROo": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8870021,
+        8872955
+      ],
+      "sha256": "4b020f575c8024708d1576ab02d0154a6690a710abe1fbe5e603fd7731e69afe"
+    },
+    "GOo": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8895883,
+        8896973
+      ],
+      "sha256": "8056845a5656f1112e13839e0e3bf614da79be4eff4672a5bc2ca4e1a15c0480"
+    },
+    "visibility-import": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        61086,
+        61095
+      ],
+      "sha256": "6167d2cc1e08f46f339106a793891946bed1335e1728872a702172b44d6ddfcf"
+    },
+    "visibility-export": {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3487993,
+        3488002
+      ],
+      "sha256": "6aabc9a2e5b004703b7033382a6a7607fe45fabd83a135c67b8b59fe2ad68b8f"
+    },
+    "collab-dispatch": {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1288333,
+        1288410
+      ],
+      "sha256": "f252266041cac31dcf7091c5d4bfd377bcb1f17eaa79b30e27e72a7cb8f0f06b"
+    }
+  },
+  "current_main_sources": {
+    "src/features/chat/view.ts": {
+      "sha256": "d318201a7a5078a576ee9f4c1da2481768c8d1894f4d066b009492216cada331",
+      "bytes": 8930
+    },
+    "src/features/chat/Transcript.tsx": {
+      "sha256": "0c6bcb94994afe0eb5f9fd8e5a10849f29e79dbb6fbcc6dbded2975324d1e4dc",
+      "bytes": 21259
+    },
+    "src/features/chat/toolGroups.ts": {
+      "sha256": "eadaab0dd0636ca31a0570074920905ba00edcff7963e4828e7b51299ac79252",
+      "bytes": 6936
+    },
+    "src/features/chat/conductorTools.ts": {
+      "sha256": "05c3a85bed997b1114e1696d083855d4e39c5d614fe57ddeb0bade8bde7cc64a",
+      "bytes": 30492
+    },
+    "src/features/chat/reason.ts": {
+      "sha256": "e5588994a8fbe290512a45579efd96c86663a1455eb9dd3413fc8452416483ee",
+      "bytes": 13801
+    },
+    "src/features/chat/types.ts": {
+      "sha256": "a20668440de9c41b8952a1ef1c7864624e2624b60108cd2d9afafba89ca7a5e0",
+      "bytes": 3480
+    },
+    "src/features/chat/reducer.ts": {
+      "sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+      "bytes": 5906
+    },
+    "src/features/chat/codex.ts": {
+      "sha256": "7bfd9bafe0bb820d8be8fb44d42e25be3f7e8c4d39245838c25d0f3d376c5eb7",
+      "bytes": 10094
+    },
+    "src/features/chat/userContent.ts": {
+      "sha256": "5bc4da24e8d193d68b85fd02f25c890ed6a2a44a3096ae51e008139900c3488c",
+      "bytes": 5105
+    },
+    "src-tauri/src/claude_chat/map.rs": {
+      "sha256": "e0d079396976a7e491e11ff1b9f5d3d3e5721c21c1f3ab2f006d6b337ad0a023",
+      "bytes": 11169
+    },
+    "src-tauri/src/reason_acp/wire.rs": {
+      "sha256": "5479cf81b638f2ede410d3fb10861f0194477f6bc251435d6a103dbc3c1510d0",
+      "bytes": 6000
+    },
+    "src-tauri/src/reason_acp/updates.rs": {
+      "sha256": "a38f31d40f38a450cb9cdff0202977d8c4208ca6364907c16e0b497e27670db5",
+      "bytes": 11211
+    },
+    "src-tauri/src/agent/codex_wire.rs": {
+      "sha256": "0a5ee4c13980decf87d70a5a2c3bee74b3cc21760cab4b9da649259689628c28",
+      "bytes": 23713
+    }
+  },
+  "static_checks": {
+    "original_exact_wait_suppression": true,
+    "original_close_any_error_by_id": true,
+    "original_renderer_gate": true,
+    "original_whole_message_filter": true,
+    "original_mixed_message_counts_all_tool_uses": true,
+    "current_view_has_no_collab_visibility_gate": true,
+    "current_groups_counts_every_tool": true,
+    "current_codex_native_mapping_gap": true,
+    "current_normalization_preserves_named_raw_tools": true,
+    "current_claude_mapper_preserves_original_tool_name": true,
+    "current_claude_result_is_error_independent": true
+  },
+  "acceptance_sha256": "476cccaed904614b3c446273765ea12349c872ee73fa02d635c86d2bdfcc11f0",
+  "declared_unrun_row_cases": 18,
+  "product_files_changed": [],
+  "actual_behavior_checks": [],
+  "publication": "No publication binding change. Frozen #847 and all preexisting fixtures untouched."
+}

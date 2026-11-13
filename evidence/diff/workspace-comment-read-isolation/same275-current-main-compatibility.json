@@ -1,0 +1,30 @@
+{
+  "status": "SOURCE_ONLY_NOT_ADMITTED",
+  "main_checked": "06500f5ef1230513090e42aebe0222fd4f83a72d",
+  "assigned_head": "390027eede5f6375af67480ad42a74b628882f38",
+  "worktree_source_sha256": {
+    "src/features/diff/ReviewComments.tsx": "d99a86bf5af6febefb896b85a39c717f6104a88393e4d98f09bb455eba96c1c0",
+    "src/features/diff/commentsApi.ts": "349e6916b1f4007e8d600a94e56614ca72d75acbca21617e69c93d4499c2f089",
+    "src/features/diff/commentStore.ts": "0a56b2277ef69c96dc29278865c6294aa0f6469e5afabd1d17590b9f5c674197",
+    "src/features/diff/comments.ts": "85505f99fc0f57ab7975b20b8c2670d963c713802b338235a738c2574ff0e1f8",
+    "src/features/diff/nav.ts": "f986ec599ffeaab0f6892382d1fa618522eca69f74b0f8827a6fa64c4a30b79c"
+  },
+  "main_source_sha256": {
+    "src/features/diff/ReviewComments.tsx": "d99a86bf5af6febefb896b85a39c717f6104a88393e4d98f09bb455eba96c1c0",
+    "src/features/diff/commentsApi.ts": "349e6916b1f4007e8d600a94e56614ca72d75acbca21617e69c93d4499c2f089",
+    "src/features/diff/commentStore.ts": "0a56b2277ef69c96dc29278865c6294aa0f6469e5afabd1d17590b9f5c674197",
+    "src/features/diff/comments.ts": "85505f99fc0f57ab7975b20b8c2670d963c713802b338235a738c2574ff0e1f8",
+    "src/features/diff/nav.ts": "f986ec599ffeaab0f6892382d1fa618522eca69f74b0f8827a6fa64c4a30b79c"
+  },
+  "fixture_transitive_source_equal": true,
+  "exact_replacement_counts": [
+    1,
+    1
+  ],
+  "prospective_candidate_ReviewComments_sha256": "e679a1986a3dc94f870be4173f0dabc92cce9dfb8923f1b158a996edd89a5a4d",
+  "candidate_patch_check_exit": 0,
+  "non_mutating_merge_tree_exit": 0,
+  "non_mutating_merge_tree_stdout": "a9aa01b30ac104a4c945faa4146b51356479ed07\n",
+  "non_mutating_merge_tree_stderr": "",
+  "product_or_fixture_mutation": false
+}

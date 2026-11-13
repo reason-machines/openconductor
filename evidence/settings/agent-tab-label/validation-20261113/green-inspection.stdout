@@ -1,0 +1,15 @@
+{
+  "phase": "green",
+  "classification": "VALID_GREEN",
+  "exit_code": 0,
+  "summary": {
+    "tests": 8,
+    "pass": 8,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "failures": [],
+  "raw_tap_sha256": "ca17fda3643c7c00d98b473d6d76ee34b662c56c70f4faadd8da766cd9be07a8"
+}

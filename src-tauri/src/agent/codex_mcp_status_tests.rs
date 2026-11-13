@@ -74,7 +74,7 @@ impl Harness {
 
     fn begin(&mut self) -> Receiver<TurnEnd> {
         let (done, end) = mpsc::channel();
-        self.worker.begin(Prompt { text: "synthetic inert turn".into(), options: TurnOptions::default(), done });
+        self.worker.begin(Prompt { text: "synthetic inert turn".into(), options: TurnOptions::default(), done, on_handoff: None });
         end
     }
 

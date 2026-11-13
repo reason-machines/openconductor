@@ -5,7 +5,7 @@ import type { DialogKind } from "../components/Dialogs";
 import { CommandPalette } from "./CommandPalette.tsx";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import type { CommandHandlers } from "../keybindings/bind.ts";
-import { workspacePaletteData, paletteSettings, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
+import { workspacePaletteData, paletteSettings, shortcutOrder, sidebarOrder, stepWorkspace, paletteOpenInRequest, type WorkspaceOpenInTarget, type WorkspaceRef } from "./fromAppState.ts";
 import { buildSearchIndex } from "../settings/searchIndex";
 import { settingsGroups } from "../settings/pages";
 import { AGENT_SEARCH_TABS, scrollToRow, searchIcon } from "../settings/SettingsView";
@@ -36,6 +36,7 @@ interface Props {
   onOpenChange: (open: boolean) => void;
   /** App-level commands the palette's Actions and Navigation items run. */
   commands: PaletteCommands;
+  activeOpenInTarget?: WorkspaceOpenInTarget | null;
 }
 
 /** App-shell commands available to the palette's actions. */
@@ -57,7 +58,7 @@ export interface PaletteCommands {
 }
 
 /** Owns the palette's open state, recent workspaces and the app's global shortcuts. */
-export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, onOpenProject, open, onOpenChange, commands }: Props) {
+export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, onOpenProject, open, onOpenChange, commands, activeOpenInTarget }: Props) {
   const [recents, setRecents] = useState<readonly string[]>(loadRecentWorkspaceIds);
   const [lastWorkspaceRoute, setLastWorkspaceRoute] = useState(loadLastWorkspaceRoute);
   const sel = state.selection;
@@ -165,10 +166,13 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
       else if (repo) dispatch({ type: "newWorkspace", repoId: repo.id });
     } else if (item.kind === "action") {
       const app = apps?.find((a) => item.action.id === `open-in-${a.id}`);
-      const workspace = state.repos.flatMap((r) => r.workspaces).find((w) => w.id === selectedId);
-      if (app && workspace?.path && workspace.status !== "archived") {
+      const repo = sel.kind === "workspace" ? state.repos.find((r) => r.id === sel.repoId) : undefined;
+      const workspace = repo?.workspaces.find((w) => w.id === selectedId);
+      if (app && repo && workspace?.path && workspace.status !== "archived") {
+        const request = paletteOpenInRequest(app.id, { repoId: repo.id, workspaceId: workspace.id, workspacePath: workspace.path }, activeOpenInTarget);
         void recordOpenIn(app.id, false).catch((err) => console.warn("could not save the default app", err));
-        void openInApp(app.id, workspace.path).catch((err) => show("error", `Failed to open in ${app.name}: ${String(err)}`));
+        const pending = request.fileContext ? openInApp(app.id, request.path, request.fileContext) : openInApp(app.id, request.path);
+        void pending.catch((err) => show("error", `Failed to open in ${app.name}: ${String(err)}`));
       } else actions[item.action.id]?.();
     } else if (item.kind === "setting") {
       openSetting(item.setting.id);

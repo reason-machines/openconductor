@@ -11,7 +11,14 @@ main = (ROOT / 'src-tauri/src/main.rs').read_text()
 start = entry.index('pub fn run()')
 assert entry.index('visual_qa_profile::before_startup', start) < entry.index('tauri::Builder::default()', start)
 assert main.index('visual_qa_profile::reject_tool_entry()') < main.index('tool_cli::dispatch(')
-assert source.index('let Some(root) = std::env::var_os(ROOT_ENV) else { return context }') < source.index('VisualQaProfile::requested(Some(&root)')
+admission = source.split('fn with_startup_admission', 1)[1].split('\n#[cfg(', 1)[0]
+assert admission.index('if requested {') < admission.index('return Err(') < admission.index('Ok(startup())')
+startup = source.split('    pub(crate) fn before_startup(', 1)[1].split('    fn configure_profile(', 1)[0]
+assert startup.count('std::env::var_os(ROOT_ENV)') == 1
+assert 'with_startup_admission(root.is_some(), || configure_profile(context, root))' in startup
+assert 'Err(error) => refuse(error),' in startup
+assert source.count('configure_profile(context, root)') == 1
+assert source.index('let Some(root) = root else { return context }') < source.index('VisualQaProfile::requested(Some(&root)')
 assert source.index('profile.environment_values()') < source.index('run_visual(context, profile)')
 
 visual_start = source.index('    fn run_visual(')
@@ -57,5 +64,5 @@ lock = (ROOT / 'src-tauri/Cargo.lock').read_text()
 for crate, version in (('tauri', '2.12.5'), ('tauri-runtime-wry', '2.12.3'), ('wry', '0.57.1'), ('objc2-web-kit', '0.3.2')):
     assert f'name = "{crate}"\nversion = "{version}"' in lock, f're-audit pinned {crate}'
 
-print('PASS: explicit pre-builder opt-in, tool guard, restricted composition, memory secrets, prebuild WebKit configuration and pinned dependency contract')
+print('PASS: visual opt-in refused before startup callback, normal no-root path preserved, tool guard, dormant restricted composition and pinned dependency contract')
 print('NOT_RUN: native resolver/write observation, actual WebKit readback, installed/package/visual/clone/provider acceptance')
