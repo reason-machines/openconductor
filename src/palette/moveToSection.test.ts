@@ -557,3 +557,19 @@ test("M12 base adapter action equality and archived/Open in context stay unchang
   assert.equal(data.actions.some((entry) => entry.id === "open-in-synthetic-editor"), false);
   assert.ok(data.actions.some((entry) => entry.id === adapter.VIEW_ARCHIVED_ACTION));
 });
+
+test("M13 no-match query renders the empty state and suppresses all options", async () => {
+  const view = await shellFixture(workspaceState);
+  try {
+    await move(view);
+    searchSections(view, "zzz-no-match");
+    assert.deepEqual(options(view).map(textOf), [], "M13 no options when query matches nothing");
+    const empty = view.root().findAllByProps({ className: "palette-section-empty" });
+    assert.equal(empty.length, 1, "M13 palette-section-empty must appear for a no-match query");
+    assert.ok(textOf(empty[0]).includes("No matching"), "M13 empty state text must reference no-match");
+    // Clearing the query restores the full list.
+    searchSections(view, "");
+    assert.ok(options(view).length > 0, "M13 clearing query restores options");
+    assert.equal(view.root().findAllByProps({ className: "palette-section-empty" }).length, 0, "M13 empty state gone after clear");
+  } finally { await view.close(); }
+});

@@ -87,3 +87,11 @@
 .palette-ws-name[data-unread] { font-weight: 600; color: var(--text); }
 .palette-item[data-archived] .palette-ws-name { color: var(--faint); }
 .palette-list:not([data-tab="workspaces"]) .palette-ws-time { display: flex; flex-shrink: 0; width: 48px; justify-content: flex-end; }
+/* Move-to-section sub-view: Conductor renderApp @10,879,795 (`Jba` section picker). */
+.palette-move-section-wrapper { display: flex; flex-direction: column; overflow: hidden; }
+.palette-move-section-header { display: flex; height: 40px; align-items: center; gap: 8px; padding: 0 12px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.palette-section-back-btn { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0; border: none; border-radius: 6px; background: transparent; color: var(--text); cursor: pointer; flex-shrink: 0; }
+.palette-section-back-btn:hover { background: var(--hover); }
+.palette-section-title { font-size: 14px; font-weight: 500; color: var(--text); }
+.palette-section-footer-row hr { margin: 4px 0; border: none; border-top: 1px solid var(--border); }
+.palette-section-empty { padding: 8px 16px; font-size: 14px; color: var(--muted); }
