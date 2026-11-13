@@ -23,6 +23,16 @@ export function FileMentionMenu({ matches, focused, hasQuery, onPick, onFocus }:
           onMouseMove: () => index !== focused && onFocus(index),
           onMouseDown: (event: MouseEvent) => { event.preventDefault(); onPick(item); },
         };
+        if (item.kind === "add-directory") return (
+          <div key="builtin:add-directory" role="option" aria-selected={index === focused} data-list-index={index} className="oc-file-mention-row" data-focused={index === focused || undefined} {...events}>
+            {/* Lucide folder-symlink (ISC License, Lucide Authors). */}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M2 9.35V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h7" /><path d="m8 16 3-3-3-3" />
+            </svg>
+            <span className="oc-file-mention-name">add directory</span>
+            <span className="oc-file-mention-directory">Link a directory or workspace</span>
+          </div>
+        );
         if (item.kind === "terminal") return (
           <div key="builtin:terminal" role="option" aria-selected={index === focused} data-list-index={index} className="oc-file-mention-row" data-focused={index === focused || undefined} {...events}>
             <TerminalIcon size={12} />

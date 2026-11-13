@@ -1,0 +1,31 @@
+name: Inline comment IME proof
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  paired:
+    name: Comment IME paired component RED/GREEN
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: python3 evidence/diff/comment-ime-submit/run-paired.py --self-test
+      - run: python3 evidence/diff/comment-ime-submit/run-paired.py --out "${{ runner.temp }}/comment-ime-proof"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: comment-ime-component-proof
+          path: ${{ runner.temp }}/comment-ime-proof
+          if-no-files-found: error

@@ -856,3 +856,10 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .submit-prompt-submit:disabled { opacity: 0.5; pointer-events: none; }
 .submit-prompt-kbd { display: inline-flex; align-items: center; opacity: 0.6; }
 @media (prefers-reduced-motion: reduce) { .submit-prompt-submit:active { transform: none; } }
+.sb-cli-status { display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; min-width: 0; font-size: 11px; color: var(--sidebar-muted-foreground); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.sb-cli-status[data-state="error"] { color: var(--destructive, var(--sidebar-muted-foreground)); }
+.sb-cli-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.sb-cli-action { flex: none; padding: 0; font-size: inherit; color: var(--text); text-decoration: underline; }
+.sb-cli-action[aria-label="Dismiss"] { text-decoration: none; }
+.onb-cli-status { position: fixed; left: 16px; bottom: 12px; max-width: 40vw; display: flex; }
+.onb-cli-status:empty { display: none; }

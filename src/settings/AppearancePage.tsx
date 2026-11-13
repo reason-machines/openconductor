@@ -44,7 +44,6 @@ export function AppearancePage({ settings, save }: Props) {
   const a = settings.appearance;
   const { overrides } = useKeybindingOverrides();
   const saved = a.mono_font ?? null;
-  // "Custom..." stays local, input shown and nothing saved, until a valid name is typed.
   const [fontChoice, setFontChoice] = useState(saved === null || saved === "Geist Mono" ? BUILTIN : MONO_FONTS.includes(saved) ? saved : CUSTOM);
   const [custom, setCustom] = useState(saved !== null && !MONO_FONTS.includes(saved) ? saved : "");
   useEffect(() => {
@@ -57,7 +56,10 @@ export function AppearancePage({ settings, save }: Props) {
     setFontChoice(choice);
     if (choice === BUILTIN) save(withAppearance(settings, "mono_font", null));
     else if (choice !== CUSTOM) save(withAppearance(settings, "mono_font", choice));
-    else if (monoFontError(custom) === null) save(withAppearance(settings, "mono_font", custom.trim()));
+    else {
+      setCustom("Menlo");
+      save(withAppearance(settings, "mono_font", "Menlo"));
+    }
   };
   const commitCustom = () => {
     if (monoFontError(custom) !== null || custom.trim() === saved) return;
@@ -120,7 +122,13 @@ export function AppearancePage({ settings, save }: Props) {
               spellCheck={false}
               autoComplete="off"
               value={custom}
-              onChange={(e) => setCustom(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setCustom(value);
+                if (monoFontError(value) === null && value.trim() !== saved) {
+                  save(withAppearance(settings, "mono_font", value.trim()));
+                }
+              }}
               onBlur={commitCustom}
               onKeyDown={(e) => e.key === "Enter" && commitCustom()}
             />

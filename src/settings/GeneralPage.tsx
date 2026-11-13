@@ -1,5 +1,6 @@
-import type { ReactNode } from "react";
-import { openUrl } from "../backend";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { ConfigSyncDialog } from "./ConfigSyncDialog";
+import { checkFullDiskAccess, openUrl } from "../backend";
 import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { currentSendKeyMode, effectiveShortcuts, type Overrides } from "../keybindings/overrides";
 import type { SendKeyMode } from "../keybindings/registry";
@@ -10,7 +11,8 @@ import { SETTINGS_CHANGED } from "./appearance";
 import { setAppPref } from "./appPrefs";
 import { chooseSendKey } from "./composerSettings";
 import { withField } from "./model";
-import { enumPref, withEnumPref } from "./prefs";
+import { notificationPermissionGranted } from "./notificationPermission";
+import { boolPref, enumPref, withBoolPref, withEnumPref } from "./prefs";
 import { GeneralAppPrefRows } from "./rows/AppPrefRows";
 import { playCompletionSound, SOUND_OPTIONS } from "./sound";
 import type { Settings, SoundType } from "./types";
@@ -19,6 +21,7 @@ import { useSettingsOverrideStore } from "./useSettingsOverrideStore";
 interface Props {
   settings: Settings;
   save: (next: Settings) => void | Promise<boolean>;
+  notify?: (kind: "error" | "info", message: string) => void;
 }
 
 /** Conductor's `aga`: System Settings › Privacy & Security › Full Disk Access. */
@@ -33,13 +36,18 @@ const shortcutGlyphs = (commandId: string, overrides: Overrides) => effectiveSho
  * organizations (`hideInPersonalOrganizations`), which is every OpenConductor
  * user, so it is not listed.
  */
-export function GeneralPage({ settings, save }: Props) {
+export function GeneralPage({ settings, save, notify }: Props) {
+  const latestSettings = useRef(settings);
+  latestSettings.current = settings;
   const g = settings.general;
+  const [syncOpen, setSyncOpen] = useState(false);
+  const [followUpPending, setFollowUpPending] = useState(false);
+  const fullDiskAccess = useFullDiskAccessStatus();
   const { overrides } = useKeybindingOverrides();
   const followUp = enumPref(settings, "default_message_send_mode");
   return (
     <div className="settings-rows">
-      <SendKeyRow settings={settings} save={save} />
+      <SendKeyRow settings={settings} save={save} notify={notify} />
       <Row
         label="Follow-up behavior"
         help="Queue messages to send after the agent finishes, or steer the agent mid-turn."
@@ -51,27 +59,49 @@ export function GeneralPage({ settings, save }: Props) {
       >
         <Select
           label="Follow-up behavior"
+          disabled={followUpPending}
           value={followUp}
           options={[
             { value: "queued", label: "Queue" },
             { value: "steering", label: "Steer" },
           ]}
-          onChange={(v) =>
-            // Open chats re-read Follow-up behavior on SETTINGS_CHANGED (useFollowUpMode).
-            void Promise.resolve(save(withEnumPref(settings, "default_message_send_mode", v))).then((ok) => {
+          onChange={async (v) => {
+            setFollowUpPending(true);
+            try {
+              const ok = await save(withEnumPref(settings, "default_message_send_mode", v));
               if (ok !== false) window.dispatchEvent(new Event(SETTINGS_CHANGED));
-            })
-          }
+            } finally {
+              setFollowUpPending(false);
+            }
+          }}
         />
       </Row>
       <Row label="Agent notifications" help="Get notified when an agent finishes working.">
         <Toggle
           label="Agent notifications"
           checked={g.send_native_notification}
-          onChange={(on) => save(withField(settings, "general", "send_native_notification", on))}
+          onChange={async (on) => {
+            if (on && !await notificationPermissionGranted()) {
+              notify?.("error", "Notification permission not granted");
+              return;
+            }
+            await save(withField(latestSettings.current, "general", "send_native_notification", on));
+          }}
         />
       </Row>
-      <PrefSwitchRow settings={settings} save={save} pref="mention_notifications_enabled" label="@ notifications" help="Get notified when a teammate mentions you." />
+      <Row label="@ notifications" help="Get notified when a teammate mentions you.">
+        <Toggle
+          label="@ notifications"
+          checked={boolPref(settings, "mention_notifications_enabled")}
+          onChange={async (on) => {
+            if (on && !await notificationPermissionGranted()) {
+              notify?.("error", "Notification permission not granted");
+              return;
+            }
+            await save(withBoolPref(latestSettings.current, "mention_notifications_enabled", on));
+          }}
+        />
+      </Row>
       <Row label="Completion sound" help="Choose what plays when AI finishes working in a chat.">
         <span className="settings-inline">
           <Select<SoundType>
@@ -87,12 +117,14 @@ export function GeneralPage({ settings, save }: Props) {
           </button>
         </span>
       </Row>
-      <ButtonRow
-        label="Full disk access permissions"
-        help="To let agents work without repeated folder permission prompts."
-        button="Open System Settings"
-        onClick={() => void openUrl(FULL_DISK_ACCESS_URL).catch(() => undefined)}
-      />
+      <Row label="Full disk access permissions" help="To let agents work without repeated folder permission prompts.">
+        <span className="settings-inline" style={{ gap: 12 }}>
+          {fullDiskAccess === true && <span style={{ color: "var(--s-muted)", fontSize: 14 }}>Granted</span>}
+          <button type="button" className="btn settings-outline" onClick={() => void openUrl(FULL_DISK_ACCESS_URL).catch(() => notify?.("error", "Couldn't open System Settings. Go to Privacy & Security > Full Disk Access to grant it manually."))}>
+            Open System Settings
+          </button>
+        </span>
+      </Row>
       <PrefSwitchRow settings={settings} save={save} pref="auto_convert_long_text" label="Auto-convert long text" help="Convert pasted text over 5000 characters into text attachments" />
       <PrefSwitchRow
         settings={settings}
@@ -129,17 +161,51 @@ export function GeneralPage({ settings, save }: Props) {
         label="Show MCP status in chat"
         help="Show a per-session MCP server status indicator in the composer."
       />
-      <GeneralAppPrefRows />
+      <GeneralAppPrefRows overrides={overrides} />
       <ButtonRow
         label="Sync agent configs"
         help="Copy skills, slash commands, and MCP servers between Claude Code and Codex."
         button="Sync"
         icon={<SyncIcon />}
-        disabled
-        onClick={() => undefined}
+        onClick={() => setSyncOpen(true)}
       />
+      {syncOpen && <ConfigSyncDialog onClose={() => setSyncOpen(false)} notify={notify} />}
     </div>
   );
+}
+
+/** Renderer status only: the native check and its error fallback are fail-open. */
+function useFullDiskAccessStatus(): boolean | undefined {
+  const [granted, setGranted] = useState<boolean>();
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.addEventListener !== "function") return;
+    let active = true;
+    let revision = 0;
+    let timer: number | undefined;
+    const refresh = async () => {
+      const current = ++revision;
+      window.clearTimeout(timer);
+      let next: boolean;
+      try {
+        next = await checkFullDiskAccess();
+      } catch (error) {
+        console.error("check_full_disk_access failed:", error);
+        next = true;
+      }
+      if (!active || current !== revision) return;
+      setGranted(next);
+      if (next === false) timer = window.setTimeout(() => void refresh(), 5000);
+    };
+    const onFocus = () => void refresh();
+    window.addEventListener("focus", onFocus);
+    void refresh();
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, []);
+  return granted;
 }
 
 /**
@@ -147,14 +213,15 @@ export function GeneralPage({ settings, save }: Props) {
  * send commands' keybinding overrides to a preset and then stores the legacy
  * `message_send_key`; a custom mix shows the "Custom" placeholder.
  */
-function SendKeyRow({ settings, save }: Props) {
+function SendKeyRow({ settings, save, notify }: Props) {
   const { overrides } = useKeybindingOverrides();
   const store = useSettingsOverrideStore(settings, save);
   const mode = currentSendKeyMode(overrides);
   // The preset goes to the four send commands, then the legacy `message_send_key` (Conductor's `RQt`).
   const choose = (next: SendKeyMode) =>
-    void chooseSendKey(next, store.updateMany, (m) => setAppPref({ key: "message_send_key", value: m })).catch((err) =>
-      console.warn("Failed to update message send key", err),
+    void chooseSendKey(next, store.updateMany, (m) => setAppPref({ key: "message_send_key", value: m })).then(
+      (ok) => { if (!ok) notify?.("error", "Failed to update message send key"); },
+      () => notify?.("error", "Failed to update message send key"),
     );
   return (
     <Row

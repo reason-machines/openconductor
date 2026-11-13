@@ -1,0 +1,25 @@
+.settings-repo-icon-positioner {
+  z-index: 50;
+}
+
+.settings-repo-icon-popover {
+  width: 360px;
+  border-radius: 8px;
+  background: var(--popover);
+  color: var(--popover-text);
+  box-shadow: 0 0 0 1px var(--popover-ring), 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10);
+  outline: none;
+  overflow: hidden;
+  transform-origin: var(--transform-origin);
+  transition: opacity 100ms, scale 100ms;
+}
+
+.settings-repo-icon-popover[data-starting-style],
+.settings-repo-icon-popover[data-ending-style] {
+  opacity: 0;
+  scale: 0.95;
+}
+
+.settings-repo-icon-popover .repo-icon-dialog {
+  margin-top: 0;
+}

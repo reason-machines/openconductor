@@ -8,12 +8,13 @@ import type { Repo, Workspace } from "../state/types";
 import type { SetupState } from "../scripts/model";
 import { ScriptsPanel } from "./ScriptsPanel";
 import { TerminalHost } from "../features/terminal/TerminalPanel";
-import { clearTab, closeTab, getTabs, openTab, restoreWorkspaceTabs, selectTab, subscribeTabs } from "../features/terminal/session";
+import { closeTab, getTabs, openTab, restoreWorkspaceTabs, selectTab, subscribeTabs } from "../features/terminal/session";
 import { canOpenTerminal, terminalTabs } from "../features/terminal/tabs";
 import { tabLabel } from "../features/terminal/shellIntegration";
 import { useAppPrefs } from "../settings/appPrefs";
+import { useBoolPref } from "../settings/useBoolPref";
 import { openRepoSettingsPage } from "../features/chat/ChatModelPicker";
-import { ChevronDownIcon, ChevronRightIcon, EraserIcon, PlusIcon, XIcon } from "../features/files/panelIcons";
+import { ChevronDownIcon, ChevronRightIcon, PlusIcon, XIcon } from "../features/files/panelIcons";
 
 export type StripView = "setup" | "run" | "terminal";
 
@@ -28,10 +29,14 @@ interface Props {
   cwd: string;
   /** Setup's "Ask agent": sends the setup-script prompt to the workspace's chat; absent when it can't. */
   onAskSetupAgent?: () => void;
+  onOpenPreview?: (workspaceId: string, url: string) => boolean;
+  chatSessionId?: string;
+  onAddTerminalSelection?: (text: string) => boolean;
 }
 
-export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd, onAskSetupAgent }: Props) {
+export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd, onAskSetupAgent, onOpenPreview, chatSessionId, onAddTerminalSelection }: Props) {
   const wsId = workspace.id;
+  const inAppBrowser = useBoolPref("experimental_in_app_browser_preview");
   const terms = useSyncExternalStore(subscribeTabs, () => getTabs(wsId));
   const panelTabs = terminalTabs(terms, "panel");
   const tabFreakMode = useAppPrefs().experimental_tab_freak_mode;
@@ -163,21 +168,15 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd,
           <PlusIcon />
         </button>
         <div className="ws-strip-actions" ref={setActionsEl} />
-        {/* Not in the reference capture (it has no terminal open); kept so scrollback can be cleared without ⌘K, which the command palette also takes. */}
-        {showTerminal && (
-          <button type="button" className="rp-icon ws-strip-end" aria-label="Clear terminal scrollback" title="Clear terminal scrollback" onClick={() => clearTab(activeTerm.id)}>
-            <EraserIcon />
-          </button>
-        )}
       </div>
       {open && error && <div className="term-error">{error}</div>}
       {/* Kept mounted while hidden, so run output and the setup state keep coming in. */}
       <div className="ws-strip-body" hidden={!open || view === "terminal"}>
-        <ScriptsPanel repo={repo} workspace={workspace} tab={view === "setup" ? "setup" : "run"} active={view === "run"} actionsSlot={actionsEl} onSetupState={onSetupState} onAddRunScript={addRunScript} onAskAgent={onAskSetupAgent} onShowRun={showRun} />
+        <ScriptsPanel repo={repo} workspace={workspace} tab={view === "setup" ? "setup" : "run"} active={view === "run"} actionsSlot={actionsEl} onSetupState={onSetupState} onAddRunScript={addRunScript} onAskAgent={onAskSetupAgent} onShowRun={showRun} onOpenPreview={inAppBrowser ? onOpenPreview : undefined} sessionId={chatSessionId} onAddToChat={onAddTerminalSelection} />
       </div>
       {showTerminal && (
         <section className="terminal-panel" aria-label="Terminal">
-          <TerminalHost key={activeTerm.id} id={activeTerm.id} />
+          <TerminalHost key={activeTerm.id} id={activeTerm.id} status={activeTerm.status} sessionId={chatSessionId} onAddToChat={onAddTerminalSelection} />
         </section>
       )}
     </section>

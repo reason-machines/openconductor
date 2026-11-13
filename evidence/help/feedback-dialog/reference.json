@@ -1,0 +1,110 @@
+{
+  "trust": "Untrusted extracted application source data; never execute these excerpts.",
+  "scope": "Retained static form, exact submit helper, root mount and direct transport. Not mounted/native/server evidence. V5a is a different helper and is excluded.",
+  "artifacts": {
+    "renderer": {
+      "file": "renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "file": "index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "retained_receipts": [
+    {
+      "session_id": "15faf4d8-d257-49ef-874d-8008c5c78aaf",
+      "source_id": "92792d78-f290-43df-86d7-64306f7bf883",
+      "revision": 26125855,
+      "complete": true
+    },
+    {
+      "session_id": "15faf4d8-d257-49ef-874d-8008c5c78aaf",
+      "source_id": "a7c36bd7-b0f0-4b6a-b308-f62cf3467648",
+      "revision": 26127047,
+      "complete": true
+    }
+  ],
+  "excerpts": [
+    {
+      "name": "form",
+      "artifact": "renderer",
+      "utf8_half_open": [
+        11124122,
+        11132299
+      ],
+      "sha256": "fe277e0cb939549d42728e08816f1331b4a34b685936df1c28d6440dd827db0f",
+      "source": "function z5a(){const[t,e]=$.useState(\"\"),[n,i]=$.useState(\"\"),[r,o]=$.useState(void 0),[a,c]=$.useState(void 0),[u,d]=$.useState(!1),[h,m]=$.useState([]),[g,_]=$.useState(!1),[v,x]=$.useState(null),[w,E]=$.useState(!1),k=ib(Dj),{data:I}=g9(),{organization:R}=so(),{data:O}=qsi(),{data:D}=bv(),{data:P,error:L}=M5a(),B=P!==void 0,F=u||!B,U=(D&&D.length>0?wce:O)!==wce;$.useEffect(()=>{e(I?.email??\"\"),E(!1),c(void 0),k?.error?(o(k.error),i(\"\")):(k?.message&&i(k.message),o(void 0))},[I?.email,k]),$.useEffect(()=>{L&&Bt.error(\"Failed to capture recent app logs:\",L)},[L]),$.useEffect(()=>{if(P)return()=>{D5a(P.path)}},[P]);const z=async te=>{if(te?.preventDefault(),c(void 0),U&&!t.trim()){c(\"Please enter your email.\");return}if(!n.trim()){c(\"Please enter your feedback message.\");return}d(!0);const Z=r?`Error: ${r}\n\nUser Message: ${n.trim()}`:n.trim();try{const se=w&&B?await vD({path:P.path,host:gn}):void 0;await $5a({email:t.trim()||\"\",message:Z,hostingMode:R===void 0?void 0:fc(R),screenshots:h.length>0?h.map(ce=>ce.dataUrl):void 0,appLogs:se}),kt.success(\"Thank you for your feedback!\",{description:\"Thanks for making Conductor better.\"}),i(\"\"),o(void 0),m([]),nr.closeDialog(Dj)}catch(se){Bt.error(\"Failed to submit feedback:\",se),c(B5a({error:se,screenshotCount:h.length}))}finally{d(!1)}},G=async()=>{if(P)try{const te=await Kc({command:`open -t ${nl(P.path)}`,host:gn});if(te.code!==0)throw new Error(te.stderr||te.stdout||`open exited with code ${te.code}`)}catch(te){Bt.error(\"Failed to open feedback app log temp file:\",te),c(\"Failed to open app logs.\")}},K=te=>{Qh(\"dialog.primaryAction\",te.nativeEvent)&&(te.preventDefault(),z().fireAndForget())},X=$.useCallback(te=>{if(!te.type.startsWith(\"image/\")){c(\"Please select image files only.\");return}if(te.size>I5a){c(`Image \"${te.name}\" is too large (max ${COt}).`);return}if(h.length>=5){c(\"Maximum 5 images allowed.\");return}const Z=new FileReader;Z.onload=se=>{const ce=se.target?.result;if(typeof ce==\"string\"){const ae={id:Date.now().toString()+Math.random().toString(),name:te.name,dataUrl:ce};m(de=>[...de,ae])}},Z.readAsDataURL(te)},[h.length]),Q=async()=>{const te=await fI({multiple:!0,filters:[{name:\"Images\",extensions:[\"png\",\"jpg\",\"jpeg\",\"gif\",\"webp\"]}]});if(te){const Z=Array.isArray(te)?te:[te];for(const se of Z)try{const ce=await ZO({path:se,host:gn}),ae=se.split(\"/\").pop()||\"image\",de=se.split(\".\").pop()?.toLowerCase()||\"png\",pe={png:\"image/png\",jpg:\"image/jpeg\",jpeg:\"image/jpeg\",gif:\"image/gif\",webp:\"image/webp\"}[de]||\"image/png\",be=new File([new Uint8Array(ce)],ae,{type:pe});X(be)}catch(ce){Bt.error(\"Failed to read file:\",ce),c(`Failed to read file: ${se.split(\"/\").pop()}`)}}},J=te=>{m(Z=>Z.filter(se=>se.id!==te))};return $.useEffect(()=>{const te=fCe().onDragDropEvent(Z=>{Z.payload.type===\"drop\"?(_(!1),Promise.all(Z.payload.paths.map(async se=>{const ce=se.split(\".\").pop()?.toLowerCase();if(!ce||![\"png\",\"jpg\",\"jpeg\",\"gif\",\"webp\"].includes(ce)){c(\"Please drop image files only.\");return}try{const ae=await ZO({path:se,host:gn}),de=se.split(\"/\").pop()||\"image\",pe={png:\"image/png\",jpg:\"image/jpeg\",jpeg:\"image/jpeg\",gif:\"image/gif\",webp:\"image/webp\"}[ce]||\"image/png\",be=new File([new Uint8Array(ae)],de,{type:pe});X(be)}catch(ae){Bt.error(\"Failed to read dropped file:\",ae),c(`Failed to read file: ${se.split(\"/\").pop()}`)}})).fireAndForget()):Z.payload.type===\"over\"?_(!0):Z.payload.type===\"leave\"&&_(!1)});return()=>{te.then(Z=>Z()).fireAndForget()}},[X]),$.useEffect(()=>{const te=Z=>{const se=Z.clipboardData?.items;if(se){for(const ce of se)if(ce.type.startsWith(\"image/\")){const ae=ce.getAsFile();ae&&X(ae)}}};return document.addEventListener(\"paste\",te),()=>document.removeEventListener(\"paste\",te)},[X]),p.jsxs(p.Fragment,{children:[p.jsxs(Hd,{children:[p.jsx(Bu,{children:\"Feedback\"}),p.jsx(wg,{children:\"You can also reach us at support@conductor.build\"})]}),p.jsxs(\"form\",{onSubmit:z,onKeyDown:K,className:\"space-y-4\",children:[p.jsxs(\"div\",{className:\"space-y-4\",children:[r&&p.jsxs(\"div\",{className:\"flex flex-col gap-2\",children:[p.jsx(Zu,{htmlFor:\"error\",children:\"Error\"}),p.jsx(wS,{id:\"error\",value:r,readOnly:!0,tabIndex:-1,rows:3,className:\"w-full bg-muted text-muted-foreground cursor-not-allowed resize-none\"})]}),p.jsxs(\"div\",{className:\"flex flex-col gap-2\",children:[p.jsx(Zu,{htmlFor:\"message\",children:\"Message\"}),p.jsx(\"div\",{className:\"relative\",children:p.jsx(wS,{id:\"message\",placeholder:r?\"Please describe what you were doing when this error occurred...\":\"Tell us about your experience, bugs you've found, or features you'd like to see...\",value:n,onChange:te=>i(te.target.value),disabled:u,rows:5,required:!0,autoFocus:!0,className:Xe(\"w-full\",g&&\"ring-2 ring-primary ring-offset-2\")})})]}),U&&p.jsxs(\"div\",{className:\"flex flex-col gap-2\",children:[p.jsx(Zu,{htmlFor:\"email\",children:\"Your email\"}),p.jsx(Qo,{id:\"email\",type:\"email\",placeholder:\"your.email@example.com\",value:t,onChange:te=>e(te.target.value),disabled:u,required:!0})]}),g&&p.jsx(\"div\",{className:\"absolute inset-0 z-10 flex items-center justify-center bg-background/80 rounded-md\",children:p.jsxs(\"div\",{className:\"flex flex-col items-center gap-2\",children:[p.jsx(QQe,{className:\"h-8 w-8 text-muted-foreground\"}),p.jsx(\"p\",{className:\"text-sm text-muted-foreground\",children:\"Drop images here\"})]})}),h.length>0&&p.jsx(\"div\",{className:\"flex flex-wrap gap-2 mt-2\",children:h.map(te=>p.jsxs(\"div\",{className:\"relative group\",children:[p.jsx(\"div\",{className:\"w-20 h-20 rounded border bg-muted/20 overflow-hidden cursor-pointer hover:opacity-80 transition-opacity\",onClick:()=>x(te),children:p.jsx(\"img\",{src:te.dataUrl,alt:te.name,className:\"w-full h-full object-cover\"})}),p.jsx(\"button\",{type:\"button\",onClick:()=>J(te.id),className:\"absolute -top-2 -right-2 rounded-full h-5 w-5 bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center\",children:p.jsx(yl,{className:\"h-3 w-3\"})}),p.jsxs(Jn,{children:[p.jsx(Xn,{asChild:!0,children:p.jsx(\"div\",{className:\"absolute inset-0 pointer-events-none\"})}),p.jsxs(ni,{children:[p.jsx(\"p\",{className:\"text-xs\",children:te.name}),p.jsx(\"p\",{className:\"text-xs text-muted-foreground\",children:\"Click to preview\"})]})]})]},te.id))})]}),p.jsxs(\"div\",{className:\"flex items-center justify-between gap-3 text-xs text-muted-foreground\",children:[p.jsxs(\"label\",{htmlFor:\"include-app-logs\",className:\"flex min-w-0 items-center gap-2\",children:[p.jsx(pv,{id:\"include-app-logs\",checked:B&&w,onCheckedChange:te=>E(te===!0),disabled:F}),p.jsx(\"span\",{className:\"min-w-0\",children:\"Include recent app logs (may include personal data)\"})]}),p.jsx(tt,{type:\"button\",variant:\"link\",size:\"xs\",onClick:G,disabled:F,title:P?`View app logs (${P.sizeBytes} bytes)`:\"App logs unavailable\",className:\"h-6 shrink-0 px-1 text-xs text-muted-foreground hover:text-foreground\",children:\"View\"})]}),a&&p.jsx(\"p\",{role:\"alert\",className:\"text-sm text-destructive\",children:a}),p.jsxs(km,{className:\"flex justify-between items-center\",children:[p.jsxs(tt,{type:\"button\",variant:\"ghost\",size:\"sm\",onClick:Q,disabled:u,className:\"h-7 px-2 text-xs text-muted-foreground hover:text-foreground\",children:[p.jsx(VQe,{className:\"h-3.5 w-3.5 mr-1\"}),\"Attach images\"]}),p.jsx(\"div\",{className:\"flex-1\"}),p.jsx(tt,{type:\"submit\",disabled:u||!n.trim(),children:u?\"Sending...\":p.jsxs(p.Fragment,{children:[\"Send feedback\",p.jsxs(\"span\",{className:\"ml-2 inline-flex items-center opacity-60\",children:[\"⌘\",p.jsx(gf,{})]})]})})]})]}),v&&p.jsx(\"div\",{className:\"fixed inset-0 z-50 flex items-center justify-center bg-black/80\",onClick:()=>x(null),children:p.jsxs(\"div\",{className:\"relative max-w-[90vw] max-h-[90vh]\",children:[p.jsx(\"img\",{src:v.dataUrl,alt:v.name,className:\"max-w-full max-h-[90vh] object-contain rounded-lg\"}),p.jsx(\"button\",{onClick:te=>{te.stopPropagation(),x(null)},className:\"absolute top-4 right-4 rounded-full h-8 w-8 bg-background/80 hover:bg-background flex items-center justify-center\",children:p.jsx(yl,{className:\"h-5 w-5\"})}),p.jsx(\"div\",{className:\"absolute bottom-4 left-4 bg-background/80 rounded px-3 py-1\",children:p.jsx(\"p\",{className:\"text-sm\",children:v.name})})]})})]})}"
+    },
+    {
+      "name": "submit",
+      "artifact": "renderer",
+      "utf8_half_open": [
+        11123602,
+        11124122
+      ],
+      "sha256": "3159ee80377c9709d2421534f955edac1ff8d57e50e092be92bfa11e54982bc1",
+      "source": "async function $5a(t){const e=await j5a(),n=N5a({message:t.message,appVersion:e.appVersion,platform:e.platform===\"darwin\"?\"macos\":e.platform,osVersion:e.osVersion,hostingMode:t.hostingMode}),i=await gv(`${cy.conductorProxyUrl}/api/feedback`,{method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify({email:t.email,message:n,screenshots:t.screenshots,logs:t.appLogs!==void 0&&t.appLogs.length>0?[t.appLogs]:void 0})});if(!i.ok){const r=await i.text();throw new aHi({status:i.status,responseText:r})}}"
+    },
+    {
+      "name": "metadata",
+      "artifact": "renderer",
+      "utf8_half_open": [
+        11122182,
+        11122368
+      ],
+      "sha256": "3c82a9d4f6a116f4668530b0fb3cb3ac002c942afabfd4847bfc9e339bd1b1ea",
+      "source": "function N5a({message:t,appVersion:e,platform:n,osVersion:i,hostingMode:r}){const o=r===void 0?\"\":`\nSent from a ${r} organization`;return`${t}\n\n----\nApp Version: ${e}\nOS: ${n} ${i}${o}`}"
+    },
+    {
+      "name": "metadata-and-errors",
+      "artifact": "renderer",
+      "utf8_half_open": [
+        11122956,
+        11123602
+      ],
+      "sha256": "dc33ece32e53ff50ace522b59035c869d28010af79fd4cdd973c54e73e2abe0b",
+      "source": "async function j5a(){const t=await yYe(),e=OSe(),n=NSe();return{appVersion:t,osVersion:e,platform:n}}class aHi extends Error{status;serverMessage;constructor({status:e,responseText:n}){super(`Failed to submit feedback (${e}): ${n}`),this.status=e,this.serverMessage=F5a(n)}}function F5a(t){try{const e=JSON.parse(t);if(typeof e==\"object\"&&e!==null&&\"error\"in e&&typeof e.error==\"string\")return e.error}catch{}}function B5a({error:t,screenshotCount:e}){if(t instanceof aHi){if(t.status===413)return R5a(e);if(t.serverMessage!==void 0)return t.serverMessage}return\"Failed to send feedback. Please try again or email us at support@conductor.build.\"}"
+    },
+    {
+      "name": "dialog-guard",
+      "artifact": "renderer",
+      "utf8_half_open": [
+        11132299,
+        11132569
+      ],
+      "sha256": "d2b1622083b1647c23534565ffc05af46fba6124a01bc13c052821c07d86526a",
+      "source": "function U5a(){const t=ne.c(4),e=x1(H5a);let n;t[0]!==e?(n=e&&p.jsx(z5a,{}),t[0]=e,t[1]=n):n=t[1];let i;return t[2]!==n?(i=p.jsx(kg,{id:Dj,children:p.jsx(nd,{className:\"sm:max-w-lg p-5\",children:n})}),t[2]=n,t[3]=i):i=t[3],i}function H5a(t){return t.activeDialogId===Dj}"
+    },
+    {
+      "name": "global-mount",
+      "artifact": "renderer",
+      "utf8_half_open": [
+        11140798,
+        11141556
+      ],
+      "sha256": "171f83ea2fcb71191f794bee7f39cdb1fae8d07b02ab3ece2aac4a5262e6c251",
+      "source": "function _wa(){const t=ne.c(16),{mode:e}=zk();let n;t[0]===Symbol.for(\"react.memo_cache_sentinel\")?(n=[],t[0]=n):n=t[0],$.useEffect(vwa,n),nwa(),Q5a(),awa();let i,r,o,a,c,u,d,h,m,g,_,v,x;t[1]===Symbol.for(\"react.memo_cache_sentinel\")?(i=UCt,u=p.jsx(G5a,{}),d=p.jsx(K5a,{}),h=p.jsx(u5a,{}),m=p.jsx(c5a,{}),g=p.jsx(U5a,{}),_=p.jsx(W5a,{}),v=p.jsx(y5a,{}),x=p.jsx(C5a,{}),r=p.jsx(T5a,{}),o=p.jsx(mwa,{}),a=p.jsx(bwa,{}),c=p.jsx(fwa,{}),t[1]=i,t[2]=r,t[3]=o,t[4]=a,t[5]=c,t[6]=u,t[7]=d,t[8]=h,t[9]=m,t[10]=g,t[11]=_,t[12]=v,t[13]=x):(i=t[1],r=t[2],o=t[3],a=t[4],c=t[5],u=t[6],d=t[7],h=t[8],m=t[9],g=t[10],_=t[11],v=t[12],x=t[13]);let w;return t[14]!==e?(w=p.jsxs(p.Fragment,{children:[i,u,d,h,m,g,_,v,x,r,o,a,c,p.jsx(Xhi,{theme:e})]}),t[14]=e,t[15]=w):w=t[15],w}"
+    },
+    {
+      "name": "root-route",
+      "artifact": "renderer",
+      "utf8_half_open": [
+        11173811,
+        11174217
+      ],
+      "sha256": "2b898249e951c7277ef34eb1b4285b05e3222a1fcda723c1a0532b914555b13e",
+      "source": "function hSa(){const t=ne.c(1);let e;return t[0]===Symbol.for(\"react.memo_cache_sentinel\")?(e=p.jsxs(p.Fragment,{children:[p.jsx(_wa,{}),p.jsx(ade,{}),p.jsx(aSa,{}),p.jsx(Lwa,{}),p.jsx(dSa,{})]}),t[0]=e):e=t[0],e}const kGt=FAr({component:hSa,errorComponent:yWt}),pSa=Ha({getParentRoute:()=>kGt,path:\"/login\",component:xWt}),hee=Ha({getParentRoute:()=>kGt,id:\"auth-guard\",component:$xa,errorComponent:yWt});"
+    },
+    {
+      "name": "transport",
+      "artifact": "index",
+      "utf8_half_open": [
+        1606854,
+        1610953
+      ],
+      "sha256": "253f4297609d054e42d86b7af2aede4d1870247261bdef82fe4f7bc11f85c2c3",
+      "source": "async function mdt(t,e){const s=e?.signal;if(s?.aborted)throw new Error(MS);const n=e?.maxRedirections,r=e?.connectTimeout,i=e?.proxy,o=e?.danger;e&&(delete e.maxRedirections,delete e.connectTimeout,delete e.proxy,delete e.danger);const a=e?.headers?e.headers instanceof Headers?e.headers:new Headers(e.headers):new Headers,c=new Request(t,e),l=await c.arrayBuffer(),u=l.byteLength!==0?Array.from(new Uint8Array(l)):null;for(const[R,x]of c.headers)a.get(R)||a.set(R,x);const h=(a instanceof Headers?Array.from(a.entries()):Array.isArray(a)?a:Object.entries(a)).map(([R,x])=>[R,typeof x==\"string\"?x:x.toString()]);if(s?.aborted)throw new Error(MS);const p=await it(\"plugin:http|fetch\",{clientConfig:{method:c.method,url:c.url,headers:h,data:u,maxRedirections:n,connectTimeout:r,proxy:i,danger:o}}),m=()=>it(\"plugin:http|fetch_cancel\",{rid:p});if(s?.aborted)throw m(),new Error(MS);s?.addEventListener(\"abort\",()=>{m()});const{status:v,statusText:_,url:S,headers:k,rid:A}=await it(\"plugin:http|fetch_send\",{rid:p}),I=[101,103,204,205,304].includes(v)?null:new ReadableStream({start:R=>{const x=new af;x.onmessage=O=>{if(s?.aborted){R.error(MS);return}const G=new Uint8Array(O),Z=G[G.byteLength-1],re=G.slice(0,G.byteLength-1);if(Z==1){R.close();return}R.enqueue(re)},it(\"plugin:http|fetch_read_body\",{rid:A,streamChannel:x}).catch(O=>{R.error(O)})}}),C=new Response(I,{status:v,statusText:_});return Object.defineProperty(C,\"url\",{value:S}),Object.defineProperty(C,\"headers\",{value:new Headers(k)}),C}async function GA(){const t=await Ie.getSetting(t_);return qv(t)}async function iae(t){await oe(\"configure_http_proxy\",{proxyUrl:qv(t)})}const IF=Y.child({name:\"fetch\"}),vdt=\"https://b79a7ea7a981e2f176a636cb05d07bc6.r2.cloudflarestorage.com/conductor-user-\";function ydt(t){return t.startsWith(vdt)}function _dt(t){return typeof t==\"string\"?t:t instanceof URL?t.toString():t.url}let QP,r7=!1;class oae extends Error{cause;constructor(e){super(an(e).message),this.name=\"NativeHttpTransportError\",this.cause=e}}async function wdt(){return QP||(QP=oe(\"is_cef_runtime\").catch(()=>!1)),await QP}function Sdt(t){return t!==\"GET\"&&t!==\"HEAD\"}function bdt(t){return t===101||t===103||t===204||t===205||t===304}async function kdt(t,e){const s=new Request(t,e),n=Sdt(s.method)?await s.arrayBuffer():new ArrayBuffer(0),r=n.byteLength===0?null:Array.from(new Uint8Array(n));return{url:s.url,method:s.method,headers:Array.from(s.headers.entries()),body:r}}async function Edt(t,e,s){const n=e?.signal===void 0&&t instanceof Request?t.signal:e?.signal;n?.throwIfAborted();const r=await kdt(t,e);n?.throwIfAborted();const i=n?crypto.randomUUID():void 0,o=()=>{oe(\"native_http_fetch_cancel\",{requestId:i}).catch(a=>{IF.warn(\"Failed to cancel native HTTP request\",{requestId:i,error:a})})};n?.addEventListener(\"abort\",o,{once:!0});try{const a=performance.now(),c=await oe(\"native_http_fetch\",{request:{...r,proxyUrl:s??null,...i===void 0?{}:{requestId:i}}}),l=performance.now()-a;n?.throwIfAborted();const u=performance.now(),d=aae(c),h=performance.now()-u,p=new URL(r.url),m=p.pathname.match(/\\/workspaces\\/([^/]+)\\/sessions\\/([^/]+)\\/feed$/);return IF.info(\"Completed native HTTP fetch\",{event:\"native.http.fetch.completed\",requestId:i,method:r.method,status:c.status,workspaceId:m?.[1],sessionId:m?.[2],afterOffset:m?p.searchParams.get(\"after\"):void 0,invokeMs:l,...c.timings,bridgeSchedulingMs:c.timings===void 0?void 0:l-c.timings.nativeTotalMs,responseConstructionMs:h}),d}catch(a){throw n?.throwIfAborted(),a}finally{n?.removeEventListener(\"abort\",o)}}function aae(t){const e=bdt(t.status)||t.body===null||t.body===void 0?null:new Uint8Array(t.body),s=new Response(e,{status:t.status,statusText:t.statusText});return Object.defineProperty(s,\"url\",{value:t.url}),Object.defineProperty(s,\"headers\",{value:new Headers(t.headers)}),s}async function Adt(t,e){try{const s=await GA();return await wdt()||ydt(_dt(t))?(r7||(r7=!0,IF.info(\"Using full-body native HTTP fetch transport\")),await Edt(t,e,s)):await mdt(t,{...e,proxy:s?{all:s}:void 0})}catch(s){throw s instanceof Error?s:new oae(s)}}const nl=(t,e)=>Adt(t,e);"
+    }
+  ]
+}

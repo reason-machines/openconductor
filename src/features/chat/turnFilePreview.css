@@ -1,0 +1,38 @@
+.chat-file-preview {
+  position: fixed;
+  z-index: 60;
+  width: 28rem;
+  max-width: calc(100vw - 2rem);
+  max-height: calc(100vh - 2rem);
+  overflow: hidden;
+  border: 1px solid var(--popover-ring);
+  border-radius: 8px;
+  background: var(--popover);
+  color: var(--popover-text);
+  box-shadow: 0 4px 6px -1px var(--conductor-menu-shadow), 0 2px 4px -2px var(--conductor-menu-shadow);
+  font: 12px/18px var(--font-mono);
+  text-align: left;
+}
+
+.chat-file-preview-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.chat-file-preview-header > svg { width: 14px; height: 14px; flex: none; }
+.chat-file-preview-header > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chat-file-preview-body { max-height: min(20rem, calc(100vh - 4.5rem)); overflow: auto; overscroll-behavior: contain; user-select: text; }
+.chat-file-preview-message { padding: 16px; color: var(--muted); font-family: var(--font-sans); text-align: center; }
+.chat-file-preview-diff { width: max-content; min-width: 100%; }
+.chat-file-preview-hunk { padding: 2px 8px; color: var(--muted); background: var(--surface-muted); white-space: pre; }
+.chat-file-preview-line { display: grid; grid-template-columns: 3.5em 3.5em 1.5em minmax(0, 1fr); min-height: 18px; }
+.chat-file-preview-line[data-kind="addition"] { background: color-mix(in srgb, var(--diff-add) 12%, var(--popover)); }
+.chat-file-preview-line[data-kind="deletion"] { background: color-mix(in srgb, var(--diff-del) 12%, var(--popover)); }
+.chat-file-preview-number { padding-right: 8px; color: var(--muted); text-align: right; user-select: none; }
+.chat-file-preview-sign { text-align: center; user-select: none; }
+.chat-file-preview-line[data-kind="addition"] .chat-file-preview-sign { color: var(--diff-add); }
+.chat-file-preview-line[data-kind="deletion"] .chat-file-preview-sign { color: var(--diff-del); }
+.chat-file-preview-text { padding-right: 10px; white-space: pre; }

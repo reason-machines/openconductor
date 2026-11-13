@@ -1,0 +1,8 @@
+   */
+  public bindMouse(): void {
+    const self = this;
+    const el = this.element!;
+
+    // send event to CoreMouseService
+    function sendEvent(ev: MouseEvent | WheelEvent): boolean {
+      // get mouse coordinates

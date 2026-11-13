@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type Dispatch, type MouseEvent, type PointerEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type Dispatch, type MouseEvent, type PointerEvent } from "react";
 import type { AppState, Repo, Workspace } from "../state/types";
 import { RepoIcon } from "./RepoIcon";
 import type { Action } from "../state/store";
@@ -8,24 +8,23 @@ import { StatusMatrix } from "./StatusMatrix";
 import { useStatusMatrix } from "../settings/useStatusMatrix";
 import { labelTargetBranch, workspaceLabel } from "./sidebarLabel";
 import { useBranchPrefix } from "./useBranchPrefix";
-import { WorkspaceActionsMenu } from "./WorkspaceActionsMenu";
-import { COMMANDS } from "../keybindings/registry";
-import { HINT_DELAY_MS, hintLabel, hintNumbers, holdsExactly } from "../state/shortcutHint";
+import { WorkspaceContextMenu } from "./WorkspaceContextMenu";
+import { HINT_DELAY_MS, hintLabel, hintNumbers } from "../state/shortcutHint";
 import { sidebarEntries } from "../state/sidebarOrder";
-import { sectionOf } from "../state/navigationSections";
 import { compactCount } from "../state/sidebarDiffStat";
 import { useRowDiffStat } from "./useRowDiffStat";
 import { useWorkspaceAgentStatus } from "../features/chat/useWorkspaceSession";
 import { applyRowLookup, useRowPrPoll } from "../features/pr/sidebarPrPoller";
 import { usePrSettings } from "../features/pr/usePullRequest";
 import type { LookupResult } from "../features/pr/types";
-import { clearManuallyUnreadForWorkspace, markManuallyUnread, selectedChatOf } from "../state/autoUnread";
 import { attentionChat, isWorkspaceUnread } from "../state/chatUnread";
 import { requestChat, workspaceChats } from "../state/openChat";
 import { chatStatuses } from "../features/chat/chatRuntime";
 import { Tooltip } from "./Tooltip";
 import { ArchiveIcon } from "./Icons";
 import { glyphs } from "../keybindings/shortcut";
+import { effectiveShortcuts } from "../keybindings/overrides";
+import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 
 interface Props {
   workspace: Workspace;
@@ -35,7 +34,7 @@ interface Props {
   /** The repo has a remote: a workspace without a PR shows "Ready" (branch) rather than "Local workspace". */
   hasRemote?: boolean;
   active: boolean;
-  onSelect: () => void;
+  onSelect: (event: MouseEvent<HTMLButtonElement>) => void;
   /** Right-click: opens the workspace actions menu. */
   onContextMenu?: (e: MouseEvent) => void;
   menuOpen?: boolean;
@@ -55,14 +54,41 @@ interface Props {
   onArchive?: () => void;
 }
 
-const ARCHIVE_COMMAND = COMMANDS.find((c) => c.id === "workspace.archive");
-const ARCHIVE_SHORTCUT = ARCHIVE_COMMAND ? glyphs(ARCHIVE_COMMAND.key) : undefined;
-
 /**
  * One workspace row in the sidebar (Conductor's `lJn`): status icon, title, diff stat,
  * and the Archive button that replaces the diff stat while the row is hovered.
  */
 export function SidebarWorkspaceRow({ workspace: ws, repoBadge, targetBranch, hasRemote, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint, repoPath, onPrLookup, branchPrefix, onPointerDown, onArchive }: Props) {
+  const { overrides } = useKeybindingOverrides();
+  const archiveShortcut = glyphs(effectiveShortcuts("workspace.archive", overrides)[0]);
+  const [scriptSnapshot, setScriptSnapshot] = useState<{ workspaceId: string; busy: boolean } | null>(null);
+  const scriptBusy = scriptSnapshot?.workspaceId === ws.id && scriptSnapshot.busy;
+  useEffect(() => {
+    let disposed = false;
+    let off: (() => void) | undefined;
+    let sequence = 0;
+    Promise.all([import("../scripts/api"), import("../scripts/model")]).then(async ([api, { activeRun }]) => {
+      if (disposed) return;
+      const refresh = async () => {
+        const current = ++sequence;
+        const status = await api.runStatus(ws.id);
+        if (!disposed && current === sequence) {
+          setScriptSnapshot({ workspaceId: ws.id, busy: activeRun(status.runs) !== null });
+        }
+      };
+      const unlisten = await api.onScriptEvent((event) => {
+        if (disposed || event.workspaceId !== ws.id) return;
+        if (event.type === "runStarted" || event.type === "runFinished") refresh().catch(() => {});
+      });
+      if (disposed) return unlisten();
+      off = unlisten;
+      await refresh();
+    }).catch(() => {});
+    return () => {
+      disposed = true;
+      off?.();
+    };
+  }, [ws.id]);
   const hint = showShortcutHint === true && shortcutNumber !== undefined;
   const label = workspaceLabel({
     name: ws.name,
@@ -130,10 +156,10 @@ export function SidebarWorkspaceRow({ workspace: ws, repoBadge, targetBranch, ha
           </span>
         )}
       </button>
-      {onArchive && (
+      {onArchive && !scriptBusy && (
         <div className="sb-ws-archive">
           {/* Conductor shows the shortcut in the tooltip only on the selected row, since ⌘⇧A archives the open workspace. */}
-          <Tooltip content="Archive workspace" shortcut={active ? ARCHIVE_SHORTCUT : undefined}>
+          <Tooltip content="Archive workspace" shortcut={active ? archiveShortcut : undefined}>
             <button
               type="button"
               aria-label="Archive workspace"
@@ -167,12 +193,20 @@ export interface RowCallbacks {
   onCopyLink?: (ws: Workspace) => void;
 }
 
-const SWITCH_MODIFIERS = COMMANDS.find((c) => c.id === "workspace.switchTo1")?.key.modifiers ?? ["meta"];
-
-/** True while the Cmd+1..9 modifier has been held alone for HINT_DELAY_MS. */
+/** True after an effective workspace-switch modifier chord is held for HINT_DELAY_MS. */
 export function useShortcutHints(): boolean {
+  const { overrides } = useKeybindingOverrides();
+  const overridesRef = useRef(overrides);
+  overridesRef.current = overrides;
   const [visible, setVisible] = useState(false);
   useEffect(() => {
+    const holdsModifiers = (e: KeyboardEvent | globalThis.MouseEvent) =>
+      effectiveShortcuts("workspace.switchTo1", overridesRef.current).some((shortcut) =>
+        shortcut.modifiers !== undefined && shortcut.modifiers.length > 0 &&
+        shortcut.modifiers.every((modifier) =>
+          modifier === "meta" ? e.metaKey : modifier === "ctrl" ? e.ctrlKey : modifier === "alt" ? e.altKey : e.shiftKey,
+        ),
+      );
     let held = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
     const hide = () => {
@@ -181,14 +215,14 @@ export function useShortcutHints(): boolean {
       setVisible(false);
     };
     const onKey = (e: KeyboardEvent) => {
-      const now = holdsExactly(SWITCH_MODIFIERS, e);
+      const now = holdsModifiers(e);
       if (now === held) return;
       held = now;
       if (now) timer = setTimeout(() => setVisible(true), HINT_DELAY_MS);
       else hide();
     };
     const onPointer = (e: globalThis.MouseEvent) => {
-      if (!holdsExactly(SWITCH_MODIFIERS, e) && held) hide();
+      if (!holdsModifiers(e) && held) hide();
     };
     window.addEventListener("keydown", onKey);
     window.addEventListener("keyup", onKey);
@@ -241,7 +275,8 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
     menuOpen: menu?.workspaceId === ws.id,
     shortcutNumber: numbers.get(ws.id),
     showShortcutHint: hintsVisible,
-    onSelect: () => {
+    onSelect: (event: MouseEvent<HTMLButtonElement>) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) return;
       if (!(sel.kind === "workspace" && sel.workspaceId === ws.id)) {
         dispatch({ type: "select", selection: { kind: "workspace", repoId, workspaceId: ws.id } });
         return;
@@ -262,39 +297,20 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
   const repo = menu && state.repos.find((r) => r.id === menu.repoId);
   const ws = menu && repo?.workspaces.find((w) => w.id === menu.workspaceId);
   if (menu && repo && ws) {
-    const ids = { repoId: repo.id, workspaceId: ws.id };
     element = (
-      <WorkspaceActionsMenu
+      <WorkspaceContextMenu
         key={ws.id}
+        repoId={repo.id}
         workspace={ws}
         selected={sel.kind === "workspace" && sel.workspaceId === ws.id}
         at={{ x: menu.x, y: menu.y }}
         onClose={close}
         sections={state.sections ?? []}
-        currentSectionId={sectionOf(state.sections, ws.id)?.id}
-        actions={{
-          toggleRead: () => {
-            // Conductor's row menu (renderApp @7,306,180): an unread workspace is read whole
-            // (markWorkspaceAsRead, and its hand marks go); otherwise its selected chat is
-            // marked unread by hand, which sticks while it is on screen.
-            if (isWorkspaceUnread(ws)) {
-              clearManuallyUnreadForWorkspace(ws.id);
-              dispatch({ type: "markWorkspaceRead", ...ids });
-            } else {
-              const chatId = selectedChatOf(ws.id);
-              markManuallyUnread(chatId);
-              dispatch({ type: "setChatUnread", ...ids, chatId, unread: true, at: Date.now() });
-            }
-          },
-          togglePin: () => dispatch({ type: "setWorkspacePinned", ...ids, pinned: typeof ws.pinnedAt !== "number" }),
-          setStatus: (status) => dispatch({ type: "setWorkspaceStatus", ...ids, status }),
-          rename: onRename && (() => onRename(repo.id, ws)),
-          copyLink: onCopyLink && (() => onCopyLink(ws)),
-          archive: () => archive(repo.id, ws),
-          moveToSection: (sectionId) => dispatch({ type: "assignSection", workspaceId: ws.id, sectionId }),
-          newSection: () => onNewSection?.(ws),
-          removeFromSection: () => dispatch({ type: "assignSection", workspaceId: ws.id, sectionId: null }),
-        }}
+        dispatch={dispatch}
+        onRename={onRename}
+        onArchive={onArchive}
+        onCopyLink={onCopyLink}
+        onNewSection={onNewSection}
       />
     );
   }

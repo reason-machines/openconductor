@@ -8,6 +8,7 @@ import { BranchIcon } from "./Icons";
 import { ContextMenu, MenuItem } from "./menu/ContextMenu";
 import { CopyIcon, PencilIcon } from "./menu/menuIcons";
 import { createBranchHeaderController } from "./branchHeaderController";
+import { useBranchPrefix } from "./useBranchPrefix";
 import "./workspaceBranchHeader.css";
 
 interface Props {
@@ -18,13 +19,16 @@ interface Props {
 }
 
 export function WorkspaceBranchHeader(props: Props) {
+  const prefix = useBranchPrefix();
+  const branch = props.workspace.branch;
+  const label = prefix && branch.startsWith(prefix) ? branch.slice(prefix.length) : branch;
   if (props.workspace.status === "archived") {
-    return <span className="chip"><BranchIcon size={12} /> {props.workspace.branch}</span>;
+    return <span className="chip" title={label}><BranchIcon size={12} /> {label}</span>;
   }
-  return <EditableBranchHeader {...props} />;
+  return <EditableBranchHeader {...props} label={label} />;
 }
 
-function EditableBranchHeader({ repoId, workspace, dispatch, onError }: Props) {
+function EditableBranchHeader({ repoId, workspace, dispatch, onError, label }: Props & { label: string }) {
   const [, refresh] = useReducer((revision: number) => revision + 1, 0);
   const callbacks = useRef({ dispatch, onError });
   callbacks.current = { dispatch, onError };
@@ -57,13 +61,18 @@ function EditableBranchHeader({ repoId, workspace, dispatch, onError }: Props) {
             value={value}
             disabled={pending}
             autoFocus
-            autoComplete="off"
+            autoComplete="new-password"
             autoCorrect="off"
             autoCapitalize="off"
             spellCheck={false}
             style={{ width: `${Math.max(1, value.length)}ch` }}
             onFocus={(event) => event.currentTarget.select()}
-            onChange={(event) => controller.change(event.currentTarget.value)}
+            onChange={(event) => {
+              const input = event.currentTarget;
+              const caret = input.selectionStart ?? 0;
+              controller.change(input.value);
+              queueMicrotask(() => input.setSelectionRange(caret, caret));
+            }}
             onBlur={() => void controller.blur()}
             onKeyDown={(event) => void controller.inputKey(event)}
           />
@@ -73,6 +82,7 @@ function EditableBranchHeader({ repoId, workspace, dispatch, onError }: Props) {
           type="button"
           className="chip"
           aria-label="Rename branch"
+          title={label}
           aria-disabled={!controller.canRename || pending}
           onClick={rename}
           onContextMenu={(event) => {
@@ -80,7 +90,7 @@ function EditableBranchHeader({ repoId, workspace, dispatch, onError }: Props) {
             setMenu({ x: event.clientX, y: event.clientY });
           }}
         >
-          <BranchIcon size={12} /> {branch}
+          <BranchIcon size={12} /> {label}
         </button>
       )}
       {menu && (

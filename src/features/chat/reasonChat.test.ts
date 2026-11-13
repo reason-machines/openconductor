@@ -52,6 +52,8 @@ g.__TAURI_INTERNALS__ = {
   },
 };
 
+handlers.set("reason_account_status", () => ({ name: "Fixture", email: "fixture@example.invalid", error: null }));
+
 // conductor.db's stored statuses, read once when reasonChat connects the status store at import.
 handlers.set("session_statuses", () => [
   { chatId: "ws-stored", workspaceId: "ws-stored", status: "needs_user_input" },
@@ -116,7 +118,7 @@ test("a prompt sent while the stored transcript loads waits for it, then runs af
   handlers.set("chat_messages_load", (a) => (a.chatId === chatId ? load.promise : { messages: [], agentSessionId: null }));
   const ends = promptsEndOnDemand();
 
-  rc.submitChat(chatId, "/w", "new prompt", "queue");
+  rc.submitChat(chatId, "/w", { text: "new prompt" }, "queue");
   await tick();
   assert.equal(callsOf("reason_prompt", chatId).length, 0, "nothing is sent before the stored transcript is in");
 
@@ -136,13 +138,42 @@ test("a prompt sent while the stored transcript loads waits for it, then runs af
   ends.shift()!();
 });
 
+test("signed-out Reason preserves the original turn without starting ACP, then retry uses the same chat", async () => {
+  const chatId = "signed-out-inline";
+  handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
+  handlers.set("reason_account_status", () => null);
+  const ends = promptsEndOnDemand();
+  rc.submitChat(chatId, "/w", { text: "original signed-out prompt" }, "queue");
+  await until(() => Object.values(rc.chatSnapshot(chatId).transcript.turns).some((turn) => turn.status === "failed"), "inline authentication failure");
+  const failed = rc.chatSnapshot(chatId).transcript;
+  const original = failed.messages.find((message) => message.role === "user")!;
+  assert.equal(original.blocks[0]?.type === "text" && original.blocks[0].text, "original signed-out prompt");
+  assert.match(failed.turns[original.turnId].error ?? "", /Sign in to Reason/);
+  assert.equal(callsOf("reason_open_chat", chatId).length, 0);
+  assert.equal(callsOf("reason_prompt", chatId).length, 0);
+  handlers.set("reason_account_status", () => ({ name: "Fixture", email: "fixture@example.invalid", error: null }));
+  assert.equal(rc.retryReasonAuth(chatId, "/w", { text: "original signed-out prompt" }, original.turnId), true);
+  await until(() => callsOf("reason_prompt", chatId).length === 1, "same-chat retry");
+  assert.equal(callsOf("reason_prompt", chatId)[0].args.text, "original signed-out prompt");
+  assert.equal(callsOf("reason_open_chat", chatId).length, 1);
+  assert.equal(rc.chatSnapshot(chatId).transcript.messages.filter((message) => message.role === "user").length, 1);
+  assert.equal(rc.chatSnapshot(chatId).transcript.activeTurn, original.turnId);
+  assert.equal(rc.chatSnapshot(chatId).transcript.messages[0], original, "the original user message is not replaced");
+  assert.equal(rc.retryReasonAuth(chatId, "/w", { text: "original signed-out prompt" }, original.turnId), false, "duplicate approval cannot resend a running turn");
+  emit({ chatId, type: "text", text: "Paired reply" });
+  emit({ chatId, type: "turnEnded", end: { outcome: "completed" } });
+  assert.equal(rc.chatSnapshot(chatId).transcript.turns[original.turnId].status, "completed");
+  assert.equal(rc.chatSnapshot(chatId).transcript.messages.at(-1)?.turnId, original.turnId);
+  ends.shift()!();
+});
+
 test("Stop while the stored transcript loads cancels the prompt without sending it", async () => {
   const chatId = "race-2";
   const load = deferred<{ messages: string[]; agentSessionId: string | null }>();
   handlers.set("chat_messages_load", (a) => (a.chatId === chatId ? load.promise : { messages: [], agentSessionId: null }));
   promptsEndOnDemand();
 
-  rc.submitChat(chatId, "/w", "never sent", "queue");
+  rc.submitChat(chatId, "/w", { text: "never sent" }, "queue");
   await tick();
   rc.stopChat(chatId);
   load.resolve({ messages: [], agentSessionId: null });
@@ -161,7 +192,7 @@ test("the chat's Session is created with its model and effort, waiting for optio
   const settings = deferred<{ id: string; value: string }[]>();
   rc.configureReasonDefault(chatId, settings.promise);
 
-  rc.submitChat(chatId, "/w", "hello", "queue");
+  rc.submitChat(chatId, "/w", { text: "hello" }, "queue");
   await tick();
   assert.equal(callsOf("reason_open_chat", chatId).length, 0, "the Session waits for its options");
   settings.resolve([{ id: "model", value: "byok:anthropic:claude-opus-5-5" }, { id: "reasoning_effort", value: "high" }]);
@@ -181,7 +212,7 @@ test("a chat's picked options win over the Settings defaults and are kept for a 
   rc.configureReason(chatId, own);
   rc.configureReasonDefault(chatId, Promise.resolve([{ id: "model", value: "byok:anthropic:claude-opus-5" }]));
 
-  rc.submitChat(chatId, "/w", "hello", "queue");
+  rc.submitChat(chatId, "/w", { text: "hello" }, "queue");
   await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
   assert.deepEqual(callsOf("reason_open_chat", chatId)[0].args.config, own);
   assert.deepEqual(JSON.parse(store.get(`openconductor.reason.config.${chatId}`) ?? "null"), own);
@@ -196,7 +227,7 @@ test("Reset chat rewinds the agent: the next prompt opens a new Session that car
   const ends = promptsEndOnDemand();
   const turn = async (text: string, answer: string) => {
     const before = callsOf("reason_prompt", chatId).length;
-    rc.submitChat(chatId, "/w", text, "queue");
+    rc.submitChat(chatId, "/w", { text }, "queue");
     await until(() => callsOf("reason_prompt", chatId).length === before + 1, `prompt "${text}"`);
     if (!store.get(`openconductor.reason.session.${chatId}`)) emit({ chatId, type: "sessionStarted", sessionId: "sess-1" });
     emit({ chatId, type: "text", text: answer });
@@ -217,7 +248,7 @@ test("Reset chat rewinds the agent: the next prompt opens a new Session that car
   assert.equal(rewind.agentSessionId, null);
   assert.ok(!JSON.stringify(rewind.upserts).includes("second"), "the deleted turn is not written back");
 
-  rc.submitChat(chatId, "/w", "third", "queue");
+  rc.submitChat(chatId, "/w", { text: "third" }, "queue");
   await until(() => callsOf("reason_prompt", chatId).length === 3, "the prompt after the reset");
   const open = callsOf("reason_open_chat", chatId);
   assert.equal(open.length, 2);
@@ -239,9 +270,9 @@ test("a turn that completes with nothing queued asks for attention; one with a f
   const asked: string[] = [];
   const off = onChatAttention((id) => id === chatId && asked.push(id));
 
-  rc.submitChat(chatId, "/w", "first", "queue");
+  rc.submitChat(chatId, "/w", { text: "first" }, "queue");
   await until(() => callsOf("reason_prompt", chatId).length === 1, "first prompt");
-  rc.submitChat(chatId, "/w", "second", "queue");
+  rc.submitChat(chatId, "/w", { text: "second" }, "queue");
   ends.shift()!();
   await until(() => callsOf("reason_prompt", chatId).length === 2, "queued prompt starts");
   assert.deepEqual(asked, [], "the queued follow-up runs next, so the chat has not settled");
@@ -260,7 +291,7 @@ test("a new permission request asks for attention once, while the turn still run
   const asked: string[] = [];
   const off = onChatAttention((id) => id === chatId && asked.push(id));
 
-  rc.submitChat(chatId, "/w", "permission", "queue");
+  rc.submitChat(chatId, "/w", { text: "permission" }, "queue");
   await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
   emit({ chatId, type: "permissionRequest", requestId: "permission-a", title: "t", options: [], kind: "permission", tool: "", input: null });
   assert.deepEqual(asked, [chatId], "the request is a wait on the user");
@@ -281,7 +312,7 @@ test("a plan request asks for attention once, though it both opens a request and
   const asked: string[] = [];
   const off = onChatAttention((id) => id === chatId && asked.push(id));
 
-  rc.submitChat(chatId, "/w", "plan", "queue");
+  rc.submitChat(chatId, "/w", { text: "plan" }, "queue");
   await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
   emit({ chatId, type: "permissionRequest", requestId: "plan-a", title: "", options: [], kind: "plan", plan: "1. Add a table" });
   assert.deepEqual(asked, [chatId]);
@@ -310,7 +341,7 @@ test("a request offering only allow choices is a question: needs_user_input, unr
     { optionId: "deny", name: "Deny", kind: "reject_once" },
   ];
 
-  rc.submitChat(chatId, "/w", "question", "queue");
+  rc.submitChat(chatId, "/w", { text: "question" }, "queue");
   await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
   emit({ chatId, type: "permissionRequest", requestId: "permission-q", title: "Which database?", options: choices, kind: "permission", tool: "", input: null });
   assert.equal(rc.chatSnapshot(chatId).queue.status, "needs_user_input");
@@ -374,7 +405,7 @@ test("a permission request makes the chat needs_user_permission until it is answ
     setTimeout(() => emit({ chatId: a.chatId, type: "permissionResolved", requestId: a.requestId }), 0);
     return true;
   });
-  rc.submitChat(chatId, "/w", "permission", "queue");
+  rc.submitChat(chatId, "/w", { text: "permission" }, "queue");
   await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
 
   emit({ chatId, type: "permissionRequest", requestId: "permission-1", title: "bash: rm -rf build", options: [{ optionId: "allow", name: "Allow", kind: "allow_once" }], kind: "permission", tool: "execute", input: { command: "rm -rf build" } });
@@ -408,7 +439,7 @@ test("plan and question requests make the chat needs_plan_response and needs_use
     setTimeout(() => emit({ chatId: a.chatId, type: "permissionResolved", requestId: a.requestId }), 0);
     return true;
   });
-  rc.submitChat(chatId, "/w", "plan", "queue");
+  rc.submitChat(chatId, "/w", { text: "plan" }, "queue");
   await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
 
   const questions = [{ header: "Database", question: "Which database?", multiSelect: false, options: [{ label: "SQLite", description: null }] }];
@@ -437,7 +468,7 @@ test("a request Reason no longer holds closes at once", async () => {
   handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
   const ends = promptsEndOnDemand();
   handlers.set("reason_answer_permission", () => false);
-  rc.submitChat(chatId, "/w", "permission", "queue");
+  rc.submitChat(chatId, "/w", { text: "permission" }, "queue");
   await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
   emit({ chatId, type: "permissionRequest", requestId: "permission-9", title: "t", options: [], kind: "permission", tool: "", input: null });
   await rc.answerPermission(chatId, "permission-9", { kind: "cancel" });
@@ -462,7 +493,7 @@ test("needs_user_permission never outlives its request: Stop withdraws it, and a
     });
     return d.promise;
   });
-  rc.submitChat(stopped, "/w", "permission", "queue");
+  rc.submitChat(stopped, "/w", { text: "permission" }, "queue");
   await until(() => callsOf("reason_prompt", stopped).length === 1, "reason_prompt");
   emit({ chatId: stopped, type: "permissionRequest", requestId: "permission-s", title: "t", options: [], kind: "permission", tool: "", input: null });
   assert.equal(runtime.chatStatuses().get(stopped), "needs_user_permission");
@@ -474,7 +505,7 @@ test("needs_user_permission never outlives its request: Stop withdraws it, and a
   // The turn ends with the request still listed (no permissionResolved came).
   const ended = "ws-perm-ended";
   const ends = promptsEndOnDemand();
-  rc.submitChat(ended, "/w", "permission", "queue");
+  rc.submitChat(ended, "/w", { text: "permission" }, "queue");
   await until(() => callsOf("reason_prompt", ended).length === 1, "reason_prompt");
   emit({ chatId: ended, type: "permissionRequest", requestId: "permission-e", title: "t", options: [], kind: "permission", tool: "", input: null });
   assert.equal(rc.chatSnapshot(ended).queue.status, "needs_user_permission");

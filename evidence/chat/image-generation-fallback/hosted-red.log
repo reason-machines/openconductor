@@ -1,0 +1,66 @@
+2026-11-12T01:56:03.9817584Z   ---
+2026-11-12T01:56:03.9817932Z   duration_ms: 0.607283
+2026-11-12T01:56:03.9818332Z   type: 'test'
+2026-11-12T01:56:03.9818675Z   ...
+2026-11-12T01:56:03.9819243Z # Subtest: generated-image disclosure: plain-explanation
+2026-11-12T01:56:03.9820085Z not ok 696 - generated-image disclosure: plain-explanation
+2026-11-12T01:56:03.9820657Z   ---
+2026-11-12T01:56:03.9821085Z   duration_ms: 530.206291
+2026-11-12T01:56:03.9821808Z   type: 'test'
+2026-11-12T01:56:03.9822926Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/imageGenerationFallbackDisclosure.test.ts:131:3'
+2026-11-12T01:56:03.9824096Z   failureType: 'testCodeFailure'
+2026-11-12T01:56:03.9824573Z   error: |-
+2026-11-12T01:56:03.9825005Z     IMAGE_FALLBACK_TEXT_MUST_NOT_TOGGLE
+2026-11-12T01:56:03.9825468Z
+2026-11-12T01:56:03.9825780Z     1 !== 0
+2026-11-12T01:56:03.9826110Z
+2026-11-12T01:56:03.9826442Z   code: 'ERR_ASSERTION'
+2026-11-12T01:56:03.9826883Z   name: 'AssertionError'
+2026-11-12T01:56:03.9827294Z   expected: 0
+2026-11-12T01:56:03.9827653Z   actual: 1
+2026-11-12T01:56:03.9828015Z   operator: 'strictEqual'
+2026-11-12T01:56:03.9828417Z   stack: |-
+2026-11-12T01:56:03.9829641Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/imageGenerationFallbackDisclosure.test.ts:145:18)
+2026-11-12T01:56:03.9831038Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T01:56:03.9832818Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-12T01:56:03.9833554Z   ...
+2026-11-12T01:56:03.9834117Z # Subtest: generated-image disclosure: unsupported-svg
+2026-11-12T01:56:03.9834926Z not ok 697 - generated-image disclosure: unsupported-svg
+2026-11-12T01:56:03.9835494Z   ---
+2026-11-12T01:56:03.9835834Z   duration_ms: 245.718261
+2026-11-12T01:56:03.9836245Z   type: 'test'
+2026-11-12T01:56:03.9837607Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/imageGenerationFallbackDisclosure.test.ts:131:3'
+2026-11-12T01:56:03.9838792Z   failureType: 'testCodeFailure'
+2026-11-12T01:56:03.9839251Z   error: |-
+2026-11-12T01:56:03.9839670Z     IMAGE_FALLBACK_SVG_MUST_NOT_TOGGLE
+2026-11-12T01:56:03.9840136Z
+2026-11-12T01:56:03.9840447Z     1 !== 0
+2026-11-12T01:56:03.9840767Z
+2026-11-12T01:56:03.9841109Z   code: 'ERR_ASSERTION'
+2026-11-12T01:56:03.9841754Z   name: 'AssertionError'
+2026-11-12T01:56:03.9842154Z   expected: 0
+2026-11-12T01:56:03.9842481Z   actual: 1
+2026-11-12T01:56:03.9842821Z   operator: 'strictEqual'
+2026-11-12T01:56:03.9843197Z   stack: |-
+2026-11-12T01:56:03.9844360Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/imageGenerationFallbackDisclosure.test.ts:145:18)
+2026-11-12T01:56:03.9845748Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T01:56:03.9846630Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T01:56:03.9847333Z   ...
+2026-11-12T01:56:03.9847905Z # Subtest: generated-image disclosure: recognized-png
+2026-11-12T01:56:03.9848673Z ok 698 - generated-image disclosure: recognized-png
+2026-11-12T01:56:03.9849213Z   ---
+2026-11-12T01:56:03.9849578Z   duration_ms: 178.347586
+2026-11-12T01:56:03.9849979Z   type: 'test'
+2026-11-12T01:56:03.9850318Z   ...
+2026-11-12T01:56:03.9850893Z # Subtest: generated-image disclosure: pending-no-result
+2026-11-12T01:56:03.9852129Z ok 699 - generated-image disclosure: pending-no-result
+2026-11-12T01:56:03.9852697Z   ---
+2026-11-12T01:56:03.9853053Z   duration_ms: 123.79462
+2026-11-12T01:56:03.9853472Z   type: 'test'
+2026-11-12T01:56:03.9854114Z   ...
+2026-11-12T01:56:03.9854733Z # Subtest: generated-image disclosure: read-still-collapsible
+2026-11-12T01:56:03.9855594Z ok 700 - generated-image disclosure: read-still-collapsible
+2026-11-12T01:56:03.9856173Z   ---
+2026-11-12T01:56:03.9856522Z   duration_ms: 149.118534
+2026-11-12T01:56:03.9856929Z   type: 'test'
+2026-11-12T01:56:03.9857260Z   ...

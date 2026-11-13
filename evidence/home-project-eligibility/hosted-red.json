@@ -1,0 +1,40 @@
+{
+  "unit": "HOME-PROJECT-ELIGIBILITY-271",
+  "producer": "Conductor Rebuild",
+  "phase": "RED_BEFORE_PRODUCT_FIX",
+  "head_sha": "7e58a8a1fba2f44f1004d54a16f3b5fad469c70d",
+  "run_id": 43097731266,
+  "job_id": 130783587876,
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43097731266/job/130783587876",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "fixture_sha256": "490743c5a88da1af06b08b1e677ed23639a427fa8ecf93445cbc04ffb28a4bb0",
+  "fixture": {
+    "tests": 7,
+    "failed": [
+      151,
+      152,
+      153
+    ],
+    "passed": [
+      154,
+      155,
+      156,
+      157
+    ],
+    "failure": "Missing Projects control: actual 0, expected 1. Both archived rows rendered before first failure; all four controls passed."
+  },
+  "full_suite": {
+    "tests": 3110,
+    "passed": 3107,
+    "failed": 3,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "setup": "Checkout, Node setup and npm ci passed; real mounted component assertions executed.",
+  "log_excerpt": "hosted-red.log.txt",
+  "product_changed_before_red": false,
+  "hosted_green": "PENDING",
+  "native": "NOT_RUN",
+  "browser": "NOT_RUN",
+  "visual": "NOT_RUN"
+}

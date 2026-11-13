@@ -1,0 +1,93 @@
+(node:93) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:100) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: single terminal dot is a custom delimiter in validation and preview
+ok 1 - single terminal dot is a custom delimiter in validation and preview
+  ---
+  duration_ms: 1.035355
+  type: 'test'
+  ...
+# Subtest: mounted Git Settings commits team. once and creates team.tokyo
+ok 2 - mounted Git Settings commits team. once and creates team.tokyo
+  ---
+  duration_ms: 190.704725
+  type: 'test'
+  ...
+# Subtest: invalid raw custom prefix "" stays rejected at both model boundaries
+ok 3 - invalid raw custom prefix "" stays rejected at both model boundaries
+  ---
+  duration_ms: 0.236094
+  type: 'test'
+  ...
+# Subtest: invalid raw custom prefix ".team" stays rejected at both model boundaries
+ok 4 - invalid raw custom prefix ".team" stays rejected at both model boundaries
+  ---
+  duration_ms: 0.139623
+  type: 'test'
+  ...
+# Subtest: invalid raw custom prefix "team.." stays rejected at both model boundaries
+ok 5 - invalid raw custom prefix "team.." stays rejected at both model boundaries
+  ---
+  duration_ms: 0.08727
+  type: 'test'
+  ...
+# Subtest: invalid raw custom prefix "team space" stays rejected at both model boundaries
+ok 6 - invalid raw custom prefix "team space" stays rejected at both model boundaries
+  ---
+  duration_ms: 0.066036
+  type: 'test'
+  ...
+# Subtest: invalid raw custom prefix "team.lock" stays rejected at both model boundaries
+ok 7 - invalid raw custom prefix "team.lock" stays rejected at both model boundaries
+  ---
+  duration_ms: 0.117565
+  type: 'test'
+  ...
+# Subtest: invalid raw custom prefix "team./" stays rejected at both model boundaries
+ok 8 - invalid raw custom prefix "team./" stays rejected at both model boundaries
+  ---
+  duration_ms: 0.062027
+  type: 'test'
+  ...
+# Subtest: invalid raw custom prefix "team@{branch" stays rejected at both model boundaries
+ok 9 - invalid raw custom prefix "team@{branch" stays rejected at both model boundaries
+  ---
+  duration_ms: 0.226426
+  type: 'test'
+  ...
+# Subtest: sanitizer-stable invalid custom prefix "" never replaces the saved value
+ok 10 - sanitizer-stable invalid custom prefix "" never replaces the saved value
+  ---
+  duration_ms: 78.665074
+  type: 'test'
+  ...
+# Subtest: sanitizer-stable invalid custom prefix "team.lock" never replaces the saved value
+ok 11 - sanitizer-stable invalid custom prefix "team.lock" never replaces the saved value
+  ---
+  duration_ms: 43.491956
+  type: 'test'
+  ...
+# Subtest: sanitizer-stable invalid custom prefix "team./" never replaces the saved value
+ok 12 - sanitizer-stable invalid custom prefix "team./" never replaces the saved value
+  ---
+  duration_ms: 47.448234
+  type: 'test'
+  ...
+# Subtest: GitHub and None still select their own prefixes without changing the custom value
+ok 13 - GitHub and None still select their own prefixes without changing the custom value
+  ---
+  duration_ms: 50.699621
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 759.284414
+elapsed_seconds=0.847

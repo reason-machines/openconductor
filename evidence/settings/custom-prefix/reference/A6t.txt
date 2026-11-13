@@ -1,0 +1,1 @@
+async function A6t(t){await ee.updateSetting("branch_prefix_custom",t)}

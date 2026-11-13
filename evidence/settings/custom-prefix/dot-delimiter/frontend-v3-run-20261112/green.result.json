@@ -1,0 +1,18 @@
+{
+  "phase": "green",
+  "command": "timeout 120s node --test --test-concurrency=1 --test-reporter=tap src/settings/customPrefixDotDelimiterV3.test.ts",
+  "start": "2026-11-12T11:28:51.208519+00:00",
+  "end": "2026-11-12T11:28:52.202227+00:00",
+  "exit": 0,
+  "elapsed_seconds": 0.994,
+  "timeout": false,
+  "log": "green.tap",
+  "log_sha256": "4903550de260af3fba05b1db3f318dbbc59b98b41b73c882093cde494a57db51",
+  "counts": {
+    "tests": 13,
+    "pass": 13,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  }
+}

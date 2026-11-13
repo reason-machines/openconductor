@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { pickFolder } from "../backend";
+import { inTauri } from "../backend";
 import { scrollbackBytesFromMegabytes, scrollbackLimitBytes, scrollbackLimitMegabytes } from "../features/terminal/scrollback";
 import { withTopLevel } from "./agentSettings";
 import { PrefSwitchRow, Toggle } from "./controls";
 import { Row } from "./GeneralPage";
-import { FolderIcon } from "./icons";
+import { CloseIcon, FolderIcon } from "./icons";
 import { RootPathRow } from "./RootPathRow";
 import { ExecutablePathRow } from "./rows/AgentOptionRows";
 import type { Settings } from "./types";
@@ -36,6 +36,7 @@ export function AdvancedPage({ settings, save }: Props) {
         browseTitle="Browse for SSH key"
         plain
         value={settings.ssh_key_path ?? ""}
+        onChange={(v) => save({ ...settings, ssh_key_path: v })}
         onSave={(v) => save(withTopLevel(settings, "ssh_key_path", v))}
       />
       <PrefSwitchRow
@@ -82,7 +83,6 @@ export function AdvancedPage({ settings, save }: Props) {
   );
 }
 
-/** The SSH key field (`npa`), saved on Enter or blur. Blank clears the setting. */
 function PathRow({
   label,
   help,
@@ -90,6 +90,7 @@ function PathRow({
   browseTitle = "Browse for executable",
   plain,
   value,
+  onChange,
   onSave,
 }: {
   label: string;
@@ -98,6 +99,7 @@ function PathRow({
   browseTitle?: string;
   plain?: boolean;
   value: string;
+  onChange: (v: string) => void;
   onSave: (v: string) => void;
 }) {
   const [text, setText] = useState(value);
@@ -106,23 +108,30 @@ function PathRow({
     if (next.trim() !== value.trim()) onSave(next);
   };
   const browse = async () => {
-    const picked = await pickFolder(label);
-    if (picked) {
+    if (!inTauri()) return;
+    const { open } = await import("@tauri-apps/plugin-dialog");
+    const picked = await open({ directory: false, multiple: false, title: "Select SSH private key" });
+    if (typeof picked === "string") {
       setText(picked);
       commit(picked);
     }
   };
   const field = (
-    <span className="settings-field-wrap">
-      <input
-        type="text"
-        aria-label={label}
-        className="settings-field mono"
+    <div className="oc-agent-exec-controls">
+      <span className="settings-field-wrap oc-agent-exec-field">
+        <input
+          type="text"
+          aria-label={label}
+          className="settings-field mono"
           placeholder={placeholder}
           autoComplete="off"
           spellCheck={false}
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => {
+            const next = e.target.value;
+            setText(next);
+            onChange(next);
+          }}
           onBlur={() => commit(text)}
           onKeyDown={(e) => {
             if (e.key === "Enter") e.currentTarget.blur();
@@ -132,6 +141,21 @@ function PathRow({
           <FolderIcon size={14} />
         </button>
       </span>
+      {value && (
+        <button
+          type="button"
+          className="oc-agent-icon-btn"
+          title="Reset to auto-generated key"
+          aria-label="Reset to auto-generated key"
+          onClick={() => {
+            setText("");
+            onSave("");
+          }}
+        >
+          <CloseIcon size={14} />
+        </button>
+      )}
+    </div>
   );
   if (plain)
     return (

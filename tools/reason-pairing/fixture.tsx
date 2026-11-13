@@ -2,6 +2,7 @@ import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { SignUp } from "../../src/onboarding/SignIn";
 import { ReasonSignInControls } from "../../src/onboarding/ReasonSignInControls";
+import { ChatSignInCard } from "../../src/features/chat/ChatSignInCard";
 import { useReasonSignIn } from "../../src/onboarding/reasonSignIn";
 import "../../src/fonts.css";
 import "../../src/theme/tokens.css";
@@ -38,11 +39,29 @@ function Fixture() {
     {visible && <section aria-label={`${entry} sign-in`} style={{ marginTop: 24 }}>
       {entry === "onboarding"
         ? <SignUp onSignedIn={() => setCompletions((n) => n + 1)} onFailed={() => undefined} onSkip={() => undefined} />
-        : <ReasonSignInControls variant={entry === "chat" ? "chat" : "settings"} workspace={workspace} />}
+        : entry === "chat" ? <FixtureChat /> : <ReasonSignInControls variant="settings" workspace={workspace} />}
     </section>}
     <output data-testid="login-state">{JSON.stringify(state)}</output>
     <output data-testid="onboarding-completion-count">{completions}</output>
   </main>;
+}
+
+/** A signed-out Reason turn: the failed message, the production card, and the resend once pairing connects. */
+function FixtureChat() {
+  const [sends, setSends] = useState(0);
+  const [replies, setReplies] = useState<string[]>([]);
+  const resend = () => {
+    setSends((n) => n + 1);
+    const bridge = Reflect.get(window, "__pairingInvoke") as (c: string) => Promise<{ email: string | null }>;
+    void bridge("reason_account_status").then((a) => setReplies((r) => [...r, `Reason (${a.email}): hello back`]));
+  };
+  return <div data-testid="fixture-chat">
+    <div className="chat-msg chat-user">hello</div>
+    <span className="chat-turn-error">Not signed in. Run `reason login`.</span>
+    <ChatSignInCard agent="reason" onSignedIn={resend} />
+    <output data-testid="chat-send-count">{sends}</output>
+    {replies.map((r, i) => <div key={i} className="chat-msg" data-testid="chat-reply">{r}</div>)}
+  </div>;
 }
 
 const root = document.getElementById("root");

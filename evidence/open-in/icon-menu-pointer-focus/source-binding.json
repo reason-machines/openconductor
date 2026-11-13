@@ -1,0 +1,50 @@
+{
+  "owner": "Conductor Rebuild SAME15",
+  "status": "SOURCE_APPLIED_RUNTIME_NOT_RUN",
+  "main_checked": "c79a81086c3a0e5ba81f1a9a53ec63a4f4dde7ba",
+  "ownership_reconfirmed_message": "f795ed3f-e33e-401f-9ebc-b79dfad4e517",
+  "product_path": "src/features/openIn/OpenInButton.tsx",
+  "baseline_sha256": "985d3eb1eb714a964c8e04514689d19d1a60a1b8453d08d303a1d85da3f4fe60",
+  "candidate_sha256": "532705c1a5ec31e807ca7e10b2631ecd9c717eecd88af50110481afc43d08fc1",
+  "fixture_path": "src/features/openIn/iconMenuPointerFocus.test.ts",
+  "fixture_sha256": "5a1080d2b994ec03a2324bf8762d5498554fb0bd42977a0e821d4fb53bba7107",
+  "behavior_spec_sha256": "bc24ebc9209a5591a1ff5ca2118654eae8c7c55bcc6a427f49a83c757f33bc6f",
+  "original14_sha256": "4009081be40ee58220527628b5f0d8e468c843123b99da80ae9ec1df21487385",
+  "source_patch_sha256": "23d4416eb3bf07bdbc9477ffdf4ca666b8dcdc39abb6010c8d1aa173ab12bdb3",
+  "frozen_packets_unchanged": {
+    "typeahead24": "d3550db8b480191fe08d2ca33dac584a071f402ceedfe4443d7bf3506bed8dc4",
+    "trigger15": "e41c6b30b1de4da14c3f2404ecfa4fb67bb3a800f41f07319b2cb6835b61e0b2"
+  },
+  "source_composition": [
+    {
+      "name": "typeahead",
+      "original_path": ".oc-tmp/icon-typeahead-inquiry/OpenInButton.candidate.tsx.txt",
+      "original_sha256": "1bf0ae3b0bf9b0095ec367f8cf28aedb77f5ee65b54c57e69b3e64cdc070333a",
+      "composed_sha256": "9dd051ad690275f840b65be82c61bd7bbe1d2239a53079dc43c373e013965b29"
+    },
+    {
+      "name": "trigger",
+      "original_path": ".oc-tmp/icon-trigger-arrows-inquiry/OpenInButton.candidate.tsx.txt",
+      "original_sha256": "132331496d9235b8e135f40ce699504f0ecba0b8b0a832e840e8c29474284817",
+      "composed_sha256": "0a22e76886e3fd34d3b7e9baf8e9d1a6ba07c144544243969f7219a5cad96f9b"
+    },
+    {
+      "name": "typeahead-trigger",
+      "original_path": ".oc-tmp/icon-trigger-arrows-inquiry/OpenInButton.after-typeahead.tsx.txt",
+      "original_sha256": "4c37ac83ff2174532d3645703644bc85730add9d3eed085870dad0ede468bf0e",
+      "composed_sha256": "f6656c23f1e3c15658e01e0d6b5b138e9bfaa42fdce8d708f5d146253de290e8"
+    }
+  ],
+  "composition_limit": "Exact after-packet source applications passed; no behavioral composition has run. Neither other packet is applied in this change.",
+  "rea_gap": "No new REA tool call or tool failure. Retained static renderer lineage only; not fresh native observation.",
+  "application_checks": {
+    "RED": "NOT_RUN",
+    "GREEN": "NOT_RUN",
+    "adjacent": "NOT_RUN",
+    "typecheck": "NOT_RUN",
+    "build": "NOT_RUN",
+    "browser": "NOT_RUN",
+    "native": "NOT_RUN",
+    "package": "NOT_RUN"
+  }
+}

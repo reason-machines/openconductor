@@ -1,0 +1,106 @@
+TAP version 13
+# Subtest: real backend DTO renders one_mib_dense
+ok 1 - real backend DTO renders one_mib_dense
+  ---
+  duration_ms: 19.155992
+  type: 'test'
+  ...
+# Subtest: real backend DTO renders one_mib_plus_one_dense
+not ok 2 - real backend DTO renders one_mib_plus_one_dense
+  ---
+  duration_ms: 3.519545
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/tests/diff/largeFilePlaceholder.mounted.test.mjs:65:3'
+  failureType: 'testCodeFailure'
+  error: 'one_mib_plus_one_dense must show the size placeholder in unified'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/tests/diff/largeFilePlaceholder.mounted.test.mjs:88:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: real backend DTO renders two_mib_sparse
+ok 3 - real backend DTO renders two_mib_sparse
+  ---
+  duration_ms: 7.379133
+  type: 'test'
+  ...
+# Subtest: real backend DTO renders five_mib_sparse
+ok 4 - real backend DTO renders five_mib_sparse
+  ---
+  duration_ms: 4.109798
+  type: 'test'
+  ...
+# Subtest: real backend DTO renders five_mib_dense
+not ok 5 - real backend DTO renders five_mib_dense
+  ---
+  duration_ms: 2.653229
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/tests/diff/largeFilePlaceholder.mounted.test.mjs:65:3'
+  failureType: 'testCodeFailure'
+  error: 'five_mib_dense must show the size placeholder in unified'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/tests/diff/largeFilePlaceholder.mounted.test.mjs:88:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: real backend DTO renders five_mib_plus_one_sparse
+not ok 6 - real backend DTO renders five_mib_plus_one_sparse
+  ---
+  duration_ms: 1.778981
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/tests/diff/largeFilePlaceholder.mounted.test.mjs:65:3'
+  failureType: 'testCodeFailure'
+  error: 'five_mib_plus_one_sparse must show the size placeholder in unified'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/tests/diff/largeFilePlaceholder.mounted.test.mjs:88:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: real backend DTO renders six_mib_sparse
+not ok 7 - real backend DTO renders six_mib_sparse
+  ---
+  duration_ms: 1.662379
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/tests/diff/largeFilePlaceholder.mounted.test.mjs:65:3'
+  failureType: 'testCodeFailure'
+  error: 'six_mib_sparse must show the size placeholder in unified'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/tests/diff/largeFilePlaceholder.mounted.test.mjs:88:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: real backend DTO renders six_mib_binary
+ok 8 - real backend DTO renders six_mib_binary
+  ---
+  duration_ms: 2.167496
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 4
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 486.740814

@@ -1,0 +1,87 @@
+{
+  "owner": "Conductor Rebuild",
+  "baseline_main": "e752f6cdd53cb235762d8392377c3c608b8b8789",
+  "reference": {
+    "kind": "retained REA-extracted Conductor 0.87.6 renderer, not fresh installed-app acquisition",
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "bytes": 11600457,
+    "spans": [
+      {
+        "name": "Add menu a7i",
+        "character_start": 7908405,
+        "character_end": 7910435,
+        "byte_start": 7953167,
+        "byte_end": 7955197,
+        "sha256": "1d2035262820c7eff28a76dc6e567040454259df3011694f1fa26ab204a7194c",
+        "file": "reference-menu.txt"
+      },
+      {
+        "name": "selected session plan capability",
+        "character_start": 8612297,
+        "character_end": 8612444,
+        "byte_start": 8657912,
+        "byte_end": 8658059,
+        "sha256": "dc17f33939df1940954ff2ffce0b2a57218ea9335cdebf8ee86ef6e7c9d369cc",
+        "file": "reference-capability.txt"
+      },
+      {
+        "name": "plan toggle and persistence",
+        "character_start": 8613755,
+        "character_end": 8614435,
+        "byte_start": 8659370,
+        "byte_end": 8660050,
+        "sha256": "82bf6f16260f5a5092a12751f071290b8c27ad8599904b91d6f254d1ae2fe746",
+        "file": "reference-toggle.txt"
+      },
+      {
+        "name": "active chat menu props",
+        "character_start": 8644722,
+        "character_end": 8644972,
+        "byte_start": 8690339,
+        "byte_end": 8690589,
+        "sha256": "668da8bd0ce63f26208aeb71ba57da773a728a793a0d3105cb1bf151d71bb509",
+        "file": "reference-menu-caller.txt"
+      }
+    ]
+  },
+  "source_files": [
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "blob": "a9e8c4f9c594cc44fc1f47eee3b415a2654de22d"
+    },
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "blob": "d838666160c425c9562aefe1052ffe5923367f3b"
+    },
+    {
+      "path": "src-tauri/src/claude_chat/commands.rs",
+      "blob": "aa368a07441815745755778dc37f44c06e5a9a5d"
+    },
+    {
+      "path": "src-tauri/src/claude_chat/runner.rs",
+      "blob": "dbf612e589dbd8df9a4702640fe9bb134e7eb8c6"
+    },
+    {
+      "path": "src-tauri/src/agent/claude_cli.rs",
+      "blob": "516da7c8fedc68dd40857efe36540290b17df86f"
+    },
+    {
+      "path": "src-tauri/src/agent/claude_stream.rs",
+      "blob": "a7d828f786faa5f84c9c31ca084407f62108b875"
+    },
+    {
+      "path": "src-tauri/src/agent/claude_session.rs",
+      "blob": "9181ef8caf6a79956e93973fb8a6b2608de1cbee"
+    }
+  ],
+  "fixture": {
+    "path": "src/features/chat/workspacePlanMode.test.ts",
+    "sha256": "f2c68d5741186b48f661debcfe0aa911251f0e318df2f25cfc676cce0e7402d0"
+  },
+  "limits": [
+    "Static retained REA source, not a fresh acquisition or native behavior proof",
+    "Claude-only idle-safe increment; live switching not implemented",
+    "Codex exact collaborationMode nested schema remains unproven; no approximation via read-only access",
+    "No local Node/Rust/native/provider runtime admitted; hosted test-first execution required"
+  ]
+}

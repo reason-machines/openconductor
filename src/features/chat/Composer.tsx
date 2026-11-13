@@ -14,7 +14,7 @@
 // (composerMinimize.ts); focus, a click or ⌘L expands it.
 
 import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ClipboardEvent, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
@@ -22,16 +22,20 @@ import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
 import { canSteerNow, headStatusLabel, resolveSendMode, turnRunning, type ChatQueue, type FollowUpMode, type SendMode } from "./queue.ts";
 import type { QueueAction } from "./queue.ts";
 import { dropOrder, queueRowKey, type QueueCommand, type QueueFocus } from "./queueKeys.ts";
-import { completeInsert, matchCommands, slashQuery, type SlashCommand } from "./slashCommands.ts";
+import { composerSlashRange, matchCommands, type SlashCommand } from "./slashCommands.ts";
 import { SlashMenu } from "./SlashMenu.tsx";
 import { fuzzyFilterFiles } from "../../backend";
 import type { FileMatch } from "../../spotlight/quickOpen";
 import { fileMentionQuery, mentionItems, type MentionItem } from "./fileMentions.ts";
 import { ComposerEditor, type ComposerEditorHandle, type ComposerSelection } from "./ComposerEditor.tsx";
 import { composerPrompt } from "./composerDocument.ts";
+import { longPasteAttachment } from "./composerLongPaste.ts";
+import { useBoolPref } from "../../settings/useBoolPref.ts";
+import { queuedUserDraft, submittedUserPrompt, type SentUserContentV1, type UserPrompt } from "./userContent.ts";
 import { FileMentionMenu } from "./FileMentionMenu.tsx";
 import { ArrowUpIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
 import type { ComposerMinimize } from "./useComposerMinimize.ts";
+import type { PlanModeControl } from "./useLocalPlanMode.ts";
 import "./queue.css";
 import "./composer.css";
 
@@ -48,7 +52,8 @@ export interface ComposerProps {
   queue: ChatQueue;
   canSteer: boolean;
   followUpMode?: FollowUpMode;
-  onSubmit: (text: string, mode: SendMode) => void;
+  /** Async callbacks own draft clearing after acceptance and handle delivery errors. */
+  onSubmit: (input: UserPrompt, mode: SendMode) => void | Promise<void>;
   /** False when the owner clears only after asynchronous delivery succeeds. */
   clearOnSubmit?: boolean;
   onStop: () => void;
@@ -60,7 +65,9 @@ export interface ComposerProps {
   /** Takes files the user attaches; without it the "+" menu has no Add attachment. */
   onAttachFiles?: (files: File[]) => void;
   onLinkWorkspaces?: () => void;
+  onMcpStatus?: () => void;
   onAttachTerminalOutput?: () => void;
+  planMode?: PlanModeControl;
   /** The model picker (or another agent's picker), at the box's bottom left. */
   picker?: ReactNode;
   /** More pickers after it (an agent's access mode), in the same row. */
@@ -93,13 +100,16 @@ export function Composer({
   workspacePath,
   onAttachFiles,
   onLinkWorkspaces,
+  onMcpStatus,
   onAttachTerminalOutput,
+  planMode,
   picker,
   controls,
   slashCommands = [],
   onCommand,
   minimize,
 }: ComposerProps) {
+  const autoConvertLongText = useBoolPref("auto_convert_long_text");
   const minimized = minimize?.minimized ?? false;
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -129,8 +139,10 @@ export function Composer({
     if (minimized && inputRef.current?.focused()) inputRef.current.blur();
   }, [minimized, inputRef]);
 
-  const query = focused ? slashQuery(selection.text, selection.start) : null;
-  const slashMatches = useMemo(() => (query === null || query === slashDismissed ? [] : matchCommands(slashCommands, query)), [query, slashDismissed, slashCommands]);
+  const slash = focused ? composerSlashRange(selection.text, selection.start, selection.end) : null;
+  const query = slash?.query ?? null;
+  const slashKey = slash ? `${slash.start}:${slash.end}:${slash.query}` : null;
+  const slashMatches = useMemo(() => (query === null || slashKey === slashDismissed ? [] : matchCommands(slashCommands, query)), [query, slashKey, slashDismissed, slashCommands]);
   const slashOpen = slashMatches.length > 0;
   const slashFocus = Math.min(slashIndex, Math.max(0, slashMatches.length - 1));
   const mention = focused && workspacePath ? fileMentionQuery(selection.text, selection.start, selection.end) : null;
@@ -148,7 +160,7 @@ export function Composer({
     return () => { live = false; };
   }, [workspacePath, mentionQuery]);
   const fileMatches = files && files.workspacePath === workspacePath && files.query === mentionQuery ? files.matches : [];
-  const mentionMatches = mentionItems(mentionQuery ?? "", fileMatches, !!onAttachTerminalOutput);
+  const mentionMatches = mentionItems(mentionQuery ?? "", fileMatches, !!onAttachTerminalOutput, !!onLinkWorkspaces);
   const mentionOpen = mention !== null && mentionQuery !== undefined && mentionMatches.length > 0;
   const mentionFocus = Math.min(mentionIndex, Math.max(0, mentionMatches.length - 1));
 
@@ -158,6 +170,12 @@ export function Composer({
     const current = box.selection();
     const range = fileMentionQuery(current.text, current.start, current.end);
     if (!range || `${range.start}:${range.query}` !== mentionKey) return;
+    if (item.kind === "add-directory") {
+      if (!onLinkWorkspaces || !box.deleteRange(range)) return;
+      setMentionDismissed(mentionKey);
+      onLinkWorkspaces();
+      return;
+    }
     if (item.kind === "terminal") {
       if (!onAttachTerminalOutput || !box.deleteRange(range)) return;
       setMentionDismissed(mentionKey);
@@ -170,26 +188,42 @@ export function Composer({
   }
 
   function pickCommand(command: SlashCommand) {
-    if (inputRef.current?.composing()) return;
-    const next = completeInsert(selection.text, command.insert ?? `/${command.name}`);
-    inputRef.current?.replaceText(next);
+    const box = inputRef.current;
+    if (!box || box.composing() || !slash) return;
+    const current = box.selection();
+    const range = composerSlashRange(current.text, current.start, current.end);
+    if (!range || range.start !== slash.start || range.end !== slash.end || range.query !== slash.query) return;
+    if (command.effect === "pick_linked_directory" && onLinkWorkspaces) {
+      if (!box.deleteRange(range)) return;
+      setSlashDismissed(slashKey);
+      onLinkWorkspaces();
+    } else if (command.effect === "show_mcp_status" && onMcpStatus) {
+      if (!box.deleteRange(range)) return;
+      setSlashDismissed(slashKey);
+      onMcpStatus();
+    } else if (!box.replaceRange(range, `${command.insert ?? `/${command.name}`} `)) return;
     setSlashIndex(0);
   }
 
   function submit(opposite: boolean) {
     if (inputRef.current?.composing()) return;
-    const text = composerPrompt(draft).trim();
-    if (!text && !hasAttachments) return;
-    if (text.startsWith("/") && onCommand?.(text)) {
+    const input = submittedUserPrompt(draft);
+    if (!input.text && !hasAttachments) return;
+    if (input.text.startsWith("/") && onCommand?.(input.text)) {
       setDraft("");
       return;
     }
-    onSubmit(text, working ? mode(opposite) : "queue");
+    const pending = onSubmit(input, working ? mode(opposite) : "queue");
+    if (pending) return;
     if (clearOnSubmit) setDraft("");
   }
 
   useKeybindings({
-    "chat.cancel": () => (working ? onStop() : false),
+    "chat.cancel": () => {
+      if (!working) return false;
+      onStop();
+      inputRef.current?.focus();
+    },
     "chat.addAttachment": () => (onAttachFiles ? fileInput.current?.click() : false),
     "chat.focus": () => {
       const box = inputRef.current;
@@ -204,13 +238,24 @@ export function Composer({
     onAttachFiles(files);
     return true;
   };
+  function onPasteCapture(event: ClipboardEvent<HTMLFormElement>) {
+    if (!onAttachFiles || event.defaultPrevented) return;
+    const file = longPasteAttachment(event.clipboardData, autoConvertLongText);
+    if (!file) return;
+    event.preventDefault();
+    event.stopPropagation();
+    onAttachFiles([file]);
+  }
   const hasFiles = (e: DragEvent) => onAttachFiles !== undefined && Array.from(e.dataTransfer?.types ?? []).includes("Files");
   const queueRef = useRef<HTMLOListElement>(null);
 
   /** Moves focus to a queued row or back to the message box. */
   function focus(target: QueueFocus) {
     if (target === "composer") return inputRef.current?.focus();
-    queueRef.current?.querySelector<HTMLElement>(`li[data-id="${CSS.escape(target.row)}"]`)?.focus();
+    const row = queueRef.current?.querySelector<HTMLElement>(`li[data-id="${CSS.escape(target.row)}"]`);
+    if (!row) return false;
+    row.focus();
+    return true;
   }
 
   function onKeyDown(e: globalThis.KeyboardEvent) {
@@ -218,15 +263,17 @@ export function Composer({
     const hit = (id: string) => keys(id).some((s) => matchesEvent(s, ev));
     if (ev.isComposing) return;
     const plain = !e.shiftKey && !e.metaKey && !e.altKey && !e.ctrlKey;
-    if (mentionOpen && plain && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+    if (mentionOpen && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
       e.preventDefault();
+      e.stopPropagation();
       setMentionIndex((mentionFocus + (e.key === "ArrowDown" ? 1 : mentionMatches.length - 1)) % mentionMatches.length);
       return;
     }
-    if (mentionOpen && plain && (e.key === "Enter" || e.key === "Tab")) {
+    if (mentionOpen && (e.key === "Enter" || e.key === "Tab")) {
       const selected = mentionMatches[mentionFocus];
       if (selected) {
         e.preventDefault();
+        e.stopPropagation();
         pickMention(selected);
       }
       return;
@@ -237,28 +284,32 @@ export function Composer({
       setMentionDismissed(mentionKey);
       return;
     }
-    if (slashOpen && plain && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+    if (slashOpen && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
       e.preventDefault();
+      e.stopPropagation();
       const n = slashMatches.length;
       setSlashIndex((slashFocus + (e.key === "ArrowDown" ? 1 : n - 1)) % n);
       return;
     }
-    if (slashOpen && plain && (e.key === "Enter" || e.key === "Tab")) {
+    if (slashOpen && (e.key === "Enter" || e.key === "Tab")) {
       e.preventDefault();
+      e.stopPropagation();
       pickCommand(slashMatches[slashFocus]!.command);
       return;
     }
     if (slashOpen && e.key === "Escape") {
       e.preventDefault();
       e.stopPropagation();
-      setSlashDismissed(query);
+      setSlashDismissed(slashKey);
       return;
     }
-    // ↑ with the caret at the very start goes to the last queued message.
-    const current = inputRef.current?.selection();
-    if (e.key === "ArrowUp" && !e.shiftKey && !e.metaKey && !e.altKey && current?.start === 0 && current.end === 0 && queue.items.length > 0 && queue.editingId === null) {
-      e.preventDefault();
-      focus({ row: queue.items[queue.items.length - 1].id });
+    const box = inputRef.current;
+    const current = box?.selection();
+    if (e.key === "ArrowUp" && plain && queue.items.length > 0 && queue.editingId === null && (box?.atTop?.() ?? (current?.start === 0 && current.end === 0))) {
+      if (focus({ row: queue.items[queue.items.length - 1].id })) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
     } else if (hit("chat.cancel") && working) {
       e.preventDefault();
       onStop();
@@ -293,6 +344,7 @@ export function Composer({
         <form
           className={`composer oc-composer${dragging ? " is-dropping" : ""}`}
           aria-label="composer"
+          onPasteCapture={onPasteCapture}
           data-composer-minimized={minimized || undefined}
           data-composer-resize-instant={(minimize && !minimize.animate) || undefined}
           onClick={() => minimize?.expand()}
@@ -348,7 +400,7 @@ export function Composer({
           </div>
           <div className="oc-composer-right" onClick={(e) => e.stopPropagation()}>
             <span className="oc-composer-fade">
-              <AddMenu hint={hint("chat.addAttachment")} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} onLinkWorkspaces={onLinkWorkspaces} />
+              <AddMenu hint={hint("chat.addAttachment")} planHint={hint("chat.togglePlanMode")} planMode={planMode} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} onLinkWorkspaces={onLinkWorkspaces} />
             </span>
             {showFocusPill && minimized ? focusPill(true) : null}
             {onAttachFiles ? (
@@ -393,11 +445,11 @@ export function Composer({
   );
 }
 
-function AddMenu({ hint, onAddAttachment, onLinkWorkspaces }: { hint: string; onAddAttachment?: () => void; onLinkWorkspaces?: () => void }) {
+function AddMenu({ hint, planHint, planMode, onAddAttachment, onLinkWorkspaces }: { hint: string; planHint: string; planMode?: PlanModeControl; onAddAttachment?: () => void; onLinkWorkspaces?: () => void }) {
   const [open, setOpen] = useState(false);
   const popup = usePresence(open);
   const ref = useRef<HTMLSpanElement>(null);
-  if (!onAddAttachment && !onLinkWorkspaces) return null;
+  if (!onAddAttachment && !onLinkWorkspaces && !planMode) return null;
   return (
     <span
       className="oc-add-menu"
@@ -434,6 +486,11 @@ function AddMenu({ hint, onAddAttachment, onLinkWorkspaces }: { hint: string; on
           </button> : null}
           {onLinkWorkspaces ? <button type="button" role="menuitem" className="oc-menu-item" onClick={() => { setOpen(false); onLinkWorkspaces(); }}>
             <PlusIcon size={16} /><span className="oc-menu-item-label">Link workspaces</span>
+          </button> : null}
+          {planMode ? <button type="button" role="menuitem" className="oc-menu-item" disabled={planMode.disabled} title={planMode.disabled ? "Wait for the current Claude Code turn to end" : undefined} onClick={() => { setOpen(false); planMode.onToggle(); }}>
+            <svg className={planMode.isPlanMode ? "oc-plan-active" : undefined} width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3M9 12l3 3L22 5" /></svg>
+            <span className={`oc-menu-item-label${planMode.isPlanMode ? " oc-plan-active" : ""}`}>{planMode.isPlanMode ? "Exit plan mode" : "Plan mode"}</span>
+            <span className="oc-kbd-hint">{planHint}</span>
           </button> : null}
         </div>
       ) : null}
@@ -526,6 +583,7 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
               key={m.id}
               id={m.id}
               text={m.text}
+              userContent={m.userContent}
               attachmentNames={m.attachments.map((a) => a.name)}
               first={i === 0}
               last={i === queue.items.length - 1}
@@ -546,6 +604,7 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
 interface RowProps {
   id: string;
   text: string;
+  userContent?: SentUserContentV1;
   attachmentNames: readonly string[];
   first: boolean;
   last: boolean;
@@ -558,44 +617,53 @@ interface RowProps {
   rowProps: React.LiHTMLAttributes<HTMLLIElement>;
 }
 
-function QueueRow({ id, text, attachmentNames, first, last, editing, canSteer, onQueue, keys, dragging, rowProps }: RowProps) {
-  const [value, setValue] = useState(text);
+function QueueRow({ id, text, userContent, attachmentNames, first, last, editing, canSteer, onQueue, keys, dragging, rowProps }: RowProps) {
+  const [value, setValue] = useState(() => queuedUserDraft({ text, userContent }));
+  const editor = useRef<ComposerEditorHandle>(null);
+  useLayoutEffect(() => {
+    if (!editing) return;
+    setValue(queuedUserDraft({ text, userContent }));
+    editor.current?.focus();
+  }, [editing, text, userContent]);
   if (editing) {
     return (
       <li className="queue-row is-editing">
-        <textarea
-          className="queue-edit"
-          aria-label="Edit queued message"
-          value={value}
-          autoFocus
-          onChange={(e) => setValue(e.target.value)}
-          onKeyDown={(e) => {
-            const ev = e.nativeEvent;
-            if (ev.isComposing) return;
-            const hit = (command: string) => keys(command).some((s) => matchesEvent(s, ev));
-            if (hit("chat.queueEdit.cancel")) {
-              e.preventDefault();
-              onQueue({ kind: "cancelEdit" });
-            } else if (canSteer && hit("chat.queueEdit.saveAndSteer")) {
-              e.preventDefault();
-              onQueue({ kind: "saveEdit", text: value, steer: true });
-            } else if (hit("chat.queueEdit.save")) {
-              e.preventDefault();
-              onQueue({ kind: "saveEdit", text: value, steer: false });
-            }
-          }}
-          rows={2}
-        />
+        <div className="queue-edit" role="group" aria-label="Edit queued message">
+          <ComposerEditor
+            value={value}
+            inputRef={editor}
+            placeholder="Edit queued message"
+            onChange={setValue}
+            onSelection={() => {}}
+            onFocus={() => {}}
+            onBlur={() => {}}
+            onPasteFiles={() => false}
+            onKeyDown={(ev) => {
+              if (ev.isComposing) return;
+              const hit = (command: string) => keys(command).some((s) => matchesEvent(s, ev));
+              if (hit("chat.queueEdit.cancel")) {
+                ev.preventDefault();
+                onQueue({ kind: "cancelEdit" });
+              } else if (canSteer && hit("chat.queueEdit.saveAndSteer")) {
+                ev.preventDefault();
+                onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: true });
+              } else if (hit("chat.queueEdit.save")) {
+                ev.preventDefault();
+                onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: false });
+              }
+            }}
+          />
+        </div>
         <span className="queue-row-actions">
           <button type="button" className="chat-action" onClick={() => onQueue({ kind: "cancelEdit" })}>
             Cancel
           </button>
           {canSteer ? (
-            <button type="button" className="chat-action" onClick={() => onQueue({ kind: "saveEdit", text: value, steer: true })}>
+            <button type="button" className="chat-action" onClick={() => onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: true })}>
               Save and steer
             </button>
           ) : null}
-          <button type="button" className="chat-action" onClick={() => onQueue({ kind: "saveEdit", text: value, steer: false })}>
+          <button type="button" className="chat-action" onClick={() => onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: false })}>
             Save
           </button>
         </span>
@@ -619,7 +687,7 @@ function QueueRow({ id, text, attachmentNames, first, last, editing, canSteer, o
           type="button"
           className="chat-action"
           onClick={() => {
-            setValue(text);
+            setValue(queuedUserDraft({ text, userContent }));
             onQueue({ kind: "edit", id });
           }}
         >

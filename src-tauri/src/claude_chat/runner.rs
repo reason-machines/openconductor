@@ -26,7 +26,7 @@ use std::time::Duration;
 use serde_json::Value;
 
 use crate::agent::claude_stream::{ClaudeEvent, PermissionDecision};
-use crate::agent::{ClaudeLaunch, ClaudeSession, SessionEvent};
+use crate::agent::{ClaudeLaunch, ClaudeSession, PermissionMode, SessionEvent};
 use crate::reason_acp::provider::{ProviderEvent, Sink, TurnEnd};
 
 use super::interact::{self, Answer};
@@ -38,8 +38,29 @@ pub type Launcher =
 
 const STDERR_TAIL: usize = 20;
 
+#[derive(Clone, Debug, Default, PartialEq, Eq, serde::Deserialize)]
+pub struct ChatOptions {
+    pub model: Option<String>,
+    pub effort: Option<String>,
+    #[serde(rename = "fastMode")]
+    pub fast_mode: Option<bool>,
+    pub permission_mode: Option<PermissionMode>,
+}
+
+impl ChatOptions {
+    fn apply_fast_mode(&self, settings: &mut Option<Value>) -> Result<(), String> {
+        let Some(fast) = self.fast_mode else { return Ok(()); };
+        let object = settings.get_or_insert_with(|| serde_json::json!({}))
+            .as_object_mut()
+            .ok_or("Claude Code launch settings must be an object to apply Fast mode.")?;
+        object.insert("fastMode".into(), Value::Bool(fast));
+        Ok(())
+    }
+}
+
 struct Live {
     directories: Vec<PathBuf>,
+    options: ChatOptions,
     session: Arc<Mutex<ClaudeSession>>,
     state: Arc<Mutex<TurnState>>,
 }
@@ -112,6 +133,26 @@ impl ClaudeRunner {
         }
     }
 
+    pub fn busy(&self, chat_id: &str) -> bool {
+        self.chats.lock().unwrap().get(chat_id).is_some_and(|chat| {
+            chat.expected || chat.live.as_ref().is_some_and(|live| !live.state.lock().unwrap().waiting.is_empty())
+        })
+    }
+
+    pub fn approves_plan(&self, chat_id: &str, id: &str, answer: &Answer) -> bool {
+        if !matches!(answer, Answer::Plan { approved: true, .. }) { return false; }
+        self.chats.lock().unwrap().get(chat_id).and_then(|chat| chat.live.as_ref()).is_some_and(|live| {
+            live.state.lock().unwrap().asks.get(id).is_some_and(|(tool, _)| tool == "ExitPlanMode")
+        })
+    }
+
+    pub fn abandon_prompt(&self, chat_id: &str) {
+        if let Some(chat) = self.chats.lock().unwrap().get_mut(chat_id) {
+            chat.expected = false;
+            chat.stopped_before_send = false;
+        }
+    }
+
     /// Announces a prompt about to be sent (after the turn's start
     /// checkpoint), so a Stop before it is sent still stops it.
     pub fn expect_prompt(&self, chat_id: &str) {
@@ -127,7 +168,29 @@ impl ClaudeRunner {
         self.prompt_with_directories(chat_id, text, &[])
     }
 
+    #[cfg(test)]
     pub fn prompt_with_directories(&self, chat_id: &str, text: &str, directories: &[PathBuf]) -> TurnEnd {
+        self.prompt_with_options(chat_id, text, directories, &ChatOptions::default())
+    }
+
+    pub fn prompt_with_options(
+        &self,
+        chat_id: &str,
+        text: &str,
+        directories: &[PathBuf],
+        options: &ChatOptions,
+    ) -> TurnEnd {
+        self.prompt_with_handoff(chat_id, text, directories, options, None)
+    }
+
+    pub fn prompt_with_handoff(
+        &self,
+        chat_id: &str,
+        text: &str,
+        directories: &[PathBuf],
+        options: &ChatOptions,
+        on_handoff: Option<Box<dyn FnOnce() + Send>>,
+    ) -> TurnEnd {
         let rx = {
             let mut chats = self.chats.lock().unwrap();
             let Some(chat) = chats.get_mut(chat_id) else {
@@ -139,7 +202,7 @@ impl ClaudeRunner {
                 (self.sink)(chat_id, ProviderEvent::TurnEnded(end.clone()));
                 return end;
             }
-            if let Err(e) = self.ensure_live(chat_id, chat, directories) {
+            if let Err(e) = self.ensure_live(chat_id, chat, directories, options) {
                 return self.fail_now(chat_id, e);
             }
             let live = chat.live.as_ref().unwrap();
@@ -158,6 +221,9 @@ impl ClaudeRunner {
                     chat_id,
                     format!("Could not send the message to Claude Code: {e}"),
                 );
+            }
+            if let Some(on_handoff) = on_handoff {
+                on_handoff();
             }
             rx
         };
@@ -265,23 +331,41 @@ impl ClaudeRunner {
         end
     }
 
-    fn ensure_live(&self, chat_id: &str, chat: &mut Chat, directories: &[PathBuf]) -> Result<(), String> {
+    fn ensure_live(
+        &self,
+        chat_id: &str,
+        chat: &mut Chat,
+        directories: &[PathBuf],
+        options: &ChatOptions,
+    ) -> Result<(), String> {
         if let Some(live) = &chat.live {
             let st = live.state.lock().unwrap();
             if st.alive {
                 if live.directories != directories {
                     return Err("Linked directories changed. Start a new Claude Code chat to apply them; live-session directory changes are not supported yet.".into());
                 }
-                return Ok(());
+                if live.options == *options {
+                    return Ok(());
+                }
+                if !st.waiting.is_empty() {
+                    return Err("Wait for the current Claude Code turn to end before changing model, effort, Fast or Plan mode.".into());
+                }
             }
-            // The process exited: resume its session in a new one.
             if let Some(id) = st.mapper.session_id() {
                 chat.resume = Some(id.to_owned());
             }
+            drop(st);
+            let mut session = live.session.lock().unwrap();
+            session.kill().map_err(|e| format!("Could not restart Claude Code: {e}"))?;
+            session.wait().map_err(|e| format!("Could not wait for Claude Code to exit: {e}"))?;
         }
         chat.live = None;
         let mut launch = (self.launcher)(&chat.cwd, chat.resume.clone())?;
         launch.add_dirs = directories.to_vec();
+        launch.model = options.model.clone();
+        launch.effort = options.effort.clone();
+        options.apply_fast_mode(&mut launch.settings)?;
+        if let Some(mode) = options.permission_mode { launch.permission_mode = mode; }
         let mut session = ClaudeSession::spawn(&launch)
             .map_err(|e| format!("Could not start Claude Code: {e}"))?;
         let events = session.take_events();
@@ -301,7 +385,12 @@ impl ClaudeRunner {
             state.clone(),
             self.sink.clone(),
         );
-        chat.live = Some(Live { directories: directories.to_vec(), session, state });
+        chat.live = Some(Live {
+            directories: directories.to_vec(),
+            options: options.clone(),
+            session,
+            state,
+        });
         Ok(())
     }
 }

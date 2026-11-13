@@ -2,6 +2,8 @@
 // Field names are camelCase and unions are tagged by `type`, exactly as serde
 // writes them; `src-tauri/src/chat/tests.rs` pins the JSON on the Rust side.
 
+import type { SentUserContentV1 } from "./userContent.ts";
+
 export type Role = "user" | "assistant" | "system";
 
 export interface TextBlock {
@@ -25,7 +27,9 @@ export interface ToolResultBlock {
   type: "tool_result";
   toolUseId: string;
   content: string;
+  rawResult?: unknown;
   isError?: boolean;
+  resultCreatedAt?: string;
 }
 
 export type Block = TextBlock | ThinkingBlock | ToolUseBlock | ToolResultBlock;
@@ -50,6 +54,7 @@ export interface ChatMessage {
   /** The message arrived through this API key rather than the app. */
   senderApiKeyName?: string;
   blocks: Block[];
+  userContent?: SentUserContentV1;
 }
 
 /** Who a message came from, for rendering (mirrors `MessageOrigin` in model.rs). */

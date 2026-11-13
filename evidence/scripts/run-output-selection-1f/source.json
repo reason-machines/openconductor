@@ -1,0 +1,253 @@
+{
+  "owner": "Conductor Rebuild / 1f14fa82-4ec3-41fc-b085-32ec441b4228",
+  "kind": "source-only-next-gap-assessment",
+  "main_checked": "f55d0330ff32e790c08a26d2e7aa83dbf2b8ea32",
+  "result": "SOURCE_QUALIFIED_RUN_OUTPUT_SELECTION_CALLER_GAP",
+  "rea_acquisition": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference_provenance": "Historical retained real-app assets; no new installed-app acquisition or execution",
+  "reference_assets": [
+    {
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    {
+      "name": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  ],
+  "reference_spans": [
+    {
+      "symbol": "rSa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11167486,
+        11170601
+      ],
+      "bytes": 3115,
+      "sha256": "55b02cfb58c1416fce68bf0cc9178e9b37bed4e03ccb0de73661b7787d99fc95"
+    },
+    {
+      "symbol": "iSa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11165888,
+        11167486
+      ],
+      "bytes": 1598,
+      "sha256": "6684d447fd003dc49e33f65d6a7e6f73f830fb32fbcf93e9933b03f1658b4e4b"
+    },
+    {
+      "symbol": "nSa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11165324,
+        11165888
+      ],
+      "bytes": 564,
+      "sha256": "9cc884fc4db8fd82c6927db40023fd05b123023437f9ab85e396ee735571d90e"
+    },
+    {
+      "symbol": "m$t",
+      "asset": "renderer",
+      "utf8_half_open": [
+        3140134,
+        3140482
+      ],
+      "bytes": 348,
+      "sha256": "087fd368571d12cc41aea3f98e478be31e7fc4fad026071490e3d17f968c65a1"
+    },
+    {
+      "symbol": "OJs",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6571868,
+        6572718
+      ],
+      "bytes": 850,
+      "sha256": "5690f01ab02ec3aa205005c2775965062bbdcef532d855a294e14a719095dd41"
+    },
+    {
+      "symbol": "xEi",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6568897,
+        6571703
+      ],
+      "bytes": 2806,
+      "sha256": "c9eafaa506a034b54ffb3e6f82f0635e7509d7a7e9672fc4aaca171b09303bc3"
+    },
+    {
+      "symbol": "AJs",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6571703,
+        6571748
+      ],
+      "bytes": 45,
+      "sha256": "2a35b68dafaa319ea940d805be477f8002d9bc3aa0c439cfe9d84752af590f5e"
+    },
+    {
+      "symbol": "aSa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11170916,
+        11171573
+      ],
+      "bytes": 657,
+      "sha256": "68f370d7469b65a71859999fe41df5b274073483a74d21f2874fa84daa62ecce"
+    },
+    {
+      "symbol": "lSa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11171573,
+        11171911
+      ],
+      "bytes": 338,
+      "sha256": "cfab3b95d6f1316ab61b7016395f89925f66289ebe072451938c3f481c52ec2a"
+    },
+    {
+      "symbol": "uSa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11171943,
+        11172105
+      ],
+      "bytes": 162,
+      "sha256": "09da707923a705cc9c8f93572eb11724514f8a7d2e75bc45d89020a36fedd4e9"
+    },
+    {
+      "symbol": "gno",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6926664,
+        6929046
+      ],
+      "bytes": 2382,
+      "sha256": "647b58ff6d4712742e8946fdf3d8ef2bb31e578b3047a7d0f0a9384395ea7db3"
+    },
+    {
+      "symbol": "run-output-call",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7197564,
+        7197670
+      ],
+      "bytes": 106,
+      "sha256": "79b678d8f2dc8a0784344b21810124a0ef65049f8a17fbf14d798f418d5d769b"
+    },
+    {
+      "symbol": "nro-session-binding",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7170202,
+        7170380
+      ],
+      "bytes": 178,
+      "sha256": "43fa7a8949239430c3ca38367be5e9cf2ea907357f2c5107aeb3d28116685598"
+    },
+    {
+      "symbol": "selected-session-import",
+      "asset": "renderer",
+      "utf8_half_open": [
+        55835,
+        55843
+      ],
+      "bytes": 8,
+      "sha256": "e8762b1d4a9a22bab64742f0a631399e6616dfe908482fb105e6f914c82bae16"
+    },
+    {
+      "symbol": "selected-session-export",
+      "asset": "index",
+      "utf8_half_open": [
+        3482231,
+        3482240
+      ],
+      "bytes": 9,
+      "sha256": "c1e776712ceecabf795af7a0df1ac76e6c07d66127349a3b84b97b60053e90fd"
+    },
+    {
+      "symbol": "selected-session-hook",
+      "asset": "index",
+      "utf8_half_open": [
+        3288717,
+        3289191
+      ],
+      "bytes": 474,
+      "sha256": "58fb927da678b70af1f401a0c5e792fbe553b3ec52342f40f69b2e975db0d06a"
+    }
+  ],
+  "current_sources": [
+    {
+      "path": "src/components/ScriptOutput.tsx",
+      "bytes": 6330,
+      "sha256": "820f840f41f37f7defa50af60a77e4e68b67e8273978ac309125102f0c7cf23b"
+    },
+    {
+      "path": "src/components/ScriptsPanel.tsx",
+      "bytes": 25204,
+      "sha256": "0a213bea4f9849c5cc879bc1e4e5ba4f964be934bc3cbf1ccd07648739e756d1"
+    },
+    {
+      "path": "src/components/PanelStrip.tsx",
+      "bytes": 8774,
+      "sha256": "171024c6fc5ba70a45ae130acd0d15bf285226f892e8de9270a77e0102ff4172"
+    },
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "bytes": 85126,
+      "sha256": "3a520439bd8b09531e82e8dcb74e780c311cb5c079504b9c8796aeea12988fe2"
+    },
+    {
+      "path": "src/features/terminal/TerminalPanel.tsx",
+      "bytes": 2779,
+      "sha256": "8d130fcd3c7836ca54eb341c41dc0a6be3b3f7ca8a218dc30dddf47548657e06"
+    },
+    {
+      "path": "src/features/terminal/selectionAddToChat.test.ts",
+      "bytes": 7502,
+      "sha256": "8107224a40867e6af24ad52d0085e6a66259a1760469bf683bc044c7b9a8a7cc"
+    },
+    {
+      "path": "src/features/terminal/selectionChatCaller.test.ts",
+      "bytes": 6415,
+      "sha256": "7fb4d437798219ccf81bf4e4bb77f418ac4f03fda95e2c227df8b8caa315d975"
+    }
+  ],
+  "callsite_evidence": {
+    "run": "<ScriptOutput key={`run:${wsId}:${shown}`} output={runOut} showCursor onInput={inputRunId ? writeInput : undefined} onResize={inputRunId ? resizeRun : undefined} />",
+    "setup": "<ScriptOutput key={`setup:${wsId}`} output={setup.log ?? \"\"} />",
+    "spotlight": "<ScriptOutput key={`spotlight:${wsId}`} output={spotLogMine && spotView.log.length > 0 ? spotView.log.join(\"\\n\") : spotButton.hint ?? SPOTLIGHT_EMPTY_TEXT} />",
+    "strip_scripts": "<ScriptsPanel repo={repo} workspace={workspace} tab={view === \"setup\" ? \"setup\" : \"run\"} active={view === \"run\"} actionsSlot={actionsEl} onSetupState={onSetupState} onAddRunScript={addRunScript} onAskAgent={onAskSetupAgent} onShowRun={showRun} onOpenPreview={inAppBrowser ? onOpenPreview : undefined} />",
+    "strip_terminal": "<TerminalHost key={activeTerm.id} id={activeTerm.id} status={activeTerm.status} sessionId={chatSessionId} onAddToChat={onAddTerminalSelection} />"
+  },
+  "observations": [
+    "Retained Run surface passes its session id to rSa, which observes selection and renders iSa; iSa offers Add to chat for nonblank selected text with a session id.",
+    "The retained Run action normalizes the selection, creates a terminal-selection text attachment stub, and requests chat attachment. Mutation success clears action state and requests chat focus; it does not clear the xterm selection.",
+    "The Run selection subscription and control are not conditioned on process running state. Setup gno has no Add-to-chat action.",
+    "Current main already has generic TerminalHost selection-to-chat support and a guarded WorkspaceView callback. PanelStrip passes that callback and chat id only to TerminalHost, not ScriptsPanel.",
+    "Current Run ScriptOutput has no selection subscription, target-chat prop or Add-to-chat action. The same output component serves Setup and Spotlight; those roles must not gain the Run action by default."
+  ],
+  "proposed_product_scope": [
+    "src/components/ScriptOutput.tsx selection state/action only",
+    "src/components/ScriptsPanel.tsx optional props and ordinary Run call only",
+    "src/components/PanelStrip.tsx existing ScriptsPanel call only"
+  ],
+  "no_product_edits": true,
+  "runtime_execution": "NOT_RUN",
+  "native_or_visual_acceptance": "NOT_RUN",
+  "limits": [
+    "No new Node, Rust, browser, native, provider, dispatch, rerun, watcher or execution admission.",
+    "Source evidence does not prove visible selection behavior, physical input, clipboard delivery, native focus or completed asynchronous file transfer.",
+    "Selected-session resolution below CYt and attachment transfer below FO/gSe remain bounded dependency observations, not end-to-end proof.",
+    "OSC8 original-ten packet already exists and is excluded from new work. Starting-body child, disclosure owner64, Settings LoginTerminal, font, geometry, scripts backend and chat internals remain untouched.",
+    "Ledger ownership reconciliation must precede any tracked test/product edit or publication; #1110 and its existing subscription remain unchanged."
+  ],
+  "verification": {
+    "original_hashes_and_spans": "PASS",
+    "fresh_main_source_and_caller_checks": "PASS",
+    "behavioral_red_green": "NOT_RUN"
+  }
+}

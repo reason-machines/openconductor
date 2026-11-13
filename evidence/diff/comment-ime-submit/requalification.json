@@ -1,0 +1,33 @@
+{
+  "result": "PASS_SOURCE_ONLY_NO_PRODUCT_RUNTIME",
+  "manifests": [
+    {
+      "path": "evidence/diff/comment-edit-drafts/source.json",
+      "only_changed_fields": [
+        "dependencies.package-lock.json",
+        "dependencies.package.json",
+        "product.candidate"
+      ]
+    },
+    {
+      "path": "evidence/diff/moved-comment-anchors/source.json",
+      "only_changed_fields": [
+        "product.src/features/diff/ReviewComments.tsx.candidate"
+      ]
+    },
+    {
+      "path": "evidence/diff/hidden-whitespace-editing/execution-source-manifest.json",
+      "only_changed_fields": [
+        "files.candidate/package-lock.json",
+        "files.candidate/package.json"
+      ]
+    }
+  ],
+  "new_fixture_sha256": "f4df74049b561f325678c650ab3fa2737c683980b80d42369d8d62a8d5b591be",
+  "frozen_fixtures": {
+    "src/features/diff/commentEditDrafts.test.ts": "487a0b6d0bb87c7325c865c864e0664f060c16d6e51d48981c250b511ec5ddf7",
+    "src/features/diff/movedCommentAnchors.test.ts": "48428ff7dd42cb1c1a01874ad8cea53eda20b286093aea45ca66fe07a962b88c",
+    "src/features/diff/hiddenWhitespaceEditing.test.ts": "6e0b9c57c9d1f2ab99f517104e6b262ea643b517d9d3aeef81be6f4fa4c52ca1"
+  },
+  "hidden_whitespace_pairs": 29
+}

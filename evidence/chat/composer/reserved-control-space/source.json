@@ -1,0 +1,168 @@
+{
+  "id": "COMPOSER-RESERVED-CTRL-SPACE-135-01",
+  "author": "Conductor Rebuild",
+  "checked_main": "12a805ed90f5aeb0d472e53a64ad6d85bf2d3479",
+  "qualification": "static source only; runtime predictions are not test results",
+  "reference": {
+    "app": "Conductor 0.87.6",
+    "asset": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "manifest": "evidence/frontend/tauri-assets-manifest.json",
+    "retained_rea_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "lineage": "Previously retained decoded asset from Conductor.app on sven m5 max, transferred in the original retained-source handoff. Whole bytes revalidated on Reason Cloud for this pass.",
+    "rea_gap": "Original JavaScript semantic worker exhausted its heap. These are inert original-byte spans, not a generated call graph or observed native execution.",
+    "spans": [
+      {
+        "symbol": "identity wrapper",
+        "utf8_bytes_half_open": [
+          674926,
+          674995
+        ],
+        "sha256": "4283e46687b05b8b24d9071e15301030bd57ac48bb3f7b129375606bfeaaca70",
+        "compiled_javascript": "function hEe(t){return t}const dBr=hEe,pEe=hEe,_v=hEe,fBr=hEe,xd=hEe;"
+      },
+      {
+        "symbol": "P5o and aqn",
+        "utf8_bytes_half_open": [
+          8415890,
+          8416002
+        ],
+        "sha256": "a0559f859ef1d94bdcd7321b1d066f889578074a5791f5bd526168e17fd95029",
+        "compiled_javascript": "const P5o=dBr(t=>(t.key===\" \"||t.code===\"Space\")&&t.ctrlKey===!0&&t.metaKey!==!0);function aqn(t){return P5o(t)}"
+      },
+      {
+        "symbol": "complete lHt parameter boundary",
+        "utf8_bytes_half_open": [
+          8418728,
+          8419391
+        ],
+        "sha256": "5113b2bb6cba794a70ab5ec64843d91785835a1322e73e63df4141152b560fba",
+        "compiled_javascript": "function lHt({value:t,onChange:e,onKeyDown:n,onFocus:i,onBlur:r,placeholder:o,disabled:a,autoFocus:c,spellCheck:u=!1,triggers:d,resolveMentionViewModel:h,interactionCapabilities:m,onEditorReady:g,onMentionClick:_,visibleAttachments:v,cloudAttachmentClipboardSourceSessionId:x,resolveAttachmentImageLocation:w,loadAttachmentPreview:E,loadPathImage:k,reportPreviewError:I,workspaceLinks:R,containerEl:O,onAttachmentMentionRemoved:D,onPastedCloudAttachmentMentionRemoved:P,messageSendKey:L=\"enter\",externalSuggestions:B=[],messageSendMode:F=\"steering\",queueEditMode:H=!1,onSubmit:U,canSubmit:z=!1,shouldSkipSubmitShortcut:G,suggestionContextKey:K,onArrowUpAtTop:X}){"
+      },
+      {
+        "symbol": "low-level editor key handler",
+        "utf8_bytes_half_open": [
+          8421834,
+          8422750
+        ],
+        "sha256": "eac6bf836043900da3c88f3d7cf6bb94538a2f17aebc082374d71e00d9620d2c",
+        "compiled_javascript": "editorProps:{attributes:{class:\"composer-tiptap-editor\",spellcheck:u?\"true\":\"false\",autocomplete:\"new-password\",autocorrect:\"off\",autocapitalize:\"off\",writingsuggestions:\"false\"},handleKeyDown:(ye,xe)=>{if(aqn(xe)||Q.isImeCompositionActive||oRt(xe))return!0;if(Q.latestVisibleSuggestionSource===\"external\")return uqn(xe)!==void 0;for(const De of ye.state.plugins){const je=De.getState(ye.state);if(je&&typeof je==\"object\"&&je.active){const Ne=De.props.handleKeyDown;if(Ne&&Ne.call(De,ye,xe))return Q.suggestionHandledKey=!0,!0}}const{shouldSend:ke,shouldInsertNewline:Se}=Q.latestQueueEditMode?lqn({event:xe,messageSendKey:Q.latestMessageSendKey,matchesCommand:Q.latestMatchesSendCommand}):cqn({event:xe,messageSendKey:Q.latestMessageSendKey,messageSendMode:Q.latestMessageSendMode,matchesCommand:Q.latestMatchesSendCommand});return ke?!0:Se||Q.latestQueueEditMode&&B5o(xe)?EIt(ye.state,ye.dispatch):!1},handleClick:"
+      },
+      {
+        "symbol": "outer React key handler",
+        "utf8_bytes_half_open": [
+          8424444,
+          8425776
+        ],
+        "sha256": "54a71fc155a2f2a55f4af2f1f7f61577d9e3d14a1c9a6582c4ac9bd457ed5425",
+        "compiled_javascript": "const ve=$.useCallback(ye=>{if(aqn(ye)){ye.preventDefault(),ye.stopPropagation();return}if(Q.isImeCompositionActive||oRt(ye))return;if(Q.suggestionHandledKey){Q.suggestionHandledKey=!1,ye.preventDefault(),ye.stopPropagation();return}const xe=be?.entry.state,ke=uqn(ye);if(he===\"external\"&&xe){if(ke===\"ArrowUp\"&&xe.setSelectedIndex((xe.selectedIndex+xe.items.length-1)%xe.items.length),ke===\"ArrowDown\"&&xe.setSelectedIndex((xe.selectedIndex+1)%xe.items.length),ke===\"Enter\"||ke===\"Tab\"){const Se=xe.items[xe.selectedIndex];Se&&xe.command&&xe.command(Se)}if(ke===\"Escape\"&&xe.dismiss(),ke!==void 0){ye.preventDefault(),ye.stopPropagation();return}}if(he===\"internal\"){ke!==void 0&&(ye.preventDefault(),ye.stopPropagation());return}if(ke===\"ArrowUp\"&&!ye.shiftKey&&!ye.metaKey&&!ye.ctrlKey&&!ye.altKey&&m.keyboardShortcuts&&X!==void 0&&ue!==null&&$5o(ue)&&X()){ye.preventDefault(),ye.stopPropagation();return}if(U!==void 0){const{shouldSend:Se,sendModeOverride:De}=H?lqn({event:ye.nativeEvent,messageSendKey:L,matchesCommand:m.matchesSendCommand}):cqn({event:ye.nativeEvent,messageSendKey:L,messageSendMode:F,matchesCommand:m.matchesSendCommand});if(Se){ye.preventDefault(),!G?.(ye)&&z&&Promise.resolve(U({sendModeOverride:De})).fireAndForget();return}}n?.(ye)},[z,ue,L,F,H,X,n,U,G,be,he,Q,m.keyboardShortcuts,m.matchesSendCommand]);"
+      },
+      {
+        "symbol": "React wrapper dispatch",
+        "utf8_bytes_half_open": [
+          8425776,
+          8426168
+        ],
+        "sha256": "ed8b69ae287a626ed12b210c6494a5d1bd75cf1dccaee5191cf8cc0f741a1a07",
+        "compiled_javascript": "return p.jsxs(\"div\",{className:\"composer-tiptap\",\"data-testid\":\"composer-input\",onCompositionEnd:()=>{Q.isImeCompositionActive=!1},onCompositionStart:()=>{Q.isImeCompositionActive=!0},onKeyDown:ve,children:[p.jsx(kIi.Provider,{value:ae,children:p.jsx(PAi,{editor:ue})}),be&&p.jsx(t5o,{state:be.entry.state,renderItem:be.entry.renderItem,containerEl:O??null,hoverPreviews:m.hoverPreviews})]})}"
+      }
+    ]
+  },
+  "source_contract": [
+    "dBr is hEe, an identity function, so it does not normalize the event before P5o.",
+    "P5o accepts logical space OR physical code Space, requires Ctrl and rejects Meta. Shift and Alt do not affect this predicate. aqn directly returns P5o(event).",
+    "lHt passes the raw editor event to aqn before composition, suggestion plugins or configured send matching.",
+    "The React div wrapper dispatches onKeyDown to ve. ve passes that event to aqn and, when reserved, prevents default and propagation before any suggestion, send or optional parent callback.",
+    "Current ComposerEditor forwards the raw editor event to props.onKeyDown after only its existing composition guard. Composer and QueueRow both receive this boundary callback.",
+    "The patch enforces the reserved-key contract in that shared editor adapter. It does not change keybinding presets, matching, native event production or composition handling."
+  ],
+  "baseline_source_pins": [
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "git_blob": "1653140e5bc159f80ced25776b470d3b59d99b26",
+      "sha256": "321a0d4fb96df850e0f4f3e6349917ac06e3474bbf01953857862395c3df3ebe"
+    },
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "git_blob": "3db2c114e023fbd23f21afe63cddf7850900da54",
+      "sha256": "ba13bc0523ef60d657b5cd864030b7a958dbdc9f60c3d866067cf493dc0e01f0"
+    },
+    {
+      "path": "src/features/chat/composerDocument.ts",
+      "git_blob": "e5a796c3f6f5d9439ff3270ac0d5953e8f9e740e",
+      "sha256": "9228c3b05e08c41faffef50363e928d80636eda949003dbac34d197971d1a676"
+    },
+    {
+      "path": "src/features/chat/composerSchema.ts",
+      "git_blob": "b6e28e2c68f068073339cd1233dddefc2d6cf215",
+      "sha256": "f64206351ac2253c2333cb67eaa19e11aee7775c64f885c1c72e374dd5f6b338"
+    },
+    {
+      "path": "src/features/chat/composerQueueFocus.test.ts",
+      "git_blob": "85e3ac0864479be794d940db373ae02e74797086",
+      "sha256": "cce2db54f4ccca445d66791fca2c9eec68b62f44e55e487af23607aea318bd37"
+    },
+    {
+      "path": "package.json",
+      "git_blob": "5fe4780b22a7417ae510a4f09f40d088683aece2",
+      "sha256": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b"
+    },
+    {
+      "path": "package-lock.json",
+      "git_blob": "9fe1d2f78593100fba2a2ce07788c56bdb450647",
+      "sha256": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1"
+    }
+  ],
+  "candidate": {
+    "path": "src/features/chat/ComposerEditor.tsx",
+    "sha256": "6b1a0b88d90a006eb82d1c098f83097873001aea462d5a521d96e0f90b6ec36c",
+    "diff": "Five-line early guard only."
+  },
+  "fixture": {
+    "path": "src/features/chat/composerReservedSpace.test.ts",
+    "bytes": 6455,
+    "sha256": "51a84ca89e0925814b178d7bf625cd525d1819652f79d497873b78ed8da03e24",
+    "cases": 12,
+    "reserved_cases": 6,
+    "control_cases": 6,
+    "boundary": "Mounts the complete production ComposerEditor in React test-renderer. A Tiptap boundary retains a real headless document and substitutes only the DOM view. Drives the installed production handleKeyDown with synthetic Event objects carrying key/code/modifier fields.",
+    "observations": [
+      "public parent callback forwarding",
+      "handled result",
+      "defaultPrevented",
+      "cancelBubble",
+      "unchanged document and change callback",
+      "published editor handle cleanup"
+    ],
+    "limits": [
+      "No actual Composer send callback or user settings is executed. Absence of forwarding prevents parent commands at this boundary.",
+      "No DOM editor dispatcher, ancestor listener, native KeyboardEvent, browser input, OS input-method switch, real IME, app/provider or visual capture runs."
+    ],
+    "predicted_baseline": "6 reserved-case assertion failures; 6 controls pass. Setup/import errors are not behavioral RED.",
+    "predicted_candidate": "12 pass with identical fixture bytes.",
+    "baseline_command": "COMPOSER_RESERVED_SPACE_SOURCE_REF=12a805ed90f5aeb0d472e53a64ad6d85bf2d3479 node --experimental-strip-types --test --test-concurrency=1 src/features/chat/composerReservedSpace.test.ts",
+    "candidate_command": "node --experimental-strip-types --test --test-concurrency=1 src/features/chat/composerReservedSpace.test.ts"
+  },
+  "verification": {
+    "passed": [
+      "Whole retained renderer identity and original-byte span hashes",
+      "Current-main source pins and five-line scope review",
+      "git diff --check"
+    ],
+    "not_run": [
+      "Behavioral baseline RED",
+      "Candidate GREEN",
+      "Typecheck",
+      "Browser/native/visual/IME/provider"
+    ],
+    "runtime_admission": "None; frozen unit submitted separately to the existing serialized e1 queue. No install or new executor."
+  },
+  "ownership_exclusions": [
+    "#1019 frozen assertions and consumer",
+    "#1024 terminal owner1f",
+    "which-only229 and real IME defect claims",
+    "global shortcuts, presets, menus and settings config",
+    "Home, local clear and typed SubagentRow owners"
+  ]
+}

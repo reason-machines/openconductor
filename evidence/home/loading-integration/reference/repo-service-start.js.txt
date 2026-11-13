@@ -1,0 +1,1 @@
+start(){if(this.initialHydrationToken!==void 0)throw new Error("Service already starting");const e=this.nextToken++;this.initialHydrationToken=e;const s=async()=>await this.reloadRepos(()=>this.initialHydrationToken===e);this.hydration=s().withErrorLogging()}

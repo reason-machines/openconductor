@@ -1,0 +1,33 @@
+{
+  "grant": "ACC_DE6_CORE33_CANDIDATE_20261113T0122",
+  "stage": "rust",
+  "argv": [
+    "nice",
+    "-n",
+    "19",
+    "cargo",
+    "test",
+    "--manifest-path",
+    "src-tauri/Cargo.toml",
+    "workspace_file::tests"
+  ],
+  "environment_additions": {
+    "CARGO_BUILD_JOBS": "1",
+    "RUST_TEST_THREADS": "1"
+  },
+  "start_utc": "2026-11-13T01:29:54.506534+00:00",
+  "elapsed_seconds": 108.96998882293701,
+  "exit": 101,
+  "stop_reason": null,
+  "wall_bound_seconds": 1800,
+  "kill_grace_seconds": 5,
+  "rss_tree_peak_sampled_bytes": 421842944,
+  "rss_budget_bytes": 3221225472,
+  "accounting": "PARTIAL: sampled owned live /proc descendants at 250ms; no private cgroup memory controller exposed; not exact peak or proof of private capacity",
+  "remaining_owned_runtime": [],
+  "baseline": "NOT_DEFINED/NOT_AUTHORED",
+  "log_sha256": {
+    "rust.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rust.stderr": "eecddeb4b9f7874ec990b4a528a1646ca07aa572fd6523619f3d93a8cebbd213"
+  }
+}

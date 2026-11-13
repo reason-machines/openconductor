@@ -1,0 +1,62 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: parseRepoIcon decodes emoji, uploaded images and bundled icon names
+ok 1 - parseRepoIcon decodes emoji, uploaded images and bundled icon names
+  ---
+  duration_ms: 1.868779
+  type: 'test'
+  ...
+# Subtest: emojiIcon trims and refuses blank input
+ok 2 - emojiIcon trims and refuses blank input
+  ---
+  duration_ms: 0.133293
+  type: 'test'
+  ...
+# Subtest: githubAvatarUrl reads the owner from github.com remotes only
+ok 3 - githubAvatarUrl reads the owner from github.com remotes only
+  ---
+  duration_ms: 0.303527
+  type: 'test'
+  ...
+# Subtest: uploads accept the five image types by extension
+ok 4 - uploads accept the five image types by extension
+  ---
+  duration_ms: 0.327846
+  type: 'test'
+  ...
+# Subtest: fitIcon scales the longest side to at most 128 and centers
+ok 5 - fitIcon scales the longest side to at most 128 and centers
+  ---
+  duration_ms: 0.254978
+  type: 'test'
+  ...
+# Subtest: fitIcon preserves half-pixel centering for odd padding
+ok 6 - fitIcon preserves half-pixel centering for odd padding
+  ---
+  duration_ms: 0.196222
+  type: 'test'
+  ...
+# Subtest: fitIcon defaults a missing width to 128 independently of height
+ok 7 - fitIcon defaults a missing width to 128 independently of height
+  ---
+  duration_ms: 0.135975
+  type: 'test'
+  ...
+# Subtest: fitIcon defaults a missing height to 128 independently of width
+ok 8 - fitIcon defaults a missing height to 128 independently of width
+  ---
+  duration_ms: 0.089386
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 303.762362

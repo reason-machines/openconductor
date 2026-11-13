@@ -1,0 +1,41 @@
+{
+  "grant": "ACC_DE6_CORE33_CANDIDATE_20261113T0122",
+  "stage": "node",
+  "argv": [
+    "nice",
+    "-n",
+    "19",
+    "node",
+    "--experimental-strip-types",
+    "--test",
+    "--test-concurrency=1",
+    "src/features/files/readText.test.ts",
+    "src/features/files/WorkspaceFileView.test.ts",
+    "src/features/files/readMarkdown.test.ts",
+    "src/features/files/filePreviewWiring.test.ts",
+    "src/features/diff/editorContents.test.ts",
+    "src/features/diff/EditInViewer.test.ts",
+    "src/features/diff/copyFile.test.ts",
+    "src/features/diff/wholeFileRefresh.test.ts"
+  ],
+  "environment_additions": {
+    "CARGO_BUILD_JOBS": "1",
+    "RUST_TEST_THREADS": "1",
+    "NODE_OPTIONS": "--max-old-space-size=1024"
+  },
+  "start_utc": "2026-11-13T01:31:47.881173+00:00",
+  "elapsed_seconds": 11.036076068878174,
+  "exit": 0,
+  "stop_reason": null,
+  "wall_bound_seconds": 120,
+  "kill_grace_seconds": 5,
+  "rss_tree_peak_sampled_bytes": 317599744,
+  "rss_budget_bytes": 2147483648,
+  "accounting": "PARTIAL: sampled owned live /proc descendants at 250ms; no private cgroup memory controller exposed; not exact peak or proof of private capacity",
+  "remaining_owned_runtime": [],
+  "baseline": "NOT_DEFINED/NOT_AUTHORED",
+  "log_sha256": {
+    "node.stdout": "cefbb332882e727d8c39e6c69eb1aeb4206c6a46f0a781ae34e489e7cdbca639",
+    "node.stderr": "76d48b110ab46798e2e7567d0957a948827b40777257b5d1984ba0931ba098e0"
+  }
+}

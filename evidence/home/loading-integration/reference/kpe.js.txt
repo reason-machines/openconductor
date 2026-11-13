@@ -1,0 +1,1 @@
+function kpe(t){const e=z.c(8),s=tt(Et.store,yn(IMt)),n=xI();let r,i;if(e[0]!==t||e[1]!==n||e[2]!==s){const a=AMt({baseUrl:t,state:s});r=a,i=a.data===void 0?void 0:T2(R2({organizations:a.data,cloudRestrictedByDataPrivacy:n})),e[0]=t,e[1]=n,e[2]=s,e[3]=r,e[4]=i}else r=e[3],i=e[4];let o;return e[5]!==r||e[6]!==i?(o={...r,data:i},e[5]=r,e[6]=i,e[7]=o):o=e[7],o}

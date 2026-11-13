@@ -4,15 +4,18 @@
 // Codex thread id is saved per chat, so a chat reopened after a restart
 // resumes its thread.
 
-import { invoke, isTauri } from "@tauri-apps/api/core";
+import { Channel, invoke, isTauri } from "@tauri-apps/api/core";
 import { cachedAgentCommands, linkCodexSkills } from "./slashCompletions.ts";
 import { listen } from "@tauri-apps/api/event";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer.ts";
 import * as Q from "./queue.ts";
+import type { UserPrompt } from "./userContent.ts";
 import { chatWantsAttention, codexAsks, turnSettled } from "./attention.ts";
 import { reportChatStatus } from "./chatRuntime.ts";
 import { answered, applyCodexPayload, codexChat, failTurn, newestTurn, startTurn, type CodexApproval, type CodexChatState, type CodexDecision, type CodexPayload, type Step } from "./codex.ts";
 import { statusWithOpenRequests, type CodexConsent, type ConsentAnswer } from "./codexConsent.ts";
+import { localModelOptions } from "./chatModelChoice.ts";
+import { desktopHost } from "./desktopHost.ts";
 
 const EVENT = "codex-chat-event";
 const threadKey = (chatId: string) => `openconductor.codex.thread.${chatId}`;
@@ -53,6 +56,7 @@ export interface CodexSnapshot {
   approvals: CodexApproval[];
   /** Open MCP elicitations and permission requests (`needs_user_input`). */
   consents: CodexConsent[];
+  inFlightAttachments?: readonly Q.MessageAttachment[];
 }
 
 interface Chat {
@@ -60,6 +64,8 @@ interface Chat {
   view: CodexSnapshot;
   cwd: string | null;
   opened: boolean;
+  workspaceId?: string;
+  deliveries: Map<string, { input: UserPrompt; attachments: readonly Q.MessageAttachment[]; workspaceId?: string; active: boolean; handedOff: boolean }>;
   listeners: Set<(v: CodexSnapshot) => void>;
 }
 
@@ -75,14 +81,16 @@ export const CODEX_CAN_STEER = false;
 function chat(chatId: string): Chat {
   let c = chats.get(chatId);
   if (!c) {
-    c = { state: codexChat(chatId), view: { transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), approvals: [], consents: [] }, cwd: null, opened: false, listeners: new Set() };
+    c = { state: codexChat(chatId), view: { transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), approvals: [], consents: [] }, cwd: null, opened: false, deliveries: new Map(), listeners: new Set() };
     chats.set(chatId, c);
   }
   return c;
 }
 
 function publish(c: Chat, next: Partial<CodexSnapshot>) {
-  c.view = { ...c.view, ...next, approvals: c.state.approvals, consents: c.state.consents };
+  c.view = { ...c.view, ...next, approvals: c.state.approvals, consents: c.state.consents,
+    inFlightAttachments: [...c.deliveries.values()].flatMap((delivery) => delivery.active ? [...delivery.attachments] : []),
+  };
   for (const fn of c.listeners) fn(c.view);
 }
 
@@ -131,7 +139,7 @@ function setQueue(c: Chat, step: Q.QueueStep | Q.ChatQueue) {
     // Codex cannot steer (`CODEX_CAN_STEER`), so a steer never comes from the composer.
     if (e.kind === "cancel") {
       if (c.opened) void invoke("codex_cancel", { chatId: c.state.chatId });
-    } else void prompt(c, inlineAttachments(e.text, e.attachments));
+    } else void prompt(c, { text: e.text, userContent: e.userContent }, e.attachments);
   }
 }
 
@@ -159,10 +167,14 @@ export function subscribeCodex(chatId: string, fn: (v: CodexSnapshot) => void): 
 }
 
 /** Opens a turn and sends the prompt; `submitCodex` sets the folder first. */
-async function prompt(c: Chat, text: string): Promise<void> {
+async function prompt(c: Chat, input: UserPrompt, attachments: readonly Q.MessageAttachment[]): Promise<void> {
   const chatId = c.state.chatId;
-  apply(c, startTurn(c.state, text));
+  const text = inlineAttachments(input.text, attachments);
+  const delivery = { input, attachments: attachments.map((attachment) => ({ ...attachment })), workspaceId: c.workspaceId, active: true, handedOff: false };
+  apply(c, startTurn(c.state, text, new Date(), input.userContent));
   const turnId = newestTurn(c.state)!;
+  c.deliveries.set(turnId, delivery);
+  publish(c, {});
   try {
     await ensureListening();
     if (!c.opened) {
@@ -173,18 +185,37 @@ async function prompt(c: Chat, text: string): Promise<void> {
     // Resolves with the prompt's end; the `turnEnded` event closes the turn.
     // A skill picked in the "/" menu (`$name`) goes to Codex as a skill input item too.
     const skills = cachedAgentCommands("codex", c.cwd ?? "")?.skills ?? [];
-    await invoke("codex_prompt", { chatId, text: linkCodexSkills(text, skills) });
+    const handoff = new Channel<null>();
+    handoff.onmessage = () => {
+      if (delivery.handedOff) return;
+      delivery.handedOff = true;
+      if (delivery.workspaceId) void desktopHost.onPromptHandoff?.(delivery.workspaceId, delivery.attachments)
+        .catch((error) => console.warn("codex: review handoff was not saved", error));
+    };
+    await invoke("codex_prompt", { chatId, text: linkCodexSkills(text, skills), ...localModelOptions(chatId, "codex"), onHandoff: handoff });
   } catch (e) {
     // The prompt never reached Codex (no CLI, chat not open), so no event will end it.
     apply(c, failTurn(c.state, turnId, String(e)));
+  } finally {
+    delivery.active = false;
+    publish(c, {});
   }
 }
 
 /** The composer's Send, the first message or a Retry: starts when idle, else queues. `cwd` is the workspace folder. */
-export function submitCodex(chatId: string, cwd: string, text: string, attachments: readonly Q.MessageAttachment[] = []): void {
+export function submitCodex(chatId: string, cwd: string, input: UserPrompt, attachments: readonly Q.MessageAttachment[] = [], workspaceId?: string): void {
   const c = chat(chatId);
   c.cwd = cwd;
-  setQueue(c, Q.submit(c.view.queue, text, "queue", new Date(), attachments));
+  if (workspaceId) c.workspaceId = workspaceId;
+  setQueue(c, Q.submit(c.view.queue, input, "queue", new Date(), attachments.map((attachment) => ({ ...attachment }))));
+}
+
+export function retryUnsentCodex(chatId: string, cwd: string, _input: UserPrompt, turnId: string): boolean {
+  const c = chat(chatId);
+  const delivery = c.deliveries.get(turnId);
+  if (!delivery || delivery.handedOff || c.view.transcript.turns[turnId]?.status !== "failed") return false;
+  submitCodex(chatId, cwd, delivery.input, delivery.attachments, delivery.workspaceId);
+  return true;
 }
 
 /** Stop: interrupts the running turn. A chat Codex never ran has nothing to stop. */

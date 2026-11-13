@@ -1,0 +1,303 @@
+{
+  "method": "Static hand-transcribed predicate evaluation. Neither app is imported, mounted, or executed.",
+  "assumptions": [
+    "All workspace records belong to known local repositories.",
+    "Reference owners U is undefined for this bounded table, not a claim about all saved preferences.",
+    "Reference state archived maps to current status archived.",
+    "The query absent has no match in any field. Search implementation is outside scope.",
+    "Loading flags are reference inputs, not available AllWorkspaces props; reachability in OpenConductor is unproven."
+  ],
+  "cases": [
+    {
+      "case": "loading-workspaces",
+      "input": {
+        "local": true,
+        "owners": "undefined",
+        "known_repo_workspace_states": [],
+        "archive_filter": "active",
+        "projects": [],
+        "query": "",
+        "loading_flag": "workspaces"
+      },
+      "reference": {
+        "branch": "Loading workspaces",
+        "empty_action": null
+      },
+      "current_main": {
+        "branch": "No matching workspaces",
+        "empty_action": "create"
+      },
+      "classification": "loading-input-not-exposed"
+    },
+    {
+      "case": "loading-repositories",
+      "input": {
+        "local": true,
+        "owners": "undefined",
+        "known_repo_workspace_states": [],
+        "archive_filter": "active",
+        "projects": [],
+        "query": "",
+        "loading_flag": "repositories"
+      },
+      "reference": {
+        "branch": "Loading workspaces",
+        "empty_action": null
+      },
+      "current_main": {
+        "branch": "No matching workspaces",
+        "empty_action": "create"
+      },
+      "classification": "loading-input-not-exposed"
+    },
+    {
+      "case": "loading-local-context",
+      "input": {
+        "local": true,
+        "owners": "undefined",
+        "known_repo_workspace_states": [],
+        "archive_filter": "active",
+        "projects": [],
+        "query": "",
+        "loading_flag": "local-context"
+      },
+      "reference": {
+        "branch": "Loading workspaces",
+        "empty_action": null
+      },
+      "current_main": {
+        "branch": "No matching workspaces",
+        "empty_action": "create"
+      },
+      "classification": "loading-input-not-exposed"
+    },
+    {
+      "case": "settled-initial-empty",
+      "input": {
+        "local": true,
+        "owners": "undefined",
+        "known_repo_workspace_states": [],
+        "archive_filter": "active",
+        "projects": [],
+        "query": "",
+        "loading_flag": null
+      },
+      "reference": {
+        "branch": "No matching workspaces",
+        "empty_action": "create"
+      },
+      "current_main": {
+        "branch": "No matching workspaces",
+        "empty_action": "create"
+      },
+      "classification": "match"
+    },
+    {
+      "case": "settled-archived-only",
+      "input": {
+        "local": true,
+        "owners": "undefined",
+        "known_repo_workspace_states": [
+          [
+            "a",
+            "archived"
+          ]
+        ],
+        "archive_filter": "active",
+        "projects": [],
+        "query": "",
+        "loading_flag": null
+      },
+      "reference": {
+        "branch": "No matching workspaces",
+        "empty_action": "clear"
+      },
+      "current_main": {
+        "branch": "No matching workspaces",
+        "empty_action": "create"
+      },
+      "classification": "source-mismatch"
+    },
+    {
+      "case": "settled-project-filter-empty",
+      "input": {
+        "local": true,
+        "owners": "undefined",
+        "known_repo_workspace_states": [
+          [
+            "a",
+            "active"
+          ]
+        ],
+        "archive_filter": "active",
+        "projects": [
+          "b"
+        ],
+        "query": "",
+        "loading_flag": null
+      },
+      "reference": {
+        "branch": "No matching workspaces",
+        "empty_action": "clear"
+      },
+      "current_main": {
+        "branch": "No matching workspaces",
+        "empty_action": "clear"
+      },
+      "classification": "match"
+    },
+    {
+      "case": "settled-query-empty",
+      "input": {
+        "local": true,
+        "owners": "undefined",
+        "known_repo_workspace_states": [
+          [
+            "a",
+            "active"
+          ]
+        ],
+        "archive_filter": "active",
+        "projects": [],
+        "query": "absent",
+        "loading_flag": null
+      },
+      "reference": {
+        "branch": "No matching workspaces",
+        "empty_action": "clear"
+      },
+      "current_main": {
+        "branch": "No matching workspaces",
+        "empty_action": "clear"
+      },
+      "classification": "match"
+    },
+    {
+      "case": "settled-archived-filter-empty",
+      "input": {
+        "local": true,
+        "owners": "undefined",
+        "known_repo_workspace_states": [
+          [
+            "a",
+            "active"
+          ]
+        ],
+        "archive_filter": "archived",
+        "projects": [],
+        "query": "",
+        "loading_flag": null
+      },
+      "reference": {
+        "branch": "No matching workspaces",
+        "empty_action": "clear"
+      },
+      "current_main": {
+        "branch": "No matching workspaces",
+        "empty_action": "clear"
+      },
+      "classification": "match"
+    },
+    {
+      "case": "settled-all-unfiltered-empty",
+      "input": {
+        "local": true,
+        "owners": "undefined",
+        "known_repo_workspace_states": [],
+        "archive_filter": "all",
+        "projects": [],
+        "query": "",
+        "loading_flag": null
+      },
+      "reference": {
+        "branch": "No matching workspaces",
+        "empty_action": null
+      },
+      "current_main": {
+        "branch": "No matching workspaces",
+        "empty_action": null
+      },
+      "classification": "match"
+    },
+    {
+      "case": "settled-all-query-empty",
+      "input": {
+        "local": true,
+        "owners": "undefined",
+        "known_repo_workspace_states": [
+          [
+            "a",
+            "active"
+          ]
+        ],
+        "archive_filter": "all",
+        "projects": [],
+        "query": "absent",
+        "loading_flag": null
+      },
+      "reference": {
+        "branch": "No matching workspaces",
+        "empty_action": null
+      },
+      "current_main": {
+        "branch": "No matching workspaces",
+        "empty_action": null
+      },
+      "classification": "match"
+    },
+    {
+      "case": "settled-all-project-filter-empty",
+      "input": {
+        "local": true,
+        "owners": "undefined",
+        "known_repo_workspace_states": [
+          [
+            "a",
+            "active"
+          ]
+        ],
+        "archive_filter": "all",
+        "projects": [
+          "b"
+        ],
+        "query": "",
+        "loading_flag": null
+      },
+      "reference": {
+        "branch": "No matching workspaces",
+        "empty_action": "clear"
+      },
+      "current_main": {
+        "branch": "No matching workspaces",
+        "empty_action": "clear"
+      },
+      "classification": "match"
+    },
+    {
+      "case": "settled-list-control",
+      "input": {
+        "local": true,
+        "owners": "undefined",
+        "known_repo_workspace_states": [
+          [
+            "a",
+            "active"
+          ]
+        ],
+        "archive_filter": "active",
+        "projects": [],
+        "query": "",
+        "loading_flag": null
+      },
+      "reference": {
+        "branch": "rows",
+        "empty_action": null
+      },
+      "current_main": {
+        "branch": "rows",
+        "empty_action": null
+      },
+      "classification": "match"
+    }
+  ]
+}

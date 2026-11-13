@@ -1,0 +1,1 @@
+function Gv(t){return t.isLoading?{...t,isPending:!0,isSuccess:!1,isError:!1,status:"pending"}:t.error!==void 0?{...t,isPending:!1,isSuccess:!1,isError:!0,status:"error"}:{...t,isPending:!1,isSuccess:!0,isError:!1,status:"success"}}

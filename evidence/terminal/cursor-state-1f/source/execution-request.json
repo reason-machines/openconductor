@@ -1,0 +1,78 @@
+{
+  "baseline": "b34ba2de9ad45365715d21a0bfe24d9c36b335fb",
+  "baseline_session_sha256": "e94da195a0f3d315ab2862f4f3333e4014df15f69b4ace90b53449258e60ad87",
+  "fixture_sha256": "1cabc78d3cc6446eea19780fc5fd71a28578b1995ba7134be9194df1a72d3681",
+  "red_fixture_sha256": "1cabc78d3cc6446eea19780fc5fd71a28578b1995ba7134be9194df1a72d3681",
+  "candidate_patch_sha256": "accd9f9e871a7489773836570b57abf1abcb963f0dab6626aa1d99091868aa65",
+  "candidate_session_sha256": "e7785e03355148c1937a02b3aca8cafebb1821fbb6cd304946b08c476fc11409",
+  "product_patch_applied": false,
+  "tests_executed": false,
+  "baseline_source_archive_sha256": "861073319e60f7a2d9f92f3365f6ffe1e54806bd0d2bbdf49fd1261cbdddb83f",
+  "owner": "1f14fa82-4ec3-41fc-b085-32ec441b4228",
+  "executor_coordinator": "e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46",
+  "fixture_cases": 9,
+  "admitted": false,
+  "commands": [
+    {
+      "stage": "RED",
+      "cwd": ".oc-tmp/cursor-state-1f/red",
+      "command": "NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 60s node --experimental-strip-types --test --test-concurrency=1 src/features/terminal/cursorState.test.ts",
+      "expected": "Intended cursor-option assertion failure; stop on setup/dependency/drift/timeout/OOM."
+    },
+    {
+      "stage": "GREEN",
+      "cwd": "checkout",
+      "prerequisite": "Only after intended RED, apply frozen candidate.patch in cleared hunks; same fixture hash.",
+      "command": "NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 60s node --experimental-strip-types --test --test-concurrency=1 src/features/terminal/cursorState.test.ts"
+    },
+    {
+      "stage": "focused",
+      "cwd": "checkout",
+      "command": "NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 90s node --experimental-strip-types --test --test-concurrency=1 src/features/terminal/*.test.ts src/components/resourceUsageLabels.test.ts",
+      "files": [
+        "src/features/terminal/bigTerminal.test.ts",
+        "src/features/terminal/capture.test.ts",
+        "src/features/terminal/clearRedraw.test.ts",
+        "src/features/terminal/cursorState.test.ts",
+        "src/features/terminal/find.test.ts",
+        "src/features/terminal/font.test.ts",
+        "src/features/terminal/nonrunningInput.test.ts",
+        "src/features/terminal/restore.test.ts",
+        "src/features/terminal/scrollback.test.ts",
+        "src/features/terminal/shellIntegration.test.ts",
+        "src/features/terminal/shortcuts.test.ts",
+        "src/features/terminal/spawnFailure.test.ts",
+        "src/features/terminal/startingBody.test.ts",
+        "src/features/terminal/tabList.test.ts",
+        "src/features/terminal/terminal.test.ts",
+        "src/features/terminal/writeQueue.test.ts",
+        "src/components/resourceUsageLabels.test.ts"
+      ]
+    },
+    {
+      "stage": "typecheck",
+      "cwd": "checkout",
+      "command": "NODE_OPTIONS=--max-old-space-size=1536 nice -n 19 timeout --kill-after=5s 180s npm run typecheck"
+    }
+  ],
+  "constraints": [
+    "Sequential once only after sole e1 admission.",
+    "No retry/install/cachewarm/build/native/browser/provider/shellPTY.",
+    "Stop and report first material failure.",
+    "No reference JS evaluation; tests inspect production option requests only."
+  ],
+  "existing_dependency_packages": [
+    {
+      "path": "node_modules/typescript/package.json",
+      "sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    },
+    {
+      "path": "node_modules/react/package.json",
+      "sha256": "d4e68a5c96babb20cad1daafea8b78822eae45b341552cf5418d06a5304fa64c"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/package.json",
+      "sha256": "f5a0dde40a146d6c7a86b22daf6e5740517e5d708ec1d162197e0445431d8f4f"
+    }
+  ]
+}

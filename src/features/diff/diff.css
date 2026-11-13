@@ -74,6 +74,8 @@
 .oc-diff-list .oc-count .d { margin-left: 0; }
 .oc-diff-list .oc-status { width: 12px; height: 12px; flex: none; }
 .oc-diff-list .oc-status.untracked { color: var(--muted); }
+.oc-change-comment-count { display: inline-flex; align-items: center; gap: 3px; color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.oc-change-comment-count svg { flex: none; }
 .oc-change-meta { display: inline-flex; align-items: center; justify-content: flex-end; gap: 4px; padding: 0 6px; min-width: 40px; flex: none; }
 .oc-change-uncommitted { font-size: 12px; font-weight: 500; color: var(--text); }
 .oc-change-actions { position: absolute; right: 0; top: 0; height: 100%; display: inline-flex; align-items: center; visibility: hidden; }
@@ -110,6 +112,8 @@
 .oc-file-header { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 8px; padding: 8px 4px 8px 12px; background: var(--bg); font-size: 12px; }
 /* Conductor's NPo: "flex min-w-0 flex-1 items-center gap-2" around the path chip, "flex shrink-0 items-center gap-2" around the actions. */
 .oc-file-lead { display: flex; flex: 1; min-width: 0; align-items: center; gap: 8px; }
+.oc-file-refresh-status { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; gap: 8px; width: 96px; height: 28px; border-radius: 6px; font-size: 12px; color: var(--muted); }
+button.oc-file-refresh-status { color: var(--danger); }
 .oc-file-actions { display: flex; flex-shrink: 0; align-items: center; gap: 8px; }
 /* The path chip (FilePathChip.tsx): Conductor's QZ outline pill, h-5 rounded-sm px-1.5 gap-1 text-xs, sans. */
 .oc-path-chip { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; min-width: 0; height: 20px; padding: 0 6px; border: 1px solid var(--input); border-radius: 4px; background: transparent; color: var(--text); font-family: var(--font-sans); font-size: 12px; line-height: 1; cursor: pointer; }

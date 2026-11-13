@@ -155,7 +155,7 @@ export function ReasonTab({ settings, save, reload }: AgentTabProps) {
           return saved !== false;
         }} systemCli={paths?.systemCli ?? null} />
       </div>
-      <ConfigFileCard title="Reason config" displayPath="~/.config/reason" path={paths?.configDir ?? null} />
+      <ConfigFileCard title="Reason config" displayPath="~/.config/reason" path={paths?.configDir ?? null} copyLabel="directory path" />
     </div>
   );
 }

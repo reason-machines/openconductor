@@ -1,0 +1,29 @@
+{
+  "kind": "hosted-test-first-behavioral-red",
+  "pr": 1062,
+  "head": "17cf1582975951893e253510f06f05b3f3f8f932",
+  "run_id": 43056758274,
+  "job_id": 130648150442,
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43056758274/job/130648150442",
+  "command": "npm test",
+  "fixture": "src/settings/agents/codexLoginVisibility.test.ts",
+  "fixture_sha256": "15a7fef650efa2f5b85859ef067193b6fc4eefdbb72e933ecaeb72e1e0d15191",
+  "cases": 5,
+  "passing_controls": 3,
+  "failing_cases": [
+    "connected CLI retains Run codex login",
+    "refreshing connected CLI retains Run codex login"
+  ],
+  "failure_type": "ERR_ASSERTION: CLI mode must keep the login action regardless of connected status",
+  "suite": {
+    "tests": 2860,
+    "pass": 2858,
+    "fail": 2,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "typecheck": "PASS in separate job130648150346 before duplicated unit step failed",
+  "candidate_green": "PENDING",
+  "native_provider_real_IPC": "NOT_RUN"
+}

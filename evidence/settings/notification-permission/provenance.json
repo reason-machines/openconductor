@@ -1,0 +1,89 @@
+{
+  "reference": "Retained Conductor 0.87.6 shipped assets from existing REA extraction on Sven m5 max; static data only.",
+  "rea_limitation": "Existing renderer semantic-analysis heap exhaustion; no fresh analysis or runtime capture.",
+  "assets": {
+    "renderer": {
+      "name": "renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "name": "index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "reference_spans": [
+    {
+      "path": "reference/mei.txt",
+      "bytes": 720,
+      "sha256": "5104c0c6c9868e5d8da6ddb26b27651e98435b9902dc3d0d273dbbf466cd8389",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10707680,
+        10708400
+      ]
+    },
+    {
+      "path": "reference/Aue.txt",
+      "bytes": 191,
+      "sha256": "2037d2021997cb793acd2f0e0e5daf171ca08592ef58fbf38818573d33984b64",
+      "asset": "index",
+      "utf8_half_open": [
+        2538380,
+        2538571
+      ]
+    },
+    {
+      "path": "reference/Iue.txt",
+      "bytes": 74,
+      "sha256": "ce05ab5befc00c528bee19cce2b921523f91e553c46977dfd2b9aee3cb93fe5c",
+      "asset": "index",
+      "utf8_half_open": [
+        2538571,
+        2538645
+      ]
+    },
+    {
+      "path": "reference/zzt.txt",
+      "bytes": 84,
+      "sha256": "3bb6444572e19413ce557687caf9a59062d49858951c4a129a03e62d6d1fd577",
+      "asset": "index",
+      "utf8_half_open": [
+        411363,
+        411447
+      ]
+    },
+    {
+      "path": "reference/row-notifications_enabled.txt",
+      "bytes": 302,
+      "sha256": "4965cde19a68de4c3be483c704f7d69f4d29cc2593a976b10c359183f7680af0",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10711629,
+        10711931
+      ]
+    },
+    {
+      "path": "reference/index-aliases.txt",
+      "bytes": 29,
+      "sha256": "93290979f356cd2bfb879b962062fdaade7538c550c3a10c14499bc129be1cd7",
+      "asset": "index",
+      "utf8_half_open": [
+        3490265,
+        3490294
+      ]
+    },
+    {
+      "path": "reference/renderer-aliases.txt",
+      "bytes": 29,
+      "sha256": "c66a54103cbbbfaeb857622d38cfd4320d77f3d8b463df83658d0ec3c3b05d90",
+      "asset": "renderer",
+      "utf8_half_open": [
+        63872,
+        63901
+      ]
+    }
+  ],
+  "checked_main": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "fixture_sha256": "d27729fbf1c3df418708a3fcbb4ac2977cf71ea2e5c1dcea02250e46f4aa6140",
+  "harness_sha256": "815f2e5cf14044e64dbda174cd44a9f68028251434ef2aa38d84296f620d3c1d"
+}

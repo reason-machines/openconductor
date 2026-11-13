@@ -17,6 +17,7 @@
 // Pure: slashCommands.test.ts covers it.
 
 import fuzzysort from "fuzzysort";
+export { composerSlashRange } from "./composerSlashRange.ts";
 
 /** The agent running the chat, as Conductor names it; Reason runs as an ACP agent. */
 export type ComposerAgent = "claude" | "codex" | "acp";
@@ -63,9 +64,9 @@ export const isSkill = (c: SlashCommand): boolean => c.effect === "skill";
 export const commandId = (c: SlashCommand): string => c.id ?? c.name;
 
 /**
- * A skill as a menu item (Conductor's `jI`). Codex runs a skill named in the
- * prompt as `$name` (its own composer's mention); Reason and Claude Code as
- * `/name`.
+ * A skill as a menu item (Conductor's `jI`). Codex's path-qualified prompt
+ * link keeps the selected skill's identity when names collide. Reason and
+ * Claude Code use `/name`.
  */
 export function skillCommand(skill: AgentSkillInput, agent: ComposerAgent): SlashCommand {
   return {
@@ -75,7 +76,7 @@ export function skillCommand(skill: AgentSkillInput, agent: ComposerAgent): Slas
     argumentHint: "",
     effect: "skill",
     supportedAgents: [agent],
-    insert: `${agent === "codex" ? "$" : "/"}${skill.name}`,
+    insert: agent === "codex" ? `[$${skill.name}](${skill.path})` : `/${skill.name}`,
   };
 }
 

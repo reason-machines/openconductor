@@ -1,0 +1,1 @@
+function Goo(t){return gS.create({...t,sectionId:crypto.randomUUID()})}

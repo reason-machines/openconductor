@@ -1,0 +1,224 @@
+{
+  "leaf": "CANCEL-HOTKEY-FOCUS-135-01",
+  "retained_rea": {
+    "retained_rea_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "manifest": "evidence/frontend/tauri-assets-manifest.json",
+    "parse_status": "skipped",
+    "known_gap": "Owned JavaScript worker exhausted its heap. Compiled bundle spans were inspected as inert text, not an REA-generated call graph. No new REA call or target execution."
+  },
+  "artifacts": {
+    "renderer": {
+      "path": ".source-prep-13576/retained-originals/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "path": ".source-prep-13576/retained-originals/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "coordinate_units": "zero-based half-open UTF-8 bytes",
+  "spans": [
+    {
+      "name": "display-import-alias",
+      "asset": "renderer",
+      "utf8_bytes": [
+        58387,
+        58396
+      ],
+      "sha256": "65f0a481e2e2766ca931eff4d5bdd7155611f04d5017acb1966c98d01d30f36c",
+      "source": "hW as UYe"
+    },
+    {
+      "name": "display-import-module",
+      "asset": "renderer",
+      "utf8_bytes": [
+        66468,
+        66495
+      ],
+      "sha256": "a3ee2f597109824593693f6ac4deb5a1b61d490ef3df64b4965dbb332f199492",
+      "source": "}from\"./index-BGEQ8YjU.js\";"
+    },
+    {
+      "name": "display-export-alias",
+      "asset": "index",
+      "utf8_bytes": [
+        3484775,
+        3484784
+      ],
+      "sha256": "5fb52a433a0e7f778301a24ffebef712f27ea3c8ba10aa9eff523feb9568bce4",
+      "source": "XKt as hW"
+    },
+    {
+      "name": "session-store-binding",
+      "asset": "index",
+      "utf8_bytes": [
+        3138684,
+        3138703
+      ],
+      "sha256": "6e9fd92a727760e4eab3f3a65b1255c35760815d5958a8235cd4329c8bfca3a7",
+      "source": "let fe=Xc.sessions;"
+    },
+    {
+      "name": "display-UYe-XKt",
+      "asset": "index",
+      "utf8_bytes": [
+        3140036,
+        3140190
+      ],
+      "sha256": "a55d5ea4b46f2ef5623a4c9e5c90f1bfcaa8960a90bfe2b61bbf96481d06342a",
+      "source": "function XKt(t,e){const s=z.c(2),n=DFt(t,e);let r;return s[0]!==t?(r={sessionId:t},s[0]=t,s[1]=r):r=s[1],Z_t(kt.optimisticOverlay,r)?.optimisticStatus??n}"
+    },
+    {
+      "name": "display-base-hook-DFt",
+      "asset": "index",
+      "utf8_bytes": [
+        3140190,
+        3140320
+      ],
+      "sha256": "2e1aad7932e2a380eefb6439ddd67153066bdbc43232aef3019b2510ead040df",
+      "source": "function DFt(t,e){const s=z.c(3);let n;return s[0]!==t||s[1]!==e?(n={sessionId:t,status:e},s[0]=t,s[1]=e,s[2]=n):n=s[2],Clt(fe,n)}"
+    },
+    {
+      "name": "display-base-selector-Clt",
+      "asset": "index",
+      "utf8_bytes": [
+        1539306,
+        1539335
+      ],
+      "sha256": "d704099f1bb4fff23b4df34d6858322223945c958f461bba9a59e6f15c9264d0",
+      "source": "Clt=Sn((t,e)=>mlt(t.state,e))"
+    },
+    {
+      "name": "display-selector-mlt",
+      "asset": "index",
+      "utf8_bytes": [
+        1537454,
+        1537552
+      ],
+      "sha256": "0430b535b11f30e660d7c3a0e499d6a0fda2eb03262fb40efec5a3449584b185",
+      "source": "function mlt(t,{sessionId:e,status:s}){return s===void 0?void 0:glt(s,t.cloudStateBySessionId[e])}"
+    },
+    {
+      "name": "display-projection-glt",
+      "asset": "index",
+      "utf8_bytes": [
+        1537325,
+        1537454
+      ],
+      "sha256": "8fd9eb4772872e59fcd0a51974b46932a9094e0f84abea8fc7bae8c0b99f622a",
+      "source": "function glt(t,e){return t===\"working\"&&e?.optimisticWorking!==void 0?\"working\":t===\"working\"&&e?.waitingSince!=null?\"waiting\":t}"
+    },
+    {
+      "name": "overlay-selector-Z_t",
+      "asset": "index",
+      "utf8_bytes": [
+        2484595,
+        2484743
+      ],
+      "sha256": "07edf630d38a5b7b6b6b1bc9f846060c77d43d6472ad1a8c2a80fbf574b7bb83",
+      "source": "function Z_t(t,e){const s=z.c(2),{sessionId:n}=e;let r;return s[0]!==n?(r=i=>i.snapshotsBySessionId[n]?.overlay,s[0]=n,s[1]=r):r=s[1],tt(t.store,r)}"
+    },
+    {
+      "name": "selector-adapter-Sn",
+      "asset": "index",
+      "utf8_bytes": [
+        769455,
+        769696
+      ],
+      "sha256": "a13c88991891418fd23b26ee3c4157d12a43a8a9173fbe18f366227fc59f4ddf",
+      "source": "function Sn(t,e=yn){function s(n,r,i){const o=z.c(5);let a;o[0]!==r?(a=u=>t(u,r),o[0]=r,o[1]=a):a=o[1];const c=e(a);let l;return o[2]!==c||o[3]!==i?(l=u=>{const d=c(u);return i?i(d):d},o[2]=c,o[3]=i,o[4]=l):l=o[4],tt(n.store,yn(l))}return s}"
+    },
+    {
+      "name": "display-composer-caller",
+      "asset": "renderer",
+      "utf8_bytes": [
+        8657339,
+        8657377
+      ],
+      "sha256": "7875d206781b4c136c6429443b98be13591ea45e0ccbba623607de98bbdfb4d4",
+      "source": "jn=UYe(e,Ye?.status),Ft=jn===\"working\""
+    },
+    {
+      "name": "cancel-eligibility-aTo",
+      "asset": "renderer",
+      "utf8_bytes": [
+        8644692,
+        8644789
+      ],
+      "sha256": "f5c8dd2e07c49fe0f2a59cd19da71c3de26f41c4b766134761a17c9e9dcc1619",
+      "source": "function aTo({sessionStatus:t,displayStatus:e}){const n=e??t;return n===\"working\"||n===\"waiting\"}"
+    },
+    {
+      "name": "cancel-gate-caller",
+      "asset": "renderer",
+      "utf8_bytes": [
+        8664633,
+        8664684
+      ],
+      "sha256": "eef986ed63aecb82cfd1b8c8a4331b3034c38fab074823706629782aab93f7e9",
+      "source": "hp=aTo({sessionStatus:Ye?.status,displayStatus:jn})"
+    },
+    {
+      "name": "cancel-accepted-caller",
+      "asset": "renderer",
+      "utf8_bytes": [
+        8667263,
+        8667417
+      ],
+      "sha256": "759f865b6d1c94341a4a575885f3925b857febfa75b259bff2d08f3c4cad4d34",
+      "source": "oi(\"chat.cancel\",()=>{hp&&Ye!==void 0&&(dS.cancelSession(Ye.id).fireAndForget(),Ah(\"cancel_attempt\",{session_id:Ye.id,method:\"keyboard_shortcut\"}),de())})"
+    },
+    {
+      "name": "cancel-focus-live-editor",
+      "asset": "renderer",
+      "utf8_bytes": [
+        8656005,
+        8656068
+      ],
+      "sha256": "ea89ecbd1daf34836b05936dac062b03d6ad95b7e684af9b1367323773687bc3",
+      "source": "de=$.useCallback(()=>{B?.isDestroyed||B?.commands.focus()},[B])"
+    },
+    {
+      "name": "pointer-stop-control",
+      "asset": "renderer",
+      "utf8_bytes": [
+        8691049,
+        8691168
+      ],
+      "sha256": "6f911517751f1142eb550aa7867e3497b31fad0f2ebc26b80b8e2c7ece553a7d",
+      "source": "hp&&p.jsx(Tgo,{onCancel:()=>{dS.cancelSession(e).fireAndForget(),Ah(\"cancel_attempt\",{session_id:e,method:\"button\"})}})"
+    }
+  ],
+  "status": "Retained REA acquisition and compiled-source spans, not a new original-app observation.",
+  "checked_openconductor_main": "9c276e2e86c0bd7ed97c8ccd0467f30c7a8ebcab",
+  "fixture_sha256": "d496b631ae63976b9128405eba09bc61c6fd6d4fd4d5e6ece6b70ed1ba823f42",
+  "execution": {
+    "red": {
+      "passed": 3,
+      "failed": 3,
+      "exit": 1,
+      "elapsed_seconds": 1.04,
+      "reason": "Accepted keyboard cancel calls stop but does not call editor focus"
+    },
+    "green": {
+      "passed": 6,
+      "failed": 0,
+      "exit": 0,
+      "elapsed_seconds": 0.953
+    },
+    "adjacent": {
+      "passed": 52,
+      "failed": 0,
+      "exit": 0,
+      "elapsed_seconds": 3.963
+    },
+    "timing": "Python monotonic wrapper; /usr/bin/time was unavailable. No speed comparison is claimed.",
+    "limits": [
+      "Real Composer rendered with mocked keybinding registration and editor handle.",
+      "No native focus, caret, IME, provider, browser, build or typecheck was executed locally in this admission.",
+      "Frozen six-case input and assertions unchanged; AddMenu29 and Modified36 not exercised."
+    ]
+  }
+}

@@ -6,6 +6,9 @@ import { countRepos, finishFirstRun, readFirstRunStep } from "./api";
 import { FINISH_FAILED, FIRST_RUN_DONE_STEP, firstRunView, parseFirstRunStep } from "./firstRun";
 import { ExitOnboardingButton, FirstRunOnboarding, StartupLoader } from "./FirstRunOnboarding";
 import { LoginScreen } from "./SignIn";
+import { startReasonCliSetup } from "./reasonCli";
+import { ReasonCliStatus } from "./ReasonCliStatus";
+import type { AgentKind } from "../settings/types";
 
 /** Conductor's `/login` route (`pSa`), outside the auth guard. */
 export const LOGIN_ROUTE = "/login";
@@ -31,6 +34,12 @@ export function FirstRunGate({ children }: { children: ReactNode }) {
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [path, setPath] = useState(window.location.pathname);
   const [busy, setBusy] = useState(false);
+
+  // Install or update the Reason CLI for every agent, in the background:
+  // startup never waits for it and its status lives in the sidebar footer.
+  useEffect(() => {
+    if (!demo) startReasonCliSetup();
+  }, [demo]);
   const { toasts, show, dismiss } = useToasts();
 
   // The app shell applies the theme once it mounts; the onboarding and
@@ -59,10 +68,10 @@ export function FirstRunGate({ children }: { children: ReactNode }) {
     setPath("/");
   }, []);
 
-  const onContinue = useCallback(() => {
+  const onContinue = useCallback((agent: AgentKind = "reason") => {
     if (busy) return;
     setBusy(true);
-    finishFirstRun().then(
+    finishFirstRun(agent).then(
       () => {
         setBusy(false);
         setLoaded((l) => (l ? { ...l, step: FIRST_RUN_DONE_STEP } : l));
@@ -79,21 +88,26 @@ export function FirstRunGate({ children }: { children: ReactNode }) {
   const onFailed = useCallback((title: string, description: string) => show("error", title, { description }), [show]);
 
   if (demo) return <>{children}</>;
+  // Before the app shell (and its sidebar footer) exists, the status sits in a corner.
+  const cliCorner = <div className="onb-cli-status"><ReasonCliStatus /></div>;
+  const toaster = <Toaster toasts={toasts} dismiss={dismiss} />;
   if (path === LOGIN_ROUTE)
     return (
       <>
         <LoginScreen onDone={goHome} onFailed={onFailed} />
-        <Toaster toasts={toasts} dismiss={dismiss} />
+        {cliCorner}
+        {toaster}
       </>
     );
   const view = firstRunView({ loaded: loaded !== null, step: loaded?.step ?? NaN, repoCount: loaded?.repoCount, path });
-  if (view === "app") return <>{children}</>;
+  if (view === "app") return <>{children}{toaster}</>;
   if (view === "loading") return <StartupLoader />;
   return (
     <>
       <FirstRunOnboarding onContinue={onContinue} busy={busy} onFailed={onFailed} />
       {view === "onboarding-route" && <ExitOnboardingButton onExit={goHome} />}
-      <Toaster toasts={toasts} dismiss={dismiss} />
+      {cliCorner}
+      {toaster}
     </>
   );
 }

@@ -1,0 +1,80 @@
+TAP version 13
+# (node:87) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: FileGlyph renders the registered glyph or fallback for /fixture/photo.constructor
+not ok 1 - FileGlyph renders the registered glyph or fallback for /fixture/photo.constructor
+  ---
+  duration_ms: 3.376352
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/src/features/chat/fileGlyph.test.ts:46:3'
+  failureType: 'testCodeFailure'
+  error: 'function is not iterable (cannot read property Symbol(Symbol.iterator))'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    FileGlyph (ToolRows.tsx:120:27)
+    renderWithHooks (/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5662:16)
+    renderIndeterminateComponent (/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5736:15)
+    renderElement (/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5961:7)
+    renderNodeDestructiveImpl (/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6119:11)
+    renderNodeDestructive (/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6091:14)
+    retryTask (/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6543:5)
+    performWork (/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6591:7)
+    /home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6915:12
+    scheduleWork (/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:78:3)
+  ...
+# Subtest: FileGlyph renders the registered glyph or fallback for /fixture/photo.__proto__
+not ok 2 - FileGlyph renders the registered glyph or fallback for /fixture/photo.__proto__
+  ---
+  duration_ms: 0.227412
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/src/features/chat/fileGlyph.test.ts:46:3'
+  failureType: 'testCodeFailure'
+  error: 'object is not iterable (cannot read property Symbol(Symbol.iterator))'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    FileGlyph (ToolRows.tsx:120:27)
+    renderWithHooks (/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5662:16)
+    renderIndeterminateComponent (/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5736:15)
+    renderElement (/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5961:7)
+    renderNodeDestructiveImpl (/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6119:11)
+    renderNodeDestructive (/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6091:14)
+    retryTask (/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6543:5)
+    performWork (/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6591:7)
+    /home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6915:12
+    scheduleWork (/home/runner/.reason/workspace/sessions/d7b27c48-81c4-4bc8-9c2c-8eb81996b477/repo/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:78:3)
+  ...
+# Subtest: FileGlyph renders the registered glyph or fallback for /fixture/example.ts
+ok 3 - FileGlyph renders the registered glyph or fallback for /fixture/example.ts
+  ---
+  duration_ms: 2.567042
+  type: 'test'
+  ...
+# Subtest: FileGlyph renders the registered glyph or fallback for /fixture/photo.PNG
+ok 4 - FileGlyph renders the registered glyph or fallback for /fixture/photo.PNG
+  ---
+  duration_ms: 1.010864
+  type: 'test'
+  ...
+# Subtest: FileGlyph renders the registered glyph or fallback for /fixture/example.unknown
+ok 5 - FileGlyph renders the registered glyph or fallback for /fixture/example.unknown
+  ---
+  duration_ms: 0.595644
+  type: 'test'
+  ...
+# Subtest: FileGlyph renders the registered glyph or fallback for /fixture/README
+ok 6 - FileGlyph renders the registered glyph or fallback for /fixture/README
+  ---
+  duration_ms: 0.433967
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 4
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22936.52949

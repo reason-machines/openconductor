@@ -1,0 +1,21 @@
+{
+  "stage": "STATIC_AUTHORING_ONLY_UNEXECUTED",
+  "fixture_head": "f442590fc0d50fb94d1f734172f4c7979f366f5e",
+  "baseline_main": "385ccb5229f56ff33903f034352eaa9827c40f0e",
+  "previous_fixture_head": "682019f1cae00653bc38d3d5832aa60b39a1c2f2",
+  "fixture_sha256": "6b1b9245ce1e996359db4f87286278c907cb280fa85eeccbd5867660cdce58fc",
+  "fixture_bytes": 16012,
+  "full_baseline_patch_sha256": "4ab54f7e8c33c50e151456451389784751acfb5ecf70ecf5c17ab54223e7caf7",
+  "full_baseline_patch_bytes": 16462,
+  "scenario_assertion_bodies_byte_identical": true,
+  "candidate_product_bytes_unchanged": true,
+  "candidate_patch_sha256": "8e90b390e51f13561941c456407452040c97ea3e74cd91e013b750d11f7a973d",
+  "static_contracts": [
+    "terminal/session getTabs uses stable real pure emptyTabs() result (terminal/tabs.ts:49)",
+    "usePullRequest supplies full authoritative PullRequest including DEFAULT_PR_SETTINGS (WorkspaceView.tsx:1096)",
+    "usePresence supplies mounted/attrs using authoritative return type",
+    "useComposerMinimize supplies MinimizeState and both callbacks using authoritative interface",
+    "useArchiveOnMerge supplies callback, not object"
+  ],
+  "replay": "sole e1 corrected baseline admission first; no runtime executed here"
+}

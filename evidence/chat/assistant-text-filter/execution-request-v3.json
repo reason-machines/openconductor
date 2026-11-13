@@ -1,0 +1,46 @@
+{
+  "producer": "Conductor Rebuild",
+  "status": "QUEUED_NOT_ADMITTED_OR_RUN",
+  "version": 3,
+  "executor": "existing e1 serialized executor only",
+  "baseline_main": "b6e7473d17462ce09948437b4239fb0a31e8d37f",
+  "red_overlay": [
+    "src/features/chat/copyCodeFeedback.test.ts",
+    "src/features/chat/transcriptAgentSummary.test.ts",
+    "src/features/chat/thinkingLinks.test.ts",
+    "src/features/chat/thinkingToolLinks.test.ts",
+    "src/features/chat/todoMixedRows.test.ts",
+    "src/features/chat/userText.test.ts",
+    "src/features/chat/assistantText.ts",
+    "src/features/chat/assistantText.test.ts"
+  ],
+  "green_overlay": [
+    "src/features/chat/Transcript.tsx",
+    "src/features/chat/copyCodeFeedback.test.ts",
+    "src/features/chat/transcriptAgentSummary.test.ts",
+    "src/features/chat/thinkingLinks.test.ts",
+    "src/features/chat/thinkingToolLinks.test.ts",
+    "src/features/chat/todoMixedRows.test.ts",
+    "src/features/chat/userText.test.ts",
+    "src/features/chat/assistantText.ts",
+    "src/features/chat/assistantText.test.ts"
+  ],
+  "red_transcript": "baseline/src/features/chat/Transcript.tsx.txt",
+  "focused_command": "node --experimental-strip-types --test --test-concurrency=1 src/features/chat/assistantText.test.ts src/features/chat/transcriptAgentSummary.test.ts src/features/chat/copyCodeFeedback.test.ts src/features/chat/thinkingLinks.test.ts src/features/chat/thinkingToolLinks.test.ts src/features/chat/todoMixedRows.test.ts src/features/chat/userText.test.ts",
+  "focused_timeout_seconds": 120,
+  "typecheck_command": "npm run typecheck",
+  "typecheck_timeout_seconds": 120,
+  "red_acceptance": "Enabled assistant display assertions fail on unfiltered display. Existing controls/helper pass. Missing-module/ReferenceError/setup errors are not the intended RED.",
+  "green_acceptance": "All identical cases pass, zero skips/cancellations/limit hits; report exact source digests and full output.",
+  "prohibited": [
+    "new executor",
+    "install",
+    "native acquisition",
+    "provider launch",
+    "assertion weakening",
+    "overwriting original BE7 replay"
+  ],
+  "qualification": "qualification-v3.json",
+  "original_request_immutable": "execution-request-v2.json",
+  "context": "only explicit CSS no-op loader case added; all product sources/assertions identical to V2"
+}

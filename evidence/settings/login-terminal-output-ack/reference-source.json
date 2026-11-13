@@ -1,0 +1,202 @@
+{
+  "author": "Conductor Rebuild",
+  "dedupe_key": "settings-login-output-ack",
+  "main_sha": "15e87440daa703030f4c402e7a41b9221a149768",
+  "retained_REA_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "REA_limit": "Historical semantic renderer analysis exhausted heap; retained real-app shipped bytes inspected statically. No reference JavaScript evaluated.",
+  "asset_sha256": {
+    "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "reference_spans": [
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "needle": "gh as qc",
+      "utf8_half_open": [
+        57354,
+        57861
+      ],
+      "sha256": "7edd35d2c134f1c655a50abe4ff626a1a0662d5fc8281608955c90650775acfb",
+      "path": "renderApp-D_fmY7hW.js.0.txt"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "needle": "function ONi(",
+      "utf8_half_open": [
+        8641405,
+        8641918
+      ],
+      "sha256": "23570c9783d860412bd68c803068cc1a7f3d92a65fb1512641412351a03cd67f",
+      "path": "renderApp-D_fmY7hW.js.1.txt"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "needle": "function nZe(",
+      "utf8_half_open": [
+        6922812,
+        6923325
+      ],
+      "sha256": "91540f5030df97240fa49c85000f59c63b4a9cedf5eefbfcdcc9fcf86f96546c",
+      "path": "renderApp-D_fmY7hW.js.2.txt"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "needle": "runtime:qc,sessionId:o,terminal:O",
+      "utf8_half_open": [
+        6923754,
+        6924287
+      ],
+      "sha256": "033bc84773aac981c206a49a938922f02249ff1c980dbcb7974e2c6aa6369d41",
+      "path": "renderApp-D_fmY7hW.js.3.txt"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "needle": "ts as gh",
+      "utf8_half_open": [
+        3484259,
+        3484767
+      ],
+      "sha256": "fdbfb47b53aedfa142e98a48547d178ff214f7ad71b5a1176e96179f12364ef2",
+      "path": "index-BGEQ8YjU.js.0.txt"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "needle": "const ts=DAt()",
+      "utf8_half_open": [
+        2829203,
+        2829717
+      ],
+      "sha256": "7dda72d8c30a773677faef5bc1bef396c26203bd6cc655b47c7bc98981abdaa7",
+      "path": "index-BGEQ8YjU.js.1.txt"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "needle": "function DAt(",
+      "utf8_half_open": [
+        2828843,
+        2829356
+      ],
+      "sha256": "264ed2694c08708c0aa56cc8b0d55d2965701fd191e95ce7e24774483e9be5a5",
+      "path": "index-BGEQ8YjU.js.2.txt"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "needle": "class $kt",
+      "utf8_half_open": [
+        2776043,
+        2776552
+      ],
+      "sha256": "fb2da9203033c468d9cddfae4eef20d02b8e7dbfbab7147fd16008afdab42882",
+      "path": "index-BGEQ8YjU.js.3.txt"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "needle": "async createSession(e){const s=await this.environmentProvider.resolveLaunch(e)",
+      "utf8_half_open": [
+        2776910,
+        2777488
+      ],
+      "sha256": "b0a93504a6127b5043317599c10d8356f54ca10e6faffec6bc9e46d17c035daa",
+      "path": "index-BGEQ8YjU.js.4.txt"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "needle": "class V9",
+      "utf8_half_open": [
+        2756759,
+        2757267
+      ],
+      "sha256": "26695f2f4ffc592b053202c392861b5157a761e09a8344c1807f02416487b5e0",
+      "path": "index-BGEQ8YjU.js.5.txt"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "needle": "this.ackBuffer=new kSt(o=>{s.acknowledgeOutputBytes?.(o)})",
+      "utf8_half_open": [
+        2765756,
+        2766314
+      ],
+      "sha256": "06816e9b9a90f3c118ac916eaf0494cec5bb96928201b880fd0b9e774b4cb80b",
+      "path": "index-BGEQ8YjU.js.6.txt"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "needle": "await this.screenState.write(i)),e.byteLength>0&&this.ackBuffer?.add(e.byteLength)",
+      "utf8_half_open": [
+        2769454,
+        2770036
+      ],
+      "sha256": "761afeda739df66e062b938891cebf6d853ef21ed1c96685cfd5522869f13fcd",
+      "path": "index-BGEQ8YjU.js.7.txt"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "needle": "acknowledgeOutputBytes(e){if(!this.isAlive||e<=0)return;const s={id:this.ptyId,byteCount:e};oe(\"pty_ack_bytes\",{args:s})",
+      "utf8_half_open": [
+        2554957,
+        2555577
+      ],
+      "sha256": "644e10f93c84f0f3d27d6d4ba5ec8b774ef1ed908b427c3d5d53c9ddffb190d8",
+      "path": "index-BGEQ8YjU.js.8.txt"
+    }
+  ],
+  "main_source_pins": [
+    {
+      "path": "src/settings/agents/parts.tsx",
+      "sha256": "624389bd708832a56fdaddb80e2ac567c2b0901002be3e9ca5501de91f73e778",
+      "git_blob": "c38edaa37561a67517ba33fc45e49fd5d501cb1b"
+    },
+    {
+      "path": "src/features/terminal/pty.ts",
+      "sha256": "6ae39f143a2ac74f846c08f02cefdbf7c0cba35c8336480e9e53dc47b9f61ec7",
+      "git_blob": "4ff0694a37b25cf23dbbb96489c29ab5ea987713"
+    },
+    {
+      "path": "src/features/terminal/session.ts",
+      "sha256": "8560deacd82ccec6a8442494b38c887a0e81fe44d271839c9e79888029a0a235",
+      "git_blob": "58fea288eaada118971927e1c3b96f07226d3446"
+    },
+    {
+      "path": "src-tauri/src/terminal_commands.rs",
+      "sha256": "75a8725122182bf9313501ce5d1abba608bb252e0afc8f11bc0a8762b432d24e",
+      "git_blob": "5dfc355d790e81f3d78f38ba673117171e143777"
+    },
+    {
+      "path": "src-tauri/src/terminal/flow.rs",
+      "sha256": "ffc3770a319615e8b44f55028a7764d4e1fb3043aa9c6812250d15ac0986648d",
+      "git_blob": "da2d52e529799cf2d918c043cbac097d15593d20"
+    },
+    {
+      "path": "src-tauri/src/terminal/manager.rs",
+      "sha256": "9889795e54c7bf248d84a5336c2614272d906039a069366e92aa87d4c483a771",
+      "git_blob": "a6a1ac0d112148f54f51a3683ac495f106f60941"
+    },
+    {
+      "path": "src-tauri/src/terminal/wire.rs",
+      "sha256": "9a722df5a8b73875c83acc20a36c04ababb05a208e194f40aa9c1fbea7c08246",
+      "git_blob": "6d48a21d8c125cdfda70a84bb79be00cd669d1a9"
+    },
+    {
+      "path": "src-tauri/src/terminal/spawn.rs",
+      "sha256": "1bbc474439ea21dd34c7a35418ce043cba9443cad5bc1c54583a1a0eb3e25b60",
+      "git_blob": "7194bbb3016b3ba776f679fe38596e7f83f9453a"
+    }
+  ],
+  "candidate": "LoginTerminal consumes PTY output but has no byte ACK. The default FlowGate pauses reads at 512 KiB unacknowledged; the separate panel session map does not include the settings login ID.",
+  "scope": "Settings LoginTerminal output ACK only; no general terminal, Reason sign-in, provider, or native execution.",
+  "limits": "Static evidence qualified; seven-case mounted regression NOT_RUN; local Node/native/provider/realIPC NOT_RUN.",
+  "archive_sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+  "proposed_fixture_sha256": "5821ea8f116268a176b3b3ad042dada17658024efdf3e754fc6e882d859afb09",
+  "completion_fixture_sha256": "b01b2a8d502fb7a1eba2b02e5ecfaf9ea2e7bbea28df81700e7b660772a305e7",
+  "source_checks": {
+    "original_archive": true,
+    "raw_asset_hashes": true,
+    "exact_spans": 13,
+    "main_source_pins": 8,
+    "new_fixture": "NOT_RUN",
+    "local_Node": "NOT_RUN",
+    "native_provider_realIPC": "NOT_RUN",
+    "current_main_pins": 8
+  },
+  "previous_main_sha": "5653e04fa90f11cb0d387f40f8eaed5660085746"
+}

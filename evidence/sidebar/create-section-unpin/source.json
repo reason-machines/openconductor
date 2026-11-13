@@ -1,0 +1,89 @@
+{
+  "owner": "Conductor Rebuild / SAME15",
+  "issue": 1033,
+  "main_checked": "5d182b1e374d1b8b2676b17da59c45b6e74834f8",
+  "reference": {
+    "app": "Conductor 0.87.6",
+    "rea_lineage": [
+      "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+      "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2"
+    ],
+    "assets": {
+      "index-BGEQ8YjU.js": {
+        "bytes": 3493297,
+        "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+      },
+      "renderApp-D_fmY7hW.js": {
+        "bytes": 11600457,
+        "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+      }
+    },
+    "spans": [
+      {
+        "asset": "index-BGEQ8YjU.js",
+        "utf8_half_open": [
+          3246157,
+          3246974
+        ],
+        "path": "reference/A-dollar-t.txt",
+        "sha256": "a1c9c39a33f69470a314fbe1548ca7cfdb98ab662d6356b9311fc37f8184e129"
+      },
+      {
+        "asset": "index-BGEQ8YjU.js",
+        "utf8_half_open": [
+          3244398,
+          3245990
+        ],
+        "path": "reference/k-dollar-t.txt",
+        "sha256": "d1bf731b47b4d4032e561188624ed28f2be1858febb8a5c950ea0b230506ef07"
+      },
+      {
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8_half_open": [
+          183711,
+          184995
+        ],
+        "path": "reference/WIr.txt",
+        "sha256": "f0125b8a096d133ded72c27f715cea9ab2f4f1814987aca9ed463781fe1d6733"
+      },
+      {
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8_half_open": [
+          183512,
+          183711
+        ],
+        "path": "reference/tve.txt",
+        "sha256": "33b0e76cd7714a28a72815a761fb5cbc568972f9b96e68e922f03806aced4ddd"
+      }
+    ]
+  },
+  "baseline": [
+    {
+      "path": "src/state/store.ts",
+      "sha256": "8ad80d70741dc80f2f2fd42d1f340f61ff5f5a34dd434353a045e45e22acaea9"
+    },
+    {
+      "path": "src/state/sidebarPersist.ts",
+      "sha256": "1c93a5df95591139580becb82e518c6aabb3d7fb6315dd82312c7a00a0121d07"
+    }
+  ],
+  "reproduction": {
+    "command": "node --experimental-strip-types --test src/state/createSectionUnpin.test.ts",
+    "red": {
+      "passed": 3,
+      "failed": 3,
+      "cause": "Captured workspace retains pinnedAt in the real reducer and inert desktop persistence consumer."
+    },
+    "green": {
+      "passed": 6,
+      "failed": 0
+    },
+    "fixture": "fixture.sha256"
+  },
+  "scope": "createSection reducer metadata and its existing accepted-layout persistence bridge. No sidebarPersist or Rust changes. Move to section UI remains separate.",
+  "limits": [
+    "Original target bytes were retained and rehashed, not executed.",
+    "Desktop branch and actual reducer run in Node with a synthetic in-memory IPC adapter, not native SQLite.",
+    "No browser, native GUI, provider, released-install or package acceptance."
+  ]
+}

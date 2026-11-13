@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: nonzero caret on the first visual line focuses the last queue row
+ok 1 - nonzero caret on the first visual line focuses the last queue row
+  ---
+  duration_ms: 462.485434
+  type: 'test'
+  ...
+# Subtest: empty editor focuses the last queue row without consulting layout
+ok 2 - empty editor focuses the last queue row without consulting layout
+  ---
+  duration_ms: 275.002436
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with later soft-wrapped visual line in the first paragraph
+ok 3 - Up leaves queue focus untouched with later soft-wrapped visual line in the first paragraph
+  ---
+  duration_ms: 223.361158
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with a false layout result at linear offset zero
+ok 4 - Up leaves queue focus untouched with a false layout result at linear offset zero
+  ---
+  duration_ms: 104.84644
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with line after a hard break
+ok 5 - Up leaves queue focus untouched with line after a hard break
+  ---
+  duration_ms: 142.696863
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with second paragraph even when layout returns true
+ok 6 - Up leaves queue focus untouched with second paragraph even when layout returns true
+  ---
+  duration_ms: 73.608142
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with noncollapsed selection
+ok 7 - Up leaves queue focus untouched with noncollapsed selection
+  ---
+  duration_ms: 91.054754
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with Shift modifier
+ok 8 - Up leaves queue focus untouched with Shift modifier
+  ---
+  duration_ms: 73.734995
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with Meta modifier
+ok 9 - Up leaves queue focus untouched with Meta modifier
+  ---
+  duration_ms: 98.260687
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with Control modifier
+ok 10 - Up leaves queue focus untouched with Control modifier
+  ---
+  duration_ms: 84.343624
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with Alt modifier
+ok 11 - Up leaves queue focus untouched with Alt modifier
+  ---
+  duration_ms: 150.728714
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with IME event
+ok 12 - Up leaves queue focus untouched with IME event
+  ---
+  duration_ms: 63.623508
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with IME editor state
+ok 13 - Up leaves queue focus untouched with IME editor state
+  ---
+  duration_ms: 58.497864
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with IME key code 229
+ok 14 - Up leaves queue focus untouched with IME key code 229
+  ---
+  duration_ms: 222.517758
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with no queue
+ok 15 - Up leaves queue focus untouched with no queue
+  ---
+  duration_ms: 42.502653
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with queue edit mode
+ok 16 - Up leaves queue focus untouched with queue edit mode
+  ---
+  duration_ms: 117.971023
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with missing last row
+ok 17 - Up leaves queue focus untouched with missing last row
+  ---
+  duration_ms: 158.671026
+  type: 'test'
+  ...
+# Subtest: Up leaves queue focus untouched with another key
+ok 18 - Up leaves queue focus untouched with another key
+  ---
+  duration_ms: 72.524249
+  type: 'test'
+  ...
+# Subtest: slash suggestion navigation takes precedence over queue focus
+ok 19 - slash suggestion navigation takes precedence over queue focus
+  ---
+  duration_ms: 114.722684
+  type: 'test'
+  ...
+# Subtest: mention suggestion navigation takes precedence over queue focus
+ok 20 - mention suggestion navigation takes precedence over queue focus
+  ---
+  duration_ms: 69.444237
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4025.658799

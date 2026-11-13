@@ -1,0 +1,153 @@
+{
+  "unit": "SAME271-workspace-name-context-menu-v1",
+  "main": "2b079f13e07b580d26191f7f1f50b4d21e62174e",
+  "reference": {
+    "evidence_id": "ev_118f9505f2b69a7f36f24659a649ccc235c40e8a64f65a2b1d8fd0371ba7f4bb",
+    "parent_evidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "app_version": "0.87.6",
+    "app_binary_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+    "assets": {
+      "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    },
+    "context_binding_chain": {
+      "s8i": {
+        "symbol": "s8i",
+        "utf8_span": [
+          7400982,
+          7402380
+        ],
+        "utf16_span": [
+          7357934,
+          7359332
+        ],
+        "sha256": "efe8947600e1202a110410668db754764d881d52c2b1222cde5972a222c5fbfb",
+        "source": "function s8i(t){const e=ne.c(27),{localWorkspaceId:n}=t;let i;e[0]!==n?(i={localWorkspaceId:n},e[0]=n,e[1]=i):i=e[1];const{data:r}=Ms(i),o=pI(r??void 0),a=mI(),c=r?.repositoryId;let u;e[2]!==c?(u={repoId:c},e[2]=c,e[3]=u):u=e[3];const{data:d}=Y1(u),{organization:h}=so(),m=h===void 0?void 0:fc(h),{data:g}=EDt(),_=m===\"cloud\",v=r?.userSetWorkspaceName,x=r?.workspaceName,w=r?.directoryName,E=r?.prTitle,k=r?.intendedTargetBranch,I=r?.host;let R;e[4]!==o||e[5]!==a||e[6]!==v||e[7]!==x||e[8]!==w||e[9]!==E||e[10]!==k||e[11]!==I?(R=$V({userSetWorkspaceName:v,workspaceName:x,directoryName:w,prTitle:E,branch:o,branchPrefix:a,targetBranch:k,host:I}),e[4]=o,e[5]=a,e[6]=v,e[7]=x,e[8]=w,e[9]=E,e[10]=k,e[11]=I,e[12]=R):R=e[12];const O=R;let D;e[13]!==a||e[14]!==O||e[15]!==r?(D=O??(r?.placeholderBranchName?pGe({branch:r.placeholderBranchName,branchPrefix:a}):void 0),e[13]=a,e[14]=O,e[15]=r,e[16]=D):D=e[16];const P=D;if(!r)return null;if(r.host!==gn){const B=h===void 0?void 0:pPt({workspace:r,organizationHostingMode:m,legacyCloudWorkspaceWriteAccessEnabled:g});let F;return e[17]!==P||e[18]!==_||e[19]!==d||e[20]!==B||e[21]!==r?(F=p.jsx(Mlo,{workspace:r,repo:d,displayName:P,isCloudOrg:_,surfaceMode:B}),e[17]=P,e[18]=_,e[19]=d,e[20]=B,e[21]=r,e[22]=F):F=e[22],F}let L;return e[23]!==P||e[24]!==d||e[25]!==r?(L=p.jsx(Llo,{workspace:r,repo:d,displayName:P}),e[23]=P,e[24]=d,e[25]=r,e[26]=L):L=e[26],L}"
+      },
+      "Llo": {
+        "symbol": "Llo",
+        "utf8_span": [
+          7403205,
+          7404470
+        ],
+        "utf16_span": [
+          7360157,
+          7361422
+        ],
+        "sha256": "67acfd9eb4a2c32287e6b5862b834805a71632df62d75d82d2bb0298f36b54cd",
+        "source": "function Llo(t){const e=ne.c(19),{workspace:n,repo:i,displayName:r}=t,[o,a]=$.useState(!1),c=$.useRef(null),{container:u,positionMethod:d}=hc();zf(o);let h;e[0]!==r?(h=p.jsx(\"span\",{className:\"block min-w-0 truncate text-xs font-medium\",children:r}),e[0]=r,e[1]=h):h=e[1];let m;e[2]!==h||e[3]!==n.localId?(m=p.jsx(o8i,{localWorkspaceId:n.localId,bare:!1,children:h}),e[2]=h,e[3]=n.localId,e[4]=m):m=e[4];let g;e[5]!==r||e[6]!==i||e[7]!==n?(g=p.jsx(E1,{ref:c,initialFocus:c,className:\"w-72 space-y-1 rounded-lg ring-1 ring-popover-ring bg-popover p-4 text-popover-foreground shadow-md outline-none origin-(--transform-origin) data-[starting-style]:opacity-0 data-[starting-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:scale-95 transition-[opacity,scale] duration-100\",children:p.jsx(a8i,{workspace:n,displayName:r,repo:i})}),e[5]=r,e[6]=i,e[7]=n,e[8]=g):g=e[8];let _;e[9]!==d||e[10]!==g?(_=p.jsx(S1,{className:\"z-50\",align:\"start\",sideOffset:4,positionMethod:d,children:g}),e[9]=d,e[10]=g,e[11]=_):_=e[11];let v;e[12]!==u||e[13]!==_?(v=p.jsx(w1,{container:u,children:_}),e[12]=u,e[13]=_,e[14]=v):v=e[14];let x;return e[15]!==o||e[16]!==m||e[17]!==v?(x=p.jsxs(X1,{open:o,onOpenChange:a,children:[m,v]}),e[15]=o,e[16]=m,e[17]=v,e[18]=x):x=e[18],x}"
+      },
+      "o8i": {
+        "symbol": "o8i",
+        "utf8_span": [
+          7402380,
+          7403205
+        ],
+        "utf16_span": [
+          7359332,
+          7360157
+        ],
+        "sha256": "8f6d1b8893e9df53e311d5f0ef616f0761a5d3ecc40dfd27012356662e4dd3ea",
+        "source": "function o8i(t){const e=ne.c(11),{localWorkspaceId:n,ariaLabel:i,bare:r,children:o}=t,a=r?\"rounded-sm text-foreground\":\"rounded-md border border-input bg-background text-muted-foreground\";let c;e[0]!==a?(c=Xe(\"mx-1 flex h-6 min-w-0 cursor-pointer items-center px-1.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring hover:bg-accent hover:text-foreground\",a),e[0]=a,e[1]=c):c=e[1];let u;e[2]!==i||e[3]!==o||e[4]!==c?(u=p.jsx(ch,{nativeButton:!1,render:p.jsx(SI,{\"aria-label\":i,className:c,children:o})}),e[2]=i,e[3]=o,e[4]=c,e[5]=u):u=e[5];let d;e[6]!==n?(d=p.jsx(g2,{children:p.jsx(b2,{children:p.jsx(m2,{className:`${my} min-w-[200px]`,children:p.jsx(D9e,{localWorkspaceId:n})})})}),e[6]=n,e[7]=d):d=e[7];let h;return e[8]!==u||e[9]!==d?(h=p.jsxs(wI,{children:[u,d]}),e[8]=u,e[9]=d,e[10]=h):h=e[10],h}"
+      },
+      "SI": {
+        "symbol": "SI",
+        "utf8_span": [
+          2215142,
+          2216980
+        ],
+        "utf16_span": [
+          2214717,
+          2216555
+        ],
+        "sha256": "9090e98500e998ff296aaa58d335583ee2c56a2e11b0e442284965ba0e13e6d1",
+        "source": "SI=$.forwardRef(function(e,n){const{render:i,className:r,style:o,...a}=e,{setAnchor:c,actionsRef:u,internalBackdropRef:d,backdropRef:h,positionerRef:m,allowMouseUpTriggerRef:g,initialCursorPointRef:_,rootId:v}=mEe(!1),{store:x}=f5(!1),w=x.useState(\"open\"),E=x.useState(\"disabled\"),k=$.useRef(null),I=$.useRef(null),R=b0(),O=b0(),D=$.useRef(!1),P=$.useRef(null);function L(K,X,Q){const J=Q.type.startsWith(\"touch\");_.current={x:K,y:X},c({getBoundingClientRect(){return DOMRect.fromRect({width:J?10:0,height:J?10:0,x:K,y:X})}}),D.current=!1,u.current?.setOpen(!0,Ys(JA,Q)),O.start(DLn,()=>{D.current=!0})}function B(K){if(E)return;g.current=!0,Z_(K),L(K.clientX,K.clientY,K.nativeEvent);const X=Gl(k.current);P.current?.abort();const Q=new AbortController;P.current=Q,X.addEventListener(\"mouseup\",J=>{if(g.current=!1,!D.current)return;O.clear(),D.current=!1;const te=jf(J);oo(m.current,te)||v&&te&&bMt(te)===v||u.current?.setOpen(!1,Ys(ZPt,J))},{once:!0,signal:Q.signal})}function F(){R.clear(),I.current=null}function H(K){if(E){F();return}if(g.current=!1,K.touches.length!==1){F();return}K.stopPropagation();const X=K.touches[0],Q={x:X.clientX,y:X.clientY};I.current=Q,R.start(DLn,()=>{L(Q.x,Q.y,K.nativeEvent)})}function U(K){if(K.touches.length!==1){F();return}if(R.isStarted()&&I.current){const X=K.touches[0],Q=10,J=Math.abs(X.clientX-I.current.x),te=Math.abs(X.clientY-I.current.y);(J>Q||te>Q)&&F()}}return $.useEffect(()=>()=>{P.current?.abort()},[]),$.useEffect(()=>{function K(Q){if(E)return;const te=jf(Q);(oo(k.current,te)||oo(d.current,te)||oo(h.current,te))&&Q.preventDefault()}const X=Gl(k.current);return vc(X,\"contextmenu\",K)},[h,E,d]),Es(\"div\",e,{state:{open:w},ref:[k,n],props:[{onContextMenu:B,onTouchStart:H,onTouchMove:U,onTouchEnd:F,onTouchCancel:F,style:{WebkitTouchCallout:\"none\"}},a],stateAttributesMapping:Rce})})"
+      },
+      "wI": {
+        "symbol": "wI",
+        "utf8_span": [
+          2214626,
+          2215128
+        ],
+        "utf16_span": [
+          2214201,
+          2214703
+        ],
+        "sha256": "b38247e518250721db86ae20122e9532598cf90b3e7c1bd85f5869988878395b",
+        "source": "function wI(t){const[e,n]=$.useState({getBoundingClientRect(){return DOMRect.fromRect({width:0,height:0,x:0,y:0})}}),i=$.useRef(null),r=$.useRef(null),o=$.useRef(null),a=$.useRef(null),c=$.useRef(!0),u=$.useRef(null),d=Fj(),h=$.useMemo(()=>({anchor:e,setAnchor:n,actionsRef:o,backdropRef:i,internalBackdropRef:r,positionerRef:a,allowMouseUpTriggerRef:c,initialCursorPointRef:u,rootId:d}),[e,d]);return p.jsx(t0i.Provider,{value:h,children:p.jsx(dMt.Provider,{value:void 0,children:p.jsx(oF,{...t})})})}"
+      },
+      "D9e": {
+        "symbol": "D9e",
+        "utf8_span": [
+          7356258,
+          7357851
+        ],
+        "utf16_span": [
+          7313216,
+          7314809
+        ],
+        "sha256": "6749cd651553318fd3c5bc1df59af226790e3e193e641e0fd4e747e716f78776",
+        "source": "function D9e(t){const e=ne.c(34),{localWorkspaceId:n}=t;let i;e[0]!==n?(i={localWorkspaceId:n},e[0]=n,e[1]=i):i=e[1];const{data:r}=Ms(i);let o;e[2]!==n?(o={localWorkspaceId:n},e[2]=n,e[3]=o):o=e[3];const{data:a}=N6(o,zao);let c;e[4]!==a?(c=a?.some(Uao)??!1,e[4]=a,e[5]=c):c=e[5];const u=c,d=r?.pinnedAt??void 0,{mutate:h}=uSe(),m=Ld(n),g=Vd()?.id;if(!r)return null;let _;e[6]!==r?(_=FYe(r),e[6]=r,e[7]=_):_=e[7];const v=_;let x;e[8]!==g||e[9]!==r.watcherUserIds?(x=g===void 0?void 0:r.watcherUserIds?.includes(g),e[8]=g,e[9]=r.watcherUserIds,e[10]=x):x=e[10];const w=x;let E;e[11]!==g||e[12]!==r?(E=g!==void 0&&HJ({workspace:r,userId:g}),e[11]=g,e[12]=r,e[13]=E):E=e[13];const k=E,I=r.state===\"archived\",R=r.state===\"unstarted\",O=r.remoteState?.workspacePublicUrl,D=r.access?.restricted===!1&&r.access.userPermission===\"admin\";let P;e[14]!==h||e[15]!==n?(P=()=>h({localWorkspaceId:n}),e[14]=h,e[15]=n,e[16]=P):P=e[16];let L;return e[17]!==v||e[18]!==u||e[19]!==k||e[20]!==w||e[21]!==n||e[22]!==m||e[23]!==d||e[24]!==D||e[25]!==P||e[26]!==I||e[27]!==R||e[28]!==O||e[29]!==r.description||e[30]!==r.host||e[31]!==r.id||e[32]!==r.orgId?(L=p.jsx(Aao,{localWorkspaceId:n,workspaceId:r.id,hasUnread:u,pinnedAt:d,effectiveStatus:v,isArchived:I,isUnstarted:R,description:r.description,isWatchedByMe:w,isAssignedToMe:k,workspaceOrganizationId:r.orgId,host:r.host,workspacePublicUrl:O,permissionLevel:m,canReassign:D,onArchive:P}),e[17]=v,e[18]=u,e[19]=k,e[20]=w,e[21]=n,e[22]=m,e[23]=d,e[24]=D,e[25]=P,e[26]=I,e[27]=R,e[28]=O,e[29]=r.description,e[30]=r.host,e[31]=r.id,e[32]=r.orgId,e[33]=L):L=e[33],L}"
+      }
+    },
+    "scope": "Local workspace name right-click -> existing local workspace actions; no left-click details parity claim"
+  },
+  "fixture": {
+    "name": "workspace-header-menu-cases.mjs",
+    "bytes": 7772,
+    "sha256": "b4f4cae76a414e5c3312ddd411e3b17ab39f90bc55b8662cdc058d55b2599605"
+  },
+  "case_ids": [
+    "control.sidebar-actions",
+    "control.header-primary-click",
+    "header.context-menu-open-dismiss",
+    "header.existing-pin-read-status",
+    "header.existing-rename-dialog",
+    "header.existing-new-section",
+    "header.sidebar-hidden",
+    "header.workspace-target-isolation"
+  ],
+  "expected_not_observed": {
+    "baseline_pass": 2,
+    "baseline_fail": 6,
+    "candidate_pass": 8
+  },
+  "original_packet": {
+    "sha256": "6879abcc815533bfde3bfd4562d9d2b82f6e7f86b357ef3a1ee52060eb83aa88",
+    "bytes": 1771145,
+    "manifest_sha256": "e2253c9286644ff22d6eaa4f98882a77955d39b2c67de494e7c4868cee7e5709"
+  },
+  "product_paths": [
+    "src/components/WorkspaceContextMenu.tsx",
+    "src/components/WorkspaceNameHeader.tsx",
+    "src/components/SidebarWorkspaceRow.tsx",
+    "src/components/WorkspaceView.tsx",
+    "src/App.tsx"
+  ],
+  "baseline_product_pins": {
+    "src/components/SidebarWorkspaceRow.tsx": {
+      "bytes": 14237,
+      "sha256": "fc5448fa9a7be5189f4467c7257e890c80ad51d2195584d86bd7ee93a9aca157"
+    },
+    "src/components/WorkspaceView.tsx": {
+      "bytes": 81577,
+      "sha256": "9156b2303c8cfd3dc3f01f71d8e821e6fff3a6740fc4118dc8c0ed19b5d8d896"
+    },
+    "src/App.tsx": {
+      "bytes": 38683,
+      "sha256": "e0bf3c21e128ac4e36430e76754fca3e04bc6f7311d5e8459f8570f6bb9bae03"
+    }
+  },
+  "unchanged_paths": [
+    "src/components/WorkspaceActionsMenu.tsx",
+    "src/components/RenameWorkspaceDialog.tsx",
+    "src/components/WorkspaceBranchHeader.tsx",
+    "src/components/branchHeaderController.ts",
+    "src/components/useBranchPrefix.ts",
+    "src/components/Sidebar.tsx",
+    "src/components/SectionDialog.tsx",
+    "src/state/navigationSections.ts",
+    "src/state/store.ts"
+  ],
+  "execution": "NOT RUN; E1 sole executor and existing queue retained"
+}

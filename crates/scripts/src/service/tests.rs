@@ -165,6 +165,8 @@ default = true
                 spec,
                 concurrent: true,
                 sink: None,
+                on_started: Arc::new(|_| {}),
+                on_finished: Arc::new(|_| {}),
             },
             SetupState::Running,
         )
@@ -212,6 +214,119 @@ default = true
     assert!(events
         .iter()
         .any(|e| matches!(e, ScriptEvent::SetupFinished(o) if o.state == SetupState::Completed)));
+}
+
+fn assert_quiet_setup_follow_on_admission(queued: bool) {
+    let mut f = fixture(
+        r#"
+[scripts]
+setup = "while [ ! -f setup-release ]; do sleep 0.02; done"
+auto_run_after_setup = true
+[scripts.run.dev]
+command = "sleep 30"
+default = true
+[scripts.run.test]
+command = "sleep 30"
+"#,
+    );
+    let snapshots = Arc::new(Mutex::new(Vec::new()));
+    let seen = snapshots.clone();
+    let runs = f.svc.runs.clone();
+    let events = f.svc.events.clone();
+    let (tx, rx) = std::sync::mpsc::channel();
+    f.svc.events = Arc::new(move |event| {
+        let wire = serde_json::to_value(&event).unwrap();
+        let current = runs.statuses("w1");
+        seen.lock().unwrap().push((wire.clone(), current.clone()));
+        events(event);
+        if wire["type"] == "runStarted" {
+            tx.send((wire, current)).unwrap();
+        }
+    });
+    assert!(f.svc.start_setup(&f.ws).unwrap());
+    if queued {
+        assert_eq!(f.svc.start_run(&f.ws, Some("test")).unwrap(), "test");
+        assert_eq!(f.svc.runs.state("w1", "test"), RunState::WaitingForSetup);
+    }
+    fs::write(f.ws.workspace_path.join("setup-release"), "").unwrap();
+    let admission = rx.recv_timeout(Duration::from_secs(5));
+    let before_stop = snapshots.lock().unwrap().clone();
+    f.svc.shutdown();
+    let (wire, current) = admission.expect("quiet follow-on must publish committed run admission");
+    let id = if queued { "test" } else { "dev" };
+    assert_eq!(wire["workspaceId"], "w1");
+    assert_eq!(wire["scriptId"], id);
+    assert_eq!(wire["state"], "running");
+    assert_eq!(wire["exit"], serde_json::Value::Null);
+    assert_eq!(current.len(), 1);
+    assert_eq!(current[0].script_id, id);
+    assert_eq!(current[0].state, RunState::Running);
+    assert_eq!(current[0].exit, None);
+    let setup = before_stop
+        .iter()
+        .position(|(event, _)| event["type"] == "setupFinished")
+        .unwrap();
+    let started = before_stop
+        .iter()
+        .position(|(event, _)| event["type"] == "runStarted")
+        .unwrap();
+    assert!(setup < started, "SetupFinished must remain early");
+    if queued {
+        assert_eq!(before_stop[setup].1[0].state, RunState::WaitingForSetup);
+    } else {
+        assert!(before_stop[setup].1.is_empty());
+    }
+    assert_eq!(
+        before_stop
+            .iter()
+            .filter(|(event, _)| event["type"] == "runStarted")
+            .count(),
+        1,
+        "queued Test must not also start automatic Dev"
+    );
+    assert!(before_stop
+        .iter()
+        .all(|(event, _)| { event["type"] != "runFinished" && event["type"] != "output" }));
+    assert_eq!(f.svc.runs.history("w1"), [id]);
+}
+
+#[test]
+fn quiet_queued_test_publishes_admission_after_early_setup_finished() {
+    assert_quiet_setup_follow_on_admission(true);
+}
+
+#[test]
+fn quiet_automatic_dev_publishes_admission_after_early_setup_finished() {
+    assert_quiet_setup_follow_on_admission(false);
+}
+
+#[test]
+fn ordinary_run_exit_emits_its_committed_status_and_keeps_output() {
+    let f = fixture("[scripts.run.dev]\ncommand = \"echo finished; exit 7\"\n");
+    f.svc.start_run(&f.ws, Some("dev")).unwrap();
+    wait_for("run completion event", || {
+        f.events
+            .lock()
+            .unwrap()
+            .iter()
+            .any(|event| serde_json::to_value(event).unwrap()["type"] == "runFinished")
+    });
+    let events = f.events.lock().unwrap();
+    let finished: Vec<_> = events
+        .iter()
+        .map(|event| serde_json::to_value(event).unwrap())
+        .filter(|event| event["type"] == "runFinished")
+        .collect();
+    assert_eq!(finished.len(), 1);
+    assert_eq!(finished[0]["workspaceId"], "w1");
+    assert_eq!(finished[0]["scriptId"], "dev");
+    assert_eq!(finished[0]["state"], "stopped");
+    assert_eq!(finished[0]["exit"], serde_json::json!([7, null]));
+    assert_eq!(f.svc.runs.state("w1", "dev"), RunState::Stopped);
+    assert_eq!(
+        f.svc.runs.output("w1", "dev").as_deref(),
+        Some("finished\r\n")
+    );
 }
 
 #[test]

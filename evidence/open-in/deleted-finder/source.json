@@ -1,0 +1,331 @@
+{
+  "unit": "DELETED-FINDER-CONSUMER-JOIN-15",
+  "owner": "Conductor Rebuild",
+  "main": "516a58c931f31097007c97e844a1bb56d118c528",
+  "original_identity": {
+    "version": "0.87.6",
+    "rea_artifact_evidence_id": "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+    "provenance": "Existing retained REA-extracted bytes; no new Mac read, app acquisition or native observation in this pass."
+  },
+  "assets": {
+    "renderer": {
+      "path": ".oc-tmp/chip-reference/renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    },
+    "index": {
+      "path": ".rea-work/pzi-wzi-source-loan/index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    }
+  },
+  "spans": {
+    "Jqo": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9652565,
+        9658452
+      ],
+      "bytes": 5887,
+      "sha256": "0e24efc52f0ab809283b07a30fbb5e615db81ab56a03f12dad7e298d15a81a87"
+    },
+    "bji": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9643145,
+        9646819
+      ],
+      "bytes": 3674,
+      "sha256": "2d2b8aac64bada5ead6bc143ac6bb272544791374a9b71b38e57eab55c8f5688"
+    },
+    "GPo": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        8973445,
+        8975165
+      ],
+      "bytes": 1720,
+      "sha256": "c08b2b57a86261a300c6d0a35c61f529842ed3e4fedeba4dbfbec7e071d83014"
+    },
+    "NPo": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        8961924,
+        8963208
+      ],
+      "bytes": 1284,
+      "sha256": "9c4539afe7b84bcf4773d421760c7149b81f32b9f4480b3b5555ffe7c7993d7d"
+    },
+    "tee": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        7777001,
+        7782029
+      ],
+      "bytes": 5028,
+      "sha256": "38d4a2efa99fd08a87b2540dfb48add94860e8932a56c644132fcecf20165bf0"
+    },
+    "Uho": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        7776600,
+        7777001
+      ],
+      "bytes": 401,
+      "sha256": "5314c8018159b9784f78ce486de5475982a9d7edce953f1092c35c915e65808e"
+    },
+    "uD": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        2674155,
+        2678639
+      ],
+      "bytes": 4484,
+      "sha256": "8d8f9856246124d0d3219722109cfb451ce244480c343f3de6d420fdcfdea16b"
+    },
+    "ivs": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        2672030,
+        2672116
+      ],
+      "bytes": 86,
+      "sha256": "a2f997f042b073788b67522151df1d2b7baea1cd8ca269c7247b55c9ba11caaf"
+    },
+    "ele": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        2672116,
+        2672183
+      ],
+      "bytes": 67,
+      "sha256": "408dcebdced1b1264e98718d2bfcd6a69c073de6167c5e9757fb450ff3d1201f"
+    },
+    "h4i": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        2672183,
+        2672261
+      ],
+      "bytes": 78,
+      "sha256": "899edbe75c0ed7cb074c7338533fe93bce20030b67fd0b2dc34cb6ca698fccd7"
+    },
+    "rvs": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        2672261,
+        2672299
+      ],
+      "bytes": 38,
+      "sha256": "7cc39c2ca2626adee395c97fc69a3950a12b883ba8bed565ead02940b9d12310"
+    },
+    "_xt": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        2671866,
+        2671940
+      ],
+      "bytes": 74,
+      "sha256": "64b693f5ef165e1e024227e11769ace98c8b69042b2cafbe3f670600177d57f0"
+    },
+    "aKe": {
+      "asset": "index",
+      "utf8_half_open": [
+        822816,
+        822928
+      ],
+      "bytes": 112,
+      "sha256": "df7ba064c0be62d476715a5775d2ea5bb3d4df6b6966831be2e6da26a740ca7e"
+    },
+    "Sne": {
+      "asset": "index",
+      "utf8_half_open": [
+        823778,
+        823825
+      ],
+      "bytes": 47,
+      "sha256": "e354adc8e924ca67c82f88ec11a7181890e2f27d757e15cf1b52f43cf476edc5"
+    },
+    "renderer-aDt-import": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        56325,
+        56334
+      ],
+      "bytes": 9,
+      "sha256": "4cbb6d47672fe0f20ba6426ed7cd0b79415db13573d676a0f03f1cb58c10b743"
+    },
+    "renderer-av-import": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        56316,
+        56324
+      ],
+      "bytes": 8,
+      "sha256": "994a0af0f0fa2ef46adf9c39427255012aeca768cb271c696f869b2405ce9e9a"
+    },
+    "index-aKe-export": {
+      "asset": "index",
+      "utf8_half_open": [
+        3482719,
+        3482728
+      ],
+      "bytes": 9,
+      "sha256": "04afd0497063d1286c73f55ad3dbb41dbf53e841b6e1e3d3e9cef04df93816a9"
+    },
+    "index-Sne-export": {
+      "asset": "index",
+      "utf8_half_open": [
+        3482709,
+        3482718
+      ],
+      "bytes": 9,
+      "sha256": "ee33d4b582807b5d08c4d45d07ddd9eb5b80df53ee9aa5909322a68aeffe9d84"
+    },
+    "Kc-import": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        53400,
+        53416
+      ],
+      "sha256": "6cc0685a27c63263e650ca3e5eaa1fcb56c8b1b14773d10fac84845b3aefacb3",
+      "bytes": 16
+    },
+    "Kc-export": {
+      "asset": "index",
+      "utf8_half_open": [
+        3480033,
+        3480048
+      ],
+      "sha256": "dea25c3ed8fc7c1f0a3e9544aad83d2d7a220bbf05060a636eb60a41108b268f",
+      "bytes": 15
+    },
+    "Ce": {
+      "asset": "index",
+      "utf8_half_open": [
+        3405843,
+        3406543
+      ],
+      "sha256": "afdc7f580a3be95fdaaedff76611be065dabd7cfef9880d3039013591b019d63",
+      "bytes": 700
+    },
+    "Qfe": {
+      "asset": "index",
+      "utf8_half_open": [
+        3405571,
+        3405843
+      ],
+      "sha256": "1c946e906304a4439bd59f3661f499bdc228c0214e5ba3d76a03d6786f906f5d",
+      "bytes": 272
+    },
+    "GI": {
+      "asset": "index",
+      "utf8_half_open": [
+        3404224,
+        3404283
+      ],
+      "sha256": "25d6d6f915194a6a324dd4ff15f7e40db5a8500c0347f34a0299cfa00a29fe15",
+      "bytes": 59
+    },
+    "oe": {
+      "asset": "index",
+      "utf8_half_open": [
+        4896,
+        4972
+      ],
+      "sha256": "0967e0226b1fa92a8f0a49fa3c1feac0f50d5bb8a3a89e81f958fa7fa9847b0f",
+      "bytes": 76
+    },
+    "local-host": {
+      "asset": "index",
+      "utf8_half_open": [
+        2485,
+        2518
+      ],
+      "sha256": "9ca0a829b3ce70b9e93b0334fc1292440541d86a397ddbdb6711e6b6855c292a",
+      "bytes": 33
+    }
+  },
+  "main_sources": {
+    "src/features/diff/DiffViewer.tsx": "9bb3cc41406952e4163810cbb8f1115b724c0936e22dc58faf2c46b2b4f23da7",
+    "src/features/diff/FileDiffView.tsx": "8e3dc981b01b2e5f8b19f51e1fd0e7c05691f2174d2d37b1fe7faf9455ecc6da",
+    "src/features/diff/FilePathChip.tsx": "c91a799ae58adc61a2d144050c51b71dbdd23e0a4f7f74b20e52a8fbc595fea5",
+    "src/features/openIn/apps.ts": "ffb9bdf5e6b21894768d4f36ca3132b00061ea77c9e538b44c40dfbec065a924",
+    "src-tauri/src/open_in/commands.rs": "20d04acb44cd56091c39d060f1e16ee7582633771d9abf6ff44b127dded23a0e",
+    "src-tauri/src/open_in/mod.rs": "92edae3828c10358dd89a92ad49a1e76470276460efb18238688b9e0efc0238e",
+    "src-tauri/src/diff/parse.rs": "92ab857a43e002c47765f3211c650b23570440089768009c6a1d57bedd34c71f"
+  },
+  "native_REA_artifact": "ev_0cf38b016e6c7595876a84f89c11d46541a225caf37f0317089a21ff09d2da67",
+  "native_binary_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+  "native_archive_sha256": "96be5c8d20705368fb72d5588e9aea3537938f17717f9219398d2d02c5b087eb",
+  "fixture_sha256": "873df7d98a6dbf9d4b685c2e35ceffd7aae09060637ed1c7960d947d99b24070",
+  "preserved_fixtures": {
+    "src/features/openIn/iconMenuNumbering.test.ts": "44eb051c160108ab818bf1c5045838df306a623c87cbb9350abed02feac4ffa3",
+    "src/features/openIn/settingsShortcutHint.test.ts": "91e42404a9307de3ec7b2ece29e1211c1e6a7e66e922ec8574d84eab068050ca"
+  },
+  "historical_join_checks": {
+    "asset:renderer": true,
+    "asset:index": true,
+    "inherited-span:Jqo": true,
+    "inherited-span:bji": true,
+    "inherited-span:GPo": true,
+    "inherited-span:NPo": true,
+    "inherited-span:tee": true,
+    "inherited-span:Uho": true,
+    "inherited-span:uD": true,
+    "inherited-span:ivs": true,
+    "inherited-span:ele": true,
+    "inherited-span:h4i": true,
+    "inherited-span:rvs": true,
+    "inherited-span:_xt": true,
+    "inherited-span:aKe": true,
+    "inherited-span:Sne": true,
+    "inherited-span:renderer-aDt-import": true,
+    "inherited-span:renderer-av-import": true,
+    "inherited-span:index-aKe-export": true,
+    "inherited-span:index-Sne-export": true,
+    "renderer-Kc-is-index-W": true,
+    "index-W-is-Ce-local-host-V-is-M": true,
+    "local-Ce-invokes-native-command": true,
+    "Ce-forwards-Qfe-output": true,
+    "Qfe-preserves-command-or-prefixes-environment": true,
+    "macOS-shell-is-zsh": true,
+    "oe-is-actual-Tauri-invoke": true,
+    "local-host-is-exported-object": true,
+    "native-payload:0x1001ea8c4.bin": true,
+    "native-payload:0x1001ea8c4.s": true,
+    "native-payload:0x1001f1af8.bin": true,
+    "native-payload:0x1001f1af8.s": true,
+    "native-payload:0x10048d40c.bin": true,
+    "native-payload:0x10048d40c.s": true,
+    "native-payload:0x10048efd4.bin": true,
+    "native-payload:0x10048efd4.s": true,
+    "native-payload:0x10049328c.bin": true,
+    "native-payload:0x10049328c.s": true,
+    "native-payload:0x100498360.bin": true,
+    "native-payload:0x100498360.s": true,
+    "native-payload:0x100533bec.bin": true,
+    "native-payload:0x100533bec.s": true,
+    "native-payload:0x1006e55bc.bin": true,
+    "native-payload:0x1006e55bc.s": true,
+    "native-payload:rea-inspect-macho.json": true,
+    "native-payload:rea-inspect-macho.stderr": true,
+    "native-payload:recover_static.py": true,
+    "native-payload:static-recovery.json": true,
+    "native-REA-binary-identity": true,
+    "native-instructions:0x1001ea8c4": true,
+    "native-instructions:0x100533bec": true,
+    "binding-string-and-option-decoders": true,
+    "binding-spawns-named-execute-shell-closure": true,
+    "worker-constructs-args-and-spawns-process": true,
+    "main-consumer-still-rejects-missing-before-dispatch": true,
+    "fixture-has-10-cases-plus-child-entry": true,
+    "fixture-uses-actual-IPC-not-copied-resolver": true
+  },
+  "behavioral_RED": "NOT_RUN",
+  "behavioral_GREEN": "NOT_RUN",
+  "native_GUI": "NOT_RUN",
+  "interface_design": "fileContext.workspacePath is a proposed input contract, not a recovered original field name; baseline Tauri command ignores this additional JSON key.",
+  "claim": "Byte-pinned static join only. The admitted actual-IPC fixture is unchanged from the source-only preparation. Four behavioral failures are predictions, not observations.",
+  "safety_boundary": "Absolute paths, known app, explicit file context and bounded immediate-parent target. Outside-workspace control is a design safeguard, not an assertion about original policy. No nearest-existing-ancestor search."
+}

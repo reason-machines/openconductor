@@ -19,11 +19,15 @@ test("Codex: the app server's 401 and CLI login messages", () => {
 
 test("Reason and empty errors", () => {
   assert.ok(isSignInFailure("reason", "Not signed in. Run `reason login`."));
+  assert.ok(isSignInFailure("reason", "Authentication required: Sign in to Reason."));
+  assert.ok(isSignInFailure("reason", "authentication_required"));
   assert.ok(!isSignInFailure("reason", undefined));
   assert.ok(!isSignInFailure("reason", "The turn failed."));
 });
 
 test("copy names the agent", () => {
+  assert.equal(signInCopy("reason").action, "Sign in to Reason");
+  assert.match(signInCopy("reason").text, /sends as soon as you are signed in/);
   assert.equal(signInCopy("codex").action, "Open Codex settings");
   assert.match(signInCopy("claude").text, /^Claude Code is not signed in/);
 });
