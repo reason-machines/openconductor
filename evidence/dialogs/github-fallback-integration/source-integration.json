@@ -1,0 +1,150 @@
+{
+  "author": "Conductor Rebuild",
+  "base": "09b1c998acb093f4d905d5ef844c80136ea987f6",
+  "state": "SOURCE_ONLY_UNAPPLIED",
+  "packets": [
+    {
+      "directory": "github-owner-fallback-source",
+      "identity_sha256": "baadf3ca8eefbb5a05402fec400562e6ec7a50024a4deb832929f9ee6a5d86aa",
+      "cases": 8,
+      "total_seconds_proposed": 60,
+      "per_invocation_seconds_proposed": 20,
+      "runtime_admission": false
+    },
+    {
+      "directory": "github-orgs-fallback-source",
+      "identity_sha256": "e3109fca44f90ce12aee192eb364e7442750ccbaeed5c3ae1488f217ff4cfd45",
+      "cases": 3,
+      "total_seconds_proposed": 60,
+      "per_invocation_seconds_proposed": 20,
+      "runtime_admission": false
+    }
+  ],
+  "fixtures": [
+    {
+      "original": "evidence/dialogs/github-owner-fallback-source/ownersErrorFallback.test.ts",
+      "original_sha256": "9b0427070799528752e3f509050b52019470f67c135aafdcd4117ba658e4bc51",
+      "target": "src/state/githubOwnerErrorFallback.test.ts",
+      "derived_sha256": "2dc480a7dc6b44acf73c8e332988cee5bf1afe32f2bbff9053c6888ae429f7f0",
+      "cases": 8,
+      "changes": "Import path only; all assertions and case data unchanged."
+    },
+    {
+      "original": "evidence/dialogs/github-orgs-fallback-source/orgsErrorFallback.test.ts",
+      "original_sha256": "1728fa2147f4ed4b01e25a1c06e0d3b4898ab3854316cd1c1043e37489993886",
+      "target": "src/state/githubOrgsErrorFallback.test.ts",
+      "derived_sha256": "c6c090576e318aaab2e44f40a076a35e2ad765958689ef900676ac63895420d1",
+      "cases": 3,
+      "changes": "Import path only; all assertions and case data unchanged."
+    }
+  ],
+  "source": [
+    {
+      "path": "src-tauri/src/github_repo.rs",
+      "sha256": "38fa1f3d992e00c905893ac7f25913eb6415083b884e1491ef00c218790bfecf"
+    },
+    {
+      "path": "src-tauri/src/lib.rs",
+      "sha256": "45ccc1d48477d47aa13921dee4b2778987476a4fbb55b3f5095eb71f4771fb62"
+    },
+    {
+      "path": "src/backend.ts",
+      "sha256": "07257e471a0eafad6ad525ef7c268b32fd5ac0fbaa520ddb5b8eed466f03cd6c"
+    },
+    {
+      "path": "src/components/GitHubRepoDialog.tsx",
+      "sha256": "5f1c7b4598047f708abb86c7f6d160ac24543aaaa401eea315c4dda67f68d5a7"
+    },
+    {
+      "path": "src/state/githubRepoDialog.test.ts",
+      "sha256": "cf30a73ab722083f234cb72e8fce317cd57fdc6538c9144fd51cfecc16253388"
+    },
+    {
+      "path": "src/state/githubRepoDialog.ts",
+      "sha256": "bb99a561510b4a35389ff90fd0ad15c55201d368bd89bb330f66fd5d8f3a0781"
+    }
+  ],
+  "patch_sha256": "fa7ee0dfb1b863bba1ff8b9e0081f392dc51abc6814808abcfa504fdc5bcfe35",
+  "product_paths": [
+    "src/state/githubRepoDialog.ts",
+    "src/state/githubRepoDialog.test.ts",
+    "src/state/githubOwnerErrorFallback.test.ts",
+    "src/state/githubOrgsErrorFallback.test.ts"
+  ],
+  "protected_inputs": [
+    {
+      "path": "evidence/dialogs/distinct-scout-6013/source/fixture.tsx",
+      "sha256": "51ca4ff835997d54f709b088e8bf74673e46ef71a6cf44382d33d4f12dc45973",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/dialogs/distinct-scout-6013/source/regression.mjs",
+      "sha256": "03342e948e8591689df93e04395be993bf43cb485eb172a8dac720ac68287252",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/dialogs/distinct-scout-6013/source/index.html",
+      "sha256": "7860c3e9b0d6e6bb5198744f2d9fe4bf030100e3ba43373af5eb30271d46b5d9",
+      "unchanged": true
+    },
+    {
+      "path": "artifacts/dialog-execution-contract-6013/run-verifier.mjs",
+      "sha256": "1d5837ebc939cdfdc78250c5cec6c6187f72bc4c70a24c708e540ac802458ce8",
+      "unchanged": true
+    },
+    {
+      "path": "src/components/githubRepoPendingName.test.ts",
+      "sha256": "a8bb98baadc597aefd53f0f7ac7b23db02e52221c8edb5c0946c2a2835204f3a",
+      "unchanged": true
+    },
+    {
+      "path": "src/components/createProjectPendingControls.test.ts",
+      "sha256": "50dea0977358233e7299d2a481bbd57469a3e362d21696d5486a9660435d1d94",
+      "unchanged": true
+    },
+    {
+      "path": "src/components/createWorkspaceLaunchClose.test.ts",
+      "sha256": "60b7fe9e506d7e936a9e9b1cef4127a631f8e44c18a4d29fbcffb9ff3194faf3",
+      "unchanged": true
+    },
+    {
+      "path": "tests/e2e/create-workspace-dialog.e2e.mjs",
+      "sha256": "a705626b665e6ff53c0db346711ca0427e430773c2d852ace273431be9230ece",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/dialogs/workspace-launch-close/create-workspace-dialog.original.mjs",
+      "sha256": "8791b3c6e61fe416163bc36d5f19d9af55eeb139c93901198d4d7ea62c854dca",
+      "unchanged": true
+    },
+    {
+      "path": "artifacts/quickstart-replacement-source-6013/regression.test.mjs",
+      "sha256": "034de1400f1dc0e5ca1dab21c3e4ab689aed7f4bfbc13d47a92124ec24ba3003",
+      "unchanged": true
+    },
+    {
+      "path": "artifacts/section-primary-action-source-6013-v3.tar.gz",
+      "sha256": "aacf7dc5cb9ddfd0ca27a54449606eca99dbb0f07b388d9678dd3cb3751b5041",
+      "unchanged": true
+    },
+    {
+      "path": "artifacts/section-primary-action-6013/candidate.patch",
+      "sha256": "09c4cd169b0d0cf6028712c2d52435f7a8a67f705ea397225e73967a65ffa343",
+      "unchanged": true
+    },
+    {
+      "path": "artifacts/section-primary-action-6013/fixture.tsx",
+      "sha256": "e07dc63b28fccd8448fcfa312c8176ab4c49b76abb026a905c91dd27de54215b",
+      "unchanged": true
+    },
+    {
+      "path": "artifacts/icons-search-contract-6013/retained/repo-icon-search-autocomplete-6013/repoIconSearchAutocomplete.test.ts",
+      "sha256": "b77699c9e940d20972a38b5f98493aa5af7ade9f25f4898c437fb6b16bf03cff",
+      "unchanged": true
+    }
+  ],
+  "source_applicability": "PASS_DETACHED_INDEX_CHECK_ONLY",
+  "baseline_behavior": "NOT_RUN",
+  "candidate_behavior": "NOT_RUN",
+  "typecheck_build_browser_native": "NOT_RUN"
+}

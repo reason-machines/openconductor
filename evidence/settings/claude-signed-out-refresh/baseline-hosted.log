@@ -1,0 +1,55 @@
+2026-11-12T06:20:22.3574549Z TAP version 13
+2026-11-12T06:20:24.5944425Z # Subtest: Claude initial pending status displays Checking before any provider record arrives
+2026-11-12T06:20:24.6030252Z ok 1 - Claude initial pending status displays Checking before any provider record arrives
+2026-11-12T06:20:24.6089199Z   ---
+2026-11-12T06:20:24.6119188Z   duration_ms: 972.654486
+2026-11-12T06:20:24.6179251Z   type: 'test'
+2026-11-12T06:20:24.6259468Z   ...
+2026-11-12T06:20:25.0120472Z # Subtest: Claude settled signed-out status retains login action and enabled Refresh
+2026-11-12T06:20:25.0149592Z ok 2 - Claude settled signed-out status retains login action and enabled Refresh
+2026-11-12T06:20:25.0168731Z   ---
+2026-11-12T06:20:25.0176129Z   duration_ms: 374.678073
+2026-11-12T06:20:25.0176847Z   type: 'test'
+2026-11-12T06:20:25.0177455Z   ...
+2026-11-12T06:20:25.2440076Z # Subtest: Claude signed-out Refresh displays Checking while both status responses remain pending
+2026-11-12T06:20:25.2459791Z not ok 3 - Claude signed-out Refresh displays Checking while both status responses remain pending
+2026-11-12T06:20:25.2460694Z   ---
+2026-11-12T06:20:25.2461079Z   duration_ms: 427.279172
+2026-11-12T06:20:25.2461505Z   type: 'test'
+2026-11-12T06:20:25.2462548Z   location: '/home/runner/work/openconductor/openconductor/tests/chat-search/claudeSignedOutRefresh.dom.test.mjs:163:3'
+2026-11-12T06:20:25.2463658Z   failureType: 'testCodeFailure'
+2026-11-12T06:20:25.2464450Z   error: 'A retained provider record must not hide the signed-out checking state'
+2026-11-12T06:20:25.2465178Z   code: 'ERR_ASSERTION'
+2026-11-12T06:20:25.2465577Z   name: 'AssertionError'
+2026-11-12T06:20:25.2465994Z   expected:
+2026-11-12T06:20:25.2466709Z   actual: 'AuthenticationCLIAPI keyCLI not authenticatedRefreshRun claude /login'
+2026-11-12T06:20:25.2467459Z   operator: 'match'
+2026-11-12T06:20:25.2467849Z   stack: |-
+2026-11-12T06:20:25.2469246Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/tests/chat-search/claudeSignedOutRefresh.dom.test.mjs:172:14)
+2026-11-12T06:20:25.2470637Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T06:20:25.2471566Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T06:20:25.2472286Z   ...
+2026-11-12T06:20:25.4540359Z # Subtest: Claude signed-out Refresh displays Checking while CLI status alone remains pending
+2026-11-12T06:20:25.4542023Z not ok 4 - Claude signed-out Refresh displays Checking while CLI status alone remains pending
+2026-11-12T06:20:25.4543158Z   ---
+2026-11-12T06:20:25.4544445Z   duration_ms: 216.585534
+2026-11-12T06:20:25.4545261Z   type: 'test'
+2026-11-12T06:20:25.4546606Z   location: '/home/runner/work/openconductor/openconductor/tests/chat-search/claudeSignedOutRefresh.dom.test.mjs:163:3'
+2026-11-12T06:20:25.4548047Z   failureType: 'testCodeFailure'
+2026-11-12T06:20:25.4549476Z   error: 'A retained provider record must not hide the signed-out checking state'
+2026-11-12T06:20:25.4550506Z   code: 'ERR_ASSERTION'
+2026-11-12T06:20:25.4551208Z   name: 'AssertionError'
+2026-11-12T06:20:25.4551848Z   expected:
+2026-11-12T06:20:25.4552789Z   actual: 'AuthenticationCLIAPI keyCLI not authenticatedRefreshRun claude /login'
+2026-11-12T06:20:25.4553849Z   operator: 'match'
+2026-11-12T06:20:25.4554501Z   stack: |-
+2026-11-12T06:20:25.4555964Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/tests/chat-search/claudeSignedOutRefresh.dom.test.mjs:172:14)
+2026-11-12T06:20:25.4557641Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T06:20:25.4559167Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T06:20:25.4560211Z   ...
+2026-11-12T06:20:25.4689025Z # Subtest: Claude authenticated Refresh preserves Connected and settles without launching login
+2026-11-12T06:20:25.4690562Z ok 5 - Claude authenticated Refresh preserves Connected and settles without launching login
+2026-11-12T06:20:25.4707319Z   ---
+2026-11-12T06:20:25.4759271Z   duration_ms: 211.198749
+2026-11-12T06:20:25.4760025Z   type: 'test'
+2026-11-12T06:20:25.4789123Z   ...

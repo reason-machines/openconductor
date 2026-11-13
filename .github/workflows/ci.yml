@@ -1,16 +1,18 @@
 name: CI
 
+# Cost policy (Sven, 2026-11-12): only the cheap ubuntu jobs run automatically,
+# on pull_request. Every heavy, Rust or macOS job, and every other workflow in
+# this folder, is workflow_dispatch only. Do not add push/pull_request triggers.
 on:
-  push:
-    branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
   group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: true
 
 jobs:
   frontend:
@@ -28,7 +30,18 @@ jobs:
       - run: npm run typecheck
       - name: No colour literals outside src/theme/
         run: npm run lint:colors
+      - name: Isolated DOM test dependencies
+        timeout-minutes: 3
+        shell: bash
+        env:
+          ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
+        run: |
+          npm install --prefix "$ONBOARDING_DOM_DEPS" --cache "$RUNNER_TEMP/onboarding-dom-cache" \
+            --ignore-scripts --no-audit --no-fund --package-lock=false --save-exact jsdom@26.1.0
       - name: Frontend unit tests
+        env:
+          NODE_ENV: development
+          ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
         run: node --test "src/**/*.test.ts"
       - name: Window fill across interface zoom and resize
         run: node --test tests/e2e/window-fill.e2e.mjs
@@ -42,6 +55,7 @@ jobs:
 
   app:
     name: Tauri app check, test, clippy (${{ matrix.os }})
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ${{ matrix.os }}
     env:
       # The fs/http/shell/sql plugins (sqlx, reqwest) push the debug target past
@@ -95,6 +109,7 @@ jobs:
 
   rust:
     name: Rust build + test (${{ matrix.os }})
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -120,6 +135,7 @@ jobs:
 
   scripts:
     name: Scripts crate build + test (${{ matrix.os }})
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -141,6 +157,7 @@ jobs:
 
   db:
     name: Persistence crate (${{ matrix.os }})
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -193,6 +210,7 @@ jobs:
 
   frontend-unit:
     name: Frontend unit tests (node --test)
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -203,7 +221,19 @@ jobs:
       - run: npm ci
       - name: Chat top-level find frozen component regression
         run: node --test --test-reporter=tap tests/chat-search/transcriptFind.component.test.mjs
+      - name: Isolated DOM test dependencies
+        timeout-minutes: 3
+        shell: bash
+        env:
+          ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
+        run: |
+          npm install --prefix "$ONBOARDING_DOM_DEPS" --cache "$RUNNER_TEMP/onboarding-dom-cache" \
+            --ignore-scripts --no-audit --no-fund --package-lock=false --save-exact \
+            react@18.3.1 react-dom@18.3.1 typescript@5.9.3 jsdom@26.1.0 @testing-library/user-event@14.6.1
       - name: Pure TypeScript modules (Node strips types natively)
+        env:
+          NODE_ENV: development
+          ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
         run: node --test "src/**/*.test.ts"
       - name: Custom branch-prefix unchanged-fixture baseline and candidate replay
         timeout-minutes: 3
@@ -235,10 +265,7 @@ jobs:
           ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
           REACT_EFFECTS_DEPS: ${{ github.workspace }}/node_modules
         run: |
-          npm install --prefix "$ONBOARDING_DOM_DEPS" --cache "$RUNNER_TEMP/onboarding-dom-cache" \
-            --ignore-scripts --no-audit --no-fund --package-lock=false --save-exact \
-            react@18.3.1 react-dom@18.3.1 typescript@5.9.3 jsdom@26.1.0
           echo "Onboarding source commit: $(git rev-parse HEAD)"
           node --check tests/onboarding-strict-effects.test.mjs
-          node --test --test-reporter=tap tests/onboarding-effects.test.mjs tests/onboarding-strict-effects.test.mjs tests/onboarding-selected-slide.test.mjs
+          node --test --test-reporter=tap tests/onboarding-effects.test.mjs tests/onboarding-strict-effects.test.mjs tests/onboarding-media.test.mjs tests/onboarding-selected-slide.test.mjs
           node --test --test-reporter=tap tests/chat-search/*.dom.test.mjs evidence/chat/recent-closed-chat/recentClosedChatEligibility.test.mjs

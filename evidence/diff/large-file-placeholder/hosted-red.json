@@ -1,0 +1,28 @@
+{
+  "head": "f98dd96bb23b345640e49abbe4a872aad1644abd",
+  "workflow_run": 43126179063,
+  "job": 130878696422,
+  "artifact": 13903422323,
+  "archive_sha256": "1a273c3dec689e39bbffdb5b7073b008af4b7abb0956dabf6eaf3971929b1ad4",
+  "backend": {
+    "passed": 4,
+    "failed": 4,
+    "expected_failures": [
+      "one_mib_plus_one_dense",
+      "five_mib_dense",
+      "five_mib_plus_one_sparse",
+      "six_mib_sparse"
+    ],
+    "failure": "actual workspace_diff DTO lacks file_too_large hide_reason"
+  },
+  "renderer": {
+    "passed": 4,
+    "failed": 4,
+    "expected_failure": "actual backend DTO does not render the size placeholder"
+  },
+  "job_conclusion": "success",
+  "conclusion_qualification": "NOT GREEN: tee masked both failing command exit statuses; explicit pipefail correction published separately before product changes",
+  "product": "UNCHANGED",
+  "frozen_fixtures": "cases, Rust assertions and mounted assertions unchanged from registration-corrected baseline",
+  "native": "NOT_RUN"
+}

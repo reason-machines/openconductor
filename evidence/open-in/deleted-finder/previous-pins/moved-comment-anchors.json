@@ -1,0 +1,53 @@
+{
+  "baseline": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "fixture_sha256": "48428ff7dd42cb1c1a01874ad8cea53eda20b286093aea45ca66fe07a962b88c",
+  "product": {
+    "src/features/diff/ReviewComments.tsx": {
+      "baseline": "a6ba5b669d94cb402d4836cd913ed8b3138d24cb948568a94eea2958de273521",
+      "candidate": "5d61d8a59f1a500d31c399907b0f54c9a51089ed7b7a7442d6c9b890b6d3d564"
+    },
+    "src/features/diff/FileDiffView.tsx": {
+      "baseline": "9cd017dd3eff31391e722a5928ec2cdf6554b103db92e69bd6019858fc4d5e07",
+      "candidate": "8e3dc981b01b2e5f8b19f51e1fd0e7c05691f2174d2d37b1fe7faf9455ecc6da"
+    },
+    "src/features/diff/DiffViewer.tsx": {
+      "baseline": "597dbc39d297635b94bcde0fc86e4b15ef24064177f9327de8e512be5e865362",
+      "candidate": "9bb3cc41406952e4163810cbb8f1115b724c0936e22dc58faf2c46b2b4f23da7"
+    },
+    "src/features/diff/comments.ts": {
+      "baseline": "788821438b34ef500514260fcd7468fac80009786d1cb59bdf8ead9fe47a8910",
+      "candidate": "d8df4efefba44a94a7ddfd781075a08bba56fef93eea4aa377f6b872d4210800"
+    },
+    "src/features/diff/commentStore.ts": {
+      "baseline": "ac72045ac8d81cd6d1bc101ad64c9ad9186ba9b0921940e15e97dd36463d306b",
+      "candidate": "89b6dc1e8c4acd63482bdca83147d1eed286b06ef1bc40c25cbc25440c44af3c"
+    },
+    "src/features/diff/commentsApi.ts": {
+      "baseline": "ec39f3d078172b59f86f2ee673a69b7b8d8b5784da346d2341c90d2247d74142",
+      "candidate": "69de64da7711ed0b9f852244b4b1f5dcf09cff7b5a4c1cb19e81f49fd48ead43"
+    },
+    "src/features/diff/pierre.ts": {
+      "baseline": "1fa035161896ed5986e278797ce44637bb07bc3dbd2543b65263da0baa12d475",
+      "candidate": "738f92c4dc768f7313c9ac8fd4ac22fc003f62578ec78f2c296129737925ab52"
+    }
+  },
+  "reference": {
+    "asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "spans": {
+      "OMi": {
+        "utf8": [
+          9403263,
+          9404772
+        ],
+        "sha256": "5816311e1b28c39a5e288be10ae0a77e3f5de4b5c74a47aec3d693e9af32c2f6"
+      },
+      "kqo": {
+        "utf8": [
+          9628186,
+          9633515
+        ],
+        "sha256": "3af80b1ec23526b5f7da46310901c69f22cb9965ef67fba947801071ede1bcc1"
+      }
+    }
+  }
+}

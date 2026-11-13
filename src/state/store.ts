@@ -1,3 +1,5 @@
+import { usePersistenceProducer } from "../lib/persistence/producer.ts";
+import type { WriteAcknowledgment } from "../lib/persistence/owner.ts";
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import type { AppState, Repo, Selection, Workspace } from "./types";
@@ -91,8 +93,8 @@ export type Action =
   /** The user sent a message at `at`: last activity moves forward (chat_messages_save writes the same to conductor.db). */
   | { type: "touchWorkspace"; repoId: string; workspaceId: string; at: number }
   /* sidebar: user sections (navigationSections.ts) */
-  | { type: "createSection"; section: NavSection; beforeSectionId?: string }
-  | { type: "editSection"; sectionId: string; name: string; emoji?: string }
+  | { type: "createSection"; section: NavSection; beforeSectionId?: string; onError?: () => void }
+  | { type: "editSection"; sectionId: string; name: string; emoji?: string; onError?: () => void }
   | { type: "deleteSection"; sectionId: string }
   /** Drag a section header to `toIndex` (Conductor's `bY`). */
   | { type: "reorderSection"; sectionId: string; toIndex: number }
@@ -258,8 +260,11 @@ export function reducer(state: AppState, action: Action): AppState {
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, manualStatus: action.status }));
     case "touchWorkspace":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => withActivity(w, action.at));
-    case "createSection":
-      return withSections(state, createSection(state.sections ?? [], action.section, action.beforeSectionId));
+    case "createSection": {
+      const next = withSections(state, createSection(state.sections ?? [], action.section, action.beforeSectionId));
+      const members = new Set(next.sections?.find((section) => section.id === action.section.id)?.workspaceIds ?? []);
+      return { ...next, repos: next.repos.map((r) => ({ ...r, workspaces: r.workspaces.map((w) => (members.has(w.id) && w.pinnedAt !== undefined ? { ...w, pinnedAt: undefined } : w)) })) };
+    }
     case "editSection":
       return withSections(state, editSection(state.sections ?? [], { id: action.sectionId, name: action.name, emoji: action.emoji }));
     case "deleteSection":
@@ -383,12 +388,28 @@ export async function loadSectionsFromDb(): Promise<{ sections: NavSection[]; up
 
 export type StoreStartup = "loading" | "ready" | "error";
 
+type StoreCommit = { value: AppState; intent: number };
+type StoreIntent = { action: Action; intent: number };
+const reduceCommit = (previous: StoreCommit, event: StoreIntent): StoreCommit => ({ value: reducer(previous.value, event.action), intent: event.intent });
+const loadCommit = (): StoreCommit => ({ value: load(), intent: 0 });
+
 export function useAppStore() {
-  const [state, rawDispatch] = useReducer(reducer, undefined, load);
+  const persistence = usePersistenceProducer();
+  const [commit, submit] = useReducer(reduceCommit, undefined, loadCommit);
+  const state = commit.value;
+  const submitted = useRef(0);
+  const pendingCommits = useRef(new Map<number, WriteAcknowledgment>());
+  const rawDispatch = useCallback((action: Action) => {
+    const intent = ++submitted.current;
+    pendingCommits.current.set(intent, persistence.begin("render"));
+    submit({ action, intent });
+  }, [persistence]);
   const demo = new URLSearchParams(window.location.search).get("demo") === "1";
   const desktop = inTauri() && !demo;
   const [startup, setStartup] = useState<StoreStartup>(desktop ? "loading" : "ready");
   const sectionsWrittenAt = useRef<number | undefined>(undefined);
+  const pendingSectionErrors = useRef<(() => void)[]>([]);
+  const pendingSectionUnpins = useRef(new Map<string, readonly string[]>());
   useEffect(() => {
     if (!desktop) return;
     let current = true;
@@ -415,34 +436,60 @@ export function useAppStore() {
   // Sections: write the whole layout whenever an edit restamps it
   // (Conductor's local backend `WIr` does the same through `tve`).
   const reloadSections = useCallback(() => {
-    loadSectionsFromDb().then(
+    return persistence.run(() => loadSectionsFromDb().then(
       ({ sections, updatedAt }) => {
         sectionsWrittenAt.current = updatedAt;
         rawDispatch({ type: "hydrateSections", sections, updatedAt });
       },
-      (err) => console.error("conductor.db: could not read sidebar sections", err),
-    );
-  }, []);
+    ), undefined, "section-read").catch((err) => console.error("conductor.db: could not read sidebar sections", err));
+  }, [persistence, rawDispatch]);
   useEffect(() => {
     const at = state.sectionsUpdatedAt;
     if (!desktop || at === undefined || at === sectionsWrittenAt.current) return;
     sectionsWrittenAt.current = at;
-    invoke<boolean>("db_write_navigation_sections", { sections: state.sections ?? [], updatedAt: at }).then(
-      (written) => {
+    const onErrors = pendingSectionErrors.current.splice(0);
+    const unpinIds = [...new Set([...pendingSectionUnpins.current].flatMap(([sectionId, members]) => state.sections?.some((section) => section.id === sectionId) ? members : []))];
+    pendingSectionUnpins.current.clear();
+    const reloadCreationPins = () => {
+      if (unpinIds.length === 0) return Promise.resolve();
+      return persistence.run(() => loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos })), undefined, "pin-read")
+        .catch((err) => console.error("conductor.db: could not reload workspace pins", err));
+    };
+    void persistence.run(() => invoke<boolean>("db_write_navigation_sections", { sections: state.sections ?? [], updatedAt: at }).then(
+      async (written) => {
         // A newer layout is stored (another window wrote it): show that one.
-        if (!written) reloadSections();
+        if (!written) {
+          await Promise.all([reloadSections(), reloadCreationPins()]);
+          return;
+        }
+        await Promise.all(unpinIds.map((workspaceId) => persistence.run(() => invoke("db_set_workspace_pinned", { workspaceId, pinned: false }), undefined, `pin:${workspaceId}`).catch(async (err) => {
+          console.error("conductor.db: could not unpin workspace after section creation", err);
+          await reloadCreationPins();
+        })));
       },
-      (err) => {
+      async (err) => {
         console.error("conductor.db: could not save sidebar sections", err);
-        reloadSections();
+        await Promise.all([reloadSections(), reloadCreationPins()]);
+        for (const onError of onErrors) onError();
+        throw err;
       },
-    );
+    ), undefined, "sections").catch(() => undefined);
   }, [desktop, state.sections, state.sectionsUpdatedAt, reloadSections]);
   useEffect(() => {
     if (demo) return;
-    if (desktop) localStorage.setItem(PREFS_KEY, JSON.stringify(prefsOf(state)));
-    else localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }, [state, demo, desktop]);
+    const acknowledgment = persistence.begin("preferences");
+    try {
+      if (desktop) localStorage.setItem(PREFS_KEY, JSON.stringify(prefsOf(state)));
+      else localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      acknowledgment.succeed();
+    } catch (error) { acknowledgment.fail(error); throw error; }
+  }, [state, demo, desktop, persistence]);
+  useEffect(() => {
+    for (const [intent, acknowledgment] of pendingCommits.current) if (intent <= commit.intent) {
+      acknowledgment.succeed();
+      pendingCommits.current.delete(intent);
+    }
+  }, [commit.intent]);
   // Navigating to /all-workspaces while the app runs (history navigation)
   // shows the Home list, as loading that path or selecting sidebar Home does.
   useEffect(() => {
@@ -519,23 +566,29 @@ export function useAppStore() {
         });
         return;
       }
+      if (desktop && (action.type === "createSection" || action.type === "editSection") && action.onError) {
+        pendingSectionErrors.current.push(action.onError);
+      }
+      if (desktop && action.type === "createSection") {
+        pendingSectionUnpins.current.set(action.section.id, action.section.workspaceIds);
+      }
       rawDispatch(action);
       // Optimistic, as in Conductor: on a failed write, reload the rows the database has.
       const rollback = (what: string) => (err: unknown) => {
         console.error(`conductor.db: could not ${what}`, err);
-        loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined);
+        persistence.run(() => loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos })), undefined, "repository-read").catch(() => undefined);
       };
       if (desktop && action.type === "setRepoHidden") {
-        invoke("db_set_repo_hidden", { repoId: action.repoId, hidden: action.hidden }).catch(rollback("hide repository"));
+        persistence.run(() => invoke("db_set_repo_hidden", { repoId: action.repoId, hidden: action.hidden }), undefined, `hidden:${action.repoId}`).catch(rollback("hide repository"));
       }
       if (desktop && action.type === "setRepoIcon") {
-        invoke("db_set_repo_icon", { repoId: action.repoId, icon: action.icon }).catch(rollback("change repository icon"));
+        persistence.run(() => invoke("db_set_repo_icon", { repoId: action.repoId, icon: action.icon }), undefined, `icon:${action.repoId}`).catch(rollback("change repository icon"));
       }
       if (desktop && action.type === "reorderRepos") {
-        invoke("db_reorder_repos", { ids: action.ids }).catch(rollback("reorder repositories"));
+        persistence.run(() => invoke("db_reorder_repos", { ids: action.ids }), undefined, "repository-order").catch(rollback("reorder repositories"));
       }
       const write = desktop ? sidebarWrite(action) : undefined;
-      if (write) invoke(write.command, write.args).catch((err) => console.error(`conductor.db: ${write.command} failed`, err));
+      if (write) persistence.run(() => invoke(write.command, write.args), undefined, `${write.command}:${JSON.stringify(write.args)}`).catch((err) => console.error(`conductor.db: ${write.command} failed`, err));
     },
     [desktop],
   );

@@ -356,7 +356,7 @@ function LoginTerminal({ command, label, onDismiss, onDone }: { command: string;
       }
     });
     const input = term.onData((d) => id && !exited && void ptyWrite(id, d));
-    const resize = term.onResize(({ cols, rows }) => id && void ptyResize(id, cols, rows));
+    const resize = term.onResize(({ cols, rows }) => id && !exited && void ptyResize(id, cols, rows));
     (async () => {
       try {
         await unlisten;
@@ -404,7 +404,7 @@ function LoginTerminal({ command, label, onDismiss, onDone }: { command: string;
           <CloseIcon size={12} />
         </button>
       </div>
-      <div className="ag-term-body" data-terminal ref={mount} />
+      <div className="ag-term-body" data-terminal ref={mount} onClick={() => mount.current?.querySelector("textarea")?.focus()} />
     </div>
   );
 }

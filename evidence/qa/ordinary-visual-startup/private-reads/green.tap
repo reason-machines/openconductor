@@ -1,0 +1,56 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary visual profile hydrates empty Home/sidebar without a startup error
+ok 1 - ordinary visual profile hydrates empty Home/sidebar without a startup error
+  ---
+  duration_ms: 4659.253012
+  type: 'test'
+  ...
+# Subtest: ordinary visual profile reads absent collapse storage through the real client
+ok 2 - ordinary visual profile reads absent collapse storage through the real client
+  ---
+  duration_ms: 2117.5914
+  type: 'test'
+  ...
+# Subtest: ordinary hydration does not hide a failed db_list_repos read
+ok 3 - ordinary hydration does not hide a failed db_list_repos read
+  ---
+  duration_ms: 1391.729803
+  type: 'test'
+  ...
+# Subtest: ordinary hydration does not hide a failed db_list_workspaces read
+ok 4 - ordinary hydration does not hide a failed db_list_workspaces read
+  ---
+  duration_ms: 1314.817892
+  type: 'test'
+  ...
+# Subtest: ordinary hydration does not hide a failed db_read_navigation_sections read
+ok 5 - ordinary hydration does not hide a failed db_read_navigation_sections read
+  ---
+  duration_ms: 889.576651
+  type: 'test'
+  ...
+# Subtest: ordinary visual profile keeps provider, process, clone and storage writes unavailable
+ok 6 - ordinary visual profile keeps provider, process, clone and storage writes unavailable
+  ---
+  duration_ms: 644.266486
+  type: 'test'
+  ...
+# Subtest: visual-profile storage getter has managed state below the checked private data root
+ok 7 - visual-profile storage getter has managed state below the checked private data root
+  ---
+  duration_ms: 0.222353
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 16062.503766

@@ -664,9 +664,10 @@ pub async fn open_tab(
     now: &str,
 ) -> Result<()> {
     sqlx::query(
-        "INSERT INTO sessions (id, workspace_id, title, is_hidden, created_at, updated_at) \
-         VALUES (?, ?, ?, 0, ?, ?) ON CONFLICT(id) DO UPDATE SET is_hidden = 0, title = excluded.title, \
-         workspace_id = COALESCE(sessions.workspace_id, excluded.workspace_id)",
+        "INSERT INTO sessions (id, workspace_id, title, status, is_hidden, created_at, updated_at) \
+         VALUES (?, ?, ?, 'idle', 0, ?, ?) ON CONFLICT(id) DO UPDATE SET is_hidden = 0, title = excluded.title, \
+         workspace_id = COALESCE(sessions.workspace_id, excluded.workspace_id), \
+         status = COALESCE(sessions.status, 'idle')",
     )
     .bind(id)
     .bind(workspace_id)
@@ -912,7 +913,7 @@ pub async fn set_chat_status(
     Ok(())
 }
 
-/// One visible session that is not idle.
+/// One session that is not idle.
 #[derive(Debug, Clone, PartialEq, Eq, sqlx::FromRow)]
 pub struct ActiveStatus {
     pub id: String,
@@ -927,6 +928,16 @@ pub async fn active_statuses(pool: &SqlitePool) -> Result<Vec<ActiveStatus>> {
     Ok(sqlx::query_as(
         "SELECT id, workspace_id, status FROM sessions \
          WHERE status IS NOT NULL AND status != 'idle' AND COALESCE(is_hidden, 0) = 0 ORDER BY id",
+    )
+    .fetch_all(pool)
+    .await?)
+}
+
+/// Every non-idle session, including hidden rows and rows without a workspace.
+pub async fn all_active_statuses(pool: &SqlitePool) -> Result<Vec<ActiveStatus>> {
+    Ok(sqlx::query_as(
+        "SELECT id, workspace_id, status FROM sessions \
+         WHERE status IS NOT NULL AND status != 'idle' ORDER BY id",
     )
     .fetch_all(pool)
     .await?)
@@ -966,4 +977,58 @@ pub async fn delete_for_workspaces(
 
 pub(crate) fn placeholders(n: usize) -> String {
     vec!["?"; n].join(", ")
+}
+
+#[cfg(test)]
+mod caffeinate_status_tests {
+    use super::{active_statuses, all_active_statuses, SessionStatus};
+
+    #[tokio::test]
+    async fn hidden_inclusive_statuses_keep_unowned_rows_without_changing_visible_reads() {
+        let pool = crate::open_in_memory().await.unwrap();
+        for (id, workspace, status, hidden) in [
+            ("visible", Some("missing-workspace"), "working", false),
+            ("hidden", Some("missing-workspace"), "waiting", true),
+            ("unowned", None, "working", true),
+            ("idle", None, "idle", true),
+        ] {
+            sqlx::query(
+                "INSERT INTO sessions (id, workspace_id, status, is_hidden) VALUES (?, ?, ?, ?)",
+            )
+            .bind(id)
+            .bind(workspace)
+            .bind(status)
+            .bind(hidden)
+            .execute(&pool)
+            .await
+            .unwrap();
+        }
+
+        let visible = active_statuses(&pool).await.unwrap();
+        assert_eq!(visible.len(), 1);
+        assert_eq!(visible[0].id, "visible");
+
+        let all = all_active_statuses(&pool).await.unwrap();
+        let rows: Vec<_> = all
+            .into_iter()
+            .map(|row| (row.id, row.workspace_id, row.status))
+            .collect();
+        assert_eq!(
+            rows,
+            [
+                (
+                    "hidden".into(),
+                    Some("missing-workspace".into()),
+                    SessionStatus::Waiting,
+                ),
+                ("unowned".into(), None, SessionStatus::Working),
+                (
+                    "visible".into(),
+                    Some("missing-workspace".into()),
+                    SessionStatus::Working,
+                ),
+            ]
+        );
+        assert_eq!(active_statuses(&pool).await.unwrap(), visible);
+    }
 }

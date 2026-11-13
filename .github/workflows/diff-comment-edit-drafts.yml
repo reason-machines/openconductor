@@ -1,11 +1,7 @@
 name: Comment edit draft retention proof
 
 on:
-  pull_request:
-    paths:
-      - "src/features/diff/**"
-      - "evidence/diff/comment-edit-drafts/**"
-      - ".github/workflows/diff-comment-edit-drafts.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read

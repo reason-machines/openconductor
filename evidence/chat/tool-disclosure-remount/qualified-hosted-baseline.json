@@ -1,0 +1,55 @@
+{
+  "author": "Conductor Rebuild",
+  "pr": 1102,
+  "head": "51a2972e9fb0bcbd1e200601f2a2ec961ebbe922",
+  "workflow_run": 43123185796,
+  "job": 130868554090,
+  "url": "https://github.com/reason-machines/openconductor/actions/runs/43123185796/job/130868554090",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "verdict": "QUALIFIED_INTENDED_RED",
+  "product": "unchanged from 167492e56dbbb90850efbadf1db2848dae7622f2",
+  "cases": [
+    {
+      "id": "read-open-return",
+      "passed": false,
+      "code": "READ_OPEN_RETURN_LOST_MANUAL_EXPANSION",
+      "type": "ERR_ASSERTION",
+      "expected": true,
+      "actual": false
+    },
+    {
+      "id": "plan-closed-return",
+      "passed": false,
+      "code": "PLAN_CLOSED_RETURN_LOST_MANUAL_COLLAPSE",
+      "type": "ERR_ASSERTION",
+      "expected": false,
+      "actual": true
+    },
+    {
+      "id": "different-tool-id-isolation",
+      "passed": true
+    },
+    {
+      "id": "same-mounted-chat-rerender",
+      "passed": true
+    },
+    {
+      "id": "expanded-setting-manual-override",
+      "passed": true
+    }
+  ],
+  "aggregate": {
+    "tests": 3179,
+    "passed": 3177,
+    "failed": 2
+  },
+  "fixture_sha256": "affb87195267009c80fcd727441b25a1e4290c29af91d45c7a9f71b8fd4e7d53",
+  "host_sha256": "274df8317c705dfc49631f138ba42ae8738e36cd62d0ea47a9a4a140fa0086ae",
+  "log": "qualified-hosted-baseline.log.txt",
+  "log_normalization": "Trailing spaces removed from four blank timestamped lines; messages and assertion data unchanged",
+  "limits": [
+    "Hosted React test renderer with synthetic native/provider boundaries",
+    "No original native A/B/A, browser screenshot, provider or database acceptance",
+    "Earlier 6c379ef loader failure is excluded"
+  ]
+}

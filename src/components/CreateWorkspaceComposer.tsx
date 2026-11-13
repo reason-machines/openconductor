@@ -57,11 +57,12 @@ export interface CreateWorkspaceComposerProps {
   eyebrowVariant: EyebrowVariant;
   /** The workspace was added (and selected), or the user backed out. */
   onClose: () => void;
-  /** Creation started or settled; the dialog keeps itself open while busy. */
+  /** An accepted launch can dismiss its modal before creation settles. */
+  onLaunchStart?: () => void;
   onBusyChange?: (busy: boolean) => void;
   /** The repo picker's "Add project" menu: Open project, Open GitHub project, Quick start, Recents. */
   addActions: AddRepositoryActions;
-  /** A non-fatal issue while creating the workspace; the workspace still opens. */
+  /** Persistent launch errors and non-fatal workspace creation issues. */
   onWarning: (message: string) => void;
   dispatch: Dispatch<Action>;
   /** The sidebar's sections, for "Create in section". */
@@ -94,6 +95,7 @@ export function CreateWorkspaceComposer({
   githubUsername,
   eyebrowVariant,
   onClose,
+  onLaunchStart,
   onBusyChange,
   addActions,
   onWarning,
@@ -197,8 +199,13 @@ export function CreateWorkspaceComposer({
     // The sidebar shows an "Untitled" initializing row in this repo until the workspace is added or fails.
     const pendingId = crypto.randomUUID();
     addPendingLaunch(pendingId, repo.id);
+    let dismissedAtLaunch = false;
     try {
       if (!repo.path) throw new Error("This repository has no local checkout yet.");
+      if (onLaunchStart) {
+        onLaunchStart();
+        dismissedAtLaunch = true;
+      }
       const backendRepo = await ensureRepository(repo.path, repo.id);
       const created = await createWorkspace(toCreateWorkspaceArgs({ ...built.request, repoId: backendRepo.id }));
       send({ type: "created", workspaceId: created.workspace.id });
@@ -232,14 +239,16 @@ export function CreateWorkspaceComposer({
         if (canCreateIn(sectionsRef.current, sectionId)) dispatch({ type: "assignSection", workspaceId: id, sectionId });
         else onWarning(SECTION_ASSIGN_FAILED);
       }
-      onClose();
+      if (!dismissedAtLaunch) onClose();
       // ...and renames a placeholder city workspace after it.
       if (firstSession) {
         const full = { ...ws, status: "idle" as const, diff: { added: 0, removed: 0 }, createdAt: Date.now() };
         void renameAfterFirstMessage(repo, full, firstSession.message, dispatch);
       }
     } catch (err) {
-      send({ type: "create_failed", error: `${FAILED_TO_CREATE}: ${errorText(err)}` });
+      const message = `${FAILED_TO_CREATE}: ${errorText(err)}`;
+      if (dismissedAtLaunch) onWarning(message);
+      else send({ type: "create_failed", error: message });
     } finally {
       removePendingLaunch(pendingId);
     }

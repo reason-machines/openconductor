@@ -34,17 +34,23 @@ interface Props {
   oldPath?: string | null;
   /** The workspace's checkout; the chip opens `worktree/path`. */
   worktree?: string | null;
+  deleted?: boolean;
   notify?: (kind: "info" | "error", message: string) => void;
 }
 
-export function FilePathChip({ path, oldPath, worktree, notify }: Props) {
+export function FilePathChip({ path, oldPath, worktree, deleted = false, notify }: Props) {
   const apps = useInstalledApps() ?? [];
   const appId = defaultAppId(apps, useAppPrefs().default_open_in);
   const app = apps.find((a) => a.id === appId);
   const full = worktree ? `${worktree}/${path}` : null;
   const open = () => {
     if (!full || !appId) return;
-    openInApp(appId, appId === "alacritty" && worktree ? worktree : full).catch((err) => notify?.("error", `Failed to open in ${app?.name ?? appId}: ${err instanceof Error ? err.message : String(err)}`));
+    const pending = deleted && appId === "finder" && worktree
+      ? openInApp(appId, full, { workspacePath: worktree })
+      : !deleted && appId === "vscode" && worktree
+        ? openInApp(appId, full, { workspacePath: worktree })
+        : openInApp(appId, appId === "alacritty" && worktree ? worktree : full);
+    pending.catch((err) => notify?.("error", `Failed to open in ${app?.name ?? appId}: ${err instanceof Error ? err.message : String(err)}`));
   };
   const chip = (
     <button type="button" className="oc-path-chip" onClick={open} aria-label={path} title={app && full ? undefined : path}>

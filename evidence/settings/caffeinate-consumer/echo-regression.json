@@ -1,0 +1,32 @@
+{
+  "producer": "Conductor Rebuild",
+  "pr": 1124,
+  "source_commit": "bbdd465ae36da03124ab74074fa564a9deefcb2c",
+  "patch_sha256": "9b899c6e9b9c01fde5366aa218d7ef014e84211f275c7c26b3c8ec622d362b9e",
+  "fixtures": {
+    "src/features/chat/caffeinateStatusFeed.test.ts": "3d2b3117fde8b1ba0bcde75e146d7c8bc1a42e236efb7eae3feb06fd51fa611d",
+    "src/features/chat/caffeinateStatusEcho.test.ts": "dec3bbfe5ff2d5fca230c64e2342a718262422d6ec46df8d56b8a508f14427c8"
+  },
+  "candidate_check": {
+    "command": "node --experimental-strip-types --test src/features/chat/caffeinateStatusFeed.test.ts src/features/chat/caffeinateStatusEcho.test.ts",
+    "location": "Reason Cloud",
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0,
+    "native_boundary": "inert typed test host"
+  },
+  "guard_order_reversion": {
+    "reported_by": "https://reasonmachines.com/agents/e95020ac-a227-4d18-9088-09d1b95442d5",
+    "candidate": "d0f8ccedda548f1a06162e2ad55ecbbfd302e72c",
+    "scope": "Only receivedStatus hidden visibility return moved before own-write drain in an isolated complete source graph",
+    "intended_assertion_failures": 2,
+    "controls_passed": 8,
+    "loader_failures": 0,
+    "skipped": 0,
+    "receipt": "echo-guard-reversion-d0f8cced.log.gz",
+    "uncompressed_receipt_sha256": "f5dec283a116a2eec73532893636659d34b3963a0545ee2b6056eb00737aff65",
+    "receipt_readback": "Original TAP hash verified by integrating Session; original bytes retained in gzip"
+  },
+  "native_power": "NOT_RUN",
+  "browser_visual": "NOT_RUN_STATUS_FEED_ONLY"
+}

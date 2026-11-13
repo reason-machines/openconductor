@@ -7,6 +7,7 @@ import io
 import json
 import os
 from pathlib import Path
+import plistlib
 import re
 import stat
 import subprocess
@@ -22,6 +23,15 @@ BUNDLE_ID = "com.reasonmachines.openconductor.qa-vm-runner"
 EXECUTABLE = "Contents/MacOS/OpenConductorQAVMRunner"
 MAX_ARCHIVE = 256 * 1024
 MAX_JSON = 64 * 1024
+MAX_BUNDLE_ARCHIVE = 36 * 1024 * 1024
+BUNDLE_ROOT = "OpenConductorQAVMRunner.app"
+BUNDLE_MEMBERS = {
+    "receipt.json": (MAX_JSON, 0o600),
+    "build.json": (MAX_JSON, 0o600),
+    f"{BUNDLE_ROOT}/Contents/Info.plist": (1024 * 1024, 0o644),
+    f"{BUNDLE_ROOT}/{EXECUTABLE}": (32 * 1024 * 1024, 0o755),
+    f"{BUNDLE_ROOT}/Contents/_CodeSignature/CodeResources": (1024 * 1024, 0o644),
+}
 
 
 def _require(condition, message):
@@ -123,8 +133,8 @@ class AuthenticatedGitHubReader(ABC):
     resolve numeric repository linkage, the workflow at the pinned source,
     exact producer job/attempt and the service archive digest without guessing.
     Missing authoritative fields must raise or return an invalid record.
-    No production broker is implemented here. Subclassing cannot authenticate
-    a service: only caller-controlled policy tests should use fake readers.
+    The fixed-origin implementation is tools.native_qa_vm_github.GitHubReader.
+    Subclassing alone cannot authenticate a service; fake readers are policy tests.
     """
     @abstractmethod
     def read_repository(self, repository_id):
@@ -364,8 +374,8 @@ class ReceiptFiles:
     manifest: Path
 
 
-def _write_new(path, data):
-    _require(len(data) <= MAX_JSON, "producer JSON size limit")
+def _write_new(path, data, *, max_bytes=MAX_JSON):
+    _require(0 < len(data) <= max_bytes, "producer output size limit")
     fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
     with os.fdopen(fd, "wb") as output:
         output.write(data)
@@ -407,6 +417,97 @@ def emit_ci_receipt(bundle, *, checkout, ci_context, output_directory, sdk_versi
     return paths
 
 
+@dataclass(frozen=True)
+class RetainedBundle:
+    source_commit: str
+    build_id: str
+    executable_sha256: str
+    archive_sha256: str
+
+
+def inspect_retained_bundle(data, *, expected_source, expected_build_id):
+    """Check retained byte binding without extraction, signature trust or admission."""
+    _require(_hex(expected_source, 40) and _text(expected_build_id),
+             "independently selected source and build ID required")
+    _require(type(data) is bytes and 0 < len(data) <= MAX_BUNDLE_ARCHIVE
+             and data.startswith(b"PK\x03\x04"), "invalid or oversized retained bundle")
+    members = {}
+    try:
+        with zipfile.ZipFile(io.BytesIO(data)) as archive:
+            entries = archive.infolist()
+            _require(len(entries) == len(BUNDLE_MEMBERS)
+                     and {item.filename for item in entries} == BUNDLE_MEMBERS.keys(),
+                     "retained bundle must contain the exact signed bundle and both JSON files")
+            for item in entries:
+                limit, permission = BUNDLE_MEMBERS[item.filename]
+                _require(item.orig_filename == item.filename and "\0" not in item.orig_filename
+                         and item.create_system == 3
+                         and item.external_attr >> 16 == stat.S_IFREG | permission
+                         and not item.is_dir() and not item.flag_bits & 1
+                         and item.compress_type == zipfile.ZIP_STORED
+                         and 0 < item.file_size <= limit
+                         and item.compress_size == item.file_size,
+                         "invalid retained bundle member or permission")
+                with archive.open(item) as stream:
+                    contents = stream.read(limit + 1)
+                _require(len(contents) == item.file_size, "retained bundle member size mismatch")
+                members[item.filename] = contents
+    except (zipfile.BadZipFile, RuntimeError, NotImplementedError, EOFError) as error:
+        raise ValueError("unreadable retained bundle") from error
+    manifest = _json(members["build.json"])
+    _require(all(_positive(manifest.get(key)) for key in ("repository_id", "run_id", "run_attempt")),
+             "retained build coordinates required")
+    build_id = _documents(members["receipt.json"], members["build.json"],
+        repository_id=manifest["repository_id"], source_commit=expected_source,
+        run_id=manifest["run_id"], run_attempt=manifest["run_attempt"])
+    _require(build_id == expected_build_id, "retained bundle differs from selected build")
+    executable_sha256 = hashlib.sha256(members[f"{BUNDLE_ROOT}/{EXECUTABLE}"]).hexdigest()
+    _require(executable_sha256 == _json(members["receipt.json"])["executable_sha256"],
+             "retained executable differs from signed-build receipt")
+    try:
+        info = plistlib.loads(members[f"{BUNDLE_ROOT}/Contents/Info.plist"])
+    except (plistlib.InvalidFileException, ValueError, TypeError) as error:
+        raise ValueError("invalid retained bundle plist") from error
+    _require(type(info) is dict and info.get("CFBundleIdentifier") == BUNDLE_ID
+             and info.get("CFBundleExecutable") == EXECUTABLE.rsplit("/", 1)[1],
+             "retained bundle identity mismatch")
+    return RetainedBundle(expected_source, build_id, executable_sha256,
+                          hashlib.sha256(data).hexdigest())
+
+
+def retain_ci_bundle(bundle, *, receipt_directory, output_file, expected_source, expected_build_id):
+    """Retain the signature-checked producer bundle; never rebuild or execute it."""
+    bundle = _no_links(bundle)
+    receipts = _no_links(receipt_directory)
+    output = _no_links(output_file)
+    _require(bundle.name == BUNDLE_ROOT and output != bundle and bundle not in output.parents
+             and output != receipts and receipts not in output.parents,
+             "standalone bundle and separate retained output required")
+    verify_build_identity(bundle, build_receipt=receipts / "receipt.json", expected_source=expected_source)
+    inputs = {}
+    for name, (limit, _) in BUNDLE_MEMBERS.items():
+        path = receipts / name if name in ("receipt.json", "build.json") else bundle / name.split("/", 1)[1]
+        inputs[name] = (path, *_read_regular(path, limit))
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_STORED) as archive:
+        for name, (_, contents, _) in inputs.items():
+            item = zipfile.ZipInfo(name)
+            item.create_system = 3
+            item.external_attr = (stat.S_IFREG | BUNDLE_MEMBERS[name][1]) << 16
+            archive.writestr(item, contents)
+    data = buffer.getvalue()
+    result = inspect_retained_bundle(data, expected_source=expected_source,
+                                     expected_build_id=expected_build_id)
+    verify_build_identity(bundle, build_receipt=receipts / "receipt.json", expected_source=expected_source)
+    for name, (path, contents, identity) in inputs.items():
+        _require(_read_regular(path, BUNDLE_MEMBERS[name][0]) == (contents, identity),
+                 "signed bundle or receipt changed during retention")
+    _write_new(output, data, max_bytes=MAX_BUNDLE_ARCHIVE)
+    _require(_read_regular(output, MAX_BUNDLE_ARCHIVE)[0] == data,
+             "retained archive changed during output readback")
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
@@ -418,17 +519,32 @@ def main():
     emit.add_argument("--output-directory", type=Path, required=True)
     emit.add_argument("--sdk-version", required=True)
     emit.add_argument("--clang-version", required=True)
+    retain = commands.add_parser("retain")
+    retain.add_argument("--checkout", type=Path, required=True)
+    retain.add_argument("--bundle", type=Path, required=True)
+    retain.add_argument("--receipt-directory", type=Path, required=True)
+    retain.add_argument("--output-file", type=Path, required=True)
     args = parser.parse_args()
     try:
         context = CIContext.from_environment(os.environ)
         if args.command == "preflight":
             validate_checkout(args.checkout, context)
             print("PASS: producer context/source preflight only; not authenticated evidence")
-        else:
+        elif args.command == "emit":
             emit_ci_receipt(args.bundle, checkout=args.checkout, ci_context=context,
                 output_directory=args.output_directory, sdk_version=args.sdk_version,
                 clang_version=args.clang_version)
             print("PASS: two inert JSON files emitted; authentication and native admission NOT established")
+        else:
+            checkout = validate_checkout(args.checkout, context)
+            output = _no_links(args.output_file)
+            _require(output != checkout and checkout not in output.parents,
+                     "retained archive must be outside checkout")
+            result = retain_ci_bundle(args.bundle, receipt_directory=args.receipt_directory,
+                output_file=output, expected_source=context.source_commit,
+                expected_build_id=_build_id(context.repository_id, context.run_id, context.run_attempt))
+            validate_checkout(checkout, context)
+            print(f"PASS: retained signed-build bytes {result.executable_sha256}; authentication and native admission NOT established")
     except (ValueError, OSError, subprocess.CalledProcessError) as error:
         parser.exit(1, f"REFUSED: {error}\n")
 

@@ -1,0 +1,17 @@
+{
+  "author": "Conductor Rebuild",
+  "phase": "green",
+  "classification": "VALID_GREEN",
+  "exit_code": 0,
+  "summary": {
+    "tests": 4,
+    "pass": 4,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "failures": [],
+  "raw_tap_sha256": "e1cb01f21fbce5e28c177634ec1884d8b43ccc58a36d9e84048e3af13115185c",
+  "test_execution_performed_by_inspector": false
+}

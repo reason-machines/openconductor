@@ -17,15 +17,16 @@ import {
   grepMatches,
   isTypedSubagent,
   lastTwoSegments,
+  lineCounts,
   mcpLabel,
   parseTask,
   parseTaskList,
   readContent,
   readLabel,
   resultText,
+  scheduleWakeupAt,
   scheduleWakeupLabel,
   sendMessageLabel,
-  shortPath,
   skillLabel,
   slashCommandLabel,
   stripMarkers,
@@ -158,7 +159,9 @@ const GLYPH_BY_EXT: Record<string, [Glyph, string]> = {
 
 export function FileGlyph({ path }: { path: string }) {
   const ext = path.split(".").pop()?.toLowerCase() ?? "";
-  const [glyph, tint] = GLYPH_BY_EXT[ext] ?? (["file", "muted"] as [Glyph, string]);
+  const [glyph, tint] = (Object.prototype.hasOwnProperty.call(GLYPH_BY_EXT, ext)
+    ? GLYPH_BY_EXT[ext]
+    : undefined) ?? (["file", "muted"] as [Glyph, string]);
   const g = FILE_GLYPHS[glyph];
   return (
     <svg className="oc-file-glyph" data-tint={tint} viewBox={g.viewBox} fill="currentColor" role="img" aria-hidden>
@@ -297,6 +300,7 @@ interface ShellProps {
   align?: "center" | "baseline";
   /** Row content when opened; no content means the row does not open. */
   content?: ReactNode;
+  isCollapsible?: boolean;
   /** `isCodeBlock`: the content brings its own frame. */
   bareContent?: boolean;
   /** `contentClassName: ""`: the content sits unframed under the label (markdown). */
@@ -309,9 +313,10 @@ interface ShellProps {
   status?: ToolStatus;
 }
 
-function RowShell({ icon, left, right, keepRight = false, align = "baseline", content, bareContent = false, plainContent = false, leftClass, open, onToggle, tone, status }: ShellProps) {
-  const opens = content !== undefined && content !== null && content !== false;
-  const collapsed = !opens || !open;
+function RowShell({ icon, left, right, keepRight = false, align = "baseline", content, isCollapsible = true, bareContent = false, plainContent = false, leftClass, open, onToggle, tone, status }: ShellProps) {
+  const hasContent = content !== undefined && content !== null && content !== false;
+  const opens = hasContent && isCollapsible;
+  const collapsed = !hasContent || !open;
   return (
     <div className="oc-tool" data-tone={tone} data-status={status}>
       <div className={`oc-tool-head${opens ? " opens" : ""}`} onClick={opens ? onToggle : undefined} role={opens ? "button" : undefined} aria-expanded={opens ? open : undefined}>
@@ -330,7 +335,7 @@ function RowShell({ icon, left, right, keepRight = false, align = "baseline", co
           {right ? <div className={`oc-tool-right${!keepRight && !collapsed ? " hidden" : ""}`}>{right}</div> : null}
         </div>
       </div>
-      {opens && open ? <div className={bareContent ? "oc-tool-content bare" : plainContent ? "oc-tool-content plain" : "oc-tool-content"}>{content}</div> : null}
+      {hasContent && open ? <div className={bareContent ? "oc-tool-content bare" : plainContent ? "oc-tool-content plain" : "oc-tool-content"}>{content}</div> : null}
     </div>
   );
 }
@@ -341,6 +346,9 @@ export interface ToolRowProps {
   tool: ConductorTool;
   status: ToolStatus;
   result?: string;
+  rawResult?: unknown;
+  resultCreatedAt?: string;
+  now?: () => number;
   isError: boolean;
   open: boolean;
   onToggle: () => void;
@@ -386,16 +394,20 @@ export function opensByDefault(tool: ConductorTool): boolean {
 
 export function ConductorToolRow(props: ToolRowProps) {
   const row = <Row {...props} />;
-  if (!props.isError || !props.result || !ERROR_ROW_KINDS.has(toolKind(props.tool.name))) return row;
+  const kind = toolKind(props.tool.name);
+  const errorResult = kind === "bash-output" && props.rawResult !== undefined
+    ? typeof props.rawResult === "string" ? props.rawResult : undefined
+    : props.result;
+  if (!props.isError || !errorResult || !ERROR_ROW_KINDS.has(kind)) return row;
   return (
     <>
       {row}
-      <ErrorRow text={props.result} />
+      <ErrorRow text={errorResult} />
     </>
   );
 }
 
-function Row({ tool, status, result, isError, open, onToggle, todoRows, workspacePath, onOpenFile }: ToolRowProps) {
+function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, open, onToggle, todoRows, workspacePath, onOpenFile }: ToolRowProps) {
   const { name, input } = tool;
   const icon = <ToolIcon name={name} />;
   const shell = { icon, open, onToggle, status };
@@ -417,17 +429,22 @@ function Row({ tool, status, result, isError, open, onToggle, todoRows, workspac
     }
     case "read": {
       const path = s(input.file_path);
-      const text = output === undefined ? undefined : readContent(output);
+      const readResult = name === "Read" ? result : output;
+      const text = readResult === undefined ? undefined : readContent(readResult);
       const languages: Record<string, string> = {
         js: "javascript", jsx: "javascript", ts: "typescript", tsx: "typescript",
         py: "python", rs: "rust", json: "json", yml: "yaml", yaml: "yaml",
         css: "css", html: "html", htm: "html", xml: "xml", sh: "bash", bash: "bash",
       };
       const language = languages[path.split(".").pop()?.toLowerCase() ?? ""];
+      const imageExtensions = { png: true, jpg: true, jpeg: true, gif: true, webp: true, tif: true, tiff: true, avif: true, bmp: true };
+      const extension = path.split(".").pop()?.toLowerCase();
+      const isImage = extension !== undefined && Object.prototype.hasOwnProperty.call(imageExtensions, extension);
       return (
         <RowShell
           {...shell}
-          left={<span>{readLabel(path, output)}</span>}
+          isCollapsible={!isImage}
+          left={<span>{readLabel(path, readResult)}</span>}
           right={path ? <FileBadge path={path} onOpen={onOpenFile} /> : undefined}
           keepRight
           align="center"
@@ -448,7 +465,7 @@ function Row({ tool, status, result, isError, open, onToggle, todoRows, workspac
               {path ? (
                 <>
                   {" in "}
-                  <code className="oc-tool-inline-code">{shortPath(path, workspacePath)}</code>
+                  <code className="oc-tool-inline-code">{lastTwoSegments(path)}</code>
                 </>
               ) : null}
               {include ? ` (include: ${include})` : null}
@@ -463,25 +480,49 @@ function Row({ tool, status, result, isError, open, onToggle, todoRows, workspac
     case "ls": {
       const label = toolKind(name) === "glob" ? "Glob" : "List files";
       const chip = toolKind(name) === "glob" ? s(input.pattern) : s(input.path) || ".";
-      return <RowShell {...shell} left={<span>{label}</span>} right={<CodeChip text={chip} />} align="center" content={output ? output : undefined} />;
+      const content = toolKind(name) === "glob" && output ? (
+        <code>{output.split("\n").filter((line) => line.trim()).map((line, index) => {
+          const trimmed = line.trim();
+          return <div key={index}>{trimmed.includes(" ") ? line : trimmed}</div>;
+        })}</code>
+      ) : output;
+      return <RowShell {...shell} left={<span>{label}</span>} right={<CodeChip text={chip} />} align="center" content={content || undefined} />;
     }
     case "edit": {
       const path = s(input.file_path);
-      const counts = editCounts(input);
+      const { oldText, newText } = (() => {
+        if (rawResult && typeof rawResult === "object" && !Array.isArray(rawResult) && "diffString" in rawResult && typeof rawResult.diffString === "string" && rawResult.diffString) {
+          const oldLines: string[] = [];
+          const newLines: string[] = [];
+          for (const line of rawResult.diffString.split("\n")) {
+            if (line.startsWith("--- ") || line.startsWith("+++ ") || line.startsWith("@@")) continue;
+            if (line.startsWith("-")) oldLines.push(line.slice(1));
+            else if (line.startsWith("+")) newLines.push(line.slice(1));
+            else {
+              const context = line.startsWith(" ") ? line.slice(1) : line;
+              oldLines.push(context);
+              newLines.push(context);
+            }
+          }
+          return { oldText: oldLines.join("\n"), newText: newLines.join("\n") };
+        }
+        return { oldText: stripMarkers(s(input.old_string)), newText: stripMarkers(s(input.new_string)) };
+      })();
+      const counts = oldText || newText ? lineCounts(oldText, newText) : undefined;
       return (
         <RowShell
           {...shell}
           left={<span>Edit</span>}
           right={
             <div className="oc-tool-right-row">
-              {path ? <FileBadge path={path} onOpen={onOpenFile} hoverContent={counts ? <DiffBlock oldText={stripMarkers(s(input.old_string))} newText={stripMarkers(s(input.new_string))} /> : undefined} /> : null}
+              {path ? <FileBadge path={path} onOpen={onOpenFile} hoverContent={counts ? <DiffBlock oldText={oldText} newText={newText} /> : undefined} /> : null}
               {counts ? <LineCounts {...counts} /> : null}
             </div>
           }
           keepRight
           align="center"
           bareContent
-          content={counts ? <DiffBlock oldText={stripMarkers(s(input.old_string))} newText={stripMarkers(s(input.new_string))} /> : undefined}
+          content={counts ? <DiffBlock oldText={oldText} newText={newText} /> : undefined}
         />
       );
     }
@@ -492,18 +533,36 @@ function Row({ tool, status, result, isError, open, onToggle, todoRows, workspac
     case "web": {
       const target = s(input.url) || s(input.query);
       const prompt = s(input.prompt);
+      const webOutput = output && output.length > 100000 ? (
+        <>
+          {output.substring(0, 100000)}
+          <div>Content truncated ({output.length.toLocaleString()} chars total)</div>
+        </>
+      ) : output;
       return (
         <RowShell
           {...shell}
           left={<span>{name === "WebSearch" ? "Web Search" : "Web Browse"}</span>}
           right={target ? <CodeChip text={target} /> : undefined}
           align="center"
-          content={output ? (prompt ? <><ul><li>Prompt: <code>{prompt}</code></li></ul>{output}</> : output) : undefined}
+          content={output ? (prompt ? <><ul><li>Prompt: <code>{prompt}</code></li></ul>{webOutput}</> : webOutput) : undefined}
         />
       );
     }
     case "todo": {
-      const todos = Array.isArray(input.todos) ? (input.todos as Record<string, unknown>[]) : [];
+      let todoSource: unknown = input.todos;
+      if (name === "TodoRead") {
+        todoSource = rawResult === undefined ? result : rawResult;
+        if (typeof todoSource === "string") {
+          const match = todoSource.match(/\[[\s\S]*\]/);
+          try {
+            todoSource = match ? JSON.parse(match[0]) : [];
+          } catch {
+            todoSource = [];
+          }
+        }
+      }
+      const todos = Array.isArray(todoSource) ? (todoSource as Record<string, unknown>[]) : [];
       const done = todos.filter((t) => t.status === "completed").length;
       const activeIndex = todos.findIndex((t) => t.status === "in_progress");
       const active = todos[activeIndex];
@@ -538,7 +597,7 @@ function Row({ tool, status, result, isError, open, onToggle, todoRows, workspac
       );
     }
     default:
-      return <MoreRows {...{ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }} />;
+      return <MoreRows {...{ tool, status, result, rawResult, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
   }
 }
 
@@ -806,16 +865,43 @@ function modelName(model: string): string {
   return alias[model] ?? model;
 }
 
-function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }: ToolRowProps) {
+function ScheduleWakeupRow({ tool, status, result, resultCreatedAt, now = Date.now, isError, open, onToggle }: ToolRowProps) {
+  const resultAt = resultCreatedAt === undefined ? undefined : Date.parse(resultCreatedAt);
+  const wakeAt = scheduleWakeupAt(tool.input, result, resultAt);
+  const [, redraw] = useState(0);
+  useEffect(() => {
+    if (isError || wakeAt === undefined) return;
+    const delay = wakeAt - now();
+    if (delay <= 0) return;
+    const timer = setTimeout(() => redraw((version) => version + 1), delay + 250);
+    return () => clearTimeout(timer);
+  }, [wakeAt, isError, now]);
+  if (isError) return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
+  const label = scheduleWakeupLabel(tool.input, result, resultAt, now(), (ms) => new Date(ms).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
+  return (
+    <RowShell
+      icon={<ToolIcon name={tool.name} />}
+      open={open}
+      onToggle={onToggle}
+      status={status}
+      left={<span>{label}</span>}
+      right={s(tool.input.reason) ? <CodeChip text={s(tool.input.reason)} /> : undefined}
+      align="center"
+      content={<InputOutput input={tool.input} result={result} isError={isError} />}
+    />
+  );
+}
+
+function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }: ToolRowProps) {
   const { name, input } = tool;
   const kind = toolKind(name);
   const shell: ShellBase = { icon: <ToolIcon name={name} />, open, onToggle, status };
-  const output = isError ? undefined : result;
   const framed = (text: string | undefined) => (text ? text : undefined);
   switch (kind) {
     case "bash-output": {
       // `N0o`
-      const st = backgroundStatus(result);
+      const content = rawResult === undefined ? result : typeof rawResult === "string" ? rawResult : undefined;
+      const st = backgroundStatus(content);
       return (
         <RowShell
           {...shell}
@@ -829,7 +915,7 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
               ) : null}
             </span>
           }
-          content={framed(result)}
+          content={framed(content)}
         />
       );
     }
@@ -928,7 +1014,7 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
       );
     }
     case "task-list": {
-      const tasks = parseTaskList(output);
+      const tasks = parseTaskList(result);
       const active = tasks.find((t) => t.status === "in_progress");
       const done = tasks.filter((t) => t.status === "completed").length;
       const doing = tasks.filter((t) => t.status === "in_progress").length;
@@ -957,7 +1043,7 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
       );
     }
     case "task-get": {
-      const task = parseTask(output);
+      const task = parseTask(result);
       const id = s(input.taskId);
       return (
         <RowShell
@@ -969,7 +1055,7 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
       );
     }
     case "task-update": {
-      const task = parseTask(output);
+      const task = parseTask(result);
       const id = s(input.taskId) || taskIdIn(result);
       const { label, note: dep } = taskUpdateLabel(input);
       const subject = task?.subject || s(input.subject);
@@ -1090,30 +1176,22 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
       return <RowShell {...shell} left={<span>Workspace diff</span>} right={<span className="oc-tool-count">{target}</span>} content={framed(result)} />;
     }
     case "get-terminal-output": {
-      const { text, note: where } = terminalOutput(input, result);
+      const { text, note: where } = terminalOutput(input, result, rawResult);
       return <RowShell {...shell} left={<span>Get terminal output</span>} right={where ? <span className="oc-tool-count">{where}</span> : undefined} content={framed(text)} />;
     }
-    case "schedule-wakeup": {
-      // `Epo`: a failed call draws as the generic row.
-      if (isError) return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
-      const label = scheduleWakeupLabel(input, result, undefined, Date.now(), (ms) => new Date(ms).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
-      return (
-        <RowShell
-          {...shell}
-          left={<span>{label}</span>}
-          right={s(input.reason) ? <CodeChip text={s(input.reason)} /> : undefined}
-          align="center"
-          content={<InputOutput input={input} result={result} isError={isError} />}
-        />
-      );
-    }
+    case "schedule-wakeup":
+      return <ScheduleWakeupRow {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle }} />;
     case "image-generation": {
       // `Vpo`: the generated image's path (the image itself is not drawn yet).
       const path = result === undefined ? "" : resultText(result).trim();
+      const imageExtensions = { png: true, jpg: true, jpeg: true, gif: true, webp: true, tif: true, tiff: true, avif: true, bmp: true };
+      const extension = path.split(".").pop()?.toLowerCase();
+      const isCollapsible = extension !== undefined && Object.prototype.hasOwnProperty.call(imageExtensions, extension);
       return (
         <RowShell
           {...shell}
           left={<span>{result === undefined ? "Generating image" : "Generated image"}</span>}
+          isCollapsible={isCollapsible}
           keepRight
           content={path ? <span className="oc-task-note mono">{path}</span> : undefined}
         />
@@ -1145,19 +1223,21 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
     case "codex-collab":
       return <CollabRow name={name} input={input} result={result} isError={isError} />;
     case "sub-agent":
-      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={output} />;
-      if (name.startsWith("mcp__linear__") || name.startsWith("mcp__context7__")) return <MoreRows {...{ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }} />;
+      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={result} />;
+      if (name.startsWith("mcp__linear__") || name.startsWith("mcp__context7__")) return <MoreRows {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
       return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
     default:
-      return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
+      return <GenericRow {...{ tool, status, result, rawResult, isError, open, onToggle }} />;
   }
 }
 
 /** `aUt`: any other tool. MCP tools get `iUt`'s shell; Monitor shows its description as plain text. */
-function GenericRow({ tool, status, result, isError, open, onToggle }: Pick<ToolRowProps, "tool" | "status" | "result" | "isError" | "open" | "onToggle">) {
+function GenericRow({ tool, status, result, rawResult, isError, open, onToggle }: Pick<ToolRowProps, "tool" | "status" | "result" | "rawResult" | "isError" | "open" | "onToggle">) {
   const { name, input } = tool;
   const shell: ShellBase = { icon: <ToolIcon name={name} />, open, onToggle, status };
   const mcp = name.startsWith("mcp__");
+  let output = result;
+  if (!mcp && rawResult !== undefined) output = typeof rawResult === "string" ? rawResult : rawResult ? JSON.stringify(rawResult, null, 2) : "";
   const monitor = name === "Monitor";
   const summary = genericSummary(name, input);
   const left = mcp || monitor || name === "ToolSearch" ? <span>{mcpLabel(name)}</span> : <span className="oc-lowercase">{name}</span>;
@@ -1170,7 +1250,7 @@ function GenericRow({ tool, status, result, isError, open, onToggle }: Pick<Tool
       leftClass={monitor ? "shrink" : undefined}
       right={right}
       align={monitor ? "baseline" : "center"}
-      content={Object.keys(input).length > 0 || result ? <InputOutput input={input} result={result} isError={isError} /> : undefined}
+      content={Object.keys(input).length > 0 || output ? <InputOutput input={input} result={output} isError={isError} /> : undefined}
     />
   );
 }

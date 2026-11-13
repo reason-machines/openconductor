@@ -66,6 +66,12 @@ async fn workspace_read_markdown(repo: String, path: String) -> Result<String, S
         .await
         .map_err(|e| format!("File read task failed: {e}"))?
 }
+#[tauri::command]
+async fn workspace_read_text(repo: String, path: String) -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(move || workspace_file::read_text(std::path::Path::new(&repo), &path))
+        .await
+        .map_err(|e| format!("File read task failed: {e}"))?
+}
 mod recent_local_repos_commands;
 mod sidebar_repo_commands;
 mod repo_misc_commands;
@@ -90,6 +96,7 @@ mod local_plan_mode;
 mod onboarding_commands;
 mod native_qa;
 mod native_qa_cache;
+pub mod visual_qa_profile;
 pub mod open_in;
 pub mod project;
 pub mod quick_open;
@@ -287,7 +294,8 @@ fn updater_plugin<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R, tauri_pl
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     native_qa::reject_release_request();
-    let context = native_qa::before_startup(tauri::generate_context!());
+    let context = visual_qa_profile::before_startup(tauri::generate_context!());
+    let context = native_qa::before_startup(context);
     let builder = native_qa::guard_builder(tauri::Builder::default());
     // Conductor is macOS-only; elsewhere keep Tauri's no-menu default.
     #[cfg(target_os = "macos")]
@@ -408,6 +416,7 @@ pub fn run() {
         .manage(app_quit::QuitHandler::default())
         .invoke_handler(tauri::generate_handler![
             workspace_read_markdown,
+            workspace_read_text,
             app_quit::set_quit_handler_ready,
             app_quit::quit_app,
             root_path_commands::get_conductor_root,
@@ -484,6 +493,7 @@ pub fn run() {
             diff::comment_commands::diff_comment_delete,
             diff::comment_commands::diff_comment_resolve,
             diff::comment_commands::diff_comments_mark_sent,
+            diff::comment_commands::diff_comments_mark_reviewed,
             turn_checkpoint_commands::checkpoint_turn_changes,
             diff::comment_commands::diff_comments_sync_github,
             diff::comment_commands::diff_comment_resolve_github,
@@ -517,6 +527,7 @@ pub fn run() {
             codex_chat::codex_cli_path,
             codex_chat::codex_open_chat,
             codex_chat::codex_prompt,
+            codex_chat::codex_mcp_status,
             codex_chat::codex_cancel,
             codex_chat::codex_answer,
             codex_chat::codex_respond,
@@ -621,6 +632,8 @@ pub fn run() {
             scripts::run_script_stop,
             scripts::run_script_status,
             scripts::run_script_output,
+            scripts::run_script_write,
+            scripts::run_script_resize,
             scripts::run_script_preview_env,
             scripts::archive_script_run,
             scripts::auto_run_after_setup_get,

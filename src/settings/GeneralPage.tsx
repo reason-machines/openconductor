@@ -12,7 +12,7 @@ import { setAppPref } from "./appPrefs";
 import { chooseSendKey } from "./composerSettings";
 import { withField } from "./model";
 import { notificationPermissionGranted } from "./notificationPermission";
-import { enumPref, withEnumPref } from "./prefs";
+import { boolPref, enumPref, withBoolPref, withEnumPref } from "./prefs";
 import { GeneralAppPrefRows } from "./rows/AppPrefRows";
 import { playCompletionSound, SOUND_OPTIONS } from "./sound";
 import type { Settings, SoundType } from "./types";
@@ -21,7 +21,7 @@ import { useSettingsOverrideStore } from "./useSettingsOverrideStore";
 interface Props {
   settings: Settings;
   save: (next: Settings) => void | Promise<boolean>;
-  notify?: (kind: "error", message: string) => void;
+  notify?: (kind: "error" | "info", message: string) => void;
 }
 
 /** Conductor's `aga`: System Settings › Privacy & Security › Full Disk Access. */
@@ -41,12 +41,13 @@ export function GeneralPage({ settings, save, notify }: Props) {
   latestSettings.current = settings;
   const g = settings.general;
   const [syncOpen, setSyncOpen] = useState(false);
+  const [followUpPending, setFollowUpPending] = useState(false);
   const fullDiskAccess = useFullDiskAccessStatus();
   const { overrides } = useKeybindingOverrides();
   const followUp = enumPref(settings, "default_message_send_mode");
   return (
     <div className="settings-rows">
-      <SendKeyRow settings={settings} save={save} />
+      <SendKeyRow settings={settings} save={save} notify={notify} />
       <Row
         label="Follow-up behavior"
         help="Queue messages to send after the agent finishes, or steer the agent mid-turn."
@@ -58,17 +59,21 @@ export function GeneralPage({ settings, save, notify }: Props) {
       >
         <Select
           label="Follow-up behavior"
+          disabled={followUpPending}
           value={followUp}
           options={[
             { value: "queued", label: "Queue" },
             { value: "steering", label: "Steer" },
           ]}
-          onChange={(v) =>
-            // Open chats re-read Follow-up behavior on SETTINGS_CHANGED (useFollowUpMode).
-            void Promise.resolve(save(withEnumPref(settings, "default_message_send_mode", v))).then((ok) => {
+          onChange={async (v) => {
+            setFollowUpPending(true);
+            try {
+              const ok = await save(withEnumPref(settings, "default_message_send_mode", v));
               if (ok !== false) window.dispatchEvent(new Event(SETTINGS_CHANGED));
-            })
-          }
+            } finally {
+              setFollowUpPending(false);
+            }
+          }}
         />
       </Row>
       <Row label="Agent notifications" help="Get notified when an agent finishes working.">
@@ -76,12 +81,27 @@ export function GeneralPage({ settings, save, notify }: Props) {
           label="Agent notifications"
           checked={g.send_native_notification}
           onChange={async (on) => {
-            if (on && !await notificationPermissionGranted()) return;
+            if (on && !await notificationPermissionGranted()) {
+              notify?.("error", "Notification permission not granted");
+              return;
+            }
             await save(withField(latestSettings.current, "general", "send_native_notification", on));
           }}
         />
       </Row>
-      <PrefSwitchRow settings={settings} save={save} pref="mention_notifications_enabled" label="@ notifications" help="Get notified when a teammate mentions you." />
+      <Row label="@ notifications" help="Get notified when a teammate mentions you.">
+        <Toggle
+          label="@ notifications"
+          checked={boolPref(settings, "mention_notifications_enabled")}
+          onChange={async (on) => {
+            if (on && !await notificationPermissionGranted()) {
+              notify?.("error", "Notification permission not granted");
+              return;
+            }
+            await save(withBoolPref(latestSettings.current, "mention_notifications_enabled", on));
+          }}
+        />
+      </Row>
       <Row label="Completion sound" help="Choose what plays when AI finishes working in a chat.">
         <span className="settings-inline">
           <Select<SoundType>
@@ -141,7 +161,7 @@ export function GeneralPage({ settings, save, notify }: Props) {
         label="Show MCP status in chat"
         help="Show a per-session MCP server status indicator in the composer."
       />
-      <GeneralAppPrefRows />
+      <GeneralAppPrefRows overrides={overrides} />
       <ButtonRow
         label="Sync agent configs"
         help="Copy skills, slash commands, and MCP servers between Claude Code and Codex."
@@ -149,7 +169,7 @@ export function GeneralPage({ settings, save, notify }: Props) {
         icon={<SyncIcon />}
         onClick={() => setSyncOpen(true)}
       />
-      {syncOpen && <ConfigSyncDialog onClose={() => setSyncOpen(false)} />}
+      {syncOpen && <ConfigSyncDialog onClose={() => setSyncOpen(false)} notify={notify} />}
     </div>
   );
 }
@@ -193,14 +213,15 @@ function useFullDiskAccessStatus(): boolean | undefined {
  * send commands' keybinding overrides to a preset and then stores the legacy
  * `message_send_key`; a custom mix shows the "Custom" placeholder.
  */
-function SendKeyRow({ settings, save }: Props) {
+function SendKeyRow({ settings, save, notify }: Props) {
   const { overrides } = useKeybindingOverrides();
   const store = useSettingsOverrideStore(settings, save);
   const mode = currentSendKeyMode(overrides);
   // The preset goes to the four send commands, then the legacy `message_send_key` (Conductor's `RQt`).
   const choose = (next: SendKeyMode) =>
-    void chooseSendKey(next, store.updateMany, (m) => setAppPref({ key: "message_send_key", value: m })).catch((err) =>
-      console.warn("Failed to update message send key", err),
+    void chooseSendKey(next, store.updateMany, (m) => setAppPref({ key: "message_send_key", value: m })).then(
+      (ok) => { if (!ok) notify?.("error", "Failed to update message send key"); },
+      () => notify?.("error", "Failed to update message send key"),
     );
   return (
     <Row

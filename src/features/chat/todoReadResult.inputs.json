@@ -1,0 +1,510 @@
+{
+  "candidate": "CHAT.TODOREAD-RESULT-CONSUMER",
+  "checked_main": "492bc5c78f2e168924f9003bfb68c7023b4aa931",
+  "status": "SOURCE_PREP_UNRUN",
+  "cases": [
+    {
+      "id": "bare-json-string",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Inspect configuration",
+          "status": "pending"
+        }
+      ],
+      "output": "[{\"content\": \"Inspect configuration\", \"status\": \"pending\"}]",
+      "rawResult": "[{\"content\": \"Inspect configuration\", \"status\": \"pending\"}]",
+      "expected_current_projection": "○ Inspect configuration",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "wrapped-json-string",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Read settings",
+          "status": "completed"
+        }
+      ],
+      "output": "Todos:\n[{\"content\": \"Read settings\", \"status\": \"completed\"}]\nEnd",
+      "rawResult": "Todos:\n[{\"content\": \"Read settings\", \"status\": \"completed\"}]\nEnd",
+      "expected_current_projection": "✓ Read settings",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "direct-array-over-stale-input",
+      "name": "TodoRead",
+      "input": {
+        "todos": [
+          {
+            "content": "STALE INPUT MUST NOT APPEAR",
+            "status": "pending"
+          }
+        ]
+      },
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Inspect configuration",
+          "status": "pending"
+        }
+      ],
+      "output": "",
+      "rawResult": [
+        {
+          "content": "Inspect configuration",
+          "status": "pending"
+        }
+      ],
+      "expected_current_projection": "○ Inspect configuration",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "direct-mixed-array",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Inspect parser",
+          "status": "completed"
+        },
+        {
+          "content": "Add regression",
+          "status": "in_progress"
+        },
+        {
+          "content": "Run checks",
+          "status": "pending"
+        }
+      ],
+      "output": "",
+      "rawResult": [
+        {
+          "content": "Inspect parser",
+          "status": "completed"
+        },
+        {
+          "content": "Add regression",
+          "status": "in_progress"
+        },
+        {
+          "content": "Run checks",
+          "status": "pending"
+        }
+      ],
+      "expected_current_projection": "✓ Inspect parser\n○ Add regression\n○ Run checks",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "raw-string-over-stale-flattened",
+      "name": "TodoRead",
+      "input": {
+        "todos": [
+          {
+            "content": "STALE INPUT MUST NOT APPEAR",
+            "status": "pending"
+          }
+        ]
+      },
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Read settings",
+          "status": "completed"
+        }
+      ],
+      "output": "[{\"content\": \"STALE INPUT MUST NOT APPEAR\", \"status\": \"pending\"}]",
+      "rawResult": "[{\"content\": \"Read settings\", \"status\": \"completed\"}]",
+      "expected_current_projection": "✓ Read settings",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "raw-null-over-stale-flattened",
+      "name": "TodoRead",
+      "input": {
+        "todos": [
+          {
+            "content": "STALE INPUT MUST NOT APPEAR",
+            "status": "pending"
+          }
+        ]
+      },
+      "isError": false,
+      "running": false,
+      "expected_todos": [],
+      "output": "[{\"content\": \"STALE INPUT MUST NOT APPEAR\", \"status\": \"pending\"}]",
+      "rawResult": null,
+      "expected_current_projection": "",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "plain-unparseable-string",
+      "name": "TodoRead",
+      "input": {
+        "todos": [
+          {
+            "content": "STALE INPUT MUST NOT APPEAR",
+            "status": "pending"
+          }
+        ]
+      },
+      "isError": false,
+      "running": false,
+      "expected_todos": [],
+      "output": "No saved tasks",
+      "rawResult": "No saved tasks",
+      "expected_current_projection": "",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "invalid-bracket-json-string",
+      "name": "TodoRead",
+      "input": {
+        "todos": [
+          {
+            "content": "STALE INPUT MUST NOT APPEAR",
+            "status": "pending"
+          }
+        ]
+      },
+      "isError": false,
+      "running": false,
+      "expected_todos": [],
+      "output": "[broken]",
+      "rawResult": "[broken]",
+      "expected_current_projection": "",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "empty-array",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [],
+      "output": "",
+      "rawResult": [],
+      "expected_current_projection": "",
+      "predicted_baseline_body_failure_NOT_MEASURED": false
+    },
+    {
+      "id": "empty-string",
+      "name": "TodoRead",
+      "input": {
+        "todos": [
+          {
+            "content": "STALE INPUT MUST NOT APPEAR",
+            "status": "pending"
+          }
+        ]
+      },
+      "isError": false,
+      "running": false,
+      "expected_todos": [],
+      "output": "",
+      "rawResult": "",
+      "expected_current_projection": "",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "pending-ignores-input",
+      "name": "TodoRead",
+      "input": {
+        "todos": [
+          {
+            "content": "STALE INPUT MUST NOT APPEAR",
+            "status": "pending"
+          }
+        ]
+      },
+      "isError": false,
+      "running": true,
+      "expected_todos": [],
+      "expected_current_projection": "",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "failed-result-still-contains-list",
+      "name": "TodoRead",
+      "input": {},
+      "isError": true,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Read settings",
+          "status": "completed"
+        }
+      ],
+      "output": "[{\"content\": \"Read settings\", \"status\": \"completed\"}]",
+      "rawResult": "[{\"content\": \"Read settings\", \"status\": \"completed\"}]",
+      "expected_current_projection": "✓ Read settings",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "legacy-result-without-raw",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Inspect configuration",
+          "status": "pending"
+        }
+      ],
+      "output": "[{\"content\": \"Inspect configuration\", \"status\": \"pending\"}]",
+      "expected_current_projection": "○ Inspect configuration",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "unicode-and-newline-content",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Read café\nnext step",
+          "status": "pending"
+        }
+      ],
+      "output": "",
+      "rawResult": [
+        {
+          "content": "Read café\nnext step",
+          "status": "pending"
+        }
+      ],
+      "expected_current_projection": "○ Read café\nnext step",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "todowrite-input-wins",
+      "name": "TodoWrite",
+      "input": {
+        "todos": [
+          {
+            "content": "Inspect configuration",
+            "status": "pending"
+          }
+        ]
+      },
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Inspect configuration",
+          "status": "pending"
+        }
+      ],
+      "output": "[{\"content\": \"Read settings\", \"status\": \"completed\"}]",
+      "rawResult": [
+        {
+          "content": "Read settings",
+          "status": "completed"
+        }
+      ],
+      "expected_current_projection": "○ Inspect configuration",
+      "predicted_baseline_body_failure_NOT_MEASURED": false
+    },
+    {
+      "id": "todowrite-mixed-control",
+      "name": "TodoWrite",
+      "input": {
+        "todos": [
+          {
+            "content": "Inspect parser",
+            "status": "completed"
+          },
+          {
+            "content": "Add regression",
+            "status": "in_progress"
+          },
+          {
+            "content": "Run checks",
+            "status": "pending"
+          }
+        ]
+      },
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Inspect parser",
+          "status": "completed"
+        },
+        {
+          "content": "Add regression",
+          "status": "in_progress"
+        },
+        {
+          "content": "Run checks",
+          "status": "pending"
+        }
+      ],
+      "output": "updated",
+      "rawResult": [
+        {
+          "content": "Inspect parser",
+          "status": "completed"
+        },
+        {
+          "content": "Add regression",
+          "status": "in_progress"
+        },
+        {
+          "content": "Run checks",
+          "status": "pending"
+        }
+      ],
+      "expected_current_projection": "✓ Inspect parser\n○ Add regression\n○ Run checks",
+      "predicted_baseline_body_failure_NOT_MEASURED": false
+    },
+    {
+      "id": "todowrite-empty-ignores-result",
+      "name": "TodoWrite",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [],
+      "output": "[{\"content\": \"Read settings\", \"status\": \"completed\"}]",
+      "rawResult": [
+        {
+          "content": "Read settings",
+          "status": "completed"
+        }
+      ],
+      "expected_current_projection": "",
+      "predicted_baseline_body_failure_NOT_MEASURED": false
+    },
+    {
+      "id": "raw-empty-array-over-stale-flattened",
+      "name": "TodoRead",
+      "input": {
+        "todos": [
+          {
+            "content": "STALE INPUT MUST NOT APPEAR",
+            "status": "pending"
+          }
+        ]
+      },
+      "isError": false,
+      "running": false,
+      "expected_todos": [],
+      "output": "[{\"content\": \"STALE INPUT MUST NOT APPEAR\", \"status\": \"pending\"}]",
+      "rawResult": [],
+      "expected_current_projection": "",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "pretty-json-list",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "Inspect parser",
+          "status": "completed"
+        },
+        {
+          "content": "Add regression",
+          "status": "in_progress"
+        },
+        {
+          "content": "Run checks",
+          "status": "pending"
+        }
+      ],
+      "output": "[\n  {\n    \"content\": \"Inspect parser\",\n    \"status\": \"completed\"\n  },\n  {\n    \"content\": \"Add regression\",\n    \"status\": \"in_progress\"\n  },\n  {\n    \"content\": \"Run checks\",\n    \"status\": \"pending\"\n  }\n]",
+      "rawResult": "[\n  {\n    \"content\": \"Inspect parser\",\n    \"status\": \"completed\"\n  },\n  {\n    \"content\": \"Add regression\",\n    \"status\": \"in_progress\"\n  },\n  {\n    \"content\": \"Run checks\",\n    \"status\": \"pending\"\n  }\n]",
+      "expected_current_projection": "✓ Inspect parser\n○ Add regression\n○ Run checks",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "raw-false-over-stale-flattened",
+      "name": "TodoRead",
+      "input": {
+        "todos": [
+          {
+            "content": "STALE INPUT MUST NOT APPEAR",
+            "status": "pending"
+          }
+        ]
+      },
+      "isError": false,
+      "running": false,
+      "expected_todos": [],
+      "output": "[{\"content\": \"STALE INPUT MUST NOT APPEAR\", \"status\": \"pending\"}]",
+      "rawResult": false,
+      "expected_current_projection": "",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "raw-object-not-a-list",
+      "name": "TodoRead",
+      "input": {
+        "todos": [
+          {
+            "content": "STALE INPUT MUST NOT APPEAR",
+            "status": "pending"
+          }
+        ]
+      },
+      "isError": false,
+      "running": false,
+      "expected_todos": [],
+      "output": "{\"message\":\"done\"}",
+      "rawResult": {
+        "message": "done"
+      },
+      "expected_current_projection": "",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    },
+    {
+      "id": "multiple-active-items",
+      "name": "TodoRead",
+      "input": {},
+      "isError": false,
+      "running": false,
+      "expected_todos": [
+        {
+          "content": "First",
+          "status": "in_progress"
+        },
+        {
+          "content": "Second",
+          "status": "in_progress"
+        }
+      ],
+      "output": "",
+      "rawResult": [
+        {
+          "content": "First",
+          "status": "in_progress"
+        },
+        {
+          "content": "Second",
+          "status": "in_progress"
+        }
+      ],
+      "expected_current_projection": "○ First\n○ Second",
+      "predicted_baseline_body_failure_NOT_MEASURED": true
+    }
+  ],
+  "limits": [
+    "Result selection in existing plain projection only",
+    "No new absence expectations for empty bodies",
+    "No full TodoRead label, styled body, mixed-row, or persistence parity claim"
+  ]
+}

@@ -54,6 +54,12 @@ pub struct Hunk {
     pub lines: Vec<DiffLine>,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum FileHideReason {
+    FileTooLarge,
+}
+
 /// The full diff of one file.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct FileDiff {
@@ -68,6 +74,8 @@ pub struct FileDiff {
     /// Worktree modification time in Unix milliseconds; absent for historical results.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_modified_time: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hide_reason: Option<FileHideReason>,
     pub hunks: Vec<Hunk>,
 }
 
@@ -81,6 +89,7 @@ impl FileDiff {
             additions: 0,
             deletions: 0,
             last_modified_time: None,
+            hide_reason: None,
             hunks: Vec::new(),
         }
     }

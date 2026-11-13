@@ -1,5 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { WorkspaceOpenInTarget } from "./palette/fromAppState.ts";
+import { useUpdates } from "./features/updates/useUpdates";
 import { useAppStore } from "./state/store";
 import { useCustomSectionCollapse } from "./state/useCustomSectionCollapse";
 import { ATTACH_FAILED, destroyWorkspaceTerminals, onAttachFailure } from "./features/terminal/session";
@@ -97,14 +99,19 @@ export default function App() {
     },
     [storeDispatch],
   );
+  const [activeOpenInTarget, setActiveOpenInTarget] = useState<WorkspaceOpenInTarget | null>(null);
+  const registerOpenInTarget = useCallback((target: WorkspaceOpenInTarget) => {
+    setActiveOpenInTarget(target);
+    return () => setActiveOpenInTarget((current) => current === target ? null : current);
+  }, []);
   const [sectionDialog, setSectionDialog] = useState<SectionDialogMode | null>(null);
   const submitSection = (mode: SectionDialogMode, value: { name: string; emoji?: string }) => {
     if (mode.mode === "edit") {
-      dispatch({ type: "editSection", sectionId: mode.sectionId, ...value });
+      dispatch({ type: "editSection", sectionId: mode.sectionId, ...value, onError: () => show("error", "Couldn't edit section") });
       return;
     }
     const section = { id: newId(), ...value, workspaceIds: mode.workspaceIdToMove === undefined ? [] : [mode.workspaceIdToMove] };
-    dispatch({ type: "createSection", section, beforeSectionId: mode.beforeSectionId });
+    dispatch({ type: "createSection", section, beforeSectionId: mode.beforeSectionId, onError: () => show("error", "Couldn't create section") });
   };
   const prefs = useAppPrefs();
   const cloudUI = useBoolPrefState("experimental_cloud_ui");
@@ -162,6 +169,7 @@ export default function App() {
   const [submitPromptOpen, setSubmitPromptOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const { toasts, show, dismiss } = useToasts();
+  useUpdates({ repos: state.repos, startup, notify: show });
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
   // A terminal screen that could not attach (Conductor's "Failed to attach terminal" toast).
@@ -564,6 +572,7 @@ export default function App() {
           <ArchivedWorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
         ) : repo && workspace ? (
           <WorkspaceView
+            onOpenInTarget={registerOpenInTarget}
             repo={repo}
             workspace={workspace}
             sections={state.sections ?? []}
@@ -678,7 +687,7 @@ export default function App() {
           onClose={() => setSectionDialog(null)}
         />
       )}
-      <PaletteHost state={state} collapsedSections={collapsedSections} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} commands={paletteCommands} />
+      <PaletteHost state={state} collapsedSections={collapsedSections} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} commands={paletteCommands} activeOpenInTarget={createPage ? null : activeOpenInTarget} />
       {archiveOverAgents && (
         <ArchiveRunningDialog
           onClose={() => setArchiveOverAgents(null)}

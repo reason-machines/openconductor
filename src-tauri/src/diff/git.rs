@@ -3,7 +3,7 @@
 //! left its base (committed and uncommitted), or only uncommitted work.
 //! Untracked files are included as additions.
 
-use super::model::{FileChange, FileDiff, FileStatus};
+use super::model::{FileChange, FileDiff, FileHideReason, FileStatus};
 use super::parse::{parse_unified, ParseError};
 use serde::{Deserialize, Serialize};
 use std::fmt;
@@ -313,6 +313,9 @@ pub fn workspace_diff(repo: &Path, req: &DiffRequest) -> Result<WorkspaceDiff, D
                 file.hunks = hunks.remove(&file.path).unwrap_or_default();
             }
         }
+        for file in &mut files {
+            apply_revision_size_policy(repo, &base, &commit, file);
+        }
         return Ok(WorkspaceDiff {
             base_commit: base,
             files,
@@ -335,11 +338,169 @@ pub fn workspace_diff(repo: &Path, req: &DiffRequest) -> Result<WorkspaceDiff, D
     }
     for file in &mut files {
         file.last_modified_time = worktree_modified_time(repo, file);
+        if matches!(req.scope, Scope::Uncommitted) {
+            apply_worktree_size_policy(repo, &base, file);
+        }
     }
     Ok(WorkspaceDiff {
         base_commit: base,
         files,
     })
+}
+
+fn apply_revision_size_policy(repo: &Path, base: &str, commit: &str, file: &mut FileDiff) {
+    if file.binary {
+        return;
+    }
+    let extension = Path::new(&file.path)
+        .extension()
+        .and_then(|extension| extension.to_str())
+        .unwrap_or("")
+        .to_ascii_lowercase();
+    if matches!(
+        extension.as_str(),
+        "png"
+            | "jpg"
+            | "jpeg"
+            | "gif"
+            | "webp"
+            | "tif"
+            | "tiff"
+            | "avif"
+            | "bmp"
+            | "mp4"
+            | "m4v"
+            | "mov"
+            | "webm"
+            | "ogv"
+    ) {
+        return;
+    }
+    let text_size = |revision: &str, path: &str| {
+        git(repo, &["show", &format!("{revision}:{path}")], &[0])
+            .ok()
+            .map(|content| content.len())
+    };
+    let old_size = if file.status == FileStatus::Added {
+        Some(0)
+    } else {
+        text_size(base, file.old_path.as_deref().unwrap_or(&file.path))
+    };
+    let new_size = if file.status == FileStatus::Deleted {
+        Some(0)
+    } else {
+        text_size(commit, &file.path)
+    };
+    let (Some(old_size), Some(new_size)) = (old_size, new_size) else {
+        return;
+    };
+    let size = old_size.max(new_size);
+    if size <= 1024 * 1024 {
+        return;
+    }
+    let sparse = size <= 5 * 1024 * 1024
+        && revision_changed_line_count(repo, base, commit, file).is_some_and(|count| count <= 500);
+    if !sparse {
+        file.hide_reason = Some(FileHideReason::FileTooLarge);
+        file.hunks.clear();
+    }
+}
+
+fn revision_changed_line_count(
+    repo: &Path,
+    base: &str,
+    commit: &str,
+    file: &FileDiff,
+) -> Option<u64> {
+    let paths: Vec<_> = file
+        .old_path
+        .iter()
+        .chain(std::iter::once(&file.path))
+        .map(|path| format!(":(literal){path}"))
+        .collect();
+    let mut args = vec!["diff", "--no-ext-diff", "--numstat", base, commit, "--"];
+    args.extend(paths.iter().map(String::as_str));
+    let output = git(repo, &args, &[0]).ok()?;
+    let mut count = None;
+    for line in output.lines().filter(|line| !line.is_empty()) {
+        let mut fields = line.splitn(3, '\t');
+        let additions = fields.next()?.parse::<u64>().ok()?;
+        let deletions = fields.next()?.parse::<u64>().ok()?;
+        count = Some(
+            count
+                .unwrap_or(0_u64)
+                .checked_add(additions)?
+                .checked_add(deletions)?,
+        );
+    }
+    count
+}
+
+fn apply_worktree_size_policy(repo: &Path, base: &str, file: &mut FileDiff) {
+    if file.binary || matches!(file.status, FileStatus::Deleted | FileStatus::Untracked) {
+        return;
+    }
+    let extension = Path::new(&file.path)
+        .extension()
+        .and_then(|extension| extension.to_str())
+        .unwrap_or("")
+        .to_ascii_lowercase();
+    if matches!(
+        extension.as_str(),
+        "png"
+            | "jpg"
+            | "jpeg"
+            | "gif"
+            | "webp"
+            | "tif"
+            | "tiff"
+            | "avif"
+            | "bmp"
+            | "mp4"
+            | "m4v"
+            | "mov"
+            | "webm"
+            | "ogv"
+    ) {
+        return;
+    }
+    let Ok(metadata) = std::fs::symlink_metadata(repo.join(&file.path)) else {
+        return;
+    };
+    if !metadata.is_file() || metadata.len() <= 1024 * 1024 {
+        return;
+    }
+    let sparse = metadata.len() <= 5 * 1024 * 1024
+        && plain_changed_line_count(repo, base, file).is_some_and(|count| count <= 500);
+    if !sparse {
+        file.hide_reason = Some(FileHideReason::FileTooLarge);
+        file.hunks.clear();
+    }
+}
+
+fn plain_changed_line_count(repo: &Path, base: &str, file: &FileDiff) -> Option<u64> {
+    let paths: Vec<_> = file
+        .old_path
+        .iter()
+        .chain(std::iter::once(&file.path))
+        .map(|path| format!(":(literal){path}"))
+        .collect();
+    let mut args = vec!["diff", "--no-ext-diff", "--numstat", base, "--"];
+    args.extend(paths.iter().map(String::as_str));
+    let output = git(repo, &args, &[0]).ok()?;
+    let mut count = None;
+    for line in output.lines().filter(|line| !line.is_empty()) {
+        let mut fields = line.splitn(3, '\t');
+        let additions = fields.next()?.parse::<u64>().ok()?;
+        let deletions = fields.next()?.parse::<u64>().ok()?;
+        count = Some(
+            count
+                .unwrap_or(0_u64)
+                .checked_add(additions)?
+                .checked_add(deletions)?,
+        );
+    }
+    count
 }
 
 pub(super) fn worktree_modified_time(repo: &Path, file: &FileDiff) -> Option<i64> {
@@ -365,6 +526,7 @@ fn diff_files(
     ws: Option<&str>,
 ) -> Result<Vec<FileDiff>, DiffError> {
     let context = req.context_lines.map(|n| format!("-U{n}"));
+    let pathspec = req.path.as_ref().map(|path| format!(":(literal){path}"));
 
     let mut args: Vec<&str> = vec!["diff"];
     args.extend(DIFF_FLAGS);
@@ -372,11 +534,11 @@ fn diff_files(
     args.extend(context.as_deref());
     args.push(base);
     args.push("--");
-    args.extend(req.path.as_deref());
+    args.extend(pathspec.as_deref());
     let mut files = parse_unified(&git(repo, &args, &[0])?).map_err(DiffError::Parse)?;
 
     let mut ls = vec!["ls-files", "--others", "--exclude-standard", "-z", "--"];
-    ls.extend(req.path.as_deref());
+    ls.extend(pathspec.as_deref());
     for path in git(repo, &ls, &[0])?.split('\0').filter(|p| !p.is_empty()) {
         let mut args: Vec<&str> = vec!["diff", "--no-index"];
         args.extend(DIFF_FLAGS);
@@ -406,6 +568,7 @@ fn turn_diff(
 ) -> Result<WorkspaceDiff, DiffError> {
     let (start, end) = turn_refs(repo, session_id, turn_id)?;
     let context = req.context_lines.map(|n| format!("-U{n}"));
+    let pathspec = req.path.as_ref().map(|path| format!(":(literal){path}"));
     let mut args: Vec<&str> = vec!["diff"];
     args.extend(DIFF_FLAGS);
     if req.ignore_whitespace {
@@ -413,8 +576,11 @@ fn turn_diff(
     }
     args.extend(context.as_deref());
     args.extend([start.as_str(), end.as_str(), "--"]);
-    args.extend(req.path.as_deref());
+    args.extend(pathspec.as_deref());
     let mut files = parse_unified(&git(repo, &args, &[0])?).map_err(DiffError::Parse)?;
+    for file in &mut files {
+        apply_revision_size_policy(repo, &start, &end, file);
+    }
     files.sort_by(|a, b| a.path.cmp(&b.path));
     Ok(WorkspaceDiff {
         base_commit: start,
@@ -494,6 +660,7 @@ fn revision_diff(
     whitespace: bool,
 ) -> Result<Vec<FileDiff>, DiffError> {
     let context = req.context_lines.map(|n| format!("-U{n}"));
+    let pathspec = req.path.as_ref().map(|path| format!(":(literal){path}"));
     let mut args = vec!["diff"];
     args.extend(DIFF_FLAGS);
     if whitespace {
@@ -501,7 +668,7 @@ fn revision_diff(
     }
     args.extend(context.as_deref());
     args.extend([base, commit, "--"]);
-    args.extend(req.path.as_deref());
+    args.extend(pathspec.as_deref());
     let mut files = parse_unified(&git(repo, &args, &[0])?).map_err(DiffError::Parse)?;
     files.sort_by(|a, b| a.path.cmp(&b.path));
     Ok(files)

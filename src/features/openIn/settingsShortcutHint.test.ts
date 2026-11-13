@@ -7,6 +7,7 @@ import * as React from "react";
 import ts from "typescript";
 import type { Repo } from "../../state/types.ts";
 import type { OpenInApp } from "./apps.ts";
+import * as persistence from "../../lib/persistence/producer.ts";
 
 const dependencies = createRequire(import.meta.url);
 const { act, create } = dependencies("react-test-renderer");
@@ -31,6 +32,7 @@ function load(file: string, exported: object, imports: Record<string, unknown>) 
     exports: exported,
     require(name: string) {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      if (name === "../../lib/persistence/producer.ts") return persistence;
       assert.ok(name in imports, `Unexpected Settings shortcut dependency: ${name}`);
       return imports[name];
     },

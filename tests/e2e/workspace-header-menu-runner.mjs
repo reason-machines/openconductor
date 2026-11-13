@@ -26,7 +26,7 @@ const git = (...args) => execFileSync("git", args, { cwd: root, encoding: "utf8"
 const harnessRoot = fileURLToPath(new URL("../../", import.meta.url));
 const fixture = fileURLToPath(new URL("./workspace-header-menu-cases.mjs", import.meta.url));
 const fixtureSha = digest(await readFile(fixture));
-assert.equal(fixtureSha, "b4f4cae76a414e5c3312ddd411e3b17ab39f90bc55b8662cdc058d55b2599605");
+assert.equal(fixtureSha, "47c78b76c63e87635418c4fd5d4b747ba1f5ed4c4c971f28aaa15463ccdae24d");
 const source = git("rev-parse", "HEAD");
 assert.equal(source, values.source, "the app checkout must match the requested source");
 git("diff", "--exit-code", "HEAD", "--", "src", "package.json", "package-lock.json", "vite.config.ts", "index.html");

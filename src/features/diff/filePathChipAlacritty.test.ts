@@ -127,7 +127,13 @@ for (const saved of ["finder", "vscode"]) {
     const view = await fixture({ saved, worktree: "/tmp/open-in-workspace", path: "src/example.ts" });
     try {
       await view.click();
-      assert.deepEqual(view.calls, [invocation(saved, "/tmp/open-in-workspace/src/example.ts")]);
+      const expected = saved === "vscode"
+        ? JSON.stringify({ command: "open_in_app", args: {
+          appId: saved, path: "/tmp/open-in-workspace/src/example.ts",
+          fileContext: { workspacePath: "/tmp/open-in-workspace" },
+        } })
+        : invocation(saved, "/tmp/open-in-workspace/src/example.ts");
+      assert.deepEqual(view.calls, [expected]);
       assert.deepEqual(view.notices, []);
     } finally { await view.close(); }
   });

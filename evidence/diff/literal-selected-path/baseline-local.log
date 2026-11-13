@@ -1,0 +1,83 @@
+    Updating crates.io index
+     Locking 11 packages to highest compatible versions
+ Downloading crates ...
+  Downloaded zmij v1.0.23
+  Downloaded proc-macro2 v1.0.107
+  Downloaded itoa v1.0.19
+  Downloaded serde_derive v1.0.229
+  Downloaded memchr v2.8.3
+  Downloaded serde_core v1.0.229
+  Downloaded quote v1.0.47
+  Downloaded unicode-ident v1.0.27
+  Downloaded serde_json v1.0.154
+  Downloaded serde v1.0.229
+  Downloaded syn v3.0.10
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling syn v3.0.10
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.154
+   Compiling serde_derive v1.0.229
+   Compiling itoa v1.0.19
+   Compiling memchr v2.8.3
+   Compiling diff-harness v0.0.0 (/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.rea-work/literal-selected-path/harness)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 46s
+     Running unittests /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src-tauri/src/diff/mod.rs (target/debug/deps/diff_harness-c8be22a1e9df4512)
+
+running 8 tests
+
+thread 'git_tests::literal_selected_paths::bracket_character_is_literal' (558) panicked at /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src-tauri/src/diff/literal_path_tests.rs:34:13:
+assertion `left == right` failed: selected path must not match siblings
+  left: ["q0.txt", "q[0].txt"]
+ right: ["q[0].txt"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test git_tests::literal_selected_paths::bracket_character_is_literal ... FAILED
+
+thread 'git_tests::literal_selected_paths::all_changes_question_mark_is_literal' (557) panicked at /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src-tauri/src/diff/literal_path_tests.rs:34:13:
+assertion `left == right` failed: selected path must not match siblings
+  left: ["q0.txt", "q?.txt"]
+ right: ["q?.txt"]
+test git_tests::literal_selected_paths::all_changes_question_mark_is_literal ... FAILED
+
+thread 'git_tests::literal_selected_paths::selected_commit_question_mark_is_literal' (560) panicked at /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src-tauri/src/diff/literal_path_tests.rs:34:13:
+assertion `left == right` failed: selected path must not match siblings
+  left: ["q0.txt", "q?.txt"]
+ right: ["q?.txt"]
+test git_tests::literal_selected_paths::selected_commit_question_mark_is_literal ... FAILED
+
+thread 'git_tests::literal_selected_paths::uncommitted_question_mark_is_literal' (708) panicked at /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src-tauri/src/diff/literal_path_tests.rs:34:13:
+assertion `left == right` failed: selected path must not match siblings
+  left: ["q0.txt", "q?.txt"]
+ right: ["q?.txt"]
+test git_tests::literal_selected_paths::uncommitted_question_mark_is_literal ... FAILED
+test git_tests::literal_selected_paths::ordinary_filename_control_still_loads_the_selected_file ... ok
+test git_tests::literal_selected_paths::unfiltered_control_keeps_both_changed_files ... ok
+
+thread 'git_tests::literal_selected_paths::turn_question_mark_is_literal' (691) panicked at /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src-tauri/src/diff/literal_path_tests.rs:34:13:
+assertion `left == right` failed: selected path must not match siblings
+  left: ["q0.txt", "q?.txt"]
+ right: ["q?.txt"]
+test git_tests::literal_selected_paths::turn_question_mark_is_literal ... FAILED
+
+thread 'git_tests::literal_selected_paths::untracked_question_mark_is_literal_but_no_index_operand_is_a_filename' (851) panicked at /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src-tauri/src/diff/literal_path_tests.rs:34:13:
+assertion `left == right` failed: selected path must not match siblings
+  left: ["q0.txt", "q?.txt"]
+ right: ["q?.txt"]
+test git_tests::literal_selected_paths::untracked_question_mark_is_literal_but_no_index_operand_is_a_filename ... FAILED
+
+failures:
+
+failures:
+    git_tests::literal_selected_paths::all_changes_question_mark_is_literal
+    git_tests::literal_selected_paths::bracket_character_is_literal
+    git_tests::literal_selected_paths::selected_commit_question_mark_is_literal
+    git_tests::literal_selected_paths::turn_question_mark_is_literal
+    git_tests::literal_selected_paths::uncommitted_question_mark_is_literal
+    git_tests::literal_selected_paths::untracked_question_mark_is_literal_but_no_index_operand_is_a_filename
+
+test result: FAILED. 2 passed; 6 failed; 0 ignored; 0 measured; 71 filtered out; finished in 2.76s
+
+error: test failed, to rerun pass `--lib`

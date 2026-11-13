@@ -6,6 +6,7 @@ import { test } from "node:test";
 import { runInNewContext } from "node:vm";
 import type { ReactNode } from "react";
 import type { AppPrefs, AppPrefUpdate } from "./appPrefs.ts";
+import * as persistence from "../lib/persistence/restartPersistence.ts";
 
 const dependencies = createRequire(process.env.APP_PREF_WRITES_DEPS
   ? resolve(process.env.APP_PREF_WRITES_DEPS, "package.json") : import.meta.url);
@@ -35,6 +36,7 @@ async function fixture({ startup = false, native = true } = {}) {
       console: { warn: (...args: unknown[]) => warnings.push(args) },
       require(name: string) {
         if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+        if (name === "../lib/persistence/restartPersistence.ts") return persistence;
         assert.ok(Object.prototype.hasOwnProperty.call(mocks, name), `unexpected preference dependency ${name}`);
         return mocks[name];
       },

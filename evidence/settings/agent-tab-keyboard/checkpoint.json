@@ -1,0 +1,207 @@
+{
+  "author": "Conductor Rebuild",
+  "status": "INACTIVE_SOURCE_CHECKPOINT_NOT_BEHAVIORAL_PROOF",
+  "checked_main": "6ab46a36752de4f57cb3c3441f4336d334ad1340",
+  "frozen_cases": 22,
+  "runtime_grant": false,
+  "new_intake": false,
+  "original11": "UNCHANGED_FROZEN_LAST",
+  "source_pins": [
+    {
+      "path": "src/keybindings/KeybindingsProvider.tsx",
+      "sha256": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6"
+    },
+    {
+      "path": "src/keybindings/bind.ts",
+      "sha256": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119"
+    },
+    {
+      "path": "src/keybindings/conflicts.ts",
+      "sha256": "282562172120ea4406bd0fd8c9b74412ab003c93067b6222e2336b9ca2d4d68d"
+    },
+    {
+      "path": "src/keybindings/dispatcher.ts",
+      "sha256": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197"
+    },
+    {
+      "path": "src/keybindings/editor.ts",
+      "sha256": "092b462b67401aadb33ec16c3c49a8aeab013971c313ce6a83ac7c17ac9f0958"
+    },
+    {
+      "path": "src/keybindings/fuzzy.ts",
+      "sha256": "1bcbf1f4058508f23d5d079235d5b96ed6ed800582aae6de50db6a182d5c2c1c"
+    },
+    {
+      "path": "src/keybindings/help.ts",
+      "sha256": "e7b5685513f3dca610159c2121ccb4cd041be04d6c9450fe15bdec7b8d97b88c"
+    },
+    {
+      "path": "src/keybindings/listeners.ts",
+      "sha256": "6944c63efcb6edee49d59d1ccdcfaed649902021946c8a8f60d50549fd89011a"
+    },
+    {
+      "path": "src/keybindings/overrides.ts",
+      "sha256": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193"
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "sha256": "3a873cc27d99b73fafa340dc1585d9f4cd850966e91408c4f4dbad445bf4dcb9"
+    },
+    {
+      "path": "src/keybindings/resolve.ts",
+      "sha256": "f8818d52d1af70bc788f5bda2d162b5b1634402592807bc78b5233ad4e1142bc"
+    },
+    {
+      "path": "src/keybindings/selectAll.ts",
+      "sha256": "508b26417d717f938eb118afbe8c0ff96873643cb4e5c0879467e5368e97db90"
+    },
+    {
+      "path": "src/keybindings/shortcut.ts",
+      "sha256": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8"
+    },
+    {
+      "path": "src/keybindings/types.ts",
+      "sha256": "cdfcd723ed324b7f32698d36496fbc6bf6514c78f61e4d562c81b302207c4ecb"
+    },
+    {
+      "path": "src/settings/AgentsPage.tsx",
+      "sha256": "2d9167dd3176f6220f6036aff0c4e8bf5125e1e6e575984c401e67cd83f7f0ee"
+    },
+    {
+      "path": "src/settings/agents/kit.tsx",
+      "sha256": "1c8ed18fac67ff8ebc44572621e1740332c0b00f639eed7f7986ba53b6532dd8"
+    },
+    {
+      "path": "src/settings/agents/kitModel.ts",
+      "sha256": "be6a94abe11962ca756be5733b946f7b5d34acafc567db937a8e1ce688352937"
+    },
+    {
+      "path": "src/settings/providerTab.ts",
+      "sha256": "da932b8fe4c9da6edd9e95b1f35032c373e3429a83fcc3f833ccedf62fef0e8c"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "5dfe0f663d72f4adeeea81ed25e6f03789925911979118ff4e5758afb411ee62"
+    },
+    {
+      "path": "package.json",
+      "sha256": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a"
+    }
+  ],
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 5666,
+      "sha256": "12ff4c0ba9423958cac7c2e0c88008cdaae5cacf0555ddd904e8b9fc7eea6ba7"
+    },
+    {
+      "path": "agentTabKeyboard.test.ts.txt",
+      "bytes": 3623,
+      "sha256": "32bf0a1afbdba8e47069f1829e908afc755efc683628bae27f9640556ae265a4"
+    },
+    {
+      "path": "agentTabsKeyboard.dom.test.mjs",
+      "bytes": 11097,
+      "sha256": "833644d93d3c45c4846800c2d923540ff53c57b22d2aa1f53aaf99dbc1789d51"
+    },
+    {
+      "path": "historical/publication-status-v2.json",
+      "bytes": 2742,
+      "sha256": "55c4c10d91ef5204913b26eb7a510cab75fb3ae955f6cc2a73c889b7f5d736c7"
+    },
+    {
+      "path": "historical/source-contract-v2.md",
+      "bytes": 9653,
+      "sha256": "33604e8f2413b3f6e14288f8f2d689d2eb30f0a5aef63858e6dbbaac8e606db0"
+    },
+    {
+      "path": "historical/source-receipt-v1.json",
+      "bytes": 7975,
+      "sha256": "9b09971b653887b53c4260d465eef8139c1736ab2c825f8a8872a74af04195b1"
+    },
+    {
+      "path": "product.patch.gz",
+      "bytes": 803,
+      "sha256": "28951f8927cca5c30d63cf0b3b3caeba44e05b01781b5ebc9f9646f2b67af78d"
+    },
+    {
+      "path": "publication.patch",
+      "bytes": 17849,
+      "sha256": "325e991868d0068c7159b3910b9e1c427cb4659e6d3f76fa1771d50ee13baf01"
+    },
+    {
+      "path": "reference/$pa.literal.txt",
+      "bytes": 2282,
+      "sha256": "947269304b3f82358a188e874d19db74e187b8abee4e9845172210ed7cdeffd3"
+    },
+    {
+      "path": "reference/E0i.literal.txt",
+      "bytes": 366,
+      "sha256": "9ee61bf96f73871cefbed555eb666c7ada8f57f72f7353261df32a596c785480"
+    },
+    {
+      "path": "reference/Ino.literal.txt",
+      "bytes": 2109,
+      "sha256": "9cffc1b4bc27b16068a100999e87b79e421cd88a3b4c16b18b167cda563f131b"
+    },
+    {
+      "path": "reference/Q1.literal.txt",
+      "bytes": 543,
+      "sha256": "b3be5063a7e5496d6fde85130085a700e4b7c1789f95b9706e1b06ee864392d4"
+    },
+    {
+      "path": "reference/Rno.literal.txt",
+      "bytes": 96,
+      "sha256": "72fda1b0ab77ec2bf4e9ab02b464230b91dadaf70beea441ae2474f7a73f98c2"
+    },
+    {
+      "path": "reference/_no.literal.txt",
+      "bytes": 2309,
+      "sha256": "f433f524bef5000968e946443f5f841c4d3cd5341caddb72c79e5690a6034921"
+    },
+    {
+      "path": "reference/census.json",
+      "bytes": 4603,
+      "sha256": "f43ffb3f84c7b3b5e232ed9700d8e8aea4734201f26caf82dd7302f56378332f"
+    },
+    {
+      "path": "reference/gI.literal.txt",
+      "bytes": 57,
+      "sha256": "9e3cb6f7b622537bcd40fd5d9ec7436065a2c5177aff05a6393802791ba6bd25"
+    },
+    {
+      "path": "reference/m9i.literal.txt",
+      "bytes": 1175,
+      "sha256": "5f096ffe4489fbf3ca5c223a1653dce3fec81d69bbd1db6edd0af0bc054e987a"
+    },
+    {
+      "path": "reference/mzt.literal.txt",
+      "bytes": 958,
+      "sha256": "d8e2d8c6c1b2357548161c9e6a0053d850eeab6439723893b8098009bff89243"
+    },
+    {
+      "path": "reference/vy.literal.txt",
+      "bytes": 1077,
+      "sha256": "62d92d85a85f06580ecefd6329fe29cafcd1a5338354a3001b8b610ce7f5290a"
+    },
+    {
+      "path": "reference/yno.literal.txt",
+      "bytes": 1593,
+      "sha256": "8d7c2055039fc5a27148050e999c9f0d5deacc1b2e72f1231bd86d47e5e4bf72"
+    },
+    {
+      "path": "reference/yy.literal.txt",
+      "bytes": 689,
+      "sha256": "32fe411dc7ba813c01a03f665c5a0d894f49c62e802566c5e85fd18cb03fecf4"
+    },
+    {
+      "path": "verify-source.py",
+      "bytes": 3740,
+      "sha256": "cf00e294a41224ef4928d02a470008064f5ed90b98aff4cd70d6019522c21ac6"
+    }
+  ]
+}

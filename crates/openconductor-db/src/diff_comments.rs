@@ -82,6 +82,11 @@ impl<'r> Decode<'r, Sqlite> for Location {
 pub enum State {
     /// Saved, not yet sent to the agent (observed, the only value seen).
     Pending,
+    Draft,
+    ReadyForReview,
+    Reviewed,
+    Hidden,
+    Superseded,
     /// Added to the chat (ours).
     Sent,
 }
@@ -180,6 +185,11 @@ pub async fn get(pool: &SqlitePool, id: &str) -> Result<Option<DiffComment>> {
 }
 
 /// Every comment in a workspace, oldest first.
+pub async fn list(pool: &SqlitePool, workspace_id: &str) -> Result<Vec<DiffComment>> {
+    list_for_workspace(pool, workspace_id).await
+}
+
+/// Every comment in a workspace, oldest first.
 pub async fn list_for_workspace(pool: &SqlitePool, workspace_id: &str) -> Result<Vec<DiffComment>> {
     let sql = format!(
         "SELECT {COLUMNS} FROM diff_comments WHERE workspace_id = ? ORDER BY created_at, id"
@@ -256,6 +266,27 @@ pub async fn mark_sent(pool: &SqlitePool, ids: &[String], now: i64) -> Result<u6
             sqlx::query("UPDATE diff_comments SET state = ?, updated_at = ? WHERE id = ?")
                 .bind(State::Sent)
                 .bind(now)
+                .bind(id),
+            pool,
+        )
+        .await?;
+    }
+    Ok(changed)
+}
+
+pub async fn mark_reviewed(
+    pool: &SqlitePool,
+    workspace_id: &str,
+    ids: &[String],
+    now: i64,
+) -> Result<u64> {
+    let mut changed = 0;
+    for id in ids {
+        changed += exec(
+            sqlx::query("UPDATE diff_comments SET state = ?, updated_at = ? WHERE workspace_id = ? AND id = ? AND (state IS NULL OR state NOT IN ('superseded', 'reviewed'))")
+                .bind(State::Reviewed)
+                .bind(now)
+                .bind(workspace_id)
                 .bind(id),
             pool,
         )

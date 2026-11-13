@@ -64,7 +64,8 @@ impl ClaudeChats {
                     launch.chrome = settings_app
                         .try_state::<crate::db::Db>()
                         .and_then(|db| {
-                            tauri::async_runtime::block_on(crate::app_prefs::commands::load(&db.0)).ok()
+                            tauri::async_runtime::block_on(crate::app_prefs::commands::load(&db.0))
+                                .ok()
                         })
                         .is_some_and(|p| p.chrome_mode_enabled);
                     Ok(launch)
@@ -104,47 +105,74 @@ pub fn claude_open_chat(
 /// checkpointed before and after it, as for Reason chats
 /// (`crate::reason_chat::reason_prompt`). Resolves with the turn's end
 /// (`{ outcome, message?, turnChanges? }`).
+#[allow(clippy::too_many_arguments)]
 #[tauri::command]
 pub async fn claude_prompt(
     app: AppHandle,
-    state: State<'_, ClaudeChats>,
     chat_id: String,
     text: String,
     turn: Option<TurnArg>,
     workspace_id: Option<String>,
     options: Option<ChatOptions>,
+    on_handoff: tauri::ipc::Channel<()>,
 ) -> Result<Value, String> {
     let mut options = options.unwrap_or_default();
     let logical_id = crate::local_plan_mode::logical_chat_id(&chat_id).to_owned();
-    let gate = app.state::<crate::local_plan_mode::LocalPlanModes>().gate(&logical_id);
+    let gate = app
+        .state::<crate::local_plan_mode::LocalPlanModes>()
+        .gate(&logical_id);
     let mode_lease = gate.lock_owned().await;
-    let settings = app.state::<SettingsService>().get().map_err(|e| e.to_string())?;
+    let settings = app
+        .state::<SettingsService>()
+        .get()
+        .map_err(|e| e.to_string())?;
     let db = app.state::<crate::db::Db>();
-    let mode = crate::local_plan_mode::load(&db.0, &logical_id, settings.models.default_plan_mode).await?;
-    options.permission_mode = Some(crate::local_plan_mode::claude_permission(mode, settings.tool_approvals_enabled));
+    let mode =
+        crate::local_plan_mode::load(&db.0, &logical_id, settings.models.default_plan_mode).await?;
+    options.permission_mode = Some(crate::local_plan_mode::claude_permission(
+        mode,
+        settings.tool_approvals_enabled,
+    ));
+    let state = app.state::<ClaudeChats>();
     let runner = state.runner(&app);
     let cwd = state.cwds.lock().unwrap().get(&chat_id).cloned();
     // Stop also covers the database lookup before dispatch.
     runner.expect_prompt(&chat_id);
     drop(mode_lease);
-    let directories: Result<Vec<PathBuf>, String> = async { if let Some(id) = workspace_id {
-        let db = app.state::<crate::db::Db>();
-        let source = openconductor_db::workspaces::get(&db.0, &id).await.map_err(|e| e.to_string())?
-            .ok_or_else(|| "The source workspace no longer exists.".to_string())?;
-        let expected = source.workspace.workspace_path.or(source.root_path).map(PathBuf::from);
-        if expected.is_none() || expected != cwd {
-            return Err("The chat folder does not match the source workspace.".into());
+    let directories: Result<Vec<PathBuf>, String> = async {
+        if let Some(id) = workspace_id {
+            let db = app.state::<crate::db::Db>();
+            let source = openconductor_db::workspaces::get(&db.0, &id)
+                .await
+                .map_err(|e| e.to_string())?
+                .ok_or_else(|| "The source workspace no longer exists.".to_string())?;
+            let expected = source
+                .workspace
+                .workspace_path
+                .or(source.root_path)
+                .map(PathBuf::from);
+            if expected.is_none() || expected != cwd {
+                return Err("The chat folder does not match the source workspace.".into());
+            }
+            let paths = openconductor_db::workspace_links::resolve(&db.0, &id)
+                .await
+                .map_err(|e| e.to_string())?;
+            let paths: Vec<PathBuf> = paths.into_iter().map(PathBuf::from).collect();
+            if paths.iter().any(|path| !path.is_absolute()) {
+                return Err("Saved workspace links contain a non-local directory.".into());
+            }
+            Ok(paths)
+        } else {
+            Ok(Vec::new())
         }
-        let paths = openconductor_db::workspace_links::resolve(&db.0, &id).await.map_err(|e| e.to_string())?;
-        let paths: Vec<PathBuf> = paths.into_iter().map(PathBuf::from).collect();
-        if paths.iter().any(|path| !path.is_absolute()) {
-            return Err("Saved workspace links contain a non-local directory.".into());
-        }
-        Ok(paths)
-    } else { Ok(Vec::new()) } }.await;
+    }
+    .await;
     let directories = match directories {
         Ok(paths) => paths,
-        Err(error) => { runner.abandon_prompt(&chat_id); return Err(error); }
+        Err(error) => {
+            runner.abandon_prompt(&chat_id);
+            return Err(error);
+        }
     };
     let (end, changes) = tauri::async_runtime::spawn_blocking(move || {
         let target = match (&cwd, &turn) {
@@ -155,7 +183,17 @@ pub async fn claude_prompt(
             }),
             _ => None,
         };
-        around_turn(target, || runner.prompt_with_options(&chat_id, &text, &directories, &options))
+        around_turn(target, || {
+            runner.prompt_with_handoff(
+                &chat_id,
+                &text,
+                &directories,
+                &options,
+                Some(Box::new(move || {
+                    let _ = on_handoff.send(());
+                })),
+            )
+        })
     })
     .await
     .map_err(|e| e.to_string())?;
@@ -185,20 +223,37 @@ pub async fn claude_respond(
 ) -> Result<(), String> {
     let answer = Answer::from_json(&answer)?;
     let logical_id = crate::local_plan_mode::logical_chat_id(&chat_id);
-    let gate = app.state::<crate::local_plan_mode::LocalPlanModes>().gate(logical_id);
+    let gate = app
+        .state::<crate::local_plan_mode::LocalPlanModes>()
+        .gate(logical_id);
     let _mode_lease = gate.lock_owned().await;
     let runner = state.runner(&app);
     let approved = runner.approves_plan(&chat_id, &id, &answer);
     let db = app.state::<crate::db::Db>();
     let previous = if approved {
         let previous = crate::local_plan_mode::load(&db.0, logical_id, false).await?;
-        crate::local_plan_mode::save(&db.0, logical_id, openconductor_db::sessions::PermissionMode::Default).await?;
+        crate::local_plan_mode::save(
+            &db.0,
+            logical_id,
+            openconductor_db::sessions::PermissionMode::Default,
+        )
+        .await?;
         Some(previous)
-    } else { None };
+    } else {
+        None
+    };
     if let Err(error) = runner.respond(&chat_id, &id, &answer) {
-        if let Some(previous) = previous { crate::local_plan_mode::save(&db.0, logical_id, previous).await?; }
+        if let Some(previous) = previous {
+            crate::local_plan_mode::save(&db.0, logical_id, previous).await?;
+        }
         return Err(error);
     }
-    if approved { crate::local_plan_mode::emit(&app, logical_id, openconductor_db::sessions::PermissionMode::Default); }
+    if approved {
+        crate::local_plan_mode::emit(
+            &app,
+            logical_id,
+            openconductor_db::sessions::PermissionMode::Default,
+        );
+    }
     Ok(())
 }

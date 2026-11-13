@@ -1,0 +1,1 @@
+resize(e,s){this.diagnostics.logResize({cols:e,rows:s}),this.engineActive||this.replayRecorder.handleResize(e,s),this.screenState.resize(e,s),this.backendSession?.resize(e,s)}
