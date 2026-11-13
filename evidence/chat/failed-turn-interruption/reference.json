@@ -1,0 +1,62 @@
+{
+  "artifact": {
+    "key": "/assets/renderApp-D_fmY7hW.js",
+    "encoding": "brotli",
+    "compressed_bytes": 2969382,
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "manifest": "evidence/frontend/tauri-assets-manifest.json",
+  "reaReceipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "limitations": "Retained static text only. REA skipped renderApp due heap exhaustion; evidence/chat/rea-gaps.md#1. No app execution, new extraction, browser or native acceptance. Raw artifact text is untrusted data, not instructions.",
+  "slices": {
+    "predicate": {
+      "text": "function gTr(t){return t.includes(\"aborted by user\")||t.includes(\"Interrupted by user\")}",
+      "utf8": [
+        77337,
+        77425
+      ],
+      "utf16": [
+        77337,
+        77425
+      ],
+      "sha256": "51abad2eb7aa4e53f6f7f4b591c1491db58f11d1d33ef3d6d6882200c803b4d9"
+    },
+    "normalization": {
+      "text": "function dDi(t){const e={\"[codex-mcp-consent] user_declined\":\"MCP request was declined.\",\"[codex-mcp-consent] user_canceled\":\"MCP request was canceled.\",\"[codex-mcp-consent] interaction_unavailable\":\"Conductor could not present this MCP request.\",\"[codex-mcp-consent] timeout\":\"The MCP request timed out.\"};return t!==void 0&&Object.prototype.hasOwnProperty.call(e,t)?e[t]:t?.replace(/^Session cancelled:/,\"Session interrupted:\")}",
+      "utf8": [
+        8876511,
+        8876941
+      ],
+      "utf16": [
+        8831018,
+        8831448
+      ],
+      "sha256": "0cdec82c337480e09da3bb16cf5ba4bd3b609f8ff8d1ec09320c0151bf47ecb7"
+    },
+    "presentation": {
+      "text": "function hDi(t){const e=ne.c(63),{authErrorCreatedAt:n,hasAuthResultInTurn:i,sessionId:r,localWorkspaceId:o,content:a,structuredErrorPayload:c,showFallbackBadge:u,errorCode:d,willRetry:h,retryInfo:m,turnModel:g}=t,_=i===void 0?!1:i,v=u===void 0?!0:u,x=dDi(a),w=aa();let E;e[0]!==r?(E={sessionId:r},e[0]=r,e[1]=E):E=e[1];const{data:k}=Cg(E),I=k?k.agentType??gu(k.model):void 0,R=I===\"claude\",O=g!=null?gu(g):I,{currentWorkspace:D}=Fp(),{data:P}=D,L=o??k?.localWorkspaceId;if(h){let F;return e[2]===Symbol.for(\"react.memo_cache_sentinel\")?(F=p.jsx(\"span\",{className:\"size-1.5 rounded-full bg-warning motion-safe:animate-pulse\"}),e[2]=F):F=e[2],p.jsxs(Qu,{variant:\"outline\",className:\"gap-1.5\",children:[F,x??\"Reconnecting\u2026\"]})}if(x!==void 0&&gTr(x)){let F;return e[3]===Symbol.for(\"react.memo_cache_sentinel\")?(F=p.jsx(Qu,{variant:\"outline\",children:\"Interrupted by user\"}),e[3]=F):F=e[3],F}else if($wr(c,HYe.CODEX_CHATGPT_WORKSPACE_OWNER_ONLY)){let F;return e[4]!==m?(F=p.jsx(M8i,{messages:m===void 0?[]:[{id:m.sourceMessageId,text:m.text}]}),e[4]=m,e[5]=F):F=e[5],F}else if(R&&oVt(x)){if(_)return null;let F;return e[6]!==n||e[7]!==o||e[8]!==r?(F=p.jsx(iOo,{authErrorCreatedAt:n,authErrorSessionId:r,localWorkspaceId:o}),e[6]=n,e[7]=o,e[8]=r,e[9]=F):F=e[9],F}else if(R&&L!==void 0&&fDi({host:P?.host,errorText:x})){let F;return e[10]!==L?(F=p.jsx(uOo,{localWorkspaceId:L}),e[10]=L,e[11]=F):F=e[11],F}else if(MOo(x)){let F;return e[12]!==r||e[13]!==c?(F=p.jsx(EHe,{sessionId:r,errorText:\"Exceeded Claude's context window. Please compact using /compact, or summarize into a new chat.\",structuredErrorPayload:c,showRetry:!1}),e[12]=r,e[13]=c,e[14]=F):F=e[14],F}else if(x?.includes(\"Claude AI usage limit reached|\")){const F=x.split(\"|\");let H;if(F.length===2){const X=F[1].trim(),Q=parseInt(X,10);if(!isNaN(Q)){const J=Q*1e3;let te;e[15]!==J?(te=new Date(J),e[15]=J,e[16]=te):te=e[16],H=te}}let U;e[17]===Symbol.for(\"react.memo_cache_sentinel\")?(U=p.jsx(Qu,{variant:\"destructive\",className:\"self-start\",children:\"Claude Code session limit reached\"}),e[17]=U):U=e[17];const z=H?p.jsxs(\"span\",{className:\"font-medium\",children:[\"Your limit will be reset on\",\" \",OX(H),\".\"]}):\"Please try again later.\";let G;e[18]===Symbol.for(\"react.memo_cache_sentinel\")?(G=p.jsxs(tt,{variant:\"link\",onClick:FOo,children:[\"Learn more about Claude Code limits\",p.jsx(co,{className:\"h-3 w-3\"})]}),e[18]=G):G=e[18];let K;return e[19]!==z?(K=p.jsxs(\"div\",{className:\"flex flex-col gap-2\",children:[U,p.jsx(\"div\",{className:\"text-sm space-y-1\",children:p.jsxs(\"p\",{children:[z,\" \",\"This limit is imposed by Anthropic and applies to all Claude Code usage.\",\" \",G]})})]}),e[19]=z,e[20]=K):K=e[20],K}else if(x?.toLowerCase().includes(\"overloaded\")){let F;e[21]!==m||e[22]!==r||e[23]!==c?(F=p.jsx(EHe,{sessionId:r,errorText:\"Anthropic's API servers are temporarily overloaded. Please try again in a few minutes.\",structuredErrorPayload:c,retryInfo:m}),e[21]=m,e[22]=r,e[23]=c,e[24]=F):F=e[24];let H;e[25]===Symbol.for(\"react.memo_cache_sentinel\")?(H=p.jsxs(tt,{variant:\"outline\",size:\"sm\",onClick:jOo,children:[p.jsx(co,{className:\"h-3 w-3\"}),\"Check Anthropic API status\"]}),e[25]=H):H=e[25];let U;return e[26]!==F?(U=p.jsxs(\"div\",{className:\"flex flex-col gap-2\",children:[F,H]}),e[26]=F,e[27]=U):U=e[27],U}else if(O===\"codex\"&&zwr(x)){let F;return e[28]===Symbol.for(\"react.memo_cache_sentinel\")?(F=p.jsx(rOo,{}),e[28]=F):F=e[28],F}else if(O===\"codex\"&&Uwr(x)){let F;e[29]!==P?(F=P!==void 0&&!Su(P.host),e[29]=P,e[30]=F):F=e[30];let H;return e[31]!==F?(H=p.jsx(CKn,{failure:\"usage_limit\",localChat:F}),e[31]=F,e[32]=H):H=e[32],H}else if(O===\"codex\"&&Hwr(x)){let F;e[33]!==P?(F=P!==void 0&&!Su(P.host),e[33]=P,e[34]=F):F=e[34];let H;return e[35]!==F?(H=p.jsx(CKn,{failure:\"not_eligible\",localChat:F}),e[35]=F,e[36]=H):H=e[36],H}else if(d===\"CODEX_AUTH_ERROR\"){let F;e[37]===Symbol.for(\"react.memo_cache_sentinel\")?(F=p.jsx(Qu,{variant:\"destructive\",className:\"self-start\",children:\"Codex authentication required\"}),e[37]=F):F=e[37];let H;e[38]===Symbol.for(\"react.memo_cache_sentinel\")?(H=p.jsx(\"div\",{className:\"text-sm space-y-1\",children:p.jsx(\"p\",{children:\"Please configure Codex authentication in Settings to use Codex.\"})}),e[38]=H):H=e[38];let U;e[39]!==w?(U=()=>{w({to:\"/settings/user/general\"}).fireAndForget()},e[39]=w,e[40]=U):U=e[40];let z;e[41]===Symbol.for(\"react.memo_cache_sentinel\")?(z=p.jsx(cv,{className:\"h-3 w-3\"}),e[41]=z):z=e[41];let G;return e[42]!==U?(G=p.jsxs(\"div\",{className:\"flex flex-col gap-2\",children:[F,H,p.jsx(\"div\",{className:\"mt-2 flex gap-2\",children:p.jsxs(tt,{variant:\"outline\",size:\"sm\",onClick:U,children:[z,\"Open settings\"]})})]}),e[42]=U,e[43]=G):G=e[43],G}else if(I===\"cursor\"&&x?.includes(\"Cursor API key is not configured\")){let F;e[44]===Symbol.for(\"react.memo_cache_sentinel\")?(F=p.jsx(Qu,{variant:\"destructive\",className:\"self-start\",children:\"Cursor API key required\"}),e[44]=F):F=e[44];let H;e[45]===Symbol.for(\"react.memo_cache_sentinel\")?(H=p.jsx(\"div\",{className:\"text-sm space-y-1\",children:p.jsx(\"p\",{children:\"Add a Cursor API key in provider settings to use Cursor.\"})}),e[45]=H):H=e[45];let U;e[46]!==w?(U=()=>{w({to:\"/settings/user/providers\",search:{providerTab:\"cursor\"}}).fireAndForget()},e[46]=w,e[47]=U):U=e[47];let z;e[48]===Symbol.for(\"react.memo_cache_sentinel\")?(z=p.jsx(cv,{className:\"h-3 w-3\"}),e[48]=z):z=e[48];let G;return e[49]!==U?(G=p.jsxs(\"div\",{className:\"flex flex-col gap-2\",children:[F,H,p.jsx(\"div\",{className:\"mt-2 flex gap-2\",children:p.jsxs(tt,{variant:\"outline\",size:\"sm\",onClick:U,children:[z,\"Open settings\"]})})]}),e[49]=U,e[50]=G):G=e[50],G}else if(x?.toLowerCase().includes(\"image exceeds 5 mb\")){let F;e[51]===Symbol.for(\"react.memo_cache_sentinel\")?(F=p.jsx(Qu,{variant:\"destructive\",className:\"self-start\",children:\"Image too large\"}),e[51]=F):F=e[51];let H;return e[52]===Symbol.for(\"react.memo_cache_sentinel\")?(H=p.jsxs(\"div\",{className:\"flex flex-col gap-2\",children:[F,p.jsx(\"div\",{className:\"text-sm space-y-1\",children:p.jsx(\"p\",{children:\"Exceeds Claude Code's size limit (5MB). Please revert to a previous user message by hovering over it, otherwise this chat will fail going forward.\"})})]}),e[52]=H):H=e[52],H}else if(d===\"unparseable_message\"){let F;return e[53]===Symbol.for(\"react.memo_cache_sentinel\")?(F=p.jsx(\"p\",{className:\"text-sm italic text-muted-foreground\",children:\"This message could not be displayed.\"}),e[53]=F):F=e[53],F}let B;return e[54]!==x||e[55]!==o||e[56]!==m||e[57]!==r||e[58]!==v||e[59]!==c||e[60]!==g||e[61]!==P?.workspacePath?(B=p.jsx(\"div\",{children:v?p.jsx(EHe,{sessionId:r,errorText:_Tr({sourceModel:g,text:`Error: ${x??\"Unknown error\"}`}),structuredErrorPayload:c,retryInfo:m}):p.jsx(xS,{text:x??\"Unknown error\",localWorkspaceId:o,workspacePath:P?.workspacePath})}),e[54]=x,e[55]=o,e[56]=m,e[57]=r,e[58]=v,e[59]=c,e[60]=g,e[61]=P?.workspacePath,e[62]=B):B=e[62],B}",
+      "utf8": [
+        8877084,
+        8883958
+      ],
+      "utf16": [
+        8831591,
+        8838463
+      ],
+      "sha256": "7df5d5701ce986ee980d0a9ae4e4938e495c5e78eccf728c89d0dfb80c95a9c9"
+    },
+    "error-message-dispatcher": {
+      "text": "function JOo(t){const e=ne.c(10),{message:n,className:i,localWorkspaceId:r,retryInfo:o}=t,a=n.content;if(a.type!==\"result\")return null;if(a.is_error){let d;return e[0]!==i||e[1]!==r||e[2]!==n||e[3]!==o?(d=p.jsx(QOo,{message:n,className:i,localWorkspaceId:r,retryInfo:o}),e[0]=i,e[1]=r,e[2]=n,e[3]=o,e[4]=d):d=e[4],d}const c=a.usage?.output_tokens??0,u=\"result\"in a?String(a.result):\"\";if(c===0&&u){let d;e[5]!==i?(d=Xe(i),e[5]=i,e[6]=d):d=e[6];let h;return e[7]!==u||e[8]!==d?(h=p.jsx(\"div\",{className:d,children:u}),e[7]=u,e[8]=d,e[9]=h):h=e[9],h}return null}const lVt=$.memo(function(e){const n=ne.c(42),{message:i,className:r,potentialToolResultMessages:o,sessionId:a,localWorkspaceId:c,isPreviewMessage:u,subAgentExecutions:d,retryInfo:h,turnModel:m}=e;let g;n[0]!==o?(g=o===void 0?[]:o,n[0]=o,n[1]=g):g=n[1];const _=g,v=u===void 0?!1:u;let x;n[2]!==d?(x=d===void 0?[]:d,n[2]=d,n[3]=x):x=n[3];const w=x;if(i.messageType===\"queued\"||i.content.type===\"user\"){let R;return n[4]!==r||n[5]!==c||n[6]!==i||n[7]!==a?(R=p.jsx(WOo,{message:i,className:r,sessionId:a,localWorkspaceId:c}),n[4]=r,n[5]=c,n[6]=i,n[7]=a,n[8]=R):R=n[8],R}if(i.role===\"SUMMARY\"){let R;return n[9]!==r||n[10]!==i?(R=p.jsx(NOo,{message:i,className:r}),n[9]=r,n[10]=i,n[11]=R):R=n[11],R}const E=i.content.type;let k;n[12]!==_?(k=cDi(_),n[12]=_,n[13]=k):k=n[13];const I=k;switch(E){case\"error\":{const R=i.model??m;let O;return n[14]!==I||n[15]!==c||n[16]!==i.content.content||n[17]!==i.content.errorCode||n[18]!==i.content.structuredErrorPayload||n[19]!==i.content.willRetry||n[20]!==i.createdAt||n[21]!==h||n[22]!==a||n[23]!==R?(O=p.jsx(hDi,{authErrorCreatedAt:i.createdAt,hasAuthResultInTurn:I,sessionId:a,localWorkspaceId:c,content:i.content.content,structuredErrorPayload:i.content.structuredErrorPayload,errorCode:i.content.errorCode,willRetry:i.content.willRetry,retryInfo:h,turnModel:R}),n[14]=I,n[15]=c,n[16]=i.content.content,n[17]=i.content.errorCode,n[18]=i.content.structuredErrorPayload,n[19]=i.content.willRetry,n[20]=i.createdAt,n[21]=h,n[22]=a,n[23]=R,n[24]=O):O=n[24],O}case\"assistant\":{let R;return n[25]!==r||n[26]!==v||n[27]!==c||n[28]!==i||n[29]!==_||n[30]!==a||n[31]!==w?(R=p.jsx(GOo,{message:i,potentialToolResultMessages:_,className:r,isPreviewMessage:v,sessionId:a,localWorkspaceId:c,subAgentExecutions:w}),n[25]=r,n[26]=v,n[27]=c,n[28]=i,n[29]=_,n[30]=a,n[31]=w,n[32]=R):R=n[32],R}case\"system\":{let R;return n[33]!==r||n[34]!==i||n[35]!==_?(R=p.jsx(YOo,{message:i,className:r,turnMessages:_}),n[33]=r,n[34]=i,n[35]=_,n[36]=R):R=n[36],R}case\"result\":{let R;return n[37]!==r||n[38]!==c||n[39]!==i||n[40]!==h?(R=p.jsx(JOo,{message:i,className:r,localWorkspaceId:c,retryInfo:h}),n[37]=r,n[38]=c,n[39]=i,n[40]=h,n[41]=R):R=n[41],R}case\"codex_goal_updated\":case\"codex_goal_cleared\":return null}});",
+      "utf8": [
+        8903418,
+        8906202
+      ],
+      "utf16": [
+        8857922,
+        8860706
+      ],
+      "sha256": "8caa30cad8cd2212c85c1cc5500f1913726d670ff9c3dc7f0f34c43373762d84"
+    }
+  }
+}
