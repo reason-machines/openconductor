@@ -587,11 +587,18 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
           </>
         );
       }
+      const nonmixedRead = name === "TodoRead" && todos.length > 0 && !(active && done > 0 && done < todos.length);
+      const label = nonmixedRead
+        ? active ? "Todo started" : done === todos.length ? "Todo list completed" : done > 0 ? "Todo completed" : "Todo list created"
+        : done > 0 && done < todos.length ? "Todo completed" : "Update todos";
+      const summary = nonmixedRead
+        ? active ? `${activeIndex + 1}. ${s(active.content) || "todo"}` : `${todos.length} ${todos.length === 1 ? "todo" : "todos"}`
+        : todos.length > 0 ? `${done}/${todos.length} completed` : undefined;
       return (
         <RowShell
           {...shell}
-          left={<span>{done > 0 && done < todos.length ? "Todo completed" : "Update todos"}</span>}
-          right={todos.length > 0 ? <span className="oc-tool-count">{`${done}/${todos.length} completed`}</span> : undefined}
+          left={<span>{label}</span>}
+          right={summary ? <span className="oc-tool-count">{summary}</span> : undefined}
           content={content}
         />
       );
