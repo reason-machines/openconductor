@@ -255,7 +255,7 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
     "./components/WorkspaceView": "WorkspaceView", "./features/browser/BrowserPreview": "BrowserPreviewHost", "./components/CreateProjectDialog": "CreateProjectDialog",
     "./components/CloneGitHubRepoDialog": "CloneGitHubRepoDialog", "./components/CreateWorkspaceDialog": "CreateWorkspaceDialog", "./components/CreateWorkspacePage": "CreateWorkspacePage",
     "./components/RemoveRepositoryDialog": "RemoveRepositoryDialog", "./components/ArchiveRunningDialog": "ArchiveRunningDialog", "./components/ArchivedWorkspaceView": "ArchivedWorkspaceView",
-    "./components/RestoreWorkspaceDialog": "RestoreWorkspaceDialog", "./components/QuickOpenDialog": "QuickOpenDialog", "./features/quit/QuitDialog": "QuitDialog",
+    "./components/RestoreWorkspaceDialog": "RestoreWorkspaceDialog", "./components/QuickOpenDialog": "QuickOpenDialog", "./components/SearchInFilesDialog": "SearchInFilesDialog", "./features/quit/QuitDialog": "QuitDialog",
     "./components/GitHubRepoDialog": "GitHubRepoDialog", "./settings/SettingsView": "SettingsView", "./features/routines/RoutinesPage": "RoutinesPage",
     "./features/routines/RoutineEditor": "RoutineEditor", "./components/KeyboardShortcutsDialog": "KeyboardShortcutsDialog",
   })) imports[file] = { [name]: inert };
