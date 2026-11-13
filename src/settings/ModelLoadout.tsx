@@ -1,3 +1,4 @@
+import { usePersistenceProducer } from "../lib/persistence/producer.ts";
 import { useEffect, useRef, useState, type DragEvent, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import type { AgentKind, Settings } from "./types";
 import type { CatalogModel } from "./modelCatalog";
@@ -25,6 +26,7 @@ export function LoadoutMark({ agent, size }: { agent: AgentKind; size: number })
 }
 
 export function ModelLoadout({ settings, save, models, errors, loading, refresh }: Props) {
+  const persistence = usePersistenceProducer();
   const [stored, setStored] = useState<(Favorite | null)[] | null>(null);
   const [readRevision, setReadRevision] = useState(0);
   const [readError, setReadError] = useState<string | null>(null);
@@ -73,6 +75,7 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
 
   const commit = (next: (Favorite | null)[], message: string) => {
     if (stored === null) return;
+    const acknowledgment = persistence.begin();
     const changedAt = ++revision.current;
     pendingWrites.current += 1;
     slotsValue.current = next;
@@ -86,7 +89,7 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
       if (await save(nextSettings) === false) throw new Error("Could not save the default model.");
       confirmed.current = next;
     });
-    writes.current = run.catch(async (e: unknown) => {
+    writes.current = run.then(() => acknowledgment.succeed()).catch(async (e: unknown) => {
       const previous = confirmed.current ?? loadoutSlots(settingsRef.current, []);
       let message = String(e);
       try { await replaceFavorites(slotsToRows(previous)); }
@@ -96,6 +99,7 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
         setStored(previous);
         setError(message);
       }
+      acknowledgment.fail(e);
     }).finally(() => { pendingWrites.current -= 1; setSaving(pendingWrites.current > 0); });
   };
   const clear = (index: number) => commit(clearSlot(slotsValue.current, index), `Slot ${index + 1} cleared.`);

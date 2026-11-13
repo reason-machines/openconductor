@@ -1,0 +1,165 @@
+{
+  "author": "Conductor Rebuild",
+  "status": "MATCHING_RAW_RED_BINDING_SOURCE_ONLY_NO_ADMISSION",
+  "prior_baseline": "original83322FAIL0PASS remains INVALID_BASELINE",
+  "amended_baseline": "ece22cases/11intendedFAIL1-10,22+11controls/zero skip-todo-cancel; raw independently requalified without rerunning Node",
+  "actual_main": "4fe392155011727e0728ebc2c668db37ee98c48c",
+  "actual_head": "308751bb69df97ad73e9e3f639eef83cb7ad1e18",
+  "actual_tree": "1ee77e0a74d2930888735403a1c577b089e1d478",
+  "source_pins": [
+    {
+      "path": "src/keybindings/KeybindingsProvider.tsx",
+      "sha256": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6"
+    },
+    {
+      "path": "src/keybindings/bind.ts",
+      "sha256": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119"
+    },
+    {
+      "path": "src/keybindings/conflicts.ts",
+      "sha256": "282562172120ea4406bd0fd8c9b74412ab003c93067b6222e2336b9ca2d4d68d"
+    },
+    {
+      "path": "src/keybindings/dispatcher.ts",
+      "sha256": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197"
+    },
+    {
+      "path": "src/keybindings/editor.ts",
+      "sha256": "092b462b67401aadb33ec16c3c49a8aeab013971c313ce6a83ac7c17ac9f0958"
+    },
+    {
+      "path": "src/keybindings/fuzzy.ts",
+      "sha256": "1bcbf1f4058508f23d5d079235d5b96ed6ed800582aae6de50db6a182d5c2c1c"
+    },
+    {
+      "path": "src/keybindings/help.ts",
+      "sha256": "e7b5685513f3dca610159c2121ccb4cd041be04d6c9450fe15bdec7b8d97b88c"
+    },
+    {
+      "path": "src/keybindings/listeners.ts",
+      "sha256": "6944c63efcb6edee49d59d1ccdcfaed649902021946c8a8f60d50549fd89011a"
+    },
+    {
+      "path": "src/keybindings/overrides.ts",
+      "sha256": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193"
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "sha256": "3a873cc27d99b73fafa340dc1585d9f4cd850966e91408c4f4dbad445bf4dcb9"
+    },
+    {
+      "path": "src/keybindings/resolve.ts",
+      "sha256": "f8818d52d1af70bc788f5bda2d162b5b1634402592807bc78b5233ad4e1142bc"
+    },
+    {
+      "path": "src/keybindings/selectAll.ts",
+      "sha256": "508b26417d717f938eb118afbe8c0ff96873643cb4e5c0879467e5368e97db90"
+    },
+    {
+      "path": "src/keybindings/shortcut.ts",
+      "sha256": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8"
+    },
+    {
+      "path": "src/keybindings/types.ts",
+      "sha256": "cdfcd723ed324b7f32698d36496fbc6bf6514c78f61e4d562c81b302207c4ecb"
+    },
+    {
+      "path": "src/settings/AgentsPage.tsx",
+      "sha256": "2d9167dd3176f6220f6036aff0c4e8bf5125e1e6e575984c401e67cd83f7f0ee"
+    },
+    {
+      "path": "src/settings/agents/kit.tsx",
+      "sha256": "1c8ed18fac67ff8ebc44572621e1740332c0b00f639eed7f7986ba53b6532dd8"
+    },
+    {
+      "path": "src/settings/agents/kitModel.ts",
+      "sha256": "be6a94abe11962ca756be5733b946f7b5d34acafc567db937a8e1ce688352937"
+    },
+    {
+      "path": "src/settings/providerTab.ts",
+      "sha256": "da932b8fe4c9da6edd9e95b1f35032c373e3429a83fcc3f833ccedf62fef0e8c"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "5dfe0f663d72f4adeeea81ed25e6f03789925911979118ff4e5758afb411ee62"
+    },
+    {
+      "path": "package.json",
+      "sha256": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a"
+    }
+  ],
+  "raw_receipt_sha256": "c3fc67656850c8357357037006697ff8c4dc55dce9a752ba895e134236ac2d8a",
+  "raw_tap_sha256": "a02cecb372b1222ab08311aba176ab0dbd8a50307deed1f5a8399e52f318b04e",
+  "raw_stderr_sha256": "4e68a6933f4ad92d0e5371e8833ca6eff49845280cebc521d89c5a0b3c79920e",
+  "argv": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "115s",
+    "nice",
+    "-n",
+    "19",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-census64/agentTabsKeyboard.dom.test.mjs"
+  ],
+  "environment": {
+    "NODE_ENV": "development",
+    "NODE_OPTIONS": "--max-old-space-size=768",
+    "AGENT_TABS_SOURCE_ROOT": "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo",
+    "ONBOARDING_DOM_DEPS": "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/open-in-escape64/proposal-v2/dom-deps"
+  },
+  "canonical_and_restored_scratch_sha256": "833644d93d3c45c4846800c2d923540ff53c57b22d2aa1f53aaf99dbc1789d51",
+  "executed_loader_sha256": "ececae31184996182e88a8608bffec216ee055fe83a8c03e38d789a09f18e8fa",
+  "assertion_and_case_suffix_sha256": "11675e5817b5cf1c705ab402474423abf385dd95f5161d9588ecf6e70e84e918",
+  "root_versions": {
+    "react": {
+      "version": "18.3.1",
+      "package_json_sha256": "d4e68a5c96babb20cad1daafea8b78822eae45b341552cf5418d06a5304fa64c"
+    },
+    "react-dom": {
+      "version": "18.3.1",
+      "package_json_sha256": "d2f29e31bd48b833e48cd7bbf41f192e8ee4ff8da249fdbe10d4ac4114b8b12e"
+    },
+    "typescript": {
+      "version": "5.9.3",
+      "package_json_sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    }
+  },
+  "isolated_jsdom": "26.1.0",
+  "installed_inventory_sha256": "480c016697f4be76f43e4ada9605d8db488bfb62cc350d839ba80c06005ab919",
+  "resolved_transitive_metadata_sha256": "cff85c82e56042b56857655f5e77c4c213bf1ba2075687a7f52f791ff5c36b33",
+  "transitives_lock_frozen_before_install": false,
+  "retained_package_metadata_recheck": "ALL44_IDENTICAL_NOW",
+  "product_patch_sha256": "722b674f6f6ea92dd9ae95b9f352589195c8192ae2da384c1b0f1db36a46fd7a",
+  "product_patch_applied": false,
+  "activation_applied": false,
+  "green": "NOT_RUN",
+  "corrected_inspector_sha256": "cb3122d4fd8d961f4bcb9479bfa83e1c82715642909e5ece920c737e41e4c23d",
+  "source_publication_wrapper_sha256": "34741ebf0b37b90b505e12aa2beb85020072c30741c6d3e8ad38ea2ccb657432",
+  "source_combined_activation_sha256": "165c1e431f4774b605b72524f170cfe87d0119cbbd6fdc6ae1726ede91f97e58",
+  "original_activation_sha256": "08cbdc5bec20ca69a105ccc3ce8d3394d1274562313e1cf6634988afc55c1eaf",
+  "actual_release": "2026-11-13T00:23:42.219350+00:00",
+  "actual_consumed_seconds": 4.107056040003954,
+  "remaining_of_original_360_seconds": 355.89294395999605,
+  "remaining_of_shared60_non_test_seconds": 59.76627357700636,
+  "continuation_prerequisites": [
+    "Existing ACC slot only; SAME15 currently holds runtime. No self-admission, new intake, runner or baseline retry.",
+    "Rebind exact21/current tree/lock versions/retained package metadata/loader and argv-env to the saved RED before reusing it. A mismatch STOPs; it does not silently authorize RED rerun.",
+    "Verify original canonical/scratch833, own backup and exact loader73 patch; apply only own scratch ece and verify same full-file/assertion hashes. No reinstall/fallback.",
+    "After valid raw RED reuse and binding, only sealed722 candidate/source check then identical amended-input GREEN22; GREEN still needs>=180s remaining, 115+5s phase, same heap/concurrency and retained total/non-test/cleanup bounds.",
+    "First unexpected failure STOP/restore own scratch/release. No extra test/import/browser/native/provider/build/package.",
+    "Only actual validGREEN permits new combined publication165c1e43 with wrapper34741ebf. Original fixture833 remains unchanged, workflow projection identical to08cbdc5b, assertions preserved. Exact-head hosted checks validate new wrapper before merge."
+  ],
+  "original11": "UNCHANGED_LAST",
+  "ownjobs": [],
+  "servers": [],
+  "support": [],
+  "source_only_verification": "Read only saved raw outputs, pinned21 file bytes and exact retained package metadata. No Node/import/test/application/patch/retry."
+}

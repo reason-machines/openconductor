@@ -1,0 +1,195 @@
+{
+  "read_at": "2026-11-13",
+  "pr": {
+    "number": 1200,
+    "title": "fix(chat): keep image Read results non-collapsible",
+    "body": "## Fix\nRead rows currently offer a disclosure toggle for image results. Set `isCollapsible={!isImage}` only on the Read arm, using the last lowercased extension and an own-property check against the nine recorded image extensions. Text-file disclosure, file opening, statuses, and tool result bytes remain unchanged.\n\nAdd the frozen 28-case fixture and its byte-identical input file. The constructor control remains unchanged. The parity basis is the retained Conductor 0.87.6 REA packet, evidence `ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2`, not a new native observation.\n\n## Verification\nConductor Rebuild ran these commands once on Cloud355 against main `09b1c998`, with #1198's exact two-source-file change separately qualified. The original fixture, inputs, patch, freeze, dependency lock, and 29 protected bindings were preserved.\n\nBaseline and candidate used the identical command:\n\n\n```bash\nenv NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 180s node --max-old-space-size=768 --experimental-strip-types --test --test-concurrency=1 src/features/chat/readImageDisclosure.test.ts\n```\n\n- Before: exit 1, exactly 12 intended disclosure assertion failures and 16 passing controls. No crashes, skips, or cancellations. The constructor control passed.\n- After the exact sealed Read-arm patch: exit 0, all 28 passed, including constructor.\n\nRetained adjacent checks passed, exit 0, all 50 top-level cases. The remount checks also verified their historical five-case baseline and current five-case candidate:\n\n```bash\nenv NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 180s node --max-old-space-size=768 --experimental-strip-types --test --test-concurrency=1 src/features/chat/readSyntaxHighlight.test.ts src/features/chat/conductorTools.test.ts src/features/chat/disclosureRemount.test.ts src/features/chat/imageGenerationFallbackDisclosure.test.ts\n```\n\nTypecheck passed, exit 0:\n\n```bash\nenv NODE_OPTIONS=--max-old-space-size=1024 nice -n 19 timeout --kill-after=5s 180s npm run typecheck\n```\n\nThe local checkpoint contains exactly the product patch and the two unchanged fixture copies. The complete run took 75.18 seconds within its 930-second bound; the slot was explicitly released with no jobs, zombies, or servers remaining. [Original receipt, phase events, and qualified source binding](https://reasonmachines.com/agents/d7b27c48-81c4-4bc8-9c2c-8eb81996b477) are attached in the owning Session.\n\n## Limits\nNo browser or native execution, screenshot, package build, release dispatch, or containing-package verification ran in this dependency-ordered unit. There is no screenshot because the grant excludes browser/native work; mounted component assertions are not native parity proof. COPY26, empty-review disclosure, and normalization changes are excluded. Package and native verification remain with the existing serialized release owner.\n",
+    "state": "closed",
+    "draft": false,
+    "merged": true,
+    "head_sha": "1a12310a7c1b7a4cd087f5669df5c43049e6155f",
+    "base_sha": "09b1c998acb093f4d905d5ef844c80136ea987f6",
+    "head_ref": "reason/openconductor-publish-fo-d7b27c48",
+    "head_repo": "reason-machines/openconductor",
+    "base_ref": "main",
+    "html_url": "https://github.com/reason-machines/openconductor/pull/1200",
+    "author": {
+      "login": "reason-machines[bot]",
+      "avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4"
+    },
+    "created_at": "2026-11-12T22:08:41Z",
+    "updated_at": "2026-11-12T22:25:12Z",
+    "mergeable": null,
+    "mergeable_state": "unknown",
+    "additions": 619,
+    "deletions": 0,
+    "changed_files": 3,
+    "labels": [],
+    "assignees": [],
+    "requested_reviewers": [],
+    "body_truncated": false
+  },
+  "commits": [
+    {
+      "sha": "58825699bc056909928c0dd527a7745ed08f9655",
+      "message": "fix(chat): match Conductor's four generic tool titles\n\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>\nCo-authored-by: qa-runner2-star <319404260+qa-runner2-star@users.noreply.github.com>",
+      "author_name": "reason-machines[bot]",
+      "author_login": "reason-machines[bot]",
+      "author_avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4",
+      "committed_at": "2026-11-12T08:25:48Z",
+      "html_url": "https://github.com/reason-machines/openconductor/commit/58825699bc056909928c0dd527a7745ed08f9655"
+    },
+    {
+      "sha": "d45f28093635456c517a29c583bbd3740d2242e7",
+      "message": "fix(chat): retain parsed TaskUpdate details on errors\n\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>\nCo-authored-by: qa-runner2-star <319404260+qa-runner2-star@users.noreply.github.com>",
+      "author_name": "reason-machines[bot]",
+      "author_login": "reason-machines[bot]",
+      "author_avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4",
+      "committed_at": "2026-11-12T09:13:47Z",
+      "html_url": "https://github.com/reason-machines/openconductor/commit/d45f28093635456c517a29c583bbd3740d2242e7"
+    },
+    {
+      "sha": "f080e2b0f71cb3b903bd1c9ad874a0b41f36f053",
+      "message": "fix(chat): retain parsed TaskList details on errors\n\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>\nCo-authored-by: qa-runner2-star <319404260+qa-runner2-star@users.noreply.github.com>",
+      "author_name": "reason-machines[bot]",
+      "author_login": "reason-machines[bot]",
+      "author_avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4",
+      "committed_at": "2026-11-12T09:43:35Z",
+      "html_url": "https://github.com/reason-machines/openconductor/commit/f080e2b0f71cb3b903bd1c9ad874a0b41f36f053"
+    },
+    {
+      "sha": "c661e8da45bbad27c64d9f5c750b85090c90cc86",
+      "message": "fix(chat): retain typed subagent results on errors\n\nConductor Rebuild forwards the original result to typed Task/Agent rows, retaining Formatted/Raw/copy disclosure on failures. Remove only the resulting pure dead MoreRows output binding; the separate Row binding, other arms, parsers and links are unchanged. Frozen sixteen-case RED reproduced two intended failures and fourteen passing controls, identical GREEN passed sixteen, five named sibling suites passed seventy-two. Initial tsc found TS6133; separately admitted corrective tsc passed after the reconciled dead-binding deletion. Evidence records both results and all original-byte hashes. No tests were weakened or rerun beyond serialized grants. Native/provider/package/deployment behavior is unverified; fixed992 release ownership and cut unchanged.\n\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>\nCo-authored-by: qa-runner2-star <319404260+qa-runner2-star@users.noreply.github.com>",
+      "author_name": "reason-machines[bot]",
+      "author_login": "reason-machines[bot]",
+      "author_avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4",
+      "committed_at": "2026-11-12T11:07:54Z",
+      "html_url": "https://github.com/reason-machines/openconductor/commit/c661e8da45bbad27c64d9f5c750b85090c90cc86"
+    },
+    {
+      "sha": "1ab1e420d1e7863a8abf7daa7d87941f0aad2e6e",
+      "message": "docs(chat): retain terminal output proof logs\n\nConductor Rebuild stores exact bounded output in lossless JSON containers with byte hashes. No product or fixture changes.\n\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>\n\nCo-authored-by: qa-runner2-star <319404260+qa-runner2-star@users.noreply.github.com>\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>",
+      "author_name": "reason-machines[bot]",
+      "author_login": "reason-machines[bot]",
+      "author_avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4",
+      "committed_at": "2026-11-12T13:05:18Z",
+      "html_url": "https://github.com/reason-machines/openconductor/commit/1ab1e420d1e7863a8abf7daa7d87941f0aad2e6e"
+    },
+    {
+      "sha": "1571c4c1a6c4f3be929b84f93a87d2b08d16d048",
+      "message": "fix(chat): honor BashOutput raw-string results\n\nKeep the measured 12-failure baseline, identical 20-case passing regression, 111 adjacent tests and passing typecheck as losslessly compressed evidence. Product and frozen fixture bytes are unchanged. Authored by Conductor Rebuild.\n\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>\nCo-authored-by: qa-runner2-star <319404260+qa-runner2-star@users.noreply.github.com>",
+      "author_name": "reason-machines[bot]",
+      "author_login": "reason-machines[bot]",
+      "author_avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4",
+      "committed_at": "2026-11-12T16:14:37Z",
+      "html_url": "https://github.com/reason-machines/openconductor/commit/1571c4c1a6c4f3be929b84f93a87d2b08d16d048"
+    },
+    {
+      "sha": "3caaedb4275f7763c34719c08aefdca2c79c0f14",
+      "message": "fix(chat): reject inherited file glyph extensions\n\nConductor Rebuild restricts the extension registry lookup to own properties. The focused fixture reproduces constructor and __proto__ tuple crashes before the correction and passes all six cases afterward. The original frozen constructor control also passes unchanged.\n\nAdjacent local coverage timed out after 39 passing subtests; local typecheck was not run after that stop. Full disclosure, COPY26, browser, native and package verification are not claimed. Exact evidence and limits are retained.\n\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>\nCo-authored-by: qa-runner2-star <319404260+qa-runner2-star@users.noreply.github.com>",
+      "author_name": "reason-machines[bot]",
+      "author_login": "reason-machines[bot]",
+      "author_avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4",
+      "committed_at": "2026-11-12T18:10:55Z",
+      "html_url": "https://github.com/reason-machines/openconductor/commit/3caaedb4275f7763c34719c08aefdca2c79c0f14"
+    },
+    {
+      "sha": "1a12310a7c1b7a4cd087f5669df5c43049e6155f",
+      "message": "fix(chat): keep image Read results non-collapsible\n\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>\nCo-authored-by: qa-runner2-star <319404260+qa-runner2-star@users.noreply.github.com>",
+      "author_name": "reason-machines[bot]",
+      "author_login": "reason-machines[bot]",
+      "author_avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4",
+      "committed_at": "2026-11-12T22:08:39Z",
+      "html_url": "https://github.com/reason-machines/openconductor/commit/1a12310a7c1b7a4cd087f5669df5c43049e6155f"
+    }
+  ],
+  "discussion": [],
+  "reviews": [],
+  "inline_comments": [],
+  "review_threads": [],
+  "feedback_page": {
+    "offset": 0,
+    "limit": 50,
+    "reviews_total": 0,
+    "reviews_next_offset": null,
+    "inline_comments_total": 0,
+    "inline_comments_next_offset": null,
+    "review_threads_total": 0,
+    "review_threads_next_offset": null,
+    "discussion_total": 0,
+    "discussion_next_offset": null
+  },
+  "sections": {
+    "commits": {
+      "status": "complete"
+    },
+    "files": {
+      "status": "complete"
+    },
+    "checks": {
+      "status": "complete"
+    },
+    "combined_status": {
+      "status": "complete"
+    },
+    "required_checks": {
+      "status": "complete"
+    },
+    "discussion": {
+      "status": "complete"
+    },
+    "reviews": {
+      "status": "complete"
+    },
+    "inline_comments": {
+      "status": "complete"
+    },
+    "review_threads": {
+      "status": "complete"
+    },
+    "options": {
+      "status": "complete"
+    },
+    "evidence": {
+      "status": "unsupported",
+      "error": "named_pull_request"
+    }
+  },
+  "files": [
+    {
+      "filename": "src/features/chat/ToolRows.tsx",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "patch": "@@ -436,9 +436,13 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o\n         css: \"css\", html: \"html\", htm: \"html\", xml: \"xml\", sh: \"bash\", bash: \"bash\",\n       };\n       const language = languages[path.split(\".\").pop()?.toLowerCase() ?? \"\"];\n+      const imageExtensions = { png: true, jpg: true, jpeg: true, gif: true, webp: true, tif: true, tiff: true, avif: true, bmp: true };\n+      const extension = path.split(\".\").pop()?.toLowerCase();\n+      const isImage = extension !== undefined && Object.prototype.hasOwnProperty.call(imageExtensions, extension);\n       return (\n         <RowShell\n           {...shell}\n+          isCollapsible={!isImage}\n           left={<span>{readLabel(path, output)}</span>}\n           right={path ? <FileBadge path={path} onOpen={onOpenFile} /> : undefined}\n           keepRight",
+      "previous_filename": null,
+      "patch_truncated": false
+    },
+    {
+      "filename": "src/features/chat/readImageDisclosure.inputs.json",
+      "status": "added",
+      "additions": 467,
+      "deletions": 0,
+      "patch": "@@ -0,0 +1,467 @@\n+{\n+  \"candidate\": \"CHAT.READ-IMAGE-DISCLOSURE-GATE\",\n+  \"cases\": [\n+    {\n+      \"id\": \"image-png\",\n+      \"path\": \"/fixture/photo.png\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"RED\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"image-jpg\",\n+      \"path\": \"/fixture/photo.jpg\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"RED\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"image-jpeg\",\n+      \"path\": \"/fixture/photo.jpeg\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"RED\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"image-gif\",\n+      \"path\": \"/fixture/photo.gif\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"RED\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"image-webp\",\n+      \"path\": \"/fixture/photo.webp\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"RED\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"image-tif\",\n+      \"path\": \"/fixture/photo.tif\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"RED\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"image-tiff\",\n+      \"path\": \"/fixture/photo.tiff\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"RED\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"image-avif\",\n+      \"path\": \"/fixture/photo.avif\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"RED\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"image-bmp\",\n+      \"path\": \"/fixture/photo.bmp\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"RED\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"image-uppercase\",\n+      \"path\": \"/fixture/photo.PNG\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"RED\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"image-mixedcase\",\n+      \"path\": \"/fixture/photo.JpEg\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"RED\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"bare-registry-key\",\n+      \"path\": \"png\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"RED\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"not-registry-svg\",\n+      \"path\": \"/fixture/photo.svg\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": true,\n+        \"lines\": [\n+          {\n+            \"number\": \"7\",\n+            \"text\": \"first payload line\"\n+          },\n+          {\n+            \"number\": \"8\",\n+            \"text\": \"second payload line\"\n+          }\n+        ],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"CONTROL\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"not-registry-ico\",\n+      \"path\": \"/fixture/photo.ico\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": true,\n+        \"lines\": [\n+          {\n+            \"number\": \"7\",\n+            \"text\": \"first payload line\"\n+          },\n+          {\n+            \"number\": \"8\",\n+            \"text\": \"second payload line\"\n+          }\n+        ],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"CONTROL\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"not-registry-heic\",\n+      \"path\": \"/fixture/photo.heic\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": true,\n+        \"lines\": [\n+          {\n+            \"number\": \"7\",\n+            \"text\": \"first payload line\"\n+          },\n+          {\n+            \"number\": \"8\",\n+            \"text\": \"second payload line\"\n+          }\n+        ],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"CONTROL\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"not-registry-pdf\",\n+      \"path\": \"/fixture/photo.pdf\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": true,\n+        \"lines\": [\n+          {\n+            \"number\": \"7\",\n+            \"text\": \"first payload line\"\n+          },\n+          {\n+            \"number\": \"8\",\n+            \"text\": \"second payload line\"\n+          }\n+        ],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"CONTROL\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"no-extension\",\n+      \"path\": \"/fixture/README\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": true,\n+        \"lines\": [\n+          {\n+            \"number\": \"7\",\n+            \"text\": \"first payload line\"\n+          },\n+          {\n+            \"number\": \"8\",\n+            \"text\": \"second payload line\"\n+          }\n+        ],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"CONTROL\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"empty-path\",\n+      \"path\": \"\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": true,\n+        \"lines\": [\n+          {\n+            \"number\": \"7\",\n+            \"text\": \"first payload line\"\n+          },\n+          {\n+            \"number\": \"8\",\n+            \"text\": \"second payload line\"\n+          }\n+        ],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"CONTROL\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"last-extension-only\",\n+      \"path\": \"/fixture/photo.png.txt\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": true,\n+        \"lines\": [\n+          {\n+            \"number\": \"7\",\n+            \"text\": \"first payload line\"\n+          },\n+          {\n+            \"number\": \"8\",\n+            \"text\": \"second payload line\"\n+          }\n+        ],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"CONTROL\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"image-directory\",\n+      \"path\": \"/fixture/photos.png/readme.txt\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": true,\n+        \"lines\": [\n+          {\n+            \"number\": \"7\",\n+            \"text\": \"first payload line\"\n+          },\n+          {\n+            \"number\": \"8\",\n+            \"text\": \"second payload line\"\n+          }\n+        ],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"CONTROL\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"no-query-stripping\",\n+      \"path\": \"/fixture/photo.png?variant=1\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": true,\n+        \"lines\": [\n+          {\n+            \"number\": \"7\",\n+            \"text\": \"first payload line\"\n+          },\n+          {\n+            \"number\": \"8\",\n+            \"text\": \"second payload line\"\n+          }\n+        ],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"CONTROL\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"no-inherited-constructor\",\n+      \"path\": \"/fixture/photo.constructor\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": true,\n+        \"lines\": [\n+          {\n+            \"number\": \"7\",\n+            \"text\": \"first payload line\"\n+          },\n+          {\n+            \"number\": \"8\",\n+            \"text\": \"second payload line\"\n+          }\n+        ],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"CONTROL\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"no-inherited-toString\",\n+      \"path\": \"/fixture/photo.toString\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": true,\n+        \"lines\": [\n+          {\n+            \"number\": \"7\",\n+            \"text\": \"first payload line\"\n+          },\n+          {\n+            \"number\": \"8\",\n+            \"text\": \"second payload line\"\n+          }\n+        ],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"CONTROL\",\n+      \"output\": \"    7\\u2192first payload line\\n    8\\u2192second payload line\"\n+    },\n+    {\n+      \"id\": \"pending-image\",\n+      \"path\": \"/fixture/photo.png\",\n+      \"state\": \"running\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"CONTROL\"\n+    },\n+    {\n+      \"id\": \"empty-image\",\n+      \"path\": \"/fixture/photo.png\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"CONTROL\",\n+      \"output\": \"\"\n+    },\n+    {\n+      \"id\": \"failed-image\",\n+      \"path\": \"/fixture/photo.png\",\n+      \"state\": \"error\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"CONTROL\",\n+      \"output\": \"Cannot read image\"\n+    },\n+    {\n+      \"id\": \"failed-text\",\n+      \"path\": \"/fixture/readme.txt\",\n+      \"state\": \"error\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"CONTROL\",\n+      \"output\": \"Cannot read text\"\n+    },\n+    {\n+      \"id\": \"whitespace-image\",\n+      \"path\": \"/fixture/photo.png\",\n+      \"state\": \"done\",\n+      \"offset\": 7,\n+      \"expected\": {\n+        \"expandable\": false,\n+        \"lines\": [],\n+        \"errorRows\": 0\n+      },\n+      \"baseline_prediction\": \"CONTROL\",\n+      \"output\": \"  \\n  \"\n+    }\n+  ]\n+}",
+      "previous_filename": null,
+      "patch_truncated": false
+    },
+    {
+      "filename": "src/features/chat/readImageDisclosure.test.ts",
+      "status": "added",
+      "additions": 148,
+      "deletions": 0,
+      "patch": "@@ -0,0 +1,148 @@\n+import assert from \"node:assert/strict\";\n+import { createHash } from \"node:crypto\";\n+import { readFileSync } from \"node:fs\";\n+import { createRequire } from \"node:module\";\n+import { test } from \"node:test\";\n+import { runInNewContext } from \"node:vm\";\n+import fixtures from \"./readImageDisclosure.inputs.json\" with { type: \"json\" };\n+import type { ToolRowProps } from \"./ToolRows.tsx\";\n+import * as tools from \"./conductorTools.ts\";\n+import * as icons from \"./toolIconData.ts\";\n+import { thinkingChipText } from \"./thinkingChip.ts\";\n+import { applyReasonPayload, reasonChat, startTurn } from \"./reason.ts\";\n+import { applyChatEvents, emptyTranscript } from \"./reducer.ts\";\n+import { buildRows } from \"./view.ts\";\n+\n+const inputBytes = readFileSync(new URL(\"./readImageDisclosure.inputs.json\", import.meta.url));\n+assert.equal(createHash(\"sha256\").update(inputBytes).digest(\"hex\"), \"adada617c0395960660e37e2c6dc48b7f9340d08811360665644dfdfd900bce9\");\n+const dependencies = createRequire(import.meta.url);\n+const React = dependencies(\"react\");\n+const { act, create } = dependencies(\"react-test-renderer\");\n+const ts = dependencies(\"typescript\");\n+type Node = {\n+  type: unknown;\n+  props: Record<string, unknown>;\n+  children: Array<Node | string>;\n+  findAll: (predicate: (node: Node) => boolean) => Node[];\n+};\n+const text = (node: Node | string): string => typeof node === \"string\" ? node : node.children.map(text).join(\"\");\n+const hasClass = (node: Node, name: string): boolean => String(node.props.className).split(\" \").includes(name);\n+const all = (root: Node, className: string): Node[] => root.findAll((node) => typeof node.type === \"string\" && hasClass(node, className));\n+const one = (root: Node, className: string): Node => {\n+  const matches = all(root, className);\n+  assert.equal(matches.length, 1, className);\n+  const match = matches[0];\n+  assert.ok(match);\n+  return match;\n+};\n+const unrelated = () => { throw new Error(\"Unrelated Read disclosure dependency executed\"); };\n+const production: Record<string, unknown> = {};\n+const compiled = ts.transpileModule(readFileSync(new URL(\"./ToolRows.tsx\", import.meta.url), \"utf8\"), {\n+  fileName: \"ToolRows.tsx\",\n+  compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022 },\n+  reportDiagnostics: true,\n+});\n+assert.equal(compiled.diagnostics?.filter((diagnostic: { category: number }) => diagnostic.category === ts.DiagnosticCategory.Error).length, 0);\n+runInNewContext(compiled.outputText, {\n+  exports: production,\n+  require(name: string) {\n+    switch (name) {\n+      case \"react\": case \"react/jsx-runtime\": return dependencies(name);\n+      case \"./conductorTools.ts\": return tools;\n+      case \"./toolIconData.ts\": return icons;\n+      case \"./thinkingChip.ts\": return { thinkingChipText };\n+      case \"./markdown.ts\": return { highlight: () => undefined, Markdown: unrelated };\n+      case \"./LinkMenu.tsx\": return { LinkWithMenu: unrelated };\n+      case \"../../backend.ts\": return { openUrl: unrelated };\n+      default: throw new Error(`Unexpected ToolRows dependency: ${name}`);\n+    }\n+  },\n+}, { filename: \"ToolRows.tsx\" });\n+assert.ok(typeof production.ConductorToolRow === \"function\");\n+\n+for (const input of fixtures.cases) {\n+  test(`Read image disclosure gate: ${input.id}`, async () => {\n+    const chatId = `read-disclosure:${input.id}`;\n+    const at = new Date(0);\n+    const started = startTurn(reasonChat(chatId), \"Read the file\", at);\n+    const output = \"output\" in input ? input.output : undefined;\n+    const toolInput = { file_path: input.path, offset: input.offset };\n+    const step = applyReasonPayload(started.state, {\n+      chatId, type: \"tool\", id: input.id, title: \"Read file\", kind: \"read\", toolName: \"Read\",\n+      rawInput: toolInput, status: input.state === \"running\" ? \"running\" : input.state === \"error\" ? \"failed\" : \"completed\",\n+      output: output ?? null, ...(output !== undefined ? { rawResult: output } : {}), diffs: [], locations: [],\n+    }, at);\n+    const reduced = applyChatEvents(emptyTranscript(chatId), [...started.events, ...step.events]);\n+    assert.ok(reduced.ok);\n+    const assistant = buildRows(reduced.transcript).find((row) => row.kind === \"assistant\");\n+    assert.ok(assistant?.kind === \"assistant\");\n+    const part = assistant.parts.find((part) => part.kind === \"tool\");\n+    assert.ok(part?.kind === \"tool\");\n+    const call = part.call;\n+    assert.deepEqual(call.tool, { name: \"Read\", input: toolInput });\n+    assert.equal(call.status, input.state);\n+    assert.equal(call.result, output);\n+    assert.equal(call.rawResult, output);\n+    let toggles = 0;\n+    const opened: string[] = [];\n+    function Scene() {\n+      const [open, setOpen] = React.useState(false);\n+      const props: ToolRowProps = {\n+        tool: call.tool, status: call.status, result: call.result, rawResult: call.rawResult,\n+        isError: call.status === \"error\", open,\n+        onToggle: () => { toggles++; setOpen((value: boolean) => !value); },\n+        onOpenFile: (path) => { opened.push(path); },\n+      };\n+      return React.createElement(production.ConductorToolRow, props);\n+    }\n+    let renderer: ReturnType<typeof create>;\n+    await act(async () => { renderer = create(React.createElement(Scene)); });\n+    try {\n+      const row = one(renderer.root, \"oc-tool\");\n+      const header = one(row, \"oc-tool-head\");\n+      assert.equal(row.props[\"data-status\"], input.state);\n+      assert.equal(all(row, \"oc-tool-content\").length, 0);\n+      const handler = header.props.onClick;\n+      assert.equal(typeof handler === \"function\", input.expected.expandable, `READ_IMAGE_DISCLOSURE_${input.id}`);\n+      assert.equal(header.props.role, input.expected.expandable ? \"button\" : undefined);\n+      assert.equal(header.props[\"aria-expanded\"], input.expected.expandable ? false : undefined);\n+      assert.equal(hasClass(header, \"opens\"), input.expected.expandable);\n+      const lines = () => all(row, \"oc-code-line\").map((line) => {\n+        const value = line.children[1];\n+        assert.ok(value !== undefined);\n+        return { number: text(one(line, \"oc-code-ln\")), text: text(value) };\n+      });\n+      if (typeof handler === \"function\") {\n+        await act(async () => { handler(); });\n+        assert.equal(one(row, \"oc-tool-head\").props[\"aria-expanded\"], true);\n+        assert.deepEqual(lines(), input.expected.lines);\n+        await act(async () => { handler(); });\n+        assert.equal(all(row, \"oc-tool-content\").length, 0);\n+        await act(async () => { handler(); });\n+        assert.deepEqual(lines(), input.expected.lines);\n+        await act(async () => { handler(); });\n+        assert.equal(toggles, 4);\n+      } else {\n+        assert.deepEqual(lines(), []);\n+        assert.equal(toggles, 0);\n+      }\n+      assert.equal(all(renderer.root, \"oc-error-chip\").length, input.expected.errorRows);\n+      const badges = all(row, \"oc-file-badge\");\n+      assert.equal(badges.length, input.path ? 1 : 0);\n+      const badge = badges[0];\n+      if (badge) {\n+        assert.equal(badge.props.title, input.path);\n+        const openFile = badge.props.onClick;\n+        assert.ok(typeof openFile === \"function\");\n+        let stopped = false;\n+        await act(async () => { openFile({ stopPropagation: () => { stopped = true; } }); });\n+        assert.equal(stopped, true);\n+        assert.deepEqual(opened, [input.path]);\n+      }\n+      assert.equal(all(row, \"oc-tool-content\").length, 0);\n+      assert.equal(toggles, input.expected.expandable ? 4 : 0, \"file badge does not toggle disclosure\");\n+      assert.equal(call.result, output, \"flattened output stays unchanged\");\n+      assert.equal(call.rawResult, output, \"raw output stays unchanged\");\n+    } finally { await act(async () => { renderer.unmount(); }); }\n+  });\n+}",
+      "previous_filename": null,
+      "patch_truncated": false
+    }
+  ],
+  "files_page": {
+    "offset": 0,
+    "limit": 4,
+    "returned": 3,
+    "total": 3,
+    "next_offset": null,
+    "provider_truncated": false
+  }
+}

@@ -1,0 +1,288 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: branch names read as sentences
+ok 1 - branch names read as sentences
+  ---
+  duration_ms: 0.93324
+  type: 'test'
+  ...
+# Subtest: a user-set name wins over the PR title and branch
+ok 2 - a user-set name wins over the PR title and branch
+  ---
+  duration_ms: 0.155694
+  type: 'test'
+  ...
+# Subtest: the PR title wins over the branch
+ok 3 - the PR title wins over the branch
+  ---
+  duration_ms: 0.125584
+  type: 'test'
+  ...
+# Subtest: the branch is shown, prettified, unless it is the target branch
+ok 4 - the branch is shown, prettified, unless it is the target branch
+  ---
+  duration_ms: 0.119058
+  type: 'test'
+  ...
+# Subtest: a stored workspace_name comes before the PR title even when not user-set ($V: if(e)return e)
+ok 5 - a stored workspace_name comes before the PR title even when not user-set ($V: if(e)return e)
+  ---
+  duration_ms: 0.187912
+  type: 'test'
+  ...
+# Subtest: the configured branch prefix is stripped before prettifying (pGe / zcs)
+ok 6 - the configured branch prefix is stripped before prettifying (pGe / zcs)
+  ---
+  duration_ms: 0.101613
+  type: 'test'
+  ...
+# Subtest: the target is the workspace's intended_target_branch, main when unset
+ok 7 - the target is the workspace's intended_target_branch, main when unset
+  ---
+  duration_ms: 0.180795
+  type: 'test'
+  ...
+# Subtest: rows are listed newest first, falling back to creation time
+ok 8 - rows are listed newest first, falling back to creation time
+  ---
+  duration_ms: 1.14715
+  type: 'test'
+  ...
+# (node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted branch editor requests the shipped new-password autocomplete hint
+ok 9 - mounted branch editor requests the shipped new-password autocomplete hint
+  ---
+  duration_ms: 182.206645
+  type: 'test'
+  ...
+# Subtest: mounted branch editor closes on Enter before rename and marker finish
+ok 10 - mounted branch editor closes on Enter before rename and marker finish
+  ---
+  duration_ms: 39.624121
+  type: 'test'
+  ...
+# Subtest: mounted branch editor closes on blur before rename and marker finish
+ok 11 - mounted branch editor closes on blur before rename and marker finish
+  ---
+  duration_ms: 150.048539
+  type: 'test'
+  ...
+# Subtest: mounted submitted branch editor stays closed on rename rejection and permits a retry
+ok 12 - mounted submitted branch editor stays closed on rename rejection and permits a retry
+  ---
+  duration_ms: 55.377177
+  type: 'test'
+  ...
+# Subtest: mounted branch editor preserves empty, unchanged and Escape controls without I/O
+ok 13 - mounted branch editor preserves empty, unchanged and Escape controls without I/O
+  ---
+  duration_ms: 48.82633
+  type: 'test'
+  ...
+# Subtest: mounted branch editor restores caret 8 after queued change of feature/ab
+ok 14 - mounted branch editor restores caret 8 after queued change of feature/ab
+  ---
+  duration_ms: 45.09301
+  type: 'test'
+  ...
+# Subtest: mounted branch editor restores caret 9 after queued change of feature/a!!b
+ok 15 - mounted branch editor restores caret 9 after queued change of feature/a!!b
+  ---
+  duration_ms: 49.318557
+  type: 'test'
+  ...
+# Subtest: mounted branch editor restores caret 0 after queued change of feature/ab
+ok 16 - mounted branch editor restores caret 0 after queued change of feature/ab
+  ---
+  duration_ms: 75.374715
+  type: 'test'
+  ...
+# Subtest: archived header renders only a static branch label; active headers retain Rename
+ok 17 - archived header renders only a static branch label; active headers retain Rename
+  ---
+  duration_ms: 189.436267
+  type: 'test'
+  ...
+# Subtest: archived header ignores edit, Copy/Rename shortcuts, Enter and blur without side effects
+ok 18 - archived header ignores edit, Copy/Rename shortcuts, Enter and blur without side effects
+  ---
+  duration_ms: 0.676939
+  type: 'test'
+  ...
+# Subtest: review workspace retains the active branch editor
+ok 19 - review workspace retains the active branch editor
+  ---
+  duration_ms: 0.291932
+  type: 'test'
+  ...
+# Subtest: inline edit starts with the full branch and sanitizes only disallowed runs
+ok 20 - inline edit starts with the full branch and sanitizes only disallowed runs
+  ---
+  duration_ms: 0.14488
+  type: 'test'
+  ...
+# Subtest: Enter followed by blur submits once, persists user-set and dispatches branch only
+ok 21 - Enter followed by blur submits once, persists user-set and dispatches branch only
+  ---
+  duration_ms: 0.248211
+  type: 'test'
+  ...
+# Subtest: blur submits; Escape stops propagation and cancels without blur mutation
+ok 22 - blur submits; Escape stops propagation and cancels without blur mutation
+  ---
+  duration_ms: 0.167414
+  type: 'test'
+  ...
+# Subtest: empty input stays open, unchanged input exits, neither mutates
+ok 23 - empty input stays open, unchanged input exits, neither mutates
+  ---
+  duration_ms: 0.099047
+  type: 'test'
+  ...
+# Subtest: copy writes the full original branch, not the current draft; C and R work
+ok 24 - copy writes the full original branch, not the current draft; C and R work
+  ---
+  duration_ms: 0.118994
+  type: 'test'
+  ...
+# Subtest: missing and detached branches never enter editing or rename
+ok 25 - missing and detached branches never enter editing or rename
+  ---
+  duration_ms: 0.21171
+  type: 'test'
+  ...
+# Subtest: pending blocks edits and repeated submits; rename error resets pending truthfully
+ok 26 - pending blocks edits and repeated submits; rename error resets pending truthfully
+  ---
+  duration_ms: 0.154827
+  type: 'test'
+  ...
+# Subtest: marker failure does not hide a successful Git branch rename
+ok 27 - marker failure does not hide a successful Git branch rename
+  ---
+  duration_ms: 0.225266
+  type: 'test'
+  ...
+# Subtest: in-flight rename keeps its workspace identity separate from another header
+ok 28 - in-flight rename keeps its workspace identity separate from another header
+  ---
+  duration_ms: 0.131136
+  type: 'test'
+  ...
+# Subtest: clipboard rejection is reported without renaming
+ok 29 - clipboard rejection is reported without renaming
+  ---
+  duration_ms: 0.153046
+  type: 'test'
+  ...
+# (node:100) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: every city is a unique, valid workspace and branch name
+ok 30 - every city is a unique, valid workspace and branch name
+  ---
+  duration_ms: 3.233436
+  type: 'test'
+  ...
+# Subtest: rarity tiers are drawn in proportion to their weights
+ok 31 - rarity tiers are drawn in proportion to their weights
+  ---
+  duration_ms: 121.12095
+  type: 'test'
+  ...
+# Subtest: pickCity skips empty tiers and returns null for no candidates
+ok 32 - pickCity skips empty tiers and returns null for no candidates
+  ---
+  duration_ms: 0.481145
+  type: 'test'
+  ...
+# Subtest: uniqueName appends -v1, -v2 ... and ignores case
+ok 33 - uniqueName appends -v1, -v2 ... and ignores case
+  ---
+  duration_ms: 0.207211
+  type: 'test'
+  ...
+# Subtest: generated names are distinct, avoid taken names, and are reproducible
+ok 34 - generated names are distinct, avoid taken names, and are reproducible
+  ---
+  duration_ms: 0.800588
+  type: 'test'
+  ...
+# Subtest: cities are reused with a version suffix once all are taken
+ok 35 - cities are reused with a version suffix once all are taken
+  ---
+  duration_ms: 0.35602
+  type: 'test'
+  ...
+# Subtest: branch prefix follows branch_prefix_type and branch_prefix
+ok 36 - branch prefix follows branch_prefix_type and branch_prefix
+  ---
+  duration_ms: 0.329793
+  type: 'test'
+  ...
+# Subtest: workspace name validation
+ok 37 - workspace name validation
+  ---
+  duration_ms: 0.169038
+  type: 'test'
+  ...
+# Subtest: branch name validation
+ok 38 - branch name validation
+  ---
+  duration_ms: 0.333407
+  type: 'test'
+  ...
+# Subtest: slugify
+ok 39 - slugify
+  ---
+  duration_ms: 0.388928
+  type: 'test'
+  ...
+# Subtest: initialNaming marks generated names as placeholders and typed ones as user-set
+ok 40 - initialNaming marks generated names as placeholders and typed ones as user-set
+  ---
+  duration_ms: 0.27395
+  type: 'test'
+  ...
+# Subtest: first message renames placeholder branch and city name
+ok 41 - first message renames placeholder branch and city name
+  ---
+  duration_ms: 0.208968
+  type: 'test'
+  ...
+# Subtest: first message keeps the city name when auto-rename is off
+ok 42 - first message keeps the city name when auto-rename is off
+  ---
+  duration_ms: 0.088741
+  type: 'test'
+  ...
+# Subtest: first message never overrides user-set names
+ok 43 - first message never overrides user-set names
+  ---
+  duration_ms: 0.088976
+  type: 'test'
+  ...
+# Subtest: renamed branch stays unique and a renamed-away placeholder is left alone
+ok 44 - renamed branch stays unique and a renamed-away placeholder is left alone
+  ---
+  duration_ms: 0.107527
+  type: 'test'
+  ...
+# Subtest: backend prefix info resolves to the branch prefix
+ok 45 - backend prefix info resolves to the branch prefix
+  ---
+  duration_ms: 0.135166
+  type: 'test'
+  ...
+1..45
+# tests 45
+# suites 0
+# pass 45
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3362.756991

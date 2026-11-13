@@ -1,0 +1,14 @@
+{
+  "stage": "install",
+  "command": "env NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 180s npm ci --ignore-scripts --no-audit --no-fund",
+  "started_at": "2026-11-12T12:57:50.087370+00:00",
+  "head": "f94b065a24ca5fa6ef166d3efef51a02467b65b0",
+  "hashes": {
+    "src/features/chat/terminalOutputRawResult.test.ts": "cf4cd97bd5b3d3928dc47128a501f354d4f04dbf0fe8d5347ae325fbbd64a55a",
+    "src/features/chat/terminalOutputRawResult.inputs.json": "f74e08121b76dc08240926a0054f3aca5349d50e46856b18a4334683b9cac54c",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a"
+  },
+  "exit_code": 0,
+  "elapsed_seconds": 9.972,
+  "ended_at": "2026-11-12T12:58:00.061145+00:00"
+}

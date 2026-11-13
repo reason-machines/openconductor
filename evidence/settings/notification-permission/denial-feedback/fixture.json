@@ -1,0 +1,10 @@
+[
+  {"id":"disable bypasses denied permission","toggle":false,"browser_permission":"denied","expected_requests":0,"expected_checks":0,"expected_writes":[false],"expected_errors":[]},
+  {"id":"already granted enables without feedback","toggle":true,"browser_permission":"granted","expected_requests":0,"expected_checks":0,"expected_writes":[true],"expected_errors":[]},
+  {"id":"native grant enables without feedback","toggle":true,"browser_permission":"default","native_is_granted":true,"expected_requests":0,"expected_checks":1,"expected_writes":[true],"expected_errors":[]},
+  {"id":"granted request enables without feedback","toggle":true,"browser_permission":"default","native_is_granted":false,"request_result":"granted","expected_requests":1,"expected_checks":1,"expected_writes":[true],"expected_errors":[]},
+  {"id":"denied request reports one error and writes nothing","toggle":true,"browser_permission":"default","native_is_granted":false,"request_result":"denied","expected_requests":1,"expected_checks":1,"expected_writes":[],"expected_errors":[["error","Notification permission not granted"]]},
+  {"id":"previously denied reports one error and writes nothing","toggle":true,"browser_permission":"denied","request_result":"denied","expected_requests":1,"expected_checks":0,"expected_writes":[],"expected_errors":[["error","Notification permission not granted"]]},
+  {"id":"pending denial is silent until settlement","toggle":true,"browser_permission":"default","native_is_granted":false,"request_pending":true,"request_result":"denied","concurrent_update":true,"expected_requests":1,"expected_checks":1,"expected_writes":[],"expected_errors":[["error","Notification permission not granted"]]},
+  {"id":"pending grant preserves latest settings without feedback","toggle":true,"browser_permission":"default","native_is_granted":false,"request_pending":true,"request_result":"granted","concurrent_update":true,"expected_requests":1,"expected_checks":1,"expected_writes":[true],"expected_errors":[]}
+]

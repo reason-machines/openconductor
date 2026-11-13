@@ -1,0 +1,29 @@
+{
+  "phase": "adjacent",
+  "command": [
+    "nice",
+    "-n19",
+    "timeout",
+    "--kill-after=5s",
+    "90s",
+    "node",
+    "--max-old-space-size=768",
+    "--experimental-strip-types",
+    "--test",
+    "--test-concurrency=1",
+    "src/features/chat/composerQueueFocus.test.ts",
+    "src/features/chat/composerFirstVisualLine.test.ts",
+    "src/features/chat/composerSlashDirectory.test.ts",
+    "src/features/chat/composerMinimize.test.ts",
+    "src/features/chat/composerAsyncSubmit.test.ts",
+    "src/features/chat/composerCancelFocus.test.ts"
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 5.073470105009619,
+  "head": "30342a5aa5b2d798b345e479c54c415c50f40473",
+  "baseline_main": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+  "fixture_sha256": "f5813de44aea1fbf56358415e754c7620ad908da00068491e7ed0f94eb6e72bf",
+  "product_source_sha256": "0664d45958836e58b36f847b6ba71cdeec37800a1f54a40d8287769c26fd9a2e",
+  "timing": "Python monotonic; not a performance measurement",
+  "source_override": "unset"
+}

@@ -1,0 +1,248 @@
+{
+  "author": "Conductor Rebuild",
+  "computer_id": "00637189-5c55-416e-b457-ed7419fb739a",
+  "grant_message_id": "ed54cf3d-ac51-4181-a65f-e8418947bb40",
+  "assigned_branch": "reason/openconductor-notificati-c18e1b05",
+  "containing_main": "1286465cb69763efaa1367c49fdebc88ab4da86d",
+  "merged_head": "066ed1567f5e243d3c6c62da6a28939b78ed9443",
+  "fixed_commit": "4235d533bafe93fc82ebce194ce3b677ecca5b8a",
+  "fixture_sha256": "d6c81e973d4054aead4ffb63a63b3288aebabb0c933f569e34473a823e3e98cb",
+  "root_lock_sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+  "qualified_source_pins": [
+    {
+      "path": "src/components/CreateWorkspaceComposer.tsx",
+      "sha256": "f5556c21dd0bea700fbce5f87d5338ab247a1c3873fdccc75c6e4a0dc2c068e8",
+      "bytes": 18882
+    },
+    {
+      "path": "src/components/useBranchPrefix.ts",
+      "sha256": "b2c8c2b543f50d81d580a93eb1b0456812b3f29dfc7c94601b3bd52de2a0c28a",
+      "bytes": 1064
+    },
+    {
+      "path": "src/home/createFirstWorkspace.ts",
+      "sha256": "215f50301d3042de3dcd5b98a29b8f4eba2a113f054aad4822a739c5474c5ecf",
+      "bytes": 2141
+    },
+    {
+      "path": "src/home/firstWorkspace.ts",
+      "sha256": "6c26fb5f748ec2c66503a1798f890e24c11e2f21dce879987ce14af3115a6b95",
+      "bytes": 2694
+    },
+    {
+      "path": "src/settings/ConfigSyncDialog.tsx",
+      "sha256": "090b22ec9a11250bbbc680c5603c8e452fe03c84bf75055bc88aec0985f439e8",
+      "bytes": 7484
+    },
+    {
+      "path": "src/settings/GeneralPage.tsx",
+      "sha256": "9ea8990dbf1037d8f55ca2fe2a9fff33eee070dfd7a93b0c0c4fdccaa909d70b",
+      "bytes": 11258
+    },
+    {
+      "path": "src/settings/GitPage.tsx",
+      "sha256": "60aeff4b79509b944d544ec2a4d8e72ae3f69b3662ccfb3dddfdad6fedd902fa",
+      "bytes": 7641
+    },
+    {
+      "path": "src/settings/SettingsView.tsx",
+      "sha256": "09a70e9c559eaebe074d1fe83c4c3c8af699763765933a8f91be2a93d469301f",
+      "bytes": 18843
+    },
+    {
+      "path": "src/settings/configSync.ts",
+      "sha256": "69dbee933f81f50e71cb031a7a11392dff31e82bbd39725f5c22d305491d0aac",
+      "bytes": 3738
+    },
+    {
+      "path": "src/settings/configSyncApi.ts",
+      "sha256": "7e566a5738d01c9fbcef988c2f03526c87e492850768d2149988b3bc97e6a1ef",
+      "bytes": 606
+    },
+    {
+      "path": "src/settings/configSyncHarness.cjs",
+      "sha256": "0b91715b67adbb76345f2ce2aa5ec0c131c8cd8c5542eca55f071096999565e3",
+      "bytes": 4686
+    },
+    {
+      "path": "src/settings/customPrefix.test.ts",
+      "sha256": "8b04f0fbe90ddd1d241ff2e0495263193868f27f2e4fc2c5df7e389c503b3d30",
+      "bytes": 1699
+    },
+    {
+      "path": "src/settings/customPrefixInput.test.ts",
+      "sha256": "7e378f757d7838440955733c9d1d9b907a64fd6a80b03b26768f5e7201f45e26",
+      "bytes": 4610
+    },
+    {
+      "path": "src/settings/model.ts",
+      "sha256": "9c718b4561c5f9925b5101ca941a6b1f3b017950ddf7a5231f1488659b40254f",
+      "bytes": 2300
+    },
+    {
+      "path": "src/settings/prefs.ts",
+      "sha256": "c29549a90cd52e0b69d1381fead957aec44d83ee971751bd2aee5b8a7981d663",
+      "bytes": 4731
+    },
+    {
+      "path": "src/settings/rows/RepoGitRows.tsx",
+      "sha256": "39d30b59f842848c452fa2d1e035e701d11891492b06f5269f4bc18398ba10ca",
+      "bytes": 4744
+    },
+    {
+      "path": "src/settings/types.ts",
+      "sha256": "66214090aad60a4403f7cfd5aaf0e620cf5717f5c8cd525bc86dff7dea814b6c",
+      "bytes": 8151
+    },
+    {
+      "path": "src/settings/useSettings.ts",
+      "sha256": "c1b933e09a3f8bb42dd39136e58b6ce32f14c669f180a1ad09a63cc37cc47211",
+      "bytes": 4404
+    },
+    {
+      "path": "src/workspace/api.ts",
+      "sha256": "7ffebf424d3a6cd7e6be0086d8e9dd3e14b6c41b23365f6553bbb03f9e521899",
+      "bytes": 9892
+    },
+    {
+      "path": "src/workspace/createFlow.ts",
+      "sha256": "c8c44d5552fdbf1d91ec4f65496ba820ee30cb7895c34944f228e76ce95e4a1c",
+      "bytes": 9693
+    },
+    {
+      "path": "src/workspace/naming.ts",
+      "sha256": "0f51121ec08c5b14b5f5e638e0244dd002b473cafde15ee0f19a52a19597bf5e",
+      "bytes": 12743
+    },
+    {
+      "path": "src-tauri/src/lib.rs",
+      "sha256": "a5543af825b4dd278f8fd7b53f22190c90ebfc8d436414d0b14f4a385c9d5f72",
+      "bytes": 30398
+    },
+    {
+      "path": "src-tauri/src/settings/validate.rs",
+      "sha256": "e24c044bcd53405df27e2f784235afadce5f5a138f19bc97c1aa122b8946e8bb",
+      "bytes": 5934
+    },
+    {
+      "path": "src-tauri/src/workspace/mod.rs",
+      "sha256": "4f9d6bea7998b10a6adbdbbb87dbda76f9574de913b007f0d13ae937e80c1bc3",
+      "bytes": 34250
+    },
+    {
+      "path": "src-tauri/src/workspace/naming.rs",
+      "sha256": "23ed6b387df42984a0e51d15dd9df2d3a8edff432b2ef28b0535ff2cd84110db",
+      "bytes": 4351
+    }
+  ],
+  "manifest_entries": [
+    {
+      "manifest": "evidence/settings/custom-prefix/dot-delimiter/SHA256SUMS",
+      "path": "evidence/settings/custom-prefix/dot-delimiter/compatibility-v3/customPrefixDotDelimiterV2.test.ts.txt",
+      "sha256": "8c6bbd962eb12b2fd45f5d525003d61b17c87d9683db5f2258ad7600b02c046e",
+      "bytes": 7119
+    },
+    {
+      "manifest": "evidence/settings/custom-prefix/dot-delimiter/SHA256SUMS",
+      "path": "evidence/settings/custom-prefix/dot-delimiter/README.md",
+      "sha256": "c8477abfadec9dca1bf363d8791f4314d20f5384248e69c4c00a65b11bb62584",
+      "bytes": 8101
+    },
+    {
+      "manifest": "evidence/settings/custom-prefix/dot-delimiter/SHA256SUMS",
+      "path": "evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml",
+      "sha256": "e5ba2cba5878e85564af9f5c0ff97281528356747f26dacceed8ddc31d5c2253",
+      "bytes": 453
+    },
+    {
+      "manifest": "evidence/settings/custom-prefix/dot-delimiter/SHA256SUMS",
+      "path": "evidence/settings/custom-prefix/dot-delimiter/backend/harness.rs",
+      "sha256": "92bcfae25ee96df34a6687b450e84b4690800b3b0eaa4104c645f9e1386579ef",
+      "bytes": 2858
+    },
+    {
+      "manifest": "evidence/settings/custom-prefix/dot-delimiter/SHA256SUMS",
+      "path": "evidence/settings/custom-prefix/dot-delimiter/source-preparation.json",
+      "sha256": "8c9cc7485a5a125cd0ab25f1fde6fa4fe54d87b851432af28b88dcced5f9d87f",
+      "bytes": 11840
+    },
+    {
+      "manifest": "evidence/settings/custom-prefix/dot-delimiter/SHA256SUMS",
+      "path": "evidence/settings/custom-prefix/dot-delimiter/reconciliation-v2.json",
+      "sha256": "6f6a3884a1e8e63ec87164016fcf9506b5bf95cc89cc59c40b0d0ad104ab2550",
+      "bytes": 21910
+    },
+    {
+      "manifest": "evidence/settings/custom-prefix/dot-delimiter/SHA256SUMS",
+      "path": "evidence/settings/custom-prefix/dot-delimiter/original-new10/customPrefixDotDelimiter.test.ts.txt",
+      "sha256": "8323215cfdfb705889d4f1e419c166652dfebe97e94421bab4340b535da2e5e9",
+      "bytes": 6883
+    },
+    {
+      "manifest": "evidence/settings/custom-prefix/dot-delimiter/SHA256SUMS",
+      "path": "evidence/settings/custom-prefix/dot-delimiter/original-new10/README.md",
+      "sha256": "98b12c40b85ad4d89c389d25accb9ee655045eae3c6254c0b180300554a935bf",
+      "bytes": 6265
+    },
+    {
+      "manifest": "evidence/settings/custom-prefix/dot-delimiter/SHA256SUMS",
+      "path": "evidence/settings/custom-prefix/dot-delimiter/original-new10/SHA256SUMS",
+      "sha256": "e7cf591420b8f367b41bd05c5e2a4286b434af4f5854d3d17f7396f69e56f63a",
+      "bytes": 632
+    },
+    {
+      "manifest": "evidence/settings/custom-prefix/dot-delimiter/compatibility-v3/SHA256SUMS",
+      "path": "src/settings/customPrefixDotDelimiterV3.test.ts",
+      "sha256": "d6c81e973d4054aead4ffb63a63b3288aebabb0c933f569e34473a823e3e98cb",
+      "bytes": 7142
+    },
+    {
+      "manifest": "evidence/settings/custom-prefix/dot-delimiter/compatibility-v3/SHA256SUMS",
+      "path": "evidence/settings/custom-prefix/dot-delimiter/compatibility-v3/customPrefixDotDelimiterV2.test.ts.txt",
+      "sha256": "8c6bbd962eb12b2fd45f5d525003d61b17c87d9683db5f2258ad7600b02c046e",
+      "bytes": 7119
+    },
+    {
+      "manifest": "evidence/settings/custom-prefix/dot-delimiter/compatibility-v3/SHA256SUMS",
+      "path": "evidence/settings/custom-prefix/dot-delimiter/compatibility-v3/mapping.json",
+      "sha256": "9226a6886c3db7ea01dcfd7074dca7c8c09884b4fcfac5fdc991eb511ec0361a",
+      "bytes": 7365
+    },
+    {
+      "manifest": "evidence/settings/custom-prefix/dot-delimiter/compatibility-v3/SHA256SUMS",
+      "path": "evidence/settings/custom-prefix/dot-delimiter/compatibility-v3/README.md",
+      "sha256": "9afa4188ed916f83eda4e81befd41e4e0bba849f65ff05a186f53636c7b81e67",
+      "bytes": 2779
+    }
+  ],
+  "archives": [
+    {
+      "path": "e2e-artifacts/dot-prefix-c18/dot-prefix-c18-preparation.tar.gz",
+      "bytes": 9902,
+      "sha256": "7d26f874da43b677f434acde0b8c87ccf86111142e51f0cad7bd5b60d7ab9f00"
+    },
+    {
+      "path": "e2e-artifacts/dot-prefix-c18/dot-prefix-new13-compatibility-v3-source.tar.gz",
+      "bytes": 39716,
+      "sha256": "a56d4d31476708b2e9fb4fc5d46b87ca4e95f2d97e787c81dc90e30563ea52da"
+    },
+    {
+      "path": "e2e-artifacts/dot-prefix-c18/dot-prefix-new13-source-v2.tar.gz",
+      "bytes": 16513,
+      "sha256": "9e8246909f99c8754e31f1e885ab7496dde4bb8f0aa7655164191bbd98bd4bec"
+    }
+  ],
+  "models": [
+    {
+      "path": "src/settings/model.ts",
+      "fixed_sha256": "a1f5436fc5ccd1c426ed5d8b21ea91efff327a9aafd4c7e692864c24f9de5da7",
+      "baseline_sha256": "9c718b4561c5f9925b5101ca941a6b1f3b017950ddf7a5231f1488659b40254f"
+    },
+    {
+      "path": "src/settings/model.test.ts",
+      "fixed_sha256": "c580502edb0cdbc7d25712a71d57393b0a2274097b06d70fa98678a291f7f896",
+      "baseline_sha256": "3de6ef64039190449ab2c527893a71854a9bf3f9b706dcdaa36910251261b0d2"
+    }
+  ],
+  "scope": "FRONTEND corrective only; no Rust/native/provider/package/install admission"
+}

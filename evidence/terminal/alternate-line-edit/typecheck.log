@@ -1,0 +1,5 @@
+(node:51) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> openconductor@0.1.0 typecheck
+> tsc --noEmit

@@ -1,0 +1,278 @@
+TAP version 13
+# (node:100) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Run start does not publish A's late error in B
+ok 1 - actual Run start does not publish A's late error in B
+  ---
+  duration_ms: 405.774353
+  type: 'test'
+  ...
+# Subtest: actual Run start preserves B's own error when an older A command rejects
+ok 2 - actual Run start preserves B's own error when an older A command rejects
+  ---
+  duration_ms: 174.456064
+  type: 'test'
+  ...
+# Subtest: actual Run start keeps same-workspace errors and exact command identity
+ok 3 - actual Run start keeps same-workspace errors and exact command identity
+  ---
+  duration_ms: 120.83374
+  type: 'test'
+  ...
+# Subtest: actual Run stop does not publish A's late error in B
+ok 4 - actual Run stop does not publish A's late error in B
+  ---
+  duration_ms: 106.226916
+  type: 'test'
+  ...
+# Subtest: actual Run stop preserves B's own error when an older A command rejects
+ok 5 - actual Run stop preserves B's own error when an older A command rejects
+  ---
+  duration_ms: 88.699052
+  type: 'test'
+  ...
+# Subtest: actual Run stop keeps same-workspace errors and exact command identity
+ok 6 - actual Run stop keeps same-workspace errors and exact command identity
+  ---
+  duration_ms: 87.982739
+  type: 'test'
+  ...
+# Subtest: actual Run pick does not publish A's late error in B
+ok 7 - actual Run pick does not publish A's late error in B
+  ---
+  duration_ms: 83.379783
+  type: 'test'
+  ...
+# Subtest: actual Run pick preserves B's own error when an older A command rejects
+ok 8 - actual Run pick preserves B's own error when an older A command rejects
+  ---
+  duration_ms: 76.523627
+  type: 'test'
+  ...
+# Subtest: actual Run pick keeps same-workspace errors and exact command identity
+ok 9 - actual Run pick keeps same-workspace errors and exact command identity
+  ---
+  duration_ms: 64.489303
+  type: 'test'
+  ...
+# Subtest: actual Stop Dev preserves a replacement Test behind an unrefreshed status snapshot
+ok 10 - actual Stop Dev preserves a replacement Test behind an unrefreshed status snapshot
+  ---
+  duration_ms: 70.508449
+  type: 'test'
+  ...
+# Subtest: actual Stop Dev still stops Dev and preserves another workspace
+ok 11 - actual Stop Dev still stops Dev and preserves another workspace
+  ---
+  duration_ms: 86.046243
+  type: 'test'
+  ...
+# (node:108) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Run panel isolates detected preview URLs and delayed snapshots across busy Dev to Test
+ok 12 - actual Run panel isolates detected preview URLs and delayed snapshots across busy Dev to Test
+  ---
+  duration_ms: 334.04615
+  type: 'test'
+  ...
+# Subtest: actual Run panel ignores obsolete output snapshots after switching workspaces with Dev busy
+ok 13 - actual Run panel ignores obsolete output snapshots after switching workspaces with Dev busy
+  ---
+  duration_ms: 125.212784
+  type: 'test'
+  ...
+# Subtest: actual Run panel ignores queued output delivery from a retired workspace subscription
+ok 14 - actual Run panel ignores queued output delivery from a retired workspace subscription
+  ---
+  duration_ms: 106.358521
+  type: 'test'
+  ...
+# Subtest: actual Run panel stops only the displayed busy Dev and keeps the picked Test
+ok 15 - actual Run panel stops only the displayed busy Dev and keeps the picked Test
+  ---
+  duration_ms: 87.956208
+  type: 'test'
+  ...
+# Subtest: actual Run panel returns to the picked Test after the displayed Dev exits naturally
+ok 16 - actual Run panel returns to the picked Test after the displayed Dev exits naturally
+  ---
+  duration_ms: 108.722598
+  type: 'test'
+  ...
+# Subtest: actual Run panel observes quiet queued Test admission after the early Setup completion refresh
+ok 17 - actual Run panel observes quiet queued Test admission after the early Setup completion refresh
+  ---
+  duration_ms: 101.387622
+  type: 'test'
+  ...
+# Subtest: actual Run panel observes quiet automatic Dev admission without another start action
+ok 18 - actual Run panel observes quiet automatic Dev admission without another start action
+  ---
+  duration_ms: 80.354006
+  type: 'test'
+  ...
+# Subtest: actual Run panel ignores foreign admission and reads current status rather than trusting its payload
+ok 19 - actual Run panel ignores foreign admission and reads current status rather than trusting its payload
+  ---
+  duration_ms: 73.071867
+  type: 'test'
+  ...
+# Subtest: actual Run panel observes natural exit 0, keeps output and restarts without Stop IPC
+ok 20 - actual Run panel observes natural exit 0, keeps output and restarts without Stop IPC
+  ---
+  duration_ms: 83.138183
+  type: 'test'
+  ...
+# Subtest: actual Run panel observes natural exit 7, keeps output and restarts without Stop IPC
+ok 21 - actual Run panel observes natural exit 7, keeps output and restarts without Stop IPC
+  ---
+  duration_ms: 72.007203
+  type: 'test'
+  ...
+# Subtest: actual Run panel retains the explicitly picked task after its natural completion
+ok 22 - actual Run panel retains the explicitly picked task after its natural completion
+  ---
+  duration_ms: 66.661704
+  type: 'test'
+  ...
+# Subtest: actual Run panel ignores completion from another workspace
+ok 23 - actual Run panel ignores completion from another workspace
+  ---
+  duration_ms: 66.078121
+  type: 'test'
+  ...
+# Subtest: actual Run panel reads current status instead of replacing a live run with a completion payload
+ok 24 - actual Run panel reads current status instead of replacing a live run with a completion payload
+  ---
+  duration_ms: 77.341972
+  type: 'test'
+  ...
+# (node:116) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Run panel restores a workspace's nondefault history without starting a task
+ok 25 - actual Run panel restores a workspace's nondefault history without starting a task
+  ---
+  duration_ms: 314.730053
+  type: 'test'
+  ...
+# Subtest: actual Run panel restores each workspace history through A to B to A
+ok 26 - actual Run panel restores each workspace history through A to B to A
+  ---
+  duration_ms: 127.562016
+  type: 'test'
+  ...
+# Subtest: actual Run panel skips deleted history IDs before selecting a configured task
+ok 27 - actual Run panel skips deleted history IDs before selecting a configured task
+  ---
+  duration_ms: 109.568495
+  type: 'test'
+  ...
+# Subtest: actual Run panel falls back to Dev when all historical tasks were removed
+ok 28 - actual Run panel falls back to Dev when all historical tasks were removed
+  ---
+  duration_ms: 111.075421
+  type: 'test'
+  ...
+# Subtest: actual Run panel keeps a busy task projected over an idle historical selection
+ok 29 - actual Run panel keeps a busy task projected over an idle historical selection
+  ---
+  duration_ms: 87.031926
+  type: 'test'
+  ...
+# Subtest: actual Run panel keeps default selection inert when workspace history is empty
+ok 30 - actual Run panel keeps default selection inert when workspace history is empty
+  ---
+  duration_ms: 429.310986
+  type: 'test'
+  ...
+# (node:124) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: display projection yields an idle selection to the busy workspace task without changing the selection
+ok 31 - display projection yields an idle selection to the busy workspace task without changing the selection
+  ---
+  duration_ms: 0.652046
+  type: 'test'
+  ...
+# Subtest: display projection treats Spotlight as a task rather than changing selection policy
+ok 32 - display projection treats Spotlight as a task rather than changing selection policy
+  ---
+  duration_ms: 0.127685
+  type: 'test'
+  ...
+# Subtest: idle: Start <label> and Test your changes here; Spotlight and no task have their own wording
+ok 33 - idle: Start <label> and Test your changes here; Spotlight and no task have their own wording
+  ---
+  duration_ms: 1.149234
+  type: 'test'
+  ...
+# Subtest: pending lines show only before any output; a task that ran shows its output
+ok 34 - pending lines show only before any output; a task that ran shows its output
+  ---
+  duration_ms: 0.267372
+  type: 'test'
+  ...
+# Subtest: header: Run <label> when idle, Stop <label> while busy, Stopping... while it stops
+ok 35 - header: Run <label> when idle, Stop <label> while busy, Stopping... while it stops
+  ---
+  duration_ms: 0.204947
+  type: 'test'
+  ...
+# (node:132) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Run menu starts nondefault Test once while Dev is shown
+ok 36 - actual Run menu starts nondefault Test once while Dev is shown
+  ---
+  duration_ms: 465.467095
+  type: 'test'
+  ...
+# Subtest: actual Run menu switches tasks without starting the previously shown task
+ok 37 - actual Run menu switches tasks without starting the previously shown task
+  ---
+  duration_ms: 205.591521
+  type: 'test'
+  ...
+# Subtest: actual Run menu starts Spotlight through Spotlight IPC, not the shown script
+ok 38 - actual Run menu starts Spotlight through Spotlight IPC, not the shown script
+  ---
+  duration_ms: 153.057567
+  type: 'test'
+  ...
+# Subtest: actual Run menu Configure opens settings without starting a task
+ok 39 - actual Run menu Configure opens settings without starting a task
+  ---
+  duration_ms: 159.280417
+  type: 'test'
+  ...
+# Subtest: actual primary Run retains its command and Stop targets the displayed task
+ok 40 - actual primary Run retains its command and Stop targets the displayed task
+  ---
+  duration_ms: 148.005409
+  type: 'test'
+  ...
+# Subtest: actual primary Run uses the explicit task last picked in the menu
+ok 41 - actual primary Run uses the explicit task last picked in the menu
+  ---
+  duration_ms: 164.010656
+  type: 'test'
+  ...
+# Subtest: actual primary Spotlight Stop and Start retain their commands after a menu pick
+ok 42 - actual primary Spotlight Stop and Start retain their commands after a menu pick
+  ---
+  duration_ms: 191.613499
+  type: 'test'
+  ...
+# Subtest: actual Run menu surfaces a rejected start through the existing panel error
+ok 43 - actual Run menu surfaces a rejected start through the existing panel error
+  ---
+  duration_ms: 95.424884
+  type: 'test'
+  ...
+1..43
+# tests 43
+# suites 0
+# pass 43
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7011.740889

@@ -5,6 +5,7 @@ import { resolve } from "node:path";
 import { test } from "node:test";
 import { runInNewContext } from "node:vm";
 import * as comments from "./comments.ts";
+import { subscribeReviewComments } from "./commentStore.ts";
 import * as navigation from "./nav.ts";
 
 const dependencies = createRequire(import.meta.url);
@@ -34,6 +35,7 @@ function fixture(initial: string) {
     "../../keybindings/KeybindingsProvider.tsx": { useKeybindings: unexpected },
     "./commentsApi.ts": { commentStoreFor: unexpected },
     "./comments.ts": comments,
+    "./commentStore.ts": { subscribeReviewComments },
     "./commentMarkdown.ts": { CommentMarkdown: unexpected },
     "../chat/chat.css": {},
     "./comments-github.css": {},

@@ -18,6 +18,7 @@ type Notify = (kind: "info" | "error", message: string) => void;
 export interface ChangesListProps {
   diff: WorkspaceDiff;
   actions?: (files: FileDiff[]) => ReactNode;
+  commentCounts?: ReadonlyMap<string, number>;
   worktree?: string | null;
   activeFilePath?: string;
   emptyAction?: ReactNode;
@@ -53,7 +54,7 @@ function copy(text: string, label: string, notify?: Notify) {
   copyText(text).then(() => notify?.("info", `Copied ${label} to clipboard`), () => notify?.("error", "Failed to copy to clipboard"));
 }
 
-export function ChangesList({ diff, actions, worktree, activeFilePath, emptyAction, filter, notify, view = "flat", collapsed, toggleDirectory }: ChangesListProps) {
+export function ChangesList({ diff, actions, commentCounts, worktree, activeFilePath, emptyAction, filter, notify, view = "flat", collapsed, toggleDirectory }: ChangesListProps) {
   const { opts, load, files, totals, current } = diff;
   const filtering = filter ? filterActive(filter.open, filter.query) : false;
   const shown = filter ? filterChangedFiles(files, filter.query) : files;
@@ -99,7 +100,7 @@ export function ChangesList({ diff, actions, worktree, activeFilePath, emptyActi
               {view === "tree" && <TreeGuides depth={row.depth} nextDepth={nextDepth} offset={8 + row.depth * 12} />}
               <button ref={(row) => { if (row) fileRows.current.set(f.path, row); else fileRows.current.delete(f.path); }} className={`oc-change${diff.isViewed(f) ? " viewed" : ""}`} aria-current={files[current]?.path === f.path} onClick={() => diff.openPath(f.path)} title={`Open ${f.path}`}>
                 <span className="name">{f.status === "renamed" && f.old_path && <><PathParts path={renameDisplayPath({ oldPath: f.old_path, path: f.path, view })} /><span className="oc-change-rename-arrow">→</span></>}<PathParts path={row.name} /></span>
-                <span className="oc-change-meta">{typeof opts.scope !== "object" && diff.uncommittedPaths.has(f.path) && <span className="oc-change-uncommitted">U</span>}<ChangeCounts additions={f.additions} deletions={f.deletions} /><ChangeStatus status={f.status} /></span>
+                <span className="oc-change-meta">{(commentCounts?.get(f.path) ?? 0) > 0 && <span className="oc-change-comment-count" aria-label={`${commentCounts?.get(f.path)} ${commentCounts?.get(f.path) === 1 ? "comment" : "comments"}`}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z" /></svg>{commentCounts?.get(f.path)}</span>}{typeof opts.scope !== "object" && diff.uncommittedPaths.has(f.path) && <span className="oc-change-uncommitted">U</span>}<ChangeCounts additions={f.additions} deletions={f.deletions} /><ChangeStatus status={f.status} /></span>
               </button>
               <span className="oc-change-actions">
                 {diff.canDiscard && <Tooltip content="Discard changes"><button className="rp-icon oc-discard" onClick={() => diff.askDiscard(f)} aria-label={`Discard changes to ${f.path}`}><RevertIcon /></button></Tooltip>}

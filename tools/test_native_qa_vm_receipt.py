@@ -531,17 +531,15 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertEqual([line.strip() for line in jobs.splitlines()
                           if line.startswith("  ") and not line.startswith("   ")],
                          ["portable:", "compile-sign:"])
-        self.assertNotIn("workflow_dispatch", source)
+        self.assertIn("on:\n  workflow_dispatch:\n", source)  # dispatch-only CI cost policy
         self.assertIn("permissions:\n  contents: read\n", source)
         self.assertNotIn("id-token:", source)
         self.assertNotIn("actions: write", source)
 
-    def test_receipt_workflow_is_push_main_only_and_exactly_two_json_uploads(self):
+    def test_receipt_workflow_is_dispatch_main_only_and_exactly_two_json_uploads(self):
         source = (ROOT / WORKFLOW).read_text()
-        self.assertEqual(source.count("'tools/native_qa_vm_receipt.py'"), 2)
-        self.assertEqual(source.count("'tools/test_native_qa_vm_receipt.py'"), 2)
         self.assertIn("tools.test_native_qa_vm_receipt", source)
-        self.assertIn("github.event_name == 'push'", source)
+        self.assertIn("github.event_name == 'workflow_dispatch'", source)
         self.assertIn("github.ref == 'refs/heads/main'", source)
         self.assertIn("github.repository == 'reason-machines/openconductor'", source)
         self.assertIn("--ci-receipt-dir", source)
@@ -560,7 +558,7 @@ class WorkflowContractTests(unittest.TestCase):
         source = (ROOT / WORKFLOW).read_text()
         self.assertEqual(source.count("uses: actions/upload-artifact@"), 2)
         bundle = source.split("- name: Publish retained signed bundle", 1)[1]
-        self.assertIn("github.event_name == 'push'", bundle)
+        self.assertIn("github.event_name == 'workflow_dispatch'", bundle)
         self.assertIn("github.ref == 'refs/heads/main'", bundle)
         self.assertIn("oc-qa-vm-bundle-${{ github.run_id }}-${{ github.run_attempt }}", bundle)
         self.assertIn("${{ runner.temp }}/oc-vm-bundle/bundle.zip", bundle)

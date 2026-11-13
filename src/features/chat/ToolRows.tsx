@@ -159,7 +159,9 @@ const GLYPH_BY_EXT: Record<string, [Glyph, string]> = {
 
 export function FileGlyph({ path }: { path: string }) {
   const ext = path.split(".").pop()?.toLowerCase() ?? "";
-  const [glyph, tint] = GLYPH_BY_EXT[ext] ?? (["file", "muted"] as [Glyph, string]);
+  const [glyph, tint] = (Object.prototype.hasOwnProperty.call(GLYPH_BY_EXT, ext)
+    ? GLYPH_BY_EXT[ext]
+    : undefined) ?? (["file", "muted"] as [Glyph, string]);
   const g = FILE_GLYPHS[glyph];
   return (
     <svg className="oc-file-glyph" data-tint={tint} viewBox={g.viewBox} fill="currentColor" role="img" aria-hidden>
@@ -392,11 +394,15 @@ export function opensByDefault(tool: ConductorTool): boolean {
 
 export function ConductorToolRow(props: ToolRowProps) {
   const row = <Row {...props} />;
-  if (!props.isError || !props.result || !ERROR_ROW_KINDS.has(toolKind(props.tool.name))) return row;
+  const kind = toolKind(props.tool.name);
+  const errorResult = kind === "bash-output" && props.rawResult !== undefined
+    ? typeof props.rawResult === "string" ? props.rawResult : undefined
+    : props.result;
+  if (!props.isError || !errorResult || !ERROR_ROW_KINDS.has(kind)) return row;
   return (
     <>
       {row}
-      <ErrorRow text={props.result} />
+      <ErrorRow text={errorResult} />
     </>
   );
 }
@@ -423,17 +429,22 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
     }
     case "read": {
       const path = s(input.file_path);
-      const text = output === undefined ? undefined : readContent(output);
+      const readResult = name === "Read" ? result : output;
+      const text = readResult === undefined ? undefined : readContent(readResult);
       const languages: Record<string, string> = {
         js: "javascript", jsx: "javascript", ts: "typescript", tsx: "typescript",
         py: "python", rs: "rust", json: "json", yml: "yaml", yaml: "yaml",
         css: "css", html: "html", htm: "html", xml: "xml", sh: "bash", bash: "bash",
       };
       const language = languages[path.split(".").pop()?.toLowerCase() ?? ""];
+      const imageExtensions = { png: true, jpg: true, jpeg: true, gif: true, webp: true, tif: true, tiff: true, avif: true, bmp: true };
+      const extension = path.split(".").pop()?.toLowerCase();
+      const isImage = extension !== undefined && Object.prototype.hasOwnProperty.call(imageExtensions, extension);
       return (
         <RowShell
           {...shell}
-          left={<span>{readLabel(path, output)}</span>}
+          isCollapsible={!isImage}
+          left={<span>{readLabel(path, readResult)}</span>}
           right={path ? <FileBadge path={path} onOpen={onOpenFile} /> : undefined}
           keepRight
           align="center"
@@ -522,18 +533,36 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
     case "web": {
       const target = s(input.url) || s(input.query);
       const prompt = s(input.prompt);
+      const webOutput = output && output.length > 100000 ? (
+        <>
+          {output.substring(0, 100000)}
+          <div>Content truncated ({output.length.toLocaleString()} chars total)</div>
+        </>
+      ) : output;
       return (
         <RowShell
           {...shell}
           left={<span>{name === "WebSearch" ? "Web Search" : "Web Browse"}</span>}
           right={target ? <CodeChip text={target} /> : undefined}
           align="center"
-          content={output ? (prompt ? <><ul><li>Prompt: <code>{prompt}</code></li></ul>{output}</> : output) : undefined}
+          content={output ? (prompt ? <><ul><li>Prompt: <code>{prompt}</code></li></ul>{webOutput}</> : webOutput) : undefined}
         />
       );
     }
     case "todo": {
-      const todos = Array.isArray(input.todos) ? (input.todos as Record<string, unknown>[]) : [];
+      let todoSource: unknown = input.todos;
+      if (name === "TodoRead") {
+        todoSource = rawResult === undefined ? result : rawResult;
+        if (typeof todoSource === "string") {
+          const match = todoSource.match(/\[[\s\S]*\]/);
+          try {
+            todoSource = match ? JSON.parse(match[0]) : [];
+          } catch {
+            todoSource = [];
+          }
+        }
+      }
+      const todos = Array.isArray(todoSource) ? (todoSource as Record<string, unknown>[]) : [];
       const done = todos.filter((t) => t.status === "completed").length;
       const activeIndex = todos.findIndex((t) => t.status === "in_progress");
       const active = todos[activeIndex];
@@ -568,7 +597,7 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
       );
     }
     default:
-      return <MoreRows {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
+      return <MoreRows {...{ tool, status, result, rawResult, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
   }
 }
 
@@ -863,16 +892,16 @@ function ScheduleWakeupRow({ tool, status, result, resultCreatedAt, now = Date.n
   );
 }
 
-function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }: ToolRowProps) {
+function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }: ToolRowProps) {
   const { name, input } = tool;
   const kind = toolKind(name);
   const shell: ShellBase = { icon: <ToolIcon name={name} />, open, onToggle, status };
-  const output = isError ? undefined : result;
   const framed = (text: string | undefined) => (text ? text : undefined);
   switch (kind) {
     case "bash-output": {
       // `N0o`
-      const st = backgroundStatus(result);
+      const content = rawResult === undefined ? result : typeof rawResult === "string" ? rawResult : undefined;
+      const st = backgroundStatus(content);
       return (
         <RowShell
           {...shell}
@@ -886,7 +915,7 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
               ) : null}
             </span>
           }
-          content={framed(result)}
+          content={framed(content)}
         />
       );
     }
@@ -985,7 +1014,7 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
       );
     }
     case "task-list": {
-      const tasks = parseTaskList(output);
+      const tasks = parseTaskList(result);
       const active = tasks.find((t) => t.status === "in_progress");
       const done = tasks.filter((t) => t.status === "completed").length;
       const doing = tasks.filter((t) => t.status === "in_progress").length;
@@ -1026,7 +1055,7 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
       );
     }
     case "task-update": {
-      const task = parseTask(output);
+      const task = parseTask(result);
       const id = s(input.taskId) || taskIdIn(result);
       const { label, note: dep } = taskUpdateLabel(input);
       const subject = task?.subject || s(input.subject);
@@ -1147,7 +1176,7 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
       return <RowShell {...shell} left={<span>Workspace diff</span>} right={<span className="oc-tool-count">{target}</span>} content={framed(result)} />;
     }
     case "get-terminal-output": {
-      const { text, note: where } = terminalOutput(input, result);
+      const { text, note: where } = terminalOutput(input, result, rawResult);
       return <RowShell {...shell} left={<span>Get terminal output</span>} right={where ? <span className="oc-tool-count">{where}</span> : undefined} content={framed(text)} />;
     }
     case "schedule-wakeup":
@@ -1194,19 +1223,21 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
     case "codex-collab":
       return <CollabRow name={name} input={input} result={result} isError={isError} />;
     case "sub-agent":
-      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={output} />;
+      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={result} />;
       if (name.startsWith("mcp__linear__") || name.startsWith("mcp__context7__")) return <MoreRows {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
       return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
     default:
-      return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
+      return <GenericRow {...{ tool, status, result, rawResult, isError, open, onToggle }} />;
   }
 }
 
 /** `aUt`: any other tool. MCP tools get `iUt`'s shell; Monitor shows its description as plain text. */
-function GenericRow({ tool, status, result, isError, open, onToggle }: Pick<ToolRowProps, "tool" | "status" | "result" | "isError" | "open" | "onToggle">) {
+function GenericRow({ tool, status, result, rawResult, isError, open, onToggle }: Pick<ToolRowProps, "tool" | "status" | "result" | "rawResult" | "isError" | "open" | "onToggle">) {
   const { name, input } = tool;
   const shell: ShellBase = { icon: <ToolIcon name={name} />, open, onToggle, status };
   const mcp = name.startsWith("mcp__");
+  let output = result;
+  if (!mcp && rawResult !== undefined) output = typeof rawResult === "string" ? rawResult : rawResult ? JSON.stringify(rawResult, null, 2) : "";
   const monitor = name === "Monitor";
   const summary = genericSummary(name, input);
   const left = mcp || monitor || name === "ToolSearch" ? <span>{mcpLabel(name)}</span> : <span className="oc-lowercase">{name}</span>;
@@ -1219,7 +1250,7 @@ function GenericRow({ tool, status, result, isError, open, onToggle }: Pick<Tool
       leftClass={monitor ? "shrink" : undefined}
       right={right}
       align={monitor ? "baseline" : "center"}
-      content={Object.keys(input).length > 0 || result ? <InputOutput input={input} result={result} isError={isError} /> : undefined}
+      content={Object.keys(input).length > 0 || output ? <InputOutput input={input} result={output} isError={isError} /> : undefined}
     />
   );
 }

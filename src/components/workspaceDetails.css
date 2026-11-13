@@ -1,0 +1,21 @@
+.ws-name-trigger { min-width: 0; overflow: hidden; text-overflow: ellipsis; cursor: default; outline: none; }
+.ws-name-trigger:focus-visible { box-shadow: 0 0 0 1px var(--ring); border-radius: 2px; }
+.ws-details-positioner { z-index: 50; }
+.ws-details {
+  box-sizing: border-box; width: 288px; max-width: calc(100vw - 16px); padding: 16px;
+  border-radius: 8px; background: var(--popover); color: var(--popover-text); outline: none;
+  box-shadow: 0 0 0 1px var(--popover-ring), 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10);
+  transform-origin: var(--transform-origin); transition: opacity 100ms, transform 100ms;
+}
+.ws-details[data-starting-style], .ws-details[data-ending-style] { opacity: 0; transform: scale(0.95); }
+.ws-details-content { display: flex; flex-direction: column; gap: 12px; }
+.ws-details-heading { display: flex; align-items: center; gap: 4px; }
+.ws-details-name { min-width: 0; flex: 1; overflow-wrap: anywhere; font-size: 14px; font-weight: 500; line-height: 1.375; }
+.ws-details-action { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 4px; background: transparent; color: inherit; }
+.ws-details-action:hover, .ws-details-action:focus-visible { background: var(--popover-hover); outline: none; }
+.ws-details-action svg { width: 14px; height: 14px; }
+.ws-details-fields { display: flex; flex-direction: column; gap: 8px; margin: 0; font-size: 12px; line-height: 16px; }
+.ws-details-fields > div { display: flex; align-items: center; gap: 8px; }
+.ws-details-fields dt { display: flex; flex-shrink: 0; align-items: center; gap: 6px; width: 88px; color: var(--muted); }
+.ws-details-fields dd { min-width: 0; overflow-wrap: anywhere; margin: 0; }
+@media (prefers-reduced-motion: reduce) { .ws-details { transition: none; } }

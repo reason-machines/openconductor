@@ -4,6 +4,7 @@ import { createRequire } from "node:module";
 import { test } from "node:test";
 import { runInNewContext } from "node:vm";
 import type { SectionDialogMode } from "./SectionDialog";
+import * as persistence from "../lib/persistence/producer.ts";
 
 const dependencies = createRequire(import.meta.url);
 const React = dependencies("react");
@@ -53,6 +54,7 @@ async function fixture(mode: SectionDialogMode) {
       require(name: string) {
         if (name === "react") return React;
         if (name === "react/jsx-runtime") return jsx;
+        if (name === "../lib/persistence/producer.ts") return persistence;
         if (name === "@tauri-apps/api/core") return {
           invoke(command: string) {
             if (command === "db_list_repos" || command === "db_list_workspaces") return Promise.resolve([]);

@@ -429,3 +429,87 @@ async fn old_side_is_stored_as_original_and_legacy_base_rows_read_as_original() 
     let c = diff_comments::get(&pool, "o").await.unwrap().unwrap();
     assert_eq!(c.location, Some(Location::Original));
 }
+
+#[tokio::test]
+async fn prompt_handoff_reviewed_is_workspace_scoped_idempotent_and_preserves_superseded() {
+    let pool = pool().await;
+    for id in ["one", "old", "other-workspace"] {
+        let mut row = comment(id, Some(12));
+        if id == "other-workspace" {
+            row.workspace_id = "another".into();
+        }
+        diff_comments::insert(&pool, &row).await.unwrap();
+    }
+    sqlx::query("UPDATE diff_comments SET state = 'superseded' WHERE id = 'old'")
+        .execute(&pool)
+        .await
+        .unwrap();
+    let ids = ["one", "old", "other-workspace"].map(str::to_owned);
+    assert_eq!(
+        diff_comments::mark_reviewed(&pool, "w", &ids, 200)
+            .await
+            .unwrap(),
+        1
+    );
+    assert_eq!(
+        diff_comments::mark_reviewed(&pool, "w", &ids, 300)
+            .await
+            .unwrap(),
+        0
+    );
+    let rows: Vec<(String, String)> =
+        sqlx::query_as("SELECT id, state FROM diff_comments ORDER BY id")
+            .fetch_all(&pool)
+            .await
+            .unwrap();
+    assert_eq!(
+        rows,
+        vec![
+            ("old".into(), "superseded".into()),
+            ("one".into(), "reviewed".into()),
+            ("other-workspace".into(), "pending".into())
+        ]
+    );
+    let updated: i64 = sqlx::query_scalar("SELECT updated_at FROM diff_comments WHERE id = 'one'")
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+    assert_eq!(updated, 200);
+}
+
+#[tokio::test]
+async fn prompt_handoff_reference_states_round_trip_without_collapsing_to_pending() {
+    let pool = pool().await;
+    for (index, state) in [
+        "draft",
+        "ready_for_review",
+        "reviewed",
+        "hidden",
+        "superseded",
+        "sent",
+    ]
+    .iter()
+    .enumerate()
+    {
+        let id = format!("state-{index}");
+        diff_comments::insert(&pool, &comment(&id, Some(12)))
+            .await
+            .unwrap();
+        sqlx::query("UPDATE diff_comments SET state = ? WHERE id = ?")
+            .bind(state)
+            .bind(&id)
+            .execute(&pool)
+            .await
+            .unwrap();
+    }
+    let rows = diff_comments::list_for_workspace(&pool, "w").await.unwrap();
+    assert_eq!(rows.len(), 6);
+    assert!(rows.iter().any(|row| row.state == Some(State::Draft)));
+    assert!(rows
+        .iter()
+        .any(|row| row.state == Some(State::ReadyForReview)));
+    assert!(rows.iter().any(|row| row.state == Some(State::Reviewed)));
+    assert!(rows.iter().any(|row| row.state == Some(State::Hidden)));
+    assert!(rows.iter().any(|row| row.state == Some(State::Superseded)));
+    assert!(rows.iter().any(|row| row.state == Some(State::Sent)));
+}

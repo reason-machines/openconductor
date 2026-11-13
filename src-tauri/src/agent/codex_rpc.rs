@@ -69,6 +69,7 @@ pub enum ClientRequest {
     /// `account/read`: the signed-in account (ChatGPT email and plan, or
     /// API key), without reading Codex's credential file ourselves.
     AccountRead,
+    McpServerStatusList { cursor: Option<String> },
     /// `account/login/start` with `{type: "chatgpt"}`: Codex starts its
     /// local callback server and answers with the browser `authUrl`.
     AccountLoginChatgpt,
@@ -143,6 +144,7 @@ impl ClientRequest {
             ClientRequest::TurnStart { .. } => "turn/start",
             ClientRequest::TurnInterrupt { .. } => "turn/interrupt",
             ClientRequest::AccountRead => "account/read",
+            ClientRequest::McpServerStatusList { .. } => "mcpServerStatus/list",
             ClientRequest::AccountLoginChatgpt => "account/login/start",
             ClientRequest::AccountLoginCancel { .. } => "account/login/cancel",
             ClientRequest::AccountLoginApiKey { .. } => "account/login/start",
@@ -192,6 +194,10 @@ impl ClientRequest {
                 json!({ "threadId": thread_id, "turnId": turn_id })
             }
             ClientRequest::AccountRead => json!({}),
+            ClientRequest::McpServerStatusList { cursor } => match cursor {
+                Some(cursor) => json!({ "cursor": cursor }),
+                None => json!({}),
+            },
             ClientRequest::AccountLoginChatgpt => json!({ "type": "chatgpt" }),
             ClientRequest::AccountLoginCancel { login_id } => json!({ "loginId": login_id }),
             ClientRequest::AccountLoginApiKey { api_key } => {
