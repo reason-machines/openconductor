@@ -41,12 +41,13 @@ export function GeneralPage({ settings, save, notify }: Props) {
   latestSettings.current = settings;
   const g = settings.general;
   const [syncOpen, setSyncOpen] = useState(false);
+  const [followUpPending, setFollowUpPending] = useState(false);
   const fullDiskAccess = useFullDiskAccessStatus();
   const { overrides } = useKeybindingOverrides();
   const followUp = enumPref(settings, "default_message_send_mode");
   return (
     <div className="settings-rows">
-      <SendKeyRow settings={settings} save={save} />
+      <SendKeyRow settings={settings} save={save} notify={notify} />
       <Row
         label="Follow-up behavior"
         help="Queue messages to send after the agent finishes, or steer the agent mid-turn."
@@ -58,17 +59,21 @@ export function GeneralPage({ settings, save, notify }: Props) {
       >
         <Select
           label="Follow-up behavior"
+          disabled={followUpPending}
           value={followUp}
           options={[
             { value: "queued", label: "Queue" },
             { value: "steering", label: "Steer" },
           ]}
-          onChange={(v) =>
-            // Open chats re-read Follow-up behavior on SETTINGS_CHANGED (useFollowUpMode).
-            void Promise.resolve(save(withEnumPref(settings, "default_message_send_mode", v))).then((ok) => {
+          onChange={async (v) => {
+            setFollowUpPending(true);
+            try {
+              const ok = await save(withEnumPref(settings, "default_message_send_mode", v));
               if (ok !== false) window.dispatchEvent(new Event(SETTINGS_CHANGED));
-            })
-          }
+            } finally {
+              setFollowUpPending(false);
+            }
+          }}
         />
       </Row>
       <Row label="Agent notifications" help="Get notified when an agent finishes working.">
@@ -208,14 +213,15 @@ function useFullDiskAccessStatus(): boolean | undefined {
  * send commands' keybinding overrides to a preset and then stores the legacy
  * `message_send_key`; a custom mix shows the "Custom" placeholder.
  */
-function SendKeyRow({ settings, save }: Props) {
+function SendKeyRow({ settings, save, notify }: Props) {
   const { overrides } = useKeybindingOverrides();
   const store = useSettingsOverrideStore(settings, save);
   const mode = currentSendKeyMode(overrides);
   // The preset goes to the four send commands, then the legacy `message_send_key` (Conductor's `RQt`).
   const choose = (next: SendKeyMode) =>
-    void chooseSendKey(next, store.updateMany, (m) => setAppPref({ key: "message_send_key", value: m })).catch((err) =>
-      console.warn("Failed to update message send key", err),
+    void chooseSendKey(next, store.updateMany, (m) => setAppPref({ key: "message_send_key", value: m })).then(
+      (ok) => { if (!ok) notify?.("error", "Failed to update message send key"); },
+      () => notify?.("error", "Failed to update message send key"),
     );
   return (
     <Row

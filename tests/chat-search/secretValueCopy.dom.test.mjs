@@ -130,7 +130,7 @@ async function fixture({ present = true, clipboard = 'available' } = {}) {
       assert.ok(value(), 'The real API-key caller must render its stored value row');
       await act(async () => { value().click(); });
     },
-    async show() { await act(async () => { button(`Show ${LABEL}`).click(); }); },
+    async show() { await act(async () => { button(`Reveal ${LABEL}`).click(); }); },
     async settle(value = FAKE_VALUE) { await act(async () => { revealRequests.at(-1).resolve(value); }); },
     async reject() { await act(async () => { revealRequests.at(-1).reject(new Error('fixture retrieval denied')); }); },
     async close() { await act(async () => { root.unmount(); }); container.remove(); },
@@ -145,7 +145,7 @@ function assertUntouched(view) {
 function assertMasked(view) {
   assert.equal(view.value().textContent, MASK);
   assert.doesNotMatch(view.text(), /fixture-only-not-a-key/);
-  assert.equal(view.button(`Show ${LABEL}`).getAttribute('aria-pressed'), 'false');
+  assert.equal(view.button(`Reveal ${LABEL}`).getAttribute('aria-pressed'), 'false');
 }
 
 test('stored-key mount shows only its hint without retrieving or copying the value', async () => {
