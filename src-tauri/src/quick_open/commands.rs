@@ -12,7 +12,7 @@ use std::sync::Arc;
 
 use tauri::State;
 
-use super::{FileEntry, FileIndexCache, FuzzyMatch};
+use super::{FileEntry, FileIndexCache, FuzzyMatch, GrepResult};
 
 /// Shared handle to the per-workspace index, registered with `app.manage`.
 pub type FileCache = Arc<FileIndexCache>;
@@ -56,6 +56,31 @@ pub async fn fuzzy_match_files(
             &query,
             exclude_directories.unwrap_or(false),
         ))
+    })
+    .await
+}
+
+/// `invoke("grep_workspace", { query, workspacePath, isRegex?, caseSensitive?, wholeWord? })`
+///
+/// Searches text-file contents in `workspacePath` for `query`, respecting
+/// `.gitignore` rules. Mirrors the reference frontend's `Tmt` call signature
+/// (index-BGEQ8YjU.js byte 2265460).
+#[tauri::command]
+pub async fn grep_workspace(
+    workspace_path: String,
+    query: String,
+    is_regex: Option<bool>,
+    case_sensitive: Option<bool>,
+    whole_word: Option<bool>,
+) -> Result<GrepResult, String> {
+    blocking(move || {
+        super::grep_workspace(
+            &workspace_path,
+            &query,
+            is_regex.unwrap_or(false),
+            case_sensitive.unwrap_or(false),
+            whole_word.unwrap_or(false),
+        )
     })
     .await
 }
