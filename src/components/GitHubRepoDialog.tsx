@@ -115,7 +115,7 @@ export function GitHubRepoDialog({ target, onClose, onOpenSettings, onCreated, o
         )}
         <label className="field">
           <span>Repository name</span>
-          <input value={name} disabled={pending} onChange={(e) => setName(e.target.value)} aria-invalid={status?.tone === "error"} />
+          <input value={name} onChange={(e) => setName(e.target.value)} aria-invalid={status?.tone === "error"} />
         </label>
         {owner && slug && <p className="muted small">Will create <code>{owner}/{slug}</code></p>}
         {owners.kind !== "error" && status && <p className={`small ${status.tone === "error" ? "error" : status.tone === "ok" ? "add" : "muted"}`} role="status">{status.text}</p>}
