@@ -677,6 +677,38 @@ Owner: `15faf4d8`. The in_progress CI result recorded in r1092 resolved: **Front
 
 MOVE-TO-SECTION-PALETTE behavioral and native acceptance remain NOT_RUN, ACC serialized. Package event watch `cd11e0dc` (owner `992a715e`) remains armed for the eventual all-green merge.
 
+## Program reconciliation r1131, main `a36188938d`, 13 November 2026
+
+### #1276 merged — scripts lane SOURCE_EXHAUSTED
+
+Owner: Session `6013adf2`. PR [#1276](https://github.com/reason-machines/openconductor/pull/1276) `feat(scripts): persist and restore setup transcript across app restarts` merged at `050c55676`. Lane: **SOURCE_EXHAUSTED**. Browser/native NOT_RUN. Note: exact Conductor persistence mechanism (DB vs filesystem vs key path) REA UNPROVEN — merged on best-effort source match; not confirmed as native behavioral parity.
+
+### #1268 merged — settings lane closed
+
+Owner: Session `49e3976d`. PR [#1268](https://github.com/reason-machines/openconductor/pull/1268) `feat(settings): custom SoundSelect with group-logo rendering (iga/sga/rga)` merged squash `a36188938d`. 2 CI checks passed (Frontend typecheck+build, Evidence tools compile), 5 skipped (platform gates). Settings lane: **SOURCE_COMPLETE**, closed. Native logo rendering: NOT_RUN — requires macOS Tauri app; E1 PROVIDER_LIMIT_BLOCKED.
+
+### Package run #1787 dispatched
+
+Owner: `992a715e`. Run id `43412568764` dispatched at `a36188938d` (33 fixes). Artifact follow-up armed at owner. Do not duplicate dispatch.
+
+### All source lanes exhausted
+
+| Session | Surface | Status | Note |
+|---|---|---|---|
+| `6013adf2` | scripts/dialogs | SOURCE_EXHAUSTED | Idle |
+| `49e3976d` | settings | SOURCE_COMPLETE | Closed |
+| `27102e36` | Home/sidebar | SOURCE_EXHAUSTED | 5-item native packet queued E1 |
+| `be7a40e4` | chat | SOURCE_EXHAUSTED | at `86748725` |
+| `13576d11` | composer | SOURCE_EXHAUSTED | at `8e847380` |
+| `de6c02f4` | diff/files | SOURCE_EXHAUSTED | #1275 merged; Q-01–Q-32 E1-owned |
+| `1f14fa82` | terminal/scripts | SOURCE_EXHAUSTED | local 2.3% historical; cloud-org excluded |
+
+**Unowned ready REA-proven source gaps: NONE.** Program is at the acceptance bottleneck. No work invented to fill idle lanes.
+
+Active builders: `15faf4d8` (#1271 open + PICK-ISSUES-DIALOG), `992a715e` (package #1787).
+
+E1 (`e1e2b6b9`) PROVIDER_LIMIT_BLOCKED — no retry authorized absent confirmed reset.
+
 ## Diff/files lane gap audit + Q-01–Q-31 recovery, main `0e91f39d5`, 13 November 2026
 
 Owner: Conductor Rebuild (Session `de6c02f4`). No Mac launch, native capture, install, build or runner. Static source-sweep and retained-evidence cross-check only. REA artifact SHA-256 `b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3` (Conductor 0.87.6 `index-BGEQ8YjU.js`), renderer SHA-256 `5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde` (`renderApp-D_fmY7hW.js`).
@@ -780,3 +812,51 @@ Merged 2026-11-13T09:04Z at `ed5fb635`. Native acceptance: **NOT_RUN** (ACC/E1 s
 ### Discrepancy note
 
 Coordinator message references "28 unavailable" of Q-01–Q-31. This lane's retained evidence gives: 10 verbatim (Q-22–Q-31) and 21 evidence-derived (Q-01–Q-21) = 31 total. If the coordinator counted only the verbatim-retained items as "available" and the evidence-derived ones as requiring further text delivery, that is 21 unavailable — not 28. The 7-item discrepancy is unresolved from source alone; coordinator `dcaa6e78` holds the authoritative count.
+
+## Diff/files evidence sweep + stale artifact cleanup, main `8416fc30d`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `de6c02f4`). No Mac launch, native capture, install, build, dispatch or runner. Static source-sweep and working-tree check only. REA artifacts SHA-256 unchanged from prior entries.
+
+### Evidence directory sweep (all 20 directories)
+
+All evidence directories in `evidence/diff/` and `evidence/files/` cross-checked against current main `8416fc30d`. Every directory maps to an already-merged or already-implemented feature:
+
+| Evidence dir | Merged/implemented via |
+|---|---|
+| `comment-cancel-dirty` | #926 — 28/28 node tests pass |
+| `comment-delete-confirmation` | `window.confirm` absent in current `ReviewComments.tsx`; 6/6 tests pass |
+| `comment-discard-dialog` | `DialogFrame` alert present lines 125–138 of `ReviewComments.tsx`; 28/28 lifecycle tests pass |
+| `pointer-cancel-selection` | #881 — `onPointerCancelCapture` at `FileDiffView.tsx:234` |
+| `selection-end-clear` | #887 — `else setSelection(null)` at `FileDiffView.tsx:197` |
+| `multi-anchor-drafts` | #1088 — `useState<Composing[]>([])` retains N drafts; 13/13 hosted green |
+| `file-copy-paths` | #858 — `fileCopyPaths.ts`, 5/5 after.tap pass |
+| `historical-chip` | chip colours via `renderApp` CSS tokens; hosted green |
+| `historical-large-file` | #1121 — 8/8 behavioral tests pass |
+| `turn-large-file` | #1143 — `fix(diff): apply the large-file policy to finished turns` |
+| `commit-history` | historical scope merged; 48 Rust + 113 Node tests pass |
+| `discard-alert` | #738 — `fix(diff): match the reference confirmation alert` |
+| `selected-reveal` | #1022 — `fix(diff): reveal active file ancestors in Changes tree` |
+| `empty-consumer` | #1013 — `fix(diff): distinguish initial loading and error states` |
+| `changes-menu-boundary` | `PopoverMenu.tsx:53` uses `el.offsetWidth/offsetHeight`; E2E asserts `< 1px delta` |
+| `wrap-lines-and-range-comments` | `wrapLines` localStorage vs Conductor settings DB — acknowledged gap, settings lane |
+| `grep-workspace` | #1257 — Rust command + frontend binding; 10 native cases with E1 |
+| `workspace-text` | #1208 — confined `WorkspaceFileView`; 94/94 node tests |
+| `markdown-preview` | Markdown rendered inline in `WorkspaceFileView` |
+
+### Stale artifact cleaned
+
+`src/features/diff/fileCommentCounts.test.ts` was an **untracked** working-tree file (never committed). It contained 11 duplicated lifecycle-test cases plus 1 stale assertion (`state === "sent"` after `addAll`) from the pre-#1181 design. The authoritative contract from #1181 is that adding to the composer does **not** mark state `"sent"` until actual prompt handoff. The stale file was deleted from the working tree; hosted CI was never affected.
+
+### Verification
+
+- `node --experimental-strip-types --test src/features/diff/*.test.ts`: **517/517 pass** (after stale file removed)
+- `npm run typecheck`: **pass**
+- `git status`: clean (only `.oc-tmp/` ephemeral dir)
+
+### Remaining wrap_lines gap
+
+`wrapLines` persists in `localStorage` (`OPTIONS_KEY`) in OpenConductor; Conductor uses `updateSetting("wrap_lines", value)` to its native settings table. All other diff view options also use localStorage. This is a known, documented gap in `evidence/diff/wrap-lines-and-range-comments.md`. It belongs to the settings lane; source-only resolution is not possible without the native settings schema.
+
+### Unowned implementable diff/files source gap
+
+**None** at `8416fc30d`. The 32 native behavioral items (Q-01–Q-32) remain with the sole native executor (E1). The `wrap_lines` settings-DB gap is settings-lane owned.

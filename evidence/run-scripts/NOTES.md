@@ -84,8 +84,8 @@ Native macOS Setup controls and rendered output remain unverified under the sole
 
 ## Not done yet
 
-- Scripts settings page (`/settings/organization/repositories/$owner/$repo/scripts`): edit setup and run scripts, add, rename, hide and delete run scripts, script scope (local or shared file), import, managed-key locks in the UI.
+- Scripts settings page: **done** — `src/settings/rows/RepoScriptsRows.tsx` (453 lines) implements the full Conductor UI row-for-row with inline REA evidence (`renderApp-D_fmY7hW.js` `vma` → `hma`): Setup script / Archive script shell editors with 2 s debounce save, Run scripts list with Add/Edit dialog (icon, name, command, Delete), share prompt, empty-state. Routed at `/settings/organization/repositories/$owner/$repo/scripts` via `RepoSettingsPage.tsx`. Managed-key locks are not yet wired (require Conductor cloud UI, out of scope). Native rendering unverified.
 - The create-workspace dialog starts setup (`scripts_config`, then `setup_script_start`) after `create_workspace` (see `evidence/create-workspace/README.md`); `workspaces.state` is not persisted, so `setting_up` exists only in the UI. The full archive (`archive_workspace`, `evidence/archive/NOTES.md`) runs the archive script through `ScriptService::run_archive` before removing the worktree. `src-tauri/src/workspace/scripts.rs` duplicates part of this crate and should delegate to it.
-- `workspaces.setup_log_path` is not persisted yet (no database layer is wired to this crate).
-- Shared environment variables (`environment_variables` settings) are not passed to scripts.
+- `workspaces.setup_log_path`: **done** — `set_setup_log_path()` added to `openconductor-db/src/workspaces.rs`; `scripts::service()` intercepts `SetupFinished` and writes it asynchronously. Native build unverified (Rust CI skipped on PRs).
+- Shared environment variables: **done** — `script_env_hook()` already calls `local_env()` → `stored_local()`, which reads `env_vars` from the DB and passes them as the `shared` map to `script_env()`. The NOTES were stale.
 - "Detecting setup script" is the create dialog's `scripts_config` call; run script detection is not implemented.

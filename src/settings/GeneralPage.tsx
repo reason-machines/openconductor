@@ -14,7 +14,8 @@ import { withField } from "./model";
 import { notificationPermissionGranted } from "./notificationPermission";
 import { boolPref, enumPref, withBoolPref, withEnumPref } from "./prefs";
 import { GeneralAppPrefRows } from "./rows/AppPrefRows";
-import { playCompletionSound, SOUND_OPTIONS } from "./sound";
+import { playCompletionSound } from "./sound";
+import { SoundSelect } from "./SoundSelect";
 import type { Settings } from "./types";
 import { useSettingsOverrideStore } from "./useSettingsOverrideStore";
 
@@ -108,23 +109,10 @@ export function GeneralPage({ settings, save, notify }: Props) {
         detail="Original recordings are not included. Playback uses a synthesized chime."
       >
         <span className="settings-inline">
-          <select
-            className="settings-select"
-            aria-label="Completion sound"
-            style={{ width: 190 }}
+          <SoundSelect
             value={g.sound_type}
-            onChange={(event) => {
-              const sound = SOUND_OPTIONS.find((option) => option.value === event.currentTarget.value);
-              if (sound) void save(withField(settings, "general", "sound_type", sound.value));
-            }}
-          >
-            {[...new Set(SOUND_OPTIONS.map((option) => option.group))].map((group) => {
-              const options = SOUND_OPTIONS.filter((option) => option.group === group).map((option) => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ));
-              return group ? <optgroup key={group} label={group}>{options}</optgroup> : options;
-            })}
-          </select>
+            onChange={(v) => void save(withField(settings, "general", "sound_type", v))}
+          />
           <button type="button" className="btn btn-ghost settings-test" disabled={g.sound_type === "disabled"} onClick={() => playCompletionSound(g.sound_type)}>
             <VolumeIcon />
             Test

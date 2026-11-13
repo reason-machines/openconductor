@@ -50,6 +50,10 @@ pub struct Workspace {
     pub initialization_log_path: Option<String>,
     pub initialization_files_copied: Option<i64>,
     pub setup_log_path: Option<String>,
+    /// The `SetupState` serialised value (`"completed"`, `"failed"`, `"cancelled"`) of the most
+    /// recent finished run. `None` before the first run or on an older database that lacked this
+    /// column.
+    pub setup_log_state: Option<String>,
     pub pinned_at: Option<String>,
     pub notes: Option<String>,
     pub unread: bool,
@@ -78,7 +82,7 @@ const SELECT_WITH_REPO: &str = "SELECT w.local_id, w.repository_id, w.directory_
     w.workspace_name, w.branch, w.placeholder_branch_name, w.state, w.derived_status, \
     w.manual_status, w.active_session_id, w.initialization_parent_branch, \
     w.intended_target_branch, w.workspace_path, w.linked_workspace_ids, w.linked_directory_paths, w.archive_commit, w.initialization_log_path, \
-    w.initialization_files_copied, w.setup_log_path, w.pinned_at, w.notes, \
+    w.initialization_files_copied, w.setup_log_path, w.setup_log_state, w.pinned_at, w.notes, \
     COALESCE(w.unread, 0) AS unread, w.pr_title, w.pr_description, \
     COALESCE(w.user_set_workspace_name, 0) AS user_set_workspace_name, w.number, w.created_at, w.updated_at, \
     r.root_path, r.name AS repo_name, COALESCE(r.storage_version, 1) AS storage_version \
@@ -324,6 +328,27 @@ pub async fn set_pr_metadata(
     let q =
         sqlx::query("UPDATE workspaces SET pr_title = ?, pr_description = ? WHERE local_id = ?");
     exec_one(q.bind(title).bind(description).bind(local_id), pool).await
+}
+
+/// Record the setup script's log path and outcome state so the Setup tab can show the previous
+/// run's transcript after a restart.  `state` is the `SetupState` serialised value
+/// (`"completed"`, `"failed"`, or `"cancelled"`).
+pub async fn update_setup_log(
+    pool: &SqlitePool,
+    local_id: &str,
+    path: &str,
+    state: &str,
+) -> Result<()> {
+    exec_one(
+        sqlx::query(
+            "UPDATE workspaces SET setup_log_path = ?, setup_log_state = ? WHERE local_id = ?",
+        )
+        .bind(path)
+        .bind(state)
+        .bind(local_id),
+        pool,
+    )
+    .await
 }
 
 /// Delete a workspace whose worktree was never created. False otherwise.
