@@ -240,3 +240,150 @@ pub fn fuzzy_filter_files(
 pub fn fuzzy_match_files(files: &[FileEntry], query: &str, exclude_directories: bool) -> Vec<FuzzyMatch> {
     fuzzy_filter(files, "", query, exclude_directories, MAX_RESULTS)
 }
+
+// ── grep_workspace ────────────────────────────────────────────────────────────
+//
+// REA evidence (index-BGEQ8YjU.js, bytes 2265460–2266400):
+//   invoke("grep_workspace", { query, workspacePath, isRegex, caseSensitive, wholeWord })
+//   → { matches: [{relative_path, line_number, line_text, submatches:[{start,end}]}],
+//        truncated, files_searched }
+// Error strings beginning "Invalid pattern: " are caught by the frontend and
+// surfaced as a user-visible invalid-pattern error (MK in the minified source).
+
+/// Most matching lines returned for one query.
+pub const MAX_GREP_RESULTS: usize = 1_000;
+
+/// One character range within a line. `start` and `end` are UTF-8 byte offsets
+/// into `line_text` (half-open `[start, end)`).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct GrepSubmatch {
+    pub start: usize,
+    pub end: usize,
+}
+
+/// One matching line in a workspace file.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct GrepMatch {
+    pub relative_path: String,
+    pub line_number: usize,
+    pub line_text: String,
+    pub submatches: Vec<GrepSubmatch>,
+}
+
+/// Return value of the `grep_workspace` command.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct GrepResult {
+    pub matches: Vec<GrepMatch>,
+    pub truncated: bool,
+    pub files_searched: usize,
+}
+
+/// Builds the regex used by `grep_workspace`. On error the message starts with
+/// `"Invalid pattern: "`, matching the frontend's error-type guard.
+fn build_grep_pattern(
+    query: &str,
+    is_regex: bool,
+    case_sensitive: bool,
+    whole_word: bool,
+) -> Result<regex::Regex, String> {
+    let core = if is_regex {
+        query.to_owned()
+    } else {
+        regex::escape(query)
+    };
+    let with_word = if whole_word {
+        format!(r"\b{}\b", core)
+    } else {
+        core
+    };
+    let full = if case_sensitive {
+        with_word
+    } else {
+        format!("(?i){}", with_word)
+    };
+    regex::Regex::new(&full).map_err(|e| format!("Invalid pattern: {e}"))
+}
+
+/// Searches text-file contents in `workspace_path` for `query`, respecting
+/// `.gitignore` rules. Returns up to `MAX_GREP_RESULTS` matching lines;
+/// `truncated` is true when the limit was reached. Binary files (those
+/// containing a null byte) and non-UTF-8 files are silently skipped.
+pub fn grep_workspace(
+    workspace_path: &str,
+    query: &str,
+    is_regex: bool,
+    case_sensitive: bool,
+    whole_word: bool,
+) -> Result<GrepResult, String> {
+    if query.is_empty() {
+        return Ok(GrepResult { matches: Vec::new(), truncated: false, files_searched: 0 });
+    }
+
+    let re = build_grep_pattern(query, is_regex, case_sensitive, whole_word)?;
+    let root = Path::new(workspace_path);
+
+    let mut matches: Vec<GrepMatch> = Vec::new();
+    let mut files_searched: usize = 0;
+    let mut truncated = false;
+
+    let walker = ignore::WalkBuilder::new(root)
+        .hidden(false)
+        .git_ignore(true)
+        .git_exclude(true)
+        .git_global(true)
+        .require_git(false)
+        .parents(true)
+        .filter_entry(|e| e.file_name() != ".git")
+        .sort_by_file_path(|a, b| a.cmp(b))
+        .build();
+
+    'outer: for entry in walker.flatten() {
+        if entry.depth() == 0 || entry.file_type().is_some_and(|t| t.is_dir()) {
+            continue;
+        }
+
+        let abs_path = entry.path();
+        let raw = match std::fs::read(abs_path) {
+            Ok(c) => c,
+            Err(_) => continue,
+        };
+
+        // Skip binary files (contain a null byte) as ripgrep does.
+        if raw.contains(&0u8) {
+            continue;
+        }
+
+        let text = match std::str::from_utf8(&raw) {
+            Ok(t) => t,
+            Err(_) => continue,
+        };
+
+        let rel = relative_path(workspace_path, &abs_path.to_string_lossy());
+        files_searched += 1;
+
+        for (line_idx, line) in text.lines().enumerate() {
+            let submatches: Vec<GrepSubmatch> = re
+                .find_iter(line)
+                .map(|m| GrepSubmatch { start: m.start(), end: m.end() })
+                .collect();
+
+            if submatches.is_empty() {
+                continue;
+            }
+
+            if matches.len() >= MAX_GREP_RESULTS {
+                truncated = true;
+                break 'outer;
+            }
+
+            matches.push(GrepMatch {
+                relative_path: rel.clone(),
+                line_number: line_idx + 1,
+                line_text: line.to_owned(),
+                submatches,
+            });
+        }
+    }
+
+    Ok(GrepResult { matches, truncated, files_searched })
+}
