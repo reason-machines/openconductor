@@ -911,14 +911,15 @@ Packaging lane closed by `992a715e`. Artifact preserved; native acceptance remai
 
 PICK-ISSUES-DIALOG work by `15faf4d8`: status per last report — ongoing. No duplication from this entry.
 
-**#1279 repair** owned by `7e1889e6` — do not duplicate.
+**#1279 merged** — squash `33ae5f4f`; repair work by `7e1889e6` complete.
+**Package run #1789** (`43418374262`) dispatched by `992a715e` at `33ae5f4f` (35 fixes, in_progress). Artifact follow-up owned by `992a715e` — do not duplicate dispatch or polling.
 
 ### Active owners
 
 | Session | Work | Status |
 |---|---|---|
 | `15faf4d8` | PICK-ISSUES-DIALOG | Ongoing |
-| `7e1889e6` | #1279 repair | Ongoing |
+| `992a715e` | Package run #1789 artifact follow-through | In progress — pending artifact proof |
 
 ### State
 
