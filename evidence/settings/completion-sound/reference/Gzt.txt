@@ -1,0 +1,1 @@
+async function Gzt(t){await ee.updateSetting("sound_type",t)}

@@ -1,0 +1,1 @@
+function Eue(t){return t===bue}
