@@ -1572,31 +1572,46 @@ Owner: Conductor Rebuild (Session `ddfc6518`).
 
 **E1 `e1e2b6b9` PROVIDER_LIMIT_BLOCKED** — multiple independent reports confirm provider usage/credit limit; no_output returned. Sole native executor. No retry, no second executor.
 
+---
+
+## Program reconciliation r1152 at main `c4d68825`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**Chat `be7a40e4` #1292 merged `c4d68825`** — 12/12 tests pass on current main. Chat lane SOURCE_EXHAUSTED. Browser/native NOT_RUN.
+
+**Menus `15faf4d8` SOURCE_EXHAUSTED (corrected from r1150)** — actual owner report: #1282 AND #1287 merged, parked ~12:34Z. PICK-ISSUES-DIALOG was NOT in-progress; that queue entry was erroneous. Removed from cloud runtime queue.
+
+**Settings `49e3976d` crash-log claim retracted** — owner explicitly retracts prior unobserved crash-log data: actual logs were NOT read; trigger/cause UNKNOWN; no warranted PR. Awaits E1 for native reproduction only.
+
+**All cloud source lanes now SOURCE_EXHAUSTED or CANCELLED** — cloud runtime queue empty.
+
 ### Lane / owner table
 
 | Lane | Session | Status |
 |---|---|---|
-| Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG in-progress; source-exhausted after. Browser/native NOT_RUN |
-| Chat | `be7a40e4` | #1292 CI in_progress. Browser/native NOT_RUN |
-| Composer | `13576d11` | #1284, #1288, #1290 merged. SOURCE_EXHAUSTED at `428f5882`. Browser/native NOT_RUN |
+| Menus / palette | `15faf4d8` | SOURCE_EXHAUSTED — #1282, #1287 merged. Parked ~12:34Z. Browser/native NOT_RUN |
+| Chat | `be7a40e4` | SOURCE_EXHAUSTED — #1292 merged `c4d68825`. Browser/native NOT_RUN |
+| Composer | `13576d11` | SOURCE_EXHAUSTED — #1284, #1288, #1290 merged at `428f5882`. Browser/native NOT_RUN |
 | Diff / files | `de6c02f4` | CANCELLED — do not restart. ws.search-in-files-dialog extraction not completed. Native NOT_RUN |
 | Home / sidebar | `27102e36` | SOURCE_EXHAUSTED at `31e6764d6`. 44 folders verified. 5 native items queued to E1 NOT_RUN |
-| Settings | `49e3976d` | Browser PASS (fixture). Env crash: UNRESOLVED, UNKNOWN cause, no log retrieved. Native ALL NOT_RUN |
-| CONFIG-SYNC | `6013adf2` | #1283 merged `04a96d018`. Lane SOURCE_EXHAUSTED |
+| Settings | `49e3976d` | Env crash: cause UNKNOWN, no log read, no warranted PR. Awaits E1 only. Native ALL NOT_RUN |
+| CONFIG-SYNC | `6013adf2` | SOURCE_EXHAUSTED — #1283 merged `04a96d018` |
 | Terminal | `1f14fa82` | CLOSED — #1281 merged `8e847380` |
 | Packaging | `992a715e` | CLOSED — artifact confirmed |
 | Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — sole executor, no retry, no second executor |
 
 ### Serialized cloud runtime queue
 
-1. **#1292** CI await → merge (`be7a40e4`)
-2. **PICK-ISSUES-DIALOG** (`15faf4d8`)
-3. Settings env-crash — awaits native reproduction via E1
+**EMPTY** — all cloud lanes SOURCE_EXHAUSTED or CANCELLED. Settings env-crash awaits E1 (blocked).
 
 ### State
 
-- **Unowned cloud gaps: NONE** — all lanes source-exhausted, owned, or cancelled; `27102e36` available, no assignable cloud gap
+- **Unowned cloud gaps: NONE** — all lanes source-exhausted or cancelled
 - **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native only)
-- **ACC E2E:** `43428348880` on `bf9f31fc61` attempt 2 result unknown; next run due on `31e6764d6`. Native 39 NOT_RUN.
+- **ACC E2E:** `43428348880` on `bf9f31fc61` attempt 2 subscription active (ACC owns); next run due on `c4d68825` main. Native 39 NOT_RUN.
 - **Native acceptance:** ALL frozen — E1 PROVIDER_LIMIT_BLOCKED, sole executor, no retry, no second executor
-- **Program bottleneck:** E1 provider limit (native acceptance); env-entry crash root cause UNKNOWN; no assignable cloud source gap remains
+- **Program state: SOURCE_COMPLETE** — all implementable cloud lanes exhausted. Remaining: native acceptance (E1 blocked), ACC E2E on current main, final review pass
+- **Program bottleneck:** E1 provider limit blocks native acceptance and settings env-crash root cause
