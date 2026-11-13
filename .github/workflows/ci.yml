@@ -30,7 +30,18 @@ jobs:
       - run: npm run typecheck
       - name: No colour literals outside src/theme/
         run: npm run lint:colors
+      - name: Isolated DOM test dependencies
+        timeout-minutes: 3
+        shell: bash
+        env:
+          ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
+        run: |
+          npm install --prefix "$ONBOARDING_DOM_DEPS" --cache "$RUNNER_TEMP/onboarding-dom-cache" \
+            --ignore-scripts --no-audit --no-fund --package-lock=false --save-exact jsdom@26.1.0
       - name: Frontend unit tests
+        env:
+          NODE_ENV: development
+          ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
         run: node --test "src/**/*.test.ts"
       - name: Window fill across interface zoom and resize
         run: node --test tests/e2e/window-fill.e2e.mjs
@@ -210,7 +221,19 @@ jobs:
       - run: npm ci
       - name: Chat top-level find frozen component regression
         run: node --test --test-reporter=tap tests/chat-search/transcriptFind.component.test.mjs
+      - name: Isolated DOM test dependencies
+        timeout-minutes: 3
+        shell: bash
+        env:
+          ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
+        run: |
+          npm install --prefix "$ONBOARDING_DOM_DEPS" --cache "$RUNNER_TEMP/onboarding-dom-cache" \
+            --ignore-scripts --no-audit --no-fund --package-lock=false --save-exact \
+            react@18.3.1 react-dom@18.3.1 typescript@5.9.3 jsdom@26.1.0
       - name: Pure TypeScript modules (Node strips types natively)
+        env:
+          NODE_ENV: development
+          ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
         run: node --test "src/**/*.test.ts"
       - name: Custom branch-prefix unchanged-fixture baseline and candidate replay
         timeout-minutes: 3
@@ -242,9 +265,6 @@ jobs:
           ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
           REACT_EFFECTS_DEPS: ${{ github.workspace }}/node_modules
         run: |
-          npm install --prefix "$ONBOARDING_DOM_DEPS" --cache "$RUNNER_TEMP/onboarding-dom-cache" \
-            --ignore-scripts --no-audit --no-fund --package-lock=false --save-exact \
-            react@18.3.1 react-dom@18.3.1 typescript@5.9.3 jsdom@26.1.0
           echo "Onboarding source commit: $(git rev-parse HEAD)"
           node --check tests/onboarding-strict-effects.test.mjs
           node --test --test-reporter=tap tests/onboarding-effects.test.mjs tests/onboarding-strict-effects.test.mjs tests/onboarding-selected-slide.test.mjs

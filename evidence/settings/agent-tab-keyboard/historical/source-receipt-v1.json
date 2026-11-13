@@ -1,0 +1,179 @@
+{
+  "author": "Conductor Rebuild",
+  "status": "SOURCE_CANDIDATE_NOT_ADMITTED_NOT_EXECUTED",
+  "checked_main": "c313e39f865694fdaf206220069f41ad063167df",
+  "ledger_scope_reply": "ddfc6518: no separate active AgentTabRow keyboard/focus claim; SAME64 may qualify the exact source leaf",
+  "existing_row": "a9e54829",
+  "queue_position": "LAST_UNCHANGED",
+  "new_execution_row": false,
+  "original11": "UNCHANGED; revision2 remains proposal, tsc excluded; not expanded by this receipt",
+  "reference_evidence": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference_renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "additional_reference_spans": [
+    {
+      "name": "_no",
+      "path": "reference/_no.literal.txt",
+      "utf8_half_open": [
+        6930560,
+        6932869
+      ],
+      "sha256": "f433f524bef5000968e946443f5f841c4d3cd5341caddb72c79e5690a6034921",
+      "bytes": 2309
+    },
+    {
+      "name": "Rno",
+      "path": "reference/Rno.literal.txt",
+      "utf8_half_open": [
+        6938178,
+        6938274
+      ],
+      "sha256": "72fda1b0ab77ec2bf4e9ab02b464230b91dadaf70beea441ae2474f7a73f98c2",
+      "bytes": 96
+    },
+    {
+      "name": "gI",
+      "path": "reference/gI.literal.txt",
+      "utf8_half_open": [
+        548374,
+        548431
+      ],
+      "sha256": "9e3cb6f7b622537bcd40fd5d9ec7436065a2c5177aff05a6393802791ba6bd25",
+      "bytes": 57
+    }
+  ],
+  "current_source_pins": [
+    {
+      "path": "src/keybindings/KeybindingsProvider.tsx",
+      "baseline_sha256": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6",
+      "candidate_sha256": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6",
+      "bytes": 5566
+    },
+    {
+      "path": "src/keybindings/bind.ts",
+      "baseline_sha256": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119",
+      "candidate_sha256": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119",
+      "bytes": 1925
+    },
+    {
+      "path": "src/keybindings/conflicts.ts",
+      "baseline_sha256": "282562172120ea4406bd0fd8c9b74412ab003c93067b6222e2336b9ca2d4d68d",
+      "candidate_sha256": "282562172120ea4406bd0fd8c9b74412ab003c93067b6222e2336b9ca2d4d68d",
+      "bytes": 1664
+    },
+    {
+      "path": "src/keybindings/dispatcher.ts",
+      "baseline_sha256": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197",
+      "candidate_sha256": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197",
+      "bytes": 5180
+    },
+    {
+      "path": "src/keybindings/editor.ts",
+      "baseline_sha256": "092b462b67401aadb33ec16c3c49a8aeab013971c313ce6a83ac7c17ac9f0958",
+      "candidate_sha256": "092b462b67401aadb33ec16c3c49a8aeab013971c313ce6a83ac7c17ac9f0958",
+      "bytes": 6167
+    },
+    {
+      "path": "src/keybindings/fuzzy.ts",
+      "baseline_sha256": "1bcbf1f4058508f23d5d079235d5b96ed6ed800582aae6de50db6a182d5c2c1c",
+      "candidate_sha256": "1bcbf1f4058508f23d5d079235d5b96ed6ed800582aae6de50db6a182d5c2c1c",
+      "bytes": 1478
+    },
+    {
+      "path": "src/keybindings/help.ts",
+      "baseline_sha256": "e7b5685513f3dca610159c2121ccb4cd041be04d6c9450fe15bdec7b8d97b88c",
+      "candidate_sha256": "e7b5685513f3dca610159c2121ccb4cd041be04d6c9450fe15bdec7b8d97b88c",
+      "bytes": 3042
+    },
+    {
+      "path": "src/keybindings/listeners.ts",
+      "baseline_sha256": "6944c63efcb6edee49d59d1ccdcfaed649902021946c8a8f60d50549fd89011a",
+      "candidate_sha256": "6944c63efcb6edee49d59d1ccdcfaed649902021946c8a8f60d50549fd89011a",
+      "bytes": 6133
+    },
+    {
+      "path": "src/keybindings/overrides.ts",
+      "baseline_sha256": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193",
+      "candidate_sha256": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193",
+      "bytes": 8207
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "baseline_sha256": "3a873cc27d99b73fafa340dc1585d9f4cd850966e91408c4f4dbad445bf4dcb9",
+      "candidate_sha256": "3a873cc27d99b73fafa340dc1585d9f4cd850966e91408c4f4dbad445bf4dcb9",
+      "bytes": 28780
+    },
+    {
+      "path": "src/keybindings/resolve.ts",
+      "baseline_sha256": "f8818d52d1af70bc788f5bda2d162b5b1634402592807bc78b5233ad4e1142bc",
+      "candidate_sha256": "f8818d52d1af70bc788f5bda2d162b5b1634402592807bc78b5233ad4e1142bc",
+      "bytes": 2809
+    },
+    {
+      "path": "src/keybindings/selectAll.ts",
+      "baseline_sha256": "508b26417d717f938eb118afbe8c0ff96873643cb4e5c0879467e5368e97db90",
+      "candidate_sha256": "508b26417d717f938eb118afbe8c0ff96873643cb4e5c0879467e5368e97db90",
+      "bytes": 1632
+    },
+    {
+      "path": "src/keybindings/shortcut.ts",
+      "baseline_sha256": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8",
+      "candidate_sha256": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8",
+      "bytes": 5791
+    },
+    {
+      "path": "src/keybindings/types.ts",
+      "baseline_sha256": "cdfcd723ed324b7f32698d36496fbc6bf6514c78f61e4d562c81b302207c4ecb",
+      "candidate_sha256": "cdfcd723ed324b7f32698d36496fbc6bf6514c78f61e4d562c81b302207c4ecb",
+      "bytes": 1758
+    },
+    {
+      "path": "src/settings/AgentsPage.tsx",
+      "baseline_sha256": "2d9167dd3176f6220f6036aff0c4e8bf5125e1e6e575984c401e67cd83f7f0ee",
+      "candidate_sha256": "2d9167dd3176f6220f6036aff0c4e8bf5125e1e6e575984c401e67cd83f7f0ee",
+      "bytes": 1817
+    },
+    {
+      "path": "src/settings/agents/kit.tsx",
+      "baseline_sha256": "1c8ed18fac67ff8ebc44572621e1740332c0b00f639eed7f7986ba53b6532dd8",
+      "candidate_sha256": "aa00bc6c5bf131d2ff33d23ac39f8ac81636ec4f82a4e8937d7612162d94124b",
+      "bytes": 14761
+    },
+    {
+      "path": "src/settings/agents/kitModel.ts",
+      "baseline_sha256": "be6a94abe11962ca756be5733b946f7b5d34acafc567db937a8e1ce688352937",
+      "candidate_sha256": "be6a94abe11962ca756be5733b946f7b5d34acafc567db937a8e1ce688352937",
+      "bytes": 1346
+    },
+    {
+      "path": "src/settings/providerTab.ts",
+      "baseline_sha256": "da932b8fe4c9da6edd9e95b1f35032c373e3429a83fcc3f833ccedf62fef0e8c",
+      "candidate_sha256": "da932b8fe4c9da6edd9e95b1f35032c373e3429a83fcc3f833ccedf62fef0e8c",
+      "bytes": 1088
+    }
+  ],
+  "product_scope": "AgentTabRow only; no OpenInSplit, SettingsView, keybindings, provider, credentials, or menus changes",
+  "fixture": {
+    "path": "agentTabsKeyboard.dom.test.mjs",
+    "sha256": "833644d93d3c45c4846800c2d923540ff53c57b22d2aa1f53aaf99dbc1789d51",
+    "cases": 22,
+    "predicted_baseline_failures": 11,
+    "predicted_baseline_controls": 11,
+    "predicted_candidate_passes": 22,
+    "predictions_not_observed": true
+  },
+  "patch": {
+    "path": "candidate.patch",
+    "sha256": "722b674f6f6ea92dd9ae95b9f352589195c8192ae2da384c1b0f1db36a46fd7a"
+  },
+  "global_boundary": "App returns SettingsView instead of WorkspaceView; SettingsView registers settings.close only. App-shell registrations have no unmodified horizontal arrow/Home/End defaults. Real KeybindingsProvider/listeners/dispatcher/bind/registry are included in fixture. The lightweight Settings host records settings.close instead of mounting the whole SettingsView. Chat is not mounted, matching the App Settings branch.",
+  "fixture_scope": "Real AgentsPage, AgentTabRow, providerTab URL store, kitModel and keybindings modules. Provider panels, settings path, app discovery and external actions are inert boundaries. No original reference JavaScript evaluated.",
+  "source_checks": "PASS",
+  "behavioral_runtime": "NOT_RUN",
+  "typecheck": "NOT_RUN_EXCLUDED",
+  "browser_native_provider_package": "NOT_RUN_EXISTING_OWNERS_UNCHANGED",
+  "limitations": [
+    "Static source predictions are not reproduced defects or runtime passes.",
+    "No native reference key press, pointer timing, browser focus, RTL app, or package acceptance observed.",
+    "Source-only draft is not an addition to the original11 admission scope."
+  ]
+}

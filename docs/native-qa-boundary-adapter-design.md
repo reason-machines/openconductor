@@ -1,7 +1,9 @@
 # Two-file authority adapter contract
 
 Conductor Rebuild. Source design and pure rejection contract, not an executor.
-Source reviewed at main `c313e39f865694fdaf206220069f41ad063167df`.
+V2 source grounded at main `06500f5ef1230513090e42aebe0222fd4f83a72d`.
+The predecessor in PR #1196 passed one ACC-admitted 41-test synthetic run; that
+historical result does not verify this v2 source or authorize another run.
 
 ## What this increment delivers
 
@@ -133,8 +135,10 @@ read/write/fsync/readback control sequences: both protected files before and
 after the quiescent denial phase. Those writes use fixed supervisor-selected
 bytes and independently observed expected changes.
 
-The single registry `OPERATIONS` defines all syscall stages and derives the
-matrix. Do not maintain a second operation list in the fixture generator.
+The single registry `OPERATIONS` defines all syscall stages, successful results,
+denial positions and closed operand schemas, and derives the matrix. `CONTROL`
+defines the consumer stages and operand schemas. Fixtures derive their stages
+and field sets from these registries, not a second operation list.
 
 1. `write`: O_RDWR open, then a non-noop pwrite if open succeeds. A passing
    protected result denies at open.
@@ -180,8 +184,9 @@ assert readback.native_admission is False
 
 `ExternalContext` is selected outside the report. It contains source/config,
 nonce and OS build; the four actual actor identities; the two approved file
-pins; bootstrap/post-drop/capability witnesses; and the digest of the
-independently authenticated observation report. Environment USER, a raw PID or a
+pins; bootstrap/post-drop/capability witnesses; the digest of the independently
+authenticated observation report; and exactly 60 ordered, frozen `RowSelection`
+objects in a tuple. Environment USER, a raw PID or a
 report-selected key cannot supply this context. The module has no credential
 lookup, signature library or transport and cannot mint this trust itself.
 
@@ -210,14 +215,76 @@ preflight errno, unsupported errors, relabelled NOT_REACHED stages, changed
 bytes/objects/ACL/ancestry, and lost final actor/observer identity. It never reads
 evidence paths, fetches URLs or executes code from reports.
 
-The parser does not independently validate exact syscall arguments, offsets,
-lengths, flags, modes, descriptor-to-open provenance, parent-rename directory
-operands or continuous per-event actor attribution. Those are explicit obligations
-of the future trusted adapter. It must authenticate the actual execution, operands
-and results, not merely approve an operation name, planned hash or actor-provided
-errno. A future strict operand-plan contract can correlate separately selected
-per-row actor lifetimes and canonical operand witnesses, but cannot collect or
-authenticate those observations by itself.
+### V2 operand and event correlation
+
+V2 replaces the v1 wire format; there is no legacy acceptance path. Each external
+`RowSelection` pins sequence, kind, role, file, operation, phase, the full selected
+`Actor`, an opaque actor-lifetime token, an operand digest and a record-witness
+digest. The selection must match the exact matrix cell. One actor retains one
+unique token throughout the interval. Each reached stage must name that token;
+NOT_REACHED stages have no event actor or acquired capability. These are recorded
+relationships, not proof of continuous lifetime or actual attribution.
+
+The closed `operand` object retains volume/target/source/alias identities and
+adds a target entry, optional source entry and an ordered `plan` of argument
+objects. Every stage has exactly the argument fields defined by its registry
+schema. Missing, unknown and extra arguments or stages are refused even when a
+synthetic test rebinds all hashes. Numeric identities, offsets, lengths, modes,
+descriptors and addresses use exact non-Boolean integers, never equal-valued
+floats or Booleans.
+
+- Entries bind volume, inode, kind, ancestry, one leaf name and a containing
+  directory's volume/inode/ancestry. Names cannot be empty, dot entries, paths
+  or contain NUL. Directory observations and namespace custody remain external.
+- Open plans select `O_RDWR|O_NOFOLLOW`; alias reopen selects `O_RDWR` through
+  the distinct symlink entry and separately binds its resolved regular target.
+  The symbolic flags are contract values; native flag translation and actual
+  resolution must be observed by the future adapter.
+- Pwrite/store plans select offset zero, 32 bytes and the digest of a fixed
+  32-byte nonce/file/position marker. Consumer positions are `before`/`after`;
+  other positions are `row:<sequence>`. The marker is SHA-256 of
+  `<nonce>:<file>:<position>` encoded as UTF-8. Truncate selects length zero;
+  chmod selects mode `0666`. These are non-noop mutations of the seeded object.
+- Mmap selects offset zero, 4096 bytes, `PROT_READ|PROT_WRITE`, `MAP_SHARED`, then
+  an in-range store and `MS_SYNC` over the same mapping. Protected open denial
+  still leaves mmap/store/msync NOT_REACHED; this is acquisition-only scope.
+- An FD or mapping reference binds its numeric value, acquisition origin, row
+  sequence, actor-lifetime token and target volume/inode. Opened descriptors
+  must match that row's actual open return; mapping references must match its
+  mmap return. Consumer descriptors instead reference `postdrop_transfer` at
+  sequence zero, remain stable within and across their controls, and are
+  distinct for disk and aux. No transfer or acquisition is performed here.
+- Parent rename binds the actual containing directory entry, its containing
+  parent, and a distinct absent sibling name under that same parent. Preflight
+  and rename must use identical source/destination records. File and directory
+  pins cannot substitute for each other. Leaf-only evidence is insufficient.
+
+The two per-row digests have different inputs. `operand_sha256` covers the
+complete `operand` object, including every planned argument and capability
+reference. `witness_sha256` covers the complete record: sequence/cell/phase,
+actor-lifetime token, operands, attributed stage results/errnos and both observer
+snapshots. Neither digest appears in the report itself, so neither is excluded
+from a self-referential report field. Both values are selected outside it.
+
+`canonical_digest(value, domain)` uses `json.dumps` with sorted keys, compact
+separators, `ensure_ascii=True` and `allow_nan=False`, then ASCII encoding. Its
+SHA-256 input is the UTF-8 prefix `OC_INERT_PAIR_CONTRACT_V2:<domain>` followed by
+one NUL byte and those canonical bytes; domain is exactly `operand` or `witness`.
+Wire parsing first rejects duplicate keys and nonfinite constants; closed schema
+and exact-type checks precede digest comparison. JSON key order is immaterial,
+but numeric types and list order are not normalized. The whole-report external
+digest still covers the original raw bytes, not canonical JSON.
+
+A matching plan hash does not establish execution. The future trusted adapter
+must independently select the intended plan and authenticate the actual operands,
+results, snapshots and attribution before supplying a separate witness hash.
+Never construct native trust anchors from submitted actor JSON, its keys or its
+claimed digests. The fixture helper deliberately does that only for synthetic
+semantic tests; correlation tests retain the separately pinned row selections.
+Constructing `ExternalContext`, `RowSelection`, or a matching hash authenticates
+nothing. Actual-caller/peer capability assessment, continuous event attribution,
+actual descriptor/mapping provenance, original namespace custody and native
+syscall truth remain unimplemented external dependencies.
 
 Calibration baseline identities and replacement-result identities are reserved
 across the complete matrix. A later calibration cannot reuse either as a baseline
@@ -278,12 +345,18 @@ The existing artifact byte reader, restricted visual startup and child-only
 sandbox do not supply those capabilities. Source reviewer 25deeefb and two
 retained design reviewers conditionally support this narrow prerequisite only.
 
-The portable command, only after ACC admits the frozen candidate, is:
+The proposed portable command, only after revision-bound source review and a
+separate ACC grant for the frozen v2 candidate, is one foreground attempt:
 
 ```bash
-python3 -W error::ResourceWarning -m unittest tools.test_native_qa_authority_contract -v
+bash -c 'ulimit -v 262144 && ulimit -f 1024 && exec timeout --signal=TERM --kill-after=5s 30s python3 -B -W error::ResourceWarning -m unittest tools.test_native_qa_authority_contract -v' > .ara-state/authority-adapter-design/portable-v2.log 2>&1
 ```
 
+The proposal requires a fresh actual-target eligibility preflight, unchanged
+three-file hashes, an existing log directory, a 35-second parent timeout and a
+45-second total budget including preflight/readback/cleanup, with explicit slot
+release. Failed setup/limits stop the attempt; no retry or extension is implied.
+No v2 imports, compilation or tests have run at the source-freeze milestone.
 No install, native test, calibration, provider operation or Mac action is part of
 that command. Boundary Discipline shaped this design: validate external evidence
 once, keep the matrix model pure, and never infer enforcement from valid data.

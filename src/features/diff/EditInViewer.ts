@@ -35,6 +35,17 @@ export interface FileEdit {
 const draftState: EditorDraftState = { contents: new Map(), pendingSaves: new Map() };
 const drafts = draftState.contents;
 const draftKey = (worktree: string | null, path: string) => `${worktree ?? "sample"}\u0000${path}`;
+const saveTasks = new Map<string, Set<Promise<void>>>();
+
+/** Wait for this target's existing writes before reading a replacement snapshot. */
+export async function waitForFileSaves(worktree: string | null, path: string): Promise<void> {
+  const key = draftKey(worktree, path);
+  let tasks = saveTasks.get(key);
+  while (tasks !== undefined) {
+    await Promise.allSettled([...tasks]);
+    tasks = saveTasks.get(key);
+  }
+}
 
 /** Browser mode (no Tauri): saves land here, so the flow can be tried without a worktree. */
 export const sampleSaves = new Map<string, string>();
@@ -75,10 +86,22 @@ export function useFileEdit(worktree: string | null, path: string, onDisk: strin
   const onSave = useCallback(
     (contents: string) => {
       setError(null);
-      persistEditorDraft(draftState, key, contents, async () => {
+      let finish = () => {};
+      const completion = new Promise<void>((resolve) => { finish = resolve; });
+      let pending = saveTasks.get(key);
+      if (pending === undefined) saveTasks.set(key, (pending = new Set()));
+      pending.add(completion);
+      const owned = pending;
+      void completion.then(() => {
+        owned.delete(completion);
+        if (owned.size === 0 && saveTasks.get(key) === owned) saveTasks.delete(key);
+      });
+      const task = persistEditorDraft(draftState, key, contents, async () => {
         await saveFile(worktree, path, contents);
         seen.current = acknowledgeEditorSave(seen.current, key, contents);
-      }).then(
+      });
+      void task.then(finish, finish);
+      task.then(
         () => {
           rerender((n) => n + 1);
           onSaved?.();

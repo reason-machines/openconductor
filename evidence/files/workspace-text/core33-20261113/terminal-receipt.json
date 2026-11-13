@@ -1,0 +1,489 @@
+{
+  "grant": "ACC_DE6_CORE33_CANDIDATE_20261113T0122",
+  "release_utc": "2026-11-13T01:35:19.961523+00:00",
+  "head": "7adf542cb1fddc7ebd36f9ad3cb71283088ed697",
+  "main": "a66b72e9fc3790a0c93ac614a901da727929c5d9",
+  "baseline": "NOT_DEFINED/NOT_AUTHORED",
+  "state": "PARTIAL_PLATFORM_BLOCKED",
+  "new_feature_node_passed": 27,
+  "adjacent_node_passed": 67,
+  "node_passed": 94,
+  "node_failed": 0,
+  "node_skipped": 0,
+  "rust_new_executed": 0,
+  "rust_existing_executed": 0,
+  "Rust": "SETUP_FAILED: glib-sys needs glib-2.0 >= 2.70; glib-2.0.pc not found; NO_RUST_TEST_CREDIT",
+  "typecheck": "PASS",
+  "original33_qualified": false,
+  "actual_per_file": {
+    "src/features/diff/EditInViewer.test.ts": {
+      "actual_passed": 9,
+      "TAP_ordinal_bounds": [
+        1,
+        9
+      ],
+      "actual_cases": [
+        {
+          "ordinal": 1,
+          "name": "the entire-file view edits the new file's full text, keeping a missing final newline"
+        },
+        {
+          "ordinal": 2,
+          "name": "unified edits the complete file, not just the visible patch"
+        },
+        {
+          "ordinal": 3,
+          "name": "split edits the complete file, not just the visible patch"
+        },
+        {
+          "ordinal": 4,
+          "name": "unified seeds the editor with the full draft and preserves annotations and old contents"
+        },
+        {
+          "ordinal": 5,
+          "name": "split seeds the editor with the full draft and preserves annotations and old contents"
+        },
+        {
+          "ordinal": 6,
+          "name": "file seeds the editor with the full draft and preserves annotations and old contents"
+        },
+        {
+          "ordinal": 7,
+          "name": "a partial diff never becomes an editable document"
+        },
+        {
+          "ordinal": 8,
+          "name": "a new file's diff editor keeps its absent old side"
+        },
+        {
+          "ordinal": 9,
+          "name": "hidden whitespace, binary and deleted files are not editable"
+        }
+      ]
+    },
+    "src/features/diff/copyFile.test.ts": {
+      "actual_passed": 9,
+      "TAP_ordinal_bounds": [
+        10,
+        18
+      ],
+      "actual_cases": [
+        {
+          "ordinal": 10,
+          "name": "text files are those that are not images, videos or PDFs"
+        },
+        {
+          "ordinal": 11,
+          "name": "no copy button for deleted, binary or non-text files"
+        },
+        {
+          "ordinal": 12,
+          "name": "copies the editor draft when there is one, else loads the whole new file"
+        },
+        {
+          "ordinal": 13,
+          "name": "whitespace-hidden files copy exact new-side text when adding trailing spaces"
+        },
+        {
+          "ordinal": 14,
+          "name": "whitespace-hidden files copy exact new-side text when removing old-side whitespace"
+        },
+        {
+          "ordinal": 15,
+          "name": "whitespace-hidden files copy exact new-side text when changing whitespace on both sides"
+        },
+        {
+          "ordinal": 16,
+          "name": "metadata-only changes without text hunks or a missing loader have nothing to copy"
+        },
+        {
+          "ordinal": 17,
+          "name": "the new file's text comes from a whole-file diff"
+        },
+        {
+          "ordinal": 18,
+          "name": "the HTML flavour names the path in Conductor's clipboard payload and escapes the text"
+        }
+      ]
+    },
+    "src/features/diff/editorContents.test.ts": {
+      "actual_passed": 26,
+      "TAP_ordinal_bounds": [
+        19,
+        44
+      ],
+      "actual_cases": [
+        {
+          "ordinal": 19,
+          "name": "external refresh preserves a pending nonempty draft without remounting"
+        },
+        {
+          "ordinal": 20,
+          "name": "external refresh preserves a pending empty draft without remounting"
+        },
+        {
+          "ordinal": 21,
+          "name": "a clean editor adopts an external revision and advances generation once"
+        },
+        {
+          "ordinal": 22,
+          "name": "a pending draft equal to the new disk text still prevents a remount"
+        },
+        {
+          "ordinal": 23,
+          "name": "loading keeps the last loaded revision and draft"
+        },
+        {
+          "ordinal": 24,
+          "name": "loading does not hide a clean external revision"
+        },
+        {
+          "ordinal": 25,
+          "name": "first loaded contents, including an empty file, do not invent a revision"
+        },
+        {
+          "ordinal": 26,
+          "name": "a clean external empty file is a real revision"
+        },
+        {
+          "ordinal": 27,
+          "name": "own-save refresh acknowledges nonempty contents once without remounting"
+        },
+        {
+          "ordinal": 28,
+          "name": "own-save refresh acknowledges empty contents once without remounting"
+        },
+        {
+          "ordinal": 29,
+          "name": "edits made while saving survive the saved-content refresh"
+        },
+        {
+          "ordinal": 30,
+          "name": "an external revision consumes a stale save acknowledgement"
+        },
+        {
+          "ordinal": 31,
+          "name": "an idle edit to the nonempty baseline clears the draft"
+        },
+        {
+          "ordinal": 32,
+          "name": "editing to the old nonempty baseline during a different save retains that draft through refresh"
+        },
+        {
+          "ordinal": 33,
+          "name": "an idle edit to the empty baseline clears the draft"
+        },
+        {
+          "ordinal": 34,
+          "name": "editing to the old empty baseline during a different save retains that draft through refresh"
+        },
+        {
+          "ordinal": 35,
+          "name": "a successful save clears only its unchanged nonempty submitted draft"
+        },
+        {
+          "ordinal": 36,
+          "name": "a successful save clears only its unchanged empty submitted draft"
+        },
+        {
+          "ordinal": 37,
+          "name": "a successful save retains a newer distinct draft"
+        },
+        {
+          "ordinal": 38,
+          "name": "a rejected write propagates its error, retains the current draft and releases pending state"
+        },
+        {
+          "ordinal": 39,
+          "name": "the write port observes pending state synchronously, including a synchronous throw"
+        },
+        {
+          "ordinal": 40,
+          "name": "pending saves and completion cleanup are isolated from \"/worktree/a\\\\u0000other.ts\""
+        },
+        {
+          "ordinal": 41,
+          "name": "pending saves and completion cleanup are isolated from \"/worktree/b\\\\u0000file.ts\""
+        },
+        {
+          "ordinal": 42,
+          "name": "concurrent saves start immediately and remain pending in completion order 0,1"
+        },
+        {
+          "ordinal": 43,
+          "name": "concurrent saves start immediately and remain pending in completion order 1,0"
+        },
+        {
+          "ordinal": 44,
+          "name": "switching file or worktree isolates drafts, generation and save acknowledgement"
+        }
+      ]
+    },
+    "src/features/diff/wholeFileRefresh.test.ts": {
+      "actual_passed": 17,
+      "TAP_ordinal_bounds": [
+        45,
+        61
+      ],
+      "actual_cases": [
+        {
+          "ordinal": 45,
+          "name": "a same-file revision retains loaded whole-file context while the background refresh is pending"
+        },
+        {
+          "ordinal": 46,
+          "name": "a rejected same-file refresh keeps prior whole-file data without making it editable"
+        },
+        {
+          "ordinal": 47,
+          "name": "an unchanged selected revision survives object replacement when another file changes, then refresh rejects"
+        },
+        {
+          "ordinal": 48,
+          "name": "an identical background list result reuses the selected object without a redundant full load"
+        },
+        {
+          "ordinal": 49,
+          "name": "an initial whole-file failure stays a non-editable partial diff"
+        },
+        {
+          "ordinal": 50,
+          "name": "a superseded whole-file success cannot replace a newer same-file result"
+        },
+        {
+          "ordinal": 51,
+          "name": "a superseded whole-file failure cannot replace a newer same-file result"
+        },
+        {
+          "ordinal": 52,
+          "name": "switching to a different file never displays the previous file's full contents"
+        },
+        {
+          "ordinal": 53,
+          "name": "a changed worktree is a different logical diff, not a same-file refresh"
+        },
+        {
+          "ordinal": 54,
+          "name": "a changed target branch is a different logical diff, not a same-file refresh"
+        },
+        {
+          "ordinal": 55,
+          "name": "a changed target remote is a different logical diff, not a same-file refresh"
+        },
+        {
+          "ordinal": 56,
+          "name": "a changed scope is a different logical diff, not a same-file refresh"
+        },
+        {
+          "ordinal": 57,
+          "name": "a changed commit is a different logical diff, not a same-file refresh"
+        },
+        {
+          "ordinal": 58,
+          "name": "a changed turn is a different logical diff, not a same-file refresh"
+        },
+        {
+          "ordinal": 59,
+          "name": "a changed whitespace mode is a different logical diff, not a same-file refresh"
+        },
+        {
+          "ordinal": 60,
+          "name": "a changed rename origin is a different logical diff, not a same-file refresh"
+        },
+        {
+          "ordinal": 61,
+          "name": "a changed status is a different logical diff, not a same-file refresh"
+        }
+      ]
+    },
+    "src/features/files/WorkspaceFileView.test.ts": {
+      "actual_passed": 20,
+      "TAP_ordinal_bounds": [
+        62,
+        81
+      ],
+      "actual_cases": [
+        {
+          "ordinal": 62,
+          "name": "unchanged generic text is a raw editable file, including \"\""
+        },
+        {
+          "ordinal": 63,
+          "name": "unchanged generic text is a raw editable file, including \"const caf\u00e9 = '\u6d77';\\\\r\\\\n\""
+        },
+        {
+          "ordinal": 64,
+          "name": "unchanged generic text is a raw editable file, including \"no final newline\""
+        },
+        {
+          "ordinal": 65,
+          "name": "the existing draft/save hook writes the generic file, without a diff API"
+        },
+        {
+          "ordinal": 66,
+          "name": "a save refusal is visible and does not discard the draft"
+        },
+        {
+          "ordinal": 67,
+          "name": "explicit read-only files render without edit or save"
+        },
+        {
+          "ordinal": 68,
+          "name": "switching to read-only after an acknowledged save rereads the saved contents"
+        },
+        {
+          "ordinal": 69,
+          "name": "a read-only replacement waits for its target's pending save before reading"
+        },
+        {
+          "ordinal": 70,
+          "name": "reopening the same target while its save is pending reads after the write"
+        },
+        {
+          "ordinal": 71,
+          "name": "A's pending completion cannot replace the current B target"
+        },
+        {
+          "ordinal": 72,
+          "name": "a pending save failure releases the read without discarding the unsaved draft"
+        },
+        {
+          "ordinal": 73,
+          "name": "a read-only round trip retains an unsaved draft without displaying it as disk text"
+        },
+        {
+          "ordinal": 74,
+          "name": "retaining a hidden view cannot consume save or write"
+        },
+        {
+          "ordinal": 75,
+          "name": "non-text path picture.PNG never becomes an editor"
+        },
+        {
+          "ordinal": 76,
+          "name": "non-text path movie.mov never becomes an editor"
+        },
+        {
+          "ordinal": 77,
+          "name": "non-text path document.pdf never becomes an editor"
+        },
+        {
+          "ordinal": 78,
+          "name": "load refusal or invalid response does not manufacture empty editable content"
+        },
+        {
+          "ordinal": 79,
+          "name": "load refusal or invalid response does not manufacture empty editable content"
+        },
+        {
+          "ordinal": 80,
+          "name": "browser mode refuses local reads rather than enabling sample writes"
+        },
+        {
+          "ordinal": 81,
+          "name": "a different worktree does not display the old path's late read"
+        }
+      ]
+    },
+    "src/features/files/filePreviewWiring.test.ts": {
+      "actual_passed": 2,
+      "TAP_ordinal_bounds": [
+        82,
+        83
+      ],
+      "actual_cases": [
+        {
+          "ordinal": 82,
+          "name": "All files can delegate internally before attempting an external app"
+        },
+        {
+          "ordinal": 83,
+          "name": "the read-only file host is wired through WorkspaceView, not chat rendering"
+        }
+      ]
+    },
+    "src/features/files/readMarkdown.test.ts": {
+      "actual_passed": 4,
+      "TAP_ordinal_bounds": [
+        84,
+        87
+      ],
+      "actual_cases": [
+        {
+          "ordinal": 84,
+          "name": "a read publishes loading then the complete UTF-8 text"
+        },
+        {
+          "ordinal": 85,
+          "name": "read errors are surfaced instead of leaving preview pending"
+        },
+        {
+          "ordinal": 86,
+          "name": "closing or replacing a file cancels publication of its late read"
+        },
+        {
+          "ordinal": 87,
+          "name": "a rejected read cannot publish after unmount"
+        }
+      ]
+    },
+    "src/features/files/readText.test.ts": {
+      "actual_passed": 7,
+      "TAP_ordinal_bounds": [
+        88,
+        94
+      ],
+      "actual_cases": [
+        {
+          "ordinal": 88,
+          "name": "generic read preserves exact text \"\""
+        },
+        {
+          "ordinal": 89,
+          "name": "generic read preserves exact text \"const caf\u00e9 = '\u6d77';\\\\r\\\\n\""
+        },
+        {
+          "ordinal": 90,
+          "name": "generic read preserves exact text \"without final newline\""
+        },
+        {
+          "ordinal": 91,
+          "name": "a failed read never becomes an editable empty document"
+        },
+        {
+          "ordinal": 92,
+          "name": "a failed read never becomes an editable empty document"
+        },
+        {
+          "ordinal": 93,
+          "name": "replacing a worktree/path cancels late successful publication"
+        },
+        {
+          "ordinal": 94,
+          "name": "unmount cancels late read errors"
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "removed_owned_rebuildables": [
+      "node_modules",
+      "src-tauri/target"
+    ],
+    "cleanup_seconds": 1.8527693639989593,
+    "locks_unchanged": true,
+    "cargo_lock_auto_addition_reverted": "openconductor dependencies sqlx entry was auto-added by Cargo; restored exact original lock",
+    "frozen_hashes_unchanged": 419,
+    "jobs": [],
+    "servers": [],
+    "ownruntime": []
+  },
+  "resource_accounting": "PARTIAL: sampled owned descendants at250ms, no private cgroup memory controller/capacity exposed",
+  "not_run": [
+    "browser",
+    "native",
+    "caller6",
+    "raw8",
+    "shortcut5"
+  ]
+}
