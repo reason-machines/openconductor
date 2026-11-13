@@ -860,3 +860,53 @@ All evidence directories in `evidence/diff/` and `evidence/files/` cross-checked
 ### Unowned implementable diff/files source gap
 
 **None** at `8416fc30d`. The 32 native behavioral items (Q-01–Q-32) remain with the sole native executor (E1). The `wrap_lines` settings-DB gap is settings-lane owned.
+
+---
+
+## Program reconciliation r1137 at main `c189ea62`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**#1278 merged** — squash `c189ea62` (docs(ledger): program reconciliation r1131). Merge-conflict event was stale; PR had already landed.
+
+**Package run #1788 (`e963fb31`) artifact confirmed** — `OpenConductor-debug-macos`, sha256 `908387b4668e2a92ae295b4e548efab1a571962beed788eee54786c552c35563`, 109 051 934 bytes, completed 11:13:48Z. Forwarding to E1 blocked (PROVIDER_LIMIT_BLOCKED).
+
+**Settings full browser acceptance — PASS** (Session `49e3976d`, main `a36188938d`, Vite dev + cloud Chrome):
+
+| Tab | Items | Result |
+|---|---|---|
+| General / SoundSelect | 7 DOM groups (1 unnamed → "No sound", 6 labeled), 6 visible group-label headers, 14 items, 4 transit logos (muni/mta/metro-de-paris/sncf), Classic/Novelty plain, onChange fires | PASS (browser) |
+| Appearance | 12 rows: Theme, Low-contrast, App zoom, Colored sidebar diffs, Accessible colors, Code theme, Mono Font, Code ligatures, Markdown Style, Terminal font, Color palette + preview blocks | PASS (browser) |
+| Keyboard shortcuts | 5 groups, full row list | PASS (browser) |
+| Environment | Table CRUD via localStorage: add `MY_API_KEY`, 18 documented vars toggle, remove all; Add env file button present | PASS (browser) |
+| Advanced | 9 rows: root dir, Claude path, Codex exec path, SSH key, Remote MCP, Always allow, File sync, Set upstream, Scrollback | PASS (browser) |
+
+Recording: https://api.reasonmachines.com/media/pr-screenshots/746fef00-042c-424c-99a4-35c5e3982e29/a4f7aaacd3f8287e39857df2a854f6bd/6956955b-aa40-4b64-a13d-1a1f1969de19.webm
+
+**NOT_RUN (requires macOS Tauri native):** settings.toml save/reload, native file pickers, full disk access check, env-file variable counts, RootPathRow native display.
+
+### Group count reconciliation (SOUNDSELECT-BROWSER-ACCEPTANCE-49-01)
+
+Reconciled from source (`sound.ts` + `SoundSelect.tsx`, main `a36188938d`) and two browser runs:
+- **7 DOM `Select.Group` nodes**: 1 unnamed (`group: ""` → "No sound"), 6 named
+- **6 visible `Select.GroupLabel` headers**: Classic, Novelty, SF Muni, NYC MTA, Paris Métro, SNCF (unnamed group suppressed by `group.label && …` guard in `SoundSelect.tsx:92`)
+- **14 total items**: No sound (1) + Classic (2) + Novelty (3) + SF Muni (2) + NYC MTA (3) + Paris Métro (2) + SNCF (1)
+- **4 transit logos** (`GROUP_LOGOS` entries): SF Muni, NYC MTA, Paris Métro, SNCF; Classic and Novelty are text-only (correct)
+
+Both prior run counts were correct and measured different things. No source defect. SOUNDSELECT-BROWSER-ACCEPTANCE-49-01 reconciled; native logo rendering NOT_RUN.
+
+### Active owners
+
+| Session | Work | Status |
+|---|---|---|
+| `15faf4d8` | #1271 CI + PICK-ISSUES-DIALOG | Ongoing |
+| `992a715e` | Package artifact follow-through | Artifact confirmed; E1 handoff blocked |
+
+### State
+
+- **Source gaps: NONE.** All lanes SOURCE_EXHAUSTED.
+- **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures, not current-main native parity). Native 39 NOT_RUN.
+- **Native acceptance (39 items + settings.toml/IPC):** Sole executor E1 PROVIDER_LIMIT_BLOCKED — no retry authorized.
+- **Program bottleneck:** E1 provider reset required before native acceptance can proceed.
