@@ -1,6 +1,6 @@
 {
   "agent": "codex",
-  "app_commit": "main 95ec07d plus this PR's Codex API key login (built from the working tree)",
+  "app_commit": "main 3da28905 (app unchanged; this PR's driver types into the contenteditable composer)",
   "host": {
     "os": "macOS-26.4-arm64-arm-64bit",
     "machine": "arm64"
@@ -8,8 +8,8 @@
   "cli_version": "codex-cli 0.166.0",
   "key_only_control": true,
   "cli_auth_in_throwaway_home": "Not logged in",
-  "started": "2026-11-06T14:16:11.338Z",
-  "ended": "2026-11-06T14:16:17.617Z",
+  "started": "2026-11-11T09:36:28.001Z",
+  "ended": "2026-11-11T09:36:31.638Z",
   "error": null,
   "modes": [
     {
@@ -30,7 +30,7 @@
         "error": null,
         "signInNotice": null,
         "reply": "oc-apikey-ok",
-        "seconds": 3
+        "seconds": 2
       },
       "result": "pass"
     }

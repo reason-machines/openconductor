@@ -25,11 +25,12 @@
 // In the desktop app every chat's status is kept in `conductor.db`
 // (`connectStatusStore`).
 
-import { invoke, isTauri } from "@tauri-apps/api/core";
+import { Channel, invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { applyReasonPayload, permissionPrompt, type PromptAttachment, type ReasonPayload } from "./reason.ts";
 import { connectStatusStore, createChatRuntime, type ChatBackend, type Deliver, type PermissionAnswer, type PermissionEvents, type PermissionPrompt } from "./chatRuntime.ts";
 import { desktopHost } from "./desktopHost.ts";
+import { signedIn, type ReasonAccount } from "../../settings/agents/reasonModes.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
 import { withGeneralPreferences } from "../../settings/prompts.ts";
 import { parseModelOptions, saveRunningModel, loadCachedModels, saveCachedModels, type ReasonModelOption, type RunningModel } from "./reasonModels.ts";
@@ -71,15 +72,19 @@ const reasonBackend: ChatBackend<ReasonConfig[]> = {
       }
     }),
   async open(chatId, cwd, sessionId, config) {
+    const account = await invoke<ReasonAccount | null>("reason_account_status");
+    if (!signedIn(account)) throw new Error("Authentication required. Sign in to Reason to send this message.");
     await invoke("reason_open_chat", { chatId, cwd, sessionId, config });
   },
   // The open Session switches before its next prompt (reason_acp/provider.rs).
   reconfigure(chatId, config) {
     void invoke("reason_set_config", { chatId, config }).catch((e) => console.warn("reason chat: options not updated", e));
   },
-  async prompt({ chatId, cwd, text, attachments, turn, firstMessage, repoPath }) {
+  async prompt({ chatId, cwd, text, attachments, turn, firstMessage, repoPath, onHandoff }) {
     const agentText = firstMessage && repoPath ? await withGeneral(text, repoPath, cwd) : text;
-    return invoke("reason_prompt", { chatId, text: agentText, attachments, turn });
+    const handoff = new Channel<null>();
+    handoff.onmessage = () => onHandoff?.();
+    return invoke("reason_prompt", { chatId, text: agentText, attachments, turn, onHandoff: handoff });
   },
   // Reason has one cancel; a repeated Stop asks it again.
   cancel(chatId) {
@@ -222,6 +227,7 @@ if (reasonAvailable()) connectStatusStore({ invoke: desktopHost.invoke, listen }
 export const chatSnapshot = reason.snapshot;
 export const subscribeChat = reason.subscribe;
 export const submitChat = reason.submit;
+export const retryReasonAuth = reason.retryUnsent;
 export const stopChat = reason.stop;
 export const queueAction = reason.queueAction;
 /**
@@ -286,5 +292,5 @@ export function reasonModels(fresh = false): Promise<ReasonModelOption[]> {
 
 /** The first message or a Retry: starts when idle, else waits in the queue. */
 export function sendReason(chatId: string, cwd: string, text: string, attachments: readonly PromptAttachment[] = [], repoPath?: string): void {
-  reason.submit(chatId, cwd, text, "queue", attachments, repoPath);
+  reason.submit(chatId, cwd, { text }, "queue", attachments, repoPath);
 }

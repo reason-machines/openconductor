@@ -146,6 +146,22 @@ pub fn reason_cli_path(app: AppHandle) -> Option<String> {
         .map(|(l, _)| l.cli().display().to_string())
 }
 
+/// Ensures the official current CLI without signing in or changing overrides.
+#[tauri::command]
+pub async fn reason_cli_ensure_current() -> Result<crate::reason_acp::install::InstalledCli, String>
+{
+    static INSTALLER: std::sync::OnceLock<crate::reason_acp::install::CliInstaller> =
+        std::sync::OnceLock::new();
+    let home = home()?;
+    tauri::async_runtime::spawn_blocking(move || {
+        INSTALLER
+            .get_or_init(Default::default)
+            .ensure_current(&home)
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
 /// Runs `f` with the configured CLI off the UI thread, in the home folder.
 async fn with_cli<T: Send + 'static>(
     app: &AppHandle,
@@ -325,6 +341,7 @@ pub async fn reason_prompt(
     text: String,
     attachments: Option<Vec<AttachmentArg>>,
     turn: Option<TurnArg>,
+    on_handoff: tauri::ipc::Channel<()>,
 ) -> Result<Value, String> {
     let provider = state.provider(&app)?;
     let attachments: Vec<Attachment> = attachments
@@ -349,7 +366,15 @@ pub async fn reason_prompt(
             _ => None,
         };
         around_turn(target, || {
-            provider.prompt_expected(&chat_id, &text, &attachments, ticket)
+            provider.prompt_expected_with_handoff(
+                &chat_id,
+                &text,
+                &attachments,
+                ticket,
+                Some(Box::new(move || {
+                    let _ = on_handoff.send(());
+                })),
+            )
         })
     })
     .await

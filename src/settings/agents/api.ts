@@ -38,9 +38,12 @@ export async function listFavorites(): Promise<FavoriteRow[]> {
   return saved ? (JSON.parse(saved) as FavoriteRow[]) : [];
 }
 
+export const FAVORITES_CHANGED_EVENT = "openconductor:favorite-models-changed";
+
 export async function replaceFavorites(favorites: FavoriteRow[]): Promise<void> {
-  if (inTauri()) return invoke<void>("favorite_models_replace", { favorites });
-  localStorage.setItem(LS_FAVORITES, JSON.stringify(favorites));
+  if (inTauri()) await invoke<void>("favorite_models_replace", { favorites });
+  else localStorage.setItem(LS_FAVORITES, JSON.stringify(favorites));
+  window.dispatchEvent(new Event(FAVORITES_CHANGED_EVENT));
 }
 
 /** The user's home folder, where the login terminal starts (Conductor's `Xj()`). */

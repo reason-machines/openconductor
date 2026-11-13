@@ -1,0 +1,1 @@
+async function iti({cwd:t,terminalId:e,host:n,localWorkspaceId:i}){const{commandDetection:r,envOverlay:o}=await So.ensureQueryData(Ywa.detail({cwd:t,host:n,localWorkspaceId:i}));return{commandDetection:r,envOverlay:o,metadata:{commandDetection:r,terminalId:e,localWorkspaceId:i,hostingServerUrl:n!==gn?n.hostingServerUrl:void 0}}}

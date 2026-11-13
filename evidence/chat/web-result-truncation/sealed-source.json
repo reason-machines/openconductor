@@ -1,0 +1,151 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate": "CHAT.WEB-RESULT-TRUNCATION",
+  "classification": "SOURCE_QUALIFIED_ACCEPTED_INPUT_MISMATCH_NOT_BEHAVIOR_RED",
+  "checked_main": "85ec32f94664d4bb46b0b70d45ff5355595517c9",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "recorded_reference_version": "Conductor 0.87.6",
+  "provenance_limits": "Retained shipped assets. Original semantic renderer pass exhausted heap and skipped this asset. This is byte/literal/source closure only, not a successful semantic rerun, fresh on-Mac app identity or native observation. Native executable hash and live installed version were not reverified in this turn.",
+  "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "index_sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+  "spans": {
+    "upo": {
+      "utf8_half_open": [
+        7842303,
+        7844170
+      ],
+      "sha256": "03f614bf3830760c8865284a75eb61880d57d2fca854e5a59adb286dc6eecc66",
+      "bytes": 1867
+    },
+    "H9e": {
+      "utf8_half_open": [
+        7795301,
+        7795403
+      ],
+      "sha256": "c1c05fe467eb42d9348b556faa81810d7e7e4c7f4d7fe03ec1d662d4ba0e32cb",
+      "bytes": 102
+    },
+    "hIt": {
+      "utf8_half_open": [
+        7877770,
+        7878325
+      ],
+      "sha256": "8c45bb6e5892cce46330f820a54460ee896d1c14c19ad134dab20b9f20b75340",
+      "bytes": 555
+    },
+    "U9e": {
+      "utf8_half_open": [
+        7795242,
+        7795300
+      ],
+      "sha256": "a9c4a88c573571730b87e9028614a84a03fccc5a21ddbdd15a6dd1e2f2bd9ddd",
+      "bytes": 58
+    },
+    "xS": {
+      "utf8_half_open": [
+        6550612,
+        6551722
+      ],
+      "sha256": "9912a5bd7f235ac2351b161575bfcc4abb2fa3c9e7392ab0666833652c364c64",
+      "bytes": 1110
+    },
+    "D1o": {
+      "utf8_half_open": [
+        7587405,
+        7588524
+      ],
+      "sha256": "f262bc45b6b432b6c2d202cc40ba21555037558e2d109ac511931f4687085fa8",
+      "bytes": 1119
+    },
+    "L1o": {
+      "utf8_half_open": [
+        7588525,
+        7588628
+      ],
+      "sha256": "86ced124065a7ea81f3d266906603d416cec7facd64287010e771de3557b01a8",
+      "bytes": 103
+    },
+    "Qpo": {
+      "utf8_half_open": [
+        7877182,
+        7877770
+      ],
+      "sha256": "94305b7588c4a5551656594289bc17ddb6934ed298cb76fc48181a2731105310",
+      "bytes": 588
+    },
+    "Mu": {
+      "utf8_half_open": [
+        7795403,
+        7798463
+      ],
+      "sha256": "2a88a2516341f7a98563d2f4b2a602ac9c0acc584282cd01cf54a011e3e4231d",
+      "bytes": 3060
+    }
+  },
+  "main_sources": {
+    "ToolRows.tsx": {
+      "path": "src/features/chat/ToolRows.tsx",
+      "sha256": "2a6f34cc04c6e7461bd85b9555d0258b213719db338eb6c98f9feecdc93f9371"
+    },
+    "conductorTools.ts": {
+      "path": "src/features/chat/conductorTools.ts",
+      "sha256": "cf705c1246cb8390ab65b2fb67274331659784271f8287fd5f77b694acf25dfe"
+    },
+    "reason.ts": {
+      "path": "src/features/chat/reason.ts",
+      "sha256": "e5588994a8fbe290512a45579efd96c86663a1455eb9dd3413fc8452416483ee"
+    },
+    "view.ts": {
+      "path": "src/features/chat/view.ts",
+      "sha256": "d318201a7a5078a576ee9f4c1da2481768c8d1894f4d066b009492216cada331"
+    },
+    "Transcript.tsx": {
+      "path": "src/features/chat/Transcript.tsx",
+      "sha256": "0c6bcb94994afe0eb5f9fd8e5a10849f29e79dbb6fbcc6dbded2975324d1e4dc"
+    },
+    "reducer.ts": {
+      "path": "src/features/chat/reducer.ts",
+      "sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a"
+    },
+    "claude_map.rs": {
+      "path": "src-tauri/src/claude_chat/map.rs",
+      "sha256": "e0d079396976a7e491e11ff1b9f5d3d3e5721c21c1f3ab2f006d6b337ad0a023"
+    },
+    "webFetchPrompt.test.ts": {
+      "path": "src/features/chat/webFetchPrompt.test.ts",
+      "sha256": "836d8f41c20f90a2956989a52249dd4ad823e5299c4c62622f82c96ef4eb9197"
+    },
+    "web-fetch-prompt.md": {
+      "path": "evidence/chat/web-fetch-prompt.md",
+      "sha256": "23fad7e7d0e76cf29dc9f93a1ecbd06561a47c60ca6e3b2ec1a661cac3e147b5"
+    }
+  },
+  "frozen_test_sha256": "5d3a7cd8d7ede02947b7e055a90821846b46ea4d76c3c1abd6c1c5fd8c1d8146",
+  "frozen_inputs_sha256": "0da49f177c57bc269af49bf22061677879683dc5f752bb74eebedd3b3d74c5ed",
+  "cheapest_real_row_regression": "Install frozen-inputs.json as src/features/chat/webResultTruncation.inputs.json and candidate test at src/features/chat/webResultTruncation.test.ts in the eligible publisher. The test runs the actual Reason payload/reducer/buildRows/ConductorToolRow path with real React and toggles the real header. It is NOT RUN here; the publisher must obtain actual RED then identical-fixture GREEN under ledger runtime admission.",
+  "smallest_patch_scope": "Successful string-result rendering in Row case web only, plus NEW test/input/evidence. Preserve <=100000 output-only child shape and prompt order. Use UTF-16 substring(0,100000), not codepoint/grapheme/UTF-8 slicing. Show original output.length.toLocaleString() only if length>100000.",
+  "excluded": [
+    "global output suppression",
+    "RowShell",
+    "Markdown rendering",
+    "URL fallback",
+    "error behavior",
+    "object/array transport",
+    "provider/backends",
+    "Edit",
+    "Glob",
+    "TaskGet",
+    "Write",
+    "#847",
+    "#1098"
+  ],
+  "execution": {
+    "reference_js": "NOT_RUN",
+    "product_test": "NOT_RUN",
+    "behavioral_red_green": "NOT_RUN",
+    "browser_native_provider": "NOT_RUN",
+    "new_workflow": "NOT_RUN",
+    "installed_package": "NOT_RUN"
+  },
+  "fixture_case_count": 13
+}

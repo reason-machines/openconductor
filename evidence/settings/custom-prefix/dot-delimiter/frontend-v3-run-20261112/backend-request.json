@@ -1,0 +1,133 @@
+{
+  "author": "Conductor Rebuild",
+  "status": "SOURCE_ONLY_REQUEST_NOT_ADMITTED",
+  "as_of_utc": "2026-11-12T11:32:23.527329+00:00",
+  "containing_main": "1286465cb69763efaa1367c49fdebc88ab4da86d",
+  "pr": 1170,
+  "same_existing_dot_row": true,
+  "source_pins": [
+    {
+      "path": "evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml",
+      "bytes": 453,
+      "sha256": "e5ba2cba5878e85564af9f5c0ff97281528356747f26dacceed8ddc31d5c2253"
+    },
+    {
+      "path": "evidence/settings/custom-prefix/dot-delimiter/backend/harness.rs",
+      "bytes": 2858,
+      "sha256": "92bcfae25ee96df34a6687b450e84b4690800b3b0eaa4104c645f9e1386579ef"
+    },
+    {
+      "path": "src-tauri/src/settings/validate.rs",
+      "bytes": 5934,
+      "sha256": "e24c044bcd53405df27e2f784235afadce5f5a138f19bc97c1aa122b8946e8bb"
+    },
+    {
+      "path": "src-tauri/src/settings/model.rs",
+      "bytes": 26621,
+      "sha256": "9ce17cafd1aa17e6ff71591ee4a24cc41a904ac43fea39bba101d9b8a8041315"
+    },
+    {
+      "path": "src-tauri/src/workspace/naming.rs",
+      "bytes": 4351,
+      "sha256": "23ed6b387df42984a0e51d15dd9df2d3a8edff432b2ef28b0535ff2cd84110db"
+    },
+    {
+      "path": "crates/scripts/Cargo.toml",
+      "bytes": 558,
+      "sha256": "84c91a9383b674e6e2a79eff1e57ea66378ebb7e91d1d5ed91bdb5e6f6e2fcc7"
+    }
+  ],
+  "direct_dependencies": {
+    "serde": {
+      "version": "=1.0.229",
+      "features": [
+        "derive"
+      ]
+    },
+    "serde_json": {
+      "version": "=1.0.154",
+      "features": [
+        "preserve_order"
+      ]
+    },
+    "toml": {
+      "version": "=0.8.2",
+      "features": [
+        "preserve_order"
+      ]
+    },
+    "oc-scripts": {
+      "path": "../../../../../crates/scripts"
+    }
+  },
+  "oc_scripts_dependencies": {
+    "serde": "1 with derive",
+    "serde_json": "1 with preserve_order",
+    "toml": "0.8 with preserve_order",
+    "libc": "0.2 on Unix",
+    "rustix-openpty": "=0.2.0 on Unix"
+  },
+  "frozen_three_cases": [
+    "dot_prefix_accepts_delimiter_at_production_settings_boundary",
+    "dot_prefix_preserves_invalid_component_and_ref_guards",
+    "dot_prefix_preserves_other_delimiters_and_modes"
+  ],
+  "predicted_baseline": {
+    "tests": 3,
+    "pass": 2,
+    "intended_fail": 1,
+    "observed": false
+  },
+  "predicted_fixed": {
+    "tests": 3,
+    "pass": 3,
+    "observed": false
+  },
+  "lock_present": false,
+  "target_present": false,
+  "executables_path_only_not_invoked": {
+    "cargo": "/usr/local/cargo/bin/cargo",
+    "rustc": "/usr/local/cargo/bin/rustc"
+  },
+  "configured_cargo_home_present": false,
+  "installed_cargo_registry_cache_present": false,
+  "installed_cargo_registry_sources_present": false,
+  "installed_cargo_registry_index_present": false,
+  "dependency_resolution": "NOT_RUN; no lock, cached direct versions or transitive resolution established",
+  "artifact_budget_request": {
+    "target_dir": "e2e-artifacts/dot-prefix-c18/rust-target",
+    "maximum_target_bytes": 2147483648,
+    "build_jobs": 1,
+    "debug_info": 0,
+    "enforcement": "REQUEST ONLY. Stop on resource warning/timeout/unexpected outcome; metadata size check between serial phases if admitted. No watcher or toolchain installation requested."
+  },
+  "commands_requested_once_serial": [
+    {
+      "phase": "lock generation",
+      "timeout_seconds": 60,
+      "command": "timeout 60s cargo generate-lockfile --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml"
+    },
+    {
+      "phase": "locked fetch",
+      "timeout_seconds": 120,
+      "command": "timeout 120s cargo fetch --locked --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml"
+    },
+    {
+      "phase": "RED",
+      "timeout_seconds": 120,
+      "command": "CARGO_BUILD_JOBS=1 CARGO_TARGET_DIR=e2e-artifacts/dot-prefix-c18/rust-target timeout 120s cargo test --locked --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml dot_prefix_ -- --nocapture"
+    },
+    {
+      "phase": "GREEN",
+      "timeout_seconds": 120,
+      "command": "CARGO_BUILD_JOBS=1 CARGO_TARGET_DIR=e2e-artifacts/dot-prefix-c18/rust-target timeout 120s cargo test --locked --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml dot_prefix_ -- --nocapture"
+    }
+  ],
+  "patch_after_expected_red_only": "Only leased production valid_branch_prefix terminal-dot boundary and dot-before-slash guard; same frozen three tests for GREEN. Frontend/GitPage/sanitizer unchanged.",
+  "limits": [
+    "No backend execution or additional resource sample made under frontend grant",
+    "No retries, install, Tauri/application build, provider, native, package, workflow dispatch or release expansion requested",
+    "Existing frontend source/fixture/lock identities must remain fixed",
+    "Direct separate ACC eligibility and execution decision required"
+  ]
+}

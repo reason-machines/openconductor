@@ -1,0 +1,1 @@
+async function Rue(t,e){await it("plugin:opener|open_url",{url:t,with:e})}

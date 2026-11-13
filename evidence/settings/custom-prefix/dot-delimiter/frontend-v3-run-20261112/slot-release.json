@@ -1,0 +1,8 @@
+{
+  "author": "Conductor Rebuild",
+  "time_utc": "2026-11-12T11:29:41.240135+00:00",
+  "frontend_slot": "RELEASED",
+  "own_runtime_jobs": [],
+  "rust_execution": "NOT_ADMITTED; no Cargo command or Rust edit ran",
+  "no_additional_resource_sample": true
+}

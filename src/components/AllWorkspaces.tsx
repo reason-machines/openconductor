@@ -27,8 +27,9 @@ import {
   type HomeFilters,
   type HomeRow,
 } from "../home/allWorkspaces";
-import { listArchivedWorkspaces, type ArchivedWorkspace } from "../workspace/archive";
+import { listArchivedWorkspaces, onArchiveEvent, type ArchivedWorkspace } from "../workspace/archive";
 import { effectiveShortcuts } from "../keybindings/overrides";
+import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { useWorkspaceAgentStatus } from "../features/chat/useWorkspaceSession";
 import { homeStatus, rowGitStatus, rowStatusColor, rowStatusLabel, showsActivityStatus } from "../state/rowStatus";
 import { RowStatusIcon } from "./RowStatusIcon";
@@ -37,9 +38,12 @@ import { useStatusMatrix } from "../settings/useStatusMatrix";
 import { glyphs } from "../keybindings/shortcut";
 import { useBoolPref } from "../settings/useBoolPref";
 import { workspaceNumberLabel } from "../state/workspaceNumber";
+import { RepoIcon } from "./RepoIcon";
+import { Tooltip } from "./Tooltip";
 
 interface Props {
   repos: Repo[];
+  loading?: boolean;
   sidebarVisible: boolean;
   dispatch: Dispatch<Action>;
   onCreateWorkspace: () => void;
@@ -96,6 +100,57 @@ function MenuCheck({ checked, onClick, children }: { checked: boolean; onClick: 
   );
 }
 
+function UnarchiveButton({ repoId, workspaceId, dispatch }: { repoId: string; workspaceId: string; dispatch: Dispatch<Action> }) {
+  const pendingRef = useRef(false);
+  const [pending, setPending] = useState(false);
+  useEffect(() => {
+    const unsubscribe = onArchiveEvent<Action>((event) => {
+      if (
+        (event.type === "unarchived" || event.type === "unarchive-failed") &&
+        event.action.type === "unarchiveWorkspace" &&
+        event.action.repoId === repoId && event.action.workspaceId === workspaceId
+      ) {
+        pendingRef.current = false;
+        setPending(false);
+      }
+    });
+    return () => { unsubscribe(); };
+  }, [repoId, workspaceId]);
+  const unarchive = () => {
+    if (pendingRef.current) return;
+    pendingRef.current = true;
+    setPending(true);
+    dispatch({ type: "unarchiveWorkspace", repoId, workspaceId });
+  };
+  return (
+    <Tooltip content="Unarchive workspace">
+      <button
+        type="button"
+        className="allws-unarchive"
+        aria-label="Unarchive workspace"
+        disabled={pending}
+        onClick={(event) => {
+          event.stopPropagation();
+          event.preventDefault();
+          unarchive();
+        }}
+        onKeyDown={(event) => {
+          if (event.key !== "Enter") return;
+          event.stopPropagation();
+          event.preventDefault();
+          unarchive();
+        }}
+      >
+        <span className="allws-unarchive-idle"><ArchiveIcon size={14} /></span>
+        <svg className="allws-unarchive-hover" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+          <path d="M3 3v5h5" />
+        </svg>
+      </button>
+    </Tooltip>
+  );
+}
+
 function Row({
   row,
   showRepoIcon,
@@ -103,6 +158,7 @@ function Row({
   active,
   now,
   onOpen,
+  dispatch,
 }: {
   row: HomeRow;
   showRepoIcon: boolean;
@@ -110,6 +166,7 @@ function Row({
   active: boolean;
   now: number;
   onOpen: () => void;
+  dispatch: Dispatch<Action>;
 }) {
   const { workspace: ws, repo, archived, matches } = row;
   const tone = archived ? "is-archived" : isWorkspaceUnread(ws) ? "is-unread" : "";
@@ -140,8 +197,8 @@ function Row({
             />
           </span>
         ) : showRepoIcon && (
-          <span className="allws-repo-initial" title={repo.name} aria-hidden>
-            {repo.name.charAt(0).toUpperCase()}
+          <span title={repo.name} aria-hidden>
+            <RepoIcon repo={repo} className="allws-repo-initial" />
           </span>
         )}
         {/* "Show workspace numbers" (Conductor's `_Jo`): a fixed-width W-<n> column, empty for unnumbered rows. */}
@@ -164,8 +221,8 @@ function Row({
         </span>
         <span className="allws-when">
           {archived ? (
-            <span className="allws-archived" title="Archived" aria-label="Archived">
-              <ArchiveIcon size={14} />
+            <span className="allws-archived" aria-label="Archived">
+              <UnarchiveButton repoId={repo.id} workspaceId={ws.id} dispatch={dispatch} />
             </span>
           ) : !matrix && showsActivityStatus(status) ? (
             <span className="allws-status" data-testid="home-workspace-status" data-status={status} data-color={rowStatusColor(status)} role="img" title={statusLabel} aria-label={statusLabel}>
@@ -180,7 +237,8 @@ function Row({
   );
 }
 
-export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspace }: Props) {
+export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch, onCreateWorkspace }: Props) {
+  const { overrides } = useKeybindingOverrides();
   const [query, setQuery] = useState("");
   const repoIds = useMemo(() => new Set(repos.map((r) => r.id)), [repos]);
   const [filters, setFiltersState] = useState<HomeFilters>(() => loadFilters(repoIds));
@@ -189,20 +247,16 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
     saveFilters(f);
   };
   const [limit, setLimit] = useState(PAGE_SIZE);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeKey, setActiveKey] = useState<string>();
   const sentinel = useRef<HTMLDivElement>(null);
   const now = Date.now();
   const showNumbers = useBoolPref("experimental_show_workspace_numbers");
 
   useEffect(() => setLimit(PAGE_SIZE), [query, filters]);
 
-  // Archived workspaces are not in the sidebar state; read them from
-  // conductor.db when the archive filter shows them, and again after an
-  // archive or unarchive changes the repos.
+  // Project choices include archived-only repositories even while archived rows are hidden.
   const [archivedRows, setArchivedRows] = useState<ArchivedWorkspace[]>([]);
-  const showsArchived = filters.archiveFilter !== "active";
   useEffect(() => {
-    if (!showsArchived) return;
     let live = true;
     listArchivedWorkspaces().then(
       (rows) => live && setArchivedRows(rows),
@@ -211,17 +265,19 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
     return () => {
       live = false;
     };
-  }, [showsArchived, repos]);
+  }, [repos]);
 
   const rows = useMemo(() => homeRows(repos, filters, query, archivedRows), [repos, filters, query, archivedRows]);
   const shown = rows.slice(0, limit);
   const hasMore = rows.length > limit;
   const groups = groupByDate(shown, now);
-  const flat = groups.flatMap((g) => g.rows);
-  const projectChoices = reposWithWorkspaces(repos);
+  const flat = groups.flatMap((g) => g.rows.map((row) => ({ row, key: `${g.bucket}:${row.workspace.id}` })));
+  const activeIndex = Math.max(0, flat.findIndex((entry) => entry.key === activeKey));
+  const projectChoices = reposWithWorkspaces(repos, archivedRows);
   const empty = emptyAction(repos, filters);
 
-  useEffect(() => setActiveIndex(0), [query, filters]);
+  useEffect(() => setActiveKey(flat[activeIndex]?.key), [activeIndex, flat]);
+  useEffect(() => setActiveKey(undefined), [query]);
 
   useEffect(() => {
     const el = sentinel.current;
@@ -238,21 +294,31 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
       : dispatch({ type: "select", selection: { kind: "workspace", repoId: row.repo.id, workspaceId: row.workspace.id } });
 
   const onSearchKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (flat.length === 0) return;
+    if (e.defaultPrevented || e.nativeEvent?.isComposing || e.keyCode === 229) return;
+    if (e.key === "Home" || e.key === "End" || (e.metaKey && (e.key === "ArrowUp" || e.key === "ArrowDown"))) {
+      e.preventDefault();
+      const entry = flat[e.key === "Home" || e.key === "ArrowUp" ? 0 : flat.length - 1];
+      if (entry) setActiveKey(entry.key);
+      return;
+    }
+    if (flat.length === 0) {
+      if (e.key === "Enter") e.preventDefault();
+      return;
+    }
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setActiveIndex((i) => Math.min(i + 1, flat.length - 1));
+      setActiveKey(flat[Math.min(activeIndex + 1, flat.length - 1)].key);
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      setActiveIndex((i) => Math.max(i - 1, 0));
+      setActiveKey(flat[Math.max(activeIndex - 1, 0)].key);
     } else if (e.key === "Enter") {
       e.preventDefault();
-      const row = flat[activeIndex];
-      if (row) open(row);
+      const entry = flat[activeIndex];
+      if (entry) open(entry.row);
     }
   };
 
-  const toggleHint = effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or ");
+  const toggleHint = effectiveShortcuts("view.toggleLeftSidebar", overrides).map(glyphs).join(" or ");
   let index = -1;
 
   return (
@@ -288,7 +354,7 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
                 onKeyDown={onSearchKey}
               />
             </label>
-            {showProjectFilter(repos) && (
+            {showProjectFilter(repos, archivedRows) && (
               <Menu ariaLabel="Projects" label={projectFilterLabel(repos, filters.projects)} icon={<FolderIcon size={14} />}>
                 {() => (
                   <>
@@ -297,7 +363,7 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
                     </MenuCheck>
                     {projectChoices.map((r) => (
                       <MenuCheck key={r.id} checked={filters.projects.includes(r.id)} onClick={() => setFilters({ ...filters, projects: toggleProject(filters.projects, r.id) })}>
-                        <span className="allws-repo-initial" aria-hidden>{r.name.charAt(0).toUpperCase()}</span>
+                        <RepoIcon repo={r} className="allws-repo-initial" />
                         {r.name}
                       </MenuCheck>
                     ))}
@@ -326,7 +392,11 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
       </div>
       <div className="allws-scroll">
         <div className="allws-list" role="listbox" aria-label="Workspaces">
-          {groups.length > 0 ? (
+          {loading ? (
+            <div className="allws-loading" role="status" aria-label="Loading workspaces">
+              <RowStatusIcon status="working" size={16} />
+            </div>
+          ) : groups.length > 0 ? (
             <>
               {groups.map((g) => (
                 <section key={g.bucket} className="allws-group" aria-label={g.label}>
@@ -344,7 +414,11 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
                         showNumber={showNumbers}
                         active={i === activeIndex}
                         now={now}
-                        onOpen={() => open(row)}
+                        onOpen={() => {
+                          setActiveKey(flat[i].key);
+                          open(row);
+                        }}
+                        dispatch={dispatch}
                       />
                     );
                   })}

@@ -46,6 +46,48 @@ async function capture(page, name) {
   await page.screenshot({ path: `${process.env.SIGN_IN_EVIDENCE}/${name}.png` });
 }
 
+test("completed onboarding with a working CLI opens Home despite an update warning", async () => {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  try {
+    await page.goto(`${base}/tools/onboarding/index.html?surface=startup&setup=working-cli-warning`);
+    await page.getByTestId("startup-home").waitFor();
+    await page.getByRole("status").filter({ hasText: "The Reason CLI update could not be verified. Using the installed CLI." }).waitFor();
+    assert.equal(await page.getByTestId("reason-cli-setup").count(), 0);
+    assert.equal(await page.locator(".onb").count(), 0);
+    await expectCalls(page, { attempts: 0, opens: 0 });
+    await capture(page, "working-cli-update-warning");
+    await page.getByRole("button", { name: "Dismiss", exact: true }).click();
+    await page.getByRole("status").filter({ hasText: "The Reason CLI update could not be verified." }).waitFor({ state: "detached" });
+    assert.equal(await page.getByTestId("startup-home").isVisible(), true);
+  } finally { await page.close(); }
+});
+
+for (const setup of ["slow", "failed"]) {
+  for (const agent of ["claude", "codex", "reason"]) {
+    test(`${agent} first run reaches Home with ${setup} CLI setup and unresolved sign-in`, async () => {
+      const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+      try {
+        await page.goto(`${base}/tools/onboarding/index.html?surface=startup&firstRun=1&setup=${setup}&status=slow`);
+        const signUp = page.getByRole("button", { name: "Sign up", exact: true });
+        await signUp.waitFor();
+        assert.equal(await signUp.isEnabled(), true);
+        await page.locator(`input[name="first-run-agent"][value="${agent}"]`).check();
+        await page.getByRole("button", { name: "Continue without signing in", exact: true }).click();
+        await page.getByTestId("startup-home").waitFor();
+        await expectCalls(page, { attempts: 0, opens: 0, cliChecks: 1 });
+        if (setup === "slow") {
+          await page.getByRole("status").filter({ hasText: "Installing or updating the Reason CLI in the background" }).waitFor();
+        } else {
+          await page.getByRole("alert").filter({ hasText: "Synthetic CLI download unavailable" }).waitFor();
+          assert.equal(await page.getByRole("button", { name: "Retry setup", exact: true }).isEnabled(), true);
+        }
+        assert.equal(await page.getByTestId("startup-home").isVisible(), true);
+        await capture(page, `${agent}-home-${setup}-cli-unsigned-in`);
+      } finally { await page.close(); }
+    });
+  }
+}
+
 test("Settings preserves an unavailable pinned workspace instead of showing the account default", async () => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
   try {
@@ -216,9 +258,10 @@ for (const strict of ["0", "1"]) {
 
 for (const surface of ["settings", "chat"]) {
   test(`${surface}: direct browser sign-in shows the connected account and workspace`, async () => {
-    const page = await open(`surface=${surface}`, "Sign in with Reason");
+    const label = surface === "chat" ? "Sign in to Reason" : "Sign in with Reason";
+    const page = await open(`surface=${surface}`, label);
     try {
-      await page.getByRole("button", { name: "Sign in with Reason", exact: true }).click();
+      await page.getByRole("button", { name: label, exact: true }).click();
       await page.getByTestId("reason-login-code").waitFor();
       await expectCalls(page, { opens: 1 });
       await page.getByRole("button", { name: "Resolve synthetic account", exact: true }).click();

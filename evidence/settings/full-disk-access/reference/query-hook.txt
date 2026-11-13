@@ -1,0 +1,1 @@
+function fga(){const t=ne.c(1);let e;return t[0]===Symbol.for("react.memo_cache_sentinel")?(e={...dga.status(),refetchInterval:hga,refetchOnWindowFocus:"always"},t[0]=e):e=t[0],qi(e)}

@@ -78,6 +78,10 @@ function fakeBackend(shellState) {
     transformCallback: (f) => ((cbs[++cb] = f), cb),
     async invoke(cmd, args) {
       switch (cmd) {
+        case "reason_cli_ensure_current":
+          return { path: "/fixture/bin/reason", version: "fixture" };
+        case "db_first_run_onboarding_step":
+          return "999";
         case "plugin:event|listen":
           if (args.event === "pty-event") handler = args.handler;
           return 1;

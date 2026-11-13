@@ -1,0 +1,1 @@
+function dVo(t){return{lineNumber:t.endLineNumber??t.lineNumber,side:hSr(t.location),metadata:t}}

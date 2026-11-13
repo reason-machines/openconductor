@@ -2,6 +2,12 @@
 // browser (vite dev / preview) so the shell can be developed without Tauri.
 import { Channel, invoke, isTauri } from "@tauri-apps/api/core";
 import type { FileMatch } from "./spotlight/quickOpen";
+import type { LocalMcpServer } from "./features/chat/localMcpStatus.ts";
+
+export async function codexMcpStatus(chatId: string): Promise<LocalMcpServer[]> {
+  if (!inTauri()) throw new Error("Live Codex MCP status requires the desktop app.");
+  return invoke<LocalMcpServer[]>("codex_mcp_status", { chatId });
+}
 import type { GitHubOwners } from "./state/githubRepoDialog";
 import type { GitProtocol, RecentRepo } from "./state/cloneDialog";
 import { STEP, targetPath, type RepoScripts, type TemplateId } from "./state/createProject";
@@ -73,6 +79,11 @@ export async function quitApp(): Promise<void> {
 export async function openDevtools(): Promise<void> {
   if (!inTauri()) return;
   await invoke("open_devtools");
+}
+
+/** Native fail-open access heuristic, not proof of a macOS permission grant. */
+export async function checkFullDiskAccess(): Promise<boolean> {
+  return invoke<boolean>("check_full_disk_access");
 }
 
 export async function openUrl(url: string): Promise<void> {

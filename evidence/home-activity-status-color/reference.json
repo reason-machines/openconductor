@@ -1,0 +1,37 @@
+{
+  "classification": "SOURCE_QUALIFIED_RUNTIME_UNRUN",
+  "base": "6acd4f8f8b79ef5b79c4a98b15eab68174943487",
+  "ledger_disposition": "8f38dbfd-5eec-46f3-b39d-73b4b6dd174c",
+  "rea_parent_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "asset": {
+    "name": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "reference": {
+    "name": "dWt",
+    "utf8_range": [
+      9829651,
+      9829961
+    ],
+    "sha256": "c9d43d6ad1f5f9446f64e026ab45b47391f902fbcadc219502655e2762e6a41d"
+  },
+  "current_main_files": {
+    "src/home.css": "e3556e517dc906aba9bacb1b72771e91c7a760ba49788c301b98cf4247dbd113",
+    "src/theme/tokens.css": "6d78f6f09053db08211e122fb44da4e55e8f420480a0f426d1ad08bf70e05afb",
+    "src/components/AllWorkspaces.tsx": "f2d8fc6cdb03a4eba70990f649cc74efb1132dc2139544b1c1f4c697274ae1d0",
+    "src/components/RowStatusIcon.tsx": "e29e27c6d84f87e9e7cbe11f719ee126fefb228d3e1deb49e9b90420ef0097aa",
+    "src/state/rowStatus.ts": "e22c083e131c35774234f0f91fb1f5e5b117c6d40161ac3f346395bc46f2df34"
+  },
+  "candidate_css_sha256": "fb8b3da6c540668c3ac9b398898d49dffd459f1697209e6a454393cea463da13",
+  "fixture_sha256": "b13269cb1a21a1cea0473fde7d239214d3a6e73bb83379667d9c71efd8598100",
+  "product_delta": "one scoped home.css token only",
+  "accepted_row_conditions": {
+    "workspace_state": "failed",
+    "archived": false,
+    "status_matrix": false
+  },
+  "execution": "NOT_RUN_NO_COLOR_ACC_GRANT",
+  "publication": "SEPARATE_FROM_TOOLTIP_PR_1218",
+  "rea_gap": "retained executable identity verified; embedded Tauri asset enumeration unavailable; no new REA failure"
+}

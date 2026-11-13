@@ -1,10 +1,26 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { runBody, runHeader, type RunTabTask } from "./runTab.ts";
+import { displayedTask, runBody, runHeader, type RunTabTask } from "./runTab.ts";
 
 const run: RunTabTask = { id: "run", label: "Run", kind: "script" };
 const dev: RunTabTask = { id: "dev-server", label: "Dev server", kind: "script" };
 const spot: RunTabTask = { id: "spotlight", label: "Spotlight", kind: "spotlight" };
+
+test("display projection yields an idle selection to the busy workspace task without changing the selection", () => {
+  const selection = { selectedTaskId: "test", selectedTaskIsBusy: false };
+  assert.equal(displayedTask({ ...selection, workspaceActiveRunTaskId: "dev", workspaceActiveRunTaskIsBusy: true }), "dev");
+  assert.equal(displayedTask({ ...selection, workspaceActiveRunTaskId: "dev", workspaceActiveRunTaskIsBusy: false }), "test");
+  assert.equal(displayedTask({ ...selection, workspaceActiveRunTaskId: null, workspaceActiveRunTaskIsBusy: true }), "test");
+  assert.equal(displayedTask({ ...selection, selectedTaskIsBusy: true, workspaceActiveRunTaskId: "dev", workspaceActiveRunTaskIsBusy: true }), "test");
+  assert.equal(selection.selectedTaskId, "test");
+});
+
+test("display projection treats Spotlight as a task rather than changing selection policy", () => {
+  assert.equal(displayedTask({ selectedTaskId: "spotlight", selectedTaskIsBusy: false, workspaceActiveRunTaskId: "dev", workspaceActiveRunTaskIsBusy: true }), "dev");
+  assert.equal(displayedTask({ selectedTaskId: "dev", selectedTaskIsBusy: false, workspaceActiveRunTaskId: "spotlight", workspaceActiveRunTaskIsBusy: true }), "spotlight");
+  assert.equal(displayedTask({ selectedTaskId: "spotlight", selectedTaskIsBusy: true, workspaceActiveRunTaskId: "dev", workspaceActiveRunTaskIsBusy: true }), "spotlight");
+  assert.equal(displayedTask({ selectedTaskId: null, selectedTaskIsBusy: false, workspaceActiveRunTaskId: null, workspaceActiveRunTaskIsBusy: false }), null);
+});
 
 test("idle: Start <label> and Test your changes here; Spotlight and no task have their own wording", () => {
   assert.deepEqual(runBody(run, null, false, false), { kind: "idle", button: "Start Run", hint: "Test your changes here." });

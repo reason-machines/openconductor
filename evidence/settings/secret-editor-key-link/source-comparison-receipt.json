@@ -1,0 +1,56 @@
+{
+  "kind": "retained-source-editor-comparison-not-behavior",
+  "author": "Conductor Rebuild",
+  "checked_main": "435c3356902c3e7cdf246f3089029154b3f908f6",
+  "source": {
+    "path": "src/settings/agents/kit.tsx",
+    "sha256": "5da43355c0757ecea46c4cf94db9272af5565ddfc2be5ad799abf668c7d4007a"
+  },
+  "original_archive_sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+  "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "retained_REA_lineage": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "retained_REA_limit": "Earlier semantic renderer analysis exhausted heap; exact shipped-byte slices used, no reference JavaScript executed.",
+  "spans": [
+    {
+      "name": "YWt",
+      "utf8_half_open": [
+        10252774,
+        10254426
+      ],
+      "bytes": 1652,
+      "sha256": "e9c696637b6b19c5adf28ba025a7a8c026476840976293b67635917a95eda869",
+      "matched_original": true
+    },
+    {
+      "name": "n$i",
+      "utf8_half_open": [
+        10248914,
+        10250561
+      ],
+      "bytes": 1647,
+      "sha256": "9ce4d9ed2540c2120b38bbce3b03730e84c132f8ef64097843ee39a06a9f2035",
+      "matched_original": true
+    },
+    {
+      "name": "Zla",
+      "utf8_half_open": [
+        10250685,
+        10252749
+      ],
+      "bytes": 2064,
+      "sha256": "6538f2eac6a963a669d3a2d9f6c949c8728d2c7ce3405472a9c8f87ed05abf20",
+      "matched_original": true
+    }
+  ],
+  "cancel_commit_disposition": "No distinct defect in bounded leaf declarations. Explicit Cancel closes the editor without writing, form submit trims and guards empty/pending input. Escape/blur app-wide semantics remain insufficiently evidenced.",
+  "candidate_gap_key": "settings-secret-editor-get-key-64",
+  "candidate_source_mismatch": "Reference YWt keeps Get key whenever its URL exists, including editing an existing key. Current SecretRow adds !configured inside the editor branch, hiding the provider link in that state.",
+  "dedupe": "Ledger ddfc6518 reserved only the SecretRow editor getKeyUrl condition and new dedicated regression/evidence for SAME64; no competing hunk found in its partial search.",
+  "qualification_stage": "Source-before-test-first-publication",
+  "runtime": "NOT_RUN",
+  "behavioral_RED_GREEN": "NOT_RUN",
+  "provider_credentials_native_IPC_browser": "NOT_RUN",
+  "new_native_acquisition": false,
+  "tracked_product_or_fixture_edits": false,
+  "limits": "Static identity and declarations only. Global keyboard handlers, actual browser opening, persistence, native rendering and provider authentication were not exercised. No same-input runtime result or final parity acceptance is claimed."
+}

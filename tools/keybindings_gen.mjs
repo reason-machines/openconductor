@@ -15,7 +15,8 @@ const shortcut = ({ key, modifiers }) => {
 };
 
 const command = (c) => {
-  const fields = [`id: ${JSON.stringify(c.id)}`, `key: ${shortcut(c.key)}`];
+  const key = /^chat\.selectLoadout[1-5]$/.test(c.id) ? { ...c.key, modifiers: ["meta"] } : c.key;
+  const fields = [`id: ${JSON.stringify(c.id)}`, `key: ${shortcut(key)}`];
   if (c.additionalKeys) fields.push(`additionalKeys: [${c.additionalKeys.map(shortcut).join(", ")}]`);
   for (const k of ["title", "category", "configurable", "hidden", "displayScope", "description", "when"]) {
     if (c[k] !== undefined) fields.push(`${k}: ${JSON.stringify(c[k])}`);

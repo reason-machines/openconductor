@@ -1,0 +1,347 @@
+{
+  "unit": "terminal-post-spawn-resize-reconciliation-1f",
+  "author": "Conductor Rebuild",
+  "main_checked": "b6e7473d17462ce09948437b4239fb0a31e8d37f",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "original_attachment_id": "bfa06ee0-799f-47fe-9edc-73997c70a340",
+  "original_attachment_sha256": "d0d8e4b9b20c5150f30f5edff149bfc25f3074da5a1a66357b1caaf1ef0033ab",
+  "offset_units": "Zero-based UTF-8 byte half-open ranges [start,end)",
+  "artifacts": [
+    {
+      "artifact": "index",
+      "name": "index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    },
+    {
+      "artifact": "renderer",
+      "name": "renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    }
+  ],
+  "spans": [
+    {
+      "artifact": "index",
+      "name": "V9",
+      "file": "spans/index-V9.txt",
+      "utf8_half_open": [
+        2756759,
+        2771688
+      ],
+      "bytes": 14929,
+      "sha256": "696ede0db7b5dfab9e731e122ffeb7dd29605b548b43e54d08d0926ce082c675",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes",
+      "retained_from": "evidence/terminal/nonrunning-input-1f/reference.json"
+    },
+    {
+      "artifact": "index",
+      "name": "$kt",
+      "file": "spans/index-$kt.txt",
+      "utf8_half_open": [
+        2776043,
+        2783784
+      ],
+      "bytes": 7741,
+      "sha256": "01a68c4db09714e2c2696dca642094d0e518af4aa11f86b41fefbf382e1816f1",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes",
+      "retained_from": "evidence/terminal/nonrunning-input-1f/reference.json"
+    },
+    {
+      "artifact": "index",
+      "name": "export-gh",
+      "file": "spans/index-export-gh.txt",
+      "utf8_half_open": [
+        3484259,
+        3484267
+      ],
+      "bytes": 8,
+      "sha256": "2480388e61e8e7bc885632949b422000cfb3dd593b84dbbfaabb7cc110e4e860",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes",
+      "retained_from": "evidence/terminal/nonrunning-input-1f/reference.json"
+    },
+    {
+      "artifact": "index",
+      "name": "ts",
+      "file": "spans/index-ts.txt",
+      "utf8_half_open": [
+        2829209,
+        2829217
+      ],
+      "bytes": 8,
+      "sha256": "a324795677321eb5d15ccefc2ee9a24e408a3db5099e78ff7cd30ca7f7b6c42f",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes",
+      "retained_from": "evidence/terminal/nonrunning-input-1f/reference.json"
+    },
+    {
+      "artifact": "renderer",
+      "name": "eSa",
+      "file": "spans/renderer-eSa.txt",
+      "utf8_half_open": [
+        11160762,
+        11165279
+      ],
+      "bytes": 4517,
+      "sha256": "7046b53ab7a925101dea1b4ed8aabaf67fe39d6842a9742efb4bf76d502548a4",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes",
+      "retained_from": "evidence/terminal/nonrunning-input-1f/reference.json"
+    },
+    {
+      "artifact": "renderer",
+      "name": "import-qc",
+      "file": "spans/renderer-import-qc.txt",
+      "utf8_half_open": [
+        57354,
+        57362
+      ],
+      "bytes": 8,
+      "sha256": "447426764ef0b8ca8f18e5bddd099b165145cc1c3967f959a75eaa90d90193ba",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes",
+      "retained_from": "evidence/terminal/nonrunning-input-1f/reference.json"
+    },
+    {
+      "artifact": "renderer",
+      "name": "import-aVe",
+      "file": "spans/renderer-import-aVe.txt",
+      "utf8_half_open": [
+        57806,
+        57815
+      ],
+      "bytes": 9,
+      "sha256": "40ed61bc07451f2560d6ea974ee2a28615936700a676314ec78c043c33da6c3e",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes",
+      "retained_from": "evidence/terminal/nonrunning-input-1f/reference.json"
+    },
+    {
+      "artifact": "index",
+      "name": "DAt",
+      "file": "spans/index-DAt.txt",
+      "utf8_half_open": [
+        2828843,
+        2829203
+      ],
+      "bytes": 360,
+      "sha256": "2466f4fd8610a85d162bafe38060173dd1320f1d617d6cd1538fdafb2abe65cd",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes",
+      "retained_from": "evidence/terminal/nonrunning-input-1f/reference.json"
+    },
+    {
+      "artifact": "index",
+      "name": "bI",
+      "file": "spans/index-bI.txt",
+      "utf8_half_open": [
+        2829218,
+        2829342
+      ],
+      "bytes": 124,
+      "sha256": "0697565ca461b948787a64ba19dd96270d69f48b674484eb0b632d18eae7d046",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes",
+      "retained_from": "evidence/terminal/nonrunning-input-1f/reference.json"
+    },
+    {
+      "artifact": "renderer",
+      "name": "w9e",
+      "file": "spans/renderer-w9e.txt",
+      "utf8_half_open": [
+        6919236,
+        6922665
+      ],
+      "bytes": 3429,
+      "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32",
+      "extraction": "Unique named declaration anchor through next named declaration function dVn(; full text retained and manually inspected",
+      "retained_from": "evidence/terminal/nonrunning-input-1f/reference.json"
+    },
+    {
+      "artifact": "renderer",
+      "name": "$At",
+      "file": "spans/renderer-$At.txt",
+      "utf8_half_open": [
+        6916898,
+        6918617
+      ],
+      "bytes": 1719,
+      "sha256": "5d73083eabd52c3345aad238d153d0fc71dd52040b8084b7d93d8f120180cd14",
+      "extraction": "Unique named declaration anchor through next named declaration function uVn(; full text retained and manually inspected",
+      "retained_from": "evidence/terminal/nonrunning-input-1f/reference.json"
+    },
+    {
+      "artifact": "renderer",
+      "name": "lno",
+      "file": "spans/renderer-lno.txt",
+      "utf8_half_open": [
+        6913120,
+        6914245
+      ],
+      "bytes": 1125,
+      "sha256": "f0ce60ce9b64bb20c9526c841aec24bf2620c9c8bf1973dd083e218e8f4fd4a5",
+      "extraction": "Unique named declaration anchor through next named declaration async function cno(; full text retained and manually inspected",
+      "retained_from": "evidence/terminal/nonrunning-input-1f/reference.json"
+    },
+    {
+      "artifact": "renderer",
+      "name": "cno",
+      "file": "spans/renderer-cno.txt",
+      "utf8_half_open": [
+        6914245,
+        6914630
+      ],
+      "bytes": 385,
+      "sha256": "d256449d670e3c7e000f82530a8d2cfb494986c8559831ac1b2f74a92ed35cd5",
+      "extraction": "Unique named declaration anchor through next named declaration async function uno(; full text retained and manually inspected",
+      "retained_from": "evidence/terminal/nonrunning-input-1f/reference.json"
+    },
+    {
+      "artifact": "renderer",
+      "name": "uno",
+      "file": "spans/renderer-uno.txt",
+      "utf8_half_open": [
+        6914630,
+        6915051
+      ],
+      "bytes": 421,
+      "sha256": "85acecc59c4b24eb7a08bf143dcdc68903fffba9180d78c83559bfea2f1eb35b",
+      "extraction": "Unique named declaration anchor through next named declaration async function dno(; full text retained and manually inspected",
+      "retained_from": "evidence/terminal/nonrunning-input-1f/reference.json"
+    },
+    {
+      "artifact": "renderer",
+      "name": "dno",
+      "file": "spans/renderer-dno.txt",
+      "utf8_half_open": [
+        6915051,
+        6916770
+      ],
+      "bytes": 1719,
+      "sha256": "c1caf84211af0d4cdc09cc07d3b7ecfc9b0dde7cbfa84704e5f2ce24109fd318",
+      "extraction": "Unique named declaration anchor through next named declaration function fno(; full text retained and manually inspected",
+      "retained_from": "evidence/terminal/nonrunning-input-1f/reference.json"
+    },
+    {
+      "artifact": "index",
+      "name": "export-g$",
+      "file": "spans/index-export-g$.txt",
+      "utf8_half_open": [
+        3483823,
+        3483831
+      ],
+      "bytes": 8,
+      "sha256": "bd756ec12e711d5a2914988d9a7392f9472a405dc408b7d2956749d9454de362",
+      "extraction": "Unique matching export-specifier bytes",
+      "retained_from": "evidence/terminal/nonrunning-input-1f/reference.json"
+    },
+    {
+      "name": "_St",
+      "artifact": "index",
+      "file": "spans/index-_St.txt",
+      "utf8_half_open": [
+        2555599,
+        2555829
+      ],
+      "bytes": 230,
+      "sha256": "220c80cb132288c1347b23170f7b822a54298827c54fb8bee0c703f70eeeb6f3",
+      "ast_type": "ClassDeclaration",
+      "retained_from": "evidence/terminal/spawn-failure/reference.json"
+    },
+    {
+      "name": "FAt",
+      "artifact": "index",
+      "file": "spans/index-FAt.txt",
+      "utf8_half_open": [
+        2828546,
+        2828780
+      ],
+      "bytes": 234,
+      "sha256": "1d4f53a1460b7fce389cc29b109d002f1ac997d08373fe71c25f1aad2c57f95f",
+      "ast_type": "ClassDeclaration",
+      "retained_from": "evidence/terminal/spawn-failure/reference.json"
+    },
+    {
+      "name": "ySt",
+      "artifact": "index",
+      "file": "spans/index-ySt.txt",
+      "utf8_half_open": [
+        2552188,
+        2555599
+      ],
+      "bytes": 3411,
+      "sha256": "7bd7df55ddbf55db2ed5863a00115af41e8696377bfb17a7ef5cb5e69ecb3913",
+      "ast_type": "ClassDeclaration",
+      "retained_from": "evidence/terminal/spawn-failure/reference.json"
+    }
+  ],
+  "main_sources": [
+    {
+      "path": "src/features/terminal/session.ts",
+      "file": "main/src/features/terminal/session.ts",
+      "sha256": "e7785e03355148c1937a02b3aca8cafebb1821fbb6cd304946b08c476fc11409",
+      "bytes": 20002,
+      "git_blob": "e4058c0a3f302f37be641579d1d33c14a0969165"
+    },
+    {
+      "path": "src/features/terminal/pty.ts",
+      "file": "main/src/features/terminal/pty.ts",
+      "sha256": "6ae39f143a2ac74f846c08f02cefdbf7c0cba35c8336480e9e53dc47b9f61ec7",
+      "bytes": 3248,
+      "git_blob": "4ff0694a37b25cf23dbbb96489c29ab5ea987713"
+    },
+    {
+      "path": "src/features/terminal/TerminalPanel.tsx",
+      "file": "main/src/features/terminal/TerminalPanel.tsx",
+      "sha256": "b2623583505c976f1738785ebf5e05f7c3690b9cdffe05139050b7a795ee1b40",
+      "bytes": 1469,
+      "git_blob": "aedef7c3285379ecd0bd3c5dcb88e1902c3213a6"
+    },
+    {
+      "path": "src-tauri/src/terminal_commands.rs",
+      "file": "main/src-tauri/src/terminal_commands.rs",
+      "sha256": "75a8725122182bf9313501ce5d1abba608bb252e0afc8f11bc0a8762b432d24e",
+      "bytes": 9313,
+      "git_blob": "5dfc355d790e81f3d78f38ba673117171e143777"
+    },
+    {
+      "path": "src-tauri/src/terminal/manager.rs",
+      "file": "main/src-tauri/src/terminal/manager.rs",
+      "sha256": "9889795e54c7bf248d84a5336c2614272d906039a069366e92aa87d4c483a771",
+      "bytes": 12496,
+      "git_blob": "a6a1ac0d112148f54f51a3683ac495f106f60941"
+    },
+    {
+      "path": "src/components/PanelStrip.tsx",
+      "file": "main/src/components/PanelStrip.tsx",
+      "sha256": "98ffac9be8c66304edd0a5b9fe9fd6465ebbd2d52ef8f6fc8a8532da8f9457de",
+      "bytes": 8592,
+      "git_blob": "5bc2426b6f96d7e72c1dafd66cb08c70cceeb66a"
+    },
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "file": "main/src/components/WorkspaceView.tsx",
+      "sha256": "275992cd7f3fb63597d24e45c1cca2502285bd985fa20029bbf63660a0b91f9f",
+      "bytes": 81487,
+      "git_blob": "f36c0a8c9ff06993403cf7af4edac2e1f53b9f9f"
+    },
+    {
+      "path": "package.json",
+      "file": "main/package.json",
+      "sha256": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b",
+      "bytes": 1901,
+      "git_blob": "5fe4780b22a7417ae510a4f09f40d088683aece2"
+    },
+    {
+      "path": "package-lock.json",
+      "file": "main/package-lock.json",
+      "sha256": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1",
+      "bytes": 221776,
+      "git_blob": "9fe1d2f78593100fba2a2ce07788c56bdb450647"
+    }
+  ],
+  "product_runtime_executed": false,
+  "reference_evaluated": false,
+  "new_acquisition": false,
+  "native_behavior_observed": false,
+  "gap": "Frontend post-spawn resize request reconciliation missing; no native/PTY/kernel/visual claim",
+  "analysis_limits": [
+    "Existing AST spans revalidated; no new whole-module parse",
+    "Source request trace is not reproduction; new regression remains unexecuted",
+    "Native allocation, kernel dimensions and actual xterm rendering not observed"
+  ]
+}

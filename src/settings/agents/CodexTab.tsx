@@ -83,14 +83,14 @@ export function CodexTab({ settings, save, reload }: AgentTabProps) {
       <StatusLine
         connected={auth.authenticated}
         rows={auth.rows}
-        checking={mode === "chatgpt" ? reading && !account : loading && !provider}
+        checking={mode === "chatgpt" ? reading && !account : loading && (mode === "cli" || !provider)}
         refreshing={loading || reading}
         onRefresh={() => (mode === "chatgpt" ? readAccount() : refresh())}
         notConnectedMessage={auth.notConnectedMessage}
         detail={actionError ?? error}
       />
       {mode === "chatgpt" && <ChatGptSignIn account={auth.authenticated ? account : null} onAccount={setAccount} onError={setActionError} />}
-      {mode === "cli" && !auth.authenticated && <LoginButton command="codex login" label="codex login" onDone={refresh} />}
+      {mode === "cli" && <LoginButton command="codex login" label="codex login" onDone={refresh} />}
       {mode === "apikey" && (
         <SecretRow
           label="OpenAI API key"

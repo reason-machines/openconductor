@@ -245,6 +245,10 @@ pub struct WorkspaceRow {
     /// The workspace's open chat tabs besides its main chat, oldest first:
     /// they come back after a restart with their unread, as Conductor's do.
     pub chat_tabs: Vec<ChatTabRow>,
+    /// Retained UI chats for transcript attachments, including hidden tabs.
+    pub transcript_chats: Vec<ChatTabRow>,
+    pub primary_chat_id: String,
+    pub active_session_id: Option<String>,
     /// The main chat's own title once the user renamed it (`sessions::main_chat_titles`);
     /// absent, its tab shows the workspace name.
     pub chat_title: Option<String>,
@@ -302,16 +306,43 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
             title: t.title,
         });
     }
+    let mut transcript_chats: std::collections::HashMap<String, Vec<ChatTabRow>> =
+        std::collections::HashMap::new();
+    for session in sessions::list(pool).await? {
+        let Some(workspace_id) = session.workspace_id else {
+            continue;
+        };
+        if session.id.ends_with(":claude")
+            || !(session.id == workspace_id
+                || session.id.starts_with(&format!("{workspace_id}:review:"))
+                || session.id.starts_with(&format!("{workspace_id}:chat:")))
+        {
+            continue;
+        }
+        transcript_chats
+            .entry(workspace_id)
+            .or_default()
+            .push(ChatTabRow {
+                id: session.id,
+                title: session.title,
+            });
+    }
+    for chats in transcript_chats.values_mut() {
+        chats.sort_by(|a, b| a.id.cmp(&b.id));
+    }
     let mut titles: std::collections::HashMap<String, String> = sessions::main_chat_titles(pool)
         .await?
         .into_iter()
         .collect();
-    workspaces::list(pool)
-        .await?
-        .into_iter()
-        .map(|w| {
-            let w = w.workspace;
-            Ok(WorkspaceRow {
+    let mut rows = Vec::new();
+    for stored in workspaces::list(pool).await? {
+            let w = stored.workspace;
+            let primary_chat_id = sessions::primary_chat_id(pool, &w.local_id).await?;
+            let mut chat_tabs = tabs.remove(&w.local_id).unwrap_or_default();
+            let primary_tab = chat_tabs.iter().position(|t| t.id == primary_chat_id).map(|i| chat_tabs.remove(i));
+            let chat_title = if primary_chat_id == w.local_id { titles.remove(&w.local_id) } else { primary_tab.map(|t| t.title) };
+            let active_session_id = w.active_session_id.filter(|id| id == &primary_chat_id || chat_tabs.iter().any(|t| &t.id == id)).or_else(|| Some(primary_chat_id.clone()));
+            rows.push(WorkspaceRow {
                 linked_workspace_ids: decode_links(w.linked_workspace_ids.as_deref())?,
                 linked_directory_paths: decode_links(w.linked_directory_paths.as_deref())?,
                 directory_name: w.directory_name.unwrap_or_default(),
@@ -327,8 +358,11 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 pinned_at: w.pinned_at,
                 unread: w.unread,
                 unread_chats: unread.remove(&w.local_id).unwrap_or_default(),
-                chat_tabs: tabs.remove(&w.local_id).unwrap_or_default(),
-                chat_title: titles.remove(&w.local_id),
+                chat_tabs,
+                transcript_chats: transcript_chats.remove(&w.local_id).unwrap_or_default(),
+                chat_title,
+                primary_chat_id,
+                active_session_id,
                 pr_title: w.pr_title,
                 pr_description: w.pr_description,
                 number: w.number,
@@ -338,9 +372,9 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 updated_at: w.updated_at,
                 repository_id: w.repository_id,
                 id: w.local_id,
-            })
-        })
-        .collect::<Result<Vec<_>>>()
+            });
+    }
+    Ok(rows)
 }
 
 fn decode_links(raw: Option<&str>) -> Result<Vec<String>> {

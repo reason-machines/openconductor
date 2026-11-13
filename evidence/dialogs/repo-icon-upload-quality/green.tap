@@ -1,0 +1,50 @@
+(node:51) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:58) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Upload configures high-quality sampling before drawing 512x256, then picks the PNG and closes
+ok 1 - Upload configures high-quality sampling before drawing 512x256, then picks the PNG and closes
+  ---
+  duration_ms: 98.136455
+  type: 'test'
+  ...
+# Subtest: Upload configures high-quality sampling before drawing 64x64, then picks the PNG and closes
+ok 2 - Upload configures high-quality sampling before drawing 64x64, then picks the PNG and closes
+  ---
+  duration_ms: 34.557845
+  type: 'test'
+  ...
+# Subtest: Upload releases its object URL and stays open after decode failure
+ok 3 - Upload releases its object URL and stays open after decode failure
+  ---
+  duration_ms: 55.028945
+  type: 'test'
+  ...
+# Subtest: Upload releases its object URL and stays open after context failure
+ok 4 - Upload releases its object URL and stays open after context failure
+  ---
+  duration_ms: 47.581934
+  type: 'test'
+  ...
+# Subtest: Upload releases its object URL and stays open after encode failure
+ok 5 - Upload releases its object URL and stays open after encode failure
+  ---
+  duration_ms: 36.420741
+  type: 'test'
+  ...
+# Subtest: Upload rejects excessive image dimensions without drawing and still releases its object URL
+ok 6 - Upload rejects excessive image dimensions without drawing and still releases its object URL
+  ---
+  duration_ms: 24.266521
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 616.152352

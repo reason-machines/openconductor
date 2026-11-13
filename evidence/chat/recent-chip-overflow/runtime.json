@@ -1,0 +1,18 @@
+{
+  "owner": "Conductor Rebuild",
+  "head_sha": "2923f5f8635232c3c10143c55a22a3d5cca9ae81",
+  "run_id": 43109491798,
+  "job_id": 130821432006,
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43109491798/job/130821432006",
+  "fixture_sha256": "6f77ff55ecbeb1519e77d6599368492a901f17156184903ddcfe42bb83c6472d",
+  "baseline": {
+    "primitive_control": "PASS",
+    "initial_four_and_trigger": "PASS",
+    "fitting_five": "PASS",
+    "intended_product_failures": 5,
+    "existing_transcript_cases": "3 PASS"
+  },
+  "candidate": "PENDING_UNCHANGED_FIXTURE_HOSTED_REPLAY",
+  "native": "NOT_RUN",
+  "visible_capture": "NOT_RUN: local visible execution outside this lease"
+}

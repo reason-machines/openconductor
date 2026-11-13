@@ -17,14 +17,14 @@ export function QuitDialog({ running, onConfirm, onClose }: { running: number | 
   };
   useKeybindings({ "dialog.primaryAction": confirm }, { priority: PRIORITY.DIALOG, enableOnDialogIds: [QUIT_DIALOG_ID] });
   return (
-    <Modal title={COPY.title} onClose={onClose} dialogId={QUIT_DIALOG_ID} motion="alert">
+    <Modal title={COPY.title} onClose={onClose} dialogId={QUIT_DIALOG_ID} motion="alert" disablePointerDismissal>
       <div className="modal-body">
         <p>{COPY.description(running)}</p>
         <div className="modal-actions">
-          <button className="btn" onClick={onClose}>
+          <button className="btn" autoFocus onClick={onClose}>
             {COPY.cancelLabel}
           </button>
-          <button className="btn btn-danger" autoFocus data-primary-action onClick={confirm}>
+          <button className="btn btn-danger" data-primary-action onClick={confirm}>
             {COPY.confirmLabel}
             {key && <kbd className="quit-kbd">{glyphs(key)}</kbd>}
           </button>

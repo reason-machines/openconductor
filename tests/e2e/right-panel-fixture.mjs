@@ -54,6 +54,26 @@ export function fakeBackend({ shell, files, spotlight = false, setupScript = nul
     transformCallback: (f) => ((cbs[++cb] = f), cb),
     async invoke(cmd, args) {
       switch (cmd) {
+        case "plugin:webview|set_webview_zoom": {
+          if (args.label !== "main" || typeof args.value !== "number" || !Number.isFinite(args.value) || args.value <= 0) {
+            throw new Error("invalid fake webview zoom");
+          }
+          // Chromium has no native webview scale. Keep the test-host emulation
+          // in a stylesheet because the product clears inline CSS in native mode.
+          let style = document.querySelector("style[data-fake-webview-zoom]");
+          if (!style) {
+            style = document.createElement("style");
+            style.dataset.fakeWebviewZoom = "";
+            document.head.append(style);
+          }
+          style.textContent = `html { zoom: ${args.value}; }`;
+          window.__fake.calls.push({ cmd, ...args });
+          return;
+        }
+        case "reason_cli_ensure_current":
+          return { path: "/fixture/bin/reason", version: "fixture" };
+        case "db_first_run_onboarding_step":
+          return "999";
         case "local_storage_get_entry":
           return localStorage.getItem(`mock-subsystem:${args.args.subsystem}:${args.args.id}`);
         case "local_storage_set_entry":

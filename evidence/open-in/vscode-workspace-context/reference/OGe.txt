@@ -1,0 +1,1 @@
+function OGe(t){if(!t.cliBinDir)return"";const e=`${t.appName}.app/${t.cliBinDir}`;return`PATH="$PATH:/Applications/${e}:$HOME/Applications/${e}" `}

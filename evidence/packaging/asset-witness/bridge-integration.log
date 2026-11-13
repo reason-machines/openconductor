@@ -1,0 +1,6 @@
+{
+  "synthetic_collector_to_retained_zip_to_brotli_macho_inspector": "PASS",
+  "unchanged_original_asset_streams": 4,
+  "mapped_assets_recognized": 2,
+  "actual_app_artifact_or_native_acceptance": "NOT_RUN"
+}

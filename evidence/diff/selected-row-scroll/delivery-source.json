@@ -1,0 +1,55 @@
+{
+  "unit": "DIFF-SELECTED-ROW-SCROLL-01",
+  "baseline_main": "5555ec597fa5d3af0311ae0094eb3134d87fbb08",
+  "candidate_version": 3,
+  "product": [
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "bytes": 81577,
+      "sha256": "9156b2303c8cfd3dc3f01f71d8e821e6fff3a6740fc4118dc8c0ed19b5d8d896"
+    },
+    {
+      "path": "src/features/diff/useChangesPresentation.ts",
+      "bytes": 1239,
+      "sha256": "f5c849770c370f63a5e25352110928e03ad6ceefd25d783aaa510423127509b9"
+    },
+    {
+      "path": "src/features/diff/changesPresentation.ts",
+      "bytes": 4948,
+      "sha256": "94e9f4c842d7525e364f902dc0a8d195bb80b0260738821e7dddf9ff68f0dc4d"
+    },
+    {
+      "path": "src/features/diff/ChangesList.tsx",
+      "bytes": 11323,
+      "sha256": "34240b90edc7612a16fcc61d3f4fa3681b0b3d374f56cd588ddad8fb35deaaaa"
+    }
+  ],
+  "fixture": {
+    "path": "src/features/diff/selectedRowScroll.test.ts",
+    "bytes": 17818,
+    "sha256": "7043501cfea2ce48d956ea4728abfd531a93058327b243e2291a014297cd3a9f"
+  },
+  "other13inputs_preserved": [
+    "src/features/diff/changesTree.ts",
+    "src/features/diff/useWorkspaceDiff.ts",
+    "src/features/diff/selectedReveal.test.ts",
+    "src/features/files/tree.ts",
+    "src/features/diff/ChangesToolbar.tsx",
+    "src/features/diff/DiffViewer.tsx",
+    "src/features/diff/changesFilter.ts",
+    "src/features/diff/renameDisplayPath.ts",
+    "src/features/diff/fileCopyPaths.ts",
+    "src/lib/local-storage/subsystems.ts",
+    "src/keybindings/fuzzy.ts",
+    "src/features/diff/FilePathChip.tsx",
+    "src/features/diff/types.ts"
+  ],
+  "receipt_sha256": {
+    "original-baseline-stop.json": "fbe8924aa40f87a05a984b735f2811b71ea5700c5b846648090dc4ff753a93e1",
+    "v2-red-and-candidate-failure.json": "4f4af356a83a0b46dc9a8a4a3aa643e5195a45cfb6620641777411a9721f926f",
+    "v3-seven-pass.json": "145c83c981d78f89a4f568a577acf4bc0be089ce2664ae3d4657474b3a6f2f94"
+  },
+  "focused_result": "qualified V2 baseline six intended assertion failures/one control; unchanged fixture V3 seven passes; baseline not replayed",
+  "native_visual_geometry": "NOT RUN",
+  "local_runtime_duplicate": "NONE"
+}

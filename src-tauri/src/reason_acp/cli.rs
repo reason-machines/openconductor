@@ -35,15 +35,14 @@ const FALLBACK_DIRS: [&str; 2] = ["/opt/homebrew/bin", "/usr/local/bin"];
 /// Stderr lines kept for error reports when the agent exits.
 const STDERR_TAIL: usize = 40;
 
-/// The first executable `reason` on `path_var`, then `~/.local/bin`, then
-/// [`FALLBACK_DIRS`]. Relative `PATH` entries are skipped.
+/// The ensured `~/.local/bin/reason`, then the first executable on `path_var`,
+/// then [`FALLBACK_DIRS`]. Relative `PATH` entries are skipped.
 pub fn find_reason_cli(path_var: Option<&OsStr>, home: Option<&Path>) -> Option<PathBuf> {
-    let mut dirs: Vec<PathBuf> = path_var
-        .map(|p| env::split_paths(p).collect())
-        .unwrap_or_default();
+    let mut dirs = Vec::new();
     if let Some(home) = home {
         dirs.push(home.join(".local/bin"));
     }
+    dirs.extend(path_var.map(env::split_paths).into_iter().flatten());
     dirs.extend(FALLBACK_DIRS.iter().map(PathBuf::from));
     dirs.into_iter()
         .filter(|d| d.is_absolute())

@@ -1,0 +1,46 @@
+{
+  "author": "Conductor Rebuild",
+  "head_sha": "e31b5e770b8e3d35c45ac51c60860cf027186d56",
+  "run_id": 43125214106,
+  "job_id": 130875448149,
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43125214106/job/130875448149",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "intended_failures": 4,
+  "controls_passed": 4,
+  "total": {
+    "tests": 3208,
+    "passed": 3204,
+    "failed": 4,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "failure_messages": [
+    "Pending name must remain editable",
+    "Pending parent must remain editable",
+    "Pending Browse must remain available",
+    "Pending templates must remain selectable"
+  ],
+  "typecheck": {
+    "job_id": 130875447601,
+    "step": "Run npm run typecheck",
+    "conclusion": "success",
+    "note": "That job later fails at the four unit assertions, so its later build step is skipped."
+  },
+  "build": {
+    "head_sha": "e31b5e770b8e3d35c45ac51c60860cf027186d56",
+    "run_id": 43125214125,
+    "job_id": 130875446022,
+    "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43125214125/job/130875446022",
+    "step": "Build",
+    "conclusion": "success",
+    "log_matches": [
+      {
+        "line": 2569,
+        "text": "2026-11-12T00:10:53.1426817Z ✓ built in 38.06s"
+      }
+    ]
+  },
+  "fixture_sha256": "50dea0977358233e7299d2a481bbd57469a3e362d21696d5486a9660435d1d94",
+  "native_or_visual_verified": false
+}

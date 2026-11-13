@@ -13,6 +13,9 @@ import * as view from "./view.ts";
 import * as groups from "./toolGroups.ts";
 import * as time from "./turnTime.ts";
 import { toolKind } from "./conductorTools.ts";
+import { userMessageCopyText } from "./userMessageCopy.ts";
+import { assistantDisplayText } from "./assistantText.ts";
+import { thinkingChipText } from "./thinkingChip.ts";
 
 function statements(path: string, names: string[]): string {
   const text = readFileSync(new URL(path, import.meta.url), "utf8");
@@ -26,7 +29,7 @@ function statements(path: string, names: string[]): string {
   }).join("\n");
 }
 
-const selected = statements("./Transcript.tsx", ["Transcript", "rowTurn", "groupTurns", "Row", "Agent", "SummaryRow", "Part"]);
+const selected = statements("./Transcript.tsx", ["toolDisclosure", "Transcript", "rowTurn", "groupTurns", "Row", "reportLabel", "Agent", "SummaryRow", "Part", "ThinkingRow"]);
 const toolDefault = statements("./ToolRows.tsx", ["opensByDefault"]);
 const transition = `
 function SummaryTransition({ summaryToggles, ...props }) {
@@ -55,13 +58,15 @@ function SummaryTransition({ summaryToggles, ...props }) {
 }
 exports.SummaryTransition = SummaryTransition;
 `;
-const compiled = ts.transpileModule(`${selected}\n${toolDefault}\n${transition}`, {
+const userText = statements("./UserText.tsx", ["trimUserUrl", "isOrdinaryUserUrl", "UserText"]);
+const compiled = ts.transpileModule(`${selected}\n${toolDefault}\n${userText}\n${transition}`, {
   fileName: "Transcript.tsx",
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022 },
   reportDiagnostics: true,
 });
 assert.equal(compiled.diagnostics?.filter((d) => d.category === ts.DiagnosticCategory.Error).length, 0);
 const localRequire = createRequire(import.meta.url);
+const StripAbsolutelyRight = React.createContext(false);
 const renderers: {
   Transcript?: React.ComponentType<TranscriptProps>;
   SummaryTransition?: React.ComponentType<TranscriptProps & { summaryToggles: number }>;
@@ -69,24 +74,27 @@ const renderers: {
 const unexpected = (name: string) => () => { throw new Error(`Unexercised leaf reached: ${name}`); };
 runInNewContext(compiled.outputText, {
   exports: renderers,
+  URL,
   require(name: string) { assert.equal(name, "react/jsx-runtime"); return localRequire(name); },
   React,
   Fragment: React.Fragment,
   useMemo: React.useMemo,
   useState: React.useState,
   useSyncExternalStore: React.useSyncExternalStore,
-  ...view, ...groups, ...time, toolKind,
+  ...view, ...groups, ...time, toolKind, userMessageCopyText, thinkingChipText, assistantDisplayText,
+  useBoolPref: (key: string) => {
+    assert.equal(key, "not_absolutely_right");
+    return React.useContext(StripAbsolutelyRight);
+  },
   LinkMenuNotify: React.createContext(undefined),
   TurnFooter: () => null,
   MessageActions: () => null,
   Lucide: ({ name, className }: { name: string; className?: string }) => React.createElement("i", { "data-icon-leaf": name, className }),
   ToolIcon: ({ name, className }: { name: string; className?: string }) => React.createElement("i", { "data-tool-icon-leaf": name, className }),
   Markdown: ({ text, className }: { text: string; className?: string }) => React.createElement("span", { "data-markdown-leaf": true, className }, text),
-  ConductorToolRow: ({ tool, open }: { tool: { name: string }; open: boolean }) => React.createElement("span", { "data-tool-leaf": tool.name, "data-tool-open": String(open) }, tool.name),
+  ConductorToolRow: ({ tool, open, result }: { tool: { name: string }; open: boolean; result?: string }) => React.createElement("span", { "data-tool-leaf": tool.name, "data-tool-open": String(open) }, tool.name, result),
   LinkWithMenu: unexpected("LinkWithMenu"),
-  ThinkingRow: unexpected("ThinkingRow"),
   openUrl: unexpected("openUrl"),
-  reportLabel: unexpected("reportLabel"),
 }, { filename: "Transcript.tsx" });
 assert.equal(typeof renderers.Transcript, "function");
 assert.ok(renderers.Transcript);
@@ -119,11 +127,11 @@ function transcript(events: ChatEvent[]): ChatTranscript {
   assert.ok(result.ok);
   return result.transcript;
 }
-function render(transcript: ChatTranscript, props: Omit<TranscriptProps, "transcript"> = {}, summaryToggles = 0) {
+function render(transcript: ChatTranscript, props: Omit<TranscriptProps, "transcript"> = {}, summaryToggles = 0, stripAbsolutelyRight = false) {
   const input = { transcript, now: () => Date.parse("2026-11-10T00:00:00Z"), ...props };
-  const html = renderToStaticMarkup(summaryToggles
+  const html = renderToStaticMarkup(React.createElement(StripAbsolutelyRight.Provider, { value: stripAbsolutelyRight }, summaryToggles
     ? React.createElement(SummaryTransition, { ...input, summaryToggles })
-    : React.createElement(ProductionTranscript, input));
+    : React.createElement(ProductionTranscript, input)));
   const blocks = groups.foldAgentRows(view.buildRows(transcript), transcript.activeTurn).filter((r) => r.kind === "agent");
   return {
     blocks,
@@ -233,4 +241,118 @@ test("three tools in one assistant message do not invent a summary", () => {
   assert.equal(o.summaryHeaders, 0);
   assert.equal(o.renderedTools, 3);
   finalVisible(o);
+});
+
+function escapeText(text: string): string {
+  return renderToStaticMarkup(React.createElement("span", null, text)).slice(6, -7);
+}
+function markdownTexts(html: string): string[] {
+  return [...html.matchAll(/<span data-markdown-leaf="true"[^>]*>(.*?)<\/span>/gs)].map((m) => m[1]!);
+}
+function assistantTranscript(blocks: Block[], running = false): ChatTranscript {
+  return transcript([
+    status("filter", "running"),
+    message("filter", "user", "user", [said("Filter display only")]),
+    message("filter", "assistant", "assistant", blocks),
+    ...(running ? [] : [status("filter", "completed")]),
+  ]);
+}
+for (const prefix of [
+  "You're absolutely right! ",
+  "You're absolutely right.\n\n",
+  "You're absolutely right -\t",
+  "You're absolutely right –\n",
+  "You're absolutely right ",
+]) {
+  for (const enabled of [false, true]) {
+    for (const kind of ["text", "thinking"] satisfies Block["type"][]) {
+      test(`assistant display prefix=${JSON.stringify(prefix)} enabled=${enabled} kind=${kind}`, () => {
+        const raw = `${prefix}Keep this.`;
+        const input = assistantTranscript([{ type: kind, text: raw }]);
+        const before = JSON.stringify(input);
+        const o = render(input, { expandToolsByDefault: true }, 0, enabled);
+        assert.deepEqual(markdownTexts(o.html), [escapeText(enabled ? "Keep this." : raw)]);
+        assert.equal(JSON.stringify(input), before, "display never mutates stored message blocks");
+      });
+    }
+  }
+}
+for (const kind of ["text", "thinking"] satisfies Block["type"][]) {
+  test(`enabled assistant display hides trimmed-empty ${kind}`, () => {
+    const o = render(assistantTranscript([{ type: kind, text: "You're absolutely right!\n\t" }]), { expandToolsByDefault: true }, 0, true);
+    assert.deepEqual(markdownTexts(o.html), []);
+    assert.doesNotMatch(o.html, /oc-msg-assistant|chat-thinking/, "empty display omits the whole block, not just its text");
+  });
+  for (const enabled of [false, true]) {
+    test(`whitespace-only ${kind} is hidden enabled=${enabled}`, () => {
+      const o = render(assistantTranscript([{ type: kind, text: " \n\t" }]), { expandToolsByDefault: true }, 0, enabled);
+      assert.deepEqual(markdownTexts(o.html), []);
+      assert.doesNotMatch(o.html, /oc-msg-assistant|chat-thinking/);
+    });
+  }
+  test(`enabled display filters streaming ${kind}`, () => {
+    const o = render(assistantTranscript([{ type: kind, text: "You're absolutely right! Live answer" }], true), {}, 0, true);
+    assert.deepEqual(markdownTexts(o.html), ["Live answer"]);
+    assert.match(o.html, /is-streaming/);
+  });
+}
+
+test("enabled display filters intermediate and preview text without changing their emphasis", () => {
+  const o = render(assistantTranscript([
+    said("You're absolutely right! Intermediate"),
+    said("You're absolutely right. Final"),
+  ]), {}, 0, true);
+  assert.deepEqual(markdownTexts(o.html), ["Intermediate", "Final"]);
+  assert.match(o.html, /class="oc-prose chat-text muted">Intermediate/);
+  assert.match(o.html, /class="oc-prose chat-text">Final/);
+});
+
+test("enabled display leaves user, report, system and tool payloads and raw copy/fork data untouched", () => {
+  const raw = "You're absolutely right! Keep raw.";
+  const report = message("filter", "report", "user", [said(raw)]);
+  assert.ok(report.type === "upsert");
+  const input = transcript([
+    status("filter", "running"),
+    message("filter", "user", "user", [said(raw)]),
+    { ...report, message: { ...report.message, senderSessionId: "other-session" } },
+    message("filter", "system", "system", [said(raw)]),
+    message("filter", "tool", "assistant", [{ type: "tool_use", id: "filter-tool", name: "Read", input: { file_path: raw } }]),
+    message("filter", "result", "user", [{ type: "tool_result", toolUseId: "filter-tool", content: raw }]),
+    message("filter", "final", "assistant", [said(raw)]),
+    status("filter", "completed"),
+  ]);
+  const before = JSON.stringify(input);
+  const o = render(input, { dontCollapseToolCalls: true }, 0, true);
+  const escaped = escapeText(raw);
+  assert.ok(o.html.includes(`class="oc-user-text">${escaped}</div>`));
+  assert.ok(o.html.includes(`class="chat-report-body">${escaped}</div>`));
+  assert.ok(o.html.includes(`class="chat-msg chat-system">${escaped}</div>`));
+  assert.ok(o.html.includes(`data-tool-input="${escapeText(JSON.stringify({ file_path: raw }))}"`));
+  assert.ok(o.html.includes(`Read${escaped}</span>`), "tool result reaches the leaf unchanged");
+  assert.deepEqual(markdownTexts(o.html), ["Keep raw."]);
+  assert.equal(JSON.stringify(input), before, "fork/storage source remains byte-identical");
+  const footer = view.buildRows(input).find((row) => row.kind === "turn_end");
+  assert.ok(footer?.kind === "turn_end");
+  assert.equal(footer.finalText, raw, "copy-final payload stays raw, not filtered");
+  assert.equal(userMessageCopyText(input.messages[0]!), raw, "user copy remains raw");
+});
+
+test("mounted off/on/off rerender restores raw assistant text and thinking from the same transcript", async () => {
+  const { act, create } = localRequire("react-test-renderer");
+  const raw = "You're absolutely right! Keep this.";
+  const input = assistantTranscript([said(raw), { type: "thinking", text: raw }], true);
+  const before = JSON.stringify(input);
+  const tree = (enabled: boolean) => React.createElement(StripAbsolutelyRight.Provider, { value: enabled },
+    React.createElement(ProductionTranscript, { transcript: input, now: () => Date.parse("2026-11-10T00:00:00Z") }));
+  let mounted: ReturnType<typeof create>;
+  await act(async () => { mounted = create(tree(false)); });
+  const displayed = (): string[] => mounted.root.findAllByProps({ "data-markdown-leaf": true }).map((node: { props: { children: string } }) => node.props.children);
+  try {
+    assert.deepEqual(displayed(), [raw, raw]);
+    await act(async () => { mounted.update(tree(true)); });
+    assert.deepEqual(displayed(), ["Keep this.", "Keep this."]);
+    await act(async () => { mounted.update(tree(false)); });
+    assert.deepEqual(displayed(), [raw, raw]);
+    assert.equal(JSON.stringify(input), before);
+  } finally { await act(async () => { mounted.unmount(); }); }
 });

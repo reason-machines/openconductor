@@ -10,7 +10,7 @@ export const MAX_TABS = tabLimit(true);
 /** Each workspace has one chat tab, and it counts toward the limit. */
 export const CHAT_TABS = 1;
 
-export type TabStatus = "starting" | "running" | "exited";
+export type TabStatus = "starting" | "running" | "exited" | "spawn_error";
 export type TerminalPlacement = "panel" | "center";
 
 export interface TerminalTab {
@@ -20,6 +20,7 @@ export interface TerminalTab {
   status: TabStatus;
   exitCode?: number;
   signal?: string | null;
+  spawnError?: string;
   /** From the shell integration marks (shellIntegration.ts); shown after the title. */
   runningProgram?: string;
 }
@@ -40,6 +41,8 @@ export type TabsAction =
   | { type: "close"; id: string }
   | { type: "select"; id: string }
   | { type: "ready"; id: string }
+  | { type: "failed"; id: string; error: string }
+  | { type: "retry"; id: string }
   | { type: "exit"; id: string; exitCode: number; signal: string | null }
   | { type: "program"; id: string; runningProgram?: string };
 
@@ -76,6 +79,14 @@ export function tabsReducer(s: TabsState, a: TabsAction): TabsState {
       return terminalTabs(s, "panel").some((t) => t.id === a.id) ? { ...s, activeId: a.id } : s;
     case "ready":
       return patch(s, a.id, (t) => ({ ...noProgram(t), status: t.status === "starting" ? "running" : t.status }));
+    case "failed":
+      return patch(s, a.id, (t) => t.status === "starting" ? { ...noProgram(t), status: "spawn_error", spawnError: a.error } : t);
+    case "retry":
+      return patch(s, a.id, (t) => {
+        if (t.status !== "spawn_error") return t;
+        const { spawnError: _, exitCode: _exitCode, signal: _signal, ...tab } = noProgram(t);
+        return { ...tab, status: "starting" };
+      });
     case "exit":
       return patch(s, a.id, (t) => ({ ...noProgram(t), status: "exited", exitCode: a.exitCode, signal: a.signal }));
     case "program":

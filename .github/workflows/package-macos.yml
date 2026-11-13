@@ -1,19 +1,7 @@
 name: Package (macOS)
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    paths:
-      - "src-tauri/**"
-      - "package.json"
-      - "package-lock.json"
-      - "scripts/package-macos.sh"
-      - "scripts/fetch-bundled-tools.sh"
-      - "tools/check_macos_bundle.py"
-      - "tools/test_check_macos_bundle.py"
-      - "evidence/packaging/**"
-      - ".github/workflows/package-macos.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -47,6 +35,10 @@ jobs:
             --signing adhoc --report bundle-check.json
       - name: Zip the bundle
         run: ditto -c -k --keepParent src-tauri/target/debug/bundle/macos/OpenConductor.app OpenConductor-debug.zip
+      - name: Retain original asset witnesses
+        run: |
+          python3 tools/collect_macos_asset_witness.py --source-commit "$GITHUB_SHA" \
+            > asset-witness.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -54,4 +46,6 @@ jobs:
           path: |
             OpenConductor-debug.zip
             bundle-check.json
+            frontend-codegen-witness.zip
+            asset-witness.json
           retention-days: 7

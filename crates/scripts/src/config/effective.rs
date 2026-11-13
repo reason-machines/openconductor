@@ -9,8 +9,9 @@
 //! user `settings.toml`, repository shared `<root>/.conductor/settings.toml`
 //! (working tree), workspace shared `<workspace>/.conductor/settings.toml`
 //! when the workspace is not the root, repository local
-//! `<root>/.conductor/settings.local.toml`, then managed. JSON files are
-//! read for the repository layers only and rank below every TOML file.
+//! `<root>/.conductor/settings.local.toml`, then managed. Repository JSON
+//! files rank below every TOML file. Managed settings use TOML when present,
+//! otherwise JSON.
 //! A higher layer's value replaces a lower one's; tables merge key by key.
 //!
 //! Environment variables are collected layer by layer in the same order:
@@ -334,7 +335,9 @@ pub fn load_effective_layers(paths: &EffectivePaths) -> Result<Vec<EffectiveLaye
             PathBuf::from(name)
         };
         let mut candidates = vec![(Format::Toml, with_ext(".toml"))];
-        if json {
+        if layer == Layer::Managed {
+            candidates.push((Format::Json, with_ext(".json")));
+        } else if json {
             candidates.insert(0, (Format::Json, with_ext(".json")));
         }
         for (format, path) in candidates {
@@ -353,6 +356,9 @@ pub fn load_effective_layers(paths: &EffectivePaths) -> Result<Vec<EffectiveLaye
                 repo,
                 home: paths.home.clone(),
             });
+            if layer == Layer::Managed {
+                break;
+            }
         }
         Ok::<(), ConfigError>(())
     };

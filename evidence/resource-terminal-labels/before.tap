@@ -1,0 +1,91 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual mounted resource poll renders panel and center labels instead of shell executable names
+not ok 1 - actual mounted resource poll renders panel and center labels instead of shell executable names
+  ---
+  duration_ms: 809.724724
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/resource-terminal-labels/regression.cjs:107:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+    + {}
+    - {
+    -   'term-1': 'Terminal 1',
+    -   'term-2': 'Terminal tab 1',
+    -   'term-3': 'Terminal 2',
+    -   'term-4': 'Terminal tab 2'
+    - }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    term-1: 'Terminal 1'
+    term-3: 'Terminal 2'
+    term-2: 'Terminal tab 1'
+    term-4: 'Terminal tab 2'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/resource-terminal-labels/regression.cjs:117:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: panel numbering starts at first PANEL insertion, independent of center-first workspaces and titles
+not ok 2 - panel numbering starts at first PANEL insertion, independent of center-first workspaces and titles
+  ---
+  duration_ms: 170.575253
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/resource-terminal-labels/regression.cjs:126:1'
+  failureType: 'testCodeFailure'
+  error: 'session.getResourceTerminalLabels is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    Object.labels (/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/resource-terminal-labels/regression.cjs:86:53)
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/resource-terminal-labels/regression.cjs:133:22)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: restored terminal ids keep their placement labels without using saved titles
+not ok 3 - restored terminal ids keep their placement labels without using saved titles
+  ---
+  duration_ms: 230.998481
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/resource-terminal-labels/regression.cjs:143:1'
+  failureType: 'testCodeFailure'
+  error: 'session.getResourceTerminalLabels is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    Object.labels (/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/resource-terminal-labels/regression.cjs:86:53)
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/resource-terminal-labels/regression.cjs:148:22)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: resource labels do not enable polling with {"enabled":false}
+ok 4 - resource labels do not enable polling with {"enabled":false}
+  ---
+  duration_ms: 734.786713
+  type: 'test'
+  ...
+# Subtest: resource labels do not enable polling with {"desktop":false}
+ok 5 - resource labels do not enable polling with {"desktop":false}
+  ---
+  duration_ms: 136.909916
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 2
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3031.128455

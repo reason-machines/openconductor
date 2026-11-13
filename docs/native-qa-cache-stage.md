@@ -32,18 +32,22 @@ Do not build or launch on the Mac from a parallel source or browser lane.
 1. Use the exact containing merged source and a fresh private QA fixture following
    [the isolated build procedure](native-qa-isolation.md). Never use the installed
    app, real credentials, preserved data, existing app processes or a previous
-   runtime fixture.
+   runtime fixture. Precreate `data/confinement-state`,
+   `tmp/confinement-startup` and `tmp/confinement-child` as owned regular
+   single-link mode-0600 files using that procedure.
 2. Build the random-identity macOS debug bundle with local bundled assets, one
    `main` window and the default `index.html` target. Dev-server, remote asset,
    multi-window, nondefault target and release configurations are refused.
+   Keep compiler output outside `$qa`; copy the bundle inside `$qa/app` and
+   retain `qa_app="$qa/app/OpenConductor QA.app"` from the isolated build
+   procedure. Do not stage code in a mutable data directory.
 3. Produce the exact-binary path receipt, then the
    [ordinary inert prerequisite receipt](native-qa-webkit.md). A stale binary,
    configuration or source identity is refused before the storage subprocess.
 4. Only in that separately scoped native unit, run the wrapper:
 
    ```bash
-   python3 tools/native_qa_cache.py "$qa" \
-     "$qa/target/debug/bundle/macos/OpenConductor QA.app" \
+   python3 tools/native_qa_cache.py "$qa" "$qa_app" \
      --execute-synthetic-storage-stage
    ```
 

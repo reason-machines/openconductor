@@ -22,6 +22,8 @@ function fixture() {
     transformCallback: () => 1,
     async invoke(cmd, args) {
       switch (cmd) {
+        case "reason_cli_ensure_current":
+          return { path: "/fixture/bin/reason", version: "fixture" };
         case "get_settings": return JSON.parse(localStorage.getItem(key) ?? JSON.stringify(defaults));
         case "update_settings": localStorage.setItem(key, JSON.stringify(args.settings)); return args.settings;
         case "reason_account_status": return { name: "Ada Demo", email: "ada@example.com", credential: "login", workspaces: [] };

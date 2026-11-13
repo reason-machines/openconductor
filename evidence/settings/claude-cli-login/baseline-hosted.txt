@@ -1,0 +1,54 @@
+2026-11-11T14:10:42.2546966Z # Subtest: connected CLI retains Run claude /login
+2026-11-11T14:10:42.2576941Z not ok 2281 - connected CLI retains Run claude /login
+2026-11-11T14:10:42.2577403Z   ---
+2026-11-11T14:10:42.2577668Z   duration_ms: 173.56903
+2026-11-11T14:10:42.2577974Z   type: 'test'
+2026-11-11T14:10:42.2578694Z   location: '/home/runner/work/openconductor/openconductor/src/settings/agents/claudeLoginVisibility.test.ts:93:3'
+2026-11-11T14:10:42.2579452Z   failureType: 'testCodeFailure'
+2026-11-11T14:10:42.2579990Z   error: 'CLI mode must keep the login action regardless of connected status'
+2026-11-11T14:10:42.2580512Z   code: 'ERR_ASSERTION'
+2026-11-11T14:10:42.2580804Z   name: 'AssertionError'
+2026-11-11T14:10:42.2581106Z   expected: true
+2026-11-11T14:10:42.2581366Z   actual: false
+2026-11-11T14:10:42.2581621Z   operator: '=='
+2026-11-11T14:10:42.2581878Z   stack: |-
+2026-11-11T14:10:42.2582699Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/claudeLoginVisibility.test.ts:96:14)
+2026-11-11T14:10:42.2583606Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T14:10:42.2584111Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T14:10:42.2584609Z     Test.start (node:internal/test_runner/test:944:17)
+2026-11-11T14:10:42.2585218Z     startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+2026-11-11T14:10:42.2585899Z   ...
+2026-11-11T14:10:42.2586284Z # Subtest: signed-out CLI retains Run claude /login
+2026-11-11T14:10:42.2586774Z ok 2282 - signed-out CLI retains Run claude /login
+2026-11-11T14:10:42.2587148Z   ---
+2026-11-11T14:10:42.2587923Z   duration_ms: 102.666778
+2026-11-11T14:10:42.2588230Z   type: 'test'
+2026-11-11T14:10:42.2588481Z   ...
+2026-11-11T14:10:42.2588893Z # Subtest: refreshing connected CLI retains Run claude /login
+2026-11-11T14:10:42.2589511Z not ok 2283 - refreshing connected CLI retains Run claude /login
+2026-11-11T14:10:42.2589929Z   ---
+2026-11-11T14:10:42.2590186Z   duration_ms: 67.383325
+2026-11-11T14:10:42.2590497Z   type: 'test'
+2026-11-11T14:10:42.2591228Z   location: '/home/runner/work/openconductor/openconductor/src/settings/agents/claudeLoginVisibility.test.ts:93:3'
+2026-11-11T14:10:42.2592194Z   failureType: 'testCodeFailure'
+2026-11-11T14:10:42.2592731Z   error: 'CLI mode must keep the login action regardless of connected status'
+2026-11-11T14:10:42.2593235Z   code: 'ERR_ASSERTION'
+2026-11-11T14:10:42.2593528Z   name: 'AssertionError'
+2026-11-11T14:10:42.2593832Z   expected: true
+2026-11-11T14:10:42.2594085Z   actual: false
+2026-11-11T14:10:42.2594344Z   operator: '=='
+2026-11-11T14:10:42.2594624Z   stack: |-
+2026-11-11T14:10:42.2595630Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/claudeLoginVisibility.test.ts:96:14)
+2026-11-11T14:10:42.2596457Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T14:10:42.2596857Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T14:10:42.2597329Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T14:10:42.2597837Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T14:10:42.2598272Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T14:10:42.2598797Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T14:10:42.2599235Z   ...
+2026-11-11T14:10:42.2599633Z # Subtest: API-key mode retains its secret control instead of CLI login
+2026-11-11T14:10:42.2600214Z ok 2284 - API-key mode retains its secret control instead of CLI login
+2026-11-11T14:10:42.2600584Z   ---
+2026-11-11T14:10:42.2600823Z   duration_ms: 62.271531
+2026-11-11T14:10:42.2601084Z   type: 'test'
+2026-11-11T14:10:42.2601306Z   ...

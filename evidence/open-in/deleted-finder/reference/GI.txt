@@ -1,0 +1,1 @@
+function GI(){return Y_()==="linux"?"/bin/bash":"/bin/zsh"}

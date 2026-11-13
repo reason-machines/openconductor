@@ -1,0 +1,151 @@
+2026-11-12T04:11:19.9039270Z # Subtest: ordinary panel output reserves two cells for a Unicode 11 emoji
+2026-11-12T04:11:19.9088696Z not ok 2096 - ordinary panel output reserves two cells for a Unicode 11 emoji
+2026-11-12T04:11:19.9098329Z   ---
+2026-11-12T04:11:19.9103084Z   duration_ms: 833.489726
+2026-11-12T04:11:19.9103840Z   type: 'test'
+2026-11-12T04:11:19.9105014Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/sessionUnicode.test.ts:107:1'
+2026-11-12T04:11:19.9106190Z   failureType: 'testCodeFailure'
+2026-11-12T04:11:19.9106836Z   error: |-
+2026-11-12T04:11:19.9107445Z     Expected values to be strictly equal:
+2026-11-12T04:11:19.9108306Z
+2026-11-12T04:11:19.9108817Z     3 !== 4
+2026-11-12T04:11:19.9109326Z
+2026-11-12T04:11:19.9110345Z   code: 'ERR_ASSERTION'
+2026-11-12T04:11:19.9110947Z   name: 'AssertionError'
+2026-11-12T04:11:19.9111544Z   expected: 4
+2026-11-12T04:11:19.9112075Z   actual: 3
+2026-11-12T04:11:19.9112614Z   operator: 'strictEqual'
+2026-11-12T04:11:19.9113204Z   stack: |-
+2026-11-12T04:11:19.9114460Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/sessionUnicode.test.ts:111:10)
+2026-11-12T04:11:19.9115884Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T04:11:19.9116946Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-12T04:11:19.9117990Z   ...
+2026-11-12T04:11:19.9158688Z # Subtest: center terminal emoji preserve the following output column
+2026-11-12T04:11:19.9188951Z not ok 2097 - center terminal emoji preserve the following output column
+2026-11-12T04:11:19.9218475Z   ---
+2026-11-12T04:11:19.9219027Z   duration_ms: 20.022636
+2026-11-12T04:11:19.9219581Z   type: 'test'
+2026-11-12T04:11:19.9220666Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/sessionUnicode.test.ts:114:1'
+2026-11-12T04:11:19.9221787Z   failureType: 'testCodeFailure'
+2026-11-12T04:11:19.9222369Z   error: |-
+2026-11-12T04:11:19.9222933Z     Expected values to be strictly equal:
+2026-11-12T04:11:19.9223529Z
+2026-11-12T04:11:19.9223969Z     3 !== 5
+2026-11-12T04:11:19.9224420Z
+2026-11-12T04:11:19.9224897Z   code: 'ERR_ASSERTION'
+2026-11-12T04:11:19.9225462Z   name: 'AssertionError'
+2026-11-12T04:11:19.9226004Z   expected: 5
+2026-11-12T04:11:19.9226482Z   actual: 3
+2026-11-12T04:11:19.9226955Z   operator: 'strictEqual'
+2026-11-12T04:11:19.9227477Z   stack: |-
+2026-11-12T04:11:19.9228930Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/sessionUnicode.test.ts:118:10)
+2026-11-12T04:11:19.9230285Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T04:11:19.9231205Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T04:11:19.9232011Z   ...
+2026-11-12T04:11:19.9374387Z # Subtest: ordinary terminal wide output wraps the next character onto the next row
+2026-11-12T04:11:19.9375835Z not ok 2098 - ordinary terminal wide output wraps the next character onto the next row
+2026-11-12T04:11:19.9376873Z   ---
+2026-11-12T04:11:19.9377457Z   duration_ms: 12.882166
+2026-11-12T04:11:19.9378311Z   type: 'test'
+2026-11-12T04:11:19.9379862Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/sessionUnicode.test.ts:121:1'
+2026-11-12T04:11:19.9380984Z   failureType: 'testCodeFailure'
+2026-11-12T04:11:19.9381566Z   error: |-
+2026-11-12T04:11:19.9382120Z     Expected values to be strictly equal:
+2026-11-12T04:11:19.9382715Z
+2026-11-12T04:11:19.9383173Z     '' !== 'Z'
+2026-11-12T04:11:19.9383638Z
+2026-11-12T04:11:19.9384108Z   code: 'ERR_ASSERTION'
+2026-11-12T04:11:19.9384635Z   name: 'AssertionError'
+2026-11-12T04:11:19.9385161Z   expected: 'Z'
+2026-11-12T04:11:19.9385669Z   actual: ''
+2026-11-12T04:11:19.9386155Z   operator: 'strictEqual'
+2026-11-12T04:11:19.9386669Z   stack: |-
+2026-11-12T04:11:19.9387962Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/sessionUnicode.test.ts:125:10)
+2026-11-12T04:11:19.9389237Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T04:11:19.9390195Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T04:11:19.9390980Z   ...
+2026-11-12T04:11:19.9517940Z # Subtest: ordinary terminal Unicode 11 combining marks do not advance the cursor
+2026-11-12T04:11:19.9523999Z not ok 2099 - ordinary terminal Unicode 11 combining marks do not advance the cursor
+2026-11-12T04:11:19.9524901Z   ---
+2026-11-12T04:11:19.9525517Z   duration_ms: 22.955972
+2026-11-12T04:11:19.9525912Z   type: 'test'
+2026-11-12T04:11:19.9526762Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/sessionUnicode.test.ts:128:1'
+2026-11-12T04:11:19.9528392Z   failureType: 'testCodeFailure'
+2026-11-12T04:11:19.9528828Z   error: |-
+2026-11-12T04:11:19.9529225Z     Expected values to be strictly equal:
+2026-11-12T04:11:19.9529669Z
+2026-11-12T04:11:19.9529954Z     3 !== 2
+2026-11-12T04:11:19.9530242Z
+2026-11-12T04:11:19.9530546Z   code: 'ERR_ASSERTION'
+2026-11-12T04:11:19.9530918Z   name: 'AssertionError'
+2026-11-12T04:11:19.9531289Z   expected: 2
+2026-11-12T04:11:19.9531593Z   actual: 3
+2026-11-12T04:11:19.9531923Z   operator: 'strictEqual'
+2026-11-12T04:11:19.9532277Z   stack: |-
+2026-11-12T04:11:19.9533280Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/sessionUnicode.test.ts:132:10)
+2026-11-12T04:11:19.9534284Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T04:11:19.9535009Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T04:11:19.9535666Z   ...
+2026-11-12T04:11:19.9675360Z # Subtest: ordinary terminal ASCII output keeps its original width
+2026-11-12T04:11:19.9688186Z ok 2100 - ordinary terminal ASCII output keeps its original width
+2026-11-12T04:11:19.9713620Z   ---
+2026-11-12T04:11:19.9714268Z   duration_ms: 16.010315
+2026-11-12T04:11:19.9714875Z   type: 'test'
+2026-11-12T04:11:19.9715388Z   ...
+2026-11-12T04:11:19.9815679Z # Subtest: ordinary terminal CJK output keeps its existing wide cells
+2026-11-12T04:11:19.9818821Z ok 2101 - ordinary terminal CJK output keeps its existing wide cells
+2026-11-12T04:11:19.9819665Z   ---
+2026-11-12T04:11:19.9820232Z   duration_ms: 14.345949
+2026-11-12T04:11:19.9820671Z   type: 'test'
+2026-11-12T04:11:19.9821018Z   ...
+2026-11-12T04:11:19.9957180Z # Subtest: ordinary terminal existing combining accents keep their zero-cell width
+2026-11-12T04:11:19.9960528Z ok 2102 - ordinary terminal existing combining accents keep their zero-cell width
+2026-11-12T04:11:19.9961399Z   ---
+2026-11-12T04:11:19.9961955Z   duration_ms: 13.873037
+2026-11-12T04:11:19.9962622Z   type: 'test'
+2026-11-12T04:11:19.9963008Z   ...
+2026-11-12T04:11:20.0119874Z # Subtest: split UTF-8 PTY data retains the Unicode 11 output width
+2026-11-12T04:11:20.0124160Z not ok 2103 - split UTF-8 PTY data retains the Unicode 11 output width
+2026-11-12T04:11:20.0125132Z   ---
+2026-11-12T04:11:20.0125722Z   duration_ms: 14.224597
+2026-11-12T04:11:20.0126303Z   type: 'test'
+2026-11-12T04:11:20.0128089Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/sessionUnicode.test.ts:156:1'
+2026-11-12T04:11:20.0129361Z   failureType: 'testCodeFailure'
+2026-11-12T04:11:20.0129972Z   error: |-
+2026-11-12T04:11:20.0130552Z     Expected values to be strictly equal:
+2026-11-12T04:11:20.0131186Z
+2026-11-12T04:11:20.0131660Z     3 !== 4
+2026-11-12T04:11:20.0132139Z
+2026-11-12T04:11:20.0132645Z   code: 'ERR_ASSERTION'
+2026-11-12T04:11:20.0133218Z   name: 'AssertionError'
+2026-11-12T04:11:20.0133775Z   expected: 4
+2026-11-12T04:11:20.0134275Z   actual: 3
+2026-11-12T04:11:20.0134777Z   operator: 'strictEqual'
+2026-11-12T04:11:20.0135343Z   stack: |-
+2026-11-12T04:11:20.0136573Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/sessionUnicode.test.ts:162:10)
+2026-11-12T04:11:20.0138076Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T04:11:20.0139157Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T04:11:20.0140000Z   ...
+2026-11-12T04:11:20.0283809Z # Subtest: restored terminal history uses Unicode 11 before its first snapshot write
+2026-11-12T04:11:20.0288516Z not ok 2104 - restored terminal history uses Unicode 11 before its first snapshot write
+2026-11-12T04:11:20.0289466Z   ---
+2026-11-12T04:11:20.0290052Z   duration_ms: 15.916454
+2026-11-12T04:11:20.0290937Z   type: 'test'
+2026-11-12T04:11:20.0291815Z   location: '/home/runner/work/openconductor/openconductor/src/features/terminal/sessionUnicode.test.ts:165:1'
+2026-11-12T04:11:20.0292699Z   failureType: 'testCodeFailure'
+2026-11-12T04:11:20.0293085Z   error: |-
+2026-11-12T04:11:20.0293919Z     Expected values to be strictly equal:
+2026-11-12T04:11:20.0294339Z
+2026-11-12T04:11:20.0294609Z     1 !== 2
+2026-11-12T04:11:20.0294882Z
+2026-11-12T04:11:20.0295185Z   code: 'ERR_ASSERTION'
+2026-11-12T04:11:20.0295669Z   name: 'AssertionError'
+2026-11-12T04:11:20.0295986Z   expected: 2
+2026-11-12T04:11:20.0296255Z   actual: 1
+2026-11-12T04:11:20.0296541Z   operator: 'strictEqual'
+2026-11-12T04:11:20.0296852Z   stack: |-
+2026-11-12T04:11:20.0297843Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/terminal/sessionUnicode.test.ts:173:10)
+2026-11-12T04:11:20.0298822Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T04:11:20.0299480Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T04:11:20.0299992Z   ...
+2026-11-12T04:11:20.0329130Z # Subtest: closing one terminal disposes it without changing a sibling's ASCII output

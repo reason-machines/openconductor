@@ -1,0 +1,1 @@
+async function p6t(t){await ee.updateSetting("not_absolutely_right",t.toString())}

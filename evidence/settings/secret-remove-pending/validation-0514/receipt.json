@@ -1,0 +1,274 @@
+{
+  "author": "Conductor Rebuild",
+  "token": "ACC_64_REMOVE4_REALM_CORRECTED_20261113T0514",
+  "actual_start": "2026-11-13T05:19:49.308771+00:00",
+  "driver_start": "2026-11-13T05:23:13.231398+00:00",
+  "status": "PASS",
+  "phases": [
+    {
+      "name": "red",
+      "start": "2026-11-13T05:23:13.447370+00:00",
+      "cap_seconds": 90,
+      "grace_seconds": 5,
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/settings/agents/secretRemovePending.test.ts"
+      ],
+      "env_nonsecret": {
+        "NODE_ENV": "development",
+        "NODE_OPTIONS": "--max-old-space-size=768",
+        "SECRET_REMOVE_SOURCE_FILE": "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/src/settings/agents/kit.tsx"
+      },
+      "stdout": "red.stdout.txt",
+      "stderr": "red.stderr.txt",
+      "pgid": 112,
+      "end": "2026-11-13T05:23:14.925437+00:00",
+      "elapsed_seconds": 1.4779188839966082,
+      "exit_code": 1,
+      "stdout_sha256": "59bde2a89ff74200962596034ba474b8430a0a7681075fb0ddd3a1b2406f25a0",
+      "stderr_sha256": "4dda6d280055087efda245496cb56191f4c2cfdec6825f0fabb322c874db6d69"
+    },
+    {
+      "name": "green",
+      "start": "2026-11-13T05:23:14.929551+00:00",
+      "cap_seconds": 90,
+      "grace_seconds": 5,
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/settings/agents/secretRemovePending.test.ts"
+      ],
+      "env_nonsecret": {
+        "NODE_ENV": "development",
+        "NODE_OPTIONS": "--max-old-space-size=768",
+        "SECRET_REMOVE_SOURCE_FILE": "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/src/settings/agents/kit.tsx"
+      },
+      "stdout": "green.stdout.txt",
+      "stderr": "green.stderr.txt",
+      "pgid": 129,
+      "end": "2026-11-13T05:23:15.997694+00:00",
+      "elapsed_seconds": 1.0678883599975961,
+      "exit_code": 0,
+      "stdout_sha256": "cbfe678b21cfa0b3bd5b948cea510e92de20547a4c8ae27b28bdd4cc2ed6e031",
+      "stderr_sha256": "a2b616a7bfc38842ec11af3bc9cb1ef091e8677904e4c8ff58019696d03de692"
+    },
+    {
+      "name": "adjacent",
+      "start": "2026-11-13T05:23:15.999015+00:00",
+      "cap_seconds": 120,
+      "grace_seconds": 5,
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "120s",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/settings/agents/secretRevealLabel.test.ts",
+        "src/settings/agents/secretEditorKeyLink.test.ts",
+        "src/settings/agents/kitModel.test.ts"
+      ],
+      "env_nonsecret": {
+        "NODE_ENV": "development",
+        "NODE_OPTIONS": "--max-old-space-size=768",
+        "SECRET_REMOVE_SOURCE_FILE": "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/src/settings/agents/kit.tsx"
+      },
+      "stdout": "adjacent.stdout.txt",
+      "stderr": "adjacent.stderr.txt",
+      "pgid": 145,
+      "end": "2026-11-13T05:23:17.877238+00:00",
+      "elapsed_seconds": 1.8780261840001913,
+      "exit_code": 0,
+      "stdout_sha256": "c779b65a203d20e76f7ac61ed3dc419fd9c3a96ab64f84a8850a1ac619f803d2",
+      "stderr_sha256": "664dfc87d37b3d4ed609574b4d8898956c73f8a10fe103435ec13e691100b4a5"
+    },
+    {
+      "name": "typecheck",
+      "start": "2026-11-13T05:23:17.878225+00:00",
+      "cap_seconds": 180,
+      "grace_seconds": 5,
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "180s",
+        "npx",
+        "--no-install",
+        "tsc",
+        "--noEmit"
+      ],
+      "env_nonsecret": {
+        "NODE_ENV": "development",
+        "NODE_OPTIONS": "--max-old-space-size=1536",
+        "SECRET_REMOVE_SOURCE_FILE": "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/src/settings/agents/kit.tsx"
+      },
+      "stdout": "typecheck.stdout.txt",
+      "stderr": "typecheck.stderr.txt",
+      "pgid": 177,
+      "end": "2026-11-13T05:23:53.252006+00:00",
+      "elapsed_seconds": 35.373463961004745,
+      "exit_code": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "da19d0ea692f30c9914af9f020f2ca8547d11da06304b81103f18d4f48d7ee08"
+    }
+  ],
+  "predicted_cases": [
+    "Anthropic API key Remove shows pending feedback until success settles",
+    "Anthropic API key Remove shows pending feedback until failure settles",
+    "OpenAI API key Remove shows pending feedback until success settles",
+    "OpenAI API key Remove shows pending feedback until failure settles"
+  ],
+  "predicted_red": "Exactly 4 ERR_ASSERTION failures: pending Remove needs its own working indicator; actual 0 expected 1",
+  "rss": "NOT_SAMPLED; no complete process-tree peak RSS claim",
+  "reveal_remote_head": "f7f5decf7b2f119ee8537cf125edcf5c323c1867",
+  "reveal_merge": "6e1c5e9d38c4d35aa7042edbbcfb6eed0b6d891c",
+  "native_package_provider_credentials": "NOT_RUN",
+  "start_resources_observed": {
+    "computer": "Cloud 355; own assigned checkout",
+    "disk_available": "31 GiB",
+    "memory_available_mib": 10797,
+    "dependencies": "React/renderer18.3.1; TypeScript5.9.3 present"
+  },
+  "prior_failures_preserved": "Original Remove GREEN 2PASS/2FAIL; Reveal source/pretest186.587s > source60; no waiver",
+  "source_end": "2026-11-13T05:23:13.437140+00:00",
+  "source_elapsed_seconds": 204.12836337089539,
+  "source_cap_seconds": 300,
+  "qualified_head": "3573af6181f3a096a875b7d10180a3f36e2a569b",
+  "qualified_tree": "6d88175287e751d5e2a0722ebeb15dc80fe82bce",
+  "qualified_main": "c79a81086c3a0e5ba81f1a9a53ec63a4f4dde7ba",
+  "actual_kit_sha256": "3d308bbec4c3874b4f54b41d9fafcc2c2b8c411ee9c470788f5de4dd16beb7c6",
+  "actual_kit_blob": "c9cba9edc064e4c8a4ffc0bad4bff2e76374c04f",
+  "known_reveal_reverse_sha256": "ef11588cdd58193d684a912eefd0b543e15bf3a238ba4f48b2762fd4969bec6f",
+  "semantic_remove_leaf": "UNCHANGED; all other bytes exact",
+  "input_sha256": {
+    "src/settings/agents/kit.tsx": "3d308bbec4c3874b4f54b41d9fafcc2c2b8c411ee9c470788f5de4dd16beb7c6",
+    "src/settings/agents/kitModel.ts": "be6a94abe11962ca756be5733b946f7b5d34acafc567db937a8e1ce688352937",
+    "src/settings/agents/icons.tsx": "c9f2647fdc104fe25ebcd4227d3765e0dd2fe1c990a816700063dc6f28da3e24",
+    "src/settings/agents/ClaudeTab.tsx": "6680823c5f7a08e1953177f17898eef2ecd7ff5c1ce4018eda27235b46b66e7c",
+    "src/settings/agents/CodexTab.tsx": "a2a0fe9222f36dc2dcdbf3c49f9d1835a20466b1dab22457c6e03d615b3d6332",
+    "src/settings/agents/ReasonTab.tsx": "12b1aeffa55130338828028331fe9aada7f6596affda65d98392dfd560e56f6e",
+    "src/settings/agents/secretEditorKeyLink.test.ts": "37a6e0de84b4ecacfa31ff59467158eacc01f4c23ce75957f2d47676fe053686",
+    "src/settings/agents/agents.css": "5a5782488458b385aa106b4120dbad9fdc73633848037c740312d3330c5de7a6",
+    "src/features/chat/ResetChatDialog.tsx": "b8604094ea0d412fda7d36d9faa33774fe5e7c9e128e95d9bcf3aad4dcb0cdf5",
+    "src/styles.css": "39e0d91146ab47ef9cc1962dc4e27afb351466b715992391fd1a5da881e193eb",
+    "src/components/pendingWorkspaceRow.css": "3ff46e80e33840f1576133d7c2f96bf353090c210c3536d2494d78648b1f8026"
+  },
+  "adjacent_sha256": {
+    "src/settings/agents/secretRevealLabel.test.ts": "8db2461a8d82202cf3d9804803530ec604cb52d469fad90430ae9124e776cac3",
+    "src/settings/agents/secretEditorKeyLink.test.ts": "37a6e0de84b4ecacfa31ff59467158eacc01f4c23ce75957f2d47676fe053686",
+    "src/settings/agents/kitModel.test.ts": "c0395304a83a792ef7ddc85c27a294c280fab87b52919dbbeebddd1c90207c2d"
+  },
+  "root_versions": {
+    "react": {
+      "version": "18.3.1",
+      "sha256": "d4e68a5c96babb20cad1daafea8b78822eae45b341552cf5418d06a5304fa64c"
+    },
+    "react-dom": {
+      "version": "18.3.1",
+      "sha256": "d2f29e31bd48b833e48cd7bbf41f192e8ee4ff8da249fdbe10d4ac4114b8b12e"
+    },
+    "react-test-renderer": {
+      "version": "18.3.1",
+      "sha256": "e3b09e5a62e134d5241b520715de45b63ff3568ccbbeeeb70601607c3136c811"
+    },
+    "typescript": {
+      "version": "5.9.3",
+      "sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    }
+  },
+  "setup": "NOT_NEEDED; matching own root reused",
+  "fixture_sha256": "1b86085cd4acce31968b4eaa74cfca4e47403b960360da35de7486fee4ff7bc7",
+  "patch_sha256": "16786423fa3d1f61434b562d230047c504ee5116a9f92d174d651c72a78a84dc",
+  "driver_sha256": "79d1708a9d71198afd86a6b9d85955e1d1f5ceb05d2375e387ef057f9791db58",
+  "lock_sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+  "npm_lock_sha256": "8c9d7f5ab16c0cf37576836e6159e30ea64922151429156971bdc43875e139ba",
+  "red_classification": {
+    "phase": "red",
+    "classification": "QUALIFYING_RED",
+    "exit_code": 1,
+    "summary": {
+      "tests": 4,
+      "pass": 0,
+      "fail": 4,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "failures": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "raw_tap_sha256": "59bde2a89ff74200962596034ba474b8430a0a7681075fb0ddd3a1b2406f25a0",
+    "inspector_driver_sha256": "79d1708a9d71198afd86a6b9d85955e1d1f5ceb05d2375e387ef057f9791db58"
+  },
+  "candidate_kit_sha256": "cf7c9f2f790a76f234735ebd0d0b0b7672d1da04ac0fc8d3790ed8009164f783",
+  "green_classification": {
+    "phase": "green",
+    "classification": "VALID_GREEN",
+    "exit_code": 0,
+    "summary": {
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "failures": [],
+    "raw_tap_sha256": "cbfe678b21cfa0b3bd5b948cea510e92de20547a4c8ae27b28bdd4cc2ed6e031",
+    "inspector_driver_sha256": "79d1708a9d71198afd86a6b9d85955e1d1f5ceb05d2375e387ef057f9791db58"
+  },
+  "adjacent_summary": {
+    "tests": [
+      "13"
+    ],
+    "pass": [
+      "13"
+    ],
+    "fail": [
+      "0"
+    ],
+    "cancelled": [
+      "0"
+    ],
+    "skipped": [
+      "0"
+    ],
+    "todo": [
+      "0"
+    ]
+  },
+  "terminal": "2026-11-13T05:23:53.253746+00:00",
+  "inclusive_elapsed_seconds": 243.94498658180237,
+  "candidate_restored": true,
+  "fixture_inactive": true,
+  "own_process_groups_absent": true,
+  "groups_remaining": [],
+  "cleanup_elapsed_seconds": 0.0002942085266113281,
+  "release": "EXPLICIT_RELEASE"
+}

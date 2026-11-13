@@ -32,7 +32,11 @@ observation. The ordinary GUI gate remains separate.
 
 1. Prepare a fresh private root and build the exact committed source with its
    random QA identity and configuration, following
-   [the path-preflight procedure](native-qa-isolation.md).
+   [the path-preflight procedure](native-qa-isolation.md). Keep compiler output
+   outside `$qa` and copy the bundle inside `$qa/app`, retaining
+   `qa_app="$qa/app/OpenConductor QA.app"`. The same procedure precreates
+   `data/confinement-state`, `tmp/confinement-startup` and
+   `tmp/confinement-child` as owned regular single-link mode-0600 files.
 2. Run the existing `tools/native_qa.py probe` and retain its path receipt,
    build log, source before/after identity, and binary/configuration hashes.
 3. Confirm there is no app-data directory and the settings directory is empty.
@@ -45,8 +49,7 @@ observation. The ordinary GUI gate remains separate.
 Only after those prerequisites and authorization, on the authorized Mac:
 
 ```bash
-python3 tools/native_qa_webkit.py "$qa" \
-  "$qa/target/debug/bundle/macos/OpenConductor QA.app" \
+python3 tools/native_qa_webkit.py "$qa" "$qa_app" \
   --execute-runtime-probe
 ```
 
@@ -99,15 +102,16 @@ prerequisite-only runtime grant. This document grants no launch permission.
 1. Check out the exact containing merged commit, verify a clean tree, prepare a
    new root and build its random-identity debug bundle using the
    [path-preflight build recipe](native-qa-isolation.md). Do not reuse the #775
-   root or an earlier runtime fixture.
+   root or an earlier runtime fixture. That recipe keeps compiler output outside
+   `$qa`, stages the bundle at `qa_app="$qa/app/OpenConductor QA.app"` and
+   precreates the three required mutable mode-0600 files.
 2. Produce `paths-receipt.json` for that exact executable/configuration with
    `tools/native_qa.py probe`. Retain the source SHA, build log and bundle.
 3. Execute only the prerequisite wrapper, never `open`, an installed app,
    `cargo tauri dev` or an unwrapped ordinary launch:
 
    ```bash
-   python3 tools/native_qa_ordinary.py "$qa" \
-     "$qa/target/debug/bundle/macos/OpenConductor QA.app" \
+   python3 tools/native_qa_ordinary.py "$qa" "$qa_app" \
      --execute-prerequisite
    ```
 

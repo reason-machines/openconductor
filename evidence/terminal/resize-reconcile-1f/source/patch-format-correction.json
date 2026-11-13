@@ -1,0 +1,8 @@
+{
+  "reason": "One-line unified-diff context avoids trailing whitespace in an archived blank context line. No product or fixture content changed.",
+  "original_patch_sha256": "014ca6f98f8ee47d6957b3cefba42e5d8b6401f5b88553ca06edcc018bce17a1",
+  "corrected_patch_sha256": "108e18d986794760380c4a451074afefcbe0e921dfdbe2192d1fb0de34d2c97b",
+  "fixture_sha256": "9983095ab54b82579683b0122698238e300fc4e16e7938e7d884f0041668c543",
+  "candidate_sha256": "8560deacd82ccec6a8442494b38c887a0e81fe44d271839c9e79888029a0a235",
+  "assertions_unchanged": true
+}

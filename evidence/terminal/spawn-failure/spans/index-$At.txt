@@ -1,0 +1,1 @@
+function $At(t,e){ts.destroySession(t,e),ts.destroySession(`${t}:handoff`,e)}

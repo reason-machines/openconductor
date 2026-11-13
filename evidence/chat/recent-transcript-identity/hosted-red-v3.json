@@ -1,0 +1,37 @@
+{
+  "owner": "Conductor Rebuild",
+  "pr": 1081,
+  "head_sha": "8e21ae6f95ae99c914eadf163bfc8019cbc39945",
+  "run_id": 43092376957,
+  "job_id": 130772696473,
+  "result": "intended_red_with_corrected_mount_boundary",
+  "fixture_sha256": "8ccac9ae0b6d4319f6f2a0626404d4f67c462ffa018c4b6d43e49fa55a71a26c",
+  "same_title": {
+    "expected": 2,
+    "actual": 1,
+    "assertion": "two source chats must retain two attachments even when their titles coincide",
+    "fixture_line": 191
+  },
+  "controls": {
+    "distinct_title": "passed",
+    "target_isolation_and_switchback": "passed",
+    "initial_mount_command_and_arguments": "passed_before_attachment_interactions"
+  },
+  "suite": {
+    "tests": 3085,
+    "passed": 3084,
+    "failed": 1,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "typecheck_build_job": {
+    "id": 130772696643,
+    "result": "same_intended_retention_assertion_failed"
+  },
+  "source_rechecked_main": "15e87440daa703030f4c402e7a41b9221a149768",
+  "limits": [
+    "Automatic hosted mounted checks only; downstream job steps skipped after intended RED",
+    "No local Node, React, browser, native, provider, CLI, installation or E1 execution",
+    "Original fixture failure receipts remain historical and are not candidate GREEN"
+  ]
+}

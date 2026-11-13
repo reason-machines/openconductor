@@ -1,0 +1,156 @@
+(node:74) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home rows show configured repository emoji and uploaded image rather than initials
+ok 1 - Home rows show configured repository emoji and uploaded image rather than initials
+  ---
+  duration_ms: 225.587844
+  type: 'test'
+  ...
+# Subtest: Home project-filter choices show configured repository emoji and uploaded image
+ok 2 - Home project-filter choices show configured repository emoji and uploaded image
+  ---
+  duration_ms: 45.696247
+  type: 'test'
+  ...
+# Subtest: Home rows still hide repository icons when a project is selected
+ok 3 - Home rows still hide repository icons when a project is selected
+  ---
+  duration_ms: 65.907312
+  type: 'test'
+  ...
+# Subtest: Home status matrix still replaces row repository icons
+ok 4 - Home status matrix still replaces row repository icons
+  ---
+  duration_ms: 56.502445
+  type: 'test'
+  ...
+# Subtest: Home retains the repository initial when no custom icon or remote is available
+ok 5 - Home retains the repository initial when no custom icon or remote is available
+  ---
+  duration_ms: 81.12436
+  type: 'test'
+  ...
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: date buckets count whole days back from local midnight
+ok 6 - date buckets count whole days back from local midnight
+  ---
+  duration_ms: 0.949485
+  type: 'test'
+  ...
+# Subtest: row time is date-fns formatDistance, shortened like Conductor
+ok 7 - row time is date-fns formatDistance, shortened like Conductor
+  ---
+  duration_ms: 0.228992
+  type: 'test'
+  ...
+# Subtest: search needs every word somewhere and highlights each field
+ok 8 - search needs every word somewhere and highlights each field
+  ---
+  duration_ms: 1.60806
+  type: 'test'
+  ...
+# Subtest: search matches workspace numbers as 12, w12 and w-12
+ok 9 - search matches workspace numbers as 12, w12 and w-12
+  ---
+  duration_ms: 0.428964
+  type: 'test'
+  ...
+# Subtest: Home search finds a known pull request number and combines it with text and filters
+ok 10 - Home search finds a known pull request number and combines it with text and filters
+  ---
+  duration_ms: 1.024417
+  type: 'test'
+  ...
+# Subtest: rows hide archived by default, filter by project, and sort newest first
+ok 11 - rows hide archived by default, filter by project, and sort newest first
+  ---
+  duration_ms: 0.276748
+  type: 'test'
+  ...
+# Subtest: row titles follow the sidebar display-name rule
+ok 12 - row titles follow the sidebar display-name rule
+  ---
+  duration_ms: 0.209397
+  type: 'test'
+  ...
+# Subtest: groups come in Conductor's order and skip empty days
+ok 13 - groups come in Conductor's order and skip empty days
+  ---
+  duration_ms: 0.254836
+  type: 'test'
+  ...
+# Subtest: project filter shows only with two or more projects that have workspaces
+ok 14 - project filter shows only with two or more projects that have workspaces
+  ---
+  duration_ms: 0.360003
+  type: 'test'
+  ...
+# Subtest: empty list offers Create with no workspaces, Clear filters when filtered
+ok 15 - empty list offers Create with no workspaces, Clear filters when filtered
+  ---
+  duration_ms: 0.392872
+  type: 'test'
+  ...
+# Subtest: saved filters drop unknown projects and bad values
+ok 16 - saved filters drop unknown projects and bad values
+  ---
+  duration_ms: 0.263955
+  type: 'test'
+  ...
+# Subtest: archived workspaces from conductor.db show under Only archived and Showing all
+ok 17 - archived workspaces from conductor.db show under Only archived and Showing all
+  ---
+  duration_ms: 0.757171
+  type: 'test'
+  ...
+# Subtest: archived rows of closed repositories, or already in the state, are not listed twice
+ok 18 - archived rows of closed repositories, or already in the state, are not listed twice
+  ---
+  duration_ms: 0.353417
+  type: 'test'
+  ...
+# (node:89) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: parseRepoIcon decodes emoji, uploaded images and bundled icon names
+ok 19 - parseRepoIcon decodes emoji, uploaded images and bundled icon names
+  ---
+  duration_ms: 1.667111
+  type: 'test'
+  ...
+# Subtest: emojiIcon trims and refuses blank input
+ok 20 - emojiIcon trims and refuses blank input
+  ---
+  duration_ms: 0.133379
+  type: 'test'
+  ...
+# Subtest: githubAvatarUrl reads the owner from github.com remotes only
+ok 21 - githubAvatarUrl reads the owner from github.com remotes only
+  ---
+  duration_ms: 0.344019
+  type: 'test'
+  ...
+# Subtest: uploads accept the five image types by extension
+ok 22 - uploads accept the five image types by extension
+  ---
+  duration_ms: 0.129129
+  type: 'test'
+  ...
+# Subtest: fitIcon scales the longest side to at most 128 and centers
+ok 23 - fitIcon scales the longest side to at most 128 and centers
+  ---
+  duration_ms: 0.266194
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1206.19696

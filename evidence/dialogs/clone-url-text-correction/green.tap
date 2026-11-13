@@ -1,0 +1,56 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: clone URL disables autoCorrect before cloning
+ok 1 - clone URL disables autoCorrect before cloning
+  ---
+  duration_ms: 161.396594
+  type: 'test'
+  ...
+# Subtest: clone URL disables autoCapitalize before cloning
+ok 2 - clone URL disables autoCapitalize before cloning
+  ---
+  duration_ms: 99.691924
+  type: 'test'
+  ...
+# Subtest: clone URL keeps its existing input controls before cloning
+ok 3 - clone URL keeps its existing input controls before cloning
+  ---
+  duration_ms: 73.383923
+  type: 'test'
+  ...
+# Subtest: clone URL disables autoCorrect while cloning
+ok 4 - clone URL disables autoCorrect while cloning
+  ---
+  duration_ms: 39.340301
+  type: 'test'
+  ...
+# Subtest: clone URL disables autoCapitalize while cloning
+ok 5 - clone URL disables autoCapitalize while cloning
+  ---
+  duration_ms: 54.142869
+  type: 'test'
+  ...
+# Subtest: clone URL keeps its existing input controls while cloning
+ok 6 - clone URL keeps its existing input controls while cloning
+  ---
+  duration_ms: 42.069066
+  type: 'test'
+  ...
+# Subtest: clone URL preserves mixed-case edits and the captured pending request
+ok 7 - clone URL preserves mixed-case edits and the captured pending request
+  ---
+  duration_ms: 37.442425
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 930.614928

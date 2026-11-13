@@ -1,0 +1,35 @@
+{
+  "phase": "GREEN",
+  "command": [
+    "nice",
+    "-n",
+    "19",
+    "timeout",
+    "--kill-after=5s",
+    "120s",
+    "node",
+    "--max-old-space-size=768",
+    "--test",
+    "--test-concurrency=1",
+    "src/scripts/outputLinks.test.ts"
+  ],
+  "start_utc": "2026-11-12T15:43:14.563811+00:00",
+  "end_utc": "2026-11-12T15:43:16.200149+00:00",
+  "wall_seconds": 1.636317611002596,
+  "exit": 0,
+  "counts": {
+    "tests": 10,
+    "suites": 0,
+    "pass": 10,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "fixture_sha256": "2c5b3e9f3074d743531169870ea0131e210e90a6478590ee5d294787126127f0",
+  "component_sha256": "1488c5c247527b2608310a201f478801a50f9d0f500edef2b71b55ce378c1a70",
+  "tap_sha256": "71b7847dd2778df83a54362ce8c297992c083bcc8b88a0a2483e0415884d87d9",
+  "test_files": {
+    "src/scripts/outputLinks.test.ts": "2c5b3e9f3074d743531169870ea0131e210e90a6478590ee5d294787126127f0"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "author": "Conductor Rebuild",
+  "kind": "FIXTURE_TYPE_BOUNDARY_ONLY_BEFORE_QUALIFIED_BASELINE",
+  "rejected_head": "ca5fc79c63b0d42f7e33843c05f0f89e702efa71",
+  "previous_fixture_sha256": "880c953e16d0f0a035bc749757d7801b60c541dfd7cdc1bb57ba8386ab2bf17a",
+  "current_fixture_sha256": "220c5d5c0ac111940680da12102317696021a246a175db963bfe022c98f967bc",
+  "unchanged_scenarios_sha256": "674ef410a98bab766c6c1920a48648e5e17a29102b8f15140a840329a6f6e4e3",
+  "rejection": "TS7016 missing react-test-renderer declaration; TS7006 callback parameter inferred any",
+  "jobs": [
+    130920074183,
+    130920072947
+  ],
+  "correction": "Replace unavailable typeof-import declaration with explicit external renderer boundary signatures. No execution logic, scenarios, assertions or product code changed.",
+  "behavior": "NOT_QUALIFIED; automatic corrected baseline pending",
+  "unchanged_execution_body_sha256": "ea835f9d2ff636084f3d4ddc0219f973b481fa27625036b3bdd297d00c9a9d71"
+}

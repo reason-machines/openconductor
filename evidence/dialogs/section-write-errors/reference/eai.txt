@@ -1,0 +1,1 @@
+function eai(t){const{database:e}=t,n=MIr(t);return{readPersisted:async()=>{if(e!==void 0)return jIr(await Zoi({database:e,scope:n}))},writePersisted:async i=>{e!==void 0&&await rIn(e).run(()=>$Ir({database:e,scope:n,value:i}))},deletePersisted:async()=>{e!==void 0&&await rIn(e).run(()=>BIr({database:e,scope:n}))}}}

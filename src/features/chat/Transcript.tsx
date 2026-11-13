@@ -5,7 +5,7 @@
 // markdown) and, once finished, its footer.
 
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
-import { ReasonSignInControls } from "../../onboarding/ReasonSignInControls";
+import { ChatSignInCard } from "./ChatSignInCard.tsx";
 import { Fragment, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { DropdownMenu, MenuItem } from "../../components/menu/ContextMenu";
 import { EllipsisIcon, MessageSquarePlusIcon, SplitIcon, Undo2Icon } from "../../components/menu/menuIcons";
@@ -14,26 +14,33 @@ import { LinkMenuNotify, LinkWithMenu } from "./LinkMenu.tsx";
 import type { ChatTranscript } from "./reducer.ts";
 import { buildRows, isToolExpanded, type PartView, type ReportOrigin } from "./view.ts";
 import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBlock, type DisplayRow, type ToolSummary } from "./toolGroups.ts";
-import { Markdown } from "./markdown.ts";
+import { Markdown, type MarkdownOptions } from "./markdown.ts";
 import { ConductorToolRow, Lucide, opensByDefault, ToolIcon } from "./ToolRows.tsx";
 import { turnDayClock, turnTime } from "./turnTime.ts";
 import { TurnDetails } from "./TurnDetails.tsx";
 import { turnAgentLabel } from "./fork.ts";
 import { openUrl } from "../../backend.ts";
 import type { ChatAgentId } from "./agentChoice.ts";
-import { isSignInFailure, signInCopy } from "./agentSignIn.ts";
-import { openAgentSettings } from "./ChatModelPicker.tsx";
+import { isSignInFailure } from "./agentSignIn.ts";
 import { thinkingChipText } from "./thinkingChip.ts";
+import { SentUserContent } from "./SentUserContent.tsx";
+import { UserText } from "./UserText.tsx";
+import type { UserPrompt } from "./userContent.ts";
+import { userMessageCopyText } from "./userMessageCopy.ts";
+import { useBoolPref } from "../../settings/useBoolPref.ts";
+import { assistantDisplayText } from "./assistantText.ts";
+import { TranscriptSearch } from "./TranscriptSearch.tsx";
 import "./chat.css";
 
 export interface TranscriptProps {
   transcript: ChatTranscript;
+  searchEnabled?: boolean;
   /** "Keep tool calls expanded" setting. */
   expandToolsByDefault?: boolean;
   /** "Don't collapse tool calls" setting: summary rows stay open. */
   dontCollapseToolCalls?: boolean;
   /** Sends a failed or cancelled turn's prompt again. */
-  onRetry?: (prompt: string, turnId: string) => void;
+  onRetry?: (prompt: UserPrompt, turnId: string) => void;
   /** Opens "Reset chat?" for a turn that can be reset. */
   onResetChat?: (turnId: string) => void;
   /** "Fork to new tab" in every finished turn's More actions menu. */
@@ -57,11 +64,28 @@ export interface TranscriptProps {
   /** Clock for the footer's time of day (tests pin it). */
   now?: () => number;
   /** Toasts, e.g. a markdown link's "Copy link address" (LinkMenu.tsx). */
-  notify?: (kind: "info" | "error", message: string) => void;
+  notify?: MarkdownOptions["notify"];
 }
+
+const toolDisclosure = (() => {
+  let expanded: ReadonlyMap<string, boolean> = new Map();
+  const listeners = new Set<() => void>();
+  return {
+    getSnapshot: () => expanded,
+    subscribe(listener: () => void) {
+      listeners.add(listener);
+      return () => { listeners.delete(listener); };
+    },
+    toggle(id: string, defaultOpen: boolean) {
+      expanded = new Map(expanded).set(id, !isToolExpanded(id, expanded, defaultOpen));
+      for (const listener of listeners) listener();
+    },
+  };
+})();
 
 export function Transcript({
   transcript,
+  searchEnabled = false,
   expandToolsByDefault = false,
   dontCollapseToolCalls = false,
   onRetry,
@@ -78,14 +102,16 @@ export function Transcript({
   chatAgent,
   notify,
 }: TranscriptProps) {
+  const stripAbsolutelyRight = useBoolPref("not_absolutely_right");
   const clock = useMemo(() => turnDayClock(now), [now]);
   const day = useSyncExternalStore(clock.subscribe, clock.getSnapshot, clock.getSnapshot);
   const rows = useMemo(() => foldAgentRows(buildRows(transcript), transcript.activeTurn), [transcript]);
   const turns = useMemo(() => groupTurns(rows), [rows]);
-  const [toggled, setToggled] = useState<ReadonlyMap<string, boolean>>(new Map());
-  const toggleTool = (id: string, defaultOpen = false) => setToggled((prev) => new Map(prev).set(id, !isToolExpanded(id, prev, expandToolsByDefault || defaultOpen)));
+  const toggled = useSyncExternalStore(toolDisclosure.subscribe, toolDisclosure.getSnapshot, toolDisclosure.getSnapshot);
+  const toggleTool = (id: string, defaultOpen = false) => toolDisclosure.toggle(id, expandToolsByDefault || defaultOpen);
   const [summaries, setSummaries] = useState<ReadonlyMap<string, "expanded" | "collapsed">>(new Map());
   const ctx: RowContext = {
+    stripAbsolutelyRight,
     isOpen: (id, defaultOpen = false) => isToolExpanded(id, toggled, expandToolsByDefault || defaultOpen),
     onToggle: toggleTool,
     summaries: {
@@ -100,15 +126,16 @@ export function Transcript({
     workspacePath,
     onOpenFile,
     now: () => day,
+    toolNow: now,
     onForkToNewTab,
     onForkToNewWorkspace,
     forkDisabled,
     turnAgent,
     chatAgent,
+    notify,
   };
 
-  return (
-    <LinkMenuNotify.Provider value={notify}>
+  const content = (
       <div className="transcript">
         {turns.map((turn) => {
           const footer = turn.rows.find((r): r is TurnEndRow => r.kind === "turn_end");
@@ -124,8 +151,10 @@ export function Transcript({
           );
         })}
       </div>
-    </LinkMenuNotify.Provider>
   );
+  return <LinkMenuNotify.Provider value={notify}>
+    {searchEnabled ? <TranscriptSearch transcript={transcript}>{content}</TranscriptSearch> : content}
+  </LinkMenuNotify.Provider>;
 }
 
 type TurnEndRow = Extract<DisplayRow, { kind: "turn_end" }>;
@@ -151,6 +180,7 @@ function groupTurns(rows: DisplayRow[]): Turn[] {
 }
 
 interface RowContext {
+  stripAbsolutelyRight: boolean;
   /** `defaultOpen`: Conductor's `defaultCollapsed: false` rows (a proposed plan). */
   isOpen: (toolId: string, defaultOpen?: boolean) => boolean;
   onToggle: (toolId: string, defaultOpen?: boolean) => void;
@@ -159,13 +189,15 @@ interface RowContext {
     isOpen: (summaryId: string, turnRunning: boolean) => boolean;
     toggle: (summaryId: string, open: boolean) => void;
   };
-  onRetry?: (prompt: string, turnId: string) => void;
+  onRetry?: (prompt: UserPrompt, turnId: string) => void;
   onResetChat?: (turnId: string) => void;
   resetDisabled: boolean;
   turnFooter?: (turnId: string) => ReactNode;
   workspacePath?: string;
   onOpenFile?: (path: string) => void;
   now: () => number;
+  toolNow: () => number;
+  notify?: TranscriptProps["notify"];
   onForkToNewTab?: (turnId: string) => void;
   onForkToNewWorkspace?: (turnId: string) => void;
   forkDisabled: boolean;
@@ -180,8 +212,8 @@ function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowConte
         <div className="chat-msg chat-user oc-msg-user" data-message-role="user">
           <div className="oc-user-col">
             <div className="chat-bubble oc-bubble">
-              <div className="oc-user-text">{row.text}</div>
-              <MessageActions text={row.text} />
+              <div className="oc-user-text">{row.message.userContent ? <SentUserContent content={row.message.userContent} workspacePath={ctx.workspacePath} onOpenFile={ctx.onOpenFile} /> : <UserText text={row.text} />}</div>
+              <MessageActions text={userMessageCopyText(row.message)} />
             </div>
             {row.cancelled ? <div className="chat-cancelled">Cancelled</div> : null}
           </div>
@@ -227,21 +259,7 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
         {menuItems.length > 0 ? <TurnMenu items={menuItems} onSelect={(id) => actions[id]?.()} /> : null}
       </span>
       {turnFooter?.(row.turnId)}
-      {row.status === "failed" && ctx.chatAgent && isSignInFailure(ctx.chatAgent, row.error) ? <SignInNotice agent={ctx.chatAgent} /> : null}
-    </div>
-  );
-}
-
-/** Reason signs in directly; local agents keep their Settings authentication flow. */
-function SignInNotice({ agent }: { agent: ChatAgentId }) {
-  const copy = signInCopy(agent);
-  return (
-    <div className="chat-sign-in" data-testid="chat-sign-in" data-agent={agent}>
-      <span className="chat-sign-in-badge">{copy.badge}</span>
-      <p>{copy.text}</p>
-      {agent === "reason" ? <ReasonSignInControls variant="chat" /> : (
-        <button type="button" className="chat-sign-in-open" onClick={() => openAgentSettings(agent)}>{copy.action}</button>
-      )}
+      {row.status === "failed" && ctx.chatAgent && isSignInFailure(ctx.chatAgent, row.error) ? <ChatSignInCard agent={ctx.chatAgent} onSignedIn={row.retryPrompt && onRetry ? () => onRetry(row.retryPrompt!, row.turnId) : undefined} /> : null}
     </div>
   );
 }
@@ -342,13 +360,16 @@ function SummaryRow({ summary, open, onToggle }: { summary: ToolSummary; open: b
 /** `preview`: the turn's final text; Conductor mutes every other text (`ROo` `muted: !isPreviewMessage`). */
 function Part({ partKey, part, preview = false, group, ctx }: { partKey: string; part: PartView; preview?: boolean; group?: string; ctx: RowContext }) {
   switch (part.kind) {
-    case "text":
+    case "text": {
+      const text = assistantDisplayText(part.text, ctx.stripAbsolutelyRight);
+      if (!text.trim()) return null;
       return (
         <div className="chat-msg chat-assistant oc-msg-assistant" data-message-role="assistant" data-tool-group={group}>
           <div className="oc-assistant-col">
             <div className="oc-text-wrap">
               <Markdown
-                text={part.text}
+                text={text}
+                notify={ctx.notify}
                 className={`oc-prose chat-text${preview ? "" : " muted"}${part.streaming ? " is-streaming" : ""}`}
                 onOpenLink={(href) => void openUrl(href)}
                 workspacePath={ctx.workspacePath}
@@ -359,8 +380,12 @@ function Part({ partKey, part, preview = false, group, ctx }: { partKey: string;
           </div>
         </div>
       );
-    case "thinking":
-      return <ThinkingRow id={`thinking:${partKey}`} text={part.text} streaming={part.streaming} group={group} ctx={ctx} />;
+    }
+    case "thinking": {
+      const text = assistantDisplayText(part.text, ctx.stripAbsolutelyRight);
+      if (!text.trim()) return null;
+      return <ThinkingRow id={`thinking:${partKey}`} text={text} streaming={part.streaming} group={group} ctx={ctx} />;
+    }
     case "tool": {
       const { call } = part;
       return (
@@ -370,9 +395,16 @@ function Part({ partKey, part, preview = false, group, ctx }: { partKey: string;
             tool={call.tool}
             status={call.status}
             result={call.result}
+            rawResult={call.rawResult}
+            resultCreatedAt={call.resultCreatedAt}
+            now={ctx.toolNow}
             isError={call.status === "error"}
             open={ctx.isOpen(call.id, opensByDefault(call.tool))}
             onToggle={() => ctx.onToggle(call.id, opensByDefault(call.tool))}
+            todoRows={call.tool.name === "TodoWrite" ? {
+              completed: { open: ctx.isOpen(`${call.id}-completed`), onToggle: () => ctx.onToggle(`${call.id}-completed`) },
+              started: { open: ctx.isOpen(`${call.id}-started`), onToggle: () => ctx.onToggle(`${call.id}-started`) },
+            } : undefined}
             workspacePath={ctx.workspacePath}
             onOpenFile={ctx.onOpenFile}
           />
@@ -410,7 +442,12 @@ function ThinkingRow({ id, text, streaming, group, ctx }: { id: string; text: st
         </div>
         {open ? (
           <div className="oc-tool-content plain">
-            <Markdown text={text} className={`oc-prose muted${streaming ? " is-streaming" : ""}`} />
+            <Markdown
+              text={text}
+              className={`oc-prose muted${streaming ? " is-streaming" : ""}`}
+              onOpenLink={(href) => void openUrl(href)}
+              Link={LinkWithMenu}
+            />
           </div>
         ) : null}
       </div>

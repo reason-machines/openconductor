@@ -2,7 +2,8 @@
 // conductor.db's settings table (left_panel_visible, left_panel_width,
 // right_panel_visible) as Conductor does. The store keeps its own copy of the
 // sidebar flag for rendering; this hook loads it from the database and writes it back.
-import { useEffect, useRef, useState, type CSSProperties, type Dispatch } from "react";
+import { usePersistenceProducer } from "../lib/persistence/producer.ts";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type Dispatch } from "react";
 import { inTauri } from "../backend";
 import type { Action } from "../state/store";
 import { SIDEBAR_DEFAULT_WIDTH, SIDEBAR_MAX_WIDTH, SIDEBAR_MIN_WIDTH, clampSidebarWidth, getAppPrefs, loadAppPrefs, setAppPref, useAppPrefs } from "../settings/appPrefs";
@@ -14,18 +15,28 @@ function warn(err: unknown) {
 /** Keeps the store's sidebar flag and `left_panel_visible` in step. */
 export function useSidebarVisiblePref(visible: boolean, dispatch: Dispatch<Action>): void {
   const synced = useRef(!inTauri());
+  const persistence = usePersistenceProducer();
+  const intent = useMemo(() => persistence.begin("visibility"), [visible, persistence]);
+  const initialIntent = useRef(intent);
+  const [readState, setReadState] = useState<"loading" | "ready" | "failed">(inTauri() ? "loading" : "ready");
   useEffect(() => {
     if (!inTauri()) return;
     loadAppPrefs()
-      .then((p) => dispatch({ type: "setSidebarVisible", visible: p.left_panel_visible }))
-      .catch(warn)
+      .then((p) => {
+        dispatch({ type: "setSidebarVisible", visible: p.left_panel_visible });
+        initialIntent.current.succeed();
+        setReadState("ready");
+      })
+      .catch((error) => { initialIntent.current.fail(error); setReadState("failed"); warn(error); })
       .finally(() => {
         synced.current = true;
       });
   }, [dispatch]);
   useEffect(() => {
-    if (synced.current && visible !== getAppPrefs().left_panel_visible) setAppPref({ key: "left_panel_visible", value: visible }).catch(warn);
-  }, [visible]);
+    if (!synced.current || readState === "loading" || readState === "failed" && intent === initialIntent.current) return;
+    if (visible === getAppPrefs().left_panel_visible) { intent.succeed(); return; }
+    void setAppPref({ key: "left_panel_visible", value: visible }).then(() => intent.succeed(), (error) => { intent.fail(error); warn(error); });
+  }, [visible, readState, intent]);
 }
 
 /** ⌥⌘B: show or hide the right panel. */

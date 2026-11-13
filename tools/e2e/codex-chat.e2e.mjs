@@ -40,6 +40,9 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+import { WebDriver } from "../../tests/e2e/webdriver.mjs";
+import { finishStartup } from "../../tests/e2e/startup.mjs";
+import { installCodexAccessDiagnostics, assertCodexAccessSnapshot, codexBoundaryReport, assertCodexBoundary } from "./codex-access-diagnostics.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const app = process.argv[2] && resolve(process.argv[2]);
@@ -81,7 +84,7 @@ writeFileSync(
   `codex_executable_path = ${JSON.stringify(custom)}\n\n[models.codex]\npersonality = "friendly"\n`,
 );
 
-const env = { ...process.env, HOME: home, SHELL: "/bin/bash" };
+const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), SHELL: "/bin/bash", OC_E2E_OUT: out };
 for (const k of ["XDG_DATA_HOME", "XDG_CONFIG_HOME", "OPENAI_API_KEY", "CODEX_API_KEY", "CODEX_HOME"]) delete env[k];
 // A key left in the user's shell: only the API key mode may hand Codex a key, and it must be the stored one.
 const SHELL_KEY = "sk-e2e-left-in-the-shell";
@@ -93,6 +96,7 @@ const driverExited = new Promise((r) => driver.on("exit", r));
 
 const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 const base = "http://127.0.0.1:4444";
+const startup = new WebDriver(base);
 let sessionUrl = null;
 
 async function wd(method, path, body, timeoutMs = 45000) {
@@ -120,6 +124,31 @@ async function find(css) {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const run = (script, ...args) => wd("POST", "/execute/sync", { script, args });
 const runAsync = (script, ...args) => wd("POST", "/execute/async", { script, args });
+let accessDiagnosticsInstalled = false;
+let expectedChatId = null;
+let firstTurnBoundary = null;
+
+async function recordAccess(phase) {
+  const snapshot = await run("return window.__ocCodexAccessDiagnostics.capture(arguments[0]);", phase);
+  console.log(`codex access ${phase}: ${JSON.stringify(snapshot)}`);
+  return snapshot;
+}
+
+function readBoundary() {
+  return codexBoundaryReport(expectedChatId, readFileSync(join(out, "codex-open-chat-events.jsonl"), "utf8"), requests().find((r) => r.method === "thread/start"));
+}
+
+async function saveAccessDiagnostics() {
+  if (!accessDiagnosticsInstalled) return;
+  const report = await run("return window.__ocCodexAccessDiagnostics.read();");
+  report.firstTurnRustBoundary = firstTurnBoundary;
+  try {
+    report.rustBoundary = { available: true, ...readBoundary() };
+  } catch {
+    report.rustBoundary = { available: false, failure: "missing-or-invalid-boundary-evidence" };
+  }
+  writeFileSync(join(out, "codex-access-diagnostics.json"), JSON.stringify(report, null, 2));
+}
 
 async function waitFor(what, fn, timeoutMs = 30000) {
   const end = Date.now() + timeoutMs;
@@ -162,8 +191,9 @@ const requests = () =>
     .split("\n")
     .map((l) => JSON.parse(l));
 
-async function send(text) {
+async function send(text, beforeSubmit) {
   await wd("POST", `/element/${await find(".composer [contenteditable=true]")}/value`, { text });
+  if (beforeSubmit) await beforeSubmit();
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 
@@ -196,6 +226,7 @@ try {
     capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application: app } } },
   });
   sessionUrl = `${base}/session/${session.sessionId}`;
+  startup.sessionId = session.sessionId;
 
   // Seed one repo with one workspace through the real backend, as the UI does.
   await waitFor("the app to load", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
@@ -211,6 +242,7 @@ try {
   const workspace = seeded.workspace;
   const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
   await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+  await finishStartup(startup);
   await waitFor("the chat panel", () => chatText().then((t) => t && t.includes("You’re in a new copy of")));
 
   const cliPath = await runAsync("const done = arguments[arguments.length - 1]; window.__TAURI_INTERNALS__.invoke('codex_cli_path').then(done, (e) => done('error: ' + e));");
@@ -220,18 +252,27 @@ try {
 
   await pickCodex("codex-0-model-picker");
   pass("the model picker switches the chat to Codex: the chip reads Codex and the access menu shows");
+  expectedChatId = workspace.id;
+  await run(`return (${installCodexAccessDiagnostics.toString()})(arguments[0]);`, expectedChatId);
+  accessDiagnosticsInstalled = true;
   const access = await run("const s = document.querySelector('.codex-access'); return s && [s.value, [...s.options].map((o) => o.textContent)];");
   assert.deepEqual(access, ["full", ["Full access", "Ask first", "Read only"]], "Conductor's default: full access");
   // Ask first, so Codex asks before running the command.
   await run(
     `const s = document.querySelector('.codex-access');
-     Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(s, 'ask');
-     s.dispatchEvent(new Event('change', { bubbles: true }));`,
+     window.__ocCodexAccessDiagnostics.capture('before-setter');
+     const setterReturn = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(s, 'ask');
+     window.__ocCodexAccessDiagnostics.capture('after-setter', null, setterReturn);
+     const dispatchReturn = s.dispatchEvent(new Event('change', { bubbles: true }));
+     return window.__ocCodexAccessDiagnostics.capture('after-dispatch', null, dispatchReturn);`,
   );
+  assertCodexAccessSnapshot(await recordAccess("after-change"));
   pass("access menu defaults to Full access (Conductor's default) and is set to Ask first");
 
   // 1. The recorded turn: approval, Allow, two commands, the reply.
-  await send("hello: create hello.txt with 'hello from codex', then cat it");
+  await send("hello: create hello.txt with 'hello from codex', then cat it", async () => {
+    assertCodexAccessSnapshot(await recordAccess("pre-Send"));
+  });
   const buttons = await waitFor("the approval card", async () => {
     const b = await approvalButtons();
     return b.length ? b : null;
@@ -282,6 +323,9 @@ try {
   const turn = sent.find((r) => r.method === "turn/start");
   assert.equal(turn.params.effort, "medium", "default Codex thinking level from settings");
   assert.deepEqual(sent.find((r) => r.response)?.response, { id: 0, result: { decision: "accept" } });
+  firstTurnBoundary = readBoundary();
+  await saveAccessDiagnostics();
+  assertCodexBoundary(firstTurnBoundary);
   pass("Codex got thread/start in the workspace folder (on-request, workspace-write), effort medium, and the accept answer");
   const launches = sent.filter((r) => r.launch).map((r) => r.launch);
   assert.ok(launches.length > 0, "the fake logged its launch");
@@ -311,6 +355,9 @@ try {
   // 4. Stop a running turn.
   await send("slow");
   await waitFor("the Stop button", running);
+  await waitFor("the slow turn to reach Codex", () =>
+    requests().find((r) => r.method === "turn/start" && r.params.threadId === "th-e2e-1" && r.params.input.some((i) => i.type === "text" && i.text === "slow")),
+  );
   await wd("POST", `/element/${await find('.composer button[aria-label^="Stop the agent"]')}/click`, {});
   await waitFor('a second "Interrupted by user"', () => chatText().then((t) => (t.match(/Interrupted by user/g) ?? []).length === 2), 20000);
   await turnDone(4);
@@ -494,6 +541,7 @@ try {
 } catch (e) {
   console.error(`not ok - ${e instanceof Error ? e.stack : e}`);
   if (sessionUrl) {
+    if (accessDiagnosticsInstalled) await recordAccess("failure").catch(() => {});
     await screenshot("codex-failure").catch(() => {});
     await chatText().then((t) => console.error(`chat text:\n${t}`)).catch(() => {});
   }
@@ -502,6 +550,7 @@ try {
   } catch {}
   process.exitCode = 1;
 } finally {
+  await saveAccessDiagnostics().catch(() => console.error("access diagnostics unavailable"));
   if (sessionUrl) await wd("DELETE", "").catch(() => {});
   driver.kill();
   await Promise.race([driverExited, sleep(3000)]);

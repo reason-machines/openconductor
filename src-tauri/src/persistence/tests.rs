@@ -504,3 +504,86 @@ async fn lists_a_renamed_main_chat_title_only() {
     // The main chat is not one of the extra tabs.
     assert!(rows.iter().all(|w| w.chat_tabs.is_empty()));
 }
+
+#[tokio::test]
+async fn transcript_catalog_serializes_retained_chats_without_reopening_hidden_tabs() {
+    let pool = pool().await;
+    record_repository(&pool, &repo("app")).await.unwrap();
+    for name in ["oslo", "lima"] {
+        finish_workspace(&pool, &ws("app", name), Some("main"), None)
+            .await
+            .unwrap();
+    }
+    let now = "2026-11-11T10:00:00.000Z";
+    for (id, workspace, title) in [
+        ("app/oslo", "app/oslo", "Primary"),
+        ("app/oslo:chat:source", "app/oslo", "Retained source"),
+        ("app/oslo:chat:target", "app/oslo", "Untitled"),
+        ("app/oslo:chat:source:claude", "app/oslo", "Alias"),
+        ("app/lima:chat:source", "app/lima", "Foreign source"),
+    ] {
+        sessions::open_tab(&pool, id, workspace, title, now)
+            .await
+            .unwrap();
+    }
+    sessions::upsert_unread(&pool, "app/oslo:chat:source", "app/oslo", true)
+        .await
+        .unwrap();
+    sessions::hide(&pool, "app/oslo:chat:source")
+        .await
+        .unwrap();
+    let rows = list_workspaces(&pool).await.unwrap();
+    let row = rows.iter().find(|w| w.id == "app/oslo").unwrap();
+    let value = serde_json::to_value(row).unwrap();
+    let mut catalog = value["transcriptChats"]
+        .as_array()
+        .expect("transcriptChats must serialize a separate retained-chat catalog")
+        .clone();
+    catalog.sort_by_key(|chat| chat["id"].as_str().unwrap().to_owned());
+    assert_eq!(
+        catalog,
+        serde_json::json!([
+            {"id": "app/oslo", "title": "Primary"},
+            {"id": "app/oslo:chat:source", "title": "Retained source"},
+            {"id": "app/oslo:chat:target", "title": "Untitled"}
+        ])
+        .as_array()
+        .unwrap()
+        .clone()
+    );
+    assert_eq!(row.primary_chat_id, "app/oslo");
+    assert_eq!(row.active_session_id.as_deref(), Some("app/oslo"));
+    assert_eq!(row.chat_tabs.len(), 1);
+    assert_eq!(row.chat_tabs[0].id, "app/oslo:chat:target");
+    assert!(row.unread_chats.is_empty());
+    assert_eq!(
+        sessions::is_hidden(&pool, "app/oslo:chat:source")
+            .await
+            .unwrap(),
+        Some(true)
+    );
+    let foreign = rows.iter().find(|w| w.id == "app/lima").unwrap();
+    assert_eq!(
+        serde_json::to_value(foreign).unwrap()["transcriptChats"],
+        serde_json::json!([{"id": "app/lima:chat:source", "title": "Foreign source"}])
+    );
+    sessions::open_tab(
+        &pool,
+        "app/oslo:chat:source",
+        "app/oslo",
+        "Retained source",
+        now,
+    )
+    .await
+    .unwrap();
+    sessions::hide(&pool, "app/oslo:chat:source")
+        .await
+        .unwrap();
+    let rows = list_workspaces(&pool).await.unwrap();
+    let reclosed = rows.iter().find(|w| w.id == "app/oslo").unwrap();
+    assert_eq!(
+        serde_json::to_value(reclosed).unwrap()["transcriptChats"],
+        value["transcriptChats"]
+    );
+    assert_eq!(reclosed.chat_tabs, row.chat_tabs);
+}

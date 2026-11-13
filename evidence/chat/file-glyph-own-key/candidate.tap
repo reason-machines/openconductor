@@ -1,0 +1,48 @@
+TAP version 13
+# (node:89) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: FileGlyph renders the registered glyph or fallback for /fixture/photo.constructor
+ok 1 - FileGlyph renders the registered glyph or fallback for /fixture/photo.constructor
+  ---
+  duration_ms: 5.95888
+  type: 'test'
+  ...
+# Subtest: FileGlyph renders the registered glyph or fallback for /fixture/photo.__proto__
+ok 2 - FileGlyph renders the registered glyph or fallback for /fixture/photo.__proto__
+  ---
+  duration_ms: 0.468887
+  type: 'test'
+  ...
+# Subtest: FileGlyph renders the registered glyph or fallback for /fixture/example.ts
+ok 3 - FileGlyph renders the registered glyph or fallback for /fixture/example.ts
+  ---
+  duration_ms: 0.470804
+  type: 'test'
+  ...
+# Subtest: FileGlyph renders the registered glyph or fallback for /fixture/photo.PNG
+ok 4 - FileGlyph renders the registered glyph or fallback for /fixture/photo.PNG
+  ---
+  duration_ms: 0.3402
+  type: 'test'
+  ...
+# Subtest: FileGlyph renders the registered glyph or fallback for /fixture/example.unknown
+ok 5 - FileGlyph renders the registered glyph or fallback for /fixture/example.unknown
+  ---
+  duration_ms: 0.489448
+  type: 'test'
+  ...
+# Subtest: FileGlyph renders the registered glyph or fallback for /fixture/README
+ok 6 - FileGlyph renders the registered glyph or fallback for /fixture/README
+  ---
+  duration_ms: 1.356867
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22133.812359

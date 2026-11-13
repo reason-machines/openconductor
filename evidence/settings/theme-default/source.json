@@ -1,0 +1,173 @@
+{
+  "producer": "Conductor Rebuild",
+  "rea_provenance": "Retained Conductor 0.87.6 assets from REA extraction on sven m5 max. Prior evidence ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2 records renderer semantic-analysis heap exhaustion. No new REA invocation.",
+  "reference_storage": "Qaa -> zk/dai -> oOr -> kIn -> yg=bw/Md -> rFe -> browser-local-storage entry melty-theme-selected-mode.",
+  "current_storage": "AppearancePage -> withField general.theme -> useSettings.save -> update_settings -> SettingsService.persist -> own settings file. applyAppearance drives data-theme and CSS media queries.",
+  "checked_main": "9a237404bc19caefe3f8473b9aae7ab4bc2439a5",
+  "scope": "Explicit missing-preference input. Clean first launch, native OS delivery and physical reference storage are not observed.",
+  "original_assets": {
+    "renderer": {
+      "name": "renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "name": "index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "immutable_files": {
+    "baseline/types.ts": "6bccb1442bf4fc9fa31c019d0f22f3937327a72fb17fbace2a84b3ca9ee89936",
+    "fixture.json": "6e6b78fd719ad4d61d78c9c57bdf0deb34ef45593010e4c9b2309240f358a861",
+    "reachability.json": "a9f89fc86b2721f1873210ab36c09c6d8519956f3d80180016a1766f483999ed",
+    "reachability/renderApp-0.txt": "c2f3e426d1b627b3a1c2bee907a32257ac138e8f34da6953cdb591591a28b775",
+    "reachability/renderApp-1.txt": "912758851f2909f18ef515459c17cca86b0d539863d0185885a4d36c5ff6198f",
+    "reachability/renderApp-2.txt": "a01e78999a7bd1f04f0c1e7298c00cd7d659c79160a145c55516761de6867d0e",
+    "reachability/renderApp-3.txt": "cd07cfad2d86afe0717c73433656bd3f8d144b8e84dfd2368646ded0f30d1c3e",
+    "reachability/renderApp-4.txt": "838c50937cf05130b8048b9257caf6191a8080504c734acca196db2c005c1c46"
+  },
+  "reference_spans": [
+    {
+      "label": "theme-row",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10208606,
+        10209734
+      ],
+      "bytes": 1128,
+      "sha256": "a01e78999a7bd1f04f0c1e7298c00cd7d659c79160a145c55516761de6867d0e",
+      "path": "reference/theme-row.txt"
+    },
+    {
+      "label": "theme-context-hook",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6087536,
+        6087655
+      ],
+      "bytes": 119,
+      "sha256": "3338a29e011fbcd8d72a0210d698bdafdc0b0496ff912299fd2f455fedb8278c",
+      "path": "reference/theme-context-hook.txt"
+    },
+    {
+      "label": "theme-mode-validator",
+      "asset": "renderer",
+      "utf8_half_open": [
+        438138,
+        438199
+      ],
+      "bytes": 61,
+      "sha256": "a97e4b94470e69733b773399fd077691abef070fe4dd6f6d2a1c1f7f9f62891b",
+      "path": "reference/theme-mode-validator.txt"
+    },
+    {
+      "label": "theme-persist-wrapper",
+      "asset": "renderer",
+      "utf8_half_open": [
+        438246,
+        438420
+      ],
+      "bytes": 174,
+      "sha256": "3987c547cd5236520b3d5f3be154892be0706fefa679bfd227088574c96b13b9",
+      "path": "reference/theme-persist-wrapper.txt"
+    },
+    {
+      "label": "theme-provider",
+      "asset": "renderer",
+      "utf8_half_open": [
+        438420,
+        441141
+      ],
+      "bytes": 2721,
+      "sha256": "912758851f2909f18ef515459c17cca86b0d539863d0185885a4d36c5ff6198f",
+      "path": "reference/theme-provider.txt"
+    },
+    {
+      "label": "storage-factory",
+      "asset": "index",
+      "utf8_half_open": [
+        235557,
+        235614
+      ],
+      "bytes": 57,
+      "sha256": "99236fb0b3df373da4c06d6c91ec8d21c6cd26b4fb5309f75e3699c0cf3718bf",
+      "path": "reference/storage-factory.txt"
+    },
+    {
+      "label": "storage-service-factory",
+      "asset": "index",
+      "utf8_half_open": [
+        235507,
+        235557
+      ],
+      "bytes": 50,
+      "sha256": "2fff659afb133598758311c707627ff26bd399e1bbf29eb727ff98cc8aa5929a",
+      "path": "reference/storage-service-factory.txt"
+    },
+    {
+      "label": "theme-provider-caller",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11537221,
+        11537540
+      ],
+      "bytes": 319,
+      "sha256": "e40bf5489971f2007fb12e702c1ff3e29f7cf6971a398d80fb707aec68000e6e",
+      "path": "reference/theme-provider-caller.txt"
+    },
+    {
+      "label": "storage-import",
+      "asset": "renderer",
+      "utf8_half_open": [
+        54390,
+        54399
+      ],
+      "bytes": 9,
+      "sha256": "8eabc7b7007fa4242963fc5e71ce496f41a29aac600e78613ff28e6050d79b2a",
+      "path": "reference/storage-import.txt"
+    },
+    {
+      "label": "storage-export",
+      "asset": "index",
+      "utf8_half_open": [
+        3481271,
+        3481280
+      ],
+      "bytes": 9,
+      "sha256": "9580a350f60936ecbfa023a7f7f7089cc468b0f636797f65d8c8651090a45fa8",
+      "path": "reference/storage-export.txt"
+    },
+    {
+      "label": "theme-storage-adapter",
+      "asset": "index",
+      "utf8_half_open": [
+        224517,
+        225312
+      ],
+      "bytes": 795,
+      "sha256": "cd181e5ce075e9df7b3998d5d575c629304f7b6c2a6829ab92eb491d2dfbb9b0",
+      "path": "reference/theme-storage-adapter.txt"
+    },
+    {
+      "label": "theme-storage-namespace",
+      "asset": "index",
+      "utf8_half_open": [
+        224468,
+        224517
+      ],
+      "bytes": 49,
+      "sha256": "52f35b8593f94400206696426da7d923185b61e867320a2d94402abf6b2875bf",
+      "path": "reference/theme-storage-namespace.txt"
+    },
+    {
+      "label": "theme-storage-service",
+      "asset": "index",
+      "utf8_half_open": [
+        226825,
+        231110
+      ],
+      "bytes": 4285,
+      "sha256": "de59d0c39ce0e779e9cda5a4ee7d44c3c81cc547359fb7dcab3a38b89cd2a0e6",
+      "path": "reference/theme-storage-service.txt"
+    }
+  ]
+}

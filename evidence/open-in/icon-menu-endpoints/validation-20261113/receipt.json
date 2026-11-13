@@ -1,0 +1,225 @@
+{
+  "result": "PASS",
+  "start": "2026-11-13T01:44:13.321500+00:00",
+  "release": "2026-11-13T01:44:54.023809+00:00",
+  "elapsed_s": 40.702681,
+  "events": [
+    {
+      "time": "2026-11-13T01:44:13.321500+00:00",
+      "elapsed_s": 4e-05,
+      "name": "actual-start",
+      "admission": "ACC_SAME15_HOME_END_20261113T0143"
+    },
+    {
+      "time": "2026-11-13T01:44:13.358700+00:00",
+      "elapsed_s": 0.037223,
+      "name": "source-qualified",
+      "main": "000948134a9685308703438f82250b1ae03f60c8",
+      "head": "3f50367a7cb9418c84c00982f2e8abf38f6f12d9",
+      "source_hashes": {
+        "src/features/openIn/OpenInButton.tsx": "3deb652e66718fb321266676595607cf158b8dd9e024db3983a1405b64d71499",
+        "src/features/openIn/apps.ts": "b37b0fec869cb0308437cf23df36ecd9f4cb356deb495564fb64c3b0d44a26a6",
+        "src/features/openIn/AppSwitcher.tsx": "87f6fba052711a3a595ee756be800b817d47ac1d8038b149c78721d37975b8ab",
+        "src/features/openIn/switcher.ts": "702f2ec96d5f606b123cecb810e0613752cf09511b15de0771a2fdf0044cdffd",
+        "src/features/openIn/apps.test.ts": "28274002088d35e08fca641727db2b8715ce155e446a0c239cc770593e8afb20",
+        "src/features/openIn/switcher.test.ts": "bea5adaea1dceebab83af74169fe845371eea64662849574a7c660e8d345c15f",
+        "src/features/openIn/iconMenuNumbering.test.ts": "44eb051c160108ab818bf1c5045838df306a623c87cbb9350abed02feac4ffa3",
+        "src/features/openIn/menuArrowIsolation.test.ts": "f1dfd9d52e75917d804bd41c26f8075bfc4c4cbec7184ee8bada0ef1c54425ca",
+        "src/features/openIn/settingsShortcutHint.test.ts": "7ddcc44b3776949216f07e27ea31a781060562798ef356422c22c5bfb6e78d68",
+        "src/palette/paletteOpenInTarget.test.ts": "7cd7c92081e0c29c5a175b442ded33f14dda51f97a571cc37a111699a0683e5d",
+        "src/palette/paletteOpenInLifecycle.test.ts": "b53a3b4df10bcff2ddcdf90e0e45ab9f1722e7a3f564911b5606841294b65da8",
+        "src/palette/fromAppState.ts": "c1aaac1863aa2b63482c62112a405ed839c7f9eb553e795fcf390b667c27a1f0",
+        "src/palette/PaletteHost.tsx": "a23db7719c106466e9f65e9ccd8b59a0d4ab337bf73b3444ad44fb223f801511",
+        "src/components/WorkspaceView.tsx": "1a3f151052cb823e5ec9dbdfc1109370ab2cf8a7a769d32c9d27e9db2fd479a8",
+        "src/App.tsx": "7d48ec516a1eb032f63e31defd892e22311e2f406d544526646eab7ba13f6c3c",
+        "package.json": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+        "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+        "tsconfig.json": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5",
+        "node_modules/.package-lock.json": "8c9d7f5ab16c0cf37576836e6159e30ea64922151429156971bdc43875e139ba",
+        "node_modules/typescript/package.json": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6",
+        "node_modules/react/package.json": "d4e68a5c96babb20cad1daafea8b78822eae45b341552cf5418d06a5304fa64c",
+        "node_modules/react-test-renderer/package.json": "e3b09e5a62e134d5241b520715de45b63ff3568ccbbeeeb70601607c3136c811",
+        "node_modules/@tauri-apps/api/package.json": "3e8dd9fbaa647151ea6179115c9e83918f46e951fcbb7fb9e998346337a05b48"
+      },
+      "fixture_sha256": "4009081be40ee58220527628b5f0d8e468c843123b99da80ae9ec1df21487385"
+    },
+    {
+      "time": "2026-11-13T01:44:13.358942+00:00",
+      "elapsed_s": 0.037456,
+      "name": "baseline-start",
+      "argv": [
+        "timeout",
+        "-k",
+        "5s",
+        "120s",
+        "nice",
+        "-n",
+        "19",
+        "env",
+        "NODE_OPTIONS=--max-old-space-size=1024",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/openIn/iconMenuEndpoints.test.ts"
+      ],
+      "ceiling_s": 125
+    },
+    {
+      "time": "2026-11-13T01:44:14.779996+00:00",
+      "elapsed_s": 1.458525,
+      "name": "baseline-end",
+      "code": 1,
+      "sha256": "e6b745c12bdadaf586555c6bfeea2f41be6db2a796f0aaaa06bdd81f7b5adcfe"
+    },
+    {
+      "time": "2026-11-13T01:44:14.781044+00:00",
+      "elapsed_s": 1.45956,
+      "name": "baseline-qualified",
+      "totals": {
+        "tests": 14,
+        "pass": 10,
+        "fail": 4,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failed_indices": [
+        1,
+        2,
+        6,
+        7
+      ]
+    },
+    {
+      "time": "2026-11-13T01:44:14.784686+00:00",
+      "elapsed_s": 1.463207,
+      "name": "candidate-start",
+      "argv": [
+        "timeout",
+        "-k",
+        "5s",
+        "120s",
+        "nice",
+        "-n",
+        "19",
+        "env",
+        "NODE_OPTIONS=--max-old-space-size=1024",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/openIn/iconMenuEndpoints.test.ts"
+      ],
+      "ceiling_s": 125
+    },
+    {
+      "time": "2026-11-13T01:44:16.151740+00:00",
+      "elapsed_s": 2.83027,
+      "name": "candidate-end",
+      "code": 0,
+      "sha256": "53379b6e5352aa9480ca64dbee4c48ddb31e7037974d8e33489d21a630d947fc"
+    },
+    {
+      "time": "2026-11-13T01:44:16.152250+00:00",
+      "elapsed_s": 2.830766,
+      "name": "candidate-qualified",
+      "totals": {
+        "tests": 14,
+        "pass": 14,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "time": "2026-11-13T01:44:16.152446+00:00",
+      "elapsed_s": 2.830959,
+      "name": "adjacent-start",
+      "argv": [
+        "timeout",
+        "-k",
+        "5s",
+        "120s",
+        "nice",
+        "-n",
+        "19",
+        "env",
+        "NODE_OPTIONS=--max-old-space-size=1024",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/openIn/apps.test.ts",
+        "src/features/openIn/switcher.test.ts",
+        "src/features/openIn/iconMenuNumbering.test.ts",
+        "src/features/openIn/menuArrowIsolation.test.ts",
+        "src/features/openIn/settingsShortcutHint.test.ts",
+        "src/palette/paletteOpenInTarget.test.ts",
+        "src/palette/paletteOpenInLifecycle.test.ts"
+      ],
+      "ceiling_s": 125
+    },
+    {
+      "time": "2026-11-13T01:44:26.824246+00:00",
+      "elapsed_s": 13.502776,
+      "name": "adjacent-end",
+      "code": 0,
+      "sha256": "cbad211e21055e80a86f01ca5aef65082f666dc1959cb634c1ff270b2b722c0e"
+    },
+    {
+      "time": "2026-11-13T01:44:26.825999+00:00",
+      "elapsed_s": 13.504516,
+      "name": "adjacent-qualified",
+      "totals": {
+        "tests": 53,
+        "pass": 53,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "time": "2026-11-13T01:44:26.826820+00:00",
+      "elapsed_s": 13.50534,
+      "name": "typecheck-start",
+      "argv": [
+        "timeout",
+        "-k",
+        "5s",
+        "180s",
+        "nice",
+        "-n",
+        "19",
+        "env",
+        "NODE_OPTIONS=--max-old-space-size=1536",
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "ceiling_s": 185
+    },
+    {
+      "time": "2026-11-13T01:44:53.985043+00:00",
+      "elapsed_s": 40.663575,
+      "name": "typecheck-end",
+      "code": 0,
+      "sha256": "e28805e1deb31aa4540d58095d49ef86750c9fafaaac153874b148ce4e57d545"
+    },
+    {
+      "time": "2026-11-13T01:44:54.023809+00:00",
+      "elapsed_s": 40.702333,
+      "name": "actual-release",
+      "result": "PASS",
+      "jobs": [],
+      "servers": [],
+      "ownruntime": [],
+      "killed_own_groups": [],
+      "tracked_status": "",
+      "product_sha256": "3deb652e66718fb321266676595607cf158b8dd9e024db3983a1405b64d71499",
+      "fixture_absent": true
+    }
+  ]
+}

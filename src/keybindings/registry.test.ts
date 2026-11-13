@@ -2,17 +2,32 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { COMMANDS, CONFLICT_BASE, CONFLICT_GROUPS, LEGACY_ALIASES, SEND_KEY_PRESETS } from "./registry.ts";
-import { CATEGORIES, MODIFIERS } from "./types.ts";
+import { CATEGORIES, MODIFIERS, type Command } from "./types.ts";
 
 const evidence = JSON.parse(readFileSync(new URL("../../evidence/keybindings/keybindings.json", import.meta.url), "utf8"));
 
-test("registry matches the extracted evidence exactly", () => {
-  assert.deepEqual(JSON.parse(JSON.stringify(COMMANDS)), evidence.commands);
+const loadoutIds = ["chat.selectLoadout1", "chat.selectLoadout2", "chat.selectLoadout3", "chat.selectLoadout4", "chat.selectLoadout5"];
+
+test("registry matches the extracted evidence with the requested OpenConductor loadout shortcuts", () => {
+  const expected = evidence.commands.map((command: Command) => loadoutIds.includes(command.id)
+    ? { ...command, key: { ...command.key, modifiers: ["meta"] } }
+    : command);
+  assert.deepEqual(JSON.parse(JSON.stringify(COMMANDS)), expected);
   assert.deepEqual(JSON.parse(JSON.stringify(SEND_KEY_PRESETS)), evidence.sendKeyPresets);
   assert.deepEqual(CONFLICT_BASE, evidence.conflictScopes.base);
   assert.deepEqual(CONFLICT_GROUPS, evidence.conflictScopes.groups);
   assert.deepEqual(LEGACY_ALIASES, evidence.legacyAliases);
   assert.deepEqual([...CATEGORIES], evidence.categoryOrder);
+});
+
+test("five loadout shortcuts are Cmd1–5 while retained reference evidence stays CmdCtrl1–5", () => {
+  for (let i = 1; i <= 5; i++) {
+    const id = `chat.selectLoadout${i}`;
+    const key = { kind: "physical", code: `Digit${i}`, display: String(i) };
+    const reference = evidence.commands.find((command: Command) => command.id === id);
+    assert.deepEqual(reference?.key, { key, modifiers: ["meta", "ctrl"] }, `${id} reference`);
+    assert.deepEqual(COMMANDS.find((command) => command.id === id)?.key, { key, modifiers: ["meta"] }, `${id} product`);
+  }
 });
 
 test("registry shape: 165 unique ids, known categories and modifiers", () => {
