@@ -897,16 +897,32 @@ Reconciled from source (`sound.ts` + `SoundSelect.tsx`, main `a36188938d`) and t
 
 Both prior run counts were correct and measured different things. No source defect. SOUNDSELECT-BROWSER-ACCEPTANCE-49-01 reconciled; native logo rendering NOT_RUN.
 
+### Packaging consolidation (from `992a715e`)
+
+- **#1787 failed** — E0599 compile error (missing `Manager` import).
+- **#1277 merged** — squash `e963fb31`; fixes `tauri::Manager` import for `AppHandle::state()`.
+- **#1788 succeeded** — artifact `14031068467` (`OpenConductor-debug-macos`), sha256 `908387b4668e2a92ae295b4e548efab1a571962beed788eee54786c552c35563`, 109 MB, expires 2026-11-20. E1 handoff blocked (PROVIDER_LIMIT_BLOCKED).
+
+Packaging lane closed by `992a715e`. Artifact preserved; native acceptance remains NOT_RUN.
+
+### Menus/palette lane
+
+**#1271 merged** — squash `8f44c4f1`; feat(palette): REA-proven missing workspace actions (search-in-files, link-issue, PR actions). Lane closed by `15faf4d8`. (CI ref `1335a0b5` confirmed passing.)
+
+PICK-ISSUES-DIALOG work by `15faf4d8`: status per last report — ongoing. No duplication from this entry.
+
+**#1279 repair** owned by `7e1889e6` — do not duplicate.
+
 ### Active owners
 
 | Session | Work | Status |
 |---|---|---|
-| `15faf4d8` | #1271 CI + PICK-ISSUES-DIALOG | Ongoing |
-| `992a715e` | Package artifact follow-through | Artifact confirmed; E1 handoff blocked |
+| `15faf4d8` | PICK-ISSUES-DIALOG | Ongoing |
+| `7e1889e6` | #1279 repair | Ongoing |
 
 ### State
 
-- **Source gaps: NONE.** All lanes SOURCE_EXHAUSTED.
+- **Source gaps: NONE.** All lanes SOURCE_EXHAUSTED; confirmed from existing ledger, no work invented.
 - **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures, not current-main native parity). Native 39 NOT_RUN.
-- **Native acceptance (39 items + settings.toml/IPC):** Sole executor E1 PROVIDER_LIMIT_BLOCKED — no retry authorized.
+- **Native acceptance (39 items + settings IPC):** Sole executor E1 PROVIDER_LIMIT_BLOCKED — no retry authorized. First-priority handoff on E1 recovery: settings native persistence / file pickers / rendering.
 - **Program bottleneck:** E1 provider reset required before native acceptance can proceed.
