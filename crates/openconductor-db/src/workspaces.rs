@@ -165,6 +165,24 @@ pub async fn finish_setup(pool: &SqlitePool, local_id: &str) -> Result<bool> {
     Ok(exec(q.bind(local_id), pool).await? > 0)
 }
 
+/// Store the path of the setup transcript written by the scripts crate.
+/// Called after setup completes or fails; silently does nothing when the
+/// workspace has already been deleted.
+pub async fn set_setup_log_path(
+    pool: &SqlitePool,
+    local_id: &str,
+    log_path: &str,
+) -> Result<()> {
+    exec(
+        sqlx::query("UPDATE workspaces SET setup_log_path = ? WHERE local_id = ?")
+            .bind(log_path)
+            .bind(local_id),
+        pool,
+    )
+    .await
+    .map(|_| ())
+}
+
 /// `initializing` or `setting_up` -> `failed`. False in any other state.
 pub async fn fail(pool: &SqlitePool, local_id: &str) -> Result<bool> {
     let q = sqlx::query(
