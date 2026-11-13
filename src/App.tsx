@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { WorkspaceOpenInTarget } from "./palette/fromAppState.ts";
 import { useUpdates } from "./features/updates/useUpdates";
 import { useAppStore } from "./state/store";
 import { useCustomSectionCollapse } from "./state/useCustomSectionCollapse";
@@ -98,6 +99,11 @@ export default function App() {
     },
     [storeDispatch],
   );
+  const [activeOpenInTarget, setActiveOpenInTarget] = useState<WorkspaceOpenInTarget | null>(null);
+  const registerOpenInTarget = useCallback((target: WorkspaceOpenInTarget) => {
+    setActiveOpenInTarget(target);
+    return () => setActiveOpenInTarget((current) => current === target ? null : current);
+  }, []);
   const [sectionDialog, setSectionDialog] = useState<SectionDialogMode | null>(null);
   const submitSection = (mode: SectionDialogMode, value: { name: string; emoji?: string }) => {
     if (mode.mode === "edit") {
@@ -566,6 +572,7 @@ export default function App() {
           <ArchivedWorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
         ) : repo && workspace ? (
           <WorkspaceView
+            onOpenInTarget={registerOpenInTarget}
             repo={repo}
             workspace={workspace}
             sections={state.sections ?? []}
@@ -680,7 +687,7 @@ export default function App() {
           onClose={() => setSectionDialog(null)}
         />
       )}
-      <PaletteHost state={state} collapsedSections={collapsedSections} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} commands={paletteCommands} />
+      <PaletteHost state={state} collapsedSections={collapsedSections} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} commands={paletteCommands} activeOpenInTarget={createPage ? null : activeOpenInTarget} />
       {archiveOverAgents && (
         <ArchiveRunningDialog
           onClose={() => setArchiveOverAgents(null)}

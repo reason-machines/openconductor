@@ -1,0 +1,11 @@
+{
+  "token": "ACC_64_TAB8_CURRENT_MAIN_20261113T0226",
+  "main": "ee120e2a0ecfd668efad398bef71f41e6d6e0047",
+  "tree": "424996ff88df7948a38a42d405301cc3276bd640",
+  "head": "9982164766c2ac142e800925d18629a6a7ff8409",
+  "original_guard_sha256": "f000a163cb4900cfe3b9d02efebb4a7c493b3a2bd28352e886405401ac9b6de0",
+  "actual_guard_sha256": "580fe34792b583f2a9b7f624c679f9c57f2c19425e1d6496578a9fd3962c80c8",
+  "relevant_pins": 21,
+  "amendment": "main and committed tree identities only",
+  "original_packet_sha256": "1e51cafc003c2fd7ad8abd2da8de964224c54480dedb27f6567ba0653529731a"
+}
