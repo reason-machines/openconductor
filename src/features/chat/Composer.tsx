@@ -655,7 +655,7 @@ function QueueRow({ id, text, userContent, attachmentNames, first, last, editing
   useLayoutEffect(() => {
     if (!editing) return;
     setValue(queuedUserDraft({ text, userContent }));
-    editor.current?.focus();
+    queueMicrotask(() => { editor.current?.focus("end"); });
   }, [editing, text, userContent]);
   if (editing) {
     return (
