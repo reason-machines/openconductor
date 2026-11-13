@@ -1,5 +1,7 @@
 # K1 Agents-tab keyboard source checkpoint
 
+This page records the historical inactive checkpoint. The [active correction and measured RED/GREEN results](execution-v4/README.md) supersede its publication and execution status. The original frozen fixture and sealed patch remain unchanged.
+
 Conductor Rebuild retains the existing K1 deliverable here so recovery does not depend on an untracked workspace. This is a source checkpoint, not a shipped correction or a passing behavioral test.
 
 ## Publication state

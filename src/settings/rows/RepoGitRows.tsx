@@ -6,6 +6,9 @@
 // `.conductor/settings.local.toml`; archive reads them through the effective
 // settings (workspace_archive_commands.rs, useArchiveOnMerge.ts).
 import { useState, type ReactNode } from "react";
+import { Menu } from "@base-ui/react/menu";
+import { EllipsisIcon } from "../../components/menu/menuIcons";
+import "../../components/sidebarActionsMenu.css";
 import type { Repo } from "../../state/types";
 import { Toggle } from "../controls";
 import { Row } from "../GeneralPage";
@@ -20,10 +23,10 @@ export function RepoGitRows({ repo }: { repo: Repo }) {
   const effective = useRepoSettings(repo.path || undefined);
   const [error, setError] = useState<string | null>(null);
   const git = effective?.git;
-  const set = (key: RepoLocalKey, on: boolean) => {
+  const set = (key: RepoLocalKey, on: boolean | null) => {
     if (!repo.path) return;
     setError(null);
-    repoSettingsSetLocal(repo.path, key, on).then(notifyRepoSettingsChanged, () => setError("Failed to save the setting"));
+    repoSettingsSetLocal(repo.path, key, on).then(notifyRepoSettingsChanged, () => setError(on === null ? "Failed to reset the setting" : "Failed to save the setting"));
   };
   const remote = repo.remote || "origin";
   const branch = repo.defaultBranch || "main";
@@ -40,7 +43,32 @@ export function RepoGitRows({ repo }: { repo: Repo }) {
           <Picker label="Remote origin" value={remote} />
         </Row>
         <Row
-          label="Delete branch on archive"
+          label={
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+              Delete branch on archive
+              {repo.path && git?.delete_branch_on_archive.layer === "repo_local" && (
+                <Menu.Root>
+                  <Menu.Trigger
+                    type="button"
+                    className="btn btn-ghost"
+                    aria-label="Setting actions"
+                    style={{ width: 24, height: 24, padding: 0, color: "var(--s-muted)" }}
+                  >
+                    <EllipsisIcon />
+                  </Menu.Trigger>
+                  <Menu.Portal>
+                    <Menu.Positioner className="sb-actions-positioner" side="bottom" align="end" sideOffset={4}>
+                      <Menu.Popup className="sb-actions-popup" aria-label="Delete branch on archive actions">
+                        <Menu.Item className="sb-actions-item" onClick={() => set("git.delete_branch_on_archive", null)}>
+                          Reset
+                        </Menu.Item>
+                      </Menu.Popup>
+                    </Menu.Positioner>
+                  </Menu.Portal>
+                </Menu.Root>
+              )}
+            </span>
+          }
           help={
             <>
               <p>Delete the local branch when archiving a workspace.</p>
