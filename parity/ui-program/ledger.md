@@ -1566,7 +1566,7 @@ Owner: Conductor Rebuild (Session `ddfc6518`).
 
 **Diff/files lane `de6c02f4` CANCELLED** — coordinator confirmed, do not restart. `ws.search-in-files-dialog` REA extraction removed from cloud runtime queue.
 
-**Chat `13576d11` #1292 open, CI pending** — fix reported by chat owner; merge follow-through retained by owner. Browser/native NOT_RUN.
+**Chat `be7a40e4` #1292 open, CI pending** — fix reported by chat owner `be7a40e4`; merge follow-through retained by that owner. `13576d11` (composer) SOURCE_EXHAUSTED. Browser/native NOT_RUN.
 
 **Home/sidebar `27102e36` SOURCE_EXHAUSTED confirmed at `31e6764d6`** — owner verified 44 evidence folders at `31e6764d6`; freed node_modules (529 MB) and dist (36 MB). No unowned implementable gap. Five native acceptance items queued to E1: #1269, #1218, #1224, #829, #1286 — all NOT_RUN pending E1 recovery.
 
@@ -1577,7 +1577,8 @@ Owner: Conductor Rebuild (Session `ddfc6518`).
 | Lane | Session | Status |
 |---|---|---|
 | Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG in-progress; source-exhausted after. Browser/native NOT_RUN |
-| Chat / composer | `13576d11` | #1284, #1288, #1290 merged. #1292 CI in_progress. Browser/native NOT_RUN |
+| Chat | `be7a40e4` | #1292 CI in_progress. Browser/native NOT_RUN |
+| Composer | `13576d11` | #1284, #1288, #1290 merged. SOURCE_EXHAUSTED at `428f5882`. Browser/native NOT_RUN |
 | Diff / files | `de6c02f4` | CANCELLED — do not restart. ws.search-in-files-dialog extraction not completed. Native NOT_RUN |
 | Home / sidebar | `27102e36` | SOURCE_EXHAUSTED at `31e6764d6`. 44 folders verified. 5 native items queued to E1 NOT_RUN |
 | Settings | `49e3976d` | Browser PASS (fixture). Env crash: UNRESOLVED, UNKNOWN cause, no log retrieved. Native ALL NOT_RUN |
@@ -1588,7 +1589,7 @@ Owner: Conductor Rebuild (Session `ddfc6518`).
 
 ### Serialized cloud runtime queue
 
-1. **#1292** CI await → merge (`13576d11`)
+1. **#1292** CI await → merge (`be7a40e4`)
 2. **PICK-ISSUES-DIALOG** (`15faf4d8`)
 3. Settings env-crash — awaits native reproduction via E1
 
