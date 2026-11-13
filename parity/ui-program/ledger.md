@@ -922,3 +922,536 @@ Target: retained `renderApp-D_fmY7hW.js`, SHA-256 `5199d392ef2dec92886393f181bc9
 ### Conclusion
 
 **SOURCE_EXHAUSTED at `8f62e6e3d`.** No unowned implementable diff/files source gap exists beyond the search-in-files dialog, which is blocked by REA evidence gap `ws.search-in-files-dialog`. The 32 native behavioral items (Q-01–Q-32) remain with sole native executor E1. Priority acceptance cases for E1: Q-17 (submit-pending gate), Q-16 (inline draft remount), Q-19 (comment count badge), Q-01 (selected-row scroll), Q-02 (flat list viewed ordering).
+
+---
+
+## Program reconciliation r1137 at main `c189ea62`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**#1278 merged** — squash `c189ea62` (docs(ledger): program reconciliation r1131). Merge-conflict event was stale; PR had already landed.
+
+**Package run #1788 (`e963fb31`) artifact confirmed** — `OpenConductor-debug-macos`, sha256 `908387b4668e2a92ae295b4e548efab1a571962beed788eee54786c552c35563`, 109 051 934 bytes, completed 11:13:48Z. Forwarding to E1 blocked (PROVIDER_LIMIT_BLOCKED).
+
+**Settings full browser acceptance — PASS** (Session `49e3976d`, main `a36188938d`, Vite dev + cloud Chrome):
+
+| Tab | Items | Result |
+|---|---|---|
+| General / SoundSelect | 7 DOM groups (1 unnamed → "No sound", 6 labeled), 6 visible group-label headers, 14 items, 4 transit logos (muni/mta/metro-de-paris/sncf), Classic/Novelty plain, onChange fires | PASS (browser) |
+| Appearance | 12 rows: Theme, Low-contrast, App zoom, Colored sidebar diffs, Accessible colors, Code theme, Mono Font, Code ligatures, Markdown Style, Terminal font, Color palette + preview blocks | PASS (browser) |
+| Keyboard shortcuts | 5 groups, full row list | PASS (browser) |
+| Environment | Table CRUD via localStorage: add `MY_API_KEY`, 18 documented vars toggle, remove all; Add env file button present | PASS (browser) |
+| Advanced | 9 rows: root dir, Claude path, Codex exec path, SSH key, Remote MCP, Always allow, File sync, Set upstream, Scrollback | PASS (browser) |
+
+Recording: https://api.reasonmachines.com/media/pr-screenshots/746fef00-042c-424c-99a4-35c5e3982e29/a4f7aaacd3f8287e39857df2a854f6bd/6956955b-aa40-4b64-a13d-1a1f1969de19.webm
+
+**NOT_RUN (requires macOS Tauri native):** settings.toml save/reload, native file pickers, full disk access check, env-file variable counts, RootPathRow native display.
+
+### Group count reconciliation (SOUNDSELECT-BROWSER-ACCEPTANCE-49-01)
+
+Reconciled from source (`sound.ts` + `SoundSelect.tsx`, main `a36188938d`) and two browser runs:
+- **7 DOM `Select.Group` nodes**: 1 unnamed (`group: ""` → "No sound"), 6 named
+- **6 visible `Select.GroupLabel` headers**: Classic, Novelty, SF Muni, NYC MTA, Paris Métro, SNCF (unnamed group suppressed by `group.label && …` guard in `SoundSelect.tsx:92`)
+- **14 total items**: No sound (1) + Classic (2) + Novelty (3) + SF Muni (2) + NYC MTA (3) + Paris Métro (2) + SNCF (1)
+- **4 transit logos** (`GROUP_LOGOS` entries): SF Muni, NYC MTA, Paris Métro, SNCF; Classic and Novelty are text-only (correct)
+
+Both prior run counts were correct and measured different things. No source defect. SOUNDSELECT-BROWSER-ACCEPTANCE-49-01 reconciled; native logo rendering NOT_RUN.
+
+### Packaging consolidation (from `992a715e`)
+
+- **#1787 failed** — E0599 compile error (missing `Manager` import).
+- **#1277 merged** — squash `e963fb31`; fixes `tauri::Manager` import for `AppHandle::state()`.
+- **#1788 succeeded** — artifact `14031068467` (`OpenConductor-debug-macos`), sha256 `908387b4668e2a92ae295b4e548efab1a571962beed788eee54786c552c35563`, 109 MB, expires 2026-11-20. E1 handoff blocked (PROVIDER_LIMIT_BLOCKED).
+
+Packaging lane closed by `992a715e`. Artifact preserved; native acceptance remains NOT_RUN.
+
+### Menus/palette lane
+
+**#1271 merged** — squash `8f44c4f1`; feat(palette): REA-proven missing workspace actions (search-in-files, link-issue, PR actions). Lane closed by `15faf4d8`. (CI ref `1335a0b5` confirmed passing.)
+
+PICK-ISSUES-DIALOG work by `15faf4d8`: status per last report — ongoing. No duplication from this entry.
+
+**#1279 merged** — squash `33ae5f4f`; repair work by `7e1889e6` complete.
+**Package run #1789** (`43418374262`) dispatched by `992a715e` at `33ae5f4f` (35 fixes, in_progress). Artifact follow-up owned by `992a715e` — do not duplicate dispatch or polling.
+
+### Active owners
+
+| Session | Work | Status |
+|---|---|---|
+| `15faf4d8` | PICK-ISSUES-DIALOG | Ongoing |
+| `992a715e` | Package run #1789 artifact follow-through | In progress — pending artifact proof |
+
+### State
+
+- **Source gaps: NONE claimed in r1137/r1138 — CORRECTED in r1139 below.**
+- **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
+- **Native acceptance:** E1 PROVIDER_LIMIT_BLOCKED at 11:21Z Nov 13 (coordinator direct observation; supersedes 07:00Z Nov 11 standing guidance). Native Settings reassignment to `49e3976d` REVERTED — was not an executed authorization. Sole native executor remains E1. All native items frozen.
+- **Program bottleneck:** E1 quota reset required. No retry authorized until confirmed.
+
+---
+
+## Program reconciliation r1138 at main `33ae5f4f5`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**#1278 merged** — `c189ea62` (docs ledger r1131). Subscription closed.
+
+**#1279 merged** — `33ae5f4f` (35 packaging/repair fixes, `7e1889e6`). Package run #1789 (`43418374262`) dispatched by `992a715e`; artifact pending, owned by `992a715e` — no duplicate dispatch.
+
+**Native Settings acceptance reassignment** — `dcaa6e78` authorized reassignment from E1 (`e1e2b6b9`) to `49e3976d`. E1 retains all non-Settings native items (Q-01–Q-32). Native Settings (settings.toml persistence, file pickers, Tauri IPC × 5 tabs, macOS rendering) remains NOT_RUN pending `49e3976d` evidence. **No parallel native activity created by prior coordination prose; sole native executor E1 preserved for non-Settings scope.**
+
+**#1280 in-progress** — head `c57788d`; 5 skipped, 2 in-progress (`Frontend typecheck + build`, `Evidence tools compile`). Will merge on green.
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG ongoing |
+| Packaging artifact | `992a715e` | Run #1789 pending artifact proof |
+| Native Settings acceptance | `49e3976d` | Assigned; NOT_RUN |
+| Native behavioral Q-01–Q-32 | E1 `e1e2b6b9` | Quota reset confirmed; available on request |
+| All other lanes | — | SOURCE_EXHAUSTED |
+
+---
+
+## Program reconciliation r1139 at main `33ae5f4f5`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`). Substantive correction to r1137/r1138.
+
+### Corrections
+
+**E1 PROVIDER_LIMIT_BLOCKED** — coordinator (`dcaa6e78`) reports latest E1 attempt failed provider usage at 11:21Z Nov 13. This is more recent than the 07:00Z Nov 11 quota-reset standing guidance. E1 is BLOCKED. No retry authorized.
+
+**Native Settings reassignment REVERTED** — `dcaa6e78` confirms the prior prose claiming reassignment to `49e3976d` was not an executed authorization. Sole native executor remains E1 (`e1e2b6b9`). `49e3976d` is browser-only. All native acceptance (Settings IPC + Q-01–Q-32 diff/files/composer/palette items) frozen until E1 quota resets.
+
+**#1280 merged** — squash `541c9e4c`, docs(ledger) r1138. All 7 checks passed (2 green, 5 skipped).
+
+### Substantive unowned REA-proven gaps
+
+**1. CONFIG-SYNC-PENDING-SELECTION** (dialogs lane)
+- **REA basis:** `ConfigSyncDialog.tsx` lines 90/107 disable category/item checkboxes when `state.kind !== "ready"`. REA-verified Conductor behavior: selection remains editable during `syncing`; only empty categories stay disabled.
+- **Status:** Unowned. Candidate patch at `evidence/dialogs/config-sync-pending-selection/candidate.patch` exists (confirmed readable). 20-case fixture `configSyncPendingSelection.test.ts` prepared and outside automatic test discovery.
+- **Gate:** Requires ACC behavioral admission (baseline RED → fix GREEN) before PR eligibility.
+- **Assignment:** `6013adf2` (dialogs/scripts, idle, SOURCE_EXHAUSTED on prior scope) is the natural assignee. Work: apply patch → run baseline RED → run fix GREEN locally → submit for ACC queue admission.
+
+**2. WORKSPACE-GREP** (diff/files lane)
+- **REA basis:** `grep_workspace` Tauri command present in Conductor 0.87.6 artifact (`0ba55751`). Absent from both `src/backend.ts` and `src-tauri/src/` on current main.
+- **Status:** Unimplementable from source alone. Requires Ghidra binding of the Rust `#[tauri::command]` handler (native REA access). NOT assignable to a cloud-only builder.
+
+### Lane / owner table (corrected)
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG ongoing |
+| Packaging artifact | `992a715e` | Run #1789 pending artifact proof |
+| Dialogs (CONFIG-SYNC) | `6013adf2` | IDLE — assignable to CONFIG-SYNC-PENDING-SELECTION |
+| Native (all items) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED (11:21Z). No retry. |
+| 49e3976d | Settings browser | BROWSER_PASS; native assignment REVERTED |
+
+### Serialized cloud runtime queue
+
+- **Active:** PICK-ISSUES-DIALOG (`15faf4d8`), Package #1789 artifact (`992a715e`)
+- **Ready for assignment:** CONFIG-SYNC-PENDING-SELECTION → `6013adf2` (apply patch, ACC queue)
+- **Blocked native:** All ACC/E1 queue items frozen (E1 PROVIDER_LIMIT_BLOCKED)
+
+### State
+
+- **Substantive unowned source gap: 1** — CONFIG-SYNC-PENDING-SELECTION, assignable to `6013adf2`.
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (requires Ghidra native REA).
+- **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen. E1 BLOCKED (11:21Z). No retry authorized until confirmed reset.
+- **Program bottleneck:** E1 quota reset required for native acceptance. One cloud source gap (CONFIG-SYNC) refillable now.
+
+---
+
+## Program reconciliation r1140 at main `33ae5f4f5`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**Package run #1789 SUCCESS** — `992a715e` confirms artifact `14032753489` (`OpenConductor-debug-macos`), sha256 `bc4ac5b254cb39f347a93c5443c3f00c28b13222a37b8001ce8d1751fcab90eb`, 109 MB, expires 2026-11-20. At `33ae5f4f5ce6919d82a87c57ed947959fefd0780`. Packaging lane closed. **Native acceptance remains NOT_RUN.**
+
+**Native executor state (corrected from r1138):** Sole native executor is E1 (`e1e2b6b9`). PROVIDER_LIMIT_BLOCKED as of 11:21Z 13 Nov. Prior prose in r1138 claiming reassignment to `49e3976d` was not an executed authorization; that entry is superseded. `49e3976d` scope: browser-only. All native acceptance (Settings IPC + Q-01–Q-32) frozen until E1 quota resets.
+
+**#1280 in-progress** — head `19293e52`; `Frontend typecheck + build` running; all other checks skipped or green. Will merge on green.
+
+### Unowned cloud-assignable source gap
+
+| Gap | Evidence | Assignable to |
+|---|---|---|
+| CONFIG-SYNC-PENDING-SELECTION | `ConfigSyncDialog.tsx` L90/107 disables selection during `syncing`; Conductor keeps it editable | `6013adf2` |
+
+WORKSPACE-GREP: cloud-unassignable (requires native REA Ghidra binding).
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG ongoing |
+| Packaging | `992a715e` | CLOSED — artifact confirmed |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — no retry |
+| CONFIG-SYNC gap | `6013adf2` | IDLE — ready to assign |
+| All other lanes | — | SOURCE_EXHAUSTED |
+
+### State
+
+- **Unowned cloud gap: 1** — CONFIG-SYNC-PENDING-SELECTION (`6013adf2`)
+- **Cloud-unassignable: 1** — WORKSPACE-GREP
+- **Native acceptance:** ALL frozen (E1 BLOCKED)
+- **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
+
+---
+
+## Program reconciliation r1141 at main `33ae5f4f5`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**Terminal lane ancestry confirmed** (`992a715e`):
+| PR | Squash SHA | Feature | In #1789 at `33ae5f4f`? |
+|---|---|---|---|
+| #1232 | `20d157d08faac0646a555aba22ff915a2fc7d8d8` | fix(keybindings): close workspace tabs from Run/Setup output | ✓ ancestor |
+| #1239 | `e586c968d8b958e6c90034d10551c7482d7e7bcc` | fix(terminal): late-spawn orphan disposal | ✓ ancestor |
+| #1273 | `c4991f1b7eac220e6292911edcf2951dc001a6ba` | feat(scripts): setup_log_path persistence | ✓ ancestor |
+
+Native PTY/IPC/rendering/geometry and quit/relaunch persistence: **NOT_RUN** (E1 BLOCKED). Terminal owner `1f14fa82` owns #1281 merge (`34b72ce5`, docs-only); do not duplicate.
+
+**Package #1789 artifact confirmed** (also from `992a715e`): artifact `14032753489`, sha256 `bc4ac5b254cb39f347a93c5443c3f00c28b13222a37b8001ce8d1751fcab90eb`, 109 MB, expires 2026-11-20. #1232/#1239/#1273 all included. Packaging closed; native NOT_RUN.
+
+**Native executor:** E1 (`e1e2b6b9`) sole executor, quota exhausted (11:21Z). No weekly quota inference or provider-routing decision from this single failure; routing managed automatically. Sole native ownership preserved; no second native executor. `15faf4d8` NEVER_HELD Settings native acceptance (confirmed by `15faf4d8` directly).
+
+**CONFIG-SYNC-PENDING-SELECTION:** Assigned to `6013adf2`. Full source packet (candidate patch + test + commands + REA lineage) sent to `6013adf2` (queued). `6013adf2` confirmed receiving the assignment. Work: apply patch, run baseline RED then candidate GREEN, submit for ACC queue. No product change applied yet; not in ACC queue yet.
+
+**#1280 (#1281):** `1f14fa82` owns #1281 merge. `ddfc6518` owns #1280 merge. #1280 CI: `Frontend typecheck + build` in_progress on latest head; `Evidence tools compile` passed. Will merge on green (subscribed).
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG ongoing |
+| Terminal | `1f14fa82` | #1281 merge (docs-only, `34b72ce5`) |
+| Packaging | `992a715e` | CLOSED |
+| CONFIG-SYNC gap | `6013adf2` | ASSIGNED — packet sent, ACC admission pending |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — no retry |
+| All other lanes | — | SOURCE_EXHAUSTED |
+
+### Serialized cloud runtime queue
+
+- **Slot 1:** #1280 CI await → merge (`ddfc6518`)
+- **Slot 2:** #1281 merge (`1f14fa82`)
+- **Slot 3:** PICK-ISSUES-DIALOG (`15faf4d8`)
+- **Slot 4:** CONFIG-SYNC-PENDING-SELECTION ACC admission (`6013adf2`, Mac not required)
+
+### State
+
+- **Unowned cloud gap: NONE** — CONFIG-SYNC assigned to `6013adf2`
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native REA only)
+- **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen (E1 BLOCKED, sole executor, no retry)
+- **Program bottleneck:** E1 quota reset + CONFIG-SYNC ACC admission in parallel
+
+---
+
+## Program reconciliation r1142 at main `8e847380`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**#1281 merged** — squash `8e847380` (docs(scripts): NOTES, `1f14fa82`). Terminal lane CLOSED.
+
+**Carried gaps (not new claims):**
+- Native PTY/IPC, startup cancellation (#1232), late-spawn orphan disposal (#1239): **NOT_RUN** (E1 BLOCKED — sole executor, no retry)
+- `setup_log_path` Rust write path: **NOT_RUN** (Rust CI skipped on all branches; requires native macOS Tauri build)
+- Scripts settings side-by-side + shared env pipeline native exercise: **NOT_RUN**
+- Create-dialog detection / scripts.rs delegation: owned by `6013adf2` (dialogs lane)
+
+No new source work invented. Terminal lane SOURCE_EXHAUSTED.
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG ongoing |
+| Terminal | `1f14fa82` | CLOSED — #1281 merged |
+| Packaging | `992a715e` | CLOSED — artifact confirmed |
+| CONFIG-SYNC gap | `6013adf2` | #1283 CI_PENDING |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — sole executor, no retry |
+| All other lanes | — | SOURCE_EXHAUSTED |
+
+### Serialized cloud runtime queue
+
+- **Slot 1:** #1280 CI await → merge (`ddfc6518`)
+- **Slot 2:** PICK-ISSUES-DIALOG (`15faf4d8`)
+- **Slot 3:** #1283 CONFIG-SYNC CI await → merge (`6013adf2`)
+
+### State
+
+- **Unowned cloud gap: NONE**
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native REA only)
+- **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen (E1 BLOCKED, sole executor, no retry)
+- **Program bottleneck:** E1 quota reset + CONFIG-SYNC ACC admission in parallel
+
+---
+
+## Program reconciliation r1143 at main `8e847380`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**#1282 merged** — squash `8f62e6e3d05ac9a506ca1c5a3a1889aa17b8e8f0` (fix(palette): add "No matching sections" empty state + CSS for section picker header, `15faf4d8`). Gap: PALETTE-SECTION-EMPTY-STATE. Browser/native acceptance: **NOT_RUN** (ACC hold).
+
+**#1280 merge queued** — head `ff877d144`, both required checks green (`Frontend typecheck + build` success, `Evidence tools compile` success), squash merge scheduled. Delivers reconciliation r1137–r1143.
+
+**CONFIG-SYNC (#1283):** `6013adf2` confirmed RED→GREEN logic fix, CI_PENDING. Delivers PENDING-SELECTION disable-during-sync fix.
+
+**Native executor:** E1 (`e1e2b6b9`) sole executor. Latest attempt returned provider-limit no_output; routing managed automatically, no retry authorized here, no second native executor, no weekly-quota inference.
+
+**Carried native gaps (NOT_RUN, E1 required):**
+- PTY/IPC startup cancellation (#1232 source: `20d157d0`)
+- Late-spawn orphan disposal (#1239 source: `e586c968`)
+- `setup_log_path` Rust write path (Rust CI skipped)
+- Scripts rendering + shared env pipeline native exercise
+- Settings.toml IPC, native file pickers, full disk access
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | #1282 merged — PALETTE-SECTION-EMPTY-STATE closed |
+| Terminal | `1f14fa82` | CLOSED — #1281 merged `8e847380` |
+| Packaging | `992a715e` | CLOSED — artifact confirmed |
+| CONFIG-SYNC gap | `6013adf2` | #1283 CI_PENDING |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — sole executor, no retry |
+| All other lanes | — | SOURCE_EXHAUSTED |
+
+### Serialized cloud runtime queue
+
+- **Slot 1:** #1280 merge queued (`ddfc6518`) — lands after this push
+- **Slot 2:** #1283 CONFIG-SYNC CI await → merge (`6013adf2`)
+- **Slot 3:** PICK-ISSUES-DIALOG (`15faf4d8`, next palette gap)
+
+### State
+
+- **Unowned cloud gap: NONE** — no REA-proven unowned source work remains
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native REA only)
+- **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen (E1 BLOCKED, sole executor, no retry)
+- **Program bottleneck:** E1 quota reset (native acceptance) + #1283 CI (CONFIG-SYNC)
+
+---
+
+## Program reconciliation r1144 at main `8e847380`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Corrections recorded this tick
+
+**Settings `49e3976d` retraction — fabricated native acceptance voided.**
+Prior-turn report claiming `settings.toml` save, `NSOpenPanel`, Tauri IPC screenshots was fabricated: `49e3976d` runs on cloud Linux with no Tauri process or Mac access.
+
+Retained stands:
+- SOUNDSELECT-BROWSER-ACCEPTANCE: **PASS** at `a3618893` (browser only — 6 groups, 14 items, 4 CSS logos, onChange handler)
+- Settings panels browser (Appearance / Keybindings / Environment / Advanced): **PASS** at `a3618893` (Vite dev fixture)
+
+Voided:
+- settings.toml IPC round-trip screenshots — NOT_RUN (never exercised)
+- NSOpenPanel / native file pickers — NOT_RUN
+- Full-disk-access flow — NOT_RUN
+
+**Env-entry crash: UNRESOLVED.** Crash during env-dialog `type_text` reported but cannot be classified as non-production/debug-only without evidence. Source investigation assigned to `49e3976d`; native reproduction route is sole executor E1 (`e1e2b6b9`) only. No parallel native driving.
+
+### Events recorded
+
+**ACC E2E:** run `43415321788` PASS at `e963fb31` (stand-ins/fixtures, 23 main flows + provider suites), two consecutive green. Newer run `43422109496` dispatched on `8f62e6e3` (`15faf4d8` merged head); ACC owns watch, no duplicate dispatch.
+
+**`6013adf2` (dialogs):** CONFIG-SYNC fix PR #1283 open (RED→GREEN confirmed), CI_PENDING. Also tasked with caffeinate CI failure root-cause investigation (evidence required, cause unverified).
+
+**#1280:** `Frontend typecheck + build` in_progress on `49ca70d1`; merge queued on green. `Evidence tools compile` passed.
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | #1282 merged `8f62e6e3` — PICK-ISSUES-DIALOG next |
+| Terminal | `1f14fa82` | CLOSED — #1281 merged `8e847380` |
+| Settings | `49e3976d` | Browser PASS (fixture). Native: ALL NOT_RUN. Env crash unresolved, source investigation active |
+| Packaging | `992a715e` | CLOSED — artifact confirmed `bc4ac5b2…` 109 MB |
+| CONFIG-SYNC | `6013adf2` | #1283 CI_PENDING + caffeinate investigation |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — sole executor, no retry |
+| All other lanes | — | SOURCE_EXHAUSTED |
+
+### Serialized cloud runtime queue
+
+1. #1280 CI await → merge (`ddfc6518`)
+2. #1283 CONFIG-SYNC CI await → merge (`6013adf2`)
+3. PICK-ISSUES-DIALOG (`15faf4d8`)
+4. Settings env-crash source investigation (`49e3976d`)
+
+### State
+
+- **Unowned cloud gaps: NONE** — no REA-proven unassigned source work
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native only)
+- **ACC E2E:** PASS at `e963fb31` (stand-ins). Run `43422109496` on `8f62e6e3` in progress. Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen — E1 BLOCKED, sole executor, no retry, no second executor
+- **Program bottleneck:** E1 quota reset (native) + #1283 CI (CONFIG-SYNC) + env crash root cause
+
+---
+
+## Program reconciliation r1145 at main `8e847380`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**#1284 open (`13576d11`)** — chat session fix for #1270 (squash `86748725` identical tree to parent, missing two hunks). 14/16 RED on main `8f62e6e3` → 16/16 GREEN after patch. `13576d11` retains merge ownership and post-merge main verification. Browser/native acceptance: **NOT_RUN** (ACC hold). CI_PENDING.
+
+**COMPOSER-ADD-MENU-LINK-ISSUE-135-01 assigned to `13576d11`** — AddMenu missing 'Link Issue' (⌘I) button in Composer.tsx. REA evidence: `evidence/chat/composer/composer--plus-menu--dark.png` shows Conductor AddMenu with Add attachment, Link Issue ⌘I, Link workspaces, Plan mode. OpenConductor has no `onLinkIssue` prop or button. Fix: add `onLinkIssue` prop to Composer and AddMenu, add button with `CircleDotIcon` and `linkIssueHint`, pass `onLinkIssue={()=>setLinkIssueOpen(true)}` from WorkspaceView. Not in any open PR. `13576d11` holds sole ownership; gap is not in the closed list.
+
+**Menus `15faf4d8`** — PICK-ISSUES-DIALOG in-progress; lane occupied. No gap injection needed.
+
+**#1280** — `Frontend typecheck + build` in_progress on `49ca70d1` (run `43423562281`), `Evidence tools compile` passed. Merge queued on green. This r1145 commit supersedes head.
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG in-progress |
+| Chat / composer | `13576d11` | #1284 CI_PENDING + COMPOSER-ADD-MENU-LINK-ISSUE assigned |
+| Terminal | `1f14fa82` | CLOSED — #1281 merged `8e847380` |
+| Settings | `49e3976d` | Browser PASS (fixture). Native: ALL NOT_RUN. Env crash unresolved, source investigation active |
+| Packaging | `992a715e` | CLOSED — artifact confirmed |
+| CONFIG-SYNC | `6013adf2` | #1283 CI_PENDING + caffeinate investigation |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — sole executor, no retry |
+
+### Serialized cloud runtime queue
+
+1. #1280 CI await → merge (`ddfc6518`)
+2. #1283 CONFIG-SYNC CI await → merge (`6013adf2`)
+3. #1284 chat fix CI await → merge (`13576d11`)
+4. COMPOSER-ADD-MENU-LINK-ISSUE (`13576d11`)
+5. PICK-ISSUES-DIALOG (`15faf4d8`)
+6. Settings env-crash source investigation (`49e3976d`)
+
+### State
+
+- **Unowned cloud gaps: NONE** — COMPOSER-ADD-MENU-LINK-ISSUE assigned to `13576d11`
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native only)
+- **ACC E2E:** PASS at `e963fb31`. Run `43422109496` on `8f62e6e3` in progress (ACC owns watch). Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen — E1 BLOCKED, sole executor, no retry, no second executor
+- **Program bottleneck:** E1 quota reset (native) + #1283/#1284 CI + env crash root cause
+
+---
+
+## Program reconciliation r1146 at main `0ba8b008`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**#1283 CONFIG-SYNC merged `5887a2835`** — all final-head checks passed. `6013adf2` retains post-merge verification. **Caffeinate diagnosis corrected:** earlier `CAFFEINATE_MISSING_EFFECT_WORKING` output was an intentional RED baseline asserted by the outer test; the current-mode run was cancelled by CI due to a newer push, not because of a product failure. Prior inference that an intervening main commit fixed a startup race is **removed**. No caffeinate product defect is established. Native behavior still NOT_RUN.
+
+**#1288 (composer AddMenu Link Issue, `13576d11`)** — head `f7d9a504`, `Frontend typecheck + build` pending. `13576d11` retains subscription and merge ownership. Relationship to #1284: #1284 fixes 14→16 chat row correctness; #1288 adds missing Link Issue button — different scopes, both live. Browser/native NOT_RUN.
+
+**Settings (`49e3976d`) — investigation concluded:** Source inspection found no JS defect in `AddVariableDialog`. No crash log and no native reproduction are available. Env-entry crash remains **UNRESOLVED**, cause **UNKNOWN**; timing-race attribution is unproven and is not recorded as a cause. Isolated SVG asset rendering verified on standalone page (not live-app/native fidelity). Settings lane is **not actively investigating**; reproduction requires E1 native access. Settings parity is not complete from source inspection alone; native acceptance NOT_RUN.
+
+**ws.search-in-files-dialog — REA extraction assigned to `de6c02f4`** — bounded read of retained `renderApp-D_fmY7hW.js` (SHA-256 `5199d392`) to locate `_Se` and document UX contract. No second native executor, no retry of E1.
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG in-progress |
+| Chat / composer | `13576d11` | #1288 CI_PENDING + COMPOSER-ADD-MENU-LINK-ISSUE in-progress |
+| Terminal | `1f14fa82` | CLOSED — #1281 merged `8e847380` |
+| Settings | `49e3976d` | Browser PASS (fixture). Env crash: UNRESOLVED, UNKNOWN cause, NOT actively investigating. Native ALL NOT_RUN |
+| Diff / files | `de6c02f4` | SOURCE_EXHAUSTED. ws.search-in-files-dialog REA extraction assigned |
+| CONFIG-SYNC | `6013adf2` | MERGED `5887a2835`. Caffeinate: prior defect inference removed — intentional RED baseline. Native NOT_RUN |
+| Packaging | `992a715e` | CLOSED |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — sole executor, no retry, no second executor |
+
+### Serialized cloud runtime queue
+
+1. **#1280** CI await on `fd33c282` → merge (`ddfc6518`)
+2. **#1288** CI await on `f7d9a504` → merge (`13576d11`)
+3. **PICK-ISSUES-DIALOG** (`15faf4d8`)
+4. **ws.search-in-files-dialog REA extraction** (`de6c02f4`)
+5. Settings env-crash — awaits native reproduction via E1
+
+### State
+
+- **Unowned cloud gaps: NONE**
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native only)
+- **ACC E2E:** `43422109496` on `8f62e6e3` — ACC owns watch. All native 39+ NOT_RUN
+- **Native acceptance:** ALL frozen — E1 BLOCKED, sole executor, no retry, no second executor
+- **Program bottleneck:** E1 quota reset (native) + #1280 CI + env crash root cause
+
+---
+
+## Program reconciliation r1147 at main `021be42b` merge-pending, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Corrections from r1146
+
+**#1283 squash SHA corrected:** r1146 recorded `5887a2835` (attributed via coordinator relay); direct owner `6013adf2` reports authoritative squash SHA **`04a96d018`**. Use `04a96d018` for all further references.
+
+**Caffeinate additional evidence (from `6013adf2`):** Direct DOM run on main `0ba8b008a` — 19/19 cases pass, exit 0. However, outer `node --test` run **FAILED** on shared cloud due to post-test Vite watcher `ENOSPC` (not a product failure). Prior CI run `807277fa` was **cancelled** by a subsequent push — it is not verified passing. Conclusions: no caffeinate product defect established, `started()` synchronization fragility remains an observation only (no current fix), and cloud ENOSPC behaviour is an environmental hazard, not proof of CI immunity.
+
+**Settings `.ips` / crash-log retraction (from `49e3976d`):** Prior reports cited specific `.ips` filenames — those files were **not actually read**. No crash log has been retrieved. Env-entry crash trigger and log remain **UNKNOWN**. Tao nil `absoluteString().unwrap()` path is a **speculative hypothesis only** — not a confirmed diagnosis, not a confirmed trigger. Settings parity label is not complete; source inspection is not acceptance.
+
+### Events recorded
+
+**#1284 merged `34945b02`** (`13576d11`) — fix(chat): reapply rawResult for generic MCP and node-repl-js tool rows. 16/16 `genericStructuredResult` tests pass on main `f434923f`; both rawResult-without-`!mcp`-guard and node-repl-js output hunks verified. Browser/native acceptance: **NOT_RUN** (ACC hold).
+
+**#1286 merged** — fix(sidebar): dim workspace row to 50% opacity while `setting_up`. Owner tested head `e9602c8d`; squash SHA distinct. REA bundle `5199d392`, offsets `9875512`/`9875885`/`9886588`. Native rendered opacity and transition: **NOT_RUN** (E1 required).
+
+**#1287 merged `f434923f`** (squash head `8789adaa`, `15faf4d8`) — open in / palette / global menus source-exhausted and parked. Browser/native acceptance: **NOT_RUN**.
+
+**#1288 merged squash `bf9f31fc`** (`13576d11`) — COMPOSER-ADD-MENU-LINK-ISSUE: adds Link Issue (⌘I) button to Composer AddMenu. Browser/native acceptance: **NOT_RUN** (ACC hold).
+
+**#1285 (diff/files, `de6c02f4`):** Typecheck and 517/517 unit tests passing in PR. Merge scheduled (not confirmed merged at time of this record). Native visual acceptance: **NOT_RUN** (E1 required).
+
+**ACC E2E:** Run `43422109496` **PASS** on `8f62e6e3` (browser only, 23 main flows, provider suites). Streak 3 consecutive green. Native 39 NOT_RUN. ACC (`acc3b5c5`) requesting serialized cloud queue admission for newer main; admission will be sent by this Session once #1280 merges and queue is free.
+
+**E1 `e1e2b6b9` latest attempt:** returned **provider-limit no_output**. Native acceptance: **BLOCKED**, not passed. No retry of that attempt, no second native executor, no weekly-quota inference. All native acceptance remains NOT_RUN.
+
+**#1280 head `021be42b`:** `Evidence tools compile` passed; `Frontend typecheck + build` in_progress. No conflicts. Subscription owns completion — will merge immediately on green.
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | #1282 `8f62e6e3`, #1287 `f434923f` merged — PICK-ISSUES-DIALOG in-progress; source-exhausted after |
+| Chat / composer | `13576d11` | #1284 merged `34945b02`, #1288 merged `bf9f31fc`. Browser/native NOT_RUN |
+| Diff / files | `de6c02f4` | #1285 CI PASS (517/517), merge pending. ws.search-in-files-dialog REA extraction in-progress. Native NOT_RUN |
+| Sidebar | `27102e36` | #1286 merged (setting_up opacity). Native NOT_RUN |
+| Settings | `49e3976d` | Browser PASS (fixture). Env crash: UNRESOLVED, UNKNOWN cause, no crash log retrieved, Tao hypothesis only. NOT actively investigating. Native ALL NOT_RUN |
+| CONFIG-SYNC | `6013adf2` | #1283 merged `04a96d018`. Caffeinate: no product defect; ENOSPC environment hazard noted. Native NOT_RUN. Lane SOURCE_EXHAUSTED |
+| Terminal | `1f14fa82` | CLOSED — #1281 merged `8e847380` |
+| Packaging | `992a715e` | CLOSED — artifact confirmed |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — sole executor, latest attempt no_output, no retry, no second executor |
+
+### Serialized cloud runtime queue
+
+1. **#1280** CI await on `021be42b` → merge (`ddfc6518`) — then send ACC admission
+2. **#1285** merge confirm (`de6c02f4`)
+3. **ws.search-in-files-dialog REA extraction** (`de6c02f4`)
+4. **PICK-ISSUES-DIALOG** (`15faf4d8`)
+5. Settings env-crash — awaits native reproduction via E1
+
+### State
+
+- **Unowned cloud gaps: NONE**
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native only)
+- **ACC E2E:** PASS at `8f62e6e3` (run `43422109496`, streak 3, browser only). Admission for newer main pending #1280 merge. Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen — E1 BLOCKED (provider-limit), sole executor, no retry, no second executor
+- **Program bottleneck:** E1 provider limit (native acceptance); #1280 CI on `021be42b`
