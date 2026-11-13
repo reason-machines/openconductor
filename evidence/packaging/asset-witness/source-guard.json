@@ -1,0 +1,9 @@
+{
+  "main_commit": "c79a81086c3a0e5ba81f1a9a53ec63a4f4dde7ba",
+  "workflow_normalization": "PASS",
+  "packaging_script_unchanged": "PASS",
+  "applied_collector_and_18_fixtures_match_original_proposal": "PASS",
+  "build_or_workflow_execution": "NOT_RUN",
+  "actual_package_inclusion": "UNVERIFIED",
+  "native_acceptance": "NOT_RUN"
+}

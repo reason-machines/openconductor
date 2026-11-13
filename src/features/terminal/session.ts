@@ -59,6 +59,13 @@ interface Live {
 
 const live = new Map<string, Live>();
 const tabsByWorkspace = new Map<string, TabsState>();
+const workspaceLifetimes = new Map<string, symbol>();
+
+function workspaceLifetime(workspaceId: string): symbol {
+  let lifetime = workspaceLifetimes.get(workspaceId);
+  if (lifetime === undefined) workspaceLifetimes.set(workspaceId, (lifetime = Symbol()));
+  return lifetime;
+}
 const panelWorkspaceOrder = new Set<string>();
 const subscribers = new Set<() => void>();
 const centerTabListeners = new Set<(workspaceId: string, id: string) => void>();
@@ -220,7 +227,9 @@ export const openTab = (workspaceId: string, cwd: string, initialCommand?: strin
  * Saved tabs restore first; their commands are never run again.
  */
 export async function openBigTab(workspaceId: string, cwd: string, run: { command: string | undefined }, initialCommand?: string): Promise<string> {
+  const lifetime = workspaceLifetime(workspaceId);
   await restoreWorkspaceTabs(workspaceId, cwd, initialCommand);
+  if (workspaceLifetimes.get(workspaceId) !== lifetime) throw new Error("Terminal startup cancelled");
   return startTab(workspaceId, cwd, initialCommand, undefined, run, false, "center");
 }
 
@@ -237,10 +246,13 @@ export function restoreWorkspaceTabs(workspaceId: string, cwd: string, initialCo
 const restoring = new Map<string, Promise<void>>();
 
 async function restoreOnce(workspaceId: string, cwd: string, initialCommand?: string): Promise<void> {
+  const lifetime = workspaceLifetime(workspaceId);
   const saved = await tabList.workspace(workspaceId);
+  if (workspaceLifetimes.get(workspaceId) !== lifetime) return;
   for (const tab of saved?.tabs ?? []) {
     if (live.has(tab.id)) continue;
     await startTab(workspaceId, cwd, initialCommand, { id: tab.id, title: tab.title }, undefined, true, tab.placement).catch(() => {});
+    if (workspaceLifetimes.get(workspaceId) !== lifetime) return;
   }
   hydrated.add(workspaceId);
   dispatch(workspaceId, { type: "restored", activeId: saved?.activeId ?? null, next: saved?.next ?? 1 });
@@ -260,6 +272,7 @@ async function startTab(
   quiet = false,
   placement: TerminalPlacement = "panel",
 ): Promise<string> {
+  const lifetime = workspaceLifetime(workspaceId);
   // Saved tabs come back as they were; new ones respect Tab Freak Mode's limit.
   const tabs = getTabs(workspaceId);
   if (!canOpen(tabs) || (!restore && !canOpenTerminal(tabs, getAppPrefs().experimental_tab_freak_mode)))
@@ -268,6 +281,7 @@ async function startTab(
   await listening;
   persistOnHide();
   const record: HistoryRecord | undefined = restore ? await ptyLoadTerminalHistory(restore.id).catch(() => undefined) : undefined;
+  if (workspaceLifetimes.get(workspaceId) !== lifetime) throw new Error("Terminal startup cancelled");
 
   const id = restore?.id ?? `term-${crypto.randomUUID()}`;
   const font = currentTerminalFont();
@@ -534,6 +548,8 @@ const forget = (id: string): Promise<void> => persist.drop(id, () => ptyDeleteTe
  * is archived or its repository removed (`destroyAllWorkspaceTerminalInstances`).
  */
 export async function destroyWorkspaceTerminals(workspaceId: string): Promise<void> {
+  workspaceLifetimes.delete(workspaceId);
+  restoring.delete(workspaceId);
   const ids = getTabs(workspaceId).tabs.map((t) => t.id);
   for (const id of ids) {
     void ptyKill(id).catch(() => {});
