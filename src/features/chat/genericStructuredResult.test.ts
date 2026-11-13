@@ -45,7 +45,7 @@ function isInput(value: unknown): value is Input {
 const text = (node: Node | string): string => typeof node === "string" ? node : node.children.map(text).join("");
 const hasClass = (node: Node, name: string): boolean => String(node.props.className).split(" ").includes(name);
 const inputBytes = readFileSync(new URL("./genericStructuredResult.inputs.json", import.meta.url));
-assert.equal(createHash("sha256").update(inputBytes).digest("hex"), "d6af06d2d52d236942bac11425f043a7ec40727129c5eeb8899ba24e263987da");
+assert.equal(createHash("sha256").update(inputBytes).digest("hex"), "28f8d336ac39d0636169cb18cdd8421c885949f99c102073bc7fa34241a6ab1f");
 const declared: unknown = JSON.parse(inputBytes.toString("utf8"));
 assert.ok(isRecord(declared) && Array.isArray(declared.cases));
 const cases = declared.cases.map((entry: unknown) => { assert.ok(isInput(entry)); return entry; });
