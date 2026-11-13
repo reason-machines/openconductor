@@ -429,7 +429,8 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
     }
     case "read": {
       const path = s(input.file_path);
-      const text = output === undefined ? undefined : readContent(output);
+      const readResult = name === "Read" ? result : output;
+      const text = readResult === undefined ? undefined : readContent(readResult);
       const languages: Record<string, string> = {
         js: "javascript", jsx: "javascript", ts: "typescript", tsx: "typescript",
         py: "python", rs: "rust", json: "json", yml: "yaml", yaml: "yaml",
@@ -443,7 +444,7 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
         <RowShell
           {...shell}
           isCollapsible={!isImage}
-          left={<span>{readLabel(path, output)}</span>}
+          left={<span>{readLabel(path, readResult)}</span>}
           right={path ? <FileBadge path={path} onOpen={onOpenFile} /> : undefined}
           keepRight
           align="center"
