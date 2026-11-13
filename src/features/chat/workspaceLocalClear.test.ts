@@ -124,7 +124,7 @@ function fixture(agent: "claude" | "codex" | "reason", options: { secondary?: bo
     "src/features/pr/usePullLatest": { usePullLatest: () => ({ shortcut: noop }) },
   };
   const modules = new Map<string, Record<string, unknown>>();
-  const actualTsx = new Set(["src/components/WorkspaceView", "src/features/chat/Composer", "src/features/diff/ReviewButton"]);
+  const actualTsx = new Set(["src/components/WorkspaceView", "src/features/chat/Composer", "src/features/chat/ComposerAttachmentChip", "src/features/diff/ReviewButton"]);
   function load(filename: string): Record<string, unknown> {
     const key = filename.slice(root.length).replace(/\.(tsx?|css)$/, "");
     if (key === "src/features/chat/agents") return { ...load(resolve(root, "src/features/chat/agentChoice.ts")), CHAT_AGENTS: agents };
