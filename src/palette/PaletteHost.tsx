@@ -6,7 +6,7 @@ import { CommandPalette } from "./CommandPalette.tsx";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import type { CommandHandlers } from "../keybindings/bind.ts";
 import { workspacePaletteData, paletteSettings, shortcutOrder, sidebarOrder, stepWorkspace, paletteOpenInRequest, type WorkspaceOpenInTarget, type WorkspaceRef } from "./fromAppState.ts";
-import type { MoveToSectionProps } from "./MoveToSection.tsx";
+import { MoveToSection, sectionItems, type MoveToSectionProps } from "./MoveToSection.tsx";
 import { buildSearchIndex } from "../settings/searchIndex";
 import { settingsGroups } from "../settings/pages";
 import { AGENT_SEARCH_TABS, scrollToRow, searchIcon } from "../settings/SettingsView";
@@ -222,6 +222,8 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
       settingIcon={settingIcon}
       sectionKey={sectionKey}
       localWorkspaceId={sectionWorkspaceId}
+      SectionPicker={MoveToSection}
+      computeSectionItems={sectionItems}
       moveToSection={sectionWorkspaceId !== undefined ? {
         workspaceId: sectionWorkspaceId,
         sections: state.sections ?? [],
