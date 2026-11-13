@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type Dispatch, type MouseEvent as ReactMouseEvent, type MutableRefObject, type ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type Dispatch, type MouseEvent as ReactMouseEvent, type MutableRefObject, type ReactNode } from "react";
+import type { OpenInTargetPublisher, WorkspaceOpenInTarget } from "../palette/fromAppState.ts";
 import type { Repo, Workspace } from "../state/types";
 import { loadReposFromDb, type Action } from "../state/store";
 import { LinkedDirectoryPicker } from "../features/chat/LinkedDirectoryPicker.tsx";
@@ -146,6 +147,7 @@ interface Props {
 interface WorkspaceViewProps extends Props {
   sections: readonly NavSection[];
   onNewSection: (workspace: Workspace) => void;
+  onOpenInTarget?: OpenInTargetPublisher;
 }
 
 // In the desktop app the workspace's own chat runs the agent picked in the
@@ -1037,8 +1039,10 @@ function TargetChip({ target, open, setOpen, repo, variant = "header" }: { targe
   );
 }
 
-export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onNewSection, onNextUnread, hasNextUnread }: WorkspaceViewProps) {
+export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onNewSection, onNextUnread, hasNextUnread, onOpenInTarget }: WorkspaceViewProps) {
   const primaryId = workspace.primaryChatId ?? workspace.id;
+  const openInOwnerKey = JSON.stringify([repo.id, workspace.id, workspace.path ?? null]);
+  const [openInCommittedOwner, setOpenInCommittedOwner] = useState(openInOwnerKey);
   // The right panel's Setup / Run / Terminal strip: open on Run, like Conductor.
   // ⌘J hides or shows the right panel; Big terminals live in the center.
   const [stripOpen, setStripOpen] = useState(true);
@@ -1304,6 +1308,22 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
   const showFile = mainTab === "file" && fileTarget !== null && fileTarget.workspaceId === workspace.id && workspace.path !== undefined;
   const showBrowser = mainTab === "browser" && browserPage !== undefined;
+  useEffect(() => setOpenInCommittedOwner(openInOwnerKey), [openInOwnerKey]);
+  const activeOpenInPath = openInCommittedOwner !== openInOwnerKey
+    ? undefined
+    : showDiff
+      ? diff.selected?.path
+      : showFile && fileTarget
+        ? fileTarget.path
+        : undefined;
+  useLayoutEffect(() => {
+    if (!workspace.path || !onOpenInTarget) return;
+    const owner = { repoId: repo.id, workspaceId: workspace.id, workspacePath: workspace.path };
+    const target: WorkspaceOpenInTarget = activeOpenInPath
+      ? { ...owner, kind: "file", relativePath: activeOpenInPath }
+      : { ...owner, kind: "workspace" };
+    return onOpenInTarget(target);
+  }, [onOpenInTarget, repo.id, workspace.id, workspace.path, activeOpenInPath]);
   const activeTab = showBrowser ? "browser" : showFile ? "file" : centerTerminal ? `terminal:${centerTerminal.id}` : showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
   const lastDiffSession = useRef({ workspaceId: workspace.id, tab: "chat" });
   if (mainTab === "chat" || activeReview) lastDiffSession.current = { workspaceId: workspace.id, tab: mainTab };
