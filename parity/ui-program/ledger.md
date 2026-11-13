@@ -658,3 +658,21 @@ Native/browser acceptance for all composer items: NOT_RUN, ACC/E1 owned (queue: 
 | OPEN-IN-SWITCHER-ENTER-POINTER | 12 cases (frozen) | `a5387885` |
 
 E1 (`e1e2b6b9`) PROVIDER_LIMIT_BLOCKED — last attempt `b372fe10` returned no_output. Sign-in `64baa6b6` likewise PROVIDER_LIMIT_BLOCKED — last attempt `c088e4f6` returned no_output. Neither retried.
+
+## Program reconciliation delta r1093, 13 November 2026
+
+Corrections to r1092 from package owner GitHub report and coordinator instruction.
+
+### #1259 head advanced to `d5006a2c`
+
+Owner: Session `6013adf2`. Head is now `d5006a2c` (not `25358baa` as recorded in r1092).
+- Evidence tools compile: **PASSED**
+- Frontend typecheck + build: **in_progress**
+
+Owner retains subscription and merge-on-green. No duplicate builder.
+
+### #1260 Frontend CI FAILED at `44c777f2`
+
+Owner: `15faf4d8`. The in_progress CI result recorded in r1092 resolved: **Frontend typecheck + build FAILED with 12 test failures** at head `44c777f2`. Coordinator has sent palette owner explicit correction/fix instruction. Owner retains sole ownership; no duplicate builder.
+
+MOVE-TO-SECTION-PALETTE behavioral and native acceptance remain NOT_RUN, ACC serialized. Package event watch `cd11e0dc` (owner `992a715e`) remains armed for the eventual all-green merge.
