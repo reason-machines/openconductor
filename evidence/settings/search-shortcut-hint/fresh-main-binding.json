@@ -1,0 +1,90 @@
+{
+  "source_commit": "d419f584b8639fd8ab2fa2eadd279dd34703d1a1",
+  "main": "d2602d267460dd67e467e7622f1ee357c085bca2",
+  "original_archive_sha256": "bec382f8bdf6ae2e7efe75078736f4bed20514f1df41c1f547ce9ac02036be73",
+  "archive_files": 35,
+  "archive_byte_matches": true,
+  "fresh_main_pins": [
+    {
+      "path": "src/settings/SettingsSearch.tsx",
+      "sha256": "d7610462610ea4d2dff91b60566ffa4ce15db64129c35a73c55ce6e4b069cc45"
+    },
+    {
+      "path": "src/keybindings/KeybindingsProvider.tsx",
+      "sha256": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6"
+    },
+    {
+      "path": "src/keybindings/overrides.ts",
+      "sha256": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193"
+    },
+    {
+      "path": "src/keybindings/shortcut.ts",
+      "sha256": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8"
+    },
+    {
+      "path": "src/keybindings/types.ts",
+      "sha256": "cdfcd723ed324b7f32698d36496fbc6bf6514c78f61e4d562c81b302207c4ecb"
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "sha256": "3a873cc27d99b73fafa340dc1585d9f4cd850966e91408c4f4dbad445bf4dcb9"
+    },
+    {
+      "path": "src/keybindings/bind.ts",
+      "sha256": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119"
+    },
+    {
+      "path": "src/keybindings/dispatcher.ts",
+      "sha256": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197"
+    },
+    {
+      "path": "src/keybindings/listeners.ts",
+      "sha256": "6944c63efcb6edee49d59d1ccdcfaed649902021946c8a8f60d50549fd89011a"
+    },
+    {
+      "path": "src/keybindings/selectAll.ts",
+      "sha256": "508b26417d717f938eb118afbe8c0ff96873643cb4e5c0879467e5368e97db90"
+    },
+    {
+      "path": "src/settings/searchIndex.ts",
+      "sha256": "6069b38e74f0d34c875d9d1a4b5d8d0075456e57fa73eaddaf13639573e93378"
+    },
+    {
+      "path": "src/settings/routes.ts",
+      "sha256": "fcab0b785a529fee1b6e325b7f525ed218a64b750204cf83df73521aece63e2d"
+    },
+    {
+      "path": "src/settings/searchRows.generated.ts",
+      "sha256": "9473928623ef0fb9ae499d1e732fccc0e7d205e0e83f1e0cd1cb5335d42fc0df"
+    },
+    {
+      "path": "src/keybindings/fuzzy.ts",
+      "sha256": "1bcbf1f4058508f23d5d079235d5b96ed6ed800582aae6de50db6a182d5c2c1c"
+    },
+    {
+      "path": "src/settings/garryShortcutHint.test.ts",
+      "sha256": "eb2d41c65f0de8d5429723ef0a6381f73772d5a6767809d2cfabb6db6bc8f2cd"
+    },
+    {
+      "path": "package.json",
+      "sha256": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5"
+    }
+  ],
+  "runtime": "PASS: baseline 3 intended assertion failures and 3 controls; fixed 6 pass; adjacent 18 pass; actual-checkout typecheck pass",
+  "admission": "ACC_49_SEARCH_HINT6_20261113T0327",
+  "execution_head": "9ccc843d41c74eb30dd7496bc9dfa2c8b70f3162",
+  "publication_history_merge": "408bd012b3a42edddf06b026d970d60494a12e4f",
+  "publication_tree_matches_tested_candidate_commit": "b62c12ec",
+  "publication_input_pins_rechecked": true,
+  "fixture_sha256": "b1c6bc8fd98e4c09f655c0b21819e165a3703716eb6888aab8e0db5bb3703ab1",
+  "candidate_sha256": "2530bb1a7ca14cf377c0629d6516bb8f1316ae29b961564ec8c13201ca01219c",
+  "native_and_visual": "NOT_RUN; physical key delivery, restart persistence, package inclusion and native parity unverified"
+}

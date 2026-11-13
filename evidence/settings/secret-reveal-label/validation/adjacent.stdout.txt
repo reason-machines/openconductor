@@ -1,0 +1,68 @@
+TAP version 13
+# (node:151) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tabs are Reason, Claude Code, Codex in that order
+ok 1 - tabs are Reason, Claude Code, Codex in that order
+  ---
+  duration_ms: 1.647164
+  type: 'test'
+  ...
+# Subtest: providerTab picks a known tab and falls back to the first
+ok 2 - providerTab picks a known tab and falls back to the first
+  ---
+  duration_ms: 0.172441
+  type: 'test'
+  ...
+# Subtest: the mask carries only the hint
+ok 3 - the mask carries only the hint
+  ---
+  duration_ms: 0.102791
+  type: 'test'
+  ...
+# Subtest: the live Settings app menu offers Copy path after its application items
+ok 4 - the live Settings app menu offers Copy path after its application items
+  ---
+  duration_ms: 0.306026
+  type: 'test'
+  ...
+# Subtest: the live Settings menu can copy a known path without installed applications
+ok 5 - the live Settings menu can copy a known path without installed applications
+  ---
+  duration_ms: 0.208774
+  type: 'test'
+  ...
+# (node:159) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: editing a configured Anthropic API key retains Get key
+ok 6 - editing a configured Anthropic API key retains Get key
+  ---
+  duration_ms: 146.925399
+  type: 'test'
+  ...
+# Subtest: editing a configured OpenAI API key retains Get key
+ok 7 - editing a configured OpenAI API key retains Get key
+  ---
+  duration_ms: 118.93512
+  type: 'test'
+  ...
+# Subtest: an unconfigured key keeps its provider link without Cancel
+ok 8 - an unconfigured key keeps its provider link without Cancel
+  ---
+  duration_ms: 125.103814
+  type: 'test'
+  ...
+# Subtest: editing a key without a provider URL does not invent a link
+ok 9 - editing a key without a provider URL does not invent a link
+  ---
+  duration_ms: 129.958646
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1058.903871
