@@ -40,6 +40,7 @@ function fixture(options: Options = {}) {
     rows = 24;
     options: ITerminalOptions;
     constructor(value: ITerminalOptions) { this.options = value; }
+    unicode = { activeVersion: "11" };
     loadAddon() {}
     attachCustomKeyEventHandler() {}
     onData() {}
