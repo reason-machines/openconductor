@@ -1003,3 +1003,42 @@ Owner: Conductor Rebuild (Session `ddfc6518`). Substantive correction to r1137/r
 - **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
 - **Native acceptance:** ALL frozen. E1 BLOCKED (11:21Z). No retry authorized until confirmed reset.
 - **Program bottleneck:** E1 quota reset required for native acceptance. One cloud source gap (CONFIG-SYNC) refillable now.
+
+---
+
+## Program reconciliation r1140 at main `33ae5f4f5`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**Package run #1789 SUCCESS** — `992a715e` confirms artifact `14032753489` (`OpenConductor-debug-macos`), sha256 `bc4ac5b254cb39f347a93c5443c3f00c28b13222a37b8001ce8d1751fcab90eb`, 109 MB, expires 2026-11-20. At `33ae5f4f5ce6919d82a87c57ed947959fefd0780`. Packaging lane closed. **Native acceptance remains NOT_RUN.**
+
+**Native executor state (corrected from r1138):** Sole native executor is E1 (`e1e2b6b9`). PROVIDER_LIMIT_BLOCKED as of 11:21Z 13 Nov. Prior prose in r1138 claiming reassignment to `49e3976d` was not an executed authorization; that entry is superseded. `49e3976d` scope: browser-only. All native acceptance (Settings IPC + Q-01–Q-32) frozen until E1 quota resets.
+
+**#1280 in-progress** — head `19293e52`; `Frontend typecheck + build` running; all other checks skipped or green. Will merge on green.
+
+### Unowned cloud-assignable source gap
+
+| Gap | Evidence | Assignable to |
+|---|---|---|
+| CONFIG-SYNC-PENDING-SELECTION | `ConfigSyncDialog.tsx` L90/107 disables selection during `syncing`; Conductor keeps it editable | `6013adf2` |
+
+WORKSPACE-GREP: cloud-unassignable (requires native REA Ghidra binding).
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | PICK-ISSUES-DIALOG ongoing |
+| Packaging | `992a715e` | CLOSED — artifact confirmed |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — no retry |
+| CONFIG-SYNC gap | `6013adf2` | IDLE — ready to assign |
+| All other lanes | — | SOURCE_EXHAUSTED |
+
+### State
+
+- **Unowned cloud gap: 1** — CONFIG-SYNC-PENDING-SELECTION (`6013adf2`)
+- **Cloud-unassignable: 1** — WORKSPACE-GREP
+- **Native acceptance:** ALL frozen (E1 BLOCKED)
+- **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
