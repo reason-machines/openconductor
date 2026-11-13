@@ -57,6 +57,20 @@ export interface PaletteCommands {
   openDocs: () => void;
   quickOpen: () => void;
   copyUrl: () => void;
+  /** Opens the codebase search dialog (Conductor's `_Se`). Absent until the dialog is implemented. */
+  searchInFiles?: () => void;
+  /** Opens the link-issue dialog (Conductor's `wA`). Absent until the dialog is implemented. */
+  linkIssue?: () => void;
+  /** Opens a PR URL in the system browser. Available as soon as the workspace has a `pr.url`. */
+  openPullRequest?: (url: string) => void;
+  /** Triggers PR creation via the backend. Absent until the IPC is implemented. */
+  createPullRequest?: () => void;
+  /** Merges the workspace's open PR. Absent until the IPC is implemented. */
+  mergePullRequest?: () => void;
+  /** Marks the workspace's draft PR ready for review. Absent until the IPC is implemented. */
+  markPrReady?: () => void;
+  /** Starts a fix-errors agent session. Absent until the IPC is implemented. */
+  fixErrors?: () => void;
 }
 
 /** Owns the palette's open state, recent workspaces and the app's global shortcuts. */
@@ -107,11 +121,20 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
   const { toasts, show, dismiss } = useToasts();
   const data = useMemo(() => {
     const entries = workspacePaletteData(state, recents, archived, settingEntries, apps ?? [], prefs.default_open_in);
-    if (!commands.createSection) {
-      return { ...entries, actions: entries.actions.filter((entry) => entry.id !== "create-section" && entry.id !== "move-to-section") };
-    }
-    return entries;
-  }, [state, recents, archived, settingEntries, apps, prefs.default_open_in, commands.createSection]);
+    // Hide actions whose backing command is not yet wired (keeps palette clean until features land).
+    const ungated = new Set<string>([
+      ...(commands.createSection ? [] : ["create-section", "move-to-section"]),
+      ...(commands.searchInFiles ? [] : ["search-in-files"]),
+      ...(commands.linkIssue ? [] : ["link-issue"]),
+      ...(commands.createPullRequest ? [] : ["create-pull-request"]),
+      ...(commands.openPullRequest ? [] : ["open-pull-request"]),
+      ...(commands.mergePullRequest ? [] : ["merge-pull-request"]),
+      ...(commands.markPrReady ? [] : ["ready-for-review"]),
+      ...(commands.fixErrors ? [] : ["fix-errors"]),
+    ]);
+    if (ungated.size === 0) return entries;
+    return { ...entries, actions: entries.actions.filter((entry) => !ungated.has(entry.id)) };
+  }, [state, recents, archived, settingEntries, apps, prefs.default_open_in, commands.createSection, commands.searchInFiles, commands.linkIssue, commands.createPullRequest, commands.openPullRequest, commands.mergePullRequest, commands.markPrReady, commands.fixErrors]);
   const archivedById = (id: string) => archived.find((a) => a.id === id);
   const showWorkspaceNumbers = useBoolPref("experimental_show_workspace_numbers");
 
@@ -137,8 +160,21 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
     settings: commands.openSettings,
     "open-docs": commands.openDocs,
     "quick-open": commands.quickOpen,
+    "search-in-files": () => commands.searchInFiles?.(),
+    "link-issue": () => commands.linkIssue?.(),
     ...Object.fromEntries(GIT_PANEL_ACTIONS.map(({ entry }) => [entry.id, () => requestGitPanelAction(entry.id, state)])),
     "copy-url": commands.copyUrl,
+    "create-pull-request": () => commands.createPullRequest?.(),
+    "open-pull-request": () => {
+      if (sel.kind !== "workspace") return;
+      const repo = state.repos.find((r) => r.id === sel.repoId);
+      const workspace = repo?.workspaces.find((w) => w.id === selectedId);
+      const url = workspace?.pr?.url;
+      if (url) commands.openPullRequest?.(url);
+    },
+    "merge-pull-request": () => commands.mergePullRequest?.(),
+    "ready-for-review": () => commands.markPrReady?.(),
+    "fix-errors": () => commands.fixErrors?.(),
     "go-home": () => dispatch({ type: "select", selection: { kind: "home" } }),
     "next-workspace": () => go(stepWorkspace(state, 1)),
     "previous-workspace": () => go(stepWorkspace(state, -1)),

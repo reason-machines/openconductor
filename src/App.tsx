@@ -462,6 +462,15 @@ export default function App() {
     copyUrl: () => {
       if (workspace) copyLink(workspace.id);
     },
+    // Opens the PR URL in the system browser — available immediately.
+    openPullRequest: (url: string) => void openUrl(url).catch((e) => show("error", errorText(e))),
+    // These require dialogs or backend IPC not yet implemented; absent = hidden from palette.
+    searchInFiles: undefined,
+    linkIssue: undefined,
+    createPullRequest: undefined,
+    mergePullRequest: undefined,
+    markPrReady: undefined,
+    fixErrors: undefined,
   };
 
   const [prefix, setPrefix] = useState<{ settings: BranchPrefixSettings; githubUsername: string | null }>({ settings: {}, githubUsername: null });
