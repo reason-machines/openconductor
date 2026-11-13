@@ -61,6 +61,7 @@ export interface ComposerProps {
   /** Files going out with the next message, shown above the message box. */
   attachments?: ReactNode;
   hasAttachments?: boolean;
+  onEditorInteraction?: () => void;
   workspacePath?: string;
   /** Takes files the user attaches; without it the "+" menu has no Add attachment. */
   onAttachFiles?: (files: File[]) => void;
@@ -97,6 +98,7 @@ export function Composer({
   onQueue,
   attachments,
   hasAttachments = false,
+  onEditorInteraction,
   workspacePath,
   onAttachFiles,
   onLinkWorkspaces,
@@ -141,6 +143,9 @@ export function Composer({
 
   const slash = focused ? composerSlashRange(selection.text, selection.start, selection.end) : null;
   const query = slash?.query ?? null;
+  useLayoutEffect(() => {
+    setSlashIndex(0);
+  }, [query]);
   const slashKey = slash ? `${slash.start}:${slash.end}:${slash.query}` : null;
   const slashMatches = useMemo(() => (query === null || slashKey === slashDismissed ? [] : matchCommands(slashCommands, query)), [query, slashKey, slashDismissed, slashCommands]);
   const slashOpen = slashMatches.length > 0;
@@ -388,6 +393,7 @@ export function Composer({
                 minimize?.expand();
               }}
               onBlur={() => setFocused(false)}
+              onInteraction={onEditorInteraction}
               onKeyDown={onKeyDown}
               onPasteFiles={takeFiles}
             />

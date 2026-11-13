@@ -1,0 +1,28 @@
+.oc-attachment-preview {
+  position: fixed;
+  z-index: 80;
+  width: min(36rem, calc(100vw - 2rem));
+  max-height: min(28rem, calc(100vh - 2rem));
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--popover);
+  color: var(--popover-text);
+  box-shadow: 0 4px 6px -1px var(--conductor-menu-shadow), 0 2px 4px -2px var(--conductor-menu-shadow);
+}
+.oc-attachment-preview-title {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.oc-attachment-preview-content {
+  margin: 0;
+  padding: 12px;
+  max-height: 24rem;
+  overflow: auto;
+  font: 12px/1.5 var(--font-mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

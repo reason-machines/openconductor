@@ -580,3 +580,203 @@ All 21 native behavioral checks remain unverified by the sole native executor (E
 ### Unowned implementable diff/files source gap
 
 **None** at `67be967f6`. The only REA-proven missing feature (`grep_workspace`) requires native Ghidra analysis before implementation. All other diff/files behaviors are either implemented or outside source reach of this lane. The 21 native items above are the concrete handoff to the sole native executor.
+
+## Program reconciliation, main `cc837e7c`, 13 November 2026
+
+Conductor Rebuild reconciled all active builder lane outcomes against current main `cc837e7cbf65f7b28cd65afc8869c0c18fda83b4`. No Mac launch, native capture, install, build or new runner. Static source-sweep and owner-report cross-check only.
+
+### Settings lane: source-complete at `cc837e7c`
+
+Owner: Session `49e3976d`. Three PRs merged; settings lane is now **source-complete**. Native acceptance remains NOT_RUN.
+
+| PR | Commit | Title | CI | Native |
+|---|---|---|---|---|
+| [#1230](https://github.com/reason-machines/openconductor/pull/1230) | (prior head) | fix(settings): full-disk-access owner resolution | green | NOT_RUN |
+| [#1233](https://github.com/reason-machines/openconductor/pull/1233) | (prior head) | fix(settings): settings-owner prior reconciliation | green | NOT_RUN |
+| [#1242](https://github.com/reason-machines/openconductor/pull/1242) | `cc837e7c` | feat(settings): wire caffeinate consumer to prevent sleep while agents work | **PASS** (Frontend typecheck+build + Evidence tools compile, exact head `f6252cce6`) | NOT_RUN |
+
+Note: `cc837e7c` is the confirmed merge commit for #1242 only. #1233's merge commit is not independently verified from owner report; treat as source-merged only.
+
+**Native caffeinate acceptance (NOT_RUN, ACC/E1 owned):**
+1. Caffeinate enabled + agent working → `caffeinate -i` process present
+2. Caffeinate disabled + agent working → `caffeinate -i` absent
+3. Battery ≤10% on battery → inhibitor stops regardless of setting
+4. All agents idle → inhibitor cancelled / not restarted
+
+No ACC behavioral admission has been performed. Sole native executor E1 (`e1e2b6b9`) remains PROVIDER_LIMIT_BLOCKED from last attempt; no retry authorized.
+
+### Package #1782 dispatched at `cc837e7c`
+
+Owner: `992a715e`. Run `43397108022` dispatched at `cc837e7c`, covering 26 fixes. Artifact verification pending with sole package owner. Do not label proven or accept as native-qualified until owner confirms artifact digest and ancestry.
+
+Previous proven package: #1781 artifact `14022467827`, HEAD `db2216e1`, 25 fixes, digest `sha256:f951b9f3eeda884fde7649f10da45cc8c99d1cb669fb958592c34d072ffbb287`.
+
+### Palette / menus: #1260 CI in_progress at `44c777f2`
+
+Owner: `15faf4d8`. PR [#1260](https://github.com/reason-machines/openconductor/pull/1260) `feat(palette): add Move to section workspace action`. Earlier failure at head `7d42b0e0` is **historical**. Current head `44c777f2`:
+- Evidence tools compile: **PASSED**
+- Frontend typecheck + build: **in_progress** (run `43396573885`)
+- Rust/Tauri checks: 5 skipped (expected)
+- No conflict; no required review
+
+Owner retains subscription and all-green merge. Package owner `992a715e` has event watch `cd11e0dc` armed for this merge. MOVE-TO-SECTION-PALETTE behavioral and native acceptance remain NOT_RUN, ACC serialized.
+
+### Diff lane: #1259 owner confirmed and fix in progress
+
+Owner: Session `6013adf2`. PR [#1259](https://github.com/reason-machines/openconductor/pull/1259) `fix(diff): wire editor.openSearch to pass ⌘F through`.
+
+Root cause confirmed: original commit `15894f56` added `useKeybindings({"editor.openSearch": () => false})` to the Code inner component in `FileDiffView.tsx`. This was unnecessary — the dispatcher passes ⌘F through naturally with no live handler needed — and broke 10 tests: 9× `pointerCancel.test.ts` (mock missing `useKeybindings`) and 1× `viewed.test.ts` (listener count 3≠1).
+
+Fix commit `25358baa`: removes the `useKeybindings` call and import alias; adds inline comment documenting pass-through behavior.
+- Local: `pointerCancel` 74/74 PASS, `viewed` 0 failures
+- CI running on head `25358baa`; merge queued once green
+
+No duplicate builder active. Package owner notified by owner `6013adf2`.
+
+### Composer lane: source-parity complete at `8e847380`
+
+Owner: Session `13576d11`. Source-parity verdict confirmed at checked main `8e847380955088974ea268690a94581c45791264`: **all 18 REA-proven composer/agent-controls gaps are merged** through #1253. No unmerged source-qualified gap remains.
+
+**Post-file-picker editor focus (observation prerequisite only):** Conductor's ITO calls `de()` after `W9` (focus request post-chooser close); OpenConductor lacks an explicit focus request after the file picker closes. Default chooser behavior on this path is unobserved. This is recorded as an **observation prerequisite**, not a confirmed bug or implementation assignment. No PR opened; no runner dispatched.
+
+Native/browser acceptance for all composer items: NOT_RUN, ACC/E1 owned (queue: #1240, #1244, #1251, #1253). E1 PROVIDER_LIMIT_BLOCKED from last attempt; no retry authorized.
+
+### Serialized ACC/E1 native queue (all NOT_RUN)
+
+| Feature | Cases | Source |
+|---|---|---|
+| Composer queue-nav (#1240) | unverified | `9923d277` |
+| Composer pointer-hover (#1244) | unverified | `9ba7c05b` |
+| Composer caret-end (#1251) | unverified | `04720aed` |
+| Composer hover-popup (#1253) | unverified | `db2216e1` |
+| Section primary-action (#1246) | 20 cases | `7ef6cef0` |
+| Queue edit caret (#1251) | 3 cases | `04720aed` |
+| Settings caffeinate (#1242) | 4 cases | `cc837e7c` |
+| Diff/files (all items) | 21 items | various |
+| Interrupted-badge (#859) | 3 cases | `67be967f` |
+| Palette MOVE-TO-SECTION | M01–M09 | awaiting #1260 merge |
+| OPEN-IN-SWITCHER-ENTER-POINTER | 12 cases (frozen) | `a5387885` |
+
+E1 (`e1e2b6b9`) PROVIDER_LIMIT_BLOCKED — last attempt `b372fe10` returned no_output. Sign-in `64baa6b6` likewise PROVIDER_LIMIT_BLOCKED — last attempt `c088e4f6` returned no_output. Neither retried.
+
+## Program reconciliation delta r1093, 13 November 2026
+
+Corrections to r1092 from package owner GitHub report and coordinator instruction.
+
+### #1259 head advanced to `d5006a2c`
+
+Owner: Session `6013adf2`. Head is now `d5006a2c` (not `25358baa` as recorded in r1092).
+- Evidence tools compile: **PASSED**
+- Frontend typecheck + build: **in_progress**
+
+Owner retains subscription and merge-on-green. No duplicate builder.
+
+### #1260 Frontend CI FAILED at `44c777f2`
+
+Owner: `15faf4d8`. The in_progress CI result recorded in r1092 resolved: **Frontend typecheck + build FAILED with 12 test failures** at head `44c777f2`. Coordinator has sent palette owner explicit correction/fix instruction. Owner retains sole ownership; no duplicate builder.
+
+MOVE-TO-SECTION-PALETTE behavioral and native acceptance remain NOT_RUN, ACC serialized. Package event watch `cd11e0dc` (owner `992a715e`) remains armed for the eventual all-green merge.
+
+## Diff/files lane gap audit + Q-01–Q-31 recovery, main `0e91f39d5`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `de6c02f4`). No Mac launch, native capture, install, build or runner. Static source-sweep and retained-evidence cross-check only. REA artifact SHA-256 `b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3` (Conductor 0.87.6 `index-BGEQ8YjU.js`), renderer SHA-256 `5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde` (`renderApp-D_fmY7hW.js`).
+
+### Fresh gap audit at `0e91f39d5`
+
+Commits touching `src/features/diff/`, `src/features/files/`, `evidence/diff/`, `evidence/files/` since last lane reconciliation (`67be967f`):
+
+| Commit | PR | Title | Lane owner |
+|---|---|---|---|
+| `25bfd448` | [#1257](https://github.com/reason-machines/openconductor/pull/1257) | feat(files): add grep_workspace Tauri command and frontend binding | DE6 `de6c02f4` |
+| `ed5fb635` | [#1259](https://github.com/reason-machines/openconductor/pull/1259) | fix(diff): wire editor.openSearch to pass ⌘F through to Pierre's native search panel | `6013adf2` |
+
+`#1257` is this lane's own delivery. `#1259` was owned by `6013adf2`; it adds one new diff-surface native acceptance item (Q-32, below) now on main.
+
+**Unowned implementable source gap: None.** All REA-proven diff/files behaviors are implemented at `0e91f39d5`. The only remaining work is native behavioral verification (31 prior items + 1 new item from #1259).
+
+### Q-01–Q-31 per-assertion recovery
+
+**Provenance note.** Q-01–Q-21 were previously transmitted to coordinator `dcaa6e78` only as category groups (5 categories, 21 total) with evidence-file refs, not as individually numbered assertions. The per-assertion descriptions below are **evidence-derived** (each cited to the evidence file or test name that establishes the behavior) and were not previously transmitted as individually numbered text. Q-22–Q-31 are **verbatim retained** from the codemode message sent to ledger owner `ddfc6518` at 2026-11-13T08:17Z (source `a67f6977-f33e-4d1f-a146-cad39103eade`, revision 27672196). Native status: all 31 items are NOT_RUN, ACC/E1 owned.
+
+#### Category 1 — Changes list ordering/presentation (Q-01–Q-06)
+
+Evidence refs: `evidence/diff/selected-row-scroll/`, `src/features/diff/changesPresentation.test.ts`, `src/features/diff/changesTree.test.ts`, `src/features/diff/changesFilter.test.ts`, `evidence/diff/changes-panel/`, `evidence/diff/filter-no-match-view.md`, `evidence/diff/filter-selection-redirect.md`
+
+| ID | Assertion text | Provenance |
+|---|---|---|
+| Q-01 | Active Changes file row scrolls into view after navigation/selection with `scrollIntoView({block:"nearest"})`; request deferred until presentation has hydrated | evidence-derived: `evidence/diff/selected-row-scroll/README.md`, unit `DIFF-SELECTED-ROW-SCROLL-01` |
+| Q-02 | In flat Changes view, unviewed files appear above viewed files; paths within each group are sorted alphabetically; viewed grouping uses the production `viewed ≥ modification_time` predicate | evidence-derived: `changesTree.test.ts` tests "flat changes put unviewed files first…" and "flat ordering uses the production viewed timestamp predicate…" |
+| Q-03 | Changes presentation state (collapsed directory paths, filter query, list mode) is retained across panel-tab switches and workspace reselections; a failed storage read does not erase unseen sibling routes | evidence-derived: `changesPresentation.test.ts`, `evidence/diff/presentation-retention/README.md` |
+| Q-04 | Filter text matches file paths fuzzy and case-insensitively; a rename matches on its old path too; no match produces an empty list | evidence-derived: `changesFilter.test.ts` tests "matching is fuzzy…" and "a rename matches on its old path too" |
+| Q-05 | When the Changes filter matches no files, the diff panel hides; the no-match state is shown instead of an empty Changes list alongside a file diff | evidence-derived: `evidence/diff/filter-no-match-view.md` |
+| Q-06 | Selecting a file from outside the Changes filter routes it into the filter (adds its path as the filter query and opens the diff) | evidence-derived: `evidence/diff/filter-selection-redirect.md` |
+
+#### Category 2 — Navigation (Q-07–Q-10)
+
+Evidence refs: `src/features/diff/nav.test.ts`, `evidence/diff/viewed-navigation.md`, `evidence/diff/navigation-order.md`, `src/features/diff/fileOpenShortcut.test.ts`, `evidence/diff/file-open-shortcut/`
+
+| ID | Assertion text | Provenance |
+|---|---|---|
+| Q-07 | Prev/next-comment navigation uses the viewport reading line; comments fully on-screen count in neither direction; a comment partly above the reading line counts as previous | evidence-derived: `nav.test.ts` tests "a comment above the reading line is previous even while still partly on screen" and "comments on screen count in neither direction" |
+| Q-08 | After marking a file viewed (Ctrl+V / `diff.toggleViewed`), navigation moves to the next unviewed file in presentation order; already-viewed files are unmarked without navigation | evidence-derived: `evidence/diff/viewed-navigation.md` |
+| Q-09 | Changes navigation (ArrowUp/Down) follows the current presentation order (filtered, sorted, tree/flat) rather than a fixed file-index order | evidence-derived: `evidence/diff/navigation-order.md` |
+| Q-10 | The file-open shortcut (⌘D or configured binding) opens the selected Changes file immediately in the first file-capable app without showing the workspace chooser | evidence-derived: `fileOpenShortcut.test.ts` test "open file immediately rather than the workspace chooser", `evidence/diff/file-open-shortcut/` |
+
+#### Category 3 — Retained file views (Q-11–Q-13)
+
+Evidence refs: `evidence/files/workspace-text/`, `evidence/diff/visited-file-retention.md`, `evidence/diff/presentation-retention/`
+
+| ID | Assertion text | Provenance |
+|---|---|---|
+| Q-11 | The Files panel opens UTF-8 workspace text files (and Markdown) in a confined `WorkspaceFileView` without leaving the app or requiring a git change | evidence-derived: `evidence/files/workspace-text/core33-20261113/README.md`, PR #1208, 94 Node tests passed |
+| Q-12 | The five most recently visited diff file views (path + scope) are retained and restored when navigating back to a previously visited file | evidence-derived: `evidence/diff/visited-file-retention.md` |
+| Q-13 | Collapsed-folder and filter-query presentation state survives switching away from the Changes panel and returning; collapse of a single directory persists without resetting other saved paths | evidence-derived: `evidence/diff/presentation-retention/README.md`, browser capture in `evidence/diff/presentation-retention/collapse-comparison.png` |
+
+#### Category 4 — Diff viewer editor/interaction (Q-14–Q-19)
+
+Evidence refs: `src/features/diff/EditInViewer.test.ts`, `evidence/diff/hidden-whitespace-editing/`, `evidence/diff/new-inline-draft-remount/`, `evidence/diff/comment-submit-pending/`, `evidence/diff/comment-save-failure/`, `src/features/diff/fileCommentCountLifecycle.test.ts`
+
+| ID | Assertion text | Provenance |
+|---|---|---|
+| Q-14 | Entire-file edit mode presents and saves the complete new-file text, not only the visible patch hunks; a missing final newline is preserved | evidence-derived: `EditInViewer.test.ts` test "the entire-file view edits the new file's full text, keeping a missing final newline" |
+| Q-15 | In hidden-whitespace view, the editor buffer receives the full unfiltered text (whitespace filtering applies only to Pierre's presentation); editing and saving produce the full file, not a whitespace-stripped version | evidence-derived: `evidence/diff/hidden-whitespace-editing/README.md`, unit `hidden-whitespace-editing` |
+| Q-16 | A new inline comment draft body is retained after the diff remounts (file-switch and return to same file); the textarea reopens with the original text | evidence-derived: `evidence/diff/new-inline-draft-remount/README.md`, unit `DIFF-NEW-INLINE-DRAFT-REMOUNT-SOURCE-DE6` |
+| Q-17 | While a pending comment submit is in flight, repeated clicks and accepted keyboard shortcuts cannot create a duplicate comment from the same draft; the submit button is effectively gated until settlement | evidence-derived: `evidence/diff/comment-submit-pending/README.md`, unit `SUBMIT-PENDING-IDENTITY-DE6-01` |
+| Q-18 | A comment save failure (rejected existing-comment edit) emits exactly one error notification with the rejection reason; the draft and retry controls remain available | evidence-derived: `evidence/diff/comment-save-failure/README.md`, unit `EDIT-SAVE-FAILURE-FEEDBACK-DE6-01` |
+| Q-19 | Each Changes-list file row shows its active comment count badge (local + remote, not sent/resolved/outdated/PR-level); the count updates immediately when a draft is added, removed, or its submit completes | evidence-derived: `fileCommentCountLifecycle.test.ts` tests `${mode} rows count active local and remote comments…` and "saving through the actual new-draft composer updates the row count…" |
+
+#### Category 5 — Files panel (Q-20–Q-21)
+
+Evidence refs: `src/features/files/AllFilesTree.tsx` (collapse/filter/open toolbar), `evidence/files/workspace-text/` (Markdown preview)
+
+| ID | Assertion text | Provenance |
+|---|---|---|
+| Q-20 | The "Collapse folders" toolbar button in the Files panel collapses all expanded folder rows in `AllFilesTree` immediately | evidence-derived: `src/features/files/AllFilesTree.tsx` lines 41–53, 62, 130–135 (`collapseSeq` increment → `scrollTo(0)` reset) |
+| Q-21 | Markdown and plain text workspace files open in a preview panel in the Files tab without navigating away; the preview shows rendered content (Markdown) or plain UTF-8 text | evidence-derived: `evidence/files/workspace-text/core33-20261113/README.md`, `evidence/files/markdown-preview.md` |
+
+#### grep_workspace (Q-22–Q-31) — verbatim retained
+
+Source: codemode `a67f6977-f33e-4d1f-a146-cad39103eade` rev 27672196 (message to ddfc6518, 2026-11-13T08:17Z). These are the exact strings as sent.
+
+| ID | Assertion text |
+|---|---|
+| Q-22 | Basic literal search: query "fn main" in a Rust workspace → matches returned with file paths + line ranges |
+| Q-23 | Regex search: query "fn .+_handler" with isRegex:true → regex matches returned |
+| Q-24 | Case-sensitive: query "Main" caseSensitive:true → no match for "main" lowercase |
+| Q-25 | Case-insensitive (default): query "MAIN" caseSensitive:false → matches "main" |
+| Q-26 | Whole-word: query "fn" wholeWord:true → matches "fn" token, not "fn_helper" substring |
+| Q-27 | Binary skip: binary files in workspace → absent from results |
+| Q-28 | Gitignore: files in .gitignore → absent from results |
+| Q-29 | Multi-submatch: query "use" in file with multiple occurrences → all match ranges returned per line |
+| Q-30 | Truncation: workspace with >1000 matches → truncated:true in response |
+| Q-31 | Error path: unreadable workspace path → structured error, no crash |
+
+### Q-32 — new item from #1259 (owner `6013adf2`)
+
+Merged 2026-11-13T09:04Z at `ed5fb635`. Native acceptance: **NOT_RUN** (ACC/E1 serialized).
+
+**Q-32** (evidence-derived): `editor.openSearch` (⌘F in diff viewer) passes through the dispatcher without prevention, reaching Pierre's own `"cmdOrCtrl+f": "openSearchPanel"` keymap entry, which opens Pierre's native search panel. No `useKeybindings` handler is registered for this command in `FileDiffView.tsx`; the pass-through is documented inline at line 159. Source: `evidence/diff/file-open-shortcut/` REA string `kqo.literal.txt`; `src/features/diff/FileDiffView.tsx` lines 159–162.
+
+### Discrepancy note
+
+Coordinator message references "28 unavailable" of Q-01–Q-31. This lane's retained evidence gives: 10 verbatim (Q-22–Q-31) and 21 evidence-derived (Q-01–Q-21) = 31 total. If the coordinator counted only the verbatim-retained items as "available" and the evidence-derived ones as requiring further text delivery, that is 21 unavailable — not 28. The 7-item discrepancy is unresolved from source alone; coordinator `dcaa6e78` holds the authoritative count.

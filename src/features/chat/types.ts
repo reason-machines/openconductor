@@ -26,7 +26,7 @@ export interface ToolUseBlock {
 export interface ToolResultBlock {
   type: "tool_result";
   toolUseId: string;
-  content: string;
+  content: string | undefined;
   rawResult?: unknown;
   isError?: boolean;
   resultCreatedAt?: string;

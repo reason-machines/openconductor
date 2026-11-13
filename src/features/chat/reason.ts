@@ -240,7 +240,7 @@ function withContent(blocks: Block[], p: ReasonPayload, now: Date): Block[] {
       const done = p.status === "completed" || p.status === "failed";
       const previous = blocks.find((b) => b.type === "tool_result" && b.toolUseId === p.id);
       const resultCreatedAt = previous?.type === "tool_result" ? previous.resultCreatedAt : now.toISOString();
-      const result: Block = { type: "tool_result", toolUseId: p.id, content: p.output ?? "", ...(p.rawResult !== undefined ? { rawResult: p.rawResult } : {}), isError: p.status === "failed", ...(resultCreatedAt !== undefined ? { resultCreatedAt } : {}) };
+      const result: Block = { type: "tool_result", toolUseId: p.id, content: p.output ?? undefined, ...(p.rawResult !== undefined ? { rawResult: p.rawResult } : {}), isError: p.status === "failed", ...(resultCreatedAt !== undefined ? { resultCreatedAt } : {}) };
       const out = blocks.filter((b) => !(b.type === "tool_result" && b.toolUseId === p.id)).map((b) => (b.type === "tool_use" && b.id === p.id ? use : b));
       if (!out.includes(use)) out.push(use);
       if (done) out.splice(out.indexOf(use) + 1, 0, result);

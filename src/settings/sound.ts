@@ -1,3 +1,16 @@
+/**
+ * Group logo metadata for sound option groups that have a transit brand.
+ * Matches Conductor's Xwt map exactly: label is the short brand name shown in
+ * the group header; path is the public asset used as a CSS mask-image.
+ * Groups without an entry (Classic, Novelty) render as text only.
+ */
+export const GROUP_LOGOS: Readonly<Record<string, { label: string; path: string }>> = {
+  "SF Muni": { label: "Muni", path: "/muni.svg" },
+  "NYC MTA": { label: "MTA", path: "/mta.svg" },
+  "Paris Métro": { label: "Métro de Paris", path: "/metro-de-paris.svg" },
+  SNCF: { label: "SNCF", path: "/sncf.svg" },
+};
+
 export const SOUND_OPTIONS = [
   { value: "disabled", label: "No sound", group: "" },
   { value: "default", label: "Chime", group: "Classic" },

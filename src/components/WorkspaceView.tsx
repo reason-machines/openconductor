@@ -32,6 +32,7 @@ import { generateWorkspaceNames } from "../workspace/naming";
 import { startSetupScript } from "../home/createFirstWorkspace";
 import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
+import { ComposerAttachmentChip } from "../features/chat/ComposerAttachmentChip.tsx";
 import { McpStatusDialog } from "../features/chat/McpStatusDialog.tsx";
 import type { ComposerEditorHandle } from "../features/chat/ComposerEditor.tsx";
 import { appendComposerText } from "../features/chat/composerDocument.ts";
@@ -229,6 +230,8 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   const cwd = workspace.path ?? repo.path;
   const [linkRepos, setLinkRepos] = useState<Repo[] | null>(null);
   const linkRequest = useRef(0);
+  const [attachmentPreviewEpoch, setAttachmentPreviewEpoch] = useState(0);
+  const dismissAttachmentPreview = useCallback(() => setAttachmentPreviewEpoch((epoch) => epoch + 1), []);
   useEffect(() => {
     linkRequest.current++;
     setLinkRepos(null);
@@ -759,16 +762,12 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           return true;
         }}
         minimize={minimize}
+        onEditorInteraction={attachments.length > 0 ? dismissAttachmentPreview : undefined}
         attachments={
           attachments.length > 0 || attachError ? (
             <div className="composer-attachments" aria-label="Attachments">
               {attachments.map((a) => (
-                <span key={a.name} className="chip composer-attachment" title={a.staged ?? a.text}>
-                  {a.label ?? a.name}
-                  <button type="button" className="composer-attachment-remove" aria-label={`Remove ${a.label ?? a.name}`} onClick={() => removeAttachment(a)}>
-                    ×
-                  </button>
-                </span>
+                <ComposerAttachmentChip key={a.name} attachment={a} editorEpoch={attachmentPreviewEpoch} onRemove={() => removeAttachment(a)} />
               ))}
               {attachError ? (
                 <span className="error small" role="alert">
@@ -1469,7 +1468,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
       <header className="ws-header" data-tauri-drag-region="deep">
         <div className="ws-title">
           <RepoHeaderMenu repo={repo} onError={(message) => notify?.("error", message)} />
-          <span className="crumb-sep">/</span>
+          <span className="crumb-sep">›</span>
           <WorkspaceNameHeader
             key={workspace.id}
             repoId={repo.id}
