@@ -1650,3 +1650,73 @@ Owner: Conductor Rebuild (Session `ddfc6518`).
 - **Native acceptance:** ALL frozen — E1 PROVIDER_LIMIT_BLOCKED, sole executor, no retry, no second executor
 - **Unowned cloud gaps: NONE**
 - **Program bottleneck:** E1 provider limit blocks native acceptance and settings env-crash root cause
+
+## Program reconciliation r1155 at main `0b71c069`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**ACC E2E run `43441462165` PASS** (`f562de4e37`) — reason-chat and codex-chat jobs both success. Completed 14:29Z. Green streak 5. ACC (`acc3b5c5`) sole owner.
+
+**E1 native blocker confirmed** — attempt `869269cf-6660-4e16-8e7a-aa4446213882` produced no output: PROVIDER_LIMIT_BLOCKED. Explicit recovery: do not retry, no second executor. User informed.
+
+**#1293 merged `0b71c069`** — ledger docs r1153–r1154 delivered to main. Docs/ledger only; no production deployment.
+
+### State
+
+- **Program state: SOURCE_COMPLETE** — all implementable cloud lanes exhausted. Remaining: native acceptance (E1 blocked), final review pass
+- **ACC E2E:** `43441462165` on `f562de4e37` PASS, streak 5. Next run on `0b71c069` TBD (ACC dispatch).
+- **Native acceptance:** ALL frozen — E1 PROVIDER_LIMIT_BLOCKED confirmed, sole executor, no retry, no second executor
+- **Unowned cloud gaps: NONE**
+- **Program bottleneck:** E1 provider limit blocks native acceptance and settings env-crash root cause
+
+## Program reconciliation r1156 at main `0b71c069`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**ACC admitted for dispatch on `0b71c069cd3c`** — cloud runtime queue EMPTY; ACC (`acc3b5c5`) sole dispatcher admitted to run `e2e.yml` on `0b71c069cd3c`. No duplicate dispatch.
+
+### State
+
+- **Program state: SOURCE_COMPLETE** — all implementable cloud lanes exhausted. Remaining: native acceptance (E1 blocked), ACC E2E on `0b71c069` (admitted, ACC dispatch pending), final review pass
+- **ACC E2E:** `43441462165` on `f562de4e37` PASS streak 5. Next run on `0b71c069cd3c` admitted (ACC dispatch).
+- **Native acceptance:** ALL frozen — E1 PROVIDER_LIMIT_BLOCKED confirmed, sole executor, no retry, no second executor
+- **Unowned cloud gaps: NONE**
+- **Program bottleneck:** E1 provider limit blocks native acceptance and settings env-crash root cause
+
+## Program reconciliation r1157 at main `0b71c069`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**ACC dispatch on `0b71c069cd3c` DEFERRED** — delta from `f562de4e37` is docs/ledger only (#1293); no code or runtime change. ACC admitted on first substantive main update or when 10-consecutive-green requirement triggers. Queue: EMPTY, ACC sole dispatcher when admitted.
+
+### State
+
+- **Program state: SOURCE_COMPLETE** — all implementable cloud lanes exhausted. Remaining: native acceptance (E1 blocked), final review pass
+- **ACC E2E:** `43441462165` on `f562de4e37` PASS streak 5. Next run DEFERRED — docs-only delta `0b71c069`, admit on first substantive main update.
+- **Native acceptance:** ALL frozen — E1 PROVIDER_LIMIT_BLOCKED confirmed, sole executor, no retry, no second executor
+- **Unowned cloud gaps: NONE**
+- **Program bottleneck:** E1 provider limit blocks native acceptance and settings env-crash root cause
+
+## Program reconciliation r1158 at main `0b71c069`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**ACC E2E run `43446589826` PASS** (`0b71c069cd3c`) — Codex chat (6m52s) PASS, Reason chat (10m31s) PASS. 23/23 run.mjs flows PASS. Suites: reason-chat, codex-chat, claude-chat, model-picker, reason-CLI-first-run, agent-binaries, transcript-parity, slash-menu (9), agent-binary-banner — all PASS. 11 artifacts present. Green streak **6** (2c7563a7 → e963fb31 → 8f62e6e3 → bf9f31fc61 → f562de4e37 → 0b71c069cd3c). ACC (`acc3b5c5`) sole owner.
+
+**r1157 DEFER note**: ACC run 43446589826 had been admitted before the DEFER directive landed; it ran and PASSED. DEFER still in effect for further dispatch.
+
+### State
+
+- **Program state: SOURCE_COMPLETE** — all implementable cloud lanes exhausted. Remaining: native acceptance (E1 blocked), final review pass
+- **ACC E2E:** `43446589826` on `0b71c069cd3c` PASS, streak **6**. Next run DEFERRED — admit on first substantive main update (4 more needed for 10-green goal).
+- **Native acceptance:** ALL frozen — E1 PROVIDER_LIMIT_BLOCKED confirmed, sole executor, no retry, no second executor
+- **Unowned cloud gaps: NONE**
+- **Program bottleneck:** E1 provider limit blocks native acceptance and settings env-crash root cause
