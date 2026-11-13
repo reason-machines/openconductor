@@ -1,0 +1,225 @@
+{
+  "admission": "ACC_READ12_2CFF_20261113T0315",
+  "main": "6acd4f8f8b79ef5b79c4a98b15eab68174943487",
+  "phases": [
+    {
+      "name": "source-baseline",
+      "argv": [
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "60s",
+        "python3",
+        "evidence/chat/read-error-result/verify-source.py",
+        "baseline"
+      ],
+      "NODE_OPTIONS": null,
+      "started_at": "2026-11-13T03:17:25.582708+00:00",
+      "process_group": 82,
+      "exit_status": 0,
+      "finished_at": "2026-11-13T03:17:25.877089+00:00"
+    },
+    {
+      "name": "setup",
+      "argv": [
+        "nice",
+        "-n",
+        "19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "600s",
+        "npm",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "NODE_OPTIONS": "--max-old-space-size=1024",
+      "started_at": "2026-11-13T03:17:25.880112+00:00",
+      "process_group": 105,
+      "exit_status": 0,
+      "finished_at": "2026-11-13T03:17:32.609646+00:00"
+    },
+    {
+      "name": "red",
+      "argv": [
+        "nice",
+        "-n",
+        "19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "180s",
+        "node",
+        "--max-old-space-size=768",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/chat/readErrorResult.test.ts"
+      ],
+      "NODE_OPTIONS": "--max-old-space-size=768",
+      "started_at": "2026-11-13T03:17:32.611148+00:00",
+      "process_group": 118,
+      "exit_status": 1,
+      "finished_at": "2026-11-13T03:17:33.746986+00:00"
+    },
+    {
+      "name": "patch-check",
+      "argv": [
+        "git",
+        "apply",
+        "--check",
+        "evidence/chat/read-error-result/source-packet/read-only-result-selection-UNAPPLIED.patch",
+        "evidence/chat/read-error-result/source-packet/historical-assertions-successor-UNAPPLIED.patch"
+      ],
+      "NODE_OPTIONS": null,
+      "started_at": "2026-11-13T03:17:33.748428+00:00",
+      "process_group": 134,
+      "exit_status": 0,
+      "finished_at": "2026-11-13T03:17:33.751020+00:00"
+    },
+    {
+      "name": "apply-exact-patches",
+      "argv": [
+        "git",
+        "apply",
+        "evidence/chat/read-error-result/source-packet/read-only-result-selection-UNAPPLIED.patch",
+        "evidence/chat/read-error-result/source-packet/historical-assertions-successor-UNAPPLIED.patch"
+      ],
+      "NODE_OPTIONS": null,
+      "started_at": "2026-11-13T03:17:33.751332+00:00",
+      "process_group": 135,
+      "exit_status": 0,
+      "finished_at": "2026-11-13T03:17:33.754192+00:00"
+    },
+    {
+      "name": "source-candidate",
+      "argv": [
+        "python3",
+        "evidence/chat/read-error-result/verify-source.py",
+        "candidate"
+      ],
+      "NODE_OPTIONS": null,
+      "started_at": "2026-11-13T03:17:33.754472+00:00",
+      "process_group": 136,
+      "exit_status": 0,
+      "finished_at": "2026-11-13T03:17:33.833358+00:00"
+    },
+    {
+      "name": "green",
+      "argv": [
+        "nice",
+        "-n",
+        "19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "180s",
+        "node",
+        "--max-old-space-size=768",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/chat/readErrorResult.test.ts"
+      ],
+      "NODE_OPTIONS": "--max-old-space-size=768",
+      "started_at": "2026-11-13T03:17:33.833788+00:00",
+      "process_group": 159,
+      "exit_status": 0,
+      "finished_at": "2026-11-13T03:17:34.720550+00:00"
+    },
+    {
+      "name": "adjacent",
+      "argv": [
+        "nice",
+        "-n",
+        "19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "180s",
+        "node",
+        "--max-old-space-size=768",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/chat/readSyntaxHighlight.test.ts",
+        "src/features/chat/readImageDisclosure.test.ts",
+        "src/features/chat/conductorTools.test.ts",
+        "src/features/chat/toolErrorRetry.test.ts",
+        "src/features/chat/writeRows.test.ts",
+        "src/features/chat/disclosureRemount.test.ts",
+        "src/features/chat/imageGenerationFallbackDisclosure.test.ts"
+      ],
+      "NODE_OPTIONS": "--max-old-space-size=768",
+      "started_at": "2026-11-13T03:17:34.721240+00:00",
+      "process_group": 175,
+      "exit_status": 1,
+      "finished_at": "2026-11-13T03:17:42.902786+00:00"
+    }
+  ],
+  "started_at": "2026-11-13T03:17:25.578534+00:00",
+  "result": "STOPPED",
+  "baseline_hashes": {
+    "src/features/chat/ToolRows.tsx": "07f7906977075245cb068907c19ee3e0c98b110720aadda95ac8436a74dee078",
+    "src/features/chat/conductorTools.ts": "05c3a85bed997b1114e1696d083855d4e39c5d614fe57ddeb0bade8bde7cc64a",
+    "src/features/chat/reason.ts": "3c93d3dfdb4669fd423c434992275c579d723afa4c6884f330444e06b0192742",
+    "src/features/chat/reducer.ts": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+    "src/features/chat/view.ts": "b9c2f038edf9432617b8aa2de6c287a2da2e48f5483b6e464cbeb8f4a6344a52",
+    "src/features/chat/Transcript.tsx": "0c6bcb94994afe0eb5f9fd8e5a10849f29e79dbb6fbcc6dbded2975324d1e4dc",
+    "src-tauri/src/claude_chat/map.rs": "e0d079396976a7e491e11ff1b9f5d3d3e5721c21c1f3ab2f006d6b337ad0a023",
+    "src-tauri/src/reason_acp/wire.rs": "5479cf81b638f2ede410d3fb10861f0194477f6bc251435d6a103dbc3c1510d0",
+    "src/features/chat/readImageDisclosure.test.ts": "a0b3c72df9c23c050285553f4b05b9a8b5e44e6836d2cb10d42ecfd0f0d97753",
+    "src/features/chat/readImageDisclosure.inputs.json": "adada617c0395960660e37e2c6dc48b7f9340d08811360665644dfdfd900bce9",
+    "src/features/chat/readSyntaxHighlight.test.ts": "acd015bba3bd0db2b53c1842a278278a837ebc26813486e4c721cf40758120ef",
+    "src/features/chat/toolErrorRetry.test.ts": "1efade652717faa26df812405ef938e64541b4ffb71522a33336e101a27a3d40",
+    "src/features/chat/writeRows.test.ts": "452afa96a84edeedfed50d9eabf36968d564634bfde717de02bd20f0f5f20e5a",
+    "src/features/chat/disclosureRemount.test.ts": "d85478fc64e2a7a8276a2e933b9e7c86a1644c24ad1a0842929403c5b29034dc",
+    "src/features/chat/imageGenerationFallbackDisclosure.test.ts": "5e4784b0a627a43010eb3200022f19e6eec257f0d43995e20fdd99a0e127cdbd",
+    "package.json": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+    "evidence/chat/read-text-syntax.md": "7e4c4137917fa3d32c004d50b5cf831ad0a0e37d5e5c84b56e604ae8126f3b0c",
+    "src/features/chat/readErrorResult.test.ts": "9ffff7830e778962648422c06044a6c10693b6dbb08ae6f85d810caea1a77ccf",
+    "src/features/chat/readErrorResult.inputs.json": "4d730391c2eb79bb00b78bb9022a022bc5062422c785de1f76acc4f7ebb96986"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-test-renderer": "18.3.1",
+    "typescript": "5.9.3"
+  },
+  "red_counts": {
+    "tests": 12,
+    "pass": 7,
+    "fail": 5,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "qualified_red": true,
+  "supplementary_baseline_controls_reached": false,
+  "green_counts": {
+    "tests": 12,
+    "pass": 12,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "error": "AssertionError: adjacent failed; no retry",
+  "groups_remaining_before_cleanup": [],
+  "own_node_modules_removed": true,
+  "groups_absent_after_cleanup": [
+    82,
+    105,
+    118,
+    134,
+    135,
+    136,
+    159,
+    175
+  ],
+  "finished_at": "2026-11-13T03:17:43.642139+00:00",
+  "elapsed_seconds": 18.0636326810054,
+  "terminal": "RELEASE"
+}

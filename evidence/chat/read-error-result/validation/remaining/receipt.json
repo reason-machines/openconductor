@@ -1,0 +1,14 @@
+{
+  "admission": "ACC_READ12_2CFF_ADJ_TSC_20261113T0321",
+  "started_at": "2026-11-13T03:22:22.595486+00:00",
+  "phases": [],
+  "result": "STOPPED",
+  "prior_receipt_preserved": true,
+  "error": "AssertionError: d2602d267460dd67e467e7622f1ee357c085bca2",
+  "groups_remaining_before_cleanup": [],
+  "own_node_modules_removed": true,
+  "groups_absent_after_cleanup": [],
+  "terminal": "RELEASE",
+  "finished_at": "2026-11-13T03:22:23.054685+00:00",
+  "elapsed_seconds": 0.45937973898253404
+}
