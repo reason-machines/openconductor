@@ -1177,10 +1177,10 @@ function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isErr
       );
     }
     case "get-diff-comments":
-      return <RowShell {...shell} left={<span>Review comments</span>} right={<span className="oc-tool-count">{s(input.file) ? lastTwoSegments(s(input.file)) : "All files"}</span>} content={framed(result)} />;
+      return <RowShell {...shell} left={<span>Review comments</span>} right={<span className="oc-tool-count">{s(input.file) ? lastTwoSegments(s(input.file)) : "All files"}</span>} content={framed(rawResult === undefined ? result : typeof rawResult === "string" ? rawResult : JSON.stringify(rawResult, null, 2))} />;
     case "get-workspace-diff": {
       const target = input.stat ? "File stats" : s(input.file) ? lastTwoSegments(s(input.file)) : "Full diff";
-      return <RowShell {...shell} left={<span>Workspace diff</span>} right={<span className="oc-tool-count">{target}</span>} content={framed(result)} />;
+      return <RowShell {...shell} left={<span>Workspace diff</span>} right={<span className="oc-tool-count">{target}</span>} content={framed(rawResult === undefined ? result : typeof rawResult === "string" ? rawResult : JSON.stringify(rawResult, null, 2))} />;
     }
     case "get-terminal-output": {
       const { text, note: where } = terminalOutput(input, result, rawResult);

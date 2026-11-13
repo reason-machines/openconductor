@@ -1,0 +1,435 @@
+{
+  "candidate": "CHAT.REVIEW-TOOLS-STRUCTURED-RESULT",
+  "fixture_version": 1,
+  "checked_main": "6ab46a36752de4f57cb3c3441f4336d334ad1340",
+  "reference": {
+    "recorded_version": "Conductor 0.87.6",
+    "evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "consumers": [
+      "Opo",
+      "Npo"
+    ],
+    "normalization": "String unchanged; all other present JSON content pretty-serialized, including null, false and zero.",
+    "execution": "NOT_RUN",
+    "scope_limit": "No claim that missing/empty-result disclosure affordance matches reference Mu default; this separate discrepancy is not changed."
+  },
+  "cases": [
+    {
+      "id": "comments-text-array",
+      "name": "mcp__conductor__GetDiffComments",
+      "input": {},
+      "isError": false,
+      "expected_label": "Review comments",
+      "expected_right": "All files",
+      "expected_output": "[\n  {\n    \"type\": \"text\",\n    \"text\": \"review A\"\n  },\n  {\n    \"type\": \"text\",\n    \"text\": \"review B\"\n  }\n]",
+      "predicted_red": true,
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "review A"
+        },
+        {
+          "type": "text",
+          "text": "review B"
+        }
+      ],
+      "output": "review A\nreview B"
+    },
+    {
+      "id": "comments-object",
+      "name": "mcp__conductor__GetDiffComments",
+      "input": {
+        "file": "/repo/src/review.ts"
+      },
+      "isError": false,
+      "expected_label": "Review comments",
+      "expected_right": "src/review.ts",
+      "expected_output": "{\n  \"changes\": [\n    \"src/a.ts\"\n  ],\n  \"count\": 1\n}",
+      "predicted_red": true,
+      "rawResult": {
+        "changes": [
+          "src/a.ts"
+        ],
+        "count": 1
+      },
+      "output": "{\"changes\":[\"src/a.ts\"],\"count\":1}"
+    },
+    {
+      "id": "comments-resource-array",
+      "name": "mcp__conductor__GetDiffComments",
+      "input": {},
+      "isError": false,
+      "expected_label": "Review comments",
+      "expected_right": "All files",
+      "expected_output": "[\n  {\n    \"type\": \"resource\",\n    \"resource\": {\n      \"uri\": \"local://review\",\n      \"value\": 42\n    }\n  }\n]",
+      "predicted_red": true,
+      "rawResult": [
+        {
+          "type": "resource",
+          "resource": {
+            "uri": "local://review",
+            "value": 42
+          }
+        }
+      ],
+      "output": ""
+    },
+    {
+      "id": "comments-empty-array",
+      "name": "mcp__conductor__GetDiffComments",
+      "input": {},
+      "isError": false,
+      "expected_label": "Review comments",
+      "expected_right": "All files",
+      "expected_output": "[]",
+      "predicted_red": true,
+      "rawResult": [],
+      "output": ""
+    },
+    {
+      "id": "comments-null",
+      "name": "mcp__conductor__GetDiffComments",
+      "input": {
+        "file": "/repo/src/review.ts"
+      },
+      "isError": false,
+      "expected_label": "Review comments",
+      "expected_right": "src/review.ts",
+      "expected_output": "null",
+      "predicted_red": true,
+      "rawResult": null,
+      "output": ""
+    },
+    {
+      "id": "comments-failed-array",
+      "name": "mcp__conductor__GetDiffComments",
+      "input": {},
+      "isError": true,
+      "expected_label": "Review comments",
+      "expected_right": "All files",
+      "expected_output": "[\n  {\n    \"type\": \"text\",\n    \"text\": \"review stopped\"\n  }\n]",
+      "predicted_red": true,
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "review stopped"
+        }
+      ],
+      "output": "review stopped"
+    },
+    {
+      "id": "comments-false",
+      "name": "mcp__conductor__GetDiffComments",
+      "input": {},
+      "isError": false,
+      "expected_label": "Review comments",
+      "expected_right": "All files",
+      "expected_output": "false",
+      "predicted_red": false,
+      "rawResult": false,
+      "output": "false"
+    },
+    {
+      "id": "comments-zero",
+      "name": "mcp__conductor__GetDiffComments",
+      "input": {
+        "file": "/repo/src/review.ts"
+      },
+      "isError": false,
+      "expected_label": "Review comments",
+      "expected_right": "src/review.ts",
+      "expected_output": "0",
+      "predicted_red": false,
+      "rawResult": 0,
+      "output": "0"
+    },
+    {
+      "id": "comments-plain-string",
+      "name": "mcp__conductor__GetDiffComments",
+      "input": {},
+      "isError": false,
+      "expected_label": "Review comments",
+      "expected_right": "All files",
+      "expected_output": "plain review",
+      "predicted_red": false,
+      "rawResult": "plain review",
+      "output": "plain review"
+    },
+    {
+      "id": "comments-json-looking-string",
+      "name": "mcp__conductor__GetDiffComments",
+      "input": {},
+      "isError": false,
+      "expected_label": "Review comments",
+      "expected_right": "All files",
+      "expected_output": "[{\"type\":\"text\",\"text\":\"review\"}]",
+      "predicted_red": false,
+      "rawResult": "[{\"type\":\"text\",\"text\":\"review\"}]",
+      "output": "[{\"type\":\"text\",\"text\":\"review\"}]"
+    },
+    {
+      "id": "comments-empty-string",
+      "name": "mcp__conductor__GetDiffComments",
+      "input": {
+        "file": "/repo/src/review.ts"
+      },
+      "isError": false,
+      "expected_label": "Review comments",
+      "expected_right": "src/review.ts",
+      "expected_output": "",
+      "predicted_red": false,
+      "rawResult": "",
+      "output": ""
+    },
+    {
+      "id": "comments-legacy-missing-raw",
+      "name": "mcp__conductor__GetDiffComments",
+      "input": {},
+      "isError": false,
+      "expected_label": "Review comments",
+      "expected_right": "All files",
+      "expected_output": "legacy review",
+      "predicted_red": false,
+      "output": "legacy review"
+    },
+    {
+      "id": "comments-pending-missing-raw",
+      "name": "mcp__conductor__GetDiffComments",
+      "input": {},
+      "isError": false,
+      "expected_label": "Review comments",
+      "expected_right": "All files",
+      "expected_output": "",
+      "predicted_red": false
+    },
+    {
+      "id": "comments-failed-plain-string",
+      "name": "mcp__conductor__GetDiffComments",
+      "input": {
+        "file": "/repo/src/review.ts"
+      },
+      "isError": true,
+      "expected_label": "Review comments",
+      "expected_right": "src/review.ts",
+      "expected_output": "review stopped",
+      "predicted_red": false,
+      "rawResult": "review stopped",
+      "output": "review stopped"
+    },
+    {
+      "id": "workspace-text-array",
+      "name": "mcp__conductor__GetWorkspaceDiff",
+      "input": {},
+      "isError": false,
+      "expected_label": "Workspace diff",
+      "expected_right": "Full diff",
+      "expected_output": "[\n  {\n    \"type\": \"text\",\n    \"text\": \"review A\"\n  },\n  {\n    \"type\": \"text\",\n    \"text\": \"review B\"\n  }\n]",
+      "predicted_red": true,
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "review A"
+        },
+        {
+          "type": "text",
+          "text": "review B"
+        }
+      ],
+      "output": "review A\nreview B"
+    },
+    {
+      "id": "workspace-object",
+      "name": "mcp__conductor__GetWorkspaceDiff",
+      "input": {
+        "file": "/repo/src/review.ts"
+      },
+      "isError": false,
+      "expected_label": "Workspace diff",
+      "expected_right": "src/review.ts",
+      "expected_output": "{\n  \"changes\": [\n    \"src/a.ts\"\n  ],\n  \"count\": 1\n}",
+      "predicted_red": true,
+      "rawResult": {
+        "changes": [
+          "src/a.ts"
+        ],
+        "count": 1
+      },
+      "output": "{\"changes\":[\"src/a.ts\"],\"count\":1}"
+    },
+    {
+      "id": "workspace-resource-array",
+      "name": "mcp__conductor__GetWorkspaceDiff",
+      "input": {
+        "file": "/repo/src/review.ts",
+        "stat": true
+      },
+      "isError": false,
+      "expected_label": "Workspace diff",
+      "expected_right": "File stats",
+      "expected_output": "[\n  {\n    \"type\": \"resource\",\n    \"resource\": {\n      \"uri\": \"local://review\",\n      \"value\": 42\n    }\n  }\n]",
+      "predicted_red": true,
+      "rawResult": [
+        {
+          "type": "resource",
+          "resource": {
+            "uri": "local://review",
+            "value": 42
+          }
+        }
+      ],
+      "output": ""
+    },
+    {
+      "id": "workspace-empty-array",
+      "name": "mcp__conductor__GetWorkspaceDiff",
+      "input": {},
+      "isError": false,
+      "expected_label": "Workspace diff",
+      "expected_right": "Full diff",
+      "expected_output": "[]",
+      "predicted_red": true,
+      "rawResult": [],
+      "output": ""
+    },
+    {
+      "id": "workspace-null",
+      "name": "mcp__conductor__GetWorkspaceDiff",
+      "input": {
+        "file": "/repo/src/review.ts"
+      },
+      "isError": false,
+      "expected_label": "Workspace diff",
+      "expected_right": "src/review.ts",
+      "expected_output": "null",
+      "predicted_red": true,
+      "rawResult": null,
+      "output": ""
+    },
+    {
+      "id": "workspace-failed-array",
+      "name": "mcp__conductor__GetWorkspaceDiff",
+      "input": {
+        "file": "/repo/src/review.ts",
+        "stat": true
+      },
+      "isError": true,
+      "expected_label": "Workspace diff",
+      "expected_right": "File stats",
+      "expected_output": "[\n  {\n    \"type\": \"text\",\n    \"text\": \"review stopped\"\n  }\n]",
+      "predicted_red": true,
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "review stopped"
+        }
+      ],
+      "output": "review stopped"
+    },
+    {
+      "id": "workspace-false",
+      "name": "mcp__conductor__GetWorkspaceDiff",
+      "input": {},
+      "isError": false,
+      "expected_label": "Workspace diff",
+      "expected_right": "Full diff",
+      "expected_output": "false",
+      "predicted_red": false,
+      "rawResult": false,
+      "output": "false"
+    },
+    {
+      "id": "workspace-zero",
+      "name": "mcp__conductor__GetWorkspaceDiff",
+      "input": {
+        "file": "/repo/src/review.ts"
+      },
+      "isError": false,
+      "expected_label": "Workspace diff",
+      "expected_right": "src/review.ts",
+      "expected_output": "0",
+      "predicted_red": false,
+      "rawResult": 0,
+      "output": "0"
+    },
+    {
+      "id": "workspace-plain-string",
+      "name": "mcp__conductor__GetWorkspaceDiff",
+      "input": {
+        "file": "/repo/src/review.ts",
+        "stat": true
+      },
+      "isError": false,
+      "expected_label": "Workspace diff",
+      "expected_right": "File stats",
+      "expected_output": "plain review",
+      "predicted_red": false,
+      "rawResult": "plain review",
+      "output": "plain review"
+    },
+    {
+      "id": "workspace-json-looking-string",
+      "name": "mcp__conductor__GetWorkspaceDiff",
+      "input": {},
+      "isError": false,
+      "expected_label": "Workspace diff",
+      "expected_right": "Full diff",
+      "expected_output": "[{\"type\":\"text\",\"text\":\"review\"}]",
+      "predicted_red": false,
+      "rawResult": "[{\"type\":\"text\",\"text\":\"review\"}]",
+      "output": "[{\"type\":\"text\",\"text\":\"review\"}]"
+    },
+    {
+      "id": "workspace-empty-string",
+      "name": "mcp__conductor__GetWorkspaceDiff",
+      "input": {
+        "file": "/repo/src/review.ts"
+      },
+      "isError": false,
+      "expected_label": "Workspace diff",
+      "expected_right": "src/review.ts",
+      "expected_output": "",
+      "predicted_red": false,
+      "rawResult": "",
+      "output": ""
+    },
+    {
+      "id": "workspace-legacy-missing-raw",
+      "name": "mcp__conductor__GetWorkspaceDiff",
+      "input": {
+        "file": "/repo/src/review.ts",
+        "stat": true
+      },
+      "isError": false,
+      "expected_label": "Workspace diff",
+      "expected_right": "File stats",
+      "expected_output": "legacy review",
+      "predicted_red": false,
+      "output": "legacy review"
+    },
+    {
+      "id": "workspace-pending-missing-raw",
+      "name": "mcp__conductor__GetWorkspaceDiff",
+      "input": {},
+      "isError": false,
+      "expected_label": "Workspace diff",
+      "expected_right": "Full diff",
+      "expected_output": "",
+      "predicted_red": false
+    },
+    {
+      "id": "workspace-failed-plain-string",
+      "name": "mcp__conductor__GetWorkspaceDiff",
+      "input": {
+        "file": "/repo/src/review.ts"
+      },
+      "isError": true,
+      "expected_label": "Workspace diff",
+      "expected_right": "src/review.ts",
+      "expected_output": "review stopped",
+      "predicted_red": false,
+      "rawResult": "review stopped",
+      "output": "review stopped"
+    }
+  ]
+}
