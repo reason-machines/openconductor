@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
 import { chromium } from "playwright-core";
 import { startViteFixture } from "../../e2e/vite-fixture-server.mjs";
 
@@ -180,11 +181,17 @@ function nativeBoundary({ rows, battery, enabled, delayedRegistration }) {
 }
 
 export async function startHost() {
-  assert.ok(process.env.CHROME_PATH, "Set CHROME_PATH to the hosted CI Chromium executable; browser tests cannot skip");
+  const executablePath = [
+    process.env.CHROME_PATH,
+    "/usr/bin/google-chrome",
+    "/usr/bin/chromium",
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  ].find((p) => p && existsSync(p));
+  assert.ok(executablePath, "Chrome is required: set CHROME_PATH or install a system Chrome; browser tests cannot skip");
   const server = await startViteFixture();
   let browser;
   try {
-    browser = await chromium.launch({ executablePath: process.env.CHROME_PATH, args: ["--no-sandbox", "--disable-dev-shm-usage"] });
+    browser = await chromium.launch({ executablePath, args: ["--no-sandbox", "--disable-dev-shm-usage"] });
   } catch (error) {
     await server.close();
     throw error;

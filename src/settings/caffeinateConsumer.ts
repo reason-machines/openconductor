@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
+import { listen } from "@tauri-apps/api/event";
 import { SETTINGS_CHANGED } from "./appearance";
 import { getSettings } from "./api";
-import { chatStatuses, subscribeChatStatuses } from "../features/chat/chatRuntime";
 import type { Settings } from "./types";
 
 const LOW_BATTERY_THRESHOLD = 10;
@@ -76,6 +76,7 @@ let seq = 0;
 export class CaffeinateConsumer {
   private settings: Settings | null = null;
   private batteryState: BatteryState | undefined;
+  private sessionStatuses: Map<string, string> = new Map();
   private stopStatusUnsubscribe: (() => void) | null = null;
   private stopBatteryPolling: (() => void) | null = null;
   private pendingId: string | undefined;
@@ -102,17 +103,37 @@ export class CaffeinateConsumer {
     this.stopStatusUnsubscribe = null;
     this.stopBatteryPolling?.();
     this.stopBatteryPolling = null;
+    this.sessionStatuses.clear();
     this.stopCaffeinate();
   }
 
   private activate(batteryState: BatteryState | undefined): void {
     if (!this.started) return;
     this.batteryState = batteryState;
-    this.stopStatusUnsubscribe = subscribeChatStatuses(() => {
-      if (this.started) this.updateDesiredState();
-    });
+    let active = true;
+    // Hydrate from all sessions including hidden (Conductor's `dAa` reads every stored row).
+    invoke<Array<{ chatId: string; status: string }> | null>("session_statuses", { includeHidden: true })
+      .then((rows) => {
+        if (!active) return;
+        for (const { chatId, status } of rows ?? []) this.sessionStatuses.set(chatId, status);
+        this.updateDesiredState();
+      })
+      .catch(() => { if (active) this.updateDesiredState(); });
+    // Subscribe to all session-status events (includes hidden sessions; chatRuntime filters those out).
+    const listenerPromise = listen<{ chatId: string; workspaceId: string | null; status: string }>(
+      "session-status",
+      (e) => {
+        if (!active) return;
+        this.sessionStatuses.set(e.payload.chatId, e.payload.status);
+        this.updateDesiredState();
+      },
+    );
+    this.stopStatusUnsubscribe = () => {
+      active = false;
+      listenerPromise.then((unlisten) => unlisten()).catch(() => undefined);
+    };
     this.stopBatteryPolling = this.startBatteryPolling();
-    this.updateDesiredState();
+    // updateDesiredState is called once the session_statuses hydration resolves above.
   }
 
   private startBatteryPolling(): () => void {
@@ -137,7 +158,7 @@ export class CaffeinateConsumer {
 
   private shouldCaffeinateWithoutBattery(): boolean {
     if (!this.settings?.general?.caffeinate_while_agents_running) return false;
-    for (const status of chatStatuses().values()) {
+    for (const status of this.sessionStatuses.values()) {
       if (status === "working" || status === "waiting") return true;
     }
     return false;
