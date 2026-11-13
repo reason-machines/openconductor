@@ -41,6 +41,7 @@ export function GeneralPage({ settings, save, notify }: Props) {
   latestSettings.current = settings;
   const g = settings.general;
   const [syncOpen, setSyncOpen] = useState(false);
+  const [followUpPending, setFollowUpPending] = useState(false);
   const fullDiskAccess = useFullDiskAccessStatus();
   const { overrides } = useKeybindingOverrides();
   const followUp = enumPref(settings, "default_message_send_mode");
@@ -58,17 +59,21 @@ export function GeneralPage({ settings, save, notify }: Props) {
       >
         <Select
           label="Follow-up behavior"
+          disabled={followUpPending}
           value={followUp}
           options={[
             { value: "queued", label: "Queue" },
             { value: "steering", label: "Steer" },
           ]}
-          onChange={(v) =>
-            // Open chats re-read Follow-up behavior on SETTINGS_CHANGED (useFollowUpMode).
-            void Promise.resolve(save(withEnumPref(settings, "default_message_send_mode", v))).then((ok) => {
+          onChange={async (v) => {
+            setFollowUpPending(true);
+            try {
+              const ok = await save(withEnumPref(settings, "default_message_send_mode", v));
               if (ok !== false) window.dispatchEvent(new Event(SETTINGS_CHANGED));
-            })
-          }
+            } finally {
+              setFollowUpPending(false);
+            }
+          }}
         />
       </Row>
       <Row label="Agent notifications" help="Get notified when an agent finishes working.">

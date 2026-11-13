@@ -1,0 +1,1 @@
+function bho(t){return p.jsx(Il,{value:t.value,children:t.label},t.value)}
