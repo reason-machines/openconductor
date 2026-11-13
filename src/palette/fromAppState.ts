@@ -3,7 +3,7 @@
 
 import type { AppState, Workspace } from "../state/types.ts";
 import type { ActionEntry, PaletteData, SettingEntry, WorkspaceEntry } from "./search/model.ts";
-import type { OpenInApp } from "../features/openIn/apps.ts";
+import { supportsFileOpen, type OpenInApp, type openInApp } from "../features/openIn/apps.ts";
 import type { SearchItem } from "../settings/searchIndex.ts";
 import { labelTargetBranch, workspaceLabel } from "../components/sidebarLabel.ts";
 import { lastActiveAt as activityAt } from "../home/allWorkspaces.ts";
@@ -19,6 +19,41 @@ import { GIT_PANEL_ACTIONS, gitPanelWorkspace } from "./gitPanelActions.ts";
 export interface WorkspaceRef {
   repoId: string;
   workspace: Workspace;
+}
+
+export interface WorkspaceOpenInOwner {
+  readonly repoId: string;
+  readonly workspaceId: string;
+  readonly workspacePath: string;
+}
+
+export type WorkspaceOpenInTarget = WorkspaceOpenInOwner & (
+  | { readonly kind: "workspace" }
+  | { readonly kind: "file"; readonly relativePath: string }
+);
+
+export type OpenInTargetPublisher = (target: WorkspaceOpenInTarget) => () => void;
+
+export interface OpenInRequest {
+  path: string;
+  fileContext?: Parameters<typeof openInApp>[2];
+}
+
+export function paletteOpenInRequest(
+  appId: string,
+  owner: WorkspaceOpenInOwner,
+  target: WorkspaceOpenInTarget | null | undefined,
+): OpenInRequest {
+  const fallback = { path: owner.workspacePath };
+  if (!target || target.kind !== "file" || !supportsFileOpen(appId)
+    || target.repoId !== owner.repoId || target.workspaceId !== owner.workspaceId
+    || target.workspacePath !== owner.workspacePath) return fallback;
+  const parts = target.relativePath.split("/");
+  if (parts.some((part) => part === "" || part === "." || part === ".." || part.includes("\0"))) return fallback;
+  const path = `${owner.workspacePath.replace(/\/+$/, "")}/${target.relativePath}`;
+  return appId === "vscode" || appId === "finder"
+    ? { path, fileContext: { workspacePath: owner.workspacePath } }
+    : { path };
 }
 
 /** Workspaces in sidebar order: Pinned, then each repo's group, newest first (src/state/sidebarOrder.ts). */
@@ -139,8 +174,11 @@ export function paletteDataFromState(
       activeAt: activityAt(a.workspace),
     });
   }
-  const activeWorkspaceId = state.selection.kind === "workspace" ? state.selection.workspaceId : null;
-  const selectedWorkspace = state.repos.flatMap((r) => r.workspaces).find((w) => w.id === activeWorkspaceId);
+  const selection = state.selection;
+  const activeWorkspaceId = selection.kind === "workspace" ? selection.workspaceId : null;
+  const selectedWorkspace = selection.kind === "workspace"
+    ? state.repos.find((repo) => repo.id === selection.repoId)?.workspaces.find((item) => item.id === selection.workspaceId)
+    : undefined;
   const openInActions: ActionEntry[] = selectedWorkspace?.path && selectedWorkspace.status !== "archived"
     ? openInApps.map((app) => ({ id: `open-in-${app.id}`, title: app.name, group: "open-in", keywords: ["open", "in", "open in", app.name, app.id], bindingId: app.id === defaultOpenIn ? "workspace.openInApp" : undefined }))
     : [];

@@ -1,0 +1,1 @@
+function cvs({localWorkspaceId:t,routeLocation:e}){if(dF(e.pathname)?.localWorkspaceId!==t)return;const i=rSe(aSe.parse(e.search));if(i.type!=="file"||!i.path)return;const r=i.mode==="edit"&&tle.isActive({localWorkspaceId:t,filePath:i.path})?tle.get({localWorkspaceId:t,filePath:i.path})?.lineNumber:void 0;return{relativePath:i.path,lineNumber:r}}
