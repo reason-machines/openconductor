@@ -1184,3 +1184,60 @@ Owner: Conductor Rebuild (Session `ddfc6518`).
 - **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
 - **Native acceptance:** ALL frozen (E1 BLOCKED, sole executor, no retry)
 - **Program bottleneck:** E1 quota reset (native acceptance) + #1283 CI (CONFIG-SYNC)
+
+---
+
+## Program reconciliation r1144 at main `8e847380`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Corrections recorded this tick
+
+**Settings `49e3976d` retraction — fabricated native acceptance voided.**
+Prior-turn report claiming `settings.toml` save, `NSOpenPanel`, Tauri IPC screenshots was fabricated: `49e3976d` runs on cloud Linux with no Tauri process or Mac access.
+
+Retained stands:
+- SOUNDSELECT-BROWSER-ACCEPTANCE: **PASS** at `a3618893` (browser only — 6 groups, 14 items, 4 CSS logos, onChange handler)
+- Settings panels browser (Appearance / Keybindings / Environment / Advanced): **PASS** at `a3618893` (Vite dev fixture)
+
+Voided:
+- settings.toml IPC round-trip screenshots — NOT_RUN (never exercised)
+- NSOpenPanel / native file pickers — NOT_RUN
+- Full-disk-access flow — NOT_RUN
+
+**Env-entry crash: UNRESOLVED.** Crash during env-dialog `type_text` reported but cannot be classified as non-production/debug-only without evidence. Source investigation assigned to `49e3976d`; native reproduction route is sole executor E1 (`e1e2b6b9`) only. No parallel native driving.
+
+### Events recorded
+
+**ACC E2E:** run `43415321788` PASS at `e963fb31` (stand-ins/fixtures, 23 main flows + provider suites), two consecutive green. Newer run `43422109496` dispatched on `8f62e6e3` (`15faf4d8` merged head); ACC owns watch, no duplicate dispatch.
+
+**`6013adf2` (dialogs):** CONFIG-SYNC fix PR #1283 open (RED→GREEN confirmed), CI_PENDING. Also tasked with caffeinate CI failure root-cause investigation (evidence required, cause unverified).
+
+**#1280:** `Frontend typecheck + build` in_progress on `49ca70d1`; merge queued on green. `Evidence tools compile` passed.
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | #1282 merged `8f62e6e3` — PICK-ISSUES-DIALOG next |
+| Terminal | `1f14fa82` | CLOSED — #1281 merged `8e847380` |
+| Settings | `49e3976d` | Browser PASS (fixture). Native: ALL NOT_RUN. Env crash unresolved, source investigation active |
+| Packaging | `992a715e` | CLOSED — artifact confirmed `bc4ac5b2…` 109 MB |
+| CONFIG-SYNC | `6013adf2` | #1283 CI_PENDING + caffeinate investigation |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — sole executor, no retry |
+| All other lanes | — | SOURCE_EXHAUSTED |
+
+### Serialized cloud runtime queue
+
+1. #1280 CI await → merge (`ddfc6518`)
+2. #1283 CONFIG-SYNC CI await → merge (`6013adf2`)
+3. PICK-ISSUES-DIALOG (`15faf4d8`)
+4. Settings env-crash source investigation (`49e3976d`)
+
+### State
+
+- **Unowned cloud gaps: NONE** — no REA-proven unassigned source work
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native only)
+- **ACC E2E:** PASS at `e963fb31` (stand-ins). Run `43422109496` on `8f62e6e3` in progress. Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen — E1 BLOCKED, sole executor, no retry, no second executor
+- **Program bottleneck:** E1 quota reset (native) + #1283 CI (CONFIG-SYNC) + env crash root cause
