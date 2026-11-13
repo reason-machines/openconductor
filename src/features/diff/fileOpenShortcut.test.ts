@@ -90,6 +90,9 @@ async function menu({ apps = [VSCODE, ZED], saved = null, canOpen = true, overri
     PRIORITY, bindCommands, effectiveShortcuts, cycleSwitcher, releasesOpenShortcut, switcherEntries, SWITCHER_DELAY_MS,
     useKeybindingOverrides: () => ({ overrides }),
     useKeybindingsContext: () => ({ dispatcher, overrides }),
+    // useContext stub: FocusedScope default is undefined (not inside a scope boundary),
+    // so isFocusedScope is undefined and handlers fire normally per the dispatcher.
+    useContext: () => undefined, FocusedScope: null,
     setTimeout: () => 1, clearTimeout: () => {},
     window: {
       innerWidth: 1280,
