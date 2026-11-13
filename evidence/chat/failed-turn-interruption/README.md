@@ -31,7 +31,7 @@ The fix changes only those two presentation conditions plus a local predicate in
 
 ## RED and GREEN
 
-The test extracts the actual checked-in `TurnFooter` and `SignInNotice` function ASTs, transpiles only those functions, and uses genuine React server rendering. It calls real `codexChat`/`startTurn`/`failTurn`, `applyChatEvents`, and `buildRows`, then asserts rendered markup and retained raw status/error. There is no replacement notice classifier or renderer mock. Unused child UI branches are not mounted.
+The test extracts the actual checked-in `TurnFooter` and sign-in card function ASTs, transpiles only those functions, and uses genuine React server rendering. Current source uses `ChatSignInCard.tsx`; historical renderer replay uses the inline `SignInNotice`. It calls real `codexChat`/`startTurn`/`failTurn`, `applyChatEvents`, and `buildRows`, then asserts rendered markup and retained raw status/error. There is no replacement notice classifier or renderer mock. Unused child UI branches are not mounted.
 
 The isolated source-test prerequisites were TypeScript 5.9.3, React 18.3.1, and React DOM 18.3.1, matching the lockfile, with their three small transitive packages. They were installed outside tracked files with scripts, audit and lockfile writes disabled after the parent lifted its prerequisite hold. No full app dependency install or app build was run.
 
@@ -40,7 +40,18 @@ The isolated source-test prerequisites were TypeScript 5.9.3, React 18.3.1, and 
 - **GREEN nearby checks:** `node --test src/features/chat/turnInterruption.test.ts src/features/chat/reducer.test.ts src/features/chat/view.test.ts src/features/chat/codex.test.ts src/features/chat/reason.test.ts` passed 63/63. [Output](./nearby.tap). The original four suites passed 49/49 before the edit.
 - **Passed:** `git diff --check`.
 
-The regression also exercises ordinary failure, missing and empty errors, different capitalization, nonmatching cancellation wording, unchanged consent wording, the existing cancelled badge, completed-status exclusion, ordinary Codex sign-in guidance, and Retry's exact prompt/turn id. `TURN_FOOTER_REF=14dc5aa889ea9f9cc0459187e6d43c475f3cbdd7 node --test src/features/chat/turnInterruption.test.ts` can replay the baseline renderer against the same tests.
+The regression also exercises ordinary failure, missing and empty errors, different capitalization, nonmatching cancellation wording, unchanged consent wording, the existing cancelled badge, completed-status exclusion, ordinary Codex sign-in guidance, and Retry's exact prompt/turn id. `TURN_FOOTER_REF=14dc5aa889ea9f9cc0459187e6d43c475f3cbdd7 node src/features/chat/turnInterruption.test.ts` can replay the baseline renderer against the same tests.
+
+## Current-main integration repair, 2026-11-13
+
+The hosted unit run at PR head `d64b78b56128685d9dfcbb4e051f9c7707d8438f` passed 4,307 tests and failed this test file before its cases ran. Local replay reproduced `SignInNotice is a production function`: main had moved that UI to `ChatSignInCard.tsx`. Current default head `e586c968` has the same card source. The test now extracts the real card without replacing its rendering. The Codex sign-in assertion still checks the actual card markup; Reason pairing and the settings click handler remain unexecuted.
+
+Once setup worked, three assertions exposed another main integration change: `retryPrompt` is now a `UserPrompt` object. The context type and exact-value assertions now use `{ text: "Keep this prompt" }`, preserving prompt content and turn-id checks. No production code changed in this follow-up.
+
+- **Passed:** `node --test src/features/chat/turnInterruption.test.ts`, 14/14.
+- **Passed:** `node --test src/features/chat/turnInterruption.test.ts src/features/chat/reducer.test.ts src/features/chat/view.test.ts src/features/chat/codex.test.ts src/features/chat/reason.test.ts src/features/chat/agentSignIn.test.ts`, 67/67.
+- **Expected RED:** `TURN_FOOTER_REF=14dc5aa889ea9f9cc0459187e6d43c475f3cbdd7 node src/features/chat/turnInterruption.test.ts`, 12/14 pass. Only the two original interruption-badge cases fail. This direct invocation preserves the historical renderer selection for the replay.
+- The same six minimal locked-version packages were restored under ignored `.rea-work` after their temporary dependencies were lost. No full install, build, mounted UI, native run, provider call, or manual CI rerun occurred.
 
 ## Verification limits
 

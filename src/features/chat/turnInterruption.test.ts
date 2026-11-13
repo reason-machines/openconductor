@@ -15,15 +15,24 @@ import { turnTime } from "./turnTime.ts";
 import { isSignInFailure, signInCopy } from "./agentSignIn.ts";
 import type { ChatAgentId } from "./agentChoice.ts";
 import type { TurnStatus } from "./types.ts";
+import type { UserPrompt } from "./userContent.ts";
 
 type FooterRow = Extract<RowView, { kind: "turn_end" }>;
-type Context = { now(): number; resetDisabled: boolean; forkDisabled: boolean; chatAgent?: ChatAgentId; onRetry?: (prompt: string, turnId: string) => void };
+type Context = { now(): number; resetDisabled: boolean; forkDisabled: boolean; chatAgent?: ChatAgentId; onRetry?: (prompt: UserPrompt, turnId: string) => void };
 const path = "src/features/chat/Transcript.tsx";
 const text = process.env.TURN_FOOTER_REF
   ? execFileSync("git", ["show", `${process.env.TURN_FOOTER_REF}:${path}`], { encoding: "utf8" })
   : readFileSync(new URL("./Transcript.tsx", import.meta.url), "utf8");
 const source = ts.createSourceFile(path, text, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
-const functions = ["TurnFooter", "SignInNotice"].map((name) => {
+const hasInlineNotice = source.statements.some((node) => ts.isFunctionDeclaration(node) && node.name?.text === "SignInNotice");
+const noticeSource = hasInlineNotice ? source : ts.createSourceFile(
+  "ChatSignInCard.tsx", readFileSync(new URL("./ChatSignInCard.tsx", import.meta.url), "utf8"),
+  ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX,
+);
+const functions = [
+  { source, name: "TurnFooter" },
+  { source: noticeSource, name: hasInlineNotice ? "SignInNotice" : "ChatSignInCard" },
+].map(({ source, name }) => {
   const node = source.statements.find((node) => ts.isFunctionDeclaration(node) && node.name?.text === name);
   assert.ok(node, `${name} is a production function`);
   return node.getText(source);
@@ -67,7 +76,7 @@ for (const error of ["Request aborted by user", "Interrupted by user"]) {
     assert.match(html, /class="chat-badge">Interrupted by user<\/span>/);
     assert.doesNotMatch(html, /chat-turn-error/);
     assert.match(html, /status-failed/);
-    assert.equal(row.retryPrompt, "Keep this prompt");
+    assert.deepEqual(row.retryPrompt, { text: "Keep this prompt" });
   });
 }
 
@@ -112,5 +121,5 @@ test("actual interruption footer retries the unchanged prompt and turn id", () =
   const retry = actions.props.children.find((child) => isValidElement<{ children?: string }>(child) && child.type === "button" && child.props.children === "Retry");
   assert.ok(isValidElement<{ onClick(): void }>(retry));
   retry.props.onClick();
-  assert.deepEqual(calls, [["Keep this prompt", row.turnId]]);
+  assert.deepEqual(calls, [[{ text: "Keep this prompt" }, row.turnId]]);
 });
