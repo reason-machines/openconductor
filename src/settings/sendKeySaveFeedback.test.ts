@@ -61,6 +61,7 @@ async function mount({
     "./prefs": prefs,
     "./rows/AppPrefRows": { GeneralAppPrefRows: inert },
     "./sound": { playCompletionSound: forbidden, SOUND_OPTIONS: [] },
+    "./SoundSelect": { SoundSelect: inert },
     "./useSettingsOverrideStore": { useSettingsOverrideStore: () => ({
       updateMany: async (updates: readonly overridesModule.OverrideUpdate[]) => {
         writes.push({ boundary: "overrides", value: updates });

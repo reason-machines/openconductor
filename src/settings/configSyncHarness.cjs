@@ -36,6 +36,7 @@ function mount(options = {}) {
     "./prefs": { enumPref: () => "steering", withEnumPref: blocked("withEnumPref"), boolPref: () => false },
     "./rows/AppPrefRows": { GeneralAppPrefRows: inert },
     "./sound": { playCompletionSound: blocked("playCompletionSound"), SOUND_OPTIONS: [{ value: "none", label: "None" }] },
+    "./SoundSelect": { SoundSelect: inert },
     "./icons": new Proxy({}, { get: () => inert }),
     "./useSettingsOverrideStore": { useSettingsOverrideStore: () => ({ updateMany: blocked("updateMany") }) },
     "./configSyncApi": {
