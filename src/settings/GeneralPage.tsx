@@ -102,11 +102,7 @@ export function GeneralPage({ settings, save, notify }: Props) {
           }}
         />
       </Row>
-      <Row
-        label="Completion sound"
-        help="Choose what plays when AI finishes working in a chat."
-        detail="Original recordings are not included. Playback uses a synthesized chime."
-      >
+      <Row label="Completion sound" help="Choose what plays when AI finishes working in a chat." detail="Original recordings are not included. Playback uses a synthesized chime.">
         <span className="settings-inline">
           <select
             className="settings-select"
