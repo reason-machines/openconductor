@@ -1,0 +1,11 @@
+{
+  "raw_terminal_receipt_preserved": true,
+  "accounting_clarification": "Raw shared_non_test_s counts orchestrated source commands only. Conservative inclusive non-test time below also counts pre-execution tool handoff and all gaps.",
+  "total_elapsed_s": 15.145178710001346,
+  "red_plus_green_s": 4.996223278998514,
+  "inclusive_non_test_plus_cleanup_s": 10.148955431002832,
+  "shared_cap_s": 60,
+  "within_cap": true,
+  "post_release_ownjobs": [],
+  "post_release_servers": []
+}

@@ -41,13 +41,14 @@ export function AgentsHeader({ settingsPath }: { settingsPath: string | null }) 
 }
 
 /** Icon + name tabs with an underline on the open one (`yy`/`Q1`). */
-export function AgentTabRow<T extends string>({ tabs, value, onChange }: { tabs: readonly TabSpec<T>[]; value: T; onChange: (t: T) => void }) {
+export function AgentTabRow<T extends string>({ tabs, value, onChange, tabIdPrefix }: { tabs: readonly TabSpec<T>[]; value: T; onChange: (t: T) => void; tabIdPrefix: string }) {
   const buttons = useRef(new Map<T, HTMLButtonElement>());
   return (
     <div role="tablist" aria-label="Agents" className="ag-tabs">
       {tabs.map((t, index) => (
         <button
           key={t.id}
+          id={`${tabIdPrefix}-${t.id}`}
           ref={(button) => { if (button) buttons.current.set(t.id, button); else buttons.current.delete(t.id); }}
           role="tab"
           type="button"
