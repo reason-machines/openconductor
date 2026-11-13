@@ -163,25 +163,25 @@ test("entries our earlier builds left in the webview's localStorage are removed;
   assert.equal(dropLegacyTurnCache(ls), 0);
 });
 
-test("chips: up to 3 files all show; more show 2 and reveal 3 per click", () => {
+test("chips: up to 3 files all show; more show 3 and reveal 3 per click", () => {
   const files = (n: number) => Array.from({ length: n }, (_, i) => change(`f${i}`, i + 1, 1));
   assert.deepEqual(chipLayout(files(3), 0).more, null);
   assert.equal(chipLayout(files(3), 0).first.length, 3);
   assert.equal(chipLayout(files(3), 0).revealed.length, 0);
 
   const eight = chipLayout(files(8), 0);
-  assert.deepEqual(eight.first.map((f) => f.path), ["f0", "f1"]);
+  assert.deepEqual(eight.first.map((f) => f.path), ["f0", "f1", "f2"]);
   assert.equal(eight.revealed.length, 0);
-  assert.equal(eight.hidden.length, 6);
+  assert.equal(eight.hidden.length, 5);
   assert.equal(eight.more, "Show 3 more changed files");
-  assert.deepEqual(eight.hiddenTotals, { additions: 3 + 4 + 5 + 6 + 7 + 8, deletions: 6 });
+  assert.deepEqual(eight.hiddenTotals, { additions: 4 + 5 + 6 + 7 + 8, deletions: 5 });
   // A click keeps the first row and puts the next 3 on their own line.
   const once = chipLayout(files(8), 1);
-  assert.deepEqual(once.first.map((f) => f.path), ["f0", "f1"]);
-  assert.deepEqual(once.revealed.map((f) => f.path), ["f2", "f3", "f4"]);
-  assert.equal(once.hidden.length, 3);
-  assert.equal(chipLayout(files(8), 1).more, "Show 3 more changed files");
-  assert.equal(chipLayout(files(6), 1).more, "Show 1 more changed file");
+  assert.deepEqual(once.first.map((f) => f.path), ["f0", "f1", "f2"]);
+  assert.deepEqual(once.revealed.map((f) => f.path), ["f3", "f4", "f5"]);
+  assert.equal(once.hidden.length, 2);
+  assert.equal(chipLayout(files(8), 1).more, "Show 2 more changed files");
+  assert.equal(chipLayout(files(6), 1).more, null);
   assert.equal(chipLayout(files(8), 2).more, null);
   assert.equal(chipLayout([], 0).more, null);
 });
