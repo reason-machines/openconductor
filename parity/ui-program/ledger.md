@@ -1393,3 +1393,65 @@ Owner: Conductor Rebuild (Session `ddfc6518`).
 - **ACC E2E:** `43422109496` on `8f62e6e3` — ACC owns watch. All native 39+ NOT_RUN
 - **Native acceptance:** ALL frozen — E1 BLOCKED, sole executor, no retry, no second executor
 - **Program bottleneck:** E1 quota reset (native) + #1280 CI + env crash root cause
+
+---
+
+## Program reconciliation r1147 at main `021be42b` merge-pending, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Corrections from r1146
+
+**#1283 squash SHA corrected:** r1146 recorded `5887a2835` (attributed via coordinator relay); direct owner `6013adf2` reports authoritative squash SHA **`04a96d018`**. Use `04a96d018` for all further references.
+
+**Caffeinate additional evidence (from `6013adf2`):** Direct DOM run on main `0ba8b008a` — 19/19 cases pass, exit 0. However, outer `node --test` run **FAILED** on shared cloud due to post-test Vite watcher `ENOSPC` (not a product failure). Prior CI run `807277fa` was **cancelled** by a subsequent push — it is not verified passing. Conclusions: no caffeinate product defect established, `started()` synchronization fragility remains an observation only (no current fix), and cloud ENOSPC behaviour is an environmental hazard, not proof of CI immunity.
+
+**Settings `.ips` / crash-log retraction (from `49e3976d`):** Prior reports cited specific `.ips` filenames — those files were **not actually read**. No crash log has been retrieved. Env-entry crash trigger and log remain **UNKNOWN**. Tao nil `absoluteString().unwrap()` path is a **speculative hypothesis only** — not a confirmed diagnosis, not a confirmed trigger. Settings parity label is not complete; source inspection is not acceptance.
+
+### Events recorded
+
+**#1284 merged `34945b02`** (`13576d11`) — fix(chat): reapply rawResult for generic MCP and node-repl-js tool rows. 16/16 `genericStructuredResult` tests pass on main `f434923f`; both rawResult-without-`!mcp`-guard and node-repl-js output hunks verified. Browser/native acceptance: **NOT_RUN** (ACC hold).
+
+**#1286 merged** — fix(sidebar): dim workspace row to 50% opacity while `setting_up`. Owner tested head `e9602c8d`; squash SHA distinct. REA bundle `5199d392`, offsets `9875512`/`9875885`/`9886588`. Native rendered opacity and transition: **NOT_RUN** (E1 required).
+
+**#1287 merged `f434923f`** (squash head `8789adaa`, `15faf4d8`) — open in / palette / global menus source-exhausted and parked. Browser/native acceptance: **NOT_RUN**.
+
+**#1288 merged squash `bf9f31fc`** (`13576d11`) — COMPOSER-ADD-MENU-LINK-ISSUE: adds Link Issue (⌘I) button to Composer AddMenu. Browser/native acceptance: **NOT_RUN** (ACC hold).
+
+**#1285 (diff/files, `de6c02f4`):** Typecheck and 517/517 unit tests passing in PR. Merge scheduled (not confirmed merged at time of this record). Native visual acceptance: **NOT_RUN** (E1 required).
+
+**ACC E2E:** Run `43422109496` **PASS** on `8f62e6e3` (browser only, 23 main flows, provider suites). Streak 3 consecutive green. Native 39 NOT_RUN. ACC (`acc3b5c5`) requesting serialized cloud queue admission for newer main; admission will be sent by this Session once #1280 merges and queue is free.
+
+**E1 `e1e2b6b9` latest attempt:** returned **provider-limit no_output**. Native acceptance: **BLOCKED**, not passed. No retry of that attempt, no second native executor, no weekly-quota inference. All native acceptance remains NOT_RUN.
+
+**#1280 head `021be42b`:** `Evidence tools compile` passed; `Frontend typecheck + build` in_progress. No conflicts. Subscription owns completion — will merge immediately on green.
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | #1282 `8f62e6e3`, #1287 `f434923f` merged — PICK-ISSUES-DIALOG in-progress; source-exhausted after |
+| Chat / composer | `13576d11` | #1284 merged `34945b02`, #1288 merged `bf9f31fc`. Browser/native NOT_RUN |
+| Diff / files | `de6c02f4` | #1285 CI PASS (517/517), merge pending. ws.search-in-files-dialog REA extraction in-progress. Native NOT_RUN |
+| Sidebar | `27102e36` | #1286 merged (setting_up opacity). Native NOT_RUN |
+| Settings | `49e3976d` | Browser PASS (fixture). Env crash: UNRESOLVED, UNKNOWN cause, no crash log retrieved, Tao hypothesis only. NOT actively investigating. Native ALL NOT_RUN |
+| CONFIG-SYNC | `6013adf2` | #1283 merged `04a96d018`. Caffeinate: no product defect; ENOSPC environment hazard noted. Native NOT_RUN. Lane SOURCE_EXHAUSTED |
+| Terminal | `1f14fa82` | CLOSED — #1281 merged `8e847380` |
+| Packaging | `992a715e` | CLOSED — artifact confirmed |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — sole executor, latest attempt no_output, no retry, no second executor |
+
+### Serialized cloud runtime queue
+
+1. **#1280** CI await on `021be42b` → merge (`ddfc6518`) — then send ACC admission
+2. **#1285** merge confirm (`de6c02f4`)
+3. **ws.search-in-files-dialog REA extraction** (`de6c02f4`)
+4. **PICK-ISSUES-DIALOG** (`15faf4d8`)
+5. Settings env-crash — awaits native reproduction via E1
+
+### State
+
+- **Unowned cloud gaps: NONE**
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native only)
+- **ACC E2E:** PASS at `8f62e6e3` (run `43422109496`, streak 3, browser only). Admission for newer main pending #1280 merge. Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen — E1 BLOCKED (provider-limit), sole executor, no retry, no second executor
+- **Program bottleneck:** E1 provider limit (native acceptance); #1280 CI on `021be42b`
