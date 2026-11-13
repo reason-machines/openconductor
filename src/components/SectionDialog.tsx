@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Modal } from "./Dialogs";
+import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
+import { effectiveShortcuts } from "../keybindings/overrides";
+import { matchesEvent } from "../keybindings/shortcut";
 import { searchSectionEmoji } from "./sectionEmoji";
 
 export { SECTION_EMOJIS } from "./sectionEmoji";
@@ -15,6 +18,8 @@ interface Props {
 }
 
 export function SectionDialog({ data, onSubmit, onClose }: Props) {
+  const { overrides } = useKeybindingOverrides();
+  const primaryShortcuts = effectiveShortcuts("dialog.primaryAction", overrides);
   const creating = data.mode === "create";
   const [name, setName] = useState(data.mode === "edit" ? data.name : "");
   const [emoji, setEmoji] = useState<string | undefined>(data.mode === "edit" ? data.emoji : undefined);
@@ -33,7 +38,14 @@ export function SectionDialog({ data, onSubmit, onClose }: Props) {
     onClose();
   };
   return (
-    <Modal title={creating ? "New section" : "Edit section"} onClose={onClose}>
+    <Modal title={creating ? "New section" : "Edit section"} onClose={onClose}
+      onKeyDown={(event) => {
+        if (event.defaultPrevented || event.nativeEvent.isComposing) return;
+        if (!primaryShortcuts.some((key) => matchesEvent(key, event.nativeEvent))) return;
+        event.preventDefault();
+        submit();
+      }}
+    >
       <div
         className="modal-body section-dialog"
         onCompositionStart={() => {
@@ -84,7 +96,9 @@ export function SectionDialog({ data, onSubmit, onClose }: Props) {
           />
         </div>
         {picking && (
-          <div>
+          <div onKeyDown={(event) => {
+            if (primaryShortcuts.some((key) => matchesEvent(key, event.nativeEvent))) event.stopPropagation();
+          }}>
             <div className="repo-icon-search">
               <input
                 aria-label="Search emoji"
