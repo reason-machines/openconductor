@@ -525,3 +525,58 @@ Owner: Conductor Rebuild (this Session). `ConfigSyncDialog.tsx` lines 90 and 107
 ### Unowned implementable dialogs gap
 
 **None** at `327277f40`. All remaining dialogs source candidates require ACC behavioral admission before PR eligibility.
+
+## Diff / files lane reconciliation, main `67be967f6`, 13 November 2026
+
+Conductor Rebuild reconciled the diff/files lane (Session `de6c02f4`) against current main `67be967f6e4e3341909e1fb269eac941a0551d59`. No Mac launch, native capture, install, build, runner or dispatch. Static source-sweep and REA obligation cross-check only.
+
+REA reference: Conductor 0.87.6 artifact SHA-256 `0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d`. REA obligation ledger ID `rol_ba2a4881609d4eec7a8be78f1d5035ba6cd0f218c0073f39a66ceafade50e29c`. No new capture performed.
+
+### #1208 source qualification at main `c5d48d0d`, 13 November 2026
+
+Conductor Rebuild qualified `feat(files): add confined workspace text viewer` (#1208, merge commit `3babb66b`) against actual containing main `c5d48d0dbef74eeb13288770b6ad871224459a4d`. No Mac launch, native capture, install, build, runner or dispatch.
+
+**Source check:** `git merge-base --is-ancestor 3babb66b c5d48d0d` → confirmed on main. `git diff 3babb66b c5d48d0d -- src-tauri/src/workspace_file.rs src/features/files/WorkspaceFileView.tsx src/features/files/readText.ts src/features/files/readMarkdown.ts src/features/files/WorkspaceFileView.test.ts src/features/files/readText.test.ts src/features/files/workspaceFile.css src-tauri/src/lib.rs crates/openconductor-db/src/diff_comments.rs src/features/diff/EditInViewer.ts` → **empty**. All 10 implementation paths unchanged from merge commit to current main; no subsequent commit regressed the workspace-text viewer.
+
+**Unit tests at main `c5d48d0d`:** `node --experimental-strip-types --test --test-concurrency=1 src/features/files/readText.test.ts src/features/files/WorkspaceFileView.test.ts` → **27 passed, 0 failed, 0 skipped**.
+
+**TypeScript:** `npx tsc --noEmit` → **exit 0** (clean).
+
+Dependency #1222 (formatter-only) confirmed merged before `3babb66b`. Status: **SOURCE_QUALIFIED at `c5d48d0d`**. Behavioral and native remain NOT_RUN (require ACC admission and E1 respectively).
+
+### Merged increments (source → CI green → behavioral)
+
+All 23 merged diff/files source items carry green hosted CI at their exact heads. The two most recently merged are:
+
+| PR | Commit | Title | Behavioral | Native |
+|---|---|---|---|---|
+| [#1208](https://github.com/reason-machines/openconductor/pull/1208) | `3babb66b` | feat(files): add confined workspace text viewer | SOURCE_QUALIFIED (`c5d48d0d`) | NOT_RUN |
+| [#864](https://github.com/reason-machines/openconductor/pull/864) | `fa1cd4aa` | fix(diff): route the file-menu open shortcut to its selected file | NOT_RUN | NOT_RUN |
+
+Earlier merged items cover: selected-row scroll, comment counts at handoff, duplicate pending review comments, comment save failures, binary/empty-file fallback messages, large-file placeholder policy, independent inline comment drafts, inline draft remount, IME comment shortcut protection, moved comment anchors, whitespace editing, whole-file refresh, loading/error states, file ancestor reveal, Changes tree collapse retention, single-file summary hide, rename origins, empty-diff tab close, recent file view retention, filter no-match view, filter redirect, viewed marks across scopes, comment discard confirmation, changed comment draft preservation, Changes navigation order, and viewed-files flat ordering.
+
+### Source drift check at `c5d48d0d`
+
+Commits between the last lane-active main (`e586c968`) and current `c5d48d0d` that touch diff/files paths: **none**. The diff/files commits in that window (`fa1cd4aa` #864, `3babb66b` #1208) are this lane's own merges. Commits `9ba7c05b` (#1244 composer), `4ab3153ac` (#1245 settings), `67be967f6` (#859 chat), `dec1c94fc` (#1241 dialogs), `75d664977` (#1243 persistence), `e586c968` (#1239 terminal), `674cc4135` (#856 composer), `9923d277a` (#1240 composer), and `c5d48d0d` (#1247 ledger) touch no diff/files paths. All earlier evidence contracts remain materially current.
+
+### REA-proven gap: WORKSPACE-GREP (unimplementable this lane)
+
+REA obligation `ws.file-tree-search` (ledger `rol_ba2a4881…`) identifies Conductor's `grep_workspace` Tauri command (located at `list_file_tree, fuzzy_match_files, fuzzy_filter_files, grep_workspace` in artifact `0ba55751`) as a required obligation. At current main `67be967f6`, `grep_workspace` is **absent** from both `src/backend.ts` and `src-tauri/src/`: no frontend call, no Rust command handler, no registration in `src-tauri/src/lib.rs`. `fuzzy_filter_files` and `fuzzy_match_files` are implemented; `grep_workspace` is not.
+
+Status: **unimplementable from source alone**. The obligation explicitly requires `required_next_evidence: "Ghidra binding of the Rust #[tauri::command] handler"` before implementation can proceed. No PR opened; no product change. Assign to a lane with native REA access for Ghidra analysis.
+
+### Native acceptance checklist (21 items unverified)
+
+All 21 native behavioral checks remain unverified by the sole native executor (E1). The items span five categories matched against evidence in `evidence/diff/` and `evidence/files/`:
+
+| Category | Evidence refs | Native status |
+|---|---|---|
+| Changes list ordering/presentation | `changesPresentation.test.ts`, `changesTree.test.ts`, `changesFilter.test.ts`, `selected-row-scroll`, `changes-panel/` | 0/6 unverified |
+| Navigation | `nav.test.ts`, `viewed-navigation.md`, `viewed-flat-order.md`, `fileOpenShortcut.test.ts` | 0/4 unverified |
+| Retained file views | `workspace-text/`, `visited-file-retention.md`, `presentation-retention/` | 0/3 unverified |
+| Diff viewer editor/interaction | `EditInViewer.test.ts`, `hidden-whitespace-editing/`, `newInlineDraftRemount`, `commentSubmitPending/`, `commentSaveFailure/`, `fileCommentCountLifecycle.test.ts` | 0/6 unverified |
+| Files panel | `AllFilesTree.tsx` collapse/search/open toolbar, `workspace-text/` preview | 0/2 unverified |
+
+### Unowned implementable diff/files source gap
+
+**None** at `67be967f6`. The only REA-proven missing feature (`grep_workspace`) requires native Ghidra analysis before implementation. All other diff/files behaviors are either implemented or outside source reach of this lane. The 21 native items above are the concrete handoff to the sole native executor.

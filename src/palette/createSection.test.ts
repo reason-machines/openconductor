@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import * as sectionShortcutOverrides from "../keybindings/overrides.ts";
+import * as sectionShortcutMatcher from "../keybindings/shortcut.ts";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { test } from "node:test";
@@ -180,7 +182,12 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
   const modal: Partial<typeof import("../components/Dialogs")> = {};
   evaluate("../components/sectionEmoji.ts", {}, emojis);
   evaluate("../components/Dialogs.tsx", { "./Icons": { CloseIcon: inert }, "./motion/dialogMotion": { useDialogMotion: () => React.useRef(null) } }, modal);
-  evaluate("../components/SectionDialog.tsx", { "./Dialogs": modal, "./sectionEmoji": emojis }, dialog);
+  evaluate("../components/SectionDialog.tsx", {
+    "./Dialogs": modal, "./sectionEmoji": emojis,
+    "../keybindings/KeybindingsProvider": { useKeybindingOverrides: () => ({ overrides: {} }) },
+    "../keybindings/overrides": sectionShortcutOverrides,
+    "../keybindings/shortcut": sectionShortcutMatcher,
+  }, dialog);
   const Host = actualHost();
   const imports: Record<string, unknown> = {
     "@tauri-apps/api/core": { invoke: forbidden },

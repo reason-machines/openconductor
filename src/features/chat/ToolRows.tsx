@@ -566,7 +566,7 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
       const done = todos.filter((t) => t.status === "completed").length;
       const activeIndex = todos.findIndex((t) => t.status === "in_progress");
       const active = todos[activeIndex];
-      const content = todos.length > 0 ? todos.map((t) => `${t.status === "completed" ? "✓" : "○"} ${s(t.content)}`).join("\n") : undefined;
+      const content = todos.length > 0 ? todos.map((t) => `${t.status === "completed" ? "✓" : "○"} ${s(t.content)}`).join("\n") : name === "TodoRead" ? <p className="oc-task-empty">No todos</p> : undefined;
       if (name === "TodoWrite" && active && done > 0 && done < todos.length) {
         return (
           <>

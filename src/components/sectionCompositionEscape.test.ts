@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import * as sectionShortcutOverrides from "../keybindings/overrides.ts";
+import * as sectionShortcutMatcher from "../keybindings/shortcut.ts";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { test } from "node:test";
@@ -47,6 +49,9 @@ function fixture(data: SectionDialogMode, webkit = false) {
         if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
         if (name === "./motion/dialogMotion") return { useDialogMotion: () => React.useRef(null) };
         if (name in files) return load(files[name]);
+        if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }) };
+        if (name === "../keybindings/overrides") return sectionShortcutOverrides;
+        if (name === "../keybindings/shortcut") return sectionShortcutMatcher;
         throw new Error(`Unexpected section composition dependency: ${name}`);
       },
     });

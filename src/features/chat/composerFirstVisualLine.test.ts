@@ -99,6 +99,7 @@ function fixture({ draft = "keep this draft", caret = 4, end = caret, up = true,
   const composerExports: Partial<Pick<typeof import("./Composer"), "Composer">> = {};
   runInNewContext(javascript("Composer.tsx"), {
     exports: composerExports, CSS: { escape: (value: string) => value },
+    queueMicrotask(_cb: () => void) { /* deferred; navigation tests do not observe edit-entry focus */ },
     require(name: string) {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
       if (name.endsWith(".css")) return {};
