@@ -3,7 +3,8 @@
 // diff_comment* Tauri commands into conductor.db (commentsApi.ts); in a plain
 // browser they are kept in localStorage with the same semantics, so the UI can
 // be developed and checked without Tauri.
-import { deleteComment, editComment, markSent, migrateLocations, setThreadResolved, type DiffComment } from "./comments.ts";
+import { deleteComment, editComment, markSent, markReviewed, migrateLocations, setThreadResolved, type DiffComment } from "./comments.ts";
+import type { CommentAnchorUpdate } from "./comments.ts";
 
 export interface CommentStore {
   list(): Promise<DiffComment[]>;
@@ -14,6 +15,8 @@ export interface CommentStore {
   /** Resolve or reopen the thread with this key (see `threadKey`). */
   resolve(threadId: string, resolved: boolean): Promise<void>;
   markSent(ids: string[]): Promise<void>;
+  markReviewed(ids: string[]): Promise<void>;
+  updateAnchors(updates: CommentAnchorUpdate[]): Promise<void>;
   /** Pull the workspace PR's comments from GitHub into the store (app only). */
   syncGithub?(): Promise<GithubSyncReport>;
   /** Resolve a GitHub review thread on GitHub, then here (app only). */
@@ -28,6 +31,19 @@ export interface GithubSyncReport {
   review_comments: number;
   general_comments: number | null;
   changed: number;
+}
+
+const reviewListeners = new Map<string, Set<() => void>>();
+
+export function subscribeReviewComments(workspaceId: string, listener: () => void): () => void {
+  let listeners = reviewListeners.get(workspaceId);
+  if (!listeners) { listeners = new Set(); reviewListeners.set(workspaceId, listeners); }
+  listeners.add(listener);
+  return () => { listeners.delete(listener); if (listeners.size === 0) reviewListeners.delete(workspaceId); };
+}
+
+export function reviewCommentsChanged(workspaceId: string): void {
+  for (const listener of reviewListeners.get(workspaceId) ?? []) listener();
 }
 
 type KV = Pick<Storage, "getItem" | "setItem">;
@@ -58,5 +74,14 @@ export function localCommentStore(storage: KV, workspaceId: string, now: () => n
     remove: (id) => write((cs) => deleteComment(cs, id)),
     resolve: (threadId, resolved) => write((cs) => setThreadResolved(cs, threadId, resolved, now())),
     markSent: (ids) => write((cs) => markSent(cs, new Set(ids), now())),
+    markReviewed: async (ids) => {
+      await write((cs) => markReviewed(cs, new Set(ids), now()));
+      reviewCommentsChanged(workspaceId);
+    },
+    updateAnchors: (updates) => write((cs) => cs.map((c) => {
+      const update = updates.find((u) => u.id === c.id);
+      return update && c.remote_url === null && !c.file_level
+        ? { ...c, line_number: update.line_number, end_line_number: update.end_line_number, updated_at: now() } : c;
+    })),
   };
 }

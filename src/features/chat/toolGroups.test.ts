@@ -256,6 +256,48 @@ test("a running turn is one block marked running, so the view keeps it open", ()
   assert.equal(rows.filter((r) => r.kind === "agent").length, 1);
 });
 
+for (const name of ["ExitPlanMode", "AskUserQuestion"]) {
+  test(`${name} stays inline and supersedes earlier text as the turn preview`, () => {
+    const rows = fold([
+      m("a1", "assistant", [said("Earlier explanation")]),
+      m("a2", "assistant", [use("r1", "Read")]),
+      m("a3", "assistant", [use("request", name)]),
+      m("a4", "assistant", [use("r2", "Read")]),
+      m("a5", "assistant", [use("r3", "Read")]),
+      done("t1"),
+    ]);
+    assert.deepEqual(describe(rows), [`"Earlier explanation" Read ${name} Read Read`, "turn_end"]);
+    const agent = rows[0];
+    assert.ok(agent?.kind === "agent");
+    assert.deepEqual(agent.items.flatMap((item) => item.kind === "part" && item.preview ? [item.messageKey] : []), ["a3"]);
+  });
+
+  test(`${name} protects its entire message and splits surrounding summaries`, () => {
+    const rows = fold([
+      ...["a1", "a2", "a3"].map((id) => m(id, "assistant", [use(id, "Read")])),
+      m("request", "assistant", [said("Please review"), use("request", name), use("extra", "Read")]),
+      ...["b1", "b2", "b3"].map((id) => m(id, "assistant", [use(id, "Read")])),
+      m("final", "assistant", [said("Final response")]),
+      done("t1"),
+    ]);
+    assert.deepEqual(describe(rows), [`[3 tool calls] "Please review" ${name} Read [3 tool calls] "Final response"`, "turn_end"]);
+    const agent = rows[0];
+    assert.ok(agent?.kind === "agent");
+    assert.deepEqual(agent.items.flatMap((item) => item.kind === "part" && item.preview ? [item.messageKey] : []), ["request", "request", "request", "final"]);
+  });
+}
+
+test("a request stays inline in an earlier assistant block separated by a system message", () => {
+  const rows = fold([
+    ...["a1", "a2", "a3"].map((id) => m(id, "assistant", [use(id, "Read")])),
+    m("request", "assistant", [use("request", "AskUserQuestion")]),
+    m("system", "system", [said("Context changed")]),
+    m("final", "assistant", [said("Final response")]),
+    done("t1"),
+  ]);
+  assert.deepEqual(describe(rows), ["[3 tool calls] AskUserQuestion", "system", '"Final response"', "turn_end"]);
+});
+
 test("different turns stay separate blocks", () => {
   const rows = fold([running("t1"), m("u1", "user", [said("a")]), m("a1", "assistant", [said("one")]), done("t1"), running("t2"), m("u2", "user", [said("b")], "t2"), m("a2", "assistant", [said("two")], "t2"), done("t2")]);
   assert.deepEqual(describe(rows), ["user", '"one"', "turn_end", "user", '"two"', "turn_end"]);

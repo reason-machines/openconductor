@@ -1,0 +1,76 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude initial pending status displays Checking before any provider record arrives
+ok 1 - Claude initial pending status displays Checking before any provider record arrives
+  ---
+  duration_ms: 343.229618
+  type: 'test'
+  ...
+# Subtest: Claude settled signed-out status retains login action and enabled Refresh
+ok 2 - Claude settled signed-out status retains login action and enabled Refresh
+  ---
+  duration_ms: 199.064951
+  type: 'test'
+  ...
+# Subtest: Claude signed-out Refresh displays Checking while both status responses remain pending
+ok 3 - Claude signed-out Refresh displays Checking while both status responses remain pending
+  ---
+  duration_ms: 156.460014
+  type: 'test'
+  ...
+# Subtest: Claude signed-out Refresh displays Checking while CLI status alone remains pending
+ok 4 - Claude signed-out Refresh displays Checking while CLI status alone remains pending
+  ---
+  duration_ms: 123.68155
+  type: 'test'
+  ...
+# Subtest: Claude authenticated Refresh preserves Connected and settles without launching login
+ok 5 - Claude authenticated Refresh preserves Connected and settles without launching login
+  ---
+  duration_ms: 118.039436
+  type: 'test'
+  ...
+# (node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Codex initial pending status displays Checking before any provider record arrives
+ok 6 - Codex initial pending status displays Checking before any provider record arrives
+  ---
+  duration_ms: 572.64198
+  type: 'test'
+  ...
+# Subtest: Codex settled signed-out status retains login action and enabled Refresh
+ok 7 - Codex settled signed-out status retains login action and enabled Refresh
+  ---
+  duration_ms: 358.955001
+  type: 'test'
+  ...
+# Subtest: Codex signed-out Refresh displays Checking while both status responses remain pending
+ok 8 - Codex signed-out Refresh displays Checking while both status responses remain pending
+  ---
+  duration_ms: 366.859985
+  type: 'test'
+  ...
+# Subtest: Codex signed-out Refresh displays Checking while CLI status alone remains pending
+ok 9 - Codex signed-out Refresh displays Checking while CLI status alone remains pending
+  ---
+  duration_ms: 226.664777
+  type: 'test'
+  ...
+# Subtest: Codex authenticated Refresh preserves Connected and settles without launching login
+ok 10 - Codex authenticated Refresh preserves Connected and settles without launching login
+  ---
+  duration_ms: 274.379733
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4191.964961

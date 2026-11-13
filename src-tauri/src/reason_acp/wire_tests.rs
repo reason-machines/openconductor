@@ -61,6 +61,7 @@ fn tool_paths_say_local_or_cloud_with_the_same_relative_path() {
         kind: "edit".into(),
         status: ToolStatus::Completed,
         output: None,
+        raw_result: None,
         diffs: Vec::new(),
         locations: vec![
             map_path("/Users/sven/project/src/a.rs", cwd),
@@ -79,6 +80,7 @@ fn tool_paths_say_local_or_cloud_with_the_same_relative_path() {
     assert_eq!(locs[1]["relative"], "src/a.rs");
     assert_eq!(v["toolName"], Value::Null);
     assert_eq!(v["rawInput"], Value::Null);
+    assert!(v.get("rawResult").is_none());
 }
 
 #[test]
@@ -89,6 +91,7 @@ fn tool_rows_carry_the_provider_tool_name_and_raw_input() {
         kind: "search".into(),
         status: ToolStatus::Running,
         output: None,
+        raw_result: None,
         diffs: Vec::new(),
         locations: Vec::new(),
         tool_name: Some("Grep".into()),
@@ -100,6 +103,32 @@ fn tool_rows_carry_the_provider_tool_name_and_raw_input() {
         v["rawInput"],
         json!({ "pattern": "redirectTo", "path": "src" })
     );
+}
+
+#[test]
+fn raw_result_is_typed_and_does_not_replace_output_text() {
+    let object = json!({"diffString": "-before\n+after"});
+    for content in [
+        object.clone(),
+        Value::String(object.to_string()),
+        Value::Null,
+    ] {
+        let row = ToolRow {
+            id: "edit".into(),
+            title: "Edit".into(),
+            kind: "edit".into(),
+            status: ToolStatus::Completed,
+            output: Some(object.to_string()),
+            raw_result: Some(content.clone()),
+            diffs: Vec::new(),
+            locations: Vec::new(),
+            tool_name: Some("Edit".into()),
+            raw_input: None,
+        };
+        let value = event_json("c", &ProviderEvent::Agent(AgentEvent::Tool(Box::new(row))));
+        assert_eq!(value.get("rawResult"), Some(&content));
+        assert_eq!(value["output"], object.to_string());
+    }
 }
 
 #[test]

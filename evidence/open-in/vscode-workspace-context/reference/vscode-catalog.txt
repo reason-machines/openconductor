@@ -1,0 +1,1 @@
+{id:"vscode",displayName:"VS Code",appName:"Visual Studio Code",iconType:"code",supportsFileOpen:!0,icon:"/app-icons/vscode.png",supportsLineNumbers:!0,cliBinDir:"Contents/Resources/app/bin"},

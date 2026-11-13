@@ -1,0 +1,42 @@
+{
+  "owner": "c18e1b05-4951-4a98-a90b-a9f7405ecc2d",
+  "candidate": "NOTIFY-MENTION-PERMISSION-C18-03",
+  "machine": "00637189-5c55-416e-b457-ed7419fb739a",
+  "branch": "reason/openconductor-notificati-c18e1b05",
+  "baseline_main": "869d6efad0cdeb6a889538978f3e6416f0e3a2c2",
+  "source_freeze_sha256": "0c2d20465a79f356af25b527e0b54b6b2f58af90c029557557e15a06b3495fd3",
+  "candidate_patch_sha256": "8a17a3d36ad7f02562afa46546eeededc378223b2bf70aa8a757a51a0d664e4c",
+  "unchanged_red_green_command": "NOTIFICATION_DEPS=\"$PWD\" NOTIFICATION_SOURCE_ROOT=\"$PWD\" nice -n 19 timeout --kill-after=5s 60s node --test --test-concurrency=1 evidence/settings/notification-permission/mention-gate/replay.test.cjs",
+  "expected_red": {
+    "pass": 2,
+    "fail": 6,
+    "setup_fail": 0,
+    "skip": 0,
+    "controls": [
+      "disable bypasses denied permission",
+      "already granted enables without feedback"
+    ]
+  },
+  "expected_green": {
+    "pass": 8,
+    "fail": 0,
+    "skip": 0
+  },
+  "adjacent_command": "NOTIFICATION_DEPS=\"$PWD\" NOTIFICATION_SOURCE_ROOT=\"$PWD\" nice -n 19 timeout --kill-after=5s 60s node --test --test-concurrency=1 evidence/settings/notification-permission/replay/notificationGate.test.cjs evidence/settings/notification-permission/replay/concurrentSettings.test.cjs evidence/settings/notification-permission/denial-feedback/replay.test.cjs",
+  "expected_adjacent": {
+    "pass": 16,
+    "fail": 0
+  },
+  "typecheck_command": "nice -n 19 timeout --kill-after=5s 90s node node_modules/typescript/bin/tsc --noEmit",
+  "proposed_source_sha256": "72eb0193654acce1af05932e1ad104127ca6afd7094fa5fbf2c116baea16a45e",
+  "admission": "NOT_ADMITTED",
+  "runtime_run": false,
+  "stop": [
+    "Any dependency/setup/import/source-pin failure",
+    "Unexpected RED/control result",
+    "Timeout or resource warning",
+    "No install, fetch, dependency or frozen fixture edits",
+    "No retries, background helper, watcher, UI, native, provider, package or manual CI dispatch"
+  ],
+  "preserve": "Original #1170 proof, all frozen notification evidence, dot-prefix fixtures, root lock, existing ledger/ACC/E1/#992 owners and order; no cloud UI."
+}

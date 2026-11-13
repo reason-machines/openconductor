@@ -1,0 +1,38 @@
+(node:79) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pending record rename accepts a later checked preference without adding a captured branch request
+ok 1 - pending record rename accepts a later checked preference without adding a captured branch request
+  ---
+  duration_ms: 92.91336
+  type: 'test'
+  ...
+# Subtest: pending record rename accepts a later unchecked preference without cancelling the captured branch request
+ok 2 - pending record rename accepts a later unchecked preference without cancelling the captured branch request
+  ---
+  duration_ms: 33.751385
+  type: 'test'
+  ...
+# Subtest: pending branch rename keeps its checkbox editable and the primary action locked
+ok 3 - pending branch rename keeps its checkbox editable and the primary action locked
+  ---
+  duration_ms: 33.987611
+  type: 'test'
+  ...
+# Subtest: empty and detached branches stay ineligible before and during record rename
+ok 4 - empty and detached branches stay ineligible before and during record rename
+  ---
+  duration_ms: 40.624528
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 777.530378

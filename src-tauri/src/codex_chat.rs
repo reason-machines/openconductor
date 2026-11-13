@@ -25,11 +25,11 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex, OnceLock};
 
 use serde_json::Value;
-use tauri::{AppHandle, Emitter, Runtime, State};
+use tauri::{AppHandle, Emitter, Manager, Runtime, State};
 
 use crate::agent::codex_cli::{ApprovalPolicy, CodexPolicy, SandboxMode};
 use crate::agent::codex_consent::ConsentAnswer;
-use crate::agent::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions};
+use crate::agent::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions, TurnOptions};
 use crate::agent::codex_runner::{CodexRunner, RunnerConfig, Sink, Timeouts};
 use crate::agent::codex_wire::{Payload, TurnEnd};
 use crate::agent_binaries::{Agent, BinaryManager};
@@ -95,6 +95,28 @@ fn event_json(chat_id: &str, payload: &Payload) -> Value {
     v
 }
 
+enum OpenPolicyDecision {
+    ExistingRunner,
+    NewRunner(CodexPolicy),
+}
+
+fn open_policy_event(
+    chat_id: &str,
+    incoming_policy: Option<CodexPolicy>,
+    decision: OpenPolicyDecision,
+) -> Value {
+    let (existing_runner, selected_policy) = match decision {
+        OpenPolicyDecision::ExistingRunner => (true, None),
+        OpenPolicyDecision::NewRunner(policy) => (false, Some(policy)),
+    };
+    serde_json::json!({
+        "chatId": chat_id,
+        "incomingPolicy": incoming_policy,
+        "existingRunner": existing_runner,
+        "selectedPolicy": selected_policy,
+    })
+}
+
 /// Absolute path of the `codex` the chat would run now, or null.
 #[tauri::command]
 pub async fn codex_cli_path<R: Runtime>(app: AppHandle<R>) -> Result<Option<String>, String> {
@@ -113,6 +135,12 @@ pub async fn codex_open_chat<R: Runtime>(
     policy: Option<CodexPolicy>,
 ) -> Result<(), String> {
     if state.chats.lock().unwrap().contains_key(&chat_id) {
+        if crate::e2e::enabled() {
+            crate::e2e::log_event(
+                "codex-open",
+                &open_policy_event(&chat_id, policy, OpenPolicyDecision::ExistingRunner),
+            );
+        }
         return Ok(());
     }
     let cwd = PathBuf::from(cwd);
@@ -121,6 +149,10 @@ pub async fn codex_open_chat<R: Runtime>(
     // the bundled copy (waits for its download), else the CLI on the login
     // shell's PATH (agent_launch.rs).
     let mut launch = settings.codex_launch(&cwd)?;
+    // Per-turn requests carry effort and Fast; process overrides would mask explicit off.
+    launch
+        .config
+        .retain(|(key, _)| key != "model_reasoning_effort" && key != "service_tier");
     let launch_app = app.clone();
     launch.executable = tauri::async_runtime::spawn_blocking(move || {
         crate::agent_launch::launch(&launch_app, Agent::Codex)
@@ -137,12 +169,29 @@ pub async fn codex_open_chat<R: Runtime>(
             model: None,
             policy: policy.unwrap_or_else(default_policy),
             developer_instructions: None,
+            fast_mode: Some(
+                settings
+                    .get()
+                    .map_err(|e| e.to_string())?
+                    .models
+                    .default_fast_mode,
+            ),
         },
         resume: thread_id,
         client_name: "openconductor".into(),
         client_version: env!("CARGO_PKG_VERSION").into(),
         timeouts: Timeouts::default(),
     };
+    if crate::e2e::enabled() {
+        crate::e2e::log_event(
+            "codex-open",
+            &open_policy_event(
+                &chat_id,
+                policy,
+                OpenPolicyDecision::NewRunner(config.thread.policy),
+            ),
+        );
+    }
     let chat = chat_id.clone();
     let sink: Sink = Arc::new(move |payload: Payload| {
         let event = event_json(&chat, &payload);
@@ -154,32 +203,71 @@ pub async fn codex_open_chat<R: Runtime>(
     Ok(())
 }
 
+fn prompt_effort(
+    model: Option<&str>,
+    effort: Option<String>,
+    default_effort: impl FnOnce() -> Option<String>,
+) -> Option<String> {
+    if model.is_some() {
+        effort
+    } else {
+        effort.or_else(default_effort)
+    }
+}
+
 /// Runs one prompt (after any still queued); events arrive meanwhile.
-/// Without `effort`, the Codex thinking level from settings is used.
+/// Without a picked model or effort, the Codex thinking level from settings is used.
+#[allow(clippy::too_many_arguments)]
 #[tauri::command]
-pub async fn codex_prompt(
-    state: State<'_, CodexChats>,
-    settings: State<'_, SettingsService>,
+pub async fn codex_prompt<R: Runtime>(
+    app: AppHandle<R>,
     chat_id: String,
     text: String,
     model: Option<String>,
     effort: Option<String>,
+    fast_mode: Option<bool>,
+    on_handoff: tauri::ipc::Channel<()>,
 ) -> Result<TurnEnd, String> {
-    let runner = state.get(&chat_id)?;
-    let effort = effort.or_else(|| {
+    let runner = app.state::<CodexChats>().get(&chat_id)?;
+    let settings = app.state::<SettingsService>();
+    let effort = prompt_effort(model.as_deref(), effort, || {
         let level = settings.get().ok()?.models.codex.default_thinking_level;
         serde_json::to_value(level)
             .ok()?
             .as_str()
             .map(str::to_owned)
     });
-    let end = runner.prompt(text, model, effort);
+    let fast_mode = fast_mode.or_else(|| settings.get().ok().map(|s| s.models.default_fast_mode));
+    let end = runner.prompt_with_handoff(
+        text,
+        TurnOptions {
+            model,
+            effort,
+            fast_mode,
+        },
+        Some(Box::new(move || {
+            let _ = on_handoff.send(());
+        })),
+    );
     tauri::async_runtime::spawn_blocking(move || {
         end.recv()
             .unwrap_or_else(|_| TurnEnd::failed("The Codex chat closed."))
     })
     .await
     .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn codex_mcp_status(
+    state: State<'_, CodexChats>,
+    chat_id: String,
+) -> Result<Vec<crate::agent::mcp_status::McpServer>, String> {
+    let runner = state.get(&chat_id)?;
+    let reply = runner.mcp_status(crate::agent::mcp_status::TIMEOUT);
+    drop(runner);
+    tauri::async_runtime::spawn_blocking(move || reply.receive())
+        .await
+        .map_err(|e| e.to_string())?
 }
 
 #[tauri::command]
@@ -228,6 +316,32 @@ mod tests {
     use crate::agent::codex_wire::Outcome;
 
     #[test]
+    fn picked_model_effort_does_not_inherit_app_defaults() {
+        assert_eq!(
+            prompt_effort(Some("dynamic-model"), None, || panic!(
+                "explicit model must not read default effort"
+            )),
+            None
+        );
+        assert_eq!(
+            prompt_effort(Some("dynamic-model"), Some("high".into()), || panic!(
+                "explicit effort must not read defaults"
+            )),
+            Some("high".into())
+        );
+        assert_eq!(
+            prompt_effort(None, Some("low".into()), || panic!(
+                "explicit effort must not read defaults"
+            )),
+            Some("low".into())
+        );
+        assert_eq!(
+            prompt_effort(None, None, || Some("medium".into())),
+            Some("medium".into())
+        );
+    }
+
+    #[test]
     fn events_carry_the_chat_id_beside_the_payload() {
         let v = event_json(
             "ws-1",
@@ -242,6 +356,71 @@ mod tests {
             v,
             serde_json::json!({"type": "turnEnded", "outcome": "completed", "chatId": "ws-1"})
         );
+    }
+
+    #[test]
+    fn new_runner_policy_event_preserves_the_supplied_policy() {
+        let policy = CodexPolicy::new(ApprovalPolicy::OnRequest, SandboxMode::WorkspaceWrite);
+        assert_eq!(
+            open_policy_event("ws-1", Some(policy), OpenPolicyDecision::NewRunner(policy)),
+            serde_json::json!({
+                "chatId": "ws-1",
+                "incomingPolicy": {"approvalPolicy": "on-request", "sandbox": "workspace-write"},
+                "existingRunner": false,
+                "selectedPolicy": {"approvalPolicy": "on-request", "sandbox": "workspace-write"},
+            })
+        );
+    }
+
+    #[test]
+    fn new_runner_policy_event_distinguishes_missing_and_inherited_policy() {
+        assert_eq!(
+            open_policy_event(
+                "ws-1",
+                None,
+                OpenPolicyDecision::NewRunner(default_policy())
+            ),
+            serde_json::json!({
+                "chatId": "ws-1",
+                "incomingPolicy": null,
+                "existingRunner": false,
+                "selectedPolicy": {"approvalPolicy": "never", "sandbox": "danger-full-access"},
+            })
+        );
+        assert_eq!(
+            open_policy_event(
+                "ws-1",
+                Some(CodexPolicy::inherit()),
+                OpenPolicyDecision::NewRunner(CodexPolicy::inherit())
+            ),
+            serde_json::json!({
+                "chatId": "ws-1",
+                "incomingPolicy": {},
+                "existingRunner": false,
+                "selectedPolicy": {},
+            })
+        );
+    }
+
+    #[test]
+    fn existing_runner_policy_event_does_not_claim_its_retained_policy() {
+        for incoming in [
+            None,
+            Some(CodexPolicy::new(
+                ApprovalPolicy::OnRequest,
+                SandboxMode::ReadOnly,
+            )),
+        ] {
+            assert_eq!(
+                open_policy_event("ws-1", incoming, OpenPolicyDecision::ExistingRunner),
+                serde_json::json!({
+                    "chatId": "ws-1",
+                    "incomingPolicy": incoming,
+                    "existingRunner": true,
+                    "selectedPolicy": null,
+                })
+            );
+        }
     }
 
     #[test]

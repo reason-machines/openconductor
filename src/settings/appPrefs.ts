@@ -1,6 +1,7 @@
 // App preferences kept in conductor.db's `settings` table (src-tauri/src/app_prefs),
 // not in settings.toml: Conductor registers these keys as non-file-backed. One shared
 // store per window; every write goes through a typed `set_app_pref` update.
+import { persistenceOwner } from "../lib/persistence/restartPersistence.ts";
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { useSyncExternalStore } from "react";
 import type { SendKeyMode } from "../keybindings/registry.ts";
@@ -129,20 +130,40 @@ function publish(next: AppPrefs): void {
   for (const l of listeners) l();
 }
 
+let confirmed = current;
+const pendingWrites = new Set<{ update: AppPrefUpdate }>();
+let nativeOperations = Promise.resolve();
+const preferenceWrites = persistenceOwner();
+
+function enqueueNative<T>(operation: () => Promise<T>, key?: string): Promise<T> {
+  const queued = () => nativeOperations.then(operation);
+  const result = key === undefined ? queued() : preferenceWrites.run(queued, undefined, key);
+  nativeOperations = result.then(() => undefined, () => undefined);
+  return result;
+}
+
+function publishConfirmed(next: AppPrefs): AppPrefs {
+  confirmed = next;
+  for (const { update } of pendingWrites) next = applyUpdate(next, update);
+  publish(next);
+  return current;
+}
+
 /** Read every preference from the database once; later reads come from the store. */
 export async function loadAppPrefs(): Promise<AppPrefs> {
   if (!isTauri()) return current;
-  const prefs = await invoke<AppPrefs>("get_app_prefs");
-  ready = true;
-  publish(prefs);
-  loaded = true;
-  return current;
+  return enqueueNative(async () => {
+    const prefs = await invoke<AppPrefs>("get_app_prefs");
+    ready = true;
+    loaded = true;
+    return publishConfirmed(prefs);
+  });
 }
 
 /** Write one preference. The store updates at once and settles on what the database holds. */
 export async function setAppPref(update: AppPrefUpdate): Promise<AppPrefs> {
-  publish(applyUpdate(current, update));
   if (!isTauri()) {
+    publish(applyUpdate(current, update));
     if (update.key === "sidebar_sort_by" || update.key === "sidebar_group_by" || update.key === "sidebar_repo_filter") {
       try {
         if (update.value === null) localStorage.removeItem(`openconductor.${update.key}`);
@@ -151,20 +172,29 @@ export async function setAppPref(update: AppPrefUpdate): Promise<AppPrefs> {
     }
     return current;
   }
-  try {
-    publish(await invoke<AppPrefs>("set_app_pref", { update }));
-  } catch (err) {
-    await loadAppPrefs().catch(() => undefined);
-    throw err;
-  }
-  return current;
+  const pending = { update };
+  pendingWrites.add(pending);
+  publish(applyUpdate(current, update));
+  return enqueueNative(async () => {
+    try {
+      const prefs = await invoke<AppPrefs>("set_app_pref", { update });
+      pendingWrites.delete(pending);
+      return publishConfirmed(prefs);
+    } catch (err) {
+      pendingWrites.delete(pending);
+      const prefs = await invoke<AppPrefs>("get_app_prefs").catch(() => confirmed);
+      publishConfirmed(prefs);
+      throw err;
+    }
+  }, update.key);
 }
 
 /** "Open in <app>": makes it the default and moves it to the front of the MRU order. */
 export async function recordOpenIn(appId: string, isRemote?: boolean): Promise<AppPrefs> {
   if (!isTauri()) return current;
-  publish(await invoke<AppPrefs>("record_open_in", { appId, isRemote: isRemote ?? null }));
-  return current;
+  return enqueueNative(async () => publishConfirmed(
+    await invoke<AppPrefs>("record_open_in", { appId, isRemote: isRemote ?? null }),
+  ), "openIn");
 }
 
 export function getAppPrefs(): AppPrefs {

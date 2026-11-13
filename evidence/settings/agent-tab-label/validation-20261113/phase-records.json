@@ -1,0 +1,262 @@
+[
+  {
+    "name": "normal-main-merge",
+    "argv": [
+      "git",
+      "merge",
+      "--no-edit",
+      "origin/main"
+    ],
+    "started_at": "2026-11-13T02:28:04.584148+00:00",
+    "timeout_s": 45,
+    "pid": 77,
+    "exit_code": 0,
+    "elapsed_s": 0.7152902290035854,
+    "finished_at": "2026-11-13T02:28:05.299440+00:00",
+    "stdout_sha256": "96459c67c04e58f638cb811140a126b6caf5ccc6da97a5ce8aa118d31be46b4d",
+    "stderr_sha256": "8cef96736913936c654d2c590c77196b24ba68e6a5540496c1d62eb91803e3a6"
+  },
+  {
+    "name": "main-identity",
+    "argv": [
+      "git",
+      "rev-parse",
+      "origin/main"
+    ],
+    "started_at": "2026-11-13T02:28:05.299878+00:00",
+    "timeout_s": 45,
+    "pid": 182,
+    "exit_code": 0,
+    "elapsed_s": 0.0016079470005934127,
+    "finished_at": "2026-11-13T02:28:05.301486+00:00",
+    "stdout_sha256": "2f7475a79b94ca668be3a67eb3a1f2dad5e7e2b0fd7a50ecb62816a25305aeb2",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "main-tree",
+    "argv": [
+      "git",
+      "rev-parse",
+      "origin/main^{tree}"
+    ],
+    "started_at": "2026-11-13T02:28:05.301707+00:00",
+    "timeout_s": 45,
+    "pid": 183,
+    "exit_code": 0,
+    "elapsed_s": 0.0035780340040219016,
+    "finished_at": "2026-11-13T02:28:05.305290+00:00",
+    "stdout_sha256": "ff460710503e33a14194b2f6fa760a8fafcdb54e58724996056d0a630777960b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "head-identity",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "started_at": "2026-11-13T02:28:05.305613+00:00",
+    "timeout_s": 45,
+    "pid": 184,
+    "exit_code": 0,
+    "elapsed_s": 0.0015210739948088303,
+    "finished_at": "2026-11-13T02:28:05.307135+00:00",
+    "stdout_sha256": "94bddc650fc8f06436e3538b3f444be70bce5aa04b647d10de6d6eb5b71d08f6",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "baseline-guard",
+    "argv": [
+      "python3",
+      "-B",
+      "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.ara-state/tab8-admitted-20261113T0226/verify_current.py",
+      "--phase",
+      "baseline"
+    ],
+    "started_at": "2026-11-13T02:28:05.353181+00:00",
+    "timeout_s": 45,
+    "pid": 206,
+    "exit_code": 0,
+    "elapsed_s": 0.11400393999792868,
+    "finished_at": "2026-11-13T02:28:05.467190+00:00",
+    "stdout_sha256": "7e878a711e8d2457b8e36d8320a7955f48ad72b3558b7f43bf61c24107f03537",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "red",
+    "argv": [
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=5s",
+      "115s",
+      "nice",
+      "-n",
+      "19",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs"
+    ],
+    "started_at": "2026-11-13T02:28:05.468324+00:00",
+    "timeout_s": 120,
+    "pid": 248,
+    "exit_code": 1,
+    "elapsed_s": 2.468839506000222,
+    "finished_at": "2026-11-13T02:28:07.937172+00:00",
+    "stdout_sha256": "e91e836f42291e2df12bd2d6b9a3588ed9d37574883f99787ffe2c2829c1d6e8",
+    "stderr_sha256": "237a5254baba7ce891bfbdcf586d320e6e09eebd7390a95300be9740c5059b6e"
+  },
+  {
+    "name": "red-inspection",
+    "argv": [
+      "python3",
+      "-B",
+      "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/inspect_tap.py",
+      "--phase",
+      "red",
+      "--exit-code",
+      "1",
+      "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.ara-state/tab8-admitted-20261113T0226/red.stdout"
+    ],
+    "started_at": "2026-11-13T02:28:07.938654+00:00",
+    "timeout_s": 45,
+    "pid": 264,
+    "exit_code": 0,
+    "elapsed_s": 0.03351235700392863,
+    "finished_at": "2026-11-13T02:28:07.972170+00:00",
+    "stdout_sha256": "5bc1b0e75a094f4a81def03bd9c0db67e5cd7f3067e3d39b25031f2622614749",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "candidate-apply-check",
+    "argv": [
+      "git",
+      "apply",
+      "--check",
+      "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/product.patch"
+    ],
+    "started_at": "2026-11-13T02:28:07.972738+00:00",
+    "timeout_s": 45,
+    "pid": 265,
+    "exit_code": 0,
+    "elapsed_s": 0.0037436559941852465,
+    "finished_at": "2026-11-13T02:28:07.976483+00:00",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "candidate-apply",
+    "argv": [
+      "git",
+      "apply",
+      "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/product.patch"
+    ],
+    "started_at": "2026-11-13T02:28:07.976806+00:00",
+    "timeout_s": 45,
+    "pid": 266,
+    "exit_code": 0,
+    "elapsed_s": 0.0035901730007026345,
+    "finished_at": "2026-11-13T02:28:07.980397+00:00",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "candidate-guard",
+    "argv": [
+      "python3",
+      "-B",
+      "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.ara-state/tab8-admitted-20261113T0226/verify_current.py",
+      "--phase",
+      "candidate"
+    ],
+    "started_at": "2026-11-13T02:28:07.980670+00:00",
+    "timeout_s": 45,
+    "pid": 267,
+    "exit_code": 0,
+    "elapsed_s": 0.11452556699805427,
+    "finished_at": "2026-11-13T02:28:08.095202+00:00",
+    "stdout_sha256": "f0570ade9f426709d4f1706680f96f3fa406e18600765f275ccf735e01ea7736",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "green",
+    "argv": [
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=5s",
+      "115s",
+      "nice",
+      "-n",
+      "19",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs"
+    ],
+    "started_at": "2026-11-13T02:28:08.095720+00:00",
+    "timeout_s": 120,
+    "pid": 309,
+    "exit_code": 0,
+    "elapsed_s": 2.5273837729982915,
+    "finished_at": "2026-11-13T02:28:10.623108+00:00",
+    "stdout_sha256": "ca17fda3643c7c00d98b473d6d76ee34b662c56c70f4faadd8da766cd9be07a8",
+    "stderr_sha256": "21192efaae35b24a471cef6234be37801e6596232d4d89889c4ca50c252b5bbe"
+  },
+  {
+    "name": "green-inspection",
+    "argv": [
+      "python3",
+      "-B",
+      "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/inspect_tap.py",
+      "--phase",
+      "green",
+      "--exit-code",
+      "0",
+      "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.ara-state/tab8-admitted-20261113T0226/green.stdout"
+    ],
+    "started_at": "2026-11-13T02:28:10.623740+00:00",
+    "timeout_s": 45,
+    "pid": 325,
+    "exit_code": 0,
+    "elapsed_s": 0.03198537899879739,
+    "finished_at": "2026-11-13T02:28:10.655730+00:00",
+    "stdout_sha256": "e956c0ced1a95460469046dc1935954591d976c7cd6c2ecb3450decb7c0c7905",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "final-candidate-guard",
+    "argv": [
+      "python3",
+      "-B",
+      "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.ara-state/tab8-admitted-20261113T0226/verify_current.py",
+      "--phase",
+      "candidate"
+    ],
+    "started_at": "2026-11-13T02:28:10.656246+00:00",
+    "timeout_s": 45,
+    "pid": 326,
+    "exit_code": 0,
+    "elapsed_s": 0.11405861800449202,
+    "finished_at": "2026-11-13T02:28:10.770310+00:00",
+    "stdout_sha256": "f0570ade9f426709d4f1706680f96f3fa406e18600765f275ccf735e01ea7736",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "diff-check",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "started_at": "2026-11-13T02:28:10.770852+00:00",
+    "timeout_s": 45,
+    "pid": 368,
+    "exit_code": 0,
+    "elapsed_s": 0.015851346994168125,
+    "finished_at": "2026-11-13T02:28:10.786706+00:00",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

@@ -1,0 +1,75 @@
+name: Workspace header context menu
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: workspace-header-menu-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  header-menu:
+    name: Header menu paired RED/GREEN (hosted browser demo)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HEADER_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      HEADER_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Set hosted artifact directory
+        run: echo "HEADER_OUT=$RUNNER_TEMP/workspace-header-menu" >> "$GITHUB_ENV"
+      - name: Frozen fixture and fail-closed result contract
+        run: |
+          echo "47c78b76c63e87635418c4fd5d4b747ba1f5ed4c4c971f28aaa15463ccdae24d  tests/e2e/workspace-header-menu-cases.mjs" | sha256sum --check
+          node --check tests/e2e/workspace-header-menu-runner.mjs
+          node --test tests/workspace-header-menu-results.test.mjs
+          mkdir "$HEADER_OUT"
+      - name: Check out exact PR base for baseline
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: baseline
+      - name: Select initial negative-proof requirement
+        id: negative
+        if: github.event_name == 'pull_request'
+        run: |
+          if [ ! -f baseline/tests/e2e/workspace-header-menu-runner.mjs ]; then
+            echo "required=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Build the exact baseline production renderer
+        if: steps.negative.outputs.required == 'true'
+        run: |
+          cmp package-lock.json baseline/package-lock.json
+          npm --prefix baseline ci
+          npm --prefix baseline run build
+      - name: Observe baseline controls and attributed missing-menu RED
+        if: steps.negative.outputs.required == 'true'
+        run: |
+          node tests/e2e/workspace-header-menu-runner.mjs --root baseline \
+            --source "$HEADER_BASE_SHA" --expect baseline --out "$HEADER_OUT/baseline"
+      - name: Build the exact candidate production renderer
+        run: npm run build
+      - name: Require all eight candidate cases GREEN
+        run: |
+          node tests/e2e/workspace-header-menu-runner.mjs --root . \
+            --source "$HEADER_HEAD_SHA" --expect candidate --out "$HEADER_OUT/candidate"
+      - name: Retain all cases, phase and renderer hashes, errors and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workspace-header-menu-${{ github.sha }}
+          path: ${{ runner.temp }}/workspace-header-menu
+          if-no-files-found: error
+          retention-days: 14

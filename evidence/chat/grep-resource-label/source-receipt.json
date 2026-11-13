@@ -1,0 +1,423 @@
+{
+  "owner": "Conductor Rebuild / BE7",
+  "checked_main": "508a1726dea81a508a853d2172ec5b1922803f2c",
+  "reservation": "Read/Grep rendered resource-label and line/range source-only census, ledger bb7a513f-9dab-4d2a-85d6-e219f32ecbce",
+  "asset_identity": {
+    "renderer": {
+      "path": ".rea-work/retained-reference/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "path": ".rea-work/retained-reference/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "reference_spans": {
+    "D0o": {
+      "utf8_half_open": [
+        7817911,
+        7819447
+      ],
+      "sha256": "807c72302039daf7c1d0aa7efaa3c37293221a9ce3d7ca6aea45195da1c8799a",
+      "path": "reference/D0o.txt"
+    },
+    "xZe": {
+      "utf8_half_open": [
+        7802965,
+        7803045
+      ],
+      "sha256": "0087ade2c4441ceff1f3525a1f277771fb5ea10440f41bf28c8cebba25902f0e",
+      "path": "reference/xZe.txt"
+    },
+    "P0o": {
+      "utf8_half_open": [
+        7819447,
+        7819479
+      ],
+      "sha256": "3bc9345e1b68d242cfe5b9875f23e9f2395d0868d42c91def1ccb116de9cef8a",
+      "path": "reference/P0o.txt"
+    },
+    "O0o": {
+      "utf8_half_open": [
+        7816650,
+        7817911
+      ],
+      "sha256": "93420505827520da576eb0ad4b434c6ea440bf2daea0d69d187c727f50d02c13",
+      "path": "reference/O0o.txt"
+    },
+    "L0o": {
+      "utf8_half_open": [
+        7819811,
+        7820054
+      ],
+      "sha256": "dc6336e43fceded629accedc76218b8475b8aa73625352895280914441665a89",
+      "path": "reference/L0o.txt"
+    },
+    "w0o": {
+      "utf8_half_open": [
+        7801811,
+        7802965
+      ],
+      "sha256": "35d3a9c669ec460ede7a2d124299b4ee4c52681759d22917609042b0a755b13c",
+      "path": "reference/w0o.txt"
+    },
+    "hIt": {
+      "utf8_half_open": [
+        7877770,
+        7878325
+      ],
+      "sha256": "8c45bb6e5892cce46330f820a54460ee896d1c14c19ad134dab20b9f20b75340",
+      "path": "reference/hIt.txt"
+    },
+    "L1o": {
+      "utf8_half_open": [
+        7588525,
+        7588936
+      ],
+      "sha256": "38f9343e156728f1decb69430d406c3c1ff29482da74e69e24b6d5c538834f25",
+      "path": "reference/L1o.txt"
+    },
+    "O1o": {
+      "utf8_half_open": [
+        7587305,
+        7588525
+      ],
+      "sha256": "9f3ff5dc1b79f4690ad7b89b8911acbd083c2b97a4b3268f14f18cd964972184",
+      "path": "reference/O1o.txt"
+    },
+    "TOo": {
+      "utf8_half_open": [
+        8865983,
+        8866426
+      ],
+      "sha256": "4e920d1f6814b732618ad039f643c613e29652f89fd4b22d4d21ae38f7bd8b76",
+      "path": "reference/TOo.txt"
+    },
+    "Qpo": {
+      "utf8_half_open": [
+        7877182,
+        7877770
+      ],
+      "sha256": "94305b7588c4a5551656594289bc17ddb6934ed298cb76fc48181a2731105310",
+      "path": "reference/Qpo.txt"
+    }
+  },
+  "main_snapshots": {
+    "src/features/chat/ToolRows.tsx": {
+      "blob": "2128fb69e186c32522b8ec05aed7a8c53fe758b8",
+      "sha256": "8ce85541e61222485a998db825f2cc0ac89654c4a94ed4a960aa4e6748df8fa4",
+      "bytes": 52448
+    },
+    "src/features/chat/conductorTools.ts": {
+      "blob": "0864081cbf711c3e515724a9eefd2174fdc93f9d",
+      "sha256": "cf705c1246cb8390ab65b2fb67274331659784271f8287fd5f77b694acf25dfe",
+      "bytes": 29961
+    },
+    "src/features/chat/reason.ts": {
+      "blob": "4c6933c4cb8a8135bf6d39844e17186ec8a3bceb",
+      "sha256": "3e8d6eb90387bb8aef436e90b7ec5f0f08d7bfb01d82daed9fb7f3017d42e2e4",
+      "bytes": 13712
+    },
+    "src/features/chat/reducer.ts": {
+      "blob": "aa9847dcc0b5030b82f1e72496f408834db9d064",
+      "sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+      "bytes": 5906
+    },
+    "src/features/chat/view.ts": {
+      "blob": "b74dab8ea6e88c8203ff20f026bf94709af283be",
+      "sha256": "61451bd3ee05ddbeff47c368e9af7e65f6cca7af6b2ed3a55ec2185f60c46b09",
+      "bytes": 8836
+    },
+    "src/features/chat/Transcript.tsx": {
+      "blob": "63141b351532043b2d880b5f5209683ca7e79e38",
+      "sha256": "8206515e6393845424a06adcfcd91a1d26593e6808aa21947c460eb000e059f4",
+      "bytes": 21220
+    },
+    "src/features/chat/conductorTools.test.ts": {
+      "blob": "2daeb9b895312a3238406fffb9781a5be21c81bc",
+      "sha256": "fb109e78c31f11c30ce1da6efd6ee736bc685e6c9059bcf2fe5ad719068acf40",
+      "bytes": 10686
+    },
+    "src/features/chat/readSyntaxHighlight.test.ts": {
+      "blob": "64acd16b10832fb3266f41f05eb7b246efc5980c",
+      "sha256": "acd015bba3bd0db2b53c1842a278278a837ebc26813486e4c721cf40758120ef",
+      "bytes": 12096
+    },
+    "evidence/chat/read-text-syntax.md": {
+      "blob": "6f1e272dd5eeba02b85f8546fbe5e57628ccf8a2",
+      "sha256": "7e4c4137917fa3d32c004d50b5cf831ad0a0e37d5e5c84b56e604ae8126f3b0c",
+      "bytes": 8070
+    },
+    "evidence/chat/tool-disclosure-remount/README.md": {
+      "blob": "c4f471487a0482c2fa8cbdc43327005f5034fa5e",
+      "sha256": "cad3d72938b5806546c01fbd5822a67e645270ff2230393df5efb66c2047cd4e",
+      "bytes": 11840
+    },
+    "tsconfig.json": {
+      "blob": "d35c1c1f5a95006999b638b365cf1b6f6454272f",
+      "sha256": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5",
+      "bytes": 526
+    }
+  },
+  "checks": [
+    {
+      "name": "renderer full retained real-app asset identity",
+      "passed": true
+    },
+    {
+      "name": "index full retained real-app asset identity",
+      "passed": true
+    },
+    {
+      "name": "D0o exact byte-range readback",
+      "passed": true
+    },
+    {
+      "name": "xZe exact byte-range readback",
+      "passed": true
+    },
+    {
+      "name": "P0o exact byte-range readback",
+      "passed": true
+    },
+    {
+      "name": "O0o exact byte-range readback",
+      "passed": true
+    },
+    {
+      "name": "L0o exact byte-range readback",
+      "passed": true
+    },
+    {
+      "name": "w0o exact byte-range readback",
+      "passed": true
+    },
+    {
+      "name": "hIt exact byte-range readback",
+      "passed": true
+    },
+    {
+      "name": "L1o exact byte-range readback",
+      "passed": true
+    },
+    {
+      "name": "O1o exact byte-range readback",
+      "passed": true
+    },
+    {
+      "name": "TOo exact byte-range readback",
+      "passed": true
+    },
+    {
+      "name": "Qpo exact byte-range readback",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/ToolRows.tsx exact current-main Git snapshot",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/conductorTools.ts exact current-main Git snapshot",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/reason.ts exact current-main Git snapshot",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/reducer.ts exact current-main Git snapshot",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/view.ts exact current-main Git snapshot",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/Transcript.tsx exact current-main Git snapshot",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/conductorTools.test.ts exact current-main Git snapshot",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/readSyntaxHighlight.test.ts exact current-main Git snapshot",
+      "passed": true
+    },
+    {
+      "name": "evidence/chat/read-text-syntax.md exact current-main Git snapshot",
+      "passed": true
+    },
+    {
+      "name": "evidence/chat/tool-disclosure-remount/README.md exact current-main Git snapshot",
+      "passed": true
+    },
+    {
+      "name": "tsconfig.json exact current-main Git snapshot",
+      "passed": true
+    },
+    {
+      "name": "original Grep registry",
+      "passed": true
+    },
+    {
+      "name": "original Read registry",
+      "passed": true
+    },
+    {
+      "name": "original Grep component",
+      "passed": true
+    },
+    {
+      "name": "original Read component",
+      "passed": true
+    },
+    {
+      "name": "original name dispatch",
+      "passed": true
+    },
+    {
+      "name": "original actual row input",
+      "passed": true
+    },
+    {
+      "name": "original Grep resource from raw path",
+      "passed": true
+    },
+    {
+      "name": "original Grep rendered resource helper",
+      "passed": true
+    },
+    {
+      "name": "original exact resource shortening",
+      "passed": true
+    },
+    {
+      "name": "original optional path label",
+      "passed": true
+    },
+    {
+      "name": "original include label separate",
+      "passed": true
+    },
+    {
+      "name": "original count nonblank lines",
+      "passed": true
+    },
+    {
+      "name": "original Read count cleaned lines",
+      "passed": true
+    },
+    {
+      "name": "original Read positive offset base",
+      "passed": true
+    },
+    {
+      "name": "original line numbering",
+      "passed": true
+    },
+    {
+      "name": "main exact raw provider input preserved",
+      "passed": true
+    },
+    {
+      "name": "main tool input preserves provider identity",
+      "passed": true
+    },
+    {
+      "name": "main view projects actual normalized tool",
+      "passed": true
+    },
+    {
+      "name": "main Transcript row props",
+      "passed": true
+    },
+    {
+      "name": "main Transcript workspace prop",
+      "passed": true
+    },
+    {
+      "name": "main Grep resource differs",
+      "passed": true
+    },
+    {
+      "name": "main existing exact helper imported",
+      "passed": true
+    },
+    {
+      "name": "main exact helper already available",
+      "passed": true
+    },
+    {
+      "name": "main Read line count cleaned",
+      "passed": true
+    },
+    {
+      "name": "main numbered Read starts at input offset",
+      "passed": true
+    },
+    {
+      "name": "main line increments",
+      "passed": true
+    },
+    {
+      "name": "existing Read closure has exact offset control",
+      "passed": true
+    },
+    {
+      "name": "existing Read closure describes source-only limits",
+      "passed": true
+    },
+    {
+      "name": "bounded Grep arm uses shortPath not exact helper",
+      "passed": true
+    },
+    {
+      "name": "dedicated shortPath import has exactly one call",
+      "passed": true
+    },
+    {
+      "name": "unused import is rejected by compiler policy",
+      "passed": true
+    },
+    {
+      "name": "assigned branch unchanged",
+      "passed": true
+    },
+    {
+      "name": "tracked diff unchanged",
+      "passed": true
+    },
+    {
+      "name": "index unchanged",
+      "passed": true
+    }
+  ],
+  "static_checks_passed": 58,
+  "verdicts": {
+    "grep_resource_label": "GAP_SOURCE_QUALIFIED",
+    "ordinary_nonimage_read_positive_offset_line_projection": "MATCHED_IN_EXISTING_CLOSURE",
+    "invalid_or_zero_offset_read_domain": "INSUFFICIENT_DOMAIN_EVIDENCE; not a new defect claim",
+    "whole_file_badge_navigation_and_backend": "OUT_OF_SCOPE",
+    "node_repl_alignment_lead": "UNQUALIFIED; stopped when ledger narrowed scope"
+  },
+  "verification": {
+    "javascript": "NOT_RUN",
+    "tests": "NOT_RUN",
+    "browser": "NOT_RUN",
+    "native": "NOT_RUN",
+    "provider": "NOT_RUN"
+  },
+  "future_minimal_scope": "Grep path label call plus removal of only dedicated shortPath import binding, new isolated regression and evidence; no shared helper edits. Import-binding removal needs explicit coordination before edits.",
+  "excluded": [
+    "1114/image/RowShell",
+    "clock/imports/Transcript",
+    "backend/OpenIn",
+    "Fast",
+    "1098/Clear",
+    "847",
+    "existing frozen tests"
+  ]
+}

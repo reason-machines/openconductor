@@ -1,0 +1,57 @@
+    Updating crates.io index
+     Locking 11 packages to highest compatible versions
+ Downloading crates ...
+  Downloaded quote v1.0.47
+  Downloaded serde_core v1.0.229
+  Downloaded itoa v1.0.19
+  Downloaded unicode-ident v1.0.27
+  Downloaded zmij v1.0.23
+  Downloaded proc-macro2 v1.0.107
+  Downloaded serde_derive v1.0.229
+  Downloaded memchr v2.8.3
+  Downloaded serde v1.0.229
+  Downloaded serde_json v1.0.154
+  Downloaded syn v3.0.10
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.154
+   Compiling itoa v1.0.19
+   Compiling memchr v2.8.3
+   Compiling syn v3.0.10
+   Compiling serde_derive v1.0.229
+   Compiling diff-harness v0.0.0 (/home/runner/work/_temp/large-file-harness)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 23.80s
+     Running unittests /home/runner/work/openconductor/openconductor/src-tauri/src/diff/mod.rs (target/debug/deps/diff_harness-207cc8bced35b5bf)
+
+running 16 tests
+test git_tests::historical_large_file_placeholder::one_mib_dense ... ok
+test git_tests::historical_large_file_placeholder::one_mib_plus_one_dense ... ok
+test git_tests::historical_large_file_placeholder::five_mib_sparse ... ok
+test git_tests::historical_large_file_placeholder::five_mib_plus_one_sparse ... ok
+test git_tests::historical_large_file_placeholder::small_text ... ok
+test git_tests::historical_large_file_placeholder::six_mib_binary ... ok
+test git_tests::historical_large_file_placeholder::six_mib_new_missing_worktree ... ok
+test git_tests::historical_large_file_placeholder::six_mib_old_small_new ... ok
+test git_tests::large_file_placeholder::five_mib_dense ... ok
+test git_tests::large_file_placeholder::one_mib_dense ... ok
+test git_tests::large_file_placeholder::five_mib_plus_one_sparse ... ok
+test git_tests::large_file_placeholder::one_mib_plus_one_dense ... ok
+test git_tests::large_file_placeholder::six_mib_binary ... ok
+test git_tests::large_file_placeholder::six_mib_sparse ... ok
+test git_tests::large_file_placeholder::two_mib_sparse ... ok
+test git_tests::large_file_placeholder::five_mib_sparse ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 55 filtered out; finished in 0.92s
+
+    Checking serde_core v1.0.229
+    Checking zmij v1.0.23
+    Checking memchr v2.8.3
+    Checking itoa v1.0.19
+    Checking serde_json v1.0.154
+    Checking serde v1.0.229
+    Checking diff-harness v0.0.0 (/home/runner/work/_temp/large-file-harness)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 5.23s

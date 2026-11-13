@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 use super::fetch::{fetch_prs, PrRequest};
 use super::gh::{Addressing, Gh, MergeMethod, MergeMethodCache, ProcessRunner, Runner};
 use super::info::{derived_status, PrLookup, WorkspaceStatus};
-use super::list::{OpenIssue, OpenPr};
+use super::list::{IssueLinkMetadata, OpenIssue, OpenPr};
 use super::prompt::CreatePrRequest;
 
 /// `gh` to run: `$OPENCONDUCTOR_GH`, else the bundled copy, else `gh` on PATH
@@ -108,6 +108,14 @@ pub fn list_open_prs<R: Runner>(gh: &Gh<R>) -> Result<Vec<OpenPr>, String> {
 /// Open GitHub issues for the create-from picker; errors as [`list_open_prs`].
 pub fn list_open_issues<R: Runner>(gh: &Gh<R>) -> Result<Vec<OpenIssue>, String> {
     gh.list_open_issues().map_err(|e| e.to_string())
+}
+
+/// Read full metadata for one selected GitHub issue without creating a workspace.
+pub fn issue_link_metadata<R: Runner>(
+    gh: &Gh<R>,
+    number: u64,
+) -> Result<IssueLinkMetadata, String> {
+    gh.issue_link_metadata(number).map_err(|e| e.to_string())
 }
 
 /// Merge with `method`, or the repository's preferred allowed method.

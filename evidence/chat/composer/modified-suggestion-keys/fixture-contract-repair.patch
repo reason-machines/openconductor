@@ -1,0 +1,11 @@
+--- original-ac3f9b76
++++ v2-void-submit-callback
+@@ -100,7 +100,7 @@
+       draft, setDraft: (value: string) => drafts.push(value), inputRef: { current: handle },
+       queue: queue.emptyQueue(), canSteer: false, slashCommands,
+       workspacePath: kind === "mention" ? "/fixture" : undefined,
+-      onSubmit: (input: userContent.UserPrompt) => submitted.push(input),
++      onSubmit: (input: userContent.UserPrompt) => { submitted.push(input); },
+       onStop: () => assert.fail("suggestion keys must not stop an agent"), onQueue() {},
+     }));
+   });

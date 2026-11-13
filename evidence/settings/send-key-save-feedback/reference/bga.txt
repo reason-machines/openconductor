@@ -1,0 +1,1 @@
+function bga(t){return t==="cmd-enter"?"cmd-enter":"enter"}

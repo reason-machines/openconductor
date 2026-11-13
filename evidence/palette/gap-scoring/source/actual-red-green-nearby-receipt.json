@@ -1,0 +1,225 @@
+{
+  "unit": "SAME15_PALETTE_SCORE_GAP",
+  "status": "ACTUAL_RED3ASSERT1CONTROL_THEN_SAME4GREEN_NEARBY19PASS",
+  "archive_sha256": "c99b212554cfac98ffa59d65f0446f958030227654603c8efb24a9a6bd34b869",
+  "source_owner_baseline": "f2fd6e19316a4cb57dbb412340638cb83193ab5c",
+  "all11_actual_git_verified_source_identical_to": "12a805ed90f5aeb0d472e53a64ad6d85bf2d3479",
+  "manifest": {
+    "baseline": "f2fd6e19316a4cb57dbb412340638cb83193ab5c",
+    "baseline_files": {
+      "src/palette/search.test.ts": {
+        "sha256": "776f1a9793e11cbcff90683a2bcb73f24251ecd0e8604eaf5b834384c1e6c7b0",
+        "bytes": 9960
+      },
+      "src/palette/search/model.ts": {
+        "sha256": "cce375cd566b4970df86882ae44b4b4ec825b5c687050e596007d6c3cc14d4a1",
+        "bytes": 11801
+      },
+      "src/workspace/archivedList.ts": {
+        "sha256": "5d5c2d74f3f2bcd2a0b1109cc22c3465a276bdd04edc71031689f1fc0a7942eb",
+        "bytes": 2977
+      },
+      "src/state/persisted.ts": {
+        "sha256": "7a83f188ae1d5f7a375352feca0831d017a86472ae8048df40a93e38f6dc9209",
+        "bytes": 9197
+      },
+      "src/state/openChat.ts": {
+        "sha256": "40a9ea9f4719fa4c8602e4bc2611c47051c54a317131f458a324cddfc072a152",
+        "bytes": 5268
+      },
+      "src/state/workspaceSessions.ts": {
+        "sha256": "180c76b22899e63cc3d1f5b92cdcedfa9c7a0bdebe82c6c7d3de54c037da291b",
+        "bytes": 1933
+      },
+      "src/state/rowStatus.ts": {
+        "sha256": "e22c083e131c35774234f0f91fb1f5e5b117c6d40161ac3f346395bc46f2df34",
+        "bytes": 7245
+      },
+      "src/home/sidebarGroupBy.ts": {
+        "sha256": "9559b98fa5853a4e227376285c4723f2b8ede795cacc0238f9a94aad9ee16449",
+        "bytes": 1027
+      },
+      "src/state/workspaceStatus.ts": {
+        "sha256": "8b26245bf7cec0e806485e5fc9608220df08cbd7250953e946122b0044eef714",
+        "bytes": 1281
+      },
+      "src/palette/search/score.ts": {
+        "sha256": "b17bea9f660febee8431e7a313077340b91014dc1904539bd7a81d66067a48aa",
+        "bytes": 2431
+      },
+      "src/palette/search/score.test.ts": {
+        "sha256": "0a327416a2e19a378a51bf65a5552149ddab89d19a624400033f26d79ed204e9",
+        "bytes": 1358
+      }
+    },
+    "external_imports": [],
+    "fixture": {
+      "path": "src/palette/search/scoreGap.test.ts",
+      "sha256": "5137ef699747c1e3b88bb6b702ee38fcafe022de99b0906d004ce961fcb298ef",
+      "bytes": 1880
+    },
+    "candidate": {
+      "path": "src/palette/search/score.ts",
+      "sha256": "6919f4b3e6806687da56fa4ed13ca4c52bebcc2dd077586b80a6130520ef2e38"
+    }
+  },
+  "actual_import_audit": {
+    "static_only_no_target_module_execution": true,
+    "node": "v22.23.4",
+    "platform": "linux",
+    "architecture": "x64",
+    "typescript": "5.9.3",
+    "files": [
+      {
+        "path": "src/palette/search/scoreGap.test.ts",
+        "sha256": "5137ef699747c1e3b88bb6b702ee38fcafe022de99b0906d004ce961fcb298ef"
+      },
+      {
+        "path": "src/palette/search/model.ts",
+        "sha256": "cce375cd566b4970df86882ae44b4b4ec825b5c687050e596007d6c3cc14d4a1"
+      },
+      {
+        "path": "src/palette/search/score.ts",
+        "sha256": "b17bea9f660febee8431e7a313077340b91014dc1904539bd7a81d66067a48aa"
+      },
+      {
+        "path": "src/workspace/archivedList.ts",
+        "sha256": "5d5c2d74f3f2bcd2a0b1109cc22c3465a276bdd04edc71031689f1fc0a7942eb"
+      },
+      {
+        "path": "src/state/persisted.ts",
+        "sha256": "7a83f188ae1d5f7a375352feca0831d017a86472ae8048df40a93e38f6dc9209"
+      },
+      {
+        "path": "src/state/workspaceStatus.ts",
+        "sha256": "8b26245bf7cec0e806485e5fc9608220df08cbd7250953e946122b0044eef714"
+      },
+      {
+        "path": "src/home/sidebarGroupBy.ts",
+        "sha256": "9559b98fa5853a4e227376285c4723f2b8ede795cacc0238f9a94aad9ee16449"
+      },
+      {
+        "path": "src/state/openChat.ts",
+        "sha256": "40a9ea9f4719fa4c8602e4bc2611c47051c54a317131f458a324cddfc072a152"
+      },
+      {
+        "path": "src/state/workspaceSessions.ts",
+        "sha256": "180c76b22899e63cc3d1f5b92cdcedfa9c7a0bdebe82c6c7d3de54c037da291b"
+      },
+      {
+        "path": "src/state/rowStatus.ts",
+        "sha256": "e22c083e131c35774234f0f91fb1f5e5b117c6d40161ac3f346395bc46f2df34"
+      },
+      {
+        "path": "src/palette/search.test.ts",
+        "sha256": "776f1a9793e11cbcff90683a2bcb73f24251ecd0e8604eaf5b834384c1e6c7b0"
+      },
+      {
+        "path": "src/palette/search/score.test.ts",
+        "sha256": "0a327416a2e19a378a51bf65a5552149ddab89d19a624400033f26d79ed204e9"
+      }
+    ],
+    "external": [],
+    "missing": [],
+    "boundary": "Static imports only; explicitly VM-compiled files and their mocked boundaries require separate inspection."
+  },
+  "phases": {
+    "red": {
+      "runner": {
+        "started_utc": "2026-11-11T10:51:21.937106+00:00",
+        "finished_utc": "2026-11-11T10:51:22.318867+00:00",
+        "command": [
+          "timeout",
+          "--kill-after=5s",
+          "90s",
+          "bash",
+          "-c",
+          "cd .rea-work/ui-runtime/palette-gap/red && exec node --test --test-concurrency=1 src/palette/search/scoreGap.test.ts"
+        ],
+        "wall_seconds": 0.382,
+        "process_exit": 1,
+        "limit_reason": null,
+        "wall_limit_seconds": 100.0,
+        "max_added_bytes": 16777216,
+        "initial_bytes": 67076108,
+        "final_bytes": 67080874,
+        "peak_observed_bytes": 67080874,
+        "added_bytes": 4766,
+        "peak_added_bytes": 4766,
+        "process_terminal": true
+      },
+      "tests": 4,
+      "pass": 1,
+      "intended_assertion_fail": 3,
+      "stdout_unmodified": "TAP version 13\n# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: scattered letters across command aliases stay below the palette threshold\nnot ok 1 - scattered letters across command aliases stay below the palette threshold\n  ---\n  duration_ms: 1.480763\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/palette-gap/red/src/palette/search/scoreGap.test.ts:15:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 0.36487804878048785\n    - 0\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 0\n  actual: 0.36487804878048785\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/palette-gap/red/src/palette/search/scoreGap.test.ts:16:10)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.start (node:internal/test_runner/test:944:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)\n    process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n  ...\n# Subtest: scattered letters across a setting and its aliases stay below the palette threshold\nnot ok 2 - scattered letters across a setting and its aliases stay below the palette threshold\n  ---\n  duration_ms: 0.286344\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/palette-gap/red/src/palette/search/scoreGap.test.ts:19:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 0.5615632183908046\n    - 0\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 0\n  actual: 0.5615632183908046\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/palette-gap/red/src/palette/search/scoreGap.test.ts:20:10)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ...\n# Subtest: a workspace-name query does not put scattered command and settings matches before the workspace\nnot ok 3 - a workspace-name query does not put scattered command and settings matches before the workspace\n  ---\n  duration_ms: 2.017133\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/palette-gap/red/src/palette/search/scoreGap.test.ts:23:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly deep-equal:\n    + actual - expected\n    \n      [\n    +   'action:create-section',\n    +   'setting:row-account-Codex tool approvals',\n        'workspace:cairo'\n      ]\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected:\n    0: 'workspace:cairo'\n  actual:\n    0: 'action:create-section'\n    1: 'setting:row-account-Codex tool approvals'\n    2: 'workspace:cairo'\n  operator: 'deepStrictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/palette-gap/red/src/palette/search/scoreGap.test.ts:32:10)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: contiguous aliases and word starts remain searchable\nok 4 - contiguous aliases and word starts remain searchable\n  ---\n  duration_ms: 0.257205\n  type: 'test'\n  ...\n1..4\n# tests 4\n# suites 0\n# pass 1\n# fail 3\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 182.772837\n",
+      "stderr_unmodified": "(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+    },
+    "green": {
+      "runner": {
+        "started_utc": "2026-11-11T10:52:16.052283+00:00",
+        "finished_utc": "2026-11-11T10:52:16.433526+00:00",
+        "command": [
+          "timeout",
+          "--kill-after=5s",
+          "90s",
+          "bash",
+          "-c",
+          "cd .rea-work/ui-runtime/palette-gap/green && exec node --test --test-concurrency=1 src/palette/search/scoreGap.test.ts"
+        ],
+        "wall_seconds": 0.381,
+        "process_exit": 0,
+        "limit_reason": null,
+        "wall_limit_seconds": 100.0,
+        "max_added_bytes": 16777216,
+        "initial_bytes": 67141624,
+        "final_bytes": 67142987,
+        "peak_observed_bytes": 67142987,
+        "added_bytes": 1363,
+        "peak_added_bytes": 1363,
+        "process_terminal": true
+      },
+      "tests": 4,
+      "pass": 4,
+      "intended_assertion_fail": 0,
+      "stdout_unmodified": "TAP version 13\n# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: scattered letters across command aliases stay below the palette threshold\nok 1 - scattered letters across command aliases stay below the palette threshold\n  ---\n  duration_ms: 0.986548\n  type: 'test'\n  ...\n# Subtest: scattered letters across a setting and its aliases stay below the palette threshold\nok 2 - scattered letters across a setting and its aliases stay below the palette threshold\n  ---\n  duration_ms: 0.201718\n  type: 'test'\n  ...\n# Subtest: a workspace-name query does not put scattered command and settings matches before the workspace\nok 3 - a workspace-name query does not put scattered command and settings matches before the workspace\n  ---\n  duration_ms: 1.707669\n  type: 'test'\n  ...\n# Subtest: contiguous aliases and word starts remain searchable\nok 4 - contiguous aliases and word starts remain searchable\n  ---\n  duration_ms: 0.510307\n  type: 'test'\n  ...\n1..4\n# tests 4\n# suites 0\n# pass 4\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 175.907755\n",
+      "stderr_unmodified": "(node:79) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+    },
+    "nearby": {
+      "runner": {
+        "started_utc": "2026-11-11T10:52:16.554758+00:00",
+        "finished_utc": "2026-11-11T10:52:17.301208+00:00",
+        "command": [
+          "timeout",
+          "--kill-after=5s",
+          "90s",
+          "bash",
+          "-c",
+          "cd .rea-work/ui-runtime/palette-gap/green && exec node --test --test-concurrency=1 src/palette/search.test.ts src/palette/search/score.test.ts"
+        ],
+        "wall_seconds": 0.746,
+        "process_exit": 0,
+        "limit_reason": null,
+        "wall_limit_seconds": 100.0,
+        "max_added_bytes": 16777216,
+        "initial_bytes": 67143615,
+        "final_bytes": 67148251,
+        "peak_observed_bytes": 67148251,
+        "added_bytes": 4636,
+        "peak_added_bytes": 4636,
+        "process_terminal": true
+      },
+      "tests": 19,
+      "pass": 19,
+      "intended_assertion_fail": 0,
+      "stdout_unmodified": "TAP version 13\n# (node:104) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: scores: exact > prefix > word-start initials > scattered; misses are 0\nok 1 - scores: exact > prefix > word-start initials > scattered; misses are 0\n  ---\n  duration_ms: 1.296084\n  type: 'test'\n  ...\n# Subtest: token matching needs every token in some field\nok 2 - token matching needs every token in some field\n  ---\n  duration_ms: 0.292011\n  type: 'test'\n  ...\n# Subtest: tabs cycle with wrap and skip Projects when hidden\nok 3 - tabs cycle with wrap and skip Projects when hidden\n  ---\n  duration_ms: 0.182441\n  type: 'test'\n  ...\n# Subtest: All tab with empty query: recents (archived included, unknown ids dropped) then action groups in fixed order\nok 4 - All tab with empty query: recents (archived included, unknown ids dropped) then action groups in fixed order\n  ---\n  duration_ms: 1.464405\n  type: 'test'\n  ...\n# Subtest: workspace actions are hidden without an active workspace\nok 5 - workspace actions are hidden without an active workspace\n  ---\n  duration_ms: 0.275276\n  type: 'test'\n  ...\n# Subtest: All tab with a query: command groups ranked by their words, then Projects, then Workspaces (Conductor's `J1`)\nok 6 - All tab with a query: command groups ranked by their words, then Projects, then Workspaces (Conductor's `J1`)\n  ---\n  duration_ms: 1.018697\n  type: 'test'\n  ...\n# Subtest: a query nothing matches keeps the All tab's Workspaces group with \"No results found\"\nok 7 - a query nothing matches keeps the All tab's Workspaces group with \"No results found\"\n  ---\n  duration_ms: 0.283361\n  type: 'test'\n  ...\n# Subtest: group order follows the query's words: settings words put Settings first\nok 8 - group order follows the query's words: settings words put Settings first\n  ---\n  duration_ms: 0.178364\n  type: 'test'\n  ...\n# Subtest: Workspaces tab lists non-archived workspaces newest first and caps results\nok 9 - Workspaces tab lists non-archived workspaces newest first and caps results\n  ---\n  duration_ms: 0.491944\n  type: 'test'\n  ...\n# Subtest: Projects, Actions and Settings tabs\nok 10 - Projects, Actions and Settings tabs\n  ---\n  duration_ms: 0.663091\n  type: 'test'\n  ...\n# Subtest: Workspaces tab archive filter stays independent from archived matches in All search\nok 11 - Workspaces tab archive filter stays independent from archived matches in All search\n  ---\n  duration_ms: 0.306399\n  type: 'test'\n  ...\n# Subtest: All search appends matching archived workspaces after active matches\nok 12 - All search appends matching archived workspaces after active matches\n  ---\n  duration_ms: 0.302744\n  type: 'test'\n  ...\n# Subtest: All search caps active and archived workspace matches separately\nok 13 - All search caps active and archived workspace matches separately\n  ---\n  duration_ms: 1.343746\n  type: 'test'\n  ...\n# Subtest: All search orders each state by workspace updates instead of recent visits\nok 14 - All search orders each state by workspace updates instead of recent visits\n  ---\n  duration_ms: 0.31113\n  type: 'test'\n  ...\n# Subtest: All search applies each state's cap after sorting by workspace updates\nok 15 - All search applies each state's cap after sorting by workspace updates\n  ---\n  duration_ms: 0.390979\n  type: 'test'\n  ...\n# (node:112) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: command queries can span consecutive keyword aliases\nok 16 - command queries can span consecutive keyword aliases\n  ---\n  duration_ms: 1.158468\n  type: 'test'\n  ...\n# Subtest: command queries can span the value and its keyword aliases\nok 17 - command queries can span the value and its keyword aliases\n  ---\n  duration_ms: 0.173501\n  type: 'test'\n  ...\n# Subtest: combined aliases still require query characters in candidate order\nok 18 - combined aliases still require query characters in candidate order\n  ---\n  duration_ms: 0.17086\n  type: 'test'\n  ...\n# Subtest: commands without aliases retain exact, prefix and missing-query behavior\nok 19 - commands without aliases retain exact, prefix and missing-query behavior\n  ---\n  duration_ms: 0.184328\n  type: 'test'\n  ...\n1..19\n# tests 19\n# suites 0\n# pass 19\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 342.438363\n",
+      "stderr_unmodified": "(node:97) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+    }
+  },
+  "candidate_changed_only": "src/palette/search/score.ts",
+  "fixture_and_all_existing_assertions_unchanged": true,
+  "source_and_package_rehashed_after_run": true,
+  "tracked_tree_unchanged": true,
+  "release": "2026-11-11T10:52:17.301208+00:00",
+  "no_retries_install_export_tsc_build_browser_native_provider_reference_eval": true,
+  "static_reference_limits": "reference29ce transport SHA verified; original binary/static span claims retained source-owner evidence, no reference numeric execution/native/visual proof. FullHomeCairoUI not exercised here. Owner15 retains ready-main PR/normalCI/merge/consuming-main tails."
+}

@@ -125,6 +125,37 @@ class ScopeReportTest(unittest.TestCase):
             annotate(row)
             self.assertEqual(row["scope"], "deferred")
 
+    def test_row_corrections_withdraw_or_scope_out_but_never_promote(self):
+        from scoped_report import rescore
+
+        def doc(corrections):
+            items = [
+                dict(id="settings-row:a", kind="settings-row", team="settings", name="A", status="missing", why="copy not shown", observed_in_reference=True),
+                dict(id="settings-row:b", kind="settings-row", team="settings", name="B", status="missing", why="copy not shown", observed_in_reference=True),
+            ]
+            return dict(summary={}, states=[], items=items, row_corrections=dict(corrections=corrections))
+
+        report = doc([
+            dict(id="settings-row:a", category="scorer quirk", raw_status="missing", status="unverified", why="Capture shows another tab.", evidence=["src"]),
+            dict(id="settings-row:b", category="removed by decision", raw_status="missing", scope="not-required", scope_reason="Agent removed.", evidence=["#640"]),
+        ])
+        rescore(report)
+        rows = {row["id"]: row for row in report["items"]}
+        self.assertEqual((rows["settings-row:a"]["status"], rows["settings-row:a"]["raw_status"], rows["settings-row:a"]["scope"]), ("unverified", "missing", "in-scope"))
+        self.assertEqual(rows["settings-row:a"]["raw_why"], "copy not shown")
+        self.assertEqual(rows["settings-row:b"]["scope"], "not-required")
+        self.assertEqual(report["summary"]["missing"], 0)
+        self.assertEqual(report["summary"]["unverified"], 3)
+        self.assertEqual(report["excluded_summary"]["total"], 1)
+        for bad in (
+            dict(id="settings-row:a", category="x", raw_status="missing", status="matches", why="no", evidence=[]),
+            dict(id="settings-row:a", category="x", raw_status="wrong", status="unverified", why="no", evidence=[]),
+            dict(id="settings-row:missing", category="x", raw_status="missing", status="unverified", why="no", evidence=[]),
+            dict(id="settings-row:a", category="x", raw_status="missing", scope="in-scope", scope_reason="no", evidence=[]),
+        ):
+            with self.assertRaises(ValueError):
+                rescore(doc([bad]))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,1 @@
+{id:"kaleidoscope",displayName:"Kaleidoscope",appName:"Kaleidoscope",iconType:"folder",icon:"/app-icons/kaleidoscope.png",cliBinDir:"Contents/MacOS"}

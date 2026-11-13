@@ -168,7 +168,7 @@ test("a finished turn ends with a footer carrying its final text; a failed turn 
     status: "failed",
     error: "rate limited",
     finalText: "partial",
-    retryPrompt: "try this",
+    retryPrompt: { text: "try this" },
     canReset: false,
   });
 });

@@ -51,7 +51,7 @@ export function ClaudeTab({ settings, save, reload }: AgentTabProps) {
 
   const keyName = apiKeyName("claude", configForMode("claude", "apikey", stored));
   const key = storedSecret(mode === storedMode ? provider : null, keyName);
-  const auth = claudeAuthState(mode, login, key.present);
+  const auth = claudeAuthState(mode, settings.claude_code_executable_path && login ? { ...login, version: undefined } : login, key.present);
   useConnectedDefault("claude", auth.authenticated);
 
   const connect = async (next: ProviderConfig, secrets: { key: string; value: string }[] = []) => {
@@ -73,7 +73,7 @@ export function ClaudeTab({ settings, save, reload }: AgentTabProps) {
       <StatusLine
         connected={auth.authenticated}
         rows={auth.rows}
-        checking={loading && !provider}
+        checking={loading}
         refreshing={loading}
         onRefresh={refresh}
         notConnectedMessage={auth.notConnectedMessage}
@@ -94,7 +94,7 @@ export function ClaudeTab({ settings, save, reload }: AgentTabProps) {
           }}
         />
       ) : (
-        !auth.authenticated && <LoginButton command="claude /login" label="claude /login" onDone={refresh} />
+        <LoginButton command="claude /login" label="claude /login" onDone={refresh} />
       )}
       <div className="settings-rows agk-rows">
         <ChromeModeRow />

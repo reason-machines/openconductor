@@ -1,0 +1,43 @@
+{
+  "unit": "HOME-EMPTY-ENTER-271-04",
+  "producer": "Conductor Rebuild",
+  "kind": "SOURCE_ONLY_NOT_BEHAVIORAL_GREEN",
+  "containing_main": "e74f6498347eb378f8df2f77427ec6b722c60eb1",
+  "contains_pr1052_merge": "0d44915a5aefd9b8d4d128d401aea60b47fd9a1f",
+  "explicit_lease_release_message_id": "db9382ce-1129-4d6b-96bf-d6a79a5d42f8",
+  "historical_intended_red_head": "dbe165b42081dc19f620e2d084150abbd15d03ba",
+  "post_release_pre_fix_source_receipt": "evidence/home-empty-enter/reference-post-release.json",
+  "post_release_pre_fix_source_receipt_sha256": "a3e14618d58d10b598b9d7c0601fb20b64df105789b7744a7feb81786ebadfce",
+  "main_component_sha256": "e0439c1c0438333c962cf49e5a8ff351536719fa8fc9139d3518d46dadf7f19c",
+  "candidate_component_sha256": "19c27b4d3db83e2810dcb4576a0099f413b24632066c4a9bd8ff83adfe2ab4f6",
+  "complete_component_equals_main_with_only_empty_guard_replacement": true,
+  "provider_integration_and_all_nonempty_branches_unchanged": true,
+  "frozen_test_and_contract_byte_identical_to_initial_freeze": true,
+  "all_seven_frozen_artifact_hashes_pass": true,
+  "preserved_containing_main_artifacts": [
+    {
+      "path": "src/components/allWorkspacesKeyboardEndpoints.test.ts",
+      "sha256": "3ae3852a44bdb5528117e32e73e966f074a6c0034e5f7c0d538433639f4cf922"
+    },
+    {
+      "path": "evidence/home-keyboard-endpoints/retained-reference.json",
+      "sha256": "a844bf663720caf0b3f8b2a209335bcddb64f305930fb67a1c7c4ae790489224"
+    },
+    {
+      "path": "src/keybindings/KeybindingsProvider.tsx",
+      "sha256": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6"
+    }
+  ],
+  "outside_owned_scope_changed": false,
+  "checks": [
+    "merge ancestry",
+    "current retained-source mismatch",
+    "exact full-file replacement",
+    "frozen and protected artifact hashes",
+    "unchanged assertion bytes",
+    "owned-scope diff"
+  ],
+  "local_runtime": "NOT_RUN_BY_SCOPE",
+  "hosted_green": "NOT_YET_OBSERVED",
+  "native_visual_and_original_app_acceptance": "NOT_RUN"
+}

@@ -73,3 +73,28 @@ test("Enter on the second filtered project returns to its last-viewed workspace 
   assert.equal(await page.locator('.sb-ws[data-active="true"]').getAttribute("title"), "accra · ada/pagination-cursor · Local workspace");
   await page.close();
 });
+
+for (const transition of ["query", "tab"]) {
+  test(`Palette resets result scroll after a ${transition} change without moving the active row`, async () => {
+    const page = await freshPage();
+    try {
+      await page.locator("body").press("Meta+k");
+      const palette = page.getByRole("dialog", { name: "Command palette" });
+      const list = palette.getByRole("listbox");
+      const active = palette.locator('[role="option"][aria-selected="true"] .palette-title');
+      const firstTitle = await active.textContent();
+      const scrolled = await list.evaluate((element) => {
+        element.scrollTop = element.scrollHeight;
+        return element.scrollTop;
+      });
+      assert.ok(scrolled > 0, "the initial results must overflow before the transition");
+      if (transition === "query") await palette.getByRole("combobox").fill(" ");
+      else await palette.getByRole("tab", { name: "Actions", exact: true }).click();
+      await page.waitForFunction(() => document.querySelector(".palette-list")?.scrollTop === 0);
+      assert.equal(await active.textContent(), firstTitle, "scroll resets even when selection stays on the same row");
+      assert.ok(await list.evaluate((element) => element.scrollHeight > element.clientHeight), "the new results must still overflow");
+    } finally {
+      await page.close();
+    }
+  });
+}

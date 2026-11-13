@@ -46,6 +46,12 @@ export interface Workspace {
    * session title). Absent, the tab shows the workspace's name.
    */
   chatTitle?: string;
+  /** Shell primary is the oldest visible UI chat, not the selected secondary. */
+  primaryChatId?: string;
+  /** Retained UI chats, independent of visible tabs and unread state. */
+  transcriptChats?: { id: string; title: string }[];
+  /** Persisted workspaces.active_session_id, independent of the primary. */
+  activeSessionId?: string;
   /** Title of the workspace's pull request; the sidebar row shows it in place of the branch. */
   prTitle?: string | null;
   /** Body of the workspace's pull request (`pr_description`); Create PR uses it verbatim. */

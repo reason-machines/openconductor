@@ -8,20 +8,20 @@ This uses the unchanged Conductor 0.87.6 frontend extracted from the real `/Appl
 
 `zno` at character 6,905,571 maps `launching` to a muted working indicator labeled `Starting`, running to no indicator, and exited to a muted circle labeled `Exited` or `Exited (code N)`. `Uno` renders the circle or working indicator at 10 px. `W9i` uses this through `v9i` in the right terminal strip. The source also has restored and spawn-error states, which this increment does not add to OpenConductor's existing tab state model.
 
-Fresh REA `capture-browser-scenario` drives that retained frontend through its visible repository, workspace and New terminal controls. The reference fixture emits schema-valid `pty.ready`, `pty.data` and `pty.exit` events; the app renders its own exit indicator. The exited capture corroborates the muted marker. Scenarios, hashes and Evidence IDs are in [captures.json](captures.json).
+The prior REA `capture-browser-scenario` run drove that retained frontend through its visible repository, workspace and New terminal controls. The reference fixture emits schema-valid `pty.ready`, `pty.data` and `pty.exit` events; the app renders its own exit indicator. The exited capture corroborates the muted marker. Scenarios, hashes and Evidence IDs are in [captures.json](captures.json).
 
 ## Change
 
 Normal exits now show a muted 10 px circle instead of a red 6 px dot, with an exit-code tooltip and accessible name. Starting uses the existing three-dot working-animation pattern instead of an unlabeled dot. Running still has no indicator. Tab IDs, shell lifecycle, persistence, working directory and backend code are unchanged.
 
-## Verification
+## Historical verification for terminal tab indicators
 
 - **Failed before:** the new browser case timed out looking for the `Starting` indicator. See [before.tap](before.tap).
 - **Passed:** `npm run build`, including TypeScript.
 - **Passed:** `node --test src/features/terminal/*.test.ts src/scripts/*.test.ts`, 81 tests.
 - **Passed:** `E2E_BASE=http://localhost:4404 node --test tests/e2e/script-output.e2e.mjs tests/e2e/terminal-restore.e2e.mjs tests/e2e/terminal-shell-integration.e2e.mjs`, 10 cases, inside the supported preview process. The new case covers starting, ready without an indicator, and muted exits with codes 0 and 7. See [after.tap](after.tap).
 - **Passed:** `npm run lint:colors`, `git diff --check`, and `node --check tools/terminal/lifecycle-capture.mjs`.
-- **Partial:** four fresh REA browser captures. The exited state is corroborated on both apps. A pending reference spawn displays `Starting terminal…` in the body but does not register the runtime launching indicator, so that screenshot does not verify the reference's starting glyph. Its behavior is supported by the static source only.
+- **Partial:** four historical REA browser captures. The exited state is corroborated on both apps. Reinspection of [reference-starting.png](reference-starting.png) shows a selected terminal tab and a blank body. Neither `Starting terminal…` nor the starting glyph is visible. This synthetic capture does not prove that the reference renders its startup body under the source predicate, or that the native app lacks it. The retained static source supports the conditional startup message, not its execution. See the [local startup-body source preparation](../starting-body/README.md).
 
 Prove It Works required the failing-before browser test and current rendered capture. Laziness Protocol kept the product correction in the existing strip and CSS, without expanding the terminal state model.
 

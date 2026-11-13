@@ -9,7 +9,8 @@
 //! exit; the last 20 run-script ids per workspace are remembered.
 
 use std::collections::HashMap;
-use std::io;
+use std::io::{self, Write};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex, MutexGuard};
 use std::thread;
 use std::time::{Duration, SystemTime};
@@ -23,6 +24,8 @@ use crate::setup::SetupState;
 pub const STOP_GRACE: Duration = Duration::from_secs(5);
 /// Run-script ids remembered per workspace.
 pub const HISTORY_LEN: usize = 20;
+
+static NEXT_RUN_ID: AtomicU64 = AtomicU64::new(1);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -44,6 +47,8 @@ pub struct RunRequest {
     /// `run_mode = "concurrent"`.
     pub concurrent: bool,
     pub sink: Option<OutputSink>,
+    pub on_started: Arc<dyn Fn(RunStatus) + Send + Sync>,
+    pub on_finished: Arc<dyn Fn(RunStatus) + Send + Sync>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -51,6 +56,8 @@ pub struct RunRequest {
 pub struct RunStatus {
     pub workspace_id: String,
     pub script_id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub run_id: Option<String>,
     pub state: RunState,
     pub exit: Option<(Option<i32>, Option<i32>)>,
 }
@@ -73,6 +80,7 @@ struct Inner {
     states: HashMap<Key, RunState>,
     repos: HashMap<Key, String>,
     processes: HashMap<Key, Arc<Mutex<Process>>>,
+    run_ids: HashMap<Key, String>,
     waiting: HashMap<String, RunRequest>,
     last_output: HashMap<Key, String>,
     last_exit: HashMap<Key, Exit>,
@@ -100,6 +108,7 @@ impl RunManager {
             history.truncate(HISTORY_LEN);
             inner.repos.insert(key.clone(), req.repo_id.clone());
             inner.started_at.insert(key.clone(), SystemTime::now());
+            inner.run_ids.remove(&key);
             if setup_state == SetupState::Running {
                 inner.states.insert(key, RunState::WaitingForSetup);
                 inner.waiting.insert(req.workspace_id.clone(), req);
@@ -130,13 +139,24 @@ impl RunManager {
                 return Err(e);
             }
         };
-        {
+        let run_id = NEXT_RUN_ID.fetch_add(1, Ordering::Relaxed).to_string();
+        let status = {
             let mut inner = self.lock();
             inner.processes.insert(key.clone(), process.clone());
+            inner.run_ids.insert(key.clone(), run_id.clone());
             inner.states.insert(key.clone(), RunState::Running);
             inner.last_exit.remove(&key);
-        }
+            RunStatus {
+                workspace_id: key.0.clone(),
+                script_id: key.1.clone(),
+                run_id: Some(run_id),
+                state: RunState::Running,
+                exit: None,
+            }
+        };
+        (req.on_started)(status);
         let this = self.clone();
+        let on_finished = req.on_finished;
         thread::spawn(move || loop {
             let exit = process.lock().unwrap_or_else(|e| e.into_inner()).try_wait();
             if let Ok(None) = exit {
@@ -159,8 +179,17 @@ impl RunManager {
                 inner.states.insert(key.clone(), RunState::Stopped);
                 inner.last_output.insert(key.clone(), output);
                 if let Ok(Some(exit)) = exit {
-                    inner.last_exit.insert(key, exit);
+                    inner.last_exit.insert(key.clone(), exit);
                 }
+                let status = RunStatus {
+                    workspace_id: key.0.clone(),
+                    script_id: key.1.clone(),
+                    run_id: inner.run_ids.get(&key).cloned(),
+                    state: RunState::Stopped,
+                    exit: inner.last_exit.get(&key).map(|e| (e.code, e.signal)),
+                };
+                drop(inner);
+                on_finished(status);
             }
             return;
         });
@@ -211,6 +240,76 @@ impl RunManager {
             self.lock().states.insert(key.clone(), RunState::Stopped);
         }
         !targets.is_empty()
+    }
+
+    /// Ignore input for stopped or replaced runs, including a rerun of the same script.
+    pub fn write(
+        &self,
+        workspace_id: &str,
+        script_id: &str,
+        run_id: &str,
+        data: &[u8],
+    ) -> io::Result<bool> {
+        let key = (workspace_id.to_string(), script_id.to_string());
+        let process = {
+            let inner = self.lock();
+            if inner.states.get(&key) != Some(&RunState::Running)
+                || inner
+                    .run_ids
+                    .get(&key)
+                    .is_none_or(|current| current != run_id)
+            {
+                return Ok(false);
+            }
+            inner.processes.get(&key).cloned()
+        };
+        let Some(process) = process else {
+            return Ok(false);
+        };
+        let writer = process
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .input_writer()?;
+        let Some(mut writer) = writer else {
+            return Ok(false);
+        };
+        writer.write_all(data)?;
+        writer.flush()?;
+        Ok(true)
+    }
+
+    pub fn resize(
+        &self,
+        workspace_id: &str,
+        script_id: &str,
+        run_id: &str,
+        cols: u16,
+        rows: u16,
+    ) -> io::Result<bool> {
+        if cols == 0 || rows == 0 {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "Terminal columns and rows must be positive.",
+            ));
+        }
+        let key = (workspace_id.to_string(), script_id.to_string());
+        let process = {
+            let inner = self.lock();
+            if inner.states.get(&key) != Some(&RunState::Running)
+                || inner
+                    .run_ids
+                    .get(&key)
+                    .is_none_or(|current| current != run_id)
+            {
+                return Ok(false);
+            }
+            inner.processes.get(&key).cloned()
+        };
+        let Some(process) = process else {
+            return Ok(false);
+        };
+        let mut process = process.lock().unwrap_or_else(|e| e.into_inner());
+        process.resize(cols, rows)
     }
 
     /// Stop every run of the repository's workspaces, waiting ones included.
@@ -284,6 +383,7 @@ impl RunManager {
             .map(|(k, s)| RunStatus {
                 workspace_id: k.0.clone(),
                 script_id: k.1.clone(),
+                run_id: inner.run_ids.get(k).cloned(),
                 state: *s,
                 exit: inner.last_exit.get(k).map(|e| (e.code, e.signal)),
             })

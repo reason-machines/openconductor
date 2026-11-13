@@ -1,5 +1,5 @@
 import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent as ReactMouseEvent } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
 import { PRIORITY } from "../../keybindings/dispatcher.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider";
@@ -22,6 +22,7 @@ interface Props {
    * `size: "icon"` beside settings paths. It registers no shortcuts.
    */
   variant?: "split" | "icon";
+  showShortcutHint?: boolean;
 }
 
 /** The app's own icon with Conductor's hairline frame, else its kind's glyph. */
@@ -60,7 +61,7 @@ export function useInstalledApps(): OpenInApp[] | null {
   return apps;
 }
 
-export function OpenInButton({ path, notify, variant = "split" }: Props) {
+export function OpenInButton({ path, notify, variant = "split", showShortcutHint = true }: Props) {
   const split = variant === "split";
   const installed = useInstalledApps();
   const apps = installed ?? [];
@@ -107,7 +108,7 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
   useKeybindings(
     Object.fromEntries(
       Array.from({ length: NUMBERED_ROWS }, (_, i) => {
-        const row = open ? rows[i] : undefined;
+        const row = split && open ? rows[i] : undefined;
         return [`menu.selectItem${i + 1}`, row && (() => (close(), row()))];
       }),
     ),
@@ -132,12 +133,24 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
       wrap.current?.querySelector<HTMLElement>(".oi-chevron")?.focus();
       return;
     }
-    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+    if (e.defaultPrevented) return;
+    const endpoint = !split && (e.key === "Home" || e.key === "End");
+    if (endpoint && e.which === 229) return;
+    if (!endpoint && e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
     const items = Array.from(menu.current?.querySelectorAll<HTMLElement>('[role="menuitem"]:not([disabled])') ?? []);
     const at = items.indexOf(document.activeElement as HTMLElement);
     if (at < 0) return;
+    const next = endpoint ? (e.key === "Home" ? 0 : items.length - 1)
+      : (at + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length;
     e.preventDefault();
-    items[(at + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length]?.focus();
+    e.stopPropagation();
+    items[next]?.focus();
+  };
+
+  const onRowMouseMove = (e: ReactMouseEvent<HTMLButtonElement>) => {
+    if (!open) return;
+    if (typeof CSS !== "undefined" && CSS.supports?.("-webkit-backdrop-filter:none") && e.movementX === 0 && e.movementY === 0) return;
+    if (document.activeElement !== e.currentTarget) e.currentTarget.focus({ preventScroll: true });
   };
 
   const mainLabel = defaultApp ? `Open in ${defaultApp.name}` : "Open in...";
@@ -181,26 +194,26 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
             <div className="oi-menu-note">No apps available</div>
           ) : (
             apps.map((a, i) => (
-              <button key={a.id} type="button" role="menuitem" className="oi-row" data-app={a.id} onClick={() => (close(), void openIn(a.id))}>
+              <button key={a.id} type="button" role="menuitem" className="oi-row" data-app={a.id} onMouseMove={split ? undefined : onRowMouseMove} onClick={() => (close(), void openIn(a.id))}>
                 <span className="oi-row-main">
                   <AppIcon app={a} size={14} />
                   <span className="oi-row-label">{a.name}</span>
                 </span>
                 <span className="oi-row-end">
-                  {a.id === defaultId && openKeyText && <span className="oi-row-kbd">{openKeyText}</span>}
-                  {numbers.apps[i] !== undefined && <span className="oi-row-num">{numbers.apps[i]}</span>}
+                  {showShortcutHint && a.id === defaultId && openKeyText && <span className="oi-row-kbd">{openKeyText}</span>}
+                  {split && numbers.apps[i] !== undefined && <span className="oi-row-num">{numbers.apps[i]}</span>}
                 </span>
               </button>
             ))
           )}
-          <button type="button" role="menuitem" className="oi-row" data-app="copy-path" onClick={() => (close(), void copyPath())}>
+          <button type="button" role="menuitem" className="oi-row" data-app="copy-path" onMouseMove={split ? undefined : onRowMouseMove} onClick={() => (close(), void copyPath())}>
             <span className="oi-row-main">
               <span className="oi-app-glyph" aria-hidden>
                 <CopyIcon size={14} />
               </span>
               <span className="oi-row-label">Copy path</span>
             </span>
-            {numbers.copyPath !== undefined && (
+            {split && numbers.copyPath !== undefined && (
               <span className="oi-row-end">
                 <span className="oi-row-num">{numbers.copyPath}</span>
               </span>

@@ -1,0 +1,24 @@
+{
+  "candidate": "EDIT-RESULT-DIFF-BE7-07",
+  "classification": "STATIC_REFERENCE_EXPECTATIONS_NOT_EXECUTED",
+  "reference": "Conductor 0.87.6 F0o/sUt/M0o/j0o/oV; exact retained spans in edit-hover-source-packet.json",
+  "interpretation": "content is the original typed tool_result content before native result_text serializes it. Expected sides come from static reading, not reference JavaScript execution. Do not recover type provenance by parsing every JSON-looking output string.",
+  "default_input": {"file_path": "/repo/src/edited.ts", "old_string": "input-old", "new_string": "input-new"},
+  "cases": [
+    {"id": "object-result-precedes-input", "content": {"diffString": "@@ -1 +1 @@\n-result-old\n+result-new"}, "expected_old": "result-old", "expected_new": "result-new", "selected": "result", "counts": {"added": 1, "removed": 1}},
+    {"id": "json-looking-text-is-not-object", "content": "{\"diffString\":\"@@ -1 +1 @@\\n-result-old\\n+result-new\"}", "expected_old": "input-old", "expected_new": "input-new", "selected": "input", "counts": {"added": 1, "removed": 1}},
+    {"id": "context-and-file-headers", "content": {"diffString": "--- a/src/edited.ts\n+++ b/src/edited.ts\n@@ -1,2 +1,2 @@\n keep\n-result-old\n+result-new"}, "expected_old": "keep\nresult-old", "expected_new": "keep\nresult-new", "selected": "result", "counts": {"added": 1, "removed": 1}},
+    {"id": "result-can-supply-empty-input", "input": {"file_path": "/repo/src/edited.ts", "old_string": "", "new_string": ""}, "content": {"diffString": "+result-new"}, "expected_old": "", "expected_new": "result-new", "selected": "result", "counts": {"added": 1, "removed": 0}},
+    {"id": "empty-diff-falls-back", "content": {"diffString": ""}, "expected_old": "input-old", "expected_new": "input-new", "selected": "input", "counts": {"added": 1, "removed": 1}},
+    {"id": "non-string-diff-falls-back", "content": {"diffString": 7}, "expected_old": "input-old", "expected_new": "input-new", "selected": "input", "counts": {"added": 1, "removed": 1}},
+    {"id": "array-does-not-select-nested-object", "content": [{"diffString": "-other\n+wrong"}], "expected_old": "input-old", "expected_new": "input-new", "selected": "input", "counts": {"added": 1, "removed": 1}},
+    {"id": "plain-text-falls-back", "content": "Updated the file", "expected_old": "input-old", "expected_new": "input-new", "selected": "input", "counts": {"added": 1, "removed": 1}},
+    {"id": "null-result-falls-back", "content": null, "expected_old": "input-old", "expected_new": "input-new", "selected": "input", "counts": {"added": 1, "removed": 1}},
+    {"id": "failed-result-still-selects-diff", "content": {"diffString": "-result-old\n+result-new"}, "is_error": true, "expected_old": "result-old", "expected_new": "result-new", "selected": "result", "counts": {"added": 1, "removed": 1}, "error_row": "preserve existing separate error row"},
+    {"id": "truthy-headers-only-suppress-input", "content": {"diffString": "--- a/src/edited.ts\n+++ b/src/edited.ts\n@@ -0,0 +0,0 @@"}, "expected_old": "", "expected_new": "", "selected": "result", "counts": null},
+    {"id": "input-marker-control", "input": {"file_path": "/repo/src/edited.ts", "old_string": "- before", "new_string": "+ after"}, "content": {}, "expected_old": "before", "expected_new": "after", "selected": "input", "counts": {"added": 1, "removed": 1}}
+  ],
+  "required_discriminator": "The first two cases serialize to the exact same current output string while the reference selects different sides. A frontend JSON.parse(output) fix is incorrect without retaining original content type.",
+  "mounted_regression_boundary": "Use actual native-map/Reason payload/reducer/buildRows/ConductorToolRow path. A payload that invents a raw-content field no production producer emits is not qualified RED. First reproduce the first object case and retain the JSON-looking-text control unchanged through any transport fix.",
+  "not_run": ["reference JavaScript", "product JavaScript tests", "provider process", "browser", "native app", "visual acceptance"]
+}

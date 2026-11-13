@@ -5,7 +5,7 @@
 // below; collapsed is the default and the right-hand part hides while open,
 // except for rows whose right part is a file badge.
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { FILE_GLYPHS, LUCIDE, type IconNode } from "./toolIconData.ts";
 import {
   askUserState,
@@ -17,15 +17,16 @@ import {
   grepMatches,
   isTypedSubagent,
   lastTwoSegments,
+  lineCounts,
   mcpLabel,
   parseTask,
   parseTaskList,
   readContent,
   readLabel,
   resultText,
+  scheduleWakeupAt,
   scheduleWakeupLabel,
   sendMessageLabel,
-  shortPath,
   skillLabel,
   slashCommandLabel,
   stripMarkers,
@@ -38,7 +39,9 @@ import {
   type ConductorTool,
   type TaskItem,
 } from "./conductorTools.ts";
-import { Markdown } from "./markdown.ts";
+import { highlight, Markdown } from "./markdown.ts";
+import { LinkWithMenu } from "./LinkMenu.tsx";
+import { openUrl } from "../../backend.ts";
 import { thinkingChipText } from "./thinkingChip.ts";
 import type { ToolStatus } from "./view.ts";
 
@@ -156,7 +159,9 @@ const GLYPH_BY_EXT: Record<string, [Glyph, string]> = {
 
 export function FileGlyph({ path }: { path: string }) {
   const ext = path.split(".").pop()?.toLowerCase() ?? "";
-  const [glyph, tint] = GLYPH_BY_EXT[ext] ?? (["file", "muted"] as [Glyph, string]);
+  const [glyph, tint] = (Object.prototype.hasOwnProperty.call(GLYPH_BY_EXT, ext)
+    ? GLYPH_BY_EXT[ext]
+    : undefined) ?? (["file", "muted"] as [Glyph, string]);
   const g = FILE_GLYPHS[glyph];
   return (
     <svg className="oc-file-glyph" data-tint={tint} viewBox={g.viewBox} fill="currentColor" role="img" aria-hidden>
@@ -168,8 +173,8 @@ export function FileGlyph({ path }: { path: string }) {
   );
 }
 
-export function FileBadge({ path, onOpen, children, className }: { path: string; onOpen?: (path: string) => void; children?: ReactNode; className?: string }) {
-  return (
+export function FileBadge({ path, onOpen, children, className, hoverContent }: { path: string; onOpen?: (path: string) => void; children?: ReactNode; className?: string; hoverContent?: ReactNode }) {
+  const button = (
     <button
       type="button"
       className={`oc-file-badge filebadge${className ? ` ${className}` : ""}`}
@@ -183,6 +188,82 @@ export function FileBadge({ path, onOpen, children, className }: { path: string;
       <span className="oc-file-badge-name">{baseName(path)}</span>
       {children}
     </button>
+  );
+  return hoverContent ? <FileBadgeHover content={hoverContent}>{button}</FileBadgeHover> : button;
+}
+
+function FileBadgeHover({ content, children }: { content: ReactNode; children: ReactNode }) {
+  const anchor = useRef<HTMLSpanElement>(null);
+  const card = useRef<HTMLDivElement>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [at, setAt] = useState<{ left: number; top: number } | null>(null);
+  const open = at !== null;
+  function clearTimer() {
+    if (timer.current !== null) clearTimeout(timer.current);
+    timer.current = null;
+  }
+  function close() {
+    clearTimer();
+    setAt(null);
+  }
+  function enter() {
+    clearTimer();
+    if (open) return;
+    timer.current = setTimeout(() => {
+      timer.current = null;
+      const rect = anchor.current?.getBoundingClientRect();
+      if (rect) setAt({ left: rect.left, top: rect.top - 8 });
+    }, 150);
+  }
+  function leave() {
+    clearTimer();
+    if (open) timer.current = setTimeout(close, 100);
+  }
+  useEffect(() => () => clearTimer(), []);
+  useEffect(() => {
+    if (!open || !anchor.current || !card.current) return;
+    const trigger = anchor.current.getBoundingClientRect();
+    const popup = card.current.getBoundingClientRect();
+    setAt({
+      left: Math.max(16, Math.min(trigger.left, window.innerWidth - popup.width - 16)),
+      top: Math.max(16, Math.min(trigger.top - popup.height - 8, window.innerHeight - popup.height - 16)),
+    });
+    const key = (event: KeyboardEvent) => { if (event.key === "Escape") close(); };
+    const scroll = (event: Event) => {
+      if (event.target instanceof Node && card.current?.contains(event.target)) return;
+      close();
+    };
+    window.addEventListener("keydown", key);
+    window.addEventListener("resize", close);
+    window.addEventListener("scroll", scroll, true);
+    return () => {
+      window.removeEventListener("keydown", key);
+      window.removeEventListener("resize", close);
+      window.removeEventListener("scroll", scroll, true);
+    };
+  }, [open]);
+  return (
+    <span
+      ref={anchor}
+      style={{ display: "inline-flex", minWidth: 0, maxWidth: "100%" }}
+      onPointerEnter={(event) => { if (event.pointerType !== "touch") enter(); }}
+      onPointerLeave={leave}
+    >
+      {children}
+      {at ? (
+        <div
+          ref={card}
+          role="region"
+          aria-label="File change preview"
+          style={{ position: "fixed", left: at.left, top: at.top, zIndex: 1000, width: "28rem", maxWidth: "calc(100vw - 32px)", maxHeight: "min(20rem, calc(100vh - 32px))", overflow: "auto", border: "1px solid var(--oc-border)", borderRadius: 6, background: "var(--oc-bg)", color: "var(--oc-fg)", whiteSpace: "normal" }}
+          onPointerEnter={clearTimer}
+          onPointerLeave={leave}
+          onClick={(event) => event.stopPropagation()}
+        >
+          {content}
+        </div>
+      ) : null}
+    </span>
   );
 }
 
@@ -219,6 +300,7 @@ interface ShellProps {
   align?: "center" | "baseline";
   /** Row content when opened; no content means the row does not open. */
   content?: ReactNode;
+  isCollapsible?: boolean;
   /** `isCodeBlock`: the content brings its own frame. */
   bareContent?: boolean;
   /** `contentClassName: ""`: the content sits unframed under the label (markdown). */
@@ -231,9 +313,10 @@ interface ShellProps {
   status?: ToolStatus;
 }
 
-function RowShell({ icon, left, right, keepRight = false, align = "baseline", content, bareContent = false, plainContent = false, leftClass, open, onToggle, tone, status }: ShellProps) {
-  const opens = content !== undefined && content !== null && content !== false;
-  const collapsed = !opens || !open;
+function RowShell({ icon, left, right, keepRight = false, align = "baseline", content, isCollapsible = true, bareContent = false, plainContent = false, leftClass, open, onToggle, tone, status }: ShellProps) {
+  const hasContent = content !== undefined && content !== null && content !== false;
+  const opens = hasContent && isCollapsible;
+  const collapsed = !hasContent || !open;
   return (
     <div className="oc-tool" data-tone={tone} data-status={status}>
       <div className={`oc-tool-head${opens ? " opens" : ""}`} onClick={opens ? onToggle : undefined} role={opens ? "button" : undefined} aria-expanded={opens ? open : undefined}>
@@ -252,7 +335,7 @@ function RowShell({ icon, left, right, keepRight = false, align = "baseline", co
           {right ? <div className={`oc-tool-right${!keepRight && !collapsed ? " hidden" : ""}`}>{right}</div> : null}
         </div>
       </div>
-      {opens && open ? <div className={bareContent ? "oc-tool-content bare" : plainContent ? "oc-tool-content plain" : "oc-tool-content"}>{content}</div> : null}
+      {hasContent && open ? <div className={bareContent ? "oc-tool-content bare" : plainContent ? "oc-tool-content plain" : "oc-tool-content"}>{content}</div> : null}
     </div>
   );
 }
@@ -263,9 +346,13 @@ export interface ToolRowProps {
   tool: ConductorTool;
   status: ToolStatus;
   result?: string;
+  rawResult?: unknown;
+  resultCreatedAt?: string;
+  now?: () => number;
   isError: boolean;
   open: boolean;
   onToggle: () => void;
+  todoRows?: Record<"completed" | "started", Pick<ShellProps, "open" | "onToggle">>;
   workspacePath?: string;
   onOpenFile?: (path: string) => void;
 }
@@ -275,6 +362,13 @@ const s = (v: unknown): string => (typeof v === "string" ? v : "");
 /** `AI`: a failed tool's error line under its row. */
 function ErrorRow({ text }: { text: string }) {
   const [open, setOpen] = useState(false);
+  if (text.includes("File has not been read yet. Read it first before writing to it.")) {
+    return (
+      <div className="oc-tool-aside" style={{ paddingLeft: 20, paddingTop: 8, borderRadius: 8 }}>
+        Claude Code has to retry the file edit because of a bug in its permissions logic. Just a moment!
+      </div>
+    );
+  }
   return (
     <RowShell
       icon={<Lucide name="circle-x" className="oc-tool-icon" />}
@@ -300,16 +394,20 @@ export function opensByDefault(tool: ConductorTool): boolean {
 
 export function ConductorToolRow(props: ToolRowProps) {
   const row = <Row {...props} />;
-  if (!props.isError || !props.result || !ERROR_ROW_KINDS.has(toolKind(props.tool.name))) return row;
+  const kind = toolKind(props.tool.name);
+  const errorResult = kind === "bash-output" && props.rawResult !== undefined
+    ? typeof props.rawResult === "string" ? props.rawResult : undefined
+    : props.result;
+  if (!props.isError || !errorResult || !ERROR_ROW_KINDS.has(kind)) return row;
   return (
     <>
       {row}
-      <ErrorRow text={props.result} />
+      <ErrorRow text={errorResult} />
     </>
   );
 }
 
-function Row({ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }: ToolRowProps) {
+function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, open, onToggle, todoRows, workspacePath, onOpenFile }: ToolRowProps) {
   const { name, input } = tool;
   const icon = <ToolIcon name={name} />;
   const shell = { icon, open, onToggle, status };
@@ -331,16 +429,27 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
     }
     case "read": {
       const path = s(input.file_path);
-      const text = output === undefined ? undefined : readContent(output);
+      const readResult = name === "Read" ? result : output;
+      const text = readResult === undefined ? undefined : readContent(readResult);
+      const languages: Record<string, string> = {
+        js: "javascript", jsx: "javascript", ts: "typescript", tsx: "typescript",
+        py: "python", rs: "rust", json: "json", yml: "yaml", yaml: "yaml",
+        css: "css", html: "html", htm: "html", xml: "xml", sh: "bash", bash: "bash",
+      };
+      const language = languages[path.split(".").pop()?.toLowerCase() ?? ""];
+      const imageExtensions = { png: true, jpg: true, jpeg: true, gif: true, webp: true, tif: true, tiff: true, avif: true, bmp: true };
+      const extension = path.split(".").pop()?.toLowerCase();
+      const isImage = extension !== undefined && Object.prototype.hasOwnProperty.call(imageExtensions, extension);
       return (
         <RowShell
           {...shell}
-          left={<span>{readLabel(path, output)}</span>}
+          isCollapsible={!isImage}
+          left={<span>{readLabel(path, readResult)}</span>}
           right={path ? <FileBadge path={path} onOpen={onOpenFile} /> : undefined}
           keepRight
           align="center"
           bareContent
-          content={text ? <NumberedCode text={text} start={typeof input.offset === "number" ? input.offset : 1} /> : undefined}
+          content={text ? <NumberedCode text={text} start={typeof input.offset === "number" ? input.offset : 1} language={language} /> : undefined}
         />
       );
     }
@@ -356,7 +465,7 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
               {path ? (
                 <>
                   {" in "}
-                  <code className="oc-tool-inline-code">{shortPath(path, workspacePath)}</code>
+                  <code className="oc-tool-inline-code">{lastTwoSegments(path)}</code>
                 </>
               ) : null}
               {include ? ` (include: ${include})` : null}
@@ -371,94 +480,213 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
     case "ls": {
       const label = toolKind(name) === "glob" ? "Glob" : "List files";
       const chip = toolKind(name) === "glob" ? s(input.pattern) : s(input.path) || ".";
-      return <RowShell {...shell} left={<span>{label}</span>} right={<CodeChip text={chip} />} align="center" content={output ? output : undefined} />;
+      const content = toolKind(name) === "glob" && output ? (
+        <code>{output.split("\n").filter((line) => line.trim()).map((line, index) => {
+          const trimmed = line.trim();
+          return <div key={index}>{trimmed.includes(" ") ? line : trimmed}</div>;
+        })}</code>
+      ) : output;
+      return <RowShell {...shell} left={<span>{label}</span>} right={<CodeChip text={chip} />} align="center" content={content || undefined} />;
     }
     case "edit": {
       const path = s(input.file_path);
-      const counts = editCounts(input);
+      const { oldText, newText } = (() => {
+        if (rawResult && typeof rawResult === "object" && !Array.isArray(rawResult) && "diffString" in rawResult && typeof rawResult.diffString === "string" && rawResult.diffString) {
+          const oldLines: string[] = [];
+          const newLines: string[] = [];
+          for (const line of rawResult.diffString.split("\n")) {
+            if (line.startsWith("--- ") || line.startsWith("+++ ") || line.startsWith("@@")) continue;
+            if (line.startsWith("-")) oldLines.push(line.slice(1));
+            else if (line.startsWith("+")) newLines.push(line.slice(1));
+            else {
+              const context = line.startsWith(" ") ? line.slice(1) : line;
+              oldLines.push(context);
+              newLines.push(context);
+            }
+          }
+          return { oldText: oldLines.join("\n"), newText: newLines.join("\n") };
+        }
+        return { oldText: stripMarkers(s(input.old_string)), newText: stripMarkers(s(input.new_string)) };
+      })();
+      const counts = oldText || newText ? lineCounts(oldText, newText) : undefined;
       return (
         <RowShell
           {...shell}
           left={<span>Edit</span>}
           right={
             <div className="oc-tool-right-row">
-              {path ? <FileBadge path={path} onOpen={onOpenFile} /> : null}
+              {path ? <FileBadge path={path} onOpen={onOpenFile} hoverContent={counts ? <DiffBlock oldText={oldText} newText={newText} /> : undefined} /> : null}
               {counts ? <LineCounts {...counts} /> : null}
             </div>
           }
           keepRight
           align="center"
           bareContent
-          content={counts ? <DiffBlock oldText={stripMarkers(s(input.old_string))} newText={stripMarkers(s(input.new_string))} /> : undefined}
+          content={counts ? <DiffBlock oldText={oldText} newText={newText} /> : undefined}
         />
       );
     }
-    case "multi-edit": {
-      const path = s(input.file_path);
-      const edits = Array.isArray(input.edits) ? (input.edits as Record<string, unknown>[]) : [];
-      const totals = edits.reduce<{ added: number; removed: number }>(
-        (t, e) => {
-          const c = editCounts(e) ?? { added: 0, removed: 0 };
-          return { added: t.added + c.added, removed: t.removed + c.removed };
-        },
-        { added: 0, removed: 0 },
-      );
-      return (
-        <RowShell
-          {...shell}
-          left={<span>{`${edits.length} ${edits.length === 1 ? "edit" : "edits"}`}</span>}
-          right={
-            <div className="oc-tool-right-row">
-              {path ? <FileBadge path={path} onOpen={onOpenFile} /> : null}
-              <LineCounts {...totals} />
-            </div>
-          }
-          keepRight
-          align="center"
-        />
-      );
-    }
-    case "write": {
-      const path = s(input.file_path);
-      const content = s(input.content);
-      return (
-        <RowShell
-          {...shell}
-          left={<span>{`Write ${content.split("\n").length} lines`}</span>}
-          right={path ? <FileBadge path={path} onOpen={onOpenFile} /> : undefined}
-          align="center"
-          bareContent
-          content={<DiffBlock oldText="" newText={content} />}
-        />
-      );
-    }
+    case "multi-edit":
+      return <MultiEditRow {...shell} input={input} onOpenFile={onOpenFile} />;
+    case "write":
+      return <WriteRow {...shell} input={input} onOpenFile={onOpenFile} />;
     case "web": {
       const target = s(input.url) || s(input.query);
+      const prompt = s(input.prompt);
+      const webOutput = output && output.length > 100000 ? (
+        <>
+          {output.substring(0, 100000)}
+          <div>Content truncated ({output.length.toLocaleString()} chars total)</div>
+        </>
+      ) : output;
       return (
         <RowShell
           {...shell}
           left={<span>{name === "WebSearch" ? "Web Search" : "Web Browse"}</span>}
           right={target ? <CodeChip text={target} /> : undefined}
           align="center"
-          content={output ? output : undefined}
+          content={output ? (prompt ? <><ul><li>Prompt: <code>{prompt}</code></li></ul>{webOutput}</> : webOutput) : undefined}
         />
       );
     }
     case "todo": {
-      const todos = Array.isArray(input.todos) ? (input.todos as Record<string, unknown>[]) : [];
+      let todoSource: unknown = input.todos;
+      if (name === "TodoRead") {
+        todoSource = rawResult === undefined ? result : rawResult;
+        if (typeof todoSource === "string") {
+          const match = todoSource.match(/\[[\s\S]*\]/);
+          try {
+            todoSource = match ? JSON.parse(match[0]) : [];
+          } catch {
+            todoSource = [];
+          }
+        }
+      }
+      const todos = Array.isArray(todoSource) ? (todoSource as Record<string, unknown>[]) : [];
       const done = todos.filter((t) => t.status === "completed").length;
+      const activeIndex = todos.findIndex((t) => t.status === "in_progress");
+      const active = todos[activeIndex];
+      const content = todos.length > 0 ? todos.map((t) => `${t.status === "completed" ? "✓" : "○"} ${s(t.content)}`).join("\n") : undefined;
+      if (name === "TodoWrite" && active && done > 0 && done < todos.length) {
+        return (
+          <>
+            <RowShell
+              {...shell}
+              {...todoRows?.completed}
+              left={<span>Todo completed</span>}
+              right={<span className="oc-tool-count">{`${done}/${todos.length} completed`}</span>}
+              content={content}
+            />
+            <RowShell
+              {...shell}
+              {...todoRows?.started}
+              left={<span>Todo started</span>}
+              right={<span className="oc-tool-count">{`${activeIndex + 1}. ${s(active.content) || "todo"}`}</span>}
+              content={content}
+            />
+          </>
+        );
+      }
       return (
         <RowShell
           {...shell}
           left={<span>{done > 0 && done < todos.length ? "Todo completed" : "Update todos"}</span>}
           right={todos.length > 0 ? <span className="oc-tool-count">{`${done}/${todos.length} completed`}</span> : undefined}
-          content={todos.length > 0 ? todos.map((t) => `${t.status === "completed" ? "✓" : "○"} ${s(t.content)}`).join("\n") : undefined}
+          content={content}
         />
       );
     }
     default:
-      return <MoreRows {...{ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }} />;
+      return <MoreRows {...{ tool, status, result, rawResult, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
   }
+}
+
+function WriteRow({ input, onOpenFile, ...shell }: ShellBase & { input: Record<string, unknown>; onOpenFile?: (path: string) => void }) {
+  const [expanded, setExpanded] = useState(false);
+  const path = s(input.file_path);
+  const content = s(input.content);
+  const long = content.length > 2000;
+  const shown = long && !expanded ? content.substring(0, 2000) : content;
+  return (
+    <RowShell
+      {...shell}
+      left={<span>{`Write ${content.split("\n").length} lines`}</span>}
+      right={path ? <FileBadge path={path} onOpen={onOpenFile} hoverContent={<DiffBlock oldText="" newText={shown} />} /> : undefined}
+      align="center"
+      bareContent
+      content={
+        <>
+          <DiffBlock oldText="" newText={shown} />
+          {long ? (
+            <div style={{ borderTop: "1px solid var(--oc-border)", background: "color-mix(in oklab, var(--oc-muted) 30%, transparent)", padding: "8px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span className="oc-tool-count">{expanded ? "Showing full content" : "Showing first 2,000 characters"}</span>
+              <button type="button" className="oc-text-action" style={{ padding: 0, color: "var(--accent)" }} onClick={() => setExpanded((previous) => !previous)}>
+                {expanded ? "Show less" : "Show more"}
+              </button>
+            </div>
+          ) : null}
+        </>
+      }
+    />
+  );
+}
+
+function MultiEditRow({ input, onOpenFile, ...shell }: ShellBase & { input: Record<string, unknown>; onOpenFile?: (path: string) => void }) {
+  const [expanded, setExpanded] = useState<Set<number>>(() => new Set());
+  const path = s(input.file_path);
+  const edits = Array.isArray(input.edits) ? (input.edits as Record<string, unknown>[]) : [];
+  const totals = edits.reduce<{ added: number; removed: number }>(
+    (total, edit) => {
+      const counts = editCounts(edit) ?? { added: 0, removed: 0 };
+      return { added: total.added + counts.added, removed: total.removed + counts.removed };
+    },
+    { added: 0, removed: 0 },
+  );
+  return (
+    <RowShell
+      {...shell}
+      left={<span>{`${edits.length} ${edits.length === 1 ? "edit" : "edits"}`}</span>}
+      right={
+        <div className="oc-tool-right-row">
+          {path ? <FileBadge path={path} onOpen={onOpenFile} hoverContent={<DiffBlock oldText={edits.map((edit) => stripMarkers(s(edit.old_string))).join("\n")} newText={edits.map((edit) => stripMarkers(s(edit.new_string))).join("\n")} />} /> : null}
+          <LineCounts {...totals} />
+        </div>
+      }
+      keepRight
+      align="center"
+      bareContent
+      content={
+        <div className="oc-multi-edit-list">
+          {edits.map((edit, index) => {
+            const oldText = s(edit.old_string);
+            const newText = s(edit.new_string);
+            const open = expanded.has(index);
+            return (
+              <div className="oc-multi-edit-item" key={index}>
+                <button
+                  type="button"
+                  className="oc-multi-edit-head"
+                  aria-label={`Edit ${index + 1}`}
+                  aria-expanded={open}
+                  onClick={() => setExpanded((previous) => {
+                    const next = new Set(previous);
+                    if (next.has(index)) next.delete(index);
+                    else next.add(index);
+                    return next;
+                  })}
+                >
+                  <span className="oc-multi-edit-label">Edit {index + 1}</span>
+                  <LineCounts {...(editCounts(edit) ?? { added: 0, removed: 0 })} />
+                  <span className="oc-multi-edit-preview">{oldText.split("\n")[0]?.substring(0, 40) || "Empty"}{oldText.length > 40 ? "..." : ""}</span>
+                </button>
+                {open ? <div className="oc-multi-edit-body"><DiffBlock oldText={stripMarkers(oldText)} newText={stripMarkers(newText)} /></div> : null}
+              </div>
+            );
+          })}
+        </div>
+      }
+    />
+  );
 }
 
 function BashRow({ input, output, ...shell }: ShellBase & { input: Record<string, unknown>; output?: string }) {
@@ -483,14 +711,14 @@ function BashRow({ input, output, ...shell }: ShellBase & { input: Record<string
   );
 }
 
-function NumberedCode({ text, start }: { text: string; start: number }) {
+function NumberedCode({ text, start, language }: { text: string; start: number; language?: string }) {
   const lines = text.split("\n");
   return (
     <pre className="oc-tool-code numbered">
       {lines.map((l, i) => (
         <div key={i} className="oc-code-line">
           <span className="oc-code-ln">{start + i}</span>
-          <span>{l}</span>
+          <span>{highlight(language, l) ?? l}</span>
         </div>
       ))}
     </pre>
@@ -637,16 +865,43 @@ function modelName(model: string): string {
   return alias[model] ?? model;
 }
 
-function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }: ToolRowProps) {
+function ScheduleWakeupRow({ tool, status, result, resultCreatedAt, now = Date.now, isError, open, onToggle }: ToolRowProps) {
+  const resultAt = resultCreatedAt === undefined ? undefined : Date.parse(resultCreatedAt);
+  const wakeAt = scheduleWakeupAt(tool.input, result, resultAt);
+  const [, redraw] = useState(0);
+  useEffect(() => {
+    if (isError || wakeAt === undefined) return;
+    const delay = wakeAt - now();
+    if (delay <= 0) return;
+    const timer = setTimeout(() => redraw((version) => version + 1), delay + 250);
+    return () => clearTimeout(timer);
+  }, [wakeAt, isError, now]);
+  if (isError) return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
+  const label = scheduleWakeupLabel(tool.input, result, resultAt, now(), (ms) => new Date(ms).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
+  return (
+    <RowShell
+      icon={<ToolIcon name={tool.name} />}
+      open={open}
+      onToggle={onToggle}
+      status={status}
+      left={<span>{label}</span>}
+      right={s(tool.input.reason) ? <CodeChip text={s(tool.input.reason)} /> : undefined}
+      align="center"
+      content={<InputOutput input={tool.input} result={result} isError={isError} />}
+    />
+  );
+}
+
+function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }: ToolRowProps) {
   const { name, input } = tool;
   const kind = toolKind(name);
   const shell: ShellBase = { icon: <ToolIcon name={name} />, open, onToggle, status };
-  const output = isError ? undefined : result;
   const framed = (text: string | undefined) => (text ? text : undefined);
   switch (kind) {
     case "bash-output": {
       // `N0o`
-      const st = backgroundStatus(result);
+      const content = rawResult === undefined ? result : typeof rawResult === "string" ? rawResult : undefined;
+      const st = backgroundStatus(content);
       return (
         <RowShell
           {...shell}
@@ -660,7 +915,7 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
               ) : null}
             </span>
           }
-          content={framed(result)}
+          content={framed(content)}
         />
       );
     }
@@ -728,7 +983,14 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
           right={<span className="oc-code-chip sans">{thinkingChipText(text)}</span>}
           align="center"
           plainContent
-          content={<Markdown text={text} className="oc-prose muted" />}
+          content={
+            <Markdown
+              text={text}
+              className="oc-prose muted"
+              onOpenLink={(href) => void openUrl(href)}
+              Link={LinkWithMenu}
+            />
+          }
         />
       );
     }
@@ -752,7 +1014,7 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
       );
     }
     case "task-list": {
-      const tasks = parseTaskList(output);
+      const tasks = parseTaskList(result);
       const active = tasks.find((t) => t.status === "in_progress");
       const done = tasks.filter((t) => t.status === "completed").length;
       const doing = tasks.filter((t) => t.status === "in_progress").length;
@@ -781,7 +1043,7 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
       );
     }
     case "task-get": {
-      const task = parseTask(output);
+      const task = parseTask(result);
       const id = s(input.taskId);
       return (
         <RowShell
@@ -793,7 +1055,7 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
       );
     }
     case "task-update": {
-      const task = parseTask(output);
+      const task = parseTask(result);
       const id = s(input.taskId) || taskIdIn(result);
       const { label, note: dep } = taskUpdateLabel(input);
       const subject = task?.subject || s(input.subject);
@@ -914,30 +1176,22 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
       return <RowShell {...shell} left={<span>Workspace diff</span>} right={<span className="oc-tool-count">{target}</span>} content={framed(result)} />;
     }
     case "get-terminal-output": {
-      const { text, note: where } = terminalOutput(input, result);
+      const { text, note: where } = terminalOutput(input, result, rawResult);
       return <RowShell {...shell} left={<span>Get terminal output</span>} right={where ? <span className="oc-tool-count">{where}</span> : undefined} content={framed(text)} />;
     }
-    case "schedule-wakeup": {
-      // `Epo`: a failed call draws as the generic row.
-      if (isError) return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
-      const label = scheduleWakeupLabel(input, result, undefined, Date.now(), (ms) => new Date(ms).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
-      return (
-        <RowShell
-          {...shell}
-          left={<span>{label}</span>}
-          right={s(input.reason) ? <CodeChip text={s(input.reason)} /> : undefined}
-          align="center"
-          content={<InputOutput input={input} result={result} isError={isError} />}
-        />
-      );
-    }
+    case "schedule-wakeup":
+      return <ScheduleWakeupRow {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle }} />;
     case "image-generation": {
       // `Vpo`: the generated image's path (the image itself is not drawn yet).
       const path = result === undefined ? "" : resultText(result).trim();
+      const imageExtensions = { png: true, jpg: true, jpeg: true, gif: true, webp: true, tif: true, tiff: true, avif: true, bmp: true };
+      const extension = path.split(".").pop()?.toLowerCase();
+      const isCollapsible = extension !== undefined && Object.prototype.hasOwnProperty.call(imageExtensions, extension);
       return (
         <RowShell
           {...shell}
           left={<span>{result === undefined ? "Generating image" : "Generated image"}</span>}
+          isCollapsible={isCollapsible}
           keepRight
           content={path ? <span className="oc-task-note mono">{path}</span> : undefined}
         />
@@ -969,19 +1223,21 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
     case "codex-collab":
       return <CollabRow name={name} input={input} result={result} isError={isError} />;
     case "sub-agent":
-      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={output} />;
-      if (name.startsWith("mcp__linear__") || name.startsWith("mcp__context7__")) return <MoreRows {...{ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }} />;
+      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={result} />;
+      if (name.startsWith("mcp__linear__") || name.startsWith("mcp__context7__")) return <MoreRows {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
       return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
     default:
-      return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
+      return <GenericRow {...{ tool, status, result, rawResult, isError, open, onToggle }} />;
   }
 }
 
 /** `aUt`: any other tool. MCP tools get `iUt`'s shell; Monitor shows its description as plain text. */
-function GenericRow({ tool, status, result, isError, open, onToggle }: Pick<ToolRowProps, "tool" | "status" | "result" | "isError" | "open" | "onToggle">) {
+function GenericRow({ tool, status, result, rawResult, isError, open, onToggle }: Pick<ToolRowProps, "tool" | "status" | "result" | "rawResult" | "isError" | "open" | "onToggle">) {
   const { name, input } = tool;
   const shell: ShellBase = { icon: <ToolIcon name={name} />, open, onToggle, status };
   const mcp = name.startsWith("mcp__");
+  let output = result;
+  if (!mcp && rawResult !== undefined) output = typeof rawResult === "string" ? rawResult : rawResult ? JSON.stringify(rawResult, null, 2) : "";
   const monitor = name === "Monitor";
   const summary = genericSummary(name, input);
   const left = mcp || monitor || name === "ToolSearch" ? <span>{mcpLabel(name)}</span> : <span className="oc-lowercase">{name}</span>;
@@ -994,7 +1250,7 @@ function GenericRow({ tool, status, result, isError, open, onToggle }: Pick<Tool
       leftClass={monitor ? "shrink" : undefined}
       right={right}
       align={monitor ? "baseline" : "center"}
-      content={Object.keys(input).length > 0 || result ? <InputOutput input={input} result={result} isError={isError} /> : undefined}
+      content={Object.keys(input).length > 0 || output ? <InputOutput input={input} result={output} isError={isError} /> : undefined}
     />
   );
 }
@@ -1037,7 +1293,7 @@ function SubagentRow({ input, result, ...shell }: ShellBase & { input: Record<st
               </div>
               <CopyIcon text={text} />
             </div>
-            <div className="oc-subagent-body">{raw ? <div className="oc-subagent-raw">{text}</div> : <Markdown text={text} className="oc-prose" />}</div>
+            <div className="oc-subagent-body">{raw ? <div className="oc-subagent-raw">{text}</div> : <Markdown text={text} className="oc-prose" onOpenLink={(href) => void openUrl(href)} Link={LinkWithMenu} />}</div>
           </div>
         ) : undefined
       }

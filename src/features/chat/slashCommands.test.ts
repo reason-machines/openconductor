@@ -75,7 +75,7 @@ test("parse: /name args and /[name](command) args", () => {
   assert.equal(parseSlashCommand("no slash", isKnownCommand), null);
 });
 
-test("skills follow every command, keyed by name and path, and insert /name or Codex's $name", () => {
+test("skills follow every command, keyed by name and path, and Codex inserts the selected path", () => {
   const skills = [
     { name: "deploy", description: "Ship it", path: "/u/.codex/skills/deploy/SKILL.md", displayName: "Deploy" },
     { name: "deploy", description: "Ship it", path: "/u/.codex/skills/deploy/SKILL.md" },
@@ -85,7 +85,7 @@ test("skills follow every command, keyed by name and path, and insert /name or C
   assert.deepEqual(names(codex), ["review", "clear", "restart", "add-dir", "personality", "mcp-status", "mcp", "compact", "Deploy", "notes"]);
   const deploy = codex.find((c) => c.name === "Deploy")!;
   assert.equal(deploy.effect, "skill");
-  assert.equal(deploy.insert, "$deploy");
+  assert.equal(deploy.insert, "[$deploy](/u/.codex/skills/deploy/SKILL.md)");
   assert.equal(deploy.id, `skill:deploy|${encodeURIComponent("/u/.codex/skills/deploy/SKILL.md")}`);
   assert.equal(codex[0]!.argumentHint, "instructions");
   const reason = commandSet({ agent: "acp", skills: [{ name: "yc-cli", description: "YC", path: "reason-skill:s1" }] });

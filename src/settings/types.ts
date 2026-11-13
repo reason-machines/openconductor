@@ -4,8 +4,9 @@
 
 import type { CodeTheme } from "../features/diff/codeThemes.ts";
 import type { PaletteId } from "../theme/palettes.ts";
+import type { SoundType } from "./sound";
 export type Theme = "system" | "light" | "dark";
-export type SoundType = "default" | "none";
+export type { SoundType } from "./sound";
 export type BranchPrefixType = "github_username" | "custom" | "none";
 /** Codex reasoning effort; Conductor's levels plus our earlier `minimal`. */
 export type ThinkingLevel = "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max" | "ultra";
@@ -173,7 +174,7 @@ export type ClaudeEffortLevel = (typeof CLAUDE_EFFORT_LEVELS)[number];
 
 export const DEFAULT_SETTINGS: Settings = {
   $schema: "https://openconductor.dev/schemas/settings.schema.json",
-  general: { theme: "system", send_native_notification: true, sound_type: "default" },
+  general: { theme: "dark", send_native_notification: true, sound_type: "default" },
   appearance: { zoom_level_v2: 1, low_contrast_dark_mode: false, terminal_font_size: 12 },
   git: {
     branch_prefix_type: "github_username",

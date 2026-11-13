@@ -1,0 +1,112 @@
+(node:105) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:112) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pending notification grant preserves an intervening parent settings update
+not ok 1 - pending notification grant preserves an intervening parent settings update
+  ---
+  duration_ms: 385.794812
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/concurrent-settings-c3b81f1b/concurrentSettings.test.cjs:111:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    permission completion must use the latest settings, not the pre-prompt snapshot
+    + actual - expected
+    ... Skipped lines
+
+      [
+        {
+          '$schema': 'https://openconductor.dev/schemas/settings.schema.json',
+          appearance: {
+            low_contrast_dark_mode: false,
+    ...
+          general: {
+    +       notification_fixture_unknown: 'preserve',
+    -       notification_fixture_unknown: 'changed-during-permission-prompt',
+            send_native_notification: true,
+    +       sound_type: 'none',
+    -       sound_type: 'default',
+            theme: 'system'
+          },
+          git: {
+            archive_on_merge: false,
+            branch_prefix_type: 'github_username',
+    ...
+          },
+    -     notification_concurrent_unknown: {
+    -       preserve: true
+    -     },
+          providers: {}
+        }
+      ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      $schema: 'https://openconductor.dev/schemas/settings.schema.json'
+      general:
+        theme: 'system'
+        send_native_notification: true
+        sound_type: 'default'
+        notification_fixture_unknown: 'changed-during-permission-prompt'
+      appearance:
+        zoom_level_v2: 1
+        low_contrast_dark_mode: false
+        terminal_font_size: 12
+      git:
+        branch_prefix_type: 'github_username'
+        delete_branch_on_archive: false
+        archive_on_merge: false
+        worktree_push_auto_setup_remote: true
+      models:
+        default: 'opus'
+        default_thinking_enabled: true
+        review_thinking_enabled: true
+        codex:
+          default_thinking_level: 'medium'
+          review_thinking_level: 'medium'
+      providers:
+      notification_concurrent_unknown:
+        preserve: true
+  actual:
+    0:
+      $schema: 'https://openconductor.dev/schemas/settings.schema.json'
+      general:
+        theme: 'system'
+        send_native_notification: true
+        sound_type: 'none'
+        notification_fixture_unknown: 'preserve'
+      appearance:
+        zoom_level_v2: 1
+        low_contrast_dark_mode: false
+        terminal_font_size: 12
+      git:
+        branch_prefix_type: 'github_username'
+        delete_branch_on_archive: false
+        archive_on_merge: false
+        worktree_push_auto_setup_remote: true
+      models:
+        default: 'opus'
+        default_thinking_enabled: true
+        review_thinking_enabled: true
+        codex:
+          default_thinking_level: 'medium'
+          review_thinking_level: 'medium'
+      providers:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/concurrent-settings-c3b81f1b/concurrentSettings.test.cjs:137:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 791.03965

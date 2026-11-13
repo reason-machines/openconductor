@@ -1,0 +1,1 @@
+async updateCommentText({localWorkspaceId:e,commentId:s,body:n}){(await this.dependencies.db.execute("UPDATE diff_comments SET body = ? WHERE id = ?",[n,s])).rowsAffected>0&&await this.refreshCommittedCommentAttachments({localWorkspaceId:e,commentId:s}),await this.refreshWorkspaceComments({localWorkspaceId:e})}

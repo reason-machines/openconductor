@@ -1,0 +1,597 @@
+{
+  "unit": "DIFF-FILE-COMMENT-COUNT-DE6-02",
+  "time": "2026-11-12T13:25:31.964689+00:00",
+  "main": "a774da0c5b48b95637f3909b4de16a4021ed5e1f",
+  "assigned_head": "f6d6b7c520edff44b0211b61a3feb044d3143e6a",
+  "method": "Inert bounded source extraction only; no product code or extracted code executed.",
+  "checks": [
+    {
+      "name": "retained renderer identity",
+      "passed": true
+    },
+    {
+      "name": "retained index identity",
+      "passed": true
+    },
+    {
+      "name": "preserved reference span workspace-selector",
+      "passed": true
+    },
+    {
+      "name": "preserved reference span selector-export",
+      "passed": true
+    },
+    {
+      "name": "preserved reference span selector-import",
+      "passed": true
+    },
+    {
+      "name": "preserved reference span panel-workspace-input",
+      "passed": true
+    },
+    {
+      "name": "preserved reference span panel-count-reduction",
+      "passed": true
+    },
+    {
+      "name": "preserved reference span per-file-reducer",
+      "passed": true
+    },
+    {
+      "name": "preserved reference span predicate-import",
+      "passed": true
+    },
+    {
+      "name": "preserved reference span predicate-export",
+      "passed": true
+    },
+    {
+      "name": "preserved reference span active-comment-predicate",
+      "passed": true
+    },
+    {
+      "name": "preserved reference span row-count-projection",
+      "passed": true
+    },
+    {
+      "name": "preserved reference span row-default-count",
+      "passed": true
+    },
+    {
+      "name": "preserved reference span positive-only-bubble",
+      "passed": true
+    },
+    {
+      "name": "existing main pin src/features/diff/comments.ts",
+      "passed": true
+    },
+    {
+      "name": "preserved assigned source src/features/diff/comments.ts",
+      "passed": true
+    },
+    {
+      "name": "existing main pin src/features/diff/ReviewComments.tsx",
+      "passed": true
+    },
+    {
+      "name": "preserved assigned source src/features/diff/ReviewComments.tsx",
+      "passed": true
+    },
+    {
+      "name": "existing main pin src/features/diff/ChangesList.tsx",
+      "passed": true
+    },
+    {
+      "name": "preserved assigned source src/features/diff/ChangesList.tsx",
+      "passed": true
+    },
+    {
+      "name": "existing main pin src/features/diff/diff.css",
+      "passed": true
+    },
+    {
+      "name": "preserved assigned source src/features/diff/diff.css",
+      "passed": true
+    },
+    {
+      "name": "existing main pin src/components/WorkspaceView.tsx",
+      "passed": true
+    },
+    {
+      "name": "preserved assigned source src/components/WorkspaceView.tsx",
+      "passed": true
+    },
+    {
+      "name": "existing main pin src/features/diff/commentStore.ts",
+      "passed": true
+    },
+    {
+      "name": "preserved assigned source src/features/diff/commentStore.ts",
+      "passed": true
+    },
+    {
+      "name": "existing main pin src/features/diff/commentsApi.ts",
+      "passed": true
+    },
+    {
+      "name": "preserved assigned source src/features/diff/commentsApi.ts",
+      "passed": true
+    },
+    {
+      "name": "existing main pin package.json",
+      "passed": true
+    },
+    {
+      "name": "preserved assigned source package.json",
+      "passed": true
+    },
+    {
+      "name": "existing main pin package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "preserved assigned source package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "historical frozen v2 fixture preserved",
+      "passed": true
+    },
+    {
+      "name": "unique source entry comments-header-add-all",
+      "passed": true
+    },
+    {
+      "name": "bounded complete span comments-header-add-all",
+      "passed": true
+    },
+    {
+      "name": "unique source entry add-all-active-predicate",
+      "passed": true
+    },
+    {
+      "name": "bounded complete span add-all-active-predicate",
+      "passed": true
+    },
+    {
+      "name": "unique source entry floating-add-all",
+      "passed": true
+    },
+    {
+      "name": "bounded complete span floating-add-all",
+      "passed": true
+    },
+    {
+      "name": "unique source entry composer-api-wrapper",
+      "passed": true
+    },
+    {
+      "name": "bounded complete span composer-api-wrapper",
+      "passed": true
+    },
+    {
+      "name": "unique source entry local-attachment-service",
+      "passed": true
+    },
+    {
+      "name": "bounded complete span local-attachment-service",
+      "passed": true
+    },
+    {
+      "name": "unique source entry workspace-attachment-router",
+      "passed": true
+    },
+    {
+      "name": "bounded complete span workspace-attachment-router",
+      "passed": true
+    },
+    {
+      "name": "unique source entry remote-attachment-add-remove",
+      "passed": true
+    },
+    {
+      "name": "bounded complete span remote-attachment-add-remove",
+      "passed": true
+    },
+    {
+      "name": "unique source entry attachment-file-writer",
+      "passed": true
+    },
+    {
+      "name": "bounded complete span attachment-file-writer",
+      "passed": true
+    },
+    {
+      "name": "unique source entry state-producers",
+      "passed": true
+    },
+    {
+      "name": "bounded complete span state-producers",
+      "passed": true
+    },
+    {
+      "name": "unique source entry immediate-delivery-and-failure",
+      "passed": true
+    },
+    {
+      "name": "bounded complete span immediate-delivery-and-failure",
+      "passed": true
+    },
+    {
+      "name": "unique source entry queued-delivery-and-failure",
+      "passed": true
+    },
+    {
+      "name": "bounded complete span queued-delivery-and-failure",
+      "passed": true
+    },
+    {
+      "name": "unique source entry agent-delivery-binding",
+      "passed": true
+    },
+    {
+      "name": "bounded complete span agent-delivery-binding",
+      "passed": true
+    },
+    {
+      "name": "unique source entry agent-dispatch",
+      "passed": true
+    },
+    {
+      "name": "bounded complete span agent-dispatch",
+      "passed": true
+    },
+    {
+      "name": "unique source entry local-dispatch-service",
+      "passed": true
+    },
+    {
+      "name": "bounded complete span local-dispatch-service",
+      "passed": true
+    },
+    {
+      "name": "unique source entry local-query-handoff",
+      "passed": true
+    },
+    {
+      "name": "bounded complete span local-query-handoff",
+      "passed": true
+    },
+    {
+      "name": "legacy method definition only addCommentToChat(",
+      "passed": true
+    },
+    {
+      "name": "legacy method definition only addAllGithubCommentsToChat(",
+      "passed": true
+    },
+    {
+      "name": "local add/remove does not mutate comment state",
+      "passed": true
+    },
+    {
+      "name": "reviewed consumer preserves superseded",
+      "passed": true
+    },
+    {
+      "name": "queued delivery failure exits before recordDelivered",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree src/features/diff/ReviewComments.tsx",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree src/features/diff/comments.ts",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree src/features/diff/commentStore.ts",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree src/features/diff/chatAttachment.ts",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree src/features/chat/composerAttachments.ts",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree src/features/chat/composerSession.ts",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree src/features/chat/queue.ts",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree src/features/chat/reason.ts",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree src/features/chat/chatRuntime.ts",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree src/features/chat/codexChat.ts",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree src/features/chat/agents.ts",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree src/components/WorkspaceView.tsx",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree src-tauri/src/reason_chat.rs",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree src-tauri/src/codex_chat.rs",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree src-tauri/src/claude_chat/commands.rs",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree src-tauri/src/diff/comment_commands.rs",
+      "passed": true
+    },
+    {
+      "name": "current source matches assigned worktree crates/openconductor-db/src/diff_comments.rs",
+      "passed": true
+    }
+  ],
+  "assets": {
+    "renderer": {
+      "filename": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "filename": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "reference_spans": {
+    "comments-header-add-all": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        2460310,
+        2463546
+      ],
+      "bytes": 3236,
+      "sha256": "ac30ec0c081ab9786c213a2c0908b60b1a96b8e778acc862ab78aa204388cc03",
+      "path": "reference/comments-header-add-all.txt"
+    },
+    "add-all-active-predicate": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        2463705,
+        2463786
+      ],
+      "bytes": 81,
+      "sha256": "535a3c927fe9ddd2a43e2b494a07f78713f91166995e55d7dc65577e72d9ed9d",
+      "path": "reference/add-all-active-predicate.txt"
+    },
+    "floating-add-all": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9695963,
+        9697035
+      ],
+      "bytes": 1072,
+      "sha256": "3c1311bc14bad5183ae5ba99cfa5167602f84181af9745fe3aacad48afc8fc86",
+      "path": "reference/floating-add-all.txt"
+    },
+    "composer-api-wrapper": {
+      "asset": "index",
+      "utf8_half_open": [
+        3138703,
+        3139202
+      ],
+      "bytes": 499,
+      "sha256": "5f3c536cf9a3a304c4d707cd164b0925d54bba61a84fff3ddf77eb1be32f6d0f",
+      "path": "reference/composer-api-wrapper.txt"
+    },
+    "local-attachment-service": {
+      "asset": "index",
+      "utf8_half_open": [
+        2343825,
+        2349415
+      ],
+      "bytes": 5590,
+      "sha256": "f5e830385af90252d6b42d2e4117f71b3037abce97558a4b8af1a3b3c1e18d99",
+      "path": "reference/local-attachment-service.txt"
+    },
+    "workspace-attachment-router": {
+      "asset": "index",
+      "utf8_half_open": [
+        2356940,
+        2357686
+      ],
+      "bytes": 746,
+      "sha256": "feb8195fbfdfb1f644d253c02ae4e5d7ce53ac0a3ac7f8505ad5d0a7fdf22805",
+      "path": "reference/workspace-attachment-router.txt"
+    },
+    "remote-attachment-add-remove": {
+      "asset": "index",
+      "utf8_half_open": [
+        2331978,
+        2332914
+      ],
+      "bytes": 936,
+      "sha256": "80f5226e453a577138ccbdbce9665626491bdd138fbf68856b3c66bf3f97570b",
+      "path": "reference/remote-attachment-add-remove.txt"
+    },
+    "attachment-file-writer": {
+      "asset": "index",
+      "utf8_half_open": [
+        3057439,
+        3059011
+      ],
+      "bytes": 1572,
+      "sha256": "6928c884b1556a0fd5fba182b6981c9a08169667dcfabb3cc277c5f679ce455d",
+      "path": "reference/attachment-file-writer.txt"
+    },
+    "state-producers": {
+      "asset": "index",
+      "utf8_half_open": [
+        2295234,
+        2297635
+      ],
+      "bytes": 2401,
+      "sha256": "330e2e13cf230cccfb998cfeecdf128e1a42d131f5800f7227bb6aac0151cea6",
+      "path": "reference/state-producers.txt"
+    },
+    "immediate-delivery-and-failure": {
+      "asset": "index",
+      "utf8_half_open": [
+        1583575,
+        1585363
+      ],
+      "bytes": 1788,
+      "sha256": "55dcca6af8bfe5dd1032029d80b1bfdfb86938a1a17035bcb4fe402156059b5c",
+      "path": "reference/immediate-delivery-and-failure.txt"
+    },
+    "queued-delivery-and-failure": {
+      "asset": "index",
+      "utf8_half_open": [
+        2382270,
+        2384972
+      ],
+      "bytes": 2702,
+      "sha256": "724e8adf25661f497bd5620aa9ad3c5714fad2a32f99db032d01eee0081e63ef",
+      "path": "reference/queued-delivery-and-failure.txt"
+    },
+    "agent-delivery-binding": {
+      "asset": "index",
+      "utf8_half_open": [
+        3038968,
+        3039429
+      ],
+      "bytes": 461,
+      "sha256": "8c021c9056f2d710142d11f4e4550aee5f63c1be5a224428135a905bee08bfc2",
+      "path": "reference/agent-delivery-binding.txt"
+    },
+    "agent-dispatch": {
+      "asset": "index",
+      "utf8_half_open": [
+        3040285,
+        3042541
+      ],
+      "bytes": 2256,
+      "sha256": "6ee14c874082914a41ef92ad3e26d619428d746f058125256b9652cf963a71ab",
+      "path": "reference/agent-dispatch.txt"
+    },
+    "local-dispatch-service": {
+      "asset": "index",
+      "utf8_half_open": [
+        3019402,
+        3020168
+      ],
+      "bytes": 766,
+      "sha256": "1f65fe005e5baf5fefee7133adf2eefe8ad1e8b636691df3d9c48ced6862c5ac",
+      "path": "reference/local-dispatch-service.txt"
+    },
+    "local-query-handoff": {
+      "asset": "index",
+      "utf8_half_open": [
+        2949266,
+        2949342
+      ],
+      "bytes": 76,
+      "sha256": "7a668f73dfec9eaeacd1c7a32a9ad7daacc26faae847884fbe3a78dc104d8e79",
+      "path": "reference/local-query-handoff.txt"
+    }
+  },
+  "current_spans": {
+    "src/features/diff/ReviewComments.tsx": {
+      "bytes": 26596,
+      "sha256": "98fe4f940144d60f1c15375068772647dfa2f36f71743fb0f0e197af39396ec9"
+    },
+    "src/features/diff/comments.ts": {
+      "bytes": 15847,
+      "sha256": "d8df4efefba44a94a7ddfd781075a08bba56fef93eea4aa377f6b872d4210800"
+    },
+    "src/features/diff/commentStore.ts": {
+      "bytes": 3227,
+      "sha256": "89b6dc1e8c4acd63482bdca83147d1eed286b06ef1bc40c25cbc25440c44af3c"
+    },
+    "src/features/diff/chatAttachment.ts": {
+      "bytes": 3888,
+      "sha256": "2883bc3aa9ba22822a0e7609d36352796e10ab563f639823b602267d8612eebd"
+    },
+    "src/features/chat/composerAttachments.ts": {
+      "bytes": 4233,
+      "sha256": "38a2657a61d3d8a43116e412813f128ce409907eefd80f1d5b6ad1612fd06beb"
+    },
+    "src/features/chat/composerSession.ts": {
+      "bytes": 6721,
+      "sha256": "7d2091a307e8b31b57ec95c0672fc4433b3588b8c470b12db0fb4b5ac38eac09"
+    },
+    "src/features/chat/queue.ts": {
+      "bytes": 12974,
+      "sha256": "2fe4c796ec1048ad122ed0a729c40c5480d51b327187e404aff84073cbf89285"
+    },
+    "src/features/chat/reason.ts": {
+      "bytes": 13801,
+      "sha256": "e5588994a8fbe290512a45579efd96c86663a1455eb9dd3413fc8452416483ee"
+    },
+    "src/features/chat/chatRuntime.ts": {
+      "bytes": 30943,
+      "sha256": "405020cf21a25d3d27875219dde6fcd0bf3d2690caf9e3b1829d44aaf9c98e39"
+    },
+    "src/features/chat/codexChat.ts": {
+      "bytes": 9656,
+      "sha256": "4738720032f34e180dc281a689083821b6dec5178a4b76462d54587c18493877"
+    },
+    "src/features/chat/agents.ts": {
+      "bytes": 2960,
+      "sha256": "42d105cacc0a38a0b5adc2dc905134345ef1ac4b154d05bf1f1a04bb673780f0"
+    },
+    "src/components/WorkspaceView.tsx": {
+      "bytes": 86701,
+      "sha256": "1f3029701b12d364024271fab334e799a79fd334848596b892ea9e8ee7d7f28a"
+    },
+    "src-tauri/src/reason_chat.rs": {
+      "bytes": 15628,
+      "sha256": "e9be925fb613c920baa98a70d33615d17ab1331969cf2df8b46c035e1649e5ab"
+    },
+    "src-tauri/src/codex_chat.rs": {
+      "bytes": 21428,
+      "sha256": "b63c106a90af315a29f329dba31932ed2e73c10e3cfd99e1575542f9e522dc93"
+    },
+    "src-tauri/src/claude_chat/commands.rs": {
+      "bytes": 9009,
+      "sha256": "26e68197cfb6609cb4b681879ad6641426fcdba3ec0abf039d7227a1f5da4056"
+    },
+    "src-tauri/src/diff/comment_commands.rs": {
+      "bytes": 17742,
+      "sha256": "228616f72107b296572fab4b86ac592fde27d67fdded74bf8bb5ee059d009933"
+    },
+    "crates/openconductor-db/src/diff_comments.rs": {
+      "bytes": 15572,
+      "sha256": "4fd81373bafc8c00fd8c6446e5a1ffed59dcccd30b57bab987d0ada068a925c2"
+    }
+  },
+  "historical_fixture": {
+    "path": "src/features/diff/fileCommentCounts.test.ts",
+    "sha256": "f9655c388de541fd3963d82ec4f56901d4f7023e3d2175825642c32cdc45c180",
+    "role": "Historical OC compatibility only. Its post-attachment count-clears assertion is contradicted by reference source and is NOT parity acceptance."
+  },
+  "runtime": "NOT_RUN_NO_ADMISSION",
+  "product_edits": "NONE",
+  "limits": [
+    "Rehashed retained Conductor 0.87.6 REA asset closure, not a fresh installed-app acquisition.",
+    "Static source does not establish native execution or packaged acceptance.",
+    "Reference local commit is Ke.notify QUERY handoff, not a provider acknowledgement or turn completion. Failures before handoff retain state; later provider outcomes do not by themselves restore comment eligibility.",
+    "Reference pre-handoff cancellation routing is not completely traced. Treat it as an explicit gap, not an unconditional cancellation-parity assertion.",
+    "OpenConductor has no shared delivery-commit notification at present. ComposerSession.send true and turn-end invoke resolution are insufficient."
+  ]
+}

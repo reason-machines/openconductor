@@ -28,9 +28,12 @@ export interface FileChange {
   binary: boolean;
   additions: number;
   deletions: number;
+  /** Worktree modification time in Unix milliseconds; absent for fresh historical results. */
+  last_modified_time?: number;
 }
 
 export interface FileDiff extends FileChange {
+  hide_reason?: "file_too_large";
   hunks: Hunk[];
 }
 

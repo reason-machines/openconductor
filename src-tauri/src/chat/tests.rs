@@ -1,5 +1,5 @@
 use super::*;
-use serde_json::json;
+use serde_json::{json, Value};
 
 fn msg(id: &str, role: Role, blocks: Vec<Block>) -> ChatMessage {
     ChatMessage {
@@ -13,6 +13,7 @@ fn msg(id: &str, role: Role, blocks: Vec<Block>) -> ChatMessage {
         cancelled_at: None,
         sender_session_id: None,
         sender_api_key_name: None,
+        user_content: None,
         blocks,
     }
 }
@@ -26,6 +27,60 @@ fn optional_usage_survives_message_json_without_inventing_missing_counts() {
     let parsed: ChatMessage = serde_json::from_value(json.clone()).unwrap();
     assert_eq!(parsed.usage.as_ref().unwrap().input_tokens, None);
     assert_eq!(serde_json::to_value(parsed).unwrap(), json);
+}
+
+#[test]
+fn sent_user_content_v1_round_trips_without_changing_plain_text() {
+    let original = msg("u", Role::User, vec![Block::text("Review @src/a.ts")]);
+    let mut value = serde_json::to_value(&original).unwrap();
+    value["userContent"] = json!({
+        "version": 1,
+        "parts": [
+            {"kind": "text", "text": "Review "},
+            {"kind": "file", "path": "src/a.ts", "label": "Custom label", "directory": false}
+        ],
+        "attachments": [
+            {"kind": "workspace-file", "name": ".context/attachments/a.png", "label": "Picture", "path": ".context/attachments/a.png"},
+            {"kind": "embedded", "name": "notes.md", "label": "Notes"}
+        ]
+    });
+    let parsed: ChatMessage = serde_json::from_value(value.clone()).unwrap();
+    assert!(parsed.user_content.is_some());
+    assert_eq!(parsed.plain_text(), original.plain_text());
+    assert_eq!(serde_json::to_value(parsed).unwrap(), value);
+}
+
+#[test]
+fn malformed_optional_user_content_never_discards_the_message() {
+    let original = msg("u", Role::User, vec![Block::text("literal @src/a.ts")]);
+    let base = serde_json::to_value(&original).unwrap();
+    for metadata in [
+        Value::Null,
+        json!({}),
+        json!({"version": 2, "parts": [], "attachments": []}),
+        json!({"version": 1, "parts": [{"kind": "file", "path": "../escape", "label": "x", "directory": false}], "attachments": []}),
+        json!({"version": 1, "parts": [{"kind": "file", "path": "a", "label": "x", "directory": "no"}], "attachments": []}),
+        json!({"version": 1, "parts": [], "attachments": [null]}),
+    ] {
+        let mut value = base.clone();
+        value["userContent"] = metadata;
+        let parsed: ChatMessage = serde_json::from_value(value).unwrap();
+        assert!(parsed.user_content.is_none());
+        assert_eq!(parsed, original);
+    }
+    let mut value = base.clone();
+    for path in [
+        "a\0b",
+        "https://example.test/a",
+        "file:///tmp/a",
+        "//host/a",
+        "a/../b",
+        "a/./b",
+    ] {
+        value["userContent"] = json!({"version": 1, "parts": [{"kind": "file", "path": path, "label": "x", "directory": false}], "attachments": []});
+        let parsed: ChatMessage = serde_json::from_value(value.clone()).unwrap();
+        assert_eq!(parsed, original);
+    }
 }
 
 fn delta(message_id: &str, block_index: usize, text: &str) -> ChatEvent {
@@ -64,7 +119,9 @@ fn message_serializes_camel_case_and_omits_absent_optionals() {
             Block::ToolResult {
                 tool_use_id: "tu1".into(),
                 content: "fn main() {}".into(),
+                raw_result: None,
                 is_error: false,
+                result_created_at: None,
             },
         ],
     );
@@ -108,9 +165,24 @@ fn tool_result_is_error_defaults_to_false() {
         Block::ToolResult {
             tool_use_id: "a".into(),
             content: String::new(),
-            is_error: false
+            raw_result: None,
+            is_error: false,
+            result_created_at: None
         }
     );
+}
+
+#[test]
+fn tool_result_keeps_object_and_json_text_distinct_across_serde() {
+    let object = json!({"diffString": "-before\n+after"});
+    for content in [object.clone(), Value::String(object.to_string())] {
+        let value = json!({
+            "type": "tool_result", "toolUseId": "edit", "content": object.to_string(),
+            "rawResult": content, "isError": false
+        });
+        let block: Block = serde_json::from_value(value.clone()).unwrap();
+        assert_eq!(serde_json::to_value(block).unwrap(), value);
+    }
 }
 
 #[test]

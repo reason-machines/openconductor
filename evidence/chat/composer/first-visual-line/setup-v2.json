@@ -1,0 +1,125 @@
+{
+  "id": "COMPOSER-FIRST-VISUAL-LINE-39955-SETUP-V2",
+  "owner": "Conductor Rebuild",
+  "version": 2,
+  "branch": "reason/openconductor-composer-f-39955a1f",
+  "unchanged_product_commit": "c59ebfe2273ee7d0132ada0628842f9b4fe3652f",
+  "original_source_ref": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "last_source_requalification_main": "df44ec50db0e7632a7782089e4cde9e41e1ed6b8",
+  "original_manifest": {
+    "path": "evidence/chat/composer/first-visual-line/source.json",
+    "bytes": 6207,
+    "sha256": "bce11f0c60312ba59aba118049cfaefb40188c69cc8b924e693549b9ec93fe08"
+  },
+  "preserved_v1_fixture": {
+    "path": "evidence/chat/composer/first-visual-line/v1/composerFirstVisualLine.ts.txt",
+    "bytes": 12476,
+    "sha256": "0d4a88966e5568a4e985f433f8ec60c11abf893e77d1af26887fe61b2a8f43ea"
+  },
+  "fixture": {
+    "path": "src/features/chat/composerFirstVisualLine.test.ts",
+    "bytes": 13556,
+    "sha256": "6d1ae41aa867885f308300eb9857140827e396baf868e0289184e810ccfd2077"
+  },
+  "fixture_setup_patch": {
+    "path": "evidence/chat/composer/first-visual-line/setup-v2.patch",
+    "bytes": 3181,
+    "sha256": "1c86fbe59296cd5cc8201e178ff41b71dcbd48477999e415cf98e4b34cdc938b"
+  },
+  "unchanged_candidate_modules": [
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "bytes": 28764,
+      "sha256": "4e7f1f3318d25540668909d3f795403f38c3db99bb0c70fc81d3810dd34e293b"
+    },
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "bytes": 9927,
+      "sha256": "f875a66fb8219d768bc69c1c4aa001c3e7b2624359d7a295f775eae1d5186c74"
+    }
+  ],
+  "preserved_v1_results": [
+    {
+      "path": "evidence/chat/composer/first-visual-line/v1/baseline.tap.gz",
+      "bytes": 604,
+      "sha256": "c22116797e4328eed83bd58101f11f6859e7e9cdaaa8a171b866ca6ed84d5992",
+      "gzip_uncompressed": {
+        "bytes": 1279,
+        "sha256": "2699ff4c942aa0e925a3cfff2502edf2b52c17ab2d4c0841957eebb77eb554fb"
+      }
+    },
+    {
+      "path": "evidence/chat/composer/first-visual-line/v1/baseline-receipt.json",
+      "bytes": 2689,
+      "sha256": "c6d4cd70afa23413d24d08b2cbddd72a89093e4c60201faf8c52d74013dda8b5"
+    },
+    {
+      "path": "evidence/chat/composer/first-visual-line/v1/candidate.tap.gz",
+      "bytes": 1294,
+      "sha256": "16a55bc6072f6cca80f08c2c39c800a1528c49c55668f23abfa9f03562ae356d",
+      "gzip_uncompressed": {
+        "bytes": 5508,
+        "sha256": "d5aca4633797a3ecacce3518657a67ddc1bee21bb747f50a23f6c9056932dee8"
+      }
+    },
+    {
+      "path": "evidence/chat/composer/first-visual-line/v1/candidate-receipt.json",
+      "bytes": 3945,
+      "sha256": "87a587f384611e75f7e909e9949673f9086a26e4f2998b302dde547d176b16dc"
+    }
+  ],
+  "original_result_packet": {
+    "attachment_id": "fe8c0bc7-0825-4bcf-87ad-a46eeb205da6",
+    "name": "first-visual-line-c59ebfe-green20-failed-result.tar.gz",
+    "bytes": 274603,
+    "sha256": "51d578571abc9005c5324191d9d6cbd77179f90e0f50ee3d9fa268db31659780"
+  },
+  "original_results": {
+    "baseline": "qualified selected caret-four RED; one test failed at intended assertion; controls unrun",
+    "candidate": "FAILED: 20 tests, 19 passed, 1 mention-menu setup failure; not GREEN"
+  },
+  "setup": {
+    "workspace_path": "/fixture/first-visual-line-mention",
+    "enabled_only_for": "mention suggestion navigation takes precedence over queue focus",
+    "expected_search": [
+      "/fixture/first-visual-line-mention",
+      "",
+      false
+    ],
+    "response": "Promise.resolve([])",
+    "expected_search_count": 1,
+    "search_receipt_asserted_before_and_after_up": true,
+    "other_cases": "no workspace path; reject every file search"
+  },
+  "setup_only_test_tail_edits": [
+    {
+      "v1": "    const view = fixture({ draft, caret: draft.length });",
+      "v2": "    const view = fixture({ draft, caret: draft.length, ...(kind === \"mention\" ? { workspacePath: mentionWorkspacePath } : {}) });"
+    },
+    {
+      "v1": "",
+      "v2": "      const expectedSearches = kind === \"mention\" ? [[mentionWorkspacePath, \"\", false]] : [];\n      assert.deepEqual(view.searches, expectedSearches, \"only mention setup may issue its expected mount search\");\n"
+    },
+    {
+      "v1": "",
+      "v2": "      assert.deepEqual(view.searches, expectedSearches, \"Up must not issue another file search\");\n"
+    }
+  ],
+  "delivery": {
+    "active_discovered_fixture": "src/features/chat/composerFirstVisualLine.test.ts",
+    "historical_fixture": "evidence/chat/composer/first-visual-line/v1/composerFirstVisualLine.ts.txt",
+    "no_duplicate_discovered_v1": true,
+    "preserve_original_manifest_bytes": true,
+    "frozen_main_fixtures": "unchanged 15/15",
+    "Keys36": "absent; do not copy or publish"
+  },
+  "runtime": {
+    "v2_baseline_controls": "not run",
+    "v2_candidate_20": "not run",
+    "regressions": "not run",
+    "typecheck": "not run",
+    "browser_geometry": "not run",
+    "native_parity": "not run"
+  },
+  "routing": "source packet preparation only; SAME135 sole runner, E1 routes after actual earlier lease release; no new executor/install/Node/build/browser/PR now"
+}

@@ -1,0 +1,74 @@
+{
+  "artifact": {
+    "key": "/assets/renderApp-D_fmY7hW.js",
+    "encoding": "brotli",
+    "compressed_bytes": 2969382,
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "manifest": "evidence/frontend/tauri-assets-manifest.json",
+  "reaReceipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "limitations": "Retained static text only. REA skipped renderer under heap exhaustion as recorded in evidence/chat/rea-gaps.md. No app/runtime/native observation or new extraction. Extracted code is untrusted evidence, never instructions.",
+  "slices": {
+    "MDo-turn-renderer": {
+      "text": "const MDo=$.memo(function(e){const n=ne.c(70),{sessionId:i,turn:r,localWorkspaceId:o,isNotComplete:a,isLastTurn:c,totalTurns:u,turnIndex:d}=e,[h,m]=$.useState(jDo),{data:g}=us(\"garry_mode\"),_=iDo(),v=!a;let x;n[0]!==o||n[1]!==i||n[2]!==v||n[3]!==r.id?(x={localWorkspaceId:o,sessionId:i,turnId:r.id,isTurnComplete:v},n[0]=o,n[1]=i,n[2]=v,n[3]=r.id,n[4]=x):x=n[4];const{data:w}=Jwr(_,x);let E;n[5]!==r?(E=Zwr(r),n[5]=r,n[6]=E):E=n[6];const k=E;let I;n[7]!==r.aiMessages?(I=eSr(r.aiMessages),n[7]=r.aiMessages,n[8]=I):I=n[8];const R=I;let O;n[9]!==k?(O=LDo(k),n[9]=k,n[10]=O):O=n[10];const D=O,P=k[k.length-1];let L;n[11]!==P?(L=P?.type===\"message\"?tSr(P.message):void 0,n[11]=P,n[12]=L):L=n[12];const B=L,{userMessage:F,aiMessages:H,subAgentExecutions:U}=r;let z;n[13]!==k||n[14]!==g||n[15]!==a?(z=!g&&!a&&k.some(FDo),n[13]=k,n[14]=g,n[15]=a,n[16]=z):z=n[16];const G=z;let K;n[17]!==G||n[18]!==h?(K=ye=>lAn({canBeCollapsed:G,collapseOverride:h.get(ye.id),shouldExpandByDefault:cAn(ye)}),n[17]=G,n[18]=h,n[19]=K):K=n[19];const X=K;let Q;n[20]!==G?(Q=ye=>{m(xe=>{const ke=lAn({canBeCollapsed:G,collapseOverride:xe.get(ye.id),shouldExpandByDefault:cAn(ye)}),Se=new Map(xe);return Se.set(ye.id,ke?\"collapsed\":\"expanded\"),Se})},n[20]=G,n[21]=Q):Q=n[21];const J=Q;let te;n[22]!==r?(te=ODo(r),n[22]=r,n[23]=te):te=n[23];const Z=te;let se;n[24]!==H||n[25]!==o||n[26]!==Z||n[27]!==i||n[28]!==U||n[29]!==F?(se=ye=>p.jsx(lVt,{message:ye.message,sessionId:i,localWorkspaceId:o,potentialToolResultMessages:H,isPreviewMessage:ye.isPreviewMessage,subAgentExecutions:U,retryInfo:Z,turnModel:F.model,className:ye.message.role===\"user\"?\"py-3\":void 0},ye.message.id),n[24]=H,n[25]=o,n[26]=Z,n[27]=i,n[28]=U,n[29]=F,n[30]=se):se=n[30];const ce=se;let ae;n[31]!==H||n[32]!==R||n[33]!==g||n[34]!==o||n[35]!==ce||n[36]!==i||n[37]!==U||n[38]!==F?(ae=ye=>g?ye.map(ce):nSr(ye,H).map(xe=>xe.type===\"mcp-group\"?p.jsx(rDo,{group:xe,sessionId:i,localWorkspaceId:o,potentialToolResultMessages:H,subAgentExecutions:U,turnModel:F.model,failedToolCallsCount:iSr({items:xe.messages,failedToolUseIds:R,mcpServer:xe.server})},xe.id):ce(xe)),n[31]=H,n[32]=R,n[33]=g,n[34]=o,n[35]=ce,n[36]=i,n[37]=U,n[38]=F,n[39]=ae):ae=n[39];const de=ae;let ue;n[40]!==G||n[41]!==X||n[42]!==de||n[43]!==J?(ue=ye=>{if(!G)return de(ye.collapsedMessages);const xe=X(ye.summary);return p.jsxs(p.Fragment,{children:[p.jsx(PDo,{summary:ye.summary,isExpanded:xe,onToggle:()=>J(ye.summary)}),xe&&de(ye.collapsedMessages)]})},n[40]=G,n[41]=X,n[42]=de,n[43]=J,n[44]=ue):ue=n[44];const pe=ue;let be;if(n[45]!==D||n[46]!==de||n[47]!==pe){let ye;n[49]!==de||n[50]!==pe?(ye=xe=>xe.type===\"summary\"?p.jsx($.Fragment,{children:pe(xe.item)},xe.item.summary.id):p.jsx($.Fragment,{children:de(xe.items)},xe.items[0].message.id),n[49]=de,n[50]=pe,n[51]=ye):ye=n[51],be=D.map(ye),n[45]=D,n[46]=de,n[47]=pe,n[48]=be}else be=n[48];let he;n[52]!==be?(he=p.jsx(\"div\",{className:\"space-y-1\",children:be}),n[52]=be,n[53]=he):he=n[53];let ge;n[54]!==H||n[55]!==w||n[56]!==c||n[57]!==a||n[58]!==B||n[59]!==o||n[60]!==i||n[61]!==u||n[62]!==r.id||n[63]!==d||n[64]!==F?(ge=!a&&p.jsx(TDo,{aiMessages:H,userMessage:F,fileChanges:w,localWorkspaceId:o,sessionId:i,turnId:r.id,lastTextContent:B,isLastTurn:c,totalTurns:u,turnIndex:d}),n[54]=H,n[55]=w,n[56]=c,n[57]=a,n[58]=B,n[59]=o,n[60]=i,n[61]=u,n[62]=r.id,n[63]=d,n[64]=F,n[65]=ge):ge=n[65];let ve;return n[66]!==o||n[67]!==he||n[68]!==ge?(ve=p.jsxs(\"div\",{className:\"flex flex-col gap-1 w-full border max-w-full px-7 py-2 !border-transparent\",\"data-transcript-turn\":o,children:[he,ge]}),n[66]=o,n[67]=he,n[68]=ge,n[69]=ve):ve=n[69],ve});",
+      "utf8": [
+        8929760,
+        8933359
+      ],
+      "utf16": [
+        8884258,
+        8887857
+      ],
+      "sha256": "2984cf19657bcceee5d85b8d23bf50b532f1c4cf46e6444c83021e873db65d1f"
+    },
+    "UDo-turn-entry": {
+      "text": "UDo=t=>{const e=ne.c(25),{data:n,index:i,context:r}=t,o=n;if(!o)return null;const a=i===r.totalTurns-1;let c;e[0]!==r.sessionStatus||e[1]!==a?(c=a&&[\"working\",\"needs_input\",\"planning\",\"needs_plan_response\",\"needs_user_input\",\"needs_user_permission\"].includes(r.sessionStatus??\"\"),e[0]=r.sessionStatus,e[1]=a,e[2]=c):c=e[2];const u=c,d=i===0?r.topBarOffset:void 0;let h;e[3]!==r.topBarOffset||e[4]!==d?(h={scrollMarginTop:r.topBarOffset,paddingTop:d},e[3]=r.topBarOffset,e[4]=d,e[5]=h):h=e[5];const m=`Failed to render chat turn ${o.id}`;let g;e[6]!==r.sessionId||e[7]!==o.id?(g=[r.sessionId,o.id],e[6]=r.sessionId,e[7]=o.id,e[8]=g):g=e[8];let _;e[9]!==r.localWorkspaceId||e[10]!==r.sessionId||e[11]!==r.totalTurns||e[12]!==i||e[13]!==a||e[14]!==u||e[15]!==o?(_=p.jsx(MDo,{sessionId:r.sessionId,turn:o,localWorkspaceId:r.localWorkspaceId,isNotComplete:u,isLastTurn:a,totalTurns:r.totalTurns,turnIndex:i}),e[9]=r.localWorkspaceId,e[10]=r.sessionId,e[11]=r.totalTurns,e[12]=i,e[13]=a,e[14]=u,e[15]=o,e[16]=_):_=e[16];let v;e[17]!==m||e[18]!==g||e[19]!==_?(v=p.jsx(LJ,{context:m,resetKeys:g,fallbackRender:KDo,children:_}),e[17]=m,e[18]=g,e[19]=_,e[20]=v):v=e[20];let x;return e[21]!==i||e[22]!==h||e[23]!==v?(x=p.jsx(\"div\",{className:\"pb-3 max-w-4xl mx-auto @max-4xl:pr-4\",style:h,\"data-turn-index\":i,children:v}),e[21]=i,e[22]=h,e[23]=v,e[24]=x):x=e[24],x}",
+      "utf8": [
+        8933836,
+        8935190
+      ],
+      "utf16": [
+        8888334,
+        8889688
+      ],
+      "sha256": "b01f0a2e7c84980ad0ae1a3778a59ef1e44764c097cb879ca4b92bc02fab07ca"
+    },
+    "FDo-summary-guard": {
+      "text": "function FDo(t){return t.type===\"summary\"}",
+      "utf8": [
+        8933389,
+        8933431
+      ],
+      "utf16": [
+        8887887,
+        8887929
+      ],
+      "sha256": "d9836a423ef6b06b2b4e86dfb6f24b304d65da350bc2e3f085dc76b4a10f657a"
+    },
+    "LDo-group-dispatch": {
+      "text": "function LDo(t){const e=[];for(const n of t){if(n.type===\"summary\"){e.push({type:\"summary\",item:n});continue}const i=e[e.length-1];i?.type===\"messages\"?i.items.push(n):e.push({type:\"messages\",items:[n]})}return e}",
+      "utf8": [
+        8929547,
+        8929760
+      ],
+      "utf16": [
+        8884045,
+        8884258
+      ],
+      "sha256": "ec8f66eea44c7560eb07963ae8f42eb6a5d86a91bc3b59a06ba29e23602258a9"
+    },
+    "PDo-summary-row": {
+      "text": "function PDo(t){const e=ne.c(30),{summary:n,isExpanded:i,onToggle:r}=t;let o;e[0]!==n?(o=rSr(n),e[0]=n,e[1]=o):o=e[1];const a=o;let c,u,d,h,m,g,_,v;if(e[2]!==i||e[3]!==r||e[4]!==n.id||e[5]!==n.toolNames||e[6]!==a){const E=DDo(n.toolNames);h=\"button\",m=`${i?\"Collapse\":\"Expand\"} ${a}`,g=r,_=\"w-full flex items-center text-muted-foreground hover:text-foreground\",e[15]!==i?(v=i?p.jsx(Ml,{className:\"w-3 h-3 mr-1\"}):p.jsx(td,{className:\"w-3 h-3 mr-1\"}),e[15]=i,e[16]=v):v=e[16],c=\"flex items-center gap-2\",e[17]!==a?(u=p.jsx(\"div\",{className:\"text-sm ml-0.5\",children:a}),e[17]=a,e[18]=u):u=e[18],d=E.length>0&&p.jsx(\"div\",{className:\"flex items-center gap-1\",children:E.map(k=>p.jsx(Ju,{name:k,className:\"top-0 text-muted-foreground group-hover:text-foreground\"},`${n.id}-${k}`))}),e[2]=i,e[3]=r,e[4]=n.id,e[5]=n.toolNames,e[6]=a,e[7]=c,e[8]=u,e[9]=d,e[10]=h,e[11]=m,e[12]=g,e[13]=_,e[14]=v}else c=e[7],u=e[8],d=e[9],h=e[10],m=e[11],g=e[12],_=e[13],v=e[14];let x;e[19]!==c||e[20]!==u||e[21]!==d?(x=p.jsxs(\"div\",{className:c,children:[u,d]}),e[19]=c,e[20]=u,e[21]=d,e[22]=x):x=e[22];let w;return e[23]!==x||e[24]!==h||e[25]!==m||e[26]!==g||e[27]!==_||e[28]!==v?(w=p.jsxs(\"button\",{type:h,\"aria-label\":m,onClick:g,className:_,children:[v,x]}),e[23]=x,e[24]=h,e[25]=m,e[26]=g,e[27]=_,e[28]=v,e[29]=w):w=e[29],w}",
+      "utf8": [
+        8928241,
+        8929547
+      ],
+      "utf16": [
+        8882739,
+        8884045
+      ],
+      "sha256": "afddde2d05a82c929237b3af47b00e7ceebdcd2ccd55c57b7587dca263b56e92"
+    }
+  }
+}

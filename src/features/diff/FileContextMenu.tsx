@@ -13,13 +13,15 @@ import { useEffect, useState, type KeyboardEvent } from "react";
 import { ContextMenu, MenuItem, MenuSeparator, SubMenu } from "../../components/menu/ContextMenu";
 import { ArrowUpRightIcon, CopyIcon, EyeIcon, Undo2Icon } from "../../components/menu/menuIcons";
 import { AppIcon } from "../openIn/OpenInButton";
-import { NUMBERED_ROWS, loadOpenInApps, supportsFileOpen, type OpenInApp } from "../openIn/apps";
+import { NUMBERED_ROWS, defaultAppId, loadOpenInApps, supportsFileOpen, type OpenInApp } from "../openIn/apps";
+import { useAppPrefs } from "../../settings/appPrefs";
+import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
+import { PRIORITY } from "../../keybindings/dispatcher.ts";
 
 export interface FileMenuActions {
   view: () => void;
-  /** Absolute path; absent while the workspace has no worktree on disk. */
-  copyPath?: () => void;
-  copyRelativePath: () => void;
+  copyPath: () => void;
+  copyRelativePath?: () => void;
   discard: () => void;
   /** Opens the file in an installed app; absent without a worktree on disk. */
   openIn?: (app: OpenInApp) => void;
@@ -54,6 +56,22 @@ function useFileApps(enabled: boolean): OpenInApp[] {
 export function FileContextMenu({ path, at, actions, onClose }: Props) {
   const { openIn } = actions;
   const apps = useFileApps(openIn !== undefined);
+  const saved = useAppPrefs().default_open_in;
+  const defaultApp = apps.find((app) => app.id === defaultAppId(apps, saved));
+  useKeybindings({
+    "workspace.openInApp": () => {
+      if (!openIn || !defaultApp) return false;
+      openIn(defaultApp);
+      return true;
+    },
+  }, {
+    priority: PRIORITY.DIALOG,
+    enableOnInputFocus: true,
+    enableOnDialogIds: [],
+    isGlobal: true,
+    enableOnTerminalFocus: true,
+    allowWhileTyping: false,
+  });
   // Number keys pick an app while the Open in submenu has focus (Conductor's `cJe` while `G`).
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (!openIn || e.metaKey || e.ctrlKey || e.altKey || !/^[1-9]$/.test(e.key)) return;
@@ -81,14 +99,14 @@ export function FileContextMenu({ path, at, actions, onClose }: Props) {
           ))}
         </SubMenu>
       )}
-      {actions.copyPath && (
-        <MenuItem icon={<CopyIcon />} onSelect={actions.copyPath}>
-          Copy path
+      <MenuItem icon={<CopyIcon />} onSelect={actions.copyPath}>
+        Copy path
+      </MenuItem>
+      {actions.copyRelativePath && (
+        <MenuItem icon={<CopyIcon />} onSelect={actions.copyRelativePath}>
+          Copy relative path
         </MenuItem>
       )}
-      <MenuItem icon={<CopyIcon />} onSelect={actions.copyRelativePath}>
-        Copy relative path
-      </MenuItem>
       <MenuSeparator />
       <MenuItem icon={<Undo2Icon />} onSelect={actions.discard}>
         Discard changes

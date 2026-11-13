@@ -1,0 +1,11 @@
+--- original6404/secretRemovePending.test.ts.txt
++++ realm-supplement/secretRemovePending.test.ts.txt
+@@ -58,7 +58,7 @@
+       }
+       throw new Error(`Unexpected source dependency: ${name}`);
+     };
+-    runInNewContext(`(function(require, module, exports) {\n${compiled.outputText}\n})`, {}, { filename })(require, module, module.exports);
++    runInNewContext(`(function(require, module, exports) {\n${compiled.outputText}\n})`, { Error }, { filename })(require, module, module.exports);
+     return module.exports;
+   }
+   const { SecretRow } = load("src/settings/agents/kit.tsx");

@@ -1,0 +1,110 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: generic structured result disclosure: toolsearch-text-block-array
+ok 1 - generic structured result disclosure: toolsearch-text-block-array
+  ---
+  duration_ms: 20.71375
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: toolsearch-object-content
+ok 2 - generic structured result disclosure: toolsearch-object-content
+  ---
+  duration_ms: 3.496968
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: monitor-nontext-array
+ok 3 - generic structured result disclosure: monitor-nontext-array
+  ---
+  duration_ms: 3.578348
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: toolsearch-empty-array-without-input
+ok 4 - generic structured result disclosure: toolsearch-empty-array-without-input
+  ---
+  duration_ms: 2.37745
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: monitor-error-array
+ok 5 - generic structured result disclosure: monitor-error-array
+  ---
+  duration_ms: 7.068817
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: toolsearch-falsy-zero
+ok 6 - generic structured result disclosure: toolsearch-falsy-zero
+  ---
+  duration_ms: 2.236913
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: toolsearch-falsy-false
+ok 7 - generic structured result disclosure: toolsearch-falsy-false
+  ---
+  duration_ms: 4.902191
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: numeric-looking-raw-string
+ok 8 - generic structured result disclosure: numeric-looking-raw-string
+  ---
+  duration_ms: 2.393711
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: json-looking-raw-string
+ok 9 - generic structured result disclosure: json-looking-raw-string
+  ---
+  duration_ms: 2.687288
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: legacy-no-raw-result
+ok 10 - generic structured result disclosure: legacy-no-raw-result
+  ---
+  duration_ms: 3.073829
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: pending-no-input
+ok 11 - generic structured result disclosure: pending-no-input
+  ---
+  duration_ms: 1.035448
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: falsy-null-no-input
+ok 12 - generic structured result disclosure: falsy-null-no-input
+  ---
+  duration_ms: 0.866763
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: empty-raw-string-no-input
+ok 13 - generic structured result disclosure: empty-raw-string-no-input
+  ---
+  duration_ms: 0.796651
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: excluded-mcp-consumer
+ok 14 - generic structured result disclosure: excluded-mcp-consumer
+  ---
+  duration_ms: 7.182475
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: excluded-node-repl-consumer
+ok 15 - generic structured result disclosure: excluded-node-repl-consumer
+  ---
+  duration_ms: 1.957888
+  type: 'test'
+  ...
+# Subtest: generic structured result disclosure: plain-string-truncation-boundary
+ok 16 - generic structured result disclosure: plain-string-truncation-boundary
+  ---
+  duration_ms: 13.993363
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 793.666154

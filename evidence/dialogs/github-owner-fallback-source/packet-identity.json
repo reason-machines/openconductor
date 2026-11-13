@@ -1,0 +1,29 @@
+{
+  "author": "Conductor Rebuild",
+  "main": "6ab46a36752de4f57cb3c3441f4336d334ad1340",
+  "state": "SOURCE_ONLY_UNAPPLIED",
+  "files": [
+    {
+      "path": "candidate.patch",
+      "bytes": 595,
+      "sha256": "00ddbd05fb66393882b836da2a6a4713eb4dacbadf695802e9360b479f4d9114"
+    },
+    {
+      "path": "ownersErrorFallback.test.ts",
+      "bytes": 2494,
+      "sha256": "9b0427070799528752e3f509050b52019470f67c135aafdcd4117ba658e4bc51"
+    },
+    {
+      "path": "behavioral-spec.json",
+      "bytes": 3047,
+      "sha256": "60033b88232e2a36589bdcd0461d3dfcb97f6ea1e17f56adf9117f5623fb2059"
+    },
+    {
+      "path": "reference.json",
+      "bytes": 6290,
+      "sha256": "f0a027b8fa3bdb33d89e71256740fc813e21da2044e89bfeba0903d3b787be97"
+    }
+  ],
+  "cases": 8,
+  "executed_cases": 0
+}

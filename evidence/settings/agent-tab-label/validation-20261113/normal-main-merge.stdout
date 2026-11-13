@@ -1,0 +1,43 @@
+Merge made by the 'ort' strategy.
+ evidence/chat/todoread-result-consumer/README.md   |  56 +++
+ .../chat/todoread-result-consumer/raw-proof.tar.gz | Bin 0 -> 11891 bytes
+ .../todoread-result-consumer/source-binding.json   | 329 +++++++++++++
+ .../chat/todoread-result-consumer/validation.json  |  48 ++
+ .../validation-20261113/README.md                  |  42 ++
+ .../validation-20261113/proof-manifest.json        |  23 +
+ .../validation-20261113/raw-proof.tar.gz           | Bin 0 -> 11085 bytes
+ .../validation-20261113/receipt.json               | 225 +++++++++
+ evidence/qa/ordinary-visual-startup/README.md      |  58 ++-
+ .../ordinary-visual-startup/admission/boundary.log |   2 +
+ .../ordinary-visual-startup/admission/green.log.gz | Bin 0 -> 372 bytes
+ .../ordinary-visual-startup/admission/red.log.gz   | Bin 0 -> 322 bytes
+ .../qa/ordinary-visual-startup/verify_boundary.py  |  11 +-
+ evidence/settings/repo-git-delete-reset/README.md  |  62 +++
+ .../qualified-delivery.tar.gz                      | Bin 0 -> 78623 bytes
+ src-tauri/Cargo.lock                               |   1 +
+ src-tauri/src/visual_qa_profile.rs                 |  38 +-
+ src/features/chat/ToolRows.tsx                     |  14 +-
+ src/features/chat/todoReadResult.inputs.json       | 510 +++++++++++++++++++++
+ src/features/chat/todoReadResult.test.ts           | 155 +++++++
+ src/features/openIn/OpenInButton.tsx               |   9 +-
+ src/features/openIn/iconMenuEndpoints.test.ts      | 224 +++++++++
+ src/settings/rows/RepoGitRows.tsx                  |  34 +-
+ src/settings/rows/repoGitDeleteReset.test.ts       | 209 +++++++++
+ 24 files changed, 2033 insertions(+), 17 deletions(-)
+ create mode 100644 evidence/chat/todoread-result-consumer/README.md
+ create mode 100644 evidence/chat/todoread-result-consumer/raw-proof.tar.gz
+ create mode 100644 evidence/chat/todoread-result-consumer/source-binding.json
+ create mode 100644 evidence/chat/todoread-result-consumer/validation.json
+ create mode 100644 evidence/open-in/icon-menu-endpoints/validation-20261113/README.md
+ create mode 100644 evidence/open-in/icon-menu-endpoints/validation-20261113/proof-manifest.json
+ create mode 100644 evidence/open-in/icon-menu-endpoints/validation-20261113/raw-proof.tar.gz
+ create mode 100644 evidence/open-in/icon-menu-endpoints/validation-20261113/receipt.json
+ create mode 100644 evidence/qa/ordinary-visual-startup/admission/boundary.log
+ create mode 100644 evidence/qa/ordinary-visual-startup/admission/green.log.gz
+ create mode 100644 evidence/qa/ordinary-visual-startup/admission/red.log.gz
+ create mode 100644 evidence/settings/repo-git-delete-reset/README.md
+ create mode 100644 evidence/settings/repo-git-delete-reset/qualified-delivery.tar.gz
+ create mode 100644 src/features/chat/todoReadResult.inputs.json
+ create mode 100644 src/features/chat/todoReadResult.test.ts
+ create mode 100644 src/features/openIn/iconMenuEndpoints.test.ts
+ create mode 100644 src/settings/rows/repoGitDeleteReset.test.ts

@@ -48,7 +48,7 @@ export function GitHubRepoDialog({ target, onClose, onOpenSettings, onCreated, o
     loadOwners(force).then(
       (value) => {
         setOwners({ kind: "ready", value });
-        setOwner((cur) => cur || value.owners[0]?.login || "");
+        setOwner((cur) => value.owners.some((entry) => entry.login === cur) ? cur : value.owners[0]?.login || "");
       },
       (err) => setOwners({ kind: "error", message: ownersErrorMessage(err instanceof Error ? err.message : String(err)) }),
     );
@@ -73,7 +73,7 @@ export function GitHubRepoDialog({ target, onClose, onOpenSettings, onCreated, o
   }, [owner, slug]);
 
   const ready = owners.kind === "ready";
-  const status = statusLine({ ownersLoading: owners.kind === "loading", slug, availability });
+  const status = statusLine({ ownersLoading: owners.kind === "loading", name, slug, availability });
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -90,7 +90,7 @@ export function GitHubRepoDialog({ target, onClose, onOpenSettings, onCreated, o
   }
 
   return (
-    <Modal title="Create a private GitHub repo?" onClose={onClose} motion="alert">
+    <Modal title="Create a private GitHub repo?" onClose={onClose} motion="alert" disablePointerDismissal>
       <form onSubmit={submit} className="modal-body github-repo">
         <p className="muted">{dialogDescription(target.needsGitInit, target.existingOriginUrl)}</p>
         <label className="field">
@@ -115,10 +115,10 @@ export function GitHubRepoDialog({ target, onClose, onOpenSettings, onCreated, o
         )}
         <label className="field">
           <span>Repository name</span>
-          <input value={name} disabled={pending} onChange={(e) => setName(e.target.value)} aria-invalid={status.tone === "error"} />
+          <input value={name} onChange={(e) => setName(e.target.value)} aria-invalid={status?.tone === "error"} />
         </label>
         {owner && slug && <p className="muted small">Will create <code>{owner}/{slug}</code></p>}
-        {owners.kind !== "error" && <p className={`small ${status.tone === "error" ? "error" : status.tone === "ok" ? "add" : "muted"}`} role="status">{status.text}</p>}
+        {owners.kind !== "error" && status && <p className={`small ${status.tone === "error" ? "error" : status.tone === "ok" ? "add" : "muted"}`} role="status">{status.text}</p>}
         <div className="modal-actions">
           <button type="button" className="btn" onClick={onClose}>Cancel</button>
           <button type="submit" className="btn btn-primary" disabled={!canSubmit(owner, slug, ready, availability, pending)}>

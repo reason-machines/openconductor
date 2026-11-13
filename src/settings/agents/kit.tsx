@@ -6,6 +6,8 @@
 // key/value table, the masked secret row, option rows, the executable path
 // and the config-file card. The Codex and Reason tabs import from here.
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { CopyIcon } from "../../components/Icons";
+import { Toaster, useToasts } from "../../components/Toast";
 import { AppIcon } from "../../features/openIn/OpenInButton";
 import { defaultAppId, loadOpenInApps, openInApp, type OpenInApp } from "../../features/openIn/apps";
 import { recordOpenIn, useAppPrefs } from "../appPrefs";
@@ -13,7 +15,7 @@ import type { InfoRow } from "./agentAuth";
 import { openUrl } from "../../backend";
 import { CheckIcon, ChevronDownIcon, ExternalIcon, EyeIcon, PencilIcon, TrashIcon } from "./icons";
 import { AuthStatus } from "./parts";
-import { maskedSecret } from "./kitModel";
+import { copySettingsPath, maskedSecret, type CopyPathLabel } from "./kitModel";
 import "./kit.css";
 
 export type { InfoRow };
@@ -39,11 +41,41 @@ export function AgentsHeader({ settingsPath }: { settingsPath: string | null }) 
 }
 
 /** Icon + name tabs with an underline on the open one (`yy`/`Q1`). */
-export function AgentTabRow<T extends string>({ tabs, value, onChange }: { tabs: readonly TabSpec<T>[]; value: T; onChange: (t: T) => void }) {
+export function AgentTabRow<T extends string>({ tabs, value, onChange, tabIdPrefix }: { tabs: readonly TabSpec<T>[]; value: T; onChange: (t: T) => void; tabIdPrefix: string }) {
+  const buttons = useRef(new Map<T, HTMLButtonElement>());
   return (
     <div role="tablist" aria-label="Agents" className="ag-tabs">
-      {tabs.map((t) => (
-        <button key={t.id} role="tab" type="button" aria-selected={value === t.id} className={`ag-tab${value === t.id ? " on" : ""}`} onClick={() => onChange(t.id)}>
+      {tabs.map((t, index) => (
+        <button
+          key={t.id}
+          id={`${tabIdPrefix}-${t.id}`}
+          ref={(button) => { if (button) buttons.current.set(t.id, button); else buttons.current.delete(t.id); }}
+          role="tab"
+          type="button"
+          aria-selected={value === t.id}
+          tabIndex={value === t.id ? 0 : -1}
+          className={`ag-tab${value === t.id ? " on" : ""}`}
+          onClick={() => onChange(t.id)}
+          onFocus={() => { if (value !== t.id) onChange(t.id); }}
+          onKeyDown={(event) => {
+            if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+            let nextIndex = index;
+            switch (event.key) {
+              case "ArrowRight": nextIndex = (index + 1) % tabs.length; break;
+              case "ArrowLeft": nextIndex = (index + tabs.length - 1) % tabs.length; break;
+              case "Home": nextIndex = 0; break;
+              case "End": nextIndex = tabs.length - 1; break;
+              default: return;
+            }
+            if (nextIndex === index) return;
+            const next = tabs[nextIndex];
+            const button = next && buttons.current.get(next.id);
+            if (!button) return;
+            event.preventDefault();
+            event.stopPropagation();
+            button.focus();
+          }}
+        >
           {t.icon}
           {t.label}
         </button>
@@ -125,9 +157,9 @@ export function StatusTable({ rows }: { rows: InfoRow[] }) {
 }
 
 /**
- * A stored secret: masked with show, edit and delete, or a key field when
- * none is stored. The value only enters the page when the eye is pressed
- * (`reveal`), and is dropped again when it is hidden or the row unmounts.
+ * A stored secret: masked with copy, show, edit and delete, or a key field
+ * when none is stored. Copy retrieves the value only on activation without
+ * revealing it; Show retains it until hidden or the row unmounts.
  */
 export function SecretRow(props: {
   label: string;
@@ -142,8 +174,10 @@ export function SecretRow(props: {
   const { label, configured, hint, reveal, onSave, onDelete, getKeyUrl } = props;
   const [editing, setEditing] = useState(false);
   const [shown, setShown] = useState<string | null>(null);
+  const [removing, setRemoving] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copyFeedback, setCopyFeedback] = useState<"copied" | "failed" | null>(null);
   useEffect(() => {
     if (!configured) setShown(null);
   }, [configured]);
@@ -154,6 +188,23 @@ export function SecretRow(props: {
     f()
       .catch((e) => setError(`Failed to ${what} ${label}: ${e instanceof Error ? e.message : String(e)}`))
       .finally(() => setBusy(false));
+  };
+
+  const copyValue = async () => {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    setCopyFeedback(null);
+    try {
+      const value = shown ?? await reveal?.();
+      if (!value || !navigator.clipboard) throw new Error("No value or clipboard");
+      await navigator.clipboard.writeText(value);
+      setCopyFeedback("copied");
+    } catch {
+      setCopyFeedback("failed");
+    } finally {
+      setBusy(false);
+    }
   };
 
   if (!configured || editing) {
@@ -171,7 +222,7 @@ export function SecretRow(props: {
             })
           }
         />
-        {getKeyUrl && !configured && (
+        {getKeyUrl && (
           <button type="button" className="ag-link-underline" onClick={() => void openUrl(getKeyUrl)}>
             Get key
             <ExternalIcon size={12} />
@@ -184,15 +235,24 @@ export function SecretRow(props: {
   return (
     <div className="ag-stack-2">
       <div className="ag-key-row">
-        <span className={`ag-key-mask${shown ? " agk-shown" : ""}`} data-testid="secret-value" aria-label={shown ? label : `${label} stored`}>
+        <button
+          type="button"
+          className={`ag-key-mask${shown ? " agk-shown" : ""}`}
+          style={{ textAlign: "left" }}
+          data-testid="secret-value"
+          aria-label={`Copy ${label}`}
+          title={shown ?? undefined}
+          disabled={busy || (!shown && !reveal)}
+          onClick={() => void copyValue()}
+        >
           {shown ?? maskedSecret(hint)}
-        </span>
+        </button>
         <div className="ag-key-actions">
           {reveal && (
             <button
               type="button"
               className="ag-btn ag-ghost ag-icon"
-              aria-label={shown ? `Hide ${label}` : `Show ${label}`}
+              aria-label={shown ? `Hide ${label}` : `Reveal ${label}`}
               aria-pressed={shown !== null}
               disabled={busy}
               onClick={() => (shown ? setShown(null) : run("show", async () => setShown(await reveal())))}
@@ -203,12 +263,31 @@ export function SecretRow(props: {
           <button type="button" className="ag-btn ag-ghost ag-icon" aria-label={`Edit ${label}`} disabled={busy} onClick={() => (setShown(null), setEditing(true))}>
             <PencilIcon size={16} />
           </button>
-          <button type="button" className="ag-btn ag-ghost ag-icon" aria-label={`Remove ${label}`} disabled={busy} onClick={() => run("remove", onDelete)}>
-            <TrashIcon size={16} />
+          <button type="button" className="ag-btn ag-ghost ag-icon" aria-label={`Remove ${label}`} disabled={busy} onClick={() => run("remove", async () => {
+            setRemoving(true);
+            try {
+              await onDelete();
+            } finally {
+              setRemoving(false);
+            }
+          })}>
+            {removing ? (
+              <svg className="sb-ws-loader" width={16} height={16} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" style={{ width: 16, height: 16, border: 0, borderRadius: 0, flexShrink: 0 }}>
+                <circle cx="3" cy="8" r="1.5" />
+                <circle cx="8" cy="8" r="1.5" />
+                <circle cx="13" cy="8" r="1.5" />
+              </svg>
+            ) : <TrashIcon size={16} />}
           </button>
         </div>
       </div>
       {error && <p className="ag-error">{error}</p>}
+      {copyFeedback && (
+        <Toaster
+          toasts={[{ id: 1, kind: copyFeedback === "copied" ? "info" : "error", message: `${copyFeedback === "copied" ? "Copied" : "Failed to copy"} ${label}.` }]}
+          dismiss={() => setCopyFeedback(null)}
+        />
+      )}
     </div>
   );
 }
@@ -237,14 +316,14 @@ function SecretInput({ label, pending, onSubmit, onCancel }: { label: string; pe
           spellCheck={false}
         />
       </div>
+      <button type="submit" className="ag-btn ag-primary" disabled={pending || value.trim() === ""}>
+        {pending ? "Saving…" : "Save"}
+      </button>
       {onCancel && (
         <button type="button" className="ag-btn ag-ghost" disabled={pending} onClick={onCancel}>
           Cancel
         </button>
       )}
-      <button type="submit" className="ag-btn ag-primary" disabled={pending || value.trim() === ""}>
-        {pending ? "Saving…" : "Save"}
-      </button>
     </form>
   );
 }
@@ -263,14 +342,14 @@ export function OptionRow({ title, help, control, stacked }: { title: ReactNode;
 }
 
 /** A file's card: title, path in mono, and "Open in" at the right (`Nzi`). */
-export function ConfigFileCard({ title, displayPath, path, fallbackPath }: { title: string; displayPath: string; path: string | null; fallbackPath?: string }) {
+export function ConfigFileCard({ title, displayPath, path, fallbackPath, copyLabel }: { title: string; displayPath: string; path: string | null; fallbackPath?: string; copyLabel?: CopyPathLabel }) {
   return (
     <section className="agk-config" aria-label={title}>
       <div className="agk-config-text">
         <h3>{title}</h3>
         <p className="agk-mono">{displayPath}</p>
       </div>
-      <OpenInSplit label="Open in" path={path} fallbackPath={fallbackPath} />
+      <OpenInSplit label="Open in" path={path} fallbackPath={fallbackPath} copyLabel={copyLabel} />
     </section>
   );
 }
@@ -281,7 +360,8 @@ export function ConfigFileCard({ title, displayPath, path, fallbackPath }: { tit
  * installed apps. Disabled until `path` is known; when `path` does not
  * exist yet it opens `fallbackPath` (Conductor's `directoryFallbackPath`).
  */
-export function OpenInSplit({ label, path, fallbackPath }: { label: string; path: string | null; fallbackPath?: string }) {
+export function OpenInSplit({ label, path, fallbackPath, copyLabel }: { label: string; path: string | null; fallbackPath?: string; copyLabel?: CopyPathLabel }) {
+  const { toasts, show, dismiss } = useToasts();
   const [apps, setApps] = useState<OpenInApp[] | null>(null);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -303,6 +383,10 @@ export function OpenInSplit({ label, path, fallbackPath }: { label: string; path
     document.addEventListener("mousedown", close, true);
     return () => document.removeEventListener("mousedown", close, true);
   }, [open]);
+  const copyPath = () => {
+    setOpen(false);
+    void copySettingsPath(path, (value) => navigator.clipboard?.writeText(value) ?? Promise.reject(new Error("no clipboard")), show, copyLabel);
+  };
   const list = apps ?? [];
   const def = list.find((a) => a.id === defaultAppId(list, saved));
   const openWith = (id: string) => {
@@ -322,7 +406,7 @@ export function OpenInSplit({ label, path, fallbackPath }: { label: string; path
         {def && <AppIcon app={def} size={12} />}
         {label}
       </button>
-      <button type="button" className="agk-split-chevron" disabled={!path || list.length === 0} aria-label={`${label}...`} aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen(!open)}>
+      <button type="button" className="agk-split-chevron" disabled={!path} aria-label={`${label}...`} aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen(!open)}>
         <ChevronDownIcon size={12} />
       </button>
       {open && (
@@ -333,8 +417,13 @@ export function OpenInSplit({ label, path, fallbackPath }: { label: string; path
               {a.name}
             </button>
           ))}
+          <button type="button" role="menuitem" className="ag-menu-item" onClick={copyPath}>
+            <CopyIcon size={14} />
+            Copy path
+          </button>
         </div>
       )}
+      <Toaster toasts={toasts} dismiss={dismiss} />
       {error && (
         <p className="ag-error agk-split-error" role="alert">
           {error}

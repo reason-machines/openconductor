@@ -1,0 +1,1 @@
+attachRenderer(e,s){const n=this.sessions.get(e);if(!n)throw new Error(`Unknown terminal session: ${e}`);return n.attachRenderer(s)}

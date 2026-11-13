@@ -70,7 +70,7 @@ export function ResetChatDialog({ loadChangedCount, onConfirm, onClose }: Props)
   // header `space-y-2` (text-lg title, text-sm muted description), footer `justify-end space-x-2`
   // with an outline Cancel and a destructive Reset.
   return (
-    <div className="modal-backdrop oc-alert-backdrop" ref={motionRef} data-dialog-motion="alert" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+    <div className="modal-backdrop oc-alert-backdrop" ref={motionRef} data-dialog-motion="alert">
       <div
         className="oc-alert oc-reset-chat"
         role="alertdialog"
@@ -97,10 +97,17 @@ export function ResetChatDialog({ loadChangedCount, onConfirm, onClose }: Props)
         </label>
         {error && <p className="error small">{error}</p>}
         <div className="oc-alert-footer">
-          <button type="button" className="oc-alert-btn oc-alert-cancel" onClick={onClose}>
+          <button type="button" className="oc-alert-btn oc-alert-cancel" onClick={onClose} autoFocus>
             Cancel
           </button>
-          <button type="button" className="oc-alert-btn oc-alert-destructive" data-primary-action onClick={confirm} disabled={busy} autoFocus title="Reset (⌘↵)">
+          <button type="button" className="oc-alert-btn oc-alert-destructive" data-primary-action onClick={confirm} disabled={busy} title="Reset (⌘↵)">
+            {busy && (
+              <svg className="sb-ws-loader" width={16} height={16} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" style={{ width: 16, height: 16, border: 0, borderRadius: 0, flexShrink: 0 }}>
+                <circle cx="3" cy="8" r="1.5" />
+                <circle cx="8" cy="8" r="1.5" />
+                <circle cx="13" cy="8" r="1.5" />
+              </svg>
+            )}
             {busy ? "Resetting..." : "Reset"} {busy ? null : (
               // Conductor: `ml-2 inline-flex items-center opacity-60` with "⌘" and its 12px Enter icon (`gf`).
               <span className="oc-alert-kbd">

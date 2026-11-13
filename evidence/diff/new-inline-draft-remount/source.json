@@ -1,0 +1,313 @@
+{
+  "unit": "DIFF-NEW-INLINE-DRAFT-REMOUNT-SOURCE-DE6",
+  "status": "14_INTENDED_HOSTED_FAILURES_REPRODUCED_MINIMAL_CANDIDATE_PENDING_PAIRED_PROOF",
+  "main": "c25670504400771e2fb31e01560db249ea4bd06c",
+  "original_identity": {
+    "version": "0.87.6",
+    "binary_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+    "binary_bytes": 70194640,
+    "rea_artifact_evidence_id": "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+    "mac_identity_observation": "Read-only devices_exec in this Session on 2026-11-11 around 17:56Z rehashed installed binary and existing extracted renderer; this Python check does not itself contact the Mac"
+  },
+  "reference_assets": {
+    "renderer": {
+      "file": "renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    },
+    "index": {
+      "file": "index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    }
+  },
+  "reference_spans": {
+    "OMi-create-and-annotations": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9403263,
+        9404772
+      ],
+      "bytes": 1509,
+      "sha256": "5816311e1b28c39a5e288be10ae0a77e3f5de4b5c74a47aec3d693e9af32c2f6"
+    },
+    "annotation-metadata": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9404772,
+        9404869
+      ],
+      "bytes": 97,
+      "sha256": "411276404fe6aec51daa906ccf8d736da52ce8c1efe0b9a42887fbf281ef87be"
+    },
+    "wet-draft-consumer": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9411602,
+        9413099
+      ],
+      "bytes": 1497,
+      "sha256": "cfe8f5dde3fc55ba71e0e07df39fdb3ba403285d7234074159b85b371a3aadb5"
+    },
+    "SVo-complete-editor": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9413099,
+        9416741
+      ],
+      "bytes": 3642,
+      "sha256": "1e6bca0b0cdf23c9b84cdb0c057e3b0929ad26176e714615132c938dd13f7e83"
+    },
+    "Pae-store-and-bridge": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9404882,
+        9405467
+      ],
+      "bytes": 585,
+      "sha256": "f60fe4bbf103700c85a6dc8c2bd4340b8477b3629df27641892e451444039ace"
+    },
+    "patch-view-annotation-caller": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9431499,
+        9436022
+      ],
+      "bytes": 4523,
+      "sha256": "d908c703a9de4c3a3e2436109edebd53418afd8dca0543b6f3fbd4bd7bfe2e44"
+    },
+    "editable-view-annotation-caller": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9628186,
+        9633977
+      ],
+      "bytes": 5791,
+      "sha256": "b83b970b85f2e050656d5cdc5b27e3510df8d1907a3e8673924a901f7975e7e6"
+    },
+    "workspace-comment-subscription": {
+      "asset": "index",
+      "utf8_half_open": [
+        3059786,
+        3059956
+      ],
+      "bytes": 170,
+      "sha256": "21856d8d746a7eb4dbede1c8c4abe2e4e812ff703d2c97cef829ad636421ee10"
+    },
+    "get-comment-wrapper": {
+      "asset": "index",
+      "utf8_half_open": [
+        3060165,
+        3060210
+      ],
+      "bytes": 45,
+      "sha256": "28bba9a8428aeb6d1cd7a10b5f8f9d7daa816670527f45228fc169e9d27cf6c5"
+    },
+    "create-comment-wrapper": {
+      "asset": "index",
+      "utf8_half_open": [
+        3060414,
+        3060457
+      ],
+      "bytes": 43,
+      "sha256": "9fd6cf106ebe80a9aa247db9969a562e68063fa3b3ff395778a0422c2a79d54e"
+    },
+    "persist-draft-wrapper": {
+      "asset": "index",
+      "utf8_half_open": [
+        3060731,
+        3060777
+      ],
+      "bytes": 46,
+      "sha256": "ecc882449a9495a4f670c946ad6a7a8a5f0b7c278f480c0e8ca17e43c786cabd"
+    },
+    "delete-comment-wrapper": {
+      "asset": "index",
+      "utf8_half_open": [
+        3060988,
+        3061064
+      ],
+      "bytes": 76,
+      "sha256": "7538200dd9b8d4c35b809d5b7a5127efa07175a35dd079cd463135c2ff946d55"
+    },
+    "comment-active-guard": {
+      "asset": "index",
+      "utf8_half_open": [
+        2299859,
+        2299910
+      ],
+      "bytes": 51,
+      "sha256": "97de8c615ec5b2e2954a3043879bc1c8560f988ec4a8d2634a112a9dbe2ce097"
+    },
+    "comment-get-and-workspace-load": {
+      "asset": "index",
+      "utf8_half_open": [
+        2288276,
+        2288676
+      ],
+      "bytes": 400,
+      "sha256": "58320b4c9354bff4854e479ba29af60bb7e47c310e93c1adf2edee2b2c0b6a33"
+    },
+    "comment-create-and-persist": {
+      "asset": "index",
+      "utf8_half_open": [
+        2291998,
+        2293276
+      ],
+      "bytes": 1278,
+      "sha256": "405f617c99b55e05422bc167098317c3968fa007ad61f56476a537a76e18df7c"
+    },
+    "persist-draft-body": {
+      "asset": "index",
+      "utf8_half_open": [
+        2294518,
+        2294674
+      ],
+      "bytes": 156,
+      "sha256": "11419f6b0e760359eeba0b6934af70f4c40378a7e8c6b7bdb559ab242b217cbb"
+    },
+    "ready-and-delete-resets": {
+      "asset": "index",
+      "utf8_half_open": [
+        2295234,
+        2295957
+      ],
+      "bytes": 723,
+      "sha256": "4faf251678488ba5e3e3229b8f331821c25c731f3ba5bea7e35d68bb1c58a2e7"
+    }
+  },
+  "import_export_joins": {
+    "pSr": {
+      "renderer_import": "mS as pSr",
+      "renderer_offset": 61505,
+      "index_export": "j7t as mS",
+      "index_offset": 3487885
+    },
+    "vSr": {
+      "renderer_import": "mZ as vSr",
+      "renderer_offset": 61575,
+      "index_export": "ppe as mZ",
+      "index_offset": 3487954
+    },
+    "wSr": {
+      "renderer_import": "n0 as wSr",
+      "renderer_offset": 61605,
+      "index_export": "V7t as n0",
+      "index_offset": 3488245
+    },
+    "WDt": {
+      "renderer_import": "mY as WDt",
+      "renderer_offset": 61565,
+      "index_export": "X7t as mY",
+      "index_offset": 3487944
+    },
+    "Tj": {
+      "renderer_import": "dD as Tj",
+      "renderer_offset": 55688,
+      "index_export": "kle as dD",
+      "index_offset": 3482085
+    },
+    "bV": {
+      "renderer_import": "dB as bV",
+      "renderer_offset": 55669,
+      "index_export": "q7t as dB",
+      "index_offset": 3482066
+    }
+  },
+  "current": {
+    "src/features/diff/ReviewComments.tsx": {
+      "sha256": "68801566a9fc93b691db5e1d0d96a754788d235e8eeb244c7d7dd2af5407f508",
+      "bytes": 25100,
+      "blob": "0fc682532b2cd22a0c155deddc296353b8d3106e"
+    },
+    "src/features/diff/DiffViewer.tsx": {
+      "sha256": "9bb3cc41406952e4163810cbb8f1115b724c0936e22dc58faf2c46b2b4f23da7",
+      "bytes": 10370,
+      "blob": "c98156bc49d63480ced48426bf6e3dbfeae01e86"
+    },
+    "src/components/WorkspaceView.tsx": {
+      "sha256": "c0753403e6c9c2481b51e87c45e291910fc17cf979519cc772aa36a84e4b3b8e",
+      "bytes": 83347,
+      "blob": "5f5d0052e9ba120d0da9ba0b329e1e7357290dc1"
+    }
+  },
+  "same_input": "Writable workspace; create new inline draft on file A/range R, type nonblank exact body, allow persistence to settle; unmount and remount the diff view without submit/cancel, retaining workspace and anchor.",
+  "reference_static": "OMi creates UUID-keyed state=draft row. SVo writes body both to Pae keyed by comment ID and to SQL draft row; wet selects that ID on remount; SVo restores map body or reloads persisted body. SVo effect cleanup only suppresses late read, not draft data. Explicit discard deletes new draft; successful submit transitions the row and discards the map draft.",
+  "current_static": "useReviewComments retains only one composing range/path. New Composer receives neither initial nor controlled draft binding. localText is initialized empty on each mount. WorkspaceView showDiff=false unmounts DiffTab; reopening same anchor mounts empty textarea. DiffTab five-file cache means simple file switch is not by itself a supported failing case.",
+  "key_identity": {
+    "reference": "Workspace ID + file path + range + original/modified side dedupe creation; random comment ID keys Pae and SQL read/write/delete.",
+    "current": "Workspace-specific hook, one range/path/side anchor; textarea body only belongs to Composer mount. Workspace/reload effect clears composing anchor. No new-comment draft store is used."
+  },
+  "proposed_hunks_not_implemented": [
+    "ReviewComments.tsx Composing state: retain exact body alongside existing anchor and bind new Composer through existing controlled text/onChange facility.",
+    "ReviewComments.tsx onLineClick/annotations lifecycle: preserve same anchor body across view remount; clear only on existing explicit cancel/discard or successful add; isolate stale callbacks by draft identity.",
+    "New isolated mounted-component regression and new source/hosted proof only after product/runtime scope is assigned. No modifications to old fixtures."
+  ],
+  "scope_limits": [
+    "No full app-restart/SQLite parity claim for proposed in-memory correction.",
+    "No reply retention, saved-edit maps, anchor persistence, existing fixtures, FilePathChip, Editor, WorkspaceView bridge, chat Composer, or native code changes.",
+    "Do not claim simple file-switch failure with five-file keepalive."
+  ],
+  "passed": [
+    "Original Mac binary and existing extracted renderer SHA match retained manifest/REA artifact node.",
+    "Complete creation/read/write/reset/caller spans and import/export joins checked as data.",
+    "Current-main counterparts and unmount/keepalive guards inspected and hash-pinned.",
+    "No tracked edits made."
+  ],
+  "not_run": [
+    "Reference JS execution",
+    "Node or component fixture",
+    "typecheck/build",
+    "hosted RED/GREEN",
+    "browser/renderer",
+    "native/visual"
+  ],
+  "rea_limit": "Historical REA renderer analysis exhausted heap; this pass reads complete retained shipped JS. REA artifact receipt establishes binary identity only, not JavaScript semantics or execution.",
+  "lease": "ReviewComments Composing body/workspace/generation, controlled binding and identity-safe clear only; hosted automatic paired proof admitted; no local/native runtime",
+  "baseline": "c25670504400771e2fb31e01560db249ea4bd06c",
+  "fixture": "src/features/diff/newInlineDraftRemount.test.ts",
+  "fixture_sha256": "03fe7b4aece5b6c5db55772df27ab04ec80c85356d38d34d576fe0397b41b907",
+  "product": {
+    "baseline": "68801566a9fc93b691db5e1d0d96a754788d235e8eeb244c7d7dd2af5407f508",
+    "candidate": "5d61d8a59f1a500d31c399907b0f54c9a51089ed7b7a7442d6c9b890b6d3d564"
+  },
+  "dependencies": {
+    "src/features/diff/comments.ts": "d8df4efefba44a94a7ddfd781075a08bba56fef93eea4aa377f6b872d4210800",
+    "src/features/diff/nav.ts": "f986ec599ffeaab0f6892382d1fa618522eca69f74b0f8827a6fa64c4a30b79c",
+    "package.json": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+    "tsconfig.json": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5"
+  },
+  "frozen_fixtures": {
+    "src/features/diff/commentEditDrafts.test.ts": "487a0b6d0bb87c7325c865c864e0664f060c16d6e51d48981c250b511ec5ddf7",
+    "src/features/diff/commentImeSubmit.test.ts": "f4df74049b561f325678c650ab3fa2737c683980b80d42369d8d62a8d5b591be",
+    "src/features/diff/movedCommentAnchors.test.ts": "48428ff7dd42cb1c1a01874ad8cea53eda20b286093aea45ca66fe07a962b88c",
+    "src/features/diff/hiddenWhitespaceEditing.test.ts": "6e0b9c57c9d1f2ab99f517104e6b262ea643b517d9d3aeef81be6f4fa4c52ca1"
+  },
+  "historical_fixture_v1": {
+    "sha256": "0cf77b6cf12bd3881fc08a5a8672d51943aeb91a0eb4c88062b809d8dc7a90ed",
+    "snapshot": "v1-fixture.test.ts.txt",
+    "receipt": "hosted-v1-red.json",
+    "result": "14 intended failures, one passing control, one out-of-scope submit-trim control mismatch"
+  },
+  "historical_harness_requalification": [
+    {
+      "manifest": "evidence/diff/comment-edit-drafts/source.json",
+      "changed": "ReviewComments candidate source hash only",
+      "old": "68801566a9fc93b691db5e1d0d96a754788d235e8eeb244c7d7dd2af5407f508",
+      "new": "80297beaa275f8925c7c9cf8290cfc67a804918d19ff02bb952d760342e262d3"
+    },
+    {
+      "manifest": "evidence/diff/comment-ime-submit/source.json",
+      "changed": "ReviewComments candidate source hash only",
+      "old": "68801566a9fc93b691db5e1d0d96a754788d235e8eeb244c7d7dd2af5407f508",
+      "new": "80297beaa275f8925c7c9cf8290cfc67a804918d19ff02bb952d760342e262d3"
+    },
+    {
+      "manifest": "evidence/diff/moved-comment-anchors/source.json",
+      "changed": "ReviewComments candidate source hash only",
+      "old": "68801566a9fc93b691db5e1d0d96a754788d235e8eeb244c7d7dd2af5407f508",
+      "new": "80297beaa275f8925c7c9cf8290cfc67a804918d19ff02bb952d760342e262d3"
+    }
+  ]
+}

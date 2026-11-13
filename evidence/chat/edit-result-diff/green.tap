@@ -1,0 +1,92 @@
+(node:68) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual native mapper preserves the colliding display-text control
+ok 1 - actual native mapper preserves the colliding display-text control
+  ---
+  duration_ms: 0.841153
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: object-result-precedes-input
+ok 2 - native producer -> reducer -> persisted/live Transcript Part -> Edit: object-result-precedes-input
+  ---
+  duration_ms: 422.764053
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: json-looking-text-is-not-object
+ok 3 - native producer -> reducer -> persisted/live Transcript Part -> Edit: json-looking-text-is-not-object
+  ---
+  duration_ms: 172.221516
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: context-and-file-headers
+ok 4 - native producer -> reducer -> persisted/live Transcript Part -> Edit: context-and-file-headers
+  ---
+  duration_ms: 149.772531
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: result-can-supply-empty-input
+ok 5 - native producer -> reducer -> persisted/live Transcript Part -> Edit: result-can-supply-empty-input
+  ---
+  duration_ms: 149.451757
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: empty-diff-falls-back
+ok 6 - native producer -> reducer -> persisted/live Transcript Part -> Edit: empty-diff-falls-back
+  ---
+  duration_ms: 135.573796
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: non-string-diff-falls-back
+ok 7 - native producer -> reducer -> persisted/live Transcript Part -> Edit: non-string-diff-falls-back
+  ---
+  duration_ms: 137.27084
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: array-does-not-select-nested-object
+ok 8 - native producer -> reducer -> persisted/live Transcript Part -> Edit: array-does-not-select-nested-object
+  ---
+  duration_ms: 146.438426
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: plain-text-falls-back
+ok 9 - native producer -> reducer -> persisted/live Transcript Part -> Edit: plain-text-falls-back
+  ---
+  duration_ms: 128.870893
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: null-result-falls-back
+ok 10 - native producer -> reducer -> persisted/live Transcript Part -> Edit: null-result-falls-back
+  ---
+  duration_ms: 131.039273
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: failed-result-still-selects-diff
+ok 11 - native producer -> reducer -> persisted/live Transcript Part -> Edit: failed-result-still-selects-diff
+  ---
+  duration_ms: 127.157434
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: truthy-headers-only-suppress-input
+ok 12 - native producer -> reducer -> persisted/live Transcript Part -> Edit: truthy-headers-only-suppress-input
+  ---
+  duration_ms: 120.97595
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: input-marker-control
+ok 13 - native producer -> reducer -> persisted/live Transcript Part -> Edit: input-marker-control
+  ---
+  duration_ms: 123.992595
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2713.75981

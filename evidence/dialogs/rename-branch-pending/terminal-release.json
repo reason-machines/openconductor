@@ -1,0 +1,84 @@
+{
+  "unit": "SAME6013-RENAME-PENDING-BRANCH-01",
+  "producer": "Conductor Rebuild",
+  "slot_status": "EXPLICITLY_RELEASED",
+  "at_utc": "2026-11-12T12:33:13.940422+00:00",
+  "computer": "00637189-5c55-416e-b457-ed7419fb739a",
+  "branch": "reason/openconductor-sol-worksp-6013adf2",
+  "head_before_fix_commit": "8667881a58a3372a772c644f7e388afd89d6dbea",
+  "stages": {
+    "install": {
+      "stage": "install",
+      "started": "2026-11-12T12:31:31.193702264Z",
+      "ended": "2026-11-12T12:31:37.857683830Z",
+      "exit": "0",
+      "log_sha256": "e4be30c168a1bd01eaa52ad0e84413630c45eae7839440ffb7b7cd01daa8b6f0"
+    },
+    "red": {
+      "stage": "red",
+      "started": "2026-11-12T12:32:09.935700759Z",
+      "ended": "2026-11-12T12:32:10.752395291Z",
+      "exit": "1",
+      "log_sha256": "2a06f6293fb74851e0887d469790da61962e7f151c7f8fee991167051abaf7d4",
+      "summary": [
+        "# tests 4",
+        "# pass 1",
+        "# fail 3",
+        "# cancelled 0",
+        "# skipped 0",
+        "# duration_ms 682.590365"
+      ]
+    },
+    "green": {
+      "stage": "green",
+      "started": "2026-11-12T12:32:39.015258033Z",
+      "ended": "2026-11-12T12:32:39.886696047Z",
+      "exit": "0",
+      "log_sha256": "61aa971c9183764d871c777b7038eca4a6d759f99a7f4c40984ff5bea794748a",
+      "summary": [
+        "# tests 4",
+        "# pass 4",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# duration_ms 777.530378"
+      ]
+    },
+    "adjacent": {
+      "stage": "adjacent",
+      "started": "2026-11-12T12:32:52.770168015Z",
+      "ended": "2026-11-12T12:32:53.055228611Z",
+      "exit": "0",
+      "log_sha256": "2b077828c9fc435af3dab8f8d02ca0ac8e738f4265b444267941a67b96bbd239",
+      "summary": [
+        "# tests 17",
+        "# pass 17",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# duration_ms 193.082797"
+      ]
+    }
+  },
+  "frozen_fixture_sha256": "309953c54b3156f609901d40266f6baf6ba4e8b6068ba44e3973ae204c071e71",
+  "product_sha256": "7ef8ae1a2ffcb1286bd0d9050d8ef063ccbd363abf27cd392bf970c12a99c5cc",
+  "static_scope_check": "PASS: only one sealed eligibility-clause removal; all other pins unchanged",
+  "NAME_unchanged": true,
+  "remaining_jobs": "no own Node/npm/test/build/server/watch jobs visible",
+  "census_scope": "sandbox namespace only, not host-wide",
+  "census": "  PID  PPID STAT COMMAND\n    1     0 Ss   bwrap\n    2     1 S    bash\n    3     2 S    socat\n    4     2 S    socat\n    7     2 S    bash\n   75     7 S    bash\n   76    75 S    python3\n   78    76 R    ps\n",
+  "not_run": [
+    "typecheck",
+    "lint",
+    "build",
+    "browser",
+    "preview",
+    "native",
+    "provider",
+    "package",
+    "dispatch",
+    "watch",
+    "additional tests"
+  ],
+  "installed_renderer_equality": "UNVERIFIED"
+}

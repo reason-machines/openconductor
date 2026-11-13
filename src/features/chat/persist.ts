@@ -12,7 +12,9 @@
 //
 // Pure apart from `ChatSaver`'s timer and the `save` function it is given.
 
+import { registerPersistenceOwner } from "../../lib/persistence/restartPersistence.ts";
 import type { ChatTranscript, TurnState } from "./reducer.ts";
+import { parseSentUserContent } from "./userContent.ts";
 import { plainText, type ChatEvent, type ChatMessage } from "./types.ts";
 
 /** A `session_messages` row as `chat_messages_save` takes it. */
@@ -91,7 +93,11 @@ export function restoreEvents(chatId: string, rows: readonly string[]): ChatEven
   for (const row of rows) {
     try {
       const m = JSON.parse(row) as FullMessage;
-      if (m && typeof m.id === "string" && Array.isArray(m.blocks)) messages.push({ ...m, sessionId: chatId });
+      if (m && typeof m.id === "string" && Array.isArray(m.blocks)) {
+        const { userContent: rawContent, ...message } = m;
+        const userContent = parseSentUserContent(rawContent);
+        messages.push({ ...message, sessionId: chatId, ...(userContent ? { userContent } : {}) });
+      }
     } catch {
       // A row this version cannot read is left out rather than failing the chat.
     }
@@ -127,6 +133,9 @@ export class ChatSaver {
   private pending: ChatTranscript | null = null;
   private timer: ReturnType<typeof setTimeout> | null = null;
   private writing = false;
+  private inFlight: Promise<void> | null = null;
+  private failure: { cause: unknown } | null = null;
+  revision = 0;
   /** A Reset chat not written yet: goes with the next batch. */
   private rewindTo: string | null = null;
   private readonly save: (batch: SaveBatch) => Promise<void>;
@@ -135,6 +144,23 @@ export class ChatSaver {
   constructor(save: (batch: SaveBatch) => Promise<void>, delayMs = 300) {
     this.save = save;
     this.delayMs = delayMs;
+    registerPersistenceOwner(this);
+  }
+
+  ready(): boolean { return !this.pending && !this.writing && !this.failure; }
+
+  private checkFailure(): void {
+    const failure = this.failure;
+    if (failure) throw failure.cause;
+  }
+
+  async drain(): Promise<void> {
+    if (this.inFlight) await this.inFlight;
+    this.checkFailure();
+    while (this.pending) {
+      await this.flush();
+      this.checkFailure();
+    }
   }
 
   /** The transcript that is already stored (a loaded chat), so it is not written again. */
@@ -152,6 +178,7 @@ export class ChatSaver {
   }
 
   update(t: ChatTranscript): void {
+    this.revision++;
     this.pending = t;
     if (!this.timer && !this.writing) this.timer = setTimeout(() => void this.flush(), this.delayMs);
   }
@@ -159,9 +186,18 @@ export class ChatSaver {
   async flush(): Promise<void> {
     if (this.timer) clearTimeout(this.timer);
     this.timer = null;
+    if (!this.pending || this.writing) return;
+    const writing = this.writePending();
+    this.inFlight = writing;
+    try { await writing; }
+    finally { if (this.inFlight === writing) this.inFlight = null; }
+  }
+
+  private async writePending(): Promise<void> {
     const next = this.pending;
     if (!next || this.writing) return;
     this.pending = null;
+    this.failure = null;
     const batch: SaveBatch = diffForSave(this.stored, next);
     const rewindTo = this.rewindTo;
     if (rewindTo !== null) batch.rewindTo = rewindTo;
@@ -175,9 +211,11 @@ export class ChatSaver {
       } catch (e) {
         console.warn("chat: transcript not saved", e);
         this.pending ??= next;
+        this.failure = { cause: e };
         failed = true;
       } finally {
         this.writing = false;
+        this.revision++;
       }
     } else this.stored = next;
     // A failed write waits for the next change instead of retrying in a loop.

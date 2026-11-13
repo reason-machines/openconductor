@@ -1,0 +1,15 @@
+[package]
+name = "resource-label-fixture"
+version = "0.0.0"
+edition = "2021"
+
+[[bin]]
+name = "resource-label-fixture"
+path = "sampler.rs"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[profile.dev]
+debug = 0

@@ -1,0 +1,1 @@
+async function ivs(t){return(await Kc({command:`test -f ${nl(t)}`,host:gn})).code===0}
