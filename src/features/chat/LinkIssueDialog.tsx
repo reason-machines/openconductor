@@ -10,7 +10,8 @@
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import { DialogFrame } from "../../components/DialogFrame.tsx";
 import { listIssues } from "../../workspace/api.ts";
-import { matches, type CreateFrom, type SourceState } from "../../workspace/createFrom.ts";
+import { matches, type SourceState } from "../../workspace/createFrom.ts";
+import type { CreateFrom } from "../../workspace/createFlow.ts";
 import type { TextAttachment } from "../diff/chatAttachment.ts";
 
 interface Props {
