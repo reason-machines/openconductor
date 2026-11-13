@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentType, type KeyboardEvent, type ReactNode } from "react";
 import { effectiveShortcuts, type Overrides } from "../keybindings/overrides.ts";
 import { glyphs } from "../keybindings/shortcut.ts";
 import { buildResults, cycleTab, emptyText, placeholderFor, TABS, type PaletteData, type PaletteIcon, type PaletteTab, type ResultItem } from "./search/model.ts";
@@ -7,7 +7,7 @@ import { workspaceNumberLabel } from "../state/workspaceNumber.ts";
 import { VIEW_ARCHIVED_ACTION } from "./fromAppState.ts";
 import type { ArchiveFilter, ArchivedWorkspace } from "../workspace/archivedList.ts";
 import type { Repo } from "../state/types.ts";
-import { MoveToSection, sectionItems, type MoveToSectionProps } from "./MoveToSection.tsx";
+import type { MoveToSectionProps, SectionItem } from "./MoveToSection.tsx";
 import { loadFilters, saveFilters, CLEARED_FILTERS, type HomeFilters, type HomeRow } from "../home/allWorkspaces.ts";
 import { showClearFilters, workspacesTabRows } from "./workspacesTab.ts";
 import { WorkspaceFilters, WorkspaceRow } from "./WorkspacesTab.tsx";
@@ -47,6 +47,16 @@ export interface CommandPaletteProps {
   settingIcon?: (settingId: string) => ReactNode;
   actionIcon?: (actionId: string) => ReactNode;
   onClose: () => void;
+  /**
+   * Injected by PaletteHost: the section picker component to render in section sub-view mode.
+   * Not imported directly to keep CommandPalette free of a MoveToSection module dependency.
+   */
+  SectionPicker?: ComponentType<{ workspaceId: string; sections: readonly MoveToSectionProps["sections"][number][]; query: string; active: number; onActive: (index: number) => void; onSelectAt: (index: number) => void; onBack: () => void }>;
+  /**
+   * Injected by PaletteHost: computes the flat navigable item list for keyboard navigation.
+   * Not imported directly to keep CommandPalette free of a MoveToSection module dependency.
+   */
+  computeSectionItems?: (sections: MoveToSectionProps["sections"], workspaceId: string, query: string) => SectionItem[];
 }
 
 /** A Workspaces-tab row as the palette item it selects. */
@@ -120,7 +130,7 @@ function ResultWorkspaceRow({ item, showNumber }: { item: Extract<ResultItem, { 
   );
 }
 
-export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter, repos = [], archived = [], showWorkspaceNumbers = false, onSelect, settingIcon, actionIcon, onClose, moveToSection, sectionKey, localWorkspaceId }: CommandPaletteProps) {
+export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter, repos = [], archived = [], showWorkspaceNumbers = false, onSelect, settingIcon, actionIcon, onClose, moveToSection, sectionKey, localWorkspaceId, SectionPicker, computeSectionItems }: CommandPaletteProps) {
   const [tab, setTab] = useState<PaletteTab>(initialTab);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(initialTab === "workspaces" ? -1 : 0);
@@ -142,8 +152,8 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     localWorkspaceId !== undefined &&
     localWorkspaceId === data.activeWorkspaceId &&
     moveToSection !== undefined;
-  const sectionFlatItems = inSectionMode && moveToSection
-    ? sectionItems(moveToSection.sections, moveToSection.workspaceId, query)
+  const sectionFlatItems = inSectionMode && moveToSection && computeSectionItems
+    ? computeSectionItems(moveToSection.sections, moveToSection.workspaceId, query)
     : [];
 
   const wsRows = useMemo(() => workspacesTabRows(repos, filters, query, archived), [repos, filters, query, archived]);
@@ -264,8 +274,8 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
             aria-controls="palette-list"
           />
         </div>
-        {inSectionMode && moveToSection ? (
-          <MoveToSection
+        {inSectionMode && moveToSection && SectionPicker ? (
+          <SectionPicker
             workspaceId={moveToSection.workspaceId}
             sections={moveToSection.sections}
             query={query}

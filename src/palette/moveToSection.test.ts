@@ -117,6 +117,12 @@ function actualHost(observe: (props: PaletteProps) => void = noop) {
     "../components/Toast": { Toaster: inert, useToasts: () => ({ toasts: [], show: forbidden, dismiss: noop }) },
     "../components/ConductorIcon": { ConductorIcon: inert },
     "./gitPanelActions.ts": { GIT_PANEL_ACTIONS, requestGitPanelAction: forbidden },
+    "./MoveToSection.tsx": (() => {
+      const s: Record<string, unknown> = {};
+      const screenUrl = new URL("./MoveToSection.tsx", import.meta.url);
+      if (existsSync(screenUrl)) evaluate("./MoveToSection.tsx", { "../components/ConductorIcon": { ConductorIcon: inert }, "../components/Icons": { SearchIcon: inert } }, s);
+      return s;
+    })(),
   };
   evaluate("./PaletteHost.tsx", imports, exports);
   assert.ok(exports.PaletteHost);
