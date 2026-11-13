@@ -588,6 +588,7 @@ export default function App() {
         ) : repo && workspace ? (
           <WorkspaceView
             onOpenInTarget={registerOpenInTarget}
+            onOpenAccountSettings={() => navigateSettings({ scope: "user", page: "account" })}
             repo={repo}
             workspace={workspace}
             sections={state.sections ?? []}
