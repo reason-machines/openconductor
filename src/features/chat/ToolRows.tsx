@@ -1207,13 +1207,14 @@ function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isErr
     case "node-repl-js": {
       // `Kpo`
       const title = s(input.title);
+      const nodeOutput = rawResult !== undefined ? (typeof rawResult === "string" ? rawResult : JSON.stringify(rawResult, null, 2)) : result;
       return (
         <RowShell
           {...shell}
           left={<span>Node REPL</span>}
           right={title ? <CodeChip text={title} /> : undefined}
           align="center"
-          content={Object.keys(input).length > 0 || result ? <InputOutput input={input} result={result} isError={isError} /> : undefined}
+          content={Object.keys(input).length > 0 || nodeOutput !== undefined ? <InputOutput input={input} result={nodeOutput} isError={isError} /> : undefined}
         />
       );
     }
@@ -1244,12 +1245,12 @@ function GenericRow({ tool, status, result, rawResult, isError, open, onToggle }
   const shell: ShellBase = { icon: <ToolIcon name={name} />, open, onToggle, status };
   const mcp = name.startsWith("mcp__");
   let output = result;
-  if (!mcp && rawResult !== undefined) output = typeof rawResult === "string" ? rawResult : rawResult ? JSON.stringify(rawResult, null, 2) : "";
+  if (rawResult !== undefined) output = typeof rawResult === "string" ? rawResult : rawResult ? JSON.stringify(rawResult, null, 2) : "";
   const monitor = name === "Monitor";
   const summary = genericSummary(name, input);
   const left = mcp || monitor || name === "ToolSearch" ? <span>{mcpLabel(name)}</span> : <span className="oc-lowercase">{name}</span>;
   const right = summary ? monitor ? <span className="oc-tool-plain">{summary}</span> : <CodeChip text={summary} /> : undefined;
-  if (mcp) return <McpRow {...shell} name={name} input={input} result={result} isError={isError} left={left} right={right} />;
+  if (mcp) return <McpRow {...shell} name={name} input={input} result={output} isError={isError} left={left} right={right} />;
   return (
     <RowShell
       {...shell}

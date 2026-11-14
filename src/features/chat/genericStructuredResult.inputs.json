@@ -1,79 +1,240 @@
 {
   "candidate": "CHAT.GENERIC-NONMCP-STRUCTURED-RESULT",
-  "checked_main": "869d6efad0cdeb6a889538978f3e6416f0e3a2c2",
+  "checked_main": "8f62e6e3d",
   "status": "SOURCE_PREP_UNRUN",
   "cases": [
     {
-      "id": "toolsearch-text-block-array", "name": "ToolSearch", "input": {"query": "catalog"}, "isError": false,
-      "output": "catalog A\ncatalog B", "rawResult": [{"type":"text","text":"catalog A"},{"type":"text","text":"catalog B"}],
-      "expected_label": "Search tools", "expected_output": "[\n  {\n    \"type\": \"text\",\n    \"text\": \"catalog A\"\n  },\n  {\n    \"type\": \"text\",\n    \"text\": \"catalog B\"\n  }\n]",
+      "id": "toolsearch-text-block-array",
+      "name": "ToolSearch",
+      "input": {
+        "query": "catalog"
+      },
+      "isError": false,
+      "output": "catalog A\ncatalog B",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "catalog A"
+        },
+        {
+          "type": "text",
+          "text": "catalog B"
+        }
+      ],
+      "expected_label": "Search tools",
+      "expected_output": "[\n  {\n    \"type\": \"text\",\n    \"text\": \"catalog A\"\n  },\n  {\n    \"type\": \"text\",\n    \"text\": \"catalog B\"\n  }\n]",
       "predicted_red": true
     },
     {
-      "id": "toolsearch-object-content", "name": "ToolSearch", "input": {"query": "catalog"}, "isError": false,
-      "output": "{\"tools\":[\"inspect\"],\"count\":1}", "rawResult": {"tools":["inspect"],"count":1},
-      "expected_label": "Search tools", "expected_output": "{\n  \"tools\": [\n    \"inspect\"\n  ],\n  \"count\": 1\n}", "predicted_red": true
+      "id": "toolsearch-object-content",
+      "name": "ToolSearch",
+      "input": {
+        "query": "catalog"
+      },
+      "isError": false,
+      "output": "{\"tools\":[\"inspect\"],\"count\":1}",
+      "rawResult": {
+        "tools": [
+          "inspect"
+        ],
+        "count": 1
+      },
+      "expected_label": "Search tools",
+      "expected_output": "{\n  \"tools\": [\n    \"inspect\"\n  ],\n  \"count\": 1\n}",
+      "predicted_red": true
     },
     {
-      "id": "monitor-nontext-array", "name": "Monitor", "input": {"description":"Watch compiler"}, "isError": false,
-      "output": "", "rawResult": [{"type":"resource","resource":{"uri":"local://compile","state":"ready"}}],
-      "expected_label": "Start monitor", "expected_output": "[\n  {\n    \"type\": \"resource\",\n    \"resource\": {\n      \"uri\": \"local://compile\",\n      \"state\": \"ready\"\n    }\n  }\n]", "predicted_red": true
+      "id": "monitor-nontext-array",
+      "name": "Monitor",
+      "input": {
+        "description": "Watch compiler"
+      },
+      "isError": false,
+      "output": "",
+      "rawResult": [
+        {
+          "type": "resource",
+          "resource": {
+            "uri": "local://compile",
+            "state": "ready"
+          }
+        }
+      ],
+      "expected_label": "Start monitor",
+      "expected_output": "[\n  {\n    \"type\": \"resource\",\n    \"resource\": {\n      \"uri\": \"local://compile\",\n      \"state\": \"ready\"\n    }\n  }\n]",
+      "predicted_red": true
     },
     {
-      "id": "toolsearch-empty-array-without-input", "name": "ToolSearch", "input": {}, "isError": false,
-      "output": "", "rawResult": [], "expected_label": "Search tools", "expected_output": "[]", "predicted_red": true
+      "id": "toolsearch-empty-array-without-input",
+      "name": "ToolSearch",
+      "input": {},
+      "isError": false,
+      "output": "",
+      "rawResult": [],
+      "expected_label": "Search tools",
+      "expected_output": "[]",
+      "predicted_red": true
     },
     {
-      "id": "monitor-error-array", "name": "Monitor", "input": {"description":"Watch compiler"}, "isError": true,
-      "output": "command stopped", "rawResult": [{"type":"text","text":"command stopped"}],
-      "expected_label": "Start monitor", "expected_output": "[\n  {\n    \"type\": \"text\",\n    \"text\": \"command stopped\"\n  }\n]", "predicted_red": true
+      "id": "monitor-error-array",
+      "name": "Monitor",
+      "input": {
+        "description": "Watch compiler"
+      },
+      "isError": true,
+      "output": "command stopped",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "command stopped"
+        }
+      ],
+      "expected_label": "Start monitor",
+      "expected_output": "[\n  {\n    \"type\": \"text\",\n    \"text\": \"command stopped\"\n  }\n]",
+      "predicted_red": true
     },
     {
-      "id": "toolsearch-falsy-zero", "name": "ToolSearch", "input": {"query":"catalog"}, "isError": false,
-      "output": "0", "rawResult": 0, "expected_label": "Search tools", "expected_output": "", "predicted_red": true
+      "id": "toolsearch-falsy-zero",
+      "name": "ToolSearch",
+      "input": {
+        "query": "catalog"
+      },
+      "isError": false,
+      "output": "0",
+      "rawResult": 0,
+      "expected_label": "Search tools",
+      "expected_output": "",
+      "predicted_red": true
     },
     {
-      "id": "toolsearch-falsy-false", "name": "ToolSearch", "input": {"query":"catalog"}, "isError": false,
-      "output": "false", "rawResult": false, "expected_label": "Search tools", "expected_output": "", "predicted_red": true
+      "id": "toolsearch-falsy-false",
+      "name": "ToolSearch",
+      "input": {
+        "query": "catalog"
+      },
+      "isError": false,
+      "output": "false",
+      "rawResult": false,
+      "expected_label": "Search tools",
+      "expected_output": "",
+      "predicted_red": true
     },
     {
-      "id": "numeric-looking-raw-string", "name": "ToolSearch", "input": {"query":"catalog"}, "isError": false,
-      "output": "123", "rawResult": "123", "expected_label": "Search tools", "expected_output": "123", "predicted_red": false
+      "id": "numeric-looking-raw-string",
+      "name": "ToolSearch",
+      "input": {
+        "query": "catalog"
+      },
+      "isError": false,
+      "output": "123",
+      "rawResult": "123",
+      "expected_label": "Search tools",
+      "expected_output": "123",
+      "predicted_red": false
     },
     {
-      "id": "json-looking-raw-string", "name": "ToolSearch", "input": {"query":"catalog"}, "isError": false,
-      "output": "[{\"type\":\"text\",\"text\":\"catalog\"}]", "rawResult": "[{\"type\":\"text\",\"text\":\"catalog\"}]",
-      "expected_label": "Search tools", "expected_output": "[{\"type\":\"text\",\"text\":\"catalog\"}]", "predicted_red": false
+      "id": "json-looking-raw-string",
+      "name": "ToolSearch",
+      "input": {
+        "query": "catalog"
+      },
+      "isError": false,
+      "output": "[{\"type\":\"text\",\"text\":\"catalog\"}]",
+      "rawResult": "[{\"type\":\"text\",\"text\":\"catalog\"}]",
+      "expected_label": "Search tools",
+      "expected_output": "[{\"type\":\"text\",\"text\":\"catalog\"}]",
+      "predicted_red": false
     },
     {
-      "id": "legacy-no-raw-result", "name": "Monitor", "input": {"description":"Watch compiler"}, "isError": false,
-      "output": "legacy flat output", "expected_label": "Start monitor", "expected_output": "legacy flat output", "predicted_red": false
+      "id": "legacy-no-raw-result",
+      "name": "Monitor",
+      "input": {
+        "description": "Watch compiler"
+      },
+      "isError": false,
+      "output": "legacy flat output",
+      "expected_label": "Start monitor",
+      "expected_output": "legacy flat output",
+      "predicted_red": false
     },
     {
-      "id": "pending-no-input", "name": "ToolSearch", "input": {}, "isError": false,
-      "expected_label": "Search tools", "expected_output": "", "predicted_red": false
+      "id": "pending-no-input",
+      "name": "ToolSearch",
+      "input": {},
+      "isError": false,
+      "expected_label": "Search tools",
+      "expected_output": "",
+      "predicted_red": false
     },
     {
-      "id": "falsy-null-no-input", "name": "ToolSearch", "input": {}, "isError": false,
-      "output": "", "rawResult": null, "expected_label": "Search tools", "expected_output": "", "predicted_red": false
+      "id": "falsy-null-no-input",
+      "name": "ToolSearch",
+      "input": {},
+      "isError": false,
+      "output": "",
+      "rawResult": null,
+      "expected_label": "Search tools",
+      "expected_output": "",
+      "predicted_red": false
     },
     {
-      "id": "empty-raw-string-no-input", "name": "ToolSearch", "input": {}, "isError": false,
-      "output": "", "rawResult": "", "expected_label": "Search tools", "expected_output": "", "predicted_red": false
+      "id": "empty-raw-string-no-input",
+      "name": "ToolSearch",
+      "input": {},
+      "isError": false,
+      "output": "",
+      "rawResult": "",
+      "expected_label": "Search tools",
+      "expected_output": "",
+      "predicted_red": false
     },
     {
-      "id": "excluded-mcp-consumer", "name": "mcp__sample__inspect", "input": {"query":"catalog"}, "isError": false,
-      "output": "mcp flat output", "rawResult": [{"type":"text","text":"mcp flat output"}],
-      "expected_label": "Inspect", "expected_output": "mcp flat output", "predicted_red": false
+      "id": "excluded-mcp-consumer",
+      "name": "mcp__sample__inspect",
+      "input": {
+        "query": "catalog"
+      },
+      "isError": false,
+      "output": "mcp flat output",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "mcp flat output"
+        }
+      ],
+      "expected_label": "Inspect",
+      "expected_output": "[\n  {\n    \"type\": \"text\",\n    \"text\": \"mcp flat output\"\n  }\n]",
+      "predicted_red": true
     },
     {
-      "id": "excluded-node-repl-consumer", "name": "mcp__node_repl__js", "input": {"title":"Inspect state"}, "isError": false,
-      "output": "node flat output", "rawResult": [{"type":"text","text":"node flat output"}],
-      "expected_label": "Node REPL", "expected_output": "node flat output", "predicted_red": false
+      "id": "excluded-node-repl-consumer",
+      "name": "mcp__node_repl__js",
+      "input": {
+        "title": "Inspect state"
+      },
+      "isError": false,
+      "output": "node flat output",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "node flat output"
+        }
+      ],
+      "expected_label": "Node REPL",
+      "expected_output": "[\n  {\n    \"type\": \"text\",\n    \"text\": \"node flat output\"\n  }\n]",
+      "predicted_red": true
     },
     {
-      "id": "plain-string-truncation-boundary", "name": "ToolSearch", "input": {"query":"catalog"}, "isError": false,
-      "repeat_string_length": 100001, "expected_label": "Search tools", "expected_output_length": 100000, "predicted_red": false
+      "id": "plain-string-truncation-boundary",
+      "name": "ToolSearch",
+      "input": {
+        "query": "catalog"
+      },
+      "isError": false,
+      "repeat_string_length": 100001,
+      "expected_label": "Search tools",
+      "expected_output_length": 100000,
+      "predicted_red": false
     }
   ]
 }

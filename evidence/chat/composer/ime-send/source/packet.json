@@ -1,0 +1,398 @@
+{
+  "id": "ACQ-COMPOSER-IME-SEND-135-03",
+  "author": "Conductor Rebuild",
+  "checked_main": "385ccb5229f56ff33903f034352eaa9827c40f0e",
+  "status": "partial_source_contract_no_product_defect_admitted",
+  "artifact": {
+    "name": "Conductor 0.87.6 decoded assets/renderApp-D_fmY7hW.js",
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "bytes": 11600457
+  },
+  "provenance": {
+    "retained_rea": {
+      "retained_rea_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+      "manifest": "evidence/frontend/tauri-assets-manifest.json",
+      "parse_status": "skipped",
+      "known_gap": "Owned JavaScript worker exhausted its heap. Compiled bundle spans were inspected as inert text, not an REA-generated call graph. No new REA call or target execution."
+    },
+    "complete_ITo_lHt_packet": "evidence/chat/composer/slash-atom-preservation/packet.json",
+    "helper_history_source": {
+      "session_id": "13576d11-76fb-4842-aa9b-c398f9ca26f3",
+      "source_id": "8384a3ff-4acf-4e4d-88e0-a51f97af81e2",
+      "revision": 26348898,
+      "created_at": "2026-11-11T05:48:32.494Z",
+      "read_window": [
+        10000,
+        23000
+      ]
+    },
+    "identity_wrapper_history_source": {
+      "source_id": "b3da3f1d-fa34-4456-a906-2a49866a97f7",
+      "revision": 26223556,
+      "read_window": [
+        12600,
+        14800
+      ]
+    },
+    "offset_limit": "Helper absolute ranges are derived from the already recorded constant anchor and recovered contiguous text, not remeasured against a freshly acquired full renderer. Known constant, oRt and wrapper hashes matched their earlier closed packet. UIi/W5o/cHt original byte offsets are not retained; their complete text and history-source identity are recorded instead.",
+    "acquisition": "none; recovered already-held inert text only"
+  },
+  "reference_fragments": [
+    {
+      "symbol": "ITo",
+      "declaration_utf8_bytes": [
+        8655325,
+        8691330
+      ],
+      "declaration_sha256": "402ecc13bb1fd4751d0ec047f818423c9e678deb9ba38b471961ad447100519f",
+      "fragment_utf8_bytes": [
+        8655325,
+        8655527
+      ],
+      "fragment_sha256": "4cdb973f533394cfc4f0fa6ea2517f0b919cb15a35565d8d78a92944ebf40ce0",
+      "compiled_javascript": "ITo=$.memo(function({selectedSessionId:e,viewSessionId:n,onTargetSessionSelect:i,localWorkspaceId:r,workspacePath:o,host:a,disabled:c=\"none\",renderAbove:u,navigateToSession:d,navigateToFile:h,onSubmit:m"
+    },
+    {
+      "symbol": "ITo",
+      "declaration_utf8_bytes": [
+        8655325,
+        8691330
+      ],
+      "declaration_sha256": "402ecc13bb1fd4751d0ec047f818423c9e678deb9ba38b471961ad447100519f",
+      "fragment_utf8_bytes": [
+        8687374,
+        8688266
+      ],
+      "fragment_sha256": "ac953696dc178ec2bd4e5936867be6c3feb3f4e4d0d698c51b99bf5511cc0273",
+      "compiled_javascript": "p.jsx(lHt,{...UIi,resolveMentionViewModel:$c,loadAttachmentPreview:Bl,value:g,onChange:X,onFocus:()=>{U(!0),lb(),UX.setFocusedInputId(B6)},onBlur:()=>{U(!1),UX.setFocusedInputId(null)},placeholder:S5(),disabled:c===\"all\",autoFocus:O&&!vf,queueEditMode:w,triggers:h_,onEditorReady:E5,onMentionClick:wv,visibleAttachments:x,cloudAttachmentClipboardSourceSessionId:Su(a)?e:void 0,resolveAttachmentImageLocation:Sv,containerEl:te,externalSuggestions:xe?[Ra]:[],messageSendKey:he,messageSendMode:ve,onSubmit:x2,canSubmit:cr,shouldSkipSubmitShortcut:ln=>!!(y2&&Qh(\"chat.planResponse.submit\",ln.nativeEvent)),onKeyDown:ln=>{w&&R!==void 0&&Qh(\"chat.queueEdit.cancel\",ln.nativeEvent)&&(ln.preventDefault(),ln.stopPropagation(),R())},suggestionContextKey:id,onArrowUpAtTop:()=>w?!1:Z8i.focusLast({localWorkspaceId:r,sessionId:e}),onAttachmentMentionRemoved:Tc,onPastedCloudAttachmentMentionRemoved:uh})"
+    },
+    {
+      "symbol": "ITo",
+      "declaration_utf8_bytes": [
+        8655325,
+        8691330
+      ],
+      "declaration_sha256": "402ecc13bb1fd4751d0ec047f818423c9e678deb9ba38b471961ad447100519f",
+      "fragment_utf8_bytes": [
+        8670237,
+        8671478
+      ],
+      "fragment_sha256": "0d5198a095dd5b1396b5565f0c28e2442e1637171b1bfa3641a00e7f19c67927",
+      "compiled_javascript": "x2=async({sendModeOverride:ln}={})=>{if(!cr)return;if(Q&&!hi){er.error(\"Codex goals are not available in this chat.\",r);return}q8.state!==\"idle\"&&q8.cancel(),Ogo({sessionId:e});let $r=g.trim();const hr=x.map(Oa=>Oa.id);let Ns=Q;if(!w&&!Q){const Oa=gWn($r);if(Oa){if(Oa.name===\"goal\"&&bt===\"codex\")if(hi)if(Oa.args)$r=Oa.args,Ns=!0;else{const Vf=Yl(\"goal\");Vf&&(pe({discardAttachments:!0}),ua(Vf,\"\"));return}else{er.error(\"Codex goals are not available in this chat.\",r);return}if(Oa.name!==\"goal\"){const Vf=Yl(Oa.name);if(gmo(Oa.name)&&!Vf){er.error(\"This command isn't available in this workspace.\",r);return}if(Vf&&Vf.supportedAgents.includes(bt)){pe({discardAttachments:!0}),ua(Vf,Oa.args);return}if(Oa.name===\"plan\"){er.error(\"Plan mode is not available in this chat.\",r);return}const ub=bt===\"acp\"?Nt===void 0?\"this agent\":_A[Nt]:_A[bt];er.error(`/${Oa.name} is not available for ${ub}.`,r);return}}}if(!Ye){er.error(\"Session not found\",r);return}Ns&&J(!1),w||pe(),await m({attachmentIds:hr,message:$r,planResponse:y2&&Ye?{isCodexSession:_n,sessionId:Ye.id}:void 0,sendMode:L?ln??ve:\"steering\",sendAsGoal:Ns,sendModeOverride:ln,targetSession:await Yu.getSession(e)})},C5=ln=>{ln.preventDefault(),!(c===\"all\"||!cr)&&x2().fireAndForget()}"
+    },
+    {
+      "symbol": "lHt",
+      "declaration_utf8_bytes": [
+        8418728,
+        8426168
+      ],
+      "declaration_sha256": "2b86481687009f77ff169d0e5f52e349ee541b80a71c205e07d691862e938215",
+      "fragment_utf8_bytes": [
+        8421834,
+        8422750
+      ],
+      "fragment_sha256": "eac6bf836043900da3c88f3d7cf6bb94538a2f17aebc082374d71e00d9620d2c",
+      "compiled_javascript": "editorProps:{attributes:{class:\"composer-tiptap-editor\",spellcheck:u?\"true\":\"false\",autocomplete:\"new-password\",autocorrect:\"off\",autocapitalize:\"off\",writingsuggestions:\"false\"},handleKeyDown:(ye,xe)=>{if(aqn(xe)||Q.isImeCompositionActive||oRt(xe))return!0;if(Q.latestVisibleSuggestionSource===\"external\")return uqn(xe)!==void 0;for(const De of ye.state.plugins){const je=De.getState(ye.state);if(je&&typeof je==\"object\"&&je.active){const Ne=De.props.handleKeyDown;if(Ne&&Ne.call(De,ye,xe))return Q.suggestionHandledKey=!0,!0}}const{shouldSend:ke,shouldInsertNewline:Se}=Q.latestQueueEditMode?lqn({event:xe,messageSendKey:Q.latestMessageSendKey,matchesCommand:Q.latestMatchesSendCommand}):cqn({event:xe,messageSendKey:Q.latestMessageSendKey,messageSendMode:Q.latestMessageSendMode,matchesCommand:Q.latestMatchesSendCommand});return ke?!0:Se||Q.latestQueueEditMode&&B5o(xe)?EIt(ye.state,ye.dispatch):!1},handleClick:"
+    },
+    {
+      "symbol": "lHt",
+      "declaration_utf8_bytes": [
+        8418728,
+        8426168
+      ],
+      "declaration_sha256": "2b86481687009f77ff169d0e5f52e349ee541b80a71c205e07d691862e938215",
+      "fragment_utf8_bytes": [
+        8424444,
+        8425776
+      ],
+      "fragment_sha256": "54a71fc155a2f2a55f4af2f1f7f61577d9e3d14a1c9a6582c4ac9bd457ed5425",
+      "compiled_javascript": "const ve=$.useCallback(ye=>{if(aqn(ye)){ye.preventDefault(),ye.stopPropagation();return}if(Q.isImeCompositionActive||oRt(ye))return;if(Q.suggestionHandledKey){Q.suggestionHandledKey=!1,ye.preventDefault(),ye.stopPropagation();return}const xe=be?.entry.state,ke=uqn(ye);if(he===\"external\"&&xe){if(ke===\"ArrowUp\"&&xe.setSelectedIndex((xe.selectedIndex+xe.items.length-1)%xe.items.length),ke===\"ArrowDown\"&&xe.setSelectedIndex((xe.selectedIndex+1)%xe.items.length),ke===\"Enter\"||ke===\"Tab\"){const Se=xe.items[xe.selectedIndex];Se&&xe.command&&xe.command(Se)}if(ke===\"Escape\"&&xe.dismiss(),ke!==void 0){ye.preventDefault(),ye.stopPropagation();return}}if(he===\"internal\"){ke!==void 0&&(ye.preventDefault(),ye.stopPropagation());return}if(ke===\"ArrowUp\"&&!ye.shiftKey&&!ye.metaKey&&!ye.ctrlKey&&!ye.altKey&&m.keyboardShortcuts&&X!==void 0&&ue!==null&&$5o(ue)&&X()){ye.preventDefault(),ye.stopPropagation();return}if(U!==void 0){const{shouldSend:Se,sendModeOverride:De}=H?lqn({event:ye.nativeEvent,messageSendKey:L,matchesCommand:m.matchesSendCommand}):cqn({event:ye.nativeEvent,messageSendKey:L,messageSendMode:F,matchesCommand:m.matchesSendCommand});if(Se){ye.preventDefault(),!G?.(ye)&&z&&Promise.resolve(U({sendModeOverride:De})).fireAndForget();return}}n?.(ye)},[z,ue,L,F,H,X,n,U,G,be,he,Q,m.keyboardShortcuts,m.matchesSendCommand]);"
+    },
+    {
+      "symbol": "lHt",
+      "declaration_utf8_bytes": [
+        8418728,
+        8426168
+      ],
+      "declaration_sha256": "2b86481687009f77ff169d0e5f52e349ee541b80a71c205e07d691862e938215",
+      "fragment_utf8_bytes": [
+        8425856,
+        8425972
+      ],
+      "fragment_sha256": "221b82963e940c90ab2a51e578df7c346f8f409d01084880c4a9dacbe709c04c",
+      "compiled_javascript": "onCompositionEnd:()=>{Q.isImeCompositionActive=!1},onCompositionStart:()=>{Q.isImeCompositionActive=!0},onKeyDown:ve"
+    }
+  ],
+  "helper_spans": [
+    {
+      "symbol": "composition_code",
+      "utf8_bytes_derived_from_known_8415731_anchor": [
+        8415731,
+        8415739
+      ],
+      "sha256": "daa7b1b31b64d1c5a942f120deff423e81c42e80fe5662bc756158009e3ec1f4",
+      "compiled_javascript": "$$e=229;"
+    },
+    {
+      "symbol": "oRt",
+      "utf8_bytes_derived_from_known_8415731_anchor": [
+        8415739,
+        8415890
+      ],
+      "sha256": "0cf63f73563cef134d6089a084469a5d52f916f9d502afade3b4752e2c20bb4b",
+      "compiled_javascript": "function oRt(t){const e=t.nativeEvent;return t.isComposing===!0||e?.isComposing===!0||t.keyCode===$$e||t.which===$$e||e?.keyCode===$$e||e?.which===$$e}"
+    },
+    {
+      "symbol": "P5o",
+      "utf8_bytes_derived_from_known_8415731_anchor": [
+        8415890,
+        8415972
+      ],
+      "sha256": "50f95272eb33f64d3ac0f8bd1a766b8b0c5fd132dfb63cf0838c8b11eabed2c9",
+      "compiled_javascript": "const P5o=dBr(t=>(t.key===\" \"||t.code===\"Space\")&&t.ctrlKey===!0&&t.metaKey!==!0);"
+    },
+    {
+      "symbol": "aqn",
+      "utf8_bytes_derived_from_known_8415731_anchor": [
+        8415972,
+        8416002
+      ],
+      "sha256": "84a25a695961de2d3b9297fb0910a758692a2c159d8164f6e1d9ba47a2843abc",
+      "compiled_javascript": "function aqn(t){return P5o(t)}"
+    },
+    {
+      "symbol": "M5o+j5o",
+      "utf8_bytes_derived_from_known_8415731_anchor": [
+        8416170,
+        8416669
+      ],
+      "sha256": "25e88bbbc4c1716daa3b0c6abdfb3bd8fcc038aa0381be28d9930a06385d160e",
+      "compiled_javascript": "const M5o=_v(t=>t.key!==\"Enter\"||t.shiftKey||t.altKey?{shouldSend:!1}:{shouldSend:!0,sendModeOverride:t.metaKey||t.ctrlKey?\"steering\":void 0}),j5o=_v(({event:t,messageSendKey:e,messageSendMode:n})=>{const i=t.key===\"Enter\"&&!t.shiftKey&&!t.altKey&&(e===\"enter\"?t.metaKey||t.ctrlKey:t.metaKey&&t.ctrlKey);return i||(e===\"enter\"?t.key===\"Enter\"&&!t.shiftKey:t.key===\"Enter\"&&(t.metaKey||t.ctrlKey))?i?{shouldSend:!0,sendModeOverride:n===\"queued\"?\"steering\":\"queued\"}:{shouldSend:!0}:{shouldSend:!1}});"
+    },
+    {
+      "symbol": "lqn",
+      "utf8_bytes_derived_from_known_8415731_anchor": [
+        8416669,
+        8416974
+      ],
+      "sha256": "050ab8fc89d0bc707ac1ddc8a93bfedd004cdd1b45aef0c6f3a9c3a2615bf88a",
+      "compiled_javascript": "function lqn(t){return\"event\"in t?t.matchesCommand({command:\"queueEditSaveAndSteer\",event:t.event,messageSendKey:t.messageSendKey})?{shouldSend:!0,sendModeOverride:\"steering\"}:t.matchesCommand({command:\"queueEditSave\",event:t.event,messageSendKey:t.messageSendKey})?{shouldSend:!0}:{shouldSend:!1}:M5o(t)}"
+    },
+    {
+      "symbol": "cqn",
+      "utf8_bytes_derived_from_known_8415731_anchor": [
+        8416974,
+        8417459
+      ],
+      "sha256": "00e837bd6da66311537a60f81b172a79de73c1e7e0130618936be2cdc8dd6725",
+      "compiled_javascript": "function cqn({event:t,messageSendKey:e,messageSendMode:n=\"steering\",matchesCommand:i}){return i!==void 0&&t instanceof KeyboardEvent?i({command:\"submitOppositeFollowUp\",event:t,messageSendKey:e})?{shouldSend:!0,sendModeOverride:n===\"queued\"?\"steering\":\"queued\"}:i({command:\"submitMessage\",event:t,messageSendKey:e})?{shouldSend:!0}:i({command:\"newLine\",event:t,messageSendKey:e})?{shouldSend:!1,shouldInsertNewline:!0}:{shouldSend:!1}:j5o({event:t,messageSendKey:e,messageSendMode:n})}"
+    }
+  ],
+  "identity_wrapper": {
+    "utf8_bytes": [
+      674926,
+      674995
+    ],
+    "sha256": "4283e46687b05b8b24d9071e15301030bd57ac48bb3f7b129375606bfeaaca70",
+    "compiled_javascript": "function hEe(t){return t}const dBr=hEe,pEe=hEe,_v=hEe,fBr=hEe,xd=hEe;"
+  },
+  "command_mapping": {
+    "history_source_only_no_original_byte_range": true,
+    "sha256": "4b6370fa66b036a5fa901f9b091047590d93311869317d54abd3d9f6cc1b6a00",
+    "compiled_javascript": "const V5o={parse:H5o,Component:U5o},W5o={newLine:\"chat.newLine\",submitMessage:\"chat.submitMessage\",submitOppositeFollowUp:\"chat.submitOppositeFollowUp\",queueEditSave:\"chat.queueEdit.save\",queueEditSaveAndSteer:\"chat.queueEdit.saveAndSteer\"},$Ii=({command:t,event:e})=>Qh(W5o[t],e),cHt={hoverPreviews:!0,contextMenu:!0,keyboardShortcuts:!0,dragAndDrop:!0,matchesSendCommand:$Ii},G5o=_v(({command:t,event:e})=>{switch(t){case\"submitMessage\":return Qh(\"workspace.startUnstartedWorkspace\",e);case\"newLine\":return e.key===\"Enter\"&&!e.metaKey&&!e.ctrlKey&&!e.altKey;default:return!1}}),q5o={...cHt,matchesSendCommand:G5o}"
+  },
+  "visible_input_capabilities": {
+    "history_source_only_no_original_byte_range": true,
+    "sha256": "b47d16dbc5123f960ced0d26ca30d602ac4eb518b1c74df113cd515a7b598b75",
+    "compiled_javascript": "const UIi={workspaceLinks:V5o,interactionCapabilities:cHt,loadPathImage:X5o,reportPreviewError:t=>{Bt.error(\"Failed to load composer mention preview\",t)}};"
+  },
+  "current_fragments": [
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "source_sha256": "321a0d4fb96df850e0f4f3e6349917ac06e3474bbf01953857862395c3df3ebe",
+      "lines_1_indexed_inclusive": [
+        72,
+        77
+      ],
+      "source": "        handleKeyDown: (_view, event) => {\n          if (event.isComposing || editor.view.composing || event.keyCode === 229) return false;\n          if (event.key === \"Delete\" || event.key === \"Backspace\") syncSelection();\n          current.current.onKeyDown(event);\n          return event.defaultPrevented;\n        },\n"
+    },
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "source_sha256": "321a0d4fb96df850e0f4f3e6349917ac06e3474bbf01953857862395c3df3ebe",
+      "lines_1_indexed_inclusive": [
+        91,
+        99
+      ],
+      "source": "          compositionend: () => {\n            setTimeout(() => {\n              if (pending.current !== null && !editor.isDestroyed) {\n                const value = pending.current; pending.current = null; apply(value);\n              }\n            }, 30);\n            return false;\n          },\n        },\n"
+    },
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "source_sha256": "321a0d4fb96df850e0f4f3e6349917ac06e3474bbf01953857862395c3df3ebe",
+      "lines_1_indexed_inclusive": [
+        141,
+        148
+      ],
+      "source": "    const handle: ComposerEditorHandle = {\n      focus: () => { editor.view.focus(); },\n      blur: () => { editor.view.dom.blur(); },\n      visible: () => editor.view.dom.offsetParent !== null,\n      focused: () => editor.isFocused,\n      composing: () => editor.view.composing,\n      selection: () => snapshot(editor),\n      replaceRange: (range, text) => {\n"
+    },
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "source_sha256": "7f00ce6d2c0acb1df02428ec9874f91c160e9f5f480fab202486c24fe370ccbd",
+      "lines_1_indexed_inclusive": [
+        194,
+        204
+      ],
+      "source": "  function submit(opposite: boolean) {\n    if (inputRef.current?.composing()) return;\n    const input = submittedUserPrompt(draft);\n    if (!input.text && !hasAttachments) return;\n    if (input.text.startsWith(\"/\") && onCommand?.(input.text)) {\n      setDraft(\"\");\n      return;\n    }\n    onSubmit(input, working ? mode(opposite) : \"queue\");\n    if (clearOnSubmit) setDraft(\"\");\n  }\n"
+    },
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "source_sha256": "7f00ce6d2c0acb1df02428ec9874f91c160e9f5f480fab202486c24fe370ccbd",
+      "lines_1_indexed_inclusive": [
+        239,
+        243
+      ],
+      "source": "  function onKeyDown(e: globalThis.KeyboardEvent) {\n    const ev = e;\n    const hit = (id: string) => keys(id).some((s) => matchesEvent(s, ev));\n    if (ev.isComposing) return;\n    const plain = !e.shiftKey && !e.metaKey && !e.altKey && !e.ctrlKey;\n"
+    },
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "source_sha256": "7f00ce6d2c0acb1df02428ec9874f91c160e9f5f480fab202486c24fe370ccbd",
+      "lines_1_indexed_inclusive": [
+        288,
+        300
+      ],
+      "source": "    } else if (hit(\"chat.submitOppositeFollowUp\")) {\n      e.preventDefault();\n      submit(true);\n    } else if (hit(\"chat.submitMessage\")) {\n      e.preventDefault();\n      submit(false);\n    }\n    else if (hit(\"chat.newLine\")) {\n      e.preventDefault();\n      inputRef.current?.newline();\n    }\n  }\n\n"
+    },
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "source_sha256": "7f00ce6d2c0acb1df02428ec9874f91c160e9f5f480fab202486c24fe370ccbd",
+      "lines_1_indexed_inclusive": [
+        347,
+        364
+      ],
+      "source": "            <ComposerEditor\n              inputRef={inputRef}\n              value={draft}\n              placeholder={placeholder ?? (working ? COMPOSER_PLACEHOLDER_WORKING : COMPOSER_PLACEHOLDER)}\n              onChange={(value) => {\n                setDraft(value);\n                setMentionDismissed(null);\n                setSlashIndex(0);\n                setSlashDismissed(null);\n              }}\n              onSelection={setSelection}\n              onFocus={() => {\n                setFocused(true);\n                minimize?.expand();\n              }}\n              onBlur={() => setFocused(false)}\n              onKeyDown={onKeyDown}\n              onPasteFiles={takeFiles}\n"
+    }
+  ],
+  "observed_source_contract": [
+    "lHt installs a low-level editor handleKeyDown and a React wrapper onKeyDown. The React wrapper produces and clears its own composition-active flag on compositionstart, compositionend and blur.",
+    "oRt recognizes event.isComposing, nativeEvent.isComposing, event.keyCode, event.which, nativeEvent.keyCode and nativeEvent.which, with numeric composition code 229. aqn is a separate Ctrl+Space guard, not an Enter-composition predicate.",
+    "ITo passes UIi interaction capabilities to lHt and binds onSubmit to x2. UIi uses cHt, cHt uses $Ii and $Ii delegates command names through W5o to Qh. The full Qh body and current active bindings are not in the held closure.",
+    "When cqn receives the real KeyboardEvent and configured matcher, it uses that matcher. Its j5o raw-key fallback and lqn's M5o fallback must not be substituted for the visible configured path.",
+    "The retained composition guard precedes suggestion dispatch and send matching. The actual x2 callback eventually calls the ITo onSubmit parameter m after its own availability/session checks.",
+    "Current ComposerEditor forwards only after its raw-event/view guard. Current Composer.onKeyDown checks event.isComposing and uses effective command shortcuts. Current submit rechecks inputRef.composing before calling onSubmit."
+  ],
+  "truth_table": [
+    {
+      "key": "Enter",
+      "composition": "Q.isImeCompositionActive or any oRt signal",
+      "reference": "Inner editor handler returns true before matching. Outer React handler returns before U; no submission callback on that path.",
+      "current": "Raw isComposing, view.composing or keyCode 229 prevents forwarding to Composer.onKeyDown. Adapter returns false, not true. Native default behavior is not established by this source comparison."
+    },
+    {
+      "key": "Enter",
+      "composition": "none of the retained composition signals",
+      "reference": "With no active suggestion consuming the key, cqn asks configured matcher in order: submitOppositeFollowUp, submitMessage, newLine. A true send then requires !shouldSkipSubmitShortcut and canSubmit before U. Exact physical key mapping is unresolved without Qh and active bindings.",
+      "current": "Adapter forwards raw event. Composer checks configured shortcuts in order: chat.submitOppositeFollowUp, chat.submitMessage, chat.newLine; submit rechecks handle.composing before onSubmit. Exact active shortcuts are outside this two-file scope."
+    },
+    {
+      "key": "Shift+Enter",
+      "composition": "Q.isImeCompositionActive or any oRt signal",
+      "reference": "Inner editor handler returns true before matching. Outer React handler returns before U; no submission callback on that path.",
+      "current": "Raw isComposing, view.composing or keyCode 229 prevents forwarding to Composer.onKeyDown. Adapter returns false, not true. Native default behavior is not established by this source comparison."
+    },
+    {
+      "key": "Shift+Enter",
+      "composition": "none of the retained composition signals",
+      "reference": "With no active suggestion consuming the key, cqn asks configured matcher in order: submitOppositeFollowUp, submitMessage, newLine. A true send then requires !shouldSkipSubmitShortcut and canSubmit before U. Exact physical key mapping is unresolved without Qh and active bindings.",
+      "current": "Adapter forwards raw event. Composer checks configured shortcuts in order: chat.submitOppositeFollowUp, chat.submitMessage, chat.newLine; submit rechecks handle.composing before onSubmit. Exact active shortcuts are outside this two-file scope."
+    },
+    {
+      "key": "Alt+Enter",
+      "composition": "Q.isImeCompositionActive or any oRt signal",
+      "reference": "Inner editor handler returns true before matching. Outer React handler returns before U; no submission callback on that path.",
+      "current": "Raw isComposing, view.composing or keyCode 229 prevents forwarding to Composer.onKeyDown. Adapter returns false, not true. Native default behavior is not established by this source comparison."
+    },
+    {
+      "key": "Alt+Enter",
+      "composition": "none of the retained composition signals",
+      "reference": "With no active suggestion consuming the key, cqn asks configured matcher in order: submitOppositeFollowUp, submitMessage, newLine. A true send then requires !shouldSkipSubmitShortcut and canSubmit before U. Exact physical key mapping is unresolved without Qh and active bindings.",
+      "current": "Adapter forwards raw event. Composer checks configured shortcuts in order: chat.submitOppositeFollowUp, chat.submitMessage, chat.newLine; submit rechecks handle.composing before onSubmit. Exact active shortcuts are outside this two-file scope."
+    },
+    {
+      "key": "Meta+Enter",
+      "composition": "Q.isImeCompositionActive or any oRt signal",
+      "reference": "Inner editor handler returns true before matching. Outer React handler returns before U; no submission callback on that path.",
+      "current": "Raw isComposing, view.composing or keyCode 229 prevents forwarding to Composer.onKeyDown. Adapter returns false, not true. Native default behavior is not established by this source comparison."
+    },
+    {
+      "key": "Meta+Enter",
+      "composition": "none of the retained composition signals",
+      "reference": "With no active suggestion consuming the key, cqn asks configured matcher in order: submitOppositeFollowUp, submitMessage, newLine. A true send then requires !shouldSkipSubmitShortcut and canSubmit before U. Exact physical key mapping is unresolved without Qh and active bindings.",
+      "current": "Adapter forwards raw event. Composer checks configured shortcuts in order: chat.submitOppositeFollowUp, chat.submitMessage, chat.newLine; submit rechecks handle.composing before onSubmit. Exact active shortcuts are outside this two-file scope."
+    },
+    {
+      "key": "Ctrl+Enter",
+      "composition": "Q.isImeCompositionActive or any oRt signal",
+      "reference": "Inner editor handler returns true before matching. Outer React handler returns before U; no submission callback on that path.",
+      "current": "Raw isComposing, view.composing or keyCode 229 prevents forwarding to Composer.onKeyDown. Adapter returns false, not true. Native default behavior is not established by this source comparison."
+    },
+    {
+      "key": "Ctrl+Enter",
+      "composition": "none of the retained composition signals",
+      "reference": "With no active suggestion consuming the key, cqn asks configured matcher in order: submitOppositeFollowUp, submitMessage, newLine. A true send then requires !shouldSkipSubmitShortcut and canSubmit before U. Exact physical key mapping is unresolved without Qh and active bindings.",
+      "current": "Adapter forwards raw event. Composer checks configured shortcuts in order: chat.submitOppositeFollowUp, chat.submitMessage, chat.newLine; submit rechecks handle.composing before onSubmit. Exact active shortcuts are outside this two-file scope."
+    },
+    {
+      "key": "Meta+Ctrl+Enter",
+      "composition": "Q.isImeCompositionActive or any oRt signal",
+      "reference": "Inner editor handler returns true before matching. Outer React handler returns before U; no submission callback on that path.",
+      "current": "Raw isComposing, view.composing or keyCode 229 prevents forwarding to Composer.onKeyDown. Adapter returns false, not true. Native default behavior is not established by this source comparison."
+    },
+    {
+      "key": "Meta+Ctrl+Enter",
+      "composition": "none of the retained composition signals",
+      "reference": "With no active suggestion consuming the key, cqn asks configured matcher in order: submitOppositeFollowUp, submitMessage, newLine. A true send then requires !shouldSkipSubmitShortcut and canSubmit before U. Exact physical key mapping is unresolved without Qh and active bindings.",
+      "current": "Adapter forwards raw event. Composer checks configured shortcuts in order: chat.submitOppositeFollowUp, chat.submitMessage, chat.newLine; submit rechecks handle.composing before onSubmit. Exact active shortcuts are outside this two-file scope."
+    }
+  ],
+  "narrow_signal_difference": {
+    "input": "Raw Enter with which=229, keyCode not 229, isComposing false and editor.view.composing false",
+    "reference": "oRt is true, so the key is blocked before command matching.",
+    "current": "The raw adapter predicate is false and forwards the event. A send is possible only if an actual configured shortcut matches and other submit conditions hold.",
+    "qualification": "Source-domain difference only. No browser/native event producer has established this combination, so no real IME defect or product correction is admitted."
+  },
+  "inert_fixture_design": {
+    "status": "design only, no executable test authored or run",
+    "path": "Exercise actual ComposerEditor.editorProps.handleKeyDown through the production callback to actual Composer.onKeyDown and submit. Do not test a copied predicate in isolation.",
+    "cases": [
+      "For Enter and each modified Enter above, isolate raw isComposing=true, view.composing=true and keyCode=229. Observe forwarding count and submit count independently.",
+      "Isolate raw which=229 with flags false and keyCode=0 as a source-boundary probe, not a claimed browser event. Keep adjacent-code controls 228 and 230.",
+      "Use a real KeyboardEvent in the configured-matcher path. Verify opposite-send, normal-send and newline against explicit existing bindings rather than the unused fallback formula.",
+      "Observe low-level handled return, preventDefault, stopPropagation, editor mutation and onSubmit separately. Returning false cannot be called equivalent to the reference returning true without executing the editor dispatcher.",
+      "A mounted browser/native phase must establish actual composition event order, view.composing timing and emitted which/keyCode combinations before the source-domain difference is admitted as an end-user defect."
+    ],
+    "dependency_and_execution": "Would need existing React/Tiptap/TypeScript fixture dependencies and a scoped runtime grant. Neither installation nor execution is part of this source pass."
+  },
+  "missing_boundary": {
+    "exact_body": "Qh configured shortcut matcher implementation and active command bindings for the visible ITo input; the held W5o/$Ii/cHt declarations retain only the call join.",
+    "consequence": "Composing behavior is source-qualified independently of physical-key mapping. Noncomposing Enter versus modified Enter outcomes remain conditional on actual configured matches. No default mapping is invented.",
+    "earlier_closed_packet": "evidence/chat/composer/model-ime-boundary/README.md already qualifies oRt's six signals for ModelPicker. That completed picker scope is not reopened or edited here."
+  },
+  "verification": {
+    "passed": [
+      "retained full ITo/lHt hashes",
+      "known composition constant and complete oRt hash",
+      "known identity wrapper hash",
+      "pinned-main two-file callback joins"
+    ],
+    "not_run": [
+      "baseline RED",
+      "patched GREEN",
+      "typecheck",
+      "mounted React/editor",
+      "browser",
+      "native IME",
+      "provider"
+    ],
+    "product_edit": "none",
+    "publication": "no PR, push or workflow dispatch"
+  }
+}

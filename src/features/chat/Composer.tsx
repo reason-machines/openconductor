@@ -33,7 +33,7 @@ import { longPasteAttachment } from "./composerLongPaste.ts";
 import { useBoolPref } from "../../settings/useBoolPref.ts";
 import { queuedUserDraft, submittedUserPrompt, type SentUserContentV1, type UserPrompt } from "./userContent.ts";
 import { FileMentionMenu } from "./FileMentionMenu.tsx";
-import { ArrowUpIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
+import { ArrowUpIcon, CircleDotIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
 import type { ComposerMinimize } from "./useComposerMinimize.ts";
 import type { PlanModeControl } from "./useLocalPlanMode.ts";
 import "./queue.css";
@@ -66,6 +66,7 @@ export interface ComposerProps {
   /** Takes files the user attaches; without it the "+" menu has no Add attachment. */
   onAttachFiles?: (files: File[]) => void;
   onLinkWorkspaces?: () => void;
+  onLinkIssue?: () => void;
   onMcpStatus?: () => void;
   onAttachTerminalOutput?: () => void;
   planMode?: PlanModeControl;
@@ -102,6 +103,7 @@ export function Composer({
   workspacePath,
   onAttachFiles,
   onLinkWorkspaces,
+  onLinkIssue,
   onMcpStatus,
   onAttachTerminalOutput,
   planMode,
@@ -406,7 +408,7 @@ export function Composer({
           </div>
           <div className="oc-composer-right" onClick={(e) => e.stopPropagation()}>
             <span className="oc-composer-fade">
-              <AddMenu hint={hint("chat.addAttachment")} planHint={hint("chat.togglePlanMode")} planMode={planMode} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} onLinkWorkspaces={onLinkWorkspaces} />
+              <AddMenu hint={hint("chat.addAttachment")} linkIssueHint={hint("chat.linkLinear")} planHint={hint("chat.togglePlanMode")} planMode={planMode} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} onLinkIssue={onLinkIssue} onLinkWorkspaces={onLinkWorkspaces} />
             </span>
             {showFocusPill && minimized ? focusPill(true) : null}
             {onAttachFiles ? (
@@ -451,7 +453,7 @@ export function Composer({
   );
 }
 
-function AddMenu({ hint, planHint, planMode, onAddAttachment, onLinkWorkspaces }: { hint: string; planHint: string; planMode?: PlanModeControl; onAddAttachment?: () => void; onLinkWorkspaces?: () => void }) {
+function AddMenu({ hint, linkIssueHint, planHint, planMode, onAddAttachment, onLinkIssue, onLinkWorkspaces }: { hint: string; linkIssueHint: string; planHint: string; planMode?: PlanModeControl; onAddAttachment?: () => void; onLinkIssue?: () => void; onLinkWorkspaces?: () => void }) {
   const [open, setOpen] = useState(false);
   const popup = usePresence(open);
   const ref = useRef<HTMLSpanElement>(null);
@@ -464,7 +466,7 @@ function AddMenu({ hint, planHint, planMode, onAddAttachment, onLinkWorkspaces }
     (focusEdge.current === "first" ? items[0] : items[items.length - 1])?.focus();
     focusEdge.current = null;
   }, [open]);
-  if (!onAddAttachment && !onLinkWorkspaces && !planMode) return null;
+  if (!onAddAttachment && !onLinkIssue && !onLinkWorkspaces && !planMode) return null;
   return (
     <span
       className="oc-add-menu"
@@ -520,6 +522,11 @@ function AddMenu({ hint, planHint, planMode, onAddAttachment, onLinkWorkspaces }
             <PaperclipIcon size={16} />
             <span className="oc-menu-item-label">Add attachment</span>
             <span className="oc-kbd-hint">{hint}</span>
+          </button> : null}
+          {onLinkIssue ? <button type="button" role="menuitem" className="oc-menu-item" onClick={() => { setOpen(false); onLinkIssue(); }}>
+            <CircleDotIcon size={16} />
+            <span className="oc-menu-item-label">Link issue</span>
+            <span className="oc-kbd-hint">{linkIssueHint}</span>
           </button> : null}
           {onLinkWorkspaces ? <button type="button" role="menuitem" className="oc-menu-item" onClick={() => { setOpen(false); onLinkWorkspaces(); }}>
             <PlusIcon size={16} /><span className="oc-menu-item-label">Link workspaces</span>
