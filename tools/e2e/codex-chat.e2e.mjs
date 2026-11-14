@@ -258,15 +258,30 @@ try {
   const access = await run("const s = document.querySelector('.codex-access'); return s && [s.value, [...s.options].map((o) => o.textContent)];");
   assert.deepEqual(access, ["full", ["Full access", "Ask first", "Read only"]], "Conductor's default: full access");
   // Ask first, so Codex asks before running the command.
+  // Set option.selected (browser selection state) before the value setter so React
+  // reads 'ask' from e.target.value even when it has reset the value property back
+  // to the controlled prop during reconciliation (React 18 controlled-select race).
   await run(
     `const s = document.querySelector('.codex-access');
      window.__ocCodexAccessDiagnostics.capture('before-setter');
+     const opt = s.querySelector('option[value="ask"]');
+     if (opt) opt.selected = true;
      const setterReturn = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(s, 'ask');
      window.__ocCodexAccessDiagnostics.capture('after-setter', null, setterReturn);
      const dispatchReturn = s.dispatchEvent(new Event('change', { bubbles: true }));
      return window.__ocCodexAccessDiagnostics.capture('after-dispatch', null, dispatchReturn);`,
   );
-  assertCodexAccessSnapshot(await recordAccess("after-change"));
+  // React 18 may apply the state update on the next scheduler tick; wait for both the
+  // localStorage write (synchronous inside onChange) and the DOM re-render to settle.
+  const afterChangeSnapshot = await waitFor(
+    "access selector to settle on Ask first",
+    async () => {
+      const snap = await recordAccess("after-change");
+      return snap.persistedPolicy === "ask" && snap.value === "ask" ? snap : null;
+    },
+    3000,
+  );
+  assertCodexAccessSnapshot(afterChangeSnapshot);
   pass("access menu defaults to Full access (Conductor's default) and is set to Ask first");
 
   // 1. The recorded turn: approval, Allow, two commands, the reply.
