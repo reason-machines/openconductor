@@ -923,6 +923,14 @@ Target: retained `renderApp-D_fmY7hW.js`, SHA-256 `5199d392ef2dec92886393f181bc9
 
 **SOURCE_EXHAUSTED at `8f62e6e3d`.** No unowned implementable diff/files source gap exists beyond the search-in-files dialog, which is blocked by REA evidence gap `ws.search-in-files-dialog`. The 32 native behavioral items (Q-01–Q-32) remain with sole native executor E1. Priority acceptance cases for E1: Q-17 (submit-pending gate), Q-16 (inline draft remount), Q-19 (comment count badge), Q-01 (selected-row scroll), Q-02 (flat list viewed ordering).
 
+### ws.search-in-files-dialog — RESOLVED on main `b80217a89`
+
+Owner: Conductor Rebuild (Session `de6c02f4`). Resolved at main `b80217a89` (14 Nov 2026).
+
+PR #1289 (`feat(files): add search-in-files dialog`) was closed as superseded. The full REA-proven implementation (326 lines) landed on main via #1295 at `src/components/SearchInFilesDialog.tsx`, together with App.tsx wiring (`const [searchInFiles, setSearchInFiles] = useState(false)`, `nav.searchInFiles` handler, `searchInFiles` command prop). Rebasing PR #1289 onto main dropped its sole commit as "patch already upstream", confirming zero net diff.
+
+`ws.search-in-files-dialog` gap: **CLOSED**. Source-layer diff/files lane: **SOURCE_EXHAUSTED** at main `b80217a89`. Native behavioral acceptance (Q-01–Q-32) remains with E1.
+
 ---
 
 ## Program reconciliation r1137 at main `c189ea62`, 13 November 2026
