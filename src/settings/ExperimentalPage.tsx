@@ -30,7 +30,12 @@ export function ExperimentalPage({ settings, save }: Props) {
       {row(
         "experimental_auto_permission_mode",
         "Auto permission mode",
-        "Run Claude chats in auto mode without approval prompts. Off (default) is approve mode: Claude asks before running tools, so PR and file changes wait for you.",
+        <>
+          Turns on Claude auto mode.{" "}
+          <a href="https://code.claude.com/docs/en/glossary#auto-mode" target="_blank" rel="noopener noreferrer">
+            Learn more
+          </a>
+        </>,
       )}
       <Row label="Big terminal mode" help="Create big terminals in the center pane with ⌘⇧T">
         <Toggle

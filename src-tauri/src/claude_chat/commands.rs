@@ -47,24 +47,15 @@ impl ClaudeChats {
                     let mut launch = ClaudeLaunch::new(cwd, env);
                     launch.executable = exe;
                     launch.resume = resume;
-                    // Experimental › "Auto permission mode" decides: on, the
-                    // agent works without asking (Claude auto mode);
-                    // off — the default, and the fallback before this
-                    // existed — approve mode: ask before tools run
-                    // ("Claude Code tool approvals" preserved its meaning).
-                    let mode = settings
-                        .inner()
-                        .get()
-                        .map(|s| {
-                            s.experimental
-                                .experimental_auto_permission_mode
-                                .unwrap_or(!s.tool_approvals_enabled)
-                        })
-                        .unwrap_or(true);
-                    launch.permission_mode = if mode {
-                        PermissionMode::BypassPermissions
-                    } else {
+                    // Account › "Claude Code tool approvals" (Conductor's
+                    // `tool_approvals_enabled`, off by default): ask before
+                    // tools run; otherwise the agent works in the workspace's
+                    // own worktree without asking.
+                    let approvals = settings.inner().get().map(|s| s.tool_approvals_enabled);
+                    launch.permission_mode = if approvals.unwrap_or(false) {
                         PermissionMode::Default
+                    } else {
+                        PermissionMode::BypassPermissions
                     };
                     // "Use Claude Code with Chrome" (Settings › Agents): the
                     // reference sidecar adds `extraArgs: { chrome: null }`.
