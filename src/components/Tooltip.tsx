@@ -28,7 +28,12 @@ function instantPhase(now: number): boolean {
 interface Props {
   /** Label text, e.g. "Settings". */
   content: ReactNode;
-  /** Shortcut glyphs shown after the label, e.g. "⌘,". Omit when the command has none. */
+  /**
+   * Shortcut glyphs shown after the label, e.g. "⌘," or "⌘K → S".
+   * Pass the already-resolved glyph string here (Low#16: contrast with
+   * ui/Tooltip whose shortcut is a commandId resolved at render time).
+   * Omit when the trigger has no keyboard shortcut.
+   */
   shortcut?: string;
   side?: Side;
   sideOffset?: number;

@@ -5,7 +5,9 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { Keys } from "../components/KeyboardShortcutsDialog";
 import { LockIcon, SearchIcon } from "../components/Icons";
-import { Toaster, useToasts } from "../components/Toast";
+// Low#16 fix: Toaster removed — KeyBindingsPage previously mounted its own <Toaster>
+// alongside App.tsx's root-level one, causing two toast containers in the DOM. Save errors
+// are now shown inline so no second Toaster is needed.
 import { conflictMessage } from "../keybindings/conflicts.ts";
 import {
   EDITOR_SEARCH_PLACEHOLDER,
@@ -64,10 +66,11 @@ function useCapture(onStop: () => void) {
 
 export function KeyBindingsPage({ settings, save }: Props) {
   const { overrides, overridesLoaded } = useKeybindingOverrides();
-  const { toasts, show, dismiss } = useToasts();
+  const [saveError, setSaveError] = useState<string | null>(null);
   const store = useSettingsOverrideStore(settings, save);
   const update = (u: OverrideUpdate) => {
-    void store.update(u).then((ok) => ok || show("error", SAVE_FAILED));
+    setSaveError(null);
+    void store.update(u).then((ok) => { if (!ok) setSaveError(SAVE_FAILED); });
   };
 
   const [query, setQuery] = useState("");
@@ -124,7 +127,7 @@ export function KeyBindingsPage({ settings, save }: Props) {
           </div>
         </section>
       ))}
-      <Toaster toasts={toasts} dismiss={dismiss} />
+      {saveError && <p className="error small kb-save-error" role="alert">{saveError}</p>}
     </div>
   );
 }

@@ -165,6 +165,32 @@ export async function listPullRequests(repoPath: string | null): Promise<SourceS
   }
 }
 
+/** Enriched metadata for one selected GitHub issue (gh_issue_link_metadata Tauri IPC). */
+export interface IssueLinkMetadata {
+  number: number;
+  title: string;
+  url: string;
+  body: string | null;
+  state: "open" | "closed";
+  labels: { name: string }[];
+  assignee: { login: string } | null;
+  milestone: { title: string } | null;
+}
+
+/**
+ * Fetches enriched metadata for one GitHub issue via gh_issue_link_metadata.
+ * Returns null outside Tauri or when gh returns an error (caller falls back
+ * to the basic key/title/url text).
+ */
+export async function issueLinkMetadata(repoPath: string, number: number): Promise<IssueLinkMetadata | null> {
+  if (!inTauri()) return null;
+  try {
+    return await invoke<IssueLinkMetadata>("gh_issue_link_metadata", { repoPath, number });
+  } catch {
+    return null;
+  }
+}
+
 /** Open GitHub issues (`gh_issue_list_open`). Linear has no backend yet, so it is not listed. */
 export async function listIssues(repoPath: string | null): Promise<SourceState<CreateFrom>> {
   if (!inTauri()) return { status: "ready", items: SAMPLE_ISSUES };
