@@ -646,7 +646,13 @@ fn a_pinned_workspace_takes_new_sessions_and_a_new_launch_restarts_the_agent() {
 }
 
 /// Local env vars for workspace A must not appear in workspace B's agent and
-/// vice versa, even with interleaved open_chat and prompt calls.
+/// vice versa, even with interleaved prompts once both agents are running.
+///
+/// Workspace is resolved at first-prompt time (via `workspace_for_new`), so
+/// each chat must be prompted while its workspace is the current setting so
+/// that separate agents are started.  Within one workspace, `local_env` of
+/// the first chat to trigger the agent wins (see
+/// `same_workspace_second_chat_local_env_does_not_restart_agent`).
 #[test]
 fn workspace_local_env_isolation() {
     let (p, log, home) = provider("local-env-isolation");
@@ -656,31 +662,30 @@ fn workspace_local_env_isolation() {
     let env_b: std::collections::BTreeMap<String, String> =
         [("OC_TEST_WS_B".into(), "ws_b_val".into())].into();
 
+    // Start the ws-a agent while ws-a is the current workspace setting.
     p.reconfigure_workspace(Some("ws-a".into()));
     p.open_chat("chat-a", &home.join("project"), None, env_a);
-
-    p.reconfigure_workspace(Some("ws-b".into()));
-    p.open_chat("chat-b", &home.join("project"), None, env_b);
-
-    // ws-a agent sees its own var; must not see ws-b's var.
     assert_eq!(p.prompt("chat-a", "env: OC_TEST_WS_A"), TurnEnd::Completed);
     assert_eq!(reply(&log), "ws_a_val", "ws-a agent missing OC_TEST_WS_A");
     log.lock().unwrap().clear();
 
-    assert_eq!(p.prompt("chat-a", "env: OC_TEST_WS_B"), TurnEnd::Completed);
-    assert_eq!(reply(&log), "unset", "ws-a agent leaked OC_TEST_WS_B from ws-b");
-    log.lock().unwrap().clear();
-
-    // ws-b agent sees its own var; must not see ws-a's var.
+    // Start the ws-b agent while ws-b is the current workspace setting.
+    p.reconfigure_workspace(Some("ws-b".into()));
+    p.open_chat("chat-b", &home.join("project"), None, env_b);
     assert_eq!(p.prompt("chat-b", "env: OC_TEST_WS_B"), TurnEnd::Completed);
     assert_eq!(reply(&log), "ws_b_val", "ws-b agent missing OC_TEST_WS_B");
+    log.lock().unwrap().clear();
+
+    // Both agents now running.  Verify cross-workspace env isolation.
+    assert_eq!(p.prompt("chat-a", "env: OC_TEST_WS_B"), TurnEnd::Completed);
+    assert_eq!(reply(&log), "unset", "ws-a agent leaked OC_TEST_WS_B from ws-b");
     log.lock().unwrap().clear();
 
     assert_eq!(p.prompt("chat-b", "env: OC_TEST_WS_A"), TurnEnd::Completed);
     assert_eq!(reply(&log), "unset", "ws-b agent leaked OC_TEST_WS_A from ws-a");
     log.lock().unwrap().clear();
 
-    // Interleaved: prompt ws-b, then ws-a again, then ws-b again.
+    // Interleaved: prompt ws-b, then ws-a, then ws-b again.
     assert_eq!(p.prompt("chat-b", "env: OC_TEST_WS_B"), TurnEnd::Completed);
     assert_eq!(reply(&log), "ws_b_val");
     log.lock().unwrap().clear();
