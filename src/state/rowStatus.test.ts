@@ -14,11 +14,19 @@ const pr = (over: Partial<RowPr> = {}): RowPr => ({
   ...over,
 });
 
-test("setup state wins over the agent and the PR", () => {
-  assert.equal(rowStatus({ workspaceState: "initializing", session: "working", pr: pr({ isMerged: true }) }), "setting-up");
+test("failed and unstarted win over the agent and the PR; setting-up yields to live session urgency", () => {
+  // Terminal / not-started states always win.
+  assert.equal(rowStatus({ workspaceState: "failed", session: "working", pr: pr({ isMerged: true }) }), "failed");
+  assert.equal(rowStatus({ workspaceState: "unstarted", session: "needs_user_permission" }), "unstarted");
+  // setting-up / initializing: a live session urgency takes priority (M17 parity — the user
+  // can interact while setup runs; without this, store default state:"setting_up" from
+  // addWorkspace would permanently mask session statuses).
+  assert.equal(rowStatus({ workspaceState: "initializing", session: "working", pr: pr({ isMerged: true }) }), "working");
+  assert.equal(rowStatus({ workspaceState: "setting_up", session: "needs_user_permission" }), "needs-user-permission");
+  // Idle/error session: setting-up still shows.
   assert.equal(rowStatus({ workspaceState: "setting_up" }), "setting-up");
-  assert.equal(rowStatus({ workspaceState: "failed" }), "failed");
-  assert.equal(rowStatus({ workspaceState: "unstarted" }), "unstarted");
+  assert.equal(rowStatus({ workspaceState: "setting_up", session: "idle" }), "setting-up");
+  assert.equal(rowStatus({ workspaceState: "setting_up", session: "error" }), "setting-up");
 });
 
 test("an active agent wins over the PR; idle and error fall through to it", () => {
@@ -89,8 +97,15 @@ test("Home shows the agent's or setup's status in place of the time, never a git
     // Idle and error fall through to the branch status, which Home shows as the time.
     ["ready", "idle", "local", false],
     ["ready", "error", "local", false],
-    // The workspace's own state comes first.
-    ["initializing", "needs_user_input", "setting-up", true],
+    // setting-up / initializing: live session urgency wins (the user can interact while setup runs).
+    ["initializing", "needs_user_input", "needs-user-input", true],
+    ["setting_up", "needs_user_permission", "needs-user-permission", true],
+    // Idle/error session: Home gives back the last-activity time (Conductor aWt), not "Setting up".
+    // The sidebar row icon still shows "Setting up" (rowStatus keeps that; homeStatus overrides for Home).
+    ["initializing", "idle", "local", false],
+    ["setting_up", "idle", "local", false],
+    ["setting_up", "error", "local", false],
+    // failed and unstarted are terminal/not-started — always win.
     ["failed", "working", "failed", true],
     ["unstarted", "idle", "unstarted", false],
   ];
