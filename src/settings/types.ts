@@ -52,8 +52,10 @@ export interface Settings {
   reason_executable_path?: string | null;
   /** Advanced › "SSH private key path". */
   ssh_key_path?: string | null;
-  /** Account › "Claude Code tool approvals"; off by default. */
+  /** Conductor's Account › "Claude Code tool approvals" switch; off by default. Kept in step with the level below. */
   tool_approvals_enabled?: boolean;
+  /** Account › "Claude Code tool approvals", the level picked (approvalLevel.ts); absent follows the switch. */
+  claude_approval_level?: "auto" | "approve_prs" | "approve_all" | null;
   general: { theme: Theme; send_native_notification: boolean; sound_type: SoundType; [extra: string]: unknown };
   /** Conductor's Appearance keys; zoom is a fraction (1 = 100%). */
   appearance: {

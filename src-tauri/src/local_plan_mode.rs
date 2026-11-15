@@ -9,6 +9,7 @@ use tokio::sync::{Mutex as AsyncMutex, OwnedMutexGuard};
 
 use crate::db::Db;
 use crate::settings::service::SettingsService;
+use crate::settings::ApprovalLevel;
 
 #[derive(Default)]
 pub struct LocalPlanModes {
@@ -21,15 +22,20 @@ impl LocalPlanModes {
     }
 
     fn idle(&self, chat_id: &str) -> Result<OwnedMutexGuard<()>, String> {
-        self.gate(chat_id).try_lock_owned().map_err(|_| "Wait for the current Claude Code turn to end before changing Plan mode.".into())
+        self.idle_for(chat_id, "Plan mode")
+    }
+
+    /// The chat's gate when no turn holds it; `what` names the setting the
+    /// caller wants to change, for the message when one does.
+    pub(crate) fn idle_for(&self, chat_id: &str, what: &str) -> Result<OwnedMutexGuard<()>, String> {
+        self.gate(chat_id).try_lock_owned().map_err(|_| format!("Wait for the current Claude Code turn to end before changing {what}."))
     }
 }
 
-pub fn claude_permission(mode: PermissionMode, approvals: bool) -> crate::agent::PermissionMode {
+pub fn claude_permission(mode: PermissionMode, level: ApprovalLevel) -> crate::agent::PermissionMode {
     match mode {
         PermissionMode::Plan => crate::agent::PermissionMode::Plan,
-        PermissionMode::Default if approvals => crate::agent::PermissionMode::Default,
-        PermissionMode::Default => crate::agent::PermissionMode::BypassPermissions,
+        PermissionMode::Default => level.claude_permission(),
     }
 }
 
@@ -45,7 +51,7 @@ pub fn logical_chat_id(run_id: &str) -> &str {
     run_id.strip_suffix(":claude").unwrap_or(run_id)
 }
 
-async fn validate(pool: &SqlitePool, workspace_id: &str, chat_id: &str) -> Result<(), String> {
+pub(crate) async fn validate(pool: &SqlitePool, workspace_id: &str, chat_id: &str) -> Result<(), String> {
     if chat_id.is_empty() || chat_id.ends_with(":claude") { return Err("Plan mode requires the logical chat ID.".into()); }
     let workspace: i64 = sqlx::query_scalar("SELECT count(*) FROM workspaces WHERE local_id = ? AND state = 'ready'")
         .bind(workspace_id).fetch_one(pool).await.map_err(|e| e.to_string())?;
@@ -104,10 +110,12 @@ mod tests {
     #[test]
     fn leaving_plan_restores_the_existing_approvals_policy() {
         use crate::agent::PermissionMode as Cli;
-        assert_eq!(claude_permission(PermissionMode::Plan, false), Cli::Plan);
-        assert_eq!(claude_permission(PermissionMode::Plan, true), Cli::Plan);
-        assert_eq!(claude_permission(PermissionMode::Default, true), Cli::Default);
-        assert_eq!(claude_permission(PermissionMode::Default, false), Cli::BypassPermissions);
+        for level in ApprovalLevel::ALL {
+            assert_eq!(claude_permission(PermissionMode::Plan, level), Cli::Plan);
+        }
+        assert_eq!(claude_permission(PermissionMode::Default, ApprovalLevel::ApproveAll), Cli::Default);
+        assert_eq!(claude_permission(PermissionMode::Default, ApprovalLevel::ApprovePrs), Cli::Default);
+        assert_eq!(claude_permission(PermissionMode::Default, ApprovalLevel::Auto), Cli::BypassPermissions);
     }
 
     #[tokio::test]

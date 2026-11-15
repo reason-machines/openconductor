@@ -121,7 +121,7 @@ export interface BigTerminalConfig {
   enabled: boolean;
   preset: BigTerminalPreset;
   customCommands: CustomCommand[];
-  /** Account › "Claude Code tool approvals" (`tool_approvals_enabled`). */
+  /** Account › "Claude Code tool approvals": true unless the level is "Auto". */
   requiresToolApprovals?: boolean;
   /** Advanced › executable paths. */
   executablePaths?: ExecutablePaths;

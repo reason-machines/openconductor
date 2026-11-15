@@ -14,7 +14,9 @@
 //! [`super::interact`]) and waits for [`ClaudeRunner::respond`]. Stop denies
 //! what is still waiting; the turn's end and the process exiting drop it.
 //! Each one answered or dropped is reported with
-//! [`ProviderEvent::PermissionResolved`].
+//! [`ProviderEvent::PermissionResolved`]. At the "Approve PRs" approval
+//! level ([`ChatOptions::publish_only`]) the runner allows a prompt itself
+//! unless the tool call publishes work, so only those reach the UI.
 
 use std::collections::{HashMap, VecDeque};
 use std::path::{Path, PathBuf};
@@ -45,6 +47,11 @@ pub struct ChatOptions {
     #[serde(rename = "fastMode")]
     pub fast_mode: Option<bool>,
     pub permission_mode: Option<PermissionMode>,
+    /// The "Approve PRs" approval level: the chat answers every tool prompt
+    /// itself, except one that publishes work ([`super::publish`]). Set by
+    /// `claude_prompt` from the chat's level, never by the UI.
+    #[serde(skip)]
+    pub publish_only: bool,
 }
 
 impl ChatOptions {
@@ -366,6 +373,9 @@ impl ClaudeRunner {
         launch.effort = options.effort.clone();
         options.apply_fast_mode(&mut launch.settings)?;
         if let Some(mode) = options.permission_mode { launch.permission_mode = mode; }
+        if options.publish_only {
+            super::publish::add_ask_rules(&mut launch.settings)?;
+        }
         let mut session = ClaudeSession::spawn(&launch)
             .map_err(|e| format!("Could not start Claude Code: {e}"))?;
         let events = session.take_events();
@@ -384,6 +394,7 @@ impl ClaudeRunner {
             session.clone(),
             state.clone(),
             self.sink.clone(),
+            options.publish_only,
         );
         chat.live = Some(Live {
             directories: directories.to_vec(),
@@ -401,6 +412,7 @@ fn spawn_reader(
     session: Arc<Mutex<ClaudeSession>>,
     state: Arc<Mutex<TurnState>>,
     sink: Sink,
+    publish_only: bool,
 ) {
     thread::spawn(move || loop {
         let Ok(event) = events.recv() else { return };
@@ -410,6 +422,19 @@ fn spawn_reader(
                 tool_name,
                 input,
             }) => {
+                // "Approve PRs": only a push or a pull request change (and
+                // a plan or a question, which are the user's to answer)
+                // waits; everything else is allowed as it arrives.
+                if publish_only
+                    && !interact::is_for_the_user(&tool_name)
+                    && !super::publish::publishes(&tool_name, &input)
+                {
+                    let _ = session
+                        .lock()
+                        .unwrap()
+                        .answer_permission(request_id, PermissionDecision::Allow { input });
+                    continue;
+                }
                 let request = interact::request_of(request_id.clone(), &tool_name, &input);
                 let mut st = state.lock().unwrap();
                 if st.waiting.is_empty() {

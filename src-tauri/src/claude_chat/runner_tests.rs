@@ -2,7 +2,9 @@
 //! each user line gets init (once), a text reply echoing it and a result.
 //! A message containing `sleep` waits for an interrupt (`ignore`: waits
 //! for good); `exit` exits 2 after printing to stderr; `askplan` asks to
-//! run ExitPlanMode and replies `allowed` or `denied` to the answer.
+//! run ExitPlanMode and replies `allowed` or `denied` to the answer;
+//! `askpush` and `asktest` ask the same way to run `git push origin
+//! feature` and `npm test` with Bash.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -26,17 +28,17 @@ init=0
 while IFS= read -r line; do
   printf '%s\n' "$line" >> "$0.stdin"
   case "$line" in
-    *'"interrupt"'*)
-      [ "$ignore" = 1 ] && continue
-      asked=0
-      echo '{"type":"result","subtype":"error_during_execution","is_error":true,"session_id":"'$sid'"}'
-      continue;;
     *'"control_response"'*)
       [ "$asked" = 1 ] || continue
       asked=0
       case "$line" in *'"behavior":"allow"'*) b=allowed;; *) b=denied;; esac
       echo '{"type":"assistant","session_id":"'$sid'","message":{"id":"p1","content":[{"type":"text","text":"'$b'"}]}}'
       echo '{"type":"result","subtype":"success","is_error":false,"result":"'$b'","session_id":"'$sid'"}'
+      continue;;
+    *'"interrupt"'*)
+      [ "$ignore" = 1 ] && continue
+      asked=0
+      echo '{"type":"result","subtype":"error_during_execution","is_error":true,"session_id":"'$sid'"}'
       continue;;
   esac
   if [ $init = 0 ]; then
@@ -49,6 +51,14 @@ while IFS= read -r line; do
     *askplan*)
       asked=1
       echo '{"type":"control_request","request_id":"req-1","request":{"subtype":"can_use_tool","tool_name":"ExitPlanMode","input":{"plan":"1. build it"}}}'
+      continue;;
+    *askpush*)
+      asked=1
+      echo '{"type":"control_request","request_id":"req-2","request":{"subtype":"can_use_tool","tool_name":"Bash","input":{"command":"git push origin feature"}}}'
+      continue;;
+    *asktest*)
+      asked=1
+      echo '{"type":"control_request","request_id":"req-3","request":{"subtype":"can_use_tool","tool_name":"Bash","input":{"command":"npm test"}}}'
       continue;;
     *exit*) echo 'boom: fake claude died' >&2; exit 2;;
   esac
@@ -350,7 +360,9 @@ fn a_second_stop_kills_the_process_and_the_next_turn_resumes() {
     h.runner.open_chat("c1", &cwd(), None);
     let r = h.runner.clone();
     let turn = thread::spawn(move || r.prompt("c1", "sleep, and ignore the interrupt"));
-    thread::sleep(Duration::from_millis(500));
+    // The process has started and logged its arguments; a fixed wait can
+    // end before it has when many tests start processes at once.
+    wait_for_type(&h, "sessionStarted");
     h.runner.cancel("c1");
     thread::sleep(Duration::from_millis(300));
     h.runner.cancel("c1");
@@ -457,6 +469,91 @@ fn a_plan_prompt_waits_for_the_user_and_the_answer_goes_back() {
         serde_json::json!({ "behavior": "allow", "updatedInput": { "plan": "1. build it" } })
     );
     assert_eq!(h.events.lock().unwrap()[3]["text"], "allowed");
+}
+
+fn approvals(publish_only: bool) -> ChatOptions {
+    ChatOptions {
+        permission_mode: Some(crate::agent::PermissionMode::Default),
+        publish_only,
+        ..ChatOptions::default()
+    }
+}
+
+#[test]
+fn approve_prs_allows_an_ordinary_command_itself_and_holds_a_push_for_the_user() {
+    use super::interact::Answer;
+    let h = harness();
+    h.runner.open_chat("c1", &cwd(), None);
+    let options = approvals(true);
+
+    // `npm test`: answered by the runner, nothing reaches the UI.
+    assert_eq!(h.runner.prompt_with_options("c1", "asktest", &[], &options), TurnEnd::Completed);
+    wait_for_type(&h, "turnEnded");
+    assert_eq!(h.types(), ["sessionStarted", "text", "turnEnded"]);
+    assert_eq!(h.events.lock().unwrap()[1]["text"], "allowed");
+    let reply = h.stdin().last().unwrap().clone();
+    assert_eq!(reply["response"]["request_id"], "req-3");
+    assert_eq!(
+        reply["response"]["response"],
+        serde_json::json!({ "behavior": "allow", "updatedInput": { "command": "npm test" } })
+    );
+
+    // `git push`: waits for the user, who says no.
+    let r = h.runner.clone();
+    let held = options.clone();
+    let turn = thread::spawn(move || r.prompt_with_options("c1", "askpush", &[], &held));
+    wait_for_type(&h, "permissionRequest");
+    let asked = h.events.lock().unwrap().iter().find(|e| e["type"] == "permissionRequest").cloned().unwrap();
+    assert_eq!(asked["requestId"], "req-2");
+    assert_eq!(asked["title"], "git push origin feature");
+    h.runner.respond("c1", "req-2", &Answer::Option("deny".into())).unwrap();
+    assert_eq!(turn.join().unwrap(), TurnEnd::Completed);
+    let reply = h.stdin().last().unwrap().clone();
+    assert_eq!(reply["response"]["request_id"], "req-2");
+    assert_eq!(reply["response"]["response"]["behavior"], "deny");
+
+    // One process for both turns, launched to ask, with the ask rules.
+    let args = h.args();
+    assert_eq!(args.len(), 1, "{args:?}");
+    assert!(args[0].contains("--permission-mode default"), "{args:?}");
+    assert!(args[0].contains("--permission-prompt-tool stdio"), "{args:?}");
+    assert!(args[0].contains("Bash(git push:*)") && args[0].contains("Bash(gh pr create:*)"), "{args:?}");
+}
+
+#[test]
+fn approve_prs_still_brings_a_plan_to_the_user() {
+    use super::interact::Answer;
+    let h = harness();
+    h.runner.open_chat("c1", &cwd(), None);
+    let r = h.runner.clone();
+    let turn = thread::spawn(move || r.prompt_with_options("c1", "askplan", &[], &approvals(true)));
+    wait_for_type(&h, "permissionRequest");
+    h.runner.respond("c1", "req-1", &Answer::Plan { approved: true, feedback: None }).unwrap();
+    assert_eq!(turn.join().unwrap(), TurnEnd::Completed);
+}
+
+#[test]
+fn approve_everything_asks_about_an_ordinary_command_and_changing_level_restarts_idle() {
+    use super::interact::Answer;
+    let h = harness();
+    h.runner.open_chat("c1", &cwd(), None);
+    let r = h.runner.clone();
+    let turn = thread::spawn(move || r.prompt_with_options("c1", "asktest", &[], &approvals(false)));
+    wait_for_type(&h, "permissionRequest");
+    let asked = h.events.lock().unwrap().iter().find(|e| e["type"] == "permissionRequest").cloned().unwrap();
+    assert_eq!(asked["requestId"], "req-3");
+    h.runner.respond("c1", "req-3", &Answer::Option("allow".into())).unwrap();
+    assert_eq!(turn.join().unwrap(), TurnEnd::Completed);
+    assert!(!h.args()[0].contains("Bash(git push:*)"), "{:?}", h.args());
+
+    // "Approve PRs" from the next turn: a new process on the same session.
+    wait_for_type(&h, "turnEnded");
+    assert_eq!(h.runner.prompt_with_options("c1", "asktest", &[], &approvals(true)), TurnEnd::Completed);
+    let args = h.args();
+    assert_eq!(args.len(), 2, "{args:?}");
+    assert!(args[1].contains("--resume fake-1") && args[1].contains("Bash(git push:*)"), "{args:?}");
+    let requests = h.types().iter().filter(|t| *t == "permissionRequest").count();
+    assert_eq!(requests, 1, "{:?}", h.types());
 }
 
 #[test]

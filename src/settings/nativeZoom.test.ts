@@ -49,6 +49,7 @@ function fixture(native: boolean) {
     "../features/diff/appearance.ts": { applyDiffAppearance() {} },
     "../theme/palettes.ts": { applyPalette() {}, paletteFrom: () => "default" },
     "./agentSettings.ts": { executablePaths: () => ({}) },
+    "./approvalLevel.ts": { approvalLevel: () => "auto" },
     "./prefs.ts": { boolPref: () => false },
     "./sidebarTransparency.ts": { setSidebarTransparency() {} },
   };

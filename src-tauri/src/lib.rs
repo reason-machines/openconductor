@@ -92,6 +92,7 @@ pub mod menu;
 mod model_catalog;
 pub mod pr;
 mod local_storage_commands;
+mod approval_level;
 mod local_plan_mode;
 mod onboarding_commands;
 mod native_qa;
@@ -396,6 +397,10 @@ pub fn run() {
                 agent::keychain::default_store(),
             )
             .with_db(settings_pool);
+            // A new install asks before a push or a pull request change.
+            if let Err(e) = settings_service.seed_new_install() {
+                eprintln!("New-install approval level not written: {e}");
+            }
             if let Err(e) = settings_service.move_appearance_to_db() {
                 eprintln!("Appearance settings stay in settings.toml until next launch: {e}");
             }
@@ -547,6 +552,10 @@ pub fn run() {
             config_sync_commands::config_sync_apply,
             local_plan_mode::local_plan_mode_get,
             local_plan_mode::local_plan_mode_set,
+            approval_level::approval_level_get,
+            approval_level::approval_level_set_chat,
+            approval_level::repo_approval_level_get,
+            approval_level::repo_approval_level_set,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
             claude_chat::commands::claude_cancel,

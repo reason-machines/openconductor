@@ -1000,13 +1000,21 @@ export const flows = [
     async run(wd) {
       await openSettingsPage(wd, "Account");
       const file = settingsFile();
-      const sw = 'input[aria-label="Claude Code tool approvals"]';
-      await wd.waitFor("the Claude Code tool approvals switch", async () => (await wd.findAll(sw)).length === 1);
-      const on = () => wd.execute("return document.querySelector(arguments[0]).checked;", [sw]);
-      const was = await on();
-      for (const want of [!was, was]) {
-        await wd.click((await wd.findAll(sw))[0]);
-        await wd.waitFor(`tool_approvals_enabled = ${want}`, async () => (tomlValue(file, "", "tool_approvals_enabled") ?? "false") === String(want));
+      // Three levels in one radio group; picking one saves the level and keeps
+      // Conductor's switch key in step (on only for "Approve everything").
+      const group = '[role="radiogroup"][aria-label="Claude Code tool approvals"]';
+      await wd.waitFor("the Claude Code tool approvals levels", async () => (await wd.findAll(`${group} [role="radio"]`)).length === 3);
+      const labels = await textsOf(wd, `${group} [role="radio"]`);
+      if (JSON.stringify(labels) !== JSON.stringify(["Auto", "Approve PRs", "Approve everything"])) throw new Error(`Claude Code tool approvals levels ${JSON.stringify(labels)}`);
+      const checked = () => wd.execute("return [...document.querySelectorAll(arguments[0])].findIndex((b) => b.getAttribute('aria-checked') === 'true');", [`${group} [role="radio"]`]);
+      const LEVELS = ["auto", "approve_prs", "approve_all"];
+      const was = await checked();
+      // Every other level, then back to the one the profile started with.
+      for (const i of [...LEVELS.keys()].filter((i) => i !== was).concat(was)) {
+        await wd.click((await wd.findAll(`${group} [role="radio"]`))[i]);
+        await wd.waitFor(`${LEVELS[i]} is checked`, async () => (await checked()) === i);
+        await wd.waitFor(`claude_approval_level = "${LEVELS[i]}"`, async () => tomlValue(file, "", "claude_approval_level") === `"${LEVELS[i]}"`);
+        await wd.waitFor(`tool_approvals_enabled = ${i === 2}`, async () => (tomlValue(file, "", "tool_approvals_enabled") ?? "false") === String(i === 2));
       }
       const select = 'select[aria-label="Codex tool approvals"]';
       const options = await textsOf(wd, `${select} option`);
@@ -1015,7 +1023,7 @@ export const flows = [
         await wd.click((await wd.findAll(`${select} option[value="${v}"]`))[0]);
         await wd.waitFor(`models.codex tool_approval_policy = "${v}"`, async () => (tomlValue(file, "models.codex", "tool_approval_policy") ?? '"default"') === `"${v}"`);
       }
-      await showRows(wd, sw);
+      await showRows(wd, group);
     },
   },
   // Settings › Account › Sign out (Conductor's `account:sign-out`) signs this

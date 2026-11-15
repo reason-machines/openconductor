@@ -6,6 +6,8 @@
 //! * [`runner`] - one `claude` process per chat: turns, Stop, restarts.
 //! * [`interact`] - permission prompts as the app's permission requests (a
 //!   tool, a plan or questions), and the user's answers as decisions.
+//! * [`publish`] - which tool calls push or change a pull request, the ones
+//!   the "Approve PRs" approval level holds for the user.
 //! * [`commands`] - the Tauri commands and the `claude-chat-event` stream.
 //!
 //! The UI flow matches Reason chats: `claude_open_chat(chatId, cwd,
@@ -18,6 +20,7 @@
 pub mod commands;
 pub mod interact;
 pub mod map;
+pub mod publish;
 pub mod runner;
 
 #[cfg(test)]

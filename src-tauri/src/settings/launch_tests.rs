@@ -466,3 +466,71 @@ fn review_without_a_review_model_uses_conductors_claude_fallback() {
     assert_eq!(s.model_for(Purpose::Chat), "gpt-5.5");
     assert_eq!(s.model_for(Purpose::Review), launch::REVIEW_FALLBACK_MODEL);
 }
+
+#[test]
+fn approval_level_follows_the_picked_level_then_conductors_switch() {
+    use super::ApprovalLevel::{ApproveAll, ApprovePrs, Auto};
+    let chat = |s: &Settings| {
+        launch::claude_launch(s, Path::new("/w"), &MemorySecretStore::new(), Purpose::Chat)
+            .unwrap()
+            .permission_mode
+    };
+    // Never picked: Conductor's switch decides, off by default.
+    let mut s = Settings::default();
+    assert_eq!(s.approval_level(), Auto);
+    assert_eq!(chat(&s), PermissionMode::BypassPermissions);
+    s.tool_approvals_enabled = true;
+    assert_eq!(s.approval_level(), ApproveAll);
+    assert_eq!(chat(&s), PermissionMode::Default);
+
+    // Picked: the level wins over the switch, either way.
+    for (level, mode) in [
+        (Auto, PermissionMode::BypassPermissions),
+        (ApprovePrs, PermissionMode::Default),
+        (ApproveAll, PermissionMode::Default),
+    ] {
+        for switch in [false, true] {
+            let s = Settings {
+                tool_approvals_enabled: switch,
+                claude_approval_level: Some(level),
+                ..Settings::default()
+            };
+            assert_eq!(s.approval_level(), level);
+            assert_eq!(chat(&s), mode, "{level:?}");
+        }
+    }
+
+    // Plan mode for new chats still comes first.
+    let mut plan = Settings::default();
+    plan.models.default_plan_mode = true;
+    plan.claude_approval_level = Some(ApprovePrs);
+    assert_eq!(chat(&plan), PermissionMode::Plan);
+}
+
+#[test]
+fn approval_level_round_trips_through_the_file_and_stays_out_when_unset() {
+    use super::ApprovalLevel;
+    let unset = toml::to_string(&Settings::default()).unwrap();
+    assert!(!unset.contains("claude_approval_level"), "{unset}");
+    for level in ApprovalLevel::ALL {
+        let s = Settings {
+            claude_approval_level: Some(level),
+            ..Settings::default()
+        };
+        let text = toml::to_string(&s).unwrap();
+        assert!(text.contains(&format!("claude_approval_level = \"{}\"", level.as_str())), "{text}");
+        let back: Settings = toml::from_str(&text).unwrap();
+        assert_eq!(back.claude_approval_level, Some(level));
+        assert_eq!(ApprovalLevel::parse(level.as_str()), Some(level));
+    }
+    assert!(toml::from_str::<Settings>("claude_approval_level = \"yolo\"").is_err());
+
+    // A repository's settings file cannot set the level.
+    let s = merge(&[
+        layer(Layer::User, "claude_approval_level = \"approve_prs\"\n"),
+        layer(Layer::RepoShared, "claude_approval_level = \"auto\"\n"),
+        layer(Layer::RepoLocal, "claude_approval_level = \"auto\"\ntool_approvals_enabled = false\n"),
+    ])
+    .unwrap();
+    assert_eq!(s.approval_level(), ApprovalLevel::ApprovePrs);
+}

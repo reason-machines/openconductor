@@ -82,6 +82,8 @@ import { addAttachment, revertedNote, useWorkspaceChatAttach, type ComposerAttac
 import { attachmentPath, randomDir, type ComposerAttachment } from "../features/chat/composerAttachments.ts";
 import { composerSessionFor } from "../features/chat/composerSession.ts";
 import { useLocalPlanMode } from "../features/chat/useLocalPlanMode.ts";
+import { APPROVAL_LEVELS, approvalSourceText, type ApprovalLevel } from "../settings/approvalLevel.ts";
+import { useChatApprovalLevel } from "../settings/useApprovalLevel.ts";
 import { terminalOutputFiles, terminalOutputRequest } from "../features/chat/composerTerminal.ts";
 import { draftAttachmentsApi } from "../features/draft-attachments/api.ts";
 
@@ -304,6 +306,8 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   const [linkIssueOpen, setLinkIssueOpen] = useState(false);
   const running = transcript.activeTurn !== null;
   const planMode = useLocalPlanMode(chatId, workspace.id, agentId === "claude", workspace.status === "archived" || running || queue.status !== "idle" || queue.items.length > 0 || permissions.length > 0, setAttachError);
+  // The chat's Claude Code approval level; like Plan mode it changes only between turns.
+  const claudeApprovals = useChatApprovalLevel(chatId, workspace.id, agentId === "claude", workspace.status === "archived" || running || queue.status !== "idle" || queue.items.length > 0 || permissions.length > 0, setAttachError);
   const slashCommands = useMemo(
     () => commandSet({ agent: COMPOSER_AGENT[agentId], planMode, fastMode, agentCommands: reported?.slashCommands, skills: reported?.skills }),
     [agentId, reported, planMode?.isPlanMode, fastMode?.isFastMode],
@@ -730,6 +734,22 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
               {(Object.keys(CODEX_ACCESS) as CodexAccess[]).map((k) => (
                 <option key={k} value={k}>
                   {CODEX_ACCESS[k].label}
+                </option>
+              ))}
+            </select>
+          ) : claudeApprovals ? (
+            // Claude Code's approval level for this chat (Settings › Account sets the default).
+            <select
+              className="agent-select claude-approvals"
+              aria-label="Claude Code approvals"
+              title={approvalSourceText(claudeApprovals.chat)}
+              value={claudeApprovals.chat.level}
+              disabled={claudeApprovals.disabled}
+              onChange={(e) => claudeApprovals.onChange(e.target.value as ApprovalLevel)}
+            >
+              {APPROVAL_LEVELS.map((l) => (
+                <option key={l.value} value={l.value}>
+                  {l.label}
                 </option>
               ))}
             </select>

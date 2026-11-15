@@ -1,4 +1,5 @@
 import { executablePaths } from "./agentSettings";
+import { approvalLevel } from "./approvalLevel";
 import { ConductorIcon } from "../components/ConductorIcon";
 import { TerminalPresetIcon } from "./TerminalPresetIcon";
 import { useEffect, useState } from "react";
@@ -51,7 +52,7 @@ export function BigTerminalPage({ settings, save }: Props) {
             const command = bigTerminalCommand({
               preset: o.value,
               customCommands,
-              requiresToolApprovals: settings.tool_approvals_enabled === true,
+              requiresToolApprovals: approvalLevel(settings) !== "auto",
               executablePaths: executablePaths(settings),
             });
             return (

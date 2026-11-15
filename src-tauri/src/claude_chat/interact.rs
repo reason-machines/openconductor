@@ -23,6 +23,12 @@ pub const DENY: &str = "deny";
 const PLAN_TOOL: &str = "ExitPlanMode";
 const QUESTION_TOOL: &str = "AskUserQuestion";
 
+/// A plan to approve or questions to answer: only the user can, whatever
+/// the chat's approval level.
+pub fn is_for_the_user(tool: &str) -> bool {
+    matches!(tool, PLAN_TOOL | QUESTION_TOOL)
+}
+
 /// The user's answer, as the UI sends it to `claude_respond` (`{ kind, ... }`).
 #[derive(Debug, Clone, PartialEq)]
 pub enum Answer {

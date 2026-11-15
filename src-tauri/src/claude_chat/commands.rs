@@ -15,6 +15,7 @@ use crate::reason_acp::provider::{ProviderEvent, Sink};
 use crate::reason_acp::wire;
 use crate::reason_chat::TurnArg;
 use crate::settings::service::SettingsService;
+use crate::settings::ApprovalLevel;
 use crate::turn_checkpoint::{around_turn, TurnTarget};
 
 use super::interact::Answer;
@@ -47,16 +48,15 @@ impl ClaudeChats {
                     let mut launch = ClaudeLaunch::new(cwd, env);
                     launch.executable = exe;
                     launch.resume = resume;
-                    // Account › "Claude Code tool approvals" (Conductor's
-                    // `tool_approvals_enabled`, off by default): ask before
-                    // tools run; otherwise the agent works in the workspace's
-                    // own worktree without asking.
-                    let approvals = settings.inner().get().map(|s| s.tool_approvals_enabled);
-                    launch.permission_mode = if approvals.unwrap_or(false) {
-                        PermissionMode::Default
-                    } else {
-                        PermissionMode::BypassPermissions
-                    };
+                    // Account › "Claude Code tool approvals": `claude_prompt`
+                    // sets the chat's own mode on every turn
+                    // (crate::approval_level); this is the account's level
+                    // for a launch without one.
+                    launch.permission_mode = settings
+                        .inner()
+                        .get()
+                        .map(|s| s.approval_level().claude_permission())
+                        .unwrap_or(PermissionMode::BypassPermissions);
                     // "Use Claude Code with Chrome" (Settings › Agents): the
                     // reference sidecar adds `extraArgs: { chrome: null }`.
                     // The launcher runs on a blocking thread (claude_prompt's
@@ -129,10 +129,16 @@ pub async fn claude_prompt(
     let db = app.state::<crate::db::Db>();
     let mode =
         crate::local_plan_mode::load(&db.0, &logical_id, settings.models.default_plan_mode).await?;
-    options.permission_mode = Some(crate::local_plan_mode::claude_permission(
-        mode,
-        settings.tool_approvals_enabled,
-    ));
+    // The chat's approval level: its own, its repository's, else the
+    // account's. In Plan mode Claude Code's own prompts reach the user as
+    // they are.
+    let level = crate::approval_level::resolve(&db.0, settings.approval_level(), &logical_id)
+        .await?
+        .level;
+    let permission = crate::local_plan_mode::claude_permission(mode, level);
+    options.permission_mode = Some(permission);
+    options.publish_only =
+        level == ApprovalLevel::ApprovePrs && permission == PermissionMode::Default;
     let state = app.state::<ClaudeChats>();
     let runner = state.runner(&app);
     let cwd = state.cwds.lock().unwrap().get(&chat_id).cloned();

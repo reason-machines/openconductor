@@ -52,9 +52,18 @@ pub struct Settings {
     /// means a generated key.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ssh_key_path: Option<String>,
-    /// Account › "Claude Code tool approvals": agents ask before running
-    /// tools. Off by default, as in Conductor, so agents run without asking.
+    /// Conductor's Account › "Claude Code tool approvals" switch: agents ask
+    /// before running tools. Off by default, as in Conductor, so agents run
+    /// without asking. The row now writes [`Settings::claude_approval_level`]
+    /// too and keeps this key in step (on only for "Approve everything"), so
+    /// it still decides when the level was never set.
     pub tool_approvals_enabled: bool,
+    /// Account › "Claude Code tool approvals", the level picked: run
+    /// everything, ask before publishing work (pushes and pull requests), or
+    /// ask before every tool. Unset follows `tool_approvals_enabled`
+    /// ([`Settings::approval_level`]).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub claude_approval_level: Option<ApprovalLevel>,
     /// The terminal panel's Open URLs; the first is the default. Conductor's
     /// `preview_urls` (setting key `open_url_template`).
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -107,6 +116,7 @@ impl Default for Settings {
             reason_executable_path: None,
             ssh_key_path: None,
             tool_approvals_enabled: false,
+            claude_approval_level: None,
             preview_urls: Vec::new(),
             environment_variable_files: Vec::new(),
             general: General::default(),
@@ -542,6 +552,42 @@ impl CodexPersonality {
             CodexPersonality::Friendly => "friendly",
             CodexPersonality::Pragmatic => "pragmatic",
         }
+    }
+}
+
+/// Account › "Claude Code tool approvals" (`claude_approval_level`): how much
+/// a Claude Code chat does before it asks. Ordered least to most strict.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ApprovalLevel {
+    /// Every tool runs without asking (`bypassPermissions`).
+    #[default]
+    Auto,
+    /// Edits and ordinary commands run; a push or a pull request change
+    /// waits for the user ([`crate::claude_chat::publish`]).
+    ApprovePrs,
+    /// Claude Code asks before every tool.
+    ApproveAll,
+}
+
+impl ApprovalLevel {
+    pub const ALL: [ApprovalLevel; 3] = [
+        ApprovalLevel::Auto,
+        ApprovalLevel::ApprovePrs,
+        ApprovalLevel::ApproveAll,
+    ];
+
+    /// The value in `settings.toml`, the settings table and the IPC.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            ApprovalLevel::Auto => "auto",
+            ApprovalLevel::ApprovePrs => "approve_prs",
+            ApprovalLevel::ApproveAll => "approve_all",
+        }
+    }
+
+    pub fn parse(text: &str) -> Option<ApprovalLevel> {
+        ApprovalLevel::ALL.into_iter().find(|l| l.as_str() == text)
     }
 }
 

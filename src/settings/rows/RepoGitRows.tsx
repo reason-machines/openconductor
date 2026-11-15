@@ -18,8 +18,8 @@ import { notifyRepoSettingsChanged, useRepoSettings } from "../useRepoSettings.t
 const GITHUB_AUTO_DELETE_DOCS =
   "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-the-automatic-deletion-of-branches";
 
-/** Mount on the repository Git page (`/settings/repos/$repoId/git`). */
-export function RepoGitRows({ repo }: { repo: Repo }) {
+/** Mount on the repository Git page (`/settings/repos/$repoId/git`); `after` adds OpenConductor's own rows below Conductor's. */
+export function RepoGitRows({ repo, after }: { repo: Repo; after?: ReactNode }) {
   const effective = useRepoSettings(repo.path || undefined);
   const [error, setError] = useState<string | null>(null);
   const git = effective?.git;
@@ -99,6 +99,7 @@ export function RepoGitRows({ repo }: { repo: Repo }) {
         >
           {flag("Set upstream on plain git push", "git.worktree_push_auto_setup_remote", git?.worktree_push_auto_setup_remote.value, true)}
         </Row>
+        {after}
       </div>
       {error && (
         <p className="error small" role="alert">

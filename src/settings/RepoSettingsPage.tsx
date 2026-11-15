@@ -7,6 +7,7 @@ import { Row } from "./GeneralPage";
 import { errorText } from "./api";
 import type { RepoSection } from "./routes";
 import { RepoActionsRows } from "./rows/PromptRows";
+import { RepoApprovalRow } from "./rows/RepoApprovalRow";
 import { RepoGitRows } from "./rows/RepoGitRows";
 import { RepoEnvironmentPage } from "./RepoEnvironmentPage";
 import { RepoMiscRows, type RepoMiscActions } from "./rows/RepoMiscRows";
@@ -46,7 +47,7 @@ function RepoEnvironment({ repo }: { repo: Repo }) {
 }
 
 function RepoGit({ repo }: { repo: Repo }) {
-  return <RepoGitRows repo={repo} />;
+  return <RepoGitRows repo={repo} after={<RepoApprovalRow repo={repo} />} />;
 }
 
 function RepoScripts({ repo, notify }: { repo: Repo; notify: RepoMiscActions["notify"] }) {

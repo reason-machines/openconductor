@@ -8,6 +8,7 @@ import { customCommandsFrom, presetFrom, setBigTerminal } from "../features/term
 import { applyDiffAppearance } from "../features/diff/appearance.ts";
 import { applyPalette, paletteFrom } from "../theme/palettes.ts";
 import { executablePaths } from "./agentSettings.ts";
+import { approvalLevel } from "./approvalLevel.ts";
 import { boolPref } from "./prefs.ts";
 import { setSidebarTransparency } from "./sidebarTransparency.ts";
 import { applyAppZoom } from "./nativeZoom.ts";
@@ -86,7 +87,8 @@ export function applyAppearance(s: Settings): void {
     enabled: s.experimental?.experimental_big_terminal_mode === true,
     preset: presetFrom(s.terminal?.big_terminal_preset),
     customCommands: customCommandsFrom(s.terminal?.big_terminal_custom_commands),
-    requiresToolApprovals: s.tool_approvals_enabled === true,
+    // Only "Auto" skips approvals; "Approve PRs" cannot hold just a push in a terminal, so it asks there too.
+    requiresToolApprovals: approvalLevel(s) !== "auto",
     executablePaths: executablePaths(s),
   });
   setSidebarTransparency(boolPref(s, "experimental_sidebar_transparency"));

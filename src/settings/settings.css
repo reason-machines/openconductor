@@ -125,6 +125,12 @@
   background-repeat: no-repeat; background-position: right 10px center; background-size: 12px;
 }
 .settings select.settings-select:disabled { opacity: 0.5; }
+/* Account › "Claude Code tool approvals": the three levels as one segmented control. */
+.settings .settings-segments { display: inline-flex; gap: 2px; padding: 2px; border: 1px solid var(--s-input); border-radius: 8px; }
+.settings .settings-segments button { height: 26px; padding: 0 10px; border: 0; border-radius: 6px; background: transparent; color: var(--s-muted); font: inherit; font-size: 13px; line-height: 18px; white-space: nowrap; cursor: pointer; }
+.settings .settings-segments button:hover { color: var(--s-fg); }
+.settings .settings-segments button[aria-checked="true"] { background: var(--s-active); color: var(--s-fg); }
+.settings .settings-segments button:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
 .settings select option { background: var(--bg); color: var(--s-fg); }
 .settings .settings-rows input[type="checkbox"][role="switch"] {
   appearance: none; -webkit-appearance: none; position: relative; width: 40px; height: 20px; margin: 0; border-radius: 999px;

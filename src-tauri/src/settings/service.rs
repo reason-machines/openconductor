@@ -233,6 +233,31 @@ impl SettingsService {
         Ok(moved)
     }
 
+    /// A new install starts at the "Approve PRs" approval level: when there
+    /// is no settings file yet and the database has no repository, write the
+    /// level as the file's first key. Returns whether it did. An install
+    /// that already has a file or a repository keeps what it has (Conductor's
+    /// default, "Auto", unless its switch is on).
+    pub fn seed_new_install(&self) -> Result<bool, ServiceError> {
+        let _guard = self.lock.lock().unwrap_or_else(|e| e.into_inner());
+        if self.path.exists() {
+            return Ok(false);
+        }
+        if let Some(pool) = &self.db {
+            let repos = run_db(openconductor_db::repos::list(pool)).map_err(db_err)?;
+            if !repos.is_empty() {
+                return Ok(false);
+            }
+        }
+        let mut table = toml::Table::new();
+        table.insert(
+            "claude_approval_level".into(),
+            toml::Value::String(super::ApprovalLevel::ApprovePrs.as_str().into()),
+        );
+        save_table(&self.path, &table)?;
+        Ok(true)
+    }
+
     pub fn path(&self) -> &Path {
         &self.path
     }

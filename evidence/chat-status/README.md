@@ -40,7 +40,7 @@ UI, from the renderApp chunk:
 
 Both Rust agents send the same `permissionRequest` / `permissionResolved` events (`reason_acp/wire.rs`); `kind` says what is asked (`ProviderEvent::PermissionRequested` carries an `Ask`: a tool, a plan or questions). The runtime keeps a chat's open requests and sets its status to the most urgent one's; an answer returns it to `working`, and a turn that ends drops what is still open (#428's rules, unchanged).
 
-The Claude chat runs in `default` permission mode when Account › "Claude Code tool approvals" (`tool_approvals_enabled`) is on, else `bypassPermissions` as before.
+The Claude chat runs in `default` permission mode when Account › "Claude Code tool approvals" is "Approve everything" (Conductor's `tool_approvals_enabled` on) or "Approve PRs", else `bypassPermissions` as before. At "Approve PRs" the runner answers every tool prompt itself except a push or a pull request change (`src-tauri/src/claude_chat/publish.rs`), so only those raise `needs_user_permission`.
 
 **Reason 0.2.684 never asks.** Its ACP agent defines `requestPermission` (the ACP SDK's client method) but never calls it, and has no plan mode. A blocking `ask_user_question` is written as an `agent_message_chunk` (`**header**`, the question, `- label: description` lines) and the prompt then ends `end_turn` with the question unanswered; the user answers with the next prompt. Nothing structured marks it, so a Reason chat cannot raise `needs_plan_response` or `needs_user_input` without guessing from reply text, which this change does not do.
 

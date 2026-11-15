@@ -17,7 +17,7 @@ use std::path::{Path, PathBuf};
 
 use serde_json::json;
 
-use super::{CodexPersonality, CodexToolApprovalPolicy, EffortLevel, Settings};
+use super::{ApprovalLevel, CodexPersonality, CodexToolApprovalPolicy, EffortLevel, Settings};
 use crate::agent::claude::AnthropicApi;
 use crate::agent::codex::{CodexLogin, OpenAiApi};
 use crate::agent::codex_cli::CodexLaunch;
@@ -155,6 +155,19 @@ impl Settings {
         }
     }
 
+    /// How much Claude Code chats do before asking: the level picked in
+    /// Account › "Claude Code tool approvals", or what Conductor's switch
+    /// (`tool_approvals_enabled`) means when no level was ever picked. A
+    /// repository or a chat may override it ([`crate::approval_level`]).
+    pub fn approval_level(&self) -> ApprovalLevel {
+        self.claude_approval_level
+            .unwrap_or(if self.tool_approvals_enabled {
+                ApprovalLevel::ApproveAll
+            } else {
+                ApprovalLevel::Auto
+            })
+    }
+
     /// The answer to every Codex approval request when the user chose
     /// "always approve" (Conductor answers `always_allow` for Codex
     /// sessions), else `None`: ask the user.
@@ -166,13 +179,25 @@ impl Settings {
     }
 }
 
+impl ApprovalLevel {
+    /// The mode Claude Code runs in outside Plan mode: it never asks at
+    /// "Auto"; at the other levels it asks the app, which decides what
+    /// reaches the user.
+    pub fn claude_permission(self) -> PermissionMode {
+        match self {
+            ApprovalLevel::Auto => PermissionMode::BypassPermissions,
+            ApprovalLevel::ApprovePrs | ApprovalLevel::ApproveAll => PermissionMode::Default,
+        }
+    }
+}
+
 /// A Claude Code session in `cwd`, configured by `settings`.
 ///
 /// Permission mode: plan for a new chat with "Default to plan mode" on;
-/// otherwise `default` (Claude Code asks before tools) when "Claude Code
-/// tool approvals" is on, `bypassPermissions` when it is off, as
+/// otherwise `bypassPermissions` at the "Auto" approval level, as
 /// Conductor's own Claude command (`claude --dangerously-skip-permissions`
-/// unless approvals are required).
+/// unless approvals are required), and `default` (Claude Code asks, and the
+/// chat answers for the user what the level lets through) at the others.
 pub fn claude_launch(
     settings: &Settings,
     cwd: &Path,
@@ -188,10 +213,8 @@ pub fn claude_launch(
     }
     launch.permission_mode = if purpose == Purpose::Chat && settings.models.default_plan_mode {
         PermissionMode::Plan
-    } else if settings.tool_approvals_enabled {
-        PermissionMode::Default
     } else {
-        PermissionMode::BypassPermissions
+        settings.approval_level().claude_permission()
     };
     let cc = &settings.models.claude_code;
     let effort = match purpose {

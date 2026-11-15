@@ -439,3 +439,41 @@ fn terminal_appearance_without_database_keeps_the_file_fallback() {
     assert_eq!(svc.get().unwrap().appearance, settings.appearance);
     assert!(svc.move_appearance_to_db().unwrap().is_empty());
 }
+
+#[test]
+fn a_new_install_starts_at_approve_prs_and_an_existing_one_keeps_its_level() {
+    use super::ApprovalLevel;
+    // No file, no repository: the level is written, and nothing else.
+    let path = temp_file();
+    let (svc, _pool) = with_db(path.clone());
+    assert_eq!(svc.get().unwrap().approval_level(), ApprovalLevel::Auto);
+    assert!(svc.seed_new_install().unwrap());
+    assert_eq!(fs::read_to_string(&path).unwrap().trim(), "claude_approval_level = \"approve_prs\"");
+    let s = svc.get().unwrap();
+    assert_eq!(s.approval_level(), ApprovalLevel::ApprovePrs);
+    assert!(!s.tool_approvals_enabled && !s.models.default_initialized);
+    // Once only: a later choice of "Auto" stays.
+    let mut auto = s.clone();
+    auto.claude_approval_level = Some(ApprovalLevel::Auto);
+    svc.update(auto).unwrap();
+    assert!(!svc.seed_new_install().unwrap());
+    assert_eq!(svc.get().unwrap().approval_level(), ApprovalLevel::Auto);
+
+    // An install with a settings file keeps Conductor's default.
+    let path = temp_file();
+    fs::write(&path, "[general]\ntheme = \"light\"\n").unwrap();
+    let (svc, _pool) = with_db(path.clone());
+    assert!(!svc.seed_new_install().unwrap());
+    assert_eq!(svc.get().unwrap().approval_level(), ApprovalLevel::Auto);
+
+    // So does one that has a repository but never saved a setting.
+    let path = temp_file();
+    let (svc, pool) = with_db(path.clone());
+    tauri::async_runtime::block_on(
+        sqlx::query("INSERT INTO repos (id, name, root_path) VALUES ('r', 'Test', '/synthetic/repo')").execute(&pool),
+    )
+    .unwrap();
+    assert!(!svc.seed_new_install().unwrap());
+    assert!(!path.exists());
+    assert_eq!(svc.get().unwrap().approval_level(), ApprovalLevel::Auto);
+}
