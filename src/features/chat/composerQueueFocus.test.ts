@@ -65,6 +65,8 @@ function fixture({ caret = 0, queued = true, editing = false, canSteer = false, 
       if (name === "./FileMentionMenu.tsx") return { FileMentionMenu: () => null };
       if (name === "./composerLongPaste.ts") return { longPasteAttachment: () => null };
       if (name.endsWith("/useBoolPref.ts")) return { useBoolPref: () => false };
+      if (name.endsWith("/useSettings.ts")) return { useSettings: () => ({ settings: null, save: () => Promise.resolve(true), error: null, reload: () => {} }) };
+      if (name.endsWith("/prefs.ts")) return { boolPref: () => false, withBoolPref: (s: unknown) => s };
       if (name === "../../backend") return { fuzzyFilterFiles: () => assert.fail("navigation must not search files") };
       if (name === "./composerIcons.tsx") return Object.fromEntries(["ArrowUpIcon", "CornerDownLeftIcon", "PaperclipIcon", "PlusIcon", "StopCircleIcon"].map((key) => [key, () => null]));
       throw new Error(`Unexpected Composer dependency: ${name}`);
@@ -264,6 +266,8 @@ function editFocusFixture(initialEditingId: string | null = null) {
       if (name === "./FileMentionMenu.tsx") return { FileMentionMenu: () => null };
       if (name === "./composerLongPaste.ts") return { longPasteAttachment: () => null };
       if (name.endsWith("/useBoolPref.ts")) return { useBoolPref: () => false };
+      if (name.endsWith("/useSettings.ts")) return { useSettings: () => ({ settings: null, save: () => Promise.resolve(true), error: null, reload: () => {} }) };
+      if (name.endsWith("/prefs.ts")) return { boolPref: () => false, withBoolPref: (s: unknown) => s };
       if (name === "../../backend") return { fuzzyFilterFiles: () => null };
       if (name === "./composerIcons.tsx") return Object.fromEntries(["ArrowUpIcon", "CornerDownLeftIcon", "PaperclipIcon", "PlusIcon", "StopCircleIcon"].map((k) => [k, () => null]));
       throw new Error(`Unexpected Composer dependency: ${name}`);

@@ -511,9 +511,9 @@ built.
 | `prompts.code_review` | Review button (`buildReviewPrompt`, appended after the default as `gue` + `_g`) | wired, via `useRepoSettings` |
 | `prompts.create_pr` | `pr_create_prompt` (appended when the caller gives no instructions) | wired; no Create PR button calls the command yet |
 | `prompts.general` | first message of a new Reason chat (`sendReason`, `<user-preferences>` block as `lU6`) | wired |
-| `prompts.fix_errors` | Fix errors action | missing: no Fix errors button or CI-log flow |
-| `prompts.resolve_merge_conflicts` | Resolve conflicts action | missing: the header computes the conflict state but has no action |
-| `prompts.rename_branch` | model-generated branch name | missing: the rebuild names branches with a local heuristic (`branchNameFromMessage`), no model call |
+| `prompts.fix_errors` | Fix errors action (`src/features/pr/checks/fixErrors.ts`, `ChecksTab.tsx`) | wired; `fixErrorsInstructions(custom)` appends the prompt to the log attachment |
+| `prompts.resolve_merge_conflicts` | Resolve conflicts action (`usePrActions.ts:114-118`) | wired; `resolveConflictsPrompt(worktree, branch, custom)` appends the prompt |
+| `prompts.rename_branch` | First agent message (`claudeChat.ts:89`, `reasonChat.ts:102`); note: `branchNameFromMessage` is a local heuristic, `withRenameBranch` appends a `<branch-naming-preferences>` block to the first agent prompt | wired via `withRenameBranch` (#1316) |
 | `git.worktree_push_auto_setup_remote` | `create_workspace` and the startup backfill | wired, effective per repository / workspace |
 | `git.branch_prefix`, `git.branch_prefix_type` | Create-workspace naming | user scope, as Conductor's `C2` |
 | `git.delete_branch_on_archive` | `archive_workspace` (`evidence/archive/NOTES.md`) | wired, effective per workspace |

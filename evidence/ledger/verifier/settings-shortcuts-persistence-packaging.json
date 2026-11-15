@@ -995,21 +995,15 @@
    "area": "shortcuts",
    "parent_obligation": null,
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 8,
-    "matched": 7,
+    "matched": 8,
     "partial": 1,
     "missing": 0,
-    "parity_pct": 93.8
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "Code review",
-     "id": "editor.openSearch",
-     "status": "declared"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "keys.wire.terminal",
@@ -1017,21 +1011,15 @@
    "area": "shortcuts",
    "parent_obligation": null,
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 12,
-    "matched": 11,
+    "matched": 12,
     "partial": 1,
     "missing": 0,
-    "parity_pct": 95.8
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "Terminal",
-     "id": "terminal.openLocalhost",
-     "status": "declared"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "keys.bindings-route",
