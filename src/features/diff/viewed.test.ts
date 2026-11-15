@@ -187,6 +187,8 @@ async function fixture(files: FileDiff[], initiallyViewed: FileDiff[] = [], init
       "./Whitespace": { ViewOptionsMenu: unexpected },
       "./FileDiffView": { FileDiffView: FilePreview },
       "./EditInViewer.ts": { editableContents: () => null, useFileEdit: () => undefined },
+      "./commentMarkdown.ts": { CommentMarkdown: () => null },
+      "../../keybindings/KeybindingsProvider.tsx": { useKeybindings: () => undefined },
       "./ChangesList": { ChangesList: unexpected },
     };
     const evaluateTab = runInNewContext(`(function(require, module, exports) { ${tabJavascript}\n})`);
@@ -928,6 +930,7 @@ function fileVisibilityFixture() {
     "../../keybindings/overrides.ts": { effectiveShortcuts: () => [] },
     "../../keybindings/shortcut.ts": { matchesEvent: () => false },
     "./EditInViewer.ts": { createEditor: inert },
+    "./commentMarkdown.ts": { CommentMarkdown: inert },
     "./CommentNav": {
       CommentNav: commentModule.CommentNav,
       useCommentNavigation: (_handle: unknown, path: string) => ({
@@ -1093,6 +1096,8 @@ async function emptyDiffCloseFixture(initialLoad: WorkspaceDiff["load"] = { stat
     "./Whitespace": { ViewOptionsMenu: inert },
     "./FileDiffView": { FileDiffView: inert },
     "./EditInViewer.ts": { editableContents: () => null, useFileEdit: () => undefined },
+    "./commentMarkdown.ts": { CommentMarkdown: inert },
+    "../../keybindings/KeybindingsProvider.tsx": { useKeybindings: () => undefined },
     "./ChangesList": { ChangesList: inert },
   };
   const tabModule = { exports: {} };

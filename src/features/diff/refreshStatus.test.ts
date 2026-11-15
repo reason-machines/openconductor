@@ -91,6 +91,7 @@ async function fixture() {
       if (name === "./FilePathChip") return { FilePathChip: () => null };
       if (name === "./useDiffTheme.ts") return { useDiffTheme: () => "test-theme" };
       if (name === "./CommentNav") return { CommentNav: () => null, useCommentNavigation: () => ({ refresh: () => undefined, previousCount: 0, nextCount: 0 }) };
+      if (name === "./commentMarkdown.ts") return { CommentMarkdown: () => null };
       if (name === "../../components/ConductorIcon") return { ConductorIcon: () => null };
       if (name === "../../components/Icons.tsx") return { CheckIcon: () => null, CopyIcon: () => null };
       if (name === "../../components/ui/Tooltip.tsx") return { Tooltip: ({ children }: { children: unknown }) => children };

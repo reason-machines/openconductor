@@ -74,6 +74,7 @@ async function fixture({ saved, worktree, path, error }: {
     "../../keybindings/overrides.ts": {},
     "../../keybindings/shortcut.ts": {},
     "./EditInViewer.ts": {},
+    "./commentMarkdown.ts": { CommentMarkdown: inert },
     "./CommentNav": {},
     "./DiscardDialog": { RevertIcon: inert },
     "./FilePathChip": chip,

@@ -78,6 +78,7 @@ async function fixture() {
       if (name === "./useChangesPresentation.ts") return { useChangesPresentation: () => ({ presentation: { filePathFilter: "", diffFileListMode: "flat" } }) };
       if (name === "./FileDiffView") return { FileDiffView: (props: unknown) => React.createElement("diff-view", props) };
       if (name === "./EditInViewer.ts") return { useFileEdit: () => undefined, editableContents: () => null };
+      if (name === "./commentMarkdown.ts") return { CommentMarkdown: () => null };
       if (name === "./copyFile.ts") return { newFileText: () => assert.fail("No file-content copy in this fixture") };
       if (name === "./ChangesList") return {};
       if (name === "./DiscardDialog") return { DiscardDialog: () => assert.fail("No discard in this fixture") };

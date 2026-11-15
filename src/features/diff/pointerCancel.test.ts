@@ -32,6 +32,7 @@ const boundaries: Record<string, object> = {
   "../../keybindings/overrides.ts": { effectiveShortcuts: () => [] },
   "../../keybindings/shortcut.ts": { matchesEvent: () => false },
   "./EditInViewer.ts": { createEditor: inert },
+  "./commentMarkdown.ts": { CommentMarkdown: inert },
   "./CommentNav": { CommentNav: inert, useCommentNavigation: () => ({ refresh: inert, previousCount: 0, nextCount: 0 }) },
   "./DiscardDialog": { RevertIcon: inert },
   "./FilePathChip": { FilePathChip: inert },

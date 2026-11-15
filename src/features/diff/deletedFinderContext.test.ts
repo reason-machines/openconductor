@@ -63,6 +63,7 @@ async function clickHeader(saved: string, status: "modified" | "deleted") {
     "../../keybindings/overrides.ts": {},
     "../../keybindings/shortcut.ts": {},
     "./EditInViewer.ts": {},
+    "./commentMarkdown.ts": { CommentMarkdown: inert },
     "./CommentNav": {},
     "./DiscardDialog": { RevertIcon: inert },
     "./FilePathChip": chip,

@@ -30,6 +30,7 @@ const boundaries: Record<string, unknown> = {
   "../../keybindings/overrides.ts": {},
   "../../keybindings/shortcut.ts": {},
   "./EditInViewer.ts": {},
+  "./commentMarkdown.ts": { CommentMarkdown: inert },
   "./CommentNav": {},
   "./DiscardDialog": { RevertIcon: inert },
   "./FilePathChip": {
