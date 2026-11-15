@@ -224,6 +224,8 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
   })) imports[file] = { [name]: inert };
   imports["./state/createProject"] = {};
   imports["./features/updates/useUpdates"] = { useUpdates: noop };
+  imports["./palette/fileOpenActions"] = { requestFileOpen: noop };
+  imports["./palette/prPaletteActions"] = { requestPrPaletteAction: noop };
   const exports: Partial<typeof import("../App")> = {};
   evaluate("../App.tsx", imports, exports, { window });
   const App = exports.default;
