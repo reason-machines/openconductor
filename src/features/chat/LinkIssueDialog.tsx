@@ -19,12 +19,15 @@ interface Props {
   repoPath: string | null;
   /** Called when the user picks an issue; the caller attaches it to the composer. */
   onSelect: (attachment: TextAttachment) => void;
-  /** Called when the dialog should navigate to Settings › Personal › Account. */
+  /**
+   * Called when the dialog should navigate to Settings › Personal › Account.
+   * Kept in Props for WorkspaceView compat; not called until a Linear integration exists.
+   */
   onOpenAccountSettings: () => void;
   onClose: () => void;
 }
 
-export function LinkIssueDialog({ repoPath, onSelect, onOpenAccountSettings, onClose }: Props) {
+export function LinkIssueDialog({ repoPath, onSelect, onOpenAccountSettings: _onOpenAccountSettings, onClose }: Props) {
   const [issues, setIssues] = useState<SourceState<CreateFrom>>({ status: "loading" });
   const [query, setQuery] = useState("");
   const [pointer, setPointer] = useState(0);
