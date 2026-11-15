@@ -245,3 +245,157 @@ for (const setupFails of [false, true]) {
     } finally { view.dispose(); }
   });
 }
+
+// -------------------------------------------------------------------------
+// workspace.addToBacklogFromComposer: Alt+Enter creates workspace idle + sets
+// status to backlog without seeding or renaming.
+// Evidence: Hji.txt `ca` callback + `Ei` keydown capture handler in Conductor.
+// -------------------------------------------------------------------------
+
+async function backlogFixture() {
+  const events: string[] = [];
+  const actions: { type: string; workspaceId?: string; status?: string }[] = [];
+  const pending = new Set<string>();
+  const creation = deferred<{ workspace: { id: string; directoryName: string; branchName: string; path: string } }>();
+  const registration = deferred<{ id: string; root: string; defaultBranch: string }>();
+  const modules = new Map<string, Record<string, unknown>>();
+  let closes = 0;
+  let creationFirstSession: unknown = "not-checked";
+  let renderer: ReturnType<typeof create>;
+  const passthrough = ({ children }: { children: unknown }) => children;
+  void passthrough; // referenced by dynamic require below
+  function load(file: string): Record<string, unknown> {
+    const cached = modules.get(file);
+    if (cached) return cached;
+    const exports = {};
+    modules.set(file, exports);
+    const source = readFileSync(resolve(root, file), "utf8");
+    runInNewContext(ts.transpileModule(source, {
+      fileName: file,
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
+    }).outputText, {
+      exports, console, crypto: { randomUUID: () => "pending-launch" },
+      document: { activeElement: null }, HTMLElement: class {},
+      require(name: string) {
+        if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+        if (name === "../workspace/createFlow") return load("src/workspace/createFlow.ts");
+        if (name === "../workspace/createInSection") return load("src/workspace/createInSection.ts");
+        if (name === "./naming.ts" || name === "../workspace/naming") return load("src/workspace/naming.ts");
+        if (name === "../workspace/api") return {
+          ensureRepository() { events.push("register"); return registration.promise; },
+          listBranches: async () => [{ name: "main", remote: null, commit: "", isHead: true, committedAt: 0 }],
+          createWorkspace(args: { firstSession?: unknown }) {
+            creationFirstSession = args.firstSession ?? null;
+            events.push("create");
+            return creation.promise;
+          },
+          errorText: (error: Error) => error.message,
+        };
+        if (name === "../workspace/pendingLaunches") return {
+          addPendingLaunch(id: string) { pending.add(id); events.push("pending"); },
+          removePendingLaunch(id: string) { pending.delete(id); events.push("remove-pending"); },
+        };
+        if (name === "../scripts/api") return { scriptsConfig: async () => ({ setup: null }) };
+        if (name === "../scripts/model") return { workspaceRef: () => null };
+        if (name === "../workspace/setupWatch") return { watchSetup: () => {}, unwatchSetup: () => {} };
+        if (name === "./WorkspaceView") return { seedTranscript: () => events.push("seed") };
+        if (name === "../features/chat/reasonChat") return { configureReason: () => {} };
+        if (name === "../features/chat/chatModel") return { sessionConfig: () => ({}) };
+        if (name === "../workspace/firstMessage") return { renameAfterFirstMessage: () => events.push("rename") };
+        if (name === "../features/chat/chatModelChoice") return { saveModelChoice: () => {} };
+        if (name === "../features/chat/agentChoice") return { saveAgent: () => {} };
+        if (name === "../workspace/launchModel") return {
+          launchDefaults: () => ({ agent: "reason", model: "fixture", effort: "" }),
+          loadoutPicks: () => [],
+          pickLaunch: (_: unknown, next: unknown) => next,
+        };
+        if (name === "../settings/agents/useLoadout") return { useLoadout: () => null };
+        if (name === "../features/chat/loadoutChoices") return { loadoutChoices: () => [] };
+        if (name === "../features/chat/ModelPicker") return { ModelPicker: () => null };
+        if (name === "../features/chat/ChatModelPicker") return {};
+        if (name === "../settings/models") return { modelLabel: (v: string) => v };
+        if (name === "./create/RepoSelect") return { RepoSelect: () => null };
+        if (name === "./create/TargetBranchButton") return { TargetBranchButton: () => null };
+        if (name === "./CreateFromPicker") return { CreateFromPicker: () => null };
+        if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }) };
+        if (name === "../keybindings/overrides") return {
+          effectiveShortcuts(id: string) {
+            if (id === "workspace.addToBacklogFromComposer")
+              return [{ key: { kind: "logical", value: "Enter" }, alt: true, meta: false, shift: false, ctrl: false }];
+            return [];
+          },
+        };
+        if (name === "../keybindings/shortcut") return {
+          glyphs: () => "",
+          // Minimal matchesEvent: logical key + exact alt modifier match
+          matchesEvent(s: { key: { kind: string; value: string }; alt?: boolean }, e: { key: string; altKey?: boolean }) {
+            return s.key.kind === "logical" && s.key.value === e.key && !!s.alt === !!e.altKey;
+          },
+        };
+        throw new Error(`Unexpected backlog-fixture dependency ${name}`);
+      },
+    });
+    return exports;
+  }
+  const CreateWorkspaceComposer = load("src/components/CreateWorkspaceComposer.tsx")["CreateWorkspaceComposer"] as (props: Record<string, unknown>) => unknown;
+  assert.equal(typeof CreateWorkspaceComposer, "function");
+  function Shell() {
+    return React.createElement(CreateWorkspaceComposer as Parameters<typeof React.createElement>[0], {
+      repos: [{ id: "repo", name: "Project", path: "/synthetic/project", defaultBranch: "main", workspaces: [] }],
+      initialRepoId: "repo", prefixSettings: { branch_prefix_type: "none" }, githubUsername: null,
+      eyebrowVariant: "floating", sections: [], initialSectionId: undefined,
+      onClose() { closes++; events.push("close"); },
+      dispatch(action: { type: string; workspaceId?: string; status?: string }) { actions.push(action); events.push(action.type); },
+      onWarning() {},
+      addActions: {},
+    });
+  }
+  await act(async () => { renderer = create(React.createElement(Shell)); });
+  function send(host: { props: Record<string, unknown> }, event: string, value: unknown) {
+    const handler = host.props[event];
+    if (typeof handler === "function") return (handler as (v: unknown) => unknown)(value);
+  }
+  return {
+    events, actions, pending,
+    get closes() { return closes; },
+    get creationFirstSession() { return creationFirstSession; },
+    async altEnter() {
+      await act(async () => {
+        const nativeEvent = { key: "Enter", altKey: true, isComposing: false } as unknown as KeyboardEvent;
+        send(
+          renderer.root.findByType("textarea"),
+          "onKeyDown",
+          { nativeEvent, key: "Enter", altKey: true, preventDefault() {}, stopPropagation() {} },
+        );
+      });
+    },
+    async registered() { await act(async () => registration.resolve({ id: "repo", root: "/synthetic/project", defaultBranch: "main" })); },
+    async succeed() {
+      await act(async () => creation.resolve({ workspace: { id: "backlog-ws", directoryName: "lima", branchName: "lima", path: "/synthetic/backlog" } }));
+    },
+    dispose() { act(() => renderer.unmount()); },
+  };
+}
+
+test("Alt+Enter (addToBacklogFromComposer) creates workspace idle, sets backlog status, skips seed/rename", async () => {
+  const view = await backlogFixture();
+  try {
+    await view.altEnter();
+    await view.registered();
+    await view.succeed();
+    // addWorkspace then setWorkspaceStatus(backlog) in that order
+    assert.deepEqual(
+      view.actions.map((a) => a.type),
+      ["addWorkspace", "setWorkspaceStatus"],
+    );
+    assert.equal(view.actions[1]?.status, "backlog");
+    assert.equal(view.actions[1]?.workspaceId, "backlog-ws");
+    // No firstSession sent to createWorkspace — the workspace starts idle
+    assert.equal(view.creationFirstSession, null, "backlog workspace must have no firstSession");
+    // No seed or rename — no chat session started
+    assert.ok(!view.events.includes("seed"), "seed must not fire for backlog workspace");
+    assert.ok(!view.events.includes("rename"), "rename must not fire for backlog workspace");
+    // Dialog closed after success
+    assert.equal(view.closes, 1);
+  } finally { view.dispose(); }
+});
