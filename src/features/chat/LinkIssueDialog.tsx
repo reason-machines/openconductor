@@ -72,35 +72,41 @@ export function LinkIssueDialog({ repoPath, onSelect, onOpenAccountSettings: _on
 
   async function pick(row: CreateFrom) {
     if (row.kind !== "issue" || picking) return;
+    let name: string;
     let text: string;
     if (row.provider === "github" && repoPath) {
-      // M13 fix: call gh_issue_link_metadata for enriched metadata (labels, assignee, body preview).
+      // M13 fix: call gh_issue_link_metadata for enriched Markdown attachment.
+      // REA contract (evidence/chat/link-issue-metadata/README.md): filename [GITHUB]-<n>.md,
+      // fields: title, url, state, labels, assignee, milestone, full body.
       setPicking(true);
       try {
         const number = parseInt(row.key.replace(/^#/, ""), 10);
         const meta = await issueLinkMetadata(repoPath, number);
         if (meta) {
-          const parts: string[] = [`${row.key}: ${meta.title}`];
-          if (meta.url) parts.push(meta.url);
-          if (meta.labels.length > 0) parts.push(`Labels: ${meta.labels.map((l) => l.name).join(", ")}`);
-          if (meta.assignee) parts.push(`Assignee: @${meta.assignee.login}`);
-          if (meta.body) {
-            const preview = meta.body.slice(0, 200).replace(/\n+/g, " ").trim();
-            parts.push(`Body: ${preview}${meta.body.length > 200 ? "\u2026" : ""}`);
-          }
-          text = parts.join("\n");
+          name = `[GITHUB]-${number}.md`;
+          const lines: string[] = [`# ${meta.title} (${row.key})`];
+          lines.push(`**URL:** ${meta.url}`);
+          lines.push(`**State:** ${meta.state}`);
+          if (meta.labels.length > 0) lines.push(`**Labels:** ${meta.labels.map((l) => l.name).join(", ")}`);
+          if (meta.assignee) lines.push(`**Assignee:** @${meta.assignee.login}`);
+          if (meta.milestone) lines.push(`**Milestone:** ${meta.milestone.title}`);
+          if (meta.body) lines.push("", "---", "", meta.body);
+          text = lines.join("\n");
         } else {
+          name = `issue-${row.key.replace(/^#/, "")}.txt`;
           text = row.url ? `${row.key}: ${row.title}\n${row.url}` : `${row.key}: ${row.title}`;
         }
       } catch {
+        name = `issue-${row.key.replace(/^#/, "")}.txt`;
         text = row.url ? `${row.key}: ${row.title}\n${row.url}` : `${row.key}: ${row.title}`;
       } finally {
         setPicking(false);
       }
     } else {
+      name = `issue-${row.key.replace(/^#/, "")}.txt`;
       text = row.url ? `${row.key}: ${row.title}\n${row.url}` : `${row.key}: ${row.title}`;
     }
-    onSelect({ name: `issue-${row.key.replace(/^#/, "")}.txt`, text });
+    onSelect({ name, text });
     onClose();
   }
 
