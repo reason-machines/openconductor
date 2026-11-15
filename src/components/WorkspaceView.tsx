@@ -33,6 +33,7 @@ import { startSetupScript } from "../home/createFirstWorkspace";
 import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
 import { ComposerAttachmentChip } from "../features/chat/ComposerAttachmentChip.tsx";
+import { nativePathToFile, useWindowDragDrop } from "../features/chat/useWindowDragDrop.ts";
 import { McpStatusDialog } from "../features/chat/McpStatusDialog.tsx";
 import { LinkIssueDialog } from "../features/chat/LinkIssueDialog.tsx";
 import type { ComposerEditorHandle } from "../features/chat/ComposerEditor.tsx";
@@ -544,6 +545,18 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     await session.attach(files, reason ? (relativePath, data) => draftAttachmentsApi.write({ draftWorkspaceId: workspace.id, relativePath, data }) : undefined);
   }
 
+  /** Attaches files dropped from the OS window onto the app (Conductor's onDragDropEvent consumer 2). */
+  async function attachDroppedPaths(paths: string[]) {
+    if (workspace.status === "archived") return;
+    const fileObjs = (await Promise.all(paths.map(nativePathToFile))).filter((f): f is NonNullable<typeof f> => f !== null);
+    if (fileObjs.length > 0) {
+      await session.attach(fileObjs as unknown as File[], reason ? (relativePath, data) => draftAttachmentsApi.write({ draftWorkspaceId: workspace.id, relativePath, data }) : undefined);
+    }
+  }
+
+  // Consumer 1: overlay state; Consumer 2: attachment handler (Conductor fCe().onDragDropEvent).
+  const isDroppingOnWindow = useWindowDragDrop(attachDroppedPaths);
+
   async function attachTerminalOutput() {
     await session.attach(
       () => invoke<unknown>("get_terminal_output", { request: terminalOutputRequest(workspace.id, getTabs(workspace.id)) }).then((output) => terminalOutputFiles(output)),
@@ -570,7 +583,14 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   }
 
   return (
-    <section className="chat" aria-label="Chat">
+    <>
+      {/* Consumer 1: drop overlay shown while files are dragged over the window (Conductor fCe().onDragDropEvent). */}
+      {isDroppingOnWindow && (
+        <div className="oc-window-drop-overlay" aria-hidden>
+          <div className="oc-window-drop-label">Drop files to attach</div>
+        </div>
+      )}
+      <section className="chat" aria-label="Chat">
       {/* Conductor minimizes the empty composer when the content tab scrolls (onScrollCapture → minimizeIfEmpty). */}
       {content !== null ? (
         <div className="chat-content" onScrollCapture={minimize.minimizeIfEmpty}>
@@ -803,6 +823,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
       />
       </div>
     </section>
+    </>
   );
 }
 
