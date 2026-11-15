@@ -143,8 +143,10 @@ export function dropLegacyTurnCache(storage: Pick<Storage, "length" | "key" | "r
   return keys.length;
 }
 
-/** Under a finished turn: all files when there are at most 3, else the first 3 and a button. */
+/** Under a finished turn: all files when there are at most this many. Evidence: Conductor gDi=3. */
 export const TURN_CHIPS_SHOWN = 3;
+/** How many files to show at first when total exceeds TURN_CHIPS_SHOWN. Evidence: Conductor hDo=2. */
+const TURN_CHIPS_FIRST = 2;
 /** Each "+N more" click reveals this many. */
 export const TURN_CHIPS_STEP = 3;
 
@@ -162,7 +164,7 @@ export interface ChipLayout {
 
 /** Which chips show after `expanded` clicks on "show more". */
 export function chipLayout(files: FileChange[], expanded: number): ChipLayout {
-  const firstCount = files.length <= TURN_CHIPS_SHOWN ? files.length : TURN_CHIPS_SHOWN;
+  const firstCount = files.length <= TURN_CHIPS_SHOWN ? files.length : TURN_CHIPS_FIRST;
   const count = Math.min(files.length, firstCount + expanded * TURN_CHIPS_STEP);
   const first = files.slice(0, firstCount);
   const revealed = files.slice(firstCount, count);

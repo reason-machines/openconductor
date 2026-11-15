@@ -15,7 +15,7 @@ export interface PromptRowSpec {
  * `Q3a`: five `S6e` rows, then General). Review and Create PR (pr/prompt.rs),
  * Fix errors (fixErrors.ts), Resolve conflicts (`resolve_merge_conflicts_prompt`)
  * and General read the repository value; branch-name generation does not read
- * `prompts.rename_branch` yet, so that row only stores it.
+ * `prompts.rename_branch` via `withRenameBranch` appended to the first agent message.
  */
 export const PROMPT_ROWS: PromptRowSpec[] = [
   {

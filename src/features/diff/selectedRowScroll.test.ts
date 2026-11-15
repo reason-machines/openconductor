@@ -127,7 +127,7 @@ async function fixture(initial: { mainTab?: string; selected?: string; panelTab?
     function Probe({ workspace, mainTab, diffOpen, fileTarget, diff, gitPanelTab, setGitPanelTab }) {
       ${variable("showDiff")}
       ${variable("showFile")}
-      const openMarkdown = unrelated;
+      const openAnyFile = unrelated;
       const review = { actions: () => null };
       const target = {}; const pickingChangesTarget = false; const setPickingChangesTarget = unrelated; const repo = {};
       const pullRequest = { pr: null, refresh: unrelated };

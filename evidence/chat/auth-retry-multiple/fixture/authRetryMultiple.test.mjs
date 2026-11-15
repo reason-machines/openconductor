@@ -34,6 +34,7 @@ function fixture(chatId) {
       ),
     }],
     [resolve(root, "src/onboarding/ReasonSignInControls"), { ReasonSignInControls: () => null }],
+    [resolve(root, "src/onboarding/reasonChatConnection"), { rememberPairedWorkspace: async () => {} }],
     [resolve(root, "src/features/chat/ChatModelPicker.tsx"), {
       openAgentSettings() { assert.fail("This Reason continuation must not open provider settings"); },
     }],

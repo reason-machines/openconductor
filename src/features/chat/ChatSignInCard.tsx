@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { ReasonSignInControls } from "../../onboarding/ReasonSignInControls";
+import { rememberPairedWorkspace } from "../../onboarding/reasonChatConnection";
 import { useReasonSignIn } from "../../onboarding/reasonSignIn";
 import { openAgentSettings } from "./ChatModelPicker.tsx";
 import type { ChatAgentId } from "./agentChoice.ts";
@@ -34,7 +35,8 @@ function ReasonResend({ onSignedIn, label }: { onSignedIn?: () => void; label: s
     if (state.state !== "connected") { sawSignedOut.current = true; return; }
     if (!sawSignedOut.current || sent.current) return;
     sent.current = true;
-    callback.current?.();
+    // Persist the paired workspace before retrying so workspace_for_new() finds it.
+    void rememberPairedWorkspace(state.account).then(() => callback.current?.());
   }, [state.state]);
   return <ReasonSignInControls variant="chat" label={label} />;
 }

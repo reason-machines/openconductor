@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { openDevtools, openUrl } from "../backend";
-import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
+import { useKeybindingOverrides, useKeybindings } from "../keybindings/KeybindingsProvider";
 import { helpShortcutHints } from "./helpShortcutHints";
 import { ArrowUpRightIcon, BookIcon, HelpIcon, KeyboardIcon, MessageIcon, StethoscopeIcon } from "./Icons";
 import { Tooltip } from "./Tooltip";
@@ -30,6 +30,8 @@ interface Props {
 
 export function HelpMenu({ appVersion, onOpenShortcuts, onSendFeedback, onSubmitPrompt, onOpenDiagnostics }: Props) {
   const { overrides } = useKeybindingOverrides();
+  /** M16: wire the openDebugTools keybinding (⌘⌥I) to the same path the menu item uses. */
+  useKeybindings({ openDebugTools: () => void openDevtools().catch((e) => console.warn("open_devtools failed", e)) });
   const claude = useAgentBinaryStatus("claude");
   const codex = useAgentBinaryStatus("codex");
   const [open, setOpen] = useState(false);

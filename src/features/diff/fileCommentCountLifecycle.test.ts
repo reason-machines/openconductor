@@ -139,7 +139,7 @@ async function fixture(rows: DiffComment[], initial: { mode?: "flat" | "tree"; q
       const review = useReviewComments(workspace.id, chat);
       React.useEffect(() => review.onLoaded(diff.files, "all"), [review.onLoaded]);
       capture(review);
-      const openMarkdown = unrelated; const showDiff = true; const showFile = false; const fileTarget = null;
+      const openAnyFile = unrelated; const showDiff = true; const showFile = false; const fileTarget = null;
       const gitPanelTab = "changes"; const setGitPanelTab = unrelated;
       const target = {}; const pickingChangesTarget = false; const setPickingChangesTarget = unrelated; const repo = {};
       const pullRequest = { pr: null, refresh: unrelated }; const reviews = { start: unrelated, error: null };
