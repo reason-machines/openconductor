@@ -78,7 +78,12 @@ fn new_chats_require_the_settings_workspace() {
 fn legacy_session_with_unknown_ownership_is_not_resumed_in_the_selected_workspace() {
     let (p, log, home) = provider("legacy-offline");
     std::fs::write(home.join("fake-reason-discovery-offline"), "").unwrap();
-    p.open_chat("chat", &home, Some("legacy-session".into()), Default::default());
+    p.open_chat(
+        "chat",
+        &home,
+        Some("legacy-session".into()),
+        Default::default(),
+    );
     let end = p.prompt("chat", "echo: must not send");
     assert!(
         matches!(end, TurnEnd::Failed(ref message) if message.contains("workspace")),
@@ -678,11 +683,19 @@ fn workspace_local_env_isolation() {
 
     // Both agents now running.  Verify cross-workspace env isolation.
     assert_eq!(p.prompt("chat-a", "env: OC_TEST_WS_B"), TurnEnd::Completed);
-    assert_eq!(reply(&log), "unset", "ws-a agent leaked OC_TEST_WS_B from ws-b");
+    assert_eq!(
+        reply(&log),
+        "unset",
+        "ws-a agent leaked OC_TEST_WS_B from ws-b"
+    );
     log.lock().unwrap().clear();
 
     assert_eq!(p.prompt("chat-b", "env: OC_TEST_WS_A"), TurnEnd::Completed);
-    assert_eq!(reply(&log), "unset", "ws-b agent leaked OC_TEST_WS_A from ws-a");
+    assert_eq!(
+        reply(&log),
+        "unset",
+        "ws-b agent leaked OC_TEST_WS_A from ws-a"
+    );
     log.lock().unwrap().clear();
 
     // Interleaved: prompt ws-b, then ws-a, then ws-b again.
