@@ -79,7 +79,7 @@ export function KeyBindingsPage({ settings, save }: Props) {
   useKeybindings({ "settings.search": () => searchRef.current?.focus() });
 
   const cloudUI = boolPref(settings, "experimental_cloud_ui");
-  const rows = useMemo(() => editorRows(overrides, { cloudUI }), [overrides, cloudUI]);
+  const rows = useMemo(() => editorRows(overrides, { cloudUI, queuedMessagesEnabled: true }), [overrides, cloudUI]);
   const groups = useMemo(() => groupRows(filterRows(rows, query, typed)), [rows, query, typed]);
 
   const onSearchKeyDown = (e: ReactKeyboardEvent<HTMLInputElement>) => {

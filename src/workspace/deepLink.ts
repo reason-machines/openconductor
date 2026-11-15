@@ -36,12 +36,20 @@ export function parseWorkspaceLink(raw: string): WorkspaceLink | null {
  * What selecting the linked workspace dispatches, as clicking its sidebar row
  * does: select it. Its unread chat is read once it is on screen (read on view,
  * Conductor's yIo), not here. Null while no repository holds it.
+ *
+ * Note: link.sessionId (the ?session=<id> query param) identifies a specific
+ * chat tab; it is not yet surfaced in the workspace selection type.
  */
 export function openWorkspaceLinkActions(state: AppState, link: WorkspaceLink): Action[] | null {
   for (const repo of state.repos) {
     const ws = repo.workspaces.find((w) => w.id === link.workspaceId);
     if (!ws) continue;
     return [{ type: "select", selection: { kind: "workspace", repoId: repo.id, workspaceId: ws.id } }];
+  }
+  // Also match a currently-open archived workspace (archivedOpen is a single
+  // read-only view of one archived workspace, not in repos).
+  if (state.archivedOpen?.workspace.id === link.workspaceId) {
+    return [{ type: "select", selection: { kind: "workspace", repoId: state.archivedOpen.repoId, workspaceId: link.workspaceId } }];
   }
   return null;
 }

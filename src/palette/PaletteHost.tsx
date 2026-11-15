@@ -3,7 +3,7 @@ import type { Action } from "../state/store";
 import type { AppState } from "../state/types";
 import type { DialogKind } from "../components/Dialogs";
 import { CommandPalette } from "./CommandPalette.tsx";
-import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
+import { useKeybindings, useKeybindingOverrides } from "../keybindings/KeybindingsProvider.tsx";
 import type { CommandHandlers } from "../keybindings/bind.ts";
 import { workspacePaletteData, paletteSettings, shortcutOrder, sidebarOrder, stepWorkspace, paletteOpenInRequest, type WorkspaceOpenInTarget, type WorkspaceRef } from "./fromAppState.ts";
 import { MoveToSection, sectionItems, type MoveToSectionProps } from "./MoveToSection.tsx";
@@ -75,6 +75,7 @@ export interface PaletteCommands {
 
 /** Owns the palette's open state, recent workspaces and the app's global shortcuts. */
 export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, onOpenProject, open, onOpenChange, commands, activeOpenInTarget }: Props) {
+  const { overrides } = useKeybindingOverrides();
   const [sectionWorkspaceId, setSectionWorkspaceId] = useState<string | undefined>(undefined);
   const sectionKeyRef = useRef(0);
   const [sectionKey, setSectionKey] = useState<string | undefined>(undefined);
@@ -250,6 +251,7 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
     <>
       <Toaster toasts={toasts} dismiss={dismiss} />
       {open && <CommandPalette
+      overrides={overrides}
       data={data}
       repos={state.repos}
       archived={archived}

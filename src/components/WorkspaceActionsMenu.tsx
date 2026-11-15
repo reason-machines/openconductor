@@ -19,6 +19,9 @@ import {
   WorkspaceStatusGlyph,
 } from "./menu/menuIcons";
 import { isWorkspaceUnread } from "../state/chatUnread";
+import { effectiveShortcuts } from "../keybindings/overrides";
+import { glyphs } from "../keybindings/shortcut";
+import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 
 // Conductor's workspace row menu: the sidebar row (`Qj` @9894200) wraps itself in a Base UI
 // ContextMenu whose popup is `${my} min-w-[200px]` around `D9e` -> `Aao` @7302657
@@ -71,22 +74,29 @@ interface Props {
 export function WorkspaceActionsMenu({ workspace, selected, at, actions, sections, currentSectionId, onClose }: Props) {
   const current = effectiveStatus(workspace);
   const pinned = typeof workspace.pinnedAt === "number";
+  const { overrides } = useKeybindingOverrides();
+  const readKey = effectiveShortcuts("workspace.contextMenu.toggleRead", overrides)[0];
+  const pinKey = effectiveShortcuts("workspace.contextMenu.togglePin", overrides)[0];
+  const readHint = readKey ? glyphs(readKey).toUpperCase() : "R";
+  const pinHint = pinKey ? glyphs(pinKey).toUpperCase() : "P";
 
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const key = e.key.toLowerCase();
-    if (key !== "r" && key !== "p") return;
+    const readMatch = readKey?.key.kind === "logical" ? readKey.key.value.toLowerCase() : "r";
+    const pinMatch = pinKey?.key.kind === "logical" ? pinKey.key.value.toLowerCase() : "p";
+    if (key !== readMatch && key !== pinMatch) return;
     e.preventDefault();
-    (key === "r" ? actions.toggleRead : actions.togglePin)();
+    (key === readMatch ? actions.toggleRead : actions.togglePin)();
     onClose();
   };
 
   return (
     <ContextMenu at={at} onClose={onClose} label="Workspace actions" className="cm-min-w-200" onKeyDown={onKeyDown}>
-      <MenuItem icon={isWorkspaceUnread(workspace) ? <MailOpenIcon /> : <MailIcon />} shortcut="R" onSelect={actions.toggleRead}>
+      <MenuItem icon={isWorkspaceUnread(workspace) ? <MailOpenIcon /> : <MailIcon />} shortcut={readHint} onSelect={actions.toggleRead}>
         {isWorkspaceUnread(workspace) ? "Mark as read" : "Mark as unread"}
       </MenuItem>
-      <MenuItem icon={pinned ? <PinOffIcon /> : <PinIcon />} shortcut="P" onSelect={actions.togglePin}>
+      <MenuItem icon={pinned ? <PinOffIcon /> : <PinIcon />} shortcut={pinHint} onSelect={actions.togglePin}>
         {pinned ? "Unpin" : "Pin"}
       </MenuItem>
       <SubMenu icon={<CircleDashedIcon />} label="Set status" className="cm-w-44">

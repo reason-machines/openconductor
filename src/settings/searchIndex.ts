@@ -68,6 +68,10 @@ const CLOUD_ONLY_ROW_LABELS = new Set<string>([
   "Enable file sync in new cloud workspaces",
   "Show agent cost",
   "Cloud desktop",
+  // These rows exist in searchRows.generated.ts but have no matching UI component
+  // when cloudUI is OFF; suppress them to avoid dead scroll targets (M14).
+  "Workspace API access",
+  "Git identity",
 ]);
 
 export interface IndexInput {
