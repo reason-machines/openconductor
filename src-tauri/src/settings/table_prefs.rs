@@ -110,6 +110,10 @@ pub const PREFS: &[Pref] = &[
     // Read by the PR panel as top-level settings keys (src/features/pr/prSettings.ts).
     b(Section::Top, "automerge_enabled"),
     b(Section::Top, "treat_optional_checks_as_blocking"),
+    // Conductor's `wrap_lines` diff/file-view setting (evidence/diff/wrap-lines-
+    // and-range-comments.md; `Te("wrap_lines",!0)` in index-BGEQ8YjU.js).
+    // Boolean, default true; stored in the settings table, not settings.toml.
+    b(Section::Top, "wrap_lines"),
     // Advanced
     b(Section::Advanced, "internal_remote_local_execution_mcp"),
     b(Section::Advanced, "always_allow_local_execution"),

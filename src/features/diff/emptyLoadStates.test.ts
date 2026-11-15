@@ -75,6 +75,7 @@ async function fixture() {
         },
       };
       if (name === "../../keybindings/KeybindingsProvider.tsx") return { useKeybindings: () => undefined };
+      if (name === "./wrapLinesPref.ts") return { useWrapLinesPref: () => ({ value: true, save: () => {} }) };
       if (name === "./useChangesPresentation.ts") return { useChangesPresentation: () => ({ presentation: { filePathFilter: "", diffFileListMode: "flat" } }) };
       if (name === "./FileDiffView") return { FileDiffView: (props: unknown) => React.createElement("diff-view", props) };
       if (name === "./EditInViewer.ts") return { useFileEdit: () => undefined, editableContents: () => null };

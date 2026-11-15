@@ -126,6 +126,7 @@ async function fixture(layout: DiffLayout, newline = true, kind: Kind = "modifie
         },
       };
       if (name === "../../keybindings/KeybindingsProvider.tsx") return { useKeybindings: () => undefined, useKeybindingOverrides: () => ({ overrides: {} }) };
+      if (name === "./wrapLinesPref.ts") return { useWrapLinesPref: () => ({ value: true, save: () => {} }) };
       if (name === "./useChangesPresentation.ts") return { useChangesPresentation: () => ({ presentation: { filePathFilter: "", diffFileListMode: "flat" } }) };
       if (name === "./useDiffTheme.ts") return { useDiffTheme: () => "github-dark" };
       if (name === "./CommentNav") return { CommentNav: () => null, useCommentNavigation: () => ({ previousCount: 0, nextCount: 0, refresh: () => undefined }) };
