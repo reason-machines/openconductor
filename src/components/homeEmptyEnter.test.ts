@@ -98,11 +98,11 @@ async function fixture(repos: Repo[]) {
     visible: () => rows().map((row) => row.props.title),
     selected: () => rows().filter((row) => row.props["aria-selected"]).map((row) => row.props.title),
     async query(value: string) { await act(async () => { input().props.onChange({ target: { value } }); }); },
-    async key(key: string) {
+    async key(key: string, modifiers: { metaKey?: boolean } = {}) {
       const event = Object.assign(new Event("keydown", { bubbles: true, cancelable: true }), {
         key, code: key === "Enter" ? "Enter" : "KeyX", keyCode: key === "Enter" ? 13 : 88,
         isComposing: false, nativeEvent: { isComposing: false },
-        metaKey: false, ctrlKey: false, altKey: false, shiftKey: false,
+        metaKey: modifiers.metaKey ?? false, ctrlKey: false, altKey: false, shiftKey: false,
       });
       await act(async () => { input().props.onKeyDown(event); });
       return event;
@@ -153,6 +153,58 @@ test("Home leaves an unrelated empty-list character key unprevented without acti
     assert.deepEqual(view.visible(), []);
     const event = await view.key("x");
     assert.equal(event.defaultPrevented, false);
+    assert.deepEqual(view.actions, []);
+  } finally { await view.close(); }
+});
+
+// --- workspace.startUnstartedWorkspace (⌘↩) tests ---
+// Evidence: keybindings/registry.ts id "workspace.startUnstartedWorkspace",
+// key logical("Enter", ["meta"]), displayScope "Backlog page".
+
+const backlogRepositories: Repo[] = [{
+  id: "project", name: "Project", path: "/fixture/project", defaultBranch: "main",
+  workspaces: [
+    {
+      id: "backlog-ws", name: "Backlogged", userSetWorkspaceName: true, branch: "backlogged",
+      status: "idle", diff: { added: 0, removed: 0 }, createdAt: Date.UTC(2026, 10, 11, 12),
+      manualStatus: "backlog",
+    },
+    {
+      id: "active-ws", name: "Active", userSetWorkspaceName: true, branch: "active",
+      status: "idle", diff: { added: 0, removed: 0 }, createdAt: Date.UTC(2026, 10, 11, 11),
+    },
+  ],
+}];
+
+test("⌘↩ (startUnstartedWorkspace) on a backlog workspace opens it", async () => {
+  const view = await fixture(backlogRepositories);
+  try {
+    assert.deepEqual(view.selected(), ["Backlogged"]);
+    const event = await view.key("Enter", { metaKey: true });
+    assert.equal(event.defaultPrevented, true, "⌘↩ on backlog workspace must be prevented");
+    assert.equal(view.actions.length, 1);
+    const action = view.actions[0];
+    assert.ok(action?.type === "select");
+    assert.deepEqual({ ...action.selection }, { kind: "workspace", repoId: "project", workspaceId: "backlog-ws" });
+  } finally { await view.close(); }
+});
+
+test("⌘↩ (startUnstartedWorkspace) does nothing when focused workspace is not backlog", async () => {
+  const view = await fixture(repositories);
+  try {
+    assert.deepEqual(view.selected(), ["Working"]);
+    const event = await view.key("Enter", { metaKey: true });
+    assert.equal(event.defaultPrevented, false, "⌘↩ on non-backlog workspace must not be prevented");
+    assert.deepEqual(view.actions, [], "⌘↩ on non-backlog workspace must dispatch nothing");
+  } finally { await view.close(); }
+});
+
+test("⌘↩ (startUnstartedWorkspace) does nothing on an empty list", async () => {
+  const view = await fixture([]);
+  try {
+    assert.deepEqual(view.visible(), []);
+    const event = await view.key("Enter", { metaKey: true });
+    assert.equal(event.defaultPrevented, false, "⌘↩ on empty list must not be prevented");
     assert.deepEqual(view.actions, []);
   } finally { await view.close(); }
 });
