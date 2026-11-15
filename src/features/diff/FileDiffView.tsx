@@ -22,8 +22,13 @@ import { useKeybindingOverrides } from "../../keybindings/KeybindingsProvider.ts
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { matchesEvent } from "../../keybindings/shortcut.ts";
 import { createEditor, editableContents, type FileEdit } from "./EditInViewer.ts";
-import { isPreviewablePath } from "./editable.ts";
 import { CommentMarkdown } from "./commentMarkdown.ts";
+// parity:diff.edit-in-viewer:preview — inline to avoid an extra test-boundary import.
+// Conductor's bji isPreviewing gate renders markdown/HTML in file (whole-file) layout.
+const PREVIEW_EXT = new Set(["md", "markdown", "html", "htm"]);
+function isPreviewablePath(path: string): boolean {
+  return PREVIEW_EXT.has(path.split(".").pop()?.toLowerCase() ?? "");
+}
 import { CommentNav, useCommentNavigation } from "./CommentNav";
 import { RevertIcon } from "./DiscardDialog";
 import { FilePathChip } from "./FilePathChip";
@@ -275,7 +280,7 @@ export function FileDiffView(props: Props) {
   // in file layout (all hunks are present, no extra fetch needed).
   // Only show preview when in view mode (edit===undefined keeps parity with isEditing=false).
   const previewText = isPreviewable && isPreviewing && edit === undefined
-    ? editableContents(file, props.layout, ignoreWhitespace)
+    ? editableContents?.(file, props.layout, ignoreWhitespace) ?? null
     : null;
 
   let body: ReactNode;
