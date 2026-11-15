@@ -40,7 +40,7 @@ export type Action =
   | {
       type: "addWorkspace";
       repoId: string;
-      workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "targetBranch" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName" | "number">;
+      workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "targetBranch" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName" | "number" | "state">;
     }
   /** `userSet` marks a rename the user made, which blocks the automatic first-message rename. */
   /** `keepPlaceholder`: a name-only rename from the Rename dialog leaves `placeholder_branch_name` alone. */
