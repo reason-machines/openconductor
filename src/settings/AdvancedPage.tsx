@@ -29,6 +29,7 @@ export function AdvancedPage({ settings, save }: Props) {
       <RootPathRow />
       <ExecutablePathRow agent="claude" settings={settings} save={save} />
       <ExecutablePathRow agent="codex" settings={settings} save={save} />
+      <ExecutablePathRow agent="opencode" settings={settings} save={save} />
       <PathRow
         label="SSH private key path"
         help="Use your own SSH key for cloud workspace access. Leave empty to auto-generate a key."
@@ -56,13 +57,6 @@ export function AdvancedPage({ settings, save }: Props) {
             Run local commands from remote agents without asking. Turned on when you choose <strong>Yes always</strong> on a local command approval.
           </>
         }
-      />
-      <PrefSwitchRow
-        settings={settings}
-        save={save}
-        pref="auto_sync_files_in_new_cloud_workspaces"
-        label="Enable file sync in new cloud workspaces"
-        help="Start syncing when you open a local terminal or run a local task. Sync files can still be turned on per workspace."
       />
       <Row
         label="Set upstream on plain git push"
