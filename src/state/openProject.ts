@@ -29,7 +29,7 @@ export function decideOpenProject(path: string, f: FolderInspection): OpenProjec
   if (!f.isDir) return { kind: "error", message: `${path} is not a folder` };
   if (!f.hasGit) return { kind: "needsGitHubRepo", name, path, needsGitInit: true };
   if (!f.origin) return { kind: "needsGitHubRepo", name, path, needsGitInit: false };
-  return { kind: "add", name, path, remote: `file://${path}` };
+  return { kind: "add", name, path, remote: f.origin };
 }
 
 export function failedToAddMessage(err: unknown): string {

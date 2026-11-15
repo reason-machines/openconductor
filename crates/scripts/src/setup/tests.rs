@@ -245,7 +245,10 @@ fn restore_missing_log_gives_empty_string() {
 fn restore_does_not_overwrite_running_setup() {
     let tmp = tempfile::tempdir().unwrap();
     let mgr = SetupManager::new(tmp.path().join("logs"));
-    let s = spec(tmp.path(), "trap 'exit 0' TERM; echo ready; while :; do sleep 0.1; done");
+    let s = spec(
+        tmp.path(),
+        "trap 'exit 0' TERM; echo ready; while :; do sleep 0.1; done",
+    );
     let (tx, rx) = std::sync::mpsc::channel();
     mgr.start("w3", &s, None, Box::new(move |o| tx.send(o).unwrap()))
         .unwrap();

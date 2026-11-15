@@ -44,6 +44,7 @@ import { RestoreWorkspaceDialog, type RestoreRequest } from "./components/Restor
 import type { Action } from "./state/store";
 import { useInitIssues } from "./workspace/useInitIssues";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
+import { SearchInFilesDialog } from "./components/SearchInFilesDialog";
 import { CHANGELOG_URL, DOCS_URL } from "./components/helpMenuItems";
 import {
   openInTerminalScript,
@@ -342,6 +343,7 @@ export default function App() {
     onAddProjectAt: addProjectAt,
   };
   const [quickOpen, setQuickOpen] = useState(false);
+  const [searchInFiles, setSearchInFiles] = useState(false);
   // ⌥⌘/ and the native Help > Keyboard Shortcuts item both toggle the help dialog.
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const { overrides } = useKeybindingOverrides();
@@ -403,6 +405,7 @@ export default function App() {
   // Quick open needs an active (not archived) workspace, like the reference.
   const canQuickOpen = !!workspace && workspace.status !== "archived";
   const workspacePath = workspace?.path || repo?.path || (inTauri() ? null : "/demo");
+  const canSearchInFiles = !!workspacePath;
 
   // Every app-shell shortcut goes through the one dispatcher (src/keybindings).
   useKeybindings({
@@ -420,6 +423,7 @@ export default function App() {
     "view.toggleZenMode": () => toggleZenMode(isSidebarVisible(state), dispatch),
     "toggleGarryMode": toggleGarryMode,
     "nav.quickOpen": () => setQuickOpen((open) => !open && canQuickOpen),
+    "nav.searchInFiles": () => setSearchInFiles((open) => !open && canSearchInFiles),
     "workspace.create": () => openDialog("create"),
     "workspace.createFromPRBranchIssue": () => openDialog("create", undefined, undefined, true),
     "quitApplication": requestQuit,
@@ -464,8 +468,8 @@ export default function App() {
     },
     // Opens the PR URL in the system browser — available immediately.
     openPullRequest: (url: string) => void openUrl(url).catch((e) => show("error", errorText(e))),
-    // These require dialogs or backend IPC not yet implemented; absent = hidden from palette.
-    searchInFiles: undefined,
+    // Opens the search-in-files dialog (REA evidence: renderApp-D_fmY7hW.js _Se/$co).
+    searchInFiles: canSearchInFiles ? () => setSearchInFiles(true) : undefined,
     linkIssue: undefined,
     createPullRequest: undefined,
     mergePullRequest: undefined,
@@ -681,6 +685,14 @@ export default function App() {
           workspacePath={workspacePath}
           onClose={() => setQuickOpen(false)}
           onOpen={(path, mode) => show("info", `${mode === "diff" ? "Diff of" : "Opened"} ${path} (file viewer not built yet)`)}
+        />
+      )}
+      {searchInFiles && repo && (
+        <SearchInFilesDialog
+          repoId={repo.id}
+          workspacePath={workspacePath}
+          onClose={() => setSearchInFiles(false)}
+          onOpen={(path, lineNumber) => show("info", `Opened ${path}:${lineNumber} (file viewer not built yet)`)}
         />
       )}
       {githubRepo && (

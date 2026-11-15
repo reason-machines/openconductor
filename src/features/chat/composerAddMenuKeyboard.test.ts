@@ -64,7 +64,7 @@ function fixture({ attachment = true, link = true, plan = true, disabledPlan = f
       if (name === "./composerLongPaste.ts") return { longPasteAttachment: () => null };
       if (name.endsWith("/useBoolPref.ts")) return { useBoolPref: () => false };
       if (name === "../../backend") return { fuzzyFilterFiles: () => assert.fail("menu navigation must not search files") };
-      if (name === "./composerIcons.tsx") return Object.fromEntries(["ArrowUpIcon", "CornerDownLeftIcon", "PaperclipIcon", "PlusIcon", "StopCircleIcon"].map((key) => [key, () => null]));
+      if (name === "./composerIcons.tsx") return Object.fromEntries(["ArrowUpIcon", "CircleDotIcon", "CornerDownLeftIcon", "PaperclipIcon", "PlusIcon", "StopCircleIcon"].map((key) => [key, () => null]));
       throw new Error(`Unexpected Composer dependency: ${name}`);
     },
   });
