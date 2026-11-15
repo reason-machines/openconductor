@@ -299,7 +299,11 @@ pub fn reason_open_chat(
 ) -> Result<(), String> {
     let provider = state.provider(&app)?;
     let cwd = PathBuf::from(cwd);
-    provider.open_chat(&chat_id, &cwd, session_id);
+    // M7: inject workspace-local env vars into the Reason agent process.
+    // Applied only when a new agent starts for this workspace; concurrent
+    // chats in the same workspace share the existing agent and its env.
+    let local_env = crate::settings::effective::local_env_for_dir(&cwd);
+    provider.open_chat(&chat_id, &cwd, session_id, local_env);
     let config = config.unwrap_or_default().into_iter();
     let config = config.map(|c| ConfigChoice {
         id: c.id,

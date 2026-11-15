@@ -44,7 +44,8 @@ turn number), "slow" (a running tool until session/cancel), "report" (a
 mid-turn user_message_chunk), "local" (a diff in the session's working folder),
 "cloud" (a diff under a cloud checkout), "write: a.txt=one;b.txt=two" (write
 files in the session's folder), "crash" (exit without answering),
-"config" (replies "model=M effort=E"), "attachments" (replies with each
+"config" (replies "model=M effort=E"), "env: VARNAME" (replies with the value
+of env var VARNAME in the agent process, or "unset"), "attachments" (replies with each
 embedded resource as "NAME: TEXT", NAME the last part of its uri),
 "permission" (asks session/request_permission for a tool call, then replies
 "permission: OPTION" with the chosen optionId or "cancelled"),
@@ -317,6 +318,11 @@ def prompt(rid, p, cancel):
         tallinn(sid)
         if cancel.is_set():
             stop = "cancelled"
+    elif cmd.startswith("env: "):
+        # "env: VARNAME" - echo the value of env var VARNAME, or "unset".
+        # Used by workspace_local_env_isolation tests.
+        var_name = cmd[5:]
+        text(sid, "agent_message_chunk", os.environ.get(var_name, "unset"))
     elif cmd == "crash":
         os._exit(3)
     if running.get(sid, (None,))[0] == rid:
