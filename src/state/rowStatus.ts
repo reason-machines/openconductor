@@ -148,7 +148,13 @@ export const isGitStatus = (s: RowStatus): boolean => GIT_STATUSES.has(s);
  * with only the sessions' status and the workspace state, no PR.
  */
 export function homeStatus(workspaceState: string | undefined, session: SessionStatus): RowStatus {
-  return rowStatus({ workspaceState, session });
+  const s = rowStatus({ workspaceState, session });
+  // Conductor (`aWt`): idle/error gives Home back the last-activity time, even
+  // during workspace setup. The sidebar row icon keeps "Setting up" (parity
+  // sidebar.ws-status). FROM_SESSION is undefined for idle/error, so checking
+  // it avoids duplicating the session urgency list here.
+  if (s === "setting-up" && FROM_SESSION[session] === undefined) return rowStatus({ session });
+  return s;
 }
 
 /**

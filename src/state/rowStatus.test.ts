@@ -100,8 +100,11 @@ test("Home shows the agent's or setup's status in place of the time, never a git
     // setting-up / initializing: live session urgency wins (the user can interact while setup runs).
     ["initializing", "needs_user_input", "needs-user-input", true],
     ["setting_up", "needs_user_permission", "needs-user-permission", true],
-    // Idle/error session: setting-up still shows.
-    ["initializing", "idle", "setting-up", true],
+    // Idle/error session: Home gives back the last-activity time (Conductor aWt), not "Setting up".
+    // The sidebar row icon still shows "Setting up" (rowStatus keeps that; homeStatus overrides for Home).
+    ["initializing", "idle", "local", false],
+    ["setting_up", "idle", "local", false],
+    ["setting_up", "error", "local", false],
     // failed and unstarted are terminal/not-started — always win.
     ["failed", "working", "failed", true],
     ["unstarted", "idle", "unstarted", false],
