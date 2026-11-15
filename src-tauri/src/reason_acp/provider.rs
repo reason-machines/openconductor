@@ -776,7 +776,7 @@ impl ReasonProvider {
         let (conn, generation, id, workspace, options) = match known {
             Some(id) => {
                 let workspace = self.locate(&id, workspace)?;
-                let (conn, generation) = self.ensure_agent(workspace.as_deref(), &local_env)?
+                let (conn, generation) = self.ensure_agent(workspace.as_deref(), &local_env)?;
                 let mut params = base;
                 params["sessionId"] = json!(id);
                 let v = conn
@@ -786,7 +786,7 @@ impl ReasonProvider {
             }
             None => {
                 let workspace = Some(self.workspace_for_new()?);
-                let (conn, generation) = self.ensure_agent(workspace.as_deref(), &local_env)?
+                let (conn, generation) = self.ensure_agent(workspace.as_deref(), &local_env)?;
                 let v = conn
                     .call("session/new", base, SETUP_TIMEOUT)
                     .map_err(|e| e.to_string())?;
@@ -942,7 +942,7 @@ impl ReasonProvider {
             .in_workspace(workspace)
             .map_err(|e| e.to_string())?;
         for (k, v) in local_env {
-            launch.env.set(k, v);
+            launch.set_env(k, v);
         }
         let (process, stdin, stdout) = AgentProcess::spawn(&launch, &self.dir)
             .map_err(|e| format!("Could not start {}: {e}", launch.cli().display()))?;

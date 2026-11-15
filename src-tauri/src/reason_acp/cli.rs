@@ -112,6 +112,13 @@ impl LaunchConfig {
         self
     }
 
+    /// Add one variable to the launch env without replacing the rest.
+    /// Used by M7 to layer workspace-local variables on top of the
+    /// provider-level env (API keys etc.) that was set through `env()`.
+    pub fn set_env(&mut self, name: &str, value: &str) {
+        self.env.set(name, value);
+    }
+
     /// The signed-in Workspace to use (`reason whoami` names it).
     pub fn workspace(mut self, slug: &str) -> Result<Self, LaunchError> {
         self.workspace = Some(checked("--workspace", slug)?);
