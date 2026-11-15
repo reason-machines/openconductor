@@ -153,6 +153,7 @@ async function fixture() {
       if (name === "@pierre/diffs") return Pierre;
       if (name === "@tauri-apps/api/core") return { invoke: forbidden, isTauri: () => false };
       if (name === "@tauri-apps/api/event") return { listen: forbidden };
+      if (name === "@tauri-apps/api/webview") return { getCurrentWebview: () => ({ onDragDropEvent: () => Promise.resolve(() => {}) }) };
       assert.ok(name.startsWith("."), `Unexpected external module ${name}`);
       const base = resolve(dirname(filename), name);
       const path = [base, `${base}.ts`, `${base}.tsx`, `${base}/index.ts`].find(existsSync);
