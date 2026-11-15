@@ -18,10 +18,12 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { processFile, type CodeViewItem, type CodeViewLineSelection, type SelectedLineRange, type ThemeTypes } from "@pierre/diffs";
 import { CodeView, EditProvider, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
 import { WhitespaceOnly } from "./Whitespace";
-import { useKeybindingOverrides } from "../../keybindings/KeybindingsProvider.tsx";
+import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { matchesEvent } from "../../keybindings/shortcut.ts";
-import { createEditor, type FileEdit } from "./EditInViewer.ts";
+import { createEditor, editableContents, type FileEdit } from "./EditInViewer.ts";
+import { isPreviewablePath } from "./editable.ts";
+import { CommentMarkdown } from "./commentMarkdown.ts";
 import { CommentNav, useCommentNavigation } from "./CommentNav";
 import { RevertIcon } from "./DiscardDialog";
 import { FilePathChip } from "./FilePathChip";
@@ -258,11 +260,27 @@ function useCodeViewItem(file: FileDiff, meta: ReturnType<typeof processFile>, l
 export function FileDiffView(props: Props) {
   const { file, ignoreWhitespace, viewed, onToggleViewed, refreshStatus, onDiscard, tools, options, worktree, onShowWhitespace, edit, loadText, notify } = props;
   const copy = copySource(file, { draft: edit?.current, loadText });
+
+  // Conductor's bji isPreviewing gate: show rendered preview for markdown/HTML in file layout.
+  // workspace.toggleFileEdit (⌘E) switches between preview and source when available.
+  const isPreviewable = props.layout === "file" && !file.binary && !file.hide_reason &&
+    file.hunks.length > 0 && isPreviewablePath(file.path);
+  const [isPreviewing, setIsPreviewing] = useState(isPreviewable);
+  useEffect(() => { setIsPreviewing(isPreviewable); }, [file.path, isPreviewable]);
+  useKeybindings({ "workspace.toggleFileEdit": isPreviewable ? () => setIsPreviewing((p) => !p) : undefined });
+  // Whole-file text for the preview: editableContents reads it synchronously from the diff data
+  // in file layout (all hunks are present, no extra fetch needed).
+  const previewText = isPreviewable && isPreviewing
+    ? editableContents(file, props.layout, ignoreWhitespace)
+    : null;
+
   let body: ReactNode;
   if (file.hide_reason === "file_too_large") body = <div className="oc-file-note">File too large to display</div>;
   else if (file.binary) body = <div className="oc-file-note">Binary file changed</div>;
   else if (file.hunks.length === 0)
     body = ignoreWhitespace ? <WhitespaceOnly onShow={onShowWhitespace} /> : <div className="oc-file-note">No changes in this file</div>;
+  else if (isPreviewable && isPreviewing && previewText !== null)
+    body = <div className="oc-md-preview oc-code-scroll"><CommentMarkdown text={previewText} /></div>;
   else
     body = (
       <div className="oc-code-scroll">
@@ -292,6 +310,18 @@ export function FileDiffView(props: Props) {
             </Tooltip>
           )}
           {copy && <CopyFileButton path={file.path} read={copy} notify={notify} />}
+          {isPreviewable && (
+            <Tooltip content={isPreviewing ? "Show source (\u2318E)" : "Show preview (\u2318E)"}>
+              <button type="button" className="icon-btn" aria-label={isPreviewing ? "Show source" : "Show preview"}
+                aria-pressed={isPreviewing} onClick={() => setIsPreviewing((p) => !p)}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  {isPreviewing
+                    ? <><path d="M17 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z" /><path d="M9 7h6M9 11h6M9 15h4" /></>
+                    : <><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></>}
+                </svg>
+              </button>
+            </Tooltip>
+          )}
           {tools}
           {refreshStatus?.type === "updating" ? (
             <span className="oc-file-refresh-status" role="status"><span className="clone-spinner" aria-hidden />Updating…</span>
