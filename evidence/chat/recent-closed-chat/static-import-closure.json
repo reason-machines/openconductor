@@ -150,6 +150,7 @@
     "src/features/diff/DiffViewer",
     "src/features/files/AllFilesTree",
     "src/features/files/MarkdownFileView",
+    "src/features/files/WorkspaceFileView",
     "src/features/files/panelIcons",
     "src/features/openIn/OpenInButton",
     "src/features/pr/PrBadgeMenu",

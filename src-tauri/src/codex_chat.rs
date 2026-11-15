@@ -174,7 +174,7 @@ pub async fn codex_open_chat<R: Runtime>(
     let config = RunnerConfig {
         launch,
         thread: ThreadOptions {
-            cwd: Some(cwd),
+            cwd: Some(cwd.clone()),
             model: None,
             policy: policy.unwrap_or_else(default_policy),
             developer_instructions: None,
