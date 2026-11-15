@@ -32,7 +32,7 @@ import { composerPrompt } from "./composerDocument.ts";
 import { longPasteAttachment } from "./composerLongPaste.ts";
 import { useBoolPref } from "../../settings/useBoolPref.ts";
 import { useSettings } from "../../settings/useSettings.ts";
-import { boolPref, withBoolPref } from "../../settings/prefs.ts";
+import { withBoolPref } from "../../settings/prefs.ts";
 import { queuedUserDraft, submittedUserPrompt, type SentUserContentV1, type UserPrompt } from "./userContent.ts";
 import { FileMentionMenu } from "./FileMentionMenu.tsx";
 import { ArrowUpIcon, CircleDotIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
