@@ -220,6 +220,10 @@ pub async fn create_workspace(
     match service.create_workspace(&req) {
         Ok(created) => {
             let log = created.initialization_log_path.as_ref().map(|p| p.display().to_string());
+            // When the caller did not name a branch, the service generated a
+            // placeholder; store it so the first-message rename can clear it.
+            let placeholder = req.branch_name.is_none()
+                .then(|| created.workspace.branch.as_str());
             let number = persistence::on_create_finished(
                 &db,
                 &repository_id,
@@ -227,6 +231,7 @@ pub async fn create_workspace(
                 &parent,
                 log.as_deref(),
                 created.initialization_files_copied,
+                placeholder,
             )
             .await;
             Ok(CreatedWorkspaceDto { number, ..created_dto(&repository_id, created) })

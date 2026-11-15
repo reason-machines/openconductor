@@ -55,7 +55,13 @@ export function ShortcutHint({ commandId, className }: { commandId: string; clas
 export interface TooltipProps {
   /** What the tooltip says. A string or node; composed exactly as the Conductor call site does. */
   content: ReactNode;
-  /** Registry command whose shortcut follows the content (`Ss`), as `[content, " ", Ss]`. */
+  /**
+   * Keybinding registry commandId whose resolved glyphs follow the content (`Ss`).
+   * Pass the commandId (e.g. `"nav.settings"`), not a glyph string — it is
+   * forwarded to `<ShortcutHint commandId={...} />` which reads the user's
+   * overrides (Low#16: contrast with components/Tooltip whose shortcut is an
+   * already-resolved glyph string).
+   */
   shortcut?: string;
   /** The trigger: one element that accepts a ref and props (a DOM element or a forwardRef component). */
   children: ReactElement;

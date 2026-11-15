@@ -359,6 +359,17 @@ impl SettingsService {
     }
 
     /// `codex_executable_path` when it is set and not blank.
+    pub fn claude_launch_for_chat(&self, cwd: &std::path::Path) -> Result<crate::agent::ClaudeLaunch, String> {
+        let settings = self.get().map_err(|e| e.to_string())?;
+        super::launch::claude_launch(
+            &settings,
+            cwd,
+            self.store.as_ref(),
+            super::launch::Purpose::Chat,
+        )
+        .map_err(|e| e.to_string())
+    }
+
     pub fn codex_executable_override(&self) -> Option<PathBuf> {
         let settings = self.get().ok()?;
         let path = settings.codex_executable_path?;

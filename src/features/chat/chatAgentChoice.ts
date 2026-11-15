@@ -12,8 +12,8 @@ import type { ChatAgentId } from "./agentChoice.ts";
 import type { ModelChoice } from "./composerModels.ts";
 
 /** The picker entries that stand for the Codex and Claude Code CLIs. */
-export const CODEX_ENTRY: ModelChoice = { model: "codex", effort: null };
-export const CLAUDE_ENTRY: ModelChoice = { model: "claude-code", effort: null };
+export const CODEX_ENTRY: ModelChoice = { model: "codex", effort: null, agent: "codex" };
+export const CLAUDE_ENTRY: ModelChoice = { model: "claude-code", effort: null, agent: "claude" };
 
 type CliAgent = Exclude<ChatAgentId, "reason">;
 const CLI_AGENTS: Record<CliAgent, { entry: ModelChoice; label: string }> = {
@@ -56,7 +56,8 @@ export function pickerState(agent: ChatAgentId, reasonModel: ModelChoice, fallba
   const others = agentsAvailable ? CLI_AGENT_IDS.filter((id) => id !== agent || reasonModel.agent === id).map((id) => CLI_AGENTS[id].entry) : [];
   if (agent !== "reason") {
     const local = reasonModel.agent === agent ? reasonModel : CLI_AGENTS[agent].entry;
-    return { value: local, ...(local.agent ? {} : { label: CLI_AGENTS[agent].label }), favorites: [...availableLoadout, ...reasonModels, ...others] };
+    const entryLabel = agentEntryLabel(local);
+    return { value: local, ...(entryLabel ? { label: entryLabel } : {}), favorites: [...availableLoadout, ...reasonModels, ...others] };
   }
   return { value: reasonModel, favorites: [...availableLoadout, ...reasonModels.slice(1), ...others] };
 }
