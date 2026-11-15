@@ -7,6 +7,7 @@ use std::path::PathBuf;
 use tauri::State;
 
 use crate::db::Db;
+use crate::terminal_history::TerminalHistory;
 use crate::workspace::files_to_copy::{self, Preview};
 use crate::workspace::service::WorkspaceService;
 
@@ -24,8 +25,32 @@ pub async fn repo_files_to_copy_preview(repo_path: String, globs: Option<String>
 /// JS: `invoke("db_remove_repo", { repoId })`: remove the repository and its
 /// workspaces from OpenConductor. Worktrees are deleted; the repository's own
 /// checkout, its branches and its remotes are not touched.
+///
+/// Terminal history has two halves: a `terminal_sessions` row in conductor.db
+/// and an encrypted entry file under `local-storage.entries/terminal-history/`.
+/// `delete_with_workspaces` removes the rows; we must call
+/// `TerminalHistory::delete_workspace` first so the files are removed too,
+/// while the rows are still present for `session_ids_for_workspace` to find.
 #[tauri::command]
-pub async fn db_remove_repo(db: State<'_, Db>, service: State<'_, WorkspaceService>, repo_id: String) -> Result<(), String> {
+pub async fn db_remove_repo(
+    db: State<'_, Db>,
+    service: State<'_, WorkspaceService>,
+    history: State<'_, TerminalHistory>,
+    repo_id: String,
+) -> Result<(), String> {
+    // Remove encrypted terminal-history entry files for every workspace in the
+    // repo.  This must run before `delete_with_workspaces` deletes the
+    // `terminal_sessions` rows that `delete_workspace` reads to find them.
+    let workspace_ids: Vec<String> =
+        sqlx::query_scalar("SELECT local_id FROM workspaces WHERE repository_id = ?")
+            .bind(&repo_id)
+            .fetch_all(&db.0)
+            .await
+            .map_err(|e| e.to_string())?;
+    for workspace_id in &workspace_ids {
+        history.delete_workspace(&db.0, workspace_id).await?;
+    }
+
     if let Ok(root) = service.repository_root(&repo_id) {
         service.manager().remove_all(&root).map_err(|e| e.to_string())?;
     }
