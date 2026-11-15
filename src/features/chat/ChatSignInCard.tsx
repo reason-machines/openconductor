@@ -1,6 +1,5 @@
-import { useEffect, useRef } from "react";
 import { ReasonSignInControls } from "../../onboarding/ReasonSignInControls";
-import { useReasonSignIn } from "../../onboarding/reasonSignIn";
+import { rememberPairedWorkspace } from "../../onboarding/reasonChatConnection";
 import { openAgentSettings } from "./ChatModelPicker.tsx";
 import type { ChatAgentId } from "./agentChoice.ts";
 import { signInCopy } from "./agentSignIn.ts";
@@ -24,17 +23,14 @@ export function ChatSignInCard({ agent, onSignedIn }: { agent: ChatAgentId; onSi
 }
 
 function ReasonResend({ onSignedIn, label }: { onSignedIn?: () => void; label: string }) {
-  const { state } = useReasonSignIn();
-  const sawSignedOut = useRef(false);
-  const sent = useRef(false);
-  const callback = useRef(onSignedIn);
-  callback.current = onSignedIn;
-  useEffect(() => {
-    if (state.state === "checking") return;
-    if (state.state !== "connected") { sawSignedOut.current = true; return; }
-    if (!sawSignedOut.current || sent.current) return;
-    sent.current = true;
-    callback.current?.();
-  }, [state.state]);
-  return <ReasonSignInControls variant="chat" label={label} />;
+  return (
+    <ReasonSignInControls
+      variant="chat"
+      label={label}
+      onSignedIn={async (account) => {
+        await rememberPairedWorkspace(account);
+        onSignedIn?.();
+      }}
+    />
+  );
 }
