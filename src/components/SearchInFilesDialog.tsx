@@ -16,6 +16,7 @@ import { grepWorkspace, type GrepMatch, type GrepResult } from "../backend";
 import { RECENT_FILES_STORAGE_KEY, addRecentFile, parseRecentFiles } from "../spotlight/recentFiles";
 import { ConductorIcon } from "./ConductorIcon";
 import { useDialogMotion } from "./motion/dialogMotion";
+import { utf8ByteToCharIndex } from "./searchInFilesHighlight";
 
 // --- Icons (Lucide geometries, inline — not in the shared icon set) ---
 
@@ -122,21 +123,6 @@ function groupByFile(result: GrepResult | null): FileGroup[] {
     }
   }
   return [...map.values()];
-}
-
-// --- UTF-8 byte offset → JS string index (H2: Rust regex::Match gives byte offsets, JS slices by UTF-16) ---
-
-/** Convert a UTF-8 byte offset within `str` to a JavaScript (UTF-16) string index. */
-function utf8ByteToCharIndex(str: string, byteOffset: number): number {
-  let idx = 0;
-  let bytes = 0;
-  while (idx < str.length && bytes < byteOffset) {
-    const cp = str.codePointAt(idx)!;
-    // UTF-8 byte widths: 1 (U+0000–U+007F), 2 (U+0080–U+07FF), 3 (U+0800–U+FFFF), 4 (U+10000+)
-    bytes += cp <= 0x7f ? 1 : cp <= 0x7ff ? 2 : cp <= 0xffff ? 3 : 4;
-    idx += cp > 0xffff ? 2 : 1; // surrogate pair = 2 UTF-16 code units
-  }
-  return idx;
 }
 
 // --- Highlighted match line (Yco) ---
