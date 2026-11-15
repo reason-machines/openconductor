@@ -35,10 +35,14 @@ def brand(s: str) -> str:
 
 def source_text() -> str:
     parts = []
-    for p in sorted((ROOT / "src/settings").rglob("*.ts*")):
-        if p.name.endswith(".test.ts") or p.name == OUT.name:
-            continue
-        parts.append(p.read_text())
+    # src/settings is the primary home; src/features holds rows too (e.g.
+    # DiffAppearanceRows for Accessible colors / Code theme / Code ligatures).
+    scan_dirs = [ROOT / "src/settings", ROOT / "src/features"]
+    for d in scan_dirs:
+        for p in sorted(d.rglob("*.ts*")):
+            if p.name.endswith(".test.ts") or p.name == OUT.name:
+                continue
+            parts.append(p.read_text())
     return "\n".join(parts)
 
 
