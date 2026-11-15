@@ -837,6 +837,11 @@ function RightPanel({ workspaceId, tab, setTab, diff, actions, pr, worktree, rev
   });
   const count = diff.load.state === "ready" ? diff.files.length : null;
   const checksStatus = pr.pr?.status?.checks.status ?? null;
+  // Conductor hides Checks when no PR is loaded. If a stale tab="checks" arrives (e.g. navigating
+  // from a workspace that had a PR to one that doesn't), reset it to "changes".
+  useEffect(() => {
+    if (!pr.pr && tab === "checks") setTab("changes");
+  }, [pr.pr, tab, setTab]);
   const files = useFilesToolbar();
   const { presentation, ready: presentationReady, update: updatePresentation } = useChangesPresentation(workspaceId);
   const [filterOpen, setFilterOpen] = useState(false);
@@ -877,7 +882,8 @@ function RightPanel({ workspaceId, tab, setTab, diff, actions, pr, worktree, rev
         <div className="rp-tab-buttons">
           {tabButton("files", "All files")}
           {tabButton("changes", <>Changes {count ? <span className="tab-count">{count}</span> : null}</>)}
-          {tabButton("checks", <>Checks {checksStatus ? <span className={`checks-dot ${checksStatus}`} aria-label={checksStatus} /> : null}</>)}
+          {/* Conductor hides Checks when no PR data is loaded (REA reference: no Checks tab when "Couldn't load PR info"). */}
+          {pr.pr && tabButton("checks", <>Checks {checksStatus ? <span className={`checks-dot ${checksStatus}`} aria-label={checksStatus} /> : null}</>)}
         </div>
         <span className="rp-tabs-end">
           {tab === "files" && <FilesToolbarButtons toolbar={files} />}

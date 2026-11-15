@@ -112,6 +112,13 @@ impl LaunchConfig {
         self
     }
 
+    /// Add one variable to the launch env without replacing the rest.
+    /// Used by M7 to layer workspace-local variables on top of the
+    /// provider-level env (API keys etc.) that was set through `env()`.
+    pub fn set_env(&mut self, name: &str, value: &str) {
+        self.env.set(name, value);
+    }
+
     /// The signed-in Workspace to use (`reason whoami` names it).
     pub fn workspace(mut self, slug: &str) -> Result<Self, LaunchError> {
         self.workspace = Some(checked("--workspace", slug)?);
@@ -489,5 +496,62 @@ impl AgentProcess {
 impl Drop for AgentProcess {
     fn drop(&mut self) {
         self.kill();
+    }
+}
+
+/// Tests for `CliEnv` and `base_command` at the real subprocess boundary.
+///
+/// These tests use a disposable `sh -c` subprocess — no ACP protocol, no
+/// Python, no native app, no credentials.  They prove that `CliEnv::apply`
+/// propagates set vars and withholds removed vars at the `Command` level,
+/// independently of the higher-level `ReasonProvider` / `fake_reason_acp.py`
+/// path.  The provider-level isolation tests in `provider_tests.rs` build on
+/// this guarantee: they verify the same property end-to-end, through the
+/// workspace-keyed agent map.
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::process::{Command, Stdio};
+
+    /// A var injected via `CliEnv::set` appears in the spawned subprocess's
+    /// environment even though it was never in the parent process.
+    #[test]
+    fn cli_env_set_var_reaches_subprocess() {
+        let mut env = CliEnv::default();
+        env.set("OC_TEST_CLI_SET", "cli_env_set_value");
+        let mut cmd = Command::new("sh");
+        cmd.arg("-c")
+            .arg("printf '%s' \"${OC_TEST_CLI_SET:-unset}\"")
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null());
+        env.apply(&mut cmd);
+        let out = cmd.output().expect("sh must be available");
+        assert_eq!(
+            String::from_utf8_lossy(&out.stdout),
+            "cli_env_set_value",
+            "env var set via CliEnv not visible in subprocess"
+        );
+    }
+
+    /// A var removed via `CliEnv::remove` is absent in the subprocess even
+    /// when the parent `Command` had it injected beforehand.
+    #[test]
+    fn cli_env_remove_var_withheld_from_subprocess() {
+        let mut env = CliEnv::default();
+        env.remove("OC_TEST_CLI_REMOVE");
+        let mut cmd = Command::new("sh");
+        cmd.arg("-c")
+            .arg("printf '%s' \"${OC_TEST_CLI_REMOVE:-unset}\"")
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            // Inject the var into the Command before CliEnv strips it.
+            .env("OC_TEST_CLI_REMOVE", "should_not_reach_child");
+        env.apply(&mut cmd);
+        let out = cmd.output().expect("sh must be available");
+        assert_eq!(
+            String::from_utf8_lossy(&out.stdout),
+            "unset",
+            "removed env var still visible in subprocess"
+        );
     }
 }

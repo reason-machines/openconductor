@@ -32,7 +32,7 @@ import { connectStatusStore, createChatRuntime, type ChatBackend, type Deliver, 
 import { desktopHost } from "./desktopHost.ts";
 import { signedIn, type ReasonAccount } from "../../settings/agents/reasonModes.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
-import { withGeneralPreferences } from "../../settings/prompts.ts";
+import { withGeneralPreferences, withRenameBranch } from "../../settings/prompts.ts";
 import { parseModelOptions, saveRunningModel, loadCachedModels, saveCachedModels, type ReasonModelOption, type RunningModel } from "./reasonModels.ts";
 
 /** One Reason Session config option (`model`, `reasoning_effort`). */
@@ -98,7 +98,8 @@ const reasonBackend: ChatBackend<ReasonConfig[]> = {
 async function withGeneral(text: string, repoPath: string, cwd: string): Promise<string> {
   try {
     const settings = await repoSettingsEffective(repoPath, cwd);
-    return withGeneralPreferences(text, settings.prompts.general?.value);
+    const withGnrl = withGeneralPreferences(text, settings.prompts.general?.value);
+    return withRenameBranch(withGnrl, settings.prompts.rename_branch?.value);
   } catch (e) {
     console.warn("reason chat: general preferences not applied", e);
     return text;
