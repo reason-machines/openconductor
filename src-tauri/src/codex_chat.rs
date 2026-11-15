@@ -33,13 +33,17 @@ use crate::agent::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions, TurnOp
 use crate::agent::codex_runner::{CodexRunner, RunnerConfig, Sink, Timeouts};
 use crate::agent::codex_wire::{Payload, TurnEnd};
 use crate::agent_binaries::{Agent, BinaryManager};
+use crate::reason_chat::TurnArg;
 use crate::settings::service::SettingsService;
+use crate::turn_checkpoint::{around_turn, TurnTarget};
 
 pub const EVENT: &str = "codex-chat-event";
 
 #[derive(Default)]
 pub struct CodexChats {
     chats: Mutex<HashMap<String, Arc<CodexRunner>>>,
+    /// Each open chat's folder, checkpointed around its turns.
+    cwds: Mutex<HashMap<String, PathBuf>>,
     /// The bundled-binary store, for [`Self::executable`].
     binaries: OnceLock<BinaryManager>,
 }
@@ -199,7 +203,8 @@ pub async fn codex_open_chat<R: Runtime>(
         let _ = app.emit(EVENT, event);
     });
     let runner = Arc::new(CodexRunner::start(config, sink));
-    state.chats.lock().unwrap().entry(chat_id).or_insert(runner);
+    state.chats.lock().unwrap().entry(chat_id.clone()).or_insert(runner);
+    state.cwds.lock().unwrap().entry(chat_id).or_insert(cwd);
     Ok(())
 }
 
@@ -226,9 +231,11 @@ pub async fn codex_prompt<R: Runtime>(
     model: Option<String>,
     effort: Option<String>,
     fast_mode: Option<bool>,
+    turn: Option<TurnArg>,
     on_handoff: tauri::ipc::Channel<()>,
 ) -> Result<TurnEnd, String> {
-    let runner = app.state::<CodexChats>().get(&chat_id)?;
+    let state = app.state::<CodexChats>();
+    let runner = state.get(&chat_id)?;
     let settings = app.state::<SettingsService>();
     let effort = prompt_effort(model.as_deref(), effort, || {
         let level = settings.get().ok()?.models.codex.default_thinking_level;
@@ -238,6 +245,7 @@ pub async fn codex_prompt<R: Runtime>(
             .map(str::to_owned)
     });
     let fast_mode = fast_mode.or_else(|| settings.get().ok().map(|s| s.models.default_fast_mode));
+    let cwd = state.cwds.lock().unwrap().get(&chat_id).cloned();
     let end = runner.prompt_with_handoff(
         text,
         TurnOptions {
@@ -249,12 +257,23 @@ pub async fn codex_prompt<R: Runtime>(
             let _ = on_handoff.send(());
         })),
     );
-    tauri::async_runtime::spawn_blocking(move || {
-        end.recv()
-            .unwrap_or_else(|_| TurnEnd::failed("The Codex chat closed."))
+    let (result, _changes) = tauri::async_runtime::spawn_blocking(move || {
+        let target = match (&cwd, &turn) {
+            (Some(workspace), Some(t)) => Some(TurnTarget {
+                workspace,
+                session_id: &t.session_id,
+                turn_id: &t.turn_id,
+            }),
+            _ => None,
+        };
+        around_turn(target, || {
+            end.recv()
+                .unwrap_or_else(|_| TurnEnd::failed("The Codex chat closed."))
+        })
     })
     .await
-    .map_err(|e| e.to_string())
+    .map_err(|e| e.to_string())?;
+    Ok(result)
 }
 
 #[tauri::command]
