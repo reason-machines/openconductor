@@ -52,7 +52,7 @@ export async function resolveConflictsPrompt(workspacePath: string, targetBranch
 }
 
 /** Conductor's prompt types for a repository's custom prompts (`db_repo_prompt`). */
-export type RepoPromptType = "createPR" | "fixErrors" | "resolveMergeConflicts";
+export type RepoPromptType = "createPR" | "fixErrors" | "renameBranch" | "resolveMergeConflicts";
 
 /** One of the repository's custom prompts from conductor.db; null when unset or not in the database yet. */
 export async function repoPrompt(repoId: string, prompt: RepoPromptType): Promise<string | null> {

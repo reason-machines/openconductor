@@ -21,7 +21,7 @@ import { createChatRuntime, type ChatBackend } from "./chatRuntime.ts";
 import { desktopHost } from "./desktopHost.ts";
 import { withAttachments } from "../diff/chatAttachment.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
-import { withGeneralPreferences } from "../../settings/prompts.ts";
+import { withGeneralPreferences, withRenameBranch } from "../../settings/prompts.ts";
 import { localModelOptions } from "./chatModelChoice.ts";
 
 const EVENT = "claude-chat-event";
@@ -85,7 +85,8 @@ export const claudeBackend: ChatBackend<null> = {
 async function withGeneral(text: string, repoPath: string, cwd: string): Promise<string> {
   try {
     const settings = await repoSettingsEffective(repoPath, cwd);
-    return withGeneralPreferences(text, settings.prompts.general?.value);
+    const withGnrl = withGeneralPreferences(text, settings.prompts.general?.value);
+    return withRenameBranch(withGnrl, settings.prompts.rename_branch?.value);
   } catch (e) {
     console.warn("claude chat: general preferences not applied", e);
     return text;

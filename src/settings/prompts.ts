@@ -20,3 +20,14 @@ export function withGeneralPreferences(message: string, general: string | null |
   if (!general?.trim()) return message;
   return `${message}\n<user-preferences>\n${general}\n</user-preferences>`;
 }
+
+/**
+ * The first message of a new chat, with the repository's branch-naming
+ * instructions (`prompts.rename_branch`). Conductor passes them in the same
+ * `<user-preferences>` block as `general`, but separately so either may be
+ * absent without suppressing the other.
+ */
+export function withRenameBranch(message: string, renameBranch: string | null | undefined): string {
+  if (!renameBranch?.trim()) return message;
+  return `${message}\n<branch-naming-preferences>\n${renameBranch.trim()}\n</branch-naming-preferences>`;
+}
