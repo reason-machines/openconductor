@@ -343,9 +343,6 @@ export function subscribeChatStatuses(fn: () => void): () => void {
 export function hideChat(chatId: string): void {
   hiddenChats.add(chatId);
   setStatus(chatId, undefined);
-  // Persist "idle" so conductor.db reflects the hidden status and
-  // CaffeinateConsumer does not keep the system awake for a closed tab.
-  persistStatus(chatId, "idle");
 }
 
 /** A closed chat tab opened again (⌘⇧T): it counts toward its workspace's status again. */
