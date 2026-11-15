@@ -31,6 +31,8 @@ import { ComposerEditor, type ComposerEditorHandle, type ComposerSelection } fro
 import { composerPrompt } from "./composerDocument.ts";
 import { longPasteAttachment } from "./composerLongPaste.ts";
 import { useBoolPref } from "../../settings/useBoolPref.ts";
+import { useSettings } from "../../settings/useSettings.ts";
+import { boolPref, withBoolPref } from "../../settings/prefs.ts";
 import { queuedUserDraft, submittedUserPrompt, type SentUserContentV1, type UserPrompt } from "./userContent.ts";
 import { FileMentionMenu } from "./FileMentionMenu.tsx";
 import { ArrowUpIcon, CircleDotIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
@@ -113,6 +115,9 @@ export function Composer({
   onCommand,
   minimize,
 }: ComposerProps) {
+  // Full speech parity requires agent.speech entitlement (NSMicrophoneUsageDescription); this PR covers the keybinding handler only.
+  const { settings: voiceSettings, save: saveVoiceSettings } = useSettings();
+  const voiceModeEnabled = useBoolPref("voice_mode");
   const autoConvertLongText = useBoolPref("auto_convert_long_text");
   const minimized = minimize?.minimized ?? false;
   const fileInput = useRef<HTMLInputElement>(null);
@@ -236,6 +241,10 @@ export function Composer({
       const box = inputRef.current;
       if (!box || !box.visible()) return false;
       box.focus();
+    },
+    "chat.toggleSpeechToText": () => {
+      if (!voiceSettings) return false;
+      void saveVoiceSettings(withBoolPref(voiceSettings, "voice_mode", !voiceModeEnabled));
     },
   });
 
