@@ -33,7 +33,8 @@ import { useKeybindings, useKeybindingOverrides } from "../keybindings/Keybindin
 import { AccountMenu } from "./AccountMenu";
 import { AppMark } from "./AppMark";
 import { ResourceUsagePill } from "./ResourceUsagePill";
-import { Tooltip, titleWithShortcut } from "./Tooltip";
+import { Tooltip } from "./ui/Tooltip";
+import { titleWithShortcut } from "./Tooltip";
 import { ContextMenu, MenuItem as CtxItem, MenuSeparator } from "./menu/ContextMenu";
 import { useRoutinesAvailable } from "../features/routines/useRoutinesAvailable";
 import { EyeIcon, EyeOffIcon, Link2Icon, PencilIcon, PlusIcon as MenuPlusIcon, SettingsIcon as MenuSettingsIcon, Trash2Icon } from "./menu/menuIcons";
@@ -570,7 +571,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
         <div className="sb-footer-actions">
           <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} onSendFeedback={onSendFeedback} onSubmitPrompt={onSubmitPrompt} onOpenDiagnostics={onOpenDiagnostics} />
           {/* Conductor's footer Settings (`Nna`): Tooltip "Settings" with the openSettings shortcut. */}
-          <Tooltip content="Settings" shortcut={hint("openSettings", overrides)}>
+          <Tooltip content="Settings" shortcut="openSettings">
             <button type="button" className="sb-footer-btn" aria-label="Settings" onClick={onOpenSettings}>
               <SettingsIcon size={16} strokeWidth={1.5} />
             </button>

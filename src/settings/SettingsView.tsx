@@ -1,7 +1,7 @@
 import { Fragment, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 import { openUrl } from "../backend";
 import { AccountMenu } from "../components/AccountMenu";
-import { Tooltip } from "../components/Tooltip";
+import { Tooltip } from "../components/ui/Tooltip";
 import { CopyIcon, ExternalIcon } from "../components/Icons";
 import { PopoverMenu, type PopoverMenuItem } from "../components/PopoverMenu";
 import type { Point } from "../components/popoverMenuPlacement";

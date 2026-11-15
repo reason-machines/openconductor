@@ -5,18 +5,18 @@ import { groupRows, helpRows, highlightSegments, noResultsText, searchRows } fro
 import { COMMANDS } from "./registry.ts";
 import { CATEGORIES, logical } from "./types.ts";
 
-test("lists 100 commands when cloudUI is OFF (default) — 4 cloud-only commands excluded", () => {
+test("lists 98 commands when cloudUI is OFF (default) — 4 cloud-only + 2 dead shortcuts excluded", () => {
   const rows = helpRows();
-  assert.equal(rows.length, 100);
+  assert.equal(rows.length, 98);
   const hidden = COMMANDS.filter((c) => c.hidden).map((c) => c.id);
   const dialogOnly = COMMANDS.filter((c) => c.when?.enableOnDialogIds?.length).map((c) => c.id);
   assert.ok(hidden.length > 0 && dialogOnly.length > 0);
   for (const id of [...hidden, ...dialogOnly]) assert.ok(!rows.some((r) => r.id === id), id);
 });
 
-test("lists the 104 commands that are neither hidden nor dialog-only when cloudUI is ON", () => {
+test("lists the 102 commands that are neither hidden nor dialog-only when cloudUI is ON", () => {
   const rows = helpRows({}, undefined, true);
-  assert.equal(rows.length, 104);
+  assert.equal(rows.length, 102);
 });
 
 test("rows show effective shortcuts, overrides applied", () => {
@@ -32,7 +32,7 @@ test("groups follow category order and skip empty categories", () => {
   const groups = groupRows(helpRows());
   const order = groups.map((g) => g.category);
   assert.deepEqual(order, CATEGORIES.filter((c) => order.includes(c)));
-  assert.equal(groups.reduce((n, g) => n + g.rows.length, 0), 100);
+  assert.equal(groups.reduce((n, g) => n + g.rows.length, 0), 98);
   assert.deepEqual(groupRows(helpRows().filter((r) => r.category === "Terminal")).map((g) => g.category), ["Terminal"]);
 });
 

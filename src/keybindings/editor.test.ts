@@ -29,7 +29,7 @@ test("lists configurable or visible commands; the opposite follow-up needs queue
   const rows = editorRows();
   const expected = COMMANDS.filter((c) => (c.configurable || !c.hidden) && c.id !== "chat.submitOppositeFollowUp" && !CLOUD_ONLY_COMMAND_IDS.has(c.id));
   assert.deepEqual(rows.map((r) => r.id), expected.map((c) => c.id));
-  assert.equal(rows.length, 132);
+  assert.equal(rows.length, 131);
   // Hidden but configurable commands are listed.
   assert.ok(rows.some((r) => r.id === "settings.close"));
   assert.ok(!rows.some((r) => r.id === "chat.submitOppositeFollowUp"));
