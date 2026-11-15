@@ -45,7 +45,7 @@ export function TranscriptSearch({ transcript, children }: {
   useEffect(() => {
     const next = session.current !== transcript.sessionId ? 0 : index;
     session.current = transcript.sessionId;
-    if (state.kind === "open" && state.index !== next) change({ ...state, index: next });
+    if (search.kind === "open" && search.index !== next) change({ ...search, index: next });
   }, [transcript.sessionId, index]);
   useEffect(() => {
     if (search.kind !== "open") return;
