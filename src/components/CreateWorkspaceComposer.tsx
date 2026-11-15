@@ -228,14 +228,18 @@ export function CreateWorkspaceComposer({
         saveAgent(id, draft.agent);
         saveModelChoice(id, { agent: draft.agent, model: draft.model, effort: draft.effort || null });
       }
+      // M10 fix: always configure the Reason session model/effort when the Reason agent is chosen,
+      // regardless of whether there is a first message. Without this an empty-prompt workspace
+      // opens with the global default model instead of the user's chosen model/effort. For
+      // 'claude' or 'codex', configureReason is not called at all (saveModelChoice above handles
+      // those agents; calling configureReason with a local agent's model ID misroutes the chat).
+      if (draft.agent === "reason") {
+        const model = firstSession?.model ?? draft.model;
+        const effort = firstSession?.effort ?? draft.effort;
+        configureReason(id, sessionConfig(model, effort));
+      }
       // The first message opens the workspace's first chat session.
       if (firstSession) {
-        // H4b fix: only configure a Reason session when the workspace was created with the Reason
-        // agent. For 'claude' or 'codex', configureReason misroutes the first chat to the cloud;
-        // skip it and let saveModelChoice (above) handle the agent choice.
-        if (draft.agent === "reason") {
-          configureReason(id, sessionConfig(firstSession.model, firstSession.effort));
-        }
         seedTranscript(id, firstSession.message);
       }
       dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });

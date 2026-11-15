@@ -143,17 +143,10 @@ export function LinkIssueDialog({ repoPath, onSelect, onOpenAccountSettings, onC
             <p className="link-issue-setup-hint">No GitHub remote found for this workspace.</p>
           </div>
         )}
-        {/* Linear: "Connect Linear" setup prompt → account settings */}
+        {/* Linear: show unavailable state without a Connect button — no Linear integration exists in OpenConductor yet (M13 fix). */}
         {issues.status === "unavailable" && issues.reason === "no_linear" && (
           <div className="link-issue-state link-issue-setup">
             <p className="link-issue-setup-hint">Linear is not connected.</p>
-            <button
-              type="button"
-              className="btn btn-primary link-issue-connect"
-              onClick={() => { onOpenAccountSettings(); onClose(); }}
-            >
-              Connect Linear
-            </button>
           </div>
         )}
         {ready && rows.length === 0 && query && (
