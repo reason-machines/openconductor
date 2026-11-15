@@ -6,6 +6,7 @@ fn repo(id: &str) -> KnownRepo {
         name: id.into(),
         root: format!("/src/{id}"),
         default_branch: "main".into(),
+        remote_url: None,
     }
 }
 

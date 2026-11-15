@@ -447,6 +447,7 @@ mod tests {
             name: "app".into(),
             root: "/src/app".into(),
             default_branch: "main".into(),
+            remote_url: None,
         };
         let ws = KnownWorkspace {
             id: "app/oslo".into(),
@@ -505,6 +506,7 @@ mod tests {
             name: "app".into(),
             root: "/src/app".into(),
             default_branch: "main".into(),
+            remote_url: None,
         };
         let ws = KnownWorkspace {
             id: "app/oslo".into(),
@@ -547,6 +549,7 @@ mod tests {
             name: "app".into(),
             root: "/src/app".into(),
             default_branch: "main".into(),
+            remote_url: None,
         };
         let ws = KnownWorkspace {
             id: "app/oslo".into(),
