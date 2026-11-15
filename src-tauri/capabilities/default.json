@@ -19,27 +19,15 @@
     {
       "identifier": "opener:allow-open-url",
       "allow": [
-        {
-          "url": "linear://*"
-        },
-        {
-          "url": "vscode://*"
-        },
-        {
-          "url": "slack://*"
-        },
-        {
-          "url": "figma://*"
-        },
-        {
-          "url": "notion://*"
-        },
-        {
-          "url": "raycast://*"
-        },
-        {
-          "url": "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
-        }
+        { "url": "https://*" },
+        { "url": "http://*" },
+        { "url": "linear://*" },
+        { "url": "vscode://*" },
+        { "url": "slack://*" },
+        { "url": "figma://*" },
+        { "url": "notion://*" },
+        { "url": "raycast://*" },
+        { "url": "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles" }
       ]
     },
     "opener:allow-reveal-item-in-dir",
@@ -139,9 +127,6 @@
       "identifier": "http:allow-fetch",
       "allow": [
         {
-          "url": "https://app.conductor.build/*"
-        },
-        {
           "url": "https://stage-app.conductor.build/*"
         },
         {
@@ -169,15 +154,6 @@
           "url": "https://api.linear.app/graphql"
         },
         {
-          "url": "https://platform.claude.com/v1/oauth/token"
-        },
-        {
-          "url": "https://api.conductor.build/*"
-        },
-        {
-          "url": "https://conductor-roundhouse.fly.dev/*"
-        },
-        {
           "url": "https://stage-api.conductor.build/*"
         },
         {
@@ -191,9 +167,6 @@
         },
         {
           "url": "https://b79a7ea7a981e2f176a636cb05d07bc6.r2.cloudflarestorage.com/conductor-user-staging/*"
-        },
-        {
-          "url": "https://b79a7ea7a981e2f176a636cb05d07bc6.r2.cloudflarestorage.com/conductor-user-prod/*"
         },
         {
           "url": "https://sb-*.vercel.run/*"
