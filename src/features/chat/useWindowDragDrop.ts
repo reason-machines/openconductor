@@ -57,7 +57,15 @@ export function useWindowDragDrop(onDrop: (paths: string[]) => void): boolean {
   useEffect(() => {
     if (!inTauri()) return;
     let cleanup: (() => void) | undefined;
-    getCurrentWebview()
+    let webview: ReturnType<typeof getCurrentWebview>;
+    try {
+      webview = getCurrentWebview();
+    } catch {
+      // getCurrentWebview() requires a real Tauri runtime (accesses window.__TAURI_INTERNALS__).
+      // In test sandboxes that mock isTauri()→true but lack the full globals, exit safely.
+      return;
+    }
+    webview
       .onDragDropEvent((event) => {
         const { type } = event.payload;
         if (type === "enter") {
