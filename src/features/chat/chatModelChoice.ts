@@ -85,7 +85,10 @@ export function copyModelChoice(sourceId: string, targetId: string, agent: ChatA
 export function localModelOptions(chatId: string, agent: "claude" | "codex", store: Store = localStorage): { model?: string; effort?: string; fastMode?: boolean } {
   const choice = loadModelChoice(chatId, store);
   if (choice?.agent !== agent) return {};
-  return { model: choice.model, ...(choice.effort ? { effort: choice.effort } : {}), ...(fastModeAvailable(choice.model) ? { fastMode: choice.fast === true } : {}) };
+  // CLI placeholder models ("codex", "claude-code") are agent identifiers, not real model
+  // names; omit them so the runner keeps its settings default (H5b).
+  const model = (choice.model !== CODEX_ENTRY.model && choice.model !== CLAUDE_ENTRY.model) ? choice.model : undefined;
+  return { ...(model !== undefined ? { model } : {}), ...(choice.effort ? { effort: choice.effort } : {}), ...(fastModeAvailable(choice.model) ? { fastMode: choice.fast === true } : {}) };
 }
 
 /** Settings › Agents › Reason's default model, else Settings › Default models: the default model and its agent's default effort. */

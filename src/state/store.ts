@@ -44,7 +44,7 @@ export type Action =
     }
   /** `userSet` marks a rename the user made, which blocks the automatic first-message rename. */
   /** `keepPlaceholder`: a name-only rename from the Rename dialog leaves `placeholder_branch_name` alone. */
-  | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean; keepPlaceholder?: boolean }
+  | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; directoryName?: string; userSet?: boolean; keepPlaceholder?: boolean }
   /**
    * Full archive (`archive_workspace`). `mode` "discardGitOperationState" is the
    * retry from the Git-operation warning; `stopRunningAgents` the confirmed
@@ -173,6 +173,7 @@ export function reducer(state: AppState, action: Action): AppState {
               ...w,
               name: action.name ?? w.name,
               branch: action.branch ?? w.branch,
+              ...(action.directoryName !== undefined ? { directoryName: action.directoryName } : {}),
               ...(action.keepPlaceholder ? {} : { placeholderBranchName: null }),
               ...(action.userSet && action.name !== undefined ? { userSetWorkspaceName: true } : {}),
               ...(action.userSet && action.branch !== undefined ? { userSetBranchName: true } : {}),

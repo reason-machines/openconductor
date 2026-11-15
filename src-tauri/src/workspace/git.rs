@@ -180,6 +180,12 @@ pub fn remote_exists(repo: &Path, remote: &str) -> bool {
     git_ok(repo, ["remote", "get-url", remote])
 }
 
+/// Return the fetch URL of `remote` (typically `"origin"`), or `None` when the
+/// remote does not exist or the git call fails.
+pub fn remote_url(repo: &Path, remote: &str) -> Option<String> {
+    git(repo, ["remote", "get-url", remote]).ok().map(|s| s.trim().to_string()).filter(|s| !s.is_empty())
+}
+
 pub fn ref_exists(repo: &Path, rev: &str) -> bool {
     git_ok(repo, ["rev-parse", "--verify", "--quiet", &format!("{rev}^{{commit}}")])
 }
