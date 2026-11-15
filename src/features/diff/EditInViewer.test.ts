@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { editableContents } from "./editable.ts";
+import { editableContents, isPreviewablePath } from "./editable.ts";
 import { processFile } from "@pierre/diffs";
 import { codeViewItem, editableCodeViewItem, fullDiffMeta, toPatch } from "./pierre.ts";
 import type { FileDiff } from "./types.ts";
@@ -96,4 +96,16 @@ test("hidden whitespace, binary and deleted files are not editable", () => {
   assert.equal(editableContents(file({ binary: true }), "file", false), null);
   assert.equal(editableContents(file({ status: "deleted" }), "file", false), null);
   assert.equal(editableContents(file({ hunks: [] }), "file", false), null);
+});
+
+test("isPreviewablePath identifies markdown and HTML extensions", () => {
+  assert.ok(isPreviewablePath("README.md"), ".md is previewable");
+  assert.ok(isPreviewablePath("NOTES.markdown"), ".markdown is previewable");
+  assert.ok(isPreviewablePath("index.html"), ".html is previewable");
+  assert.ok(isPreviewablePath("page.htm"), ".htm is previewable");
+  assert.ok(isPreviewablePath("src/docs/guide.MD"), "case-insensitive");
+  assert.ok(!isPreviewablePath("app.ts"), ".ts is not previewable");
+  assert.ok(!isPreviewablePath("styles.css"), ".css is not previewable");
+  assert.ok(!isPreviewablePath("image.png"), ".png is not previewable");
+  assert.ok(!isPreviewablePath("noextension"), "no extension is not previewable");
 });

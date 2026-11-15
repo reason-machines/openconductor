@@ -1,6 +1,6 @@
 {
  "ref": "origin/main",
- "sha": "274ac804c49b3b6a4a55c7bfddf0bd7bb7b890a4",
+ "sha": "64c2e5324f09e62742d885a4c717996f49147b9c",
  "source_files_scanned": 693,
  "reference": {
   "conductor_version": "0.87.6",
@@ -13,10 +13,9 @@
  },
  "overall": {
   "total": 419,
-  "matched": 301,
-  "partial": 101,
-  "missing": 17,
-  "parity_pct": 83.9
+  "matched": 303,
+  "partial": 0,
+  "parity_pct": 72.3
  },
  "areas": {
   "settings": {
@@ -72,65 +71,56 @@
   },
   "shortcuts": {
    "total": 172,
-   "matched": 74,
-   "partial": 98,
-   "missing": 0,
-   "parity_pct": 71.5,
+   "matched": 76,
+   "partial": 0,
+   "parity_pct": 44.2,
    "groups": {
     "General": {
      "total": 30,
      "matched": 11,
-     "partial": 19,
-     "missing": 0,
-     "parity_pct": 68.3
+     "partial": 0,
+     "parity_pct": 36.7
     },
     "View": {
      "total": 7,
      "matched": 7,
      "partial": 0,
-     "missing": 0,
      "parity_pct": 100.0
     },
     "Navigation": {
      "total": 20,
      "matched": 6,
-     "partial": 14,
-     "missing": 0,
-     "parity_pct": 65.0
+     "partial": 0,
+     "parity_pct": 30.0
     },
     "Chat": {
      "total": 51,
      "matched": 12,
-     "partial": 39,
-     "missing": 0,
-     "parity_pct": 61.8
+     "partial": 0,
+     "parity_pct": 23.5
     },
     "Workspace": {
      "total": 37,
      "matched": 13,
-     "partial": 24,
-     "missing": 0,
-     "parity_pct": 67.6
+     "partial": 0,
+     "parity_pct": 35.1
     },
     "Code review": {
      "total": 8,
-     "matched": 7,
-     "partial": 1,
-     "missing": 0,
-     "parity_pct": 93.8
+     "matched": 8,
+     "partial": 0,
+     "parity_pct": 100.0
     },
     "Terminal": {
      "total": 12,
-     "matched": 11,
-     "partial": 1,
-     "missing": 0,
-     "parity_pct": 95.8
+     "matched": 12,
+     "partial": 0,
+     "parity_pct": 100.0
     },
     "feature": {
      "total": 7,
      "matched": 7,
      "partial": 0,
-     "missing": 0,
      "parity_pct": 100.0
     }
    }
@@ -3614,8 +3604,8 @@
    "area": "shortcuts",
    "group": "Code review",
    "id": "editor.openSearch",
-   "status": "declared",
-   "detail": "meta+f; no handler references this id"
+   "status": "matched",
+   "detail": "meta+f; native delegation: CodeMirror default keymap: openSearchPanel (Mod-f/Mod-F)"
   },
   {
    "area": "shortcuts",
@@ -3684,8 +3674,8 @@
    "area": "shortcuts",
    "group": "Terminal",
    "id": "terminal.openLocalhost",
-   "status": "declared",
-   "detail": "meta+shift+b; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+b; handler in src/components/ScriptsPanel.tsx"
   },
   {
    "area": "shortcuts",

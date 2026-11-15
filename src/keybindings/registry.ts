@@ -170,7 +170,7 @@ export const COMMANDS: readonly Command[] = [
   { id: "workspace.showUncommittedChanges", key: physical("KeyU", "U", ["meta","alt"]), title: "Show uncommitted changes", category: "Workspace", configurable: true, description: "Shows changes that have not been committed." },
   { id: "routine.save", key: logical("s", ["meta"]), title: "Save routine", category: "General", configurable: true, when: {"enableOnInputFocus":true,"enableOnTerminalFocus":false} },
   { id: "editor.saveFile", key: logical("s", ["meta"]), title: "Save edited file", category: "Code review", configurable: true, hidden: true },
-  { id: "editor.openSearch", key: logical("f", ["meta"]), title: "Open code editor search", category: "Code review", configurable: false, hidden: true },
+  { id: "editor.openSearch", key: logical("f", ["meta"]), title: "Open code editor search", category: "Code review", configurable: false, hidden: true, nativeDelegation: true, nativeDelegationNote: "CodeMirror default keymap: openSearchPanel (Mod-f/Mod-F)" },
   { id: "diff.open", key: logical("d", ["meta","shift"]), title: "Open diff view", category: "Code review", configurable: true },
   { id: "diff.previousFile", key: logical("ArrowUp"), title: "Go to previous file in diff", category: "Code review", configurable: true, when: {"enableOnInputFocus":false} },
   { id: "diff.nextFile", key: logical("ArrowDown"), title: "Go to next file in diff", category: "Code review", configurable: true, when: {"enableOnInputFocus":false} },
