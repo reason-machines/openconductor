@@ -141,6 +141,7 @@ const expectedRecordAction = {
   repoId: "synthetic-repo",
   workspaceId: "synthetic-workspace",
   name: "New Workspace",
+  directoryName: "new-workspace",
   userSet: true,
   keepPlaceholder: true,
 };

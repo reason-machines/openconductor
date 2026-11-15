@@ -5,6 +5,7 @@ import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { planWorkspaceRename } from "./rename";
 import { renameWorkspaceBranch } from "./api";
+import { renameWorkspaceRecord } from "../backend";
 
 export async function renameAfterFirstMessage(repo: Repo, ws: Workspace, message: string, dispatch: Dispatch<Action>): Promise<void> {
   const plan = planWorkspaceRename(repo, ws, message);
@@ -18,5 +19,16 @@ export async function renameAfterFirstMessage(repo: Repo, ws: Workspace, message
       branch = undefined;
     }
   }
-  dispatch({ type: "renameWorkspace", repoId: repo.id, workspaceId: ws.id, name: plan.workspace_name, branch });
+  // Persist the workspace name so it survives a restart (Bug H8-2: previously
+  // only an in-memory dispatch was made, losing workspace_name on restart).
+  if (plan.workspace_name !== undefined) {
+    const newDirName = branch ?? ws.directoryName ?? ws.id.split("/").pop() ?? ws.id;
+    try {
+      await renameWorkspaceRecord(ws.id, newDirName, plan.workspace_name ?? null);
+    } catch {
+      // Non-fatal: in-memory rename still improves UX for this session.
+    }
+  }
+  dispatch({ type: "renameWorkspace", repoId: repo.id, workspaceId: ws.id, name: plan.workspace_name, branch,
+    ...(branch !== undefined ? { directoryName: branch } : {}) });
 }
