@@ -96,7 +96,7 @@ async function fixture() {
     "src/settings/pages": { USER_PAGES: [], settingsGroups: () => [] },
     "src/settings/SettingsView": { SettingsView: inert, AGENT_SEARCH_TABS: [], scrollToRow: forbidden, searchIcon: inert },
     "src/settings/searchIndex": { buildSearchIndex: () => [] },
-    "src/settings/useSettings": { rememberSettings: (value: unknown) => value },
+    "src/settings/useSettings": { rememberSettings: (value: unknown) => value, useSettings: () => ({ settings: null, save: async () => {} }) },
     "src/settings/appearance": { applyAppearance: noop },
     "src/features/updates/useUpdates": { useUpdates: noop },
     "src/keybindings/KeybindingsProvider": {
