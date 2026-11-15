@@ -124,9 +124,13 @@ function firstRule(i: RowStatusInput, rules: Rule[]): RowStatus {
 /** The row's status (`oWt`): workspace setup, then the agent, then the PR, then the branch. */
 export function rowStatus(i: RowStatusInput): RowStatus {
   const fromState = i.workspaceState === undefined ? undefined : FROM_WORKSPACE_STATE[i.workspaceState];
-  if (fromState) return fromState;
+  // `failed` and `unstarted` are terminal/not-started states that always win.
+  // `setting-up` / `initializing` yield to a live session urgency so the user
+  // can respond (e.g. `needs_user_permission`) while setup is still running.
+  if (fromState && fromState !== "setting-up") return fromState;
   const fromSession = i.session === undefined ? undefined : FROM_SESSION[i.session];
   if (fromSession) return fromSession;
+  if (fromState) return fromState;
   return firstRule(i, STATUS_RULES);
 }
 
