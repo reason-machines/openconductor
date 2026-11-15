@@ -136,7 +136,7 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
   const organization = useOrganization().active;
   // The Cloud group shows for a signed-in Reason CLI (Conductor's cloud entitlement, `F` in `L9a`), personal accounts only.
   const cloudUI = settings !== null && boolPref(settings, "experimental_cloud_ui");
-  const cloud = useCloudSetup().setup?.signedIn === true && !organization && cloudUI;
+  const cloud = useCloudSetup(cloudUI).setup?.signedIn === true && !organization && cloudUI;
   const groups = useMemo(() => settingsGroups(bigTerminal, cloud), [bigTerminal, cloud]);
   const orgGroups = useMemo(() => (cloudUI && organization ? orgSettingsGroups(bigTerminal) : null), [cloudUI, organization, bigTerminal]);
   const orgEntry = (e: OrgNavEntry) =>
@@ -153,8 +153,8 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
       navButton({ scope: "user", page: e.page }, e.label, "nav-item", PAGE_ICONS[e.page])
     );
   const searchItems = useMemo(
-    () => buildSearchIndex({ pages: groups.flatMap((g) => g.pages), agentTabs: AGENT_SEARCH_TABS, hasRepos: repos.length > 0 }),
-    [groups, repos.length],
+    () => buildSearchIndex({ pages: groups.flatMap((g) => g.pages), agentTabs: AGENT_SEARCH_TABS, hasRepos: repos.length > 0, cloudUI }),
+    [groups, repos.length, cloudUI],
   );
   // Conductor's `wGt`: a repository section opens in the repository being viewed, else the first one.
   const openResult = (item: SearchItem) => {

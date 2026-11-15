@@ -16,6 +16,7 @@ import type { Overrides } from "../keybindings/overrides.ts";
 import { partGlyph, shortcutParts, spoken } from "../keybindings/shortcut.ts";
 import type { Shortcut } from "../keybindings/types.ts";
 import { CloseIcon, KeyboardIcon, SearchIcon } from "./Icons";
+import { useBoolPref } from "../settings/useBoolPref";
 import { useDialogMotion } from "./motion/dialogMotion";
 
 export const KEYBOARD_SHORTCUTS_DIALOG_ID = "keyboard-shortcuts-dialog";
@@ -60,7 +61,8 @@ function Row({ row, titleIndexes, hasQuery }: { row: HelpRow; titleIndexes?: rea
 
 export function KeyboardShortcutsDialog({ onClose, overrides = {} }: { onClose: () => void; overrides?: Overrides }) {
   const [query, setQuery] = useState("");
-  const rows = useMemo(() => helpRows(overrides), [overrides]);
+  const cloudUI = useBoolPref("experimental_cloud_ui");
+  const rows = useMemo(() => helpRows(overrides, undefined, cloudUI), [overrides, cloudUI]);
   const groups = useMemo(() => groupRows(rows), [rows]);
   const results = useMemo(() => searchRows(rows, query), [rows, query]);
   const ref = useDialogMotion<HTMLDivElement>();

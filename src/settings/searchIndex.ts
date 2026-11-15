@@ -60,6 +60,16 @@ export function keywordsFor(label: string, extra: readonly string[] = []): strin
 /** Agent tabs listed under Agents (Conductor's `Lba`: label and extra keywords). */
 const AGENT_KEYWORDS: Record<string, string[]> = { claude: ["anthropic"], codex: ["openai"] };
 
+/** Labels of rows that only make sense when experimental_cloud_ui is ON. */
+const CLOUD_ONLY_ROW_LABELS = new Set<string>([
+  "SSH private key path",
+  "Remote execution MCP",
+  "Always allow local commands",
+  "Enable file sync in new cloud workspaces",
+  "Show agent cost",
+  "Cloud desktop",
+]);
+
 export interface IndexInput {
   /** User pages in nav order, with their labels. */
   pages: readonly { id: SettingsPage; label: string }[];
@@ -67,11 +77,13 @@ export interface IndexInput {
   agentTabs: readonly { id: string; label: string }[];
   /** Whether repository sections can be opened (a repository exists). */
   hasRepos: boolean;
+  /** When false, cloud-only rows are excluded from the search index (M6c). */
+  cloudUI?: boolean;
 }
 
 const REPO_ONLY: readonly RepoSection[] = ["scripts", "actions", "misc"];
 
-export function buildSearchIndex({ pages, agentTabs, hasRepos }: IndexInput): SearchItem[] {
+export function buildSearchIndex({ pages, agentTabs, hasRepos, cloudUI = false }: IndexInput): SearchItem[] {
   const labels = new Map<string, string>(pages.map((p) => [p.id, p.label]));
   const items: SearchItem[] = [];
   for (const p of pages) {
@@ -94,6 +106,8 @@ export function buildSearchIndex({ pages, agentTabs, hasRepos }: IndexInput): Se
     const repo = r.scope === "repo";
     if (repo && !hasRepos) continue;
     if (!repo && !labels.has(r.tab)) continue;
+    // M6c: exclude cloud-only rows when cloudUI is OFF
+    if (!cloudUI && CLOUD_ONLY_ROW_LABELS.has(r.label)) continue;
     const tabLabel = repo ? REPO_SECTION_LABELS[r.tab as RepoSection] : labels.get(r.tab);
     items.push({
       id: `row-${r.tab}-${r.label}`,
