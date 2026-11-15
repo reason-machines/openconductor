@@ -24,7 +24,7 @@ pub fn startup(db: &Db, service: &WorkspaceService) -> Result<(), Box<dyn std::e
         // Drain symlinks queued for deletion by previous renames.
         for path in openconductor_db::workspace_rename::pending_symlink_deletions(pool).await? {
             let p = std::path::Path::new(&path);
-            if p.symlink_metadata().map_or(false, |m| m.file_type().is_symlink()) {
+            if p.symlink_metadata().is_ok_and(|m| m.file_type().is_symlink()) {
                 let _ = std::fs::remove_file(p);
             }
             openconductor_db::workspace_rename::unqueue_symlink_deletion(pool, &path).await?;
