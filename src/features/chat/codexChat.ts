@@ -16,6 +16,7 @@ import { answered, applyCodexPayload, codexChat, failTurn, newestTurn, startTurn
 import { statusWithOpenRequests, type CodexConsent, type ConsentAnswer } from "./codexConsent.ts";
 import { localModelOptions } from "./chatModelChoice.ts";
 import { desktopHost } from "./desktopHost.ts";
+import { ChatSaver, restoreEvents } from "./persist.ts";
 
 const EVENT = "codex-chat-event";
 const threadKey = (chatId: string) => `openconductor.codex.thread.${chatId}`;
@@ -70,6 +71,8 @@ interface Chat {
 }
 
 const chats = new Map<string, Chat>();
+const savers = new Map<string, ChatSaver>();
+const pendingLoads = new Map<string, Promise<void>>();
 let listening: Promise<unknown> | null = null;
 
 /** Codex chats need the desktop app. */
@@ -83,8 +86,26 @@ function chat(chatId: string): Chat {
   if (!c) {
     c = { state: codexChat(chatId), view: { transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), approvals: [], consents: [] }, cwd: null, opened: false, deliveries: new Map(), listeners: new Set() };
     chats.set(chatId, c);
+    if (isTauri()) loadStoredTranscript(chatId, c);
   }
   return c;
+}
+
+function loadStoredTranscript(chatId: string, c: Chat): void {
+  const saver = new ChatSaver(async (batch) => {
+    await invoke<void>("chat_messages_save", { chatId, ...batch, agentSessionId: localStorage.getItem(threadKey(chatId)) });
+  });
+  savers.set(chatId, saver);
+  const load: Promise<void> = invoke<{ messages: string[]; agentSessionId: string | null }>("chat_messages_load", { chatId })
+    .then(({ messages }) => {
+      if (messages.length === 0) return;
+      const r = applyChatEvents(c.view.transcript, restoreEvents(chatId, messages));
+      if (!r.ok) { console.warn("codex: stored transcript not applied", r.error); return; }
+      saver.loaded(r.transcript);
+      publish(c, { transcript: r.transcript });
+    })
+    .catch((e) => { console.warn("codex: stored transcript not loaded", e); });
+  pendingLoads.set(chatId, load);
 }
 
 function publish(c: Chat, next: Partial<CodexSnapshot>) {
@@ -120,6 +141,7 @@ function apply(c: Chat, step: Step) {
     return;
   }
   publish(c, { transcript: r.transcript });
+  savers.get(c.state.chatId)?.update(r.transcript);
   // A turn that ended moves the queue on: the next queued message may start.
   for (const e of step.events) {
     if (e.type !== "turn_status" || e.status === "running") continue;
@@ -177,6 +199,10 @@ async function prompt(c: Chat, input: UserPrompt, attachments: readonly Q.Messag
   publish(c, {});
   try {
     await ensureListening();
+    // Wait for any stored transcript to finish loading before opening the chat,
+    // so a resumed session starts on the restored thread id and history.
+    const pendingLoad = pendingLoads.get(chatId);
+    if (pendingLoad) { await pendingLoad; pendingLoads.delete(chatId); }
     if (!c.opened) {
       const policy = CODEX_ACCESS[codexAccess(chatId)].policy;
       await invoke("codex_open_chat", { chatId, cwd: c.cwd ?? "", threadId: localStorage.getItem(threadKey(chatId)), policy });
@@ -192,7 +218,10 @@ async function prompt(c: Chat, input: UserPrompt, attachments: readonly Q.Messag
       if (delivery.workspaceId) void desktopHost.onPromptHandoff?.(delivery.workspaceId, delivery.attachments)
         .catch((error) => console.warn("codex: review handoff was not saved", error));
     };
-    await invoke("codex_prompt", { chatId, text: linkCodexSkills(text, skills), ...localModelOptions(chatId, "codex"), onHandoff: handoff });
+    // Pass a turn checkpoint so Codex turns produce changed-file chips (H4-B2).
+    // Use chatId as the stable session id; turnId is the frontend's per-turn UUID.
+    const turn = { sessionId: chatId, turnId };
+    await invoke("codex_prompt", { chatId, text: linkCodexSkills(text, skills), ...localModelOptions(chatId, "codex"), turn, onHandoff: handoff });
   } catch (e) {
     // The prompt never reached Codex (no CLI, chat not open), so no event will end it.
     apply(c, failTurn(c.state, turnId, String(e)));
