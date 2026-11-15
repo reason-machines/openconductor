@@ -727,7 +727,7 @@ impl ReasonProvider {
 
     /// Recent Sessions in the signed-in Workspace, newest first.
     pub fn list_sessions(&self) -> Result<Vec<SessionInfo>, String> {
-        let agent = self.ensure_agent(None)?;
+        let agent = self.ensure_agent(None, &Default::default())?;
         let params = json!({ "cwd": self.dir });
         let v = agent.0.call("session/list", params, SETUP_TIMEOUT);
         let v = v.map_err(|e| e.to_string())?;
