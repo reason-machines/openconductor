@@ -169,6 +169,11 @@ pub struct Advanced {
 pub struct Experimental {
     /// "Big terminal mode": ⌘⇧T opens a terminal running the Big terminal preset.
     pub experimental_big_terminal_mode: bool,
+    /// Experimental › "Auto permission mode": Claude chats run in auto mode
+    /// (`bypassPermissions`) when on, approve mode (Claude Code asks before
+    /// tools) when off. Unset means Conductor's default, off.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub experimental_auto_permission_mode: Option<bool>,
     #[serde(flatten)]
     pub extra: toml::Table,
 }

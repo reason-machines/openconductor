@@ -169,10 +169,12 @@ impl Settings {
 /// A Claude Code session in `cwd`, configured by `settings`.
 ///
 /// Permission mode: plan for a new chat with "Default to plan mode" on;
-/// otherwise `default` (Claude Code asks before tools) when "Claude Code
-/// tool approvals" is on, `bypassPermissions` when it is off, as
-/// Conductor's own Claude command (`claude --dangerously-skip-permissions`
-/// unless approvals are required).
+/// otherwise "Auto permission mode" (experimental) decides. On, the agent
+/// runs in auto mode (`bypassPermissions`, as Conductor's own Claude command
+/// `claude --dangerously-skip-permissions`); off — the default — approve
+/// mode, Claude Code asks before tools (`default`). "Claude Code tool
+/// approvals" stays the fallback when the experimental toggle has never
+/// been set.
 pub fn claude_launch(
     settings: &Settings,
     cwd: &Path,
@@ -188,10 +190,16 @@ pub fn claude_launch(
     }
     launch.permission_mode = if purpose == Purpose::Chat && settings.models.default_plan_mode {
         PermissionMode::Plan
-    } else if settings.tool_approvals_enabled {
-        PermissionMode::Default
-    } else {
+    } else if settings
+        .experimental
+        .experimental_auto_permission_mode
+        .unwrap_or(!settings.tool_approvals_enabled)
+    {
+        // Auto permission mode on (or unset with approvals off): the agent
+        // runs without asking. Off: approve mode, Claude Code asks.
         PermissionMode::BypassPermissions
+    } else {
+        PermissionMode::Default
     };
     let cc = &settings.models.claude_code;
     let effort = match purpose {

@@ -77,6 +77,7 @@ pub const PR_OPEN_TARGETS: &[&str] = &["github", "linear", "graphite"];
 pub const MARKDOWN_STYLES: &[&str] = &["default", "tufte"];
 
 const BIG_TERMINAL_MODE: &str = "experimental_big_terminal_mode";
+const AUTO_PERMISSION_MODE: &str = "experimental_auto_permission_mode";
 
 /// Every table-backed key, in Conductor's tab order.
 pub const PREFS: &[Pref] = &[
@@ -194,6 +195,9 @@ pub fn overlay(s: &mut Settings, rows: &HashMap<String, String>) {
                 (BIG_TERMINAL_MODE, Value::Boolean(value)) => {
                     s.experimental.experimental_big_terminal_mode = value;
                 }
+                (AUTO_PERMISSION_MODE, Value::Boolean(value)) => {
+                    s.experimental.experimental_auto_permission_mode = Some(value);
+                }
                 (_, value) => {
                     extra_mut(s, pref.section).insert(pref.key.to_string(), value);
                 }
@@ -214,6 +218,16 @@ pub fn values(s: &Settings) -> Result<Vec<(&'static str, String)>, String> {
                     s.experimental.experimental_big_terminal_mode.to_string(),
                 )));
             }
+            if p.key == AUTO_PERMISSION_MODE {
+                return Some(Ok((
+                    p.key,
+                    s.experimental
+                        .experimental_auto_permission_mode
+                        // Unset reads as Conductor's default, off.
+                        .unwrap_or(false)
+                        .to_string(),
+                )));
+            }
             extra(s, p.section)
                 .get(p.key)
                 .map(|v| encode(p, v).map(|t| (p.key, t)))
@@ -230,6 +244,13 @@ pub fn changes(
         .into_iter()
         .filter(|(k, v)| current.get(*k) != Some(v))
         .filter(|(k, v)| *k != BIG_TERMINAL_MODE || v != "false" || current.contains_key(*k))
+        .filter(
+            |(k, v)| {
+                *k != AUTO_PERMISSION_MODE
+                    || v != "false"
+                    || current.contains_key(*k)
+            }
+        )
         .collect())
 }
 

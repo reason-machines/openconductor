@@ -120,6 +120,8 @@ export interface Settings {
   experimental?: {
     /** "Big terminal mode": ⌘⇧T opens a terminal running the Big terminal preset. */
     experimental_big_terminal_mode?: boolean;
+    /** "Auto permission mode": Claude chats run without asking (auto) when on, ask before tools (approve) when off. */
+    experimental_auto_permission_mode?: boolean;
     [extra: string]: unknown;
   };
   /** The terminal panel's Open URLs (Conductor's `preview_urls`); the first is the default. */

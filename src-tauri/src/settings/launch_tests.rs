@@ -466,3 +466,24 @@ fn review_without_a_review_model_uses_conductors_claude_fallback() {
     assert_eq!(s.model_for(Purpose::Chat), "gpt-5.5");
     assert_eq!(s.model_for(Purpose::Review), launch::REVIEW_FALLBACK_MODEL);
 }
+
+#[test]
+fn auto_permission_mode_decides_approve_or_auto() {
+    // Explicit values win, either way.
+    let mut on = Settings::default();
+    on.experimental.experimental_auto_permission_mode = Some(true);
+    let chat = launch::claude_launch(&on, Path::new("/w"), &MemorySecretStore::new(), Purpose::Chat).unwrap();
+    assert_eq!(chat.permission_mode, PermissionMode::BypassPermissions);
+    let mut off = Settings::default();
+    off.experimental.experimental_auto_permission_mode = Some(false);
+    let chat = launch::claude_launch(&off, Path::new("/w"), &MemorySecretStore::new(), Purpose::Chat).unwrap();
+    assert_eq!(chat.permission_mode, PermissionMode::Default);
+
+    // Unset falls back to Conductor's "Claude Code tool approvals".
+    let mut approvals = Settings::default();
+    approvals.tool_approvals_enabled = true;
+    let chat = launch::claude_launch(&approvals, Path::new("/w"), &MemorySecretStore::new(), Purpose::Chat).unwrap();
+    assert_eq!(chat.permission_mode, PermissionMode::Default);
+    let chat = launch::claude_launch(&Settings::default(), Path::new("/w"), &MemorySecretStore::new(), Purpose::Chat).unwrap();
+    assert_eq!(chat.permission_mode, PermissionMode::BypassPermissions);
+}
