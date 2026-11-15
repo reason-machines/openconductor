@@ -302,7 +302,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
       return;
     }
     if (flat.length === 0) {
-      if (e.key === "Enter") e.preventDefault();
+      if (e.key === "Enter" && !e.metaKey) e.preventDefault();
       return;
     }
     if (e.key === "ArrowDown") {
@@ -311,6 +311,16 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setActiveKey(flat[Math.max(activeIndex - 1, 0)].key);
+    } else if (e.key === "Enter" && e.metaKey) {
+      // workspace.startUnstartedWorkspace (⌘↩): open a backlog workspace from
+      // the Home list (Conductor's "Backlog page" displayScope). Only fires for
+      // a focused row whose workspace is in the backlog; plain ↩ handles the
+      // rest. Evidence: keybindings/registry.ts displayScope "Backlog page".
+      const entry = flat[activeIndex];
+      if (entry && !entry.row.archived && entry.row.workspace.manualStatus === "backlog") {
+        e.preventDefault();
+        open(entry.row);
+      }
     } else if (e.key === "Enter") {
       e.preventDefault();
       const entry = flat[activeIndex];
