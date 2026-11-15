@@ -11,6 +11,7 @@ import { DiscardDialog } from "./DiscardDialog";
 import { ViewOptionsMenu } from "./Whitespace";
 import { FileDiffView, type FileRefreshStatus, type LineAnchor, type LineRange } from "./FileDiffView";
 import { editableContents, useFileEdit } from "./EditInViewer.ts";
+import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import type { DiffLayout, FileDiff } from "./types.ts";
 import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
 import type { CommentAnchorPositions } from "./comments.ts";
@@ -146,7 +147,18 @@ function useWholeFile(diff: WorkspaceDiff, selected: FileDiff, layout: DiffLayou
 function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anchors, annotations, onPersistAnchors, notes, notify }: DiffTabProps & { f: FileDiff; selected: FileDiff; isVisible: boolean }) {
   const { opts, update } = diff;
   const { file: full, current, refreshStatus } = useWholeFile(diff, selected, opts.layout);
-  const edit = useFileEdit(diff.worktree, selected.path, typeof opts.scope === "object" || diff.turn !== null ? null : editableContents(selected, opts.layout, opts.ignoreWhitespace, current ? full : null), diff.reloadQuietly);
+  // Conductor's bji isEditing gate: view mode (false) by default; ⌘E toggles to edit mode and back.
+  // Applies in file (entire-file) layout only. Resets to view when switching files or layouts.
+  const [isEditing, setIsEditing] = useState(false);
+  useEffect(() => { setIsEditing(false); }, [selected.path, opts.layout]);
+  useKeybindings({
+    "workspace.toggleFileEdit": opts.layout === "file" ? () => setIsEditing((e) => !e) : undefined,
+  });
+  // Pass editable content only when the user has entered edit mode.
+  const onDisk = isEditing && typeof opts.scope !== "object" && diff.turn === null
+    ? editableContents(selected, opts.layout, opts.ignoreWhitespace, current ? full : null)
+    : null;
+  const edit = useFileEdit(diff.worktree, selected.path, onDisk, diff.reloadQuietly);
   return (
     <div className="oc-files" hidden={!isVisible} style={!isVisible ? { display: "none" } : undefined}>
       {notes?.(f)}
