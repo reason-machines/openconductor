@@ -47,7 +47,7 @@ export function DefaultModelsPage({ settings, save }: Props) {
       if (live) { setCatalog({ models: [], errors: { reason: String(error), claude: String(error), codex: String(error) } }); setLoading(false); }
     });
     return () => { live = false; };
-  }, [revision, settings.reason?.workspace, settings.reason_executable_path, settings.claude_executable_path, settings.codex_executable_path]);
+  }, [revision, settings.reason?.workspace, settings.reason_executable_path, settings.claude_code_executable_path, settings.codex_executable_path]);
   const m = settings.models;
   const personality = m.codex.personality ?? "pragmatic";
   const reviewModel = storedModel(m.review || REVIEW_FALLBACK);

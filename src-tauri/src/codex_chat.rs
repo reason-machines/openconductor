@@ -162,6 +162,11 @@ pub async fn codex_open_chat<R: Runtime>(
     if let Some(path) = state.path() {
         launch.env.set("PATH", path.to_string_lossy());
     }
+    // M7: apply local env vars from Settings > Environment and .conductor/settings.toml;
+    // provider secrets already set in launch.env retain precedence.
+    for (k, v) in crate::settings::effective::local_env_for_dir(&cwd) {
+        launch.env.set(&k, v.as_str());
+    }
     let config = RunnerConfig {
         launch,
         thread: ThreadOptions {
