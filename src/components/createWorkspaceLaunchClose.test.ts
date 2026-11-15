@@ -56,6 +56,13 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
         if (name === "./naming.ts" || name === "../workspace/naming") return load("src/workspace/naming.ts");
         if (name === "@base-ui/react/dialog") return { Dialog: { Root: passthrough, Portal: passthrough, Popup: ({ children }: { children: unknown }) => React.createElement("section", { role: "dialog" }, children) } };
         if (name === "./motion/dialogMotion") return { useDialogMotion: () => React.useRef(null) };
+        if (name === "./motion/usePresence") return { usePresence: () => ({ mounted: true, attrs: {} }) };
+        if (name === "./ui/Tooltip") return { Tooltip: ({ children }: { children: unknown }) => children };
+        if (name === "../features/chat/ComposerAttachmentChip") return { ComposerAttachmentChip: () => null };
+        if (name === "../features/chat/composerAttachments") return { inlineText: async () => null, rejectReason: () => null, safeFileName: (s: string) => s };
+        if (name === "../features/diff/ReviewButton") return { queuePending: () => {} };
+        if (name === "../features/chat/composerIcons") return { PaperclipIcon: () => null, PlusIcon: () => null };
+        if (name === "../features/chat/composer.css") return {};
         if (name === "../workspace/api") return {
           ensureRepository() {
             if (submitting) { events.push("register"); return registration.promise; }
@@ -90,7 +97,7 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
         if (name === "./create/RepoSelect") return { RepoSelect: () => null };
         if (name === "./create/TargetBranchButton") return { TargetBranchButton: ({ onChange }: { onChange: (value: string) => void }) => React.createElement("input", { "aria-label": "Target branch", onChange }) };
         if (name === "./CreateFromPicker") return { CreateFromPicker: () => null };
-        if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }) };
+        if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }), useKeybindings: () => {} };
         if (name === "../keybindings/overrides") return { effectiveShortcuts: () => [] };
         if (name === "../keybindings/shortcut") return { glyphs: () => "", matchesEvent: () => false };
         throw new Error(`Unexpected launch-close dependency ${name}`);
