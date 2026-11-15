@@ -139,7 +139,7 @@
     {"id":"workspace.showUncommittedChanges","key":{"key":{"kind":"physical","code":"KeyU","display":"U"},"modifiers":["meta","alt"]},"title":"Show uncommitted changes","description":"Shows changes that have not been committed.","configurable":true,"category":"Workspace"},
     {"id":"routine.save","key":{"key":{"kind":"logical","value":"s"},"modifiers":["meta"]},"title":"Save routine","configurable":true,"category":"General","when":{"enableOnInputFocus":true,"enableOnTerminalFocus":false}},
     {"id":"editor.saveFile","key":{"key":{"kind":"logical","value":"s"},"modifiers":["meta"]},"title":"Save edited file","configurable":true,"category":"Code review","hidden":true},
-    {"id":"editor.openSearch","key":{"key":{"kind":"logical","value":"f"},"modifiers":["meta"]},"title":"Open code editor search","configurable":false,"category":"Code review","hidden":true},
+    {"id":"editor.openSearch","key":{"key":{"kind":"logical","value":"f"},"modifiers":["meta"]},"title":"Open code editor search","configurable":false,"category":"Code review","hidden":true,"nativeDelegation":true,"nativeDelegationNote":"CodeMirror default keymap: openSearchPanel (Mod-f/Mod-F)"},
     {"id":"diff.open","key":{"key":{"kind":"logical","value":"d"},"modifiers":["meta","shift"]},"title":"Open diff view","configurable":true,"category":"Code review"},
     {"id":"diff.previousFile","key":{"key":{"kind":"logical","value":"ArrowUp"}},"title":"Go to previous file in diff","configurable":true,"category":"Code review","when":{"enableOnInputFocus":false}},
     {"id":"diff.nextFile","key":{"key":{"kind":"logical","value":"ArrowDown"}},"title":"Go to next file in diff","configurable":true,"category":"Code review","when":{"enableOnInputFocus":false}},
