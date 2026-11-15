@@ -425,6 +425,7 @@ export default function App() {
     "view.toggleRightSidebar": toggleRightPanel,
     "view.toggleZenMode": () => toggleZenMode(isSidebarVisible(state), dispatch),
     "toggleGarryMode": toggleGarryMode,
+    "openSidecarLogs": () => setDiagnosticsOpen(true),
     "nav.quickOpen": () => setQuickOpen((open) => !open && canQuickOpen),
     "nav.searchInFiles": () => setSearchInFiles((open) => !open && canSearchInFiles),
     "workspace.create": () => openDialog("create"),

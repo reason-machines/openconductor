@@ -3,6 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { AppState, Repo } from "../state/types.ts";
 import { lastWorkspaceLink, openWorkspaceLinkActions, parseWorkspaceLink } from "./deepLink.ts";
+import { requestChat, takeChatRequest } from "../state/openChat.ts";
 
 const repo = (id: string, workspaces: Repo["workspaces"]): Repo => ({ id, name: id, path: `/r/${id}`, workspaces }) as Repo;
 const ws = (id: string, unread?: boolean): Repo["workspaces"][number] =>
@@ -53,4 +54,29 @@ test("of several URLs the OS hands over, the last workspace link wins", () => {
   assert.deepEqual(lastWorkspaceLink(["openconductor://workspace?id=w1", "https://x.test", "openconductor://workspace?id=w3"]), { workspaceId: "w3" });
   assert.equal(lastWorkspaceLink(null), null);
   assert.equal(lastWorkspaceLink(["https://x.test"]), null);
+});
+
+test("session link: requestChat queues the session for the workspace view to open", () => {
+  // useWorkspaceDeepLinks calls requestChat(sessionId) after dispatching workspace
+  // selection. Chat IDs for review and additional chats encode the workspace ID:
+  // "w1:review:1", "w1:chat:2". takeChatRequest(workspaceId) hands it to
+  // WorkspaceView on render (openChat.ts). Main chat has sessionId === workspaceId.
+
+  // Additional chat tab: workspaceOfChat("w1:chat:1") === "w1"
+  requestChat("w1:chat:1");
+  assert.equal(takeChatRequest("w1"), "w1:chat:1");
+  assert.equal(takeChatRequest("w1"), undefined, "taken once");
+
+  // Review chat: workspaceOfChat("w2:review:3") === "w2"
+  requestChat("w2:review:3");
+  assert.equal(takeChatRequest("w2"), "w2:review:3");
+
+  // Main chat: sessionId === workspaceId, selects the main "chat" tab
+  requestChat("w3");
+  assert.equal(takeChatRequest("w3"), "w3");
+
+  // A later request for the same workspace overwrites the earlier one
+  requestChat("w1:chat:1");
+  requestChat("w1:chat:2");
+  assert.equal(takeChatRequest("w1"), "w1:chat:2");
 });
