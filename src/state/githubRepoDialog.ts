@@ -77,7 +77,7 @@ export function ownersErrorMessage(detail: string): string {
   if (d.includes("gh auth login") || d.includes("not logged") || d.includes("401") || d.includes("bad credentials")) {
     return "You're not signed in to GitHub. Run gh auth login, then try again.";
   }
-  return `Couldn't load GitHub owners: ${detail}`;
+  return "Couldn't load your GitHub accounts.";
 }
 
 /** Muted note when the user loaded but their organizations did not. */
