@@ -87,7 +87,7 @@ export function ConfigSyncDialog({ onClose, notify }: { onClose: () => void; not
                 <input
                   type="checkbox" aria-label={`Select ${title}`} checked={all} aria-checked={some ? "mixed" : all}
                   ref={(input) => { if (input) input.indeterminate = some; }}
-                  disabled={state.kind !== "ready" || categoryItems.length === 0} onChange={() => toggleCategory(id)}
+                  disabled={!diff || categoryItems.length === 0} onChange={() => toggleCategory(id)}
                 />
                 <button type="button" className="config-sync-expand" aria-expanded={open} aria-controls={`config-sync-${id}`} disabled={!category || categoryItems.length === 0} onClick={() => setExpanded((current) => {
                   const next = new Set(current);
@@ -104,7 +104,7 @@ export function ConfigSyncDialog({ onClose, notify }: { onClose: () => void; not
                   const key = configSyncKey({ category: id, direction, name });
                   const from = direction === "ccToCodex" ? "Claude Code" : "Codex";
                   return <label className="config-sync-item" key={key}>
-                    <input type="checkbox" aria-label={`${name} from ${from}`} checked={!deselected.has(key)} disabled={state.kind !== "ready"} onChange={() => toggleItem(key)} />
+                    <input type="checkbox" aria-label={`${name} from ${from}`} checked={!deselected.has(key)} disabled={!diff} onChange={() => toggleItem(key)} />
                     <span className="config-sync-from">From {from}</span><span className="config-sync-name">{name}</span>
                   </label>;
                 }))}

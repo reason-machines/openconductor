@@ -9,7 +9,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import { DialogFrame } from "../../components/DialogFrame.tsx";
-import { listIssues } from "../../workspace/api.ts";
+import { issueLinkMetadata, listIssues } from "../../workspace/api.ts";
 import { matches, type SourceState } from "../../workspace/createFrom.ts";
 import type { CreateFrom } from "../../workspace/createFlow.ts";
 import type { TextAttachment } from "../diff/chatAttachment.ts";
@@ -28,6 +28,7 @@ export function LinkIssueDialog({ repoPath, onSelect, onOpenAccountSettings, onC
   const [issues, setIssues] = useState<SourceState<CreateFrom>>({ status: "loading" });
   const [query, setQuery] = useState("");
   const [pointer, setPointer] = useState(0);
+  const [picking, setPicking] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -62,15 +63,40 @@ export function LinkIssueDialog({ repoPath, onSelect, onOpenAccountSettings, onC
     } else if (e.key === "Enter") {
       e.preventDefault();
       const row = rows[pointer];
-      if (row) pick(row);
+      if (row) void pick(row);
     }
   }
 
-  function pick(row: CreateFrom) {
-    if (row.kind !== "issue") return;
-    const text = row.url
-      ? `${row.key}: ${row.title}\n${row.url}`
-      : `${row.key}: ${row.title}`;
+  async function pick(row: CreateFrom) {
+    if (row.kind !== "issue" || picking) return;
+    let text: string;
+    if (row.provider === "github" && repoPath) {
+      // M13 fix: call gh_issue_link_metadata for enriched metadata (labels, assignee, body preview).
+      setPicking(true);
+      try {
+        const number = parseInt(row.key.replace(/^#/, ""), 10);
+        const meta = await issueLinkMetadata(repoPath, number);
+        if (meta) {
+          const parts: string[] = [`${row.key}: ${meta.title}`];
+          if (meta.url) parts.push(meta.url);
+          if (meta.labels.length > 0) parts.push(`Labels: ${meta.labels.map((l) => l.name).join(", ")}`);
+          if (meta.assignee) parts.push(`Assignee: @${meta.assignee.login}`);
+          if (meta.body) {
+            const preview = meta.body.slice(0, 200).replace(/\n+/g, " ").trim();
+            parts.push(`Body: ${preview}${meta.body.length > 200 ? "\u2026" : ""}`);
+          }
+          text = parts.join("\n");
+        } else {
+          text = row.url ? `${row.key}: ${row.title}\n${row.url}` : `${row.key}: ${row.title}`;
+        }
+      } catch {
+        text = row.url ? `${row.key}: ${row.title}\n${row.url}` : `${row.key}: ${row.title}`;
+      } finally {
+        setPicking(false);
+      }
+    } else {
+      text = row.url ? `${row.key}: ${row.title}\n${row.url}` : `${row.key}: ${row.title}`;
+    }
     onSelect({ name: `issue-${row.key.replace(/^#/, "")}.txt`, text });
     onClose();
   }
@@ -143,7 +169,7 @@ export function LinkIssueDialog({ repoPath, onSelect, onOpenAccountSettings, onC
             aria-selected={i === pointer}
             className={`link-issue-row${i === pointer ? " is-selected" : ""}`}
             onMouseEnter={() => setPointer(i)}
-            onClick={() => pick(row)}
+            onClick={() => void pick(row)}
           >
             <span className="link-issue-key">{row.key}</span>
             <span className="link-issue-title">{row.title}</span>
