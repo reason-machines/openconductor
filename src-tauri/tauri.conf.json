@@ -23,7 +23,9 @@
       }
     ],
     "macOSPrivateApi": true,
-    "security": { "csp": null }
+    "security": {
+      "csp": "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: https: data: blob:; font-src 'self' asset:; connect-src ipc: http://ipc.localhost; media-src 'self' asset:;"
+    }
   },
   "bundle": {
     "active": true,

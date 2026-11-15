@@ -12,6 +12,8 @@ const WORDS: &[&str] = &[
     "larch", "laurel", "linden", "maple", "oak", "olive", "pine", "poplar", "redwood", "rowan",
     "sequoia", "spruce", "sycamore", "willow", "yew", "acacia", "baobab", "banyan", "cork",
     "ginkgo", "hickory", "magnolia", "mahogany", "mangrove", "myrtle", "palm", "teak", "walnut",
+    // City slugs that also appear in the frontend CITIES list (passport tier).
+    "alert", "longyearbyen", "avalon", "camelot", "shangri-la", "xanadu",
 ];
 
 /// Lowercase, ASCII alphanumerics and single dashes; trimmed of dashes.
