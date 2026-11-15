@@ -37,13 +37,13 @@ export function TerminalFontRows({ settings, save }: Props) {
   return (
     <div className="settings-terminal-font" data-settings-row>
       <label className="settings-row-label" htmlFor="terminal-font">
-        Terminal Font
+        Terminal font
       </label>
       <input
         id="terminal-font"
         type="text"
         className="settings-field"
-        aria-label="Terminal Font"
+        aria-label="Terminal font"
         aria-invalid={error !== null}
         placeholder="Leave empty for default"
         spellCheck={false}
@@ -62,7 +62,7 @@ export function TerminalFontRows({ settings, save }: Props) {
       <p className={error ? "error small" : "settings-row-detail"}>{error ?? "Enter font name exactly as installed, e.g. Arial, Papyrus, FiraCode Nerd Font"}</p>
       <div className="settings-terminal-size">
         <div className="settings-terminal-size-head">
-          <span className="settings-row-label">Terminal Font Size</span>
+          <span className="settings-row-label">Terminal font size</span>
           <span className="settings-row-help">{size}px</span>
         </div>
         <Slider.Root
@@ -78,7 +78,7 @@ export function TerminalFontRows({ settings, save }: Props) {
             <Slider.Track className="settings-terminal-slider-track">
               <Slider.Indicator className="settings-terminal-slider-fill" />
             </Slider.Track>
-            <Slider.Thumb className="settings-terminal-slider-thumb" aria-label="Terminal Font Size" />
+            <Slider.Thumb className="settings-terminal-slider-thumb" aria-label="Terminal font size" />
           </Slider.Control>
         </Slider.Root>
       </div>

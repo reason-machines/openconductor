@@ -12,3 +12,4 @@ __pycache__/
 # REA session working directories (reproducible build artifacts)
 .rea-work/
 .ara-state/
+.oc-tmp/

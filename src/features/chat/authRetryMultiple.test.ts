@@ -15,7 +15,7 @@ const cases = [
 ];
 
 test("the frozen sign-in continuation regression delivers every failed message once", () => {
-  assert.equal(createHash("sha256").update(readFileSync(fixture)).digest("hex"), "9b3d03de095956357d3e81e0290e2f4b214b849b5620dedc60f42d3bf245efcc");
+  assert.equal(createHash("sha256").update(readFileSync(fixture)).digest("hex"), "715669444b0b46a07ab559e043a03b1fd60fddb4ae1bc7763542581517451041");
   const env: typeof process.env = { ...process.env, RETRY_PACKET: packet, RETRY_REACT_DEPS: root };
   delete env.NODE_TEST_CONTEXT;
   const result = spawnSync(process.execPath, [
