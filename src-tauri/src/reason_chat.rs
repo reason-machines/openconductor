@@ -188,6 +188,14 @@ pub async fn reason_account_status(app: AppHandle) -> Result<Account, String> {
 /// `reason call` reads of the Reason HTTP API, run at the same time.
 #[tauri::command]
 pub async fn reason_cloud_setup(app: AppHandle) -> Result<CloudSetup, String> {
+    let service = app.state::<SettingsService>();
+    let settings = service.get().map_err(|e| e.to_string())?;
+    if settings.experimental.extra.get("experimental_cloud_ui")
+        .and_then(|v| v.as_bool())
+        != Some(true)
+    {
+        return Err("Cloud UI is disabled in Settings › Experimental.".into());
+    }
     with_cli(&app, |l, dir| l.cloud_setup(dir)).await
 }
 
@@ -269,6 +277,16 @@ pub async fn reason_api_call(
         code: "reason_unavailable".into(),
         message,
     };
+    {
+        let service = app.state::<SettingsService>();
+        let settings = service.get().map_err(|e| unavailable(e.to_string()))?;
+        if settings.experimental.extra.get("experimental_cloud_ui")
+            .and_then(|v| v.as_bool())
+            != Some(true)
+        {
+            return Err(unavailable("Cloud UI is disabled in Settings › Experimental.".into()));
+        }
+    }
     let (launch, workspace) = configured(&app).map_err(unavailable)?;
     let launch = launch
         .in_workspace(workspace.as_deref())
