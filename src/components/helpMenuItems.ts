@@ -49,7 +49,7 @@ export const HELP_ITEMS: readonly HelpItem[] = [
   { label: "Send feedback", icon: "message", commandId: "sendFeedback", action: { kind: "feedback" } },
   { label: "Submit a prompt", action: { kind: "submitPrompt" } },
   { label: "Diagnostics", icon: "stethoscope", action: { kind: "diagnostics" } },
-  { label: "Open debug tools", action: { kind: "devtools" } },
+  { label: "Open debug tools", commandId: "openDebugTools", action: { kind: "devtools" } },
 ];
 
 /**

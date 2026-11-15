@@ -141,6 +141,7 @@ export function CreateWorkspaceComposer({
   useEffect(() => onBusyChange?.(busy), [busy, onBusyChange]);
   const { overrides } = useKeybindingOverrides();
   const submitKeys = [...effectiveShortcuts("chat.submitMessage", overrides), ...effectiveShortcuts("chat.submitOppositeFollowUp", overrides)];
+  const backlogKeys = effectiveShortcuts("workspace.addToBacklogFromComposer", overrides);
   const submitShortcut = effectiveShortcuts("chat.submitMessage", overrides)[0];
   const submitHint = submitShortcut ? glyphs(submitShortcut) : "↵";
   const hint = (commandId: string) => {
@@ -343,8 +344,62 @@ export function CreateWorkspaceComposer({
     }
   }
 
+  /**
+   * Conductor's "Add to backlog" (⌥↩, `workspace.addToBacklogFromComposer`):
+   * creates the workspace without sending the first message, then marks it
+   * backlog. The draft text is preserved as a workspace description but no
+   * chat session is started until the user opens the workspace.
+   *
+   * Evidence: Hji.txt `ca` callback + `Ei` keydown capture handler.
+   */
+  async function addToBacklog() {
+    if (busy || !repo) return;
+    const built = buildCreateRequest(draft, prefix);
+    if (!built.ok) return setErrors(built.errors);
+    setErrors({});
+    send({ type: "submit" });
+    const pendingId = crypto.randomUUID();
+    addPendingLaunch(pendingId, repo.id);
+    try {
+      if (!repo.path) throw new Error("This repository has no local checkout yet.");
+      const backendRepo = await ensureRepository(repo.path, repo.id);
+      // Backlog workspaces are created idle — no first chat session even if the composer had text.
+      const backlogRequest = { ...built.request, firstSession: null };
+      const created = await createWorkspace(toCreateWorkspaceArgs({ ...backlogRequest, repoId: backendRepo.id }));
+      send({ type: "created", workspaceId: created.workspace.id });
+      if (created.upstreamWarning) onWarning(created.upstreamWarning);
+      send({ type: "setup_detected", started: await startSetupScript(backendRepo, created, built.request.targetBranch) });
+      const { id, directoryName, branchName, path } = created.workspace;
+      const { naming } = built.request;
+      const ws = {
+        id,
+        name: directoryName,
+        branch: branchName,
+        path,
+        targetBranch: built.request.targetBranch,
+        placeholderBranchName: naming.placeholder_branch_name === null ? null : branchName,
+        userSetWorkspaceName: naming.user_set_workspace_name,
+        userSetBranchName: naming.user_set_branch_name,
+        number: created.number ?? null,
+      };
+      dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });
+      dispatch({ type: "setWorkspaceStatus", repoId: repo.id, workspaceId: id, status: "backlog" });
+      onClose();
+    } catch (err) {
+      send({ type: "create_failed", error: `${FAILED_TO_CREATE}: ${errorText(err)}` });
+    } finally {
+      removePendingLaunch(pendingId);
+    }
+  }
+
   function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     if (e.nativeEvent.isComposing) return;
+    // ⌥↩ adds to backlog without opening a chat session (Conductor `workspace.addToBacklogFromComposer`).
+    if (backlogKeys.some((s) => matchesEvent(s, e.nativeEvent))) {
+      e.preventDefault();
+      void addToBacklog();
+      return;
+    }
     // `chat.newLine` (Shift+Enter, or Enter under the ⌘Enter preset) falls through to the textarea.
     if (submitKeys.some((s) => matchesEvent(s, e.nativeEvent))) {
       e.preventDefault();

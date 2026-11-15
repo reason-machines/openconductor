@@ -77,6 +77,14 @@ export function AppearancePage({ settings, save }: Props) {
           onChange={(v) => save(withField(settings, "general", "theme", v))}
         />
       </Row>
+      <Row label="Color palette" help="Surfaces, text and the accent color. Status and diff colors keep their meaning.">
+        <Select<PaletteId>
+          label="Color palette"
+          value={paletteFrom(a.color_palette)}
+          options={PALETTE_IDS.map((id) => ({ value: id, label: PALETTE_LABELS[id] }))}
+          onChange={(v) => save(withAppearance(settings, "color_palette", v))}
+        />
+      </Row>
       <Row label="Low-contrast dark mode">
         <Toggle label="Low-contrast dark mode" checked={a.low_contrast_dark_mode} onChange={(on) => save(withAppearance(settings, "low_contrast_dark_mode", on))} />
       </Row>
@@ -162,14 +170,6 @@ export function AppearancePage({ settings, save }: Props) {
         </div>
       </div>
       <TerminalFontRows settings={settings} save={save} />
-      <Row label="Color palette" help="Surfaces, text and the accent color. Status and diff colors keep their meaning.">
-        <Select<PaletteId>
-          label="Color palette"
-          value={paletteFrom(a.color_palette)}
-          options={PALETTE_IDS.map((id) => ({ value: id, label: PALETTE_LABELS[id] }))}
-          onChange={(v) => save(withAppearance(settings, "color_palette", v))}
-        />
-      </Row>
     </div>
   );
 }

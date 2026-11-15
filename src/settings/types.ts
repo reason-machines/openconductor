@@ -48,6 +48,7 @@ export interface Settings {
   /** Advanced › executable paths; blank means the agent on PATH. */
   claude_code_executable_path?: string | null;
   codex_executable_path?: string | null;
+  opencode_executable_path?: string | null;
   /** Agents › Reason › "Reason executable path"; blank uses the installed `reason`. */
   reason_executable_path?: string | null;
   /** Advanced › "SSH private key path". */
