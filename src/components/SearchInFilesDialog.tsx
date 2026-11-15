@@ -11,7 +11,7 @@
 //   • 150ms debounce on query
 //   • On pick: addRecentFile + onOpen({path, lineNumber}) + onClose
 
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { grepWorkspace, type GrepMatch, type GrepResult } from "../backend";
 import { RECENT_FILES_STORAGE_KEY, addRecentFile, parseRecentFiles } from "../spotlight/recentFiles";
 import { ConductorIcon } from "./ConductorIcon";
@@ -124,16 +124,33 @@ function groupByFile(result: GrepResult | null): FileGroup[] {
   return [...map.values()];
 }
 
+// --- UTF-8 byte offset → JS string index (H2: Rust regex::Match gives byte offsets, JS slices by UTF-16) ---
+
+/** Convert a UTF-8 byte offset within `str` to a JavaScript (UTF-16) string index. */
+function utf8ByteToCharIndex(str: string, byteOffset: number): number {
+  let idx = 0;
+  let bytes = 0;
+  while (idx < str.length && bytes < byteOffset) {
+    const cp = str.codePointAt(idx)!;
+    // UTF-8 byte widths: 1 (U+0000–U+007F), 2 (U+0080–U+07FF), 3 (U+0800–U+FFFF), 4 (U+10000+)
+    bytes += cp <= 0x7f ? 1 : cp <= 0x7ff ? 2 : cp <= 0xffff ? 3 : 4;
+    idx += cp > 0xffff ? 2 : 1; // surrogate pair = 2 UTF-16 code units
+  }
+  return idx;
+}
+
 // --- Highlighted match line (Yco) ---
 
 function HighlightedLine({ match }: { match: GrepMatch }) {
   const trimmed = match.line_text.trimStart();
-  const offset = match.line_text.length - trimmed.length;
+  // Leading whitespace is always ASCII, so char count equals byte count.
+  const leadingBytes = match.line_text.length - trimmed.length;
   const parts: React.ReactNode[] = [];
   let cursor = 0;
   for (const sub of match.submatches) {
-    const start = Math.max(sub.start - offset, 0);
-    const end = Math.max(sub.end - offset, 0);
+    // sub.start/end are UTF-8 byte offsets in line_text; adjust to trimmed, then to char index.
+    const start = utf8ByteToCharIndex(trimmed, Math.max(sub.start - leadingBytes, 0));
+    const end = utf8ByteToCharIndex(trimmed, Math.max(sub.end - leadingBytes, 0));
     if (start > cursor) parts.push(<span key={`t${cursor}`}>{trimmed.slice(cursor, start)}</span>);
     parts.push(
       <mark key={`m${start}`} className="sif-mark">
@@ -247,6 +264,13 @@ export function SearchInFilesDialog({ repoId, workspacePath, onClose, onOpen }: 
   const groups = groupByFile(result);
   const count = matchCount(result, hasQuery);
   const empty = emptyState(hasQuery, showFetching, error, result);
+  // Flat list of all matches for keyboard navigation (H2).
+  const allMatches = useMemo(() => groups.flatMap((g) => g.matches), [groups]);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  // Reset selection when the result set changes.
+  useEffect(() => { setSelectedIndex(-1); }, [allMatches.length]);
+  const selectedRowRef = useRef<HTMLButtonElement | null>(null);
+  useEffect(() => { selectedRowRef.current?.scrollIntoView({ block: "nearest" }); }, [selectedIndex]);
 
   function pick(match: GrepMatch) {
     const next = addRecentFile(recents, { repositoryId: repoId, path: match.relative_path, timestamp: Date.now() });
@@ -257,9 +281,22 @@ export function SearchInFilesDialog({ repoId, workspacePath, onClose, onOpen }: 
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Escape") {
+    if (e.key === "Escape") { e.preventDefault(); onClose(); return; }
+    if (e.key === "ArrowDown") {
       e.preventDefault();
-      onClose();
+      setSelectedIndex((i) => allMatches.length === 0 ? -1 : (i + 1) % allMatches.length);
+      return;
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSelectedIndex((i) => allMatches.length === 0 ? -1 : (i - 1 + allMatches.length) % allMatches.length);
+      return;
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const m = allMatches[selectedIndex];
+      if (m) pick(m);
+      return;
     }
   }
 
@@ -302,22 +339,32 @@ export function SearchInFilesDialog({ repoId, workspacePath, onClose, onOpen }: 
           {empty ? (
             <div className="sif-empty">{empty}</div>
           ) : (
-            groups.map((group) => (
-              <div key={group.relativePath} className="sif-group">
-                <FileHeading group={group} />
-                {group.matches.map((match) => (
-                  <button
-                    key={`${match.relative_path}:${match.line_number}`}
-                    type="button"
-                    className="sif-match-row"
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => pick(match)}
-                  >
-                    <HighlightedLine match={match} />
-                  </button>
-                ))}
-              </div>
-            ))
+            (() => {
+              let flatIdx = 0;
+              return groups.map((group) => (
+                <div key={group.relativePath} className="sif-group">
+                  <FileHeading group={group} />
+                  {group.matches.map((match) => {
+                    const idx = flatIdx++;
+                    const isSel = idx === selectedIndex;
+                    return (
+                      <button
+                        key={`${match.relative_path}:${match.line_number}`}
+                        ref={isSel ? selectedRowRef : undefined}
+                        type="button"
+                        className="sif-match-row"
+                        data-selected={isSel || undefined}
+                        aria-current={isSel ? "true" : undefined}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => pick(match)}
+                      >
+                        <HighlightedLine match={match} />
+                      </button>
+                    );
+                  })}
+                </div>
+              ));
+            })()
           )}
         </div>
       </div>
