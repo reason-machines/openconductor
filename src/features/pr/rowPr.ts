@@ -13,5 +13,6 @@ export function rowPrOf(info: PrInfo, optionalChecksBlock: boolean): RowPr {
     failingChecks: info.status?.checks.failing.length ?? 0,
     viewerCanMerge: info.viewerCanMerge,
     optionalChecksBlock,
+    url: info.url,
   };
 }
