@@ -28,7 +28,7 @@ const boundaries: Record<string, object> = {
   "@pierre/diffs": { processFile: () => ({ isPartial: false }) },
   "@pierre/diffs/react": { CodeView, EditProvider: ({ children }: { children: unknown }) => children },
   "./Whitespace": { WhitespaceOnly: inert },
-  "../../keybindings/KeybindingsProvider.tsx": { useKeybindingOverrides: () => ({ overrides: {} }) },
+  "../../keybindings/KeybindingsProvider.tsx": { useKeybindings: () => undefined, useKeybindingOverrides: () => ({ overrides: {} }) },
   "../../keybindings/overrides.ts": { effectiveShortcuts: () => [] },
   "../../keybindings/shortcut.ts": { matchesEvent: () => false },
   "./EditInViewer.ts": { createEditor: inert },

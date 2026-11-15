@@ -26,7 +26,7 @@ const boundaries: Record<string, unknown> = {
       "data-whitespace-control": true, onClick: onShow,
     }, "Only whitespace changes found"),
   },
-  "../../keybindings/KeybindingsProvider.tsx": {},
+  "../../keybindings/KeybindingsProvider.tsx": { useKeybindings: () => undefined },
   "../../keybindings/overrides.ts": {},
   "../../keybindings/shortcut.ts": {},
   "./EditInViewer.ts": {},

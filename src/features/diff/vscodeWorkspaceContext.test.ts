@@ -60,7 +60,7 @@ async function clickHeader(appId: string, path: string) {
     "./copyFile.ts": { copySource: () => null },
     "@pierre/diffs": {}, "@pierre/diffs/react": {},
     "./Whitespace": { WhitespaceOnly: inert },
-    "../../keybindings/KeybindingsProvider.tsx": {},
+    "../../keybindings/KeybindingsProvider.tsx": { useKeybindings: () => undefined },
     "../../keybindings/overrides.ts": {}, "../../keybindings/shortcut.ts": {},
     "./EditInViewer.ts": {}, "./commentMarkdown.ts": { CommentMarkdown: inert }, "./CommentNav": {},
     "./DiscardDialog": { RevertIcon: inert }, "./FilePathChip": chip,

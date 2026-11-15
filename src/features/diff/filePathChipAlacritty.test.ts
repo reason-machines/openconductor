@@ -70,7 +70,7 @@ async function fixture({ saved, worktree, path, error }: {
     "@pierre/diffs": {},
     "@pierre/diffs/react": {},
     "./Whitespace": { WhitespaceOnly: inert },
-    "../../keybindings/KeybindingsProvider.tsx": {},
+    "../../keybindings/KeybindingsProvider.tsx": { useKeybindings: () => undefined },
     "../../keybindings/overrides.ts": {},
     "../../keybindings/shortcut.ts": {},
     "./EditInViewer.ts": {},

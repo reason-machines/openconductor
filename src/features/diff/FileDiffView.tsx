@@ -18,7 +18,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { processFile, type CodeViewItem, type CodeViewLineSelection, type SelectedLineRange, type ThemeTypes } from "@pierre/diffs";
 import { CodeView, EditProvider, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
 import { WhitespaceOnly } from "./Whitespace";
-import { useKeybindings, useKeybindingOverrides } from "../../keybindings/KeybindingsProvider.tsx";
+import { useKeybindingOverrides } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { matchesEvent } from "../../keybindings/shortcut.ts";
 import { createEditor, editableContents, type FileEdit } from "./EditInViewer.ts";
@@ -77,6 +77,14 @@ interface Props {
   onShowWhitespace?: () => void;
   /** Enable editing from complete current contents; absent for read-only files and history. */
   edit?: FileEdit;
+  /**
+   * Render markdown/HTML in preview mode instead of source diff.
+   * Controlled by the parent (OpenFile) via workspace.toggleFileEdit (⌘E).
+   * Only meaningful in "file" layout for previewable paths.
+   */
+  isPreviewing?: boolean;
+  /** Toggle between preview and source (called by the header button and ⌘E keybinding in the parent). */
+  onTogglePreview?: () => void;
   /** The whole new file, for the header's "Copy file contents" button. */
   loadText?: () => Promise<string>;
   /** Shows a toast (a failed copy). */
@@ -267,17 +275,13 @@ export function FileDiffView(props: Props) {
   const copy = copySource(file, { draft: edit?.current, loadText });
 
   // Conductor's bji isPreviewing gate: show rendered preview for markdown/HTML in file layout.
-  // workspace.toggleFileEdit (⌘E) switches between preview and source when available.
+  // isPreviewing is controlled by the parent (OpenFile) via workspace.toggleFileEdit (⌘E).
   const isPreviewable = props.layout === "file" && !file.binary && !file.hide_reason &&
     file.hunks.length > 0 && isPreviewablePath(file.path);
-  const [isPreviewing, setIsPreviewing] = useState(isPreviewable);
-  useEffect(() => { setIsPreviewing(isPreviewable); }, [file.path, isPreviewable]);
-  // workspace.toggleFileEdit (⌘E) toggles between rendered preview and editable source.
-  // Only active when the file is previewable (markdown/HTML in file layout).
-  useKeybindings({ "workspace.toggleFileEdit": isPreviewable ? () => setIsPreviewing((p) => !p) : undefined });
+  const isPreviewing = props.isPreviewing ?? false;
   // Whole-file text for the preview: editableContents reads it synchronously from the diff data
   // in file layout (all hunks are present, no extra fetch needed).
-  const previewText = isPreviewable && isPreviewing
+  const previewText = isPreviewing
     ? editableContents(file, props.layout, ignoreWhitespace) ?? null
     : null;
 
@@ -286,7 +290,7 @@ export function FileDiffView(props: Props) {
   else if (file.binary) body = <div className="oc-file-note">Binary file changed</div>;
   else if (file.hunks.length === 0)
     body = ignoreWhitespace ? <WhitespaceOnly onShow={onShowWhitespace} /> : <div className="oc-file-note">No changes in this file</div>;
-  else if (isPreviewable && isPreviewing && previewText !== null)
+  else if (isPreviewing && previewText !== null)
     body = <div className="oc-md-preview oc-code-scroll"><CommentMarkdown text={previewText} /></div>;
   else
     body = (
@@ -317,10 +321,10 @@ export function FileDiffView(props: Props) {
             </Tooltip>
           )}
           {copy && <CopyFileButton path={file.path} read={copy} notify={notify} />}
-          {isPreviewable && (
+          {isPreviewable && props.onTogglePreview && (
             <Tooltip content={isPreviewing ? "Show source (\u2318E)" : "Show preview (\u2318E)"}>
               <button type="button" className="icon-btn" aria-label={isPreviewing ? "Show source" : "Show preview"}
-                aria-pressed={isPreviewing} onClick={() => setIsPreviewing((p) => !p)}>
+                aria-pressed={isPreviewing} onClick={props.onTogglePreview}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   {isPreviewing
                     ? <><path d="M17 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z" /><path d="M9 7h6M9 11h6M9 15h4" /></>
