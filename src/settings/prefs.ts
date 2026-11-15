@@ -55,6 +55,10 @@ export const BOOL_PREFS = {
   local_git_forge_enabled: bool("experimental", false),
   voice_mode: bool("experimental", false),
   experimental_sidebar_transparency: bool("experimental", false),
+  // Conductor's `wrap_lines` setting (`Te("wrap_lines",!0)` in
+  // index-BGEQ8YjU.js). Stored in the settings table, not localStorage.
+  // Default true (Conductor's registry default; `{data: n = !0}` in its hook).
+  wrap_lines: bool("top", true),
 } as const satisfies Record<string, BoolPref>;
 
 export const ENUM_PREFS = {

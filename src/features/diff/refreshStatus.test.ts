@@ -82,6 +82,7 @@ async function fixture() {
       };
       if (name === "@pierre/diffs/edit") return { Editor: class { constructor() { assert.fail("No DOM editor in this test"); } } };
       if (name === "../../keybindings/KeybindingsProvider.tsx") return { useKeybindings: () => undefined, useKeybindingOverrides: () => ({ overrides: {} }) };
+      if (name === "./wrapLinesPref.ts") return { useWrapLinesPref: () => ({ value: true, save: () => {} }) };
       if (name === "../../keybindings/overrides.ts") return { effectiveShortcuts: () => [] };
       if (name === "../../keybindings/shortcut.ts") return { matchesEvent: () => false };
       if (name === "./useChangesPresentation.ts") return { useChangesPresentation: () => ({ presentation: { filePathFilter: "", diffFileListMode: "flat" } }) };
