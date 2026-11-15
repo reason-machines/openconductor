@@ -18,7 +18,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { processFile, type CodeViewItem, type CodeViewLineSelection, type SelectedLineRange, type ThemeTypes } from "@pierre/diffs";
 import { CodeView, EditProvider, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
 import { WhitespaceOnly } from "./Whitespace";
-import { useKeybindingOverrides } from "../../keybindings/KeybindingsProvider.tsx";
+import { useKeybindings, useKeybindingOverrides } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { matchesEvent } from "../../keybindings/shortcut.ts";
 import { createEditor, editableContents, type FileEdit } from "./EditInViewer.ts";
@@ -272,15 +272,13 @@ export function FileDiffView(props: Props) {
     file.hunks.length > 0 && isPreviewablePath(file.path);
   const [isPreviewing, setIsPreviewing] = useState(isPreviewable);
   useEffect(() => { setIsPreviewing(isPreviewable); }, [file.path, isPreviewable]);
-  // workspace.toggleFileEdit (⌘E) is wired in DiffViewer's OpenFile (the parent), which passes
-  // edit=undefined for view mode and edit=<FileEdit> for edit mode. When edit is provided,
-  // the parent has entered edit mode: exit preview so the user sees the editable source.
-  useEffect(() => { if (edit !== undefined) setIsPreviewing(false); }, [edit]);
+  // workspace.toggleFileEdit (⌘E) toggles between rendered preview and editable source.
+  // Only active when the file is previewable (markdown/HTML in file layout).
+  useKeybindings({ "workspace.toggleFileEdit": isPreviewable ? () => setIsPreviewing((p) => !p) : undefined });
   // Whole-file text for the preview: editableContents reads it synchronously from the diff data
   // in file layout (all hunks are present, no extra fetch needed).
-  // Only show preview when in view mode (edit===undefined keeps parity with isEditing=false).
-  const previewText = isPreviewable && isPreviewing && edit === undefined
-    ? editableContents?.(file, props.layout, ignoreWhitespace) ?? null
+  const previewText = isPreviewable && isPreviewing
+    ? editableContents(file, props.layout, ignoreWhitespace) ?? null
     : null;
 
   let body: ReactNode;
@@ -288,7 +286,7 @@ export function FileDiffView(props: Props) {
   else if (file.binary) body = <div className="oc-file-note">Binary file changed</div>;
   else if (file.hunks.length === 0)
     body = ignoreWhitespace ? <WhitespaceOnly onShow={onShowWhitespace} /> : <div className="oc-file-note">No changes in this file</div>;
-  else if (isPreviewable && isPreviewing && edit === undefined && previewText !== null)
+  else if (isPreviewable && isPreviewing && previewText !== null)
     body = <div className="oc-md-preview oc-code-scroll"><CommentMarkdown text={previewText} /></div>;
   else
     body = (
