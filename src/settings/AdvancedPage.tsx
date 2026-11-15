@@ -31,45 +31,41 @@ export function AdvancedPage({ settings, save }: Props) {
       <RootPathRow />
       <ExecutablePathRow agent="claude" settings={settings} save={save} />
       <ExecutablePathRow agent="codex" settings={settings} save={save} />
-      {cloudUI && (
-        <>
-          <PathRow
-            label="SSH private key path"
-            help="Use your own SSH key for cloud workspace access. Leave empty to auto-generate a key."
-            placeholder="~/.ssh/id_ed25519"
-            browseTitle="Browse for SSH key"
-            plain
-            value={settings.ssh_key_path ?? ""}
-            onChange={(v) => save({ ...settings, ssh_key_path: v })}
-            onSave={(v) => save(withTopLevel(settings, "ssh_key_path", v))}
-          />
-          <PrefSwitchRow
-            settings={settings}
-            save={save}
-            pref="internal_remote_local_execution_mcp"
-            label="Remote execution MCP"
-            help="Let remote agents request approved one-shot commands on this Mac. Each command still requires your approval."
-          />
-          <PrefSwitchRow
-            settings={settings}
-            save={save}
-            pref="always_allow_local_execution"
-            label="Always allow local commands"
-            help={
-              <>
-                Run local commands from remote agents without asking. Turned on when you choose <strong>Yes always</strong> on a local command approval.
-              </>
-            }
-          />
-          <PrefSwitchRow
-            settings={settings}
-            save={save}
-            pref="auto_sync_files_in_new_cloud_workspaces"
-            label="Enable file sync in new cloud workspaces"
-            help="Start syncing when you open a local terminal or run a local task. Sync files can still be turned on per workspace."
-          />
-        </>
-      )}
+      {cloudUI && <PathRow
+        label="SSH private key path"
+        help="Use your own SSH key for cloud workspace access. Leave empty to auto-generate a key."
+        placeholder="~/.ssh/id_ed25519"
+        browseTitle="Browse for SSH key"
+        plain
+        value={settings.ssh_key_path ?? ""}
+        onChange={(v) => save({ ...settings, ssh_key_path: v })}
+        onSave={(v) => save(withTopLevel(settings, "ssh_key_path", v))}
+      />}
+      {cloudUI && <PrefSwitchRow
+        settings={settings}
+        save={save}
+        pref="internal_remote_local_execution_mcp"
+        label="Remote execution MCP"
+        help="Let remote agents request approved one-shot commands on this Mac. Each command still requires your approval."
+      />}
+      {cloudUI && <PrefSwitchRow
+        settings={settings}
+        save={save}
+        pref="always_allow_local_execution"
+        label="Always allow local commands"
+        help={
+          <>
+            Run local commands from remote agents without asking. Turned on when you choose <strong>Yes always</strong> on a local command approval.
+          </>
+        }
+      />}
+      {cloudUI && <PrefSwitchRow
+        settings={settings}
+        save={save}
+        pref="auto_sync_files_in_new_cloud_workspaces"
+        label="Enable file sync in new cloud workspaces"
+        help="Start syncing when you open a local terminal or run a local task. Sync files can still be turned on per workspace."
+      />}
       <Row
         label="Set upstream on plain git push"
         help={

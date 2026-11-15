@@ -105,7 +105,7 @@ function actualHost(observe: (props: PaletteProps) => void = noop) {
   const exports: Partial<typeof import("./PaletteHost")> = {};
   const imports = {
     "./CommandPalette.tsx": { CommandPalette: (props: PaletteProps) => { observe(props); return React.createElement(Palette, props); } },
-    "../keybindings/KeybindingsProvider.tsx": { useKeybindings: noop },
+    "../keybindings/KeybindingsProvider.tsx": { useKeybindings: noop, useKeybindingOverrides: () => ({ overrides: {} }) },
     "./fromAppState.ts": adapter,
     "../settings/searchIndex": { buildSearchIndex: () => [] },
     "../settings/pages": { settingsGroups: () => [] },
