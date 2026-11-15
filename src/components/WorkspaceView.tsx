@@ -114,8 +114,9 @@ import { ChecksTab } from "../features/pr/checks/ChecksTab";
 import { fixShortcutApplies } from "../features/pr/checks/fixErrors";
 import { useFixErrors, type FixErrors } from "../features/pr/checks/useFixErrors";
 import { AllFilesTree, FilesToolbarButtons, useFilesToolbar } from "../features/files/AllFilesTree";
-import { MarkdownFileView } from "../features/files/MarkdownFileView";
-import { isMarkdownFile } from "../features/files/fileView";
+import { WorkspaceFileView } from "../features/files/WorkspaceFileView";
+import { onFileOpenRequest, takeFileOpenRequest } from "../palette/fileOpenActions";
+import { onPrPaletteRequest, takePrPaletteRequest } from "../palette/prPaletteActions";
 import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrTab } from "../features/pr/PrTab";
 import { BranchPicker } from "../features/pr/edit/BranchPicker";
@@ -187,6 +188,8 @@ interface ChatPanelProps extends Props {
   openTurnFile: (turn: TurnRef, path: string) => void;
   /** A file badge in a tool row (repository-relative path): open the file's changes when it has some. */
   openFile?: (path: string) => void;
+  /** Incremented by WorkspaceView when a palette linkIssue command arrives for this chat. */
+  triggerLinkIssue?: number;
   /** Opens a forked chat tab on `config` with `draft` in its composer; returns its chat id. */
   forkToNewTab: (title: string, config: ConfigChoice[], draft: { text: string; attachments: TextAttachment[] }) => string;
   /** Retained chats and live tabs of this workspace for transcript attachments. */
@@ -230,7 +233,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
 /** What the chat panel shows: Codex's approvals and consent requests, or the permission requests of Reason and Claude Code. */
 type ChatView = Omit<ChatSnapshot, "permissions"> & { permissions?: readonly PermissionPrompt[]; approvals?: CodexApproval[]; consents?: CodexConsent[] };
 
-function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, content, onRunningChange, openTurnFile, openFile, onNextUnread, forkToNewTab, chatTabs, onClearLocal, onOpenAccountSettings }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, content, onRunningChange, openTurnFile, openFile, triggerLinkIssue, onNextUnread, forkToNewTab, chatTabs, onClearLocal, onOpenAccountSettings }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const [linkRepos, setLinkRepos] = useState<Repo[] | null>(null);
@@ -310,6 +313,8 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   );
   useKeybindings({ "chat.togglePlanMode": planMode ? () => planMode.onToggle() : undefined });
   useKeybindings({ "chat.linkLinear": () => { setLinkIssueOpen(true); } });
+  // Palette linkIssue command routed via WorkspaceView (prPaletteActions pub/sub).
+  useEffect(() => { if (triggerLinkIssue) setLinkIssueOpen(true); }, [triggerLinkIssue]);
   // Only the workspace's own chat counts as the agent working; a review chat does not.
   useEffect(() => {
     if (main) onRunningChange?.(running);
@@ -445,7 +450,8 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
       const taken = repo.workspaces.flatMap((w) => [w.name, w.branch.replace(/^.*\//, "")]);
       const [name] = generateWorkspaceNames(1, taken, Math.random);
       const targetBranch = workspace.targetBranch || backendRepo.defaultBranch;
-      const config = await reasonChatConfig(chatId);
+      // Fork config: Reason workspaces carry their options; Claude Code and Codex carry none (M10).
+      const config = agentId === "reason" ? await reasonChatConfig(chatId) : [];
       const fork = await forkToNewWorkspace(
         { invoke: (cmd, args) => invoke(cmd, args), createWorkspace },
         {
@@ -461,8 +467,9 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
       );
       const { id, directoryName, branchName, path } = fork.created.workspace;
       const title = review?.title ?? workspace.chatTitle ?? workspace.name;
-      configureReason(id, config);
+      if (agentId === "reason") configureReason(id, config);
       copyModelChoice(chatId, id, agentId, config);
+      if (agentId !== "reason") saveAgent(id, agentId);
       queuePending(id, { kind: "draft", text: "", attachments: [{ name: forkAttachmentName(title), text: fork.transcript }] });
       await startSetupScript({ id: backendRepo.id, root: backendRepo.root, defaultBranch: backendRepo.defaultBranch }, { id, name: directoryName, path }, targetBranch);
       dispatch({
@@ -613,9 +620,9 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
             onOpenFile={openFile ? (path) => openFile(path.startsWith(`${cwd}/`) ? path.slice(cwd.length + 1) : path) : undefined}
             // Conductor: any turn of a chat in a workspace that is not archived; disabled while a fork is made.
             onForkToNewTab={workspace.status !== "archived" ? (turnId: string) => void forkToTab(turnId) : undefined}
-            // Conductor: the same, and only for a workspace on this machine. It restores the turn's
-            // end checkpoint under the Reason chat id, so Codex and Claude Code chats do not offer it yet.
-            onForkToNewWorkspace={reason && agentId === "reason" && workspace.path && workspace.status !== "archived" ? (turnId) => void forkToWorkspace(turnId) : undefined}
+            // Conductor: any workspace with a local path that is not archived (M10: unfenced for all agents).
+            // forkToWorkspace restores the turn's git checkpoint; Reason carries its chat config, others carry none.
+            onForkToNewWorkspace={workspace.path && workspace.status !== "archived" ? (turnId) => void forkToWorkspace(turnId) : undefined}
             forkDisabled={forking}
             turnAgent={agent.label}
             chatAgent={agentId}
@@ -1088,13 +1095,53 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
   }, [mainTab, centerTerminal]);
   const [fileTarget, setFileTarget] = useState<{ path: string; workspaceId: string } | null>(null);
   useEffect(() => setFileTarget(null), [workspace.id]);
-  const openMarkdown = (path: string) => {
-    if (!workspace.path || !isMarkdownFile(path)) return false;
+  // Opens any file type in the file viewer tab (H1: WorkspaceFileView wiring).
+  const openAnyFile = useCallback((path: string): boolean => {
+    if (!workspace.path) return false;
     setFileTarget({ path, workspaceId: workspace.id });
     setMainTab("file");
     return true;
-  };
+  }, [workspace.path, workspace.id]);
   const closeFile = () => { setFileTarget(null); setMainTab("chat"); };
+  // Counter incremented to trigger linkIssue dialog in the shown ChatPanel (H7).
+  const [linkIssueTrigger, setLinkIssueTrigger] = useState(0);
+  // Subscribe to palette PR actions (H7: linkIssue/createPR/mergePR/markPrReady/fixErrors).
+  useEffect(() => {
+    const handle = (repoId: string, workspaceId: string) => {
+      if (repoId !== repo.id || workspaceId !== workspace.id) return;
+      const action = takePrPaletteRequest(repo.id, workspace.id);
+      if (!action) return;
+      switch (action) {
+        case "linkIssue": setLinkIssueTrigger((n) => n + 1); break;
+        case "createPullRequest":
+          if (createShortcutApplies(pullRequest.header, prActions.busy !== null)) void prActions.create(false);
+          break;
+        case "mergePullRequest":
+          if (mergeShortcutApplies(pullRequest.pr, pullRequest.settings.optionalChecksBlock, prActions.busy === "merging")) void prActions.merge();
+          break;
+        case "markPrReady": void prActions.markReady(); break;
+        case "fixErrors": {
+          const failing = pullRequest.pr?.status?.checks.failing ?? [];
+          if (fixShortcutApplies(failing, fixErrors.fixing, workspace.status === "archived")) void fixErrors.run(failing);
+          break;
+        }
+      }
+    };
+    return onPrPaletteRequest(handle);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [repo.id, workspace.id]);
+  // Subscribe to file-open requests from QuickOpenDialog / SearchInFilesDialog (H1).
+  useEffect(() => {
+    const handle = (repoId: string, workspaceId: string) => {
+      if (repoId !== repo.id || workspaceId !== workspace.id) return;
+      const req = takeFileOpenRequest(repo.id, workspace.id);
+      if (!req) return;
+      if (req.mode === "diff") diff.openPath(req.path);
+      else openAnyFile(req.path);
+    };
+    return onFileOpenRequest(handle);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [repo.id, workspace.id, openAnyFile]);
   const [prOpen, setPrOpen] = useState(false);
   const [pickingTarget, setPickingTarget] = useState(false);
   const [pickingChangesTarget, setPickingChangesTarget] = useState(false);
@@ -1137,6 +1184,16 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
   useEffect(() => setPrBase(null), [workspace.id]);
   const diffTarget = { branch: targetBranch({ prBase: prBase?.base ?? null, prMerged: prBase?.merged ?? false, intended: workspace.targetBranch, fallback: repo.defaultBranch }), remote: TARGET_REMOTE };
   const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, target: diffTarget, onLoaded, onOpen: openDiffTab });
+  // H1/H6: file badge handler — open in diff if tracked, indicate cloud paths, fall back to file viewer.
+  const openFileOrViewer = useCallback((path: string) => {
+    if (diff.files.some((f) => f.path === path)) { diff.openPath(path); return; }
+    // Cloud/absolute paths not under the worktree cannot be opened locally (H6).
+    if (path.startsWith("/") && (!workspace.path || !path.startsWith(workspace.path))) {
+      notify?.("info", `${path.split("/").pop() ?? path} is a cloud file — not available locally`);
+      return;
+    }
+    openAnyFile(path);
+  }, [diff, workspace.path, notify, openAnyFile]);
   const [gitPanelTab, setGitPanelTab] = useState<GitPanelTarget["tab"]>("changes");
   // Keep the tab while RightPanel is hidden; picking a turn still opens its changes list.
   useEffect(() => {
@@ -1556,7 +1613,8 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
           bridge={chatBridge}
           onRunningChange={setAgentWorking}
           openTurnFile={diff.openTurnFile}
-          openFile={diff.openPath}
+          triggerLinkIssue={linkIssueTrigger}
+          openFile={openFileOrViewer}
           // Conductor hides the button once the workspace's PR is merged (g1o's `hidden`, `mIo` isMerged).
           onNextUnread={!prBase?.merged && hasNextUnread?.(selectedChat) ? onNextUnread : undefined}
           forkToNewTab={reviews.fork}
@@ -1564,7 +1622,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
           onOpenAccountSettings={onOpenAccountSettings}
           content={
             showFile && fileTarget && workspace.path ? (
-              <MarkdownFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} />
+              <WorkspaceFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} isVisible={true} readOnly={workspace.status === "archived"} />
             ) : showDiff ? (
               <DiffTab diff={diff} onClose={autoCloseDiffTab} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} onPersistAnchors={review.persistAnchors} notes={review.notes} notify={notify} />
             ) : showPr ? (
@@ -1595,7 +1653,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
         {rightPanelVisible && (
           <div className={`ws-right${stripOpen ? "" : " strip-collapsed"}`}>
             <RightPanel
-              onOpenFile={openMarkdown}
+              onOpenFile={openAnyFile}
               workspaceId={workspace.id}
               activeFilePath={showDiff ? diff.selected?.path : showFile ? fileTarget.path : undefined}
               tab={gitPanelTab}

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import type { CreateFrom } from "../workspace/createFlow";
 import {
   COULD_NOT_LOAD_PR,
@@ -69,6 +70,8 @@ function EnterHint({ children }: { children: ReactNode }) {
 /** "Create from..." in the create composer's eyebrow, and its PR / branch / issue picker. */
 export function CreateFromPicker({ value, branches, repoPath, disabled, shortcut, onChange, defaultOpen = false, defaultBranch = null }: Props) {
   const [open, setOpen] = useState(defaultOpen);
+  /** M16: wire the workspace.toggleCreateFrom keybinding (⌘I); skip when the picker is disabled. */
+  useKeybindings({ "workspace.toggleCreateFrom": disabled ? undefined : () => setOpen((o) => !o) });
   const presence = usePresence(open);
   const [tab, setTab] = useState<FromTab>("pr");
   const [query, setQuery] = useState("");

@@ -228,9 +228,18 @@ export function CreateWorkspaceComposer({
         saveAgent(id, draft.agent);
         saveModelChoice(id, { agent: draft.agent, model: draft.model, effort: draft.effort || null });
       }
+      // M10 fix: always configure the Reason session model/effort when the Reason agent is chosen,
+      // regardless of whether there is a first message. Without this an empty-prompt workspace
+      // opens with the global default model instead of the user's chosen model/effort. For
+      // 'claude' or 'codex', configureReason is not called at all (saveModelChoice above handles
+      // those agents; calling configureReason with a local agent's model ID misroutes the chat).
+      if (draft.agent === "reason") {
+        const model = firstSession?.model ?? draft.model;
+        const effort = firstSession?.effort ?? draft.effort;
+        configureReason(id, sessionConfig(model, effort));
+      }
       // The first message opens the workspace's first chat session.
       if (firstSession) {
-        configureReason(id, sessionConfig(firstSession.model, firstSession.effort));
         seedTranscript(id, firstSession.message);
       }
       dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });
@@ -403,11 +412,23 @@ export function CreateWorkspaceComposer({
  * picker (`RNi` inside `Hji`), with the loadout's favorites, "Add models" and
  * "Edit" (Settings › Default models) and the effort submenu, in place of two selects.
  */
+/** H4b fix: Codex and Claude Code always present in the picker regardless of Loadout slots (B2). */
+const CODEX_LAUNCH: LaunchPick = { model: "codex", effort: null, agent: "codex" };
+const CLAUDE_LAUNCH: LaunchPick = { model: "claude-code", effort: null, agent: "claude" };
+
 function CreateModelPicker({ value, favorites, slots, settings, disabled, onChange }: { value: LaunchModel; favorites: readonly LaunchPick[]; slots: readonly (import("../features/chat/composerModels").ModelChoice | null)[]; settings: Settings | null; disabled: boolean; onChange: (next: LaunchModel) => void }) {
+  const allFavorites = useMemo<LaunchPick[]>(() => {
+    const models = new Set(favorites.map((f) => f.model));
+    return [
+      ...favorites,
+      ...(models.has(CODEX_LAUNCH.model) ? [] : [CODEX_LAUNCH]),
+      ...(models.has(CLAUDE_LAUNCH.model) ? [] : [CLAUDE_LAUNCH]),
+    ];
+  }, [favorites]);
   return (
     <ModelPicker
       value={{ model: value.model, effort: value.effort || null, ...(value.agent === "reason" || value.agent === "claude" || value.agent === "codex" ? { agent: value.agent } : {}) }}
-      favorites={favorites}
+      favorites={allFavorites}
       loadout={slots}
       keybindingDialogIds={["dialog"]}
       itemAgent={(f) => f.agent ?? "reason"}

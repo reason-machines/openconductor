@@ -47,6 +47,7 @@ function workspaceChatHost(KeybindingScope: unknown, ChatPanel: unknown) {
     prBase: undefined, hasNextUnread: undefined, selectedChat: "workspace", onNextUnread: undefined,
     reviews: { tabs: [], fork: () => {} }, transcriptChats: [{ id: "workspace", title: "Workspace" }],
     showFile: false, showDiff: false, showPr: false, onOpenAccountSettings: undefined,
+    linkIssueTrigger: 0, openFileOrViewer: undefined,
   })(createRequire(path), module, module.exports);
   return module.exports;
 }

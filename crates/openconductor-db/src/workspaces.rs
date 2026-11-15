@@ -47,6 +47,9 @@ pub struct Workspace {
     pub linked_workspace_ids: Option<String>,
     pub linked_directory_paths: Option<String>,
     pub archive_commit: Option<String>,
+    /// For `ready` / `setting_up` workspaces: the user-picked name the symlink
+    /// points to; `directory_name` stays as the original worktree folder.
+    pub secondary_directory_name: Option<String>,
     pub initialization_log_path: Option<String>,
     pub initialization_files_copied: Option<i64>,
     pub setup_log_path: Option<String>,
@@ -62,6 +65,8 @@ pub struct Workspace {
     /// The user named the workspace (rename dialog or create form); the sidebar
     /// then shows `workspace_name` as is instead of the PR title or branch.
     pub user_set_workspace_name: bool,
+    /// The user explicitly set a branch name; blocks automatic first-message renames.
+    pub user_set_branch_name: bool,
     /// Workspace number (shown as `W-<n>`); Conductor's hosting server assigns it.
     pub number: Option<i64>,
     pub created_at: String,
@@ -81,10 +86,13 @@ pub struct WorkspaceWithRepo {
 const SELECT_WITH_REPO: &str = "SELECT w.local_id, w.repository_id, w.directory_name, \
     w.workspace_name, w.branch, w.placeholder_branch_name, w.state, w.derived_status, \
     w.manual_status, w.active_session_id, w.initialization_parent_branch, \
-    w.intended_target_branch, w.workspace_path, w.linked_workspace_ids, w.linked_directory_paths, w.archive_commit, w.initialization_log_path, \
+    w.intended_target_branch, w.workspace_path, w.linked_workspace_ids, w.linked_directory_paths, w.archive_commit, \
+    w.secondary_directory_name, w.initialization_log_path, \
     w.initialization_files_copied, w.setup_log_path, w.setup_log_state, w.pinned_at, w.notes, \
     COALESCE(w.unread, 0) AS unread, w.pr_title, w.pr_description, \
-    COALESCE(w.user_set_workspace_name, 0) AS user_set_workspace_name, w.number, w.created_at, w.updated_at, \
+    COALESCE(w.user_set_workspace_name, 0) AS user_set_workspace_name, \
+    COALESCE(w.user_set_branch_name, 0) AS user_set_branch_name, \
+    w.number, w.created_at, w.updated_at, \
     r.root_path, r.name AS repo_name, COALESCE(r.storage_version, 1) AS storage_version \
     FROM workspaces w JOIN repos r ON w.repository_id = r.id";
 

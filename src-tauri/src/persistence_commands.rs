@@ -21,6 +21,14 @@ pub fn startup(db: &Db, service: &WorkspaceService) -> Result<(), Box<dyn std::e
         // Conductor's `xet`: sessions of local workspaces left busy by the
         // last run go idle; `needs_user_input` survives.
         openconductor_db::sessions::reset_busy_to_idle_at_startup(pool).await?;
+        // Drain symlinks queued for deletion by previous renames.
+        for path in openconductor_db::workspace_rename::pending_symlink_deletions(pool).await? {
+            let p = std::path::Path::new(&path);
+            if p.symlink_metadata().map_or(false, |m| m.file_type().is_symlink()) {
+                let _ = std::fs::remove_file(p);
+            }
+            openconductor_db::workspace_rename::unqueue_symlink_deletion(pool, &path).await?;
+        }
         for repo in service.repositories() {
             if openconductor_db::repos::get(pool, &repo.id).await?.is_some() {
                 continue;
@@ -110,6 +118,7 @@ pub fn known_repo(r: &RepositoryInfo) -> KnownRepo {
         name: r.name.clone(),
         root: r.root.display().to_string(),
         default_branch: r.default_branch.clone(),
+        remote_url: crate::workspace::git::remote_url(&r.root, "origin"),
     }
 }
 
@@ -166,9 +175,10 @@ pub async fn on_create_finished(
     parent_branch: &str,
     init_log: Option<&str>,
     files_copied: i64,
+    placeholder_branch_name: Option<&str>,
 ) -> Option<i64> {
     let row = known_workspace(repository_id, w);
-    match store::finish_workspace(&db.0, &row, Some(parent_branch), None).await {
+    match store::finish_workspace(&db.0, &row, Some(parent_branch), placeholder_branch_name).await {
         Ok(number) => {
             log_err(
                 "record initialization log",
@@ -273,5 +283,68 @@ mod duplicate_repo_tests {
             ]
         );
         let _ = std::fs::remove_dir_all(&tmp);
+    }
+}
+
+#[cfg(test)]
+mod rename_persistence_tests {
+    use super::*;
+
+    /// A workspace that is renamed via `db_rename_workspace` (which writes
+    /// `secondary_directory_name`) must come back with the user-chosen name
+    /// after a simulated restart — i.e. `list_workspaces` must return the
+    /// secondary name, not the original city slug.
+    #[tokio::test]
+    async fn workspace_name_survives_restart_after_rename() {
+        let pool = openconductor_db::open_in_memory().await.unwrap();
+
+        // Register a minimal repository.
+        let repo = store::KnownRepo {
+            id: "my-app".into(),
+            name: "My App".into(),
+            root: "/tmp/my-app".into(),
+            default_branch: "main".into(),
+            remote_url: None,
+        };
+        store::record_repository(&pool, &repo).await.unwrap();
+
+        // Create a workspace (simulating on_create_finished with a placeholder branch).
+        let ws = store::KnownWorkspace {
+            id: "my-app/pencil-panda".into(),
+            repository_id: "my-app".into(),
+            directory_name: "pencil-panda".into(),
+            branch: "sven/pencil-panda".into(),
+            path: "/tmp/my-app/workspaces/my-app/pencil-panda".into(),
+            archived: false,
+        };
+        store::finish_workspace(&pool, &ws, Some("main"), Some("sven/pencil-panda"))
+            .await
+            .unwrap();
+
+        // Simulate user rename: write secondary_directory_name + workspace_name
+        // exactly as db_rename_workspace does for a ready workspace.
+        openconductor_db::workspace_rename::record_secondary_name(
+            &pool,
+            "my-app/pencil-panda",
+            Some("fix-login-bug"),
+            Some("Fix login bug"),
+            true,
+        )
+        .await
+        .unwrap();
+
+        // Simulate restart: list_workspaces must return the renamed name.
+        let rows = store::list_workspaces(&pool).await.unwrap();
+        assert_eq!(rows.len(), 1);
+        let row = &rows[0];
+        assert_eq!(
+            row.directory_name, "fix-login-bug",
+            "directory_name should reflect secondary_directory_name after rename"
+        );
+        assert_eq!(
+            row.workspace_name.as_deref(),
+            Some("Fix login bug"),
+            "workspace_name must survive restart"
+        );
     }
 }

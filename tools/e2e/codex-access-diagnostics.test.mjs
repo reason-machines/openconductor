@@ -12,6 +12,8 @@ function fixture(handled = false) {
     value: "full", isConnected: true, disabled: false,
     getBoundingClientRect: () => ({ width: 100, height: 20 }),
     closest: () => null,
+    // PR #1299 added option.selected = true before the setter (Low#20 fix).
+    querySelector: () => null,
     matches: (selector) => selector === ".codex-access",
     dispatchEvent(event) {
       if (resetOnChange) this.value = "full";
@@ -40,7 +42,9 @@ function fixture(handled = false) {
   };
   runInNewContext(`(${installCodexAccessDiagnostics.toString()})("proj/e2e")`, context);
   const capture = (phase) => context.window.__ocCodexAccessDiagnostics.capture(phase);
-  const run = (script) => Promise.resolve(runInNewContext(script, context));
+  // Browser CDP wraps scripts in a function automatically; do the same here so
+  // `return` statements inside extracted e2e scripts are valid (Low#20).
+  const run = (script) => runInNewContext(`(async function() { ${script} })`, context)();
   return { select, saved, context, capture, run, invoke, resetOnChange: () => { resetOnChange = true; } };
 }
 
@@ -48,11 +52,19 @@ async function actualChangeBlock(f) {
   const source = readFileSync(new URL("./codex-chat.e2e.mjs", import.meta.url), "utf8");
   const block = source.match(/  \/\/ Ask first,[\s\S]+?(?=  \/\/ 1\. The recorded turn)/)?.[0];
   assert.ok(block, "actual driver's initial access change block");
+  const recordAccess = async (phase) => f.capture(phase);
   const execute = runInNewContext(`(async () => { ${block} })`, {
     run: f.run,
-    recordAccess: async (phase) => f.capture(phase),
+    recordAccess,
     assertCodexAccessSnapshot,
     pass() {},
+    // The real waitFor polls until settled; here, try once then fall back to a
+    // direct capture so assertCodexAccessSnapshot can verify the actual state
+    // (triggering the expected assertion error for the fixture(false) tests).
+    waitFor: async (_label, fn) => {
+      const result = await fn();
+      return result ?? recordAccess("after-change");
+    },
   });
   await execute();
 }

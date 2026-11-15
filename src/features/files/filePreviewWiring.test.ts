@@ -11,12 +11,12 @@ test("All files can delegate internally before attempting an external app", () =
   assert.ok(internal < tree.indexOf("await openInApp("));
 });
 
-test("the read-only file host is wired through WorkspaceView, not chat rendering", () => {
+test("the file host is wired through WorkspaceView (WorkspaceFileView), not chat rendering", () => {
   const workspace = source("components/WorkspaceView.tsx");
-  assert.match(workspace, /<MarkdownFileView/);
-  assert.match(workspace, /onOpenFile=\{openMarkdown\}/);
-  const viewer = readFileSync(new URL("./MarkdownFileView.tsx", import.meta.url), "utf8");
-  assert.match(viewer, /workspace_read_markdown/);
-  assert.match(viewer, /markdown_style/);
-  assert.doesNotMatch(viewer, /diff_write_file|<textarea|saveFileMode/);
+  // H1: WorkspaceFileView replaced MarkdownFileView as the main file tab host.
+  assert.match(workspace, /<WorkspaceFileView/);
+  assert.match(workspace, /onOpenFile=\{openAnyFile\}/);
+  // WorkspaceFileView must not be imported in chat-layer components.
+  const chatComp = source("features/chat/Transcript.tsx");
+  assert.doesNotMatch(chatComp, /WorkspaceFileView/);
 });

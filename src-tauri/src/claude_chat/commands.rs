@@ -9,7 +9,7 @@ use std::sync::{Arc, Mutex, OnceLock};
 use serde_json::Value;
 use tauri::{AppHandle, Emitter, Manager, State};
 
-use crate::agent::{AgentKind, ClaudeLaunch, PermissionMode};
+use crate::agent::PermissionMode;
 use crate::agent_binaries::Agent;
 use crate::reason_acp::provider::{ProviderEvent, Sink};
 use crate::reason_acp::wire;
@@ -43,24 +43,17 @@ impl ClaudeChats {
                     // download), else the CLI on PATH (agent_launch.rs).
                     let exe = crate::agent_launch::launch(&settings_app, Agent::Claude)?;
                     let settings = settings_app.state::<SettingsService>();
-                    let env = settings.launch_env(AgentKind::Claude)?;
-                    let mut launch = ClaudeLaunch::new(cwd, env);
+                    // H5a: use claude_launch_for_chat() to wire all settings fields
+                    // (model, effort, outputStyle, fastMode, ultracode, permission_mode).
+                    let mut launch = settings.inner().claude_launch_for_chat(cwd)?;
                     launch.executable = exe;
                     launch.resume = resume;
-                    // Account › "Claude Code tool approvals" (Conductor's
-                    // `tool_approvals_enabled`, off by default): ask before
-                    // tools run; otherwise the agent works in the workspace's
-                    // own worktree without asking.
-                    let approvals = settings.inner().get().map(|s| s.tool_approvals_enabled);
-                    launch.permission_mode = if approvals.unwrap_or(false) {
-                        PermissionMode::Default
-                    } else {
-                        PermissionMode::BypassPermissions
-                    };
-                    // "Use Claude Code with Chrome" (Settings › Agents): the
-                    // reference sidecar adds `extraArgs: { chrome: null }`.
-                    // The launcher runs on a blocking thread (claude_prompt's
-                    // spawn_blocking), so it can wait on the database.
+                    // H5c: inject login-shell PATH so Claude's Bash tool finds system
+                    // tools when launched from Finder (mirrors codex_chat.rs:161).
+                    if let Some(path) = crate::agent_launch::login_shell_path() {
+                        launch.env.set("PATH", path.to_string_lossy());
+                    }
+                    // "Use Claude Code with Chrome" (Settings > Agents).
                     launch.chrome = settings_app
                         .try_state::<crate::db::Db>()
                         .and_then(|db| {
@@ -68,6 +61,11 @@ impl ClaudeChats {
                                 .ok()
                         })
                         .is_some_and(|p| p.chrome_mode_enabled);
+                    // M7: apply local env vars from Settings > Environment and
+                    // .conductor/settings.toml; provider secrets in launch.env retain precedence.
+                    for (k, v) in crate::settings::effective::local_env_for_dir(cwd) {
+                        launch.env.set(&k, v.as_str());
+                    }
                     Ok(launch)
                 });
                 let emit_app = app.clone();
