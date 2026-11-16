@@ -182,7 +182,7 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
   const emojis: Partial<typeof import("../components/sectionEmoji")> = {};
   evaluate("../components/sectionEmoji.ts", {}, emojis);
   evaluate("../components/SectionDialog.tsx", {
-    "./DialogFrame": { DialogFrame: ({ titleId, children }: { titleId: string; children: unknown }) => React.createElement("div", { role: "dialog", "aria-labelledby": titleId }, children) }, "./sectionEmoji": emojis,
+    "./DialogFrame": { DialogFrame: ({ titleId, children }: { titleId: string; children: React.ReactNode }) => React.createElement("div", { role: "dialog", "aria-labelledby": titleId }, children) }, "./sectionEmoji": emojis,
     "../keybindings/KeybindingsProvider": { useKeybindingOverrides: () => ({ overrides: {} }) },
     "../keybindings/overrides": sectionShortcutOverrides,
     "../keybindings/shortcut": sectionShortcutMatcher,
