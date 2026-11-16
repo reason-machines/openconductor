@@ -31,7 +31,7 @@ jobs:
             native-qa-vm-runner/Profile.c native-qa-vm-runner/ProfileTests.c \
             -o "${RUNNER_TEMP}/vm-profile-tests"
           "${RUNNER_TEMP}/vm-profile-tests"
-          python3 -W error::ResourceWarning -m unittest tools.test_native_qa_vm_signing tools.test_native_qa_vm_receipt tools.test_native_qa_vm_github tools.test_native_qa_vm_staging tools.test_native_qa_vm_broker tools.test_native_qa_vm_executor tools.test_native_qa_vm_alloc tools.test_native_qa_vm_allocation tools.test_native_qa_identity_through_use tools.test_native_qa_vz_bridge -v
+          python3 -W error::ResourceWarning -m unittest tools.test_native_qa_vm_signing tools.test_native_qa_vm_receipt tools.test_native_qa_vm_github tools.test_native_qa_vm_staging tools.test_native_qa_vm_broker tools.test_native_qa_vm_executor tools.test_native_qa_vm_alloc tools.test_native_qa_vm_allocation tools.test_native_qa_identity_through_use tools.test_native_qa_vz_bridge tools.test_native_qa_vm_lifecycle -v
   compile-sign:
     needs: portable
     name: VM runner compile and signature readback (no execution)
