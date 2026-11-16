@@ -79,13 +79,47 @@ class CacheStageTests(unittest.TestCase):
         self.assertEqual(receipt["write"]["token"], receipt["read"]["token"])
         self.assertEqual(receipt["binary_sha256"], hashlib.sha256(self.exe.read_bytes()).hexdigest())
         self.assertEqual((self.root / stage.RECEIPT).stat().st_mode & 0o777, 0o600)
-        self.assertIn("no process/helper filesystem observer", receipt["scope"])
+        # Observer is now integrated; scope reflects snapshot observer, not absence.
+        self.assertIn("lstat snapshot observer", receipt["scope"])
+        self.assertIn("filesystem_coverage_verified remains false", receipt["scope"])
+        # Observer delta must be present and clean (fake runner writes nothing outside permitted).
+        delta = receipt["filesystem_observer_delta"]
+        self.assertIsNotNone(delta)
+        self.assertEqual(delta["status"], "clean")
+        self.assertEqual(delta["unauthorized_writes"], [])
 
-    def test_no_asserted_receipt_can_unlock_filesystem_admission(self):
-        for receipt in ({}, {"filesystem_coverage_verified": True, "all_helpers_covered": True,
-                             "lost_events": 0, "external_writes": []}):
+    def test_receipt_without_observer_delta_cannot_unlock_admission(self):
+        """No receipt lacking a filesystem_observer_delta can pass the gate."""
+        for receipt in (
+            {},
+            {"filesystem_coverage_verified": True, "all_helpers_covered": True,
+             "lost_events": 0, "external_writes": []},
+            {"filesystem_observer_delta": {"status": "not_run",
+                                           "scope": "observer did not run"}},
+            {"filesystem_observer_delta": {"status": "unauthorized_writes_detected",
+                                           "unauthorized_writes": ["bad.txt"]}},
+        ):
             with self.assertRaisesRegex(ValueError, "admission denied"):
                 stage.require_filesystem_isolation(receipt)
+
+    def test_require_filesystem_isolation_accepts_clean_observer_delta(self):
+        """A lifecycle receipt with a clean observer delta passes the gate."""
+        clean_receipt = {
+            "filesystem_observer_delta": {
+                "status": "clean",
+                "unauthorized_writes": [],
+                "permitted_changed": [],
+                "scope": "parent-process lstat snapshot",
+            }
+        }
+        # Must NOT raise.
+        stage.require_filesystem_isolation(clean_receipt)
+
+    def test_require_filesystem_isolation_accepts_probe_lifecycle_receipt(self):
+        """A receipt returned by probe() satisfies require_filesystem_isolation."""
+        receipt = stage.probe(self.root, self.app)
+        # Must NOT raise — real observer ran and found no unauthorized writes.
+        stage.require_filesystem_isolation(receipt)
 
     def test_old_binary_refused_without_execution(self):
         self.script(extra="raise RuntimeError('must not execute')", marker=False)

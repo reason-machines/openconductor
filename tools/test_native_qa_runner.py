@@ -620,6 +620,194 @@ class NativeSentinelTests(unittest.TestCase):
         print("seeded alias on permitted mutable file: staging refusal only, not kernel denial", flush=True)
 
 
+class FilesystemSnapshotTests(unittest.TestCase):
+    """Portable tests for filesystem_snapshot() and filesystem_delta().
+
+    These tests exercise the parent-process observer directly (no subprocess,
+    no macOS dependency).  They verify structural correctness: snapshot capture,
+    delta categorisation, and integration with run_probe().
+
+    Not enforcement proof: portable runner tests cannot substitute for
+    sandbox-exec confinement on a physical Mac host.
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name).resolve()
+
+    # --- filesystem_snapshot -------------------------------------------
+
+    def test_snapshot_empty_root_returns_empty_dict(self):
+        snap = runner.filesystem_snapshot(self.root)
+        self.assertEqual(snap, {})
+
+    def test_snapshot_captures_regular_file(self):
+        (self.root / "file.txt").write_bytes(b"hello")
+        snap = runner.filesystem_snapshot(self.root)
+        self.assertIn("file.txt", snap)
+        self.assertEqual(len(snap), 1)
+
+    def test_snapshot_uses_posix_separators_for_nested_path(self):
+        (self.root / "sub").mkdir()
+        (self.root / "sub" / "nested.txt").write_bytes(b"data")
+        snap = runner.filesystem_snapshot(self.root)
+        self.assertIn("sub/nested.txt", snap)
+
+    def test_snapshot_does_not_follow_symlinks(self):
+        real = self.root / "real.txt"
+        real.write_bytes(b"real")
+        (self.root / "link.txt").symlink_to(real)
+        snap = runner.filesystem_snapshot(self.root)
+        self.assertNotIn("link.txt", snap)   # symlink skipped (not S_ISREG after lstat)
+        self.assertIn("real.txt", snap)
+
+    def test_snapshot_identity_tuple_matches_lstat(self):
+        f = self.root / "f.bin"
+        f.write_bytes(b"abc")
+        snap = runner.filesystem_snapshot(self.root)
+        st = f.lstat()
+        ino, dev, size, mtime_ns, ctime_ns, mode = snap["f.bin"]
+        self.assertEqual(ino,      st.st_ino)
+        self.assertEqual(dev,      st.st_dev)
+        self.assertEqual(size,     st.st_size)
+        self.assertEqual(mtime_ns, st.st_mtime_ns)
+        self.assertEqual(ctime_ns, st.st_ctime_ns)
+        self.assertEqual(mode,     stat.S_IMODE(st.st_mode))
+
+    # --- filesystem_delta ----------------------------------------------
+
+    def test_delta_stable_root_is_clean_with_no_permitted(self):
+        (self.root / "a.txt").write_bytes(b"x")
+        snap = runner.filesystem_snapshot(self.root)
+        delta = runner.filesystem_delta(snap, snap, frozenset())
+        self.assertEqual(delta["unauthorized_writes"], [])
+        self.assertEqual(delta["status"], "clean")
+
+    def test_delta_detects_new_unauthorized_file(self):
+        before = runner.filesystem_snapshot(self.root)
+        (self.root / "new.txt").write_bytes(b"new")
+        after = runner.filesystem_snapshot(self.root)
+        delta = runner.filesystem_delta(before, after, frozenset())
+        self.assertIn("new.txt", delta["unauthorized_writes"])
+        self.assertEqual(delta["status"], "unauthorized_writes_detected")
+
+    def test_delta_detects_modified_unauthorized_file(self):
+        f = self.root / "existing.txt"
+        f.write_bytes(b"original")
+        before = runner.filesystem_snapshot(self.root)
+        import time; time.sleep(0.02)  # ensure mtime_ns changes
+        f.write_bytes(b"modified")
+        after = runner.filesystem_snapshot(self.root)
+        delta = runner.filesystem_delta(before, after, frozenset())
+        self.assertIn("existing.txt", delta["unauthorized_writes"])
+
+    def test_delta_detects_deleted_unauthorized_file(self):
+        f = self.root / "gone.txt"
+        f.write_bytes(b"present")
+        before = runner.filesystem_snapshot(self.root)
+        f.unlink()
+        after = runner.filesystem_snapshot(self.root)
+        delta = runner.filesystem_delta(before, after, frozenset())
+        self.assertIn("gone.txt", delta["unauthorized_writes"])
+
+    def test_delta_permits_named_modified_path(self):
+        f = self.root / "state"
+        f.write_bytes(b"v1")
+        before = runner.filesystem_snapshot(self.root)
+        import time; time.sleep(0.02)
+        f.write_bytes(b"v2")
+        after = runner.filesystem_snapshot(self.root)
+        delta = runner.filesystem_delta(before, after, frozenset({"state"}))
+        self.assertEqual(delta["unauthorized_writes"], [])
+        self.assertIn("state", delta["permitted_changed"])
+        self.assertEqual(delta["status"], "clean")
+
+    def test_delta_permits_named_new_path(self):
+        before = runner.filesystem_snapshot(self.root)
+        (self.root / "allowed").write_bytes(b"ok")
+        after = runner.filesystem_snapshot(self.root)
+        delta = runner.filesystem_delta(before, after, frozenset({"allowed"}))
+        self.assertEqual(delta["unauthorized_writes"], [])
+        self.assertIn("allowed", delta["permitted_changed"])
+
+    def test_delta_mixed_permitted_and_unauthorized(self):
+        f_ok  = self.root / "ok"
+        f_bad = self.root / "bad"
+        f_ok.write_bytes(b"x")
+        before = runner.filesystem_snapshot(self.root)
+        import time; time.sleep(0.02)
+        f_ok.write_bytes(b"y")
+        f_bad.write_bytes(b"z")
+        after = runner.filesystem_snapshot(self.root)
+        delta = runner.filesystem_delta(before, after, frozenset({"ok"}))
+        self.assertIn("bad", delta["unauthorized_writes"])
+        self.assertNotIn("ok", delta["unauthorized_writes"])
+        self.assertIn("ok", delta["permitted_changed"])
+        self.assertEqual(delta["status"], "unauthorized_writes_detected")
+
+    def test_delta_scope_field_is_present(self):
+        snap = runner.filesystem_snapshot(self.root)
+        delta = runner.filesystem_delta(snap, snap, frozenset())
+        self.assertIn("scope", delta)
+        self.assertIn("lstat", delta["scope"])
+
+    # --- integration with run_probe ------------------------------------
+
+    def test_run_probe_observer_delta_included_on_success(self):
+        with portable_transport():
+            root = self.root / "root"
+            root.mkdir(mode=0o700)
+            exe = root / "fixture"
+            exe.write_text(f"#!{sys.executable}\nimport json; print(json.dumps({{}}))\n")
+            exe.chmod(0o700)
+            stage_fixed_files(root)
+            result = runner.run_probe(runner.LaunchSpec(root, exe, runner.Probe.PATHS))
+        self.assertIsNotNone(result.filesystem_observer_delta)
+        delta = result.filesystem_observer_delta
+        self.assertIn("unauthorized_writes", delta)
+        self.assertIn("status", delta)
+        self.assertEqual(delta["status"], "clean")
+        self.assertEqual(delta["unauthorized_writes"], [])
+
+    def test_run_probe_observer_detects_unauthorized_write_by_subprocess(self):
+        """Subprocess writes a file outside the permitted set → delta catches it.
+
+        The subprocess's cwd is the QA root (set by run_probe via Popen cwd=spec.root),
+        so a relative-path open() lands inside the root and the snapshot captures it.
+        No QA_ROOT env var needed: the cwd is the root.
+        """
+        with portable_transport():
+            root = self.root / "root"
+            root.mkdir(mode=0o700)
+            exe = root / "fixture"
+            # cwd=spec.root, so 'intruder.txt' is created directly in the QA root.
+            exe.write_text(
+                f"#!{sys.executable}\n"
+                "import json; "
+                "open('intruder.txt', 'w').write('x'); "
+                "print(json.dumps({}))\n"
+            )
+            exe.chmod(0o700)
+            stage_fixed_files(root)
+            result = runner.run_probe(runner.LaunchSpec(root, exe, runner.Probe.PATHS))
+        delta = result.filesystem_observer_delta
+        self.assertIn("intruder.txt", delta["unauthorized_writes"])
+        self.assertEqual(delta["status"], "unauthorized_writes_detected")
+
+    def test_observer_receipt_property_returns_delta_when_set(self):
+        fake_delta = {"status": "clean", "unauthorized_writes": [], "permitted_changed": [],
+                      "scope": "test"}
+        probe = runner.CompletedProbe(1, 0, "", "", filesystem_observer_delta=fake_delta)
+        self.assertEqual(probe.observer_receipt, fake_delta)
+
+    def test_observer_receipt_property_returns_not_run_sentinel_when_none(self):
+        probe = runner.CompletedProbe(1, 0, "", "")
+        receipt = probe.observer_receipt
+        self.assertEqual(receipt["status"], "not_run")
+        self.assertIn("scope", receipt)
+
+
 def run_native_sentinel_suite():
     """Hosted gating must not turn missing authorization or collection into green."""
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(NativeSentinelTests)
