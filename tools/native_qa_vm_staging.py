@@ -206,6 +206,60 @@ def stage_retained_bundle(data: bytes, target: Path) -> StagedBundle:
         raise
 
 
+def dispose_staged_bundle(bundle: StagedBundle) -> None:
+    """Remove the staged directory when the caller is finished with it.
+
+    Verifies that staged_path is still a mode-0700 directory owned by the
+    current process before removing it, so a replaced or swapped path is
+    refused rather than silently deleted.  Uses ``lstat`` so symlinks are never
+    followed: a symlink to a directory fails the ``S_ISDIR`` check.
+
+    **Lifecycle cleanup only — not isolation proof.**  This function removes
+    the staged directory after use, but it does NOT close the TOCTOU window
+    between ``lstat`` and ``shutil.rmtree``: a same-uid attacker could replace
+    the directory with a symlink in that interval and cause ``rmtree`` to
+    remove the symlink target instead.  Closing that window requires
+    ``O_PATH``-pinned file descriptors and ``unlinkat`` semantics, which are
+    not available through the Python standard library.  This limitation matches
+    the note in ``recheck_resource_identity``; true race prevention remains
+    E1's native responsibility.  The tests for this function verify that
+    symlinks and wrong-owner/mode paths are refused at the ``lstat`` check, not
+    that path replacement between ``lstat`` and ``rmtree`` is prevented.
+
+    After return the staged directory no longer exists.  Callers must not use
+    any path derived from the bundle after calling this function.
+
+    Raises:
+        TypeError: bundle is not a StagedBundle.
+        ValueError: staged_path is a symlink, is not a directory, is not
+            mode-0700, or is not owned by the current process.
+        OSError: lstat or rmtree failed for an OS-level reason.
+    """
+    if not isinstance(bundle, StagedBundle):
+        raise TypeError("bundle must be a StagedBundle")
+    path = bundle.staged_path
+    if not path.is_absolute():
+        raise ValueError("StagedBundle.staged_path must be absolute")
+    # lstat never follows symlinks; a symlink reports S_ISLNK, not S_ISDIR.
+    st = path.lstat()
+    if not stat.S_ISDIR(st.st_mode):
+        raise ValueError(
+            f"staged_path is not an owned non-symlink directory: {path}"
+        )
+    if st.st_uid != os.getuid():
+        raise ValueError(
+            f"staged_path is not owned by the current user: {path} "
+            f"(owner uid={st.st_uid}, current uid={os.getuid()})"
+        )
+    perm = stat.S_IMODE(st.st_mode)
+    if perm != 0o700:
+        raise ValueError(
+            f"staged_path does not have mode 0700: {path} "
+            f"(actual mode={oct(perm)})"
+        )
+    shutil.rmtree(path)
+
+
 def compose_invocation(bundle: StagedBundle) -> tuple[str, ...]:
     """Return the fixed argv for the authenticated VM runner; never executes it.
 

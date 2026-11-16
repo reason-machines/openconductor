@@ -5,13 +5,18 @@ import { groupRows, helpRows, highlightSegments, noResultsText, searchRows } fro
 import { COMMANDS } from "./registry.ts";
 import { CATEGORIES, logical } from "./types.ts";
 
-test("lists the 104 commands that are neither hidden nor dialog-only", () => {
+test("lists 99 commands when cloudUI is OFF (default) — 3 cloud-only shortcuts excluded", () => {
   const rows = helpRows();
-  assert.equal(rows.length, 104);
+  assert.equal(rows.length, 99);
   const hidden = COMMANDS.filter((c) => c.hidden).map((c) => c.id);
   const dialogOnly = COMMANDS.filter((c) => c.when?.enableOnDialogIds?.length).map((c) => c.id);
   assert.ok(hidden.length > 0 && dialogOnly.length > 0);
   for (const id of [...hidden, ...dialogOnly]) assert.ok(!rows.some((r) => r.id === id), id);
+});
+
+test("lists the 102 commands that are neither hidden nor dialog-only when cloudUI is ON", () => {
+  const rows = helpRows({}, undefined, true);
+  assert.equal(rows.length, 102);
 });
 
 test("rows show effective shortcuts, overrides applied", () => {
@@ -23,11 +28,27 @@ test("rows show effective shortcuts, overrides applied", () => {
   assert.deepEqual(overridden?.shortcuts, custom);
 });
 
+test("workspace.addToBacklogFromComposer appears when cloudUI is OFF (local shortcut, not cloud-only)", () => {
+  // GAP-COMP-01: this shortcut is wired locally in CreateWorkspaceComposer; it
+  // must NOT be hidden by CLOUD_ONLY_COMMAND_IDS when experimental_cloud_ui is off.
+  const rowsOff = helpRows();
+  assert.ok(rowsOff.some((r) => r.id === "workspace.addToBacklogFromComposer"),
+    "workspace.addToBacklogFromComposer must be visible when cloudUI is off");
+  // Cloud-only commands that have no handler are still correctly filtered.
+  assert.ok(!rowsOff.some((r) => r.id === "routine.save"), "routine.save must be hidden when cloudUI is off");
+  assert.ok(!rowsOff.some((r) => r.id === "workspace.openRemoteInApp"), "workspace.openRemoteInApp must be hidden when cloudUI is off");
+  // All three appear when cloudUI is on.
+  const rowsOn = helpRows({}, undefined, true);
+  assert.ok(rowsOn.some((r) => r.id === "workspace.addToBacklogFromComposer"));
+  assert.ok(rowsOn.some((r) => r.id === "routine.save"));
+  assert.ok(rowsOn.some((r) => r.id === "workspace.openRemoteInApp"));
+});
+
 test("groups follow category order and skip empty categories", () => {
   const groups = groupRows(helpRows());
   const order = groups.map((g) => g.category);
   assert.deepEqual(order, CATEGORIES.filter((c) => order.includes(c)));
-  assert.equal(groups.reduce((n, g) => n + g.rows.length, 0), 104);
+  assert.equal(groups.reduce((n, g) => n + g.rows.length, 0), 99);
   assert.deepEqual(groupRows(helpRows().filter((r) => r.category === "Terminal")).map((g) => g.category), ["Terminal"]);
 });
 

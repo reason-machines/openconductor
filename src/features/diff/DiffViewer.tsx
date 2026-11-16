@@ -4,6 +4,7 @@
 // Both read one useWorkspaceDiff state. The list is in ChangesList.tsx.
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useEffect, useState, type ReactNode } from "react";
+import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { ConductorIcon } from "../../components/ConductorIcon";
 import type { ConductorIconName } from "../../components/conductorIcons.generated";
 import "./diff.css";
@@ -143,10 +144,25 @@ function useWholeFile(diff: WorkspaceDiff, selected: FileDiff, layout: DiffLayou
 }
 
 /** The open file, editable after its complete current contents are available. */
+// parity:diff.edit-in-viewer — inline preview-ext check to avoid an extra test-boundary import.
+const PREVIEW_EXT = new Set(["md", "markdown", "html", "htm"]);
+function isPreviewablePath(path: string): boolean {
+  return PREVIEW_EXT.has(path.split(".").pop()?.toLowerCase() ?? "");
+}
+
 function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anchors, annotations, onPersistAnchors, notes, notify }: DiffTabProps & { f: FileDiff; selected: FileDiff; isVisible: boolean }) {
   const { opts, update } = diff;
   const { file: full, current, refreshStatus } = useWholeFile(diff, selected, opts.layout);
   const edit = useFileEdit(diff.worktree, selected.path, typeof opts.scope === "object" || diff.turn !== null ? null : editableContents(selected, opts.layout, opts.ignoreWhitespace, current ? full : null), diff.reloadQuietly);
+  // parity:diff.edit-in-viewer — preview toggle for markdown/HTML in "file" layout.
+  // Conductor's bji wires workspace.toggleFileEdit (⌘E) in the file-layout component.
+  const isPreviewable = opts.layout === "file" && !selected.binary && !selected.hide_reason &&
+    selected.hunks.length > 0 && isPreviewablePath(selected.path);
+  const [isPreviewing, setIsPreviewing] = useState(isPreviewable);
+  useEffect(() => { setIsPreviewing(isPreviewable); }, [selected.path, isPreviewable]);
+  // No effect on edit availability: Conductor keeps preview as the default even
+  // when the file is editable (isEditing=false is the default; ⌘E enters edit mode).
+  useKeybindings(isPreviewable ? { "workspace.toggleFileEdit": () => setIsPreviewing((p) => !p) } : {});
   return (
     <div className="oc-files" hidden={!isVisible} style={!isVisible ? { display: "none" } : undefined}>
       {notes?.(f)}
@@ -172,6 +188,8 @@ function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anc
         onDiscard={diff.canDiscard ? () => diff.askDiscard(f) : undefined}
         onShowWhitespace={() => update({ ignoreWhitespace: false })}
         edit={edit}
+        isPreviewing={isPreviewing}
+        onTogglePreview={isPreviewable ? () => setIsPreviewing((p) => !p) : undefined}
         worktree={diff.worktree}
         tools={<LayoutToggle value={opts.layout} onChange={(layout) => update({ layout })} />}
         options={

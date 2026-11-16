@@ -5,7 +5,7 @@ import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
 import { TicketsPlaneIcon } from "../components/Icons";
 import { ConductorIcon } from "../components/ConductorIcon";
-import { Tooltip } from "../components/Tooltip";
+import { Tooltip } from "../components/ui/Tooltip";
 import { CITY_TOTAL } from "./cities";
 import { listArchivedWorkspaces, type ArchivedWorkspace } from "../workspace/archive";
 import { PASSPORT_CITIES, type CityTier } from "./passportCities";

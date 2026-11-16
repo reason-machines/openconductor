@@ -4,6 +4,7 @@ import { errorText } from "./api";
 import { PrefSwitchRow, Toggle } from "./controls";
 import { Row } from "./GeneralPage";
 import { DashboardRow, GraphiteRow, NewWorkspacePageRow, ShowAgentCostRow, SidebarResourceUsageRow, TabFreakModeRow } from "./rows/AppPrefRows";
+import { boolPref } from "./prefs";
 import type { Settings } from "./types";
 
 interface Props {
@@ -21,6 +22,7 @@ interface Props {
  */
 export function ExperimentalPage({ settings, save }: Props) {
   const on = settings.experimental?.experimental_big_terminal_mode === true;
+  const cloudUI = boolPref(settings, "experimental_cloud_ui");
   const row = (pref: Parameters<typeof PrefSwitchRow>[0]["pref"], label: string, help?: ReactNode) => (
     <PrefSwitchRow settings={settings} save={save} pref={pref} label={label} help={help} />
   );
@@ -54,10 +56,10 @@ export function ExperimentalPage({ settings, save }: Props) {
         "Open the preview button in an in-app browser tab (with the annotation overlay) instead of your external browser.",
       )}
       {row("experimental_legacy_file_preview_and_editing", "Use legacy file preview and editing")}
-      <ShowAgentCostRow />
+      {cloudUI && <ShowAgentCostRow />}
       {row("experimental_show_workspace_numbers", "Show workspace numbers")}
       {row("internal_workspace_status_matrix", "Workspace status matrix", "Use the matrix-style workspace status indicator in Home and the sidebar.")}
-      {row("experimental_cloud_desktop", "Cloud desktop", "Show Cloud desktop tabs in cloud workspaces.")}
+      {cloudUI && row("experimental_cloud_desktop", "Cloud desktop", "Show Cloud desktop tabs in cloud workspaces.")}
       {row(
         "local_git_forge_enabled",
         "Add projects without GitHub",

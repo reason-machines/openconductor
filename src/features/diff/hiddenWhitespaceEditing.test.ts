@@ -134,6 +134,7 @@ async function fixture(layout: DiffLayout, newline = true, kind: Kind = "modifie
       if (name === "./DiscardDialog") return { DiscardDialog: () => null, RevertIcon: () => null };
       if (name === "./FilePathChip") return { FilePathChip: () => null };
       if (name === "./Whitespace") return { ViewOptionsMenu: () => null, WhitespaceOnly: () => React.createElement("whitespace-only") };
+      if (name === "./commentMarkdown.ts") return { CommentMarkdown: () => null };
       if (name === "../../components/ConductorIcon") return { ConductorIcon: () => null };
       if (name === "../../components/Icons.tsx") return { CopyIcon: () => null, CheckIcon: () => null };
       if (name === "../../components/ui/Tooltip.tsx") return { Tooltip: ({ children }: { children: unknown }) => children };
