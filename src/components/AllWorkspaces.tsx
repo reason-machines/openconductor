@@ -335,15 +335,16 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
     <div className="allws">
       <div className="allws-top" data-tauri-drag-region>
         {!sidebarVisible && (
-          <button
-            type="button"
-            className="home-sidebar-toggle"
-            title={`Toggle left sidebar (${toggleHint})`}
-            aria-label="Toggle left sidebar"
-            onClick={() => dispatch({ type: "toggleSidebar" })}
-          >
-            <SidebarIcon size={16} />
-          </button>
+          <Tooltip content="Toggle left sidebar" shortcut={toggleHint}>
+            <button
+              type="button"
+              className="home-sidebar-toggle"
+              aria-label="Toggle left sidebar"
+              onClick={() => dispatch({ type: "toggleSidebar" })}
+            >
+              <SidebarIcon size={16} />
+            </button>
+          </Tooltip>
         )}
         <div className="allws-header">
           <h1 className="allws-title">Home</h1>
