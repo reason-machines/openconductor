@@ -144,56 +144,58 @@ static void OCVMUsage(const char *prog) {
 }
 
 int main(int argc, char *argv[]) {
-    /*
-     * Step 1: Parse CLI arguments (--disk <path> --aux <path>).
-     * Step 2: Validate resource files via C-level O_RDONLY|O_NOFOLLOW + fstat.
-     *
-     * These are the last pure-POSIX, platform-portable seams before the VZ
-     * framework boundary.  VZ framework dispatch remains unimplemented until
-     * E1 satisfies all native prerequisites listed in README.md.
-     * PROBE (argc == 1) skips both steps and reaches the stub below.
-     */
     if (argc > 1) {
-        /* Step 1: Arg parsing. */
         OCVMArgs args;
-        OCVMArgsStatus parse_status = OCVMParseArgs(argc, argv, &args);
-        if (parse_status != OC_VM_ARGS_OK) {
+        OCVMArgsStatus status = OCVMParseArgs(argc, argv, &args);
+        if (status != OC_VM_ARGS_OK) {
             OCVMUsage(argv[0]);
-            return (int)parse_status;  /* exit 1-3: arg parse error */
+            return (int)status;
         }
-
-        /* Step 2: Resource file validation. */
-        OCVMResourceIdentity disk_id, aux_id;
-        OCVMResourceStatus disk_st = OCVMValidateResource(
-            args.disk, OC_VM_RESOURCE_DISK, &disk_id);
-        if (disk_st != OC_VM_RESOURCE_OK) {
-            fputs("runner: disk resource validation failed\n", stderr);
-            return 10 + (int)disk_st;  /* exit 11-19: disk validation error */
+        int disk_fd = OCVMValidateResource(args.disk, OC_VM_RES_DISK);
+        if (disk_fd < 0) {
+            fprintf(stderr, "disk resource validation failed: %s\n", args.disk);
+            return 11;
         }
-        OCVMResourceStatus aux_st = OCVMValidateResource(
-            args.aux, OC_VM_RESOURCE_AUX, &aux_id);
-        if (aux_st != OC_VM_RESOURCE_OK) {
-            OCVMReleaseResource(&disk_id);
-            fputs("runner: aux resource validation failed\n", stderr);
-            return 20 + (int)aux_st;   /* exit 21-29: aux validation error */
+        int aux_fd = OCVMValidateResource(args.aux, OC_VM_RES_AUX);
+        if (aux_fd < 0) {
+            fprintf(stderr, "aux resource validation failed: %s\n", args.aux);
+            OCVMReleaseResourceFd(disk_fd);
+            return 12;
         }
-
-        /*
-         * Both resource files are open (disk_id.fd, aux_id.fd), owned,
-         * regular, link-count-1, and within size bounds.  On macOS these
-         * fds would be passed to VZDiskImageStorageDeviceAttachment and
-         * VZMacAuxiliaryStorage; VZ framework dispatch is not yet
-         * implemented here.  Release the fds and fall through to the stub.
-         *
-         * NOTE: a TOCTOU window remains between fstat and VZ object
-         * construction; closing that requires holding these fds through the
-         * VZ call.  That is E1's native responsibility.
-         */
-        OCVMReleaseResource(&disk_id);
-        OCVMReleaseResource(&aux_id);
+        /* Optional hardware identity resources (--hardware-model, --machine-id). */
+        int hw_fd = -1;
+        if (args.hardware_model != NULL) {
+            hw_fd = OCVMValidateResource(args.hardware_model, OC_VM_RES_AUX);
+            if (hw_fd < 0) {
+                fprintf(stderr, "hardware-model resource validation failed: %s\n",
+                        args.hardware_model);
+                OCVMReleaseResourceFd(disk_fd);
+                OCVMReleaseResourceFd(aux_fd);
+                return 13;
+            }
+        }
+        int mid_fd = -1;
+        if (args.machine_id != NULL) {
+            mid_fd = OCVMValidateResource(args.machine_id, OC_VM_RES_AUX);
+            if (mid_fd < 0) {
+                fprintf(stderr, "machine-id resource validation failed: %s\n",
+                        args.machine_id);
+                OCVMReleaseResourceFd(disk_fd);
+                OCVMReleaseResourceFd(aux_fd);
+                if (hw_fd >= 0) OCVMReleaseResourceFd(hw_fd);
+                return 14;
+            }
+        }
+        OCVMReleaseResourceFd(disk_fd);
+        OCVMReleaseResourceFd(aux_fd);
+        if (hw_fd  >= 0) OCVMReleaseResourceFd(hw_fd);
+        if (mid_fd >= 0) OCVMReleaseResourceFd(mid_fd);
     }
-
-    fputs("VM execution is unavailable: resource identity, inherited-capability, "
-          "effective-profile and lifecycle acceptance are not implemented.\n", stderr);
+    if (!OCVMAdmitNative()) {
+        fputs("VM execution is unavailable: resource identity, inherited-capability, "
+              "effective-profile and lifecycle acceptance are not implemented.\n", stderr);
+        return 78;
+    }
+    /* Unreachable until E1 satisfies native admission prerequisites. */
     return 78;
 }

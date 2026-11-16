@@ -40,6 +40,14 @@ MIN_RESOURCE_BYTES: int = 1
 # CLI argument names the runner will receive.
 ARG_DISK = "--disk"
 ARG_AUX = "--aux"
+ARG_HARDWARE_MODEL = "--hardware-model"
+ARG_MACHINE_ID = "--machine-id"
+
+# Size limits for optional hardware identity resource files.
+# VZ hardware model data and machine identifier data are small NSData blobs
+# (typically a few hundred bytes each; cap at 1 MiB to be generous).
+MAX_HARDWARE_MODEL_BYTES: int = 1 * 1024 * 1024
+MAX_MACHINE_ID_BYTES: int = 1 * 1024 * 1024
 
 
 # ---------------------------------------------------------------------------
@@ -85,6 +93,8 @@ class GuestAllocation:
     build_id: str
     disk: GuestResourceIdentity
     aux: GuestResourceIdentity
+    hardware_model: Optional["GuestResourceIdentity"] = None
+    machine_id: Optional["GuestResourceIdentity"] = None
 
     def __post_init__(self) -> None:
         if not (isinstance(self.source_commit, str) and len(self.source_commit) == 40
@@ -99,6 +109,14 @@ class GuestAllocation:
         # disk and aux must be distinct files.
         if self.disk.dev == self.aux.dev and self.disk.ino == self.aux.ino:
             raise ValueError("disk image and auxiliary storage must be distinct files")
+        if self.hardware_model is not None and not isinstance(
+            self.hardware_model, GuestResourceIdentity
+        ):
+            raise TypeError("hardware_model must be a GuestResourceIdentity or None")
+        if self.machine_id is not None and not isinstance(
+            self.machine_id, GuestResourceIdentity
+        ):
+            raise TypeError("machine_id must be a GuestResourceIdentity or None")
 
 
 # ---------------------------------------------------------------------------
@@ -281,12 +299,91 @@ def recheck_resource_identity(identity: GuestResourceIdentity) -> None:
 def build_allocation_argv(allocation: GuestAllocation) -> tuple[str, ...]:
     """Return the allocation CLI arguments the runner should receive.
 
-    Returns a 4-tuple ``(ARG_DISK, disk_path, ARG_AUX, aux_path)``.
-    This tuple is appended to the runner executable path in the DispatchPlan
-    argv; the executable itself is prepended by compose_invocation().
+    Returns a 4-tuple ``(ARG_DISK, disk_path, ARG_AUX, aux_path)`` when
+    hardware_model and machine_id are absent, or an 8-tuple
+    ``(ARG_DISK, disk_path, ARG_AUX, aux_path,
+       ARG_HARDWARE_MODEL, hw_path, ARG_MACHINE_ID, mid_path)``
+    when both hardware identity fields are present.
+
+    Both hardware_model and machine_id must either both be present or both be
+    absent; a mix is rejected because the runner requires either both or
+    neither.
 
     Raises TypeError for wrong argument type.
+    Raises ValueError when exactly one of hardware_model / machine_id is set.
     """
     if not isinstance(allocation, GuestAllocation):
         raise TypeError("allocation must be a GuestAllocation")
-    return (ARG_DISK, allocation.disk.path, ARG_AUX, allocation.aux.path)
+    has_hw = allocation.hardware_model is not None
+    has_mid = allocation.machine_id is not None
+    if has_hw != has_mid:
+        raise ValueError(
+            "hardware_model and machine_id must both be present or both be absent"
+        )
+    argv: tuple[str, ...] = (ARG_DISK, allocation.disk.path,
+                              ARG_AUX, allocation.aux.path)
+    if has_hw and has_mid:
+        argv += (ARG_HARDWARE_MODEL, allocation.hardware_model.path,  # type: ignore[union-attr]
+                 ARG_MACHINE_ID,     allocation.machine_id.path)       # type: ignore[union-attr]
+    return argv
+
+
+def produce_guest_allocation_with_hardware(
+    bundle: staging.StagedBundle,
+    disk_path: Path,
+    aux_path: Path,
+    hardware_model_path: Path,
+    machine_id_path: Path,
+    *,
+    max_disk_bytes: int = MAX_DISK_BYTES,
+    max_aux_bytes: int = MAX_AUX_BYTES,
+    max_hardware_model_bytes: int = MAX_HARDWARE_MODEL_BYTES,
+    max_machine_id_bytes: int = MAX_MACHINE_ID_BYTES,
+) -> GuestAllocation:
+    """Like produce_guest_allocation but also captures hardware identity files.
+
+    ``hardware_model_path`` is the path to the VZMacHardwareModel data file.
+    ``machine_id_path`` is the path to the VZMacMachineIdentifier data file.
+    Both are captured with the same O_RDONLY|O_NOFOLLOW|O_NONBLOCK stat as
+    disk and aux; they are small files (< 1 MiB each).
+
+    The returned GuestAllocation has hardware_model and machine_id populated.
+    build_allocation_argv() will include --hardware-model and --machine-id.
+
+    Does NOT close the TOCTOU window; E1 must recheck before native invocation.
+    No VZ runtime, no native execution, no network.
+    """
+    base = produce_guest_allocation(
+        bundle,
+        disk_path,
+        aux_path,
+        max_disk_bytes=max_disk_bytes,
+        max_aux_bytes=max_aux_bytes,
+    )
+    hw_id = _capture_resource_identity(
+        hardware_model_path,
+        min_bytes=MIN_RESOURCE_BYTES,
+        max_bytes=max_hardware_model_bytes,
+    )
+    mid_id = _capture_resource_identity(
+        machine_id_path,
+        min_bytes=MIN_RESOURCE_BYTES,
+        max_bytes=max_machine_id_bytes,
+    )
+    # hardware_model and machine_id must be distinct files from each other and
+    # from disk/aux (dev+ino uniqueness across all four).
+    identities = [base.disk, base.aux, hw_id, mid_id]
+    for i, a in enumerate(identities):
+        for b in identities[i + 1:]:
+            if a.dev == b.dev and a.ino == b.ino:
+                raise ValueError(
+                    "all four guest resource files must be distinct inodes"
+                )
+    return GuestAllocation(
+        source_commit=base.source_commit,
+        build_id=base.build_id,
+        disk=base.disk,
+        aux=base.aux,
+        hardware_model=hw_id,
+        machine_id=mid_id,
+    )

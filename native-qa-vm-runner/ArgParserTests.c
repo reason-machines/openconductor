@@ -1,5 +1,8 @@
 /*
- * ArgParserTests.c — 24 pure-C assertions for OCVMParseArgs.
+ * ArgParserTests.c — 36 pure-C assertions for OCVMParseArgs.
+ *
+ * Covers 2-pair (--disk/--aux) and 4-pair (adds --hardware-model/--machine-id)
+ * invocations plus error and edge cases.
  *
  * Build & run (no dependencies beyond libc):
  *   cc -std=c11 -Wall -Wextra -Werror \
@@ -29,7 +32,7 @@ static void check(const char *name, int cond) {
 /* ------------------------------------------------------------------ helpers */
 
 static OCVMArgsStatus parse_s(int argc, char *argv[]) {
-    OCVMArgs out = {NULL, NULL};
+    OCVMArgs out = {NULL, NULL, NULL, NULL};
     return OCVMParseArgs(argc, argv, &out);
 }
 
@@ -38,7 +41,7 @@ static OCVMArgsStatus parse_s(int argc, char *argv[]) {
 /* Group 1 — PROBE (argc == 1): 3 checks */
 static void g_probe(void) {
     char *argv[] = {"runner"};
-    OCVMArgs out = {(void *)1, (void *)1};
+    OCVMArgs out = {(void *)1, (void *)1, NULL, NULL};
     OCVMArgsStatus s = OCVMParseArgs(1, argv, &out);
     check("probe_status",   s == OC_VM_ARGS_PROBE);     /* 1 */
     check("probe_disk_nil", out.disk == NULL);           /* 2 */
@@ -147,6 +150,83 @@ static void g_path_values(void) {
     check("spaces_disk", strcmp(out.disk, "/volumes/my disk.img") == 0);    /* 24 */
 }
 
+/* Group 12 — 4-pair (disk+aux+hardware-model+machine-id): 4 checks */
+static void g_four_pair(void) {
+    char *argv[] = {"runner",
+                    "--disk",           "/d.img",
+                    "--aux",            "/a.bin",
+                    "--hardware-model", "/hw.bin",
+                    "--machine-id",     "/mid.bin"};
+    OCVMArgs out;
+    OCVMArgsStatus s = OCVMParseArgs(9, argv, &out);
+    check("four_pair_ok",             s == OC_VM_ARGS_OK);                  /* 25 */
+    check("four_pair_hw_path",        strcmp(out.hardware_model, "/hw.bin") == 0); /* 26 */
+    check("four_pair_mid_path",       strcmp(out.machine_id,     "/mid.bin") == 0); /* 27 */
+    check("four_pair_hw_not_null",    out.hardware_model != NULL);          /* 28 */
+}
+
+/* Group 13 — 4-pair in alternate order: 2 checks */
+static void g_four_pair_order(void) {
+    char *argv[] = {"runner",
+                    "--hardware-model", "/hw.bin",
+                    "--machine-id",     "/mid.bin",
+                    "--disk",           "/d.img",
+                    "--aux",            "/a.bin"};
+    OCVMArgs out;
+    OCVMArgsStatus s = OCVMParseArgs(9, argv, &out);
+    check("four_order_ok",   s == OC_VM_ARGS_OK);                           /* 29 */
+    check("four_order_disk", strcmp(out.disk, "/d.img") == 0);             /* 30 */
+}
+
+/* Group 14 — 2-pair leaves hw/mid NULL: 2 checks */
+static void g_two_pair_null_hw_mid(void) {
+    char *argv[] = {"runner", "--disk", "/d.img", "--aux", "/a.bin"};
+    OCVMArgs out;
+    OCVMArgsStatus s = OCVMParseArgs(5, argv, &out);
+    check("two_pair_hw_null",  s == OC_VM_ARGS_OK && out.hardware_model == NULL); /* 31 */
+    check("two_pair_mid_null", s == OC_VM_ARGS_OK && out.machine_id    == NULL); /* 32 */
+}
+
+/* Group 15 — empty hardware-model / machine-id values: 2 checks */
+static void g_empty_hw_mid(void) {
+    {
+        char *argv[] = {"runner", "--disk", "/d", "--aux", "/a",
+                        "--hardware-model", "", "--machine-id", "/m"};
+        OCVMArgs out;
+        OCVMArgsStatus s = OCVMParseArgs(9, argv, &out);
+        check("empty_hw_model", s == OC_VM_ARGS_MISSING_HARDWARE_MODEL);    /* 33 */
+    }
+    {
+        char *argv[] = {"runner", "--disk", "/d", "--aux", "/a",
+                        "--hardware-model", "/hw", "--machine-id", ""};
+        OCVMArgs out;
+        OCVMArgsStatus s = OCVMParseArgs(9, argv, &out);
+        check("empty_machine_id", s == OC_VM_ARGS_MISSING_MACHINE_ID);      /* 34 */
+    }
+}
+
+/* Group 16 — wrong counts near 9: 2 checks */
+static void g_wrong_count_near_nine(void) {
+    {
+        /* argc == 7: not 5 and not 9, should be UNKNOWN */
+        char *argv[] = {"runner", "--disk", "/d", "--aux", "/a",
+                        "--hardware-model", "/hw"};
+        OCVMArgs out;
+        OCVMArgsStatus s = OCVMParseArgs(7, argv, &out);
+        check("wrong_count_7", s == OC_VM_ARGS_UNKNOWN);                    /* 35 */
+    }
+    {
+        /* argc == 11: too many */
+        char *argv[11] = {"runner",
+                          "--disk", "/d", "--aux", "/a",
+                          "--hardware-model", "/hw", "--machine-id", "/m",
+                          "--extra", "/x"};
+        OCVMArgs out;
+        OCVMArgsStatus s = OCVMParseArgs(11, argv, &out);
+        check("wrong_count_11", s == OC_VM_ARGS_UNKNOWN);                   /* 36 */
+    }
+}
+
 /* ================================================================== main */
 
 int main(void) {
@@ -161,6 +241,11 @@ int main(void) {
     g_pointer_aliasing();
     g_null_out();
     g_path_values();
+    g_four_pair();
+    g_four_pair_order();
+    g_two_pair_null_hw_mid();
+    g_empty_hw_mid();
+    g_wrong_count_near_nine();
 
     printf("\n%d passed, %d failed\n", g_pass, g_fail);
     return g_fail == 0 ? 0 : 1;

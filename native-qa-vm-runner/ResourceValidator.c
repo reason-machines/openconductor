@@ -1,99 +1,97 @@
+/*
+ * ResourceValidator.c — C-level identity validation for VM disk/aux resources.
+ *
+ * Pure POSIX C; no Virtualization framework dependency.  Compiled separately
+ * into ResourceValidator.o and linked with Runner.m.
+ */
+
 #define _POSIX_C_SOURCE 200809L
+
 #include "ResourceValidator.h"
 
 #include <errno.h>
 #include <fcntl.h>
-#include <stdint.h>
-#include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
-OCVMResourceStatus OCVMValidateResource(const char *path,
-                                        OCVMResourceKind kind,
-                                        OCVMResourceIdentity *out) {
-    out->fd = -1;
+/* Upper size limits for each resource kind. */
+#define OC_VM_RES_SIZE_MIN    ((off_t)1)
+#define OC_VM_RES_DISK_MAX    ((off_t)(256LL * 1024 * 1024 * 1024)) /* 256 GiB */
+#define OC_VM_RES_AUX_MAX     ((off_t)(  4LL * 1024 * 1024 * 1024)) /*   4 GiB */
 
+int OCVMValidateResource(const char *path, OCVMResourceKind kind) {
     if (path == NULL || path[0] == '\0') {
-        return OC_VM_RESOURCE_BAD_PATH;
+        errno = EINVAL;
+        return -1;
+    }
+    if (kind != OC_VM_RES_DISK && kind != OC_VM_RES_AUX) {
+        errno = EINVAL;
+        return -1;
     }
 
     /*
-     * O_NOFOLLOW refuses a symlink at the final path component:
-     *   Linux  — returns ELOOP when the final component is a symlink.
-     *   macOS  — returns ENOTDIR (or ELOOP on some paths).
-     * Either way open() fails and we report OC_VM_RESOURCE_IS_SYMLINK.
-     *
-     * O_NONBLOCK prevents blocking on FIFOs or other special files.
+     * O_RDONLY   — no write intent; the VZ attachment opens its own handle.
+     * O_NOFOLLOW — reject a symlink at the final path component (TOCTOU guard).
+     * O_NONBLOCK — avoid blocking on a FIFO or device node if the path is wrong.
      */
-    int flags = O_RDONLY | O_NOFOLLOW | O_NONBLOCK;
-    int fd = open(path, flags);
+    int fd = open(path, O_RDONLY | O_NOFOLLOW | O_NONBLOCK);
     if (fd < 0) {
-        int e = errno;
-        if (e == ELOOP
-#ifdef ENOTDIR
-            /* macOS uses ENOTDIR for O_NOFOLLOW on a symlink in some cases. */
-            || (e == ENOTDIR && lstat(path, &(struct stat){0}) == 0)
-#endif
-        ) {
-            return OC_VM_RESOURCE_IS_SYMLINK;
-        }
-        return OC_VM_RESOURCE_OPEN_FAILED;
+        return -1;
     }
 
     struct stat st;
-    if (fstat(fd, &st) < 0) {
+    if (fstat(fd, &st) != 0) {
         close(fd);
-        return OC_VM_RESOURCE_STAT_FAILED;
+        return -1;
     }
 
-    /* Reject non-regular files (devices, FIFOs, directories, symlinks). */
+    /* Must be a regular file — no directories, devices or fifos. */
     if (!S_ISREG(st.st_mode)) {
         close(fd);
-        return OC_VM_RESOURCE_NOT_REGULAR;
+        errno = EINVAL;
+        return -1;
     }
 
-    /* Reject hard links; guest resources must have exactly one link count. */
+    /* Exactly one hard link: no aliasing via multiple directory entries. */
     if (st.st_nlink != 1) {
         close(fd);
-        return OC_VM_RESOURCE_HARD_LINKED;
+        errno = EINVAL;
+        return -1;
     }
 
-    /* Caller must own the file. */
+    /* File must be owned by the effective user of this process. */
     if (st.st_uid != geteuid()) {
         close(fd);
-        return OC_VM_RESOURCE_WRONG_OWNER;
+        errno = EACCES;
+        return -1;
     }
 
-    /* Size bounds. */
-    uint64_t max_bytes = (kind == OC_VM_RESOURCE_DISK)
-        ? OC_VM_MAX_DISK_BYTES : OC_VM_MAX_AUX_BYTES;
-    if ((uint64_t)st.st_size < (uint64_t)OC_VM_MIN_RESOURCE_BYTES ||
-        (uint64_t)st.st_size > max_bytes) {
+    /* At least one byte; at most the kind-specific ceiling. */
+    off_t max_size = (kind == OC_VM_RES_DISK) ? OC_VM_RES_DISK_MAX : OC_VM_RES_AUX_MAX;
+    if (st.st_size < OC_VM_RES_SIZE_MIN || st.st_size > max_size) {
         close(fd);
-        return OC_VM_RESOURCE_BAD_SIZE;
+        errno = EINVAL;
+        return -1;
     }
 
-    /* Disk resources must also be writable by the caller (W_OK via access). */
-    if (kind == OC_VM_RESOURCE_DISK) {
-        if (access(path, W_OK) != 0) {
-            close(fd);
-            return OC_VM_RESOURCE_NOT_WRITABLE;
-        }
+    /*
+     * Disk images must be writable by this process: the VZ block attachment
+     * opens them read-write.  Auxiliary storage is read-only to VZ so this
+     * check is skipped.
+     *
+     * TOCTOU: access(2) uses the real UID and re-stats the path.  Pass the
+     * returned fd directly to VZ construction without re-opening the path.
+     */
+    if (kind == OC_VM_RES_DISK && access(path, W_OK) != 0) {
+        close(fd);
+        return -1;
     }
 
-    out->dev   = st.st_dev;
-    out->ino   = st.st_ino;
-    out->size  = st.st_size;
-    out->nlink = st.st_nlink;
-    out->uid   = st.st_uid;
-    out->mode  = (mode_t)(st.st_mode & (mode_t)07777);
-    out->fd    = fd;
-    return OC_VM_RESOURCE_OK;
+    return fd;
 }
 
-void OCVMReleaseResource(OCVMResourceIdentity *identity) {
-    if (identity->fd >= 0) {
-        close(identity->fd);
-        identity->fd = -1;
+void OCVMReleaseResourceFd(int fd) {
+    if (fd >= 0) {
+        close(fd);
     }
 }

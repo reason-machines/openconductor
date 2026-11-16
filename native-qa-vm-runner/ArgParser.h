@@ -11,16 +11,20 @@
 #include <stddef.h>
 
 typedef enum {
-    OC_VM_ARGS_OK           = 0,  /* --disk and --aux both present and non-empty */
-    OC_VM_ARGS_PROBE        = 1,  /* argc == 1; capability probe, no arguments */
-    OC_VM_ARGS_MISSING_DISK = 2,  /* --disk absent or value missing */
-    OC_VM_ARGS_MISSING_AUX  = 3,  /* --aux absent or value missing */
-    OC_VM_ARGS_UNKNOWN      = 4,  /* unrecognised flag or wrong argument count */
+    OC_VM_ARGS_OK                    = 0,  /* --disk and --aux present; hw-model/mid optional */
+    OC_VM_ARGS_PROBE                 = 1,  /* argc == 1; capability probe, no arguments */
+    OC_VM_ARGS_MISSING_DISK          = 2,  /* --disk absent or value missing */
+    OC_VM_ARGS_MISSING_AUX           = 3,  /* --aux absent or value missing */
+    OC_VM_ARGS_UNKNOWN               = 4,  /* unrecognised flag or wrong argument count */
+    OC_VM_ARGS_MISSING_HARDWARE_MODEL = 5, /* --hardware-model value missing (flag present, empty val) */
+    OC_VM_ARGS_MISSING_MACHINE_ID    = 6,  /* --machine-id value missing (flag present, empty val) */
 } OCVMArgsStatus;
 
 typedef struct {
-    const char *disk; /* alias into argv; not owned */
-    const char *aux;  /* alias into argv; not owned */
+    const char *disk;           /* alias into argv; not owned */
+    const char *aux;            /* alias into argv; not owned */
+    const char *hardware_model; /* alias into argv; not owned; NULL when not supplied */
+    const char *machine_id;     /* alias into argv; not owned; NULL when not supplied */
 } OCVMArgs;
 
 /*
