@@ -67,7 +67,14 @@ async function fixture({ text = "saved", desktop = true, read, write, saveError,
     "./editable.ts": {},
   });
   const component: Partial<typeof import("./WorkspaceFileView.tsx")> = {};
-  const CodeView = React.forwardRef<unknown, object>((props, _ref) => React.createElement("code-probe", props));
+  const scrollCalls: unknown[] = [];
+  const CodeView = React.forwardRef<{ scrollTo: (t: unknown) => void }, object>((props, ref) => {
+    // Expose a mock handle so tests can verify scrollTo calls (parity:files.open:nav).
+    // getEditor is also exposed (returning undefined) so the save-on-Cmd+S path's optional-chain
+    // falls back to edit.current() as before — this stub only records scroll targets.
+    React.useImperativeHandle(ref, () => ({ scrollTo: (t: unknown) => { scrollCalls.push(t); }, getEditor: () => undefined }));
+    return React.createElement("code-probe", props);
+  });
   load("./WorkspaceFileView.tsx", component, {
     "@tauri-apps/api/core": native,
     "@pierre/diffs/react": {
@@ -96,6 +103,7 @@ async function fixture({ text = "saved", desktop = true, read, write, saveError,
   await act(async () => { renderer = create(React.createElement(View, props)); await settle(); });
   return {
     calls,
+    scrollCalls,
     code: () => renderer.root.findByType("code-probe"),
     codeCount: () => renderer.root.findAllByType("code-probe").length,
     alertCount: () => renderer.root.findAllByProps({ role: "alert" }).length,
@@ -319,4 +327,115 @@ test("wrap_lines false renders overflow:scroll in the code view", async () => {
   try {
     assert.equal(view.code().props.options.overflow, "scroll");
   } finally { await view.close(); }
+});
+
+
+// --- GAP-PAL-01 / lineNumber propagation ---
+
+test("initialLine scrolls the CodeView to that line on mount", async () => {
+  // Load a custom fixture with a CodeView that exposes scrollTo via useImperativeHandle.
+  const scrollCalls: unknown[] = [];
+  const CustomCodeView = React.forwardRef<{ scrollTo: (t: unknown) => void }, object>((props, ref) => {
+    React.useImperativeHandle(ref, () => ({ scrollTo(t: unknown) { scrollCalls.push(t); } }));
+    return React.createElement("code-probe", props);
+  });
+  const component2: Partial<typeof import("./WorkspaceFileView.tsx")> = {};
+  const edits2: Partial<typeof import("../diff/EditInViewer.ts")> = {};
+  const native2 = {
+    async invoke(command: string, _args: unknown) {
+      if (command === "workspace_read_text") return "line1\nline2\nline3\n";
+      throw new Error(`Unexpected command: ${command}`);
+    },
+  };
+  load("../diff/EditInViewer.ts", edits2, {
+    "@tauri-apps/api/core": native2,
+    "@pierre/diffs/edit": { Editor: class {} },
+    "../../backend": { inTauri: () => true },
+    "./editorContents.ts": editorContents,
+    "./editable.ts": {},
+  });
+  load("./WorkspaceFileView.tsx", component2, {
+    "@tauri-apps/api/core": native2,
+    "@pierre/diffs/react": { CodeView: CustomCodeView, EditProvider: ({ children }: { children: React.ReactNode }) => children },
+    "../../backend": { inTauri: () => true },
+    "../../components/ui/Tooltip.tsx": { Tooltip: ({ children }: { children: React.ReactNode }) => children },
+    "../../keybindings/KeybindingsProvider.tsx": { useKeybindingOverrides: () => ({ overrides: {} }) },
+    "../../keybindings/overrides.ts": { effectiveShortcuts },
+    "../../keybindings/shortcut.ts": { matchesEvent },
+    "../diff/copyFile.ts": { isTextPath },
+    "../diff/EditInViewer.ts": edits2,
+    "../diff/FilePathChip": { FilePathChip: ({ path }: { path: string }) => React.createElement("span", {}, path) },
+    "../diff/pierre.ts": { CODE_VIEW_LAYOUT: { paddingTop: 0, paddingBottom: 8, gap: 8 } },
+    "../diff/useDiffTheme.ts": { useDiffTheme: () => "test-theme" },
+    "../diff/Whitespace": { ViewOptionsMenu: () => null },
+    "../../settings/useBoolPref.ts": { useBoolPrefWithSave: (_key: string) => [true, () => {}] },
+    "./readText.ts": { readText },
+  });
+  assert.ok(component2.WorkspaceFileView);
+  const View2 = component2.WorkspaceFileView!;
+  let renderer2: ReturnType<typeof create>;
+  await act(async () => {
+    renderer2 = create(React.createElement(View2, {
+      worktree: "/tmp/workspace-a", path: "src/file.ts", isVisible: true, readOnly: false, initialLine: 3,
+    }));
+    await settle();
+  });
+  assert.equal(scrollCalls.length, 1, "scrollTo must be called exactly once on mount");
+  const target = scrollCalls[0] as { type: string; lineNumber: number; align: string; behavior: string };
+  assert.equal(target.type, "line");
+  assert.equal(target.lineNumber, 3);
+  assert.equal(target.align, "center");
+  assert.equal(target.behavior, "instant");
+  await act(async () => { renderer2.unmount(); });
+});
+
+test("omitting initialLine does not call scrollTo", async () => {
+  const scrollCalls: unknown[] = [];
+  const CustomCodeView = React.forwardRef<{ scrollTo: (t: unknown) => void }, object>((props, ref) => {
+    React.useImperativeHandle(ref, () => ({ scrollTo(t: unknown) { scrollCalls.push(t); } }));
+    return React.createElement("code-probe", props);
+  });
+  const component3: Partial<typeof import("./WorkspaceFileView.tsx")> = {};
+  const edits3: Partial<typeof import("../diff/EditInViewer.ts")> = {};
+  const native3 = {
+    async invoke(command: string, _args: unknown) {
+      if (command === "workspace_read_text") return "content\n";
+      throw new Error(`Unexpected command: ${command}`);
+    },
+  };
+  load("../diff/EditInViewer.ts", edits3, {
+    "@tauri-apps/api/core": native3,
+    "@pierre/diffs/edit": { Editor: class {} },
+    "../../backend": { inTauri: () => true },
+    "./editorContents.ts": editorContents,
+    "./editable.ts": {},
+  });
+  load("./WorkspaceFileView.tsx", component3, {
+    "@tauri-apps/api/core": native3,
+    "@pierre/diffs/react": { CodeView: CustomCodeView, EditProvider: ({ children }: { children: React.ReactNode }) => children },
+    "../../backend": { inTauri: () => true },
+    "../../components/ui/Tooltip.tsx": { Tooltip: ({ children }: { children: React.ReactNode }) => children },
+    "../../keybindings/KeybindingsProvider.tsx": { useKeybindingOverrides: () => ({ overrides: {} }) },
+    "../../keybindings/overrides.ts": { effectiveShortcuts },
+    "../../keybindings/shortcut.ts": { matchesEvent },
+    "../diff/copyFile.ts": { isTextPath },
+    "../diff/EditInViewer.ts": edits3,
+    "../diff/FilePathChip": { FilePathChip: ({ path }: { path: string }) => React.createElement("span", {}, path) },
+    "../diff/pierre.ts": { CODE_VIEW_LAYOUT: { paddingTop: 0, paddingBottom: 8, gap: 8 } },
+    "../diff/useDiffTheme.ts": { useDiffTheme: () => "test-theme" },
+    "../diff/Whitespace": { ViewOptionsMenu: () => null },
+    "../../settings/useBoolPref.ts": { useBoolPrefWithSave: (_key: string) => [true, () => {}] },
+    "./readText.ts": { readText },
+  });
+  assert.ok(component3.WorkspaceFileView);
+  const View3 = component3.WorkspaceFileView!;
+  let renderer3: ReturnType<typeof create>;
+  await act(async () => {
+    renderer3 = create(React.createElement(View3, {
+      worktree: "/tmp/workspace-a", path: "src/file.ts", isVisible: true, readOnly: false,
+    }));
+    await settle();
+  });
+  assert.equal(scrollCalls.length, 0, "scrollTo must not be called when initialLine is absent");
+  await act(async () => { renderer3.unmount(); });
 });

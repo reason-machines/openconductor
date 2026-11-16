@@ -2,7 +2,8 @@
 // (/settings/user/<id>, evidence/settings/NOTES.md); routes.ts resolves URLs
 // to them. Groups follow Conductor's navigation (`jWt`) for a local user:
 // Ports needs a cloud organization and Internal an internal build, so
-// neither is listed.
+// neither is listed. Key-bindings is an internal-builds-only page in Conductor;
+// settingsGroups() inserts it after Appearance only when internalSettings is on.
 
 import type { OrgPage } from "./routes";
 
@@ -34,8 +35,6 @@ export const SETTINGS_GROUPS: SettingsGroup[] = [
       { id: "general", label: "General" },
       { id: "account", label: "Account" },
       { id: "appearance", label: "Appearance" },
-      // Conductor inserts this after Appearance only with internal settings on; here it is a normal page.
-      { id: "key-bindings", label: "Keyboard shortcuts" },
       { id: "models", label: "Default models" },
       { id: "git", label: "Git" },
     ],
@@ -60,13 +59,33 @@ export const SETTINGS_GROUPS: SettingsGroup[] = [
 export const BIG_TERMINAL_PAGE: { id: SettingsPage; label: string } = { id: "terminal", label: "Big terminal" };
 
 /**
+ * Conductor's "Keyboard shortcuts" tab: Personal group, after Appearance, only in internal builds.
+ * OpenConductor has no internal-builds flag; settingsGroups() inserts it when internalSettings is true.
+ * The page and its route (/settings/user/key-bindings) remain active regardless, via USER_PAGES.
+ * The Help menu's "Keyboard shortcuts" item (openKeyboardShortcuts, ⌥⌘/) is the default path.
+ */
+export const KEY_BINDINGS_PAGE: { id: SettingsPage; label: string } = { id: "key-bindings", label: "Keyboard shortcuts" };
+
+/**
  * The page list to show. Conductor's `dti` (renderApp-D_fmY7hW.js @11,263,400) appends the
  * Big terminal tab to the last group's tabs (More, after Advanced) when the mode is on.
+ * Key-bindings is inserted after Appearance in Personal only when internalSettings is true,
+ * matching Conductor's `jWt` with internal settings on. By default it is not in nav (Conductor:
+ * local users do not see it). The Help menu's openKeyboardShortcuts dialog is the default access.
  */
-export function settingsGroups(bigTerminalEnabled: boolean, cloud = false): SettingsGroup[] {
-  const groups = !bigTerminalEnabled
+export function settingsGroups(bigTerminalEnabled: boolean, cloud = false, internalSettings = false): SettingsGroup[] {
+  let groups: SettingsGroup[] = !internalSettings
     ? SETTINGS_GROUPS
-    : SETTINGS_GROUPS.map((g, i) => (i === SETTINGS_GROUPS.length - 1 ? { ...g, pages: [...g.pages, BIG_TERMINAL_PAGE] } : g));
+    : SETTINGS_GROUPS.map((g) => {
+        if (g.title !== "Personal") return g;
+        const pages = [...g.pages];
+        const afterAppearance = pages.findIndex((p) => p.id === "appearance");
+        pages.splice(afterAppearance < 0 ? pages.length : afterAppearance + 1, 0, KEY_BINDINGS_PAGE);
+        return { ...g, pages };
+      });
+  if (bigTerminalEnabled) {
+    groups = groups.map((g, i) => (i === groups.length - 1 ? { ...g, pages: [...g.pages, BIG_TERMINAL_PAGE] } : g));
+  }
   return cloud ? [...groups, CLOUD_GROUP] : groups;
 }
 
@@ -79,7 +98,8 @@ export function settingsGroups(bigTerminalEnabled: boolean, cloud = false): Sett
  */
 export const CLOUD_GROUP: SettingsGroup = { title: "Cloud", badge: "Legacy", pages: [{ id: "setup-cloud", label: "Cloud setup" }] };
 
-const PAGES = [...SETTINGS_GROUPS.flatMap((g) => g.pages), BIG_TERMINAL_PAGE];
+// KEY_BINDINGS_PAGE and BIG_TERMINAL_PAGE are conditional in nav but always valid routes.
+const PAGES = [...SETTINGS_GROUPS.flatMap((g) => g.pages), BIG_TERMINAL_PAGE, KEY_BINDINGS_PAGE];
 
 export const pageLabel = (page: SettingsPage): string => [...PAGES, ...CLOUD_GROUP.pages].find((p) => p.id === page)?.label ?? "";
 

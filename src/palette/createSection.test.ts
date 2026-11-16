@@ -112,6 +112,7 @@ function actualHost(observe: (props: PaletteProps) => void = noop) {
     "../settings/SettingsView": { AGENT_SEARCH_TABS: [], scrollToRow: forbidden, searchIcon: inert },
     "../features/chat/ChatModelPicker": { openAgentSettings: forbidden, openRepoSettingsPage: forbidden, openSettingsPage: forbidden },
     "../settings/useBoolPref.ts": { useBoolPref: () => false },
+    "../settings/useSettings.ts": { useSettings: () => ({ settings: undefined }) },
     "./recentWorkspaces.ts": { loadRecentWorkspaceIds: () => [], saveRecentWorkspaceIds: noop, recordViewedWorkspace: (ids: string[]) => ids },
     "./settingsRepository.ts": { loadLastWorkspaceRoute: () => null, selectedWorkspaceRoute: () => null, saveLastWorkspaceRoute: noop, settingsRepositoryId: forbidden },
     "../workspace/archive": { listArchivedWorkspaces: async () => [] },
