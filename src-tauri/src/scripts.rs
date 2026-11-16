@@ -50,6 +50,10 @@ pub fn service(app: &AppHandle) -> ScriptService {
                     {
                         eprintln!("Could not persist setup log for {workspace_id}: {e}");
                     }
+                    // M17: finish_setup clears setting_up so local_plan_mode and /clear unblock.
+                    if let Err(e) = openconductor_db::workspaces::finish_setup(&pool, &workspace_id).await {
+                        eprintln!("Could not finish setup for {workspace_id}: {e}");
+                    }
                 });
             }
             let _ = emitter.emit(EVENT, event);

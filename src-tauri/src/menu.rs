@@ -6,10 +6,11 @@
 //! string table of `Conductor.app/Contents/MacOS/conductor` 0.87.6 (see
 //! evidence/keybindings/README.md, "Native menu").
 //!
-//! So far: Help > Keyboard Shortcuts, and Toggle Left Sidebar / Toggle Right
-//! Sidebar. The other Help items (Documentation, Best Practices, Changelog,
-//! Send Feedback, Submit a Prompt, Diagnostics, Debug) follow the same shape
-//! once their features exist.
+//! Help menu items (8): Keyboard Shortcuts, Documentation, Best Practices,
+//! Changelog, Send Feedback (⌘⌥F), Submit a Prompt, Diagnostics, Open Debug
+//! Tools (⌘⌥I). All confirmed from `strings -a -t d` on the Conductor binary
+//! 2026-11-15; see constants below for exact byte offsets.
+//! Separator structure: not in binary log strings; items appended flat.
 //!
 //! The sidebar items have no accelerator: in the string run their labels are
 //! not followed by one, unlike `Settings...` (`CmdOrCtrl+,`); ⌘B / ⌥⌘B are
@@ -49,6 +50,88 @@ const KEYBOARD_SHORTCUTS_LABEL: &str = "Keyboard Shortcuts";
 /// Event the help dialog listens for (src/App.tsx); it toggles the dialog.
 pub const KEYBOARD_SHORTCUTS_EVENT: &str = "open_keyboard_shortcuts_dialog";
 
+// ── Help menu: remaining 7 items ─────────────────────────────────────────────
+// Evidence: `strings -a -t d /Applications/Conductor.app/Contents/MacOS/conductor`
+// on Sven's Mac (sven m5 max), re-read 2026-11-15.
+//
+// String run at byte 22,085,559 (packed, sequential in binary):
+//   keyboard_shortcutsKeyboard Shortcutsdocumentation
+//   best_practicesBest PracticeschangelogChangelog
+//   send_feedbackCmdOrCtrl+Alt+f
+//   submit_a_promptSubmit a Prompt...diagnosticsDiagnostics...
+//   debugCmdOrCtrl+Alt+i
+//
+// Labels "Send Feedback..." and "Open Debug Tools" from string run
+// at byte 22,069,162: "Send Feedback...Open Debug Tools".
+// "Documentation" is the natural capitalisation of id `documentation`
+// (same pattern as best_practices→"Best Practices", changelog→"Changelog").
+//
+// Event names from byte 22,086,375:
+//   open_diagnostics_page  open_submit_prompt_dialog  open_changelog_url
+//   open_best_practices_url  open_feedback_dialog
+//   open_keyboard_shortcuts_dialog  open_documentation_url
+//
+// Error-log strings confirm emit calls:
+//   byte 46,901,646 "Failed to emit diagnostics page event:"
+//   byte 46,901,833 "Failed to emit changelog URL event:"
+//   byte 46,902,016 "Failed to emit documentation URL event:"
+//
+// `debug` has no emit event string anywhere in the binary; Conductor opens the
+// web inspector directly from the native side (WebviewWindow::open_devtools).
+
+/// Help > Documentation.
+pub const DOCUMENTATION_ID: &str = "documentation";
+#[cfg(target_os = "macos")]
+const DOCUMENTATION_LABEL: &str = "Documentation";
+/// Event emitted to the webview (src/App.tsx).
+pub const DOCUMENTATION_EVENT: &str = "open_documentation_url";
+
+/// Help > Best Practices.
+pub const BEST_PRACTICES_ID: &str = "best_practices";
+#[cfg(target_os = "macos")]
+const BEST_PRACTICES_LABEL: &str = "Best Practices";
+/// Event emitted to the webview.
+pub const BEST_PRACTICES_EVENT: &str = "open_best_practices_url";
+
+/// Help > Changelog.
+pub const CHANGELOG_ID: &str = "changelog";
+#[cfg(target_os = "macos")]
+const CHANGELOG_LABEL: &str = "Changelog";
+/// Event emitted to the webview.
+pub const CHANGELOG_EVENT: &str = "open_changelog_url";
+
+/// Help > Send Feedback... (⌘⌥F).
+pub const SEND_FEEDBACK_ID: &str = "send_feedback";
+#[cfg(target_os = "macos")]
+const SEND_FEEDBACK_LABEL: &str = "Send Feedback...";
+#[cfg(target_os = "macos")]
+const SEND_FEEDBACK_ACCELERATOR: &str = "CmdOrCtrl+Alt+f";
+/// Event emitted to the webview.
+pub const SEND_FEEDBACK_EVENT: &str = "open_feedback_dialog";
+
+/// Help > Submit a Prompt...
+pub const SUBMIT_A_PROMPT_ID: &str = "submit_a_prompt";
+#[cfg(target_os = "macos")]
+const SUBMIT_A_PROMPT_LABEL: &str = "Submit a Prompt...";
+/// Event emitted to the webview.
+pub const SUBMIT_A_PROMPT_EVENT: &str = "open_submit_prompt_dialog";
+
+/// Help > Diagnostics...
+pub const DIAGNOSTICS_ID: &str = "diagnostics";
+#[cfg(target_os = "macos")]
+const DIAGNOSTICS_LABEL: &str = "Diagnostics...";
+/// Event emitted to the webview.
+pub const DIAGNOSTICS_EVENT: &str = "open_diagnostics_page";
+
+/// Help > Open Debug Tools (⌘⌥I).
+/// No webview event: Conductor opens the web inspector directly from the
+/// native side. `handle_event` calls `WebviewWindow::open_devtools()`.
+pub const DEBUG_ID: &str = "debug";
+#[cfg(target_os = "macos")]
+const DEBUG_LABEL: &str = "Open Debug Tools";
+#[cfg(target_os = "macos")]
+const DEBUG_ACCELERATOR: &str = "CmdOrCtrl+Alt+i";
+
 /// View > Toggle Left Sidebar. The id is also the event name.
 pub const TOGGLE_LEFT_SIDEBAR_ID: &str = "toggle_left_sidebar";
 /// View > Toggle Right Sidebar. The id is also the event name.
@@ -87,12 +170,22 @@ pub fn is_quit_label(label: &str) -> bool {
 }
 
 /// The webview event a menu item id emits, if it is one of ours.
+///
+/// Returns `None` for ids handled outside the emit path: `custom_quit`
+/// (goes through `app_quit::request_quit`) and `debug` (opens devtools
+/// directly — no event string found in the Conductor binary).
 pub fn event_for(id: &str) -> Option<&'static str> {
     match id {
         SETTINGS_ID => Some(SETTINGS_EVENT),
         KEYBOARD_SHORTCUTS_ID => Some(KEYBOARD_SHORTCUTS_EVENT),
         TOGGLE_LEFT_SIDEBAR_ID => Some(TOGGLE_LEFT_SIDEBAR_ID),
         TOGGLE_RIGHT_SIDEBAR_ID => Some(TOGGLE_RIGHT_SIDEBAR_ID),
+        DOCUMENTATION_ID => Some(DOCUMENTATION_EVENT),
+        BEST_PRACTICES_ID => Some(BEST_PRACTICES_EVENT),
+        CHANGELOG_ID => Some(CHANGELOG_EVENT),
+        SEND_FEEDBACK_ID => Some(SEND_FEEDBACK_EVENT),
+        SUBMIT_A_PROMPT_ID => Some(SUBMIT_A_PROMPT_EVENT),
+        DIAGNOSTICS_ID => Some(DIAGNOSTICS_EVENT),
         _ => None,
     }
 }
@@ -123,22 +216,31 @@ pub fn build<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<tauri::menu::Menu<
             eprintln!("Warning: Could not add {label} menu item");
         }
     }
-    let added = menu
+    // Items appended in Conductor's binary order: Keyboard Shortcuts,
+    // Documentation, Best Practices, Changelog, Send Feedback (⌘⌥F),
+    // Submit a Prompt, Diagnostics, Open Debug Tools (⌘⌥I).
+    // Separator structure not confirmed from binary; items appended flat.
+    let help_submenu = menu
         .get(HELP_SUBMENU_ID)
-        .and_then(|kind| kind.as_submenu().cloned())
-        .and_then(|help| {
-            let item = MenuItem::with_id(
-                app,
-                KEYBOARD_SHORTCUTS_ID,
-                KEYBOARD_SHORTCUTS_LABEL,
-                true,
-                None::<&str>,
-            )
-            .ok()?;
+        .and_then(|kind| kind.as_submenu().cloned());
+    let help_items: &[(&str, &str, Option<&str>)] = &[
+        (KEYBOARD_SHORTCUTS_ID, KEYBOARD_SHORTCUTS_LABEL, None),
+        (DOCUMENTATION_ID,      DOCUMENTATION_LABEL,      None),
+        (BEST_PRACTICES_ID,     BEST_PRACTICES_LABEL,     None),
+        (CHANGELOG_ID,          CHANGELOG_LABEL,          None),
+        (SEND_FEEDBACK_ID,      SEND_FEEDBACK_LABEL,      Some(SEND_FEEDBACK_ACCELERATOR)),
+        (SUBMIT_A_PROMPT_ID,    SUBMIT_A_PROMPT_LABEL,    None),
+        (DIAGNOSTICS_ID,        DIAGNOSTICS_LABEL,        None),
+        (DEBUG_ID,              DEBUG_LABEL,              Some(DEBUG_ACCELERATOR)),
+    ];
+    for &(id, label, accel) in help_items {
+        let added = help_submenu.as_ref().and_then(|help| {
+            let item = MenuItem::with_id(app, id, label, true, accel).ok()?;
             help.append(&item).ok()
         });
-    if added.is_none() {
-        eprintln!("Warning: Could not add Keyboard Shortcuts menu item");
+        if added.is_none() {
+            eprintln!("Warning: Could not add {label} menu item");
+        }
     }
     Ok(menu)
 }
@@ -241,6 +343,15 @@ pub fn handle_event<R: Runtime>(app: &AppHandle<R>, id: &str) {
         crate::app_quit::request_quit(app);
         return;
     }
+    // Open Debug Tools (⌘⌥I): no webview event — Conductor opens the web
+    // inspector from the native side directly (no event string in binary).
+    if id == DEBUG_ID {
+        use tauri::Manager;
+        if let Some(window) = app.get_webview_window("main") {
+            window.open_devtools();
+        }
+        return;
+    }
     let Some(event) = event_for(id) else {
         return;
     };
@@ -306,7 +417,19 @@ mod tests {
 
     #[test]
     fn other_ids_emit_nothing() {
-        assert_eq!(event_for("documentation"), None);
+        // debug and custom_quit are handled outside event_for.
+        assert_eq!(event_for("debug"), None);
+        assert_eq!(event_for("custom_quit"), None);
         assert_eq!(event_for(""), None);
+    }
+
+    #[test]
+    fn help_items_emit_their_events() {
+        assert_eq!(event_for("documentation"),   Some("open_documentation_url"));
+        assert_eq!(event_for("best_practices"),  Some("open_best_practices_url"));
+        assert_eq!(event_for("changelog"),       Some("open_changelog_url"));
+        assert_eq!(event_for("send_feedback"),   Some("open_feedback_dialog"));
+        assert_eq!(event_for("submit_a_prompt"), Some("open_submit_prompt_dialog"));
+        assert_eq!(event_for("diagnostics"),     Some("open_diagnostics_page"));
     }
 }

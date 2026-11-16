@@ -39,7 +39,7 @@ function replay(baseline: boolean): string {
     assert.equal((result.stdout.match(/code: 'ERR_ASSERTION'/g) ?? []).length, 1, result.stdout);
     assert.doesNotMatch(result.stdout, /ReferenceError|TypeError|MODULE_NOT_FOUND|SyntaxError/);
   }
-  console.log(`${baseline ? "BASELINE" : "CANDIDATE"}\n${result.stdout}`);
+  process.stderr.write(`${baseline ? "BASELINE" : "CANDIDATE"}\n${result.stdout}`);
   return result.stdout;
 }
 

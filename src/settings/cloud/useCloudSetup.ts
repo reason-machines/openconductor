@@ -47,7 +47,11 @@ function load(force: boolean): Promise<CloudSetupDto> {
 /** The cached read without waiting (null until the first one lands). */
 export const cachedCloudSetup = (): CloudSetupDto | null => cached?.value ?? null;
 
-export function useCloudSetup(): { setup: CloudSetupDto | null; loading: boolean; refresh: () => void } {
+/**
+ * @param enabled – when false (experimental_cloud_ui is OFF) the hook skips the
+ * background `reason_cloud_setup` invocation entirely and returns null.
+ */
+export function useCloudSetup(enabled = true): { setup: CloudSetupDto | null; loading: boolean; refresh: () => void } {
   const [setup, setSetup] = useState<CloudSetupDto | null>(cachedCloudSetup);
   const [loading, setLoading] = useState(false);
   const run = useCallback((force: boolean) => {
@@ -55,11 +59,12 @@ export function useCloudSetup(): { setup: CloudSetupDto | null; loading: boolean
     void load(force).finally(() => setLoading(false));
   }, []);
   useEffect(() => {
+    if (!enabled) return;
     listeners.add(setSetup);
     run(false);
     return () => {
       listeners.delete(setSetup);
     };
-  }, [run]);
+  }, [run, enabled]);
   return { setup, loading, refresh: useCallback(() => run(true), [run]) };
 }

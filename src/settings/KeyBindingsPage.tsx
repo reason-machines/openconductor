@@ -31,6 +31,7 @@ import type { OverrideUpdate, Overrides } from "../keybindings/overrides.ts";
 import { heldModifiers, type KeyEventLike } from "../keybindings/shortcut.ts";
 import type { Modifier, Shortcut } from "../keybindings/types.ts";
 import { useSettingsOverrideStore } from "./useSettingsOverrideStore.ts";
+import { boolPref } from "./prefs";
 import type { Settings } from "./types";
 
 interface Props {
@@ -80,7 +81,8 @@ export function KeyBindingsPage({ settings, save }: Props) {
   const searchRef = useRef<HTMLInputElement>(null);
   useKeybindings({ "settings.search": () => searchRef.current?.focus() });
 
-  const rows = useMemo(() => editorRows(overrides), [overrides]);
+  const cloudUI = boolPref(settings, "experimental_cloud_ui");
+  const rows = useMemo(() => editorRows(overrides, { cloudUI, queuedMessagesEnabled: true }), [overrides, cloudUI]);
   const groups = useMemo(() => groupRows(filterRows(rows, query, typed)), [rows, query, typed]);
 
   const onSearchKeyDown = (e: ReactKeyboardEvent<HTMLInputElement>) => {

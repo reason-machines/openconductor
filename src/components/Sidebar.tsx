@@ -5,9 +5,8 @@ import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
 import type { AppInfo } from "../backend";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, FolderPlusIcon, HomeIcon, LayoutGridIcon, MoreIcon, PlayIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
-import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
-import { effectiveShortcuts } from "../keybindings/overrides";
+import { effectiveShortcuts, type Overrides } from "../keybindings/overrides";
 import { HelpMenu } from "./HelpMenu";
 import { RepoIcon } from "./RepoIcon";
 import { RenameWorkspaceDialog } from "./RenameWorkspaceDialog";
@@ -34,7 +33,8 @@ import { useKeybindings, useKeybindingOverrides } from "../keybindings/Keybindin
 import { AccountMenu } from "./AccountMenu";
 import { AppMark } from "./AppMark";
 import { ResourceUsagePill } from "./ResourceUsagePill";
-import { Tooltip, titleWithShortcut } from "./Tooltip";
+import { Tooltip } from "./ui/Tooltip";
+import { titleWithShortcut } from "./Tooltip";
 import { ContextMenu, MenuItem as CtxItem, MenuSeparator } from "./menu/ContextMenu";
 import { useRoutinesAvailable } from "../features/routines/useRoutinesAvailable";
 import { EyeIcon, EyeOffIcon, Link2Icon, PencilIcon, PlusIcon as MenuPlusIcon, SettingsIcon as MenuSettingsIcon, Trash2Icon } from "./menu/menuIcons";
@@ -47,9 +47,9 @@ import { SidebarActionsMenu, type SidebarMenuAction } from "./SidebarActionsMenu
 export const OPEN_ADD_PROJECT_MENU = "openconductor:open-add-project-menu";
 
 /** Default shortcut glyphs for a registered command, e.g. "⌘N" for workspace.create. */
-function hint(commandId: string): string {
-  const c = COMMANDS.find((cmd) => cmd.id === commandId);
-  return c ? glyphs(c.key) : "";
+function hint(commandId: string, overrides: Overrides = {}): string {
+  const shortcuts = effectiveShortcuts(commandId, overrides);
+  return shortcuts.length > 0 ? glyphs(shortcuts[0]) : "";
 }
 
 export interface NavControls {
@@ -328,9 +328,9 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
   const repoMenu = (repo: AppState["repos"][number]): MenuEntry[] => {
     const active = sel.kind === "workspace" && sel.repoId === repo.id;
     return [
-      { label: "Create workspace", icon: <MenuPlusIcon />, contextShortcut: active ? hint("workspace.create") : undefined, onSelect: () => onOpenDialog("create", repo.id) },
-      ...(onCreateFrom ? [{ label: "Create from...", icon: <Link2Icon />, contextShortcut: hint("workspace.createFromPRBranchIssue"), onSelect: () => onCreateFrom(repo.id) }] : []),
-      ...(onOpenRepoSettings ? [{ label: "Configuration", icon: <MenuSettingsIcon />, contextShortcut: hint("openSettings"), onSelect: () => onOpenRepoSettings(repo.id) }] : []),
+      { label: "Create workspace", icon: <MenuPlusIcon />, contextShortcut: active ? hint("workspace.create", overrides) : undefined, onSelect: () => onOpenDialog("create", repo.id) },
+      ...(onCreateFrom ? [{ label: "Create from...", icon: <Link2Icon />, contextShortcut: hint("workspace.createFromPRBranchIssue", overrides), onSelect: () => onCreateFrom(repo.id) }] : []),
+      ...(onOpenRepoSettings ? [{ label: "Configuration", icon: <MenuSettingsIcon />, contextShortcut: hint("openSettings", overrides), onSelect: () => onOpenRepoSettings(repo.id) }] : []),
       { label: repo.hidden ? "Unhide repository" : "Hide repository", icon: repo.hidden ? <EyeIcon /> : <EyeOffIcon />, onSelect: () => dispatch({ type: "setRepoHidden", repoId: repo.id, hidden: !repo.hidden }) },
       ...(onRemoveRepository ? ["-" as const, { label: "Remove repository", icon: <Trash2Icon />, destructive: true, onSelect: () => onRemoveRepository(repo.id) }] : []),
     ];
@@ -376,7 +376,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
             type="button"
             className="sb-toggle"
             aria-label="Toggle left sidebar"
-            title={titleWithShortcut("Toggle left sidebar", hint("view.toggleLeftSidebar"))}
+            title={titleWithShortcut("Toggle left sidebar", hint("view.toggleLeftSidebar", overrides))}
             onClick={() => dispatch({ type: "toggleSidebar" })}
           >
             <SidebarIcon size={16} />
@@ -384,10 +384,10 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
         </div>
         <div className="sb-history">
           <ResourceUsagePill workspaces={usageWorkspaces} />
-          <button type="button" className="sb-icon-btn" aria-label="Go back" title={titleWithShortcut("Go back", hint("nav.back"))} disabled={!nav.canBack} onClick={nav.onBack}>
+          <button type="button" className="sb-icon-btn" aria-label="Go back" title={titleWithShortcut("Go back", hint("nav.back", overrides))} disabled={!nav.canBack} onClick={nav.onBack}>
             <ArrowLeftIcon size={12} />
           </button>
-          <button type="button" className="sb-icon-btn" aria-label="Go forward" title={titleWithShortcut("Go forward", hint("nav.forward"))} disabled={!nav.canForward} onClick={nav.onForward}>
+          <button type="button" className="sb-icon-btn" aria-label="Go forward" title={titleWithShortcut("Go forward", hint("nav.forward", overrides))} disabled={!nav.canForward} onClick={nav.onForward}>
             <ArrowRightIcon size={12} />
           </button>
         </div>
@@ -409,7 +409,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
         </div>
       </div>
 
-      <nav className="repo-list" ref={scrollRoot}>
+      <nav className="repo-list" ref={scrollRoot} data-sidebar-scroll-root>
         {pinned.length > 0 && (
           <SidebarGroup label="Pinned" count={pinned.length} collapsed={builtinCollapsed.has(PINNED_COLLAPSE_KEY)} onToggle={() => toggleBuiltin(PINNED_COLLAPSE_KEY)} pinnedDropZone isDropTarget={dropTarget?.type === "pinned"}>
             <SidebarPresence>{pinned.map((entry, index) => row(entry, index))}</SidebarPresence>
@@ -571,7 +571,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
         <div className="sb-footer-actions">
           <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} onSendFeedback={onSendFeedback} onSubmitPrompt={onSubmitPrompt} onOpenDiagnostics={onOpenDiagnostics} />
           {/* Conductor's footer Settings (`Nna`): Tooltip "Settings" with the openSettings shortcut. */}
-          <Tooltip content="Settings" shortcut={hint("openSettings")}>
+          <Tooltip content="Settings" shortcut="openSettings">
             <button type="button" className="sb-footer-btn" aria-label="Settings" onClick={onOpenSettings}>
               <SettingsIcon size={16} strokeWidth={1.5} />
             </button>

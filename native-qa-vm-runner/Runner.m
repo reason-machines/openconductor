@@ -1,7 +1,9 @@
 #import <AppKit/AppKit.h>
 #import <Virtualization/Virtualization.h>
 #import <objc/runtime.h>
+#include "ArgParser.h"
 #include "Profile.h"
+#include "ResourceValidator.h"
 
 static BOOL OCVMReject(NSError **error) {
     if (error != NULL) {
@@ -134,8 +136,66 @@ static bool OCVMConstruct(void *raw) {
 }
 @end
 
-int main(void) {
-    fputs("VM execution is unavailable: resource identity, inherited-capability, "
-          "effective-profile and lifecycle acceptance are not implemented.\n", stderr);
+static void OCVMUsage(const char *prog) {
+    fprintf(stderr,
+        "Usage: %s --disk <path> --aux <path>\n"
+        "       %s          (probe: no arguments)\n",
+        prog, prog);
+}
+
+int main(int argc, char *argv[]) {
+    if (argc > 1) {
+        OCVMArgs args;
+        OCVMArgsStatus status = OCVMParseArgs(argc, argv, &args);
+        if (status != OC_VM_ARGS_OK) {
+            OCVMUsage(argv[0]);
+            return (int)status;
+        }
+        int disk_fd = OCVMValidateResource(args.disk, OC_VM_RES_DISK);
+        if (disk_fd < 0) {
+            fprintf(stderr, "disk resource validation failed: %s\n", args.disk);
+            return 11;
+        }
+        int aux_fd = OCVMValidateResource(args.aux, OC_VM_RES_AUX);
+        if (aux_fd < 0) {
+            fprintf(stderr, "aux resource validation failed: %s\n", args.aux);
+            OCVMReleaseResourceFd(disk_fd);
+            return 12;
+        }
+        /* Optional hardware identity resources (--hardware-model, --machine-id). */
+        int hw_fd = -1;
+        if (args.hardware_model != NULL) {
+            hw_fd = OCVMValidateResource(args.hardware_model, OC_VM_RES_AUX);
+            if (hw_fd < 0) {
+                fprintf(stderr, "hardware-model resource validation failed: %s\n",
+                        args.hardware_model);
+                OCVMReleaseResourceFd(disk_fd);
+                OCVMReleaseResourceFd(aux_fd);
+                return 13;
+            }
+        }
+        int mid_fd = -1;
+        if (args.machine_id != NULL) {
+            mid_fd = OCVMValidateResource(args.machine_id, OC_VM_RES_AUX);
+            if (mid_fd < 0) {
+                fprintf(stderr, "machine-id resource validation failed: %s\n",
+                        args.machine_id);
+                OCVMReleaseResourceFd(disk_fd);
+                OCVMReleaseResourceFd(aux_fd);
+                if (hw_fd >= 0) OCVMReleaseResourceFd(hw_fd);
+                return 14;
+            }
+        }
+        OCVMReleaseResourceFd(disk_fd);
+        OCVMReleaseResourceFd(aux_fd);
+        if (hw_fd  >= 0) OCVMReleaseResourceFd(hw_fd);
+        if (mid_fd >= 0) OCVMReleaseResourceFd(mid_fd);
+    }
+    if (!OCVMAdmitNative()) {
+        fputs("VM execution is unavailable: resource identity, inherited-capability, "
+              "effective-profile and lifecycle acceptance are not implemented.\n", stderr);
+        return 78;
+    }
+    /* Unreachable until E1 satisfies native admission prerequisites. */
     return 78;
 }
