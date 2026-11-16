@@ -12,11 +12,13 @@ Cloud-safe: plan_capability_dispatch and consume_capability_output never execute
 subprocesses, never access the network, and touch no native resources.
 """
 import dataclasses
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 import hashlib
+from typing import Optional
 
 from tools import native_qa_vm_staging as staging
+from tools import native_qa_vm_alloc as alloc
 
 # ---------------------------------------------------------------------------
 # Bounded I/O limits for the runner process.
@@ -76,6 +78,7 @@ class DispatchPlan:
     max_wall_seconds: float
     stdout_limit: int
     stderr_limit: int
+    allocation: Optional[alloc.GuestAllocation] = field(default=None)
 
     def __post_init__(self):
         if not (isinstance(self.source_commit, str) and len(self.source_commit) == 40
@@ -102,6 +105,8 @@ class DispatchPlan:
         if not (isinstance(self.stderr_limit, int)
                 and 0 < self.stderr_limit <= MAX_STDERR_BYTES):
             raise ValueError(f"stderr_limit must be in (0, {MAX_STDERR_BYTES}]")
+        if self.allocation is not None and not isinstance(self.allocation, alloc.GuestAllocation):
+            raise TypeError("allocation must be a GuestAllocation or None")
 
 
 class CapabilityOutcome(Enum):
@@ -195,6 +200,76 @@ def plan_capability_dispatch(
         max_wall_seconds=float(max_wall_seconds),
         stdout_limit=stdout_limit,
         stderr_limit=stderr_limit,
+    )
+
+
+def plan_capability_dispatch_with_allocation(
+    bundle: staging.StagedBundle,
+    capability: CapabilitySpec,
+    guest_allocation: alloc.GuestAllocation,
+    *,
+    max_wall_seconds: float = MAX_WALL_SECONDS,
+    stdout_limit: int = MAX_STDOUT_BYTES,
+    stderr_limit: int = MAX_STDERR_BYTES,
+) -> DispatchPlan:
+    """Like plan_capability_dispatch, but binds a GuestAllocation to the plan.
+
+    Validates that the allocation's source_commit and build_id match the
+    bundle's.  Extends argv with the allocation's CLI arguments so the runner
+    receives ``--disk <path> --aux <path>``.
+
+    The returned DispatchPlan carries the GuestAllocation.  The executor will
+    call recheck_resource_identity() on both disk and aux before invoking the
+    subprocess, implementing the identity-through-use contract.
+
+    Raises TypeError for wrong argument types.
+    Raises ValueError for mismatched bundle/allocation identity or bad limits.
+    """
+    if not isinstance(bundle, staging.StagedBundle):
+        raise TypeError("bundle must be a StagedBundle")
+    if not isinstance(capability, CapabilitySpec):
+        raise TypeError("capability must be a CapabilitySpec")
+    if not isinstance(guest_allocation, alloc.GuestAllocation):
+        raise TypeError("guest_allocation must be a GuestAllocation")
+
+    # Validate identity binding between bundle and allocation.
+    if guest_allocation.source_commit != bundle.source_commit:
+        raise ValueError(
+            "allocation source_commit does not match bundle source_commit"
+        )
+    if guest_allocation.build_id != bundle.build_id:
+        raise ValueError(
+            "allocation build_id does not match bundle build_id"
+        )
+
+    # Range-check caller-supplied limits.
+    if not (isinstance(max_wall_seconds, (int, float))
+            and MIN_WALL_SECONDS < max_wall_seconds <= MAX_WALL_SECONDS):
+        raise ValueError(
+            f"max_wall_seconds must be in ({MIN_WALL_SECONDS}, {MAX_WALL_SECONDS}]"
+        )
+    if not (isinstance(stdout_limit, int) and 0 < stdout_limit <= MAX_STDOUT_BYTES):
+        raise ValueError(f"stdout_limit must be in (0, {MAX_STDOUT_BYTES}]")
+    if not (isinstance(stderr_limit, int) and 0 < stderr_limit <= MAX_STDERR_BYTES):
+        raise ValueError(f"stderr_limit must be in (0, {MAX_STDERR_BYTES}]")
+
+    # Build argv: executable path + allocation CLI args.
+    if capability is CapabilitySpec.PROBE:
+        base_argv = staging.compose_invocation(bundle)
+    else:
+        raise ValueError(f"unrecognised capability: {capability!r}")
+    argv = base_argv + alloc.build_allocation_argv(guest_allocation)
+
+    return DispatchPlan(
+        source_commit=bundle.source_commit,
+        build_id=bundle.build_id,
+        executable_sha256=bundle.executable_sha256,
+        argv=argv,
+        capability=capability,
+        max_wall_seconds=float(max_wall_seconds),
+        stdout_limit=stdout_limit,
+        stderr_limit=stderr_limit,
+        allocation=guest_allocation,
     )
 
 

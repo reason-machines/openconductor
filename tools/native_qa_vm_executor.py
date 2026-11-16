@@ -38,6 +38,7 @@ import subprocess
 import time
 
 from tools import native_qa_vm_broker as broker
+from tools import native_qa_vm_alloc as alloc
 
 
 # ---------------------------------------------------------------------------
@@ -92,6 +93,15 @@ def execute_capability_plan(
     """
     if not isinstance(plan, broker.DispatchPlan):
         raise TypeError("plan must be a DispatchPlan")
+
+    # Identity-through-use contract: recheck resource identities immediately
+    # before subprocess start.  This detects file replacement, truncation, or
+    # timestamp changes since produce_guest_allocation() was called.
+    # NOTE: a TOCTOU window remains between recheck and execve; closing that
+    # window requires O_PATH-pinned fds and is E1's native responsibility.
+    if plan.allocation is not None:
+        alloc.recheck_resource_identity(plan.allocation.disk)
+        alloc.recheck_resource_identity(plan.allocation.aux)
 
     t_start = time.monotonic()
     try:
