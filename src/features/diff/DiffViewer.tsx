@@ -160,8 +160,8 @@ function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anc
     selected.hunks.length > 0 && isPreviewablePath(selected.path);
   const [isPreviewing, setIsPreviewing] = useState(isPreviewable);
   useEffect(() => { setIsPreviewing(isPreviewable); }, [selected.path, isPreviewable]);
-  // Exit preview when edit mode is entered (edit prop becomes defined).
-  useEffect(() => { if (edit !== undefined) setIsPreviewing(false); }, [edit]);
+  // No effect on edit availability: Conductor keeps preview as the default even
+  // when the file is editable (isEditing=false is the default; ⌘E enters edit mode).
   useKeybindings(isPreviewable ? { "workspace.toggleFileEdit": () => setIsPreviewing((p) => !p) } : {});
   return (
     <div className="oc-files" hidden={!isVisible} style={!isVisible ? { display: "none" } : undefined}>

@@ -386,3 +386,28 @@ button.oc-sent-file-chip:focus-visible { outline: 2px solid currentColor; outlin
 .oc-collab-line .oc-tool-icon { margin-top: 2px; }
 .oc-tool-icon.error { color: var(--oc-destructive); }
 .oc-tool-icon.working { animation: pulse 1.4s ease-in-out infinite; }
+
+/* parity:chat.attachments:drag-window — window-level drop overlay (Conductor fCe().onDragDropEvent consumer 1) */
+.oc-window-drop-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--oc-bg) 85%, transparent);
+  pointer-events: none;
+}
+.oc-window-drop-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 36px;
+  border-radius: 12px;
+  border: 2px dashed var(--oc-accent);
+  background: var(--oc-bg);
+  color: var(--oc-fg);
+  font-size: 15px;
+  font-weight: 500;
+}

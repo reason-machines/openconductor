@@ -140,6 +140,7 @@ async function fixture(files: FileDiff[], initiallyViewed: FileDiff[] = [], init
       discardFileChanges: () => { throw new Error("Unexpected discard"); },
     },
     "../../keybindings/KeybindingsProvider.tsx": { useKeybindings: (next: typeof handlers) => Object.assign(handlers, next) },
+    "./wrapLinesPref.ts": { useWrapLinesPref: () => ({ value: true, save: () => {} }) },
     "./nav.ts": navigation,
     "./changesTree.ts": { changeRows },
     "./changesFilter.ts": { filterChangedFiles },

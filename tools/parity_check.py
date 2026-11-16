@@ -227,7 +227,10 @@ TEST_FILE = re.compile(r"(\.test\.[jt]sx?$|(^|/)tests?(\.rs|/)|_test\.rs$)")
 def probe_shortcuts(corpus, ref):
     """`matched`: registered with Conductor's default key and referenced from code outside the registry
     (a handler, menu or dispatcher); `declared`: registered with the default key but not referenced
-    anywhere else; `partial`: id present but the default key does not match; else `missing`."""
+    anywhere else; `partial`: id present but the default key does not match; else `missing`.
+    Commands with `nativeDelegation: true` in the JSON are classified as `matched` unconditionally —
+    the key is handled natively by the component (e.g. CodeMirror default keymap) and no
+    useKeybindings handler is needed or expected."""
     items = []
     ids = [c["id"] for c in ref["commands"]]
     quoted = {i: re.compile(r"""["'`]""" + re.escape(i) + r"""["'`]""") for i in ids}
@@ -238,6 +241,13 @@ def probe_shortcuts(corpus, ref):
         b = {"id": c["id"], "category": c.get("category"),
              "keys": [shortcut_spec(c["key"])] + [shortcut_spec(k) for k in c.get("additionalKeys", [])]}
         ident = b["id"]
+        # nativeDelegation: key is handled by the native component (e.g. CodeMirror default keymap);
+        # no useKeybindings handler is needed or expected — classify as matched.
+        if c.get("nativeDelegation"):
+            note = c.get("nativeDelegationNote", "native component delegation")
+            items.append(item("shortcuts", b["category"] or "uncategorised", ident, "matched",
+                              describe_keys(b["keys"]) + f"; native delegation: {note}"))
+            continue
         hits = [m.start() for m in quoted[ident].finditer(text)]
         if not hits:
             items.append(item("shortcuts", b["category"] or "uncategorised", ident, "missing",

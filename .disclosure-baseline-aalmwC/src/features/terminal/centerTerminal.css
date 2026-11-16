@@ -1,0 +1,5 @@
+.ws-main { display: flex; flex-direction: column; min-width: 0; min-height: 0; border-right: 1px solid var(--border); }
+.ws-chat-host { display: flex; flex: 1; min-height: 0; min-width: 0; }
+.ws-chat-host[hidden] { display: none; }
+.ws-chat-host > .chat { flex: 1; min-width: 0; border-right: 0; }
+.ws-main > .center-terminal { display: flex; flex: 1; height: auto; min-height: 0; border-top: 0; }

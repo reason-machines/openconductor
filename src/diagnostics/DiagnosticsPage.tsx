@@ -12,7 +12,7 @@ import { useCallback, useRef, useState } from "react";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import { copyText } from "../features/openIn/apps";
 import { ConductorIcon } from "../components/ConductorIcon";
-import { Tooltip } from "../components/Tooltip";
+import { Tooltip } from "../components/ui/Tooltip";
 import { diagnosticChecks, progress, reportMarkdown, runDiagnostics, type CheckResult } from "./checks";
 import { exportConsoleLogs } from "./consoleLog";
 import { diagnosticsShell } from "./shell";

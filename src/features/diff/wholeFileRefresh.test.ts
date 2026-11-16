@@ -78,6 +78,7 @@ async function fixture() {
       };
       if (name === "@pierre/diffs/edit") return { Editor: class { constructor() { assert.fail("No DOM editor in the component test"); } } };
       if (name === "../../keybindings/KeybindingsProvider.tsx") return { useKeybindings: () => undefined };
+      if (name === "./wrapLinesPref.ts") return { useWrapLinesPref: () => ({ value: true, save: () => {} }) };
       if (name === "./useChangesPresentation.ts") return {
         useChangesPresentation: () => ({ presentation: { filePathFilter: "", diffFileListMode: "flat" } }),
       };
