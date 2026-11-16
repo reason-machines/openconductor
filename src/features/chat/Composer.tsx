@@ -29,7 +29,9 @@ import type { FileMatch } from "../../spotlight/quickOpen";
 import { fileMentionQuery, mentionItems, type MentionItem } from "./fileMentions.ts";
 import { ComposerEditor, type ComposerEditorHandle, type ComposerSelection } from "./ComposerEditor.tsx";
 import { composerPrompt } from "./composerDocument.ts";
+import { invoke, isTauri } from "@tauri-apps/api/core";
 import { longPasteAttachment } from "./composerLongPaste.ts";
+import { readClipboardText } from "./composerPasteFilePaths.ts";
 import { useBoolPref } from "../../settings/useBoolPref.ts";
 import { useSettings } from "../../settings/useSettings.ts";
 import { withBoolPref } from "../../settings/prefs.ts";
@@ -245,6 +247,21 @@ export function Composer({
     "chat.toggleSpeechToText": () => {
       if (!voiceSettings) return false;
       void saveVoiceSettings(withBoolPref(voiceSettings, "voice_mode", !voiceModeEnabled));
+    },
+    "chat.composer.pasteFilePaths": () => {
+      const box = inputRef.current;
+      if (!box) return false;
+      // Read clipboard text via Tauri plugin (matches Conductor's clipboard-manager|read_text
+      // usage; evidence/packaging/conductor-plugin-commands.json) or the web API in browser.
+      const clip = isTauri()
+        ? { readText: () => invoke<string>("plugin:clipboard-manager|read_text") }
+        : navigator.clipboard;
+      void readClipboardText(clip).then((text) => {
+        if (!text) return;
+        box.focus();
+        const sel = box.selection();
+        box.replaceRange({ start: sel.start, end: sel.end }, text);
+      });
     },
   });
 
