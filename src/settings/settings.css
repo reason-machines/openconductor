@@ -261,7 +261,9 @@
 
 /* Conductor's branch / remote picker trigger (`text-sm border px-2`, up-down chevron). */
 .settings .settings-picker { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px; border: 1px solid var(--s-border); border-radius: 6px; font-size: 14px; line-height: 20px; color: var(--s-fg); cursor: default; }
+.settings .settings-picker:has(select) { cursor: pointer; }
 .settings .settings-picker svg { opacity: 0.7; }
+.settings .settings-picker-select { appearance: none; -webkit-appearance: none; background: transparent; border: none; outline: none; cursor: pointer; color: inherit; font: inherit; padding: 0; min-width: 0; }
 
 /* Repository Environment (Conductor's `zda` for a repository: `T$i` tables, `FZn` rows, `vda`/`Fda` sheets). */
 .settings .settings-env-sections { display: flex; flex-direction: column; gap: 40px; margin-top: 24px; }
