@@ -88,38 +88,63 @@ class CacheStageTests(unittest.TestCase):
         self.assertEqual(delta["status"], "clean")
         self.assertEqual(delta["unauthorized_writes"], [])
 
-    def test_receipt_without_observer_delta_cannot_unlock_admission(self):
-        """No receipt lacking a filesystem_observer_delta can pass the gate."""
-        for receipt in (
+    def test_no_receipt_can_unlock_filesystem_admission(self):
+        """require_filesystem_isolation is unconditionally fail-closed.
+
+        Every receipt variant — absent delta, not_run, unauthorized writes detected,
+        non-clean status, absent/None unauthorized_writes key, hand-constructed clean
+        dict, dict with sandbox_policy_applied=True, and even a real probe() receipt —
+        must be refused.  Provenance cannot be established from a caller-supplied dict;
+        lstat before/after cannot prove no transient write-delete or helper activity.
+        """
+        # --- previously failing bypass cases reproduced on main 4a71e1b6 ---
+        bypass_cases = [
+            # Case 1: delta absent entirely
             {},
+            # Case 2: unrelated fields, no delta
             {"filesystem_coverage_verified": True, "all_helpers_covered": True,
              "lost_events": 0, "external_writes": []},
+            # Case 3: not_run sentinel
             {"filesystem_observer_delta": {"status": "not_run",
                                            "scope": "observer did not run"}},
+            # Case 4: explicit unauthorized write
             {"filesystem_observer_delta": {"status": "unauthorized_writes_detected",
                                            "unauthorized_writes": ["bad.txt"]}},
-        ):
-            with self.assertRaisesRegex(ValueError, "admission denied"):
-                stage.require_filesystem_isolation(receipt)
-
-    def test_require_filesystem_isolation_accepts_clean_observer_delta(self):
-        """A lifecycle receipt with a clean observer delta passes the gate."""
-        clean_receipt = {
-            "filesystem_observer_delta": {
+            # Case 5: unauthorized_writes key absent (falsy None bypass)
+            {"filesystem_observer_delta": {"status": "clean"}},
+            # Case 6: unauthorized_writes: None (falsy None bypass)
+            {"filesystem_observer_delta": {"status": "clean",
+                                           "unauthorized_writes": None}},
+            # Case 7: hand-constructed structurally-complete clean dict
+            {"filesystem_observer_delta": {
                 "status": "clean",
                 "unauthorized_writes": [],
                 "permitted_changed": [],
                 "scope": "parent-process lstat snapshot",
-            }
-        }
-        # Must NOT raise.
-        stage.require_filesystem_isolation(clean_receipt)
+            }},
+            # Case 8: same with sandbox_policy_applied asserted True
+            {"filesystem_observer_delta": {
+                "status": "clean",
+                "unauthorized_writes": [],
+                "permitted_changed": [],
+                "scope": "parent-process lstat snapshot",
+                "sandbox_policy_applied": True,
+            }},
+            # Case 9: delta is not a dict
+            {"filesystem_observer_delta": "clean"},
+        ]
+        for receipt in bypass_cases:
+            with self.subTest(receipt=receipt):
+                with self.assertRaisesRegex(ValueError, "admission denied"):
+                    stage.require_filesystem_isolation(receipt)
 
-    def test_require_filesystem_isolation_accepts_probe_lifecycle_receipt(self):
-        """A receipt returned by probe() satisfies require_filesystem_isolation."""
+    def test_require_filesystem_isolation_refuses_real_probe_receipt(self):
+        """Even a genuine probe() receipt is refused: lstat snapshot ≠ kernel audit."""
         receipt = stage.probe(self.root, self.app)
-        # Must NOT raise — real observer ran and found no unauthorized writes.
-        stage.require_filesystem_isolation(receipt)
+        # The receipt has a real observer delta, but filesystem_coverage_verified=False
+        # and lstat cannot prove no transient write-delete.  Gate must remain closed.
+        with self.assertRaisesRegex(ValueError, "admission denied"):
+            stage.require_filesystem_isolation(receipt)
 
     def test_old_binary_refused_without_execution(self):
         self.script(extra="raise RuntimeError('must not execute')", marker=False)
