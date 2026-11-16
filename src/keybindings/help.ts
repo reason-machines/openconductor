@@ -32,10 +32,14 @@ export interface HelpMatch {
 /**
  * Command ids that only apply when experimental_cloud_ui is ON (M6c).
  * Kept here (not in registry.ts, which is generated) to avoid regeneration.
+ *
+ * NOT listed here: `workspace.addToBacklogFromComposer` — it is wired locally
+ * in CreateWorkspaceComposer (creates a workspace with no first session and
+ * sets its status to "backlog" entirely through the local backend). It should
+ * appear in the help dialog even when cloud UI is off.
  */
 export const CLOUD_ONLY_COMMAND_IDS = new Set<string>([
   "routine.save",
-  "workspace.addToBacklogFromComposer",
   "workspace.openRemoteInApp",
   "workspace.togglePortForwarding",
   "org.switchTo1",

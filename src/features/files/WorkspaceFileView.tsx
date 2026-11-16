@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useBoolPrefWithSave } from "../../settings/useBoolPref.ts";
 import { invoke } from "@tauri-apps/api/core";
 import type { CodeViewItem, ThemeTypes } from "@pierre/diffs";
 import { CodeView, EditProvider, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
@@ -33,7 +34,8 @@ export function WorkspaceFileView(props: WorkspaceFileViewProps) {
 function WorkspaceFile({ worktree, path, isVisible, readOnly, initialLine }: WorkspaceFileViewProps) {
   const [load, setLoad] = useState<TextRead>({ kind: "loading" });
   const [attempt, setAttempt] = useState(0);
-  const [wrapLines, setWrapLines] = useState(true);
+  // parity:diff.appearance — wrap_lines pref persisted to conductor.db (Conductor: Te("wrap_lines",!0)).
+  const [wrapLines, setWrapLines] = useBoolPrefWithSave("wrap_lines");
   const textPath = isTextPath(path);
   useEffect(() => {
     if (!textPath) return;
