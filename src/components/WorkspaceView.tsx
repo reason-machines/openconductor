@@ -1123,6 +1123,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
   const [fileTarget, setFileTarget] = useState<{ path: string; workspaceId: string; line?: number } | null>(null);
   useEffect(() => setFileTarget(null), [workspace.id]);
   // Opens any file type in the file viewer tab (H1: WorkspaceFileView wiring).
+  // `line` is 1-based and comes from SearchInFiles results (fileOpenActions.ts).
   const openAnyFile = useCallback((path: string, line?: number): boolean => {
     if (!workspace.path) return false;
     setFileTarget({ path, workspaceId: workspace.id, line });
@@ -1649,7 +1650,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
           onOpenAccountSettings={onOpenAccountSettings}
           content={
             showFile && fileTarget && workspace.path ? (
-              <WorkspaceFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} isVisible={true} readOnly={workspace.status === "archived"} line={fileTarget.line} />
+              <WorkspaceFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} isVisible={true} readOnly={workspace.status === "archived"} initialLine={fileTarget.line} />
             ) : showDiff ? (
               <DiffTab diff={diff} onClose={autoCloseDiffTab} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} onPersistAnchors={review.persistAnchors} notes={review.notes} notify={notify} />
             ) : showPr ? (

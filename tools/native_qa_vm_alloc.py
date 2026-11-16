@@ -19,6 +19,7 @@ No subprocess, no network, no native execution.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 import os
 import stat
@@ -386,4 +387,114 @@ def produce_guest_allocation_with_hardware(
         aux=base.aux,
         hardware_model=hw_id,
         machine_id=mid_id,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Guest disk disposal.
+
+_DISPOSE_TOCTOU_NOTE = (
+    "lstat-to-unlink TOCTOU gap not closed; "
+    "atomic removal requires O_PATH-pinned fd and unlinkat semantics; "
+    "closing this gap is E1's native responsibility"
+)
+_DISPOSE_SCOPE = (
+    "disk image identity re-verified against allocation record and removed by parent "
+    "process; guest writes were confined within the VZ disk image by VZ design; "
+    "host QA root was not reachable by guest filesystem operations by VZ isolation "
+    "architecture; this disposal revokes the only file containing guest-written data; "
+    "host_filesystem_coverage_verified remains False: VZ isolation is an architectural "
+    "claim, not an observation-based certificate"
+)
+
+
+@dataclass(frozen=True)
+class GuestDiskDisposalReceipt:
+    """Receipt produced by dispose_guest_disk() after removing the disk image.
+
+    Fields
+    ------
+    disk_path
+        Absolute path that was removed.
+    disk_ino, disk_dev, disk_size
+        Identity fields from the GuestAllocation, verified before removal.
+    disposed_at
+        ISO 8601 UTC timestamp at the moment os.unlink() was called.
+    disk_identity_verified_before_removal
+        Always True: recheck_resource_identity() passed before unlink.
+    host_filesystem_coverage_verified
+        Always False: VZ isolation is an architectural claim, not an
+        observation-based certificate.  This receipt does NOT assert that
+        the host filesystem was unmodified; it only asserts that the disk
+        image file (which held all guest writes by VZ design) has been
+        removed.  Asserting host coverage requires ES/BSM kernel-level
+        audit or E1 native validation on a physical Mac host.
+    toctou_note
+        Documents the lstat-to-unlink gap that this function does not close.
+    scope
+        Human-readable description of what this receipt covers and what it
+        does not prove.
+    """
+
+    disk_path: str
+    disk_ino: int
+    disk_dev: int
+    disk_size: int
+    disposed_at: str          # ISO 8601 UTC
+    disk_identity_verified_before_removal: bool  # always True
+    host_filesystem_coverage_verified: bool       # always False
+    toctou_note: str
+    scope: str
+
+
+def dispose_guest_disk(allocation: GuestAllocation) -> GuestDiskDisposalReceipt:
+    """Re-verify and remove the disposable guest disk image after a run.
+
+    Re-verifies the disk image identity against the allocation record (by
+    re-calling ``recheck_resource_identity``) before removing it, so a
+    replaced or swapped path is refused rather than silently deleted.
+
+    **Lifecycle cleanup only — not isolation proof.**  This function removes
+    the disk image that held all guest writes (which were confined within it
+    by VZ isolation architecture) and returns a receipt documenting the
+    removal.  It does NOT assert that the host filesystem was unmodified:
+    that is an architectural property of VZ isolation, not an observation
+    this function can certify.  ``host_filesystem_coverage_verified`` in the
+    returned receipt is therefore always False.
+
+    The lstat-to-unlink TOCTOU gap is not closed; closing it requires
+    O_PATH-pinned file descriptors and ``unlinkat`` semantics, which are not
+    available through the Python standard library.  This matches the
+    documented limitation in ``dispose_staged_bundle``.  True atomic removal
+    remains E1's native responsibility.
+
+    Args:
+        allocation: The GuestAllocation whose disk image should be removed.
+
+    Returns:
+        GuestDiskDisposalReceipt documenting the verified removal.
+
+    Raises:
+        TypeError: allocation is not a GuestAllocation.
+        ValueError: disk identity changed since allocation (swapped or
+            modified); raised by recheck_resource_identity before any unlink.
+        OSError: os.unlink failed for an OS-level reason.
+    """
+    if not isinstance(allocation, GuestAllocation):
+        raise TypeError("allocation must be a GuestAllocation")
+    # Re-verify identity before removal: refuses a swapped or modified disk image.
+    recheck_resource_identity(allocation.disk)
+    path = Path(allocation.disk.path)
+    disposed_at = datetime.now(timezone.utc).isoformat()
+    os.unlink(path)
+    return GuestDiskDisposalReceipt(
+        disk_path=str(path),
+        disk_ino=allocation.disk.ino,
+        disk_dev=allocation.disk.dev,
+        disk_size=allocation.disk.size,
+        disposed_at=disposed_at,
+        disk_identity_verified_before_removal=True,
+        host_filesystem_coverage_verified=False,
+        toctou_note=_DISPOSE_TOCTOU_NOTE,
+        scope=_DISPOSE_SCOPE,
     )
