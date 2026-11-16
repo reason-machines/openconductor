@@ -23,7 +23,7 @@ const candidateFiles = new Set([
 const allowed = new Set([
   ...candidateFiles, "src/features/diff/api.ts", "src/features/diff/types.ts", "src/features/diff/target.ts",
   "src/features/diff/nav.ts", "src/features/diff/changesTree.ts", "src/features/diff/changesFilter.ts",
-  "src/features/diff/viewed.ts", "src/features/diff/EditInViewer.ts", "src/features/diff/editorContents.ts",
+  "src/features/diff/viewed.ts", "src/features/diff/EditInViewer.ts", "src/features/diff/editorContents.ts", "src/features/diff/draftStorage.ts",
   "src/features/diff/copyFile.ts", "src/features/files/tree.ts", "src/lib/keyedCache.ts", "src/keybindings/fuzzy.ts",
   "src/keybindings/overrides.ts", "src/keybindings/registry.ts", "src/keybindings/shortcut.ts", "src/keybindings/types.ts",
 ].map((path) => resolve(root, path)));
