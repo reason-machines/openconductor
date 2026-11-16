@@ -203,6 +203,30 @@ pub async fn codex_open_chat<R: Runtime>(
     }
     let chat = chat_id.clone();
     let sink: Sink = Arc::new(move |payload: Payload| {
+        // Before forwarding an approval to the UI, check whether the user has
+        // chosen "always approve" in Settings › Account. If so, answer the
+        // request immediately and skip the prompt card entirely, matching
+        // Conductor's behaviour (`settings.codex_auto_approval`).
+        if let Payload::Approval(ref approval) = payload {
+            let decision = app
+                .state::<SettingsService>()
+                .get()
+                .ok()
+                .and_then(|s| s.codex_auto_approval());
+            if let Some(d) = decision {
+                if let Some(runner) = app
+                    .state::<CodexChats>()
+                    .chats
+                    .lock()
+                    .unwrap()
+                    .get(&chat)
+                    .cloned()
+                {
+                    runner.answer(approval.request_id.clone(), d);
+                    return;
+                }
+            }
+        }
         let event = event_json(&chat, &payload);
         crate::e2e::log_event("codex", &event);
         let _ = app.emit(EVENT, event);
