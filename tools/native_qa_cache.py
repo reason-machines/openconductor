@@ -25,34 +25,43 @@ TIMEOUT_SECONDS = 16
 
 
 def require_filesystem_isolation(receipt):
-    """Gate: require that *receipt* contains a clean parent-process filesystem observer delta.
+    """Gate: unconditionally fail-closed; always raises ValueError.
 
-    A 'clean' delta means the observer ran alongside a real ``run_probe()`` call (not the
-    'not_run' sentinel) and found no unauthorized writes within the QA root.
+    The parent-process lstat snapshot observer (``filesystem_observer_delta`` in the receipt)
+    is a useful diagnostic but cannot establish genuine isolation coverage:
 
-    The observer is a parent-process ``lstat`` snapshot taken immediately before and after
-    ``Popen.communicate()``; it is independent of the subprocess's own JSON output and cannot
-    be altered by the subprocess.  Computed by ``native_qa_runner.run_probe()`` and embedded
-    in the lifecycle receipt by this module's ``probe()`` function.
+    * It cannot detect atomic write-delete within subprocess lifetime.
+    * It cannot detect writes outside the snapshot root (helper processes, /tmp, etc.).
+    * A caller-supplied dict carries no provenance; ``sandbox_policy_applied`` is an
+      asserted field, not a trusted kernel attestation.
+    * The ``sandbox-exec (deny default)`` enforcement layer is absent on Linux CI.
 
-    Residual gaps (``filesystem_coverage_verified`` remains ``False``):
-    * Not kernel-level audit: Endpoint Security / BSM interception is not present.
-    * Atomic write-delete within the subprocess lifetime is not captured by the snapshot;
-      under the existing ``sandbox-exec`` ``(deny default)`` policy this scenario is
-      structurally prevented on macOS for paths outside the permitted set.
-    * On Linux CI the sandbox-exec enforcement layer is absent; the observer still runs
-      and reports whether the subprocess wrote outside the permitted set.
+    Defense-in-depth checks below give specific error messages for known bypass cases
+    before the unconditional final raise.
+
+    Admission requires Endpoint Security / BSM kernel-level audit with a trusted
+    privileged observer, or E1 native validation on a physical Mac host.
+    ``filesystem_coverage_verified`` remains ``False``.
     """
     delta = receipt.get("filesystem_observer_delta")
     if delta is None:
         raise ValueError(
             "filesystem observer delta absent from receipt; ordinary admission denied"
         )
+    if not isinstance(delta, dict):
+        raise ValueError(
+            "filesystem observer delta is not a dict; ordinary admission denied"
+        )
     if delta.get("status") == "not_run":
         raise ValueError(
             "filesystem observer did not run; ordinary admission denied"
         )
     unauthorized = delta.get("unauthorized_writes")
+    if not isinstance(unauthorized, list):
+        raise ValueError(
+            "filesystem observer unauthorized_writes is absent or not a list; "
+            "ordinary admission denied"
+        )
     if unauthorized:
         raise ValueError(
             f"filesystem observer detected {len(unauthorized)} unauthorized write(s) "
@@ -63,6 +72,19 @@ def require_filesystem_isolation(receipt):
             f"filesystem observer non-clean status ({delta.get('status')!r}); "
             f"ordinary admission denied"
         )
+    if not delta.get("sandbox_policy_applied"):
+        raise ValueError(
+            "sandbox_policy_applied is false or absent; portable transport cannot "
+            "establish confinement; ordinary admission denied"
+        )
+    # Unconditional: lstat snapshot cannot prove absence of transient write-delete,
+    # writes outside root, or helper-process activity; caller-supplied fields have
+    # no provenance.  Admission requires ES/BSM kernel-level audit or E1 native
+    # validation on a physical Mac host.
+    raise ValueError(
+        "filesystem_coverage_verified is False; lstat snapshot is not kernel-level "
+        "audit; ordinary admission denied"
+    )
 
 
 def validate_stage(receipt, phase, token, pid):
