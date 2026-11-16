@@ -24,7 +24,7 @@ function load(file: string): Record<string, unknown> {
     exports,
     require(name: string) {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
-      if (name === "./Dialogs") return { Modal: ({ children }: { children: ReactNode }) => children };
+      if (name === "./DialogFrame") return { DialogFrame: ({ children }: { children: ReactNode }) => children };
       if (name === "./sectionEmoji") return load("./sectionEmoji.ts");
       if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }) };
       if (name === "../keybindings/overrides") return sectionShortcutOverrides;

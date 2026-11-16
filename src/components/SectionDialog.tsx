@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Modal } from "./Dialogs";
+import { DialogFrame } from "./DialogFrame";
 import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { effectiveShortcuts } from "../keybindings/overrides";
 import { matchesEvent } from "../keybindings/shortcut";
@@ -38,14 +38,8 @@ export function SectionDialog({ data, onSubmit, onClose }: Props) {
     onClose();
   };
   return (
-    <Modal title={creating ? "New section" : "Edit section"} onClose={onClose}
-      onKeyDown={(event) => {
-        if (event.defaultPrevented || event.nativeEvent.isComposing) return;
-        if (!primaryShortcuts.some((key) => matchesEvent(key, event.nativeEvent))) return;
-        event.preventDefault();
-        submit();
-      }}
-    >
+    <DialogFrame kind="dialog" titleId="section-dialog-title" onClose={onClose}>
+      <h2 id="section-dialog-title">{creating ? "New section" : "Edit section"}</h2>
       <div
         className="modal-body section-dialog"
         onCompositionStart={() => {
@@ -153,6 +147,6 @@ export function SectionDialog({ data, onSubmit, onClose }: Props) {
           </button>
         </div>
       </div>
-    </Modal>
+    </DialogFrame>
   );
 }

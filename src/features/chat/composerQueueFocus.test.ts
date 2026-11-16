@@ -64,6 +64,7 @@ function fixture({ caret = 0, queued = true, editing = false, canSteer = false, 
       if (name === "./SlashMenu.tsx") return { SlashMenu: () => null };
       if (name === "./FileMentionMenu.tsx") return { FileMentionMenu: () => null };
       if (name === "./composerLongPaste.ts") return { longPasteAttachment: () => null };
+      if (name === "./composerPasteFilePaths.ts") return { readClipboardText: async () => null, readClipboardTextFromPlatform: async () => null };
       if (name.endsWith("/useBoolPref.ts")) return { useBoolPref: () => false };
       if (name.endsWith("/useSettings.ts")) return { useSettings: () => ({ settings: null, save: () => Promise.resolve(true), error: null, reload: () => {} }) };
       if (name.endsWith("/prefs.ts")) return { boolPref: () => false, withBoolPref: (s: unknown) => s };
@@ -265,6 +266,7 @@ function editFocusFixture(initialEditingId: string | null = null) {
       if (name === "./SlashMenu.tsx") return { SlashMenu: () => null };
       if (name === "./FileMentionMenu.tsx") return { FileMentionMenu: () => null };
       if (name === "./composerLongPaste.ts") return { longPasteAttachment: () => null };
+      if (name === "./composerPasteFilePaths.ts") return { readClipboardText: async () => null, readClipboardTextFromPlatform: async () => null };
       if (name.endsWith("/useBoolPref.ts")) return { useBoolPref: () => false };
       if (name.endsWith("/useSettings.ts")) return { useSettings: () => ({ settings: null, save: () => Promise.resolve(true), error: null, reload: () => {} }) };
       if (name.endsWith("/prefs.ts")) return { boolPref: () => false, withBoolPref: (s: unknown) => s };
