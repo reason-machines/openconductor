@@ -27,6 +27,10 @@ jobs:
             native-qa-vm-runner/ArgParser.c native-qa-vm-runner/ArgParserTests.c \
             -o "${RUNNER_TEMP}/vm-arg-parser-tests"
           "${RUNNER_TEMP}/vm-arg-parser-tests"
+          cc -std=c11 -Wall -Wextra -Werror \
+            native-qa-vm-runner/ResourceValidator.c native-qa-vm-runner/ResourceValidatorTests.c \
+            -o "${RUNNER_TEMP}/vm-resource-validator-tests"
+          "${RUNNER_TEMP}/vm-resource-validator-tests"
           cc -std=c11 -Wall -Wextra -Werror -pedantic \
             native-qa-vm-runner/Profile.c native-qa-vm-runner/ProfileTests.c \
             -o "${RUNNER_TEMP}/vm-profile-tests"

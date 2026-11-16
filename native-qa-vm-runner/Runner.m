@@ -3,6 +3,7 @@
 #import <objc/runtime.h>
 #include "ArgParser.h"
 #include "Profile.h"
+#include "ResourceValidator.h"
 
 static BOOL OCVMReject(NSError **error) {
     if (error != NULL) {
@@ -150,8 +151,19 @@ int main(int argc, char *argv[]) {
             OCVMUsage(argv[0]);
             return (int)status;
         }
-        /* Valid parse: fall through to existing stub below. */
-        (void)args;
+        int disk_fd = OCVMValidateResource(args.disk, OC_VM_RES_DISK);
+        if (disk_fd < 0) {
+            fprintf(stderr, "disk resource validation failed: %s\n", args.disk);
+            return 11;
+        }
+        int aux_fd = OCVMValidateResource(args.aux, OC_VM_RES_AUX);
+        if (aux_fd < 0) {
+            fprintf(stderr, "aux resource validation failed: %s\n", args.aux);
+            OCVMReleaseResourceFd(disk_fd);
+            return 12;
+        }
+        OCVMReleaseResourceFd(disk_fd);
+        OCVMReleaseResourceFd(aux_fd);
     }
     fputs("VM execution is unavailable: resource identity, inherited-capability, "
           "effective-profile and lifecycle acceptance are not implemented.\n", stderr);
