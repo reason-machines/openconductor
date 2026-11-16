@@ -1,7 +1,7 @@
 {
   "commit": "bbdca3e984f5b80183703daa9f9bb27bbaf0f47c",
   "archive": "graph.tar.gz",
-  "sha256": "359391db9cb22bf58479d8031722f56c92879ebdaa38113c04241452d1f84e21",
+  "sha256": "2318db28693783197078693ff0433a64157f6f2c9d9dfd547d8bcdbe0431c5d5",
   "files": {
     "index.html": "d0e5abaa3d334b6c77f0c9c6fc32ec4b597620a5d71ae388c06a68acba714e6d",
     "package-lock.json": "7bde1541f0802ab52336a44c9769d43023aac23e3d72bdd263fcb0dfc00c04a1",
