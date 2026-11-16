@@ -67,7 +67,14 @@ async function fixture({ text = "saved", desktop = true, read, write, saveError,
     "./editable.ts": {},
   });
   const component: Partial<typeof import("./WorkspaceFileView.tsx")> = {};
-  const CodeView = React.forwardRef<unknown, object>((props, _ref) => React.createElement("code-probe", props));
+  const scrollCalls: unknown[] = [];
+  const CodeView = React.forwardRef<{ scrollTo: (t: unknown) => void }, object>((props, ref) => {
+    // Expose a mock handle so tests can verify scrollTo calls (parity:files.open:nav).
+    // getEditor is also exposed (returning undefined) so the save-on-Cmd+S path's optional-chain
+    // falls back to edit.current() as before — this stub only records scroll targets.
+    React.useImperativeHandle(ref, () => ({ scrollTo: (t: unknown) => { scrollCalls.push(t); }, getEditor: () => undefined }));
+    return React.createElement("code-probe", props);
+  });
   load("./WorkspaceFileView.tsx", component, {
     "@tauri-apps/api/core": native,
     "@pierre/diffs/react": {
@@ -96,6 +103,7 @@ async function fixture({ text = "saved", desktop = true, read, write, saveError,
   await act(async () => { renderer = create(React.createElement(View, props)); await settle(); });
   return {
     calls,
+    scrollCalls,
     code: () => renderer.root.findByType("code-probe"),
     codeCount: () => renderer.root.findAllByType("code-probe").length,
     alertCount: () => renderer.root.findAllByProps({ role: "alert" }).length,
@@ -320,6 +328,7 @@ test("wrap_lines false renders overflow:scroll in the code view", async () => {
     assert.equal(view.code().props.options.overflow, "scroll");
   } finally { await view.close(); }
 });
+
 
 // --- GAP-PAL-01 / lineNumber propagation ---
 
