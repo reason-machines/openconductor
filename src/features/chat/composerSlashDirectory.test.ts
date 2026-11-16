@@ -89,6 +89,8 @@ function fixture(parts: document.ComposerPart[], options: { command?: commands.S
       if (name === "./FileMentionMenu.tsx") return { FileMentionMenu: () => null };
       if (name === "./composerLongPaste.ts") return { longPasteAttachment: () => null };
       if (name.endsWith("/useBoolPref.ts")) return { useBoolPref: () => false };
+      if (name.endsWith("/useSettings.ts")) return { useSettings: () => ({ settings: null, save: () => Promise.resolve(true), error: null, reload: () => {} }) };
+      if (name.endsWith("/prefs.ts")) return { boolPref: () => false, withBoolPref: (s: unknown) => s };
       if (name === "../../backend") return { fuzzyFilterFiles: () => assert.fail("no file search in slash completion") };
       if (name === "./composerIcons.tsx") return Object.fromEntries(["ArrowUpIcon", "CornerDownLeftIcon", "PaperclipIcon", "PlusIcon", "StopCircleIcon"].map((key) => [key, () => null]));
       throw new Error(`Unexpected Composer dependency: ${name}`);

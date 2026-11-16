@@ -184,20 +184,23 @@ Terminal font. Values read from the bundle:
   ("Enter font name...", "Enter font name exactly as installed on your system") and a
   three-line preview. Conductor bundles Geist Mono and defaults to it.
 
-OpenConductor's Appearance page (`src/settings/AppearancePage.tsx`) has Theme, Low-contrast
-dark mode, App zoom and Mono Font, stored under `[appearance]` with Conductor's key names
-(Conductor keeps them in its settings table, not settings.toml). ⌘+ / ⌘− / ⌘0 change the
-zoom anywhere in the app. Divergences and gaps:
+OpenConductor's Appearance page (`src/settings/AppearancePage.tsx`) has all ten Conductor
+rows in Conductor's display order: Theme, Low-contrast dark mode, App zoom, Colored sidebar
+diffs, Accessible colors, Code theme (with code preview), Mono Font (with custom-name input
+and font preview), Code ligatures, Markdown Style (with Tufte preview), Terminal font.
+All keys are stored in `conductor.db`'s `settings` table (not `settings.toml`), via
+`src-tauri/src/settings/db_backed.rs`; at startup any `[appearance]` TOML values migrate
+into the table. ⌘+ / ⌘− / ⌘0 change the zoom anywhere in the app. Divergences:
 
 - Zoom is CSS `zoom` on the document, not the webview's zoom.
 - No font is bundled, so the default is "System default" (the built-in mono stack), and
   Geist Mono / iA Writer Mono apply only when installed. Font names that could end a CSS
   string (quotes, `\`, `;`, braces, `<>`) are refused, in the UI and in `validate`.
-- The App zoom help text does not name the shortcuts, since overrides can change them.
-- Not built: Colored sidebar diffs, Code ligatures, Accessible colors, Code theme,
-  Markdown Style.
-- Terminal font (`terminal_font_family`, `terminal_font_size`) is built by the terminal
-  area; see `evidence/terminal/NOTES.md`.
+- The App zoom help text names the shortcuts dynamically (via `shortcutGlyphs`), which
+  matches what Conductor shows; the help text in the NOTES previously said shortcuts were
+  omitted, but that is no longer the case.
+- Terminal font (`terminal_font_family`, `terminal_font_size`) is built in
+  `src/settings/TerminalFont.tsx`; also see `evidence/terminal/NOTES.md`.
 
 ## Settings routes
 
@@ -508,9 +511,9 @@ built.
 | `prompts.code_review` | Review button (`buildReviewPrompt`, appended after the default as `gue` + `_g`) | wired, via `useRepoSettings` |
 | `prompts.create_pr` | `pr_create_prompt` (appended when the caller gives no instructions) | wired; no Create PR button calls the command yet |
 | `prompts.general` | first message of a new Reason chat (`sendReason`, `<user-preferences>` block as `lU6`) | wired |
-| `prompts.fix_errors` | Fix errors action | missing: no Fix errors button or CI-log flow |
-| `prompts.resolve_merge_conflicts` | Resolve conflicts action | missing: the header computes the conflict state but has no action |
-| `prompts.rename_branch` | model-generated branch name | missing: the rebuild names branches with a local heuristic (`branchNameFromMessage`), no model call |
+| `prompts.fix_errors` | Fix errors action (`src/features/pr/checks/fixErrors.ts`, `ChecksTab.tsx`) | wired; `fixErrorsInstructions(custom)` appends the prompt to the log attachment |
+| `prompts.resolve_merge_conflicts` | Resolve conflicts action (`usePrActions.ts:114-118`) | wired; `resolveConflictsPrompt(worktree, branch, custom)` appends the prompt |
+| `prompts.rename_branch` | First agent message (`claudeChat.ts:89`, `reasonChat.ts:102`); note: `branchNameFromMessage` is a local heuristic, `withRenameBranch` appends a `<branch-naming-preferences>` block to the first agent prompt | wired via `withRenameBranch` (#1316) |
 | `git.worktree_push_auto_setup_remote` | `create_workspace` and the startup backfill | wired, effective per repository / workspace |
 | `git.branch_prefix`, `git.branch_prefix_type` | Create-workspace naming | user scope, as Conductor's `C2` |
 | `git.delete_branch_on_archive` | `archive_workspace` (`evidence/archive/NOTES.md`) | wired, effective per workspace |

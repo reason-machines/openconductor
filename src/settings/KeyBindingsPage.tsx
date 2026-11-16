@@ -5,7 +5,9 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { Keys } from "../components/KeyboardShortcutsDialog";
 import { LockIcon, SearchIcon } from "../components/Icons";
-import { Toaster, useToasts } from "../components/Toast";
+// Low#16 fix: Toaster removed — KeyBindingsPage previously mounted its own <Toaster>
+// alongside App.tsx's root-level one, causing two toast containers in the DOM. Save errors
+// are now shown inline so no second Toaster is needed.
 import { conflictMessage } from "../keybindings/conflicts.ts";
 import {
   EDITOR_SEARCH_PLACEHOLDER,
@@ -29,6 +31,7 @@ import type { OverrideUpdate, Overrides } from "../keybindings/overrides.ts";
 import { heldModifiers, type KeyEventLike } from "../keybindings/shortcut.ts";
 import type { Modifier, Shortcut } from "../keybindings/types.ts";
 import { useSettingsOverrideStore } from "./useSettingsOverrideStore.ts";
+import { boolPref } from "./prefs";
 import type { Settings } from "./types";
 
 interface Props {
@@ -64,10 +67,11 @@ function useCapture(onStop: () => void) {
 
 export function KeyBindingsPage({ settings, save }: Props) {
   const { overrides, overridesLoaded } = useKeybindingOverrides();
-  const { toasts, show, dismiss } = useToasts();
+  const [saveError, setSaveError] = useState<string | null>(null);
   const store = useSettingsOverrideStore(settings, save);
   const update = (u: OverrideUpdate) => {
-    void store.update(u).then((ok) => ok || show("error", SAVE_FAILED));
+    setSaveError(null);
+    void store.update(u).then((ok) => { if (!ok) setSaveError(SAVE_FAILED); });
   };
 
   const [query, setQuery] = useState("");
@@ -77,7 +81,8 @@ export function KeyBindingsPage({ settings, save }: Props) {
   const searchRef = useRef<HTMLInputElement>(null);
   useKeybindings({ "settings.search": () => searchRef.current?.focus() });
 
-  const rows = useMemo(() => editorRows(overrides), [overrides]);
+  const cloudUI = boolPref(settings, "experimental_cloud_ui");
+  const rows = useMemo(() => editorRows(overrides, { cloudUI, queuedMessagesEnabled: true }), [overrides, cloudUI]);
   const groups = useMemo(() => groupRows(filterRows(rows, query, typed)), [rows, query, typed]);
 
   const onSearchKeyDown = (e: ReactKeyboardEvent<HTMLInputElement>) => {
@@ -124,7 +129,7 @@ export function KeyBindingsPage({ settings, save }: Props) {
           </div>
         </section>
       ))}
-      <Toaster toasts={toasts} dismiss={dismiss} />
+      {saveError && <p className="error small kb-save-error" role="alert">{saveError}</p>}
     </div>
   );
 }

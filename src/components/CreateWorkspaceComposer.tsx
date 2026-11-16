@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer, useRef, useState, type Dispatch, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type Dispatch, type FormEvent, type KeyboardEvent } from "react";
 import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
 import { seedTranscript } from "./WorkspaceView";
@@ -36,11 +36,20 @@ import { modelLabel } from "../settings/models";
 import type { AddRepositoryActions } from "./AddRepositoryMenu";
 import { RepoSelect } from "./create/RepoSelect";
 import { TargetBranchButton } from "./create/TargetBranchButton";
-import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
+import { useKeybindingOverrides, useKeybindings } from "../keybindings/KeybindingsProvider";
 import { effectiveShortcuts } from "../keybindings/overrides";
 import { glyphs, matchesEvent } from "../keybindings/shortcut";
+import { usePresence } from "./motion/usePresence";
+import { Tooltip } from "./ui/Tooltip";
+import { ComposerAttachmentChip } from "../features/chat/ComposerAttachmentChip";
+import type { ComposerAttachment } from "../features/chat/composerAttachments";
+import { inlineText, rejectReason, safeFileName } from "../features/chat/composerAttachments";
+import type { PromptAttachment } from "../features/chat/reason";
+import { queuePending } from "../features/diff/ReviewButton";
+import { PaperclipIcon, PlusIcon } from "../features/chat/composerIcons";
 import type { NavSection } from "../state/navigationSections";
 import { CREATE_IN_SECTION, SECTION_ASSIGN_FAILED, canCreateIn, sectionChoice } from "../workspace/createInSection";
+import "../features/chat/composer.css";
 
 /**
  * Where the repo / branch / create-from row sits (Conductor's `eyebrowVariant`):
@@ -114,6 +123,11 @@ export function CreateWorkspaceComposer({
   const settings = loadout?.settings ?? null;
   const favorites = loadoutPicks(loadout?.slots ?? []);
   const modelEdited = useRef(false);
+  /** Files attached in the create composer; delivered with the first message via queuePending. */
+  const [createAttachments, setCreateAttachments] = useState<ComposerAttachment[]>([]);
+  const [attachError, setAttachError] = useState<string | null>(null);
+  const [attachPreviewEpoch, setAttachPreviewEpoch] = useState(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [draft, setDraft] = useState<CreateDraft>(() =>
     newDraft({ repoId: startRepo?.id ?? null, defaultBranch: startRepo?.defaultBranch ?? "main", cityName: suggestName(startRepo)?.name ?? "", ...launchDefaults(null) }),
   );
@@ -127,6 +141,7 @@ export function CreateWorkspaceComposer({
   useEffect(() => onBusyChange?.(busy), [busy, onBusyChange]);
   const { overrides } = useKeybindingOverrides();
   const submitKeys = [...effectiveShortcuts("chat.submitMessage", overrides), ...effectiveShortcuts("chat.submitOppositeFollowUp", overrides)];
+  const backlogKeys = effectiveShortcuts("workspace.addToBacklogFromComposer", overrides);
   const submitShortcut = effectiveShortcuts("chat.submitMessage", overrides)[0];
   const submitHint = submitShortcut ? glyphs(submitShortcut) : "↵";
   const hint = (commandId: string) => {
@@ -174,6 +189,38 @@ export function CreateWorkspaceComposer({
       live = false;
     };
   }, [repo?.id, branchAttempt]);
+
+  /** Wire ⌘U to open the file picker (matches the main Composer's chat.addAttachment handler). */
+  useKeybindings({
+    "chat.addAttachment": () => { if (!busy) fileInputRef.current?.click(); },
+  });
+
+  /**
+   * Read picked files and store as inline ComposerAttachments; text files get
+   * their content inlined; binary files get a size note. No staging: the
+   * workspace doesn't exist yet, so attachments travel via queuePending.
+   */
+  async function attachFiles(files: File[]) {
+    const errors: string[] = [];
+    const toAdd: ComposerAttachment[] = [];
+    for (const file of files) {
+      const reject = rejectReason(file);
+      if (reject) { errors.push(reject); continue; }
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      const name = safeFileName(file.name);
+      const textContent = inlineText(bytes);
+      toAdd.push(textContent !== null
+        ? { name, text: textContent, preview: "text" as const }
+        : { name, text: `The user attached a file (${bytes.length} bytes): ${name}` });
+    }
+    if (errors.length > 0) setAttachError(errors.join(" "));
+    if (toAdd.length > 0) {
+      setCreateAttachments((prev) => {
+        const taken = new Set(prev.map((a) => a.name));
+        return [...prev, ...toAdd.filter((a) => !taken.has(a.name))];
+      });
+    }
+  }
 
   function chooseRepo(id: string) {
     const next = repos.find((r) => r.id === id);
@@ -228,9 +275,29 @@ export function CreateWorkspaceComposer({
         saveAgent(id, draft.agent);
         saveModelChoice(id, { agent: draft.agent, model: draft.model, effort: draft.effort || null });
       }
-      // The first message opens the workspace's first chat session.
-      if (firstSession) {
-        configureReason(id, sessionConfig(firstSession.model, firstSession.effort));
+      // M10 fix: always configure the Reason session model/effort when the Reason agent is chosen,
+      // regardless of whether there is a first message. Without this an empty-prompt workspace
+      // opens with the global default model instead of the user's chosen model/effort. For
+      // 'claude' or 'codex', configureReason is not called at all (saveModelChoice above handles
+      // those agents; calling configureReason with a local agent's model ID misroutes the chat).
+      if (draft.agent === "reason") {
+        const model = firstSession?.model ?? draft.model;
+        const effort = firstSession?.effort ?? draft.effort;
+        configureReason(id, sessionConfig(model, effort));
+      }
+      // Seed the first session. With attachments, queuePending delivers them together
+      // with the message via WorkspaceView.submit (which also handles renameAfterFirstMessage).
+      // Without attachments, the existing seedTranscript + direct renameAfterFirstMessage path
+      // is used unchanged.
+      if (createAttachments.length > 0) {
+        const text = firstSession?.message ?? "";
+        const queued: PromptAttachment[] = createAttachments.map(({ name, text: t, commentId }) =>
+          commentId ? { name, text: t, commentId } : { name, text: t },
+        );
+        // kind "send" means WorkspaceView auto-submits on mount; it also calls
+        // renameAfterFirstMessage so we skip it below to avoid a double rename.
+        queuePending(id, { kind: "send", text, attachments: queued });
+      } else if (firstSession) {
         seedTranscript(id, firstSession.message);
       }
       dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });
@@ -240,8 +307,9 @@ export function CreateWorkspaceComposer({
         else onWarning(SECTION_ASSIGN_FAILED);
       }
       if (!dismissedAtLaunch) onClose();
-      // ...and renames a placeholder city workspace after it.
-      if (firstSession) {
+      // Rename placeholder after first message. Skipped when queuePending was used (attachments
+      // present) because WorkspaceView.submit handles the rename in that path.
+      if (!createAttachments.length && firstSession) {
         const full = { ...ws, status: "idle" as const, diff: { added: 0, removed: 0 }, createdAt: Date.now() };
         void renameAfterFirstMessage(repo, full, firstSession.message, dispatch);
       }
@@ -276,8 +344,62 @@ export function CreateWorkspaceComposer({
     }
   }
 
+  /**
+   * Conductor's "Add to backlog" (⌥↩, `workspace.addToBacklogFromComposer`):
+   * creates the workspace without sending the first message, then marks it
+   * backlog. The draft text is preserved as a workspace description but no
+   * chat session is started until the user opens the workspace.
+   *
+   * Evidence: Hji.txt `ca` callback + `Ei` keydown capture handler.
+   */
+  async function addToBacklog() {
+    if (busy || !repo) return;
+    const built = buildCreateRequest(draft, prefix);
+    if (!built.ok) return setErrors(built.errors);
+    setErrors({});
+    send({ type: "submit" });
+    const pendingId = crypto.randomUUID();
+    addPendingLaunch(pendingId, repo.id);
+    try {
+      if (!repo.path) throw new Error("This repository has no local checkout yet.");
+      const backendRepo = await ensureRepository(repo.path, repo.id);
+      // Backlog workspaces are created idle — no first chat session even if the composer had text.
+      const backlogRequest = { ...built.request, firstSession: null };
+      const created = await createWorkspace(toCreateWorkspaceArgs({ ...backlogRequest, repoId: backendRepo.id }));
+      send({ type: "created", workspaceId: created.workspace.id });
+      if (created.upstreamWarning) onWarning(created.upstreamWarning);
+      send({ type: "setup_detected", started: await startSetupScript(backendRepo, created, built.request.targetBranch) });
+      const { id, directoryName, branchName, path } = created.workspace;
+      const { naming } = built.request;
+      const ws = {
+        id,
+        name: directoryName,
+        branch: branchName,
+        path,
+        targetBranch: built.request.targetBranch,
+        placeholderBranchName: naming.placeholder_branch_name === null ? null : branchName,
+        userSetWorkspaceName: naming.user_set_workspace_name,
+        userSetBranchName: naming.user_set_branch_name,
+        number: created.number ?? null,
+      };
+      dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });
+      dispatch({ type: "setWorkspaceStatus", repoId: repo.id, workspaceId: id, status: "backlog" });
+      onClose();
+    } catch (err) {
+      send({ type: "create_failed", error: `${FAILED_TO_CREATE}: ${errorText(err)}` });
+    } finally {
+      removePendingLaunch(pendingId);
+    }
+  }
+
   function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     if (e.nativeEvent.isComposing) return;
+    // ⌥↩ adds to backlog without opening a chat session (Conductor `workspace.addToBacklogFromComposer`).
+    if (backlogKeys.some((s) => matchesEvent(s, e.nativeEvent))) {
+      e.preventDefault();
+      void addToBacklog();
+      return;
+    }
     // `chat.newLine` (Shift+Enter, or Enter under the ⌘Enter preset) falls through to the textarea.
     if (submitKeys.some((s) => matchesEvent(s, e.nativeEvent))) {
       e.preventDefault();
@@ -285,7 +407,7 @@ export function CreateWorkspaceComposer({
     }
   }
 
-  const error = errors.repo ?? errors.baseBranch ?? errors.name ?? errors.from;
+  const error = errors.repo ?? errors.baseBranch ?? errors.name ?? errors.from ?? attachError;
   const status = progress.step !== "idle" ? progressLabel(progress) : null;
   return (
     <form onSubmit={submit} className={`create-ws create-ws-${eyebrowVariant}`} aria-busy={busy} aria-label="composer">
@@ -326,6 +448,20 @@ export function CreateWorkspaceComposer({
           />
         </span>
       </div>
+      {/* Hidden file input for the add-attachment picker. */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        multiple
+        className="sr-only"
+        tabIndex={-1}
+        aria-hidden
+        onChange={(e) => {
+          const files = e.target.files ? Array.from(e.target.files) : [];
+          e.target.value = "";
+          if (files.length > 0) void attachFiles(files);
+        }}
+      />
       <div className="create-card">
         <textarea
           autoFocus
@@ -337,8 +473,24 @@ export function CreateWorkspaceComposer({
           onKeyDown={onKeyDown}
           disabled={busy}
         />
+        {createAttachments.length > 0 && (
+          <div className="composer-attachments" aria-label="Attachments">
+            {createAttachments.map((a) => (
+              <ComposerAttachmentChip
+                key={a.name}
+                attachment={a}
+                editorEpoch={attachPreviewEpoch}
+                onRemove={() => {
+                  setCreateAttachments((list) => list.filter((x) => x.name !== a.name));
+                  setAttachPreviewEpoch((n) => n + 1);
+                }}
+              />
+            ))}
+          </div>
+        )}
         <div className="create-card-bar">
           <CreateModelPicker value={draft} favorites={favorites} slots={loadoutChoices(loadout?.slots ?? [])} settings={settings} disabled={busy} onChange={chooseLaunch} />
+          <CreateAddMenu disabled={busy} hint={hint("chat.addAttachment") ?? ""} onAddAttachment={() => fileInputRef.current?.click()} />
           <div className="create-split" role="group" aria-label="Create workspace">
             <button
               type="submit"
@@ -403,11 +555,90 @@ export function CreateWorkspaceComposer({
  * picker (`RNi` inside `Hji`), with the loadout's favorites, "Add models" and
  * "Edit" (Settings › Default models) and the effort submenu, in place of two selects.
  */
+/** H4b fix: Codex and Claude Code always present in the picker regardless of Loadout slots (B2). */
+const CODEX_LAUNCH: LaunchPick = { model: "codex", effort: null, agent: "codex" };
+const CLAUDE_LAUNCH: LaunchPick = { model: "claude-code", effort: null, agent: "claude" };
+
+/**
+ * The "+" add-attachment button in the create-composer footer.
+ * Evidence: `a7i @7908848` — tooltip "Add attachments and more"; placed between
+ * the model picker and Create in the `create-card-bar` footer.
+ */
+function CreateAddMenu({ disabled, hint, onAddAttachment }: { disabled: boolean; hint: string; onAddAttachment: () => void }) {
+  const [open, setOpen] = useState(false);
+  const popup = usePresence(open);
+  const ref = useRef<HTMLSpanElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const focusEdge = useRef<"first" | null>(null);
+  useLayoutEffect(() => {
+    if (!open || focusEdge.current === null) return;
+    const item = ref.current?.querySelector<HTMLButtonElement>('[role="menuitem"]:not(:disabled)');
+    item?.focus();
+    focusEdge.current = null;
+  }, [open]);
+  return (
+    <span
+      className="oc-add-menu"
+      ref={ref}
+      onBlur={(e) => { if (!ref.current?.contains(e.relatedTarget as Node)) setOpen(false); }}
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && open) {
+          e.preventDefault();
+          e.stopPropagation();
+          setOpen(false);
+          triggerRef.current?.focus();
+        } else if ((e.key === "ArrowDown" || e.key === "ArrowUp") && !open) {
+          e.preventDefault();
+          focusEdge.current = "first";
+          setOpen(true);
+        }
+      }}
+    >
+      <Tooltip content={<p>Add attachments and more</p>}>
+        <button
+          ref={triggerRef}
+          type="button"
+          className="oc-icon-btn oc-add-btn"
+          aria-label="Add"
+          aria-haspopup="menu"
+          aria-expanded={open}
+          disabled={disabled}
+          onClick={() => setOpen((o) => !o)}
+        >
+          <PlusIcon size={16} strokeWidth={1.5} />
+        </button>
+      </Tooltip>
+      {popup.mounted ? (
+        <div className="oc-menu oc-add-popup" role="menu" data-motion="popup" {...popup.attrs}>
+          <button
+            type="button"
+            role="menuitem"
+            className="oc-menu-item"
+            onClick={() => { setOpen(false); onAddAttachment(); }}
+          >
+            <PaperclipIcon size={16} />
+            <span className="oc-menu-item-label">Add attachment</span>
+            <span className="oc-kbd-hint">{hint}</span>
+          </button>
+        </div>
+      ) : null}
+    </span>
+  );
+}
+
 function CreateModelPicker({ value, favorites, slots, settings, disabled, onChange }: { value: LaunchModel; favorites: readonly LaunchPick[]; slots: readonly (import("../features/chat/composerModels").ModelChoice | null)[]; settings: Settings | null; disabled: boolean; onChange: (next: LaunchModel) => void }) {
+  const allFavorites = useMemo<LaunchPick[]>(() => {
+    const models = new Set(favorites.map((f) => f.model));
+    return [
+      ...favorites,
+      ...(models.has(CODEX_LAUNCH.model) ? [] : [CODEX_LAUNCH]),
+      ...(models.has(CLAUDE_LAUNCH.model) ? [] : [CLAUDE_LAUNCH]),
+    ];
+  }, [favorites]);
   return (
     <ModelPicker
       value={{ model: value.model, effort: value.effort || null, ...(value.agent === "reason" || value.agent === "claude" || value.agent === "codex" ? { agent: value.agent } : {}) }}
-      favorites={favorites}
+      favorites={allFavorites}
       loadout={slots}
       keybindingDialogIds={["dialog"]}
       itemAgent={(f) => f.agent ?? "reason"}

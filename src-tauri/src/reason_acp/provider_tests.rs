@@ -64,7 +64,7 @@ fn started(log: &Log) -> Vec<String> {
 fn new_chats_require_the_settings_workspace() {
     let (p, log, home) = provider("no-settings-workspace");
     p.reconfigure_workspace(None);
-    p.open_chat("chat", &home, None);
+    p.open_chat("chat", &home, None, Default::default());
     let end = p.prompt("chat", "echo: must not send");
     assert!(
         matches!(end, TurnEnd::Failed(ref message) if message.contains("Settings")),
@@ -78,7 +78,12 @@ fn new_chats_require_the_settings_workspace() {
 fn legacy_session_with_unknown_ownership_is_not_resumed_in_the_selected_workspace() {
     let (p, log, home) = provider("legacy-offline");
     std::fs::write(home.join("fake-reason-discovery-offline"), "").unwrap();
-    p.open_chat("chat", &home, Some("legacy-session".into()));
+    p.open_chat(
+        "chat",
+        &home,
+        Some("legacy-session".into()),
+        Default::default(),
+    );
     let end = p.prompt("chat", "echo: must not send");
     assert!(
         matches!(end, TurnEnd::Failed(ref message) if message.contains("workspace")),
@@ -91,13 +96,13 @@ fn legacy_session_with_unknown_ownership_is_not_resumed_in_the_selected_workspac
 #[test]
 fn one_session_per_chat_and_a_follow_up_continues_it() {
     let (p, log, home) = provider("follow");
-    p.open_chat("chat-a", &home.join("project"), None);
+    p.open_chat("chat-a", &home.join("project"), None, Default::default());
     assert_eq!(p.prompt("chat-a", "echo: hello"), TurnEnd::Completed);
     assert_eq!(reply(&log), "turn 1: hello");
     assert_eq!(p.prompt("chat-a", "echo: again"), TurnEnd::Completed);
     assert_eq!(reply(&log), "turn 1: helloturn 2: again");
     assert_eq!(started(&log), ["sess-1"]);
-    p.open_chat("chat-b", &home, None);
+    p.open_chat("chat-b", &home, None, Default::default());
     assert_eq!(p.prompt("chat-b", "echo: b"), TurnEnd::Completed);
     assert_eq!(started(&log), ["sess-1", "sess-2"]);
 }
@@ -105,7 +110,7 @@ fn one_session_per_chat_and_a_follow_up_continues_it() {
 #[test]
 fn device_not_found_ends_the_turn_as_an_error() {
     let (p, log, _home) = provider("device");
-    p.open_chat("chat", &std::env::temp_dir(), None);
+    p.open_chat("chat", &std::env::temp_dir(), None, Default::default());
     let end = p.prompt("chat", "echo: pwd");
     let TurnEnd::Failed(message) = &end else {
         panic!("expected a failure, got {end:?}");
@@ -120,7 +125,7 @@ fn device_not_found_ends_the_turn_as_an_error() {
 #[test]
 fn stop_cancels_and_a_follow_up_supersedes_a_running_turn() {
     let (p, log, home) = provider("stop");
-    p.open_chat("chat", &home, None);
+    p.open_chat("chat", &home, None, Default::default());
     let running = |p: &Arc<ReasonProvider>| {
         let p = p.clone();
         std::thread::spawn(move || p.prompt("chat", "slow"))
@@ -141,7 +146,7 @@ fn stop_cancels_and_a_follow_up_supersedes_a_running_turn() {
 #[test]
 fn a_stored_session_resumes_after_restart_and_after_a_crash() {
     let (p, log, home) = provider("resume");
-    p.open_chat("chat", &home, None);
+    p.open_chat("chat", &home, None, Default::default());
     assert_eq!(p.prompt("chat", "echo: one"), TurnEnd::Completed);
     let id = started(&log).pop().unwrap();
     p.shutdown();
@@ -149,7 +154,7 @@ fn a_stored_session_resumes_after_restart_and_after_a_crash() {
 
     // A new app run: same folder, the stored id, a new agent process.
     let (p, log, _) = provider_in(home.clone());
-    p.open_chat("chat", &home, Some(id.clone()));
+    p.open_chat("chat", &home, Some(id.clone()), Default::default());
     assert_eq!(p.prompt("chat", "echo: two"), TurnEnd::Completed);
     assert_eq!(reply(&log), "turn 2: two");
     assert!(started(&log).is_empty(), "no new Session");
@@ -164,7 +169,7 @@ fn a_stored_session_resumes_after_restart_and_after_a_crash() {
 #[test]
 fn reports_and_cloud_paths_are_told_apart() {
     let (p, log, home) = provider("report");
-    p.open_chat("chat", &home, None);
+    p.open_chat("chat", &home, None, Default::default());
     assert_eq!(p.prompt("chat", "report"), TurnEnd::Completed);
     assert_eq!(reply(&log), "ok");
     let log2 = log.lock().unwrap();
@@ -200,7 +205,7 @@ fn provider_in(home: PathBuf) -> (Arc<ReasonProvider>, Log, PathBuf) {
 fn config_is_set_on_a_new_session_and_unoffered_values_become_notices() {
     use super::provider::ConfigChoice;
     let (p, log, home) = provider("config");
-    p.open_chat("review", &home, None);
+    p.open_chat("review", &home, None, Default::default());
     let choice = |id: &str, value: &str| ConfigChoice {
         id: id.into(),
         value: value.into(),
@@ -220,7 +225,7 @@ fn config_is_set_on_a_new_session_and_unoffered_values_become_notices() {
 
     // Reason would reset an unoffered model to its default: not sent, told instead.
     let (p, log, home) = provider("config-unoffered");
-    p.open_chat("review", &home, None);
+    p.open_chat("review", &home, None, Default::default());
     p.set_config(
         "review",
         vec![choice("model", "opus-5-1m"), choice("speed", "fast")],
@@ -256,7 +261,7 @@ fn a_changed_config_applies_to_the_open_session_at_its_next_prompt() {
         value: value.into(),
     };
     let (p, log, home) = provider("config-live");
-    p.open_chat("ws", &home, None);
+    p.open_chat("ws", &home, None, Default::default());
     p.set_config(
         "ws",
         vec![
@@ -322,7 +327,7 @@ fn a_changed_config_applies_to_the_open_session_at_its_next_prompt() {
 fn attachments_go_to_reason_as_embedded_files() {
     use super::provider::Attachment;
     let (p, log, home) = provider("attach");
-    p.open_chat("review", &home, None);
+    p.open_chat("review", &home, None, Default::default());
     let a = Attachment {
         name: "Review request.md".into(),
         text: "the prompt".into(),
@@ -337,7 +342,7 @@ fn attachments_go_to_reason_as_embedded_files() {
 #[test]
 fn a_stop_before_an_announced_prompt_is_sent_cancels_it_unsent() {
     let (p, log, home) = provider("stop-unsent");
-    p.open_chat("chat", &home.join("project"), None);
+    p.open_chat("chat", &home.join("project"), None, Default::default());
     // The app announces the prompt, then saves the start checkpoint; Stop lands in between.
     let ticket = p.expect_prompt("chat");
     assert!(ticket.is_some());
@@ -388,7 +393,7 @@ fn resolved(log: &Log) -> Vec<String> {
 #[test]
 fn a_permission_request_waits_for_the_apps_answer() {
     let (p, log, home) = provider("permission");
-    p.open_chat("chat", &home.join("project"), None);
+    p.open_chat("chat", &home.join("project"), None, Default::default());
     let turn = {
         let p = p.clone();
         std::thread::spawn(move || p.prompt("chat", "permission"))
@@ -418,7 +423,7 @@ fn a_permission_request_waits_for_the_apps_answer() {
 #[test]
 fn stop_answers_an_open_permission_request_cancelled() {
     let (p, log, home) = provider("permission-stop");
-    p.open_chat("chat", &home.join("project"), None);
+    p.open_chat("chat", &home.join("project"), None, Default::default());
     let turn = {
         let p = p.clone();
         std::thread::spawn(move || p.prompt("chat", "permission"))
@@ -439,7 +444,7 @@ fn stop_answers_an_open_permission_request_cancelled() {
 #[test]
 fn a_follow_up_after_relaunch_resumes_the_session_in_its_own_workspace() {
     let (p, log, home) = provider("relaunch-ws");
-    p.open_chat("chat", &home, None);
+    p.open_chat("chat", &home, None, Default::default());
     assert_eq!(p.prompt("chat", "echo: one"), TurnEnd::Completed);
     let id = started(&log).pop().unwrap();
     p.shutdown();
@@ -447,7 +452,7 @@ fn a_follow_up_after_relaunch_resumes_the_session_in_its_own_workspace() {
 
     std::fs::write(home.join("fake-reason-selected"), "ws-b").unwrap();
     let (p, log, _) = provider_in(home.clone());
-    p.open_chat("chat", &home, Some(id.clone()));
+    p.open_chat("chat", &home, Some(id.clone()), Default::default());
     let end = p.prompt("chat", "echo: two");
     let errors: Vec<String> = log
         .lock()
@@ -465,7 +470,7 @@ fn a_follow_up_after_relaunch_resumes_the_session_in_its_own_workspace() {
 
     // Settings, not the CLI's selected workspace, chooses a new chat.
     p.reconfigure_workspace(Some("ws-b".into()));
-    p.open_chat("new", &home, None);
+    p.open_chat("new", &home, None, Default::default());
     assert_eq!(p.prompt("new", "echo: b"), TurnEnd::Completed);
     let state: serde_json::Value =
         serde_json::from_str(&std::fs::read_to_string(home.join("state.json")).unwrap()).unwrap();
@@ -483,7 +488,7 @@ fn a_session_no_workspace_has_fails_with_a_clear_message() {
     state["sessions"]["sess-9"] =
         serde_json::json!({ "cwd": home, "turns": 1, "title": null, "workspace": "ws-z" });
     std::fs::write(home.join("state.json"), state.to_string()).unwrap();
-    p.open_chat("chat", &home, Some("sess-9".into()));
+    p.open_chat("chat", &home, Some("sess-9".into()), Default::default());
     let end = p.prompt("chat", "echo: two");
     let TurnEnd::Failed(message) = &end else {
         panic!("expected a failure, got {end:?}");
@@ -508,7 +513,7 @@ fn the_session_store_remembers_each_sessions_workspace() {
         (Arc::new(p), log)
     };
     let (p, log) = with_store(&home);
-    p.open_chat("chat", &home, None);
+    p.open_chat("chat", &home, None, Default::default());
     assert_eq!(p.prompt("chat", "echo: one"), TurnEnd::Completed);
     let id = started(&log).pop().unwrap();
     drop(p);
@@ -518,7 +523,7 @@ fn the_session_store_remembers_each_sessions_workspace() {
 
     std::fs::write(home.join("fake-reason-selected"), "ws-b").unwrap();
     let (p, log) = with_store(&home);
-    p.open_chat("chat", &home, Some(id));
+    p.open_chat("chat", &home, Some(id), Default::default());
     assert_eq!(p.prompt("chat", "echo: two"), TurnEnd::Completed);
     assert_eq!(reply(&log), "turn 2: two");
 }
@@ -532,7 +537,7 @@ fn a_persisted_workspace_survives_settings_and_cli_selection_changes_offline() {
         .ok()
         .unwrap()
         .with_session_store(store.clone());
-    p.open_chat("chat", &home, None);
+    p.open_chat("chat", &home, None, Default::default());
     assert_eq!(p.prompt("chat", "echo: one"), TurnEnd::Completed);
     let id = started(&log).pop().unwrap();
     drop(p);
@@ -541,7 +546,7 @@ fn a_persisted_workspace_survives_settings_and_cli_selection_changes_offline() {
     let (p, log, _) = provider_in(home.clone());
     let p = Arc::try_unwrap(p).ok().unwrap().with_session_store(store);
     p.reconfigure_workspace(Some("ws-b".into()));
-    p.open_chat("chat", &home, Some(id));
+    p.open_chat("chat", &home, Some(id), Default::default());
     assert_eq!(p.prompt("chat", "echo: two"), TurnEnd::Completed);
     assert_eq!(reply(&log), "turn 2: two");
 }
@@ -555,7 +560,7 @@ fn workspace_persistence_failure_does_not_send_the_prompt() {
         .ok()
         .unwrap()
         .with_session_store(blocked.join("workspaces.json"));
-    p.open_chat("chat", &home, None);
+    p.open_chat("chat", &home, None, Default::default());
     let end = p.prompt("chat", "echo: must not send");
     assert!(
         matches!(end, TurnEnd::Failed(ref message) if message.contains("Could not save")),
@@ -577,7 +582,7 @@ fn session_models(log: &Log) -> Vec<(String, Option<String>)> {
 #[test]
 fn after_each_turn_the_model_the_session_ran_on_is_reported() {
     let (p, log, home) = provider("session-model");
-    p.open_chat("c", &home, None);
+    p.open_chat("c", &home, None, Default::default());
     assert_eq!(p.prompt("c", "hello"), TurnEnd::Completed);
     // Auto: the fake's `session get` says it ran Claude Opus 5.5 at high.
     wait_for(&log, |e| matches!(e, ProviderEvent::SessionModel(_)));
@@ -618,13 +623,13 @@ fn models_lists_what_a_new_session_offers_without_keeping_it() {
 #[test]
 fn a_pinned_workspace_takes_new_sessions_and_a_new_launch_restarts_the_agent() {
     let (p, log, home) = provider("pinned");
-    p.open_chat("old", &home, None);
+    p.open_chat("old", &home, None, Default::default());
     assert_eq!(p.prompt("old", "echo: a"), TurnEnd::Completed);
     let old = started(&log).pop().unwrap();
 
     let same = LaunchConfig::new(fake_agent()).unwrap();
     p.reconfigure(same, Some("ws-b".into()));
-    p.open_chat("new", &home, None);
+    p.open_chat("new", &home, None, Default::default());
     assert_eq!(p.prompt("new", "echo: b"), TurnEnd::Completed);
     let new = started(&log).pop().unwrap();
     let state = |home: &PathBuf| -> serde_json::Value {
@@ -643,4 +648,91 @@ fn a_pinned_workspace_takes_new_sessions_and_a_new_launch_restarts_the_agent() {
     assert_eq!(p.prompt("old", "echo: c"), TurnEnd::Completed);
     assert!(reply(&log).ends_with("turn 2: c"), "{}", reply(&log));
     assert_eq!(started(&log), [old, new], "no new Session");
+}
+
+/// Local env vars for workspace A must not appear in workspace B's agent and
+/// vice versa, even with interleaved prompts once both agents are running.
+///
+/// Workspace is resolved at first-prompt time (via `workspace_for_new`), so
+/// each chat must be prompted while its workspace is the current setting so
+/// that separate agents are started.  Within one workspace, `local_env` of
+/// the first chat to trigger the agent wins (see
+/// `same_workspace_second_chat_local_env_does_not_restart_agent`).
+#[test]
+fn workspace_local_env_isolation() {
+    let (p, log, home) = provider("local-env-isolation");
+    // ws-a gets OC_TEST_WS_A=ws_a_val; ws-b gets OC_TEST_WS_B=ws_b_val.
+    let env_a: std::collections::BTreeMap<String, String> =
+        [("OC_TEST_WS_A".into(), "ws_a_val".into())].into();
+    let env_b: std::collections::BTreeMap<String, String> =
+        [("OC_TEST_WS_B".into(), "ws_b_val".into())].into();
+
+    // Start the ws-a agent while ws-a is the current workspace setting.
+    p.reconfigure_workspace(Some("ws-a".into()));
+    p.open_chat("chat-a", &home.join("project"), None, env_a);
+    assert_eq!(p.prompt("chat-a", "env: OC_TEST_WS_A"), TurnEnd::Completed);
+    assert_eq!(reply(&log), "ws_a_val", "ws-a agent missing OC_TEST_WS_A");
+    log.lock().unwrap().clear();
+
+    // Start the ws-b agent while ws-b is the current workspace setting.
+    p.reconfigure_workspace(Some("ws-b".into()));
+    p.open_chat("chat-b", &home.join("project"), None, env_b);
+    assert_eq!(p.prompt("chat-b", "env: OC_TEST_WS_B"), TurnEnd::Completed);
+    assert_eq!(reply(&log), "ws_b_val", "ws-b agent missing OC_TEST_WS_B");
+    log.lock().unwrap().clear();
+
+    // Both agents now running.  Verify cross-workspace env isolation.
+    assert_eq!(p.prompt("chat-a", "env: OC_TEST_WS_B"), TurnEnd::Completed);
+    assert_eq!(
+        reply(&log),
+        "unset",
+        "ws-a agent leaked OC_TEST_WS_B from ws-b"
+    );
+    log.lock().unwrap().clear();
+
+    assert_eq!(p.prompt("chat-b", "env: OC_TEST_WS_A"), TurnEnd::Completed);
+    assert_eq!(
+        reply(&log),
+        "unset",
+        "ws-b agent leaked OC_TEST_WS_A from ws-a"
+    );
+    log.lock().unwrap().clear();
+
+    // Interleaved: prompt ws-b, then ws-a, then ws-b again.
+    assert_eq!(p.prompt("chat-b", "env: OC_TEST_WS_B"), TurnEnd::Completed);
+    assert_eq!(reply(&log), "ws_b_val");
+    log.lock().unwrap().clear();
+
+    assert_eq!(p.prompt("chat-a", "env: OC_TEST_WS_A"), TurnEnd::Completed);
+    assert_eq!(reply(&log), "ws_a_val");
+}
+
+/// A second chat opened in the same workspace does not alter the first
+/// chat's already-running agent env (first-open-chat wins within a workspace).
+#[test]
+fn same_workspace_second_chat_local_env_does_not_restart_agent() {
+    let (p, log, home) = provider("local-env-same-ws");
+    let env_first: std::collections::BTreeMap<String, String> =
+        [("OC_TEST_FIRST".into(), "first_val".into())].into();
+    let env_second: std::collections::BTreeMap<String, String> =
+        [("OC_TEST_FIRST".into(), "second_val".into())].into();
+
+    p.reconfigure_workspace(Some("ws-a".into()));
+    p.open_chat("chat-1", &home.join("project"), None, env_first);
+    // Start the agent by prompting chat-1.
+    assert_eq!(p.prompt("chat-1", "env: OC_TEST_FIRST"), TurnEnd::Completed);
+    assert_eq!(reply(&log), "first_val");
+    log.lock().unwrap().clear();
+
+    // Open a second chat in the same workspace with a different env value.
+    p.open_chat("chat-2", &home.join("project"), None, env_second);
+
+    // chat-1 prompt still sees first_val — agent was not restarted.
+    assert_eq!(p.prompt("chat-1", "env: OC_TEST_FIRST"), TurnEnd::Completed);
+    assert_eq!(reply(&log), "first_val", "agent restarted unexpectedly");
+    log.lock().unwrap().clear();
+
+    // chat-2 prompt also sees first_val — same agent, first-chat env.
+    assert_eq!(p.prompt("chat-2", "env: OC_TEST_FIRST"), TurnEnd::Completed);
+    assert_eq!(reply(&log), "first_val", "same-workspace env contamination");
 }

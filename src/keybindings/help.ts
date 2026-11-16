@@ -29,10 +29,32 @@ export interface HelpMatch {
   titleIndexes?: readonly number[];
 }
 
+/**
+ * Command ids that only apply when experimental_cloud_ui is ON (M6c).
+ * Kept here (not in registry.ts, which is generated) to avoid regeneration.
+ */
+export const CLOUD_ONLY_COMMAND_IDS = new Set<string>([
+  "routine.save",
+  "workspace.addToBacklogFromComposer",
+  "workspace.openRemoteInApp",
+  "workspace.togglePortForwarding",
+  "org.switchTo1",
+  "org.switchTo2",
+  "org.switchTo3",
+  "org.switchTo4",
+  "org.switchTo5",
+  "org.switchTo6",
+  "org.switchTo7",
+  "org.switchTo8",
+  "org.switchTo9",
+  "onboarding.cloud.continue",
+]);
+
 /** Commands that are not hidden and not tied to a dialog, in registry order. */
-export function helpRows(overrides: Overrides = {}, commands: readonly Command[] = COMMANDS): HelpRow[] {
+export function helpRows(overrides: Overrides = {}, commands: readonly Command[] = COMMANDS, cloudUI = false): HelpRow[] {
   return commands
     .filter((c) => !c.hidden && !c.when?.enableOnDialogIds?.length)
+    .filter((c) => cloudUI || !CLOUD_ONLY_COMMAND_IDS.has(c.id))
     .map((c) => ({ id: c.id, title: c.title, category: c.category, shortcuts: effectiveShortcuts(c.id, overrides) }));
 }
 

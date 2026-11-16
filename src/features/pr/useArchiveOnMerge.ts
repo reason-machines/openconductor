@@ -8,7 +8,7 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, type Dispatch } from "react";
 import { openUrl } from "../../backend";
-import { chatSnapshot } from "../chat/reasonChat";
+import { workspaceAgentStatus } from "../../workspace/archive";
 import type { ToastAction } from "../../components/toastTiming";
 import type { Action } from "../../state/store";
 import type { Repo, Workspace } from "../../state/types";
@@ -125,7 +125,7 @@ export function useArchiveOnMergeWatcher(args: WatcherArgs): void {
           const merged = observeLookup(workspace.id, lookup);
           if (!merged) return;
           const { dispatch, notify } = latest.current;
-          const agentWorking = chatSnapshot(workspace.id).transcript.activeTurn !== null;
+          const agentWorking = workspaceAgentStatus(workspace.id) !== "idle";
           void archiveAfterMerge({ repo, workspace, merged, dispatch, agentWorking, notify });
         });
       }

@@ -1,4 +1,7 @@
 # openconductor
+
+![OpenConductor, the desktop app's first screen](assets/openconductor-app.png)
+
 Open recreation of a parallel coding-agent desktop app, with Claude Code, Codex and Reason runtimes.
 
 ## Scope

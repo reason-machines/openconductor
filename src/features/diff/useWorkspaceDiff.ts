@@ -18,6 +18,7 @@ import type { TurnRef } from "./turnChangesCache.ts";
 import { newFileText } from "./copyFile.ts";
 import { DEFAULT_VIEW_OPTIONS, type DiffScope, type DiffViewOptions, type FileDiff } from "./types.ts";
 import { isViewed, loadViewed, saveViewed, toggleViewed, viewedCount, type ViewedMap } from "./viewed.ts";
+import { useWrapLinesPref } from "./wrapLinesPref.ts";
 
 export type DiffLoad = { state: "loading" } | { state: "error"; message: string } | { state: "ready"; files: FileDiff[] };
 
@@ -36,7 +37,11 @@ const fromCache = (key: string): DiffLoad => {
 
 function initialOptions(): DiffViewOptions {
   try {
-    return { ...DEFAULT_VIEW_OPTIONS, ...JSON.parse(localStorage.getItem(OPTIONS_KEY) ?? "{}") };
+    // wrapLines now lives in the settings DB (parity:diff.appearance); ignore
+    // any stale localStorage value and fall back to the registry default (true)
+    // until the settings hook syncs the DB value via useEffect.
+    const { wrapLines: _ignored, ...stored } = JSON.parse(localStorage.getItem(OPTIONS_KEY) ?? "{}") as Partial<DiffViewOptions>;
+    return { ...DEFAULT_VIEW_OPTIONS, ...stored };
   } catch {
     return DEFAULT_VIEW_OPTIONS;
   }
@@ -70,11 +75,25 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   // The selected chat turn; not saved, unlike `opts`.
   const [turn, setTurn] = useState<TurnRef | null>(null);
 
+  // parity:diff.appearance — wrapLines lives in the settings DB, not localStorage.
+  const wrapPref = useWrapLinesPref();
+
+  // Keep opts.wrapLines in sync with the settings DB value. wrapPref.value is
+  // derived from lastSettings (primed at app startup) so this rarely causes a
+  // visible flash; the effect covers the first-load edge case.
+  useEffect(() => {
+    setOpts((o) => (o.wrapLines === wrapPref.value ? o : { ...o, wrapLines: wrapPref.value }));
+  }, [wrapPref.value]);
+
   const update = (patch: Partial<DiffViewOptions>) => {
     const next = { ...opts, ...patch };
-    localStorage.setItem(OPTIONS_KEY, JSON.stringify({ ...next, scope: typeof next.scope === "object" ? "all" : next.scope }));
+    // wrapLines is persisted in the settings DB; exclude it from localStorage
+    // so stale values never override the DB value on the next mount.
+    const { wrapLines: _w, ...persist } = next;
+    localStorage.setItem(OPTIONS_KEY, JSON.stringify({ ...persist, scope: typeof next.scope === "object" ? "all" : next.scope }));
     setOpts(next);
     if (patch.scope) setTurn(null);
+    if ("wrapLines" in patch) wrapPref.save(patch.wrapLines!);
   };
 
   // The list belongs to the key it was loaded for. On a new key (another workspace,

@@ -45,7 +45,9 @@ import type { Action } from "./state/store";
 import { useInitIssues } from "./workspace/useInitIssues";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { SearchInFilesDialog } from "./components/SearchInFilesDialog";
-import { CHANGELOG_URL, DOCS_URL } from "./components/helpMenuItems";
+import { requestFileOpen } from "./palette/fileOpenActions";
+import { requestPrPaletteAction } from "./palette/prPaletteActions";
+import { CHANGELOG_URL, DOCS_URL, REPO_URL } from "./components/helpMenuItems";
 import {
   openInTerminalScript,
   XCODE_LICENSE_COMMAND,
@@ -393,6 +395,22 @@ export default function App() {
       offs.forEach((off) => void off.then((f) => f()));
     };
   }, []);
+  // Native Help menu items (src-tauri/src/menu.rs): Documentation,
+  // Best Practices, Changelog open URLs; Send Feedback / Submit a Prompt /
+  // Diagnostics toggle dialogs already present in the render tree.
+  // Evidence: binary strings, Conductor 0.87.6, re-read 2026-11-15.
+  useEffect(() => {
+    if (!inTauri()) return;
+    const offs = [
+      listen("open_documentation_url",    () => void openUrl(DOCS_URL)),
+      listen("open_best_practices_url",   () => void openUrl(`${REPO_URL}/tree/main/docs`)),
+      listen("open_changelog_url",        () => void openUrl(CHANGELOG_URL)),
+      listen("open_feedback_dialog",      () => setFeedbackOpen(true)),
+      listen("open_submit_prompt_dialog", () => setSubmitPromptOpen(true)),
+      listen("open_diagnostics_page",     () => setDiagnosticsOpen(true)),
+    ];
+    return () => offs.forEach((off) => void off.then((f) => f()));
+  }, []);
   const quitDialog = quitConfirm !== null && <QuitDialog running={quitConfirm} onConfirm={confirmQuit} onClose={() => setQuitConfirm(null)} />;
 
   const sel = state.selection;
@@ -405,7 +423,8 @@ export default function App() {
   // Quick open needs an active (not archived) workspace, like the reference.
   const canQuickOpen = !!workspace && workspace.status !== "archived";
   const workspacePath = workspace?.path || repo?.path || (inTauri() ? null : "/demo");
-  const canSearchInFiles = !!workspacePath;
+  // Active (not archived) workspace required: Conductor gates search-in-files on a live workspace.
+  const canSearchInFiles = !!workspacePath && workspace?.status !== "archived";
 
   // Every app-shell shortcut goes through the one dispatcher (src/keybindings).
   useKeybindings({
@@ -422,6 +441,7 @@ export default function App() {
     "view.toggleRightSidebar": toggleRightPanel,
     "view.toggleZenMode": () => toggleZenMode(isSidebarVisible(state), dispatch),
     "toggleGarryMode": toggleGarryMode,
+    "openSidecarLogs": () => setDiagnosticsOpen(true),
     "nav.quickOpen": () => setQuickOpen((open) => !open && canQuickOpen),
     "nav.searchInFiles": () => setSearchInFiles((open) => !open && canSearchInFiles),
     "workspace.create": () => openDialog("create"),
@@ -470,11 +490,12 @@ export default function App() {
     openPullRequest: (url: string) => void openUrl(url).catch((e) => show("error", errorText(e))),
     // Opens the search-in-files dialog (REA evidence: renderApp-D_fmY7hW.js _Se/$co).
     searchInFiles: canSearchInFiles ? () => setSearchInFiles(true) : undefined,
-    linkIssue: undefined,
-    createPullRequest: undefined,
-    mergePullRequest: undefined,
-    markPrReady: undefined,
-    fixErrors: undefined,
+    // PR actions: dispatched to the active WorkspaceView via prPaletteActions pub/sub.
+    linkIssue: workspace && workspace.status !== "archived" && repo ? () => requestPrPaletteAction(repo.id, workspace.id, "linkIssue") : undefined,
+    createPullRequest: workspace && workspace.status !== "archived" && repo ? () => requestPrPaletteAction(repo.id, workspace.id, "createPullRequest") : undefined,
+    mergePullRequest: workspace && workspace.status !== "archived" && repo ? () => requestPrPaletteAction(repo.id, workspace.id, "mergePullRequest") : undefined,
+    markPrReady: workspace && workspace.status !== "archived" && repo ? () => requestPrPaletteAction(repo.id, workspace.id, "markPrReady") : undefined,
+    fixErrors: workspace && workspace.status !== "archived" && repo ? () => requestPrPaletteAction(repo.id, workspace.id, "fixErrors") : undefined,
   };
 
   const [prefix, setPrefix] = useState<{ settings: BranchPrefixSettings; githubUsername: string | null }>({ settings: {}, githubUsername: null });
@@ -684,7 +705,10 @@ export default function App() {
           repoId={repo.id}
           workspacePath={workspacePath}
           onClose={() => setQuickOpen(false)}
-          onOpen={(path, mode) => show("info", `${mode === "diff" ? "Diff of" : "Opened"} ${path} (file viewer not built yet)`)}
+          onOpen={(path, mode) => {
+            if (!workspace || !repo) return;
+            requestFileOpen(repo.id, workspace.id, { path, mode });
+          }}
         />
       )}
       {searchInFiles && repo && (
@@ -692,7 +716,10 @@ export default function App() {
           repoId={repo.id}
           workspacePath={workspacePath}
           onClose={() => setSearchInFiles(false)}
-          onOpen={(path, lineNumber) => show("info", `Opened ${path}:${lineNumber} (file viewer not built yet)`)}
+          onOpen={(path, lineNumber) => {
+            if (!workspace || !repo) return;
+            requestFileOpen(repo.id, workspace.id, { path, line: lineNumber, mode: "file" });
+          }}
         />
       )}
       {githubRepo && (

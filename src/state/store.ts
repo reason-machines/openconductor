@@ -40,11 +40,11 @@ export type Action =
   | {
       type: "addWorkspace";
       repoId: string;
-      workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "targetBranch" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName" | "number">;
+      workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "targetBranch" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName" | "number" | "state">;
     }
   /** `userSet` marks a rename the user made, which blocks the automatic first-message rename. */
   /** `keepPlaceholder`: a name-only rename from the Rename dialog leaves `placeholder_branch_name` alone. */
-  | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean; keepPlaceholder?: boolean }
+  | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; directoryName?: string; userSet?: boolean; keepPlaceholder?: boolean }
   /**
    * Full archive (`archive_workspace`). `mode` "discardGitOperationState" is the
    * retry from the Git-operation warning; `stopRunningAgents` the confirmed
@@ -159,7 +159,9 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, repos, selection };
     }
     case "addWorkspace": {
-      const ws: Workspace = { ...action.workspace, status: "idle", diff: { added: 0, removed: 0 }, createdAt: Date.now() };
+      // M17: preserve the state from the DB row (setting_up / ready); default to
+      // setting_up for a workspace that enters memory before its DB row is confirmed.
+      const ws: Workspace = { ...action.workspace, status: "idle", diff: { added: 0, removed: 0 }, createdAt: Date.now(), state: action.workspace.state ?? "setting_up" };
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: [...r.workspaces, ws] } : r));
       return { ...state, repos, selection: { kind: "workspace", repoId: action.repoId, workspaceId: ws.id } };
     }
@@ -171,6 +173,7 @@ export function reducer(state: AppState, action: Action): AppState {
               ...w,
               name: action.name ?? w.name,
               branch: action.branch ?? w.branch,
+              ...(action.directoryName !== undefined ? { directoryName: action.directoryName } : {}),
               ...(action.keepPlaceholder ? {} : { placeholderBranchName: null }),
               ...(action.userSet && action.name !== undefined ? { userSetWorkspaceName: true } : {}),
               ...(action.userSet && action.branch !== undefined ? { userSetBranchName: true } : {}),

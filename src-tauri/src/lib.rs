@@ -353,6 +353,12 @@ pub fn run() {
             let transparent_window = sidebar_transparency::startup_enabled(&db.0);
             app.manage(db::open_cache(&data_dir));
             spotlight_commands::migrate_legacy_setting(&db);
+            // Mark Conductor's one-time file-format migration flags complete
+            // and deprecate model keys that moved to settings.toml.
+            let _migrations_pool = db.0.clone();
+            tauri::async_runtime::spawn(async move {
+                settings::startup_migrations::run(&_migrations_pool).await;
+            });
             app.manage(terminal_commands::history_state(&data_dir));
             // Conductor's sidecar opens its session event outbox at start and
             // carries on without it if that fails (sidecar_stores/).
@@ -401,6 +407,16 @@ pub fn run() {
             }
             app.manage(settings_service);
             let scripts = scripts::service(app.handle());
+            // Wire stored env_vars (conductor.db) into the scripts service so
+            // setup/run/archive scripts see the same environment as terminals
+            // and agent launchers. Without this hook, `settings_env()` calls
+            // `vars()` (file-only); with it, `local_env` calls
+            // `vars_with_stored` and applies the SQLite env_vars table on top
+            // of file values, as Conductor's ng(…,{context:"local"}) does
+            // (evidence/settings/NOTES.md "Environment", "Consumers").
+            scripts.set_settings_env(::std::sync::Arc::new(|ws: &oc_scripts::service::WorkspaceRef| {
+                crate::settings::effective::local_env(&ws.repo_root, Some(&ws.workspace_path))
+            }));
             let spotlight = spotlight_commands::service(app.handle());
             scripts.set_auto_run_spotlight(spotlight::auto_run::hook(spotlight.clone()));
             app.manage(scripts);

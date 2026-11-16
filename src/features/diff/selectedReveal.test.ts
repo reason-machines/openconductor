@@ -123,7 +123,7 @@ async function fixture(initial: { mainTab?: string; selected?: string; panelTab?
     function Probe({ workspace, mainTab, diffOpen, fileTarget, diff, gitPanelTab, setGitPanelTab }) {
       ${variable("showDiff")}
       ${variable("showFile")}
-      const openMarkdown = unrelated;
+      const openAnyFile = unrelated;
       const review = { actions: () => null };
       const target = {}; const pickingChangesTarget = false; const setPickingChangesTarget = unrelated; const repo = {};
       const pullRequest = { pr: null, refresh: unrelated };
@@ -274,7 +274,7 @@ test("an inactive Changes panel does not reveal until the Changes consumer is mo
     await view.panel("Changes");
     assert.ok(view.rows().includes(target));
     await view.collapse("src");
-    await view.panel("Checks");
+    await view.panel("All"); // navigate away; Checks tab is hidden when no PR data (parity)
     await view.panel("Changes");
     assert.ok(view.rows().includes(target));
     assert.deepEqual(view.persisted().collapsedDirectoryPaths, ["other"]);

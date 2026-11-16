@@ -9,7 +9,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import { DialogFrame } from "../../components/DialogFrame.tsx";
-import { listIssues } from "../../workspace/api.ts";
+import { issueLinkMetadata, listIssues } from "../../workspace/api.ts";
 import { matches, type SourceState } from "../../workspace/createFrom.ts";
 import type { CreateFrom } from "../../workspace/createFlow.ts";
 import type { TextAttachment } from "../diff/chatAttachment.ts";
@@ -19,15 +19,19 @@ interface Props {
   repoPath: string | null;
   /** Called when the user picks an issue; the caller attaches it to the composer. */
   onSelect: (attachment: TextAttachment) => void;
-  /** Called when the dialog should navigate to Settings › Personal › Account. */
+  /**
+   * Called when the dialog should navigate to Settings › Personal › Account.
+   * Kept in Props for WorkspaceView compat; not called until a Linear integration exists.
+   */
   onOpenAccountSettings: () => void;
   onClose: () => void;
 }
 
-export function LinkIssueDialog({ repoPath, onSelect, onOpenAccountSettings, onClose }: Props) {
+export function LinkIssueDialog({ repoPath, onSelect, onOpenAccountSettings: _onOpenAccountSettings, onClose }: Props) {
   const [issues, setIssues] = useState<SourceState<CreateFrom>>({ status: "loading" });
   const [query, setQuery] = useState("");
   const [pointer, setPointer] = useState(0);
+  const [picking, setPicking] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -62,16 +66,47 @@ export function LinkIssueDialog({ repoPath, onSelect, onOpenAccountSettings, onC
     } else if (e.key === "Enter") {
       e.preventDefault();
       const row = rows[pointer];
-      if (row) pick(row);
+      if (row) void pick(row);
     }
   }
 
-  function pick(row: CreateFrom) {
-    if (row.kind !== "issue") return;
-    const text = row.url
-      ? `${row.key}: ${row.title}\n${row.url}`
-      : `${row.key}: ${row.title}`;
-    onSelect({ name: `issue-${row.key.replace(/^#/, "")}.txt`, text });
+  async function pick(row: CreateFrom) {
+    if (row.kind !== "issue" || picking) return;
+    let name: string;
+    let text: string;
+    if (row.provider === "github" && repoPath) {
+      // M13 fix: call gh_issue_link_metadata for enriched Markdown attachment.
+      // REA contract (evidence/chat/link-issue-metadata/README.md): filename [GITHUB]-<n>.md,
+      // fields: title, url, state, labels, assignee, milestone, full body.
+      setPicking(true);
+      try {
+        const number = parseInt(row.key.replace(/^#/, ""), 10);
+        const meta = await issueLinkMetadata(repoPath, number);
+        if (meta) {
+          name = `[GITHUB]-${number}.md`;
+          const lines: string[] = [`# ${meta.title} (${row.key})`];
+          lines.push(`**URL:** ${meta.url}`);
+          lines.push(`**State:** ${meta.state}`);
+          if (meta.labels.length > 0) lines.push(`**Labels:** ${meta.labels.map((l) => l.name).join(", ")}`);
+          if (meta.assignee) lines.push(`**Assignee:** @${meta.assignee.login}`);
+          if (meta.milestone) lines.push(`**Milestone:** ${meta.milestone.title}`);
+          if (meta.body) lines.push("", "---", "", meta.body);
+          text = lines.join("\n");
+        } else {
+          name = `issue-${row.key.replace(/^#/, "")}.txt`;
+          text = row.url ? `${row.key}: ${row.title}\n${row.url}` : `${row.key}: ${row.title}`;
+        }
+      } catch {
+        name = `issue-${row.key.replace(/^#/, "")}.txt`;
+        text = row.url ? `${row.key}: ${row.title}\n${row.url}` : `${row.key}: ${row.title}`;
+      } finally {
+        setPicking(false);
+      }
+    } else {
+      name = `issue-${row.key.replace(/^#/, "")}.txt`;
+      text = row.url ? `${row.key}: ${row.title}\n${row.url}` : `${row.key}: ${row.title}`;
+    }
+    onSelect({ name, text });
     onClose();
   }
 
@@ -117,17 +152,10 @@ export function LinkIssueDialog({ repoPath, onSelect, onOpenAccountSettings, onC
             <p className="link-issue-setup-hint">No GitHub remote found for this workspace.</p>
           </div>
         )}
-        {/* Linear: "Connect Linear" setup prompt → account settings */}
+        {/* Linear: show unavailable state without a Connect button — no Linear integration exists in OpenConductor yet (M13 fix). */}
         {issues.status === "unavailable" && issues.reason === "no_linear" && (
           <div className="link-issue-state link-issue-setup">
             <p className="link-issue-setup-hint">Linear is not connected.</p>
-            <button
-              type="button"
-              className="btn btn-primary link-issue-connect"
-              onClick={() => { onOpenAccountSettings(); onClose(); }}
-            >
-              Connect Linear
-            </button>
           </div>
         )}
         {ready && rows.length === 0 && query && (
@@ -143,7 +171,7 @@ export function LinkIssueDialog({ repoPath, onSelect, onOpenAccountSettings, onC
             aria-selected={i === pointer}
             className={`link-issue-row${i === pointer ? " is-selected" : ""}`}
             onMouseEnter={() => setPointer(i)}
-            onClick={() => pick(row)}
+            onClick={() => void pick(row)}
           >
             <span className="link-issue-key">{row.key}</span>
             <span className="link-issue-title">{row.title}</span>

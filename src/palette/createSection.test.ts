@@ -105,7 +105,7 @@ function actualHost(observe: (props: PaletteProps) => void = noop) {
   const exports: Partial<typeof import("./PaletteHost")> = {};
   const imports = {
     "./CommandPalette.tsx": { CommandPalette: (props: PaletteProps) => { observe(props); return React.createElement(Palette, props); } },
-    "../keybindings/KeybindingsProvider.tsx": { useKeybindings: noop },
+    "../keybindings/KeybindingsProvider.tsx": { useKeybindings: noop, useKeybindingOverrides: () => ({ overrides: {} }) },
     "./fromAppState.ts": adapter,
     "../settings/searchIndex": { buildSearchIndex: () => [] },
     "../settings/pages": { settingsGroups: () => [] },
@@ -260,6 +260,8 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
     "./features/routines/RoutineEditor": "RoutineEditor", "./components/KeyboardShortcutsDialog": "KeyboardShortcutsDialog",
   })) imports[file] = { [name]: inert };
   imports["./state/createProject"] = {};
+  imports["./palette/fileOpenActions"] = { requestFileOpen: noop };
+  imports["./palette/prPaletteActions"] = { requestPrPaletteAction: noop };
   const exports: Partial<typeof import("../App")> = {};
   evaluate("../App.tsx", imports, exports, { window });
   const App = exports.default;

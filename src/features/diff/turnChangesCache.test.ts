@@ -163,25 +163,40 @@ test("entries our earlier builds left in the webview's localStorage are removed;
   assert.equal(dropLegacyTurnCache(ls), 0);
 });
 
-test("chips: up to 3 files all show; more show 3 and reveal 3 per click", () => {
+test("chips: up to 3 files all show; overflow shows first 2 (hDo=2) and reveals 3 per click", () => {
   const files = (n: number) => Array.from({ length: n }, (_, i) => change(`f${i}`, i + 1, 1));
+  // <=3 files: all shown, no overflow (gDi=3)
   assert.deepEqual(chipLayout(files(3), 0).more, null);
   assert.equal(chipLayout(files(3), 0).first.length, 3);
   assert.equal(chipLayout(files(3), 0).revealed.length, 0);
 
+  // 8 files: first 2 shown, 6 hidden (hDo=2)
   const eight = chipLayout(files(8), 0);
-  assert.deepEqual(eight.first.map((f) => f.path), ["f0", "f1", "f2"]);
+  assert.deepEqual(eight.first.map((f) => f.path), ["f0", "f1"]);
   assert.equal(eight.revealed.length, 0);
-  assert.equal(eight.hidden.length, 5);
+  assert.equal(eight.hidden.length, 6);
   assert.equal(eight.more, "Show 3 more changed files");
-  assert.deepEqual(eight.hiddenTotals, { additions: 4 + 5 + 6 + 7 + 8, deletions: 5 });
-  // A click keeps the first row and puts the next 3 on their own line.
+  assert.deepEqual(eight.hiddenTotals, { additions: 3 + 4 + 5 + 6 + 7 + 8, deletions: 6 });
+  // A click keeps the first 2 and reveals the next 3.
   const once = chipLayout(files(8), 1);
-  assert.deepEqual(once.first.map((f) => f.path), ["f0", "f1", "f2"]);
-  assert.deepEqual(once.revealed.map((f) => f.path), ["f3", "f4", "f5"]);
-  assert.equal(once.hidden.length, 2);
-  assert.equal(chipLayout(files(8), 1).more, "Show 2 more changed files");
-  assert.equal(chipLayout(files(6), 1).more, null);
+  assert.deepEqual(once.first.map((f) => f.path), ["f0", "f1"]);
+  assert.deepEqual(once.revealed.map((f) => f.path), ["f2", "f3", "f4"]);
+  assert.equal(once.hidden.length, 3);
+  assert.equal(chipLayout(files(8), 1).more, "Show 3 more changed files");
+  assert.equal(chipLayout(files(6), 2).more, null); // 2 first + 3 revealed + 1 extra = all shown
   assert.equal(chipLayout(files(8), 2).more, null);
   assert.equal(chipLayout([], 0).more, null);
+});
+
+test("chips: 4-file turn shows 2 + '+2 more', not 3+1 (evidence hDo=2, gDi=3)", () => {
+  const files = [change("a.ts"), change("b.ts"), change("c.ts"), change("d.ts")];
+  const layout = chipLayout(files, 0);
+  assert.equal(layout.first.length, 2, "first should show 2 files on overflow (hDo=2)");
+  assert.equal(layout.revealed.length, 0);
+  assert.equal(layout.hidden.length, 2);
+  assert.ok(layout.more?.includes("2"), `'+N more' label should mention 2, got: ${layout.more}`);
+  // Clicking once reveals all remaining 2.
+  const expanded = chipLayout(files, 1);
+  assert.equal(expanded.more, null);
+  assert.equal(expanded.first.length + expanded.revealed.length, 4);
 });

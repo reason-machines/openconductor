@@ -3,9 +3,9 @@ import type { Action } from "../state/store";
 import { CreateWorkspaceComposer, type CreateWorkspaceComposerProps } from "./CreateWorkspaceComposer";
 import { SidebarIcon } from "./Icons";
 import { effectiveShortcuts } from "../keybindings/overrides";
+import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { glyphs } from "../keybindings/shortcut";
 
-const TOGGLE_LEFT_SIDEBAR_HINT = effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or ");
 
 type Props = Omit<CreateWorkspaceComposerProps, "eyebrowVariant" | "onBusyChange"> & {
   sidebarVisible: boolean;
@@ -19,6 +19,8 @@ type Props = Omit<CreateWorkspaceComposerProps, "eyebrowVariant" | "onBusyChange
  * 768 px column with its eyebrow above the card.
  */
 export function CreateWorkspacePage({ sidebarVisible, ...props }: Props) {
+  const { overrides } = useKeybindingOverrides();
+  const TOGGLE_LEFT_SIDEBAR_HINT = effectiveShortcuts("view.toggleLeftSidebar", overrides).map(glyphs).join(" or ");
   return (
     <div className="create-page">
       <div className="create-page-top" data-tauri-drag-region>
