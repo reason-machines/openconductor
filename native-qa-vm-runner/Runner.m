@@ -1,6 +1,7 @@
 #import <AppKit/AppKit.h>
 #import <Virtualization/Virtualization.h>
 #import <objc/runtime.h>
+#include "ArgParser.h"
 #include "Profile.h"
 
 static BOOL OCVMReject(NSError **error) {
@@ -134,7 +135,24 @@ static bool OCVMConstruct(void *raw) {
 }
 @end
 
-int main(void) {
+static void OCVMUsage(const char *prog) {
+    fprintf(stderr,
+        "Usage: %s --disk <path> --aux <path>\n"
+        "       %s          (probe: no arguments)\n",
+        prog, prog);
+}
+
+int main(int argc, char *argv[]) {
+    if (argc > 1) {
+        OCVMArgs args;
+        OCVMArgsStatus status = OCVMParseArgs(argc, argv, &args);
+        if (status != OC_VM_ARGS_OK) {
+            OCVMUsage(argv[0]);
+            return (int)status;
+        }
+        /* Valid parse: fall through to existing stub below. */
+        (void)args;
+    }
     fputs("VM execution is unavailable: resource identity, inherited-capability, "
           "effective-profile and lifecycle acceptance are not implemented.\n", stderr);
     return 78;
