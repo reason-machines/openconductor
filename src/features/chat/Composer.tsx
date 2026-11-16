@@ -29,9 +29,8 @@ import type { FileMatch } from "../../spotlight/quickOpen";
 import { fileMentionQuery, mentionItems, type MentionItem } from "./fileMentions.ts";
 import { ComposerEditor, type ComposerEditorHandle, type ComposerSelection } from "./ComposerEditor.tsx";
 import { composerPrompt } from "./composerDocument.ts";
-import { invoke, isTauri } from "@tauri-apps/api/core";
 import { longPasteAttachment } from "./composerLongPaste.ts";
-import { readClipboardText } from "./composerPasteFilePaths.ts";
+import { readClipboardTextFromPlatform } from "./composerPasteFilePaths.ts";
 import { useBoolPref } from "../../settings/useBoolPref.ts";
 import { useSettings } from "../../settings/useSettings.ts";
 import { withBoolPref } from "../../settings/prefs.ts";
@@ -251,12 +250,12 @@ export function Composer({
     "chat.composer.pasteFilePaths": () => {
       const box = inputRef.current;
       if (!box) return false;
-      // Read clipboard text via Tauri plugin (matches Conductor's clipboard-manager|read_text
-      // usage; evidence/packaging/conductor-plugin-commands.json) or the web API in browser.
-      const clip = isTauri()
-        ? { readText: () => invoke<string>("plugin:clipboard-manager|read_text") }
-        : navigator.clipboard;
-      void readClipboardText(clip).then((text) => {
+      // Read clipboard text via the platform adapter (Tauri clipboard-manager plugin
+      // in desktop, navigator.clipboard in browser). The adapter is imported from
+      // composerPasteFilePaths.ts so Composer.tsx does not need a direct
+      // @tauri-apps/api/core import (the add-menu keyboard test VMs this file and
+      // blocks unexpected platform dependencies).
+      void readClipboardTextFromPlatform().then((text) => {
         if (!text) return;
         box.focus();
         const sel = box.selection();

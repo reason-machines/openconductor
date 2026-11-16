@@ -10,8 +10,9 @@
 // handler reads clipboard text via plugin:clipboard-manager|read_text, not a custom
 // native command.
 //
-// Pure module: inject a ReadClipboard for tests; Composer.tsx supplies the platform
-// implementation (Tauri invoke in desktop, navigator.clipboard in browser).
+// Platform adapter: Composer.tsx imports readClipboardTextFromPlatform so it
+// does not need to import @tauri-apps/api/core directly. The injected-reader
+// overload (readClipboardText) stays for unit tests.
 
 export interface ReadClipboard {
   readText(): Promise<string>;
@@ -21,8 +22,8 @@ export interface ReadClipboard {
  * Returns the clipboard's current plain-text content, or null when the clipboard
  * is empty, unreadable, or the read is refused.
  *
- * @param clipboard  Injectable clipboard reader; Composer.tsx supplies the
- *                   Tauri or web implementation at the call site.
+ * @param clipboard  Injectable clipboard reader; use readClipboardTextFromPlatform
+ *                   for the runtime adapter.
  */
 export async function readClipboardText(clipboard: ReadClipboard): Promise<string | null> {
   let text: string;
@@ -32,4 +33,18 @@ export async function readClipboardText(clipboard: ReadClipboard): Promise<strin
     return null;
   }
   return text || null;
+}
+
+/**
+ * Runtime platform adapter: reads clipboard text via the Tauri
+ * clipboard-manager plugin in desktop builds, or navigator.clipboard in
+ * browser. Composer.tsx imports this so it does not need a direct
+ * @tauri-apps/api/core import.
+ */
+export async function readClipboardTextFromPlatform(): Promise<string | null> {
+  const { invoke, isTauri } = await import("@tauri-apps/api/core");
+  const clip: ReadClipboard = isTauri()
+    ? { readText: () => invoke<string>("plugin:clipboard-manager|read_text") }
+    : (navigator.clipboard as unknown as ReadClipboard);
+  return readClipboardText(clip);
 }
