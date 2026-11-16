@@ -353,6 +353,12 @@ pub fn run() {
             let transparent_window = sidebar_transparency::startup_enabled(&db.0);
             app.manage(db::open_cache(&data_dir));
             spotlight_commands::migrate_legacy_setting(&db);
+            // Mark Conductor's one-time file-format migration flags complete
+            // and deprecate model keys that moved to settings.toml.
+            let _migrations_pool = db.0.clone();
+            tauri::async_runtime::spawn(async move {
+                settings::startup_migrations::run(&_migrations_pool).await;
+            });
             app.manage(terminal_commands::history_state(&data_dir));
             // Conductor's sidecar opens its session event outbox at start and
             // carries on without it if that fails (sidecar_stores/).

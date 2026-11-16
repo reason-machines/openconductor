@@ -42,7 +42,7 @@ function load(relativePath) {
     if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
     if (Object.hasOwn(stubs, name)) return stubs[name];
     const target = resolve(dirname(filename), name.endsWith(".ts") ? name : `${name}.ts`);
-    const allowed = ["src/settings/agentSettings.ts", "src/features/terminal/scrollback.ts"];
+    const allowed = ["src/settings/agentSettings.ts", "src/features/terminal/scrollback.ts", "src/settings/prefs.ts"];
     if (allowed.some((path) => resolve(sourceRoot, path) === target)) return load(target);
     throw new Error(`Unexpected import: ${name}`);
   };
@@ -54,7 +54,7 @@ function load(relativePath) {
 const { AdvancedPage } = load("src/settings/AdvancedPage.tsx");
 function mount(sshKeyPath) {
   const saved = [];
-  const initial = { ssh_key_path: sshKeyPath, git: { worktree_push_auto_setup_remote: true }, advanced: {} };
+  const initial = { ssh_key_path: sshKeyPath, git: { worktree_push_auto_setup_remote: true }, advanced: {}, experimental: { experimental_cloud_ui: true } };
   function Host() {
     const [settings, setSettings] = React.useState(initial);
     return React.createElement(AdvancedPage, { settings, save: (next) => { saved.push(next); setSettings(next); } });

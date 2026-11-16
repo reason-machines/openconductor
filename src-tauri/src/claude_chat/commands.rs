@@ -9,7 +9,6 @@ use std::sync::{Arc, Mutex, OnceLock};
 use serde_json::Value;
 use tauri::{AppHandle, Emitter, Manager, State};
 
-use crate::agent::PermissionMode;
 use crate::agent_binaries::Agent;
 use crate::reason_acp::provider::{ProviderEvent, Sink};
 use crate::reason_acp::wire;

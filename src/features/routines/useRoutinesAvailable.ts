@@ -28,10 +28,14 @@ function set(v: boolean): void {
 export function useRoutinesAvailable(): boolean {
   const cloudUI = useBoolPref("experimental_cloud_ui");
   useEffect(() => {
+    // Only register the focus listener and check Reason account status when
+    // the cloud UI is enabled; prevents background reason_account_status calls
+    // every 60 s when cloudUI is OFF (M6a).
+    if (!cloudUI) return;
     check();
     window.addEventListener("focus", check);
     return () => window.removeEventListener("focus", check);
-  }, []);
+  }, [cloudUI]);
   const available = useSyncExternalStore(
     (l) => (listeners.add(l), () => listeners.delete(l)),
     () => signedIn,

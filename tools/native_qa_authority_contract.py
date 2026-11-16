@@ -1,4 +1,10 @@
-"""Pure inert-pair evidence contract. No transport, syscall probe or admission."""
+"""Pure inert-pair evidence contract. No transport, syscall probe or admission.
+
+Consumer bridge (parse_authority_contract / consume_authority_contract /
+verify_contract_identity) connects CapabilityResult.stdout to
+verify_identity_through_use, completing the Python pipeline from bundle staging
+to identity verification.  No subprocess, native framework call, or OS admission.
+"""
 from dataclasses import asdict, dataclass, replace
 import hashlib
 import itertools
@@ -542,3 +548,271 @@ def validate_receipt(raw, context):
              and _actor(terminal["consumer"]) == consumer
              and _actor(terminal["observer"]) == supervisor, "lost final ownership/lifetime")
     return ContractReadback(digest, caller, peer)
+
+
+# ---------------------------------------------------------------------------
+# Consumer bridge: CapabilityResult → AuthorityContractDocument → identity
+# ---------------------------------------------------------------------------
+# No subprocess, native framework call, OS admission, or file I/O.  All
+# verification is deterministic and purely document-based.  The JSON allowlist
+# below is the sole accepted schema; unknown fields are refused at every level.
+
+from tools import native_qa_identity_through_use as _itu
+
+AUTHORITY_CONTRACT_SCHEMA = "OC_VM_AUTHORITY_CONTRACT_V1"
+
+# The JSON document the runner writes to stdout does NOT carry stdout_sha256;
+# parse_authority_contract computes it from the raw bytes and stores it in the
+# returned AuthorityContractDocument.  The field is therefore absent from the
+# JSON allowlist so that an actor-supplied value is refused.
+_AC_DOC_FIELDS = frozenset((
+    "schema", "operation",
+    "caller", "caller_stages",
+    "consumer", "consumer_stages",
+))
+_AC_ACTOR_FIELDS = frozenset(("role", "uid", "pid", "boot", "birth", "image", "authority"))
+_AC_STAGE_FIELDS = frozenset(("stage", "return", "errno"))
+
+
+class AuthorityContractRefusal(ValueError):
+    """stdout does not conform to the authority contract document schema."""
+
+
+@dataclass(frozen=True)
+class AuthorityContractDocument:
+    """Parsed JSON authority contract produced by the native QA VM runner on exit 0.
+
+    Fields
+    ------
+    schema          : always AUTHORITY_CONTRACT_SCHEMA.
+    operation       : operation key (e.g. "write", "mmap") exercised in this run.
+    stdout_sha256   : sha256 hex of the raw stdout bytes that were parsed;
+                      populated by parse_authority_contract, absent from the JSON.
+    caller          : ActorIdentityClaim for the caller principal (uid 501).
+    caller_stages   : ordered StageRecords from the caller's operation sequence.
+    consumer        : ActorIdentityClaim for the consumer principal (uid 1).
+    consumer_stages : ordered StageRecords from the consumer's operation sequence.
+    """
+    schema: str
+    operation: str
+    stdout_sha256: str
+    caller: _itu.ActorIdentityClaim
+    caller_stages: tuple
+    consumer: _itu.ActorIdentityClaim
+    consumer_stages: tuple
+
+
+@dataclass(frozen=True)
+class ContractIdentityResult:
+    """Result of verify_contract_identity: verdicts for caller and consumer.
+
+    both_proven is True iff both caller_verdict and consumer_verdict are PROVEN.
+    """
+    caller_verdict: _itu.IdentityVerdict
+    consumer_verdict: _itu.IdentityVerdict
+    both_proven: bool
+
+
+def _ac_require(condition, reason):
+    if not condition:
+        raise AuthorityContractRefusal(reason)
+
+
+def _ac_parse_actor(value, *, expected_role, expected_uid):
+    """Parse and validate an actor dict from the authority contract document."""
+    _ac_require(isinstance(value, dict) and not isinstance(value, type)
+                and set(value) == _AC_ACTOR_FIELDS,
+                f"actor must be an object with exactly these fields: {sorted(_AC_ACTOR_FIELDS)}")
+    role = value["role"]
+    _ac_require(isinstance(role, str) and role == expected_role,
+                f"actor role must be {expected_role!r}")
+    uid = value["uid"]
+    _ac_require(isinstance(uid, int) and not isinstance(uid, bool) and uid == expected_uid,
+                f"actor uid must be {expected_uid} (integer, not bool)")
+    pid = value["pid"]
+    _ac_require(isinstance(pid, int) and not isinstance(pid, bool) and pid >= 1,
+                "actor pid must be a positive integer")
+    for field_name in ("boot", "birth", "image", "authority"):
+        v = value[field_name]
+        _ac_require(isinstance(v, str) and v,
+                    f"actor {field_name!r} must be a non-empty string")
+    return _itu.ActorIdentityClaim(
+        role=role, uid=uid, pid=pid,
+        boot=value["boot"], birth=value["birth"],
+        image=value["image"], authority=value["authority"],
+    )
+
+
+def _ac_parse_stages(value):
+    """Parse a list of stage dicts from the authority contract document."""
+    _ac_require(isinstance(value, list),
+                "stages must be a JSON array")
+    result = []
+    for item in value:
+        _ac_require(isinstance(item, dict) and set(item) == _AC_STAGE_FIELDS,
+                    f"stage must be an object with exactly these fields: {sorted(_AC_STAGE_FIELDS)}")
+        name = item["stage"]
+        _ac_require(isinstance(name, str) and name,
+                    "stage 'stage' must be a non-empty string")
+        returned = item["return"]
+        errno = item["errno"]
+        absent = returned is None and not errno
+        denied = (not absent) and bool(errno)
+        result.append(_itu.StageRecord(stage=name, denied=denied, absent=absent))
+    return tuple(result)
+
+
+def parse_authority_contract(stdout):
+    """Parse *stdout* bytes as an authority contract document.
+
+    Parameters
+    ----------
+    stdout : bytes
+        Raw stdout captured from the native QA VM runner on exit 0.
+
+    Returns
+    -------
+    AuthorityContractDocument
+
+    Raises
+    ------
+    AuthorityContractRefusal
+        If *stdout* is not bytes, is empty, is not valid JSON, or does not
+        conform to the strict AUTHORITY_CONTRACT_SCHEMA allowlist.
+    """
+    _ac_require(isinstance(stdout, bytes) and stdout,
+                "stdout must be non-empty bytes")
+    actual_sha256 = hashlib.sha256(stdout).hexdigest()
+    try:
+        doc = json.loads(stdout)
+    except (ValueError, UnicodeError) as exc:
+        raise AuthorityContractRefusal("stdout is not valid JSON") from exc
+    _ac_require(isinstance(doc, dict) and set(doc) == _AC_DOC_FIELDS,
+                f"document must be a JSON object with exactly these fields: {sorted(_AC_DOC_FIELDS)}")
+    _ac_require(doc["schema"] == AUTHORITY_CONTRACT_SCHEMA,
+                f"document schema must be {AUTHORITY_CONTRACT_SCHEMA!r}")
+    operation = doc["operation"]
+    _ac_require(isinstance(operation, str) and operation,
+                "operation must be a non-empty string")
+    caller = _ac_parse_actor(
+        doc["caller"],
+        expected_role=_itu.CALLER_ROLE,
+        expected_uid=_itu.CANONICAL_UID[_itu.CALLER_ROLE],
+    )
+    consumer = _ac_parse_actor(
+        doc["consumer"],
+        expected_role=_itu.CONSUMER_ROLE,
+        expected_uid=_itu.CANONICAL_UID[_itu.CONSUMER_ROLE],
+    )
+    caller_stages = _ac_parse_stages(doc["caller_stages"])
+    consumer_stages = _ac_parse_stages(doc["consumer_stages"])
+    return AuthorityContractDocument(
+        schema=doc["schema"],
+        operation=operation,
+        stdout_sha256=actual_sha256,
+        caller=caller,
+        caller_stages=caller_stages,
+        consumer=consumer,
+        consumer_stages=consumer_stages,
+    )
+
+
+def consume_authority_contract(result):
+    """Bridge a CapabilityResult to an AuthorityContractDocument.
+
+    Requires ``result.outcome == CapabilityOutcome.SUCCESS``; raises
+    AuthorityContractRefusal for any other outcome (including
+    NOT_YET_IMPLEMENTED), because the authority contract document is only
+    produced when the runner exits 0.
+
+    The document's stdout_sha256 is cross-checked against
+    result.stdout_sha256 as an additional binding.
+
+    Parameters
+    ----------
+    result : CapabilityResult
+        A structured result token from the capability broker's
+        consume_capability_output.
+
+    Returns
+    -------
+    AuthorityContractDocument
+
+    Raises
+    ------
+    TypeError
+        If *result* is not a CapabilityResult.
+    AuthorityContractRefusal
+        If the outcome is not SUCCESS, or the parsed document fails
+        any structural or sha256 check.
+    """
+    # Lazy import to keep this module independent of the broker at module load.
+    from tools.native_qa_vm_broker import CapabilityResult, CapabilityOutcome
+    if not isinstance(result, CapabilityResult):
+        raise TypeError(f"result must be a CapabilityResult, got {type(result).__name__!r}")
+    if result.outcome != CapabilityOutcome.SUCCESS:
+        raise AuthorityContractRefusal(
+            f"CapabilityResult outcome is {result.outcome.value!r}, not 'success'; "
+            "the authority contract document is only produced on exit 0"
+        )
+    doc = parse_authority_contract(result.stdout)
+    _ac_require(doc.stdout_sha256 == result.stdout_sha256,
+                "document stdout_sha256 does not match CapabilityResult.stdout_sha256")
+    return doc
+
+
+def verify_contract_identity(doc, operation_name):
+    """Verify caller and consumer identities from an authority contract document.
+
+    Calls verify_identity_through_use for both the caller (uid 501) and the
+    consumer (uid 1) using the stage records in *doc*.
+
+    Parameters
+    ----------
+    doc            : AuthorityContractDocument
+    operation_name : str
+        The operation key to associate with the stage evidence (e.g. "write").
+        Typically ``doc.operation``; callers may supply it independently.
+
+    Returns
+    -------
+    ContractIdentityResult
+        both_proven is True iff both verdicts are IdentityVerdict.PROVEN.
+
+    Raises
+    ------
+    TypeError
+        If *doc* is not an AuthorityContractDocument or *operation_name* is
+        not a str.
+    _itu.ThroughUseContractError
+        If the evidence structure is internally inconsistent.
+    """
+    if not isinstance(doc, AuthorityContractDocument):
+        raise TypeError(f"doc must be an AuthorityContractDocument, got {type(doc).__name__!r}")
+    if not isinstance(operation_name, str):
+        raise TypeError(f"operation_name must be a str, got {type(operation_name).__name__!r}")
+    caller_evidence = _itu.ThroughUseEvidence(
+        actor=doc.caller,
+        stages=doc.caller_stages,
+        operation_name=operation_name,
+    )
+    consumer_evidence = _itu.ThroughUseEvidence(
+        actor=doc.consumer,
+        stages=doc.consumer_stages,
+        operation_name=operation_name,
+    )
+    caller_verdict = _itu.verify_identity_through_use(
+        caller_evidence, expected_role=_itu.CALLER_ROLE
+    )
+    consumer_verdict = _itu.verify_identity_through_use(
+        consumer_evidence, expected_role=_itu.CONSUMER_ROLE
+    )
+    both_proven = (
+        caller_verdict == _itu.IdentityVerdict.PROVEN
+        and consumer_verdict == _itu.IdentityVerdict.PROVEN
+    )
+    return ContractIdentityResult(
+        caller_verdict=caller_verdict,
+        consumer_verdict=consumer_verdict,
+        both_proven=both_proven,
+    )

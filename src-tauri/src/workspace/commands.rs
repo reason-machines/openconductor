@@ -223,7 +223,7 @@ pub async fn create_workspace(
             // When the caller did not name a branch, the service generated a
             // placeholder; store it so the first-message rename can clear it.
             let placeholder = req.branch_name.is_none()
-                .then(|| created.workspace.branch.as_str());
+                .then_some(created.workspace.branch.as_str());
             let number = persistence::on_create_finished(
                 &db,
                 &repository_id,

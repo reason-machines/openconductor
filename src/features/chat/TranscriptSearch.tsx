@@ -1,4 +1,4 @@
-import { cloneElement, useEffect, useMemo, useRef, useSyncExternalStore, type ReactElement, type Ref } from "react";
+import { cloneElement, useEffect, useMemo, useRef, useState, type ReactElement, type Ref } from "react";
 import { ChevronDownIcon, ChevronUpIcon, CloseIcon, SearchIcon } from "../../components/Icons.tsx";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { PRIORITY } from "../../keybindings/dispatcher.ts";
@@ -7,23 +7,13 @@ import { highlightTranscript, transcriptMatches } from "./transcriptSearch.ts";
 import "./transcriptSearch.css";
 
 type SearchState = { kind: "closed" } | { kind: "open"; query: string; index: number; focus: number };
-let state: SearchState = { kind: "closed" };
-const listeners = new Set<() => void>();
-const snapshot = () => state;
-const subscribe = (listener: () => void) => {
-  listeners.add(listener);
-  return () => { listeners.delete(listener); };
-};
-function change(next: SearchState) {
-  state = next;
-  for (const listener of listeners) listener();
-}
 
 export function TranscriptSearch({ transcript, children }: {
   transcript: ChatTranscript;
   children: ReactElement<{ ref?: Ref<HTMLDivElement> }>;
 }) {
-  const search = useSyncExternalStore(subscribe, snapshot, snapshot);
+  const [search, setSearch] = useState<SearchState>({ kind: "closed" });
+  const change = setSearch;
   const container = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const query = search.kind === "open" ? search.query : "";
@@ -55,7 +45,7 @@ export function TranscriptSearch({ transcript, children }: {
   useEffect(() => {
     const next = session.current !== transcript.sessionId ? 0 : index;
     session.current = transcript.sessionId;
-    if (state.kind === "open" && state.index !== next) change({ ...state, index: next });
+    if (search.kind === "open" && search.index !== next) change({ ...search, index: next });
   }, [transcript.sessionId, index]);
   useEffect(() => {
     if (search.kind !== "open") return;

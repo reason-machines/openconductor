@@ -46,6 +46,11 @@ export interface Command {
   displayScope?: string;
   description?: string;
   when?: When;
+  /** True when the key is handled natively by the component (e.g. CodeMirror default keymap)
+   * and no useKeybindings handler is needed or expected. */
+  nativeDelegation?: boolean;
+  /** Human-readable note explaining the native delegation (e.g. the specific keymap entry). */
+  nativeDelegationNote?: string;
 }
 
 export const logical = (value: string, modifiers?: readonly Modifier[]): Shortcut =>

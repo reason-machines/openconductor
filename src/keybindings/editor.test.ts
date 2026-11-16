@@ -12,6 +12,7 @@ import {
   type RecorderEvent,
 } from "./editor.ts";
 import { COMMANDS } from "./registry.ts";
+import { CLOUD_ONLY_COMMAND_IDS } from "./help.ts";
 import { logical } from "./types.ts";
 
 const press = (key: string, code: string, mods: Partial<RecorderEvent> = {}): RecorderEvent => ({
@@ -26,13 +27,16 @@ const press = (key: string, code: string, mods: Partial<RecorderEvent> = {}): Re
 
 test("lists configurable or visible commands; the opposite follow-up needs queued messages", () => {
   const rows = editorRows();
-  const expected = COMMANDS.filter((c) => (c.configurable || !c.hidden) && c.id !== "chat.submitOppositeFollowUp");
+  const expected = COMMANDS.filter((c) => (c.configurable || !c.hidden) && c.id !== "chat.submitOppositeFollowUp" && !CLOUD_ONLY_COMMAND_IDS.has(c.id));
   assert.deepEqual(rows.map((r) => r.id), expected.map((c) => c.id));
-  assert.equal(rows.length, 146);
+  assert.equal(rows.length, 132);
   // Hidden but configurable commands are listed.
   assert.ok(rows.some((r) => r.id === "settings.close"));
   assert.ok(!rows.some((r) => r.id === "chat.submitOppositeFollowUp"));
   assert.ok(editorRows({}, { queuedMessagesEnabled: true }).some((r) => r.id === "chat.submitOppositeFollowUp"));
+  // Cloud commands absent when cloudUI is OFF (default), present when ON.
+  assert.ok(!rows.some((r) => r.id === "routine.save"));
+  assert.ok(editorRows({}, { cloudUI: true }).some((r) => r.id === "routine.save"));
 });
 
 test("non-configurable and send-key commands are fixed", () => {
