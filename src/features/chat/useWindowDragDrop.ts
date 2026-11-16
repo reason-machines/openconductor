@@ -6,17 +6,18 @@
 //   Consumer 1 (overlay): `isDragging` turns true on `enter`, false on `leave`/`drop`.
 //   Consumer 2 (handler): `onDrop(paths)` fires with native OS paths on `drop`.
 //
-// Native path → PickedFile conversion: convertFileSrc (Tauri asset protocol) + fetch.
-// Requires tauri-plugin-fs = { features = ["watch"] } already in Cargo.toml and
-// the asset protocol scope to include the dropped paths (default: app data dir only;
-// production scope may need "scope": ["$HOME/**"] in tauri.conf.json — REA_GAP:
-// Conductor's exact asset protocol scope is not established from bundle evidence).
+// Native path → PickedFile conversion: tauri-plugin-fs readFile (IPC plugin:fs|read_file).
+// Authorization: fs:allow-read-file + fs:scope { "path": "**/*" } in default.json — no
+// additional configuration required. fetch(convertFileSrc) was NOT used because:
+//   1. The CSP connect-src allows only "ipc: http://ipc.localhost", not "asset:".
+//   2. No assetProtocol capability is configured in default.json.
+//   Under a signed build, fetch(asset://…) would silently fail on arbitrary paths.
 //
-// NATIVE_NOT_RUN: live drop, overlay rendering, path scope in a signed build.
+// NATIVE_NOT_RUN: live drop, overlay rendering, confirmed bytes in a signed build.
 
 import { useEffect, useRef, useState } from "react";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
-import { convertFileSrc } from "@tauri-apps/api/core";
+import { readFile } from "@tauri-apps/plugin-fs";
 import { inTauri } from "../../backend";
 
 /** A native-path file compatible with composerSession's PickedFile duck type. */
@@ -26,18 +27,15 @@ export interface WindowDropFile {
   arrayBuffer(): Promise<ArrayBuffer>;
 }
 
-/**
- * Read a native OS path as bytes using the Tauri asset protocol.
- * Returns null when the fetch fails (file not accessible via the protocol scope).
- */
+// Read a native OS path as bytes via the Tauri IPC plugin:fs|read_file.
+// Uses the already-granted fs:allow-read-file + fs:scope {path:"**/*"} capability;
+// no asset protocol scope or CSP change required.
+// Returns null when the file cannot be read (permission denied, path missing, etc.).
 export async function nativePathToFile(path: string): Promise<WindowDropFile | null> {
   try {
-    const url = convertFileSrc(path);
-    const response = await fetch(url);
-    if (!response.ok) return null;
-    const bytes = await response.arrayBuffer();
+    const bytes = await readFile(path);
     const name = path.split(/[\\/]/).pop() ?? path;
-    return { name, size: bytes.byteLength, arrayBuffer: () => Promise.resolve(bytes) };
+    return { name, size: bytes.byteLength, arrayBuffer: () => Promise.resolve(bytes.buffer as ArrayBuffer) };
   } catch {
     return null;
   }

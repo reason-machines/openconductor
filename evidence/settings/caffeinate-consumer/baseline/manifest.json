@@ -1,11 +1,11 @@
 {
   "commit": "bbdca3e984f5b80183703daa9f9bb27bbaf0f47c",
   "archive": "graph.tar.gz",
-  "sha256": "359391db9cb22bf58479d8031722f56c92879ebdaa38113c04241452d1f84e21",
+  "sha256": "2318db28693783197078693ff0433a64157f6f2c9d9dfd547d8bcdbe0431c5d5",
   "files": {
     "index.html": "d0e5abaa3d334b6c77f0c9c6fc32ec4b597620a5d71ae388c06a68acba714e6d",
-    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
-    "package.json": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+    "package-lock.json": "7bde1541f0802ab52336a44c9769d43023aac23e3d72bdd263fcb0dfc00c04a1",
+    "package.json": "d5d9145d4840447b67155b67b87903075ea68659805246fa98823d3db4b47f26",
     "tsconfig.json": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5",
     "vite.config.ts": "36a961686ecadb0aabaff2566671cd804bb504bbbba77dd15f66b352f58fc968",
     "src/App.tsx": "5376811866211058d8ce2b1430ea38b7dbbaa6286631b742aeefae83a7017709",
