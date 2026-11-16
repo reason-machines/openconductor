@@ -12,7 +12,7 @@ test("General Sync opens a local selection dialog without copying files", async 
     assert.notEqual(sync.props.disabled, true, "local config sync must be reachable");
     assert.equal(view.calls.reads, 0, "opening General must not read agent configs");
     await act(async () => { sync.props.onClick(); });
-    const dialogs = view.root().findAllByProps({ role: "dialog", "aria-label": "Sync agent configs" });
+    const dialogs = view.root().findAllByProps({ role: "dialog", "aria-labelledby": "config-sync-title" });
     assert.equal(dialogs.length, 1);
     assert.equal(view.calls.reads, 1, "opening Sync must request a fresh local diff");
     assert.deepEqual(view.calls.writes, [], "opening must not copy anything");

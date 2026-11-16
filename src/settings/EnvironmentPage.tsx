@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../backend";
-import { Modal } from "../components/Dialogs";
+import { DialogFrame } from "../components/DialogFrame";
 import { errorText } from "./api";
 import { CloseIcon, FolderIcon, PlusIcon } from "./icons";
 import type { Settings } from "./types";
@@ -274,7 +274,8 @@ function AddVariableDialog({ existing, onCancel, onAdd }: { existing: StoredVar[
     onAdd(entries);
   };
   return (
-    <Modal title={pasted ? "Add environment variables" : "Add environment variable"} onClose={onCancel}>
+    <DialogFrame kind="dialog" titleId="env-dialog-title" onClose={onCancel}>
+      <h2 id="env-dialog-title">{pasted ? "Add environment variables" : "Add environment variable"}</h2>
       <div className="modal-body settings-env-dialog">
         <p className="settings-row-help">{pasted ? `Detected ${pasted.length} variables from your pasted text.` : "Paste a block of KEY=VALUE lines into the name field to add several at once."}</p>
         <label className="settings-env-dialog-field">
@@ -313,6 +314,6 @@ function AddVariableDialog({ existing, onCancel, onAdd }: { existing: StoredVar[
           </button>
         </div>
       </div>
-    </Modal>
+    </DialogFrame>
   );
 }

@@ -27,7 +27,7 @@ function fixture(icon: string | null = null) {
       if (name === "../backend") return { openUrl: () => assert.fail("Unexpected URL launch in emoji picker test") };
       if (name === "../state/repoIcon") return repoIcon;
       if (name === "./repoEmoji") return { searchEmoji };
-      if (name === "./Dialogs") return { Modal: ({ children }: { children: ReactNode }) => children };
+      if (name === "./DialogFrame") return { DialogFrame: ({ children }: { children: ReactNode }) => children };
       if (name === "./Icons") return { CloseIcon: () => null, SearchIcon: () => null };
       if (name === "./repoIcons.generated") return { REPO_ICONS: { folder: {} } };
       if (name === "./RepoIcon") return {

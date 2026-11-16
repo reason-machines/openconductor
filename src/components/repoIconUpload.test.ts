@@ -77,7 +77,7 @@ function fixture(width: number, height: number, failure?: Failure) {
       if (name === "../backend") return { openUrl: () => assert.fail("Unexpected URL launch in upload test") };
       if (name === "../state/repoIcon") return repoIcon;
       if (name === "./repoEmoji") return { searchEmoji() { throw new Error("Unexpected emoji tab"); } };
-      if (name === "./Dialogs") return { Modal: ({ children }: { children: ReactNode }) => children };
+      if (name === "./DialogFrame") return { DialogFrame: ({ children }: { children: ReactNode }) => children };
       if (name === "./Icons") return { CloseIcon: () => null, SearchIcon: () => null };
       if (name === "./repoIcons.generated") return { REPO_ICONS: { folder: {} } };
       if (name === "./RepoIcon") return {
