@@ -257,7 +257,8 @@ export function CreateWorkspaceComposer({
       const created = await createWorkspace(toCreateWorkspaceArgs({ ...built.request, repoId: backendRepo.id }));
       send({ type: "created", workspaceId: created.workspace.id });
       if (created.upstreamWarning) onWarning(created.upstreamWarning);
-      send({ type: "setup_detected", started: await startSetupScript(backendRepo, created, built.request.targetBranch) });
+      const setupStarted = await startSetupScript(backendRepo, created, built.request.targetBranch);
+      send({ type: "setup_detected", started: setupStarted });
       const { id, directoryName, branchName, path } = created.workspace;
       const { naming, firstSession } = built.request;
       const ws = {
@@ -270,6 +271,10 @@ export function CreateWorkspaceComposer({
         userSetWorkspaceName: naming.user_set_workspace_name,
         userSetBranchName: naming.user_set_branch_name,
         number: created.number ?? null,
+        // GAP-SB-01: pass state so the sidebar row dims while setup runs and
+        // clears immediately when no setup script starts (store default was
+        // always "setting_up", leaving the row permanently dimmed).
+        state: setupStarted ? "setting_up" : "ready",
       };
       if (draft.agent === "reason" || draft.agent === "claude" || draft.agent === "codex") {
         saveAgent(id, draft.agent);
@@ -368,7 +373,8 @@ export function CreateWorkspaceComposer({
       const created = await createWorkspace(toCreateWorkspaceArgs({ ...backlogRequest, repoId: backendRepo.id }));
       send({ type: "created", workspaceId: created.workspace.id });
       if (created.upstreamWarning) onWarning(created.upstreamWarning);
-      send({ type: "setup_detected", started: await startSetupScript(backendRepo, created, built.request.targetBranch) });
+      const backlogSetupStarted = await startSetupScript(backendRepo, created, built.request.targetBranch);
+      send({ type: "setup_detected", started: backlogSetupStarted });
       const { id, directoryName, branchName, path } = created.workspace;
       const { naming } = built.request;
       const ws = {
@@ -381,6 +387,8 @@ export function CreateWorkspaceComposer({
         userSetWorkspaceName: naming.user_set_workspace_name,
         userSetBranchName: naming.user_set_branch_name,
         number: created.number ?? null,
+        // GAP-SB-01: same lifecycle fix for backlog path.
+        state: backlogSetupStarted ? "setting_up" : "ready",
       };
       dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });
       dispatch({ type: "setWorkspaceStatus", repoId: repo.id, workspaceId: id, status: "backlog" });
