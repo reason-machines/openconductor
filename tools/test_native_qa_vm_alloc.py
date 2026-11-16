@@ -487,5 +487,162 @@ class TestExecutorAllocationRecheck(unittest.TestCase):
             executor.execute_capability_plan(plan)
 
 
+# ---------------------------------------------------------------------------
+# Tests for produce_guest_allocation_with_hardware and extended build_allocation_argv.
+
+class TestProduceGuestAllocationWithHardware(unittest.TestCase):
+    """Tests for produce_guest_allocation_with_hardware.
+
+    Uses tiny synthetic files; no VZ runtime, no real hardware blobs.
+    """
+
+    def setUp(self):
+        self._tmp = tempfile.mkdtemp()
+        self._staged = _make_staged_bundle(self._tmp)
+        self._disk = Path(self._tmp) / "disk.img"
+        self._aux = Path(self._tmp) / "aux.nvram"
+        self._hw = Path(self._tmp) / "hardware_model.bin"
+        self._mid = Path(self._tmp) / "machine_id.bin"
+        self._disk.write_bytes(b"d" * 32)
+        self._aux.write_bytes(b"a" * 32)
+        self._hw.write_bytes(b"h" * 64)
+        self._mid.write_bytes(b"m" * 64)
+
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self._tmp, ignore_errors=True)
+
+    def test_returns_guest_allocation(self):
+        result = alloc.produce_guest_allocation_with_hardware(
+            self._staged, self._disk, self._aux, self._hw, self._mid,
+            max_disk_bytes=4096, max_aux_bytes=4096,
+            max_hardware_model_bytes=4096, max_machine_id_bytes=4096,
+        )
+        self.assertIsInstance(result, alloc.GuestAllocation)
+
+    def test_hardware_model_and_machine_id_populated(self):
+        result = alloc.produce_guest_allocation_with_hardware(
+            self._staged, self._disk, self._aux, self._hw, self._mid,
+            max_disk_bytes=4096, max_aux_bytes=4096,
+            max_hardware_model_bytes=4096, max_machine_id_bytes=4096,
+        )
+        self.assertIsNotNone(result.hardware_model)
+        self.assertIsNotNone(result.machine_id)
+        # Path is stored via os.path.abspath; check basename to avoid symlink-resolution differences.
+        self.assertTrue(result.hardware_model.path.endswith("hardware_model.bin"))  # type: ignore
+        self.assertTrue(result.machine_id.path.endswith("machine_id.bin"))          # type: ignore
+
+    def test_binds_bundle_identity(self):
+        result = alloc.produce_guest_allocation_with_hardware(
+            self._staged, self._disk, self._aux, self._hw, self._mid,
+            max_disk_bytes=4096, max_aux_bytes=4096,
+            max_hardware_model_bytes=4096, max_machine_id_bytes=4096,
+        )
+        self.assertEqual(result.source_commit, _SOURCE)
+
+    def test_refuses_missing_hardware_model(self):
+        missing = Path(self._tmp) / "no_hw.bin"
+        with self.assertRaises((ValueError, OSError)):
+            alloc.produce_guest_allocation_with_hardware(
+                self._staged, self._disk, self._aux, missing, self._mid,
+                max_disk_bytes=4096, max_aux_bytes=4096,
+                max_hardware_model_bytes=4096, max_machine_id_bytes=4096,
+            )
+
+    def test_refuses_missing_machine_id(self):
+        missing = Path(self._tmp) / "no_mid.bin"
+        with self.assertRaises((ValueError, OSError)):
+            alloc.produce_guest_allocation_with_hardware(
+                self._staged, self._disk, self._aux, self._hw, missing,
+                max_disk_bytes=4096, max_aux_bytes=4096,
+                max_hardware_model_bytes=4096, max_machine_id_bytes=4096,
+            )
+
+    def test_refuses_duplicate_hw_inode_as_disk(self):
+        # hardware_model must be a distinct inode from disk.
+        with self.assertRaises(ValueError):
+            alloc.produce_guest_allocation_with_hardware(
+                self._staged, self._disk, self._aux, self._disk, self._mid,
+                max_disk_bytes=4096, max_aux_bytes=4096,
+                max_hardware_model_bytes=4096, max_machine_id_bytes=4096,
+            )
+
+    def test_refuses_hw_exceeds_max(self):
+        big = Path(self._tmp) / "big_hw.bin"
+        big.write_bytes(b"x" * 128)
+        with self.assertRaises(ValueError):
+            alloc.produce_guest_allocation_with_hardware(
+                self._staged, self._disk, self._aux, big, self._mid,
+                max_disk_bytes=4096, max_aux_bytes=4096,
+                max_hardware_model_bytes=64, max_machine_id_bytes=4096,
+            )
+
+
+class TestBuildAllocationArgvWithHardware(unittest.TestCase):
+    """Tests for build_allocation_argv with hardware_model and machine_id."""
+
+    def setUp(self):
+        self._tmp = tempfile.mkdtemp()
+        self._staged = _make_staged_bundle(self._tmp)
+        self._disk = Path(self._tmp) / "disk.img"
+        self._aux = Path(self._tmp) / "aux.nvram"
+        self._hw = Path(self._tmp) / "hw.bin"
+        self._mid = Path(self._tmp) / "mid.bin"
+        for p in (self._disk, self._aux, self._hw, self._mid):
+            p.write_bytes(b"x" * 32)
+
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self._tmp, ignore_errors=True)
+
+    def _make_full_alloc(self):
+        return alloc.produce_guest_allocation_with_hardware(
+            self._staged, self._disk, self._aux, self._hw, self._mid,
+            max_disk_bytes=4096, max_aux_bytes=4096,
+            max_hardware_model_bytes=4096, max_machine_id_bytes=4096,
+        )
+
+    def test_returns_eight_tuple_with_hardware(self):
+        a = self._make_full_alloc()
+        argv = alloc.build_allocation_argv(a)
+        self.assertEqual(len(argv), 8)
+
+    def test_includes_hardware_model_flag(self):
+        a = self._make_full_alloc()
+        argv = alloc.build_allocation_argv(a)
+        self.assertIn(alloc.ARG_HARDWARE_MODEL, argv)
+
+    def test_includes_machine_id_flag(self):
+        a = self._make_full_alloc()
+        argv = alloc.build_allocation_argv(a)
+        self.assertIn(alloc.ARG_MACHINE_ID, argv)
+
+    def test_hardware_model_path_in_argv(self):
+        a = self._make_full_alloc()
+        argv = alloc.build_allocation_argv(a)
+        hw_idx = argv.index(alloc.ARG_HARDWARE_MODEL)
+        self.assertTrue(argv[hw_idx + 1].endswith("hw.bin"))
+
+    def test_machine_id_path_in_argv(self):
+        a = self._make_full_alloc()
+        argv = alloc.build_allocation_argv(a)
+        mid_idx = argv.index(alloc.ARG_MACHINE_ID)
+        self.assertTrue(argv[mid_idx + 1].endswith("mid.bin"))
+
+    def test_partial_hardware_raises_value_error(self):
+        # Allocate without hardware, then manually construct partial GuestAllocation.
+        base_alloc = alloc.produce_guest_allocation(
+            self._staged, self._disk, self._aux,
+            max_disk_bytes=4096, max_aux_bytes=4096,
+        )
+        # hardware_model set but machine_id = None → ValueError
+        import dataclasses
+        partial = dataclasses.replace(base_alloc,
+                                       hardware_model=base_alloc.disk,
+                                       machine_id=None)
+        with self.assertRaises(ValueError):
+            alloc.build_allocation_argv(partial)
+
+
 if __name__ == "__main__":
     unittest.main()

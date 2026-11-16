@@ -2,6 +2,15 @@
  * ArgParser.c — CLI argument parser for the native-qa-vm-runner.
  *
  * Pure string processing; no stat/open/syscalls.
+ *
+ * Accepted forms:
+ *   argc == 1  : probe (no arguments)
+ *   argc == 5  : --disk <val> --aux <val>  (any order)
+ *   argc == 9  : --disk <val> --aux <val> --hardware-model <val> --machine-id <val>
+ *                (any order)
+ *
+ * --hardware-model and --machine-id are optional; when absent, the
+ * corresponding OCVMArgs fields are left NULL.
  */
 
 #include "ArgParser.h"
@@ -9,7 +18,7 @@
 #include <string.h>
 
 OCVMArgsStatus OCVMParseArgs(int argc, char *argv[], OCVMArgs *args_out) {
-    OCVMArgs out = {NULL, NULL};
+    OCVMArgs out = {NULL, NULL, NULL, NULL};
 
     /* Probe: invoked with no arguments. */
     if (argc == 1) {
@@ -17,8 +26,8 @@ OCVMArgsStatus OCVMParseArgs(int argc, char *argv[], OCVMArgs *args_out) {
         return OC_VM_ARGS_PROBE;
     }
 
-    /* Expect exactly: <prog> --disk <val> --aux <val>  (5 tokens, either order) */
-    if (argc != 5) {
+    /* Accept exactly 5 (disk+aux) or 9 (disk+aux+hardware-model+machine-id) tokens. */
+    if (argc != 5 && argc != 9) {
         if (args_out != NULL) *args_out = out;
         return OC_VM_ARGS_UNKNOWN;
     }
@@ -37,6 +46,14 @@ OCVMArgsStatus OCVMParseArgs(int argc, char *argv[], OCVMArgs *args_out) {
                 if (args_out != NULL) *args_out = out;
                 return OC_VM_ARGS_MISSING_AUX;
             }
+            if (strcmp(flag, "--hardware-model") == 0) {
+                if (args_out != NULL) *args_out = out;
+                return OC_VM_ARGS_MISSING_HARDWARE_MODEL;
+            }
+            if (strcmp(flag, "--machine-id") == 0) {
+                if (args_out != NULL) *args_out = out;
+                return OC_VM_ARGS_MISSING_MACHINE_ID;
+            }
             if (args_out != NULL) *args_out = out;
             return OC_VM_ARGS_UNKNOWN;
         }
@@ -45,6 +62,10 @@ OCVMArgsStatus OCVMParseArgs(int argc, char *argv[], OCVMArgs *args_out) {
             out.disk = val;
         } else if (strcmp(flag, "--aux") == 0) {
             out.aux = val;
+        } else if (strcmp(flag, "--hardware-model") == 0) {
+            out.hardware_model = val;
+        } else if (strcmp(flag, "--machine-id") == 0) {
+            out.machine_id = val;
         } else {
             if (args_out != NULL) *args_out = out;
             return OC_VM_ARGS_UNKNOWN;

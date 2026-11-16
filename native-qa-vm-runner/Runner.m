@@ -162,10 +162,40 @@ int main(int argc, char *argv[]) {
             OCVMReleaseResourceFd(disk_fd);
             return 12;
         }
+        /* Optional hardware identity resources (--hardware-model, --machine-id). */
+        int hw_fd = -1;
+        if (args.hardware_model != NULL) {
+            hw_fd = OCVMValidateResource(args.hardware_model, OC_VM_RES_AUX);
+            if (hw_fd < 0) {
+                fprintf(stderr, "hardware-model resource validation failed: %s\n",
+                        args.hardware_model);
+                OCVMReleaseResourceFd(disk_fd);
+                OCVMReleaseResourceFd(aux_fd);
+                return 13;
+            }
+        }
+        int mid_fd = -1;
+        if (args.machine_id != NULL) {
+            mid_fd = OCVMValidateResource(args.machine_id, OC_VM_RES_AUX);
+            if (mid_fd < 0) {
+                fprintf(stderr, "machine-id resource validation failed: %s\n",
+                        args.machine_id);
+                OCVMReleaseResourceFd(disk_fd);
+                OCVMReleaseResourceFd(aux_fd);
+                if (hw_fd >= 0) OCVMReleaseResourceFd(hw_fd);
+                return 14;
+            }
+        }
         OCVMReleaseResourceFd(disk_fd);
         OCVMReleaseResourceFd(aux_fd);
+        if (hw_fd  >= 0) OCVMReleaseResourceFd(hw_fd);
+        if (mid_fd >= 0) OCVMReleaseResourceFd(mid_fd);
     }
-    fputs("VM execution is unavailable: resource identity, inherited-capability, "
-          "effective-profile and lifecycle acceptance are not implemented.\n", stderr);
+    if (!OCVMAdmitNative()) {
+        fputs("VM execution is unavailable: resource identity, inherited-capability, "
+              "effective-profile and lifecycle acceptance are not implemented.\n", stderr);
+        return 78;
+    }
+    /* Unreachable until E1 satisfies native admission prerequisites. */
     return 78;
 }
