@@ -1120,12 +1120,12 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
   useEffect(() => {
     if (mainTab.startsWith("terminal:") && !centerTerminal) setMainTab("chat");
   }, [mainTab, centerTerminal]);
-  const [fileTarget, setFileTarget] = useState<{ path: string; workspaceId: string } | null>(null);
+  const [fileTarget, setFileTarget] = useState<{ path: string; workspaceId: string; line?: number } | null>(null);
   useEffect(() => setFileTarget(null), [workspace.id]);
   // Opens any file type in the file viewer tab (H1: WorkspaceFileView wiring).
-  const openAnyFile = useCallback((path: string): boolean => {
+  const openAnyFile = useCallback((path: string, line?: number): boolean => {
     if (!workspace.path) return false;
-    setFileTarget({ path, workspaceId: workspace.id });
+    setFileTarget({ path, workspaceId: workspace.id, line });
     setMainTab("file");
     return true;
   }, [workspace.path, workspace.id]);
@@ -1164,7 +1164,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
       const req = takeFileOpenRequest(repo.id, workspace.id);
       if (!req) return;
       if (req.mode === "diff") diff.openPath(req.path);
-      else openAnyFile(req.path);
+      else openAnyFile(req.path, req.line);
     };
     return onFileOpenRequest(handle);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1649,7 +1649,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
           onOpenAccountSettings={onOpenAccountSettings}
           content={
             showFile && fileTarget && workspace.path ? (
-              <WorkspaceFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} isVisible={true} readOnly={workspace.status === "archived"} />
+              <WorkspaceFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} isVisible={true} readOnly={workspace.status === "archived"} line={fileTarget.line} />
             ) : showDiff ? (
               <DiffTab diff={diff} onClose={autoCloseDiffTab} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} onPersistAnchors={review.persistAnchors} notes={review.notes} notify={notify} />
             ) : showPr ? (
