@@ -119,6 +119,8 @@ function fixture({ draft = "keep this draft", caret = 4, end = caret, up = true,
       if (name === "./FileMentionMenu.tsx") return { FileMentionMenu };
       if (name === "./composerLongPaste.ts") return { longPasteAttachment: () => null };
       if (name.endsWith("/useBoolPref.ts")) return { useBoolPref: () => false };
+      if (name.endsWith("/useSettings.ts")) return { useSettings: () => ({ settings: null, save: () => Promise.resolve(true), error: null, reload: () => {} }) };
+      if (name.endsWith("/prefs.ts")) return { boolPref: () => false, withBoolPref: (s: unknown) => s };
       if (name === "../../backend") return { fuzzyFilterFiles: (...args: FileSearch) => {
         assert.equal(workspacePath, mentionWorkspacePath, "queue navigation must not search files");
         assert.equal(draft, "@", "only the mention control may search files");

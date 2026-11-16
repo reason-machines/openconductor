@@ -1,0 +1,388 @@
+@import './markdownFrontmatter.css';
+/* Chat transcript in Conductor's message list layout (renderApp `UDo`,
+   `MDo`, `PDo`, `TDo`, tool rows `Mu`; evidence/chat/README.md). Sizes are
+   Conductor's Tailwind classes in px (text-sm 14/20, text-xs 12/16 +0.01em,
+   spacing 4px steps); colours are its theme tokens (evidence/frontend/css-tokens.json). */
+.transcript,
+.prompt-approval {
+  --oc-fg: var(--text); --oc-muted-fg: var(--muted); --oc-muted: var(--surface-muted); --oc-accent: var(--surface-accent); --oc-accent-fg: var(--surface-accent-text);
+  --oc-highlight: var(--highlight); --oc-highlight-fg: var(--highlight-text); --oc-border: var(--border); --oc-input: var(--input); --oc-bg: var(--bg);
+  --oc-git-green: var(--success); --oc-git-red: var(--destructive); --oc-destructive: var(--destructive); --oc-link-fg: var(--emphasis);
+  --oc-tint-blue-600: var(--tint-blue-600); --oc-tint-blue-500: var(--tint-blue-500); --oc-tint-cyan-400: var(--tint-cyan-400);
+  --oc-tint-cyan-600: var(--tint-cyan-600); --oc-tint-yellow-400: var(--tint-yellow-400); --oc-tint-yellow-600: var(--tint-yellow-600);
+  --oc-tint-orange-600: var(--tint-orange-600); --oc-tint-orange-700: var(--tint-orange-700); --oc-tint-red-600: var(--tint-red-600);
+  --oc-tint-green-500: var(--tint-green-500); --oc-tint-green-600: var(--tint-green-600); --oc-tint-gray-600: var(--tint-gray); --oc-tint-documentation: var(--tint-doc);
+}
+.transcript { display: flex; flex-direction: column; color: var(--oc-fg); }
+
+/* The scroll area is the list: no padding of its own, turns centre at max-w-4xl.
+   The first turn sits 16px below the tab bar (Virtuoso's top offset). */
+.chat-scroll:has(> .transcript) { padding: 16px 0 0; gap: 0; container-type: inline-size; }
+.oc-turn { width: 100%; max-width: 896px; margin: 0 auto; padding-bottom: 12px; }
+@container (width < 896px) { .oc-turn { padding-right: 16px; } }
+.oc-turn-body { display: flex; flex-direction: column; gap: 4px; width: 100%; padding: 8px 28px; border: 1px solid transparent; }
+.oc-turn-items > * + * { margin-top: 4px; }
+.chat-msg { position: relative; overflow-wrap: anywhere; }
+
+/* User prompt (`_Oo` bubble in a right-aligned row, py-3). */
+.oc-msg-user { display: flex; justify-content: flex-end; padding: 12px 0; }
+.oc-user-col { display: flex; flex-direction: column; align-items: flex-end; max-width: 100%; min-width: 0; }
+.oc-bubble { position: relative; max-width: 768px; padding: 12px 16px; border-radius: 4px; background: var(--oc-highlight); color: var(--oc-highlight-fg); overflow: hidden; overflow-wrap: break-word; }
+.oc-user-text { font-size: 14px; line-height: 20px; white-space: pre-wrap; overflow-wrap: break-word; user-select: text; }
+.oc-sent-file-chip { display: inline; border: 1px solid var(--border); border-radius: 4px; padding: 1px 4px; background: var(--muted); color: inherit; font: inherit; overflow-wrap: anywhere; }
+button.oc-sent-file-chip { cursor: pointer; }
+button.oc-sent-file-chip:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.oc-bubble .chat-msg-actions { position: absolute; top: 4px; right: 6px; }
+
+.chat-report { align-self: stretch; border-left: 3px solid var(--accent); background: var(--hover); border-radius: 0 var(--radius) var(--radius) 0; padding: 6px 10px; white-space: pre-wrap; }
+.chat-report-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
+.chat-system { text-align: center; color: var(--oc-muted-fg); font-size: 12px; white-space: pre-wrap; }
+
+/* Assistant text (`aVt` > `uDi` > `yOo` my-1 > prose). */
+.oc-msg-assistant { display: flex; justify-content: flex-start; }
+.oc-assistant-col { display: flex; flex-direction: column; width: 100%; max-width: 768px; overflow-wrap: break-word; }
+.oc-text-wrap { margin: 4px 0; }
+.chat-text.is-streaming > :last-child::after { content: ""; display: inline-block; width: 7px; height: 1em; margin-left: 2px; vertical-align: text-bottom; background: currentColor; opacity: 0.6; animation: chat-blink 1s steps(2) infinite; }
+.chat-typing { display: inline-block; width: 28px; height: 10px; margin: 8px 0; background: radial-gradient(circle, var(--oc-muted-fg) 2px, transparent 3px) 0 50% / 9px 10px repeat-x; animation: pulse 1.4s ease-in-out infinite; }
+@keyframes chat-blink { to { opacity: 0; } }
+
+/* "4 tool calls, 2 messages" (`PDo`). */
+.oc-summary { display: flex; width: 100%; align-items: center; color: var(--oc-muted-fg); font: inherit; text-align: left; padding: 0; background: none; border: 0; }
+.oc-summary:not(:disabled):hover { color: var(--oc-fg); }
+.oc-summary:disabled { cursor: default; }
+.oc-summary-chevron { width: 12px; height: 12px; margin-right: 4px; flex: none; }
+.oc-summary-main { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.oc-summary-label { margin-left: 2px; font-size: 14px; line-height: 20px; white-space: nowrap; }
+.oc-summary-icons { display: flex; align-items: center; gap: 4px; }
+.oc-summary-icons .oc-tool-icon { color: var(--oc-muted-fg); }
+
+/* Tool rows (`Mu`). */
+.oc-tool-wrap { width: 100%; }
+.oc-tool { width: 100%; }
+.oc-tool-icon { display: block; width: 12px; height: 12px; color: var(--oc-muted-fg); flex: none; }
+.oc-tool-head { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; padding: 6px 8px; margin: 0 -8px; border-radius: 4px; }
+.oc-tool-head.opens { cursor: pointer; }
+.oc-tool-head:hover { background: color-mix(in oklab, var(--oc-muted) 50%, transparent); }
+.oc-tool-icon-slot { flex: none; }
+.oc-tool-icon-swap { position: relative; }
+.oc-tool-icon-hover { position: absolute; inset: 0; margin: auto; display: none; width: 12px; height: 12px; color: var(--oc-muted-fg); }
+.oc-tool-head:hover .oc-tool-icon-idle { opacity: 0; }
+.oc-tool-head:hover .oc-tool-icon-hover { display: block; }
+.oc-tool-head:has(.filebadge:hover) .oc-tool-icon-idle { opacity: 1; }
+.oc-tool-head:has(.filebadge:hover) .oc-tool-icon-hover { display: none; }
+.oc-tool-main { display: flex; gap: 8px; min-width: 0; flex: 1; }
+.oc-tool-main.align-baseline { align-items: baseline; }
+.oc-tool-main.align-center { align-items: center; }
+.oc-tool-left { font-size: 14px; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.oc-tool-right { font-family: var(--font-mono); font-weight: 500; font-size: 12px; line-height: 16px; letter-spacing: 0.01em; color: var(--oc-muted-fg); max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.oc-tool-right.hidden { visibility: hidden; }
+.oc-tool-right-row { display: flex; align-items: center; gap: 8px; }
+.oc-tool-inline-code { font-family: var(--font-mono); font-size: 12px; line-height: 16px; letter-spacing: 0.01em; background: none; padding: 0; border: 0; color: inherit; }
+.oc-tool-count { font-size: 12px; line-height: 16px; color: var(--oc-muted-fg); }
+.oc-lowercase { text-transform: lowercase; }
+.oc-code-chip { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-weight: 500; font-size: 12px; line-height: 16px; letter-spacing: 0.01em; color: var(--oc-muted-fg); background: var(--oc-muted); padding: 2px 4px; border-radius: 6px; }
+.oc-code-chip.sans { font-family: var(--font-sans); font-weight: 400; }
+.oc-tool[data-tone="error"] .oc-tool-left, .oc-tool[data-tone="error"] .oc-tool-icon { color: var(--oc-destructive); }
+.oc-error-chip { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-weight: 500; font-size: 12px; line-height: 16px; color: var(--oc-destructive); background: color-mix(in oklab, var(--oc-destructive) 10%, transparent); padding: 2px 4px; border-radius: 6px; }
+.oc-tool[data-status="running"] .oc-tool-icon-idle .oc-tool-icon { animation: pulse 1.4s ease-in-out infinite; }
+.oc-tool-content { margin-top: 8px; user-select: text; font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; white-space: pre-wrap; overflow-wrap: break-word; color: var(--oc-accent-fg); background: var(--oc-accent); padding: 12px; border-radius: 6px; border: 1px solid var(--oc-border); max-height: 384px; overflow: auto; }
+.oc-tool-content.bare { padding: 0; background: none; border: 0; }
+.oc-tool-content.plain { font-family: inherit; font-weight: 400; background: none; border: 0; padding: 0 0 0 20px; color: inherit; }
+.oc-multi-edit-item + .oc-multi-edit-item { border-top: 1px solid var(--oc-border); }
+.oc-multi-edit-head { display: flex; align-items: center; gap: 8px; width: 100%; padding: 12px; border: 0; background: none; color: inherit; font: 400 12px/16px var(--font-sans); text-align: left; cursor: pointer; }
+.oc-multi-edit-head:hover { background: color-mix(in oklab, var(--oc-muted) 30%, transparent); }
+.oc-multi-edit-label { flex: none; font-weight: 500; }
+.oc-multi-edit-preview { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--oc-muted-fg); }
+.oc-multi-edit-body { border-top: 1px solid var(--oc-border); padding: 8px; }
+.oc-tool[data-tone="error"] .oc-tool-content { color: var(--oc-destructive); background: color-mix(in oklab, var(--oc-destructive) 10%, transparent); border-color: color-mix(in oklab, var(--oc-destructive) 20%, transparent); }
+.oc-tool-code { margin: 0; padding: 12px; font: 500 12px/16px var(--font-mono); color: var(--oc-accent-fg); background: var(--oc-accent); border: 1px solid var(--oc-border); border-radius: 6px; white-space: pre; overflow: auto; max-height: 384px; }
+.oc-tool-prompt { color: var(--oc-muted-fg); }
+.oc-code-line { display: flex; gap: 12px; }
+.oc-code-ln { flex: none; min-width: 2ch; text-align: right; color: var(--oc-muted-fg); user-select: none; }
+.oc-code-line.add { background: color-mix(in oklab, var(--oc-git-green) 12%, transparent); }
+.oc-code-line.del { background: color-mix(in oklab, var(--oc-git-red) 12%, transparent); }
+
+/* "+N −N" beside an Edit (`fIt`). */
+.oc-line-counts { display: flex; align-items: center; gap: 8px; font-size: 12px; line-height: 16px; }
+.oc-line-counts > span { display: flex; align-items: center; }
+.oc-line-counts .add { color: var(--oc-git-green); }
+.oc-line-counts .del { color: var(--oc-git-red); }
+.oc-line-counts-icon { width: 12px; height: 12px; }
+
+/* File badge (`tee` / `QZ`: an outline button, h-5 text-xs). */
+.oc-file-badge { display: inline-flex; align-items: center; gap: 4px; height: 20px; min-width: 0; max-width: 100%; padding: 0 6px; overflow: hidden; border: 1px solid var(--oc-input); border-radius: 4px; background: var(--oc-bg); color: inherit; font-family: var(--font-sans); font-size: 12px; line-height: 1; font-weight: inherit; /* twMerge drops the outline button's font-450 next to font-sans, so the weight is inherited */ letter-spacing: 0.01em; white-space: nowrap; cursor: pointer; }
+.oc-file-badge:hover { background: var(--oc-accent); color: var(--oc-accent-fg); }
+.oc-file-badge-name { display: block; min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.oc-file-glyph { width: 12px; height: 12px; flex: none; color: var(--oc-muted-fg); }
+.oc-file-glyph[data-tint="blue-600"] { color: var(--oc-tint-blue-600); }
+.oc-file-glyph[data-tint="blue-500"] { color: var(--oc-tint-blue-500); }
+.oc-file-glyph[data-tint="cyan-400"] { color: var(--oc-tint-cyan-400); }
+.oc-file-glyph[data-tint="cyan-600"] { color: var(--oc-tint-cyan-600); }
+.oc-file-glyph[data-tint="yellow-400"] { color: var(--oc-tint-yellow-400); }
+.oc-file-glyph[data-tint="yellow-600"] { color: var(--oc-tint-yellow-600); }
+.oc-file-glyph[data-tint="orange-600"] { color: var(--oc-tint-orange-600); }
+.oc-file-glyph[data-tint="orange-700"] { color: var(--oc-tint-orange-700); }
+.oc-file-glyph[data-tint="red-600"] { color: var(--oc-tint-red-600); }
+.oc-file-glyph[data-tint="green-500"] { color: var(--oc-tint-green-500); }
+.oc-file-glyph[data-tint="green-600"] { color: var(--oc-tint-green-600); }
+.oc-file-glyph[data-tint="gray-600"] { color: var(--oc-tint-gray-600); }
+.oc-file-glyph[data-tint="documentation"] { color: var(--oc-tint-documentation); }
+
+/* Thinking text. */
+.chat-thinking .oc-prose { color: var(--oc-muted-fg); }
+
+/* Turn footer (`TDo`): one wrapping row, text-xs muted. */
+.oc-turn-footer { container: turn-footer / inline-size; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; margin-top: 2px; font-size: 12px; line-height: 16px; letter-spacing: 0.01em; color: var(--oc-muted-fg); }
+.oc-turn-time { flex: none; border-radius: 4px; }
+.oc-turn-time:hover { color: var(--oc-fg); }
+.chat-turn-actions { display: flex; flex: none; align-items: center; gap: 4px; }
+.chat-turn-error { color: var(--oc-destructive); }
+/* Not signed in (Conductor's auth block: destructive badge, text-sm copy, outline sm button). */
+.chat-sign-in { flex-basis: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 4px; font-size: 14px; line-height: 20px; color: var(--oc-fg); }
+.chat-sign-in p { margin: 0; }
+.chat-sign-in-badge { padding: 1px 8px; border-radius: 6px; background: var(--oc-destructive); color: var(--oc-bg); font-size: 12px; font-weight: 500; }
+.chat-sign-in-open { height: 28px; padding: 0 10px; border: 1px solid var(--oc-border); border-radius: 6px; background: var(--oc-bg); color: var(--oc-fg); font: inherit; font-size: 12px; font-weight: 500; cursor: default; }
+.chat-sign-in-open:hover { background: var(--oc-accent); color: var(--oc-accent-fg); }
+.oc-icon-action { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--oc-muted-fg); cursor: pointer; }
+.oc-icon-action:hover, .oc-icon-action[aria-expanded="true"] { background: var(--oc-accent); color: var(--oc-accent-fg); }
+.oc-icon-action-svg { width: 14px; height: 14px; }
+/* Conductor's footer icons are lucide-react with its global `.lucide{stroke-width:1px}` and non-scaling strokes. */
+.oc-turn-footer .oc-icon-action svg { stroke-width: 1px; }
+.oc-turn-footer .oc-icon-action svg * { vector-effect: non-scaling-stroke; }
+/* "Show message actions" (`tt` ghost iconXs + `size-5`): rounded-sm (4px), presses to 97%, accent while open. */
+.oc-turn-menu-trigger { border-radius: 4px; transition: transform 150ms ease-out; }
+.oc-turn-menu-trigger:active { transform: scale(0.97); }
+.oc-turn-menu-trigger[data-popup-open] { background: var(--oc-accent); color: var(--oc-accent-fg); }
+.oc-text-action { font-size: 12px; color: var(--oc-muted-fg); padding: 2px 6px; border-radius: 5px; }
+.oc-text-action:hover { background: var(--oc-accent); color: var(--oc-accent-fg); }
+/* Conductor (`vDo`): the first chips share the footer row and shrink instead of wrapping (flex-1 min-w-0
+   max-w-fit overflow-hidden); revealed chips and "+N more" wrap, on their own line once revealed (basis-full). */
+.chat-turn-changes { display: flex; flex: 1 1 0; align-items: center; gap: 8px; min-width: 0; max-width: fit-content; overflow: hidden; }
+.chat-turn-changes-more { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.chat-turn-changes-more.revealed { flex-basis: 100%; }
+.chat-turn-chip { flex: 0 1 auto; min-width: 0; }
+.chat-turn-chip.more { gap: 4px; padding: 0 6px; tab-size: 4; font-variant-numeric: tabular-nums; }
+.oc-chip-counts { display: flex; flex: none; align-items: center; gap: 4px; font: 500 10px/12px var(--font-mono); letter-spacing: 0.04em; }
+.oc-chip-counts .a { color: var(--oc-git-green); }
+.oc-chip-counts .d { color: var(--oc-git-red); }
+.chat-turn-more-icon { width: 12px; height: 12px; flex: none; }
+.chat-turn-more-compact { display: none; }
+.chat-turn-chip.more.compact-only { display: none; }
+@container turn-footer (width < 560px) {
+  .chat-turn-chip.more .oc-chip-counts { display: none; }
+}
+@container turn-footer (width < 480px) {
+  .chat-turn-chip.more { padding: 0 4px; }
+  .chat-turn-changes:not(.revealed) { display: none; }
+  .chat-turn-changes.revealed { flex-basis: 100%; max-width: none; }
+  .chat-turn-chip.more.compact-only { display: inline-flex; }
+  .chat-turn-more-compact { display: inline; }
+  .chat-turn-more-wide { display: none; }
+}
+
+/* Conductor: a stopped prompt's "Cancelled" caption (mt-0.5 text-xs muted) and the outline "Interrupted by user" badge. */
+.chat-cancelled { margin-top: 2px; font-size: 12px; line-height: 16px; color: var(--oc-muted-fg); }
+.chat-badge { display: inline-flex; align-items: center; border: 1px solid var(--oc-border); border-radius: 6px; padding: 1px 7px; font-size: 12px; font-weight: 500; color: var(--oc-fg); }
+.chat-msg-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.12s; }
+.chat-msg:hover .chat-msg-actions, .chat-msg-actions:focus-within { opacity: 1; }
+.chat-action { font-size: 11.5px; color: var(--muted); padding: 2px 6px; border-radius: 5px; }
+.chat-action:hover { background: var(--hover); color: var(--text); }
+
+/* Markdown (markdown.ts) outside chat text, and code blocks. Code colours follow Conductor's default code theme
+   (--code-* in src/theme/tokens.css; evidence/chat/README.md) and its .hljs rules. */
+
+.md { white-space: normal; line-height: 1.6; min-width: 0; }
+.md > :first-child { margin-top: 0; }
+.md > :last-child { margin-bottom: 0; }
+.md p { margin: 0 0 0.75em; }
+.md ul, .md ol { margin: 0 0 0.75em; padding-left: 1.5em; }
+.md li { margin: 0.2em 0; }
+.md li > p { margin: 0; }
+.md h1, .md h2, .md h3, .md h4 { margin: 1em 0 0.5em; line-height: 1.3; font-weight: 600; }
+.md h1 { font-size: 1.35em; } .md h2 { font-size: 1.2em; } .md h3 { font-size: 1.05em; } .md h4 { font-size: 1em; }
+.md blockquote { margin: 0 0 0.75em; padding-left: 12px; border-left: 3px solid var(--border); color: var(--muted); }
+.md hr { border: 0; border-top: 1px solid var(--border); margin: 1em 0; }
+.md-link { color: var(--accent); text-decoration: none; }
+.md-link:hover { text-decoration: underline; }
+.md code.md-code { font-family: var(--font-mono); font-size: 0.88em; padding: 1px 5px; border: 1px solid var(--border); border-radius: 5px; background: var(--hover); overflow-wrap: anywhere; }
+.md-pre { margin: 0 0 0.75em; }
+.md-code-block { position: relative; min-height: 35px; border-radius: 6px; background: var(--code-bg); overflow: hidden; font-variant-ligatures: none; }
+.md-code-scroll { margin: 0; max-height: 500px; overflow: auto; padding: 10px 12px; font: 12.5px/1.55 var(--font-mono); font-variant-ligatures: none; white-space: pre; }
+.md-code-scroll code { font: inherit; background: none; padding: 0; border-radius: 0; }
+.md-code-copy { position: absolute; top: 8px; right: 10px; font-size: 11px; color: var(--muted); padding: 1px 6px; border-radius: 5px; visibility: hidden; background: var(--code-bg); }
+.md-code-block:hover .md-code-copy, .md-code-copy:focus-visible { visibility: visible; }
+.md-code-copy:hover { color: var(--text); }
+.md-table-scroll { overflow-x: auto; margin: 0 0 0.75em; }
+.md table { border-collapse: collapse; width: 100%; font-size: 0.95em; }
+.md th, .md td { border: 1px solid var(--border); padding: 4px 8px; text-align: left; vertical-align: top; }
+.md th { font-weight: 600; background: var(--hover); }
+.md input[type="checkbox"] { margin: 0 6px 0 0; vertical-align: middle; }
+.md li:has(> input[type="checkbox"]) { list-style: none; margin-left: -1.3em; }
+
+.hljs { color: var(--code-fg); background: transparent; }
+.hljs-comment, .hljs-quote { color: var(--code-comment); font-style: italic; }
+.hljs-doctag, .hljs-keyword, .hljs-formula { color: var(--code-keyword); }
+.hljs-section, .hljs-name, .hljs-selector-tag, .hljs-subst { color: var(--code-tag); }
+.hljs-literal { color: var(--code-operator); }
+.hljs-string, .hljs-regexp, .hljs-attribute, .hljs-meta .hljs-string { color: var(--code-string); }
+.hljs-addition { color: var(--diff-add); }
+.hljs-deletion { color: var(--diff-del); }
+.hljs-attr, .hljs-variable, .hljs-template-variable, .hljs-type, .hljs-selector-class, .hljs-selector-attr, .hljs-selector-pseudo, .hljs-number { color: var(--code-number); }
+.hljs-symbol, .hljs-bullet, .hljs-link, .hljs-meta, .hljs-selector-id, .hljs-title { color: var(--code-function); }
+.hljs-built_in, .hljs-title.class_, .hljs-class .hljs-title { color: var(--code-class); }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: 700; }
+.hljs-link { text-decoration: underline; }
+
+/* "Reset chat?" in Conductor's AlertDialog: a centred 512px (max-w-lg) panel, p-6, gap-4, rounded-xl,
+   over the overlay with backdrop-blur-xs; header space-y-2 with a text-lg font-medium title and a
+   text-sm muted description; footer justify-end space-x-2 with 32px (h-8) outline and destructive buttons. */
+.oc-alert-backdrop { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.oc-alert { display: grid; gap: 16px; width: min(512px, calc(100vw - 32px)); box-sizing: border-box; padding: 24px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 10px 15px -3px var(--shadow-25); color: var(--text); }
+.oc-alert-header { display: flex; flex-direction: column; gap: 8px; }
+.oc-alert-header h2 { margin: 0; font-size: 18px; line-height: 28px; font-weight: 500; }
+.oc-alert-header p { margin: 0; font-size: 14px; line-height: 20px; color: var(--muted); }
+.oc-alert-footer { display: flex; justify-content: flex-end; gap: 8px; }
+.oc-alert-btn { display: inline-flex; align-items: center; justify-content: center; height: 32px; box-sizing: border-box; gap: 8px; padding: 0 12px; border-radius: 6px; border: 1px solid transparent; font: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer; }
+.oc-alert-btn:disabled { opacity: 0.5; cursor: default; }
+.oc-alert-cancel { background: transparent; border-color: var(--border); color: var(--text); }
+.oc-alert-cancel:hover { background: var(--hover); }
+.oc-alert-destructive { background: var(--destructive); color: var(--on-solid); }
+.oc-alert-destructive:hover:not(:disabled) { filter: brightness(1.08); }
+.oc-alert-kbd { margin-left: 8px; display: inline-flex; align-items: center; opacity: 0.6; }
+.oc-alert-enter { display: inline-block; width: 12px; height: 12px; flex-shrink: 0; }
+
+.oc-reset-files { display: flex; align-items: center; gap: 8px; font-size: 14px; line-height: 20px; color: var(--text); }
+/* Conductor's checkbox `pv`: a 16px rounded box, filled with the foreground and a background-coloured check when on. */
+.oc-reset-files input[type="checkbox"] { appearance: none; -webkit-appearance: none; position: relative; flex-shrink: 0; width: 16px; height: 16px; margin: 0; border: 1px solid var(--text); border-radius: 4px; background: transparent; cursor: pointer; }
+.oc-reset-files input[type="checkbox"]:checked { background: var(--text); }
+.oc-reset-files input[type="checkbox"]:checked::after { content: ""; position: absolute; left: 4.5px; top: 1.5px; width: 4px; height: 8px; border: solid var(--bg); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+.oc-reset-count { font-variant-numeric: tabular-nums; }
+.oc-skeleton { display: inline-block; width: 64px; height: 14px; border-radius: 4px; background: var(--muted); opacity: 0.2; animation: pulse 1.4s ease-in-out infinite; }
+
+/* Conductor's prose for chat text (`xS`: prose prose-sm, with its own overrides). */
+.oc-prose { font-size: 14px; line-height: 1.71429; letter-spacing: -0.01em; color: var(--oc-fg); font-kerning: normal; text-rendering: optimizeLegibility; overflow-wrap: anywhere; text-wrap: pretty; white-space: normal; user-select: text; }
+.oc-prose > :first-child { margin-top: 0; }
+.oc-prose > :last-child { margin-bottom: 0; }
+.oc-prose p { margin: 1.14286em 0; font-weight: 450; letter-spacing: -0.10667px; }
+.oc-prose ul, .oc-prose ol { margin: 1.14286em 0; padding-inline-start: 1.57143em; }
+.oc-prose ul { list-style-type: disc; }
+.oc-prose ol { list-style-type: decimal; }
+.oc-prose li { margin: 0.285714em 0; padding-inline-start: 0; }
+.oc-prose li::marker { color: var(--oc-muted-fg); }
+.oc-prose li > p { margin: 0.571429em 0; }
+.oc-prose :is(ul, ol) :is(ul, ol) { margin: 0.571429em 0; }
+.oc-prose strong { font-weight: 500; color: var(--oc-fg); }
+.oc-prose h1, .oc-prose h2, .oc-prose h3, .oc-prose h4 { color: var(--oc-fg); font-weight: 600; text-wrap: balance; }
+.oc-prose h1 { margin: 0 0 0.8em; font-size: 2.14286em; line-height: 1.2; }
+.oc-prose h2 { margin: 1.6em 0 0.8em; font-size: 1.42857em; line-height: 1.4; }
+.oc-prose h3 { margin: 1.55556em 0 0.444444em; font-size: 1.28571em; line-height: 1.55556; }
+.oc-prose h4 { margin: 1.42857em 0 0.571429em; line-height: 1.42857; font-weight: 500; }
+.oc-prose :is(h2, h3, h4, hr) + * { margin-top: 0; }
+.oc-prose blockquote { margin: 1.33333em 0; padding-inline-start: 1.11111em; border-left: 4px solid var(--oc-border); color: var(--oc-muted-fg); }
+.oc-prose hr { border: 0; border-top: 1px solid var(--oc-border); margin: 2.85714em 0; }
+.oc-prose .md-link { color: var(--oc-fg); font-weight: 500; text-decoration: none; }
+.oc-prose .md-link:hover { text-decoration: underline; }
+.oc-prose .md-file-link { display: inline; padding: 0; border: 0; background: none; font: inherit; letter-spacing: inherit; color: inherit; text-align: left; cursor: pointer; user-select: text; }
+.oc-prose .md-file-link code.md-code { color: var(--oc-link-fg); }
+.oc-prose .md-file-link:hover { text-decoration: underline; text-decoration-color: var(--oc-link-fg); }
+.oc-prose code.md-code { font-family: var(--font-mono); font-size: 0.857143em; font-weight: 450; color: var(--oc-fg); padding: 0.1em 0.4em; border: 1px solid var(--oc-input); border-radius: 6px; background: transparent; overflow-wrap: anywhere; }
+.oc-prose .md-pre { margin: 1.66667em 0; }
+.oc-prose.muted, .oc-prose.muted :is(p, li, strong, code.md-code) { color: var(--oc-muted-fg); }
+
+/* ---- The rest of Conductor's tool rows (renderApp Tpo ... Kpo, aUt, _0o) ---- */
+.oc-tool-icon-pair { display: inline-flex; align-items: center; gap: 2px; color: var(--oc-muted-fg); }
+.oc-tool-stack { display: flex; flex-direction: column; gap: 4px; }
+.oc-tool-aside { margin: 0; font-size: 12px; line-height: 16px; color: var(--oc-muted-fg); overflow-wrap: break-word; }
+.oc-tool-left.shrink { flex: none; }
+.oc-tool-left-row { display: flex; align-items: center; gap: 8px; }
+.oc-tool-note { display: block; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 16px; color: var(--oc-muted-fg); }
+.oc-tool-tag { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--oc-muted-fg); }
+.oc-tool-plain { font-family: var(--font-sans); font-weight: 400; }
+.oc-tool-count.mono, .oc-task-note.mono, .oc-task-field-value.mono { font-family: var(--font-mono); }
+/* N0o's status pill */
+.oc-status-pill { font-size: 12px; line-height: 16px; padding: 2px 6px; border-radius: 4px; background: var(--oc-muted); }
+.oc-status-pill[data-status="running"] { background: var(--status-running); color: var(--status-running-text); }
+.oc-status-pill[data-status="completed"] { background: color-mix(in oklab, var(--oc-git-green) 15%, transparent); color: var(--oc-git-green); }
+/* Qu variant="outline" */
+.oc-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border: 1px solid var(--oc-border); border-radius: 6px; font-family: var(--font-mono); font-size: 12px; line-height: 16px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--oc-fg); }
+.oc-badge[data-tone="destructive"] { color: var(--oc-destructive); }
+.oc-badge[data-tone="muted"] { color: var(--oc-muted-fg); }
+.oc-badge-icon { width: 12px; height: 12px; flex: none; }
+.oc-tool[data-status="running"] .oc-badge-icon { animation: pulse 1.4s ease-in-out infinite; }
+/* t0 */
+.oc-copy-icon { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--oc-muted-fg); cursor: pointer; }
+.oc-copy-icon:hover { background: var(--oc-accent); color: var(--oc-accent-fg); }
+.oc-copy-icon-svg { width: 14px; height: 14px; }
+/* V9e */
+.oc-io { display: flex; flex-direction: column; gap: 12px; }
+.oc-io-label { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--oc-muted-fg); margin-bottom: 4px; }
+.oc-io-label.mono { font-family: var(--font-mono); font-weight: 400; margin-bottom: 0; }
+.oc-io-pre { margin: 0; padding: 0; font: 500 12px/16px var(--font-mono); white-space: pre-wrap; overflow-wrap: break-word; }
+.oc-io-pre.muted { color: var(--oc-muted-fg); }
+.oc-io-pre.error { color: var(--oc-destructive); }
+.oc-io-truncated { margin-top: 8px; font-size: 12px; font-style: italic; color: var(--oc-muted-fg); }
+/* AskUserQuestion's answers, DiffComment's comments */
+.oc-qa { display: flex; flex-direction: column; gap: 12px; font-size: 12px; line-height: 16px; }
+.oc-qa-question { border-left: 2px solid var(--oc-muted); padding-left: 8px; color: var(--oc-muted-fg); }
+.oc-qa-question.body { color: inherit; }
+.oc-qa-answer { font-weight: 500; }
+.oc-comment { display: flex; flex-direction: column; gap: 4px; }
+.oc-comment-where { font-family: var(--font-mono); color: var(--oc-muted-fg); }
+/* ExitPlanMode */
+.oc-plan { font-family: var(--font-sans); font-weight: 400; white-space: normal; color: var(--oc-fg); }
+.oc-plan .oc-prose { font-size: 14px; }
+.oc-qa, .oc-task-fields, .oc-task-detail, .oc-task-list, .oc-task-counts, .oc-tool-content > .oc-task { font-family: var(--font-sans); font-weight: 400; white-space: normal; color: var(--oc-fg); }
+/* Tasks (oUt) */
+.oc-task-list, .oc-task-detail { display: flex; flex-direction: column; gap: 8px; }
+.oc-task-counts { font-size: 12px; line-height: 16px; color: var(--oc-muted-fg); margin-bottom: 8px; }
+.oc-task { display: flex; align-items: flex-start; gap: 8px; }
+.oc-task[data-status="completed"] { opacity: 0.6; }
+.oc-task[data-status="deleted"] { opacity: 0.4; }
+.oc-task[data-status="completed"] .oc-task-subject, .oc-task[data-status="deleted"] .oc-task-subject { text-decoration: line-through; }
+.oc-task-icon { width: 16px; height: 16px; margin-top: 2px; flex: none; color: var(--oc-muted-fg); }
+.oc-task[data-status="completed"] .oc-task-icon { color: var(--oc-git-green); }
+.oc-task[data-status="in_progress"] .oc-task-icon { color: var(--status-task-running); animation: pulse 1.4s ease-in-out infinite; }
+.oc-task[data-status="deleted"] .oc-task-icon { color: var(--oc-destructive); }
+.oc-task-body { flex: 1; min-width: 0; }
+.oc-task-subject { margin: 0; font-size: 12px; line-height: 16px; font-weight: 500; overflow-wrap: break-word; }
+.oc-task-note { margin: 2px 0 0; font-size: 12px; line-height: 16px; color: var(--oc-muted-fg); overflow-wrap: break-word; }
+.oc-task-empty { margin: 0; padding: 12px; font-size: 12px; font-style: italic; color: var(--oc-muted-fg); }
+.oc-task-fields { display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; }
+.oc-task-field { display: flex; align-items: center; gap: 8px; }
+.oc-task-field.id { margin-top: 8px; font-family: var(--font-mono); color: var(--oc-muted-fg); }
+.oc-task-field-key { color: var(--oc-muted-fg); }
+.oc-task-field-value { font-weight: 500; }
+.oc-pre-wrap { white-space: pre-wrap; overflow-wrap: break-word; }
+/* bpo */
+.oc-subagent-type { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 4px; font-size: 12px; line-height: 16px; font-weight: 500; }
+.oc-subagent-dot { flex: none; color: var(--oc-muted-fg); }
+.oc-subagent-model { flex: none; max-width: 192px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oc-subagent-result { display: flex; flex-direction: column; gap: 8px; font-family: var(--font-sans); font-weight: 400; white-space: normal; }
+.oc-subagent-tabs { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--oc-border); padding-bottom: 8px; }
+.oc-subagent-tab-group { display: flex; align-items: center; gap: 8px; }
+.oc-subagent-tab { padding: 4px 8px; border: 0; border-radius: 4px; background: none; font-size: 12px; line-height: 16px; font-weight: 500; color: var(--oc-muted-fg); cursor: pointer; }
+.oc-subagent-tab:hover { color: var(--oc-fg); }
+.oc-subagent-tab.active { background: var(--oc-fg); color: var(--oc-bg); }
+.oc-subagent-body { max-height: 384px; overflow: auto; }
+.oc-subagent-raw { padding: 12px; background: var(--oc-muted); border-radius: 4px; font: 12px/16px var(--font-mono); white-space: pre-wrap; overflow-wrap: break-word; }
+/* _0o / Rki */
+.oc-collab-title { display: flex; min-width: 0; flex: 1; align-items: baseline; gap: 6px; font-size: 14px; line-height: 20px; }
+.oc-collab-action { flex: none; }
+.oc-collab-agent { display: inline-flex; min-width: 0; align-items: baseline; gap: 4px; }
+.oc-collab-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.oc-collab-name[data-color="blue"] { color: var(--collab-blue); }
+.oc-collab-name[data-color="green"] { color: var(--collab-green); }
+.oc-collab-name[data-color="cyan"] { color: var(--collab-cyan); }
+.oc-collab-name[data-color="fuchsia"] { color: var(--collab-fuchsia); }
+.oc-collab-name[data-color="orange"] { color: var(--collab-orange); }
+.oc-collab-name[data-color="yellow"] { color: var(--collab-yellow); }
+.oc-collab-role, .oc-collab-state { flex: none; color: var(--oc-muted-fg); }
+.oc-collab-count { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; color: var(--oc-fg); }
+.oc-collab-children { margin-left: 6px; border-left: 1px solid var(--oc-border); padding-left: 16px; }
+.oc-collab-body { margin-top: 4px; display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; color: var(--oc-muted-fg); }
+.oc-collab-prompt { min-width: 0; overflow-wrap: break-word; }
+.oc-collab-line { display: flex; min-width: 0; align-items: flex-start; gap: 8px; }
+.oc-collab-line .oc-tool-icon { margin-top: 2px; }
+.oc-tool-icon.error { color: var(--oc-destructive); }
+.oc-tool-icon.working { animation: pulse 1.4s ease-in-out infinite; }

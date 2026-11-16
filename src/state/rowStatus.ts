@@ -124,9 +124,13 @@ function firstRule(i: RowStatusInput, rules: Rule[]): RowStatus {
 /** The row's status (`oWt`): workspace setup, then the agent, then the PR, then the branch. */
 export function rowStatus(i: RowStatusInput): RowStatus {
   const fromState = i.workspaceState === undefined ? undefined : FROM_WORKSPACE_STATE[i.workspaceState];
-  if (fromState) return fromState;
+  // `failed` and `unstarted` are terminal/not-started states that always win.
+  // `setting-up` / `initializing` yield to a live session urgency so the user
+  // can respond (e.g. `needs_user_permission`) while setup is still running.
+  if (fromState && fromState !== "setting-up") return fromState;
   const fromSession = i.session === undefined ? undefined : FROM_SESSION[i.session];
   if (fromSession) return fromSession;
+  if (fromState) return fromState;
   return firstRule(i, STATUS_RULES);
 }
 
@@ -144,7 +148,13 @@ export const isGitStatus = (s: RowStatus): boolean => GIT_STATUSES.has(s);
  * with only the sessions' status and the workspace state, no PR.
  */
 export function homeStatus(workspaceState: string | undefined, session: SessionStatus): RowStatus {
-  return rowStatus({ workspaceState, session });
+  const s = rowStatus({ workspaceState, session });
+  // Conductor (`aWt`): idle/error gives Home back the last-activity time, even
+  // during workspace setup. The sidebar row icon keeps "Setting up" (parity
+  // sidebar.ws-status). FROM_SESSION is undefined for idle/error, so checking
+  // it avoids duplicating the session urgency list here.
+  if (s === "setting-up" && FROM_SESSION[session] === undefined) return rowStatus({ session });
+  return s;
 }
 
 /**

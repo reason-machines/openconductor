@@ -135,6 +135,7 @@ const sidebar: Pick<typeof import("./Sidebar"), "Sidebar"> = compile("./Sidebar.
   "./AppMark": { AppMark: empty },
   "./ResourceUsagePill": { ResourceUsagePill: empty },
   "./Tooltip": { Tooltip: passthrough, titleWithShortcut: (title: string) => title },
+  "./ui/Tooltip": { Tooltip: passthrough },
   "./menu/ContextMenu": { ContextMenu: empty, MenuItem: empty, MenuSeparator: empty },
   "../features/routines/useRoutinesAvailable": { useRoutinesAvailable: () => false },
   "./menu/menuIcons": Object.fromEntries(menuIconNames.map((name) => [name, empty])),

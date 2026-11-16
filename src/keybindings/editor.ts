@@ -6,6 +6,7 @@ import { findConflict } from "./conflicts.ts";
 import { rankByFields } from "./fuzzy.ts";
 import { effectiveShortcuts, SEND_KEY_COMMANDS, type Overrides } from "./overrides.ts";
 import { COMMANDS } from "./registry.ts";
+import { CLOUD_ONLY_COMMAND_IDS } from "./help.ts";
 import { glyphs, heldModifiers, matchesEvent, MODIFIER_KEYS, partGlyph, recordFromEvent, searchTokens, spoken, type KeyEventLike } from "./shortcut.ts";
 import type { Category, Command, Modifier, Shortcut } from "./types.ts";
 
@@ -35,11 +36,12 @@ export interface EditorRow {
  */
 export function editorRows(
   overrides: Overrides = {},
-  { queuedMessagesEnabled = false } = {},
+  { queuedMessagesEnabled = false, cloudUI = false } = {},
   commands: readonly Command[] = COMMANDS,
 ): EditorRow[] {
   return commands
     .filter((c) => (c.configurable || c.hidden !== true) && (queuedMessagesEnabled || c.id !== "chat.submitOppositeFollowUp"))
+    .filter((c) => cloudUI || !CLOUD_ONLY_COMMAND_IDS.has(c.id))
     .map((c) => {
       const shortcuts = effectiveShortcuts(c.id, overrides);
       return {

@@ -85,6 +85,7 @@ async function fixture() {
       if (name === "./FileDiffView") return { FileDiffView: (props: ViewProps) => React.createElement("diff-view", props) };
       if (name === "./ChangesList") return {};
       if (name === "./DiscardDialog") return { DiscardDialog: () => assert.fail("Unrelated discard dialog") };
+      if (name === "./commentMarkdown.ts") return { CommentMarkdown: () => null };
       if (name === "./Whitespace") return { ViewOptionsMenu: () => null };
       if (name === "../../components/ConductorIcon") return { ConductorIcon: () => null };
       if (name === "../../components/ui/Tooltip.tsx") return { Tooltip: ({ children }: { children: unknown }) => children };

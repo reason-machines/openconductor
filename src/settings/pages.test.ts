@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { pageLabel, settingsGroups } from "./pages.ts";
+import { KEY_BINDINGS_PAGE, pageLabel, settingsGroups } from "./pages.ts";
 
 test("page labels", () => {
   assert.equal(pageLabel("general"), "General");
@@ -29,9 +29,26 @@ test("the Big terminal tab is listed, last, only while Big terminal mode is on",
 
 test("navigation follows Conductor's groups for a local user", () => {
   const groups = settingsGroups(false).map((g) => [g.title, g.pages.map((p) => p.id)]);
+  // Key-bindings is not in default nav (Conductor: internal builds only).
   assert.deepEqual(groups, [
-    ["Personal", ["general", "account", "appearance", "key-bindings", "models", "git"]],
+    ["Personal", ["general", "account", "appearance", "models", "git"]],
     ["Agents & environment", ["providers", "environment"]],
     ["More", ["experimental", "advanced"]],
   ]);
+});
+
+test("key-bindings is not in nav by default; appears after Appearance in Personal with internalSettings on", () => {
+  const ids = (internal: boolean) => settingsGroups(false, false, internal).flatMap((g) => g.pages.map((p) => p.id));
+  // Default: not in nav (Conductor: local users do not see it).
+  assert.ok(!ids(false).includes("key-bindings"));
+  // Internal: in nav, after Appearance.
+  assert.ok(ids(true).includes("key-bindings"));
+  const personal = settingsGroups(false, false, true).find((g) => g.title === "Personal")!.pages.map((p) => p.id);
+  const appearanceIdx = personal.indexOf("appearance");
+  assert.equal(personal[appearanceIdx + 1], "key-bindings", "key-bindings follows Appearance in Personal");
+  // Group count unchanged by internalSettings.
+  assert.equal(settingsGroups(false, false, true).length, settingsGroups(false).length);
+  // KEY_BINDINGS_PAGE constant has the right id and label.
+  assert.equal(KEY_BINDINGS_PAGE.id, "key-bindings");
+  assert.equal(KEY_BINDINGS_PAGE.label, "Keyboard shortcuts");
 });

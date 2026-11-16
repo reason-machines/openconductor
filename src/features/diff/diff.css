@@ -59,6 +59,10 @@
 .oc-count .a { color: var(--oc-diff-addition); }
 .oc-count .d { color: var(--oc-diff-deletion); margin-left: 4px; }
 
+/* Markdown/HTML rendered preview in file (whole-file) layout: Conductor's bji isPreviewing=true. */
+.oc-md-preview { padding: 20px 28px; }
+.oc-md-preview .oc-md { font-size: 14px; line-height: 1.6; color: var(--text); }
+
 /* Right panel: toolbar over the list. Main-area tab: one file filling the tab. */
 .oc-diff.oc-diff-list, .oc-diff.oc-diff-tab { grid-template-columns: minmax(0, 1fr); }
 .oc-diff.oc-diff-tab { grid-template-rows: minmax(0, 1fr); position: relative; }
