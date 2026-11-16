@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import type { Repo } from "../state/types";
 import { openUrl } from "../backend";
 import { emojiIcon, fitIcon, githubAvatarUrl, parseRepoIcon, UPLOAD_MAX_BYTES, UPLOAD_MAX_DIMENSION, uploadMimeType } from "../state/repoIcon";
-import { Modal } from "./Dialogs";
+import { DialogFrame } from "./DialogFrame";
 import { CloseIcon, ExternalIcon, SearchIcon } from "./Icons";
 import { REPO_ICONS } from "./repoIcons.generated";
 import { searchEmoji } from "./repoEmoji";
@@ -26,9 +26,10 @@ interface Props {
  */
 export function RepoIconDialog(props: Props) {
   return (
-    <Modal title={`Change icon for ${props.repo.name}`} onClose={props.onClose}>
+    <DialogFrame kind="dialog" titleId="repo-icon-title" onClose={props.onClose}>
+      <h2 id="repo-icon-title">Change icon for {props.repo.name}</h2>
       <RepoIconPicker {...props} />
-    </Modal>
+    </DialogFrame>
   );
 }
 
