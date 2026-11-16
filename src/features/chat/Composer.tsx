@@ -30,6 +30,7 @@ import { fileMentionQuery, mentionItems, type MentionItem } from "./fileMentions
 import { ComposerEditor, type ComposerEditorHandle, type ComposerSelection } from "./ComposerEditor.tsx";
 import { composerPrompt } from "./composerDocument.ts";
 import { longPasteAttachment } from "./composerLongPaste.ts";
+import { readClipboardTextFromPlatform } from "./composerPasteFilePaths.ts";
 import { useBoolPref } from "../../settings/useBoolPref.ts";
 import { useSettings } from "../../settings/useSettings.ts";
 import { withBoolPref } from "../../settings/prefs.ts";
@@ -245,6 +246,21 @@ export function Composer({
     "chat.toggleSpeechToText": () => {
       if (!voiceSettings) return false;
       void saveVoiceSettings(withBoolPref(voiceSettings, "voice_mode", !voiceModeEnabled));
+    },
+    "chat.composer.pasteFilePaths": () => {
+      const box = inputRef.current;
+      if (!box) return false;
+      // Read clipboard text via the platform adapter (Tauri clipboard-manager plugin
+      // in desktop, navigator.clipboard in browser). The adapter is imported from
+      // composerPasteFilePaths.ts so Composer.tsx does not need a direct
+      // @tauri-apps/api/core import (the add-menu keyboard test VMs this file and
+      // blocks unexpected platform dependencies).
+      void readClipboardTextFromPlatform().then((text) => {
+        if (!text) return;
+        box.focus();
+        const sel = box.selection();
+        box.replaceRange({ start: sel.start, end: sel.end }, text);
+      });
     },
   });
 
