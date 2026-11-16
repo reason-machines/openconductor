@@ -34,12 +34,14 @@ function load(file: string, exported: object, imports: Record<string, unknown>) 
   });
 }
 
-async function fixture({ text = "saved", desktop = true, read, write, saveError }: {
+async function fixture({ text = "saved", desktop = true, read, write, saveError, wrapPref = true }: {
   text?: string;
   desktop?: boolean;
   read?: (args: unknown) => Promise<unknown>;
   write?: () => Promise<void>;
   saveError?: Error;
+  /** Stub value for the wrap_lines bool pref (default true). */
+  wrapPref?: boolean;
 } = {}, initial: Partial<WorkspaceFileViewProps> = {}) {
   const calls: string[] = [];
   let diskText = text;
@@ -83,6 +85,8 @@ async function fixture({ text = "saved", desktop = true, read, write, saveError 
     "../diff/pierre.ts": { CODE_VIEW_LAYOUT: { paddingTop: 0, paddingBottom: 8, gap: 8 } },
     "../diff/useDiffTheme.ts": { useDiffTheme: () => "test-theme" },
     "../diff/Whitespace": { ViewOptionsMenu: () => null },
+    // parity:diff.appearance — useBoolPrefWithSave stub returns the fixture wrapPref value.
+    "../../settings/useBoolPref.ts": { useBoolPrefWithSave: (_key: string) => [wrapPref, () => {}] },
     "./readText.ts": { readText },
   });
   assert.ok(component.WorkspaceFileView);
@@ -297,5 +301,22 @@ test("a different worktree does not display the old path's late read", async () 
     assert.equal(view.code().props.items[0].file.contents, "workspace b");
     await act(async () => { resolveOld("stale workspace a"); await settle(); });
     assert.equal(view.code().props.items[0].file.contents, "workspace b");
+  } finally { await view.close(); }
+});
+
+// parity:diff.appearance — wrap_lines pref wiring in WorkspaceFileView
+
+test("wrap_lines default true renders overflow:wrap in the code view", async () => {
+  // wrapPref defaults to true; useBoolPrefWithSave stub returns it.
+  const view = await fixture();
+  try {
+    assert.equal(view.code().props.options.overflow, "wrap");
+  } finally { await view.close(); }
+});
+
+test("wrap_lines false renders overflow:scroll in the code view", async () => {
+  const view = await fixture({ wrapPref: false });
+  try {
+    assert.equal(view.code().props.options.overflow, "scroll");
   } finally { await view.close(); }
 });
