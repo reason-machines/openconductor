@@ -663,5 +663,368 @@ class AuthorityContractTests(unittest.TestCase):
         self.refused()
 
 
+# ---------------------------------------------------------------------------
+# Consumer bridge tests (parse_authority_contract / consume_authority_contract /
+# verify_contract_identity) — 36 tests in 3 classes.
+# ---------------------------------------------------------------------------
+
+from tools import native_qa_identity_through_use as _itu
+from tools import native_qa_vm_broker as _broker
+
+
+def _ac_actor(role, uid, pid=100):
+    return {
+        "role": role,
+        "uid": uid,
+        "pid": pid,
+        "boot": "fixture-boot",
+        "birth": "fixture-birth",
+        "image": "a" * 64,
+        "authority": "b" * 64,
+    }
+
+
+def _ac_stage(name, returned=0, errno=0):
+    return {"stage": name, "return": returned, "errno": errno}
+
+
+def _ac_make_doc(operation="write", caller_stages=None, consumer_stages=None):
+    """Build a valid authority contract document dict (no stdout_sha256 in JSON)."""
+    if caller_stages is None:
+        caller_stages = [_ac_stage("open", 3), _ac_stage("pwrite", 32)]
+    if consumer_stages is None:
+        consumer_stages = [
+            _ac_stage("pread", 4096), _ac_stage("pwrite", 32),
+            _ac_stage("fsync", 0), _ac_stage("pread", 4096),
+        ]
+    return {
+        "schema": contract.AUTHORITY_CONTRACT_SCHEMA,
+        "operation": operation,
+        "caller": _ac_actor("caller", 501),
+        "caller_stages": caller_stages,
+        "consumer": _ac_actor("consumer", 1),
+        "consumer_stages": consumer_stages,
+    }
+
+
+def _ac_encode(doc):
+    """JSON-encode the document dict as bytes (sha256 is not in the JSON)."""
+    return json.dumps(doc).encode()
+
+
+class ParseAuthorityContractTests(unittest.TestCase):
+    """Tests for parse_authority_contract: 12 tests."""
+
+    def _parse(self, raw):
+        return contract.parse_authority_contract(raw)
+
+    def _make_raw(self, **overrides):
+        doc = _ac_make_doc(**overrides)
+        return _ac_encode(doc)
+
+    def test_valid_document_returns_document(self):
+        raw = self._make_raw()
+        doc = self._parse(raw)
+        self.assertIsInstance(doc, contract.AuthorityContractDocument)
+        self.assertEqual(doc.schema, contract.AUTHORITY_CONTRACT_SCHEMA)
+        self.assertEqual(doc.operation, "write")
+
+    def test_stdout_sha256_binding_matches_raw_bytes(self):
+        raw = self._make_raw()
+        doc = self._parse(raw)
+        self.assertEqual(doc.stdout_sha256, hashlib.sha256(raw).hexdigest())
+
+    def test_caller_uid_501_and_consumer_uid_1(self):
+        raw = self._make_raw()
+        doc = self._parse(raw)
+        self.assertEqual(doc.caller.uid, 501)
+        self.assertEqual(doc.consumer.uid, 1)
+        self.assertEqual(doc.caller.role, "caller")
+        self.assertEqual(doc.consumer.role, "consumer")
+
+    def test_mmap_operation_accepted(self):
+        raw = self._make_raw(operation="mmap")
+        doc = self._parse(raw)
+        self.assertEqual(doc.operation, "mmap")
+
+    def test_caller_stages_parsed_to_stage_records(self):
+        raw = self._make_raw()
+        doc = self._parse(raw)
+        self.assertIsInstance(doc.caller_stages, tuple)
+        for s in doc.caller_stages:
+            self.assertIsInstance(s, _itu.StageRecord)
+
+    def test_empty_bytes_refused(self):
+        with self.assertRaises(contract.AuthorityContractRefusal):
+            self._parse(b"")
+
+    def test_non_bytes_refused(self):
+        with self.assertRaises(contract.AuthorityContractRefusal):
+            self._parse("{\"schema\": \"x\"}")
+
+    def test_invalid_json_refused(self):
+        with self.assertRaises(contract.AuthorityContractRefusal):
+            self._parse(b"not json at all")
+
+    def test_unknown_top_level_field_refused(self):
+        d = _ac_make_doc()
+        d["extra"] = True
+        with self.assertRaises(contract.AuthorityContractRefusal):
+            self._parse(json.dumps(d).encode())
+
+    def test_wrong_schema_string_refused(self):
+        d = _ac_make_doc()
+        d["schema"] = "OC_VM_AUTHORITY_CONTRACT_V0"
+        with self.assertRaises(contract.AuthorityContractRefusal):
+            self._parse(json.dumps(d).encode())
+
+    def test_caller_wrong_role_refused(self):
+        doc = _ac_make_doc()
+        doc["caller"] = _ac_actor("consumer", 501)
+        with self.assertRaises(contract.AuthorityContractRefusal):
+            self._parse(_ac_encode(doc))
+
+    def test_consumer_bad_actor_type_refused(self):
+        doc = _ac_make_doc()
+        doc["consumer"] = "not-a-dict"
+        with self.assertRaises(contract.AuthorityContractRefusal):
+            self._parse(_ac_encode(doc))
+
+
+class ConsumeAuthorityContractTests(unittest.TestCase):
+    """Tests for consume_authority_contract: 12 tests."""
+
+    def _make_plan(self):
+        """Build a minimal but valid DispatchPlan fixture."""
+        return _broker.DispatchPlan(
+            source_commit="a" * 40,
+            build_id="github-actions:1:10:1:portable",
+            executable_sha256="b" * 64,
+            argv=("/usr/local/bin/runner",),
+            capability=_broker.CapabilitySpec.PROBE,
+            max_wall_seconds=30.0,
+            stdout_limit=256 * 1024,
+            stderr_limit=256 * 1024,
+        )
+
+    def _make_result(self, raw=None, outcome=None, sha256_override=None):
+        """Minimal CapabilityResult with the given stdout bytes."""
+        raw = _ac_encode(_ac_make_doc()) if raw is None else raw
+        sha256 = sha256_override if sha256_override is not None else hashlib.sha256(raw).hexdigest()
+        oc = outcome if outcome is not None else _broker.CapabilityOutcome.SUCCESS
+        marker = oc == _broker.CapabilityOutcome.NOT_YET_IMPLEMENTED
+        return _broker.CapabilityResult(
+            plan=self._make_plan(),
+            exit_code=0 if oc == _broker.CapabilityOutcome.SUCCESS else 78,
+            stdout=raw,
+            stderr=b"",
+            wall_seconds=0.1,
+            outcome=oc,
+            stdout_sha256=sha256,
+            stderr_sha256=hashlib.sha256(b"").hexdigest(),
+            not_yet_impl_marker_present=marker,
+        )
+
+    def _consume(self, result):
+        return contract.consume_authority_contract(result)
+
+    def test_success_outcome_returns_document(self):
+        result = self._make_result()
+        doc = self._consume(result)
+        self.assertIsInstance(doc, contract.AuthorityContractDocument)
+
+    def test_sha256_matches_result_stdout_sha256(self):
+        result = self._make_result()
+        doc = self._consume(result)
+        self.assertEqual(doc.stdout_sha256, result.stdout_sha256)
+
+    def test_success_with_mmap_operation(self):
+        raw = _ac_encode(_ac_make_doc(operation="mmap"))
+        result = self._make_result(raw=raw)
+        doc = self._consume(result)
+        self.assertEqual(doc.operation, "mmap")
+
+    def test_caller_uid_501_in_consumed_document(self):
+        result = self._make_result()
+        doc = self._consume(result)
+        self.assertEqual(doc.caller.uid, 501)
+
+    def test_consumer_uid_1_in_consumed_document(self):
+        result = self._make_result()
+        doc = self._consume(result)
+        self.assertEqual(doc.consumer.uid, 1)
+
+    def test_not_yet_implemented_raises(self):
+        result = self._make_result(outcome=_broker.CapabilityOutcome.NOT_YET_IMPLEMENTED)
+        with self.assertRaises(contract.AuthorityContractRefusal):
+            self._consume(result)
+
+    def test_failure_outcome_raises(self):
+        result = self._make_result(outcome=_broker.CapabilityOutcome.FAILURE)
+        with self.assertRaises(contract.AuthorityContractRefusal):
+            self._consume(result)
+
+    def test_wrong_type_raises_type_error(self):
+        with self.assertRaises(TypeError):
+            self._consume("not-a-result")
+
+    def test_none_raises_type_error(self):
+        with self.assertRaises(TypeError):
+            self._consume(None)
+
+    def test_stdout_sha256_mismatch_raises(self):
+        result = self._make_result(sha256_override="e" * 64)
+        with self.assertRaises(contract.AuthorityContractRefusal):
+            self._consume(result)
+
+    def test_empty_stdout_raises(self):
+        result = self._make_result(raw=b"")
+        with self.assertRaises(contract.AuthorityContractRefusal):
+            self._consume(result)
+
+    def test_not_yet_implemented_error_message_mentions_outcome(self):
+        result = self._make_result(outcome=_broker.CapabilityOutcome.NOT_YET_IMPLEMENTED)
+        with self.assertRaisesRegex(contract.AuthorityContractRefusal,
+                                    "not_yet_implemented"):
+            self._consume(result)
+
+
+class VerifyContractIdentityTests(unittest.TestCase):
+    """Tests for verify_contract_identity: 12 tests."""
+
+    @staticmethod
+    def _stage_records(stage_dicts):
+        return tuple(
+            _itu.StageRecord(
+                stage=s["stage"],
+                denied=(not (s["return"] is None and not s["errno"])) and bool(s["errno"]),
+                absent=s["return"] is None and not s["errno"],
+            ) for s in stage_dicts
+        )
+
+    def _make_doc(self, operation="write", caller_stages=None, consumer_stages=None,
+                  caller_uid=501, consumer_uid=1,
+                  caller_role="caller", consumer_role="consumer"):
+        """Build an AuthorityContractDocument directly (bypasses JSON parse-time checks)."""
+        raw_caller_stages = caller_stages or [
+            _ac_stage("open", 3), _ac_stage("pwrite", 32)
+        ]
+        raw_consumer_stages = consumer_stages or [
+            _ac_stage("pread", 4096), _ac_stage("pwrite", 32),
+            _ac_stage("fsync", 0), _ac_stage("pread", 4096),
+        ]
+        return contract.AuthorityContractDocument(
+            schema=contract.AUTHORITY_CONTRACT_SCHEMA,
+            operation=operation,
+            stdout_sha256="f" * 64,
+            caller=_itu.ActorIdentityClaim(
+                role=caller_role, uid=caller_uid, pid=100,
+                boot="fixture-boot", birth="fixture-birth",
+                image="a" * 64, authority="b" * 64,
+            ),
+            caller_stages=self._stage_records(raw_caller_stages),
+            consumer=_itu.ActorIdentityClaim(
+                role=consumer_role, uid=consumer_uid, pid=200,
+                boot="fixture-boot", birth="fixture-birth",
+                image="a" * 64, authority="b" * 64,
+            ),
+            consumer_stages=self._stage_records(raw_consumer_stages),
+        )
+
+    def _verify(self, doc=None, operation_name=None):
+        d = doc or self._make_doc()
+        return contract.verify_contract_identity(d, operation_name or d.operation)
+
+    def test_both_proven_when_all_stages_pass(self):
+        result = self._verify()
+        self.assertTrue(result.both_proven)
+        self.assertEqual(result.caller_verdict, _itu.IdentityVerdict.PROVEN)
+        self.assertEqual(result.consumer_verdict, _itu.IdentityVerdict.PROVEN)
+
+    def test_caller_uid_mismatch_gives_uid_mismatch_verdict(self):
+        doc = self._make_doc(caller_uid=502)
+        result = self._verify(doc)
+        self.assertEqual(result.caller_verdict, _itu.IdentityVerdict.UID_MISMATCH)
+        self.assertFalse(result.both_proven)
+
+    def test_consumer_uid_mismatch_gives_uid_mismatch_verdict(self):
+        doc = self._make_doc(consumer_uid=2)
+        result = self._verify(doc)
+        self.assertEqual(result.consumer_verdict, _itu.IdentityVerdict.UID_MISMATCH)
+        self.assertFalse(result.both_proven)
+
+    def test_caller_denied_stage_gives_unproven_verdict(self):
+        doc = self._make_doc(
+            caller_stages=[_ac_stage("open", -1, 13), _ac_stage("pwrite", None, None)]
+        )
+        result = self._verify(doc)
+        self.assertEqual(result.caller_verdict, _itu.IdentityVerdict.UNPROVEN)
+        self.assertFalse(result.both_proven)
+
+    def test_consumer_absent_stage_gives_unproven_verdict(self):
+        doc = self._make_doc(
+            consumer_stages=[
+                _ac_stage("pread", None, None), _ac_stage("pwrite", 32),
+                _ac_stage("fsync", 0), _ac_stage("pread", 4096),
+            ]
+        )
+        result = self._verify(doc)
+        self.assertEqual(result.consumer_verdict, _itu.IdentityVerdict.UNPROVEN)
+        self.assertFalse(result.both_proven)
+
+    def test_caller_incomplete_identity_gives_identity_incomplete_verdict(self):
+        doc = self._make_doc()
+        doc2 = contract.AuthorityContractDocument(
+            schema=doc.schema, operation=doc.operation, stdout_sha256=doc.stdout_sha256,
+            caller=_itu.ActorIdentityClaim(
+                role="caller", uid=501, pid=100,
+                boot="",  # empty boot — incomplete
+                birth="fixture-birth", image="a" * 64, authority="b" * 64,
+            ),
+            caller_stages=doc.caller_stages,
+            consumer=doc.consumer, consumer_stages=doc.consumer_stages,
+        )
+        result = self._verify(doc2)
+        self.assertEqual(result.caller_verdict, _itu.IdentityVerdict.IDENTITY_INCOMPLETE)
+        self.assertFalse(result.both_proven)
+
+    def test_partial_not_both_proven_when_only_caller_proven(self):
+        doc = self._make_doc(
+            consumer_stages=[_ac_stage("pread", -1, 13)] + [_ac_stage("pwrite", None, None)] * 3
+        )
+        result = self._verify(doc)
+        self.assertEqual(result.caller_verdict, _itu.IdentityVerdict.PROVEN)
+        self.assertNotEqual(result.consumer_verdict, _itu.IdentityVerdict.PROVEN)
+        self.assertFalse(result.both_proven)
+
+    def test_partial_not_both_proven_when_only_consumer_proven(self):
+        doc = self._make_doc(
+            caller_stages=[_ac_stage("open", -1, 13), _ac_stage("pwrite", None, None)]
+        )
+        result = self._verify(doc)
+        self.assertEqual(result.consumer_verdict, _itu.IdentityVerdict.PROVEN)
+        self.assertNotEqual(result.caller_verdict, _itu.IdentityVerdict.PROVEN)
+        self.assertFalse(result.both_proven)
+
+    def test_wrong_doc_type_raises_type_error(self):
+        with self.assertRaises(TypeError):
+            contract.verify_contract_identity("not-a-doc", "write")
+
+    def test_wrong_operation_name_type_raises_type_error(self):
+        doc = self._make_doc()
+        with self.assertRaises(TypeError):
+            contract.verify_contract_identity(doc, 42)
+
+    def test_result_is_frozen(self):
+        result = self._verify()
+        with self.assertRaises((AttributeError, TypeError)):
+            result.both_proven = False
+
+    def test_both_verdicts_in_result(self):
+        result = self._verify()
+        self.assertIsInstance(result.caller_verdict, _itu.IdentityVerdict)
+        self.assertIsInstance(result.consumer_verdict, _itu.IdentityVerdict)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -30,3 +30,12 @@ bool OCVMPrepareConfiguration(const OCVMProfile *profile,
                               OCVMConfigurationBuilder build, void *context) {
     return OCVMValidateProfile(profile) && build != NULL && build(context);
 }
+
+bool OCVMAdmitNative(void) {
+    /*
+     * Fail-closed admission gate.  Returns false until E1 satisfies all native
+     * prerequisites on a physical Mac host.  Never set to true in source;
+     * source tests may assert this returns false without claiming confinement.
+     */
+    return false;
+}

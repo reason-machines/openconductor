@@ -44,4 +44,15 @@ bool OCVMValidateProfile(const OCVMProfile *profile);
 bool OCVMPrepareConfiguration(const OCVMProfile *profile,
                               OCVMConfigurationBuilder build, void *context);
 
+/*
+ * OCVMAdmitNative — fail-closed admission gate for native VM dispatch.
+ *
+ * Returns false until E1 satisfies all native prerequisites on a physical Mac
+ * host: resource identity locked through open file descriptors, inherited-
+ * capability refusal, effective confinement controls, and sole-owner lifecycle
+ * acceptance through the guest's actual stop.  Source tests may assert this
+ * returns false; they do not prove confinement or native parity.
+ */
+bool OCVMAdmitNative(void);
+
 #endif

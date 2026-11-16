@@ -249,9 +249,33 @@ for (const setupFails of [false, true]) {
       assert.equal(view.actions[1]?.sectionId, "section");
       for (const event of ["configure", "seed", "rename", "setup", "watch"]) assert.ok(view.events.includes(event), event);
       assert.equal(view.events.includes("unwatch"), setupFails);
+      // GAP-SB-01: state must reflect whether setup actually started.
+      // setup started successfully → "setting_up" (row stays dimmed until backend clears it).
+      // setup threw (setupFails) → "ready" (row must NOT stay permanently dimmed).
+      const wsAction = view.actions[0] as { type: string; workspace?: { state?: string } };
+      assert.equal(wsAction.workspace?.state, setupFails ? "ready" : "setting_up",
+        `workspace.state must be ${setupFails ? "ready" : "setting_up"} when setup ${setupFails ? "fails" : "starts"}`
+      );
     } finally { view.dispose(); }
   });
 }
+
+test("accepted modal launch adds workspace with state ready when no setup script", async () => {
+  // GAP-SB-01: when startSetupScript returns false (no .setup in scriptsConfig),
+  // addWorkspace must dispatch state="ready" so the row is NOT permanently dimmed.
+  const view = await fixture({ setup: false });
+  try {
+    await view.submit();
+    await view.registered();
+    await view.succeed();
+    assert.equal(view.pending.size, 0);
+    const wsAction = view.actions.find(a => a.type === "addWorkspace") as { type: string; workspace?: { state?: string } } | undefined;
+    assert.ok(wsAction, "addWorkspace must be dispatched");
+    assert.equal(wsAction?.workspace?.state, "ready",
+      "workspace.state must be \"ready\" when no setup script exists"
+    );
+  } finally { view.dispose(); }
+});
 
 // -------------------------------------------------------------------------
 // workspace.addToBacklogFromComposer: Alt+Enter creates workspace idle + sets
