@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { DialogFrame } from "../components/DialogFrame";
+import { CloseIcon } from "../components/Icons";
 import { configSyncApi } from "./configSyncApi";
 import { CONFIG_SYNC_CATEGORIES, CONFIG_SYNC_DIRECTIONS, configSyncItems, configSyncKey, type ConfigSyncCategory, type ConfigSyncDiff, type ConfigSyncResult } from "./configSync";
 import "./configSync.css";
@@ -68,7 +69,10 @@ export function ConfigSyncDialog({ onClose, notify }: { onClose: () => void; not
 
   return (
     <DialogFrame kind="dialog" titleId="config-sync-title" onClose={() => { if (state.kind !== "syncing") close(); }}>
-      <h2 id="config-sync-title">Sync agent configs</h2>
+      <div className="modal-header">
+        <h2 id="config-sync-title">Sync agent configs</h2>
+        <button type="button" className="icon-btn" aria-label="Close" onClick={close}><CloseIcon size={16} /></button>
+      </div>
       <div className="config-sync-body" aria-busy={state.kind === "syncing" || state.kind === "loading"}>
         <p className="config-sync-description">Copy skills, slash commands, and MCP servers between Claude Code and Codex.</p>
         <p className="config-sync-note">Copies stay on this Mac. Existing items are not overwritten. Selected MCP definitions can include environment and header values.</p>

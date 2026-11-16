@@ -27,7 +27,10 @@ interface Props {
 export function RepoIconDialog(props: Props) {
   return (
     <DialogFrame kind="dialog" titleId="repo-icon-title" onClose={props.onClose}>
-      <h2 id="repo-icon-title">Change icon for {props.repo.name}</h2>
+      <div className="modal-header">
+        <h2 id="repo-icon-title">Change icon for {props.repo.name}</h2>
+        <button type="button" className="icon-btn" aria-label="Close" onClick={props.onClose}><CloseIcon size={16} /></button>
+      </div>
       <RepoIconPicker {...props} />
     </DialogFrame>
   );

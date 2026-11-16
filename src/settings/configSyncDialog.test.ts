@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 
 const { mount, act } = createRequire(import.meta.url)("./configSyncHarness.cjs");
-const dialog = (view: ReturnType<typeof mount>) => view.root().findAllByProps({ role: "dialog", "aria-label": "Sync agent configs" });
+const dialog = (view: ReturnType<typeof mount>) => view.root().findAllByProps({ role: "dialog", "aria-labelledby": "config-sync-title" });
 const primary = (view: ReturnType<typeof mount>) => view.root().find((node: { type: unknown; props: Record<string, unknown> }) => node.type === "button" && node.props["data-primary-action"] === true);
 async function open(view: ReturnType<typeof mount>) {
   await act(async () => { view.button("Sync").props.onClick(); });

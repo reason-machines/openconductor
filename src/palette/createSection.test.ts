@@ -180,11 +180,9 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
   const window = Object.assign(new EventTarget(), { location: { pathname: "/", search: "?palette=1" }, history: { state: null, replaceState: noop } });
   const dialog: Partial<typeof import("../components/SectionDialog")> = {};
   const emojis: Partial<typeof import("../components/sectionEmoji")> = {};
-  const modal: Partial<typeof import("../components/Dialogs")> = {};
   evaluate("../components/sectionEmoji.ts", {}, emojis);
-  evaluate("../components/Dialogs.tsx", { "./Icons": { CloseIcon: inert }, "./motion/dialogMotion": { useDialogMotion: () => React.useRef(null) } }, modal);
   evaluate("../components/SectionDialog.tsx", {
-    "./Dialogs": modal, "./sectionEmoji": emojis,
+    "./DialogFrame": { DialogFrame: ({ titleId, children }: { titleId: string; children: unknown }) => React.createElement("div", { role: "dialog", "aria-labelledby": titleId }, children) }, "./sectionEmoji": emojis,
     "../keybindings/KeybindingsProvider": { useKeybindingOverrides: () => ({ overrides: {} }) },
     "../keybindings/overrides": sectionShortcutOverrides,
     "../keybindings/shortcut": sectionShortcutMatcher,
@@ -274,7 +272,7 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
     state: () => state,
     palette: requirePalette,
     sidebar() { assert.ok(sidebar); return sidebar; },
-    dialogs: () => renderer.root.findAllByProps({ role: "dialog" }).filter((node: { props: { "aria-label"?: string } }) => node.props["aria-label"] === "New section" || node.props["aria-label"] === "Edit section"),
+    dialogs: () => renderer.root.findAllByProps({ role: "dialog", "aria-labelledby": "section-dialog-title" }),
     sidebarCount: () => renderer.root.findAllByType("sidebar-probe").length,
     open() {
       act(() => requirePalette().onOpenChange(true));
