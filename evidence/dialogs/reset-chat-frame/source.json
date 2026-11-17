@@ -2,6 +2,7 @@
   "author": "Conductor Rebuild",
   "gap": "RESET-CHAT-FRAME",
   "checked_main": "f60b6e365395ceb62b2b2ec6e1542a16a5b0d0ee",
+  "rechecked_main": "4cbaa9f6cdf995f3654ec8d6a49e984050ee9784",
   "lease_message_id": "83ea924a-8650-4c91-84a5-13f08a1a180b",
   "renderer": {
     "name": "renderApp-D_fmY7hW.js",
@@ -51,6 +52,26 @@
       "fail": 2,
       "pass": 3
     }
+  },
+  "validation": {
+    "baseline_ci": {
+      "head": "44af542cf6ddcc73eb1aa4baf84b0b558b8b6db9",
+      "run_id": 44028994317,
+      "job_id": 133856085411,
+      "url": "https://github.com/reason-machines/openconductor/actions/runs/44028994317/job/133856085411",
+      "command": "node --test \"src/**/*.test.ts\"",
+      "suite": { "tests": 4587, "pass": 4585, "fail": 2 },
+      "fixture": { "tests": 5, "pass": 3, "fail": 2 },
+      "failures": [
+        "Reset chat has one styled panel, not an oc-alert panel nested inside DialogFrame",
+        "Reset chat selects the existing rounded alert variant on its sole panel"
+      ],
+      "log_excerpt": "red-ci.txt",
+      "typecheck": "PASS",
+      "build": "NOT_REACHED"
+    },
+    "green": "PENDING: ordinary automatic CI on the corrected head, with the frozen fixture unchanged",
+    "native": "NOT_RUN: sole E1 acceptance queue, no runtime admission"
   },
   "limits": [
     "Vendor source treated as data, not executed.",

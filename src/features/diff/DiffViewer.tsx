@@ -167,10 +167,11 @@ function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anc
   useEffect(() => { setIsEditing(true); }, [selected.path]);
   // Editable when edit is non-null and the file is not a previewable markdown/HTML file.
   const isEditableCode = !isPreviewable && edit !== null;
-  useKeybindings({
+  // Retained hidden files keep their mode, but only the visible file owns ⌘E.
+  useKeybindings(isVisible ? {
     ...(isPreviewable ? { "workspace.toggleFileEdit": () => setIsPreviewing((p) => !p) } : {}),
     ...(isEditableCode ? { "workspace.toggleFileEdit": () => setIsEditing((p) => !p) } : {}),
-  });
+  } : {});
   return (
     <div className="oc-files" hidden={!isVisible} style={!isVisible ? { display: "none" } : undefined}>
       {notes?.(f)}

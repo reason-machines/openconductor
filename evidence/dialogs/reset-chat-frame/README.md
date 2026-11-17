@@ -14,15 +14,15 @@ Offsets are zero-based UTF-8, half-open. Retained third-party code is data, neve
 
 ## Fresh-main mismatch and bounded correction
 
-Checked default main `f60b6e365395ceb62b2b2ec6e1542a16a5b0d0ee`. After #1369, `ResetChatDialog` places an `.oc-alert` panel inside the actual `DialogFrame` popup. Both declare their own width, padding, border and background. The outer `.modal.project-dialog` uses ordinary-dialog 6px corners; the inner panel uses 12px corners. These are source-level duplicate-shell facts, not measured browser geometry.
+Initially checked default main `f60b6e365395ceb62b2b2ec6e1542a16a5b0d0ee`; re-read default main `4cbaa9f6cdf995f3654ec8d6a49e984050ee9784` before the correction. The Reset component, shared frame/CSS and existing Reset test hashes are unchanged between these heads. After #1369, `ResetChatDialog` places an `.oc-alert` panel inside the actual `DialogFrame` popup. Both declare their own width, padding, border and background. The outer `.modal.project-dialog` uses ordinary-dialog 6px corners; the inner panel uses 12px corners. These are source-level duplicate-shell facts, not measured browser geometry.
 
-The correction will remove only that inner shell and select the existing `project-confirmation` rounded-alert variant on `DialogFrame`. Header, checkbox and footer then become direct children of the shared panel. No shared Frame/CSS, existing tests, action callbacks, busy state, preference persistence, focus/dismissal plumbing or #703 decision-dependent work changes.
+The correction removes only that inner shell and selects the existing `project-confirmation` rounded-alert variant on `DialogFrame`. Header, checkbox and footer then become direct children of the shared panel. No shared Frame/CSS, existing tests, action callbacks, busy state, preference persistence, focus/dismissal plumbing or #703 decision-dependent work changes.
 
 ## Frozen mounted regression
 
 `src/features/chat/resetChatFrame.test.ts` loads the actual production Reset component, actual DialogFrame, checkpoint preferences and menu icons. Only Base UI portal/DOM primitives, keybinding provider/matching and motion hooks are boundary doubles. Unlike the earlier Reset tests, it does not stub DialogFrame itself.
 
-The five cases require one styled panel and the existing rounded-alert variant, preserve Cancel's focus marker/callback, and preserve both reset-files payloads through pending/success. The expected baseline result is two shell/variant failures and three passing behavior controls. [fixture.sha256](fixture.sha256) freezes the exact fixture across RED and GREEN.
+The five cases require one styled panel and the existing rounded-alert variant, preserve Cancel's focus marker/callback, and preserve both reset-files payloads through pending/success. The observed hosted baseline is two shell/variant failures and three passing behavior controls. [fixture.sha256](fixture.sha256) freezes the exact fixture across RED and GREEN.
 
 Hosted command, automatically discovered by unchanged ordinary PR CI:
 
@@ -30,7 +30,9 @@ Hosted command, automatically discovered by unchanged ordinary PR CI:
 node --test "src/**/*.test.ts"
 ```
 
-Local source checks passed: `node --check src/features/chat/resetChatFrame.test.ts` and `git diff --check`. Local component execution, typecheck, build, browser, screenshot and native acceptance are NOT RUN under this lane's source-only admission. Automatic hosted baseline RED is pending; product correction has not yet been applied.
+Baseline RED is confirmed on PR #1380 head `44af542cf6ddcc73eb1aa4baf84b0b558b8b6db9`, [workflow run 44028994317, frontend job 133856085411](https://github.com/reason-machines/openconductor/actions/runs/44028994317/job/133856085411). The ordinary frontend suite ran 4,587 tests: 4,585 passed, exactly these two failed. Typecheck and the color-literal gate passed; the build was not reached. The five-case [RED log excerpt](red-ci.txt) records `2 !== 1` for the panel count, the absent rounded-alert variant, and the three passing behavior controls.
+
+The product correction is now applied; `resetChatFrame.test.ts` remains byte-identical. GREEN must be established by the next ordinary automatic CI on the corrected head, not by rewriting this fixture or bypassing the failed gate. Local source checks are `node --check src/features/chat/resetChatFrame.test.ts`, `sha256sum -c evidence/dialogs/reset-chat-frame/fixture.sha256` and `git diff --check`. Local component execution, typecheck, build, browser, screenshot and native acceptance are NOT RUN under this lane's source-only admission. No installs or workflow changes were made.
 
 ## Acceptance limits
 
