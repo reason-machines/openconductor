@@ -1,0 +1,86 @@
+{
+  "owner": "Conductor Rebuild / SAME49",
+  "execution": "Reason Cloud, headless source-only mocked boundaries; existing dependencies",
+  "original_fixture_sha256": "1777b03a07ce45e70b29cd087a19203b24aaec86e775608415ce2df82559eb1e",
+  "permanent_fixture_sha256": "c4ee00eac6edd3c88761d3e8a2f7d0902d150e23062fe43189ab8146e7f8b4ba",
+  "results": {
+    "original_red": {
+      "status": "EXPECTED_FAILURE",
+      "exit": 1,
+      "pass": 0,
+      "fail": 6,
+      "skipped": 0,
+      "log": "validation/original-red.tap"
+    },
+    "permanent_red": {
+      "status": "EXPECTED_FAILURE",
+      "exit": 1,
+      "pass": 0,
+      "fail": 6,
+      "skipped": 0,
+      "log": "validation/permanent-red.tap"
+    },
+    "original_green": {
+      "status": "PASS",
+      "exit": 0,
+      "pass": 6,
+      "fail": 0,
+      "skipped": 0,
+      "log": "validation/original-green.tap"
+    },
+    "permanent_green": {
+      "status": "PASS",
+      "exit": 0,
+      "pass": 6,
+      "fail": 0,
+      "skipped": 0,
+      "log": "validation/permanent-green.tap"
+    },
+    "adjacent_green": {
+      "status": "PASS",
+      "exit": 0,
+      "pass": 29,
+      "fail": 0,
+      "skipped": 0,
+      "log": "validation/adjacent-green.tap"
+    },
+    "scoped_typecheck": {
+      "status": "PASS",
+      "exit": 0,
+      "log": "validation/scoped-typecheck.txt"
+    },
+    "full_typecheck_initial": {
+      "status": "TIMEOUT",
+      "exit": 124,
+      "deadline_seconds": 120,
+      "log": "validation/typecheck.txt"
+    },
+    "full_typecheck_retry": {
+      "status": "PASS",
+      "exit": 0,
+      "deadline_seconds": 180,
+      "log": "validation/full-typecheck-retry.txt"
+    },
+    "syntax": {
+      "status": "PASS",
+      "command": "node --check tests/settings/support/caffeinateHost.mjs"
+    },
+    "preservation": {
+      "status": "PASS",
+      "log": "validation/preservation.json"
+    },
+    "whitespace": {
+      "status": "PASS",
+      "command": "git diff --check"
+    }
+  },
+  "not_run": [
+    "real browser/server whole-main graph",
+    "full app build",
+    "native/visual/package acceptance",
+    "installation",
+    "manual workflow dispatch"
+  ],
+  "hosted_1381_underlying_cause": "UNVERIFIED",
+  "product_source_changed": false
+}
