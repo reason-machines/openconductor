@@ -1,0 +1,1 @@
+function RQe(t,e,n){switch(t){case"vertical":return e;case"horizontal":return n;default:return e||n}}
