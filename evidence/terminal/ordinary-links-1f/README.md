@@ -49,6 +49,23 @@ python3 evidence/terminal/ordinary-links-1f/verify.py \
 
 **154 source/fixture/receipt checks passed** across sixteen original spans, including complete-original asset identities, unchanged fixture, both RED receipts, GREEN receipts, unchanged ScriptOutput, archived/hashed legacy loader originals, and boundary-only legacy-loader changes. Omit the asset arguments to verify retained span hashes/joins without the complete local originals; that mode explicitly does not verify full asset bytes.
 
+## Hosted CI import-boundary correction
+
+The first hosted run at `331db83b3b6d5c4a29cdd83542eb6ebd7aedc3b6` passed typecheck, color lint and 5,373 of 5,378 unit tests. All five failures were the resource-label fixture's closed module allowlist rejecting the new dialog import before reaching its behavior assertions. Build was skipped after that test failure; this was not a passing build.
+
+The correction adds only two entries in `evidence/resource-terminal-labels/regression.cjs`: `confirm` and `openUrl` use its existing throwing `unexpected` boundary. No native call can be silently accepted, and no product code, behavior assertion, expectation or invocation changes.
+
+```bash
+timeout 180s nice -n 19 node --max-old-space-size=512 --test evidence/resource-terminal-labels/regression.cjs
+timeout 180s nice -n 19 node --max-old-space-size=512 --test src/features/terminal/ordinaryLinks.test.ts
+python3 evidence/terminal/ordinary-links-1f/ci-loader/verify.py
+```
+
+- Identical resource-label command: **0 passed / 5 import failures → 5/5 passed**.
+- Byte-identical frozen encoded-link fixture: **12/12 passed** again.
+- The original resource-label fixture, RED and GREEN receipts, and byte-exact boundary-only audit are retained under `ci-loader/`.
+- No local heavy check, product runtime, native URL activation or package executor ran. Full corrected-head hosted verification remains required before merge.
+
 ## Scope and acceptance limits
 
 - No plain-text WebLinksAddon, WorkspaceView/attachment focus, ScriptOutput, PTY, input/output, Find, copy, reset, selection lifetime or dependency change.

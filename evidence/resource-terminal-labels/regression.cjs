@@ -34,6 +34,8 @@ function fixture({ enabled = true, desktop = true } = {}) {
     ] };
   }
   const boundaries = {
+    '@tauri-apps/plugin-dialog': { confirm: unexpected },
+    'src/backend': { openUrl: unexpected },
     '@xterm/xterm': { Terminal: class { constructor(options) { this.options = options; this.cols = 80; this.rows = 24; this.unicode = { activeVersion: '6' }; } loadAddon() {} resize() {} write() {} dispose() {} attachCustomKeyEventHandler() {} onData() {} onResize() {} } },
     '@xterm/addon-fit': { FitAddon: class {} },
     '@xterm/addon-unicode11': { Unicode11Addon: class {} },
