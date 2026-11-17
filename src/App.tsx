@@ -668,7 +668,10 @@ export default function App() {
           onClose={() => setDialog(null)}
           onRepoAdded={({ id, ...repo }) => dispatch({ type: "addRepo", id, repo })}
           onCreated={(repoId, first, githubUrl) => {
-            dispatch({ type: "addWorkspace", repoId, workspace: first.workspace });
+            // GAP-SB-01c: pass state so the sidebar row dims while setup runs and
+            // clears immediately when no setup script starts (store default is
+            // "setting_up", which would leave the row permanently dimmed).
+            dispatch({ type: "addWorkspace", repoId, workspace: { ...first.workspace, state: first.setupStarted ? "setting_up" : "ready" } });
             show("info", SUCCESS_TOAST, { action: { label: OPEN_IN_GITHUB, onClick: () => void openUrl(githubUrl) } });
           }}
         />
