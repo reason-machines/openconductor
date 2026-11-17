@@ -1,0 +1,35 @@
+{
+  "start_utc": "2026-11-17T22:11:02.971235+00:00",
+  "free_before": 16842850304,
+  "pins_pass": 21,
+  "dependency_pins_pass": 3,
+  "exit": 0,
+  "counters": {
+    "tests": 8,
+    "suites": 0,
+    "pass": 8,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "outcomes": [
+    "ok 1 - plan: confirmation survives 1500 and 1999ms, then resets at 2000ms",
+    "ok 2 - plan: every successful copy retains its independent 2000ms reset",
+    "ok 3 - plan: exact caller payload, propagation and delayed-fulfillment controls",
+    "ok 4 - plan: absent caller payload exposes no copy button",
+    "ok 5 - subagent: confirmation survives 1500 and 1999ms, then resets at 2000ms",
+    "ok 6 - subagent: every successful copy retains its independent 2000ms reset",
+    "ok 7 - subagent: exact caller payload, propagation and delayed-fulfillment controls",
+    "ok 8 - subagent: absent caller payload exposes no copy button"
+  ],
+  "output_sha256": "654f8cd230df26808683b4f51cba8a05d91df3cf4257d150e4c8285df47d217c",
+  "fixture_sha256": "baca8d635d26f2c93f7cc97356fc232ae0cb780b86847b17449b5259e355105a",
+  "ToolRows_sha256": "562755550ca487766cfc8a8b08781edded583a1c3890e14719e3752a5d399188",
+  "pins_unchanged": true,
+  "no_node_npm_survivor": true,
+  "processes_after": "  PID  PPID COMMAND\n    1     0 bwrap\n    2     1 bash\n    3     2 socat\n    4     2 socat\n    7     2 bash\n   75     7 bash\n  103    75 python3\n  104   103 ps\n",
+  "free_after": 16842833920,
+  "RSS": "not measured",
+  "actual_release_utc": "2026-11-17T22:11:04.534471+00:00"
+}
