@@ -1,0 +1,97 @@
+{
+  "author": "Conductor Rebuild",
+  "main_checked": "b22fa9adaf67fa79fc3dddf72914cae01f352b08",
+  "regression_first_commit": "98d2ded7",
+  "machine": "Reason Cloud compute-linux-s; no Mac or product runtime",
+  "node": "v22.23.5",
+  "regression_command": "nice -n 19 timeout --kill-after=5s 120s node --max-old-space-size=768 --test --test-concurrency=1 src/features/terminal/selectionTheme.test.ts",
+  "red": {
+    "passed": 4,
+    "failed": 5,
+    "skipped": 0
+  },
+  "green": {
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0
+  },
+  "frozen_inputs_before_and_after": {
+    "src/features/terminal/selectionTheme.test.ts": {
+      "bytes": 12149,
+      "sha256": "694f95675789ed9e1aad4c06be8c500df4c7c86cb66f42c62f106fa5a4dfc938"
+    },
+    "src/theme/terminalAnsiThemeFixture.ts": {
+      "bytes": 1171,
+      "sha256": "6a9fcfffdec8c84ccb17ec4f378b8548bfd7e06f89f0124383445647d7988607"
+    },
+    "src/components/ScriptOutput.tsx": {
+      "bytes": 8334,
+      "sha256": "1488c5c247527b2608310a201f478801a50f9d0f500edef2b71b55ce378c1a70"
+    }
+  },
+  "product_before_sha256": "b0eac860b324dcc4539db87f12d93ba6cdc10bb1edd19ed2475cad0f3e0c32e0",
+  "product_after": {
+    "bytes": 23586,
+    "sha256": "1aa41588140bcfbf7a223aae21470482680a2778ba27a1a269ff667abae13a21"
+  },
+  "adjacent_command": "nice -n 19 timeout --kill-after=5s 180s node --max-old-space-size=768 --test --test-concurrency=1 src/features/terminal/*.test.ts src/scripts/outputCursor.test.ts src/scripts/outputUnicode.test.ts src/scripts/outputCopy.test.ts src/scripts/outputLinks.test.ts src/scripts/runOutputSelection.test.ts",
+  "adjacent": {
+    "passed": 321,
+    "failed": 0,
+    "skipped": 0
+  },
+  "typecheck": {
+    "command": "nice -n 19 timeout --kill-after=5s 180s node --max-old-space-size=4096 node_modules/typescript/bin/tsc --noEmit",
+    "exit": 0,
+    "stdout_stderr_bytes": 0,
+    "prior_768mb_attempt": "self-imposed V8 heap limit, exit134; rerun without changing sources or dependencies"
+  },
+  "color_lint": {
+    "command": "nice -n 19 timeout --kill-after=5s 120s npm run lint:colors",
+    "passed": 6,
+    "failed": 0,
+    "scanned_files": 1191
+  },
+  "logs": {
+    "red.tap": {
+      "file": "red.tap.gz",
+      "exit": 1,
+      "bytes": 6533,
+      "sha256": "fbd28c81ae845d93e688c74a73adb06ed5ebb0edf7a84d1eeb1e0b9d9d830497",
+      "gzip_sha256": "b8d80fef80282935cfc72476b6801239c99c667de8ee3d2199e4f32a6ee70daa"
+    },
+    "green.tap": {
+      "file": "green.tap.gz",
+      "exit": 0,
+      "bytes": 2500,
+      "sha256": "f5af3603562fa7fd4809479f34bd79ec00433372c8c4242da7c31f605d609554",
+      "gzip_sha256": "f0cd460402293bdfad43f079b98d462c4c8d3f658c2d953d9b246cbcb81a5252"
+    },
+    "adjacent.tap": {
+      "file": "adjacent.tap.gz",
+      "exit": 0,
+      "bytes": 73605,
+      "sha256": "4eed0ada93363e2a9c5cc4c4ffab3caecb8406298ce4c16ae353834952dec39c",
+      "gzip_sha256": "c2275f19c63f66f98d2db87377742067696b08998070e3d0985332bf654f5a58"
+    },
+    "typecheck-768mb.log": {
+      "file": "typecheck-768mb.log.gz",
+      "exit": 134,
+      "bytes": 1003,
+      "sha256": "7be0b54233d6cfa0756b173cc51cf0e70e629f74b6a8fc6c161391e6871fd8a1",
+      "gzip_sha256": "c370c38a7b5e319da8b49ca7561454c5ab67c5bc082ee163ff4bac04433ae06e"
+    },
+    "color-lint.log": {
+      "file": "color-lint.log.gz",
+      "exit": 0,
+      "bytes": 2204,
+      "sha256": "56ae329678ae036ff6b4d4d9c1f85f97ea91d6c3ff854e8f41a059f7103a146f",
+      "gzip_sha256": "2a3490ca35b7d29287881148e4dcb5540866db7d7d84ddc48a607e4b699763e9"
+    }
+  },
+  "limits": [
+    "Headless xterm options and React test renderer with synthetic DOM and PTY boundaries only",
+    "No browser paint, native app, real PTY, Mac dispatch, install, package or deployment run",
+    "Retained static REA bytes, no fresh reference acquisition"
+  ]
+}

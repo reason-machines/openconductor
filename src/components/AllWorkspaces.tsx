@@ -248,6 +248,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
   };
   const [limit, setLimit] = useState(PAGE_SIZE);
   const [activeKey, setActiveKey] = useState<string>();
+  const list = useRef<HTMLDivElement>(null);
   const sentinel = useRef<HTMLDivElement>(null);
   const now = Date.now();
   const showNumbers = useBoolPref("experimental_show_workspace_numbers");
@@ -278,6 +279,17 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
 
   useEffect(() => setActiveKey(flat[activeIndex]?.key), [activeIndex, flat]);
   useEffect(() => setActiveKey(undefined), [query]);
+
+  const selectedKey = flat[activeIndex]?.key;
+  useEffect(() => {
+    const row = list.current?.querySelector<HTMLElement>('[role="option"][aria-selected="true"]');
+    if (!row) return;
+    const group = row.closest(".allws-group");
+    if (group?.querySelector('[role="option"]') === row) {
+      group.querySelector<HTMLElement>(".allws-group-heading")?.scrollIntoView({ block: "nearest" });
+    }
+    row.scrollIntoView({ block: "nearest" });
+  }, [selectedKey, loading]);
 
   useEffect(() => {
     const el = sentinel.current;
@@ -402,7 +414,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
         </div>
       </div>
       <div className="allws-scroll">
-        <div className="allws-list" role="listbox" aria-label="Workspaces">
+        <div ref={list} className="allws-list" role="listbox" aria-label="Workspaces">
           {loading ? (
             <div className="allws-loading" role="status" aria-label="Loading workspaces">
               <RowStatusIcon status="working" size={16} />

@@ -1,0 +1,140 @@
+(node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: loaded matching prefix is removed only from the idle header label
+ok 1 - loaded matching prefix is removed only from the idle header label
+  ---
+  duration_ms: 181.538517
+  type: 'test'
+  ...
+# Subtest: idle header preserves the full label with unmatched prefix
+ok 2 - idle header preserves the full label with unmatched prefix
+  ---
+  duration_ms: 102.435807
+  type: 'test'
+  ...
+# Subtest: idle header preserves the full label with no prefix
+ok 3 - idle header preserves the full label with no prefix
+  ---
+  duration_ms: 76.808584
+  type: 'test'
+  ...
+# Subtest: loaded matching prefix is removed only from the archived header label
+ok 4 - loaded matching prefix is removed only from the archived header label
+  ---
+  duration_ms: 65.811606
+  type: 'test'
+  ...
+# Subtest: archived header preserves the full label with unmatched prefix
+ok 5 - archived header preserves the full label with unmatched prefix
+  ---
+  duration_ms: 52.312595
+  type: 'test'
+  ...
+# Subtest: archived header preserves the full label with no prefix
+ok 6 - archived header preserves the full label with no prefix
+  ---
+  duration_ms: 58.888348
+  type: 'test'
+  ...
+# Subtest: idle header falls back to the placeholder with matching prefix
+ok 7 - idle header falls back to the placeholder with matching prefix
+  ---
+  duration_ms: 31.809257
+  type: 'test'
+  ...
+# Subtest: idle header falls back to the placeholder with unmatched prefix
+ok 8 - idle header falls back to the placeholder with unmatched prefix
+  ---
+  duration_ms: 41.846704
+  type: 'test'
+  ...
+# Subtest: idle header falls back to the placeholder with no prefix
+ok 9 - idle header falls back to the placeholder with no prefix
+  ---
+  duration_ms: 32.899794
+  type: 'test'
+  ...
+# Subtest: idle header prefers the actual branch over a placeholder
+ok 10 - idle header prefers the actual branch over a placeholder
+  ---
+  duration_ms: 54.583916
+  type: 'test'
+  ...
+# Subtest: idle header does not invent a label for null placeholder
+ok 11 - idle header does not invent a label for null placeholder
+  ---
+  duration_ms: 53.777416
+  type: 'test'
+  ...
+# Subtest: idle header does not invent a label for empty placeholder
+ok 12 - idle header does not invent a label for empty placeholder
+  ---
+  duration_ms: 30.190897
+  type: 'test'
+  ...
+# Subtest: archived header falls back to the placeholder with matching prefix
+ok 13 - archived header falls back to the placeholder with matching prefix
+  ---
+  duration_ms: 25.770753
+  type: 'test'
+  ...
+# Subtest: archived header falls back to the placeholder with unmatched prefix
+ok 14 - archived header falls back to the placeholder with unmatched prefix
+  ---
+  duration_ms: 39.990732
+  type: 'test'
+  ...
+# Subtest: archived header falls back to the placeholder with no prefix
+ok 15 - archived header falls back to the placeholder with no prefix
+  ---
+  duration_ms: 45.71618
+  type: 'test'
+  ...
+# Subtest: archived header prefers the actual branch over a placeholder
+ok 16 - archived header prefers the actual branch over a placeholder
+  ---
+  duration_ms: 44.892548
+  type: 'test'
+  ...
+# Subtest: archived header does not invent a label for null placeholder
+ok 17 - archived header does not invent a label for null placeholder
+  ---
+  duration_ms: 33.720075
+  type: 'test'
+  ...
+# Subtest: archived header does not invent a label for empty placeholder
+ok 18 - archived header does not invent a label for empty placeholder
+  ---
+  duration_ms: 31.172589
+  type: 'test'
+  ...
+# Subtest: prefix display does not alter Copy or initial rename input
+ok 19 - prefix display does not alter Copy or initial rename input
+  ---
+  duration_ms: 49.658255
+  type: 'test'
+  ...
+# Subtest: settings notification updates the idle label without changing the branch
+ok 20 - settings notification updates the idle label without changing the branch
+  ---
+  duration_ms: 35.292026
+  type: 'test'
+  ...
+# Subtest: settings notification updates the archived label without changing the branch
+ok 21 - settings notification updates the archived label without changing the branch
+  ---
+  duration_ms: 55.274825
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1668.811757
