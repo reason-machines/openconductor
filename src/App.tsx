@@ -768,7 +768,7 @@ export default function App() {
           onConfirm={() => dispatch({ ...archiveOverAgents, stopRunningAgents: true })}
         />
       )}
-      {restoreRequest && <RestoreWorkspaceDialog request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
+      {restoreRequest && <RestoreWorkspaceDialog key={restoreRequest.workspaceId} request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
       {quitDialog}
     </div>
     <BrowserPreviewHost />
