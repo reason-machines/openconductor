@@ -1,0 +1,1 @@
+function TQt(t,e){return nh(t).some(s=>Hfe(s,e)&&_Ut(s,e))}

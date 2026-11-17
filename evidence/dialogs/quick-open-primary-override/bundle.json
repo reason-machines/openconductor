@@ -1,0 +1,96 @@
+{
+  "head": "f45ab99045eeacb1b4336153b32a1b46cea24f27",
+  "records": [
+    {
+      "version": "baseline",
+      "componentSha256": "417b8cda0da9d6967b992bd6184fe846e015ee5078f7087044deb4fc2427455c",
+      "inputCount": 30,
+      "inputs": [
+        ".ara-state/quick-open-primary-6013/entry.tsx",
+        ".ara-state/quick-open-primary-6013/fixture.css",
+        ".ara-state/quick-open-primary-6013/io.ts",
+        "node_modules/react-dom/cjs/react-dom.development.js",
+        "node_modules/react-dom/client.js",
+        "node_modules/react-dom/index.js",
+        "node_modules/react/cjs/react-jsx-runtime.development.js",
+        "node_modules/react/cjs/react.development.js",
+        "node_modules/react/index.js",
+        "node_modules/react/jsx-runtime.js",
+        "node_modules/scheduler/cjs/scheduler.development.js",
+        "node_modules/scheduler/index.js",
+        "src/components/AppMark.tsx",
+        "src/components/ConductorIcon.tsx",
+        "src/components/Icons.tsx",
+        "src/components/QuickOpenDialog.tsx",
+        "src/components/conductorIcons.generated.ts",
+        "src/components/motion/dialogMotion.ts",
+        "src/keybindings/KeybindingsProvider.tsx",
+        "src/keybindings/bind.ts",
+        "src/keybindings/dispatcher.ts",
+        "src/keybindings/listeners.ts",
+        "src/keybindings/overrides.ts",
+        "src/keybindings/registry.ts",
+        "src/keybindings/resolve.ts",
+        "src/keybindings/selectAll.ts",
+        "src/keybindings/shortcut.ts",
+        "src/keybindings/types.ts",
+        "src/spotlight/quickOpen.ts",
+        "src/spotlight/recentFiles.ts"
+      ],
+      "served": {
+        "baseline.js": "5397e5f8d6df2ddebfbc3a822303f805b8ce85684e16e6919c32672f14d61db4",
+        "baseline.css": "2c83c3c86c53c08d8060d309a7784ec77ba4ab959c62a3a3d7893f6284368767",
+        "baseline.html": "54ebd18df0b3fe767463f9a797faa72991e14d0eb19e0376b65aff90b449db4a"
+      }
+    },
+    {
+      "version": "treatment",
+      "componentSha256": "7a34d148c43e9082b5adbb784f107f7ee0b657d2ceee24284a99c1e07bdc1790",
+      "inputCount": 30,
+      "inputs": [
+        ".ara-state/quick-open-primary-6013/entry.tsx",
+        ".ara-state/quick-open-primary-6013/fixture.css",
+        ".ara-state/quick-open-primary-6013/io.ts",
+        "node_modules/react-dom/cjs/react-dom.development.js",
+        "node_modules/react-dom/client.js",
+        "node_modules/react-dom/index.js",
+        "node_modules/react/cjs/react-jsx-runtime.development.js",
+        "node_modules/react/cjs/react.development.js",
+        "node_modules/react/index.js",
+        "node_modules/react/jsx-runtime.js",
+        "node_modules/scheduler/cjs/scheduler.development.js",
+        "node_modules/scheduler/index.js",
+        "src/components/AppMark.tsx",
+        "src/components/ConductorIcon.tsx",
+        "src/components/Icons.tsx",
+        "src/components/QuickOpenDialog.tsx",
+        "src/components/conductorIcons.generated.ts",
+        "src/components/motion/dialogMotion.ts",
+        "src/keybindings/KeybindingsProvider.tsx",
+        "src/keybindings/bind.ts",
+        "src/keybindings/dispatcher.ts",
+        "src/keybindings/listeners.ts",
+        "src/keybindings/overrides.ts",
+        "src/keybindings/registry.ts",
+        "src/keybindings/resolve.ts",
+        "src/keybindings/selectAll.ts",
+        "src/keybindings/shortcut.ts",
+        "src/keybindings/types.ts",
+        "src/spotlight/quickOpen.ts",
+        "src/spotlight/recentFiles.ts"
+      ],
+      "served": {
+        "treatment.js": "4d864bcede459d6b0c617104a7c1dee47b0fb923b0927a27c22d96db8614f4e2",
+        "treatment.css": "2c83c3c86c53c08d8060d309a7784ec77ba4ab959c62a3a3d7893f6284368767",
+        "treatment.html": "7f6c1a6995a83f44deb4cd910ea6012e580bfadf8c90ee44aa20f938cf17e5a2"
+      }
+    }
+  ],
+  "fixture": {
+    "entry.tsx": "73ec5383f84732436065f61fd60a1b433079ce3047942ae524fce96f311d26d7",
+    "io.ts": "0bd5d88c7018b6991f39b8feada2a723d9955ffa42203d6acbfc6801d6ac0583",
+    "build.mjs": "caf652aad595d247519620ac9269e310d9809d65e0654de1f1d6ade3774b1836",
+    "fixture.css": "581105237e63be81067d8c1c3f580ccb7783aa40348ec9e80362408bfb4dab9e"
+  },
+  "isolation": "Only synthetic backend stub; no App/native/provider/real backend module; CSP connect/form none"
+}

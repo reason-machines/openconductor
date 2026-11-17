@@ -1,0 +1,14 @@
+{
+  "releasedAt": "2026-11-17T18:16:04.504162+00:00",
+  "serverId": "6ee12688-422c-44e0-938f-bc446dabac86",
+  "port": 48733,
+  "tabId": 1440146777,
+  "tabs": [],
+  "preview": "stopped",
+  "listening": null,
+  "previewStopProcessGroupEnded": true,
+  "ownServerProcesses": [],
+  "independentNamespaceBind": "PASS",
+  "actualStart": "2026-11-17T18:08:30.076Z",
+  "deadline": "2026-11-17T18:23:30.076Z"
+}
