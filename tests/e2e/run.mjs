@@ -4,6 +4,8 @@
 // After each flow it saves <flow>.png; a screenshot that fails or passes its 20 s
 // bound (WebDriver.screenshot) is reported in results.json, not skipped silently.
 import { spawn } from "node:child_process";
+import { homedir } from "node:os";
+import { createRuntimeReceipt } from "../../tools/e2e/runtime-receipt.mjs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { WebDriver } from "./webdriver.mjs";
@@ -13,7 +15,9 @@ const app = resolve(process.env.OC_APP ?? "src-tauri/target/debug/openconductor"
 const out = resolve(process.env.E2E_OUT ?? "e2e-artifacts");
 await mkdir(out, { recursive: true });
 
+const receipt = createRuntimeReceipt({ suite: "app-flows", app, out, home: homedir() });
 const driver = spawn(process.env.TAURI_DRIVER ?? "tauri-driver", [], { stdio: ["ignore", "inherit", "inherit"] });
+receipt.track(driver);
 const wd = new WebDriver();
 const results = [];
 const ctx = {}; // shared between flows, e.g. the fixture repo add-repo created
@@ -51,9 +55,11 @@ try {
   results.push({ flow: "session", status: "fail", error: String(e?.message ?? e) });
   console.log(`FAIL session: ${e?.message ?? e}`);
 } finally {
+  await receipt.beforeTeardown((script) => wd.executeAsync(script, [], 3000));
   await wd.deleteSession();
   driver.kill();
   for (const flow of flows) await Promise.resolve(flow.teardown?.(ctx)).catch((e) => console.log(`teardown ${flow.name}: ${e?.message ?? e}`));
+  await receipt.afterTeardown();
 }
 
 await writeFile(join(out, "results.json"), JSON.stringify(results, null, 2));

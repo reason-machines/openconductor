@@ -27,6 +27,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: E2E runtime receipt tests (no app or driver)
+        run: node --test tools/e2e/runtime-receipt.test.mjs
       - run: npm run typecheck
       - name: No colour literals outside src/theme/
         run: npm run lint:colors
