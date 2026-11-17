@@ -1,0 +1,916 @@
+(node:95) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:102) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pending Create project name edits preserve the active request and survive rejection
+ok 1 - pending Create project name edits preserve the active request and survive rejection
+  ---
+  duration_ms: 156.72132
+  type: 'test'
+  ...
+# Subtest: pending Create project parent edits preserve the active request and survive rejection
+ok 2 - pending Create project parent edits preserve the active request and survive rejection
+  ---
+  duration_ms: 98.450093
+  type: 'test'
+  ...
+# Subtest: pending Create project Browse updates only the draft and preserves Cancel
+ok 3 - pending Create project Browse updates only the draft and preserves Cancel
+  ---
+  duration_ms: 70.232545
+  type: 'test'
+  ...
+# Subtest: pending Create project template selection does not change the active pipeline
+ok 4 - pending Create project template selection does not change the active pipeline
+  ---
+  duration_ms: 51.092966
+  type: 'test'
+  ...
+# Subtest: pending Create project retains the primary, shortcut and duplicate-submit guards
+ok 5 - pending Create project retains the primary, shortcut and duplicate-submit guards
+  ---
+  duration_ms: 62.794631
+  type: 'test'
+  ...
+# Subtest: Create project success retains its captured request and completion callbacks
+ok 6 - Create project success retains its captured request and completion callbacks
+  ---
+  duration_ms: 60.982063
+  type: 'test'
+  ...
+# Subtest: Create project rejection preserves its draft and permits a new captured retry
+ok 7 - Create project rejection preserves its draft and permits a new captured retry
+  ---
+  duration_ms: 46.691063
+  type: 'test'
+  ...
+# Subtest: idle Create project Browse Cancel preserves the displayed folder without creating
+ok 8 - idle Create project Browse Cancel preserves the displayed folder without creating
+  ---
+  duration_ms: 43.784837
+  type: 'test'
+  ...
+# (node:110) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: create composer leaves clipboard pastes without files to the shared editor
+ok 9 - create composer leaves clipboard pastes without files to the shared editor
+  ---
+  duration_ms: 554.212938
+  type: 'test'
+  ...
+# Subtest: create composer still handles clipboard file attachments
+ok 10 - create composer still handles clipboard file attachments
+  ---
+  duration_ms: 263.675348
+  type: 'test'
+  ...
+# Subtest: create composer stages exact binary bytes and finishes materialization before queueing
+ok 11 - create composer stages exact binary bytes and finishes materialization before queueing
+  ---
+  duration_ms: 198.572062
+  type: 'test'
+  ...
+# Subtest: create composer keeps nonbinary files inline without staging
+ok 12 - create composer keeps nonbinary files inline without staging
+  ---
+  duration_ms: 183.125566
+  type: 'test'
+  ...
+# Subtest: create composer blocks launch while an attachment read is pending
+ok 13 - create composer blocks launch while an attachment read is pending
+  ---
+  duration_ms: 161.326262
+  type: 'test'
+  ...
+# Subtest: create composer surfaces staging failure without a phantom binary chip
+ok 14 - create composer surfaces staging failure without a phantom binary chip
+  ---
+  duration_ms: 166.72275
+  type: 'test'
+  ...
+# Subtest: create composer does not auto-send a path when materialization fails
+ok 15 - create composer does not auto-send a path when materialization fails
+  ---
+  duration_ms: 287.089555
+  type: 'test'
+  ...
+# Subtest: create composer blocks launch while the staging write is pending
+ok 16 - create composer blocks launch while the staging write is pending
+  ---
+  duration_ms: 155.705465
+  type: 'test'
+  ...
+# Subtest: same-name binary files use distinct paths and removing a chip deletes only its staged copy
+ok 17 - same-name binary files use distinct paths and removing a chip deletes only its staged copy
+  ---
+  duration_ms: 125.480386
+  type: 'test'
+  ...
+# Subtest: create composer stops automatic delivery on missingCopy
+ok 18 - create composer stops automatic delivery on missingCopy
+  ---
+  duration_ms: 148.263406
+  type: 'test'
+  ...
+# Subtest: create composer stops automatic delivery on copyThrows
+ok 19 - create composer stops automatic delivery on copyThrows
+  ---
+  duration_ms: 112.593421
+  type: 'test'
+  ...
+# Subtest: create composer rejects oversized files without reading or staging them
+ok 20 - create composer rejects oversized files without reading or staging them
+  ---
+  duration_ms: 126.056636
+  type: 'test'
+  ...
+# Subtest: accepted modal launch closes after pending registration and before repository registration settles
+ok 21 - accepted modal launch closes after pending registration and before repository registration settles
+  ---
+  duration_ms: 138.015263
+  type: 'test'
+  ...
+# Subtest: late modal success does not close a replacement dialog
+ok 22 - late modal success does not close a replacement dialog
+  ---
+  duration_ms: 163.504509
+  type: 'test'
+  ...
+# Subtest: detached creation failure stays visible through the persistent warning surface
+ok 23 - detached creation failure stays visible through the persistent warning surface
+  ---
+  duration_ms: 157.60216
+  type: 'test'
+  ...
+# Subtest: full-page creation remains mounted until success and suppresses a pending duplicate
+ok 24 - full-page creation remains mounted until success and suppresses a pending duplicate
+  ---
+  duration_ms: 103.769061
+  type: 'test'
+  ...
+# Subtest: full-page creation failure stays inline and clears the pending row
+ok 25 - full-page creation failure stays inline and clears the pending row
+  ---
+  duration_ms: 108.058995
+  type: 'test'
+  ...
+# Subtest: invalid does not close or create a workspace
+ok 26 - invalid does not close or create a workspace
+  ---
+  duration_ms: 111.042062
+  type: 'test'
+  ...
+# Subtest: missing-checkout does not close or create a workspace
+ok 27 - missing-checkout does not close or create a workspace
+  ---
+  duration_ms: 123.286201
+  type: 'test'
+  ...
+# Subtest: no-repository does not close or create a workspace
+ok 28 - no-repository does not close or create a workspace
+  ---
+  duration_ms: 107.05006
+  type: 'test'
+  ...
+# Subtest: detached launch preserves first message, section and setup success
+ok 29 - detached launch preserves first message, section and setup success
+  ---
+  duration_ms: 117.137517
+  type: 'test'
+  ...
+# Subtest: detached launch preserves first message, section and setup failure
+ok 30 - detached launch preserves first message, section and setup failure
+  ---
+  duration_ms: 116.597839
+  type: 'test'
+  ...
+# Subtest: accepted modal launch adds workspace with state ready when no setup script
+ok 31 - accepted modal launch adds workspace with state ready when no setup script
+  ---
+  duration_ms: 118.631685
+  type: 'test'
+  ...
+# Subtest: Alt+Enter (addToBacklogFromComposer) creates workspace idle, sets backlog status, skips seed/rename
+ok 32 - Alt+Enter (addToBacklogFromComposer) creates workspace idle, sets backlog status, skips seed/rename
+  ---
+  duration_ms: 105.860065
+  type: 'test'
+  ...
+# Subtest: create Plan shortcut toggles the existing menu state while editor-focused (page=false)
+ok 33 - create Plan shortcut toggles the existing menu state while editor-focused (page=false)
+  ---
+  duration_ms: 118.018572
+  type: 'test'
+  ...
+# Subtest: create Plan shortcut toggles the existing menu state while editor-focused (page=true)
+ok 34 - create Plan shortcut toggles the existing menu state while editor-focused (page=true)
+  ---
+  duration_ms: 116.609256
+  type: 'test'
+  ...
+# Subtest: create Plan shortcut leaves an unfocused editor unchanged
+ok 35 - create Plan shortcut leaves an unfocused editor unchanged
+  ---
+  duration_ms: 123.408173
+  type: 'test'
+  ...
+# Subtest: create Plan shortcut does not change launch controls while creating
+ok 36 - create Plan shortcut does not change launch controls while creating
+  ---
+  duration_ms: 123.556058
+  type: 'test'
+  ...
+# Subtest: create Plan shortcut never exposes unsupported agent controls (reason)
+ok 37 - create Plan shortcut never exposes unsupported agent controls (reason)
+  ---
+  duration_ms: 129.742161
+  type: 'test'
+  ...
+# Subtest: create Plan shortcut never exposes unsupported agent controls (codex)
+ok 38 - create Plan shortcut never exposes unsupported agent controls (codex)
+  ---
+  duration_ms: 111.614132
+  type: 'test'
+  ...
+# (node:118) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: configured newline reaches the mounted shared editor command once (page=false)
+ok 39 - configured newline reaches the mounted shared editor command once (page=false)
+  ---
+  duration_ms: 654.82335
+  type: 'test'
+  ...
+# Subtest: configured chat.submitMessage wins a newline collision (page=false)
+ok 40 - configured chat.submitMessage wins a newline collision (page=false)
+  ---
+  duration_ms: 268.993794
+  type: 'test'
+  ...
+# Subtest: configured chat.submitOppositeFollowUp wins a newline collision (page=false)
+ok 41 - configured chat.submitOppositeFollowUp wins a newline collision (page=false)
+  ---
+  duration_ms: 222.757999
+  type: 'test'
+  ...
+# Subtest: configured workspace.addToBacklogFromComposer wins a newline collision (page=false)
+ok 42 - configured workspace.addToBacklogFromComposer wins a newline collision (page=false)
+  ---
+  duration_ms: 174.059356
+  type: 'test'
+  ...
+# Subtest: composition signals and unrelated chords remain unhandled (page=false)
+ok 43 - composition signals and unrelated chords remain unhandled (page=false)
+  ---
+  duration_ms: 192.353977
+  type: 'test'
+  ...
+# Subtest: default Shift+Enter uses the same newline command (page=false)
+ok 44 - default Shift+Enter uses the same newline command (page=false)
+  ---
+  duration_ms: 162.789424
+  type: 'test'
+  ...
+# Subtest: ordinary Enter still submits exactly once (page=false)
+ok 45 - ordinary Enter still submits exactly once (page=false)
+  ---
+  duration_ms: 213.41457
+  type: 'test'
+  ...
+# Subtest: configured newline reaches the mounted shared editor command once (page=true)
+ok 46 - configured newline reaches the mounted shared editor command once (page=true)
+  ---
+  duration_ms: 152.905664
+  type: 'test'
+  ...
+# Subtest: configured chat.submitMessage wins a newline collision (page=true)
+ok 47 - configured chat.submitMessage wins a newline collision (page=true)
+  ---
+  duration_ms: 152.316774
+  type: 'test'
+  ...
+# Subtest: configured chat.submitOppositeFollowUp wins a newline collision (page=true)
+ok 48 - configured chat.submitOppositeFollowUp wins a newline collision (page=true)
+  ---
+  duration_ms: 142.934667
+  type: 'test'
+  ...
+# Subtest: configured workspace.addToBacklogFromComposer wins a newline collision (page=true)
+ok 49 - configured workspace.addToBacklogFromComposer wins a newline collision (page=true)
+  ---
+  duration_ms: 169.170356
+  type: 'test'
+  ...
+# Subtest: composition signals and unrelated chords remain unhandled (page=true)
+ok 50 - composition signals and unrelated chords remain unhandled (page=true)
+  ---
+  duration_ms: 166.990655
+  type: 'test'
+  ...
+# Subtest: default Shift+Enter uses the same newline command (page=true)
+ok 51 - default Shift+Enter uses the same newline command (page=true)
+  ---
+  duration_ms: 182.859232
+  type: 'test'
+  ...
+# Subtest: ordinary Enter still submits exactly once (page=true)
+ok 52 - ordinary Enter still submits exactly once (page=true)
+  ---
+  duration_ms: 178.450084
+  type: 'test'
+  ...
+# (node:126) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Create inherits Plan default false and persists before the first text prompt
+ok 53 - Create inherits Plan default false and persists before the first text prompt
+  ---
+  duration_ms: 696.568352
+  type: 'test'
+  ...
+# Subtest: Create explicitly overrides Plan default false using either menu or shortcut
+ok 54 - Create explicitly overrides Plan default false using either menu or shortcut
+  ---
+  duration_ms: 306.456533
+  type: 'test'
+  ...
+# Subtest: Create inherits Plan default true and persists before the first text prompt
+ok 55 - Create inherits Plan default true and persists before the first text prompt
+  ---
+  duration_ms: 224.234183
+  type: 'test'
+  ...
+# Subtest: Create explicitly overrides Plan default true using either menu or shortcut
+ok 56 - Create explicitly overrides Plan default true using either menu or shortcut
+  ---
+  duration_ms: 183.882262
+  type: 'test'
+  ...
+# Subtest: Create inherits asynchronously loaded settings until an explicit choice is made
+ok 57 - Create inherits asynchronously loaded settings until an explicit choice is made
+  ---
+  duration_ms: 191.479614
+  type: 'test'
+  ...
+# Subtest: an explicit Plan choice before settings load survives the load
+ok 58 - an explicit Plan choice before settings load survives the load
+  ---
+  duration_ms: 237.575732
+  type: 'test'
+  ...
+# Subtest: Plan persistence gates an empty-prompt workspace
+ok 59 - Plan persistence gates an empty-prompt workspace
+  ---
+  duration_ms: 190.901423
+  type: 'test'
+  ...
+# Subtest: rejected Plan persistence keeps created workspace reachable without auto-send (attachments=false)
+ok 60 - rejected Plan persistence keeps created workspace reachable without auto-send (attachments=false)
+  ---
+  duration_ms: 177.434506
+  type: 'test'
+  ...
+# Subtest: Plan persistence gates attachment delivery
+ok 61 - Plan persistence gates attachment delivery
+  ---
+  duration_ms: 178.305844
+  type: 'test'
+  ...
+# Subtest: rejected Plan persistence keeps created workspace reachable without auto-send (attachments=true)
+ok 62 - rejected Plan persistence keeps created workspace reachable without auto-send (attachments=true)
+  ---
+  duration_ms: 178.597782
+  type: 'test'
+  ...
+# Subtest: failed binary copy (error) preserves inline UTF-8 files in the editable draft
+ok 63 - failed binary copy (error) preserves inline UTF-8 files in the editable draft
+  ---
+  duration_ms: 137.147088
+  type: 'test'
+  ...
+# Subtest: failed binary copy (missing) preserves inline UTF-8 files in the editable draft
+ok 64 - failed binary copy (missing) preserves inline UTF-8 files in the editable draft
+  ---
+  duration_ms: 180.67514
+  type: 'test'
+  ...
+# Subtest: failed binary copy (throws) preserves inline UTF-8 files in the editable draft
+ok 65 - failed binary copy (throws) preserves inline UTF-8 files in the editable draft
+  ---
+  duration_ms: 187.486813
+  type: 'test'
+  ...
+# Subtest: successful mixed attachment delivery still includes both inline and materialized files
+ok 66 - successful mixed attachment delivery still includes both inline and materialized files
+  ---
+  duration_ms: 152.504477
+  type: 'test'
+  ...
+# Subtest: reason launch stays outside the Claude Plan persistence boundary
+ok 67 - reason launch stays outside the Claude Plan persistence boundary
+  ---
+  duration_ms: 162.50056
+  type: 'test'
+  ...
+# Subtest: codex launch stays outside the Claude Plan persistence boundary
+ok 68 - codex launch stays outside the Claude Plan persistence boundary
+  ---
+  duration_ms: 155.465771
+  type: 'test'
+  ...
+# (node:134) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pre-workspace lookup uses repository/ref/agent identity, not an existing workspace (page=false)
+ok 69 - pre-workspace lookup uses repository/ref/agent identity, not an existing workspace (page=false)
+  ---
+  duration_ms: 614.388989
+  type: 'test'
+  ...
+# Subtest: @ selection inserts one file atom and trailing space without creating (page=false,key=Enter)
+ok 70 - @ selection inserts one file atom and trailing space without creating (page=false,key=Enter)
+  ---
+  duration_ms: 302.744562
+  type: 'test'
+  ...
+# Subtest: / selection inserts the reported command without submitting (page=false,key=Enter)
+ok 71 - / selection inserts the reported command without submitting (page=false,key=Enter)
+  ---
+  duration_ms: 185.886983
+  type: 'test'
+  ...
+# Subtest: @ selection inserts one file atom and trailing space without creating (page=false,key=Tab)
+ok 72 - @ selection inserts one file atom and trailing space without creating (page=false,key=Tab)
+  ---
+  duration_ms: 161.2291
+  type: 'test'
+  ...
+# Subtest: / selection inserts the reported command without submitting (page=false,key=Tab)
+ok 73 - / selection inserts the reported command without submitting (page=false,key=Tab)
+  ---
+  duration_ms: 163.201454
+  type: 'test'
+  ...
+# Subtest: directory selections preserve directory identity (page=false)
+ok 74 - directory selections preserve directory identity (page=false)
+  ---
+  duration_ms: 164.466321
+  type: 'test'
+  ...
+# Subtest: Escape dismisses suggestions without closing the containing dialog (page=false)
+ok 75 - Escape dismisses suggestions without closing the containing dialog (page=false)
+  ---
+  duration_ms: 181.016353
+  type: 'test'
+  ...
+# Subtest: composition and unrelated keys do not submit or mutate (page=false)
+ok 76 - composition and unrelated keys do not submit or mutate (page=false)
+  ---
+  duration_ms: 165.266909
+  type: 'test'
+  ...
+# Subtest: no repository means no native lookup, no suggestions, and no create (page=false)
+ok 77 - no repository means no native lookup, no suggestions, and no create (page=false)
+  ---
+  duration_ms: 149.746169
+  type: 'test'
+  ...
+# Subtest: ordinary Enter keeps the existing create path (page=false)
+ok 78 - ordinary Enter keeps the existing create path (page=false)
+  ---
+  duration_ms: 143.002567
+  type: 'test'
+  ...
+# Subtest: pre-workspace lookup uses repository/ref/agent identity, not an existing workspace (page=true)
+ok 79 - pre-workspace lookup uses repository/ref/agent identity, not an existing workspace (page=true)
+  ---
+  duration_ms: 141.690932
+  type: 'test'
+  ...
+# Subtest: @ selection inserts one file atom and trailing space without creating (page=true,key=Enter)
+ok 80 - @ selection inserts one file atom and trailing space without creating (page=true,key=Enter)
+  ---
+  duration_ms: 135.367566
+  type: 'test'
+  ...
+# Subtest: / selection inserts the reported command without submitting (page=true,key=Enter)
+ok 81 - / selection inserts the reported command without submitting (page=true,key=Enter)
+  ---
+  duration_ms: 149.375253
+  type: 'test'
+  ...
+# Subtest: @ selection inserts one file atom and trailing space without creating (page=true,key=Tab)
+ok 82 - @ selection inserts one file atom and trailing space without creating (page=true,key=Tab)
+  ---
+  duration_ms: 165.71866
+  type: 'test'
+  ...
+# Subtest: / selection inserts the reported command without submitting (page=true,key=Tab)
+ok 83 - / selection inserts the reported command without submitting (page=true,key=Tab)
+  ---
+  duration_ms: 142.118491
+  type: 'test'
+  ...
+# Subtest: directory selections preserve directory identity (page=true)
+ok 84 - directory selections preserve directory identity (page=true)
+  ---
+  duration_ms: 160.702812
+  type: 'test'
+  ...
+# Subtest: Escape dismisses suggestions without closing the containing dialog (page=true)
+ok 85 - Escape dismisses suggestions without closing the containing dialog (page=true)
+  ---
+  duration_ms: 132.5313
+  type: 'test'
+  ...
+# Subtest: composition and unrelated keys do not submit or mutate (page=true)
+ok 86 - composition and unrelated keys do not submit or mutate (page=true)
+  ---
+  duration_ms: 149.220828
+  type: 'test'
+  ...
+# Subtest: no repository means no native lookup, no suggestions, and no create (page=true)
+ok 87 - no repository means no native lookup, no suggestions, and no create (page=true)
+  ---
+  duration_ms: 147.26004
+  type: 'test'
+  ...
+# Subtest: ordinary Enter keeps the existing create path (page=true)
+ok 88 - ordinary Enter keeps the existing create path (page=true)
+  ---
+  duration_ms: 143.476544
+  type: 'test'
+  ...
+# (node:142) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: selected branch and source ref replace target/cwd identity (page=false)
+ok 89 - selected branch and source ref replace target/cwd identity (page=false)
+  ---
+  duration_ms: 554.788848
+  type: 'test'
+  ...
+# Subtest: old repository/ref result cannot reappear after a newer response (page=false)
+ok 90 - old repository/ref result cannot reappear after a newer response (page=false)
+  ---
+  duration_ms: 272.982739
+  type: 'test'
+  ...
+# Subtest: response after unmount is discarded (page=false)
+ok 91 - response after unmount is discarded (page=false)
+  ---
+  duration_ms: 194.769227
+  type: 'test'
+  ...
+# Subtest: lookup failure leaves ordinary text editable and does not synthesize suggestions (page=false)
+ok 92 - lookup failure leaves ordinary text editable and does not synthesize suggestions (page=false)
+  ---
+  duration_ms: 209.728989
+  type: 'test'
+  ...
+# Subtest: skill selection preserves existing Codex path-link grammar and never creates (page=false)
+ok 93 - skill selection preserves existing Codex path-link grammar and never creates (page=false)
+  ---
+  duration_ms: 167.857201
+  type: 'test'
+  ...
+# Subtest: agent change requests a distinct snapshot; Claude uses existing slash grammar (page=false)
+ok 94 - agent change requests a distinct snapshot; Claude uses existing slash grammar (page=false)
+  ---
+  duration_ms: 173.408951
+  type: 'test'
+  ...
+# Subtest: file atom becomes prompt text at submit boundary, never envelope (page=false)
+ok 95 - file atom becomes prompt text at submit boundary, never envelope (page=false)
+  ---
+  duration_ms: 191.581421
+  type: 'test'
+  ...
+# Subtest: file atom becomes prompt text at backlog boundary, never envelope (page=false)
+ok 96 - file atom becomes prompt text at backlog boundary, never envelope (page=false)
+  ---
+  duration_ms: 218.299106
+  type: 'test'
+  ...
+# Subtest: blur and escaped popup cannot consume subsequent ordinary keys (page=false)
+ok 97 - blur and escaped popup cannot consume subsequent ordinary keys (page=false)
+  ---
+  duration_ms: 148.767311
+  type: 'test'
+  ...
+# Subtest: selected branch and source ref replace target/cwd identity (page=true)
+ok 98 - selected branch and source ref replace target/cwd identity (page=true)
+  ---
+  duration_ms: 180.183072
+  type: 'test'
+  ...
+# Subtest: old repository/ref result cannot reappear after a newer response (page=true)
+ok 99 - old repository/ref result cannot reappear after a newer response (page=true)
+  ---
+  duration_ms: 142.476857
+  type: 'test'
+  ...
+# Subtest: response after unmount is discarded (page=true)
+ok 100 - response after unmount is discarded (page=true)
+  ---
+  duration_ms: 133.329508
+  type: 'test'
+  ...
+# Subtest: lookup failure leaves ordinary text editable and does not synthesize suggestions (page=true)
+ok 101 - lookup failure leaves ordinary text editable and does not synthesize suggestions (page=true)
+  ---
+  duration_ms: 168.857738
+  type: 'test'
+  ...
+# Subtest: skill selection preserves existing Codex path-link grammar and never creates (page=true)
+ok 102 - skill selection preserves existing Codex path-link grammar and never creates (page=true)
+  ---
+  duration_ms: 153.249246
+  type: 'test'
+  ...
+# Subtest: agent change requests a distinct snapshot; Claude uses existing slash grammar (page=true)
+ok 103 - agent change requests a distinct snapshot; Claude uses existing slash grammar (page=true)
+  ---
+  duration_ms: 150.479903
+  type: 'test'
+  ...
+# Subtest: file atom becomes prompt text at submit boundary, never envelope (page=true)
+ok 104 - file atom becomes prompt text at submit boundary, never envelope (page=true)
+  ---
+  duration_ms: 144.450117
+  type: 'test'
+  ...
+# Subtest: file atom becomes prompt text at backlog boundary, never envelope (page=true)
+ok 105 - file atom becomes prompt text at backlog boundary, never envelope (page=true)
+  ---
+  duration_ms: 140.513914
+  type: 'test'
+  ...
+# Subtest: blur and escaped popup cannot consume subsequent ordinary keys (page=true)
+ok 106 - blur and escaped popup cannot consume subsequent ordinary keys (page=true)
+  ---
+  duration_ms: 148.264563
+  type: 'test'
+  ...
+# (node:150) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a target arriving without user navigation refocuses the same actual Create editor once
+ok 107 - a target arriving without user navigation refocuses the same actual Create editor once
+  ---
+  duration_ms: 472.764989
+  type: 'test'
+  ...
+# Subtest: unrelated keys do not cancel target-arrival focus
+ok 108 - unrelated keys do not cancel target-arrival focus
+  ---
+  duration_ms: 221.365361
+  type: 'test'
+  ...
+# Subtest: Tab expresses user focus intent and cancels target-arrival focus
+ok 109 - Tab expresses user focus intent and cancels target-arrival focus
+  ---
+  duration_ms: 135.627753
+  type: 'test'
+  ...
+# Subtest: pointer interaction cancels target-arrival focus
+ok 110 - pointer interaction cancels target-arrival focus
+  ---
+  duration_ms: 129.510068
+  type: 'test'
+  ...
+# Subtest: a target present at mount keeps existing single autofocus and never refocuses on updates
+ok 111 - a target present at mount keeps existing single autofocus and never refocuses on updates
+  ---
+  duration_ms: 120.005797
+  type: 'test'
+  ...
+# Subtest: remaining without a target does not add focus calls
+ok 112 - remaining without a target does not add focus calls
+  ---
+  duration_ms: 115.774229
+  type: 'test'
+  ...
+# Subtest: waiting focus listeners are removed on actual editor unmount
+ok 113 - waiting focus listeners are removed on actual editor unmount
+  ---
+  duration_ms: 84.600256
+  type: 'test'
+  ...
+# Subtest: target arrival in a second composer cannot focus the first editor
+ok 114 - target arrival in a second composer cannot focus the first editor
+  ---
+  duration_ms: 176.363186
+  type: 'test'
+  ...
+# (node:158) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: startSetupScript returns true when setup script starts
+ok 115 - startSetupScript returns true when setup script starts
+  ---
+  duration_ms: 54.276296
+  type: 'test'
+  ...
+# Subtest: startSetupScript returns false when no setup script configured
+ok 116 - startSetupScript returns false when no setup script configured
+  ---
+  duration_ms: 9.217334
+  type: 'test'
+  ...
+# Subtest: startSetupScript returns false when workspaceRef resolves to null
+ok 117 - startSetupScript returns false when workspaceRef resolves to null
+  ---
+  duration_ms: 8.15372
+  type: 'test'
+  ...
+# Subtest: startSetupScript returns false when startSetup returns false
+ok 118 - startSetupScript returns false when startSetup returns false
+  ---
+  duration_ms: 7.267016
+  type: 'test'
+  ...
+# (node:166) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: new drafts default the base branch to the repo default branch
+ok 119 - new drafts default the base branch to the repo default branch
+  ---
+  duration_ms: 0.796167
+  type: 'test'
+  ...
+# Subtest: a generated city name becomes a placeholder branch with the prefix
+ok 120 - a generated city name becomes a placeholder branch with the prefix
+  ---
+  duration_ms: 1.498137
+  type: 'test'
+  ...
+# Subtest: no first session without a first message
+ok 121 - no first session without a first message
+  ---
+  duration_ms: 0.167516
+  type: 'test'
+  ...
+# Subtest: a typed name is user-set and never a placeholder
+ok 122 - a typed name is user-set and never a placeholder
+  ---
+  duration_ms: 0.125121
+  type: 'test'
+  ...
+# Subtest: validation errors: repo, workspace name, base branch
+ok 123 - validation errors: repo, workspace name, base branch
+  ---
+  duration_ms: 0.126991
+  type: 'test'
+  ...
+# Subtest: create from PR starts on the PR branch and targets the PR base
+ok 124 - create from PR starts on the PR branch and targets the PR base
+  ---
+  duration_ms: 0.184298
+  type: 'test'
+  ...
+# Subtest: create from branch checks out that branch; a bad branch is an error
+ok 125 - create from branch checks out that branch; a bad branch is an error
+  ---
+  duration_ms: 0.242452
+  type: 'test'
+  ...
+# Subtest: create from issue seeds the composer, and clearing removes only the seed
+ok 126 - create from issue seeds the composer, and clearing removes only the seed
+  ---
+  duration_ms: 0.298522
+  type: 'test'
+  ...
+# Subtest: lifecycle with a setup script: initializing -> setting_up, and setup keeps running after the dialog
+ok 127 - lifecycle with a setup script: initializing -> setting_up, and setup keeps running after the dialog
+  ---
+  duration_ms: 0.465317
+  type: 'test'
+  ...
+# Subtest: no setup script goes straight to ready
+ok 128 - no setup script goes straight to ready
+  ---
+  duration_ms: 0.349377
+  type: 'test'
+  ...
+# Subtest: create failure shows the backend error or the generic one, and allows resubmit
+ok 129 - create failure shows the backend error or the generic one, and allows resubmit
+  ---
+  duration_ms: 0.171287
+  type: 'test'
+  ...
+# Subtest: out-of-order events are ignored
+ok 130 - out-of-order events are ignored
+  ---
+  duration_ms: 0.091101
+  type: 'test'
+  ...
+# Subtest: requests map onto create_workspace arguments
+ok 131 - requests map onto create_workspace arguments
+  ---
+  duration_ms: 0.17716
+  type: 'test'
+  ...
+# Subtest: create from a PR or branch asks create_workspace to check that branch out
+ok 132 - create from a PR or branch asks create_workspace to check that branch out
+  ---
+  duration_ms: 0.129306
+  type: 'test'
+  ...
+# Subtest: a fork PR is checked out as <owner>/<branch> and sends its PR number
+ok 133 - a fork PR is checked out as <owner>/<branch> and sends its PR number
+  ---
+  duration_ms: 0.105931
+  type: 'test'
+  ...
+# (node:174) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a preselected section labels Create with its name and hides the section menu
+ok 134 - a preselected section labels Create with its name and hides the section menu
+  ---
+  duration_ms: 1.61609
+  type: 'test'
+  ...
+# Subtest: with no section chosen, Create offers every section in a Create in section menu
+ok 135 - with no section chosen, Create offers every section in a Create in section menu
+  ---
+  duration_ms: 0.157601
+  type: 'test'
+  ...
+# Subtest: no sections: plain Create, no menu
+ok 136 - no sections: plain Create, no menu
+  ---
+  duration_ms: 0.094725
+  type: 'test'
+  ...
+# Subtest: a preselected section that was deleted falls back to plain Create with the menu
+ok 137 - a preselected section that was deleted falls back to plain Create with the menu
+  ---
+  duration_ms: 0.085309
+  type: 'test'
+  ...
+# Subtest: a create aimed at a section that no longer exists is refused
+ok 138 - a create aimed at a section that no longer exists is refused
+  ---
+  duration_ms: 0.177553
+  type: 'test'
+  ...
+# Subtest: Conductor's copy
+ok 139 - Conductor's copy
+  ---
+  duration_ms: 0.072969
+  type: 'test'
+  ...
+# (node:182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: starts on the default model with its agent's default effort
+ok 140 - starts on the default model with its agent's default effort
+  ---
+  duration_ms: 1.77975
+  type: 'test'
+  ...
+# Subtest: an unset Claude effort, or no settings yet, falls back to high
+ok 141 - an unset Claude effort, or no settings yet, falls back to high
+  ---
+  duration_ms: 0.158429
+  type: 'test'
+  ...
+# Subtest: a stored Cursor default starts on the default model; other agents have no effort levels
+ok 142 - a stored Cursor default starts on the default model; other agents have no effort levels
+  ---
+  duration_ms: 0.12183
+  type: 'test'
+  ...
+# Subtest: switching model keeps an effort the new agent offers, else takes that agent's default
+ok 143 - switching model keeps an effort the new agent offers, else takes that agent's default
+  ---
+  duration_ms: 0.222331
+  type: 'test'
+  ...
+# Subtest: a favorite pick applies its own effort; an effort pick keeps the model
+ok 144 - a favorite pick applies its own effort; an effort pick keeps the model
+  ---
+  duration_ms: 0.25636
+  type: 'test'
+  ...
+# Subtest: explicit live catalog picks retain their agent and effort without hardcoded validation
+ok 145 - explicit live catalog picks retain their agent and effort without hardcoded validation
+  ---
+  duration_ms: 0.111643
+  type: 'test'
+  ...
+# Subtest: launch uses only slot1, including explicit runtime and absent effort
+ok 146 - launch uses only slot1, including explicit runtime and absent effort
+  ---
+  duration_ms: 0.101778
+  type: 'test'
+  ...
+# Subtest: the loadout lists built-in favorites with their effort and skips ACP ones
+ok 147 - the loadout lists built-in favorites with their effort and skips ACP ones
+  ---
+  duration_ms: 0.142722
+  type: 'test'
+  ...
+1..147
+# tests 147
+# suites 0
+# pass 147
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24264.347918

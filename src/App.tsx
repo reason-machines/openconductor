@@ -68,6 +68,7 @@ import { PaletteHost, type PaletteCommands } from "./palette/PaletteHost";
 import { useKeybindingOverrides, useKeybindings } from "./keybindings/KeybindingsProvider";
 import { PRIORITY } from "./keybindings/dispatcher";
 import { copyWorkspaceLink } from "./workspace/link";
+import { copyText } from "./features/openIn/apps.ts";
 import { SettingsView } from "./settings/SettingsView";
 import { USER_PAGES } from "./settings/pages";
 import { OPEN_SETTINGS_EVENT, openAgentSettings } from "./features/chat/ChatModelPicker.tsx";
@@ -605,7 +606,16 @@ export default function App() {
             sidebarVisible={isSidebarVisible(state)}
             onClose={() => setCreatePage(null)}
             addActions={createAddActions}
-            onWarning={(message) => show("error", message, { sticky: true })}
+            onWarning={(message, recovery) => show("error", message, {
+              sticky: true,
+              action: recovery ? {
+                label: "Recover prompt",
+                onClick: () => void copyText(recovery.prompt).then(
+                  () => show("info", "Copied prompt to clipboard"),
+                  () => show("error", "Failed to copy to clipboard"),
+                ),
+              } : undefined,
+            })}
             dispatch={dispatch}
           />
         ) : repo && workspace?.status === "archived" ? (
@@ -709,7 +719,16 @@ export default function App() {
           githubUsername={prefix.githubUsername}
           onClose={() => setDialog(null)}
           addActions={createAddActions}
-          onWarning={(message) => show("error", message, { sticky: true })}
+          onWarning={(message, recovery) => show("error", message, {
+            sticky: true,
+            action: recovery ? {
+              label: "Recover prompt",
+              onClick: () => void copyText(recovery.prompt).then(
+                () => show("info", "Copied prompt to clipboard"),
+                () => show("error", "Failed to copy to clipboard"),
+              ),
+            } : undefined,
+          })}
           dispatch={dispatch}
         />
       )}

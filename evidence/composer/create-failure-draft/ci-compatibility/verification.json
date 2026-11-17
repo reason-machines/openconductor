@@ -1,0 +1,48 @@
+{
+  "pass": true,
+  "failedHostedHead": "4e3768a61f0ef92acb6d9debcdcc98efa1cfc3c3",
+  "failedCheck": "https://github.com/reason-machines/openconductor/actions/runs/44137577952/job/134231257301",
+  "hostedFailures": 20,
+  "baseline": {
+    "tests": 26,
+    "pass": 6,
+    "fail": 20,
+    "missingImportFailures": 20
+  },
+  "treatment": {
+    "tests": 26,
+    "pass": 26,
+    "fail": 0
+  },
+  "frozenAndAdjacent": {
+    "tests": 155,
+    "pass": 155,
+    "fail": 0
+  },
+  "clipboardControls": {
+    "tests": 8,
+    "pass": 8,
+    "fail": 0
+  },
+  "exactFailFastPortsAdded": 2,
+  "productionAndFrozenFixtureUnchanged": true,
+  "identities": [
+    {
+      "file": "src/palette/createSection.test.ts",
+      "originalSha256": "7e9f8e0df0da4ea1846a66a93ab21dce365d22da1a3bbd86e5fd478cf04291a0",
+      "treatmentSha256": "1caff72029478ea0b08b5382d32e4e7e7c7d4405b1bae3a86d6c73c577cfe230",
+      "unchangedTestCalls": 8
+    },
+    {
+      "file": "src/palette/moveToSection.test.ts",
+      "originalSha256": "3f813a619614e13f637381a5f85a99535461a72337258de63229e85fbf3b4b70",
+      "treatmentSha256": "16632c6f00ac76159cf350b29824936fb4649a2b801518e898f3877d3a6a2449",
+      "unchangedTestCalls": 15
+    }
+  ],
+  "limits": [
+    "No full local frontend pipeline, browser/native runtime or real clipboard",
+    "Package/native acceptance unverified",
+    "Hosted exact-head rerun reported separately"
+  ]
+}

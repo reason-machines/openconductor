@@ -1,0 +1,62 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: page warning: recover copies captured bytes and confirms only after fulfillment
+ok 1 - page warning: recover copies captured bytes and confirms only after fulfillment
+  ---
+  duration_ms: 56.878464
+  type: 'test'
+  ...
+# Subtest: page warning: clipboard rejection is contained and never reports success
+ok 2 - page warning: clipboard rejection is contained and never reports success
+  ---
+  duration_ms: 14.245549
+  type: 'test'
+  ...
+# Subtest: page warning: missing clipboard is contained by the same error-reporting path
+ok 3 - page warning: missing clipboard is contained by the same error-reporting path
+  ---
+  duration_ms: 15.989281
+  type: 'test'
+  ...
+# Subtest: page warning: existing one-argument warnings keep their sticky error and no action
+ok 4 - page warning: existing one-argument warnings keep their sticky error and no action
+  ---
+  duration_ms: 15.858677
+  type: 'test'
+  ...
+# Subtest: dialog warning: recover copies captured bytes and confirms only after fulfillment
+ok 5 - dialog warning: recover copies captured bytes and confirms only after fulfillment
+  ---
+  duration_ms: 31.556776
+  type: 'test'
+  ...
+# Subtest: dialog warning: clipboard rejection is contained and never reports success
+ok 6 - dialog warning: clipboard rejection is contained and never reports success
+  ---
+  duration_ms: 25.671544
+  type: 'test'
+  ...
+# Subtest: dialog warning: missing clipboard is contained by the same error-reporting path
+ok 7 - dialog warning: missing clipboard is contained by the same error-reporting path
+  ---
+  duration_ms: 11.848246
+  type: 'test'
+  ...
+# Subtest: dialog warning: existing one-argument warnings keep their sticky error and no action
+ok 8 - dialog warning: existing one-argument warnings keep their sticky error and no action
+  ---
+  duration_ms: 7.097984
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 651.756426
