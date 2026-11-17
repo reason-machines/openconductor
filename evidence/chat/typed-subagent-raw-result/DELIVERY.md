@@ -26,7 +26,13 @@ After the scoped edit, the identical command and fixture **passed 42/42**, zero 
 
 **Adjacent passed 215/215:** new42, typed16/links, untyped fallback30, prefix18, generic16, Reason adapter, reducer, view, persistence, review results, conductorTools and retry. The historical qualification used a different command and counted 219; no cases are removed from that historical receipt.
 
-Whole current-checkout typecheck, build and full chat-suite verification are recorded separately after this verified increment. Hosted exact-head CI is a separate merge requirement.
+On committed production/test source `feefb9113`, the current-checkout checks also passed:
+
+- `node --test --test-concurrency=2 src/features/chat/*.test.ts` — **1,825/1,825 passed**, zero failed/skipped/cancelled.
+- `npm run typecheck` — **passed**, exit 0.
+- `npm run build` — **passed**, branding/TypeScript/Vite exit 0; existing large-chunk advisory only.
+
+`current-verification.json` and losslessly compressed full-chat/typecheck/build logs retain those exact commands, source commit and decisive results. Receipt-only changes after that commit leave the exercised production/test graph unchanged. Hosted exact-head CI is a separate merge requirement.
 
 ## Scope and integrity
 

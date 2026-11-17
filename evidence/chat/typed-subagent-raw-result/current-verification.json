@@ -1,0 +1,15 @@
+{
+  "checked_local_commit": "feefb9113a109d4a8c795b10909a89d070bd566a",
+  "commands": {
+    "node --test --test-concurrency=2 src/features/chat/*.test.ts": 0,
+    "npm run typecheck": 0,
+    "npm run build": 0
+  },
+  "full_chat": {
+    "tests": 1825,
+    "pass": 1825,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  }
+}
