@@ -1,0 +1,209 @@
+{
+  "unit": "COMPOSER-EMPTY-DROP-135",
+  "classification": "QUALIFIED_RED_NO_PRODUCT_LEASE",
+  "main": "6cc9a9c75cb2ee4cdec678bc51f6b2960dac2280",
+  "originalParentSha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "sourceSpanCount": 6,
+  "checks": [
+    {
+      "name": "held original renderer parent identity",
+      "passed": true
+    },
+    {
+      "name": "six complete source declarations retained",
+      "passed": true
+    },
+    {
+      "name": "LNi UTF8 exact range",
+      "passed": true
+    },
+    {
+      "name": "LNi UTF16 exact range",
+      "passed": true
+    },
+    {
+      "name": "LNi SHA256",
+      "passed": true
+    },
+    {
+      "name": "LNi standalone syntax complete",
+      "passed": true
+    },
+    {
+      "name": "dTo UTF8 exact range",
+      "passed": true
+    },
+    {
+      "name": "dTo UTF16 exact range",
+      "passed": true
+    },
+    {
+      "name": "dTo SHA256",
+      "passed": true
+    },
+    {
+      "name": "dTo standalone syntax complete",
+      "passed": true
+    },
+    {
+      "name": "fCe UTF8 exact range",
+      "passed": true
+    },
+    {
+      "name": "fCe UTF16 exact range",
+      "passed": true
+    },
+    {
+      "name": "fCe SHA256",
+      "passed": true
+    },
+    {
+      "name": "fCe standalone syntax complete",
+      "passed": true
+    },
+    {
+      "name": "c7i UTF8 exact range",
+      "passed": true
+    },
+    {
+      "name": "c7i UTF16 exact range",
+      "passed": true
+    },
+    {
+      "name": "c7i SHA256",
+      "passed": true
+    },
+    {
+      "name": "c7i standalone syntax complete",
+      "passed": true
+    },
+    {
+      "name": "VHt UTF8 exact range",
+      "passed": true
+    },
+    {
+      "name": "VHt UTF16 exact range",
+      "passed": true
+    },
+    {
+      "name": "VHt SHA256",
+      "passed": true
+    },
+    {
+      "name": "VHt standalone syntax complete",
+      "passed": true
+    },
+    {
+      "name": "ITo UTF8 exact range",
+      "passed": true
+    },
+    {
+      "name": "ITo UTF16 exact range",
+      "passed": true
+    },
+    {
+      "name": "ITo SHA256",
+      "passed": true
+    },
+    {
+      "name": "ITo standalone syntax complete",
+      "passed": true
+    },
+    {
+      "name": "fCe resolves current webview through VHt",
+      "passed": true
+    },
+    {
+      "name": "original native enter forwards original path list without a nonempty filter",
+      "passed": true
+    },
+    {
+      "name": "original native subscription is asynchronous",
+      "passed": true
+    },
+    {
+      "name": "original native handle disposes every event listener",
+      "passed": true
+    },
+    {
+      "name": "original hook derives enter state from nonempty paths",
+      "passed": true
+    },
+    {
+      "name": "original hook clears enter state on leave",
+      "passed": true
+    },
+    {
+      "name": "original hook clears drop state and ignores empty path lists",
+      "passed": true
+    },
+    {
+      "name": "original hook cleanup awaits pending subscription",
+      "passed": true
+    },
+    {
+      "name": "original cleanup invokes resolved unlisten",
+      "passed": true
+    },
+    {
+      "name": "original caller connects real composer to hook",
+      "passed": true
+    },
+    {
+      "name": "original caller admission is explicit",
+      "passed": true
+    },
+    {
+      "name": "original returned state reaches visible overlay",
+      "passed": true
+    },
+    {
+      "name": "original overlay gates on visible",
+      "passed": true
+    },
+    {
+      "name": "fresh-main exact src/features/chat/useWindowDragDrop.ts",
+      "passed": true
+    },
+    {
+      "name": "fresh-main exact src/components/WorkspaceView.tsx",
+      "passed": true
+    },
+    {
+      "name": "current hook is imported by live WorkspaceView",
+      "passed": true
+    },
+    {
+      "name": "current hook returned state controls active window overlay",
+      "passed": true
+    },
+    {
+      "name": "current callback remains concrete and guards inactive/archived",
+      "passed": true
+    },
+    {
+      "name": "current hook enter ignores native path count",
+      "passed": true
+    },
+    {
+      "name": "current cleanup misses a still-pending handle",
+      "passed": true
+    },
+    {
+      "name": "frozen unchanged windowDropLifecycle.qualification.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "frozen unchanged useWindowDragDrop.ts",
+      "passed": true
+    }
+  ],
+  "passed": 48,
+  "failed": 0,
+  "limitations": [
+    "Source and inert hook callback proof only",
+    "No native app, OS event delivery, browser, provider, package or release proof",
+    "Retained original JavaScript never executed",
+    "No production files changed"
+  ]
+}
