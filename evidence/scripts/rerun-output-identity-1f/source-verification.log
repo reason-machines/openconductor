@@ -1,0 +1,3 @@
+PASS: 11 retained spans, run-ID caller/output/remount/surface/effect join, frozen fixture, baseline/treatment
+PASS: original archive and both complete asset bindings
+NOT RUN: browser/native/process/PTY/provider/package acceptance; native serializer/kill ABI remain unresolved

@@ -273,7 +273,15 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
   const [query, setQuery] = useState("");
   const repoIds = useMemo(() => new Set(repos.map((r) => r.id)), [repos]);
   const [filters, setFiltersState] = useState<HomeFilters>(() => loadFilters(repoIds));
+  const pendingFilterHydration = useRef(loading);
+  useEffect(() => {
+    if (loading || !pendingFilterHydration.current) return;
+    pendingFilterHydration.current = false;
+    // Desktop Home mounts before repository ids arrive; validate saved projects once ready.
+    setFiltersState(loadFilters(repoIds));
+  }, [loading, repoIds]);
   const setFilters = (f: HomeFilters) => {
+    pendingFilterHydration.current = false;
     setFiltersState(f);
     saveFilters(f);
   };
