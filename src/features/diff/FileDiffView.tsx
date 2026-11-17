@@ -29,6 +29,11 @@ const PREVIEW_EXT = new Set(["md", "markdown", "html", "htm"]);
 function isPreviewablePath(path: string): boolean {
   return PREVIEW_EXT.has(path.split(".").pop()?.toLowerCase() ?? "");
 }
+/** True for .html/.htm — rendered via srcdoc iframe, not CommentMarkdown. */
+function isHtmlPath(path: string): boolean {
+  const ext = path.split(".").pop()?.toLowerCase() ?? "";
+  return ext === "html" || ext === "htm";
+}
 import { CommentNav, useCommentNavigation } from "./CommentNav";
 import { RevertIcon } from "./DiscardDialog";
 import { FilePathChip } from "./FilePathChip";
@@ -85,6 +90,11 @@ interface Props {
   isPreviewing?: boolean;
   /** Toggle between preview and source (called by the header button and ⌘E keybinding in the parent). */
   onTogglePreview?: () => void;
+  /**
+   * Toggle between read-only view and edit mode for non-previewable files (⌘E).
+   * When present, an Edit/View button appears in the header.
+   */
+  onToggleEdit?: () => void;
   /** The whole new file, for the header's "Copy file contents" button. */
   loadText?: () => Promise<string>;
   /** Shows a toast (a failed copy). */
@@ -291,7 +301,11 @@ export function FileDiffView(props: Props) {
   else if (file.hunks.length === 0)
     body = ignoreWhitespace ? <WhitespaceOnly onShow={onShowWhitespace} /> : <div className="oc-file-note">No changes in this file</div>;
   else if (isPreviewing && previewText !== null)
-    body = <div className="oc-md-preview oc-code-scroll"><CommentMarkdown text={previewText} /></div>;
+    // parity:diff.edit-in-viewer:preview — HTML files rendered via sandboxed iframe;
+    // markdown via CommentMarkdown. Avoids escaped tags for .html/.htm (GAP-DIFF-01).
+    body = isHtmlPath(file.path)
+      ? <div className="oc-html-preview oc-code-scroll"><iframe srcDoc={previewText} sandbox="allow-same-origin" title={`Preview of ${file.path}`} className="oc-html-preview-frame" /></div>
+      : <div className="oc-md-preview oc-code-scroll"><CommentMarkdown text={previewText} /></div>;
   else
     body = (
       <div className="oc-code-scroll">
@@ -321,8 +335,21 @@ export function FileDiffView(props: Props) {
             </Tooltip>
           )}
           {copy && <CopyFileButton path={file.path} read={copy} notify={notify} />}
+          {!isPreviewable && props.onToggleEdit && (
+            // parity:diff.edit-in-viewer — ⌘E read-only↔edit toggle for code files (GAP-DIFF-01).
+            <Tooltip content={edit !== undefined ? "View read-only (\u2318E)" : "Edit (\u2318E)"}>
+              <button type="button" className="icon-btn" aria-label={edit !== undefined ? "View read-only" : "Edit"}
+                aria-pressed={edit !== undefined} onClick={props.onToggleEdit}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  {edit !== undefined
+                    ? <><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></>
+                    : <><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z" /></>}
+                  </svg>
+              </button>
+            </Tooltip>
+          )}
           {isPreviewable && props.onTogglePreview && (
-            <Tooltip content={isPreviewing ? "Show source (\u2318E)" : "Show preview (\u2318E)"}>
+            <Tooltip content={isPreviewing ? "Show source (\u2318E)" : "Show preview (\u2318E)"}> 
               <button type="button" className="icon-btn" aria-label={isPreviewing ? "Show source" : "Show preview"}
                 aria-pressed={isPreviewing} onClick={props.onTogglePreview}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">

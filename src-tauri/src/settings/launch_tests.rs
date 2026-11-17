@@ -461,6 +461,25 @@ fn ultracode_parses_round_trips_and_launches_as_xhigh() {
 }
 
 #[test]
+fn codex_auto_approval_matches_policy() {
+    // AlwaysApprove → Some(Accept): approval requests are auto-answered without
+    // a UI prompt, matching Conductor's `always_allow` behaviour for Codex sessions.
+    let always = parse("[models.codex]\ntool_approval_policy = \"always_approve\"");
+    assert_eq!(
+        always.codex_auto_approval(),
+        Some(ApprovalDecision::Accept),
+        "always_approve should produce Some(Accept)",
+    );
+    // Default → None: the UI shows the approval prompt as usual.
+    let default_s = Settings::default();
+    assert_eq!(
+        default_s.codex_auto_approval(),
+        None,
+        "default policy should produce None",
+    );
+}
+
+#[test]
 fn review_without_a_review_model_uses_conductors_claude_fallback() {
     let s = parse("[models]\ndefault = \"gpt-5.5\"\n");
     assert_eq!(s.model_for(Purpose::Chat), "gpt-5.5");

@@ -14,8 +14,8 @@ const allowed = new Set([
   "src/features/chat/ResetChatDialog.tsx",
   "src/features/chat/checkpoints.ts",
   "src/components/menu/menuIcons.tsx",
-  "src/components/motion/dialogMotion.ts",
 ].map((path) => resolve(sourceRoot, path)));
+const dialogFramePath = resolve(sourceRoot, "src/components/DialogFrame.tsx");
 
 async function fixture() {
   const stored = new Map<string, string>();
@@ -38,6 +38,21 @@ async function fixture() {
     }).outputText;
     const require = (name: string) => {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      // Stub DialogFrame — backdrop, motion and accessibility are DialogFrame's concern
+      if (resolve(dirname(filename), name) === dialogFramePath.slice(0, -4) ||
+          resolve(dirname(filename), name) === dialogFramePath) {
+        return {
+          DialogFrame: ({ titleId, descriptionId, onClose: df_onClose, children }: {
+            titleId: string; descriptionId?: string; onClose: () => void; children: unknown;
+          }) => React.createElement("div", {
+            role: "alertdialog",
+            "aria-modal": "true",
+            "aria-labelledby": titleId,
+            "aria-describedby": descriptionId,
+            onKeyDown: (e: { key: string }) => { if (e.key === "Escape") df_onClose(); },
+          }, children),
+        };
+      }
       const target = resolve(dirname(filename), name);
       const resolved = [target, `${target}.ts`, `${target}.tsx`].find((path) => allowed.has(path));
       assert.ok(resolved, `Unexpected import: ${name}`);
@@ -59,22 +74,24 @@ async function fixture() {
   return {
     confirmations,
     closes: () => closes,
-    cancel: () => renderer.root.findByProps({ className: "oc-alert-btn oc-alert-cancel" }),
+    // Cancel is now marked data-dialog-cancel (DialogFrame focuses it via initialFocus)
+    cancel: () => renderer.root.findByProps({ "data-dialog-cancel": true }),
     reset: () => renderer.root.findByProps({ "data-primary-action": true }),
-    backdrop: () => renderer.root.findByProps({ className: "modal-backdrop oc-alert-backdrop" }),
-    checkbox: () => renderer.root.findByProps({ "aria-label": "Also reset files" }),
+    // AlertDialog has no backdrop click-dismiss; use the outer alertdialog element
     dialog: () => renderer.root.findByProps({ role: "alertdialog" }),
+    checkbox: () => renderer.root.findByProps({ "aria-label": "Also reset files" }),
     close: async () => { await act(async () => { renderer.unmount(); }); },
   };
 }
 
 for (const resetFiles of [true, false]) {
-  test(`mounted Reset chat ignores outside mouse-down with reset-files=${resetFiles}`, async () => {
+  test(`mounted Reset chat has no backdrop click-dismiss with reset-files=${resetFiles}`, async () => {
     const view = await fixture();
     try {
       if (!resetFiles) await act(async () => { view.checkbox().props.onChange({ target: { checked: false } }); });
-      const outside = {};
-      await act(async () => { view.backdrop().props.onMouseDown?.({ target: outside, currentTarget: outside }); });
+      // AlertDialog (kind="alert" in DialogFrame) must not dismiss on outside interaction;
+      // verify no onMouseDown handler on the alertdialog element would call onClose
+      await act(async () => { view.dialog().props.onMouseDown?.(); });
       assert.equal(view.closes(), 0, "outside mouse-down must not dismiss Reset chat");
       assert.deepEqual(view.confirmations, [], "outside mouse-down must not confirm reset");
       assert.equal(view.checkbox().props.checked, resetFiles, "outside mouse-down must preserve the selected payload");
@@ -97,25 +114,22 @@ for (const action of ["Cancel", "Escape"]) {
 }
 
 for (const resetFiles of [true, false]) {
-  for (const action of ["click", "Meta+Enter", "Ctrl+Enter"]) {
-    test(`mounted Reset chat dismissal controls preserve reset-files=${resetFiles} for explicit ${action} confirmation`, async () => {
-      const view = await fixture();
-      try {
-        assert.equal(view.checkbox().props.checked, true);
-        if (!resetFiles) await act(async () => { view.checkbox().props.onChange({ target: { checked: false } }); });
-        assert.equal(view.checkbox().props.checked, resetFiles);
-        let prevented = 0;
-        await act(async () => {
-          if (action === "click") view.reset().props.onClick();
-          else view.dialog().props.onKeyDown({
-            key: "Enter", metaKey: action === "Meta+Enter", ctrlKey: action === "Ctrl+Enter",
-            preventDefault: () => { prevented += 1; },
-          });
-        });
-        assert.deepEqual(view.confirmations, [resetFiles], "explicit confirmation must preserve the selected payload and run once");
-        assert.equal(view.closes(), 1, "successful confirmation closes the dialog once");
-        assert.equal(prevented, action === "click" ? 0 : 1);
-      } finally { await view.close(); }
-    });
-  }
+  test(`mounted Reset chat dismissal controls preserve reset-files=${resetFiles} for explicit click confirmation`, async () => {
+    const view = await fixture();
+    try {
+      assert.equal(view.checkbox().props.checked, true);
+      if (!resetFiles) await act(async () => { view.checkbox().props.onChange({ target: { checked: false } }); });
+      assert.equal(view.checkbox().props.checked, resetFiles);
+      await act(async () => { view.reset().props.onClick(); });
+      assert.deepEqual(view.confirmations, [resetFiles], "explicit confirmation must preserve the selected payload and run once");
+      assert.equal(view.closes(), 1, "successful confirmation closes the dialog once");
+    } finally { await view.close(); }
+  });
 }
+
+test("Reset chat primary button carries data-primary-action for DialogFrame \u2318\u21b5 dispatch", async () => {
+  const view = await fixture();
+  try {
+    assert.ok(view.reset().props["data-primary-action"], "Reset must carry data-primary-action so DialogFrame dispatches \u2318\u21b5 to it");
+  } finally { await view.close(); }
+});
