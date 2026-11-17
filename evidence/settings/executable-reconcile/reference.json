@@ -1,0 +1,235 @@
+{
+  "author": "Conductor Rebuild",
+  "baseline": "93b9d53ce02970967a831b0ac93ecdbf17bdea31",
+  "origin": "Previously retained real Conductor 0.87.6 REA-extracted assets on sven m5 max; inert reads only",
+  "assets": {
+    "index": {
+      "file": "frontend/assets/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    },
+    "bun": {
+      "file": "bunjs/app/conductor-runtime.js",
+      "bytes": 13025924,
+      "sha256": "f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab"
+    },
+    "renderer": {
+      "file": "frontend/assets/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    }
+  },
+  "inherited_binding": "evidence/settings/auto-permission/reference.json and evidence/settings/chrome-reconcile/reference.json",
+  "scope": "Resolved local Claude executable change invalidation only; not cloud, MCP, provider or global host redesign",
+  "asset_readback": "Complete SHA256 rechecked on sven m5 max 2026-11-17; no new REA acquisition or execution",
+  "spans": [
+    {
+      "asset": "index",
+      "label": "local-settings-env",
+      "start": 2969332,
+      "end": 2971021,
+      "bytes": 1689,
+      "source": "async function Mv({host:t,settings:e=Ie,repo:s,workspaceContext:n}){if(t!==void 0&&t!==M)return{env:{}};const[i,o]=await Promise.all([Bp({settings:e,key:\"claude_provider\",repo:s,workspaceContext:n}),Bp({settings:e,key:\"codex_provider\",repo:s,workspaceContext:n})]);return{env:await XN(e,{context:\"local\",claudeProvider:i,codexProvider:o,workspaceContext:n}),claudeProvider:i,codexProvider:o}}async function Ohe({host:t,settings:e=Ie,repo:s,workspaceContext:n,workspace:r,resolveCodexChatGptLaunch:i=Che}){const o=t===M;if(t!==void 0&&t!==M)return{};const c=\"local\",[l,u,d,h,p]=await Promise.all([Bp({settings:e,key:\"claude_executable_path\",repo:s,workspaceContext:n}),Bp({settings:e,key:\"claude_provider\",repo:s,workspaceContext:n}),Bp({settings:e,key:\"codex_executable_path\",repo:s,workspaceContext:n}),Bp({settings:e,key:\"codex_provider\",repo:s,workspaceContext:n}),ng(e,{scope:\"shared\",context:c,workspaceContext:n})]),m=u===\"custom\",v=h===\"custom\",_=m?p:Object.fromEntries(Object.entries(p).filter(([C])=>C!==\"ANTHROPIC_API_KEY\"&&C!==\"ANTHROPIC_AUTH_TOKEN\")),S=v?p:Object.fromEntries(Object.entries(p).filter(([C])=>C!==\"CODEX_API_KEY\"&&C!==\"AI_GATEWAY_API_KEY\"&&C!==\"OPENAI_BASE_URL\")),k=Object.fromEntries(Object.entries(p).filter(([C])=>C!==\"CURSOR_API_KEY\")),A=o&&h===XE&&r!==void 0?await i({workspace:r}):void 0,I=Mhe({codexProvider:h,env:S,chatGpt:A});return{claudeExecutablePath:o&&l||void 0,claudeEnvVars:Cd(_),codexExecutablePath:o&&d||void 0,...I===void 0?{}:{codexEnvVars:Cd(I.env),codexApiKey:I.apiKey,codexBaseUrl:I.baseUrl,codexChatGptProxyOrigin:I.chatGptProxyOrigin,codexDisableWebsockets:I.disableWebsockets},cursorApiKey:p.CURSOR_API_KEY||void 0,cursorEnvVars:Cd(k)}}",
+      "sha256": "d4dde3d8130f096657c54860852be0bda83d39534838c240f0a0d8798609a699"
+    },
+    {
+      "asset": "index",
+      "label": "per-agent-env",
+      "start": 3003077,
+      "end": 3005306,
+      "bytes": 2229,
+      "source": "async function qxt({agentType:t,acpAgentId:e,workspace:s}){const n=s.host!==M,r=n?\"cloud\":\"local\",i=await Nxt(s),o=()=>n?Promise.resolve(void 0):gne();if(t===\"claude\"){const[v,_,S]=await Promise.all([o(),zhe(s),n?Promise.resolve(void 0):Nl({workspace:s,key:vy(\"claude\")})]);let k={};return n||(k=(await Mv({host:s.host,settings:Ie,workspaceContext:i})).env),{ghToken:v?.token,ghTokenExpiresAt:cb(v?.expiresAtMs),agentParams:{agentType:\"claude\",envVars:Cd(k),executablePath:Tv(S),chromeEnabled:_}}}if(t===\"cursor\"){const[v,_]=await Promise.all([Mv({host:s.host,settings:Ie,workspaceContext:i}),o()]);return{ghToken:_?.token,ghTokenExpiresAt:cb(_?.expiresAtMs),agentParams:{agentType:\"cursor\",apiKey:v.env.CURSOR_API_KEY||void 0}}}if(t===\"acp\"){if(e===void 0)throw new Error(\"No ACP agent selected\");const v=!n||!Uxt(s),[_,S,k,A,I]=await Promise.all([v?XN(Ie,{context:r,claudeProvider:e===\"opencode\"?\"custom\":void 0,codexProvider:e===\"opencode\"?\"custom\":void 0,workspaceContext:i}):Promise.resolve({}),e===\"opencode\"&&v?Ie.getSetting(iB):Promise.resolve(void 0),e===\"opencode\"?Wxt(s):Promise.resolve({}),o(),e===\"opencode\"&&!n?Nl({workspace:s,key:\"opencode_executable_path\"}):Promise.resolve(void 0)]),C=e===\"opencode\"?mre({shellApiKeyEnv:k,effectiveEnvMap:_,savedProviderApiKeys:S}):_,R=Tv(I);return{ghToken:A?.token,ghTokenExpiresAt:cb(A?.expiresAtMs),agentParams:{agentType:\"acp\",acpAgentId:e,command:e===\"opencode\"&&R?{command:R,args:[\"acp\"]}:void 0,envVars:Cd(C)}}}const[a,c,l,u,d]=await Promise.all([o(),n?Promise.resolve(void 0):Nl({workspace:s,key:vy(\"codex\")}),Nl({workspace:s,key:\"internal_settings_enabled\"}),Nl({workspace:s,key:\"internal_codex_message_log\"}),Mv({host:s.host,settings:Ie,workspaceContext:i})]),h=!n&&d.codexProvider===XE?await Ihe({workspace:s}):void 0,p=n?void 0:Mhe({codexProvider:d.codexProvider,env:d.env,chatGpt:h});if(!n&&p===void 0)throw new Error(\"Codex ChatGPT launch routing is unavailable.\");const m=l===\"true\";return{ghToken:a?.token,ghTokenExpiresAt:cb(a?.expiresAtMs),agentParams:{agentType:\"codex\",executablePath:Tv(c),envVars:Cd(p?.env??d.env),apiKey:p?.apiKey,baseUrl:p?.baseUrl,chatGptProxyOrigin:p?.chatGptProxyOrigin,disableWebsockets:p?.disableWebsockets,messageLog:m&&u===\"true\"}}}",
+      "sha256": "d0d45ebf25b24131e294202854ad9c15e431ef97bfd5bbf7f27c35f931839eea"
+    },
+    {
+      "asset": "index",
+      "label": "per-turn-options",
+      "start": 3006028,
+      "end": 3008343,
+      "bytes": 2315,
+      "source": "async function q_({session:t,workspace:e}){const s=t.agentType??fs(t.model),n=s===\"acp\"?t.model??void 0:TN(await Hxt({session:t,workspace:e}));if(!n&&s!==\"acp\")throw new Error(\"No model selected\");const r=await qxt({agentType:s,acpAgentId:s===\"acp\"?Bxt(t.acpAgentId):void 0,workspace:e}),i=t.resumeSessionAt!==void 0&&t.resumeSessionAt!==null;let o=r.agentParams;s===\"claude\"&&o?.agentType===\"claude\"?o={...o,enterpriseDataPrivacy:await Bhe(e),shouldResetGenerator:i,resumeSessionAt:t.resumeSessionAt??void 0,effortLevel:hxt(t),claudePersonality:t.claudePersonality}:s===\"codex\"&&o?.agentType===\"codex\"?o={...o,modelReasoningEffort:eg(n)?aNe({model:n,codexThinkingLevel:A0(t.thinkingLevel)}):A0(t.thinkingLevel),personality:t.codexPersonality}:s===\"cursor\"&&o?.agentType===\"cursor\"&&(o={...o,effortLevel:Fxt(t.thinkingLevel)});const a=t.externalSessionId??void 0,c=ls(e.repositoryId),[l,u,d,h,p]=await Promise.all([zxt(e),Gxt(e),I2(),c,c.then(async re=>Ohe({host:e.host,settings:Ie,repo:re,workspaceContext:await b2({workspace:e,repo:re}),workspace:e}))]),[m,v,_,S,k,A,I]=await Promise.all([Ie.getSetting(\"tool_approvals_enabled\"),Ie.getSetting(\"experimental_auto_permission_mode\"),Nl({workspace:e,key:\"garry_mode\"}),$he(h),Ie.getUserSetting(\"internal_settings_use_defaults\"),Ie.getUserSetting(\"internal_claude_initial_permission_mode\"),Ie.getUserSetting(\"internal_codex_initial_permission_config\")]),C=await S2(e),R=Is(e),x=s!==\"acp\"&&t.fastMode&&n!==void 0&&Qs(n)&&Kc(n),O=e.host===M&&s===\"claude\"?Dxt(k===\"true\"?\"inherit\":A):void 0,G=e.host===M&&s===\"codex\"?Lxt(k===\"true\"?\"inherit\":I):void 0,Z=k===\"true\"?void 0:G;return{agentType:s,model:n,shouldResetGenerator:i,options:{cwd:R,workspaceId:e.localId,host:e.host,model:n,acpConfig:s===\"acp\"?t.acpConfig:void 0,resume:a,conductorEnv:{...u,...d?{CONDUCTOR_USER_ID:d.id}:{}},additionalDirectories:l,fastMode:x||void 0,forgeAuth:S,ghToken:r.ghToken,ghTokenExpiresAt:r.ghTokenExpiresAt,mainWorktreePath:h.mainWorktreePath,requiresToolApprovals:d?.requiresToolApprovals||m===\"true\",autoPermissionModeEnabled:v===\"true\",...O===void 0?{}:{initialClaudePermissionMode:O},...Z===void 0?{}:{initialCodexApprovalPolicy:Z.approvalPolicy,initialCodexSandboxMode:Z.sandboxMode},localExecutionMcpEnabled:C,getDiffCommentsEnabled:!0,agentParams:o,showThinking:_===\"true\",...p}}}",
+      "sha256": "7134ecb7fb806b86598c7917aa619a7600d6d820aa3199cfb513495230a31716"
+    },
+    {
+      "asset": "index",
+      "label": "execute-session",
+      "start": 3019402,
+      "end": 3020168,
+      "bytes": 766,
+      "source": "async executeSession(e){const{id:s,agentType:n,message:r,prompt:i,options:o}=e;try{const a=await due({sessionId:s,agentType:n,agentParams:o.agentParams});if(o.host&&o.host!==M){await Zp({label:\"agentSidecarService.executeSession.cloudExecute\",details:{sessionId:s,agentType:n,baseUrl:o.host.hostingServerUrl},fn:()=>fe.cloud.executeSession({id:s,agentType:n,message:r,prompt:i,options:{...o,maxTurns:1e3,agentParams:a}})});return}vs.query({id:s,agentType:n,message:r,prompt:i,options:{...o,maxTurns:1e3,agentParams:a}})}catch(a){throw Qhe(a)&&Gt(\"session_state_error\",{session_id:s,location:\"executeSession\",error_message:a instanceof Error?a.message:String(a),error_stack:a instanceof Error?a.stack?.slice(0,1e3):void 0}),await fe.updateSessionStatus(s,\"error\"),a}}",
+      "sha256": "1f65fe005e5baf5fefee7133adf2eefe8ad1e8b636691df3d9c48ced6862c5ac"
+    },
+    {
+      "asset": "index",
+      "label": "send-each-turn",
+      "start": 3040285,
+      "end": 3042541,
+      "bytes": 2256,
+      "source": "async sendToAgent(e,s,n,{deliveryMode:r=\"default\",codexGoal:i,useRoundhouseDelivery:o=!1}={}){const a={sessionId:e.id,workspaceId:e.localWorkspaceId},c=await Zp({label:\"sendToAgent.fetchWorkspace\",details:a,fn:()=>Un(e.id)}),l=!e.externalSessionId&&r!==\"steering\",{agentType:u,model:d,options:h,shouldResetGenerator:p}=await Zp({label:\"sendToAgent.buildLaunchConfig\",details:a,fn:()=>q_({session:e,workspace:c})}),m=s.model||d;if(!m&&u!==\"acp\")throw new Error(`No model specified for ${u} session. This is likely a bug - sessions should always have a model set before sending messages.`);m&&txt({workspace:c,message:s.content,messageId:s.id,agentType:u,model:m,sessionId:e.id}).fireAndForget();const v=c.host===M?await Zp({label:\"sendToAgent.collectLocalMessageEnrichment\",details:{...a,isNewSession:l},fn:()=>nPt({originalMessage:s.content,messageId:s.id,workspace:c,isNewSession:l})}):void 0,_=await ls(c.repositoryId);u===\"codex\"&&!h.resume&&YV.warn(\"Codex turn starting without resume thread id\",{sessionId:e.id,turnId:n,messageId:s.id,storedExternalSessionId:e.externalSessionId??null,shouldResetGenerator:p,resumeSessionAt:e.resumeSessionAt??null}),Gt(\"user_message_sent\",{session_id:e.id,workspace_id:c.localId,model:m,permission_mode:e.permissionMode,agent_type:u,delivery_mode:r,workspace_runtime:c.host===M?\"local\":\"cloud\",$set:{lastActiveAt:new Date().toISOString()}}),l&&c.host===M&&xDt(e.id,c.localId,s.content).fireAndForget(),gr.log(\"send.toSidecar\",{sessionId:e.id,agentType:u,shouldResetGenerator:p});const S=fe.state.state.cloudStateBySessionId[e.id]?.waitingSince!=null;S&&fe.markSessionOptimisticallyWorking(e.id);try{const k=o&&c.host!==M?await due({sessionId:e.id,agentType:u,agentParams:h.agentParams}):h.agentParams,A={id:e.id,agentType:u,message:s.content,prompt:s.content,options:{...h,workspaceId:c.localId,userMessageId:s.id,model:m,permissionMode:u===\"cursor\"?\"default\":e.permissionMode||\"default\",turnId:n,forgeAuth:await $he(_),deliveryMode:r,codexGoal:i,agentParams:k,...v===void 0?{}:{localMessageEnrichment:v}}};o&&c.host!==M?await fe.cloud.deliverPromotedMessage(A):await this.agentSidecarService.executeSession(A)}catch(k){throw S&&fe.clearSessionOptimisticWorking(e.id),k}S&&fe.completeSessionOptimisticDelivery(e.id)}}",
+      "sha256": "6ee14c874082914a41ef92ad3e26d619428d746f058125256b9652cf963a71ab"
+    },
+    {
+      "asset": "bun",
+      "label": "local-config-key",
+      "start": 12505318,
+      "end": 12507925,
+      "bytes": 2607,
+      "source": "async function zd5({ workspaceDir: U11, options: B, resolveClaudeExecutablePath: G, resolveCodexExecutablePath: D, processEnv: w = process.env, loadShellEnvironment: j = Wr }) {\n  let V = B.agentParams?.agentType === \"claude\" ? B.agentParams : undefined, z = B.agentParams?.agentType === \"codex\" ? B.agentParams : undefined, L = B.agentParams?.agentType === \"cursor\" ? B.agentParams : undefined, A = B.agentParams?.agentType === \"acp\" ? B.agentParams : undefined, M = await wd5({ workspaceDir: U11, options: B, processEnv: w, loadShellEnvironment: j, logShellEnvironmentLoadFailure: (T) => b5(\"Failed to load shell environment, continuing without it:\", T) }), P = B.claudeEnvVars ?? V?.envVars, N = B.codexEnvVars ?? z?.envVars, H = B.cursorEnvVars ?? L?.envVars, q = B.acpEnvVars ?? A?.envVars, W = B.codexBaseUrl ?? z?.baseUrl ?? gy7(N), E = B.codexChatGptProxyOrigin ?? z?.chatGptProxyOrigin, C = B.codexDisableWebsockets ?? z?.disableWebsockets, Q = { claudeExecutablePath: G(B.claudeExecutablePath ?? V?.executablePath), codexExecutablePath: D(B.codexExecutablePath ?? z?.executablePath), workspaceDir: U11, workspaceId: B.workspaceId, claudeEnv: await Gd5({ workspaceDir: U11, options: B, processEnv: w, loadShellEnvironment: j, logShellEnvironmentLoadFailure: (T) => b5(\"Failed to load shell environment, continuing without it:\", T) }), codexEnv: await Dd5({ workspaceDir: U11, options: B, processEnv: w, loadShellEnvironment: j, logShellEnvironmentLoadFailure: (T) => b5(\"Failed to load shell environment, continuing without it:\", T) }), cursorEnv: M, acpEnv: await Fd5({ workspaceDir: U11, options: B, processEnv: w, loadShellEnvironment: j, logShellEnvironmentLoadFailure: (T) => b5(\"Failed to load shell environment, continuing without it:\", T) }), codexApiKey: B.codexApiKey ?? z?.apiKey, codexBaseUrl: W, codexChatGptProxyOrigin: E, codexDisableWebsockets: C, cursorApiKey: B.cursorApiKey ?? L?.apiKey ?? M.CURSOR_API_KEY, acpAgentId: B.acpAgentId ?? A?.acpAgentId, acpCommand: B.acpCommand ?? A?.command };\n  return { agentConfig: Q, configKey: hy7(\"sha256\").update(JSON.stringify({ claudeExecutablePath: Q.claudeExecutablePath, claudeEnvVars: P ?? null, codexExecutablePath: Q.codexExecutablePath, codexEnvVars: N ?? null, codexApiKey: Q.codexApiKey ?? null, codexBaseUrl: Q.codexBaseUrl ?? null, codexChatGptProxyOrigin: Q.codexChatGptProxyOrigin ?? null, codexDisableWebsockets: Q.codexDisableWebsockets ?? null, cursorApiKey: Q.cursorApiKey ?? null, cursorEnvVars: H ?? null, acpAgentId: Q.acpAgentId ?? null, acpCommand: Q.acpCommand ?? null, acpEnvVars: q ?? null })).digest(\"hex\") };\n}\n",
+      "sha256": "1260110e1f605ef17260291d9eda39cd88139f30358366c30edd7dc7614a9f1d"
+    },
+    {
+      "asset": "bun",
+      "label": "host-reconciliation",
+      "start": 12508505,
+      "end": 12509823,
+      "bytes": 1318,
+      "source": "async function Od5({ workspaces: U11, sessions: B, workspaceDir: G, configKey: D, createWorkspaceHost: w, onPruneSession: j, hasInFlightWork: V, reuseExistingHost: z }) {\n  let L = Pd5.get(G) ?? new $f({ type: \"serial\" });\n  return Pd5.set(G, L), L.run(async () => {\n    let A = U11.get(G);\n    if (A && z === true)\n      return n8(`Reusing workspace host for ${G} (reuseExistingHost)`), A;\n    if (A && A.configKey === D)\n      return n8(`Reusing workspace host for ${G} (configKey match)`), A;\n    if (A) {\n      if (cy7(A.sessionStore) || V?.(G) === true)\n        return n8(`Deferring workspace recreation for ${G} \\u2014 session work in progress (configKey mismatch will be retried on next request)`), A;\n      n8(`Recreating workspace host for ${G} (configKey mismatch)`), await A.host.stopAll();\n      let N = uy7({ sessions: B, workspaceDir: G });\n      await Promise.all(N.map(async (H) => j?.(H)));\n    } else\n      n8(`Creating workspace host for ${G}`);\n    let M = A?.sessionStore ?? aQ4(), P = await w({ sessionStore: M });\n    return U11.set(G, P), P;\n  });\n}\nfunction cy7(U11) {\n  for (let B of U11.listSessionIds()) {\n    let G = U11.get(B);\n    if (G === undefined)\n      continue;\n    if (G.session.runningMessageId !== undefined || eQ4(G.session.liveState))\n      return true;\n  }\n  return false;\n}\n",
+      "sha256": "464f4c7baf7604025fc108fcb7c86c3ac62d6e90a4022b758c7e26ce1a78490d"
+    },
+    {
+      "asset": "bun",
+      "label": "local-host-caller",
+      "start": 12619376,
+      "end": 12621968,
+      "bytes": 2592,
+      "source": "  async ensureWorkspace({ workspaceDir: U11, options: B, reuseExistingHost: G }) {\n    let { agentConfig: D, configKey: w } = await zd5({ workspaceDir: U11, options: B, resolveClaudeExecutablePath: Bh7, resolveCodexExecutablePath: $p5 }), j = await Od5({ workspaces: this.workspaces, sessions: this.sessions, workspaceDir: U11, configKey: w, reuseExistingHost: G, hasInFlightWork: (V) => {\n      for (let z of this.sessions.values())\n        if (z.workspaceDir === V && z.processKey !== undefined && this.processManager.hasActiveLeases(z.processKey))\n          return true;\n      return false;\n    }, onPruneSession: async ({ sessionId: V, session: z }) => {\n      let L = z.processKey === undefined ? tU6(V) : [z.processKey, ...tU6(V)];\n      await Promise.all(L.map((A) => this.processManager.disconnect(A)));\n    }, createWorkspaceHost: async ({ sessionStore: V }) => {\n      let z = { sendNotification: (M) => fp5({ context: this.createRouteContext(), workspaceDir: U11, params: M }), getDiff: async (M) => {\n        return { type: \"getDiffResponse\", ...await qB.requestGetDiff(M) };\n      }, getDiffComments: async (M) => {\n        return { type: \"getDiffCommentsResponse\", ...await qB.requestGetDiffComments(M) };\n      }, diffComment: async (M) => {\n        return { type: \"diffCommentResponse\", ...await qB.requestDiffComment(M) };\n      }, getTerminalOutput: async (M) => {\n        return { type: \"getTerminalOutputResponse\", ...await qB.requestGetTerminalOutput(M) };\n      }, runLocalCommand: async () => ({ type: \"runLocalCommandResponse\", error: \"Local execution MCP is only available for remote workspaces.\", denied: true }), toolApproval: async (M) => {\n        return { type: \"toolApprovalResponse\", decision: (await qB.requestToolApproval(M)).decision };\n      } }, L = lA.join(lA.dirname(Uh7(import.meta.url)), \"codex-local-execution-mcp.js\"), A;\n      try {\n        A = await or({ workspaceId: U11, outgoing: z });\n      } catch (M) {\n        b5(\"Failed to start Conductor MCP bridge; Codex will run without Conductor MCP tools:\", M);\n      }\n      return { configKey: w, sessionStore: V, workspaceDir: U11, host: new rU6({ workspaceDir: U11, agentConfig: { ...D, ...A ? { localExecutionMcp: { socketPath: A.socketPath, createAuthToken: (M) => A.createAuthToken(M), getSessionHello: (M) => A.getSessionHello(M), launch: Vd5({ executablePath: process.execPath, helperPath: L }) } } : {} }, conductorEnv: B.conductorEnv, conductorMcpBridge: A, sessionStore: V, bridge: z }) };\n    } });\n    if (B.conductorEnv)\n      j.host.setConductorEnv(B.conductorEnv);\n    return j;\n  }\n",
+      "sha256": "eed56a555dbcf3027941433970667a32f79b2dc19ff55d8c323b9b63d139efb4"
+    },
+    {
+      "asset": "bun",
+      "label": "query-host-caller",
+      "start": 12573043,
+      "end": 12573637,
+      "bytes": 594,
+      "source": "async function gp5({ context: U11, pendingQuery: B, request: { id: G, agentType: D, message: w, prompt: j, options: V } }) {\n  let z = QP(D), L = V.cwd, A = B ?? PB6({ context: U11, sessionId: G });\n  try {\n    if (U11.pendingSessionLogCompression.delete(G), U11.persistSessionLogs)\n      await U11.sessionEventStore.decompressSession({ workspaceDir: L, sessionId: G });\n    let M = await U11.ensureWorkspace({ workspaceDir: L, options: V }), P = (I) => {\n      if (!A.signal.aborted)\n        return false;\n      return NV(\"query.cancelledBeforeSend\", { sessionId: G, stage: I }), true;\n    };\n",
+      "sha256": "00bc40226a0fa1fbcd1fd5fd1a210b2834c6387cd6b3a1202bd6c10c8cddc490"
+    },
+    {
+      "asset": "bun",
+      "start": 12606131,
+      "sha256": "d0b42c333fafea0a39449f0930b6016e254240ac06c3e85801752eb573cd88cf",
+      "label": "executable-resolver",
+      "source": "function Bh7(U11) {\n  if (U11?.trim())\n    return U11.trim();\n  let B = Gi5(\"claude\", ap5);\n  if (B)\n    return B;\n  return lA.join(Bi5(), \"claude\");\n}\n",
+      "bytes": 152,
+      "end": 12606283
+    },
+    {
+      "asset": "bun",
+      "label": "host-constructor",
+      "source": "class rU6 {\n  handlers;\n  sessionStore;\n  agentRunnerFactory;\n  cursorApiKey;\n  conductorMcpBridge;\n  workspaceDir;\n  conductorEnv;\n  constructor({ workspaceDir: U11, bridge: B, agentConfig: G, conductorEnv: D, conductorMcpBridge: w, sessionStore: j = aQ4() }) {\n    this.workspaceDir = U11, this.sessionStore = j, this.cursorApiKey = G.cursorApiKey, this.conductorMcpBridge = w, this.conductorEnv = D, this.agentRunnerFactory = gQ4({ ...G, getActivityExeProxyEnv: am6, getConductorEnv: () => this.conductorEnv }), this.handlers = rQ4({ sessionStore: j, outgoing: B, agentRunnerFactory: this.agentRunnerFactory, workspaceDir: U11 });\n  }\n",
+      "bytes": 638,
+      "start": 12492344,
+      "sha256": "204e74b87be3254effdcbfadefc3739279e30e3985b8d022b4b447a0c5bb2f9d",
+      "end": 12492982
+    },
+    {
+      "asset": "bun",
+      "end": 12418586,
+      "start": 12416127,
+      "sha256": "004629d9d6090330a2b2834a6474ca6914496f458f3ae0f271570baed72ceb36",
+      "source": "function gQ4(U11) {\n  let B = U11.getActivityExeProxyEnv ?? Gv, G = new En4({ claudeExecutablePath: U11.claudeExecutablePath, workspaceDir: U11.workspaceDir, workspaceId: U11.workspaceId, getActivityExeProxyEnv: B, env: U11.claudeEnv, getGitHubAuthEnv: U11.getGitHubAuthEnv, getClaudeAuthForNextSpawn: U11.getClaudeAuthForNextSpawn, getConductorEnv: U11.getConductorEnv, cloudMcpServers: U11.cloudMcpServers, initialWorkspaceSettingsBundle: U11.initialWorkspaceSettingsBundle, fetchWorkspaceSettingsBundle: U11.fetchWorkspaceSettingsBundle, includeComputerAdminTools: U11.includeComputerAdminTools, computerAdminClient: U11.computerAdminClient, claudeOauthTokenProvider: U11.claudeOauthTokenProvider }), D = new an4({ codexExecutablePath: U11.codexExecutablePath, workspaceDir: U11.workspaceDir, workspaceId: U11.workspaceId, getActivityExeProxyEnv: B, env: U11.codexEnv, getGitHubAuthEnv: U11.getGitHubAuthEnv, getConductorEnv: U11.getConductorEnv, codexApiKey: U11.codexApiKey, getCodexApiKeyForNextSpawn: U11.getCodexApiKeyForNextSpawn, codexBaseUrl: U11.codexBaseUrl, codexChatGptProxyOrigin: U11.codexChatGptProxyOrigin, disableWebsockets: U11.codexDisableWebsockets, codexChatGptTokenProvider: U11.codexChatGptTokenProvider, localExecutionMcp: U11.localExecutionMcp, cloudMcpServers: U11.cloudMcpServers, initialWorkspaceSettingsBundle: U11.initialWorkspaceSettingsBundle, fetchWorkspaceSettingsBundle: U11.fetchWorkspaceSettingsBundle, includeComputerAdminTools: U11.includeComputerAdminTools, preSpawnHook: U11.codexPreSpawnHook }), w = new ra0({ workspaceDir: U11.workspaceDir, env: U11.cursorEnv, cursorApiKey: U11.cursorApiKey, cloudMcpServers: U11.cloudMcpServers, includeComputerAdminTools: U11.includeComputerAdminTools, computerAdminClient: U11.computerAdminClient }), j = new j34({ workspaceDir: U11.workspaceDir, env: U11.acpEnv, getGitHubAuthEnv: U11.getGitHubAuthEnv, acpAgentId: U11.acpAgentId, acpCommand: U11.acpCommand, localExecutionMcp: U11.localExecutionMcp, cloudMcpServers: U11.cloudMcpServers, initialWorkspaceSettingsBundle: U11.initialWorkspaceSettingsBundle, fetchWorkspaceSettingsBundle: U11.fetchWorkspaceSettingsBundle, includeComputerAdminTools: U11.includeComputerAdminTools });\n  return { get: (V) => {\n    if (V === \"claude\")\n      return G;\n    if (V === \"codex\")\n      return D;\n    if (V === \"cursor\")\n      return w;\n    return j;\n  }, getClaude: () => G, getCodex: () => D, getCursor: () => w, getAcp: () => j };\n}\n",
+      "label": "agent-factory",
+      "bytes": 2459
+    },
+    {
+      "asset": "bun",
+      "end": 3529729,
+      "sha256": "1c4e8fe110f53d6873917551beda482a2869edbf40e6cfad14bf3194e4b3dd27",
+      "start": 3525693,
+      "bytes": 4036,
+      "label": "launch-options",
+      "source": "  getClaudeLaunchOptions({ sessionId: U, workspaceSettingsBundle: B = this.lastKnownWorkspaceSettingsBundle } = {}) {\n    if (!BW.existsSync(this.workspaceDir))\n      throw Error(`Workspace directory missing: ${this.workspaceDir}`);\n    let G = this.getEffectiveEnv(B), D = this.getActivityExeProxyEnv({ realExePath: this.claudeExecutablePath, pathEnv: G.PATH, logSuffix: \"claude-exe\", sessionId: U, workspaceId: this.workspaceId });\n    if (D)\n      j5(\"sidecar.claude.exeProxy\", { agentType: \"claude\", target: this.claudeExecutablePath, ...U ? { sessionId: U } : {}, workspaceId: this.workspaceId });\n    let w = (V) => {\n      let z = { ...G, ...U && this.getGitHubAuthEnv ? this.getGitHubAuthEnv(U, G) : {}, ...this.getConductorEnv?.(), ...U ? { CONDUCTOR_SESSION_ID: U } : {}, CLAUDE_CODE_EMIT_SESSION_STATE_EVENTS: \"1\" };\n      if (V?.type === \"env\")\n        delete z.ANTHROPIC_API_KEY, delete z.CLAUDE_CODE_OAUTH_TOKEN, delete z.CLAUDE_CODE_OAUTH_SCOPES, Object.assign(z, V.env);\n      let L = () => rc3({ claudeExecutablePath: this.claudeExecutablePath, env: z, exeProxy: D });\n      if (!(V === undefined ? this.claudeOauthTokenProvider !== undefined : V.type === \"brokered-oauth\")) {\n        if (U !== undefined)\n          this.claudeOauthAuthFailedSessions.delete(U);\n        return L();\n      }\n      let M = this.claudeOauthTokenProvider;\n      if (M === undefined)\n        throw Error(\"Brokered Claude OAuth mode is missing its token provider\");\n      let P = U !== undefined && this.claudeOauthAuthFailedSessions.has(U);\n      return M.refresh(P ? { forceRefresh: true } : {}).then((N) => {\n        if (U !== undefined)\n          this.claudeOauthAuthFailedSessions.delete(U);\n        return z.CLAUDE_CODE_OAUTH_TOKEN = N.accessToken, z.CLAUDE_CODE_OAUTH_SCOPES = N.scopes.join(\" \"), delete z.ANTHROPIC_API_KEY, { ...L(), claudeOauthTokenExpiresAt: N.expiresAt };\n      });\n    }, j = this.getClaudeAuthForNextSpawn?.();\n    return j === undefined ? w(undefined) : j.then(w);\n  }\n  getConductorSkillPlugins() {\n    let U = [], B = On4();\n    if (B)\n      U.push({ type: \"local\", path: B });\n    if (this.includeComputerAdminTools) {\n      let G = Nn4();\n      if (G)\n        U.push({ type: \"local\", path: G });\n    }\n    return U;\n  }\n  buildMcpServers({ sessionId: U, getCallbacks: B, config: G, workspaceSettingsBundle: D = this.lastKnownWorkspaceSettingsBundle }) {\n    return { ...D.mcpServers ? sc3(D.mcpServers) : {}, conductor: uB5({ sessionId: U, workspaceDir: this.workspaceDir, getCallbacks: B, localExecutionEnabled: G?.localExecutionMcpEnabled === true, getDiffCommentsEnabled: G?.getDiffCommentsEnabled === true, summaryToolsEnabled: G?.summaryToolsEnabled === true, computerAdminEnabled: this.includeComputerAdminTools, computerAdminClient: this.computerAdminClient }) };\n  }\n  setEditAutoAccept({ sessionId: U, enabled: B }) {\n    let G = this.liveSessions.get(U);\n    if (!G)\n      return;\n    G.autoApproveEditsForSession = B;\n  }\n  agentCredentialsChanged() {\n    this.agentAuthGeneration += 1;\n  }\n  reconcileSessionConfig({ sessionId: U, live: B, config: G, workspaceSettingsBundle: D, canRecreate: w, callbacks: j, log: V }) {\n    return CB5({ policy: Ln4, live: B, config: G, canRecreate: w, forceRecreateReason: this.claudeOauthAuthFailedSessions.has(U) ? \"Claude rejected the brokered OAuth token\" : B.agentAuthGeneration !== this.agentAuthGeneration ? \"managed Claude credentials changed\" : ic3(B.claudeOauthTokenExpiresAt) ? \"brokered Claude OAuth token expiring\" : undefined, recreate: async (z) => {\n      V.info(`[ClaudeAgentRunner] Restarting generator for session ${U} (${z})`);\n      let L = this.resumeForRestart({ sessionId: U, live: B, workspaceSettingsBundle: D }), A = B.resolveTurn, M = B.rejectTurn;\n      B.resolveTurn = undefined, B.rejectTurn = undefined, this.stopLiveGenerator({ sessionId: U });\n      let P = await this.startGenerator(U, G, { resume: L, workspaceSettingsBundle: D });\n      return P.callbacks = j, P.resolveTurn = A, P.rejectTurn = M, P;\n    }, log: V });\n  }\n"
+    },
+    {
+      "asset": "bun",
+      "end": 3522294,
+      "label": "launch-routing",
+      "source": "function rc3({ claudeExecutablePath: U, env: B, exeProxy: G }) {\n  if (!G) {\n    let D = zr();\n    if (D) {\n      let w = /\\.(?:cjs|js|mjs|tsx|ts|jsx)$/.test(U);\n      return { claudeExecutablePath: D, executableArgs: w ? [\"bun\", U] : [U], env: B };\n    }\n    return { claudeExecutablePath: U, env: B };\n  }\n  return { claudeExecutablePath: G.exeProxyPath, env: { ...B, ...G.env } };\n}\n",
+      "bytes": 386,
+      "start": 3521908,
+      "sha256": "f20e2a4832eb25e5154f6febd4f650189963f3bac5b8ab5f191c153837160ef0"
+    },
+    {
+      "asset": "bun",
+      "source": "class En4 {\n  liveSessions = new Map;\n  pendingCancellationExits = new Map;\n  stopGenerations = new Map;\n  pendingGeneratorStarts = new Map;\n  outstandingStopGenerationCaptures = new Map;\n  startedSessionIds = new Set;\n  pendingResumeSessionAts = new Map;\n  claudeExecutablePath;\n  workspaceDir;\n  workspaceId;\n  queryFn;\n  env;\n  getActivityExeProxyEnv;\n  getGitHubAuthEnv;\n  getClaudeAuthForNextSpawn;\n  getConductorEnv;\n  lastKnownWorkspaceSettingsBundle;\n  fetchWorkspaceSettingsBundle;\n  bootClaudeConfigDir;\n  includeComputerAdminTools;\n  computerAdminClient;\n  claudeOauthTokenProvider;\n  claudeOauthAuthFailedSessions = new Set;\n  agentAuthGeneration = 0;\n  constructor({ claudeExecutablePath: U, workspaceDir: B, workspaceId: G, getActivityExeProxyEnv: D = Gv, env: w = Zc3(process.env), queryFn: j = VB5, getGitHubAuthEnv: V, getClaudeAuthForNextSpawn: z, getConductorEnv: L, cloudMcpServers: A, initialWorkspaceSettingsBundle: M, fetchWorkspaceSettingsBundle: P, includeComputerAdminTools: N = false, computerAdminClient: H, claudeOauthTokenProvider: q }) {\n    if (this.claudeExecutablePath = U, this.workspaceDir = B, this.workspaceId = G, this.env = w, this.queryFn = j, this.getActivityExeProxyEnv = D, this.getGitHubAuthEnv = V, this.getClaudeAuthForNextSpawn = z, this.getConductorEnv = L, this.lastKnownWorkspaceSettingsBundle = M ?? { cloudEnv: {}, ...A ? { mcpServers: A } : {} }, this.bootClaudeConfigDir = this.lastKnownWorkspaceSettingsBundle.cloudEnv.CLAUDE_CONFIG_DIR ?? w.CLAUDE_CONFIG_DIR, this.fetchWorkspaceSettingsBundle = P, this.includeComputerAdminTools = N, this.computerAdminClient = H, this.claudeOauthTokenProvider = q, !ZB5.has(U)) {\n      ZB5.add(U);\n      let W = dc3({ claudeExecutablePath: U });\n      bc3(W.command, W.args, { encoding: \"utf-8\", timeout: 5000 }, (E, C) => {\n        if (E) {\n          d0.warn(`[ClaudeAgentRunner] Could not determine version for: ${U}`);\n          return;\n        }\n        d0.info(`[ClaudeAgentRunner] Using Claude executable: ${U} (${C.trim()})`);\n      });\n    }\n  }\n",
+      "end": 3524777,
+      "sha256": "e24e5dc8ea1dda8ffeb03248cc931fdc68c27f0a04aeb1d1eafa3ab230ab1e01",
+      "start": 3522731,
+      "bytes": 2046,
+      "label": "runner-constructor"
+    },
+    {
+      "asset": "bun",
+      "label": "start-generator-launch-prefix",
+      "bytes": 6920,
+      "start": 3548996,
+      "sha256": "a26e4d5d8847e168713d30d0af27b4bb39c4310c1251a83ab7a35e67987e2a22",
+      "source": "  startGenerator(U, B, { resume: G, resumeSessionAt: D, workspaceSettingsBundle: w, launchOptions: j, agentAuthGeneration: V }) {\n    if (j === undefined) {\n      let Y = this.pendingGeneratorStarts.get(U);\n      if (Y !== undefined)\n        return Y;\n    }\n    let z = V ?? this.agentAuthGeneration, L = j ?? this.getClaudeLaunchOptions({ sessionId: U, workspaceSettingsBundle: w });\n    if (L instanceof Promise) {\n      let Y = this.captureStopGeneration(U), K = L.then((x) => {\n        if ((this.stopGenerations.get(U) ?? 0) !== Y)\n          throw new d7(U);\n        return this.startGenerator(U, B, { resume: G, resumeSessionAt: D, workspaceSettingsBundle: w, launchOptions: x, agentAuthGeneration: z });\n      }).finally(() => {\n        if (this.releaseStopGeneration(U), this.pendingGeneratorStarts.get(U) === K)\n          this.pendingGeneratorStarts.delete(U);\n      });\n      return this.pendingGeneratorStarts.set(U, K), K;\n    }\n    let A = this.getSessionLogger(U), M = [], P = undefined, N = false, H = async function* () {\n      while (!N) {\n        let Y;\n        if (M.length > 0)\n          Y = M.shift();\n        else if (Y = await new Promise((K) => {\n          P = K;\n        }), N)\n          return;\n        yield { type: \"user\", message: { role: \"user\", content: Y.text }, parent_tool_use_id: null, session_id: U, uuid: Y.userMessageUuid };\n      }\n    }(), q = new AbortController, W = L, E = qB5(B), C = new Set, Q = { hasAppended: false }, T = { append: async (Y, K) => {\n      Q.hasAppended = true;\n      for (let x of K) {\n        let v = fc3(x);\n        if (v !== undefined)\n          C.delete(v);\n      }\n    }, load: async () => null }, b = { abortController: q, pathToClaudeCodeExecutable: W.claudeExecutablePath, executableArgs: W.executableArgs, cwd: this.workspaceDir, env: { ...W.env, CLAUDE_CODE_ENABLE_OPUS_4_7_FAST_MODE: \"1\" }, sessionStore: T, sessionStoreFlush: \"eager\", ...D ? { resume: G ?? U, sessionId: U, resumeSessionAt: D, forkSession: true } : G ? { resume: G } : { sessionId: U }, model: Fy(B.model, { env: this.getEffectiveEnv(w) }), thinking: HB5({ model: B.model, thinkingLevel: B.thinkingLevel }), effort: oB4(B.thinkingLevel), permissionMode: \"bypassPermissions\", systemPrompt: uc3({ summaryToolsEnabled: B.summaryToolsEnabled === true }), settingSources: qn4, plugins: this.getConductorSkillPlugins(), maxTurns: 1000, additionalDirectories: B.additionalDirectories ?? [], disallowedTools: [\"AskUserQuestion\"], toolAliases: { AskUserQuestion: \"mcp__conductor__AskUserQuestion\" }, ...E ? { settings: E } : {}, ...B.chromeEnabled ? { extraArgs: { chrome: null } } : {}, stderr: (Y) => {\n      if (Y.includes(\"[DEBUG]\"))\n        return;\n      if (Y.includes(cc3))\n        this.liveSessions.get(U)?.callbacks?.onFastModeUnavailable(Y.trim()).fireAndForget();\n      A.info(`[ClaudeAgentRunner:stderr] ${Y.trim()}`);\n    }, canUseTool: async (Y, K, x) => {\n      if (AL({ source: \"workspace <> SDK\", sessionId: U, direction: \"upstream\", data: { type: \"canUseTool\", toolName: Y, toolUseId: x.toolUseID } }), Y === \"ExitPlanMode\") {\n        let u = this.liveSessions.get(U), Z = await u?.callbacks?.onExitPlanMode?.(K);\n        if (Z?.approved) {\n          let n = zn4({ requiresToolApprovals: u?.appliedConfig.requiresToolApprovals, autoPermissionModeEnabled: u?.appliedConfig.autoPermissionModeEnabled });\n          if (u)\n            u.currentPermissionMode = n;\n          return { behavior: \"allow\", updatedInput: { ...K, planFilePath: Z.planFilePath, _targetMode: n }, updatedPermissions: [{ type: \"setMode\", mode: n, destination: \"session\" }] };\n        }\n        return { behavior: \"deny\", message: Z?.feedback ?? \"Plan not approved\", interrupt: true };\n      }\n      if (tB5.has(Y)) {\n        let u = hc3(K);\n        if (u) {\n          let Z = this.liveSessions.get(U)?.appliedConfig.additionalDirectories ?? B.additionalDirectories ?? [], n = yc3({ cwd: this.workspaceDir, additionalDirectories: Z });\n          if (!gc3({ filePath: u, cwd: this.workspaceDir, allowedDirectories: n }))\n            return { behavior: \"deny\", message: `Cannot edit files outside allowed directories (${n.join(\", \")}). Attempted to edit: ${u}` };\n        } else\n          A.warn(`[canUseTool] ${Y} is listed in EDIT_TOOLS but tool input has no file_path/notebook_path; sandbox check skipped. Input keys: ${Object.keys(K).join(\", \")}`);\n      }\n      if (Jc3.has(Y))\n        return { behavior: \"allow\", updatedInput: K };\n      let v = this.liveSessions.get(U);\n      if (!v)\n        return A.warn(`[canUseTool] denying ${Y} because session ${U} is no longer live`), { behavior: \"deny\", message: \"Tool use denied because the Claude session is no longer active.\" };\n      if (v.appliedConfig.requiresToolApprovals !== true)\n        return { behavior: \"allow\", updatedInput: K };\n      if (tB5.has(Y) && v?.autoApproveEditsForSession)\n        return { behavior: \"allow\", updatedInput: K };\n      if (!v?.callbacks?.onToolApproval)\n        return A.error(`[canUseTool] requiresToolApprovals is true but onToolApproval callback is missing for session ${U}`), { behavior: \"deny\", message: \"Tool approval required but approval handler is not available\" };\n      switch ((await v.callbacks.onToolApproval({ toolUseId: x.toolUseID, toolName: Y, toolInput: K, decisionReason: x.decisionReason, blockedPath: x.blockedPath, suggestions: mc3(x.suggestions), subAgentId: x.agentID })).decision) {\n        case \"deny\":\n          return { behavior: \"deny\", message: `${Y} denied by user.` };\n        case \"allow_edits_for_session\":\n          if (v)\n            v.autoApproveEditsForSession = true;\n          return { behavior: \"allow\", updatedInput: K };\n        case \"allow_with_permissions\":\n          return { behavior: \"allow\", updatedInput: K, updatedPermissions: x.suggestions };\n        case \"always_allow\":\n          return { behavior: \"allow\", updatedInput: K, updatedPermissions: [{ type: \"addRules\", rules: [{ toolName: Y }], behavior: \"allow\", destination: \"localSettings\" }] };\n        case \"allow\":\n        default:\n          return { behavior: \"allow\", updatedInput: K };\n      }\n    }, hooks: { PreToolUse: [{ hooks: [async (Y) => {\n      if (Y.hook_event_name !== \"PreToolUse\")\n        return {};\n      let K = Y.tool_name;\n      if (vc3.has(K))\n        return {};\n      let x = this.liveSessions.get(U)?.pendingStartCheckpoint;\n      if (x)\n        A.info(`[ClaudeAgentRunner] Waiting for start checkpoint before ${K}`), await x;\n      return {};\n    }] }] }, mcpServers: this.buildMcpServers({ sessionId: U, getCallbacks: () => this.liveSessions.get(U)?.callbacks, config: B, workspaceSettingsBundle: w }) };\n    AL({ source: \"workspace <> SDK\", direction: \"downstream\", data: { type: \"startGenerator\", sessionId: U, sdkSessionId: b.sessionId, resume: b.resume, resumeSessionAt: b.resumeSessionAt, cwd: b.cwd, model: b.model } });\n    let k = this.queryFn({ prompt: H, options: b })",
+      "end": 3555916,
+      "boundary": "Exact enclosing-method prefix through queryFn launch call; remainder intentionally omitted, not a complete method."
+    },
+    {
+      "asset": "renderer",
+      "sha256": "a7af20eab473256cfc487f5d36f36d4fc62c0c389863a0ebec80795ce1707851",
+      "source": "function mGt(t){const e=ne.c(45),{label:n,systemBinaryName:i,systemPathLabel:r,savedPath:o,onSave:a,disabled:c,settingKey:u,repoContext:d,title:h,description:m}=t,{data:g}=tpa(i);let _;e[0]!==c||e[1]!==n||e[2]!==a?(_=async()=>{if(c)return;const z=await fI({multiple:!1,title:`Select ${n} executable`});z&&a(z)},e[0]=c,e[1]=n,e[2]=a,e[3]=_):_=e[3];const v=_,x=h??`${n} executable path`,w=m??`Override the bundled ${n} executable with a custom one. Leave empty to use the bundled version (recommended).`;let E;e[4]!==c||e[5]!==a?(E=z=>{c||a(z.target.value)},e[4]=c,e[5]=a,e[6]=E):E=e[6];const k=g??`/usr/local/bin/${i}`;let I;e[7]!==c||e[8]!==o||e[9]!==E||e[10]!==k?(I=p.jsx(Qo,{type:\"text\",value:o,onChange:E,placeholder:k,className:\"font-mono text-xs pr-8\",disabled:c}),e[7]=c,e[8]=o,e[9]=E,e[10]=k,e[11]=I):I=e[11];let R;e[12]!==v?(R=()=>v().fireAndForget(),e[12]=v,e[13]=R):R=e[13];let O;e[14]===Symbol.for(\"react.memo_cache_sentinel\")?(O=p.jsx(Ak,{className:\"w-3.5 h-3.5\"}),e[14]=O):O=e[14];let D;e[15]!==c||e[16]!==R?(D=p.jsx(\"button\",{type:\"button\",onClick:R,className:\"absolute right-1 top-1/2 -translate-y-1/2 flex items-center justify-center w-6 h-6 rounded text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-muted-foreground\",title:\"Browse for executable\",disabled:c,children:O}),e[15]=c,e[16]=R,e[17]=D):D=e[17];let P;e[18]!==I||e[19]!==D?(P=p.jsxs(\"div\",{className:\"relative min-w-0 flex-1\",children:[I,D]}),e[18]=I,e[19]=D,e[20]=P):P=e[20];let L;e[21]!==c||e[22]!==n||e[23]!==a||e[24]!==o?(L=o&&p.jsxs(Jn,{children:[p.jsx(Xn,{asChild:!0,children:p.jsx(\"button\",{type:\"button\",onClick:()=>a(\"\"),className:\"flex items-center justify-center w-6 h-6 rounded text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-muted-foreground\",disabled:c,children:p.jsx(yl,{className:\"w-3.5 h-3.5\"})})}),p.jsxs(ni,{children:[\"Reset to bundled \",n]})]}),e[21]=c,e[22]=n,e[23]=a,e[24]=o,e[25]=L):L=e[25];let B;e[26]!==c||e[27]!==a||e[28]!==o||e[29]!==g||e[30]!==r?(B=g&&!o&&p.jsxs(Jn,{children:[p.jsx(Xn,{asChild:!0,children:p.jsxs(tt,{variant:\"outline\",size:\"sm\",onClick:()=>a(g),disabled:c,className:\"shrink-0\",children:[\"Use system \",r]})}),p.jsx(ni,{children:g})]}),e[26]=c,e[27]=a,e[28]=o,e[29]=g,e[30]=r,e[31]=B):B=e[31];let F;e[32]!==P||e[33]!==L||e[34]!==B?(F=p.jsxs(\"div\",{className:\"flex items-center gap-2\",children:[P,L,B]}),e[32]=P,e[33]=L,e[34]=B,e[35]=F):F=e[35];let H;e[36]!==o?(H=o&&p.jsxs(\"div\",{className:\"flex items-start gap-2 text-xs text-amber-600 dark:text-amber-500 mt-1\",children:[p.jsx(e0,{className:\"size-3.5 shrink-0 mt-0.5\"}),p.jsx(\"p\",{children:\"Changing this may cause issues if the executable is not compatible with Conductor.\"})]}),e[36]=o,e[37]=H):H=e[37];let U;return e[38]!==d||e[39]!==u||e[40]!==F||e[41]!==H||e[42]!==x||e[43]!==w?(U=p.jsxs(Al,{settingKey:u,repoScope:d,title:x,description:w,children:[F,H]}),e[38]=d,e[39]=u,e[40]=F,e[41]=H,e[42]=x,e[43]=w,e[44]=U):U=e[44],U}",
+      "end": 10594152,
+      "bytes": 3061,
+      "label": "executable-row",
+      "start": 10591091
+    },
+    {
+      "asset": "renderer",
+      "sha256": "a4448b935ecb0bf9d384b92e069e6c17c56f0c2f0c35eacdab24b35afd897812",
+      "source": "function gGt(t){const e=ne.c(20),{key:n,repoContext:i}=t,r=_0(),o=tde(),a=kSe(),c=_Ye();let u;e[0]!==n||e[1]!==r?(u=I=>{if(n!==\"codex_executable_path\"){I?.fireAndForget();return}(I??Promise.resolve()).then(()=>OPt(r)).fireAndForget()},e[0]=n,e[1]=r,e[2]=u):u=e[2];const d=u;let h=c;n===\"claude_executable_path\"?h=o:n===\"codex_executable_path\"&&(h=a);let m;e[3]!==n||e[4]!==i?(m={key:n,for:i},e[3]=n,e[4]=i,e[5]=m):m=e[5];const g=us(m),_=cVe(n),v=g.data?.configurations[\"repo-local\"];if(i===void 0){const I=_?.system===!0;let R;e[6]!==n||e[7]!==d?(R=D=>{if(n===\"claude_executable_path\"){o9r(D).fireAndForget();return}if(n===\"codex_executable_path\"){d(a9r(D));return}l9r(D).fireAndForget()},e[6]=n,e[7]=d,e[8]=R):R=e[8];let O;return e[9]!==I||e[10]!==R||e[11]!==h.data?(O={savedPath:h.data,isLocked:I,update:R},e[9]=I,e[10]=R,e[11]=h.data,e[12]=O):O=e[12],O}const x=g.data?.effective.value??\"\",w=v?.setValue===void 0;let E;e[13]!==v||e[14]!==d?(E=I=>{const R=XA(I);d(R===void 0?v?.resetToInherited?.():v?.setValue?.(R))},e[13]=v,e[14]=d,e[15]=E):E=e[15];let k;return e[16]!==x||e[17]!==w||e[18]!==E?(k={savedPath:x,isLocked:w,update:E},e[16]=x,e[17]=w,e[18]=E,e[19]=k):k=e[19],k}",
+      "label": "executable-setting-hook",
+      "bytes": 1177,
+      "start": 10594152,
+      "end": 10595329
+    },
+    {
+      "asset": "renderer",
+      "sha256": "91befa48ef5f767f882d525c58844230739ab1fe036966c708e989db5202402c",
+      "source": "function Czi(t){const e=ne.c(9),{repoContext:n,title:i,description:r}=t;let o;e[0]!==n?(o={key:\"claude_executable_path\",repoContext:n},e[0]=n,e[1]=o):o=e[1];const a=gGt(o);let c;return e[2]!==r||e[3]!==a.isLocked||e[4]!==a.savedPath||e[5]!==a.update||e[6]!==n||e[7]!==i?(c=p.jsx(mGt,{label:\"Claude Code\",systemBinaryName:\"claude\",systemPathLabel:\"Claude Code\",savedPath:a.savedPath,onSave:a.update,disabled:a.isLocked,settingKey:\"claude_executable_path\",repoContext:n,title:i,description:r}),e[2]=r,e[3]=a.isLocked,e[4]=a.savedPath,e[5]=a.update,e[6]=n,e[7]=i,e[8]=c):c=e[8],c}",
+      "bytes": 577,
+      "label": "claude-executable-row",
+      "start": 10595329,
+      "end": 10595906
+    },
+    {
+      "asset": "renderer",
+      "sha256": "eea547bf3ed5d58242d2e34478f6192090532767d6e280c9b5f1bcb0110bc9d9",
+      "source": "pR as o9r,",
+      "label": "setting-save-import",
+      "bytes": 10,
+      "start": 63405,
+      "end": 63415
+    },
+    {
+      "asset": "index",
+      "start": 412624,
+      "bytes": 70,
+      "sha256": "78ca2c81c650ac9fbd8018b658f79613da60bbd54e2dcf8546528ca6ceff8e9f",
+      "end": 412694,
+      "label": "n6t",
+      "source": "async function n6t(t){await VN({key:\"claude_executable_path\",path:t})}"
+    },
+    {
+      "asset": "index",
+      "label": "VN",
+      "source": "async function VN({key:t,path:e}){const s=qBe(e);if(s===void 0){await ee.deleteSetting(t);return}await ee.updateSetting(t,s,void 0,{debounce:!0})}",
+      "sha256": "31c8d880a3856edf463c0b0d55138a4652f0e4850942400489952cb941bd2c02",
+      "bytes": 146,
+      "start": 412478,
+      "end": 412624
+    },
+    {
+      "asset": "index",
+      "bytes": 51,
+      "sha256": "6b76cfda4a11b210c75a970d5bf158870bcc02f6dcbbc9d9220dafd1d7c697d8",
+      "label": "export-binding",
+      "start": 3489767,
+      "end": 3489818,
+      "source": "t as pO,tV as pP,CVt as pQ,n6t as pR,r6t as pS,i6t "
+    }
+  ]
+}
