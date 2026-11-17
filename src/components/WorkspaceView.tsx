@@ -3,6 +3,7 @@ import type { OpenInTargetPublisher, WorkspaceOpenInTarget } from "../palette/fr
 import type { Repo, Workspace } from "../state/types";
 import { loadReposFromDb, type Action } from "../state/store";
 import { LinkedDirectoryPicker } from "../features/chat/LinkedDirectoryPicker.tsx";
+import { useScrollFollow } from "../features/chat/hooks/useScrollFollow.ts";
 import { mutateWorkspaceLinks, type LinkMutation } from "../features/chat/workspaceLinks.ts";
 import { ChevronIcon, RightSidebarIcon } from "./Icons";
 import { toggleRightPanel } from "./panelPrefs";
@@ -302,6 +303,10 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   /** A "Fork to new tab" is reading the chat's options. */
   const [forking, setForking] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const { isAtBottomRef } = useScrollFollow(scrollContainerRef);
+  /** Set to true before a user-initiated send so the next transcript effect force-scrolls. */
+  const forceScrollRef = useRef(false);
   const inputRef = useRef<ComposerEditorHandle>(null);
   const [mcpStatusChat, setMcpStatusChat] = useState<string | null>(null);
   useEffect(() => setMcpStatusChat(null), [chatId, agentId]);
@@ -332,6 +337,8 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   }, [chatId]);
 
   useEffect(() => {
+    // Switching chats should always land at the bottom of the new chat.
+    forceScrollRef.current = true;
     setSnapshot(agent.snapshot(runId));
     setResetTurn(null);
     const pendingMessage = takePendingMessage(chatId);
@@ -357,14 +364,24 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     setPicked((p) => ({ ...p, [chatId]: next }));
   }
 
+  // parity:chat.scroll-follow  BE7-17
+  // Scroll to bottom only when already at the bottom, or when the user just
+  // sent a message (forceScrollRef). Mirrors Conductor: a user who has
+  // scrolled up to review history is not dragged back down by agent updates.
   useEffect(() => {
-    endRef.current?.scrollIntoView({ block: "end" });
+    if (forceScrollRef.current || isAtBottomRef.current) {
+      endRef.current?.scrollIntoView({ block: "end" });
+      isAtBottomRef.current = true;
+    }
+    forceScrollRef.current = false;
   }, [transcript, waiting]);
 
   // Attachments (a review request, revert notes) go to the agent with the message and show by name.
   function submit(input: UserPrompt, mode: SendMode, attached: readonly TextAttachment[] = []) {
     const { text } = input;
     if (!text.trim() && attached.length === 0) return;
+    // User-initiated send: always scroll to bottom so the sent message is visible.
+    forceScrollRef.current = true;
     const first = main && !agent.snapshot(runId).transcript.messages.some((m) => m.role === "user");
     agent.submit(runId, cwd, input, mode, attached, repo.path || undefined, workspace.id);
     dispatch({ type: "touchWorkspace", repoId: repo.id, workspaceId: workspace.id, at: Date.now() });
@@ -599,7 +616,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           {content}
         </div>
       ) : null}
-      <div className="chat-scroll" hidden={content !== null}>
+      <div className="chat-scroll" ref={scrollContainerRef} hidden={content !== null}>
         {review && !review.fork && !review.blank && (
           <div className="review-chat-info muted" role="note">
             Code review on {review.modelLabel}

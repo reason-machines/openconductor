@@ -77,12 +77,16 @@ test("actual Sidebar navigation expressions follow changed snapshots and reset t
   }
 });
 
-test("actual Sidebar Home title uses the effective primary key without adding Create or Search titles", () => {
+test("actual Sidebar Home native title uses the effective primary key without adding Create or Search titles", () => {
+  // Retained REA caller Aia uses title: HH("Home", "nav.home"), not a Tooltip.
   assert.equal(attribute("Home", "title", remapped), "Home ⌘⇧Y");
   assert.equal(attribute("Home", "title", changed), "Home ⌘⇧U");
   assert.equal(attribute("Home", "title", {}), "Home ⌘⇧H");
-  assert.doesNotMatch(rowSource("Create"), /\btitle=/);
-  assert.doesNotMatch(rowSource("Search"), /\btitle=/);
+  assert.doesNotMatch(rowSource("Home"), /\btooltip=/);
+  assert.doesNotMatch(rowSource("Create"), /\btitle=|\btooltip=/);
+  assert.doesNotMatch(rowSource("Search"), /\btitle=|\btooltip=/);
+  const navRow = source.slice(source.indexOf("function NavRow("), source.indexOf("\ninterface MenuItem"));
+  assert.match(navRow, /<button\b[^>]*\btitle=\{title\}/, "NavRow forwards its title to the button");
 });
 
 test("Sidebar reads the live provider snapshot used by its navigation expressions", () => {

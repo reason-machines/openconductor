@@ -63,6 +63,7 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
         if (name === "../features/diff/ReviewButton") return { queuePending: () => {} };
         if (name === "../features/chat/composerIcons") return { PaperclipIcon: () => null, PlusIcon: () => null };
         if (name === "../features/chat/composer.css") return {};
+        if (name === "@tauri-apps/api/core") return { invoke: async () => {} };
         if (name === "../workspace/api") return {
           ensureRepository() {
             if (submitting) { events.push("register"); return registration.promise; }
@@ -377,6 +378,7 @@ async function backlogFixture() {
         if (name === "../features/diff/ReviewButton") return { queuePending: () => {} };
         if (name === "../features/chat/composerIcons") return { PaperclipIcon: () => null, PlusIcon: () => null };
         if (name === "../features/chat/composer.css") return {};
+        if (name === "@tauri-apps/api/core") return { invoke: async () => {} };
         if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }), useKeybindings: () => {} };
         if (name === "../keybindings/overrides") return {
           effectiveShortcuts(id: string) {
