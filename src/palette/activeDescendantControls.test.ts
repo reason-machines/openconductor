@@ -5,6 +5,7 @@ import test from "node:test";
 import { runInNewContext } from "node:vm";
 import * as React from "react";
 import ts from "typescript";
+import * as sectionSearchScore from "./search/score.ts";
 
 const dependencies = createRequire(import.meta.url);
 const { act, create } = dependencies("react-test-renderer");
@@ -16,6 +17,7 @@ const exports: Partial<typeof import("./MoveToSection.tsx")> = {};
 runInNewContext(output, {
   exports,
   require(name: string) {
+    if (name === "./search/score.ts") return sectionSearchScore;
     if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
     assert.equal(name, "../components/ConductorIcon");
     return { ConductorIcon: () => null };

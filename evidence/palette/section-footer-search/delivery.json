@@ -1,0 +1,51 @@
+{
+  "owner": "Conductor Rebuild / SAME15",
+  "unit": "SECTION-FOOTER-SEARCH-SAME15",
+  "baseMain": "2ada6e3e186391695cae1ce5694ac251a6323079",
+  "production": "src/palette/MoveToSection.tsx",
+  "productionAfterSha256": "521cfabbbd72e9c0baf17b57e314c9f3f73e263b9f06c254ac050c9d75331d42",
+  "frozenMountedFixtureSha256": "71c8d038ebe5abdb7910c7921dd7c8ce5c23e5bb5989b98c1847179dca50d8b7",
+  "checks": {
+    "mountedBaseline": {"tests": 17, "pass": 7, "intendedAssertionFailures": 10, "skipped": 0},
+    "mountedTreatment": {"tests": 17, "pass": 17, "fail": 0, "skipped": 0},
+    "affectedBaseline": {"tests": 538, "pass": 528, "intendedAssertionFailures": 10, "skipped": 0},
+    "rankingFirstCandidate": {"tests": 3, "pass": 2, "intendedAssertionFailures": 1},
+    "focusedFinal": {"tests": 20, "pass": 20, "fail": 0, "skipped": 0},
+    "affectedFinal": {"tests": 541, "pass": 541, "fail": 0, "skipped": 0},
+    "typecheck": "PASS",
+    "branding": "PASS",
+    "build": "PASS",
+    "viteSeconds": 47.85,
+    "wholeParentAndSourceVerification": "PASS",
+    "unchangedExistingSourceTestPins": 52,
+    "sourceRecords": 16,
+    "loaderOnlyFiles": 11,
+    "testAssertionAstAndCounts": "PASS",
+    "heavySlot": "Explicitly admitted then RELEASED; own build/test/tsc process receipt empty"
+  },
+  "publication": {
+    "state": "INTEGRATED_AFTER_1448_ACTUAL_MERGE_READY_FOR_SEPARATE_MAIN_PR",
+    "newPullRequest": null,
+    "mainBaseOnly": true,
+    "notAppendedTo1448": true,
+    "sectionQueryIsolationAdapter": "APPLICABLE after actual #1448 merge; original bfe699 bytes archived, loader-only addition and unchanged test/assertion AST/counts verified",
+    "integrationMain": "d90bed88174656d577adfa793d3850d28eaea7e2",
+    "priorQueryActualSquash": "ee7bb510506906a08e2acff5e196a484bffb1480"
+  },
+  "integrationChecks": {
+    "mountedBaseline": {"tests": 17, "pass": 7, "intendedAssertionFailures": 10, "skipped": 0},
+    "focused": {"tests": 20, "pass": 20, "fail": 0, "skipped": 0},
+    "affected": {"tests": 554, "pass": 554, "fail": 0, "skipped": 0},
+    "typecheck": "PASS",
+    "branding": "PASS",
+    "build": "PASS",
+    "viteSeconds": 51.02,
+    "wholeParentAndSourceVerification": "PASS",
+    "sourceRecords": 16,
+    "loaderOnlyFiles": 12,
+    "testAssertionAstAndCounts": "PASS",
+    "heavySlot": "Explicitly admitted then RELEASED; ownHeavyProcesses=[]"
+  },
+  "sideIssue": {"number": 1442, "unchangedHistoricalOptionalVmFailures": 7, "fullSuitePass": false},
+  "acceptance": {"browser": "NOT_RUN", "geometry": "NOT_RUN", "native": "NOT_RUN", "package": "NOT_RUN", "installedIdentity": "NOT_RUN"}
+}

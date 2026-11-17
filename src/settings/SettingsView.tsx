@@ -397,8 +397,17 @@ export function scrollToRow(title: string, tries = 20) {
     const label = Array.from(document.querySelectorAll(".settings-page [data-settings-row]")).find((row) =>
       Array.from(row.querySelectorAll(".settings-row-label, h2, h3, label, strong")).some((el) => el.textContent?.trim() === title),
     );
-    if (label) label.scrollIntoView({ block: "start" });
-    else if (tries > 0) scrollToRow(title, tries - 1);
+    if (label) {
+      label.scrollIntoView({ block: "center" });
+      const frame = label.querySelector(":scope > [data-reveal-frame]") ?? label;
+      if (typeof frame.animate === "function") {
+        frame.animate([
+          { outline: "2px solid var(--ring)", outlineOffset: "8px", offset: 0 },
+          { outline: "2px solid var(--ring)", outlineOffset: "8px", offset: 0.55 },
+          { outline: "2px solid transparent", outlineOffset: "8px" },
+        ], { duration: 1400, easing: "ease-out" });
+      }
+    } else if (tries > 0) scrollToRow(title, tries - 1);
   });
 }
 

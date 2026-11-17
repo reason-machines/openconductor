@@ -1,0 +1,260 @@
+{
+  "author": "Conductor Rebuild",
+  "status": "SOURCE_QUALIFIED_WITH_FROZEN_RED; 3 PASS / 7 intended assertion failures, no lease/product change",
+  "main": "ee7bb510506906a08e2acff5e196a484bffb1480",
+  "asset": {
+    "path": ".oc-tmp/settings-loader-reference/renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "spans": [
+    {
+      "label": "Eki",
+      "utf8_half_open": [
+        7749718,
+        7750087
+      ],
+      "bytes": 369,
+      "sha256": "0f397f25df98c4b517b508ad034f3f54ae5928cec0ebd495b80030a7e31a7281",
+      "text": "function Eki(t){t.scrollIntoView({block:\"center\"});const e=t.querySelector(\":scope > [data-reveal-frame]\")??t;typeof e.animate==\"function\"&&e.animate([{outline:\"2px solid var(--ring)\",outlineOffset:\"8px\",offset:0},{outline:\"2px solid var(--ring)\",outlineOffset:\"8px\",offset:.55},{outline:\"2px solid transparent\",outlineOffset:\"8px\"}],{duration:1400,easing:\"ease-out\"})}"
+    },
+    {
+      "label": "Zzt",
+      "utf8_half_open": [
+        7750093,
+        7750120
+      ],
+      "bytes": 27,
+      "sha256": "e266d425a981924bab4f4fb2faf7be0169bc2e5fb7f88e6d0ec97459d8a5a468",
+      "text": "Zzt=$.createContext(void 0)"
+    },
+    {
+      "label": "Cki",
+      "utf8_half_open": [
+        7750121,
+        7750148
+      ],
+      "bytes": 27,
+      "sha256": "00bf1c7a080b533974a4786252a30329d19aa66ce4a5160759837f37cbe560b9",
+      "text": "Cki=$.createContext(void 0)"
+    },
+    {
+      "label": "eUt",
+      "utf8_half_open": [
+        7750149,
+        7750189
+      ],
+      "bytes": 40,
+      "sha256": "4ec07cb02c4b9b0659380a37bc7c092cb03d116c575f93b46ed0004f9199383e",
+      "text": "function eUt(){return $.useContext(Zzt)}"
+    },
+    {
+      "label": "hS",
+      "utf8_half_open": [
+        7750189,
+        7750427
+      ],
+      "bytes": 238,
+      "sha256": "d6c84344a4083660502c6426e7ba778ac841358d8147137a40e4c9494602be9c",
+      "text": "function hS(t){const e=ne.c(6),n=$.useContext(Cki);let i;e[0]!==t||e[1]!==n?(i=a=>{a!==null&&t!==void 0&&n===t&&Eki(a)},e[0]=t,e[1]=n,e[2]=i):i=e[2];const r=i;let o;return e[3]!==t||e[4]!==r?(o={id:t,ref:r},e[3]=t,e[4]=r,e[5]=o):o=e[5],o}"
+    },
+    {
+      "label": "Al",
+      "utf8_half_open": [
+        7753241,
+        7755288
+      ],
+      "bytes": 2047,
+      "sha256": "4a5dedcb364712276136cf7e5aee0d6bc63b9eeb8c29687514b9a3dc0ed10ff9",
+      "text": "function Al({title:t,description:e,detail:n,settingKey:i,repoScope:r,onReset:o,resetLabel:a,showReset:c=!0,resetActions:u,resetDisabled:d,sourceInfo:h,control:m,children:g,align:_=n===void 0?\"center\":\"start\",className:v,contentClassName:x}){const w=eUt(),E=hS(i),k=w??E,I=cVe(i??\"\"),R=N9(i??\"\"),O=us({key:i,for:r}),D=r!==void 0?O.data?.configurations[\"repo-local\"]:void 0,P=Qzt(),L=r!==void 0?Xzt(O.data):void 0,B=r!==void 0?O.data?.effective.source:I,F=h?.source??B,H=h?.overrides??L?.overrides,U=u??(r!==void 0&&o===void 0?_Ze(O.data?.configurations):void 0),z=i!==void 0&&(r!==void 0?D?.isConfigured===!0:h!==void 0?F!==void 0&&P?.isCurrentSettingsSource(F)===!0:lho({source:I,navigation:P,currentValue:R.data})),G=c&&(z||i===void 0&&o!==void 0),K=U!==void 0?U.length>0:G,X=t!==void 0||e!==void 0||m!==void 0,Q=K?p.jsx(mho,{settingKey:i,onReset:o,resetLabel:a,showReset:G,resetActions:U,disabled:d}):null,J=t===void 0&&Q!==null,te=$.useMemo(()=>({isConfiguredInCurrentScope:z,effectiveSource:F,overrides:H}),[z,F,H]);return p.jsx(yki.Provider,{value:te,children:p.jsx(tho,{target:w?.pageTarget,children:p.jsx(\"div\",{id:k.id,ref:k.ref,\"data-settings-row\":!0,className:Xe(\"group/settings-row relative border-t pt-5\",v),children:p.jsxs(\"div\",{\"data-reveal-frame\":!0,className:Xe(\"relative min-w-0\",x),children:[J&&p.jsx(\"div\",{className:\"absolute right-0 top-0 z-10\",children:Q}),X&&p.jsxs(\"div\",{className:Xe(\"flex justify-between gap-8\",_===\"start\"?\"items-start\":\"items-center\"),children:[p.jsxs(\"div\",{className:\"min-w-0 flex-1\",children:[t!==void 0&&p.jsxs(\"div\",{className:\"flex min-h-7 items-center gap-2 font-medium\",children:[p.jsx(\"div\",{className:\"min-w-0\",children:t}),p.jsx(xki,{source:F}),p.jsx(Ski,{}),Q]}),e!==void 0&&p.jsx(\"div\",{className:\"mt-0.5 text-sm text-muted-foreground\",children:e}),n!==void 0&&p.jsx(\"div\",{className:\"mt-1 text-xs text-muted-foreground\",children:n})]}),m!==void 0&&p.jsx(\"div\",{className:\"shrink-0\",children:m})]}),g!==void 0&&g!==!1&&p.jsx(\"div\",{className:Xe(X&&\"mt-3\",J&&\"pr-8\"),children:g})]})})})})}"
+    },
+    {
+      "label": "pUi",
+      "utf8_half_open": [
+        10864423,
+        10864799
+      ],
+      "bytes": 376,
+      "sha256": "5c0e9ed6ec43b42536916ea4b718476b9eed4c88c4855cd22961c0c84398c040",
+      "text": "function pUi(t){const e=xGt(t.id);if(e!==void 0)return{page:\"providers\",providerTab:e};const{tab:n}=t;return n===\"scripts\"||n===\"actions\"||n===\"misc\"?{page:\"repo\",section:n,scrollTo:t.id}:(n===\"environment\"||n===\"git\")&&t.scopes!==void 0&&!t.scopes.includes(\"user\")?{page:\"repo\",section:n,scrollTo:t.id}:n===\"providers\"?{page:\"providers\",scrollTo:t.id}:{page:n,scrollTo:t.id}}"
+    },
+    {
+      "label": "wGt",
+      "utf8_half_open": [
+        10866145,
+        10866683
+      ],
+      "bytes": 538,
+      "sha256": "62bdba7204c58b4ce4f486ed54d97f1e194023382857279e5806eab97a847fd3",
+      "text": "function wGt({navigate:t,target:e,replace:n,currentRepoId:i}){switch(e.type){case\"page\":t({to:e.to,search:{scrollTo:e.scrollTo},hash:e.hash,replace:n}).fireAndForget();return;case\"providers\":t({to:\"/settings/user/providers\",search:{providerTab:e.providerTab},replace:n}).fireAndForget();return;case\"repo-section\":if(i!==void 0){t({to:BCe[e.section],params:{repoId:i},search:{scrollTo:e.scrollTo},replace:n}).fireAndForget();return}t({to:\"/settings/repos\",search:{section:e.section,scrollTo:e.scrollTo},replace:n}).fireAndForget();return}}"
+    },
+    {
+      "label": "_Ui",
+      "utf8_half_open": [
+        10866683,
+        10866718
+      ],
+      "bytes": 35,
+      "sha256": "80712e0b0a66fb2b6fb8735e1488e49e5ef0b062b0dc518bbd417c94ebda381f",
+      "text": "function _Ui(t){return Dba(pUi(t))}"
+    },
+    {
+      "label": "Dba",
+      "utf8_half_open": [
+        10866718,
+        10867060
+      ],
+      "bytes": 342,
+      "sha256": "b5bda79a4e086ced07f70811c03086ca7ffc4fbc6d60f7e612c50d9718e75958",
+      "text": "function Dba(t){switch(t.page){case\"providers\":return t.providerTab!==void 0?{type:\"providers\",providerTab:t.providerTab}:{type:\"page\",to:\"/settings/user/providers\",scrollTo:t.scrollTo};case\"repo\":return{type:\"repo-section\",section:t.section,scrollTo:t.scrollTo};default:return{type:\"page\",to:`/settings/${ode[t.page]}`,scrollTo:t.scrollTo}}}"
+    },
+    {
+      "label": "Uba",
+      "utf8_half_open": [
+        10870789,
+        10871526
+      ],
+      "bytes": 737,
+      "sha256": "6a17a6f8463ca4fd924acc3ba4edf3166a7ba064c11e17a71fc08b6c70a50c09",
+      "text": "function Uba({definition:t,target:e,gates:n}){if(e.type===\"repo-section\"&&(n.cloudOrganizationActive!==!1||!n.hasRepos)||t.internalOnly===!0&&!n.internalEnabled||t.settingKey===\"chrome_mode_enabled\"&&n.cloudOrganizationActive!==!1)return!1;switch(t.tab){case\"ports\":return n.cloudOrganizationActive===!0;case\"terminal\":return n.bigTerminalEnabled;case\"internal\":return n.internalEnabled;case\"setup-cloud\":return n.cloudSetupEnabled;case\"organization\":case\"organization-preferences\":case\"organization-members\":case\"organization-computer\":case\"organization-environment\":case\"organization-prompts\":return n.organizationSettingsEnabled;case\"organization-mcp-servers\":return n.organizationSettingsEnabled&&n.internalEnabled;default:return!0}}"
+    },
+    {
+      "label": "xUi",
+      "utf8_half_open": [
+        10871526,
+        10872078
+      ],
+      "bytes": 552,
+      "sha256": "fe9940e7da0cee64962a796fe741077a7ef6bf273bd288245e28596b3ea1590c",
+      "text": "function xUi(t){const e=[];for(const n of fUi){if(n.id.endsWith(\"-panel\")||n.excludeFromSearch===!0||xGt(n.id)!==void 0||!mUi({definition:n,cloudOrganizationActive:t.cloudOrganizationActive}))continue;const i=_Ui(n);if(!Uba({definition:n,target:i,gates:t}))continue;const r=zba.get(n.tab),o=n.settingKey===\"default_model\"?\"Edit models\":n.title;e.push({id:`row-${n.id}`,label:o,icon:r?.icon??cv,tabLabel:r?.label,description:n.description,keywords:qet({label:o,extra:[...r===void 0?[]:[r.label.toLowerCase()],...n.searchTerms??[]]}),target:i})}return e}"
+    },
+    {
+      "label": "mSa",
+      "utf8_half_open": [
+        11174217,
+        11174986
+      ],
+      "bytes": 769,
+      "sha256": "49d36370157cc896eed562b034f6cf861f8b7e698c29b5def13d643d0f7e0737",
+      "text": "function mSa(t){const e=ne.c(19),{definition:n,repoContext:i,scrollTo:r}=t;let o;e[0]!==n.id||e[1]!==r?(o=v=>{v!==null&&r===n.id&&Eki(v)},e[0]=n.id,e[1]=r,e[2]=o):o=e[2];const a=o,c=n.id;let u;e[3]!==n?(u=pUi(n),e[3]=n,e[4]=u):u=e[4];let d;e[5]!==n.id||e[6]!==a||e[7]!==u?(d={id:c,ref:a,pageTarget:u},e[5]=n.id,e[6]=a,e[7]=u,e[8]=d):d=e[8];const h=d,m=n.render;let g;e[9]!==m||e[10]!==n.description||e[11]!==n.settingKey||e[12]!==n.title||e[13]!==i||e[14]!==r?(g=p.jsx(m,{title:n.title,description:n.description,settingKey:n.settingKey,repoContext:i,scrollTo:r}),e[9]=m,e[10]=n.description,e[11]=n.settingKey,e[12]=n.title,e[13]=i,e[14]=r,e[15]=g):g=e[15];let _;return e[16]!==h||e[17]!==g?(_=p.jsx(Zzt.Provider,{value:h,children:g}),e[16]=h,e[17]=g,e[18]=_):_=e[18],_}"
+    },
+    {
+      "label": "gSa",
+      "utf8_half_open": [
+        11174986,
+        11175397
+      ],
+      "bytes": 411,
+      "sha256": "0a8daf25f1c6389329a2a26d7e5e7c099d9962fa4c770102acec8f9b3ff61bbb",
+      "text": "function gSa(t){const e=ne.c(10),{rows:n,repoContext:i,scrollTo:r}=t;let o;if(e[0]!==i||e[1]!==n||e[2]!==r){let c;e[4]!==i||e[5]!==r?(c=u=>p.jsx(mSa,{definition:u,repoContext:i,scrollTo:r},i===void 0?u.id:`${i.id}:${u.id}`),e[4]=i,e[5]=r,e[6]=c):c=e[6],o=n.map(c),e[0]=i,e[1]=n,e[2]=r,e[3]=o}else o=e[3];let a;return e[7]!==r||e[8]!==o?(a=p.jsx(Cki.Provider,{value:r,children:o}),e[7]=r,e[8]=o,e[9]=a):a=e[9],a}"
+    },
+    {
+      "label": "_5",
+      "utf8_half_open": [
+        11175515,
+        11177348
+      ],
+      "bytes": 1833,
+      "sha256": "fa0d903b29779836812ab149fdd35bee0ade6bf313f0dc8b6dfadeff32a75aab",
+      "text": "function _5(t){const e=ne.c(32),{tab:n,scope:i,repoContext:r,scrollTo:o}=t;let a;e[0]===Symbol.for(\"react.memo_cache_sentinel\")?(a={from:\"/auth-guard/settings\"},e[0]=a):a=e[0];const{scrollTo:c}=l_(a),u=n===\"advanced\"&&i===\"user\";let d;e[1]!==u?(d={enabled:u},e[1]=u,e[2]=d):d=e[2];const{organization:h,isLoading:m}=so(d),{data:g}=hy(),_=g===void 0?!1:g,v=o??c;if(bSa({activeTab:n,settingsScope:i,hasSelectedRepo:r!==void 0})){let L;return e[3]===Symbol.for(\"react.memo_cache_sentinel\")?(L=p.jsx(ap,{children:p.jsx(\"div\",{className:\"h-64 flex items-center justify-center\",children:p.jsx(ri,{type:\"setting-up\"})})}),e[3]=L):L=e[3],L}let x;if(e[4]!==h||e[5]!==_||e[6]!==m||e[7]!==i||e[8]!==n){let L;e[10]!==_?(L=F=>F.internalOnly!==!0||_,e[10]=_,e[11]=L):L=e[11];let B;e[12]!==h||e[13]!==m?(B=F=>mUi({definition:F,cloudOrganizationActive:m?void 0:h!==void 0&&fc(h)===\"cloud\"}),e[12]=h,e[13]=m,e[14]=B):B=e[14],x=Eba({tab:n,scope:i}).filter(L).filter(B),e[4]=h,e[5]=_,e[6]=m,e[7]=i,e[8]=n,e[9]=x}else x=e[9];const w=x;let E;e[15]!==m||e[16]!==u||e[17]!==r||e[18]!==w||e[19]!==v?(E=u&&m?p.jsx(\"div\",{className:\"flex h-64 items-center justify-center\",children:p.jsx(ri,{type:\"setting-up\"})}):p.jsx(gSa,{rows:w,repoContext:r,scrollTo:v}),e[15]=m,e[16]=u,e[17]=r,e[18]=w,e[19]=v,e[20]=E):E=e[20];const k=E;let I;e[21]!==n?(I=_Sa(n),e[21]=n,e[22]=I):I=e[22];const R=I;if(R===void 0)return k;let O;e[23]!==R.description||e[24]!==R.title?(O=p.jsx(Z3,{title:R.title,description:R.description}),e[23]=R.description,e[24]=R.title,e[25]=O):O=e[25];let D;e[26]!==R.rowLayout||e[27]!==k?(D=R.rowLayout===\"spaced\"?p.jsx(\"div\",{className:\"space-y-4\",children:k}):R.rowLayout===\"bare\"?k:p.jsx(rV,{children:k}),e[26]=R.rowLayout,e[27]=k,e[28]=D):D=e[28];let P;return e[29]!==O||e[30]!==D?(P=p.jsxs(ap,{children:[O,D]}),e[29]=O,e[30]=D,e[31]=P):P=e[31],P}"
+    },
+    {
+      "label": "a9a",
+      "utf8_half_open": [
+        11250105,
+        11253266
+      ],
+      "bytes": 3161,
+      "sha256": "f422a970a0f35cc780ae1a6a00093dbd752dd5fdae4604bd2b69562f574d3389",
+      "text": "function a9a({gates:t,workspaceRepoId:e,disabled:n}){const i=aa(),[r,o]=$.useState(\"\"),[a,c]=$.useState(0),u=$.useRef(null),d=$.useRef(null),h=$.useRef(null),{container:m,positionMethod:g}=hc(),_=jde(\"settings.search\")?.key,v=_?Zj(_):void 0;oi(\"settings.search\",()=>{if(n)return!1;u.current?.focus()});const x=$.useMemo(()=>[...yUi(t),...xUi(t)],[t]),w=!n&&r.trim()!==\"\";zf(w);const E=$.useMemo(()=>w?WZ({items:x,query:r,fields:{label:D=>D.label,description:D=>D.description??\"\",keywords:D=>D.keywords.join(\" \")},threshold:_Je}).slice(0,o9a):[],[x,r,w]),k=Math.min(a,Math.max(E.length-1,0)),I=()=>{o(\"\"),c(0)},R=D=>{wGt({navigate:i,target:D.target,replace:!0,currentRepoId:e}),I()},O=xd(D=>{if(w)if(D.key===\"ArrowDown\"||D.key===\"ArrowUp\"){D.preventDefault();const P=D.key===\"ArrowDown\"?1:-1,L=Math.min(Math.max(k+P,0),E.length-1);c(L),d.current?.querySelector(`[data-result-index=\"${L}\"]`)?.scrollIntoView({block:\"nearest\"})}else if(D.key===\"Enter\"){D.preventDefault();const P=E[k];P!==void 0&&R(P.item)}else D.key===\"Escape\"&&(D.preventDefault(),D.stopPropagation(),I())});return p.jsxs(X1,{open:w,onOpenChange:(D,P)=>{if(!D){if(P.reason===\"outside-press\"&&P.event.target instanceof Node&&h.current?.contains(P.event.target)){P.cancel();return}I()}},children:[p.jsxs(\"div\",{ref:h,className:\"relative w-full min-w-0\",children:[p.jsx(o_,{className:\"pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground\"}),p.jsx(Qo,{ref:u,value:r,onChange:D=>{o(D.target.value),c(0)},onKeyDown:O,placeholder:\"Search settings\",className:\"h-7 pl-8 pr-10\",spellCheck:!1,disabled:n}),r===\"\"&&!n&&v!==void 0&&p.jsx(\"kbd\",{\"aria-label\":\"Search settings shortcut\",className:\"pointer-events-none absolute right-2 top-1/2 inline-flex h-4 min-w-5 -translate-y-1/2 items-center justify-center gap-1 rounded-sm border border-border bg-muted px-1 text-[10px] font-medium leading-none text-muted-foreground shadow-xs [&>span]:inline-flex [&>span]:items-center [&>span]:pt-0 [&>span]:text-[10px] [&>span]:leading-none\",children:p.jsx(sFt,{parts:v})}),w&&p.jsx(\"button\",{onClick:I,className:\"absolute right-2 top-1/2 -translate-y-1/2 rounded-sm p-0.5 text-muted-foreground hover:text-foreground\",\"aria-label\":\"Clear settings search\",children:p.jsx(yl,{className:\"size-3.5\"})})]}),p.jsx(w1,{container:m,children:p.jsx(S1,{className:\"z-50\",anchor:h,align:\"end\",side:\"bottom\",sideOffset:6,positionMethod:g,children:p.jsx(E1,{className:\"w-(--anchor-width) space-y-1 rounded-lg ring-1 ring-popover-ring bg-sidebar-background p-1 text-popover-foreground shadow-md outline-none origin-(--transform-origin) data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0 transition-[opacity,scale] duration-100\",initialFocus:!1,children:p.jsxs(\"div\",{ref:d,className:\"flex max-h-[min(480px,var(--available-height))] flex-col gap-0.5 overflow-y-auto\",children:[E.map((D,P)=>p.jsx(l9a,{result:D,highlighted:P===k,index:P,onHover:()=>c(P),onPick:()=>R(D.item)},D.item.id)),E.length===0&&p.jsxs(\"div\",{className:\"px-2 py-1.5 text-xs text-muted-foreground\",children:['No settings match \"',r,'\"']})]})})})})]})}"
+    }
+  ],
+  "missing": [],
+  "production": [
+    {
+      "path": "src/settings/SettingsView.tsx",
+      "main": "ee7bb510506906a08e2acff5e196a484bffb1480",
+      "sha256": "327694212be97cf95f31248064cb2a22f49736064dbd92d2db72ee94f86e87a7",
+      "working_matches_main": true,
+      "bytes": 19056
+    },
+    {
+      "path": "src/settings/SettingsSearch.tsx",
+      "main": "ee7bb510506906a08e2acff5e196a484bffb1480",
+      "sha256": "2530bb1a7ca14cf377c0629d6516bb8f1316ae29b961564ec8c13201ca01219c",
+      "working_matches_main": true,
+      "bytes": 6809
+    },
+    {
+      "path": "src/settings/searchIndex.ts",
+      "main": "ee7bb510506906a08e2acff5e196a484bffb1480",
+      "sha256": "268082e3c2a83dd5911ebc59886309fd40c70a9cfd00357998d37bf0b504ba41",
+      "working_matches_main": true,
+      "bytes": 6101
+    },
+    {
+      "path": "src/settings/GeneralPage.tsx",
+      "main": "ee7bb510506906a08e2acff5e196a484bffb1480",
+      "sha256": "9bca3756afdf671eaeb451d0269e61dd6aa12b37163081d3ec191a8f69a8efcb",
+      "working_matches_main": true,
+      "bytes": 11957
+    },
+    {
+      "path": "src/settings/pages.ts",
+      "main": "ee7bb510506906a08e2acff5e196a484bffb1480",
+      "sha256": "bc7308514f2b9111b94f5697f27618f3be19ed5943c53faace5b23e11b95b2ca",
+      "working_matches_main": true,
+      "bytes": 6341
+    },
+    {
+      "path": "src/settings/routes.ts",
+      "main": "ee7bb510506906a08e2acff5e196a484bffb1480",
+      "sha256": "fcab0b785a529fee1b6e325b7f525ed218a64b750204cf83df73521aece63e2d",
+      "working_matches_main": true,
+      "bytes": 12444
+    },
+    {
+      "path": "src/settings/types.ts",
+      "main": "ee7bb510506906a08e2acff5e196a484bffb1480",
+      "sha256": "ef5a5350bb14848487569820f547e8d1aca60aa03fd3af93f32b365c32be7f45",
+      "working_matches_main": true,
+      "bytes": 8235
+    },
+    {
+      "path": "src/settings/searchRows.generated.ts",
+      "main": "ee7bb510506906a08e2acff5e196a484bffb1480",
+      "sha256": "2976b53cb911f9f5e2fab20a99c9508e4b28321330adeda596fda30cd49766cf",
+      "working_matches_main": true,
+      "bytes": 16789
+    },
+    {
+      "path": "src/keybindings/fuzzy.ts",
+      "main": "ee7bb510506906a08e2acff5e196a484bffb1480",
+      "sha256": "1bcbf1f4058508f23d5d079235d5b96ed6ed800582aae6de50db6a182d5c2c1c",
+      "working_matches_main": true,
+      "bytes": 1478
+    },
+    {
+      "path": "src/palette/PaletteHost.tsx",
+      "main": "ee7bb510506906a08e2acff5e196a484bffb1480",
+      "sha256": "78a4067ebb66ef016b7d5903c38e3b312bf8c569ffd5f00c2b11743b07fb8471",
+      "working_matches_main": true,
+      "bytes": 16240
+    },
+    {
+      "path": "src/palette/settingsRepository.test.ts",
+      "main": "ee7bb510506906a08e2acff5e196a484bffb1480",
+      "sha256": "2d73bd75e4e74909e892746a0e886ae8a3454b0988f7d0bc7bd38990dbef24f4",
+      "working_matches_main": true,
+      "bytes": 9799
+    }
+  ],
+  "closed_seam_dedupe": {
+    "async": "not repeated",
+    "scrollback": "not repeated",
+    "rememberedRepo": "merged #1451; not repeated",
+    "fontAndCompletion": "not repeated",
+    "searchActivationFixture": "existing fixture only verifies destination/clear; page bodies and DOM are controlled, so it does not prove target reveal"
+  },
+  "scope": "Search result row reveal only; shared helper also consumed by PaletteHost. No palette edit proposed. Existing animation exclusion needs exact ledger reconciliation before a new fixture or repair."
+}

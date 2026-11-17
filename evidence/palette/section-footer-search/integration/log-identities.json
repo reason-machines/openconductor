@@ -1,0 +1,27 @@
+{
+  "integration/red.tap.gz": {
+    "compressedSha256": "fc6146d076bb669939af2a7e5acd193412b1550cc5c477104331fcf35d18439e",
+    "rawSha256": "725f7e9635a9d1fe57114a1240d26c8a88b888c1c43eb6baf9ce0fa1394863e3",
+    "rawBytes": 11600
+  },
+  "integration/focused.tap.gz": {
+    "compressedSha256": "3f5e124ef958baa4c49f67ec429896ef7962a0b10526dd9359683dbccce7667b",
+    "rawSha256": "7716d71f2d2b0c62281007c5146df210ef7c863d808cf51860f421d0624e1b00",
+    "rawBytes": 4600
+  },
+  "integration/affected.tap.gz": {
+    "compressedSha256": "2bbd463352a7a0fc0ded46b33a77be9edc390ee43213d7be409a1e8afa2ff95f",
+    "rawSha256": "6dceff172def20646834b6d4b369881909600bf3a6561b9efd6ec81672152c64",
+    "rawBytes": 150831
+  },
+  "integration/typecheck.log.gz": {
+    "compressedSha256": "b3ddd70788970d2149c5ee774a0f7f38cde097c0bdae78a9572eab8d2b70f34b",
+    "rawSha256": "91c9fe8679639260822d83ee7e81d6f3da39f84dad13a146ce6cfe8ac11c5994",
+    "rawBytes": 224
+  },
+  "integration/build.log.gz": {
+    "compressedSha256": "48ee4ad91a31caaf35d3493d4ae89c09bc017b2af697957ac9b945127a57d20e",
+    "rawSha256": "5a9977ecd051b82e9dc571bc45c18ea91666313e10a2a051d455750c9f6aaf87",
+    "rawBytes": 180316
+  }
+}
