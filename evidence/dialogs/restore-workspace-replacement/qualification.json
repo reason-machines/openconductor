@@ -1,0 +1,135 @@
+{
+  "candidate": "RESTORE-DIALOG-REPLACEMENT-6013",
+  "baseline": "d14e1307fe225f4bf9128545551ae36709b1b4cd",
+  "source_only": true,
+  "reference_spans": [
+    {
+      "label": "mutation-hook",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 590697,
+      "end": 591102,
+      "sha256": "2d19c00f1ad14128c9610fd0c36aef104421b32d299daff0f25cd09e34a1a246"
+    },
+    {
+      "label": "mutation-observer",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 585103,
+      "end": 586585,
+      "sha256": "bbcb1f16505bda3bedaf442a49b875cd9e950c540bae365bf853634a09be5e9a"
+    },
+    {
+      "label": "mutation-idle",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 569399,
+      "end": 569551,
+      "sha256": "edabc647fdf89699b37d774faf222a6a25b3b350656c2782acdb6a3c1f7f3884"
+    },
+    {
+      "label": "restore-root",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10958437,
+      "end": 10958814,
+      "sha256": "5f697c671e6e214c56d64586b8f90ea490d3d2ffe74edbaf6bbfdf130bf6f645"
+    },
+    {
+      "label": "restore-content",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10958948,
+      "end": 10960364,
+      "sha256": "a566b387b4f480e29156a2043ed7625d521d79dd2c7f03c793efc88f3f40c0d0"
+    },
+    {
+      "label": "renderer-mutation-import",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 58228,
+      "end": 58237,
+      "sha256": "f7cfde790024d0b085059f6a4e725b3e90fc2409e20d58d1a651a0ab4998f701"
+    },
+    {
+      "label": "index-mutation-export",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3484616,
+      "end": 3484625,
+      "sha256": "a87386c40d6486262fce36f93ac66cc182a3726e479cf083ae8525cc0a7a3227"
+    },
+    {
+      "label": "unarchive-mutation",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3311814,
+      "end": 3312356,
+      "sha256": "f1cb74ad8a3888bdb0591667a8eacea9a44928067cc2efa476a7469a86d33f65",
+      "existing_owner_receipt": "evidence/home-archived-context/spans/HYt.txt at d14e1307"
+    }
+  ],
+  "fixture_sha256": "4fa1b255afc493e1620c88ec8742f1e6758447450652b5ace5217360c732cc88",
+  "red": {
+    "pass": 3,
+    "fail": 1,
+    "message": "workspace B must not inherit workspace A's pending mutation"
+  },
+  "reference_assets": {
+    "renderApp-D_fmY7hW.js": {
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "source": "existing original-byte upload fb21a22e-e0d3-4e8f-85c0-a8b6cb9d65f2"
+    },
+    "index-BGEQ8YjU.js": {
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "source": "existing original-byte upload 3aff3764-9967-4046-8b73-576fa8b13eba"
+    }
+  },
+  "current_source_sha256": {
+    "src/App.tsx": "02fcf52e537ecd85aefcf4f5f7a6d676abc0300e6d610f321b19be9762e32d4a",
+    "src/components/RestoreWorkspaceDialog.tsx": "be9e5fd20a9e616b6d346c0834f4c67ddb4fd4c4c54ed25167c4d34cb06dec22",
+    "src/components/ConfirmationDialog.tsx": "e1b7cef3375b30a5bcc2f3e09e7de009096bb1ce3406824e6c2ed7a717894cfe",
+    "src/workspace/archiveModel.ts": "b10da74189783890ee5b99a881b18077e971792b78ab56815ed94d48f34ee762",
+    "src/state/store.ts": "a6f2d578588d8b4afbce6af9095b6ef1d474bfbd9c7692c4d7d9eaa11e15ae87"
+  },
+  "integrated_baseline": "1e483efabf7798579c72587365d3ae0c93bd689d",
+  "pre_product_commit": "020d4b11124add4f23fdd643c1f7ce70052ab93d",
+  "integrated_source_sha256": {
+    "src/App.tsx": "02fcf52e537ecd85aefcf4f5f7a6d676abc0300e6d610f321b19be9762e32d4a",
+    "src/components/RestoreWorkspaceDialog.tsx": "be9e5fd20a9e616b6d346c0834f4c67ddb4fd4c4c54ed25167c4d34cb06dec22",
+    "src/components/ConfirmationDialog.tsx": "e1b7cef3375b30a5bcc2f3e09e7de009096bb1ce3406824e6c2ed7a717894cfe",
+    "src/workspace/archiveModel.ts": "b10da74189783890ee5b99a881b18077e971792b78ab56815ed94d48f34ee762",
+    "src/state/store.ts": "a6f2d578588d8b4afbce6af9095b6ef1d474bfbd9c7692c4d7d9eaa11e15ae87"
+  },
+  "fresh_main_red": {
+    "pass": 3,
+    "fail": 1,
+    "skip": 0,
+    "setup_failure": false
+  },
+  "test_first_commit": "92f0344f",
+  "green": {
+    "focused_pass": 4,
+    "combined_pass": 27,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "fixture_sha256": "4fa1b255afc493e1620c88ec8742f1e6758447450652b5ace5217360c732cc88"
+  },
+  "checks": {
+    "typecheck": "PASS with 2048MiB heap; 768MiB attempt OOM, not a type error",
+    "build": "PASS: branding, tsc, vite",
+    "retained_source_bindings": "PASS 8",
+    "frozen_fixture": "PASS unchanged",
+    "browser": "NOT RUN: no admission",
+    "full_app": "NOT RUN",
+    "native": "NOT RUN: E1 hold unchanged",
+    "package_inclusion": "NOT VERIFIED"
+  },
+  "production_paths": [
+    "src/App.tsx"
+  ],
+  "log_sha256": {
+    "adjacent-before-install.tap": "75426f32911fad93844ad7fbd15ae53bdcc96b63cf3640cdc2fc180e1e82bcc6",
+    "archive-model-before.tap": "4f7cf4d6860d306fb1c3c6a4c86dc56db107796eb2c30bfbb664e65070248d42",
+    "build.log.gz": "9b388207a6444c56fe459067dc98a9190a9a68323d65138267ae2aa416897e96",
+    "green-adjacent.tap": "6c411396d03590ca0344ee994657b182507e432d65218a1bb1c77c32c7896c30",
+    "red-fresh-main.tap": "7b7f88a74a7825867f3996a9117a52467c99fca64ee0bea1a72cb102c751aed2",
+    "red.tap": "a3d593383bc7af8a5c4ff565b14e1b34f8567f928caea259034c2a651f54912c",
+    "source-check.log.gz": "c5af07cdf2c6342a3a9d1103a662be20487f09b45aec7258deaa0a5366d95dc3",
+    "typecheck-low-heap.log.gz": "51a1ba310edac23869450e411e78644127a3167d01ca99992641955a14401fea",
+    "typecheck.log.gz": "b1dd6ab4f96412fd5c6acc50d9602b9616f9615b5e5997b094f9752787d7e37a"
+  }
+}

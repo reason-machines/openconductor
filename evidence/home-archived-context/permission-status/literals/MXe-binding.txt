@@ -1,0 +1,1 @@
+MXe=ko({cacheKey:({localWorkspaceId:t})=>`workspace:${t}`,normalizeInput:({localWorkspaceId:t})=>t===void 0?Ga:{args:{localWorkspaceId:t}},selector:xXe,sideEffect:(t,{localWorkspaceId:e})=>t.getWorkspace(e)})

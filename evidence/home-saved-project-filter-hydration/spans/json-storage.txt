@@ -1,0 +1,1 @@
+function PE(t,e){let s;try{s=t()}catch{return}return{getItem:r=>{var i;const o=c=>c===null?null:JSON.parse(c,void 0),a=(i=s.getItem(r))!=null?i:null;return a instanceof Promise?a.then(o):o(a)},setItem:(r,i)=>s.setItem(r,JSON.stringify(i,void 0)),removeItem:r=>s.removeItem(r)}}

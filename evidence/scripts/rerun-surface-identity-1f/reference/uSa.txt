@@ -1,0 +1,1 @@
+function uSa(t){return{anchors:t.anchors,requestedFocusSurfaceId:t.requestedFocusSurfaceId,surfaceConfigs:t.surfaceConfigs,surfacePlacements:t.surfacePlacements}}

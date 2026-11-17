@@ -16,6 +16,7 @@ import {
   PinIcon,
   PinOffIcon,
   PlusIcon,
+  RotateCcwIcon,
   WorkspaceStatusGlyph,
 } from "./menu/menuIcons";
 import { isWorkspaceUnread } from "../state/chatUnread";
@@ -68,10 +69,12 @@ interface Props {
   sections: readonly NavSection[];
   /** Section that holds this workspace, if any. */
   currentSectionId?: string;
+  /** Archived Home rows share this with their existing restore button. */
+  unarchive?: { pending: boolean; run: () => void };
   onClose: () => void;
 }
 
-export function WorkspaceActionsMenu({ workspace, selected, at, actions, sections, currentSectionId, onClose }: Props) {
+export function WorkspaceActionsMenu({ workspace, selected, at, actions, sections, currentSectionId, unarchive, onClose }: Props) {
   const current = effectiveStatus(workspace);
   const pinned = typeof workspace.pinnedAt === "number";
   const { overrides } = useKeybindingOverrides();
@@ -143,9 +146,15 @@ export function WorkspaceActionsMenu({ workspace, selected, at, actions, section
         </MenuItem>
       )}
       <MenuSeparator />
-      <MenuItem icon={<ArchiveIcon />} shortcut={selected ? "⌘⇧A" : undefined} onSelect={actions.archive}>
-        Archive
-      </MenuItem>
+      {unarchive ? (
+        <MenuItem icon={<RotateCcwIcon />} disabled={unarchive.pending} onSelect={unarchive.run}>
+          Unarchive
+        </MenuItem>
+      ) : (
+        <MenuItem icon={<ArchiveIcon />} shortcut={selected ? "⌘⇧A" : undefined} onSelect={actions.archive}>
+          Archive
+        </MenuItem>
+      )}
     </ContextMenu>
   );
 }

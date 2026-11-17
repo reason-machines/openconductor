@@ -1,0 +1,21 @@
+{
+  "author": "Conductor Rebuild",
+  "checks": 64,
+  "full_index_bytes": 3493297,
+  "full_index_sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+  "full_renderer_bytes": 11600457,
+  "full_renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "spans": 34,
+  "prior_permission_status_spans": 16,
+  "named_import_export_bindings": {
+    "Ms": "aJ",
+    "N6": "fh",
+    "BYe": "hG",
+    "SDt": "hH",
+    "wDt": "hF"
+  },
+  "vendor_execution": false,
+  "behavioral_tests": "NOT_RUN_BY_THIS_SOURCE_COMMAND",
+  "provider_population": "NOT_QUALIFIED",
+  "native_browser_package": "NOT_RUN"
+}

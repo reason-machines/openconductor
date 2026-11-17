@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { ConductorIcon } from "../components/ConductorIcon";
 import type { NavSection } from "../state/navigationSections";
 
@@ -57,6 +58,21 @@ export function MoveToSection({
     sections.find((s) => s.workspaceIds.includes(workspaceId))?.id ?? null;
   const items = sectionItems(sections, workspaceId, query);
   const sectionCount = items.filter((item) => item.kind === "section").length;
+  const listRef = useRef<HTMLDivElement>(null);
+  const pointerSelection = useRef(false);
+  const selected = items[active];
+  const selectedKey = selected?.kind === "section" ? selected.section.id : selected?.kind;
+  useEffect(() => {
+    if (!pointerSelection.current) {
+      listRef.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest" });
+    }
+    pointerSelection.current = false;
+  }, [selectedKey]);
+  function selectFromPointer(index: number) {
+    if (index === active) return;
+    pointerSelection.current = true;
+    onActive(index);
+  }
 
   return (
     <div className="palette-move-section-wrapper">
@@ -71,7 +87,7 @@ export function MoveToSection({
         </button>
         <span className="palette-section-title">Move to section</span>
       </div>
-      <div className="palette-list" id="palette-list" role="listbox">
+      <div className="palette-list" id="palette-list" role="listbox" ref={listRef}>
         {query.length > 0 && items.length === 0 && (
           <div className="palette-section-empty">No matching sections</div>
         )}
@@ -89,7 +105,7 @@ export function MoveToSection({
                   "palette-item",
                   i === active && !isCurrent ? "active" : "",
                 ].filter(Boolean).join(" ")}
-                onMouseMove={() => { if (!isCurrent && i !== active) onActive(i); }}
+                onMouseMove={() => { if (!isCurrent) selectFromPointer(i); }}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => { if (!isCurrent) onSelectAt(i); }}
               >
@@ -115,7 +131,7 @@ export function MoveToSection({
                 role="option"
                 aria-selected={i === active}
                 className={i === active ? "palette-item active" : "palette-item"}
-                onMouseMove={() => { if (i !== active) onActive(i); }}
+                onMouseMove={() => selectFromPointer(i)}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => onSelectAt(i)}
               >

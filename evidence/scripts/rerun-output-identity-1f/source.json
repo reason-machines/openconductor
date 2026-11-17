@@ -1,0 +1,167 @@
+{
+  "author": "Conductor Rebuild",
+  "main_checked": "00bf65f92c31a5d355f6767ea3258f6af187baa2",
+  "acquisition": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference_kind": "Previously retained Conductor 0.87.6 shipped frontend; inert REA source data, not new acquisition or native acceptance.",
+  "archive_sha256": "991f15ebf130ccb8e705fc74f612dbb46095bd6d73b420fbced1ffbcd94165bc",
+  "assets": {
+    "index-BGEQ8YjU.js": {
+      "archive_member": "glob-result-source-packet/retained-reference/index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    },
+    "renderApp-D_fmY7hW.js": {
+      "archive_member": "glob-result-source-packet/retained-reference/renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    }
+  },
+  "spans": [
+    {
+      "path": "reference/task-run-id.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 2933837,
+      "end_exclusive": 2933949,
+      "sha256": "9403297171e1ba8a8ba34060424ebdf1ed820ac3ff96c694de4405a670df0b97"
+    },
+    {
+      "path": "reference/index-export.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3484123,
+      "end_exclusive": 3484132,
+      "sha256": "782454771bf148f2f79b4740691ac68d42fbcc0ccc906b816321de7e18865977"
+    },
+    {
+      "path": "reference/renderer-import.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 57739,
+      "end_exclusive": 57747,
+      "sha256": "ea39fd570a2d4497e9acf83c28dc20bb9f39498beaa9a7e8765b597155e01030"
+    },
+    {
+      "path": "reference/renderer-state-bindings.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 7172488,
+      "end_exclusive": 7172999,
+      "sha256": "6c4abb6618a911e29f010c02aec005bf5bab3097918d64de8cc2dbcc6d0b64a2"
+    },
+    {
+      "path": "reference/renderer-output-complete.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 7197052,
+      "end_exclusive": 7199367,
+      "sha256": "bbd8f6863b6f1b682c573f0bc4d2b06767bc6ab6a38bd2168fec6dc3d1cea586"
+    },
+    {
+      "path": "reference/output-surface-OJs.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 6571868,
+      "end_exclusive": 6572718,
+      "sha256": "5690f01ab02ec3aa205005c2775965062bbdcef532d855a294e14a719095dd41"
+    },
+    {
+      "path": "reference/surface-effect-xEi.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 6568897,
+      "end_exclusive": 6571703,
+      "sha256": "c9eafaa506a034b54ffb3e6f82f0635e7509d7a7e9672fc4aaca171b09303bc3"
+    },
+    {
+      "path": "reference/surface-selector-AJs.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 6571703,
+      "end_exclusive": 6571748,
+      "sha256": "2a35b68dafaa319ea940d805be477f8002d9bc3aa0c439cfe9d84752af590f5e"
+    },
+    {
+      "path": "reference/identity-helper-EI.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 2876199,
+      "end_exclusive": 2876231,
+      "sha256": "62623e20a910ddc0c3b0f1270bbbe680d85fc0617c16f86ea3864ab397197495"
+    },
+    {
+      "path": "reference/identity-export.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3483889,
+      "end_exclusive": 3483897,
+      "sha256": "d2aebe82422c1e7460676595fec67a0ab244717b27b3f2bba4753f35a4cc2305"
+    },
+    {
+      "path": "reference/identity-import.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 57245,
+      "end_exclusive": 57254,
+      "sha256": "8933add135f85599eab9f076cda55a784dd828d184695785a7c7dd0755dc5888"
+    }
+  ],
+  "complete_function_boundaries": {
+    "parser": "TypeScript createSourceFile on inert retained JavaScript, parseDiagnostics=0; function declaration getStart/end converted to UTF-8 offsets",
+    "OJs": [
+      6571868,
+      6572718
+    ],
+    "xEi": [
+      6568897,
+      6571703
+    ]
+  },
+  "fixture": "src/scripts/rerunOutputIdentity.test.ts",
+  "fixture_sha256": "1cd934ec24dee5607e7aacceaa8f85b3aac956e5e6c38a3c016a77594c18909f",
+  "baseline": "2 intended assertion failures / 5 passing controls; no product edit before freezing",
+  "treatment": "7 passed / 0 failures / 0 skips",
+  "qualification_boundary": "Actual mounted ScriptsPanel/RunSplitButton with real source API/selection/body helpers, serialized-value-shaped in-memory IPC and held async output reads; output painting and unrelated services stubbed. No process/PTY/browser/application/provider launch.",
+  "limits": [
+    "Snapshot serializer and kill ABI unresolved, no new inference",
+    "No rendered/browser/native/process/package acceptance",
+    "No backend or API changes"
+  ],
+  "log_receipts": {
+    "red.log": {
+      "raw_path": "red.raw.log.gz",
+      "raw_sha256": "79f05ea21b7f8a2f221a60e91b6f3dfdf7323a23ff6790b924938f2ac96e30b6",
+      "compressed_sha256": "6ecb91e20b8ad615e26068a691c78b2effd77f3367c1cc6a57394d7b0c413986",
+      "display_sha256": "8e0226b0e1303d9ce8789f5f741449eb552c513891765cac155b7b14e1833307"
+    },
+    "build.log": {
+      "raw_path": "build.raw.log.gz",
+      "raw_sha256": "7ccefc73c98b988fc011749094100f702383340ffe8122d4bc1781ce58b17b73",
+      "compressed_sha256": "bc0217a43684285e4c32b87e6fba958d9ad134666c1ef055878a7ec860fe64d2",
+      "display_sha256": "5ace8e3993dec7e01217d23343bc6007f06c9242fa0d6cfba3a070617c2ed2e1"
+    },
+    "green.log": {
+      "raw_path": "green.raw.log.gz",
+      "raw_sha256": "03a18cdcbe70e708968cee58f8da87c852ea93220377fe6c59358d0cf78f8a86",
+      "compressed_sha256": "66abd7f101c37896ed22b318728aa2752c1502fd5c8b0c1504e01b896a558045",
+      "display_sha256": "03a18cdcbe70e708968cee58f8da87c852ea93220377fe6c59358d0cf78f8a86"
+    },
+    "typecheck.log": {
+      "raw_path": "typecheck.raw.log.gz",
+      "raw_sha256": "91c9fe8679639260822d83ee7e81d6f3da39f84dad13a146ce6cfe8ac11c5994",
+      "compressed_sha256": "b3ddd70788970d2149c5ee774a0f7f38cde097c0bdae78a9572eab8d2b70f34b",
+      "display_sha256": "a3680710f924776d9bc94281e553053a3e59f42450adfe228f729a5528803e07"
+    },
+    "build-first-timeout.log": {
+      "raw_path": "build-first-timeout.raw.log.gz",
+      "raw_sha256": "b9f217da6aec400b307024b1b9de0f5972d921911a194c30ad15e60d8e3361b9",
+      "compressed_sha256": "7c5d32d5dcb787c7b346be3eb18f2e69396080d3149df194a34dc35ec20ee05e",
+      "display_sha256": "b9f217da6aec400b307024b1b9de0f5972d921911a194c30ad15e60d8e3361b9"
+    },
+    "source-verification.log": {
+      "raw_path": "source-verification.raw.log.gz",
+      "raw_sha256": "f2d47fa905eddef1f5d9e6e6cf380465fc5852c0b9aa5c93caafb67af5734b39",
+      "compressed_sha256": "8cc9218f1399d66b6a4ce61c952334e4235a8ab9f82d0cd26fc917eb4f509026",
+      "display_sha256": "f2d47fa905eddef1f5d9e6e6cf380465fc5852c0b9aa5c93caafb67af5734b39"
+    },
+    "fixture-v1-not-product-red.log": {
+      "raw_path": "fixture-v1-not-product-red.raw.log.gz",
+      "raw_sha256": "3debf0fc87ca3a91c94ec1a21d3489ec550428cc8f140deeadb50a8efc19ea47",
+      "compressed_sha256": "c3464a0ffd4e97ac2e1438e532eb5656ba10ef5d5ef1c1570ab9ae4ba69cf3d7",
+      "display_sha256": "dfcce402896958778ff79cd2ebbe4cd1bbedb332c560afd20f76414bb94cc2d9"
+    },
+    "adjacent.log": {
+      "raw_path": "adjacent.raw.log.gz",
+      "raw_sha256": "1834dd732acd1ce0da379099c05bcc5b9cb6cb2ceffbd750e93ebd837b1a6e31",
+      "compressed_sha256": "cc375d4e5b4b7f3dcc56ce1491485377f10f0aeaf9f2737b2ded20f7e0ed7c81",
+      "display_sha256": "1834dd732acd1ce0da379099c05bcc5b9cb6cb2ceffbd750e93ebd837b1a6e31"
+    }
+  }
+}

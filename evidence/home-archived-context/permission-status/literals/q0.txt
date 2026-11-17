@@ -1,0 +1,1 @@
+function q0(t,e){return Object.is(t,e)?!0:typeof t!="object"||t===null||typeof e!="object"||e===null||Object.getPrototypeOf(t)!==Object.getPrototypeOf(e)?!1:LG(t)&&LG(e)?NG(t)&&NG(e)?$G(t,e):t8e(t,e):$G({entries:()=>Object.entries(t)},{entries:()=>Object.entries(e)})}

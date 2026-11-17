@@ -1,0 +1,1 @@
+function J$({workspace:t,activeOrganization:e,activeOrganizationPointer:s,activeOrganizationLoading:n}){return e===void 0?s!==void 0?!1:n?t.storedHostingServerUrl===void 0||t.orgId===void 0:!0:X$(e)?!1:t.storedHostingServerUrl===void 0?Qo(e)==="local":t.orgId===e.id?!0:t.orgId===void 0&&e.kind==="personal"}

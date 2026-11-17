@@ -48,6 +48,7 @@ interface Props {
   dispatch: Dispatch<Action>;
   onCreateWorkspace: () => void;
   onWorkspaceContextMenu?: (row: HomeRow, at: { x: number; y: number }) => void;
+  onArchivedWorkspaceContextMenu?: (row: HomeRow, at: { x: number; y: number }, unarchive: { pending: boolean; run: () => void }) => void;
 }
 
 function Highlight({ match, fallback }: { match?: FieldMatch; fallback: string }) {
@@ -110,10 +111,15 @@ function MenuCheck({ checked, onClick, children }: { checked: boolean; onClick: 
   );
 }
 
-function UnarchiveButton({ repoId, workspaceId, dispatch }: { repoId: string; workspaceId: string; dispatch: Dispatch<Action> }) {
+function useUnarchiveAction(repoId: string, workspaceId: string, dispatch: Dispatch<Action>, enabled: boolean) {
   const pendingRef = useRef(false);
   const [pending, setPending] = useState(false);
   useEffect(() => {
+    if (!enabled) {
+      pendingRef.current = false;
+      setPending(false);
+      return;
+    }
     const unsubscribe = onArchiveEvent<Action>((event) => {
       if (
         (event.type === "unarchived" || event.type === "unarchive-failed") &&
@@ -125,30 +131,34 @@ function UnarchiveButton({ repoId, workspaceId, dispatch }: { repoId: string; wo
       }
     });
     return () => { unsubscribe(); };
-  }, [repoId, workspaceId]);
-  const unarchive = () => {
-    if (pendingRef.current) return;
+  }, [repoId, workspaceId, enabled]);
+  const run = () => {
+    if (!enabled || pendingRef.current) return;
     pendingRef.current = true;
     setPending(true);
     dispatch({ type: "unarchiveWorkspace", repoId, workspaceId });
   };
+  return { pending, run };
+}
+
+function UnarchiveButton({ action }: { action: { pending: boolean; run: () => void } }) {
   return (
     <Tooltip content="Unarchive workspace">
       <button
         type="button"
         className="allws-unarchive"
         aria-label="Unarchive workspace"
-        disabled={pending}
+        disabled={action.pending}
         onClick={(event) => {
           event.stopPropagation();
           event.preventDefault();
-          unarchive();
+          action.run();
         }}
         onKeyDown={(event) => {
           if (event.key !== "Enter") return;
           event.stopPropagation();
           event.preventDefault();
-          unarchive();
+          action.run();
         }}
       >
         <span className="allws-unarchive-idle"><ArchiveIcon size={14} /></span>
@@ -170,6 +180,7 @@ function Row({
   onOpen,
   dispatch,
   onWorkspaceContextMenu,
+  onArchivedWorkspaceContextMenu,
 }: {
   row: HomeRow;
   showRepoIcon: boolean;
@@ -179,8 +190,10 @@ function Row({
   onOpen: () => void;
   dispatch: Dispatch<Action>;
   onWorkspaceContextMenu?: Props["onWorkspaceContextMenu"];
+  onArchivedWorkspaceContextMenu?: Props["onArchivedWorkspaceContextMenu"];
 }) {
   const { workspace: ws, repo, archived, matches } = row;
+  const unarchive = useUnarchiveAction(repo.id, ws.id, dispatch, archived);
   const tone = archived ? "is-archived" : isWorkspaceUnread(ws) ? "is-unread" : "";
   const label = workspaceNumberLabel(ws.number);
   // Conductor's Home row (`vJo`): the agent's or setup's status, else the last-activity time.
@@ -197,9 +210,11 @@ function Row({
       data-selected={active || undefined}
       className="allws-row"
       onClick={onOpen}
-      onContextMenu={!archived && !unstarted && onWorkspaceContextMenu ? (event) => {
+      onContextMenu={!unstarted && (archived ? onArchivedWorkspaceContextMenu : onWorkspaceContextMenu) ? (event) => {
         event.preventDefault();
-        onWorkspaceContextMenu(row, { x: event.clientX, y: event.clientY });
+        const at = { x: event.clientX, y: event.clientY };
+        if (archived) onArchivedWorkspaceContextMenu?.(row, at, unarchive);
+        else onWorkspaceContextMenu?.(row, at);
       } : undefined}
       title={row.title}
     >
@@ -238,7 +253,7 @@ function Row({
         <span className="allws-when">
           {archived ? (
             <span className="allws-archived" aria-label="Archived">
-              <UnarchiveButton repoId={repo.id} workspaceId={ws.id} dispatch={dispatch} />
+              <UnarchiveButton action={unarchive} />
             </span>
           ) : !matrix && showsActivityStatus(status) ? (
             <span className="allws-status" data-testid="home-workspace-status" data-status={status} data-color={rowStatusColor(status)} role="img" title={statusLabel} aria-label={statusLabel}>
@@ -253,12 +268,20 @@ function Row({
   );
 }
 
-export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch, onCreateWorkspace, onWorkspaceContextMenu }: Props) {
+export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch, onCreateWorkspace, onWorkspaceContextMenu, onArchivedWorkspaceContextMenu }: Props) {
   const { overrides } = useKeybindingOverrides();
   const [query, setQuery] = useState("");
   const repoIds = useMemo(() => new Set(repos.map((r) => r.id)), [repos]);
   const [filters, setFiltersState] = useState<HomeFilters>(() => loadFilters(repoIds));
+  const pendingFilterHydration = useRef(loading);
+  useEffect(() => {
+    if (loading || !pendingFilterHydration.current) return;
+    pendingFilterHydration.current = false;
+    // Desktop Home mounts before repository ids arrive; validate saved projects once ready.
+    setFiltersState(loadFilters(repoIds));
+  }, [loading, repoIds]);
   const setFilters = (f: HomeFilters) => {
+    pendingFilterHydration.current = false;
     setFiltersState(f);
     saveFilters(f);
   };
@@ -466,6 +489,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
                         }}
                         dispatch={dispatch}
                         onWorkspaceContextMenu={onWorkspaceContextMenu}
+                        onArchivedWorkspaceContextMenu={onArchivedWorkspaceContextMenu}
                       />
                     );
                   })}

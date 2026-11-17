@@ -1,0 +1,193 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/run_main:123
+#     triggerUncaughtException(
+#     ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'react' imported from /home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/motion/dialogMotion.ts
+# Did you mean to import "react/index.js"?
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.5
+# Subtest: src/components/motion/dialogMotion.test.ts
+not ok 1 - src/components/motion/dialogMotion.test.ts
+  ---
+  duration_ms: 236.549686
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/motion/dialogMotion.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:91) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pending record rename accepts a later checked preference without adding a captured branch request
+ok 2 - pending record rename accepts a later checked preference without adding a captured branch request
+  ---
+  duration_ms: 188.826261
+  type: 'test'
+  ...
+# Subtest: pending record rename accepts a later unchecked preference without cancelling the captured branch request
+ok 3 - pending record rename accepts a later unchecked preference without cancelling the captured branch request
+  ---
+  duration_ms: 33.302254
+  type: 'test'
+  ...
+# Subtest: pending branch rename keeps its checkbox editable and the primary action locked
+ok 4 - pending branch rename keeps its checkbox editable and the primary action locked
+  ---
+  duration_ms: 40.375472
+  type: 'test'
+  ...
+# Subtest: empty and detached branches stay ineligible before and during record rename
+ok 5 - empty and detached branches stay ineligible before and during record rename
+  ---
+  duration_ms: 68.50759
+  type: 'test'
+  ...
+# (node:99) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a second concurrent local restore request starts ready instead of inheriting the first workspace's pending state
+ok 6 - a second concurrent local restore request starts ready instead of inheriting the first workspace's pending state
+  ---
+  duration_ms: 203.063732
+  type: 'test'
+  ...
+# Subtest: same-workspace scenario refresh keeps its existing pending operation
+ok 7 - same-workspace scenario refresh keeps its existing pending operation
+  ---
+  duration_ms: 42.338409
+  type: 'test'
+  ...
+# Subtest: late completion for a replaced workspace cannot close the currently displayed restore request
+ok 8 - late completion for a replaced workspace cannot close the currently displayed restore request
+  ---
+  duration_ms: 121.299465
+  type: 'test'
+  ...
+# Subtest: an unrelated completed unarchive without a restore scenario does not replace a pending dialog
+ok 9 - an unrelated completed unarchive without a restore scenario does not replace a pending dialog
+  ---
+  duration_ms: 69.814091
+  type: 'test'
+  ...
+# (node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a working agent blocks archive until the user confirms
+ok 10 - a working agent blocks archive until the user confirms
+  ---
+  duration_ms: 0.811218
+  type: 'test'
+  ...
+# Subtest: cancelling and waiting sessions block archive too, as in Conductor's dYe
+ok 11 - cancelling and waiting sessions block archive too, as in Conductor's dYe
+  ---
+  duration_ms: 0.159919
+  type: 'test'
+  ...
+# Subtest: the running-agents dialog uses Conductor's copy
+ok 12 - the running-agents dialog uses Conductor's copy
+  ---
+  duration_ms: 1.095322
+  type: 'test'
+  ...
+# Subtest: a git operation in safe mode offers the discard retry; after it, the plain message
+ok 13 - a git operation in safe mode offers the discard retry; after it, the plain message
+  ---
+  duration_ms: 0.203504
+  type: 'test'
+  ...
+# Subtest: a missing directory reads as a corrupted workspace; anything else shows its message
+ok 14 - a missing directory reads as a corrupted workspace; anything else shows its message
+  ---
+  duration_ms: 0.215873
+  type: 'test'
+  ...
+# Subtest: archive events reach every listener until it unsubscribes
+ok 15 - archive events reach every listener until it unsubscribes
+  ---
+  duration_ms: 0.196012
+  type: 'test'
+  ...
+# Subtest: startArchive asks instead of archiving over a running agent, and archives once confirmed
+ok 16 - startArchive asks instead of archiving over a running agent, and archives once confirmed
+  ---
+  duration_ms: 3.893779
+  type: 'test'
+  ...
+# Subtest: startArchive hides the row first, then reports the result with its notices
+ok 17 - startArchive hides the row first, then reports the result with its notices
+  ---
+  duration_ms: 0.200564
+  type: 'test'
+  ...
+# Subtest: startArchive brings the row back and reports a failure with the mode it ran in
+ok 18 - startArchive brings the row back and reports a failure with the mode it ran in
+  ---
+  duration_ms: 0.374143
+  type: 'test'
+  ...
+# Subtest: outside the desktop app startArchive only hides the row
+ok 19 - outside the desktop app startArchive only hides the row
+  ---
+  duration_ms: 0.335586
+  type: 'test'
+  ...
+# Subtest: unarchive shows the row, recreates the worktree, then reruns setup
+ok 20 - unarchive shows the row, recreates the worktree, then reruns setup
+  ---
+  duration_ms: 0.290667
+  type: 'test'
+  ...
+# Subtest: unarchive of a row that was not archived reruns nothing
+ok 21 - unarchive of a row that was not archived reruns nothing
+  ---
+  duration_ms: 0.118079
+  type: 'test'
+  ...
+# Subtest: a failed unarchive puts the row away again and reports Conductor's message
+ok 22 - a failed unarchive puts the row away again and reports Conductor's message
+  ---
+  duration_ms: 0.167201
+  type: 'test'
+  ...
+# Subtest: outside the desktop app unarchive only shows the row
+ok 23 - outside the desktop app unarchive only shows the row
+  ---
+  duration_ms: 0.084417
+  type: 'test'
+  ...
+# Subtest: an unarchive blocked by an existing folder gets Conductor's directory-exists toast
+ok 24 - an unarchive blocked by an existing folder gets Conductor's directory-exists toast
+  ---
+  duration_ms: 0.146247
+  type: 'test'
+  ...
+# Subtest: the restore dialog uses Conductor's copy for each scenario
+ok 25 - the restore dialog uses Conductor's copy for each scenario
+  ---
+  duration_ms: 0.106681
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 24
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2412.759745
