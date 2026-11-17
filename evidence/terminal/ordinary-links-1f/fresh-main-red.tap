@@ -1,0 +1,255 @@
+(node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:88) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary encoded Command-click warns before opening the exact target
+not ok 1 - ordinary encoded Command-click warns before opening the exact target
+  ---
+  duration_ms: 757.340258
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/ordinaryLinks.test.ts:133:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   {
+    -     args: {
+    -       buttons: {
+    -         OkCancelCustom: [
+    -           'Open',
+    -           'Cancel'
+    -         ]
+    -       },
+    -       kind: 'warning',
+    -       message: 'Open this terminal link?\n' +
+    -         '\n' +
+    -         'https://example.test/docs?from=terminal#result',
+    -       title: 'Open link?'
+    -     },
+    -     command: 'plugin:dialog|message'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      command: 'plugin:dialog|message'
+      args:
+        message: |-
+          Open this terminal link?
+          
+          https://example.test/docs?from=terminal#result
+        title: 'Open link?'
+        kind: 'warning'
+        buttons:
+          OkCancelCustom:
+            0: 'Open'
+            1: 'Cancel'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/ordinaryLinks.test.ts:137:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: ordinary encoded-link cancellation never reaches the opener
+not ok 2 - ordinary encoded-link cancellation never reaches the opener
+  ---
+  duration_ms: 13.979313
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/ordinaryLinks.test.ts:145:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    one warning before cancellation
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/ordinaryLinks.test.ts:148:32)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary unmodified and Control-only encoded-link activation does nothing
+ok 3 - ordinary unmodified and Control-only encoded-link activation does nothing
+  ---
+  duration_ms: 11.372913
+  type: 'test'
+  ...
+# Subtest: ordinary encoded HTTP localhost target is preserved through confirmation
+not ok 4 - ordinary encoded HTTP localhost target is preserved through confirmation
+  ---
+  duration_ms: 10.79501
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/ordinaryLinks.test.ts:157:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    localhost still requires confirmation
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/ordinaryLinks.test.ts:160:32)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary encoded links disable non-HTTP protocols
+not ok 5 - ordinary encoded links disable non-HTTP protocols
+  ---
+  duration_ms: 14.248175
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/ordinaryLinks.test.ts:164:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/ordinaryLinks.test.ts:166:16)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary invalid and non-web targets never reach the warning or opener
+ok 6 - ordinary invalid and non-web targets never reach the warning or opener
+  ---
+  duration_ms: 47.546673
+  type: 'test'
+  ...
+# Subtest: ordinary warning failures are handled without opening
+not ok 7 - ordinary warning failures are handled without opening
+  ---
+  duration_ms: 6.353622
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/ordinaryLinks.test.ts:177:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/ordinaryLinks.test.ts:179:84)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary opener failures are handled after approval
+not ok 8 - ordinary opener failures are handled after approval
+  ---
+  duration_ms: 11.800247
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/ordinaryLinks.test.ts:182:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    one confirmation before opener error
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/ordinaryLinks.test.ts:185:32)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary reattachment keeps one terminal and its encoded-link handler
+not ok 9 - ordinary reattachment keeps one terminal and its encoded-link handler
+  ---
+  duration_ms: 8.772097
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/ordinaryLinks.test.ts:189:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    reattached terminal retains warning
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/ordinaryLinks.test.ts:193:32)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary starting and exited terminals keep the encoded-link handler
+not ok 10 - ordinary starting and exited terminals keep the encoded-link handler
+  ---
+  duration_ms: 8.732447
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/ordinaryLinks.test.ts:197:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    starting terminal warns
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/ordinaryLinks.test.ts:200:32)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary input remains gated by ready and exit states
+ok 11 - ordinary input remains gated by ready and exit states
+  ---
+  duration_ms: 6.787297
+  type: 'test'
+  ...
+# Subtest: ordinary terminal disposal and Unicode setup stay unchanged
+ok 12 - ordinary terminal disposal and Unicode setup stay unchanged
+  ---
+  duration_ms: 6.724364
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 4
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1403.760694

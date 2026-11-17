@@ -587,11 +587,11 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
           </>
         );
       }
-      const nonmixedRead = name === "TodoRead" && todos.length > 0 && !(active && done > 0 && done < todos.length);
-      const label = nonmixedRead
-        ? active ? "Todo started" : done === todos.length ? "Todo list completed" : done > 0 ? "Todo completed" : "Todo list created"
+      const stateHeader = (name === "TodoWrite" || todos.length > 0) && !(active && done > 0 && done < todos.length);
+      const label = stateHeader
+        ? todos.length === 0 ? "Todo list created" : active ? "Todo started" : done === todos.length ? "Todo list completed" : done > 0 ? "Todo completed" : "Todo list created"
         : done > 0 && done < todos.length ? "Todo completed" : "Update todos";
-      const summary = nonmixedRead
+      const summary = stateHeader
         ? active ? `${activeIndex + 1}. ${s(active.content) || "todo"}` : `${todos.length} ${todos.length === 1 ? "todo" : "todos"}`
         : todos.length > 0 ? `${done}/${todos.length} completed` : undefined;
       return (
