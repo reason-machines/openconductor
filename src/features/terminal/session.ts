@@ -212,9 +212,6 @@ function cssVar(name: string): string | undefined {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || undefined;
 }
 
-/** `#rrggbb` plus an alpha byte; other colour forms pass through unchanged. */
-const withAlpha = (hex: string | undefined, alpha: string) => (hex && /^#[0-9a-f]{6}$/i.test(hex) ? hex + alpha : hex);
-
 /**
  * Open a new tab running the login shell in `cwd`; resolves to its id. `quiet`
  * when the app opens it by itself, so it does not take focus from a text field.
@@ -299,11 +296,9 @@ async function startTab(
       foreground: cssVar("--text"),
       cursor: "transparent",
       cursorAccent: cssVar("--panel"),
-      // xterm's default selection is pale white, invisible on the light theme.
-      // The inactive colour matters for Find: the match is selected while the
-      // find input, not the terminal, has focus.
-      selectionBackground: withAlpha(cssVar("--accent"), "66"),
-      selectionInactiveBackground: withAlpha(cssVar("--accent"), "4d"),
+      // Match IJe and ScriptOutput: the primary pair also covers inactive selection.
+      selectionBackground: cssVar("--accent"),
+      selectionForeground: cssVar("--accent-text"),
       black: cssVar("--terminal-black"),
       red: cssVar("--terminal-red"),
       green: cssVar("--terminal-green"),
@@ -360,8 +355,8 @@ async function startTab(
         foreground: cssVar("--text"),
         cursor: term.options.disableStdin ? "transparent" : cssVar("--text"),
         cursorAccent: cssVar("--panel"),
-        selectionBackground: withAlpha(cssVar("--accent"), "66"),
-        selectionInactiveBackground: withAlpha(cssVar("--accent"), "4d"),
+        selectionBackground: cssVar("--accent"),
+        selectionForeground: cssVar("--accent-text"),
         black: cssVar("--terminal-black"),
         red: cssVar("--terminal-red"),
         green: cssVar("--terminal-green"),

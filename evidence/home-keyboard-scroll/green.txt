@@ -1,0 +1,62 @@
+(node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home initially reveals the selected first row after its date heading
+ok 1 - Home initially reveals the selected first row after its date heading
+  ---
+  duration_ms: 162.474679
+  type: 'test'
+  ...
+# Subtest: Arrow navigation reveals the actual selected row, and only first rows reveal their heading
+ok 2 - Arrow navigation reveals the actual selected row, and only first rows reveal their heading
+  ---
+  duration_ms: 94.162482
+  type: 'test'
+  ...
+# Subtest: Home, End and meta-arrow endpoints reveal the selection without opening it
+ok 3 - Home, End and meta-arrow endpoints reveal the selection without opening it
+  ---
+  duration_ms: 98.065036
+  type: 'test'
+  ...
+# Subtest: unchanged endpoint selections and unrelated renders do not repeatedly scroll
+ok 4 - unchanged endpoint selections and unrelated renders do not repeatedly scroll
+  ---
+  duration_ms: 86.23322
+  type: 'test'
+  ...
+# Subtest: a search-selected row is revealed and no-match/empty navigation never scrolls a stale row
+ok 5 - a search-selected row is revealed and no-match/empty navigation never scrolls a stale row
+  ---
+  duration_ms: 75.426708
+  type: 'test'
+  ...
+# Subtest: an empty Home has no row to reveal
+ok 6 - an empty Home has no row to reveal
+  ---
+  duration_ms: 57.066701
+  type: 'test'
+  ...
+# Subtest: loading completion reveals the selected row even when its key did not change
+ok 7 - loading completion reveals the selected row even when its key did not change
+  ---
+  duration_ms: 44.673859
+  type: 'test'
+  ...
+# Subtest: composing or already-consumed navigation does not reveal a different row
+ok 8 - composing or already-consumed navigation does not reveal a different row
+  ---
+  duration_ms: 48.932916
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1228.085503

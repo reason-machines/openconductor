@@ -12,7 +12,7 @@ export const LINE_EDIT_BYTES: Readonly<Record<string, string>> = {
   "terminal.deleteLine": "\x15", // Ctrl-U
   "terminal.moveWordLeft": "\x1bb", // Esc b
   "terminal.moveWordRight": "\x1bf", // Esc f
-  "terminal.insertNewline": "\x1b\r", // Esc Enter: a literal newline in zsh and agent CLIs
+  "terminal.insertNewline": "\n", // Literal LF, as the reference's $wa handler sends
 };
 
 export const TAB_COMMANDS = ["terminal.newTab", "terminal.newBigTab", "terminal.closeTab", "terminal.clearScrollback"] as const;

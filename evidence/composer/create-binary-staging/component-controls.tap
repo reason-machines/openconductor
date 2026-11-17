@@ -1,0 +1,124 @@
+(node:74) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pending Create project name edits preserve the active request and survive rejection
+ok 1 - pending Create project name edits preserve the active request and survive rejection
+  ---
+  duration_ms: 174.78231
+  type: 'test'
+  ...
+# Subtest: pending Create project parent edits preserve the active request and survive rejection
+ok 2 - pending Create project parent edits preserve the active request and survive rejection
+  ---
+  duration_ms: 124.678964
+  type: 'test'
+  ...
+# Subtest: pending Create project Browse updates only the draft and preserves Cancel
+ok 3 - pending Create project Browse updates only the draft and preserves Cancel
+  ---
+  duration_ms: 90.443306
+  type: 'test'
+  ...
+# Subtest: pending Create project template selection does not change the active pipeline
+ok 4 - pending Create project template selection does not change the active pipeline
+  ---
+  duration_ms: 50.141869
+  type: 'test'
+  ...
+# Subtest: pending Create project retains the primary, shortcut and duplicate-submit guards
+ok 5 - pending Create project retains the primary, shortcut and duplicate-submit guards
+  ---
+  duration_ms: 59.685258
+  type: 'test'
+  ...
+# Subtest: Create project success retains its captured request and completion callbacks
+ok 6 - Create project success retains its captured request and completion callbacks
+  ---
+  duration_ms: 37.73351
+  type: 'test'
+  ...
+# Subtest: Create project rejection preserves its draft and permits a new captured retry
+ok 7 - Create project rejection preserves its draft and permits a new captured retry
+  ---
+  duration_ms: 48.987034
+  type: 'test'
+  ...
+# Subtest: idle Create project Browse Cancel preserves the displayed folder without creating
+ok 8 - idle Create project Browse Cancel preserves the displayed folder without creating
+  ---
+  duration_ms: 41.590889
+  type: 'test'
+  ...
+# (node:89) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: local section action has the reference row contract without requiring a project or workspace
+ok 9 - local section action has the reference row contract without requiring a project or workspace
+  ---
+  duration_ms: 5.450789
+  type: 'test'
+  ...
+# Subtest: actual PaletteHost selects the local section handler exactly once
+ok 10 - actual PaletteHost selects the local section handler exactly once
+  ---
+  duration_ms: 209.008869
+  type: 'test'
+  ...
+# Subtest: actual PaletteHost omits the row without the shell's local-section capability
+ok 11 - actual PaletteHost omits the row without the shell's local-section capability
+  ---
+  duration_ms: 144.35164
+  type: 'test'
+  ...
+# Subtest: mounted App opens one shared section dialog with hidden Sidebar at root
+ok 12 - mounted App opens one shared section dialog with hidden Sidebar at root
+  ---
+  duration_ms: 315.893513
+  type: 'test'
+  ...
+# Subtest: mounted App opens one shared section dialog with hidden Sidebar at home
+ok 13 - mounted App opens one shared section dialog with hidden Sidebar at home
+  ---
+  duration_ms: 218.114966
+  type: 'test'
+  ...
+# Subtest: mounted App creates in the local section store without moving the selected workspace
+ok 14 - mounted App creates in the local section store without moving the selected workspace
+  ---
+  duration_ms: 148.407561
+  type: 'test'
+  ...
+# Subtest: mounted App Cancel and repeated opens do not write a section or duplicate the dialog
+ok 15 - mounted App Cancel and repeated opens do not write a section or duplicate the dialog
+  ---
+  duration_ms: 124.951222
+  type: 'test'
+  ...
+# Subtest: mounted App with loading local store withholds creation until ready
+ok 16 - mounted App with loading local store withholds creation until ready
+  ---
+  duration_ms: 120.462014
+  type: 'test'
+  ...
+# Subtest: mounted App with error local store withholds creation until ready
+ok 17 - mounted App with error local store withholds creation until ready
+  ---
+  duration_ms: 123.80012
+  type: 'test'
+  ...
+# Subtest: shared shell owner preserves Sidebar create-before, workspace move and edit contracts
+ok 18 - shared shell owner preserves Sidebar create-before, workspace move and edit contracts
+  ---
+  duration_ms: 142.328092
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3109.462082
