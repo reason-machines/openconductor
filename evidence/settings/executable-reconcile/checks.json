@@ -1,0 +1,149 @@
+{
+  "author": "Conductor Rebuild",
+  "baseline": "93b9d53ce02970967a831b0ac93ecdbf17bdea31",
+  "machine": "Reason Cloud Linux; original retained-source reads on sven m5 max",
+  "logs": [
+    {
+      "label": "red",
+      "command": "python3 evidence/settings/executable-reconcile/run-probe.py --source-ref 93b9d53ce02970967a831b0ac93ecdbf17bdea31",
+      "result": "compiled; 9 controls passed / 5 intended assertion failures; exit101",
+      "exit_code": 101,
+      "path": "logs/red.log.gz",
+      "raw_bytes": 7246,
+      "raw_sha256": "f14fa114ec0b10a7b335ca9f3038ded0d3cc6c3015663abd9cea6661f5dbe1c9"
+    },
+    {
+      "label": "green",
+      "command": "python3 evidence/settings/executable-reconcile/run-probe.py",
+      "result": "15/15 passed, including 1 new IPC guard",
+      "exit_code": 0,
+      "path": "logs/green.log.gz",
+      "raw_bytes": 5280,
+      "raw_sha256": "4cf1310fdf54779b5ae148e29090e6d9885f104c11f9f0a326fcb3522a12d7b5"
+    },
+    {
+      "label": "command",
+      "command": "python3 evidence/settings/executable-reconcile/run-command.py",
+      "result": "2/2 passed; actual changed blocking envelope with pure shims",
+      "exit_code": 0,
+      "path": "logs/command.log.gz",
+      "raw_bytes": 614,
+      "raw_sha256": "2cad0b4a2c9d1ae7cb3e2560464a2cff00f5cf49afcc5f8695e6d49df598d6e9"
+    },
+    {
+      "label": "adjacent",
+      "command": "python3 evidence/settings/executable-reconcile/run-adjacent.py",
+      "result": "environment15/15; linked-directories15/15; Chrome14/14 passed; archived assertions unchanged",
+      "exit_code": 0,
+      "path": "logs/adjacent.log.gz",
+      "raw_bytes": 8716,
+      "raw_sha256": "0f5ed5ac1fa4ceeaafc7b912681d66f705720f4d710659a563bc723b9150d2fe"
+    },
+    {
+      "label": "policy",
+      "command": "python3 evidence/settings/auto-permission/run-tests.py",
+      "result": "13/13 passed",
+      "exit_code": 0,
+      "path": "logs/policy.log.gz",
+      "raw_bytes": 2751,
+      "raw_sha256": "91f2bb937577119065c0b78a147222cb7dd54f3b75bbebeb4fb926fb4f30aed1"
+    },
+    {
+      "label": "interact",
+      "command": "python3 evidence/settings/auto-permission/run-tests.py --filter interact_tests::",
+      "result": "7/7 passed",
+      "exit_code": 0,
+      "path": "logs/interact.log.gz",
+      "raw_bytes": 1148,
+      "raw_sha256": "e1b1c451d2a09332fc5c8db87edaf1efa4487f3b2fe49957580ee44767473930"
+    },
+    {
+      "label": "stream",
+      "command": "python3 evidence/settings/auto-permission/run-tests.py --filter agent::claude_stream::tests::",
+      "result": "6/6 passed",
+      "exit_code": 0,
+      "path": "logs/stream.log.gz",
+      "raw_bytes": 1102,
+      "raw_sha256": "f46bc72c350efb9748cc2c34bba6c87f9980a0730add4f737790e0ea954fe0d2"
+    },
+    {
+      "label": "launch",
+      "command": "python3 evidence/settings/auto-permission/run-tests.py --filter launch_policy_case::",
+      "result": "1/1 passed",
+      "exit_code": 0,
+      "path": "logs/launch.log.gz",
+      "raw_bytes": 683,
+      "raw_sha256": "39066f75d91569ba46b041c586bc59b9c7618a5a3acc065f98a8ddd4ee026db4"
+    },
+    {
+      "label": "typecheck",
+      "command": "npm run typecheck",
+      "result": "passed",
+      "exit_code": 0,
+      "path": "logs/typecheck.log.gz",
+      "raw_bytes": 224,
+      "raw_sha256": "d5085e3e8e565109d158c9b2533aa52ddf5936811f85b35986ae3f533bd2bcbb"
+    },
+    {
+      "label": "build",
+      "command": "npm run build",
+      "result": "passed; Vite size warnings only",
+      "exit_code": 0,
+      "path": "logs/build.log.gz",
+      "raw_bytes": 183726,
+      "raw_sha256": "859767139d1025c62a6db393cb6a958ad690b28487f3feffefa20f64cca65fe6"
+    },
+    {
+      "label": "integrated-green",
+      "command": "python3 evidence/settings/executable-reconcile/run-probe.py",
+      "result": "15/15 passed",
+      "exit_code": 0,
+      "path": "logs/integrated-green.log.gz",
+      "raw_bytes": 5251,
+      "raw_sha256": "4576370a23dc5af1665de106208adf626ce51e3ff0e6292602fb2d243677871c"
+    },
+    {
+      "label": "integrated-command",
+      "command": "python3 evidence/settings/executable-reconcile/run-command.py",
+      "result": "2/2 passed",
+      "exit_code": 0,
+      "path": "logs/integrated-command.log.gz",
+      "raw_bytes": 614,
+      "raw_sha256": "2cad0b4a2c9d1ae7cb3e2560464a2cff00f5cf49afcc5f8695e6d49df598d6e9"
+    },
+    {
+      "label": "integrated-adjacent",
+      "command": "python3 evidence/settings/executable-reconcile/run-adjacent.py",
+      "result": "15/15 environment,15/15 directories,14/14 Chrome passed",
+      "exit_code": 0,
+      "path": "logs/integrated-adjacent.log.gz",
+      "raw_bytes": 8629,
+      "raw_sha256": "24a08ab70907e1fd0d95565c5148509f6303d1f67b0b751bae9ec94e7a613e3e"
+    },
+    {
+      "label": "integrated-build",
+      "command": "npm run build",
+      "result": "passed including full frontend TypeScript",
+      "exit_code": 0,
+      "path": "logs/integrated-build.log.gz",
+      "raw_bytes": 180187,
+      "raw_sha256": "4a77216b3feaa013e0212e9f9947ec0e873c40aa8808737aeeb466645ee49bda"
+    }
+  ],
+  "gaps": [
+    "full Tauri compilation/integration",
+    "real effective settings persistence/SQLite",
+    "actual bundled/system executable resolution/download",
+    "live provider-process restart/resume",
+    "package containment and runtime embedding",
+    "installed identity/native/visual parity"
+  ],
+  "prohibited_actions_not_run": [
+    "app/provider process",
+    "manual workflow/package dispatch",
+    "native acquisition or runtime",
+    "additional watcher"
+  ],
+  "fresh_main_readback": "810a79d40a7205a52e730ae5cc6da2f84401c063",
+  "fresh_main_two_backend_blobs_unchanged_from_baseline": true
+}

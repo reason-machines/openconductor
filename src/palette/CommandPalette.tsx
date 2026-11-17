@@ -200,7 +200,12 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
   }, [tab, query]);
   useEffect(() => {
     if (!pointerSelection.current) {
-      listRef.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest" });
+      const selected = listRef.current?.querySelector<HTMLElement>('[aria-selected="true"]');
+      const group = selected?.closest?.(".palette-group");
+      if (group && group.querySelector('[role="option"]') === selected) {
+        group.querySelector<HTMLElement>(".palette-heading")?.scrollIntoView({ block: "nearest" });
+      }
+      selected?.scrollIntoView({ block: "nearest" });
     }
     pointerSelection.current = false;
   }, [active]);

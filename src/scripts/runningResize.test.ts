@@ -225,10 +225,11 @@ test("running without a generation does not send unqualified geometry", async (t
   assert.deepEqual(f.resizes, []);
 });
 
-test("same mounted screen disables resize on stop and sends measured geometry to a replacement generation", async (t) => {
+test("same-run stop preserves its screen and replacement geometry targets only the new generation", async (t) => {
   const f = await fixture();
   t.after(f.close);
   const screen = f.screens.at(-1);
+  assert.ok(screen);
   f.resizes.length = 0;
   await f.measure(measured);
   assert.deepEqual(f.resizes, [payload()]);
@@ -237,12 +238,17 @@ test("same mounted screen disables resize on stop and sends measured geometry to
     f.resizes.length = 0;
     await f.measure(initialSize);
     await f.measure(measured);
+    assert.equal(f.screens.at(-1), screen, "same-run status changes preserve the terminal buffer");
+    assert.equal(screen.disposed, false);
     assert.deepEqual(f.resizes, [], state);
   }
   f.resizes.length = 0;
   await f.setState("running", "run-2");
-  assert.equal(f.screens.at(-1), screen, "the current output buffer must not be remounted");
-  assert.deepEqual(f.resizes, [payload(a.id, "run-2")], "callback identity change must propagate already-measured geometry even when dimensions are unchanged");
+  assert.notEqual(f.screens.at(-1), screen, "a replacement run owns a fresh terminal surface");
+  assert.equal(screen.disposed, true);
+  assert.equal(screen.resizeListeners.size, 0);
+  screen.resize(initialSize.cols, initialSize.rows);
+  assert.deepEqual(f.resizes, [payload(a.id, "run-2")], "new surface sends measured geometry to run-2, never from the disposed predecessor");
 });
 
 test("workspace replacement never retargets a disposed terminal", async (t) => {
