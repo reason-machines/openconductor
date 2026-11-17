@@ -11,7 +11,7 @@
 // organizations only), cost column and the status-matrix setting.
 
 import type { Repo, Workspace } from "../state/types";
-import { workspaceLabel } from "../components/sidebarLabel.ts";
+import { labelTargetBranch, workspaceLabel } from "../components/sidebarLabel.ts";
 import type { ArchivedWorkspace } from "../workspace/archivedList.ts";
 
 export type ArchiveFilter = "active" | "all" | "archived";
@@ -277,7 +277,7 @@ export function homeRows(
       branch: workspace.branch,
       prTitle: workspace.prTitle,
       userSetWorkspaceName: workspace.userSetWorkspaceName,
-      targetBranch: repo.defaultBranch,
+      targetBranch: labelTargetBranch(workspace.targetBranch),
     });
     rows.push({ repo, workspace, title, lastActiveAt: lastActiveAt(workspace), archived });
   }

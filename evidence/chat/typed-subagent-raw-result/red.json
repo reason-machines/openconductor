@@ -1,0 +1,177 @@
+{
+  "stage": "FINAL_RED",
+  "pass": 15,
+  "intended_assertion_failures": 27,
+  "skip": 0,
+  "cancel": 0,
+  "cases": [
+    [
+      "not ok",
+      "typed subagent raw result: Task:text-blocks-concatenate"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Task:verbatim-raw-string"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Task:object-text"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Task:structured-object"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Task:empty-array-keeps-controls"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Task:explicit-null"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Task:explicit-false"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Task:explicit-zero"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Task:explicit-empty-string"
+    ],
+    [
+      "ok",
+      "typed subagent raw result: Task:legacy-success"
+    ],
+    [
+      "ok",
+      "typed subagent raw result: Task:legacy-error"
+    ],
+    [
+      "ok",
+      "typed subagent raw result: Task:pending"
+    ],
+    [
+      "ok",
+      "typed subagent raw result: Task:raw-true-control"
+    ],
+    [
+      "ok",
+      "typed subagent raw result: Task:matching-text-array-control"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Agent:text-blocks-concatenate"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Agent:verbatim-raw-string"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Agent:object-text"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Agent:structured-object"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Agent:empty-array-keeps-controls"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Agent:explicit-null"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Agent:explicit-false"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Agent:explicit-zero"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: Agent:explicit-empty-string"
+    ],
+    [
+      "ok",
+      "typed subagent raw result: Agent:legacy-success"
+    ],
+    [
+      "ok",
+      "typed subagent raw result: Agent:legacy-error"
+    ],
+    [
+      "ok",
+      "typed subagent raw result: Agent:pending"
+    ],
+    [
+      "ok",
+      "typed subagent raw result: Agent:raw-true-control"
+    ],
+    [
+      "ok",
+      "typed subagent raw result: Agent:matching-text-array-control"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: sub-agent:text-blocks-concatenate"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: sub-agent:verbatim-raw-string"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: sub-agent:object-text"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: sub-agent:structured-object"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: sub-agent:empty-array-keeps-controls"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: sub-agent:explicit-null"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: sub-agent:explicit-false"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: sub-agent:explicit-zero"
+    ],
+    [
+      "not ok",
+      "typed subagent raw result: sub-agent:explicit-empty-string"
+    ],
+    [
+      "ok",
+      "typed subagent raw result: sub-agent:legacy-success"
+    ],
+    [
+      "ok",
+      "typed subagent raw result: sub-agent:legacy-error"
+    ],
+    [
+      "ok",
+      "typed subagent raw result: sub-agent:pending"
+    ],
+    [
+      "ok",
+      "typed subagent raw result: sub-agent:raw-true-control"
+    ],
+    [
+      "ok",
+      "typed subagent raw result: sub-agent:matching-text-array-control"
+    ]
+  ]
+}
