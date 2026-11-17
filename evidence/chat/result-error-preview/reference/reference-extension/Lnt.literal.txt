@@ -1,0 +1,1 @@
+function Lnt(t){if(t.type!=="user")return!1;const e=oo(t,"message");if(!Kp(e))return!1;const s=e.content;return typeof s=="string"&&s.includes("<local-command-stdout>")}

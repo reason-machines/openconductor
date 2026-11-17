@@ -1,0 +1,32 @@
+[
+  {
+    "id": "common Claude error result: prior text is not the preview",
+    "scope": "stopping=false; current producer boundary, no future metadata fabricated",
+    "raw": [
+      {"type":"assistant","session_id":"source-only-chat","message":{"id":"a1","role":"assistant","content":[{"type":"text","text":"Work in progress."}]}},
+      {"type":"result","session_id":"source-only-chat","subtype":"error_during_execution","is_error":true,"result":"Synthetic result failure."}
+    ],
+    "normalizedEnd":{"outcome":"failed","message":"Synthetic result failure."},
+    "expected":{"previewTexts":[],"status":"failed","error":"Synthetic result failure."}
+  },
+  {
+    "id": "success control: prior text remains preview",
+    "scope": "stopping=false; same ordinary assistant text then successful result",
+    "raw": [
+      {"type":"assistant","session_id":"source-only-chat","message":{"id":"a1","role":"assistant","content":[{"type":"text","text":"Work in progress."}]}},
+      {"type":"result","session_id":"source-only-chat","subtype":"success","is_error":false,"result":"Done."}
+    ],
+    "normalizedEnd":{"outcome":"completed"},
+    "expected":{"previewTexts":["Work in progress."],"status":"completed","error":null}
+  },
+  {
+    "id": "stopping control: cancelled status does not become a result error",
+    "scope": "stopping=true; preserve existing normalized cancellation, not original cancelled-reference parity",
+    "raw": [
+      {"type":"assistant","session_id":"source-only-chat","message":{"id":"a1","role":"assistant","content":[{"type":"text","text":"Work in progress."}]}},
+      {"type":"result","session_id":"source-only-chat","subtype":"error_during_execution","is_error":true,"result":"Synthetic result failure."}
+    ],
+    "normalizedEnd":{"outcome":"cancelled"},
+    "expected":{"previewTexts":["Work in progress."],"status":"cancelled","error":null}
+  }
+]

@@ -118,6 +118,7 @@ export function restoreEvents(chatId: string, rows: readonly string[]): ChatEven
       turnId,
       status,
       ...(turn.error !== undefined ? { error: turn.error } : {}),
+      ...(turn.resultError === true && status === "failed" ? { resultError: true } : {}),
       ...((turn.endedAt ?? turn.startedAt) ? { at: (turn.endedAt ?? turn.startedAt)! } : {}),
     });
   }

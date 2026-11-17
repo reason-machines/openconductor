@@ -1,0 +1,1 @@
+function fs(t){return eg(t)?"codex":Zy(t)?"cursor":"claude"}

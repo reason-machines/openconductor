@@ -10,6 +10,8 @@ import { eventSessionId } from "./types.ts";
 export interface TurnState {
   status: TurnStatus;
   error?: string;
+  /** A terminal result message, distinct from a status-only failure. */
+  resultError?: true;
   /** `at` of the turn's `running` status. */
   startedAt?: string;
   /** `at` of the turn's first terminal status. */
@@ -102,6 +104,7 @@ export function applyChatEvent(t: ChatTranscript, event: ChatEvent): ApplyResult
       const prev = t.turns[turnId];
       const next: TurnState = { status };
       if (error !== undefined) next.error = error;
+      if (status === "failed" && event.resultError === true) next.resultError = true;
       const startedAt = status === "running" ? (at ?? prev?.startedAt) : prev?.startedAt;
       if (startedAt !== undefined) next.startedAt = startedAt;
       const endedAt = status === "running" ? undefined : (prev?.endedAt ?? at);

@@ -7,6 +7,7 @@ import { AGENT_LABEL, agentForModel } from "../../settings/models.ts";
 import { modelDisplayName, type ModelChoice } from "./composerModels.ts";
 import type { ChatAgentId } from "./agentChoice.ts";
 import { orderedModelChoices } from "./loadoutChoices.ts";
+import fuzzysort from "fuzzysort";
 
 const path = "src/features/chat/ModelPicker.tsx";
 const source = process.env.MODEL_PICKER_REGRESSION_REF
@@ -15,12 +16,12 @@ const source = process.env.MODEL_PICKER_REGRESSION_REF
 const body = source.match(/const items = useMemo\(\(\) => \{([\s\S]*?)\n  \}, \[([^\]]+)\]\);/);
 assert.ok(body, "ModelPicker exposes its production items callback and dependencies");
 const callback = stripTypeScriptTypes(`(() => {${body[1]}})`);
-const filter = new Function("value", "favorites", "models", "query", "itemLabel", "modelName", "itemAgent", "orderedModelChoices", "modelDisplayName", "agentForModel", "AGENT_LABEL", `return ${callback}();`);
+const filter = new Function("value", "favorites", "models", "query", "itemLabel", "modelName", "itemAgent", "orderedModelChoices", "modelDisplayName", "agentForModel", "AGENT_LABEL", "fuzzysort", `return ${callback}();`);
 
 const opus: ModelChoice = { model: "opus-5-1m", effort: "high" };
 const codex: ModelChoice = { model: "gpt-5.6-sol", effort: "high" };
 function results(query: string, choices: readonly ModelChoice[] = [opus, codex], itemAgent?: (choice: ModelChoice) => ChatAgentId) {
-  return filter(choices[0], [], choices, query, undefined, undefined, itemAgent, orderedModelChoices, modelDisplayName, agentForModel, AGENT_LABEL);
+  return filter(choices[0], [], choices, query, undefined, undefined, itemAgent, orderedModelChoices, modelDisplayName, agentForModel, AGENT_LABEL, fuzzysort);
 }
 
 const originalCases = [
@@ -56,9 +57,9 @@ test("source-only: explicit and callback agent identities take precedence over m
   assert.ok(body[2].split(",").some((dependency) => dependency.trim() === "itemAgent"), "agent identity changes invalidate memoized results");
 });
 
-test("source-only: agent search preserves matching input order and unknown IDs", () => {
+test("source-only: agent search ranks matching models and preserves unknown IDs", () => {
   const secondOpus: ModelChoice = { model: "opus-5-5-1m", effort: null };
-  assert.deepEqual(results("claude", [secondOpus, codex, opus]), [secondOpus, opus]);
+  assert.deepEqual(results("claude", [secondOpus, codex, opus]), [opus, secondOpus]);
   const unknown: ModelChoice = { model: "custom-model", effort: null };
   assert.deepEqual(results("custom-model", [unknown]), [unknown]);
   assert.deepEqual(results("claude", [unknown]), []);
@@ -77,9 +78,9 @@ for (const [query, expected] of [
   });
 }
 
-test("source-only: multiword search preserves matching input order", () => {
+test("source-only: multiword search ranks matching models", () => {
   const secondOpus: ModelChoice = { model: "opus-5-5-1m", effort: null };
-  assert.deepEqual(results("opus claude", [secondOpus, codex, opus]), [secondOpus, opus]);
+  assert.deepEqual(results("opus claude", [secondOpus, codex, opus]), [opus, secondOpus]);
 });
 
 test("source-only: multiword search preserves explicit and callback agent precedence", () => {
@@ -92,7 +93,7 @@ test("source-only: multiword search preserves explicit and callback agent preced
 
 test("source-only: multiword search uses supplied names and keeps unknown model IDs", () => {
   const custom: ModelChoice = { model: "custom-model", effort: null, agent: "reason" };
-  const named = filter(custom, [], [custom], "north reason", () => "North Star", undefined, undefined, orderedModelChoices, modelDisplayName, agentForModel, AGENT_LABEL);
+  const named = filter(custom, [], [custom], "north reason", () => "North Star", undefined, undefined, orderedModelChoices, modelDisplayName, agentForModel, AGENT_LABEL, fuzzysort);
   assert.deepEqual(named, [custom]);
   assert.deepEqual(results("custom model", [custom]), [custom]);
   assert.deepEqual(results("custom claude", [custom]), []);

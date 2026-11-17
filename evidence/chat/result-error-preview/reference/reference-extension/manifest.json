@@ -1,0 +1,380 @@
+{
+  "parent": {
+    "bytes": 3493297,
+    "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "vendor_execution": false,
+  "method": "TypeScript syntax tree extraction; zero parse diagnostics",
+  "records": [
+    {
+      "symbol": "yB",
+      "path": "yB.literal.txt",
+      "utf8_half_open": [
+        1145245,
+        1147997
+      ],
+      "bytes": 2752,
+      "sha256": "181ee4821cd93653e08ab3e3943275942352080824874b6344f2b813ba26291c"
+    },
+    {
+      "symbol": "na",
+      "path": "na.literal.txt",
+      "utf8_half_open": [
+        1148057,
+        1148224
+      ],
+      "bytes": 167,
+      "sha256": "7673a785165ce3c671210fa21a1e1a0a836ccda502ece16b01fe4cc93d6b87bb"
+    },
+    {
+      "symbol": "Fa",
+      "path": "Fa.literal.txt",
+      "utf8_half_open": [
+        1148224,
+        1148305
+      ],
+      "bytes": 81,
+      "sha256": "26475e8ddf9c5f5292ca8e385429f41b1893267e4599b2fef7055b93f51a7407"
+    },
+    {
+      "symbol": "hie",
+      "path": "hie.literal.txt",
+      "utf8_half_open": [
+        1148755,
+        1148849
+      ],
+      "bytes": 94,
+      "sha256": "8a711327171a0bed272961eb073858cef00d02da972697bd5ae912f8c11f4a7d"
+    },
+    {
+      "symbol": "Ett",
+      "path": "Ett.literal.txt",
+      "utf8_half_open": [
+        1148849,
+        1149033
+      ],
+      "bytes": 184,
+      "sha256": "1cc88e4d4cbd22bd69303b64ea6ddf447f10347a4f35f65ea4fd245b64838ff1"
+    },
+    {
+      "symbol": "Att",
+      "path": "Att.literal.txt",
+      "utf8_half_open": [
+        1149033,
+        1149431
+      ],
+      "bytes": 398,
+      "sha256": "ad83bdd40d7ce09c1fab5180892be86b2786181336619db39f575926e2026a06"
+    },
+    {
+      "symbol": "wB",
+      "path": "wB.literal.txt",
+      "utf8_half_open": [
+        1149946,
+        1150034
+      ],
+      "bytes": 88,
+      "sha256": "2061ef5afd371daeae34b2e2acf120508bed1993c3b8c5ea1841da5cf7a422c5"
+    },
+    {
+      "symbol": "kh",
+      "path": "kh.literal.txt",
+      "utf8_half_open": [
+        1150034,
+        1150248
+      ],
+      "bytes": 214,
+      "sha256": "d7de35e6aa83ce628d29ca7acb6833a98beb00534043df4bcfb73e100a9bd112"
+    },
+    {
+      "symbol": "Itt",
+      "path": "Itt.literal.txt",
+      "utf8_half_open": [
+        1150248,
+        1150301
+      ],
+      "bytes": 53,
+      "sha256": "b7f75ed2b827f12ddeba9757bbf5b300bb02763854eebecafa6dab15d9c48b3a"
+    },
+    {
+      "symbol": "SB",
+      "path": "SB.literal.txt",
+      "utf8_half_open": [
+        1150301,
+        1150443
+      ],
+      "bytes": 142,
+      "sha256": "ebd2cfabf0eeb4c26546d2350c6d77dd02647448f4f88a0bb4f2a47ecd4a0ca3"
+    },
+    {
+      "symbol": "bB",
+      "path": "bB.literal.txt",
+      "utf8_half_open": [
+        1152714,
+        1153123
+      ],
+      "bytes": 409,
+      "sha256": "e7f1f75c7784f033a2be1c38499d83c69b2f64cdd628faf26c33d3781132ba0c"
+    },
+    {
+      "symbol": "_jt",
+      "path": "_jt.literal.txt",
+      "utf8_half_open": [
+        1153746,
+        1154246
+      ],
+      "bytes": 500,
+      "sha256": "1806109603caa218b2bc48dac7cb3ed18126790e4ec12f8d3bd578b765e17964"
+    },
+    {
+      "symbol": "zd",
+      "path": "zd.literal.txt",
+      "utf8_half_open": [
+        1154841,
+        1155328
+      ],
+      "bytes": 487,
+      "sha256": "f75b54c7124c446bdd6a900d2324f75703f6a4a201316141ab0b16abb48c8f6b"
+    },
+    {
+      "symbol": "Wtt",
+      "path": "Wtt.literal.txt",
+      "utf8_half_open": [
+        1155394,
+        1155664
+      ],
+      "bytes": 270,
+      "sha256": "5079dc5aeb7f77ffba34bc232bebc748aed980b1ac38184de4f808667cfe9ef5"
+    },
+    {
+      "symbol": "o8",
+      "path": "o8.literal.txt",
+      "utf8_half_open": [
+        1155664,
+        1155798
+      ],
+      "bytes": 134,
+      "sha256": "1a4a0a3be574aadd10d60bb73586eb41f140aca7cef4df566eb91ae3b4fc195d"
+    },
+    {
+      "symbol": "Utt",
+      "path": "Utt.literal.txt",
+      "utf8_half_open": [
+        1155798,
+        1155904
+      ],
+      "bytes": 106,
+      "sha256": "7b61be78307619bfa5e0e07b4f6916422e4623f41f3760b8067f20d932617265"
+    },
+    {
+      "symbol": "Htt",
+      "path": "Htt.literal.txt",
+      "utf8_half_open": [
+        1155904,
+        1156003
+      ],
+      "bytes": 99,
+      "sha256": "0b29fe06452dbb278782d61b7df7ee98835795ce6c7b8e75091c2a4db78f8832"
+    },
+    {
+      "symbol": "qtt",
+      "path": "qtt.literal.txt",
+      "utf8_half_open": [
+        1156003,
+        1156123
+      ],
+      "bytes": 120,
+      "sha256": "70114c60bcae03216b18e10e20c2a24e4b1640a346b1fecfa57232649ca47cb5"
+    },
+    {
+      "symbol": "fie",
+      "path": "fie.literal.txt",
+      "utf8_half_open": [
+        1156123,
+        1156440
+      ],
+      "bytes": 317,
+      "sha256": "a2864425beaadd74561b250725ed94bf9d64092c76bf099cac81744d8fa5fb5e"
+    },
+    {
+      "symbol": "Qtt",
+      "path": "Qtt.literal.txt",
+      "utf8_half_open": [
+        1158303,
+        1158546
+      ],
+      "bytes": 243,
+      "sha256": "d6e2cf71b9666f26c4412ad2aa9c8a9109211f928c630fc0e3fe09ba4324c77b"
+    },
+    {
+      "symbol": "Xtt",
+      "path": "Xtt.literal.txt",
+      "utf8_half_open": [
+        1158546,
+        1158741
+      ],
+      "bytes": 195,
+      "sha256": "fb380bc0d58c8668ecaf34a4bd8fb4989214d9d7e764c9d65ff6e1f7be4ac4f3"
+    },
+    {
+      "symbol": "AB",
+      "path": "AB.literal.txt",
+      "utf8_half_open": [
+        1163571,
+        1164998
+      ],
+      "bytes": 1427,
+      "sha256": "96e522b9ac51e6a51a00cdc378531a5b21ac4951bc80c0c8267216065b29d8ac"
+    },
+    {
+      "symbol": "Mb",
+      "path": "Mb.literal.txt",
+      "utf8_half_open": [
+        1165837,
+        1166277
+      ],
+      "bytes": 440,
+      "sha256": "495df368a2907f0924a9dbe5aef81704188544b47ce1989f0027b8a81f3689f7"
+    },
+    {
+      "symbol": "rF",
+      "path": "rF.literal.txt",
+      "utf8_half_open": [
+        1167092,
+        1167597
+      ],
+      "bytes": 505,
+      "sha256": "7ca7642f6e5c0128fed18fecb0314f7e862d440ef5306e305e8235f43a45a588"
+    },
+    {
+      "symbol": "DA",
+      "path": "DA.literal.txt",
+      "utf8_half_open": [
+        1169443,
+        1169615
+      ],
+      "bytes": 172,
+      "sha256": "34c62d074c7972c9b3bec67132584ceb54e21eb5ec4e0e770ae51a788e03e624"
+    },
+    {
+      "symbol": "LA",
+      "path": "LA.literal.txt",
+      "utf8_half_open": [
+        1174995,
+        1179549
+      ],
+      "bytes": 4554,
+      "sha256": "f0aaef0dac136a53b7b7dead30e704005113c2c500ea10be949b5e15d4deaf09"
+    },
+    {
+      "symbol": "Ant",
+      "path": "Ant.literal.txt",
+      "utf8_half_open": [
+        1288874,
+        1290373
+      ],
+      "bytes": 1499,
+      "sha256": "ca83f06e3aa75d8d4f730beb6957ff2b6b80f1db948c43b8ad66a13af1d0520f"
+    },
+    {
+      "symbol": "Tnt",
+      "path": "Tnt.literal.txt",
+      "utf8_half_open": [
+        1291588,
+        1291742
+      ],
+      "bytes": 154,
+      "sha256": "59c233bd4886b530e50661840f1b8e71373e1e86a90834ac16d1f0cd73113695"
+    },
+    {
+      "symbol": "xnt",
+      "path": "xnt.literal.txt",
+      "utf8_half_open": [
+        1291742,
+        1291812
+      ],
+      "bytes": 70,
+      "sha256": "d42b95d760c25e9f2b350791fc6f88ee6a995b76b3612f8421a18b00c196c2a8"
+    },
+    {
+      "symbol": "Pnt",
+      "path": "Pnt.literal.txt",
+      "utf8_half_open": [
+        1291812,
+        1291916
+      ],
+      "bytes": 104,
+      "sha256": "2fe7eb56b22723dcc672e8cbe5b3b518e6b0c7f7317cda89abc4ee3618a9ed9e"
+    },
+    {
+      "symbol": "Die",
+      "path": "Die.literal.txt",
+      "utf8_half_open": [
+        1291916,
+        1292265
+      ],
+      "bytes": 349,
+      "sha256": "b5910f369223258092e959f153e775a85847e5a8004d42f8ad6efe2784299645"
+    },
+    {
+      "symbol": "TB",
+      "path": "TB.literal.txt",
+      "utf8_half_open": [
+        1292265,
+        1292489
+      ],
+      "bytes": 224,
+      "sha256": "0e3ad08eef03ad162202e8d9ffcbb45bf0b44cdb3ae1b4bd3deec683a74ac6df"
+    },
+    {
+      "symbol": "Lnt",
+      "path": "Lnt.literal.txt",
+      "utf8_half_open": [
+        1294731,
+        1294900
+      ],
+      "bytes": 169,
+      "sha256": "7d21ae27269c3f7a7b4b07710cf4f8aa0259dce5d006de2870f954945d40e1a3"
+    },
+    {
+      "symbol": "Nnt",
+      "path": "Nnt.literal.txt",
+      "utf8_half_open": [
+        1294900,
+        1295207
+      ],
+      "bytes": 307,
+      "sha256": "76278341794d5b467598c6566e58c7386c67bdd594684989174bee9b7f60b022"
+    },
+    {
+      "symbol": "MB",
+      "path": "MB.literal.txt",
+      "utf8_half_open": [
+        1295753,
+        1295791
+      ],
+      "bytes": 38,
+      "sha256": "703557091ccb061e595cc803560e49b8c3684bc2fcd994c14e711f2ec9d8ff81"
+    },
+    {
+      "symbol": "Hie",
+      "path": "Hie.literal.txt",
+      "utf8_half_open": [
+        1295791,
+        1296935
+      ],
+      "bytes": 1144,
+      "sha256": "0822204ad19f3346eeb9983778aca8afecf95122cbbf26d27a34a2431846e3a0"
+    },
+    {
+      "symbol": "addAssistantMessage-method",
+      "path": "addAssistantMessage-method.literal.txt",
+      "utf8_half_open": [
+        1531419,
+        1531472
+      ],
+      "bytes": 53,
+      "sha256": "a8bd6521a5b8a21dee61e523bcfd91d3714041765f6abea61fe3b945a62e0818"
+    }
+  ]
+}

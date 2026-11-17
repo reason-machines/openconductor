@@ -80,6 +80,9 @@ pub fn turn_end_json(end: &TurnEnd) -> Value {
         TurnEnd::Cancelled => json!({ "outcome": "cancelled" }),
         TurnEnd::Superseded => json!({ "outcome": "superseded" }),
         TurnEnd::Failed(message) => json!({ "outcome": "failed", "message": message }),
+        TurnEnd::ResultError(message) => {
+            json!({ "outcome": "failed", "message": message, "resultError": true })
+        }
     }
 }
 

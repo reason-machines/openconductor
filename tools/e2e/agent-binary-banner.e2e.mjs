@@ -121,9 +121,10 @@ async function waitFor(what, fn, timeoutMs = 30000, everyMs = 200) {
 /** Saves <name>.png; a screenshot that fails or takes over 20 s is logged, not fatal (as in run.mjs). */
 async function screenshot(name) {
   try {
-    const png = await wd("GET", "/screenshot", undefined, 20000);
+    // Share the repaint/deadline handling used by the main WebDriver flow runner.
+    const png = await startup.screenshot(20000);
     const file = join(out, `${name}.png`);
-    writeFileSync(file, Buffer.from(png, "base64"));
+    writeFileSync(file, png);
     console.log(`screenshot: ${file}`);
   } catch (e) {
     console.log(`no ${name}.png: ${e?.message ?? e}`);

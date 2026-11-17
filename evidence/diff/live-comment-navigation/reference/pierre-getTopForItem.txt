@@ -1,0 +1,1 @@
+getTopForItem(e){const n=this.idToItem.get(e);if(n!=null)return n.top+this.getItemTopOffset()}

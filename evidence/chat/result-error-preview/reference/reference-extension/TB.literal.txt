@@ -1,0 +1,1 @@
+function TB({payload:t,agentType:e}){try{if(e==="claude"||e==="cursor"||e==="acp"){const s=yB.safeParse(t);return!s.success||xnt(s.data)?null:[Tnt(s.data)]}return Rnt(t)?Pnt(Ant(t.event,t.thread_id)):null}catch{return null}}
