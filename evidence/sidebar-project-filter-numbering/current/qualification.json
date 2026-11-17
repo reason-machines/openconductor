@@ -1,0 +1,90 @@
+{
+  "unit": "SIDEBAR-PROJECT-FILTER-NUMBERING",
+  "verdict": "QUALIFIED_BOUNDED_SOURCE_DEFECT_WITH_ACTUAL_RED",
+  "producer": "Conductor Rebuild",
+  "checked_main": "e6f9dfcb2eb9e12dc3b1c67c41baa268236f7269",
+  "execution": "Reason Cloud; exact src and package.json exported with git archive from the pinned main; Node v22.23.5 --experimental-strip-types; actual selectors and shortcutOrder, no vendor JS or app runtime",
+  "fixture": {
+    "path": "src/sidebar/sidebarProjectFilterNumbering.test.ts",
+    "sha256": "bbea95554e60381830e80fe5980fa63583a7f39db2aa90dcd66d211c6a2e286e",
+    "unchanged_during_run": true
+  },
+  "reference_packet": {
+    "attachment_id": "292abcb2-2baa-4baa-8ab3-fe0b080b66cf",
+    "sha256": "5e704cf8e4df1f325992613f051bf7f21de164057eb38cb9846e2b324a52c627",
+    "owner": "SAMEde6 original-source closure; Home271 functional custody",
+    "original_full_renderer_verification": "owner-reported passed, not independently repeated here",
+    "transferred_spans_and_controls": "independently reverified here; see reference-transfer-check.json"
+  },
+  "scope": {
+    "local": true,
+    "group_by": "repo",
+    "loaded_repos": [
+      "alpha",
+      "beta"
+    ],
+    "expanded_repos": [
+      "alpha",
+      "beta"
+    ],
+    "normal_filter": "beta",
+    "selection": "home",
+    "ordinary_workspaces_per_repo": 1,
+    "pins": 0,
+    "shared": 0,
+    "custom_sections": 0
+  },
+  "expected": {
+    "numbered_rows": [
+      "beta-row"
+    ],
+    "beta_hint": 1,
+    "shortcut_1": "beta-row",
+    "shortcut_2": null
+  },
+  "actual": {
+    "numbered_rows": [
+      "alpha-row",
+      "beta-row"
+    ],
+    "beta_hint": 2,
+    "shortcut_1": "alpha-row",
+    "shortcut_2": "beta-row"
+  },
+  "tests": {
+    "command": "node --experimental-strip-types --test .oc-tmp/sidebar-project-filter-numbering/main/src/sidebar/sidebarProjectFilterNumbering.test.ts",
+    "exit_code": 1,
+    "total": 6,
+    "passing_controls": 2,
+    "assertion_failures": 4,
+    "loader_or_harness_errors": 0,
+    "skipped": 0,
+    "log": "red.tap",
+    "log_sha256": "72b2f3809911f3fcd0a4d5a7d0a8593965c2eebbe94364c9f8adf9c0e5ae63c3"
+  },
+  "source_pins": {
+    "src/state/store.ts": "a6f2d578588d8b4afbce6af9095b6ef1d474bfbd9c7692c4d7d9eaa11e15ae87",
+    "src/components/Sidebar.tsx": "08a8549b5202e26a55aedd00e8337b42e8cecf4cf9748e588f6c9890dbf4d4bf",
+    "src/state/sidebarOrder.ts": "08bffd6a3044fb97854796f1d7b316dfb8ff4f06882a98aee4dbd98ad25ae532",
+    "src/components/SidebarWorkspaceRow.tsx": "054e2ae155e2ed5cd79de28299b712cdd187c712ff282164c5cb59397dee93f0",
+    "src/state/shortcutHint.ts": "9185606b83d867145ffe36370a46ee7a341f9227fb625621e39c43cbb78d0974",
+    "src/home/repoFilter.ts": "ae1b71b144bfc3d7606f30fb80964a51046075f36efac42aac9f4ee19019e8d9",
+    "src/home/useRepoFilter.ts": "3ce8810952618549c2ab61bfa48d62d14dc1556f58ebe5a25b8d65c8d5d2b6bc",
+    "src/palette/fromAppState.ts": "9f54e40cb6d59fa95994c4464d720f118d4ab41264c8b779c97e5ed9ffa0965c",
+    "src/palette/PaletteHost.tsx": "78a4067ebb66ef016b7d5903c38e3b312bf8c569ffd5f00c2b11743b07fb8471"
+  },
+  "production_edits": false,
+  "publication": "none; qualification-only; no product lease",
+  "not_run": [
+    "production fix or GREEN replay",
+    "typecheck/build/full integration",
+    "browser/DOM/native/package/provider execution",
+    "fresh REA acquisition",
+    "watcher/release dispatch"
+  ],
+  "non_claims": [
+    "No blanket contiguous-numbering oracle or use of #757 visible 1 and 3.",
+    "No general multi-row ordering/collapse/hidden/section/pin/shared/cloud behavior acceptance.",
+    "No runtime key dispatch or navigation executed; actual shortcutOrder target output is exercised and source-wired to numbered handlers."
+  ]
+}

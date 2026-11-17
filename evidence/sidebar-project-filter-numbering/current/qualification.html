@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sidebar filter qualification</title><style>
+body{margin:0;color:var(--foreground);font:14px/1.55 var(--font-sans,system-ui)}h1{font-size:24px;line-height:1.25;font-weight:550;margin:8px 0 14px}h2{font-size:17px;font-weight:550;margin:28px 0 8px}p{margin:8px 0}a{color:var(--accent)}code{font:12px/1.5 var(--font-mono,monospace);overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.6 var(--font-mono,monospace);padding:14px;background:var(--muted);border-radius:6px}table{border-collapse:collapse;width:100%;text-align:left;font-variant-numeric:tabular-nums}th,td{border-bottom:1px solid var(--border);padding:12px 8px;vertical-align:top}th{font-weight:500;color:var(--muted-foreground)}th:first-child,td:first-child{padding-left:0}ul{padding-left:20px}li{margin:8px 0}.muted{color:var(--muted-foreground)}.boundary{border-left:3px solid var(--chart-4);padding-left:14px;margin:20px 0}.checks{display:flex;gap:28px;flex-wrap:wrap;margin:24px 0}.checks strong{display:block;font-size:24px;line-height:1.4;font-weight:550}.checks span{color:var(--muted-foreground);font-size:12px}details{margin:24px 0;border-top:1px solid var(--border);padding-top:14px}summary{cursor:pointer}
+</style></head><body>
+<p class="muted">Conductor Rebuild · Bounded implementation proof · Reason Cloud</p>
+<h1>Project filtering now keeps sidebar hints and numbered shortcuts on the same sequence</h1>
+<p><strong>Unchanged regression: seven intended failures before, all 12 tests pass after.</strong> The only production edit applies the existing project-filter predicate to the repository-group arm of <code>sidebarEntries</code>. Remote CI and merge state are tracked separately on the pull request; local checks do not prove release containment.</p>
+<div class="checks"><div><strong>12 / 12</strong><span>Frozen producer/render/dispatch cases</span></div><div><strong>23 / 23</strong><span>Adjacent preservation controls</span></div><div><strong>1,372 / 1,372</strong><span>Legacy adjacent tests</span></div></div>
+<div class="boundary">Bounded original contract: two expanded local projects; one ordinary workspace each; Project grouping; Home selected; normal Beta filter; no sections, pins or shared rows. Not a blanket contiguity claim, not #757 inference, and not an original-app runtime replay.</div>
+<h2>The same normal Beta filter, before and after</h2>
+<table><thead><tr><th>Consumer</th><th>Pinned main before</th><th>Same fixture after</th></tr></thead><tbody>
+<tr><td>Rendered workspace</td><td>Beta only</td><td>Beta only</td></tr>
+<tr><td>Visible number</td><td>2 · Switch with Command-2</td><td>1 · Switch with Command-1</td></tr>
+<tr><td>Command-1 dispatch</td><td>Alpha, outside the filter</td><td>Beta workspace</td></tr>
+<tr><td>Command-2 dispatch</td><td>Beta workspace</td><td>No selection target</td></tr>
+<tr><td>Loaded project records</td><td>Alpha and Beta retained</td><td>Alpha and Beta retained</td></tr>
+</tbody></table>
+<h2>Fresh baseline and strict edit boundary</h2>
+<p>Pinned main <a href="https://github.com/reason-machines/openconductor/commit/1b2d83e6c2e2b3fa2eb251fc25a56d96401d96f1"><code>1b2d83e6</code></a> reproduced five passing controls and seven assertion failures with no harness errors or skips. Fixture and historical evidence were committed first, before the production edit. The exact fixture hash stayed unchanged through RED and GREEN.</p>
+<p>The verifier checked all <strong>1,259 pinned source files</strong>, allowing only the exact repository-arm predicate replacement. This is source identity evidence, not 1,259 behavioral tests. Pinned/section prefixes, status grouping, collapse/sort helpers, rows, preferences/store and global handlers are byte-unchanged.</p>
+<h2>Real component consumers, isolated external effects</h2>
+<p>The actual <code>ProjectFilterSubmenu</code> radio click flows through <code>useRepoFilter → appPrefs → useAppStore → Sidebar → SidebarWorkspaceRow</code>. The replay checks rendered hint text, accessible label and visible state.</p>
+<p>Numbered keys flow through the real registry, <code>bindCommands</code> and dispatcher into the registered <code>PaletteHost</code> handler, then actual <code>select</code> actions and store reducer. Unfiltered labels/targets, normal filter propagation and clearing back to All projects pass unchanged.</p>
+<h2>Verification results</h2>
+<ul><li><strong>Passed:</strong> 12 frozen regression cases; 23 preservation controls for prefixes, status branch, no-filter order, collapse/sort, existing hidden/archive policy, unknown filters and non-mutation; 1,372 adjacent legacy tests.</li><li><strong>Passed:</strong> full TypeScript check, production build and color lint (six checker cases plus source scan). Build retains Vite’s chunk-size advisory.</li><li><strong>Corrected supplemental harness:</strong> an initial preservation-runner relative import was one directory too high. It ran no behavioral assertions; after correction all 23 cases passed. Both logs are retained; the frozen 12-case regression was not edited.</li><li><strong>Reference reused:</strong> the handed SAMEde6 packet/verifier hashes match; no repeated original extraction or vendor-JavaScript evaluation.</li></ul>
+<h2>Acceptance boundaries</h2>
+<p>This is Node/React in-memory rendering, isolated browser-fallback preference storage and adapted React keybinding registration. Geometry, portals, time and unrelated effects are inert. It is <strong>not</strong> a browser screenshot, OS-key delivery, native persistence or installed-app test. Browser/native/runtime execution was excluded from this serialized lane.</p>
+<p>Tauri/SQLite integration, live-provider behavior, installed package containment and runtime embedding remain unverified or not run. Existing release custody owns those checks. No acquisition, watcher or release dispatch was created.</p>
+<details><summary>Frozen identities and reproduction</summary><pre>Fixture SHA-256 (unchanged)
+3116f4291371e127b6b5dc08afa29eb6213c9e834eb400fa47761b430562d217
+
+Original six-test SHA-256 (unchanged)
+bbea95554e60381830e80fe5980fa63583a7f39db2aa90dcd66d211c6a2e286e
+
+Handed reference packet SHA-256
+5e704cf8e4df1f325992613f051bf7f21de164057eb38cb9846e2b324a52c627
+
+python3 evidence/sidebar-project-filter-numbering/current/verify-implementation.py green
+node --experimental-strip-types --test evidence/sidebar-project-filter-numbering/current/adjacent-controls.test.ts
+node --experimental-strip-types --test --test-concurrency=2 src/state/*.test.ts src/home/*.test.ts src/palette/*.test.ts src/keybindings/*.test.ts src/components/*.test.ts
+npm run typecheck
+npm run build
+npm run lint:colors
+
+Logs and hash manifests: implementation-{red,green,checks}.json,
+fresh-main-red.tap, fresh-main-red-recheck.tap, candidate-{red,green}.tap,
+adjacent-controls.tap, adjacent-legacy.tap.gz and scoped build/lint logs.</pre></details>
+</body></html>
