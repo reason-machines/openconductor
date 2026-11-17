@@ -1,0 +1,1 @@
+function Cce(t){return!mQe()||typeof ShadowRoot>"u"?!1:t instanceof ShadowRoot||t instanceof mf(t).ShadowRoot}

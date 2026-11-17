@@ -1,0 +1,139 @@
+(node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:93) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual mounted resource poll renders panel and center labels instead of shell executable names
+not ok 1 - actual mounted resource poll renders panel and center labels instead of shell executable names
+  ---
+  duration_ms: 201.305131
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:108:1'
+  failureType: 'testCodeFailure'
+  error: '@tauri-apps/plugin-dialog'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    requireSource (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:77:14)
+    src/features/terminal/session.ts:23:25
+    load (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:81:107)
+    fixture (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:84:19)
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:109:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: panel numbering starts at first PANEL insertion, independent of center-first workspaces and titles
+not ok 2 - panel numbering starts at first PANEL insertion, independent of center-first workspaces and titles
+  ---
+  duration_ms: 136.635441
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:127:1'
+  failureType: 'testCodeFailure'
+  error: '@tauri-apps/plugin-dialog'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    requireSource (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:77:14)
+    src/features/terminal/session.ts:23:25
+    load (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:81:107)
+    fixture (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:84:19)
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:128:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+  ...
+# Subtest: restored terminal ids keep their placement labels without using saved titles
+not ok 3 - restored terminal ids keep their placement labels without using saved titles
+  ---
+  duration_ms: 116.534871
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:144:1'
+  failureType: 'testCodeFailure'
+  error: '@tauri-apps/plugin-dialog'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    requireSource (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:77:14)
+    src/features/terminal/session.ts:23:25
+    load (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:81:107)
+    fixture (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:84:19)
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:145:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+  ...
+# Subtest: resource labels do not enable polling with {"enabled":false}
+not ok 4 - resource labels do not enable polling with {"enabled":false}
+  ---
+  duration_ms: 47.324701
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:153:3'
+  failureType: 'testCodeFailure'
+  error: '@tauri-apps/plugin-dialog'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    requireSource (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:77:14)
+    src/features/terminal/session.ts:23:25
+    load (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:81:107)
+    fixture (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:84:19)
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:154:15)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+  ...
+# Subtest: resource labels do not enable polling with {"desktop":false}
+not ok 5 - resource labels do not enable polling with {"desktop":false}
+  ---
+  duration_ms: 36.58067
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:153:3'
+  failureType: 'testCodeFailure'
+  error: '@tauri-apps/plugin-dialog'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    requireSource (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:77:14)
+    src/features/terminal/session.ts:23:25
+    load (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:81:107)
+    fixture (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:84:19)
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/evidence/resource-terminal-labels/regression.cjs:154:15)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 913.486149

@@ -1,0 +1,74 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual helper centers its exact matched row
+ok 1 - actual helper centers its exact matched row
+  ---
+  duration_ms: 387.484795
+  type: 'test'
+  ...
+# Subtest: actual helper animates the direct reveal frame, not its outer row
+ok 2 - actual helper animates the direct reveal frame, not its outer row
+  ---
+  duration_ms: 154.524588
+  type: 'test'
+  ...
+# Subtest: actual helper falls back to animating the row when no reveal frame exists
+ok 3 - actual helper falls back to animating the row when no reveal frame exists
+  ---
+  duration_ms: 126.986365
+  type: 'test'
+  ...
+# Subtest: without Web Animations support, revealing a row does not throw
+ok 4 - without Web Animations support, revealing a row does not throw
+  ---
+  duration_ms: 104.61708
+  type: 'test'
+  ...
+# Subtest: mounted actual SettingsSearch activation reveals the target (click)
+ok 5 - mounted actual SettingsSearch activation reveals the target (click)
+  ---
+  duration_ms: 138.725394
+  type: 'test'
+  ...
+# Subtest: mounted actual SettingsSearch activation reveals the target (Enter)
+ok 6 - mounted actual SettingsSearch activation reveals the target (Enter)
+  ---
+  duration_ms: 108.553642
+  type: 'test'
+  ...
+# Subtest: a mounted page result with no row schedules no reveal
+ok 7 - a mounted page result with no row schedules no reveal
+  ---
+  duration_ms: 148.19151
+  type: 'test'
+  ...
+# Subtest: existing delayed-row retry still reveals the target exactly once when it appears
+ok 8 - existing delayed-row retry still reveals the target exactly once when it appears
+  ---
+  duration_ms: 102.810524
+  type: 'test'
+  ...
+# Subtest: an absent row remains a bounded harmless no-op
+ok 9 - an absent row remains a bounded harmless no-op
+  ---
+  duration_ms: 102.97757
+  type: 'test'
+  ...
+# Subtest: first exact match is still selected, not an unrelated or later duplicate row
+ok 10 - first exact match is still selected, not an unrelated or later duplicate row
+  ---
+  duration_ms: 90.916929
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1822.777145

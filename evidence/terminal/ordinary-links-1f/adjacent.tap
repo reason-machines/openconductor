@@ -1,0 +1,1220 @@
+(node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:89) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: clear shortcut leaves the real xterm alternate buffer 47 and transport untouched
+ok 1 - clear shortcut leaves the real xterm alternate buffer 47 and transport untouched
+  ---
+  duration_ms: 563.393055
+  type: 'test'
+  ...
+# Subtest: clear shortcut leaves the real xterm alternate buffer 1047 and transport untouched
+ok 2 - clear shortcut leaves the real xterm alternate buffer 1047 and transport untouched
+  ---
+  duration_ms: 23.912009
+  type: 'test'
+  ...
+# Subtest: clear shortcut leaves the real xterm alternate buffer 1049 and transport untouched
+ok 3 - clear shortcut leaves the real xterm alternate buffer 1049 and transport untouched
+  ---
+  duration_ms: 12.346952
+  type: 'test'
+  ...
+# Subtest: normal-buffer clear shortcut still clears and requests one shell redraw
+ok 4 - normal-buffer clear shortcut still clears and requests one shell redraw
+  ---
+  duration_ms: 8.980616
+  type: 'test'
+  ...
+# Subtest: returning from alternate mode restores normal-buffer clear handling
+ok 5 - returning from alternate mode restores normal-buffer clear handling
+  ---
+  duration_ms: 12.115002
+  type: 'test'
+  ...
+# Subtest: alternate-buffer keyup does not clear or consume the event
+ok 6 - alternate-buffer keyup does not clear or consume the event
+  ---
+  duration_ms: 11.604129
+  type: 'test'
+  ...
+# Subtest: unbound alternate-buffer shortcut still passes through
+ok 7 - unbound alternate-buffer shortcut still passes through
+  ---
+  duration_ms: 9.696816
+  type: 'test'
+  ...
+# Subtest: direct clearTab remains independent of the keyboard buffer guard
+ok 8 - direct clearTab remains independent of the keyboard buffer guard
+  ---
+  duration_ms: 11.325666
+  type: 'test'
+  ...
+# Subtest: find shortcut remains available in the alternate buffer
+ok 9 - find shortcut remains available in the alternate buffer
+  ---
+  duration_ms: 10.057998
+  type: 'test'
+  ...
+# Subtest: clearing a normal sibling does not clear an alternate-buffer terminal
+ok 10 - clearing a normal sibling does not clear an alternate-buffer terminal
+  ---
+  duration_ms: 12.340594
+  type: 'test'
+  ...
+# (node:97) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: line start passes through alternate buffer 47 without injected readline bytes
+ok 11 - line start passes through alternate buffer 47 without injected readline bytes
+  ---
+  duration_ms: 516.993446
+  type: 'test'
+  ...
+# Subtest: line end passes through alternate buffer 47 without injected readline bytes
+ok 12 - line end passes through alternate buffer 47 without injected readline bytes
+  ---
+  duration_ms: 22.311684
+  type: 'test'
+  ...
+# Subtest: delete line passes through alternate buffer 47 without injected readline bytes
+ok 13 - delete line passes through alternate buffer 47 without injected readline bytes
+  ---
+  duration_ms: 10.408509
+  type: 'test'
+  ...
+# Subtest: word left passes through alternate buffer 47 without injected readline bytes
+ok 14 - word left passes through alternate buffer 47 without injected readline bytes
+  ---
+  duration_ms: 10.941276
+  type: 'test'
+  ...
+# Subtest: word right passes through alternate buffer 47 without injected readline bytes
+ok 15 - word right passes through alternate buffer 47 without injected readline bytes
+  ---
+  duration_ms: 12.98818
+  type: 'test'
+  ...
+# Subtest: insert-newline still precedes the alternate-buffer 47 guard
+ok 16 - insert-newline still precedes the alternate-buffer 47 guard
+  ---
+  duration_ms: 11.943977
+  type: 'test'
+  ...
+# Subtest: line start passes through alternate buffer 1047 without injected readline bytes
+ok 17 - line start passes through alternate buffer 1047 without injected readline bytes
+  ---
+  duration_ms: 10.508373
+  type: 'test'
+  ...
+# Subtest: line end passes through alternate buffer 1047 without injected readline bytes
+ok 18 - line end passes through alternate buffer 1047 without injected readline bytes
+  ---
+  duration_ms: 9.69545
+  type: 'test'
+  ...
+# Subtest: delete line passes through alternate buffer 1047 without injected readline bytes
+ok 19 - delete line passes through alternate buffer 1047 without injected readline bytes
+  ---
+  duration_ms: 9.013279
+  type: 'test'
+  ...
+# Subtest: word left passes through alternate buffer 1047 without injected readline bytes
+ok 20 - word left passes through alternate buffer 1047 without injected readline bytes
+  ---
+  duration_ms: 13.87102
+  type: 'test'
+  ...
+# Subtest: word right passes through alternate buffer 1047 without injected readline bytes
+ok 21 - word right passes through alternate buffer 1047 without injected readline bytes
+  ---
+  duration_ms: 24.151851
+  type: 'test'
+  ...
+# Subtest: insert-newline still precedes the alternate-buffer 1047 guard
+ok 22 - insert-newline still precedes the alternate-buffer 1047 guard
+  ---
+  duration_ms: 24.973135
+  type: 'test'
+  ...
+# Subtest: line start passes through alternate buffer 1049 without injected readline bytes
+ok 23 - line start passes through alternate buffer 1049 without injected readline bytes
+  ---
+  duration_ms: 9.652823
+  type: 'test'
+  ...
+# Subtest: line end passes through alternate buffer 1049 without injected readline bytes
+ok 24 - line end passes through alternate buffer 1049 without injected readline bytes
+  ---
+  duration_ms: 9.43139
+  type: 'test'
+  ...
+# Subtest: delete line passes through alternate buffer 1049 without injected readline bytes
+ok 25 - delete line passes through alternate buffer 1049 without injected readline bytes
+  ---
+  duration_ms: 10.709391
+  type: 'test'
+  ...
+# Subtest: word left passes through alternate buffer 1049 without injected readline bytes
+ok 26 - word left passes through alternate buffer 1049 without injected readline bytes
+  ---
+  duration_ms: 9.603649
+  type: 'test'
+  ...
+# Subtest: word right passes through alternate buffer 1049 without injected readline bytes
+ok 27 - word right passes through alternate buffer 1049 without injected readline bytes
+  ---
+  duration_ms: 9.257004
+  type: 'test'
+  ...
+# Subtest: insert-newline still precedes the alternate-buffer 1049 guard
+ok 28 - insert-newline still precedes the alternate-buffer 1049 guard
+  ---
+  duration_ms: 10.446014
+  type: 'test'
+  ...
+# Subtest: line start still sends its exact readline bytes in the normal buffer
+ok 29 - line start still sends its exact readline bytes in the normal buffer
+  ---
+  duration_ms: 8.038891
+  type: 'test'
+  ...
+# Subtest: line end still sends its exact readline bytes in the normal buffer
+ok 30 - line end still sends its exact readline bytes in the normal buffer
+  ---
+  duration_ms: 9.242507
+  type: 'test'
+  ...
+# Subtest: delete line still sends its exact readline bytes in the normal buffer
+ok 31 - delete line still sends its exact readline bytes in the normal buffer
+  ---
+  duration_ms: 7.754688
+  type: 'test'
+  ...
+# Subtest: word left still sends its exact readline bytes in the normal buffer
+ok 32 - word left still sends its exact readline bytes in the normal buffer
+  ---
+  duration_ms: 9.561789
+  type: 'test'
+  ...
+# Subtest: word right still sends its exact readline bytes in the normal buffer
+ok 33 - word right still sends its exact readline bytes in the normal buffer
+  ---
+  duration_ms: 8.266918
+  type: 'test'
+  ...
+# Subtest: leaving the alternate buffer restores all normal line-edit commands
+ok 34 - leaving the alternate buffer restores all normal line-edit commands
+  ---
+  duration_ms: 11.654819
+  type: 'test'
+  ...
+# Subtest: alternate-buffer keyup never injects readline bytes
+ok 35 - alternate-buffer keyup never injects readline bytes
+  ---
+  duration_ms: 11.15025
+  type: 'test'
+  ...
+# Subtest: ordinary alternate-buffer input still passes through
+ok 36 - ordinary alternate-buffer input still passes through
+  ---
+  duration_ms: 17.681132
+  type: 'test'
+  ...
+# Subtest: Find remains available in the alternate buffer
+ok 37 - Find remains available in the alternate buffer
+  ---
+  duration_ms: 10.321177
+  type: 'test'
+  ...
+# Subtest: new-tab remains available in the alternate buffer
+ok 38 - new-tab remains available in the alternate buffer
+  ---
+  duration_ms: 11.942421
+  type: 'test'
+  ...
+# Subtest: an alternate sibling does not suppress normal-buffer line editing
+ok 39 - an alternate sibling does not suppress normal-buffer line editing
+  ---
+  duration_ms: 12.011985
+  type: 'test'
+  ...
+# (node:105) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: starting clear preserves screen/history clearing and guards the redraw request
+ok 40 - starting clear preserves screen/history clearing and guards the redraw request
+  ---
+  duration_ms: 392.958346
+  type: 'test'
+  ...
+# Subtest: running clear preserves screen/history clearing and guards the redraw request
+ok 41 - running clear preserves screen/history clearing and guards the redraw request
+  ---
+  duration_ms: 9.769371
+  type: 'test'
+  ...
+# Subtest: exited clear preserves screen/history clearing and guards the redraw request
+ok 42 - exited clear preserves screen/history clearing and guards the redraw request
+  ---
+  duration_ms: 10.70521
+  type: 'test'
+  ...
+# Subtest: spawn_error clear preserves screen/history clearing and guards the redraw request
+ok 43 - spawn_error clear preserves screen/history clearing and guards the redraw request
+  ---
+  duration_ms: 7.253396
+  type: 'test'
+  ...
+# Subtest: disabled clear preserves screen/history clearing and guards the redraw request
+ok 44 - disabled clear preserves screen/history clearing and guards the redraw request
+  ---
+  duration_ms: 7.373864
+  type: 'test'
+  ...
+# Subtest: clear shortcut targets only its terminal and preserves user-input metadata (false)
+ok 45 - clear shortcut targets only its terminal and preserves user-input metadata (false)
+  ---
+  duration_ms: 8.866956
+  type: 'test'
+  ...
+# Subtest: clear shortcut targets only its terminal and preserves user-input metadata (true)
+ok 46 - clear shortcut targets only its terminal and preserves user-input metadata (true)
+  ---
+  duration_ms: 7.638441
+  type: 'test'
+  ...
+# Subtest: clearing a closed terminal cannot write to a surviving terminal
+ok 47 - clearing a closed terminal cannot write to a surviving terminal
+  ---
+  duration_ms: 7.527454
+  type: 'test'
+  ...
+# (node:113) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a starting terminal requests a transparent cursor with the terminal background accent
+ok 48 - a starting terminal requests a transparent cursor with the terminal background accent
+  ---
+  duration_ms: 375.395862
+  type: 'test'
+  ...
+# Subtest: ready projects the foreground cursor without changing other terminal colors
+ok 49 - ready projects the foreground cursor without changing other terminal colors
+  ---
+  duration_ms: 10.539864
+  type: 'test'
+  ...
+# Subtest: exit projects a transparent cursor without changing other terminal colors
+ok 50 - exit projects a transparent cursor without changing other terminal colors
+  ---
+  duration_ms: 7.94332
+  type: 'test'
+  ...
+# Subtest: failed spawn requests a transparent cursor
+ok 51 - failed spawn requests a transparent cursor
+  ---
+  duration_ms: 8.030015
+  type: 'test'
+  ...
+# Subtest: failed-spawn retry keeps the cursor transparent until ready
+ok 52 - failed-spawn retry keeps the cursor transparent until ready
+  ---
+  duration_ms: 7.543398
+  type: 'test'
+  ...
+# Subtest: a terminal's cursor lifecycle does not change its sibling's theme
+ok 53 - a terminal's cursor lifecycle does not change its sibling's theme
+  ---
+  duration_ms: 10.859178
+  type: 'test'
+  ...
+# Subtest: cursor lifecycle preserves saved user-input metadata (false)
+ok 54 - cursor lifecycle preserves saved user-input metadata (false)
+  ---
+  duration_ms: 16.768149
+  type: 'test'
+  ...
+# Subtest: cursor lifecycle preserves saved user-input metadata (true)
+ok 55 - cursor lifecycle preserves saved user-input metadata (true)
+  ---
+  duration_ms: 6.540696
+  type: 'test'
+  ...
+# Subtest: late events for a closed terminal cannot alter a surviving cursor theme
+ok 56 - late events for a closed terminal cannot alter a surviving cursor theme
+  ---
+  duration_ms: 5.97571
+  type: 'test'
+  ...
+# (node:121) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: starting ordinary input cannot queue writes or mark saved user input
+ok 57 - starting ordinary input cannot queue writes or mark saved user input
+  ---
+  duration_ms: 397.507638
+  type: 'test'
+  ...
+# Subtest: starting line-edit input cannot queue writes or mark saved user input
+ok 58 - starting line-edit input cannot queue writes or mark saved user input
+  ---
+  duration_ms: 16.446484
+  type: 'test'
+  ...
+# Subtest: exited ordinary input cannot queue writes or mark saved user input
+ok 59 - exited ordinary input cannot queue writes or mark saved user input
+  ---
+  duration_ms: 7.635051
+  type: 'test'
+  ...
+# Subtest: exited line-edit input cannot queue writes or mark saved user input
+ok 60 - exited line-edit input cannot queue writes or mark saved user input
+  ---
+  duration_ms: 6.076698
+  type: 'test'
+  ...
+# Subtest: spawn_error ordinary input cannot queue writes or mark saved user input
+ok 61 - spawn_error ordinary input cannot queue writes or mark saved user input
+  ---
+  duration_ms: 8.65731
+  type: 'test'
+  ...
+# Subtest: spawn_error line-edit input cannot queue writes or mark saved user input
+ok 62 - spawn_error line-edit input cannot queue writes or mark saved user input
+  ---
+  duration_ms: 7.374386
+  type: 'test'
+  ...
+# Subtest: running enabled ordinary input is written to the selected PTY and recorded
+ok 63 - running enabled ordinary input is written to the selected PTY and recorded
+  ---
+  duration_ms: 7.355911
+  type: 'test'
+  ...
+# Subtest: running disabled ordinary input cannot queue writes or mark saved user input
+ok 64 - running disabled ordinary input cannot queue writes or mark saved user input
+  ---
+  duration_ms: 7.04359
+  type: 'test'
+  ...
+# Subtest: running enabled line-edit input is written to the selected PTY and recorded
+ok 65 - running enabled line-edit input is written to the selected PTY and recorded
+  ---
+  duration_ms: 7.676415
+  type: 'test'
+  ...
+# Subtest: running disabled line-edit input cannot queue writes or mark saved user input
+ok 66 - running disabled line-edit input cannot queue writes or mark saved user input
+  ---
+  duration_ms: 8.028021
+  type: 'test'
+  ...
+# Subtest: stdin is disabled until ready and after exit
+ok 67 - stdin is disabled until ready and after exit
+  ---
+  duration_ms: 8.230761
+  type: 'test'
+  ...
+# Subtest: failed-spawn retry stays read-only until ready, then accepts input
+ok 68 - failed-spawn retry stays read-only until ready, then accepts input
+  ---
+  duration_ms: 11.892325
+  type: 'test'
+  ...
+# Subtest: read-only terminals still allow local Find and clear commands
+ok 69 - read-only terminals still allow local Find and clear commands
+  ---
+  duration_ms: 5.739173
+  type: 'test'
+  ...
+# (node:129) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary copy trims a partial selection ending before later terminal text
+ok 70 - ordinary copy trims a partial selection ending before later terminal text
+  ---
+  duration_ms: 259.965009
+  type: 'test'
+  ...
+# Subtest: ordinary copy trims each line and preserves indentation and internal spaces
+ok 71 - ordinary copy trims each line and preserves indentation and internal spaces
+  ---
+  duration_ms: 8.864345
+  type: 'test'
+  ...
+# Subtest: ordinary copy of selected spaces writes an empty plain-text value
+ok 72 - ordinary copy of selected spaces writes an empty plain-text value
+  ---
+  duration_ms: 7.227065
+  type: 'test'
+  ...
+# Subtest: ordinary copy preserves selected blank lines rather than trimming the whole selection
+ok 73 - ordinary copy preserves selected blank lines rather than trimming the whole selection
+  ---
+  duration_ms: 8.607274
+  type: 'test'
+  ...
+# Subtest: ordinary copy preserves leading and internal spaces without trailing whitespace
+ok 74 - ordinary copy preserves leading and internal spaces without trailing whitespace
+  ---
+  duration_ms: 6.952861
+  type: 'test'
+  ...
+# Subtest: ordinary collapsed selection leaves clipboard and default action unchanged
+ok 75 - ordinary collapsed selection leaves clipboard and default action unchanged
+  ---
+  duration_ms: 9.544862
+  type: 'test'
+  ...
+# Subtest: copy outside the ordinary terminal is not intercepted
+ok 76 - copy outside the ordinary terminal is not intercepted
+  ---
+  duration_ms: 19.706926
+  type: 'test'
+  ...
+# Subtest: ordinary copy without clipboard data does not throw
+ok 77 - ordinary copy without clipboard data does not throw
+  ---
+  duration_ms: 12.299198
+  type: 'test'
+  ...
+# Subtest: ordinary reattachment keeps one open terminal and its corrected copy behavior
+ok 78 - ordinary reattachment keeps one open terminal and its corrected copy behavior
+  ---
+  duration_ms: 7.054813
+  type: 'test'
+  ...
+# Subtest: ordinary close removes its copy listener from the old terminal element
+ok 79 - ordinary close removes its copy listener from the old terminal element
+  ---
+  duration_ms: 8.987579
+  type: 'test'
+  ...
+# Subtest: ordinary starting and exited terminals retain local copy behavior without PTY input
+ok 80 - ordinary starting and exited terminals retain local copy behavior without PTY input
+  ---
+  duration_ms: 6.594997
+  type: 'test'
+  ...
+# (node:137) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary encoded Command-click warns before opening the exact target
+ok 81 - ordinary encoded Command-click warns before opening the exact target
+  ---
+  duration_ms: 519.092244
+  type: 'test'
+  ...
+# Subtest: ordinary encoded-link cancellation never reaches the opener
+ok 82 - ordinary encoded-link cancellation never reaches the opener
+  ---
+  duration_ms: 9.502203
+  type: 'test'
+  ...
+# Subtest: ordinary unmodified and Control-only encoded-link activation does nothing
+ok 83 - ordinary unmodified and Control-only encoded-link activation does nothing
+  ---
+  duration_ms: 10.809989
+  type: 'test'
+  ...
+# Subtest: ordinary encoded HTTP localhost target is preserved through confirmation
+ok 84 - ordinary encoded HTTP localhost target is preserved through confirmation
+  ---
+  duration_ms: 8.841898
+  type: 'test'
+  ...
+# Subtest: ordinary encoded links disable non-HTTP protocols
+ok 85 - ordinary encoded links disable non-HTTP protocols
+  ---
+  duration_ms: 13.449267
+  type: 'test'
+  ...
+# Subtest: ordinary invalid and non-web targets never reach the warning or opener
+ok 86 - ordinary invalid and non-web targets never reach the warning or opener
+  ---
+  duration_ms: 30.547868
+  type: 'test'
+  ...
+# Subtest: ordinary warning failures are handled without opening
+ok 87 - ordinary warning failures are handled without opening
+  ---
+  duration_ms: 7.564182
+  type: 'test'
+  ...
+# Subtest: ordinary opener failures are handled after approval
+ok 88 - ordinary opener failures are handled after approval
+  ---
+  duration_ms: 8.100525
+  type: 'test'
+  ...
+# Subtest: ordinary reattachment keeps one terminal and its encoded-link handler
+ok 89 - ordinary reattachment keeps one terminal and its encoded-link handler
+  ---
+  duration_ms: 8.964735
+  type: 'test'
+  ...
+# Subtest: ordinary starting and exited terminals keep the encoded-link handler
+ok 90 - ordinary starting and exited terminals keep the encoded-link handler
+  ---
+  duration_ms: 7.746841
+  type: 'test'
+  ...
+# Subtest: ordinary input remains gated by ready and exit states
+ok 91 - ordinary input remains gated by ready and exit states
+  ---
+  duration_ms: 8.536858
+  type: 'test'
+  ...
+# Subtest: ordinary terminal disposal and Unicode setup stay unchanged
+ok 92 - ordinary terminal disposal and Unicode setup stay unchanged
+  ---
+  duration_ms: 7.623728
+  type: 'test'
+  ...
+# (node:145) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary terminal refreshes black after root appearance changes
+ok 93 - ordinary terminal refreshes black after root appearance changes
+  ---
+  duration_ms: 458.476326
+  type: 'test'
+  ...
+# Subtest: ordinary terminal refreshes red after root appearance changes
+ok 94 - ordinary terminal refreshes red after root appearance changes
+  ---
+  duration_ms: 19.065158
+  type: 'test'
+  ...
+# Subtest: ordinary terminal refreshes green after root appearance changes
+ok 95 - ordinary terminal refreshes green after root appearance changes
+  ---
+  duration_ms: 10.552974
+  type: 'test'
+  ...
+# Subtest: ordinary terminal refreshes yellow after root appearance changes
+ok 96 - ordinary terminal refreshes yellow after root appearance changes
+  ---
+  duration_ms: 9.055194
+  type: 'test'
+  ...
+# Subtest: ordinary terminal refreshes blue after root appearance changes
+ok 97 - ordinary terminal refreshes blue after root appearance changes
+  ---
+  duration_ms: 9.612279
+  type: 'test'
+  ...
+# Subtest: ordinary terminal refreshes magenta after root appearance changes
+ok 98 - ordinary terminal refreshes magenta after root appearance changes
+  ---
+  duration_ms: 24.464676
+  type: 'test'
+  ...
+# Subtest: ordinary terminal refreshes cyan after root appearance changes
+ok 99 - ordinary terminal refreshes cyan after root appearance changes
+  ---
+  duration_ms: 14.680056
+  type: 'test'
+  ...
+# Subtest: ordinary terminal refreshes white after root appearance changes
+ok 100 - ordinary terminal refreshes white after root appearance changes
+  ---
+  duration_ms: 6.928473
+  type: 'test'
+  ...
+# Subtest: ordinary terminal refreshes brightBlack after root appearance changes
+ok 101 - ordinary terminal refreshes brightBlack after root appearance changes
+  ---
+  duration_ms: 8.030136
+  type: 'test'
+  ...
+# Subtest: ordinary terminal refreshes brightRed after root appearance changes
+ok 102 - ordinary terminal refreshes brightRed after root appearance changes
+  ---
+  duration_ms: 7.953292
+  type: 'test'
+  ...
+# Subtest: ordinary terminal refreshes brightGreen after root appearance changes
+ok 103 - ordinary terminal refreshes brightGreen after root appearance changes
+  ---
+  duration_ms: 7.47592
+  type: 'test'
+  ...
+# Subtest: ordinary terminal refreshes brightYellow after root appearance changes
+ok 104 - ordinary terminal refreshes brightYellow after root appearance changes
+  ---
+  duration_ms: 7.437406
+  type: 'test'
+  ...
+# Subtest: ordinary terminal refreshes brightBlue after root appearance changes
+ok 105 - ordinary terminal refreshes brightBlue after root appearance changes
+  ---
+  duration_ms: 7.493616
+  type: 'test'
+  ...
+# Subtest: ordinary terminal refreshes brightMagenta after root appearance changes
+ok 106 - ordinary terminal refreshes brightMagenta after root appearance changes
+  ---
+  duration_ms: 7.759768
+  type: 'test'
+  ...
+# Subtest: ordinary terminal refreshes brightCyan after root appearance changes
+ok 107 - ordinary terminal refreshes brightCyan after root appearance changes
+  ---
+  duration_ms: 7.570793
+  type: 'test'
+  ...
+# Subtest: ordinary terminal refreshes brightWhite after root appearance changes
+ok 108 - ordinary terminal refreshes brightWhite after root appearance changes
+  ---
+  duration_ms: 8.089135
+  type: 'test'
+  ...
+# Subtest: CSS value changes without a root mutation leave the first terminal unchanged
+ok 109 - CSS value changes without a root mutation leave the first terminal unchanged
+  ---
+  duration_ms: 8.928142
+  type: 'test'
+  ...
+# Subtest: unrelated root attributes do not refresh ordinary terminal colors
+ok 110 - unrelated root attributes do not refresh ordinary terminal colors
+  ---
+  duration_ms: 7.881155
+  type: 'test'
+  ...
+# Subtest: appearance notifications preserve starting and exited cursor and input states
+ok 111 - appearance notifications preserve starting and exited cursor and input states
+  ---
+  duration_ms: 9.02852
+  type: 'test'
+  ...
+# Subtest: disposed terminals retain no effective appearance notification
+ok 112 - disposed terminals retain no effective appearance notification
+  ---
+  duration_ms: 8.812463
+  type: 'test'
+  ...
+# (node:153) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: startup resize is reconciled after registration (120 columns, 24 rows)
+ok 113 - startup resize is reconciled after registration (120 columns, 24 rows)
+  ---
+  duration_ms: 403.098573
+  type: 'test'
+  ...
+# Subtest: startup resize is reconciled after registration (80 columns, 40 rows)
+ok 114 - startup resize is reconciled after registration (80 columns, 40 rows)
+  ---
+  duration_ms: 16.227124
+  type: 'test'
+  ...
+# Subtest: startup resize is reconciled after registration (120 columns, 40 rows)
+ok 115 - startup resize is reconciled after registration (120 columns, 40 rows)
+  ---
+  duration_ms: 6.36474
+  type: 'test'
+  ...
+# Subtest: unchanged startup dimensions do not submit a redundant resize
+ok 116 - unchanged startup dimensions do not submit a redundant resize
+  ---
+  duration_ms: 6.205342
+  type: 'test'
+  ...
+# Subtest: startup reconciliation uses the latest dimensions after several changes
+ok 117 - startup reconciliation uses the latest dimensions after several changes
+  ---
+  duration_ms: 7.646505
+  type: 'test'
+  ...
+# Subtest: successful spawn reconciles even when the ready event has not yet been consumed
+ok 118 - successful spawn reconciles even when the ready event has not yet been consumed
+  ---
+  duration_ms: 7.524738
+  type: 'test'
+  ...
+# Subtest: a terminal closed during startup cannot send a late reconciliation
+ok 119 - a terminal closed during startup cannot send a late reconciliation
+  ---
+  duration_ms: 7.376231
+  type: 'test'
+  ...
+# Subtest: an exit observed before spawn resolution prevents a late reconciliation
+ok 120 - an exit observed before spawn resolution prevents a late reconciliation
+  ---
+  duration_ms: 7.698984
+  type: 'test'
+  ...
+# Subtest: a rejected spawn does not reconcile; retry captures its own dimensions
+ok 121 - a rejected spawn does not reconcile; retry captures its own dimensions
+  ---
+  duration_ms: 8.383055
+  type: 'test'
+  ...
+# Subtest: post-startup resize still forwards normally and does not change its sibling
+ok 122 - post-startup resize still forwards normally and does not change its sibling
+  ---
+  duration_ms: 8.5589
+  type: 'test'
+  ...
+# (node:161) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary constructor uses the unmodified semantic selectionBackground
+ok 123 - ordinary constructor uses the unmodified semantic selectionBackground
+  ---
+  duration_ms: 386.422173
+  type: 'test'
+  ...
+# Subtest: ordinary appearance refresh updates selectionBackground independently
+ok 124 - ordinary appearance refresh updates selectionBackground independently
+  ---
+  duration_ms: 9.875093
+  type: 'test'
+  ...
+# Subtest: ScriptOutput retains independent selectionBackground mapping on appearance refresh
+ok 125 - ScriptOutput retains independent selectionBackground mapping on appearance refresh
+  ---
+  duration_ms: 42.860391
+  type: 'test'
+  ...
+# Subtest: ordinary constructor uses the unmodified semantic selectionForeground
+ok 126 - ordinary constructor uses the unmodified semantic selectionForeground
+  ---
+  duration_ms: 8.883222
+  type: 'test'
+  ...
+# Subtest: ordinary appearance refresh updates selectionForeground independently
+ok 127 - ordinary appearance refresh updates selectionForeground independently
+  ---
+  duration_ms: 13.061571
+  type: 'test'
+  ...
+# Subtest: ScriptOutput retains independent selectionForeground mapping on appearance refresh
+ok 128 - ScriptOutput retains independent selectionForeground mapping on appearance refresh
+  ---
+  duration_ms: 3.897202
+  type: 'test'
+  ...
+# Subtest: ordinary selection follows IJe's omitted inactive override through refresh and lifecycle
+ok 129 - ordinary selection follows IJe's omitted inactive override through refresh and lifecycle
+  ---
+  duration_ms: 6.786672
+  type: 'test'
+  ...
+# Subtest: unrelated root attributes leave ordinary selection unchanged
+ok 130 - unrelated root attributes leave ordinary selection unchanged
+  ---
+  duration_ms: 6.307251
+  type: 'test'
+  ...
+# Subtest: retained REA IJe/F3 bytes bind selection to primary and primary-foreground without an inactive override
+ok 131 - retained REA IJe/F3 bytes bind selection to primary and primary-foreground without an inactive override
+  ---
+  duration_ms: 0.839216
+  type: 'test'
+  ...
+# (node:169) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary panel LF starts the next line at column zero
+ok 132 - ordinary panel LF starts the next line at column zero
+  ---
+  duration_ms: 393.298707
+  type: 'test'
+  ...
+# Subtest: center terminal LF resets the column after wide output
+ok 133 - center terminal LF resets the column after wide output
+  ---
+  duration_ms: 11.923909
+  type: 'test'
+  ...
+# Subtest: LF received in a separate PTY event resets the output column
+ok 134 - LF received in a separate PTY event resets the output column
+  ---
+  duration_ms: 12.984659
+  type: 'test'
+  ...
+# Subtest: consecutive LF keep the following output aligned to column zero
+ok 135 - consecutive LF keep the following output aligned to column zero
+  ---
+  duration_ms: 14.773078
+  type: 'test'
+  ...
+# Subtest: LF near the right margin starts the following row at column zero
+ok 136 - LF near the right margin starts the following row at column zero
+  ---
+  duration_ms: 7.939666
+  type: 'test'
+  ...
+# Subtest: SGR around LF does not leave indentation on the next output line
+ok 137 - SGR around LF does not leave indentation on the next output line
+  ---
+  duration_ms: 9.344182
+  type: 'test'
+  ...
+# Subtest: ordinary terminal CRLF retains its existing output alignment
+ok 138 - ordinary terminal CRLF retains its existing output alignment
+  ---
+  duration_ms: 9.638911
+  type: 'test'
+  ...
+# Subtest: ordinary terminal CR still overwrites the current row
+ok 139 - ordinary terminal CR still overwrites the current row
+  ---
+  duration_ms: 8.303707
+  type: 'test'
+  ...
+# Subtest: ordinary terminal plain output keeps its original width
+ok 140 - ordinary terminal plain output keeps its original width
+  ---
+  duration_ms: 9.684139
+  type: 'test'
+  ...
+# Subtest: disposing one ordinary terminal preserves sibling output
+ok 141 - disposing one ordinary terminal preserves sibling output
+  ---
+  duration_ms: 10.595071
+  type: 'test'
+  ...
+# (node:177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary panel output reserves two cells for a Unicode 11 emoji
+ok 142 - ordinary panel output reserves two cells for a Unicode 11 emoji
+  ---
+  duration_ms: 408.951769
+  type: 'test'
+  ...
+# Subtest: center terminal emoji preserve the following output column
+ok 143 - center terminal emoji preserve the following output column
+  ---
+  duration_ms: 11.869902
+  type: 'test'
+  ...
+# Subtest: ordinary terminal wide output wraps the next character onto the next row
+ok 144 - ordinary terminal wide output wraps the next character onto the next row
+  ---
+  duration_ms: 19.303067
+  type: 'test'
+  ...
+# Subtest: ordinary terminal Unicode 11 combining marks do not advance the cursor
+ok 145 - ordinary terminal Unicode 11 combining marks do not advance the cursor
+  ---
+  duration_ms: 8.922159
+  type: 'test'
+  ...
+# Subtest: ordinary terminal ASCII output keeps its original width
+ok 146 - ordinary terminal ASCII output keeps its original width
+  ---
+  duration_ms: 8.352252
+  type: 'test'
+  ...
+# Subtest: ordinary terminal CJK output keeps its existing wide cells
+ok 147 - ordinary terminal CJK output keeps its existing wide cells
+  ---
+  duration_ms: 8.343344
+  type: 'test'
+  ...
+# Subtest: ordinary terminal existing combining accents keep their zero-cell width
+ok 148 - ordinary terminal existing combining accents keep their zero-cell width
+  ---
+  duration_ms: 8.141736
+  type: 'test'
+  ...
+# Subtest: split UTF-8 PTY data retains the Unicode 11 output width
+ok 149 - split UTF-8 PTY data retains the Unicode 11 output width
+  ---
+  duration_ms: 10.608705
+  type: 'test'
+  ...
+# Subtest: restored terminal history uses Unicode 11 before its first snapshot write
+ok 150 - restored terminal history uses Unicode 11 before its first snapshot write
+  ---
+  duration_ms: 10.036668
+  type: 'test'
+  ...
+# Subtest: closing one terminal disposes it without changing a sibling's ASCII output
+ok 151 - closing one terminal disposes it without changing a sibling's ASCII output
+  ---
+  duration_ms: 11.828374
+  type: 'test'
+  ...
+# (node:185) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: backend spawn rejection retains the selected tab and its screen
+ok 152 - backend spawn rejection retains the selected tab and its screen
+  ---
+  duration_ms: 405.394144
+  type: 'test'
+  ...
+# Subtest: Retry targets the retained id, is single-flight, and leaves ready/exited sessions alone
+ok 153 - Retry targets the retained id, is single-flight, and leaves ready/exited sessions alone
+  ---
+  duration_ms: 176.997198
+  type: 'test'
+  ...
+# Subtest: a repeated Retry rejection keeps the same terminal retryable
+ok 154 - a repeated Retry rejection keeps the same terminal retryable
+  ---
+  duration_ms: 137.49597
+  type: 'test'
+  ...
+# Subtest: restored failed terminals and their saved history are not forgotten
+ok 155 - restored failed terminals and their saved history are not forgotten
+  ---
+  duration_ms: 125.66151
+  type: 'test'
+  ...
+# Subtest: center creation exposes a retained failed terminal without changing its placement
+ok 156 - center creation exposes a retained failed terminal without changing its placement
+  ---
+  duration_ms: 144.19665
+  type: 'test'
+  ...
+# Subtest: actual TerminalHost shows the retained error and its Retry button
+ok 157 - actual TerminalHost shows the retained error and its Retry button
+  ---
+  duration_ms: 120.750672
+  type: 'test'
+  ...
+# Subtest: failed tab transitions preserve title, selection, placement and clear error on Retry
+ok 158 - failed tab transitions preserve title, selection, placement and clear error on Retry
+  ---
+  duration_ms: 0.4363
+  type: 'test'
+  ...
+# (node:193) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: workspace removal while the event listener is pending does not create a terminal
+ok 159 - workspace removal while the event listener is pending does not create a terminal
+  ---
+  duration_ms: 403.939876
+  type: 'test'
+  ...
+# Subtest: workspace removal cancels every panel start sharing the pending listener
+ok 160 - workspace removal cancels every panel start sharing the pending listener
+  ---
+  duration_ms: 10.038568
+  type: 'test'
+  ...
+# Subtest: cancelling a start does not cancel a sibling workspace using the same listener
+ok 161 - cancelling a start does not cancel a sibling workspace using the same listener
+  ---
+  duration_ms: 10.723099
+  type: 'test'
+  ...
+# Subtest: workspace removal while saved history loads does not recreate its restored tab
+ok 162 - workspace removal while saved history loads does not recreate its restored tab
+  ---
+  duration_ms: 7.076784
+  type: 'test'
+  ...
+# Subtest: workspace removal while a center terminal awaits the listener leaves it closed
+ok 163 - workspace removal while a center terminal awaits the listener leaves it closed
+  ---
+  duration_ms: 7.431957
+  type: 'test'
+  ...
+# Subtest: a pending center-terminal request cannot reopen a removed workspace
+ok 164 - a pending center-terminal request cannot reopen a removed workspace
+  ---
+  duration_ms: 7.34593
+  type: 'test'
+  ...
+# Subtest: an explicit new start after teardown survives while the old pending start stays cancelled
+ok 165 - an explicit new start after teardown survives while the old pending start stays cancelled
+  ---
+  duration_ms: 7.310772
+  type: 'test'
+  ...
+# Subtest: an ordinary panel start still reaches its backend and running tab
+ok 166 - an ordinary panel start still reaches its backend and running tab
+  ---
+  duration_ms: 7.133253
+  type: 'test'
+  ...
+# Subtest: an ordinary center start still reaches its center tab
+ok 167 - an ordinary center start still reaches its center tab
+  ---
+  duration_ms: 7.345438
+  type: 'test'
+  ...
+# Subtest: an uncancelled saved terminal still restores normally
+ok 168 - an uncancelled saved terminal still restores normally
+  ---
+  duration_ms: 7.558497
+  type: 'test'
+  ...
+# (node:201) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: close panel during startup cleans up the late-created backend session
+ok 169 - close panel during startup cleans up the late-created backend session
+  ---
+  duration_ms: 385.362972
+  type: 'test'
+  ...
+# Subtest: close center during startup cleans up the late-created backend session
+ok 170 - close center during startup cleans up the late-created backend session
+  ---
+  duration_ms: 10.416784
+  type: 'test'
+  ...
+# Subtest: destroy workspace during startup cleans up the late-created backend session
+ok 171 - destroy workspace during startup cleans up the late-created backend session
+  ---
+  duration_ms: 10.61146
+  type: 'test'
+  ...
+# Subtest: closing a failed terminal during its retry cleans up the late-created backend session
+ok 172 - closing a failed terminal during its retry cleans up the late-created backend session
+  ---
+  duration_ms: 6.778591
+  type: 'test'
+  ...
+# Subtest: late cleanup of a closed terminal preserves its running sibling
+ok 173 - late cleanup of a closed terminal preserves its running sibling
+  ---
+  duration_ms: 7.755743
+  type: 'test'
+  ...
+# Subtest: an open terminal retains its backend session after successful startup
+ok 174 - an open terminal retains its backend session after successful startup
+  ---
+  duration_ms: 7.265023
+  type: 'test'
+  ...
+# Subtest: closing after backend registration but before spawn resolution stays closed
+ok 175 - closing after backend registration but before spawn resolution stays closed
+  ---
+  duration_ms: 7.443687
+  type: 'test'
+  ...
+# Subtest: spawn rejection after close does not recreate the tab or attempt late cleanup
+ok 176 - spawn rejection after close does not recreate the tab or attempt late cleanup
+  ---
+  duration_ms: 7.409775
+  type: 'test'
+  ...
+# (node:209) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary terminal uses computed black and retains it through ready and exit
+ok 177 - ordinary terminal uses computed black and retains it through ready and exit
+  ---
+  duration_ms: 406.003322
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed red and retains it through ready and exit
+ok 178 - ordinary terminal uses computed red and retains it through ready and exit
+  ---
+  duration_ms: 9.526551
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed green and retains it through ready and exit
+ok 179 - ordinary terminal uses computed green and retains it through ready and exit
+  ---
+  duration_ms: 9.21344
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed yellow and retains it through ready and exit
+ok 180 - ordinary terminal uses computed yellow and retains it through ready and exit
+  ---
+  duration_ms: 9.007941
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed blue and retains it through ready and exit
+ok 181 - ordinary terminal uses computed blue and retains it through ready and exit
+  ---
+  duration_ms: 9.070114
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed magenta and retains it through ready and exit
+ok 182 - ordinary terminal uses computed magenta and retains it through ready and exit
+  ---
+  duration_ms: 10.132494
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed cyan and retains it through ready and exit
+ok 183 - ordinary terminal uses computed cyan and retains it through ready and exit
+  ---
+  duration_ms: 13.229301
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed white and retains it through ready and exit
+ok 184 - ordinary terminal uses computed white and retains it through ready and exit
+  ---
+  duration_ms: 6.80457
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed brightBlack and retains it through ready and exit
+ok 185 - ordinary terminal uses computed brightBlack and retains it through ready and exit
+  ---
+  duration_ms: 7.839218
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed brightRed and retains it through ready and exit
+ok 186 - ordinary terminal uses computed brightRed and retains it through ready and exit
+  ---
+  duration_ms: 8.140633
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed brightGreen and retains it through ready and exit
+ok 187 - ordinary terminal uses computed brightGreen and retains it through ready and exit
+  ---
+  duration_ms: 7.630626
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed brightYellow and retains it through ready and exit
+ok 188 - ordinary terminal uses computed brightYellow and retains it through ready and exit
+  ---
+  duration_ms: 7.672127
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed brightBlue and retains it through ready and exit
+ok 189 - ordinary terminal uses computed brightBlue and retains it through ready and exit
+  ---
+  duration_ms: 7.508734
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed brightMagenta and retains it through ready and exit
+ok 190 - ordinary terminal uses computed brightMagenta and retains it through ready and exit
+  ---
+  duration_ms: 7.507841
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed brightCyan and retains it through ready and exit
+ok 191 - ordinary terminal uses computed brightCyan and retains it through ready and exit
+  ---
+  duration_ms: 7.806093
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed brightWhite and retains it through ready and exit
+ok 192 - ordinary terminal uses computed brightWhite and retains it through ready and exit
+  ---
+  duration_ms: 7.803174
+  type: 'test'
+  ...
+# Subtest: unset ANSI CSS tokens retain xterm's default palette
+ok 193 - unset ANSI CSS tokens retain xterm's default palette
+  ---
+  duration_ms: 8.284056
+  type: 'test'
+  ...
+# Subtest: the palette does not change the existing cursor and input lifecycle
+ok 194 - the palette does not change the existing cursor and input lifecycle
+  ---
+  duration_ms: 8.219917
+  type: 'test'
+  ...
+# Subtest: ordinary terminal keeps line-feed conversion and Unicode 11
+ok 195 - ordinary terminal keeps line-feed conversion and Unicode 11
+  ---
+  duration_ms: 8.136124
+  type: 'test'
+  ...
+# Subtest: palette initialization does not change another terminal's options
+ok 196 - palette initialization does not change another terminal's options
+  ---
+  duration_ms: 8.831133
+  type: 'test'
+  ...
+1..196
+# tests 196
+# suites 0
+# pass 196
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 16157.656829

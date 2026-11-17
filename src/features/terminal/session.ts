@@ -5,6 +5,8 @@
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { Unicode11Addon } from "@xterm/addon-unicode11";
+import { confirm } from "@tauri-apps/plugin-dialog";
+import { openUrl } from "../../backend";
 import { AckBatcher, type PtyEvent } from "./events";
 import {
   onPtyEvent,
@@ -318,6 +320,20 @@ async function startTab(
       brightMagenta: cssVar("--terminal-bright-magenta"),
       brightCyan: cssVar("--terminal-bright-cyan"),
       brightWhite: cssVar("--terminal-bright-white"),
+    },
+    linkHandler: {
+      allowNonHttpProtocols: false,
+      activate: (event, url) => {
+        if (!event.metaKey) return;
+        let protocol: string;
+        try { protocol = new URL(url).protocol; } catch { return; }
+        if (protocol !== "http:" && protocol !== "https:") return;
+        void confirm(`Open this terminal link?\n\n${url}`, {
+          cancelLabel: "Cancel", kind: "warning", okLabel: "Open", title: "Open link?",
+        }).then((allowed) => {
+          if (allowed) return openUrl(url);
+        }).catch((error: unknown) => { console.error("Failed to open terminal link", error); });
+      },
     },
   });
   term.loadAddon(new Unicode11Addon());

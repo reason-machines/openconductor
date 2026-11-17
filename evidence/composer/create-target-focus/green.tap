@@ -1,0 +1,62 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a target arriving without user navigation refocuses the same actual Create editor once
+ok 1 - a target arriving without user navigation refocuses the same actual Create editor once
+  ---
+  duration_ms: 443.253942
+  type: 'test'
+  ...
+# Subtest: unrelated keys do not cancel target-arrival focus
+ok 2 - unrelated keys do not cancel target-arrival focus
+  ---
+  duration_ms: 207.87517
+  type: 'test'
+  ...
+# Subtest: Tab expresses user focus intent and cancels target-arrival focus
+ok 3 - Tab expresses user focus intent and cancels target-arrival focus
+  ---
+  duration_ms: 185.710344
+  type: 'test'
+  ...
+# Subtest: pointer interaction cancels target-arrival focus
+ok 4 - pointer interaction cancels target-arrival focus
+  ---
+  duration_ms: 116.391054
+  type: 'test'
+  ...
+# Subtest: a target present at mount keeps existing single autofocus and never refocuses on updates
+ok 5 - a target present at mount keeps existing single autofocus and never refocuses on updates
+  ---
+  duration_ms: 176.775448
+  type: 'test'
+  ...
+# Subtest: remaining without a target does not add focus calls
+ok 6 - remaining without a target does not add focus calls
+  ---
+  duration_ms: 134.597847
+  type: 'test'
+  ...
+# Subtest: waiting focus listeners are removed on actual editor unmount
+ok 7 - waiting focus listeners are removed on actual editor unmount
+  ---
+  duration_ms: 109.935939
+  type: 'test'
+  ...
+# Subtest: target arrival in a second composer cannot focus the first editor
+ok 8 - target arrival in a second composer cannot focus the first editor
+  ---
+  duration_ms: 226.214179
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1937.485018

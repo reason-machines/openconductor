@@ -1,0 +1,8 @@
+{
+  "status": "PASS_SOURCE_AND_FROZEN_REGRESSION_INTEGRITY",
+  "checks": 245,
+  "spans": 38,
+  "main_checked": "c1e74c56f6bb7455bb59311797515138adc4a235",
+  "fixture_sha256": "994bb96693dcb54c21af2b3168a9b7b6ab1d66b095d0bd45c9dadc406a0dda51",
+  "browser_native_package": "NOT_RUN"
+}
