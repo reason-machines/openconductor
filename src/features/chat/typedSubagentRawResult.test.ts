@@ -48,7 +48,7 @@ for (const name of ["Task", "Agent", "sub-agent"]) for (const entry of cases) te
   runInNewContext(compiled.outputText, {
     exports: production,
     navigator: { clipboard: { writeText: async (value: string) => { copied.push(value); } } },
-    setTimeout(callback: () => void, delay: number) { assert.equal(delay, 1500); timers.push(callback); return timers.length; },
+    setTimeout(callback: () => void, delay: number) { assert.equal(delay, 2000); timers.push(callback); return timers.length; },
     require(module: string) {
       switch (module) {
         case "react": case "react/jsx-runtime": return dependencies(module);
