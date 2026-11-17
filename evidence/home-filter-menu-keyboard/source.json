@@ -1,0 +1,401 @@
+{
+  "key": "HOME-FILTER-MENU-KEYBOARD-271",
+  "mode": "retained inert source, no vendor evaluation",
+  "app": "Conductor 0.87.6",
+  "asset": {
+    "name": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "rea_parent_evidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  },
+  "baseline": "1e483efabf7798579c72587365d3ae0c93bd689d",
+  "fixture": {
+    "file": "frozen/homeFilterMenuKeyboard.test.ts.txt",
+    "sha256": "99b46ce7b6cfabce10cd13cf4e0c6f79c4d68354abf5b07a70b645e075c09b86",
+    "tests": 12,
+    "red": {
+      "pass": 3,
+      "fail": 9,
+      "cancelled": 0,
+      "skipped": 0
+    }
+  },
+  "spans": [
+    {
+      "name": "SLt",
+      "utf8_span": [
+        531356,
+        536840
+      ],
+      "bytes": 5484,
+      "sha256": "639dff80215201bdcf7b13dc95b69b4fb63010d8e480c03fadd009b46400570e",
+      "file": "spans/SLt.txt"
+    },
+    {
+      "name": "wde",
+      "utf8_span": [
+        698799,
+        699716
+      ],
+      "bytes": 917,
+      "sha256": "af7174033eea6e8229cc230ad3f8cc30e166e25928883fa4a88c944652401bc2",
+      "file": "spans/wde.txt"
+    },
+    {
+      "name": "m2",
+      "utf8_span": [
+        703921,
+        705553
+      ],
+      "bytes": 1632,
+      "sha256": "24ae5b347aa847b6e07f6390a080c9eac18665c8e93e730450435bd1c4304490",
+      "file": "spans/m2.txt"
+    },
+    {
+      "name": "oF",
+      "utf8_span": [
+        721785,
+        726746
+      ],
+      "bytes": 4961,
+      "sha256": "3af0f9db98413f4da5219d57588879f6409fca2dfb8daeb7aa5c6801cdb90500",
+      "file": "spans/oF.txt"
+    },
+    {
+      "name": "Ede",
+      "utf8_span": [
+        729191,
+        731998
+      ],
+      "bytes": 2807,
+      "sha256": "42cde766e66e872810ac48ed0bda4b1c6bb61b321f0522acc3a306d336ae73e1",
+      "file": "spans/Ede.txt"
+    },
+    {
+      "name": "Hos",
+      "utf8_span": [
+        1997469,
+        2002869
+      ],
+      "bytes": 5400,
+      "sha256": "59c5cea118ef5b790cc4c60d866d70c7a25f56c4ef5602c8201c36c4798270f9",
+      "file": "spans/Hos.txt"
+    },
+    {
+      "name": "ah",
+      "utf8_span": [
+        2020251,
+        2021023
+      ],
+      "bytes": 772,
+      "sha256": "20310e9fba08e90f2cbe6be7d408448df3676c372bd3a99c712637d936656ab8",
+      "file": "spans/ah.txt"
+    },
+    {
+      "name": "h2",
+      "utf8_span": [
+        2224899,
+        2225573
+      ],
+      "bytes": 674,
+      "sha256": "ef11b076e80655dbde5fd5ecf4c2b5c7b8e5d5f69acf900c85e43d59f091a53d",
+      "file": "spans/h2.txt"
+    },
+    {
+      "name": "Sg",
+      "utf8_span": [
+        2225579,
+        2225950
+      ],
+      "bytes": 371,
+      "sha256": "febd4e7dd556a600317d00cd674617d216ac262f0d9fb290e5869c487e43fda6",
+      "file": "spans/Sg.txt"
+    },
+    {
+      "name": "Tm",
+      "utf8_span": [
+        2227703,
+        2230674
+      ],
+      "bytes": 2971,
+      "sha256": "5c33f5317d683c7fbdf594f0a841fd72d21e39328cff1402c434aef01641b1d3",
+      "file": "spans/Tm.txt"
+    },
+    {
+      "name": "i4e",
+      "utf8_span": [
+        2232312,
+        2233576
+      ],
+      "bytes": 1264,
+      "sha256": "2d2c0cf34251f4df27a432d34e0f15a2ab14c2157b3a4d1d794d3cea19ec295f",
+      "file": "spans/i4e.txt"
+    },
+    {
+      "name": "nFi",
+      "utf8_span": [
+        9820611,
+        9824705
+      ],
+      "bytes": 4094,
+      "sha256": "e8064ef68babed91e936ed903442e09407fa15cef1ff3031f15d0aecfee61263",
+      "file": "spans/nFi.txt"
+    },
+    {
+      "name": "Z_",
+      "utf8_span": [
+        443179,
+        443233
+      ],
+      "bytes": 54,
+      "sha256": "8157d51b71802f3db0fba1b5c1210fa900918a10fdd0906cbadbe6c0dabef455",
+      "file": "spans/Z_.txt"
+    },
+    {
+      "name": "Gze",
+      "utf8_span": [
+        455044,
+        455103
+      ],
+      "bytes": 59,
+      "sha256": "5c6eaaf22eb2925a5d4e4085b4d48042b1aa7217bb2e591d83d3323178627f29",
+      "file": "spans/Gze.txt"
+    },
+    {
+      "name": "d8t",
+      "utf8_span": [
+        455103,
+        455206
+      ],
+      "bytes": 103,
+      "sha256": "acaa1dc24b2a1f9074ccb6b6f6e54335b38294b5853f6702c4c66fe01bd2a427",
+      "file": "spans/d8t.txt"
+    },
+    {
+      "name": "Y_",
+      "utf8_span": [
+        455206,
+        455358
+      ],
+      "bytes": 152,
+      "sha256": "ceb58076b6ff2d38aa71cd8bbc88ab686116848509394b31a0709450a75489c7",
+      "file": "spans/Y_.txt"
+    },
+    {
+      "name": "qze",
+      "utf8_span": [
+        461160,
+        461421
+      ],
+      "bytes": 261,
+      "sha256": "005eef0adac96874d230de3b4031f3caa91e82f826e5830991b8d02346424ae1",
+      "file": "spans/qze.txt"
+    },
+    {
+      "name": "JSe",
+      "utf8_span": [
+        516478,
+        516607
+      ],
+      "bytes": 129,
+      "sha256": "1c9226fd01bd5481ec7489e267f5f3b59dabbbc9c5a6f9bc1ad78fa74324ac48",
+      "file": "spans/JSe.txt"
+    },
+    {
+      "name": "aFe",
+      "utf8_span": [
+        531032,
+        531096
+      ],
+      "bytes": 64,
+      "sha256": "e26e5ba8a207d31d28d1de46db86ae131a294435364d5d22704ba799ef8ca594",
+      "file": "spans/aFe.txt"
+    },
+    {
+      "name": "S4t",
+      "utf8_span": [
+        531096,
+        531184
+      ],
+      "bytes": 88,
+      "sha256": "b27546d4d2952d4f8e29c07d8c45907865e8ed0e4eb5e51fe27445679e52a793",
+      "file": "spans/S4t.txt"
+    },
+    {
+      "name": "DPr",
+      "utf8_span": [
+        531184,
+        531242
+      ],
+      "bytes": 58,
+      "sha256": "4f0b161130cf50f160fcfc1758970146716624548a919885bf667940bd040279",
+      "file": "spans/DPr.txt"
+    },
+    {
+      "name": "eXe",
+      "utf8_span": [
+        697334,
+        697857
+      ],
+      "bytes": 523,
+      "sha256": "ba099ff83e13b984073d4798b01efbdbedffa2e751967310814497bed1a4ca0b",
+      "file": "spans/eXe.txt"
+    },
+    {
+      "name": "DX",
+      "utf8_span": [
+        446337,
+        446351
+      ],
+      "bytes": 14,
+      "sha256": "13a243416b43f4ea46dfa32dc9ae424f0d6d46d7b24ade8821ddf07c990768b8",
+      "file": "spans/DX.txt"
+    },
+    {
+      "name": "PX",
+      "utf8_span": [
+        446352,
+        446367
+      ],
+      "bytes": 15,
+      "sha256": "be4f978e9c55f05cb7bca765c972e9744447d74e1ca754070d3664424b8ceeb1",
+      "file": "spans/PX.txt"
+    },
+    {
+      "name": "QPt",
+      "utf8_span": [
+        446368,
+        446381
+      ],
+      "bytes": 13,
+      "sha256": "d44fda3ac56a130668d9225be3a9f3eb010f1416cafd3214451f53e785a1abe4",
+      "file": "spans/QPt.txt"
+    },
+    {
+      "name": "_Qe",
+      "utf8_span": [
+        446382,
+        446397
+      ],
+      "bytes": 15,
+      "sha256": "15dae73eb5d5fcbd17b5e425b4a74fa8ce4e77d7510a1087ef429dc9057971c3",
+      "file": "spans/_Qe.txt"
+    },
+    {
+      "name": "Ice",
+      "utf8_span": [
+        457546,
+        457758
+      ],
+      "bytes": 212,
+      "sha256": "18f2a17b6aeccecb30698025d02f97fbb878ef208815438b8f03256cee41478b",
+      "file": "spans/Ice.txt"
+    },
+    {
+      "name": "RQe",
+      "utf8_span": [
+        530931,
+        531032
+      ],
+      "bytes": 101,
+      "sha256": "bc117cca5e3cd0d69c094a8982f8613cc9c10d5cf7ae2006d676674ddb94ecf6",
+      "file": "spans/RQe.txt"
+    },
+    {
+      "name": "$li",
+      "utf8_span": [
+        536840,
+        538458
+      ],
+      "bytes": 1618,
+      "sha256": "a01ae63c2e4cea8770a3eefc4ff938fca383acd8e5a4e4ded39a3e952ec630b8",
+      "file": "spans/$li.txt"
+    },
+    {
+      "name": "O6",
+      "utf8_span": [
+        592323,
+        593854
+      ],
+      "bytes": 1531,
+      "sha256": "f8ff51bdccbb867c1ccd804968380bf548eb19fcbd9e5097b1a861948f1befc0",
+      "file": "spans/O6.txt"
+    },
+    {
+      "name": "r0i",
+      "utf8_span": [
+        696510,
+        697302
+      ],
+      "bytes": 792,
+      "sha256": "baea4757e6f5768448520d97492ee9e3fae86b82bfe1597f824df3826f58a619",
+      "file": "spans/r0i.txt"
+    },
+    {
+      "name": "wD",
+      "utf8_span": [
+        698015,
+        698570
+      ],
+      "bytes": 555,
+      "sha256": "a9f6d9eaac70ae3b8c9a4235e1807254a43dd79bedf7ff73182637ab8f9261ef",
+      "file": "spans/wD.txt"
+    },
+    {
+      "name": "fQe",
+      "utf8_span": [
+        441298,
+        441533
+      ],
+      "bytes": 235,
+      "sha256": "644cadb78b8df396c1c40e063ac8985898e2632da4483bf5a3a216acb6c70544",
+      "file": "spans/fQe.txt"
+    },
+    {
+      "name": "LX",
+      "utf8_span": [
+        592120,
+        592323
+      ],
+      "bytes": 203,
+      "sha256": "770fcda94cf73feb6d2bf258000d9e56d523d8ddd9040e14c3a06b6602cfd34a",
+      "file": "spans/LX.txt"
+    },
+    {
+      "name": "YBr",
+      "utf8_span": [
+        697975,
+        698015
+      ],
+      "bytes": 40,
+      "sha256": "91ddf1d1d5841a1d8d21fe7833f35bd29834a2ff8377d114cc1fe6d6d841980c",
+      "file": "spans/YBr.txt"
+    },
+    {
+      "name": "Sde",
+      "utf8_span": [
+        705854,
+        707350
+      ],
+      "bytes": 1496,
+      "sha256": "bcde61d268f35c26f4b5e28ea0eda54c276724af58e022fb8bc509841f6a68b8",
+      "file": "spans/Sde.txt"
+    },
+    {
+      "name": "b2",
+      "utf8_span": [
+        712430,
+        716214
+      ],
+      "bytes": 3784,
+      "sha256": "b55e2ed69e189f806b0d68034b4d794aa02ff37bfe9474e36536bb29c1511f23",
+      "file": "spans/b2.txt"
+    }
+  ],
+  "limits": [
+    "Only mounted OpenConductor component handlers, not original-app execution",
+    "DOM focus/query adapter supplied to react-test-renderer; not browser focus or native delivery",
+    "Native/provider/installed persistence/package/first-paint acceptance NOT_RUN",
+    "Archived select keyboard and global/shared-menu behavior excluded"
+  ]
+}

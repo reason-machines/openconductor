@@ -1,0 +1,4 @@
+(node:71) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS: exact frozen/dedicated/baseline/treatment hashes; all eight case ASTs unchanged; nativePathToFile unchanged; six complete source spans; tracked diff confined to lease.
+PASS: retained original full parent identity and exact UTF8/UTF16 ranges (read as inert data only).

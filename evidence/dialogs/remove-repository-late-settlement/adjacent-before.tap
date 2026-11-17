@@ -1,0 +1,38 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Preview URLs always show one row, even with nothing saved
+ok 1 - Preview URLs always show one row, even with nothing saved
+  ---
+  duration_ms: 1.626797
+  type: 'test'
+  ...
+# Subtest: Preview URLs save trimmed rows with a URL and clear the setting when none is left
+ok 2 - Preview URLs save trimmed rows with a URL and clear the setting when none is left
+  ---
+  duration_ms: 0.232658
+  type: 'test'
+  ...
+# Subtest: Preview URL rows move up or down and ignore moves past the ends
+ok 3 - Preview URL rows move up or down and ignore moves past the ends
+  ---
+  duration_ms: 0.206465
+  type: 'test'
+  ...
+# Subtest: splitPath splits the last segment off, as Conductor shows paths
+ok 4 - splitPath splits the last segment off, as Conductor shows paths
+  ---
+  duration_ms: 0.260015
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 265.934696

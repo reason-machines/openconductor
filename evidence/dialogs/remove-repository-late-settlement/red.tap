@@ -1,0 +1,76 @@
+(node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:99) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: late repository A success does not close the ready removal dialog opened for B
+not ok 1 - late repository A success does not close the ready removal dialog opened for B
+  ---
+  duration_ms: 197.626573
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/.qualification-remove-late/src/components/removeRepositoryLateSettlement.test.ts:154:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    late A settlement must not close B's removal dialog
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/.qualification-remove-late/src/components/removeRepositoryLateSettlement.test.ts:165:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: late A success preserves B's own pending operation until B settles
+not ok 2 - late A success preserves B's own pending operation until B settles
+  ---
+  duration_ms: 79.13791
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/.qualification-remove-late/src/components/removeRepositoryLateSettlement.test.ts:177:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    late A must not dismiss pending B
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/.qualification-remove-late/src/components/removeRepositoryLateSettlement.test.ts:183:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the current repository's own success still closes its dialog and removes only that repository
+ok 3 - the current repository's own success still closes its dialog and removes only that repository
+  ---
+  duration_ms: 61.01796
+  type: 'test'
+  ...
+# Subtest: late A rejection reports the failure without closing or mutating B
+ok 4 - late A rejection reports the failure without closing or mutating B
+  ---
+  duration_ms: 47.633585
+  type: 'test'
+  ...
+# Subtest: success after dismissal without a replacement stays closed but retains removal and notification
+ok 5 - success after dismissal without a replacement stays closed but retains removal and notification
+  ---
+  duration_ms: 53.34677
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 3
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 816.163467

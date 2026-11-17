@@ -57,11 +57,12 @@ test("End selects the last result instead of moving only the text cursor", () =>
   assert.equal(moveActive(0, 0, command), 0);
 });
 
-test("modified Home and End keep their text-field behavior", () => {
+test("Home and End preserve modifier shortcuts while Shift navigates", () => {
   for (const k of ["Home", "End"]) {
-    for (const modifier of ["metaKey", "ctrlKey", "altKey", "shiftKey"]) {
+    for (const modifier of ["metaKey", "ctrlKey", "altKey"]) {
       assert.equal(cmdFor(key(k, { [modifier]: true })), null);
     }
+    assert.equal(cmdFor(key(k, { shiftKey: true })), k === "Home" ? "first-item" : "last-item");
   }
 });
 

@@ -695,7 +695,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         <ResetChatDialog
           loadChangedCount={() => changedSinceTurn(invoke, cwd, runId, resetTurn)}
           onConfirm={(resetFiles) => (agent.reset ? agent.reset(runId, cwd, resetTurn, resetFiles) : Promise.resolve())}
-          onClose={() => setResetTurn(null)}
+          onClose={() => setResetTurn((current) => current === resetTurn ? null : current)}
         />
       ) : null}
       <PermissionRequests permissions={permissions} onAnswer={(requestId, answer) => {

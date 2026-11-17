@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState, type MouseEvent, type ReactNode } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import { openUrl } from "../backend";
 import { AccountMenu } from "../components/AccountMenu";
 import { Tooltip } from "../components/ui/Tooltip";
@@ -112,6 +112,10 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
   };
 
   const repo = location.scope === "repo" ? repos.find((r) => r.id === location.repoId) : undefined;
+  const lastViewedRepoId = useRef<string>();
+  useEffect(() => {
+    if (repo) lastViewedRepoId.current = repo.id;
+  }, [repo]);
   const title =
     location.scope === "user" ? pageLabel(location.page) : location.scope === "org" ? ORG_HEADERS[location.page].title : REPO_SECTION_LABELS[location.section];
   const navButton = (to: SettingsLocation, label: string, className = "nav-item", icon?: ReactNode) => {
@@ -156,11 +160,11 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
     () => buildSearchIndex({ pages: groups.flatMap((g) => g.pages), agentTabs: AGENT_SEARCH_TABS, hasRepos: repos.length > 0, cloudUI }),
     [groups, repos.length, cloudUI],
   );
-  // Conductor's `wGt`: a repository section opens in the repository being viewed, else the first one.
+  // Conductor's `L9a` / `bUi` retain the last viewed repo across personal pages.
   const openResult = (item: SearchItem) => {
     const t = item.target;
     if (t.scope === "repo") {
-      const repoId = location.scope === "repo" ? location.repoId : repos[0]?.id;
+      const repoId = location.scope === "repo" ? location.repoId : (repos.find((r) => r.id === lastViewedRepoId.current) ?? repos[0])?.id;
       if (repoId) onNavigate({ scope: "repo", repoId, section: t.section });
     } else {
       onNavigate({ scope: "user", page: t.page });
