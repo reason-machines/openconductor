@@ -28,7 +28,7 @@ It runs the actual persisted-message reducer, `buildRows`, `foldAgentRows` and l
 node --experimental-strip-types --test --test-concurrency=1 src/features/chat/summaryMessageCounts.test.ts
 ```
 
-- **RED:** four intended count-assertion failures, six passing controls, no skips. Mixed text/tools counted four other parts instead of zero; thinking+text and two text blocks each counted two instead of one; visible text plus hidden wait counted one instead of zero. Tool counts, hidden-child exclusion and metadata checks passed before their count assertions. [Retained RED](red.tap).
+- **RED:** four intended count-assertion failures, six passing controls, no skips. Mixed text/tools counted four other parts instead of zero; thinking+text and two text blocks each counted two instead of one; visible text plus hidden wait counted one instead of zero. Tool counts, hidden-child exclusion and metadata checks passed before their count assertions. [Retained RED, losslessly compressed to preserve raw TAP whitespace](red.tap.gz).
 - **GREEN:** identical command and regression bytes, ten passed, no failures or skips. [Retained GREEN](green.tap).
 - Controls retain distinct-message identity even for identical text, ordinary tool-only counts, the two-message threshold, hidden-only and empty-text exclusion, and visible thinking-only inclusion in expanded children.
 
