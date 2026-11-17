@@ -1,0 +1,74 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home search Unicode: plain ASCII
+ok 1 - Home search Unicode: plain ASCII
+  ---
+  duration_ms: 195.973976
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: BMP prefix
+ok 2 - Home search Unicode: BMP prefix
+  ---
+  duration_ms: 120.836582
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: astral prefix
+ok 3 - Home search Unicode: astral prefix
+  ---
+  duration_ms: 78.646619
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: two astral prefixes
+ok 4 - Home search Unicode: two astral prefixes
+  ---
+  duration_ms: 83.453267
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: emoji query
+ok 5 - Home search Unicode: emoji query
+  ---
+  duration_ms: 78.520153
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: multiword after emoji
+ok 6 - Home search Unicode: multiword after emoji
+  ---
+  duration_ms: 58.917185
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: emoji after match
+ok 7 - Home search Unicode: emoji after match
+  ---
+  duration_ms: 36.242198
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: uppercase query after emoji
+ok 8 - Home search Unicode: uppercase query after emoji
+  ---
+  duration_ms: 41.544316
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: empty query preserves complete Unicode label
+ok 9 - Home search Unicode: empty query preserves complete Unicode label
+  ---
+  duration_ms: 49.131126
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: branch-only match leaves displayed name unmarked
+ok 10 - Home search Unicode: branch-only match leaves displayed name unmarked
+  ---
+  duration_ms: 47.891689
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1339.758914

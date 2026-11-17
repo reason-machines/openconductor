@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ComponentType, type KeyboardEvent, type ReactNode } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type ComponentType, type KeyboardEvent, type ReactNode } from "react";
 import { effectiveShortcuts, type Overrides } from "../keybindings/overrides.ts";
 import { glyphs } from "../keybindings/shortcut.ts";
 import { buildResults, cycleTab, emptyText, placeholderFor, TABS, type PaletteData, type PaletteIcon, type PaletteTab, type ResultItem } from "./search/model.ts";
@@ -51,7 +51,7 @@ export interface CommandPaletteProps {
    * Injected by PaletteHost: the section picker component to render in section sub-view mode.
    * Not imported directly to keep CommandPalette free of a MoveToSection module dependency.
    */
-  SectionPicker?: ComponentType<{ workspaceId: string; sections: readonly MoveToSectionProps["sections"][number][]; query: string; active: number; onActive: (index: number) => void; onSelectAt: (index: number) => void; onBack: () => void }>;
+  SectionPicker?: ComponentType<{ workspaceId: string; sections: readonly MoveToSectionProps["sections"][number][]; query: string; active: number; optionId: (index: number) => string; onActive: (index: number) => void; onSelectAt: (index: number) => void; onBack: () => void }>;
   /**
    * Injected by PaletteHost: computes the flat navigable item list for keyboard navigation.
    * Not imported directly to keep CommandPalette free of a MoveToSection module dependency.
@@ -135,9 +135,12 @@ function ResultWorkspaceRow({ item, showNumber }: { item: Extract<ResultItem, { 
 }
 
 export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter, repos = [], archived = [], showWorkspaceNumbers = false, onSelect, settingIcon, actionIcon, onClose, moveToSection, sectionKey, localWorkspaceId, SectionPicker, computeSectionItems }: CommandPaletteProps) {
+  const optionPrefix = useId();
+  const optionId = (index: number) => `${optionPrefix}-option-${index}`;
   const [tab, setTab] = useState<PaletteTab>(initialTab);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(initialTab === "workspaces" ? -1 : 0);
+  const [sectionActive, setSectionActive] = useState(0);
   const [filters, setFiltersState] = useState<HomeFilters>(() => {
     const saved = loadFilters(new Set(repos.map((r) => r.id)));
     return initialArchiveFilter ? { ...saved, archiveFilter: initialArchiveFilter } : saved;
@@ -166,6 +169,15 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     () => (tab === "workspaces" ? [...wsRows.active, ...wsRows.archived].map(rowItem) : groups.flatMap((g) => g.items)),
     [tab, wsRows, groups],
   );
+  // Like cmdk's enabled-item selector, retain display indices but navigate only
+  // actionable rows. The current section remains visible, checked and disabled.
+  const enabledSectionIndices = sectionFlatItems.flatMap((item, index) =>
+    item.kind === "section" && item.section.workspaceIds.includes(moveToSection!.workspaceId) ? [] : [index],
+  );
+  const selectedSectionIndex = enabledSectionIndices.includes(sectionActive) ? sectionActive : enabledSectionIndices[0] ?? -1;
+  const activeIndex = inSectionMode ? selectedSectionIndex : active;
+  const activeItem = inSectionMode ? SectionPicker && sectionFlatItems[activeIndex] : flat[activeIndex];
+  useEffect(() => { setSectionActive(0); }, [query, sectionKey]);
 
   function changeTab(next: PaletteTab) {
     if (next === tab) return;
@@ -243,9 +255,10 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
       if (cmd === "close" || cmd === "prev-tab") {
         moveToSection.onBack();
       } else if (cmd === "select") {
-        chooseSectionAt(active);
+        chooseSectionAt(selectedSectionIndex);
       } else {
-        setActive((a) => moveActive(a, sectionFlatItems.length, cmd));
+        const next = moveActive(enabledSectionIndices.indexOf(selectedSectionIndex), enabledSectionIndices.length, cmd);
+        setSectionActive(enabledSectionIndices[next] ?? -1);
       }
       return;
     }
@@ -259,7 +272,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
 
   const tabs = TABS.filter((t) => t.value !== "projects" || showProjects);
   const wsRow = (row: HomeRow, i: number) => (
-    <WorkspaceRow key={row.workspace.id} row={row} active={i === active} showNumber={showWorkspaceNumbers} now={now} onHover={() => setActive(i)} onChoose={() => choose(flat[i])} />
+    <WorkspaceRow key={row.workspace.id} id={optionId(i)} row={row} active={i === active} showNumber={showWorkspaceNumbers} now={now} onHover={() => setActive(i)} onChoose={() => choose(flat[i])} />
   );
   let index = -1;
   return (
@@ -278,6 +291,8 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={onKeyDown}
             role="combobox"
+            aria-autocomplete="list"
+            aria-activedescendant={activeItem ? optionId(activeIndex) : undefined}
             aria-expanded="true"
             aria-controls="palette-list"
           />
@@ -287,8 +302,9 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
             workspaceId={moveToSection.workspaceId}
             sections={moveToSection.sections}
             query={query}
-            active={active}
-            onActive={setActive}
+            active={selectedSectionIndex}
+            optionId={optionId}
+            onActive={setSectionActive}
             onSelectAt={chooseSectionAt}
             onBack={moveToSection.onBack}
           />
@@ -357,6 +373,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
                     return (
                       <div
                         key={item.id}
+                        id={optionId(i)}
                         role="option"
                         aria-selected={i === active}
                         data-archived={archivedRow || undefined}

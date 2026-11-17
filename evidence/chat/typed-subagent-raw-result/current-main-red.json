@@ -1,0 +1,13 @@
+{
+  "refreshed_main": "d18e6bf2f05580c11e51572c3a75e98749c6ff81",
+  "actual_1418_merge": "d18e6bf2f05580c11e51572c3a75e98749c6ff81",
+  "fixture_sha256": "dea7a1df1432b2b325944f1bd9243ac056ea59aec9e7be2a00ccd23e6107ae79",
+  "baseline_toolrows_sha256": "e98b71e18836bb1c207e6fc2c5d750ebb6dd661c15d497da31a882fc90e79e24",
+  "exit_code": 1,
+  "tests": 42,
+  "pass": 15,
+  "fail": 27,
+  "skipped": 0,
+  "cancelled": 0,
+  "assertion_error_count": 27
+}

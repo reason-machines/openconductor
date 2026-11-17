@@ -1,0 +1,68 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: cancelled queued Run returns to its idle start action without an output surface
+not ok 1 - cancelled queued Run returns to its idle start action without an output surface
+  ---
+  duration_ms: 799.596055
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/scripts/cancelledWaitIdle.test.ts:119:1'
+  failureType: 'testCodeFailure'
+  error: 'a stopped queue entry without a run ID is not a completed run'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/scripts/cancelledWaitIdle.test.ts:127:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: a completed Run keeps its empty output surface when its run ID exists
+ok 2 - a completed Run keeps its empty output surface when its run ID exists
+  ---
+  duration_ms: 191.441494
+  type: 'test'
+  ...
+# Subtest: cancelled queued Run stays idle after visiting another workspace's completed output
+not ok 3 - cancelled queued Run stays idle after visiting another workspace's completed output
+  ---
+  duration_ms: 722.356504
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/scripts/cancelledWaitIdle.test.ts:142:1'
+  failureType: 'testCodeFailure'
+  error: "the cancelled workspace cannot borrow another workspace's run identity"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/scripts/cancelledWaitIdle.test.ts:151:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: legacy output remains readable without adding a synthetic run identity
+ok 4 - legacy output remains readable without adding a synthetic run identity
+  ---
+  duration_ms: 399.942153
+  type: 'test'
+  ...
+# Subtest: rejected queue requests preserve the error and idle retry action
+ok 5 - rejected queue requests preserve the error and idle retry action
+  ---
+  duration_ms: 271.47451
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 3
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3043.889841
