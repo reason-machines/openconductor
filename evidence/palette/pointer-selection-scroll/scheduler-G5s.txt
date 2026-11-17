@@ -1,0 +1,1 @@
+var G5s=()=>{let[t,e]=$.useState(),n=_ae(()=>new Map);return DJ(()=>{n.current.forEach(i=>i()),n.current=new Map},[t]),(i,r)=>{n.current.set(i,r),e({})}};

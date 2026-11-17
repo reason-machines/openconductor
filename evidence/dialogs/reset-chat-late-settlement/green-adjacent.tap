@@ -1,0 +1,465 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: real runtime persists each rich sent snapshot without changing provider prompt or attachments
+ok 1 - real runtime persists each rich sent snapshot without changing provider prompt or attachments
+  ---
+  duration_ms: 455.844535
+  type: 'test'
+  ...
+# Subtest: a queued message is prompted once the running turn ends
+ok 2 - a queued message is prompted once the running turn ends
+  ---
+  duration_ms: 2.841332
+  type: 'test'
+  ...
+# Subtest: an empty Reason completion fails the queue visibly and preserves the prompt for retry
+ok 3 - an empty Reason completion fails the queue visibly and preserves the prompt for retry
+  ---
+  duration_ms: 0.868843
+  type: 'test'
+  ...
+# Subtest: a pick in a chat whose session is open goes to that session; before it opens, open carries it
+ok 4 - a pick in a chat whose session is open goes to that session; before it opens, open carries it
+  ---
+  duration_ms: 2.177018
+  type: 'test'
+  ...
+# Subtest: a steered follow-up goes to the backend while the turn runs
+ok 5 - a steered follow-up goes to the backend while the turn runs
+  ---
+  duration_ms: 1.948739
+  type: 'test'
+  ...
+# Subtest: Stop cancels, a second Stop cancels hard, and the queue moves on
+ok 6 - Stop cancels, a second Stop cancels hard, and the queue moves on
+  ---
+  duration_ms: 1.679767
+  type: 'test'
+  ...
+# Subtest: a Stop before the prompt reached the backend ends the turn cancelled without sending it
+ok 7 - a Stop before the prompt reached the backend ends the turn cancelled without sending it
+  ---
+  duration_ms: 2.018843
+  type: 'test'
+  ...
+# Subtest: a prompt the backend rejects fails its turn
+ok 8 - a prompt the backend rejects fails its turn
+  ---
+  duration_ms: 0.850962
+  type: 'test'
+  ...
+# Subtest: Reset chat restores the turn's end checkpoint, then drops later turns
+ok 9 - Reset chat restores the turn's end checkpoint, then drops later turns
+  ---
+  duration_ms: 13.804051
+  type: 'test'
+  ...
+# Subtest: chat statuses span runtimes, and a hidden chat drops out
+ok 10 - chat statuses span runtimes, and a hidden chat drops out
+  ---
+  duration_ms: 5.45912
+  type: 'test'
+  ...
+# Subtest: a chat entering plan review or user input asks for attention once, as Conductor's _p after updateSessionStatus
+ok 11 - a chat entering plan review or user input asks for attention once, as Conductor's _p after updateSessionStatus
+  ---
+  duration_ms: 0.303834
+  type: 'test'
+  ...
+# (node:91) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Checkpoint not found: session-ws1-turn-t2-end (session=ws1, turn=ws1:t2, path=/w)
+# Subtest: checkpoint ids follow Conductor's session-<session>-turn-<turn>-<start|end> and are ref-safe
+ok 12 - checkpoint ids follow Conductor's session-<session>-turn-<turn>-<start|end> and are ref-safe
+  ---
+  duration_ms: 2.07013
+  type: 'test'
+  ...
+# Subtest: the ref sent to the backend names the same checkpoints Reset chat looks for
+ok 13 - the ref sent to the backend names the same checkpoints Reset chat looks for
+  ---
+  duration_ms: 10.511174
+  type: 'test'
+  ...
+# Subtest: reset with files checks the end checkpoint exists, then restores it
+ok 14 - reset with files checks the end checkpoint exists, then restores it
+  ---
+  duration_ms: 0.277696
+  type: 'test'
+  ...
+# Subtest: a missing checkpoint fails with Conductor's message and restores nothing
+ok 15 - a missing checkpoint fails with Conductor's message and restores nothing
+  ---
+  duration_ms: 3.057399
+  type: 'test'
+  ...
+# Subtest: reset without files touches no checkpoint
+ok 16 - reset without files touches no checkpoint
+  ---
+  duration_ms: 0.14685
+  type: 'test'
+  ...
+# Subtest: Also reset files defaults to on
+ok 17 - Also reset files defaults to on
+  ---
+  duration_ms: 0.101531
+  type: 'test'
+  ...
+# (node:99) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: wire JSON from the backend parses into the mirror types
+ok 18 - wire JSON from the backend parses into the mirror types
+  ---
+  duration_ms: 7.190583
+  type: 'test'
+  ...
+# Subtest: plainText joins text blocks only
+ok 19 - plainText joins text blocks only
+  ---
+  duration_ms: 0.189462
+  type: 'test'
+  ...
+# Subtest: upsert appends, then replaces in place
+ok 20 - upsert appends, then replaces in place
+  ---
+  duration_ms: 1.216086
+  type: 'test'
+  ...
+# Subtest: text_delta starts and grows text blocks without mutating the previous transcript
+ok 21 - text_delta starts and grows text blocks without mutating the previous transcript
+  ---
+  duration_ms: 6.343197
+  type: 'test'
+  ...
+# Subtest: text_delta grows thinking blocks
+ok 22 - text_delta grows thinking blocks
+  ---
+  duration_ms: 0.282703
+  type: 'test'
+  ...
+# Subtest: bad deltas are rejected without changes
+ok 23 - bad deltas are rejected without changes
+  ---
+  duration_ms: 0.20346
+  type: 'test'
+  ...
+# Subtest: events for another session are rejected
+ok 24 - events for another session are rejected
+  ---
+  duration_ms: 0.15247
+  type: 'test'
+  ...
+# Subtest: turn_status tracks the active turn and keeps the error
+ok 25 - turn_status tracks the active turn and keeps the error
+  ---
+  duration_ms: 0.222778
+  type: 'test'
+  ...
+# Subtest: transcriptFromMessages keeps this session's messages and lets later copies win
+ok 26 - transcriptFromMessages keeps this session's messages and lets later copies win
+  ---
+  duration_ms: 6.933878
+  type: 'test'
+  ...
+# Subtest: sender fields parse from the wire and decide the origin
+ok 27 - sender fields parse from the wire and decide the origin
+  ---
+  duration_ms: 0.51176
+  type: 'test'
+  ...
+# Subtest: a session report arriving mid-turn leaves the active turn running
+ok 28 - a session report arriving mid-turn leaves the active turn running
+  ---
+  duration_ms: 0.201394
+  type: 'test'
+  ...
+# Subtest: turn status keeps start and end times
+ok 29 - turn status keeps start and end times
+  ---
+  duration_ms: 0.159488
+  type: 'test'
+  ...
+# Subtest: truncateAfterTurn keeps the turn and everything before it, and drops later turns' statuses
+ok 30 - truncateAfterTurn keeps the turn and everything before it, and drops later turns' statuses
+  ---
+  duration_ms: 0.411859
+  type: 'test'
+  ...
+# (node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted Reset chat has no backdrop click-dismiss with reset-files=true
+ok 31 - mounted Reset chat has no backdrop click-dismiss with reset-files=true
+  ---
+  duration_ms: 461.353092
+  type: 'test'
+  ...
+# Subtest: mounted Reset chat has no backdrop click-dismiss with reset-files=false
+ok 32 - mounted Reset chat has no backdrop click-dismiss with reset-files=false
+  ---
+  duration_ms: 58.41838
+  type: 'test'
+  ...
+# Subtest: mounted Reset chat remains dismissible by explicit Cancel
+ok 33 - mounted Reset chat remains dismissible by explicit Cancel
+  ---
+  duration_ms: 43.072746
+  type: 'test'
+  ...
+# Subtest: mounted Reset chat remains dismissible by explicit Escape
+ok 34 - mounted Reset chat remains dismissible by explicit Escape
+  ---
+  duration_ms: 128.859169
+  type: 'test'
+  ...
+# Subtest: mounted Reset chat dismissal controls preserve reset-files=true for explicit click confirmation
+ok 35 - mounted Reset chat dismissal controls preserve reset-files=true for explicit click confirmation
+  ---
+  duration_ms: 166.552037
+  type: 'test'
+  ...
+# Subtest: mounted Reset chat dismissal controls preserve reset-files=false for explicit click confirmation
+ok 36 - mounted Reset chat dismissal controls preserve reset-files=false for explicit click confirmation
+  ---
+  duration_ms: 233.436493
+  type: 'test'
+  ...
+# Subtest: Reset chat primary button carries data-primary-action for DialogFrame ⌘↵ dispatch
+ok 37 - Reset chat primary button carries data-primary-action for DialogFrame ⌘↵ dispatch
+  ---
+  duration_ms: 139.91986
+  type: 'test'
+  ...
+# (node:115) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted Reset chat declares Cancel as its initial focus target via data-dialog-cancel
+ok 38 - mounted Reset chat declares Cancel as its initial focus target via data-dialog-cancel
+  ---
+  duration_ms: 280.626808
+  type: 'test'
+  ...
+# Subtest: mounted Reset chat preserves reset-files=true for explicit click confirmation
+ok 39 - mounted Reset chat preserves reset-files=true for explicit click confirmation
+  ---
+  duration_ms: 305.204821
+  type: 'test'
+  ...
+# Subtest: mounted Reset chat preserves reset-files=false for explicit click confirmation
+ok 40 - mounted Reset chat preserves reset-files=false for explicit click confirmation
+  ---
+  duration_ms: 189.949066
+  type: 'test'
+  ...
+# (node:123) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Reset chat has one styled panel, not an oc-alert panel nested inside DialogFrame
+ok 41 - Reset chat has one styled panel, not an oc-alert panel nested inside DialogFrame
+  ---
+  duration_ms: 313.211861
+  type: 'test'
+  ...
+# Subtest: Reset chat selects the existing rounded alert variant on its sole panel
+ok 42 - Reset chat selects the existing rounded alert variant on its sole panel
+  ---
+  duration_ms: 132.144448
+  type: 'test'
+  ...
+# Subtest: Reset chat keeps Cancel as the focus target and cancellation never resets
+ok 43 - Reset chat keeps Cancel as the focus target and cancellation never resets
+  ---
+  duration_ms: 84.191587
+  type: 'test'
+  ...
+# Subtest: Reset chat frame preserves reset-files=true and pending confirmation
+ok 44 - Reset chat frame preserves reset-files=true and pending confirmation
+  ---
+  duration_ms: 148.632673
+  type: 'test'
+  ...
+# Subtest: Reset chat frame preserves reset-files=false and pending confirmation
+ok 45 - Reset chat frame preserves reset-files=false and pending confirmation
+  ---
+  duration_ms: 58.297543
+  type: 'test'
+  ...
+# (node:131) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: late reset A success preserves the earlier B dialog opened after Cancel
+ok 46 - late reset A success preserves the earlier B dialog opened after Cancel
+  ---
+  duration_ms: 573.718087
+  type: 'test'
+  ...
+# Subtest: late reset A success cannot close B while B's own reset is pending
+ok 47 - late reset A success cannot close B while B's own reset is pending
+  ---
+  duration_ms: 351.859247
+  type: 'test'
+  ...
+# Subtest: late A rejection leaves B ready without leaking A's error
+ok 48 - late A rejection leaves B ready without leaking A's error
+  ---
+  duration_ms: 217.010263
+  type: 'test'
+  ...
+# Subtest: current reset failure stays open and can be retried without resetting files
+ok 49 - current reset failure stays open and can be retried without resetting files
+  ---
+  duration_ms: 122.444271
+  type: 'test'
+  ...
+# Subtest: a reopened same-turn dialog still closes when its reset makes that turn the latest
+ok 50 - a reopened same-turn dialog still closes when its reset makes that turn the latest
+  ---
+  duration_ms: 144.365702
+  type: 'test'
+  ...
+# Subtest: a dismissed reset still truncates its own later messages without reopening a dialog
+ok 51 - a dismissed reset still truncates its own later messages without reopening a dialog
+  ---
+  duration_ms: 156.517152
+  type: 'test'
+  ...
+# (node:139) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Reset chat shows pending feedback until failure settles
+ok 52 - Reset chat shows pending feedback until failure settles
+  ---
+  duration_ms: 300.563153
+  type: 'test'
+  ...
+# Subtest: Reset chat shows pending feedback until success settles
+ok 53 - Reset chat shows pending feedback until success settles
+  ---
+  duration_ms: 193.266363
+  type: 'test'
+  ...
+# (node:147) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: trigger copy is Conductor's
+ok 54 - trigger copy is Conductor's
+  ---
+  duration_ms: 0.63794
+  type: 'test'
+  ...
+# Subtest: items come in Conductor's order with its labels and icons
+ok 55 - items come in Conductor's order with its labels and icons
+  ---
+  duration_ms: 3.947796
+  type: 'test'
+  ...
+# Subtest: each item shows only when its feature is offered; none hides the trigger
+ok 56 - each item shows only when its feature is offered; none hides the trigger
+  ---
+  duration_ms: 0.224065
+  type: 'test'
+  ...
+# Subtest: a fork in progress disables both forks, a busy agent only Reset chat
+ok 57 - a fork in progress disables both forks, a busy agent only Reset chat
+  ---
+  duration_ms: 0.216052
+  type: 'test'
+  ...
+# (node:155) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: turn usage sums distinct result messages only, replayed upserts replace rather than add
+ok 58 - turn usage sums distinct result messages only, replayed upserts replace rather than add
+  ---
+  duration_ms: 5.227111
+  type: 'test'
+  ...
+# Subtest: turn attribution uses the first truthy assistant model, not a later assistant or another turn
+ok 59 - turn attribution uses the first truthy assistant model, not a later assistant or another turn
+  ---
+  duration_ms: 0.528489
+  type: 'test'
+  ...
+# Subtest: turn attribution falls back only to its original user's snapshot, not steering, reports or system data
+ok 60 - turn attribution falls back only to its original user's snapshot, not steering, reports or system data
+  ---
+  duration_ms: 0.338971
+  type: 'test'
+  ...
+# Subtest: missing historical models stay unknown, even when a later steering message has a model
+ok 61 - missing historical models stay unknown, even when a later steering message has a model
+  ---
+  duration_ms: 0.314263
+  type: 'test'
+  ...
+# Subtest: historical turn models survive the existing full-message save and restore boundary
+ok 62 - historical turn models survive the existing full-message save and restore boundary
+  ---
+  duration_ms: 14.063604
+  type: 'test'
+  ...
+# Subtest: a streaming assistant message marks its last text part as streaming and has no footer yet
+ok 63 - a streaming assistant message marks its last text part as streaming and has no footer yet
+  ---
+  duration_ms: 0.410532
+  type: 'test'
+  ...
+# Subtest: an empty assistant message shows while streaming (typing state) and is dropped once the turn ends
+ok 64 - an empty assistant message shows while streaming (typing state) and is dropped once the turn ends
+  ---
+  duration_ms: 0.238769
+  type: 'test'
+  ...
+# Subtest: tool calls pair with their results and tool-result carriers never render as user messages
+ok 65 - tool calls pair with their results and tool-result carriers never render as user messages
+  ---
+  duration_ms: 0.553138
+  type: 'test'
+  ...
+# Subtest: a tool call with no result after its turn ended is interrupted
+ok 66 - a tool call with no result after its turn ended is interrupted
+  ---
+  duration_ms: 0.582806
+  type: 'test'
+  ...
+# Subtest: a mid-turn child-session report renders as a report, not user input, and the turn keeps streaming
+ok 67 - a mid-turn child-session report renders as a report, not user input, and the turn keeps streaming
+  ---
+  duration_ms: 0.476084
+  type: 'test'
+  ...
+# Subtest: a finished turn ends with a footer carrying its final text; a failed turn also offers retry with the prompt
+ok 68 - a finished turn ends with a footer carrying its final text; a failed turn also offers retry with the prompt
+  ---
+  duration_ms: 0.344466
+  type: 'test'
+  ...
+# Subtest: a user toggle on a tool row wins over the expand-by-default setting
+ok 69 - a user toggle on a tool row wins over the expand-by-default setting
+  ---
+  duration_ms: 0.105386
+  type: 'test'
+  ...
+# Subtest: Reset chat applies to every turn with a reply except the chat's last
+ok 70 - Reset chat applies to every turn with a reply except the chat's last
+  ---
+  duration_ms: 0.185934
+  type: 'test'
+  ...
+# Subtest: a stopped turn's prompt is marked cancelled (Conductor's "Cancelled" caption); others are not
+ok 71 - a stopped turn's prompt is marked cancelled (Conductor's "Cancelled" caption); others are not
+  ---
+  duration_ms: 0.167537
+  type: 'test'
+  ...
+# Subtest: a finished turn's footer carries when the turn started and ended
+ok 72 - a finished turn's footer carries when the turn started and ended
+  ---
+  duration_ms: 0.148372
+  type: 'test'
+  ...
+1..72
+# tests 72
+# suites 0
+# pass 72
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13739.966606

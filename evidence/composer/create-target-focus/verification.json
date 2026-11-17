@@ -1,0 +1,12 @@
+{
+  "pass": true,
+  "sourceSpans": 8,
+  "bindings": 21,
+  "wholeParent": true,
+  "exactProductionFocusBlockLines": 19,
+  "frozenV1": "2c013fd034d0c4000f12d77680d65e8116cfda57b601d8b6ab63a5b0d6e69720",
+  "compatibleV2": "37af20994544881b504c156365538aef450cc864c02f0daec22e2319e47b6a6b",
+  "legacyPortOnly": true,
+  "fixtureTestAndAssertionInvocations": 23,
+  "legacyTestAndAssertionInvocations": 149
+}

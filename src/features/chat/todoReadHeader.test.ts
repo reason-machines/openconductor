@@ -52,7 +52,7 @@ function isInput(value: unknown): value is Input {
 const text = (node: Node | string): string => typeof node === "string" ? node : node.children.map(text).join("");
 const hasClass = (node: Node, name: string): boolean => String(node.props.className).split(" ").includes(name);
 const inputBytes = readFileSync(new URL("./todoReadHeader.inputs.json", import.meta.url));
-assert.equal(createHash("sha256").update(inputBytes).digest("hex"), "249b830fee9e3c8ec2e09982de0293b447b183eecfea7f7b33b1e290225d2991");
+assert.equal(createHash("sha256").update(inputBytes).digest("hex"), "6b9b3a3dbbe8f93db9fe70c111b3bcdbaf038eac2fbf24edcee440c7a1bb9d8d");
 const declared: unknown = JSON.parse(inputBytes.toString("utf8"));
 assert.ok(isRecord(declared) && Array.isArray(declared.cases));
 const cases = declared.cases.map((entry: unknown) => { assert.ok(isInput(entry)); return entry; });

@@ -1,0 +1,1 @@
+function Lia(t,e){return p.jsx(Qj,{localWorkspaceId:t,displayMode:"pinned",listIndex:e,desktopGestures:!0},t)}

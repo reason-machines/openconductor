@@ -1,0 +1,22 @@
+{
+  "source_ref": "93b9d53ce02970967a831b0ac93ecdbf17bdea31",
+  "runner_sha256": "977b1b13c79c39a8c6147a21b5b126d16ae29da804a4919fb27f892e5f50b1ce",
+  "commands_sha256": "d7cd53350e3c3a6197d4b89b08efb9eb1f5c7e48f6a8caf9ac640bebcea68d49",
+  "resolver_sha256": "c3b71bcb1fcf8bfca7cf143fcc940ac316385fd9995b845cb98e759c4b297faa",
+  "fixture_sha256": "90a3328dec58d2e9933f6f64aaebc47906a7b314310261cd5245339a2a4bce8f",
+  "prefix_sha256": "2f01feaffbb41d2537aae5434e9e9791f94d7bbad4bccb4e75391c5fd239cc30",
+  "turn_capture_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "launcher_resolve_sha256": "2878c0016c34cfba6478347d658342044c24025df32ce514204008ffbccc2f06",
+  "launcher_apply_sha256": "7f82569183909a1e6d77e90c21407e144c9912138907c6eb3fd8a896b1240db6",
+  "transforms": [
+    "Result<(), String> -> Result<Option<ClaudeLaunch>, String>",
+    "early Ok(()) -> Ok(None)",
+    "stop before spawn; return prepared launch"
+  ],
+  "adapters": [
+    "actual pure resolver with synthetic paths only",
+    "counter-only session kill/wait",
+    "launch/state/mapper DTOs",
+    "fake agent_launch::launch and AppHandle"
+  ]
+}

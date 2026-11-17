@@ -1,0 +1,1286 @@
+(node:126) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:133) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Sidebar Archive busy visibility: idle selected and unselected rows retain the archive action
+ok 1 - Sidebar Archive busy visibility: idle selected and unselected rows retain the archive action
+  ---
+  duration_ms: 499.199154
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive busy visibility: starting hides Archive after an older stopped script
+ok 2 - Sidebar Archive busy visibility: starting hides Archive after an older stopped script
+  ---
+  duration_ms: 186.822756
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive busy visibility: waiting_for_setup hides Archive after an older stopped script
+ok 3 - Sidebar Archive busy visibility: waiting_for_setup hides Archive after an older stopped script
+  ---
+  duration_ms: 132.795518
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive busy visibility: running hides Archive after an older stopped script
+ok 4 - Sidebar Archive busy visibility: running hides Archive after an older stopped script
+  ---
+  duration_ms: 94.000982
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive busy visibility: stopping hides Archive after an older stopped script
+ok 5 - Sidebar Archive busy visibility: stopping hides Archive after an older stopped script
+  ---
+  duration_ms: 78.587946
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive busy visibility: another workspace's busy snapshot and events leave Archive available
+ok 6 - Sidebar Archive busy visibility: another workspace's busy snapshot and events leave Archive available
+  ---
+  duration_ms: 75.283482
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive busy visibility: run start and finish hide then restore Archive on the same row
+ok 7 - Sidebar Archive busy visibility: run start and finish hide then restore Archive on the same row
+  ---
+  duration_ms: 88.325384
+  type: 'test'
+  ...
+# (node:141) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Sidebar Archive tooltip: selected row shows the default shortcut
+ok 8 - Sidebar Archive tooltip: selected row shows the default shortcut
+  ---
+  duration_ms: 258.056026
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive tooltip: saved remap arriving after mount replaces the default
+ok 9 - Sidebar Archive tooltip: saved remap arriving after mount replaces the default
+  ---
+  duration_ms: 135.857693
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive tooltip: open selected tooltip updates on a live remap
+ok 10 - Sidebar Archive tooltip: open selected tooltip updates on a live remap
+  ---
+  duration_ms: 77.54511
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive tooltip: only the primary saved shortcut is shown
+ok 11 - Sidebar Archive tooltip: only the primary saved shortcut is shown
+  ---
+  duration_ms: 91.075461
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive tooltip: reset restores the default on the same row
+ok 12 - Sidebar Archive tooltip: reset restores the default on the same row
+  ---
+  duration_ms: 61.19197
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive tooltip: unselected row omits shortcuts before and after remap
+ok 13 - Sidebar Archive tooltip: unselected row omits shortcuts before and after remap
+  ---
+  duration_ms: 67.973883
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive tooltip: archive click keeps its callback and stops propagation
+ok 14 - Sidebar Archive tooltip: archive click keeps its callback and stops propagation
+  ---
+  duration_ms: 54.331389
+  type: 'test'
+  ...
+# (node:149) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: empty sidebar frozen8: empty-repo-expanded
+ok 15 - empty sidebar frozen8: empty-repo-expanded
+  ---
+  duration_ms: 21.491589
+  type: 'test'
+  ...
+# Subtest: empty sidebar frozen8: empty-repo-collapsed
+ok 16 - empty sidebar frozen8: empty-repo-collapsed
+  ---
+  duration_ms: 5.848047
+  type: 'test'
+  ...
+# Subtest: empty sidebar frozen8: empty-status-expanded
+ok 17 - empty sidebar frozen8: empty-status-expanded
+  ---
+  duration_ms: 5.375733
+  type: 'test'
+  ...
+# Subtest: empty sidebar frozen8: empty-status-collapsed
+ok 18 - empty sidebar frozen8: empty-status-collapsed
+  ---
+  duration_ms: 4.305261
+  type: 'test'
+  ...
+# Subtest: empty sidebar frozen8: one-linked-empty-repo-expanded
+ok 19 - empty sidebar frozen8: one-linked-empty-repo-expanded
+  ---
+  duration_ms: 9.98749
+  type: 'test'
+  ...
+# Subtest: empty sidebar frozen8: one-linked-empty-repo-collapsed
+ok 20 - empty sidebar frozen8: one-linked-empty-repo-collapsed
+  ---
+  duration_ms: 5.294969
+  type: 'test'
+  ...
+# Subtest: empty sidebar frozen8: hidden-only-repo
+ok 21 - empty sidebar frozen8: hidden-only-repo
+  ---
+  duration_ms: 7.641528
+  type: 'test'
+  ...
+# Subtest: empty sidebar frozen8: nonmatching-filter-nonempty-repos
+ok 22 - empty sidebar frozen8: nonmatching-filter-nonempty-repos
+  ---
+  duration_ms: 4.896521
+  type: 'test'
+  ...
+# Subtest: empty sidebar adjacent: live repo collapse keeps guidance and persists
+ok 23 - empty sidebar adjacent: live repo collapse keeps guidance and persists
+  ---
+  duration_ms: 8.857219
+  type: 'test'
+  ...
+# Subtest: empty sidebar adjacent: live status collapse keeps guidance and persists
+ok 24 - empty sidebar adjacent: live status collapse keeps guidance and persists
+  ---
+  duration_ms: 7.674343
+  type: 'test'
+  ...
+# Subtest: empty sidebar adjacent: adding and removing the last repository retains collapsed state
+ok 25 - empty sidebar adjacent: adding and removing the last repository retains collapsed state
+  ---
+  duration_ms: 4.245861
+  type: 'test'
+  ...
+# (node:157) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: branch names read as sentences
+ok 26 - branch names read as sentences
+  ---
+  duration_ms: 0.78503
+  type: 'test'
+  ...
+# Subtest: a user-set name wins over the PR title and branch
+ok 27 - a user-set name wins over the PR title and branch
+  ---
+  duration_ms: 0.130883
+  type: 'test'
+  ...
+# Subtest: the PR title wins over the branch
+ok 28 - the PR title wins over the branch
+  ---
+  duration_ms: 0.093431
+  type: 'test'
+  ...
+# Subtest: the branch is shown, prettified, unless it is the target branch
+ok 29 - the branch is shown, prettified, unless it is the target branch
+  ---
+  duration_ms: 0.097851
+  type: 'test'
+  ...
+# Subtest: a stored workspace_name comes before the PR title even when not user-set ($V: if(e)return e)
+ok 30 - a stored workspace_name comes before the PR title even when not user-set ($V: if(e)return e)
+  ---
+  duration_ms: 0.150113
+  type: 'test'
+  ...
+# Subtest: the configured branch prefix is stripped before prettifying (pGe / zcs)
+ok 31 - the configured branch prefix is stripped before prettifying (pGe / zcs)
+  ---
+  duration_ms: 0.095913
+  type: 'test'
+  ...
+# Subtest: the target is the workspace's intended_target_branch, main when unset
+ok 32 - the target is the workspace's intended_target_branch, main when unset
+  ---
+  duration_ms: 0.144848
+  type: 'test'
+  ...
+# Subtest: rows are listed newest first, falling back to creation time
+ok 33 - rows are listed newest first, falling back to creation time
+  ---
+  duration_ms: 1.125304
+  type: 'test'
+  ...
+# (node:165) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Sidebar number hints: default modifier waits 500ms and hides on release
+ok 34 - Sidebar number hints: default modifier waits 500ms and hides on release
+  ---
+  duration_ms: 163.936439
+  type: 'test'
+  ...
+# Subtest: Sidebar number hints: saved primary Control modifier reveals hints
+ok 35 - Sidebar number hints: saved primary Control modifier reveals hints
+  ---
+  duration_ms: 115.36324
+  type: 'test'
+  ...
+# Subtest: Sidebar number hints: a saved replacement no longer accepts default Command
+ok 36 - Sidebar number hints: a saved replacement no longer accepts default Command
+  ---
+  duration_ms: 82.746519
+  type: 'test'
+  ...
+# Subtest: Sidebar number hints: an additional physical shortcut can reveal hints
+ok 37 - Sidebar number hints: an additional physical shortcut can reveal hints
+  ---
+  duration_ms: 71.038766
+  type: 'test'
+  ...
+# Subtest: Sidebar number hints: extra held modifiers do not hide an eligible chord
+ok 38 - Sidebar number hints: extra held modifiers do not hide an eligible chord
+  ---
+  duration_ms: 46.296789
+  type: 'test'
+  ...
+# Subtest: Sidebar number hints: shortcuts with no modifiers never reveal hints
+ok 39 - Sidebar number hints: shortcuts with no modifiers never reveal hints
+  ---
+  duration_ms: 42.203809
+  type: 'test'
+  ...
+# Subtest: Sidebar number hints: provider updates and reset affect the next event without remounting
+ok 40 - Sidebar number hints: provider updates and reset affect the next event without remounting
+  ---
+  duration_ms: 56.75169
+  type: 'test'
+  ...
+# Subtest: Sidebar number hints: pointer release cancels a pending default hint
+ok 41 - Sidebar number hints: pointer release cancels a pending default hint
+  ---
+  duration_ms: 43.536984
+  type: 'test'
+  ...
+# Subtest: Sidebar number hints: focus loss hides a visible default hint
+ok 42 - Sidebar number hints: focus loss hides a visible default hint
+  ---
+  duration_ms: 49.996314
+  type: 'test'
+  ...
+# (node:173) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Pinned mounted: latest pin appears first
+ok 43 - Pinned mounted: latest pin appears first
+  ---
+  duration_ms: 15.606255
+  type: 'test'
+  ...
+# Subtest: Pinned mounted: newest first spans loaded repositories
+ok 44 - Pinned mounted: newest first spans loaded repositories
+  ---
+  duration_ms: 2.140304
+  type: 'test'
+  ...
+# Subtest: Pinned mounted: a later pin update moves to the front
+ok 45 - Pinned mounted: a later pin update moves to the front
+  ---
+  duration_ms: 5.350028
+  type: 'test'
+  ...
+# Subtest: Pinned mounted: updated setting does not override pin time
+ok 46 - Pinned mounted: updated setting does not override pin time
+  ---
+  duration_ms: 1.895355
+  type: 'test'
+  ...
+# Subtest: Pinned mounted: created setting does not override pin time
+ok 47 - Pinned mounted: created setting does not override pin time
+  ---
+  duration_ms: 1.657215
+  type: 'test'
+  ...
+# Subtest: Pinned control: equal pin timestamps retain repository/input order
+ok 48 - Pinned control: equal pin timestamps retain repository/input order
+  ---
+  duration_ms: 1.862919
+  type: 'test'
+  ...
+# Subtest: Pinned control: unpinned and archived unpinned rows stay out
+ok 49 - Pinned control: unpinned and archived unpinned rows stay out
+  ---
+  duration_ms: 1.576466
+  type: 'test'
+  ...
+# Subtest: Pinned control: section membership takes precedence
+ok 50 - Pinned control: section membership takes precedence
+  ---
+  duration_ms: 2.780194
+  type: 'test'
+  ...
+# Subtest: Pinned control: collapsed Pinned group has no rendered rows
+ok 51 - Pinned control: collapsed Pinned group has no rendered rows
+  ---
+  duration_ms: 1.575935
+  type: 'test'
+  ...
+# Subtest: Pinned control: empty pin projection has no rows
+ok 52 - Pinned control: empty pin projection has no rows
+  ---
+  duration_ms: 4.449595
+  type: 'test'
+  ...
+# Subtest: Pinned control: Status grouping keeps the separate Pinned group
+ok 53 - Pinned control: Status grouping keeps the separate Pinned group
+  ---
+  duration_ms: 1.01471
+  type: 'test'
+  ...
+# Subtest: Pinned control: unrelated hidden repository does not enter the group
+ok 54 - Pinned control: unrelated hidden repository does not enter the group
+  ---
+  duration_ms: 1.209029
+  type: 'test'
+  ...
+# (node:181) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:181) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: repository badge frozen8: folded-one-ordinary-one-pinned
+ok 55 - repository badge frozen8: folded-one-ordinary-one-pinned
+  ---
+  duration_ms: 14.281283
+  type: 'test'
+  ...
+# Subtest: repository badge frozen8: folded-only-pinned
+ok 56 - repository badge frozen8: folded-only-pinned
+  ---
+  duration_ms: 2.406901
+  type: 'test'
+  ...
+# Subtest: repository badge frozen8: folded-one-ordinary-one-sectioned
+ok 57 - repository badge frozen8: folded-one-ordinary-one-sectioned
+  ---
+  duration_ms: 1.926453
+  type: 'test'
+  ...
+# Subtest: repository badge frozen8: folded-only-sectioned
+ok 58 - repository badge frozen8: folded-only-sectioned
+  ---
+  duration_ms: 2.935126
+  type: 'test'
+  ...
+# Subtest: repository badge frozen8: folded-two-ordinary-control
+ok 59 - repository badge frozen8: folded-two-ordinary-control
+  ---
+  duration_ms: 2.387919
+  type: 'test'
+  ...
+# Subtest: repository badge frozen8: folded-empty-control
+ok 60 - repository badge frozen8: folded-empty-control
+  ---
+  duration_ms: 1.652171
+  type: 'test'
+  ...
+# Subtest: repository badge frozen8: expanded-mixed-control
+ok 61 - repository badge frozen8: expanded-mixed-control
+  ---
+  duration_ms: 1.740511
+  type: 'test'
+  ...
+# Subtest: repository badge frozen8: folded-mixed-with-pending
+ok 62 - repository badge frozen8: folded-mixed-with-pending
+  ---
+  duration_ms: 2.016499
+  type: 'test'
+  ...
+# Subtest: repository badge adjacent: expanded updated row order stays unchanged
+ok 63 - repository badge adjacent: expanded updated row order stays unchanged
+  ---
+  duration_ms: 4.754878
+  type: 'test'
+  ...
+# Subtest: repository badge adjacent: expanded created row order stays unchanged
+ok 64 - repository badge adjacent: expanded created row order stays unchanged
+  ---
+  duration_ms: 2.106483
+  type: 'test'
+  ...
+# Subtest: repository badge adjacent: pending-only folded group has no badge
+ok 65 - repository badge adjacent: pending-only folded group has no badge
+  ---
+  duration_ms: 7.978497
+  type: 'test'
+  ...
+# Subtest: repository badge adjacent: live pending add/remove and expansion preserve ordinary rows
+ok 66 - repository badge adjacent: live pending add/remove and expansion preserve ordinary rows
+  ---
+  duration_ms: 15.671752
+  type: 'test'
+  ...
+# (node:189) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Sidebar row activation: already-prevented leaves selection and attention chats alone
+ok 67 - Sidebar row activation: already-prevented leaves selection and attention chats alone
+  ---
+  duration_ms: 398.693536
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: middle-button leaves selection and attention chats alone
+ok 68 - Sidebar row activation: middle-button leaves selection and attention chats alone
+  ---
+  duration_ms: 279.556292
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: secondary-button leaves selection and attention chats alone
+ok 69 - Sidebar row activation: secondary-button leaves selection and attention chats alone
+  ---
+  duration_ms: 161.526162
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: meta-primary leaves selection and attention chats alone
+ok 70 - Sidebar row activation: meta-primary leaves selection and attention chats alone
+  ---
+  duration_ms: 128.018113
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: alt-primary leaves selection and attention chats alone
+ok 71 - Sidebar row activation: alt-primary leaves selection and attention chats alone
+  ---
+  duration_ms: 104.060143
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: ctrl-primary leaves selection and attention chats alone
+ok 72 - Sidebar row activation: ctrl-primary leaves selection and attention chats alone
+  ---
+  duration_ms: 114.885122
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: shift-primary leaves selection and attention chats alone
+ok 73 - Sidebar row activation: shift-primary leaves selection and attention chats alone
+  ---
+  duration_ms: 182.583793
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: ordinary-primary-different-workspace
+ok 74 - Sidebar row activation: ordinary-primary-different-workspace
+  ---
+  duration_ms: 34.615586
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: ordinary-primary-current-unread-chat
+ok 75 - Sidebar row activation: ordinary-primary-current-unread-chat
+  ---
+  duration_ms: 22.798606
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: ordinary-primary-current-waiting-chat
+ok 76 - Sidebar row activation: ordinary-primary-current-waiting-chat
+  ---
+  duration_ms: 27.680974
+  type: 'test'
+  ...
+# (node:197) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:197) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: actual Sidebar navigation expressions retain default shortcut hints
+ok 77 - actual Sidebar navigation expressions retain default shortcut hints
+  ---
+  duration_ms: 2.586376
+  type: 'test'
+  ...
+# Subtest: actual Sidebar Home expression displays primary and additional saved replacements
+ok 78 - actual Sidebar Home expression displays primary and additional saved replacements
+  ---
+  duration_ms: 0.258477
+  type: 'test'
+  ...
+# Subtest: actual Sidebar Create expression displays primary and additional saved replacements
+ok 79 - actual Sidebar Create expression displays primary and additional saved replacements
+  ---
+  duration_ms: 0.206666
+  type: 'test'
+  ...
+# Subtest: actual Sidebar Search expression displays primary and additional saved replacements
+ok 80 - actual Sidebar Search expression displays primary and additional saved replacements
+  ---
+  duration_ms: 0.258489
+  type: 'test'
+  ...
+# Subtest: actual Sidebar navigation expressions follow changed snapshots and reset to defaults
+ok 81 - actual Sidebar navigation expressions follow changed snapshots and reset to defaults
+  ---
+  duration_ms: 1.542991
+  type: 'test'
+  ...
+# Subtest: actual Sidebar Home native title uses the effective primary key without adding Create or Search titles
+ok 82 - actual Sidebar Home native title uses the effective primary key without adding Create or Search titles
+  ---
+  duration_ms: 0.809869
+  type: 'test'
+  ...
+# Subtest: Sidebar reads the live provider snapshot used by its navigation expressions
+ok 83 - Sidebar reads the live provider snapshot used by its navigation expressions
+  ---
+  duration_ms: 0.219976
+  type: 'test'
+  ...
+# (node:205) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: no Filter by project submenu with one repository or none
+ok 84 - no Filter by project submenu with one repository or none
+  ---
+  duration_ms: 0.742448
+  type: 'test'
+  ...
+# Subtest: options are All projects, then every repository by name in list order
+ok 85 - options are All projects, then every repository by name in list order
+  ---
+  duration_ms: 1.098687
+  type: 'test'
+  ...
+# Subtest: All projects clears the filter; a repository id sets it
+ok 86 - All projects clears the filter; a repository id sets it
+  ---
+  duration_ms: 0.137756
+  type: 'test'
+  ...
+# Subtest: a filter keeps only the filtered repository's group
+ok 87 - a filter keeps only the filtered repository's group
+  ---
+  duration_ms: 0.200668
+  type: 'test'
+  ...
+# Subtest: a filter on a removed repository is cleared only after repositories load
+ok 88 - a filter on a removed repository is cleared only after repositories load
+  ---
+  duration_ms: 0.125249
+  type: 'test'
+  ...
+# Subtest: createRepoDefault keeps a requested repository
+ok 89 - createRepoDefault keeps a requested repository
+  ---
+  duration_ms: 0.097252
+  type: 'test'
+  ...
+# Subtest: createRepoDefault starts on the sidebar's project filter when nothing is requested
+ok 90 - createRepoDefault starts on the sidebar's project filter when nothing is requested
+  ---
+  duration_ms: 0.135202
+  type: 'test'
+  ...
+# Subtest: createRepoDefault skips a requested or filtered repository that is gone
+ok 91 - createRepoDefault skips a requested or filtered repository that is gone
+  ---
+  duration_ms: 0.075011
+  type: 'test'
+  ...
+# Subtest: createRepoDefault falls back to the first repository, or none
+ok 92 - createRepoDefault falls back to the first repository, or none
+  ---
+  duration_ms: 0.27184
+  type: 'test'
+  ...
+# (node:213) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: sort preference defaults to Updated and only accepts Created
+ok 93 - sort preference defaults to Updated and only accepts Created
+  ---
+  duration_ms: 0.684288
+  type: 'test'
+  ...
+# Subtest: Created ignores later activity; Updated falls back to creation and preserves equal-time order
+ok 94 - Created ignores later activity; Updated falls back to creation and preserves equal-time order
+  ---
+  duration_ms: 1.138093
+  type: 'test'
+  ...
+# (node:221) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: local section action has the reference row contract without requiring a project or workspace
+ok 95 - local section action has the reference row contract without requiring a project or workspace
+  ---
+  duration_ms: 5.536803
+  type: 'test'
+  ...
+# Subtest: actual PaletteHost selects the local section handler exactly once
+ok 96 - actual PaletteHost selects the local section handler exactly once
+  ---
+  duration_ms: 227.566839
+  type: 'test'
+  ...
+# Subtest: actual PaletteHost omits the row without the shell's local-section capability
+ok 97 - actual PaletteHost omits the row without the shell's local-section capability
+  ---
+  duration_ms: 152.247381
+  type: 'test'
+  ...
+# Subtest: mounted App opens one shared section dialog with hidden Sidebar at root
+ok 98 - mounted App opens one shared section dialog with hidden Sidebar at root
+  ---
+  duration_ms: 423.294267
+  type: 'test'
+  ...
+# Subtest: mounted App opens one shared section dialog with hidden Sidebar at home
+ok 99 - mounted App opens one shared section dialog with hidden Sidebar at home
+  ---
+  duration_ms: 278.809033
+  type: 'test'
+  ...
+# Subtest: mounted App creates in the local section store without moving the selected workspace
+ok 100 - mounted App creates in the local section store without moving the selected workspace
+  ---
+  duration_ms: 175.367854
+  type: 'test'
+  ...
+# Subtest: mounted App Cancel and repeated opens do not write a section or duplicate the dialog
+ok 101 - mounted App Cancel and repeated opens do not write a section or duplicate the dialog
+  ---
+  duration_ms: 155.756773
+  type: 'test'
+  ...
+# Subtest: mounted App with loading local store withholds creation until ready
+ok 102 - mounted App with loading local store withholds creation until ready
+  ---
+  duration_ms: 277.441018
+  type: 'test'
+  ...
+# Subtest: mounted App with error local store withholds creation until ready
+ok 103 - mounted App with error local store withholds creation until ready
+  ---
+  duration_ms: 171.4755
+  type: 'test'
+  ...
+# Subtest: shared shell owner preserves Sidebar create-before, workspace move and edit contracts
+ok 104 - shared shell owner preserves Sidebar create-before, workspace move and edit contracts
+  ---
+  duration_ms: 172.513985
+  type: 'test'
+  ...
+# (node:229) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: M01 actual adapter, All/Actions search and mounted palette expose the reference Move to section command
+ok 105 - M01 actual adapter, All/Actions search and mounted palette expose the reference Move to section command
+  ---
+  duration_ms: 602.039373
+  type: 'test'
+  ...
+# Subtest: M02 eligibility resolves only the selected repository and does not reuse editable/status guards
+ok 106 - M02 eligibility resolves only the selected repository and does not reuse editable/status guards
+  ---
+  duration_ms: 0.619026
+  type: 'test'
+  ...
+# Subtest: M03 negative route and same-id other-repository controls never expose a usable Move to section action
+ok 107 - M03 negative route and same-id other-repository controls never expose a usable Move to section action
+  ---
+  duration_ms: 0.300466
+  type: 'test'
+  ...
+# Subtest: M03 mounted loading local hydration withholds the row until ready
+ok 108 - M03 mounted loading local hydration withholds the row until ready
+  ---
+  duration_ms: 305.497516
+  type: 'test'
+  ...
+# Subtest: M03 mounted error local hydration withholds the row until ready
+ok 109 - M03 mounted error local hydration withholds the row until ready
+  ---
+  duration_ms: 202.588798
+  type: 'test'
+  ...
+# Subtest: M04 sections retain stored order; current membership is checked and disabled, with New and conditional Remove
+ok 110 - M04 sections retain stored order; current membership is checked and disabled, with New and conditional Remove
+  ---
+  duration_ms: 498.789828
+  type: 'test'
+  ...
+# Subtest: M05 choosing an existing section reuses the reducer, removes old membership, unpins and retains the palette
+ok 111 - M05 choosing an existing section reuses the reducer, removes old membership, unpins and retains the palette
+  ---
+  duration_ms: 127.691414
+  type: 'test'
+  ...
+# Subtest: M06 Remove from section uses the existing null assignment without repinning or dismissing
+ok 112 - M06 Remove from section uses the existing null assignment without repinning or dismissing
+  ---
+  duration_ms: 130.217382
+  type: 'test'
+  ...
+# Subtest: M07 Escape, empty Backspace and explicit Back return to commands, not out of the palette
+ok 113 - M07 Escape, empty Backspace and explicit Back return to commands, not out of the palette
+  ---
+  duration_ms: 160.718324
+  type: 'test'
+  ...
+# Subtest: M08 complete-name query filters eligible sections and Enter cannot activate the disabled current section
+ok 114 - M08 complete-name query filters eligible sections and Enter cannot activate the disabled current section
+  ---
+  duration_ms: 137.089196
+  type: 'test'
+  ...
+# Subtest: M09 New section closes the palette and opens exactly one existing dialog for the captured workspace
+ok 115 - M09 New section closes the palette and opens exactly one existing dialog for the captured workspace
+  ---
+  duration_ms: 102.09002
+  type: 'test'
+  ...
+# Subtest: M10 explicit Cancel returns to the same section screen without writes; stale selection is not restored
+ok 116 - M10 explicit Cancel returns to the same section screen without writes; stale selection is not restored
+  ---
+  duration_ms: 117.169005
+  type: 'test'
+  ...
+# Subtest: M11 valid Create reuses the captured-workspace creator with trimmed name/emoji, unpins and restores the screen
+ok 117 - M11 valid Create reuses the captured-workspace creator with trimmed name/emoji, unpins and restores the screen
+  ---
+  duration_ms: 118.956508
+  type: 'test'
+  ...
+# Subtest: M12 plain Home Create section and ordinary Cancel remain independent of section navigation
+ok 118 - M12 plain Home Create section and ordinary Cancel remain independent of section navigation
+  ---
+  duration_ms: 105.038433
+  type: 'test'
+  ...
+# Subtest: M12 base adapter action equality and archived/Open in context stay unchanged
+ok 119 - M12 base adapter action equality and archived/Open in context stay unchanged
+  ---
+  duration_ms: 0.522877
+  type: 'test'
+  ...
+# Subtest: M13 no-match query renders the empty state and suppresses all options
+ok 120 - M13 no-match query renders the empty state and suppresses all options
+  ---
+  duration_ms: 111.724575
+  type: 'test'
+  ...
+# (node:237) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted section keyboard scroll: {} ArrowDown Section 00 -> Section 01
+ok 121 - mounted section keyboard scroll: {} ArrowDown Section 00 -> Section 01
+  ---
+  duration_ms: 301.613448
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {} ArrowUp Section 29 -> Section 28
+ok 122 - mounted section keyboard scroll: {} ArrowUp Section 29 -> Section 28
+  ---
+  duration_ms: 176.480075
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {"ctrlKey":true} j Section 00 -> Section 01
+ok 123 - mounted section keyboard scroll: {"ctrlKey":true} j Section 00 -> Section 01
+  ---
+  duration_ms: 114.512253
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {"ctrlKey":true} k Section 29 -> Section 28
+ok 124 - mounted section keyboard scroll: {"ctrlKey":true} k Section 29 -> Section 28
+  ---
+  duration_ms: 98.622438
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {} Home Section 29 -> Section 00
+ok 125 - mounted section keyboard scroll: {} Home Section 29 -> Section 00
+  ---
+  duration_ms: 75.280764
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {} End Section 00 -> Remove from section
+ok 126 - mounted section keyboard scroll: {} End Section 00 -> Remove from section
+  ---
+  duration_ms: 75.988056
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {"metaKey":true} ArrowDown Section 00 -> Remove from section
+ok 127 - mounted section keyboard scroll: {"metaKey":true} ArrowDown Section 00 -> Remove from section
+  ---
+  duration_ms: 69.58904
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {"metaKey":true} ArrowUp Section 29 -> Section 00
+ok 128 - mounted section keyboard scroll: {"metaKey":true} ArrowUp Section 29 -> Section 00
+  ---
+  duration_ms: 77.604781
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {} ArrowUp Section 00 -> Remove from section
+ok 129 - mounted section keyboard scroll: {} ArrowUp Section 00 -> Remove from section
+  ---
+  duration_ms: 90.385795
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {} ArrowDown Remove from section -> Section 00
+ok 130 - mounted section keyboard scroll: {} ArrowDown Remove from section -> Section 00
+  ---
+  duration_ms: 50.959238
+  type: 'test'
+  ...
+# Subtest: filtered result change at the same index scrolls the newly selected section
+ok 131 - filtered result change at the same index scrolls the newly selected section
+  ---
+  duration_ms: 56.039008
+  type: 'test'
+  ...
+# Subtest: control: ordinary command navigation still scrolls the regular list
+ok 132 - control: ordinary command navigation still scrolls the regular list
+  ---
+  duration_ms: 53.771638
+  type: 'test'
+  ...
+# Subtest: control: composition does not change selection or request scroll
+ok 133 - control: composition does not change selection or request scroll
+  ---
+  duration_ms: 45.089671
+  type: 'test'
+  ...
+# Subtest: control: enabled pointer selection changes the highlight without requesting scroll
+ok 134 - control: enabled pointer selection changes the highlight without requesting scroll
+  ---
+  duration_ms: 43.69142
+  type: 'test'
+  ...
+# Subtest: control: current section pointer callbacks cannot select, scroll or dispatch
+ok 135 - control: current section pointer callbacks cannot select, scroll or dispatch
+  ---
+  duration_ms: 57.50843
+  type: 'test'
+  ...
+# Subtest: control: empty filtered list does not scroll or assign
+ok 136 - control: empty filtered list does not scroll or assign
+  ---
+  duration_ms: 102.987281
+  type: 'test'
+  ...
+# Subtest: control: disabled-only filtered rows do not request scroll or dispatch
+ok 137 - control: disabled-only filtered rows do not request scroll or dispatch
+  ---
+  duration_ms: 97.677642
+  type: 'test'
+  ...
+# Subtest: control: selected enabled section still reaches the real Host assignment consumer
+ok 138 - control: selected enabled section still reaches the real Host assignment consumer
+  ---
+  duration_ms: 98.443036
+  type: 'test'
+  ...
+# (node:245) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: repo; filter=all; Focus=expanded: numbers target their labelled row
+ok 139 - repo; filter=all; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 2.404789
+  type: 'test'
+  ...
+# Subtest: repo; filter=all; Focus=collapsed: numbers target their labelled row
+ok 140 - repo; filter=all; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.288576
+  type: 'test'
+  ...
+# Subtest: repo; filter=alpha; Focus=expanded: numbers target their labelled row
+ok 141 - repo; filter=alpha; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.282634
+  type: 'test'
+  ...
+# Subtest: repo; filter=alpha; Focus=collapsed: numbers target their labelled row
+ok 142 - repo; filter=alpha; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.188999
+  type: 'test'
+  ...
+# Subtest: repo; filter=beta; Focus=expanded: numbers target their labelled row
+ok 143 - repo; filter=beta; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.149975
+  type: 'test'
+  ...
+# Subtest: repo; filter=beta; Focus=collapsed: numbers target their labelled row
+ok 144 - repo; filter=beta; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.216335
+  type: 'test'
+  ...
+# Subtest: status; filter=all; Focus=expanded: numbers target their labelled row
+ok 145 - status; filter=all; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.441244
+  type: 'test'
+  ...
+# Subtest: status; filter=all; Focus=collapsed: numbers target their labelled row
+ok 146 - status; filter=all; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.133693
+  type: 'test'
+  ...
+# Subtest: status; filter=alpha; Focus=expanded: numbers target their labelled row
+ok 147 - status; filter=alpha; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.413538
+  type: 'test'
+  ...
+# Subtest: status; filter=alpha; Focus=collapsed: numbers target their labelled row
+ok 148 - status; filter=alpha; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.340185
+  type: 'test'
+  ...
+# Subtest: status; filter=beta; Focus=expanded: numbers target their labelled row
+ok 149 - status; filter=beta; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.18933
+  type: 'test'
+  ...
+# Subtest: status; filter=beta; Focus=collapsed: numbers target their labelled row
+ok 150 - status; filter=beta; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.091575
+  type: 'test'
+  ...
+# (node:253) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: control: normal Project filter renders only Beta's repository group
+ok 151 - control: normal Project filter renders only Beta's repository group
+  ---
+  duration_ms: 1.809193
+  type: 'test'
+  ...
+# Subtest: filtered-out ordinary project rows consume no numbered position
+ok 152 - filtered-out ordinary project rows consume no numbered position
+  ---
+  duration_ms: 0.629442
+  type: 'test'
+  ...
+# Subtest: the selected project's sole ordinary workspace has hint number one
+ok 153 - the selected project's sole ordinary workspace has hint number one
+  ---
+  duration_ms: 0.200674
+  type: 'test'
+  ...
+# Subtest: workspace.switchTo1 targets the selected project's sole workspace
+ok 154 - workspace.switchTo1 targets the selected project's sole workspace
+  ---
+  duration_ms: 0.154522
+  type: 'test'
+  ...
+# Subtest: workspace.switchTo2 has no target when the filtered sequence has one row
+ok 155 - workspace.switchTo2 has no target when the filtered sequence has one row
+  ---
+  duration_ms: 0.122134
+  type: 'test'
+  ...
+# Subtest: control: filtering leaves both loaded repositories and their rows intact
+ok 156 - control: filtering leaves both loaded repositories and their rows intact
+  ---
+  duration_ms: 0.249962
+  type: 'test'
+  ...
+# Subtest: mounted control: ordinary unfiltered producer renders hints 1/2 and dispatches both targets
+ok 157 - mounted control: ordinary unfiltered producer renders hints 1/2 and dispatches both targets
+  ---
+  duration_ms: 901.536314
+  type: 'test'
+  ...
+# Subtest: mounted control: normal Beta radio propagates through app prefs and useAppStore without deleting loaded rows
+ok 158 - mounted control: normal Beta radio propagates through app prefs and useAppStore without deleting loaded rows
+  ---
+  duration_ms: 450.16774
+  type: 'test'
+  ...
+# Subtest: mounted Beta filter: the rendered, visible hint says Switch with Command-1
+ok 159 - mounted Beta filter: the rendered, visible hint says Switch with Command-1
+  ---
+  duration_ms: 334.192761
+  type: 'test'
+  ...
+# Subtest: mounted Beta filter: actual numbered shortcut dispatch selects Beta on Command-1
+ok 160 - mounted Beta filter: actual numbered shortcut dispatch selects Beta on Command-1
+  ---
+  duration_ms: 341.822401
+  type: 'test'
+  ...
+# Subtest: mounted Beta filter: actual Command-2 dispatch has no selection target
+ok 161 - mounted Beta filter: actual Command-2 dispatch has no selection target
+  ---
+  duration_ms: 274.314456
+  type: 'test'
+  ...
+# Subtest: mounted control: clearing normal filter restores both labels and targets unchanged
+ok 162 - mounted control: clearing normal filter restores both labels and targets unchanged
+  ---
+  duration_ms: 335.897811
+  type: 'test'
+  ...
+# (node:261) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: create appends, or inserts before a section, and takes its members out of other sections
+ok 163 - create appends, or inserts before a section, and takes its members out of other sections
+  ---
+  duration_ms: 1.745238
+  type: 'test'
+  ...
+# Subtest: edit renames and sets the emoji, but an edit without an emoji keeps the stored one (Conductor's SY)
+ok 164 - edit renames and sets the emoji, but an edit without an emoji keeps the stored one (Conductor's SY)
+  ---
+  duration_ms: 0.273936
+  type: 'test'
+  ...
+# Subtest: delete drops the section; reorder moves it to an index of the list without it
+ok 165 - delete drops the section; reorder moves it to an index of the list without it
+  ---
+  duration_ms: 0.174258
+  type: 'test'
+  ...
+# Subtest: assign moves a workspace to the end of one section; null takes it out
+ok 166 - assign moves a workspace to the end of one section; null takes it out
+  ---
+  duration_ms: 0.253467
+  type: 'test'
+  ...
+# Subtest: the layout stamp always moves forward
+ok 167 - the layout stamp always moves forward
+  ---
+  duration_ms: 0.126777
+  type: 'test'
+  ...
+# Subtest: projection: first section wins, unlisted rows are left out, newest activity first
+ok 168 - projection: first section wins, unlisted rows are left out, newest activity first
+  ---
+  duration_ms: 0.233138
+  type: 'test'
+  ...
+# (node:269) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: persisted workspace links hydrate separately from prompt attachments
+ok 169 - persisted workspace links hydrate separately from prompt attachments
+  ---
+  duration_ms: 2.019867
+  type: 'test'
+  ...
+# Subtest: retained transcript chats hydrate without opening tabs or counting hidden unread
+ok 170 - retained transcript chats hydrate without opening tabs or counting hidden unread
+  ---
+  duration_ms: 0.425192
+  type: 'test'
+  ...
+# Subtest: maps rows in database order, marks hidden repos and drops archived workspaces
+ok 171 - maps rows in database order, marks hidden repos and drops archived workspaces
+  ---
+  duration_ms: 0.451719
+  type: 'test'
+  ...
+# Subtest: carries the workspace's target branch from conductor.db
+ok 172 - carries the workspace's target branch from conductor.db
+  ---
+  duration_ms: 0.257953
+  type: 'test'
+  ...
+# Subtest: carries the workspace number from conductor.db
+ok 173 - carries the workspace number from conductor.db
+  ---
+  duration_ms: 0.267245
+  type: 'test'
+  ...
+# Subtest: carries the workspace's intended target branch for the diff
+ok 174 - carries the workspace's intended target branch for the diff
+  ---
+  duration_ms: 0.142902
+  type: 'test'
+  ...
+# Subtest: selection falls back to home when its workspace is gone
+ok 175 - selection falls back to home when its workspace is gone
+  ---
+  duration_ms: 0.229917
+  type: 'test'
+  ...
+# Subtest: prefs round-trip and survive garbage
+ok 176 - prefs round-trip and survive garbage
+  ---
+  duration_ms: 0.40582
+  type: 'test'
+  ...
+# Subtest: sidebar: pin, unread and status columns reach the workspace
+ok 177 - sidebar: pin, unread and status columns reach the workspace
+  ---
+  duration_ms: 0.402122
+  type: 'test'
+  ...
+# Subtest: sidebar: unread chats come from sessions; a legacy workspaces.unread marks the main chat; closed reviews count as hidden
+ok 178 - sidebar: unread chats come from sessions; a legacy workspaces.unread marks the main chat; closed reviews count as hidden
+  ---
+  duration_ms: 0.514344
+  type: 'test'
+  ...
+# Subtest: sidebar: a review tab open at quit comes back after a restart, still unread
+ok 179 - sidebar: a review tab open at quit comes back after a restart, still unread
+  ---
+  duration_ms: 0.482391
+  type: 'test'
+  ...
+# Subtest: sidebar: a user-set workspace name is shown as is
+ok 180 - sidebar: a user-set workspace name is shown as is
+  ---
+  duration_ms: 1.294952
+  type: 'test'
+  ...
+# Subtest: re-reading conductor.db keeps the PR the app last read
+ok 181 - re-reading conductor.db keeps the PR the app last read
+  ---
+  duration_ms: 0.216975
+  type: 'test'
+  ...
+# Subtest: saved browser state drops live session statuses, including the old status: working
+ok 182 - saved browser state drops live session statuses, including the old status: working
+  ---
+  duration_ms: 0.184971
+  type: 'test'
+  ...
+# Subtest: loads updated_at, so Go to next unread picks the most recently active row
+ok 183 - loads updated_at, so Go to next unread picks the most recently active row
+  ---
+  duration_ms: 0.210277
+  type: 'test'
+  ...
+# (node:277) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: moveRepo puts the dragged id at the target's place
+ok 184 - moveRepo puts the dragged id at the target's place
+  ---
+  duration_ms: 1.626515
+  type: 'test'
+  ...
+# Subtest: moving between visible repos keeps a hidden one in its slot
+ok 185 - moving between visible repos keeps a hidden one in its slot
+  ---
+  duration_ms: 0.171683
+  type: 'test'
+  ...
+# Subtest: orderRepos follows ids and keeps unknown repos at the end
+ok 186 - orderRepos follows ids and keeps unknown repos at the end
+  ---
+  duration_ms: 0.208002
+  type: 'test'
+  ...
+# Subtest: hidden repos are listed only while show hidden is on
+ok 187 - hidden repos are listed only while show hidden is on
+  ---
+  duration_ms: 0.190669
+  type: 'test'
+  ...
+# Subtest: setRepoHidden flips one repo and leaves the others alone
+ok 188 - setRepoHidden flips one repo and leaves the others alone
+  ---
+  duration_ms: 0.284557
+  type: 'test'
+  ...
+# (node:285) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Status grouping shares the reference's five-group order with keyboard navigation
+ok 189 - Status grouping shares the reference's five-group order with keyboard navigation
+  ---
+  duration_ms: 2.289971
+  type: 'test'
+  ...
+# Subtest: Status groups exclude pinned, sectioned and archived rows without duplicating them
+ok 190 - Status groups exclude pinned, sectioned and archived rows without duplicating them
+  ---
+  duration_ms: 0.411765
+  type: 'test'
+  ...
+# Subtest: Status grouping applies the selected timestamp within groups, across repositories
+ok 191 - Status grouping applies the selected timestamp within groups, across repositories
+  ---
+  duration_ms: 0.32977
+  type: 'test'
+  ...
+# Subtest: Status grouping's project filter does not move Pinned or sections
+ok 192 - Status grouping's project filter does not move Pinned or sections
+  ---
+  duration_ms: 0.260017
+  type: 'test'
+  ...
+# Subtest: all five status headers exist even when empty; default collapse follows the selected row
+ok 193 - all five status headers exist even when empty; default collapse follows the selected row
+  ---
+  duration_ms: 0.398268
+  type: 'test'
+  ...
+# Subtest: an explicit collapse wins over selection, and Project/Status each reset their destination groups
+ok 194 - an explicit collapse wins over selection, and Project/Status each reset their destination groups
+  ---
+  duration_ms: 0.408093
+  type: 'test'
+  ...
+# Subtest: a filtered-out selection cannot open a status group or consume a shortcut number
+ok 195 - a filtered-out selection cannot open a status group or consume a shortcut number
+  ---
+  duration_ms: 1.80302
+  type: 'test'
+  ...
+# Subtest: grouping parses legacy and corrupt values as Project, and typed writes preserve other prefs
+ok 196 - grouping parses legacy and corrupt values as Project, and typed writes preserve other prefs
+  ---
+  duration_ms: 0.268185
+  type: 'test'
+  ...
+# Subtest: manual status collapse persists in desktop UI prefs, accepting only boolean known status keys
+ok 197 - manual status collapse persists in desktop UI prefs, accepting only boolean known status keys
+  ---
+  duration_ms: 0.60281
+  type: 'test'
+  ...
+# (node:293) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pinned workspaces leave their repo group and sort newest pin first
+ok 198 - pinned workspaces leave their repo group and sort newest pin first
+  ---
+  duration_ms: 2.013784
+  type: 'test'
+  ...
+# Subtest: sidebar order is pinned, then each repo newest first; visibleOnly skips collapsed repos
+ok 199 - sidebar order is pinned, then each repo newest first; visibleOnly skips collapsed repos
+  ---
+  duration_ms: 0.46783
+  type: 'test'
+  ...
+# Subtest: Created sort controls repository and shortcut order without moving pinned or section rows
+ok 200 - Created sort controls repository and shortcut order without moving pinned or section rows
+  ---
+  duration_ms: 0.363792
+  type: 'test'
+  ...
+# Subtest: effective status is manual, then derived, then in-progress
+ok 201 - effective status is manual, then derived, then in-progress
+  ---
+  duration_ms: 0.32539
+  type: 'test'
+  ...
+# Subtest: sectioned workspaces sit between Pinned and the repo groups and leave both
+ok 202 - sectioned workspaces sit between Pinned and the repo groups and leave both
+  ---
+  duration_ms: 0.340292
+  type: 'test'
+  ...
+# Subtest: an untoggled repo group is folded unless the open workspace is one of its rows (Conductor's Dra)
+ok 203 - an untoggled repo group is folded unless the open workspace is one of its rows (Conductor's Dra)
+  ---
+  duration_ms: 0.236927
+  type: 'test'
+  ...
+# Subtest: toggling stores the opposite of what the group shows
+ok 204 - toggling stores the opposite of what the group shows
+  ---
+  duration_ms: 0.224935
+  type: 'test'
+  ...
+# Subtest: visibleOnly numbers only rows of unfolded groups: Home folds untoggled groups
+ok 205 - visibleOnly numbers only rows of unfolded groups: Home folds untoggled groups
+  ---
+  duration_ms: 0.171365
+  type: 'test'
+  ...
+1..205
+# tests 205
+# suites 0
+# pass 205
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22657.868066

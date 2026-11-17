@@ -1,0 +1,64 @@
+{
+  "author": "Conductor Rebuild",
+  "baseline": "08be22cfcb0034e23171fe9b5f3b0a5df93585f3",
+  "source_commit": "1858b6e39",
+  "fixture_version": "V2",
+  "fixture_sha256": "267a2f2e09ba9c7bf87cce71f7ac622ac46baa53a9864f166b0493069c537edb",
+  "checks": {
+    "red": {
+      "status": "PASS_REPRODUCTION",
+      "pass": 12,
+      "intended_fail": 12,
+      "exit": 1
+    },
+    "green": {
+      "status": "PASS",
+      "pass": 24,
+      "fail": 0,
+      "exit": 0
+    },
+    "adjacent": {
+      "status": "PASS",
+      "pass": 111,
+      "fail": 0
+    },
+    "full_chat_committed": {
+      "status": "PASS",
+      "pass": 1849,
+      "fail": 0,
+      "skip": 0,
+      "cancel": 0
+    },
+    "typecheck": "PASS",
+    "build": "PASS",
+    "source": "PASS_2_PARENTS_11_SPANS_15_JOINS_9_CONTROLS",
+    "diff_check": "PASS"
+  },
+  "historical_attempts": {
+    "V1": "DISQUALIFIED_TYPECHECK_FIXTURE_NARROWING",
+    "partial_archive_full_chat": "INCOMPLETE_AND_FAILED_MISSING_CONTEXT_180S_TIMEOUT",
+    "first_build": "FAILED_BROKEN_DEPENDENCY_LINK"
+  },
+  "acceptance": {
+    "browser": "NOT_RUN",
+    "native": "NOT_RUN",
+    "provider": "NOT_RUN",
+    "package": "UNVERIFIED",
+    "Node24_on_integrated_base": "PENDING_1431_ACTUAL_MERGE"
+  },
+  "log_sha256": {
+    "image-raw-green.tap.gz": "5f0441acd98af39b87b92555e34835b12d6f8cf00a7d763b98e87d754578a0a6",
+    "image-raw-v2-typecheck.log.gz": "20f1a2bf5ea8125cc627718b817e395583d90ef536d8df5b2175cf433774a432",
+    "image-raw-v2-committed-build-restored.log.gz": "7aad7c880a8f9129ea93a0c577b17dcbe2447226a6291b2f92e00234ffb70c2c",
+    "image-raw-red.tap.gz": "740a3f225c5063ebd265ed14c43129ebd416c22386e087356cab41785b7b0d12",
+    "image-raw-v2-full-chat.tap.gz": "e1ad9c8155f13bb83b004d005d13b3b54cdeae76d15f4188d651884701e2a273",
+    "image-raw-adjacent.tap.gz": "6cb4c88e948ea0818ad598b43cd748e7211acebbceebb00a99a217e39aa7cd90",
+    "image-raw-v2-red.tap.gz": "63c053528d82e1b549753e7b1a2a55f1ab083f209e8beb86b32968675084d81a",
+    "image-raw-v2-committed-full-chat.tap.gz": "9925e7fea89bdd96e4d44d65e2c9b659af6db85cee0068c525a2195a78d1fa66",
+    "image-raw-v2-committed-typecheck.log.gz": "91c9fe8679639260822d83ee7e81d6f3da39f84dad13a146ce6cfe8ac11c5994",
+    "image-raw-v2-committed-build.log.gz": "6b1e8bdef4df0c1483fd0cb9e7ddb96df187b3785c211b98136822e907e6f7ab",
+    "disqualified-v1.test.txt.gz": "96dd51db6e42de014394d9091c8633627549fa5e7912242e1cd6bd2627cb8e42",
+    "image-raw-v2-green.tap.gz": "40e6fdbe866d27d4b3b292cfe33fb022e0f74a5eea521243185d58c31d4dbfac",
+    "image-raw-typecheck.log.gz": "e5273035bf90c0039f36fab85d5aa00929098dc1ebd40a858420be7a70037ae8"
+  }
+}

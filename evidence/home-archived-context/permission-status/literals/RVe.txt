@@ -1,0 +1,1 @@
+function RVe(t,e){return t===void 0||t.isLoading?{data:void 0,error:void 0,isLoading:!0,shouldFetch:t===void 0}:t.error!==void 0?{data:void 0,error:t.error,isLoading:!1,shouldFetch:!1}:t.data===void 0?{data:void 0,error:void 0,isLoading:!1,shouldFetch:!1}:{data:e(t.data),error:void 0,isLoading:!1,shouldFetch:!1}}

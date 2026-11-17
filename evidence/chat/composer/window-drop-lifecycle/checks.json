@@ -1,0 +1,82 @@
+{
+  "unit": "COMPOSER-EMPTY-DROP-135",
+  "owner": "Conductor Rebuild",
+  "baselineMain": "6cc9a9c75cb2ee4cdec678bc51f6b2960dac2280",
+  "handoffArchiveSha256": "6ab35e393e9ce24f57d32ec5ee6a83fbe0e03e8434562fd40dd4b2552205ff7f",
+  "originalParentBytes": 11600457,
+  "originalParentSha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "frozenFixtureSha256": "f0b8e475c5a00d31c8ab839df50f1d959571e3080400e27df24ebb12d5c6e075",
+  "dedicatedFixtureSha256": "5edcfe59755b50f44b103d61a0376d6d69070cf7f696a51396732c2480d16b3d",
+  "baselineHookSha256": "4c20f02c50e768ec37995126066bea55ea18e25ee427690a3238165558adef4c",
+  "staticSourceChecks": {
+    "passed": 48,
+    "failed": 0
+  },
+  "baselineFrozen": {
+    "passed": 6,
+    "failed": 2,
+    "skipped": 0,
+    "exit": 1
+  },
+  "baselineDedicated": {
+    "passed": 6,
+    "failed": 2,
+    "skipped": 0,
+    "exit": 1
+  },
+  "treatmentHookSha256": "d3994ef9e65be373f9b0b6006800cce5b88e3cbbc253b13c09dbe5b9e5c6cd14",
+  "treatmentFrozen": {
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "exit": 0
+  },
+  "treatmentDedicated": {
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "exit": 0
+  },
+  "adjacent": {
+    "passed": 63,
+    "failed": 0,
+    "skipped": 0,
+    "exit": 0,
+    "command": "node --test --test-concurrency=2 src/features/chat/useWindowDragDrop.test.ts src/features/chat/composerAttachments.test.ts src/features/chat/composerAttachmentPreview.test.ts src/features/chat/composerAttachmentSettlement.test.ts src/features/chat/composerSession.test.ts src/features/chat/composerPasteFilePaths.test.ts src/features/chat/composerAsyncSubmit.test.ts src/features/chat/composerCancelFocus.test.ts src/features/chat/sendReadiness.test.ts"
+  },
+  "commands": [
+    {
+      "command": "npm ci --ignore-scripts --no-audit --no-fund",
+      "exit": 0,
+      "result": "passed"
+    },
+    {
+      "command": "npm run typecheck",
+      "exit": 0,
+      "result": "passed"
+    },
+    {
+      "command": "npm run build",
+      "exit": 0,
+      "result": "passed"
+    },
+    {
+      "command": "npm run lint:colors",
+      "exit": 0,
+      "result": "passed"
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0,
+      "result": "passed"
+    }
+  ],
+  "acceptanceLimits": [
+    "No browser/app/native runtime or screenshot",
+    "Inert actual-hook callback/state/disposer checks are not native OS proof",
+    "No provider/persistence/signed-installed-build/package-containment/final-side-by-side verification",
+    "No new original acquisition or vendor code execution",
+    "No native build/release/package dispatch or duplicate watcher",
+    "Original qualification.json and verifier remain historical and unchanged"
+  ]
+}

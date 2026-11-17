@@ -1,0 +1,82 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: late reset A success preserves the earlier B dialog opened after Cancel
+not ok 1 - late reset A success preserves the earlier B dialog opened after Cancel
+  ---
+  duration_ms: 353.377973
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/features/chat/resetChatLateSettlement.test.ts:194:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    dismissed A must not close the current B reset dialog
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/features/chat/resetChatLateSettlement.test.ts:202:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: late reset A success cannot close B while B's own reset is pending
+not ok 2 - late reset A success cannot close B while B's own reset is pending
+  ---
+  duration_ms: 129.291489
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/features/chat/resetChatLateSettlement.test.ts:211:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    A does not own B's pending dialog
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/features/chat/resetChatLateSettlement.test.ts:218:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: late A rejection leaves B ready without leaking A's error
+ok 3 - late A rejection leaves B ready without leaking A's error
+  ---
+  duration_ms: 99.68437
+  type: 'test'
+  ...
+# Subtest: current reset failure stays open and can be retried without resetting files
+ok 4 - current reset failure stays open and can be retried without resetting files
+  ---
+  duration_ms: 133.11841
+  type: 'test'
+  ...
+# Subtest: a reopened same-turn dialog still closes when its reset makes that turn the latest
+ok 5 - a reopened same-turn dialog still closes when its reset makes that turn the latest
+  ---
+  duration_ms: 114.286734
+  type: 'test'
+  ...
+# Subtest: a dismissed reset still truncates its own later messages without reopening a dialog
+ok 6 - a dismissed reset still truncates its own later messages without reopening a dialog
+  ---
+  duration_ms: 62.273319
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 4
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1477.960175

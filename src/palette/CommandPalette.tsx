@@ -138,7 +138,8 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
   const optionPrefix = useId();
   const optionId = (index: number) => `${optionPrefix}-option-${index}`;
   const [tab, setTab] = useState<PaletteTab>(initialTab);
-  const [query, setQuery] = useState("");
+  const [commandQuery, setCommandQuery] = useState("");
+  const [sectionQuery, setSectionQuery] = useState("");
   const [active, setActive] = useState(initialTab === "workspaces" ? -1 : 0);
   const [sectionActive, setSectionActive] = useState(0);
   const [filters, setFiltersState] = useState<HomeFilters>(() => {
@@ -150,6 +151,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     saveFilters(f);
   };
   const listRef = useRef<HTMLDivElement>(null);
+  const pointerSelection = useRef(false);
   const motionRef = useDialogMotion<HTMLDivElement>();
   const now = Date.now();
 
@@ -159,6 +161,9 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     localWorkspaceId !== undefined &&
     localWorkspaceId === data.activeWorkspaceId &&
     moveToSection !== undefined;
+  // The section picker has its own search lifetime; Back restores commands.
+  const query = inSectionMode ? sectionQuery : commandQuery;
+  const setQuery = inSectionMode ? setSectionQuery : setCommandQuery;
   const sectionFlatItems = inSectionMode && moveToSection && computeSectionItems
     ? computeSectionItems(moveToSection.sections, moveToSection.workspaceId, query)
     : [];
@@ -198,8 +203,21 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     if (tab !== "workspaces") listRef.current?.scrollTo(0, 0);
   }, [tab, query]);
   useEffect(() => {
-    listRef.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest" });
+    if (!pointerSelection.current) {
+      const selected = listRef.current?.querySelector<HTMLElement>('[aria-selected="true"]');
+      const group = selected?.closest?.(".palette-group");
+      if (group && group.querySelector('[role="option"]') === selected) {
+        group.querySelector<HTMLElement>(".palette-heading")?.scrollIntoView({ block: "nearest" });
+      }
+      selected?.scrollIntoView({ block: "nearest" });
+    }
+    pointerSelection.current = false;
   }, [active]);
+  function selectFromPointer(index: number) {
+    if (index === active) return;
+    pointerSelection.current = true;
+    setActive(index);
+  }
 
   function chooseSectionAt(i: number) {
     if (!moveToSection) return;
@@ -220,7 +238,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     if (!item) return;
     // Move to section: enter the section picker sub-view without dismissing.
     if (item.kind === "action" && item.action.id === "move-to-section") {
-      setQuery("");
+      setSectionQuery("");
       onSelect(item);
       return;
     }
@@ -272,7 +290,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
 
   const tabs = TABS.filter((t) => t.value !== "projects" || showProjects);
   const wsRow = (row: HomeRow, i: number) => (
-    <WorkspaceRow key={row.workspace.id} id={optionId(i)} row={row} active={i === active} showNumber={showWorkspaceNumbers} now={now} onHover={() => setActive(i)} onChoose={() => choose(flat[i])} />
+    <WorkspaceRow key={row.workspace.id} id={optionId(i)} row={row} active={i === active} showNumber={showWorkspaceNumbers} now={now} onHover={() => selectFromPointer(i)} onChoose={() => choose(flat[i])} />
   );
   let index = -1;
   return (
@@ -379,7 +397,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
                         data-archived={archivedRow || undefined}
                         data-kind={item.kind}
                         className={i === active ? "palette-item active" : "palette-item"}
-                        onMouseMove={() => i !== active && setActive(i)}
+                        onMouseMove={() => selectFromPointer(i)}
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => choose(item)}
                       >

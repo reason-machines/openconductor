@@ -1,0 +1,1 @@
+function c7i(t){const e=ne.c(1),{visible:n}=t;if(!n)return null;let i;return e[0]===Symbol.for("react.memo_cache_sentinel")?(i=p.jsx("div",{className:"pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-[inherit] border border-border bg-background/80",children:p.jsx(QQe,{className:"size-5 text-foreground"})}),e[0]=i):i=e[0],i}

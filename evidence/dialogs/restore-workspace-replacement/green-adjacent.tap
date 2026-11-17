@@ -1,0 +1,182 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the leaving snapshot drops every attribute that names or labels a dialog
+ok 1 - the leaving snapshot drops every attribute that names or labels a dialog
+  ---
+  duration_ms: 0.702565
+  type: 'test'
+  ...
+# Subtest: the leaving snapshot keeps what its look and exit animation depend on
+ok 2 - the leaving snapshot keeps what its look and exit animation depend on
+  ---
+  duration_ms: 0.351843
+  type: 'test'
+  ...
+# Subtest: motion tokens carry Conductor's dialog timings
+ok 3 - motion tokens carry Conductor's dialog timings
+  ---
+  duration_ms: 0.30696
+  type: 'test'
+  ...
+# (node:93) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pending record rename accepts a later checked preference without adding a captured branch request
+ok 4 - pending record rename accepts a later checked preference without adding a captured branch request
+  ---
+  duration_ms: 310.668401
+  type: 'test'
+  ...
+# Subtest: pending record rename accepts a later unchecked preference without cancelling the captured branch request
+ok 5 - pending record rename accepts a later unchecked preference without cancelling the captured branch request
+  ---
+  duration_ms: 51.985825
+  type: 'test'
+  ...
+# Subtest: pending branch rename keeps its checkbox editable and the primary action locked
+ok 6 - pending branch rename keeps its checkbox editable and the primary action locked
+  ---
+  duration_ms: 125.649081
+  type: 'test'
+  ...
+# Subtest: empty and detached branches stay ineligible before and during record rename
+ok 7 - empty and detached branches stay ineligible before and during record rename
+  ---
+  duration_ms: 509.042678
+  type: 'test'
+  ...
+# (node:101) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a second concurrent local restore request starts ready instead of inheriting the first workspace's pending state
+ok 8 - a second concurrent local restore request starts ready instead of inheriting the first workspace's pending state
+  ---
+  duration_ms: 479.352327
+  type: 'test'
+  ...
+# Subtest: same-workspace scenario refresh keeps its existing pending operation
+ok 9 - same-workspace scenario refresh keeps its existing pending operation
+  ---
+  duration_ms: 57.104496
+  type: 'test'
+  ...
+# Subtest: late completion for a replaced workspace cannot close the currently displayed restore request
+ok 10 - late completion for a replaced workspace cannot close the currently displayed restore request
+  ---
+  duration_ms: 62.355226
+  type: 'test'
+  ...
+# Subtest: an unrelated completed unarchive without a restore scenario does not replace a pending dialog
+ok 11 - an unrelated completed unarchive without a restore scenario does not replace a pending dialog
+  ---
+  duration_ms: 57.975416
+  type: 'test'
+  ...
+# (node:109) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a working agent blocks archive until the user confirms
+ok 12 - a working agent blocks archive until the user confirms
+  ---
+  duration_ms: 0.832436
+  type: 'test'
+  ...
+# Subtest: cancelling and waiting sessions block archive too, as in Conductor's dYe
+ok 13 - cancelling and waiting sessions block archive too, as in Conductor's dYe
+  ---
+  duration_ms: 0.171271
+  type: 'test'
+  ...
+# Subtest: the running-agents dialog uses Conductor's copy
+ok 14 - the running-agents dialog uses Conductor's copy
+  ---
+  duration_ms: 1.233707
+  type: 'test'
+  ...
+# Subtest: a git operation in safe mode offers the discard retry; after it, the plain message
+ok 15 - a git operation in safe mode offers the discard retry; after it, the plain message
+  ---
+  duration_ms: 0.202207
+  type: 'test'
+  ...
+# Subtest: a missing directory reads as a corrupted workspace; anything else shows its message
+ok 16 - a missing directory reads as a corrupted workspace; anything else shows its message
+  ---
+  duration_ms: 0.243721
+  type: 'test'
+  ...
+# Subtest: archive events reach every listener until it unsubscribes
+ok 17 - archive events reach every listener until it unsubscribes
+  ---
+  duration_ms: 0.206676
+  type: 'test'
+  ...
+# Subtest: startArchive asks instead of archiving over a running agent, and archives once confirmed
+ok 18 - startArchive asks instead of archiving over a running agent, and archives once confirmed
+  ---
+  duration_ms: 0.484082
+  type: 'test'
+  ...
+# Subtest: startArchive hides the row first, then reports the result with its notices
+ok 19 - startArchive hides the row first, then reports the result with its notices
+  ---
+  duration_ms: 0.169035
+  type: 'test'
+  ...
+# Subtest: startArchive brings the row back and reports a failure with the mode it ran in
+ok 20 - startArchive brings the row back and reports a failure with the mode it ran in
+  ---
+  duration_ms: 0.351827
+  type: 'test'
+  ...
+# Subtest: outside the desktop app startArchive only hides the row
+ok 21 - outside the desktop app startArchive only hides the row
+  ---
+  duration_ms: 0.348607
+  type: 'test'
+  ...
+# Subtest: unarchive shows the row, recreates the worktree, then reruns setup
+ok 22 - unarchive shows the row, recreates the worktree, then reruns setup
+  ---
+  duration_ms: 0.280257
+  type: 'test'
+  ...
+# Subtest: unarchive of a row that was not archived reruns nothing
+ok 23 - unarchive of a row that was not archived reruns nothing
+  ---
+  duration_ms: 0.121347
+  type: 'test'
+  ...
+# Subtest: a failed unarchive puts the row away again and reports Conductor's message
+ok 24 - a failed unarchive puts the row away again and reports Conductor's message
+  ---
+  duration_ms: 0.169615
+  type: 'test'
+  ...
+# Subtest: outside the desktop app unarchive only shows the row
+ok 25 - outside the desktop app unarchive only shows the row
+  ---
+  duration_ms: 0.084597
+  type: 'test'
+  ...
+# Subtest: an unarchive blocked by an existing folder gets Conductor's directory-exists toast
+ok 26 - an unarchive blocked by an existing folder gets Conductor's directory-exists toast
+  ---
+  duration_ms: 0.154309
+  type: 'test'
+  ...
+# Subtest: the restore dialog uses Conductor's copy for each scenario
+ok 27 - the restore dialog uses Conductor's copy for each scenario
+  ---
+  duration_ms: 0.112702
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5750.512693

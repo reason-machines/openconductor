@@ -1,0 +1,22 @@
+{
+  "author": "Conductor Rebuild",
+  "checked_main": "c3c9ab420f62edb08159f6bcbbcc921ca57f52f3",
+  "command": "node --test --test-concurrency=2 src/features/chat/nodeReplResultTruthiness.test.ts",
+  "exit_code": 1,
+  "tests": 24,
+  "pass": 16,
+  "intended_assertion_failures": 8,
+  "skipped": 0,
+  "cancelled": 0,
+  "fixture_sha256": "20b169940ed2f18c0ecb29918c5f1a1172fc08646e55b9858fe755dbde8de117",
+  "failures": [
+    "Node REPL result truthiness: null-without-input",
+    "Node REPL result truthiness: false-without-input",
+    "Node REPL result truthiness: zero-without-input",
+    "Node REPL result truthiness: empty-string-without-input",
+    "Node REPL result truthiness: null-with-input",
+    "Node REPL result truthiness: false-with-input",
+    "Node REPL result truthiness: zero-with-input",
+    "Node REPL result truthiness: legacy-empty-without-input"
+  ]
+}

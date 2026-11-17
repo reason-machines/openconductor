@@ -510,8 +510,8 @@
       ],
       "expected_headers": [
         {
-          "left": "Update todos",
-          "right": "0/1 completed"
+          "left": "Todo started",
+          "right": "1. Unchanged write"
         }
       ],
       "header_prefix_only": false,
@@ -540,8 +540,8 @@
       ],
       "expected_headers": [
         {
-          "left": "Update todos",
-          "right": "1/1 completed"
+          "left": "Todo list completed",
+          "right": "1 todo"
         }
       ],
       "header_prefix_only": false,
