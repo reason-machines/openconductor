@@ -1,0 +1,1 @@
+class bS{static create(){return new bS}currentId=ove;start(e,n){this.clear(),this.currentId=setTimeout(()=>{this.currentId=ove,n()},e)}isStarted(){return this.currentId!==ove}clear=()=>{this.currentId!==ove&&(clearTimeout(this.currentId),this.currentId=ove)};disposeEffect=()=>this.clear}

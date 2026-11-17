@@ -1,0 +1,11 @@
+{
+  "original_main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+  "fresh_main": "acd37606d6159470ba46c4be8d748885133aed4d",
+  "actual_1454_squash": "acd37606d6159470ba46c4be8d748885133aed4d",
+  "baseline_sha256": "b003805dffb1628aaa3668f887ff09e96257d9fcbb938c5a245165c5f1c457dd",
+  "baseline_unchanged": true,
+  "frozen27_sha256": "5de8fc5655468b118cd6efda351fa486a27913a694b7ea330dd3b5895129784a",
+  "regression_tier": "actual React OpenInButton + apps adapter; synthetic DOM, time, native IPC and preference writes",
+  "existing_test_edits": [],
+  "browser_native_package": "NOT_RUN"
+}
