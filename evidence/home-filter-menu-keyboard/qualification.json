@@ -1,0 +1,39 @@
+{
+  "unit": "HOME-FILTER-MENU-KEYBOARD-271",
+  "owner_session": "27102e36-8b7f-4f1b-9ada-1e0503d3fede",
+  "previous_pr": {
+    "number": 1433,
+    "head": "067b983ae424091700b690708c57e8a08496fe85",
+    "actual_squash": "a5642f15442e177b0409b3bb6a44036d4efb859f",
+    "merged_at": "2026-11-17T13:25:49Z",
+    "executed_checks_passed": 2,
+    "conditional_checks_skipped": 5
+  },
+  "fresh_main": "a5642f15442e177b0409b3bb6a44036d4efb859f",
+  "allworkspaces_matches_fresh_main_before_fix": true,
+  "fixture_sha256": "99b46ce7b6cfabce10cd13cf4e0c6f79c4d68354abf5b07a70b645e075c09b86",
+  "fresh_main_red": {
+    "command": "node --max-old-space-size=768 --experimental-strip-types --test --test-concurrency=1 src/components/homeFilterMenuKeyboard.test.ts",
+    "passed": 3,
+    "intended_assertion_failures": 9,
+    "skipped": 0,
+    "cancelled": 0,
+    "log": "fresh-main-red.tap.gz"
+  },
+  "source_check": {
+    "command": "python3 evidence/home-filter-menu-keyboard/verify-source.py .ara-state/home-ejo/retained-renderer.js",
+    "checks_passed": 127,
+    "spans": 37,
+    "vendor_execution": false,
+    "new_acquisition": false
+  },
+  "frozen_manifest_check": "PASS",
+  "literal_fixture_typecheck": "PASS",
+  "product_change": "NOT_STARTED_PENDING_PRECISE_LEASE",
+  "native": "NOT_RUN",
+  "browser": "NOT_RUN_FOR_KEYBOARD_UNIT_YET",
+  "installed_persistence": "NOT_RUN",
+  "containing_package_embedding_runtime": "UNVERIFIED",
+  "release_custody": "Existing SAME992 canonical Part 4; package #1791 unchanged excludes successors",
+  "new_dispatch_or_watch": false
+}

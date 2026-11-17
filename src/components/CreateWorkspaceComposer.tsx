@@ -54,6 +54,9 @@ import { CREATE_IN_SECTION, SECTION_ASSIGN_FAILED, canCreateIn, sectionChoice } 
 import "../features/chat/composer.css";
 import { ComposerEditor, type ComposerEditorHandle } from "../features/chat/ComposerEditor.tsx";
 import type { PlanModeControl } from "../features/chat/useLocalPlanMode.ts";
+import { composerPrompt } from "../features/chat/composerDocument.ts";
+import { preWorkspaceRef } from "../features/chat/preWorkspaceCompletions.ts";
+import { CreateWorkspaceSuggestions, useCreateWorkspaceSuggestions } from "./create/CreateWorkspaceSuggestions.tsx";
 
 /**
  * Where the repo / branch / create-from row sits (Conductor's `eyebrowVariant`):
@@ -153,6 +156,11 @@ export function CreateWorkspaceComposer({
   const prefix = useMemo(() => resolveBranchPrefix(prefixSettings, githubUsername), [prefixSettings, githubUsername]);
   const [branchAttempt, setBranchAttempt] = useState(0);
   const busy = stagingFiles > 0 || progress.step === "creating" || progress.step === "detecting_setup";
+  const suggestions = useCreateWorkspaceSuggestions({
+    identity: repo?.path && branchSrc.status !== "loading" ? { repositoryId: repo.id, ref: preWorkspaceRef(draft.from, draft.baseBranch), agentType: draft.agent } : null,
+    inputRef: composerInputRef,
+    disabled: busy,
+  });
   useEffect(() => onBusyChange?.(busy), [busy, onBusyChange]);
   const { overrides } = useKeybindingOverrides();
   const submitKeys = [...effectiveShortcuts("chat.submitMessage", overrides), ...effectiveShortcuts("chat.submitOppositeFollowUp", overrides)];
@@ -279,7 +287,7 @@ export function CreateWorkspaceComposer({
   async function submit(e?: FormEvent, sectionId: string | undefined = choice.sectionId) {
     e?.preventDefault();
     if (busy || pendingFiles.current > 0 || !repo || !canCreateIn(sectionsRef.current, sectionId)) return;
-    const built = buildCreateRequest(draft, prefix);
+    const built = buildCreateRequest({ ...draft, firstMessage: composerPrompt(draft.firstMessage) }, prefix);
     if (!built.ok) return setErrors(built.errors);
     setErrors({});
     send({ type: "submit" });
@@ -411,7 +419,7 @@ export function CreateWorkspaceComposer({
    */
   async function addToBacklog() {
     if (busy || pendingFiles.current > 0 || !repo) return;
-    const built = buildCreateRequest(draft, prefix);
+    const built = buildCreateRequest({ ...draft, firstMessage: composerPrompt(draft.firstMessage) }, prefix);
     if (!built.ok) return setErrors(built.errors);
     setErrors({});
     send({ type: "submit" });
@@ -456,7 +464,7 @@ export function CreateWorkspaceComposer({
 
   // ComposerEditor fires the native KeyboardEvent directly (no React synthetic wrapper).
   function onKeyDown(e: globalThis.KeyboardEvent) {
-    if (e.isComposing) return;
+    if (e.isComposing || suggestions.onKeyDown(e)) return;
     // ⌥↩ adds to backlog without opening a chat session (Conductor `workspace.addToBacklogFromComposer`).
     if (backlogKeys.some((s) => matchesEvent(s, e))) {
       e.preventDefault();
@@ -529,24 +537,20 @@ export function CreateWorkspaceComposer({
         }}
       />
       <div className="create-card">
-        {/* GAP-COMP-04 (create.editor): replaced <textarea> with ComposerEditor (TipTap) to match
-            Conductor's Hji create-workspace composer, which uses the same rich-text editor as
-            the main chat composer (lHt with Conductor's ComposerEditor equivalent). The @-mention
-            and /-slash triggers that Conductor wires to repository files are omitted here because
-            they require an existing workspace checkout; the structural parity (TipTap vs textarea)
-            is the gap being closed. Sub-gap 2 ("Link issue" in AddMenu) is not a gap: REA shows
-            allowIssueLinks=false in Conductor's a7i for Hji. Binary files use the existing
-            draft-attachments store, then materialize before the initial prompt is queued. */}
+        {/* Hji/PQo: selected repository/ref suggestions exist before a workspace.
+            Our local adapter reads immutable Git objects, not a workspace checkout.
+            Binary files still use the existing draft-attachments barrier. */}
+        <CreateWorkspaceSuggestions state={suggestions} />
         <div className="create-editor">
           <ComposerEditor
             inputRef={composerInputRef}
             value={draft.firstMessage}
             placeholder={CREATE_PLACEHOLDER}
             onChange={(v) => setDraft((d) => ({ ...d, firstMessage: v }))}
-            onSelection={() => {}}
+            onSelection={suggestions.onSelection}
             onKeyDown={onKeyDown}
-            onFocus={() => {}}
-            onBlur={() => {}}
+            onFocus={suggestions.onFocus}
+            onBlur={suggestions.onBlur}
             onPasteFiles={(files) => {
               if (files.length === 0) return false;
               void attachFiles(Array.from(files));

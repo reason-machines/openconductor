@@ -1,0 +1,526 @@
+(node:74) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# The above error occurred in the <FileMentionMenu> component:
+#     at FileMentionMenu (evalmachine.<anonymous>:10:28)
+#     at CreateWorkspaceSuggestions (evalmachine.<anonymous>:103:39)
+#     at div
+#     at form
+#     at CreateWorkspaceComposer (evalmachine.<anonymous>:60:36)
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at div
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at CreateWorkspaceDialog (evalmachine.<anonymous>:16:50)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: pre-workspace lookup uses repository/ref/agent identity, not an existing workspace (page=false)
+not ok 1 - pre-workspace lookup uses repository/ref/agent identity, not an existing workspace (page=false)
+  ---
+  duration_ms: 626.963486
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:190:3'
+  failureType: 'testCodeFailure'
+  error: 'document.addEventListener is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evalmachine.<anonymous>:11:18
+    commitHookEffectListMount (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:13038:26)
+    commitPassiveMountOnFiber (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14461:11)
+    commitPassiveMountEffects_complete (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14421:9)
+    commitPassiveMountEffects_begin (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14408:7)
+    commitPassiveMountEffects (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14396:3)
+    flushPassiveEffectsImpl (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16287:3)
+    flushPassiveEffects (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16236:14)
+    /home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16051:9
+    flushActQueue (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react/cjs/react.development.js:2667:24)
+  ...
+# The above error occurred in the <FileMentionMenu> component:
+#     at FileMentionMenu (evalmachine.<anonymous>:10:28)
+#     at CreateWorkspaceSuggestions (evalmachine.<anonymous>:103:39)
+#     at div
+#     at form
+#     at CreateWorkspaceComposer (evalmachine.<anonymous>:60:36)
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at div
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at CreateWorkspaceDialog (evalmachine.<anonymous>:16:50)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: @ selection inserts one file atom and trailing space without creating (page=false,key=Enter)
+not ok 2 - @ selection inserts one file atom and trailing space without creating (page=false,key=Enter)
+  ---
+  duration_ms: 205.699963
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:202:5'
+  failureType: 'testCodeFailure'
+  error: 'document.addEventListener is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evalmachine.<anonymous>:11:18
+    commitHookEffectListMount (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:13038:26)
+    commitPassiveMountOnFiber (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14461:11)
+    commitPassiveMountEffects_complete (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14421:9)
+    commitPassiveMountEffects_begin (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14408:7)
+    commitPassiveMountEffects (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14396:3)
+    flushPassiveEffectsImpl (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16287:3)
+    flushPassiveEffects (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16236:14)
+    /home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16051:9
+    flushActQueue (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react/cjs/react.development.js:2667:24)
+  ...
+# The above error occurred in the <CreateWorkspaceComposer> component:
+#     at CreateWorkspaceComposer (evalmachine.<anonymous>:60:36)
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at div
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at CreateWorkspaceDialog (evalmachine.<anonymous>:16:50)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: / selection inserts the reported command without submitting (page=false,key=Enter)
+not ok 3 - / selection inserts the reported command without submitting (page=false,key=Enter)
+  ---
+  duration_ms: 222.681012
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:212:5'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'go')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    matchCommands (evalmachine.<anonymous>:102:38)
+    useCreateWorkspaceSuggestions (evalmachine.<anonymous>:49:97)
+    CreateWorkspaceComposer (evalmachine.<anonymous>:95:92)
+    renderWithHooks (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5608:18)
+    updateFunctionComponent (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9512:20)
+    beginWork (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11365:16)
+    performUnitOfWork (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15850:12)
+    workLoopSync (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15784:5)
+    renderRootSync (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15756:7)
+    performSyncWorkOnRoot (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15461:20)
+  ...
+# The above error occurred in the <FileMentionMenu> component:
+#     at FileMentionMenu (evalmachine.<anonymous>:10:28)
+#     at CreateWorkspaceSuggestions (evalmachine.<anonymous>:103:39)
+#     at div
+#     at form
+#     at CreateWorkspaceComposer (evalmachine.<anonymous>:60:36)
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at div
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at CreateWorkspaceDialog (evalmachine.<anonymous>:16:50)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: @ selection inserts one file atom and trailing space without creating (page=false,key=Tab)
+not ok 4 - @ selection inserts one file atom and trailing space without creating (page=false,key=Tab)
+  ---
+  duration_ms: 202.92419
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:202:5'
+  failureType: 'testCodeFailure'
+  error: 'document.addEventListener is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evalmachine.<anonymous>:11:18
+    commitHookEffectListMount (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:13038:26)
+    commitPassiveMountOnFiber (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14461:11)
+    commitPassiveMountEffects_complete (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14421:9)
+    commitPassiveMountEffects_begin (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14408:7)
+    commitPassiveMountEffects (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14396:3)
+    flushPassiveEffectsImpl (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16287:3)
+    flushPassiveEffects (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16236:14)
+    /home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16051:9
+    flushActQueue (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react/cjs/react.development.js:2667:24)
+  ...
+# The above error occurred in the <CreateWorkspaceComposer> component:
+#     at CreateWorkspaceComposer (evalmachine.<anonymous>:60:36)
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at div
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at CreateWorkspaceDialog (evalmachine.<anonymous>:16:50)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: / selection inserts the reported command without submitting (page=false,key=Tab)
+not ok 5 - / selection inserts the reported command without submitting (page=false,key=Tab)
+  ---
+  duration_ms: 173.222031
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:212:5'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'go')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    matchCommands (evalmachine.<anonymous>:102:38)
+    useCreateWorkspaceSuggestions (evalmachine.<anonymous>:49:97)
+    CreateWorkspaceComposer (evalmachine.<anonymous>:95:92)
+    renderWithHooks (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5608:18)
+    updateFunctionComponent (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9512:20)
+    beginWork (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11365:16)
+    performUnitOfWork (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15850:12)
+    workLoopSync (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15784:5)
+    renderRootSync (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15756:7)
+    performSyncWorkOnRoot (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15461:20)
+  ...
+# The above error occurred in the <FileMentionMenu> component:
+#     at FileMentionMenu (evalmachine.<anonymous>:10:28)
+#     at CreateWorkspaceSuggestions (evalmachine.<anonymous>:103:39)
+#     at div
+#     at form
+#     at CreateWorkspaceComposer (evalmachine.<anonymous>:60:36)
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at div
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at CreateWorkspaceDialog (evalmachine.<anonymous>:16:50)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: directory selections preserve directory identity (page=false)
+not ok 6 - directory selections preserve directory identity (page=false)
+  ---
+  duration_ms: 166.00079
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:222:3'
+  failureType: 'testCodeFailure'
+  error: 'document.addEventListener is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evalmachine.<anonymous>:11:18
+    commitHookEffectListMount (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:13038:26)
+    commitPassiveMountOnFiber (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14461:11)
+    commitPassiveMountEffects_complete (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14421:9)
+    commitPassiveMountEffects_begin (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14408:7)
+    commitPassiveMountEffects (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14396:3)
+    flushPassiveEffectsImpl (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16287:3)
+    flushPassiveEffects (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16236:14)
+    /home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16051:9
+    flushActQueue (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react/cjs/react.development.js:2667:24)
+  ...
+# The above error occurred in the <CreateWorkspaceComposer> component:
+#     at CreateWorkspaceComposer (evalmachine.<anonymous>:60:36)
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at div
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at CreateWorkspaceDialog (evalmachine.<anonymous>:16:50)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: Escape dismisses suggestions without closing the containing dialog (page=false)
+not ok 7 - Escape dismisses suggestions without closing the containing dialog (page=false)
+  ---
+  duration_ms: 167.223293
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:232:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'go')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    matchCommands (evalmachine.<anonymous>:102:38)
+    useCreateWorkspaceSuggestions (evalmachine.<anonymous>:49:97)
+    CreateWorkspaceComposer (evalmachine.<anonymous>:95:92)
+    renderWithHooks (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5608:18)
+    updateFunctionComponent (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9512:20)
+    beginWork (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11365:16)
+    performUnitOfWork (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15850:12)
+    workLoopSync (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15784:5)
+    renderRootSync (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15756:7)
+    performSyncWorkOnRoot (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15461:20)
+  ...
+# The above error occurred in the <CreateWorkspaceComposer> component:
+#     at CreateWorkspaceComposer (evalmachine.<anonymous>:60:36)
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at div
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at passthrough (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:33:26)
+#     at CreateWorkspaceDialog (evalmachine.<anonymous>:16:50)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: composition and unrelated keys do not submit or mutate (page=false)
+not ok 8 - composition and unrelated keys do not submit or mutate (page=false)
+  ---
+  duration_ms: 187.640674
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:240:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'go')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    matchCommands (evalmachine.<anonymous>:102:38)
+    useCreateWorkspaceSuggestions (evalmachine.<anonymous>:49:97)
+    CreateWorkspaceComposer (evalmachine.<anonymous>:95:92)
+    renderWithHooks (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5608:18)
+    updateFunctionComponent (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9512:20)
+    beginWork (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11365:16)
+    performUnitOfWork (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15850:12)
+    workLoopSync (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15784:5)
+    renderRootSync (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15756:7)
+    performSyncWorkOnRoot (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15461:20)
+  ...
+# Subtest: no repository means no native lookup, no suggestions, and no create (page=false)
+ok 9 - no repository means no native lookup, no suggestions, and no create (page=false)
+  ---
+  duration_ms: 144.656634
+  type: 'test'
+  ...
+# Subtest: ordinary Enter keeps the existing create path (page=false)
+ok 10 - ordinary Enter keeps the existing create path (page=false)
+  ---
+  duration_ms: 164.678394
+  type: 'test'
+  ...
+# The above error occurred in the <FileMentionMenu> component:
+#     at FileMentionMenu (evalmachine.<anonymous>:10:28)
+#     at CreateWorkspaceSuggestions (evalmachine.<anonymous>:103:39)
+#     at div
+#     at form
+#     at CreateWorkspaceComposer (evalmachine.<anonymous>:60:36)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: pre-workspace lookup uses repository/ref/agent identity, not an existing workspace (page=true)
+not ok 11 - pre-workspace lookup uses repository/ref/agent identity, not an existing workspace (page=true)
+  ---
+  duration_ms: 136.335532
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:190:3'
+  failureType: 'testCodeFailure'
+  error: 'document.addEventListener is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evalmachine.<anonymous>:11:18
+    commitHookEffectListMount (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:13038:26)
+    commitPassiveMountOnFiber (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14461:11)
+    commitPassiveMountEffects_complete (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14421:9)
+    commitPassiveMountEffects_begin (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14408:7)
+    commitPassiveMountEffects (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14396:3)
+    flushPassiveEffectsImpl (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16287:3)
+    flushPassiveEffects (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16236:14)
+    /home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16051:9
+    flushActQueue (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react/cjs/react.development.js:2667:24)
+  ...
+# The above error occurred in the <FileMentionMenu> component:
+#     at FileMentionMenu (evalmachine.<anonymous>:10:28)
+#     at CreateWorkspaceSuggestions (evalmachine.<anonymous>:103:39)
+#     at div
+#     at form
+#     at CreateWorkspaceComposer (evalmachine.<anonymous>:60:36)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: @ selection inserts one file atom and trailing space without creating (page=true,key=Enter)
+not ok 12 - @ selection inserts one file atom and trailing space without creating (page=true,key=Enter)
+  ---
+  duration_ms: 134.842874
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:202:5'
+  failureType: 'testCodeFailure'
+  error: 'document.addEventListener is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evalmachine.<anonymous>:11:18
+    commitHookEffectListMount (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:13038:26)
+    commitPassiveMountOnFiber (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14461:11)
+    commitPassiveMountEffects_complete (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14421:9)
+    commitPassiveMountEffects_begin (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14408:7)
+    commitPassiveMountEffects (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14396:3)
+    flushPassiveEffectsImpl (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16287:3)
+    flushPassiveEffects (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16236:14)
+    /home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16051:9
+    flushActQueue (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react/cjs/react.development.js:2667:24)
+  ...
+# The above error occurred in the <CreateWorkspaceComposer> component:
+#     at CreateWorkspaceComposer (evalmachine.<anonymous>:60:36)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: / selection inserts the reported command without submitting (page=true,key=Enter)
+not ok 13 - / selection inserts the reported command without submitting (page=true,key=Enter)
+  ---
+  duration_ms: 133.986236
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:212:5'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'go')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    matchCommands (evalmachine.<anonymous>:102:38)
+    useCreateWorkspaceSuggestions (evalmachine.<anonymous>:49:97)
+    CreateWorkspaceComposer (evalmachine.<anonymous>:95:92)
+    renderWithHooks (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5608:18)
+    updateFunctionComponent (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9512:20)
+    beginWork (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11365:16)
+    performUnitOfWork (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15850:12)
+    workLoopSync (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15784:5)
+    renderRootSync (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15756:7)
+    performSyncWorkOnRoot (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15461:20)
+  ...
+# The above error occurred in the <FileMentionMenu> component:
+#     at FileMentionMenu (evalmachine.<anonymous>:10:28)
+#     at CreateWorkspaceSuggestions (evalmachine.<anonymous>:103:39)
+#     at div
+#     at form
+#     at CreateWorkspaceComposer (evalmachine.<anonymous>:60:36)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: @ selection inserts one file atom and trailing space without creating (page=true,key=Tab)
+not ok 14 - @ selection inserts one file atom and trailing space without creating (page=true,key=Tab)
+  ---
+  duration_ms: 158.552354
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:202:5'
+  failureType: 'testCodeFailure'
+  error: 'document.addEventListener is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evalmachine.<anonymous>:11:18
+    commitHookEffectListMount (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:13038:26)
+    commitPassiveMountOnFiber (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14461:11)
+    commitPassiveMountEffects_complete (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14421:9)
+    commitPassiveMountEffects_begin (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14408:7)
+    commitPassiveMountEffects (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14396:3)
+    flushPassiveEffectsImpl (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16287:3)
+    flushPassiveEffects (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16236:14)
+    /home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16051:9
+    flushActQueue (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react/cjs/react.development.js:2667:24)
+  ...
+# The above error occurred in the <CreateWorkspaceComposer> component:
+#     at CreateWorkspaceComposer (evalmachine.<anonymous>:60:36)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: / selection inserts the reported command without submitting (page=true,key=Tab)
+not ok 15 - / selection inserts the reported command without submitting (page=true,key=Tab)
+  ---
+  duration_ms: 153.6254
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:212:5'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'go')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    matchCommands (evalmachine.<anonymous>:102:38)
+    useCreateWorkspaceSuggestions (evalmachine.<anonymous>:49:97)
+    CreateWorkspaceComposer (evalmachine.<anonymous>:95:92)
+    renderWithHooks (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5608:18)
+    updateFunctionComponent (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9512:20)
+    beginWork (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11365:16)
+    performUnitOfWork (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15850:12)
+    workLoopSync (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15784:5)
+    renderRootSync (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15756:7)
+    performSyncWorkOnRoot (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15461:20)
+  ...
+# The above error occurred in the <FileMentionMenu> component:
+#     at FileMentionMenu (evalmachine.<anonymous>:10:28)
+#     at CreateWorkspaceSuggestions (evalmachine.<anonymous>:103:39)
+#     at div
+#     at form
+#     at CreateWorkspaceComposer (evalmachine.<anonymous>:60:36)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: directory selections preserve directory identity (page=true)
+not ok 16 - directory selections preserve directory identity (page=true)
+  ---
+  duration_ms: 138.999548
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:222:3'
+  failureType: 'testCodeFailure'
+  error: 'document.addEventListener is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evalmachine.<anonymous>:11:18
+    commitHookEffectListMount (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:13038:26)
+    commitPassiveMountOnFiber (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14461:11)
+    commitPassiveMountEffects_complete (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14421:9)
+    commitPassiveMountEffects_begin (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14408:7)
+    commitPassiveMountEffects (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14396:3)
+    flushPassiveEffectsImpl (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16287:3)
+    flushPassiveEffects (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16236:14)
+    /home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16051:9
+    flushActQueue (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react/cjs/react.development.js:2667:24)
+  ...
+# The above error occurred in the <CreateWorkspaceComposer> component:
+#     at CreateWorkspaceComposer (evalmachine.<anonymous>:60:36)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: Escape dismisses suggestions without closing the containing dialog (page=true)
+not ok 17 - Escape dismisses suggestions without closing the containing dialog (page=true)
+  ---
+  duration_ms: 129.987682
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:232:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'go')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    matchCommands (evalmachine.<anonymous>:102:38)
+    useCreateWorkspaceSuggestions (evalmachine.<anonymous>:49:97)
+    CreateWorkspaceComposer (evalmachine.<anonymous>:95:92)
+    renderWithHooks (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5608:18)
+    updateFunctionComponent (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9512:20)
+    beginWork (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11365:16)
+    performUnitOfWork (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15850:12)
+    workLoopSync (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15784:5)
+    renderRootSync (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15756:7)
+    performSyncWorkOnRoot (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15461:20)
+  ...
+# The above error occurred in the <CreateWorkspaceComposer> component:
+#     at CreateWorkspaceComposer (evalmachine.<anonymous>:60:36)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: composition and unrelated keys do not submit or mutate (page=true)
+not ok 18 - composition and unrelated keys do not submit or mutate (page=true)
+  ---
+  duration_ms: 141.026367
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceSuggestions.test.ts:240:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'go')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    matchCommands (evalmachine.<anonymous>:102:38)
+    useCreateWorkspaceSuggestions (evalmachine.<anonymous>:49:97)
+    CreateWorkspaceComposer (evalmachine.<anonymous>:95:92)
+    renderWithHooks (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5608:18)
+    updateFunctionComponent (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9512:20)
+    beginWork (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11365:16)
+    performUnitOfWork (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15850:12)
+    workLoopSync (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15784:5)
+    renderRootSync (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15756:7)
+    performSyncWorkOnRoot (/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15461:20)
+  ...
+# Subtest: no repository means no native lookup, no suggestions, and no create (page=true)
+ok 19 - no repository means no native lookup, no suggestions, and no create (page=true)
+  ---
+  duration_ms: 151.789896
+  type: 'test'
+  ...
+# Subtest: ordinary Enter keeps the existing create path (page=true)
+ok 20 - ordinary Enter keeps the existing create path (page=true)
+  ---
+  duration_ms: 132.637251
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 4
+# fail 16
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4100.354113

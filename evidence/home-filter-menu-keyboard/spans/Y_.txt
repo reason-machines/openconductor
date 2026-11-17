@@ -1,0 +1,1 @@
+function Y_(t,{startingIndex:e=-1,decrement:n=!1,disabledIndices:i,amount:r=1}={}){let o=e;do o+=n?-r:r;while(o>=0&&o<=t.length-1&&Ice(t,o,i));return o}

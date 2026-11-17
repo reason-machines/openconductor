@@ -1,0 +1,192 @@
+{
+  "author": "Conductor Rebuild",
+  "qualification_main": "93b9d53ce02970967a831b0ac93ecdbf17bdea31",
+  "acquisition": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference_kind": "Previously retained Conductor 0.87.6 shipped frontend; inert REA source data, not new acquisition or native acceptance.",
+  "archive_sha256": "991f15ebf130ccb8e705fc74f612dbb46095bd6d73b420fbced1ffbcd94165bc",
+  "assets": {
+    "index-BGEQ8YjU.js": {
+      "archive_member": "glob-result-source-packet/retained-reference/index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    },
+    "renderApp-D_fmY7hW.js": {
+      "archive_member": "glob-result-source-packet/retained-reference/renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    }
+  },
+  "spans": [
+    {
+      "path": "reference/task-run-id.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 2933837,
+      "end_exclusive": 2933949,
+      "sha256": "9403297171e1ba8a8ba34060424ebdf1ed820ac3ff96c694de4405a670df0b97"
+    },
+    {
+      "path": "reference/index-export.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3484123,
+      "end_exclusive": 3484132,
+      "sha256": "782454771bf148f2f79b4740691ac68d42fbcc0ccc906b816321de7e18865977"
+    },
+    {
+      "path": "reference/renderer-import.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 57739,
+      "end_exclusive": 57747,
+      "sha256": "ea39fd570a2d4497e9acf83c28dc20bb9f39498beaa9a7e8765b597155e01030"
+    },
+    {
+      "path": "reference/renderer-state-bindings.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 7172488,
+      "end_exclusive": 7172999,
+      "sha256": "6c4abb6618a911e29f010c02aec005bf5bab3097918d64de8cc2dbcc6d0b64a2"
+    },
+    {
+      "path": "reference/renderer-output-complete.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 7197052,
+      "end_exclusive": 7199367,
+      "sha256": "bbd8f6863b6f1b682c573f0bc4d2b06767bc6ab6a38bd2168fec6dc3d1cea586"
+    },
+    {
+      "path": "reference/output-surface-OJs.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 6571868,
+      "end_exclusive": 6572718,
+      "sha256": "5690f01ab02ec3aa205005c2775965062bbdcef532d855a294e14a719095dd41"
+    },
+    {
+      "path": "reference/surface-effect-xEi.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 6568897,
+      "end_exclusive": 6571703,
+      "sha256": "c9eafaa506a034b54ffb3e6f82f0635e7509d7a7e9672fc4aaca171b09303bc3"
+    },
+    {
+      "path": "reference/surface-selector-AJs.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 6571703,
+      "end_exclusive": 6571748,
+      "sha256": "2a35b68dafaa319ea940d805be477f8002d9bc3aa0c439cfe9d84752af590f5e"
+    },
+    {
+      "path": "reference/identity-helper-EI.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 2876199,
+      "end_exclusive": 2876231,
+      "sha256": "62623e20a910ddc0c3b0f1270bbbe680d85fc0617c16f86ea3864ab397197495"
+    },
+    {
+      "path": "reference/identity-export.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3483889,
+      "end_exclusive": 3483897,
+      "sha256": "d2aebe82422c1e7460676595fec67a0ab244717b27b3f2bba4753f35a4cc2305"
+    },
+    {
+      "path": "reference/identity-import.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 57245,
+      "end_exclusive": 57254,
+      "sha256": "8933add135f85599eab9f076cda55a784dd828d184695785a7c7dd0755dc5888"
+    },
+    {
+      "path": "reference/surface-store-K2.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3235824,
+      "end_exclusive": 3238055,
+      "sha256": "06ca95b44c6f281770cfcfbe91db8e39ed25dffbe9eedd267c531d1f3cbf9fd3"
+    },
+    {
+      "path": "reference/replace-removes-surface.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3238056,
+      "end_exclusive": 3238137,
+      "sha256": "73914c71e42fbe4a15ae5fb3ee2ea28c4968a8beab93140ae6be643a7b70fec0"
+    },
+    {
+      "path": "reference/surface-store-export.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3483880,
+      "end_exclusive": 3483888,
+      "sha256": "960391331c3c835441e1261717616a0003a67ae9e1c0abdb4fe48480313ac71f"
+    },
+    {
+      "path": "reference/run-identity-store-subscription.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3238179,
+      "end_exclusive": 3238232,
+      "sha256": "fb049032cf6fa2902cfbf390d9a94afdacc7fd07fe169b42093dbc585ce0105b"
+    },
+    {
+      "path": "reference/dzt.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 6925136,
+      "end_exclusive": 6926664,
+      "sha256": "ce0b9ada301e3bf75b73f5cb2c15f4b1052a4ed501200c786bec716a58c1a587"
+    },
+    {
+      "path": "reference/iSa.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 11165888,
+      "end_exclusive": 11167486,
+      "sha256": "6684d447fd003dc49e33f65d6a7e6f73f830fb32fbcf93e9933b03f1658b4e4b"
+    },
+    {
+      "path": "reference/rSa.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 11167486,
+      "end_exclusive": 11170601,
+      "sha256": "55b02cfb58c1416fce68bf0cc9178e9b37bed4e03ccb0de73661b7787d99fc95"
+    },
+    {
+      "path": "reference/aSa.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 11170916,
+      "end_exclusive": 11171573,
+      "sha256": "68f370d7469b65a71859999fe41df5b274073483a74d21f2874fa84daa62ecce"
+    },
+    {
+      "path": "reference/lSa.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 11171573,
+      "end_exclusive": 11171911,
+      "sha256": "cfab3b95d6f1316ab61b7016395f89925f66289ebe072451938c3f481c52ec2a"
+    },
+    {
+      "path": "reference/uSa.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 11171943,
+      "end_exclusive": 11172105,
+      "sha256": "09da707923a705cc9c8f93572eb11724514f8a7d2e75bc45d89020a36fedd4e9"
+    },
+    {
+      "path": "reference/surface-store-import.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 57236,
+      "end_exclusive": 57244,
+      "sha256": "1e92eb0abc75e1519656ec4bf873c2b213163f66a6deff71f2182e6fede28d44"
+    }
+  ],
+  "parser": "TypeScript createSourceFile, zero diagnostics, complete declarations; offsets converted to UTF-8 bytes. No vendor code evaluated.",
+  "fixture": "src/scripts/rerunSurfaceIdentity.test.ts",
+  "fixture_sha256": "1a5da8c156c3d15f191ff7b98e27879e91c2615f47b9d89084bf9786e6be7091",
+  "product": "src/components/ScriptsPanel.tsx",
+  "baseline_product_sha256": "f6ae1bb27f24d4d616a39d9fa4ebbdcd850147975559aaa3fbb941b40dc6f2d8",
+  "qualification_log_hashes": {
+    "red": {
+      "raw_sha256": "b8cb293391d36cc80544d5f268b202d4c46e660816e97160bc228b5e0bd5ebf6",
+      "gzip_sha256": "b3848dabdc387baf563d4f5acd395d3895f82d10f245d5d2f57e52fde29403f8"
+    },
+    "adjacent-before": {
+      "raw_sha256": "92efae88bf5c43174a77b75d9f7c1b555a525a619755fc181b44c463fdae7294",
+      "gzip_sha256": "1da8dea6bcaa3d1edcbf49a23c7d94dd47dca5cbd7097f47ad2982b6a25a2983"
+    },
+    "typecheck-before": {
+      "raw_sha256": "2521c3a9a531250e8fb72e2a3e9a11b0c44d283ed29c6ab86c1e202ab6b2c509",
+      "gzip_sha256": "a7b1fb7292d5a0542e8499748f7919f4cd3285576699b77b98d50f6fe9c32d29"
+    }
+  }
+}
