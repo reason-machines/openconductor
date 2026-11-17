@@ -58,4 +58,4 @@ Sole runtime started **18:53:57.913Z**, deadline **19:08:57.913Z**. Explicit ear
 
 ## Raw log preservation
 
-The canonical RED `baseline.tap.gz` and earlier pre-freeze-v1 RED archive preserve their original bytes, including Node’s whitespace-only diagnostic separators. `raw-red-archives.json` pins their byte lengths, decompressed SHA-256s, archive SHA-256s, and original Git commit/path; `verify.py` compares the decompressed bytes directly to that original Git content. No raw output was trimmed or regenerated to pass `git diff --check origin/main...HEAD`.
+The canonical RED `baseline.tap.gz` and earlier pre-freeze-v1 RED archive preserve their original bytes, including Node’s whitespace-only diagnostic separators. `raw-red-archives.json` pins their byte lengths, decompressed SHA-256s, archive SHA-256s, and published original Git commit/path. Conversion compared the decompressed bytes directly against that published content; `verify.py` checks the pinned lengths and SHA-256s without requiring an eventually-squashed PR ancestor. No raw output was trimmed or regenerated to pass `git diff --check origin/main...HEAD`.

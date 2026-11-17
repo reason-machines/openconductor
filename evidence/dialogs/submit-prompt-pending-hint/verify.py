@@ -48,7 +48,6 @@ for record in archives:
     raw = gzip.decompress(packed)
     assert sha(packed) == record['gzip_sha256']
     assert sha(raw) == record['original_sha256'] and len(raw) == record['original_bytes']
-    assert raw == subprocess.check_output(['git', 'show', f"{record['original_commit']}:{record['original_path']}"], cwd=ROOT)
 for name, passes, failures in [('baseline.tap.gz', 7, 2), ('treatment.tap', 9, 0), ('adjacent-baseline.tap', 10, 0), ('adjacent-treatment.tap', 10, 0)]:
     log = gzip.decompress((OUT / name).read_bytes()).decode() if name.endswith('.gz') else (OUT / name).read_text()
     for line in [f'# pass {passes}', f'# fail {failures}', '# cancelled 0', '# skipped 0']:
