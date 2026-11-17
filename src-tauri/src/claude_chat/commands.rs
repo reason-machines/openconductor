@@ -124,6 +124,9 @@ pub async fn claude_prompt(
         .get()
         .map_err(|e| e.to_string())?;
     let db = app.state::<crate::db::Db>();
+    // Chrome changes recreate an idle generator, just like other launch options.
+    // Read the authoritative preference each turn, not a caller-supplied value.
+    options.chrome_enabled = Some(crate::app_prefs::commands::load(&db.0).await?.chrome_mode_enabled);
     let mode =
         crate::local_plan_mode::load(&db.0, &logical_id, settings.models.default_plan_mode).await?;
     options.permission_mode = Some(crate::local_plan_mode::claude_permission(
