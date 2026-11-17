@@ -20,7 +20,15 @@ first in the handler.
 
 This is separate from #1387's selected-row reveal. Source preparation occurred
 locally while #1387 was open; no Ctrl-letter repair was published into it.
-Delivery is against main after #1387 merges, not stacked on its open branch.
+#1387 is provider-confirmed merged as
+`5f0d5c81903f38a0cbcfef92f1a1803786aeb696`. Delivery is separately against
+fresh main `162fc5acc97b3463ba8bad8f3c715c0fb43e7c14`, not stacked on its
+finished branch. Main was integrated on the assigned branch without conflicts;
+its Home component is byte-identical to the original portable RED production
+input at local `a519e1738`, SHA-256
+`1275b874ea8e727ae71b8add0daf68f5dbb4b2639b4c0d3b6056c302f405271e`.
+The net product diff contains only the Ctrl-letter `onSearchKey` correction,
+not #1387's already-merged reveal effect.
 
 ## Historical REA source contract
 
@@ -75,7 +83,8 @@ timeout 90s node --max-old-space-size=512 --experimental-strip-types \
 sha256sum -c evidence/home-ctrl-navigation/fixture.sha256
 ```
 
-- **RED reproduced:** [raw receipt](red.txt), exit 1, **3 passed / 6 failed**.
+- **RED reproduced:** [losslessly compressed raw receipt](red.txt.gz), exit 1,
+  **3 passed / 6 failed**.
   Four Ctrl-letter cases leave the previous selection unchanged; filtered
   navigation and empty-results cancellation also fail. All three controls pass.
   There are no setup/import failures, skips or cancellations.
@@ -99,12 +108,31 @@ sha256sum -c evidence/home-ctrl-navigation/fixture.sha256
   this checkout's dependencies, also recorded by #1382/#1387. No dependency was
   installed and no manifest changed. A hosted installed-dependency check is a
   separate exact-head verification, not a local pass.
-- **Product/test whitespace passed:** `git diff --cached --check --
+- **Original product/test whitespace passed:** `git diff --cached --check --
   src/components/AllWorkspaces.tsx src/components/homeCtrlNavigation.test.ts`.
-  The full staged whitespace check **failed** on 12 whitespace-only lines
-  emitted by `node:test` in the raw RED receipt. That receipt is preserved
-  byte-for-byte so its recorded SHA-256 remains valid; this is not a
-  product/test-source whitespace failure.
+  The original full staged whitespace check **failed** on 12 whitespace-only
+  lines emitted by `node:test` in the raw RED receipt. For publication it is
+  stored with deterministic, lossless gzip compression; decompressed bytes
+  match its original SHA-256 exactly. No assertion or receipt content changed.
+
+### Fresh-main integration checks (Reason Cloud)
+
+After integrating main `162fc5acc97b3463ba8bad8f3c715c0fb43e7c14`:
+
+- **Passed:** same unchanged frozen regression command — **9/9**,
+  [receipt](green-current-main.txt).
+- **Passed:** same adjacent command — **173/173**, zero failures/skips,
+  [receipt](adjacent-current-main.txt).
+- **Failed, existing environment limitation:** same local typecheck — exit 2,
+  sole missing `@tauri-apps/plugin-fs` TS2307,
+  [receipt](typecheck-current-main.txt). No installation or declaration shim.
+- **Passed:** reference receipt SHA-256; seven retained-span hashes and both
+  UTF-8/UTF-16 range lengths; separate P6 binding; frozen fixture and four
+  original receipt hashes; fresh-main/RED-input source byte identity; lossless
+  RED decompression. Reference JavaScript was not executed.
+- Hosted installed-dependency typecheck/build and all exact-head automatic
+  workflows remain separate publication/merge checks. Manual-only skips are
+  not passing tests.
 
 The regression mounts real React, the production Home component and the real
 KeybindingsProvider. It invokes the rendered Search callback with cancelable
