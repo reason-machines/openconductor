@@ -124,12 +124,12 @@ test("mounted qualified model search preserves raw IDs, agent labels, and blank 
   } finally { view.close(); }
 });
 
-test("mounted qualified model search preserves matching loadout order", () => {
+test("mounted qualified model search ranks matching loadout models", () => {
   const secondOpus: composerModels.ModelChoice = { model: "opus-5-5-1m", agent: "claude", effort: null };
   const view = fixture({ favorites: [secondOpus, opus, codex] });
   try {
     view.query("claude:opus");
-    assert.deepEqual(view.rows(), [name(secondOpus), name(opus)]);
+    assert.deepEqual(view.rows(), [name(opus), name(secondOpus)]);
   } finally { view.close(); }
 });
 

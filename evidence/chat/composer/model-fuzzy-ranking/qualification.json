@@ -1,0 +1,236 @@
+{
+  "scope": "COMPOSER-MODEL-RANK-135",
+  "owner": "Conductor Rebuild / SAME135",
+  "phase": "implemented; frozen GREEN; ready publication",
+  "main_sha": "eef01e9b287472280fb3f4a585bc697d5f1f8f51",
+  "reference": {
+    "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index_sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+    "method": "retained inert source span self-hashes; not new full-artifact revalidation, no vendor evaluation",
+    "checks": [
+      {
+        "label": "A7o query input and searchableModels forwarding",
+        "range": [
+          8599657,
+          8601817
+        ],
+        "expected_sha256": "e94aaed3bf7beff63737f3574c578074d9b27d30067e6c303cd3358c3a1c7dce",
+        "actual_sha256": "e94aaed3bf7beff63737f3574c578074d9b27d30067e6c303cd3358c3a1c7dce",
+        "pass": true
+      },
+      {
+        "label": "R7o model/agent/id search text",
+        "range": [
+          8601858,
+          8601917
+        ],
+        "expected_sha256": "7acb23448ac4ff25dad653d670d1bdc56ebad4eaf5db4daca02ffd472f8200db",
+        "actual_sha256": "7acb23448ac4ff25dad653d670d1bdc56ebad4eaf5db4daca02ffd472f8200db",
+        "pass": true
+      },
+      {
+        "label": "agent ids used to construct searchable result ids",
+        "range": [
+          8601917,
+          8601977
+        ],
+        "expected_sha256": "0139c0c0c41927b0333dc3670192e3a08e6d001f319523b8059a400f40bf3751",
+        "actual_sha256": "0139c0c0c41927b0333dc3670192e3a08e6d001f319523b8059a400f40bf3751",
+        "pass": true
+      },
+      {
+        "label": "L7o result entry construction",
+        "range": [
+          8603880,
+          8613595
+        ],
+        "expected_sha256": "763d5d0e217d3fd22a7decbb99b3551df62c8356626dbb8a07d87585386c6f3c",
+        "actual_sha256": "763d5d0e217d3fd22a7decbb99b3551df62c8356626dbb8a07d87585386c6f3c",
+        "pass": true
+      },
+      {
+        "label": "lj result search adapter",
+        "range": [
+          2839201,
+          2839529
+        ],
+        "expected_sha256": "cc3d7c4102af2bb5c8d557b82956e7c8231561f5417784d41807293d2296adb3",
+        "actual_sha256": "cc3d7c4102af2bb5c8d557b82956e7c8231561f5417784d41807293d2296adb3",
+        "pass": true
+      },
+      {
+        "label": "fuzzysort full initialization and local helpers",
+        "range": [
+          2829988,
+          2838976
+        ],
+        "expected_sha256": "b37454e1205cc8a0df1dd3c5b6e8bf04e2f0491397bec24e933d206844f79a35",
+        "actual_sha256": "b37454e1205cc8a0df1dd3c5b6e8bf04e2f0491397bec24e933d206844f79a35",
+        "pass": true
+      },
+      {
+        "label": "fuzzysort wrapper binding",
+        "range": [
+          2838976,
+          2839015
+        ],
+        "expected_sha256": "2a7bc952329a33e1b029d4212a33ff45cfbba76d2c27a4cc718b027d25ec6fda",
+        "actual_sha256": "2a7bc952329a33e1b029d4212a33ff45cfbba76d2c27a4cc718b027d25ec6fda",
+        "pass": true
+      },
+      {
+        "label": "Dk default-export interop",
+        "range": [
+          117763,
+          117864
+        ],
+        "expected_sha256": "0234768a9a5db321fa7ad872061578be6f51a4ea0fa4bcd9043f1003b2518ca1",
+        "actual_sha256": "0234768a9a5db321fa7ad872061578be6f51a4ea0fa4bcd9043f1003b2518ca1",
+        "pass": true
+      },
+      {
+        "label": "agent display labels",
+        "range": [
+          301310,
+          301401
+        ],
+        "expected_sha256": "8d02c2f3cd6c882e1a915bad01bb299391e85ca80955482bae2d02571e65f616",
+        "actual_sha256": "8d02c2f3cd6c882e1a915bad01bb299391e85ca80955482bae2d02571e65f616",
+        "pass": true
+      },
+      {
+        "label": "index export b9",
+        "range": [
+          3480797,
+          3480805
+        ],
+        "expected_sha256": "b0737961c1f96b8edf9a5bd8f27a664c26a024598c8f66f023157c8747b6778b",
+        "actual_sha256": "b0737961c1f96b8edf9a5bd8f27a664c26a024598c8f66f023157c8747b6778b",
+        "pass": true
+      },
+      {
+        "label": "index export kS",
+        "range": [
+          3486619,
+          3486628
+        ],
+        "expected_sha256": "aa804f47684f7396e98fcecf81f558f65d3a2ed5295b796d03e90354bc94072b",
+        "actual_sha256": "aa804f47684f7396e98fcecf81f558f65d3a2ed5295b796d03e90354bc94072b",
+        "pass": true
+      },
+      {
+        "label": "renderer import Dk",
+        "range": [
+          54167,
+          54175
+        ],
+        "expected_sha256": "5de213a555931acf7faf016669a7ce5c299b20f8613940b24b8290bc8248c0f4",
+        "actual_sha256": "5de213a555931acf7faf016669a7ce5c299b20f8613940b24b8290bc8248c0f4",
+        "pass": true
+      },
+      {
+        "label": "renderer import _A",
+        "range": [
+          60229,
+          60237
+        ],
+        "expected_sha256": "e8e711e2ae95f0b04f44d8b5e213575231af664bd3c77361208a98af4bac8e59",
+        "actual_sha256": "e8e711e2ae95f0b04f44d8b5e213575231af664bd3c77361208a98af4bac8e59",
+        "pass": true
+      }
+    ]
+  },
+  "source_pins": {
+    "src/features/chat/ModelPicker.tsx": {
+      "git_blob": "fd245cbec27560f5f047319092eb4a9fd9674a78",
+      "sha256": "0ad4597faefd1a07ca740b4f7d1c79fad8839574c068a46ed33523da029e1bb6"
+    },
+    "src/features/chat/slashCommands.ts": {
+      "git_blob": "caf1080281edfd3936481e8b6df3b190199447ee",
+      "sha256": "f505f1a42b18162b37cc9adf46e2623bf47e61c77fdb77adb27a469cdb464c88"
+    },
+    "src/features/chat/loadoutChoices.ts": {
+      "git_blob": "645c5012430d350a20145fa1ebc52b6d3d90997e",
+      "sha256": "6f598e35d99d142e63711db22e0e189096cb0162410f1daf73a35833311c354c"
+    },
+    "src/features/chat/composerModels.ts": {
+      "git_blob": "3ced18d487c6a25876b5281460746bc516b19c0b",
+      "sha256": "e9b1e5cb5d1bc04fed9b909300c5b7e29d3e159afec3fd31a27ac0ed21699cab"
+    },
+    "src/settings/models.ts": {
+      "git_blob": "6ae8f0d217767cde80a63bfa4b46db8ecea8be86",
+      "sha256": "bfe92c614ec2076b61055a35ef402cfe06e9b407ac424ca55c8a70c8a89f4939"
+    },
+    "package-lock.json": {
+      "git_blob": "b60dfc071d9c0c8714be5498b0ef250813a63a4d",
+      "sha256": "1b5e71303afef426f22e8a492d1e8f8e74fdc34bf4242984b2ef3f9a59675782"
+    }
+  },
+  "fixture": {
+    "path": "src/features/chat/modelPickerFuzzyRanking.test.ts",
+    "sha256": "a7a9a940f18fc3c96d390580d2ab2eba926ab578986f76fc6fd38268d61e28d1",
+    "command": "MODEL_PICKER_RANK_REF=eef01e9b287472280fb3f4a585bc697d5f1f8f51 node --test src/features/chat/modelPickerFuzzyRanking.test.ts",
+    "exit": 1,
+    "tests": 11,
+    "pass": 6,
+    "intended_fail": 5
+  },
+  "pr1409_control": {
+    "command": "MODEL_PICKER_FUZZY_REGRESSION_REF=eef01e9b287472280fb3f4a585bc697d5f1f8f51 node --test src/features/chat/modelPickerFuzzySearch.test.ts",
+    "tests": 12,
+    "pass": 12,
+    "fail": 0
+  },
+  "static_mac_inspection": {
+    "performed_before_ledger_retained_only_restriction": true,
+    "rea_version": "6.7.0",
+    "operation": "inspect-artifact /Applications/Conductor.app --format json",
+    "evidence_id": "ev_073fad1de22de94627d902947184d714b577c7578c567226341845dcd0887c84",
+    "root_sha256": "e9a9637d323bcbcc4958b8b71ec4a35e5126ea6bf91ce6a72eb5f96237cc03c7",
+    "native_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+    "full_receipt_retained_on_mac": "/tmp/openconductor-rea-model-ranking-135.json",
+    "receipt_sha256": "595b7363030289666104a312c11ae576d3f02724a2730cb31af755125eff5811",
+    "limitation": "artifact inventory is not JS semantics or runtime evidence; current native identity matches previously decoded renderer relationship; no new decoded-asset hash check"
+  },
+  "blocking_contract": "resolved by explicit parent direction and ledger reconciliation; four nonempty-order expectations migrated with original fixtures retained",
+  "not_run": [
+    "full repository source suite",
+    "visible app/browser/native/provider/WebKit/E1",
+    "release installation",
+    "successor package containment/build/watch/dispatch"
+  ],
+  "validation": {
+    "frozen_new": {
+      "tests": 11,
+      "pass": 11,
+      "fail": 0,
+      "command": "node --test src/features/chat/modelPickerFuzzyRanking.test.ts"
+    },
+    "adjacent_before_expectation_migration": {
+      "tests": 156,
+      "pass": 152,
+      "fail": 4
+    },
+    "adjacent_green": {
+      "tests": 156,
+      "pass": 156,
+      "fail": 0,
+      "command": "node --test src/features/chat/modelPicker*.test.ts src/features/chat/chatModelFriendlyLabel.test.ts"
+    },
+    "expanded_green": {
+      "tests": 512,
+      "pass": 512,
+      "fail": 0,
+      "command": "node --test src/features/chat/composer*.test.ts src/features/chat/slash*.test.ts src/features/chat/loadout*.test.ts src/features/chat/fileMentions.test.ts src/features/chat/chatModel*.test.ts src/features/chat/modelPicker*.test.ts"
+    },
+    "build": {
+      "command": "npm run build",
+      "exit": 0,
+      "includes": [
+        "branding",
+        "TypeScript no emit",
+        "Vite production build"
+      ]
+    }
+  }
+}

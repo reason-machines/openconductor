@@ -1,0 +1,87 @@
+(node:93) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:100) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:100) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: abbreviated model search retains the cld result
+ok 1 - abbreviated model search retains the cld result
+  ---
+  duration_ms: 3.121667
+  type: 'test'
+  ...
+# Subtest: abbreviated model search retains the cdx result
+ok 2 - abbreviated model search retains the cdx result
+  ---
+  duration_ms: 0.276761
+  type: 'test'
+  ...
+# Subtest: abbreviated model search retains the gpt56 result
+ok 3 - abbreviated model search retains the gpt56 result
+  ---
+  duration_ms: 0.249868
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing "opus" control
+ok 4 - model search preserves the existing "opus" control
+  ---
+  duration_ms: 0.182358
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing "codex" control
+ok 5 - model search preserves the existing "codex" control
+  ---
+  duration_ms: 0.160882
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing "opus claude" control
+ok 6 - model search preserves the existing "opus claude" control
+  ---
+  duration_ms: 0.152517
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing " CLAUDE\\t \\n opus " control
+ok 7 - model search preserves the existing " CLAUDE\\t \\n opus " control
+  ---
+  duration_ms: 0.084526
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing "" control
+ok 8 - model search preserves the existing "" control
+  ---
+  duration_ms: 0.070672
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing " \\t" control
+ok 9 - model search preserves the existing " \\t" control
+  ---
+  duration_ms: 0.246446
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing "no matching model" control
+ok 10 - model search preserves the existing "no matching model" control
+  ---
+  duration_ms: 0.312083
+  type: 'test'
+  ...
+# Subtest: literal model search preserves source order and choice identity
+ok 11 - literal model search preserves source order and choice identity
+  ---
+  duration_ms: 0.242185
+  type: 'test'
+  ...
+# Subtest: provider identity still uses the explicit agent and callback precedence
+ok 12 - provider identity still uses the explicit agent and callback precedence
+  ---
+  duration_ms: 0.173296
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 202.217036
