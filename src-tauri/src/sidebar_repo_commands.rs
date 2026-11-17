@@ -7,6 +7,7 @@
 use tauri::State;
 
 use crate::db::Db;
+use crate::workspace::service::WorkspaceService;
 
 /// JS: `invoke("db_set_repo_hidden", { repoId, hidden })`.
 #[tauri::command]
@@ -39,6 +40,40 @@ pub async fn db_set_repo_icon(
     icon: Option<String>,
 ) -> Result<(), String> {
     openconductor_db::repos::set_icon(&db.0, &repo_id, icon.as_deref())
+        .await
+        .map_err(|e| e.to_string())
+}
+
+/// JS: `invoke("db_set_repo_default_branch", { repoId, branch })`: update the
+/// base branch new workspaces are created from, as the "Branch new workspaces
+/// from" picker in Settings › Git.
+#[tauri::command]
+pub async fn db_set_repo_default_branch(
+    db: State<'_, Db>,
+    repo_id: String,
+    branch: String,
+) -> Result<(), String> {
+    openconductor_db::repos::set_default_branch(&db.0, &repo_id, &branch)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+/// JS: `invoke("db_set_repo_remote", { repoId, remote })`: update the git
+/// remote used for pushes, pulls and PR creation, as the "Remote origin" picker
+/// in Settings › Git. The remote's URL is re-read from git config and stored
+/// alongside the name.
+#[tauri::command]
+pub async fn db_set_repo_remote(
+    db: State<'_, Db>,
+    workspace_service: State<'_, WorkspaceService>,
+    repo_id: String,
+    remote: String,
+) -> Result<(), String> {
+    let remote_url = workspace_service
+        .repository_root(&repo_id)
+        .ok()
+        .and_then(|root| crate::workspace::git::remote_url(&root, &remote));
+    openconductor_db::repos::set_remote(&db.0, &repo_id, &remote, remote_url.as_deref())
         .await
         .map_err(|e| e.to_string())
 }

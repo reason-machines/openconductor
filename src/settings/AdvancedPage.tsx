@@ -31,7 +31,6 @@ export function AdvancedPage({ settings, save }: Props) {
       <RootPathRow />
       <ExecutablePathRow agent="claude" settings={settings} save={save} />
       <ExecutablePathRow agent="codex" settings={settings} save={save} />
-      <ExecutablePathRow agent="opencode" settings={settings} save={save} />
       {cloudUI && <PathRow
         label="SSH private key path"
         help="Use your own SSH key for cloud workspace access. Leave empty to auto-generate a key."

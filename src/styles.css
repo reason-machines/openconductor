@@ -365,7 +365,11 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .create-card { position: relative; display: flex; flex-direction: column; min-height: 216px; padding: 12px 16px 12px 18px; border: 1px solid var(--border); border-radius: 12px; background: var(--secondary); color: var(--text); cursor: text; }
 .create-ws-attached .create-card { border-radius: 0 0 12px 12px; }
 .create-ws-floating .create-card { padding-left: 16px; }
-.create-editor { flex: 1; width: 100%; min-height: 142px; max-height: 312px; padding: 4px 0; border: 0; outline: 0; resize: none; background: transparent; color: inherit; font: inherit; font-size: 14px; line-height: 1.5; }
+.create-editor { flex: 1; width: 100%; min-height: 142px; max-height: 312px; padding: 4px 0; border: 0; outline: 0; resize: none; background: transparent; color: inherit; font: inherit; font-size: 14px; line-height: 1.5; overflow-y: auto; }
+/* TipTap (ComposerEditor) inside the create composer — mirrors .composer.oc-composer .tiptap rules. */
+.create-editor .tiptap { outline: 0; position: relative; word-break: break-word; overflow-wrap: break-word; cursor: text; }
+.create-editor .tiptap p { margin: 0; min-height: 1em; }
+.create-editor .tiptap[data-empty="true"]::before { content: attr(data-placeholder); color: var(--oc-c-faint); pointer-events: none; position: absolute; top: 0; }
 /* Footer controls sit 12px in from the card's sides (Conductor: model trigger and Create at card edge + 12). */
 .create-card-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 8px -4px 0; }
 .create-ws-attached .create-card-bar { margin-left: -6px; }

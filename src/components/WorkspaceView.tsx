@@ -472,11 +472,13 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
       copyModelChoice(chatId, id, agentId, config);
       if (agentId !== "reason") saveAgent(id, agentId);
       queuePending(id, { kind: "draft", text: "", attachments: [{ name: forkAttachmentName(title), text: fork.transcript }] });
-      await startSetupScript({ id: backendRepo.id, root: backendRepo.root, defaultBranch: backendRepo.defaultBranch }, { id, name: directoryName, path }, targetBranch);
+      // GAP-SB-01b/01c: capture startSetupScript return so the sidebar row dims
+      // while setup runs and clears immediately when no script starts.
+      const forkSetupStarted = await startSetupScript({ id: backendRepo.id, root: backendRepo.root, defaultBranch: backendRepo.defaultBranch }, { id, name: directoryName, path }, targetBranch);
       dispatch({
         type: "addWorkspace",
         repoId: repo.id,
-        workspace: { id, name: directoryName, branch: branchName, path, targetBranch, placeholderBranchName: null, userSetWorkspaceName: false, userSetBranchName: false, number: fork.created.number ?? null },
+        workspace: { id, name: directoryName, branch: branchName, path, targetBranch, placeholderBranchName: null, userSetWorkspaceName: false, userSetBranchName: false, number: fork.created.number ?? null, state: forkSetupStarted ? "setting_up" : "ready" },
       });
     } catch (e) {
       setAttachError(e instanceof Error ? e.message : "Failed to fork chat");

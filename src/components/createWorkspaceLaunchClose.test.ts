@@ -100,6 +100,28 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
         if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }), useKeybindings: () => {} };
         if (name === "../keybindings/overrides") return { effectiveShortcuts: () => [] };
         if (name === "../keybindings/shortcut") return { glyphs: () => "", matchesEvent: () => false };
+        if (name.endsWith("/ComposerEditor.tsx") || name.endsWith("/ComposerEditor")) {
+          return {
+            ComposerEditor({ inputRef, value, onChange, onKeyDown }: Record<string, ((...a: unknown[]) => unknown) & string>) {
+              React.useLayoutEffect(() => {
+                const handle = {
+                  focus: () => {}, blur: () => {}, visible: () => true,
+                  focused: () => false, composing: () => false,
+                  selection: () => ({ text: String(value), start: 0, end: 0 }),
+                  replaceRange: () => false, insertFile: () => {}, deleteRange: () => false, newline: () => {},
+                };
+                Object.assign(inputRef, { current: handle });
+                return () => Object.assign(inputRef, { current: null });
+              }, []);
+              return React.createElement("textarea", {
+                "aria-label": "First message",
+                value,
+                onChange: (e: { target: { value: string } }) => onChange(e.target.value),
+                onKeyDown: (e: { nativeEvent: KeyboardEvent }) => onKeyDown(e.nativeEvent),
+              });
+            },
+          };
+        }
         throw new Error(`Unexpected launch-close dependency ${name}`);
       },
     });
@@ -370,6 +392,28 @@ async function backlogFixture() {
             return s.key.kind === "logical" && s.key.value === e.key && !!s.alt === !!e.altKey;
           },
         };
+        if (name.endsWith("/ComposerEditor.tsx") || name.endsWith("/ComposerEditor")) {
+          return {
+            ComposerEditor({ inputRef, value, onChange, onKeyDown }: Record<string, ((...a: unknown[]) => unknown) & string>) {
+              React.useLayoutEffect(() => {
+                const handle = {
+                  focus: () => {}, blur: () => {}, visible: () => true,
+                  focused: () => false, composing: () => false,
+                  selection: () => ({ text: String(value), start: 0, end: 0 }),
+                  replaceRange: () => false, insertFile: () => {}, deleteRange: () => false, newline: () => {},
+                };
+                Object.assign(inputRef, { current: handle });
+                return () => Object.assign(inputRef, { current: null });
+              }, []);
+              return React.createElement("textarea", {
+                "aria-label": "First message",
+                value,
+                onChange: (e: { target: { value: string } }) => onChange(e.target.value),
+                onKeyDown: (e: { nativeEvent: KeyboardEvent }) => onKeyDown(e.nativeEvent),
+              });
+            },
+          };
+        }
         throw new Error(`Unexpected backlog-fixture dependency ${name}`);
       },
     });
@@ -399,7 +443,9 @@ async function backlogFixture() {
     get creationFirstSession() { return creationFirstSession; },
     async altEnter() {
       await act(async () => {
-        const nativeEvent = { key: "Enter", altKey: true, isComposing: false } as unknown as KeyboardEvent;
+        // nativeEvent needs preventDefault/stopPropagation because ComposerEditor passes the native
+        // event directly to onKeyDown (no React synthetic wrapper), so the handler calls e.preventDefault().
+        const nativeEvent = { key: "Enter", altKey: true, isComposing: false, preventDefault() {}, stopPropagation() {} } as unknown as KeyboardEvent;
         send(
           renderer.root.findByType("textarea"),
           "onKeyDown",
