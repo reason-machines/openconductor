@@ -1,0 +1,250 @@
+{
+  "author": "Conductor Rebuild",
+  "main": "350276dac249fa14d24ec2460c5397a1e61cec97",
+  "scope": "Owner editability during a pending creation only; source/component evidence, not native acceptance",
+  "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "assets": {
+    "renderer": {
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "spans": [
+    {
+      "name": "local-mount-Gls",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2118911,
+        2120648
+      ],
+      "bytes": 1737,
+      "sha256": "916e8b7106c0d8db45b1084171514e606d696aaf0408b991c4e99123a1cf628c",
+      "path": "reference/local-mount-Gls.txt"
+    },
+    {
+      "name": "dialog-container-dbi",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2028481,
+        2028894
+      ],
+      "bytes": 413,
+      "sha256": "885a7fb6ae1c4e36285a2e8b348867f3afdc003adc473e40da5e57a12bfee83b",
+      "path": "reference/dialog-container-dbi.txt"
+    },
+    {
+      "name": "dialog-wrapper-Im",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1986046,
+        1988633
+      ],
+      "bytes": 2587,
+      "sha256": "beb65b39a01d82a2900e25add3857daaec2a75ea608c69514adc516a97083b76",
+      "path": "reference/dialog-wrapper-Im.txt"
+    },
+    {
+      "name": "native-popup-Rde",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1904644,
+        1905795
+      ],
+      "bytes": 1151,
+      "sha256": "0e1c8eabd9149ee24668748dcd73a520bf8a99916a6a77f61aa7688bdc375277",
+      "path": "reference/native-popup-Rde.txt"
+    },
+    {
+      "name": "owners-producer-Aos",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1981992,
+        1982600
+      ],
+      "bytes": 608,
+      "sha256": "882bd6a4c6981b51f2cad8f722be02e9e26166b85bc4234f0ac47df6103de898",
+      "path": "reference/owners-producer-Aos.txt"
+    },
+    {
+      "name": "owners-query-H3i-Ros",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1983084,
+        1983474
+      ],
+      "bytes": 390,
+      "sha256": "b72ddd00e9b030d464bdae023b0b85fe76c32df5dc3994652db9d45190e01a9c",
+      "path": "reference/owners-query-H3i-Ros.txt"
+    },
+    {
+      "name": "dialog-was",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2028894,
+        2035857
+      ],
+      "bytes": 6963,
+      "sha256": "094b63d901870ac438213f6ba4cf5bd1e4f843736c1ecd2b4fe87421893151d7",
+      "path": "reference/dialog-was.txt"
+    },
+    {
+      "name": "owner-disabled-consumer",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2032360,
+        2032427
+      ],
+      "bytes": 67,
+      "sha256": "07d6b4d5405f2595c734a2f29624ee7b3d2daf9a81e3416ace3a651026da4fcc",
+      "path": "reference/owner-disabled-consumer.txt"
+    },
+    {
+      "name": "select-wrapper-ah",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2020251,
+        2021023
+      ],
+      "bytes": 772,
+      "sha256": "20310e9fba08e90f2cbe6be7d408448df3676c372bd3a99c712637d936656ab8",
+      "path": "reference/select-wrapper-ah.txt"
+    },
+    {
+      "name": "select-root-Hos",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1997469,
+        2002869
+      ],
+      "bytes": 5400,
+      "sha256": "59c5cea118ef5b790cc4c60d866d70c7a25f56c4ef5602c8201c36c4798270f9",
+      "path": "reference/select-root-Hos.txt"
+    },
+    {
+      "name": "trigger-wrapper-Bf",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2021044,
+        2022256
+      ],
+      "bytes": 1212,
+      "sha256": "2f35aca4c6ecc0adf23822d525ab297109ef27e53d3bd9c873f2b064f418e402",
+      "path": "reference/trigger-wrapper-Bf.txt"
+    },
+    {
+      "name": "trigger-qos",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2003040,
+        2004873
+      ],
+      "bytes": 1833,
+      "sha256": "f8d3a3e852f14eb8ed81e5caf0929e2816cd990eb66056953f9c30e18436b34c",
+      "path": "reference/trigger-qos.txt"
+    },
+    {
+      "name": "button-O6",
+      "asset": "renderer",
+      "utf8_half_open": [
+        592323,
+        593854
+      ],
+      "bytes": 1531,
+      "sha256": "f8ff51bdccbb867c1ccd804968380bf548eb19fcbd9e5097b1a861948f1befc0",
+      "path": "reference/button-O6.txt"
+    },
+    {
+      "name": "button-props-jLr",
+      "asset": "renderer",
+      "utf8_half_open": [
+        591756,
+        592120
+      ],
+      "bytes": 364,
+      "sha256": "92e5b6fdd4c19dfc46fe7c7e21dd5fb84271ec436ac58580ecc7d958ca22aaff",
+      "path": "reference/button-props-jLr.txt"
+    },
+    {
+      "name": "native-Es",
+      "asset": "renderer",
+      "utf8_half_open": [
+        465319,
+        466387
+      ],
+      "bytes": 1068,
+      "sha256": "7f39c0705567d476943e1872d89c8d230668965dfcc7da26017a0a4f910a8c5e",
+      "path": "reference/native-Es.txt"
+    },
+    {
+      "name": "item-Eas",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2035898,
+        2035972
+      ],
+      "bytes": 74,
+      "sha256": "ef8715cc13d49012cbaf2d90f802c2a25d82e3b9d7bbe4d98c720e094f7e2d84",
+      "path": "reference/item-Eas.txt"
+    },
+    {
+      "name": "item-wrapper-Il",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2026506,
+        2027417
+      ],
+      "bytes": 911,
+      "sha256": "ec04877222ec59a4394b2f70f7788376ef65152a9507687f311ec126b00fa36c",
+      "path": "reference/item-wrapper-Il.txt"
+    },
+    {
+      "name": "item-ras",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2014457,
+        2016593
+      ],
+      "bytes": 2136,
+      "sha256": "9967d7379c01a8d94a7b63694369b738a59c32d9958515f32b57224ea9fb5e37",
+      "path": "reference/item-ras.txt"
+    }
+  ],
+  "frozen": [
+    {
+      "path": "src/components/GitHubRepoDialog.tsx",
+      "bytes": 5910,
+      "sha256": "31410cf1ead4ba45c055c74ebd64c90adf7c85c05db400deea989c06953c79f1",
+      "snapshot": "baseline/GitHubRepoDialog.tsx.txt"
+    },
+    {
+      "path": "src/components/githubRepoPendingOwner.test.ts",
+      "bytes": 11267,
+      "sha256": "d6f688f8f325a87144b17807ec6f0cbd832cd5469d723628b25927991c8b5229",
+      "snapshot": "baseline/githubRepoPendingOwner.test.ts.txt"
+    }
+  ],
+  "reference_rule": "was uses owners-query isLoading (_) for ah.disabled; mutation c.isPending only guards the primary action. ah/Hos/qos/O6 forward disabled to the native trigger; Eas/Il/ras/Hos.onValueChange/was.I forward owner selection.",
+  "current_counterexample": "After two owners load and creation starts, current Owner is disabled solely by pending. Reference Owner remains enabled. First request has already captured its scalar owner.",
+  "proposed_change": "GitHubRepoDialog.tsx only: disabled={!ready || pending} -> disabled={!ready}",
+  "controls": [
+    "Initial loading: current disabled and submit blocked, unchanged.",
+    "Idle ready: selection updates availability and the next creation owner.",
+    "Pending: loaded Owner remains enabled; captured first request is unchanged and duplicate submits stay blocked.",
+    "Rejected create: draft owner retained; after availability the retry captures that owner.",
+    "Resolved create: existing remote callback and one close remain unchanged.",
+    "Cached-query background refetch is characterized statically only. The runtime retry control covers orgsError refetch, not cached-query parity; existing OwnersState loading gate is unchanged.",
+    "Owner query error: existing !ready and empty-owner guards unchanged. Not a claim of whole error-state parity."
+  ],
+  "frozen_test_count": 9,
+  "expected_red": [
+    "Owner stays enabled while creation is pending",
+    "pending Owner edits preserve the captured request and rejection draft through retry"
+  ],
+  "expected_other_controls": "7 pass before and after; all 9 pass after the single expression change",
+  "ports": "Actual GitHubRepoDialog and state model; outer DialogFrame and backend APIs are synthetic. No provider-backed filesystem, authentication, network or native operation; source files are read locally.",
+  "limits": "Retained original source only; current installed Conductor identity, live original, visual, full-App, native, real-provider and packaged inclusion not verified. Original REA semantic renderer analysis exhausted heap; these hashed literal bytes supplement it and are never executed."
+}

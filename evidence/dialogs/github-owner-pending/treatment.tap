@@ -1,0 +1,68 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Owner stays enabled while creation is pending
+ok 1 - Owner stays enabled while creation is pending
+  ---
+  duration_ms: 169.00222
+  type: 'test'
+  ...
+# Subtest: pending Owner edits preserve the captured request and rejection draft through retry
+ok 2 - pending Owner edits preserve the captured request and rejection draft through retry
+  ---
+  duration_ms: 59.819999
+  type: 'test'
+  ...
+# Subtest: initial owner loading keeps selection and submission disabled
+ok 3 - initial owner loading keeps selection and submission disabled
+  ---
+  duration_ms: 46.139295
+  type: 'test'
+  ...
+# Subtest: idle owner selection updates availability before creating
+ok 4 - idle owner selection updates availability before creating
+  ---
+  duration_ms: 32.848526
+  type: 'test'
+  ...
+# Subtest: pending creation blocks duplicates even after availability changes
+ok 5 - pending creation blocks duplicates even after availability changes
+  ---
+  duration_ms: 51.176889
+  type: 'test'
+  ...
+# Subtest: resolved creation adds the captured remote and closes once
+ok 6 - resolved creation adds the captured remote and closes once
+  ---
+  duration_ms: 43.768464
+  type: 'test'
+  ...
+# Subtest: rejected creation retains the loaded owner and allows retry
+ok 7 - rejected creation retains the loaded owner and allows retry
+  ---
+  duration_ms: 45.924278
+  type: 'test'
+  ...
+# Subtest: owner refetch keeps existing loading behavior until refreshed owners arrive
+ok 8 - owner refetch keeps existing loading behavior until refreshed owners arrive
+  ---
+  duration_ms: 35.132993
+  type: 'test'
+  ...
+# Subtest: owner failure keeps existing empty-owner and submit guards
+ok 9 - owner failure keeps existing empty-owner and submit guards
+  ---
+  duration_ms: 30.322655
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1402.702321

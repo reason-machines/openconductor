@@ -1,0 +1,10 @@
+{
+  "start": "2026-11-17T19:39:41.664718+00:00",
+  "deadline": "2026-11-17T19:44:41.664718+00:00",
+  "free_bytes_before": 13567684608,
+  "commands": [
+    "npm ci --ignore-scripts --no-audit --no-fund",
+    "npm run build",
+    "npm run lint:colors"
+  ]
+}
