@@ -1,0 +1,56 @@
+(node:132) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:139) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: same-task dev rerun hides the previous run's transcript before the replacement output read resolves
+ok 1 - same-task dev rerun hides the previous run's transcript before the replacement output read resolves
+  ---
+  duration_ms: 411.725068
+  type: 'test'
+  ...
+# Subtest: same-task test rerun hides the previous run's transcript before the replacement output read resolves
+ok 2 - same-task test rerun hides the previous run's transcript before the replacement output read resolves
+  ---
+  duration_ms: 177.755914
+  type: 'test'
+  ...
+# Subtest: same-run refresh and completion retain its transcript while fresh reads are pending
+ok 3 - same-run refresh and completion retain its transcript while fresh reads are pending
+  ---
+  duration_ms: 91.549869
+  type: 'test'
+  ...
+# Subtest: a late previous-run output read cannot overwrite the replacement transcript
+ok 4 - a late previous-run output read cannot overwrite the replacement transcript
+  ---
+  duration_ms: 96.640543
+  type: 'test'
+  ...
+# Subtest: equal run IDs in different workspaces cannot share output
+ok 5 - equal run IDs in different workspaces cannot share output
+  ---
+  duration_ms: 112.509963
+  type: 'test'
+  ...
+# Subtest: legacy output and completed empty output stay readable without inventing identities
+ok 6 - legacy output and completed empty output stay readable without inventing identities
+  ---
+  duration_ms: 167.740332
+  type: 'test'
+  ...
+# Subtest: a rejected replacement keeps the prior run and the action error
+ok 7 - a rejected replacement keeps the prior run and the action error
+  ---
+  duration_ms: 89.842868
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1627.232813

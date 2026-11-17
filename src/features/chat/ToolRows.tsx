@@ -1236,7 +1236,7 @@ function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isErr
     case "sub-agent":
       if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={result} />;
       if (name.startsWith("mcp__linear__") || name.startsWith("mcp__context7__")) return <MoreRows {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
-      return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
+      return <GenericRow {...{ tool, status, result, rawResult, isError, open, onToggle }} />;
     default:
       return <GenericRow {...{ tool, status, result, rawResult, isError, open, onToggle }} />;
   }

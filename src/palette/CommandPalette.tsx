@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ComponentType, type KeyboardEvent, type ReactNode } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type ComponentType, type KeyboardEvent, type ReactNode } from "react";
 import { effectiveShortcuts, type Overrides } from "../keybindings/overrides.ts";
 import { glyphs } from "../keybindings/shortcut.ts";
 import { buildResults, cycleTab, emptyText, placeholderFor, TABS, type PaletteData, type PaletteIcon, type PaletteTab, type ResultItem } from "./search/model.ts";
@@ -51,7 +51,7 @@ export interface CommandPaletteProps {
    * Injected by PaletteHost: the section picker component to render in section sub-view mode.
    * Not imported directly to keep CommandPalette free of a MoveToSection module dependency.
    */
-  SectionPicker?: ComponentType<{ workspaceId: string; sections: readonly MoveToSectionProps["sections"][number][]; query: string; active: number; onActive: (index: number) => void; onSelectAt: (index: number) => void; onBack: () => void }>;
+  SectionPicker?: ComponentType<{ workspaceId: string; sections: readonly MoveToSectionProps["sections"][number][]; query: string; active: number; optionId: (index: number) => string; onActive: (index: number) => void; onSelectAt: (index: number) => void; onBack: () => void }>;
   /**
    * Injected by PaletteHost: computes the flat navigable item list for keyboard navigation.
    * Not imported directly to keep CommandPalette free of a MoveToSection module dependency.
@@ -135,6 +135,8 @@ function ResultWorkspaceRow({ item, showNumber }: { item: Extract<ResultItem, { 
 }
 
 export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter, repos = [], archived = [], showWorkspaceNumbers = false, onSelect, settingIcon, actionIcon, onClose, moveToSection, sectionKey, localWorkspaceId, SectionPicker, computeSectionItems }: CommandPaletteProps) {
+  const optionPrefix = useId();
+  const optionId = (index: number) => `${optionPrefix}-option-${index}`;
   const [tab, setTab] = useState<PaletteTab>(initialTab);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(initialTab === "workspaces" ? -1 : 0);
@@ -166,6 +168,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     () => (tab === "workspaces" ? [...wsRows.active, ...wsRows.archived].map(rowItem) : groups.flatMap((g) => g.items)),
     [tab, wsRows, groups],
   );
+  const activeItem = inSectionMode ? SectionPicker && sectionFlatItems[active] : flat[active];
 
   function changeTab(next: PaletteTab) {
     if (next === tab) return;
@@ -259,7 +262,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
 
   const tabs = TABS.filter((t) => t.value !== "projects" || showProjects);
   const wsRow = (row: HomeRow, i: number) => (
-    <WorkspaceRow key={row.workspace.id} row={row} active={i === active} showNumber={showWorkspaceNumbers} now={now} onHover={() => setActive(i)} onChoose={() => choose(flat[i])} />
+    <WorkspaceRow key={row.workspace.id} id={optionId(i)} row={row} active={i === active} showNumber={showWorkspaceNumbers} now={now} onHover={() => setActive(i)} onChoose={() => choose(flat[i])} />
   );
   let index = -1;
   return (
@@ -278,6 +281,8 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={onKeyDown}
             role="combobox"
+            aria-autocomplete="list"
+            aria-activedescendant={activeItem ? optionId(active) : undefined}
             aria-expanded="true"
             aria-controls="palette-list"
           />
@@ -288,6 +293,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
             sections={moveToSection.sections}
             query={query}
             active={active}
+            optionId={optionId}
             onActive={setActive}
             onSelectAt={chooseSectionAt}
             onBack={moveToSection.onBack}
@@ -357,6 +363,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
                     return (
                       <div
                         key={item.id}
+                        id={optionId(i)}
                         role="option"
                         aria-selected={i === active}
                         data-archived={archivedRow || undefined}
