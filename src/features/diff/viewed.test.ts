@@ -1112,6 +1112,7 @@ async function emptyDiffCloseFixture(initialLoad: WorkspaceDiff["load"] = { stat
     const { useState, useRef, useCallback } = React;
     ${tabOfChat.getText()}
     function Probe({ workspace, reviews, load, noMatchingFiles }) {
+      const centerPanel = { enabled: false };
       ${declaration("primaryId").getText()}
       ${declaration("[diffOpen, setDiffOpen]").getText()}
       ${declaration("[mainTab, setMainTab]").getText()}

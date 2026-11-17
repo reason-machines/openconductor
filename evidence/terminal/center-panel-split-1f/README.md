@@ -65,6 +65,25 @@ Covers existing-key transfer, 50/50 and nested geometry, missing/duplicate guard
 
 **Passed:** color policy and `git diff --check`.
 
+## CI adapter correction
+
+Hosted head `8c48ec34112014115ac8a3234bb571adb1bb7d89` passed typecheck and color checks, but failed 64 frontend tests. The same nine-file regression command reproduced **61 passed / 64 failed** locally. Seven sandbox loaders treated the new `CenterPanelGroups.tsx` hook as a decorative component returning null; the Diff and focus-scope extraction fixtures also lacked the newly referenced disabled-layout/render locals.
+
+The correction loads the **real** layout hook/controller in the seven existing mounted harnesses and supplies ordinary-mode context to the two extraction probes. It changes no product code, behavioral assertion, baseline source archive, split preference or runtime path. The disclosure host's sole added real-module classification requires renewing only its SHA256 in `fixture-freeze.json` from `79fe0b7bf9efd793e3ef647f7177339e1f5172fc13b4ca730861a12663d966c0` to `f54ad55a9f64d16efd974f319098e58f0fae53bc32bcb28b5940fecec685a9e0`; the five cases, exact intended baseline failures, proof loader and historical source pins remain unchanged. Its current-source integrity guard requires committed source for replay.
+
+Reproduction command:
+
+```bash
+node --test --test-concurrency=2 \
+  src/features/chat/{recentColdHydration,recentTranscriptIdentity,workspaceLocalClear,workspacePlanApproval,workspacePlanMode,disclosureRemount}.test.ts \
+  src/features/diff/viewed.test.ts src/keybindings/focusScope.test.ts \
+  src/palette/paletteOpenInLifecycle.test.ts
+```
+
+After correction, the full standard frontend glob passed **4,685/4,685 tests**, 3 suites, 0 failures/skips, using `NODE_ENV=development ONBOARDING_DOM_DEPS="$PWD/.oc-tmp/dom-deps" node --test --test-concurrency=4 'src/**/*.test.ts'`. Isolated DOM dependencies were `jsdom@26.1.0`, matching CI. The committed-source disclosure replay independently passed 2/2 outer checks, qualifying the unchanged five-case historical RED and current candidate GREEN. Local `npm run typecheck`, `npm run lint:colors` (6/6 + policy), `npm run build`, `verify-reference.py`, the frozen dispatcher SHA256 check and `git diff --check` all passed. Vite emitted non-fatal mixed-import/chunk-size warnings. These are local results, not hosted CI or native acceptance.
+
+Ordinary cloud `npm ci --ignore-scripts --no-audit --no-fund` dependencies are now available for CI reproduction, explicitly cleared by the coordinator. No native app installation, server, provider/PTY operation or Mac access occurred.
+
 ## Limits and REA gap
 
 The earlier declaration-only qualifier remains unchanged as `historical-qualification.mjs.txt` plus `historical-qualification-red.tap.gz`: **5 controls passed / 3 intended failures**. It is historical qualification, not the implementation acceptance fixture; its original scratch-relative imports are not a runnable test at this renamed archival path. The acceptance fixture above was frozen before production edits and provides RED -> GREEN.
