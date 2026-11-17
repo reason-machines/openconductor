@@ -1,0 +1,21 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.00s
+     Running unittests /home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src-tauri/src/draft_attachments.rs (.qa/binary-store-harness/target/debug/deps/draft_attachments_harness-0edc180e16cb3690)
+
+running 14 tests
+test tests::materialize_keeps_staging_when_a_copy_fails ... ok
+test tests::materialize_copies_into_the_workspace_and_removes_staging ... ok
+test tests::materialize_without_staging_is_a_no_op ... ok
+test tests::materialize_local_path_attachment_creates_parents_and_overwrites ... ok
+test tests::resolve_rejects_escapes ... ok
+test tests::resolve_rejects_paths_outside_the_attachments_dir_with_conductors_message ... ok
+test tests::resolve_strips_the_attachments_prefix ... ok
+test tests::root_is_app_data_draft_attachments ... ok
+test tests::sweep_removes_only_directories_older_than_720_hours ... ok
+test tests::sweep_without_root_is_a_no_op ... ok
+test tests::sweep_treats_future_mtimes_as_fresh ... ok
+test tests::upload_of_a_missing_staged_file_fails ... ok
+test tests::upload_one_materializes_and_removes_the_staged_copy ... ok
+test tests::write_creates_parents_and_remove_is_idempotent ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
