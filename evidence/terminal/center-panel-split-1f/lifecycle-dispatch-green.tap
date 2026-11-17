@@ -1,0 +1,63 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:83) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: ordinary false: Cmd+D passes, tab order remains intact
+ok 1 - ordinary false: Cmd+D passes, tab order remains intact
+  ---
+  duration_ms: 3.929367
+  type: 'test'
+  ...
+# Subtest: ordinary undefined: Cmd+D passes, tab order remains intact
+ok 2 - ordinary undefined: Cmd+D passes, tab order remains intact
+  ---
+  duration_ms: 0.868876
+  type: 'test'
+  ...
+# Subtest: control: next and previous tab remain bound
+ok 3 - control: next and previous tab remain bound
+  ---
+  duration_ms: 0.791833
+  type: 'test'
+  ...
+# Subtest: control: plain typing and active dialogs pass split key
+ok 4 - control: plain typing and active dialogs pass split key
+  ---
+  duration_ms: 1.324167
+  type: 'test'
+  ...
+# Subtest: enabled Cmd+D moves existing active tab; terminal=false
+ok 5 - enabled Cmd+D moves existing active tab; terminal=false
+  ---
+  duration_ms: 0.970476
+  type: 'test'
+  ...
+# Subtest: enabled Cmd+D moves existing active tab; terminal=true
+ok 6 - enabled Cmd+D moves existing active tab; terminal=true
+  ---
+  duration_ms: 0.90138
+  type: 'test'
+  ...
+# Subtest: enabled configured shortcut dispatches split, old key passes
+ok 7 - enabled configured shortcut dispatches split, old key passes
+  ---
+  duration_ms: 4.060853
+  type: 'test'
+  ...
+# Subtest: enabled one-tab guard consumes key without manufacturing another tab
+ok 8 - enabled one-tab guard consumes key without manufacturing another tab
+  ---
+  duration_ms: 0.834069
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 318.986069
