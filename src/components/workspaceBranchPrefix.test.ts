@@ -17,7 +17,7 @@ function custom(prefix: string): BranchPrefixInfo {
   return { branchPrefixType: "custom", branchPrefix: prefix, githubUsername: null };
 }
 
-async function fixture(branch: string, status: Workspace["status"], initial: BranchPrefixInfo) {
+async function fixture(branch: string, status: Workspace["status"], initial: BranchPrefixInfo, placeholderBranchName: Workspace["placeholderBranchName"] = null) {
   let info = initial;
   let settingsReads = 0;
   const copied: string[] = [];
@@ -79,7 +79,7 @@ async function fixture(branch: string, status: Workspace["status"], initial: Bra
   evaluate("src/components/WorkspaceBranchHeader.tsx", exported);
   const Header = exported.WorkspaceBranchHeader;
   assert.ok(Header);
-  const workspace: Workspace = { id: "workspace", name: "Workspace", branch, status, diff: { added: 0, removed: 0 }, createdAt: 0 };
+  const workspace: Workspace = { id: "workspace", name: "Workspace", branch, placeholderBranchName, status, diff: { added: 0, removed: 0 }, createdAt: 0 };
   let renderer: ReturnType<typeof create>;
   await act(async () => {
     renderer = create(React.createElement(Header, {
@@ -93,6 +93,8 @@ async function fixture(branch: string, status: Workspace["status"], initial: Bra
     reads: () => settingsReads,
     button: () => renderer.root.findByProps({ "aria-label": "Rename branch" }),
     input: () => renderer.root.findByType("input"),
+    inputs: () => renderer.root.findAllByType("input"),
+    title: () => renderer.root.findAllByProps({ className: "chip" })[0].props.title,
     label: () => renderer.root.findAllByProps({ className: "chip" })[0].children.filter((item: unknown) => typeof item === "string").join("").trim(),
     async copy() {
       await act(async () => { this.button().props.onContextMenu({ preventDefault() {}, clientX: 1, clientY: 1 }); });
@@ -124,6 +126,55 @@ for (const status of ["idle", "archived"] as const) {
       try {
         assert.equal(view.label(), "team/fix-nav");
         assert.equal(view.workspace.branch, "team/fix-nav");
+      } finally { await view.close(); }
+    });
+  }
+}
+
+for (const status of ["idle", "archived"] as const) {
+  for (const { settings, expected, kind } of [
+    { settings: custom("team/"), expected: "future-branch", kind: "matching" },
+    { settings: custom("other/"), expected: "team/future-branch", kind: "unmatched" },
+    { settings: { branchPrefixType: "none", branchPrefix: null, githubUsername: null } as BranchPrefixInfo, expected: "team/future-branch", kind: "no" },
+  ]) {
+    test(`${status} header falls back to the placeholder with ${kind} prefix`, async () => {
+      const view = await fixture("", status, settings, "team/future-branch");
+      try {
+        assert.equal(view.label(), expected);
+        assert.equal(view.title(), expected);
+        assert.equal(view.workspace.branch, "", "display fallback must not fabricate an actual Git branch");
+        if (status === "idle") {
+          assert.equal(view.button().props["aria-disabled"], true);
+          await view.copy();
+          await view.edit();
+          assert.equal(view.inputs().length, 0, "a placeholder must not enable Rename");
+        }
+        assert.deepEqual(view.copied, []);
+        assert.deepEqual(view.renames, []);
+        assert.deepEqual(view.actions, []);
+        assert.deepEqual(view.errors, []);
+      } finally { await view.close(); }
+    });
+  }
+
+  test(`${status} header prefers the actual branch over a placeholder`, async () => {
+    const view = await fixture("team/actual-branch", status, custom("team/"), "team/future-branch");
+    try {
+      assert.equal(view.label(), "actual-branch");
+      assert.equal(view.title(), "actual-branch");
+      assert.equal(view.workspace.branch, "team/actual-branch");
+    } finally { await view.close(); }
+  });
+
+  for (const placeholder of [null, ""]) {
+    test(`${status} header does not invent a label for ${placeholder === null ? "null" : "empty"} placeholder`, async () => {
+      const view = await fixture("", status, custom("team/"), placeholder);
+      try {
+        assert.equal(view.label(), "");
+        assert.equal(view.workspace.branch, "");
+        assert.deepEqual(view.copied, []);
+        assert.deepEqual(view.renames, []);
+        assert.deepEqual(view.actions, []);
       } finally { await view.close(); }
     });
   }
