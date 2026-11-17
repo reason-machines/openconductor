@@ -1,0 +1,198 @@
+[
+  {
+    "name": "saveQueuedMessageEdit",
+    "asset": "index-BGEQ8YjU.js",
+    "utf8_half_open": [
+      2359594,
+      2360741
+    ],
+    "bytes": 1147,
+    "sha256": "8c4abd227b26d1913c4c579fab71f7ccdce89b7814db3a32f7b8088cfbd29d67",
+    "method": "Unique exact delimiter range; string-aware lexical balancing, not JS parsing or target execution"
+  },
+  {
+    "name": "cancelQueuedMessageEdit",
+    "asset": "index-BGEQ8YjU.js",
+    "utf8_half_open": [
+      2360741,
+      2361410
+    ],
+    "bytes": 669,
+    "sha256": "c5e1bc5aa65acb0d5d150e35d78c465ad642d9b08bcf03070f2f82251888b3cd",
+    "method": "Unique exact delimiter range; string-aware lexical balancing, not JS parsing or target execution"
+  },
+  {
+    "name": "xyt",
+    "asset": "index-BGEQ8YjU.js",
+    "utf8_half_open": [
+      2349415,
+      2352508
+    ],
+    "bytes": 3093,
+    "sha256": "0bf28eda31c7396081ab3e0812250dd572d92061d2e0ce9b109423f17a61a838",
+    "method": "Unique exact delimiter range; string-aware lexical balancing, not JS parsing or target execution"
+  },
+  {
+    "name": "r9t",
+    "asset": "index-BGEQ8YjU.js",
+    "utf8_half_open": [
+      3142072,
+      3142190
+    ],
+    "bytes": 118,
+    "sha256": "304a8ef26c216f3bcf70e8dc70a35aceaf3f349474653794332c6512d699d3c6",
+    "method": "Unique exact delimiter range; string-aware lexical balancing, not JS parsing or target execution"
+  },
+  {
+    "name": "vyt",
+    "asset": "index-BGEQ8YjU.js",
+    "utf8_half_open": [
+      2332914,
+      2332977
+    ],
+    "bytes": 63,
+    "sha256": "dd51591cd265f0feae2f4900c03c3b31f3fdc7cd83ede438380173760c25179d",
+    "method": "Unique exact delimiter range; string-aware lexical balancing, not JS parsing or target execution"
+  },
+  {
+    "name": "Sn",
+    "asset": "index-BGEQ8YjU.js",
+    "utf8_half_open": [
+      769455,
+      769696
+    ],
+    "bytes": 241,
+    "sha256": "a13c88991891418fd23b26ee3c4157d12a43a8a9173fbe18f366227fc59f4ddf",
+    "method": "Unique exact delimiter range; string-aware lexical balancing, not JS parsing or target execution"
+  },
+  {
+    "name": "L_t",
+    "asset": "index-BGEQ8YjU.js",
+    "utf8_half_open": [
+      2466708,
+      2467081
+    ],
+    "bytes": 373,
+    "sha256": "ac4a56b872aece703aa16551ad148b228b5ad6c2a10c4ac1a6acb7a6392d0a77",
+    "method": "Unique exact delimiter range; string-aware lexical balancing, not JS parsing or target execution"
+  },
+  {
+    "name": "J_t",
+    "asset": "index-BGEQ8YjU.js",
+    "utf8_half_open": [
+      2482502,
+      2484595
+    ],
+    "bytes": 2093,
+    "sha256": "f5794670bdb7be91236d1361964f16a4ea4710c85ffea85dad63b4d38e0d3beb",
+    "method": "Unique exact delimiter range; string-aware lexical balancing, not JS parsing or target execution"
+  },
+  {
+    "name": "renderer-import-nc",
+    "asset": "renderApp-D_fmY7hW.js",
+    "utf8_half_open": [
+      53815,
+      53824
+    ],
+    "bytes": 9,
+    "sha256": "133a5b6d16e22ba854062a8d414c185a2af9b91da6ab5ff18cf4cf32da15cf26",
+    "literal": "aB as nc,",
+    "method": "Unique literal binding, inert source"
+  },
+  {
+    "name": "renderer-import-Fri",
+    "asset": "renderApp-D_fmY7hW.js",
+    "utf8_half_open": [
+      60716,
+      60726
+    ],
+    "bytes": 10,
+    "sha256": "1aae4ab9b1f20bb7ef0c985dbcbf37bc3a3027b846ded0342311625c83484c44",
+    "literal": "lD as Fri,",
+    "method": "Unique literal binding, inert source"
+  },
+  {
+    "name": "index-export-client",
+    "asset": "index-BGEQ8YjU.js",
+    "utf8_half_open": [
+      3480205,
+      3480214
+    ],
+    "bytes": 9,
+    "sha256": "a64f60f398ddd257feb39e8f3385931180c1a948b1f5c25eaa36ebb04ad300c9",
+    "literal": "kt as aB,",
+    "method": "Unique literal binding, inert source"
+  },
+  {
+    "name": "index-export-edit-hook",
+    "asset": "index-BGEQ8YjU.js",
+    "utf8_half_open": [
+      3487099,
+      3487109
+    ],
+    "bytes": 10,
+    "sha256": "8cae5df49703713081558c6e131c6cdaab857730e44263aa6e68d9829080adaa",
+    "literal": "r9t as lD,",
+    "method": "Unique literal binding, inert source"
+  },
+  {
+    "name": "index-client-instance",
+    "asset": "index-BGEQ8YjU.js",
+    "utf8_half_open": [
+      3052196,
+      3052215
+    ],
+    "bytes": 19,
+    "sha256": "2d151d60e26a96f4cc5eb1a15c6bcb5bf01c8d5365b6a841ab6e9b9194762e3f",
+    "literal": "let kt=Xc.composer;",
+    "method": "Unique literal binding, inert source"
+  },
+  {
+    "name": "index-client-initialization",
+    "asset": "index-BGEQ8YjU.js",
+    "utf8_half_open": [
+      3057236,
+      3057286
+    ],
+    "bytes": 50,
+    "sha256": "7787a5687f21b2a50af28347b527534943a5de3e87a2f1190472470a557b8479",
+    "literal": "return kt=e,m1t(e.refreshReviewCommentAttachments)",
+    "method": "Unique literal binding, inert source"
+  },
+  {
+    "name": "index-client-factory",
+    "asset": "index-BGEQ8YjU.js",
+    "utf8_half_open": [
+      2364967,
+      2364991
+    ],
+    "bytes": 24,
+    "sha256": "6843dd4bf2b29edc15224f85e2c87c269948403770c5eb3e55a51b758500fe66",
+    "literal": "const Fyt=t=>new Myt(t);",
+    "method": "Unique literal binding, inert source"
+  },
+  {
+    "name": "index-transaction-owner",
+    "asset": "index-BGEQ8YjU.js",
+    "utf8_half_open": [
+      2353039,
+      2353081
+    ],
+    "bytes": 42,
+    "sha256": "53867ed657136e54f2aca2254f3f24b2d9987f11ecf00cb5e611b61185ddafbe",
+    "literal": "this.queuedEdits=new xyt(e.drafts,e.store)",
+    "method": "Unique literal binding, inert source"
+  },
+  {
+    "name": "index-edit-hook-adapter",
+    "asset": "index-BGEQ8YjU.js",
+    "utf8_half_open": [
+      2484814,
+      2484843
+    ],
+    "bytes": 29,
+    "sha256": "e6bc37fca19a42f3d31c4b36f99e415680c1a1f004781b274ced66a0253903a4",
+    "literal": "swt=Sn((t,e)=>vyt(t.state,e))",
+    "method": "Unique literal binding, inert source"
+  }
+]

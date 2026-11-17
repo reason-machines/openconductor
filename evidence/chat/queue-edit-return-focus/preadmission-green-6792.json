@@ -1,0 +1,91 @@
+{
+  "status": "READY_FOR_ACTUAL_START_ADMISSION_NOT_EXECUTED",
+  "utc": "2026-11-17T22:58:01.409410+00:00",
+  "host": "ws-zh5pmwqtgx3uglxhwaae5q2k",
+  "allowed_cpu_affinity": [
+    0,
+    1
+  ],
+  "free_disk_bytes": 16559554560,
+  "own_workload_processes": [],
+  "own_active_runtime_reservation": null,
+  "main": "6792a09a2d4826a57d8afd7c7e4243de052529bf",
+  "head": "727d210fa102e7ce9921846b1464b22c11afcaca",
+  "main_unchanged_baseline_source_pins": 15,
+  "working_source_pins": 15,
+  "unchanged_other_source_pins": 14,
+  "unchanged_dependency_files": 217,
+  "unchanged_package_contracts": 2,
+  "fixture": {
+    "path": ".qa/queue-edit-return-focus-135/composerQueueEditReturnFocus.test.ts",
+    "bytes": 21078,
+    "sha256": "e275647b5174feb78281ff3ae2c0a5c3c735ccf2207da9815e66a3d965bf86be"
+  },
+  "oracle": {
+    "path": ".qa/queue-edit-return-focus-135/frozen-oracle.json",
+    "sha256": "d9f1d9b1a11764422c57ad3dbba7331c09d2b90edcf4dc5b0f21b7368f840979"
+  },
+  "treatment": {
+    "path": "src/features/chat/Composer.tsx",
+    "sha256": "60484a0072e816fe61f4abbc19f236c3d5c9e1bc4807fe3d4bcd69bbf2a5d6c8",
+    "bytes": 34875
+  },
+  "treatment_diff_sha256": "69475239c8b33dc6ec38fbb8d5a7b946e975b6ed5672bf091cc05d58f7e53b2d",
+  "outside_region_and_panel_sha256": {
+    "baseline": {
+      "prefix": "5420b41b77fa1d29fd0ab4df62c6d1426788ab7fc2140b5e499c2e9f8dfd6316",
+      "QueuePanel": "bdf832ab37fb945e73c06353cf7335ec5e971bfcfbfe8f8e9e61197ba6873cf8",
+      "suffix": "7be20e94f602bc05c3ac249044663d0ef1fd48c6e0ca14352f72c1cca8a82981"
+    },
+    "treatment": {
+      "prefix": "5420b41b77fa1d29fd0ab4df62c6d1426788ab7fc2140b5e499c2e9f8dfd6316",
+      "QueuePanel": "bd01744fab5725fb6fb00c248edba8a99159ee72b928d9e924af4bbacce6c97f",
+      "suffix": "7be20e94f602bc05c3ac249044663d0ef1fd48c6e0ca14352f72c1cca8a82981"
+    }
+  },
+  "request_metadata_only_delta": [
+    "baseline.checked_default_main",
+    "green.main",
+    "green.head"
+  ],
+  "cases": {
+    "total": 20,
+    "predicted_semantic_failures": 6,
+    "predicted_controls_pass": 14,
+    "prediction_not_result": true
+  },
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "env",
+    "-u",
+    "COMPOSER_QUEUE_EDIT_RETURN_FOCUS_SOURCE_REF",
+    "NODE_OPTIONS=--max-old-space-size=768",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    ".qa/queue-edit-return-focus-135/composerQueueEditReturnFocus.test.ts"
+  ],
+  "bounds": {
+    "cpu": 1,
+    "node_test_invocations": 1,
+    "timeout_seconds": 60,
+    "kill_grace_seconds": 5,
+    "cleanup_seconds": 30,
+    "heap_mib": 768,
+    "estimated_rss_mib": 1536,
+    "incremental_disk_mib": 16,
+    "minimum_free_disk_gib": 4,
+    "affinity": "CPU0 conditional on fresh allowed affinity; not a host-exclusive claim",
+    "reservation": null
+  },
+  "full_267_audit_repeated": false,
+  "node_or_parser_invoked": false,
+  "test_executed": false,
+  "request_sha256": "0f35438f7757c756ff1725b8d64e2eaf3c981c97dbd9647fafe4ee5cf348edd6"
+}

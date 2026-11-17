@@ -1,0 +1,35 @@
+{
+  "frontier": "COMPOSER-QUEUE-EDIT-RETURN-FOCUS-135",
+  "baseline_main": "1e2500a959f68411be54cdca5c0473d0010b0559",
+  "written_before_fixture": true,
+  "scope": "Mount complete actual Composer including private QueuePanel/QueueRow, actual queue.actionStep and prompt/shortcut modules. Replace only editor, nonparticipating platform/menu boundaries and DOM focus endpoint. No product source patch or disabled callback invocation.",
+  "ordinary_conditions": "Enabled non-minimized full Composer; a real active working queue containing q1/q2/q3 from queue.submit; no disabled override; q2 has its ordinary retained attachment; enter edit through visible enabled Edit button; exit through visible enabled Cancel/Save or real configured Escape/Enter handler. Expected return focus is an invocation of the existing exact-row focus port for the surviving edited ID, once; it is not a claim of browser/native activeElement parity.",
+  "decisive": [
+    "Cancel button on surviving middle q2 focuses q2 exactly once and leaves items unchanged",
+    "Escape on surviving middle q2 is consumed, cancels and focuses q2 exactly once",
+    "Save button on surviving middle q2 commits text, preserves row/attachment and focuses q2 exactly once",
+    "Enter on surviving middle q2 is consumed, commits text and focuses q2 exactly once",
+    "Cancel button on surviving head q1 focuses q1, not last or adjacent row",
+    "Save button on surviving head q1 focuses q1, not last or adjacent row"
+  ],
+  "controls": [
+    "Entering edit still calls editor.focus(end) and does not focus any display row",
+    "Rerender after edit exit does not repeat any row-focus invocation",
+    "No-edit mount and unrelated rerender do not focus a row or mutate the queue",
+    "Editing rerender preserves editor custody and does not focus a display row",
+    "Direct q1-to-q2 edit switch does not trigger exit restoration",
+    "Save and steer removes edited q2 and never queries/focuses an absent q2",
+    "Explicit deletion of edited q2 clears editing without querying/focusing it",
+    "Idle head drain after normal Save removes q1 and never focuses the absent row",
+    "Workspace-style session-key switch does not restore the old session's row",
+    "Session-key remount with same editing ID performs entry focus only",
+    "Blank Save and Save-and-steer remain disabled without invoking disabled callbacks",
+    "Blank Enter and meta-Enter are consumed without save dispatch or return focus",
+    "1476 collapsed two-to-one-to-two remains revealed/expanded, with no unrelated row focus",
+    "Re-entering a previously cancelled edit retains caret-at-end entry behavior"
+  ],
+  "expected_before": "Six decisive semantic assertions are predicted to fail; fourteen controls are predicted to pass. Predictions are not observed results. Setup, imports, transpilation or missing-node errors are not semantic RED.",
+  "command_after_slot_only": "taskset -c 0 timeout --signal=TERM --kill-after=5s 60s env -u COMPOSER_QUEUE_EDIT_RETURN_FOCUS_SOURCE_REF NODE_OPTIONS=--max-old-space-size=768 node --test --test-concurrency=1 .qa/queue-edit-return-focus-135/composerQueueEditReturnFocus.test.ts",
+  "runtime_limits": "Requires explicit canonical serialized reservation. One CPU0, one foreground Node; 60s plus 5s kill grace and at most 30s cleanup; heap768MiB, estimated RSS<=1.5GiB, incremental disk<=16MiB. In-slot Node capability gate must fail closed. No install/version probe before admission, no extra test/build/parser/browser/native/provider command.",
+  "honest_gaps": ["No runtime has executed", "No real browser layout/focus/screenshot", "No native/package parity", "No backend race or provider behavior claim"]
+}
