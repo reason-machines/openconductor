@@ -72,6 +72,15 @@ for side, expected_exit, passed, failed in [("red", 1, 4, 4), ("green", 0, 8, 0)
 red = json.loads((HERE / "execution/red-result.json").read_text())
 check(red["markers"] == {"TOOL_COPY_RESET_MUST_NOT_FIRE_AT_1500": 2, "TOOL_COPY_FIRST_RESET_MUST_WAIT_UNTIL_2000": 2}, "only intended RED markers")
 check(json.loads((HERE / "execution/green-result.json").read_text())["fixture_sha256"] == request["fixture"]["sha256"], "paired identical fixture")
+legacy = json.loads((HERE / "execution/legacy-result.json").read_text())
+check(legacy["exit"] == 0, "legacy exit")
+check(legacy["counters"] == {"tests": 58, "suites": 0, "pass": 58, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0}, "legacy exact counters")
+check(digest((HERE / "execution/legacy-output.log").read_bytes()) == legacy["output_sha256"], "legacy output identity")
+check(legacy["all_1293_source_pins_unchanged"], "legacy frozen source stability")
+check(legacy["private_deps_removed"] and legacy["no_node_npm_survivor"], "legacy final cleanup/release")
+legacy_request = gzip.decompress((HERE / "execution/legacy-request.json.gz").read_bytes())
+check(digest(legacy_request) == "7755e2dc7ffeada8481a93a69a2180e9c25442b452decc42d5ade7b6296dd286", "lossless frozen legacy request")
+check(legacy["fixture_sha256"] == request["fixture"]["sha256"], "legacy permanent fixture stability")
 manifest = HERE / "SHA256SUMS"
 if manifest.exists():
     for line in manifest.read_text().splitlines():

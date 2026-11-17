@@ -35,7 +35,15 @@ taskset -c 0 timeout --signal=TERM --kill-after=5s 60s env NODE_OPTIONS=--max-ol
 
 [Raw outputs and release receipts](execution/) retain complete results. RED released `2026-11-17T22:07:23.607597Z`; GREEN released `2026-11-17T22:11:04.534471Z`. Both had fresh disk >=4 GiB, CPU0 affinity, frozen input/dependency and Node native-TypeScript capability gates. Node was 22.23.5; React/test-renderer 18.3.1; TypeScript 5.9.3. Only the authorized lockfile install ran; install scripts were disabled. RSS was **not measured**; the 768 MiB setting is a Node heap cap, not an RSS measurement. Each phase ended with no own Node/npm survivor.
 
-The two existing typed-subagent suites retain **every assertion/control**; only their exact expected copy timer changes from 1500 to 2000. Immutable [baseline tests](baseline/) permit byte-for-byte verification of that restriction. Adjacent-suite execution is tracked separately, not implied by the eight-case fixture.
+The two existing typed-subagent suites retain **every assertion/control**; only their exact expected copy timer changes from 1500 to 2000. Immutable [baseline tests](baseline/) permit byte-for-byte verification of that restriction.
+
+**Adjacent suites passed separately: 58/58**, exit 0 (42 raw-result and 16 error/disclosure cases), zero failures/skips/cancellations. The same owned runtime was assembled from 1293 pinned source files, all unchanged before/after execution; the original frozen request is retained losslessly as `execution/legacy-request.json.gz`.
+
+```bash
+taskset -c 0 timeout --signal=TERM --kill-after=5s 60s env NODE_OPTIONS=--max-old-space-size=768 node --test --test-concurrency=1 src/features/chat/typedSubagentRawResult.test.ts src/features/chat/typedSubagentErrorResult.test.ts
+```
+
+The separate legacy slot released **2026-11-17T22:17:22.459627Z**, with no own Node/npm survivors. The private 334,744,289-byte dependency directory and local cache/temp were removed at final release. Raw outputs and exact source/cleanup receipts are in `execution/`. RSS was not measured.
 
 The [frozen source request](frozen-source-request.json) and [original request](frozen-request.md) intentionally preserve their historical UNRUN/predicted status. The actual execution receipts above supersede only that status, not any original bytes or predictions.
 
