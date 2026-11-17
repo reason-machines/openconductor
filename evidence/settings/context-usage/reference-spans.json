@@ -1,0 +1,179 @@
+{
+  "author": "Conductor Rebuild / SAME49",
+  "source_only": true,
+  "vendor_code_executed": false,
+  "assets": [
+    {
+      "asset": "renderer",
+      "file": ".oc-tmp/settings-loader-reference/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "parse_diagnostics": 0
+    },
+    {
+      "asset": "index",
+      "file": ".oc-tmp/settings-coverage-current/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "parse_diagnostics": 0
+    }
+  ],
+  "spans": [
+    {
+      "asset": "renderer",
+      "target": "Nri()",
+      "name": "registry",
+      "file": "renderer-0-registry.txt",
+      "kind": "FunctionExpression",
+      "utf8_half_open": [
+        8655336,
+        8691329
+      ],
+      "bytes": 35993,
+      "sha256": "6903892e955dc619b72d12da28faae754253fa0471bebc972047a88b9788aafe"
+    },
+    {
+      "asset": "renderer",
+      "target": "settingKey:\"always_show_context_wheel\"",
+      "name": "registry",
+      "file": "renderer-1-registry.txt",
+      "kind": "FirstStatement",
+      "utf8_half_open": [
+        10710007,
+        10717261
+      ],
+      "bytes": 7254,
+      "sha256": "53d48eca908fc6e0aea737d038dc026d136229b19f0194805532d1621924c827"
+    },
+    {
+      "asset": "renderer",
+      "target": "function Qmo(",
+      "name": "Qmo",
+      "file": "renderer-2-Qmo.txt",
+      "kind": "FunctionDeclaration",
+      "utf8_half_open": [
+        7920780,
+        7925291
+      ],
+      "bytes": 4511,
+      "sha256": "b1d8cad596dcd305ae1505ccd90a1cdf15d58ef96682c98a15752b90681e4a31"
+    },
+    {
+      "asset": "renderer",
+      "target": "contextTokenCount:t.contextTokenCount",
+      "name": "B7o",
+      "file": "renderer-3-B7o.txt",
+      "kind": "FunctionDeclaration",
+      "utf8_half_open": [
+        8623873,
+        8624251
+      ],
+      "bytes": 378,
+      "sha256": "67f93fbf188f9ebdb746adad0882825ba8d28d3747c803349b827668390bb03f"
+    },
+    {
+      "asset": "index",
+      "target": "function V5t(",
+      "name": "V5t",
+      "file": "index-0-V5t.txt",
+      "kind": "FunctionDeclaration",
+      "utf8_half_open": [
+        401675,
+        401837
+      ],
+      "bytes": 162,
+      "sha256": "0c3ec99840dbca7609abf4ae4f1721818e78c180e60d1ce628232ab647b0adf8"
+    },
+    {
+      "asset": "index",
+      "target": "function R6t(",
+      "name": "R6t",
+      "file": "index-1-R6t.txt",
+      "kind": "FunctionDeclaration",
+      "utf8_half_open": [
+        414762,
+        414849
+      ],
+      "bytes": 87,
+      "sha256": "fe2806598253a40547b57918636e6f14c9d2bd20244845192491c3804ca56243"
+    },
+    {
+      "asset": "index",
+      "target": "function Yqt(",
+      "name": "Yqt",
+      "file": "index-2-Yqt.txt",
+      "kind": "FunctionDeclaration",
+      "utf8_half_open": [
+        390407,
+        390586
+      ],
+      "bytes": 179,
+      "sha256": "56a417e83d0d9142a0528d48077c5b245145bbd0a59290fd8f680a7eb7c97d7f"
+    },
+    {
+      "asset": "index",
+      "target": "function ajt(",
+      "name": "ajt",
+      "file": "index-3-ajt.txt",
+      "kind": "FunctionDeclaration",
+      "utf8_half_open": [
+        1076914,
+        1077040
+      ],
+      "bytes": 126,
+      "sha256": "f6710553176b72cab9487b64a674986a81f9d37a81a5d1cfb0cab8bebe91045b"
+    },
+    {
+      "asset": "index",
+      "target": "function Doe(",
+      "name": "Doe",
+      "file": "index-4-Doe.txt",
+      "kind": "FunctionDeclaration",
+      "utf8_half_open": [
+        1453931,
+        1454202
+      ],
+      "bytes": 271,
+      "sha256": "82a2b50a4acc5e954a702c30a4d4125ee5ad0fe445719e9ebf093a2527e31bc6"
+    },
+    {
+      "asset": "index",
+      "target": "contextTokenCount:a.totalTokens",
+      "name": "oct",
+      "file": "index-5-oct.txt",
+      "kind": "FunctionDeclaration",
+      "utf8_half_open": [
+        1454481,
+        1454969
+      ],
+      "bytes": 488,
+      "sha256": "346ab26889bef2d43d6df463ea37d879dde4ad5f6c34174f4cd3b52610598772"
+    },
+    {
+      "asset": "index",
+      "target": "contextTokenCount:d.contextTokenCount",
+      "name": "act",
+      "file": "index-6-act.txt",
+      "kind": "FunctionDeclaration",
+      "utf8_half_open": [
+        1455400,
+        1457385
+      ],
+      "bytes": 1985,
+      "sha256": "20d7a0b981f8cc4dd69056aeef90cf665f7daf7bda0c7b48860e97c8d9063990"
+    },
+    {
+      "asset": "index",
+      "target": "contextTokenCount:e.contextTokenCount??",
+      "name": "_ct",
+      "file": "index-7-_ct.txt",
+      "kind": "FunctionDeclaration",
+      "utf8_half_open": [
+        1472577,
+        1473284
+      ],
+      "bytes": 707,
+      "sha256": "ff6dcaf74fe7a7154c943caca173c6c7a124a51633c7416654a029f9f276e688"
+    }
+  ]
+}

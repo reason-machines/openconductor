@@ -1,0 +1,14 @@
+[
+  {"name":"root assistant includes all four token components", "event":{"type":"assistant","parent_tool_use_id":null,"message":{"model":"claude-test","usage":{"input_tokens":10,"cache_read_input_tokens":20,"cache_creation_input_tokens":30,"output_tokens":4},"content":[]}}, "context":[{"kind":"sample","model":"claude-test","inputTokens":10,"cacheReadInputTokens":20,"cacheCreationInputTokens":30,"outputTokens":4}]},
+  {"name":"absent root parent also accepted", "event":{"type":"assistant","message":{"usage":{"input_tokens":5},"content":[]}}, "context":[{"kind":"sample","inputTokens":5}]},
+  {"name":"subagent usage ignored", "event":{"type":"assistant","parent_tool_use_id":"tool-1","message":{"usage":{"input_tokens":900},"content":[]}}, "context":[]},
+  {"name":"malformed parent ignored", "event":{"type":"assistant","parent_tool_use_id":false,"message":{"usage":{"input_tokens":900},"content":[]}}, "context":[]},
+  {"name":"zero sample preserves previous context", "event":{"type":"assistant","message":{"usage":{"input_tokens":0,"cache_read_input_tokens":0,"cache_creation_input_tokens":0,"output_tokens":0},"content":[]}}, "context":[]},
+  {"name":"negative component rejected without losing valid component", "event":{"type":"assistant","message":{"usage":{"input_tokens":-1,"output_tokens":7},"content":[]}}, "context":[{"kind":"sample","outputTokens":7}]},
+  {"name":"unsafe and fractional components rejected", "event":{"type":"assistant","message":{"usage":{"input_tokens":9007199254740992,"cache_read_input_tokens":1.5,"cache_creation_input_tokens":"9","output_tokens":null},"content":[]}}, "context":[]},
+  {"name":"unsafe sum rejected", "event":{"type":"assistant","message":{"usage":{"input_tokens":9007199254740991,"output_tokens":1},"content":[]}}, "context":[]},
+  {"name":"compact boundary resets", "event":{"type":"system","subtype":"compact_boundary"}, "context":[{"kind":"reset"}]},
+  {"name":"unrelated system event preserves context", "event":{"type":"system","subtype":"status"}, "context":[]},
+  {"name":"result supplies only model denominators never cumulative sample", "event":{"type":"result","session_id":"s1","usage":{"input_tokens":9999,"output_tokens":8888},"modelUsage":{"claude-test":{"contextWindow":200000,"inputTokens":7777,"outputTokens":6666},"bad-zero":{"contextWindow":0},"bad-negative":{"contextWindow":-1},"bad-fraction":{"contextWindow":1.5},"bad-unsafe":{"contextWindow":9007199254740992}}}, "context":[{"kind":"window","model":"claude-test","contextWindow":200000}]},
+  {"name":"missing result denominator emits no context", "event":{"type":"result","session_id":"s1","usage":{"input_tokens":10}}, "context":[]}
+]

@@ -22,6 +22,7 @@ use std::path::{Path, PathBuf};
 use serde_json::Value;
 
 use crate::agent::claude_stream::{ClaudeEvent, TurnResult};
+use crate::reason_acp::context_usage::{claude_sample, claude_windows, ContextUpdate};
 use crate::reason_acp::provider::{ProviderEvent, TurnEnd};
 use crate::reason_acp::updates::{
     map_path, AgentEvent, Diff, MappedPath, ReasonError, ToolRow, ToolStatus,
@@ -76,6 +77,31 @@ impl TurnMapper {
     }
 
     pub fn map(&mut self, event: &ClaudeEvent) -> Vec<ProviderEvent> {
+        let updates = match event {
+            ClaudeEvent::Assistant {
+                message,
+                parent_tool_use_id,
+                ..
+            } => claude_sample(message, parent_tool_use_id)
+                .into_iter()
+                .collect(),
+            ClaudeEvent::Result(result) => claude_windows(&result.model_usage),
+            ClaudeEvent::Unknown(value)
+                if value["type"] == "system" && value["subtype"] == "compact_boundary" =>
+            {
+                vec![ContextUpdate::Reset]
+            }
+            _ => Vec::new(),
+        };
+        let mut out: Vec<_> = updates
+            .into_iter()
+            .map(|context| ProviderEvent::ContextUsage { context })
+            .collect();
+        out.extend(self.map_transcript(event));
+        out
+    }
+
+    fn map_transcript(&mut self, event: &ClaudeEvent) -> Vec<ProviderEvent> {
         match event {
             ClaudeEvent::Init { session_id, .. } => {
                 if self.session_id.as_deref() == Some(session_id) {
@@ -89,6 +115,7 @@ impl TurnMapper {
             ClaudeEvent::Assistant {
                 message,
                 api_error: Some(e),
+                ..
             } => {
                 let error = ReasonError {
                     code: e.code.clone(),
@@ -105,6 +132,7 @@ impl TurnMapper {
             ClaudeEvent::Assistant {
                 message,
                 api_error: None,
+                ..
             } => self.assistant(message),
             ClaudeEvent::ToolResults { message } => self.tool_results(message),
             ClaudeEvent::Result(result) => {

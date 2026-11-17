@@ -288,7 +288,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   /** The chat id on the agent's side. */
   const runId = agent.chatId(chatId);
   // Codex's snapshots carry its pending approvals and consent requests; the others' carry permission requests.
-  const [{ transcript, queue, approvals = [], consents = [], permissions = [] }, setSnapshot] = useState<ChatView>(() => agent.snapshot(runId));
+  const [{ transcript, queue, contextUsage, approvals = [], consents = [], permissions = [] }, setSnapshot] = useState<ChatView>(() => agent.snapshot(runId));
   const [access, setAccess] = useState<CodexAccess>(() => codexAccess(chatId));
   // The card shows the oldest open request; while it is a plan, the message box asks for changes to it.
   const waiting = permissions[0];
@@ -769,6 +769,8 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         setDraft={setDraft}
         inputRef={inputRef}
         workspacePath={cwd}
+        contextUsage={contextUsage}
+        agentType={agentId === "reason" ? "acp" : agentId}
         hasAttachments={!planWaiting && attachments.length > 0}
         // Conductor: while a plan waits, the message box asks for changes to it; otherwise its own placeholders.
         placeholder={planWaiting ? "Enter your plan adjustments here..." : undefined}

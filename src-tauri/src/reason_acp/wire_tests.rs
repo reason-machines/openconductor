@@ -5,6 +5,49 @@ use serde_json::{json, Value};
 use std::path::Path;
 
 #[test]
+fn context_usage_is_tagged_separately_from_cumulative_usage() {
+    use super::context_usage::{claude_sample, ContextUpdate};
+    let sample = claude_sample(
+        &json!({"model":"m", "usage":{
+            "input_tokens":1,"cache_read_input_tokens":2,
+            "cache_creation_input_tokens":3,"output_tokens":4
+        }}),
+        &Value::Null,
+    )
+    .unwrap();
+    assert_eq!(
+        event_json("c", &ProviderEvent::ContextUsage { context: sample }),
+        json!({"chatId":"c","type":"contextUsage","context":{
+            "kind":"sample","model":"m","inputTokens":1,
+            "cacheReadInputTokens":2,"cacheCreationInputTokens":3,"outputTokens":4
+        }})
+    );
+    assert_eq!(
+        event_json(
+            "c",
+            &ProviderEvent::ContextUsage {
+                context: ContextUpdate::Reset
+            }
+        ),
+        json!({"chatId":"c","type":"contextUsage","context":{"kind":"reset"}})
+    );
+    assert_eq!(
+        event_json(
+            "c",
+            &ProviderEvent::ContextUsage {
+                context: ContextUpdate::Window {
+                    model: "m".into(),
+                    context_window: 200000
+                }
+            }
+        ),
+        json!({"chatId":"c","type":"contextUsage","context":{
+            "kind":"window","model":"m","contextWindow":200000
+        }})
+    );
+}
+
+#[test]
 fn every_payload_names_its_chat_and_type() {
     let started = ProviderEvent::SessionStarted {
         session_id: "s-1".into(),

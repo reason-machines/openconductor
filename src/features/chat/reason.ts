@@ -17,6 +17,7 @@
 import type { Block, ChatEvent, ChatMessage, TokenUsage, TurnStatus } from "./types.ts";
 import type { SentUserContentV1 } from "./userContent.ts";
 import type { PermissionOption, PermissionPrompt, Question } from "./chatRuntime.ts";
+import type { ContextUpdate } from "./contextUsage.ts";
 
 export interface ReasonPath {
   raw: string;
@@ -57,6 +58,7 @@ export type ReasonPayload = { chatId: string } & (
   | ReasonTool
   | { type: "turnEnded"; end: ReasonTurnEnd }
   | { type: "usage"; usage: TokenUsage }
+  | { type: "contextUsage"; context: ContextUpdate }
   | PermissionRequestPayload
   | { type: "permissionResolved"; requestId: string }
   | { type: "sessionModel"; model: string; effort: string | null }
@@ -106,6 +108,8 @@ export interface Step {
   events: ChatEvent[];
   /** Set by `sessionStarted`: save it to resume the chat after a restart. */
   sessionId?: string;
+  /** Independent latest-context update; never attached to turn-cost usage. */
+  context?: ContextUpdate;
 }
 
 export function reasonChat(chatId: string): ReasonChatState {
@@ -255,6 +259,8 @@ function withContent(blocks: Block[], p: ReasonPayload, now: Date): Block[] {
 
 export function applyReasonPayload(state: ReasonChatState, p: ReasonPayload, now = new Date()): Step {
   switch (p.type) {
+    case "contextUsage":
+      return { state, events: [], context: p.context };
     case "sessionStarted":
       return { state, events: [], sessionId: p.sessionId };
     case "turnEnded":

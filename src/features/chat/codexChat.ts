@@ -17,6 +17,7 @@ import { statusWithOpenRequests, type CodexConsent, type ConsentAnswer } from ".
 import { localModelOptions } from "./chatModelChoice.ts";
 import { desktopHost } from "./desktopHost.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
+import { applyContextUpdate, contextStorageKey, currentContextUsage, emptyContext, restoreContext, storeContext, type ContextState, type ContextUsage } from "./contextUsage.ts";
 
 const EVENT = "codex-chat-event";
 const threadKey = (chatId: string) => `openconductor.codex.thread.${chatId}`;
@@ -52,6 +53,7 @@ export async function setCodexAccess(chatId: string, access: CodexAccess): Promi
 }
 
 export interface CodexSnapshot {
+  contextUsage?: ContextUsage;
   transcript: ChatTranscript;
   queue: Q.ChatQueue;
   approvals: CodexApproval[];
@@ -62,6 +64,7 @@ export interface CodexSnapshot {
 
 interface Chat {
   state: CodexChatState;
+  context: ContextState;
   view: CodexSnapshot;
   cwd: string | null;
   opened: boolean;
@@ -81,10 +84,16 @@ export const codexAvailable = (): boolean => isTauri();
 /** The runner sends one prompt at a time, so a follow-up waits in the queue. */
 export const CODEX_CAN_STEER = false;
 
+function savedContext(chatId: string): ContextState {
+  try { return restoreContext(localStorage.getItem(contextStorageKey(chatId))); }
+  catch { return emptyContext(); }
+}
+
 function chat(chatId: string): Chat {
   let c = chats.get(chatId);
   if (!c) {
-    c = { state: codexChat(chatId), view: { transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), approvals: [], consents: [] }, cwd: null, opened: false, deliveries: new Map(), listeners: new Set() };
+    const context = savedContext(chatId);
+    c = { state: codexChat(chatId), context, view: { contextUsage: currentContextUsage(context), transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), approvals: [], consents: [] }, cwd: null, opened: false, deliveries: new Map(), listeners: new Set() };
     chats.set(chatId, c);
     if (isTauri()) loadStoredTranscript(chatId, c);
   }
@@ -109,7 +118,7 @@ function loadStoredTranscript(chatId: string, c: Chat): void {
 }
 
 function publish(c: Chat, next: Partial<CodexSnapshot>) {
-  c.view = { ...c.view, ...next, approvals: c.state.approvals, consents: c.state.consents,
+  c.view = { ...c.view, ...next, contextUsage: currentContextUsage(c.context), approvals: c.state.approvals, consents: c.state.consents,
     inFlightAttachments: [...c.deliveries.values()].flatMap((delivery) => delivery.active ? [...delivery.attachments] : []),
   };
   for (const fn of c.listeners) fn(c.view);
@@ -130,7 +139,23 @@ function apply(c: Chat, step: Step) {
   }
   // A new approval or consent is a wait on the user (Conductor's `_p`, attention.ts).
   if (codexAsks(before, { approvals: c.state.approvals, consents: c.state.consents, status: c.view.queue.status })) chatWantsAttention(c.state.chatId);
-  if (step.threadId) localStorage.setItem(threadKey(c.state.chatId), step.threadId);
+  if (step.threadId) {
+    if (localStorage.getItem(threadKey(c.state.chatId)) !== step.threadId) {
+      c.context = emptyContext();
+      localStorage.removeItem(contextStorageKey(c.state.chatId));
+      publish(c, {});
+    }
+    localStorage.setItem(threadKey(c.state.chatId), step.threadId);
+  }
+  if (step.context) {
+    const context = applyContextUpdate(c.context, step.context);
+    if (context !== c.context) {
+      c.context = context;
+      try { localStorage.setItem(contextStorageKey(c.state.chatId), storeContext(context)); }
+      catch (error) { console.warn("codex: context sample not saved", error); }
+      publish(c, {});
+    }
+  }
   if (step.events.length === 0) {
     if (approvalsChanged || consentsChanged) publish(c, {});
     return;

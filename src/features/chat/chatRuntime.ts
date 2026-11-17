@@ -45,6 +45,7 @@ import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
 import type { FileChange } from "../diff/types.ts";
 import type { SentUserContentV1, UserPrompt } from "./userContent.ts";
 import type { ChatMessage } from "./types.ts";
+import { applyContextUpdate, contextStorageKey, currentContextUsage, emptyContext, restoreContext, storeContext, type ContextState, type ContextUsage } from "./contextUsage.ts";
 
 /** Open turns of one chat, as reason.ts tracks them. */
 export type ChatTurns = ReasonChatState;
@@ -219,6 +220,8 @@ export interface ChatHost {
 }
 
 export interface ChatSnapshot {
+  /** Latest context sample, deliberately independent of cumulative turn cost. */
+  contextUsage?: ContextUsage;
   transcript: ChatTranscript;
   queue: Q.ChatQueue;
   inFlightAttachments?: readonly PromptAttachment[];
@@ -277,6 +280,7 @@ export interface ChatRuntime<Config> {
 
 interface Chat<Config> {
   state: ChatTurns;
+  context: ContextState;
   transcript: ChatTranscript;
   queue: Q.ChatQueue;
   cwd: string | null;
@@ -463,12 +467,18 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     }
   }
 
+  function savedContext(chatId: string): ContextState {
+    try { return restoreContext(host.storage.getItem(contextStorageKey(chatId))); }
+    catch { return emptyContext(); }
+  }
+
   function chat(chatId: string): Chat<Config> {
     let c = chats.get(chatId);
     if (!c) {
       const saved = savedConfig(chatId);
       c = {
         state: reasonChat(chatId),
+        context: savedContext(chatId),
         transcript: emptyTranscript(chatId),
         queue: Q.emptyQueue(),
         cwd: null,
@@ -520,6 +530,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
   }
 
   const snapshot = (c: Chat<Config>): ChatSnapshot => ({ transcript: c.transcript, queue: c.queue, permissions: c.permissions,
+    contextUsage: currentContextUsage(c.context),
     inFlightAttachments: [...c.deliveries.values()].flatMap((delivery) => delivery.active ? delivery.attachments : []),
   });
   const notify = (c: Chat<Config>) => {
@@ -529,7 +540,24 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
 
   function apply(c: Chat<Config>, step: Step) {
     c.state = step.state;
-    if (step.sessionId) host.storage.setItem(sessionKey(c.state.chatId), step.sessionId);
+    if (step.sessionId) {
+      if (host.storage.getItem(sessionKey(c.state.chatId)) !== step.sessionId) {
+        c.context = emptyContext();
+        host.storage.removeItem(contextStorageKey(c.state.chatId));
+        notify(c);
+      }
+      host.storage.setItem(sessionKey(c.state.chatId), step.sessionId);
+    }
+    if (step.context) {
+      const context = applyContextUpdate(c.context, step.context);
+      if (context !== c.context) {
+        c.context = context;
+        try { host.storage.setItem(contextStorageKey(c.state.chatId), storeContext(context)); }
+        catch (error) { console.warn("chat: context sample not saved", error); }
+        // Context updates commonly have no transcript event or even open turn.
+        notify(c);
+      }
+    }
     if (step.events.length === 0) return;
     const r = applyChatEvents(c.transcript, step.events);
     if (!r.ok) {
@@ -722,6 +750,8 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       const saver = savers.get(chatId);
       if (lastKept && c.transcript.messages.length < before.messages.length) {
         host.storage.removeItem(sessionKey(chatId));
+        host.storage.removeItem(contextStorageKey(chatId));
+        c.context = emptyContext();
         c.opened = false;
         saver?.rewind(c.transcript, lastKept);
       } else saver?.update(c.transcript);

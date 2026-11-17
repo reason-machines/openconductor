@@ -30,6 +30,9 @@ pub fn event_json(chat: &str, ev: &ProviderEvent) -> Value {
             }
             json!({ "type": "usage", "usage": usage })
         }
+        ProviderEvent::ContextUsage { context } => {
+            json!({ "type": "contextUsage", "context": context })
+        }
         ProviderEvent::Agent(a) => agent_json(a),
         ProviderEvent::Notice(t) => json!({ "type": "notice", "text": t }),
         ProviderEvent::PermissionRequested(r) => {

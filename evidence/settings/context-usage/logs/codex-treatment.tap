@@ -1,0 +1,223 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a recorded turn becomes one assistant message with tools between its texts
+ok 1 - a recorded turn becomes one assistant message with tools between its texts
+  ---
+  duration_ms: 3.800613
+  type: 'test'
+  ...
+# Subtest: approvals are kept until answered or the turn ends
+ok 2 - approvals are kept until answered or the turn ends
+  ---
+  duration_ms: 0.463815
+  type: 'test'
+  ...
+# Subtest: consents (MCP elicitation, permissions) are kept until resolved or the turn ends
+ok 3 - consents (MCP elicitation, permissions) are kept until resolved or the turn ends
+  ---
+  duration_ms: 0.502893
+  type: 'test'
+  ...
+# Subtest: declined and failing tools are errors; failures end the turn with Codex's message
+ok 4 - declined and failing tools are errors; failures end the turn with Codex's message
+  ---
+  duration_ms: 0.276707
+  type: 'test'
+  ...
+# Subtest: prompts queue: content goes to the oldest open turn and turnEnded closes it
+ok 5 - prompts queue: content goes to the oldest open turn and turnEnded closes it
+  ---
+  duration_ms: 0.316244
+  type: 'test'
+  ...
+# Subtest: retry notices replace each other; other notices are separate system rows
+ok 6 - retry notices replace each other; other notices are separate system rows
+  ---
+  duration_ms: 0.200202
+  type: 'test'
+  ...
+# Subtest: a prompt that never reached Codex fails its own turn only
+ok 7 - a prompt that never reached Codex fails its own turn only
+  ---
+  duration_ms: 0.243849
+  type: 'test'
+  ...
+# (node:91) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:91) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# codex: stored transcript not loaded TypeError: Cannot destructure property 'messages' of 'object null' as it is null.
+#     at file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/codexChat.ts:109:14
+# codex: stored transcript not loaded TypeError: Cannot destructure property 'messages' of 'object null' as it is null.
+#     at file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/codexChat.ts:109:14
+#     at async prompt (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/codexChat.ts:230:24)
+# Subtest: Codex adapter keeps V1 separate from exact inline attachment text through queued drain
+ok 8 - Codex adapter keeps V1 separate from exact inline attachment text through queued drain
+  ---
+  duration_ms: 13.940576
+  type: 'test'
+  ...
+# codex: stored transcript not loaded TypeError: Cannot destructure property 'messages' of 'object null' as it is null.
+#     at file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/codexChat.ts:109:14
+#     at async prompt (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/codexChat.ts:230:24)
+# Subtest: Codex sends each picked local loadout on dispatch, including queued changes and absent effort
+ok 9 - Codex sends each picked local loadout on dispatch, including queued changes and absent effort
+  ---
+  duration_ms: 16.055519
+  type: 'test'
+  ...
+# codex: stored transcript not loaded TypeError: Cannot destructure property 'messages' of 'object null' as it is null.
+#     at file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/codexChat.ts:109:14
+#     at async prompt (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/codexChat.ts:230:24)
+# Subtest: an MCP elicitation asks for attention once; a second one while it waits asks again; a re-send does not
+ok 10 - an MCP elicitation asks for attention once; a second one while it waits asks again; a re-send does not
+  ---
+  duration_ms: 5.387001
+  type: 'test'
+  ...
+# Subtest: a consent while a tool approval waits asks for attention, as does the approval
+ok 11 - a consent while a tool approval waits asks for attention, as does the approval
+  ---
+  duration_ms: 6.467846
+  type: 'test'
+  ...
+# (node:100) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:100) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Codex pure context step is independent of transcript and open turns
+ok 12 - Codex pure context step is independent of transcript and open turns
+  ---
+  duration_ms: 1.795939
+  type: 'test'
+  ...
+# Subtest: actual Codex runtime notifies for context-only latest samples, persists reset, and isolates chats
+ok 13 - actual Codex runtime notifies for context-only latest samples, persists reset, and isolates chats
+  ---
+  duration_ms: 14.077638
+  type: 'test'
+  ...
+# (node:109) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: context codec preserves an explicit compact boundary across reload
+ok 14 - context codec preserves an explicit compact boundary across reload
+  ---
+  duration_ms: 1.935719
+  type: 'test'
+  ...
+# Subtest: context parser accepts explicit Codex zero but ignores empty Claude samples
+ok 15 - context parser accepts explicit Codex zero but ignores empty Claude samples
+  ---
+  duration_ms: 0.300727
+  type: 'test'
+  ...
+# Subtest: model windows never create a sample or borrow a denominator
+ok 16 - model windows never create a sample or borrow a denominator
+  ---
+  duration_ms: 0.169728
+  type: 'test'
+  ...
+# Subtest: saved context validates its version and numbers without coercion
+ok 17 - saved context validates its version and numbers without coercion
+  ---
+  duration_ms: 0.196973
+  type: 'test'
+  ...
+# Subtest: model names are inert object keys and the denominator cache is bounded
+ok 18 - model names are inert object keys and the denominator cache is bounded
+  ---
+  duration_ms: 19.023407
+  type: 'test'
+  ...
+# (node:117) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: context telemetry is a distinct pure step, not a cumulative usage replacement
+ok 19 - context telemetry is a distinct pure step, not a cumulative usage replacement
+  ---
+  duration_ms: 2.011377
+  type: 'test'
+  ...
+# Subtest: actual runtime keeps latest cache-inclusive sample and same-model denominator across reload
+ok 20 - actual runtime keeps latest cache-inclusive sample and same-model denominator across reload
+  ---
+  duration_ms: 7.289904
+  type: 'test'
+  ...
+# Subtest: compact reset is zero; missing windows do not borrow another model's denominator
+ok 21 - compact reset is zero; missing windows do not borrow another model's denominator
+  ---
+  duration_ms: 1.176388
+  type: 'test'
+  ...
+# Subtest: malformed, metadata-only and zero Claude samples preserve known context
+ok 22 - malformed, metadata-only and zero Claude samples preserve known context
+  ---
+  duration_ms: 1.881948
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: default missing
+ok 23 - actual Composer context display: default missing
+  ---
+  duration_ms: 153.937371
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: off below threshold
+ok 24 - actual Composer context display: off below threshold
+  ---
+  duration_ms: 67.179474
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: rounded 69.95 reaches threshold
+ok 25 - actual Composer context display: rounded 69.95 reaches threshold
+  ---
+  duration_ms: 43.346454
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: exact threshold
+ok 26 - actual Composer context display: exact threshold
+  ---
+  duration_ms: 35.051264
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: on below threshold
+ok 27 - actual Composer context display: on below threshold
+  ---
+  duration_ms: 35.422625
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: on missing is unknown
+ok 28 - actual Composer context display: on missing is unknown
+  ---
+  duration_ms: 37.970208
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: metadata gate
+ok 29 - actual Composer context display: metadata gate
+  ---
+  duration_ms: 29.053324
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: ACP gate
+ok 30 - actual Composer context display: ACP gate
+  ---
+  duration_ms: 34.539924
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: unknown denominator is not a percentage
+ok 31 - actual Composer context display: unknown denominator is not a percentage
+  ---
+  duration_ms: 31.060819
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2617.991093

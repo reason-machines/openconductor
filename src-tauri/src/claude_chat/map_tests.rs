@@ -19,6 +19,63 @@ fn result(is_error: bool, text: &str) -> ClaudeEvent {
 }
 
 #[test]
+fn latest_context_regressions_survive_parser_mapper_and_wire() {
+    let cases: Vec<Value> =
+        serde_json::from_str(include_str!("../agent/context_usage_cases.json")).unwrap();
+    assert_eq!(cases.len(), 12);
+    for case in cases {
+        let mut mapper = TurnMapper::new(CWD, None);
+        let actual: Vec<_> = mapper
+            .map(&ev(case["event"].clone()))
+            .iter()
+            .map(|event| crate::reason_acp::wire::event_json("context-chat", event))
+            .filter(|event| event["type"] == "contextUsage")
+            .map(|event| {
+                assert_eq!(event["chatId"], "context-chat");
+                event["context"].clone()
+            })
+            .collect();
+        assert_eq!(json!(actual), case["context"], "{}", case["name"]);
+    }
+}
+
+#[test]
+fn context_samples_are_independent_of_transcript_and_cumulative_usage() {
+    let mut mapper = TurnMapper::new(CWD, None);
+    let sample = |tokens| {
+        ev(json!({"type":"assistant", "message":{
+            "id":"m1", "content":[{"type":"text", "text":"reply"}],
+            "usage":{"input_tokens":tokens}
+        }}))
+    };
+    for tokens in [400, 20] {
+        let events = mapper.map(&sample(tokens));
+        assert!(matches!(&events[0], ProviderEvent::ContextUsage { .. }));
+        assert_eq!(texts(&events), vec!["reply"]);
+        assert!(!events
+            .iter()
+            .any(|event| matches!(event, ProviderEvent::Usage { .. })));
+    }
+    let events = mapper.map(&ev(json!({"type":"result", "session_id":"s1",
+        "usage":{"input_tokens":9000, "output_tokens":300},
+        "modelUsage":{"m":{"contextWindow":200000, "inputTokens":50000}}
+    })));
+    let wire: Vec<_> = events
+        .iter()
+        .map(|event| crate::reason_acp::wire::event_json("c", event))
+        .collect();
+    assert_eq!(
+        wire,
+        vec![
+            json!({"chatId":"c","type":"contextUsage","context":{
+            "kind":"window","model":"m","contextWindow":200000}}),
+            json!({"chatId":"c","type":"usage","usage":{"inputTokens":9000,"outputTokens":300}}),
+            json!({"chatId":"c","type":"turnEnded","end":{"outcome":"completed"}}),
+        ]
+    );
+}
+
+#[test]
 fn result_error_provenance_survives_only_the_explicit_unstopped_result() {
     let raw: Vec<Value> = serde_json::from_str(include_str!(
         "../../../evidence/chat/result-error-preview/raw.json"

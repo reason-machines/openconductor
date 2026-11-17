@@ -42,6 +42,34 @@
 }
 .oc-composer-anchor { position: relative; }
 
+/* Context control: ITo/Qmo's independent latest-sample indicator. */
+.oc-context-usage { position: relative; display: inline-flex; }
+.oc-context-trigger { color: var(--oc-c-muted-fg); }
+.oc-context-ring-track { stroke: currentColor; opacity: .2; }
+.oc-context-ring-value { stroke: currentColor; }
+.oc-context-details {
+  position: absolute;
+  z-index: 40;
+  right: 0;
+  bottom: calc(100% + 8px);
+  width: 320px;
+  max-width: min(320px, calc(100vw - 32px));
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid var(--oc-c-border);
+  border-radius: 8px;
+  background: var(--oc-c-popover);
+  color: var(--oc-c-popover-fg);
+  box-shadow: var(--oc-c-shadow-md);
+  cursor: default;
+  font-size: 12px;
+  line-height: 18px;
+}
+.oc-context-details p { margin: 4px 0 8px; color: var(--oc-c-muted-fg); }
+.oc-context-details dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; margin: 0; }
+.oc-context-details dt { color: var(--oc-c-muted-fg); }
+.oc-context-details dd { margin: 0; text-align: right; overflow-wrap: anywhere; }
+
 /* The box: bg-muted border rounded-xl min-h-38 pt-4 pr-4 pb-3 pl-4.5, shadow 0 1px 2px var(--shadow-5). */
 .composer.oc-composer {
   position: relative;

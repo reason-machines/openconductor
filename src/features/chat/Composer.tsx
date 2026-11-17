@@ -34,6 +34,7 @@ import { readClipboardTextFromPlatform } from "./composerPasteFilePaths.ts";
 import { useBoolPref } from "../../settings/useBoolPref.ts";
 import { useSettings } from "../../settings/useSettings.ts";
 import { withBoolPref } from "../../settings/prefs.ts";
+import type { ContextUsage } from "./contextUsage.ts";
 import { queuedUserDraft, submittedUserPrompt, type SentUserContentV1, type UserPrompt } from "./userContent.ts";
 import { FileMentionMenu } from "./FileMentionMenu.tsx";
 import { ArrowUpIcon, CircleDotIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
@@ -73,6 +74,12 @@ export interface ComposerProps {
   onMcpStatus?: () => void;
   onAttachTerminalOutput?: () => void;
   planMode?: PlanModeControl;
+  /** Latest provider context, independent of cumulative turn cost. */
+  contextUsage?: ContextUsage;
+  /** ACP always shows the indicator, including when usage is unavailable. */
+  agentType?: string;
+  /** Internal feature flag, separate from user preferences. */
+  showContextMetadata?: boolean;
   /** The model picker (or another agent's picker), at the box's bottom left. */
   picker?: ReactNode;
   /** More pickers after it (an agent's access mode), in the same row. */
@@ -112,6 +119,9 @@ export function Composer({
   planMode,
   picker,
   controls,
+  contextUsage,
+  agentType,
+  showContextMetadata = false,
   slashCommands = [],
   onCommand,
   minimize,
@@ -120,6 +130,7 @@ export function Composer({
   const { settings: voiceSettings, save: saveVoiceSettings } = useSettings();
   const voiceModeEnabled = useBoolPref("voice_mode");
   const autoConvertLongText = useBoolPref("auto_convert_long_text");
+  const alwaysShowContext = useBoolPref("always_show_context_wheel");
   const minimized = minimize?.minimized ?? false;
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -432,6 +443,7 @@ export function Composer({
             {controls ? <span className="oc-composer-fade">{controls}</span> : null}
           </div>
           <div className="oc-composer-right" onClick={(e) => e.stopPropagation()}>
+            <ContextUsageIndicator usage={contextUsage} always={alwaysShowContext || showContextMetadata || agentType === "acp"} />
             <span className="oc-composer-fade">
               <AddMenu hint={hint("chat.addAttachment")} linkIssueHint={hint("chat.linkLinear")} planHint={hint("chat.togglePlanMode")} planMode={planMode} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} onLinkIssue={onLinkIssue} onLinkWorkspaces={onLinkWorkspaces} />
             </span>
@@ -475,6 +487,48 @@ export function Composer({
         </form>
       </div>
     </div>
+  );
+}
+
+function ContextUsageIndicator({ usage, always }: { usage?: ContextUsage; always: boolean }) {
+  const [open, setOpen] = useState(false);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const total = usage?.totalTokens;
+  const window = usage?.contextWindow;
+  const percent = total !== undefined && Number.isSafeInteger(total) && total >= 0 && window !== undefined && Number.isSafeInteger(window) && window > 0
+    ? Math.round(total / window * 1000) / 10 : undefined;
+  // ITo rounds before gating. Missing data is a zero ring, not known 0%.
+  if (!always && (percent ?? 0) < 70) return null;
+  const description = percent === undefined ? "Context usage unavailable" : `${percent.toFixed(1)}% of context used`;
+  return (
+    <span className="oc-context-usage" onBlur={(event) => {
+      if (!event.currentTarget.contains(event.relatedTarget as Node)) setOpen(false);
+    }} onKeyDown={(event) => {
+      if (event.key === "Escape" && open) {
+        event.preventDefault();
+        event.stopPropagation();
+        setOpen(false);
+        trigger.current?.focus();
+      }
+    }}>
+      <button ref={trigger} type="button" className="oc-icon-btn oc-context-trigger" aria-label="Context usage" aria-expanded={open} aria-haspopup="dialog" title="Context usage" data-percent={percent} onClick={() => setOpen((value) => !value)}>
+        <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" fill="none">
+          <circle className="oc-context-ring-track" cx="8" cy="8" r="5.5" strokeWidth="2" />
+          <circle className="oc-context-ring-value" cx="8" cy="8" r="5.5" strokeWidth="2" pathLength="100" strokeDasharray={`${Math.min(100, Math.max(0, percent ?? 0))} 100`} transform="rotate(-90 8 8)" />
+        </svg>
+      </button>
+      {open ? <section className="oc-context-details" role="dialog" aria-label="Context usage details" tabIndex={-1}>
+        <strong>Context usage</strong>
+        <p>{description}</p>
+        <dl>
+          <dt>Context tokens</dt><dd>{total === undefined ? "Unknown" : total.toLocaleString()}</dd>
+          <dt>Context window</dt><dd>{window === undefined ? "Unknown" : window.toLocaleString()}</dd>
+          {usage?.cacheReadInputTokens !== undefined ? <><dt>Cache read</dt><dd>{usage.cacheReadInputTokens.toLocaleString()}</dd></> : null}
+          {usage?.cacheCreationInputTokens !== undefined ? <><dt>Cache creation</dt><dd>{usage.cacheCreationInputTokens.toLocaleString()}</dd></> : null}
+          {usage?.model ? <><dt>Model</dt><dd>{usage.model}</dd></> : null}
+        </dl>
+      </section> : null}
+    </span>
   );
 }
 

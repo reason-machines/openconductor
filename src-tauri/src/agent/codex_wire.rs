@@ -13,6 +13,7 @@ use serde_json::{json, Value};
 use super::codex_consent::{consent, Consent};
 use super::codex_events::{Notification, ServerMessage, ServerRequest, TurnStatus};
 use super::codex_rpc::{ApprovalDecision, RequestId};
+use super::context_usage::{codex_sample, ContextUpdate};
 
 /// One step of a tool row's life.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
@@ -173,6 +174,10 @@ pub enum Payload {
     Notice {
         message: String,
         will_retry: bool,
+    },
+    /// Latest occupancy, separate from cumulative thread/turn Usage.
+    ContextUsage {
+        context: ContextUpdate,
     },
     /// The prompt is over. Exactly one per prompt.
     TurnEnded {
@@ -423,6 +428,10 @@ fn notification_payloads(n: &Notification) -> Vec<Payload> {
             will_retry: *will_retry,
         }],
         Notification::Other { method, params } => match method.as_str() {
+            "thread/tokenUsage/updated" => codex_sample(params)
+                .map(|context| Payload::ContextUsage { context })
+                .into_iter()
+                .collect(),
             "item/reasoning/summaryTextDelta" => {
                 match (text(params, "itemId"), text(params, "delta")) {
                     (Some(item_id), Some(delta)) => vec![Payload::Thought { item_id, delta }],
@@ -469,6 +478,43 @@ mod tests {
 
     fn json_of(p: &Payload) -> Value {
         serde_json::to_value(p).unwrap()
+    }
+
+    #[test]
+    fn context_usage_uses_only_the_official_latest_total() {
+        // Frozen before production writes: c1f620f8932c2ad860a0eae1aaec6f786c8e6d19c71ab51eba2f48db979ea006.
+        // Synthetic controls for official rust-v0.166.0 schema, not live usage proof.
+        let cases: Vec<Value> = serde_json::from_str(r#"[
+ {"name":"explicit latest total beats cumulative total and reasoning is not added", "method":"thread/tokenUsage/updated", "params":{"threadId":"th","turnId":"tu","tokenUsage":{"total":{"totalTokens":999999,"inputTokens":990000,"outputTokens":9999},"last":{"totalTokens":130,"inputTokens":100,"cachedInputTokens":40,"cacheWriteInputTokens":10,"outputTokens":30,"reasoningOutputTokens":20},"modelContextWindow":200000}},"context":{"kind":"sample","totalTokens":130,"contextWindow":200000}},
+ {"name":"missing last never falls back to total", "method":"thread/tokenUsage/updated", "params":{"threadId":"th","turnId":"tu","tokenUsage":{"total":{"totalTokens":999999},"modelContextWindow":200000}},"context":null},
+ {"name":"missing latest total is not synthesized from components", "method":"thread/tokenUsage/updated", "params":{"threadId":"th","turnId":"tu","tokenUsage":{"last":{"inputTokens":100,"cachedInputTokens":40,"outputTokens":30,"reasoningOutputTokens":20},"modelContextWindow":200000}},"context":null},
+ {"name":"negative latest total rejected", "method":"thread/tokenUsage/updated", "params":{"threadId":"th","turnId":"tu","tokenUsage":{"last":{"totalTokens":-1}}},"context":null},
+ {"name":"unsafe latest total rejected", "method":"thread/tokenUsage/updated", "params":{"threadId":"th","turnId":"tu","tokenUsage":{"last":{"totalTokens":9007199254740992}}},"context":null},
+ {"name":"fractional latest total rejected", "method":"thread/tokenUsage/updated", "params":{"threadId":"th","turnId":"tu","tokenUsage":{"last":{"totalTokens":1.5}}},"context":null},
+ {"name":"zero latest total remains an explicit latest sample", "method":"thread/tokenUsage/updated", "params":{"threadId":"th","turnId":"tu","tokenUsage":{"last":{"totalTokens":0},"modelContextWindow":null}},"context":{"kind":"sample","totalTokens":0}},
+ {"name":"cached is a subset not added again", "method":"thread/tokenUsage/updated", "params":{"threadId":"th","turnId":"tu","tokenUsage":{"last":{"totalTokens":100,"inputTokens":80,"cachedInputTokens":70,"outputTokens":20,"reasoningOutputTokens":15}}},"context":{"kind":"sample","totalTokens":100}},
+ {"name":"malformed component totals never synthesized", "method":"thread/tokenUsage/updated", "params":{"threadId":"th","turnId":"tu","tokenUsage":{"last":{"totalTokens":100,"inputTokens":10,"cachedInputTokens":20,"outputTokens":90}}},"context":{"kind":"sample","totalTokens":100}},
+ {"name":"zero denominator omitted", "method":"thread/tokenUsage/updated", "params":{"threadId":"th","turnId":"tu","tokenUsage":{"last":{"totalTokens":100},"modelContextWindow":0}},"context":{"kind":"sample","totalTokens":100}},
+ {"name":"similar method ignored", "method":"thread/tokenUsage", "params":{"threadId":"th","turnId":"tu","tokenUsage":{"last":{"totalTokens":100},"modelContextWindow":200000}},"context":null},
+ {"name":"missing thread identity ignored", "method":"thread/tokenUsage/updated", "params":{"turnId":"tu","tokenUsage":{"last":{"totalTokens":100}}},"context":null}
+]
+"#).unwrap();
+        assert_eq!(cases.len(), 12);
+        for case in cases {
+            let events = one(&json!({"method":case["method"],"params":case["params"]}).to_string());
+            let contexts: Vec<_> = events
+                .iter()
+                .map(json_of)
+                .filter(|event| event["type"] == "contextUsage")
+                .map(|event| event["context"].clone())
+                .collect();
+            let expected = if case["context"].is_null() {
+                vec![]
+            } else {
+                vec![case["context"].clone()]
+            };
+            assert_eq!(contexts, expected, "{}", case["name"]);
+        }
     }
 
     // Lines below are from a live turn with Codex 0.166.0 on macOS
