@@ -1,0 +1,19 @@
+{
+  "started_at": "2026-11-17T17:32:57.167673+00:00",
+  "head": "55ac8816aada260c03bba63f4b6873779c22dfda",
+  "main": "74c004a95d7b10072f54f71ca611f22c50944f64",
+  "sources": {
+    "src/components/CreateProjectDialog.tsx": "3600dc42f142ab04a8611fb8b9a2ab09700dcdb0d1db09fe37d99a3db9577189",
+    "src/components/createProjectImplicitEnter.test.ts": "ef16dfbf4826994da9c22884c58b078869555f041de37f189dab2f8740d857a6",
+    "src/components/createProjectPendingControls.test.ts": "d505784d4339b4bebd0c62335f4bb082207df8e1c17508f68ca6315ad8d2fc60",
+    "src/components/DialogFrame.tsx": "47734d523d725af2615c80a1f9995f28e78b2b2d8e6dd32a7303b97e69c670d5",
+    "src/keybindings/KeybindingsProvider.tsx": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6",
+    "package.json": "3436671ba8bb422c26debf8149ed0cdd9e985b77262bf9316e09e79302c80118",
+    "package-lock.json": "1b5e71303afef426f22e8a492d1e8f8e74fdc34bf4242984b2ef3f9a59675782"
+  },
+  "commands": [
+    "npm run build",
+    "npm run lint:colors"
+  ],
+  "sequential": true
+}

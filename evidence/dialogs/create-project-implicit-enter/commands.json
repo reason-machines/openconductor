@@ -1,0 +1,21 @@
+{
+  "owner": "Conductor Rebuild / SAME6013",
+  "baseline_node6": "node --experimental-strip-types --test --test-concurrency=1 src/components/createProjectImplicitEnter.test.ts",
+  "baseline_node6_result": "4 pass / 2 intended failures; baseline.tap and pre-treatment-baseline.tap",
+  "treatment_node6_result": "6/6 PASS unchanged, included in treatment-focused.tap",
+  "focused20": "node --experimental-strip-types --test --test-concurrency=1 src/components/createProjectImplicitEnter.test.ts src/components/createProjectPendingControls.test.ts src/state/createProject.test.ts",
+  "adjacent53": "node --experimental-strip-types --test --test-concurrency=1 src/components/createProjectImplicitEnter.test.ts src/components/createProjectPendingControls.test.ts src/components/cloneImplicitEnter.test.ts src/components/clonePendingInputs.test.ts src/components/cloneRecentPendingSelection.test.ts src/components/cloneUrlTextCorrection.test.ts src/state/createProject.test.ts src/state/cloneDialog.test.ts",
+  "fixture_typecheck": "node node_modules/typescript/bin/tsc --noEmit --target ES2021 --lib ES2021,DOM,DOM.Iterable --module ESNext --skipLibCheck --moduleResolution bundler --allowImportingTsExtensions --resolveJsonModule --isolatedModules --jsx react-jsx --strict --noUnusedLocals --noUnusedParameters --noFallthroughCasesInSwitch src/components/CreateProjectDialog.tsx src/components/createProjectImplicitEnter.test.ts src/components/createProjectPendingControls.test.ts",
+  "fixture_typecheck_result": "PASS; treatment-fixture-typecheck.log.gz is empty because tsc emitted no diagnostics",
+  "bundle": "node .ara-state/create-project-enter-6013/build.mjs",
+  "bundle_reconstruction": "The script and its entry, I/O stub and stylesheet are frozen under frozen/. Copy to .ara-state/create-project-enter-6013/ before building; build script writes public/ itself except fixture.css, which must be copied there.",
+  "source_and_harness": "node evidence/dialogs/create-project-implicit-enter/verify-treatment.cjs",
+  "browser_evidence": [
+    "python3 evidence/dialogs/create-project-implicit-enter/verify-browser-baseline.py",
+    "python3 evidence/dialogs/create-project-implicit-enter/verify-browser-treatment.py"
+  ],
+  "sequential_heavy": ["npm run build", "npm run lint:colors"],
+  "heavy_result": "PASS, branding + full tsc + Vite40.08s, then six color checker tests and 1265-file scan; own processes[]",
+  "diff": "git diff --check",
+  "limitations": ["REA retained-source contract, not fresh live-original side-by-side", "Linux Chromium fixture, not macOS/WebKit", "No real backend/provider/native/package operation", "Baseline blank-value and parent-focus export schemas differ; semantic values/events checked explicitly, no focus parity claim"]
+}
