@@ -65,6 +65,7 @@ async function fixture({ text = "saved", desktop = true, read, write, saveError,
     "../../backend": { inTauri: () => desktop },
     "./editorContents.ts": editorContents,
     "./editable.ts": {},
+    "./draftStorage.ts": { loadPersistedDrafts: () => new Map(), syncDraftToStorage: () => {} },
   });
   const component: Partial<typeof import("./WorkspaceFileView.tsx")> = {};
   const scrollCalls: unknown[] = [];
@@ -353,6 +354,7 @@ test("initialLine scrolls the CodeView to that line on mount", async () => {
     "../../backend": { inTauri: () => true },
     "./editorContents.ts": editorContents,
     "./editable.ts": {},
+    "./draftStorage.ts": { loadPersistedDrafts: () => new Map(), syncDraftToStorage: () => {} },
   });
   load("./WorkspaceFileView.tsx", component2, {
     "@tauri-apps/api/core": native2,
@@ -409,6 +411,7 @@ test("omitting initialLine does not call scrollTo", async () => {
     "../../backend": { inTauri: () => true },
     "./editorContents.ts": editorContents,
     "./editable.ts": {},
+    "./draftStorage.ts": { loadPersistedDrafts: () => new Map(), syncDraftToStorage: () => {} },
   });
   load("./WorkspaceFileView.tsx", component3, {
     "@tauri-apps/api/core": native3,
