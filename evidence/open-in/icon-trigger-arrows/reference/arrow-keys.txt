@@ -1,0 +1,1 @@
+DX="ArrowLeft",PX="ArrowRight",QPt="ArrowUp",_Qe="ArrowDown"
