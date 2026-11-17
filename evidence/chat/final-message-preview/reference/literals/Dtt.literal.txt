@@ -1,0 +1,1 @@
+function Dtt(t){const e=t.content;return e.type==="system"&&"subtype"in e&&(e.subtype==="compact_boundary"||e.subtype==="status"&&"status"in e&&e.status==="compacting")}

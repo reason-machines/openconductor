@@ -28,7 +28,7 @@
     "PLAN_CLOSED_RETURN_LOST_MANUAL_COLLAPSE"
   ],
   "files": {
-    "wv-host.mjs": "79fe0b7bf9efd793e3ef647f7177339e1f5172fc13b4ca730861a12663d966c0",
+    "wv-host.mjs": "f54ad55a9f64d16efd974f319098e58f0fae53bc32bcb28b5940fecec685a9e0",
     "disclosureRemount.component.test.mjs": "affb87195267009c80fcd727441b25a1e4290c29af91d45c7a9f71b8fd4e7d53",
     "proof-loader.mjs": "6b0800e7cac8ac656b82cbf4fb1580ffe8c373a13493c17ecb56e02e932e618a",
     "static-import-closure.json": "2b630c560f40abe618ed6d3ee22011a9a860361f0688c194fd75a41b2d7cc5c5",

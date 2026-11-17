@@ -30,6 +30,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import assert from "node:assert/strict";
+import { createRuntimeReceipt } from "./runtime-receipt.mjs";
 import { WebDriver } from "../../tests/e2e/webdriver.mjs";
 import { finishStartup } from "../../tests/e2e/startup.mjs";
 import { createAgentBinaryReleaseFixture } from "./agent-binary-release-fixture.mjs";
@@ -64,7 +65,9 @@ writeFileSync(manifest, JSON.stringify({ claude: { version: "2.1.284", files: [{
 
 const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), SHELL: "/bin/bash", OPENCONDUCTOR_AGENT_BINARY_MANIFEST: manifest };
 for (const k of ["XDG_DATA_HOME", "XDG_CONFIG_HOME"]) delete env[k];
+const receipt = createRuntimeReceipt({ suite: "agent-binary-banner", app, out, home, project });
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
+receipt.track(driver);
 const driverExited = new Promise((r) => driver.on("exit", r));
 
 const base = "http://127.0.0.1:4444";
@@ -277,8 +280,10 @@ try {
   }
   process.exitCode = 1;
 } finally {
+  await receipt.beforeTeardown((script) => wd("POST", "/execute/async", { script, args: [] }, 3000));
   if (sessionUrl) await wd("DELETE", "").catch(() => {});
   driver.kill();
   server.close();
   await Promise.race([driverExited, sleep(3000)]);
+  await receipt.afterTeardown();
 }

@@ -110,6 +110,10 @@ export class WebDriver {
     return this.#call("POST", this.#s("/execute/sync"), { script, args }, timeoutMs);
   }
 
+  executeAsync(script, args = [], timeoutMs) {
+    return this.#call("POST", this.#s("/execute/async"), { script, args }, timeoutMs);
+  }
+
   async findAll(css) {
     const els = await this.#call("POST", this.#s("/elements"), { using: "css selector", value: css });
     // W3C key, else the legacy JSON Wire `ELEMENT` key.

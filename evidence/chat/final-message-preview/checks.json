@@ -1,0 +1,32 @@
+{
+  "author": "Conductor Rebuild",
+  "source": "PASS retained asset and 33 exact spans; no vendor execution",
+  "baseline": {
+    "tests": 10,
+    "pass": 7,
+    "fail": 3,
+    "skipped": 0
+  },
+  "treatment": {
+    "tests": 10,
+    "pass": 10,
+    "fail": 0,
+    "skipped": 0
+  },
+  "adjacent": {
+    "tests": 107,
+    "pass": 107,
+    "fail": 0,
+    "skipped": 0
+  },
+  "frozen_fixture_sha256": "3a9bca3c929b42cd6064e459fd0836b04c36b22999d6a29604fbd7956daeb705",
+  "preservation": "PASS frozen baseline source/archive preflight",
+  "local_full_typecheck_build": "NOT_RUN dependencies absent; automatic exact-head CI owns gate",
+  "mounted": "NOT_RUN",
+  "native": "NOT_RUN",
+  "package": "NOT_RUN",
+  "screenshot": "NOT_RUN lane excludes runtime/native dispatch",
+  "changed_production_files": [
+    "src/features/chat/toolGroups.ts"
+  ]
+}
