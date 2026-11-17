@@ -1,0 +1,68 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: arrows, Enter and Escape drive the list
+ok 1 - arrows, Enter and Escape drive the list
+  ---
+  duration_ms: 0.832198
+  type: 'test'
+  ...
+# Subtest: Ctrl+J moves forward through results and wraps like Ctrl+N
+ok 2 - Ctrl+J moves forward through results and wraps like Ctrl+N
+  ---
+  duration_ms: 0.781653
+  type: 'test'
+  ...
+# Subtest: Ctrl+K moves backward through results and wraps like Ctrl+P
+ok 3 - Ctrl+K moves backward through results and wraps like Ctrl+P
+  ---
+  duration_ms: 0.398956
+  type: 'test'
+  ...
+# Subtest: Home selects the first result instead of moving only the text cursor
+ok 4 - Home selects the first result instead of moving only the text cursor
+  ---
+  duration_ms: 0.113476
+  type: 'test'
+  ...
+# Subtest: End selects the last result instead of moving only the text cursor
+ok 5 - End selects the last result instead of moving only the text cursor
+  ---
+  duration_ms: 0.120161
+  type: 'test'
+  ...
+# Subtest: modified Home and End keep their text-field behavior
+ok 6 - modified Home and End keep their text-field behavior
+  ---
+  duration_ms: 0.242429
+  type: 'test'
+  ...
+# Subtest: Tab and Shift+Tab switch tabs; Cmd+K closes; letters type
+ok 7 - Tab and Shift+Tab switch tabs; Cmd+K closes; letters type
+  ---
+  duration_ms: 0.221535
+  type: 'test'
+  ...
+# Subtest: rebinding the palette toggle changes what closes it
+ok 8 - rebinding the palette toggle changes what closes it
+  ---
+  duration_ms: 0.120436
+  type: 'test'
+  ...
+# Subtest: active row wraps and clamps
+ok 9 - active row wraps and clamps
+  ---
+  duration_ms: 0.327208
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 214.937173

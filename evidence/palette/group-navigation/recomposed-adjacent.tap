@@ -1,0 +1,1151 @@
+(node:175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: bindCommands registers every default shortcut of a command
+ok 1 - bindCommands registers every default shortcut of a command
+  ---
+  duration_ms: 7.867801
+  type: 'test'
+  ...
+# Subtest: a bare-key shortcut does not fire while typing; its modifier shortcut does
+ok 2 - a bare-key shortcut does not fire while typing; its modifier shortcut does
+  ---
+  duration_ms: 0.273001
+  type: 'test'
+  ...
+# Subtest: a non-global command stays off while a dialog is open; a global one runs
+ok 3 - a non-global command stays off while a dialog is open; a global one runs
+  ---
+  duration_ms: 1.211816
+  type: 'test'
+  ...
+# Subtest: overrides replace the default shortcut
+ok 4 - overrides replace the default shortcut
+  ---
+  duration_ms: 0.237511
+  type: 'test'
+  ...
+# Subtest: undefined callbacks are skipped and the remover takes back only its own handlers
+ok 5 - undefined callbacks are skipped and the remover takes back only its own handlers
+  ---
+  duration_ms: 0.26681
+  type: 'test'
+  ...
+# Subtest: a callback returning false passes the key on
+ok 6 - a callback returning false passes the key on
+  ---
+  duration_ms: 0.133416
+  type: 'test'
+  ...
+# Subtest: unknown command ids throw
+ok 7 - unknown command ids throw
+  ---
+  duration_ms: 0.428209
+  type: 'test'
+  ...
+# Subtest: hidden chat bindings cannot cancel or attach from a center terminal
+ok 8 - hidden chat bindings cannot cancel or attach from a center terminal
+  ---
+  duration_ms: 0.305239
+  type: 'test'
+  ...
+# Subtest: focused chat shortcuts still work while its panel terminal has keyboard focus
+ok 9 - focused chat shortcuts still work while its panel terminal has keyboard focus
+  ---
+  duration_ms: 0.444614
+  type: 'test'
+  ...
+# Subtest: activeDialogIdFromDom: the last tagged dialog, else any modal, else none
+ok 10 - activeDialogIdFromDom: the last tagged dialog, else any modal, else none
+  ---
+  duration_ms: 0.409061
+  type: 'test'
+  ...
+# Subtest: a higher-priority binding runs first and passes the key on by returning false
+ok 11 - a higher-priority binding runs first and passes the key on by returning false
+  ---
+  duration_ms: 0.24966
+  type: 'test'
+  ...
+# (node:188) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: base commands share a scope with every group; groups do not share with each other
+ok 12 - base commands share a scope with every group; groups do not share with each other
+  ---
+  duration_ms: 0.794585
+  type: 'test'
+  ...
+# Subtest: a shortcut taken by a command in a shared scope is a conflict
+ok 13 - a shortcut taken by a command in a shared scope is a conflict
+  ---
+  duration_ms: 0.582637
+  type: 'test'
+  ...
+# Subtest: the same keys in unrelated scopes do not conflict
+ok 14 - the same keys in unrelated scopes do not conflict
+  ---
+  duration_ms: 0.35293
+  type: 'test'
+  ...
+# Subtest: a command never conflicts with itself
+ok 15 - a command never conflicts with itself
+  ---
+  duration_ms: 0.327616
+  type: 'test'
+  ...
+# Subtest: hidden fixed commands count, as in Conductor (palette Cmd+K vs clear scrollback)
+ok 16 - hidden fixed commands count, as in Conductor (palette Cmd+K vs clear scrollback)
+  ---
+  duration_ms: 0.225353
+  type: 'test'
+  ...
+# Subtest: additional default keys count (zoom in is Cmd+= as well as Cmd++)
+ok 17 - additional default keys count (zoom in is Cmd+= as well as Cmd++)
+  ---
+  duration_ms: 0.109687
+  type: 'test'
+  ...
+# Subtest: a physical binding conflicts with the event that presses it
+ok 18 - a physical binding conflicts with the event that presses it
+  ---
+  duration_ms: 0.437336
+  type: 'test'
+  ...
+# Subtest: overrides replace defaults on both sides
+ok 19 - overrides replace defaults on both sides
+  ---
+  duration_ms: 0.246756
+  type: 'test'
+  ...
+# (node:189) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a bare key is off while typing unless allowWhileTyping
+ok 20 - a bare key is off while typing unless allowWhileTyping
+  ---
+  duration_ms: 0.845341
+  type: 'test'
+  ...
+# Subtest: a modified key needs enableOnInputFocus or isGlobal while typing
+ok 21 - a modified key needs enableOnInputFocus or isGlobal while typing
+  ---
+  duration_ms: 0.169209
+  type: 'test'
+  ...
+# Subtest: terminal focus gates enableOnTerminalFocus and requireTerminalFocus
+ok 22 - terminal focus gates enableOnTerminalFocus and requireTerminalFocus
+  ---
+  duration_ms: 0.116215
+  type: 'test'
+  ...
+# Subtest: dialogs: only listed dialog ids, and nothing unlisted while a dialog is open
+ok 23 - dialogs: only listed dialog ids, and nothing unlisted while a dialog is open
+  ---
+  duration_ms: 0.128252
+  type: 'test'
+  ...
+# Subtest: higher priority runs first, then more modifiers; false passes on
+ok 24 - higher priority runs first, then more modifiers; false passes on
+  ---
+  duration_ms: 1.89609
+  type: 'test'
+  ...
+# Subtest: telemetry carries the dialog id and context only when present
+ok 25 - telemetry carries the dialog id and context only when present
+  ---
+  duration_ms: 0.243638
+  type: 'test'
+  ...
+# Subtest: held-key repeats are swallowed unless a handler allows repeat
+ok 26 - held-key repeats are swallowed unless a handler allows repeat
+  ---
+  duration_ms: 0.234998
+  type: 'test'
+  ...
+# Subtest: Escape blurs a focused input before any handler; not in the terminal
+ok 27 - Escape blurs a focused input before any handler; not in the terminal
+  ---
+  duration_ms: 0.144988
+  type: 'test'
+  ...
+# Subtest: recorder, lone modifiers, unfocused scopes and unregister all pass
+ok 28 - recorder, lone modifiers, unfocused scopes and unregister all pass
+  ---
+  duration_ms: 0.317863
+  type: 'test'
+  ...
+# Subtest: Backspace outside a text field is prevented even when nothing handles it
+ok 29 - Backspace outside a text field is prevented even when nothing handles it
+  ---
+  duration_ms: 0.344271
+  type: 'test'
+  ...
+# (node:206) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: probeFocus: input in path, outermost contenteditable, terminal, recorder
+ok 30 - probeFocus: input in path, outermost contenteditable, terminal, recorder
+  ---
+  duration_ms: 2.346621
+  type: 'test'
+  ...
+# Subtest: probeFocus: a data-keybinding-local list reads its own plain keys, like a text field
+ok 31 - probeFocus: a data-keybinding-local list reads its own plain keys, like a text field
+  ---
+  duration_ms: 0.239451
+  type: 'test'
+  ...
+# Subtest: a matching shortcut runs, stops propagation and sends telemetry
+ok 32 - a matching shortcut runs, stops propagation and sends telemetry
+  ---
+  duration_ms: 0.67671
+  type: 'test'
+  ...
+# Subtest: an unmatched key passes untouched; Backspace outside a field is prevented
+ok 33 - an unmatched key passes untouched; Backspace outside a field is prevented
+  ---
+  duration_ms: 3.517839
+  type: 'test'
+  ...
+# Subtest: a bare Escape waits for the bubble phase and is skipped if handled
+ok 34 - a bare Escape waits for the bubble phase and is skipped if handled
+  ---
+  duration_ms: 0.631379
+  type: 'test'
+  ...
+# Subtest: a bare Escape in a text field blurs it
+ok 35 - a bare Escape in a text field blurs it
+  ---
+  duration_ms: 0.25034
+  type: 'test'
+  ...
+# Subtest: the bubble listener ignores everything but a bare Escape
+ok 36 - the bubble listener ignores everything but a bare Escape
+  ---
+  duration_ms: 0.233154
+  type: 'test'
+  ...
+# Subtest: a key capture takes every key until removed
+ok 37 - a key capture takes every key until removed
+  ---
+  duration_ms: 0.452321
+  type: 'test'
+  ...
+# Subtest: removing a replaced capture keeps the newer one
+ok 38 - removing a replaced capture keeps the newer one
+  ---
+  duration_ms: 0.334497
+  type: 'test'
+  ...
+# Subtest: text input is blocked briefly after an Option chord runs
+ok 39 - text input is blocked briefly after an Option chord runs
+  ---
+  duration_ms: 0.463373
+  type: 'test'
+  ...
+# Subtest: a Command-Option chord does not block text input
+ok 40 - a Command-Option chord does not block text input
+  ---
+  duration_ms: 0.272119
+  type: 'test'
+  ...
+# Subtest: a held-key repeat with no repeatable handler is swallowed
+ok 41 - a held-key repeat with no repeatable handler is swallowed
+  ---
+  duration_ms: 0.160189
+  type: 'test'
+  ...
+# Subtest: installKeyListeners wires capture and bubble phases and removes them
+ok 42 - installKeyListeners wires capture and bubble phases and removes them
+  ---
+  duration_ms: 19.48768
+  type: 'test'
+  ...
+# (node:208) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: openDebugTools fires on physical ⌘⌥I (code=KeyI)
+ok 43 - openDebugTools fires on physical ⌘⌥I (code=KeyI)
+  ---
+  duration_ms: 1.15029
+  type: 'test'
+  ...
+# Subtest: openDebugTools fires even with a dialog open (isGlobal:true)
+ok 44 - openDebugTools fires even with a dialog open (isGlobal:true)
+  ---
+  duration_ms: 0.176925
+  type: 'test'
+  ...
+# Subtest: openDebugTools does not fire without the alt modifier
+ok 45 - openDebugTools does not fire without the alt modifier
+  ---
+  duration_ms: 0.134479
+  type: 'test'
+  ...
+# Subtest: openDebugTools shortcut override replaces ⌘⌥I
+ok 46 - openDebugTools shortcut override replaces ⌘⌥I
+  ---
+  duration_ms: 0.531546
+  type: 'test'
+  ...
+# Subtest: workspace.toggleCreateFrom fires on ⌘I
+ok 47 - workspace.toggleCreateFrom fires on ⌘I
+  ---
+  duration_ms: 0.22415
+  type: 'test'
+  ...
+# Subtest: workspace.toggleCreateFrom fires while typing (allowWhileTyping:true)
+ok 48 - workspace.toggleCreateFrom fires while typing (allowWhileTyping:true)
+  ---
+  duration_ms: 0.154017
+  type: 'test'
+  ...
+# Subtest: workspace.toggleCreateFrom skips when handler is undefined (picker disabled)
+ok 49 - workspace.toggleCreateFrom skips when handler is undefined (picker disabled)
+  ---
+  duration_ms: 0.146403
+  type: 'test'
+  ...
+# Subtest: workspace.toggleCreateFrom shortcut override replaces ⌘I
+ok 50 - workspace.toggleCreateFrom shortcut override replaces ⌘I
+  ---
+  duration_ms: 0.615701
+  type: 'test'
+  ...
+# (node:220) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: bad documents give no overrides
+ok 51 - bad documents give no overrides
+  ---
+  duration_ms: 1.84006
+  type: 'test'
+  ...
+# Subtest: shortcut parsing canonicalizes modifiers and rejects junk
+ok 52 - shortcut parsing canonicalizes modifiers and rejects junk
+  ---
+  duration_ms: 0.406676
+  type: 'test'
+  ...
+# Subtest: unknown, non-configurable and invalid entries are dropped
+ok 53 - unknown, non-configurable and invalid entries are dropped
+  ---
+  duration_ms: 0.349852
+  type: 'test'
+  ...
+# Subtest: legacy ids migrate to their replacements
+ok 54 - legacy ids migrate to their replacements
+  ---
+  duration_ms: 0.296292
+  type: 'test'
+  ...
+# Subtest: old cmd-enter setups regain Shift+Enter for new line
+ok 55 - old cmd-enter setups regain Shift+Enter for new line
+  ---
+  duration_ms: 0.48401
+  type: 'test'
+  ...
+# Subtest: serialize stores singles bare, lists as arrays, and deletes resets
+ok 56 - serialize stores singles bare, lists as arrays, and deletes resets
+  ---
+  duration_ms: 0.198461
+  type: 'test'
+  ...
+# Subtest: effective shortcuts fall back to key plus additionalKeys
+ok 57 - effective shortcuts fall back to key plus additionalKeys
+  ---
+  duration_ms: 7.399882
+  type: 'test'
+  ...
+# Subtest: store serializes concurrent updates without losing either
+ok 58 - store serializes concurrent updates without losing either
+  ---
+  duration_ms: 47.532352
+  type: 'test'
+  ...
+# (node:230) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: registry matches the extracted evidence with the requested OpenConductor loadout shortcuts
+ok 59 - registry matches the extracted evidence with the requested OpenConductor loadout shortcuts
+  ---
+  duration_ms: 2.918989
+  type: 'test'
+  ...
+# Subtest: five loadout shortcuts are Cmd1–5 while retained reference evidence stays CmdCtrl1–5
+ok 60 - five loadout shortcuts are Cmd1–5 while retained reference evidence stays CmdCtrl1–5
+  ---
+  duration_ms: 0.31787
+  type: 'test'
+  ...
+# Subtest: registry shape: 165 unique ids, known categories and modifiers
+ok 61 - registry shape: 165 unique ids, known categories and modifiers
+  ---
+  duration_ms: 0.541742
+  type: 'test'
+  ...
+# Subtest: every id in scopes, presets and aliases names a command
+ok 62 - every id in scopes, presets and aliases names a command
+  ---
+  duration_ms: 0.273394
+  type: 'test'
+  ...
+# Subtest: help shortcut defaults to Option+Command+/ (physical Slash)
+ok 63 - help shortcut defaults to Option+Command+/ (physical Slash)
+  ---
+  duration_ms: 0.139827
+  type: 'test'
+  ...
+# (node:236) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: registration defaults: input and terminal focus on, NORMAL priority, not global
+ok 64 - registration defaults: input and terminal focus on, NORMAL priority, not global
+  ---
+  duration_ms: 7.112432
+  type: 'test'
+  ...
+# Subtest: one binding per effective shortcut; call-site options win over the command's when
+ok 65 - one binding per effective shortcut; call-site options win over the command's when
+  ---
+  duration_ms: 0.383747
+  type: 'test'
+  ...
+# Subtest: Cmd+K opens the palette idle, while typing and inside the palette
+ok 66 - Cmd+K opens the palette idle, while typing and inside the palette
+  ---
+  duration_ms: 2.002172
+  type: 'test'
+  ...
+# Subtest: terminal-only commands need terminal focus
+ok 67 - terminal-only commands need terminal focus
+  ---
+  duration_ms: 2.143758
+  type: 'test'
+  ...
+# Subtest: Tab cycles palette tabs only while the palette is open
+ok 68 - Tab cycles palette tabs only while the palette is open
+  ---
+  duration_ms: 0.577473
+  type: 'test'
+  ...
+# Subtest: an open dialog blocks non-global commands
+ok 69 - an open dialog blocks non-global commands
+  ---
+  duration_ms: 2.404601
+  type: 'test'
+  ...
+# Subtest: bare keys need allowWhileTyping; Cmd chords and Cmd+1..9 fire while typing
+ok 70 - bare keys need allowWhileTyping; Cmd chords and Cmd+1..9 fire while typing
+  ---
+  duration_ms: 0.365374
+  type: 'test'
+  ...
+# Subtest: overrides rebind what resolves
+ok 71 - overrides rebind what resolves
+  ---
+  duration_ms: 0.174193
+  type: 'test'
+  ...
+# (node:243) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ⌘A outside a text field is swallowed
+ok 72 - ⌘A outside a text field is swallowed
+  ---
+  duration_ms: 4.665445
+  type: 'test'
+  ...
+# Subtest: ⌘A in an input, a textarea or a contenteditable element keeps its native meaning
+ok 73 - ⌘A in an input, a textarea or a contenteditable element keeps its native meaning
+  ---
+  duration_ms: 0.225728
+  type: 'test'
+  ...
+# Subtest: other keys are left alone
+ok 74 - other keys are left alone
+  ---
+  duration_ms: 0.195763
+  type: 'test'
+  ...
+# (node:254) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: parts are modifiers in ctrl, meta, shift, alt order, then the key
+ok 75 - parts are modifiers in ctrl, meta, shift, alt order, then the key
+  ---
+  duration_ms: 1.733462
+  type: 'test'
+  ...
+# Subtest: glyphs and spoken labels
+ok 76 - glyphs and spoken labels
+  ---
+  duration_ms: 0.263117
+  type: 'test'
+  ...
+# Subtest: search tokens include modifier aliases and glyphs
+ok 77 - search tokens include modifier aliases and glyphs
+  ---
+  duration_ms: 0.131623
+  type: 'test'
+  ...
+# Subtest: logical keys match case-insensitively with exact modifiers
+ok 78 - logical keys match case-insensitively with exact modifiers
+  ---
+  duration_ms: 12.63048
+  type: 'test'
+  ...
+# Subtest: symbols tolerate the Shift or Option that produced them
+ok 79 - symbols tolerate the Shift or Option that produced them
+  ---
+  duration_ms: 0.342865
+  type: 'test'
+  ...
+# Subtest: physical keys match by code whatever the layout types
+ok 80 - physical keys match by code whatever the layout types
+  ---
+  duration_ms: 0.474357
+  type: 'test'
+  ...
+# Subtest: sameShortcut is exact; equivalent bridges logical and physical
+ok 81 - sameShortcut is exact; equivalent bridges logical and physical
+  ---
+  duration_ms: 0.784877
+  type: 'test'
+  ...
+# Subtest: recording: Option letter chords become physical, dead keys are refused
+ok 82 - recording: Option letter chords become physical, dead keys are refused
+  ---
+  duration_ms: 1.600361
+  type: 'test'
+  ...
+# (node:261) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:261) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: Option+ArrowDown: next sibling group skips an empty disabled-result group
+ok 83 - Option+ArrowDown: next sibling group skips an empty disabled-result group
+  ---
+  duration_ms: 22.988407
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: next sibling group starts at its first enabled row
+ok 84 - Option+ArrowDown: next sibling group starts at its first enabled row
+  ---
+  duration_ms: 12.954427
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: previous group selects its first row, not its last
+ok 85 - Option+ArrowUp: previous group selects its first row, not its last
+  ---
+  duration_ms: 1.692276
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: previous sibling skips empty disabled-result groups
+ok 86 - Option+ArrowUp: previous sibling skips empty disabled-result groups
+  ---
+  duration_ms: 8.574994
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: last group falls back to one row forward
+ok 87 - Option+ArrowDown: last group falls back to one row forward
+  ---
+  duration_ms: 3.607772
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: last row falls back to ordinary forward wrap
+ok 88 - Option+ArrowDown: last row falls back to ordinary forward wrap
+  ---
+  duration_ms: 3.864241
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: first group falls back to one row backward
+ok 89 - Option+ArrowUp: first group falls back to one row backward
+  ---
+  duration_ms: 10.621868
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: first row falls back to ordinary backward wrap
+ok 90 - Option+ArrowUp: first row falls back to ordinary backward wrap
+  ---
+  duration_ms: 3.957895
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: no selected row falls back to the first item
+ok 91 - Option+ArrowDown: no selected row falls back to the first item
+  ---
+  duration_ms: 3.240227
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: no selected row falls back to the last item
+ok 92 - Option+ArrowUp: no selected row falls back to the last item
+  ---
+  duration_ms: 17.014738
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: a single group moves one row forward
+ok 93 - Option+ArrowDown: a single group moves one row forward
+  ---
+  duration_ms: 10.974898
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: a single group moves one row backward
+ok 94 - Option+ArrowUp: a single group moves one row backward
+  ---
+  duration_ms: 13.09624
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: empty list consumes navigation without selecting
+ok 95 - Option+ArrowDown: empty list consumes navigation without selecting
+  ---
+  duration_ms: 9.901109
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: leading empty groups do not shift next-group offsets
+ok 96 - Option+ArrowDown: leading empty groups do not shift next-group offsets
+  ---
+  duration_ms: 8.784234
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: leading empty groups do not shift previous-group offsets
+ok 97 - Option+ArrowUp: leading empty groups do not shift previous-group offsets
+  ---
+  duration_ms: 1.258274
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: Workspaces active to Archived group
+ok 98 - Option+ArrowDown: Workspaces active to Archived group
+  ---
+  duration_ms: 2.346191
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: Workspaces Archived to active group
+ok 99 - Option+ArrowUp: Workspaces Archived to active group
+  ---
+  duration_ms: 0.851697
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: Projects single group keeps ordinary wrap
+ok 100 - Option+ArrowDown: Projects single group keeps ordinary wrap
+  ---
+  duration_ms: 12.259854
+  type: 'test'
+  ...
+# Subtest: control: {} ArrowDown keeps existing row/end navigation
+ok 101 - control: {} ArrowDown keeps existing row/end navigation
+  ---
+  duration_ms: 5.425026
+  type: 'test'
+  ...
+# Subtest: control: {} ArrowUp keeps existing row/end navigation
+ok 102 - control: {} ArrowUp keeps existing row/end navigation
+  ---
+  duration_ms: 11.972271
+  type: 'test'
+  ...
+# Subtest: control: {"metaKey":true} ArrowDown keeps existing row/end navigation
+ok 103 - control: {"metaKey":true} ArrowDown keeps existing row/end navigation
+  ---
+  duration_ms: 6.599733
+  type: 'test'
+  ...
+# Subtest: control: {"metaKey":true} ArrowUp keeps existing row/end navigation
+ok 104 - control: {"metaKey":true} ArrowUp keeps existing row/end navigation
+  ---
+  duration_ms: 11.754176
+  type: 'test'
+  ...
+# Subtest: control: {} Home keeps existing row/end navigation
+ok 105 - control: {} Home keeps existing row/end navigation
+  ---
+  duration_ms: 6.568455
+  type: 'test'
+  ...
+# Subtest: control: {} End keeps existing row/end navigation
+ok 106 - control: {} End keeps existing row/end navigation
+  ---
+  duration_ms: 18.970088
+  type: 'test'
+  ...
+# Subtest: control: {"ctrlKey":true} n keeps existing row/end navigation
+ok 107 - control: {"ctrlKey":true} n keeps existing row/end navigation
+  ---
+  duration_ms: 9.209251
+  type: 'test'
+  ...
+# Subtest: control: {"ctrlKey":true} j keeps existing row/end navigation
+ok 108 - control: {"ctrlKey":true} j keeps existing row/end navigation
+  ---
+  duration_ms: 7.068982
+  type: 'test'
+  ...
+# Subtest: control: {"ctrlKey":true} p keeps existing row/end navigation
+ok 109 - control: {"ctrlKey":true} p keeps existing row/end navigation
+  ---
+  duration_ms: 15.59372
+  type: 'test'
+  ...
+# Subtest: control: {"ctrlKey":true} k keeps existing row/end navigation
+ok 110 - control: {"ctrlKey":true} k keeps existing row/end navigation
+  ---
+  duration_ms: 14.706087
+  type: 'test'
+  ...
+# Subtest: control: composing Option+ArrowDown {"isComposing":true} remains unconsumed
+ok 111 - control: composing Option+ArrowDown {"isComposing":true} remains unconsumed
+  ---
+  duration_ms: 11.528771
+  type: 'test'
+  ...
+# Subtest: control: composing Option+ArrowUp {"isComposing":true} remains unconsumed
+ok 112 - control: composing Option+ArrowUp {"isComposing":true} remains unconsumed
+  ---
+  duration_ms: 9.631158
+  type: 'test'
+  ...
+# Subtest: control: composing Option+ArrowDown {"keyCode":229} remains unconsumed
+ok 113 - control: composing Option+ArrowDown {"keyCode":229} remains unconsumed
+  ---
+  duration_ms: 7.951478
+  type: 'test'
+  ...
+# Subtest: control: composing Option+ArrowUp {"keyCode":229} remains unconsumed
+ok 114 - control: composing Option+ArrowUp {"keyCode":229} remains unconsumed
+  ---
+  duration_ms: 7.960037
+  type: 'test'
+  ...
+# Subtest: control: Enter selects the active item
+ok 115 - control: Enter selects the active item
+  ---
+  duration_ms: 15.166747
+  type: 'test'
+  ...
+# Subtest: control: Escape closes instead of navigating
+ok 116 - control: Escape closes instead of navigating
+  ---
+  duration_ms: 0.861991
+  type: 'test'
+  ...
+# Subtest: control: a custom Option shortcut still switches tabs
+ok 117 - control: a custom Option shortcut still switches tabs
+  ---
+  duration_ms: 1.037548
+  type: 'test'
+  ...
+# Subtest: control: unrelated Option input stays in the search field
+ok 118 - control: unrelated Option input stays in the search field
+  ---
+  duration_ms: 5.965264
+  type: 'test'
+  ...
+# (node:270) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Projects returns the last-viewed workspace in that project, not its first or newest row
+ok 119 - Projects returns the last-viewed workspace in that project, not its first or newest row
+  ---
+  duration_ms: 0.7323
+  type: 'test'
+  ...
+# Subtest: Projects without a surviving recent visit opens the most recently updated workspace
+ok 120 - Projects without a surviving recent visit opens the most recently updated workspace
+  ---
+  duration_ms: 8.050185
+  type: 'test'
+  ...
+# Subtest: Projects preserves source order on a recency tie and has no target for an empty project
+ok 121 - Projects preserves source order on a recency tie and has no target for an empty project
+  ---
+  duration_ms: 0.138503
+  type: 'test'
+  ...
+# (node:278) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: recordViewedWorkspace puts the id first, drops its old place and keeps 5
+ok 122 - recordViewedWorkspace puts the id first, drops its old place and keeps 5
+  ---
+  duration_ms: 1.746777
+  type: 'test'
+  ...
+# Subtest: the list survives a save and a fresh load, beside other stored fields
+ok 123 - the list survives a save and a fresh load, beside other stored fields
+  ---
+  duration_ms: 0.40858
+  type: 'test'
+  ...
+# Subtest: a missing or malformed store reads as empty, and the load caps at 5
+ok 124 - a missing or malformed store reads as empty, and the load caps at 5
+  ---
+  duration_ms: 0.265684
+  type: 'test'
+  ...
+# (node:301) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: scores: exact > prefix > word-start initials > scattered; misses are 0
+ok 125 - scores: exact > prefix > word-start initials > scattered; misses are 0
+  ---
+  duration_ms: 1.318778
+  type: 'test'
+  ...
+# Subtest: token matching needs every token in some field
+ok 126 - token matching needs every token in some field
+  ---
+  duration_ms: 0.341287
+  type: 'test'
+  ...
+# Subtest: tabs cycle with wrap and skip Projects when hidden
+ok 127 - tabs cycle with wrap and skip Projects when hidden
+  ---
+  duration_ms: 0.192249
+  type: 'test'
+  ...
+# Subtest: All tab with empty query: recents (archived included, unknown ids dropped) then action groups in fixed order
+ok 128 - All tab with empty query: recents (archived included, unknown ids dropped) then action groups in fixed order
+  ---
+  duration_ms: 1.489432
+  type: 'test'
+  ...
+# Subtest: workspace actions are hidden without an active workspace
+ok 129 - workspace actions are hidden without an active workspace
+  ---
+  duration_ms: 0.290554
+  type: 'test'
+  ...
+# Subtest: All tab with a query: command groups ranked by their words, then Projects, then Workspaces (Conductor's `J1`)
+ok 130 - All tab with a query: command groups ranked by their words, then Projects, then Workspaces (Conductor's `J1`)
+  ---
+  duration_ms: 0.949387
+  type: 'test'
+  ...
+# Subtest: a query nothing matches keeps the All tab's Workspaces group with "No results found"
+ok 131 - a query nothing matches keeps the All tab's Workspaces group with "No results found"
+  ---
+  duration_ms: 0.293963
+  type: 'test'
+  ...
+# Subtest: group order follows the query's words: settings words put Settings first
+ok 132 - group order follows the query's words: settings words put Settings first
+  ---
+  duration_ms: 0.194423
+  type: 'test'
+  ...
+# Subtest: Workspaces tab lists non-archived workspaces newest first and caps results
+ok 133 - Workspaces tab lists non-archived workspaces newest first and caps results
+  ---
+  duration_ms: 0.439433
+  type: 'test'
+  ...
+# Subtest: Projects, Actions and Settings tabs
+ok 134 - Projects, Actions and Settings tabs
+  ---
+  duration_ms: 0.577876
+  type: 'test'
+  ...
+# Subtest: Workspaces tab archive filter stays independent from archived matches in All search
+ok 135 - Workspaces tab archive filter stays independent from archived matches in All search
+  ---
+  duration_ms: 0.29515
+  type: 'test'
+  ...
+# Subtest: All search appends matching archived workspaces after active matches
+ok 136 - All search appends matching archived workspaces after active matches
+  ---
+  duration_ms: 0.25526
+  type: 'test'
+  ...
+# Subtest: All search caps active and archived workspace matches separately
+ok 137 - All search caps active and archived workspace matches separately
+  ---
+  duration_ms: 0.52189
+  type: 'test'
+  ...
+# Subtest: All search orders each state by workspace updates instead of recent visits
+ok 138 - All search orders each state by workspace updates instead of recent visits
+  ---
+  duration_ms: 15.65963
+  type: 'test'
+  ...
+# Subtest: All search applies each state's cap after sorting by workspace updates
+ok 139 - All search applies each state's cap after sorting by workspace updates
+  ---
+  duration_ms: 0.44321
+  type: 'test'
+  ...
+# (node:322) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: command queries can span consecutive keyword aliases
+ok 140 - command queries can span consecutive keyword aliases
+  ---
+  duration_ms: 1.165273
+  type: 'test'
+  ...
+# Subtest: command queries can span the value and its keyword aliases
+ok 141 - command queries can span the value and its keyword aliases
+  ---
+  duration_ms: 0.159526
+  type: 'test'
+  ...
+# Subtest: combined aliases still require query characters in candidate order
+ok 142 - combined aliases still require query characters in candidate order
+  ---
+  duration_ms: 0.146085
+  type: 'test'
+  ...
+# Subtest: commands without aliases retain exact, prefix and missing-query behavior
+ok 143 - commands without aliases retain exact, prefix and missing-query behavior
+  ---
+  duration_ms: 0.17911
+  type: 'test'
+  ...
+# (node:338) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: scattered letters across command aliases stay below the palette threshold
+ok 144 - scattered letters across command aliases stay below the palette threshold
+  ---
+  duration_ms: 1.020302
+  type: 'test'
+  ...
+# Subtest: scattered letters across a setting and its aliases stay below the palette threshold
+ok 145 - scattered letters across a setting and its aliases stay below the palette threshold
+  ---
+  duration_ms: 0.254241
+  type: 'test'
+  ...
+# Subtest: a workspace-name query does not put scattered command and settings matches before the workspace
+ok 146 - a workspace-name query does not put scattered command and settings matches before the workspace
+  ---
+  duration_ms: 1.849948
+  type: 'test'
+  ...
+# Subtest: contiguous aliases and word starts remain searchable
+ok 147 - contiguous aliases and word starts remain searchable
+  ---
+  duration_ms: 0.516303
+  type: 'test'
+  ...
+# (node:346) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the actual palette callback retains the last workspace repository after Home and reload
+ok 148 - the actual palette callback retains the last workspace repository after Home and reload
+  ---
+  duration_ms: 11.538007
+  type: 'test'
+  ...
+# Subtest: the actual palette callback keeps the requested repository setting row
+ok 149 - the actual palette callback keeps the requested repository setting row
+  ---
+  duration_ms: 0.444237
+  type: 'test'
+  ...
+# Subtest: a resolved selected workspace takes precedence over the saved route
+ok 150 - a resolved selected workspace takes precedence over the saved route
+  ---
+  duration_ms: 0.277972
+  type: 'test'
+  ...
+# Subtest: no route, an invalid route or a removed repository falls back to the first repository
+ok 151 - no route, an invalid route or a removed repository falls back to the first repository
+  ---
+  duration_ms: 0.523528
+  type: 'test'
+  ...
+# Subtest: the saved route selects its repository even if that workspace is no longer in the sidebar
+ok 152 - the saved route selects its repository even if that workspace is no longer in the sidebar
+  ---
+  duration_ms: 0.216097
+  type: 'test'
+  ...
+# Subtest: an empty repository list has no Settings target
+ok 153 - an empty repository list has no Settings target
+  ---
+  duration_ms: 1.73906
+  type: 'test'
+  ...
+# Subtest: an unresolved or wrong-repository selection does not create a saved workspace route
+ok 154 - an unresolved or wrong-repository selection does not create a saved workspace route
+  ---
+  duration_ms: 0.214963
+  type: 'test'
+  ...
+# Subtest: resolved unstarted and failed workspaces still establish their repository route
+ok 155 - resolved unstarted and failed workspaces still establish their repository route
+  ---
+  duration_ms: 0.163016
+  type: 'test'
+  ...
+# Subtest: only a full matching archived workspace can establish the selected route
+ok 156 - only a full matching archived workspace can establish the selected route
+  ---
+  duration_ms: 0.333019
+  type: 'test'
+  ...
+# Subtest: stale unresolved selection leaves the previous persisted route intact
+ok 157 - stale unresolved selection leaves the previous persisted route intact
+  ---
+  duration_ms: 0.471362
+  type: 'test'
+  ...
+# Subtest: the authoritative recent writer preserves the route and ordinary tab fields through reload
+ok 158 - the authoritative recent writer preserves the route and ordinary tab fields through reload
+  ---
+  duration_ms: 0.316162
+  type: 'test'
+  ...
+# Subtest: saving a route preserves recents and sibling fields from the latest ordinary write
+ok 159 - saving a route preserves recents and sibling fields from the latest ordinary write
+  ---
+  duration_ms: 0.244188
+  type: 'test'
+  ...
+# Subtest: persisted route parsing rejects malformed fields and non-workspace paths
+ok 160 - persisted route parsing rejects malformed fields and non-workspace paths
+  ---
+  duration_ms: 0.190335
+  type: 'test'
+  ...
+# Subtest: workspace routes accept a trailing slash and search without decoding opaque IDs
+ok 161 - workspace routes accept a trailing slash and search without decoding opaque IDs
+  ---
+  duration_ms: 0.094028
+  type: 'test'
+  ...
+# Subtest: storage denial does not throw or prevent in-memory repository selection
+ok 162 - storage denial does not throw or prevent in-memory repository selection
+  ---
+  duration_ms: 0.227402
+  type: 'test'
+  ...
+# Subtest: user pages, provider pages and unknown rows keep their existing callback behavior
+ok 163 - user pages, provider pages and unknown rows keep their existing callback behavior
+  ---
+  duration_ms: 1.39228
+  type: 'test'
+  ...
+# (node:352) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: arrows, Enter and Escape drive the list
+ok 164 - arrows, Enter and Escape drive the list
+  ---
+  duration_ms: 0.92591
+  type: 'test'
+  ...
+# Subtest: Ctrl+J moves forward through results and wraps like Ctrl+N
+ok 165 - Ctrl+J moves forward through results and wraps like Ctrl+N
+  ---
+  duration_ms: 0.717808
+  type: 'test'
+  ...
+# Subtest: Ctrl+K moves backward through results and wraps like Ctrl+P
+ok 166 - Ctrl+K moves backward through results and wraps like Ctrl+P
+  ---
+  duration_ms: 0.371155
+  type: 'test'
+  ...
+# Subtest: Home selects the first result instead of moving only the text cursor
+ok 167 - Home selects the first result instead of moving only the text cursor
+  ---
+  duration_ms: 0.123825
+  type: 'test'
+  ...
+# Subtest: End selects the last result instead of moving only the text cursor
+ok 168 - End selects the last result instead of moving only the text cursor
+  ---
+  duration_ms: 0.117103
+  type: 'test'
+  ...
+# Subtest: modified Home and End keep their text-field behavior
+ok 169 - modified Home and End keep their text-field behavior
+  ---
+  duration_ms: 12.439224
+  type: 'test'
+  ...
+# Subtest: Tab and Shift+Tab switch tabs; Cmd+K closes; letters type
+ok 170 - Tab and Shift+Tab switch tabs; Cmd+K closes; letters type
+  ---
+  duration_ms: 0.226059
+  type: 'test'
+  ...
+# Subtest: rebinding the palette toggle changes what closes it
+ok 171 - rebinding the palette toggle changes what closes it
+  ---
+  duration_ms: 0.133609
+  type: 'test'
+  ...
+# Subtest: active row wraps and clamps
+ok 172 - active row wraps and clamps
+  ---
+  duration_ms: 0.485804
+  type: 'test'
+  ...
+# (node:362) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: All to Projects keeps the second selected project for Enter activation
+ok 173 - All to Projects keeps the second selected project for Enter activation
+  ---
+  duration_ms: 20.199925
+  type: 'test'
+  ...
+# Subtest: Projects to All keeps the selected project instead of selecting a command
+ok 174 - Projects to All keeps the selected project instead of selecting a command
+  ---
+  duration_ms: 3.763328
+  type: 'test'
+  ...
+# Subtest: a project absent from the destination falls back to its first result
+ok 175 - a project absent from the destination falls back to its first result
+  ---
+  duration_ms: 0.303381
+  type: 'test'
+  ...
+# Subtest: non-project tab transitions keep their existing initial selection
+ok 176 - non-project tab transitions keep their existing initial selection
+  ---
+  duration_ms: 2.415088
+  type: 'test'
+  ...
+# (node:370) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: rows are newest first; Hiding archived leaves archived workspaces out
+ok 177 - rows are newest first; Hiding archived leaves archived workspaces out
+  ---
+  duration_ms: 2.810805
+  type: 'test'
+  ...
+# Subtest: Showing all lists archived workspaces in their own group; Only archived lists only them
+ok 178 - Showing all lists archived workspaces in their own group; Only archived lists only them
+  ---
+  duration_ms: 0.258541
+  type: 'test'
+  ...
+# Subtest: the project filter and the query narrow the rows
+ok 179 - the project filter and the query narrow the rows
+  ---
+  duration_ms: 0.705456
+  type: 'test'
+  ...
+# Subtest: rows are capped at 50 (Conductor's GHe)
+ok 180 - rows are capped at 50 (Conductor's GHe)
+  ---
+  duration_ms: 0.293095
+  type: 'test'
+  ...
+# Subtest: Clear filters shows under the empty list whenever a filter is set, Hiding archived included
+ok 181 - Clear filters shows under the empty list whenever a filter is set, Hiding archived included
+  ---
+  duration_ms: 0.120334
+  type: 'test'
+  ...
+# Subtest: the compact project filter reads All projects, the project's name, or a count
+ok 182 - the compact project filter reads All projects, the project's name, or a count
+  ---
+  duration_ms: 0.207173
+  type: 'test'
+  ...
+# Subtest: with no row highlighted, the first move picks the first or the last row
+ok 183 - with no row highlighted, the first move picks the first or the last row
+  ---
+  duration_ms: 0.242133
+  type: 'test'
+  ...
+1..183
+# tests 183
+# suites 0
+# pass 183
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4985.692418
