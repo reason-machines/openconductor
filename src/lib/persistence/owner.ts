@@ -7,6 +7,8 @@ export interface PersistenceOwner {
 export interface WriteAcknowledgment {
   succeed(): void;
   fail(cause: unknown): void;
+  /** Settle an unsent, deliberately discarded edit without acknowledging a write. */
+  cancel(): void;
 }
 
 export class WriteBarrier implements PersistenceOwner {
@@ -24,20 +26,20 @@ export class WriteBarrier implements PersistenceOwner {
     let finish: () => void = () => {};
     this.pending.set(revision, new Promise<void>((resolve) => { finish = resolve; }));
     let settled = false;
-    const settle = (result: { kind: "success" } | { kind: "failure"; cause: unknown }) => {
+    const settle = (result: { kind: "success" } | { kind: "failure"; cause: unknown } | { kind: "cancel" }) => {
       if (settled) return;
       settled = true;
       if (result.kind === "success") {
         this.acknowledged.set(key, Math.max(this.acknowledged.get(key) ?? 0, revision));
         if ((this.failures.get(key)?.revision ?? 0) < revision) this.failures.delete(key);
-      } else if ((this.acknowledged.get(key) ?? 0) < revision && (this.failures.get(key)?.revision ?? 0) < revision) {
+      } else if (result.kind === "failure" && (this.acknowledged.get(key) ?? 0) < revision && (this.failures.get(key)?.revision ?? 0) < revision) {
         this.failures.set(key, { revision, cause: result.cause });
       }
       this.pending.delete(revision);
       this.revision++;
       finish();
     };
-    return { succeed: () => settle({ kind: "success" }), fail: (cause) => settle({ kind: "failure", cause }) };
+    return { succeed: () => settle({ kind: "success" }), fail: (cause) => settle({ kind: "failure", cause }), cancel: () => settle({ kind: "cancel" }) };
   }
 
   async run<T>(operation: () => Promise<T>, success: (value: T) => boolean = () => true, key = "value"): Promise<T> {

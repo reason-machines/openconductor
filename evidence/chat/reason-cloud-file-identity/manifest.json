@@ -1,0 +1,23 @@
+{
+  "src/reasonCloudFileIdentity.test.ts": "a027e8aa35476a77a44e3907192a60dac0c9bfef920766490fd334a12c074ce4",
+  "evidence/chat/reason-cloud-file-identity/README.md": "8191c6fe672b7776e914f53a64728f192f21909e02c35b7a3607874150ed8c3b",
+  "evidence/chat/reason-cloud-file-identity/adjacent.tap": "48628a52dc355d0f272c61ed6c1a8541d21dc8e8981c70044794f0da5dfe457c",
+  "evidence/chat/reason-cloud-file-identity/baseline.tap": "19ab3d8f453d883181f1920e0eecf81fa7eae6e156e18bfdfc3eb9ec6f6ac056",
+  "evidence/chat/reason-cloud-file-identity/compile-command.json": "b9331cdbf3eb85a7f98643713a2e3ee3883036976fe30c301072f851f0cd0a33",
+  "evidence/chat/reason-cloud-file-identity/compile-missing-transitive-search-path.log": "b0ddfe9f0b650c694e88e271dcd10e6532a0c66777483139a01f1eae2c9d9fc5",
+  "evidence/chat/reason-cloud-file-identity/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidence/chat/reason-cloud-file-identity/freeze.json": "5789280edfe3e9512a109dfc5862338eefefa8f96526879d476b5771cba433b2",
+  "evidence/chat/reason-cloud-file-identity/harness-missing-event-constant.tap": "3e0caccef6db851c9ecc65720074f70b1a6c020d83d4aca0396ca5d31b09067e",
+  "evidence/chat/reason-cloud-file-identity/inputs.json": "4f90d373a92b0a9f99b7a458a3805761dbd2b257f98da188d47b4e02c3f629ca",
+  "evidence/chat/reason-cloud-file-identity/observations.json": "8965fdd30f35eaf736a14279e68e7a213367c413c1878398f12c935952731642",
+  "evidence/chat/reason-cloud-file-identity/pre-execution-setup-freeze.json": "920216f7f7a4e5b09b3acab01db4abbba0b451cf76f2aca3f1f7ca39cbb48d2d",
+  "evidence/chat/reason-cloud-file-identity/prepare.py": "abb1db1e07df2a6701149517b329251e0cbd32a3cd134aface21c0dcb2473610",
+  "evidence/chat/reason-cloud-file-identity/prepared-before-admission-freeze.json": "8664054da9a47dcc54e67f8f4f750322b8e76da456cb943e7283d1c608972fc8",
+  "evidence/chat/reason-cloud-file-identity/probe.rs": "c7f9b41f96caebd45a7d15741b72528de16544f5422a6b7308fd361c52a329a0",
+  "evidence/chat/reason-cloud-file-identity/render_report.py": "6876d69f0244589b1bada22b8babb3c13edb2df53922f6238add50c20298b25e",
+  "evidence/chat/reason-cloud-file-identity/report.html": "509bb4e32cca567e50c17b9d0be6b7b25f3f18e0a78165128ee5a6611631f230",
+  "evidence/chat/reason-cloud-file-identity/source.json": "25dfdede8e086c1e8762f2516ab7dc772c628afba8fa75d56138d8aedeea1659",
+  "evidence/chat/reason-cloud-file-identity/verification.json": "1dd9f16d5240b5387766c136b7bf996265b811484990afe5131bb243ad76d11f",
+  "evidence/chat/reason-cloud-file-identity/verify.py": "c2c76f9b103b115c8deb963009b7a3604ef10f1a448b3272d738131143a11586",
+  "evidence/chat/reason-cloud-file-identity/wire.json": "e471b501dd71305d05092bdaef2d3dc6bc3edac6438b83c4a49a7b0bef3f2815"
+}

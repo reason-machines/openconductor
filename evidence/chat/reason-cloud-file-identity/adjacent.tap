@@ -1,0 +1,418 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude Code, Reason and Codex give Conductor the same tool calls for one turn
+ok 1 - Claude Code, Reason and Codex give Conductor the same tool calls for one turn
+  ---
+  duration_ms: 3.110928
+  type: 'test'
+  ...
+# Subtest: Codex: the shell wrapper is dropped and single command actions become Read/Grep/LS (Conductor's Kst)
+ok 2 - Codex: the shell wrapper is dropped and single command actions become Read/Grep/LS (Conductor's Kst)
+  ---
+  duration_ms: 0.339196
+  type: 'test'
+  ...
+# Subtest: Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)
+ok 3 - Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)
+  ---
+  duration_ms: 0.248498
+  type: 'test'
+  ...
+# Subtest: Codex: MCP tool calls are mcp__server__tool with their arguments
+ok 4 - Codex: MCP tool calls are mcp__server__tool with their arguments
+  ---
+  duration_ms: 0.37713
+  type: 'test'
+  ...
+# Subtest: Reason: a tool with no Claude Code counterpart keeps its title for Conductor's generic row
+ok 5 - Reason: a tool with no Claude Code counterpart keeps its title for Conductor's generic row
+  ---
+  duration_ms: 0.18576
+  type: 'test'
+  ...
+# Subtest: row text: Read lines, Grep matches, generic summary
+ok 6 - row text: Read lines, Grep matches, generic summary
+  ---
+  duration_ms: 1.151134
+  type: 'test'
+  ...
+# Subtest: line counts follow a line diff
+ok 7 - line counts follow a line diff
+  ---
+  duration_ms: 0.215078
+  type: 'test'
+  ...
+# Subtest: every kind in Conductor's registry resolves by name or prefix (D1o, P1o)
+ok 8 - every kind in Conductor's registry resolves by name or prefix (D1o, P1o)
+  ---
+  duration_ms: 0.291051
+  type: 'test'
+  ...
+# Subtest: Skill and SlashCommand labels (_po, Cpo)
+ok 9 - Skill and SlashCommand labels (_po, Cpo)
+  ---
+  duration_ms: 0.334719
+  type: 'test'
+  ...
+# Subtest: a sub-agent row needs a type other than general-purpose (bpo vs Ypo)
+ok 10 - a sub-agent row needs a type other than general-purpose (bpo vs Ypo)
+  ---
+  duration_ms: 0.406158
+  type: 'test'
+  ...
+# Subtest: AskUserQuestion results (Tpo)
+ok 11 - AskUserQuestion results (Tpo)
+  ---
+  duration_ms: 0.387506
+  type: 'test'
+  ...
+# Subtest: task results parse from JSON and from Claude Code's text (epo, jki)
+ok 12 - task results parse from JSON and from Claude Code's text (epo, jki)
+  ---
+  duration_ms: 0.588261
+  type: 'test'
+  ...
+# Subtest: terminal output, background status and file names (Dpo, R0o, xZe)
+ok 13 - terminal output, background status and file names (Dpo, R0o, xZe)
+  ---
+  duration_ms: 0.232613
+  type: 'test'
+  ...
+# Subtest: swarm messages and wake-ups (qpo, Spo)
+ok 14 - swarm messages and wake-ups (qpo, Spo)
+  ---
+  duration_ms: 0.371837
+  type: 'test'
+  ...
+# Subtest: Codex collaboration calls (_0o)
+ok 15 - Codex collaboration calls (_0o)
+  ---
+  duration_ms: 0.629714
+  type: 'test'
+  ...
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a saved chat restores to the same messages and turn state
+ok 16 - a saved chat restores to the same messages and turn state
+  ---
+  duration_ms: 2.263581
+  type: 'test'
+  ...
+# Subtest: only changed messages are written; a turn's state rides on its first message
+ok 17 - only changed messages are written; a turn's state rides on its first message
+  ---
+  duration_ms: 0.421297
+  type: 'test'
+  ...
+# Subtest: rows carry the columns Conductor filters on
+ok 18 - rows carry the columns Conductor filters on
+  ---
+  duration_ms: 0.298871
+  type: 'test'
+  ...
+# Subtest: Reset chat deletes the dropped turns' rows
+ok 19 - Reset chat deletes the dropped turns' rows
+  ---
+  duration_ms: 0.39543
+  type: 'test'
+  ...
+# Subtest: a failed turn keeps its error; a turn running at quit comes back cancelled
+ok 20 - a failed turn keeps its error; a turn running at quit comes back cancelled
+  ---
+  duration_ms: 0.447683
+  type: 'test'
+  ...
+# Subtest: unreadable rows are skipped and messages take the chat's id
+ok 21 - unreadable rows are skipped and messages take the chat's id
+  ---
+  duration_ms: 0.230072
+  type: 'test'
+  ...
+# Subtest: the saver batches changes, writes one at a time, and retries a failed write on the next change
+ok 22 - the saver batches changes, writes one at a time, and retries a failed write on the next change
+  ---
+  duration_ms: 0.598507
+  type: 'test'
+  ...
+# Subtest: a Reset chat goes with the write that deletes the turns, and is retried until it is written
+ok 23 - a Reset chat goes with the write that deletes the turns, and is retried until it is written
+  ---
+  duration_ms: 0.415626
+  type: 'test'
+  ...
+# Subtest: a Reset chat that deletes nothing still writes the rewind
+ok 24 - a Reset chat that deletes nothing still writes the rewind
+  ---
+  duration_ms: 0.381549
+  type: 'test'
+  ...
+# (node:90) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude result wire usage survives final upserts, persistence and replay without duplication
+ok 25 - Claude result wire usage survives final upserts, persistence and replay without duplication
+  ---
+  duration_ms: 10.973461
+  type: 'test'
+  ...
+# Subtest: usage absence, explicit zero and partial counts remain distinct
+ok 26 - usage absence, explicit zero and partial counts remain distinct
+  ---
+  duration_ms: 0.964081
+  type: 'test'
+  ...
+# Subtest: an empty successful Reason turn is a retryable failure, not a timestamp-only reply
+ok 27 - an empty successful Reason turn is a retryable failure, not a timestamp-only reply
+  ---
+  duration_ms: 0.509135
+  type: 'test'
+  ...
+# Subtest: one chat shows a local home path, then a cloud /repo path in a follow-up
+ok 28 - one chat shows a local home path, then a cloud /repo path in a follow-up
+  ---
+  duration_ms: 1.10187
+  type: 'test'
+  ...
+# Subtest: a tool row updates in place and text after it starts a new block
+ok 29 - a tool row updates in place and text after it starts a new block
+  ---
+  duration_ms: 0.38174
+  type: 'test'
+  ...
+# Subtest: device_not_found fails the turn with the error, not a reply
+ok 30 - device_not_found fails the turn with the error, not a reply
+  ---
+  duration_ms: 0.202741
+  type: 'test'
+  ...
+# Subtest: a follow-up during a turn supersedes it; the end goes to the older turn
+ok 31 - a follow-up during a turn supersedes it; the end goes to the older turn
+  ---
+  duration_ms: 0.289296
+  type: 'test'
+  ...
+# Subtest: a mid-turn report is attributed to another session, never the user
+ok 32 - a mid-turn report is attributed to another session, never the user
+  ---
+  duration_ms: 2.046113
+  type: 'test'
+  ...
+# Subtest: Stop ends the turn cancelled with the prompt offered again; a failed call fails it
+ok 33 - Stop ends the turn cancelled with the prompt offered again; a failed call fails it
+  ---
+  duration_ms: 0.519595
+  type: 'test'
+  ...
+# Subtest: a stopped turn marks its prompt cancelled and records start and end times
+ok 34 - a stopped turn marks its prompt cancelled and records start and end times
+  ---
+  duration_ms: 0.442207
+  type: 'test'
+  ...
+# Subtest: a turn stopped before its prompt reached Reason ends cancelled, leaving earlier open turns running
+ok 35 - a turn stopped before its prompt reached Reason ends cancelled, leaving earlier open turns running
+  ---
+  duration_ms: 0.258673
+  type: 'test'
+  ...
+# Subtest: a notice is a system message in the running turn
+ok 36 - a notice is a system message in the running turn
+  ---
+  duration_ms: 0.135471
+  type: 'test'
+  ...
+# Subtest: attachments show by name under the prompt
+ok 37 - attachments show by name under the prompt
+  ---
+  duration_ms: 0.116301
+  type: 'test'
+  ...
+# Subtest: startTurn can take the turn id that names the turn's checkpoints
+ok 38 - startTurn can take the turn id that names the turn's checkpoints
+  ---
+  duration_ms: 0.087568
+  type: 'test'
+  ...
+# (node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: wire JSON from the backend parses into the mirror types
+ok 39 - wire JSON from the backend parses into the mirror types
+  ---
+  duration_ms: 1.035069
+  type: 'test'
+  ...
+# Subtest: plainText joins text blocks only
+ok 40 - plainText joins text blocks only
+  ---
+  duration_ms: 0.17121
+  type: 'test'
+  ...
+# Subtest: upsert appends, then replaces in place
+ok 41 - upsert appends, then replaces in place
+  ---
+  duration_ms: 1.173485
+  type: 'test'
+  ...
+# Subtest: text_delta starts and grows text blocks without mutating the previous transcript
+ok 42 - text_delta starts and grows text blocks without mutating the previous transcript
+  ---
+  duration_ms: 0.253167
+  type: 'test'
+  ...
+# Subtest: text_delta grows thinking blocks
+ok 43 - text_delta grows thinking blocks
+  ---
+  duration_ms: 0.192398
+  type: 'test'
+  ...
+# Subtest: bad deltas are rejected without changes
+ok 44 - bad deltas are rejected without changes
+  ---
+  duration_ms: 0.314532
+  type: 'test'
+  ...
+# Subtest: events for another session are rejected
+ok 45 - events for another session are rejected
+  ---
+  duration_ms: 0.178533
+  type: 'test'
+  ...
+# Subtest: turn_status tracks the active turn and keeps the error
+ok 46 - turn_status tracks the active turn and keeps the error
+  ---
+  duration_ms: 0.246686
+  type: 'test'
+  ...
+# Subtest: transcriptFromMessages keeps this session's messages and lets later copies win
+ok 47 - transcriptFromMessages keeps this session's messages and lets later copies win
+  ---
+  duration_ms: 0.382239
+  type: 'test'
+  ...
+# Subtest: sender fields parse from the wire and decide the origin
+ok 48 - sender fields parse from the wire and decide the origin
+  ---
+  duration_ms: 0.392658
+  type: 'test'
+  ...
+# Subtest: a session report arriving mid-turn leaves the active turn running
+ok 49 - a session report arriving mid-turn leaves the active turn running
+  ---
+  duration_ms: 0.192355
+  type: 'test'
+  ...
+# Subtest: turn status keeps start and end times
+ok 50 - turn status keeps start and end times
+  ---
+  duration_ms: 0.15272
+  type: 'test'
+  ...
+# Subtest: truncateAfterTurn keeps the turn and everything before it, and drops later turns' statuses
+ok 51 - truncateAfterTurn keeps the turn and everything before it, and drops later turns' statuses
+  ---
+  duration_ms: 0.347869
+  type: 'test'
+  ...
+# (node:108) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: turn usage sums distinct result messages only, replayed upserts replace rather than add
+ok 52 - turn usage sums distinct result messages only, replayed upserts replace rather than add
+  ---
+  duration_ms: 2.625784
+  type: 'test'
+  ...
+# Subtest: turn attribution uses the first truthy assistant model, not a later assistant or another turn
+ok 53 - turn attribution uses the first truthy assistant model, not a later assistant or another turn
+  ---
+  duration_ms: 0.531216
+  type: 'test'
+  ...
+# Subtest: turn attribution falls back only to its original user's snapshot, not steering, reports or system data
+ok 54 - turn attribution falls back only to its original user's snapshot, not steering, reports or system data
+  ---
+  duration_ms: 0.316959
+  type: 'test'
+  ...
+# Subtest: missing historical models stay unknown, even when a later steering message has a model
+ok 55 - missing historical models stay unknown, even when a later steering message has a model
+  ---
+  duration_ms: 0.274446
+  type: 'test'
+  ...
+# Subtest: historical turn models survive the existing full-message save and restore boundary
+ok 56 - historical turn models survive the existing full-message save and restore boundary
+  ---
+  duration_ms: 0.660936
+  type: 'test'
+  ...
+# Subtest: a streaming assistant message marks its last text part as streaming and has no footer yet
+ok 57 - a streaming assistant message marks its last text part as streaming and has no footer yet
+  ---
+  duration_ms: 0.333505
+  type: 'test'
+  ...
+# Subtest: an empty assistant message shows while streaming (typing state) and is dropped once the turn ends
+ok 58 - an empty assistant message shows while streaming (typing state) and is dropped once the turn ends
+  ---
+  duration_ms: 0.211366
+  type: 'test'
+  ...
+# Subtest: tool calls pair with their results and tool-result carriers never render as user messages
+ok 59 - tool calls pair with their results and tool-result carriers never render as user messages
+  ---
+  duration_ms: 0.553392
+  type: 'test'
+  ...
+# Subtest: a tool call with no result after its turn ended is interrupted
+ok 60 - a tool call with no result after its turn ended is interrupted
+  ---
+  duration_ms: 0.335002
+  type: 'test'
+  ...
+# Subtest: a mid-turn child-session report renders as a report, not user input, and the turn keeps streaming
+ok 61 - a mid-turn child-session report renders as a report, not user input, and the turn keeps streaming
+  ---
+  duration_ms: 0.44988
+  type: 'test'
+  ...
+# Subtest: a finished turn ends with a footer carrying its final text; a failed turn also offers retry with the prompt
+ok 62 - a finished turn ends with a footer carrying its final text; a failed turn also offers retry with the prompt
+  ---
+  duration_ms: 0.307041
+  type: 'test'
+  ...
+# Subtest: a user toggle on a tool row wins over the expand-by-default setting
+ok 63 - a user toggle on a tool row wins over the expand-by-default setting
+  ---
+  duration_ms: 0.100068
+  type: 'test'
+  ...
+# Subtest: Reset chat applies to every turn with a reply except the chat's last
+ok 64 - Reset chat applies to every turn with a reply except the chat's last
+  ---
+  duration_ms: 0.17684
+  type: 'test'
+  ...
+# Subtest: a stopped turn's prompt is marked cancelled (Conductor's "Cancelled" caption); others are not
+ok 65 - a stopped turn's prompt is marked cancelled (Conductor's "Cancelled" caption); others are not
+  ---
+  duration_ms: 0.14697
+  type: 'test'
+  ...
+# Subtest: a finished turn's footer carries when the turn started and ended
+ok 66 - a finished turn's footer carries when the turn started and ended
+  ---
+  duration_ms: 0.147311
+  type: 'test'
+  ...
+1..66
+# tests 66
+# suites 0
+# pass 66
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 520.023028

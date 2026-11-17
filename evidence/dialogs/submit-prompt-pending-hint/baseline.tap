@@ -1,0 +1,110 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Submit prompt shows the default hint while idle
+ok 1 - Submit prompt shows the default hint while idle
+  ---
+  duration_ms: 2785.290638
+  type: 'test'
+  ...
+# Subtest: Submit prompt shows the configured hint while idle
+ok 2 - Submit prompt shows the configured hint while idle
+  ---
+  duration_ms: 1619.998417
+  type: 'test'
+  ...
+# Subtest: Submit prompt hides the default hint while the opener is pending
+not ok 3 - Submit prompt hides the default hint while the opener is pending
+  ---
+  duration_ms: 498.712561
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/submitPromptPendingHint.test.ts:112:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    pending button must not advertise an idle shortcut
+    + actual - expected
+    
+    + [
+    +   '⌘↵'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: '⌘↵'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/submitPromptPendingHint.test.ts:121:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Submit prompt restores the default hint and draft after rejection, then retries
+ok 4 - Submit prompt restores the default hint and draft after rejection, then retries
+  ---
+  duration_ms: 227.195453
+  type: 'test'
+  ...
+# Subtest: Submit prompt hides the custom hint while the opener is pending
+not ok 5 - Submit prompt hides the custom hint while the opener is pending
+  ---
+  duration_ms: 161.844804
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/submitPromptPendingHint.test.ts:112:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    pending button must not advertise an idle shortcut
+    + actual - expected
+    
+    + [
+    +   '⌘D'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: '⌘D'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/submitPromptPendingHint.test.ts:121:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Submit prompt restores the custom hint and draft after rejection, then retries
+ok 6 - Submit prompt restores the custom hint and draft after rejection, then retries
+  ---
+  duration_ms: 170.976104
+  type: 'test'
+  ...
+# Subtest: Submit prompt falls back to the default hint after an invalid stored shortcut
+ok 7 - Submit prompt falls back to the default hint after an invalid stored shortcut
+  ---
+  duration_ms: 362.129452
+  type: 'test'
+  ...
+# Subtest: Submit prompt still waits, disables both fields and suppresses duplicate submits
+ok 8 - Submit prompt still waits, disables both fields and suppresses duplicate submits
+  ---
+  duration_ms: 1173.785301
+  type: 'test'
+  ...
+# Subtest: Submit prompt does not open a blank draft
+ok 9 - Submit prompt does not open a blank draft
+  ---
+  duration_ms: 524.679527
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 7
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10038.4498

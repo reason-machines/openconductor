@@ -1,0 +1,600 @@
+{
+  "wire_sha256": "e471b501dd71305d05092bdaef2d3dc6bc3edac6438b83c4a49a7b0bef3f2815",
+  "observations": [
+    {
+      "phase": "live",
+      "case": "local-read-diff",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "local"
+      },
+      "effects": [
+        {
+          "kind": "diff",
+          "path": "src/same.txt"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "live",
+      "case": "local-read-viewer",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "local"
+      },
+      "effects": [
+        {
+          "kind": "viewer",
+          "value": {
+            "path": "src/same.txt",
+            "workspaceId": "fixture-workspace"
+          }
+        },
+        {
+          "kind": "tab",
+          "value": "file"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "live",
+      "case": "cloud-read-diff",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "cloud",
+        "sessionId": "11111111-1111-4111-8111-111111111111"
+      },
+      "effects": [
+        {
+          "kind": "diff",
+          "path": "src/same.txt"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "live",
+      "case": "cloud-read-viewer",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "cloud",
+        "sessionId": "11111111-1111-4111-8111-111111111111"
+      },
+      "effects": [
+        {
+          "kind": "viewer",
+          "value": {
+            "path": "src/same.txt",
+            "workspaceId": "fixture-workspace"
+          }
+        },
+        {
+          "kind": "tab",
+          "value": "file"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "live",
+      "case": "cloud-write-viewer",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "cloud",
+        "sessionId": "11111111-1111-4111-8111-111111111111"
+      },
+      "effects": [
+        {
+          "kind": "viewer",
+          "value": {
+            "path": "src/same.txt",
+            "workspaceId": "fixture-workspace"
+          }
+        },
+        {
+          "kind": "tab",
+          "value": "file"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "live",
+      "case": "cloud-edit-diff",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "cloud",
+        "sessionId": "11111111-1111-4111-8111-111111111111"
+      },
+      "effects": [
+        {
+          "kind": "diff",
+          "path": "src/same.txt"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "live",
+      "case": "cloud-multiple-diffs",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "cloud",
+        "sessionId": "11111111-1111-4111-8111-111111111111"
+      },
+      "effects": [
+        {
+          "kind": "diff",
+          "path": "src/same.txt"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "live",
+      "case": "cloud-multiple-diffs",
+      "index": 1,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/second.txt",
+        "relative": "src/second.txt",
+        "place": "cloud",
+        "sessionId": "11111111-1111-4111-8111-111111111111"
+      },
+      "effects": [
+        {
+          "kind": "diff",
+          "path": "src/second.txt"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "live",
+      "case": "child-literal-viewer",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/home/runner/.reason/workspace/sessions/22222222-2222-4222-8222-222222222222/repo/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "cloud",
+        "sessionId": "22222222-2222-4222-8222-222222222222"
+      },
+      "effects": [],
+      "notifications": [
+        {
+          "kind": "info",
+          "message": "same.txt is a cloud file — not available locally"
+        }
+      ]
+    },
+    {
+      "phase": "live",
+      "case": "child-literal-diff",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/home/runner/.reason/workspace/sessions/22222222-2222-4222-8222-222222222222/repo/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "cloud",
+        "sessionId": "22222222-2222-4222-8222-222222222222"
+      },
+      "effects": [],
+      "notifications": [
+        {
+          "kind": "info",
+          "message": "same.txt is a cloud file — not available locally"
+        }
+      ]
+    },
+    {
+      "phase": "live",
+      "case": "local-read-after-return",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "local"
+      },
+      "effects": [
+        {
+          "kind": "viewer",
+          "value": {
+            "path": "src/same.txt",
+            "workspaceId": "fixture-workspace"
+          }
+        },
+        {
+          "kind": "tab",
+          "value": "file"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "live",
+      "case": "local-write-after-return",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "local"
+      },
+      "effects": [
+        {
+          "kind": "viewer",
+          "value": {
+            "path": "src/same.txt",
+            "workspaceId": "fixture-workspace"
+          }
+        },
+        {
+          "kind": "tab",
+          "value": "file"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "live",
+      "case": "local-edit-after-return",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "local"
+      },
+      "effects": [
+        {
+          "kind": "diff",
+          "path": "src/same.txt"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "restored",
+      "case": "local-read-diff",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "local"
+      },
+      "effects": [
+        {
+          "kind": "diff",
+          "path": "src/same.txt"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "restored",
+      "case": "local-read-viewer",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "local"
+      },
+      "effects": [
+        {
+          "kind": "viewer",
+          "value": {
+            "path": "src/same.txt",
+            "workspaceId": "fixture-workspace"
+          }
+        },
+        {
+          "kind": "tab",
+          "value": "file"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "restored",
+      "case": "cloud-read-diff",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "cloud",
+        "sessionId": "11111111-1111-4111-8111-111111111111"
+      },
+      "effects": [
+        {
+          "kind": "diff",
+          "path": "src/same.txt"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "restored",
+      "case": "cloud-read-viewer",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "cloud",
+        "sessionId": "11111111-1111-4111-8111-111111111111"
+      },
+      "effects": [
+        {
+          "kind": "viewer",
+          "value": {
+            "path": "src/same.txt",
+            "workspaceId": "fixture-workspace"
+          }
+        },
+        {
+          "kind": "tab",
+          "value": "file"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "restored",
+      "case": "cloud-write-viewer",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "cloud",
+        "sessionId": "11111111-1111-4111-8111-111111111111"
+      },
+      "effects": [
+        {
+          "kind": "viewer",
+          "value": {
+            "path": "src/same.txt",
+            "workspaceId": "fixture-workspace"
+          }
+        },
+        {
+          "kind": "tab",
+          "value": "file"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "restored",
+      "case": "cloud-edit-diff",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "cloud",
+        "sessionId": "11111111-1111-4111-8111-111111111111"
+      },
+      "effects": [
+        {
+          "kind": "diff",
+          "path": "src/same.txt"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "restored",
+      "case": "cloud-multiple-diffs",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "cloud",
+        "sessionId": "11111111-1111-4111-8111-111111111111"
+      },
+      "effects": [
+        {
+          "kind": "diff",
+          "path": "src/same.txt"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "restored",
+      "case": "cloud-multiple-diffs",
+      "index": 1,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/second.txt",
+        "relative": "src/second.txt",
+        "place": "cloud",
+        "sessionId": "11111111-1111-4111-8111-111111111111"
+      },
+      "effects": [
+        {
+          "kind": "diff",
+          "path": "src/second.txt"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "restored",
+      "case": "child-literal-viewer",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/home/runner/.reason/workspace/sessions/22222222-2222-4222-8222-222222222222/repo/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "cloud",
+        "sessionId": "22222222-2222-4222-8222-222222222222"
+      },
+      "effects": [],
+      "notifications": [
+        {
+          "kind": "info",
+          "message": "same.txt is a cloud file — not available locally"
+        }
+      ]
+    },
+    {
+      "phase": "restored",
+      "case": "child-literal-diff",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/home/runner/.reason/workspace/sessions/22222222-2222-4222-8222-222222222222/repo/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "cloud",
+        "sessionId": "22222222-2222-4222-8222-222222222222"
+      },
+      "effects": [],
+      "notifications": [
+        {
+          "kind": "info",
+          "message": "same.txt is a cloud file — not available locally"
+        }
+      ]
+    },
+    {
+      "phase": "restored",
+      "case": "local-read-after-return",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "local"
+      },
+      "effects": [
+        {
+          "kind": "viewer",
+          "value": {
+            "path": "src/same.txt",
+            "workspaceId": "fixture-workspace"
+          }
+        },
+        {
+          "kind": "tab",
+          "value": "file"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "restored",
+      "case": "local-write-after-return",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "local"
+      },
+      "effects": [
+        {
+          "kind": "viewer",
+          "value": {
+            "path": "src/same.txt",
+            "workspaceId": "fixture-workspace"
+          }
+        },
+        {
+          "kind": "tab",
+          "value": "file"
+        }
+      ],
+      "notifications": []
+    },
+    {
+      "phase": "restored",
+      "case": "local-edit-after-return",
+      "index": 0,
+      "declaredTarget": {
+        "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+        "relative": "src/same.txt",
+        "place": "local"
+      },
+      "effects": [
+        {
+          "kind": "diff",
+          "path": "src/same.txt"
+        }
+      ],
+      "notifications": []
+    }
+  ],
+  "executed_source": [
+    {
+      "name": "Transcript.toolDisclosure",
+      "text": "const toolDisclosure = (() => {\n  let expanded: ReadonlyMap<string, boolean> = new Map();\n  const listeners = new Set<() => void>();\n  return {\n    getSnapshot: () => expanded,\n    subscribe(listener: () => void) {\n      listeners.add(listener);\n      return () => { listeners.delete(listener); };\n    },\n    toggle(id: string, defaultOpen: boolean) {\n      expanded = new Map(expanded).set(id, !isToolExpanded(id, expanded, defaultOpen));\n      for (const listener of listeners) listener();\n    },\n  };\n})();",
+      "sha256": "ba2e5ea5fcfa8c79a737297c010df542045f54cc6a1497321be67eabe1f4baec"
+    },
+    {
+      "name": "Transcript.Transcript",
+      "text": "export function Transcript({\n  transcript,\n  searchEnabled = false,\n  expandToolsByDefault = false,\n  dontCollapseToolCalls = false,\n  onRetry,\n  onResetChat,\n  resetDisabled = false,\n  turnFooter,\n  workspacePath,\n  onOpenFile,\n  now = Date.now,\n  onForkToNewTab,\n  onForkToNewWorkspace,\n  forkDisabled = false,\n  turnAgent,\n  chatAgent,\n  notify,\n}: TranscriptProps) {\n  const stripAbsolutelyRight = useBoolPref(\"not_absolutely_right\");\n  const clock = useMemo(() => turnDayClock(now), [now]);\n  const day = useSyncExternalStore(clock.subscribe, clock.getSnapshot, clock.getSnapshot);\n  const rows = useMemo(() => foldAgentRows(buildRows(transcript), transcript.activeTurn), [transcript]);\n  const turns = useMemo(() => groupTurns(rows), [rows]);\n  const toggled = useSyncExternalStore(toolDisclosure.subscribe, toolDisclosure.getSnapshot, toolDisclosure.getSnapshot);\n  const toggleTool = (id: string, defaultOpen = false) => toolDisclosure.toggle(id, expandToolsByDefault || defaultOpen);\n  const [summaries, setSummaries] = useState<ReadonlyMap<string, \"expanded\" | \"collapsed\">>(new Map());\n  const ctx: RowContext = {\n    stripAbsolutelyRight,\n    isOpen: (id, defaultOpen = false) => isToolExpanded(id, toggled, expandToolsByDefault || defaultOpen),\n    onToggle: toggleTool,\n    summaries: {\n      canCollapse: (running) => canCollapse(running, dontCollapseToolCalls),\n      isOpen: (id, running) => isSummaryOpen(canCollapse(running, dontCollapseToolCalls), summaries.get(id)),\n      toggle: (id, open) => setSummaries((prev) => new Map(prev).set(id, open ? \"collapsed\" : \"expanded\")),\n    },\n    onRetry,\n    onResetChat,\n    resetDisabled,\n    turnFooter,\n    workspacePath,\n    onOpenFile,\n    now: () => day,\n    toolNow: now,\n    onForkToNewTab,\n    onForkToNewWorkspace,\n    forkDisabled,\n    turnAgent,\n    chatAgent,\n    notify,\n  };\n\n  const content = (\n      <div className=\"transcript\">\n        {turns.map((turn) => {\n          const footer = turn.rows.find((r): r is TurnEndRow => r.kind === \"turn_end\");\n          return (\n            <div key={turn.key} className=\"oc-turn\" data-turn-id={turn.turnId}>\n              <div className=\"oc-turn-body\">\n                <div className=\"oc-turn-items\">\n                  {turn.rows.map((row) => (row.kind === \"turn_end\" ? null : <Row key={row.key} row={row} ctx={ctx} />))}\n                </div>\n                {footer ? <TurnFooter row={footer} ctx={ctx} /> : null}\n              </div>\n            </div>\n          );\n        })}\n      </div>\n  );\n  return <LinkMenuNotify.Provider value={notify}>\n    {searchEnabled ? <TranscriptSearch transcript={transcript}>{content}</TranscriptSearch> : content}\n  </LinkMenuNotify.Provider>;\n}",
+      "sha256": "79a57b7de408445e639759ab4d7157b32040fa9940b66ca9179eb38b2ec75907"
+    },
+    {
+      "name": "Transcript.rowTurn",
+      "text": "const rowTurn = (row: DisplayRow): string => (row.kind === \"agent\" || row.kind === \"turn_end\" ? row.turnId : row.message.turnId);",
+      "sha256": "68dd7ea5fddb051adb4fe45736c6465e92d4a6ef890baa0289681d955b792a73"
+    },
+    {
+      "name": "Transcript.groupTurns",
+      "text": "function groupTurns(rows: DisplayRow[]): Turn[] {\n  const out: Turn[] = [];\n  for (const row of rows) {\n    const turnId = rowTurn(row);\n    const last = out[out.length - 1];\n    if (last && last.turnId === turnId && !last.rows.some((r) => r.kind === \"turn_end\")) last.rows.push(row);\n    else out.push({ key: `turn:${row.key}`, turnId, rows: [row] });\n  }\n  return out;\n}",
+      "sha256": "8c2a9015dd1a98cc6750ef63aa2d41e2cc21b0effece55794e9b5fdd9d127cb5"
+    },
+    {
+      "name": "Transcript.Row",
+      "text": "function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowContext }) {\n  switch (row.kind) {\n    case \"user\":\n      return (\n        <div className=\"chat-msg chat-user oc-msg-user\" data-message-role=\"user\">\n          <div className=\"oc-user-col\">\n            <div className=\"chat-bubble oc-bubble\">\n              <div className=\"oc-user-text\">{row.message.userContent ? <SentUserContent content={row.message.userContent} workspacePath={ctx.workspacePath} onOpenFile={ctx.onOpenFile} /> : <UserText text={row.text} />}</div>\n              <MessageActions text={userMessageCopyText(row.message)} />\n            </div>\n            {row.cancelled ? <div className=\"chat-cancelled\">Cancelled</div> : null}\n          </div>\n        </div>\n      );\n    case \"report\":\n      return (\n        <div className=\"chat-msg chat-report\" data-origin={row.origin.kind}>\n          <div className=\"chat-report-label\">{reportLabel(row.origin)}</div>\n          <div className=\"chat-report-body\">{row.text}</div>\n        </div>\n      );\n    case \"system\":\n      return <div className=\"chat-msg chat-system\">{row.text}</div>;\n    case \"agent\":\n      return <Agent block={row} ctx={ctx} />;\n  }\n}",
+      "sha256": "18e62cc63d043829b91f12d18b27546867f7c103900ba2c6f9e0d6b6b1cb251f"
+    },
+    {
+      "name": "Transcript.Agent",
+      "text": "function Agent({ block, ctx }: { block: AgentBlock; ctx: RowContext }) {\n  const collapsible = ctx.summaries.canCollapse(block.running);\n  return (\n    <>\n      {block.empty && block.streaming ? (\n        <div className=\"chat-msg chat-assistant oc-msg-assistant\">\n          <span className=\"chat-typing\" aria-label=\"Agent is responding\" />\n        </div>\n      ) : null}\n      {block.items.map((item) => {\n        if (item.kind === \"part\") return <Part key={item.key} partKey={item.key} part={item.part} preview={item.preview === true} ctx={ctx} />;\n        const open = ctx.summaries.isOpen(item.summary.id, block.running);\n        return (\n          <Fragment key={item.summary.id}>\n            {collapsible ? <SummaryRow summary={item.summary} open={open} onToggle={() => ctx.summaries.toggle(item.summary.id, open)} /> : null}\n            {open ? item.parts.map((p) => <Part key={p.key} partKey={p.key} part={p.part} group={item.summary.id} ctx={ctx} />) : null}\n          </Fragment>\n        );\n      })}\n    </>\n  );\n}",
+      "sha256": "0a42072af5992b33975612a34cf098eeedb244ca5573a5e29d4d8ae3e0e05086"
+    },
+    {
+      "name": "Transcript.SummaryRow",
+      "text": "function SummaryRow({ summary, open, onToggle }: { summary: ToolSummary; open: boolean; onToggle?: () => void }) {\n  const label = summaryLabel(summary);\n  const icons = [...new Map(summary.toolNames.map((n) => [n, n])).values()];\n  return (\n    <button type=\"button\" className=\"chat-tool-summary-row oc-summary\" aria-expanded={open} aria-label={`${open ? \"Collapse\" : \"Expand\"} ${label}`} disabled={!onToggle} onClick={onToggle}>\n      <Lucide name={open ? \"chevron-down\" : \"chevron-right\"} className=\"oc-summary-chevron\" />\n      <span className=\"oc-summary-main\">\n        <span className=\"oc-summary-label\">{label}</span>\n        {icons.length > 0 ? (\n          <span className=\"oc-summary-icons\" aria-hidden>\n            {icons.map((name) => (\n              <ToolIcon key={name} name={name} className=\"oc-tool-icon\" />\n            ))}\n          </span>\n        ) : null}\n      </span>\n    </button>\n  );\n}",
+      "sha256": "7a7f083361e13f266531377bcd9d75633bd454113f3ae20f0155b1ebea784a36"
+    },
+    {
+      "name": "Transcript.Part",
+      "text": "function Part({ partKey, part, preview = false, group, ctx }: { partKey: string; part: PartView; preview?: boolean; group?: string; ctx: RowContext }) {\n  switch (part.kind) {\n    case \"text\": {\n      const text = assistantDisplayText(part.text, ctx.stripAbsolutelyRight);\n      if (!text.trim()) return null;\n      return (\n        <div className=\"chat-msg chat-assistant oc-msg-assistant\" data-message-role=\"assistant\" data-tool-group={group}>\n          <div className=\"oc-assistant-col\">\n            <div className=\"oc-text-wrap\">\n              <Markdown\n                text={text}\n                notify={ctx.notify}\n                className={`oc-prose chat-text${preview ? \"\" : \" muted\"}${part.streaming ? \" is-streaming\" : \"\"}`}\n                onOpenLink={(href) => void openUrl(href)}\n                workspacePath={ctx.workspacePath}\n                onOpenFile={ctx.onOpenFile}\n                Link={LinkWithMenu}\n              />\n            </div>\n          </div>\n        </div>\n      );\n    }\n    case \"thinking\": {\n      const text = assistantDisplayText(part.text, ctx.stripAbsolutelyRight);\n      if (!text.trim()) return null;\n      return <ThinkingRow id={`thinking:${partKey}`} text={text} streaming={part.streaming} group={group} ctx={ctx} />;\n    }\n    case \"tool\": {\n      const { call } = part;\n      return (\n        // data-tool-input: the block's input as the agent reported it (paths marked local or cloud), for e2e checks.\n        <div className={`chat-tool oc-tool-wrap status-${call.status}`} data-tool-group={group} data-tool-input={JSON.stringify(call.input ?? null)}>\n          <ConductorToolRow\n            tool={call.tool}\n            status={call.status}\n            result={call.result}\n            rawResult={call.rawResult}\n            resultCreatedAt={call.resultCreatedAt}\n            now={ctx.toolNow}\n            isError={call.status === \"error\"}\n            open={ctx.isOpen(call.id, opensByDefault(call.tool))}\n            onToggle={() => ctx.onToggle(call.id, opensByDefault(call.tool))}\n            todoRows={call.tool.name === \"TodoWrite\" ? {\n              completed: { open: ctx.isOpen(`${call.id}-completed`), onToggle: () => ctx.onToggle(`${call.id}-completed`) },\n              started: { open: ctx.isOpen(`${call.id}-started`), onToggle: () => ctx.onToggle(`${call.id}-started`) },\n            } : undefined}\n            workspacePath={ctx.workspacePath}\n            onOpenFile={ctx.onOpenFile}\n          />\n        </div>\n      );\n    }\n  }\n}",
+      "sha256": "5283e068e4de3b8aeabdb49535cf6c409b3ca14c9d4e6fb4999c37aceaa6b9c8"
+    },
+    {
+      "name": "reasonBackend.listen",
+      "text": "(deliver, permissions) =>\n    listen<ReasonPayload>(EVENT, ({ payload }) => {\n      if (payload.type === \"permissionRequest\") permissions.requested(payload.chatId, permissionPrompt(payload));\n      else if (payload.type === \"permissionResolved\") permissions.resolved(payload.chatId, payload.requestId);\n      else {\n        // A new Session has run no turn yet: its model is the chat's pick until one ends.\n        if (payload.type === \"sessionStarted\") setRunningModel(payload.chatId, null);\n        if (payload.type === \"sessionModel\") setRunningModel(payload.chatId, { model: payload.model, effort: payload.effort ?? null });\n        deliver(payload.chatId, (s) => applyReasonPayload(s, payload));\n      }\n    })",
+      "sha256": "2fbd46671a3805124066ff17999972ca879a4eb074b804c7e05e9b645f0cd125"
+    },
+    {
+      "name": "reasonChat.EVENT",
+      "text": "\"reason-chat-event\"",
+      "sha256": "95bf14b552f33d7ad5d40b53bdc7271ede9a6f5052b3f9fedc6318b69916f5e1"
+    },
+    {
+      "name": "WorkspaceView.openAnyFile",
+      "text": "(path: string, line?: number): boolean => {\n    if (!workspace.path) return false;\n    setFileTarget({ path, workspaceId: workspace.id, line });\n    setMainTab(\"file\");\n    return true;\n  }",
+      "sha256": "c0ffcebb971aa0a92115f40916ddc3165e350a67a9966072319a76cbee9d9323"
+    },
+    {
+      "name": "WorkspaceView.openFileOrViewer",
+      "text": "(path: string) => {\n    if (diff.files.some((f) => f.path === path)) { diff.openPath(path); return; }\n    // Cloud/absolute paths not under the worktree cannot be opened locally (H6).\n    if (path.startsWith(\"/\") && (!workspace.path || !path.startsWith(workspace.path))) {\n      notify?.(\"info\", `${path.split(\"/\").pop() ?? path} is a cloud file — not available locally`);\n      return;\n    }\n    openAnyFile(path);\n  }",
+      "sha256": "3efb003355bd72f6b8bb2da639af4df2af2e122ba777210431c3f9b924f3d27c"
+    },
+    {
+      "name": "ChatPanel.Transcript.onOpenFile",
+      "text": "openFile ? (path) => openFile(path.startsWith(`${cwd}/`) ? path.slice(cwd.length + 1) : path) : undefined",
+      "sha256": "a20f1ede9121d8bd7730b0b25506f0bc161f8332568ed43028e99b2ceab17aca"
+    }
+  ]
+}

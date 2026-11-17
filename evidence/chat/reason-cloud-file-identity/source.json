@@ -1,0 +1,99 @@
+{
+  "id": "REASON-ACP-CLOUD-PATH-OPEN-IDENTITY-BE7",
+  "author": "Conductor Rebuild",
+  "checked_main": "74c004a95d7b10072f54f71ca611f22c50944f64",
+  "inputs_sha256": "4f90d373a92b0a9f99b7a458a3805761dbd2b257f98da188d47b4e02c3f629ca",
+  "probe_sha256": "c7f9b41f96caebd45a7d15741b72528de16544f5422a6b7308fd361c52a329a0",
+  "production_files": {
+    "src/features/chat/reasonChat.ts": "06cb361e2298c25f708553ba1256a20d092318dc50e2bdd127db8a19736640fb",
+    "src/features/chat/reason.ts": "cb07a5ec7dc2a8406d9021848280cf9acc83445c371390b94c6a57a290b1cf5b",
+    "src/features/chat/reducer.ts": "9b4783c08f496b05ebdc99a141f52b13c06a4b46f3f1a240a780ef5535d22ec4",
+    "src/features/chat/persist.ts": "1c0cc086cd028248e27615fe6169c314ed1fe4d44bbdd4926dc6553099262441",
+    "src/features/chat/view.ts": "132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43",
+    "src/features/chat/conductorTools.ts": "05c3a85bed997b1114e1696d083855d4e39c5d614fe57ddeb0bade8bde7cc64a",
+    "src/features/chat/Transcript.tsx": "8b13f23d0fec69db4fa1311cb901fdf936c18a267f8f7f47f56aafca1747f1e8",
+    "src/features/chat/ToolRows.tsx": "399c0f2bd7bf1dbb57ae7c70252d6875e92e4414683146a8cd7964208259fb1b",
+    "src/components/WorkspaceView.tsx": "1e558c044ce5dda41a33420ef82ad00123af97adaed892f9336c77b9d1f84935",
+    "src-tauri/src/reason_acp/provider.rs": "13040f83f62c312683dce1433e24c79b37278546026efd1947b4d1a64fcb72ea",
+    "src-tauri/src/reason_acp/updates.rs": "a38f31d40f38a450cb9cdff0202977d8c4208ca6364907c16e0b497e27670db5",
+    "src-tauri/src/reason_acp/wire.rs": "96dee0f64c933bcaa9c60bc992f30a2fe190a625db540bfb8c350d6a4f6933dd"
+  },
+  "rust_source_spans": [
+    {
+      "path": "src-tauri/src/reason_acp/provider.rs",
+      "name": "session-update-routed-block",
+      "start_byte": 44306,
+      "end_byte": 45507,
+      "sha256": "10ca29184936630a7a3b0c2579e5b2e14d2dad34a3f881f468eb50bdcba6e39b",
+      "kind": "unmodified-production-routing-block",
+      "text": "            let routed = {\n                let mut s = shared.lock().unwrap();\n                let sid = params[\"sessionId\"].as_str().unwrap_or_default();\n                let chat_id = s.by_session.get(sid).cloned();\n                chat_id.and_then(|id| {\n                    let c = s.chats.get_mut(&id)?;\n                    if let Some(cloud) = computer_is_cloud(&params[\"update\"]) {\n                        c.on_cloud = cloud;\n                    }\n                    let ctx = UpdateContext {\n                        cwd: &c.cwd,\n                        turn_running: c.turn.is_some(),\n                        in_text: c.turn.as_ref().is_some_and(|t| t.in_text),\n                        cloud_session: c.session_id.as_deref().filter(|_| c.on_cloud),\n                    };\n                    let ev = parse_update(&params[\"update\"], ctx)?;\n                    if let Some(t) = &mut c.turn {\n                        t.in_text = matches!(ev, AgentEvent::Text(_));\n                        if let AgentEvent::Error(e) = &ev {\n                            t.error = Some(e.clone());\n                        }\n                    }\n                    Some((id, ev))\n                })\n            };"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/updates.rs",
+      "start_byte": 0,
+      "end_byte": 11211,
+      "sha256": "a38f31d40f38a450cb9cdff0202977d8c4208ca6364907c16e0b497e27670db5",
+      "kind": "whole-production-module"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/wire.rs",
+      "name": "agent_json",
+      "start_byte": 4189,
+      "end_byte": 4809,
+      "sha256": "b884b93c3923ee3657b5f03dac3a07d0b5f56f11d449ef1a821874cc635302e2",
+      "kind": "unmodified-production-serializer-function",
+      "text": "fn agent_json(a: &AgentEvent) -> Value {\n    match a {\n        AgentEvent::Text(t) => json!({ \"type\": \"text\", \"text\": t }),\n        AgentEvent::Thought(t) => json!({ \"type\": \"thought\", \"text\": t }),\n        AgentEvent::Title(t) => json!({ \"type\": \"title\", \"title\": t }),\n        AgentEvent::Report(t) => json!({ \"type\": \"report\", \"text\": t }),\n        AgentEvent::UserReplay(t) => json!({ \"type\": \"userReplay\", \"text\": t }),\n        AgentEvent::Error(e) => json!({\n            \"type\": \"error\", \"code\": e.code, \"status\": e.status, \"message\": e.message,\n        }),\n        AgentEvent::Tool(row) => tool_json(row),\n    }\n}"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/wire.rs",
+      "name": "tool_json",
+      "start_byte": 4811,
+      "end_byte": 5547,
+      "sha256": "b5bf3958f98d5107f522893933593c6165afa9456a61d21ea12a32510a16ccc9",
+      "kind": "unmodified-production-serializer-function",
+      "text": "fn tool_json(r: &ToolRow) -> Value {\n    let status = match r.status {\n        ToolStatus::Pending => \"pending\",\n        ToolStatus::Running => \"running\",\n        ToolStatus::Completed => \"completed\",\n        ToolStatus::Failed => \"failed\",\n    };\n    let mut v = json!({\n        \"type\": \"tool\",\n        \"id\": r.id,\n        \"title\": r.title,\n        \"kind\": r.kind,\n        \"status\": status,\n        \"output\": r.output,\n        \"diffs\": r.diffs.iter().map(diff_json).collect::<Vec<_>>(),\n        \"locations\": r.locations.iter().map(path_json).collect::<Vec<_>>(),\n        \"toolName\": r.tool_name,\n        \"rawInput\": r.raw_input,\n    });\n    if let Some(content) = &r.raw_result {\n        v[\"rawResult\"] = content.clone();\n    }\n    v\n}"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/wire.rs",
+      "name": "diff_json",
+      "start_byte": 5549,
+      "end_byte": 5672,
+      "sha256": "79706e859b3d44a38d3f5390ee7a5785a55b63573af9829105f14ed481aa27cf",
+      "kind": "unmodified-production-serializer-function",
+      "text": "fn diff_json(d: &Diff) -> Value {\n    json!({ \"path\": path_json(&d.path), \"oldText\": d.old_text, \"newText\": d.new_text })\n}"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/wire.rs",
+      "name": "path_json",
+      "start_byte": 5747,
+      "end_byte": 6136,
+      "sha256": "6f584eb151ca59afd01af3a00604e76a5140deae67badf4d6a07c00a6a27295e",
+      "kind": "unmodified-production-serializer-function",
+      "text": "pub fn path_json(p: &MappedPath) -> Value {\n    let mut v = json!({ \"raw\": p.raw, \"relative\": p.relative });\n    match &p.place {\n        Place::Local => v[\"place\"] = json!(\"local\"),\n        Place::Cloud { session_id } => {\n            v[\"place\"] = json!(\"cloud\");\n            v[\"sessionId\"] = json!(session_id);\n        }\n        Place::Other => v[\"place\"] = json!(\"other\"),\n    }\n    v\n}"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/wire.rs",
+      "name": "event_json-chat-envelope-tail",
+      "start_byte": 3103,
+      "end_byte": 3139,
+      "sha256": "db419ea790773d6f9adab333d799e51a7d2cfffd08fcaaef7a7ec8a6fd6c4f1f",
+      "kind": "unmodified-production-envelope-tail",
+      "text": "    v[\"chatId\"] = json!(chat);\n    v"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/wire.rs",
+      "name": "session-started-json-expression",
+      "start_byte": 737,
+      "end_byte": 797,
+      "sha256": "13c0e7cd14530c9590ee0047861be4a3ee22ddc4b68ab324f306723b4b32179a",
+      "kind": "unmodified-production-wire-expression",
+      "text": "json!({ \"type\": \"sessionStarted\", \"sessionId\": session_id })"
+    }
+  ],
+  "limits": [
+    "Inert source-valid ACP fixture, not a recording of current provider execution.",
+    "No provider/CLI/Tauri/native/browser/package execution; no real-user data.",
+    "Harness storage and event sink are inert; routing, parser and wire formatter bodies are production source unchanged.",
+    "No production edits."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "result": "PASS",
+  "main_checked": "a793c0f2f5c5d6f8f00860d31cec9053a0e99744",
+  "source_bindings": 8,
+  "current_source_pins": 19,
+  "product_replacements": 1,
+  "legacy_test_edits": 0,
+  "frozen9_sha256": "680bec20893cda8756929862903cbf7157eb9931dc583281b2a766a22004199d",
+  "baseline": "7 pass / 2 intended failures",
+  "treatment": "9 pass",
+  "adjacent_before_and_after": "10 pass",
+  "limits": "Retained source and inert mounted form callbacks, not browser/native/package acceptance"
+}

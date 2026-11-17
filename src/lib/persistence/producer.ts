@@ -35,6 +35,14 @@ export class PendingEdit<T> {
     }, (error) => pending.acknowledgment.fail(error));
   }
 
+  /** Discard only the unsent draft; in-flight writes and prior failures stay owned. */
+  discard(): void {
+    this.cancelTimer();
+    const pending = this.latest;
+    this.latest = undefined;
+    pending?.acknowledgment.cancel();
+  }
+
   abandon(): void {
     this.cancelTimer();
     const pending = this.latest;
@@ -43,7 +51,7 @@ export class PendingEdit<T> {
   }
 }
 
-export function usePendingEdit<T>(scope: string, save: (value: T) => Promise<unknown>, cancelTimer: () => void, flushOnUnmount = false) {
+export function usePendingEdit<T>(scope: string, save: (value: T) => Promise<unknown>, cancelTimer: () => void, unmountPolicy: boolean | "discard" = false) {
   const callbacks = useMemo(() => ({ save, cancelTimer }), [scope]);
   callbacks.save = save;
   callbacks.cancelTimer = cancelTimer;
@@ -51,9 +59,11 @@ export function usePendingEdit<T>(scope: string, save: (value: T) => Promise<unk
   useEffect(() => {
     const release = registerPersistenceOwner(edit.writes);
     return () => {
-      if (flushOnUnmount) edit.flush(); else edit.abandon();
+      if (unmountPolicy === true) edit.flush();
+      else if (unmountPolicy === "discard") edit.discard();
+      else edit.abandon();
       release();
     };
-  }, [edit, flushOnUnmount]);
+  }, [edit, unmountPolicy]);
   return edit;
 }
