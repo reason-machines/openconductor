@@ -150,7 +150,7 @@ for (const mode of [47, 1047, 1049]) {
     await f.output(id, screen, `\x1b[?${mode}h`);
     assert.deepEqual(press(screen, key("Enter", { shiftKey: true })), handled);
     await f.settle();
-    assert.deepEqual(f.writes, [{ id, data: "\x1b\r" }]);
+    assert.deepEqual(f.writes, [{ id, data: "\n" }]);
   });
 }
 

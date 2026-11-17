@@ -1,0 +1,58 @@
+2026-11-17T06:10:15.0552671Z # Subtest: Reset chat has one styled panel, not an oc-alert panel nested inside DialogFrame
+2026-11-17T06:10:15.0553163Z not ok 1652 - Reset chat has one styled panel, not an oc-alert panel nested inside DialogFrame
+2026-11-17T06:10:15.0553262Z   ---
+2026-11-17T06:10:15.0553389Z   duration_ms: 180.130497
+2026-11-17T06:10:15.0553505Z   type: 'test'
+2026-11-17T06:10:15.0554040Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/resetChatFrame.test.ts:96:1'
+2026-11-17T06:10:15.0554205Z   failureType: 'testCodeFailure'
+2026-11-17T06:10:15.0554331Z   error: |-
+2026-11-17T06:10:15.0554736Z     Reset must not nest a second width/padding/border/background shell inside DialogFrame
+2026-11-17T06:10:15.0554834Z     
+2026-11-17T06:10:15.0554946Z     2 !== 1
+2026-11-17T06:10:15.0555053Z     
+2026-11-17T06:10:15.0555172Z   code: 'ERR_ASSERTION'
+2026-11-17T06:10:15.0555306Z   name: 'AssertionError'
+2026-11-17T06:10:15.0555420Z   expected: 1
+2026-11-17T06:10:15.0555527Z   actual: 2
+2026-11-17T06:10:15.0555660Z   operator: 'strictEqual'
+2026-11-17T06:10:15.0555937Z   stack: |-
+2026-11-17T06:10:15.0556654Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/resetChatFrame.test.ts:104:12)
+2026-11-17T06:10:15.0556907Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-17T06:10:15.0557274Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-17T06:10:15.0557384Z   ...
+2026-11-17T06:10:15.0557798Z # Subtest: Reset chat selects the existing rounded alert variant on its sole panel
+2026-11-17T06:10:15.0558228Z not ok 1653 - Reset chat selects the existing rounded alert variant on its sole panel
+2026-11-17T06:10:15.0558339Z   ---
+2026-11-17T06:10:15.0558466Z   duration_ms: 116.340642
+2026-11-17T06:10:15.0558575Z   type: 'test'
+2026-11-17T06:10:15.0559097Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/resetChatFrame.test.ts:112:1'
+2026-11-17T06:10:15.0559268Z   failureType: 'testCodeFailure'
+2026-11-17T06:10:15.0559686Z   error: 'Reset must opt into the shared 12px alert corners, not ordinary-dialog 6px corners'
+2026-11-17T06:10:15.0559806Z   code: 'ERR_ASSERTION'
+2026-11-17T06:10:15.0559935Z   name: 'AssertionError'
+2026-11-17T06:10:15.0560054Z   expected: true
+2026-11-17T06:10:15.0560165Z   actual: false
+2026-11-17T06:10:15.0560281Z   operator: '=='
+2026-11-17T06:10:15.0560393Z   stack: |-
+2026-11-17T06:10:15.0561031Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/resetChatFrame.test.ts:115:12)
+2026-11-17T06:10:15.0561270Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-17T06:10:15.0561925Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-17T06:10:15.0562036Z   ...
+2026-11-17T06:10:15.0562459Z # Subtest: Reset chat keeps Cancel as the focus target and cancellation never resets
+2026-11-17T06:10:15.0562879Z ok 1654 - Reset chat keeps Cancel as the focus target and cancellation never resets
+2026-11-17T06:10:15.0562989Z   ---
+2026-11-17T06:10:15.0563112Z   duration_ms: 80.349259
+2026-11-17T06:10:15.0563228Z   type: 'test'
+2026-11-17T06:10:15.0563334Z   ...
+2026-11-17T06:10:15.0563733Z # Subtest: Reset chat frame preserves reset-files=true and pending confirmation
+2026-11-17T06:10:15.0564104Z ok 1655 - Reset chat frame preserves reset-files=true and pending confirmation
+2026-11-17T06:10:15.0564216Z   ---
+2026-11-17T06:10:15.0564340Z   duration_ms: 63.820712
+2026-11-17T06:10:15.0564461Z   type: 'test'
+2026-11-17T06:10:15.0564570Z   ...
+2026-11-17T06:10:15.0564982Z # Subtest: Reset chat frame preserves reset-files=false and pending confirmation
+2026-11-17T06:10:15.0565386Z ok 1656 - Reset chat frame preserves reset-files=false and pending confirmation
+2026-11-17T06:10:15.0565489Z   ---
+2026-11-17T06:10:15.0565615Z   duration_ms: 32.368094
+2026-11-17T06:10:15.0565732Z   type: 'test'
+2026-11-17T06:10:15.0565829Z   ...
