@@ -60,9 +60,7 @@ const changed = snapshot("u", "l");
 
 test("actual Sidebar navigation expressions retain default shortcut hints", () => {
   for (const { label, defaultHint } of rows) assert.deepEqual(rowHints(label, {}), [defaultHint]);
-  // Home switched from native title= to <Tooltip> via NavRow's tooltip prop.
-  assert.match(rowSource("Home"), /\btooltip=/, "Home NavRow carries a tooltip prop");
-  assert.doesNotMatch(rowSource("Home"), /\btitle=/, "Home NavRow omits the native title=");
+  assert.equal(attribute("Home", "title", {}), "Home ⌘⇧H");
 });
 
 for (const { label } of rows) {
@@ -79,19 +77,16 @@ test("actual Sidebar navigation expressions follow changed snapshots and reset t
   }
 });
 
-test("actual Sidebar Home uses a Tooltip shortcut-hint without adding title= or tooltip= to Create or Search", () => {
-  // Home uses <Tooltip> via NavRow's tooltip prop; the command ID must be present and must
-  // resolve to the right glyphs at every override level.
-  const homeRow = rowSource("Home");
-  assert.match(homeRow, /\btooltip=/, "Home NavRow has a tooltip prop");
-  assert.doesNotMatch(homeRow, /\btitle=/, "Home NavRow omits native title=");
-  assert.match(homeRow, /"nav\.home"/, "Home tooltip references the nav.home command ID");
-  assert.equal(hint("nav.home", {}), "⌘⇧H");
-  assert.equal(hint("nav.home", remapped), "⌘⇧Y");
-  assert.equal(hint("nav.home", changed), "⌘⇧U");
-  // Create and Search retain no title= (unchanged) and no tooltip=.
+test("actual Sidebar Home native title uses the effective primary key without adding Create or Search titles", () => {
+  // Retained REA caller Aia uses title: HH("Home", "nav.home"), not a Tooltip.
+  assert.equal(attribute("Home", "title", remapped), "Home ⌘⇧Y");
+  assert.equal(attribute("Home", "title", changed), "Home ⌘⇧U");
+  assert.equal(attribute("Home", "title", {}), "Home ⌘⇧H");
+  assert.doesNotMatch(rowSource("Home"), /\btooltip=/);
   assert.doesNotMatch(rowSource("Create"), /\btitle=|\btooltip=/);
   assert.doesNotMatch(rowSource("Search"), /\btitle=|\btooltip=/);
+  const navRow = source.slice(source.indexOf("function NavRow("), source.indexOf("\ninterface MenuItem"));
+  assert.match(navRow, /<button\b[^>]*\btitle=\{title\}/, "NavRow forwards its title to the button");
 });
 
 test("Sidebar reads the live provider snapshot used by its navigation expressions", () => {

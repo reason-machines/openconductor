@@ -34,6 +34,7 @@ import { AccountMenu } from "./AccountMenu";
 import { AppMark } from "./AppMark";
 import { ResourceUsagePill } from "./ResourceUsagePill";
 import { Tooltip } from "./ui/Tooltip";
+import { titleWithShortcut } from "./Tooltip";
 import { ContextMenu, MenuItem as CtxItem, MenuSeparator } from "./menu/ContextMenu";
 import { useRoutinesAvailable } from "../features/routines/useRoutinesAvailable";
 import { EyeIcon, EyeOffIcon, Link2Icon, PencilIcon, PlusIcon as MenuPlusIcon, SettingsIcon as MenuSettingsIcon, Trash2Icon } from "./menu/menuIcons";
@@ -93,16 +94,14 @@ interface Props {
 
 // Conductor's nav rows: only Home has a native title (`HH("Home","nav.home")`, "Home ⌘…");
 // Create and Search have none. All three show the shortcut in the row on hover.
-function NavRow({ icon, label, shortcut, tooltip, active, onClick }: { icon: JSX.Element; label: string; shortcut: string | readonly string[]; tooltip?: { content: string; shortcut?: string }; active?: boolean; onClick: () => void }) {
-  const btn = (
-    <button type="button" className="sb-row" data-active={active ? "true" : undefined} onClick={onClick}>
+function NavRow({ icon, label, shortcut, title, active, onClick }: { icon: JSX.Element; label: string; shortcut: string | readonly string[]; title?: string; active?: boolean; onClick: () => void }) {
+  return (
+    <button type="button" className="sb-row" data-active={active ? "true" : undefined} title={title} onClick={onClick}>
       <span className="sb-row-icon">{icon}</span>
       <span className="sb-row-label">{label}</span>
       {shortcut.length > 0 && <kbd className="sb-row-hint">{typeof shortcut === "string" ? shortcut : shortcut.map((key, index) => <span key={index}>{key}</span>)}</kbd>}
     </button>
   );
-  if (tooltip) return <Tooltip content={tooltip.content} shortcut={tooltip.shortcut}>{btn}</Tooltip>;
-  return btn;
 }
 
 interface MenuItem extends SidebarMenuAction { contextShortcut?: string }
@@ -404,7 +403,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
           {dashboardEnabled && (
             <NavRow icon={<LayoutGridIcon size={12} />} label="Dashboard" shortcut="" active={sel.kind === "dashboard"} onClick={() => dispatch({ type: "select", selection: { kind: "dashboard" } })} />
           )}
-          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={effectiveShortcuts("nav.home", overrides).map(glyphs)} tooltip={{ content: "Home", shortcut: "nav.home" }} active={sel.kind === "home"} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
+          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={effectiveShortcuts("nav.home", overrides).map(glyphs)} title={titleWithShortcut("Home", glyphs(effectiveShortcuts("nav.home", overrides)[0]))} active={sel.kind === "home"} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
           <NavRow icon={<PlusIcon size={12} />} label="Create" shortcut={effectiveShortcuts("workspace.create", overrides).map(glyphs)} onClick={() => onOpenDialog("create")} />
           {/* "Routines" (Conductor's `uy` row after Create, active on /routines*): Conductor shows it for a cloud
               organization; ours runs on Reason Loops, so it shows once Reason is signed in. */}
