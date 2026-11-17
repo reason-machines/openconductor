@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type Dispatch, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type Dispatch, type FormEvent } from "react";
 import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
 import { seedTranscript } from "./WorkspaceView";
@@ -50,6 +50,7 @@ import { PaperclipIcon, PlusIcon } from "../features/chat/composerIcons";
 import type { NavSection } from "../state/navigationSections";
 import { CREATE_IN_SECTION, SECTION_ASSIGN_FAILED, canCreateIn, sectionChoice } from "../workspace/createInSection";
 import "../features/chat/composer.css";
+import { ComposerEditor, type ComposerEditorHandle } from "../features/chat/ComposerEditor.tsx";
 
 /**
  * Where the repo / branch / create-from row sits (Conductor's `eyebrowVariant`):
@@ -128,6 +129,10 @@ export function CreateWorkspaceComposer({
   const [attachError, setAttachError] = useState<string | null>(null);
   const [attachPreviewEpoch, setAttachPreviewEpoch] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  /** Rich-text editor handle for the create composer's first-message field (Conductor: Hji uses ComposerEditor). */
+  const composerInputRef = useRef<ComposerEditorHandle>(null);
+  // Auto-focus the editor on mount (mirrors the textarea's autoFocus attribute).
+  useLayoutEffect(() => { composerInputRef.current?.focus(); }, []);
   const [draft, setDraft] = useState<CreateDraft>(() =>
     newDraft({ repoId: startRepo?.id ?? null, defaultBranch: startRepo?.defaultBranch ?? "main", cityName: suggestName(startRepo)?.name ?? "", ...launchDefaults(null) }),
   );
@@ -400,16 +405,18 @@ export function CreateWorkspaceComposer({
     }
   }
 
-  function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.nativeEvent.isComposing) return;
+  // ComposerEditor fires the native KeyboardEvent directly (no React synthetic wrapper).
+  function onKeyDown(e: globalThis.KeyboardEvent) {
+    if (e.isComposing) return;
     // ⌥↩ adds to backlog without opening a chat session (Conductor `workspace.addToBacklogFromComposer`).
-    if (backlogKeys.some((s) => matchesEvent(s, e.nativeEvent))) {
+    if (backlogKeys.some((s) => matchesEvent(s, e))) {
       e.preventDefault();
+      e.stopPropagation();
       void addToBacklog();
       return;
     }
-    // `chat.newLine` (Shift+Enter, or Enter under the ⌘Enter preset) falls through to the textarea.
-    if (submitKeys.some((s) => matchesEvent(s, e.nativeEvent))) {
+    // `chat.newLine` (Shift+Enter, or Enter under the ⌘Enter preset) falls through to the editor.
+    if (submitKeys.some((s) => matchesEvent(s, e))) {
       e.preventDefault();
       void submit();
     }
@@ -471,16 +478,27 @@ export function CreateWorkspaceComposer({
         }}
       />
       <div className="create-card">
-        <textarea
-          autoFocus
-          aria-label="First message"
-          className="create-editor"
-          value={draft.firstMessage}
-          placeholder={CREATE_PLACEHOLDER}
-          onChange={(e) => setDraft({ ...draft, firstMessage: e.target.value })}
-          onKeyDown={onKeyDown}
-          disabled={busy}
-        />
+        {/* GAP-COMP-04 (create.editor): replaced <textarea> with ComposerEditor (TipTap) to match
+            Conductor's Hji create-workspace composer, which uses the same rich-text editor as
+            the main chat composer (lHt with Conductor's ComposerEditor equivalent). The @-mention
+            and /-slash triggers that Conductor wires to repository files are omitted here because
+            they require an existing workspace checkout; the structural parity (TipTap vs textarea)
+            is the gap being closed. Sub-gap 2 ("Link issue" in AddMenu) is not a gap: REA shows
+            allowIssueLinks=false in Conductor's a7i for Hji. Sub-gap 3 (binary staging to
+            draft-attachments/ via draftWorkspaceId) is deferred pending backend support. */}
+        <div className="create-editor">
+          <ComposerEditor
+            inputRef={composerInputRef}
+            value={draft.firstMessage}
+            placeholder={CREATE_PLACEHOLDER}
+            onChange={(v) => setDraft((d) => ({ ...d, firstMessage: v }))}
+            onSelection={() => {}}
+            onKeyDown={onKeyDown}
+            onFocus={() => {}}
+            onBlur={() => {}}
+            onPasteFiles={(files) => { void attachFiles(Array.from(files)); return true; }}
+          />
+        </div>
         {createAttachments.length > 0 && (
           <div className="composer-attachments" aria-label="Attachments">
             {createAttachments.map((a) => (
