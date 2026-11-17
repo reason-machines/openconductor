@@ -157,6 +157,7 @@ export function CreateWorkspaceComposer({
   const { overrides } = useKeybindingOverrides();
   const submitKeys = [...effectiveShortcuts("chat.submitMessage", overrides), ...effectiveShortcuts("chat.submitOppositeFollowUp", overrides)];
   const backlogKeys = effectiveShortcuts("workspace.addToBacklogFromComposer", overrides);
+  const newlineKeys = effectiveShortcuts("chat.newLine", overrides);
   const submitShortcut = effectiveShortcuts("chat.submitMessage", overrides)[0];
   const submitHint = submitShortcut ? glyphs(submitShortcut) : "↵";
   const hint = (commandId: string) => {
@@ -463,10 +464,12 @@ export function CreateWorkspaceComposer({
       void addToBacklog();
       return;
     }
-    // `chat.newLine` (Shift+Enter, or Enter under the ⌘Enter preset) falls through to the editor.
     if (submitKeys.some((s) => matchesEvent(s, e))) {
       e.preventDefault();
       void submit();
+    } else if (newlineKeys.some((s) => matchesEvent(s, e))) {
+      e.preventDefault();
+      composerInputRef.current?.newline();
     }
   }
 

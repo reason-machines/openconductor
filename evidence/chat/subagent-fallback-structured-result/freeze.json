@@ -1,0 +1,14 @@
+{
+  "main": "eef01e9b287472280fb3f4a585bc697d5f1f8f51",
+  "fixture_sha256": "63d0454a0e67d18b893abef483e9b7b35403df94f43f96f008b3eb8ec522c65a",
+  "baseline_files": {
+    "src/features/chat/ToolRows.tsx": "e4283955d494e99d60206780669cc931164602501ee0441853661298a1274edb",
+    "src/features/chat/conductorTools.ts": "05c3a85bed997b1114e1696d083855d4e39c5d614fe57ddeb0bade8bde7cc64a",
+    "src/features/chat/reason.ts": "cb07a5ec7dc2a8406d9021848280cf9acc83445c371390b94c6a57a290b1cf5b",
+    "src/features/chat/reducer.ts": "9b4783c08f496b05ebdc99a141f52b13c06a4b46f3f1a240a780ef5535d22ec4",
+    "src/features/chat/view.ts": "132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43",
+    "src/features/chat/genericStructuredResult.test.ts": "a7f43b70a5166674667b736f0dc4b90f7cd6077f9bef4478ef3f81c1fcce7e7f",
+    "src/features/chat/genericStructuredResult.inputs.json": "28f8d336ac39d0636169cb18cdd8421c885949f99c102073bc7fa34241a6ab1f",
+    "src/features/chat/typedSubagentErrorResult.test.ts": "c02bef14a8da8b334303870fc90fe33bad288f12f01dea3b58c00ae7c3e64dc3"
+  }
+}

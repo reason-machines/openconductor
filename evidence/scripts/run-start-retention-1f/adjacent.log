@@ -1,0 +1,188 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: workspaceRef needs both paths
+ok 1 - workspaceRef needs both paths
+  ---
+  duration_ms: 1.651285
+  type: 'test'
+  ...
+# Subtest: default script prefers the default flag, local only
+ok 2 - default script prefers the default flag, local only
+  ---
+  duration_ms: 0.287796
+  type: 'test'
+  ...
+# Subtest: run button follows the active run
+ok 3 - run button follows the active run
+  ---
+  duration_ms: 0.22231
+  type: 'test'
+  ...
+# Subtest: exit text and output buffer
+ok 4 - exit text and output buffer
+  ---
+  duration_ms: 0.329601
+  type: 'test'
+  ...
+# (node:93) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Run panel isolates detected preview URLs and delayed snapshots across busy Dev to Test
+ok 5 - actual Run panel isolates detected preview URLs and delayed snapshots across busy Dev to Test
+  ---
+  duration_ms: 3513.429079
+  type: 'test'
+  ...
+# Subtest: actual Run panel ignores obsolete output snapshots after switching workspaces with Dev busy
+ok 6 - actual Run panel ignores obsolete output snapshots after switching workspaces with Dev busy
+  ---
+  duration_ms: 788.201928
+  type: 'test'
+  ...
+# Subtest: actual Run panel ignores queued output delivery from a retired workspace subscription
+ok 7 - actual Run panel ignores queued output delivery from a retired workspace subscription
+  ---
+  duration_ms: 623.517533
+  type: 'test'
+  ...
+# Subtest: actual Run panel stops only the displayed busy Dev and keeps the picked Test
+ok 8 - actual Run panel stops only the displayed busy Dev and keeps the picked Test
+  ---
+  duration_ms: 764.578049
+  type: 'test'
+  ...
+# Subtest: actual Run panel returns to the picked Test after the displayed Dev exits naturally
+ok 9 - actual Run panel returns to the picked Test after the displayed Dev exits naturally
+  ---
+  duration_ms: 364.757947
+  type: 'test'
+  ...
+# Subtest: actual Run panel observes quiet queued Test admission after the early Setup completion refresh
+ok 10 - actual Run panel observes quiet queued Test admission after the early Setup completion refresh
+  ---
+  duration_ms: 1227.614062
+  type: 'test'
+  ...
+# Subtest: actual Run panel observes quiet automatic Dev admission without another start action
+ok 11 - actual Run panel observes quiet automatic Dev admission without another start action
+  ---
+  duration_ms: 1876.388713
+  type: 'test'
+  ...
+# Subtest: actual Run panel ignores foreign admission and reads current status rather than trusting its payload
+ok 12 - actual Run panel ignores foreign admission and reads current status rather than trusting its payload
+  ---
+  duration_ms: 1742.359227
+  type: 'test'
+  ...
+# Subtest: actual Run panel observes natural exit 0, keeps output and restarts without Stop IPC
+ok 13 - actual Run panel observes natural exit 0, keeps output and restarts without Stop IPC
+  ---
+  duration_ms: 2000.703687
+  type: 'test'
+  ...
+# Subtest: actual Run panel observes natural exit 7, keeps output and restarts without Stop IPC
+ok 14 - actual Run panel observes natural exit 7, keeps output and restarts without Stop IPC
+  ---
+  duration_ms: 1154.361979
+  type: 'test'
+  ...
+# Subtest: actual Run panel retains the explicitly picked task after its natural completion
+ok 15 - actual Run panel retains the explicitly picked task after its natural completion
+  ---
+  duration_ms: 400.85354
+  type: 'test'
+  ...
+# Subtest: actual Run panel ignores completion from another workspace
+ok 16 - actual Run panel ignores completion from another workspace
+  ---
+  duration_ms: 311.086504
+  type: 'test'
+  ...
+# Subtest: actual Run panel reads current status instead of replacing a live run with a completion payload
+ok 17 - actual Run panel reads current status instead of replacing a live run with a completion payload
+  ---
+  duration_ms: 489.044978
+  type: 'test'
+  ...
+# (node:101) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Run panel restores a workspace's nondefault history without starting a task
+ok 18 - actual Run panel restores a workspace's nondefault history without starting a task
+  ---
+  duration_ms: 3781.502849
+  type: 'test'
+  ...
+# Subtest: actual Run panel restores each workspace history through A to B to A
+ok 19 - actual Run panel restores each workspace history through A to B to A
+  ---
+  duration_ms: 2614.1347
+  type: 'test'
+  ...
+# Subtest: actual Run panel skips deleted history IDs before selecting a configured task
+ok 20 - actual Run panel skips deleted history IDs before selecting a configured task
+  ---
+  duration_ms: 2996.605768
+  type: 'test'
+  ...
+# Subtest: actual Run panel falls back to Dev when all historical tasks were removed
+ok 21 - actual Run panel falls back to Dev when all historical tasks were removed
+  ---
+  duration_ms: 3141.189513
+  type: 'test'
+  ...
+# Subtest: actual Run panel keeps a busy task projected over an idle historical selection
+ok 22 - actual Run panel keeps a busy task projected over an idle historical selection
+  ---
+  duration_ms: 2564.115604
+  type: 'test'
+  ...
+# Subtest: actual Run panel keeps default selection inert when workspace history is empty
+ok 23 - actual Run panel keeps default selection inert when workspace history is empty
+  ---
+  duration_ms: 399.337309
+  type: 'test'
+  ...
+# (node:109) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: display projection yields an idle selection to the busy workspace task without changing the selection
+ok 24 - display projection yields an idle selection to the busy workspace task without changing the selection
+  ---
+  duration_ms: 0.669026
+  type: 'test'
+  ...
+# Subtest: display projection treats Spotlight as a task rather than changing selection policy
+ok 25 - display projection treats Spotlight as a task rather than changing selection policy
+  ---
+  duration_ms: 0.125197
+  type: 'test'
+  ...
+# Subtest: idle: Start <label> and Test your changes here; Spotlight and no task have their own wording
+ok 26 - idle: Start <label> and Test your changes here; Spotlight and no task have their own wording
+  ---
+  duration_ms: 1.222357
+  type: 'test'
+  ...
+# Subtest: pending lines show only before any output; a task that ran shows its output
+ok 27 - pending lines show only before any output; a task that ran shows its output
+  ---
+  duration_ms: 7.979267
+  type: 'test'
+  ...
+# Subtest: header: Run <label> when idle, Stop <label> while busy, Stopping... while it stops
+ok 28 - header: Run <label> when idle, Stop <label> while busy, Stopping... while it stops
+  ---
+  duration_ms: 0.371838
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 40158.416843

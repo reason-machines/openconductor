@@ -1,0 +1,194 @@
+{
+  "owner": "Conductor Rebuild / SAME15",
+  "unit": "PALETTE-ACTIVE-DESCENDANT-SAME15",
+  "main": "eef01e9b287472280fb3f4a585bc697d5f1f8f51",
+  "reference": {
+    "parent": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "retained_REA_artifact_id": "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+    "offsets": "zero-based half-open UTF-8 bytes",
+    "records": [
+      {
+        "path": "item-M5s.txt",
+        "range": [
+          2908581,
+          2909564
+        ],
+        "bytes": 983,
+        "sha256": "84e0d537998fe7e8a40a285ca3b33d0aa3309933ceab0c4e0dca0dd6ad66acda"
+      },
+      {
+        "path": "item-wrapper.txt",
+        "range": [
+          2919435,
+          2920051
+        ],
+        "bytes": 616,
+        "sha256": "7faacd97381417474f2e9ac15b97597734839554f1229709902488b3c0337d25"
+      },
+      {
+        "path": "section-Jba.txt",
+        "range": [
+          10877545,
+          10880908
+        ],
+        "bytes": 3363,
+        "sha256": "e5d76b4abadffdc8f9ea6350a230c242b38cfbe53ab5dd515e481a93045563d1"
+      },
+      {
+        "path": "../group-navigation/command-root-Xyi.txt",
+        "range": [
+          2903072,
+          2908580
+        ],
+        "bytes": 5508,
+        "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92"
+      },
+      {
+        "path": "../group-navigation/command-input-B5s.txt",
+        "range": [
+          2910380,
+          2910953
+        ],
+        "bytes": 573,
+        "sha256": "70fa9c07b0d8b605e648601e01cd266db15dadad0ac59b8cb5569cee58c02758"
+      },
+      {
+        "path": "../group-navigation/command-component-P6.txt",
+        "range": [
+          2912384,
+          2912493
+        ],
+        "bytes": 109,
+        "sha256": "9b57d93a69e00511c26ce27dfc26117a75a0a2f70492d5f3436f58f4351df3bc"
+      },
+      {
+        "path": "../group-navigation/Home-command-input-kI.txt",
+        "range": [
+          2916816,
+          2917726
+        ],
+        "bytes": 910,
+        "sha256": "970dc084f87ebeb0e3f1220debf849ee4115e11f0be19c8442dab05ba688decf"
+      },
+      {
+        "path": "../group-navigation/m_a.txt",
+        "range": [
+          10889115,
+          10920819
+        ],
+        "bytes": 31704,
+        "sha256": "cd07cfad2d86afe0717c73433656bd3f8d144b8e84dfd2368646ded0f30d1c3e"
+      },
+      {
+        "path": "../group-navigation/../ime-composition/Xyi-root.txt",
+        "range": [
+          2903072,
+          2908580
+        ],
+        "bytes": 5508,
+        "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92"
+      },
+      {
+        "path": "../group-navigation/../ime-composition/P6-alias.txt",
+        "range": [
+          2912384,
+          2912492
+        ],
+        "bytes": 108,
+        "sha256": "20b129f07752490e4c9ca33091b5d947173fb1de439bcda0f2b15b9e25deb4f6"
+      },
+      {
+        "path": "../group-navigation/../ime-composition/KV-wrapper.txt",
+        "range": [
+          2913899,
+          2914244
+        ],
+        "bytes": 345,
+        "sha256": "12168391677891cbeaddc6307650dab1ee6e762cbd0f8114b28ff1a0339a97c4"
+      },
+      {
+        "path": "../group-navigation/../ime-composition/qZ-dialog.txt",
+        "range": [
+          2914275,
+          2914883
+        ],
+        "bytes": 608,
+        "sha256": "8d7253f154bad3c2441e4850e50b961b2e2870a2c38d7424a9b15cdd6a7f8768"
+      },
+      {
+        "path": "../group-navigation/../ime-composition/Y5s-content.txt",
+        "range": [
+          2914884,
+          2916816
+        ],
+        "bytes": 1932,
+        "sha256": "1f343b0f6340b44087d7914fc114f67311554dd62c7b60c549241f3645c4ea29"
+      },
+      {
+        "path": "../group-navigation/../ime-composition/h_a-palette-caller.txt",
+        "range": [
+          10888832,
+          10889073
+        ],
+        "bytes": 241,
+        "sha256": "db46eeae9e65f9feee9a554863994313bfa6fbabdf9653f1fbb11b2d34d7d55b"
+      }
+    ]
+  },
+  "baseline": [
+    {
+      "path": "src/palette/CommandPalette.tsx",
+      "sha256": "4b87e1d6800a55c47c94af1adff31b5b53bdccd23406ccb513ac4b36accdc711"
+    },
+    {
+      "path": "src/palette/WorkspacesTab.tsx",
+      "sha256": "257f286fe2f400915526faa75a66fd3e83a7146bda38631abf85dd6736b25e6c"
+    },
+    {
+      "path": "src/palette/MoveToSection.tsx",
+      "sha256": "3e1f1f4bfa78dc8c508a502e2a329751b0e8ee372fa1c4d57cc918b6033c6ba5"
+    }
+  ],
+  "fixture": {
+    "path": "src/palette/activeDescendant.test.ts",
+    "sha256": "0f358cda74b6a85bf5daa68df514828e839c01c06fe2a606586106898ea4ea17"
+  },
+  "red": {
+    "tests": 14,
+    "pass": 3,
+    "assertion_failures": 11,
+    "exit": 1
+  },
+  "limits": [
+    "Retained REA source, not fresh app acquisition or installed identity",
+    "No reference JavaScript execution",
+    "React test-renderer of actual OpenConductor components with synthetic dependencies; no browser, native accessibility tree, VoiceOver, package or provider acceptance"
+  ],
+  "integration_main": "1d8c37ab634e4eca9f86d54c138dc73fb0ee3fb5",
+  "green": {
+    "unchanged_fixture": {
+      "tests": 14,
+      "pass": 14,
+      "fail": 0
+    },
+    "with_disabled_controls": {
+      "tests": 16,
+      "pass": 16,
+      "fail": 0
+    },
+    "adjacent": {
+      "tests": 392,
+      "pass": 392,
+      "fail": 0
+    },
+    "typecheck": "PASS",
+    "build": "PASS with advisory chunk-size warning"
+  },
+  "integration_checks": {
+    "focused": "16/16",
+    "palette_and_keybindings": "394/394",
+    "branding_typecheck_build": "PASS; chunk-size advisory only"
+  }
+}

@@ -1,0 +1,219 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home target label: workspace target hides its branch even when the repository default differs
+not ok 1 - Home target label: workspace target hides its branch even when the repository default differs
+  ---
+  duration_ms: 275.414564
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeTargetLabel.test.ts:113:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        repositoryContexts: 1,
+    +   text: 'Develop',
+    +   title: 'Develop'
+    -   text: 'Cairo',
+    -   title: 'Cairo'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    title: 'Cairo'
+    text: 'Cairo'
+    repositoryContexts: 1
+  actual:
+    title: 'Develop'
+    text: 'Develop'
+    repositoryContexts: 1
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeTargetLabel.test.ts:116:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Home target label: repository default remains visible when it is not the workspace target
+not ok 2 - Home target label: repository default remains visible when it is not the workspace target
+  ---
+  duration_ms: 187.661709
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeTargetLabel.test.ts:113:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        repositoryContexts: 1,
+    +   text: 'Cairo',
+    +   title: 'Cairo'
+    -   text: 'Main',
+    -   title: 'Main'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    title: 'Main'
+    text: 'Main'
+    repositoryContexts: 1
+  actual:
+    title: 'Cairo'
+    text: 'Cairo'
+    repositoryContexts: 1
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeTargetLabel.test.ts:116:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Home target label: null workspace target uses the decoder's main fallback, not repository default
+not ok 3 - Home target label: null workspace target uses the decoder's main fallback, not repository default
+  ---
+  duration_ms: 120.598876
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeTargetLabel.test.ts:113:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        repositoryContexts: 1,
+    +   text: 'Main',
+    +   title: 'Main'
+    -   text: 'Cairo',
+    -   title: 'Cairo'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    title: 'Cairo'
+    text: 'Cairo'
+    repositoryContexts: 1
+  actual:
+    title: 'Main'
+    text: 'Main'
+    repositoryContexts: 1
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeTargetLabel.test.ts:116:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Home target label: older workspace row uses the same main fallback
+not ok 4 - Home target label: older workspace row uses the same main fallback
+  ---
+  duration_ms: 132.8034
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeTargetLabel.test.ts:113:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        repositoryContexts: 1,
+    +   text: 'Main',
+    +   title: 'Main'
+    -   text: 'Cairo',
+    -   title: 'Cairo'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    title: 'Cairo'
+    text: 'Cairo'
+    repositoryContexts: 1
+  actual:
+    title: 'Main'
+    text: 'Main'
+    repositoryContexts: 1
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeTargetLabel.test.ts:116:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Home target label: matching repository and workspace targets keep directory fallback
+ok 5 - Home target label: matching repository and workspace targets keep directory fallback
+  ---
+  duration_ms: 72.809525
+  type: 'test'
+  ...
+# Subtest: Home target label: unrelated branch keeps its prettified label
+ok 6 - Home target label: unrelated branch keeps its prettified label
+  ---
+  duration_ms: 70.200804
+  type: 'test'
+  ...
+# Subtest: Home target label: stored name still precedes target and branch
+ok 7 - Home target label: stored name still precedes target and branch
+  ---
+  duration_ms: 51.551835
+  type: 'test'
+  ...
+# Subtest: Home target label: PR title still precedes target and branch
+ok 8 - Home target label: PR title still precedes target and branch
+  ---
+  duration_ms: 65.689064
+  type: 'test'
+  ...
+# Subtest: Home target label: explicit user name still wins
+ok 9 - Home target label: explicit user name still wins
+  ---
+  duration_ms: 30.730289
+  type: 'test'
+  ...
+# Subtest: Home target label: search uses the same corrected displayed name
+not ok 10 - Home target label: search uses the same corrected displayed name
+  ---
+  duration_ms: 41.886963
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeTargetLabel.test.ts:113:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        repositoryContexts: 1,
+    +   text: 'Cairo',
+    +   title: 'Cairo'
+    -   text: 'Main',
+    -   title: 'Main'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    title: 'Main'
+    text: 'Main'
+    repositoryContexts: 1
+  actual:
+    title: 'Cairo'
+    text: 'Cairo'
+    repositoryContexts: 1
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/homeTargetLabel.test.ts:116:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 5
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1701.731273

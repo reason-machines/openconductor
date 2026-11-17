@@ -102,6 +102,14 @@ impl RunManager {
         let key = (req.workspace_id.clone(), req.script_id.clone());
         {
             let mut inner = self.lock();
+            // The reference clears workspace runs before starting or queuing a
+            // replacement. Keep task-selection history, not old output/status.
+            inner.states.retain(|k, _| k.0 != req.workspace_id);
+            inner.repos.retain(|k, _| k.0 != req.workspace_id);
+            inner.run_ids.retain(|k, _| k.0 != req.workspace_id);
+            inner.last_output.retain(|k, _| k.0 != req.workspace_id);
+            inner.last_exit.retain(|k, _| k.0 != req.workspace_id);
+            inner.started_at.retain(|k, _| k.0 != req.workspace_id);
             let history = inner.history.entry(req.workspace_id.clone()).or_default();
             history.retain(|id| id != &req.script_id);
             history.insert(0, req.script_id.clone());

@@ -64,7 +64,7 @@ for (const field of ["keyCode", "which", "nativeKeyCode", "nativeWhich"] as cons
   for (const key of ["Enter", "Escape"]) {
     test(`source callback: ${field} 229 alone keeps composing ${key} out of model commands`, () => {
       for (const query of ["", "opus"]) {
-        assert.deepEqual(dispatch({ key, query, [field]: 229 }), untouched(query));
+        assert.deepEqual(dispatch({ key, query, [field]: 229 }), { ...untouched(query), stopped: true });
       }
     });
   }
@@ -73,7 +73,7 @@ for (const field of ["keyCode", "which", "nativeKeyCode", "nativeWhich"] as cons
 for (const field of ["isComposing", "nativeIsComposing"] as const) {
   for (const key of ["Enter", "Escape"]) {
     test(`source callback: ${field} keeps ${key} out of model commands without a 229 code`, () => {
-      assert.deepEqual(dispatch({ key, [field]: true }), untouched());
+      assert.deepEqual(dispatch({ key, [field]: true }), { ...untouched(), stopped: true });
     });
   }
 }
@@ -107,9 +107,9 @@ test("source callback: adjacent key codes do not suppress ordinary model command
   }
 });
 
-test("source callback: composing navigation and editing keys do not move result focus", () => {
+test("source callback: composing navigation and editing keys stay in search without moving result focus", () => {
   for (const key of ["ArrowDown", "ArrowUp", "Tab", "a"]) {
-    assert.deepEqual(dispatch({ key, nativeKeyCode: 229 }), untouched());
+    assert.deepEqual(dispatch({ key, nativeKeyCode: 229 }), { ...untouched(), stopped: true });
   }
 });
 

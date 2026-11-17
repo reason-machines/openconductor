@@ -11,7 +11,7 @@
 // organizations only), cost column and the status-matrix setting.
 
 import type { Repo, Workspace } from "../state/types";
-import { workspaceLabel } from "../components/sidebarLabel.ts";
+import { labelTargetBranch, workspaceLabel } from "../components/sidebarLabel.ts";
 import type { ArchivedWorkspace } from "../workspace/archivedList.ts";
 
 export type ArchiveFilter = "active" | "all" | "archived";
@@ -277,7 +277,7 @@ export function homeRows(
       branch: workspace.branch,
       prTitle: workspace.prTitle,
       userSetWorkspaceName: workspace.userSetWorkspaceName,
-      targetBranch: repo.defaultBranch,
+      targetBranch: labelTargetBranch(workspace.targetBranch),
     });
     rows.push({ repo, workspace, title, lastActiveAt: lastActiveAt(workspace), archived });
   }
@@ -316,8 +316,12 @@ export type EmptyAction = "create" | "clear" | null;
  * workspace when no project is selected, archived workspaces are hidden, and
  * no workspace records exist before filtering (`Or`), else Clear filters (`mr`).
  */
-export function emptyAction(repos: readonly Repo[], filters: HomeFilters): EmptyAction {
-  const anyWorkspace = repos.some((r) => r.workspaces.length > 0);
+export function emptyAction(
+  repos: readonly Repo[],
+  filters: HomeFilters,
+  archivedRows: readonly ArchivedWorkspace[] = [],
+): EmptyAction {
+  const anyWorkspace = reposWithWorkspaces(repos, archivedRows).length > 0;
   if (filters.projects.length === 0 && filters.archiveFilter === "active" && !anyWorkspace) return "create";
   return hasActiveFilters(filters) ? "clear" : null;
 }
