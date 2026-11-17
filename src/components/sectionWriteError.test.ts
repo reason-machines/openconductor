@@ -76,6 +76,7 @@ async function fixture(mode: SectionDialogMode) {
         if (name === "./Icons") return { CloseIcon: () => null };
         if (name === "./sidebarMotion") return { endingProps: () => ({}) };
         if (name === "./motion/dialogMotion") return { useDialogMotion: () => React.useRef(null) };
+        if (name === "./DialogFrame") return { DialogFrame: ({ children }: { children: unknown }) => children };
         if (name in files) return load(files[name]);
         if (unused.has(name)) return {};
         if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }) };

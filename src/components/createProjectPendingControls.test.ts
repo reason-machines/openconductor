@@ -96,7 +96,7 @@ async function fixture() {
         if (name === "../home/createFirstWorkspace") return {
           async createFirstWorkspace(repo: { id: string; root: string; defaultBranch: string }) {
             workspaces.push({ ...repo });
-            return { workspace: { id: "first-workspace" } };
+            return { workspace: { id: "first-workspace" }, setupStarted: false };
           },
         };
         if (name === "./Icons") return { FileCodeIcon: () => null, NextMarkIcon: () => null };

@@ -35,7 +35,7 @@ function fixture(choice: typeof cases[number], icon: string | null) {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
       if (name === "../backend") return { openUrl: async (url: string) => { opened.push(url); } };
       if (name === "../state/repoIcon") return repoIcon;
-      if (name === "./Dialogs") return { Modal: ({ children }: { children: ReactNode }) => children };
+      if (name === "./DialogFrame") return { DialogFrame: ({ children }: { children: ReactNode }) => children };
       if (name === "./Icons") return { CloseIcon: () => null, SearchIcon: () => null, ExternalIcon: () => null };
       if (name === "./repoIcons.generated") return { REPO_ICONS: { folder: {} } };
       if (name === "./repoEmoji") return { searchEmoji: () => assert.fail("Unexpected emoji search") };

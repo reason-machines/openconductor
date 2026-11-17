@@ -48,6 +48,7 @@ function fixture(data: SectionDialogMode, webkit = false) {
       require(name: string) {
         if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
         if (name === "./motion/dialogMotion") return { useDialogMotion: () => React.useRef(null) };
+        if (name === "./DialogFrame") return { DialogFrame: ({ children, onClose }: { children: unknown; onClose: () => void }) => React.createElement("div", { onKeyDown: (e: { key: string; nativeEvent?: { isComposing?: boolean } }) => { if (e.key === "Escape" && !e.nativeEvent?.isComposing) onClose(); } }, children) };
         if (name in files) return load(files[name]);
         if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }) };
         if (name === "../keybindings/overrides") return sectionShortcutOverrides;

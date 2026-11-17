@@ -63,6 +63,7 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
         if (name === "../features/diff/ReviewButton") return { queuePending: () => {} };
         if (name === "../features/chat/composerIcons") return { PaperclipIcon: () => null, PlusIcon: () => null };
         if (name === "../features/chat/composer.css") return {};
+        if (name === "@tauri-apps/api/core") return { invoke: async () => {} };
         if (name === "../workspace/api") return {
           ensureRepository() {
             if (submitting) { events.push("register"); return registration.promise; }
@@ -100,6 +101,28 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
         if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }), useKeybindings: () => {} };
         if (name === "../keybindings/overrides") return { effectiveShortcuts: () => [] };
         if (name === "../keybindings/shortcut") return { glyphs: () => "", matchesEvent: () => false };
+        if (name.endsWith("/ComposerEditor.tsx") || name.endsWith("/ComposerEditor")) {
+          return {
+            ComposerEditor({ inputRef, value, onChange, onKeyDown }: Record<string, ((...a: unknown[]) => unknown) & string>) {
+              React.useLayoutEffect(() => {
+                const handle = {
+                  focus: () => {}, blur: () => {}, visible: () => true,
+                  focused: () => false, composing: () => false,
+                  selection: () => ({ text: String(value), start: 0, end: 0 }),
+                  replaceRange: () => false, insertFile: () => {}, deleteRange: () => false, newline: () => {},
+                };
+                Object.assign(inputRef, { current: handle });
+                return () => Object.assign(inputRef, { current: null });
+              }, []);
+              return React.createElement("textarea", {
+                "aria-label": "First message",
+                value,
+                onChange: (e: { target: { value: string } }) => onChange(e.target.value),
+                onKeyDown: (e: { nativeEvent: KeyboardEvent }) => onKeyDown(e.nativeEvent),
+              });
+            },
+          };
+        }
         throw new Error(`Unexpected launch-close dependency ${name}`);
       },
     });
@@ -140,9 +163,35 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
     replace() { act(() => setScreen("replacement")); },
     invalid() { act(() => send(renderer.root.findByProps({ "aria-label": "Target branch" }), "onChange", "bad..branch")); },
     message() { act(() => send(renderer.root.findByType("textarea"), "onChange", { target: { value: "First request" } })); },
+    async pasteFiles(files: File[]) {
+      let handled = false;
+      await act(async () => {
+        const editor = renderer.root.find((node: { type: unknown }) => typeof node.type === "function" && node.type.name === "ComposerEditor");
+        handled = editor.props.onPasteFiles(files as unknown as FileList);
+      });
+      return handled;
+    },
     dispose() { act(() => renderer.unmount()); },
   };
 }
+
+test("create composer leaves clipboard pastes without files to the shared editor", async () => {
+  const view = await fixture();
+  try {
+    view.message();
+    assert.equal(await view.pasteFiles([]), false, "plain text and custom atoms must reach ComposerEditor.handlePaste");
+    assert.match(view.rendered(), /First request/);
+    assert.equal(view.requests, 0);
+  } finally { view.dispose(); }
+});
+
+test("create composer still handles clipboard file attachments", async () => {
+  const view = await fixture();
+  try {
+    assert.equal(await view.pasteFiles([new File(["fixture"], "fixture.txt", { type: "text/plain" })]), true);
+    assert.equal(view.requests, 0);
+  } finally { view.dispose(); }
+});
 
 test("accepted modal launch closes after pending registration and before repository registration settles", async () => {
   const view = await fixture();
@@ -249,9 +298,33 @@ for (const setupFails of [false, true]) {
       assert.equal(view.actions[1]?.sectionId, "section");
       for (const event of ["configure", "seed", "rename", "setup", "watch"]) assert.ok(view.events.includes(event), event);
       assert.equal(view.events.includes("unwatch"), setupFails);
+      // GAP-SB-01: state must reflect whether setup actually started.
+      // setup started successfully → "setting_up" (row stays dimmed until backend clears it).
+      // setup threw (setupFails) → "ready" (row must NOT stay permanently dimmed).
+      const wsAction = view.actions[0] as { type: string; workspace?: { state?: string } };
+      assert.equal(wsAction.workspace?.state, setupFails ? "ready" : "setting_up",
+        `workspace.state must be ${setupFails ? "ready" : "setting_up"} when setup ${setupFails ? "fails" : "starts"}`
+      );
     } finally { view.dispose(); }
   });
 }
+
+test("accepted modal launch adds workspace with state ready when no setup script", async () => {
+  // GAP-SB-01: when startSetupScript returns false (no .setup in scriptsConfig),
+  // addWorkspace must dispatch state="ready" so the row is NOT permanently dimmed.
+  const view = await fixture({ setup: false });
+  try {
+    await view.submit();
+    await view.registered();
+    await view.succeed();
+    assert.equal(view.pending.size, 0);
+    const wsAction = view.actions.find(a => a.type === "addWorkspace") as { type: string; workspace?: { state?: string } } | undefined;
+    assert.ok(wsAction, "addWorkspace must be dispatched");
+    assert.equal(wsAction?.workspace?.state, "ready",
+      "workspace.state must be \"ready\" when no setup script exists"
+    );
+  } finally { view.dispose(); }
+});
 
 // -------------------------------------------------------------------------
 // workspace.addToBacklogFromComposer: Alt+Enter creates workspace idle + sets
@@ -331,6 +404,7 @@ async function backlogFixture() {
         if (name === "../features/diff/ReviewButton") return { queuePending: () => {} };
         if (name === "../features/chat/composerIcons") return { PaperclipIcon: () => null, PlusIcon: () => null };
         if (name === "../features/chat/composer.css") return {};
+        if (name === "@tauri-apps/api/core") return { invoke: async () => {} };
         if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }), useKeybindings: () => {} };
         if (name === "../keybindings/overrides") return {
           effectiveShortcuts(id: string) {
@@ -346,6 +420,28 @@ async function backlogFixture() {
             return s.key.kind === "logical" && s.key.value === e.key && !!s.alt === !!e.altKey;
           },
         };
+        if (name.endsWith("/ComposerEditor.tsx") || name.endsWith("/ComposerEditor")) {
+          return {
+            ComposerEditor({ inputRef, value, onChange, onKeyDown }: Record<string, ((...a: unknown[]) => unknown) & string>) {
+              React.useLayoutEffect(() => {
+                const handle = {
+                  focus: () => {}, blur: () => {}, visible: () => true,
+                  focused: () => false, composing: () => false,
+                  selection: () => ({ text: String(value), start: 0, end: 0 }),
+                  replaceRange: () => false, insertFile: () => {}, deleteRange: () => false, newline: () => {},
+                };
+                Object.assign(inputRef, { current: handle });
+                return () => Object.assign(inputRef, { current: null });
+              }, []);
+              return React.createElement("textarea", {
+                "aria-label": "First message",
+                value,
+                onChange: (e: { target: { value: string } }) => onChange(e.target.value),
+                onKeyDown: (e: { nativeEvent: KeyboardEvent }) => onKeyDown(e.nativeEvent),
+              });
+            },
+          };
+        }
         throw new Error(`Unexpected backlog-fixture dependency ${name}`);
       },
     });
@@ -375,7 +471,9 @@ async function backlogFixture() {
     get creationFirstSession() { return creationFirstSession; },
     async altEnter() {
       await act(async () => {
-        const nativeEvent = { key: "Enter", altKey: true, isComposing: false } as unknown as KeyboardEvent;
+        // nativeEvent needs preventDefault/stopPropagation because ComposerEditor passes the native
+        // event directly to onKeyDown (no React synthetic wrapper), so the handler calls e.preventDefault().
+        const nativeEvent = { key: "Enter", altKey: true, isComposing: false, preventDefault() {}, stopPropagation() {} } as unknown as KeyboardEvent;
         send(
           renderer.root.findByType("textarea"),
           "onKeyDown",

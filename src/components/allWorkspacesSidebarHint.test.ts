@@ -12,6 +12,7 @@ import * as listeners from "../keybindings/listeners.ts";
 import * as overrides from "../keybindings/overrides.ts";
 import * as selectAll from "../keybindings/selectAll.ts";
 import * as shortcut from "../keybindings/shortcut.ts";
+import * as tooltipPlacement from "./tooltipPlacement.ts";
 import * as home from "../home/allWorkspaces.ts";
 import * as status from "../state/rowStatus.ts";
 import { workspaceNumberLabel } from "../state/workspaceNumber.ts";
@@ -19,7 +20,19 @@ import { workspaceNumberLabel } from "../state/workspaceNumber.ts";
 const dependencies = createRequire(import.meta.url);
 const { act, create } = dependencies("react-test-renderer");
 const commandId = "view.toggleLeftSidebar";
-const defaultTitle = "Toggle left sidebar (⌘B or [)";
+const defaultHint = "Toggle left sidebar ⌘B or [";
+
+class FixtureWindow extends EventTarget {
+  private next = 0;
+  private timers = new Map<number, () => void>();
+  setTimeout = (callback: () => void) => { const id = ++this.next; this.timers.set(id, callback); return id; };
+  clearTimeout = (id: number) => { this.timers.delete(id); };
+  flush() {
+    for (const [id, callback] of [...this.timers]) {
+      if (this.timers.delete(id)) callback();
+    }
+  }
+}
 
 function compile(file: string): string {
   return ts.transpileModule(readFileSync(new URL(file, import.meta.url), "utf8"), {
@@ -37,7 +50,7 @@ function saved(primary: string, additional?: string): string {
 
 async function fixture(sidebarVisible = false) {
   const provider: Partial<typeof import("../keybindings/KeybindingsProvider")> = {};
-  const globals = { window: new EventTarget(), document: new EventTarget() };
+  const globals: { window: FixtureWindow; document: EventTarget; performance: { now: () => number } } = { window: new FixtureWindow(), document: new EventTarget(), performance: { now: () => 1000 } };
   const providerImports: Record<string, unknown> = {
     "./bind.ts": bind, "./dispatcher.ts": dispatcher, "./listeners.ts": listeners,
     "./overrides.ts": overrides, "./selectAll.ts": selectAll,
@@ -55,6 +68,18 @@ async function fixture(sidebarVisible = false) {
 
   const component: Partial<Pick<typeof import("./AllWorkspaces"), "AllWorkspaces">> = {};
   const inert = () => null;
+  const tooltip: Partial<Pick<typeof import("./Tooltip"), "Tooltip">> = {};
+  runInNewContext(compile("./Tooltip.tsx"), {
+    ...globals, exports: tooltip,
+    require(name: string) {
+      if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      if (name === "react-dom") return { createPortal: (children: React.ReactNode) => children };
+      if (name === "./tooltip.css") return {};
+      assert.equal(name, "./tooltipPlacement", `Unexpected tooltip dependency: ${name}`);
+      return tooltipPlacement;
+    },
+  });
+
   const homeImports: Record<string, unknown> = {
     "../home/allWorkspaces": { ...home, loadFilters: () => ({ projects: [], archiveFilter: "active" }), saveFilters() {} },
     "../state/rowStatus": status,
@@ -65,7 +90,7 @@ async function fixture(sidebarVisible = false) {
     "../settings/useBoolPref": { useBoolPref: () => false },
     "../workspace/archive": { listArchivedWorkspaces: async () => [], onArchiveEvent: () => () => {} },
     "./RepoIcon": { RepoIcon: inert },
-    "./Tooltip": { Tooltip: ({ children }: { children: React.ReactNode }) => children },
+    "./Tooltip": tooltip,
     "./Icons": { ArchiveIcon: inert, ChevronDownIcon: inert, FolderIcon: inert, SearchIcon: inert, SidebarIcon: inert },
     "./RowStatusIcon": { RowStatusIcon: inert },
     "./StatusMatrix": { StatusMatrix: inert },
@@ -73,6 +98,7 @@ async function fixture(sidebarVisible = false) {
     "../keybindings/shortcut": shortcut,
     "../keybindings/KeybindingsProvider": provider,
   };
+
   runInNewContext(compile("./AllWorkspaces.tsx"), {
     exports: component,
     require(name: string) {
@@ -103,10 +129,26 @@ async function fixture(sidebarVisible = false) {
       children: React.createElement(React.Fragment, null, React.createElement(Controls), React.createElement(AllWorkspaces, props)),
     }));
   });
+  const toggle = () => renderer.root.findByProps({ className: "home-sidebar-toggle" });
+  const tooltips = () => renderer.root.findAllByProps({ role: "tooltip" });
+  type TextTree = string | { children: readonly TextTree[] };
+  function text(node: TextTree): string {
+    return typeof node === "string" ? node : node.children.map(text).join("");
+  }
   return {
-    actions,
-    toggle: () => renderer.root.findByProps({ className: "home-sidebar-toggle" }),
-    toggles: () => renderer.root.findAllByProps({ className: "home-sidebar-toggle" }),
+    actions, toggle, toggles: () => renderer.root.findAllByProps({ className: "home-sidebar-toggle" }),
+    tooltipText() {
+      assert.equal(tooltips().length, 1, "hover must render the app tooltip");
+      return text(tooltips()[0]);
+    },
+    async hover(pointerType = "mouse") {
+      await act(async () => { toggle().props.onPointerEnter?.({ pointerType }); });
+      await act(async () => { globals.window.flush(); });
+    },
+    async leave() {
+      await act(async () => { toggle().props.onPointerLeave?.({}); });
+      await act(async () => { globals.window.flush(); });
+    },
     async hydrate(raw: string | undefined) {
       const resolveStored = hydrate;
       assert.ok(resolveStored);
@@ -125,22 +167,29 @@ async function fixture(sidebarVisible = false) {
 test("Home workspace-list sidebar toggle retains its default hint and click action", async () => {
   const view = await fixture();
   try {
-    assert.equal(view.toggle().props.title, defaultTitle);
+    await view.hover();
+    assert.equal(view.tooltipText(), defaultHint);
     assert.equal(view.toggle().props["aria-label"], "Toggle left sidebar");
+    assert.equal(view.toggle().props.title, undefined);
     await act(async () => { view.toggle().props.onClick(); });
     assert.equal(view.actions.length, 1);
     assert.equal(view.actions[0]?.type, "toggleSidebar");
     await view.hydrate(undefined);
-    assert.equal(view.toggle().props.title, defaultTitle);
+    await view.leave();
+    await view.hover();
+    assert.equal(view.tooltipText(), defaultHint);
   } finally { await view.close(); }
 });
 
 test("mounted Home workspace-list sidebar hint follows persisted primary and additional shortcuts after hydration", async () => {
   const view = await fixture();
   try {
-    assert.equal(view.toggle().props.title, defaultTitle);
+    await view.hover();
+    assert.equal(view.tooltipText(), defaultHint);
+    await view.leave();
     await view.hydrate(saved("y", "j"));
-    assert.equal(view.toggle().props.title, "Toggle left sidebar (⌘⇧Y or ⌥J)");
+    await view.hover();
+    assert.equal(view.tooltipText(), "Toggle left sidebar ⌘⇧Y or ⌥J");
   } finally { await view.close(); }
 });
 
@@ -149,11 +198,16 @@ test("mounted Home workspace-list sidebar hint follows live provider changes and
   try {
     await view.hydrate(undefined);
     await view.update(saved("y", "j"));
-    assert.equal(view.toggle().props.title, "Toggle left sidebar (⌘⇧Y or ⌥J)");
+    await view.hover();
+    assert.equal(view.tooltipText(), "Toggle left sidebar ⌘⇧Y or ⌥J");
+    await view.leave();
     await view.update(saved("u", "l"));
-    assert.equal(view.toggle().props.title, "Toggle left sidebar (⌘⇧U or ⌥L)");
+    await view.hover();
+    assert.equal(view.tooltipText(), "Toggle left sidebar ⌘⇧U or ⌥L");
+    await view.leave();
     await view.update(undefined);
-    assert.equal(view.toggle().props.title, defaultTitle);
+    await view.hover();
+    assert.equal(view.tooltipText(), defaultHint);
   } finally { await view.close(); }
 });
 
@@ -161,7 +215,8 @@ test("Home workspace-list sidebar hint replaces defaults with a single saved sho
   const view = await fixture();
   try {
     await view.hydrate(saved("y"));
-    assert.equal(view.toggle().props.title, "Toggle left sidebar (⌘⇧Y)");
+    await view.hover();
+    assert.equal(view.tooltipText(), "Toggle left sidebar ⌘⇧Y");
   } finally { await view.close(); }
 });
 
@@ -169,7 +224,15 @@ test("Home workspace-list sidebar hint keeps defaults when the persisted setting
   const view = await fixture();
   try {
     await view.hydrate("not-json");
-    assert.equal(view.toggle().props.title, defaultTitle);
+    await view.hover();
+    assert.equal(view.tooltipText(), defaultHint);
+  } finally { await view.close(); }
+});
+
+test("Home workspace-list sidebar toggle has no competing native title", async () => {
+  const view = await fixture();
+  try {
+    assert.equal(view.toggle().props.title, undefined);
   } finally { await view.close(); }
 });
 

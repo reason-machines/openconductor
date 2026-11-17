@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { pickFolder } from "../backend";
-import { Modal } from "../components/Dialogs";
+import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { Row } from "./GeneralPage";
 import { FolderIcon } from "./icons";
 import { errorText } from "./api";
@@ -73,26 +73,20 @@ export function RootPathRow() {
       </Row>
       {error && !pending && <p className="error small" role="alert">{error}</p>}
       {pending && (
-        <Modal title={CHANGE_TITLE} onClose={() => !busy && setPending(null)} motion="alert">
-          <div className="modal-body">
-            <p>{CHANGE_BODY}</p>
-            <p className="small">
-              <span className="muted">Old root path:</span> <code>{root}</code>
-            </p>
-            <p className="small">
-              <span className="muted">New root path:</span> <code>{pending}</code>
-            </p>
-            {error && <p className="error small" role="alert">{error}</p>}
-            <div className="modal-actions">
-              <button type="button" className="btn" onClick={() => setPending(null)} disabled={busy}>
-                Cancel
-              </button>
-              <button type="button" className="btn btn-danger" onClick={confirm} disabled={busy} data-primary-action>
-                {busy ? "Changing..." : "Remove all and change"}
-              </button>
-            </div>
-          </div>
-        </Modal>
+        <ConfirmationDialog
+          title={CHANGE_TITLE}
+          confirmLabel="Remove all and change"
+          pendingLabel="Changing..."
+          pending={busy}
+          destructive
+          onConfirm={confirm}
+          onClose={() => setPending(null)}
+        >
+          <p>{CHANGE_BODY}</p>
+          <p className="small"><span className="muted">Old root path:</span> <code>{root}</code></p>
+          <p className="small"><span className="muted">New root path:</span> <code>{pending}</code></p>
+          {error && <p className="error small" role="alert">{error}</p>}
+        </ConfirmationDialog>
       )}
     </>
   );

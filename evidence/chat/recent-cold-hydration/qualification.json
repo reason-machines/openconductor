@@ -1,0 +1,124 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate": "CHAT.RECENT-COLD-HYDRATION",
+  "baseline_main": "b22fa9adaf67fa79fc3dddf72914cae01f352b08",
+  "source_unit_main": "f60b6e365395ceb62b2b2ec6e1542a16a5b0d0ee",
+  "source_unit_fixture_sha256": "24257777dba2a5f340a09a2bbaf4e841e4c0413c53b27e8a92f9aa34ef5ab8c8",
+  "source_unit_result": {
+    "intended_failures": 1,
+    "passing_controls": 2,
+    "mounted_react": false,
+    "provider_or_native": false
+  },
+  "reference_checks": {
+    "main": "f60b6e365395ceb62b2b2ec6e1542a16a5b0d0ee",
+    "checks": [
+      "identity packet archive",
+      "identity reference-nPo.txt",
+      "identity reference-RIo.txt",
+      "identity reference-EIo.txt",
+      "identity reference-uKn.txt",
+      "identity reference-index-Wpe.txt",
+      "identity reference-index-Bf.txt",
+      "identity reference-index-gpe.txt",
+      "identity reference-index-k1t.txt",
+      "identity reference-index-svt.txt",
+      "identity reference-index-ple.txt",
+      "identity reference-index-au.txt",
+      "identity reference-index-A2.txt",
+      "identity reference-index-A1t.txt",
+      "identity reference-index-I1t.txt",
+      "identity reference-index-Xo.txt",
+      "identity reference-index-C_.txt",
+      "identity reference-index-LFt.txt",
+      "identity reference-index-h9t.txt",
+      "identity reference-index-G4e.txt",
+      "identity reference-index-j4e.txt",
+      "identity reference-index-dqe.txt",
+      "closed empty-state full caller",
+      "closed first-state predicate",
+      "closed recent transcripts full caller",
+      "closed all-workspace session hook",
+      "closed visible and hidden query definitions",
+      "closed visible and hidden hook bindings",
+      "closed workspace database loader",
+      "closed stored-session decoder",
+      "closed visible selector",
+      "closed session close mutation",
+      "closed local/cloud close guard",
+      "closed close hook",
+      "closed hide backend operation",
+      "closed cached-workspace loader",
+      "closed query-state workspace selectors",
+      "closed recent hook import",
+      "closed all-session hook export",
+      "closed hide mutation import",
+      "closed hide mutation export",
+      "closed legacy close callback",
+      "closed service hide dispatch",
+      "closed query-state selectors",
+      "closed legacy close-hook binding",
+      "closed grouped close-hook binding",
+      "closed grouped close callback",
+      "disclosure dIt-store",
+      "disclosure Mu",
+      "disclosure y0o",
+      "disclosure O0o-read",
+      "disclosure gpo-plan",
+      "disclosure hIt-dispatch",
+      "disclosure registry"
+    ],
+    "count": 54,
+    "full_assets_rehashed": false,
+    "sources": {
+      "src/features/chat/chatEmptyState.ts": "4010ad862ee542c7a474e9588f09398326720a73e5175e2cb9a23779deb1ee23",
+      "src/features/chat/chatRuntime.ts": "ce7c3cb29940ccfa4fedce7e3b49d2c835db6644c9c40330bebbbf6111723816",
+      "src/features/chat/rewind.ts": "011b517c6bd12b2749818db9e84825e4f79dce1fb18cffe3991c172cb88425d0",
+      "src/features/chat/attention.ts": "9a674d34d8172ef0b94ebf1136398f526fbdb3c86c5a10748ecdfbfedff8c314",
+      "src/features/chat/persist.ts": "f42e462ac347b53b0b8b1a864771195cfcbf2e5c69b0f20f8b6c2dace49d65ef",
+      "src/features/chat/types.ts": "3014952a29ee66057157191c8f8f91ec5bf3293cbaf06c179ea9752e4b3cbd97",
+      "src/features/chat/userContent.ts": "5bc4da24e8d193d68b85fd02f25c890ed6a2a44a3096ae51e008139900c3488c",
+      "src/features/chat/composerDocument.ts": "9228c3b05e08c41faffef50363e928d80636eda949003dbac34d197971d1a676",
+      "src/lib/persistence/restartPersistence.ts": "931accd8ac4c43621ae0235e16000688587ce448acdfc2989284d098ebc70a03",
+      "src/lib/persistence/owner.ts": "0839e315b74003736dba89c3f3c08dc0f7bea2fe3cba2e7a37252d4ac4a9abe6",
+      "src/features/chat/queue.ts": "f08c481457eaf0389259d148c62c1c592cfc95612dc6b7576cb4c7c415e1e1a1",
+      "src/features/chat/reason.ts": "f07517deda7a715fcdc974d7d6147e65c28efa44c451f890777da233039fa572",
+      "src/features/chat/checkpoints.ts": "b462a6367fc162f53c214b1e8bef6d8aac7c3fb253f2f4393c8169c4bfc6d432",
+      "src/features/chat/reducer.ts": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a"
+    }
+  },
+  "source_inputs": {
+    "src/components/WorkspaceView.tsx": {
+      "sha256": "25b439faa914fe5d9ea0edabefd1e4dcc07896fd6afefe1838b0cd328eaceed0",
+      "bytes": 97362,
+      "unchanged_since_source_unit": true
+    },
+    "src/features/chat/chatRuntime.ts": {
+      "sha256": "ce7c3cb29940ccfa4fedce7e3b49d2c835db6644c9c40330bebbbf6111723816",
+      "bytes": 33403,
+      "unchanged_since_source_unit": true
+    },
+    "src/features/chat/ChatEmptyState.tsx": {
+      "sha256": "508793cae7b930d2add60856460af8996b77361ba2668de261081ee370528ecb",
+      "bytes": 4161,
+      "unchanged_since_source_unit": true
+    },
+    "src/features/chat/chatEmptyState.ts": {
+      "sha256": "4010ad862ee542c7a474e9588f09398326720a73e5175e2cb9a23779deb1ee23",
+      "bytes": 2747,
+      "unchanged_since_source_unit": true
+    },
+    "src/features/chat/Transcript.tsx": {
+      "sha256": "8b13f23d0fec69db4fa1311cb901fdf936c18a267f8f7f47f56aafca1747f1e8",
+      "bytes": 21433,
+      "unchanged_since_source_unit": true
+    }
+  },
+  "mounted_fixture_sha256": "7b5169bae2619147538678a2ae9ba686e2dc635a8e33b2c986ca41f7653e805e",
+  "mounted_baseline": "NOT_RUN; ordinary hosted CI requested with test-only publication",
+  "limits": [
+    "No full original artifact reacquisition or full-asset rehash in this pass",
+    "Static retained reference spans, not observed native reference behavior",
+    "No local dependency installation, browser/native/provider runtime or manual E2E dispatch"
+  ]
+}
