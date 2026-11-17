@@ -531,7 +531,8 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
     for (const draft of composing) {
       if (draft.path !== file.path) continue;
       const key = `${draft.side}:${draft.line}`;
-      if (!out.has(key)) out.set(key, { side: draft.side, line: draft.line });
+      const existing = out.get(key);
+      out.set(key, { side: draft.side, line: draft.line, commentIds: [...(existing?.commentIds ?? []), draft.id] });
     }
     return [...out.values()];
   };
@@ -539,6 +540,14 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
   const persistAnchors = (file: FileDiff, positions: CommentAnchorPositions) => {
     const updates = commentAnchorUpdates(stored, file.path, positions);
     if (updates.length > 0) void run(store.updateAnchors(updates));
+    // New composers use the same pending ID map, but commit their range only
+    // here (save/completion), not while the editor is changing the document.
+    setComposing((current) => current.map((draft) => {
+      if (draft.workspaceId !== workspaceId || draft.path !== file.path) return draft;
+      const line = positions.get(draft.id);
+      if (line == null || line === draft.line) return draft;
+      return { ...draft, start: draft.start + line - draft.line, line };
+    }));
   };
 
   const annotations = (file: FileDiff, anchor: LineAnchor): ReactNode => {
@@ -561,7 +570,7 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
               if (submittingDrafts.current.has(draft.id)) return;
               submittingDrafts.current.add(draft.id);
               try {
-                const ok = await run(store.add(newLocalComment({ id: crypto.randomUUID(), workspaceId, filePath: file.path, side: anchor.side, start: draft.start, end: anchor.line, body, now: Date.now() })));
+                const ok = await run(store.add(newLocalComment({ id: draft.id, workspaceId, filePath: file.path, side: anchor.side, start: draft.start, end: anchor.line, body, now: Date.now() })));
                 if (ok) discardNewDraft(draft);
               } finally {
                 submittingDrafts.current.delete(draft.id);

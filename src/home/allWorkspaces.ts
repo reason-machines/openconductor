@@ -316,8 +316,12 @@ export type EmptyAction = "create" | "clear" | null;
  * workspace when no project is selected, archived workspaces are hidden, and
  * no workspace records exist before filtering (`Or`), else Clear filters (`mr`).
  */
-export function emptyAction(repos: readonly Repo[], filters: HomeFilters): EmptyAction {
-  const anyWorkspace = repos.some((r) => r.workspaces.length > 0);
+export function emptyAction(
+  repos: readonly Repo[],
+  filters: HomeFilters,
+  archivedRows: readonly ArchivedWorkspace[] = [],
+): EmptyAction {
+  const anyWorkspace = reposWithWorkspaces(repos, archivedRows).length > 0;
   if (filters.projects.length === 0 && filters.archiveFilter === "active" && !anyWorkspace) return "create";
   return hasActiveFilters(filters) ? "clear" : null;
 }

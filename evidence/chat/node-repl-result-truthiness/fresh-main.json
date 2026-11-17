@@ -1,0 +1,39 @@
+{
+  "author": "Conductor Rebuild",
+  "baseline_main": "810a79d40a7205a52e730ae5cc6da2f84401c063",
+  "predecessor_pr": 1423,
+  "actual_predecessor_merge": "810a79d40a7205a52e730ae5cc6da2f84401c063",
+  "node_fixture_sha256": "20b169940ed2f18c0ecb29918c5f1a1172fc08646e55b9858fe755dbde8de117",
+  "typed_v3_sha256": "dea7a1df1432b2b325944f1bd9243ac056ea59aec9e7be2a00ccd23e6107ae79",
+  "red": {
+    "tests": 24,
+    "pass": 16,
+    "fail": 8,
+    "exit": 1
+  },
+  "green": {
+    "tests": 24,
+    "pass": 24,
+    "fail": 0,
+    "exit": 0
+  },
+  "adjacent": {
+    "tests": 106,
+    "pass": 106,
+    "fail": 0,
+    "exit": 0
+  },
+  "typecheck": "PASS",
+  "source_bindings": "PASS: seven complete spans plus limit, full parent, frozen fixture, exact Node-only hunk/seven unchanged controls",
+  "acceptance_limits": "Browser/native/provider/package UNVERIFIED; no runtime dispatch, app install or new watcher",
+  "verified_source_commit": "ce9dcf7b8",
+  "full_chat": {
+    "tests": 1849,
+    "pass": 1849,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "exit": 0
+  },
+  "build": "PASS in independent committed worktree ce9dcf7b8; existing chunk advisory. Interrupted original dispatch unconfirmed, no original build success claimed."
+}

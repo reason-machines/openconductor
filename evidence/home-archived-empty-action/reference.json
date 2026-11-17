@@ -1,0 +1,176 @@
+{
+  "unit": "HOME-ARCHIVED-EMPTY-ACTION-271-04",
+  "baseline_main": "51e6b1be397ebd294a11f5c827a68abbb7f57c3f",
+  "reference": {
+    "app": "Conductor 0.87.6",
+    "parent_rea_evidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "full_asset_digests_rechecked": false,
+    "asset_verification": {
+      "renderer": "full asset SHA-256 and original byte spans freshly rechecked",
+      "index": "historical retained identity and literal span hashes only; no fresh full-asset rehash"
+    },
+    "assets": {
+      "renderer": {
+        "bytes": 11600457,
+        "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+      },
+      "index": {
+        "bytes": 3493297,
+        "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+      }
+    }
+  },
+  "spans": [
+    {
+      "name": "Home-UJo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9863549,
+        9874571
+      ],
+      "bytes": 11022,
+      "sha256": "58824b140436a668433f7e08fe26d2083c0e100d363cda5edb14150526a53030",
+      "source": "function UJo(){const t=ne.c(176),e=aa(),n=g5(),{data:i,isLoading:r}=Xh();let o;t[0]!==i?(o=i===void 0?[]:i,t[0]=i,t[1]=o):o=t[1];const a=o,{data:c,isLoading:u}=nF();let d;t[2]!==c?(d=c===void 0?[]:c,t[2]=c,t[3]=d):d=t[3];const h=d,{data:m}=yV(gPt);let g;t[4]!==m?(g=m===void 0?[]:m,t[4]=m,t[5]=g):g=t[5];const _=g,v=hI(Ko.store,ed(KJo)),[x,w]=$.useState(\"\"),{organization:E,baseUrl:k,isLoading:I}=so();let R;t[6]!==E?(R=E!==void 0&&fc(E)===\"cloud\",t[6]=E,t[7]=R):R=t[7];const O=R,D=O?E.id:void 0;let P;t[8]!==k||t[9]!==D?(P={baseUrl:k,organizationId:D},t[8]=k,t[9]=D,t[10]=P):P=t[10];const{data:L}=j9(P),B=Vd(),F=B?.id,H=E?.id,{owners:U,projects:z,archiveFilter:G,setOwners:K,setProjects:X,setArchiveFilter:Q,clearFilters:J}=MJo(H),[te,Z]=$.useState(50),se=$.useRef(null),ce=mI(),{data:ae}=bD(),de=ae===void 0?!0:ae,{data:ue}=Lii(),{data:pe}=sde(),be=pe===void 0?!1:pe,he=ue;let ge;t[11]===Symbol.for(\"react.memo_cache_sentinel\")?(ge=()=>{Z(50)},t[11]=ge):ge=t[11];let ve;t[12]!==G||t[13]!==U||t[14]!==z||t[15]!==x?(ve=[x,U,z,G],t[12]=G,t[13]=U,t[14]=z,t[15]=x,t[16]=ve):ve=t[16],$.useEffect(ge,ve);let ye;t[17]!==h?(ye=new Map,h.forEach(Ei=>ye.set(Ei.id,Ei)),t[17]=h,t[18]=ye):ye=t[18];const xe=ye;let ke;t[19]!==a?(ke=new Set(a.map(qJo)),t[19]=a,t[20]=ke):ke=t[20];const Se=ke;let De;if(t[21]!==Se||t[22]!==h){let Ei;t[24]!==Se?(Ei=hi=>Se.has(hi.id),t[24]=Se,t[25]=Ei):Ei=t[25],De=h.filter(Ei),t[21]=Se,t[22]=h,t[23]=De}else De=t[23];const je=De;let Ne;if(t[26]!==L){Ne=new Map;for(const Ei of L??[])Ne.set(Ei.id,Ei);t[26]=L,t[27]=Ne}else Ne=t[27];const Le=Ne;let ze;if(t[28]!==F||t[29]!==L){let Ei;t[31]!==F?(Ei=(hi,Dr)=>{if(hi.id!==Dr.id){if(hi.id===F)return-1;if(Dr.id===F)return 1}return(hi.name??hi.email).localeCompare(Dr.name??Dr.email)},t[31]=F,t[32]=Ei):Ei=t[32],ze=[...L??[]].sort(Ei),t[28]=F,t[29]=L,t[30]=ze}else ze=t[30];const Ke=ze;let Ze;e:{if(!O){let Dr;t[33]===Symbol.for(\"react.memo_cache_sentinel\")?(Dr=[],t[33]=Dr):Dr=t[33],Ze=Dr;break e}if(U===void 0){let Dr;t[34]!==F?(Dr=F!==void 0?[F]:void 0,t[34]=F,t[35]=Dr):Dr=t[35],Ze=Dr;break e}let Ei;t[36]!==U?(Ei=new Set(U),t[36]=U,t[37]=Ei):Ei=t[37];let hi;t[38]!==Ei?(hi=[...Ei],t[38]=Ei,t[39]=hi):hi=t[39],Ze=hi}const Ye=Ze;let Qe;if(t[40]!==_){Qe=new Map;for(const Ei of _){if(Ei.localWorkspaceId===void 0)continue;const hi=Qe.get(Ei.localWorkspaceId);hi?hi.push(Ei):Qe.set(Ei.localWorkspaceId,[Ei])}t[40]=_,t[41]=Qe}else Qe=t[41];const Ue=Qe;let We;e:{if(!a){let hi;t[42]===Symbol.for(\"react.memo_cache_sentinel\")?(hi=[],t[42]=hi):hi=t[42],We=hi;break e}let Ei;if(t[43]!==xe||t[44]!==Ue||t[45]!==a){let hi;t[47]!==xe?(hi=mo=>xe.has(mo.repositoryId),t[47]=xe,t[48]=hi):hi=t[48];let Dr;t[49]!==Ue?(Dr=mo=>zJo(mo,Ue.get(mo.localId)??$Jo),t[49]=Ue,t[50]=Dr):Dr=t[50],Ei=[...a.filter(hi).map(Dr)].sort(GJo),t[43]=xe,t[44]=Ue,t[45]=a,t[46]=Ei}else Ei=t[46];We=Ei}const Ve=We;let He;e:{if(Ye===void 0){let hi;t[51]===Symbol.for(\"react.memo_cache_sentinel\")?(hi=[],t[51]=hi):hi=t[51],He=hi;break e}if(Ye.length===0){He=Ve;break e}if(F===void 0){let hi;if(t[52]!==Ve||t[53]!==Ye){let Dr;t[55]!==Ye?(Dr=Ra=>Ye.some(mo=>HJ({workspace:Ra,userId:mo})),t[55]=Ye,t[56]=Dr):Dr=t[56],hi=Ve.filter(Dr),t[52]=Ve,t[53]=Ye,t[54]=hi}else hi=t[54];He=hi;break e}let Ei;if(t[57]!==Ve||t[58]!==F||t[59]!==Ye){let hi;t[61]!==F||t[62]!==Ye?(hi=Dr=>{const Ra=Ye.some(Eu=>HJ({workspace:Dr,userId:Eu})),mo=Ye.includes(F)&&Dr.creatorUserId===void 0&&Dr.assigneeUserId===void 0;return Ra||mo},t[61]=F,t[62]=Ye,t[63]=hi):hi=t[63],Ei=Ve.filter(hi),t[57]=Ve,t[58]=F,t[59]=Ye,t[60]=Ei}else Ei=t[60];He=Ei}const it=He;let ft;if(t[64]!==G||t[65]!==it||t[66]!==z){let Ei;t[68]!==G||t[69]!==z?(Ei=hi=>!(G===\"active\"&&hi.state===\"archived\"||G===\"archived\"&&hi.state!==\"archived\"||z.length>0&&!z.includes(hi.repositoryId)),t[68]=G,t[69]=z,t[70]=Ei):Ei=t[70],ft=it.filter(Ei),t[64]=G,t[65]=it,t[66]=z,t[67]=ft}else ft=t[67];const gt=ft;let Tt;if(t[71]!==ce||t[72]!==gt||t[73]!==v||t[74]!==xe){let Ei;t[76]!==ce||t[77]!==v||t[78]!==xe?(Ei=hi=>{const Dr=hi.state===\"archived\"?void 0:v.localBranch[hi.localId],Ra=Dr&&!QO(Dr)?Dr:void 0,mo=Ra??(hi.state===\"archived\"?hi.branch:void 0),Eu=$V({userSetWorkspaceName:hi.userSetWorkspaceName,workspaceName:hi.workspaceName,directoryName:hi.directoryName,prTitle:hi.prTitle,branch:mo,branchPrefix:ce,targetBranch:hi.intendedTargetBranch,host:hi.host})??hi.directoryName,fo=xe.get(hi.repositoryId)?.name??\"\",Fo={name:Eu,branch:Ra??hi.branch??\"\",directory:hi.directoryName,repo:fo,number:hi.number,prNumber:v.workspacePrNumber[hi.localId]};return{workspace:hi,displayBranch:Eu,searchFields:Fo}},t[76]=ce,t[77]=v,t[78]=xe,t[79]=Ei):Ei=t[79],Tt=gt.map(Ei),t[71]=ce,t[72]=gt,t[73]=v,t[74]=xe,t[75]=Tt}else Tt=t[75];const Ct=Tt;let _t;if(t[80]!==x||t[81]!==Ct){e:{const Ei=x.trim();if(!Ei){let hi;t[83]!==Ct?(hi=Ct.map(WJo),t[83]=Ct,t[84]=hi):hi=t[84],_t=hi;break e}_t=Ct.flatMap(hi=>{const Dr=pFi({query:Ei,fields:hi.searchFields});return Dr?[{workspace:hi.workspace,displayBranch:hi.displayBranch,fieldMatches:Dr}]:[]})}t[80]=x,t[81]=Ct,t[82]=_t}else _t=t[82];const Vt=_t;let bt;e:{if(!O){let hi;t[85]===Symbol.for(\"react.memo_cache_sentinel\")?(hi=[],t[85]=hi):hi=t[85];let Dr;t[86]!==Vt?(Dr={pinnedItems:hi,unpinnedWorkspaces:Vt},t[86]=Vt,t[87]=Dr):Dr=t[87],bt=Dr;break e}let Ei;if(t[88]!==Vt){const hi=[],Dr=[];for(const Ra of Vt){const{pinnedAt:mo}=Ra.workspace;mo!==void 0&&Ra.workspace.state!==\"archived\"?hi.push({...Ra,pinnedAt:mo}):Dr.push(Ra)}hi.sort(VJo),Ei={pinnedItems:hi,unpinnedWorkspaces:Dr},t[88]=Vt,t[89]=Ei}else Ei=t[89];bt=Ei}const{pinnedItems:wt,unpinnedWorkspaces:Nt}=bt;let Wt;t[90]!==te||t[91]!==Nt?(Wt=Nt.slice(0,te),t[90]=te,t[91]=Nt,t[92]=Wt):Wt=t[92];const Dn=Nt.length>te;let _n;t[93]!==Wt||t[94]!==Dn?(_n={workspacesToDisplay:Wt,hasMore:Dn},t[93]=Wt,t[94]=Dn,t[95]=_n):_n=t[95];const{workspacesToDisplay:Vn,hasMore:Zt}=_n;let zt;t[96]!==Vn?(zt={today:[],yesterday:[],\"2daysAgo\":[],\"3daysAgo\":[],\"4daysAgo\":[],\"5daysAgo\":[],\"6daysAgo\":[],\"1weekAgo\":[],\"2weeksAgo\":[],\"3weeksAgo\":[],\"1monthAgo\":[],\"2monthsAgo\":[],\"3monthsAgo\":[],older:[]},Vn.forEach(Ei=>{const hi=jJo(Ei.workspace.lastActiveAt);zt[hi].push(Ei)}),t[96]=Vn,t[97]=zt):zt=t[97];const ct=zt;let Pt;t[98]!==e?(Pt=Ei=>{e({to:\"/repository/$repositoryId/workspace/$localWorkspaceId\",params:{repositoryId:Ei.repositoryId,localWorkspaceId:Ei.localId}}).fireAndForget()},t[98]=e,t[99]=Pt):Pt=t[99];const Rt=Pt,Yt=O&&Le.size>0,on=z.length===0;let jn;t[100]!==Rt||t[101]!==Le||t[102]!==xe||t[103]!==he||t[104]!==Yt||t[105]!==on||t[106]!==be?(jn={repoMap:xe,membersById:Le,showOwnerColumn:Yt,showRepositoryIcon:on,showCostColumn:he,workspaceStatusMatrixEnabled:be,onSelectWorkspace:Rt},t[100]=Rt,t[101]=Le,t[102]=xe,t[103]=he,t[104]=Yt,t[105]=on,t[106]=be,t[107]=jn):jn=t[107];const Ft=jn;let Dt;t[108]!==Ft||t[109]!==ct?(Dt=BJo.map(Ei=>p.jsx(iJn,{heading:FJo[Ei],items:ct[Ei]??[],...Ft},Ei)),t[108]=Ft,t[109]=ct,t[110]=Dt):Dt=t[110];let Xt;t[111]!==Zt?(Xt=Zt&&p.jsx(\"div\",{ref:se,className:\"py-4 flex justify-center\",children:p.jsx(ri,{type:\"working\",className:\"size-4\"})}),t[111]=Zt,t[112]=Xt):Xt=t[112];let hn;t[113]!==Dt||t[114]!==Xt?(hn=p.jsxs(p.Fragment,{children:[Dt,Xt]}),t[113]=Dt,t[114]=Xt,t[115]=hn):hn=t[115];const Hn=hn;let en,Li;t[116]!==Zt?(en=()=>{const Ei=se.current;if(!Ei||!Zt)return;const hi=new IntersectionObserver(Dr=>{Dr[0].isIntersecting&&Z(HJo)},{threshold:.1});return hi.observe(Ei),()=>hi.disconnect()},Li=[Zt],t[116]=Zt,t[117]=en,t[118]=Li):(en=t[117],Li=t[118]),$.useEffect(en,Li);const dr=Vn.length>0||wt.length>0,mr=Ye!==void 0&&Ye.length>0||z.length>0||G!==\"all\",Zr=O&&Ke.length>1,Tr=je.length>1,Or=U===void 0&&z.length===0&&G===\"active\"&&it.length===0,Jo=r||u||I||Ye===void 0;let Zo;t[119]!==de?(Zo=!de&&p.jsx(YJo,{}),t[119]=de,t[120]=Zo):Zo=t[120];let pl;t[121]!==e?(pl=()=>{e({to:\"/settings/organization/computer\"}).fireAndForget()},t[121]=e,t[122]=pl):pl=t[122];let Ws;t[123]!==E||t[124]!==B||t[125]!==O||t[126]!==pl?(Ws=p.jsx(RJo,{activeOrg:E,currentUser:B,isCloudOrg:O,onOpenOrgSettings:pl}),t[123]=E,t[124]=B,t[125]=O,t[126]=pl,t[127]=Ws):Ws=t[127];let ea;t[128]!==E||t[129]!==O||t[130]!==Ke?(ea=O&&p.jsx(NJo,{members:Ke,organizationId:E.id}),t[128]=E,t[129]=O,t[130]=Ke,t[131]=ea):ea=t[131];let ba;t[132]!==n?(ba=p.jsx(tt,{size:\"sm\",className:\"shrink-0 text-sm\",onClick:()=>n(),children:\"Create workspace\"}),t[132]=n,t[133]=ba):ba=t[133];let Gs;t[134]!==ea||t[135]!==ba?(Gs=p.jsxs(\"div\",{className:\"flex shrink-0 items-center gap-3\",children:[ea,ba]}),t[134]=ea,t[135]=ba,t[136]=Gs):Gs=t[136];let Oi;t[137]!==Ws||t[138]!==Gs?(Oi=p.jsxs(\"div\",{className:\"mx-auto flex w-full max-w-4xl items-center justify-between px-8 pb-3 pt-1\",children:[Ws,Gs]}),t[137]=Ws,t[138]=Gs,t[139]=Oi):Oi=t[139];let gr;t[140]!==x?(gr=p.jsx(kI,{placeholder:\"Search\",autoFocus:!0,wrapperClassName:\"min-w-0 flex-1 border-b-0 px-2\",value:x,onValueChange:w}),t[140]=x,t[141]=gr):gr=t[141];let Yr;t[142]!==Ye?(Yr=Ye??[],t[142]=Ye,t[143]=Yr):Yr=t[143];let Bs;t[144]!==G||t[145]!==Ke||t[146]!==je||t[147]!==z||t[148]!==Q||t[149]!==K||t[150]!==X||t[151]!==Zr||t[152]!==Tr||t[153]!==Yr?(Bs=p.jsx(nFi,{showOwnerFilter:Zr,showProjectFilter:Tr,selectedOwnerIds:Yr,onOwnersChange:K,selectedProjectIds:z,onProjectsChange:X,archiveFilter:G,onArchiveFilterChange:Q,orderedMembers:Ke,repos:je}),t[144]=G,t[145]=Ke,t[146]=je,t[147]=z,t[148]=Q,t[149]=K,t[150]=X,t[151]=Zr,t[152]=Tr,t[153]=Yr,t[154]=Bs):Bs=t[154];let la;t[155]!==gr||t[156]!==Bs?(la=p.jsx(\"div\",{className:\"border-b\",children:p.jsxs(\"div\",{className:\"mx-auto flex w-full max-w-4xl items-center gap-2 px-8\",children:[gr,Bs]})}),t[155]=gr,t[156]=Bs,t[157]=la):la=t[157];let ca;t[158]!==Zo||t[159]!==Oi||t[160]!==la?(ca=p.jsxs(\"div\",{className:\"relative pt-9\",\"data-tauri-drag-region\":!0,children:[Zo,Oi,la]}),t[158]=Zo,t[159]=Oi,t[160]=la,t[161]=ca):ca=t[161];let Fc;t[162]!==J||t[163]!==mr||t[164]!==dr||t[165]!==O||t[166]!==Jo||t[167]!==n||t[168]!==wt||t[169]!==Or||t[170]!==Hn||t[171]!==Ft?(Fc=p.jsx(L6,{className:\"flex-1 max-h-none overflow-y-scroll mt-1 pt-0\",children:p.jsx(\"div\",{className:\"mx-auto w-full max-w-4xl px-8 pt-2\",children:Jo?p.jsx(\"div\",{role:\"status\",\"aria-label\":\"Loading workspaces\",className:\"flex justify-center py-6 text-muted-foreground\",children:p.jsx(ri,{type:\"working\",className:\"size-4\"})}):dr?p.jsxs(p.Fragment,{children:[O&&p.jsx(iJn,{heading:\"Pinned\",items:wt,...Ft}),Hn]}):p.jsxs(\"div\",{className:\"py-6 flex flex-col items-center gap-3 text-sm text-muted-foreground\",children:[p.jsx(\"span\",{children:\"No matching workspaces\"}),Or?p.jsx(tt,{size:\"sm\",onClick:()=>n(),children:\"Create a workspace\"}):mr&&p.jsx(tt,{variant:\"outline\",size:\"sm\",onClick:J,children:\"Clear filters\"})]})})}),t[162]=J,t[163]=mr,t[164]=dr,t[165]=O,t[166]=Jo,t[167]=n,t[168]=wt,t[169]=Or,t[170]=Hn,t[171]=Ft,t[172]=Fc):Fc=t[172];let lr;return t[173]!==ca||t[174]!==Fc?(lr=p.jsx(\"div\",{className:\"h-full flex flex-col bg-background\",children:p.jsxs(KV,{shouldFilter:!1,disablePointerSelection:!0,className:\"h-full flex flex-col bg-transparent\",children:[ca,Fc]})}),t[173]=ca,t[174]=Fc,t[175]=lr):lr=t[175],lr}"
+    },
+    {
+      "name": "workspace-repository-qJo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9874810,
+        9874848
+      ],
+      "bytes": 38,
+      "sha256": "636883e9ad74fd9f99ea65fb01bf5e56f2f1e212d6fdf57ada9f2bd8cc432700",
+      "source": "function qJo(t){return t.repositoryId}"
+    },
+    {
+      "name": "filter-controls-nFi",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9820611,
+        9824705
+      ],
+      "bytes": 4094,
+      "sha256": "e8064ef68babed91e936ed903442e09407fa15cef1ff3031f15d0aecfee61263",
+      "source": "function nFi(t){const e=ne.c(51),{showOwnerFilter:n,showProjectFilter:i,selectedOwnerIds:r,onOwnersChange:o,selectedProjectIds:a,onProjectsChange:c,archiveFilter:u,onArchiveFilterChange:d,orderedMembers:h,repos:m,variant:g,modal:_}=t,v=g===void 0?\"default\":g,x=_===void 0?!0:_,w=v===\"compact\",E=SXo;let k,I;e[0]!==h||e[1]!==r[0]||e[2]!==r.length?(k=r.length===1?h.find(ue=>ue.id===r[0]):void 0,I=r.length===0?\"anyone\":r.length===1?k?E(k):\"1 person\":`${r.length} people`,e[0]=h,e[1]=r[0],e[2]=r.length,e[3]=k,e[4]=I):(k=e[3],I=e[4]);const R=I;let O;e[5]!==m||e[6]!==a[0]||e[7]!==a.length?(O=a.length===0?\"all projects\":a.length===1?(()=>{const ue=m.find(pe=>pe.id===a[0]);return ue?ue.name:\"1 project\"})():`${a.length} projects`,e[5]=m,e[6]=a[0],e[7]=a.length,e[8]=O):O=e[8];const D=O;let P;e[9]===Symbol.for(\"react.memo_cache_sentinel\")?(P=[\"active\",\"all\",\"archived\"],e[9]=P):P=e[9];const L=P;let B;e[10]===Symbol.for(\"react.memo_cache_sentinel\")?(B={active:\"Hiding archived\",all:\"Showing all\",archived:\"Only archived\"},e[10]=B):B=e[10];const F=B;let H;e[11]!==R||e[12]!==w||e[13]!==x||e[14]!==o||e[15]!==h||e[16]!==k||e[17]!==r||e[18]!==n?(H=n&&p.jsxs(h2,{modal:x,children:[p.jsx(Sg,{asChild:!0,children:p.jsx(qXn,{className:w?\"h-6 max-w-36 gap-1 px-1.5 text-xs\":void 0,icon:k?p.jsx(\"span\",{\"aria-hidden\":\"true\",className:\"shrink-0\",children:p.jsx(ZKe,{member:k,className:w?\"size-3.5\":\"size-4\"})}):p.jsx(sMt,{className:Xe(\"shrink-0\",w?\"size-3.5\":\"size-4\")}),label:w?R===\"anyone\"?\"Anyone\":R:`By ${R}`})}),p.jsxs(Tm,{align:\"start\",className:\"w-56\",children:[p.jsx(i4e,{checked:r.length===0,onCheckedChange:()=>o([]),children:p.jsx(\"span\",{className:\"truncate\",children:\"Anyone\"})}),h.map(ue=>p.jsxs(i4e,{checked:r.includes(ue.id),onCheckedChange:()=>o(GXn(r,ue.id)),children:[p.jsx(ZKe,{member:ue,className:\"size-4\"}),p.jsx(\"span\",{className:\"truncate\",children:E(ue)})]},ue.id))]})]}),e[11]=R,e[12]=w,e[13]=x,e[14]=o,e[15]=h,e[16]=k,e[17]=r,e[18]=n,e[19]=H):H=e[19];let U;e[20]!==w||e[21]!==x||e[22]!==c||e[23]!==D||e[24]!==m||e[25]!==a||e[26]!==i?(U=i&&p.jsxs(h2,{modal:x,children:[p.jsx(Sg,{asChild:!0,children:p.jsx(qXn,{className:w?\"h-6 max-w-36 gap-1 px-1.5 text-xs\":void 0,icon:p.jsx(Ak,{className:Xe(\"shrink-0\",w?\"size-3.5\":\"size-4\")}),label:w?D===\"all projects\"?\"All projects\":D:`In ${D}`})}),p.jsxs(Tm,{align:\"start\",className:\"w-56\",children:[p.jsx(i4e,{checked:a.length===0,onCheckedChange:()=>c([]),children:p.jsx(\"span\",{className:\"truncate\",children:\"All projects\"})}),m.map(ue=>p.jsxs(i4e,{checked:a.includes(ue.id),onCheckedChange:()=>c(GXn(a,ue.id)),children:[p.jsx(U9,{repository:ue}),p.jsx(\"span\",{className:\"truncate\",children:ue.name})]},ue.id))]})]}),e[20]=w,e[21]=x,e[22]=c,e[23]=D,e[24]=m,e[25]=a,e[26]=i,e[27]=U):U=e[27];let z;e[28]!==d?(z=ue=>d(tFi.parse(ue)),e[28]=d,e[29]=z):z=e[29];const G=w&&\"h-6 gap-1 px-1.5 text-xs\";let K;e[30]!==G?(K=Xe(\"h-7 w-auto max-w-48 gap-1.5 border-0 bg-transparent px-2 py-0 text-sm text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-[popup-open]:text-foreground active:scale-[0.98]\",G),e[30]=G,e[31]=K):K=e[31];const X=w?\"size-3.5\":\"size-4\";let Q;e[32]!==X?(Q=Xe(\"shrink-0\",X),e[32]=X,e[33]=Q):Q=e[33];let J;e[34]!==Q?(J=p.jsx(O9,{className:Q}),e[34]=Q,e[35]=J):J=e[35];let te,Z;e[36]===Symbol.for(\"react.memo_cache_sentinel\")?(te=p.jsx(lh,{}),Z=p.jsx(Ml,{className:\"size-3 shrink-0\"}),e[36]=te,e[37]=Z):(te=e[36],Z=e[37]);let se;e[38]!==K||e[39]!==J?(se=p.jsxs(Bf,{\"aria-label\":\"Archived workspaces\",hideChevrons:!0,className:K,children:[J,te,Z]}),e[38]=K,e[39]=J,e[40]=se):se=e[40];let ce;e[41]===Symbol.for(\"react.memo_cache_sentinel\")?(ce=p.jsx($f,{align:\"end\",children:L.map(ue=>p.jsx(Il,{value:ue,children:F[ue]},ue))}),e[41]=ce):ce=e[41];let ae;e[42]!==u||e[43]!==x||e[44]!==se||e[45]!==z?(ae=p.jsxs(ah,{modal:x,value:u,onValueChange:z,children:[se,ce]}),e[42]=u,e[43]=x,e[44]=se,e[45]=z,e[46]=ae):ae=e[46];let de;return e[47]!==ae||e[48]!==H||e[49]!==U?(de=p.jsxs(\"div\",{className:\"flex shrink-0 items-center gap-1\",children:[H,U,ae]}),e[47]=ae,e[48]=H,e[49]=U,e[50]=de):de=e[50],de}"
+    },
+    {
+      "name": "all-workspaces-Afe",
+      "asset": "index",
+      "utf8_half_open": [
+        3284737,
+        3285851
+      ],
+      "bytes": 1114,
+      "sha256": "95635092bcbc111c89f8a06b001ab0e2305938606157af400da28bdf0d8c9251",
+      "source": "function Afe(t){const e=FI(),{organization:s,isLoading:n}=rl(),{data:r}=dBe(),i=s!==void 0&&X$(s),a=kfe()&&s!==void 0&&Qo(s)===\"cloud\"?s.id:void 0,c=XBt(i?void 0:a),l=a===void 0?void 0:c?.localWorkspaceIds??KBt,u=tt(we.store,qa(v=>YBt(v,l))),d=tt(we.store,yn(v=>({error:v.allWorkspacesError,loaded:v.allWorkspacesLoaded}))),h=$e.useMemo(()=>{if(i)return dt(VBt);if(a!==void 0){const v=l!==void 0&&l.length>0,_=c?.error!==void 0&&wn(c.error)&&c.error.code===ot.FORBIDDEN;return c?.error!==void 0&&(_||!v)?Mr(c.error):!c?.loaded&&!v?tr():dt(u)}return d.error!==void 0?Mr(d.error):d.loaded?dt(u):tr()},[a,d,l,i,c?.error,c?.loaded,u]);$e.useEffect(()=>{a!==void 0||n||h.data!==void 0||h.error!==void 0||we.getWorkspaces().catch(v=>{Y.error(\"Failed to load local workspaces\",{error:v})})},[n,a,h.data,h.error]);const p=$e.useRef(void 0),m=$e.useMemo(()=>{if(h.data===void 0)return h;const v=QBt({workspaces:h.data,organization:s,activeOrgPointer:e,activeOrgIsLoading:n,unstartedWorkspacesEnabled:r===!0}),_=t===void 0?v:t(v),S=p.current===void 0?_:Yse(p.current,_);return p.current=S,dt(S)},[n,e,s,t,r,h]);return Gv(m)}"
+    },
+    {
+      "name": "cached-workspaces-YBt",
+      "asset": "index",
+      "utf8_half_open": [
+        3283791,
+        3284185
+      ],
+      "bytes": 394,
+      "sha256": "bc5bb2e198c4630a82efd22091ca57553c97ce672d472683ef292543edcea481",
+      "source": "function YBt(t,e){if(Am!==void 0&&Am.workspacesByLocalId===t.workspacesByLocalId&&Am.pagedWorkspaceIds===e)return Am.workspaces;const s=e!==void 0?e.flatMap(n=>{const r=t.workspacesByLocalId[n]?.data;return r===void 0?[]:[r]}):Object.values(t.workspacesByLocalId).flatMap(n=>n?.data===void 0?[]:[n.data]);return Am={workspacesByLocalId:t.workspacesByLocalId,pagedWorkspaceIds:e,workspaces:s},s}"
+    },
+    {
+      "name": "scoped-workspaces-QBt",
+      "asset": "index",
+      "utf8_half_open": [
+        3284192,
+        3284737
+      ],
+      "bytes": 545,
+      "sha256": "72aaad60f9f51051a9768a0554a3bf1485fbad3d846d621c998a077d07226a6b",
+      "source": "function QBt(t){const e=TY;if(e!==void 0&&e.workspaces===t.workspaces&&e.organization===t.organization&&e.activeOrgPointer===t.activeOrgPointer&&e.activeOrgIsLoading===t.activeOrgIsLoading&&e.unstartedWorkspacesEnabled===t.unstartedWorkspacesEnabled)return e.scopedWorkspaces;const s=t.workspaces.filter(n=>(t.unstartedWorkspacesEnabled||n.state!==\"unstarted\")&&J$({workspace:n,activeOrganization:t.organization,activeOrganizationPointer:t.activeOrgPointer,activeOrganizationLoading:t.activeOrgIsLoading}));return TY={...t,scopedWorkspaces:s},s}"
+    },
+    {
+      "name": "organization-scope-J$",
+      "asset": "index",
+      "utf8_half_open": [
+        923985,
+        924293
+      ],
+      "bytes": 308,
+      "sha256": "02c78a7d49542118bb1141f3722b3a6897e724546c7c0b76048713217816499c",
+      "source": "function J$({workspace:t,activeOrganization:e,activeOrganizationPointer:s,activeOrganizationLoading:n}){return e===void 0?s!==void 0?!1:n?t.storedHostingServerUrl===void 0||t.orgId===void 0:!0:X$(e)?!1:t.storedHostingServerUrl===void 0?Qo(e)===\"local\":t.orgId===e.id?!0:t.orgId===void 0&&e.kind===\"personal\"}"
+    },
+    {
+      "name": "default-filters-and-prefs",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9859706,
+        9860278
+      ],
+      "bytes": 572,
+      "sha256": "0fb45477b9eee97c9b49f60587552f61cd65ff3142efccf6a04af85a5526788e",
+      "source": "const LJo={owners:void 0,projects:[],archiveFilter:\"active\"};function mFi(t){const e=ne.c(9),n=t??\"personal\";let i;e[0]!==n?(i=uJe({routeId:\"all-workspaces\",scope:[n]}),e[0]=n,e[1]=i):i=e[1];const r=i;let o;e[2]!==r?(o={routeKey:r,stateKey:\"filters\",schema:wXo,defaultValue:LJo},e[2]=r,e[3]=o):o=e[3];const[a,c]=Gde(o);let u;e[4]!==a?(u=\"archiveFilter\"in a?a:{owners:a.owners,projects:a.projects,archiveFilter:a.showArchived?\"all\":\"active\"},e[4]=a,e[5]=u):u=e[5];const d=u;let h;return e[6]!==d||e[7]!==c?(h={preferences:d,setPreferences:c},e[6]=d,e[7]=c,e[8]=h):h=e[8],h}"
+    },
+    {
+      "name": "filter-route-MJo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9860278,
+        9862126
+      ],
+      "bytes": 1848,
+      "sha256": "7e75df8888bf9d63c869ce04c489d322f385442a92eeef71253a9cee4f51bfe9",
+      "source": "function MJo(t){const e=ne.c(36);let n;e[0]===Symbol.for(\"react.memo_cache_sentinel\")?(n={from:\"/auth-guard/main-layout/all-workspaces\"},e[0]=n):n=e[0];const i=l_(n);let r;e[1]===Symbol.for(\"react.memo_cache_sentinel\")?(r={from:\"/all-workspaces\"},e[1]=r):r=e[1];const o=aa(r),{preferences:a,setPreferences:c}=mFi(t),u=i.org!==void 0&&t!==void 0&&i.org!==t;let d,h;e[2]!==o||e[3]!==u?(d=()=>{u&&o({search:{},replace:!0}).fireAndForget()},h=[o,u],e[2]=o,e[3]=u,e[4]=d,e[5]=h):(d=e[4],h=e[5]),$.useEffect(d,h);const m=!u&&(i.org!==void 0||i.owners!==void 0||i.projects!==void 0||i.state!==void 0),g=m?i.owners:a.owners;let _;e[6]!==m||e[7]!==a.projects||e[8]!==i.projects?(_=m?i.projects??[]:a.projects,e[6]=m,e[7]=a.projects,e[8]=i.projects,e[9]=_):_=e[9];const v=_,x=m?i.state??\"active\":a.archiveFilter;let w;e[10]!==t||e[11]!==o||e[12]!==c?(w=H=>{c(H),o({search:{org:t,owners:H.owners,projects:H.projects.length>0?H.projects:void 0,state:H.archiveFilter===\"active\"?void 0:H.archiveFilter},replace:!0}).fireAndForget()},e[10]=t,e[11]=o,e[12]=c,e[13]=w):w=e[13];const E=w;let k;e[14]!==E||e[15]!==x||e[16]!==v?(k=H=>E({owners:H,projects:v,archiveFilter:x}),e[14]=E,e[15]=x,e[16]=v,e[17]=k):k=e[17];const I=k;let R;e[18]!==E||e[19]!==x||e[20]!==g?(R=H=>E({owners:g,projects:H,archiveFilter:x}),e[18]=E,e[19]=x,e[20]=g,e[21]=R):R=e[21];const O=R;let D;e[22]!==E||e[23]!==g||e[24]!==v?(D=H=>E({owners:g,projects:v,archiveFilter:H}),e[22]=E,e[23]=g,e[24]=v,e[25]=D):D=e[25];const P=D;let L;e[26]!==E?(L=()=>E({owners:[],projects:[],archiveFilter:\"all\"}),e[26]=E,e[27]=L):L=e[27];const B=L;let F;return e[28]!==x||e[29]!==B||e[30]!==g||e[31]!==v||e[32]!==P||e[33]!==I||e[34]!==O?(F={owners:g,projects:v,archiveFilter:x,setOwners:I,setProjects:O,setArchiveFilter:P,clearFilters:B},e[28]=x,e[29]=B,e[30]=g,e[31]=v,e[32]=P,e[33]=I,e[34]=O,e[35]=F):F=e[35],F}"
+    },
+    {
+      "name": "activity-zJo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9863013,
+        9863549
+      ],
+      "bytes": 536,
+      "sha256": "15a42e2f59742cb13499a64be77a98c7514c2f547bbd5d913f5afbdc8e927431",
+      "source": "function zJo(t,e){const n=e.filter(u=>!u.isHidden),i=e.reduce((u,d)=>d.lastUserMessageAt?u?d.lastUserMessageAt>u?d.lastUserMessageAt:u:d.lastUserMessageAt:u,null),r=Eet(n),o=n.some(u=>u.unread),a=n.some(u=>u.status===\"working\"&&u.permissionMode===\"plan\"),c=Math.max(t.createdAt,t.storedHostingServerUrl===void 0?Math.max(...n.flatMap(u=>[u.createdAt,...u.lastUserMessageAt!==null?[u.lastUserMessageAt]:[]])):t.updatedAt);return{...t,aggregatedStatus:r,hasUnread:o,lastUserMessageAt:i,isPlanning:a,effectiveStatus:FYe(t),lastActiveAt:c}}"
+    },
+    {
+      "name": "renderer-import-Xh",
+      "asset": "renderer",
+      "utf8_half_open": [
+        54774,
+        54834
+      ],
+      "bytes": 60,
+      "sha256": "2419d4a04a7175da535f431d110f83bb2c7ac4bc79c99b14b8ecdb129ff2f137",
+      "source": ",c8 as eSe,c9 as tSe,ca as Qh,cb as Xh,cc as L4r,cd as yCt,c"
+    }
+  ],
+  "integration_main": "7b2ed2475cec621ff1c934612375dd6bbfeb3e22",
+  "baseline_source_sha256": {
+    "src/components/AllWorkspaces.tsx": "26f878fac8e8a4b9dce77355e585c099d98d304d60201c889860777ceab6eb6e",
+    "src/home/allWorkspaces.ts": "2dd8b01c2eac573b9ab1cf068d7d73562a7f2413844c3a86921f310ced941dcb",
+    "src/state/persisted.ts": "e05b71987a5e37a5b2e86f013c8b53fd1ccec6e29717a4408237206d73593da2",
+    "src/workspace/archive.ts": "26e187412bbadd452fd380261cb9e4deea31c17b452384c5818ff46e3967dfa0",
+    "src/workspace/archivedList.ts": "5d5c2d74f3f2bcd2a0b1109cc22c3465a276bdd04edc71031689f1fc0a7942eb",
+    "src/components/homeEmptyAction.test.ts": "6d4eddc37b6eab0ef4a5cfa1c0d35bbc8a70cbf1c0920480edef5291bcd0adf8"
+  },
+  "qualification_source_sha256": {
+    "src/components/AllWorkspaces.tsx": "bc8183819ab33fdf49cf1b97d0922ed5070547c010bf5ea1a7ca073c3ecd0443",
+    "src/home/allWorkspaces.ts": "2dd8b01c2eac573b9ab1cf068d7d73562a7f2413844c3a86921f310ced941dcb",
+    "src/state/persisted.ts": "e05b71987a5e37a5b2e86f013c8b53fd1ccec6e29717a4408237206d73593da2",
+    "src/workspace/archive.ts": "26e187412bbadd452fd380261cb9e4deea31c17b452384c5818ff46e3967dfa0",
+    "src/workspace/archivedList.ts": "5d5c2d74f3f2bcd2a0b1109cc22c3465a276bdd04edc71031689f1fc0a7942eb",
+    "src/components/homeEmptyAction.test.ts": "6d4eddc37b6eab0ef4a5cfa1c0d35bbc8a70cbf1c0920480edef5291bcd0adf8"
+  },
+  "frozen_fixture_sha256": "37caa4d8c61faf7d1755b990094d946d93cbecb2cc63c532dc9ed683a3ee32ba",
+  "actual_red": {
+    "tests": 10,
+    "pass_count": 5,
+    "intended_failures": 5,
+    "exit": 1
+  },
+  "contract": "Actual local /all-workspaces UJo reads all linked local workspace rows before filtering. Default owners undefined, projects empty, state active. Or Create requires pre-archive-filter it.length===0. An archived-only linked list is not initially empty, so Clear filters must reveal it without creating/restoring the workspace.",
+  "limits": [
+    "Retained renderer full digest and renderer spans rechecked; four retained index spans have literal hash verification only, full index asset not freshly rehashed.",
+    "No reference code evaluated; no new REA extraction or native/browser invocation.",
+    "React test renderer exercises production source and real persisted decoders, not native pixels."
+  ]
+}
