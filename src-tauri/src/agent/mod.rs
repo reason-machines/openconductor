@@ -59,9 +59,14 @@ pub mod codex_rpc;
 pub mod codex_runner;
 pub mod codex_session;
 pub mod codex_wire;
-pub mod mcp_status;
+// Shared pure wire contract; agent and reason_acp also build independently in
+// their std/serde-only harnesses. One implementation, no provider dependency.
+#[allow(clippy::duplicate_mod)]
+#[path = "../reason_acp/context_usage.rs"]
+pub mod context_usage;
 pub mod env;
 pub mod keychain;
+pub mod mcp_status;
 pub mod provider;
 pub mod reason;
 pub mod secret;

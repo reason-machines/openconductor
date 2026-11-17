@@ -1,0 +1,4 @@
+/* Fixture controls only. Actual SubmitPromptDialog styles and tokens are imported unchanged. */
+.fixture-controls { position: fixed; z-index: 100; top: 12px; left: 16px; right: 16px; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); font: 13px/20px system-ui, sans-serif; }
+.fixture-controls span { flex: 1; }
+.fixture-controls button { border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; }

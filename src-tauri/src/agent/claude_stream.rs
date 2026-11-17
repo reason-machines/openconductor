@@ -122,6 +122,9 @@ pub enum ClaudeEvent {
     /// authentication) as this message; its text is then the error.
     Assistant {
         message: Value,
+        /// Outer stream envelope provenance; null/missing is top-level.
+        /// Keep malformed non-null values too so they cannot become root usage.
+        parent_tool_use_id: Value,
         api_error: Option<ApiError>,
     },
     /// A user-role message from the CLI, usually tool results.
@@ -179,6 +182,8 @@ pub struct TurnResult {
     pub total_cost_usd: Option<f64>,
     pub num_turns: Option<u64>,
     pub usage: Option<ClaudeUsage>,
+    /// Per-model denominators for context occupancy, not cumulative usage.
+    pub model_usage: Value,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -235,6 +240,7 @@ impl ClaudeEvent {
             },
             ("assistant", _) => ClaudeEvent::Assistant {
                 message: v.get("message").cloned().unwrap_or(Value::Null),
+                parent_tool_use_id: v.get("parent_tool_use_id").cloned().unwrap_or(Value::Null),
                 api_error: ApiError::parse(&v),
             },
             ("user", _) => ClaudeEvent::ToolResults {
@@ -248,6 +254,7 @@ impl ClaudeEvent {
                 total_cost_usd: v.get("total_cost_usd").and_then(Value::as_f64),
                 num_turns: v.get("num_turns").and_then(Value::as_u64),
                 usage: v.get("usage").and_then(ClaudeUsage::parse),
+                model_usage: v.get("modelUsage").cloned().unwrap_or(Value::Null),
             }),
             ("control_request", _) => {
                 let request = v.get("request").cloned().unwrap_or(Value::Null);
@@ -389,6 +396,7 @@ mod tests {
             parse(json!({"type": "assistant", "message": msg, "session_id": "s1"})),
             ClaudeEvent::Assistant {
                 message: msg.clone(),
+                parent_tool_use_id: Value::Null,
                 api_error: None
             }
         );
@@ -401,6 +409,7 @@ mod tests {
             ),
             ClaudeEvent::Assistant {
                 message: msg,
+                parent_tool_use_id: Value::Null,
                 api_error: Some(ApiError {
                     code: Some("usage_limit_reached".into()),
                     status: Some(429)
@@ -425,6 +434,7 @@ mod tests {
                 total_cost_usd: Some(0.25),
                 num_turns: Some(3),
                 usage: None,
+                model_usage: Value::Null,
             })
         );
     }

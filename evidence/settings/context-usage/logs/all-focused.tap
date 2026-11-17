@@ -1,0 +1,483 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: real runtime persists each rich sent snapshot without changing provider prompt or attachments
+ok 1 - real runtime persists each rich sent snapshot without changing provider prompt or attachments
+  ---
+  duration_ms: 411.99506
+  type: 'test'
+  ...
+# Subtest: a queued message is prompted once the running turn ends
+ok 2 - a queued message is prompted once the running turn ends
+  ---
+  duration_ms: 1.881562
+  type: 'test'
+  ...
+# Subtest: an empty Reason completion fails the queue visibly and preserves the prompt for retry
+ok 3 - an empty Reason completion fails the queue visibly and preserves the prompt for retry
+  ---
+  duration_ms: 0.850579
+  type: 'test'
+  ...
+# Subtest: a pick in a chat whose session is open goes to that session; before it opens, open carries it
+ok 4 - a pick in a chat whose session is open goes to that session; before it opens, open carries it
+  ---
+  duration_ms: 1.072988
+  type: 'test'
+  ...
+# Subtest: a steered follow-up goes to the backend while the turn runs
+ok 5 - a steered follow-up goes to the backend while the turn runs
+  ---
+  duration_ms: 0.941806
+  type: 'test'
+  ...
+# Subtest: Stop cancels, a second Stop cancels hard, and the queue moves on
+ok 6 - Stop cancels, a second Stop cancels hard, and the queue moves on
+  ---
+  duration_ms: 0.925151
+  type: 'test'
+  ...
+# Subtest: a Stop before the prompt reached the backend ends the turn cancelled without sending it
+ok 7 - a Stop before the prompt reached the backend ends the turn cancelled without sending it
+  ---
+  duration_ms: 0.75504
+  type: 'test'
+  ...
+# Subtest: a prompt the backend rejects fails its turn
+ok 8 - a prompt the backend rejects fails its turn
+  ---
+  duration_ms: 0.843018
+  type: 'test'
+  ...
+# Subtest: Reset chat restores the turn's end checkpoint, then drops later turns
+ok 9 - Reset chat restores the turn's end checkpoint, then drops later turns
+  ---
+  duration_ms: 1.6664
+  type: 'test'
+  ...
+# Subtest: chat statuses span runtimes, and a hidden chat drops out
+ok 10 - chat statuses span runtimes, and a hidden chat drops out
+  ---
+  duration_ms: 2.491645
+  type: 'test'
+  ...
+# Subtest: a chat entering plan review or user input asks for attention once, as Conductor's _p after updateSessionStatus
+ok 11 - a chat entering plan review or user input asks for attention once, as Conductor's _p after updateSessionStatus
+  ---
+  duration_ms: 0.311934
+  type: 'test'
+  ...
+# (node:91) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a recorded turn becomes one assistant message with tools between its texts
+ok 12 - a recorded turn becomes one assistant message with tools between its texts
+  ---
+  duration_ms: 8.572507
+  type: 'test'
+  ...
+# Subtest: approvals are kept until answered or the turn ends
+ok 13 - approvals are kept until answered or the turn ends
+  ---
+  duration_ms: 0.454135
+  type: 'test'
+  ...
+# Subtest: consents (MCP elicitation, permissions) are kept until resolved or the turn ends
+ok 14 - consents (MCP elicitation, permissions) are kept until resolved or the turn ends
+  ---
+  duration_ms: 0.494061
+  type: 'test'
+  ...
+# Subtest: declined and failing tools are errors; failures end the turn with Codex's message
+ok 15 - declined and failing tools are errors; failures end the turn with Codex's message
+  ---
+  duration_ms: 0.280273
+  type: 'test'
+  ...
+# Subtest: prompts queue: content goes to the oldest open turn and turnEnded closes it
+ok 16 - prompts queue: content goes to the oldest open turn and turnEnded closes it
+  ---
+  duration_ms: 0.323659
+  type: 'test'
+  ...
+# Subtest: retry notices replace each other; other notices are separate system rows
+ok 17 - retry notices replace each other; other notices are separate system rows
+  ---
+  duration_ms: 0.215397
+  type: 'test'
+  ...
+# Subtest: a prompt that never reached Codex fails its own turn only
+ok 18 - a prompt that never reached Codex fails its own turn only
+  ---
+  duration_ms: 0.251763
+  type: 'test'
+  ...
+# (node:99) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:99) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# codex: stored transcript not loaded TypeError: Cannot destructure property 'messages' of 'object null' as it is null.
+#     at file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/codexChat.ts:109:14
+# codex: stored transcript not loaded TypeError: Cannot destructure property 'messages' of 'object null' as it is null.
+#     at file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/codexChat.ts:109:14
+#     at async prompt (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/codexChat.ts:230:24)
+# Subtest: Codex adapter keeps V1 separate from exact inline attachment text through queued drain
+ok 19 - Codex adapter keeps V1 separate from exact inline attachment text through queued drain
+  ---
+  duration_ms: 14.824834
+  type: 'test'
+  ...
+# codex: stored transcript not loaded TypeError: Cannot destructure property 'messages' of 'object null' as it is null.
+#     at file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/codexChat.ts:109:14
+#     at async prompt (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/codexChat.ts:230:24)
+# Subtest: Codex sends each picked local loadout on dispatch, including queued changes and absent effort
+ok 20 - Codex sends each picked local loadout on dispatch, including queued changes and absent effort
+  ---
+  duration_ms: 16.202391
+  type: 'test'
+  ...
+# codex: stored transcript not loaded TypeError: Cannot destructure property 'messages' of 'object null' as it is null.
+#     at file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/codexChat.ts:109:14
+#     at async prompt (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/codexChat.ts:230:24)
+# Subtest: an MCP elicitation asks for attention once; a second one while it waits asks again; a re-send does not
+ok 21 - an MCP elicitation asks for attention once; a second one while it waits asks again; a re-send does not
+  ---
+  duration_ms: 5.390828
+  type: 'test'
+  ...
+# Subtest: a consent while a tool approval waits asks for attention, as does the approval
+ok 22 - a consent while a tool approval waits asks for attention, as does the approval
+  ---
+  duration_ms: 6.210119
+  type: 'test'
+  ...
+# (node:108) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:108) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Codex pure context step is independent of transcript and open turns
+ok 23 - Codex pure context step is independent of transcript and open turns
+  ---
+  duration_ms: 1.815032
+  type: 'test'
+  ...
+# Subtest: actual Codex runtime notifies for context-only latest samples, persists reset, and isolates chats
+ok 24 - actual Codex runtime notifies for context-only latest samples, persists reset, and isolates chats
+  ---
+  duration_ms: 16.88098
+  type: 'test'
+  ...
+# (node:117) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ctrl+Space is handled before the Composer command callback
+ok 25 - Ctrl+Space is handled before the Composer command callback
+  ---
+  duration_ms: 73.110349
+  type: 'test'
+  ...
+# Subtest: logical space with another physical code is handled before the Composer command callback
+ok 26 - logical space with another physical code is handled before the Composer command callback
+  ---
+  duration_ms: 2.596525
+  type: 'test'
+  ...
+# Subtest: physical Space with another logical key is handled before the Composer command callback
+ok 27 - physical Space with another logical key is handled before the Composer command callback
+  ---
+  duration_ms: 2.288487
+  type: 'test'
+  ...
+# Subtest: Ctrl+Shift+Space is handled before the Composer command callback
+ok 28 - Ctrl+Shift+Space is handled before the Composer command callback
+  ---
+  duration_ms: 1.946964
+  type: 'test'
+  ...
+# Subtest: Ctrl+Alt+Space is handled before the Composer command callback
+ok 29 - Ctrl+Alt+Space is handled before the Composer command callback
+  ---
+  duration_ms: 2.620306
+  type: 'test'
+  ...
+# Subtest: Ctrl+Shift+Alt+Space is handled before the Composer command callback
+ok 30 - Ctrl+Shift+Alt+Space is handled before the Composer command callback
+  ---
+  duration_ms: 1.774203
+  type: 'test'
+  ...
+# Subtest: plain Space still reaches the Composer command callback once
+ok 31 - plain Space still reaches the Composer command callback once
+  ---
+  duration_ms: 1.989851
+  type: 'test'
+  ...
+# Subtest: Meta+Space still reaches the Composer command callback once
+ok 32 - Meta+Space still reaches the Composer command callback once
+  ---
+  duration_ms: 1.817938
+  type: 'test'
+  ...
+# Subtest: Ctrl+Meta+Space still reaches the Composer command callback once
+ok 33 - Ctrl+Meta+Space still reaches the Composer command callback once
+  ---
+  duration_ms: 2.664696
+  type: 'test'
+  ...
+# Subtest: Ctrl+Shift+Meta+Space still reaches the Composer command callback once
+ok 34 - Ctrl+Shift+Meta+Space still reaches the Composer command callback once
+  ---
+  duration_ms: 2.158787
+  type: 'test'
+  ...
+# Subtest: Ctrl+another key still reaches the Composer command callback once
+ok 35 - Ctrl+another key still reaches the Composer command callback once
+  ---
+  duration_ms: 1.683813
+  type: 'test'
+  ...
+# Subtest: an allowed chord retains the parent callback's handled result
+ok 36 - an allowed chord retains the parent callback's handled result
+  ---
+  duration_ms: 1.715942
+  type: 'test'
+  ...
+# (node:125) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: chat.toggleSpeechToText is registered as a keybinding handler
+ok 37 - chat.toggleSpeechToText is registered as a keybinding handler
+  ---
+  duration_ms: 196.899704
+  type: 'test'
+  ...
+# Subtest: chat.toggleSpeechToText turns voice_mode on when it is off
+ok 38 - chat.toggleSpeechToText turns voice_mode on when it is off
+  ---
+  duration_ms: 73.076433
+  type: 'test'
+  ...
+# Subtest: chat.toggleSpeechToText turns voice_mode off when it is on
+ok 39 - chat.toggleSpeechToText turns voice_mode off when it is on
+  ---
+  duration_ms: 56.493088
+  type: 'test'
+  ...
+# (node:133) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: shared native Claude vectors pass the real TS context reducer without losing cache fields
+ok 40 - shared native Claude vectors pass the real TS context reducer without losing cache fields
+  ---
+  duration_ms: 2.749442
+  type: 'test'
+  ...
+# Subtest: a replacement provider session clears persisted context instead of reviving an old sample
+ok 41 - a replacement provider session clears persisted context instead of reviving an old sample
+  ---
+  duration_ms: 8.25275
+  type: 'test'
+  ...
+# Subtest: context codec preserves an explicit compact boundary across reload
+ok 42 - context codec preserves an explicit compact boundary across reload
+  ---
+  duration_ms: 0.304669
+  type: 'test'
+  ...
+# Subtest: context parser accepts explicit Codex zero but ignores empty Claude samples
+ok 43 - context parser accepts explicit Codex zero but ignores empty Claude samples
+  ---
+  duration_ms: 0.214876
+  type: 'test'
+  ...
+# Subtest: model windows never create a sample or borrow a denominator
+ok 44 - model windows never create a sample or borrow a denominator
+  ---
+  duration_ms: 0.167566
+  type: 'test'
+  ...
+# Subtest: saved context validates its version and numbers without coercion
+ok 45 - saved context validates its version and numbers without coercion
+  ---
+  duration_ms: 0.257522
+  type: 'test'
+  ...
+# Subtest: model names are inert object keys and the denominator cache is bounded
+ok 46 - model names are inert object keys and the denominator cache is bounded
+  ---
+  duration_ms: 19.946976
+  type: 'test'
+  ...
+# (node:141) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: context telemetry is a distinct pure step, not a cumulative usage replacement
+ok 47 - context telemetry is a distinct pure step, not a cumulative usage replacement
+  ---
+  duration_ms: 1.988682
+  type: 'test'
+  ...
+# Subtest: actual runtime keeps latest cache-inclusive sample and same-model denominator across reload
+ok 48 - actual runtime keeps latest cache-inclusive sample and same-model denominator across reload
+  ---
+  duration_ms: 8.488669
+  type: 'test'
+  ...
+# Subtest: compact reset is zero; missing windows do not borrow another model's denominator
+ok 49 - compact reset is zero; missing windows do not borrow another model's denominator
+  ---
+  duration_ms: 1.365487
+  type: 'test'
+  ...
+# Subtest: malformed, metadata-only and zero Claude samples preserve known context
+ok 50 - malformed, metadata-only and zero Claude samples preserve known context
+  ---
+  duration_ms: 1.677041
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: default missing
+ok 51 - actual Composer context display: default missing
+  ---
+  duration_ms: 177.036314
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: off below threshold
+ok 52 - actual Composer context display: off below threshold
+  ---
+  duration_ms: 73.334533
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: rounded 69.95 reaches threshold
+ok 53 - actual Composer context display: rounded 69.95 reaches threshold
+  ---
+  duration_ms: 53.418855
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: exact threshold
+ok 54 - actual Composer context display: exact threshold
+  ---
+  duration_ms: 40.082759
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: on below threshold
+ok 55 - actual Composer context display: on below threshold
+  ---
+  duration_ms: 35.95862
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: on missing is unknown
+ok 56 - actual Composer context display: on missing is unknown
+  ---
+  duration_ms: 36.792929
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: metadata gate
+ok 57 - actual Composer context display: metadata gate
+  ---
+  duration_ms: 33.409034
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: ACP gate
+ok 58 - actual Composer context display: ACP gate
+  ---
+  duration_ms: 71.363633
+  type: 'test'
+  ...
+# Subtest: actual Composer context display: unknown denominator is not a percentage
+ok 59 - actual Composer context display: unknown denominator is not a percentage
+  ---
+  duration_ms: 37.334482
+  type: 'test'
+  ...
+# (node:149) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude result wire usage survives final upserts, persistence and replay without duplication
+ok 60 - Claude result wire usage survives final upserts, persistence and replay without duplication
+  ---
+  duration_ms: 4.631935
+  type: 'test'
+  ...
+# Subtest: usage absence, explicit zero and partial counts remain distinct
+ok 61 - usage absence, explicit zero and partial counts remain distinct
+  ---
+  duration_ms: 0.995955
+  type: 'test'
+  ...
+# Subtest: an empty successful Reason turn is a retryable failure, not a timestamp-only reply
+ok 62 - an empty successful Reason turn is a retryable failure, not a timestamp-only reply
+  ---
+  duration_ms: 0.518069
+  type: 'test'
+  ...
+# Subtest: one chat shows a local home path, then a cloud /repo path in a follow-up
+ok 63 - one chat shows a local home path, then a cloud /repo path in a follow-up
+  ---
+  duration_ms: 1.149053
+  type: 'test'
+  ...
+# Subtest: a tool row updates in place and text after it starts a new block
+ok 64 - a tool row updates in place and text after it starts a new block
+  ---
+  duration_ms: 0.390067
+  type: 'test'
+  ...
+# Subtest: device_not_found fails the turn with the error, not a reply
+ok 65 - device_not_found fails the turn with the error, not a reply
+  ---
+  duration_ms: 0.223108
+  type: 'test'
+  ...
+# Subtest: a follow-up during a turn supersedes it; the end goes to the older turn
+ok 66 - a follow-up during a turn supersedes it; the end goes to the older turn
+  ---
+  duration_ms: 0.294751
+  type: 'test'
+  ...
+# Subtest: a mid-turn report is attributed to another session, never the user
+ok 67 - a mid-turn report is attributed to another session, never the user
+  ---
+  duration_ms: 0.190807
+  type: 'test'
+  ...
+# Subtest: Stop ends the turn cancelled with the prompt offered again; a failed call fails it
+ok 68 - Stop ends the turn cancelled with the prompt offered again; a failed call fails it
+  ---
+  duration_ms: 0.456512
+  type: 'test'
+  ...
+# Subtest: a stopped turn marks its prompt cancelled and records start and end times
+ok 69 - a stopped turn marks its prompt cancelled and records start and end times
+  ---
+  duration_ms: 0.43651
+  type: 'test'
+  ...
+# Subtest: a turn stopped before its prompt reached Reason ends cancelled, leaving earlier open turns running
+ok 70 - a turn stopped before its prompt reached Reason ends cancelled, leaving earlier open turns running
+  ---
+  duration_ms: 0.440631
+  type: 'test'
+  ...
+# Subtest: a notice is a system message in the running turn
+ok 71 - a notice is a system message in the running turn
+  ---
+  duration_ms: 0.148024
+  type: 'test'
+  ...
+# Subtest: attachments show by name under the prompt
+ok 72 - attachments show by name under the prompt
+  ---
+  duration_ms: 0.1201
+  type: 'test'
+  ...
+# Subtest: startTurn can take the turn id that names the turn's checkpoints
+ok 73 - startTurn can take the turn id that names the turn's checkpoints
+  ---
+  duration_ms: 0.0759
+  type: 'test'
+  ...
+1..73
+# tests 73
+# suites 0
+# pass 73
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5168.806165

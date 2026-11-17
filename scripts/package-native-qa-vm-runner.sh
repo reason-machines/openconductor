@@ -35,9 +35,14 @@ xcrun clang -arch arm64 -mmacosx-version-min=15.0 -std=c11 \
   -Wall -Wextra -Werror -pedantic -c native-qa-vm-runner/ArgParser.c -o "$out/ArgParser.o"
 xcrun clang -arch arm64 -mmacosx-version-min=15.0 -std=c11 \
   -Wall -Wextra -Werror -c native-qa-vm-runner/ResourceValidator.c -o "$out/ResourceValidator.o"
+xcrun clang -arch arm64 -mmacosx-version-min=15.0 -std=c11 \
+  -Wall -Wextra -Werror -pedantic -c native-qa-vm-runner/HeldResources.c -o "$out/HeldResources.o"
+xcrun clang -arch arm64 -mmacosx-version-min=15.0 -std=c11 \
+  -Wall -Wextra -Werror -pedantic -c native-qa-vm-runner/Lifecycle.c -o "$out/Lifecycle.o"
 xcrun clang -arch arm64 -mmacosx-version-min=15.0 -fobjc-arc -fmodules \
   -Wall -Wextra -Werror native-qa-vm-runner/Runner.m \
   "$out/Profile.o" "$out/ArgParser.o" "$out/ResourceValidator.o" \
+  "$out/HeldResources.o" "$out/Lifecycle.o" \
   -framework AppKit -framework Virtualization -o "$app/Contents/MacOS/OpenConductorQAVMRunner"
 codesign --force --sign "$identity" --options runtime \
   --entitlements native-qa-vm-runner/Entitlements.plist "$app"

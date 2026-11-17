@@ -1,0 +1,16 @@
+{
+  "README.md": "5f7dc829c13f423a79b5850428e19ad6bebb670ba883e2bbffb12a7b457c5708",
+  "frozen/codexContextFlow.test.ts.txt": "5a37023709d31bdea621fcd854a337ddea857c7d4a401edf2200754557ea1e4e",
+  "frozen/contextUsageFlow.test.ts.txt": "fd723b15bba8d3143413747fb81cdb8f14ebf05d87626ee02d098c24102e5f3b",
+  "frozen/pre-bootstrap-v1.test.ts.txt": "f005549339f7145be5b509b5ceacf7cb210fcc4dc9bc4eb16c5ed92b5995be8d",
+  "frozen/pre-metadata-v2.test.ts.txt": "e0e0ea3d25f0300f7517f2aa1195a0a032df8715d17445457e77fe9b61bc6cee",
+  "logs/all-focused.tap": "4b45fbc06e63d98ae8dfa10510d883cde5fb5207e723c457411e0b7a991f860f",
+  "logs/baseline-final.tap": "9aafe8becd78cb1b812608074a0cec7dff5caa58562e9b8e33d66f0900c7bdf6",
+  "logs/baseline-v2.tap": "adc61fab4ad4e595ca456ad6da8033f6bcb2dd0f38bf7da1b9f4f9883ac2526b",
+  "logs/baseline.tap": "849963f2ead69b5ce4d282cf9961051de33c80a338db169497ba3adec7f5a18a",
+  "logs/codex-baseline.tap": "c581bf27601ebff9c34e58ba622d81ecc0e165eb50ced09087f82857e92b76f9",
+  "logs/codex-treatment.tap": "015fb40387fc725455dba55aeb4ccf94cc58a512e13765f384d6c2e51e4d4f81",
+  "logs/colors.log": "3179d9410338b68f24dd8de198bd7491fb2bbc25b207ec0556c6a07d1c18d189",
+  "logs/session-replacement-red.tap": "518c1893a0bc78545c08ff9ecc38373c38d5733e0f54555b7bac433d5b1902a6",
+  "reference-spans.json": "1026c18d70c2fd04c94084913b97bed6fe17c059250c8d4f535e44a26d32b4ec"
+}

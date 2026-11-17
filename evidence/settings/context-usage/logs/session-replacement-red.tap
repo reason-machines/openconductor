@@ -1,0 +1,78 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: shared native Claude vectors pass the real TS context reducer without losing cache fields
+ok 1 - shared native Claude vectors pass the real TS context reducer without losing cache fields
+  ---
+  duration_ms: 2.798401
+  type: 'test'
+  ...
+# Subtest: a replacement provider session clears persisted context instead of reviving an old sample
+not ok 2 - a replacement provider session clears persisted context instead of reviving an old sample
+  ---
+  duration_ms: 12.452276
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/contextUsage.test.ts:20:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + {
+    +   contextWindow: 100,
+    +   totalTokens: 90
+    + }
+    - undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+    totalTokens: 90
+    contextWindow: 100
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/contextUsage.test.ts:36:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: context codec preserves an explicit compact boundary across reload
+ok 3 - context codec preserves an explicit compact boundary across reload
+  ---
+  duration_ms: 0.902035
+  type: 'test'
+  ...
+# Subtest: context parser accepts explicit Codex zero but ignores empty Claude samples
+ok 4 - context parser accepts explicit Codex zero but ignores empty Claude samples
+  ---
+  duration_ms: 0.230427
+  type: 'test'
+  ...
+# Subtest: model windows never create a sample or borrow a denominator
+ok 5 - model windows never create a sample or borrow a denominator
+  ---
+  duration_ms: 0.183611
+  type: 'test'
+  ...
+# Subtest: saved context validates its version and numbers without coercion
+ok 6 - saved context validates its version and numbers without coercion
+  ---
+  duration_ms: 0.240489
+  type: 'test'
+  ...
+# Subtest: model names are inert object keys and the denominator cache is bounded
+ok 7 - model names are inert object keys and the denominator cache is bounded
+  ---
+  duration_ms: 20.643194
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 6
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 349.305511

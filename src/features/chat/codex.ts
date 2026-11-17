@@ -17,6 +17,7 @@
 // Pure: no Tauri, no React, so `codex.test.ts` covers it.
 
 import type { CodexConsent } from "./codexConsent.ts";
+import type { ContextUpdate } from "./contextUsage.ts";
 import type { SentUserContentV1 } from "./userContent.ts";
 import type { Block, ChatEvent, ChatMessage, TurnStatus } from "./types.ts";
 
@@ -51,6 +52,7 @@ export interface CodexTurnEnd {
 
 export type CodexPayload = { chatId: string } & (
   | { type: "threadStarted"; threadId: string; resumed: boolean }
+  | { type: "contextUsage"; context: ContextUpdate }
   | { type: "turnStarted"; turnId: string }
   | { type: "text" | "thought"; itemId: string; delta: string }
   | { type: "message"; itemId: string; text: string; phase: string | null }
@@ -84,6 +86,7 @@ export interface Step {
   events: ChatEvent[];
   /** Set by `threadStarted`: save it to resume the chat after a restart. */
   threadId?: string;
+  context?: ContextUpdate;
 }
 
 export function codexChat(chatId: string): CodexChatState {
@@ -166,6 +169,8 @@ function updateAssistant(state: CodexChatState, now: Date, f: (turn: OpenTurn, b
 
 export function applyCodexPayload(state: CodexChatState, p: CodexPayload, now = new Date()): Step {
   switch (p.type) {
+    case "contextUsage":
+      return { state, events: [], context: p.context };
     case "threadStarted":
       return { state, events: [], threadId: p.threadId };
     case "turnEnded": {

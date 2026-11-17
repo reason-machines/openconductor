@@ -1,0 +1,82 @@
+{
+  "status": "PASS",
+  "observations": {
+    "baseline": {
+      "passed": 3,
+      "total": 8,
+      "results": [
+        {
+          "case": "default-primary",
+          "pass": true
+        },
+        {
+          "case": "custom-primary",
+          "pass": false
+        },
+        {
+          "case": "removed-default",
+          "pass": false
+        },
+        {
+          "case": "plain-enter",
+          "pass": true
+        },
+        {
+          "case": "additional-primary",
+          "pass": false
+        },
+        {
+          "case": "physical-primary",
+          "pass": false
+        },
+        {
+          "case": "navigation-click",
+          "pass": true
+        },
+        {
+          "case": "empty-primary",
+          "pass": false
+        }
+      ]
+    },
+    "treatment": {
+      "passed": 8,
+      "total": 8,
+      "results": [
+        {
+          "case": "default-primary",
+          "pass": true
+        },
+        {
+          "case": "custom-primary",
+          "pass": true
+        },
+        {
+          "case": "removed-default",
+          "pass": true
+        },
+        {
+          "case": "plain-enter",
+          "pass": true
+        },
+        {
+          "case": "additional-primary",
+          "pass": true
+        },
+        {
+          "case": "physical-primary",
+          "pass": true
+        },
+        {
+          "case": "navigation-click",
+          "pass": true
+        },
+        {
+          "case": "empty-primary",
+          "pass": true
+        }
+      ]
+    }
+  },
+  "cleanup": "PASS"
+}

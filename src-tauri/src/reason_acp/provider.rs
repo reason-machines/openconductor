@@ -78,6 +78,10 @@ pub enum ProviderEvent {
         input_tokens: Option<u64>,
         output_tokens: Option<u64>,
     },
+    /// Latest context occupancy or model denominator, not turn billing Usage.
+    ContextUsage {
+        context: super::context_usage::ContextUpdate,
+    },
     /// Something the app should tell the user about the chat, e.g. that a
     /// requested model is not offered and Reason's default runs instead.
     Notice(String),
