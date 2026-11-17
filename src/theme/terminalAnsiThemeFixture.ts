@@ -23,7 +23,7 @@ export const fixtureColors = {
   "background": "#121314",
   "foreground": "#efefef",
   "accent": "#3582dc",
-  "selectionBackground": "#3582dc66",
-  "selectionInactiveBackground": "#3582dc4d",
+  "selectionBackground": "#3582dc",
+  "selectionForeground": "#fafafa",
   "replacement": "#aabbcc"
 } as const;

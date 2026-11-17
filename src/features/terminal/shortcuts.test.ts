@@ -30,7 +30,7 @@ test("line-editing shortcuts resolve to commands that send shell bytes", () => {
     [key("Backspace", { metaKey: true }), "terminal.deleteLine", "\x15"],
     [key("ArrowLeft", { altKey: true }), "terminal.moveWordLeft", "\x1bb"],
     [key("ArrowRight", { altKey: true }), "terminal.moveWordRight", "\x1bf"],
-    [key("Enter", { shiftKey: true }), "terminal.insertNewline", "\x1b\r"],
+    [key("Enter", { shiftKey: true }), "terminal.insertNewline", "\n"],
   ];
   for (const [e, id, bytes] of cases) {
     assert.equal(terminalCommandFor(e), id);

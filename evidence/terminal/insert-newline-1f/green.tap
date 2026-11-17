@@ -1,0 +1,38 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tab shortcuts resolve inside the terminal
+ok 1 - tab shortcuts resolve inside the terminal
+  ---
+  duration_ms: 1.520358
+  type: 'test'
+  ...
+# Subtest: line-editing shortcuts resolve to commands that send shell bytes
+ok 2 - line-editing shortcuts resolve to commands that send shell bytes
+  ---
+  duration_ms: 0.342485
+  type: 'test'
+  ...
+# Subtest: ordinary typing reaches the shell untouched
+ok 3 - ordinary typing reaches the shell untouched
+  ---
+  duration_ms: 0.28107
+  type: 'test'
+  ...
+# Subtest: every command the terminal handles is in the registry
+ok 4 - every command the terminal handles is in the registry
+  ---
+  duration_ms: 0.264217
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 204.127583

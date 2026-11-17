@@ -150,8 +150,8 @@ for (const [index, [field, token, initial]] of palette.entries()) {
     assert.equal(screen.options.theme?.foreground, fixtureColors.background);
     assert.equal(screen.options.theme?.cursor, fixtureColors.background);
     assert.equal(screen.options.theme?.cursorAccent, fixtureColors.foreground);
-    assert.equal(screen.options.theme?.selectionBackground, `${fixtureColors.replacement}66`);
-    assert.equal(screen.options.theme?.selectionInactiveBackground, `${fixtureColors.replacement}4d`);
+    assert.equal(screen.options.theme?.selectionBackground, fixtureColors.replacement);
+    assert.equal(screen.options.theme?.selectionInactiveBackground, undefined);
     assert.equal(screen.options.disableStdin, false);
     assert.equal(screen.options.convertEol, true);
     assert.equal(screen.unicode.activeVersion, "11");

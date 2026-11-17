@@ -1,0 +1,2 @@
+.ara-state/header-placeholder-typecheck-main/src/features/chat/useWindowDragDrop.ts(20,26): error TS2307: Cannot find module '@tauri-apps/plugin-fs' or its corresponding type declarations.
+exit_code=2
