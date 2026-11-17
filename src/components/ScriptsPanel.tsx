@@ -468,7 +468,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
       : null;
   const header = runHeader(shownTaskInfo, taskState);
   const hasOutput = showSpotlight ? spotLogMine && spotView.log.length > 0 : runOut.length > 0;
-  const body = runBody(shownTaskInfo, taskState, showSpotlight ? spotMine : shownStatus !== undefined, hasOutput);
+  const body = runBody(shownTaskInfo, taskState, showSpotlight ? spotMine : Boolean(shownStatus?.runId), hasOutput);
   const headerDisabled = showSpotlight ? spotButton.disabled : button.disabled;
 
   function runTabBody() {

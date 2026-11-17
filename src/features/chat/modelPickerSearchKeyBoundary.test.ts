@@ -127,9 +127,9 @@ test("source callback: Escape preserves query-clear, menu-close and submenu-clos
   });
 });
 
-test("source callback: composing search keys retain the existing early return", () => {
+test("source callback: composing search keys remain in the input without executing model commands", () => {
   for (const key of ["a", "Enter", "Escape", "ArrowDown"]) {
-    assert.deepEqual(dispatch({ key, composing: true }), untouched());
+    assert.deepEqual(dispatch({ key, composing: true }), { ...untouched(), stopped: true });
   }
 });
 

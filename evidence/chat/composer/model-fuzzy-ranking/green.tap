@@ -1,0 +1,81 @@
+(node:74) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:81) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: filtered opus ranks the stronger model match before its physical loadout predecessor
+ok 1 - filtered opus ranks the stronger model match before its physical loadout predecessor
+  ---
+  duration_ms: 4.730562
+  type: 'test'
+  ...
+# Subtest: filtered claude:opus ranks the stronger model match before its physical loadout predecessor
+ok 2 - filtered claude:opus ranks the stronger model match before its physical loadout predecessor
+  ---
+  duration_ms: 0.390802
+  type: 'test'
+  ...
+# Subtest: filtered cld ranks the stronger model match before its physical loadout predecessor
+ok 3 - filtered cld ranks the stronger model match before its physical loadout predecessor
+  ---
+  duration_ms: 0.31108
+  type: 'test'
+  ...
+# Subtest: filtered Opus 5 Claude Code claude:opus-5-1m ranks the stronger model match before its physical loadout predecessor
+ok 4 - filtered Opus 5 Claude Code claude:opus-5-1m ranks the stronger model match before its physical loadout predecessor
+  ---
+  duration_ms: 0.744115
+  type: 'test'
+  ...
+# Subtest: unfiltered "" preserves physical order and identity
+ok 5 - unfiltered "" preserves physical order and identity
+  ---
+  duration_ms: 0.251699
+  type: 'test'
+  ...
+# Subtest: unfiltered " \\t\\n" preserves physical order and identity
+ok 6 - unfiltered " \\t\\n" preserves physical order and identity
+  ---
+  duration_ms: 0.111742
+  type: 'test'
+  ...
+# Subtest: cdx retains existing membership control
+ok 7 - cdx retains existing membership control
+  ---
+  duration_ms: 0.228052
+  type: 'test'
+  ...
+# Subtest: gpt56 retains existing membership control
+ok 8 - gpt56 retains existing membership control
+  ---
+  duration_ms: 0.112527
+  type: 'test'
+  ...
+# Subtest: no matching model retains existing membership control
+ok 9 - no matching model retains existing membership control
+  ---
+  duration_ms: 0.32475
+  type: 'test'
+  ...
+# Subtest: provider identity precedence stays separate from ranking
+ok 10 - provider identity precedence stays separate from ranking
+  ---
+  duration_ms: 0.524978
+  type: 'test'
+  ...
+# Subtest: Enter from search applies the highest ranked eligible result without closing or submitting
+ok 11 - Enter from search applies the highest ranked eligible result without closing or submitting
+  ---
+  duration_ms: 1.024655
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 208.83618
