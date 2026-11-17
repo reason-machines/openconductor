@@ -1,0 +1,292 @@
+(node:90) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:97) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: create composer leaves clipboard pastes without files to the shared editor
+ok 1 - create composer leaves clipboard pastes without files to the shared editor
+  ---
+  duration_ms: 332.407399
+  type: 'test'
+  ...
+# Subtest: create composer still handles clipboard file attachments
+ok 2 - create composer still handles clipboard file attachments
+  ---
+  duration_ms: 141.087709
+  type: 'test'
+  ...
+# Subtest: create composer stages exact binary bytes and finishes materialization before queueing
+ok 3 - create composer stages exact binary bytes and finishes materialization before queueing
+  ---
+  duration_ms: 148.473568
+  type: 'test'
+  ...
+# Subtest: create composer keeps nonbinary files inline without staging
+ok 4 - create composer keeps nonbinary files inline without staging
+  ---
+  duration_ms: 82.259764
+  type: 'test'
+  ...
+# Subtest: create composer blocks launch while an attachment read is pending
+ok 5 - create composer blocks launch while an attachment read is pending
+  ---
+  duration_ms: 77.12574
+  type: 'test'
+  ...
+# Subtest: create composer surfaces staging failure without a phantom binary chip
+ok 6 - create composer surfaces staging failure without a phantom binary chip
+  ---
+  duration_ms: 96.909068
+  type: 'test'
+  ...
+# Subtest: create composer does not auto-send a path when materialization fails
+ok 7 - create composer does not auto-send a path when materialization fails
+  ---
+  duration_ms: 68.934387
+  type: 'test'
+  ...
+# Subtest: create composer blocks launch while the staging write is pending
+ok 8 - create composer blocks launch while the staging write is pending
+  ---
+  duration_ms: 81.289651
+  type: 'test'
+  ...
+# Subtest: same-name binary files use distinct paths and removing a chip deletes only its staged copy
+ok 9 - same-name binary files use distinct paths and removing a chip deletes only its staged copy
+  ---
+  duration_ms: 66.536342
+  type: 'test'
+  ...
+# Subtest: create composer stops automatic delivery on missingCopy
+ok 10 - create composer stops automatic delivery on missingCopy
+  ---
+  duration_ms: 80.604464
+  type: 'test'
+  ...
+# Subtest: create composer stops automatic delivery on copyThrows
+ok 11 - create composer stops automatic delivery on copyThrows
+  ---
+  duration_ms: 67.955112
+  type: 'test'
+  ...
+# Subtest: create composer rejects oversized files without reading or staging them
+ok 12 - create composer rejects oversized files without reading or staging them
+  ---
+  duration_ms: 66.428516
+  type: 'test'
+  ...
+# Subtest: accepted modal launch closes after pending registration and before repository registration settles
+ok 13 - accepted modal launch closes after pending registration and before repository registration settles
+  ---
+  duration_ms: 74.148914
+  type: 'test'
+  ...
+# Subtest: late modal success does not close a replacement dialog
+ok 14 - late modal success does not close a replacement dialog
+  ---
+  duration_ms: 70.883993
+  type: 'test'
+  ...
+# Subtest: detached creation failure stays visible through the persistent warning surface
+ok 15 - detached creation failure stays visible through the persistent warning surface
+  ---
+  duration_ms: 97.983982
+  type: 'test'
+  ...
+# Subtest: full-page creation remains mounted until success and suppresses a pending duplicate
+ok 16 - full-page creation remains mounted until success and suppresses a pending duplicate
+  ---
+  duration_ms: 80.175932
+  type: 'test'
+  ...
+# Subtest: full-page creation failure stays inline and clears the pending row
+ok 17 - full-page creation failure stays inline and clears the pending row
+  ---
+  duration_ms: 52.800162
+  type: 'test'
+  ...
+# Subtest: invalid does not close or create a workspace
+ok 18 - invalid does not close or create a workspace
+  ---
+  duration_ms: 66.947603
+  type: 'test'
+  ...
+# Subtest: missing-checkout does not close or create a workspace
+ok 19 - missing-checkout does not close or create a workspace
+  ---
+  duration_ms: 63.166202
+  type: 'test'
+  ...
+# Subtest: no-repository does not close or create a workspace
+ok 20 - no-repository does not close or create a workspace
+  ---
+  duration_ms: 72.575096
+  type: 'test'
+  ...
+# Subtest: detached launch preserves first message, section and setup success
+ok 21 - detached launch preserves first message, section and setup success
+  ---
+  duration_ms: 68.110401
+  type: 'test'
+  ...
+# Subtest: detached launch preserves first message, section and setup failure
+ok 22 - detached launch preserves first message, section and setup failure
+  ---
+  duration_ms: 65.888278
+  type: 'test'
+  ...
+# Subtest: accepted modal launch adds workspace with state ready when no setup script
+ok 23 - accepted modal launch adds workspace with state ready when no setup script
+  ---
+  duration_ms: 58.932458
+  type: 'test'
+  ...
+# Subtest: Alt+Enter (addToBacklogFromComposer) creates workspace idle, sets backlog status, skips seed/rename
+ok 24 - Alt+Enter (addToBacklogFromComposer) creates workspace idle, sets backlog status, skips seed/rename
+  ---
+  duration_ms: 40.242049
+  type: 'test'
+  ...
+# Subtest: create Plan shortcut toggles the existing menu state while editor-focused (page=false)
+ok 25 - create Plan shortcut toggles the existing menu state while editor-focused (page=false)
+  ---
+  duration_ms: 57.240081
+  type: 'test'
+  ...
+# Subtest: create Plan shortcut toggles the existing menu state while editor-focused (page=true)
+ok 26 - create Plan shortcut toggles the existing menu state while editor-focused (page=true)
+  ---
+  duration_ms: 47.364786
+  type: 'test'
+  ...
+# Subtest: create Plan shortcut leaves an unfocused editor unchanged
+ok 27 - create Plan shortcut leaves an unfocused editor unchanged
+  ---
+  duration_ms: 47.497054
+  type: 'test'
+  ...
+# Subtest: create Plan shortcut does not change launch controls while creating
+ok 28 - create Plan shortcut does not change launch controls while creating
+  ---
+  duration_ms: 44.218956
+  type: 'test'
+  ...
+# Subtest: create Plan shortcut never exposes unsupported agent controls (reason)
+ok 29 - create Plan shortcut never exposes unsupported agent controls (reason)
+  ---
+  duration_ms: 47.062737
+  type: 'test'
+  ...
+# Subtest: create Plan shortcut never exposes unsupported agent controls (codex)
+ok 30 - create Plan shortcut never exposes unsupported agent controls (codex)
+  ---
+  duration_ms: 70.779334
+  type: 'test'
+  ...
+# (node:105) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Create inherits Plan default false and persists before the first text prompt
+ok 31 - Create inherits Plan default false and persists before the first text prompt
+  ---
+  duration_ms: 330.765035
+  type: 'test'
+  ...
+# Subtest: Create explicitly overrides Plan default false using either menu or shortcut
+ok 32 - Create explicitly overrides Plan default false using either menu or shortcut
+  ---
+  duration_ms: 160.356427
+  type: 'test'
+  ...
+# Subtest: Create inherits Plan default true and persists before the first text prompt
+ok 33 - Create inherits Plan default true and persists before the first text prompt
+  ---
+  duration_ms: 137.677078
+  type: 'test'
+  ...
+# Subtest: Create explicitly overrides Plan default true using either menu or shortcut
+ok 34 - Create explicitly overrides Plan default true using either menu or shortcut
+  ---
+  duration_ms: 97.096597
+  type: 'test'
+  ...
+# Subtest: Create inherits asynchronously loaded settings until an explicit choice is made
+ok 35 - Create inherits asynchronously loaded settings until an explicit choice is made
+  ---
+  duration_ms: 80.155714
+  type: 'test'
+  ...
+# Subtest: an explicit Plan choice before settings load survives the load
+ok 36 - an explicit Plan choice before settings load survives the load
+  ---
+  duration_ms: 96.861403
+  type: 'test'
+  ...
+# Subtest: Plan persistence gates an empty-prompt workspace
+ok 37 - Plan persistence gates an empty-prompt workspace
+  ---
+  duration_ms: 77.521488
+  type: 'test'
+  ...
+# Subtest: rejected Plan persistence keeps created workspace reachable without auto-send (attachments=false)
+ok 38 - rejected Plan persistence keeps created workspace reachable without auto-send (attachments=false)
+  ---
+  duration_ms: 77.509508
+  type: 'test'
+  ...
+# Subtest: Plan persistence gates attachment delivery
+ok 39 - Plan persistence gates attachment delivery
+  ---
+  duration_ms: 60.833995
+  type: 'test'
+  ...
+# Subtest: rejected Plan persistence keeps created workspace reachable without auto-send (attachments=true)
+ok 40 - rejected Plan persistence keeps created workspace reachable without auto-send (attachments=true)
+  ---
+  duration_ms: 87.566326
+  type: 'test'
+  ...
+# Subtest: failed binary copy (error) preserves inline UTF-8 files in the editable draft
+ok 41 - failed binary copy (error) preserves inline UTF-8 files in the editable draft
+  ---
+  duration_ms: 65.06779
+  type: 'test'
+  ...
+# Subtest: failed binary copy (missing) preserves inline UTF-8 files in the editable draft
+ok 42 - failed binary copy (missing) preserves inline UTF-8 files in the editable draft
+  ---
+  duration_ms: 55.670511
+  type: 'test'
+  ...
+# Subtest: failed binary copy (throws) preserves inline UTF-8 files in the editable draft
+ok 43 - failed binary copy (throws) preserves inline UTF-8 files in the editable draft
+  ---
+  duration_ms: 70.279484
+  type: 'test'
+  ...
+# Subtest: successful mixed attachment delivery still includes both inline and materialized files
+ok 44 - successful mixed attachment delivery still includes both inline and materialized files
+  ---
+  duration_ms: 77.020617
+  type: 'test'
+  ...
+# Subtest: reason launch stays outside the Claude Plan persistence boundary
+ok 45 - reason launch stays outside the Claude Plan persistence boundary
+  ---
+  duration_ms: 66.043247
+  type: 'test'
+  ...
+# Subtest: codex launch stays outside the Claude Plan persistence boundary
+ok 46 - codex launch stays outside the Claude Plan persistence boundary
+  ---
+  duration_ms: 73.088753
+  type: 'test'
+  ...
+1..46
+# tests 46
+# suites 0
+# pass 46
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4767.015206

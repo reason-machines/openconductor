@@ -8,8 +8,9 @@ write these files in their existing `E2E_OUT` directory:
   job-namespace port 4444 snapshot before starting the driver.
 - `runtime-before-teardown.json`: app-reported settings-file/config-directory,
   repository roots and worktree paths (read-only Tauri commands); actual open
-  `conductor.db` / `cache.db` descriptors and their canonical parent app-data
-  directories; driver/descendant PIDs, parent PIDs, executable/cwd, process-start
+  `conductor.db` / `cache.db` descriptors held by the exact app executable and
+  their canonical parent app-data directories (not browser-child cache files);
+  driver/descendant PIDs, parent PIDs, executable/cwd, process-start
   ticks, and port 4444 listener inode/owner PID.
 - `runtime-after-teardown.json`: the same binding, retained live-root evidence,
   final process/port observation, elapsed lifetime and explicit cleanup outcome.
@@ -51,14 +52,32 @@ An unset Node `exitCode` is `null`, **not a claimed passing suite**.
   most 3 additional seconds and reports failures without killing anything.
   Existing hosted step/job timeouts remain the lifetime bound.
 
+## Owner-scoped harness teardown
+
+The Codex and app-flows suites additionally use `owned-processes.mjs` **after**
+their existing session deletion / driver stop, before the final receipt. This
+is separate from the read-only recorder. A passing session deletion or a released
+4444 listener does not prove the app and its browser/agent children exited.
+
+The helper accepts the pre-teardown observed driver tree, checks each PID and
+process-start identity again before signalling, and stops only that tree and
+its still-attributable descendants. It handles previously seen reparented
+children, skips reused PIDs and zombies, and never selects by process name,
+executable, port, HOME or machine-wide occupancy. It sends SIGTERM, then SIGKILL
+to remaining matching identities, with a 750 ms bound per phase. Permission or
+observation failures stay unverified; live survivors remain failed in the final
+independent receipt. It does not touch another owner's processes or data, change
+suite assertions or auth modes, or treat missing evidence as clean teardown.
+
 Run the self-contained generator, failure-control, transport and wiring tests:
 
 ```bash
 node --test tools/e2e/runtime-receipt.test.mjs
 ```
 
-These tests use synthetic `/proc` fixtures and an inert child Node process for
-exit handling; they launch no app, WebDriver, native runtime or network server.
+These tests use synthetic `/proc` fixtures and inert child Node processes for
+exit handling and a bounded SIGTERM/SIGKILL teardown control; they launch no app,
+WebDriver, native runtime or network server.
 Real built-app receipts/artifact publication require a later explicitly assigned
 hosted E2E run containing this change. They cannot be added to an already-running
 workflow frozen at another source commit.

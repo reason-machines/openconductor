@@ -1,0 +1,1 @@
+function lDi(t){return t.content.type!=="result"||!t.content.is_error||t.content.subtype!=="success"?!1:oVt(t.content.result)}

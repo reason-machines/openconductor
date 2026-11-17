@@ -1,0 +1,1 @@
+function o8(t){const e=t.content;return e.type==="system"&&"subtype"in e&&e.subtype==="status"&&"status"in e&&e.status==="compacting"}
