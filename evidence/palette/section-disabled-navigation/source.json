@@ -1,0 +1,210 @@
+{
+  "owner": "Conductor Rebuild / SAME15",
+  "unit": "PALETTE-SECTION-DISABLED-NAV-SAME15",
+  "main": "1d8c37ab634e4eca9f86d54c138dc73fb0ee3fb5",
+  "reference": {
+    "parent": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "retained_REA_artifact_id": "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+    "offsets": "zero-based half-open UTF-8 bytes",
+    "records": [
+      {
+        "path": "../active-descendant/item-M5s.txt",
+        "range": [
+          2908581,
+          2909564
+        ],
+        "bytes": 983,
+        "sha256": "84e0d537998fe7e8a40a285ca3b33d0aa3309933ceab0c4e0dca0dd6ad66acda"
+      },
+      {
+        "path": "../active-descendant/item-wrapper.txt",
+        "range": [
+          2919435,
+          2920051
+        ],
+        "bytes": 616,
+        "sha256": "7faacd97381417474f2e9ac15b97597734839554f1229709902488b3c0337d25"
+      },
+      {
+        "path": "../active-descendant/section-Jba.txt",
+        "range": [
+          10877545,
+          10880908
+        ],
+        "bytes": 3363,
+        "sha256": "e5d76b4abadffdc8f9ea6350a230c242b38cfbe53ab5dd515e481a93045563d1"
+      },
+      {
+        "path": "../active-descendant/../group-navigation/command-root-Xyi.txt",
+        "range": [
+          2903072,
+          2908580
+        ],
+        "bytes": 5508,
+        "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92"
+      },
+      {
+        "path": "../active-descendant/../group-navigation/command-input-B5s.txt",
+        "range": [
+          2910380,
+          2910953
+        ],
+        "bytes": 573,
+        "sha256": "70fa9c07b0d8b605e648601e01cd266db15dadad0ac59b8cb5569cee58c02758"
+      },
+      {
+        "path": "../active-descendant/../group-navigation/command-component-P6.txt",
+        "range": [
+          2912384,
+          2912493
+        ],
+        "bytes": 109,
+        "sha256": "9b57d93a69e00511c26ce27dfc26117a75a0a2f70492d5f3436f58f4351df3bc"
+      },
+      {
+        "path": "../active-descendant/../group-navigation/Home-command-input-kI.txt",
+        "range": [
+          2916816,
+          2917726
+        ],
+        "bytes": 910,
+        "sha256": "970dc084f87ebeb0e3f1220debf849ee4115e11f0be19c8442dab05ba688decf"
+      },
+      {
+        "path": "../active-descendant/../group-navigation/m_a.txt",
+        "range": [
+          10889115,
+          10920819
+        ],
+        "bytes": 31704,
+        "sha256": "cd07cfad2d86afe0717c73433656bd3f8d144b8e84dfd2368646ded0f30d1c3e"
+      },
+      {
+        "path": "../active-descendant/../group-navigation/../ime-composition/Xyi-root.txt",
+        "range": [
+          2903072,
+          2908580
+        ],
+        "bytes": 5508,
+        "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92"
+      },
+      {
+        "path": "../active-descendant/../group-navigation/../ime-composition/P6-alias.txt",
+        "range": [
+          2912384,
+          2912492
+        ],
+        "bytes": 108,
+        "sha256": "20b129f07752490e4c9ca33091b5d947173fb1de439bcda0f2b15b9e25deb4f6"
+      },
+      {
+        "path": "../active-descendant/../group-navigation/../ime-composition/KV-wrapper.txt",
+        "range": [
+          2913899,
+          2914244
+        ],
+        "bytes": 345,
+        "sha256": "12168391677891cbeaddc6307650dab1ee6e762cbd0f8114b28ff1a0339a97c4"
+      },
+      {
+        "path": "../active-descendant/../group-navigation/../ime-composition/qZ-dialog.txt",
+        "range": [
+          2914275,
+          2914883
+        ],
+        "bytes": 608,
+        "sha256": "8d7253f154bad3c2441e4850e50b961b2e2870a2c38d7424a9b15cdd6a7f8768"
+      },
+      {
+        "path": "../active-descendant/../group-navigation/../ime-composition/Y5s-content.txt",
+        "range": [
+          2914884,
+          2916816
+        ],
+        "bytes": 1932,
+        "sha256": "1f343b0f6340b44087d7914fc114f67311554dd62c7b60c549241f3645c4ea29"
+      },
+      {
+        "path": "../active-descendant/../group-navigation/../ime-composition/h_a-palette-caller.txt",
+        "range": [
+          10888832,
+          10889073
+        ],
+        "bytes": 241,
+        "sha256": "db46eeae9e65f9feee9a554863994313bfa6fbabdf9653f1fbb11b2d34d7d55b"
+      },
+      {
+        "path": "../group-navigation/qyi.txt",
+        "range": [
+          2902810,
+          2902830
+        ],
+        "bytes": 20,
+        "sha256": "4d810091b0007f59d87015ad3dfce057971f4219355ae104623ffa9bdbcc96d3"
+      },
+      {
+        "path": "../group-navigation/_Bn.txt",
+        "range": [
+          2902831,
+          2902871
+        ],
+        "bytes": 40,
+        "sha256": "df2ee50ccae18e973388f34369e642e17949910513087210047727129aa67c51"
+      }
+    ]
+  },
+  "baseline": [
+    {
+      "path": "src/palette/CommandPalette.tsx",
+      "sha256": "4b87e1d6800a55c47c94af1adff31b5b53bdccd23406ccb513ac4b36accdc711"
+    },
+    {
+      "path": "src/palette/PaletteHost.tsx",
+      "sha256": "78a4067ebb66ef016b7d5903c38e3b312bf8c569ffd5f00c2b11743b07fb8471"
+    },
+    {
+      "path": "src/palette/MoveToSection.tsx",
+      "sha256": "3e1f1f4bfa78dc8c508a502e2a329751b0e8ee372fa1c4d57cc918b6033c6ba5"
+    }
+  ],
+  "fixture": {
+    "path": "src/palette/sectionEnabledNavigation.test.ts",
+    "sha256": "855ce5ff5e712d582ed86c1b1048f3d6c795ac103fba1dd59a1dde9b58ea59a4"
+  },
+  "red": {
+    "tests": 21,
+    "passed": 12,
+    "assertion_failures": 9,
+    "exit": 1
+  },
+  "limits": [
+    "Actual OpenConductor React Host/Palette/section component callbacks with synthetic external dependencies, not browser DOM, native focus/accessibility, package identity or runtime acceptance.",
+    "Retained REA real-app bytes read inertly only. No acquisition, vendor execution, app/provider/native/package action or watcher."
+  ],
+  "green": {
+    "frozen_mounted": {
+      "tests": 21,
+      "pass": 21,
+      "fail": 0
+    },
+    "palette_and_keybindings": {
+      "tests": 415,
+      "pass": 415,
+      "fail": 0
+    },
+    "build": "PASS in isolated worktree after primary timeout during Vite transformation",
+    "native_browser_package": "NOT_RUN"
+  },
+  "preserved_fixtures": [
+    {
+      "path": "src/palette/activeDescendant.test.ts",
+      "sha256": "0f358cda74b6a85bf5daa68df514828e839c01c06fe2a606586106898ea4ea17"
+    },
+    {
+      "path": "src/palette/activeDescendantControls.test.ts",
+      "sha256": "5b9a99dd3ca663af5c473a24287c317615480938e1d99c4b2c20d54fa741a4cd"
+    }
+  ]
+}
