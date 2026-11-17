@@ -1,4 +1,3 @@
-import importlib.util
 import json
 import os
 from pathlib import Path
@@ -8,20 +7,21 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-spec = importlib.util.spec_from_file_location("native_qa", Path(__file__).with_name("native_qa.py"))
-qa = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(qa)
+from tools import native_qa as qa
+from tools.test_native_qa_runner import portable_transport, stage_fixed_files
 
 
 class NativeQaTests(unittest.TestCase):
     def setUp(self):
+        self.enterContext(portable_transport())
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.parent = Path(self.tmp.name).resolve()
         self.root = self.parent / "fresh"
         with patch.object(qa.subprocess, "check_output", side_effect=["a" * 40 + "\n", b""]):
             self.manifest = qa.prepare(self.root)
-        self.app = self.parent / "OpenConductor QA.app"
+        stage_fixed_files(self.root)
+        self.app = self.root / "OpenConductor QA.app"
         (self.app / "Contents/MacOS").mkdir(parents=True)
         (self.app / "Contents/Info.plist").write_bytes(plistlib.dumps({
             "CFBundleIdentifier": self.manifest["identifier"], "CFBundleExecutable": "qa-fixture",

@@ -8,6 +8,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from tools.test_native_qa_runner import portable_transport, stage_fixed_files
+
 from tools import native_qa as qa
 from tools import native_qa_cache as cache
 from tools import native_qa_ordinary as ordinary
@@ -16,13 +18,15 @@ from tools import native_qa_webkit as webkit
 
 class NativeQaStdinTests(unittest.TestCase):
     def setUp(self):
+        self.enterContext(portable_transport())
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.parent = Path(self.tmp.name).resolve()
         self.root = self.parent / "fresh"
         with patch.object(qa.subprocess, "check_output", side_effect=["d" * 40 + "\n", b""]):
             self.manifest = qa.prepare(self.root)
-        self.app = self.parent / "QA.app"
+        stage_fixed_files(self.root)
+        self.app = self.root / "QA.app"
         (self.app / "Contents/MacOS").mkdir(parents=True)
         (self.app / "Contents/Info.plist").write_bytes(plistlib.dumps({
             "CFBundleIdentifier": self.manifest["identifier"], "CFBundleExecutable": "fixture",
