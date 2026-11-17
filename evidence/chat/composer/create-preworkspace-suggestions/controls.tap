@@ -1,0 +1,122 @@
+(node:74) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: selected branch and source ref replace target/cwd identity (page=false)
+ok 1 - selected branch and source ref replace target/cwd identity (page=false)
+  ---
+  duration_ms: 583.378798
+  type: 'test'
+  ...
+# Subtest: old repository/ref result cannot reappear after a newer response (page=false)
+ok 2 - old repository/ref result cannot reappear after a newer response (page=false)
+  ---
+  duration_ms: 314.791831
+  type: 'test'
+  ...
+# Subtest: response after unmount is discarded (page=false)
+ok 3 - response after unmount is discarded (page=false)
+  ---
+  duration_ms: 182.417104
+  type: 'test'
+  ...
+# Subtest: lookup failure leaves ordinary text editable and does not synthesize suggestions (page=false)
+ok 4 - lookup failure leaves ordinary text editable and does not synthesize suggestions (page=false)
+  ---
+  duration_ms: 206.488906
+  type: 'test'
+  ...
+# Subtest: skill selection preserves existing Codex path-link grammar and never creates (page=false)
+ok 5 - skill selection preserves existing Codex path-link grammar and never creates (page=false)
+  ---
+  duration_ms: 186.879249
+  type: 'test'
+  ...
+# Subtest: agent change requests a distinct snapshot; Claude uses existing slash grammar (page=false)
+ok 6 - agent change requests a distinct snapshot; Claude uses existing slash grammar (page=false)
+  ---
+  duration_ms: 239.238535
+  type: 'test'
+  ...
+# Subtest: file atom becomes prompt text at submit boundary, never envelope (page=false)
+ok 7 - file atom becomes prompt text at submit boundary, never envelope (page=false)
+  ---
+  duration_ms: 192.57787
+  type: 'test'
+  ...
+# Subtest: file atom becomes prompt text at backlog boundary, never envelope (page=false)
+ok 8 - file atom becomes prompt text at backlog boundary, never envelope (page=false)
+  ---
+  duration_ms: 220.128349
+  type: 'test'
+  ...
+# Subtest: blur and escaped popup cannot consume subsequent ordinary keys (page=false)
+ok 9 - blur and escaped popup cannot consume subsequent ordinary keys (page=false)
+  ---
+  duration_ms: 161.142932
+  type: 'test'
+  ...
+# Subtest: selected branch and source ref replace target/cwd identity (page=true)
+ok 10 - selected branch and source ref replace target/cwd identity (page=true)
+  ---
+  duration_ms: 139.520909
+  type: 'test'
+  ...
+# Subtest: old repository/ref result cannot reappear after a newer response (page=true)
+ok 11 - old repository/ref result cannot reappear after a newer response (page=true)
+  ---
+  duration_ms: 154.570685
+  type: 'test'
+  ...
+# Subtest: response after unmount is discarded (page=true)
+ok 12 - response after unmount is discarded (page=true)
+  ---
+  duration_ms: 195.700306
+  type: 'test'
+  ...
+# Subtest: lookup failure leaves ordinary text editable and does not synthesize suggestions (page=true)
+ok 13 - lookup failure leaves ordinary text editable and does not synthesize suggestions (page=true)
+  ---
+  duration_ms: 146.965773
+  type: 'test'
+  ...
+# Subtest: skill selection preserves existing Codex path-link grammar and never creates (page=true)
+ok 14 - skill selection preserves existing Codex path-link grammar and never creates (page=true)
+  ---
+  duration_ms: 154.790288
+  type: 'test'
+  ...
+# Subtest: agent change requests a distinct snapshot; Claude uses existing slash grammar (page=true)
+ok 15 - agent change requests a distinct snapshot; Claude uses existing slash grammar (page=true)
+  ---
+  duration_ms: 152.080451
+  type: 'test'
+  ...
+# Subtest: file atom becomes prompt text at submit boundary, never envelope (page=true)
+ok 16 - file atom becomes prompt text at submit boundary, never envelope (page=true)
+  ---
+  duration_ms: 151.079773
+  type: 'test'
+  ...
+# Subtest: file atom becomes prompt text at backlog boundary, never envelope (page=true)
+ok 17 - file atom becomes prompt text at backlog boundary, never envelope (page=true)
+  ---
+  duration_ms: 157.638267
+  type: 'test'
+  ...
+# Subtest: blur and escaped popup cannot consume subsequent ordinary keys (page=true)
+ok 18 - blur and escaped popup cannot consume subsequent ordinary keys (page=true)
+  ---
+  duration_ms: 182.495367
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4182.579629

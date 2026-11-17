@@ -13,6 +13,30 @@ const React = dependencies("react");
 const { act, create } = dependencies("react-test-renderer");
 const ts: typeof import("typescript") = dependencies("typescript");
 const root = resolve(import.meta.dirname, "../..");
+// Explicit real-module paths added by Create suggestions; all newline and
+// submit/backlog precedence assertions remain byte-for-byte unchanged.
+const suggestionModules: Record<string, string> = {
+  "../features/chat/composerDocument.ts": "src/features/chat/composerDocument.ts",
+  "../features/chat/preWorkspaceCompletions.ts": "src/features/chat/preWorkspaceCompletions.ts",
+  "./create/CreateWorkspaceSuggestions.tsx": "src/components/create/CreateWorkspaceSuggestions.tsx",
+  "../../workspace/createFlow.ts": "src/workspace/createFlow.ts",
+  "../../features/chat/preWorkspaceCompletions.ts": "src/features/chat/preWorkspaceCompletions.ts",
+  "../../features/chat/FileMentionMenu.tsx": "src/features/chat/FileMentionMenu.tsx",
+  "../../features/chat/SlashMenu.tsx": "src/features/chat/SlashMenu.tsx",
+  "../../features/chat/fileMentions.ts": "src/features/chat/fileMentions.ts",
+  "../../features/chat/slashCommands.ts": "src/features/chat/slashCommands.ts",
+  "./composerSlashRange.ts": "src/features/chat/composerSlashRange.ts",
+  "./fileMentions.ts": "src/features/chat/fileMentions.ts",
+  "./slashCommands.ts": "src/features/chat/slashCommands.ts",
+  "./useSuggestionPointer.ts": "src/features/chat/useSuggestionPointer.ts",
+  "../../components/FileIcons": "src/components/FileIcons.tsx",
+  "../../components/Icons": "src/components/Icons.tsx",
+  "./fileIconNames": "src/components/fileIconNames.ts",
+  "./Icons": "src/components/Icons.tsx",
+  "./ConductorIcon": "src/components/ConductorIcon.tsx",
+  "./AppMark": "src/components/AppMark.tsx",
+  "./conductorIcons.generated": "src/components/conductorIcons.generated.ts",
+};
 const chord = [{ key: { kind: "logical" as const, value: "Enter" }, modifiers: ["ctrl" as const, "shift" as const] }];
 
 // Mount the actual dialog, Create composer and shared editor. Only TipTap's DOM
@@ -61,13 +85,14 @@ async function fixture(page: boolean, overrides: Record<string, typeof chord> = 
       ? execFileSync("git", ["show", `${ref}:${file}`], { cwd: root, encoding: "utf8" })
       : readFileSync(resolve(root, file), "utf8");
     runInNewContext(ts.transpileModule(source, {
-      fileName: file, compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
+      fileName: file, compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true },
     }).outputText, {
       exports, console, document, HTMLElement: class {}, TextDecoder, TextEncoder, Uint8Array,
       crypto: { randomUUID: () => "newline-fixture" },
       require(name: string) {
         if (name === "@tiptap/core") return { ...dependencies(name), Editor: InertEditor };
-        if (name.startsWith("@tiptap/") || name === "react" || name === "react/jsx-runtime") return dependencies(name);
+        if (name.startsWith("@tiptap/") || name === "react" || name === "react/jsx-runtime" || name === "fuzzysort" || name === "vscode-material-icons") return dependencies(name);
+        if (suggestionModules[name]) return load(suggestionModules[name]);
         if (name === "./CreateWorkspaceComposer") return load("src/components/CreateWorkspaceComposer.tsx");
         if (name === "../features/chat/ComposerEditor.tsx") return load("src/features/chat/ComposerEditor.tsx");
         if (name === "./composerDocument.ts") return load("src/features/chat/composerDocument.ts");
@@ -85,7 +110,7 @@ async function fixture(page: boolean, overrides: Record<string, typeof chord> = 
         if (name === "../features/draft-attachments/api.ts") return { draftAttachmentsApi: {} };
         if (name === "../features/diff/ReviewButton") return { queuePending: () => assert.fail("must not queue a message") };
         if (name === "../features/chat/composer.css") return {};
-        if (name === "@tauri-apps/api/core") return { invoke: async () => assert.fail("must not invoke native commands") };
+        if (name === "@tauri-apps/api/core") return { isTauri: () => false, invoke: async () => assert.fail("must not invoke native commands") };
         if (name === "../workspace/api") return {
           ensureRepository: async () => ({ id: "repo", root: "/synthetic/project", defaultBranch: "main" }),
           listBranches: async () => [{ name: "main", remote: null, commit: "", isHead: true, committedAt: 0 }],

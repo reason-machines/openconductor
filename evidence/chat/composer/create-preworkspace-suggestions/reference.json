@@ -1,0 +1,326 @@
+{
+  "assets": {
+    "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "original_upload": {
+    "name": "glob-result-source-packet-be7.tar.gz",
+    "attachment_id": "e78b8633-85a2-4561-a67c-ff7181b1d9fc",
+    "sha256": "991f15ebf130ccb8e705fc74f612dbb46095bd6d73b420fbced1ffbcd94165bc"
+  },
+  "historical_qualified_main": "29c82d0bf7b7f5b8f3e3a936a0f91eeb420ddac6",
+  "fresh_baseline": "5c12f27036aec2e75e8a3dc80d462f0fd249680e",
+  "spans": [
+    {
+      "name": "PQo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9768674,
+        9770840
+      ],
+      "utf16_half_open": [
+        9723144,
+        9725310
+      ],
+      "bytes": 2166,
+      "sha256": "63ef70bc75a89a9df9f84f2cf2891c83420855a7b6697f9407332cae35e533aa",
+      "parseErrors": 0,
+      "text": "function PQo(t){const e=ne.c(45),{hostingTarget:n,machine:i,repositoryId:r,source:o,targetBranchOverride:a,agentType:c}=t;let u;e[0]!==r?(u=de=>de.find(ue=>ue.id===r),e[0]=r,e[1]=u):u=e[1];const{data:d}=bv(u),h=d?.remoteUrl??i?.gitRemoteUrl;let m;e[2]!==h?(m=Yde(h),e[2]=h,e[3]=m):m=e[3];const g=m,_=d?.defaultBranch??i?.defaultBranch??(i!==void 0?\"main\":void 0),v=d?.remoteName;let x;e[4]!==o||e[5]!==_||e[6]!==v||e[7]!==a?(x=cQo({source:o,targetBranchOverride:a,defaultBranch:_,remoteName:v}),e[4]=o,e[5]=_,e[6]=v,e[7]=a,e[8]=x):x=e[8];const w=x,E=n.kind===\"cloud\";let k;e[9]!==E?(k={enabled:E},e[9]=E,e[10]=k):k=e[10];const{organization:I,baseUrl:R}=so(k),O=Vd()?.id;let D;e:{if(g===void 0||w===void 0||O===void 0){D=void 0;break e}if(n.kind===\"local\"){if(r===void 0){D=void 0;break e}let ue;e[11]!==c||e[12]!==O||e[13]!==w||e[14]!==g||e[15]!==r?(ue={kind:\"local\",userId:O,repositoryId:r,repoFullName:g,ref:w,agentType:c},e[11]=c,e[12]=O,e[13]=w,e[14]=g,e[15]=r,e[16]=ue):ue=e[16],D=ue;break e}if(R===void 0||I===void 0){D=void 0;break e}let de;e[17]!==c||e[18]!==R||e[19]!==O||e[20]!==w||e[21]!==g||e[22]!==I.id?(de={kind:\"cloud\",userId:O,baseUrl:R,organizationId:I.id,repoFullName:g,ref:w,agentType:c},e[17]=c,e[18]=R,e[19]=O,e[20]=w,e[21]=g,e[22]=I.id,e[23]=de):de=e[23],D=de}const P=D,{data:L}=RQo(P);let B;e[24]!==L?(B=async de=>L===void 0?[]:await NQo({files:L.files,query:de}),e[24]=L,e[25]=B):B=e[25];const F=B,H=n.kind===\"cloud\"?I?.id:void 0;let U;e[26]!==R||e[27]!==H?(U={baseUrl:R,organizationId:H},e[26]=R,e[27]=H,e[28]=U):U=e[28];const{data:z}=j9(U);let G;e[29]!==z?(G={orgMembers:z},e[29]=z,e[30]=G):G=e[30];const K=zIi(G),X=P===void 0?void 0:F;let Q;e[31]!==O||e[32]!==z||e[33]!==X?(Q=OQo({searchFiles:X,orgMembers:z,currentUserId:O}),e[31]=O,e[32]=z,e[33]=X,e[34]=Q):Q=e[34];const J=L?.slashCommands,te=L?.skills;let Z;e[35]!==L||e[36]!==J||e[37]!==te?(Z=DQo({slashCommands:J,skills:te,refreshKey:L}),e[35]=L,e[36]=J,e[37]=te,e[38]=Z):Z=e[38];let se;e[39]!==Q||e[40]!==Z?(se=[Q,Z],e[39]=Q,e[40]=Z,e[41]=se):se=e[41];const ce=se;let ae;return e[42]!==K||e[43]!==ce?(ae={resolveMentionViewModel:K,triggers:ce},e[42]=K,e[43]=ce,e[44]=ae):ae=e[44],ae}"
+    },
+    {
+      "name": "cQo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9761435,
+        9761800
+      ],
+      "utf16_half_open": [
+        9715905,
+        9716270
+      ],
+      "bytes": 365,
+      "sha256": "0f235d55a809d4c70f75e82d99379986f33698fc1aeeb771663a2c18ac767268",
+      "parseErrors": 0,
+      "text": "function cQo({source:t,targetBranchOverride:e,defaultBranch:n,remoteName:i}){const r=t?.branchMode,o=t?.kind===\"pr\"||t?.kind===\"branch\"?t.githubFileRef:void 0,a=t===void 0?e??n:o??(r?.mode===\"branch_from_remote\"&&r.remoteBranch?r.remoteBranch:t.kind===\"pr\"?t.targetBranch:n);if(a===void 0)return;const c=`${i??\"origin\"}/`;return a.startsWith(c)?a.slice(c.length):a}"
+    },
+    {
+      "name": "RQo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9766736,
+        9767012
+      ],
+      "utf16_half_open": [
+        9721206,
+        9721482
+      ],
+      "bytes": 276,
+      "sha256": "ca3d405abc56fa43d34178a96bea57aea62ac9dd15762f67ca17a866961d902f",
+      "parseErrors": 0,
+      "text": "function RQo(t){const e=ne.c(7);let n;e[0]!==t?(n=IQo.detail(t),e[0]=t,e[1]=n):n=e[1];let i;e[2]!==t?(i=t===void 0?Vo:()=>AQo({target:t}),e[2]=t,e[3]=i):i=e[3];let r;return e[4]!==n||e[5]!==i?(r={queryKey:n,queryFn:i,staleTime:$ji,retry:!1},e[4]=n,e[5]=i,e[6]=r):r=e[6],qi(r)}"
+    },
+    {
+      "name": "NQo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9767012,
+        9767127
+      ],
+      "utf16_half_open": [
+        9721482,
+        9721597
+      ],
+      "bytes": 115,
+      "sha256": "cc19dd9f28e8d06003fcaa5599aa8831026bb65bfee3d05fa0975b357f611c04",
+      "parseErrors": 0,
+      "text": "async function NQo({files:t,query:e}){return await tl(\"fuzzy_match_files\",{query:e,files:t,excludeDirectories:!1})}"
+    },
+    {
+      "name": "OQo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9767206,
+        9768001
+      ],
+      "utf16_half_open": [
+        9721676,
+        9722471
+      ],
+      "bytes": 795,
+      "sha256": "901dc33dc83039673b90b2d745ad0f9aa7eb0bbc6dc5e7cba7dc6ed5745884b1",
+      "parseErrors": 0,
+      "text": "function OQo({searchFiles:t,orgMembers:e,currentUserId:n}){return{char:\"@\",query:async i=>{const r=YIi({orgMembers:e,currentUserId:n,query:i});if(t===void 0)return r;try{const o=await t(i);return rRi({items:[...r,...Gzt(o)],search:i,getValue:a=>a.display,getKeywords:a=>rce(a)?[a.email]:void 0})}catch(o){return Bt.error(\"Failed to load pre-workspace files for @-mention\",o),[...r,{id:Uji,display:`Couldn't load files: ${rc(o)}`}]}},renderItem:(i,r,o)=>UXn(i)?p.jsx(\"div\",{className:`px-2 py-1 text-xs text-muted-foreground ${o?\"bg-sidebar-accent\":\"\"}`,children:i.display}):rce(i)?KIi(i,r,o):JU(i)?qzt({item:i,focused:o}):null,onSelect:(i,r,o)=>{if(!UXn(o)){if(rce(o)){nce(i,r,{id:o.id,label:o.label??o.id,char:\"@\"});return}if(!JU(o)){i.chain().focus().deleteRange(r).run();return}rki(i,r,o)}}}}"
+    },
+    {
+      "name": "DQo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9768001,
+        9768674
+      ],
+      "utf16_half_open": [
+        9722471,
+        9723144
+      ],
+      "bytes": 673,
+      "sha256": "a795a0c335484ab5342947e61397ab69e68d31179d730ece3a63d6306048526a",
+      "parseErrors": 0,
+      "text": "function DQo({slashCommands:t,skills:e,refreshKey:n}){return{char:\"/\",refreshKey:n,query:i=>jNi({items:[...(t??[]).map(r=>({id:r.name,label:r.name,display:r.name,command:{name:r.name,description:r.description,supportedAgents:[]},isSkill:!1})),...(e??[]).map(r=>({id:`skill:${r.name}|${nde(r.path)}`,label:r.displayName??r.name,display:r.displayName??r.name,command:{name:r.displayName??r.name,description:r.description,supportedAgents:[]},isSkill:!0}))],query:i}),renderItem:(i,r,o)=>uRt(i)?FNi({item:i,focused:o}):null,onSelect:(i,r,o)=>{if(!uRt(o))return;if(MNi(o.id)){BNi(i,r,o);return}const a=o.label??String(o.id);i.chain().focus().insertContentAt(r,`/${a} `).run()}}}"
+    },
+    {
+      "name": "AQo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9766464,
+        9766684
+      ],
+      "utf16_half_open": [
+        9720934,
+        9721154
+      ],
+      "bytes": 220,
+      "sha256": "3cde27a23ea03d787ee157aca9d7f9bc985eac93717f6ce96db5888c6f1d6226",
+      "parseErrors": 0,
+      "text": "async function AQo({target:t}){const e=await SQo({target:t});if(e!==void 0&&wQo(e.updatedAt))return e.data;try{const n=await TQo(t).fetch(t);return await EQo({target:t,data:n}).catch(()=>{}),n}catch{return e?.data??_Qo}}"
+    },
+    {
+      "name": "Gzt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7577936,
+        7578273
+      ],
+      "utf16_half_open": [
+        7534854,
+        7535191
+      ],
+      "bytes": 337,
+      "sha256": "82686a0b13c354252f6e76c3f8702cd6059393a6f374c8e183fedecc8b1ab48d",
+      "parseErrors": 0,
+      "text": "function Gzt(t,e){return t.map(n=>({id:nde(e?`${e.replace(/\\/$/,\"\")}/${n.relative_path}`:n.file.path),label:n.relative_path,display:n.relative_path,fileName:n.relative_path.split(\"/\").pop()||n.relative_path,fullPath:n.relative_path,type:\"file\",isDirectory:n.file.is_directory,fuzzyMatch:{text:n.relative_path,indices:n.match_indices}}))}"
+    },
+    {
+      "name": "rki",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7578273,
+        7578367
+      ],
+      "utf16_half_open": [
+        7535191,
+        7535285
+      ],
+      "bytes": 94,
+      "sha256": "83f8f50bc0d804fede4a5e41ac057c05f19b16db4cf92c5c850d26c69308a778",
+      "parseErrors": 0,
+      "text": "function rki(t,e,n){nce(t,e,{id:n.id,label:n.label??n.id,char:\"@\",isDirectory:n.isDirectory})}"
+    },
+    {
+      "name": "nce",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7577399,
+        7577469
+      ],
+      "utf16_half_open": [
+        7534323,
+        7534393
+      ],
+      "bytes": 70,
+      "sha256": "0e8023c8d1f8edf8ef8009bb39bb4013f6cb4f2583db3e72c6820ae3ff9d909c",
+      "parseErrors": 0,
+      "text": "function nce(t,e,n){t.chain().focus().insertContentAt(e,eki(n)).run()}"
+    },
+    {
+      "name": "jNi",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8650121,
+        8650399
+      ],
+      "utf16_half_open": [
+        8604647,
+        8604925
+      ],
+      "bytes": 278,
+      "sha256": "bf8bd7d2bc3f9a9b893914bb4e97e29b73df2c573315e315671f7f345954c65a",
+      "parseErrors": 0,
+      "text": "function jNi({items:t,query:e}){const n=lj({items:t,query:e,getText:r=>r.command.name}),i=[...n.filter(({item:r})=>!r.isSkill),...n.filter(({item:r})=>r.isSkill)];return i.map(({item:r,match:o},a)=>({...r,nameMatch:o,showSkillHeader:r.isSkill&&(a===0||!i[a-1]?.item.isSkill)}))}"
+    },
+    {
+      "name": "BNi",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8651020,
+        8651089
+      ],
+      "utf16_half_open": [
+        8605546,
+        8605614
+      ],
+      "bytes": 69,
+      "sha256": "5b44c4d29f93d2c7a52c5f06447fadd0437f5c45b93913da403a1b860eb1b12b",
+      "parseErrors": 0,
+      "text": "function BNi(t,e,n){nce(t,e,{id:n.id,label:n.label??n.id,char:\"\u00a7\"})}"
+    },
+    {
+      "name": "eki",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7577223,
+        7577399
+      ],
+      "utf16_half_open": [
+        7534147,
+        7534323
+      ],
+      "bytes": 176,
+      "sha256": "493b8010a6d417d038da9792cc1b23b40d5707a45333142d50a0f53fb3443bc7",
+      "parseErrors": 0,
+      "text": "function eki({id:t,label:e,char:n,isDirectory:i}){return[{type:\"mention\",attrs:{id:t,label:e,mentionSuggestionChar:n,...i===void 0?{}:{isDirectory:i}}},{type:\"text\",text:\" \"}]}"
+    },
+    {
+      "name": "CQo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9765517,
+        9765989
+      ],
+      "utf16_half_open": [
+        9719987,
+        9720459
+      ],
+      "bytes": 472,
+      "sha256": "e3172d27ea07fdbad13670461980c27cfd60cf2f8ff34a52aeca720ef0d14f3b",
+      "text": "CQo={async fetch(t){if(t.kind!==\"local\")throw new Error(\"Local completion provider received a cloud target\");const[e,n]=await Promise.all([byi({repoFullName:t.repoFullName,ref:t.ref,authTarget:\"local\"}),Kh.fetchPreWorkspaceCompletions({id:`pre-workspace-completions:${GDt(t)}`,userId:t.userId,repositoryId:t.repositoryId,repoFullName:t.repoFullName,ref:t.ref,agentType:t.agentType,ghToken:await jSr()})]);return{files:e,slashCommands:n.slashCommands,skills:n.skills??[]}}}"
+    },
+    {
+      "name": "_Qo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9764645,
+        9764686
+      ],
+      "utf16_half_open": [
+        9719115,
+        9719156
+      ],
+      "bytes": 41,
+      "sha256": "9959b77c06b47864b155b4c9cbddd6014de1f4efdb25acf2983c6f8fceec89d3",
+      "text": "_Qo={files:[],slashCommands:[],skills:[]}"
+    },
+    {
+      "name": "Hji-join-9773196",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9773196,
+        9773288
+      ],
+      "sha256": "72443476c7c3d04d681384bec8c8a17811118221e8e1a944e23afaf41ca5d7c1",
+      "text": "PQo({hostingTarget:r,machine:i,repositoryId:e,source:c,targetBranchOverride:u,agentType:_t})"
+    },
+    {
+      "name": "Hji-join-9773183",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9773183,
+        9773194
+      ],
+      "sha256": "8f4175e8f507fe3c2ea78af5dc8417e87e9744e860aa60cc3649392454467c2f",
+      "text": "triggers:on"
+    },
+    {
+      "name": "lHt-join-8421600",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8421600,
+        8421639
+      ],
+      "sha256": "280991061ac2f632c2574f359aa62ea0c509e9037ba3fa74bcb7db5ab7df5fe6",
+      "text": "Q.latestTriggers[xe].onSelect(ke,Se,De)"
+    },
+    {
+      "name": "o5o-join-8390233",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8390233,
+        8390267
+      ],
+      "sha256": "d775e3a65084d35a9c22663a441b80bb186fb8ae96e56112d3f660d701f6e6b4",
+      "text": "if(P.key===\"Enter\"||P.key===\"Tab\")"
+    }
+  ],
+  "joins": [
+    {
+      "label": "selected source/ref",
+      "span": "PQo",
+      "text": "cQo({source:o,targetBranchOverride:a,defaultBranch:_,remoteName:v})"
+    },
+    {
+      "label": "ref-qualified local bridge",
+      "span": "CQo",
+      "text": "Kh.fetchPreWorkspaceCompletions("
+    },
+    {
+      "label": "supplied immutable tree incl directories",
+      "span": "NQo",
+      "text": "excludeDirectories:!1"
+    },
+    {
+      "label": "commands and skills",
+      "span": "DQo",
+      "text": "skill:${r.name}|${nde(r.path)}"
+    },
+    {
+      "label": "reference skill atom differs from our grammar",
+      "span": "BNi",
+      "text": "char:\"\u00a7\""
+    }
+  ],
+  "limits": [
+    "Inert retained REA-derived source only; no JS evaluation or new native acquisition.",
+    "Complete proprietary native fetchPreWorkspaceCompletions body absent; our ref adapter is independently implemented.",
+    "Existing OpenConductor skill-link grammar reused, NOT reference section-sign atom/document parity.",
+    "Live provider/CLI/browser/WebKit/native/package acceptance not exercised."
+  ]
+}
