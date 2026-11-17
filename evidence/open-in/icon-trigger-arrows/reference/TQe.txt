@@ -1,0 +1,1 @@
+function TQe(t,e,n,i=!1){e?t.preventUnmountingOnClose=!1:i&&(t.preventUnmountingOnClose=!0);const r=n?.id??null;(r||e)&&(t.activeTriggerId=r,t.activeTriggerElement=n??null)}

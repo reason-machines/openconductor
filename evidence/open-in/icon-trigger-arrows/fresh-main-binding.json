@@ -1,0 +1,13 @@
+{
+  "main_checked": "f60b6e365395ceb62b2b2ec6e1542a16a5b0d0ee",
+  "baseline_product_sha256": "532705c1a5ec31e807ca7e10b2631ecd9c717eecd88af50110481afc43d08fc1",
+  "candidate_product_sha256": "0a22e76886e3fd34d3b7e9baf8e9d1a6ba07c144544243969f7219a5cad96f9b",
+  "fixture_sha256": "593c025f7fb0e8f7d75092dfc477ec824df0d33360b672f368ef60f8fbf8be7a",
+  "retained_archive_sha256": "e41c6b30b1de4da14c3f2404ecfa4fb67bb3a800f41f07319b2cb6835b61e0b2",
+  "source_spans_verified": 21,
+  "fresh_main_composition": "PASS; later pointer-focus handler and bindings preserved byte-for-byte",
+  "source_patch_applicability": "PASS_REQUALIFIED; original historical patch context predates pointer-focus handler",
+  "baseline_behavior": "PENDING_HOSTED_CI",
+  "candidate_behavior": "NOT_RUN",
+  "browser_native_package": "NOT_RUN"
+}

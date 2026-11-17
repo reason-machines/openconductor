@@ -1,3 +1,4 @@
+import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type Dispatch, type FormEvent } from "react";
 import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
@@ -51,6 +52,7 @@ import type { NavSection } from "../state/navigationSections";
 import { CREATE_IN_SECTION, SECTION_ASSIGN_FAILED, canCreateIn, sectionChoice } from "../workspace/createInSection";
 import "../features/chat/composer.css";
 import { ComposerEditor, type ComposerEditorHandle } from "../features/chat/ComposerEditor.tsx";
+import type { PlanModeControl } from "../features/chat/useLocalPlanMode.ts";
 
 /**
  * Where the repo / branch / create-from row sits (Conductor's `eyebrowVariant`):
@@ -124,6 +126,8 @@ export function CreateWorkspaceComposer({
   const settings = loadout?.settings ?? null;
   const favorites = loadoutPicks(loadout?.slots ?? []);
   const modelEdited = useRef(false);
+  /** Whether the user toggled plan mode on before creating the workspace (REA a7i planMode). */
+  const [createPlanMode, setCreatePlanMode] = useState(false);
   /** Files attached in the create composer; delivered with the first message via queuePending. */
   const [createAttachments, setCreateAttachments] = useState<ComposerAttachment[]>([]);
   const [attachError, setAttachError] = useState<string | null>(null);
@@ -264,6 +268,11 @@ export function CreateWorkspaceComposer({
       if (created.upstreamWarning) onWarning(created.upstreamWarning);
       const setupStarted = await startSetupScript(backendRepo, created, built.request.targetBranch);
       send({ type: "setup_detected", started: setupStarted });
+      // GAP-COMP-04 (plan mode): set initial plan mode on the new workspace's primary chat
+      // when the user toggled it on in the create composer (REA a7i planMode prop, wt path).
+      if (createPlanMode && draft.agent === "claude") {
+        void invoke<unknown>("local_plan_mode_set", { chatId: created.workspace.id, workspaceId: created.workspace.id, mode: "plan" });
+      }
       const { id, directoryName, branchName, path } = created.workspace;
       const { naming, firstSession } = built.request;
       const ws = {
@@ -516,7 +525,13 @@ export function CreateWorkspaceComposer({
         )}
         <div className="create-card-bar">
           <CreateModelPicker value={draft} favorites={favorites} slots={loadoutChoices(loadout?.slots ?? [])} settings={settings} disabled={busy} onChange={chooseLaunch} />
-          <CreateAddMenu disabled={busy} hint={hint("chat.addAttachment") ?? ""} onAddAttachment={() => fileInputRef.current?.click()} />
+          <CreateAddMenu
+            disabled={busy}
+            hint={hint("chat.addAttachment") ?? ""}
+            planHint={hint("chat.togglePlanMode") ?? ""}
+            planMode={draft.agent === "claude" ? { isPlanMode: createPlanMode, disabled: busy, onToggle: () => setCreatePlanMode((v) => !v) } : undefined}
+            onAddAttachment={() => fileInputRef.current?.click()}
+          />
           <div className="create-split" role="group" aria-label="Create workspace">
             <button
               type="submit"
@@ -589,17 +604,20 @@ const CLAUDE_LAUNCH: LaunchPick = { model: "claude-code", effort: null, agent: "
  * The "+" add-attachment button in the create-composer footer.
  * Evidence: `a7i @7908848` — tooltip "Add attachments and more"; placed between
  * the model picker and Create in the `create-card-bar` footer.
+ * GAP-COMP-04: adds planMode prop (REA a7i planMode wt path) with keyboard navigation
+ * matching the main AddMenu.
  */
-function CreateAddMenu({ disabled, hint, onAddAttachment }: { disabled: boolean; hint: string; onAddAttachment: () => void }) {
+function CreateAddMenu({ disabled, hint, planHint, planMode, onAddAttachment }: { disabled: boolean; hint: string; planHint?: string; planMode?: PlanModeControl; onAddAttachment: () => void }) {
   const [open, setOpen] = useState(false);
   const popup = usePresence(open);
   const ref = useRef<HTMLSpanElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const focusEdge = useRef<"first" | null>(null);
+  const focusEdge = useRef<"first" | "last" | null>(null);
+  const menuItems = () => Array.from(ref.current?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]:not(:disabled)') ?? []);
   useLayoutEffect(() => {
     if (!open || focusEdge.current === null) return;
-    const item = ref.current?.querySelector<HTMLButtonElement>('[role="menuitem"]:not(:disabled)');
-    item?.focus();
+    const items = menuItems();
+    (focusEdge.current === "first" ? items[0] : items[items.length - 1])?.focus();
     focusEdge.current = null;
   }, [open]);
   return (
@@ -608,15 +626,28 @@ function CreateAddMenu({ disabled, hint, onAddAttachment }: { disabled: boolean;
       ref={ref}
       onBlur={(e) => { if (!ref.current?.contains(e.relatedTarget as Node)) setOpen(false); }}
       onKeyDown={(e) => {
-        if (e.key === "Escape" && open) {
+        if (e.nativeEvent?.isComposing) return;
+        const arrow = e.key === "ArrowDown" || e.key === "ArrowUp";
+        if (arrow || (open && (e.key === "Home" || e.key === "End"))) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!open) {
+            focusEdge.current = e.key === "ArrowDown" ? "first" : "last";
+            setOpen(true);
+          } else {
+            const items = menuItems();
+            if (items.length === 0) return;
+            const current = items.findIndex((item) => item === e.target);
+            let next = current + (e.key === "ArrowDown" ? 1 : -1);
+            if (e.key === "Home") next = 0;
+            else if (e.key === "End" || (current === -1 && e.key === "ArrowUp")) next = items.length - 1;
+            items[(next + items.length) % items.length]?.focus();
+          }
+        } else if (e.key === "Escape" && open) {
           e.preventDefault();
           e.stopPropagation();
           setOpen(false);
           triggerRef.current?.focus();
-        } else if ((e.key === "ArrowDown" || e.key === "ArrowUp") && !open) {
-          e.preventDefault();
-          focusEdge.current = "first";
-          setOpen(true);
         }
       }}
     >
@@ -629,7 +660,10 @@ function CreateAddMenu({ disabled, hint, onAddAttachment }: { disabled: boolean;
           aria-haspopup="menu"
           aria-expanded={open}
           disabled={disabled}
-          onClick={() => setOpen((o) => !o)}
+          onClick={(e) => {
+            if (!open && e?.detail === 0) focusEdge.current = "first";
+            setOpen((o) => !o);
+          }}
         >
           <PlusIcon size={16} strokeWidth={1.5} />
         </button>
@@ -646,6 +680,11 @@ function CreateAddMenu({ disabled, hint, onAddAttachment }: { disabled: boolean;
             <span className="oc-menu-item-label">Add attachment</span>
             <span className="oc-kbd-hint">{hint}</span>
           </button>
+          {planMode ? <button type="button" role="menuitem" className="oc-menu-item" disabled={planMode.disabled} title={planMode.disabled ? "Wait for the current Claude Code turn to end" : undefined} onClick={() => { setOpen(false); planMode.onToggle(); }}>
+            <svg className={planMode.isPlanMode ? "oc-plan-active" : undefined} width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3M9 12l3 3L22 5" /></svg>
+            <span className={`oc-menu-item-label${planMode.isPlanMode ? " oc-plan-active" : ""}`}>{planMode.isPlanMode ? "Exit plan mode" : "Plan mode"}</span>
+            {planHint ? <span className="oc-kbd-hint">{planHint}</span> : null}
+          </button> : null}
         </div>
       ) : null}
     </span>
