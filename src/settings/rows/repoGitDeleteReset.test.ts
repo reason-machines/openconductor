@@ -92,6 +92,7 @@ function fixture({ value = true, layer = "repo_local", inherited = false, path =
     return React.createElement("button", { role: "menuitem", onClick: () => { onClick(); menu.setOpen(false); } }, children);
   }
   const component = load("src/settings/rows/RepoGitRows.tsx", {
+    "@tauri-apps/api/core": { invoke: async () => [] },
     "@base-ui/react/menu": { Menu: { Root, Trigger, Portal, Positioner, Popup, Item } },
     "../../components/menu/menuIcons": { EllipsisIcon: () => null },
     "../../components/sidebarActionsMenu.css": {},

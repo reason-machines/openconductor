@@ -87,6 +87,7 @@ async function fixture(kind: Menu, open = true) {
       if (name === "./SlashMenu.tsx") return { SlashMenu: SlashBoundary };
       if (name === "./FileMentionMenu.tsx") return { FileMentionMenu: MentionBoundary };
       if (name === "./composerLongPaste.ts") return { longPasteAttachment: () => null };
+      if (name === "./composerPasteFilePaths.ts") return { readClipboardText: async () => null, readClipboardTextFromPlatform: async () => null };
       if (name.endsWith("/useBoolPref.ts")) return { useBoolPref: () => false };
       if (name.endsWith("/useSettings.ts")) return { useSettings: () => ({ settings: null, save: () => Promise.resolve(true), error: null, reload: () => {} }) };
       if (name.endsWith("/prefs.ts")) return { boolPref: () => false, withBoolPref: (s: unknown) => s };

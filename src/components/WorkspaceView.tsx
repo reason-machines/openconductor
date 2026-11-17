@@ -3,6 +3,7 @@ import type { OpenInTargetPublisher, WorkspaceOpenInTarget } from "../palette/fr
 import type { Repo, Workspace } from "../state/types";
 import { loadReposFromDb, type Action } from "../state/store";
 import { LinkedDirectoryPicker } from "../features/chat/LinkedDirectoryPicker.tsx";
+import { useScrollFollow } from "../features/chat/hooks/useScrollFollow.ts";
 import { mutateWorkspaceLinks, type LinkMutation } from "../features/chat/workspaceLinks.ts";
 import { ChevronIcon, RightSidebarIcon } from "./Icons";
 import { toggleRightPanel } from "./panelPrefs";
@@ -302,6 +303,10 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   /** A "Fork to new tab" is reading the chat's options. */
   const [forking, setForking] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const { isAtBottomRef } = useScrollFollow(scrollContainerRef);
+  /** Set to true before a user-initiated send so the next transcript effect force-scrolls. */
+  const forceScrollRef = useRef(false);
   const inputRef = useRef<ComposerEditorHandle>(null);
   const [mcpStatusChat, setMcpStatusChat] = useState<string | null>(null);
   useEffect(() => setMcpStatusChat(null), [chatId, agentId]);
@@ -332,6 +337,8 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   }, [chatId]);
 
   useEffect(() => {
+    // Switching chats should always land at the bottom of the new chat.
+    forceScrollRef.current = true;
     setSnapshot(agent.snapshot(runId));
     setResetTurn(null);
     const pendingMessage = takePendingMessage(chatId);
@@ -357,14 +364,24 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     setPicked((p) => ({ ...p, [chatId]: next }));
   }
 
+  // parity:chat.scroll-follow  BE7-17
+  // Scroll to bottom only when already at the bottom, or when the user just
+  // sent a message (forceScrollRef). Mirrors Conductor: a user who has
+  // scrolled up to review history is not dragged back down by agent updates.
   useEffect(() => {
-    endRef.current?.scrollIntoView({ block: "end" });
+    if (forceScrollRef.current || isAtBottomRef.current) {
+      endRef.current?.scrollIntoView({ block: "end" });
+      isAtBottomRef.current = true;
+    }
+    forceScrollRef.current = false;
   }, [transcript, waiting]);
 
   // Attachments (a review request, revert notes) go to the agent with the message and show by name.
   function submit(input: UserPrompt, mode: SendMode, attached: readonly TextAttachment[] = []) {
     const { text } = input;
     if (!text.trim() && attached.length === 0) return;
+    // User-initiated send: always scroll to bottom so the sent message is visible.
+    forceScrollRef.current = true;
     const first = main && !agent.snapshot(runId).transcript.messages.some((m) => m.role === "user");
     agent.submit(runId, cwd, input, mode, attached, repo.path || undefined, workspace.id);
     dispatch({ type: "touchWorkspace", repoId: repo.id, workspaceId: workspace.id, at: Date.now() });
@@ -472,11 +489,13 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
       copyModelChoice(chatId, id, agentId, config);
       if (agentId !== "reason") saveAgent(id, agentId);
       queuePending(id, { kind: "draft", text: "", attachments: [{ name: forkAttachmentName(title), text: fork.transcript }] });
-      await startSetupScript({ id: backendRepo.id, root: backendRepo.root, defaultBranch: backendRepo.defaultBranch }, { id, name: directoryName, path }, targetBranch);
+      // GAP-SB-01b/01c: capture startSetupScript return so the sidebar row dims
+      // while setup runs and clears immediately when no script starts.
+      const forkSetupStarted = await startSetupScript({ id: backendRepo.id, root: backendRepo.root, defaultBranch: backendRepo.defaultBranch }, { id, name: directoryName, path }, targetBranch);
       dispatch({
         type: "addWorkspace",
         repoId: repo.id,
-        workspace: { id, name: directoryName, branch: branchName, path, targetBranch, placeholderBranchName: null, userSetWorkspaceName: false, userSetBranchName: false, number: fork.created.number ?? null },
+        workspace: { id, name: directoryName, branch: branchName, path, targetBranch, placeholderBranchName: null, userSetWorkspaceName: false, userSetBranchName: false, number: fork.created.number ?? null, state: forkSetupStarted ? "setting_up" : "ready" },
       });
     } catch (e) {
       setAttachError(e instanceof Error ? e.message : "Failed to fork chat");
@@ -597,7 +616,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           {content}
         </div>
       ) : null}
-      <div className="chat-scroll" hidden={content !== null}>
+      <div className="chat-scroll" ref={scrollContainerRef} hidden={content !== null}>
         {review && !review.fork && !review.blank && (
           <div className="review-chat-info muted" role="note">
             Code review on {review.modelLabel}
@@ -1120,12 +1139,13 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
   useEffect(() => {
     if (mainTab.startsWith("terminal:") && !centerTerminal) setMainTab("chat");
   }, [mainTab, centerTerminal]);
-  const [fileTarget, setFileTarget] = useState<{ path: string; workspaceId: string } | null>(null);
+  const [fileTarget, setFileTarget] = useState<{ path: string; workspaceId: string; line?: number } | null>(null);
   useEffect(() => setFileTarget(null), [workspace.id]);
   // Opens any file type in the file viewer tab (H1: WorkspaceFileView wiring).
-  const openAnyFile = useCallback((path: string): boolean => {
+  // `line` is 1-based and comes from SearchInFiles results (fileOpenActions.ts).
+  const openAnyFile = useCallback((path: string, line?: number): boolean => {
     if (!workspace.path) return false;
-    setFileTarget({ path, workspaceId: workspace.id });
+    setFileTarget({ path, workspaceId: workspace.id, line });
     setMainTab("file");
     return true;
   }, [workspace.path, workspace.id]);
@@ -1164,7 +1184,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
       const req = takeFileOpenRequest(repo.id, workspace.id);
       if (!req) return;
       if (req.mode === "diff") diff.openPath(req.path);
-      else openAnyFile(req.path);
+      else openAnyFile(req.path, req.line);
     };
     return onFileOpenRequest(handle);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1649,7 +1669,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
           onOpenAccountSettings={onOpenAccountSettings}
           content={
             showFile && fileTarget && workspace.path ? (
-              <WorkspaceFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} isVisible={true} readOnly={workspace.status === "archived"} />
+              <WorkspaceFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} isVisible={true} readOnly={workspace.status === "archived"} initialLine={fileTarget.line} />
             ) : showDiff ? (
               <DiffTab diff={diff} onClose={autoCloseDiffTab} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} onPersistAnchors={review.persistAnchors} notes={review.notes} notify={notify} />
             ) : showPr ? (

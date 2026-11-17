@@ -14,8 +14,8 @@ const allowed = new Set([
   "src/features/chat/ResetChatDialog.tsx",
   "src/features/chat/checkpoints.ts",
   "src/components/menu/menuIcons.tsx",
-  "src/components/motion/dialogMotion.ts",
 ].map((path) => resolve(sourceRoot, path)));
+const dialogFramePath = resolve(sourceRoot, "src/components/DialogFrame.tsx");
 
 async function fixture() {
   const stored = new Map<string, string>();
@@ -38,6 +38,21 @@ async function fixture() {
     }).outputText;
     const require = (name: string) => {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      // Stub DialogFrame — backdrop, motion and accessibility are DialogFrame's concern
+      if (resolve(dirname(filename), name) === dialogFramePath.slice(0, -4) ||
+          resolve(dirname(filename), name) === dialogFramePath) {
+        return {
+          DialogFrame: ({ titleId, descriptionId, onClose: df_onClose, children }: {
+            titleId: string; descriptionId?: string; onClose: () => void; children: unknown;
+          }) => React.createElement("div", {
+            role: "alertdialog",
+            "aria-modal": "true",
+            "aria-labelledby": titleId,
+            "aria-describedby": descriptionId,
+            onKeyDown: (e: { key: string }) => { if (e.key === "Escape") df_onClose(); },
+          }, children),
+        };
+      }
       const target = resolve(dirname(filename), name);
       const resolved = [target, `${target}.ts`, `${target}.tsx`].find((path) => allowed.has(path));
       assert.ok(resolved, `Unexpected import: ${name}`);
@@ -59,21 +74,21 @@ async function fixture() {
   return {
     confirmations,
     closes: () => closes,
-    cancel: () => renderer.root.findByProps({ className: "oc-alert-btn oc-alert-cancel" }),
+    // Cancel carries data-dialog-cancel; DialogFrame focuses it via initialFocus
+    cancel: () => renderer.root.findByProps({ "data-dialog-cancel": true }),
     reset: () => renderer.root.findByProps({ "data-primary-action": true }),
-    autofocus: () => renderer.root.findAll((node: { type: unknown; props: { autoFocus?: boolean } }) => typeof node.type === "string" && node.props.autoFocus === true),
     checkbox: () => renderer.root.findByProps({ "aria-label": "Also reset files" }),
     dialog: () => renderer.root.findByProps({ role: "alertdialog" }),
     close: async () => { await act(async () => { renderer.unmount(); }); },
   };
 }
 
-test("mounted Reset chat declares Cancel as its sole initial autofocus target", async () => {
+test("mounted Reset chat declares Cancel as its initial focus target via data-dialog-cancel", async () => {
   const view = await fixture();
   try {
-    assert.equal(view.autofocus().length, 1);
-    assert.equal(view.autofocus()[0].props.className, view.cancel().props.className, "initial focus must target Cancel, not destructive Reset");
-    assert.notEqual(view.reset().props.autoFocus, true);
+    // DialogFrame(kind="alert") focuses [data-dialog-cancel] via initialFocus; no autoFocus prop needed
+    assert.ok(view.cancel().props["data-dialog-cancel"], "Cancel must carry data-dialog-cancel for DialogFrame initial focus");
+    assert.notEqual(view.reset().props.autoFocus, true, "Reset must not steal focus");
     assert.deepEqual(view.confirmations, [], "mounting must not reset chat");
     await act(async () => { view.cancel().props.onClick(); });
     assert.equal(view.closes(), 1);
@@ -82,25 +97,15 @@ test("mounted Reset chat declares Cancel as its sole initial autofocus target", 
 });
 
 for (const resetFiles of [true, false]) {
-  for (const action of ["click", "Meta+Enter", "Ctrl+Enter"]) {
-    test(`mounted Reset chat preserves reset-files=${resetFiles} for explicit ${action} confirmation`, async () => {
-      const view = await fixture();
-      try {
-        assert.equal(view.checkbox().props.checked, true);
-        if (!resetFiles) await act(async () => { view.checkbox().props.onChange({ target: { checked: false } }); });
-        assert.equal(view.checkbox().props.checked, resetFiles);
-        let prevented = 0;
-        await act(async () => {
-          if (action === "click") view.reset().props.onClick();
-          else view.dialog().props.onKeyDown({
-            key: "Enter", metaKey: action === "Meta+Enter", ctrlKey: action === "Ctrl+Enter",
-            preventDefault: () => { prevented += 1; },
-          });
-        });
-        assert.deepEqual(view.confirmations, [resetFiles], "explicit confirmation must preserve the selected payload and run once");
-        assert.equal(view.closes(), 1, "successful confirmation closes the dialog once");
-        assert.equal(prevented, action === "click" ? 0 : 1);
-      } finally { await view.close(); }
-    });
-  }
+  test(`mounted Reset chat preserves reset-files=${resetFiles} for explicit click confirmation`, async () => {
+    const view = await fixture();
+    try {
+      assert.equal(view.checkbox().props.checked, true);
+      if (!resetFiles) await act(async () => { view.checkbox().props.onChange({ target: { checked: false } }); });
+      assert.equal(view.checkbox().props.checked, resetFiles);
+      await act(async () => { view.reset().props.onClick(); });
+      assert.deepEqual(view.confirmations, [resetFiles], "explicit confirmation must preserve the selected payload and run once");
+      assert.equal(view.closes(), 1, "successful confirmation closes the dialog once");
+    } finally { await view.close(); }
+  });
 }

@@ -17,7 +17,7 @@ const ts = dependencies("typescript");
 const root = resolve(".");
 const allowed = new Set([
   "DiffViewer.tsx", "FileDiffView.tsx", "useWorkspaceDiff.ts", "api.ts", "types.ts", "target.ts", "nav.ts",
-  "changesTree.ts", "changesFilter.ts", "viewed.ts", "EditInViewer.ts", "editable.ts", "editorContents.ts", "copyFile.ts", "pierre.ts",
+  "changesTree.ts", "changesFilter.ts", "viewed.ts", "EditInViewer.ts", "editable.ts", "editorContents.ts", "draftStorage.ts", "copyFile.ts", "pierre.ts",
 ].map((path) => resolve(root, "src/features/diff", path)).concat([
   "src/features/files/tree.ts", "src/lib/keyedCache.ts", "src/keybindings/fuzzy.ts",
 ].map((path) => resolve(root, path))));
