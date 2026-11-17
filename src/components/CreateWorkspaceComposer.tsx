@@ -78,8 +78,8 @@ export interface CreateWorkspaceComposerProps {
   onBusyChange?: (busy: boolean) => void;
   /** The repo picker's "Add project" menu: Open project, Open GitHub project, Quick start, Recents. */
   addActions: AddRepositoryActions;
-  /** Persistent launch errors and non-fatal workspace creation issues. */
-  onWarning: (message: string) => void;
+  /** Persistent launch errors; detached creation failures can recover their submitted prompt. */
+  onWarning: (message: string, recovery?: { prompt: string }) => void;
   dispatch: Dispatch<Action>;
   /** The sidebar's sections, for "Create in section". */
   sections?: readonly NavSection[];
@@ -306,6 +306,7 @@ export function CreateWorkspaceComposer({
   async function submit(e?: FormEvent, sectionId: string | undefined = choice.sectionId) {
     e?.preventDefault();
     if (busy || pendingFiles.current > 0 || !repo || !canCreateIn(sectionsRef.current, sectionId)) return;
+    const submittedPrompt = draft.firstMessage;
     const built = buildCreateRequest({ ...draft, firstMessage: composerPrompt(draft.firstMessage) }, prefix);
     if (!built.ok) return setErrors(built.errors);
     setErrors({});
@@ -399,7 +400,7 @@ export function CreateWorkspaceComposer({
       }
     } catch (err) {
       const message = `${FAILED_TO_CREATE}: ${errorText(err)}`;
-      if (dismissedAtLaunch) onWarning(message);
+      if (dismissedAtLaunch) onWarning(message, submittedPrompt ? { prompt: submittedPrompt } : undefined);
       else send({ type: "create_failed", error: message });
     } finally {
       removePendingLaunch(pendingId);

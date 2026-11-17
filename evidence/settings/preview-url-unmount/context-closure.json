@@ -1,0 +1,27 @@
+{
+  "asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "parse_diagnostics": 0,
+  "binding": "pos",
+  "non_property_identifier_occurrences": [
+    {
+      "kind": "VariableDeclaration",
+      "utf8_half_open": [
+        1971219,
+        1971222
+      ],
+      "sha256": "7160f8688035138fcbc9a6c8041949ebea0c0d21a1b1d063f839f38d5c2be8f9",
+      "context": "Name:\"h-3 w-3/5\"})]})]},t)}const hos=[1,2,3],pos=$.createContext(null);function mos(){return $.useContext(pos)?.d"
+    },
+    {
+      "kind": "CallExpression",
+      "utf8_half_open": [
+        1971280,
+        1971283
+      ],
+      "sha256": "7160f8688035138fcbc9a6c8041949ebea0c0d21a1b1d063f839f38d5c2be8f9",
+      "context": "ext(null);function mos(){return $.useContext(pos)?.defaultOptions??{}}function gos(t){return typeof t==\"function\""
+    }
+  ],
+  "static_conclusion": "Only the context declaration and mos useContext call refer to this unexported binding in the complete retained renderer. No provider or alias reference exists in this asset. aD therefore receives no default debouncer.onUnmount override from this context.",
+  "limits": "Static retained-source conclusion only; no original/native/runtime observation."
+}

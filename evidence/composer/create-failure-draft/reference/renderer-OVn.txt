@@ -1,0 +1,1 @@
+function OVn({error:t,prompt:e}){kt.error(rc(t),e?{action:{label:"Recover prompt",onClick:()=>n5(e,"prompt").fireAndForget()}}:void 0)}

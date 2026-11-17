@@ -1,0 +1,280 @@
+(node:79) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Quick open keeps the default primary shortcut in diff mode
+ok 1 - Quick open keeps the default primary shortcut in diff mode
+  ---
+  duration_ms: 1244.267157
+  type: 'test'
+  ...
+# Subtest: Quick open keeps plain Enter in file mode
+ok 2 - Quick open keeps plain Enter in file mode
+  ---
+  duration_ms: 543.678269
+  type: 'test'
+  ...
+# Subtest: Quick open resolves a configured logical primary shortcut
+not ok 3 - Quick open resolves a configured logical primary shortcut
+  ---
+  duration_ms: 317.221027
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/quickOpenPrimaryOverride.test.ts:124:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   {
+    -     mode: 'diff',
+    -     path: 'src/first.ts'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: 'src/first.ts'
+      mode: 'diff'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/quickOpenPrimaryOverride.test.ts:128:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Quick open removed default primary falls back to file selection
+not ok 4 - Quick open removed default primary falls back to file selection
+  ---
+  duration_ms: 394.637792
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/quickOpenPrimaryOverride.test.ts:134:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+    +     mode: 'diff',
+    -     mode: 'file',
+          path: 'src/first.ts'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: 'src/first.ts'
+      mode: 'file'
+  actual:
+    0:
+      path: 'src/first.ts'
+      mode: 'diff'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/quickOpenPrimaryOverride.test.ts:138:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Quick open resolves physical primary keys despite layout output
+not ok 5 - Quick open resolves physical primary keys despite layout output
+  ---
+  duration_ms: 394.065598
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/quickOpenPrimaryOverride.test.ts:142:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   {
+    -     mode: 'diff',
+    -     path: 'src/first.ts'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: 'src/first.ts'
+      mode: 'diff'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/quickOpenPrimaryOverride.test.ts:146:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Quick open resolves additional configured primary shortcuts
+not ok 6 - Quick open resolves additional configured primary shortcuts
+  ---
+  duration_ms: 166.087039
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/quickOpenPrimaryOverride.test.ts:150:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   {
+    -     mode: 'diff',
+    -     path: 'src/first.ts'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: 'src/first.ts'
+      mode: 'diff'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/quickOpenPrimaryOverride.test.ts:154:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Quick open can configure plain Enter as the primary action
+not ok 7 - Quick open can configure plain Enter as the primary action
+  ---
+  duration_ms: 183.255749
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/quickOpenPrimaryOverride.test.ts:158:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+    +     mode: 'file',
+    -     mode: 'diff',
+          path: 'src/first.ts'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: 'src/first.ts'
+      mode: 'diff'
+  actual:
+    0:
+      path: 'src/first.ts'
+      mode: 'file'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/quickOpenPrimaryOverride.test.ts:162:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Quick open configured primary precedes its navigation fallback
+not ok 8 - Quick open configured primary precedes its navigation fallback
+  ---
+  duration_ms: 270.290359
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/quickOpenPrimaryOverride.test.ts:166:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   {
+    -     mode: 'diff',
+    -     path: 'src/first.ts'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: 'src/first.ts'
+      mode: 'diff'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/quickOpenPrimaryOverride.test.ts:170:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Quick open consumes live override replacement and reset
+not ok 9 - Quick open consumes live override replacement and reset
+  ---
+  duration_ms: 176.143987
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/quickOpenPrimaryOverride.test.ts:174:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/quickOpenPrimaryOverride.test.ts:179:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Quick open keeps exact modifier matching
+ok 10 - Quick open keeps exact modifier matching
+  ---
+  duration_ms: 239.424719
+  type: 'test'
+  ...
+# Subtest: Quick open keeps navigation and click in file mode with custom primary
+ok 11 - Quick open keeps navigation and click in file mode with custom primary
+  ---
+  duration_ms: 238.52031
+  type: 'test'
+  ...
+# Subtest: Quick open custom primary with no result never opens or closes
+not ok 12 - Quick open custom primary with no result never opens or closes
+  ---
+  duration_ms: 756.885757
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/quickOpenPrimaryOverride.test.ts:209:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/quickOpenPrimaryOverride.test.ts:215:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 4
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5939.395313

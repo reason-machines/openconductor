@@ -59,7 +59,7 @@ export function SubmitPromptDialog({ appVersion, platform, onClose }: Props) {
           <div className="submit-prompt-footer">
             <button type="submit" className="submit-prompt-submit" disabled={!prompt.trim() || opening} data-primary-action>
               {opening ? "Submitting..." : COPY.submit}
-              {key && <span className="submit-prompt-kbd">{glyphs(key)}</span>}
+              {!opening && key && <span className="submit-prompt-kbd">{glyphs(key)}</span>}
             </button>
           </div>
         </form>

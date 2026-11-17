@@ -1,0 +1,1 @@
+function Eas(t){return p.jsx(Il,{value:t.login,children:t.login},t.login)}

@@ -1,0 +1,17 @@
+7c221376d46d0eb84d2504b2617cbd25ed0def4612dda750b348fc387d2d69f0  evidence/chat/code-copy-overlapping-reset/README.md
+4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91  evidence/chat/code-copy-overlapping-reset/baseline/package.json.txt
+b543001eeb48ab956140a164646554862ad314ae3511bda7abdfd5238d7eeac0  evidence/chat/code-copy-overlapping-reset/baseline/src/features/chat/Transcript.tsx.txt
+5e99cc9f652a18249c33fbcf9e2260c7e320b6a025f44e708a9c9ecd55f6f86b  evidence/chat/code-copy-overlapping-reset/baseline/src/features/chat/copyCodeFeedback.test.ts.txt
+06354820fa6722b771c0e626a3dffc2cee5f34f0917366ca25ec47cdddab17b4  evidence/chat/code-copy-overlapping-reset/baseline/src/features/chat/markdown.ts.txt
+42fe78d984082b8e54acc36acf96380b46e4e83a794516a251534c87366c7ec8  evidence/chat/code-copy-overlapping-reset/reference/ROo.js.json
+fcb63fb74ea411da58430daf88a794dad043b339982308759439de0a8dd77860  evidence/chat/code-copy-overlapping-reset/reference/VXs.js.json
+85f4dab007038b9cef4b19dd2e9ef57973b17cb4fc052dd3ea54c6c42103cfeb  evidence/chat/code-copy-overlapping-reset/reference/WJe.js.json
+b3e4f3493d0b68c1efbb4359a29d746b715f4d02ffcc839f61453e7a9aacde26  evidence/chat/code-copy-overlapping-reset/reference/dHn.js.json
+bd603c6cc6a1efc9667b3cc5bc9426e247c34514c3f9c3845981a3b00541b17c  evidence/chat/code-copy-overlapping-reset/reference/dollar-Xs.js.json
+9b57a2538c63c77ca4a0606afe557d887f823cbe1f4417898c81ea90f4d55def  evidence/chat/code-copy-overlapping-reset/reference/l1.js.json
+5e77cc75a346d4521f524d13c86177d085beab0241d43209e23ca6e05def9ee5  evidence/chat/code-copy-overlapping-reset/reference/pEi.js.json
+8fc8a2a4242115c36c8bfbc9051a3c6ed30d81148f57a375645a15475845c1d9  evidence/chat/code-copy-overlapping-reset/reference/t0.js.json
+1598b0a7bb4af2f551c1da074c6a0709fed04d4f2944f6cfa39d767a4d9ca869  evidence/chat/code-copy-overlapping-reset/reference/xS.js.json
+dd8b8fc8fdae0c356a751ae9779655d38c0c9f1d99142adac6c214b91a32fc40  evidence/chat/code-copy-overlapping-reset/source-manifest.json
+962b8763051631eadcc5ab341f15d2cfd4334c37a80839b7afa46a132e17c5d1  evidence/chat/code-copy-overlapping-reset/static-verification.json
+720e650d15b131230353f0673cb307fe1a935e0d8ece4415379ef8df96de91c2  src/features/chat/copyCodeFeedback.test.ts

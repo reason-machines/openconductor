@@ -42,14 +42,13 @@ const transcriptCode = compile(["toolDisclosure", "Transcript", "rowTurn", "grou
 }).join("\n"), "Transcript.tsx");
 
 type Feedback = [kind: "info" | "error", message: string, options?: { description?: string }];
-type Button = { props: { children: string; title: string; "aria-label": string; onClick: () => void } };
+type Button = { props: { children: string; title: string; "aria-label": string; disabled?: boolean; onClick: () => void } };
 const code = "const answer = 42;\n";
 const fenced = `\`\`\`js\n${code}\`\`\``;
 
 async function fixture({ text = fenced, withNotify = true }: { text?: string; withNotify?: boolean } = {}) {
   const writes: string[] = [], feedback: Feedback[] = [];
-  let fulfill!: () => void, reject!: (reason: Error) => void;
-  const pending = new Promise<void>((resolve, fail) => { fulfill = resolve; reject = fail; });
+  const pending: { fulfill: () => void; reject: (reason: Error) => void }[] = [];
   let now = 0, nextTimer = 0;
   const timers = new Map<number, { at: number; callback: () => void }>();
   const markdown: Partial<typeof MarkdownModule> = {};
@@ -59,7 +58,10 @@ async function fixture({ text = fenced, withNotify = true }: { text?: string; wi
       assert.ok(markdownImports.has(name), `Known markdown dependency ${name}`);
       return markdownImports.get(name);
     },
-    navigator: { clipboard: { writeText: (text: string) => { writes.push(text); return pending; } } },
+    navigator: { clipboard: { writeText: (text: string) => {
+      writes.push(text);
+      return new Promise<void>((fulfill, reject) => { pending.push({ fulfill, reject }); });
+    } } },
     setTimeout: (callback: () => void, ms: number) => { const id = ++nextTimer; timers.set(id, { at: now + ms, callback }); return id; },
     clearTimeout: (id: number) => timers.delete(id),
   }, { filename: "markdown.ts" });
@@ -96,7 +98,11 @@ async function fixture({ text = fenced, withNotify = true }: { text?: string; wi
   return {
     writes, feedback, buttons, timers,
     async click() { assert.equal(buttons().length, 1); await act(async () => { buttons()[0]!.props.onClick(); }); },
-    async settle(outcome: "fulfilled" | "rejected") { await act(async () => { if (outcome === "fulfilled") fulfill(); else reject(new Error("Synthetic clipboard rejection")); }); },
+    async settle(outcome: "fulfilled" | "rejected") {
+      const next = pending.shift();
+      assert.ok(next, "A real CopyCode clipboard request is pending");
+      await act(async () => { if (outcome === "fulfilled") next.fulfill(); else next.reject(new Error("Synthetic clipboard rejection")); });
+    },
     async advance(ms: number) {
       await act(async () => {
         now += ms;
@@ -171,5 +177,55 @@ test("plain assistant text and inline code request no copy feedback", async () =
     assert.deepEqual(f.writes, []);
     assert.deepEqual(f.feedback, []);
     assert.equal(f.timers.size, 0);
+  } finally { await f.close(); }
+});
+
+test("overlapping fenced-code successes retain every two-second reset at 2000, 3000, and 4500 ms", async () => {
+  const f = await fixture();
+  try {
+    // Retained REA t0 schedules a timeout for every fulfilled copy. WJe supplies
+    // no tooltip: this tests reset timing via existing labels, not label parity.
+    assert.equal(f.buttons().length, 1);
+    const button = f.buttons()[0]!;
+    assert.notEqual(button.props.disabled, true);
+    await f.click();
+    copyState(f.buttons()[0]!, false);
+    await f.settle("fulfilled"); // Successful fulfillment at 0 ms.
+    copyState(f.buttons()[0]!, true);
+
+    await f.advance(1000);
+    assert.equal(f.buttons()[0], button, "The ordinary code block stays mounted");
+    assert.notEqual(f.buttons()[0]!.props.disabled, true);
+    await f.click();
+    await f.settle("fulfilled"); // Successful fulfillment at 1000 ms.
+    copyState(f.buttons()[0]!, true);
+    await f.advance(999);
+    copyState(f.buttons()[0]!, true); // 1999 ms: first reset has not fired.
+    await f.advance(1);
+    copyState(f.buttons()[0]!, false); // Exact first reset at 2000 ms.
+
+    await f.advance(500);
+    assert.equal(f.buttons()[0], button, "The third copy uses the same real button");
+    assert.notEqual(f.buttons()[0]!.props.disabled, true);
+    await f.click();
+    copyState(f.buttons()[0]!, false);
+    await f.settle("fulfilled"); // Successful fulfillment at 2500 ms.
+    copyState(f.buttons()[0]!, true);
+    await f.advance(499);
+    copyState(f.buttons()[0]!, true); // 2999 ms: second reset has not fired.
+    await f.advance(1);
+    const at3000 = f.buttons()[0]!.props;
+    const secondReset = [at3000.children, at3000.title, at3000["aria-label"]];
+    await f.advance(1499);
+    const at4499 = f.buttons()[0]!.props;
+    const beforeThirdReset = [at4499.children, at4499.title, at4499["aria-label"]];
+    await f.advance(1);
+    copyState(f.buttons()[0]!, false); // Exact third reset at 4500 ms.
+    assert.equal(f.timers.size, 0);
+    assert.deepEqual(f.writes, [code.trim(), code.trim(), code.trim()]);
+    assert.deepEqual(f.feedback, [], "Repeated successes request no notifier feedback");
+    // Assert after visiting 4500 so even the RED run samples every boundary.
+    assert.deepEqual(secondReset, ["Copy", "Copy", "Copy code"], "The 1000-ms success must still reset the third success at exactly 3000 ms");
+    assert.deepEqual(beforeThirdReset, ["Copy", "Copy", "Copy code"], "The stale second reset stays clear until the third reset at 4500 ms");
   } finally { await f.close(); }
 });

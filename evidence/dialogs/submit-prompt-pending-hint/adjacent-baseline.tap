@@ -1,0 +1,76 @@
+(node:112) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:119) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the body is Conductor's prompt submission text with the version footer
+ok 1 - the body is Conductor's prompt submission text with the version footer
+  ---
+  duration_ms: 0.990915
+  type: 'test'
+  ...
+# Subtest: the URL opens a new issue on the repository with the prompt as title and body
+ok 2 - the URL opens a new issue on the repository with the prompt as title and body
+  ---
+  duration_ms: 0.519206
+  type: 'test'
+  ...
+# Subtest: long first lines are shortened in the title
+ok 3 - long first lines are shortened in the title
+  ---
+  duration_ms: 0.208128
+  type: 'test'
+  ...
+# (node:120) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: empty prompt does not open a draft
+ok 4 - empty prompt does not open a draft
+  ---
+  duration_ms: 212.857597
+  type: 'test'
+  ...
+# Subtest: submit waits for the draft opener before closing and keeps captured arguments
+ok 5 - submit waits for the draft opener before closing and keeps captured arguments
+  ---
+  duration_ms: 37.432293
+  type: 'test'
+  ...
+# Subtest: submit rejection preserves the prompt and name and allows retry
+ok 6 - submit rejection preserves the prompt and name and allows retry
+  ---
+  duration_ms: 55.207656
+  type: 'test'
+  ...
+# Subtest: shortcut rejection preserves the prompt and name and allows retry
+ok 7 - shortcut rejection preserves the prompt and name and allows retry
+  ---
+  duration_ms: 42.247493
+  type: 'test'
+  ...
+# Subtest: form and shortcut cannot start duplicate pending openers in the same render
+ok 8 - form and shortcut cannot start duplicate pending openers in the same render
+  ---
+  duration_ms: 158.169036
+  type: 'test'
+  ...
+# Subtest: Escape remains an explicit dismissal
+ok 9 - Escape remains an explicit dismissal
+  ---
+  duration_ms: 15.602368
+  type: 'test'
+  ...
+# Subtest: only outside backdrop presses dismiss the form
+ok 10 - only outside backdrop presses dismiss the form
+  ---
+  duration_ms: 26.638922
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1833.028956

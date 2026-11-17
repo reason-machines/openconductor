@@ -1,0 +1,28 @@
+{
+  "baseline_main": "6ea9565048bfdc730e6ddc03c279d988031fe2e1",
+  "treatment": {
+    "src/lib/persistence/owner.ts": "f87f5fc8676576683a5e6c525d1948f1325ed497b65af690394a20ba6c504280",
+    "src/lib/persistence/producer.ts": "72f229a9207f6dcd595e8448181ea1fa446ce196c9574741a3fd487b26090a9c",
+    "src/settings/rows/RepoMiscRows.tsx": "c3bc7e0f02f00e096fb80049a95667d66b456396522f1164033647eb58a903a5",
+    "src/settings/previewUrlUnmount.test.ts": "1d0b4fe682612208bf83962f49c652cdb0c30a3d9072bd0b3c6c9879f66ccb7e"
+  },
+  "unchanged": {
+    "src/settings/repoMisc.ts": "201c0d32a3efc7389fa7656d921608ae67d71833eed275d9f5bd81e79c5add67",
+    "src/settings/repoMisc.test.ts": "ac08ec36f55ca17023ecbd0ff4e2dce55e3ef6f599e195e5d771ba3080c2decb",
+    "src/settings/RepoSettingsPage.tsx": "17d01f471d821c6fd23bdfe2f3efb2ba26354fb1b0c1a6982f40138b4df4331b",
+    "src/settings/useRepoSettings.ts": "8a0fd5f8fe1be6f43ff440cc8f05c590cb2123e65a1edbc3ebad94faa46e22c2",
+    "src/settings/repoSettings.ts": "907529a9d07a35c88e0bb62957d906d7b1aed5664640d5c3fad332bb166574cc",
+    "src/lib/persistence/restartPersistence.ts": "931accd8ac4c43621ae0235e16000688587ce448acdfc2989284d098ebc70a03",
+    "crates/scripts/src/config/effective.rs": "8e946e686cb1274cbb76f3bf350cb9bf2931616a59c93642be7e7efa866e0c4e",
+    "src/settings/rows/PromptRows.tsx": "1f60bfd2d0b271da85678418929313040d561b05ca8348c318e0a23150435392",
+    "src/settings/rows/rowModel.ts": "6b57f0353afc0aa148ca449164fac9ebf4e95ff5ed50ae1c5a41467d3ed9ed94",
+    "src/settings/rows/rowModel.test.ts": "b7524c3c1bc0be5ed48274620a828c157134d3f50855eecdb0285f4662720c25",
+    "src/settings/actionResetOverride.test.ts": "7b7633c7111801568272c6fa060c36b0cf7c39badf53dd189cdafeead7d1b2a1",
+    "crates/scripts/src/config/effective_tests.rs": "9007d0c80cb72a4abfa26cb29e9dcba5183ef2f873a65b9b0b5d21fad101e0c7",
+    "src/features/updates/restartWhenIdle.ts": "c53c2ae461901fe40c787a069dafb8cb8faef2eac0b133ce8f61d204242f841a",
+    "src/settings/actionPromptPreview.test.ts": "6a750d6019ddf94fe431e4967faf63b8411034d8859aac021326af27762c02e9",
+    "src/settings/rows/repoGitDeleteReset.test.ts": "bf53366420b5345076163f301ac2a0605e9a7d1201b2c850205c1e305166f85a",
+    "src/settings/prompts.test.ts": "ba10c881053718c188fe3cdd04a6d1f5d8841854a5d70a67825b8330726ac341",
+    "src/settings/configSyncPendingSelection.test.ts": "8649c90030e2e5be542c083917c45a4f59f9139d697f85ae7426e5c2e6f0edc3"
+  }
+}

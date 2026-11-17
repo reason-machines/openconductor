@@ -1,0 +1,1 @@
+function LVe(t){return t?t.hasAttribute(l8t)?t:t.querySelector(`[${l8t}]`)||t:null}

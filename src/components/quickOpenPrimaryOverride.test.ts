@@ -1,0 +1,218 @@
+import assert from "node:assert/strict";
+import { existsSync, readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { test } from "node:test";
+import { runInNewContext } from "node:vm";
+import type { Overrides } from "../keybindings/overrides.ts";
+
+const dependencies = createRequire(import.meta.url);
+const React = dependencies("react");
+const { act, create } = dependencies("react-test-renderer");
+const ts = dependencies("typescript");
+const sourceRoot = fileURLToPath(new URL("..", import.meta.url));
+const logical = (value: string, modifiers: string[] = ["meta"]) => ({ key: { kind: "logical", value }, modifiers });
+
+// These checks invoke the actual mounted input callback. They cover configured
+// shortcut resolution, not trusted keyboard delivery or browser default actions.
+async function fixture(initial: Overrides = {}, files = ["src/first.ts", "src/second.ts"]) {
+  const opens: { path: string; mode: string }[] = [];
+  let closes = 0;
+  let replaceOverrides: (value: Overrides) => void = () => { throw new Error("Provider not mounted"); };
+  const storage = new Map<string, string>();
+  const events = { addEventListener() {}, removeEventListener() {} };
+  const document = { ...events, activeElement: null };
+  const modules = new Map<string, { exports: any }>();
+  function load(path: string): any {
+    if (modules.has(path)) return modules.get(path)!.exports;
+    assert.ok(path === resolve(sourceRoot, "components/QuickOpenDialog.tsx") || /[/\\](keybindings|spotlight)[/\\]/.test(path), `Unexpected source module: ${path}`);
+    const module = { exports: {} as any };
+    modules.set(path, module);
+    const source = ts.transpileModule(readFileSync(path, "utf8"), {
+      fileName: path,
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021, jsx: ts.JsxEmit.ReactJSX },
+    }).outputText;
+    runInNewContext(source, {
+      exports: module.exports, module,
+      window: events, document, HTMLElement: class {},
+      localStorage: {
+        getItem: (key: string) => storage.get(key) ?? null,
+        setItem: (key: string, value: string) => { storage.set(key, value); },
+      },
+      require(name: string) {
+        if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+        if (name === "../backend" && path.endsWith("QuickOpenDialog.tsx")) return {
+          async fuzzyFilterFiles() {
+            return files.map((relative_path) => ({
+              file: { name: relative_path.split("/").pop(), path: `/synthetic/${relative_path}`, is_directory: false },
+              relative_path, score: 1, match_indices: [],
+            }));
+          },
+        };
+        if (name === "./Icons" && path.endsWith("QuickOpenDialog.tsx")) return { FileIcon: () => null };
+        if (name === "./motion/dialogMotion" && path.endsWith("QuickOpenDialog.tsx")) return { useDialogMotion: () => React.useRef(null) };
+        assert.ok(name.startsWith("."), `Unexpected dependency: ${name}`);
+        const target = resolve(dirname(path), name);
+        const file = [target, `${target}.ts`, `${target}.tsx`].find((candidate) => existsSync(candidate));
+        assert.ok(file, `Unresolved test source: ${name}`);
+        return load(file);
+      },
+    }, { filename: path });
+    return module.exports;
+  }
+  const provider = load(resolve(sourceRoot, "keybindings/KeybindingsProvider.tsx"));
+  const { QuickOpenDialog } = load(resolve(sourceRoot, "components/QuickOpenDialog.tsx"));
+  function Controller() {
+    replaceOverrides = provider.useKeybindingOverrides().setOverrides;
+    return React.createElement(QuickOpenDialog, {
+      repoId: "synthetic-repo", workspacePath: "/synthetic",
+      onOpen(path: string, mode: string) { opens.push({ path, mode }); },
+      onClose() { closes++; },
+    });
+  }
+  let renderer: ReturnType<typeof create>;
+  await act(async () => {
+    renderer = create(React.createElement(provider.KeybindingsProvider, {
+      loadOverrides: async () => JSON.stringify({ version: 1, overrides: initial }),
+    }, React.createElement(Controller)));
+  });
+  const input = () => renderer.root.findByType("input");
+  return {
+    opens, storage, input,
+    get closes() { return closes; },
+    async key(key: string, modifiers: Record<string, boolean | string> = {}) {
+      const nativeEvent = { key, code: key === "Enter" ? "Enter" : "", metaKey: false, ctrlKey: false, altKey: false, shiftKey: false, isComposing: false, ...modifiers };
+      const event = {
+        ...nativeEvent, nativeEvent, defaultPrevented: false, stopped: false,
+        preventDefault() { this.defaultPrevented = true; },
+        stopPropagation() { this.stopped = true; },
+      };
+      await act(async () => input().props.onKeyDown(event));
+      return event;
+    },
+    override(value: Overrides) { act(() => replaceOverrides(value)); },
+    click(path = "src/first.ts") {
+      const row = renderer.root.findAll((node: { props: { row?: { relativePath: string } } }) => node.props.row?.relativePath === path)[0];
+      act(() => row.findByType("li").props.onMouseDown({ preventDefault() {} }));
+    },
+    dispose() { act(() => renderer.unmount()); },
+  };
+}
+
+const custom = { "dialog.primaryAction": [logical("d")] } as Overrides;
+
+test("Quick open keeps the default primary shortcut in diff mode", async () => {
+  const view = await fixture();
+  try {
+    const event = await view.key("Enter", { metaKey: true });
+    assert.deepEqual(view.opens, [{ path: "src/first.ts", mode: "diff" }]);
+    assert.equal(view.closes, 1);
+    assert.equal(event.defaultPrevented, true);
+    assert.equal(event.stopped, true);
+  } finally { view.dispose(); }
+});
+
+test("Quick open keeps plain Enter in file mode", async () => {
+  const view = await fixture(custom);
+  try {
+    await view.key("Enter");
+    assert.deepEqual(view.opens, [{ path: "src/first.ts", mode: "file" }]);
+  } finally { view.dispose(); }
+});
+
+test("Quick open resolves a configured logical primary shortcut", async () => {
+  const view = await fixture(custom);
+  try {
+    const event = await view.key("D", { code: "KeyD", metaKey: true });
+    assert.deepEqual(view.opens, [{ path: "src/first.ts", mode: "diff" }]);
+    assert.equal(event.defaultPrevented, true);
+    assert.equal(event.stopped, true);
+  } finally { view.dispose(); }
+});
+
+test("Quick open removed default primary falls back to file selection", async () => {
+  const view = await fixture(custom);
+  try {
+    await view.key("Enter", { metaKey: true });
+    assert.deepEqual(view.opens, [{ path: "src/first.ts", mode: "file" }]);
+  } finally { view.dispose(); }
+});
+
+test("Quick open resolves physical primary keys despite layout output", async () => {
+  const view = await fixture({ "dialog.primaryAction": [{ key: { kind: "physical", code: "KeyD", display: "D" }, modifiers: ["alt"] }] });
+  try {
+    await view.key("∂", { code: "KeyD", altKey: true });
+    assert.deepEqual(view.opens, [{ path: "src/first.ts", mode: "diff" }]);
+  } finally { view.dispose(); }
+});
+
+test("Quick open resolves additional configured primary shortcuts", async () => {
+  const view = await fixture({ "dialog.primaryAction": [logical("d"), logical("y", ["ctrl", "shift"])] } as Overrides);
+  try {
+    await view.key("Y", { code: "KeyY", ctrlKey: true, shiftKey: true });
+    assert.deepEqual(view.opens, [{ path: "src/first.ts", mode: "diff" }]);
+  } finally { view.dispose(); }
+});
+
+test("Quick open can configure plain Enter as the primary action", async () => {
+  const view = await fixture({ "dialog.primaryAction": [logical("Enter", [])] } as Overrides);
+  try {
+    await view.key("Enter");
+    assert.deepEqual(view.opens, [{ path: "src/first.ts", mode: "diff" }]);
+  } finally { view.dispose(); }
+});
+
+test("Quick open configured primary precedes its navigation fallback", async () => {
+  const view = await fixture({ "dialog.primaryAction": [logical("j", ["ctrl"])] } as Overrides);
+  try {
+    await view.key("j", { code: "KeyJ", ctrlKey: true });
+    assert.deepEqual(view.opens, [{ path: "src/first.ts", mode: "diff" }]);
+  } finally { view.dispose(); }
+});
+
+test("Quick open consumes live override replacement and reset", async () => {
+  const view = await fixture();
+  try {
+    view.override(custom);
+    await view.key("d", { code: "KeyD", metaKey: true });
+    assert.equal(view.opens.length, 1);
+    view.override({});
+    await view.key("d", { code: "KeyD", metaKey: true });
+    assert.equal(view.opens.length, 1);
+    await view.key("Enter", { metaKey: true });
+    assert.deepEqual(view.opens, [{ path: "src/first.ts", mode: "diff" }, { path: "src/first.ts", mode: "diff" }]);
+  } finally { view.dispose(); }
+});
+
+test("Quick open keeps exact modifier matching", async () => {
+  const view = await fixture(custom);
+  try {
+    const event = await view.key("d", { code: "KeyD", metaKey: true, shiftKey: true });
+    assert.deepEqual(view.opens, []);
+    assert.equal(view.closes, 0);
+    assert.equal(event.defaultPrevented, false);
+  } finally { view.dispose(); }
+});
+
+test("Quick open keeps navigation and click in file mode with custom primary", async () => {
+  const view = await fixture(custom);
+  try {
+    await view.key("ArrowUp");
+    await view.key("Enter");
+    view.click();
+    assert.deepEqual(view.opens, [{ path: "src/second.ts", mode: "file" }, { path: "src/first.ts", mode: "file" }]);
+    assert.equal(view.closes, 2);
+  } finally { view.dispose(); }
+});
+
+test("Quick open custom primary with no result never opens or closes", async () => {
+  const view = await fixture(custom, []);
+  try {
+    const event = await view.key("d", { code: "KeyD", metaKey: true });
+    assert.deepEqual(view.opens, []);
+    assert.equal(view.closes, 0);
+    assert.equal(event.defaultPrevented, true);
+    assert.equal(event.stopped, true);
+  } finally { view.dispose(); }
+});

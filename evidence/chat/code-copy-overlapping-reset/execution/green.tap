@@ -1,0 +1,48 @@
+(node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:88) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: rejected fenced-code copy requests the source-proven error title and description
+ok 1 - rejected fenced-code copy requests the source-proven error title and description
+  ---
+  duration_ms: 288.746332
+  type: 'test'
+  ...
+# Subtest: ordinary fenced-code success confirms only after fulfillment and resets at two seconds without feedback
+ok 2 - ordinary fenced-code success confirms only after fulfillment and resets at two seconds without feedback
+  ---
+  duration_ms: 141.820605
+  type: 'test'
+  ...
+# Subtest: rejected code copy without an installed notifier remains handled and never claims success
+ok 3 - rejected code copy without an installed notifier remains handled and never claims success
+  ---
+  duration_ms: 84.457107
+  type: 'test'
+  ...
+# Subtest: plain assistant text and inline code request no copy feedback
+ok 4 - plain assistant text and inline code request no copy feedback
+  ---
+  duration_ms: 67.164916
+  type: 'test'
+  ...
+# Subtest: overlapping fenced-code successes retain every two-second reset at 2000, 3000, and 4500 ms
+ok 5 - overlapping fenced-code successes retain every two-second reset at 2000, 3000, and 4500 ms
+  ---
+  duration_ms: 96.018839
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1996.884762
+
+real	0m2.114s
+user	0m1.799s
+sys	0m0.166s
