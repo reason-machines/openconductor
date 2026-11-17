@@ -212,24 +212,18 @@ export async function startHost() {
         return route.abort("blockedbyclient");
       });
       await page.addInitScript(nativeBoundary, { rows, battery, enabled, delayedRegistration });
-      let stage = "navigate";
       try {
         await page.goto(`${server.base}/settings/user/general`, { waitUntil: "domcontentloaded" });
-        stage = "initialize";
         await page.evaluate(async () => {
           const [{ DEFAULT_SETTINGS }, { DEFAULT_APP_PREFS }] = await Promise.all([
             import("/src/settings/types.ts"), import("/src/settings/appPrefs.ts"),
           ]);
           window.__caffeinateHost.initialize(DEFAULT_SETTINGS, DEFAULT_APP_PREFS);
         });
-        stage = "toggle-visible";
         const toggle = page.getByRole("switch", { name: SWITCH_NAME, exact: true });
         await toggle.waitFor();
-        stage = "hydrate";
         assert.equal(await toggle.isChecked(), enabled, "actual General setting must hydrate before product assertions");
-        stage = "statuses";
         await page.waitForFunction(() => window.__caffeinateHost.snapshot().calls.some(call => call.command === "session_statuses"));
-        stage = "disk-access";
         await page.waitForFunction(() => window.__caffeinateHost.snapshot().calls.some(call => call.command === "check_full_disk_access"));
         const snapshot = () => page.evaluate(() => window.__caffeinateHost.snapshot());
         const tick = async () => {
@@ -240,11 +234,8 @@ export async function startHost() {
           assert.deepEqual(errors, [], "loader/page errors are not product RED");
           assert.deepEqual(blocked, [], "the test must not attempt external service requests");
         };
-        stage = "settle";
         await tick();
-        stage = "clean";
         await clean();
-        stage = "seeded-sessions";
         assert.deepEqual((await snapshot()).sessions, rows, "seeded stored session rows must exist before assertions");
         return {
           page, snapshot, tick, clean,
@@ -260,7 +251,7 @@ export async function startHost() {
       } catch (error) {
         const state = await page.evaluate(() => window.__caffeinateHost?.snapshot()).catch(() => null);
         await context.close();
-        throw new Error(`Whole-main host failed before product assertion: ${JSON.stringify({ stage, error: { name: error?.name ?? "Error", message: error?.message ?? String(error) }, errors, blocked, unexpected: state?.unexpected })}`, { cause: error });
+        throw new Error(`Whole-main host failed before product assertion: ${JSON.stringify({ errors, blocked, unexpected: state?.unexpected })}`, { cause: error });
       }
     },
     async close() { try { await browser.close(); } finally { await server.close(); } },

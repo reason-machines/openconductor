@@ -1,7 +1,0 @@
-{
-  "preservation": "PASS: removing only diagnostic labels/error serialization reproduces whole original host byte-for-byte",
-  "graph_assertions_waits_deadlines_native_boundary_cleanup": "UNCHANGED",
-  "fixtures_unchanged": true,
-  "current_host_sha256": "887d655ea48a768b96e2536667b29456623335c6be6ecdadbf36e21fc8e248f0",
-  "real_browser_server_native_operations": 0
-}
