@@ -1,0 +1,8 @@
+{
+  "raw_sha256": {
+    "red.tap": "a4e8c41091d259a0573d02c41fb2d1df63e8b4f192c3d77b0f51b1605e20269a",
+    "green.tap": "8cd59d6ab49464bc283b54abad192b90f23cbea7698b81cef44585b68aaa1a4c",
+    "focused.tap": "3c4179225b0c9137b72ab22f4222ee374d583ff5eb8aa048e646500c7eeffb94"
+  },
+  "normalization": "Trailing whitespace removed; test cases, assertions and counts unchanged."
+}

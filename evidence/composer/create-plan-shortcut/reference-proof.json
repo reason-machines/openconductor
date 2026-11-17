@@ -1,0 +1,63 @@
+{
+  "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "rea_lineage": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "span_sha256": "3c5589cd46083bc08b635d4e752bfe1f93bc8456ae81e68c401dc6814948f567",
+  "checks": {
+    "focus_state": {
+      "utf8_half_open": [
+        9771709,
+        9771731
+      ],
+      "literal": "[pe,be]=$.useState(!1)",
+      "passed": true
+    },
+    "plan_setter": {
+      "utf8_half_open": [
+        9777028,
+        9777105
+      ],
+      "literal": "fo=$.useCallback(()=>{if(!wt)return!1;gr({selectedPlanMode:!Vn})},[wt,Vn,gr])",
+      "passed": true
+    },
+    "command_binding": {
+      "utf8_half_open": [
+        9777156,
+        9777197
+      ],
+      "literal": "oi(\"chat.togglePlanMode\",fo,{enabled:pe})",
+      "passed": true
+    },
+    "editor_focus_blur": {
+      "utf8_half_open": [
+        9779628,
+        9779664
+      ],
+      "literal": "onFocus:()=>be(!0),onBlur:()=>be(!1)",
+      "passed": true
+    },
+    "editor_caller": {
+      "utf8_half_open": [
+        9779507,
+        9779533
+      ],
+      "literal": "children:p.jsx(lHt,{...UIi",
+      "passed": true
+    },
+    "menu_caller": {
+      "utf8_half_open": [
+        9778186,
+        9778232
+      ],
+      "literal": "planMode:wt?{isPlanMode:Vn,onToggle:fo}:void 0",
+      "passed": true
+    },
+    "launch_store_update": {
+      "utf8_half_open": [
+        9774600,
+        9774649
+      ],
+      "literal": "gr=$.useCallback(Br=>{Oi({...Qe,...Br})},[Qe,Oi])",
+      "passed": true
+    }
+  }
+}
