@@ -1,0 +1,86 @@
+(node:1354) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:1361) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: control: normal Project filter renders only Beta's repository group
+ok 1 - control: normal Project filter renders only Beta's repository group
+  ---
+  duration_ms: 1.880645
+  type: 'test'
+  ...
+# Subtest: filtered-out ordinary project rows consume no numbered position
+ok 2 - filtered-out ordinary project rows consume no numbered position
+  ---
+  duration_ms: 0.5388
+  type: 'test'
+  ...
+# Subtest: the selected project's sole ordinary workspace has hint number one
+ok 3 - the selected project's sole ordinary workspace has hint number one
+  ---
+  duration_ms: 0.191493
+  type: 'test'
+  ...
+# Subtest: workspace.switchTo1 targets the selected project's sole workspace
+ok 4 - workspace.switchTo1 targets the selected project's sole workspace
+  ---
+  duration_ms: 0.140921
+  type: 'test'
+  ...
+# Subtest: workspace.switchTo2 has no target when the filtered sequence has one row
+ok 5 - workspace.switchTo2 has no target when the filtered sequence has one row
+  ---
+  duration_ms: 0.115966
+  type: 'test'
+  ...
+# Subtest: control: filtering leaves both loaded repositories and their rows intact
+ok 6 - control: filtering leaves both loaded repositories and their rows intact
+  ---
+  duration_ms: 0.254238
+  type: 'test'
+  ...
+# Subtest: mounted control: ordinary unfiltered producer renders hints 1/2 and dispatches both targets
+ok 7 - mounted control: ordinary unfiltered producer renders hints 1/2 and dispatches both targets
+  ---
+  duration_ms: 839.799716
+  type: 'test'
+  ...
+# Subtest: mounted control: normal Beta radio propagates through app prefs and useAppStore without deleting loaded rows
+ok 8 - mounted control: normal Beta radio propagates through app prefs and useAppStore without deleting loaded rows
+  ---
+  duration_ms: 512.343696
+  type: 'test'
+  ...
+# Subtest: mounted Beta filter: the rendered, visible hint says Switch with Command-1
+ok 9 - mounted Beta filter: the rendered, visible hint says Switch with Command-1
+  ---
+  duration_ms: 461.960711
+  type: 'test'
+  ...
+# Subtest: mounted Beta filter: actual numbered shortcut dispatch selects Beta on Command-1
+ok 10 - mounted Beta filter: actual numbered shortcut dispatch selects Beta on Command-1
+  ---
+  duration_ms: 358.031186
+  type: 'test'
+  ...
+# Subtest: mounted Beta filter: actual Command-2 dispatch has no selection target
+ok 11 - mounted Beta filter: actual Command-2 dispatch has no selection target
+  ---
+  duration_ms: 232.340313
+  type: 'test'
+  ...
+# Subtest: mounted control: clearing normal filter restores both labels and targets unchanged
+ok 12 - mounted control: clearing normal filter restores both labels and targets unchanged
+  ---
+  duration_ms: 216.26955
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3208.745067
