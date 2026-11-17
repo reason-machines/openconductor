@@ -43,11 +43,11 @@ export function sectionEntries(state: AppState): { sections: SidebarSection[]; s
   };
 }
 
-/** Pinned workspaces outside sections, across repositories, in the order they were pinned. */
+/** Pinned workspaces outside sections, across repositories, newest pin first (Conductor's Pia/jia). */
 export function pinnedEntries(state: AppState, sectioned: ReadonlySet<string> = sectionEntries(state).sectioned): SidebarEntry[] {
   return state.repos
     .flatMap((r) => r.workspaces.filter((w) => isPinned(w) && !sectioned.has(w.id)).map((workspace) => ({ repoId: r.id, workspace })))
-    .sort((a, b) => (a.workspace.pinnedAt ?? 0) - (b.workspace.pinnedAt ?? 0));
+    .sort((a, b) => (b.workspace.pinnedAt ?? 0) - (a.workspace.pinnedAt ?? 0));
 }
 
 /** Unpinned workspaces outside sections, in the selected timestamp order. */

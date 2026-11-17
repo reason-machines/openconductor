@@ -1,0 +1,6 @@
+{
+  "main": "217498aae38dfd63b97919b1a0ab4097462c691e",
+  "fixture_sha256": "bfe699c1a96bf4346fe4e92874affbf3a563cdf13453959315d8efe254328b8b",
+  "fixture": "src/palette/sectionQueryIsolation.test.ts",
+  "initial_fixture_correction": "Cross-VM object prototype equality replaced by exact key/value assertions; all five query assertions unchanged. Removed unused import and corrected fixture comment before final freeze."
+}

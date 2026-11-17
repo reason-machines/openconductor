@@ -1,0 +1,229 @@
+{
+  "candidate": "RESET-CHAT-LATE-SETTLEMENT-6013",
+  "baseline": "6cc9a9c75cb2ee4cdec678bc51f6b2960dac2280",
+  "scope": "QUALIFIED_ONE_LINE_RESET_MOUNT_FIX",
+  "reference_assets": {
+    "renderApp-D_fmY7hW.js": {
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index-BGEQ8YjU.js": {
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "rea_lineage": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2 (retained renderer; no new acquisition)",
+  "spans": [
+    {
+      "label": "uDo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8909221,
+        8909638
+      ],
+      "bytes": 417,
+      "sha256": "f58edd582f64ab88781315bd255a422e37c8b68e0d37088cff62779870c0ec8e",
+      "path": "reference/uDo.txt"
+    },
+    {
+      "label": "dDo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8909638,
+        8912447
+      ],
+      "bytes": 2809,
+      "sha256": "a630468ca26d3946ce00e7a5c75b5c4dc103c03e9e4d16c329f277c2a524e311",
+      "path": "reference/dDo.txt"
+    },
+    {
+      "label": "TDo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8919506,
+        8927404
+      ],
+      "bytes": 7898,
+      "sha256": "de83e26c19d4a782733240a5a86a62142cd18cda9301bdb4d2ddc5861e7e7e0e",
+      "path": "reference/TDo.txt"
+    },
+    {
+      "label": "MDo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8929760,
+        8933359
+      ],
+      "bytes": 3599,
+      "sha256": "2984cf19657bcceee5d85b8d23bf50b532f1c4cf46e6444c83021e873db65d1f",
+      "path": "reference/MDo.txt"
+    },
+    {
+      "label": "qDt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3164521,
+        3164877
+      ],
+      "bytes": 356,
+      "sha256": "d44bdf9de9d504e00fe0aeb5132077fafc9838255e34a1ad50a6ec87ad50a115",
+      "path": "reference/qDt.txt"
+    },
+    {
+      "label": "mutation-hook",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        590697,
+        591102
+      ],
+      "bytes": 405,
+      "sha256": "2d19c00f1ad14128c9610fd0c36aef104421b32d299daff0f25cd09e34a1a246",
+      "path": "reference/mutation-hook.txt"
+    },
+    {
+      "label": "mutation-observer",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        585103,
+        586585
+      ],
+      "bytes": 1482,
+      "sha256": "bbcb1f16505bda3bedaf442a49b875cd9e950c540bae365bf853634a09be5e9a",
+      "path": "reference/mutation-observer.txt"
+    },
+    {
+      "label": "mutation-listener",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        553275,
+        553552
+      ],
+      "bytes": 277,
+      "sha256": "9ffa5c37b9db9c97fd5d82358a92106b0d4879c409ac22f8b9ee45271290d912",
+      "path": "reference/mutation-listener.txt"
+    },
+    {
+      "label": "reset-api-registry",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3165630,
+        3165748
+      ],
+      "bytes": 118,
+      "sha256": "f36f7167126f73ad8af1ccefc849e548a69749bb49eea18f650b01992bb2604c",
+      "path": "reference/reset-api-registry.txt"
+    },
+    {
+      "label": "reset-api-export",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3483643,
+        3483652
+      ],
+      "bytes": 9,
+      "sha256": "ee9f877535788380b828528d7e29b78345d0998978e6b80a43476f93974f3570",
+      "path": "reference/reset-api-export.txt"
+    },
+    {
+      "label": "reset-api-import",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        56735,
+        56744
+      ],
+      "bytes": 9,
+      "sha256": "e13a7364fda17564927481275333d56a4dd9d87217c3120aaa293c2a07cb27de",
+      "path": "reference/reset-api-import.txt"
+    },
+    {
+      "label": "UDt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3162979,
+        3164491
+      ],
+      "bytes": 1512,
+      "sha256": "dfaae724d3e1c1e01cbc817cfb4da771df1e80c8a99055e410668e7b2a09f4e6",
+      "path": "reference/UDt.txt"
+    }
+  ],
+  "current_source_sha256": {
+    "src/components/WorkspaceView.tsx": "13b7c8637a9ca84995697a67fd5ed2de95098d89ef6220cdacde1152cd6d24ee",
+    "src/features/chat/ResetChatDialog.tsx": "3b0f09879a53b0c4d8476b1b1e288ddb3cbff8545a1341a18ad29c337ca3a6d8",
+    "src/features/chat/Transcript.tsx": "8b13f23d0fec69db4fa1311cb901fdf936c18a267f8f7f47f56aafca1747f1e8",
+    "src/features/chat/chatRuntime.ts": "ce7c3cb29940ccfa4fedce7e3b49d2c835db6644c9c40330bebbbf6111723816",
+    "src/features/chat/turnMenu.ts": "d870e489bd4b329b7d721e886d7fb7e64222bcaab5ece28a0bf4d88b3a484e5b",
+    "src/features/chat/checkpoints.ts": "b462a6367fc162f53c214b1e8bef6d8aac7c3fb253f2f4393c8169c4bfc6d432",
+    "src/features/chat/view.ts": "132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43"
+  },
+  "limits": [
+    "Retained source only; no new acquisition or reference code execution",
+    "Pending regression is not full-App/DOM/browser/native/package verification",
+    "Synthetic checkpoint and agent backend only; no real deletion or provider request"
+  ],
+  "regression": {
+    "path": "src/features/chat/resetChatLateSettlement.test.ts",
+    "sha256": "1198de444d4c13f7f5cfd5cfbb9af516360dca8f94365c90352c64dfcb6779d1",
+    "cases": 6
+  },
+  "red": {
+    "pass": 4,
+    "fail": 2,
+    "skip": 0,
+    "failure_messages": [
+      "dismissed A must not close the current B reset dialog",
+      "A does not own B's pending dialog"
+    ],
+    "source_only": false,
+    "full_app": false
+  },
+  "checks_before_product": {
+    "typecheck": "PASS",
+    "source_bindings": 12,
+    "browser": "NOT RUN",
+    "native": "NOT RUN",
+    "package": "NOT VERIFIED"
+  },
+  "test_first_commit": "6718c281fd2caf1a2fc0ab1f85dcaafc4cf3cf29",
+  "green": {
+    "focused_pass": 6,
+    "combined_pass": 72,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "fixture_sha256": "1198de444d4c13f7f5cfd5cfbb9af516360dca8f94365c90352c64dfcb6779d1"
+  },
+  "checks_after_product": {
+    "production_build": "PASS branding + tsc + Vite; existing large-chunk warning",
+    "lint_colors": "PASS",
+    "reference_bindings": "PASS 12",
+    "original_asset_offset_checks": "PASS",
+    "fixture_checksum": "PASS unchanged",
+    "browser": "NOT RUN: no admission",
+    "full_app": "NOT RUN: projected source boundary only",
+    "native": "NOT RUN: existing holds",
+    "real_deletion": "NOT RUN: synthetic checkpoint I/O only",
+    "package_inclusion": "NOT VERIFIED"
+  },
+  "production_paths": [
+    "src/components/WorkspaceView.tsx"
+  ],
+  "candidate_source_sha256": "1e558c044ce5dda41a33420ef82ad00123af97adaed892f9336c77b9d1f84935",
+  "log_sha256": {
+    "typecheck-red.log.gz": "6fa486f11642d82e305700d208b2adf026a926d13d600b5a3f494f182ea4d454",
+    "red.tap": "78b62673a8a7164539cd1769a716fd50aecf94a6e0b08cbe1181e59efa0f3ce0",
+    "green-adjacent.tap": "7b80099cb9fcefbe812a832b12c4526a9511f9d8c54dbefc71285b430bd62474",
+    "initial-harness-error.tap": "f2e393f71d4a9ef1dbfc7269d220be2645bfa3091ab7d50dca6ec96ff87996dd",
+    "lint-colors.log.gz": "4d81bde08ca795c6ab398f69776b6ae632a02a6aa3b5609752e262300071f1ac",
+    "adjacent-before.tap": "647b0e768ff6cec36bcdeb3d1160e435f5bb5dbee82d6a86a30f18164b4defea",
+    "build.log.gz": "ad5ab0300aced7e88a5065f9fa1a19d048b5a70026e4f06bbd5da4decbebced9"
+  },
+  "unchanged_guards": {
+    "src/features/chat/ResetChatDialog.tsx": "3b0f09879a53b0c4d8476b1b1e288ddb3cbff8545a1341a18ad29c337ca3a6d8",
+    "src/features/chat/chatRuntime.ts": "ce7c3cb29940ccfa4fedce7e3b49d2c835db6644c9c40330bebbbf6111723816",
+    "src/features/chat/checkpoints.ts": "b462a6367fc162f53c214b1e8bef6d8aac7c3fb253f2f4393c8169c4bfc6d432",
+    "src/features/chat/Transcript.tsx": "8b13f23d0fec69db4fa1311cb901fdf936c18a267f8f7f47f56aafca1747f1e8",
+    "src/features/chat/turnMenu.ts": "d870e489bd4b329b7d721e886d7fb7e64222bcaab5ece28a0bf4d88b3a484e5b",
+    "src/components/DialogFrame.tsx": "47734d523d725af2615c80a1f9995f28e78b2b2d8e6dd32a7303b97e69c670d5"
+  }
+}

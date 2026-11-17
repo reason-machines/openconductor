@@ -1,0 +1,66 @@
+[
+  {
+    "raw": "adjacent-before.tap",
+    "bytes": 143622,
+    "sha256": "35cf4d7f340a5551f7d2b4059428eddd050d6d8542d2ce2a6d8cf724e99ca7f2",
+    "compressed": "adjacent-before.tap.gz",
+    "compressedBytes": 19570,
+    "compressedSha256": "c75fb67c834421442800f40d4e05f4a4c682e43e2b92b3574ca8eac31499b1da"
+  },
+  {
+    "raw": "affected.tap",
+    "bytes": 146672,
+    "sha256": "f7de995fd2953cb9f2e59f8ab7a3d399057c10a8b1086e69c95fa9c78e05d878",
+    "compressed": "affected.tap.gz",
+    "compressedBytes": 20198,
+    "compressedSha256": "10486b61790ee3733c1401f3f985aa9458a3b703a17b1372ec2bb4533f0b22be"
+  },
+  {
+    "raw": "build-timeout.log",
+    "bytes": 1101,
+    "sha256": "b9f217da6aec400b307024b1b9de0f5972d921911a194c30ad15e60d8e3361b9",
+    "compressed": "build-timeout.log.gz",
+    "compressedBytes": 411,
+    "compressedSha256": "7c5d32d5dcb787c7b346be3eb18f2e69396080d3149df194a34dc35ec20ee05e"
+  },
+  {
+    "raw": "build.log",
+    "bytes": 180315,
+    "sha256": "a4c2f9224d533b7ba972efcc9ec07aa334270141575c40f02e3ca1862decc689",
+    "compressed": "build.log.gz",
+    "compressedBytes": 26564,
+    "compressedSha256": "10b913cb3c3301970a7a62b95db883614dba3d42bc8d7c41c915f61faeb2a572"
+  },
+  {
+    "raw": "green.tap",
+    "bytes": 3187,
+    "sha256": "2022f93443ff5de006ff1a9da9199d5b9d84731a211335191ecffa1e452f8144",
+    "compressed": "green.tap.gz",
+    "compressedBytes": 846,
+    "compressedSha256": "a9927f9516920943d1e8ceab66fe95dfe49adef22a7f371c5e00c876d7b84edd"
+  },
+  {
+    "raw": "initial-fixture/red.tap",
+    "bytes": 7680,
+    "sha256": "7d08bdf892beb7bd62ec1b39cdb2174f8e0435d299954739b6197d97a40a0c05",
+    "compressed": "initial-fixture/red.tap.gz",
+    "compressedBytes": 1432,
+    "compressedSha256": "732afc9403ec98f2e7fd79d0a16953f885b1a5e28ba5450cf7e9a19918d78655"
+  },
+  {
+    "raw": "red.tap",
+    "bytes": 6703,
+    "sha256": "18421287c6d2f946ac676bbc2cc437dfd53f6cb1ec426efcf5b0678f0d128839",
+    "compressed": "red.tap.gz",
+    "compressedBytes": 1304,
+    "compressedSha256": "c94db2fcbc1d7043c1b1578ad63d607a1bddcabec2608de73df13bfcfe312173"
+  },
+  {
+    "raw": "typecheck.log",
+    "bytes": 224,
+    "sha256": "91c9fe8679639260822d83ee7e81d6f3da39f84dad13a146ce6cfe8ac11c5994",
+    "compressed": "typecheck.log.gz",
+    "compressedBytes": 195,
+    "compressedSha256": "b3ddd70788970d2149c5ee774a0f7f38cde097c0bdae78a9572eab8d2b70f34b"
+  }
+]
