@@ -1,0 +1,14 @@
+[
+  {
+    "path": "red.tap.gz",
+    "uncompressed_sha256": "b0e5383946613bd3572f0191e3a3805d60df576515d6f9a321696b21679e8ef2",
+    "uncompressed_bytes": 25701,
+    "content": "exact raw TAP; gzip used to preserve assertion whitespace"
+  },
+  {
+    "path": "red-recheck.tap.gz",
+    "uncompressed_sha256": "c99dbcbc367d190f51b3d31c2ab974d2346ebf724430244fd350768d67ecfa60",
+    "uncompressed_bytes": 25700,
+    "content": "exact raw TAP; gzip used to preserve assertion whitespace"
+  }
+]

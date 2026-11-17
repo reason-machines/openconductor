@@ -1,0 +1,78 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:83) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: queued resize callbacks lose ownership on replacement and detach
+ok 1 - queued resize callbacks lose ownership on replacement and detach
+  ---
+  duration_ms: 1.892638
+  type: 'test'
+  ...
+# Subtest: dispose releases the active attachment as well as terminal state
+ok 2 - dispose releases the active attachment as well as terminal state
+  ---
+  duration_ms: 0.707833
+  type: 'test'
+  ...
+# Subtest: a disposed session's detach cannot remove a new session with the same id
+ok 3 - a disposed session's detach cannot remove a new session with the same id
+  ---
+  duration_ms: 0.637
+  type: 'test'
+  ...
+# Subtest: failed open reports once, leaves no observer, and permits a retry
+ok 4 - failed open reports once, leaves no observer, and permits a retry
+  ---
+  duration_ms: 0.845602
+  type: 'test'
+  ...
+# Subtest: attaching an unknown terminal is a no-op
+ok 5 - attaching an unknown terminal is a no-op
+  ---
+  duration_ms: 0.545956
+  type: 'test'
+  ...
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:84) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: control: initial attach opens once, fits, and mounts in its container
+ok 6 - control: initial attach opens once, fits, and mounts in its container
+  ---
+  duration_ms: 1.657901
+  type: 'test'
+  ...
+# Subtest: control: the active detach removes its mount and disconnects its observer
+ok 7 - control: the active detach removes its mount and disconnects its observer
+  ---
+  duration_ms: 0.660057
+  type: 'test'
+  ...
+# Subtest: stale detach must not remove a newer attachment in another container
+ok 8 - stale detach must not remove a newer attachment in another container
+  ---
+  duration_ms: 0.580098
+  type: 'test'
+  ...
+# Subtest: stale detach must not remove a newer attachment in the same container
+ok 9 - stale detach must not remove a newer attachment in the same container
+  ---
+  duration_ms: 0.644038
+  type: 'test'
+  ...
+# Subtest: replacing an attachment disconnects the old resize observer immediately
+ok 10 - replacing an attachment disconnects the old resize observer immediately
+  ---
+  duration_ms: 0.621252
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 222.730772
