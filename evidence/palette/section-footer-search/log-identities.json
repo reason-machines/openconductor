@@ -1,0 +1,56 @@
+{
+  "adjacent-before.tap.gz": {
+    "rawBytes": 157077,
+    "rawSha256": "d33b348111ec7c72cbc510244aafe775b75f3eb209552f62979c465f1b947d25",
+    "compressedBytes": 20902,
+    "compressedSha256": "2074f845b3abda13c065cdd5b16746f7dc864822b691c359a5b5b45f3a069016"
+  },
+  "affected.tap.gz": {
+    "rawBytes": 148539,
+    "rawSha256": "c91eab8b6b20684f52c76bffdbb7625eff2d5fed984ea89a0d44f1304caa28e6",
+    "compressedBytes": 20213,
+    "compressedSha256": "5ccef0abf39c34995240ed9eecee98bc5838144190bb46f8b08f8ac778c7ef1a"
+  },
+  "build.log.gz": {
+    "rawBytes": 184252,
+    "rawSha256": "8aaf101e1069ca70113712e850c114367d1921ea27852048781d09ea3d53bf83",
+    "compressedBytes": 26583,
+    "compressedSha256": "24ac660d906850213d3ef613e7d24c5ba8410670cd9f4ab820044b6d3b65a7fb"
+  },
+  "final-affected.tap.gz": {
+    "rawBytes": 149267,
+    "rawSha256": "bbb54a4984a917057df1a58ecb527af7df74774036008552df2bd784053b8c2f",
+    "compressedBytes": 20189,
+    "compressedSha256": "3e72855f100bb14053ebdde0d68878934475f255dbd3cac37aa4e67635847f19"
+  },
+  "final-focused.tap.gz": {
+    "rawBytes": 4598,
+    "rawSha256": "98e3f16bf5b7ca45f34696a24341c5768d4907f0c3cd0ac1cb81412539417474",
+    "compressedBytes": 1123,
+    "compressedSha256": "e7881185f52df89f1dc1af5524f9b1d4dd492258d0fd2b1c80125a13c7271187"
+  },
+  "green.tap.gz": {
+    "rawBytes": 3805,
+    "rawSha256": "2e2263ae1abcfcc64ff640818ffa685e18035204a01833b125729dee62ab7446",
+    "compressedBytes": 970,
+    "compressedSha256": "093c9b0287d1f267327152909e2e63c80f065c24bd7c1ea1ae4efdd374949d58"
+  },
+  "ranking-candidate-before.tap.gz": {
+    "rawBytes": 2216,
+    "rawSha256": "011f648907be3d10cef9f89851f97cef130ea64cad84e9ec22edd38535caf2bd",
+    "compressedBytes": 906,
+    "compressedSha256": "a75bdcef4718a2e80007c00534caa16211bb407a6b8f13b87de787d2c6f996eb"
+  },
+  "red.tap.gz": {
+    "rawBytes": 12252,
+    "rawSha256": "c9d70b6fffcb11ddbee0c137c289d23d9124130bfc675e99ebc6f7af964f2ce8",
+    "compressedBytes": 1600,
+    "compressedSha256": "1c84fa21ee3a1f5b8ef7d92654b6f45ff49060d237baf30dba65b4c68cc2b56b"
+  },
+  "typecheck.log.gz": {
+    "rawBytes": 224,
+    "rawSha256": "91c9fe8679639260822d83ee7e81d6f3da39f84dad13a146ce6cfe8ac11c5994",
+    "compressedBytes": 195,
+    "compressedSha256": "b3ddd70788970d2149c5ee774a0f7f38cde097c0bdae78a9572eab8d2b70f34b"
+  }
+}

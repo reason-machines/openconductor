@@ -132,6 +132,7 @@ async function fixture(input: Selection) {
     const module = { exports: {} };
     modules.set(name, module);
     const require = (dep: string): unknown => {
+      if (dep === "@xterm/addon-web-links") return deps(dep);
       const key = dep.startsWith(".") ? resolve(dirname(file), dep).slice(process.cwd().length + 1).replace(/\.tsx?$/, "") : dep;
       assert.ok(Object.prototype.hasOwnProperty.call(boundaries, key) || dep.startsWith("."), `unexpected package ${dep}`);
       return Object.prototype.hasOwnProperty.call(boundaries, key) ? boundaries[key] : load(key);

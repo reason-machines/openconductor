@@ -5,6 +5,7 @@ import test from "node:test";
 import { runInNewContext } from "node:vm";
 import * as React from "react";
 import ts from "typescript";
+import * as sectionSearchScore from "../../../src/palette/search/score.ts";
 import * as overrides from "../../../src/keybindings/overrides.ts";
 import * as shortcut from "../../../src/keybindings/shortcut.ts";
 import * as workspaceNumber from "../../../src/state/workspaceNumber.ts";
@@ -32,6 +33,7 @@ function evaluate(file: string, imports: Record<string, unknown>) {
   runInNewContext(output, {
     exports, console, Date,
     require(name: string) {
+      if (name === "./search/score.ts") return sectionSearchScore;
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
       assert.ok(name in imports, `Unexpected ${file} import: ${name}`);
       return imports[name];

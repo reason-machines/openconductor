@@ -99,6 +99,7 @@ function fixture(spawn: (args: SpawnArgs) => Promise<string>, saved = false) {
       fileName: file, compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021, jsx: ts.JsxEmit.ReactJSX },
     });
     const require = (dep: string): unknown => {
+      if (dep === "@xterm/addon-web-links") return deps(dep);
       if (dep === "react" || dep === "react/jsx-runtime") return deps(dep);
       if (dep.endsWith(".css")) return {};
       const key = dep.startsWith(".") ? resolve(dirname(file), dep).slice(process.cwd().length + 1).replace(/\.tsx?$/, "") : dep;

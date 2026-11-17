@@ -78,19 +78,19 @@ async function fixture() {
       onCloned() { throw new Error("No real clone is performed"); },
     }));
   });
-  const input = () => renderer.root.findByType("form").findAllByType("input").find((node: { props: { id?: string } }) => node.props.id === "git-url");
+  const input = () => renderer.root.findByProps({ className: "modal-body clone-dialog" }).findAllByType("input").find((node: { props: { id?: string } }) => node.props.id === "git-url");
   const submit = async () => {
-    await act(async () => { void renderer.root.findByType("form").props.onSubmit({ preventDefault() {} }); });
+    await act(async () => { void renderer.root.findByProps({ "data-primary-action": true }).props.onClick(); });
   };
   const edit = (value: string) => { act(() => input().props.onChange({ target: { value } })); };
   return {
     input, edit, submit, requests,
-    primary: () => renderer.root.findByProps({ type: "submit" }),
+    primary: () => renderer.root.findByProps({ "data-primary-action": true }),
     async start() {
       edit("https://github.com/Acme/MixedCase.git");
       await submit();
       assert.equal(requests.length, 1);
-      assert.equal(renderer.root.findByProps({ type: "submit" }).props.disabled, true);
+      assert.equal(renderer.root.findByProps({ "data-primary-action": true }).props.disabled, true);
     },
     dispose() { act(() => renderer.unmount()); },
   };

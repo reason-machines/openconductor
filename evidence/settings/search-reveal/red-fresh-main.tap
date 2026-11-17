@@ -1,0 +1,325 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual helper centers its exact matched row
+not ok 1 - actual helper centers its exact matched row
+  ---
+  duration_ms: 341.697732
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:100:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+    +     block: 'start'
+    -     block: 'center'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      block: 'center'
+  actual:
+    0:
+      block: 'start'
+  operator: 'deepStrictEqual'
+  stack: |-
+    centered (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:98:29)
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:101:138)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: actual helper animates the direct reveal frame, not its outer row
+not ok 2 - actual helper animates the direct reveal frame, not its outer row
+  ---
+  duration_ms: 200.014976
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:103:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   [
+    -     [
+    -       {
+    -         offset: 0,
+    -         outline: '2px solid var(--ring)',
+    -         outlineOffset: '8px'
+    -       },
+    -       {
+    -         offset: 0.55,
+    -         outline: '2px solid var(--ring)',
+    -         outlineOffset: '8px'
+    -       },
+    -       {
+    -         outline: '2px solid transparent',
+    -         outlineOffset: '8px'
+    -       }
+    -     ],
+    -     {
+    -       duration: 1400,
+    -       easing: 'ease-out'
+    -     }
+    -   ]
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0:
+        0:
+          outline: '2px solid var(--ring)'
+          outlineOffset: '8px'
+          offset: 0
+        1:
+          outline: '2px solid var(--ring)'
+          outlineOffset: '8px'
+          offset: 0.55
+        2:
+          outline: '2px solid transparent'
+          outlineOffset: '8px'
+      1:
+        duration: 1400
+        easing: 'ease-out'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    animated (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:99:33)
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:104:135)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: actual helper falls back to animating the row when no reveal frame exists
+not ok 3 - actual helper falls back to animating the row when no reveal frame exists
+  ---
+  duration_ms: 118.12557
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:106:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   [
+    -     [
+    -       {
+    -         offset: 0,
+    -         outline: '2px solid var(--ring)',
+    -         outlineOffset: '8px'
+    -       },
+    -       {
+    -         offset: 0.55,
+    -         outline: '2px solid var(--ring)',
+    -         outlineOffset: '8px'
+    -       },
+    -       {
+    -         outline: '2px solid transparent',
+    -         outlineOffset: '8px'
+    -       }
+    -     ],
+    -     {
+    -       duration: 1400,
+    -       easing: 'ease-out'
+    -     }
+    -   ]
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0:
+        0:
+          outline: '2px solid var(--ring)'
+          outlineOffset: '8px'
+          offset: 0
+        1:
+          outline: '2px solid var(--ring)'
+          outlineOffset: '8px'
+          offset: 0.55
+        2:
+          outline: '2px solid transparent'
+          outlineOffset: '8px'
+      1:
+        duration: 1400
+        easing: 'ease-out'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    animated (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:99:33)
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:107:122)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: without Web Animations support, revealing a row does not throw
+ok 4 - without Web Animations support, revealing a row does not throw
+  ---
+  duration_ms: 120.627696
+  type: 'test'
+  ...
+# Subtest: mounted actual SettingsSearch activation reveals the target (click)
+not ok 5 - mounted actual SettingsSearch activation reveals the target (click)
+  ---
+  duration_ms: 137.691091
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:112:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+    +     block: 'start'
+    -     block: 'center'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      block: 'center'
+  actual:
+    0:
+      block: 'start'
+  operator: 'deepStrictEqual'
+  stack: |-
+    centered (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:98:29)
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:113:222)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: mounted actual SettingsSearch activation reveals the target (Enter)
+not ok 6 - mounted actual SettingsSearch activation reveals the target (Enter)
+  ---
+  duration_ms: 114.460738
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:112:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+    +     block: 'start'
+    -     block: 'center'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      block: 'center'
+  actual:
+    0:
+      block: 'start'
+  operator: 'deepStrictEqual'
+  stack: |-
+    centered (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:98:29)
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:113:222)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: a mounted page result with no row schedules no reveal
+ok 7 - a mounted page result with no row schedules no reveal
+  ---
+  duration_ms: 114.543056
+  type: 'test'
+  ...
+# Subtest: existing delayed-row retry still reveals the target exactly once when it appears
+not ok 8 - existing delayed-row retry still reveals the target exactly once when it appears
+  ---
+  duration_ms: 110.496948
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:118:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+    +     block: 'start'
+    -     block: 'center'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      block: 'center'
+  actual:
+    0:
+      block: 'start'
+  operator: 'deepStrictEqual'
+  stack: |-
+    centered (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:98:29)
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:119:198)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: an absent row remains a bounded harmless no-op
+ok 9 - an absent row remains a bounded harmless no-op
+  ---
+  duration_ms: 109.274084
+  type: 'test'
+  ...
+# Subtest: first exact match is still selected, not an unrelated or later duplicate row
+not ok 10 - first exact match is still selected, not an unrelated or later duplicate row
+  ---
+  duration_ms: 122.769729
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:124:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+    +     block: 'start'
+    -     block: 'center'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      block: 'center'
+  actual:
+    0:
+      block: 'start'
+  operator: 'deepStrictEqual'
+  stack: |-
+    centered (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:98:29)
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/evidence/settings/search-reveal/reveal.test.cjs:125:205)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 3
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1828.935643
