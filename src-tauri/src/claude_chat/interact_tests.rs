@@ -1,8 +1,42 @@
 use serde_json::{json, Value};
 
-use super::interact::{decision, request_of, Answer, ALLOW, DENY};
+use super::interact::{decision, decision_with_plan_mode, request_of, Answer, ALLOW, DENY};
 use crate::agent::claude_stream::PermissionDecision;
 use crate::reason_acp::provider::Ask;
+
+#[test]
+fn approved_plan_restores_only_a_configured_execution_mode() {
+    use crate::agent::{PermissionMode, claude_stream::ClientMessage};
+    let answer = Answer::Plan { approved: true, feedback: None };
+    let input = json!({"plan": "p", "planFilePath": "/synthetic/plan.md"});
+    for mode in [PermissionMode::Default, PermissionMode::Auto, PermissionMode::BypassPermissions] {
+        let decision = decision_with_plan_mode("ExitPlanMode", &input, &answer, Some(mode)).unwrap();
+        let response = ClientMessage::PermissionReply { request_id: "r".into(), decision }.to_json();
+        assert_eq!(response["response"]["response"]["updatedPermissions"], json!([
+            {"type": "setMode", "mode": mode.as_str(), "destination": "session"}
+        ]));
+        let updated = &response["response"]["response"]["updatedInput"];
+        assert_eq!(updated["_targetMode"], mode.as_str());
+        assert_eq!(updated["planFilePath"], input["planFilePath"]);
+    }
+    for mode in [PermissionMode::Plan, PermissionMode::AcceptEdits, PermissionMode::DontAsk] {
+        assert!(decision_with_plan_mode("ExitPlanMode", &input, &answer, Some(mode)).is_err());
+    }
+    assert!(decision_with_plan_mode("ExitPlanMode", &Value::Null, &answer, Some(PermissionMode::Auto)).is_err());
+}
+
+#[test]
+fn a_mode_target_cannot_approve_a_tool_or_a_rejected_plan() {
+    use crate::agent::PermissionMode;
+    let plan = json!({"plan": "p"});
+    for answer in [Answer::Cancel, Answer::Plan { approved: false, feedback: None }] {
+        assert_eq!(decision_with_plan_mode("ExitPlanMode", &plan, &answer, Some(PermissionMode::Auto)), decision("ExitPlanMode", &plan, &answer));
+    }
+    let input = json!({"command": "synthetic command"});
+    for answer in [Answer::Option(ALLOW.into()), Answer::Option(DENY.into())] {
+        assert_eq!(decision_with_plan_mode("Bash", &input, &answer, Some(PermissionMode::Auto)), decision("Bash", &input, &answer));
+    }
+}
 
 fn question_input() -> Value {
     json!({ "questions": [

@@ -23,6 +23,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+import { createRuntimeReceipt } from "./runtime-receipt.mjs";
 import { WebDriver } from "../../tests/e2e/webdriver.mjs";
 import { finishStartup } from "../../tests/e2e/startup.mjs";
 
@@ -85,7 +86,9 @@ mkdirSync(env.OPENCONDUCTOR_HOME, { recursive: true });
 writeFileSync(join(env.OPENCONDUCTOR_HOME, "settings.toml"), `reason_executable_path = ${JSON.stringify(join(bin, "reason"))}\n`);
 delete env.REASON_CLI;
 delete env.XDG_DATA_HOME;
+const receipt = createRuntimeReceipt({ suite: "slash-menu", app, out, home, project });
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
+receipt.track(driver);
 const driverExited = new Promise((r) => driver.on("exit", r));
 
 const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
@@ -234,8 +237,10 @@ try {
   }
   process.exitCode = 1;
 } finally {
+  await receipt.beforeTeardown((script) => wd("POST", "/execute/async", { script, args: [] }, 3000));
   if (sessionUrl) await wd("DELETE", "").catch(() => {});
   restoreOfficialReason();
   driver.kill();
   await Promise.race([driverExited, sleep(3000)]);
+  await receipt.afterTeardown();
 }

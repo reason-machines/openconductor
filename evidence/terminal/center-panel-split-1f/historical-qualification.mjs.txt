@@ -1,0 +1,64 @@
+// Frozen source-dispatch qualification. Executes OpenConductor code only.
+// Conductor originals remain inert bytes; this is not a full React/native mount.
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { runInNewContext } from 'node:vm';
+import { test } from 'node:test';
+import { createDispatcher } from '../../src/keybindings/dispatcher.ts';
+import { bindCommands } from '../../src/keybindings/bind.ts';
+import { effectiveShortcuts } from '../../src/keybindings/overrides.ts';
+
+const ref = process.env.SOURCE_REF ?? 'origin/main';
+const source = execFileSync('git', ['show', `${ref}:src/components/WorkspaceView.tsx`], {encoding:'utf8'});
+const start = source.indexOf('useKeybindings({\n    "view.toggleTerminalPanel"');
+assert.ok(start >= 0, 'actual workspace navigation registration found');
+const end = source.indexOf('\n  });', start) + '\n  });'.length;
+assert.ok(end > start, 'complete current navigation map found');
+const registration = source.slice(start, end);
+assert.ok(registration.includes('"nav.nextTab"') && registration.includes('"nav.previousTab"'));
+const snapshot = execFileSync('git', ['show', `${ref}:src/keybindings/dispatcher.ts`]);
+assert.deepEqual(readFileSync(new URL('../../src/keybindings/dispatcher.ts', import.meta.url)), snapshot,
+  'actual imported dispatcher is identical to checked main');
+for (const file of ['bind.ts','resolve.ts','overrides.ts','registry.ts','shortcut.ts','types.ts']) {
+  assert.deepEqual(readFileSync(new URL(`../../src/keybindings/${file}`,import.meta.url)),
+    execFileSync('git',['show',`${ref}:src/keybindings/${file}`]), `actual ${file} matches checked main`);
+}
+function fixture({overrides={},typing=false,inTerminal=false,activeDialogId=null}={}) {
+  const dispatcher=createDispatcher(), effects=[];
+  runInNewContext(registration, {
+    useKeybindings(handlers,options={}) { bindCommands(dispatcher,handlers,{overrides},options); },
+    stepTab(direction) { effects.push(direction); },
+    prActions:{openOnGitHub() {}},
+  });
+  return { effects, press(key, modifiers={metaKey:true}) {
+    return dispatcher.dispatch({key,code:key==='d'?'KeyD':'Tab',metaKey:false,ctrlKey:false,
+      shiftKey:false,altKey:false,repeat:false,...modifiers}, {typing,inTerminal,activeDialogId});
+  }};
+}
+test('control: Cmd+D is declared with its shipped logical shortcut',()=> {
+  assert.deepEqual(effectiveShortcuts('nav.splitTab'), [{key:{kind:'logical',value:'d'},modifiers:['meta']}]);
+});
+test('control: the actual workspace map dispatches next-tab',()=> {
+  const f=fixture(); assert.equal(f.press('Tab',{ctrlKey:true}).kind,'ran'); assert.deepEqual(f.effects,[1]);
+});
+test('control: the actual workspace map dispatches previous-tab',()=> {
+  const f=fixture(); assert.equal(f.press('Tab',{ctrlKey:true,shiftKey:true}).kind,'ran'); assert.deepEqual(f.effects,[-1]);
+});
+test('control: plain d is not consumed by navigation',()=> {
+  assert.equal(fixture({typing:true}).press('d',{}).kind,'pass');
+});
+test('RED: workspace Cmd+D reaches a split consumer',()=> {
+  assert.equal(fixture().press('d').kind,'ran');
+});
+test('RED: center-terminal Cmd+D reaches the same higher-scope split consumer',()=> {
+  assert.equal(fixture({typing:true,inTerminal:true}).press('d').kind,'ran');
+});
+test('RED: configured split shortcut reaches a consumer',()=> {
+  const overrides={'nav.splitTab':[{key:{kind:'logical',value:'F12'},modifiers:['meta','alt']}]};
+  const result=fixture({overrides}).press('F12',{metaKey:true,altKey:true});
+  assert.deepEqual({kind:result.kind,commandId:result.commandId},{kind:'ran',commandId:'nav.splitTab'});
+});
+test('control: a dialog excludes workspace navigation',()=> {
+  const f=fixture({activeDialogId:'confirmation'}); assert.equal(f.press('Tab',{ctrlKey:true}).kind,'pass'); assert.deepEqual(f.effects,[]);
+});

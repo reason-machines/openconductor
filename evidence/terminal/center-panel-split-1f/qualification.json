@@ -1,0 +1,177 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate": "TERMINAL-CENTER-PANEL-SPLIT-1F",
+  "status": "CONDITIONAL_SOURCE_DISPATCH_GAP_PENDING_LEASE",
+  "main": "da5d179229db0ed3333b98235310928038bd2a26",
+  "reference_archive": {
+    "attachment_id": "e78b8633-85a2-4561-a67c-ff7181b1d9fc",
+    "sha256": "991f15ebf130ccb8e705fc74f612dbb46095bd6d73b420fbced1ffbcd94165bc"
+  },
+  "assets": {
+    "renderer": {
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "rea_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "rea_gap": "Retained renderer graph parse_status=skipped, owned JavaScript worker heap exhaustion. Whole assets and literal spans checked inertly, not semantic or runtime proof. No new analysis, extraction or target execution.",
+  "gate": "experimental_configurable_center_panel defaults false; gXo renders Dji if unset/false, bXo\u2192vXo\u2192yYo only when true. The candidate is enabled-mode only.",
+  "spans": [
+    {
+      "asset": "index",
+      "name": "flag-default",
+      "utf8_half_open": [
+        279994,
+        280041
+      ],
+      "bytes": 47,
+      "sha256": "a73d34c6035473fd004e5e561037156f2ba66028c58242534e5673f623bc807d",
+      "file": "spans/flag-default.txt"
+    },
+    {
+      "asset": "index",
+      "name": "flag-key",
+      "utf8_half_open": [
+        333797,
+        333840
+      ],
+      "bytes": 43,
+      "sha256": "0cf74e257921e33fa92063a89e85132f7121c1d4cdc0483cae6b8be0d9c4da50",
+      "file": "spans/flag-key.txt"
+    },
+    {
+      "asset": "index",
+      "name": "flag-reader",
+      "utf8_half_open": [
+        391643,
+        391672
+      ],
+      "bytes": 29,
+      "sha256": "0f885f9cd6ca1563f342a8a8b783f7790575473b28a3200baf764beb2b9eec79",
+      "file": "spans/flag-reader.txt"
+    },
+    {
+      "asset": "index",
+      "name": "reader-export",
+      "utf8_half_open": [
+        3482046,
+        3482055
+      ],
+      "bytes": 9,
+      "sha256": "52aa65b4bc03ad70d41a2e195fa21a7f97e4195baa04d8bd0214ba35d810db2a",
+      "file": "spans/reader-export.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "reader-import",
+      "utf8_half_open": [
+        55409,
+        55418
+      ],
+      "bytes": 9,
+      "sha256": "6e7020227908dfb119b18e580f05944c01b687d3e44ef596a5e1ce0e83d0189f",
+      "file": "spans/reader-import.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "feature-wrapper",
+      "utf8_half_open": [
+        9811623,
+        9811878
+      ],
+      "bytes": 255,
+      "sha256": "88c6d181702b42be580d4e956b0cab6720508675d9cfedf72ef2e1d284f4bee6",
+      "file": "spans/feature-wrapper.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "center-layout-model-store",
+      "utf8_half_open": [
+        2138309,
+        2146610
+      ],
+      "bytes": 8301,
+      "sha256": "49940831049b7be2e1955de6a1a921e63163aca397e4fcb5910966c8431a3320",
+      "file": "spans/center-layout-model-store.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "consumer-yYo",
+      "utf8_half_open": [
+        9727314,
+        9734923
+      ],
+      "bytes": 7609,
+      "sha256": "e4e86b58c9c18f8721fae2bb8c15c8186a0a40850e78a3aa1cad742f0ade4df8",
+      "file": "spans/consumer-yYo.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "group-surface-mounts",
+      "utf8_half_open": [
+        9811623,
+        9817374
+      ],
+      "bytes": 5751,
+      "sha256": "89a3e6f087adab0c0ca21cf0fc82d96b9a77cb725af7c240e7f5b6c763158fd1",
+      "file": "spans/group-surface-mounts.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "layout-renderer",
+      "utf8_half_open": [
+        9713910,
+        9716519
+      ],
+      "bytes": 2609,
+      "sha256": "6c8e4db994ad1a814e1a21585c2aefd32b097b5b5f4baf4fe3870d6ee87e82e6",
+      "file": "spans/layout-renderer.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "layout-ratios",
+      "utf8_half_open": [
+        9708040,
+        9708355
+      ],
+      "bytes": 315,
+      "sha256": "8f63ddd6f45a894e968c5dae2db381447a5b06618babd7b55548f7af8aaceecf",
+      "file": "spans/layout-ratios.txt"
+    }
+  ],
+  "current_source": [
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "sha256": "291dfc0709159d08125bdc51129cd7f1caaf816f4410bcfffa0288061b477988"
+    },
+    {
+      "path": "src/settings/prefs.ts",
+      "sha256": "bf3f8bd9c377a3da0cabcf84f87c7fc42ffe201a958541d974f9803ed9e6c4a8"
+    },
+    {
+      "path": "src/settings/ExperimentalPage.tsx",
+      "sha256": "84fb951236965853b40d4d21c8e96655f239d3c5c45873e65db092730e992090"
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "sha256": "b9df8f72c86c6c4e1cc05cade6b4719cd3abf26e557e690ffd574cbe2231ecb5"
+    }
+  ],
+  "fixture": {
+    "file": "qualification.test.mjs",
+    "sha256": "642b27d6289218b02c54e66ddd27e8124d3d17e0021a06c22811c4bab618de19",
+    "command": "node --experimental-strip-types --test .oc-tmp/nav-split-contract-1f/qualification.test.mjs",
+    "coverage": "Executes exact current-main navigation registration using real OpenConductor bindCommands/dispatcher. Does not mount React, read stored preference, execute layout transforms, or exercise native focus."
+  },
+  "execution_boundaries": {
+    "reference_js_evaluated": false,
+    "production_modified": false,
+    "native": false,
+    "pty": false,
+    "runtime_admission": false
+  }
+}

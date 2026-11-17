@@ -1,0 +1,536 @@
+{
+  "author": "Conductor Rebuild",
+  "disposition": "QUALIFIED_RETAINED_LITERAL_SOURCE_ONLY",
+  "asset": {
+    "original_name": "index-BGEQ8YjU.js",
+    "received_name": "retained-original-index-BGEQ8YjU.js",
+    "attachment_id": "3aff3764-9967-4046-8b73-576fa8b13eba",
+    "bytes": 3493297,
+    "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+    "direct_observation": "Exact supplied upload bytes and digest; no installed app identity observed.",
+    "reported_provenance": "Ledger supplied unchanged prior extraction asset after read/copy on authorized sven m5 max; not a fresh extraction.",
+    "provenance_limit": "Asset filename/digest does not independently prove current installed Conductor version or runtime behavior."
+  },
+  "range_convention": "Zero-based UTF-8 byte offsets, start inclusive, end exclusive; no normalization/newline added.",
+  "selection_chain": [
+    "_jt -> wB/SB -> hie -> Ett -> Att -> na/Fa/ktt/die",
+    "_jt -> bB/uie visibility -> per-message isPreviewMessage -> collapse grouping",
+    "KOt concise -> jOt -> Wp -> hie -> Ett -> Att",
+    "jOt selects full d.content by d.id; OOt/MOt account for elisions",
+    "hjt is a separate exported last-text accessor, not part of either selector chain"
+  ],
+  "spans": [
+    {
+      "symbol": "na",
+      "kind": "function",
+      "role": "Selector dependency: array-valued assistant/user content blocks only.",
+      "utf8_start_inclusive": 1148057,
+      "utf8_end_exclusive": 1148224,
+      "unicode_codepoint_start": 1148039,
+      "unicode_codepoint_end": 1148206,
+      "bytes": 167,
+      "literal_sha256": "7673a785165ce3c671210fa21a1e1a0a836ccda502ece16b01fe4cc93d6b87bb",
+      "path": "literals/na.literal.txt",
+      "next_48_characters": "function Fa(t,e){return!(typeof t==\"string\"||t.t"
+    },
+    {
+      "symbol": "Fa",
+      "kind": "function",
+      "role": "Selector dependency: tool_use predicate, optionally exact tool name.",
+      "utf8_start_inclusive": 1148224,
+      "utf8_end_exclusive": 1148305,
+      "unicode_codepoint_start": 1148206,
+      "unicode_codepoint_end": 1148287,
+      "bytes": 81,
+      "literal_sha256": "26475e8ddf9c5f5292ca8e385429f41b1893267e4599b2fef7055b93f51a7407",
+      "path": "literals/Fa.literal.txt",
+      "next_48_characters": "function btt(t,e){return e.some(s=>na(s).some(n="
+    },
+    {
+      "symbol": "ktt",
+      "kind": "function",
+      "role": "Selector dependency: any non-string, nonblank text block.",
+      "utf8_start_inclusive": 1148596,
+      "utf8_end_exclusive": 1148681,
+      "unicode_codepoint_start": 1148578,
+      "unicode_codepoint_end": 1148663,
+      "bytes": 85,
+      "literal_sha256": "de3c05b77b5051e130fab95650b8af0f7be153eba4b27d88910bd3d678685361",
+      "path": "literals/ktt.literal.txt",
+      "next_48_characters": "function die(t){return t.type===\"result\"&&\"is_er"
+    },
+    {
+      "symbol": "die",
+      "kind": "function",
+      "role": "Selector dependency: result with is_error exactly true.",
+      "utf8_start_inclusive": 1148681,
+      "utf8_end_exclusive": 1148755,
+      "unicode_codepoint_start": 1148663,
+      "unicode_codepoint_end": 1148737,
+      "bytes": 74,
+      "literal_sha256": "04936ad02551fcbfc2dff5bb11d147651464598b9ddda84892177c785050bb9c",
+      "path": "literals/die.literal.txt",
+      "next_48_characters": "function hie(t){const e=new Set;for(const s of E"
+    },
+    {
+      "symbol": "hie",
+      "kind": "function",
+      "role": "Union of Att message IDs across Ett segments.",
+      "utf8_start_inclusive": 1148755,
+      "utf8_end_exclusive": 1148849,
+      "unicode_codepoint_start": 1148737,
+      "unicode_codepoint_end": 1148831,
+      "bytes": 94,
+      "literal_sha256": "8a711327171a0bed272961eb073858cef00d02da972697bd5ae912f8c11f4a7d",
+      "path": "literals/hie.literal.txt",
+      "next_48_characters": "function Ett(t){const e=[];let s=[];for(const n "
+    },
+    {
+      "symbol": "Ett",
+      "kind": "function",
+      "role": "Partition at each user boundary and after every result.",
+      "utf8_start_inclusive": 1148849,
+      "utf8_end_exclusive": 1149033,
+      "unicode_codepoint_start": 1148831,
+      "unicode_codepoint_end": 1149015,
+      "bytes": 184,
+      "literal_sha256": "1cc88e4d4cbd22bd69303b64ea6ddf447f10347a4f35f65ea4fd245b64838ff1",
+      "path": "literals/Ett.literal.txt",
+      "next_48_characters": "function Att(t){const e=new Set;let s=!1,n=!1,r="
+    },
+    {
+      "symbol": "Att",
+      "kind": "function",
+      "role": "Reverse-scanned per-segment preview message-ID selector.",
+      "utf8_start_inclusive": 1149033,
+      "utf8_end_exclusive": 1149431,
+      "unicode_codepoint_start": 1149015,
+      "unicode_codepoint_end": 1149413,
+      "bytes": 398,
+      "literal_sha256": "ad83bdd40d7ce09c1fab5180892be86b2786181336619db39f575926e2026a06",
+      "path": "literals/Att.literal.txt",
+      "next_48_characters": "function hjt(t){if(t.role!==\"assistant\"||t.conte"
+    },
+    {
+      "symbol": "hjt",
+      "kind": "function",
+      "role": "Separate last-text accessor; not called by Att/hie/Ett or _jt.",
+      "utf8_start_inclusive": 1149431,
+      "utf8_end_exclusive": 1149671,
+      "unicode_codepoint_start": 1149413,
+      "unicode_codepoint_end": 1149653,
+      "bytes": 240,
+      "literal_sha256": "6f8e647077e5e0ccd9f526c045a545e71e144a1a7526ef261524bc34242d8b6c",
+      "path": "literals/hjt.literal.txt",
+      "next_48_characters": "const nF=\"mcp__\";function _B(t){if(!t.startsWith"
+    },
+    {
+      "symbol": "wB",
+      "kind": "function",
+      "role": "Presentation caller input: user, steering, AI messages sorted by SB.",
+      "utf8_start_inclusive": 1149946,
+      "utf8_end_exclusive": 1150034,
+      "unicode_codepoint_start": 1149928,
+      "unicode_codepoint_end": 1150016,
+      "bytes": 88,
+      "literal_sha256": "2061ef5afd371daeae34b2e2acf120508bed1993c3b8c5ea1841da5cf7a422c5",
+      "path": "literals/wB.literal.txt",
+      "next_48_characters": "function kh(t){const e=new Map,s=[...wB(t),...t."
+    },
+    {
+      "symbol": "SB",
+      "kind": "function",
+      "role": "Presentation input order by sentAt/cancelledAt/createdAt, then createdAt.",
+      "utf8_start_inclusive": 1150301,
+      "utf8_end_exclusive": 1150443,
+      "unicode_codepoint_start": 1150283,
+      "unicode_codepoint_end": 1150425,
+      "bytes": 142,
+      "literal_sha256": "ebd2cfabf0eeb4c26546d2350c6d77dd02647448f4f88a0bb4f2a47ecd4a0ca3",
+      "path": "literals/SB.literal.txt",
+      "next_48_characters": "const Ctt=new Set([\"local_agent\",\"remote_agent\","
+    },
+    {
+      "symbol": "btt",
+      "kind": "function",
+      "role": "Visibility dependency: failed matching tool_result.",
+      "utf8_start_inclusive": 1148305,
+      "utf8_end_exclusive": 1148415,
+      "unicode_codepoint_start": 1148287,
+      "unicode_codepoint_end": 1148397,
+      "bytes": 110,
+      "literal_sha256": "6831a23f1c59e1c76445797aba43b4a075878a9750733048e5e3b7f8bd434e0a",
+      "path": "literals/btt.literal.txt",
+      "next_48_characters": "function uie({block:t,potentialToolResultMessage"
+    },
+    {
+      "symbol": "uie",
+      "kind": "function",
+      "role": "Visibility dependency: blank text and collab tool exclusions.",
+      "utf8_start_inclusive": 1148415,
+      "utf8_end_exclusive": 1148596,
+      "unicode_codepoint_start": 1148397,
+      "unicode_codepoint_end": 1148578,
+      "bytes": 181,
+      "literal_sha256": "bba1207f3241d3cd24b8e70dceafa842f7d2b327961299151c9692888053b34e",
+      "path": "literals/uie.literal.txt",
+      "next_48_characters": "function ktt(t){return t.some(e=>typeof e!=\"stri"
+    },
+    {
+      "symbol": "Ott",
+      "kind": "function",
+      "role": "Visibility dependency: tool_result block predicate.",
+      "utf8_start_inclusive": 1152152,
+      "utf8_end_exclusive": 1152218,
+      "unicode_codepoint_start": 1152134,
+      "unicode_codepoint_end": 1152200,
+      "bytes": 66,
+      "literal_sha256": "4cc95eb81634911fb148b0145af1eaecc7b6543924f5a4d876a6b96761ba6cda",
+      "path": "literals/Ott.literal.txt",
+      "next_48_characters": "function Ftt(t){if(t.content.type!==\"user\")retur"
+    },
+    {
+      "symbol": "Ftt",
+      "kind": "function",
+      "role": "Visibility dependency: compact user input predicate.",
+      "utf8_start_inclusive": 1152218,
+      "utf8_end_exclusive": 1152446,
+      "unicode_codepoint_start": 1152200,
+      "unicode_codepoint_end": 1152428,
+      "bytes": 228,
+      "literal_sha256": "b1c285abb36da50712e51101dac57abd46d0db59a0e035ac6a675ec6a6adc2ea",
+      "path": "literals/Ftt.literal.txt",
+      "next_48_characters": "function Dtt(t){const e=t.content;return e.type="
+    },
+    {
+      "symbol": "Dtt",
+      "kind": "function",
+      "role": "Visibility dependency: compact boundary/status predicate.",
+      "utf8_start_inclusive": 1152446,
+      "utf8_end_exclusive": 1152615,
+      "unicode_codepoint_start": 1152428,
+      "unicode_codepoint_end": 1152597,
+      "bytes": 169,
+      "literal_sha256": "e28fbe318d5ed2641f7f14419e73ed26a4660cf91650d20f4be215b403f7ca57",
+      "path": "literals/Dtt.literal.txt",
+      "next_48_characters": "function Ltt(t){const e=t.content;return e.type="
+    },
+    {
+      "symbol": "Ltt",
+      "kind": "function",
+      "role": "Visibility dependency: retry system message predicate.",
+      "utf8_start_inclusive": 1152615,
+      "utf8_end_exclusive": 1152714,
+      "unicode_codepoint_start": 1152597,
+      "unicode_codepoint_end": 1152696,
+      "bytes": 99,
+      "literal_sha256": "1aca8df8942cb8b1289a6070406fd0958030e6fce042cbac267acb621943f73c",
+      "path": "literals/Ltt.literal.txt",
+      "next_48_characters": "function bB({message:t,potentialToolResultMessag"
+    },
+    {
+      "symbol": "Rtt",
+      "kind": "function",
+      "role": "Visibility dependency: subagent task predicate; uses Ctt.",
+      "utf8_start_inclusive": 1150504,
+      "utf8_end_exclusive": 1150596,
+      "unicode_codepoint_start": 1150486,
+      "unicode_codepoint_end": 1150578,
+      "bytes": 92,
+      "literal_sha256": "863b76dd76e5905086927ca030a70ae975562a485d4fbd1ae38cf4a0a6a09579",
+      "path": "literals/Rtt.literal.txt",
+      "next_48_characters": "function Ttt(t){switch(t){case\"Monitor\":case\"Bas"
+    },
+    {
+      "symbol": "Ttt",
+      "kind": "function",
+      "role": "Visibility dependency: tool-name to command/script input field.",
+      "utf8_start_inclusive": 1150596,
+      "utf8_end_exclusive": 1150709,
+      "unicode_codepoint_start": 1150578,
+      "unicode_codepoint_end": 1150691,
+      "bytes": 113,
+      "literal_sha256": "c7e92719de01c3911828d8cd308f8211788f272e81327b25471ec6089700fff3",
+      "path": "literals/Ttt.literal.txt",
+      "next_48_characters": "function xtt(t,e){const s=Ttt(t);if(s===void 0||"
+    },
+    {
+      "symbol": "xtt",
+      "kind": "function",
+      "role": "Visibility dependency: named string input value.",
+      "utf8_start_inclusive": 1150709,
+      "utf8_end_exclusive": 1150853,
+      "unicode_codepoint_start": 1150691,
+      "unicode_codepoint_end": 1150835,
+      "bytes": 144,
+      "literal_sha256": "f7b82d1bd6045025563fd1677450d163837926261e65f7a0d7e79daa4104ba89",
+      "path": "literals/xtt.literal.txt",
+      "next_48_characters": "function Ptt({toolUseId:t,turnMessages:e}){for(c"
+    },
+    {
+      "symbol": "Ptt",
+      "kind": "function",
+      "role": "Visibility dependency: find tool use by ID in turn messages.",
+      "utf8_start_inclusive": 1150853,
+      "utf8_end_exclusive": 1151016,
+      "unicode_codepoint_start": 1150835,
+      "unicode_codepoint_end": 1150998,
+      "bytes": 163,
+      "literal_sha256": "44a33ded54388a758a2bb2dae207acce3daeba1f054cac0e2ed3f4ff28e39cca",
+      "path": "literals/Ptt.literal.txt",
+      "next_48_characters": "function Mtt(t,e){if(t.type!==\"system\"||t.subtyp"
+    },
+    {
+      "symbol": "Mtt",
+      "kind": "function",
+      "role": "Visibility dependency: background-task metadata.",
+      "utf8_start_inclusive": 1151016,
+      "utf8_end_exclusive": 1151322,
+      "unicode_codepoint_start": 1150998,
+      "unicode_codepoint_end": 1151304,
+      "bytes": 306,
+      "literal_sha256": "ff76d0e7cd8971c218b76c3f6e45521dcec36167415ac27b6f1489aacb015a15",
+      "path": "literals/Mtt.literal.txt",
+      "next_48_characters": "function fjt(t){const e=new Set;for(const s of t"
+    },
+    {
+      "symbol": "bB",
+      "kind": "function",
+      "role": "Presentation caller renderable-message filter, after selector computation.",
+      "utf8_start_inclusive": 1152714,
+      "utf8_end_exclusive": 1153123,
+      "unicode_codepoint_start": 1152696,
+      "unicode_codepoint_end": 1153105,
+      "bytes": 409,
+      "literal_sha256": "e7f1f75c7784f033a2be1c38499d83c69b2f64cdd628faf26c33d3781132ba0c",
+      "path": "literals/bB.literal.txt",
+      "next_48_characters": "function pie(t){const e=na(t),s=new Set,n=new Se"
+    },
+    {
+      "symbol": "pie",
+      "kind": "function",
+      "role": "Collapse-count dependency: tool names and IDs per message.",
+      "utf8_start_inclusive": 1153123,
+      "utf8_end_exclusive": 1153287,
+      "unicode_codepoint_start": 1153105,
+      "unicode_codepoint_end": 1153269,
+      "bytes": 164,
+      "literal_sha256": "77cf0f21c109c6b1cac5294cbfddda01782195633b56070cb0e03a002e8fde3e",
+      "path": "literals/pie.literal.txt",
+      "next_48_characters": "function Ntt(t,e,s,n){let r=0,i=0;const o=new Se"
+    },
+    {
+      "symbol": "Ntt",
+      "kind": "function",
+      "role": "Collapse-count dependency: no alteration of selected preview IDs.",
+      "utf8_start_inclusive": 1153287,
+      "utf8_end_exclusive": 1153746,
+      "unicode_codepoint_start": 1153269,
+      "unicode_codepoint_end": 1153728,
+      "bytes": 459,
+      "literal_sha256": "cd443cbf5241aaaaeeffb3075040bf244c9c0755b2a6885a2c5337057738650a",
+      "path": "literals/Ntt.literal.txt",
+      "next_48_characters": "function _jt(t){const e=wB(t),s=hie(e),n=e.filte"
+    },
+    {
+      "symbol": "_jt",
+      "kind": "function",
+      "role": "Direct presentation caller: isPreviewMessage = selectedIds.has(message.id).",
+      "utf8_start_inclusive": 1153746,
+      "utf8_end_exclusive": 1154246,
+      "unicode_codepoint_start": 1153728,
+      "unicode_codepoint_end": 1154228,
+      "bytes": 500,
+      "literal_sha256": "1806109603caa218b2bc48dac7cb3ed18126790e4ec12f8d3bd578b765e17964",
+      "path": "literals/_jt.literal.txt",
+      "next_48_characters": "function $tt(t,e){if(t.isPreviewMessage||t.messa"
+    },
+    {
+      "symbol": "Wp",
+      "kind": "function",
+      "role": "Second caller input filter: cancelledAt exactly null.",
+      "utf8_start_inclusive": 3115186,
+      "utf8_end_exclusive": 3115229,
+      "unicode_codepoint_start": 3114692,
+      "unicode_codepoint_end": 3114735,
+      "bytes": 43,
+      "literal_sha256": "8a72e613414ff7e5c4039bc3247613a5fc7ac8852c51a7dda9be68caf960b614",
+      "path": "literals/Wp.literal.txt",
+      "next_48_characters": "function MOt(t){return t===1?\"[1 message elided]"
+    },
+    {
+      "symbol": "MOt",
+      "kind": "function",
+      "role": "Second caller elision label only.",
+      "utf8_start_inclusive": 3115229,
+      "utf8_end_exclusive": 3115304,
+      "unicode_codepoint_start": 3114735,
+      "unicode_codepoint_end": 3114810,
+      "bytes": 75,
+      "literal_sha256": "a9c5a78b636f66cdc34eb6a77842be6fcd58e617f08266af39c1bd3add0533a6",
+      "path": "literals/MOt.literal.txt",
+      "next_48_characters": "function OOt(t,e){const s=new Map;for(const i of"
+    },
+    {
+      "symbol": "OOt",
+      "kind": "function",
+      "role": "Second caller subagent elision counts only.",
+      "utf8_start_inclusive": 3115304,
+      "utf8_end_exclusive": 3115618,
+      "unicode_codepoint_start": 3114810,
+      "unicode_codepoint_end": 3115124,
+      "bytes": 314,
+      "literal_sha256": "0d963c62a809169d891777a089e0cfe35abf47ce0a89d424aed8ae50ca56ce70",
+      "path": "literals/OOt.literal.txt",
+      "next_48_characters": "const FOt=[\"command\",\"file_path\",\"path\",\"pattern"
+    },
+    {
+      "symbol": "jOt",
+      "kind": "function",
+      "role": "Second direct caller: retain selected full d.content, elide other messages.",
+      "utf8_start_inclusive": 3118967,
+      "utf8_end_exclusive": 3119515,
+      "unicode_codepoint_start": 3118467,
+      "unicode_codepoint_end": 3119015,
+      "bytes": 548,
+      "literal_sha256": "24054ba9df5ba234069cf3bd1d576237f2ac5522a85970232329e7af2ec1414f",
+      "path": "literals/jOt.literal.txt",
+      "next_48_characters": "function KOt(t,e){if(!Wp(t.userMessage))return[]"
+    },
+    {
+      "symbol": "KOt",
+      "kind": "function",
+      "role": "Second caller upstream: concise branch invokes jOt; complete branch does not.",
+      "utf8_start_inclusive": 3119515,
+      "utf8_end_exclusive": 3120590,
+      "unicode_codepoint_start": 3119015,
+      "unicode_codepoint_end": 3120090,
+      "bytes": 1075,
+      "literal_sha256": "7ed5fe0c966e8e724bf24dd70cbc38ac1530d4a6aeffedc41e1e55a07fe19267",
+      "path": "literals/KOt.literal.txt",
+      "next_48_characters": "function VOt(t,e){const s=e===\"complete\"?BOt(t):"
+    },
+    {
+      "symbol": "Ctt",
+      "kind": "constant",
+      "role": "Visibility dependency constant.",
+      "utf8_start_inclusive": 1150443,
+      "utf8_end_exclusive": 1150504,
+      "unicode_codepoint_start": 1150425,
+      "unicode_codepoint_end": 1150486,
+      "bytes": 61,
+      "literal_sha256": "b9319b29847346c71fa2fa38892859cfef7b54ee49128457c046b82eb93d963b",
+      "path": "literals/Ctt.literal.txt",
+      "next_48_characters": "function Rtt(t){return t.subagent_type!==void 0|"
+    },
+    {
+      "symbol": "export-presentation",
+      "kind": "export-alias",
+      "role": "Export alias only; consuming chunk not qualified.",
+      "utf8_start_inclusive": 3488207,
+      "utf8_end_exclusive": 3488216,
+      "unicode_codepoint_start": 3487671,
+      "unicode_codepoint_end": 3487680,
+      "bytes": 9,
+      "literal_sha256": "0e661c369e10f2cc566d95fc93a2246748d655007fc340ba921835bda1b331b8",
+      "path": "literals/export-presentation.literal.txt",
+      "next_48_characters": ",fjt as mz,GP as n,iMt as n$,V7t as n0,Zjt as n1"
+    },
+    {
+      "symbol": "export-last-text",
+      "kind": "export-alias",
+      "role": "Export alias only; consuming chunk not qualified.",
+      "utf8_start_inclusive": 3487707,
+      "utf8_end_exclusive": 3487716,
+      "unicode_codepoint_start": 3487171,
+      "unicode_codepoint_end": 3487180,
+      "bytes": 9,
+      "literal_sha256": "94842ec8af75082232f9813183aedc229efcd6f6822ad3549052459da366ddac",
+      "path": "literals/export-last-text.literal.txt",
+      "next_48_characters": ",yjt as mB,vjt as mC,wjt as mD,gjt as mE,mjt as "
+    }
+  ],
+  "whole_asset_identifier_occurrences": {
+    "Att": [
+      {
+        "unicode_codepoint_start": 1148806,
+        "utf8_start_inclusive": 1148824
+      },
+      {
+        "unicode_codepoint_start": 1149024,
+        "utf8_start_inclusive": 1149042
+      }
+    ],
+    "hie": [
+      {
+        "unicode_codepoint_start": 1148746,
+        "utf8_start_inclusive": 1148764
+      },
+      {
+        "unicode_codepoint_start": 1153760,
+        "utf8_start_inclusive": 1153778
+      },
+      {
+        "unicode_codepoint_start": 3118546,
+        "utf8_start_inclusive": 3119046
+      }
+    ],
+    "Ett": [
+      {
+        "unicode_codepoint_start": 1148784,
+        "utf8_start_inclusive": 1148802
+      },
+      {
+        "unicode_codepoint_start": 1148840,
+        "utf8_start_inclusive": 1148858
+      }
+    ],
+    "_jt": [
+      {
+        "unicode_codepoint_start": 1153737,
+        "utf8_start_inclusive": 1153755
+      },
+      {
+        "unicode_codepoint_start": 3487671,
+        "utf8_start_inclusive": 3488207
+      }
+    ],
+    "hjt": [
+      {
+        "unicode_codepoint_start": 1149422,
+        "utf8_start_inclusive": 1149440
+      },
+      {
+        "unicode_codepoint_start": 3487171,
+        "utf8_start_inclusive": 3487707
+      }
+    ],
+    "isPreviewMessage": [
+      {
+        "unicode_codepoint_start": 1154140,
+        "utf8_start_inclusive": 1154158
+      },
+      {
+        "unicode_codepoint_start": 1154172,
+        "utf8_start_inclusive": 1154190
+      },
+      {
+        "unicode_codepoint_start": 1154251,
+        "utf8_start_inclusive": 1154269
+      }
+    ]
+  },
+  "execution": {
+    "vendor_javascript": "NOT_EXECUTED_NOT_IMPORTED_NOT_EVALUATED",
+    "product_or_test_edits": "NONE",
+    "current_main_comparison": "BE7_OWNED_NOT_RUN_HERE",
+    "fresh_app_REA_acquisition": "NOT_RUN",
+    "mounted_native_package": "NOT_RUN"
+  },
+  "not_proved": [
+    "Cross-chunk renderer consumption or per-part visual treatment",
+    "Physical final-preview display or installed-reference parity",
+    "Package containment or native behavior",
+    "A current OpenConductor mismatch or a behavioral RED"
+  ]
+}

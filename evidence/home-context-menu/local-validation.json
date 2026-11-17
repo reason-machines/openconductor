@@ -1,0 +1,48 @@
+{
+  "recorded_at_utc": "2026-11-17T08:35:56Z",
+  "execution": "Reason Cloud; local frontend validation only",
+  "product_commit": "4b125052e",
+  "dependency_recovery": {
+    "command": "npm ci --ignore-scripts --no-audit --no-fund",
+    "status": "PASS",
+    "packages_added": 395,
+    "documented_path": [
+      "docs/packaging.md",
+      ".github/workflows/ci.yml"
+    ],
+    "plugin_fs_version": "2.7.1",
+    "manifest_or_lockfile_changes": false,
+    "product_or_test_changes": false
+  },
+  "typecheck": {
+    "command": "npm run typecheck",
+    "status": "PASS",
+    "exit": 0,
+    "log": "typecheck-restored.txt"
+  },
+  "build": {
+    "command": "npm run build",
+    "status": "PASS",
+    "exit": 0,
+    "vite_seconds": 54.02,
+    "warning": "Advisory chunks larger than 500 kB; no failing build diagnostic",
+    "log": "build-restored.txt.gz"
+  },
+  "frozen_regression": {
+    "command": "node --max-old-space-size=768 --experimental-strip-types --test --test-concurrency=1 src/components/homeContextMenu.test.ts",
+    "status": "PASS",
+    "pass": 7,
+    "fail": 0,
+    "skip": 0,
+    "sha256": "000a0ac3eefce9da250cb31dcc535bd6965c192fd0a764b5debb18a42edb3818"
+  },
+  "unchanged_sha256": {
+    "package.json": "3436671ba8bb422c26debf8149ed0cdd9e985b77262bf9316e09e79302c80118",
+    "package-lock.json": "1b5e71303afef426f22e8a492d1e8f8e74fdc34bf4242984b2ef3f9a59675782",
+    "bun.lock": "84032afd0835648c99681ac5a6d70129a4a425d339976b39740745535fd07fec"
+  },
+  "native": "NOT_RUN",
+  "browser": "NOT_RUN",
+  "package": "UNVERIFIED",
+  "hosted_exact_head": "PENDING publication; not inferred from local checks"
+}

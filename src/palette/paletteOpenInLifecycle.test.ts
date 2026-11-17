@@ -60,7 +60,7 @@ async function fixture() {
   const presentation = { filePathFilter: "", diffFileListMode: "flat", collapsedDirectoryPaths: [] };
   const requirePalette = () => { assert.ok(palette); return palette; };
   const modules = new Map<string, Record<string, unknown>>();
-  const actualTsx = new Set(["src/App", "src/components/WorkspaceView", "src/palette/PaletteHost"]);
+  const actualTsx = new Set(["src/features/workspace/CenterPanelGroups", "src/App", "src/components/WorkspaceView", "src/palette/PaletteHost"]);
   const overrides: Record<string, Record<string, unknown>> = {
     "src/backend": { inTauri: () => false, appInfo: async () => null },
     "src/state/store": { loadReposFromDb: forbidden, useAppStore() {
