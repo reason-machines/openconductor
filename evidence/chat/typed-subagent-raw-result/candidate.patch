@@ -1,0 +1,36 @@
+--- main/ToolRows.tsx
++++ candidate/ToolRows.tsx
+@@ -1234,7 +1234,7 @@
+     case "codex-collab":
+       return <CollabRow name={name} input={input} result={result} isError={isError} />;
+     case "sub-agent":
+-      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={result} />;
++      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={result} rawResult={rawResult} />;
+       if (name.startsWith("mcp__linear__") || name.startsWith("mcp__context7__")) return <MoreRows {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
+       return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
+     default:
+@@ -1267,12 +1267,13 @@
+ }
+ 
+ /** `bpo`: a typed sub-agent (Explore, Plan, ...): its type and model, its description, its answer. */
+-function SubagentRow({ input, result, ...shell }: ShellBase & { input: Record<string, unknown>; result?: string }) {
++function SubagentRow({ input, result, rawResult, ...shell }: ShellBase & { input: Record<string, unknown>; result?: string; rawResult?: unknown }) {
+   const [raw, setRaw] = useState(false);
+   const type = s(input.subagent_type);
+   const model = s(input.model);
+   const description = subagentDescription(s(input.description), model || undefined);
+-  const text = result === undefined ? "" : resultText(result);
++  const content = rawResult === undefined ? result : rawResult;
++  const text = content ? resultText(content) : "";
+   return (
+     <RowShell
+       {...shell}
+@@ -1291,7 +1292,7 @@
+       right={description ? <span className="oc-tool-count">{description}</span> : undefined}
+       plainContent
+       content={
+-        text ? (
++        content ? (
+           <div className="oc-subagent-result">
+             <div className="oc-subagent-tabs">
+               <div className="oc-subagent-tab-group">

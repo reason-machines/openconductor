@@ -1,0 +1,168 @@
+{
+  "author": "Conductor Rebuild",
+  "baseline": "c3c9ab420f62edb08159f6bcbbcc921ca57f52f3",
+  "origin": "Previously retained real Conductor 0.87.6 REA-subject files on sven m5 max; inert source reads only",
+  "assets": {
+    "index": {
+      "file": "frontend/assets/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    },
+    "bun": {
+      "file": "bunjs/app/conductor-runtime.js",
+      "bytes": 13025924,
+      "sha256": "f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab"
+    },
+    "renderer": {
+      "file": "frontend/assets/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    }
+  },
+  "digest_read": "2026-11-17 current confined openssl SHA-256 on both retained complete original assets; full container binding inherited, not reacquired",
+  "inherited_binding": "evidence/settings/auto-permission/reference.json and evidence/settings/chrome-reconcile/reference.json",
+  "spans": [
+    {
+      "asset": "index",
+      "label": "settings-env-map",
+      "start": 423502,
+      "end": 424140,
+      "bytes": 638,
+      "source": "async function ng(t,{scope:e,context:s,workspaceContext:n}){const r=n_(t);if(n===void 0){const a=await oO(r,{scope:e,context:s});return{...await xz(r,{context:s,storedEntries:a,workspaceContext:n}),...r.getManagedEnvVars(s)}}const i=await oO(r,{scope:e,context:s});return{...await xz(r,{context:s,storedEntries:i,workspaceContext:n}),...r.getManagedEnvVars(s)}}async function xz(t,{context:e,storedEntries:s,workspaceContext:n}){const r={},i=await od(t,n);Object.assign(r,i.envVarsByContext[e]);for(const o of s){const a=i.envVarSourcesByContext[e][o.key],c=i.envVarDefinedSourcesByContext[e][o.key];oN(a??c)||(r[o.key]=o.value)}return r}",
+      "sha256": "fd0affd961d4e2b89100cc47d6c5378bea7216254535a2be1b8dc3ac3bc3d81c"
+    },
+    {
+      "asset": "index",
+      "label": "settings-env-save",
+      "start": 424140,
+      "end": 424979,
+      "bytes": 839,
+      "source": "async function rGt(t,{key:e,scope:s,context:n,value:r,target:i}){const o=n_(t),a=await QN(o,i);if(a?.scope===\"repo\")return a.locality===\"shared\"?(o.dependencies.feedback.error(\"Shared repository settings are read-only in Conductor. Edit the settings file directly.\"),!1):await YBe(o,{key:e,context:n,value:r,target:a});if(r_(o)){const c=YN({key:e,scope:s,context:n});await o.dependencies.secrets.setSecret({key:c,value:r}),await o.dependencies.db.execute(`INSERT INTO env_vars (key, scope, context, value)\n             VALUES (?, ?, ?, NULL)\n             ON CONFLICT(key, scope, context) DO UPDATE SET value = NULL`,[e,s,n])}else await o.dependencies.db.execute(`INSERT INTO env_vars (key, scope, context, value)\n             VALUES (?, ?, ?, ?)\n             ON CONFLICT(key, scope, context) DO UPDATE SET value = ?`,[e,s,n,r,r]);return!0}",
+      "sha256": "af5ea31a71128f3c2790952508a57a057193954dc6482b29804d8aeae4113796"
+    },
+    {
+      "asset": "index",
+      "label": "settings-env-delete",
+      "start": 424979,
+      "end": 425493,
+      "bytes": 514,
+      "source": "async function iGt(t,{key:e,scope:s,context:n,target:r}){const i=n_(t),o=await QN(i,r);if(o?.scope===\"repo\")return o.locality===\"shared\"?(i.dependencies.feedback.error(\"Shared repository settings are read-only in Conductor. Edit the settings file directly.\"),!1):await QBe(i,{key:e,context:n,target:o});if(r_(i)){const a=YN({key:e,scope:s,context:n});await i.dependencies.secrets.deleteSecret(a)}return await i.dependencies.db.execute(\"DELETE FROM env_vars WHERE key = ? AND scope = ? AND context = ?\",[e,s,n]),!0}",
+      "sha256": "8287ee8df03e425bff747b414553fd550ce2444797a9e090c48153d24c90acd4"
+    },
+    {
+      "asset": "index",
+      "label": "settings-provider-env",
+      "start": 425493,
+      "end": 426008,
+      "bytes": 515,
+      "source": "async function XN(t,{context:e,claudeProvider:s,codexProvider:n,workspaceContext:r}){const i=n_(t),o=await ng(i,{scope:\"shared\",context:e,workspaceContext:r}),a=i.getManagedEnvVars(e),c={...o};return s!==\"custom\"&&(a.ANTHROPIC_API_KEY===void 0&&delete c.ANTHROPIC_API_KEY,a.ANTHROPIC_AUTH_TOKEN===void 0&&delete c.ANTHROPIC_AUTH_TOKEN),n!==\"custom\"&&(a.CODEX_API_KEY===void 0&&delete c.CODEX_API_KEY,a.AI_GATEWAY_API_KEY===void 0&&delete c.AI_GATEWAY_API_KEY,a.OPENAI_BASE_URL===void 0&&delete c.OPENAI_BASE_URL),c}",
+      "sha256": "330a7bef34529f0d0ad812444cab4be52db13f92daf94bd0d8729e8cbf8f7f39"
+    },
+    {
+      "asset": "index",
+      "label": "env-serialization",
+      "start": 2515513,
+      "end": 2515825,
+      "bytes": 312,
+      "source": "function Cd(t){const e=Object.entries(t).filter(([s])=>s.trim()!==\"\").sort(([s],[n])=>s.localeCompare(n)).map(([s,n])=>`${s}=${Owt(n)}`);if(e.length!==0)return e.join(`\n`)}function Owt(t){return t===\"\"?'\"\"':t.includes(`\n`)||t.includes('\"')||/^\\s|\\s$/.test(t)?`\"${t.replace(/\\\\/g,\"\\\\\\\\\").replace(/\"/g,'\\\\\"')}\"`:t}",
+      "sha256": "dcb04820570e433da9306db48d9f8973455420ebbe6f9f743c0e1c0ddbe62833"
+    },
+    {
+      "asset": "index",
+      "label": "local-settings-env",
+      "start": 2969332,
+      "end": 2971021,
+      "bytes": 1689,
+      "source": "async function Mv({host:t,settings:e=Ie,repo:s,workspaceContext:n}){if(t!==void 0&&t!==M)return{env:{}};const[i,o]=await Promise.all([Bp({settings:e,key:\"claude_provider\",repo:s,workspaceContext:n}),Bp({settings:e,key:\"codex_provider\",repo:s,workspaceContext:n})]);return{env:await XN(e,{context:\"local\",claudeProvider:i,codexProvider:o,workspaceContext:n}),claudeProvider:i,codexProvider:o}}async function Ohe({host:t,settings:e=Ie,repo:s,workspaceContext:n,workspace:r,resolveCodexChatGptLaunch:i=Che}){const o=t===M;if(t!==void 0&&t!==M)return{};const c=\"local\",[l,u,d,h,p]=await Promise.all([Bp({settings:e,key:\"claude_executable_path\",repo:s,workspaceContext:n}),Bp({settings:e,key:\"claude_provider\",repo:s,workspaceContext:n}),Bp({settings:e,key:\"codex_executable_path\",repo:s,workspaceContext:n}),Bp({settings:e,key:\"codex_provider\",repo:s,workspaceContext:n}),ng(e,{scope:\"shared\",context:c,workspaceContext:n})]),m=u===\"custom\",v=h===\"custom\",_=m?p:Object.fromEntries(Object.entries(p).filter(([C])=>C!==\"ANTHROPIC_API_KEY\"&&C!==\"ANTHROPIC_AUTH_TOKEN\")),S=v?p:Object.fromEntries(Object.entries(p).filter(([C])=>C!==\"CODEX_API_KEY\"&&C!==\"AI_GATEWAY_API_KEY\"&&C!==\"OPENAI_BASE_URL\")),k=Object.fromEntries(Object.entries(p).filter(([C])=>C!==\"CURSOR_API_KEY\")),A=o&&h===XE&&r!==void 0?await i({workspace:r}):void 0,I=Mhe({codexProvider:h,env:S,chatGpt:A});return{claudeExecutablePath:o&&l||void 0,claudeEnvVars:Cd(_),codexExecutablePath:o&&d||void 0,...I===void 0?{}:{codexEnvVars:Cd(I.env),codexApiKey:I.apiKey,codexBaseUrl:I.baseUrl,codexChatGptProxyOrigin:I.chatGptProxyOrigin,codexDisableWebsockets:I.disableWebsockets},cursorApiKey:p.CURSOR_API_KEY||void 0,cursorEnvVars:Cd(k)}}",
+      "sha256": "d4dde3d8130f096657c54860852be0bda83d39534838c240f0a0d8798609a699"
+    },
+    {
+      "asset": "index",
+      "label": "per-agent-env",
+      "start": 3003077,
+      "end": 3005306,
+      "bytes": 2229,
+      "source": "async function qxt({agentType:t,acpAgentId:e,workspace:s}){const n=s.host!==M,r=n?\"cloud\":\"local\",i=await Nxt(s),o=()=>n?Promise.resolve(void 0):gne();if(t===\"claude\"){const[v,_,S]=await Promise.all([o(),zhe(s),n?Promise.resolve(void 0):Nl({workspace:s,key:vy(\"claude\")})]);let k={};return n||(k=(await Mv({host:s.host,settings:Ie,workspaceContext:i})).env),{ghToken:v?.token,ghTokenExpiresAt:cb(v?.expiresAtMs),agentParams:{agentType:\"claude\",envVars:Cd(k),executablePath:Tv(S),chromeEnabled:_}}}if(t===\"cursor\"){const[v,_]=await Promise.all([Mv({host:s.host,settings:Ie,workspaceContext:i}),o()]);return{ghToken:_?.token,ghTokenExpiresAt:cb(_?.expiresAtMs),agentParams:{agentType:\"cursor\",apiKey:v.env.CURSOR_API_KEY||void 0}}}if(t===\"acp\"){if(e===void 0)throw new Error(\"No ACP agent selected\");const v=!n||!Uxt(s),[_,S,k,A,I]=await Promise.all([v?XN(Ie,{context:r,claudeProvider:e===\"opencode\"?\"custom\":void 0,codexProvider:e===\"opencode\"?\"custom\":void 0,workspaceContext:i}):Promise.resolve({}),e===\"opencode\"&&v?Ie.getSetting(iB):Promise.resolve(void 0),e===\"opencode\"?Wxt(s):Promise.resolve({}),o(),e===\"opencode\"&&!n?Nl({workspace:s,key:\"opencode_executable_path\"}):Promise.resolve(void 0)]),C=e===\"opencode\"?mre({shellApiKeyEnv:k,effectiveEnvMap:_,savedProviderApiKeys:S}):_,R=Tv(I);return{ghToken:A?.token,ghTokenExpiresAt:cb(A?.expiresAtMs),agentParams:{agentType:\"acp\",acpAgentId:e,command:e===\"opencode\"&&R?{command:R,args:[\"acp\"]}:void 0,envVars:Cd(C)}}}const[a,c,l,u,d]=await Promise.all([o(),n?Promise.resolve(void 0):Nl({workspace:s,key:vy(\"codex\")}),Nl({workspace:s,key:\"internal_settings_enabled\"}),Nl({workspace:s,key:\"internal_codex_message_log\"}),Mv({host:s.host,settings:Ie,workspaceContext:i})]),h=!n&&d.codexProvider===XE?await Ihe({workspace:s}):void 0,p=n?void 0:Mhe({codexProvider:d.codexProvider,env:d.env,chatGpt:h});if(!n&&p===void 0)throw new Error(\"Codex ChatGPT launch routing is unavailable.\");const m=l===\"true\";return{ghToken:a?.token,ghTokenExpiresAt:cb(a?.expiresAtMs),agentParams:{agentType:\"codex\",executablePath:Tv(c),envVars:Cd(p?.env??d.env),apiKey:p?.apiKey,baseUrl:p?.baseUrl,chatGptProxyOrigin:p?.chatGptProxyOrigin,disableWebsockets:p?.disableWebsockets,messageLog:m&&u===\"true\"}}}",
+      "sha256": "d0d45ebf25b24131e294202854ad9c15e431ef97bfd5bbf7f27c35f931839eea"
+    },
+    {
+      "asset": "index",
+      "label": "per-turn-options",
+      "start": 3006028,
+      "end": 3008343,
+      "bytes": 2315,
+      "source": "async function q_({session:t,workspace:e}){const s=t.agentType??fs(t.model),n=s===\"acp\"?t.model??void 0:TN(await Hxt({session:t,workspace:e}));if(!n&&s!==\"acp\")throw new Error(\"No model selected\");const r=await qxt({agentType:s,acpAgentId:s===\"acp\"?Bxt(t.acpAgentId):void 0,workspace:e}),i=t.resumeSessionAt!==void 0&&t.resumeSessionAt!==null;let o=r.agentParams;s===\"claude\"&&o?.agentType===\"claude\"?o={...o,enterpriseDataPrivacy:await Bhe(e),shouldResetGenerator:i,resumeSessionAt:t.resumeSessionAt??void 0,effortLevel:hxt(t),claudePersonality:t.claudePersonality}:s===\"codex\"&&o?.agentType===\"codex\"?o={...o,modelReasoningEffort:eg(n)?aNe({model:n,codexThinkingLevel:A0(t.thinkingLevel)}):A0(t.thinkingLevel),personality:t.codexPersonality}:s===\"cursor\"&&o?.agentType===\"cursor\"&&(o={...o,effortLevel:Fxt(t.thinkingLevel)});const a=t.externalSessionId??void 0,c=ls(e.repositoryId),[l,u,d,h,p]=await Promise.all([zxt(e),Gxt(e),I2(),c,c.then(async re=>Ohe({host:e.host,settings:Ie,repo:re,workspaceContext:await b2({workspace:e,repo:re}),workspace:e}))]),[m,v,_,S,k,A,I]=await Promise.all([Ie.getSetting(\"tool_approvals_enabled\"),Ie.getSetting(\"experimental_auto_permission_mode\"),Nl({workspace:e,key:\"garry_mode\"}),$he(h),Ie.getUserSetting(\"internal_settings_use_defaults\"),Ie.getUserSetting(\"internal_claude_initial_permission_mode\"),Ie.getUserSetting(\"internal_codex_initial_permission_config\")]),C=await S2(e),R=Is(e),x=s!==\"acp\"&&t.fastMode&&n!==void 0&&Qs(n)&&Kc(n),O=e.host===M&&s===\"claude\"?Dxt(k===\"true\"?\"inherit\":A):void 0,G=e.host===M&&s===\"codex\"?Lxt(k===\"true\"?\"inherit\":I):void 0,Z=k===\"true\"?void 0:G;return{agentType:s,model:n,shouldResetGenerator:i,options:{cwd:R,workspaceId:e.localId,host:e.host,model:n,acpConfig:s===\"acp\"?t.acpConfig:void 0,resume:a,conductorEnv:{...u,...d?{CONDUCTOR_USER_ID:d.id}:{}},additionalDirectories:l,fastMode:x||void 0,forgeAuth:S,ghToken:r.ghToken,ghTokenExpiresAt:r.ghTokenExpiresAt,mainWorktreePath:h.mainWorktreePath,requiresToolApprovals:d?.requiresToolApprovals||m===\"true\",autoPermissionModeEnabled:v===\"true\",...O===void 0?{}:{initialClaudePermissionMode:O},...Z===void 0?{}:{initialCodexApprovalPolicy:Z.approvalPolicy,initialCodexSandboxMode:Z.sandboxMode},localExecutionMcpEnabled:C,getDiffCommentsEnabled:!0,agentParams:o,showThinking:_===\"true\",...p}}}",
+      "sha256": "7134ecb7fb806b86598c7917aa619a7600d6d820aa3199cfb513495230a31716"
+    },
+    {
+      "asset": "index",
+      "label": "execute-session",
+      "start": 3019402,
+      "end": 3020168,
+      "bytes": 766,
+      "source": "async executeSession(e){const{id:s,agentType:n,message:r,prompt:i,options:o}=e;try{const a=await due({sessionId:s,agentType:n,agentParams:o.agentParams});if(o.host&&o.host!==M){await Zp({label:\"agentSidecarService.executeSession.cloudExecute\",details:{sessionId:s,agentType:n,baseUrl:o.host.hostingServerUrl},fn:()=>fe.cloud.executeSession({id:s,agentType:n,message:r,prompt:i,options:{...o,maxTurns:1e3,agentParams:a}})});return}vs.query({id:s,agentType:n,message:r,prompt:i,options:{...o,maxTurns:1e3,agentParams:a}})}catch(a){throw Qhe(a)&&Gt(\"session_state_error\",{session_id:s,location:\"executeSession\",error_message:a instanceof Error?a.message:String(a),error_stack:a instanceof Error?a.stack?.slice(0,1e3):void 0}),await fe.updateSessionStatus(s,\"error\"),a}}",
+      "sha256": "1f65fe005e5baf5fefee7133adf2eefe8ad1e8b636691df3d9c48ced6862c5ac"
+    },
+    {
+      "asset": "index",
+      "label": "send-each-turn",
+      "start": 3040285,
+      "end": 3042541,
+      "bytes": 2256,
+      "source": "async sendToAgent(e,s,n,{deliveryMode:r=\"default\",codexGoal:i,useRoundhouseDelivery:o=!1}={}){const a={sessionId:e.id,workspaceId:e.localWorkspaceId},c=await Zp({label:\"sendToAgent.fetchWorkspace\",details:a,fn:()=>Un(e.id)}),l=!e.externalSessionId&&r!==\"steering\",{agentType:u,model:d,options:h,shouldResetGenerator:p}=await Zp({label:\"sendToAgent.buildLaunchConfig\",details:a,fn:()=>q_({session:e,workspace:c})}),m=s.model||d;if(!m&&u!==\"acp\")throw new Error(`No model specified for ${u} session. This is likely a bug - sessions should always have a model set before sending messages.`);m&&txt({workspace:c,message:s.content,messageId:s.id,agentType:u,model:m,sessionId:e.id}).fireAndForget();const v=c.host===M?await Zp({label:\"sendToAgent.collectLocalMessageEnrichment\",details:{...a,isNewSession:l},fn:()=>nPt({originalMessage:s.content,messageId:s.id,workspace:c,isNewSession:l})}):void 0,_=await ls(c.repositoryId);u===\"codex\"&&!h.resume&&YV.warn(\"Codex turn starting without resume thread id\",{sessionId:e.id,turnId:n,messageId:s.id,storedExternalSessionId:e.externalSessionId??null,shouldResetGenerator:p,resumeSessionAt:e.resumeSessionAt??null}),Gt(\"user_message_sent\",{session_id:e.id,workspace_id:c.localId,model:m,permission_mode:e.permissionMode,agent_type:u,delivery_mode:r,workspace_runtime:c.host===M?\"local\":\"cloud\",$set:{lastActiveAt:new Date().toISOString()}}),l&&c.host===M&&xDt(e.id,c.localId,s.content).fireAndForget(),gr.log(\"send.toSidecar\",{sessionId:e.id,agentType:u,shouldResetGenerator:p});const S=fe.state.state.cloudStateBySessionId[e.id]?.waitingSince!=null;S&&fe.markSessionOptimisticallyWorking(e.id);try{const k=o&&c.host!==M?await due({sessionId:e.id,agentType:u,agentParams:h.agentParams}):h.agentParams,A={id:e.id,agentType:u,message:s.content,prompt:s.content,options:{...h,workspaceId:c.localId,userMessageId:s.id,model:m,permissionMode:u===\"cursor\"?\"default\":e.permissionMode||\"default\",turnId:n,forgeAuth:await $he(_),deliveryMode:r,codexGoal:i,agentParams:k,...v===void 0?{}:{localMessageEnrichment:v}}};o&&c.host!==M?await fe.cloud.deliverPromotedMessage(A):await this.agentSidecarService.executeSession(A)}catch(k){throw S&&fe.clearSessionOptimisticWorking(e.id),k}S&&fe.completeSessionOptimisticDelivery(e.id)}}",
+      "sha256": "6ee14c874082914a41ef92ad3e26d619428d746f058125256b9652cf963a71ab"
+    },
+    {
+      "asset": "bun",
+      "label": "local-config-key",
+      "start": 12505318,
+      "end": 12507925,
+      "bytes": 2607,
+      "source": "async function zd5({ workspaceDir: U11, options: B, resolveClaudeExecutablePath: G, resolveCodexExecutablePath: D, processEnv: w = process.env, loadShellEnvironment: j = Wr }) {\n  let V = B.agentParams?.agentType === \"claude\" ? B.agentParams : undefined, z = B.agentParams?.agentType === \"codex\" ? B.agentParams : undefined, L = B.agentParams?.agentType === \"cursor\" ? B.agentParams : undefined, A = B.agentParams?.agentType === \"acp\" ? B.agentParams : undefined, M = await wd5({ workspaceDir: U11, options: B, processEnv: w, loadShellEnvironment: j, logShellEnvironmentLoadFailure: (T) => b5(\"Failed to load shell environment, continuing without it:\", T) }), P = B.claudeEnvVars ?? V?.envVars, N = B.codexEnvVars ?? z?.envVars, H = B.cursorEnvVars ?? L?.envVars, q = B.acpEnvVars ?? A?.envVars, W = B.codexBaseUrl ?? z?.baseUrl ?? gy7(N), E = B.codexChatGptProxyOrigin ?? z?.chatGptProxyOrigin, C = B.codexDisableWebsockets ?? z?.disableWebsockets, Q = { claudeExecutablePath: G(B.claudeExecutablePath ?? V?.executablePath), codexExecutablePath: D(B.codexExecutablePath ?? z?.executablePath), workspaceDir: U11, workspaceId: B.workspaceId, claudeEnv: await Gd5({ workspaceDir: U11, options: B, processEnv: w, loadShellEnvironment: j, logShellEnvironmentLoadFailure: (T) => b5(\"Failed to load shell environment, continuing without it:\", T) }), codexEnv: await Dd5({ workspaceDir: U11, options: B, processEnv: w, loadShellEnvironment: j, logShellEnvironmentLoadFailure: (T) => b5(\"Failed to load shell environment, continuing without it:\", T) }), cursorEnv: M, acpEnv: await Fd5({ workspaceDir: U11, options: B, processEnv: w, loadShellEnvironment: j, logShellEnvironmentLoadFailure: (T) => b5(\"Failed to load shell environment, continuing without it:\", T) }), codexApiKey: B.codexApiKey ?? z?.apiKey, codexBaseUrl: W, codexChatGptProxyOrigin: E, codexDisableWebsockets: C, cursorApiKey: B.cursorApiKey ?? L?.apiKey ?? M.CURSOR_API_KEY, acpAgentId: B.acpAgentId ?? A?.acpAgentId, acpCommand: B.acpCommand ?? A?.command };\n  return { agentConfig: Q, configKey: hy7(\"sha256\").update(JSON.stringify({ claudeExecutablePath: Q.claudeExecutablePath, claudeEnvVars: P ?? null, codexExecutablePath: Q.codexExecutablePath, codexEnvVars: N ?? null, codexApiKey: Q.codexApiKey ?? null, codexBaseUrl: Q.codexBaseUrl ?? null, codexChatGptProxyOrigin: Q.codexChatGptProxyOrigin ?? null, codexDisableWebsockets: Q.codexDisableWebsockets ?? null, cursorApiKey: Q.cursorApiKey ?? null, cursorEnvVars: H ?? null, acpAgentId: Q.acpAgentId ?? null, acpCommand: Q.acpCommand ?? null, acpEnvVars: q ?? null })).digest(\"hex\") };\n}\n",
+      "sha256": "1260110e1f605ef17260291d9eda39cd88139f30358366c30edd7dc7614a9f1d"
+    },
+    {
+      "asset": "bun",
+      "label": "host-reconciliation",
+      "start": 12508505,
+      "end": 12509823,
+      "bytes": 1318,
+      "source": "async function Od5({ workspaces: U11, sessions: B, workspaceDir: G, configKey: D, createWorkspaceHost: w, onPruneSession: j, hasInFlightWork: V, reuseExistingHost: z }) {\n  let L = Pd5.get(G) ?? new $f({ type: \"serial\" });\n  return Pd5.set(G, L), L.run(async () => {\n    let A = U11.get(G);\n    if (A && z === true)\n      return n8(`Reusing workspace host for ${G} (reuseExistingHost)`), A;\n    if (A && A.configKey === D)\n      return n8(`Reusing workspace host for ${G} (configKey match)`), A;\n    if (A) {\n      if (cy7(A.sessionStore) || V?.(G) === true)\n        return n8(`Deferring workspace recreation for ${G} \\u2014 session work in progress (configKey mismatch will be retried on next request)`), A;\n      n8(`Recreating workspace host for ${G} (configKey mismatch)`), await A.host.stopAll();\n      let N = uy7({ sessions: B, workspaceDir: G });\n      await Promise.all(N.map(async (H) => j?.(H)));\n    } else\n      n8(`Creating workspace host for ${G}`);\n    let M = A?.sessionStore ?? aQ4(), P = await w({ sessionStore: M });\n    return U11.set(G, P), P;\n  });\n}\nfunction cy7(U11) {\n  for (let B of U11.listSessionIds()) {\n    let G = U11.get(B);\n    if (G === undefined)\n      continue;\n    if (G.session.runningMessageId !== undefined || eQ4(G.session.liveState))\n      return true;\n  }\n  return false;\n}\n",
+      "sha256": "464f4c7baf7604025fc108fcb7c86c3ac62d6e90a4022b758c7e26ce1a78490d"
+    },
+    {
+      "asset": "bun",
+      "label": "local-host-caller",
+      "start": 12619376,
+      "end": 12621968,
+      "bytes": 2592,
+      "source": "  async ensureWorkspace({ workspaceDir: U11, options: B, reuseExistingHost: G }) {\n    let { agentConfig: D, configKey: w } = await zd5({ workspaceDir: U11, options: B, resolveClaudeExecutablePath: Bh7, resolveCodexExecutablePath: $p5 }), j = await Od5({ workspaces: this.workspaces, sessions: this.sessions, workspaceDir: U11, configKey: w, reuseExistingHost: G, hasInFlightWork: (V) => {\n      for (let z of this.sessions.values())\n        if (z.workspaceDir === V && z.processKey !== undefined && this.processManager.hasActiveLeases(z.processKey))\n          return true;\n      return false;\n    }, onPruneSession: async ({ sessionId: V, session: z }) => {\n      let L = z.processKey === undefined ? tU6(V) : [z.processKey, ...tU6(V)];\n      await Promise.all(L.map((A) => this.processManager.disconnect(A)));\n    }, createWorkspaceHost: async ({ sessionStore: V }) => {\n      let z = { sendNotification: (M) => fp5({ context: this.createRouteContext(), workspaceDir: U11, params: M }), getDiff: async (M) => {\n        return { type: \"getDiffResponse\", ...await qB.requestGetDiff(M) };\n      }, getDiffComments: async (M) => {\n        return { type: \"getDiffCommentsResponse\", ...await qB.requestGetDiffComments(M) };\n      }, diffComment: async (M) => {\n        return { type: \"diffCommentResponse\", ...await qB.requestDiffComment(M) };\n      }, getTerminalOutput: async (M) => {\n        return { type: \"getTerminalOutputResponse\", ...await qB.requestGetTerminalOutput(M) };\n      }, runLocalCommand: async () => ({ type: \"runLocalCommandResponse\", error: \"Local execution MCP is only available for remote workspaces.\", denied: true }), toolApproval: async (M) => {\n        return { type: \"toolApprovalResponse\", decision: (await qB.requestToolApproval(M)).decision };\n      } }, L = lA.join(lA.dirname(Uh7(import.meta.url)), \"codex-local-execution-mcp.js\"), A;\n      try {\n        A = await or({ workspaceId: U11, outgoing: z });\n      } catch (M) {\n        b5(\"Failed to start Conductor MCP bridge; Codex will run without Conductor MCP tools:\", M);\n      }\n      return { configKey: w, sessionStore: V, workspaceDir: U11, host: new rU6({ workspaceDir: U11, agentConfig: { ...D, ...A ? { localExecutionMcp: { socketPath: A.socketPath, createAuthToken: (M) => A.createAuthToken(M), getSessionHello: (M) => A.getSessionHello(M), launch: Vd5({ executablePath: process.execPath, helperPath: L }) } } : {} }, conductorEnv: B.conductorEnv, conductorMcpBridge: A, sessionStore: V, bridge: z }) };\n    } });\n    if (B.conductorEnv)\n      j.host.setConductorEnv(B.conductorEnv);\n    return j;\n  }\n",
+      "sha256": "eed56a555dbcf3027941433970667a32f79b2dc19ff55d8c323b9b63d139efb4"
+    },
+    {
+      "asset": "bun",
+      "label": "query-host-caller",
+      "start": 12573043,
+      "end": 12573637,
+      "bytes": 594,
+      "source": "async function gp5({ context: U11, pendingQuery: B, request: { id: G, agentType: D, message: w, prompt: j, options: V } }) {\n  let z = QP(D), L = V.cwd, A = B ?? PB6({ context: U11, sessionId: G });\n  try {\n    if (U11.pendingSessionLogCompression.delete(G), U11.persistSessionLogs)\n      await U11.sessionEventStore.decompressSession({ workspaceDir: L, sessionId: G });\n    let M = await U11.ensureWorkspace({ workspaceDir: L, options: V }), P = (I) => {\n      if (!A.signal.aborted)\n        return false;\n      return NV(\"query.cancelledBeforeSend\", { sessionId: G, stage: I }), true;\n    };\n",
+      "sha256": "00bc40226a0fa1fbcd1fd5fd1a210b2834c6387cd6b3a1202bd6c10c8cddc490"
+    },
+    {
+      "asset": "renderer",
+      "label": "settings-editor-save",
+      "start": 10348997,
+      "end": 10349822,
+      "bytes": 825,
+      "source": "function tda(t){const e=ne.c(15),{scope:n,context:i,target:r}=t,o=_0();let a;e[0]!==o?(a=()=>{o.invalidateQueries({queryKey:[\"envVars\"]}).fireAndForget()},e[0]=o,e[1]=a):a=e[1];const c=a;let u;e[2]!==i||e[3]!==c||e[4]!==n||e[5]!==r?(u=_=>{const{name:v,value:x,previousName:w}=_;(async()=>{w&&w!==v&&!await Ale(zo,{key:w,scope:n,context:i,target:r})||!(x!==void 0?await _Z(zo,{key:v,scope:n,context:i,value:x,target:r}):await Ale(zo,{key:v,scope:n,context:i,target:r}))||c()})().fireAndForget()},e[2]=i,e[3]=c,e[4]=n,e[5]=r,e[6]=u):u=e[6];const d=u;let h;e[7]!==i||e[8]!==c||e[9]!==n||e[10]!==r?(h=_=>{Ale(zo,{key:_,scope:n,context:i,target:r}).then(v=>{v&&c()}).fireAndForget()},e[7]=i,e[8]=c,e[9]=n,e[10]=r,e[11]=h):h=e[11];const m=h;let g;return e[12]!==m||e[13]!==d?(g={save:d,remove:m},e[12]=m,e[13]=d,e[14]=g):g=e[14],g}",
+      "sha256": "ea0534b29c4aedf354d23f0032320486d1482d8a87f89932fc45f45fdd5fc9ca"
+    }
+  ],
+  "limits": [
+    "No vendor JS evaluated; no REA/app/provider/DB process run.",
+    "Original workspace-wide idle host recreation is evidence for local env invalidation, not a new global host implementation.",
+    "Cloud workspaceSettingsRevision is explicitly excluded; no local revision field or cloud UI.",
+    "Reference busy path defers/retries; OpenConductor existing busy rejection/no-kill is retained.",
+    "Full original binary binding is inherited, not independently remeasured."
+  ]
+}

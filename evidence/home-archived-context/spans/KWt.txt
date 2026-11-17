@@ -1,0 +1,1 @@
+function KWt(t,e){const{localWorkspaceId:s,status:n}=e;we.refreshWorkspace(s).fireAndForget(),Gt("workspace_status_changed",{workspace_id:s,status:n,is_manual:!0})}
