@@ -1,0 +1,38 @@
+"""Frozen fixture/source custody. No Node, imports of product code, or tests."""
+from pathlib import Path
+import argparse, hashlib, json, os, shutil, subprocess
+D=Path('.qa/queue-collapse-shrink-135')
+F=D/'fixture-freeze'
+p=argparse.ArgumentParser()
+p.add_argument('--require-main', action='store_true', help='Admission prerequisite: fresh fetched main must contain the frozen #1474 source')
+p.add_argument('--check-host', action='store_true', help='Only meaningful immediately before the admitted slot')
+a=p.parse_args()
+r=json.loads((F/'request.json').read_text())
+sha=lambda b:hashlib.sha256(b).hexdigest()
+checks=[]
+def check(label, ok):
+    if not ok: raise AssertionError(label)
+    checks.append(label)
+def identity(pin):
+    b=Path(pin['path']).read_bytes()
+    check(pin['path'],len(b)==pin['bytes'] and sha(b)==pin['sha256'])
+identity(r['fixture'])
+check('frozen inert fixture copy matches executable path',Path(r['fixture']['path']).read_bytes()==(F/'composerQueueCollapseShrink.test.ts.txt').read_bytes())
+for pin in r['source_pins']: identity(pin)
+for dep in r['dependency_custody']:
+    for pin in dep['files']: identity(pin)
+for pin in r['package_contracts']: identity(pin)
+check('unchanged reference qualification',sha((D/'qualification.json').read_bytes())==r['reference_qualification_sha256'])
+check('unchanged reference span closure',sha((D/'reference/spans.json').read_bytes())==r['reference_spans_sha256'])
+check('exact frozen baseline retained',sha((F/'baseline-Composer.tsx.txt').read_bytes())==r['baseline_source']['sha256'])
+check('unchanged original REA receipt',Path('evidence/chat-queue/rea-queue-sites.json').read_bytes()==(D/'reference/original-rea-queue-sites.json').read_bytes())
+if a.require_main:
+    current=subprocess.check_output(['git','-c','gc.auto=0','show','origin/main:src/features/chat/Composer.tsx'])
+    check('fresh fetched main Composer equals frozen #1474 baseline',sha(current)==r['baseline_source']['sha256'])
+if a.check_host:
+    check('CPU0 currently allowed',0 in os.sched_getaffinity(0))
+    check('minimum 4GiB currently free',shutil.disk_usage('.').free>=4*1024**3)
+check('no tracked changes',not subprocess.check_output(['git','-c','gc.auto=0','diff','--name-only']).strip())
+check('no staged changes',not subprocess.check_output(['git','-c','gc.auto=0','diff','--cached','--name-only']).strip())
+check('whitespace',subprocess.run(['git','-c','gc.auto=0','diff','--check']).returncode==0)
+print(json.dumps({'static_checks_passed':len(checks),'fixture_sha256':r['fixture']['sha256'],'require_main_exercised':a.require_main,'host_checks_exercised':a.check_host,'no_node_or_test_execution':True,'does_not_grant_runtime_admission':True}))
