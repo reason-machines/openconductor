@@ -1,0 +1,127 @@
+SAME135: EXISTING final-helper verification evidence — no test/lint/format rerun
+Recovered by Conductor Rebuild from this Session's retained tool records, 2026-11-17.
+
+Checked helper head: 239f335de6ffe89eabf3de53ad9b49aa22d3feb0
+Original check began 2026-11-17T12:50:13.703Z; output captured 2026-11-17T12:51:11.370Z.
+Tests/lint ran after final edits and rustfmt, then git diff --check, then the unchanged tested tree was committed as 239f335d in the same && chain.
+Current git HEAD matches and git status --short was empty during this evidence handoff. No repository files changed in this turn.
+
+ORIGINAL COMMAND RECORD
+source_id: 25d95747-0fee-430b-b393-05e965d401e0; revision: 30002156
+{"command":"rustfmt --edition 2021 src-tauri/src/pre_workspace_completions.rs && python3 src-tauri/src/pre_workspace_completions/run-tests.py && git diff --check && git add src-tauri/src/pre_workspace_completions.rs src-tauri/src/pre_workspace_completions/tests.rs && git commit -m \"fix(composer): preserve private skill resource executable modes\" -m \"Conductor Rebuild maps selected Git executable modes to owner-only 0700 and regular files to 0600, verifies modes on reuse, and never executes the retained resources.\" && git format-patch --stdout 93b9d53c..HEAD > \"$TMPDIR/pre-workspace-completions.patch\" && sha256sum \"$TMPDIR/pre-workspace-completions.patch\" && git status --short && git rev-parse HEAD","timeout":240000}
+
+ORIGINAL OUTPUT RECORD
+source_id: 77973a1a-3a9c-4b56-aa28-1b387b97b8cc; revision: 30002628
+Below is the recovered compilation/test/Clippy output plus resulting commit. Unrelated patch hash and trailing token-redacted line omitted.
+    Updating crates.io index
+     Locking 38 packages to highest compatible versions
+      Adding generic-array v0.14.7 (available: v0.14.9)
+      Adding sha2 v0.10.9 (available: v0.11.1)
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling version_check v0.9.5
+   Compiling typenum v1.20.1
+   Compiling generic-array v0.14.7
+   Compiling libc v0.2.191
+   Compiling serde_core v1.0.229
+   Compiling getrandom v0.4.3
+   Compiling cfg-if v1.0.5
+   Compiling zmij v1.0.23
+   Compiling syn v3.0.10
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.7
+   Compiling pin-project-lite v0.2.17
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.154
+   Compiling digest v0.10.7
+   Compiling memchr v2.8.3
+   Compiling cpufeatures v0.2.17
+   Compiling itoa v1.0.19
+   Compiling completion-macros v0.0.0 (/tmp/.reason-tmp/f85829f1708d/.ara-state/tmp/oc-ref-tests-08dbfjq7/macros)
+   Compiling sha2 v0.10.9
+   Compiling uuid v1.29.3
+   Compiling tokio-macros v2.7.2
+   Compiling serde_derive v1.0.229
+   Compiling tokio v1.54.1
+   Compiling tauri v0.0.0 (/tmp/.reason-tmp/f85829f1708d/.ara-state/tmp/oc-ref-tests-08dbfjq7/tauri)
+   Compiling pre-workspace-harness v0.0.0 (/tmp/.reason-tmp/f85829f1708d/.ara-state/tmp/oc-ref-tests-08dbfjq7)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 28.45s
+     Running unittests lib.rs (/tmp/.reason-tmp/f85829f1708d/.ara-state/tmp/oc-ref-tests-08dbfjq7/target/debug/build/pre-workspace-harness/a2ca14f1ce690ac7/out/pre_workspace_harness-a2ca14f1ce690ac7)
+
+running 18 tests
+test pre_workspace_completions::tests::aggregate_metadata_limits_and_retained_cache_capacity_fail_explicitly ... ok
+test pre_workspace_completions::tests::bounded_blobs_trees_and_metadata_paths ... ok
+test pre_workspace_completions::tests::callable_command_uses_registered_repository_and_exact_response_schema ... ok
+test pre_workspace_completions::tests::command_registration_and_argument_keys_are_pinned ... ok
+test pre_workspace_completions::tests::cache_tampering_extra_files_and_unsafe_paths_are_errors ... ok
+test pre_workspace_completions::tests::immutable_commit_survives_branch_move_and_cache_hit_resolves_ref_again ... ok
+test pre_workspace_completions::tests::git_and_cache_symlinks_are_never_followed ... ok
+test pre_workspace_completions::tests::invalid_unknown_and_deleted_refs_never_fall_back ... ok
+test pre_workspace_completions::tests::link_tests::persisted_selected_ref_skill_path_is_consumed_by_actual_skill_links_grammar ... ok
+test pre_workspace_completions::tests::missing_or_replaced_registered_repo_does_not_discover_parent_repo ... ok
+test pre_workspace_completions::tests::local_global_scans_keep_existing_precedence_without_runtime ... ok
+test pre_workspace_completions::tests::registered_linked_worktree_and_pointer_changes_are_checked ... ok
+test pre_workspace_completions::tests::no_workspace_index_checkout_or_registry_mutation ... ok
+test pre_workspace_completions::tests::selected_refs_isolate_files_commands_skills_and_dirty_checkout ... ok
+test pre_workspace_completions::tests::repository_and_registration_cache_isolation ... ok
+test pre_workspace_completions::tests::symlinked_git_directory_is_rejected_even_when_target_exists ... ok
+test pre_workspace_completions::tests::stable_private_cache_contains_only_allowed_trees_and_inert_skill_resources ... ok
+test pre_workspace_completions::tests::unrepresentable_skill_name_or_path_is_never_returned ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 66 filtered out; finished in 14.43s
+
+    Checking typenum v1.20.1
+    Checking cfg-if v1.0.5
+    Checking serde_core v1.0.229
+    Checking libc v0.2.191
+    Checking pin-project-lite v0.2.17
+    Checking tokio v1.54.1
+    Checking generic-array v0.14.7
+    Checking getrandom v0.4.3
+    Checking zmij v1.0.23
+    Checking block-buffer v0.10.4
+    Checking crypto-common v0.1.7
+    Checking digest v0.10.7
+    Checking memchr v2.8.3
+    Checking cpufeatures v0.2.17
+    Checking itoa v1.0.19
+   Compiling completion-macros v0.0.0 (/tmp/.reason-tmp/f85829f1708d/.ara-state/tmp/oc-ref-tests-08dbfjq7/macros)
+    Checking serde v1.0.229
+    Checking sha2 v0.10.9
+    Checking serde_json v1.0.154
+    Checking tauri v0.0.0 (/tmp/.reason-tmp/f85829f1708d/.ara-state/tmp/oc-ref-tests-08dbfjq7/tauri)
+    Checking uuid v1.29.3
+    Checking pre-workspace-harness v0.0.0 (/tmp/.reason-tmp/f85829f1708d/.ara-state/tmp/oc-ref-tests-08dbfjq7)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 7.77s
+PASS: actual selected-ref adapter/scanners/service + signature-stubbed IPC edge; clippy
+[reason/create-suggestions-local-f687d9b6 239f335d] fix(composer): preserve private skill resource executable modes
+ 2 files changed, 25 insertions(+), 10 deletions(-)
+
+FORMAT / DIFF EVIDENCE
+rustfmt --edition 2021 src-tauri/src/pre_workspace_completions.rs ran successfully, recursively formatting the module's tests.rs as normal.
+This was formatting, NOT rustfmt --check. It emitted no stdout. The && chain reached tests, Clippy, diff --check, and commit; those later steps establish its zero exit.
+git diff --check emitted no stdout and the chain reached git commit, establishing its zero exit.
+
+HARNESS COMMANDS (from committed run-tests.py; not rerun for this handoff)
+RUSTFLAGS is inherited with ' --cfg workspace_std_only' appended.
+cargo test --manifest-path <temporary-crate>/Cargo.toml pre_workspace_completions:: -- --test-threads=2
+cargo clippy --manifest-path <temporary-crate>/Cargo.toml --all-targets -- -D warnings
+No lints were suppressed. Temporary harness crate and its target are removed by TemporaryDirectory on successful exit.
+Harness uses actual WorkspaceService, command/skill scanners, DTO and skill_links source. Only Tauri attribute/AppHandle/path/state/spawn edge is signature-stubbed.
+18 adapter tests passed; 66 unrelated mounted tests filtered out. Clippy checked all harness targets with warnings denied.
+No full Tauri IPC, macOS compilation, native app, browser, package dispatch or provider runtime was executed.
+
+TOOLCHAIN SETUP
+No Rust/Clippy component was installed by this Session. Existing cloud /usr/local/cargo/bin tools were used through inherited PATH.
+The earlier 12:36:21.827Z setup observation already found /usr/local/cargo/bin/cargo and /usr/local/cargo/bin/rustc (source_id 3174adf4-10be-4c67-b73f-e0be1b01c9aa, revision 29992838).
+Exact versions were NOT captured before the original test run. Read-only version queries at this handoff now report:
+  rustc 1.100.0 (0ef1bc386 2026-11-09)
+  cargo 1.100.0 (3acc79c0c 2026-11-05)
+  rustfmt 1.11.0-stable (0ef1bc3860 2026-11-09)
+  stable-x86_64-unknown-linux-gnu (default)
+  cargo, rustc, rustfmt, cargo-clippy all resolve under /usr/local/cargo/bin.
+These now-observed versions are setup context, not a separate historical-version attestation.
+
+Parent's inability to install Clippy is not a lint result; this original helper-head Clippy success does not assert parent integrated-head/full-app lint success.
+Session source: https://reasonmachines.com/agents/f687d9b6-30ff-4c71-be56-29ea979cf698

@@ -1,0 +1,45 @@
+{
+  "author": "Conductor Rebuild",
+  "machine": "Reason Cloud Linux",
+  "phase": "green",
+  "checked_main": "1b2d83e6c2e2b3fa2eb251fc25a56d96401d96f1",
+  "fixture_sha256": "3116f4291371e127b6b5dc08afa29eb6213c9e834eb400fa47761b430562d217",
+  "original_six_sha256": "bbea95554e60381830e80fe5980fa63583a7f39db2aa90dcd66d211c6a2e286e",
+  "baseline": {
+    "command": "node --experimental-strip-types --test .oc-tmp/sidebar-project-filter-numbering/fresh-main/src/sidebar/sidebarProjectFilterNumbering.test.ts",
+    "exit_code": 1,
+    "tests": 12,
+    "passed": 5,
+    "failed": 7,
+    "skipped": 0,
+    "harness_errors": 0,
+    "log": "fresh-main-red-recheck.tap",
+    "sha256": "87e248da4ae9d4df50fbad231cc42156b7851ae53bedae0034d2d4e4eb13171e"
+  },
+  "candidate": {
+    "command": "node --experimental-strip-types --test src/sidebar/sidebarProjectFilterNumbering.test.ts",
+    "exit_code": 0,
+    "tests": 12,
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "harness_errors": 0,
+    "log": "candidate-green.tap",
+    "sha256": "a0e95c8e68de9c0212558e2d8b397256d1abdb64b22bffd99e4445b7a663f055"
+  },
+  "source_files_checked": 1259,
+  "all_sources_unchanged_during_run": true,
+  "protected_source_hash_manifest_sha256": "4479b25f3136a57d10f8c937396408e1779467e40028a2bd4b933f824d155574",
+  "allowed_production_delta": [
+    "src/state/sidebarOrder.ts: sidebarEntries repo-group filter only"
+  ],
+  "not_run": [
+    "browser screenshot",
+    "native persistence",
+    "OS keyboard delivery",
+    "provider",
+    "package",
+    "runtime",
+    "release dispatch"
+  ]
+}

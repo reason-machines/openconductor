@@ -1,0 +1,1 @@
+async function bwo({event:t,editor:e}){if(e===null||!uri()||!Qh("chat.composer.pasteFilePaths",t.nativeEvent)||(t.preventDefault(),t.stopPropagation(),t.nativeEvent.repeat))return;const n=await aRt()??await vwo();if(n===void 0){Bt.debug("[composer-clipboard] paste-as-paths shortcut found nothing to paste");return}e.isDestroyed||XQ({view:e.view,text:n})}

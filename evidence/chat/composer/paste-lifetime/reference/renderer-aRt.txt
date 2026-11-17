@@ -1,0 +1,1 @@
+async function aRt(){try{const t=await tl("execute_shell_command",{shell:"/bin/zsh",command:_wo,noRcs:!0});return GIi(t.stdout)}catch(t){Bt.debug("[composer-clipboard] native file path read failed",{error:t instanceof Error?t.message:String(t)});return}}

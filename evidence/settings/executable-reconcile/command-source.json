@@ -1,0 +1,10 @@
+{
+  "command_envelope_sha256": "16925e34628ce404c56a16598bdc2dd53751b0ed1293ba83e947f5556d6fb06d",
+  "commands_sha256": "60da11b8774fe6c5b980f37f79202182375818d6686d49e5f13f42918d110efc",
+  "adapters": [
+    "ready-only async_runtime shim",
+    "counter-only runner, checkpoint and handoff",
+    "fake resolver path/error"
+  ],
+  "exact_changed_envelope": true
+}

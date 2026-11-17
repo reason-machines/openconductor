@@ -1,0 +1,522 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Host All: Home reveals first row's heading before the option
+not ok 1 - actual Host All: Home reveals first row's heading before the option
+  ---
+  duration_ms: 428.135532
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:171:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    heading must be revealed before the selected first option
+    + actual - expected
+    
+      [
+        {
+          block: 'nearest',
+    -     kind: 'heading',
+    -     title: 'Workspace actions'
+    -   },
+    -   {
+    -     block: 'nearest',
+          kind: 'item',
+          title: 'File picker⌘P'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'heading'
+      title: 'Workspace actions'
+      block: 'nearest'
+    1:
+      kind: 'item'
+      title: 'File picker⌘P'
+      block: 'nearest'
+  actual:
+    0:
+      kind: 'item'
+      title: 'File picker⌘P'
+      block: 'nearest'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:181:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: actual Host All: ArrowUp reveals first row's heading before the option
+not ok 2 - actual Host All: ArrowUp reveals first row's heading before the option
+  ---
+  duration_ms: 232.610153
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:171:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    heading must be revealed before the selected first option
+    + actual - expected
+    
+      [
+        {
+          block: 'nearest',
+    -     kind: 'heading',
+    -     title: 'Workspace actions'
+    -   },
+    -   {
+    -     block: 'nearest',
+          kind: 'item',
+          title: 'File picker⌘P'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'heading'
+      title: 'Workspace actions'
+      block: 'nearest'
+    1:
+      kind: 'item'
+      title: 'File picker⌘P'
+      block: 'nearest'
+  actual:
+    0:
+      kind: 'item'
+      title: 'File picker⌘P'
+      block: 'nearest'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:181:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: actual Host Actions: Home reveals first row's heading before the option
+not ok 3 - actual Host Actions: Home reveals first row's heading before the option
+  ---
+  duration_ms: 126.144814
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:171:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    heading must be revealed before the selected first option
+    + actual - expected
+    
+      [
+        {
+          block: 'nearest',
+    -     kind: 'heading',
+    -     title: 'Workspace actions'
+    -   },
+    -   {
+    -     block: 'nearest',
+          kind: 'item',
+          title: 'File picker⌘P'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'heading'
+      title: 'Workspace actions'
+      block: 'nearest'
+    1:
+      kind: 'item'
+      title: 'File picker⌘P'
+      block: 'nearest'
+  actual:
+    0:
+      kind: 'item'
+      title: 'File picker⌘P'
+      block: 'nearest'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:181:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: actual Host Actions: ArrowUp reveals first row's heading before the option
+not ok 4 - actual Host Actions: ArrowUp reveals first row's heading before the option
+  ---
+  duration_ms: 87.881104
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:171:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    heading must be revealed before the selected first option
+    + actual - expected
+    
+      [
+        {
+          block: 'nearest',
+    -     kind: 'heading',
+    -     title: 'Workspace actions'
+    -   },
+    -   {
+    -     block: 'nearest',
+          kind: 'item',
+          title: 'File picker⌘P'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'heading'
+      title: 'Workspace actions'
+      block: 'nearest'
+    1:
+      kind: 'item'
+      title: 'File picker⌘P'
+      block: 'nearest'
+  actual:
+    0:
+      kind: 'item'
+      title: 'File picker⌘P'
+      block: 'nearest'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:181:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: actual Host Settings: Home reveals first row's heading before the option
+not ok 5 - actual Host Settings: Home reveals first row's heading before the option
+  ---
+  duration_ms: 77.975317
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:171:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    heading must be revealed before the selected first option
+    + actual - expected
+    
+      [
+        {
+          block: 'nearest',
+    -     kind: 'heading',
+    -     title: 'Settings'
+    -   },
+    -   {
+    -     block: 'nearest',
+          kind: 'item',
+          title: 'General'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'heading'
+      title: 'Settings'
+      block: 'nearest'
+    1:
+      kind: 'item'
+      title: 'General'
+      block: 'nearest'
+  actual:
+    0:
+      kind: 'item'
+      title: 'General'
+      block: 'nearest'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:181:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: actual Host Settings: ArrowUp reveals first row's heading before the option
+not ok 6 - actual Host Settings: ArrowUp reveals first row's heading before the option
+  ---
+  duration_ms: 136.634971
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:171:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    heading must be revealed before the selected first option
+    + actual - expected
+    
+      [
+        {
+          block: 'nearest',
+    -     kind: 'heading',
+    -     title: 'Settings'
+    -   },
+    -   {
+    -     block: 'nearest',
+          kind: 'item',
+          title: 'General'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'heading'
+      title: 'Settings'
+      block: 'nearest'
+    1:
+      kind: 'item'
+      title: 'General'
+      block: 'nearest'
+  actual:
+    0:
+      kind: 'item'
+      title: 'General'
+      block: 'nearest'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:181:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: actual Host Workspaces: Home reveals first row's heading before the option
+not ok 7 - actual Host Workspaces: Home reveals first row's heading before the option
+  ---
+  duration_ms: 62.2795
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:171:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    heading must be revealed before the selected first option
+    + actual - expected
+    
+      [
+        {
+          block: 'nearest',
+    -     kind: 'heading',
+    -     title: 'Workspaces'
+    -   },
+    -   {
+    -     block: 'nearest',
+          kind: 'item',
+          title: 'PFixture 2 2almost 57y'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'heading'
+      title: 'Workspaces'
+      block: 'nearest'
+    1:
+      kind: 'item'
+      title: 'PFixture 2 2almost 57y'
+      block: 'nearest'
+  actual:
+    0:
+      kind: 'item'
+      title: 'PFixture 2 2almost 57y'
+      block: 'nearest'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:181:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: actual Host Workspaces: ArrowUp reveals first row's heading before the option
+not ok 8 - actual Host Workspaces: ArrowUp reveals first row's heading before the option
+  ---
+  duration_ms: 107.952517
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:171:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    heading must be revealed before the selected first option
+    + actual - expected
+    
+      [
+        {
+          block: 'nearest',
+    -     kind: 'heading',
+    -     title: 'Workspaces'
+    -   },
+    -   {
+    -     block: 'nearest',
+          kind: 'item',
+          title: 'PFixture 2 2almost 57y'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'heading'
+      title: 'Workspaces'
+      block: 'nearest'
+    1:
+      kind: 'item'
+      title: 'PFixture 2 2almost 57y'
+      block: 'nearest'
+  actual:
+    0:
+      kind: 'item'
+      title: 'PFixture 2 2almost 57y'
+      block: 'nearest'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:181:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: actual Host: Option+ArrowDown reveals the destination group's heading
+not ok 9 - actual Host: Option+ArrowDown reveals the destination group's heading
+  ---
+  duration_ms: 164.063635
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:188:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          block: 'nearest',
+    -     kind: 'heading',
+    -     title: 'Actions'
+    -   },
+    -   {
+    -     block: 'nearest',
+          kind: 'item',
+          title: 'Create workspace⌘N'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'heading'
+      title: 'Actions'
+      block: 'nearest'
+    1:
+      kind: 'item'
+      title: 'Create workspace⌘N'
+      block: 'nearest'
+  actual:
+    0:
+      kind: 'item'
+      title: 'Create workspace⌘N'
+      block: 'nearest'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:199:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: actual Host: Option+ArrowUp reveals the destination group's heading
+not ok 10 - actual Host: Option+ArrowUp reveals the destination group's heading
+  ---
+  duration_ms: 64.286572
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:188:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          block: 'nearest',
+    -     kind: 'heading',
+    -     title: 'Workspace actions'
+    -   },
+    -   {
+    -     block: 'nearest',
+          kind: 'item',
+          title: 'File picker⌘P'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'heading'
+      title: 'Workspace actions'
+      block: 'nearest'
+    1:
+      kind: 'item'
+      title: 'File picker⌘P'
+      block: 'nearest'
+  actual:
+    0:
+      kind: 'item'
+      title: 'File picker⌘P'
+      block: 'nearest'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteGroupHeadingScroll.test.ts:199:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: control All: nonfirst row only reveals the option
+ok 11 - control All: nonfirst row only reveals the option
+  ---
+  duration_ms: 86.371479
+  type: 'test'
+  ...
+# Subtest: control Actions: nonfirst row only reveals the option
+ok 12 - control Actions: nonfirst row only reveals the option
+  ---
+  duration_ms: 115.273847
+  type: 'test'
+  ...
+# Subtest: control Settings: nonfirst row only reveals the option
+ok 13 - control Settings: nonfirst row only reveals the option
+  ---
+  duration_ms: 166.498462
+  type: 'test'
+  ...
+# Subtest: control Workspaces: nonfirst row only reveals the option
+ok 14 - control Workspaces: nonfirst row only reveals the option
+  ---
+  duration_ms: 86.077715
+  type: 'test'
+  ...
+# Subtest: control: headless Projects group only reveals its selected option
+ok 15 - control: headless Projects group only reveals its selected option
+  ---
+  duration_ms: 133.027366
+  type: 'test'
+  ...
+# Subtest: control: IME leaves selection and scroll calls untouched
+ok 16 - control: IME leaves selection and scroll calls untouched
+  ---
+  duration_ms: 89.847654
+  type: 'test'
+  ...
+# Subtest: control: empty/disabled rows produce no selection or scroll
+ok 17 - control: empty/disabled rows produce no selection or scroll
+  ---
+  duration_ms: 86.137832
+  type: 'test'
+  ...
+# Subtest: control: pointer selection never requests a group-heading scroll
+ok 18 - control: pointer selection never requests a group-heading scroll
+  ---
+  duration_ms: 77.748903
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 8
+# fail 10
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3102.436498

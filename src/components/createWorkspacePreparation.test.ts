@@ -10,6 +10,29 @@ const React = dependencies("react");
 const { act, create } = dependencies("react-test-renderer");
 const ts: typeof import("typescript") = dependencies("typescript");
 const root = resolve(import.meta.dirname, "../..");
+// Explicit real-module loader additions; no lifecycle/Plan assertions change.
+const suggestionModules: Record<string, string> = {
+  "../features/chat/composerDocument.ts": "src/features/chat/composerDocument.ts",
+  "../features/chat/preWorkspaceCompletions.ts": "src/features/chat/preWorkspaceCompletions.ts",
+  "./create/CreateWorkspaceSuggestions.tsx": "src/components/create/CreateWorkspaceSuggestions.tsx",
+  "../../workspace/createFlow.ts": "src/workspace/createFlow.ts",
+  "../../features/chat/preWorkspaceCompletions.ts": "src/features/chat/preWorkspaceCompletions.ts",
+  "../../features/chat/FileMentionMenu.tsx": "src/features/chat/FileMentionMenu.tsx",
+  "../../features/chat/SlashMenu.tsx": "src/features/chat/SlashMenu.tsx",
+  "../../features/chat/fileMentions.ts": "src/features/chat/fileMentions.ts",
+  "../../features/chat/slashCommands.ts": "src/features/chat/slashCommands.ts",
+  "./composerSlashRange.ts": "src/features/chat/composerSlashRange.ts",
+  "./fileMentions.ts": "src/features/chat/fileMentions.ts",
+  "./slashCommands.ts": "src/features/chat/slashCommands.ts",
+  "./useSuggestionPointer.ts": "src/features/chat/useSuggestionPointer.ts",
+  "../../components/FileIcons": "src/components/FileIcons.tsx",
+  "../../components/Icons": "src/components/Icons.tsx",
+  "./fileIconNames": "src/components/fileIconNames.ts",
+  "./Icons": "src/components/Icons.tsx",
+  "./ConductorIcon": "src/components/ConductorIcon.tsx",
+  "./AppMark": "src/components/AppMark.tsx",
+  "./conductorIcons.generated": "src/components/conductorIcons.generated.ts",
+};
 type Attachment = { name: string; text: string };
 type Pending = { kind: string; text: string; attachments?: Attachment[] };
 
@@ -41,12 +64,13 @@ async function fixture({ agent = "claude", defaultPlan = false, loaded = true, h
     const source = readFileSync(resolve(sourceRoot, file), "utf8");
     runInNewContext(ts.transpileModule(source, {
       fileName: file,
-      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true },
     }).outputText, {
       exports, console, TextDecoder, TextEncoder, Uint8Array, crypto: { randomUUID: () => "draft" },
       document: { activeElement: null }, HTMLElement: class {},
       require(name: string) {
-        if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+        if (name === "react" || name === "react/jsx-runtime" || name === "fuzzysort" || name === "vscode-material-icons") return dependencies(name);
+        if (suggestionModules[name]) return load(suggestionModules[name]);
         const real: Record<string, string> = {
           "../workspace/createFlow": "src/workspace/createFlow.ts",
           "../workspace/createInSection": "src/workspace/createInSection.ts",
@@ -56,7 +80,7 @@ async function fixture({ agent = "claude", defaultPlan = false, loaded = true, h
           "../draft-attachments/staging.ts": "src/features/draft-attachments/staging.ts",
         };
         if (real[name]) return load(real[name]);
-        if (name === "@tauri-apps/api/core") return { invoke: async (command: string, args: typeof writes[number]) => {
+        if (name === "@tauri-apps/api/core") return { isTauri: () => false, invoke: async (command: string, args: typeof writes[number]) => {
           assert.equal(command, "local_plan_mode_set");
           writes.push({ ...args }); events.push("plan-start");
           if (holdPlan) await planGate.promise;
