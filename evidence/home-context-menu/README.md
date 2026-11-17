@@ -63,6 +63,17 @@ After restoration, **`npm run typecheck` passed** and **`npm run build` passed**
 
 The initial adjacent run exposed four hydration-fixture failures because its real-module allowlist did not include the new Home screen. Adding that exact production module restored all four unchanged assertions; no expectation, timeout or behavior was weakened.
 
+## Hosted CI adapter recovery
+
+Hosted head `85f7c1cdd5002c8a57b1d0382a20b5e2f256a594` passed typecheck but failed 20 frontend unit cases: the strict App loaders in `src/palette/createSection.test.ts` and `src/palette/moveToSection.test.ts` still expected the old inert `AllWorkspaces` screen import. The two-line repair updates only those import maps to `HomeWorkspaceScreen`; every case body/assertion and the frozen Home fixture remain byte-identical. No production behavior, workflow, timeout or test gate was changed.
+
+- Same 26 affected cases: **6 pass / 20 fail before → 26/26 pass after**.
+- Full CI-equivalent local frontend run: **4,731 pass / 1 fail / zero skips**. This pre-commit run is **partial**, not an all-pass result: the disclosure remount test intentionally verifies every `src` file against `HEAD` and rejected the two then-uncommitted test edits.
+- After committing the adapter repair, the unchanged disclosure guard/replay plus both Home context-menu suites **passed 13/13**, zero skips. No disclosure/tool source was edited.
+- `npm run typecheck` and `npm run build` both **passed** again (42.74s Vite; advisory chunk-size warning only). CI-equivalent isolated `jsdom@26.1.0` dependencies were restored under ignored `.ara-state`; no tracked manifest/lockfile changed.
+
+See [the exact recovery receipt](ci-recovery.json) and its losslessly compressed RED, GREEN, full-run and committed-guard logs. A complete post-commit frontend rerun was not repeated locally; all exact-head hosted automatic checks must still pass before merge.
+
 ## Acceptance gaps and ownership
 
 Product browser, native, packaged-app and side-by-side acceptance are **NOT RUN**. There is no product screenshot: this lane has no runtime/native admission, and the sole executor's existing reservation was not duplicated. A Page preview is documentation rendering, not product evidence.

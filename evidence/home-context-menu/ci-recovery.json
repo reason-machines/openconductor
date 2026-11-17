@@ -1,0 +1,83 @@
+{
+  "unit": "SAME271 Home context-menu CI adapter recovery",
+  "execution": "Reason Cloud; inert mounted/unit tests only",
+  "hosted_failed_head": "85f7c1cdd5002c8a57b1d0382a20b5e2f256a594",
+  "hosted_failed_run": 44049282207,
+  "hosted_failure": "20 tests reject unexpected ./components/HomeWorkspaceScreen in two strict App loaders",
+  "local_pre_edit_tree_equal_to_hosted_head": true,
+  "committed_adapter_fix": "ca2470579b9103b8b641405157ce8e90e443ab1b",
+  "changed_test_paths": [
+    "src/palette/createSection.test.ts",
+    "src/palette/moveToSection.test.ts"
+  ],
+  "test_case_bodies_and_assertions_unchanged": true,
+  "frozen_home_fixture_unchanged": true,
+  "affected_before": {
+    "tests": 26,
+    "pass": 6,
+    "fail": 20,
+    "skip": 0
+  },
+  "affected_after": {
+    "tests": 26,
+    "pass": 26,
+    "fail": 0,
+    "skip": 0
+  },
+  "full_pre_commit": {
+    "command": "NODE_ENV=development ONBOARDING_DOM_DEPS=<isolated jsdom prefix> node --test \"src/**/*.test.ts\"",
+    "tests": 4732,
+    "pass": 4731,
+    "fail": 1,
+    "skip": 0,
+    "status": "PARTIAL",
+    "failure": "disclosureRemount source-identity guard rejects the two uncommitted test files against HEAD; not a tool behavior failure"
+  },
+  "post_commit_focused": {
+    "command": "NODE_ENV=development ONBOARDING_DOM_DEPS=<isolated jsdom prefix> node --test --test-concurrency=1 src/features/chat/disclosureRemount.test.ts src/components/homeContextMenu.test.ts src/components/homeContextMenuIntegration.test.ts",
+    "tests": 13,
+    "pass": 13,
+    "fail": 0,
+    "skip": 0,
+    "status": "PASS"
+  },
+  "typecheck": {
+    "command": "npm run typecheck",
+    "status": "PASS"
+  },
+  "build": {
+    "command": "npm run build",
+    "status": "PASS",
+    "vite_seconds": 42.74,
+    "warning": "advisory chunk-size warning only"
+  },
+  "dependency_setup": "CI-equivalent isolated jsdom@26.1.0 prefix under ignored .ara-state; no tracked manifest/lockfile changes",
+  "full_post_commit_rerun": "NOT_RUN locally; exact-head hosted gate remains required",
+  "logs": {
+    "red": {
+      "path": "ci-recovery-red.txt.gz",
+      "uncompressed_sha256": "d415fb330afb8e2584077d2773132c6d859e7e17cd6bf7bf195a3a53bf82a29d",
+      "archive_sha256": "61f3b1a92623295a47e8cedf362222704139e98c058b88f3b1dbcdee06984cb1"
+    },
+    "green": {
+      "path": "ci-recovery-green.txt.gz",
+      "uncompressed_sha256": "faf24b70563c83b6c24a13a92199298ba5440ee2462822f1161483bdefbeb7cf",
+      "archive_sha256": "390dee5a2d138bec6d3d955e7647eeacc2fee77c1a22f132467b4935adbb8d58"
+    },
+    "full-suite": {
+      "path": "ci-recovery-full-suite.txt.gz",
+      "uncompressed_sha256": "2967c324441f6ece83ddfd9929a39f7bdbc99921361c763d321ba944daca4bed",
+      "archive_sha256": "e8a3eac4049124ea7be5291652f3b3475bd8088d788761e538b2f4e738c0660e"
+    },
+    "committed-regressions": {
+      "path": "ci-recovery-committed-regressions.txt.gz",
+      "uncompressed_sha256": "a3753704824b948cda70b16024c18efc2a7a68082e7e666c63b1408ccc30397b",
+      "archive_sha256": "c86c73bda9fa384ba3fd4097cebe479c07ee13e8c6c6d10d2ddcc3876679c539"
+    }
+  },
+  "product_changes_in_recovery": false,
+  "test_or_workflow_gates_weakened": false,
+  "product_browser": "NOT_RUN",
+  "native": "NOT_RUN",
+  "package": "UNVERIFIED; existing sole owner/check unchanged"
+}
