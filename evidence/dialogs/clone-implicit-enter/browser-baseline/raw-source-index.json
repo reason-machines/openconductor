@@ -1,0 +1,58 @@
+[
+  {
+    "query": "actual-location-enter",
+    "file": "actual-location-enter.json",
+    "source_id": "a23181a2-7eb3-4416-8f59-5f1fd2ae57b5",
+    "revision": 30085297,
+    "created_at": "2026-11-17T15:34:26.962Z"
+  },
+  {
+    "query": "actual-url-meta-enter",
+    "file": "actual-url-meta-enter.json",
+    "source_id": "719a8276-f5bc-4f62-97ae-3272ebdb211e",
+    "revision": 30085631,
+    "created_at": "2026-11-17T15:34:58.574Z"
+  },
+  {
+    "query": "actual-location-meta-enter",
+    "file": "actual-location-meta-enter.json",
+    "source_id": "b6297a64-9871-4f04-8596-a3f77ef70a03",
+    "revision": 30085896,
+    "created_at": "2026-11-17T15:35:33.391Z"
+  },
+  {
+    "query": "actual-primary-click",
+    "file": "actual-primary-click.json",
+    "source_id": "564be070-31ed-4980-8942-884408355390",
+    "revision": 30086161,
+    "created_at": "2026-11-17T15:36:06.743Z"
+  },
+  {
+    "query": "actual-blank",
+    "file": "actual-blank.json",
+    "source_id": "b3def2d7-5c2c-4f8d-a03d-d42703f727d9",
+    "revision": 30086509,
+    "created_at": "2026-11-17T15:36:54.776Z"
+  },
+  {
+    "query": "pendingFinal",
+    "file": "pendingFinal.json",
+    "source_id": "99cc23e4-a731-4b6e-b51d-a392a2abea20",
+    "revision": 30085063,
+    "created_at": "2026-11-17T15:33:59.986Z"
+  },
+  {
+    "query": "capabilitySubmits\\\":3",
+    "file": "capabilitySubmits_3.json",
+    "source_id": "382152ef-6c45-4f8f-a23d-72677833eda6",
+    "revision": 30084221,
+    "created_at": "2026-11-17T15:32:10.049Z"
+  },
+  {
+    "query": "Cloning...",
+    "file": "Cloning_.json",
+    "source_id": "5e09c1f6-0d38-4f4f-90ae-60f5cf27e8bc",
+    "revision": 30084597,
+    "created_at": "2026-11-17T15:32:58.247Z"
+  }
+]
