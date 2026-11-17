@@ -317,15 +317,19 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
     const ctrlNext = ctrlLetter && (e.key === "n" || e.key === "j");
     const ctrlPrevious = ctrlLetter && (e.key === "p" || e.key === "k");
     if (flat.length === 0) {
-      if ((e.key === "Enter" && !e.metaKey) || ctrlNext || ctrlPrevious) e.preventDefault();
+      if ((e.key === "Enter" && !e.metaKey) || ctrlNext || ctrlPrevious ||
+        (e.altKey && (e.key === "ArrowDown" || e.key === "ArrowUp"))) e.preventDefault();
       return;
     }
-    if (e.key === "ArrowDown" || ctrlNext) {
+    if (e.key === "ArrowDown" || ctrlNext || e.key === "ArrowUp" || ctrlPrevious) {
       e.preventDefault();
-      setActiveKey(flat[Math.min(activeIndex + 1, flat.length - 1)].key);
-    } else if (e.key === "ArrowUp" || ctrlPrevious) {
-      e.preventDefault();
-      setActiveKey(flat[Math.max(activeIndex - 1, 0)].key);
+      const direction = e.key === "ArrowDown" || ctrlNext ? 1 : -1;
+      const nextGroup = e.altKey
+        ? groups[groups.findIndex((group) => group.rows.includes(flat[activeIndex].row)) + direction]
+        : undefined;
+      setActiveKey(nextGroup
+        ? `${nextGroup.bucket}:${nextGroup.rows[0].workspace.id}`
+        : flat[Math.max(0, Math.min(activeIndex + direction, flat.length - 1))].key);
     } else if (e.key === "Enter" && e.metaKey) {
       // workspace.startUnstartedWorkspace (⌘↩): open a backlog workspace from
       // the Home list (Conductor's "Backlog page" displayScope). Only fires for
