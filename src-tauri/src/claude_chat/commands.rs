@@ -60,11 +60,6 @@ impl ClaudeChats {
                                 .ok()
                         })
                         .is_some_and(|p| p.chrome_mode_enabled);
-                    // M7: apply local env vars from Settings > Environment and
-                    // .conductor/settings.toml; provider secrets in launch.env retain precedence.
-                    for (k, v) in crate::settings::effective::local_env_for_dir(cwd) {
-                        launch.env.set(&k, v.as_str());
-                    }
                     Ok(launch)
                 });
                 let emit_app = app.clone();
@@ -136,6 +131,14 @@ pub async fn claude_prompt(
     let state = app.state::<ClaudeChats>();
     let runner = state.runner(&app);
     let cwd = state.cwds.lock().unwrap().get(&chat_id).cloned();
+    // Local settings changes recreate an idle generator. Capture once so the
+    // reuse key and the next launch use the same authoritative environment.
+    options.local_env = cwd.as_deref().map(|cwd| {
+        crate::settings::effective::local_env_for_dir(cwd)
+            .into_iter()
+            .map(|(key, value)| (key, crate::agent::SecretString::new(value)))
+            .collect()
+    });
     // Stop also covers the database lookup before dispatch.
     runner.expect_prompt(&chat_id);
     drop(mode_lease);

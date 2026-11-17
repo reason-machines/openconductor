@@ -48,6 +48,9 @@ pub struct ChatOptions {
     /// Server-derived app preference, never accepted from chat IPC options.
     #[serde(skip)]
     pub chrome_enabled: Option<bool>,
+    /// Effective local settings captured by the server, with redacted values.
+    #[serde(skip)]
+    pub local_env: Option<std::collections::BTreeMap<String, crate::agent::SecretString>>,
 }
 
 impl ChatOptions {
@@ -82,6 +85,29 @@ mod option_tests {
         assert_ne!(off, on);
         assert_eq!(off.clone(), off);
         assert_eq!(on.clone(), on);
+    }
+
+    #[test]
+    fn local_environment_is_not_deserialized_from_ipc() {
+        let options: ChatOptions = serde_json::from_value(serde_json::json!({
+            "local_env": {"PARITY_ENV": "caller-value"},
+            "localEnv": {"PARITY_ENV": "caller-value"}
+        })).unwrap();
+        assert_eq!(options.local_env, None);
+    }
+
+    #[test]
+    fn local_environment_reuse_key_redacts_values() {
+        let snapshot = |value: &str| ChatOptions {
+            local_env: Some(std::collections::BTreeMap::from([(
+                "PARITY_ENV".into(), crate::agent::SecretString::new(value)
+            )])),
+            ..ChatOptions::default()
+        };
+        let first = snapshot("synthetic-first");
+        assert_eq!(first, snapshot("synthetic-first"));
+        assert_ne!(first, snapshot("synthetic-second"));
+        assert!(!format!("{first:?}").contains("synthetic-first"));
     }
 }
 
@@ -372,7 +398,7 @@ impl ClaudeRunner {
                     return Ok(());
                 }
                 if !st.waiting.is_empty() {
-                    return Err("Wait for the current Claude Code turn to end before changing linked directories, model, effort, Fast, Plan or Chrome mode.".into());
+                    return Err("Wait for the current Claude Code turn to end before changing linked directories, environment, model, effort, Fast, Plan or Chrome mode.".into());
                 }
             }
             if let Some(id) = st.mapper.session_id() {
@@ -391,6 +417,11 @@ impl ClaudeRunner {
         options.apply_fast_mode(&mut launch.settings)?;
         if let Some(mode) = options.permission_mode { launch.permission_mode = mode; }
         if let Some(chrome) = options.chrome_enabled { launch.chrome = chrome; }
+        if let Some(env) = &options.local_env {
+            for (key, value) in env {
+                launch.env.set_secret(key, value.clone());
+            }
+        }
         let mut session = ClaudeSession::spawn(&launch)
             .map_err(|e| format!("Could not start Claude Code: {e}"))?;
         let events = session.take_events();
