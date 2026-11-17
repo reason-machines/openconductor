@@ -1,0 +1,344 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reason cloud file identity</title><style>
+body{margin:0;font:14px/20px var(--font-sans,system-ui);color:var(--foreground)}h1{font-size:22px;line-height:28px;font-weight:500;margin:8px 0 12px}h2{font-size:17px;line-height:24px;font-weight:500;margin:24px 0 12px}p{margin:8px 0 12px}a{color:var(--chart-1)}.muted{color:var(--muted-foreground)}.eyebrow{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-foreground)}.verdict{border-left:3px solid var(--chart-3);padding-left:12px;margin:16px 0 24px}.vis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}.vis-card{border:1px solid var(--border);border-radius:8px;padding:12px}.value{display:block;font-size:22px;line-height:28px;font-weight:500;font-variant-numeric:tabular-nums}code,pre{font:12px/18px var(--font-mono,monospace);overflow-wrap:anywhere}pre{white-space:pre-wrap;background:var(--muted);padding:12px;border-radius:8px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;border-bottom:1px solid var(--border);padding:10px 6px;vertical-align:top}th{font-weight:500;color:var(--muted-foreground)}details{border-top:1px solid var(--border);padding:12px 0}summary{cursor:pointer;overflow-wrap:anywhere}li{margin-bottom:8px}footer{margin:24px 0 8px;padding-top:12px;border-top:1px solid var(--border);font-size:13px;color:var(--muted-foreground)}
+</style></head><body>
+<div class="eyebrow">Conductor Rebuild · frozen source-backed reproduction</div>
+<h1>A known cloud result opens the local same-path file.</h1>
+<p class="muted">Reason-specific one-chat local/cloud integration. Not a Conductor behavior claim, live provider test, or native parity claim.</p>
+<div class="verdict"><strong>FROZEN RED · no product edits</strong><p>Six cloud-normalized targets dispatch to the local diff/viewer, both live and after save/restore. Their cloud provenance and Session ID still exist in the mounted transcript immediately before the click boundary.</p></div>
+<div class="vis-grid"><div class="vis-card"><span class="muted">Baseline controls</span><span class="value">19 pass</span><span>Local, literal-cloud, chat/session and persistence controls</span></div><div class="vis-card"><span class="muted">Intended failures</span><span class="value">12 fail</span><span>Six target clicks × live/restored</span></div><div class="vis-card"><span class="muted">Adjacent checks</span><span class="value">66 / 66</span><span>No failures, skips or cancellations</span></div></div>
+<h2>What the reproduction actually ran</h2>
+<ol><li>Source-valid inert ACP metadata and tool notifications; same owned chat/Session, local → cloud → local.</li><li>Whole production Rust <code>updates.rs</code>, the exact extracted provider routing block, and unchanged wire serializer helpers.</li><li>Actual Reason listener, adapter, reducer, save/restore and row builder.</li><li>Mounted production Transcript and ToolRows; actual FileBadge click, then exact AST-extracted ChatPanel and Workspace file-open callbacks with inert state/diff witnesses.</li></ol>
+<p>No full provider/process module was compiled. No provider, CLI, app, browser/native, credentials, remote request or real file-open/read IPC was used.</p>
+<h2>Target controls and observed dispatch</h2>
+<table><thead><tr><th>Case</th><th>Live + restored clicks</th><th>Observed destination</th><th>Verdict</th></tr></thead><tbody><tr><td><code>local-read-diff</code></td><td>2</td><td>diff</td><td>PASS</td></tr><tr><td><code>local-read-viewer</code></td><td>2</td><td>viewer</td><td>PASS</td></tr><tr><td><code>cloud-read-diff</code></td><td>2</td><td>diff</td><td>INTENDED FAIL</td></tr><tr><td><code>cloud-read-viewer</code></td><td>2</td><td>viewer</td><td>INTENDED FAIL</td></tr><tr><td><code>cloud-write-viewer</code></td><td>2</td><td>viewer</td><td>INTENDED FAIL</td></tr><tr><td><code>cloud-edit-diff</code></td><td>2</td><td>diff</td><td>INTENDED FAIL</td></tr><tr><td><code>cloud-multiple-diffs</code></td><td>4</td><td>diff</td><td>INTENDED FAIL</td></tr><tr><td><code>child-literal-viewer</code></td><td>2</td><td>cloud notice only</td><td>PASS</td></tr><tr><td><code>child-literal-diff</code></td><td>2</td><td>cloud notice only</td><td>PASS</td></tr><tr><td><code>local-read-after-return</code></td><td>2</td><td>viewer</td><td>PASS</td></tr><tr><td><code>local-write-after-return</code></td><td>2</td><td>viewer</td><td>PASS</td></tr><tr><td><code>local-edit-after-return</code></td><td>2</td><td>diff</td><td>PASS</td></tr></tbody></table>
+<p>All 26 clicks executed. There are exactly 12 intended failures and no unexpected failures. Multi-diff cases test each rendered row target separately. Results keep exact text; child cloud paths keep their own Session ID; local actions work again after returning from cloud.</p>
+<h2>Fresh source and freeze</h2>
+<p>Checked main <code>74c004a95d7b10072f54f71ca611f22c50944f64</code>. Twelve relevant production files are hash-identical; eight Rust spans and thirteen extracted TypeScript spans are source-verified. Frozen test, inputs, wire, probe, generator and receipt bytes are verified unchanged after the completed baseline.</p>
+<ul><li>New regression: <code>src/reasonCloudFileIdentity.test.ts</code><br>SHA-256 <code>a027e8aa35476a77a44e3907192a60dac0c9bfef920766490fd334a12c074ce4</code></li><li>Inert protocol input: <code>4f90d373a92b0a9f99b7a458a3805761dbd2b257f98da188d47b4e02c3f629ca</code></li><li>Actual Rust wire output: <code>e471b501dd71305d05092bdaef2d3dc6bc3edac6438b83c4a49a7b0bef3f2815</code></li></ul>
+<h2>Commands and decisive results</h2>
+<pre>node --experimental-strip-types --test src/reasonCloudFileIdentity.test.ts
+# exit 1: 31 tests; 19 pass; 12 intended fail; 0 skip
+
+node --experimental-strip-types --test [reason, reducer, persist, conductorTools, view].test.ts
+# exact five paths retained in README: exit 0; 66 pass
+
+python3 evidence/chat/reason-cloud-file-identity/verify.py
+# FROZEN_RED_VERIFIED</pre>
+<p>The admitted cached-serde parser compile passed in 0.316 seconds; its replay passed. Initial linker-path and VM-constant setup errors are retained separately and are not counted as behavioral results. Own-process readback was empty and the heavy slot was explicitly released.</p>
+<h2>Official contract and evidence limits</h2>
+<p>The freshly read <a href="https://docs.reasonmachines.com/docs/build/choose-a-path.md">interface guide</a>, <a href="https://docs.reasonmachines.com/docs/acp.md">ACP reference</a> and <a href="https://docs.reasonmachines.com/docs/build/editor-app-acp.md">editor recipe</a> describe one provider and one Session spanning local/cloud. The fixture does not execute their live local/cloud acceptance procedure.</p>
+<p>The cwd-normalized cloud shape is accepted by current production source; the retained CLI 0.2.683 observation of that shape remains historical. This proves the unit-level click misrouting, not current provider behavior. A safe repair must not reinterpret a target already known to be cloud as local. No new cloud-workspace/team UI is requested.</p>
+<p><strong>Not run:</strong> current CLI/provider, built-app/native/browser/package behavior, packaged inclusion, typecheck, full Rust/app build, full-chat suite. Earlier full-chat timeouts stay incomplete. No UI screenshot exists because application/browser/native execution was not admitted.</p>
+<h2>Exact executed source</h2><details><summary>Rust parser, routing and serialization identity</summary><details><summary>session-update-routed-block</summary><p><code>src-tauri/src/reason_acp/provider.rs</code> · bytes 44306–45507</p><p class="muted">SHA-256 <code>10ca29184936630a7a3b0c2579e5b2e14d2dad34a3f881f468eb50bdcba6e39b</code></p><pre>            let routed = {
+                let mut s = shared.lock().unwrap();
+                let sid = params[&quot;sessionId&quot;].as_str().unwrap_or_default();
+                let chat_id = s.by_session.get(sid).cloned();
+                chat_id.and_then(|id| {
+                    let c = s.chats.get_mut(&amp;id)?;
+                    if let Some(cloud) = computer_is_cloud(&amp;params[&quot;update&quot;]) {
+                        c.on_cloud = cloud;
+                    }
+                    let ctx = UpdateContext {
+                        cwd: &amp;c.cwd,
+                        turn_running: c.turn.is_some(),
+                        in_text: c.turn.as_ref().is_some_and(|t| t.in_text),
+                        cloud_session: c.session_id.as_deref().filter(|_| c.on_cloud),
+                    };
+                    let ev = parse_update(&amp;params[&quot;update&quot;], ctx)?;
+                    if let Some(t) = &amp;mut c.turn {
+                        t.in_text = matches!(ev, AgentEvent::Text(_));
+                        if let AgentEvent::Error(e) = &amp;ev {
+                            t.error = Some(e.clone());
+                        }
+                    }
+                    Some((id, ev))
+                })
+            };</pre></details><details><summary>src-tauri/src/reason_acp/updates.rs</summary><p><code>src-tauri/src/reason_acp/updates.rs</code> · bytes 0–11211</p><p class="muted">SHA-256 <code>a38f31d40f38a450cb9cdff0202977d8c4208ca6364907c16e0b497e27670db5</code></p><p>Entire production module included unchanged.</p></details><details><summary>agent_json</summary><p><code>src-tauri/src/reason_acp/wire.rs</code> · bytes 4189–4809</p><p class="muted">SHA-256 <code>b884b93c3923ee3657b5f03dac3a07d0b5f56f11d449ef1a821874cc635302e2</code></p><pre>fn agent_json(a: &amp;AgentEvent) -&gt; Value {
+    match a {
+        AgentEvent::Text(t) =&gt; json!({ &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: t }),
+        AgentEvent::Thought(t) =&gt; json!({ &quot;type&quot;: &quot;thought&quot;, &quot;text&quot;: t }),
+        AgentEvent::Title(t) =&gt; json!({ &quot;type&quot;: &quot;title&quot;, &quot;title&quot;: t }),
+        AgentEvent::Report(t) =&gt; json!({ &quot;type&quot;: &quot;report&quot;, &quot;text&quot;: t }),
+        AgentEvent::UserReplay(t) =&gt; json!({ &quot;type&quot;: &quot;userReplay&quot;, &quot;text&quot;: t }),
+        AgentEvent::Error(e) =&gt; json!({
+            &quot;type&quot;: &quot;error&quot;, &quot;code&quot;: e.code, &quot;status&quot;: e.status, &quot;message&quot;: e.message,
+        }),
+        AgentEvent::Tool(row) =&gt; tool_json(row),
+    }
+}</pre></details><details><summary>tool_json</summary><p><code>src-tauri/src/reason_acp/wire.rs</code> · bytes 4811–5547</p><p class="muted">SHA-256 <code>b5bf3958f98d5107f522893933593c6165afa9456a61d21ea12a32510a16ccc9</code></p><pre>fn tool_json(r: &amp;ToolRow) -&gt; Value {
+    let status = match r.status {
+        ToolStatus::Pending =&gt; &quot;pending&quot;,
+        ToolStatus::Running =&gt; &quot;running&quot;,
+        ToolStatus::Completed =&gt; &quot;completed&quot;,
+        ToolStatus::Failed =&gt; &quot;failed&quot;,
+    };
+    let mut v = json!({
+        &quot;type&quot;: &quot;tool&quot;,
+        &quot;id&quot;: r.id,
+        &quot;title&quot;: r.title,
+        &quot;kind&quot;: r.kind,
+        &quot;status&quot;: status,
+        &quot;output&quot;: r.output,
+        &quot;diffs&quot;: r.diffs.iter().map(diff_json).collect::&lt;Vec&lt;_&gt;&gt;(),
+        &quot;locations&quot;: r.locations.iter().map(path_json).collect::&lt;Vec&lt;_&gt;&gt;(),
+        &quot;toolName&quot;: r.tool_name,
+        &quot;rawInput&quot;: r.raw_input,
+    });
+    if let Some(content) = &amp;r.raw_result {
+        v[&quot;rawResult&quot;] = content.clone();
+    }
+    v
+}</pre></details><details><summary>diff_json</summary><p><code>src-tauri/src/reason_acp/wire.rs</code> · bytes 5549–5672</p><p class="muted">SHA-256 <code>79706e859b3d44a38d3f5390ee7a5785a55b63573af9829105f14ed481aa27cf</code></p><pre>fn diff_json(d: &amp;Diff) -&gt; Value {
+    json!({ &quot;path&quot;: path_json(&amp;d.path), &quot;oldText&quot;: d.old_text, &quot;newText&quot;: d.new_text })
+}</pre></details><details><summary>path_json</summary><p><code>src-tauri/src/reason_acp/wire.rs</code> · bytes 5747–6136</p><p class="muted">SHA-256 <code>6f584eb151ca59afd01af3a00604e76a5140deae67badf4d6a07c00a6a27295e</code></p><pre>pub fn path_json(p: &amp;MappedPath) -&gt; Value {
+    let mut v = json!({ &quot;raw&quot;: p.raw, &quot;relative&quot;: p.relative });
+    match &amp;p.place {
+        Place::Local =&gt; v[&quot;place&quot;] = json!(&quot;local&quot;),
+        Place::Cloud { session_id } =&gt; {
+            v[&quot;place&quot;] = json!(&quot;cloud&quot;);
+            v[&quot;sessionId&quot;] = json!(session_id);
+        }
+        Place::Other =&gt; v[&quot;place&quot;] = json!(&quot;other&quot;),
+    }
+    v
+}</pre></details><details><summary>event_json-chat-envelope-tail</summary><p><code>src-tauri/src/reason_acp/wire.rs</code> · bytes 3103–3139</p><p class="muted">SHA-256 <code>db419ea790773d6f9adab333d799e51a7d2cfffd08fcaaef7a7ec8a6fd6c4f1f</code></p><pre>    v[&quot;chatId&quot;] = json!(chat);
+    v</pre></details><details><summary>session-started-json-expression</summary><p><code>src-tauri/src/reason_acp/wire.rs</code> · bytes 737–797</p><p class="muted">SHA-256 <code>13c0e7cd14530c9590ee0047861be4a3ee22ddc4b68ab324f306723b4b32179a</code></p><pre>json!({ &quot;type&quot;: &quot;sessionStarted&quot;, &quot;sessionId&quot;: session_id })</pre></details></details><details><summary>TypeScript listener, mounted transcript and click callbacks</summary><details><summary>Transcript.toolDisclosure</summary><p class="muted">SHA-256 <code>ba2e5ea5fcfa8c79a737297c010df542045f54cc6a1497321be67eabe1f4baec</code></p><pre>const toolDisclosure = (() =&gt; {
+  let expanded: ReadonlyMap&lt;string, boolean&gt; = new Map();
+  const listeners = new Set&lt;() =&gt; void&gt;();
+  return {
+    getSnapshot: () =&gt; expanded,
+    subscribe(listener: () =&gt; void) {
+      listeners.add(listener);
+      return () =&gt; { listeners.delete(listener); };
+    },
+    toggle(id: string, defaultOpen: boolean) {
+      expanded = new Map(expanded).set(id, !isToolExpanded(id, expanded, defaultOpen));
+      for (const listener of listeners) listener();
+    },
+  };
+})();</pre></details><details><summary>Transcript.Transcript</summary><p class="muted">SHA-256 <code>79a57b7de408445e639759ab4d7157b32040fa9940b66ca9179eb38b2ec75907</code></p><pre>export function Transcript({
+  transcript,
+  searchEnabled = false,
+  expandToolsByDefault = false,
+  dontCollapseToolCalls = false,
+  onRetry,
+  onResetChat,
+  resetDisabled = false,
+  turnFooter,
+  workspacePath,
+  onOpenFile,
+  now = Date.now,
+  onForkToNewTab,
+  onForkToNewWorkspace,
+  forkDisabled = false,
+  turnAgent,
+  chatAgent,
+  notify,
+}: TranscriptProps) {
+  const stripAbsolutelyRight = useBoolPref(&quot;not_absolutely_right&quot;);
+  const clock = useMemo(() =&gt; turnDayClock(now), [now]);
+  const day = useSyncExternalStore(clock.subscribe, clock.getSnapshot, clock.getSnapshot);
+  const rows = useMemo(() =&gt; foldAgentRows(buildRows(transcript), transcript.activeTurn), [transcript]);
+  const turns = useMemo(() =&gt; groupTurns(rows), [rows]);
+  const toggled = useSyncExternalStore(toolDisclosure.subscribe, toolDisclosure.getSnapshot, toolDisclosure.getSnapshot);
+  const toggleTool = (id: string, defaultOpen = false) =&gt; toolDisclosure.toggle(id, expandToolsByDefault || defaultOpen);
+  const [summaries, setSummaries] = useState&lt;ReadonlyMap&lt;string, &quot;expanded&quot; | &quot;collapsed&quot;&gt;&gt;(new Map());
+  const ctx: RowContext = {
+    stripAbsolutelyRight,
+    isOpen: (id, defaultOpen = false) =&gt; isToolExpanded(id, toggled, expandToolsByDefault || defaultOpen),
+    onToggle: toggleTool,
+    summaries: {
+      canCollapse: (running) =&gt; canCollapse(running, dontCollapseToolCalls),
+      isOpen: (id, running) =&gt; isSummaryOpen(canCollapse(running, dontCollapseToolCalls), summaries.get(id)),
+      toggle: (id, open) =&gt; setSummaries((prev) =&gt; new Map(prev).set(id, open ? &quot;collapsed&quot; : &quot;expanded&quot;)),
+    },
+    onRetry,
+    onResetChat,
+    resetDisabled,
+    turnFooter,
+    workspacePath,
+    onOpenFile,
+    now: () =&gt; day,
+    toolNow: now,
+    onForkToNewTab,
+    onForkToNewWorkspace,
+    forkDisabled,
+    turnAgent,
+    chatAgent,
+    notify,
+  };
+
+  const content = (
+      &lt;div className=&quot;transcript&quot;&gt;
+        {turns.map((turn) =&gt; {
+          const footer = turn.rows.find((r): r is TurnEndRow =&gt; r.kind === &quot;turn_end&quot;);
+          return (
+            &lt;div key={turn.key} className=&quot;oc-turn&quot; data-turn-id={turn.turnId}&gt;
+              &lt;div className=&quot;oc-turn-body&quot;&gt;
+                &lt;div className=&quot;oc-turn-items&quot;&gt;
+                  {turn.rows.map((row) =&gt; (row.kind === &quot;turn_end&quot; ? null : &lt;Row key={row.key} row={row} ctx={ctx} /&gt;))}
+                &lt;/div&gt;
+                {footer ? &lt;TurnFooter row={footer} ctx={ctx} /&gt; : null}
+              &lt;/div&gt;
+            &lt;/div&gt;
+          );
+        })}
+      &lt;/div&gt;
+  );
+  return &lt;LinkMenuNotify.Provider value={notify}&gt;
+    {searchEnabled ? &lt;TranscriptSearch transcript={transcript}&gt;{content}&lt;/TranscriptSearch&gt; : content}
+  &lt;/LinkMenuNotify.Provider&gt;;
+}</pre></details><details><summary>Transcript.rowTurn</summary><p class="muted">SHA-256 <code>68dd7ea5fddb051adb4fe45736c6465e92d4a6ef890baa0289681d955b792a73</code></p><pre>const rowTurn = (row: DisplayRow): string =&gt; (row.kind === &quot;agent&quot; || row.kind === &quot;turn_end&quot; ? row.turnId : row.message.turnId);</pre></details><details><summary>Transcript.groupTurns</summary><p class="muted">SHA-256 <code>8c2a9015dd1a98cc6750ef63aa2d41e2cc21b0effece55794e9b5fdd9d127cb5</code></p><pre>function groupTurns(rows: DisplayRow[]): Turn[] {
+  const out: Turn[] = [];
+  for (const row of rows) {
+    const turnId = rowTurn(row);
+    const last = out[out.length - 1];
+    if (last &amp;&amp; last.turnId === turnId &amp;&amp; !last.rows.some((r) =&gt; r.kind === &quot;turn_end&quot;)) last.rows.push(row);
+    else out.push({ key: `turn:${row.key}`, turnId, rows: [row] });
+  }
+  return out;
+}</pre></details><details><summary>Transcript.Row</summary><p class="muted">SHA-256 <code>18e62cc63d043829b91f12d18b27546867f7c103900ba2c6f9e0d6b6b1cb251f</code></p><pre>function Row({ row, ctx }: { row: Exclude&lt;DisplayRow, TurnEndRow&gt;; ctx: RowContext }) {
+  switch (row.kind) {
+    case &quot;user&quot;:
+      return (
+        &lt;div className=&quot;chat-msg chat-user oc-msg-user&quot; data-message-role=&quot;user&quot;&gt;
+          &lt;div className=&quot;oc-user-col&quot;&gt;
+            &lt;div className=&quot;chat-bubble oc-bubble&quot;&gt;
+              &lt;div className=&quot;oc-user-text&quot;&gt;{row.message.userContent ? &lt;SentUserContent content={row.message.userContent} workspacePath={ctx.workspacePath} onOpenFile={ctx.onOpenFile} /&gt; : &lt;UserText text={row.text} /&gt;}&lt;/div&gt;
+              &lt;MessageActions text={userMessageCopyText(row.message)} /&gt;
+            &lt;/div&gt;
+            {row.cancelled ? &lt;div className=&quot;chat-cancelled&quot;&gt;Cancelled&lt;/div&gt; : null}
+          &lt;/div&gt;
+        &lt;/div&gt;
+      );
+    case &quot;report&quot;:
+      return (
+        &lt;div className=&quot;chat-msg chat-report&quot; data-origin={row.origin.kind}&gt;
+          &lt;div className=&quot;chat-report-label&quot;&gt;{reportLabel(row.origin)}&lt;/div&gt;
+          &lt;div className=&quot;chat-report-body&quot;&gt;{row.text}&lt;/div&gt;
+        &lt;/div&gt;
+      );
+    case &quot;system&quot;:
+      return &lt;div className=&quot;chat-msg chat-system&quot;&gt;{row.text}&lt;/div&gt;;
+    case &quot;agent&quot;:
+      return &lt;Agent block={row} ctx={ctx} /&gt;;
+  }
+}</pre></details><details><summary>Transcript.Agent</summary><p class="muted">SHA-256 <code>0a42072af5992b33975612a34cf098eeedb244ca5573a5e29d4d8ae3e0e05086</code></p><pre>function Agent({ block, ctx }: { block: AgentBlock; ctx: RowContext }) {
+  const collapsible = ctx.summaries.canCollapse(block.running);
+  return (
+    &lt;&gt;
+      {block.empty &amp;&amp; block.streaming ? (
+        &lt;div className=&quot;chat-msg chat-assistant oc-msg-assistant&quot;&gt;
+          &lt;span className=&quot;chat-typing&quot; aria-label=&quot;Agent is responding&quot; /&gt;
+        &lt;/div&gt;
+      ) : null}
+      {block.items.map((item) =&gt; {
+        if (item.kind === &quot;part&quot;) return &lt;Part key={item.key} partKey={item.key} part={item.part} preview={item.preview === true} ctx={ctx} /&gt;;
+        const open = ctx.summaries.isOpen(item.summary.id, block.running);
+        return (
+          &lt;Fragment key={item.summary.id}&gt;
+            {collapsible ? &lt;SummaryRow summary={item.summary} open={open} onToggle={() =&gt; ctx.summaries.toggle(item.summary.id, open)} /&gt; : null}
+            {open ? item.parts.map((p) =&gt; &lt;Part key={p.key} partKey={p.key} part={p.part} group={item.summary.id} ctx={ctx} /&gt;) : null}
+          &lt;/Fragment&gt;
+        );
+      })}
+    &lt;/&gt;
+  );
+}</pre></details><details><summary>Transcript.SummaryRow</summary><p class="muted">SHA-256 <code>7a7f083361e13f266531377bcd9d75633bd454113f3ae20f0155b1ebea784a36</code></p><pre>function SummaryRow({ summary, open, onToggle }: { summary: ToolSummary; open: boolean; onToggle?: () =&gt; void }) {
+  const label = summaryLabel(summary);
+  const icons = [...new Map(summary.toolNames.map((n) =&gt; [n, n])).values()];
+  return (
+    &lt;button type=&quot;button&quot; className=&quot;chat-tool-summary-row oc-summary&quot; aria-expanded={open} aria-label={`${open ? &quot;Collapse&quot; : &quot;Expand&quot;} ${label}`} disabled={!onToggle} onClick={onToggle}&gt;
+      &lt;Lucide name={open ? &quot;chevron-down&quot; : &quot;chevron-right&quot;} className=&quot;oc-summary-chevron&quot; /&gt;
+      &lt;span className=&quot;oc-summary-main&quot;&gt;
+        &lt;span className=&quot;oc-summary-label&quot;&gt;{label}&lt;/span&gt;
+        {icons.length &gt; 0 ? (
+          &lt;span className=&quot;oc-summary-icons&quot; aria-hidden&gt;
+            {icons.map((name) =&gt; (
+              &lt;ToolIcon key={name} name={name} className=&quot;oc-tool-icon&quot; /&gt;
+            ))}
+          &lt;/span&gt;
+        ) : null}
+      &lt;/span&gt;
+    &lt;/button&gt;
+  );
+}</pre></details><details><summary>Transcript.Part</summary><p class="muted">SHA-256 <code>5283e068e4de3b8aeabdb49535cf6c409b3ca14c9d4e6fb4999c37aceaa6b9c8</code></p><pre>function Part({ partKey, part, preview = false, group, ctx }: { partKey: string; part: PartView; preview?: boolean; group?: string; ctx: RowContext }) {
+  switch (part.kind) {
+    case &quot;text&quot;: {
+      const text = assistantDisplayText(part.text, ctx.stripAbsolutelyRight);
+      if (!text.trim()) return null;
+      return (
+        &lt;div className=&quot;chat-msg chat-assistant oc-msg-assistant&quot; data-message-role=&quot;assistant&quot; data-tool-group={group}&gt;
+          &lt;div className=&quot;oc-assistant-col&quot;&gt;
+            &lt;div className=&quot;oc-text-wrap&quot;&gt;
+              &lt;Markdown
+                text={text}
+                notify={ctx.notify}
+                className={`oc-prose chat-text${preview ? &quot;&quot; : &quot; muted&quot;}${part.streaming ? &quot; is-streaming&quot; : &quot;&quot;}`}
+                onOpenLink={(href) =&gt; void openUrl(href)}
+                workspacePath={ctx.workspacePath}
+                onOpenFile={ctx.onOpenFile}
+                Link={LinkWithMenu}
+              /&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      );
+    }
+    case &quot;thinking&quot;: {
+      const text = assistantDisplayText(part.text, ctx.stripAbsolutelyRight);
+      if (!text.trim()) return null;
+      return &lt;ThinkingRow id={`thinking:${partKey}`} text={text} streaming={part.streaming} group={group} ctx={ctx} /&gt;;
+    }
+    case &quot;tool&quot;: {
+      const { call } = part;
+      return (
+        // data-tool-input: the block&#x27;s input as the agent reported it (paths marked local or cloud), for e2e checks.
+        &lt;div className={`chat-tool oc-tool-wrap status-${call.status}`} data-tool-group={group} data-tool-input={JSON.stringify(call.input ?? null)}&gt;
+          &lt;ConductorToolRow
+            tool={call.tool}
+            status={call.status}
+            result={call.result}
+            rawResult={call.rawResult}
+            resultCreatedAt={call.resultCreatedAt}
+            now={ctx.toolNow}
+            isError={call.status === &quot;error&quot;}
+            open={ctx.isOpen(call.id, opensByDefault(call.tool))}
+            onToggle={() =&gt; ctx.onToggle(call.id, opensByDefault(call.tool))}
+            todoRows={call.tool.name === &quot;TodoWrite&quot; ? {
+              completed: { open: ctx.isOpen(`${call.id}-completed`), onToggle: () =&gt; ctx.onToggle(`${call.id}-completed`) },
+              started: { open: ctx.isOpen(`${call.id}-started`), onToggle: () =&gt; ctx.onToggle(`${call.id}-started`) },
+            } : undefined}
+            workspacePath={ctx.workspacePath}
+            onOpenFile={ctx.onOpenFile}
+          /&gt;
+        &lt;/div&gt;
+      );
+    }
+  }
+}</pre></details><details><summary>reasonBackend.listen</summary><p class="muted">SHA-256 <code>2fbd46671a3805124066ff17999972ca879a4eb074b804c7e05e9b645f0cd125</code></p><pre>(deliver, permissions) =&gt;
+    listen&lt;ReasonPayload&gt;(EVENT, ({ payload }) =&gt; {
+      if (payload.type === &quot;permissionRequest&quot;) permissions.requested(payload.chatId, permissionPrompt(payload));
+      else if (payload.type === &quot;permissionResolved&quot;) permissions.resolved(payload.chatId, payload.requestId);
+      else {
+        // A new Session has run no turn yet: its model is the chat&#x27;s pick until one ends.
+        if (payload.type === &quot;sessionStarted&quot;) setRunningModel(payload.chatId, null);
+        if (payload.type === &quot;sessionModel&quot;) setRunningModel(payload.chatId, { model: payload.model, effort: payload.effort ?? null });
+        deliver(payload.chatId, (s) =&gt; applyReasonPayload(s, payload));
+      }
+    })</pre></details><details><summary>reasonChat.EVENT</summary><p class="muted">SHA-256 <code>95bf14b552f33d7ad5d40b53bdc7271ede9a6f5052b3f9fedc6318b69916f5e1</code></p><pre>&quot;reason-chat-event&quot;</pre></details><details><summary>WorkspaceView.openAnyFile</summary><p class="muted">SHA-256 <code>c0ffcebb971aa0a92115f40916ddc3165e350a67a9966072319a76cbee9d9323</code></p><pre>(path: string, line?: number): boolean =&gt; {
+    if (!workspace.path) return false;
+    setFileTarget({ path, workspaceId: workspace.id, line });
+    setMainTab(&quot;file&quot;);
+    return true;
+  }</pre></details><details><summary>WorkspaceView.openFileOrViewer</summary><p class="muted">SHA-256 <code>3efb003355bd72f6b8bb2da639af4df2af2e122ba777210431c3f9b924f3d27c</code></p><pre>(path: string) =&gt; {
+    if (diff.files.some((f) =&gt; f.path === path)) { diff.openPath(path); return; }
+    // Cloud/absolute paths not under the worktree cannot be opened locally (H6).
+    if (path.startsWith(&quot;/&quot;) &amp;&amp; (!workspace.path || !path.startsWith(workspace.path))) {
+      notify?.(&quot;info&quot;, `${path.split(&quot;/&quot;).pop() ?? path} is a cloud file — not available locally`);
+      return;
+    }
+    openAnyFile(path);
+  }</pre></details><details><summary>ChatPanel.Transcript.onOpenFile</summary><p class="muted">SHA-256 <code>a20f1ede9121d8bd7730b0b25506f0bc161f8332568ed43028e99b2ceab17aca</code></p><pre>openFile ? (path) =&gt; openFile(path.startsWith(`${cwd}/`) ? path.slice(cwd.length + 1) : path) : undefined</pre></details></details>
+<footer>Prepared by Conductor Rebuild. Reproduction-only lease: one new regression and its evidence directory. All production and held WorkspaceView callbacks are unchanged. Product lease not granted; no repair or PR opened for this RED fixture.</footer>
+</body></html>

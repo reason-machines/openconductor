@@ -1,0 +1,38 @@
+{
+  "checked_main": "860041bd42aca394da3b8bdbf9d7fa1ca7597836",
+  "frozen_files": 6,
+  "unchanged_rust_source_spans": 8,
+  "retained_baseline": {
+    "pass": 19,
+    "intended_fail": 12
+  },
+  "frozen_treatment": {
+    "pass": 31,
+    "fail": 0
+  },
+  "supplemental_baseline": {
+    "pass": 7,
+    "intended_fail": 10
+  },
+  "supplemental_final": {
+    "pass": 18,
+    "fail": 0
+  },
+  "additional_primary_control": "first candidate RED 0/1; final GREEN 1/1; not part of original 17",
+  "adjacent": {
+    "pass": 66,
+    "fail": 0
+  },
+  "click_witnesses_per_phase": 26,
+  "typescript_treatment_spans": 13,
+  "production_files": {
+    "src/components/WorkspaceView.tsx": "4520e46b632d50ef6feaf78398ec08cf7e8a58697605067b707af50d3c1f8214",
+    "src/features/chat/Transcript.tsx": "b543001eeb48ab956140a164646554862ad314ae3511bda7abdfd5238d7eeac0",
+    "src/features/chat/conductorTools.ts": "775150d24fd147bba59c0da0173b67cd6e955c4dbfaec404c8378823e6e07bbe"
+  },
+  "supplemental_tests": {
+    "controls.test.ts": "f7105afa41559b09d793eaed8c0decf3181ac46352d1a1aa6b076a2dcc14ea59",
+    "primary.test.ts": "940571f86f93f7e2bf39165b8cb0c03108a152f4bf35ef12a8174e8ab76d0566"
+  },
+  "verdict": "FROZEN_RED_TO_GREEN_VERIFIED"
+}

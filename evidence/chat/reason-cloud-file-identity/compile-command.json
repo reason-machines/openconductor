@@ -1,0 +1,90 @@
+{
+  "command": [
+    "rustc",
+    "--edition=2021",
+    "/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/reason-cloud-file-identity/evidence/chat/reason-cloud-file-identity/probe.rs",
+    "--crate-name",
+    "reason_cloud_identity_probe",
+    "--extern",
+    "serde_json=/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/web-completion/target/debug/build/serde_json/4ce44e46ea093bc3/out/libserde_json-4ce44e46ea093bc3.rlib",
+    "-L",
+    "dependency=/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/web-completion/target/debug/build/codex-web-native-suite/f1d69f900c71ba86/out",
+    "-L",
+    "dependency=/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/web-completion/target/debug/build/itoa/d94c6f6a50ab65b9/out",
+    "-L",
+    "dependency=/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/web-completion/target/debug/build/memchr/7627f4867e22528a/out",
+    "-L",
+    "dependency=/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/web-completion/target/debug/build/proc-macro2/330e9912606cf63b/out",
+    "-L",
+    "dependency=/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/web-completion/target/debug/build/quote/e29a87636324cf30/out",
+    "-L",
+    "dependency=/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/web-completion/target/debug/build/serde/bb2ddffd3446b581/out",
+    "-L",
+    "dependency=/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/web-completion/target/debug/build/serde_core/0ac2b99cb4dbcec9/out",
+    "-L",
+    "dependency=/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/web-completion/target/debug/build/serde_json/4ce44e46ea093bc3/out",
+    "-L",
+    "dependency=/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/web-completion/target/debug/build/syn/b666b342ad8e0592/out",
+    "-L",
+    "dependency=/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/web-completion/target/debug/build/unicode-ident/11d3de421067f5a8/out",
+    "-L",
+    "dependency=/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/web-completion/target/debug/build/zmij/032728c4c52d8a52/out",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "debuginfo=0",
+    "-o",
+    "/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/reason-cloud-file-identity/evidence/chat/reason-cloud-file-identity/probe"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.316,
+  "dependency_artifacts": [
+    {
+      "name": "libmemchr-7627f4867e22528a.rlib",
+      "sha256": "3fb46f52e4085928e7da7fc4f8f58e78afb997d37c6e83bd64330f5488d3488d"
+    },
+    {
+      "name": "libserde_json-4ce44e46ea093bc3.rlib",
+      "sha256": "8d0cfb6dcdd98bb084016bcfca01109e8c201a1b81d602aea636696a31c5abe4"
+    },
+    {
+      "name": "libserde_core-0ac2b99cb4dbcec9.rlib",
+      "sha256": "af7f59249f1da511ccb489c3d4cb4362b857996ce60e2709eaec5ca884711ac1"
+    },
+    {
+      "name": "libitoa-d94c6f6a50ab65b9.rlib",
+      "sha256": "4389dcfa10147a28644e01912ceff599057bad1617016f6c6bc6dcf666d416ad"
+    },
+    {
+      "name": "libcodex_web_native_suite-f1d69f900c71ba86.rlib",
+      "sha256": "41236de6d70a0fb6fd0d2c7f7f3062f8bd721c8295e4507cc0c91e954e830c34"
+    },
+    {
+      "name": "libserde-bb2ddffd3446b581.rlib",
+      "sha256": "b7e37892a4417e6eff9a4ac5dfb1d4fcd4ae0a65b5080c51c2d2989bcc57a266"
+    },
+    {
+      "name": "libquote-e29a87636324cf30.rlib",
+      "sha256": "b01256ebb3659ffbc2d0bd4aa3546ef2d8927b40c135a32524fa8f10b6e56420"
+    },
+    {
+      "name": "libproc_macro2-330e9912606cf63b.rlib",
+      "sha256": "f90d2eca265a726ba5bfc291403537a043d459160f95237b459b51ca8a8963aa"
+    },
+    {
+      "name": "libunicode_ident-11d3de421067f5a8.rlib",
+      "sha256": "02ca356b0e7bbd777a37234e5f644ed3af456ddc1bc929197b07968746da141c"
+    },
+    {
+      "name": "libzmij-032728c4c52d8a52.rlib",
+      "sha256": "105c932f4e4b215d400f947d8d0fb4a720b6358327057f51f447cbcd30299823"
+    },
+    {
+      "name": "libsyn-b666b342ad8e0592.rlib",
+      "sha256": "a9818e3a929b5861ef9aef90a7df46e04507a3e36000adc1347619452e96486b"
+    }
+  ],
+  "executable_sha256": "6f019c19694f1c74947e98ce1a7b70ea10ef2be8bdfb068c769b10a23a868f0e",
+  "single_compile_process": true,
+  "new_dependencies": false
+}

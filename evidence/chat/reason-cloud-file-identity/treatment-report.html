@@ -1,0 +1,551 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reason cloud file identity</title><style>
+body{margin:0;font:14px/20px var(--font-sans,system-ui);color:var(--foreground)}h1{font-size:22px;line-height:28px;font-weight:500;margin:8px 0 12px}h2{font-size:17px;line-height:24px;font-weight:500;margin:24px 0 12px}p{margin:8px 0 12px}a{color:var(--chart-1)}.muted{color:var(--muted-foreground)}.eyebrow{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-foreground)}.verdict{border-left:3px solid var(--chart-3);padding-left:12px;margin:16px 0 24px}.vis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}.vis-card{border:1px solid var(--border);border-radius:8px;padding:12px}.value{display:block;font-size:22px;line-height:28px;font-weight:500;font-variant-numeric:tabular-nums}code,pre{font:12px/18px var(--font-mono,monospace);overflow-wrap:anywhere}pre{white-space:pre-wrap;background:var(--muted);padding:12px;border-radius:8px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;border-bottom:1px solid var(--border);padding:10px 6px;vertical-align:top}th{font-weight:500;color:var(--muted-foreground)}details{border-top:1px solid var(--border);padding:12px 0}summary{cursor:pointer;overflow-wrap:anywhere}li{margin-bottom:8px}footer{margin:24px 0 8px;padding-top:12px;border-top:1px solid var(--border);font-size:13px;color:var(--muted-foreground)}
+</style></head><body>
+<div class="eyebrow">Conductor Rebuild · scoped source fix</div>
+<h1>Cloud file clicks no longer open the local same-path file.</h1>
+<p class="muted">Reason-specific local/cloud identity routing. Mounted React proof, not live provider, native, packaged or Conductor parity evidence.</p>
+<div class="verdict"><strong>FROZEN RED → GREEN</strong><p>The original 31 tests and six frozen files are unchanged: retained 19 pass / 12 intended failures becomes 31/31 passing. Cloud badges remain clickable and produce the existing explanatory notice, with no local diff/viewer/tab effect.</p></div>
+<div class="vis-grid"><div class="vis-card"><span class="muted">Unchanged regression</span><span class="value">31 / 31</span><span>Live/restored; original RED retained separately</span></div><div class="vis-card"><span class="muted">Supplemental controls</span><span class="value">18 / 18</span><span>17 original controls plus one parent/child corrective control</span></div><div class="vis-card"><span class="muted">Adjacent checks</span><span class="value">66 / 66</span><span>Adapter, reducer, persistence, projection and rows</span></div></div>
+<h2>What changed</h2><ol><li><strong>Canonical tool projection:</strong> retain complete <code>ReasonPath</code> beside the input. Default Read uses its primary location; each split Write/Edit retains its own diff location. Preserve raw-input/name precedence and exact Session identity; do not fabricate unknown or ambiguous targets.</li><li><strong>Transcript:</strong> close over the row target and pass it as an optional second file-open argument. FileBadge/ToolRows, labels, output, previews and clickability are unchanged.</li><li><strong>Workspace:</strong> forward the target unchanged and handle explicit cloud provenance <em>before</em> exact diff matching or the local viewer. Keep local/untyped normalization and the old fallback unchanged.</li></ol>
+<h2>Newly exercised, not previously claimed</h2><p>Both outside-worktree and cwd-normalized explicit-cloud absolute paths equal an existing exact diff key. They now produce the cloud notice without local effects. Relative exact keys, strict target/session object delivery, raw override/matching, local-after-cloud and legacy untyped precedence also pass.</p><p>The separate 17-control baseline was <strong>7 pass / 10 intended failures</strong>. Review added a distinct primary-location control: it failed on the first repair candidate, then passed when default Read was tied to its primary location even if a child diff reported the same string from another Session. No assertion was weakened; final supplemental result is 18/18.</p>
+<h2>Verification and scope</h2><p>Independent checked-main base <code>860041bd42aca394da3b8bdbf9d7fa1ca7597836</code>. Passed freeze/source/scope checks: 6 frozen files, 8 unchanged executed Rust spans, 13 current TypeScript AST spans and 26 actual mounted click witnesses. All three production diffs reviewed; WorkspaceView equals the exact reconciled four-hunk proposal. Excluded attachment callbacks are unchanged.</p>
+<pre>node --experimental-strip-types --test src/reasonCloudFileIdentity.test.ts
+# PASS 31/31
+node --experimental-strip-types --test evidence/chat/reason-cloud-file-identity/controls.test.ts evidence/chat/reason-cloud-file-identity/primary.test.ts
+# PASS 18/18
+node --experimental-strip-types --test src/features/chat/reason.test.ts src/features/chat/reducer.test.ts src/features/chat/persist.test.ts src/features/chat/conductorTools.test.ts src/features/chat/view.test.ts
+# PASS 66/66
+python3 evidence/chat/reason-cloud-file-identity/verify-treatment.py
+# PASS frozen RED/GREEN, source and scope verification
+git diff --check
+# PASS</pre>
+<h2>Full verification completed</h2><p><strong>Passed:</strong> default <code>npm run build</code> including full TypeScript, branding and Vite (50.34s); <code>npm run lint:colors</code> including 1266 source files. A final sequential run against the committed source and refreshed locked dependencies passed <strong>115/115</strong> tests (31 frozen + 18 supplemental + 66 adjacent), with no failures, cancellations or skips. Own pipeline process readback was empty and the serialized heavy slot was explicitly released.</p><h2>Limits that remain</h2><p><strong>Not run:</strong> provider/CLI, authenticated API, actual local/cloud file reads, app/browser/native/package acceptance, second Rust compile or full chat suite. No screenshot exists because application/browser/native execution was not admitted. CI status and release inclusion are separate from this source treatment.</p><p>No cloud reader, transport, context mapping, credentials, ID substitution or cloud-workspace/team UI was added. This is wrong-file routing correctness, not arbitrary cloud viewing or completion of the broader one-chat local/cloud requirement. Existing release custody retains native/package replay; earlier full-chat timeouts remain incomplete.</p>
+<details><summary>Exact implemented WorkspaceView callback hunks</summary><pre>diff --git a/src/components/WorkspaceView.tsx b/src/components/WorkspaceView.tsx
+index f55445aef..ad8c8e4b0 100644
+--- a/src/components/WorkspaceView.tsx
++++ b/src/components/WorkspaceView.tsx
+@@ -14,6 +14,7 @@ import { onChatRequest, takeChatRequest } from "../state/openChat";
+ import { onGitPanelRequest, takeGitPanelRequest, type GitPanelTarget } from "../palette/gitPanelActions.ts";
+ import { useWindowFocused } from "../state/useAutoUnread";
+ import { Transcript } from "../features/chat/Transcript.tsx";
++import type { ReasonPath } from "../features/chat/reason.ts";
+ import { configureReason, configureReasonDefault, reasonAvailable, reasonChatConfig, retryReasonAuth } from "../features/chat/reasonChat.ts";
+ import { isSignInFailure } from "../features/chat/agentSignIn.ts";
+ import { CHAT_AGENTS, saveAgent, savedAgent, type ChatAgentId } from "../features/chat/agents.ts";
+@@ -190,8 +191,8 @@ interface ChatPanelProps extends Props {
+   onRunningChange?: (running: boolean) =&gt; void;
+   /** A file chip under a finished turn: open that file's changes from the turn. */
+   openTurnFile: (turn: TurnRef, path: string) =&gt; void;
+-  /** A file badge in a tool row (repository-relative path): open the file's changes when it has some. */
+-  openFile?: (path: string) =&gt; void;
++  /** A tool-row file badge: retain its reported location when choosing a file destination. */
++  openFile?: (path: string, target?: ReasonPath) =&gt; void;
+   /** Only the selected chat receives window-level drop/palette actions in split mode. */
+   interactionActive?: boolean;
+   /** Incremented by WorkspaceView when a palette linkIssue command arrives for this chat. */
+@@ -679,7 +680,10 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge,
+             resetDisabled={running || planWaiting !== undefined}
+             turnFooter={agent.reset ? turnFooter : undefined}
+             workspacePath={cwd}
+-            onOpenFile={openFile ? (path) =&gt; openFile(path.startsWith(`${cwd}/`) ? path.slice(cwd.length + 1) : path) : undefined}
++            onOpenFile={openFile ? (path, target) =&gt; openFile(
++              target?.place === "cloud" ? path : path.startsWith(`${cwd}/`) ? path.slice(cwd.length + 1) : path,
++              target,
++            ) : undefined}
+             // Conductor: any turn of a chat in a workspace that is not archived; disabled while a fork is made.
+             onForkToNewTab={workspace.status !== "archived" ? (turnId: string) =&gt; void forkToTab(turnId) : undefined}
+             // Conductor: any workspace with a local path that is not archived (M10: unfenced for all agents).
+@@ -1258,7 +1262,11 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
+   const diffTarget = { branch: targetBranch({ prBase: prBase?.base ?? null, prMerged: prBase?.merged ?? false, intended: workspace.targetBranch, fallback: repo.defaultBranch }), remote: TARGET_REMOTE };
+   const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, target: diffTarget, onLoaded, onOpen: openDiffTab });
+   // H1/H6: file badge handler — open in diff if tracked, indicate cloud paths, fall back to file viewer.
+-  const openFileOrViewer = useCallback((path: string) =&gt; {
++  const openFileOrViewer = useCallback((path: string, target?: ReasonPath) =&gt; {
++    if (target?.place === "cloud") {
++      notify?.("info", `${target.raw.split("/").pop() ?? target.raw} is a cloud file — not available locally`);
++      return;
++    }
+     if (diff.files.some((f) =&gt; f.path === path)) { diff.openPath(path); return; }
+     // Cloud/absolute paths not under the worktree cannot be opened locally (H6).
+     if (path.startsWith("/") &amp;&amp; (!workspace.path || !path.startsWith(workspace.path))) {
+</pre></details>
+<details><summary>Historical frozen RED, source qualification and unapplied plan — superseded by treatment above</summary>
+<div class="eyebrow">Conductor Rebuild · frozen source-backed reproduction</div>
+<h1>A known cloud result opens the local same-path file.</h1>
+<p class="muted">Reason-specific one-chat local/cloud integration. Not a Conductor behavior claim, live provider test, or native parity claim.</p>
+<div class="verdict"><strong>FROZEN RED · no product edits</strong><p>Six cloud-normalized targets dispatch to the local diff/viewer, both live and after save/restore. Their cloud provenance and Session ID still exist in the mounted transcript immediately before the click boundary.</p></div>
+<div class="vis-grid"><div class="vis-card"><span class="muted">Baseline controls</span><span class="value">19 pass</span><span>Local, literal-cloud, chat/session and persistence controls</span></div><div class="vis-card"><span class="muted">Intended failures</span><span class="value">12 fail</span><span>Six target clicks × live/restored</span></div><div class="vis-card"><span class="muted">Adjacent checks</span><span class="value">66 / 66</span><span>No failures, skips or cancellations</span></div></div>
+<section aria-label="Latest source-only repair plan"><h2>Proposed repair: three files; no backend or cloud-reader API</h2><p class="muted">Conductor Rebuild · source plan only, checked main <code>860041bd4</code>. All twelve frozen production files remain byte-identical. No product lease, implementation or treatment run is implied.</p><ol><li><strong><a href="https://github.com/reason-machines/openconductor/blob/860041bd42aca394da3b8bdbf9d7fa1ca7597836/src/features/chat/conductorTools.ts#L19">conductorTools.ts</a></strong>: add optional <code>fileTarget?: ReasonPath</code> beside the canonical tool name/input. Preserve the primary reported target for Read and each individual diff target for split Write/Edit rows. The raw-input early return must retain matching reported identity without changing provider input precedence; never attach an unrelated first path.</li><li><strong><a href="https://github.com/reason-machines/openconductor/blob/860041bd42aca394da3b8bdbf9d7fa1ca7597836/src/features/chat/Transcript.tsx#L63">Transcript.tsx</a></strong>: widen its two callback types to accept optional <code>ReasonPath</code>; bind <code>call.tool.fileTarget</code> only at the tool-row callback. FileBadge, ToolRows, labels, previews and clickability stay unchanged.</li><li><strong><a href="https://github.com/reason-machines/openconductor/blob/860041bd42aca394da3b8bdbf9d7fa1ca7597836/src/components/WorkspaceView.tsx#L194">WorkspaceView.tsx</a></strong>: widen ChatPanel’s callback type, forward the complete target at line 682 without normalizing known cloud paths, and check explicit <code>place === "cloud"</code> before diff/viewer dispatch at lines 1261–1270. Preserve <code>raw/relative/place/sessionId</code> to the final decision; keep the old untyped fallback and local open routes.</li></ol><h3>Frozen expected outcome, not a new feature cut</h3><p>A known cloud target must produce an explanatory cloud notice and <strong>no local diff, viewer or tab effect</strong>. The existing literal-absolute guard guesses from the path string, runs after exact diff matching and misses cwd-normalized cloud paths. The new explicit-provenance decision must run first; the old heuristic remains unchanged for untyped callers. All badges remain visible/clickable and inline output/diff previews remain available.</p><p><strong>Proposed goal:</strong> unchanged frozen 19 pass / 12 intended fail becomes 31/31. This has not been run. A separately supplied absolute-cloud/exact-diff-key control is still unexercised, as are new raw-input target-matching controls; do not alter the frozen oracle to add them.</p><p>This fixes wrong-file identity, not arbitrary cloud content viewing or the full local/cloud product requirement. Home271 found no authorized Session/path reader binding in the targeted contracts it checked—not universal API absence. No IDs may be substituted and no new reader is proposed.</p><h3>Collision closure</h3><p><a href="https://github.com/reason-machines/openconductor/pull/1450">#1450</a> changes only <code>attachFiles</code> at 586–588 (two inserted lines; live head <code>c986bd28</code>). <strong>Zero textual overlap</strong> with the proposed prop/binding/file-open hunks. SAME7b36 also confirmed its held successors are only <code>attachTerminalOutput</code> then <code>attachDroppedPaths</code>; these proposed seams are outside its reservation. Same file/ChatPanel ancestor only. Scope confirmation is not product clearance.</p><p><strong>Passed now:</strong> fresh-main resolution/fetch, 12/12 file hashes, frozen test/input/wire hashes, direct complete #1450 WorkspaceView patch read. <strong>Not run now:</strong> tests, compile, typecheck/build, provider/API/CLI or app/native/browser/package acceptance. Both tracked worktrees are unchanged.</p><details><summary>Exact hunk plan, callback sketches and verification limits</summary><pre># Reason ACP cloud file-open identity — exact proposed production scope
+
+Prepared by **Conductor Rebuild**. **SOURCE PLAN ONLY; not applied or behaviorally verified.**
+
+## Fresh source
+
+Checked default-branch head: `860041bd42aca394da3b8bdbf9d7fa1ca7597836` (GitHub main/main resolution, then `git fetch origin main --no-tags`). All twelve production files pinned by the frozen reproduction at `74c004a95d7b10072f54f71ca611f22c50944f64` remain byte-identical. The reproduction itself, inputs, Rust wire output, assertions and original RED receipts remain unchanged; no second Rust compile or frontend run.
+
+## Recommendation: three production files, no backend or transport work
+
+### 1. `src/features/chat/conductorTools.ts`
+
+Exact hunk anchors on checked main:
+
+- `ConductorTool` (lines 19–23): type-only import of existing `ReasonPath`; add optional `fileTarget?: ReasonPath` alongside `name`/`input`, not inside provider raw input.
+- `ReasonPathInput` (110–113): retain the existing `raw`/`relative` fields and account for existing `place`/`sessionId` when selecting a complete source path. Do not default a missing/unknown place to local, synthesize a Session ID or infer execution place from path text.
+- `fromReason` (138–180): preserve exact path identity when a row is projected. Read/NotebookRead and edit-without-diffs use the reported primary location (or reported diff path when no location exists); each split diff row uses **that diff&#x27;s own `d.path`**, never the parent&#x27;s first path. Preserve `raw`, `relative`, `place`, and optional parent/child `sessionId` unchanged. The existing toolName/rawInput early return must also attach the matching reported target for its rendered `file_path` (exact raw or explicitly reported relative match); it must not bypass identity propagation. Preserve name/rawInput precedence and all existing displayed inputs.
+
+Keep target association tied to the actual canonical row path: where provider raw input overrides `file_path`, do not attach an unrelated first location. Unknown/unmatched targets retain existing untyped behavior rather than fabricating provenance. No change to Codex/Claude raw producers, title parsing, result formatting or non-file tool kinds.
+
+Why this seam: `view.ts:108–112` already carries the whole projected `ConductorTool` unchanged for each split row. `reason.ts:211–230`, reducer, persistence, and restored `buildRows` already retain the original path objects; they need no product edits.
+
+### 2. `src/features/chat/Transcript.tsx`
+
+Exact hunk anchors:
+
+- Type-only import existing `ReasonPath`; widen only `TranscriptProps.onOpenFile` (63) and `RowContext.onOpenFile` (197) to `(path: string, target?: ReasonPath) =&gt; void`.
+- Only the **tool** branch&#x27;s `ConductorToolRow.onOpenFile` binding (409): bind the row&#x27;s sidecar target into the existing string callback:
+
+```tsx
+onOpenFile={ctx.onOpenFile ? (path) =&gt; ctx.onOpenFile?.(path, call.tool.fileTarget) : undefined}
+```
+
+No change to FileBadge, ToolRows, badge markup, labels, hover/diff previews, clickability, Markdown or sent-user callbacks. They can keep their existing one-argument string interface. No global current-computer inference: each row closes over its own historical target, including after a return to local execution and after save/restore.
+
+### 3. `src/components/WorkspaceView.tsx` — held; proposed, NOT EDITED
+
+Exact hunk anchors:
+
+- Type-only import existing `ReasonPath`.
+- `ChatPanelProps.openFile` at 194: `(path: string, target?: ReasonPath) =&gt; void` (update its currently repository-relative-only comment).
+- ChatPanel&#x27;s Transcript `onOpenFile` at 682: forward the exact target; do not cwd-normalize a known cloud string before dispatch. Local/untyped calls retain the old cwd normalization:
+
+```tsx
+onOpenFile={openFile ? (path, target) =&gt; openFile(
+  target?.place === &quot;cloud&quot; ? path : path.startsWith(`${cwd}/`) ? path.slice(cwd.length + 1) : path,
+  target,
+) : undefined}
+```
+
+- `openFileOrViewer` at 1261–1270: accept the optional target and handle `target?.place === &quot;cloud&quot;` **before** `diff.files` lookup or `openAnyFile`. Preserve the complete target to this final routing decision, including `sessionId`. Use the existing cloud-unavailable informational outcome; do not substitute a local file or invent an authenticated reader. An explicit minimal form is:
+
+```tsx
+const openFileOrViewer = useCallback((path: string, target?: ReasonPath) =&gt; {
+  if (target?.place === &quot;cloud&quot;) {
+    notify?.(&quot;info&quot;, `${target.raw.split(&quot;/&quot;).pop() ?? target.raw} is a cloud file — not available locally`);
+    return;
+  }
+  if (diff.files.some((f) =&gt; f.path === path)) { diff.openPath(path); return; }
+  // Existing fallback for untyped absolute/outside-worktree paths stays as-is.
+  if (path.startsWith(&quot;/&quot;) &amp;&amp; (!workspace.path || !path.startsWith(workspace.path))) {
+    notify?.(&quot;info&quot;, `${path.split(&quot;/&quot;).pop() ?? path} is a cloud file — not available locally`);
+    return;
+  }
+  openAnyFile(path);
+}, [diff, workspace.path, notify, openAnyFile]);
+```
+
+The repeated notice is intentional in this minimal proposal: do not reorder or broaden the existing untyped-path heuristic while fixing explicit cloud identity. `openAnyFile`, local fileTarget state, WorkspaceFileView, TurnChanges, file tree/search/palette routes and attachment callbacks remain untouched. No new production module, command, dependency, schema migration, cloud-workspace/team UI, provider process or native dispatch is proposed.
+
+## Frozen cloud outcome vs existing literal-absolute guard
+
+The unchanged frozen oracle requires **no local diff/viewer/tab effects and an explanatory cloud notice for every explicitly cloud target**. It does not require a cloud download, prescribe an API, or authorize making a target local. Twelve existing failing clicks (six targets × live/restored) should become passes, retaining the nineteen currently passing cases: proposed treatment goal **31/31**, not a current result.
+
+Current literal guard infers cloud from `path.startsWith(&#x27;/&#x27;)` outside the workspace and runs **after** an exact diff match. Four literal-child-cloud clicks already pass. Twelve cwd-normalized cloud clicks lose identity, become `src/same.txt`/`src/second.txt`, and dispatch locally. The proposed explicit-cloud guard handles both representations by provenance and runs before diff selection, regardless of same relative filename or session. The preexisting heuristic remains only a legacy fallback for calls without explicit target identity.
+
+Known coverage limit: the frozen suite does not separately exercise an absolute cloud path that is an exact existing diff key. The proposed order addresses that case by inspection, not by an executed test. If implementation is leased, add a separate supplemental check without altering the frozen 31-case baseline. Also check exact target/session delivery for both split-diff rows, raw-input-file-path matching and a local action after cloud, without changing any existing oracle.
+
+This is a routing correctness repair, **not completion of arbitrary cloud-file viewing or the broader local/cloud product requirement**. Badges remain shown and clickable; output text and existing inline diff previews remain available. A current authorized cloud content reader is a separate unresolved transport capability.
+
+## Exact overlap with #1450 and held ownership
+
+Live #1450 read at head `c986bd28a24d5f81394a620152c69932e5ff3614` is open. Its complete WorkspaceView patch is only `attachFiles`, main lines **586–588** (PR hunk `@@ -584,7 +584,9 @@`): capture `inputRef.current`, await the unchanged `session.attach`, then conditionally refocus. This plan changes none of those lines, bindings or callbacks.
+
+**Textual overlap: zero.** Same file and the containing `ChatPanel` function overlap structurally; proposed local hunks are the prop type at 194 and Transcript binding at 682. The other behavioral hunk is outer WorkspaceView&#x27;s `openFileOrViewer` at 1261–1270, not attachFiles. No edit/reformat of the whole ancestor is needed. SAME7b36 has now confirmed its held successor scope is only `WorkspaceView.attachTerminalOutput` then `attachDroppedPaths`, with dedicated tests/evidence—not all of WorkspaceView/ChatPanel. It explicitly confirms all four proposed WorkspaceView seams lie outside its reservation. This is scope confirmation only, not product clearance; ledger resolution is still required. No implementation was requested or new Session created.
+
+## Contract limits and verification status
+
+Home271&#x27;s targeted official-docs review reports no documented `(Reason Session ID, cloud checkout path) -&gt; authorized content/open` contract in the checked Session, ACP and execution-context pages. This is a **bounded absence report**, not a universal API-absence claim. Observational placement `computer_id`/`device_id`/`root_id` fields grant no permission; do not substitute Session/placement IDs for an owned execution-context ID. No new API is necessary for this narrow no-local-alias invariant.
+
+**Passed this turn:** fresh main resolution/fetch; exact twelve-file source equality; direct #1450 full WorkspaceView patch read; frozen file-integrity readback. **Not run this turn:** any test, Rust compile, typecheck/build, provider/CLI/API call, app/native/browser/package check. Prior RED 19P/12 intended F and 66 adjacent P remain historical baseline results, not a new treatment run. No product/test/frozen evidence edits, commit, PR, or runtime dispatch.
+</pre></details><details><summary>Machine-readable source identity receipt</summary><pre>{
+  &quot;author&quot;: &quot;Conductor Rebuild&quot;,
+  &quot;kind&quot;: &quot;source-plan-only&quot;,
+  &quot;checked_main&quot;: &quot;860041bd42aca394da3b8bdbf9d7fa1ca7597836&quot;,
+  &quot;source_identity_files&quot;: {
+    &quot;src/features/chat/reasonChat.ts&quot;: &quot;06cb361e2298c25f708553ba1256a20d092318dc50e2bdd127db8a19736640fb&quot;,
+    &quot;src/features/chat/reason.ts&quot;: &quot;cb07a5ec7dc2a8406d9021848280cf9acc83445c371390b94c6a57a290b1cf5b&quot;,
+    &quot;src/features/chat/reducer.ts&quot;: &quot;9b4783c08f496b05ebdc99a141f52b13c06a4b46f3f1a240a780ef5535d22ec4&quot;,
+    &quot;src/features/chat/persist.ts&quot;: &quot;1c0cc086cd028248e27615fe6169c314ed1fe4d44bbdd4926dc6553099262441&quot;,
+    &quot;src/features/chat/view.ts&quot;: &quot;132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43&quot;,
+    &quot;src/features/chat/conductorTools.ts&quot;: &quot;05c3a85bed997b1114e1696d083855d4e39c5d614fe57ddeb0bade8bde7cc64a&quot;,
+    &quot;src/features/chat/Transcript.tsx&quot;: &quot;8b13f23d0fec69db4fa1311cb901fdf936c18a267f8f7f47f56aafca1747f1e8&quot;,
+    &quot;src/features/chat/ToolRows.tsx&quot;: &quot;399c0f2bd7bf1dbb57ae7c70252d6875e92e4414683146a8cd7964208259fb1b&quot;,
+    &quot;src/components/WorkspaceView.tsx&quot;: &quot;1e558c044ce5dda41a33420ef82ad00123af97adaed892f9336c77b9d1f84935&quot;,
+    &quot;src-tauri/src/reason_acp/provider.rs&quot;: &quot;13040f83f62c312683dce1433e24c79b37278546026efd1947b4d1a64fcb72ea&quot;,
+    &quot;src-tauri/src/reason_acp/updates.rs&quot;: &quot;a38f31d40f38a450cb9cdff0202977d8c4208ca6364907c16e0b497e27670db5&quot;,
+    &quot;src-tauri/src/reason_acp/wire.rs&quot;: &quot;96dee0f64c933bcaa9c60bc992f30a2fe190a625db540bfb8c350d6a4f6933dd&quot;
+  },
+  &quot;frozen_files_verified&quot;: {
+    &quot;src/reasonCloudFileIdentity.test.ts&quot;: &quot;a027e8aa35476a77a44e3907192a60dac0c9bfef920766490fd334a12c074ce4&quot;,
+    &quot;evidence/chat/reason-cloud-file-identity/inputs.json&quot;: &quot;4f90d373a92b0a9f99b7a458a3805761dbd2b257f98da188d47b4e02c3f629ca&quot;,
+    &quot;evidence/chat/reason-cloud-file-identity/wire.json&quot;: &quot;e471b501dd71305d05092bdaef2d3dc6bc3edac6438b83c4a49a7b0bef3f2815&quot;
+  },
+  &quot;tests_run&quot;: false,
+  &quot;rust_compile_run&quot;: false,
+  &quot;product_edits&quot;: false,
+  &quot;proposed_production_files&quot;: [
+    &quot;src/features/chat/conductorTools.ts&quot;,
+    &quot;src/features/chat/Transcript.tsx&quot;,
+    &quot;src/components/WorkspaceView.tsx&quot;
+  ],
+  &quot;reservation_overlap&quot;: {
+    &quot;pr1450_head&quot;: &quot;c986bd28a24d5f81394a620152c69932e5ff3614&quot;,
+    &quot;textual_overlap&quot;: false,
+    &quot;same_file&quot;: true,
+    &quot;held_successor_scope&quot;: [
+      &quot;WorkspaceView.attachTerminalOutput&quot;,
+      &quot;WorkspaceView.attachDroppedPaths&quot;
+    ],
+    &quot;owner_scope_confirmation_message&quot;: &quot;aaab26ae-749b-4eda-aa22-f7e5ca173392&quot;,
+    &quot;product_clearance&quot;: false
+  },
+  &quot;proposed_treatment_expectation&quot;: &quot;31/31 existing unchanged frozen tests; not run&quot;,
+  &quot;plan_sha256&quot;: &quot;b94a9897785369f0a416167015a80359d4109d8295da55d903a7333c4665f5e1&quot;
+}
+</pre></details></section><h2>Historical frozen reproduction — unchanged</h2><h2>What the reproduction actually ran</h2>
+<ol><li>Source-valid inert ACP metadata and tool notifications; same owned chat/Session, local → cloud → local.</li><li>Whole production Rust <code>updates.rs</code>, the exact extracted provider routing block, and unchanged wire serializer helpers.</li><li>Actual Reason listener, adapter, reducer, save/restore and row builder.</li><li>Mounted production Transcript and ToolRows; actual FileBadge click, then exact AST-extracted ChatPanel and Workspace file-open callbacks with inert state/diff witnesses.</li></ol>
+<p>No full provider/process module was compiled. No provider, CLI, app, browser/native, credentials, remote request or real file-open/read IPC was used.</p>
+<h2>Target controls and observed dispatch</h2>
+<table><thead><tr><th>Case</th><th>Live + restored clicks</th><th>Observed destination</th><th>Verdict</th></tr></thead><tbody><tr><td><code>local-read-diff</code></td><td>2</td><td>diff</td><td>PASS</td></tr><tr><td><code>local-read-viewer</code></td><td>2</td><td>viewer</td><td>PASS</td></tr><tr><td><code>cloud-read-diff</code></td><td>2</td><td>diff</td><td>INTENDED FAIL</td></tr><tr><td><code>cloud-read-viewer</code></td><td>2</td><td>viewer</td><td>INTENDED FAIL</td></tr><tr><td><code>cloud-write-viewer</code></td><td>2</td><td>viewer</td><td>INTENDED FAIL</td></tr><tr><td><code>cloud-edit-diff</code></td><td>2</td><td>diff</td><td>INTENDED FAIL</td></tr><tr><td><code>cloud-multiple-diffs</code></td><td>4</td><td>diff</td><td>INTENDED FAIL</td></tr><tr><td><code>child-literal-viewer</code></td><td>2</td><td>cloud notice only</td><td>PASS</td></tr><tr><td><code>child-literal-diff</code></td><td>2</td><td>cloud notice only</td><td>PASS</td></tr><tr><td><code>local-read-after-return</code></td><td>2</td><td>viewer</td><td>PASS</td></tr><tr><td><code>local-write-after-return</code></td><td>2</td><td>viewer</td><td>PASS</td></tr><tr><td><code>local-edit-after-return</code></td><td>2</td><td>diff</td><td>PASS</td></tr></tbody></table>
+<p>All 26 clicks executed. There are exactly 12 intended failures and no unexpected failures. Multi-diff cases test each rendered row target separately. Results keep exact text; child cloud paths keep their own Session ID; local actions work again after returning from cloud.</p>
+<h2>Fresh source and freeze</h2>
+<p>Checked main <code>74c004a95d7b10072f54f71ca611f22c50944f64</code>. Twelve relevant production files are hash-identical; eight Rust spans and thirteen extracted TypeScript spans are source-verified. Frozen test, inputs, wire, probe, generator and receipt bytes are verified unchanged after the completed baseline.</p>
+<ul><li>New regression: <code>src/reasonCloudFileIdentity.test.ts</code><br>SHA-256 <code>a027e8aa35476a77a44e3907192a60dac0c9bfef920766490fd334a12c074ce4</code></li><li>Inert protocol input: <code>4f90d373a92b0a9f99b7a458a3805761dbd2b257f98da188d47b4e02c3f629ca</code></li><li>Actual Rust wire output: <code>e471b501dd71305d05092bdaef2d3dc6bc3edac6438b83c4a49a7b0bef3f2815</code></li></ul>
+<h2>Commands and decisive results</h2>
+<pre>node --experimental-strip-types --test src/reasonCloudFileIdentity.test.ts
+# exit 1: 31 tests; 19 pass; 12 intended fail; 0 skip
+
+node --experimental-strip-types --test [reason, reducer, persist, conductorTools, view].test.ts
+# exact five paths retained in README: exit 0; 66 pass
+
+python3 evidence/chat/reason-cloud-file-identity/verify.py
+# FROZEN_RED_VERIFIED</pre>
+<p>The admitted cached-serde parser compile passed in 0.316 seconds; its replay passed. Initial linker-path and VM-constant setup errors are retained separately and are not counted as behavioral results. Own-process readback was empty and the heavy slot was explicitly released.</p>
+<h2>Official contract and evidence limits</h2>
+<p>The freshly read <a href="https://docs.reasonmachines.com/docs/build/choose-a-path.md">interface guide</a>, <a href="https://docs.reasonmachines.com/docs/acp.md">ACP reference</a> and <a href="https://docs.reasonmachines.com/docs/build/editor-app-acp.md">editor recipe</a> describe one provider and one Session spanning local/cloud. The fixture does not execute their live local/cloud acceptance procedure.</p>
+<p>The cwd-normalized cloud shape is accepted by current production source; the retained CLI 0.2.683 observation of that shape remains historical. This proves the unit-level click misrouting, not current provider behavior. A safe repair must not reinterpret a target already known to be cloud as local. No new cloud-workspace/team UI is requested.</p>
+<p><strong>Not run:</strong> current CLI/provider, built-app/native/browser/package behavior, packaged inclusion, typecheck, full Rust/app build, full-chat suite. Earlier full-chat timeouts stay incomplete. No UI screenshot exists because application/browser/native execution was not admitted.</p>
+<h2>Exact executed source</h2><details><summary>Rust parser, routing and serialization identity</summary><details><summary>session-update-routed-block</summary><p><code>src-tauri/src/reason_acp/provider.rs</code> · bytes 44306–45507</p><p class="muted">SHA-256 <code>10ca29184936630a7a3b0c2579e5b2e14d2dad34a3f881f468eb50bdcba6e39b</code></p><pre>            let routed = {
+                let mut s = shared.lock().unwrap();
+                let sid = params[&quot;sessionId&quot;].as_str().unwrap_or_default();
+                let chat_id = s.by_session.get(sid).cloned();
+                chat_id.and_then(|id| {
+                    let c = s.chats.get_mut(&amp;id)?;
+                    if let Some(cloud) = computer_is_cloud(&amp;params[&quot;update&quot;]) {
+                        c.on_cloud = cloud;
+                    }
+                    let ctx = UpdateContext {
+                        cwd: &amp;c.cwd,
+                        turn_running: c.turn.is_some(),
+                        in_text: c.turn.as_ref().is_some_and(|t| t.in_text),
+                        cloud_session: c.session_id.as_deref().filter(|_| c.on_cloud),
+                    };
+                    let ev = parse_update(&amp;params[&quot;update&quot;], ctx)?;
+                    if let Some(t) = &amp;mut c.turn {
+                        t.in_text = matches!(ev, AgentEvent::Text(_));
+                        if let AgentEvent::Error(e) = &amp;ev {
+                            t.error = Some(e.clone());
+                        }
+                    }
+                    Some((id, ev))
+                })
+            };</pre></details><details><summary>src-tauri/src/reason_acp/updates.rs</summary><p><code>src-tauri/src/reason_acp/updates.rs</code> · bytes 0–11211</p><p class="muted">SHA-256 <code>a38f31d40f38a450cb9cdff0202977d8c4208ca6364907c16e0b497e27670db5</code></p><p>Entire production module included unchanged.</p></details><details><summary>agent_json</summary><p><code>src-tauri/src/reason_acp/wire.rs</code> · bytes 4189–4809</p><p class="muted">SHA-256 <code>b884b93c3923ee3657b5f03dac3a07d0b5f56f11d449ef1a821874cc635302e2</code></p><pre>fn agent_json(a: &amp;AgentEvent) -&gt; Value {
+    match a {
+        AgentEvent::Text(t) =&gt; json!({ &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: t }),
+        AgentEvent::Thought(t) =&gt; json!({ &quot;type&quot;: &quot;thought&quot;, &quot;text&quot;: t }),
+        AgentEvent::Title(t) =&gt; json!({ &quot;type&quot;: &quot;title&quot;, &quot;title&quot;: t }),
+        AgentEvent::Report(t) =&gt; json!({ &quot;type&quot;: &quot;report&quot;, &quot;text&quot;: t }),
+        AgentEvent::UserReplay(t) =&gt; json!({ &quot;type&quot;: &quot;userReplay&quot;, &quot;text&quot;: t }),
+        AgentEvent::Error(e) =&gt; json!({
+            &quot;type&quot;: &quot;error&quot;, &quot;code&quot;: e.code, &quot;status&quot;: e.status, &quot;message&quot;: e.message,
+        }),
+        AgentEvent::Tool(row) =&gt; tool_json(row),
+    }
+}</pre></details><details><summary>tool_json</summary><p><code>src-tauri/src/reason_acp/wire.rs</code> · bytes 4811–5547</p><p class="muted">SHA-256 <code>b5bf3958f98d5107f522893933593c6165afa9456a61d21ea12a32510a16ccc9</code></p><pre>fn tool_json(r: &amp;ToolRow) -&gt; Value {
+    let status = match r.status {
+        ToolStatus::Pending =&gt; &quot;pending&quot;,
+        ToolStatus::Running =&gt; &quot;running&quot;,
+        ToolStatus::Completed =&gt; &quot;completed&quot;,
+        ToolStatus::Failed =&gt; &quot;failed&quot;,
+    };
+    let mut v = json!({
+        &quot;type&quot;: &quot;tool&quot;,
+        &quot;id&quot;: r.id,
+        &quot;title&quot;: r.title,
+        &quot;kind&quot;: r.kind,
+        &quot;status&quot;: status,
+        &quot;output&quot;: r.output,
+        &quot;diffs&quot;: r.diffs.iter().map(diff_json).collect::&lt;Vec&lt;_&gt;&gt;(),
+        &quot;locations&quot;: r.locations.iter().map(path_json).collect::&lt;Vec&lt;_&gt;&gt;(),
+        &quot;toolName&quot;: r.tool_name,
+        &quot;rawInput&quot;: r.raw_input,
+    });
+    if let Some(content) = &amp;r.raw_result {
+        v[&quot;rawResult&quot;] = content.clone();
+    }
+    v
+}</pre></details><details><summary>diff_json</summary><p><code>src-tauri/src/reason_acp/wire.rs</code> · bytes 5549–5672</p><p class="muted">SHA-256 <code>79706e859b3d44a38d3f5390ee7a5785a55b63573af9829105f14ed481aa27cf</code></p><pre>fn diff_json(d: &amp;Diff) -&gt; Value {
+    json!({ &quot;path&quot;: path_json(&amp;d.path), &quot;oldText&quot;: d.old_text, &quot;newText&quot;: d.new_text })
+}</pre></details><details><summary>path_json</summary><p><code>src-tauri/src/reason_acp/wire.rs</code> · bytes 5747–6136</p><p class="muted">SHA-256 <code>6f584eb151ca59afd01af3a00604e76a5140deae67badf4d6a07c00a6a27295e</code></p><pre>pub fn path_json(p: &amp;MappedPath) -&gt; Value {
+    let mut v = json!({ &quot;raw&quot;: p.raw, &quot;relative&quot;: p.relative });
+    match &amp;p.place {
+        Place::Local =&gt; v[&quot;place&quot;] = json!(&quot;local&quot;),
+        Place::Cloud { session_id } =&gt; {
+            v[&quot;place&quot;] = json!(&quot;cloud&quot;);
+            v[&quot;sessionId&quot;] = json!(session_id);
+        }
+        Place::Other =&gt; v[&quot;place&quot;] = json!(&quot;other&quot;),
+    }
+    v
+}</pre></details><details><summary>event_json-chat-envelope-tail</summary><p><code>src-tauri/src/reason_acp/wire.rs</code> · bytes 3103–3139</p><p class="muted">SHA-256 <code>db419ea790773d6f9adab333d799e51a7d2cfffd08fcaaef7a7ec8a6fd6c4f1f</code></p><pre>    v[&quot;chatId&quot;] = json!(chat);
+    v</pre></details><details><summary>session-started-json-expression</summary><p><code>src-tauri/src/reason_acp/wire.rs</code> · bytes 737–797</p><p class="muted">SHA-256 <code>13c0e7cd14530c9590ee0047861be4a3ee22ddc4b68ab324f306723b4b32179a</code></p><pre>json!({ &quot;type&quot;: &quot;sessionStarted&quot;, &quot;sessionId&quot;: session_id })</pre></details></details><details><summary>TypeScript listener, mounted transcript and click callbacks</summary><details><summary>Transcript.toolDisclosure</summary><p class="muted">SHA-256 <code>ba2e5ea5fcfa8c79a737297c010df542045f54cc6a1497321be67eabe1f4baec</code></p><pre>const toolDisclosure = (() =&gt; {
+  let expanded: ReadonlyMap&lt;string, boolean&gt; = new Map();
+  const listeners = new Set&lt;() =&gt; void&gt;();
+  return {
+    getSnapshot: () =&gt; expanded,
+    subscribe(listener: () =&gt; void) {
+      listeners.add(listener);
+      return () =&gt; { listeners.delete(listener); };
+    },
+    toggle(id: string, defaultOpen: boolean) {
+      expanded = new Map(expanded).set(id, !isToolExpanded(id, expanded, defaultOpen));
+      for (const listener of listeners) listener();
+    },
+  };
+})();</pre></details><details><summary>Transcript.Transcript</summary><p class="muted">SHA-256 <code>79a57b7de408445e639759ab4d7157b32040fa9940b66ca9179eb38b2ec75907</code></p><pre>export function Transcript({
+  transcript,
+  searchEnabled = false,
+  expandToolsByDefault = false,
+  dontCollapseToolCalls = false,
+  onRetry,
+  onResetChat,
+  resetDisabled = false,
+  turnFooter,
+  workspacePath,
+  onOpenFile,
+  now = Date.now,
+  onForkToNewTab,
+  onForkToNewWorkspace,
+  forkDisabled = false,
+  turnAgent,
+  chatAgent,
+  notify,
+}: TranscriptProps) {
+  const stripAbsolutelyRight = useBoolPref(&quot;not_absolutely_right&quot;);
+  const clock = useMemo(() =&gt; turnDayClock(now), [now]);
+  const day = useSyncExternalStore(clock.subscribe, clock.getSnapshot, clock.getSnapshot);
+  const rows = useMemo(() =&gt; foldAgentRows(buildRows(transcript), transcript.activeTurn), [transcript]);
+  const turns = useMemo(() =&gt; groupTurns(rows), [rows]);
+  const toggled = useSyncExternalStore(toolDisclosure.subscribe, toolDisclosure.getSnapshot, toolDisclosure.getSnapshot);
+  const toggleTool = (id: string, defaultOpen = false) =&gt; toolDisclosure.toggle(id, expandToolsByDefault || defaultOpen);
+  const [summaries, setSummaries] = useState&lt;ReadonlyMap&lt;string, &quot;expanded&quot; | &quot;collapsed&quot;&gt;&gt;(new Map());
+  const ctx: RowContext = {
+    stripAbsolutelyRight,
+    isOpen: (id, defaultOpen = false) =&gt; isToolExpanded(id, toggled, expandToolsByDefault || defaultOpen),
+    onToggle: toggleTool,
+    summaries: {
+      canCollapse: (running) =&gt; canCollapse(running, dontCollapseToolCalls),
+      isOpen: (id, running) =&gt; isSummaryOpen(canCollapse(running, dontCollapseToolCalls), summaries.get(id)),
+      toggle: (id, open) =&gt; setSummaries((prev) =&gt; new Map(prev).set(id, open ? &quot;collapsed&quot; : &quot;expanded&quot;)),
+    },
+    onRetry,
+    onResetChat,
+    resetDisabled,
+    turnFooter,
+    workspacePath,
+    onOpenFile,
+    now: () =&gt; day,
+    toolNow: now,
+    onForkToNewTab,
+    onForkToNewWorkspace,
+    forkDisabled,
+    turnAgent,
+    chatAgent,
+    notify,
+  };
+
+  const content = (
+      &lt;div className=&quot;transcript&quot;&gt;
+        {turns.map((turn) =&gt; {
+          const footer = turn.rows.find((r): r is TurnEndRow =&gt; r.kind === &quot;turn_end&quot;);
+          return (
+            &lt;div key={turn.key} className=&quot;oc-turn&quot; data-turn-id={turn.turnId}&gt;
+              &lt;div className=&quot;oc-turn-body&quot;&gt;
+                &lt;div className=&quot;oc-turn-items&quot;&gt;
+                  {turn.rows.map((row) =&gt; (row.kind === &quot;turn_end&quot; ? null : &lt;Row key={row.key} row={row} ctx={ctx} /&gt;))}
+                &lt;/div&gt;
+                {footer ? &lt;TurnFooter row={footer} ctx={ctx} /&gt; : null}
+              &lt;/div&gt;
+            &lt;/div&gt;
+          );
+        })}
+      &lt;/div&gt;
+  );
+  return &lt;LinkMenuNotify.Provider value={notify}&gt;
+    {searchEnabled ? &lt;TranscriptSearch transcript={transcript}&gt;{content}&lt;/TranscriptSearch&gt; : content}
+  &lt;/LinkMenuNotify.Provider&gt;;
+}</pre></details><details><summary>Transcript.rowTurn</summary><p class="muted">SHA-256 <code>68dd7ea5fddb051adb4fe45736c6465e92d4a6ef890baa0289681d955b792a73</code></p><pre>const rowTurn = (row: DisplayRow): string =&gt; (row.kind === &quot;agent&quot; || row.kind === &quot;turn_end&quot; ? row.turnId : row.message.turnId);</pre></details><details><summary>Transcript.groupTurns</summary><p class="muted">SHA-256 <code>8c2a9015dd1a98cc6750ef63aa2d41e2cc21b0effece55794e9b5fdd9d127cb5</code></p><pre>function groupTurns(rows: DisplayRow[]): Turn[] {
+  const out: Turn[] = [];
+  for (const row of rows) {
+    const turnId = rowTurn(row);
+    const last = out[out.length - 1];
+    if (last &amp;&amp; last.turnId === turnId &amp;&amp; !last.rows.some((r) =&gt; r.kind === &quot;turn_end&quot;)) last.rows.push(row);
+    else out.push({ key: `turn:${row.key}`, turnId, rows: [row] });
+  }
+  return out;
+}</pre></details><details><summary>Transcript.Row</summary><p class="muted">SHA-256 <code>18e62cc63d043829b91f12d18b27546867f7c103900ba2c6f9e0d6b6b1cb251f</code></p><pre>function Row({ row, ctx }: { row: Exclude&lt;DisplayRow, TurnEndRow&gt;; ctx: RowContext }) {
+  switch (row.kind) {
+    case &quot;user&quot;:
+      return (
+        &lt;div className=&quot;chat-msg chat-user oc-msg-user&quot; data-message-role=&quot;user&quot;&gt;
+          &lt;div className=&quot;oc-user-col&quot;&gt;
+            &lt;div className=&quot;chat-bubble oc-bubble&quot;&gt;
+              &lt;div className=&quot;oc-user-text&quot;&gt;{row.message.userContent ? &lt;SentUserContent content={row.message.userContent} workspacePath={ctx.workspacePath} onOpenFile={ctx.onOpenFile} /&gt; : &lt;UserText text={row.text} /&gt;}&lt;/div&gt;
+              &lt;MessageActions text={userMessageCopyText(row.message)} /&gt;
+            &lt;/div&gt;
+            {row.cancelled ? &lt;div className=&quot;chat-cancelled&quot;&gt;Cancelled&lt;/div&gt; : null}
+          &lt;/div&gt;
+        &lt;/div&gt;
+      );
+    case &quot;report&quot;:
+      return (
+        &lt;div className=&quot;chat-msg chat-report&quot; data-origin={row.origin.kind}&gt;
+          &lt;div className=&quot;chat-report-label&quot;&gt;{reportLabel(row.origin)}&lt;/div&gt;
+          &lt;div className=&quot;chat-report-body&quot;&gt;{row.text}&lt;/div&gt;
+        &lt;/div&gt;
+      );
+    case &quot;system&quot;:
+      return &lt;div className=&quot;chat-msg chat-system&quot;&gt;{row.text}&lt;/div&gt;;
+    case &quot;agent&quot;:
+      return &lt;Agent block={row} ctx={ctx} /&gt;;
+  }
+}</pre></details><details><summary>Transcript.Agent</summary><p class="muted">SHA-256 <code>0a42072af5992b33975612a34cf098eeedb244ca5573a5e29d4d8ae3e0e05086</code></p><pre>function Agent({ block, ctx }: { block: AgentBlock; ctx: RowContext }) {
+  const collapsible = ctx.summaries.canCollapse(block.running);
+  return (
+    &lt;&gt;
+      {block.empty &amp;&amp; block.streaming ? (
+        &lt;div className=&quot;chat-msg chat-assistant oc-msg-assistant&quot;&gt;
+          &lt;span className=&quot;chat-typing&quot; aria-label=&quot;Agent is responding&quot; /&gt;
+        &lt;/div&gt;
+      ) : null}
+      {block.items.map((item) =&gt; {
+        if (item.kind === &quot;part&quot;) return &lt;Part key={item.key} partKey={item.key} part={item.part} preview={item.preview === true} ctx={ctx} /&gt;;
+        const open = ctx.summaries.isOpen(item.summary.id, block.running);
+        return (
+          &lt;Fragment key={item.summary.id}&gt;
+            {collapsible ? &lt;SummaryRow summary={item.summary} open={open} onToggle={() =&gt; ctx.summaries.toggle(item.summary.id, open)} /&gt; : null}
+            {open ? item.parts.map((p) =&gt; &lt;Part key={p.key} partKey={p.key} part={p.part} group={item.summary.id} ctx={ctx} /&gt;) : null}
+          &lt;/Fragment&gt;
+        );
+      })}
+    &lt;/&gt;
+  );
+}</pre></details><details><summary>Transcript.SummaryRow</summary><p class="muted">SHA-256 <code>7a7f083361e13f266531377bcd9d75633bd454113f3ae20f0155b1ebea784a36</code></p><pre>function SummaryRow({ summary, open, onToggle }: { summary: ToolSummary; open: boolean; onToggle?: () =&gt; void }) {
+  const label = summaryLabel(summary);
+  const icons = [...new Map(summary.toolNames.map((n) =&gt; [n, n])).values()];
+  return (
+    &lt;button type=&quot;button&quot; className=&quot;chat-tool-summary-row oc-summary&quot; aria-expanded={open} aria-label={`${open ? &quot;Collapse&quot; : &quot;Expand&quot;} ${label}`} disabled={!onToggle} onClick={onToggle}&gt;
+      &lt;Lucide name={open ? &quot;chevron-down&quot; : &quot;chevron-right&quot;} className=&quot;oc-summary-chevron&quot; /&gt;
+      &lt;span className=&quot;oc-summary-main&quot;&gt;
+        &lt;span className=&quot;oc-summary-label&quot;&gt;{label}&lt;/span&gt;
+        {icons.length &gt; 0 ? (
+          &lt;span className=&quot;oc-summary-icons&quot; aria-hidden&gt;
+            {icons.map((name) =&gt; (
+              &lt;ToolIcon key={name} name={name} className=&quot;oc-tool-icon&quot; /&gt;
+            ))}
+          &lt;/span&gt;
+        ) : null}
+      &lt;/span&gt;
+    &lt;/button&gt;
+  );
+}</pre></details><details><summary>Transcript.Part</summary><p class="muted">SHA-256 <code>5283e068e4de3b8aeabdb49535cf6c409b3ca14c9d4e6fb4999c37aceaa6b9c8</code></p><pre>function Part({ partKey, part, preview = false, group, ctx }: { partKey: string; part: PartView; preview?: boolean; group?: string; ctx: RowContext }) {
+  switch (part.kind) {
+    case &quot;text&quot;: {
+      const text = assistantDisplayText(part.text, ctx.stripAbsolutelyRight);
+      if (!text.trim()) return null;
+      return (
+        &lt;div className=&quot;chat-msg chat-assistant oc-msg-assistant&quot; data-message-role=&quot;assistant&quot; data-tool-group={group}&gt;
+          &lt;div className=&quot;oc-assistant-col&quot;&gt;
+            &lt;div className=&quot;oc-text-wrap&quot;&gt;
+              &lt;Markdown
+                text={text}
+                notify={ctx.notify}
+                className={`oc-prose chat-text${preview ? &quot;&quot; : &quot; muted&quot;}${part.streaming ? &quot; is-streaming&quot; : &quot;&quot;}`}
+                onOpenLink={(href) =&gt; void openUrl(href)}
+                workspacePath={ctx.workspacePath}
+                onOpenFile={ctx.onOpenFile}
+                Link={LinkWithMenu}
+              /&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      );
+    }
+    case &quot;thinking&quot;: {
+      const text = assistantDisplayText(part.text, ctx.stripAbsolutelyRight);
+      if (!text.trim()) return null;
+      return &lt;ThinkingRow id={`thinking:${partKey}`} text={text} streaming={part.streaming} group={group} ctx={ctx} /&gt;;
+    }
+    case &quot;tool&quot;: {
+      const { call } = part;
+      return (
+        // data-tool-input: the block&#x27;s input as the agent reported it (paths marked local or cloud), for e2e checks.
+        &lt;div className={`chat-tool oc-tool-wrap status-${call.status}`} data-tool-group={group} data-tool-input={JSON.stringify(call.input ?? null)}&gt;
+          &lt;ConductorToolRow
+            tool={call.tool}
+            status={call.status}
+            result={call.result}
+            rawResult={call.rawResult}
+            resultCreatedAt={call.resultCreatedAt}
+            now={ctx.toolNow}
+            isError={call.status === &quot;error&quot;}
+            open={ctx.isOpen(call.id, opensByDefault(call.tool))}
+            onToggle={() =&gt; ctx.onToggle(call.id, opensByDefault(call.tool))}
+            todoRows={call.tool.name === &quot;TodoWrite&quot; ? {
+              completed: { open: ctx.isOpen(`${call.id}-completed`), onToggle: () =&gt; ctx.onToggle(`${call.id}-completed`) },
+              started: { open: ctx.isOpen(`${call.id}-started`), onToggle: () =&gt; ctx.onToggle(`${call.id}-started`) },
+            } : undefined}
+            workspacePath={ctx.workspacePath}
+            onOpenFile={ctx.onOpenFile}
+          /&gt;
+        &lt;/div&gt;
+      );
+    }
+  }
+}</pre></details><details><summary>reasonBackend.listen</summary><p class="muted">SHA-256 <code>2fbd46671a3805124066ff17999972ca879a4eb074b804c7e05e9b645f0cd125</code></p><pre>(deliver, permissions) =&gt;
+    listen&lt;ReasonPayload&gt;(EVENT, ({ payload }) =&gt; {
+      if (payload.type === &quot;permissionRequest&quot;) permissions.requested(payload.chatId, permissionPrompt(payload));
+      else if (payload.type === &quot;permissionResolved&quot;) permissions.resolved(payload.chatId, payload.requestId);
+      else {
+        // A new Session has run no turn yet: its model is the chat&#x27;s pick until one ends.
+        if (payload.type === &quot;sessionStarted&quot;) setRunningModel(payload.chatId, null);
+        if (payload.type === &quot;sessionModel&quot;) setRunningModel(payload.chatId, { model: payload.model, effort: payload.effort ?? null });
+        deliver(payload.chatId, (s) =&gt; applyReasonPayload(s, payload));
+      }
+    })</pre></details><details><summary>reasonChat.EVENT</summary><p class="muted">SHA-256 <code>95bf14b552f33d7ad5d40b53bdc7271ede9a6f5052b3f9fedc6318b69916f5e1</code></p><pre>&quot;reason-chat-event&quot;</pre></details><details><summary>WorkspaceView.openAnyFile</summary><p class="muted">SHA-256 <code>c0ffcebb971aa0a92115f40916ddc3165e350a67a9966072319a76cbee9d9323</code></p><pre>(path: string, line?: number): boolean =&gt; {
+    if (!workspace.path) return false;
+    setFileTarget({ path, workspaceId: workspace.id, line });
+    setMainTab(&quot;file&quot;);
+    return true;
+  }</pre></details><details><summary>WorkspaceView.openFileOrViewer</summary><p class="muted">SHA-256 <code>3efb003355bd72f6b8bb2da639af4df2af2e122ba777210431c3f9b924f3d27c</code></p><pre>(path: string) =&gt; {
+    if (diff.files.some((f) =&gt; f.path === path)) { diff.openPath(path); return; }
+    // Cloud/absolute paths not under the worktree cannot be opened locally (H6).
+    if (path.startsWith(&quot;/&quot;) &amp;&amp; (!workspace.path || !path.startsWith(workspace.path))) {
+      notify?.(&quot;info&quot;, `${path.split(&quot;/&quot;).pop() ?? path} is a cloud file — not available locally`);
+      return;
+    }
+    openAnyFile(path);
+  }</pre></details><details><summary>ChatPanel.Transcript.onOpenFile</summary><p class="muted">SHA-256 <code>a20f1ede9121d8bd7730b0b25506f0bc161f8332568ed43028e99b2ceab17aca</code></p><pre>openFile ? (path) =&gt; openFile(path.startsWith(`${cwd}/`) ? path.slice(cwd.length + 1) : path) : undefined</pre></details></details>
+<footer>Prepared by Conductor Rebuild. Reproduction-only lease: one new regression and its evidence directory. All production and held WorkspaceView callbacks are unchanged. Product lease not granted; no repair or PR opened for this RED fixture.</footer>
+</details>
+<footer>Prepared by Conductor Rebuild. Current treatment receipts and historical baseline evidence are distinct. No live/native parity or package inclusion claimed.</footer>
+</body></html>

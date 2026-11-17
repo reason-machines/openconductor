@@ -1,0 +1,8 @@
+{
+  "pass": true,
+  "candidate": "CREATE-FAILURE-DRAFT-135",
+  "main": "74c004a95d7b10072f54f71ca611f22c50944f64",
+  "spans": 15,
+  "joins": 26,
+  "currentIdentities": 10
+}

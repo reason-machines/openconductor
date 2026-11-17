@@ -1,0 +1,26 @@
+[
+  {
+    "name": "eno",
+    "asset": "renderer",
+    "utf8_half_open": [
+      6907860,
+      6912485
+    ],
+    "bytes": 4625,
+    "sha256": "6490b51e8c12707c1cbb0aa1940d1c7274ada1a13f39debda86ed9b2e9858a94",
+    "file": "eno.txt",
+    "ast_type": "VariableDeclaration(ClassExpression)"
+  },
+  {
+    "name": "Kto",
+    "asset": "renderer",
+    "utf8_half_open": [
+      6905050,
+      6905599
+    ],
+    "bytes": 549,
+    "sha256": "ac6efa15419b082e12e94f40b8ce4134b7861b4c37e986120a25ad83de288c27",
+    "file": "Kto.txt",
+    "ast_type": "VariableDeclaration(ClassExpression)"
+  }
+]

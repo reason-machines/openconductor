@@ -1,0 +1,86 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a rejected dismissed modal exposes exact captured prompt through the real toast action
+not ok 1 - a rejected dismissed modal exposes exact captured prompt through the real toast action
+  ---
+  duration_ms: 426.829079
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceFailureDraft.test.ts:163:1'
+  failureType: 'testCodeFailure'
+  error: 'failed nonempty modal prompt must reach the actual Toaster recovery action'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    Object.recover (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceFailureDraft.test.ts:156:66)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceFailureDraft.test.ts:165:191)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: recovering a detached failure never replaces the new composer's draft or selected target
+not ok 2 - recovering a detached failure never replaces the new composer's draft or selected target
+  ---
+  duration_ms: 199.128955
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceFailureDraft.test.ts:168:1'
+  failureType: 'testCodeFailure'
+  error: 'failed nonempty modal prompt must reach the actual Toaster recovery action'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    Object.recover (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceFailureDraft.test.ts:156:66)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/components/createWorkspaceFailureDraft.test.ts:170:288)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: full-page rejection retains an editable draft and the same repository and target
+ok 3 - full-page rejection retains an editable draft and the same repository and target
+  ---
+  duration_ms: 130.424752
+  type: 'test'
+  ...
+# Subtest: pending full-page creation suppresses duplicate submit and keeps the captured request
+ok 4 - pending full-page creation suppresses duplicate submit and keeps the captured request
+  ---
+  duration_ms: 125.35062
+  type: 'test'
+  ...
+# Subtest: empty modal prompt reports the error without a recover action
+ok 5 - empty modal prompt reports the error without a recover action
+  ---
+  duration_ms: 138.217463
+  type: 'test'
+  ...
+# Subtest: string rejection uses the actual errorText formatter and leaves no pending row
+ok 6 - string rejection uses the actual errorText formatter and leaves no pending row
+  ---
+  duration_ms: 102.699896
+  type: 'test'
+  ...
+# Subtest: successful modal creation produces no failure recovery or clipboard write
+ok 7 - successful modal creation produces no failure recovery or clipboard write
+  ---
+  duration_ms: 121.904667
+  type: 'test'
+  ...
+# Subtest: no selected repository never launches or emits a recovery error
+ok 8 - no selected repository never launches or emits a recovery error
+  ---
+  duration_ms: 111.378648
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 6
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1704.63651

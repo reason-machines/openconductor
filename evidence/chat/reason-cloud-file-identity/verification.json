@@ -1,0 +1,53 @@
+{
+  "checked_main": "74c004a95d7b10072f54f71ca611f22c50944f64",
+  "production_file_identity": "PASS",
+  "production_files": 12,
+  "frozen_integrity": "PASS",
+  "frozen_files": 6,
+  "actual_rust_compile": "PASS",
+  "actual_rust_compile_seconds": 0.316,
+  "initial_link_invocation": "FAILED missing transitive cached dependency -L dirs; preserved log, corrected without changing source or dependencies",
+  "initial_frontend_setup": "FAILED missing EVENT VM binding; preserved log and setup freeze; no behavioral claims from setup run",
+  "actual_rust_replay": "PASS",
+  "frozen_behavioral_baseline": {
+    "tests": 31,
+    "pass": 19,
+    "intended_fail": 12,
+    "unexpected_fail": 0,
+    "skip": 0
+  },
+  "expected_failures": [
+    "live file target: cloud-read-diff#0 (cloud, diff)",
+    "live file target: cloud-read-viewer#0 (cloud, viewer)",
+    "live file target: cloud-write-viewer#0 (cloud, viewer)",
+    "live file target: cloud-edit-diff#0 (cloud, diff)",
+    "live file target: cloud-multiple-diffs#0 (cloud, diff)",
+    "live file target: cloud-multiple-diffs#1 (cloud, diff)",
+    "restored file target: cloud-read-diff#0 (cloud, diff)",
+    "restored file target: cloud-read-viewer#0 (cloud, viewer)",
+    "restored file target: cloud-write-viewer#0 (cloud, viewer)",
+    "restored file target: cloud-edit-diff#0 (cloud, diff)",
+    "restored file target: cloud-multiple-diffs#0 (cloud, diff)",
+    "restored file target: cloud-multiple-diffs#1 (cloud, diff)"
+  ],
+  "mounted_click_witnesses": 26,
+  "source_extracted_js_spans": 13,
+  "own_parser_compiler_node_processes": [],
+  "heavy_slot": "RELEASED",
+  "provider_launches": 0,
+  "native_launches": 0,
+  "browser_launches": 0,
+  "production_edits": 0,
+  "gaps": [
+    "No provider process/current CLI execution.",
+    "No built-app/native/browser/package acceptance.",
+    "No full-chat suite, typecheck, full Rust or app build.",
+    "No fix or product lease; WorkspaceView callbacks read-only."
+  ],
+  "adjacent": {
+    "tests": 66,
+    "pass": 66,
+    "fail": 0,
+    "skip": 0
+  }
+}

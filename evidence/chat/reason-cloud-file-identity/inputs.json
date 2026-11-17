@@ -1,0 +1,849 @@
+{
+  "schema": 1,
+  "chatId": "fixture/workspace-chat",
+  "sessionId": "11111111-1111-4111-8111-111111111111",
+  "cwd": "/Users/fixture/openconductor/workspace",
+  "cases": [
+    {
+      "id": "local-read-diff",
+      "kind": "read",
+      "mode": "diff",
+      "paths": [
+        {
+          "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+          "relative": "src/same.txt",
+          "place": "local"
+        }
+      ],
+      "output": "fixture result: local-read-diff",
+      "notifications": [
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "session_info_update",
+            "_meta": {
+              "com.reasonmachines/computer": {
+                "kind": "headless",
+                "name": "Fixture local"
+              }
+            }
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call",
+            "toolCallId": "local-read-diff",
+            "title": "Read: src/same.txt",
+            "kind": "read",
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ],
+            "status": "pending"
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call_update",
+            "toolCallId": "local-read-diff",
+            "title": "Read: src/same.txt",
+            "kind": "read",
+            "status": "completed",
+            "content": [
+              {
+                "type": "content",
+                "content": {
+                  "type": "text",
+                  "text": "fixture result: local-read-diff"
+                }
+              }
+            ],
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "local-read-viewer",
+      "kind": "read",
+      "mode": "viewer",
+      "paths": [
+        {
+          "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+          "relative": "src/same.txt",
+          "place": "local"
+        }
+      ],
+      "output": "fixture result: local-read-viewer",
+      "notifications": [
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "session_info_update",
+            "_meta": {
+              "com.reasonmachines/computer": {
+                "kind": "headless",
+                "name": "Fixture local"
+              }
+            }
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call",
+            "toolCallId": "local-read-viewer",
+            "title": "Read: src/same.txt",
+            "kind": "read",
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ],
+            "status": "pending"
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call_update",
+            "toolCallId": "local-read-viewer",
+            "title": "Read: src/same.txt",
+            "kind": "read",
+            "status": "completed",
+            "content": [
+              {
+                "type": "content",
+                "content": {
+                  "type": "text",
+                  "text": "fixture result: local-read-viewer"
+                }
+              }
+            ],
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "cloud-read-diff",
+      "kind": "read",
+      "mode": "diff",
+      "paths": [
+        {
+          "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+          "relative": "src/same.txt",
+          "place": "cloud",
+          "sessionId": "11111111-1111-4111-8111-111111111111"
+        }
+      ],
+      "output": "fixture result: cloud-read-diff",
+      "notifications": [
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "session_info_update",
+            "_meta": {
+              "com.reasonmachines/computer": {
+                "kind": "cloud",
+                "name": "Fixture cloud"
+              }
+            }
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call",
+            "toolCallId": "cloud-read-diff",
+            "title": "Read: src/same.txt",
+            "kind": "read",
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ],
+            "status": "pending"
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call_update",
+            "toolCallId": "cloud-read-diff",
+            "title": "Read: src/same.txt",
+            "kind": "read",
+            "status": "completed",
+            "content": [
+              {
+                "type": "content",
+                "content": {
+                  "type": "text",
+                  "text": "fixture result: cloud-read-diff"
+                }
+              }
+            ],
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "cloud-read-viewer",
+      "kind": "read",
+      "mode": "viewer",
+      "paths": [
+        {
+          "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+          "relative": "src/same.txt",
+          "place": "cloud",
+          "sessionId": "11111111-1111-4111-8111-111111111111"
+        }
+      ],
+      "output": "fixture result: cloud-read-viewer",
+      "notifications": [
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "session_info_update",
+            "_meta": {
+              "com.reasonmachines/computer": {
+                "kind": "cloud",
+                "name": "Fixture cloud"
+              }
+            }
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call",
+            "toolCallId": "cloud-read-viewer",
+            "title": "Read: src/same.txt",
+            "kind": "read",
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ],
+            "status": "pending"
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call_update",
+            "toolCallId": "cloud-read-viewer",
+            "title": "Read: src/same.txt",
+            "kind": "read",
+            "status": "completed",
+            "content": [
+              {
+                "type": "content",
+                "content": {
+                  "type": "text",
+                  "text": "fixture result: cloud-read-viewer"
+                }
+              }
+            ],
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "cloud-write-viewer",
+      "kind": "write",
+      "mode": "viewer",
+      "paths": [
+        {
+          "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+          "relative": "src/same.txt",
+          "place": "cloud",
+          "sessionId": "11111111-1111-4111-8111-111111111111"
+        }
+      ],
+      "output": "fixture result: cloud-write-viewer",
+      "notifications": [
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "session_info_update",
+            "_meta": {
+              "com.reasonmachines/computer": {
+                "kind": "cloud",
+                "name": "Fixture cloud"
+              }
+            }
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call",
+            "toolCallId": "cloud-write-viewer",
+            "title": "Write: src/same.txt",
+            "kind": "edit",
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ],
+            "status": "pending"
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call_update",
+            "toolCallId": "cloud-write-viewer",
+            "title": "Write: src/same.txt",
+            "kind": "edit",
+            "status": "completed",
+            "content": [
+              {
+                "type": "content",
+                "content": {
+                  "type": "text",
+                  "text": "fixture result: cloud-write-viewer"
+                }
+              },
+              {
+                "type": "diff",
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt",
+                "oldText": null,
+                "newText": "fixture new\n"
+              }
+            ],
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "cloud-edit-diff",
+      "kind": "edit",
+      "mode": "diff",
+      "paths": [
+        {
+          "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+          "relative": "src/same.txt",
+          "place": "cloud",
+          "sessionId": "11111111-1111-4111-8111-111111111111"
+        }
+      ],
+      "output": "fixture result: cloud-edit-diff",
+      "notifications": [
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "session_info_update",
+            "_meta": {
+              "com.reasonmachines/computer": {
+                "kind": "cloud",
+                "name": "Fixture cloud"
+              }
+            }
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call",
+            "toolCallId": "cloud-edit-diff",
+            "title": "Edit: src/same.txt",
+            "kind": "edit",
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ],
+            "status": "pending"
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call_update",
+            "toolCallId": "cloud-edit-diff",
+            "title": "Edit: src/same.txt",
+            "kind": "edit",
+            "status": "completed",
+            "content": [
+              {
+                "type": "content",
+                "content": {
+                  "type": "text",
+                  "text": "fixture result: cloud-edit-diff"
+                }
+              },
+              {
+                "type": "diff",
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt",
+                "oldText": "fixture old\n",
+                "newText": "fixture new\n"
+              }
+            ],
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "cloud-multiple-diffs",
+      "kind": "edit",
+      "mode": "diff",
+      "paths": [
+        {
+          "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+          "relative": "src/same.txt",
+          "place": "cloud",
+          "sessionId": "11111111-1111-4111-8111-111111111111"
+        },
+        {
+          "raw": "/Users/fixture/openconductor/workspace/src/second.txt",
+          "relative": "src/second.txt",
+          "place": "cloud",
+          "sessionId": "11111111-1111-4111-8111-111111111111"
+        }
+      ],
+      "output": "fixture result: cloud-multiple-diffs",
+      "notifications": [
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "session_info_update",
+            "_meta": {
+              "com.reasonmachines/computer": {
+                "kind": "cloud",
+                "name": "Fixture cloud"
+              }
+            }
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call",
+            "toolCallId": "cloud-multiple-diffs",
+            "title": "Edit: src/same.txt",
+            "kind": "edit",
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ],
+            "status": "pending"
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call_update",
+            "toolCallId": "cloud-multiple-diffs",
+            "title": "Edit: src/same.txt",
+            "kind": "edit",
+            "status": "completed",
+            "content": [
+              {
+                "type": "content",
+                "content": {
+                  "type": "text",
+                  "text": "fixture result: cloud-multiple-diffs"
+                }
+              },
+              {
+                "type": "diff",
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt",
+                "oldText": "fixture old\n",
+                "newText": "fixture new\n"
+              },
+              {
+                "type": "diff",
+                "path": "/Users/fixture/openconductor/workspace/src/second.txt",
+                "oldText": "second old\n",
+                "newText": "second new\n"
+              }
+            ],
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "child-literal-viewer",
+      "kind": "read",
+      "mode": "viewer",
+      "paths": [
+        {
+          "raw": "/home/runner/.reason/workspace/sessions/22222222-2222-4222-8222-222222222222/repo/src/same.txt",
+          "relative": "src/same.txt",
+          "place": "cloud",
+          "sessionId": "22222222-2222-4222-8222-222222222222"
+        }
+      ],
+      "output": "fixture result: child-literal-viewer",
+      "notifications": [
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "session_info_update",
+            "_meta": {
+              "com.reasonmachines/computer": {
+                "kind": "cloud",
+                "name": "Fixture cloud"
+              }
+            }
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call",
+            "toolCallId": "child-literal-viewer",
+            "title": "Read: src/same.txt",
+            "kind": "read",
+            "locations": [
+              {
+                "path": "/home/runner/.reason/workspace/sessions/22222222-2222-4222-8222-222222222222/repo/src/same.txt"
+              }
+            ],
+            "status": "pending"
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call_update",
+            "toolCallId": "child-literal-viewer",
+            "title": "Read: src/same.txt",
+            "kind": "read",
+            "status": "completed",
+            "content": [
+              {
+                "type": "content",
+                "content": {
+                  "type": "text",
+                  "text": "fixture result: child-literal-viewer"
+                }
+              }
+            ],
+            "locations": [
+              {
+                "path": "/home/runner/.reason/workspace/sessions/22222222-2222-4222-8222-222222222222/repo/src/same.txt"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "child-literal-diff",
+      "kind": "read",
+      "mode": "diff",
+      "paths": [
+        {
+          "raw": "/home/runner/.reason/workspace/sessions/22222222-2222-4222-8222-222222222222/repo/src/same.txt",
+          "relative": "src/same.txt",
+          "place": "cloud",
+          "sessionId": "22222222-2222-4222-8222-222222222222"
+        }
+      ],
+      "output": "fixture result: child-literal-diff",
+      "notifications": [
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "session_info_update",
+            "_meta": {
+              "com.reasonmachines/computer": {
+                "kind": "cloud",
+                "name": "Fixture cloud"
+              }
+            }
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call",
+            "toolCallId": "child-literal-diff",
+            "title": "Read: src/same.txt",
+            "kind": "read",
+            "locations": [
+              {
+                "path": "/home/runner/.reason/workspace/sessions/22222222-2222-4222-8222-222222222222/repo/src/same.txt"
+              }
+            ],
+            "status": "pending"
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call_update",
+            "toolCallId": "child-literal-diff",
+            "title": "Read: src/same.txt",
+            "kind": "read",
+            "status": "completed",
+            "content": [
+              {
+                "type": "content",
+                "content": {
+                  "type": "text",
+                  "text": "fixture result: child-literal-diff"
+                }
+              }
+            ],
+            "locations": [
+              {
+                "path": "/home/runner/.reason/workspace/sessions/22222222-2222-4222-8222-222222222222/repo/src/same.txt"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "local-read-after-return",
+      "kind": "read",
+      "mode": "viewer",
+      "paths": [
+        {
+          "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+          "relative": "src/same.txt",
+          "place": "local"
+        }
+      ],
+      "output": "fixture result: local-read-after-return",
+      "notifications": [
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "session_info_update",
+            "_meta": {
+              "com.reasonmachines/computer": {
+                "kind": "headless",
+                "name": "Fixture local"
+              }
+            }
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call",
+            "toolCallId": "local-read-after-return",
+            "title": "Read: src/same.txt",
+            "kind": "read",
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ],
+            "status": "pending"
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call_update",
+            "toolCallId": "local-read-after-return",
+            "title": "Read: src/same.txt",
+            "kind": "read",
+            "status": "completed",
+            "content": [
+              {
+                "type": "content",
+                "content": {
+                  "type": "text",
+                  "text": "fixture result: local-read-after-return"
+                }
+              }
+            ],
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "local-write-after-return",
+      "kind": "write",
+      "mode": "viewer",
+      "paths": [
+        {
+          "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+          "relative": "src/same.txt",
+          "place": "local"
+        }
+      ],
+      "output": "fixture result: local-write-after-return",
+      "notifications": [
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "session_info_update",
+            "_meta": {
+              "com.reasonmachines/computer": {
+                "kind": "headless",
+                "name": "Fixture local"
+              }
+            }
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call",
+            "toolCallId": "local-write-after-return",
+            "title": "Write: src/same.txt",
+            "kind": "edit",
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ],
+            "status": "pending"
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call_update",
+            "toolCallId": "local-write-after-return",
+            "title": "Write: src/same.txt",
+            "kind": "edit",
+            "status": "completed",
+            "content": [
+              {
+                "type": "content",
+                "content": {
+                  "type": "text",
+                  "text": "fixture result: local-write-after-return"
+                }
+              },
+              {
+                "type": "diff",
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt",
+                "oldText": null,
+                "newText": "fixture new\n"
+              }
+            ],
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "local-edit-after-return",
+      "kind": "edit",
+      "mode": "diff",
+      "paths": [
+        {
+          "raw": "/Users/fixture/openconductor/workspace/src/same.txt",
+          "relative": "src/same.txt",
+          "place": "local"
+        }
+      ],
+      "output": "fixture result: local-edit-after-return",
+      "notifications": [
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "session_info_update",
+            "_meta": {
+              "com.reasonmachines/computer": {
+                "kind": "headless",
+                "name": "Fixture local"
+              }
+            }
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call",
+            "toolCallId": "local-edit-after-return",
+            "title": "Edit: src/same.txt",
+            "kind": "edit",
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ],
+            "status": "pending"
+          }
+        },
+        {
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "update": {
+            "sessionUpdate": "tool_call_update",
+            "toolCallId": "local-edit-after-return",
+            "title": "Edit: src/same.txt",
+            "kind": "edit",
+            "status": "completed",
+            "content": [
+              {
+                "type": "content",
+                "content": {
+                  "type": "text",
+                  "text": "fixture result: local-edit-after-return"
+                }
+              },
+              {
+                "type": "diff",
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt",
+                "oldText": "fixture old\n",
+                "newText": "fixture new\n"
+              }
+            ],
+            "locations": [
+              {
+                "path": "/Users/fixture/openconductor/workspace/src/same.txt"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

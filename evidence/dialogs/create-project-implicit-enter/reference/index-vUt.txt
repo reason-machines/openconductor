@@ -1,0 +1,1 @@
+function vUt({shortcut:t,event:e,modifier:s}){if(s!=="shift"&&s!=="alt"||t.key.kind!=="logical")return!1;const n=t.key.value;return[...n].length===1&&!Jk(n)&&Oy(n,e.key)}

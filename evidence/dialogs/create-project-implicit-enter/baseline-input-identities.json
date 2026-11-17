@@ -1,0 +1,947 @@
+[
+  {
+    "path": "node_modules/react/cjs/react.development.js",
+    "bytes": 87593,
+    "sha256": "1ff3a1d9861a87984329584fa1172aea920855d79eb57dae0d1cebe54093d7e3"
+  },
+  {
+    "path": "node_modules/react/index.js",
+    "bytes": 190,
+    "sha256": "a216c390bf956cbb906c66d29fdb2e2ad6999464a5ca83e476533a6f25ad0ef3"
+  },
+  {
+    "path": "node_modules/scheduler/cjs/scheduler.development.js",
+    "bytes": 17497,
+    "sha256": "22e3d959dc9f9cd59fca4e1fc95fecb9fde4d2cb8ecadbd279137ada995983ac"
+  },
+  {
+    "path": "node_modules/scheduler/index.js",
+    "bytes": 198,
+    "sha256": "b413b3aac7bd209fd82cbe2241fda1467558daaef830744f45ed8396fac9185e"
+  },
+  {
+    "path": "node_modules/react-dom/cjs/react-dom.development.js",
+    "bytes": 1029622,
+    "sha256": "1459b808bc6991de5a1ec3a86d8beee32dbb6c14282cf13f84e00dfebfbdc025"
+  },
+  {
+    "path": "node_modules/react-dom/index.js",
+    "bytes": 1363,
+    "sha256": "f26fcb81b5d1dc32c6edea34645c75b60d259916293d3208c8be48ac33e882e4"
+  },
+  {
+    "path": "node_modules/react-dom/client.js",
+    "bytes": 619,
+    "sha256": "a510041dfc40d69b3aa574e5e111864186c711fbeb3db41aa2f27196b27c429f"
+  },
+  {
+    "path": ".ara-state/create-project-enter-6013/io.ts",
+    "bytes": 1195,
+    "sha256": "409b466d947886c62c326384f09551233960492da64a65413b9799d283620220"
+  },
+  {
+    "path": "src/state/cloneDialog.ts",
+    "bytes": 4711,
+    "sha256": "aa973b6dab60656c0977b4ff03f09860c95377aacc20d758214709a21ba6379d"
+  },
+  {
+    "path": "src/state/githubRepoDialog.ts",
+    "bytes": 4247,
+    "sha256": "d5fb1eb4efd9a38902592200273d8e3a308a4750d42ffd399429de86ceaa06f5"
+  },
+  {
+    "path": "src/state/createProject.ts",
+    "bytes": 3679,
+    "sha256": "08be32e2b1697032c51759a4798db4abdf0bb0e1d2ee82ad548d0e47bb0cc283"
+  },
+  {
+    "path": "src/components/conductorIcons.generated.ts",
+    "bytes": 14086,
+    "sha256": "06a650b2103d3cef025d619725c786a12984f624ece9be987e628203e4ae1768"
+  },
+  {
+    "path": "node_modules/react/cjs/react-jsx-runtime.development.js",
+    "bytes": 42700,
+    "sha256": "581f93fa33c32b3aa7ea35b85b80258922517de046f5447236047dcc2845d9ff"
+  },
+  {
+    "path": "node_modules/react/jsx-runtime.js",
+    "bytes": 214,
+    "sha256": "28170e60f2ff0bc045bc7d175f5849e86f68dd02d76d7255369420718b30295a"
+  },
+  {
+    "path": "src/components/ConductorIcon.tsx",
+    "bytes": 761,
+    "sha256": "0006e0282e0a6f36e16cd0c72c471da934b2a2b4a6c70305d5f51c22b6a19d79"
+  },
+  {
+    "path": "src/components/AppMark.tsx",
+    "bytes": 483,
+    "sha256": "861194399307ce164527542c0be4852ea13af6911e6137dc44445d343f61c87f"
+  },
+  {
+    "path": "src/components/Icons.tsx",
+    "bytes": 9088,
+    "sha256": "adee2029be2d9c13ec090c50bf6ed5a558e7db58d5870db1b50bff1f7c19fdb0"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/formatErrorMessage.mjs",
+    "bytes": 1235,
+    "sha256": "37836b29292936dbce04b3cbcc412b8937f91ca39b03c1cb75b361c6cb3e5df7"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/root/DialogRootContext.mjs",
+    "bytes": 634,
+    "sha256": "756fd0915bbb7519f856e622e69a27c2bdfabecf46168fef5aee57db7e6801e7"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/useRefWithInit.mjs",
+    "bytes": 519,
+    "sha256": "9a56b296c711e519f44067b53164b404e06ecad1debb0ef7624cd32be6f05e6f"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/useMergedRefs.mjs",
+    "bytes": 3189,
+    "sha256": "af2bf169f819dad3dd7749dc9dc210837d7c46f81d502ff66068ebe90cc7e241"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/reactVersion.mjs",
+    "bytes": 190,
+    "sha256": "eb874d943f20542eb5847ba29727fa42b8c7c3ecbfc9788b7b09ee2cbc5df1a9"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/getReactElementRef.mjs",
+    "bytes": 462,
+    "sha256": "88f349905b8ff1c2d0704b2c7bc279cb7dc95820c91fb5a0cc308d4ef8446d6c"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/mergeObjects.mjs",
+    "bytes": 191,
+    "sha256": "3cda66677f81f516b9301eb3d5a717950be194e6099358a30c18e2f1e5f187de"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/createLogOnce.mjs",
+    "bytes": 755,
+    "sha256": "1f800dafbb96fc3fd3b54d8b6997a424387409946f498e31f843770b5b9e1751"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/warn.mjs",
+    "bytes": 151,
+    "sha256": "9d68727b0a51f3db072b18148da2515fe3c590d383fcc0d9bc8a8c9aa49876f7"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/empty.mjs",
+    "bytes": 381,
+    "sha256": "22158d7dba2fd30d6ef5c95db1ac8be26b3214a27ef5b7af2e90a6d597e17299"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/getStateAttributesProps.mjs",
+    "bytes": 580,
+    "sha256": "4f4875695d017fbf7d606ade90331001156b82b2d870dbc05c492f1079741c89"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/resolveClassName.mjs",
+    "bytes": 341,
+    "sha256": "03eee8826b34c8863e313b62c495c437f3e5596277b3464691f38483462a939e"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/resolveStyle.mjs",
+    "bytes": 310,
+    "sha256": "a9d016d80a54ed09949cb9095d3fd6854c9a3bcdd000ab094ac24eab418743d1"
+  },
+  {
+    "path": "node_modules/@base-ui/react/merge-props/mergeProps.mjs",
+    "bytes": 7116,
+    "sha256": "85c9b7afe4b9392f731e8ad4cef6dbcb3da4e7367c81fa478929cf6e6c7f9a9e"
+  },
+  {
+    "path": "node_modules/@base-ui/react/merge-props/index.mjs",
+    "bytes": 33,
+    "sha256": "0833e55be9920ff787cedb7ea623e97ac9bab28961e0e11aa4a56d36d6074dd2"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/useRenderElement.mjs",
+    "bytes": 7835,
+    "sha256": "21c8dfe7a44516ecbdeb85ed42e12db1ba1ae417a8427d280b8ed627d006d0a4"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/TransitionStatusDataAttributes.mjs",
+    "bytes": 215,
+    "sha256": "47784f474a68c4f93b43f9b11f2ce36180af67242bc63697faa88a50ab2d197e"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/stateAttributesMapping.mjs",
+    "bytes": 507,
+    "sha256": "8e1345c197a950924406906074525b44c3d32d8c20305027e2486012efcde228"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/CommonPopupDataAttributes.mjs",
+    "bytes": 953,
+    "sha256": "485e8f72910e3353c409441cbaa984f5cfe0b1194339520464bd91edccb4ef1f"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/CommonTriggerDataAttributes.mjs",
+    "bytes": 182,
+    "sha256": "a9c94182182a0129c13eea967231e528e71ee81d976e6dfc6565594185642112"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/popupStateMapping.mjs",
+    "bytes": 1352,
+    "sha256": "783e4111944fbe3ecd3711831fe03df8a3540a7e47a1a1d8ffac77429e2b9a8f"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/backdrop/DialogBackdrop.mjs",
+    "bytes": 1429,
+    "sha256": "b9db5bc3f6c8d66a5a5d47bb416add8878dc2e495d4b2249bbe739b9c79f215a"
+  },
+  {
+    "path": "node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs",
+    "bytes": 5818,
+    "sha256": "b6658b1eac47e2917e6d10ebbeefb9c4ac9a166f0052bed6e08c871ed848b680"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/safeReact.mjs",
+    "bytes": 437,
+    "sha256": "8b2eca3c6c65b9c3bd0387968037b79d243b9a70be9fa9c2b8e1a23b9fb9de12"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/useStableCallback.mjs",
+    "bytes": 1756,
+    "sha256": "5b30b0bd68c60776fa3295a2fdf7be8030061b64894c83913aede21763b87d92"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/error.mjs",
+    "bytes": 153,
+    "sha256": "eabd1dc1506b88f980990b153da6fbef0f0cdd23652d45524ba4f182c1ea0321"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/useIsoLayoutEffect.mjs",
+    "bytes": 167,
+    "sha256": "08e03c070ef8fb5b36d312d561d2c7823fff8b98cc7b4ec5f8079128a557642b"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/composite/root/CompositeRootContext.mjs",
+    "bytes": 672,
+    "sha256": "cd9c4a9d84adfcd036b42d9e8907f74d3de74819f329aef207b2ecc3614fc791"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/useFocusableWhenDisabled.mjs",
+    "bytes": 1522,
+    "sha256": "ca9f80a7ae426f6b745d57450c58c55c408d474a61900cc03f4760aa06c5c842"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/owner.mjs",
+    "bytes": 148,
+    "sha256": "0eceef9549f291548fef1e0d07df4985149c8ff07566a6e76e1907c089ea22e2"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/dispatchClickWithModifiers.mjs",
+    "bytes": 996,
+    "sha256": "2a92640f4208df2fb98ced3bb8d1198023306faf93acca598269995bafc59bb1"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/use-button/useButton.mjs",
+    "bytes": 8083,
+    "sha256": "1c3156a6e86f7f7f79235526f7dc381298b61b84a54e4d23745e46c184f10243"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/use-button/index.mjs",
+    "bytes": 44,
+    "sha256": "0578f30dd16a9432fc0cef9e97cd4ea018c5ec00f2098b265b36740ebbe6736d"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs",
+    "bytes": 1313,
+    "sha256": "9affdb690697b38b8ab942cfc155597bc864eb2134479bcd8403edc05cdf13ea"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/reason-parts.mjs",
+    "bytes": 1448,
+    "sha256": "b1e9bb76a80e9d71f4c3a3e7b3503372e6280807f40e2a94771e1c82599b2e40"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/reasons.mjs",
+    "bytes": 66,
+    "sha256": "4e4004344e8e5d003797a7ed89077e2e54dfa222ce14bc55085ffac7f3dbe1f1"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/close/DialogClose.mjs",
+    "bytes": 1453,
+    "sha256": "8a79b58bea5c0bfc788968f0fc103c116ebc5c09c54daf69e57638cd121f3f9b"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/useForcedRerendering.mjs",
+    "bytes": 250,
+    "sha256": "5b7e12ab0b7e223713fe875867d7c9f822c372cff397a281ec84bb1f1c1bb06d"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/useId.mjs",
+    "bytes": 2118,
+    "sha256": "56dfe824e136b6c74b8044b74b5a79b546e1ca3283a4dcc3e2a6e45429e66d2d"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/useBaseUiId.mjs",
+    "bytes": 330,
+    "sha256": "aa4cf08c9eb323fae5b83d7d8a0f97701927145889b6430208a1c598d5014a95"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/description/DialogDescription.mjs",
+    "bytes": 1019,
+    "sha256": "95dfe80a591eb33922c3a3d876822b6c09d56d7030b15a22dc842bc9f0c9e196"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/useOnMount.mjs",
+    "bytes": 519,
+    "sha256": "1f5adc191c075ca14546dc67c820fe29e8e976ebdbdd331373057258ad6fb32c"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/useTimeout.mjs",
+    "bytes": 952,
+    "sha256": "a2df474c09994018574ad16007d712225141785d84a98c50b6c38af9004124d5"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/platform/shared.mjs",
+    "bytes": 1390,
+    "sha256": "bad2035a2206f9515c0945dc3ded1496b996f8095794066dbeb014b41f22bb00"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/platform/os.mjs",
+    "bytes": 1035,
+    "sha256": "1caeffef50258784bae8e99f11045328723e88ad999cf0164f1bac03b8eb55cc"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/platform/engine.mjs",
+    "bytes": 1256,
+    "sha256": "44d516640670a6b2f77074781d80d88403d3c8f413a3a3bb45b0e74d4b39f58d"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/platform/screen-reader.mjs",
+    "bytes": 602,
+    "sha256": "56c8d1de75383da0ac8545ec8ed982918fa8824c12c7f67bcadd9ff192125f43"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/platform/env.mjs",
+    "bytes": 165,
+    "sha256": "787ae57ca9ae0bf329ec931a0a6c194249ed76aa67c8ad8d2046215a12aea2bc"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/platform/media-query.mjs",
+    "bytes": 293,
+    "sha256": "f7b3bd346947e6b251422db90aa51c8685bb8130efc4430c9000bd25f0f02f71"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/platform/parts.mjs",
+    "bytes": 207,
+    "sha256": "6e85c7480997cdd7aea1fd9b7c9b4baf4df4dd3f591b8e1879dcd60eb71d6cc3"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/platform/index.mjs",
+    "bytes": 1399,
+    "sha256": "ca5fff0a5c397ed40a9aa8d6710b0b325a6d5a1d3d97ba433d3619308d6a15ce"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/utils/event.mjs",
+    "bytes": 1928,
+    "sha256": "2ab49565b061e344f315a30524cdaad58b2048ce25f26084b6503c8c4f878d11"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/shadowDom.mjs",
+    "bytes": 1653,
+    "sha256": "602e35f304cefba22b792957c061acd08337eae233373acf8e8c79db4b8c8997"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/utils/constants.mjs",
+    "bytes": 448,
+    "sha256": "9ca7d94aa8ce47b00dc6f1241ce222fa433edfb922807091dad5e627401f105b"
+  },
+  {
+    "path": "node_modules/@base-ui/react/tooltip/trigger/TooltipTriggerDataAttributes.mjs",
+    "bytes": 382,
+    "sha256": "4712c1a04d4bef60bbf87eb8f1d86c251b409e9351b1eba60e1f9975bfe6b00a"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/utils/element.mjs",
+    "bytes": 2771,
+    "sha256": "01141f3b492c2a21a1cbbc4c6c15db108d5b7c2e326bcc711a41e15be55038e7"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/hooks/useHoverShared.mjs",
+    "bytes": 960,
+    "sha256": "120baec6b8f19407e0918c9771373d9819cf6abc32a0cd3afe9f4d6730ada777"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/components/FloatingDelayGroup.mjs",
+    "bytes": 5675,
+    "sha256": "cc2ff42dc2516bf7e66232874623ae15981282977bdaf40e78abc6359d06574c"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/addEventListener.mjs",
+    "bytes": 280,
+    "sha256": "4ea2879d0a9166b0dae227714676deddd1f1d7dc39a97a5f18dc414cf0ab6455"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/mergeCleanups.mjs",
+    "bytes": 287,
+    "sha256": "2fe1111789cd5f521b34683dde1a8ae15893c3d9e1ed2b352c2fd66a60a491fa"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/useValueAsRef.mjs",
+    "bytes": 765,
+    "sha256": "352daa6b8a35d565ad58d9a395c50a5a99ce19b5f9ccb6fdd9280ccccef961b1"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/useAnimationFrame.mjs",
+    "bytes": 4478,
+    "sha256": "9b03cf4e8b36e218b346505f404b6f18d1707115891a896ea90be04ffebe76b3"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/visuallyHidden.mjs",
+    "bytes": 370,
+    "sha256": "cbb0b77b77c23ec33fa4d8190107e5ba76c5ef02c3df3a3ae92d384a03514284"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/FocusGuard.mjs",
+    "bytes": 1202,
+    "sha256": "71008da16b80cecacf2a55c0108e3aa1e2b1cebdac8ede05b8aa6c9cdcad3aac"
+  },
+  {
+    "path": "node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs",
+    "bytes": 4435,
+    "sha256": "f53b3ea1eec15af77ca9def295b8f40f6d65706acfc5aaac4801ca3ca21ef7bd"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/utils/composite.mjs",
+    "bytes": 14197,
+    "sha256": "a710d19b83d5983a8bfa9c123e129bc3ad2a01560bf5f791a13cd572d49079dd"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/utils/tabbable.mjs",
+    "bytes": 7196,
+    "sha256": "06d71b5bc8a6957577f5a65238059604ddc44a56ef089bd3b221bdfd63f3dc06"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/utils/nodes.mjs",
+    "bytes": 755,
+    "sha256": "31db32365fdd3520b41c15abb050b666880c3482d9c2c336c0650dbe02ec91a1"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/utils/createAttribute.mjs",
+    "bytes": 74,
+    "sha256": "00f6ccf4b9f44a11c5b21fa1336270e3b079f666e018bbbbaeaed5cc74205629"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/utils/enqueueFocus.mjs",
+    "bytes": 600,
+    "sha256": "a8ac843e6c4f55a9bd66238c33a493ea398ac9a1307c4ff8f90fdb9681114fc4"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/utils/markOthers.mjs",
+    "bytes": 4161,
+    "sha256": "f2ec53bb31e105a8f3d43669aa6ec440be34fc55ea9bbc01b7387b0182d411f8"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/constants.mjs",
+    "bytes": 1374,
+    "sha256": "a0c45238a8a6bea73cdb77884be809dc361132709d7e1420c875459a8fc78063"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/components/FloatingPortal.mjs",
+    "bytes": 8591,
+    "sha256": "7b597558aa84b3d1d5069d36dd92a7ed39e85df2ab0116091b1cf249dab58bf1"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/utils/createEventEmitter.mjs",
+    "bytes": 385,
+    "sha256": "7457ec43a01ae87a75fe957ad5ef56c99af73dfe2480cd635e144e7c770ad2e7"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/components/FloatingTreeStore.mjs",
+    "bytes": 533,
+    "sha256": "46b74cbee866bd6e6ee612f756c78b28ce797c52e6c4a039b4dbefcce5996b4a"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/components/FloatingTree.mjs",
+    "bytes": 2920,
+    "sha256": "db94c8551b5776bae8f70f6849211f288239d68ac7ad2fae8bf76579b282e06b"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/resolveRef.mjs",
+    "bytes": 278,
+    "sha256": "c78b9726f1b2229e6e24feb50054dbbbe9003c4ca3e9b45cca0a55eebf16df02"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/components/FloatingFocusManager.mjs",
+    "bytes": 31868,
+    "sha256": "a5544a382d5f341d1f5e28a4383c7e1850710628c5d857e3ba3b025a7edceb9b"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/hooks/useClick.mjs",
+    "bytes": 5898,
+    "sha256": "5cab77b57c8bae8964dfa18285d5c0669d85e7fe2d3078c9da22cc85b6ce92be"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/hooks/useClientPoint.mjs",
+    "bytes": 5959,
+    "sha256": "28b16cfe8987be10e1fd5ec08eb84f2ef53043e86d5704c9c4b7755ec60df958"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/hooks/useDismiss.mjs",
+    "bytes": 22789,
+    "sha256": "eb134db28524ff8e914dc733b2478625c9b955f7ae8b90b5372eea85c5cbfb2a"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/popups/inlineRect.mjs",
+    "bytes": 6079,
+    "sha256": "e6a9a3f885fda3a1b70e02d96f84de98c84e56e808b1e98b05a1f00b75a5493b"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/popups/popupHandle.mjs",
+    "bytes": 10800,
+    "sha256": "6c95b68c0708e117de64b26be3b529b53e42067aac5f1009537177e49b5a3061"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/hooks/useSyncedFloatingRootContext.mjs",
+    "bytes": 1562,
+    "sha256": "4ff3a6c0eb8376e782aebd65802d497ffcf203aca2b1f33a042b1ad25862142a"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/useTransitionStatus.mjs",
+    "bytes": 2994,
+    "sha256": "1691d05e13949a4df7ab93f6f679d7368cb0c45444f4d2338451ca233689fff9"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/getFiniteAnimations.mjs",
+    "bytes": 347,
+    "sha256": "887659d0be059bfec69b45458873cd923879da8c5223825a58104dbbfb6df500"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/useAnimationsFinished.mjs",
+    "bytes": 5106,
+    "sha256": "997e0c6b10254c638703538650f80d716b6f0342b3b78a0e2f64f111651795ff"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/useOpenChangeComplete.mjs",
+    "bytes": 897,
+    "sha256": "c7e2ecac88c4e2185f221f8f35344f22ec8d8ed0acfcc977ddf6e17014956f2c"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/useUnmountAfterClose.mjs",
+    "bytes": 3650,
+    "sha256": "dba609a68e5e11edb697e2b5c0efa2fe75c669abc880f66d1a40b01c0c6351e9"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/popups/popupStoreUtils.mjs",
+    "bytes": 20842,
+    "sha256": "2360f6ed15c6dc5af3c4d853bf81d88885b6556de5b9424f708b94395da66570"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/popups/popupTriggerMap.mjs",
+    "bytes": 3445,
+    "sha256": "e8c9e1496aa84263c3453094c157feb81a85bb6e50885491fba223490ccd1f61"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/store/createSelector.mjs",
+    "bytes": 5108,
+    "sha256": "ea0cc828f47c44033ce5c7c27225d1fbceeb740485ae050b7b315dae11dcc7b7"
+  },
+  {
+    "path": "node_modules/reselect/dist/reselect.mjs",
+    "bytes": 18189,
+    "sha256": "0da63d82f26c074090064e7e24b6c8b9ace629227d8647233b051fc3848d6f8e"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/lruMemoize.mjs",
+    "bytes": 38,
+    "sha256": "32b4ae3fee3c969e411111c256b28daf68923dfd49d9960124a54adc80c49d79"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/store/createSelectorMemoized.mjs",
+    "bytes": 5288,
+    "sha256": "f5b27d3f2ea8a27858ee11f855125e237835963ad9dbf7b97c8c6029a668ec0d"
+  },
+  {
+    "path": "node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.development.js",
+    "bytes": 3457,
+    "sha256": "6dfd5d60543b0a24a524d1366758ff6303fc67604a69eb1536d0b70c47af0e8d"
+  },
+  {
+    "path": "node_modules/use-sync-external-store/shim/index.js",
+    "bytes": 234,
+    "sha256": "de571b60495a636e12a24000b78531994a819aba03917e679803c2b482c66a89"
+  },
+  {
+    "path": "node_modules/use-sync-external-store/cjs/use-sync-external-store-shim/with-selector.development.js",
+    "bytes": 3526,
+    "sha256": "47600087cfa6f998386b2d2b46072b28564d2992099676b0d3eed8c0031f78b9"
+  },
+  {
+    "path": "node_modules/use-sync-external-store/shim/with-selector.js",
+    "bytes": 262,
+    "sha256": "08f4e878658941dd77b3d9032d2f0818649dd0a093288e768526090e9f00556f"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/fastHooks.mjs",
+    "bytes": 3685,
+    "sha256": "da4d849c4700eeb83a1d6b7c325eec2dad7bc2b7c631fc46b5cb618e25593faa"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/store/useStore.mjs",
+    "bytes": 3848,
+    "sha256": "99f8ba07f9d7673c35baf204ac69f134c5ae37acd9a1f31c0c56b8d182474b3e"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/store/Store.mjs",
+    "bytes": 3747,
+    "sha256": "6a86276539c97bbb5a5a7d98179ababaee2b4a3888452af4e35618d7ff016330"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/store/ReactStore.mjs",
+    "bytes": 7132,
+    "sha256": "36af7421ca4a4376a21bd69be8762428cbda35ea80f8615a216efd196924ca57"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/store/StoreInspector.mjs",
+    "bytes": 16181,
+    "sha256": "3ded52b1f12d6877ecac5f1b4786e36770d2e2c4b034b17fca41fdd60aedddc2"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/store/index.mjs",
+    "bytes": 216,
+    "sha256": "cbaadb95dcc68691900ffa857b3bd7eaa99eeb6c351afca15103560bc87f0d15"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/utils.mjs",
+    "bytes": 183,
+    "sha256": "98f0dd83f227ffde1538ced68bda95ef25c420fd065c603427159b4908fde319"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/components/FloatingRootStore.mjs",
+    "bytes": 2491,
+    "sha256": "d5f75a29be06f9027b20488f820f702f93cd4c55d75be9bc2b832ab4d9877b92"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/popups/store.mjs",
+    "bytes": 4274,
+    "sha256": "7c7e060560d5d887e8bfe780392ec65ca377187aef032ebf534143929bb09a95"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/popups/usePopupHandleStore.mjs",
+    "bytes": 1124,
+    "sha256": "f095eed1ef480044cfb4d2dd54d828587b479ebbf42834b61e3a3f5fb3f19e39"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/popups/index.mjs",
+    "bytes": 218,
+    "sha256": "3ed29ed577653d8f21773f524d0bc0f64c631fcd08badf548624c800c49dd8d8"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/hooks/useFloatingRootContext.mjs",
+    "bytes": 1950,
+    "sha256": "3dcc3e6b1cd9e2a430de09e3fba0d300c9c4c968412b989c0138f4527f4c4e24"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/hooks/useFocus.mjs",
+    "bytes": 6867,
+    "sha256": "e5dfd11767a4928fc19479ba3d3e047f1a74a93cc71525fcdd5da596348cd6bc"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/hooks/useHoverInteractionSharedState.mjs",
+    "bytes": 3006,
+    "sha256": "8833f01c408d64ba7cd5e502eec4b459c5f12bbb01bc27dba99d9fa67e39c14b"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/hooks/useHoverFloatingInteraction.mjs",
+    "bytes": 7388,
+    "sha256": "e097d1ebe7046fd70bce8c4da233990ff2336c44c4e5e11da749d5baed8b8617"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/hooks/useHoverReferenceInteraction.mjs",
+    "bytes": 13867,
+    "sha256": "6070b9b6b5d537987efb08386936f33ade97aa38d7941dceab39e40014cef5f6"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/hooks/useListNavigation.mjs",
+    "bytes": 24624,
+    "sha256": "87b69b6dbedfe20e4bab118e17d6f48614b3d5303e13167bd67ed11e99d95771"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/hooks/useTypeahead.mjs",
+    "bytes": 6322,
+    "sha256": "28528c8827a8047998771d35fa0b9fad1527fb654f021bf02dbe490d07de9ea5"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/safePolygon.mjs",
+    "bytes": 11186,
+    "sha256": "37a3f37e0422cc5f86e5a5da7fedfbc40157e2dacf0fd82c6e1457bee20f18fc"
+  },
+  {
+    "path": "node_modules/@floating-ui/core/dist/floating-ui.core.mjs",
+    "bytes": 36290,
+    "sha256": "c6c359d91fbc6636f6143aae9ff47105eeacea869b14afe7d54e120444ab8f37"
+  },
+  {
+    "path": "node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs",
+    "bytes": 27950,
+    "sha256": "a1c916ed18ed8bb2c586079f7946d35797b45bc79eafae1d99ec6f812672ef54"
+  },
+  {
+    "path": "node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs",
+    "bytes": 11185,
+    "sha256": "2f39fd6f12c3989fa13d9ac5104e7739e5f15cc8dee01d63fc06e0f44bba8771"
+  },
+  {
+    "path": "node_modules/@base-ui/react/floating-ui-react/index.mjs",
+    "bytes": 1468,
+    "sha256": "f7af19a9890cce2cbbcbf8309b7af6400432bf6f4d4bddbf70e188740d09b0ce"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/portal/DialogPortalContext.mjs",
+    "bytes": 571,
+    "sha256": "3181cc9c689123f4ab823be2ad25551f5f6f70685cf5cbec7921b5ee3f1c9e67"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/composite/composite.mjs",
+    "bytes": 5130,
+    "sha256": "72d19386f8cae75161c9a94fe45d4914b1e604e92c9b271dce20c35006479865"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/popup/DialogPopupCssVars.mjs",
+    "bytes": 123,
+    "sha256": "affcc2fb52502c8543ec79a184148ce69b4315854a5e59155341365800cebd88"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/popup/DialogPopupDataAttributes.mjs",
+    "bytes": 762,
+    "sha256": "ca2e27b5572acbdfdcff98000cb15575e49e72164bf490a758961e1f8ce4790d"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/utils/stateAttributesMapping.mjs",
+    "bytes": 645,
+    "sha256": "45b2ec52ba5f2b9aeee720627aa04537e81b3965b6713ba0d0756fa803257aa7"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/popup/DialogPopup.mjs",
+    "bytes": 3631,
+    "sha256": "0eb7fc621ff678a483b6f3c90b51913512c5ffaa82b300465be1bfeb3bf9ee51"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/inertValue.mjs",
+    "bytes": 226,
+    "sha256": "67bd6c54868c292e9a5cf4ec32c80e5b674370511c39ce5c018e729573406bc3"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/InternalBackdrop.mjs",
+    "bytes": 1061,
+    "sha256": "daf9b107819d5f22500d1091ecfd9dc57aa58b0342c440c582665849f4aceb70"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/portal/DialogPortal.mjs",
+    "bytes": 1593,
+    "sha256": "62feb38c4324aa9a11f74acca06a4881873c60dc40b0a5c6397da613156e27cb"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/useScrollLock.mjs",
+    "bytes": 10631,
+    "sha256": "8f0150cbc228d9a3733f455bb24817a521f58ddc477bbaaee6232bc7621bcd0c"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/root/useDialogRoot.mjs",
+    "bytes": 4961,
+    "sha256": "e5e03789b7dc8855275a4878b9f91aade2b9a959437d625d7732cd1235d7e91a"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/NullStore.mjs",
+    "bytes": 707,
+    "sha256": "38d2e2f8112a68c1deeed6dbd13913619b992b60b33773ee807c89e55f7374fd"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/store/DialogStore.mjs",
+    "bytes": 3493,
+    "sha256": "a4be32dac9be32e84802c46e03bf8020c38b68454518854c3205016c3eb9ee56"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/root/useRenderDialogRoot.mjs",
+    "bytes": 3556,
+    "sha256": "6d7591732a0fbbe7a197b39f8cf749e82287653335d6bcf8a815169ecb68b86a"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/root/DialogRoot.mjs",
+    "bytes": 506,
+    "sha256": "d031146a2dc83001720b2350a1d183fae0df574eb06c2ae3c298d144d63a3af7"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/viewport/DialogViewport.mjs",
+    "bytes": 1846,
+    "sha256": "1b784e73a09409a5bd135b362d3ddf86570c8ca75429ce76d902490f1d62acca"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/title/DialogTitle.mjs",
+    "bytes": 968,
+    "sha256": "b835a8b4c71d1c920e679788d383a226f21740cf961b9a731454ccc1c46d68a0"
+  },
+  {
+    "path": "node_modules/@base-ui/utils/useEnhancedClickHandler.mjs",
+    "bytes": 1424,
+    "sha256": "12447f4705b228af4ff70bd196d4dcec2a61e8c530b2bbdf41347a294f4425a8"
+  },
+  {
+    "path": "node_modules/@base-ui/react/internals/useValueChanged.mjs",
+    "bytes": 515,
+    "sha256": "1987d62086d97fda4d22833ec574cb680119fad61edb09500c289cf6354426be"
+  },
+  {
+    "path": "node_modules/@base-ui/react/utils/useOpenInteractionType.mjs",
+    "bytes": 1587,
+    "sha256": "43180db8b055e37dfdf3f8c8a55346d731dc1c1a64ba27e41395548c58b01351"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/trigger/DialogTrigger.mjs",
+    "bytes": 3120,
+    "sha256": "9a42b54b73e01a53ef61d7aee5b59b79414f4c75b462c3d110a56e833eb52a16"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/store/DialogHandle.mjs",
+    "bytes": 2667,
+    "sha256": "38025672876303b4b99fd2e5e81df928c47662c8531771c7253c0ea7a1bbad5f"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/index.parts.mjs",
+    "bytes": 734,
+    "sha256": "b6c5cede83853964b2f753d7e202613e1d461857cc3780a57a2a3d346c5afc0a"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/backdrop/DialogBackdropDataAttributes.mjs",
+    "bytes": 522,
+    "sha256": "781edc24c014354ac1dc645d96a6bc62916eb20a160062614c4f9373faebf9d6"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/close/DialogCloseDataAttributes.mjs",
+    "bytes": 88,
+    "sha256": "004541720c0548c957d466f954a80d166974cb787c66e9071d9bc35b3426f889"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/viewport/DialogViewportDataAttributes.mjs",
+    "bytes": 762,
+    "sha256": "ca2e27b5572acbdfdcff98000cb15575e49e72164bf490a758961e1f8ce4790d"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/trigger/DialogTriggerDataAttributes.mjs",
+    "bytes": 293,
+    "sha256": "550de3de2c13f3f826a757d8c8a67b12f24e284e6ac92192b0ddc2e376aa42bd"
+  },
+  {
+    "path": "node_modules/@base-ui/react/dialog/index.mjs",
+    "bytes": 563,
+    "sha256": "b4eeb435e509e0245897ec6f499095d847aa1220283dd572b4be0ba449a3bbcb"
+  },
+  {
+    "path": "node_modules/@base-ui/react/alert-dialog/root/AlertDialogRoot.mjs",
+    "bytes": 375,
+    "sha256": "e694e86d05c747d10fe6db7da2c0398e939969c5cf5903980ed1fe50f95de355"
+  },
+  {
+    "path": "node_modules/@base-ui/react/alert-dialog/trigger/AlertDialogTrigger.mjs",
+    "bytes": 312,
+    "sha256": "0192d085acd3c93e7dd3eb41909e12c390ce2b6cdae9ddc48de1c601d23d5768"
+  },
+  {
+    "path": "node_modules/@base-ui/react/alert-dialog/handle.mjs",
+    "bytes": 746,
+    "sha256": "9472350a0ff7b242e1fbdaec9aa753b25fa24eb90528f60e04235949acf50b3c"
+  },
+  {
+    "path": "node_modules/@base-ui/react/alert-dialog/index.parts.mjs",
+    "bytes": 808,
+    "sha256": "8c86f563e8bcefb0b5b1ac62e5a27ee6a2a9b775e72dea5793823edeb24d36e9"
+  },
+  {
+    "path": "node_modules/@base-ui/react/alert-dialog/trigger/AlertDialogTriggerDataAttributes.mjs",
+    "bytes": 299,
+    "sha256": "5a9be3a0259b1c9ca6d59a1d3796be4993fe54ea59d970727c113b4c16c2c7a9"
+  },
+  {
+    "path": "node_modules/@base-ui/react/alert-dialog/index.mjs",
+    "bytes": 643,
+    "sha256": "fd8803a32f91801e2460f5309cecabd18e386a56fe2d958c836408527cf476a0"
+  },
+  {
+    "path": "src/keybindings/types.ts",
+    "bytes": 2072,
+    "sha256": "20556563af7ebab6179ca9d0bf4912700fb967a4571f22d2baffaa98087433f7"
+  },
+  {
+    "path": "src/keybindings/shortcut.ts",
+    "bytes": 5791,
+    "sha256": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8"
+  },
+  {
+    "path": "src/keybindings/dispatcher.ts",
+    "bytes": 5180,
+    "sha256": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197"
+  },
+  {
+    "path": "src/keybindings/registry.ts",
+    "bytes": 28914,
+    "sha256": "b9df8f72c86c6c4e1cc05cade6b4719cd3abf26e557e690ffd574cbe2231ecb5"
+  },
+  {
+    "path": "src/keybindings/overrides.ts",
+    "bytes": 8207,
+    "sha256": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193"
+  },
+  {
+    "path": "src/keybindings/resolve.ts",
+    "bytes": 2809,
+    "sha256": "f8818d52d1af70bc788f5bda2d162b5b1634402592807bc78b5233ad4e1142bc"
+  },
+  {
+    "path": "src/keybindings/bind.ts",
+    "bytes": 1925,
+    "sha256": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119"
+  },
+  {
+    "path": "src/keybindings/listeners.ts",
+    "bytes": 6133,
+    "sha256": "6944c63efcb6edee49d59d1ccdcfaed649902021946c8a8f60d50549fd89011a"
+  },
+  {
+    "path": "src/keybindings/selectAll.ts",
+    "bytes": 1632,
+    "sha256": "508b26417d717f938eb118afbe8c0ff96873643cb4e5c0879467e5368e97db90"
+  },
+  {
+    "path": "src/keybindings/KeybindingsProvider.tsx",
+    "bytes": 5566,
+    "sha256": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6"
+  },
+  {
+    "path": "src/components/motion/dialogMotion.ts",
+    "bytes": 3126,
+    "sha256": "0f9c5b9ee51ab9bd5e822e31a1d764676e3622c434103de2ca29ea2d8bd14839"
+  },
+  {
+    "path": "src/components/dialogFrame.css",
+    "bytes": 3838,
+    "sha256": "b735074241f4fd63fb16896bceb06a704b2ecae5bbc739f0af977a7e2b05f838"
+  },
+  {
+    "path": "src/components/DialogFrame.tsx",
+    "bytes": 2509,
+    "sha256": "47734d523d725af2615c80a1f9995f28e78b2b2d8e6dd32a7303b97e69c670d5"
+  },
+  {
+    "path": "src/components/CreateProjectDialog.tsx",
+    "bytes": 7413,
+    "sha256": "9837498bd312efec36a2f0717291a706b08dfabd5817557f1a7121bceb76effa"
+  },
+  {
+    "path": ".ara-state/create-project-enter-6013/fixture.css",
+    "bytes": 1283,
+    "sha256": "10b799b6540ba9246bc80404c326ca008eff9b9ae74b82421fad36171b1bf889"
+  },
+  {
+    "path": ".ara-state/create-project-enter-6013/entry.tsx",
+    "bytes": 2604,
+    "sha256": "936620169f76e297c6001814d4da2910b1323cadf169878deb012db5391a2a70"
+  }
+]

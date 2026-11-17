@@ -1,0 +1,17 @@
+{
+  "baseline.tap": {
+    "decoded_sha256": "19ab3d8f453d883181f1920e0eecf81fa7eae6e156e18bfdfc3eb9ec6f6ac056",
+    "encoding": "gzip",
+    "lossless_roundtrip": "PASS"
+  },
+  "controls-baseline.tap": {
+    "decoded_sha256": "75059b44a2c008d82f105cd1d9742d283f37e478aa24b61b074c66aafb679560",
+    "encoding": "gzip",
+    "lossless_roundtrip": "PASS"
+  },
+  "primary-candidate-baseline.tap": {
+    "decoded_sha256": "0fe0023d1cda156a8dc25140b891bb184093cc301b9f2c22a436f1be4f16a0c6",
+    "encoding": "gzip",
+    "lossless_roundtrip": "PASS"
+  }
+}
