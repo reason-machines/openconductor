@@ -1,0 +1,384 @@
+{
+  "id": "COMPOSER-CREATE-NEWLINE-135",
+  "author": "Conductor Rebuild",
+  "checked_default_main": "1d8c37ab634e4eca9f86d54c138dc73fb0ee3fb5",
+  "production_scope": [
+    "src/components/CreateWorkspaceComposer.tsx"
+  ],
+  "fixture": {
+    "path": "src/components/createWorkspaceNewlineShortcut.test.ts",
+    "sha256": "e6039e73bf6ac3990af0a37519f18f2cf35a88088add9f14bcb6fb236b494223",
+    "baseline": {
+      "pass": 10,
+      "fail": 4
+    },
+    "candidate": {
+      "pass": 14,
+      "fail": 0
+    },
+    "type_only_refreeze": "One Map generic annotation fixes TypeScript inference; all runtime bodies/assertions identical. Final bytes replayed red and green."
+  },
+  "historical_callback_probe": {
+    "sha256": "f67f52f2d7b171b87ede12fe44961b39f4380628505f53679b901fb1764f37a8",
+    "baseline": {
+      "pass": 8,
+      "fail": 2
+    },
+    "candidate": {
+      "pass": 10,
+      "fail": 0
+    }
+  },
+  "sources": {
+    "src/components/CreateWorkspaceComposer.tsx": {
+      "baseline_sha256": "215253ae27314003e22095582f9d66d88b114c5aee96b53c0cfcb1d6616c91ad",
+      "candidate_sha256": "f9e6d061619b1f7cc193650a0b8d9dcd2006f81626c8c7ad9dc9c61e08799956",
+      "unchanged": false
+    },
+    "src/components/CreateWorkspaceDialog.tsx": {
+      "baseline_sha256": "85edc785f6dc05a9daafa966e4610b1b4165fb68e1d5a5596e02b80fdd219475",
+      "candidate_sha256": "85edc785f6dc05a9daafa966e4610b1b4165fb68e1d5a5596e02b80fdd219475",
+      "unchanged": true
+    },
+    "src/features/chat/ComposerEditor.tsx": {
+      "baseline_sha256": "7e8f7f7426164d2e707d9507a2af87336607b88db891fb864c55f28b8ab34fdf",
+      "candidate_sha256": "7e8f7f7426164d2e707d9507a2af87336607b88db891fb864c55f28b8ab34fdf",
+      "unchanged": true
+    },
+    "src/features/chat/Composer.tsx": {
+      "baseline_sha256": "d110236404a7916fcb9de706eed42df54bcc87953a7358198e0b2974243789ae",
+      "candidate_sha256": "d110236404a7916fcb9de706eed42df54bcc87953a7358198e0b2974243789ae",
+      "unchanged": true
+    }
+  },
+  "retained_self_hashes": [
+    {
+      "packet": "evidence/chat/composer/modified-suggestion-keys/retained-source.json",
+      "symbol": "identity wrappers including xd",
+      "range": [
+        674926,
+        674995
+      ],
+      "sha256": "4283e46687b05b8b24d9071e15301030bd57ac48bb3f7b129375606bfeaaca70"
+    },
+    {
+      "packet": "evidence/chat/composer/modified-suggestion-keys/retained-source.json",
+      "symbol": "complete suggestion renderer o5o",
+      "range": [
+        8388129,
+        8390402
+      ],
+      "sha256": "b8f74afbbe8163233b44a3240c2790287305b37c6d773bcdce90fd6927311f55"
+    },
+    {
+      "packet": "evidence/chat/composer/modified-suggestion-keys/retained-source.json",
+      "symbol": "raw suggestion-key selector uqn and B5o",
+      "range": [
+        8418120,
+        8418286
+      ],
+      "sha256": "c6e1214c3cbeb9df5b5981e564d6a72fba5b945dd620dabdf6ea9fd99983e3a5"
+    },
+    {
+      "packet": "evidence/chat/composer/modified-suggestion-keys/retained-source.json",
+      "symbol": "composition predicate and reserved Ctrl+Space",
+      "range": [
+        8415731,
+        8416002
+      ],
+      "sha256": "d06f8ac4db35bbdd019c98b28f608a88a7a8eff2bca848631a169206de66e32b"
+    },
+    {
+      "packet": "evidence/chat/composer/modified-suggestion-keys/retained-source.json",
+      "symbol": "complete shared editor lHt including low-level and outer keyboard boundaries",
+      "range": [
+        8418728,
+        8426168
+      ],
+      "sha256": "2b86481687009f77ff169d0e5f52e349ee541b80a71c205e07d691862e938215"
+    },
+    {
+      "packet": "evidence/chat/composer/modified-suggestion-keys/retained-source.json",
+      "symbol": "normal composer capabilities and send command adapter",
+      "range": [
+        8426745,
+        8428012
+      ],
+      "sha256": "abdfd680fecffe3004dc602aeda8692287f0f61b8c491ee9c0c48fdf5f5fe16d"
+    },
+    {
+      "packet": "evidence/chat/composer/modified-suggestion-keys/retained-source.json",
+      "symbol": "normal composer internal triggers h_",
+      "range": [
+        8679780,
+        8681319
+      ],
+      "sha256": "834b57460faa287e6b124ad177eb0ccfbdda41d8d4f368316558918d1ea66ef3"
+    },
+    {
+      "packet": "evidence/chat/composer/modified-suggestion-keys/retained-source.json",
+      "symbol": "normal composer lHt call",
+      "range": [
+        8687374,
+        8688266
+      ],
+      "sha256": "ac953696dc178ec2bd4e5936867be6c3feb3f4e4d0d698c51b99bf5511cc0273"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/packet.json",
+      "symbol": "composition_code",
+      "range": [
+        8415731,
+        8415739
+      ],
+      "sha256": "daa7b1b31b64d1c5a942f120deff423e81c42e80fe5662bc756158009e3ec1f4"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/packet.json",
+      "symbol": "oRt",
+      "range": [
+        8415739,
+        8415890
+      ],
+      "sha256": "0cf63f73563cef134d6089a084469a5d52f916f9d502afade3b4752e2c20bb4b"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/packet.json",
+      "symbol": "P5o",
+      "range": [
+        8415890,
+        8415972
+      ],
+      "sha256": "50f95272eb33f64d3ac0f8bd1a766b8b0c5fd132dfb63cf0838c8b11eabed2c9"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/packet.json",
+      "symbol": "aqn",
+      "range": [
+        8415972,
+        8416002
+      ],
+      "sha256": "84a25a695961de2d3b9297fb0910a758692a2c159d8164f6e1d9ba47a2843abc"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/packet.json",
+      "symbol": "M5o+j5o",
+      "range": [
+        8416170,
+        8416669
+      ],
+      "sha256": "25e88bbbc4c1716daa3b0c6abdfb3bd8fcc038aa0381be28d9930a06385d160e"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/packet.json",
+      "symbol": "lqn",
+      "range": [
+        8416669,
+        8416974
+      ],
+      "sha256": "050ab8fc89d0bc707ac1ddc8a93bfedd004cdd1b45aef0c6f3a9c3a2615bf88a"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/packet.json",
+      "symbol": "cqn",
+      "range": [
+        8416974,
+        8417459
+      ],
+      "sha256": "00e837bd6da66311537a60f81b172a79de73c1e7e0130618936be2cdc8dd6725"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/packet.json",
+      "symbol": null,
+      "range": null,
+      "sha256": "4283e46687b05b8b24d9071e15301030bd57ac48bb3f7b129375606bfeaaca70"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/packet.json",
+      "symbol": null,
+      "range": null,
+      "sha256": "4b6370fa66b036a5fa901f9b091047590d93311869317d54abd3d9f6cc1b6a00"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/packet.json",
+      "symbol": null,
+      "range": null,
+      "sha256": "b47d16dbc5123f960ced0d26ca30d602ac4eb518b1c74df113cd515a7b598b75"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/matcher-closure.json",
+      "symbol": "named import ca as Qh",
+      "range": [
+        54795,
+        54803
+      ],
+      "sha256": "1b194c6d61bdd2ba9511d896cec3c875d62548892f7010b52ebf7f8eb909fdc4"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/matcher-closure.json",
+      "symbol": "named export TQt as ca",
+      "range": [
+        3481691,
+        3481700
+      ],
+      "sha256": "b33c810666a02b677b37fe77123d7655849b04c502a6ee58269b018118c62e0c"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/matcher-closure.json",
+      "symbol": "key constructors, Hfe key matcher, _Ut exact modifier matcher",
+      "range": [
+        3357751,
+        3359357
+      ],
+      "sha256": "3ddfbd3655d48344eca1cc2b8ce8eadc15799b850138a1eb602522ec8a4b4854"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/matcher-closure.json",
+      "symbol": "modifier constants and zl send presets",
+      "range": [
+        3359794,
+        3360745
+      ],
+      "sha256": "0824e3742747d521e9a97a9e856d006127ffa4c3bd98752e4aee0ffe201e9c15"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/matcher-closure.json",
+      "symbol": "override snapshot producer EUt and subscription",
+      "range": [
+        3388801,
+        3389362
+      ],
+      "sha256": "482343f00517199e10614c8191b4c2a568fb169d58e9d5a042dd561f89d36069"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/matcher-closure.json",
+      "symbol": "override parser helpers through normalization DUt",
+      "range": [
+        3389362,
+        3392441
+      ],
+      "sha256": "0b500b859c002e1a4598d188e5665b1c0ab6097843a8bd5a19f4ccb0ba439d08"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/matcher-closure.json",
+      "symbol": "WUt snapshot parse and nh effective binding lookup",
+      "range": [
+        3393417,
+        3393608
+      ],
+      "sha256": "40d4e57130c3ce05df658a1c8cfba35ed55c70c852f5b82d8f4053e4c1475afa"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/matcher-closure.json",
+      "symbol": "TQt configured matcher",
+      "range": [
+        3394706,
+        3394765
+      ],
+      "sha256": "3d20839a0dfff54bd43aa0f0ed5cd862f1ff49678c9018fc4aae67b3825e56dd"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/matcher-closure.json",
+      "symbol": "RQt preset update and HUt legacy migration",
+      "range": [
+        3394221,
+        3394706
+      ],
+      "sha256": "27c4105ad014782aa4d72566025ad29faf4d9c9952890a474adac73751912d53"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/matcher-closure.json",
+      "symbol": "jUt settings-store installation",
+      "range": [
+        3395628,
+        3396070
+      ],
+      "sha256": "b9eafd08efb9a12d47f1d32f3821c87303cbabd1aca0734226cc086251bb14d0"
+    },
+    {
+      "packet": "evidence/chat/composer/ime-send/source/matcher-closure.json",
+      "symbol": "settings service calls jUt",
+      "range": [
+        3398235,
+        3398257
+      ],
+      "sha256": "900a17da87d7e03bbb633249b4e997829823f3dfe909168fb31046c16c8fbb99"
+    }
+  ],
+  "unchanged_fixture_hashes": {
+    "src/components/createWorkspaceLaunchClose.test.ts": "7e0af91637b9c61cd3ea7e9094341cf06392ea29d9df6db6ba032b2a48149713",
+    "src/components/createWorkspacePreparation.test.ts": "45117dbf453afc44baf987f2b468e6533bec9dca55326c8c43a93348111ddba2",
+    "src/features/chat/composerAddMenuKeyboard.test.ts": "b3e702c65a04a7a2c2b7b60c66be3264e05eb18f7abeaabf9b948fe14cdd7339",
+    "src/features/chat/composerAsyncSubmit.test.ts": "80b7fec66ff1e0b68aae839b0498e6143cd8b8a85d65acb1a9df5f9a22082518",
+    "src/features/chat/composerAttachmentPreview.test.ts": "efe87a237fcece1cfbe4e7a025b8364db9c5b323f872532d60426dc3792e931d",
+    "src/features/chat/composerAttachmentSettlement.test.ts": "d949e1b3fbe27504173a346aaa173e2aefa1607710424fd4135ca99d9163e89d",
+    "src/features/chat/composerAttachments.test.ts": "71f4ae854a66fca6b4672ff2c602d9be8de541382d33dda555ca2df995a4ba12",
+    "src/features/chat/composerCancelFocus.test.ts": "d669880c76b361c3ec76d85ec3052151940a43caf4bd527d8f21e454417a3669",
+    "src/features/chat/composerDirectoryEntry.test.ts": "4b6e1a8b5e45c6893c78b0c6dd506a462492ec2960123095d7dd981d35ed5c8f",
+    "src/features/chat/composerDocument.test.ts": "790cdc37859790e4f40c9827b2313fa801bb796ca3942d80d8e8d8617f468a0f",
+    "src/features/chat/composerFirstVisualLine.test.ts": "d9817d67f951a6056b40bf44dc096691cfe32eb3378aa492f94c15822b5312ae",
+    "src/features/chat/composerLongPaste.test.ts": "5283d2819add9f8621b0046ecc82b47e878a4aa5fb05cbce336d90c84e6d6b5a",
+    "src/features/chat/composerMinimize.test.ts": "b67efe38118100ea489c37e5136749159bbc352854c26c298807fb60d28925f2",
+    "src/features/chat/composerModels.test.ts": "83b9010d4def64b716527a2483e4e54d58bdbf5afc27c846bc55d7dfa48a733b",
+    "src/features/chat/composerPasteFilePaths.test.ts": "fc22e97ac29860630104a19bb0c2e7bbb8404b52f9cdca05bf90991491e6074a",
+    "src/features/chat/composerQueueFocus.test.ts": "399ade20e426496ab14a385f0439ed97aaad13504c97bd0839e4fbea547892c6",
+    "src/features/chat/composerReservedSpace.test.ts": "51a84ca89e0925814b178d7bf625cd525d1819652f79d497873b78ed8da03e24",
+    "src/features/chat/composerSchema.test.ts": "bed970e91f18cd038a3f43885e8190f251d96d7d000491a900575e8afda67018",
+    "src/features/chat/composerSession.test.ts": "e0cd494c65f4fa11d378012a3acd89591902580a99f97e4aa6af11f27f720adb",
+    "src/features/chat/composerSlashAtoms.test.ts": "c155ffe346bc549fd27676bed23981b8b3b4175664eecadfa5f4494dd7e7e2d3",
+    "src/features/chat/composerSlashDirectory.test.ts": "b380f406c0ad8e189b82f0ce06bf6b21a33374ea2c003fefe960a0fe0fe1f93d",
+    "src/features/chat/composerSlashPrefix.test.ts": "39fd68983f002d2d84280fd658243b088cce8d64e7fdc332f7e076bff70d47e7",
+    "src/features/chat/composerSlashSelection.test.ts": "ef76e5cf5719d5671257457d530284b78fd583a989430fdaad276d7c30008cf4",
+    "src/features/chat/composerSpeechToText.test.ts": "19dcecd43560d347861a9d66935cf16f017556c0c5a0630feaaef9f0a54f7538",
+    "src/features/chat/composerSubmit.test.ts": "e783f1e30be4007d9adfcc564934fdf87764fb328275645f873cd27b9f5b1c72",
+    "src/features/chat/composerSuggestionKeys.test.ts": "eeabdf4f464acf1fce9104021ea6fe667f4f0a8a70a84ae7db97e6ed1803019c",
+    "src/features/chat/composerSuggestionPointer.test.ts": "7400a9b3874cfd444993eedf288d9ac855a0e6dc5651b7880436de990a763ef1",
+    "src/features/chat/composerTerminal.test.ts": "5ebd7372da6066326ce802dbb069b79c34ab793bc17afb1c98d5bcfa6d49e25f",
+    "src/features/chat/composerTerminalEntry.test.ts": "09cc654d0fd4a64927fcb4fa32d539cd139b57d920e0e18ead312d7ea7e16d3c",
+    "src/keybindings/bind.test.ts": "e7d66f191a350162020c0e022bf22f6fdd3c439cf4fe4e8b837c24963d1de420",
+    "src/keybindings/conflicts.test.ts": "999b29fcf0710afc677aa79a2614531e904989622c2d90f35aaf5835a5306c8d",
+    "src/keybindings/dispatcher.test.ts": "e1e51ffd6d91e1cec3151c932c25a4a87d4b0d3fe5111683b810e0c1d1d43072",
+    "src/keybindings/editor.test.ts": "f1b856e6bba3453c3113a99b7c1dee5936a51f7fc54705286d4dc276bca025e3",
+    "src/keybindings/focusScope.test.ts": "7b8579d29d9d61c8c68e21b1f0ec94d9f2f4c891186f9012a66f49650ca3748b",
+    "src/keybindings/help.test.ts": "81366b2e88448dd84890e4b270abc3e7adc579efab28a228dacb77b0b5ab870c",
+    "src/keybindings/listeners.test.ts": "365482aba62355da9bd52d62eb0120b46b41213a5a08adf16a9dd8e3a086924c",
+    "src/keybindings/m16Handlers.test.ts": "b7d1ebf990457c9e1c0b0e03681eb6a6a623344c294457c32c6d88c50aaccc84",
+    "src/keybindings/overrides.test.ts": "7d324ccd881ec046af20beed0abf1e654b73174195bd86ebb654cab086f7af9e",
+    "src/keybindings/registry.test.ts": "495fc6763a107ea709f398738f4822b820b9bcee1b9c54c6124558b15b1cf9f5",
+    "src/keybindings/resolve.test.ts": "38e2d32f6c82087f7395a6339ae82dd4ec36d4d2dbe06d0ffe7c15d7645294cf",
+    "src/keybindings/selectAll.test.ts": "3d5dfcbd713fc5bcdc68c53089a726d8e3078ef91f90cecf93dae9b834915eed",
+    "src/keybindings/shortcut.test.ts": "8ef3bcf7e1cb551f8a4ba191a62c5cf7df402743df219d9a87652ca0161b8b79",
+    "src/keybindings/workspaceRunClose.test.ts": "b5f7caf2e0092e17faa12ece45ebadc3183c018897ddb568efd80022e2772bd3"
+  },
+  "checks": {
+    "adjacent": {
+      "command": "node --test src/components/createWorkspace*.test.ts src/features/chat/composer*.test.ts src/keybindings/*.test.ts",
+      "pass": 490,
+      "fail": 0
+    },
+    "build": {
+      "command": "npm run build",
+      "status": "PASS"
+    }
+  },
+  "fresh_main_integration": {
+    "checked_main": "51e6b1be397ebd294a11f5c827a68abbb7f57c3f",
+    "qualified_relevant_source_unchanged": true,
+    "frozen_mounted_baseline": { "pass": 10, "fail": 4 },
+    "frozen_mounted_candidate": { "pass": 14, "fail": 0 },
+    "adjacent": {
+      "command": "node --test src/components/createWorkspace*.test.ts src/features/chat/composer*.test.ts src/features/chat/modelPicker*.test.ts src/keybindings/*.test.ts",
+      "pass": 653,
+      "fail": 0
+    },
+    "build": { "command": "npm run build", "status": "PASS" },
+    "logs": "integration/"
+  },
+  "limits": [
+    "Retained inert spans only; original full assets not freshly acquired/rehashed.",
+    "Reference contract ends at EIt(state, dispatch); its complete body/import closure is absent.",
+    "Mounted actual React components with inert TipTap DOM engine; final setHardBreak command dispatch recorded, not real DOM/default action.",
+    "No browser/native/provider/installed package/full repository suite or successor containment verification.",
+    "Default Shift+Enter baseline can still use TipTap fallback; failed default cases qualify explicit configured dispatch, not broken visible default editing."
+  ]
+}
