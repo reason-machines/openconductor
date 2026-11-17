@@ -505,7 +505,11 @@ export function CreateWorkspaceComposer({
             onKeyDown={onKeyDown}
             onFocus={() => {}}
             onBlur={() => {}}
-            onPasteFiles={(files) => { void attachFiles(Array.from(files)); return true; }}
+            onPasteFiles={(files) => {
+              if (files.length === 0) return false;
+              void attachFiles(Array.from(files));
+              return true;
+            }}
           />
         </div>
         {createAttachments.length > 0 && (

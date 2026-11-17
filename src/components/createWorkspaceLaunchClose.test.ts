@@ -163,9 +163,35 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
     replace() { act(() => setScreen("replacement")); },
     invalid() { act(() => send(renderer.root.findByProps({ "aria-label": "Target branch" }), "onChange", "bad..branch")); },
     message() { act(() => send(renderer.root.findByType("textarea"), "onChange", { target: { value: "First request" } })); },
+    async pasteFiles(files: File[]) {
+      let handled = false;
+      await act(async () => {
+        const editor = renderer.root.find((node: { type: unknown }) => typeof node.type === "function" && node.type.name === "ComposerEditor");
+        handled = editor.props.onPasteFiles(files as unknown as FileList);
+      });
+      return handled;
+    },
     dispose() { act(() => renderer.unmount()); },
   };
 }
+
+test("create composer leaves clipboard pastes without files to the shared editor", async () => {
+  const view = await fixture();
+  try {
+    view.message();
+    assert.equal(await view.pasteFiles([]), false, "plain text and custom atoms must reach ComposerEditor.handlePaste");
+    assert.match(view.rendered(), /First request/);
+    assert.equal(view.requests, 0);
+  } finally { view.dispose(); }
+});
+
+test("create composer still handles clipboard file attachments", async () => {
+  const view = await fixture();
+  try {
+    assert.equal(await view.pasteFiles([new File(["fixture"], "fixture.txt", { type: "text/plain" })]), true);
+    assert.equal(view.requests, 0);
+  } finally { view.dispose(); }
+});
 
 test("accepted modal launch closes after pending registration and before repository registration settles", async () => {
   const view = await fixture();
