@@ -41,6 +41,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
 import { createRuntimeReceipt } from "./runtime-receipt.mjs";
+import { stopObservedProcesses } from "./owned-processes.mjs";
 import { WebDriver } from "../../tests/e2e/webdriver.mjs";
 import { finishStartup } from "../../tests/e2e/startup.mjs";
 import { installCodexAccessDiagnostics, assertCodexAccessSnapshot, codexBoundaryReport, assertCodexBoundary } from "./codex-access-diagnostics.mjs";
@@ -568,10 +569,11 @@ try {
   } catch {}
   process.exitCode = 1;
 } finally {
-  await receipt.beforeTeardown((script) => wd("POST", "/execute/async", { script, args: [] }, 3000));
+  const owned = await receipt.beforeTeardown((script) => wd("POST", "/execute/async", { script, args: [] }, 3000));
   await saveAccessDiagnostics().catch(() => console.error("access diagnostics unavailable"));
   if (sessionUrl) await wd("DELETE", "").catch(() => {});
   driver.kill();
   await Promise.race([driverExited, sleep(3000)]);
+  await stopObservedProcesses(owned);
   await receipt.afterTeardown();
 }
