@@ -278,7 +278,7 @@ impl ClaudeRunner {
     }
 
     /// Answers the chat's waiting permission prompt `id`.
-    pub fn respond(&self, chat_id: &str, id: &str, answer: &Answer) -> Result<(), String> {
+    pub fn respond(&self, chat_id: &str, id: &str, answer: &Answer, post_plan_mode: Option<PermissionMode>) -> Result<(), String> {
         let chats = self.chats.lock().unwrap();
         let live = chats
             .get(chat_id)
@@ -292,7 +292,7 @@ impl ClaudeRunner {
             .get(id)
             .cloned()
             .ok_or_else(|| format!("No request {id} is waiting in this chat."))?;
-        let decision = interact::decision(&tool, &input, answer)?;
+        let decision = interact::decision_with_plan_mode(&tool, &input, answer, post_plan_mode)?;
         live.state.lock().unwrap().asks.remove(id);
         // Resolved before the answer: the agent may end the turn right after it.
         (self.sink)(

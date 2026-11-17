@@ -1,0 +1,16 @@
+   Compiling settings-auto-permission-unit v0.0.0 (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-auto-permission-binding/harness)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.17s
+     Running unittests src/lib.rs (.oc-tmp/settings-auto-permission-binding/harness/target/debug/build/settings-auto-permission-unit/dda2fa8575ded66e/out/settings_auto_permission_unit-dda2fa8575ded66e)
+
+running 9 tests
+test regression::auto_permission_default_is_unchanged_for_absent_false_or_invalid_flag ... ok
+test regression::auto_permission_follow_up_reads_latest_approval_and_auto_flags ... ok
+test regression::auto_permission_launch_honors_enabled_classifier ... ok
+test regression::auto_permission_does_not_change_codex_launch ... ok
+test regression::auto_permission_per_turn_honors_enabled_classifier ... ok
+test regression::auto_permission_persisted_opt_out_wins_over_initial_plan_default ... ok
+test regression::auto_permission_plan_precedes_both_flags ... ok
+test regression::auto_permission_never_enables_approvals_by_itself ... ok
+test regression::auto_permission_review_ignores_chat_plan_default_but_keeps_approval_policy ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 101 filtered out; finished in 0.00s

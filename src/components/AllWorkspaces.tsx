@@ -47,6 +47,7 @@ interface Props {
   sidebarVisible: boolean;
   dispatch: Dispatch<Action>;
   onCreateWorkspace: () => void;
+  onWorkspaceContextMenu?: (row: HomeRow, at: { x: number; y: number }) => void;
 }
 
 function Highlight({ match, fallback }: { match?: FieldMatch; fallback: string }) {
@@ -159,6 +160,7 @@ function Row({
   now,
   onOpen,
   dispatch,
+  onWorkspaceContextMenu,
 }: {
   row: HomeRow;
   showRepoIcon: boolean;
@@ -167,6 +169,7 @@ function Row({
   now: number;
   onOpen: () => void;
   dispatch: Dispatch<Action>;
+  onWorkspaceContextMenu?: Props["onWorkspaceContextMenu"];
 }) {
   const { workspace: ws, repo, archived, matches } = row;
   const tone = archived ? "is-archived" : isWorkspaceUnread(ws) ? "is-unread" : "";
@@ -185,6 +188,10 @@ function Row({
       data-selected={active || undefined}
       className="allws-row"
       onClick={onOpen}
+      onContextMenu={!archived && !unstarted && onWorkspaceContextMenu ? (event) => {
+        event.preventDefault();
+        onWorkspaceContextMenu(row, { x: event.clientX, y: event.clientY });
+      } : undefined}
       title={row.title}
     >
       <div className="allws-row-main">
@@ -237,7 +244,7 @@ function Row({
   );
 }
 
-export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch, onCreateWorkspace }: Props) {
+export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch, onCreateWorkspace, onWorkspaceContextMenu }: Props) {
   const { overrides } = useKeybindingOverrides();
   const [query, setQuery] = useState("");
   const repoIds = useMemo(() => new Set(repos.map((r) => r.id)), [repos]);
@@ -449,6 +456,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
                           open(row);
                         }}
                         dispatch={dispatch}
+                        onWorkspaceContextMenu={onWorkspaceContextMenu}
                       />
                     );
                   })}
