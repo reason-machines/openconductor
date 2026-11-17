@@ -1,0 +1,12 @@
+{
+  "result": "PASS",
+  "checks": 62,
+  "baseline_main": "6ea9565048bfdc730e6ddc03c279d988031fe2e1",
+  "not_verified": [
+    "physical UI timing",
+    "Tauri transport",
+    "disk persistence",
+    "installed identity",
+    "package inclusion"
+  ]
+}
