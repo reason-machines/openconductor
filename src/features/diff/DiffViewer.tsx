@@ -161,10 +161,10 @@ function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anc
   const [isPreviewing, setIsPreviewing] = useState(isPreviewable);
   useEffect(() => { setIsPreviewing(isPreviewable); }, [selected.path, isPreviewable]);
   // parity:diff.edit-in-viewer — ⌘E read-only↔edit toggle for code files (GAP-DIFF-01).
-  // Conductor keeps preview as default for markdown/HTML; for code files, read-only is
-  // the default and ⌘E enters edit mode (isEditing=false → true).
-  const [isEditing, setIsEditing] = useState(false);
-  useEffect(() => { setIsEditing(false); }, [selected.path]);
+  // Conductor keeps preview as default for markdown/HTML; for code files, edit mode is
+  // active by default (matching Conductor's bji behaviour) and ⌘E toggles to read-only.
+  const [isEditing, setIsEditing] = useState(true);
+  useEffect(() => { setIsEditing(true); }, [selected.path]);
   // Editable when edit is non-null and the file is not a previewable markdown/HTML file.
   const isEditableCode = !isPreviewable && edit !== null;
   useKeybindings({
