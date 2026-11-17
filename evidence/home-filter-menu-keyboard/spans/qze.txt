@@ -1,0 +1,1 @@
+function qze(t,e={}){const{preventScroll:n=!1,sync:i=!1,shouldFocus:r}=e;cancelAnimationFrame(oFe);function o(){r&&!r()||t?.focus({preventScroll:n})}if(i)return o(),Lu;const a=requestAnimationFrame(o);return oFe=a,()=>{oFe===a&&(cancelAnimationFrame(a),oFe=0)}}

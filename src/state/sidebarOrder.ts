@@ -120,7 +120,7 @@ export function sidebarEntries(
   const inSections = sections.flatMap((s) => (visibleOnly && collapsedSections.has(s.section.id) ? [] : s.entries));
   const grouped = state.sidebarGroupBy === "status"
     ? statusGroupEntries(state, sectioned).flatMap((group) => visibleOnly && isStatusGroupCollapsed(state, group) ? [] : group.entries)
-    : state.repos.flatMap((r) =>
+    : state.repos.filter((repo) => !state.sidebarRepoFilter || repo.id === state.sidebarRepoFilter).flatMap((r) =>
       visibleOnly && isRepoCollapsed(r, state.selection, sectioned) ? [] : repoGroupWorkspaces(r.workspaces, sectioned, state.sidebarSort).map((workspace) => ({ repoId: r.id, workspace })),
     );
   return [...pinned, ...inSections, ...grouped];
