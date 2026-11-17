@@ -1,0 +1,74 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Clone url has no implicit native-form activation path
+not ok 1 - Clone url has no implicit native-form activation path
+  ---
+  duration_ms: 211.78825
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/cloneImplicitEnter.test.ts:80:3'
+  failureType: 'testCodeFailure'
+  error: 'url must not acquire native implicit submission'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'form'
+  actual: 'form'
+  operator: 'notStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/cloneImplicitEnter.test.ts:85:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Clone location has no implicit native-form activation path
+not ok 2 - Clone location has no implicit native-form activation path
+  ---
+  duration_ms: 76.14327
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/cloneImplicitEnter.test.ts:80:3'
+  failureType: 'testCodeFailure'
+  error: 'location must not acquire native implicit submission'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'form'
+  actual: 'form'
+  operator: 'notStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/cloneImplicitEnter.test.ts:85:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Clone explicit primary activation captures valid inputs once
+ok 3 - Clone explicit primary activation captures valid inputs once
+  ---
+  duration_ms: 35.554937
+  type: 'test'
+  ...
+# Subtest: Clone pending guard survives repeated explicit primary activation
+ok 4 - Clone pending guard survives repeated explicit primary activation
+  ---
+  duration_ms: 31.138527
+  type: 'test'
+  ...
+# Subtest: Clone blank URL keeps the primary action disabled and transport unused
+ok 5 - Clone blank URL keeps the primary action disabled and transport unused
+  ---
+  duration_ms: 59.508796
+  type: 'test'
+  ...
+# Subtest: Clone rejection permits explicit retry with the latest inputs
+ok 6 - Clone rejection permits explicit retry with the latest inputs
+  ---
+  duration_ms: 42.213131
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 4
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1619.553009

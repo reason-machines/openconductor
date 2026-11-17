@@ -1,0 +1,80 @@
+{
+  "author": "Conductor Rebuild / SAME6013",
+  "dedupe": "CLONE-IMPLICIT-ENTER-6013",
+  "mainChecked": "2ada6e3e186391695cae1ce5694ac251a6323079",
+  "testFirstCommit": "d259bf8bbfcf376275fbbbb18ac7d597f728c2a2",
+  "frozenTestSha256": "15bd3668d4548b44110c2add89067a0e7e4e7e5c212c84abea3f233b1f74ed0c",
+  "checks": [
+    {
+      "command": "node --experimental-strip-types --test src/components/cloneImplicitEnter.test.ts",
+      "phase": "baseline before product edit",
+      "exit": 1,
+      "passed": 4,
+      "intendedFailures": 2
+    },
+    {
+      "command": "npm run typecheck",
+      "phase": "test-first pre-product",
+      "exit": 0
+    },
+    {
+      "command": "node --experimental-strip-types --test src/components/cloneImplicitEnter.test.ts src/components/clonePendingInputs.test.ts src/components/cloneRecentPendingSelection.test.ts src/components/cloneUrlTextCorrection.test.ts",
+      "phase": "treatment",
+      "exit": 0,
+      "passed": 25,
+      "failed": 0
+    },
+    {
+      "command": "node --experimental-strip-types --test --test-concurrency=2 src/state/cloneDialog.test.ts src/state/cloneTargetNameNormalization.test.ts src/keybindings/shortcut.test.ts src/keybindings/overrides.test.ts src/components/cloneImplicitEnter.test.ts src/components/clonePendingInputs.test.ts src/components/cloneRecentPendingSelection.test.ts src/components/cloneUrlTextCorrection.test.ts",
+      "exit": 0,
+      "passed": 57,
+      "failed": 0
+    },
+    {
+      "command": "node evidence/dialogs/clone-implicit-enter/verify.mjs .rea-work/dlg-pr-title-cancel-focus-retained",
+      "exit": 0,
+      "originalParents": 2,
+      "originalRecords": 20,
+      "productReplacements": 5,
+      "harnessTransports": 3,
+      "browserRecords": 16
+    },
+    {
+      "command": "npm run typecheck",
+      "phase": "post-change serialized heavy slot",
+      "exit": 0
+    },
+    {
+      "command": "npm run build",
+      "phase": "post-change serialized heavy slot",
+      "exit": 0,
+      "viteSeconds": 47.06
+    },
+    {
+      "command": "npm run lint:colors",
+      "phase": "post-change serialized heavy slot",
+      "exit": 0,
+      "checkerTests": 6
+    },
+    {
+      "command": "git diff --check origin/main",
+      "exit": 0
+    }
+  ],
+  "browser": {
+    "engine": "Chrome155/Linux",
+    "fixtureSourcesFrozen": 5,
+    "graphInputs": 183,
+    "baselineStarted": "2026-11-17T15:30:04.086Z",
+    "baselineReleased": "2026-11-17T15:37:22Z",
+    "treatmentStarted": "2026-11-17T15:49:00.066Z",
+    "treatmentReleased": "2026-11-17T15:54:56Z",
+    "bothCleanups": "PASS: own tab closed; managed tabs empty; preview stopped/process group ended; own namespace bind free; own fixture process list empty"
+  },
+  "limits": [
+    "No live original/native/WebKit/full-App/provider/backend/real-clone or packaged acceptance",
+    "No user shortcut overrides observed; fixture controlled default meta+Enter",
+    "No screenshot visual-parity claim; minimal fixture CSS",
+    "Hosted exact-head CI not yet observed"
+  ]
+}

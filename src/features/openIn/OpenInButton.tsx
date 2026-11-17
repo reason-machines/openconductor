@@ -73,6 +73,13 @@ export function OpenInButton({ path, notify, variant = "split", showShortcutHint
   const wrap = useRef<HTMLDivElement>(null);
   const menu = useRef<HTMLDivElement>(null);
   const initialFocus = useRef<"first" | "last" | null>(null);
+  const typeahead = useRef({ text: "", start: -1, lastMatch: -1 });
+  const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clearTypeahead = () => {
+    if (typingTimer.current !== null) clearTimeout(typingTimer.current);
+    typingTimer.current = null;
+    typeahead.current = { text: "", start: -1, lastMatch: -1 };
+  };
   const { overrides } = useKeybindingOverrides();
   const openKey = effectiveShortcuts("workspace.openInApp", overrides)[0];
   const openKeyText = openKey ? glyphs(openKey) : "";
@@ -117,6 +124,7 @@ export function OpenInButton({ path, notify, variant = "split", showShortcutHint
   );
 
   useEffect(() => {
+    clearTypeahead();
     if (!open) return;
     const edge = initialFocus.current;
     initialFocus.current = null;
@@ -130,7 +138,10 @@ export function OpenInButton({ path, notify, variant = "split", showShortcutHint
       if (!wrap.current?.contains(e.target as Node)) close();
     };
     document.addEventListener("mousedown", onDown, true);
-    return () => document.removeEventListener("mousedown", onDown, true);
+    return () => {
+      document.removeEventListener("mousedown", onDown, true);
+      clearTypeahead();
+    };
   }, [open]);
 
   // Conductor's icon trigger (SLt) opens at the enabled first/last row.
@@ -152,6 +163,45 @@ export function OpenInButton({ path, notify, variant = "split", showShortcutHint
       return;
     }
     if (e.defaultPrevented) return;
+    // The icon menu's P9 → $li path types to focus, never to launch or copy.
+    if (!split && open && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const typing = typeahead.current;
+      const items = Array.from(menu.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? []);
+      const eligible = (item: HTMLElement) => item.isConnected && !item.matches(":disabled")
+        && (typeof item.checkVisibility === "function" ? item.checkVisibility()
+          : !["none", "contents"].includes(getComputedStyle(item).display));
+      const labels = items.map((item) => item.textContent?.toLowerCase() ?? "");
+      const at = items.indexOf(document.activeElement as HTMLElement);
+      const wasEmpty = typing.text === "";
+      if (wasEmpty) typing.start = at;
+      if (e.key !== " " || !wasEmpty) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const canCycle = items.every((item, i) => !labels[i] || !eligible(item) || labels[i][0] !== labels[i][1]);
+      if (canCycle && typing.text === e.key) {
+        typing.text = "";
+        typing.start = typing.lastMatch;
+      }
+      typing.text += e.key;
+      if (typingTimer.current !== null) clearTimeout(typingTimer.current);
+      typingTimer.current = setTimeout(() => {
+        typing.text = "";
+        typing.start = typing.lastMatch;
+        typingTimer.current = null;
+      }, 500);
+      const from = (wasEmpty ? at : typing.start) + 1;
+      for (let offset = 0; offset < items.length; offset++) {
+        const index = (from + offset + items.length) % items.length;
+        if (eligible(items[index]) && labels[index].startsWith(typing.text.toLowerCase())) {
+          typing.lastMatch = index;
+          if (items[index] !== document.activeElement) items[index].focus();
+          return;
+        }
+      }
+      if (e.key !== " ") typing.text = "";
+      return;
+    }
     const endpoint = !split && (e.key === "Home" || e.key === "End");
     if (endpoint && e.which === 229) return;
     if (!endpoint && e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
@@ -206,7 +256,9 @@ export function OpenInButton({ path, notify, variant = "split", showShortcutHint
         </button>
       </Tooltip>
       {presence.mounted && (
-        <div className="oi-menu" role="menu" aria-label="Open in" ref={menu} onKeyDown={onMenuKey} data-tauri-drag-region="false" data-motion="popup" {...presence.attrs}>
+        <div className="oi-menu" role="menu" aria-label="Open in" ref={menu} onKeyDown={onMenuKey}
+          onBlur={(e) => { if (!split && !wrap.current?.contains(e.relatedTarget as Node | null)) clearTypeahead(); }}
+          data-tauri-drag-region="false" data-motion="popup" {...presence.attrs}>
           {installed === null ? (
             <div className="oi-menu-note">Loading…</div>
           ) : apps.length === 0 ? (
