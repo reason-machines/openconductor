@@ -1,0 +1,57 @@
+{
+  "integrated_main": "2ada6e3e186391695cae1ce5694ac251a6323079",
+  "tested_tree_head": "757fc23f204025d01eb8e5ccd0778bd976e420b7",
+  "qualification_main": "217498aae38dfd63b97919b1a0ab4097462c691e",
+  "files": [
+    {
+      "path": "src-tauri/src/claude_chat/map.rs",
+      "sha256": "76d8e4ea0e93b4fe624f5b25975bda8febfd2d18d01df9372772149ba58a6d52",
+      "unchanged_from_qualification": true
+    },
+    {
+      "path": "src-tauri/src/reason_acp/wire.rs",
+      "sha256": "96dee0f64c933bcaa9c60bc992f30a2fe190a625db540bfb8c350d6a4f6933dd",
+      "unchanged_from_qualification": true
+    },
+    {
+      "path": "src/features/chat/reason.ts",
+      "sha256": "cb07a5ec7dc2a8406d9021848280cf9acc83445c371390b94c6a57a290b1cf5b",
+      "unchanged_from_qualification": true
+    },
+    {
+      "path": "src/features/chat/reducer.ts",
+      "sha256": "9b4783c08f496b05ebdc99a141f52b13c06a4b46f3f1a240a780ef5535d22ec4",
+      "unchanged_from_qualification": true
+    },
+    {
+      "path": "src/features/chat/view.ts",
+      "sha256": "132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43",
+      "unchanged_from_qualification": true
+    },
+    {
+      "path": "src/features/chat/conductorTools.ts",
+      "sha256": "05c3a85bed997b1114e1696d083855d4e39c5d614fe57ddeb0bade8bde7cc64a",
+      "unchanged_from_qualification": true
+    },
+    {
+      "path": "src/features/chat/Transcript.tsx",
+      "sha256": "8b13f23d0fec69db4fa1311cb901fdf936c18a267f8f7f47f56aafca1747f1e8",
+      "unchanged_from_qualification": true
+    },
+    {
+      "path": "src/features/chat/ToolRows.tsx",
+      "sha256": "a31773ad0d2479cdea6683fe75a7219d9852fbc1ff2b66587e6c7dbb9175766d",
+      "unchanged_from_qualification": true
+    }
+  ],
+  "focused": {
+    "tests": 153,
+    "pass": 153,
+    "fail": 0,
+    "skipped": 0
+  },
+  "default_build": "passed",
+  "full_chat_single_invocation": "incomplete_timeout_300s_1639_passes_0_failures",
+  "tail_invocation": "incomplete_timeout_180s_229_passes_0_failures",
+  "native_browser_provider_package_acceptance": "not_run"
+}

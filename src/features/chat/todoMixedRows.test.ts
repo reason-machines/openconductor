@@ -228,7 +228,7 @@ for (const [name, statuses] of [
   test(`nonmixed ${name} input retains one ordinary row`, (t) => {
     const mounted = mount(t, fixture(statuses.map((status, i) => ({ content: `Item ${i}`, status }))));
     assert.equal(headers(mounted).length, 1);
-    assert.equal(text(headers(mounted)[0]!).includes("Todo started"), false);
+    assert.equal(text(headers(mounted)[0]!).includes("Todo started"), name === "only active");
   });
 }
 

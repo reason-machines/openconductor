@@ -1,0 +1,225 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate": "ORDINARY-TERMINAL-COPY-WHITESPACE-1F",
+  "status": "IMPLEMENTED_LOCAL_SOURCE_VERIFIED_PENDING_EXACT_HEAD_CI",
+  "main_checked": "217498aae38dfd63b97919b1a0ab4097462c691e",
+  "rea_parent": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference_asset": {
+    "asset": "renderer",
+    "name": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "spans": [
+    {
+      "name": "lSa",
+      "artifact": "renderer",
+      "file": "reference/lSa.txt",
+      "utf8_half_open": [
+        11171573,
+        11171911
+      ],
+      "bytes": 338,
+      "sha256": "cfab3b95d6f1316ab61b7016395f89925f66289ebe072451938c3f481c52ec2a",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "eSa",
+      "artifact": "renderer",
+      "file": "reference/eSa.txt",
+      "utf8_half_open": [
+        11160762,
+        11165279
+      ],
+      "bytes": 4517,
+      "sha256": "7046b53ab7a925101dea1b4ed8aabaf67fe39d6842a9742efb4bf76d502548a4",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "artifact": "renderer",
+      "name": "w9e",
+      "file": "reference/w9e.txt",
+      "utf8_half_open": [
+        6919236,
+        6922665
+      ],
+      "bytes": 3429,
+      "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32",
+      "extraction": "Unique named declaration anchor through next named declaration function dVn(; full text retained and manually inspected"
+    },
+    {
+      "asset": "renderer",
+      "name": "dno",
+      "utf8_half_open": [
+        6915051,
+        6916770
+      ],
+      "bytes": 1719,
+      "sha256": "c1caf84211af0d4cdc09cc07d3b7ecfc9b0dde7cbfa84704e5f2ce24109fd318",
+      "file": "reference/dno.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "uno",
+      "utf8_half_open": [
+        6914630,
+        6915051
+      ],
+      "bytes": 421,
+      "sha256": "85acecc59c4b24eb7a08bf143dcdc68903fffba9180d78c83559bfea2f1eb35b",
+      "file": "reference/uno.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "cno",
+      "utf8_half_open": [
+        6914245,
+        6914630
+      ],
+      "bytes": 385,
+      "sha256": "d256449d670e3c7e000f82530a8d2cfb494986c8559831ac1b2f74a92ed35cd5",
+      "file": "reference/cno.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "lno",
+      "utf8_half_open": [
+        6913120,
+        6914245
+      ],
+      "bytes": 1125,
+      "sha256": "f0ce60ce9b64bb20c9526c841aec24bf2620c9c8bf1973dd083e218e8f4fd4a5",
+      "file": "reference/lno.txt"
+    },
+    {
+      "name": "t9s",
+      "asset": "renderer",
+      "utf8_half_open": [
+        3140055,
+        3140134
+      ],
+      "bytes": 79,
+      "sha256": "4ae382816b30e3b65c256132845a99c89050d84f3f8207c95d724cc407dd38f2",
+      "file": "reference/t9s.txt"
+    },
+    {
+      "name": "W5e",
+      "file": "reference/W5e.txt",
+      "utf8_half_open": [
+        6918847,
+        6919236
+      ],
+      "bytes": 389,
+      "sha256": "7829aaf4a1fdf9ed7789f958496e3f7f7274f69cfbd31997aeb7ae99de28a881",
+      "extraction": "unique named function anchor through next declaration; inspected as inert text"
+    },
+    {
+      "name": "uVn",
+      "file": "reference/uVn.txt",
+      "utf8_half_open": [
+        6918617,
+        6918847
+      ],
+      "bytes": 230,
+      "sha256": "ac48251fcbe99909fea8abc6d01ba6234dcb51496f742ee012debc4aa57c5e53",
+      "extraction": "unique named function anchor through next declaration; inspected as inert text"
+    }
+  ],
+  "baseline_session_sha256": "b1f0a4a4fc616bd0dbe6f1e1b51a5374cb716c73841a31830c6351df9db8177b",
+  "fixture_sha256": "da3e5f06bbf6347fab42c5725b859bcc6f7c8d02402c341bc63d22a0a17b3ccd",
+  "red": {
+    "pass": 5,
+    "fail": 6,
+    "skipped": 0,
+    "expected_failing_cases": [
+      1,
+      2,
+      3,
+      4,
+      9,
+      11
+    ],
+    "sha256": "73ce3c41ac818ed8c8cd3b6eadf900fbc958971c98abf04e5d53bd7b352ed345"
+  },
+  "boundaries": [
+    "actual session open/attach/dispose/tabs and installed xterm Buffer/SelectionService/native copyHandler",
+    "DOM EventTarget, rendering, observers, font/storage and PTY boundaries substituted"
+  ],
+  "not_run": [
+    "browser",
+    "native",
+    "system clipboard",
+    "PTY",
+    "provider",
+    "package"
+  ],
+  "product_changed": true,
+  "delivered_fixture_sha256": "a625b99094a1d976a8d36f55eecc04bd5b87817d7ba13eba654f5ec294c581e5",
+  "candidate_session_sha256": "a66e5172b5dfe545c6a45ea441447894193ae4c0c11a594a89f15704c50d7f28",
+  "patch_sha256": "a56804dc9133664dec3f031b695ddcc20460a5c4a51b6636c20fe5c09467ca5f",
+  "fixture_transport": "Only Object.hasOwn -> Object.prototype.hasOwnProperty.call for ES2021; all 11 test bodies/assertions unchanged. Both v1 and v2 baseline RED retained.",
+  "commands": {
+    "baseline": "ORDINARY_COPY_DEPS=<isolated exact dependencies> timeout 180s nice -n 19 node --max-old-space-size=512 --experimental-strip-types --test --test-concurrency=1 src/features/terminal/ordinaryCopy.test.ts",
+    "green": "same immutable v2 fixture, same isolated dependency installation and command as corrected baseline; source patch only",
+    "focused": "NODE_ENV=development timeout 240s nice -n 19 node --max-old-space-size=512 --experimental-strip-types --test --test-concurrency=1 src/features/terminal/ordinaryCopy.test.ts src/features/terminal/attachmentOwnership.test.mjs src/features/terminal/nonrunningInput.test.ts src/features/terminal/startupDisposal.test.ts src/features/terminal/ordinaryThemeRefresh.test.ts src/features/terminal/clearRedraw.test.ts src/features/terminal/cursorState.test.ts src/scripts/outputCopy.test.ts",
+    "typecheck_initial": "NODE_OPTIONS=--max-old-space-size=1536 timeout 240s nice -n 19 npm run typecheck",
+    "typecheck_success": "time timeout 180s node --max-old-space-size=1536 node_modules/typescript/bin/tsc --noEmit",
+    "build": "time NODE_OPTIONS=--max-old-space-size=1536 timeout 300s npm run build",
+    "lint": "npm run lint:colors"
+  },
+  "results": {
+    "v1_baseline": {
+      "exit": 1,
+      "pass": 5,
+      "fail": 6
+    },
+    "v2_baseline": {
+      "exit": 1,
+      "pass": 5,
+      "fail": 6
+    },
+    "green": {
+      "exit": 0,
+      "pass": 11,
+      "fail": 0
+    },
+    "focused": {
+      "exit": 0,
+      "pass": 83,
+      "fail": 0,
+      "skipped": 0
+    },
+    "typecheck_initial": {
+      "exit": 124,
+      "status": "TIMEOUT_NO_DIAGNOSTIC_NO_VERDICT"
+    },
+    "typecheck_normal_priority": {
+      "exit": 0,
+      "status": "PASS",
+      "wall_seconds": 157.264
+    },
+    "build": {
+      "exit": 124,
+      "status": "PARTIAL_BRANDING_AND_TSC_PASS_VITE_TRANSFORM_TIMEOUT",
+      "wall_seconds": 300.02
+    },
+    "lint": {
+      "exit": 0,
+      "tests_passed": 6,
+      "status": "PASS"
+    }
+  },
+  "execution_environment": "Reason Cloud computer 362. Initial four-vCPU shared-machine load 27.10, CPU99.8% busy. No owned leftover job to stop. No source/dependency change between typecheck scheduling-priority attempts; full Vite build not retried.",
+  "timing_substitution": "/usr/bin/time was absent (exit127); Bash time was used for the successful typecheck and partial build. The typechecker did not run in the failed timing-tool invocation.",
+  "rea_gaps": "No new REA acquisition or native reference operation. Historical whole-renderer semantic/heap limitation not retried. Ten exact retained spans checked inertly; no reference JavaScript evaluated.",
+  "no_dispatch": [
+    "browser",
+    "native",
+    "PTY",
+    "provider",
+    "package",
+    "watcher"
+  ],
+  "main_reconciled": "2ada6e3e186391695cae1ce5694ac251a6323079",
+  "main_reconciliation": "Original-session, new-test absence, existing Run-copy fixture and package manifests/lockfile unchanged between baseline217498aae and fresh2ada6e3e1. Disjoint main updates merged before publication; local behavioral/compiler receipts exercised earlier baseline, hosted exact-head CI remains required."
+}

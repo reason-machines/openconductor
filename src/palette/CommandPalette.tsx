@@ -138,7 +138,8 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
   const optionPrefix = useId();
   const optionId = (index: number) => `${optionPrefix}-option-${index}`;
   const [tab, setTab] = useState<PaletteTab>(initialTab);
-  const [query, setQuery] = useState("");
+  const [commandQuery, setCommandQuery] = useState("");
+  const [sectionQuery, setSectionQuery] = useState("");
   const [active, setActive] = useState(initialTab === "workspaces" ? -1 : 0);
   const [sectionActive, setSectionActive] = useState(0);
   const [filters, setFiltersState] = useState<HomeFilters>(() => {
@@ -160,6 +161,9 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     localWorkspaceId !== undefined &&
     localWorkspaceId === data.activeWorkspaceId &&
     moveToSection !== undefined;
+  // The section picker has its own search lifetime; Back restores commands.
+  const query = inSectionMode ? sectionQuery : commandQuery;
+  const setQuery = inSectionMode ? setSectionQuery : setCommandQuery;
   const sectionFlatItems = inSectionMode && moveToSection && computeSectionItems
     ? computeSectionItems(moveToSection.sections, moveToSection.workspaceId, query)
     : [];
@@ -234,7 +238,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     if (!item) return;
     // Move to section: enter the section picker sub-view without dismissing.
     if (item.kind === "action" && item.action.id === "move-to-section") {
-      setQuery("");
+      setSectionQuery("");
       onSelect(item);
       return;
     }
