@@ -1,0 +1,11 @@
+{
+  "candidate": "CODEX-WEBSEARCH-COMPLETION-RESULT-BE7",
+  "cases": [
+    { "id": "running-query", "method": "item/started", "item": { "type": "webSearch", "id": "web-running", "query": "configuration keys" }, "expectedOutput": null, "expectedHeader": "configuration keys", "expectedBody": null },
+    { "id": "completed-query", "method": "item/completed", "item": { "type": "webSearch", "id": "web-completed", "query": "configuration keys" }, "expectedOutput": "Web search completed for: configuration keys", "expectedHeader": "configuration keys", "expectedBody": "Web search completed for: configuration keys" },
+    { "id": "completed-empty-query", "method": "item/completed", "item": { "type": "webSearch", "id": "web-empty", "query": "" }, "expectedOutput": "Web search completed", "expectedHeader": "", "expectedBody": "Web search completed" },
+    { "id": "completed-whitespace-query", "method": "item/completed", "item": { "type": "webSearch", "id": "web-whitespace", "query": "  config\nkeys  " }, "expectedOutput": "Web search completed for:   config\nkeys  ", "expectedHeader": "  config\nkeys  ", "expectedBody": "Web search completed for:   config\nkeys  " },
+    { "id": "completed-markup-query", "method": "item/completed", "item": { "type": "webSearch", "id": "web-markup", "query": "<img src=x onerror=unsafe()> & **keys**" }, "expectedOutput": "Web search completed for: <img src=x onerror=unsafe()> & **keys**", "expectedHeader": "<img src=x onerror=unsafe()> & **keys**", "expectedBody": "Web search completed for: <img src=x onerror=unsafe()> & **keys**" },
+    { "id": "running-empty-query", "method": "item/started", "item": { "type": "webSearch", "id": "web-running-empty", "query": "" }, "expectedOutput": null, "expectedHeader": "", "expectedBody": null }
+  ]
+}

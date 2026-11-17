@@ -1,0 +1,86 @@
+(node:184) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:191) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: producer running-query: completed web search has the retained result summary; running does not
+ok 1 - producer running-query: completed web search has the retained result summary; running does not
+  ---
+  duration_ms: 0.876442
+  type: 'test'
+  ...
+# Subtest: mounted running-query: actual Rust payload to Codex adapter, reducer, view and production row
+ok 2 - mounted running-query: actual Rust payload to Codex adapter, reducer, view and production row
+  ---
+  duration_ms: 236.95359
+  type: 'test'
+  ...
+# Subtest: producer completed-query: completed web search has the retained result summary; running does not
+ok 3 - producer completed-query: completed web search has the retained result summary; running does not
+  ---
+  duration_ms: 0.234473
+  type: 'test'
+  ...
+# Subtest: mounted completed-query: actual Rust payload to Codex adapter, reducer, view and production row
+ok 4 - mounted completed-query: actual Rust payload to Codex adapter, reducer, view and production row
+  ---
+  duration_ms: 106.471487
+  type: 'test'
+  ...
+# Subtest: producer completed-empty-query: completed web search has the retained result summary; running does not
+ok 5 - producer completed-empty-query: completed web search has the retained result summary; running does not
+  ---
+  duration_ms: 0.181521
+  type: 'test'
+  ...
+# Subtest: mounted completed-empty-query: actual Rust payload to Codex adapter, reducer, view and production row
+ok 6 - mounted completed-empty-query: actual Rust payload to Codex adapter, reducer, view and production row
+  ---
+  duration_ms: 86.219264
+  type: 'test'
+  ...
+# Subtest: producer completed-whitespace-query: completed web search has the retained result summary; running does not
+ok 7 - producer completed-whitespace-query: completed web search has the retained result summary; running does not
+  ---
+  duration_ms: 0.162345
+  type: 'test'
+  ...
+# Subtest: mounted completed-whitespace-query: actual Rust payload to Codex adapter, reducer, view and production row
+ok 8 - mounted completed-whitespace-query: actual Rust payload to Codex adapter, reducer, view and production row
+  ---
+  duration_ms: 65.25139
+  type: 'test'
+  ...
+# Subtest: producer completed-markup-query: completed web search has the retained result summary; running does not
+ok 9 - producer completed-markup-query: completed web search has the retained result summary; running does not
+  ---
+  duration_ms: 0.471364
+  type: 'test'
+  ...
+# Subtest: mounted completed-markup-query: actual Rust payload to Codex adapter, reducer, view and production row
+ok 10 - mounted completed-markup-query: actual Rust payload to Codex adapter, reducer, view and production row
+  ---
+  duration_ms: 64.09857
+  type: 'test'
+  ...
+# Subtest: producer running-empty-query: completed web search has the retained result summary; running does not
+ok 11 - producer running-empty-query: completed web search has the retained result summary; running does not
+  ---
+  duration_ms: 0.197123
+  type: 'test'
+  ...
+# Subtest: mounted running-empty-query: actual Rust payload to Codex adapter, reducer, view and production row
+ok 12 - mounted running-empty-query: actual Rust payload to Codex adapter, reducer, view and production row
+  ---
+  duration_ms: 47.458322
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 988.734487
