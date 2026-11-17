@@ -141,6 +141,28 @@ pub fn decision(tool: &str, input: &Value, answer: &Answer) -> Result<Permission
     })
 }
 
+/// Only an explicitly approved Plan may restore the configured execution mode.
+/// Ordinary tool replies, denials and cancellation never carry a mode change.
+/// Reference: the retained ExitPlanMode branch in settings/auto-permission.
+pub fn decision_with_plan_mode(
+    tool: &str,
+    input: &Value,
+    answer: &Answer,
+    post_plan_mode: Option<crate::agent::PermissionMode>,
+) -> Result<PermissionDecision, String> {
+    let decision = decision(tool, input, answer)?;
+    if let (PLAN_TOOL, Answer::Plan { approved: true, .. }, Some(mode)) = (tool, answer, post_plan_mode) {
+        use crate::agent::PermissionMode;
+        if !matches!(mode, PermissionMode::Default | PermissionMode::Auto | PermissionMode::BypassPermissions) {
+            return Err("Invalid permission mode after approving a plan.".into());
+        }
+        let mut input = input.as_object().cloned().ok_or("Plan input must be an object.")?;
+        input.insert("_targetMode".into(), json!(mode.as_str()));
+        return Ok(PermissionDecision::AllowWithMode { input: Value::Object(input), mode });
+    }
+    Ok(decision)
+}
+
 fn questions(input: &Value) -> Vec<Question> {
     let list = input["questions"]
         .as_array()

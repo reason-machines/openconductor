@@ -1,0 +1,25 @@
+--- ../chrome-reconcile/probe-template.rs (archived unchanged)
++++ chrome-successor-template.rs
+@@ -125,7 +125,7 @@
+     assert!(block_on(snapshot(Err("preference unavailable".into()), json!({}))).is_err());
+ }
+ #[test]
+-fn chrome_preserves_existing_plan_fast_model_effort_and_directory_guards() {
++fn chrome_preserves_plan_fast_model_effort_and_reconciles_directories() {
+     let mut picked = opts(true);
+     picked.model = Some("picked".into()); picked.effort = Some("high".into());
+     picked.fast_mode = Some(false); picked.permission_mode = Some(PermissionMode::Plan);
+@@ -134,8 +134,11 @@
+     assert_eq!(launch.model.as_deref(), Some("picked")); assert_eq!(launch.effort.as_deref(), Some("high"));
+     assert_eq!(launch.permission_mode, PermissionMode::Plan); assert_eq!(launch.settings, Some(json!({"fastMode":false})));
+     let (mut linked, session) = chat(opts(true), false);
+-    assert!(runner(true).ensure_live("chat", &mut linked, &["/other".into()], &opts(false)).is_err());
+-    assert_eq!(session.lock().unwrap().kills, 0);
++    let launch = runner(true).ensure_live("chat", &mut linked, &["/other".into()], &opts(false)).unwrap().unwrap();
++    assert!(!launch.chrome);
++    assert_eq!(launch.add_dirs, vec![PathBuf::from("/other")]);
++    assert_eq!(launch.resume.as_deref(), Some("observed"));
++    assert_eq!(session.lock().unwrap().kills, 1);
+ }
+ #[test]
+ fn chrome_change_does_not_touch_another_chat() {

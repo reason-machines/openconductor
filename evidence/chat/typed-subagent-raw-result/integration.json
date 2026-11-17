@@ -1,0 +1,9 @@
+{
+  "author": "Conductor Rebuild",
+  "fresh_main": "d18e6bf2f05580c11e51572c3a75e98749c6ff81",
+  "actual_1418_merge": "d18e6bf2f05580c11e51572c3a75e98749c6ff81",
+  "fixture_sha256": "dea7a1df1432b2b325944f1bd9243ac056ea59aec9e7be2a00ccd23e6107ae79",
+  "fallback30_sha256": "63d0454a0e67d18b893abef483e9b7b35403df94f43f96f008b3eb8ec522c65a",
+  "production_diff_sha256": "394c2967696fba05c53d66bd6bda449973fa4d486b471916d51f8d3a76abf9c2",
+  "scope": "exact typed dispatch/SubagentRow candidate only; all other ToolRows bytes unchanged"
+}

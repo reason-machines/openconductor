@@ -1,0 +1,54 @@
+(node:80) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:87) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a second concurrent local restore request starts ready instead of inheriting the first workspace's pending state
+not ok 1 - a second concurrent local restore request starts ready instead of inheriting the first workspace's pending state
+  ---
+  duration_ms: 270.772013
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/.qa/restore-replacement-qualification/restoreWorkspaceReplacement.test.ts:147:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    workspace B must not inherit workspace A's pending mutation
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/.qa/restore-replacement-qualification/restoreWorkspaceReplacement.test.ts:162:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: same-workspace scenario refresh keeps its existing pending operation
+ok 2 - same-workspace scenario refresh keeps its existing pending operation
+  ---
+  duration_ms: 32.097873
+  type: 'test'
+  ...
+# Subtest: late completion for a replaced workspace cannot close the currently displayed restore request
+ok 3 - late completion for a replaced workspace cannot close the currently displayed restore request
+  ---
+  duration_ms: 218.178095
+  type: 'test'
+  ...
+# Subtest: an unrelated completed unarchive without a restore scenario does not replace a pending dialog
+ok 4 - an unrelated completed unarchive without a restore scenario does not replace a pending dialog
+  ---
+  duration_ms: 119.6469
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1816.243312

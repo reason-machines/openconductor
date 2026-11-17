@@ -5,6 +5,7 @@
 // ("Effort"/"Thinking"), the Fast toggle, and a footer with "Edit" and the
 // Cycle effort shortcut. ⌘/ opens it, ⌘⇧/ cycles the effort, ⌘⇧E toggles Fast.
 
+import fuzzysort from "fuzzysort";
 import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
@@ -81,12 +82,24 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
     const q = query.trim().toLowerCase();
     const words = q.split(/\s+/);
     const name = (f: ModelChoice) => itemLabel?.(f) ?? modelName?.(f.model) ?? modelDisplayName(f.model);
-    return q ? list.filter((f) => {
-      const agent = itemAgent?.(f) ?? f.agent ?? agentForModel(f.model);
+    if (!q) return list;
+    const matches = list.flatMap((choice) => {
+      const agent = itemAgent?.(choice) ?? choice.agent ?? agentForModel(choice.model);
       const agentLabel = agent === "reason" ? "Reason" : agent ? AGENT_LABEL[agent] : "";
-      const fields = [name(f), f.model, agentLabel, agent ? `${agent}:${f.model}` : ""].map((field) => field.toLowerCase());
-      return words.every((word) => fields.some((field) => field.includes(word)));
-    }) : list;
+      const label = name(choice);
+      const qualifiedId = agent ? `${agent}:${choice.model}` : "";
+      const fields = [label, choice.model, agentLabel, qualifiedId].map((field) => field.toLowerCase());
+      return words.every((word) => fields.some((field) => fuzzysort.single(word, field) !== null))
+        ? [{ choice, text: `${label} ${agentLabel} ${qualifiedId || choice.model}` }] : [];
+    });
+    // Conductor's A7o uses lj's relevance order, including its exact-first
+    // partition, for both visible search results and Enter's first choice.
+    const ranked = fuzzysort.go(words.join(" "), matches, { key: "text" }).map((match) => match.obj);
+    const exact = (match: typeof matches[number]) => match.text.toLowerCase() === q;
+    const seen = new Set(ranked);
+    // Ranking must not remove a choice admitted by the existing field matcher.
+    return [...ranked.filter(exact), ...ranked.filter((match) => !exact(match)), ...matches.filter((match) => !seen.has(match))]
+      .map((match) => match.choice);
   }, [favorites, value, query, itemLabel, models, modelName, itemAgent]);
 
   useLayoutEffect(() => {
@@ -174,8 +187,13 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
   };
 
   const onMenuKey = (e: KeyboardEvent) => {
-    if (e.defaultPrevented || ("isComposing" in e && e.isComposing === true) || e.nativeEvent.isComposing === true
-      || e.keyCode === 229 || e.which === 229 || e.nativeEvent.keyCode === 229 || e.nativeEvent.which === 229) return;
+    if (e.defaultPrevented) return;
+    if (("isComposing" in e && e.isComposing === true) || e.nativeEvent.isComposing === true
+      || e.keyCode === 229 || e.which === 229 || e.nativeEvent.keyCode === 229 || e.nativeEvent.which === 229) {
+      // The search input owns IME keys, including Escape, not enclosing dialogs.
+      if (e.target === search.current) e.stopPropagation();
+      return;
+    }
     const resultIndex = e.target instanceof HTMLButtonElement ? e.target.dataset.modelResult : undefined;
     const inSearch = e.target === search.current || (query.trim() !== "" && resultIndex !== undefined);
     if (query.trim() && inSearch && (e.key === "ArrowDown" || e.key === "ArrowUp")) {

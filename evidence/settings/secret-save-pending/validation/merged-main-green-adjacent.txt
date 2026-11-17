@@ -1,0 +1,160 @@
+(node:124) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:131) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tabs are Reason, Claude Code, Codex in that order
+ok 1 - tabs are Reason, Claude Code, Codex in that order
+  ---
+  duration_ms: 1.608152
+  type: 'test'
+  ...
+# Subtest: providerTab picks a known tab and falls back to the first
+ok 2 - providerTab picks a known tab and falls back to the first
+  ---
+  duration_ms: 0.169909
+  type: 'test'
+  ...
+# Subtest: the mask carries only the hint
+ok 3 - the mask carries only the hint
+  ---
+  duration_ms: 0.099815
+  type: 'test'
+  ...
+# Subtest: the live Settings app menu offers Copy path after its application items
+ok 4 - the live Settings app menu offers Copy path after its application items
+  ---
+  duration_ms: 0.284195
+  type: 'test'
+  ...
+# Subtest: the live Settings menu can copy a known path without installed applications
+ok 5 - the live Settings menu can copy a known path without installed applications
+  ---
+  duration_ms: 0.218383
+  type: 'test'
+  ...
+# (node:139) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: editing a configured Anthropic API key retains Get key
+ok 6 - editing a configured Anthropic API key retains Get key
+  ---
+  duration_ms: 210.437761
+  type: 'test'
+  ...
+# Subtest: editing a configured OpenAI API key retains Get key
+ok 7 - editing a configured OpenAI API key retains Get key
+  ---
+  duration_ms: 149.68928
+  type: 'test'
+  ...
+# Subtest: an unconfigured key keeps its provider link without Cancel
+ok 8 - an unconfigured key keeps its provider link without Cancel
+  ---
+  duration_ms: 43.789875
+  type: 'test'
+  ...
+# Subtest: editing a key without a provider URL does not invent a link
+ok 9 - editing a key without a provider URL does not invent a link
+  ---
+  duration_ms: 38.830731
+  type: 'test'
+  ...
+# (node:147) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Anthropic API key Remove shows pending feedback until success settles
+ok 10 - Anthropic API key Remove shows pending feedback until success settles
+  ---
+  duration_ms: 208.556715
+  type: 'test'
+  ...
+# Subtest: Anthropic API key Remove shows pending feedback until failure settles
+ok 11 - Anthropic API key Remove shows pending feedback until failure settles
+  ---
+  duration_ms: 100.487083
+  type: 'test'
+  ...
+# Subtest: OpenAI API key Remove shows pending feedback until success settles
+ok 12 - OpenAI API key Remove shows pending feedback until success settles
+  ---
+  duration_ms: 69.44508
+  type: 'test'
+  ...
+# Subtest: OpenAI API key Remove shows pending feedback until failure settles
+ok 13 - OpenAI API key Remove shows pending feedback until failure settles
+  ---
+  duration_ms: 56.197071
+  type: 'test'
+  ...
+# (node:155) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the hidden Anthropic API key action is named Reveal
+ok 14 - the hidden Anthropic API key action is named Reveal
+  ---
+  duration_ms: 209.841413
+  type: 'test'
+  ...
+# Subtest: the hidden OpenAI API key action is named Reveal
+ok 15 - the hidden OpenAI API key action is named Reveal
+  ---
+  duration_ms: 209.015715
+  type: 'test'
+  ...
+# Subtest: a configured row without a reveal callback has no reveal toggle
+ok 16 - a configured row without a reveal callback has no reveal toggle
+  ---
+  duration_ms: 124.452204
+  type: 'test'
+  ...
+# Subtest: the visible action keeps its Hide name and pressed state
+ok 17 - the visible action keeps its Hide name and pressed state
+  ---
+  duration_ms: 99.090841
+  type: 'test'
+  ...
+# (node:163) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Anthropic API key Save exposes working feedback until resolve
+ok 18 - Anthropic API key Save exposes working feedback until resolve
+  ---
+  duration_ms: 42.857248
+  type: 'test'
+  ...
+# Subtest: Anthropic API key Save exposes working feedback until reject
+ok 19 - Anthropic API key Save exposes working feedback until reject
+  ---
+  duration_ms: 2.93605
+  type: 'test'
+  ...
+# Subtest: Anthropic API key blank/duplicate submission controls stay intact
+ok 20 - Anthropic API key blank/duplicate submission controls stay intact
+  ---
+  duration_ms: 2.3353
+  type: 'test'
+  ...
+# Subtest: OpenAI API key Save exposes working feedback until resolve
+ok 21 - OpenAI API key Save exposes working feedback until resolve
+  ---
+  duration_ms: 1.623115
+  type: 'test'
+  ...
+# Subtest: OpenAI API key Save exposes working feedback until reject
+ok 22 - OpenAI API key Save exposes working feedback until reject
+  ---
+  duration_ms: 1.853414
+  type: 'test'
+  ...
+# Subtest: OpenAI API key blank/duplicate submission controls stay intact
+ok 23 - OpenAI API key blank/duplicate submission controls stay intact
+  ---
+  duration_ms: 1.603581
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4639.952194

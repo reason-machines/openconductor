@@ -1,0 +1,945 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: final message clipboard: two text blocks separated by thinking copy only the last block
+ok 1 - final message clipboard: two text blocks separated by thinking copy only the last block
+  ---
+  duration_ms: 26.884488
+  type: 'test'
+  ...
+# Subtest: final message clipboard: a tool between text blocks does not enter final copy
+ok 2 - final message clipboard: a tool between text blocks does not enter final copy
+  ---
+  duration_ms: 2.581604
+  type: 'test'
+  ...
+# Subtest: final message clipboard: three text blocks copy only the third
+ok 3 - final message clipboard: three text blocks copy only the third
+  ---
+  duration_ms: 1.787654
+  type: 'test'
+  ...
+# Subtest: final message clipboard: the selected block retains all leading and trailing whitespace
+ok 4 - final message clipboard: the selected block retains all leading and trailing whitespace
+  ---
+  duration_ms: 1.729862
+  type: 'test'
+  ...
+# Subtest: final message clipboard: trailing blank text is skipped without trimming the selected block
+ok 5 - final message clipboard: trailing blank text is skipped without trimming the selected block
+  ---
+  duration_ms: 1.611751
+  type: 'test'
+  ...
+# Subtest: final message clipboard: final Markdown and file-looking text are literal clipboard bytes
+ok 6 - final message clipboard: final Markdown and file-looking text are literal clipboard bytes
+  ---
+  duration_ms: 1.57515
+  type: 'test'
+  ...
+# Subtest: final message clipboard: Unicode in the last block is preserved
+ok 7 - final message clipboard: Unicode in the last block is preserved
+  ---
+  duration_ms: 1.509962
+  type: 'test'
+  ...
+# Subtest: final message clipboard: blank-only payloads produce no final-copy control
+ok 8 - final message clipboard: blank-only payloads produce no final-copy control
+  ---
+  duration_ms: 1.44872
+  type: 'test'
+  ...
+# Subtest: final message clipboard: one ordinary text block is unchanged
+ok 9 - final message clipboard: one ordinary text block is unchanged
+  ---
+  duration_ms: 1.938665
+  type: 'test'
+  ...
+# Subtest: final message clipboard: adjacent text deltas remain one complete block
+ok 10 - final message clipboard: adjacent text deltas remain one complete block
+  ---
+  duration_ms: 1.643153
+  type: 'test'
+  ...
+# Subtest: final message clipboard: trailing thinking does not replace the only text block
+ok 11 - final message clipboard: trailing thinking does not replace the only text block
+  ---
+  duration_ms: 1.361058
+  type: 'test'
+  ...
+# Subtest: final message clipboard: thought-only content offers no final-copy control
+ok 12 - final message clipboard: thought-only content offers no final-copy control
+  ---
+  duration_ms: 1.239061
+  type: 'test'
+  ...
+# Subtest: final message clipboard: empty text payloads do not erase the selected block
+ok 13 - final message clipboard: empty text payloads do not erase the selected block
+  ---
+  duration_ms: 1.179751
+  type: 'test'
+  ...
+# Subtest: final message clipboard: one multiline block is copied in full
+ok 14 - final message clipboard: one multiline block is copied in full
+  ---
+  duration_ms: 4.236253
+  type: 'test'
+  ...
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a saved chat restores to the same messages and turn state
+ok 15 - a saved chat restores to the same messages and turn state
+  ---
+  duration_ms: 2.280256
+  type: 'test'
+  ...
+# Subtest: only changed messages are written; a turn's state rides on its first message
+ok 16 - only changed messages are written; a turn's state rides on its first message
+  ---
+  duration_ms: 0.440311
+  type: 'test'
+  ...
+# Subtest: rows carry the columns Conductor filters on
+ok 17 - rows carry the columns Conductor filters on
+  ---
+  duration_ms: 0.3039
+  type: 'test'
+  ...
+# Subtest: Reset chat deletes the dropped turns' rows
+ok 18 - Reset chat deletes the dropped turns' rows
+  ---
+  duration_ms: 0.453332
+  type: 'test'
+  ...
+# Subtest: a failed turn keeps its error; a turn running at quit comes back cancelled
+ok 19 - a failed turn keeps its error; a turn running at quit comes back cancelled
+  ---
+  duration_ms: 0.391243
+  type: 'test'
+  ...
+# Subtest: unreadable rows are skipped and messages take the chat's id
+ok 20 - unreadable rows are skipped and messages take the chat's id
+  ---
+  duration_ms: 0.304798
+  type: 'test'
+  ...
+# Subtest: the saver batches changes, writes one at a time, and retries a failed write on the next change
+ok 21 - the saver batches changes, writes one at a time, and retries a failed write on the next change
+  ---
+  duration_ms: 0.667369
+  type: 'test'
+  ...
+# Subtest: a Reset chat goes with the write that deletes the turns, and is retried until it is written
+ok 22 - a Reset chat goes with the write that deletes the turns, and is retried until it is written
+  ---
+  duration_ms: 0.392427
+  type: 'test'
+  ...
+# Subtest: a Reset chat that deletes nothing still writes the rewind
+ok 23 - a Reset chat that deletes nothing still writes the rewind
+  ---
+  duration_ms: 0.400471
+  type: 'test'
+  ...
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: whole-message preview grouping passes the unchanged source-qualified 10-case fixture
+ok 24 - whole-message preview grouping passes the unchanged source-qualified 10-case fixture
+  ---
+  duration_ms: 394.245857
+  type: 'test'
+  ...
+# Subtest: whole-message selection does not expose hidden tools or mutate its input
+ok 25 - whole-message selection does not expose hidden tools or mutate its input
+  ---
+  duration_ms: 1.648077
+  type: 'test'
+  ...
+# (node:113) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude result wire usage survives final upserts, persistence and replay without duplication
+ok 26 - Claude result wire usage survives final upserts, persistence and replay without duplication
+  ---
+  duration_ms: 6.498763
+  type: 'test'
+  ...
+# Subtest: usage absence, explicit zero and partial counts remain distinct
+ok 27 - usage absence, explicit zero and partial counts remain distinct
+  ---
+  duration_ms: 0.992667
+  type: 'test'
+  ...
+# Subtest: an empty successful Reason turn is a retryable failure, not a timestamp-only reply
+ok 28 - an empty successful Reason turn is a retryable failure, not a timestamp-only reply
+  ---
+  duration_ms: 0.51035
+  type: 'test'
+  ...
+# Subtest: one chat shows a local home path, then a cloud /repo path in a follow-up
+ok 29 - one chat shows a local home path, then a cloud /repo path in a follow-up
+  ---
+  duration_ms: 1.362345
+  type: 'test'
+  ...
+# Subtest: a tool row updates in place and text after it starts a new block
+ok 30 - a tool row updates in place and text after it starts a new block
+  ---
+  duration_ms: 0.413771
+  type: 'test'
+  ...
+# Subtest: device_not_found fails the turn with the error, not a reply
+ok 31 - device_not_found fails the turn with the error, not a reply
+  ---
+  duration_ms: 0.212557
+  type: 'test'
+  ...
+# Subtest: a follow-up during a turn supersedes it; the end goes to the older turn
+ok 32 - a follow-up during a turn supersedes it; the end goes to the older turn
+  ---
+  duration_ms: 0.275389
+  type: 'test'
+  ...
+# Subtest: a mid-turn report is attributed to another session, never the user
+ok 33 - a mid-turn report is attributed to another session, never the user
+  ---
+  duration_ms: 0.186008
+  type: 'test'
+  ...
+# Subtest: Stop ends the turn cancelled with the prompt offered again; a failed call fails it
+ok 34 - Stop ends the turn cancelled with the prompt offered again; a failed call fails it
+  ---
+  duration_ms: 0.532196
+  type: 'test'
+  ...
+# Subtest: a stopped turn marks its prompt cancelled and records start and end times
+ok 35 - a stopped turn marks its prompt cancelled and records start and end times
+  ---
+  duration_ms: 0.428369
+  type: 'test'
+  ...
+# Subtest: a turn stopped before its prompt reached Reason ends cancelled, leaving earlier open turns running
+ok 36 - a turn stopped before its prompt reached Reason ends cancelled, leaving earlier open turns running
+  ---
+  duration_ms: 0.263263
+  type: 'test'
+  ...
+# Subtest: a notice is a system message in the running turn
+ok 37 - a notice is a system message in the running turn
+  ---
+  duration_ms: 0.123896
+  type: 'test'
+  ...
+# Subtest: attachments show by name under the prompt
+ok 38 - attachments show by name under the prompt
+  ---
+  duration_ms: 0.111888
+  type: 'test'
+  ...
+# Subtest: startTurn can take the turn id that names the turn's checkpoints
+ok 39 - startTurn can take the turn id that names the turn's checkpoints
+  ---
+  duration_ms: 0.074899
+  type: 'test'
+  ...
+# (node:130) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: wire JSON from the backend parses into the mirror types
+ok 40 - wire JSON from the backend parses into the mirror types
+  ---
+  duration_ms: 1.062394
+  type: 'test'
+  ...
+# Subtest: plainText joins text blocks only
+ok 41 - plainText joins text blocks only
+  ---
+  duration_ms: 0.180062
+  type: 'test'
+  ...
+# Subtest: upsert appends, then replaces in place
+ok 42 - upsert appends, then replaces in place
+  ---
+  duration_ms: 1.152166
+  type: 'test'
+  ...
+# Subtest: text_delta starts and grows text blocks without mutating the previous transcript
+ok 43 - text_delta starts and grows text blocks without mutating the previous transcript
+  ---
+  duration_ms: 0.26208
+  type: 'test'
+  ...
+# Subtest: text_delta grows thinking blocks
+ok 44 - text_delta grows thinking blocks
+  ---
+  duration_ms: 0.196799
+  type: 'test'
+  ...
+# Subtest: bad deltas are rejected without changes
+ok 45 - bad deltas are rejected without changes
+  ---
+  duration_ms: 0.176876
+  type: 'test'
+  ...
+# Subtest: events for another session are rejected
+ok 46 - events for another session are rejected
+  ---
+  duration_ms: 0.143219
+  type: 'test'
+  ...
+# Subtest: turn_status tracks the active turn and keeps the error
+ok 47 - turn_status tracks the active turn and keeps the error
+  ---
+  duration_ms: 0.225117
+  type: 'test'
+  ...
+# Subtest: transcriptFromMessages keeps this session's messages and lets later copies win
+ok 48 - transcriptFromMessages keeps this session's messages and lets later copies win
+  ---
+  duration_ms: 0.379569
+  type: 'test'
+  ...
+# Subtest: sender fields parse from the wire and decide the origin
+ok 49 - sender fields parse from the wire and decide the origin
+  ---
+  duration_ms: 0.402053
+  type: 'test'
+  ...
+# Subtest: a session report arriving mid-turn leaves the active turn running
+ok 50 - a session report arriving mid-turn leaves the active turn running
+  ---
+  duration_ms: 0.19079
+  type: 'test'
+  ...
+# Subtest: turn status keeps start and end times
+ok 51 - turn status keeps start and end times
+  ---
+  duration_ms: 0.170263
+  type: 'test'
+  ...
+# Subtest: truncateAfterTurn keeps the turn and everything before it, and drops later turns' statuses
+ok 52 - truncateAfterTurn keeps the turn and everything before it, and drops later turns' statuses
+  ---
+  duration_ms: 0.36001
+  type: 'test'
+  ...
+# (node:131) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude result boundary: explicit error result
+ok 53 - Claude result boundary: explicit error result
+  ---
+  duration_ms: 14.039732
+  type: 'test'
+  ...
+# Subtest: Claude result boundary: success control
+ok 54 - Claude result boundary: success control
+  ---
+  duration_ms: 0.785641
+  type: 'test'
+  ...
+# Subtest: Claude result boundary: stopping control
+ok 55 - Claude result boundary: stopping control
+  ---
+  duration_ms: 0.53878
+  type: 'test'
+  ...
+# Subtest: Claude result boundary: failure subtype without an error result
+ok 56 - Claude result boundary: failure subtype without an error result
+  ---
+  duration_ms: 0.299242
+  type: 'test'
+  ...
+# Subtest: explicit result error survives save and restore with the same preview
+ok 57 - explicit result error survives save and restore with the same preview
+  ---
+  duration_ms: 0.847844
+  type: 'test'
+  ...
+# Subtest: legacy generic failure stays status-only before and after restart
+ok 58 - legacy generic failure stays status-only before and after restart
+  ---
+  duration_ms: 0.381764
+  type: 'test'
+  ...
+# Subtest: failed prompt and standalone API error do not imply result-error provenance
+ok 59 - failed prompt and standalone API error do not imply result-error provenance
+  ---
+  duration_ms: 0.494753
+  type: 'test'
+  ...
+# Subtest: Reason and Codex no-marker failures keep their existing preview
+ok 60 - Reason and Codex no-marker failures keep their existing preview
+  ---
+  duration_ms: 0.376729
+  type: 'test'
+  ...
+# Subtest: nested tool failure does not become a terminal result error
+ok 61 - nested tool failure does not become a terminal result error
+  ---
+  duration_ms: 1.851346
+  type: 'test'
+  ...
+# Subtest: protected plan/question message keeps its preview despite a later error result
+ok 62 - protected plan/question message keeps its preview despite a later error result
+  ---
+  duration_ms: 0.659596
+  type: 'test'
+  ...
+# Subtest: result-error metadata is ignored on success, cancellation, and supersession
+ok 63 - result-error metadata is ignored on success, cancellation, and supersession
+  ---
+  duration_ms: 0.310312
+  type: 'test'
+  ...
+# Subtest: a subsequent turn does not inherit the previous result error
+ok 64 - a subsequent turn does not inherit the previous result error
+  ---
+  duration_ms: 0.251165
+  type: 'test'
+  ...
+# (node:146) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the reference turn collapses to '4 tool calls, 2 messages' above the final text
+ok 65 - the reference turn collapses to '4 tool calls, 2 messages' above the final text
+  ---
+  duration_ms: 26.689112
+  type: 'test'
+  ...
+# Subtest: batches shorter than 3 items stay inline
+ok 66 - batches shorter than 3 items stay inline
+  ---
+  duration_ms: 0.200629
+  type: 'test'
+  ...
+# Subtest: labels leave out zero counts and use singulars
+ok 67 - labels leave out zero counts and use singulars
+  ---
+  duration_ms: 0.205616
+  type: 'test'
+  ...
+# Subtest: thinking counts as a message; empty text and thinking are dropped
+ok 68 - thinking counts as a message; empty text and thinking are dropped
+  ---
+  duration_ms: 0.200098
+  type: 'test'
+  ...
+# Subtest: a message that is not the turn's last has no preview, so its text can collapse
+ok 69 - a message that is not the turn's last has no preview, so its text can collapse
+  ---
+  duration_ms: 0.1894
+  type: 'test'
+  ...
+# Subtest: tools after the final text form their own batch
+ok 70 - tools after the final text form their own batch
+  ---
+  duration_ms: 0.127552
+  type: 'test'
+  ...
+# Subtest: collapsing is off while the turn runs and with 'Don't collapse tool calls'
+ok 71 - collapsing is off while the turn runs and with 'Don't collapse tool calls'
+  ---
+  duration_ms: 0.179188
+  type: 'test'
+  ...
+# Subtest: a turn's mixed tool/text messages collapse without double-counting messages
+ok 72 - a turn's mixed tool/text messages collapse without double-counting messages
+  ---
+  duration_ms: 1.696484
+  type: 'test'
+  ...
+# Subtest: the Codex adapter's one-message turn keeps commentary and tools inline
+ok 73 - the Codex adapter's one-message turn keeps commentary and tools inline
+  ---
+  duration_ms: 1.421819
+  type: 'test'
+  ...
+# Subtest: the Reason Lisbon adapter turn preserves one message and all inline content
+ok 74 - the Reason Lisbon adapter turn preserves one message and all inline content
+  ---
+  duration_ms: 1.43532
+  type: 'test'
+  ...
+# Subtest: the reference seed's six distinct pre-final messages still collapse
+ok 75 - the reference seed's six distinct pre-final messages still collapse
+  ---
+  duration_ms: 0.52326
+  type: 'test'
+  ...
+# Subtest: three tools in one assistant message stay inline before the final text
+ok 76 - three tools in one assistant message stay inline before the final text
+  ---
+  duration_ms: 0.195313
+  type: 'test'
+  ...
+# Subtest: three tools across two assistant messages stay inline before the final text
+ok 77 - three tools across two assistant messages stay inline before the final text
+  ---
+  duration_ms: 0.16313
+  type: 'test'
+  ...
+# Subtest: empty assistant messages do not bring a two-message batch to the threshold
+ok 78 - empty assistant messages do not bring a two-message batch to the threshold
+  ---
+  duration_ms: 0.179744
+  type: 'test'
+  ...
+# Subtest: three separate visible assistant messages collapse before the final text
+ok 79 - three separate visible assistant messages collapse before the final text
+  ---
+  duration_ms: 1.654018
+  type: 'test'
+  ...
+# Subtest: a running turn is one block marked running, so the view keeps it open
+ok 80 - a running turn is one block marked running, so the view keeps it open
+  ---
+  duration_ms: 0.206355
+  type: 'test'
+  ...
+# Subtest: ExitPlanMode stays inline and supersedes earlier text as the turn preview
+ok 81 - ExitPlanMode stays inline and supersedes earlier text as the turn preview
+  ---
+  duration_ms: 0.242876
+  type: 'test'
+  ...
+# Subtest: ExitPlanMode protects its entire message and splits surrounding summaries
+ok 82 - ExitPlanMode protects its entire message and splits surrounding summaries
+  ---
+  duration_ms: 0.19997
+  type: 'test'
+  ...
+# Subtest: AskUserQuestion stays inline and supersedes earlier text as the turn preview
+ok 83 - AskUserQuestion stays inline and supersedes earlier text as the turn preview
+  ---
+  duration_ms: 0.09088
+  type: 'test'
+  ...
+# Subtest: AskUserQuestion protects its entire message and splits surrounding summaries
+ok 84 - AskUserQuestion protects its entire message and splits surrounding summaries
+  ---
+  duration_ms: 0.104013
+  type: 'test'
+  ...
+# Subtest: a request stays inline in an earlier assistant block separated by a system message
+ok 85 - a request stays inline in an earlier assistant block separated by a system message
+  ---
+  duration_ms: 0.149828
+  type: 'test'
+  ...
+# Subtest: different turns stay separate blocks
+ok 86 - different turns stay separate blocks
+  ---
+  duration_ms: 0.141179
+  type: 'test'
+  ...
+# (node:154) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Warning: Detected multiple renderers concurrently rendering the same context provider. This is currently unsupported.
+# Warning: Detected multiple renderers concurrently rendering the same context provider. This is currently unsupported.
+#     at Transcript (Transcript.tsx:23:23)
+# Subtest: running default omits summary header and retains all parts
+ok 87 - running default omits summary header and retains all parts
+  ---
+  duration_ms: 9.069544
+  type: 'test'
+  ...
+# Subtest: finished dontCollapseToolCalls omits summary header and retains all parts
+ok 88 - finished dontCollapseToolCalls omits summary header and retains all parts
+  ---
+  duration_ms: 2.224381
+  type: 'test'
+  ...
+# Subtest: running plus dontCollapseToolCalls omits summary header and retains all parts
+ok 89 - running plus dontCollapseToolCalls omits summary header and retains all parts
+  ---
+  duration_ms: 1.009158
+  type: 'test'
+  ...
+# Subtest: finished normal batch is collapsed and final text is visible
+ok 90 - finished normal batch is collapsed and final text is visible
+  ---
+  duration_ms: 1.184145
+  type: 'test'
+  ...
+# Subtest: normal summary preserves its real toggle after 1 activation(s)
+ok 91 - normal summary preserves its real toggle after 1 activation(s)
+  ---
+  duration_ms: 2.189248
+  type: 'test'
+  ...
+# Subtest: normal summary preserves its real toggle after 2 activation(s)
+ok 92 - normal summary preserves its real toggle after 2 activation(s)
+  ---
+  duration_ms: 1.203446
+  type: 'test'
+  ...
+# Subtest: no-summary final-only turn running=false
+ok 93 - no-summary final-only turn running=false
+  ---
+  duration_ms: 0.661865
+  type: 'test'
+  ...
+# Subtest: no-summary final-only turn running=true
+ok 94 - no-summary final-only turn running=true
+  ---
+  duration_ms: 0.401876
+  type: 'test'
+  ...
+# Subtest: two-message short batch running=false dontCollapse=false
+ok 95 - two-message short batch running=false dontCollapse=false
+  ---
+  duration_ms: 1.102954
+  type: 'test'
+  ...
+# Subtest: two-message short batch running=true dontCollapse=false
+ok 96 - two-message short batch running=true dontCollapse=false
+  ---
+  duration_ms: 0.780631
+  type: 'test'
+  ...
+# Subtest: two-message short batch running=false dontCollapse=true
+ok 97 - two-message short batch running=false dontCollapse=true
+  ---
+  duration_ms: 0.558908
+  type: 'test'
+  ...
+# Subtest: two-message short batch running=true dontCollapse=true
+ok 98 - two-message short batch running=true dontCollapse=true
+  ---
+  duration_ms: 0.406679
+  type: 'test'
+  ...
+# Subtest: earlier completed turn stays collapsed while only the latest running turn loses its header
+ok 99 - earlier completed turn stays collapsed while only the latest running turn loses its header
+  ---
+  duration_ms: 2.628772
+  type: 'test'
+  ...
+# Subtest: expandToolsByDefault alone does not hide a collapsible summary
+ok 100 - expandToolsByDefault alone does not hide a collapsible summary
+  ---
+  duration_ms: 0.660658
+  type: 'test'
+  ...
+# Subtest: independent expandToolsByDefault expands inline short-batch tools running=false
+ok 101 - independent expandToolsByDefault expands inline short-batch tools running=false
+  ---
+  duration_ms: 0.498069
+  type: 'test'
+  ...
+# Subtest: independent expandToolsByDefault expands inline short-batch tools running=true
+ok 102 - independent expandToolsByDefault expands inline short-batch tools running=true
+  ---
+  duration_ms: 0.368767
+  type: 'test'
+  ...
+# Subtest: expandToolsByDefault plus running keeps expanded inline tools without a summary header
+ok 103 - expandToolsByDefault plus running keeps expanded inline tools without a summary header
+  ---
+  duration_ms: 0.754197
+  type: 'test'
+  ...
+# Subtest: expandToolsByDefault plus dontCollapse keeps expanded inline tools without a summary header
+ok 104 - expandToolsByDefault plus dontCollapse keeps expanded inline tools without a summary header
+  ---
+  duration_ms: 0.996968
+  type: 'test'
+  ...
+# Subtest: three tools in one assistant message do not invent a summary
+ok 105 - three tools in one assistant message do not invent a summary
+  ---
+  duration_ms: 0.507017
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right! " enabled=false kind=text
+ok 106 - assistant display prefix="You're absolutely right! " enabled=false kind=text
+  ---
+  duration_ms: 0.674681
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right! " enabled=false kind=thinking
+ok 107 - assistant display prefix="You're absolutely right! " enabled=false kind=thinking
+  ---
+  duration_ms: 0.685292
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right! " enabled=true kind=text
+ok 108 - assistant display prefix="You're absolutely right! " enabled=true kind=text
+  ---
+  duration_ms: 0.531451
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right! " enabled=true kind=thinking
+ok 109 - assistant display prefix="You're absolutely right! " enabled=true kind=thinking
+  ---
+  duration_ms: 0.64849
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right.\\n\\n" enabled=false kind=text
+ok 110 - assistant display prefix="You're absolutely right.\\n\\n" enabled=false kind=text
+  ---
+  duration_ms: 0.333431
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right.\\n\\n" enabled=false kind=thinking
+ok 111 - assistant display prefix="You're absolutely right.\\n\\n" enabled=false kind=thinking
+  ---
+  duration_ms: 0.529683
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right.\\n\\n" enabled=true kind=text
+ok 112 - assistant display prefix="You're absolutely right.\\n\\n" enabled=true kind=text
+  ---
+  duration_ms: 0.421352
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right.\\n\\n" enabled=true kind=thinking
+ok 113 - assistant display prefix="You're absolutely right.\\n\\n" enabled=true kind=thinking
+  ---
+  duration_ms: 0.47765
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right -\\t" enabled=false kind=text
+ok 114 - assistant display prefix="You're absolutely right -\\t" enabled=false kind=text
+  ---
+  duration_ms: 0.324513
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right -\\t" enabled=false kind=thinking
+ok 115 - assistant display prefix="You're absolutely right -\\t" enabled=false kind=thinking
+  ---
+  duration_ms: 0.39409
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right -\\t" enabled=true kind=text
+ok 116 - assistant display prefix="You're absolutely right -\\t" enabled=true kind=text
+  ---
+  duration_ms: 0.27996
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right -\\t" enabled=true kind=thinking
+ok 117 - assistant display prefix="You're absolutely right -\\t" enabled=true kind=thinking
+  ---
+  duration_ms: 0.326479
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right –\\n" enabled=false kind=text
+ok 118 - assistant display prefix="You're absolutely right –\\n" enabled=false kind=text
+  ---
+  duration_ms: 0.397627
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right –\\n" enabled=false kind=thinking
+ok 119 - assistant display prefix="You're absolutely right –\\n" enabled=false kind=thinking
+  ---
+  duration_ms: 0.403846
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right –\\n" enabled=true kind=text
+ok 120 - assistant display prefix="You're absolutely right –\\n" enabled=true kind=text
+  ---
+  duration_ms: 0.412944
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right –\\n" enabled=true kind=thinking
+ok 121 - assistant display prefix="You're absolutely right –\\n" enabled=true kind=thinking
+  ---
+  duration_ms: 0.458964
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right " enabled=false kind=text
+ok 122 - assistant display prefix="You're absolutely right " enabled=false kind=text
+  ---
+  duration_ms: 0.339561
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right " enabled=false kind=thinking
+ok 123 - assistant display prefix="You're absolutely right " enabled=false kind=thinking
+  ---
+  duration_ms: 0.452759
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right " enabled=true kind=text
+ok 124 - assistant display prefix="You're absolutely right " enabled=true kind=text
+  ---
+  duration_ms: 0.285406
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right " enabled=true kind=thinking
+ok 125 - assistant display prefix="You're absolutely right " enabled=true kind=thinking
+  ---
+  duration_ms: 2.5573
+  type: 'test'
+  ...
+# Subtest: enabled assistant display hides trimmed-empty text
+ok 126 - enabled assistant display hides trimmed-empty text
+  ---
+  duration_ms: 0.444217
+  type: 'test'
+  ...
+# Subtest: whitespace-only text is hidden enabled=false
+ok 127 - whitespace-only text is hidden enabled=false
+  ---
+  duration_ms: 0.397753
+  type: 'test'
+  ...
+# Subtest: whitespace-only text is hidden enabled=true
+ok 128 - whitespace-only text is hidden enabled=true
+  ---
+  duration_ms: 0.27038
+  type: 'test'
+  ...
+# Subtest: enabled display filters streaming text
+ok 129 - enabled display filters streaming text
+  ---
+  duration_ms: 0.366899
+  type: 'test'
+  ...
+# Subtest: enabled assistant display hides trimmed-empty thinking
+ok 130 - enabled assistant display hides trimmed-empty thinking
+  ---
+  duration_ms: 0.239203
+  type: 'test'
+  ...
+# Subtest: whitespace-only thinking is hidden enabled=false
+ok 131 - whitespace-only thinking is hidden enabled=false
+  ---
+  duration_ms: 0.240331
+  type: 'test'
+  ...
+# Subtest: whitespace-only thinking is hidden enabled=true
+ok 132 - whitespace-only thinking is hidden enabled=true
+  ---
+  duration_ms: 0.18448
+  type: 'test'
+  ...
+# Subtest: enabled display filters streaming thinking
+ok 133 - enabled display filters streaming thinking
+  ---
+  duration_ms: 0.519194
+  type: 'test'
+  ...
+# Subtest: enabled display filters intermediate and preview text without changing their emphasis
+ok 134 - enabled display filters intermediate and preview text without changing their emphasis
+  ---
+  duration_ms: 0.504085
+  type: 'test'
+  ...
+# Subtest: multipart preview keeps every text part emphasized with display filter enabled=false
+ok 135 - multipart preview keeps every text part emphasized with display filter enabled=false
+  ---
+  duration_ms: 0.52827
+  type: 'test'
+  ...
+# Subtest: multipart preview keeps every text part emphasized with display filter enabled=true
+ok 136 - multipart preview keeps every text part emphasized with display filter enabled=true
+  ---
+  duration_ms: 1.209591
+  type: 'test'
+  ...
+# Subtest: enabled display leaves user, report, system and tool payloads and raw copy/fork data untouched
+ok 137 - enabled display leaves user, report, system and tool payloads and raw copy/fork data untouched
+  ---
+  duration_ms: 1.073042
+  type: 'test'
+  ...
+# Subtest: mounted off/on/off rerender restores raw assistant text and thinking from the same transcript
+ok 138 - mounted off/on/off rerender restores raw assistant text and thinking from the same transcript
+  ---
+  duration_ms: 51.746578
+  type: 'test'
+  ...
+# (node:161) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual failed-turn footer presents "Request aborted by user" as an outline interruption
+ok 139 - actual failed-turn footer presents "Request aborted by user" as an outline interruption
+  ---
+  duration_ms: 6.107309
+  type: 'test'
+  ...
+# Subtest: actual failed-turn footer presents "Interrupted by user" as an outline interruption
+ok 140 - actual failed-turn footer presents "Interrupted by user" as an outline interruption
+  ---
+  duration_ms: 0.593561
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "Provider unavailable"
+ok 141 - actual footer preserves nonmatching failure "Provider unavailable"
+  ---
+  duration_ms: 0.556198
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "Aborted by user"
+ok 142 - actual footer preserves nonmatching failure "Aborted by user"
+  ---
+  duration_ms: 0.374639
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "interrupted by user"
+ok 143 - actual footer preserves nonmatching failure "interrupted by user"
+  ---
+  duration_ms: 0.318832
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "Session cancelled: stopped"
+ok 144 - actual footer preserves nonmatching failure "Session cancelled: stopped"
+  ---
+  duration_ms: 0.284633
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "request cancelled"
+ok 145 - actual footer preserves nonmatching failure "request cancelled"
+  ---
+  duration_ms: 0.249048
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "[codex-mcp-consent] user_canceled"
+ok 146 - actual footer preserves nonmatching failure "[codex-mcp-consent] user_canceled"
+  ---
+  duration_ms: 0.299489
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure ""
+ok 147 - actual footer preserves nonmatching failure ""
+  ---
+  duration_ms: 0.797625
+  type: 'test'
+  ...
+# Subtest: actual footer retains the missing-error fallback
+ok 148 - actual footer retains the missing-error fallback
+  ---
+  duration_ms: 0.588415
+  type: 'test'
+  ...
+# Subtest: actual cancelled footer keeps exactly one interruption badge and no raw error
+ok 149 - actual cancelled footer keeps exactly one interruption badge and no raw error
+  ---
+  duration_ms: 0.353892
+  type: 'test'
+  ...
+# Subtest: a completed turn does not gain an interruption badge from its error field
+ok 150 - a completed turn does not gain an interruption badge from its error field
+  ---
+  duration_ms: 0.226219
+  type: 'test'
+  ...
+# Subtest: actual footer keeps ordinary Codex sign-in guidance
+ok 151 - actual footer keeps ordinary Codex sign-in guidance
+  ---
+  duration_ms: 0.57159
+  type: 'test'
+  ...
+# Subtest: actual interruption footer retries the unchanged prompt and turn id
+ok 152 - actual interruption footer retries the unchanged prompt and turn id
+  ---
+  duration_ms: 0.289593
+  type: 'test'
+  ...
+1..152
+# tests 152
+# suites 0
+# pass 152
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2225.122892

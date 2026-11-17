@@ -1,0 +1,56 @@
+(node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home context control: primary click still opens the clicked row
+ok 1 - Home context control: primary click still opens the clicked row
+  ---
+  duration_ms: 171.17054
+  type: 'test'
+  ...
+# Subtest: Home context control: keyboard selection and Enter remain separate from menus
+ok 2 - Home context control: keyboard selection and Enter remain separate from menus
+  ---
+  duration_ms: 70.101898
+  type: 'test'
+  ...
+# Subtest: Home context control: archived and unstarted rows do not gain the active-only menu
+ok 3 - Home context control: archived and unstarted rows do not gain the active-only menu
+  ---
+  duration_ms: 55.00914
+  type: 'test'
+  ...
+# Subtest: Home context control: existing archived Unarchive button still consumes and dispatches once
+ok 4 - Home context control: existing archived Unarchive button still consumes and dispatches once
+  ---
+  duration_ms: 98.629447
+  type: 'test'
+  ...
+# Subtest: Home context: active row emits its own workspace identity and pointer position without navigating
+ok 5 - Home context: active row emits its own workspace identity and pointer position without navigating
+  ---
+  duration_ms: 64.834945
+  type: 'test'
+  ...
+# Subtest: Home context: right-click target is independent of the keyboard-selected row
+ok 6 - Home context: right-click target is independent of the keyboard-selected row
+  ---
+  duration_ms: 61.359988
+  type: 'test'
+  ...
+# Subtest: Home context: filtering preserves the visible row target instead of an old result index
+ok 7 - Home context: filtering preserves the visible row target instead of an old result index
+  ---
+  duration_ms: 51.650241
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1116.921624

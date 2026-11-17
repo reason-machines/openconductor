@@ -47,16 +47,27 @@ interface Props {
   sidebarVisible: boolean;
   dispatch: Dispatch<Action>;
   onCreateWorkspace: () => void;
+  onWorkspaceContextMenu?: (row: HomeRow, at: { x: number; y: number }) => void;
+  onArchivedWorkspaceContextMenu?: (row: HomeRow, at: { x: number; y: number }, unarchive: { pending: boolean; run: () => void }) => void;
 }
 
 function Highlight({ match, fallback }: { match?: FieldMatch; fallback: string }) {
   if (!match) return <>{fallback}</>;
   const marked = new Set(match.indices);
-  return (
-    <>
-      {Array.from(match.text).map((ch, i) => (marked.has(i) ? <mark key={i} className="allws-hit">{ch}</mark> : <span key={i}>{ch}</span>))}
-    </>
-  );
+  const parts: ReactNode[] = [];
+  let start = 0;
+  // Match indices use UTF-16 offsets. Slice contiguous runs in the same units,
+  // keeping surrogate pairs together instead of counting code points.
+  for (let end = 1; end <= match.text.length; end++) {
+    if (end === match.text.length || marked.has(end) !== marked.has(start)) {
+      const chunk = match.text.slice(start, end);
+      parts.push(marked.has(start)
+        ? <mark key={start} className="allws-hit">{chunk}</mark>
+        : <span key={start}>{chunk}</span>);
+      start = end;
+    }
+  }
+  return <>{parts}</>;
 }
 
 function Menu({ label, icon, ariaLabel, children }: { label: string; icon: ReactNode; ariaLabel: string; children: (close: () => void) => ReactNode }) {
@@ -100,10 +111,15 @@ function MenuCheck({ checked, onClick, children }: { checked: boolean; onClick: 
   );
 }
 
-function UnarchiveButton({ repoId, workspaceId, dispatch }: { repoId: string; workspaceId: string; dispatch: Dispatch<Action> }) {
+function useUnarchiveAction(repoId: string, workspaceId: string, dispatch: Dispatch<Action>, enabled: boolean) {
   const pendingRef = useRef(false);
   const [pending, setPending] = useState(false);
   useEffect(() => {
+    if (!enabled) {
+      pendingRef.current = false;
+      setPending(false);
+      return;
+    }
     const unsubscribe = onArchiveEvent<Action>((event) => {
       if (
         (event.type === "unarchived" || event.type === "unarchive-failed") &&
@@ -115,30 +131,34 @@ function UnarchiveButton({ repoId, workspaceId, dispatch }: { repoId: string; wo
       }
     });
     return () => { unsubscribe(); };
-  }, [repoId, workspaceId]);
-  const unarchive = () => {
-    if (pendingRef.current) return;
+  }, [repoId, workspaceId, enabled]);
+  const run = () => {
+    if (!enabled || pendingRef.current) return;
     pendingRef.current = true;
     setPending(true);
     dispatch({ type: "unarchiveWorkspace", repoId, workspaceId });
   };
+  return { pending, run };
+}
+
+function UnarchiveButton({ action }: { action: { pending: boolean; run: () => void } }) {
   return (
     <Tooltip content="Unarchive workspace">
       <button
         type="button"
         className="allws-unarchive"
         aria-label="Unarchive workspace"
-        disabled={pending}
+        disabled={action.pending}
         onClick={(event) => {
           event.stopPropagation();
           event.preventDefault();
-          unarchive();
+          action.run();
         }}
         onKeyDown={(event) => {
           if (event.key !== "Enter") return;
           event.stopPropagation();
           event.preventDefault();
-          unarchive();
+          action.run();
         }}
       >
         <span className="allws-unarchive-idle"><ArchiveIcon size={14} /></span>
@@ -159,6 +179,8 @@ function Row({
   now,
   onOpen,
   dispatch,
+  onWorkspaceContextMenu,
+  onArchivedWorkspaceContextMenu,
 }: {
   row: HomeRow;
   showRepoIcon: boolean;
@@ -167,8 +189,11 @@ function Row({
   now: number;
   onOpen: () => void;
   dispatch: Dispatch<Action>;
+  onWorkspaceContextMenu?: Props["onWorkspaceContextMenu"];
+  onArchivedWorkspaceContextMenu?: Props["onArchivedWorkspaceContextMenu"];
 }) {
   const { workspace: ws, repo, archived, matches } = row;
+  const unarchive = useUnarchiveAction(repo.id, ws.id, dispatch, archived);
   const tone = archived ? "is-archived" : isWorkspaceUnread(ws) ? "is-unread" : "";
   const label = workspaceNumberLabel(ws.number);
   // Conductor's Home row (`vJo`): the agent's or setup's status, else the last-activity time.
@@ -185,6 +210,12 @@ function Row({
       data-selected={active || undefined}
       className="allws-row"
       onClick={onOpen}
+      onContextMenu={!unstarted && (archived ? onArchivedWorkspaceContextMenu : onWorkspaceContextMenu) ? (event) => {
+        event.preventDefault();
+        const at = { x: event.clientX, y: event.clientY };
+        if (archived) onArchivedWorkspaceContextMenu?.(row, at, unarchive);
+        else onWorkspaceContextMenu?.(row, at);
+      } : undefined}
       title={row.title}
     >
       <div className="allws-row-main">
@@ -222,7 +253,7 @@ function Row({
         <span className="allws-when">
           {archived ? (
             <span className="allws-archived" aria-label="Archived">
-              <UnarchiveButton repoId={repo.id} workspaceId={ws.id} dispatch={dispatch} />
+              <UnarchiveButton action={unarchive} />
             </span>
           ) : !matrix && showsActivityStatus(status) ? (
             <span className="allws-status" data-testid="home-workspace-status" data-status={status} data-color={rowStatusColor(status)} role="img" title={statusLabel} aria-label={statusLabel}>
@@ -237,7 +268,7 @@ function Row({
   );
 }
 
-export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch, onCreateWorkspace }: Props) {
+export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch, onCreateWorkspace, onWorkspaceContextMenu, onArchivedWorkspaceContextMenu }: Props) {
   const { overrides } = useKeybindingOverrides();
   const [query, setQuery] = useState("");
   const repoIds = useMemo(() => new Set(repos.map((r) => r.id)), [repos]);
@@ -248,6 +279,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
   };
   const [limit, setLimit] = useState(PAGE_SIZE);
   const [activeKey, setActiveKey] = useState<string>();
+  const list = useRef<HTMLDivElement>(null);
   const sentinel = useRef<HTMLDivElement>(null);
   const now = Date.now();
   const showNumbers = useBoolPref("experimental_show_workspace_numbers");
@@ -274,10 +306,21 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
   const flat = groups.flatMap((g) => g.rows.map((row) => ({ row, key: `${g.bucket}:${row.workspace.id}` })));
   const activeIndex = Math.max(0, flat.findIndex((entry) => entry.key === activeKey));
   const projectChoices = reposWithWorkspaces(repos, archivedRows);
-  const empty = emptyAction(repos, filters);
+  const empty = emptyAction(repos, filters, archivedRows);
 
   useEffect(() => setActiveKey(flat[activeIndex]?.key), [activeIndex, flat]);
   useEffect(() => setActiveKey(undefined), [query]);
+
+  const selectedKey = flat[activeIndex]?.key;
+  useEffect(() => {
+    const row = list.current?.querySelector<HTMLElement>('[role="option"][aria-selected="true"]');
+    if (!row) return;
+    const group = row.closest(".allws-group");
+    if (group?.querySelector('[role="option"]') === row) {
+      group.querySelector<HTMLElement>(".allws-group-heading")?.scrollIntoView({ block: "nearest" });
+    }
+    row.scrollIntoView({ block: "nearest" });
+  }, [selectedKey, loading]);
 
   useEffect(() => {
     const el = sentinel.current;
@@ -301,16 +344,23 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
       if (entry) setActiveKey(entry.key);
       return;
     }
+    const ctrlLetter = e.ctrlKey && !e.metaKey && !e.altKey;
+    const ctrlNext = ctrlLetter && (e.key === "n" || e.key === "j");
+    const ctrlPrevious = ctrlLetter && (e.key === "p" || e.key === "k");
     if (flat.length === 0) {
-      if (e.key === "Enter" && !e.metaKey) e.preventDefault();
+      if ((e.key === "Enter" && !e.metaKey) || ctrlNext || ctrlPrevious ||
+        (e.altKey && (e.key === "ArrowDown" || e.key === "ArrowUp"))) e.preventDefault();
       return;
     }
-    if (e.key === "ArrowDown") {
+    if (e.key === "ArrowDown" || ctrlNext || e.key === "ArrowUp" || ctrlPrevious) {
       e.preventDefault();
-      setActiveKey(flat[Math.min(activeIndex + 1, flat.length - 1)].key);
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setActiveKey(flat[Math.max(activeIndex - 1, 0)].key);
+      const direction = e.key === "ArrowDown" || ctrlNext ? 1 : -1;
+      const nextGroup = e.altKey
+        ? groups[groups.findIndex((group) => group.rows.includes(flat[activeIndex].row)) + direction]
+        : undefined;
+      setActiveKey(nextGroup
+        ? `${nextGroup.bucket}:${nextGroup.rows[0].workspace.id}`
+        : flat[Math.max(0, Math.min(activeIndex + direction, flat.length - 1))].key);
     } else if (e.key === "Enter" && e.metaKey) {
       // workspace.startUnstartedWorkspace (⌘↩): open a backlog workspace from
       // the Home list (Conductor's "Backlog page" displayScope). Only fires for
@@ -402,7 +452,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
         </div>
       </div>
       <div className="allws-scroll">
-        <div className="allws-list" role="listbox" aria-label="Workspaces">
+        <div ref={list} className="allws-list" role="listbox" aria-label="Workspaces">
           {loading ? (
             <div className="allws-loading" role="status" aria-label="Loading workspaces">
               <RowStatusIcon status="working" size={16} />
@@ -430,6 +480,8 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
                           open(row);
                         }}
                         dispatch={dispatch}
+                        onWorkspaceContextMenu={onWorkspaceContextMenu}
+                        onArchivedWorkspaceContextMenu={onArchivedWorkspaceContextMenu}
                       />
                     );
                   })}

@@ -1,0 +1,1 @@
+function FDo(t){return t.type==="summary"}

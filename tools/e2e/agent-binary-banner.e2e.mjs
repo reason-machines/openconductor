@@ -30,6 +30,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import assert from "node:assert/strict";
+import { createRuntimeReceipt } from "./runtime-receipt.mjs";
 import { WebDriver } from "../../tests/e2e/webdriver.mjs";
 import { finishStartup } from "../../tests/e2e/startup.mjs";
 import { createAgentBinaryReleaseFixture } from "./agent-binary-release-fixture.mjs";
@@ -64,7 +65,9 @@ writeFileSync(manifest, JSON.stringify({ claude: { version: "2.1.284", files: [{
 
 const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), SHELL: "/bin/bash", OPENCONDUCTOR_AGENT_BINARY_MANIFEST: manifest };
 for (const k of ["XDG_DATA_HOME", "XDG_CONFIG_HOME"]) delete env[k];
+const receipt = createRuntimeReceipt({ suite: "agent-binary-banner", app, out, home, project });
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
+receipt.track(driver);
 const driverExited = new Promise((r) => driver.on("exit", r));
 
 const base = "http://127.0.0.1:4444";
@@ -118,9 +121,10 @@ async function waitFor(what, fn, timeoutMs = 30000, everyMs = 200) {
 /** Saves <name>.png; a screenshot that fails or takes over 20 s is logged, not fatal (as in run.mjs). */
 async function screenshot(name) {
   try {
-    const png = await wd("GET", "/screenshot", undefined, 20000);
+    // Share the repaint/deadline handling used by the main WebDriver flow runner.
+    const png = await startup.screenshot(20000);
     const file = join(out, `${name}.png`);
-    writeFileSync(file, Buffer.from(png, "base64"));
+    writeFileSync(file, png);
     console.log(`screenshot: ${file}`);
   } catch (e) {
     console.log(`no ${name}.png: ${e?.message ?? e}`);
@@ -277,8 +281,10 @@ try {
   }
   process.exitCode = 1;
 } finally {
+  await receipt.beforeTeardown((script) => wd("POST", "/execute/async", { script, args: [] }, 3000));
   if (sessionUrl) await wd("DELETE", "").catch(() => {});
   driver.kill();
   server.close();
   await Promise.race([driverExited, sleep(3000)]);
+  await receipt.afterTeardown();
 }

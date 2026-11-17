@@ -133,7 +133,7 @@ fn cwd() -> PathBuf {
 }
 
 #[test]
-fn linked_directories_reach_new_processes_without_guessing_live_reconciliation() {
+fn linked_directories_reach_launch_and_changes_resume_the_idle_chat() {
     let h = harness();
     h.runner.open_chat("links", &cwd(), None);
     let directories = vec![PathBuf::from("/extra/one"), PathBuf::from("/extra/two")];
@@ -141,10 +141,19 @@ fn linked_directories_reach_new_processes_without_guessing_live_reconciliation()
     let args = h.args();
     assert!(args[0].contains("--add-dir /extra/one"), "{args:?}");
     assert!(args[0].contains("--add-dir /extra/two"), "{args:?}");
-    assert!(matches!(h.runner.prompt_with_directories("links", "changed", &[]), TurnEnd::Failed(message) if message.contains("Start a new Claude Code chat")));
-    assert_eq!(h.stdin().len(), 1, "changed directories must not silently send to the old process");
     assert_eq!(h.runner.prompt_with_directories("links", "unchanged", &directories), TurnEnd::Completed);
     assert_eq!(h.args().len(), 1);
+    assert_eq!(h.runner.prompt_with_directories("links", "removed", &[]), TurnEnd::Completed);
+    let args = h.args();
+    assert_eq!(args.len(), 2, "changed directories must recreate the idle process");
+    assert!(!args[1].contains("--add-dir"), "{args:?}");
+    assert!(args[1].contains("--resume fake-1"), "{args:?}");
+    assert_eq!(h.runner.prompt_with_directories("links", "added", &directories), TurnEnd::Completed);
+    let args = h.args();
+    assert_eq!(args.len(), 3);
+    assert!(args[2].contains("--add-dir /extra/one") && args[2].contains("--add-dir /extra/two"), "{args:?}");
+    assert!(args[2].contains("--resume fake-1"), "{args:?}");
+    assert_eq!(h.stdin().len(), 4);
 }
 
 #[test]
@@ -428,15 +437,15 @@ fn a_plan_prompt_waits_for_the_user_and_the_answer_goes_back() {
     assert_eq!(asked["plan"], "1. build it");
     let wrong = Answer::Option("allow".into());
     assert!(
-        h.runner.respond("c1", "req-1", &wrong).is_err(),
+        h.runner.respond("c1", "req-1", &wrong, None).is_err(),
         "a plan takes a plan answer"
     );
-    assert!(h.runner.respond("c1", "nope", &Answer::Cancel).is_err());
+    assert!(h.runner.respond("c1", "nope", &Answer::Cancel, None).is_err());
     let approve = Answer::Plan {
         approved: true,
         feedback: None,
     };
-    h.runner.respond("c1", "req-1", &approve).unwrap();
+    h.runner.respond("c1", "req-1", &approve, None).unwrap();
     assert_eq!(turn.join().unwrap(), TurnEnd::Completed);
     // The waiter hears of the end just before the event is emitted.
     wait_for_type(&h, "turnEnded");

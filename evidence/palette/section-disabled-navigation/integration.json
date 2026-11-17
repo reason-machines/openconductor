@@ -1,0 +1,60 @@
+{
+  "owner": "Conductor Rebuild / SAME15",
+  "base": "00bf65f92c31a5d355f6767ea3258f6af187baa2",
+  "predecessor": {
+    "pr": 1417,
+    "head": "d161062a2b8b14fe3da1664551d3ec3a31cfc213",
+    "merge": "00bf65f92c31a5d355f6767ea3258f6af187baa2"
+  },
+  "isolated_increment": "aa1bcaa684b32f6f44d47bd211e1c0a61b79c395",
+  "baseline": [
+    {
+      "path": "src/palette/PaletteHost.tsx",
+      "sha256": "78a4067ebb66ef016b7d5903c38e3b312bf8c569ffd5f00c2b11743b07fb8471"
+    },
+    {
+      "path": "src/palette/CommandPalette.tsx",
+      "sha256": "d2353fa32e43ad3201b9edea3268ad69596e27b1fdde4517011c33a6ec1b214a"
+    },
+    {
+      "path": "src/palette/MoveToSection.tsx",
+      "sha256": "341fe88d70ba0a13134fb918e2eaa60ce2b7da8878fbb5f161593797b4da3806"
+    }
+  ],
+  "fixtures": [
+    {
+      "path": "src/palette/sectionEnabledNavigation.test.ts",
+      "sha256": "855ce5ff5e712d582ed86c1b1048f3d6c795ac103fba1dd59a1dde9b58ea59a4"
+    },
+    {
+      "path": "src/palette/activeDescendant.test.ts",
+      "sha256": "0f358cda74b6a85bf5daa68df514828e839c01c06fe2a606586106898ea4ea17"
+    },
+    {
+      "path": "src/palette/activeDescendantControls.test.ts",
+      "sha256": "5b9a99dd3ca663af5c473a24287c317615480938e1d99c4b2c20d54fa741a4cd"
+    }
+  ],
+  "checks": {
+    "frozen_red": {
+      "pass": 12,
+      "assertion_failures": 9
+    },
+    "frozen_green": {
+      "pass": 21,
+      "fail": 0
+    },
+    "integrated": {
+      "pass": 415,
+      "fail": 0
+    },
+    "branding_typecheck_build": "PASS",
+    "retained_source_records": 16,
+    "parent_equality": true
+  },
+  "acceptance": {
+    "browser": "NOT_RUN",
+    "native": "NOT_RUN",
+    "package": "NOT_RUN"
+  }
+}

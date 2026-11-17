@@ -1,0 +1,258 @@
+(node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted branch editor requests the shipped new-password autocomplete hint
+ok 1 - mounted branch editor requests the shipped new-password autocomplete hint
+  ---
+  duration_ms: 90.136604
+  type: 'test'
+  ...
+# Subtest: mounted branch editor closes on Enter before rename and marker finish
+ok 2 - mounted branch editor closes on Enter before rename and marker finish
+  ---
+  duration_ms: 28.813311
+  type: 'test'
+  ...
+# Subtest: mounted branch editor closes on blur before rename and marker finish
+ok 3 - mounted branch editor closes on blur before rename and marker finish
+  ---
+  duration_ms: 32.939539
+  type: 'test'
+  ...
+# Subtest: mounted submitted branch editor stays closed on rename rejection and permits a retry
+ok 4 - mounted submitted branch editor stays closed on rename rejection and permits a retry
+  ---
+  duration_ms: 22.239155
+  type: 'test'
+  ...
+# Subtest: mounted branch editor preserves empty, unchanged and Escape controls without I/O
+ok 5 - mounted branch editor preserves empty, unchanged and Escape controls without I/O
+  ---
+  duration_ms: 27.083025
+  type: 'test'
+  ...
+# Subtest: mounted branch editor restores caret 8 after queued change of feature/ab
+ok 6 - mounted branch editor restores caret 8 after queued change of feature/ab
+  ---
+  duration_ms: 23.348597
+  type: 'test'
+  ...
+# Subtest: mounted branch editor restores caret 9 after queued change of feature/a!!b
+ok 7 - mounted branch editor restores caret 9 after queued change of feature/a!!b
+  ---
+  duration_ms: 25.200615
+  type: 'test'
+  ...
+# Subtest: mounted branch editor restores caret 0 after queued change of feature/ab
+ok 8 - mounted branch editor restores caret 0 after queued change of feature/ab
+  ---
+  duration_ms: 13.615915
+  type: 'test'
+  ...
+# Subtest: archived header renders only a static branch label; active headers retain Rename
+ok 9 - archived header renders only a static branch label; active headers retain Rename
+  ---
+  duration_ms: 31.365915
+  type: 'test'
+  ...
+# Subtest: archived header ignores edit, Copy/Rename shortcuts, Enter and blur without side effects
+ok 10 - archived header ignores edit, Copy/Rename shortcuts, Enter and blur without side effects
+  ---
+  duration_ms: 0.674253
+  type: 'test'
+  ...
+# Subtest: review workspace retains the active branch editor
+ok 11 - review workspace retains the active branch editor
+  ---
+  duration_ms: 0.354373
+  type: 'test'
+  ...
+# Subtest: inline edit starts with the full branch and sanitizes only disallowed runs
+ok 12 - inline edit starts with the full branch and sanitizes only disallowed runs
+  ---
+  duration_ms: 0.149326
+  type: 'test'
+  ...
+# Subtest: Enter followed by blur submits once, persists user-set and dispatches branch only
+ok 13 - Enter followed by blur submits once, persists user-set and dispatches branch only
+  ---
+  duration_ms: 0.269144
+  type: 'test'
+  ...
+# Subtest: blur submits; Escape stops propagation and cancels without blur mutation
+ok 14 - blur submits; Escape stops propagation and cancels without blur mutation
+  ---
+  duration_ms: 0.170887
+  type: 'test'
+  ...
+# Subtest: empty input stays open, unchanged input exits, neither mutates
+ok 15 - empty input stays open, unchanged input exits, neither mutates
+  ---
+  duration_ms: 0.111122
+  type: 'test'
+  ...
+# Subtest: copy writes the full original branch, not the current draft; C and R work
+ok 16 - copy writes the full original branch, not the current draft; C and R work
+  ---
+  duration_ms: 0.182665
+  type: 'test'
+  ...
+# Subtest: missing and detached branches never enter editing or rename
+ok 17 - missing and detached branches never enter editing or rename
+  ---
+  duration_ms: 0.225176
+  type: 'test'
+  ...
+# Subtest: pending blocks edits and repeated submits; rename error resets pending truthfully
+ok 18 - pending blocks edits and repeated submits; rename error resets pending truthfully
+  ---
+  duration_ms: 0.175007
+  type: 'test'
+  ...
+# Subtest: marker failure does not hide a successful Git branch rename
+ok 19 - marker failure does not hide a successful Git branch rename
+  ---
+  duration_ms: 0.172336
+  type: 'test'
+  ...
+# Subtest: in-flight rename keeps its workspace identity separate from another header
+ok 20 - in-flight rename keeps its workspace identity separate from another header
+  ---
+  duration_ms: 0.173384
+  type: 'test'
+  ...
+# Subtest: clipboard rejection is reported without renaming
+ok 21 - clipboard rejection is reported without renaming
+  ---
+  duration_ms: 0.15938
+  type: 'test'
+  ...
+# (node:90) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: idle ordinary branch label exposes its displayed text as native title
+ok 22 - idle ordinary branch label exposes its displayed text as native title
+  ---
+  duration_ms: 83.503333
+  type: 'test'
+  ...
+# Subtest: idle long branch label exposes its displayed text as native title
+ok 23 - idle long branch label exposes its displayed text as native title
+  ---
+  duration_ms: 21.831263
+  type: 'test'
+  ...
+# Subtest: archived ordinary branch label exposes its displayed text as native title
+ok 24 - archived ordinary branch label exposes its displayed text as native title
+  ---
+  duration_ms: 23.578991
+  type: 'test'
+  ...
+# Subtest: archived long branch label exposes its displayed text as native title
+ok 25 - archived long branch label exposes its displayed text as native title
+  ---
+  duration_ms: 16.828462
+  type: 'test'
+  ...
+# (node:98) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: persisted workspace links hydrate separately from prompt attachments
+ok 26 - persisted workspace links hydrate separately from prompt attachments
+  ---
+  duration_ms: 1.974221
+  type: 'test'
+  ...
+# Subtest: retained transcript chats hydrate without opening tabs or counting hidden unread
+ok 27 - retained transcript chats hydrate without opening tabs or counting hidden unread
+  ---
+  duration_ms: 0.35501
+  type: 'test'
+  ...
+# Subtest: maps rows in database order, marks hidden repos and drops archived workspaces
+ok 28 - maps rows in database order, marks hidden repos and drops archived workspaces
+  ---
+  duration_ms: 0.482839
+  type: 'test'
+  ...
+# Subtest: carries the workspace's target branch from conductor.db
+ok 29 - carries the workspace's target branch from conductor.db
+  ---
+  duration_ms: 0.225762
+  type: 'test'
+  ...
+# Subtest: carries the workspace number from conductor.db
+ok 30 - carries the workspace number from conductor.db
+  ---
+  duration_ms: 0.30482
+  type: 'test'
+  ...
+# Subtest: carries the workspace's intended target branch for the diff
+ok 31 - carries the workspace's intended target branch for the diff
+  ---
+  duration_ms: 0.159775
+  type: 'test'
+  ...
+# Subtest: selection falls back to home when its workspace is gone
+ok 32 - selection falls back to home when its workspace is gone
+  ---
+  duration_ms: 0.23316
+  type: 'test'
+  ...
+# Subtest: prefs round-trip and survive garbage
+ok 33 - prefs round-trip and survive garbage
+  ---
+  duration_ms: 0.372904
+  type: 'test'
+  ...
+# Subtest: sidebar: pin, unread and status columns reach the workspace
+ok 34 - sidebar: pin, unread and status columns reach the workspace
+  ---
+  duration_ms: 0.413935
+  type: 'test'
+  ...
+# Subtest: sidebar: unread chats come from sessions; a legacy workspaces.unread marks the main chat; closed reviews count as hidden
+ok 35 - sidebar: unread chats come from sessions; a legacy workspaces.unread marks the main chat; closed reviews count as hidden
+  ---
+  duration_ms: 0.499503
+  type: 'test'
+  ...
+# Subtest: sidebar: a review tab open at quit comes back after a restart, still unread
+ok 36 - sidebar: a review tab open at quit comes back after a restart, still unread
+  ---
+  duration_ms: 0.486321
+  type: 'test'
+  ...
+# Subtest: sidebar: a user-set workspace name is shown as is
+ok 37 - sidebar: a user-set workspace name is shown as is
+  ---
+  duration_ms: 1.258927
+  type: 'test'
+  ...
+# Subtest: re-reading conductor.db keeps the PR the app last read
+ok 38 - re-reading conductor.db keeps the PR the app last read
+  ---
+  duration_ms: 0.244103
+  type: 'test'
+  ...
+# Subtest: saved browser state drops live session statuses, including the old status: working
+ok 39 - saved browser state drops live session statuses, including the old status: working
+  ---
+  duration_ms: 0.187689
+  type: 'test'
+  ...
+# Subtest: loads updated_at, so Go to next unread picks the most recently active row
+ok 40 - loads updated_at, so Go to next unread picks the most recently active row
+  ---
+  duration_ms: 0.1934
+  type: 'test'
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1740.227276

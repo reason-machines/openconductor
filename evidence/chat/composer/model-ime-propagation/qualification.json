@@ -1,0 +1,311 @@
+{
+  "id": "COMPOSER-MODEL-IME-PROPAGATION-135",
+  "author": "Conductor Rebuild",
+  "baseline_main": "d74b767e33b5ef9f582458322e42156eb3b3623b",
+  "frozen_mounted_fixture": {
+    "path": "src/features/chat/modelPickerImePropagation.test.ts",
+    "sha256": "e6f35ac64e17705e9daa53b3c95db14643d3c04c9caa2f004f273f0606cff7b3"
+  },
+  "root_probe_v1_sha256": "d6fafe1b9ad0d77be682b15aca26b767b405c6f2d821880cb3c2575b00d9c559",
+  "retained_reference": {
+    "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "model_search_spans": [
+      {
+        "label": "A7o query input and searchableModels forwarding",
+        "artifact": "renderer",
+        "utf8_half_open": [
+          8599657,
+          8601817
+        ],
+        "sha256": "e94aaed3bf7beff63737f3574c578074d9b27d30067e6c303cd3358c3a1c7dce"
+      },
+      {
+        "label": "R7o model/agent/id search text",
+        "artifact": "renderer",
+        "utf8_half_open": [
+          8601858,
+          8601917
+        ],
+        "sha256": "7acb23448ac4ff25dad653d670d1bdc56ebad4eaf5db4daca02ffd472f8200db"
+      },
+      {
+        "label": "agent ids used to construct searchable result ids",
+        "artifact": "renderer",
+        "utf8_half_open": [
+          8601917,
+          8601977
+        ],
+        "sha256": "0139c0c0c41927b0333dc3670192e3a08e6d001f319523b8059a400f40bf3751"
+      },
+      {
+        "label": "L7o result entry construction",
+        "artifact": "renderer",
+        "utf8_half_open": [
+          8603880,
+          8613595
+        ],
+        "sha256": "763d5d0e217d3fd22a7decbb99b3551df62c8356626dbb8a07d87585386c6f3c"
+      },
+      {
+        "label": "lj result search adapter",
+        "artifact": "renderer",
+        "utf8_half_open": [
+          2839201,
+          2839529
+        ],
+        "sha256": "cc3d7c4102af2bb5c8d557b82956e7c8231561f5417784d41807293d2296adb3"
+      },
+      {
+        "label": "fuzzysort full initialization and local helpers",
+        "artifact": "renderer",
+        "utf8_half_open": [
+          2829988,
+          2838976
+        ],
+        "sha256": "b37454e1205cc8a0df1dd3c5b6e8bf04e2f0491397bec24e933d206844f79a35"
+      },
+      {
+        "label": "fuzzysort wrapper binding",
+        "artifact": "renderer",
+        "utf8_half_open": [
+          2838976,
+          2839015
+        ],
+        "sha256": "2a7bc952329a33e1b029d4212a33ff45cfbba76d2c27a4cc718b027d25ec6fda"
+      },
+      {
+        "label": "Dk default-export interop",
+        "artifact": "index",
+        "utf8_half_open": [
+          117763,
+          117864
+        ],
+        "sha256": "0234768a9a5db321fa7ad872061578be6f51a4ea0fa4bcd9043f1003b2518ca1"
+      },
+      {
+        "label": "agent display labels",
+        "artifact": "index",
+        "utf8_half_open": [
+          301310,
+          301401
+        ],
+        "sha256": "8d02c2f3cd6c882e1a915bad01bb299391e85ca80955482bae2d02571e65f616"
+      },
+      {
+        "label": "index export b9",
+        "artifact": "index",
+        "utf8_half_open": [
+          3480797,
+          3480805
+        ],
+        "sha256": "b0737961c1f96b8edf9a5bd8f27a664c26a024598c8f66f023157c8747b6778b"
+      },
+      {
+        "label": "index export kS",
+        "artifact": "index",
+        "utf8_half_open": [
+          3486619,
+          3486628
+        ],
+        "sha256": "aa804f47684f7396e98fcecf81f558f65d3a2ed5295b796d03e90354bc94072b"
+      },
+      {
+        "label": "renderer import Dk",
+        "artifact": "renderer",
+        "utf8_half_open": [
+          54167,
+          54175
+        ],
+        "sha256": "5de213a555931acf7faf016669a7ce5c299b20f8613940b24b8290bc8248c0f4"
+      },
+      {
+        "label": "renderer import _A",
+        "artifact": "renderer",
+        "utf8_half_open": [
+          60229,
+          60237
+        ],
+        "sha256": "e8e711e2ae95f0b04f44d8b5e213575231af664bd3c77361208a98af4bac8e59"
+      }
+    ],
+    "composition_spans": [
+      {
+        "symbol": "composition_code",
+        "utf8_bytes_derived_from_known_8415731_anchor": [
+          8415731,
+          8415739
+        ],
+        "sha256": "daa7b1b31b64d1c5a942f120deff423e81c42e80fe5662bc756158009e3ec1f4"
+      },
+      {
+        "symbol": "oRt",
+        "utf8_bytes_derived_from_known_8415731_anchor": [
+          8415739,
+          8415890
+        ],
+        "sha256": "0cf63f73563cef134d6089a084469a5d52f916f9d502afade3b4752e2c20bb4b"
+      },
+      {
+        "utf8_bytes": [
+          674926,
+          674995
+        ],
+        "sha256": "4283e46687b05b8b24d9071e15301030bd57ac48bb3f7b129375606bfeaaca70"
+      }
+    ],
+    "verification": "16 self-hashes PASS; no fresh acquisition or full-renderer rehash"
+  },
+  "existing_fixtures": [
+    {
+      "path": "src/features/chat/modelPickerAgentSearch.test.ts",
+      "baseline_sha256": "277266f6218eb66d7eb0722d64242cd6edd8823e3e50b38f82025c97ce7354c4",
+      "current_sha256": "277266f6218eb66d7eb0722d64242cd6edd8823e3e50b38f82025c97ce7354c4",
+      "expectations_migrated": false
+    },
+    {
+      "path": "src/features/chat/modelPickerDisabledResults.test.ts",
+      "baseline_sha256": "548ddebc10e4af550437244a55b2788af44afdb170f62084ba55d875e4cf37d2",
+      "current_sha256": "548ddebc10e4af550437244a55b2788af44afdb170f62084ba55d875e4cf37d2",
+      "expectations_migrated": false
+    },
+    {
+      "path": "src/features/chat/modelPickerEffortSelection.test.ts",
+      "baseline_sha256": "4d9c85d757d56f44b956a796b3a9e49053d25d275260c27ca627758fd97cfbe4",
+      "current_sha256": "4d9c85d757d56f44b956a796b3a9e49053d25d275260c27ca627758fd97cfbe4",
+      "expectations_migrated": false
+    },
+    {
+      "path": "src/features/chat/modelPickerFuzzyRanking.test.ts",
+      "baseline_sha256": "a7a9a940f18fc3c96d390580d2ab2eba926ab578986f76fc6fd38268d61e28d1",
+      "current_sha256": "a7a9a940f18fc3c96d390580d2ab2eba926ab578986f76fc6fd38268d61e28d1",
+      "expectations_migrated": false
+    },
+    {
+      "path": "src/features/chat/modelPickerFuzzySearch.test.ts",
+      "baseline_sha256": "dc252fccdf7813945877f8595bc6d549aca334c70ae604c84db41bb36f4c197f",
+      "current_sha256": "dc252fccdf7813945877f8595bc6d549aca334c70ae604c84db41bb36f4c197f",
+      "expectations_migrated": false
+    },
+    {
+      "path": "src/features/chat/modelPickerImeBoundary.test.ts",
+      "baseline_sha256": "8ab198fd940c895ae2eb65db5ffd345e00ca7f49a6dac9d323277ad4514ac6d2",
+      "current_sha256": "1973bab3783a8d72842328d8f406842a0a8c63aa44e080ddc0417d496b205ec8",
+      "expectations_migrated": true
+    },
+    {
+      "path": "src/features/chat/modelPickerLoadoutClose.test.ts",
+      "baseline_sha256": "19e0e9e21606cf7e606fffcd04789dfd65000cd7e2963ae5d18e7add21e6d68b",
+      "current_sha256": "19e0e9e21606cf7e606fffcd04789dfd65000cd7e2963ae5d18e7add21e6d68b",
+      "expectations_migrated": false
+    },
+    {
+      "path": "src/features/chat/modelPickerMouseSearch.test.ts",
+      "baseline_sha256": "45d080e56eb16052b9406df4685ae2fea95fb7b17c056451787e809332484b68",
+      "current_sha256": "45d080e56eb16052b9406df4685ae2fea95fb7b17c056451787e809332484b68",
+      "expectations_migrated": false
+    },
+    {
+      "path": "src/features/chat/modelPickerQualifiedModelSearch.test.ts",
+      "baseline_sha256": "35a55a0e14a8ea68e4d7108c6045ba347b2a0a5ddcbf10cdc0ee43776117b813",
+      "current_sha256": "35a55a0e14a8ea68e4d7108c6045ba347b2a0a5ddcbf10cdc0ee43776117b813",
+      "expectations_migrated": false
+    },
+    {
+      "path": "src/features/chat/modelPickerSearch.test.ts",
+      "baseline_sha256": "55bb06efefd4f7d0a8304fe3badef30771f7a67504de32c9fa3d6c734bc0a64c",
+      "current_sha256": "55bb06efefd4f7d0a8304fe3badef30771f7a67504de32c9fa3d6c734bc0a64c",
+      "expectations_migrated": false
+    },
+    {
+      "path": "src/features/chat/modelPickerSearchAgentLabel.test.ts",
+      "baseline_sha256": "ce963567784f2cdcdae992965e4fa42feee16f6b3de86cf83d043a5d00bda02f",
+      "current_sha256": "ce963567784f2cdcdae992965e4fa42feee16f6b3de86cf83d043a5d00bda02f",
+      "expectations_migrated": false
+    },
+    {
+      "path": "src/features/chat/modelPickerSearchHeight.test.ts",
+      "baseline_sha256": "da4b7c76d081c1eb77d151c5d8f66e1428817f8d1ae6ab2d768bf7807f461c13",
+      "current_sha256": "da4b7c76d081c1eb77d151c5d8f66e1428817f8d1ae6ab2d768bf7807f461c13",
+      "expectations_migrated": false
+    },
+    {
+      "path": "src/features/chat/modelPickerSearchInputAttributes.test.ts",
+      "baseline_sha256": "a86d5dfe97880d7ec976e32f60091429801e4a186b92da7dd4fb1504d4c8ddf3",
+      "current_sha256": "a86d5dfe97880d7ec976e32f60091429801e4a186b92da7dd4fb1504d4c8ddf3",
+      "expectations_migrated": false
+    },
+    {
+      "path": "src/features/chat/modelPickerSearchKeyBoundary.test.ts",
+      "baseline_sha256": "d229dbc77564ecbf90485152e66ec24967061e17d9346154d38699741e8b0a9f",
+      "current_sha256": "da03c2a07ade8ab7507a34f4bdf46441709907bf6c234e50a5342c292c6b3fa7",
+      "expectations_migrated": true
+    },
+    {
+      "path": "src/features/chat/modelPickerSearchScroll.test.ts",
+      "baseline_sha256": "ed952d62f3db19489f856f97dea589c7b37b356f6d5f7179a79e0a97fc1a681b",
+      "current_sha256": "ed952d62f3db19489f856f97dea589c7b37b356f6d5f7179a79e0a97fc1a681b",
+      "expectations_migrated": false
+    },
+    {
+      "path": "src/features/chat/modelPickerUnsupportedEffort.test.ts",
+      "baseline_sha256": "7d21505edcb5336faad81aad2f47d34630317969cf2f68f73957f9e8b5436275",
+      "current_sha256": "7d21505edcb5336faad81aad2f47d34630317969cf2f68f73957f9e8b5436275",
+      "expectations_migrated": false
+    }
+  ],
+  "exact_expectation_migration_verification": "PASS: deterministic stopped-only/title replacements reproduce current fixtures exactly",
+  "checks": [
+    {
+      "command": "MODEL_PICKER_IME_PROPAGATION_REF=d74b767e33b5ef9f582458322e42156eb3b3623b node --test src/features/chat/modelPickerImePropagation.test.ts",
+      "status": "FAILED_AS_INTENDED",
+      "passed": 5,
+      "failed": 7,
+      "log": "red.tap.gz"
+    },
+    {
+      "command": "node --test src/features/chat/modelPickerImePropagation.test.ts",
+      "status": "PASS",
+      "passed": 12,
+      "failed": 0,
+      "log": "green.tap.gz"
+    },
+    {
+      "command": "node --test evidence/chat/composer/model-ime-propagation/baseline/root-probe-v1.test.ts",
+      "status": "PASS",
+      "passed": 12,
+      "failed": 0,
+      "log": "root-probe-v1-green.tap.gz"
+    },
+    {
+      "command": "node --test src/features/chat/modelPicker*.test.ts src/features/chat/chatModelFriendlyLabel.test.ts",
+      "status": "PASS",
+      "passed": 168,
+      "failed": 0,
+      "log": "focused.tap.gz"
+    },
+    {
+      "command": "node --test src/features/chat/composer*.test.ts src/features/chat/slash*.test.ts src/features/chat/loadout*.test.ts src/features/chat/fileMentions.test.ts src/features/chat/chatModel*.test.ts src/features/chat/modelPicker*.test.ts src/components/createWorkspace*.test.ts",
+      "status": "PASS",
+      "passed": 570,
+      "failed": 0,
+      "log": "expanded.tap.gz"
+    },
+    {
+      "command": "npm run build",
+      "status": "PASS",
+      "log": "build.log.gz"
+    },
+    {
+      "command": "git diff --check",
+      "status": "PASS"
+    }
+  ],
+  "limitations": [
+    "full repository suite NOT_RUN",
+    "native/WebKit/browser/provider NOT_RUN",
+    "mounted host-bubble callbacks are not browser capture/default action proof",
+    "implicit submission prevention NOT_CLAIMED",
+    "successor package containment NOT_VERIFIED",
+    "existing package44070332569/eef excludes this and1411; no new dispatch/watch"
+  ]
+}

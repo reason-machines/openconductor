@@ -17,7 +17,7 @@ import { glyphs } from "./keybindings/shortcut";
 import { SubmitPromptDialog } from "./components/SubmitPromptDialog";
 import { FeedbackDialog } from "./components/FeedbackDialog";
 import { DiagnosticsPage } from "./diagnostics/DiagnosticsPage";
-import { AllWorkspaces } from "./components/AllWorkspaces";
+import { HomeWorkspaceScreen } from "./components/HomeWorkspaceScreen";
 import { Dashboard } from "./components/Dashboard";
 import "./home.css";
 import { WorkspaceView } from "./components/WorkspaceView";
@@ -624,7 +624,17 @@ export default function App() {
             onNextUnread={() => void openNextUnread(state, dispatch, { skipSelected: true })}
           />
         ) : sel.kind === "home" ? (
-          <AllWorkspaces repos={state.repos} loading={startup === "loading"} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
+          <HomeWorkspaceScreen
+            repos={state.repos}
+            loading={startup === "loading"}
+            sidebarVisible={isSidebarVisible(state)}
+            dispatch={dispatch}
+            onCreateWorkspace={() => openDialog("create")}
+            sections={state.sections ?? []}
+            onNewSection={(ws) => setSectionDialog({ mode: "create", workspaceIdToMove: ws.id })}
+            onCopyLink={(ws) => copyLink(ws.id)}
+            onError={(message) => show("error", message)}
+          />
         ) : sel.kind === "routines" && cloudUI === true ? (
           sel.page ? (
             <RoutineEditor
@@ -758,7 +768,7 @@ export default function App() {
           onConfirm={() => dispatch({ ...archiveOverAgents, stopRunningAgents: true })}
         />
       )}
-      {restoreRequest && <RestoreWorkspaceDialog request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
+      {restoreRequest && <RestoreWorkspaceDialog key={restoreRequest.workspaceId} request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
       {quitDialog}
     </div>
     <BrowserPreviewHost />

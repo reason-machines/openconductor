@@ -148,7 +148,8 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
     workspaceActiveRunTaskIsBusy: activeScript !== null || spotMine,
   });
   const showSpotlight = shown === SPOTLIGHT_TASK_ID;
-  const outputKey = JSON.stringify([wsId, shown]);
+  const shownStatus = runs.find((r) => r.scriptId === shown);
+  const outputKey = JSON.stringify([wsId, shown, shownStatus?.runId]);
   const runOut = runOutputState.key === outputKey ? runOutputState.text : "";
   const detectedUrl = detectedPreview.key === outputKey ? detectedPreview.url : null;
 
@@ -293,7 +294,6 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const scripts = visibleScripts(config);
   const tasks = runTasks(scripts, spotEnabled);
   const busy = showSpotlight ? spotButton.action === "stop" : button.action === "stop";
-  const shownStatus = runs.find((r) => r.scriptId === shown);
   const setupRunning = setup.state === "running";
   const inputRunId = !showSpotlight && shownStatus?.state === "running" ? shownStatus.runId : undefined;
   const inputKey = JSON.stringify([wsId, shown, inputRunId]);
@@ -468,7 +468,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
       : null;
   const header = runHeader(shownTaskInfo, taskState);
   const hasOutput = showSpotlight ? spotLogMine && spotView.log.length > 0 : runOut.length > 0;
-  const body = runBody(shownTaskInfo, taskState, showSpotlight ? spotMine : shownStatus !== undefined, hasOutput);
+  const body = runBody(shownTaskInfo, taskState, showSpotlight ? spotMine : Boolean(shownStatus?.runId), hasOutput);
   const headerDisabled = showSpotlight ? spotButton.disabled : button.disabled;
 
   function runTabBody() {

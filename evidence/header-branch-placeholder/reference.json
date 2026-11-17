@@ -1,0 +1,108 @@
+{
+  "owner": "Conductor Rebuild / Home271",
+  "gap": "HEADER-PLACEHOLDER-LABEL-271",
+  "measured_main": "f60b6e365395ceb62b2b2ec6e1542a16a5b0d0ee",
+  "delivery_main": "8e3c9e02bdb11817066c3d03c7a2fa13354dd3c7",
+  "delivery_revalidation": "All four main_source_sha256 files and the missing plugin-fs import are unchanged; all 61 focused and adjacent source-unit tests pass after integration.",
+  "reference": "Historical REA-derived Conductor 0.87.6 source only; no new extraction or installed-app observation.",
+  "rea_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "assets": {
+    "renderApp-D_fmY7hW.js": {
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index-BGEQ8YjU.js": {
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "verified_retained_spans": [
+    {
+      "packet": "evidence/header-branch-prefix/reference.json",
+      "packet_sha256": "471a89eca55d747f370d6826c0343a05aa766464d00ef1e812641abb637efff8",
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "bro",
+      "utf8_span": [
+        7206225,
+        7209202
+      ],
+      "sha256": "ef7bdf8d88ab7587123cab8ccf81848f4bed54685987b2fe2373ff4cbbcd613b"
+    },
+    {
+      "packet": "evidence/header-branch-prefix/reference.json",
+      "packet_sha256": "471a89eca55d747f370d6826c0343a05aa766464d00ef1e812641abb637efff8",
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "yoo",
+      "utf8_span": [
+        7302745,
+        7303279
+      ],
+      "sha256": "4b38a7af16b277110bdea0f3fe14b333e5646d2d2a489d0d23ec53edc4ef9e75"
+    },
+    {
+      "packet": "evidence/header-branch-prefix/reference.json",
+      "packet_sha256": "471a89eca55d747f370d6826c0343a05aa766464d00ef1e812641abb637efff8",
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "zce",
+      "utf8_span": [
+        2153685,
+        2153763
+      ],
+      "sha256": "af28f00b8948dd206a24d10a9d2c0d49037c2e75c403061d6b2838f694932bc6"
+    },
+    {
+      "packet": "evidence/header-branch-prefix/reference.json",
+      "packet_sha256": "471a89eca55d747f370d6826c0343a05aa766464d00ef1e812641abb637efff8",
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "zcs",
+      "utf8_span": [
+        2153599,
+        2153685
+      ],
+      "sha256": "882a3c3868af550a8db9f882795eff27bd6e68ea1e55c40aa5f921231a4721e5"
+    },
+    {
+      "packet": "evidence/header-local-details/source.json",
+      "packet_sha256": "3c0ddf5d0328865362e7f3d0677ca5fcc7b9e81e61fc87be2bf2b35abe116827",
+      "asset": "index-BGEQ8YjU.js",
+      "symbol": "w_",
+      "utf8_span": [
+        862181,
+        865564
+      ],
+      "sha256": "1de40b67162a9c17f06d2f4f067a95406871d85ba820c366824fb688221e8b73"
+    }
+  ],
+  "main_source_sha256": {
+    "src/components/WorkspaceBranchHeader.tsx": "eae9f6e4e7a6dc3f6215ded5bf906015e0155f8c3ba2d3a985b91f70fc8791a6",
+    "src/components/workspaceBranchPrefix.test.ts": "894e0f32379cf3bade2d18f7b04b373ff62eab3a002dbeec8f05be1dff8bc3ce",
+    "src/state/persisted.ts": "e05b71987a5e37a5b2e86f013c8b53fd1ccec6e29717a4408237206d73593da2",
+    "src-tauri/src/persistence/mod.rs": "3d5e28f56115c9bf3b62f7a8f2eef0c998ac81afad7f5d764af72ae21ac56196"
+  },
+  "frozen_test_sha256": "e6ca2915752ced9d93314d9f8178e29f2216a2b6242818506840552b432c8599",
+  "source_unit_red": {
+    "passed": 15,
+    "failed": 6,
+    "exit_code": 1
+  },
+  "source_unit_green": {
+    "passed": 21,
+    "failed": 0,
+    "exit_code": 0
+  },
+  "adjacent": {
+    "passed": 40,
+    "failed": 0,
+    "exit_code": 0
+  },
+  "typecheck": {
+    "status": "FAILED_ENVIRONMENT",
+    "initial_exit_code": 134,
+    "initial_cause": "768 MiB V8 heap exhausted",
+    "retry_exit_code": 2,
+    "retry_cause": "TS2307: @tauri-apps/plugin-fs absent from existing node_modules; installs prohibited"
+  },
+  "native": "NOT_RUN",
+  "browser": "NOT_RUN",
+  "package": "NOT_RUN"
+}

@@ -1,0 +1,140 @@
+{
+  "status": "FROZEN_CLOSED_TRIGGER_15_NOT_EXECUTED",
+  "main_checked": "e6836acf258d6b526b5fb1a6d057aa8ee017dc2e",
+  "scope": "Icon-only CLOSED Open in chevron ArrowDown/ArrowUp opening and initial enabled endpoint focus",
+  "counterexample": "With installed Finder and Cursor, the closed enabled icon chevron has no onKeyDown on current main. ArrowDown or ArrowUp therefore leaves the menu closed. Retained Conductor P9 icon trigger props route those arrows through SLt to open and focus first/last respectively.",
+  "proposed_data_shape": "One component-local ref of first|last, consumed and reset by the existing open effect; no shared state, timer, IPC or global listener",
+  "cases": [
+    {
+      "id": 1,
+      "name": "closed icon ArrowDown opens the menu and focuses Finder",
+      "expected_baseline": "ERR_ASSERTION",
+      "after": "PASS"
+    },
+    {
+      "id": 2,
+      "name": "closed icon ArrowUp opens the menu and focuses Copy path",
+      "expected_baseline": "ERR_ASSERTION",
+      "after": "PASS"
+    },
+    {
+      "id": 3,
+      "name": "closed icon ArrowDown skips disabled first row",
+      "expected_baseline": "ERR_ASSERTION",
+      "after": "PASS"
+    },
+    {
+      "id": 4,
+      "name": "closed icon ArrowUp skips disabled last row",
+      "expected_baseline": "ERR_ASSERTION",
+      "after": "PASS"
+    },
+    {
+      "id": 5,
+      "name": "ArrowUp opening does not leak its last-row choice to subsequent pointer opening",
+      "expected_baseline": "ERR_ASSERTION",
+      "after": "PASS"
+    },
+    {
+      "id": 6,
+      "name": "ArrowDown opening and Escape compose with subsequent ArrowUp reopening",
+      "expected_baseline": "ERR_ASSERTION",
+      "after": "PASS"
+    },
+    {
+      "id": 7,
+      "name": "split ArrowDown trigger behavior remains unchanged",
+      "expected_baseline": "PASS",
+      "after": "PASS"
+    },
+    {
+      "id": 8,
+      "name": "split ArrowUp trigger behavior remains unchanged",
+      "expected_baseline": "PASS",
+      "after": "PASS"
+    },
+    {
+      "id": 9,
+      "name": "already-prevented icon ArrowDown leaves menu closed",
+      "expected_baseline": "PASS",
+      "after": "PASS"
+    },
+    {
+      "id": 10,
+      "name": "already-prevented icon ArrowUp leaves menu closed",
+      "expected_baseline": "PASS",
+      "after": "PASS"
+    },
+    {
+      "id": 11,
+      "name": "missing workspace path leaves icon disabled with no keyboard side effects",
+      "expected_baseline": "PASS",
+      "after": "PASS"
+    },
+    {
+      "id": 12,
+      "name": "empty installed-app inventory leaves icon disabled with no keyboard side effects",
+      "expected_baseline": "PASS",
+      "after": "PASS"
+    },
+    {
+      "id": 13,
+      "name": "unrelated trigger keys remain unconsumed and leave the menu closed",
+      "expected_baseline": "PASS",
+      "after": "PASS"
+    },
+    {
+      "id": 14,
+      "name": "ordinary icon pointer opening still focuses the first row",
+      "expected_baseline": "PASS",
+      "after": "PASS"
+    },
+    {
+      "id": 15,
+      "name": "icon app and Copy path clicks retain exact external side effects",
+      "expected_baseline": "PASS",
+      "after": "PASS"
+    }
+  ],
+  "execution_contract_status": "NO_RUNTIME_INTAKE_OR_GRANT_REQUESTED",
+  "predicted_only": {
+    "collected": 15,
+    "baseline_failures": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "baseline_controls": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "candidate_passes": 15
+  },
+  "unchanged_inputs": [
+    "icon-typeahead24 d3550db8 packet",
+    "delivered iconMenuEndpoints original14 SHA2564009081b",
+    "SAME64 Escape22 and Tab8/Reveal",
+    "split menu _vs",
+    "palette target #1205",
+    "global keyboard detectors",
+    "IPC"
+  ],
+  "limitations": [
+    "Static retained real-app evidence only; no native or physical-key observation",
+    "Mounted fixture will mock DOM focus, app preferences and native IPC boundaries",
+    "Frozen expected outcomes are predictions, not RED/GREEN results",
+    "No browser, typecheck, build, dependency installation, package or native runtime executed"
+  ],
+  "dedup_message": "3e4a0e87-cafc-4b2a-814b-25abf65d3ee4",
+  "inquiry17_status": "UNSELECTED_PRESERVED_NOT_EXECUTED"
+}

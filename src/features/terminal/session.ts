@@ -38,6 +38,8 @@ interface Live {
   host: HTMLDivElement;
   ack: AckBatcher;
   opened: boolean;
+  /** The current attachment alone owns its host and resize observer. */
+  attachment?: { detach: () => void; observer: ResizeObserver };
   appearance?: MutationObserver;
   /**
    * Opened by the app, not the user (a workspace's first terminal, restored
@@ -212,9 +214,6 @@ function cssVar(name: string): string | undefined {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || undefined;
 }
 
-/** `#rrggbb` plus an alpha byte; other colour forms pass through unchanged. */
-const withAlpha = (hex: string | undefined, alpha: string) => (hex && /^#[0-9a-f]{6}$/i.test(hex) ? hex + alpha : hex);
-
 /**
  * Open a new tab running the login shell in `cwd`; resolves to its id. `quiet`
  * when the app opens it by itself, so it does not take focus from a text field.
@@ -299,11 +298,9 @@ async function startTab(
       foreground: cssVar("--text"),
       cursor: "transparent",
       cursorAccent: cssVar("--panel"),
-      // xterm's default selection is pale white, invisible on the light theme.
-      // The inactive colour matters for Find: the match is selected while the
-      // find input, not the terminal, has focus.
-      selectionBackground: withAlpha(cssVar("--accent"), "66"),
-      selectionInactiveBackground: withAlpha(cssVar("--accent"), "4d"),
+      // Match IJe and ScriptOutput: the primary pair also covers inactive selection.
+      selectionBackground: cssVar("--accent"),
+      selectionForeground: cssVar("--accent-text"),
       black: cssVar("--terminal-black"),
       red: cssVar("--terminal-red"),
       green: cssVar("--terminal-green"),
@@ -360,8 +357,8 @@ async function startTab(
         foreground: cssVar("--text"),
         cursor: term.options.disableStdin ? "transparent" : cssVar("--text"),
         cursorAccent: cssVar("--panel"),
-        selectionBackground: withAlpha(cssVar("--accent"), "66"),
-        selectionInactiveBackground: withAlpha(cssVar("--accent"), "4d"),
+        selectionBackground: cssVar("--accent"),
+        selectionForeground: cssVar("--accent-text"),
         black: cssVar("--terminal-black"),
         red: cssVar("--terminal-red"),
         green: cssVar("--terminal-green"),
@@ -461,6 +458,8 @@ export function onAttachFailure(f: (error: unknown) => void): () => void {
 export function attachTab(id: string, container: HTMLElement): () => void {
   const l = live.get(id);
   if (!l) return () => {};
+  l.attachment?.observer.disconnect();
+  l.attachment = undefined;
   container.appendChild(l.host);
   if (!l.opened) {
     try {
@@ -473,21 +472,25 @@ export function attachTab(id: string, container: HTMLElement): () => void {
     }
     l.opened = true;
   }
-  const refit = () => {
-    if (l.host.clientWidth > 0) l.fit.fit();
+  const detach = () => {
+    if (l.attachment?.detach !== detach) return;
+    l.attachment = undefined;
+    ro.disconnect();
+    l.host.remove();
   };
+  const refit = () => {
+    if (l.attachment?.detach === detach && l.host.clientWidth > 0) l.fit.fit();
+  };
+  const ro = new ResizeObserver(refit);
+  l.attachment = { detach, observer: ro };
+  ro.observe(container);
   refit();
   // A tab takes the keyboard when shown. A quiet tab's first showing lands a
   // moment after the workspace opens (it waits on the PTY listener), so it
   // leaves focus in a text field the user is typing in, such as the chat box.
   if (!(l.quiet && typingElsewhere())) l.term.focus();
   l.quiet = false;
-  const ro = new ResizeObserver(refit);
-  ro.observe(container);
-  return () => {
-    ro.disconnect();
-    l.host.remove();
-  };
+  return detach;
 }
 
 function writeInput(id: string, data: string) {
@@ -566,6 +569,7 @@ export async function destroyWorkspaceTerminals(workspaceId: string): Promise<vo
 }
 
 function dispose(id: string) {
+  live.get(id)?.attachment?.detach();
   live.get(id)?.appearance?.disconnect();
   live.get(id)?.term.dispose();
   live.delete(id);

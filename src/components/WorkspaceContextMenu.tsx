@@ -18,9 +18,10 @@ interface Props {
   onArchive?: (repoId: string, workspace: Workspace) => void;
   onCopyLink?: (workspace: Workspace) => void;
   onNewSection?: (workspace: Workspace) => void;
+  unarchive?: { pending: boolean; run: () => void };
 }
 
-export function WorkspaceContextMenu({ repoId, workspace: ws, selected, at, sections, dispatch, onClose, onRename, onArchive, onCopyLink, onNewSection }: Props) {
+export function WorkspaceContextMenu({ repoId, workspace: ws, selected, at, sections, dispatch, onClose, onRename, onArchive, onCopyLink, onNewSection, unarchive }: Props) {
   const ids = { repoId, workspaceId: ws.id };
   return (
     <WorkspaceActionsMenu
@@ -30,6 +31,7 @@ export function WorkspaceContextMenu({ repoId, workspace: ws, selected, at, sect
       onClose={onClose}
       sections={sections}
       currentSectionId={sectionOf(sections, ws.id)?.id}
+      unarchive={unarchive}
       actions={{
         toggleRead: () => {
           if (isWorkspaceUnread(ws)) {

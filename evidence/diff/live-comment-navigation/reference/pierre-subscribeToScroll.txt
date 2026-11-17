@@ -1,0 +1,1 @@
+subscribeToScroll(e){return this.scrollListeners.add(e),()=>{this.scrollListeners.delete(e)}}

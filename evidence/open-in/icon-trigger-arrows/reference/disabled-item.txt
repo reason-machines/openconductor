@@ -1,0 +1,1 @@
+function Ice(t,e,n){if(typeof n=="function"?n(e):n?.includes(e)??!1)return!0;const r=t[e];return r?!xQe(r)||r.matches(":disabled")?!0:!n&&(r.hasAttribute("disabled")||r.getAttribute("aria-disabled")==="true"):!1}
