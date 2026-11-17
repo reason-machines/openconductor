@@ -16,7 +16,7 @@ const exports: Partial<typeof import("./MoveToSection.tsx")> = {};
 runInNewContext(output, {
   exports,
   require(name: string) {
-    if (name === "react/jsx-runtime") return dependencies(name);
+    if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
     assert.equal(name, "../components/ConductorIcon");
     return { ConductorIcon: () => null };
   },
