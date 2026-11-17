@@ -1,0 +1,62 @@
+{
+  "author": "Conductor Rebuild",
+  "gap": "RESET-CHAT-FRAME",
+  "checked_main": "f60b6e365395ceb62b2b2ec6e1542a16a5b0d0ee",
+  "lease_message_id": "83ea924a-8650-4c91-84a5-13f08a1a180b",
+  "renderer": {
+    "name": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2"
+  },
+  "spans": [
+    {
+      "name": "dDo",
+      "utf8_half_open": [
+        8909638,
+        8912447
+      ],
+      "sha256": "a630468ca26d3946ce00e7a5c75b5c4dc103c03e9e4d16c329f277c2a524e311",
+      "path": "../reset-chat-pending-indicator/reference/dDo.txt",
+      "check": "Rehashed complete 2809-byte literal; returns a Fragment containing header, checkbox label and footer, not a panel."
+    },
+    {
+      "name": "Im",
+      "utf8_half_open": [
+        1986046,
+        1988633
+      ],
+      "sha256": "beb65b39a01d82a2900e25add3857daaec2a75ea608c69514adc516a97083b76",
+      "session_id": "13576d11-76fb-4842-aa9b-c398f9ca26f3",
+      "source_id": "b3ce19be-f34e-4e4c-9369-efcbd127b563",
+      "revision": 25750252,
+      "check": "Recovered complete 2587-byte literal from retained receipt and rehashed it. One max-w-lg gap-4 p-6 sm:rounded-xl popup."
+    }
+  ],
+  "baseline_sha256": {
+    "src/features/chat/ResetChatDialog.tsx": "3f930c30923a64bc14c47f37d9342182209d2ebe24cee9c78da3cb0ee44d29a8",
+    "src/components/DialogFrame.tsx": "47734d523d725af2615c80a1f9995f28e78b2b2d8e6dd32a7303b97e69c670d5",
+    "src/components/dialogFrame.css": "b735074241f4fd63fb16896bceb06a704b2ecae5bbc739f0af977a7e2b05f838",
+    "src/features/chat/chat.css": "bc2dc8c2fb38370117e5f4e98448b5ed0849762a29071feebaf568aa8d86e4db",
+    "src/features/chat/resetChatFocus.test.ts": "1caa55337bf1ff0926e297cce2607d6b29aa335629da9b74d81ce79ab99d2e9b",
+    "src/features/chat/resetChatDismissal.test.ts": "8c215bfe056de65d06bbe065a311de5994d9a17a3b462df35932acf607d3d96a",
+    "src/features/chat/resetChatPendingIndicator.test.ts": "9a2df87d4fd85b60bf244da03e4f5e3f643e504e0ccb678c692d7d6e72c78b37",
+    "src/features/chat/resetChatFrame.test.ts": "a0bd840b98d5ee14f3eca0eb80c32f0ceb0c20097e2359e105e7418140800faf"
+  },
+  "fixture": {
+    "path": "src/features/chat/resetChatFrame.test.ts",
+    "sha256": "a0bd840b98d5ee14f3eca0eb80c32f0ceb0c20097e2359e105e7418140800faf",
+    "cases": 5,
+    "expected_red": {
+      "fail": 2,
+      "pass": 3
+    }
+  },
+  "limits": [
+    "Vendor source treated as data, not executed.",
+    "Historical REA semantic renderer analysis exhausted heap; complete bounded literal receipts are the proof.",
+    "Mounted composition tests replace Base UI portal/DOM primitives; they do not measure CSS layout, real focus, pointer delivery, shortcuts, or native appearance.",
+    "No native/Mac/browser/runtime dispatch, installs or cloud-UI work.",
+    "GAP-DLG-02 / #703 untouched."
+  ]
+}

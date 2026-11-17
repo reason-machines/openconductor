@@ -12,6 +12,7 @@ import { Editor } from "@pierre/diffs/edit";
 import type { EditorFactory } from "@pierre/diffs/react";
 import { inTauri } from "../../backend";
 import { acknowledgeEditorSave, changeEditorDraft, observeEditorContents, persistEditorDraft, type EditorContents, type EditorDraftState } from "./editorContents.ts";
+import { loadPersistedDrafts, syncDraftToStorage } from "./draftStorage.ts";
 export { editableContents } from "./editable.ts";
 
 /** Pierre's editor factory, as Conductor's `bqo` (`(t, o, k) => new Editor(t, o, k)`). */
@@ -31,8 +32,9 @@ export interface FileEdit {
   error: string | null;
 }
 
-/** Drafts outlive the open file, as Conductor's draft store does: switching files and back keeps the edit. */
-const draftState: EditorDraftState = { contents: new Map(), pendingSaves: new Map() };
+/** Drafts outlive the open file, as Conductor's draft store does: switching files and back keeps the edit.
+ * Seeded from localStorage on startup so drafts survive a Tauri WebView restart (parity:diff.edit-in-viewer). */
+const draftState: EditorDraftState = { contents: loadPersistedDrafts(), pendingSaves: new Map() };
 const drafts = draftState.contents;
 const draftKey = (worktree: string | null, path: string) => `${worktree ?? "sample"}\u0000${path}`;
 const saveTasks = new Map<string, Set<Promise<void>>>();
@@ -80,6 +82,7 @@ export function useFileEdit(worktree: string | null, path: string, onDisk: strin
     const { key: k, savedText: s } = latest.current;
     const before = isDirty(drafts.get(k), s);
     changeEditorDraft(draftState, k, s, contents);
+    syncDraftToStorage(k, drafts.get(k));
     if (isDirty(drafts.get(k), s) !== before) rerender((n) => n + 1);
   }, []);
 
@@ -103,6 +106,8 @@ export function useFileEdit(worktree: string | null, path: string, onDisk: strin
       void task.then(finish, finish);
       task.then(
         () => {
+          // Sync cleared draft (or retained draft after a concurrent edit) to localStorage.
+          syncDraftToStorage(key, drafts.get(key));
           rerender((n) => n + 1);
           onSaved?.();
         },
