@@ -55,3 +55,7 @@ Two inspected PNGs are retained and published in `media.json`: before, the disab
 Sole runtime started **18:53:57.913Z**, deadline **19:08:57.913Z**. Explicit early cleanup/release **19:00:57.238358Z**: own tab closed, managed tabs `[]`, published preview stopped/listening null, worker-confirmed process group exit/free port, own server processes `[]`, separate command-network-namespace bind passed. That independent bind is not a substitute for the preview namespace's stopped/listening-null receipt. No runtime remains reserved.
 
 **Not run:** full-App, live-original side-by-side, macOS/WebKit, real backend/provider/native behavior and packaged inclusion. Existing native/release custodians retain their lanes; these source/mounted/Linux Chrome checks do not establish those acceptance gates.
+
+## Raw log preservation
+
+The canonical RED `baseline.tap.gz` and earlier pre-freeze-v1 RED archive preserve their original bytes, including Node’s whitespace-only diagnostic separators. `raw-red-archives.json` pins their byte lengths, decompressed SHA-256s, archive SHA-256s, and original Git commit/path; `verify.py` compares the decompressed bytes directly to that original Git content. No raw output was trimmed or regenerated to pass `git diff --check origin/main...HEAD`.

@@ -5,6 +5,7 @@
   "current_source_pins": 19,
   "product_replacements": 1,
   "legacy_test_edits": 0,
+  "byte_exact_red_archives": 2,
   "frozen9_sha256": "680bec20893cda8756929862903cbf7157eb9931dc583281b2a766a22004199d",
   "baseline": "7 pass / 2 intended failures",
   "treatment": "9 pass",

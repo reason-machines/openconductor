@@ -1,0 +1,18 @@
+[
+  {
+    "path": "baseline.tap.gz",
+    "gzip_sha256": "01c77de6297dedd2593d4844e43b0949b43169b2f8c5a2853a15b216f1f73ef3",
+    "original_path": "evidence/dialogs/submit-prompt-pending-hint/baseline.tap",
+    "original_commit": "911c815dbdeff4ea5f3496382173b2c05c25e21f",
+    "original_bytes": 3821,
+    "original_sha256": "994e6e8499cc96ff31376bc0d3a6f6a750fa093c63c0d6476b99a5c0855a7cbe"
+  },
+  {
+    "path": "pre-freeze-v1/baseline.tap.gz",
+    "gzip_sha256": "264b4fae22eb2754b6c87e3ec03132f01561cdc001c32cd6feee89b3ac2d6f93",
+    "original_path": "evidence/dialogs/submit-prompt-pending-hint/pre-freeze-v1/baseline.tap",
+    "original_commit": "911c815dbdeff4ea5f3496382173b2c05c25e21f",
+    "original_bytes": 4579,
+    "original_sha256": "32bd6d101b5ddf76b4ac3499f3b132b5409d77270a580dcf407f82062c04319f"
+  }
+]

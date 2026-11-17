@@ -42,11 +42,18 @@ fixture = (ROOT / 'src/components/submitPromptPendingHint.test.ts').read_bytes()
 assert sha(fixture) == manifest['fixture_sha256']
 assert fixture == (OUT / 'baseline/submitPromptPendingHint.test.ts.txt').read_bytes()
 assert sha(fixture) == (OUT / 'fixture.sha256').read_text().split()[0]
-for name, passes, failures in [('baseline.tap', 7, 2), ('treatment.tap', 9, 0), ('adjacent-baseline.tap', 10, 0), ('adjacent-treatment.tap', 10, 0)]:
-    log = (OUT / name).read_text()
+archives = json.loads((OUT / 'raw-red-archives.json').read_text())
+for record in archives:
+    packed = (OUT / record['path']).read_bytes()
+    raw = gzip.decompress(packed)
+    assert sha(packed) == record['gzip_sha256']
+    assert sha(raw) == record['original_sha256'] and len(raw) == record['original_bytes']
+    assert raw == subprocess.check_output(['git', 'show', f"{record['original_commit']}:{record['original_path']}"], cwd=ROOT)
+for name, passes, failures in [('baseline.tap.gz', 7, 2), ('treatment.tap', 9, 0), ('adjacent-baseline.tap', 10, 0), ('adjacent-treatment.tap', 10, 0)]:
+    log = gzip.decompress((OUT / name).read_bytes()).decode() if name.endswith('.gz') else (OUT / name).read_text()
     for line in [f'# pass {passes}', f'# fail {failures}', '# cancelled 0', '# skipped 0']:
         assert line in log.splitlines(), (name, line)
-red = (OUT / 'baseline.tap').read_text()
+red = gzip.decompress((OUT / 'baseline.tap.gz').read_bytes()).decode()
 assert red.count('pending button must not advertise an idle shortcut') == 2
 assert red.count('not ok ') == 2
 assert 'not ok 3 - Submit prompt hides the default hint while the opener is pending' in red
@@ -54,7 +61,7 @@ assert 'not ok 5 - Submit prompt hides the custom hint while the opener is pendi
 print(json.dumps({
     'result': 'PASS', 'main_checked': manifest['main_checked'],
     'source_bindings': len(manifest['spans']), 'current_source_pins': len(manifest['current_sources']),
-    'product_replacements': 1, 'legacy_test_edits': 0,
+    'product_replacements': 1, 'legacy_test_edits': 0, 'byte_exact_red_archives': len(archives),
     'frozen9_sha256': sha(fixture), 'baseline': '7 pass / 2 intended failures',
     'treatment': '9 pass', 'adjacent_before_and_after': '10 pass',
     'limits': 'Retained source and inert mounted form callbacks, not browser/native/package acceptance',
