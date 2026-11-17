@@ -1,0 +1,22 @@
+diff --git a/src/features/diff/unsubmittedAnchorMovement.test.ts b/src/features/diff/unsubmittedAnchorMovement.test.ts
+index 0c3c03c6..d5e174ab 100644
+--- a/src/features/diff/unsubmittedAnchorMovement.test.ts
++++ b/src/features/diff/unsubmittedAnchorMovement.test.ts
+@@ -204,7 +204,7 @@ for (const layout of ["unified", "split", "file"] as const) {
+       assert.equal(f.value(), body); assert.equal(f.anchors().filter((a) => a.side === "new").length, 2, "draft must remain grouped with its shared-line thread");
+       assert.equal(f.anchors().find((a) => a.commentIds?.includes("shared"))?.line, 25);
+       await f.submit();
+-      const row = (await f.rows()).find((r: DiffComment) => r.body === body); assert.ok(row);
++      const row = (await f.rows()).find((r: DiffComment) => r.body === body.trim()); assert.ok(row);
+       assert.equal(row.line_number, 23); assert.equal(row.end_line_number, 25);
+       await f.complete();
+       const again = (await f.rows()).find((r: DiffComment) => r.id === row.id); assert.equal(again.line_number, 23); assert.equal(again.end_line_number, 25);
+@@ -215,7 +215,7 @@ for (const layout of ["unified", "split", "file"] as const) {
+       await f.open(); await f.body(); await f.insert(); await f.submit(); await f.refresh();
+       assert.equal(f.next(), true); assert.equal(f.scrolls.at(-1)?.lineNumber, 25, "submitting must not replace the live mapping identity");
+       assert.deepEqual(f.writes, ["add"]);
+-      await f.complete(); const row = (await f.rows()).find((r: DiffComment) => r.body === body); assert.ok(row);
++      await f.complete(); const row = (await f.rows()).find((r: DiffComment) => r.body === body.trim()); assert.ok(row);
+       assert.equal(row.line_number, 23); assert.equal(row.end_line_number, 25);
+     } finally { await f.close(); }
+   });

@@ -1,0 +1,74 @@
+(node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home target label: workspace target hides its branch even when the repository default differs
+ok 1 - Home target label: workspace target hides its branch even when the repository default differs
+  ---
+  duration_ms: 181.130196
+  type: 'test'
+  ...
+# Subtest: Home target label: repository default remains visible when it is not the workspace target
+ok 2 - Home target label: repository default remains visible when it is not the workspace target
+  ---
+  duration_ms: 114.212125
+  type: 'test'
+  ...
+# Subtest: Home target label: null workspace target uses the decoder's main fallback, not repository default
+ok 3 - Home target label: null workspace target uses the decoder's main fallback, not repository default
+  ---
+  duration_ms: 74.11117
+  type: 'test'
+  ...
+# Subtest: Home target label: older workspace row uses the same main fallback
+ok 4 - Home target label: older workspace row uses the same main fallback
+  ---
+  duration_ms: 59.404956
+  type: 'test'
+  ...
+# Subtest: Home target label: matching repository and workspace targets keep directory fallback
+ok 5 - Home target label: matching repository and workspace targets keep directory fallback
+  ---
+  duration_ms: 62.334387
+  type: 'test'
+  ...
+# Subtest: Home target label: unrelated branch keeps its prettified label
+ok 6 - Home target label: unrelated branch keeps its prettified label
+  ---
+  duration_ms: 59.782196
+  type: 'test'
+  ...
+# Subtest: Home target label: stored name still precedes target and branch
+ok 7 - Home target label: stored name still precedes target and branch
+  ---
+  duration_ms: 45.385114
+  type: 'test'
+  ...
+# Subtest: Home target label: PR title still precedes target and branch
+ok 8 - Home target label: PR title still precedes target and branch
+  ---
+  duration_ms: 43.05001
+  type: 'test'
+  ...
+# Subtest: Home target label: explicit user name still wins
+ok 9 - Home target label: explicit user name still wins
+  ---
+  duration_ms: 51.154732
+  type: 'test'
+  ...
+# Subtest: Home target label: search uses the same corrected displayed name
+ok 10 - Home target label: search uses the same corrected displayed name
+  ---
+  duration_ms: 39.876709
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1275.163564
