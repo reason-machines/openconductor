@@ -1,0 +1,89 @@
+{
+  "author": "Conductor Rebuild",
+  "source_pr_1427_actual_merge": "5284779b7cb8705170b64968cc92eefd3a4740a0",
+  "baseline_main": "5284779b7cb8705170b64968cc92eefd3a4740a0",
+  "integration_main": "08be22cfcb0034e23171fe9b5f3b0a5df93585f3",
+  "baseline_product_sha256": "ae00d798fa797ceca841f88374bbbdabeeb829ea7826b4352868b264183a501e",
+  "treatment_product_sha256": "4205f587b2c2649ed28335d5c070c5a14bbed603ec9a7485dccfc4fff0fe4ace",
+  "frozen_fixture_sha256": "1a5da8c156c3d15f191ff7b98e27879e91c2615f47b9d89084bf9786e6be7091",
+  "test_migration_originals": {
+    "src/scripts/runningInput.test.ts": {
+      "raw_sha256": "574f1995ce29109fc61ad0d523e64672aa6fa9ee5d96242dbb054b06afed57e2",
+      "archive": "runningInput.before.test.ts.gz",
+      "gzip_sha256": "3306b9a8242f5d643499beb1976777ebbe88ea3ba5dbfd23eee7148ecfcd4209",
+      "current_sha256": "3e8562f0242592e93ef98d39609351749d91d04e4f096db33e827b9098477d5a"
+    },
+    "src/scripts/runningResize.test.ts": {
+      "raw_sha256": "1141ccc7be4b4aa39edaf7c6433aaffe9689c3955d3bbb553dab5ef0b399a49f",
+      "archive": "runningResize.before.test.ts.gz",
+      "gzip_sha256": "63877f8a8f71c362f1d503e527ff2123034f3d1596d35c61e015db87e64b7c53",
+      "current_sha256": "0d83241dcf43f74306fa24d57fb47abe1f6fbb246c301d1ceffaa7c677d9f4f8"
+    }
+  },
+  "log_hashes": {
+    "fresh-red": {
+      "raw_sha256": "11e215fbc356445c53633cbc5d09ce7df554ed5e0829e1fd3a9bd39773693f41",
+      "gzip_sha256": "390c5af6d7ac2d14ea715511e48ee72c3376629a70e520b50773dbc4cd5d5f47",
+      "exit_code": 1,
+      "result": "expected baseline failure"
+    },
+    "fresh-green": {
+      "raw_sha256": "f2795eeaf8d95b34aafcafd7aed51f6d2a1c58ade5517a104769a838eb54030f",
+      "gzip_sha256": "2b633d33553ef84b8d1110afa7d31cd6a10809f2567ccc4976d4984d72cac696",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    "fresh-adjacent-before-migration": {
+      "raw_sha256": "8c33b0016d94fcc988c30f8e59347b67fa359d57fefd2f1da836b8c8664e9432",
+      "gzip_sha256": "1028f97dce526e4e2d0bc0bc1dd4b68f1bb4a77dec7eb6e45144687314f29717",
+      "exit_code": 1,
+      "result": "two source-contradictory adjacent screen-lifetime assertions; migrated below"
+    },
+    "fresh-typecheck": {
+      "raw_sha256": "91c9fe8679639260822d83ee7e81d6f3da39f84dad13a146ce6cfe8ac11c5994",
+      "gzip_sha256": "b3ddd70788970d2149c5ee774a0f7f38cde097c0bdae78a9572eab8d2b70f34b",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    "fresh-build-first-timeout": {
+      "raw_sha256": "b9f217da6aec400b307024b1b9de0f5972d921911a194c30ad15e60d8e3361b9",
+      "gzip_sha256": "7c5d32d5dcb787c7b346be3eb18f2e69396080d3149df194a34dc35ec20ee05e",
+      "exit_code": null,
+      "result": "timeout at 240s in combined typecheck/build invocation"
+    },
+    "fresh-build": {
+      "raw_sha256": "a5e2e850feb80d2fbb33deb3fbf45b64c0bc15e872ff358fa8acae6e829e3dfb",
+      "gzip_sha256": "08c88bf2ca54af6a32f84e7eb13c0c91ceb5c3f0b566aaf738fd1a668009cb22",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    "integrated-affected": {
+      "raw_sha256": "e0e93896930adfe0479d73219e50cb15d2fa369707ea9c933539a20ffbbb4528",
+      "gzip_sha256": "d8265f3e6ee7d9f37b41b741f927e83f9c358083cf84576a9d35a3dda13e19c3",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    "integrated-typecheck": {
+      "raw_sha256": "13bec250b0cc23f156b79cd3aea62614ff98809d9ad9e40612c7dcb76459ba97",
+      "gzip_sha256": "5682560b83c5367160ff04b010012ee7cd8f36ee73e84b465d3758a3f41c30f1",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    "integrated-build": {
+      "raw_sha256": "650164d453cd6581da74d00e676f9a8f507b1f02e5eae1e7ff8bbc789ff666ff",
+      "gzip_sha256": "9671bc313e530232ef66d32a666b9348091f4951c8bbddc4ebe7df8f0ad0cbb3",
+      "exit_code": 0,
+      "result": "passed"
+    }
+  },
+  "not_run": [
+    "browser",
+    "native",
+    "real-process",
+    "PTY",
+    "provider",
+    "package/installed-build embedding"
+  ],
+  "negative_claim": "RIS clears modeled selection; no stale xterm-selection claim",
+  "source_only": true
+}
