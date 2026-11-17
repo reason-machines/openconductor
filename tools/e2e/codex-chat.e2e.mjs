@@ -40,6 +40,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+import { createRuntimeReceipt } from "./runtime-receipt.mjs";
 import { WebDriver } from "../../tests/e2e/webdriver.mjs";
 import { finishStartup } from "../../tests/e2e/startup.mjs";
 import { installCodexAccessDiagnostics, assertCodexAccessSnapshot, codexBoundaryReport, assertCodexBoundary } from "./codex-access-diagnostics.mjs";
@@ -91,7 +92,9 @@ const SHELL_KEY = "sk-e2e-left-in-the-shell";
 env.OPENAI_API_KEY = env.CODEX_API_KEY = SHELL_KEY;
 // "Sign in with ChatGPT" opens the auth URL: xdg-open runs $BROWSER, so no real browser starts.
 env.BROWSER = "true";
+const receipt = createRuntimeReceipt({ suite: "codex-chat", app, out, home, project });
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
+receipt.track(driver);
 const driverExited = new Promise((r) => driver.on("exit", r));
 
 const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
@@ -565,8 +568,10 @@ try {
   } catch {}
   process.exitCode = 1;
 } finally {
+  await receipt.beforeTeardown((script) => wd("POST", "/execute/async", { script, args: [] }, 3000));
   await saveAccessDiagnostics().catch(() => console.error("access diagnostics unavailable"));
   if (sessionUrl) await wd("DELETE", "").catch(() => {});
   driver.kill();
   await Promise.race([driverExited, sleep(3000)]);
+  await receipt.afterTeardown();
 }

@@ -1,0 +1,1 @@
+function W5s(t,e){let n=t.previousElementSibling;for(;n;){if(n.matches(e))return n;n=n.previousElementSibling}}

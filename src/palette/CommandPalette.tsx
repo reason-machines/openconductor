@@ -233,6 +233,8 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     }
     const cmd = paletteCommandFor(e.nativeEvent, overrides);
     if (cmd === null) return;
+    // Section picking is outside the regular palette's group-navigation scope.
+    if (inSectionMode && (cmd === "next-group" || cmd === "prev-group")) return;
     if ((e.nativeEvent.isComposing || e.keyCode === 229) && cmd !== "close" && cmd !== "next-tab" && cmd !== "prev-tab") return;
     e.preventDefault();
     e.stopPropagation();
@@ -250,7 +252,9 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     if (cmd === "close") onClose();
     else if (cmd === "select") choose(flat[active]);
     else if (cmd === "next-tab" || cmd === "prev-tab") changeTab(cycleTab(tab, cmd === "next-tab" ? 1 : -1, showProjects));
-    else setActive((a) => moveActive(a, flat.length, cmd));
+    else setActive((a) => moveActive(a, flat.length, cmd,
+      tab === "workspaces" ? [wsRows.active.length, wsRows.archived.length] : groups.map((group) => group.items.length),
+    ));
   }
 
   const tabs = TABS.filter((t) => t.value !== "projects" || showProjects);

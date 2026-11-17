@@ -1,0 +1,128 @@
+{
+  "unit": "PALETTE-GROUP-NAVIGATION-SAME15",
+  "owner": "Conductor Rebuild / SAME15",
+  "stage": "QUALIFIED_SOURCE_UNIT_RED_AWAITING_IMPLEMENTATION_LEASE",
+  "main_checked": "c821b27519ab1831cf62dce6d236337bf75cc3e0",
+  "reference": {
+    "app": "Conductor 0.87.6",
+    "asset": "renderApp-D_fmY7hW.js",
+    "asset_bytes": 11600457,
+    "asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "identity_basis": "BE7 reports full retained renderer freshly rehashed. This Session rehashes 12 delivered raw spans and 6 retained wrapper spans, not the full renderer. No new acquisition or original-code execution.",
+    "retained_REA_artifact_id": "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+    "packet_sha256": "a53245ce867757b163a8bdbe0ca7bf815f0007876a7e3c86cd61b09adc5fb408",
+    "wrapper_spans": [
+      {
+        "role": "Xyi-root",
+        "utf8_half_open": [
+          2903072,
+          2908580
+        ],
+        "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92",
+        "path": "../ime-composition/Xyi-root.txt"
+      },
+      {
+        "role": "P6-alias",
+        "utf8_half_open": [
+          2912384,
+          2912492
+        ],
+        "sha256": "20b129f07752490e4c9ca33091b5d947173fb1de439bcda0f2b15b9e25deb4f6",
+        "path": "../ime-composition/P6-alias.txt"
+      },
+      {
+        "role": "KV-wrapper",
+        "utf8_half_open": [
+          2913899,
+          2914244
+        ],
+        "sha256": "12168391677891cbeaddc6307650dab1ee6e762cbd0f8114b28ff1a0339a97c4",
+        "path": "../ime-composition/KV-wrapper.txt"
+      },
+      {
+        "role": "qZ-dialog",
+        "utf8_half_open": [
+          2914275,
+          2914883
+        ],
+        "sha256": "8d7253f154bad3c2441e4850e50b961b2e2870a2c38d7424a9b15cdd6a7f8768",
+        "path": "../ime-composition/qZ-dialog.txt"
+      },
+      {
+        "role": "Y5s-content",
+        "utf8_half_open": [
+          2914884,
+          2916816
+        ],
+        "sha256": "1f343b0f6340b44087d7914fc114f67311554dd62c7b60c549241f3645c4ea29",
+        "path": "../ime-composition/Y5s-content.txt"
+      },
+      {
+        "role": "h_a-palette-caller",
+        "utf8_half_open": [
+          10888832,
+          10889073
+        ],
+        "sha256": "db46eeae9e65f9feee9a554863994313bfa6fbabdf9653f1fbb11b2d34d7d55b",
+        "path": "../ime-composition/h_a-palette-caller.txt"
+      }
+    ],
+    "input_consumer": {
+      "parent": "m_a.txt",
+      "relative_utf8_half_open": [
+        19659,
+        19793
+      ],
+      "asset_utf8_half_open": [
+        10908774,
+        10908908
+      ],
+      "sha256": "3ad284ab081b397077dcaa3e3a5792983ab85aca5fb38fa5c301b5e2760166d1"
+    },
+    "chain": [
+      "h_a \u2192 qZ \u2192 Y5s \u2192 KV \u2192 P6=Xyi",
+      "m_a \u2192 kI \u2192 P6.Input=B5s: forwarded input props, no onKeyDown override",
+      "Xyi onKeyDown \u2192 Z/se \u2192 altKey \u2192 J(+1/-1)",
+      "J \u2192 G + closest(Eve) \u2192 V5s/W5s sibling traversal \u2192 querySelector(_Bn)",
+      "no sibling enabled row \u2192 Q ordinary row movement, with loop=true from Y5s"
+    ]
+  },
+  "current": [
+    {
+      "path": "src/palette/state.ts",
+      "snapshot": "main-state.ts",
+      "sha256": "26afbc98aed1f0157bcf2f25ba6f5668ee5829f25437865fbdd71fa5cac36838"
+    },
+    {
+      "path": "src/palette/CommandPalette.tsx",
+      "snapshot": "main-CommandPalette.tsx",
+      "sha256": "2eadcc19c108b500404d36737000ea2643b71f14bd8fbdc493a1f133129c1b23"
+    }
+  ],
+  "proposed_product_paths": [
+    "src/palette/state.ts",
+    "src/palette/CommandPalette.tsx"
+  ],
+  "limits": [
+    "Qualification only: production files remain read-only until exact implementation lease.",
+    "Fixture executes only our actual input handler and actual pure state functions with synthetic boundaries; not a mounted React, DOM, browser or native result.",
+    "No dependency installation, product/backend/provider/guest dispatch, original extracted-JS execution or new REA acquisition.",
+    "Raw m_a cd07cfad\u2026d1c3e is not the previous read-record hash.",
+    "Typeahead, icon-trigger arrows, split menu behavior, section-picker and global defaultPrevented handling excluded."
+  ],
+  "fixture": {
+    "path": "src/palette/paletteGroupNavigation.test.ts",
+    "sha256": "b89d551dba77bb2f3eb0c6d1a7590d84190f428af77a891a96aaa7f54fe3c52c",
+    "command": "node --experimental-strip-types --test src/palette/paletteGroupNavigation.test.ts",
+    "tests": 36,
+    "expected_assertion_failures": 18,
+    "passing_controls": 18,
+    "exit": 1
+  },
+  "adjacent": {
+    "command": "node --experimental-strip-types --test src/palette/state.test.ts",
+    "tests": 9,
+    "pass": 9,
+    "exit": 0
+  }
+}
