@@ -53,7 +53,7 @@ node --experimental-strip-types --test --test-concurrency=2 \
 
 **131/131 PASS**, zero failures/skips/cancellations. `adjacent.tap` retains the output. Together with the unchanged dedicated fixture, **139 tests passed**. Existing JavaScript dependencies reused; no dependency/lockfile edits, package acquisition or native build.
 
-`npm run lint:colors`: **PASS**, six checker tests and source scan. Typecheck/build receipts are recorded in `commands.json` and their logs after the serialized heavy-check slot; they are distinct from CI on the eventual published head.
+`npm run lint:colors`: **PASS**, six checker tests and source scan. The single admitted serialized foreground sequence then ran `npm run typecheck`: **PASS**, followed by `npm run build`: **PASS** (branding, TypeScript and Vite, built in **39.38s**). Chunk-size advisories remain visible in the lossless logs. No tests/build/typecheck ran in parallel; post-sequence process readback found no remaining own build/tsc process and the shared slot was explicitly released. `typecheck.log.gz`, `build.log.gz` and `commands.json` retain these local receipts, distinct from CI on the eventual published head.
 
 ## REA-retained source, static only
 

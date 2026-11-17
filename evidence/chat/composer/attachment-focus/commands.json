@@ -51,11 +51,15 @@
     },
     {
       "command": "npm run typecheck",
-      "result": "NOT_RUN pending serialized heavy-check slot"
+      "result": "PASS in the admitted serialized foreground heavy-check sequence; no parallel build/typecheck/tests",
+      "exit": 0,
+      "log": "typecheck.log.gz"
     },
     {
       "command": "npm run build",
-      "result": "NOT_RUN pending serialized heavy-check slot"
+      "result": "PASS branding, TypeScript and frontend Vite production build (39.38s); chunk-size advisory retained; post-sequence own build/tsc processes empty and slot explicitly released",
+      "exit": 0,
+      "log": "build.log.gz"
     }
   ],
   "limits": [
