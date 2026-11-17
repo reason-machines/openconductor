@@ -1,0 +1,742 @@
+[
+  {
+    "query": "name-plain-enter",
+    "source_id": "751c0d6c-96c7-4443-9007-6169818cf31c",
+    "revision": 30121939,
+    "raw": "{\"id\":\"cli-1\",\"jsonrpc\":\"2.0\",\"result\":{\"result\":{\"type\":\"string\",\"value\":\"{\\\"case\\\":\\\"name-plain-enter\\\",\\\"values\\\":[{\\\"id\\\":\\\"project-name\\\",\\\"value\\\":\\\"fixture-project\\\",\\\"disabled\\\":false},{\\\"id\\\":\\\"\\\",\\\"value\\\":\\\"/synthetic/project-root\\\",\\\"disabled\\\":false}],\\\"active\\\":\\\"project-name\\\",\\\"primary\\\":true,\\\"witness\\\":{\\\"fixture\\\":\\\"CREATE-PROJECT-IMPLICIT-ENTER-6013/v1\\\",\\\"calls\\\":[{\\\"parentDir\\\":\\\"/synthetic/project-root\\\",\\\"slug\\\":\\\"fixture-project\\\",\\\"template\\\":\\\"empty\\\",\\\"effect\\\":\\\"inert pending Promise only\\\"}],\\\"events\\\":[{\\\"type\\\":\\\"keydown\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"project-name\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"click\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"BUTTON\\\",\\\"id\\\":\\\"\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"submit\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"FORM\\\",\\\"id\\\":\\\"\\\",\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"keyup\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"project-name\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false}],\\\"errors\\\":[],\\\"shortcuts\\\":[{\\\"key\\\":{\\\"kind\\\":\\\"logical\\\",\\\"value\\\":\\\"Enter\\\"},\\\"modifiers\\\":[\\\"meta\\\"]}],\\\"closed\\\":0,\\\"completed\\\":0,\\\"capabilitySubmits\\\":0}}\"}}}",
+    "observed": {
+      "case": "name-plain-enter",
+      "values": [
+        {
+          "id": "project-name",
+          "value": "fixture-project",
+          "disabled": false
+        },
+        {
+          "id": "",
+          "value": "/synthetic/project-root",
+          "disabled": false
+        }
+      ],
+      "active": "project-name",
+      "primary": true,
+      "witness": {
+        "fixture": "CREATE-PROJECT-IMPLICIT-ENTER-6013/v1",
+        "calls": [
+          {
+            "parentDir": "/synthetic/project-root",
+            "slug": "fixture-project",
+            "template": "empty",
+            "effect": "inert pending Promise only"
+          }
+        ],
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "project-name",
+            "key": "Enter",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "click",
+            "trusted": true,
+            "tag": "BUTTON",
+            "id": "",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "submit",
+            "trusted": true,
+            "tag": "FORM",
+            "id": "",
+            "defaultPrevented": false
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "project-name",
+            "key": "Enter",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          }
+        ],
+        "errors": [],
+        "shortcuts": [
+          {
+            "key": {
+              "kind": "logical",
+              "value": "Enter"
+            },
+            "modifiers": [
+              "meta"
+            ]
+          }
+        ],
+        "closed": 0,
+        "completed": 0,
+        "capabilitySubmits": 0
+      }
+    }
+  },
+  {
+    "query": "capabilitySubmits\\\":3",
+    "source_id": "156ce694-1e40-485e-837d-c88ecb057f63",
+    "revision": 30121722,
+    "raw": "{\"id\":\"cli-1\",\"jsonrpc\":\"2.0\",\"result\":{\"result\":{\"type\":\"string\",\"value\":\"{\\\"case\\\":\\\"capability\\\",\\\"url\\\":\\\"http://localhost:48733/?mode=capability\\\",\\\"values\\\":[{\\\"id\\\":\\\"cap-name\\\",\\\"value\\\":\\\"fixture-project\\\"},{\\\"id\\\":\\\"cap-parent\\\",\\\"value\\\":\\\"/synthetic/project-root\\\"}],\\\"active\\\":\\\"cap-submit\\\",\\\"witness\\\":{\\\"fixture\\\":\\\"CREATE-PROJECT-IMPLICIT-ENTER-6013/v1\\\",\\\"calls\\\":[],\\\"events\\\":[{\\\"type\\\":\\\"keydown\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"cap-name\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"click\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"BUTTON\\\",\\\"id\\\":\\\"cap-submit\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"submit\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"FORM\\\",\\\"id\\\":\\\"\\\",\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"keyup\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"cap-name\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"keydown\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"cap-parent\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"click\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"BUTTON\\\",\\\"id\\\":\\\"cap-submit\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"submit\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"FORM\\\",\\\"id\\\":\\\"\\\",\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"keyup\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"cap-parent\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"click\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"BUTTON\\\",\\\"id\\\":\\\"cap-submit\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"submit\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"FORM\\\",\\\"id\\\":\\\"\\\",\\\"defaultPrevented\\\":false}],\\\"errors\\\":[],\\\"shortcuts\\\":[],\\\"closed\\\":0,\\\"completed\\\":0,\\\"capabilitySubmits\\\":3}}\"}}}",
+    "observed": {
+      "case": "capability",
+      "url": "http://localhost:48733/?mode=capability",
+      "values": [
+        {
+          "id": "cap-name",
+          "value": "fixture-project"
+        },
+        {
+          "id": "cap-parent",
+          "value": "/synthetic/project-root"
+        }
+      ],
+      "active": "cap-submit",
+      "witness": {
+        "fixture": "CREATE-PROJECT-IMPLICIT-ENTER-6013/v1",
+        "calls": [],
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "cap-name",
+            "key": "Enter",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "click",
+            "trusted": true,
+            "tag": "BUTTON",
+            "id": "cap-submit",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "submit",
+            "trusted": true,
+            "tag": "FORM",
+            "id": "",
+            "defaultPrevented": false
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "cap-name",
+            "key": "Enter",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "keydown",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "cap-parent",
+            "key": "Enter",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "click",
+            "trusted": true,
+            "tag": "BUTTON",
+            "id": "cap-submit",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "submit",
+            "trusted": true,
+            "tag": "FORM",
+            "id": "",
+            "defaultPrevented": false
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "cap-parent",
+            "key": "Enter",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "click",
+            "trusted": true,
+            "tag": "BUTTON",
+            "id": "cap-submit",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "submit",
+            "trusted": true,
+            "tag": "FORM",
+            "id": "",
+            "defaultPrevented": false
+          }
+        ],
+        "errors": [],
+        "shortcuts": [],
+        "closed": 0,
+        "completed": 0,
+        "capabilitySubmits": 3
+      }
+    }
+  },
+  {
+    "query": "parent-plain-enter",
+    "source_id": "244192a2-85f5-4cd0-a7cd-31602ab8ac3c",
+    "revision": 30122099,
+    "raw": "{\"id\":\"cli-1\",\"jsonrpc\":\"2.0\",\"result\":{\"result\":{\"type\":\"string\",\"value\":\"{\\\"case\\\":\\\"parent-plain-enter\\\",\\\"values\\\":[{\\\"id\\\":\\\"project-name\\\",\\\"value\\\":\\\"fixture-project\\\",\\\"disabled\\\":false},{\\\"id\\\":\\\"\\\",\\\"value\\\":\\\"/synthetic/project-root\\\",\\\"disabled\\\":false}],\\\"active\\\":\\\"\\u003cinput placeholder=\\\\\\\"Enter path or click to select\\\\\\\" value=\\\\\\\"/synthetic/project-root\\\\\\\"\\u003e\\\",\\\"primary\\\":true,\\\"witness\\\":{\\\"fixture\\\":\\\"CREATE-PROJECT-IMPLICIT-ENTER-6013/v1\\\",\\\"calls\\\":[{\\\"parentDir\\\":\\\"/synthetic/project-root\\\",\\\"slug\\\":\\\"fixture-project\\\",\\\"template\\\":\\\"empty\\\",\\\"effect\\\":\\\"inert pending Promise only\\\"}],\\\"events\\\":[{\\\"type\\\":\\\"keydown\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"click\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"BUTTON\\\",\\\"id\\\":\\\"\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"submit\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"FORM\\\",\\\"id\\\":\\\"\\\",\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"keyup\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false}],\\\"errors\\\":[],\\\"shortcuts\\\":[{\\\"key\\\":{\\\"kind\\\":\\\"logical\\\",\\\"value\\\":\\\"Enter\\\"},\\\"modifiers\\\":[\\\"meta\\\"]}],\\\"closed\\\":0,\\\"completed\\\":0,\\\"capabilitySubmits\\\":0}}\"}}}",
+    "observed": {
+      "case": "parent-plain-enter",
+      "values": [
+        {
+          "id": "project-name",
+          "value": "fixture-project",
+          "disabled": false
+        },
+        {
+          "id": "",
+          "value": "/synthetic/project-root",
+          "disabled": false
+        }
+      ],
+      "active": "<input placeholder=\"Enter path or click to select\" value=\"/synthetic/project-root\">",
+      "primary": true,
+      "witness": {
+        "fixture": "CREATE-PROJECT-IMPLICIT-ENTER-6013/v1",
+        "calls": [
+          {
+            "parentDir": "/synthetic/project-root",
+            "slug": "fixture-project",
+            "template": "empty",
+            "effect": "inert pending Promise only"
+          }
+        ],
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "",
+            "key": "Enter",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "click",
+            "trusted": true,
+            "tag": "BUTTON",
+            "id": "",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "submit",
+            "trusted": true,
+            "tag": "FORM",
+            "id": "",
+            "defaultPrevented": false
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "",
+            "key": "Enter",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          }
+        ],
+        "errors": [],
+        "shortcuts": [
+          {
+            "key": {
+              "kind": "logical",
+              "value": "Enter"
+            },
+            "modifiers": [
+              "meta"
+            ]
+          }
+        ],
+        "closed": 0,
+        "completed": 0,
+        "capabilitySubmits": 0
+      }
+    }
+  },
+  {
+    "query": "name-meta-enter",
+    "source_id": "782a8b1b-f2f7-44e1-8382-b6037ac3cc95",
+    "revision": 30122287,
+    "raw": "{\"id\":\"cli-1\",\"jsonrpc\":\"2.0\",\"result\":{\"result\":{\"type\":\"string\",\"value\":\"{\\\"case\\\":\\\"name-meta-enter\\\",\\\"values\\\":[{\\\"id\\\":\\\"project-name\\\",\\\"value\\\":\\\"fixture-project\\\",\\\"disabled\\\":false},{\\\"id\\\":\\\"\\\",\\\"value\\\":\\\"/synthetic/project-root\\\",\\\"disabled\\\":false}],\\\"active\\\":\\\"project-name\\\",\\\"primary\\\":true,\\\"witness\\\":{\\\"fixture\\\":\\\"CREATE-PROJECT-IMPLICIT-ENTER-6013/v1\\\",\\\"calls\\\":[{\\\"parentDir\\\":\\\"/synthetic/project-root\\\",\\\"slug\\\":\\\"fixture-project\\\",\\\"template\\\":\\\"empty\\\",\\\"effect\\\":\\\"inert pending Promise only\\\"}],\\\"events\\\":[{\\\"type\\\":\\\"keydown\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"project-name\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":true,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"click\\\",\\\"trusted\\\":false,\\\"tag\\\":\\\"BUTTON\\\",\\\"id\\\":\\\"\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"submit\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"FORM\\\",\\\"id\\\":\\\"\\\",\\\"defaultPrevented\\\":true},{\\\"type\\\":\\\"keyup\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"project-name\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":true,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false}],\\\"errors\\\":[],\\\"shortcuts\\\":[{\\\"key\\\":{\\\"kind\\\":\\\"logical\\\",\\\"value\\\":\\\"Enter\\\"},\\\"modifiers\\\":[\\\"meta\\\"]}],\\\"closed\\\":0,\\\"completed\\\":0,\\\"capabilitySubmits\\\":0}}\"}}}",
+    "observed": {
+      "case": "name-meta-enter",
+      "values": [
+        {
+          "id": "project-name",
+          "value": "fixture-project",
+          "disabled": false
+        },
+        {
+          "id": "",
+          "value": "/synthetic/project-root",
+          "disabled": false
+        }
+      ],
+      "active": "project-name",
+      "primary": true,
+      "witness": {
+        "fixture": "CREATE-PROJECT-IMPLICIT-ENTER-6013/v1",
+        "calls": [
+          {
+            "parentDir": "/synthetic/project-root",
+            "slug": "fixture-project",
+            "template": "empty",
+            "effect": "inert pending Promise only"
+          }
+        ],
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "project-name",
+            "key": "Enter",
+            "meta": true,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "click",
+            "trusted": false,
+            "tag": "BUTTON",
+            "id": "",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "submit",
+            "trusted": true,
+            "tag": "FORM",
+            "id": "",
+            "defaultPrevented": true
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "project-name",
+            "key": "Enter",
+            "meta": true,
+            "ctrl": false,
+            "defaultPrevented": false
+          }
+        ],
+        "errors": [],
+        "shortcuts": [
+          {
+            "key": {
+              "kind": "logical",
+              "value": "Enter"
+            },
+            "modifiers": [
+              "meta"
+            ]
+          }
+        ],
+        "closed": 0,
+        "completed": 0,
+        "capabilitySubmits": 0
+      }
+    }
+  },
+  {
+    "query": "parent-meta-enter",
+    "source_id": "92167875-3e16-47f6-8c9f-40b0eaaaacac",
+    "revision": 30122397,
+    "raw": "{\"id\":\"cli-1\",\"jsonrpc\":\"2.0\",\"result\":{\"result\":{\"type\":\"string\",\"value\":\"{\\\"case\\\":\\\"parent-meta-enter\\\",\\\"values\\\":[{\\\"id\\\":\\\"project-name\\\",\\\"value\\\":\\\"fixture-project\\\",\\\"disabled\\\":false},{\\\"id\\\":\\\"\\\",\\\"value\\\":\\\"/synthetic/project-root\\\",\\\"disabled\\\":false}],\\\"active\\\":\\\"\\u003cinput placeholder=\\\\\\\"Enter path or click to select\\\\\\\" value=\\\\\\\"/synthetic/project-root\\\\\\\"\\u003e\\\",\\\"primary\\\":true,\\\"witness\\\":{\\\"fixture\\\":\\\"CREATE-PROJECT-IMPLICIT-ENTER-6013/v1\\\",\\\"calls\\\":[{\\\"parentDir\\\":\\\"/synthetic/project-root\\\",\\\"slug\\\":\\\"fixture-project\\\",\\\"template\\\":\\\"empty\\\",\\\"effect\\\":\\\"inert pending Promise only\\\"}],\\\"events\\\":[{\\\"type\\\":\\\"keydown\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":true,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"click\\\",\\\"trusted\\\":false,\\\"tag\\\":\\\"BUTTON\\\",\\\"id\\\":\\\"\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"submit\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"FORM\\\",\\\"id\\\":\\\"\\\",\\\"defaultPrevented\\\":true},{\\\"type\\\":\\\"keyup\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":true,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false}],\\\"errors\\\":[],\\\"shortcuts\\\":[{\\\"key\\\":{\\\"kind\\\":\\\"logical\\\",\\\"value\\\":\\\"Enter\\\"},\\\"modifiers\\\":[\\\"meta\\\"]}],\\\"closed\\\":0,\\\"completed\\\":0,\\\"capabilitySubmits\\\":0}}\"}}}",
+    "observed": {
+      "case": "parent-meta-enter",
+      "values": [
+        {
+          "id": "project-name",
+          "value": "fixture-project",
+          "disabled": false
+        },
+        {
+          "id": "",
+          "value": "/synthetic/project-root",
+          "disabled": false
+        }
+      ],
+      "active": "<input placeholder=\"Enter path or click to select\" value=\"/synthetic/project-root\">",
+      "primary": true,
+      "witness": {
+        "fixture": "CREATE-PROJECT-IMPLICIT-ENTER-6013/v1",
+        "calls": [
+          {
+            "parentDir": "/synthetic/project-root",
+            "slug": "fixture-project",
+            "template": "empty",
+            "effect": "inert pending Promise only"
+          }
+        ],
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "",
+            "key": "Enter",
+            "meta": true,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "click",
+            "trusted": false,
+            "tag": "BUTTON",
+            "id": "",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "submit",
+            "trusted": true,
+            "tag": "FORM",
+            "id": "",
+            "defaultPrevented": true
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "",
+            "key": "Enter",
+            "meta": true,
+            "ctrl": false,
+            "defaultPrevented": false
+          }
+        ],
+        "errors": [],
+        "shortcuts": [
+          {
+            "key": {
+              "kind": "logical",
+              "value": "Enter"
+            },
+            "modifiers": [
+              "meta"
+            ]
+          }
+        ],
+        "closed": 0,
+        "completed": 0,
+        "capabilitySubmits": 0
+      }
+    }
+  },
+  {
+    "query": "primary-mouse-click",
+    "source_id": "5477622f-3a7d-4bc8-8406-5c5fa1e4e202",
+    "revision": 30122532,
+    "raw": "{\"id\":\"cli-1\",\"jsonrpc\":\"2.0\",\"result\":{\"result\":{\"type\":\"string\",\"value\":\"{\\\"case\\\":\\\"primary-mouse-click\\\",\\\"values\\\":[{\\\"id\\\":\\\"project-name\\\",\\\"value\\\":\\\"fixture-project\\\",\\\"disabled\\\":false},{\\\"id\\\":\\\"\\\",\\\"value\\\":\\\"/synthetic/project-root\\\",\\\"disabled\\\":false}],\\\"active\\\":\\\"\\u003cbody style=\\\\\\\"overflow: hidden;\\\\\\\"\\u003e\\u003cdiv id=\\\\\\\"root\\\\\\\" aria-hidden=\\\\\\\"true\\\\\\\" data-base-ui-inert=\\\\\\\"\\\\\\\"\\u003e\\u003ch1\\u003eCreate project keyboard witness\\u003c/h1\\u003e\\u003cp class=\\\\\\\"scope\\\\\\\"\\u003eSynthetic data; backend and workspace services replaced; no files, GitHub, provider or app runtime.\\u003c/p\\u003e\\u003cpre id=\\\\\\\"trace\\\\\\\" aria-label=\\\\\\\"Witness trace\\\\\\\"\\u003e{\\\\n  \\\\\\\"fixture\\\\\\\": \\\\\\\"CREATE-PROJECT-IMPLICIT-ENTER-6013/v1\\\\\\\",\\\\n  \\\\\\\"calls\\\\\\\": [\\\\n    {\\\\n      \\\\\\\"parentDir\\\\\\\": \\\\\\\"/synthetic/project-root\\\\\\\",\\\\n      \\\\\\\"slug\\\\\\\": \\\\\\\"fixture-project\\\\\\\",\\\\n      \\\\\\\"template\\\\\\\": \\\\\\\"empty\\\\\\\",\\\\n      \\\\\\\"effect\\\\\\\": \\\\\\\"inert pending Promise only\\\\\\\"\\\\n    }\\\\n  ],\\\\n  \\\\\\\"events\\\\\\\": [\\\\n    {\\\\n      \\\\\\\"type\\\\\\\": \\\\\\\"click\\\\\\\",\\\\n      \\\\\\\"trusted\\\\\\\": true,\\\\n      \\\\\\\"tag\\\\\\\": \\\\\\\"BUTTON\\\\\\\",\\\\n      \\\\\\\"id\\\\\\\": \\\\\\\"\\\\\\\",\\\\n      \\\\\\\"meta\\\\\\\": false,\\\\n      \\\\\\\"ctrl\\\\\\\": false,\\\\n      \\\\\\\"defaultPrevented\\\\\\\": false\\\\n    },\\\\n    {\\\\n      \\\\\\\"type\\\\\\\": \\\\\\\"submit\\\\\\\",\\\\n      \\\\\\\"trusted\\\\\\\": true,\\\\n      \\\\\\\"tag\\\\\\\": \\\\\\\"FORM\\\\\\\",\\\\n      \\\\\\\"id\\\\\\\": \\\\\\\"\\\\\\\",\\\\n      \\\\\\\"defaultPrevented\\\\\\\": false\\\\n    }\\\\n  ],\\\\n  \\\\\\\"errors\\\\\\\": [],\\\\n  \\\\\\\"shortcuts\\\\\\\": [\\\\n    {\\\\n      \\\\\\\"key\\\\\\\": {\\\\n        \\\\\\\"kind\\\\\\\": \\\\\\\"logical\\\\\\\",\\\\n        \\\\\\\"value\\\\\\\": \\\\\\\"Enter\\\\\\\"\\\\n      },\\\\n      \\\\\\\"modifiers\\\\\\\": [\\\\n        \\\\\\\"meta\\\\\\\"\\\\n      ]\\\\n    }\\\\n  ],\\\\n  \\\\\\\"closed\\\\\\\": 0,\\\\n  \\\\\\\"completed\\\\\\\": 0,\\\\n  \\\\\\\"capabilitySubmits\\\\\\\": 0\\\\n}\\u003c/pre\\u003e\\u003c/div\\u003e\\u003cscript src=\\\\\\\"fixture.js\\\\\\\"\\u003e\\u003c/script\\u003e\\u003cdiv id=\\\\\\\":r1:\\\\\\\" data-base-ui-portal=\\\\\\\"\\\\\\\"\\u003e\\u003cdiv role=\\\\\\\"presentation\\\\\\\" data-base-ui-inert=\\\\\\\"\\\\\\\" aria-hidden=\\\\\\\"true\\\\\\\" style=\\\\\\\"position: fixed; inset: 0px; user-select: none;\\\\\\\"\\u003e\\u003c/div\\u003e\\u003cdiv class=\\\\\\\"project-dialog-layer\\\\\\\" data-dialog-id=\\\\\\\"project-dialog\\\\\\\" data-dialog-motion=\\\\\\\"dialog\\\\\\\"\\u003e\\u003cdiv data-open=\\\\\\\"\\\\\\\" role=\\\\\\\"presentation\\\\\\\" class=\\\\\\\"project-dialog-backdrop\\\\\\\" aria-hidden=\\\\\\\"true\\\\\\\" data-base-ui-inert=\\\\\\\"\\\\\\\" style=\\\\\\\"user-select: none;\\\\\\\"\\u003e\\u003c/div\\u003e\\u003cdiv class=\\\\\\\"project-dialog-viewport project-dialog-dialog\\\\\\\"\\u003e\\u003cspan data-type=\\\\\\\"inside\\\\\\\" aria-hidden=\\\\\\\"true\\\\\\\" tabindex=\\\\\\\"0\\\\\\\" data-base-ui-focus-guard=\\\\\\\"\\\\\\\" data-base-ui-inert=\\\\\\\"\\\\\\\" style=\\\\\\\"clip-path: inset(50%); overflow: hidden; white-space: nowrap; border: 0px; padding: 0px; width: 1px; height: 1px; margin: 0px; position: fixed; top: 0px; left: 0px;\\\\\\\"\\u003e\\u003c/span\\u003e\\u003cdiv data-open=\\\\\\\"\\\\\\\" id=\\\\\\\":r0:\\\\\\\" aria-labelledby=\\\\\\\"create-project-title\\\\\\\" aria-describedby=\\\\\\\"create-project-description\\\\\\\" role=\\\\\\\"dialog\\\\\\\" tabindex=\\\\\\\"-1\\\\\\\" data-base-ui-focusable=\\\\\\\"\\\\\\\" aria-modal=\\\\\\\"true\\\\\\\" class=\\\\\\\"modal project-dialog create-project-modal\\\\\\\" style=\\\\\\\"--nested-dialogs: 0;\\\\\\\"\\u003e\\u003cdiv class=\\\\\\\"create-project-header\\\\\\\"\\u003e\\u003ch2 id=\\\\\\\"create-project-title\\\\\\\"\\u003eCreate project\\u003c/h2\\u003e\\u003cp id=\\\\\\\"create-project-description\\\\\\\" class=\\\\\\\"create-project-subtitle\\\\\\\"\\u003eCreate a local folder, private GitHub repo, and first workspace.\\u003c/p\\u003e\\u003c/div\\u003e\\u003cform class=\\\\\\\"create-project-dialog\\\\\\\"\\u003e\\u003clabel class=\\\\\\\"field\\\\\\\"\\u003e\\u003cspan\\u003eProject name\\u003c/span\\u003e\\u003cinput id=\\\\\\\"project-name\\\\\\\" autocomplete=\\\\\\\"off\\\\\\\" autocorrect=\\\\\\\"off\\\\\\\" autocapitalize=\\\\\\\"off\\\\\\\" spellcheck=\\\\\\\"false\\\\\\\" placeholder=\\\\\\\"my-awesome-project\\\\\\\" value=\\\\\\\"fixture-project\\\\\\\"\\u003e\\u003cspan class=\\\\\\\"create-project-hint\\\\\\\"\\u003eCreates folder and repo \\u003ccode\\u003efixture-project\\u003c/code\\u003e\\u003c/span\\u003e\\u003c/label\\u003e\\u003clabel class=\\\\\\\"field\\\\\\\"\\u003e\\u003cspan\\u003eParent folder\\u003c/span\\u003e\\u003cdiv class=\\\\\\\"field-row\\\\\\\"\\u003e\\u003cinput placeholder=\\\\\\\"Enter path or click to select\\\\\\\" value=\\\\\\\"/synthetic/project-root\\\\\\\"\\u003e\\u003cbutton type=\\\\\\\"button\\\\\\\" class=\\\\\\\"btn\\\\\\\"\\u003eBrowse\\u003c/button\\u003e\\u003c/div\\u003e\\u003c/label\\u003e\\u003cdiv class=\\\\\\\"field\\\\\\\"\\u003e\\u003cspan\\u003eTemplate\\u003c/span\\u003e\\u003cdiv class=\\\\\\\"create-project-templates\\\\\\\" role=\\\\\\\"radiogroup\\\\\\\" aria-label=\\\\\\\"Template\\\\\\\"\\u003e\\u003cbutton type=\\\\\\\"button\\\\\\\" role=\\\\\\\"radio\\\\\\\" aria-checked=\\\\\\\"true\\\\\\\" class=\\\\\\\"selected\\\\\\\"\\u003e\\u003cspan class=\\\\\\\"create-project-template-icon\\\\\\\"\\u003e\\u003csvg width=\\\\\\\"24\\\\\\\" height=\\\\\\\"24\\\\\\\" viewBox=\\\\\\\"0 0 24 24\\\\\\\" fill=\\\\\\\"none\\\\\\\" stroke=\\\\\\\"currentColor\\\\\\\" stroke-width=\\\\\\\"1\\\\\\\" stroke-linecap=\\\\\\\"round\\\\\\\" stroke-linejoin=\\\\\\\"round\\\\\\\" aria-hidden=\\\\\\\"true\\\\\\\"\\u003e\\u003cpath d=\\\\\\\"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z\\\\\\\"\\u003e\\u003c/path\\u003e\\u003cpath d=\\\\\\\"M14 2v5a1 1 0 0 0 1 1h5\\\\\\\"\\u003e\\u003c/path\\u003e\\u003cpath d=\\\\\\\"M10 12.5 8 15l2 2.5\\\\\\\"\\u003e\\u003c/path\\u003e\\u003cpath d=\\\\\\\"m14 12.5 2 2.5-2 2.5\\\\\\\"\\u003e\\u003c/path\\u003e\\u003c/svg\\u003e\\u003c/span\\u003e\\u003cspan class=\\\\\\\"create-project-template-label\\\\\\\"\\u003eEmpty\\u003c/span\\u003e\\u003cspan class=\\\\\\\"create-project-template-desc\\\\\\\"\\u003eBlank Git repo\\u003c/span\\u003e\\u003c/button\\u003e\\u003cbutton type=\\\\\\\"button\\\\\\\" role=\\\\\\\"radio\\\\\\\" aria-checked=\\\\\\\"false\\\\\\\" class=\\\\\\\"\\\\\\\"\\u003e\\u003cspan class=\\\\\\\"create-project-template-icon\\\\\\\"\\u003e\\u003csvg width=\\\\\\\"24\\\\\\\" height=\\\\\\\"24\\\\\\\" viewBox=\\\\\\\"0 0 24 24\\\\\\\" aria-hidden=\\\\\\\"true\\\\\\\"\\u003e\\u003ccircle cx=\\\\\\\"12\\\\\\\" cy=\\\\\\\"12\\\\\\\" r=\\\\\\\"10\\\\\\\" fill=\\\\\\\"currentColor\\\\\\\"\\u003e\\u003c/circle\\u003e\\u003cpath d=\\\\\\\"M9 16.5v-9l7.5 10M15 7.5v5.5\\\\\\\" fill=\\\\\\\"none\\\\\\\" stroke=\\\\\\\"var(--bg)\\\\\\\" stroke-width=\\\\\\\"1.8\\\\\\\" stroke-linecap=\\\\\\\"round\\\\\\\" stroke-linejoin=\\\\\\\"round\\\\\\\"\\u003e\\u003c/path\\u003e\\u003c/svg\\u003e\\u003c/span\\u003e\\u003cspan class=\\\\\\\"create-project-template-label\\\\\\\"\\u003eNext.js\\u003c/span\\u003e\\u003cspan class=\\\\\\\"create-project-template-desc\\\\\\\"\\u003eTypeScript, Tailwind, App Router\\u003c/span\\u003e\\u003c/button\\u003e\\u003c/div\\u003e\\u003c/div\\u003e\\u003cdiv class=\\\\\\\"modal-actions\\\\\\\"\\u003e\\u003cbutton type=\\\\\\\"submit\\\\\\\" class=\\\\\\\"btn btn-primary\\\\\\\" data-primary-action=\\\\\\\"true\\\\\\\" disabled=\\\\\\\"\\\\\\\"\\u003eCreating...\\u003c/button\\u003e\\u003c/div\\u003e\\u003c/form\\u003e\\u003c/div\\u003e\\u003cspan data-type=\\\\\\\"inside\\\\\\\" aria-hidden=\\\\\\\"true\\\\\\\" tabindex=\\\\\\\"0\\\\\\\" data-base-ui-focus-guard=\\\\\\\"\\\\\\\" data-base-ui-inert=\\\\\\\"\\\\\\\" style=\\\\\\\"clip-path: inset(50%); overflow: hidden; white-space: nowrap; border: 0px; padding: 0px; width: 1px; height: 1px; margin: 0px; position: fixed; top: 0px; left: 0px;\\\\\\\"\\u003e\\u003c/span\\u003e\\u003c/div\\u003e\\u003c/div\\u003e\\u003c/div\\u003e\\u003c/body\\u003e\\\",\\\"primary\\\":true,\\\"witness\\\":{\\\"fixture\\\":\\\"CREATE-PROJECT-IMPLICIT-ENTER-6013/v1\\\",\\\"calls\\\":[{\\\"parentDir\\\":\\\"/synthetic/project-root\\\",\\\"slug\\\":\\\"fixture-project\\\",\\\"template\\\":\\\"empty\\\",\\\"effect\\\":\\\"inert pending Promise only\\\"}],\\\"events\\\":[{\\\"type\\\":\\\"click\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"BUTTON\\\",\\\"id\\\":\\\"\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"submit\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"FORM\\\",\\\"id\\\":\\\"\\\",\\\"defaultPrevented\\\":false}],\\\"errors\\\":[],\\\"shortcuts\\\":[{\\\"key\\\":{\\\"kind\\\":\\\"logical\\\",\\\"value\\\":\\\"Enter\\\"},\\\"modifiers\\\":[\\\"meta\\\"]}],\\\"closed\\\":0,\\\"completed\\\":0,\\\"capabilitySubmits\\\":0}}\"}}}",
+    "observed": {
+      "case": "primary-mouse-click",
+      "values": [
+        {
+          "id": "project-name",
+          "value": "fixture-project",
+          "disabled": false
+        },
+        {
+          "id": "",
+          "value": "/synthetic/project-root",
+          "disabled": false
+        }
+      ],
+      "active": "<body style=\"overflow: hidden;\"><div id=\"root\" aria-hidden=\"true\" data-base-ui-inert=\"\"><h1>Create project keyboard witness</h1><p class=\"scope\">Synthetic data; backend and workspace services replaced; no files, GitHub, provider or app runtime.</p><pre id=\"trace\" aria-label=\"Witness trace\">{\n  \"fixture\": \"CREATE-PROJECT-IMPLICIT-ENTER-6013/v1\",\n  \"calls\": [\n    {\n      \"parentDir\": \"/synthetic/project-root\",\n      \"slug\": \"fixture-project\",\n      \"template\": \"empty\",\n      \"effect\": \"inert pending Promise only\"\n    }\n  ],\n  \"events\": [\n    {\n      \"type\": \"click\",\n      \"trusted\": true,\n      \"tag\": \"BUTTON\",\n      \"id\": \"\",\n      \"meta\": false,\n      \"ctrl\": false,\n      \"defaultPrevented\": false\n    },\n    {\n      \"type\": \"submit\",\n      \"trusted\": true,\n      \"tag\": \"FORM\",\n      \"id\": \"\",\n      \"defaultPrevented\": false\n    }\n  ],\n  \"errors\": [],\n  \"shortcuts\": [\n    {\n      \"key\": {\n        \"kind\": \"logical\",\n        \"value\": \"Enter\"\n      },\n      \"modifiers\": [\n        \"meta\"\n      ]\n    }\n  ],\n  \"closed\": 0,\n  \"completed\": 0,\n  \"capabilitySubmits\": 0\n}</pre></div><script src=\"fixture.js\"></script><div id=\":r1:\" data-base-ui-portal=\"\"><div role=\"presentation\" data-base-ui-inert=\"\" aria-hidden=\"true\" style=\"position: fixed; inset: 0px; user-select: none;\"></div><div class=\"project-dialog-layer\" data-dialog-id=\"project-dialog\" data-dialog-motion=\"dialog\"><div data-open=\"\" role=\"presentation\" class=\"project-dialog-backdrop\" aria-hidden=\"true\" data-base-ui-inert=\"\" style=\"user-select: none;\"></div><div class=\"project-dialog-viewport project-dialog-dialog\"><span data-type=\"inside\" aria-hidden=\"true\" tabindex=\"0\" data-base-ui-focus-guard=\"\" data-base-ui-inert=\"\" style=\"clip-path: inset(50%); overflow: hidden; white-space: nowrap; border: 0px; padding: 0px; width: 1px; height: 1px; margin: 0px; position: fixed; top: 0px; left: 0px;\"></span><div data-open=\"\" id=\":r0:\" aria-labelledby=\"create-project-title\" aria-describedby=\"create-project-description\" role=\"dialog\" tabindex=\"-1\" data-base-ui-focusable=\"\" aria-modal=\"true\" class=\"modal project-dialog create-project-modal\" style=\"--nested-dialogs: 0;\"><div class=\"create-project-header\"><h2 id=\"create-project-title\">Create project</h2><p id=\"create-project-description\" class=\"create-project-subtitle\">Create a local folder, private GitHub repo, and first workspace.</p></div><form class=\"create-project-dialog\"><label class=\"field\"><span>Project name</span><input id=\"project-name\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\" placeholder=\"my-awesome-project\" value=\"fixture-project\"><span class=\"create-project-hint\">Creates folder and repo <code>fixture-project</code></span></label><label class=\"field\"><span>Parent folder</span><div class=\"field-row\"><input placeholder=\"Enter path or click to select\" value=\"/synthetic/project-root\"><button type=\"button\" class=\"btn\">Browse</button></div></label><div class=\"field\"><span>Template</span><div class=\"create-project-templates\" role=\"radiogroup\" aria-label=\"Template\"><button type=\"button\" role=\"radio\" aria-checked=\"true\" class=\"selected\"><span class=\"create-project-template-icon\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z\"></path><path d=\"M14 2v5a1 1 0 0 0 1 1h5\"></path><path d=\"M10 12.5 8 15l2 2.5\"></path><path d=\"m14 12.5 2 2.5-2 2.5\"></path></svg></span><span class=\"create-project-template-label\">Empty</span><span class=\"create-project-template-desc\">Blank Git repo</span></button><button type=\"button\" role=\"radio\" aria-checked=\"false\" class=\"\"><span class=\"create-project-template-icon\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"currentColor\"></circle><path d=\"M9 16.5v-9l7.5 10M15 7.5v5.5\" fill=\"none\" stroke=\"var(--bg)\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></span><span class=\"create-project-template-label\">Next.js</span><span class=\"create-project-template-desc\">TypeScript, Tailwind, App Router</span></button></div></div><div class=\"modal-actions\"><button type=\"submit\" class=\"btn btn-primary\" data-primary-action=\"true\" disabled=\"\">Creating...</button></div></form></div><span data-type=\"inside\" aria-hidden=\"true\" tabindex=\"0\" data-base-ui-focus-guard=\"\" data-base-ui-inert=\"\" style=\"clip-path: inset(50%); overflow: hidden; white-space: nowrap; border: 0px; padding: 0px; width: 1px; height: 1px; margin: 0px; position: fixed; top: 0px; left: 0px;\"></span></div></div></div></body>",
+      "primary": true,
+      "witness": {
+        "fixture": "CREATE-PROJECT-IMPLICIT-ENTER-6013/v1",
+        "calls": [
+          {
+            "parentDir": "/synthetic/project-root",
+            "slug": "fixture-project",
+            "template": "empty",
+            "effect": "inert pending Promise only"
+          }
+        ],
+        "events": [
+          {
+            "type": "click",
+            "trusted": true,
+            "tag": "BUTTON",
+            "id": "",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "submit",
+            "trusted": true,
+            "tag": "FORM",
+            "id": "",
+            "defaultPrevented": false
+          }
+        ],
+        "errors": [],
+        "shortcuts": [
+          {
+            "key": {
+              "kind": "logical",
+              "value": "Enter"
+            },
+            "modifiers": [
+              "meta"
+            ]
+          }
+        ],
+        "closed": 0,
+        "completed": 0,
+        "capabilitySubmits": 0
+      }
+    }
+  },
+  {
+    "query": "blank-both-enter",
+    "source_id": "9ff013ff-6588-45cc-acd6-9c436c5711fa",
+    "revision": 30122831,
+    "raw": "{\"id\":\"cli-1\",\"jsonrpc\":\"2.0\",\"result\":{\"result\":{\"type\":\"string\",\"value\":\"{\\\"case\\\":\\\"blank-both-enter\\\",\\\"values\\\":[\\\"\\\",\\\"/synthetic/project-root\\\"],\\\"primary\\\":true,\\\"witness\\\":{\\\"fixture\\\":\\\"CREATE-PROJECT-IMPLICIT-ENTER-6013/v1\\\",\\\"calls\\\":[],\\\"events\\\":[{\\\"type\\\":\\\"keydown\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"project-name\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"keyup\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"project-name\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"keydown\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"project-name\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":true,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"keyup\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"project-name\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":true,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false}],\\\"errors\\\":[],\\\"shortcuts\\\":[{\\\"key\\\":{\\\"kind\\\":\\\"logical\\\",\\\"value\\\":\\\"Enter\\\"},\\\"modifiers\\\":[\\\"meta\\\"]}],\\\"closed\\\":0,\\\"completed\\\":0,\\\"capabilitySubmits\\\":0}}\"}}}",
+    "observed": {
+      "case": "blank-both-enter",
+      "values": [
+        "",
+        "/synthetic/project-root"
+      ],
+      "primary": true,
+      "witness": {
+        "fixture": "CREATE-PROJECT-IMPLICIT-ENTER-6013/v1",
+        "calls": [],
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "project-name",
+            "key": "Enter",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "project-name",
+            "key": "Enter",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "keydown",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "project-name",
+            "key": "Enter",
+            "meta": true,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "project-name",
+            "key": "Enter",
+            "meta": true,
+            "ctrl": false,
+            "defaultPrevented": false
+          }
+        ],
+        "errors": [],
+        "shortcuts": [
+          {
+            "key": {
+              "kind": "logical",
+              "value": "Enter"
+            },
+            "modifiers": [
+              "meta"
+            ]
+          }
+        ],
+        "closed": 0,
+        "completed": 0,
+        "capabilitySubmits": 0
+      }
+    }
+  },
+  {
+    "query": "pending-drafts-editable",
+    "source_id": "a849c239-dea2-4d46-82b6-7a6ecc92a351",
+    "revision": 30123472,
+    "raw": "{\"id\":\"cli-1\",\"jsonrpc\":\"2.0\",\"result\":{\"result\":{\"type\":\"string\",\"value\":\"{\\\"case\\\":\\\"pending-drafts-editable\\\",\\\"values\\\":[{\\\"id\\\":\\\"project-name\\\",\\\"value\\\":\\\"pending-draft\\\",\\\"disabled\\\":false},{\\\"id\\\":\\\"\\\",\\\"value\\\":\\\"/synthetic/pending-draft\\\",\\\"disabled\\\":false}],\\\"active\\\":{\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"\\\"},\\\"primary\\\":true,\\\"witness\\\":{\\\"fixture\\\":\\\"CREATE-PROJECT-IMPLICIT-ENTER-6013/v1\\\",\\\"calls\\\":[{\\\"parentDir\\\":\\\"/synthetic/project-root\\\",\\\"slug\\\":\\\"fixture-project\\\",\\\"template\\\":\\\"empty\\\",\\\"effect\\\":\\\"inert pending Promise only\\\"}],\\\"events\\\":[{\\\"type\\\":\\\"keydown\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"project-name\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":true,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"click\\\",\\\"trusted\\\":false,\\\"tag\\\":\\\"BUTTON\\\",\\\"id\\\":\\\"\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"submit\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"FORM\\\",\\\"id\\\":\\\"\\\",\\\"defaultPrevented\\\":true},{\\\"type\\\":\\\"keyup\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"project-name\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":true,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"keydown\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"project-name\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"keyup\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"project-name\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":false,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"keydown\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"project-name\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":true,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false},{\\\"type\\\":\\\"keyup\\\",\\\"trusted\\\":true,\\\"tag\\\":\\\"INPUT\\\",\\\"id\\\":\\\"project-name\\\",\\\"key\\\":\\\"Enter\\\",\\\"meta\\\":true,\\\"ctrl\\\":false,\\\"defaultPrevented\\\":false}],\\\"errors\\\":[],\\\"shortcuts\\\":[{\\\"key\\\":{\\\"kind\\\":\\\"logical\\\",\\\"value\\\":\\\"Enter\\\"},\\\"modifiers\\\":[\\\"meta\\\"]}],\\\"closed\\\":0,\\\"completed\\\":0,\\\"capabilitySubmits\\\":0}}\"}}}",
+    "observed": {
+      "case": "pending-drafts-editable",
+      "values": [
+        {
+          "id": "project-name",
+          "value": "pending-draft",
+          "disabled": false
+        },
+        {
+          "id": "",
+          "value": "/synthetic/pending-draft",
+          "disabled": false
+        }
+      ],
+      "active": {
+        "tag": "INPUT",
+        "id": ""
+      },
+      "primary": true,
+      "witness": {
+        "fixture": "CREATE-PROJECT-IMPLICIT-ENTER-6013/v1",
+        "calls": [
+          {
+            "parentDir": "/synthetic/project-root",
+            "slug": "fixture-project",
+            "template": "empty",
+            "effect": "inert pending Promise only"
+          }
+        ],
+        "events": [
+          {
+            "type": "keydown",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "project-name",
+            "key": "Enter",
+            "meta": true,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "click",
+            "trusted": false,
+            "tag": "BUTTON",
+            "id": "",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "submit",
+            "trusted": true,
+            "tag": "FORM",
+            "id": "",
+            "defaultPrevented": true
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "project-name",
+            "key": "Enter",
+            "meta": true,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "keydown",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "project-name",
+            "key": "Enter",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "project-name",
+            "key": "Enter",
+            "meta": false,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "keydown",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "project-name",
+            "key": "Enter",
+            "meta": true,
+            "ctrl": false,
+            "defaultPrevented": false
+          },
+          {
+            "type": "keyup",
+            "trusted": true,
+            "tag": "INPUT",
+            "id": "project-name",
+            "key": "Enter",
+            "meta": true,
+            "ctrl": false,
+            "defaultPrevented": false
+          }
+        ],
+        "errors": [],
+        "shortcuts": [
+          {
+            "key": {
+              "kind": "logical",
+              "value": "Enter"
+            },
+            "modifiers": [
+              "meta"
+            ]
+          }
+        ],
+        "closed": 0,
+        "completed": 0,
+        "capabilitySubmits": 0
+      }
+    }
+  }
+]

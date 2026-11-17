@@ -14,9 +14,46 @@ setup failure, cancellation or skip. This establishes the mounted topology,
 **not** actual browser implicit submission. Adjacent Create project pending
 controls and state tests passed **14/14** unchanged.
 
-There is no production correction yet. A separately admitted actual trusted-key
-browser baseline is required before requesting a production lease. Browser,
-native, live-original side-by-side and packaged acceptance are **NOT_RUN**.
+There is no production correction yet. The separately admitted trusted-key
+Chrome baseline now reproduces both discrepancies: plain Enter from name and
+parent each starts **one inert creation request**, versus the retained reference
+contract of zero. The eight-case control results, full original browser tool
+readbacks and cleanup receipt are preserved in `browser-baseline-*.json`.
+Native, live-original side-by-side and packaged acceptance are **NOT_RUN**.
+
+## Trusted Chrome baseline — 2026-11-17
+
+- **Capability passed:** independent native form counted 1, 2, 3 submissions
+  after name Enter, parent Enter and real primary mouse click.
+- **Expected RED reproduced:** name and parent plain Enter each recorded trusted
+  key, implicit click and submit events and one pending request. No test code
+  invoked a submit/click adapter.
+- **Activation controls passed:** configured Meta+Enter from each field and real
+  primary mouse click each made exactly one captured request with slug
+  `fixture-project`, parent `/synthetic/project-root`, template `empty`.
+  The real DialogFrame shortcut internally invokes the button; its resulting
+  click is correctly preserved as untrusted, unlike the initiating trusted key.
+- **Disabled/pending controls passed:** blank plain/Meta+Enter stayed at zero;
+  pending plain/Meta+Enter/disabled-button mouse click stayed at one. Both drafts
+  accepted real `Input.insertText` edits without changing the captured request.
+- **Isolation passed:** frozen actual-component bundle; connections and form
+  navigation denied by CSP; no completions, closes or errors in any case.
+- **Cleanup passed:** preview `b50854eb-0a78-4fa7-ae4c-0e72a837fd54`, port 48733,
+  started 17:00:00.090Z; stopped by 17:06:28Z (deadline 17:15:00.090Z). Own tab
+  1440146772 closed and managed tabs empty. Preview worker attested process-group
+  exit and free preview port; status stopped/listening null. Separate Bash
+  namespace bind passed, own fixture processes empty. The Bash bind alone does
+  not establish preview-namespace release; the worker receipt does.
+- **Evidence verification passed:** `python3
+  evidence/dialogs/create-project-implicit-enter/verify-browser-baseline.py`
+  checks all eight raw readbacks against their decoded records, observed controls,
+  original bundle/input identities and all three frozen served assets.
+
+Three inspected screenshots were durably published; Markdown is retained in
+`browser-baseline-media.json`. The existing qualification page was updated at
+https://reasonmachines.com/agents/6013adf2-e94a-4a6d-9be7-bbd07622cf3c?page=f30d2043-6c9c-4e5e-81b1-b6f5150205c0.
+A production/harness lease and separately serialized treatment slot were
+requested from the ledger; this baseline grant does not admit treatment.
 
 ## Retained reference
 
@@ -63,12 +100,11 @@ onSubmit/requestSubmit/submit/button.click to manufacture outcomes.
 
 ## Boundaries
 
-Qualification-test/setup lease only. No component, DialogFrame, provider,
-helper/backend, pending-controls harness, styling or native/package change.
-No preview server, managed tab, runtime dispatch, real project/files/GitHub
+Qualification-test/setup plus one consumed and released baseline-browser lease
+only. No component, DialogFrame, provider, helper/backend, pending-controls
+harness, styling or native/package change. No real project/files/GitHub
 operation, native picker, full heavy pipeline or watcher was started.
 
-The source/Node preparation ran on the Session's Reason cloud computer. Existing
-exclusive runtime/native/package custodians remain unchanged. A trusted-key
-baseline request was sent to the existing serialized ledger queue; it is not
-runtime admission.
+Source/Node preparation and the isolated Chrome baseline ran on the Session's
+Reason cloud computer. Existing exclusive native/package custodians remain
+unchanged. Treatment requires a separate ledger grant.
