@@ -4,6 +4,7 @@ import { createRequire } from "node:module";
 import test from "node:test";
 import { runInNewContext } from "node:vm";
 import * as React from "react";
+import { closedArchiveFilterFixture } from "../../evidence/home-archive-select-keyboard/closedArchiveFilterFixture.ts";
 import ts from "typescript";
 import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
@@ -42,6 +43,7 @@ async function fixture() {
     "../workspace/archive": { listArchivedWorkspaces: async () => [], onArchiveEvent: () => () => {} },
     "./RepoIcon": { RepoIcon: inert },
     "./Tooltip": { Tooltip: ({ children }: { children: React.ReactNode }) => children },
+    "./home/ArchiveFilter": closedArchiveFilterFixture,
     "./Icons": { ArchiveIcon: inert, ChevronDownIcon: inert, FolderIcon: inert, SearchIcon: inert, SidebarIcon: inert },
     "./RowStatusIcon": { RowStatusIcon: inert },
     "./StatusMatrix": { StatusMatrix: inert },

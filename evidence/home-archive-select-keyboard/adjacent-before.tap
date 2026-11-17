@@ -1,0 +1,1610 @@
+(node:74) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home key selects the first grouped workspace without activating it, and Enter opens that row
+ok 1 - Home key selects the first grouped workspace without activating it, and Enter opens that row
+  ---
+  duration_ms: 270.577102
+  type: 'test'
+  ...
+# Subtest: End key selects the last grouped workspace without activating it, and Enter opens that row
+ok 2 - End key selects the last grouped workspace without activating it, and Enter opens that row
+  ---
+  duration_ms: 124.946847
+  type: 'test'
+  ...
+# Subtest: Home and End remain at their endpoints when repeated
+ok 3 - Home and End remain at their endpoints when repeated
+  ---
+  duration_ms: 99.904175
+  type: 'test'
+  ...
+# Subtest: Home and End select a single row without opening it before Enter
+ok 4 - Home and End select a single row without opening it before Enter
+  ---
+  duration_ms: 95.131865
+  type: 'test'
+  ...
+# Subtest: Home and End prevent default on an empty workspace list without activating anything
+ok 5 - Home and End prevent default on an empty workspace list without activating anything
+  ---
+  duration_ms: 79.740646
+  type: 'test'
+  ...
+# Subtest: Home and End prevent default with no search matches and leave Enter inactive
+ok 6 - Home and End prevent default with no search matches and leave Enter inactive
+  ---
+  duration_ms: 66.316441
+  type: 'test'
+  ...
+# Subtest: ArrowUp and ArrowDown retain clamped row navigation and Enter activation
+ok 7 - ArrowUp and ArrowDown retain clamped row navigation and Enter activation
+  ---
+  duration_ms: 51.532891
+  type: 'test'
+  ...
+# (node:89) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home retains a surviving selected workspace and Enter target when a project filter removes earlier rows
+ok 8 - Home retains a surviving selected workspace and Enter target when a project filter removes earlier rows
+  ---
+  duration_ms: 220.538673
+  type: 'test'
+  ...
+# Subtest: Home retains selection when clearing the project filter inserts earlier rows
+ok 9 - Home retains selection when clearing the project filter inserts earlier rows
+  ---
+  duration_ms: 142.995234
+  type: 'test'
+  ...
+# Subtest: Home resets to the first remaining row when the selected workspace is filtered out
+ok 10 - Home resets to the first remaining row when the selected workspace is filtered out
+  ---
+  duration_ms: 59.904003
+  type: 'test'
+  ...
+# Subtest: Home selects the first row after an empty filtered list becomes nonempty
+ok 11 - Home selects the first row after an empty filtered list becomes nonempty
+  ---
+  duration_ms: 96.016883
+  type: 'test'
+  ...
+# Subtest: Home search changes reset selection even when the selected workspace still matches
+ok 12 - Home search changes reset selection even when the selected workspace still matches
+  ---
+  duration_ms: 65.485201
+  type: 'test'
+  ...
+# Subtest: Home row clicks activate that workspace rather than the previous keyboard target
+ok 13 - Home row clicks activate that workspace rather than the previous keyboard target
+  ---
+  duration_ms: 64.78756
+  type: 'test'
+  ...
+# Subtest: Home retains selection across same-group row reordering but resets after the selected row changes date group
+ok 14 - Home retains selection across same-group row reordering but resets after the selected row changes date group
+  ---
+  duration_ms: 65.396739
+  type: 'test'
+  ...
+# (node:97) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home workspace-list sidebar toggle retains its default hint and click action
+ok 15 - Home workspace-list sidebar toggle retains its default hint and click action
+  ---
+  duration_ms: 274.492697
+  type: 'test'
+  ...
+# Subtest: mounted Home workspace-list sidebar hint follows persisted primary and additional shortcuts after hydration
+ok 16 - mounted Home workspace-list sidebar hint follows persisted primary and additional shortcuts after hydration
+  ---
+  duration_ms: 142.370864
+  type: 'test'
+  ...
+# Subtest: mounted Home workspace-list sidebar hint follows live provider changes and reset without parent rerender
+ok 17 - mounted Home workspace-list sidebar hint follows live provider changes and reset without parent rerender
+  ---
+  duration_ms: 124.32732
+  type: 'test'
+  ...
+# Subtest: Home workspace-list sidebar hint replaces defaults with a single saved shortcut
+ok 18 - Home workspace-list sidebar hint replaces defaults with a single saved shortcut
+  ---
+  duration_ms: 98.306818
+  type: 'test'
+  ...
+# Subtest: Home workspace-list sidebar hint keeps defaults when the persisted setting is malformed
+ok 19 - Home workspace-list sidebar hint keeps defaults when the persisted setting is malformed
+  ---
+  duration_ms: 86.642098
+  type: 'test'
+  ...
+# Subtest: Home workspace-list sidebar toggle has no competing native title
+ok 20 - Home workspace-list sidebar toggle has no competing native title
+  ---
+  duration_ms: 72.663935
+  type: 'test'
+  ...
+# Subtest: Home workspace list omits the toggle while the sidebar is visible, including after hydration
+ok 21 - Home workspace list omits the toggle while the sidebar is visible, including after hydration
+  ---
+  duration_ms: 76.351781
+  type: 'test'
+  ...
+# (node:105) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: archived Home menu control: active row keeps its Archive target
+ok 22 - archived Home menu control: active row keeps its Archive target
+  ---
+  duration_ms: 269.79438
+  type: 'test'
+  ...
+# Subtest: archived Home menu control: primary click opens the existing archived view
+ok 23 - archived Home menu control: primary click opens the existing archived view
+  ---
+  duration_ms: 168.462109
+  type: 'test'
+  ...
+# Subtest: archived Home menu control: unstarted rows gain neither local menu nor Start
+ok 24 - archived Home menu control: unstarted rows gain neither local menu nor Start
+  ---
+  duration_ms: 80.929495
+  type: 'test'
+  ...
+# Subtest: archived Home menu control: existing row restore still dispatches only once
+ok 25 - archived Home menu control: existing row restore still dispatches only once
+  ---
+  duration_ms: 93.739707
+  type: 'test'
+  ...
+# Subtest: archived Home row mounts lifecycle menu from persisted archived split without navigation
+ok 26 - archived Home row mounts lifecycle menu from persisted archived split without navigation
+  ---
+  duration_ms: 74.689514
+  type: 'test'
+  ...
+# Subtest: archived Home menu restores exact requested row after filtering
+ok 27 - archived Home menu restores exact requested row after filtering
+  ---
+  duration_ms: 69.722938
+  type: 'test'
+  ...
+# Subtest: archived Home menu shares pin status read section copy and rename target
+ok 28 - archived Home menu shares pin status read section copy and rename target
+  ---
+  duration_ms: 78.915812
+  type: 'test'
+  ...
+# Subtest: archived Home menu respects the existing row restore pending state and failure reset
+ok 29 - archived Home menu respects the existing row restore pending state and failure reset
+  ---
+  duration_ms: 92.391794
+  type: 'test'
+  ...
+# Subtest: archived Home menu restore shares pending state with the existing row button
+ok 30 - archived Home menu restore shares pending state with the existing row button
+  ---
+  duration_ms: 80.588778
+  type: 'test'
+  ...
+# Subtest: archived Home menu closes when its repository is unlinked
+ok 31 - archived Home menu closes when its repository is unlinked
+  ---
+  duration_ms: 49.224794
+  type: 'test'
+  ...
+# (node:113) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home persisted archived-only list offers Clear filters with query ""
+ok 32 - Home persisted archived-only list offers Clear filters with query ""
+  ---
+  duration_ms: 180.363598
+  type: 'test'
+  ...
+# Subtest: Home persisted archived-only list offers Clear filters with query "Saved"
+ok 33 - Home persisted archived-only list offers Clear filters with query "Saved"
+  ---
+  duration_ms: 145.124153
+  type: 'test'
+  ...
+# Subtest: Home persisted archived-only list offers Clear filters with query "missing-query"
+ok 34 - Home persisted archived-only list offers Clear filters with query "missing-query"
+  ---
+  duration_ms: 83.554751
+  type: 'test'
+  ...
+# Subtest: Home counts archived workspaces across linked repositories before filtering
+ok 35 - Home counts archived workspaces across linked repositories before filtering
+  ---
+  duration_ms: 84.592124
+  type: 'test'
+  ...
+# Subtest: Home Clear filters reveals the persisted archived row without creating or restoring it
+ok 36 - Home Clear filters reveals the persisted archived row without creating or restoring it
+  ---
+  duration_ms: 81.426525
+  type: 'test'
+  ...
+# Subtest: Home truly empty persisted list still offers Create
+ok 37 - Home truly empty persisted list still offers Create
+  ---
+  duration_ms: 77.773208
+  type: 'test'
+  ...
+# Subtest: Home does not count archived rows belonging to an unlinked repository
+ok 38 - Home does not count archived rows belonging to an unlinked repository
+  ---
+  duration_ms: 63.789322
+  type: 'test'
+  ...
+# Subtest: Home active query miss still clears filters without changing its query
+ok 39 - Home active query miss still clears filters without changing its query
+  ---
+  duration_ms: 74.239886
+  type: 'test'
+  ...
+# Subtest: Home empty unfiltered all-mode list still has no empty-state action
+ok 40 - Home empty unfiltered all-mode list still has no empty-state action
+  ---
+  duration_ms: 62.669241
+  type: 'test'
+  ...
+# Subtest: Home empty archived-mode list still offers Clear filters
+ok 41 - Home empty archived-mode list still offers Clear filters
+  ---
+  duration_ms: 75.262439
+  type: 'test'
+  ...
+# (node:121) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home compact time: spring local-clock boundary
+ok 42 - Home compact time: spring local-clock boundary
+  ---
+  duration_ms: 311.588279
+  type: 'test'
+  ...
+# Subtest: Home compact time: fall local-clock boundary
+ok 43 - Home compact time: fall local-clock boundary
+  ---
+  duration_ms: 156.676184
+  type: 'test'
+  ...
+# Subtest: Home compact time: leap-day full year at February end
+ok 44 - Home compact time: leap-day full year at February end
+  ---
+  duration_ms: 74.193829
+  type: 'test'
+  ...
+# Subtest: Home compact time: year boundary before full month clock time
+ok 45 - Home compact time: year boundary before full month clock time
+  ---
+  duration_ms: 99.967611
+  type: 'test'
+  ...
+# Subtest: Home compact time: ordinary same-offset hours control
+ok 46 - Home compact time: ordinary same-offset hours control
+  ---
+  duration_ms: 92.014015
+  type: 'test'
+  ...
+# Subtest: Home compact time: complete ordinary year control
+ok 47 - Home compact time: complete ordinary year control
+  ---
+  duration_ms: 58.857511
+  type: 'test'
+  ...
+# (node:129) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home context control: primary click still opens the clicked row
+ok 48 - Home context control: primary click still opens the clicked row
+  ---
+  duration_ms: 331.77619
+  type: 'test'
+  ...
+# Subtest: Home context control: keyboard selection and Enter remain separate from menus
+ok 49 - Home context control: keyboard selection and Enter remain separate from menus
+  ---
+  duration_ms: 265.280013
+  type: 'test'
+  ...
+# Subtest: Home context control: archived and unstarted rows do not gain the active-only menu
+ok 50 - Home context control: archived and unstarted rows do not gain the active-only menu
+  ---
+  duration_ms: 193.322729
+  type: 'test'
+  ...
+# Subtest: Home context control: existing archived Unarchive button still consumes and dispatches once
+ok 51 - Home context control: existing archived Unarchive button still consumes and dispatches once
+  ---
+  duration_ms: 61.627764
+  type: 'test'
+  ...
+# Subtest: Home context: active row emits its own workspace identity and pointer position without navigating
+ok 52 - Home context: active row emits its own workspace identity and pointer position without navigating
+  ---
+  duration_ms: 84.739692
+  type: 'test'
+  ...
+# Subtest: Home context: right-click target is independent of the keyboard-selected row
+ok 53 - Home context: right-click target is independent of the keyboard-selected row
+  ---
+  duration_ms: 85.541681
+  type: 'test'
+  ...
+# Subtest: Home context: filtering preserves the visible row target instead of an old result index
+ok 54 - Home context: filtering preserves the visible row target instead of an old result index
+  ---
+  duration_ms: 59.192531
+  type: 'test'
+  ...
+# (node:137) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home menu uses the shared read/pin/status/archive dispatch for the requested workspace
+ok 55 - Home menu uses the shared read/pin/status/archive dispatch for the requested workspace
+  ---
+  duration_ms: 183.463401
+  type: 'test'
+  ...
+# Subtest: Home menu shares section, copy-link and rename targets and keeps rename open after menu dismissal
+ok 56 - Home menu shares section, copy-link and rename targets and keeps rename open after menu dismissal
+  ---
+  duration_ms: 142.70335
+  type: 'test'
+  ...
+# Subtest: Home menu retargets between rows and reads fresh workspace state
+ok 57 - Home menu retargets between rows and reads fresh workspace state
+  ---
+  duration_ms: 91.415276
+  type: 'test'
+  ...
+# Subtest: Home menu dismisses removed or lifecycle-ineligible targets and does not reopen after restoration
+ok 58 - Home menu dismisses removed or lifecycle-ineligible targets and does not reopen after restoration
+  ---
+  duration_ms: 173.269039
+  type: 'test'
+  ...
+# (node:145) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home Ctrl+n moves to the adjacent selected row without activation
+ok 59 - Home Ctrl+n moves to the adjacent selected row without activation
+  ---
+  duration_ms: 280.411897
+  type: 'test'
+  ...
+# Subtest: Home Ctrl+j moves to the adjacent selected row without activation
+ok 60 - Home Ctrl+j moves to the adjacent selected row without activation
+  ---
+  duration_ms: 187.414657
+  type: 'test'
+  ...
+# Subtest: Home Ctrl+p moves to the adjacent selected row without activation
+ok 61 - Home Ctrl+p moves to the adjacent selected row without activation
+  ---
+  duration_ms: 160.951897
+  type: 'test'
+  ...
+# Subtest: Home Ctrl+k moves to the adjacent selected row without activation
+ok 62 - Home Ctrl+k moves to the adjacent selected row without activation
+  ---
+  duration_ms: 91.685306
+  type: 'test'
+  ...
+# Subtest: Home Ctrl navigation uses filtered rows
+ok 63 - Home Ctrl navigation uses filtered rows
+  ---
+  duration_ms: 110.541458
+  type: 'test'
+  ...
+# Subtest: Home Ctrl navigation cancels without activation when no rows match
+ok 64 - Home Ctrl navigation cancels without activation when no rows match
+  ---
+  duration_ms: 69.440534
+  type: 'test'
+  ...
+# Subtest: Control: plain and uppercase letters do not select or cancel
+ok 65 - Control: plain and uppercase letters do not select or cancel
+  ---
+  duration_ms: 93.31335
+  type: 'test'
+  ...
+# Subtest: Control: composition and consumed Ctrl-letter events remain untouched
+ok 66 - Control: composition and consumed Ctrl-letter events remain untouched
+  ---
+  duration_ms: 113.932644
+  type: 'test'
+  ...
+# Subtest: Control: existing arrows and endpoint activation reach the production handler
+ok 67 - Control: existing arrows and endpoint activation reach the production handler
+  ---
+  duration_ms: 81.900138
+  type: 'test'
+  ...
+# (node:153) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home offers Clear filters for a settled archived-only local workspace list
+ok 68 - Home offers Clear filters for a settled archived-only local workspace list
+  ---
+  duration_ms: 234.817835
+  type: 'test'
+  ...
+# Subtest: Home offers Create for an initially empty local list and retains the separate header action
+ok 69 - Home offers Create for an initially empty local list and retains the separate header action
+  ---
+  duration_ms: 246.822285
+  type: 'test'
+  ...
+# Subtest: Home clears a project-filter miss and reveals the existing workspace
+ok 70 - Home clears a project-filter miss and reveals the existing workspace
+  ---
+  duration_ms: 192.6446
+  type: 'test'
+  ...
+# Subtest: Home clears active filters without clearing a nonmatching text query
+ok 71 - Home clears active filters without clearing a nonmatching text query
+  ---
+  duration_ms: 103.298091
+  type: 'test'
+  ...
+# Subtest: Home clears an archived-filter miss instead of offering Create
+ok 72 - Home clears an archived-filter miss instead of offering Create
+  ---
+  duration_ms: 73.778651
+  type: 'test'
+  ...
+# Subtest: Home offers no empty-state action for an unfiltered empty list in all mode
+ok 73 - Home offers no empty-state action for an unfiltered empty list in all mode
+  ---
+  duration_ms: 71.803261
+  type: 'test'
+  ...
+# Subtest: Home offers no empty-state action for a query miss with all filters cleared
+ok 74 - Home offers no empty-state action for a query miss with all filters cleared
+  ---
+  duration_ms: 65.713978
+  type: 'test'
+  ...
+# Subtest: Home clears a project-filter miss while already in all mode
+ok 75 - Home clears a project-filter miss while already in all mode
+  ---
+  duration_ms: 80.201962
+  type: 'test'
+  ...
+# Subtest: Home renders nonempty rows without an empty-state action and preserves header Create
+ok 76 - Home renders nonempty rows without an empty-state action and preserves header Create
+  ---
+  duration_ms: 61.464709
+  type: 'test'
+  ...
+# (node:161) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home prevents Enter on an empty source list without activating a workspace
+ok 77 - Home prevents Enter on an empty source list without activating a workspace
+  ---
+  duration_ms: 359.62661
+  type: 'test'
+  ...
+# Subtest: Home prevents Enter after filtering a populated list to zero without activating a workspace
+ok 78 - Home prevents Enter after filtering a populated list to zero without activating a workspace
+  ---
+  duration_ms: 152.358855
+  type: 'test'
+  ...
+# Subtest: Home prevents nonempty Enter and activates the selected workspace exactly once
+ok 79 - Home prevents nonempty Enter and activates the selected workspace exactly once
+  ---
+  duration_ms: 121.366027
+  type: 'test'
+  ...
+# Subtest: Home leaves an unrelated empty-list character key unprevented without activation
+ok 80 - Home leaves an unrelated empty-list character key unprevented without activation
+  ---
+  duration_ms: 88.164792
+  type: 'test'
+  ...
+# Subtest: ⌘↩ (startUnstartedWorkspace) on a backlog workspace opens it
+ok 81 - ⌘↩ (startUnstartedWorkspace) on a backlog workspace opens it
+  ---
+  duration_ms: 84.296946
+  type: 'test'
+  ...
+# Subtest: ⌘↩ (startUnstartedWorkspace) does nothing when focused workspace is not backlog
+ok 82 - ⌘↩ (startUnstartedWorkspace) does nothing when focused workspace is not backlog
+  ---
+  duration_ms: 68.227269
+  type: 'test'
+  ...
+# Subtest: ⌘↩ (startUnstartedWorkspace) does nothing on an empty list
+ok 83 - ⌘↩ (startUnstartedWorkspace) does nothing on an empty list
+  ---
+  duration_ms: 81.030456
+  type: 'test'
+  ...
+# (node:169) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Projects trigger ArrowDown opens and focuses All projects
+ok 84 - Projects trigger ArrowDown opens and focuses All projects
+  ---
+  duration_ms: 368.992054
+  type: 'test'
+  ...
+# Subtest: Projects trigger ArrowUp opens and focuses Beta
+ok 85 - Projects trigger ArrowUp opens and focuses Beta
+  ---
+  duration_ms: 204.90168
+  type: 'test'
+  ...
+# Subtest: Projects menu ArrowDown moves Alpha to Beta
+ok 86 - Projects menu ArrowDown moves Alpha to Beta
+  ---
+  duration_ms: 162.165434
+  type: 'test'
+  ...
+# Subtest: Projects menu ArrowUp moves Alpha to All projects
+ok 87 - Projects menu ArrowUp moves Alpha to All projects
+  ---
+  duration_ms: 116.586649
+  type: 'test'
+  ...
+# Subtest: Projects menu ArrowDown moves Beta to All projects
+ok 88 - Projects menu ArrowDown moves Beta to All projects
+  ---
+  duration_ms: 121.358286
+  type: 'test'
+  ...
+# Subtest: Projects menu ArrowUp moves All projects to Beta
+ok 89 - Projects menu ArrowUp moves All projects to Beta
+  ---
+  duration_ms: 107.909402
+  type: 'test'
+  ...
+# Subtest: Projects menu Home moves Beta to All projects
+ok 90 - Projects menu Home moves Beta to All projects
+  ---
+  duration_ms: 84.6011
+  type: 'test'
+  ...
+# Subtest: Projects menu End moves All projects to Beta
+ok 91 - Projects menu End moves All projects to Beta
+  ---
+  duration_ms: 119.329572
+  type: 'test'
+  ...
+# Subtest: Projects typeahead reaches checked Beta without changing the filter
+ok 92 - Projects typeahead reaches checked Beta without changing the filter
+  ---
+  duration_ms: 81.537075
+  type: 'test'
+  ...
+# Subtest: Projects pointer choices remain multi-select and All projects clears
+ok 93 - Projects pointer choices remain multi-select and All projects clears
+  ---
+  duration_ms: 111.310455
+  type: 'test'
+  ...
+# Subtest: Escape still dismisses a clicked Projects menu
+ok 94 - Escape still dismisses a clicked Projects menu
+  ---
+  duration_ms: 106.820785
+  type: 'test'
+  ...
+# Subtest: An unrelated trigger key leaves the menu closed and emits no actions
+ok 95 - An unrelated trigger key leaves the menu closed and emits no actions
+  ---
+  duration_ms: 82.036804
+  type: 'test'
+  ...
+# (node:177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home Alt+ArrowDown selects the adjacent date group's first row from initial selection
+ok 96 - Home Alt+ArrowDown selects the adjacent date group's first row from initial selection
+  ---
+  duration_ms: 235.327149
+  type: 'test'
+  ...
+# Subtest: Home Alt+ArrowUp selects the adjacent date group's first row from ArrowDown/ArrowDown/ArrowDown
+ok 97 - Home Alt+ArrowUp selects the adjacent date group's first row from ArrowDown/ArrowDown/ArrowDown
+  ---
+  duration_ms: 192.281425
+  type: 'test'
+  ...
+# Subtest: Home Alt+ArrowUp selects the adjacent date group's first row from End
+ok 98 - Home Alt+ArrowUp selects the adjacent date group's first row from End
+  ---
+  duration_ms: 175.421985
+  type: 'test'
+  ...
+# Subtest: Home Alt+Arrow uses only rendered date groups after filtering
+ok 99 - Home Alt+Arrow uses only rendered date groups after filtering
+  ---
+  duration_ms: 101.526951
+  type: 'test'
+  ...
+# Subtest: Home Alt+Arrow cancels both directions when no rows match
+ok 100 - Home Alt+Arrow cancels both directions when no rows match
+  ---
+  duration_ms: 93.479331
+  type: 'test'
+  ...
+# Subtest: Control: absent neighboring groups fall back to adjacent rows without wrapping
+ok 101 - Control: absent neighboring groups fall back to adjacent rows without wrapping
+  ---
+  duration_ms: 98.637674
+  type: 'test'
+  ...
+# Subtest: Control: plain arrows and Ctrl letters remain adjacent within a date group
+ok 102 - Control: plain arrows and Ctrl letters remain adjacent within a date group
+  ---
+  duration_ms: 103.278344
+  type: 'test'
+  ...
+# Subtest: Control: Meta endpoints take precedence over Alt group navigation
+ok 103 - Control: Meta endpoints take precedence over Alt group navigation
+  ---
+  duration_ms: 98.188542
+  type: 'test'
+  ...
+# Subtest: Control: consumed and composing Alt+Arrow events do not navigate
+ok 104 - Control: consumed and composing Alt+Arrow events do not navigate
+  ---
+  duration_ms: 92.612975
+  type: 'test'
+  ...
+# (node:185) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home composing Enter does not open the selected workspace or cancel IME confirmation
+ok 105 - Home composing Enter does not open the selected workspace or cancel IME confirmation
+  ---
+  duration_ms: 317.700896
+  type: 'test'
+  ...
+# Subtest: Home legacy keyCode 229 Enter does not open the selected workspace
+ok 106 - Home legacy keyCode 229 Enter does not open the selected workspace
+  ---
+  duration_ms: 241.909495
+  type: 'test'
+  ...
+# Subtest: Home leaves composing and legacy-229 navigation to the input method
+ok 107 - Home leaves composing and legacy-229 navigation to the input method
+  ---
+  duration_ms: 172.691529
+  type: 'test'
+  ...
+# Subtest: Home does not act on Enter or navigation already prevented upstream
+ok 108 - Home does not act on Enter or navigation already prevented upstream
+  ---
+  duration_ms: 97.480592
+  type: 'test'
+  ...
+# Subtest: Home ordinary Enter still opens the selected workspace
+ok 109 - Home ordinary Enter still opens the selected workspace
+  ---
+  duration_ms: 84.429959
+  type: 'test'
+  ...
+# Subtest: Home ordinary arrows and endpoint keys retain selection navigation
+ok 110 - Home ordinary arrows and endpoint keys retain selection navigation
+  ---
+  duration_ms: 81.788416
+  type: 'test'
+  ...
+# Subtest: Home empty-list composing Enter is untouched while ordinary Enter stays cancelled
+ok 111 - Home empty-list composing Enter is untouched while ordinary Enter stays cancelled
+  ---
+  duration_ms: 62.099786
+  type: 'test'
+  ...
+# (node:193) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home initially reveals the selected first row after its date heading
+ok 112 - Home initially reveals the selected first row after its date heading
+  ---
+  duration_ms: 220.791457
+  type: 'test'
+  ...
+# Subtest: Arrow navigation reveals the actual selected row, and only first rows reveal their heading
+ok 113 - Arrow navigation reveals the actual selected row, and only first rows reveal their heading
+  ---
+  duration_ms: 151.564126
+  type: 'test'
+  ...
+# Subtest: Home, End and meta-arrow endpoints reveal the selection without opening it
+ok 114 - Home, End and meta-arrow endpoints reveal the selection without opening it
+  ---
+  duration_ms: 68.038523
+  type: 'test'
+  ...
+# Subtest: unchanged endpoint selections and unrelated renders do not repeatedly scroll
+ok 115 - unchanged endpoint selections and unrelated renders do not repeatedly scroll
+  ---
+  duration_ms: 83.196835
+  type: 'test'
+  ...
+# Subtest: a search-selected row is revealed and no-match/empty navigation never scrolls a stale row
+ok 116 - a search-selected row is revealed and no-match/empty navigation never scrolls a stale row
+  ---
+  duration_ms: 79.307361
+  type: 'test'
+  ...
+# Subtest: an empty Home has no row to reveal
+ok 117 - an empty Home has no row to reveal
+  ---
+  duration_ms: 60.5073
+  type: 'test'
+  ...
+# Subtest: loading completion reveals the selected row even when its key did not change
+ok 118 - loading completion reveals the selected row even when its key did not change
+  ---
+  duration_ms: 47.961737
+  type: 'test'
+  ...
+# Subtest: composing or already-consumed navigation does not reveal a different row
+ok 119 - composing or already-consumed navigation does not reveal a different row
+  ---
+  duration_ms: 73.135743
+  type: 'test'
+  ...
+# (node:201) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home keeps the loading state while the actual desktop store hydrates through App
+ok 120 - Home keeps the loading state while the actual desktop store hydrates through App
+  ---
+  duration_ms: 914.525661
+  type: 'test'
+  ...
+# Subtest: Home keeps populated desktop data visible after startup
+ok 121 - Home keeps populated desktop data visible after startup
+  ---
+  duration_ms: 359.705086
+  type: 'test'
+  ...
+# Subtest: Home keeps its settled-empty Create action after desktop startup
+ok 122 - Home keeps its settled-empty Create action after desktop startup
+  ---
+  duration_ms: 258.5373
+  type: 'test'
+  ...
+# Subtest: Home browser preview stays ready and does not issue desktop reads
+ok 123 - Home browser preview stays ready and does not issue desktop reads
+  ---
+  duration_ms: 228.575731
+  type: 'test'
+  ...
+# (node:209) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home Meta+ArrowDown selects and clamps to the last row without opening it until Enter
+ok 124 - Home Meta+ArrowDown selects and clamps to the last row without opening it until Enter
+  ---
+  duration_ms: 278.049822
+  type: 'test'
+  ...
+# Subtest: Home Meta+ArrowUp selects and clamps to the first row without opening it until Enter
+ok 125 - Home Meta+ArrowUp selects and clamps to the first row without opening it until Enter
+  ---
+  duration_ms: 144.88174
+  type: 'test'
+  ...
+# Subtest: Home Meta endpoint navigation takes precedence over other held modifiers
+ok 126 - Home Meta endpoint navigation takes precedence over other held modifiers
+  ---
+  duration_ms: 128.889263
+  type: 'test'
+  ...
+# Subtest: Home Meta arrows select endpoints within the current search results
+ok 127 - Home Meta arrows select endpoints within the current search results
+  ---
+  duration_ms: 100.541999
+  type: 'test'
+  ...
+# Subtest: Home Meta arrows cancel native endpoint movement when there are no workspaces
+ok 128 - Home Meta arrows cancel native endpoint movement when there are no workspaces
+  ---
+  duration_ms: 69.420413
+  type: 'test'
+  ...
+# Subtest: Home Meta arrows cancel native endpoint movement when search matches nothing
+ok 129 - Home Meta arrows cancel native endpoint movement when search matches nothing
+  ---
+  duration_ms: 62.685949
+  type: 'test'
+  ...
+# Subtest: Home Meta arrows leave composing, legacy-229 and already-consumed events untouched
+ok 130 - Home Meta arrows leave composing, legacy-229 and already-consumed events untouched
+  ---
+  duration_ms: 67.577729
+  type: 'test'
+  ...
+# Subtest: Home plain arrows and non-Meta modifiers retain adjacent row navigation
+ok 131 - Home plain arrows and non-Meta modifiers retain adjacent row navigation
+  ---
+  duration_ms: 76.65974
+  type: 'test'
+  ...
+# Subtest: Home Meta arrows leave a single workspace selected and inactive before Enter
+ok 132 - Home Meta arrows leave a single workspace selected and inactive before Enter
+  ---
+  duration_ms: 71.419192
+  type: 'test'
+  ...
+# (node:217) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home Projects includes two archived-only linked repositories in Only archived
+ok 133 - Home Projects includes two archived-only linked repositories in Only archived
+  ---
+  duration_ms: 215.798265
+  type: 'test'
+  ...
+# Subtest: Home Projects includes an archived-only repository beside a live repository
+ok 134 - Home Projects includes an archived-only repository beside a live repository
+  ---
+  duration_ms: 162.219566
+  type: 'test'
+  ...
+# Subtest: Home Projects eligibility does not disappear when archived rows are hidden
+ok 135 - Home Projects eligibility does not disappear when archived rows are hidden
+  ---
+  duration_ms: 73.297641
+  type: 'test'
+  ...
+# Subtest: Home Projects live-only choices preserve repository order and omit an empty repository
+ok 136 - Home Projects live-only choices preserve repository order and omit an empty repository
+  ---
+  duration_ms: 97.336837
+  type: 'test'
+  ...
+# Subtest: Home Projects stays absent for multiple archived workspaces in one repository
+ok 137 - Home Projects stays absent for multiple archived workspaces in one repository
+  ---
+  duration_ms: 60.773782
+  type: 'test'
+  ...
+# Subtest: Home Projects stays absent for one live repository
+ok 138 - Home Projects stays absent for one live repository
+  ---
+  duration_ms: 63.001248
+  type: 'test'
+  ...
+# Subtest: Home Projects ignores archived rows from closed repositories
+ok 139 - Home Projects ignores archived rows from closed repositories
+  ---
+  duration_ms: 46.677934
+  type: 'test'
+  ...
+# (node:225) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home rows show configured repository emoji and uploaded image rather than initials
+ok 140 - Home rows show configured repository emoji and uploaded image rather than initials
+  ---
+  duration_ms: 233.82824
+  type: 'test'
+  ...
+# Subtest: Home project-filter choices show configured repository emoji and uploaded image
+ok 141 - Home project-filter choices show configured repository emoji and uploaded image
+  ---
+  duration_ms: 129.467792
+  type: 'test'
+  ...
+# Subtest: Home rows still hide repository icons when a project is selected
+ok 142 - Home rows still hide repository icons when a project is selected
+  ---
+  duration_ms: 95.552989
+  type: 'test'
+  ...
+# Subtest: Home status matrix still replaces row repository icons
+ok 143 - Home status matrix still replaces row repository icons
+  ---
+  duration_ms: 81.255116
+  type: 'test'
+  ...
+# Subtest: Home retains the repository initial when no custom icon or remote is available
+ok 144 - Home retains the repository initial when no custom icon or remote is available
+  ---
+  duration_ms: 56.739614
+  type: 'test'
+  ...
+# (node:233) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home row label: stored name precedes PR title
+ok 145 - Home row label: stored name precedes PR title
+  ---
+  duration_ms: 229.276025
+  type: 'test'
+  ...
+# Subtest: Home row label: stored name precedes branch
+ok 146 - Home row label: stored name precedes branch
+  ---
+  duration_ms: 127.949287
+  type: 'test'
+  ...
+# Subtest: Home row label: explicit user name remains first
+ok 147 - Home row label: explicit user name remains first
+  ---
+  duration_ms: 88.535677
+  type: 'test'
+  ...
+# Subtest: Home row label: null stored name falls through to PR title
+ok 148 - Home row label: null stored name falls through to PR title
+  ---
+  duration_ms: 76.096026
+  type: 'test'
+  ...
+# Subtest: Home row label: null stored name falls through to branch
+ok 149 - Home row label: null stored name falls through to branch
+  ---
+  duration_ms: 69.968429
+  type: 'test'
+  ...
+# Subtest: Home row label: null stored name and target branch fall through to directory
+ok 150 - Home row label: null stored name and target branch fall through to directory
+  ---
+  duration_ms: 59.51158
+  type: 'test'
+  ...
+# (node:241) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home preserves single saved project across actual desktop startup
+ok 151 - Home preserves single saved project across actual desktop startup
+  ---
+  duration_ms: 921.573838
+  type: 'test'
+  ...
+# Subtest: Home preserves partial stale selection across actual desktop startup
+ok 152 - Home preserves partial stale selection across actual desktop startup
+  ---
+  duration_ms: 347.001687
+  type: 'test'
+  ...
+# Subtest: Home preserves multiple saved projects across actual desktop startup
+ok 153 - Home preserves multiple saved projects across actual desktop startup
+  ---
+  duration_ms: 272.345705
+  type: 'test'
+  ...
+# Subtest: Home preserves saved all-archive mode across actual desktop startup
+ok 154 - Home preserves saved all-archive mode across actual desktop startup
+  ---
+  duration_ms: 266.752282
+  type: 'test'
+  ...
+# Subtest: Home retains absent fallback after desktop startup
+ok 155 - Home retains absent fallback after desktop startup
+  ---
+  duration_ms: 204.556738
+  type: 'test'
+  ...
+# Subtest: Home retains malformed fallback after desktop startup
+ok 156 - Home retains malformed fallback after desktop startup
+  ---
+  duration_ms: 269.483602
+  type: 'test'
+  ...
+# Subtest: Home retains removed project fallback after desktop startup
+ok 157 - Home retains removed project fallback after desktop startup
+  ---
+  duration_ms: 220.746305
+  type: 'test'
+  ...
+# Subtest: Home keeps a saved project filter with immediately resolved desktop reads
+ok 158 - Home keeps a saved project filter with immediately resolved desktop reads
+  ---
+  duration_ms: 183.373495
+  type: 'test'
+  ...
+# Subtest: Home archive mode survives startup independently of project selection
+ok 159 - Home archive mode survives startup independently of project selection
+  ---
+  duration_ms: 235.126926
+  type: 'test'
+  ...
+# Subtest: Home user project changes keep the existing real save path
+ok 160 - Home user project changes keep the existing real save path
+  ---
+  duration_ms: 224.14997
+  type: 'test'
+  ...
+# (node:249) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home search Unicode: plain ASCII
+ok 161 - Home search Unicode: plain ASCII
+  ---
+  duration_ms: 212.004245
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: BMP prefix
+ok 162 - Home search Unicode: BMP prefix
+  ---
+  duration_ms: 145.017584
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: astral prefix
+ok 163 - Home search Unicode: astral prefix
+  ---
+  duration_ms: 107.045851
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: two astral prefixes
+ok 164 - Home search Unicode: two astral prefixes
+  ---
+  duration_ms: 86.435409
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: emoji query
+ok 165 - Home search Unicode: emoji query
+  ---
+  duration_ms: 59.028915
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: multiword after emoji
+ok 166 - Home search Unicode: multiword after emoji
+  ---
+  duration_ms: 48.713479
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: emoji after match
+ok 167 - Home search Unicode: emoji after match
+  ---
+  duration_ms: 52.390556
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: uppercase query after emoji
+ok 168 - Home search Unicode: uppercase query after emoji
+  ---
+  duration_ms: 47.388292
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: empty query preserves complete Unicode label
+ok 169 - Home search Unicode: empty query preserves complete Unicode label
+  ---
+  duration_ms: 52.556516
+  type: 'test'
+  ...
+# Subtest: Home search Unicode: branch-only match leaves displayed name unmarked
+ok 170 - Home search Unicode: branch-only match leaves displayed name unmarked
+  ---
+  duration_ms: 40.185274
+  type: 'test'
+  ...
+# (node:257) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home sidebar toggle retains its default hint and click action
+ok 171 - Home sidebar toggle retains its default hint and click action
+  ---
+  duration_ms: 158.141217
+  type: 'test'
+  ...
+# Subtest: mounted Home sidebar hint follows persisted primary and additional shortcuts after hydration
+ok 172 - mounted Home sidebar hint follows persisted primary and additional shortcuts after hydration
+  ---
+  duration_ms: 99.009244
+  type: 'test'
+  ...
+# Subtest: mounted Home sidebar hint follows live provider changes and reset without parent rerender
+ok 173 - mounted Home sidebar hint follows live provider changes and reset without parent rerender
+  ---
+  duration_ms: 94.659816
+  type: 'test'
+  ...
+# Subtest: Home sidebar hint replaces defaults with a single saved shortcut
+ok 174 - Home sidebar hint replaces defaults with a single saved shortcut
+  ---
+  duration_ms: 95.157384
+  type: 'test'
+  ...
+# Subtest: Home sidebar hint keeps defaults when the persisted setting is malformed
+ok 175 - Home sidebar hint keeps defaults when the persisted setting is malformed
+  ---
+  duration_ms: 44.980975
+  type: 'test'
+  ...
+# Subtest: Home omits the toggle while the sidebar is visible, including after hydration
+ok 176 - Home omits the toggle while the sidebar is visible, including after hydration
+  ---
+  duration_ms: 57.103166
+  type: 'test'
+  ...
+# Subtest: Home sidebar toggle has no competing native title
+ok 177 - Home sidebar toggle has no competing native title
+  ---
+  duration_ms: 58.525553
+  type: 'test'
+  ...
+# Subtest: Home sidebar tooltip dismisses on pointer leave
+ok 178 - Home sidebar tooltip dismisses on pointer leave
+  ---
+  duration_ms: 57.228297
+  type: 'test'
+  ...
+# Subtest: Home sidebar tooltip does not open for touch
+ok 179 - Home sidebar tooltip does not open for touch
+  ---
+  duration_ms: 44.533639
+  type: 'test'
+  ...
+# Subtest: Home sidebar tooltip dismisses on Escape
+ok 180 - Home sidebar tooltip dismisses on Escape
+  ---
+  duration_ms: 28.536605
+  type: 'test'
+  ...
+# (node:265) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home target label: workspace target hides its branch even when the repository default differs
+ok 181 - Home target label: workspace target hides its branch even when the repository default differs
+  ---
+  duration_ms: 199.187416
+  type: 'test'
+  ...
+# Subtest: Home target label: repository default remains visible when it is not the workspace target
+ok 182 - Home target label: repository default remains visible when it is not the workspace target
+  ---
+  duration_ms: 149.281309
+  type: 'test'
+  ...
+# Subtest: Home target label: null workspace target uses the decoder's main fallback, not repository default
+ok 183 - Home target label: null workspace target uses the decoder's main fallback, not repository default
+  ---
+  duration_ms: 85.302101
+  type: 'test'
+  ...
+# Subtest: Home target label: older workspace row uses the same main fallback
+ok 184 - Home target label: older workspace row uses the same main fallback
+  ---
+  duration_ms: 75.053431
+  type: 'test'
+  ...
+# Subtest: Home target label: matching repository and workspace targets keep directory fallback
+ok 185 - Home target label: matching repository and workspace targets keep directory fallback
+  ---
+  duration_ms: 70.67568
+  type: 'test'
+  ...
+# Subtest: Home target label: unrelated branch keeps its prettified label
+ok 186 - Home target label: unrelated branch keeps its prettified label
+  ---
+  duration_ms: 47.847653
+  type: 'test'
+  ...
+# Subtest: Home target label: stored name still precedes target and branch
+ok 187 - Home target label: stored name still precedes target and branch
+  ---
+  duration_ms: 47.478441
+  type: 'test'
+  ...
+# Subtest: Home target label: PR title still precedes target and branch
+ok 188 - Home target label: PR title still precedes target and branch
+  ---
+  duration_ms: 44.611249
+  type: 'test'
+  ...
+# Subtest: Home target label: explicit user name still wins
+ok 189 - Home target label: explicit user name still wins
+  ---
+  duration_ms: 32.608428
+  type: 'test'
+  ...
+# Subtest: Home target label: search uses the same corrected displayed name
+ok 190 - Home target label: search uses the same corrected displayed name
+  ---
+  duration_ms: 43.208184
+  type: 'test'
+  ...
+# (node:273) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: date buckets count whole days back from local midnight
+ok 191 - date buckets count whole days back from local midnight
+  ---
+  duration_ms: 1.003682
+  type: 'test'
+  ...
+# Subtest: row time is date-fns formatDistance, shortened like Conductor
+ok 192 - row time is date-fns formatDistance, shortened like Conductor
+  ---
+  duration_ms: 0.349115
+  type: 'test'
+  ...
+# Subtest: search needs every word somewhere and highlights each field
+ok 193 - search needs every word somewhere and highlights each field
+  ---
+  duration_ms: 2.734034
+  type: 'test'
+  ...
+# Subtest: search matches workspace numbers as 12, w12 and w-12
+ok 194 - search matches workspace numbers as 12, w12 and w-12
+  ---
+  duration_ms: 0.610939
+  type: 'test'
+  ...
+# Subtest: Home search finds a known pull request number and combines it with text and filters
+ok 195 - Home search finds a known pull request number and combines it with text and filters
+  ---
+  duration_ms: 3.397315
+  type: 'test'
+  ...
+# Subtest: rows hide archived by default, filter by project, and sort newest first
+ok 196 - rows hide archived by default, filter by project, and sort newest first
+  ---
+  duration_ms: 0.322819
+  type: 'test'
+  ...
+# Subtest: row titles follow the sidebar display-name rule
+ok 197 - row titles follow the sidebar display-name rule
+  ---
+  duration_ms: 0.236153
+  type: 'test'
+  ...
+# Subtest: groups come in Conductor's order and skip empty days
+ok 198 - groups come in Conductor's order and skip empty days
+  ---
+  duration_ms: 0.273795
+  type: 'test'
+  ...
+# Subtest: project filter shows only with two or more projects that have workspaces
+ok 199 - project filter shows only with two or more projects that have workspaces
+  ---
+  duration_ms: 0.378543
+  type: 'test'
+  ...
+# Subtest: empty list offers Create with no workspaces, Clear filters when filtered
+ok 200 - empty list offers Create with no workspaces, Clear filters when filtered
+  ---
+  duration_ms: 0.391257
+  type: 'test'
+  ...
+# Subtest: saved filters drop unknown projects and bad values
+ok 201 - saved filters drop unknown projects and bad values
+  ---
+  duration_ms: 0.27309
+  type: 'test'
+  ...
+# Subtest: archived workspaces from conductor.db show under Only archived and Showing all
+ok 202 - archived workspaces from conductor.db show under Only archived and Showing all
+  ---
+  duration_ms: 0.802229
+  type: 'test'
+  ...
+# Subtest: archived rows of closed repositories, or already in the state, are not listed twice
+ok 203 - archived rows of closed repositories, or already in the state, are not listed twice
+  ---
+  duration_ms: 0.163794
+  type: 'test'
+  ...
+# (node:281) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a renamed archived workspace is found by its preserved directory without changing its displayed title
+ok 204 - a renamed archived workspace is found by its preserved directory without changing its displayed title
+  ---
+  duration_ms: 2.487213
+  type: 'test'
+  ...
+# Subtest: a renamed active workspace is found by its preserved directory
+ok 205 - a renamed active workspace is found by its preserved directory
+  ---
+  duration_ms: 0.347517
+  type: 'test'
+  ...
+# Subtest: directory matching remains case insensitive and trims the query
+ok 206 - directory matching remains case insensitive and trims the query
+  ---
+  duration_ms: 0.397228
+  type: 'test'
+  ...
+# Subtest: directory and repository words can match together
+ok 207 - directory and repository words can match together
+  ---
+  duration_ms: 0.240588
+  type: 'test'
+  ...
+# Subtest: control: stored display-name and branch queries remain searchable
+ok 208 - control: stored display-name and branch queries remain searchable
+  ---
+  duration_ms: 0.549511
+  type: 'test'
+  ...
+# Subtest: control: an unmatched word still excludes the row
+ok 209 - control: an unmatched word still excludes the row
+  ---
+  duration_ms: 0.294687
+  type: 'test'
+  ...
+# Subtest: control: matching a directory does not bypass archive or project filters
+ok 210 - control: matching a directory does not bypass archive or project filters
+  ---
+  duration_ms: 0.195967
+  type: 'test'
+  ...
+# Subtest: control: legacy workspaces without a separate directory retain name search
+ok 211 - control: legacy workspaces without a separate directory retain name search
+  ---
+  duration_ms: 0.269175
+  type: 'test'
+  ...
+# (node:289) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: no repositories means no visited cities
+ok 212 - no repositories means no visited cities
+  ---
+  duration_ms: 1.612192
+  type: 'test'
+  ...
+# Subtest: a city counts once however many workspaces carry its name, in catalogue order
+ok 213 - a city counts once however many workspaces carry its name, in catalogue order
+  ---
+  duration_ms: 0.37422
+  type: 'test'
+  ...
+# Subtest: Home recognizes the complete 385-city catalogue, independently of the name generator
+ok 214 - Home recognizes the complete 385-city catalogue, independently of the name generator
+  ---
+  duration_ms: 0.129484
+  type: 'test'
+  ...
+# Subtest: a -vN suffix and letter case still name the city
+ok 215 - a -vN suffix and letter case still name the city
+  ---
+  duration_ms: 0.097635
+  type: 'test'
+  ...
+# Subtest: a renamed workspace counts by its directory name, as Conductor's does
+ok 216 - a renamed workspace counts by its directory name, as Conductor's does
+  ---
+  duration_ms: 0.149289
+  type: 'test'
+  ...
+# (node:297) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: startSetupScript returns true when setup script starts
+ok 217 - startSetupScript returns true when setup script starts
+  ---
+  duration_ms: 60.677468
+  type: 'test'
+  ...
+# Subtest: startSetupScript returns false when no setup script configured
+ok 218 - startSetupScript returns false when no setup script configured
+  ---
+  duration_ms: 14.008999
+  type: 'test'
+  ...
+# Subtest: startSetupScript returns false when workspaceRef resolves to null
+ok 219 - startSetupScript returns false when workspaceRef resolves to null
+  ---
+  duration_ms: 10.880106
+  type: 'test'
+  ...
+# Subtest: startSetupScript returns false when startSetup returns false
+ok 220 - startSetupScript returns false when startSetup returns false
+  ---
+  duration_ms: 11.815845
+  type: 'test'
+  ...
+# (node:305) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the board lists every non-archived workspace, newest activity first
+ok 221 - the board lists every non-archived workspace, newest activity first
+  ---
+  duration_ms: 2.04229
+  type: 'test'
+  ...
+# Subtest: ?repo= narrows the board by the raw value, so an unknown project shows no cards
+ok 222 - ?repo= narrows the board by the raw value, so an unknown project shows no cards
+  ---
+  duration_ms: 0.220196
+  type: 'test'
+  ...
+# Subtest: cards sit in the column of their effective status; derived in-progress by default
+ok 223 - cards sit in the column of their effective status; derived in-progress by default
+  ---
+  duration_ms: 0.31623
+  type: 'test'
+  ...
+# Subtest: a drag shows in its new column until the stored status catches up
+ok 224 - a drag shows in its new column until the stored status catches up
+  ---
+  duration_ms: 0.241934
+  type: 'test'
+  ...
+# Subtest: dropping on the column the card shows in, or off the board, changes nothing
+ok 225 - dropping on the column the card shows in, or off the board, changes nothing
+  ---
+  duration_ms: 0.22158
+  type: 'test'
+  ...
+# Subtest: a column shows ten cards until it is expanded
+ok 226 - a column shows ten cards until it is expanded
+  ---
+  duration_ms: 0.222697
+  type: 'test'
+  ...
+# Subtest: the selected project tab: listed ?repo=, none for an unknown one, the only project otherwise
+ok 227 - the selected project tab: listed ?repo=, none for an unknown one, the only project otherwise
+  ---
+  duration_ms: 0.129256
+  type: 'test'
+  ...
+# Subtest: project tabs: hidden with one project, five tabs, the rest under More (named when active)
+ok 228 - project tabs: hidden with one project, five tabs, the rest under More (named when active)
+  ---
+  duration_ms: 0.213107
+  type: 'test'
+  ...
+# Subtest: card times read like Conductor's SS
+ok 229 - card times read like Conductor's SS
+  ---
+  duration_ms: 0.588876
+  type: 'test'
+  ...
+# Subtest: the PR row needs a pull request or changed files
+ok 230 - the PR row needs a pull request or changed files
+  ---
+  duration_ms: 0.427265
+  type: 'test'
+  ...
+# Subtest: PR links come from GitHub remotes
+ok 231 - PR links come from GitHub remotes
+  ---
+  duration_ms: 0.322001
+  type: 'test'
+  ...
+# Subtest: /dashboard?repo= round-trips
+ok 232 - /dashboard?repo= round-trips
+  ---
+  duration_ms: 0.169503
+  type: 'test'
+  ...
+# (node:313) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: first workspace belongs to the registered repository id, not a client-side one
+ok 233 - first workspace belongs to the registered repository id, not a client-side one
+  ---
+  duration_ms: 1.288974
+  type: 'test'
+  ...
+# Subtest: first workspace branches from the default branch with a generated name and no first message
+ok 234 - first workspace branches from the default branch with a generated name and no first message
+  ---
+  duration_ms: 0.294568
+  type: 'test'
+  ...
+# Subtest: first workspace branch takes the user's branch prefix
+ok 235 - first workspace branch takes the user's branch prefix
+  ---
+  duration_ms: 0.158042
+  type: 'test'
+  ...
+# Subtest: toStoreWorkspace maps the created worktree into the store's addWorkspace payload
+ok 236 - toStoreWorkspace maps the created worktree into the store's addWorkspace payload
+  ---
+  duration_ms: 1.172742
+  type: 'test'
+  ...
+# (node:321) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the wordmark spells OPENCONDUCTOR on Conductor's grid
+ok 237 - the wordmark spells OPENCONDUCTOR on Conductor's grid
+  ---
+  duration_ms: 1.198406
+  type: 'test'
+  ...
+# (node:329) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the map covers the same 385 city facts as Home
+ok 238 - the map covers the same 385 city facts as Home
+  ---
+  duration_ms: 2.155773
+  type: 'test'
+  ...
+# Subtest: visited counts deduplicate city variants and include archived workspaces
+ok 239 - visited counts deduplicate city variants and include archived workspaces
+  ---
+  duration_ms: 0.474495
+  type: 'test'
+  ...
+# Subtest: only an active city opens a workspace, preserving repository and workspace ids
+ok 240 - only an active city opens a workspace, preserving repository and workspace ids
+  ---
+  duration_ms: 0.165691
+  type: 'test'
+  ...
+# Subtest: an active row replaces a stale archived record for the same workspace
+ok 241 - an active row replaces a stale archived record for the same workspace
+  ---
+  duration_ms: 0.195443
+  type: 'test'
+  ...
+# Subtest: map zoom is bounded from 1 to 8 and button zoom preserves the center
+ok 242 - map zoom is bounded from 1 to 8 and button zoom preserves the center
+  ---
+  duration_ms: 0.230174
+  type: 'test'
+  ...
+# Subtest: panning retains zoom and can move past the viewport as the reference's unbounded translate extent
+ok 243 - panning retains zoom and can move past the viewport as the reference's unbounded translate extent
+  ---
+  duration_ms: 0.170517
+  type: 'test'
+  ...
+# Subtest: EqualEarth projects the origin to the map center and is symmetric
+ok 244 - EqualEarth projects the origin to the map center and is symmetric
+  ---
+  duration_ms: 0.186114
+  type: 'test'
+  ...
+# (node:337) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: no Filter by project submenu with one repository or none
+ok 245 - no Filter by project submenu with one repository or none
+  ---
+  duration_ms: 0.774857
+  type: 'test'
+  ...
+# Subtest: options are All projects, then every repository by name in list order
+ok 246 - options are All projects, then every repository by name in list order
+  ---
+  duration_ms: 1.109349
+  type: 'test'
+  ...
+# Subtest: All projects clears the filter; a repository id sets it
+ok 247 - All projects clears the filter; a repository id sets it
+  ---
+  duration_ms: 0.133207
+  type: 'test'
+  ...
+# Subtest: a filter keeps only the filtered repository's group
+ok 248 - a filter keeps only the filtered repository's group
+  ---
+  duration_ms: 0.192865
+  type: 'test'
+  ...
+# Subtest: a filter on a removed repository is cleared only after repositories load
+ok 249 - a filter on a removed repository is cleared only after repositories load
+  ---
+  duration_ms: 0.131754
+  type: 'test'
+  ...
+# Subtest: createRepoDefault keeps a requested repository
+ok 250 - createRepoDefault keeps a requested repository
+  ---
+  duration_ms: 0.097813
+  type: 'test'
+  ...
+# Subtest: createRepoDefault starts on the sidebar's project filter when nothing is requested
+ok 251 - createRepoDefault starts on the sidebar's project filter when nothing is requested
+  ---
+  duration_ms: 0.139553
+  type: 'test'
+  ...
+# Subtest: createRepoDefault skips a requested or filtered repository that is gone
+ok 252 - createRepoDefault skips a requested or filtered repository that is gone
+  ---
+  duration_ms: 0.077014
+  type: 'test'
+  ...
+# Subtest: createRepoDefault falls back to the first repository, or none
+ok 253 - createRepoDefault falls back to the first repository, or none
+  ---
+  duration_ms: 0.256447
+  type: 'test'
+  ...
+# (node:345) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: sort preference defaults to Updated and only accepts Created
+ok 254 - sort preference defaults to Updated and only accepts Created
+  ---
+  duration_ms: 0.675779
+  type: 'test'
+  ...
+# Subtest: Created ignores later activity; Updated falls back to creation and preserves equal-time order
+ok 255 - Created ignores later activity; Updated falls back to creation and preserves equal-time order
+  ---
+  duration_ms: 1.150663
+  type: 'test'
+  ...
+1..255
+# tests 255
+# suites 0
+# pass 255
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 42034.124527

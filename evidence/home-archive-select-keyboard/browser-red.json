@@ -1,0 +1,27 @@
+{
+  "at": "2026-11-17T15:15Z",
+  "baseline": "217498aae38dfd63b97919b1a0ab4097462c691e",
+  "server": "c65b02db-8e80-4eb0-878b-8fa18d81be7b",
+  "port": 48731,
+  "tab": 1491875801,
+  "url": "http://localhost:48731/.ara-state/home-archive-keyboard/browser.html",
+  "actions": [
+    "Observe Archive trigger from DOM",
+    "Focus observed trigger",
+    "Input.dispatchKeyEvent ArrowDown keyDown",
+    "Read actual DOM",
+    "Input.dispatchKeyEvent ArrowDown keyUp"
+  ],
+  "observed": {
+    "focused": "Hiding archived",
+    "open": false,
+    "popup": false,
+    "workspaces": 2
+  },
+  "expected": {
+    "open": true,
+    "focused": "Hiding archived"
+  },
+  "passed": false,
+  "scope": "own generated fixture in managed Chrome; not original Conductor/native/full App"
+}

@@ -1,0 +1,1 @@
+function kD(){const t=$.useContext(K3i);if(t===null)throw new Error(jl(60));return t}

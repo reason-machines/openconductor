@@ -1,0 +1,98 @@
+(node:74) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Archive {ArrowDown} opens on selected Showing all
+ok 1 - Archive {ArrowDown} opens on selected Showing all
+  ---
+  duration_ms: 936.695706
+  type: 'test'
+  ...
+# Subtest: Archive {ArrowUp} opens on selected Showing all
+ok 2 - Archive {ArrowUp} opens on selected Showing all
+  ---
+  duration_ms: 414.178866
+  type: 'test'
+  ...
+# Subtest: Archive clamps {ArrowUp} at Hiding archived
+ok 3 - Archive clamps {ArrowUp} at Hiding archived
+  ---
+  duration_ms: 429.160111
+  type: 'test'
+  ...
+# Subtest: Archive clamps {ArrowDown} at Only archived
+ok 4 - Archive clamps {ArrowDown} at Only archived
+  ---
+  duration_ms: 508.329356
+  type: 'test'
+  ...
+# Subtest: Archive moves ArrowDown and ArrowUp without committing
+ok 5 - Archive moves ArrowDown and ArrowUp without committing
+  ---
+  duration_ms: 501.280984
+  type: 'test'
+  ...
+# Subtest: Archive Home and End move focus without committing
+ok 6 - Archive Home and End move focus without committing
+  ---
+  duration_ms: 495.072509
+  type: 'test'
+  ...
+# Subtest: Archive open typeahead highlights without changing filter
+ok 7 - Archive open typeahead highlights without changing filter
+  ---
+  duration_ms: 389.801511
+  type: 'test'
+  ...
+# Subtest: Archive closed typeahead commits single select without opening
+ok 8 - Archive closed typeahead commits single select without opening
+  ---
+  duration_ms: 176.013264
+  type: 'test'
+  ...
+# Subtest: Archive Enter commits focused option, closes and preserves projects
+ok 9 - Archive Enter commits focused option, closes and preserves projects
+  ---
+  duration_ms: 511.197337
+  type: 'test'
+  ...
+# Subtest: Archive Space commits one focused option
+ok 10 - Archive Space commits one focused option
+  ---
+  duration_ms: 430.602491
+  type: 'test'
+  ...
+# Subtest: Archive Escape dismisses without commit and restores trigger focus
+ok 11 - Archive Escape dismisses without commit and restores trigger focus
+  ---
+  duration_ms: 408.08233
+  type: 'test'
+  ...
+# Subtest: Archive pointer choice remains a closing single select
+ok 12 - Archive pointer choice remains a closing single select
+  ---
+  duration_ms: 450.865837
+  type: 'test'
+  ...
+# Subtest: Projects stays multi-select while Archive preserves its selections
+ok 13 - Projects stays multi-select while Archive preserves its selections
+  ---
+  duration_ms: 963.067413
+  type: 'test'
+  ...
+# Subtest: Archive exposes combobox/listbox/option selection semantics
+ok 14 - Archive exposes combobox/listbox/option selection semantics
+  ---
+  duration_ms: 300.501392
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7812.421426

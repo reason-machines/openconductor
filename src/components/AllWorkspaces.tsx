@@ -9,8 +9,6 @@ import type { Action } from "../state/store";
 import { isWorkspaceUnread } from "../state/chatUnread";
 import { ArchiveIcon, ChevronDownIcon, FolderIcon, SearchIcon, SidebarIcon } from "./Icons";
 import {
-  ARCHIVE_FILTERS,
-  ARCHIVE_FILTER_LABELS,
   CLEARED_FILTERS,
   PAGE_SIZE,
   emptyAction,
@@ -40,6 +38,7 @@ import { useBoolPref } from "../settings/useBoolPref";
 import { workspaceNumberLabel } from "../state/workspaceNumber";
 import { RepoIcon } from "./RepoIcon";
 import { Tooltip } from "./Tooltip";
+import { ArchiveFilter } from "./home/ArchiveFilter";
 
 interface Props {
   repos: Repo[];
@@ -486,22 +485,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
                 )}
               </Menu>
             )}
-            <Menu ariaLabel="Archived workspaces" label={ARCHIVE_FILTER_LABELS[filters.archiveFilter]} icon={<ArchiveIcon size={14} />}>
-              {(close) =>
-                ARCHIVE_FILTERS.map((f) => (
-                  <MenuCheck
-                    key={f}
-                    checked={filters.archiveFilter === f}
-                    onClick={() => {
-                      setFilters({ ...filters, archiveFilter: f });
-                      close();
-                    }}
-                  >
-                    {ARCHIVE_FILTER_LABELS[f]}
-                  </MenuCheck>
-                ))
-              }
-            </Menu>
+            <ArchiveFilter value={filters.archiveFilter} onChange={(archiveFilter) => setFilters({ ...filters, archiveFilter })} />
           </div>
         </div>
       </div>

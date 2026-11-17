@@ -1,0 +1,22 @@
+{
+  "src/components/allWorkspacesKeyboardEndpoints.test.ts": "3ae3852a44bdb5528117e32e73e966f074a6c0034e5f7c0d538433639f4cf922",
+  "src/components/allWorkspacesSelection.test.ts": "e68e158938854648bd0029d886831ab6bb556924509181cc26aadf81c330461b",
+  "src/components/allWorkspacesSidebarHint.test.ts": "b4e80f150ff0bf60d9bdc5c2546730eb7b81f0da848a96031817a11c74067c3e",
+  "src/components/homeArchivedContextMenu.test.ts": "828088deea49b09aee131f138cb4436fc7fbc788c7d1351c8342151a8225557a",
+  "src/components/homeArchivedEmptyAction.test.ts": "37caa4d8c61faf7d1755b990094d946d93cbecb2cc63c532dc9ed683a3ee32ba",
+  "src/components/homeCompactTime.test.ts": "13bda10e86ef6ca2170bd79b6e7634c5cd94f553feb3b2fce2617120d8ea761e",
+  "src/components/homeContextMenu.test.ts": "000a0ac3eefce9da250cb31dcc535bd6965c192fd0a764b5debb18a42edb3818",
+  "src/components/homeCtrlNavigation.test.ts": "94b13df577538e95a8a443ac1279590113dceccf4b2cca5d9d7348bbeb7390ca",
+  "src/components/homeEmptyAction.test.ts": "6d4eddc37b6eab0ef4a5cfa1c0d35bbc8a70cbf1c0920480edef5291bcd0adf8",
+  "src/components/homeEmptyEnter.test.ts": "94d1338806ca424a6605116b1fd733b7765d3fe6d2849bf8fc942d9045fb72f8",
+  "src/components/homeGroupNavigation.test.ts": "28690ba41c9a4cf66595c06832815ee151c211b8b70a8ed58ee12d759f12c874",
+  "src/components/homeIme.test.ts": "f972b0a3707f54f8709b36aeacc01efe3c1fc4a015e6f8a4ddb85fb7d1638d7f",
+  "src/components/homeKeyboardScroll.test.ts": "85dd53c167303f33f520d37830a3ff62fcd389ace61c0bc8583879e49532358a",
+  "src/components/homeMetaArrow.test.ts": "7f16f7a36a790048fe7d8840721c4660f48d59dd93e48d4d582df221f3441d1b",
+  "src/components/homeProjectEligibility.test.ts": "490743c5a88da1af06b08b1e677ed23639a427fa8ecf93445cbc04ffb28a4bb0",
+  "src/components/homeRepoIcon.test.ts": "369bd67d9882ce3225e57f7f1802c501f4a69270beb2e3560e1548564fcc6381",
+  "src/components/homeRowLabels.test.ts": "beb49db0c36d524378e64236facf39cdbc104db774fc357dab1099a3efb1601c",
+  "src/components/homeSavedProjectFilterHydration.test.ts": "aa3264f1cc330057277b52c8932ef0ede10850ef49ffa6b66ee1358c8e4ed5ec",
+  "src/components/homeSearchUnicode.test.ts": "48e1a9edc6d94caf3f1913ec3a59ed208fa23932a2d919a8cbc6c0a0bb8447e7",
+  "src/components/homeTargetLabel.test.ts": "91aae6218fcdab2e795ecde1eefbd802fc147bd489ee78933da31bf2a09a3f80"
+}

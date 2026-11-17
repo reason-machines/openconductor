@@ -1,0 +1,1 @@
+function mMt(t){const[e,n]=$.useState(null),i=pMt(t,n);return NO(t,r=>{r&&!t&&n(null)}),$.useMemo(()=>({openMethod:e,triggerProps:i}),[e,i])}

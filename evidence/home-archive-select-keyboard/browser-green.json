@@ -1,0 +1,82 @@
+{
+  "at": "2026-11-17T15:25:00Z",
+  "server": "c65b02db-8e80-4eb0-878b-8fa18d81be7b",
+  "port": 48731,
+  "tab": 1491875801,
+  "scope": "own synthetic Chrome fixture, actual AllWorkspaces + installed BaseUI; not original Conductor/native/full App",
+  "checks": [
+    {
+      "input": "Focus closed Archive; real CDP KeyO text=o",
+      "observed": {
+        "label": "Only archived",
+        "open": false,
+        "saved": {
+          "projects": [],
+          "archiveFilter": "archived"
+        },
+        "rows": 2
+      },
+      "pass": true
+    },
+    {
+      "input": "Reset fixture control; pointer choose Showing all; focus Archive",
+      "observed": {
+        "label": "Showing all",
+        "open": false,
+        "saved": {
+          "projects": [],
+          "archiveFilter": "all"
+        }
+      },
+      "pass": true
+    },
+    {
+      "input": "Real CDP ArrowDown",
+      "observed": {
+        "focused": "Showing all",
+        "role": "option",
+        "open": true,
+        "saved": {
+          "projects": [],
+          "archiveFilter": "all"
+        },
+        "selected": "Showing all",
+        "rows": 4
+      },
+      "pass": true
+    },
+    {
+      "input": "Real CDP End then ArrowDown",
+      "observed": {
+        "focused": "Only archived",
+        "open": true,
+        "saved": {
+          "projects": [],
+          "archiveFilter": "all"
+        }
+      },
+      "pass": true
+    },
+    {
+      "input": "Real CDP Enter",
+      "observed": {
+        "focused": "Only archived",
+        "open": false,
+        "saved": {
+          "projects": [],
+          "archiveFilter": "archived"
+        },
+        "rows": [
+          "Alpha archived",
+          "Beta archived"
+        ],
+        "workspaceActions": 0
+      },
+      "pass": true
+    }
+  ],
+  "screenshots": [
+    "green-selected-open.png",
+    "green-enter-committed.png"
+  ]
+}

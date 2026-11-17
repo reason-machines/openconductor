@@ -42,7 +42,13 @@ export function paletteCommandFor(e: KeyEventLike, overrides: Overrides = {}): P
     case "toggleCommandPalette":
       return "close";
     default:
-      // Keep existing explicit bindings ahead of the new Option-arrow fallback.
+      // Explicit bindings take priority over cmdk's built-in navigation.
+      if (plain && e.shiftKey) {
+        if (e.key === "ArrowDown") return "next-item";
+        if (e.key === "ArrowUp") return "prev-item";
+        if (e.key === "Home") return "first-item";
+        if (e.key === "End") return "last-item";
+      }
       if (e.altKey && !e.metaKey && !e.ctrlKey && !e.shiftKey) {
         if (e.key === "ArrowDown") return "next-group";
         if (e.key === "ArrowUp") return "prev-group";

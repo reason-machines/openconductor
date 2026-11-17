@@ -1,0 +1,119 @@
+[
+  {
+    "file": "adjacent-after-adapters.tap",
+    "bytes": 4159940,
+    "sha256": "17d11ccb0fa5de51995b601a2580f054d79b51386fa901bde6683ecb94bcab39",
+    "totals": {
+      "tests": 255,
+      "pass": 249,
+      "fail": 6,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "exception_or_react_warning": true
+  },
+  {
+    "file": "adjacent-after.tap",
+    "bytes": 233288,
+    "sha256": "99a120612339969182e3f915d3b40ee2d4b7f718d9a415176a48c9cf79e96829",
+    "totals": {
+      "tests": 255,
+      "pass": 104,
+      "fail": 151,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "exception_or_react_warning": false
+  },
+  {
+    "file": "adjacent-green.tap",
+    "bytes": 60939,
+    "sha256": "e0a3feb6b02fa048d4070f38a1e745a5d6b73ea0de03aac20df22ec22299e0f7",
+    "totals": {
+      "tests": 255,
+      "pass": 254,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "exception_or_react_warning": true
+  },
+  {
+    "file": "green-v2-dom27.tap",
+    "bytes": 4588,
+    "sha256": "f308cf0c16679fc39d234eea315901bd8f8c12e77b7df06e8b5d2ef390835672",
+    "totals": {
+      "tests": 14,
+      "pass": 12,
+      "fail": 2,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "exception_or_react_warning": false
+  },
+  {
+    "file": "green-v2-final.tap",
+    "bytes": 3806,
+    "sha256": "6741ba3e475e72c9877f698feea71990254390b506c9ac44ca57b135c181d0b9",
+    "totals": {
+      "tests": 14,
+      "pass": 13,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "exception_or_react_warning": false
+  },
+  {
+    "file": "green-v2-flush-before.tap",
+    "bytes": 3016,
+    "sha256": "62e46722e52ec2d8a2635869344dc7c922305ff4acb8efca2c4ec98f58e11596",
+    "totals": {
+      "tests": 14,
+      "pass": 14,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "exception_or_react_warning": false
+  },
+  {
+    "file": "green-v2-flush.tap",
+    "bytes": 54649,
+    "sha256": "1a0bb6890e042b7ac2f2c0a7106108b122e2d2b7aa52a01ab1ef546113876f98",
+    "totals": {
+      "tests": 14,
+      "pass": 14,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "exception_or_react_warning": true
+  },
+  {
+    "file": "green-v2-host.tap",
+    "bytes": 4583,
+    "sha256": "8fd2ce87200d511f7483f44155ad568ee23b7a43988c7625772e28aaee97861d",
+    "totals": {
+      "tests": 14,
+      "pass": 12,
+      "fail": 2,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "exception_or_react_warning": false
+  },
+  {
+    "file": "green-v2.tap",
+    "bytes": 21885,
+    "sha256": "d43c7de83797972038bb17c728e7246ced41fcfe1c8c1fce03b4238f80fc5c7f",
+    "totals": {
+      "tests": 14,
+      "pass": 11,
+      "fail": 3,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "exception_or_react_warning": true
+  }
+]

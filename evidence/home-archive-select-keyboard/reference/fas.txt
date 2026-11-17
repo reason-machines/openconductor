@@ -1,0 +1,1 @@
+fas=$.forwardRef(function(e,n){const{render:i,className:r,style:o,...a}=e,[c,u]=$.useState(),d=$.useMemo(()=>({labelId:c,setLabelId:u}),[c,u]),h=Es("div",e,{ref:n,props:[{role:"group","aria-labelledby":c},a]});return p.jsx(obi.Provider,{value:d,children:h})})

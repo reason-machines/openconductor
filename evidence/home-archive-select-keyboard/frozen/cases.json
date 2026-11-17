@@ -1,0 +1,93 @@
+{
+  "key": "HOME-ARCHIVE-SELECT-KEYBOARD-271",
+  "baseline": "217498aae3ed",
+  "expectedSource": "retained Conductor 0.87.6 ah/Hos Select, never evaluated",
+  "cases": [
+    {
+      "id": "open-down",
+      "setup": "default active",
+      "action": "focus archive trigger; ArrowDown",
+      "expected": "open; Hiding archived focused; saved active unchanged"
+    },
+    {
+      "id": "open-up",
+      "setup": "saved all selected by pointer",
+      "action": "focus archive trigger; ArrowUp",
+      "expected": "open; Showing all focused; saved all unchanged"
+    },
+    {
+      "id": "no-wrap-up",
+      "setup": "active open, first option focused",
+      "action": "ArrowUp",
+      "expected": "Hiding archived focused; no save"
+    },
+    {
+      "id": "no-wrap-down",
+      "setup": "archived open, last option focused",
+      "action": "ArrowDown",
+      "expected": "Only archived focused; no save"
+    },
+    {
+      "id": "home-end",
+      "setup": "all open",
+      "action": "End then Home",
+      "expected": "Only archived then Hiding archived; no save"
+    },
+    {
+      "id": "typeahead-open",
+      "setup": "active open",
+      "action": "type o",
+      "expected": "Only archived focused; saved active unchanged"
+    },
+    {
+      "id": "commit-enter",
+      "setup": "Only archived focused while saved active",
+      "action": "Enter",
+      "expected": "closed; Only archived trigger; two archived rows; saved archived; projects preserved"
+    },
+    {
+      "id": "commit-space",
+      "setup": "Showing all focused",
+      "action": "Space",
+      "expected": "closed; Showing all; four rows; saved all"
+    },
+    {
+      "id": "escape",
+      "setup": "active open with Only archived focused",
+      "action": "Escape",
+      "expected": "closed; archive trigger focused; saved active unchanged"
+    },
+    {
+      "id": "closed-typeahead",
+      "setup": "default active, closed trigger focused",
+      "action": "type o",
+      "expected": "closed; Only archived; saved archived"
+    },
+    {
+      "id": "pointer",
+      "setup": "default active",
+      "action": "open and click Showing all",
+      "expected": "closed; Showing all; four rows; saved all"
+    },
+    {
+      "id": "projects-control",
+      "setup": "Projects open",
+      "action": "choose Alpha then Beta; End then ArrowDown",
+      "expected": "multi-select stays open and saves both; Projects wraps Beta→All projects"
+    },
+    {
+      "id": "project-preservation",
+      "setup": "Alpha selected, archive Only archived",
+      "action": "choose Showing all",
+      "expected": "Alpha project filter retained; Alpha active+archived rows"
+    },
+    {
+      "id": "dismiss-outside",
+      "setup": "active open",
+      "action": "click Home title",
+      "expected": "closed; filter unchanged"
+    }
+  ],
+  "native": "NOT_RUN",
+  "vendorExecution": false
+}\n

@@ -1,0 +1,1 @@
+aas=$.memo($.forwardRef(function(e,n){const{index:i,textRef:r,selectedByFocus:o}=eFt(),{firstItemTextRef:a,selectedItemTextRef:c}=kD(),{render:u,className:d,style:h,...m}=e,g=$.useCallback(v=>{v&&(i===0&&(a.current=v),o&&(c.current=v))},[a,c,i,o]);return Es("div",e,{ref:[g,n,r],props:m})}))

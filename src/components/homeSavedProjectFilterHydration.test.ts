@@ -4,6 +4,7 @@ import { createRequire } from "node:module";
 import test from "node:test";
 import { runInNewContext } from "node:vm";
 import * as React from "react";
+import { closedArchiveFilterFixture } from "../../evidence/home-archive-select-keyboard/closedArchiveFilterFixture.ts";
 import ts from "typescript";
 import type { Action } from "../state/store";
 import type { DbRepoRow, DbWorkspaceRow } from "../state/persisted";
@@ -71,6 +72,7 @@ async function fixture(raw: string | null, pending = true) {
     effectiveShortcuts: () => [], glyphs: () => "",
     listArchivedWorkspaces: async () => [], onArchiveEvent: () => inert,
     Tooltip: ({ children }: { children: React.ReactNode }) => children,
+    ArchiveFilter: closedArchiveFilterFixture.ArchiveFilter,
     USER_PAGES: [], REPO_SECTIONS: [], PRIORITY: { DIALOG: 1 },
     invoke(name: string) {
       commands.push(name);

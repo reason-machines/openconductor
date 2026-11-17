@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { runInNewContext } from "node:vm";
 import * as React from "react";
+import { closedArchiveFilterFixture } from "../../evidence/home-archive-select-keyboard/closedArchiveFilterFixture.ts";
 import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
 import type { Repo } from "../state/types";
@@ -50,6 +51,7 @@ function renderHome({ menuOpen = false, matrix = false, projects = [], repos = f
     };
     if (name === "../home/allWorkspaces") return { ...home, loadFilters: () => ({ projects, archiveFilter: "active" }) };
     if (name === "./RepoIcon") return iconExports;
+    if (name === "./home/ArchiveFilter") return closedArchiveFilterFixture;
     if (name === "./Tooltip") return { Tooltip: ({ children }: { children: React.ReactNode }) => children };
     if (name === "../state/rowStatus") return status;
     if (name === "../state/workspaceNumber") return { workspaceNumberLabel };

@@ -4,6 +4,7 @@ import { createRequire } from "node:module";
 import test from "node:test";
 import { runInNewContext } from "node:vm";
 import * as React from "react";
+import { closedArchiveFilterFixture } from "../../evidence/home-archive-select-keyboard/closedArchiveFilterFixture.ts";
 import ts from "typescript";
 import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
@@ -43,6 +44,7 @@ async function fixture(projects: string[] = []) {
     "../workspace/archive": { listArchivedWorkspaces: async () => [], onArchiveEvent: () => () => {} },
     "./RepoIcon": { RepoIcon: inert },
     "./Tooltip": { Tooltip: ({ children }: { children: React.ReactNode }) => children },
+    "./home/ArchiveFilter": closedArchiveFilterFixture,
     "./Icons": { ArchiveIcon: inert, ChevronDownIcon: inert, FolderIcon: inert, SearchIcon: inert, SidebarIcon: inert },
     "./RowStatusIcon": { RowStatusIcon: inert },
     "./StatusMatrix": { StatusMatrix: inert },
@@ -67,10 +69,13 @@ async function fixture(projects: string[] = []) {
   const rows = (): { props: { title: string; "aria-selected": boolean; onClick(): void } }[] => renderer.root.findAllByProps({ role: "option" });
   const input = () => renderer.root.findByProps({ "aria-label": "Search workspaces" });
   async function choose(menu: string, label: string) {
-    const button = renderer.root.findByProps({ "aria-label": menu });
+    const button = renderer.root.find((node: any) => node.type === "button" && node.props["aria-label"] === menu);
     if (!button.props["aria-expanded"]) await act(async () => { button.props.onClick(); });
-    const choices: { children: unknown[]; props: { onClick(): void } }[] = renderer.root.findAllByProps({ role: "menuitemcheckbox" });
-    const choice = choices.find((node) => node.children.includes(label));
+    const archive = menu === "Archived workspaces";
+    const popup = archive ? renderer.root.findByProps({ className: "allws-menu-pop allws-archive-popup" }) : renderer.root;
+    const choices: { children: unknown[]; props: { onClick(): void } }[] = popup.findAllByProps({ role: archive ? "option" : "menuitemcheckbox" });
+    const text = (node: any): string => typeof node === "string" ? node : node.children.map(text).join("");
+    const choice = choices.find((node) => archive ? text(node).replace(/^✓/, "") === label : node.children.includes(label));
     assert.ok(choice, label);
     await act(async () => { choice.props.onClick(); });
   }

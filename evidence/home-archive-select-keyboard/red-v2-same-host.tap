@@ -1,0 +1,252 @@
+(node:80) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:87) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Archive {ArrowDown} opens on selected Showing all
+not ok 1 - Archive {ArrowDown} opens on selected Showing all
+  ---
+  duration_ms: 485.534331
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:101:47'
+  failureType: 'testCodeFailure'
+  error: |-
+    archive arrow opens select
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:102:107)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Archive {ArrowUp} opens on selected Showing all
+not ok 2 - Archive {ArrowUp} opens on selected Showing all
+  ---
+  duration_ms: 280.681841
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:101:47'
+  failureType: 'testCodeFailure'
+  error: |-
+    archive arrow opens select
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:102:107)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Archive clamps {ArrowUp} at Hiding archived
+ok 3 - Archive clamps {ArrowUp} at Hiding archived
+  ---
+  duration_ms: 450.531715
+  type: 'test'
+  ...
+# Subtest: Archive clamps {ArrowDown} at Only archived
+ok 4 - Archive clamps {ArrowDown} at Only archived
+  ---
+  duration_ms: 330.08935
+  type: 'test'
+  ...
+# Subtest: Archive moves ArrowDown and ArrowUp without committing
+not ok 5 - Archive moves ArrowDown and ArrowUp without committing
+  ---
+  duration_ms: 318.546219
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:107:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Hiding archived'
+    - 'Showing all'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Showing all'
+  actual: 'Hiding archived'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:108:136)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Archive Home and End move focus without committing
+not ok 6 - Archive Home and End move focus without committing
+  ---
+  duration_ms: 327.819692
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:110:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Showing all'
+    - 'Only archived'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Only archived'
+  actual: 'Showing all'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:111:147)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Archive open typeahead highlights without changing filter
+not ok 7 - Archive open typeahead highlights without changing filter
+  ---
+  duration_ms: 314.600713
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:113:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Hiding archived'
+    - 'Only archived'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Only archived'
+  actual: 'Hiding archived'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:114:126)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Archive closed typeahead commits single select without opening
+not ok 8 - Archive closed typeahead commits single select without opening
+  ---
+  duration_ms: 168.366006
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:116:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'active'
+    - 'archived'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'archived'
+  actual: 'active'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:117:118)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Archive Enter commits focused option, closes and preserves projects
+not ok 9 - Archive Enter commits focused option, closes and preserves projects
+  ---
+  duration_ms: 367.040255
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:119:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'active'
+    - 'archived'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'archived'
+  actual: 'active'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:120:189)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Archive Space commits one focused option
+ok 10 - Archive Space commits one focused option
+  ---
+  duration_ms: 319.035732
+  type: 'test'
+  ...
+# Subtest: Archive Escape dismisses without commit and restores trigger focus
+not ok 11 - Archive Escape dismisses without commit and restores trigger focus
+  ---
+  duration_ms: 295.553861
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:125:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Escape returns focus to the archive trigger
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:126:213)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Archive pointer choice remains a closing single select
+ok 12 - Archive pointer choice remains a closing single select
+  ---
+  duration_ms: 363.952694
+  type: 'test'
+  ...
+# Subtest: Projects stays multi-select while Archive preserves its selections
+ok 13 - Projects stays multi-select while Archive preserves its selections
+  ---
+  duration_ms: 899.615987
+  type: 'test'
+  ...
+# Subtest: Archive exposes combobox/listbox/option selection semantics
+not ok 14 - Archive exposes combobox/listbox/option selection semantics
+  ---
+  duration_ms: 57.992613
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:134:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    null !== 'combobox'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'combobox'
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/evidence/home-archive-select-keyboard/frozen/archiveKeyboard.test.cjs:135:61)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 5
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5772.809625
