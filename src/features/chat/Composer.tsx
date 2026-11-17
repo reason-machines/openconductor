@@ -256,7 +256,7 @@ export function Composer({
       // @tauri-apps/api/core import (the add-menu keyboard test VMs this file and
       // blocks unexpected platform dependencies).
       void readClipboardTextFromPlatform().then((text) => {
-        if (!text) return;
+        if (!text || inputRef.current !== box) return;
         box.focus();
         const sel = box.selection();
         box.replaceRange({ start: sel.start, end: sel.end }, text);

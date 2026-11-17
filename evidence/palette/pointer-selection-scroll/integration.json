@@ -1,0 +1,67 @@
+{
+  "owner": "Conductor Rebuild / SAME15",
+  "main": "08be22cfcb0034e23171fe9b5f3b0a5df93585f3",
+  "checked_candidate": "53b8aca8c00d271c07bf58530fd80f32a17f4232",
+  "predecessor": {
+    "pr": 1428,
+    "merge": "08be22cfcb0034e23171fe9b5f3b0a5df93585f3",
+    "merged_at": "2026-11-17T13:04:13Z"
+  },
+  "frozen_fixture_sha256": "1f7f9be48228daf8aa0f516f341b1548294ab36a06d07947c951b1f3a301cd4d",
+  "protected_fixtures": {
+    "src/palette/activeDescendant.test.ts": "0f358cda74b6a85bf5daa68df514828e839c01c06fe2a606586106898ea4ea17",
+    "src/palette/activeDescendantControls.test.ts": "a578b2cbb8b26e62b24754711885be0117c72c8dce4c5c22d3ddfdeef2ff32cd",
+    "src/palette/sectionEnabledNavigation.test.ts": "855ce5ff5e712d582ed86c1b1048f3d6c795ac103fba1dd59a1dde9b58ea59a4",
+    "src/palette/sectionAutoScroll.test.ts": "29d14849c86f6bd8f4bd4389f9b1eb6ee7b791e89dc235a9560d32e96de42220",
+    "evidence/palette/section-auto-scroll/pointer-controls.test.ts": "b78b8a85e8ab477075d8645287657bf6e83c5ce7e12a6fd9c6867dcec9b3774a"
+  },
+  "production_paths": [
+    "src/palette/CommandPalette.tsx"
+  ],
+  "logs": [
+    {
+      "path": "integrated-red.tap.gz",
+      "raw_sha256": "47c2d303df2433ae6fd041c0f4e03610991c003328ffa73a589b62cc62586e83",
+      "required": [
+        "# tests 15",
+        "# pass 10",
+        "# fail 5",
+        "# skipped 0"
+      ],
+      "exit": 1
+    },
+    {
+      "path": "integrated-green.tap.gz",
+      "raw_sha256": "7bcf314ecf17c01051849621c96aa53f942db4ab9c7e6748b1471a39486fc97c",
+      "required": [
+        "# tests 19",
+        "# pass 19",
+        "# fail 0",
+        "# skipped 0"
+      ],
+      "exit": 0
+    },
+    {
+      "path": "integrated-adjacent.tap.gz",
+      "raw_sha256": "b096a48362ca01756bd795cd9e62b476bc7640cc9daa09830b7261ea9eba0b00",
+      "required": [
+        "# tests 452",
+        "# pass 452",
+        "# fail 0",
+        "# skipped 0"
+      ],
+      "exit": 0
+    },
+    {
+      "path": "integrated-build.log.gz",
+      "raw_sha256": "cbba425e82d3735146a4a156da786697ac9911206b9221c74f279609966ecc90",
+      "required": [
+        "check:branding",
+        "tsc --noEmit",
+        "built in"
+      ],
+      "exit": 0
+    }
+  ],
+  "acceptance": "Source/mounted synthetic-list scroll calls only. Browser geometry, native and package acceptance NOT_RUN."
+}

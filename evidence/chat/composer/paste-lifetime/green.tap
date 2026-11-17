@@ -1,0 +1,56 @@
+(node:51) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:58) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pending paste does not focus or insert after the editor unmounts
+ok 1 - pending paste does not focus or insert after the editor unmounts
+  ---
+  duration_ms: 280.801904
+  type: 'test'
+  ...
+# Subtest: a live editor retains focus and exact current-selection insertion
+ok 2 - a live editor retains focus and exact current-selection insertion
+  ---
+  duration_ms: 146.472381
+  type: 'test'
+  ...
+# Subtest: empty clipboard null does not focus or insert
+ok 3 - empty clipboard null does not focus or insert
+  ---
+  duration_ms: 55.528607
+  type: 'test'
+  ...
+# Subtest: empty clipboard "" does not focus or insert
+ok 4 - empty clipboard "" does not focus or insert
+  ---
+  duration_ms: 49.618274
+  type: 'test'
+  ...
+# Subtest: clipboard whitespace remains legitimate content
+ok 5 - clipboard whitespace remains legitimate content
+  ---
+  duration_ms: 42.851268
+  type: 'test'
+  ...
+# Subtest: a detached editor declines without reading clipboard
+ok 6 - a detached editor declines without reading clipboard
+  ---
+  duration_ms: 48.81441
+  type: 'test'
+  ...
+# Subtest: a pending paste in one editor does not touch another mounted composer
+ok 7 - a pending paste in one editor does not touch another mounted composer
+  ---
+  duration_ms: 72.83343
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1125.619635

@@ -1,0 +1,1 @@
+function JSe(t,e){t.useSyncedValues(e),or(()=>()=>{t.update({activeTriggerProps:pf,inactiveTriggerProps:pf,popupProps:pf})},[t])}

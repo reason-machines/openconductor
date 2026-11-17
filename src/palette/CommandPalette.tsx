@@ -150,6 +150,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     saveFilters(f);
   };
   const listRef = useRef<HTMLDivElement>(null);
+  const pointerSelection = useRef(false);
   const motionRef = useDialogMotion<HTMLDivElement>();
   const now = Date.now();
 
@@ -198,8 +199,21 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     if (tab !== "workspaces") listRef.current?.scrollTo(0, 0);
   }, [tab, query]);
   useEffect(() => {
-    listRef.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest" });
+    if (!pointerSelection.current) {
+      const selected = listRef.current?.querySelector<HTMLElement>('[aria-selected="true"]');
+      const group = selected?.closest?.(".palette-group");
+      if (group && group.querySelector('[role="option"]') === selected) {
+        group.querySelector<HTMLElement>(".palette-heading")?.scrollIntoView({ block: "nearest" });
+      }
+      selected?.scrollIntoView({ block: "nearest" });
+    }
+    pointerSelection.current = false;
   }, [active]);
+  function selectFromPointer(index: number) {
+    if (index === active) return;
+    pointerSelection.current = true;
+    setActive(index);
+  }
 
   function chooseSectionAt(i: number) {
     if (!moveToSection) return;
@@ -272,7 +286,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
 
   const tabs = TABS.filter((t) => t.value !== "projects" || showProjects);
   const wsRow = (row: HomeRow, i: number) => (
-    <WorkspaceRow key={row.workspace.id} id={optionId(i)} row={row} active={i === active} showNumber={showWorkspaceNumbers} now={now} onHover={() => setActive(i)} onChoose={() => choose(flat[i])} />
+    <WorkspaceRow key={row.workspace.id} id={optionId(i)} row={row} active={i === active} showNumber={showWorkspaceNumbers} now={now} onHover={() => selectFromPointer(i)} onChoose={() => choose(flat[i])} />
   );
   let index = -1;
   return (
@@ -379,7 +393,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
                         data-archived={archivedRow || undefined}
                         data-kind={item.kind}
                         className={i === active ? "palette-item active" : "palette-item"}
-                        onMouseMove={() => i !== active && setActive(i)}
+                        onMouseMove={() => selectFromPointer(i)}
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => choose(item)}
                       >

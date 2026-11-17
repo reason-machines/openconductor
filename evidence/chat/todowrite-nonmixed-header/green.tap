@@ -1,0 +1,948 @@
+(node:106) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:113) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude Code, Reason and Codex give Conductor the same tool calls for one turn
+ok 1 - Claude Code, Reason and Codex give Conductor the same tool calls for one turn
+  ---
+  duration_ms: 8.532646
+  type: 'test'
+  ...
+# Subtest: Codex: the shell wrapper is dropped and single command actions become Read/Grep/LS (Conductor's Kst)
+ok 2 - Codex: the shell wrapper is dropped and single command actions become Read/Grep/LS (Conductor's Kst)
+  ---
+  duration_ms: 0.355995
+  type: 'test'
+  ...
+# Subtest: Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)
+ok 3 - Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)
+  ---
+  duration_ms: 0.27352
+  type: 'test'
+  ...
+# Subtest: Codex: MCP tool calls are mcp__server__tool with their arguments
+ok 4 - Codex: MCP tool calls are mcp__server__tool with their arguments
+  ---
+  duration_ms: 0.36906
+  type: 'test'
+  ...
+# Subtest: Reason: a tool with no Claude Code counterpart keeps its title for Conductor's generic row
+ok 5 - Reason: a tool with no Claude Code counterpart keeps its title for Conductor's generic row
+  ---
+  duration_ms: 0.183328
+  type: 'test'
+  ...
+# Subtest: row text: Read lines, Grep matches, generic summary
+ok 6 - row text: Read lines, Grep matches, generic summary
+  ---
+  duration_ms: 17.044382
+  type: 'test'
+  ...
+# Subtest: line counts follow a line diff
+ok 7 - line counts follow a line diff
+  ---
+  duration_ms: 0.262613
+  type: 'test'
+  ...
+# Subtest: every kind in Conductor's registry resolves by name or prefix (D1o, P1o)
+ok 8 - every kind in Conductor's registry resolves by name or prefix (D1o, P1o)
+  ---
+  duration_ms: 0.296566
+  type: 'test'
+  ...
+# Subtest: Skill and SlashCommand labels (_po, Cpo)
+ok 9 - Skill and SlashCommand labels (_po, Cpo)
+  ---
+  duration_ms: 0.353452
+  type: 'test'
+  ...
+# Subtest: a sub-agent row needs a type other than general-purpose (bpo vs Ypo)
+ok 10 - a sub-agent row needs a type other than general-purpose (bpo vs Ypo)
+  ---
+  duration_ms: 0.42022
+  type: 'test'
+  ...
+# Subtest: AskUserQuestion results (Tpo)
+ok 11 - AskUserQuestion results (Tpo)
+  ---
+  duration_ms: 0.413784
+  type: 'test'
+  ...
+# Subtest: task results parse from JSON and from Claude Code's text (epo, jki)
+ok 12 - task results parse from JSON and from Claude Code's text (epo, jki)
+  ---
+  duration_ms: 6.462728
+  type: 'test'
+  ...
+# Subtest: terminal output, background status and file names (Dpo, R0o, xZe)
+ok 13 - terminal output, background status and file names (Dpo, R0o, xZe)
+  ---
+  duration_ms: 0.281291
+  type: 'test'
+  ...
+# Subtest: swarm messages and wake-ups (qpo, Spo)
+ok 14 - swarm messages and wake-ups (qpo, Spo)
+  ---
+  duration_ms: 5.477653
+  type: 'test'
+  ...
+# Subtest: Codex collaboration calls (_0o)
+ok 15 - Codex collaboration calls (_0o)
+  ---
+  duration_ms: 0.645419
+  type: 'test'
+  ...
+# (node:121) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude result wire usage survives final upserts, persistence and replay without duplication
+ok 16 - Claude result wire usage survives final upserts, persistence and replay without duplication
+  ---
+  duration_ms: 12.913497
+  type: 'test'
+  ...
+# Subtest: usage absence, explicit zero and partial counts remain distinct
+ok 17 - usage absence, explicit zero and partial counts remain distinct
+  ---
+  duration_ms: 1.013276
+  type: 'test'
+  ...
+# Subtest: an empty successful Reason turn is a retryable failure, not a timestamp-only reply
+ok 18 - an empty successful Reason turn is a retryable failure, not a timestamp-only reply
+  ---
+  duration_ms: 0.52779
+  type: 'test'
+  ...
+# Subtest: one chat shows a local home path, then a cloud /repo path in a follow-up
+ok 19 - one chat shows a local home path, then a cloud /repo path in a follow-up
+  ---
+  duration_ms: 1.117875
+  type: 'test'
+  ...
+# Subtest: a tool row updates in place and text after it starts a new block
+ok 20 - a tool row updates in place and text after it starts a new block
+  ---
+  duration_ms: 0.375648
+  type: 'test'
+  ...
+# Subtest: device_not_found fails the turn with the error, not a reply
+ok 21 - device_not_found fails the turn with the error, not a reply
+  ---
+  duration_ms: 4.450508
+  type: 'test'
+  ...
+# Subtest: a follow-up during a turn supersedes it; the end goes to the older turn
+ok 22 - a follow-up during a turn supersedes it; the end goes to the older turn
+  ---
+  duration_ms: 0.327127
+  type: 'test'
+  ...
+# Subtest: a mid-turn report is attributed to another session, never the user
+ok 23 - a mid-turn report is attributed to another session, never the user
+  ---
+  duration_ms: 0.218986
+  type: 'test'
+  ...
+# Subtest: Stop ends the turn cancelled with the prompt offered again; a failed call fails it
+ok 24 - Stop ends the turn cancelled with the prompt offered again; a failed call fails it
+  ---
+  duration_ms: 1.524288
+  type: 'test'
+  ...
+# Subtest: a stopped turn marks its prompt cancelled and records start and end times
+ok 25 - a stopped turn marks its prompt cancelled and records start and end times
+  ---
+  duration_ms: 5.120369
+  type: 'test'
+  ...
+# Subtest: a turn stopped before its prompt reached Reason ends cancelled, leaving earlier open turns running
+ok 26 - a turn stopped before its prompt reached Reason ends cancelled, leaving earlier open turns running
+  ---
+  duration_ms: 0.409511
+  type: 'test'
+  ...
+# Subtest: a notice is a system message in the running turn
+ok 27 - a notice is a system message in the running turn
+  ---
+  duration_ms: 0.68497
+  type: 'test'
+  ...
+# Subtest: attachments show by name under the prompt
+ok 28 - attachments show by name under the prompt
+  ---
+  duration_ms: 0.169544
+  type: 'test'
+  ...
+# Subtest: startTurn can take the turn id that names the turn's checkpoints
+ok 29 - startTurn can take the turn id that names the turn's checkpoints
+  ---
+  duration_ms: 0.081369
+  type: 'test'
+  ...
+# (node:129) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: wire JSON from the backend parses into the mirror types
+ok 30 - wire JSON from the backend parses into the mirror types
+  ---
+  duration_ms: 1.09322
+  type: 'test'
+  ...
+# Subtest: plainText joins text blocks only
+ok 31 - plainText joins text blocks only
+  ---
+  duration_ms: 0.19391
+  type: 'test'
+  ...
+# Subtest: upsert appends, then replaces in place
+ok 32 - upsert appends, then replaces in place
+  ---
+  duration_ms: 21.47825
+  type: 'test'
+  ...
+# Subtest: text_delta starts and grows text blocks without mutating the previous transcript
+ok 33 - text_delta starts and grows text blocks without mutating the previous transcript
+  ---
+  duration_ms: 0.398431
+  type: 'test'
+  ...
+# Subtest: text_delta grows thinking blocks
+ok 34 - text_delta grows thinking blocks
+  ---
+  duration_ms: 0.218091
+  type: 'test'
+  ...
+# Subtest: bad deltas are rejected without changes
+ok 35 - bad deltas are rejected without changes
+  ---
+  duration_ms: 1.617234
+  type: 'test'
+  ...
+# Subtest: events for another session are rejected
+ok 36 - events for another session are rejected
+  ---
+  duration_ms: 0.201681
+  type: 'test'
+  ...
+# Subtest: turn_status tracks the active turn and keeps the error
+ok 37 - turn_status tracks the active turn and keeps the error
+  ---
+  duration_ms: 0.239267
+  type: 'test'
+  ...
+# Subtest: transcriptFromMessages keeps this session's messages and lets later copies win
+ok 38 - transcriptFromMessages keeps this session's messages and lets later copies win
+  ---
+  duration_ms: 0.382499
+  type: 'test'
+  ...
+# Subtest: sender fields parse from the wire and decide the origin
+ok 39 - sender fields parse from the wire and decide the origin
+  ---
+  duration_ms: 0.770639
+  type: 'test'
+  ...
+# Subtest: a session report arriving mid-turn leaves the active turn running
+ok 40 - a session report arriving mid-turn leaves the active turn running
+  ---
+  duration_ms: 2.924444
+  type: 'test'
+  ...
+# Subtest: turn status keeps start and end times
+ok 41 - turn status keeps start and end times
+  ---
+  duration_ms: 0.422957
+  type: 'test'
+  ...
+# Subtest: truncateAfterTurn keeps the turn and everything before it, and drops later turns' statuses
+ok 42 - truncateAfterTurn keeps the turn and everything before it, and drops later turns' statuses
+  ---
+  duration_ms: 1.393335
+  type: 'test'
+  ...
+# (node:137) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary mixed TodoWrite renders completed and started rows with the original active index
+ok 43 - ordinary mixed TodoWrite renders completed and started rows with the original active index
+  ---
+  duration_ms: 386.033501
+  type: 'test'
+  ...
+# Subtest: completed and started disclosures toggle independently and show the same complete list
+ok 44 - completed and started disclosures toggle independently and show the same complete list
+  ---
+  duration_ms: 171.156549
+  type: 'test'
+  ...
+# Subtest: different tool-use identities do not share either disclosure entry
+ok 45 - different tool-use identities do not share either disclosure entry
+  ---
+  duration_ms: 191.399386
+  type: 'test'
+  ...
+# Subtest: summary unmount and remount retains independent entries in the existing Transcript map
+ok 46 - summary unmount and remount retains independent entries in the existing Transcript map
+  ---
+  duration_ms: 118.109118
+  type: 'test'
+  ...
+# Subtest: mixed active item uses its actual position and the source fallback label
+ok 47 - mixed active item uses its actual position and the source fallback label
+  ---
+  duration_ms: 186.466182
+  type: 'test'
+  ...
+# Subtest: nonmixed empty input retains one ordinary row
+ok 48 - nonmixed empty input retains one ordinary row
+  ---
+  duration_ms: 130.291827
+  type: 'test'
+  ...
+# Subtest: nonmixed only active input retains one ordinary row
+ok 49 - nonmixed only active input retains one ordinary row
+  ---
+  duration_ms: 119.826179
+  type: 'test'
+  ...
+# Subtest: nonmixed no active input retains one ordinary row
+ok 50 - nonmixed no active input retains one ordinary row
+  ---
+  duration_ms: 137.233913
+  type: 'test'
+  ...
+# Subtest: nonmixed all completed input retains one ordinary row
+ok 51 - nonmixed all completed input retains one ordinary row
+  ---
+  duration_ms: 97.56551
+  type: 'test'
+  ...
+# Subtest: nonmixed only pending input retains one ordinary row
+ok 52 - nonmixed only pending input retains one ordinary row
+  ---
+  duration_ms: 36.023807
+  type: 'test'
+  ...
+# Subtest: TodoRead is outside this ordinary TodoWrite change
+ok 53 - TodoRead is outside this ordinary TodoWrite change
+  ---
+  duration_ms: 62.97943
+  type: 'test'
+  ...
+# Subtest: existing expand-tools preference applies independently to both mixed disclosures
+ok 54 - existing expand-tools preference applies independently to both mixed disclosures
+  ---
+  duration_ms: 134.97102
+  type: 'test'
+  ...
+# (node:145) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: TodoRead empty-body successor: bare-json-string
+ok 55 - TodoRead empty-body successor: bare-json-string
+  ---
+  duration_ms: 138.377046
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: wrapped-json-string
+ok 56 - TodoRead empty-body successor: wrapped-json-string
+  ---
+  duration_ms: 16.212209
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: direct-array-over-stale-input
+ok 57 - TodoRead empty-body successor: direct-array-over-stale-input
+  ---
+  duration_ms: 10.099804
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: direct-mixed-array
+ok 58 - TodoRead empty-body successor: direct-mixed-array
+  ---
+  duration_ms: 7.54915
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: raw-string-over-stale-flattened
+ok 59 - TodoRead empty-body successor: raw-string-over-stale-flattened
+  ---
+  duration_ms: 25.483042
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: raw-null-over-stale-flattened
+ok 60 - TodoRead empty-body successor: raw-null-over-stale-flattened
+  ---
+  duration_ms: 3.764672
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: plain-unparseable-string
+ok 61 - TodoRead empty-body successor: plain-unparseable-string
+  ---
+  duration_ms: 18.627708
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: invalid-bracket-json-string
+ok 62 - TodoRead empty-body successor: invalid-bracket-json-string
+  ---
+  duration_ms: 15.153753
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: empty-array
+ok 63 - TodoRead empty-body successor: empty-array
+  ---
+  duration_ms: 12.297931
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: empty-string
+ok 64 - TodoRead empty-body successor: empty-string
+  ---
+  duration_ms: 9.369915
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: pending-ignores-input
+ok 65 - TodoRead empty-body successor: pending-ignores-input
+  ---
+  duration_ms: 1.732268
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: failed-result-still-contains-list
+ok 66 - TodoRead empty-body successor: failed-result-still-contains-list
+  ---
+  duration_ms: 23.061553
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: legacy-result-without-raw
+ok 67 - TodoRead empty-body successor: legacy-result-without-raw
+  ---
+  duration_ms: 4.647643
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: unicode-and-newline-content
+ok 68 - TodoRead empty-body successor: unicode-and-newline-content
+  ---
+  duration_ms: 1.761919
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: todowrite-input-wins
+ok 69 - TodoRead empty-body successor: todowrite-input-wins
+  ---
+  duration_ms: 41.787336
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: todowrite-mixed-control
+ok 70 - TodoRead empty-body successor: todowrite-mixed-control
+  ---
+  duration_ms: 15.686435
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: todowrite-empty-ignores-result
+ok 71 - TodoRead empty-body successor: todowrite-empty-ignores-result
+  ---
+  duration_ms: 1.206155
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: raw-empty-array-over-stale-flattened
+ok 72 - TodoRead empty-body successor: raw-empty-array-over-stale-flattened
+  ---
+  duration_ms: 1.529861
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: pretty-json-list
+ok 73 - TodoRead empty-body successor: pretty-json-list
+  ---
+  duration_ms: 7.03648
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: raw-false-over-stale-flattened
+ok 74 - TodoRead empty-body successor: raw-false-over-stale-flattened
+  ---
+  duration_ms: 18.168895
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: raw-object-not-a-list
+ok 75 - TodoRead empty-body successor: raw-object-not-a-list
+  ---
+  duration_ms: 22.904488
+  type: 'test'
+  ...
+# Subtest: TodoRead empty-body successor: multiple-active-items
+ok 76 - TodoRead empty-body successor: multiple-active-items
+  ---
+  duration_ms: 23.881849
+  type: 'test'
+  ...
+# (node:153) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: TodoRead nonmixed header: read-active-legacy-output
+ok 77 - TodoRead nonmixed header: read-active-legacy-output
+  ---
+  duration_ms: 66.819846
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: read-active-wrapped-raw-string
+ok 78 - TodoRead nonmixed header: read-active-wrapped-raw-string
+  ---
+  duration_ms: 8.169944
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: read-active-original-index
+ok 79 - TodoRead nonmixed header: read-active-original-index
+  ---
+  duration_ms: 3.063534
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: read-first-active-among-several
+ok 80 - TodoRead nonmixed header: read-first-active-among-several
+  ---
+  duration_ms: 7.144576
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: read-empty-active-content-fallback
+ok 81 - TodoRead nonmixed header: read-empty-active-content-fallback
+  ---
+  duration_ms: 2.9681
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: read-active-unicode-and-newline
+ok 82 - TodoRead nonmixed header: read-active-unicode-and-newline
+  ---
+  duration_ms: 8.997001
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: read-all-completed-singular
+ok 83 - TodoRead nonmixed header: read-all-completed-singular
+  ---
+  duration_ms: 41.900463
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: read-all-completed-plural
+ok 84 - TodoRead nonmixed header: read-all-completed-plural
+  ---
+  duration_ms: 3.761763
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: read-pending-singular
+ok 85 - TodoRead nonmixed header: read-pending-singular
+  ---
+  duration_ms: 5.114829
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: read-pending-plural
+ok 86 - TodoRead nonmixed header: read-pending-plural
+  ---
+  duration_ms: 13.726828
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: read-partial-completion-without-active
+ok 87 - TodoRead nonmixed header: read-partial-completion-without-active
+  ---
+  duration_ms: 6.829312
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: read-failed-returned-active
+ok 88 - TodoRead nonmixed header: read-failed-returned-active
+  ---
+  duration_ms: 5.262246
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: control-read-mixed-first-header
+ok 89 - TodoRead nonmixed header: control-read-mixed-first-header
+  ---
+  duration_ms: 11.01927
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: control-read-empty
+ok 90 - TodoRead nonmixed header: control-read-empty
+  ---
+  duration_ms: 1.531141
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: control-read-missing-result-over-stale-input
+ok 91 - TodoRead nonmixed header: control-read-missing-result-over-stale-input
+  ---
+  duration_ms: 1.417815
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: control-read-running-over-stale-input
+ok 92 - TodoRead nonmixed header: control-read-running-over-stale-input
+  ---
+  duration_ms: 1.42977
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: control-read-malformed-string
+ok 93 - TodoRead nonmixed header: control-read-malformed-string
+  ---
+  duration_ms: 2.638841
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: control-write-active
+ok 94 - TodoRead nonmixed header: control-write-active
+  ---
+  duration_ms: 2.613557
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: control-write-all-completed
+ok 95 - TodoRead nonmixed header: control-write-all-completed
+  ---
+  duration_ms: 6.82612
+  type: 'test'
+  ...
+# Subtest: TodoRead nonmixed header: control-write-mixed
+ok 96 - TodoRead nonmixed header: control-write-mixed
+  ---
+  duration_ms: 4.010415
+  type: 'test'
+  ...
+# (node:161) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: TodoRead result selection: bare-json-string
+ok 97 - TodoRead result selection: bare-json-string
+  ---
+  duration_ms: 28.169935
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: wrapped-json-string
+ok 98 - TodoRead result selection: wrapped-json-string
+  ---
+  duration_ms: 6.699916
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: direct-array-over-stale-input
+ok 99 - TodoRead result selection: direct-array-over-stale-input
+  ---
+  duration_ms: 4.206519
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: direct-mixed-array
+ok 100 - TodoRead result selection: direct-mixed-array
+  ---
+  duration_ms: 17.73522
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: raw-string-over-stale-flattened
+ok 101 - TodoRead result selection: raw-string-over-stale-flattened
+  ---
+  duration_ms: 3.014778
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: raw-null-over-stale-flattened
+ok 102 - TodoRead result selection: raw-null-over-stale-flattened
+  ---
+  duration_ms: 8.106907
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: plain-unparseable-string
+ok 103 - TodoRead result selection: plain-unparseable-string
+  ---
+  duration_ms: 1.888168
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: invalid-bracket-json-string
+ok 104 - TodoRead result selection: invalid-bracket-json-string
+  ---
+  duration_ms: 2.254508
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: empty-array
+ok 105 - TodoRead result selection: empty-array
+  ---
+  duration_ms: 10.163
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: empty-string
+ok 106 - TodoRead result selection: empty-string
+  ---
+  duration_ms: 9.633233
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: pending-ignores-input
+ok 107 - TodoRead result selection: pending-ignores-input
+  ---
+  duration_ms: 1.757249
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: failed-result-still-contains-list
+ok 108 - TodoRead result selection: failed-result-still-contains-list
+  ---
+  duration_ms: 2.692781
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: legacy-result-without-raw
+ok 109 - TodoRead result selection: legacy-result-without-raw
+  ---
+  duration_ms: 7.950798
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: unicode-and-newline-content
+ok 110 - TodoRead result selection: unicode-and-newline-content
+  ---
+  duration_ms: 8.155899
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: todowrite-input-wins
+ok 111 - TodoRead result selection: todowrite-input-wins
+  ---
+  duration_ms: 34.88006
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: todowrite-mixed-control
+ok 112 - TodoRead result selection: todowrite-mixed-control
+  ---
+  duration_ms: 12.301318
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: todowrite-empty-ignores-result
+ok 113 - TodoRead result selection: todowrite-empty-ignores-result
+  ---
+  duration_ms: 1.42969
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: raw-empty-array-over-stale-flattened
+ok 114 - TodoRead result selection: raw-empty-array-over-stale-flattened
+  ---
+  duration_ms: 1.681981
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: pretty-json-list
+ok 115 - TodoRead result selection: pretty-json-list
+  ---
+  duration_ms: 12.672927
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: raw-false-over-stale-flattened
+ok 116 - TodoRead result selection: raw-false-over-stale-flattened
+  ---
+  duration_ms: 12.020946
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: raw-object-not-a-list
+ok 117 - TodoRead result selection: raw-object-not-a-list
+  ---
+  duration_ms: 1.703239
+  type: 'test'
+  ...
+# Subtest: TodoRead result selection: multiple-active-items
+ok 118 - TodoRead result selection: multiple-active-items
+  ---
+  duration_ms: 4.411235
+  type: 'test'
+  ...
+# (node:169) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: TodoWrite nonmixed header: empty
+ok 119 - TodoWrite nonmixed header: empty
+  ---
+  duration_ms: 205.735454
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: one-pending
+ok 120 - TodoWrite nonmixed header: one-pending
+  ---
+  duration_ms: 141.080423
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: many-pending
+ok 121 - TodoWrite nonmixed header: many-pending
+  ---
+  duration_ms: 215.362476
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: one-complete
+ok 122 - TodoWrite nonmixed header: one-complete
+  ---
+  duration_ms: 21.705369
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: all-complete
+ok 123 - TodoWrite nonmixed header: all-complete
+  ---
+  duration_ms: 22.023957
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: active-first
+ok 124 - TodoWrite nonmixed header: active-first
+  ---
+  duration_ms: 122.549516
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: active-second
+ok 125 - TodoWrite nonmixed header: active-second
+  ---
+  duration_ms: 74.00624
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: active-empty-fallback
+ok 126 - TodoWrite nonmixed header: active-empty-fallback
+  ---
+  duration_ms: 118.044533
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: first-active-wins
+ok 127 - TodoWrite nonmixed header: first-active-wins
+  ---
+  duration_ms: 263.298091
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: some-completed-no-active
+ok 128 - TodoWrite nonmixed header: some-completed-no-active
+  ---
+  duration_ms: 29.30358
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: running-input
+ok 129 - TodoWrite nonmixed header: running-input
+  ---
+  duration_ms: 138.56945
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: failed-input
+ok 130 - TodoWrite nonmixed header: failed-input
+  ---
+  duration_ms: 134.096037
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: mixed-write-control
+ok 131 - TodoWrite nonmixed header: mixed-write-control
+  ---
+  duration_ms: 121.570615
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: mixed-write-empty-active-control
+ok 132 - TodoWrite nonmixed header: mixed-write-empty-active-control
+  ---
+  duration_ms: 86.527937
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: mixed-write-running-control
+ok 133 - TodoWrite nonmixed header: mixed-write-running-control
+  ---
+  duration_ms: 272.768735
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: read-active-control
+ok 134 - TodoWrite nonmixed header: read-active-control
+  ---
+  duration_ms: 96.430653
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: read-pending-control
+ok 135 - TodoWrite nonmixed header: read-pending-control
+  ---
+  duration_ms: 158.676367
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: read-complete-control
+ok 136 - TodoWrite nonmixed header: read-complete-control
+  ---
+  duration_ms: 36.456478
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: read-empty-control
+ok 137 - TodoWrite nonmixed header: read-empty-control
+  ---
+  duration_ms: 49.79657
+  type: 'test'
+  ...
+# Subtest: TodoWrite nonmixed header: read-partial-control
+ok 138 - TodoWrite nonmixed header: read-partial-control
+  ---
+  duration_ms: 20.171025
+  type: 'test'
+  ...
+# (node:177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: turn usage sums distinct result messages only, replayed upserts replace rather than add
+ok 139 - turn usage sums distinct result messages only, replayed upserts replace rather than add
+  ---
+  duration_ms: 14.778312
+  type: 'test'
+  ...
+# Subtest: turn attribution uses the first truthy assistant model, not a later assistant or another turn
+ok 140 - turn attribution uses the first truthy assistant model, not a later assistant or another turn
+  ---
+  duration_ms: 0.632844
+  type: 'test'
+  ...
+# Subtest: turn attribution falls back only to its original user's snapshot, not steering, reports or system data
+ok 141 - turn attribution falls back only to its original user's snapshot, not steering, reports or system data
+  ---
+  duration_ms: 2.30698
+  type: 'test'
+  ...
+# Subtest: missing historical models stay unknown, even when a later steering message has a model
+ok 142 - missing historical models stay unknown, even when a later steering message has a model
+  ---
+  duration_ms: 1.023901
+  type: 'test'
+  ...
+# Subtest: historical turn models survive the existing full-message save and restore boundary
+ok 143 - historical turn models survive the existing full-message save and restore boundary
+  ---
+  duration_ms: 7.091307
+  type: 'test'
+  ...
+# Subtest: a streaming assistant message marks its last text part as streaming and has no footer yet
+ok 144 - a streaming assistant message marks its last text part as streaming and has no footer yet
+  ---
+  duration_ms: 0.391802
+  type: 'test'
+  ...
+# Subtest: an empty assistant message shows while streaming (typing state) and is dropped once the turn ends
+ok 145 - an empty assistant message shows while streaming (typing state) and is dropped once the turn ends
+  ---
+  duration_ms: 0.963848
+  type: 'test'
+  ...
+# Subtest: tool calls pair with their results and tool-result carriers never render as user messages
+ok 146 - tool calls pair with their results and tool-result carriers never render as user messages
+  ---
+  duration_ms: 2.434558
+  type: 'test'
+  ...
+# Subtest: a tool call with no result after its turn ended is interrupted
+ok 147 - a tool call with no result after its turn ended is interrupted
+  ---
+  duration_ms: 1.374451
+  type: 'test'
+  ...
+# Subtest: a mid-turn child-session report renders as a report, not user input, and the turn keeps streaming
+ok 148 - a mid-turn child-session report renders as a report, not user input, and the turn keeps streaming
+  ---
+  duration_ms: 6.377441
+  type: 'test'
+  ...
+# Subtest: a finished turn ends with a footer carrying its final text; a failed turn also offers retry with the prompt
+ok 149 - a finished turn ends with a footer carrying its final text; a failed turn also offers retry with the prompt
+  ---
+  duration_ms: 1.718298
+  type: 'test'
+  ...
+# Subtest: a user toggle on a tool row wins over the expand-by-default setting
+ok 150 - a user toggle on a tool row wins over the expand-by-default setting
+  ---
+  duration_ms: 0.175649
+  type: 'test'
+  ...
+# Subtest: Reset chat applies to every turn with a reply except the chat's last
+ok 151 - Reset chat applies to every turn with a reply except the chat's last
+  ---
+  duration_ms: 7.224655
+  type: 'test'
+  ...
+# Subtest: a stopped turn's prompt is marked cancelled (Conductor's "Cancelled" caption); others are not
+ok 152 - a stopped turn's prompt is marked cancelled (Conductor's "Cancelled" caption); others are not
+  ---
+  duration_ms: 0.835054
+  type: 'test'
+  ...
+# Subtest: a finished turn's footer carries when the turn started and ended
+ok 153 - a finished turn's footer carries when the turn started and ended
+  ---
+  duration_ms: 0.828693
+  type: 'test'
+  ...
+1..153
+# tests 153
+# suites 0
+# pass 153
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 23796.495867

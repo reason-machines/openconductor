@@ -1,0 +1,259 @@
+{
+  "owner": "Conductor Rebuild / SAME15",
+  "unit": "REGULAR-PALETTE-POINTER-SCROLL-SAME15",
+  "main": "810a79d40a7205a52e730ae5cc6da2f84401c063",
+  "reference": {
+    "parent": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "retained_REA_artifact_id": "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+    "offsets": "zero-based half-open UTF-8 bytes",
+    "records": [
+      {
+        "path": "item-M5s.txt",
+        "range": [
+          2908581,
+          2909564
+        ],
+        "bytes": 983,
+        "sha256": "84e0d537998fe7e8a40a285ca3b33d0aa3309933ceab0c4e0dca0dd6ad66acda"
+      },
+      {
+        "path": "item-wrapper.txt",
+        "range": [
+          2919435,
+          2920051
+        ],
+        "bytes": 616,
+        "sha256": "7faacd97381417474f2e9ac15b97597734839554f1229709902488b3c0337d25"
+      },
+      {
+        "path": "section-Jba.txt",
+        "range": [
+          10877545,
+          10880908
+        ],
+        "bytes": 3363,
+        "sha256": "e5d76b4abadffdc8f9ea6350a230c242b38cfbe53ab5dd515e481a93045563d1"
+      },
+      {
+        "path": "command-root-Xyi.txt",
+        "range": [
+          2903072,
+          2908580
+        ],
+        "bytes": 5508,
+        "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92"
+      },
+      {
+        "path": "command-input-B5s.txt",
+        "range": [
+          2910380,
+          2910953
+        ],
+        "bytes": 573,
+        "sha256": "70fa9c07b0d8b605e648601e01cd266db15dadad0ac59b8cb5569cee58c02758"
+      },
+      {
+        "path": "command-component-P6.txt",
+        "range": [
+          2912384,
+          2912493
+        ],
+        "bytes": 109,
+        "sha256": "9b57d93a69e00511c26ce27dfc26117a75a0a2f70492d5f3436f58f4351df3bc"
+      },
+      {
+        "path": "Home-command-input-kI.txt",
+        "range": [
+          2916816,
+          2917726
+        ],
+        "bytes": 910,
+        "sha256": "970dc084f87ebeb0e3f1220debf849ee4115e11f0be19c8442dab05ba688decf"
+      },
+      {
+        "path": "m_a.txt",
+        "range": [
+          10889115,
+          10920819
+        ],
+        "bytes": 31704,
+        "sha256": "cd07cfad2d86afe0717c73433656bd3f8d144b8e84dfd2368646ded0f30d1c3e"
+      },
+      {
+        "path": "Xyi-root.txt",
+        "range": [
+          2903072,
+          2908580
+        ],
+        "bytes": 5508,
+        "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92"
+      },
+      {
+        "path": "P6-alias.txt",
+        "range": [
+          2912384,
+          2912492
+        ],
+        "bytes": 108,
+        "sha256": "20b129f07752490e4c9ca33091b5d947173fb1de439bcda0f2b15b9e25deb4f6"
+      },
+      {
+        "path": "KV-wrapper.txt",
+        "range": [
+          2913899,
+          2914244
+        ],
+        "bytes": 345,
+        "sha256": "12168391677891cbeaddc6307650dab1ee6e762cbd0f8114b28ff1a0339a97c4"
+      },
+      {
+        "path": "qZ-dialog.txt",
+        "range": [
+          2914275,
+          2914883
+        ],
+        "bytes": 608,
+        "sha256": "8d7253f154bad3c2441e4850e50b961b2e2870a2c38d7424a9b15cdd6a7f8768"
+      },
+      {
+        "path": "Y5s-content.txt",
+        "range": [
+          2914884,
+          2916816
+        ],
+        "bytes": 1932,
+        "sha256": "1f343b0f6340b44087d7914fc114f67311554dd62c7b60c549241f3645c4ea29"
+      },
+      {
+        "path": "h_a-palette-caller.txt",
+        "range": [
+          10888832,
+          10889073
+        ],
+        "bytes": 241,
+        "sha256": "db46eeae9e65f9feee9a554863994313bfa6fbabdf9653f1fbb11b2d34d7d55b"
+      },
+      {
+        "path": "qyi.txt",
+        "range": [
+          2902810,
+          2902830
+        ],
+        "bytes": 20,
+        "sha256": "4d810091b0007f59d87015ad3dfce057971f4219355ae104623ffa9bdbcc96d3"
+      },
+      {
+        "path": "_Bn.txt",
+        "range": [
+          2902831,
+          2902871
+        ],
+        "bytes": 40,
+        "sha256": "df2ee50ccae18e973388f34369e642e17949910513087210047727129aa67c51"
+      },
+      {
+        "path": "layout-DJ.txt",
+        "range": [
+          2912772,
+          2912827
+        ],
+        "bytes": 55,
+        "sha256": "cc31604b801930b66c325bd71f639d4eb2d0bb0dc6147f413170323ab7c00fb6"
+      },
+      {
+        "path": "list-$5s.txt",
+        "range": [
+          2910954,
+          2911606
+        ],
+        "bytes": 652,
+        "sha256": "d506ed15e29788f64ffedf3b213af32771040b3d6bcc30f964b584688def97e2"
+      },
+      {
+        "path": "list-L6.txt",
+        "range": [
+          2917726,
+          2918147
+        ],
+        "bytes": 421,
+        "sha256": "cc94de9660669ebb51d59e82001122a8ce7873a6a878fe22e51af00433d608f8"
+      },
+      {
+        "path": "scheduler-G5s.txt",
+        "range": [
+          2913356,
+          2913510
+        ],
+        "bytes": 154,
+        "sha256": "190e7246dcee23264d59c5e85b5eb97d12b70cb0baa043146b17a8f573f12bf0"
+      },
+      {
+        "path": "regular-workspace-Vba.txt",
+        "range": [
+          10872171,
+          10873071
+        ],
+        "bytes": 900,
+        "sha256": "b9cc37e85b94a4d7256d48431ccb2e37aa12b97b17bdbe7b13964635373331c0"
+      },
+      {
+        "path": "workspace-item-aYe.txt",
+        "range": [
+          10883127,
+          10884027
+        ],
+        "bytes": 900,
+        "sha256": "a217757edb8fa2507b44fd55ad8c41cb78dea9725b865909c621573ab75ca4b1"
+      },
+      {
+        "path": "workspaces-list-l_a.txt",
+        "range": [
+          10884027,
+          10888832
+        ],
+        "bytes": 4805,
+        "sha256": "7aff57cee781297d0f583b787a79a543570aa1f09d10dfdca5cb912cf916ac0e"
+      }
+    ]
+  },
+  "fixture": {
+    "path": "src/palette/palettePointerScroll.test.ts",
+    "sha256": "1f7f9be48228daf8aa0f516f341b1548294ab36a06d07947c951b1f3a301cd4d"
+  },
+  "baseline": [
+    {
+      "path": "src/palette/PaletteHost.tsx",
+      "sha256": "78a4067ebb66ef016b7d5903c38e3b312bf8c569ffd5f00c2b11743b07fb8471"
+    },
+    {
+      "path": "src/palette/CommandPalette.tsx",
+      "sha256": "ea2c1f1228a86374dbc878ff5077d7c932433ac9bee0d09985b7381ab3baa74b"
+    },
+    {
+      "path": "src/palette/WorkspacesTab.tsx",
+      "sha256": "a8d94b86fd8aa00805c48021224c25f70fd8014894e7fe77665cb1bdaa9b48b6"
+    },
+    {
+      "path": "src/palette/MoveToSection.tsx",
+      "sha256": "341fe88d70ba0a13134fb918e2eaa60ce2b7da8878fbb5f161593797b4da3806"
+    }
+  ],
+  "red": {
+    "tests": 15,
+    "pass": 10,
+    "assertion_failures": 5,
+    "exit": 1
+  },
+  "isolated_checks": {
+    "frozen": { "tests": 15, "pass": 15, "fail": 0 },
+    "supplemental_query_tab_controls": { "tests": 4, "pass": 4, "fail": 0 },
+    "adjacent": { "tests": 434, "pass": 434, "fail": 0, "skipped": 0 },
+    "build": "PASS: branding, TypeScript and production compilation; advisory chunk-size warning only"
+  },
+  "limits": [
+    "Actual mounted component callbacks/effects with synthetic list nodes, not browser geometry, viewport visibility, native input, package or provider acceptance.",
+    "Retained REA source only; no new reference acquisition or vendor JavaScript execution."
+  ]
+}

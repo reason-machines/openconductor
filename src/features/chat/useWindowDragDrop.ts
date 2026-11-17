@@ -3,7 +3,7 @@
 //
 // Evidence: REA bundle fCe().onDragDropEvent consumer analysis, Conductor 0.87.6.
 // Two listeners in Conductor's bundle:
-//   Consumer 1 (overlay): `isDragging` turns true on `enter`, false on `leave`/`drop`.
+//   Consumer 1 (overlay): `isDragging` reflects nonempty `enter` paths, clears on `leave`/`drop`.
 //   Consumer 2 (handler): `onDrop(paths)` fires with native OS paths on `drop`.
 //
 // Native path → PickedFile conversion: tauri-plugin-fs readFile (IPC plugin:fs|read_file).
@@ -55,6 +55,7 @@ export function useWindowDragDrop(onDrop: (paths: string[]) => void): boolean {
   useEffect(() => {
     if (!inTauri()) return;
     let cleanup: (() => void) | undefined;
+    let disposed = false;
     let webview: ReturnType<typeof getCurrentWebview>;
     try {
       webview = getCurrentWebview();
@@ -67,7 +68,7 @@ export function useWindowDragDrop(onDrop: (paths: string[]) => void): boolean {
       .onDragDropEvent((event) => {
         const { type } = event.payload;
         if (type === "enter") {
-          setIsDragging(true);
+          setIsDragging(event.payload.paths.length > 0);
         } else if (type === "drop") {
           setIsDragging(false);
           const paths = (event.payload as { paths?: string[] }).paths ?? [];
@@ -77,9 +78,13 @@ export function useWindowDragDrop(onDrop: (paths: string[]) => void): boolean {
         }
       })
       .then((unlisten) => {
-        cleanup = unlisten;
+        if (disposed) unlisten();
+        else cleanup = unlisten;
       });
-    return () => cleanup?.();
+    return () => {
+      disposed = true;
+      cleanup?.();
+    };
   }, []);
 
   return isDragging;

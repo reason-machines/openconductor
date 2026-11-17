@@ -1,0 +1,144 @@
+(node:106) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:113) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: control: normal Project filter renders only Beta's repository group
+ok 1 - control: normal Project filter renders only Beta's repository group
+  ---
+  duration_ms: 1.673722
+  type: 'test'
+  ...
+# Subtest: filtered-out ordinary project rows consume no numbered position
+not ok 2 - filtered-out ordinary project rows consume no numbered position
+  ---
+  duration_ms: 1.408532
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/main/src/sidebar/sidebarProjectFilterNumbering.test.ts:40:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'alpha-row',
+        'beta-row'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'beta-row'
+  actual:
+    0: 'alpha-row'
+    1: 'beta-row'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/main/src/sidebar/sidebarProjectFilterNumbering.test.ts:41:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: the selected project's sole ordinary workspace has hint number one
+not ok 3 - the selected project's sole ordinary workspace has hint number one
+  ---
+  duration_ms: 0.410071
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/main/src/sidebar/sidebarProjectFilterNumbering.test.ts:44:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    2 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/main/src/sidebar/sidebarProjectFilterNumbering.test.ts:46:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: workspace.switchTo1 targets the selected project's sole workspace
+not ok 4 - workspace.switchTo1 targets the selected project's sole workspace
+  ---
+  duration_ms: 0.302526
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/main/src/sidebar/sidebarProjectFilterNumbering.test.ts:49:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'alpha-row'
+    - 'beta-row'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'beta-row'
+  actual: 'alpha-row'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/main/src/sidebar/sidebarProjectFilterNumbering.test.ts:50:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: workspace.switchTo2 has no target when the filtered sequence has one row
+not ok 5 - workspace.switchTo2 has no target when the filtered sequence has one row
+  ---
+  duration_ms: 11.675643
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/main/src/sidebar/sidebarProjectFilterNumbering.test.ts:53:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'beta-row'
+    - undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual: 'beta-row'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/main/src/sidebar/sidebarProjectFilterNumbering.test.ts:54:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: control: filtering leaves both loaded repositories and their rows intact
+ok 6 - control: filtering leaves both loaded repositories and their rows intact
+  ---
+  duration_ms: 0.370026
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 2
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 239.96548

@@ -1,0 +1,1 @@
+function qDt(){const t=z.c(1);let e;return t[0]===Symbol.for("react.memo_cache_sentinel")?(e={mutationKey:HDt,mutationFn:UDt,onSuccess:GDt,onError:zDt},t[0]=e):e=t[0],Be(e)}function zDt(t){rt.error(`Failed to reset chat: ${t instanceof Error?t.message:"Unknown error"}`)}async function GDt(t,e){e.resetFiles&&await Ye.invalidateQueries({queryKey:["git"]})}

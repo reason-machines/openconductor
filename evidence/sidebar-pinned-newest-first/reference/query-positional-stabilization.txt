@@ -1,0 +1,1 @@
+function Vse(t,e){if(e===void 0)return;if(t===void 0)return e;let s=t.length!==e.length;const n=[];for(const[r,i]of e.entries()){const o=t[r];if(o!==void 0&&Kse(o,i)){n.push(o);continue}s=!0,n.push(i)}return s?n:t}function Yse(t,e){return Array.isArray(e)?Vse(Array.isArray(t)?t:void 0,e):Kse(t,e)?t:e}

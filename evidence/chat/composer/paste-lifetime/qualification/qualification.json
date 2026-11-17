@@ -1,0 +1,192 @@
+{
+  "candidate": "COMPOSER-PASTE-LIFETIME-135",
+  "baseline": "217498aae38dfd63b97919b1a0ab4097462c691e",
+  "parent": {
+    "path": ".qa/create-suggestions-135/retained/renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "spans": [
+    {
+      "name": "DNi",
+      "file": "reference/renderer-DNi.txt",
+      "utf16": [
+        8599729,
+        8600413
+      ],
+      "utf8": [
+        8645203,
+        8645887
+      ],
+      "sha256": "c5f6b222ab98af94fb716f2a3e1fe63773956bf84d2992d4deb351dcd5f3b418",
+      "bytes": 684,
+      "completeSyntax": true
+    },
+    {
+      "name": "bwo",
+      "file": "reference/renderer-bwo.txt",
+      "utf16": [
+        8392047,
+        8392402
+      ],
+      "utf8": [
+        8437496,
+        8437851
+      ],
+      "sha256": "91af9fc36b913f073171c10af87e6df99fd5058ba6bfa9d4c63efc1fd2aeb292",
+      "bytes": 355,
+      "completeSyntax": true
+    },
+    {
+      "name": "aRt",
+      "file": "reference/renderer-aRt.txt",
+      "utf16": [
+        8393025,
+        8393279
+      ],
+      "utf8": [
+        8438474,
+        8438728
+      ],
+      "sha256": "383d82952892b1156ed39356cf54ffcae267f9732794d34dec1a6c4d4b4b9544",
+      "bytes": 254,
+      "completeSyntax": true
+    },
+    {
+      "name": "vwo",
+      "file": "reference/renderer-vwo.txt",
+      "utf16": [
+        8393279,
+        8393573
+      ],
+      "utf8": [
+        8438728,
+        8439022
+      ],
+      "sha256": "ece1304784f317bc5b1f40dcb79f65fdd9fa113a494a3cf9f155ab9f659a6a99",
+      "bytes": 294,
+      "completeSyntax": true
+    },
+    {
+      "name": "XQ",
+      "file": "reference/renderer-XQ.txt",
+      "utf16": [
+        8335958,
+        8336196
+      ],
+      "utf8": [
+        8381402,
+        8381640
+      ],
+      "sha256": "6d61c7db2bbdaacdef62f33141bb502cf7e8474d4914376384f05022697c350e",
+      "bytes": 238,
+      "completeSyntax": true
+    },
+    {
+      "name": "lHt",
+      "file": "reference/renderer-lHt.txt",
+      "utf16": [
+        8373279,
+        8380719
+      ],
+      "utf8": [
+        8418728,
+        8426168
+      ],
+      "sha256": "2b86481687009f77ff169d0e5f52e349ee541b80a71c205e07d691862e938215",
+      "bytes": 7440,
+      "completeSyntax": true
+    },
+    {
+      "name": "n4o",
+      "file": "reference/renderer-n4o.txt",
+      "utf16": [
+        8229906,
+        8230287
+      ],
+      "utf8": [
+        8274538,
+        8274919
+      ],
+      "sha256": "914a8dc26db6ca57f1d9ba39bd03856db426a2878a475cb27d38ea2042037eb4",
+      "bytes": 381,
+      "completeSyntax": true
+    },
+    {
+      "name": "t4o",
+      "file": "reference/renderer-t4o.txt",
+      "utf16": [
+        8225913,
+        8229905
+      ],
+      "utf8": [
+        8270545,
+        8274537
+      ],
+      "sha256": "39b5f3663a1fca0342d4136d0a94a2ff1ac55c782f8805b277ff9e14d91bbc90",
+      "bytes": 3992,
+      "completeSyntax": true
+    },
+    {
+      "name": "ITo",
+      "file": "reference/renderer-ITo.txt",
+      "utf16": [
+        8609850,
+        8645853
+      ],
+      "utf8": [
+        8655325,
+        8691330
+      ],
+      "sha256": "402ecc13bb1fd4751d0ec047f818423c9e678deb9ba38b471961ad447100519f",
+      "bytes": 36005,
+      "completeSyntax": true
+    }
+  ],
+  "bindings": {
+    "composerCapturesEditor": true,
+    "composerPassesEditorToPaste": true,
+    "composerInstallsCapture": true,
+    "composerReadyCallback": true,
+    "hookCallsAsyncHandler": true,
+    "shortcutAndRepeatGate": true,
+    "delayedProducer": true,
+    "destroyedGuardAtInsertion": true,
+    "textInsertionMutatesSelection": true,
+    "editorReadyRegistration": true,
+    "editorCreatedByManagedHook": true,
+    "hookRegistersLifetime": true,
+    "ownerCleanupSchedulesDestroy": true,
+    "scheduledDestroyChecksLifetime": true,
+    "currentEditorDetachesThenDestroys": true
+  },
+  "currentFiles": [
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "sha256": "d110236404a7916fcb9de706eed42df54bcc87953a7358198e0b2974243789ae"
+    },
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "sha256": "7e8f7f7426164d2e707d9507a2af87336607b88db891fb864c55f28b8ab34fdf"
+    },
+    {
+      "path": "src/features/chat/composerPasteFilePaths.ts",
+      "sha256": "f55bb97454f7a694d90d55670c43a37c49cbf210b6e081dd0b8441929e9dec20"
+    }
+  ],
+  "fixture": {
+    "path": "worktree/src/features/chat/composerPasteLifetime.test.ts",
+    "sha256": "fd1a42f871d8324250ba1ae886cd772bd74ce4c7c5ca66eedd419336ea93b301"
+  },
+  "regression": {
+    "passed": 6,
+    "intendedFailures": 1,
+    "total": 7
+  },
+  "limits": [
+    "Static source closure, no vendor execution",
+    "Mounted actual Composer with inert editor and deferred clipboard adapter",
+    "No OS clipboard, native shell, provider, package or installed-app acceptance",
+    "No assertion about clipboard normalization, native reader implementation or final agent input"
+  ]
+}

@@ -1,0 +1,1 @@
+function u5(t){let e=!1,n;return i=>{const r=t(i);if(!e)return e=!0,n=r,r;const o=OSr(n,r);return n=o,o}}

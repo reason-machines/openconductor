@@ -1,0 +1,56 @@
+{
+  "candidate": "REMOVE-REPO-LATE-SETTLEMENT-6013",
+  "baseline": "1b2d83e6c2e2b3fa2eb251fc25a56d96401d96f1",
+  "included_restore_merge": "73aa5579f97c9c90094314fb39c0dedd3b01237e",
+  "isolated_test_first_commit": "2759e32cd",
+  "isolated_fix_commit": "25365ef99",
+  "integrated_test_first_commit": "f69f29bca",
+  "integrated_red_receipt_commit": "0779d5600",
+  "integrated_fix_commit": "8abe32266",
+  "fixture_sha256": "8e3285f0fc2effa0d4ef85ed928677c358878e47301a59847c1e55002567d3dc",
+  "restore_control_fixture_sha256": "4fa1b255afc493e1620c88ec8742f1e6758447450652b5ace5217360c732cc88",
+  "frozen_regression": {
+    "before": {
+      "tests": 5,
+      "pass": 3,
+      "intended_fail": 2,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "after": {
+      "tests": 5,
+      "pass": 5,
+      "fail": 0
+    }
+  },
+  "combined_regression_and_adjacent": {
+    "tests": 36,
+    "pass": 36,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "checks": {
+    "typecheck": "PASS",
+    "branding_build": "PASS",
+    "retained_source_bindings": "PASS 6",
+    "untouched_component_adapter_reducer_pins": "PASS 4",
+    "frozen_fixtures": "PASS both",
+    "diff_hygiene": "PASS"
+  },
+  "limits": {
+    "boundary": "Actual App source projection with actual removal/confirmation components, adapter and removeRepo reducer; not full App",
+    "ipc": "Deferred synthetic IPC only; no real deletion",
+    "frame": "DOM/focus frame boundary stubbed",
+    "browser": "NOT RUN: not admitted",
+    "native": "NOT RUN",
+    "package": "UNVERIFIED; no dispatch"
+  },
+  "logs": {
+    "red-fresh-main.tap": "aca3c286588e1759bcf8d27dc9cd42f31e976fbdca7594ab7119252cd4604e90",
+    "green-fresh-main-adjacent.tap": "e812405c0b5da905e181cd10401097d7ca068d9c2182d36e988084c2ff5a78ff",
+    "typecheck-fresh-main.log.gz": "3450272f8805453816005418d1a96a6d94e64078b6bc9113bd35d431b4d5b48a",
+    "build-fresh-main.log.gz": "834768ee8f225090579ef5bfcec56e459894d74fa47a00ab5e66a5bb30045923",
+    "source-fresh-main.txt": "724b4e827691d26d6dd58021d435f99b39efdcdcf853d33fc2fd76dc0ae437fa"
+  }
+}
