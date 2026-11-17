@@ -8,7 +8,7 @@ The unchanged retained REA-linked asset `index-BGEQ8YjU.js` is 3,493,297 bytes w
 
 `Att` selects message IDs; `hie` unions them across `Ett` segments. `_jt` applies `s.has(a.id)` to whole messages before collapse batching; `jOt` retains a selected message's content whole. The unrelated `hjt` last-text accessor is not called by either selector chain. These facts establish whole-message membership, not downstream per-part visual semantics.
 
-Only `toolGroups.ts`, the new `protectedMessagePreview.test.ts`, and this evidence directory are in the treatment scope. WorkspaceView, providers, Terminal, native/runtime, shared styles and frozen reference helpers remain outside it.
+The initial treatment scope was `toolGroups.ts`, the new `protectedMessagePreview.test.ts`, and this evidence directory. The coordinator then cleared `transcriptAgentSummary.test.ts` only for the CI fixture correction below. WorkspaceView, providers, Terminal, native/runtime, shared styles and frozen reference helpers remain outside it.
 
 ## Frozen RED on post-merge main
 
@@ -32,8 +32,22 @@ The correction changes the ordinary preview selector from a part index to its me
 - `python3 evidence/chat/tool-disclosure-remount/verify_baseline_root.py`: passed its frozen source/archive preflight. [Exact result](preservation.json). This is preservation, not JavaScript or UI behavior.
 - Full asset, all 33 literal lengths/ranges/hashes, the frozen fixture digest, focused scope, `git diff --check` and staged whitespace: passed.
 
-Full local typecheck/build was **not run** because this checkout has no installed dependencies; exact-head automatic frontend CI owns that gate. No test/check was skipped, disabled or weakened to obtain GREEN. Local regression commit `c4d7953c` preceded product edits; the server publication may squash local commits.
+Dependencies were subsequently restored without package/lockfile edits. Full local typecheck and production frontend build passed, including again after the CI correction below. Exact-head automatic frontend CI remains independently required. No test/check was skipped, disabled or weakened to obtain GREEN. Local regression commit `c4d7953c` preceded product edits; the server publication may squash local commits.
+
+## CI display-fixture correction
+
+The first published head `edd1e3f7d71464fe906a3db51ff381fd0970f8ef` passed hosted typecheck but failed frontend tests: **4,753 passed / 1 failed**. The sole outer failure was the display-filter emphasis check in `transcriptAgentSummary.test.ts`. It put two text blocks in one message while expecting only the final block to receive preview emphasis, contradicting the retained message-ID contract. Re-reading the exact `_jt` literal confirmed membership is `s.has(a.id)` for the whole message.
+
+The unchanged test file reproduced **49 passed / 1 failed** locally: `NODE_ENV=development node --experimental-strip-types --test src/features/chat/transcriptAgentSummary.test.ts`. [Complete RED output](display-red.tap.gz).
+
+The narrow test-only correction preserves both original emphasis assertions using two distinct assistant message IDs. Two additional cases exercise the real extracted React `Transcript`/`Part` functions with same-message multipart text: filter off/on, preview emphasis on both parts, correct displayed strings and byte-identical stored input. No production code or frozen fixture changed. This is React static rendering with explicit leaf mocks, not full mounted/native acceptance.
+
+- **Focused PASS 159/159, zero skips:** the earlier ten-file command plus `src/features/chat/transcriptAgentSummary.test.ts`, with `NODE_ENV=development`. [Complete output](display-focused-green.tap.gz).
+- **Full local suite PARTIAL:** clean committed head `70f0ff5ee7ae2a921f075c7cb46dfc2ec6a45ac4`; `NODE_ENV=development ONBOARDING_DOM_DEPS="$PWD/.ara-state/tmp/pr1404-dom-deps" nice -n 19 node --experimental-strip-types --test --test-concurrency=4 'src/**/*.test.ts'` — **4,754 passed / 2 failed / 0 skipped**, 3 suites, 764.16 seconds. Isolated jsdom was exactly 26.1.0, installed with scripts disabled. Both failures were Caffeinate whole-main baseline/current graph checks: the baseline off control and several current cases hit navigation-stage `page.goto` 30-second timeouts before product assertions; the baseline regression still reached its intended missing-effect assertion, but its failed control invalidates RED qualification. No timeout cause is established. No Caffeinate source, fixture, assertion or deadline was changed. [Complete full-suite output](full-suite.tap.gz).
+- **Fresh typecheck PASS:** `nice -n 19 npm run typecheck`, exit 0.
+- **Fresh production build PASS:** `nice -n 19 npm run build`, exit 0; Vite completed in 3m 18s with non-failing chunk-size warnings.
+- Frozen ten-case fixture digest remains `3a9bca3c929b42cd6064e459fd0836b04c36b22999d6a29604fbd7956daeb705`. Exact-head hosted checks must all pass before merge; local full-suite success is not claimed.
 
 ## Verification limits
 
-Source/range qualification and grouping checks are separate from mounted UI, exported renderer-chunk behavior, provider delivery, built-package containment and native acceptance. None of the latter is asserted or dispatched here. There is no screenshot because this lane excludes runtime/native dispatch. Existing package/native owners retain that work; no duplicate campaign or watcher is created.
+Source/range qualification, grouping checks and the extracted React static-rendering probe are separate from full mounted UI, exported renderer-chunk behavior, provider delivery, built-package containment and native acceptance. The full-suite browser graph attempt above was partial and grants none of those acceptance claims. There is no screenshot because this lane excludes runtime/native acceptance dispatch. Existing package/native owners retain that work; no duplicate campaign or watcher is created.
