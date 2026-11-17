@@ -1,0 +1,12 @@
+{
+  "checked_main": "8e1c32c3f05efc1562177ea91ad3adccc940c7fe",
+  "reference_spans_verified": 6,
+  "main_pins_verified": 13,
+  "protected_source_unchanged": true,
+  "fixture_sha256": "ba3017b5fcfc86d51a58c8590152b76e102f47900d89e88add8dcd6e1f557ea7",
+  "candidate_kit_sha256": "2fd17c15f43564fcd83ad8921da6cf87aa84e458c86bee036f20846a884d3da4",
+  "only_product_path": [
+    "src/settings/agents/kit.tsx",
+    "src/settings/agents/secretSavePending.test.ts"
+  ]
+}
