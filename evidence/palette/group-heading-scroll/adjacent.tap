@@ -1,0 +1,3214 @@
+(node:80) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:87) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pointer marker cannot leak through query reset (same-selected hover=false)
+ok 1 - pointer marker cannot leak through query reset (same-selected hover=false)
+  ---
+  duration_ms: 163.653868
+  type: 'test'
+  ...
+# Subtest: pointer marker cannot leak through tab change (same-selected hover=false)
+ok 2 - pointer marker cannot leak through tab change (same-selected hover=false)
+  ---
+  duration_ms: 130.542139
+  type: 'test'
+  ...
+# Subtest: pointer marker cannot leak through query reset (same-selected hover=true)
+ok 3 - pointer marker cannot leak through query reset (same-selected hover=true)
+  ---
+  duration_ms: 97.758253
+  type: 'test'
+  ...
+# Subtest: pointer marker cannot leak through tab change (same-selected hover=true)
+ok 4 - pointer marker cannot leak through tab change (same-selected hover=true)
+  ---
+  duration_ms: 92.094106
+  type: 'test'
+  ...
+# (node:95) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: bindCommands registers every default shortcut of a command
+ok 5 - bindCommands registers every default shortcut of a command
+  ---
+  duration_ms: 1.608903
+  type: 'test'
+  ...
+# Subtest: a bare-key shortcut does not fire while typing; its modifier shortcut does
+ok 6 - a bare-key shortcut does not fire while typing; its modifier shortcut does
+  ---
+  duration_ms: 0.281545
+  type: 'test'
+  ...
+# Subtest: a non-global command stays off while a dialog is open; a global one runs
+ok 7 - a non-global command stays off while a dialog is open; a global one runs
+  ---
+  duration_ms: 1.216493
+  type: 'test'
+  ...
+# Subtest: overrides replace the default shortcut
+ok 8 - overrides replace the default shortcut
+  ---
+  duration_ms: 0.254553
+  type: 'test'
+  ...
+# Subtest: undefined callbacks are skipped and the remover takes back only its own handlers
+ok 9 - undefined callbacks are skipped and the remover takes back only its own handlers
+  ---
+  duration_ms: 0.434376
+  type: 'test'
+  ...
+# Subtest: a callback returning false passes the key on
+ok 10 - a callback returning false passes the key on
+  ---
+  duration_ms: 0.306713
+  type: 'test'
+  ...
+# Subtest: unknown command ids throw
+ok 11 - unknown command ids throw
+  ---
+  duration_ms: 0.628292
+  type: 'test'
+  ...
+# Subtest: hidden chat bindings cannot cancel or attach from a center terminal
+ok 12 - hidden chat bindings cannot cancel or attach from a center terminal
+  ---
+  duration_ms: 0.374975
+  type: 'test'
+  ...
+# Subtest: focused chat shortcuts still work while its panel terminal has keyboard focus
+ok 13 - focused chat shortcuts still work while its panel terminal has keyboard focus
+  ---
+  duration_ms: 0.510641
+  type: 'test'
+  ...
+# Subtest: activeDialogIdFromDom: the last tagged dialog, else any modal, else none
+ok 14 - activeDialogIdFromDom: the last tagged dialog, else any modal, else none
+  ---
+  duration_ms: 0.472025
+  type: 'test'
+  ...
+# Subtest: a higher-priority binding runs first and passes the key on by returning false
+ok 15 - a higher-priority binding runs first and passes the key on by returning false
+  ---
+  duration_ms: 0.373955
+  type: 'test'
+  ...
+# (node:103) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: base commands share a scope with every group; groups do not share with each other
+ok 16 - base commands share a scope with every group; groups do not share with each other
+  ---
+  duration_ms: 0.854278
+  type: 'test'
+  ...
+# Subtest: a shortcut taken by a command in a shared scope is a conflict
+ok 17 - a shortcut taken by a command in a shared scope is a conflict
+  ---
+  duration_ms: 2.937771
+  type: 'test'
+  ...
+# Subtest: the same keys in unrelated scopes do not conflict
+ok 18 - the same keys in unrelated scopes do not conflict
+  ---
+  duration_ms: 0.380738
+  type: 'test'
+  ...
+# Subtest: a command never conflicts with itself
+ok 19 - a command never conflicts with itself
+  ---
+  duration_ms: 0.30531
+  type: 'test'
+  ...
+# Subtest: hidden fixed commands count, as in Conductor (palette Cmd+K vs clear scrollback)
+ok 20 - hidden fixed commands count, as in Conductor (palette Cmd+K vs clear scrollback)
+  ---
+  duration_ms: 0.219999
+  type: 'test'
+  ...
+# Subtest: additional default keys count (zoom in is Cmd+= as well as Cmd++)
+ok 21 - additional default keys count (zoom in is Cmd+= as well as Cmd++)
+  ---
+  duration_ms: 0.236885
+  type: 'test'
+  ...
+# Subtest: a physical binding conflicts with the event that presses it
+ok 22 - a physical binding conflicts with the event that presses it
+  ---
+  duration_ms: 0.590765
+  type: 'test'
+  ...
+# Subtest: overrides replace defaults on both sides
+ok 23 - overrides replace defaults on both sides
+  ---
+  duration_ms: 0.277113
+  type: 'test'
+  ...
+# (node:111) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a bare key is off while typing unless allowWhileTyping
+ok 24 - a bare key is off while typing unless allowWhileTyping
+  ---
+  duration_ms: 0.824214
+  type: 'test'
+  ...
+# Subtest: a modified key needs enableOnInputFocus or isGlobal while typing
+ok 25 - a modified key needs enableOnInputFocus or isGlobal while typing
+  ---
+  duration_ms: 0.176372
+  type: 'test'
+  ...
+# Subtest: terminal focus gates enableOnTerminalFocus and requireTerminalFocus
+ok 26 - terminal focus gates enableOnTerminalFocus and requireTerminalFocus
+  ---
+  duration_ms: 0.115856
+  type: 'test'
+  ...
+# Subtest: dialogs: only listed dialog ids, and nothing unlisted while a dialog is open
+ok 27 - dialogs: only listed dialog ids, and nothing unlisted while a dialog is open
+  ---
+  duration_ms: 0.123741
+  type: 'test'
+  ...
+# Subtest: higher priority runs first, then more modifiers; false passes on
+ok 28 - higher priority runs first, then more modifiers; false passes on
+  ---
+  duration_ms: 1.964579
+  type: 'test'
+  ...
+# Subtest: telemetry carries the dialog id and context only when present
+ok 29 - telemetry carries the dialog id and context only when present
+  ---
+  duration_ms: 0.261437
+  type: 'test'
+  ...
+# Subtest: held-key repeats are swallowed unless a handler allows repeat
+ok 30 - held-key repeats are swallowed unless a handler allows repeat
+  ---
+  duration_ms: 0.238675
+  type: 'test'
+  ...
+# Subtest: Escape blurs a focused input before any handler; not in the terminal
+ok 31 - Escape blurs a focused input before any handler; not in the terminal
+  ---
+  duration_ms: 0.147056
+  type: 'test'
+  ...
+# Subtest: recorder, lone modifiers, unfocused scopes and unregister all pass
+ok 32 - recorder, lone modifiers, unfocused scopes and unregister all pass
+  ---
+  duration_ms: 0.325964
+  type: 'test'
+  ...
+# Subtest: Backspace outside a text field is prevented even when nothing handles it
+ok 33 - Backspace outside a text field is prevented even when nothing handles it
+  ---
+  duration_ms: 0.351815
+  type: 'test'
+  ...
+# (node:119) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: lists configurable or visible commands; the opposite follow-up needs queued messages
+ok 34 - lists configurable or visible commands; the opposite follow-up needs queued messages
+  ---
+  duration_ms: 5.019666
+  type: 'test'
+  ...
+# Subtest: non-configurable and send-key commands are fixed
+ok 35 - non-configurable and send-key commands are fixed
+  ---
+  duration_ms: 0.490497
+  type: 'test'
+  ...
+# Subtest: rows carry overrides and key search text
+ok 36 - rows carry overrides and key search text
+  ---
+  duration_ms: 1.456265
+  type: 'test'
+  ...
+# Subtest: search ranks over title, category, command id and key names
+ok 37 - search ranks over title, category, command id and key names
+  ---
+  duration_ms: 4.234847
+  type: 'test'
+  ...
+# Subtest: a typed shortcut keeps rows with a key that fires on that press
+ok 38 - a typed shortcut keeps rows with a key that fires on that press
+  ---
+  duration_ms: 1.392677
+  type: 'test'
+  ...
+# Subtest: recorder keys: repeats ignored, modifiers held, bare Escape cancels
+ok 39 - recorder keys: repeats ignored, modifiers held, bare Escape cancels
+  ---
+  duration_ms: 0.419186
+  type: 'test'
+  ...
+# Subtest: recording saves a free shortcut and reports a taken one
+ok 40 - recording saves a free shortcut and reports a taken one
+  ---
+  duration_ms: 0.664128
+  type: 'test'
+  ...
+# Subtest: the search box's Type shortcut mode and its text
+ok 41 - the search box's Type shortcut mode and its text
+  ---
+  duration_ms: 0.150522
+  type: 'test'
+  ...
+# Subtest: recorder labels match Conductor's
+ok 42 - recorder labels match Conductor's
+  ---
+  duration_ms: 0.337032
+  type: 'test'
+  ...
+# (node:127) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a mounted chat stops handling terminal keys while hidden and resumes without losing its draft
+ok 43 - a mounted chat stops handling terminal keys while hidden and resumes without losing its draft
+  ---
+  duration_ms: 116.341463
+  type: 'test'
+  ...
+# Subtest: WorkspaceView's actual retained chat host suppresses shortcuts behind a center terminal
+ok 44 - WorkspaceView's actual retained chat host suppresses shortcuts behind a center terminal
+  ---
+  duration_ms: 139.20458
+  type: 'test'
+  ...
+# Subtest: WorkspaceView's actual retained chat host suppresses shortcuts behind a Browser preview
+ok 45 - WorkspaceView's actual retained chat host suppresses shortcuts behind a Browser preview
+  ---
+  duration_ms: 52.910704
+  type: 'test'
+  ...
+# Subtest: a nested focused scope cannot reactivate a hidden parent chat
+ok 46 - a nested focused scope cannot reactivate a hidden parent chat
+  ---
+  duration_ms: 27.110958
+  type: 'test'
+  ...
+# (node:135) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: lists 99 commands when cloudUI is OFF (default) — 3 cloud-only shortcuts excluded
+ok 47 - lists 99 commands when cloudUI is OFF (default) — 3 cloud-only shortcuts excluded
+  ---
+  duration_ms: 1.626791
+  type: 'test'
+  ...
+# Subtest: lists the 102 commands that are neither hidden nor dialog-only when cloudUI is ON
+ok 48 - lists the 102 commands that are neither hidden nor dialog-only when cloudUI is ON
+  ---
+  duration_ms: 0.250691
+  type: 'test'
+  ...
+# Subtest: rows show effective shortcuts, overrides applied
+ok 49 - rows show effective shortcuts, overrides applied
+  ---
+  duration_ms: 1.088401
+  type: 'test'
+  ...
+# Subtest: workspace.addToBacklogFromComposer appears when cloudUI is OFF (local shortcut, not cloud-only)
+ok 50 - workspace.addToBacklogFromComposer appears when cloudUI is OFF (local shortcut, not cloud-only)
+  ---
+  duration_ms: 0.568949
+  type: 'test'
+  ...
+# Subtest: groups follow category order and skip empty categories
+ok 51 - groups follow category order and skip empty categories
+  ---
+  duration_ms: 0.756036
+  type: 'test'
+  ...
+# Subtest: a blank query means no search (the dialog shows groups)
+ok 52 - a blank query means no search (the dialog shows groups)
+  ---
+  duration_ms: 0.234795
+  type: 'test'
+  ...
+# Subtest: title matches rank first and carry highlight indexes
+ok 53 - title matches rank first and carry highlight indexes
+  ---
+  duration_ms: 3.509225
+  type: 'test'
+  ...
+# Subtest: a category match lists the row without a title highlight
+ok 54 - a category match lists the row without a title highlight
+  ---
+  duration_ms: 0.569575
+  type: 'test'
+  ...
+# Subtest: weak matches below the 0.5 threshold are dropped
+ok 55 - weak matches below the 0.5 threshold are dropped
+  ---
+  duration_ms: 0.933551
+  type: 'test'
+  ...
+# Subtest: no-results text quotes the query
+ok 56 - no-results text quotes the query
+  ---
+  duration_ms: 0.347409
+  type: 'test'
+  ...
+# Subtest: highlight segments alternate matched and unmatched runs
+ok 57 - highlight segments alternate matched and unmatched runs
+  ---
+  duration_ms: 0.253433
+  type: 'test'
+  ...
+# (node:143) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: probeFocus: input in path, outermost contenteditable, terminal, recorder
+ok 58 - probeFocus: input in path, outermost contenteditable, terminal, recorder
+  ---
+  duration_ms: 2.108471
+  type: 'test'
+  ...
+# Subtest: probeFocus: a data-keybinding-local list reads its own plain keys, like a text field
+ok 59 - probeFocus: a data-keybinding-local list reads its own plain keys, like a text field
+  ---
+  duration_ms: 0.232177
+  type: 'test'
+  ...
+# Subtest: a matching shortcut runs, stops propagation and sends telemetry
+ok 60 - a matching shortcut runs, stops propagation and sends telemetry
+  ---
+  duration_ms: 0.634127
+  type: 'test'
+  ...
+# Subtest: an unmatched key passes untouched; Backspace outside a field is prevented
+ok 61 - an unmatched key passes untouched; Backspace outside a field is prevented
+  ---
+  duration_ms: 0.18524
+  type: 'test'
+  ...
+# Subtest: a bare Escape waits for the bubble phase and is skipped if handled
+ok 62 - a bare Escape waits for the bubble phase and is skipped if handled
+  ---
+  duration_ms: 0.478192
+  type: 'test'
+  ...
+# Subtest: a bare Escape in a text field blurs it
+ok 63 - a bare Escape in a text field blurs it
+  ---
+  duration_ms: 0.179494
+  type: 'test'
+  ...
+# Subtest: the bubble listener ignores everything but a bare Escape
+ok 64 - the bubble listener ignores everything but a bare Escape
+  ---
+  duration_ms: 0.151321
+  type: 'test'
+  ...
+# Subtest: a key capture takes every key until removed
+ok 65 - a key capture takes every key until removed
+  ---
+  duration_ms: 0.433325
+  type: 'test'
+  ...
+# Subtest: removing a replaced capture keeps the newer one
+ok 66 - removing a replaced capture keeps the newer one
+  ---
+  duration_ms: 0.313001
+  type: 'test'
+  ...
+# Subtest: text input is blocked briefly after an Option chord runs
+ok 67 - text input is blocked briefly after an Option chord runs
+  ---
+  duration_ms: 0.390494
+  type: 'test'
+  ...
+# Subtest: a Command-Option chord does not block text input
+ok 68 - a Command-Option chord does not block text input
+  ---
+  duration_ms: 0.294422
+  type: 'test'
+  ...
+# Subtest: a held-key repeat with no repeatable handler is swallowed
+ok 69 - a held-key repeat with no repeatable handler is swallowed
+  ---
+  duration_ms: 0.163904
+  type: 'test'
+  ...
+# Subtest: installKeyListeners wires capture and bubble phases and removes them
+ok 70 - installKeyListeners wires capture and bubble phases and removes them
+  ---
+  duration_ms: 0.213712
+  type: 'test'
+  ...
+# (node:151) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: openDebugTools fires on physical ⌘⌥I (code=KeyI)
+ok 71 - openDebugTools fires on physical ⌘⌥I (code=KeyI)
+  ---
+  duration_ms: 1.210027
+  type: 'test'
+  ...
+# Subtest: openDebugTools fires even with a dialog open (isGlobal:true)
+ok 72 - openDebugTools fires even with a dialog open (isGlobal:true)
+  ---
+  duration_ms: 0.180525
+  type: 'test'
+  ...
+# Subtest: openDebugTools does not fire without the alt modifier
+ok 73 - openDebugTools does not fire without the alt modifier
+  ---
+  duration_ms: 0.132832
+  type: 'test'
+  ...
+# Subtest: openDebugTools shortcut override replaces ⌘⌥I
+ok 74 - openDebugTools shortcut override replaces ⌘⌥I
+  ---
+  duration_ms: 0.552759
+  type: 'test'
+  ...
+# Subtest: workspace.toggleCreateFrom fires on ⌘I
+ok 75 - workspace.toggleCreateFrom fires on ⌘I
+  ---
+  duration_ms: 0.22301
+  type: 'test'
+  ...
+# Subtest: workspace.toggleCreateFrom fires while typing (allowWhileTyping:true)
+ok 76 - workspace.toggleCreateFrom fires while typing (allowWhileTyping:true)
+  ---
+  duration_ms: 0.159231
+  type: 'test'
+  ...
+# Subtest: workspace.toggleCreateFrom skips when handler is undefined (picker disabled)
+ok 77 - workspace.toggleCreateFrom skips when handler is undefined (picker disabled)
+  ---
+  duration_ms: 0.147632
+  type: 'test'
+  ...
+# Subtest: workspace.toggleCreateFrom shortcut override replaces ⌘I
+ok 78 - workspace.toggleCreateFrom shortcut override replaces ⌘I
+  ---
+  duration_ms: 0.147835
+  type: 'test'
+  ...
+# (node:159) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: bad documents give no overrides
+ok 79 - bad documents give no overrides
+  ---
+  duration_ms: 1.835804
+  type: 'test'
+  ...
+# Subtest: shortcut parsing canonicalizes modifiers and rejects junk
+ok 80 - shortcut parsing canonicalizes modifiers and rejects junk
+  ---
+  duration_ms: 0.544365
+  type: 'test'
+  ...
+# Subtest: unknown, non-configurable and invalid entries are dropped
+ok 81 - unknown, non-configurable and invalid entries are dropped
+  ---
+  duration_ms: 0.355175
+  type: 'test'
+  ...
+# Subtest: legacy ids migrate to their replacements
+ok 82 - legacy ids migrate to their replacements
+  ---
+  duration_ms: 0.294853
+  type: 'test'
+  ...
+# Subtest: old cmd-enter setups regain Shift+Enter for new line
+ok 83 - old cmd-enter setups regain Shift+Enter for new line
+  ---
+  duration_ms: 0.510589
+  type: 'test'
+  ...
+# Subtest: serialize stores singles bare, lists as arrays, and deletes resets
+ok 84 - serialize stores singles bare, lists as arrays, and deletes resets
+  ---
+  duration_ms: 0.18353
+  type: 'test'
+  ...
+# Subtest: effective shortcuts fall back to key plus additionalKeys
+ok 85 - effective shortcuts fall back to key plus additionalKeys
+  ---
+  duration_ms: 0.351302
+  type: 'test'
+  ...
+# Subtest: store serializes concurrent updates without losing either
+ok 86 - store serializes concurrent updates without losing either
+  ---
+  duration_ms: 15.565106
+  type: 'test'
+  ...
+# (node:167) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: registry matches the extracted evidence with the requested OpenConductor loadout shortcuts
+ok 87 - registry matches the extracted evidence with the requested OpenConductor loadout shortcuts
+  ---
+  duration_ms: 2.918988
+  type: 'test'
+  ...
+# Subtest: five loadout shortcuts are Cmd1–5 while retained reference evidence stays CmdCtrl1–5
+ok 88 - five loadout shortcuts are Cmd1–5 while retained reference evidence stays CmdCtrl1–5
+  ---
+  duration_ms: 0.335588
+  type: 'test'
+  ...
+# Subtest: registry shape: 165 unique ids, known categories and modifiers
+ok 89 - registry shape: 165 unique ids, known categories and modifiers
+  ---
+  duration_ms: 0.553265
+  type: 'test'
+  ...
+# Subtest: every id in scopes, presets and aliases names a command
+ok 90 - every id in scopes, presets and aliases names a command
+  ---
+  duration_ms: 0.582585
+  type: 'test'
+  ...
+# Subtest: help shortcut defaults to Option+Command+/ (physical Slash)
+ok 91 - help shortcut defaults to Option+Command+/ (physical Slash)
+  ---
+  duration_ms: 0.186047
+  type: 'test'
+  ...
+# (node:175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: registration defaults: input and terminal focus on, NORMAL priority, not global
+ok 92 - registration defaults: input and terminal focus on, NORMAL priority, not global
+  ---
+  duration_ms: 1.82618
+  type: 'test'
+  ...
+# Subtest: one binding per effective shortcut; call-site options win over the command's when
+ok 93 - one binding per effective shortcut; call-site options win over the command's when
+  ---
+  duration_ms: 0.373051
+  type: 'test'
+  ...
+# Subtest: Cmd+K opens the palette idle, while typing and inside the palette
+ok 94 - Cmd+K opens the palette idle, while typing and inside the palette
+  ---
+  duration_ms: 0.807358
+  type: 'test'
+  ...
+# Subtest: terminal-only commands need terminal focus
+ok 95 - terminal-only commands need terminal focus
+  ---
+  duration_ms: 0.143157
+  type: 'test'
+  ...
+# Subtest: Tab cycles palette tabs only while the palette is open
+ok 96 - Tab cycles palette tabs only while the palette is open
+  ---
+  duration_ms: 0.134601
+  type: 'test'
+  ...
+# Subtest: an open dialog blocks non-global commands
+ok 97 - an open dialog blocks non-global commands
+  ---
+  duration_ms: 0.19437
+  type: 'test'
+  ...
+# Subtest: bare keys need allowWhileTyping; Cmd chords and Cmd+1..9 fire while typing
+ok 98 - bare keys need allowWhileTyping; Cmd chords and Cmd+1..9 fire while typing
+  ---
+  duration_ms: 0.247213
+  type: 'test'
+  ...
+# Subtest: overrides rebind what resolves
+ok 99 - overrides rebind what resolves
+  ---
+  duration_ms: 0.155018
+  type: 'test'
+  ...
+# (node:183) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ⌘A outside a text field is swallowed
+ok 100 - ⌘A outside a text field is swallowed
+  ---
+  duration_ms: 1.160944
+  type: 'test'
+  ...
+# Subtest: ⌘A in an input, a textarea or a contenteditable element keeps its native meaning
+ok 101 - ⌘A in an input, a textarea or a contenteditable element keeps its native meaning
+  ---
+  duration_ms: 0.177406
+  type: 'test'
+  ...
+# Subtest: other keys are left alone
+ok 102 - other keys are left alone
+  ---
+  duration_ms: 0.188535
+  type: 'test'
+  ...
+# (node:191) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: parts are modifiers in ctrl, meta, shift, alt order, then the key
+ok 103 - parts are modifiers in ctrl, meta, shift, alt order, then the key
+  ---
+  duration_ms: 1.748936
+  type: 'test'
+  ...
+# Subtest: glyphs and spoken labels
+ok 104 - glyphs and spoken labels
+  ---
+  duration_ms: 0.243663
+  type: 'test'
+  ...
+# Subtest: search tokens include modifier aliases and glyphs
+ok 105 - search tokens include modifier aliases and glyphs
+  ---
+  duration_ms: 0.139407
+  type: 'test'
+  ...
+# Subtest: logical keys match case-insensitively with exact modifiers
+ok 106 - logical keys match case-insensitively with exact modifiers
+  ---
+  duration_ms: 0.564691
+  type: 'test'
+  ...
+# Subtest: symbols tolerate the Shift or Option that produced them
+ok 107 - symbols tolerate the Shift or Option that produced them
+  ---
+  duration_ms: 0.132916
+  type: 'test'
+  ...
+# Subtest: physical keys match by code whatever the layout types
+ok 108 - physical keys match by code whatever the layout types
+  ---
+  duration_ms: 0.108
+  type: 'test'
+  ...
+# Subtest: sameShortcut is exact; equivalent bridges logical and physical
+ok 109 - sameShortcut is exact; equivalent bridges logical and physical
+  ---
+  duration_ms: 0.346902
+  type: 'test'
+  ...
+# Subtest: recording: Option letter chords become physical, dead keys are refused
+ok 110 - recording: Option letter chords become physical, dead keys are refused
+  ---
+  duration_ms: 0.516174
+  type: 'test'
+  ...
+# (node:199) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Cmd+W in run output closes the displayed changes tab
+ok 111 - Cmd+W in run output closes the displayed changes tab
+  ---
+  duration_ms: 3.616182
+  type: 'test'
+  ...
+# Subtest: Cmd+W in setup output closes the displayed changes tab
+ok 112 - Cmd+W in setup output closes the displayed changes tab
+  ---
+  duration_ms: 0.691772
+  type: 'test'
+  ...
+# Subtest: Cmd+W in a panel-terminal stays with its terminal consumer
+ok 113 - Cmd+W in a panel-terminal stays with its terminal consumer
+  ---
+  duration_ms: 0.733505
+  type: 'test'
+  ...
+# Subtest: Cmd+W in a center-terminal stays with its terminal consumer
+ok 114 - Cmd+W in a center-terminal stays with its terminal consumer
+  ---
+  duration_ms: 0.681349
+  type: 'test'
+  ...
+# Subtest: nonterminal Cmd+W still closes the displayed changes tab
+ok 115 - nonterminal Cmd+W still closes the displayed changes tab
+  ---
+  duration_ms: 0.712412
+  type: 'test'
+  ...
+# Subtest: Run focus does not close a tab through an open dialog
+ok 116 - Run focus does not close a tab through an open dialog
+  ---
+  duration_ms: 0.732001
+  type: 'test'
+  ...
+# Subtest: Run focus does not close the primary chat or an unrelated terminal
+ok 117 - Run focus does not close the primary chat or an unrelated terminal
+  ---
+  duration_ms: 0.666533
+  type: 'test'
+  ...
+# Subtest: reopen remains disabled inside terminal output
+ok 118 - reopen remains disabled inside terminal output
+  ---
+  duration_ms: 0.664055
+  type: 'test'
+  ...
+# Subtest: nonterminal reopen still reaches its existing consumer
+ok 119 - nonterminal reopen still reaches its existing consumer
+  ---
+  duration_ms: 1.021589
+  type: 'test'
+  ...
+# (node:207) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actions combobox exposes the selected result to assistive technology
+ok 120 - actions combobox exposes the selected result to assistive technology
+  ---
+  duration_ms: 204.169375
+  type: 'test'
+  ...
+# Subtest: all combobox exposes the selected result to assistive technology
+ok 121 - all combobox exposes the selected result to assistive technology
+  ---
+  duration_ms: 65.404611
+  type: 'test'
+  ...
+# Subtest: projects combobox exposes the selected result to assistive technology
+ok 122 - projects combobox exposes the selected result to assistive technology
+  ---
+  duration_ms: 57.28023
+  type: 'test'
+  ...
+# Subtest: settings combobox exposes the selected result to assistive technology
+ok 123 - settings combobox exposes the selected result to assistive technology
+  ---
+  duration_ms: 42.213629
+  type: 'test'
+  ...
+# Subtest: the search input declares list autocomplete
+ok 124 - the search input declares list autocomplete
+  ---
+  duration_ms: 42.229595
+  type: 'test'
+  ...
+# Subtest: keyboard and pointer selection update the active descendant without activation
+ok 125 - keyboard and pointer selection update the active descendant without activation
+  ---
+  duration_ms: 44.197391
+  type: 'test'
+  ...
+# Subtest: filtering clears a missing target and reconnects when results return
+ok 126 - filtering clears a missing target and reconnects when results return
+  ---
+  duration_ms: 36.772802
+  type: 'test'
+  ...
+# Subtest: workspaces begin unselected, then keyboard and pointer selection link real workspace rows
+ok 127 - workspaces begin unselected, then keyboard and pointer selection link real workspace rows
+  ---
+  duration_ms: 38.690093
+  type: 'test'
+  ...
+# Subtest: section results and both footer actions share the input's active-descendant contract
+ok 128 - section results and both footer actions share the input's active-descendant contract
+  ---
+  duration_ms: 38.17113
+  type: 'test'
+  ...
+# Subtest: a removed result never leaves a dangling active-descendant reference
+ok 129 - a removed result never leaves a dangling active-descendant reference
+  ---
+  duration_ms: 28.90529
+  type: 'test'
+  ...
+# Subtest: simultaneously mounted palettes have independent option IDs
+ok 130 - simultaneously mounted palettes have independent option IDs
+  ---
+  duration_ms: 66.629795
+  type: 'test'
+  ...
+# Subtest: control: ordinary Enter selects the existing result and closes once
+ok 131 - control: ordinary Enter selects the existing result and closes once
+  ---
+  duration_ms: 30.699837
+  type: 'test'
+  ...
+# Subtest: control: composition still suppresses navigation and selection
+ok 132 - control: composition still suppresses navigation and selection
+  ---
+  duration_ms: 32.218754
+  type: 'test'
+  ...
+# Subtest: control: no results have no active descendant
+ok 133 - control: no results have no active descendant
+  ---
+  duration_ms: 33.764589
+  type: 'test'
+  ...
+# (node:215) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: control: section IDs absent do not enable the current section
+ok 134 - control: section IDs absent do not enable the current section
+  ---
+  duration_ms: 12.4016
+  type: 'test'
+  ...
+# Subtest: control: section IDs present do not enable the current section
+ok 135 - control: section IDs present do not enable the current section
+  ---
+  duration_ms: 2.869761
+  type: 'test'
+  ...
+# (node:223) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: local section action has the reference row contract without requiring a project or workspace
+ok 136 - local section action has the reference row contract without requiring a project or workspace
+  ---
+  duration_ms: 6.186874
+  type: 'test'
+  ...
+# Subtest: actual PaletteHost selects the local section handler exactly once
+ok 137 - actual PaletteHost selects the local section handler exactly once
+  ---
+  duration_ms: 221.868425
+  type: 'test'
+  ...
+# Subtest: actual PaletteHost omits the row without the shell's local-section capability
+ok 138 - actual PaletteHost omits the row without the shell's local-section capability
+  ---
+  duration_ms: 75.761187
+  type: 'test'
+  ...
+# Subtest: mounted App opens one shared section dialog with hidden Sidebar at root
+ok 139 - mounted App opens one shared section dialog with hidden Sidebar at root
+  ---
+  duration_ms: 225.595884
+  type: 'test'
+  ...
+# Subtest: mounted App opens one shared section dialog with hidden Sidebar at home
+ok 140 - mounted App opens one shared section dialog with hidden Sidebar at home
+  ---
+  duration_ms: 138.441196
+  type: 'test'
+  ...
+# Subtest: mounted App creates in the local section store without moving the selected workspace
+ok 141 - mounted App creates in the local section store without moving the selected workspace
+  ---
+  duration_ms: 124.657986
+  type: 'test'
+  ...
+# Subtest: mounted App Cancel and repeated opens do not write a section or duplicate the dialog
+ok 142 - mounted App Cancel and repeated opens do not write a section or duplicate the dialog
+  ---
+  duration_ms: 100.789545
+  type: 'test'
+  ...
+# Subtest: mounted App with loading local store withholds creation until ready
+ok 143 - mounted App with loading local store withholds creation until ready
+  ---
+  duration_ms: 95.787723
+  type: 'test'
+  ...
+# Subtest: mounted App with error local store withholds creation until ready
+ok 144 - mounted App with error local store withholds creation until ready
+  ---
+  duration_ms: 92.816909
+  type: 'test'
+  ...
+# Subtest: shared shell owner preserves Sidebar create-before, workspace move and edit contracts
+ok 145 - shared shell owner preserves Sidebar create-before, workspace move and edit contracts
+  ---
+  duration_ms: 136.997317
+  type: 'test'
+  ...
+# (node:231) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: sidebar order spans repos in order, newest first inside a repo, as the sidebar shows them
+ok 146 - sidebar order spans repos in order, newest first inside a repo, as the sidebar shows them
+  ---
+  duration_ms: 2.268303
+  type: 'test'
+  ...
+# Subtest: Cmd+1..9 order puts Pinned first and skips collapsed repos
+ok 147 - Cmd+1..9 order puts Pinned first and skips collapsed repos
+  ---
+  duration_ms: 0.386479
+  type: 'test'
+  ...
+# Subtest: stepping wraps and starts at the ends when nothing is selected
+ok 148 - stepping wraps and starts at the ends when nothing is selected
+  ---
+  duration_ms: 0.358538
+  type: 'test'
+  ...
+# Subtest: recents drop unknown ids and outrank creation time in the Workspaces tab
+ok 149 - recents drop unknown ids and outrank creation time in the Workspaces tab
+  ---
+  duration_ms: 1.066389
+  type: 'test'
+  ...
+# Subtest: All search uses workspace updates while Recent and Workspaces keep their existing order
+ok 150 - All search uses workspace updates while Recent and Workspaces keep their existing order
+  ---
+  duration_ms: 1.598937
+  type: 'test'
+  ...
+# Subtest: workspace actions appear only with a workspace selected
+ok 151 - workspace actions appear only with a workspace selected
+  ---
+  duration_ms: 0.421416
+  type: 'test'
+  ...
+# Subtest: Archive workspace is absent for the open archived selection before archived results load
+ok 152 - Archive workspace is absent for the open archived selection before archived results load
+  ---
+  duration_ms: 0.931828
+  type: 'test'
+  ...
+# Subtest: Archive workspace is absent for the open archived selection after archived results load
+ok 153 - Archive workspace is absent for the open archived selection after archived results load
+  ---
+  duration_ms: 1.418577
+  type: 'test'
+  ...
+# Subtest: Archive workspace stays available for an active selection and hidden without a workspace despite a retained archived view
+ok 154 - Archive workspace stays available for an active selection and hidden without a workspace despite a retained archived view
+  ---
+  duration_ms: 1.419115
+  type: 'test'
+  ...
+# Subtest: File picker is absent for the open archived selection before archived results load
+ok 155 - File picker is absent for the open archived selection before archived results load
+  ---
+  duration_ms: 0.699032
+  type: 'test'
+  ...
+# Subtest: File picker is absent for the open archived selection after archived results load
+ok 156 - File picker is absent for the open archived selection after archived results load
+  ---
+  duration_ms: 0.378972
+  type: 'test'
+  ...
+# Subtest: File picker is absent for an unstarted local workspace even when its path is known
+ok 157 - File picker is absent for an unstarted local workspace even when its path is known
+  ---
+  duration_ms: 0.388488
+  type: 'test'
+  ...
+# Subtest: File picker stays available for active local states despite an unrelated retained archived view
+ok 158 - File picker stays available for active local states despite an unrelated retained archived view
+  ---
+  duration_ms: 2.644271
+  type: 'test'
+  ...
+# Subtest: File picker is absent for a missing workspace or without a workspace selection
+ok 159 - File picker is absent for a missing workspace or without a workspace selection
+  ---
+  duration_ms: 0.723442
+  type: 'test'
+  ...
+# Subtest: palette workspace entries carry workspaces.number for the W-<n> column
+ok 160 - palette workspace entries carry workspaces.number for the W-<n> column
+  ---
+  duration_ms: 0.187878
+  type: 'test'
+  ...
+# Subtest: archived workspaces from conductor.db join the palette data after the active ones; View archived workspaces is a Navigation action
+ok 161 - archived workspaces from conductor.db join the palette data after the active ones; View archived workspaces is a Navigation action
+  ---
+  duration_ms: 0.572636
+  type: 'test'
+  ...
+# Subtest: Recent workspaces keeps archived workspaces and drops deleted ones, as Conductor's palette does
+ok 162 - Recent workspaces keeps archived workspaces and drops deleted ones, as Conductor's palette does
+  ---
+  duration_ms: 0.178211
+  type: 'test'
+  ...
+# Subtest: Go to next unread is listed under Navigation only while a chat of a non-archived workspace is unread
+ok 163 - Go to next unread is listed under Navigation only while a chat of a non-archived workspace is unread
+  ---
+  duration_ms: 0.331581
+  type: 'test'
+  ...
+# Subtest: the All tab lists Conductor's Actions and Navigation commands in its order, with their shortcuts
+ok 164 - the All tab lists Conductor's Actions and Navigation commands in its order, with their shortcuts
+  ---
+  duration_ms: 0.143242
+  type: 'test'
+  ...
+# Subtest: View archived workspaces is listed only while a workspace is open, as Conductor's `Xt &&`
+ok 165 - View archived workspaces is listed only while a workspace is open, as Conductor's `Xt &&`
+  ---
+  duration_ms: 0.111845
+  type: 'test'
+  ...
+# Subtest: workspace rows carry the sidebar's display name, last activity and unread
+ok 166 - workspace rows carry the sidebar's display name, last activity and unread
+  ---
+  duration_ms: 0.103476
+  type: 'test'
+  ...
+# Subtest: settings pages are listed with no query and their rows join once there is one (Conductor's `[...We, ...query ? He : []]`)
+ok 167 - settings pages are listed with no query and their rows join once there is one (Conductor's `[...We, ...query ? He : []]`)
+  ---
+  duration_ms: 3.812993
+  type: 'test'
+  ...
+# Subtest: View archived workspaces is absent for startup placeholders before workspace hydration
+ok 168 - View archived workspaces is absent for startup placeholders before workspace hydration
+  ---
+  duration_ms: 0.428175
+  type: 'test'
+  ...
+# Subtest: View archived workspaces is absent for a missing selected workspace
+ok 169 - View archived workspaces is absent for a missing selected workspace
+  ---
+  duration_ms: 0.241891
+  type: 'test'
+  ...
+# Subtest: View archived workspaces is absent for a workspace found only in another repository
+ok 170 - View archived workspaces is absent for a workspace found only in another repository
+  ---
+  duration_ms: 0.199809
+  type: 'test'
+  ...
+# Subtest: View archived workspaces is absent for a missing selected repository
+ok 171 - View archived workspaces is absent for a missing selected repository
+  ---
+  duration_ms: 0.201775
+  type: 'test'
+  ...
+# Subtest: View archived workspaces does not resolve a selection from the archived list before results load
+ok 172 - View archived workspaces does not resolve a selection from the archived list before results load
+  ---
+  duration_ms: 0.37852
+  type: 'test'
+  ...
+# Subtest: View archived workspaces stays available for the resolved archived view before results load
+ok 173 - View archived workspaces stays available for the resolved archived view before results load
+  ---
+  duration_ms: 0.41599
+  type: 'test'
+  ...
+# Subtest: View archived workspaces does not resolve a selection from the archived list after results load
+ok 174 - View archived workspaces does not resolve a selection from the archived list after results load
+  ---
+  duration_ms: 0.271218
+  type: 'test'
+  ...
+# Subtest: View archived workspaces stays available for the resolved archived view after results load
+ok 175 - View archived workspaces stays available for the resolved archived view after results load
+  ---
+  duration_ms: 0.288215
+  type: 'test'
+  ...
+# Subtest: View archived workspaces requires presence rather than a ready-only lifecycle
+ok 176 - View archived workspaces requires presence rather than a ready-only lifecycle
+  ---
+  duration_ms: 2.087173
+  type: 'test'
+  ...
+# Subtest: View archived workspaces is absent without a workspace selection despite a retained archived view
+ok 177 - View archived workspaces is absent without a workspace selection despite a retained archived view
+  ---
+  duration_ms: 0.39901
+  type: 'test'
+  ...
+# Subtest: Copy URL is absent for startup placeholders before workspace hydration
+ok 178 - Copy URL is absent for startup placeholders before workspace hydration
+  ---
+  duration_ms: 0.485664
+  type: 'test'
+  ...
+# Subtest: Copy URL is absent for a missing selected workspace
+ok 179 - Copy URL is absent for a missing selected workspace
+  ---
+  duration_ms: 0.32802
+  type: 'test'
+  ...
+# Subtest: Copy URL is absent for a workspace found only in another repository
+ok 180 - Copy URL is absent for a workspace found only in another repository
+  ---
+  duration_ms: 0.409799
+  type: 'test'
+  ...
+# Subtest: Copy URL is absent for a missing selected repository
+ok 181 - Copy URL is absent for a missing selected repository
+  ---
+  duration_ms: 0.318627
+  type: 'test'
+  ...
+# Subtest: Copy URL does not resolve a selection from the archived list before results load
+ok 182 - Copy URL does not resolve a selection from the archived list before results load
+  ---
+  duration_ms: 0.382495
+  type: 'test'
+  ...
+# Subtest: Copy URL stays available for the resolved archived view before results load
+ok 183 - Copy URL stays available for the resolved archived view before results load
+  ---
+  duration_ms: 0.58916
+  type: 'test'
+  ...
+# Subtest: Copy URL does not resolve a selection from the archived list after results load
+ok 184 - Copy URL does not resolve a selection from the archived list after results load
+  ---
+  duration_ms: 0.346332
+  type: 'test'
+  ...
+# Subtest: Copy URL stays available for the resolved archived view after results load
+ok 185 - Copy URL stays available for the resolved archived view after results load
+  ---
+  duration_ms: 0.501552
+  type: 'test'
+  ...
+# Subtest: Copy URL requires presence rather than a path or a ready-only lifecycle
+ok 186 - Copy URL requires presence rather than a path or a ready-only lifecycle
+  ---
+  duration_ms: 3.93146
+  type: 'test'
+  ...
+# Subtest: Copy URL is absent without a workspace selection despite a retained archived view
+ok 187 - Copy URL is absent without a workspace selection despite a retained archived view
+  ---
+  duration_ms: 0.604126
+  type: 'test'
+  ...
+# (node:239) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:239) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: show-changes is offered for an active workspace
+ok 188 - show-changes is offered for an active workspace
+  ---
+  duration_ms: 3.057839
+  type: 'test'
+  ...
+# Subtest: the actual palette callback requests show-changes for the selected workspace
+ok 189 - the actual palette callback requests show-changes for the selected workspace
+  ---
+  duration_ms: 3.452568
+  type: 'test'
+  ...
+# Subtest: the actual workspace consumer applies show-changes without changing the center view
+ok 190 - the actual workspace consumer applies show-changes without changing the center view
+  ---
+  duration_ms: 1.921222
+  type: 'test'
+  ...
+# Subtest: show-uncommitted-changes is offered for an active workspace
+ok 191 - show-uncommitted-changes is offered for an active workspace
+  ---
+  duration_ms: 0.533669
+  type: 'test'
+  ...
+# Subtest: the actual palette callback requests show-uncommitted-changes for the selected workspace
+ok 192 - the actual palette callback requests show-uncommitted-changes for the selected workspace
+  ---
+  duration_ms: 0.7181
+  type: 'test'
+  ...
+# Subtest: the actual workspace consumer applies show-uncommitted-changes without changing the center view
+ok 193 - the actual workspace consumer applies show-uncommitted-changes without changing the center view
+  ---
+  duration_ms: 1.512454
+  type: 'test'
+  ...
+# Subtest: show-all-files is offered for an active workspace
+ok 194 - show-all-files is offered for an active workspace
+  ---
+  duration_ms: 0.313447
+  type: 'test'
+  ...
+# Subtest: the actual palette callback requests show-all-files for the selected workspace
+ok 195 - the actual palette callback requests show-all-files for the selected workspace
+  ---
+  duration_ms: 0.722058
+  type: 'test'
+  ...
+# Subtest: the actual workspace consumer applies show-all-files without changing the center view
+ok 196 - the actual workspace consumer applies show-all-files without changing the center view
+  ---
+  duration_ms: 1.584188
+  type: 'test'
+  ...
+# Subtest: show-checks is offered for an active workspace
+ok 197 - show-checks is offered for an active workspace
+  ---
+  duration_ms: 0.537309
+  type: 'test'
+  ...
+# Subtest: the actual palette callback requests show-checks for the selected workspace
+ok 198 - the actual palette callback requests show-checks for the selected workspace
+  ---
+  duration_ms: 0.732807
+  type: 'test'
+  ...
+# Subtest: the actual workspace consumer applies show-checks without changing the center view
+ok 199 - the actual workspace consumer applies show-checks without changing the center view
+  ---
+  duration_ms: 1.320534
+  type: 'test'
+  ...
+# Subtest: lifecycle gates retain initializing, failed and legacy local workspaces
+ok 200 - lifecycle gates retain initializing, failed and legacy local workspaces
+  ---
+  duration_ms: 15.10992
+  type: 'test'
+  ...
+# Subtest: unstarted, archived, missing and wrong-repository selections have no panel actions or requests
+ok 201 - unstarted, archived, missing and wrong-repository selections have no panel actions or requests
+  ---
+  duration_ms: 16.669609
+  type: 'test'
+  ...
+# Subtest: requests survive a hidden panel and are consumed once by the workspace owner
+ok 202 - requests survive a hidden panel and are consumed once by the workspace owner
+  ---
+  duration_ms: 1.281089
+  type: 'test'
+  ...
+# Subtest: a workspace switch and same-ID sibling repository cannot consume another target
+ok 203 - a workspace switch and same-ID sibling repository cannot consume another target
+  ---
+  duration_ms: 1.61158
+  type: 'test'
+  ...
+# Subtest: an unsubscribed consumer receives nothing, and the latest queued command wins
+ok 204 - an unsubscribed consumer receives nothing, and the latest queued command wins
+  ---
+  duration_ms: 1.576308
+  type: 'test'
+  ...
+# Subtest: the existing quick-open and Copy URL callbacks are unchanged
+ok 205 - the existing quick-open and Copy URL callbacks are unchanged
+  ---
+  duration_ms: 0.627187
+  type: 'test'
+  ...
+# Subtest: Archive workspace is absent for the open archived selection before archived results load
+ok 206 - Archive workspace is absent for the open archived selection before archived results load
+  ---
+  duration_ms: 0.367503
+  type: 'test'
+  ...
+# Subtest: Archive workspace is absent for the open archived selection after archived results load
+ok 207 - Archive workspace is absent for the open archived selection after archived results load
+  ---
+  duration_ms: 0.167872
+  type: 'test'
+  ...
+# Subtest: unknown actions do not notify listeners or create a request
+ok 208 - unknown actions do not notify listeners or create a request
+  ---
+  duration_ms: 0.117336
+  type: 'test'
+  ...
+# (node:247) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: M01 actual adapter, All/Actions search and mounted palette expose the reference Move to section command
+ok 209 - M01 actual adapter, All/Actions search and mounted palette expose the reference Move to section command
+  ---
+  duration_ms: 359.481284
+  type: 'test'
+  ...
+# Subtest: M02 eligibility resolves only the selected repository and does not reuse editable/status guards
+ok 210 - M02 eligibility resolves only the selected repository and does not reuse editable/status guards
+  ---
+  duration_ms: 0.600665
+  type: 'test'
+  ...
+# Subtest: M03 negative route and same-id other-repository controls never expose a usable Move to section action
+ok 211 - M03 negative route and same-id other-repository controls never expose a usable Move to section action
+  ---
+  duration_ms: 0.296711
+  type: 'test'
+  ...
+# Subtest: M03 mounted loading local hydration withholds the row until ready
+ok 212 - M03 mounted loading local hydration withholds the row until ready
+  ---
+  duration_ms: 181.471465
+  type: 'test'
+  ...
+# Subtest: M03 mounted error local hydration withholds the row until ready
+ok 213 - M03 mounted error local hydration withholds the row until ready
+  ---
+  duration_ms: 178.889214
+  type: 'test'
+  ...
+# Subtest: M04 sections retain stored order; current membership is checked and disabled, with New and conditional Remove
+ok 214 - M04 sections retain stored order; current membership is checked and disabled, with New and conditional Remove
+  ---
+  duration_ms: 379.189936
+  type: 'test'
+  ...
+# Subtest: M05 choosing an existing section reuses the reducer, removes old membership, unpins and retains the palette
+ok 215 - M05 choosing an existing section reuses the reducer, removes old membership, unpins and retains the palette
+  ---
+  duration_ms: 135.756367
+  type: 'test'
+  ...
+# Subtest: M06 Remove from section uses the existing null assignment without repinning or dismissing
+ok 216 - M06 Remove from section uses the existing null assignment without repinning or dismissing
+  ---
+  duration_ms: 102.850059
+  type: 'test'
+  ...
+# Subtest: M07 Escape, empty Backspace and explicit Back return to commands, not out of the palette
+ok 217 - M07 Escape, empty Backspace and explicit Back return to commands, not out of the palette
+  ---
+  duration_ms: 109.406835
+  type: 'test'
+  ...
+# Subtest: M08 complete-name query filters eligible sections and Enter cannot activate the disabled current section
+ok 218 - M08 complete-name query filters eligible sections and Enter cannot activate the disabled current section
+  ---
+  duration_ms: 103.775195
+  type: 'test'
+  ...
+# Subtest: M09 New section closes the palette and opens exactly one existing dialog for the captured workspace
+ok 219 - M09 New section closes the palette and opens exactly one existing dialog for the captured workspace
+  ---
+  duration_ms: 101.992416
+  type: 'test'
+  ...
+# Subtest: M10 explicit Cancel returns to the same section screen without writes; stale selection is not restored
+ok 220 - M10 explicit Cancel returns to the same section screen without writes; stale selection is not restored
+  ---
+  duration_ms: 113.224739
+  type: 'test'
+  ...
+# Subtest: M11 valid Create reuses the captured-workspace creator with trimmed name/emoji, unpins and restores the screen
+ok 221 - M11 valid Create reuses the captured-workspace creator with trimmed name/emoji, unpins and restores the screen
+  ---
+  duration_ms: 87.656326
+  type: 'test'
+  ...
+# Subtest: M12 plain Home Create section and ordinary Cancel remain independent of section navigation
+ok 222 - M12 plain Home Create section and ordinary Cancel remain independent of section navigation
+  ---
+  duration_ms: 87.566906
+  type: 'test'
+  ...
+# Subtest: M12 base adapter action equality and archived/Open in context stay unchanged
+ok 223 - M12 base adapter action equality and archived/Open in context stay unchanged
+  ---
+  duration_ms: 0.558515
+  type: 'test'
+  ...
+# Subtest: M13 no-match query renders the empty state and suppresses all options
+ok 224 - M13 no-match query renders the empty state and suppresses all options
+  ---
+  duration_ms: 87.104367
+  type: 'test'
+  ...
+# (node:255) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: palette offers installed apps in catalog order with the saved app shortcut
+ok 225 - palette offers installed apps in catalog order with the saved app shortcut
+  ---
+  duration_ms: 4.298919
+  type: 'test'
+  ...
+# Subtest: Open in searches by app name and open-in keywords, but never appears in Settings or Projects
+ok 226 - Open in searches by app name and open-in keywords, but never appears in Settings or Projects
+  ---
+  duration_ms: 4.481413
+  type: 'test'
+  ...
+# Subtest: no app launch rows without a live workspace path
+ok 227 - no app launch rows without a live workspace path
+  ---
+  duration_ms: 0.399361
+  type: 'test'
+  ...
+# (node:263) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: palette ignores Enter during native composition
+ok 228 - palette ignores Enter during native composition
+  ---
+  duration_ms: 181.110269
+  type: 'test'
+  ...
+# Subtest: palette ignores ArrowDown during native composition
+ok 229 - palette ignores ArrowDown during native composition
+  ---
+  duration_ms: 51.205611
+  type: 'test'
+  ...
+# Subtest: palette ignores ArrowUp during native composition
+ok 230 - palette ignores ArrowUp during native composition
+  ---
+  duration_ms: 40.565297
+  type: 'test'
+  ...
+# Subtest: palette ignores Home during native composition
+ok 231 - palette ignores Home during native composition
+  ---
+  duration_ms: 27.67186
+  type: 'test'
+  ...
+# Subtest: palette ignores End during native composition
+ok 232 - palette ignores End during native composition
+  ---
+  duration_ms: 41.773038
+  type: 'test'
+  ...
+# Subtest: palette ignores Meta+ArrowUp during native composition
+ok 233 - palette ignores Meta+ArrowUp during native composition
+  ---
+  duration_ms: 35.156939
+  type: 'test'
+  ...
+# Subtest: palette ignores Meta+ArrowDown during native composition
+ok 234 - palette ignores Meta+ArrowDown during native composition
+  ---
+  duration_ms: 28.110321
+  type: 'test'
+  ...
+# Subtest: palette ignores Control+n during native composition
+ok 235 - palette ignores Control+n during native composition
+  ---
+  duration_ms: 33.979944
+  type: 'test'
+  ...
+# Subtest: palette ignores Control+p during native composition
+ok 236 - palette ignores Control+p during native composition
+  ---
+  duration_ms: 38.397501
+  type: 'test'
+  ...
+# Subtest: palette ignores Enter during legacy keyCode 229
+ok 237 - palette ignores Enter during legacy keyCode 229
+  ---
+  duration_ms: 22.486137
+  type: 'test'
+  ...
+# Subtest: palette ignores ArrowDown during legacy keyCode 229
+ok 238 - palette ignores ArrowDown during legacy keyCode 229
+  ---
+  duration_ms: 32.899903
+  type: 'test'
+  ...
+# Subtest: palette ignores ArrowUp during legacy keyCode 229
+ok 239 - palette ignores ArrowUp during legacy keyCode 229
+  ---
+  duration_ms: 48.890053
+  type: 'test'
+  ...
+# Subtest: palette ignores Home during legacy keyCode 229
+ok 240 - palette ignores Home during legacy keyCode 229
+  ---
+  duration_ms: 38.360344
+  type: 'test'
+  ...
+# Subtest: palette ignores End during legacy keyCode 229
+ok 241 - palette ignores End during legacy keyCode 229
+  ---
+  duration_ms: 17.524787
+  type: 'test'
+  ...
+# Subtest: palette ignores Meta+ArrowUp during legacy keyCode 229
+ok 242 - palette ignores Meta+ArrowUp during legacy keyCode 229
+  ---
+  duration_ms: 27.734646
+  type: 'test'
+  ...
+# Subtest: palette ignores Meta+ArrowDown during legacy keyCode 229
+ok 243 - palette ignores Meta+ArrowDown during legacy keyCode 229
+  ---
+  duration_ms: 55.757754
+  type: 'test'
+  ...
+# Subtest: palette ignores Control+n during legacy keyCode 229
+ok 244 - palette ignores Control+n during legacy keyCode 229
+  ---
+  duration_ms: 32.736397
+  type: 'test'
+  ...
+# Subtest: palette ignores Control+p during legacy keyCode 229
+ok 245 - palette ignores Control+p during legacy keyCode 229
+  ---
+  duration_ms: 38.474078
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Enter
+ok 246 - palette preserves ordinary Enter
+  ---
+  duration_ms: 34.512217
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary ArrowDown
+ok 247 - palette preserves ordinary ArrowDown
+  ---
+  duration_ms: 26.825498
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary ArrowUp
+ok 248 - palette preserves ordinary ArrowUp
+  ---
+  duration_ms: 37.656287
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Home
+ok 249 - palette preserves ordinary Home
+  ---
+  duration_ms: 35.522793
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary End
+ok 250 - palette preserves ordinary End
+  ---
+  duration_ms: 27.699068
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Meta+ArrowUp
+ok 251 - palette preserves ordinary Meta+ArrowUp
+  ---
+  duration_ms: 21.707276
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Meta+ArrowDown
+ok 252 - palette preserves ordinary Meta+ArrowDown
+  ---
+  duration_ms: 17.444514
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Control+n
+ok 253 - palette preserves ordinary Control+n
+  ---
+  duration_ms: 30.372897
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Control+p
+ok 254 - palette preserves ordinary Control+p
+  ---
+  duration_ms: 22.82504
+  type: 'test'
+  ...
+# Subtest: palette preserves Escape close during native composition
+ok 255 - palette preserves Escape close during native composition
+  ---
+  duration_ms: 32.714132
+  type: 'test'
+  ...
+# Subtest: palette preserves a custom tab shortcut during native composition
+ok 256 - palette preserves a custom tab shortcut during native composition
+  ---
+  duration_ms: 20.186963
+  type: 'test'
+  ...
+# Subtest: palette leaves unrelated text keys untouched during native composition
+ok 257 - palette leaves unrelated text keys untouched during native composition
+  ---
+  duration_ms: 15.922561
+  type: 'test'
+  ...
+# Subtest: palette preserves Escape close during legacy keyCode 229
+ok 258 - palette preserves Escape close during legacy keyCode 229
+  ---
+  duration_ms: 41.281192
+  type: 'test'
+  ...
+# Subtest: palette preserves a custom tab shortcut during legacy keyCode 229
+ok 259 - palette preserves a custom tab shortcut during legacy keyCode 229
+  ---
+  duration_ms: 21.370847
+  type: 'test'
+  ...
+# Subtest: palette leaves unrelated text keys untouched during legacy keyCode 229
+ok 260 - palette leaves unrelated text keys untouched during legacy keyCode 229
+  ---
+  duration_ms: 20.925055
+  type: 'test'
+  ...
+# (node:271) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Host All: Home reveals first row's heading before the option
+ok 261 - actual Host All: Home reveals first row's heading before the option
+  ---
+  duration_ms: 263.892831
+  type: 'test'
+  ...
+# Subtest: actual Host All: ArrowUp reveals first row's heading before the option
+ok 262 - actual Host All: ArrowUp reveals first row's heading before the option
+  ---
+  duration_ms: 90.712095
+  type: 'test'
+  ...
+# Subtest: actual Host Actions: Home reveals first row's heading before the option
+ok 263 - actual Host Actions: Home reveals first row's heading before the option
+  ---
+  duration_ms: 117.252546
+  type: 'test'
+  ...
+# Subtest: actual Host Actions: ArrowUp reveals first row's heading before the option
+ok 264 - actual Host Actions: ArrowUp reveals first row's heading before the option
+  ---
+  duration_ms: 86.27471
+  type: 'test'
+  ...
+# Subtest: actual Host Settings: Home reveals first row's heading before the option
+ok 265 - actual Host Settings: Home reveals first row's heading before the option
+  ---
+  duration_ms: 62.102745
+  type: 'test'
+  ...
+# Subtest: actual Host Settings: ArrowUp reveals first row's heading before the option
+ok 266 - actual Host Settings: ArrowUp reveals first row's heading before the option
+  ---
+  duration_ms: 62.606749
+  type: 'test'
+  ...
+# Subtest: actual Host Workspaces: Home reveals first row's heading before the option
+ok 267 - actual Host Workspaces: Home reveals first row's heading before the option
+  ---
+  duration_ms: 58.705882
+  type: 'test'
+  ...
+# Subtest: actual Host Workspaces: ArrowUp reveals first row's heading before the option
+ok 268 - actual Host Workspaces: ArrowUp reveals first row's heading before the option
+  ---
+  duration_ms: 66.998818
+  type: 'test'
+  ...
+# Subtest: actual Host: Option+ArrowDown reveals the destination group's heading
+ok 269 - actual Host: Option+ArrowDown reveals the destination group's heading
+  ---
+  duration_ms: 70.310883
+  type: 'test'
+  ...
+# Subtest: actual Host: Option+ArrowUp reveals the destination group's heading
+ok 270 - actual Host: Option+ArrowUp reveals the destination group's heading
+  ---
+  duration_ms: 53.40746
+  type: 'test'
+  ...
+# Subtest: control All: nonfirst row only reveals the option
+ok 271 - control All: nonfirst row only reveals the option
+  ---
+  duration_ms: 62.407985
+  type: 'test'
+  ...
+# Subtest: control Actions: nonfirst row only reveals the option
+ok 272 - control Actions: nonfirst row only reveals the option
+  ---
+  duration_ms: 83.632143
+  type: 'test'
+  ...
+# Subtest: control Settings: nonfirst row only reveals the option
+ok 273 - control Settings: nonfirst row only reveals the option
+  ---
+  duration_ms: 52.461
+  type: 'test'
+  ...
+# Subtest: control Workspaces: nonfirst row only reveals the option
+ok 274 - control Workspaces: nonfirst row only reveals the option
+  ---
+  duration_ms: 55.703195
+  type: 'test'
+  ...
+# Subtest: control: headless Projects group only reveals its selected option
+ok 275 - control: headless Projects group only reveals its selected option
+  ---
+  duration_ms: 60.245881
+  type: 'test'
+  ...
+# Subtest: control: IME leaves selection and scroll calls untouched
+ok 276 - control: IME leaves selection and scroll calls untouched
+  ---
+  duration_ms: 64.125567
+  type: 'test'
+  ...
+# Subtest: control: empty/disabled rows produce no selection or scroll
+ok 277 - control: empty/disabled rows produce no selection or scroll
+  ---
+  duration_ms: 54.225115
+  type: 'test'
+  ...
+# Subtest: control: pointer selection never requests a group-heading scroll
+ok 278 - control: pointer selection never requests a group-heading scroll
+  ---
+  duration_ms: 49.371589
+  type: 'test'
+  ...
+# (node:279) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:279) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: Option+ArrowDown: next sibling group skips an empty disabled-result group
+ok 279 - Option+ArrowDown: next sibling group skips an empty disabled-result group
+  ---
+  duration_ms: 5.370082
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: next sibling group starts at its first enabled row
+ok 280 - Option+ArrowDown: next sibling group starts at its first enabled row
+  ---
+  duration_ms: 1.00494
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: previous group selects its first row, not its last
+ok 281 - Option+ArrowUp: previous group selects its first row, not its last
+  ---
+  duration_ms: 0.922937
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: previous sibling skips empty disabled-result groups
+ok 282 - Option+ArrowUp: previous sibling skips empty disabled-result groups
+  ---
+  duration_ms: 0.893183
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: last group falls back to one row forward
+ok 283 - Option+ArrowDown: last group falls back to one row forward
+  ---
+  duration_ms: 1.055999
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: last row falls back to ordinary forward wrap
+ok 284 - Option+ArrowDown: last row falls back to ordinary forward wrap
+  ---
+  duration_ms: 0.869201
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: first group falls back to one row backward
+ok 285 - Option+ArrowUp: first group falls back to one row backward
+  ---
+  duration_ms: 0.87729
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: first row falls back to ordinary backward wrap
+ok 286 - Option+ArrowUp: first row falls back to ordinary backward wrap
+  ---
+  duration_ms: 0.806282
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: no selected row falls back to the first item
+ok 287 - Option+ArrowDown: no selected row falls back to the first item
+  ---
+  duration_ms: 1.072243
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: no selected row falls back to the last item
+ok 288 - Option+ArrowUp: no selected row falls back to the last item
+  ---
+  duration_ms: 1.094251
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: a single group moves one row forward
+ok 289 - Option+ArrowDown: a single group moves one row forward
+  ---
+  duration_ms: 0.818546
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: a single group moves one row backward
+ok 290 - Option+ArrowUp: a single group moves one row backward
+  ---
+  duration_ms: 0.749642
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: empty list consumes navigation without selecting
+ok 291 - Option+ArrowDown: empty list consumes navigation without selecting
+  ---
+  duration_ms: 0.718454
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: leading empty groups do not shift next-group offsets
+ok 292 - Option+ArrowDown: leading empty groups do not shift next-group offsets
+  ---
+  duration_ms: 0.778651
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: leading empty groups do not shift previous-group offsets
+ok 293 - Option+ArrowUp: leading empty groups do not shift previous-group offsets
+  ---
+  duration_ms: 0.751994
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: Workspaces active to Archived group
+ok 294 - Option+ArrowDown: Workspaces active to Archived group
+  ---
+  duration_ms: 0.690553
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: Workspaces Archived to active group
+ok 295 - Option+ArrowUp: Workspaces Archived to active group
+  ---
+  duration_ms: 0.722287
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: Projects single group keeps ordinary wrap
+ok 296 - Option+ArrowDown: Projects single group keeps ordinary wrap
+  ---
+  duration_ms: 0.658433
+  type: 'test'
+  ...
+# Subtest: control: {} ArrowDown keeps existing row/end navigation
+ok 297 - control: {} ArrowDown keeps existing row/end navigation
+  ---
+  duration_ms: 0.812161
+  type: 'test'
+  ...
+# Subtest: control: {} ArrowUp keeps existing row/end navigation
+ok 298 - control: {} ArrowUp keeps existing row/end navigation
+  ---
+  duration_ms: 0.759196
+  type: 'test'
+  ...
+# Subtest: control: {"metaKey":true} ArrowDown keeps existing row/end navigation
+ok 299 - control: {"metaKey":true} ArrowDown keeps existing row/end navigation
+  ---
+  duration_ms: 0.696383
+  type: 'test'
+  ...
+# Subtest: control: {"metaKey":true} ArrowUp keeps existing row/end navigation
+ok 300 - control: {"metaKey":true} ArrowUp keeps existing row/end navigation
+  ---
+  duration_ms: 0.708598
+  type: 'test'
+  ...
+# Subtest: control: {} Home keeps existing row/end navigation
+ok 301 - control: {} Home keeps existing row/end navigation
+  ---
+  duration_ms: 0.653596
+  type: 'test'
+  ...
+# Subtest: control: {} End keeps existing row/end navigation
+ok 302 - control: {} End keeps existing row/end navigation
+  ---
+  duration_ms: 1.402959
+  type: 'test'
+  ...
+# Subtest: control: {"ctrlKey":true} n keeps existing row/end navigation
+ok 303 - control: {"ctrlKey":true} n keeps existing row/end navigation
+  ---
+  duration_ms: 0.767406
+  type: 'test'
+  ...
+# Subtest: control: {"ctrlKey":true} j keeps existing row/end navigation
+ok 304 - control: {"ctrlKey":true} j keeps existing row/end navigation
+  ---
+  duration_ms: 0.724904
+  type: 'test'
+  ...
+# Subtest: control: {"ctrlKey":true} p keeps existing row/end navigation
+ok 305 - control: {"ctrlKey":true} p keeps existing row/end navigation
+  ---
+  duration_ms: 0.69227
+  type: 'test'
+  ...
+# Subtest: control: {"ctrlKey":true} k keeps existing row/end navigation
+ok 306 - control: {"ctrlKey":true} k keeps existing row/end navigation
+  ---
+  duration_ms: 0.650764
+  type: 'test'
+  ...
+# Subtest: control: composing Option+ArrowDown {"isComposing":true} remains unconsumed
+ok 307 - control: composing Option+ArrowDown {"isComposing":true} remains unconsumed
+  ---
+  duration_ms: 0.791355
+  type: 'test'
+  ...
+# Subtest: control: composing Option+ArrowUp {"isComposing":true} remains unconsumed
+ok 308 - control: composing Option+ArrowUp {"isComposing":true} remains unconsumed
+  ---
+  duration_ms: 0.857018
+  type: 'test'
+  ...
+# Subtest: control: composing Option+ArrowDown {"keyCode":229} remains unconsumed
+ok 309 - control: composing Option+ArrowDown {"keyCode":229} remains unconsumed
+  ---
+  duration_ms: 1.676699
+  type: 'test'
+  ...
+# Subtest: control: composing Option+ArrowUp {"keyCode":229} remains unconsumed
+ok 310 - control: composing Option+ArrowUp {"keyCode":229} remains unconsumed
+  ---
+  duration_ms: 0.697137
+  type: 'test'
+  ...
+# Subtest: control: Enter selects the active item
+ok 311 - control: Enter selects the active item
+  ---
+  duration_ms: 0.781307
+  type: 'test'
+  ...
+# Subtest: control: Escape closes instead of navigating
+ok 312 - control: Escape closes instead of navigating
+  ---
+  duration_ms: 0.776941
+  type: 'test'
+  ...
+# Subtest: control: a custom Option shortcut still switches tabs
+ok 313 - control: a custom Option shortcut still switches tabs
+  ---
+  duration_ms: 1.027984
+  type: 'test'
+  ...
+# Subtest: control: unrelated Option input stays in the search field
+ok 314 - control: unrelated Option input stays in the search field
+  ---
+  duration_ms: 0.781808
+  type: 'test'
+  ...
+# (node:323) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Subtest: actual App and WorkspaceView publish only the visible diff or Markdown file
+ok 315 - actual App and WorkspaceView publish only the visible diff or Markdown file
+  ---
+  duration_ms: 1490.800611
+  type: 'test'
+  ...
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Subtest: actual producer remount and owner transitions cannot leak the previous file
+ok 316 - actual producer remount and owner transitions cannot leak the previous file
+  ---
+  duration_ms: 760.322457
+  type: 'test'
+  ...
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+# Check the render method of `WorkspaceView`.
+#     at WorkspaceView (evalmachine.<anonymous>:714:26)
+#     at WorkspaceView (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/artifacts/group-heading-scroll/worktree/src/palette/paletteOpenInLifecycle.test.ts:82:25)
+#     at main
+#     at div
+#     at App (evalmachine.<anonymous>:86:69)
+# Subtest: actual App keeps the newest registration when an obsolete owner cleans up
+ok 317 - actual App keeps the newest registration when an obsolete owner cleans up
+  ---
+  duration_ms: 757.433605
+  type: 'test'
+  ...
+# (node:331) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual palette host opens the active file src/selected.ts inside its workspace
+ok 318 - actual palette host opens the active file src/selected.ts inside its workspace
+  ---
+  duration_ms: 120.890902
+  type: 'test'
+  ...
+# Subtest: actual palette host opens the active file docs/selected.md inside its workspace
+ok 319 - actual palette host opens the active file docs/selected.md inside its workspace
+  ---
+  duration_ms: 31.999677
+  type: 'test'
+  ...
+# Subtest: actual palette host preserves exact folder payload without an active file
+ok 320 - actual palette host preserves exact folder payload without an active file
+  ---
+  duration_ms: 60.358551
+  type: 'test'
+  ...
+# Subtest: another workspace, repository or root cannot supply the file target
+ok 321 - another workspace, repository or root cannot supply the file target
+  ---
+  duration_ms: 61.01437
+  type: 'test'
+  ...
+# Subtest: closed or hidden file publication restores the exact workspace launch
+ok 322 - closed or hidden file publication restores the exact workspace launch
+  ---
+  duration_ms: 25.040295
+  type: 'test'
+  ...
+# Subtest: folder-only apps keep the workspace directory rather than the file parent
+ok 323 - folder-only apps keep the workspace directory rather than the file parent
+  ---
+  duration_ms: 84.521177
+  type: 'test'
+  ...
+# Subtest: Finder gets existing file context; other file-capable editors remain context-free
+ok 324 - Finder gets existing file context; other file-capable editors remain context-free
+  ---
+  duration_ms: 29.728326
+  type: 'test'
+  ...
+# Subtest: invalid relative publication cannot broaden the workspace path
+ok 325 - invalid relative publication cannot broaden the workspace path
+  ---
+  duration_ms: 114.317093
+  type: 'test'
+  ...
+# Subtest: root changes do not reuse an old publication even with the same workspace id
+ok 326 - root changes do not reuse an old publication even with the same workspace id
+  ---
+  duration_ms: 13.418516
+  type: 'test'
+  ...
+# Subtest: a launch error reports once without retrying the workspace folder
+ok 327 - a launch error reports once without retrying the workspace folder
+  ---
+  duration_ms: 25.672491
+  type: 'test'
+  ...
+# Subtest: same workspace ids in sibling repositories resolve only the selected repository
+ok 328 - same workspace ids in sibling repositories resolve only the selected repository
+  ---
+  duration_ms: 11.914208
+  type: 'test'
+  ...
+# Subtest: archived, pathless and root selections still have no launch row
+ok 329 - archived, pathless and root selections still have no launch row
+  ---
+  duration_ms: 44.861911
+  type: 'test'
+  ...
+# (node:339) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Host All: pointer selection changes highlight without requesting scroll
+ok 330 - actual Host All: pointer selection changes highlight without requesting scroll
+  ---
+  duration_ms: 229.430942
+  type: 'test'
+  ...
+# Subtest: control All: pointer selection does not suppress the following keyboard scroll
+ok 331 - control All: pointer selection does not suppress the following keyboard scroll
+  ---
+  duration_ms: 93.75403
+  type: 'test'
+  ...
+# Subtest: actual Host Actions: pointer selection changes highlight without requesting scroll
+ok 332 - actual Host Actions: pointer selection changes highlight without requesting scroll
+  ---
+  duration_ms: 74.958406
+  type: 'test'
+  ...
+# Subtest: control Actions: pointer selection does not suppress the following keyboard scroll
+ok 333 - control Actions: pointer selection does not suppress the following keyboard scroll
+  ---
+  duration_ms: 63.5168
+  type: 'test'
+  ...
+# Subtest: actual Host Projects: pointer selection changes highlight without requesting scroll
+ok 334 - actual Host Projects: pointer selection changes highlight without requesting scroll
+  ---
+  duration_ms: 62.435738
+  type: 'test'
+  ...
+# Subtest: control Projects: pointer selection does not suppress the following keyboard scroll
+ok 335 - control Projects: pointer selection does not suppress the following keyboard scroll
+  ---
+  duration_ms: 72.881513
+  type: 'test'
+  ...
+# Subtest: actual Host Settings: pointer selection changes highlight without requesting scroll
+ok 336 - actual Host Settings: pointer selection changes highlight without requesting scroll
+  ---
+  duration_ms: 87.307997
+  type: 'test'
+  ...
+# Subtest: control Settings: pointer selection does not suppress the following keyboard scroll
+ok 337 - control Settings: pointer selection does not suppress the following keyboard scroll
+  ---
+  duration_ms: 71.739272
+  type: 'test'
+  ...
+# Subtest: actual Host Workspaces: pointer selection changes highlight without requesting scroll
+ok 338 - actual Host Workspaces: pointer selection changes highlight without requesting scroll
+  ---
+  duration_ms: 63.494716
+  type: 'test'
+  ...
+# Subtest: control Workspaces: pointer selection does not suppress the following keyboard scroll
+ok 339 - control Workspaces: pointer selection does not suppress the following keyboard scroll
+  ---
+  duration_ms: 51.981509
+  type: 'test'
+  ...
+# Subtest: control: hovering the already selected result cannot suppress the next keyboard scroll
+ok 340 - control: hovering the already selected result cannot suppress the next keyboard scroll
+  ---
+  duration_ms: 66.165707
+  type: 'test'
+  ...
+# Subtest: control: repeated pointer updates retain highlight and ordinary Enter activation
+ok 341 - control: repeated pointer updates retain highlight and ordinary Enter activation
+  ---
+  duration_ms: 55.442194
+  type: 'test'
+  ...
+# Subtest: control: composition preserves the pointer-selected result without scrolling
+ok 342 - control: composition preserves the pointer-selected result without scrolling
+  ---
+  duration_ms: 58.332564
+  type: 'test'
+  ...
+# Subtest: control: disabled empty-results row has no pointer selection or scroll callback
+ok 343 - control: disabled empty-results row has no pointer selection or scroll callback
+  ---
+  duration_ms: 57.438153
+  type: 'test'
+  ...
+# Subtest: control: section current-row pointer remains inert
+ok 344 - control: section current-row pointer remains inert
+  ---
+  duration_ms: 69.244805
+  type: 'test'
+  ...
+# (node:347) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: palette settings index omits bigTerminal page when mode is off
+ok 345 - palette settings index omits bigTerminal page when mode is off
+  ---
+  duration_ms: 1.402975
+  type: 'test'
+  ...
+# Subtest: palette settings index includes bigTerminal page when mode is on
+ok 346 - palette settings index includes bigTerminal page when mode is on
+  ---
+  duration_ms: 0.423418
+  type: 'test'
+  ...
+# Subtest: palette settings index never includes cloud-only setup-cloud page
+ok 347 - palette settings index never includes cloud-only setup-cloud page
+  ---
+  duration_ms: 0.508693
+  type: 'test'
+  ...
+# (node:355) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Projects returns the last-viewed workspace in that project, not its first or newest row
+ok 348 - Projects returns the last-viewed workspace in that project, not its first or newest row
+  ---
+  duration_ms: 0.664128
+  type: 'test'
+  ...
+# Subtest: Projects without a surviving recent visit opens the most recently updated workspace
+ok 349 - Projects without a surviving recent visit opens the most recently updated workspace
+  ---
+  duration_ms: 1.109106
+  type: 'test'
+  ...
+# Subtest: Projects preserves source order on a recency tie and has no target for an empty project
+ok 350 - Projects preserves source order on a recency tie and has no target for an empty project
+  ---
+  duration_ms: 0.135134
+  type: 'test'
+  ...
+# (node:363) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: recordViewedWorkspace puts the id first, drops its old place and keeps 5
+ok 351 - recordViewedWorkspace puts the id first, drops its old place and keeps 5
+  ---
+  duration_ms: 1.675883
+  type: 'test'
+  ...
+# Subtest: the list survives a save and a fresh load, beside other stored fields
+ok 352 - the list survives a save and a fresh load, beside other stored fields
+  ---
+  duration_ms: 0.349283
+  type: 'test'
+  ...
+# Subtest: a missing or malformed store reads as empty, and the load caps at 5
+ok 353 - a missing or malformed store reads as empty, and the load caps at 5
+  ---
+  duration_ms: 0.248088
+  type: 'test'
+  ...
+# (node:371) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: scores: exact > prefix > word-start initials > scattered; misses are 0
+ok 354 - scores: exact > prefix > word-start initials > scattered; misses are 0
+  ---
+  duration_ms: 1.630326
+  type: 'test'
+  ...
+# Subtest: token matching needs every token in some field
+ok 355 - token matching needs every token in some field
+  ---
+  duration_ms: 0.291679
+  type: 'test'
+  ...
+# Subtest: tabs cycle with wrap and skip Projects when hidden
+ok 356 - tabs cycle with wrap and skip Projects when hidden
+  ---
+  duration_ms: 0.195488
+  type: 'test'
+  ...
+# Subtest: All tab with empty query: recents (archived included, unknown ids dropped) then action groups in fixed order
+ok 357 - All tab with empty query: recents (archived included, unknown ids dropped) then action groups in fixed order
+  ---
+  duration_ms: 1.49291
+  type: 'test'
+  ...
+# Subtest: workspace actions are hidden without an active workspace
+ok 358 - workspace actions are hidden without an active workspace
+  ---
+  duration_ms: 0.277533
+  type: 'test'
+  ...
+# Subtest: All tab with a query: command groups ranked by their words, then Projects, then Workspaces (Conductor's `J1`)
+ok 359 - All tab with a query: command groups ranked by their words, then Projects, then Workspaces (Conductor's `J1`)
+  ---
+  duration_ms: 0.990104
+  type: 'test'
+  ...
+# Subtest: a query nothing matches keeps the All tab's Workspaces group with "No results found"
+ok 360 - a query nothing matches keeps the All tab's Workspaces group with "No results found"
+  ---
+  duration_ms: 0.284278
+  type: 'test'
+  ...
+# Subtest: group order follows the query's words: settings words put Settings first
+ok 361 - group order follows the query's words: settings words put Settings first
+  ---
+  duration_ms: 0.175757
+  type: 'test'
+  ...
+# Subtest: Workspaces tab lists non-archived workspaces newest first and caps results
+ok 362 - Workspaces tab lists non-archived workspaces newest first and caps results
+  ---
+  duration_ms: 0.428455
+  type: 'test'
+  ...
+# Subtest: Projects, Actions and Settings tabs
+ok 363 - Projects, Actions and Settings tabs
+  ---
+  duration_ms: 0.602931
+  type: 'test'
+  ...
+# Subtest: Workspaces tab archive filter stays independent from archived matches in All search
+ok 364 - Workspaces tab archive filter stays independent from archived matches in All search
+  ---
+  duration_ms: 0.275833
+  type: 'test'
+  ...
+# Subtest: All search appends matching archived workspaces after active matches
+ok 365 - All search appends matching archived workspaces after active matches
+  ---
+  duration_ms: 0.281929
+  type: 'test'
+  ...
+# Subtest: All search caps active and archived workspace matches separately
+ok 366 - All search caps active and archived workspace matches separately
+  ---
+  duration_ms: 2.058137
+  type: 'test'
+  ...
+# Subtest: All search orders each state by workspace updates instead of recent visits
+ok 367 - All search orders each state by workspace updates instead of recent visits
+  ---
+  duration_ms: 0.275376
+  type: 'test'
+  ...
+# Subtest: All search applies each state's cap after sorting by workspace updates
+ok 368 - All search applies each state's cap after sorting by workspace updates
+  ---
+  duration_ms: 0.455525
+  type: 'test'
+  ...
+# (node:379) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: command queries can span consecutive keyword aliases
+ok 369 - command queries can span consecutive keyword aliases
+  ---
+  duration_ms: 1.099967
+  type: 'test'
+  ...
+# Subtest: command queries can span the value and its keyword aliases
+ok 370 - command queries can span the value and its keyword aliases
+  ---
+  duration_ms: 0.160035
+  type: 'test'
+  ...
+# Subtest: combined aliases still require query characters in candidate order
+ok 371 - combined aliases still require query characters in candidate order
+  ---
+  duration_ms: 0.146671
+  type: 'test'
+  ...
+# Subtest: commands without aliases retain exact, prefix and missing-query behavior
+ok 372 - commands without aliases retain exact, prefix and missing-query behavior
+  ---
+  duration_ms: 0.162248
+  type: 'test'
+  ...
+# (node:387) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: scattered letters across command aliases stay below the palette threshold
+ok 373 - scattered letters across command aliases stay below the palette threshold
+  ---
+  duration_ms: 1.018559
+  type: 'test'
+  ...
+# Subtest: scattered letters across a setting and its aliases stay below the palette threshold
+ok 374 - scattered letters across a setting and its aliases stay below the palette threshold
+  ---
+  duration_ms: 0.186353
+  type: 'test'
+  ...
+# Subtest: a workspace-name query does not put scattered command and settings matches before the workspace
+ok 375 - a workspace-name query does not put scattered command and settings matches before the workspace
+  ---
+  duration_ms: 1.778046
+  type: 'test'
+  ...
+# Subtest: contiguous aliases and word starts remain searchable
+ok 376 - contiguous aliases and word starts remain searchable
+  ---
+  duration_ms: 0.49412
+  type: 'test'
+  ...
+# (node:395) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted section keyboard scroll: {} ArrowDown Section 00 -> Section 01
+ok 377 - mounted section keyboard scroll: {} ArrowDown Section 00 -> Section 01
+  ---
+  duration_ms: 252.644699
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {} ArrowUp Section 29 -> Section 28
+ok 378 - mounted section keyboard scroll: {} ArrowUp Section 29 -> Section 28
+  ---
+  duration_ms: 96.321876
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {"ctrlKey":true} j Section 00 -> Section 01
+ok 379 - mounted section keyboard scroll: {"ctrlKey":true} j Section 00 -> Section 01
+  ---
+  duration_ms: 86.182015
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {"ctrlKey":true} k Section 29 -> Section 28
+ok 380 - mounted section keyboard scroll: {"ctrlKey":true} k Section 29 -> Section 28
+  ---
+  duration_ms: 64.961253
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {} Home Section 29 -> Section 00
+ok 381 - mounted section keyboard scroll: {} Home Section 29 -> Section 00
+  ---
+  duration_ms: 58.128637
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {} End Section 00 -> Remove from section
+ok 382 - mounted section keyboard scroll: {} End Section 00 -> Remove from section
+  ---
+  duration_ms: 53.298112
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {"metaKey":true} ArrowDown Section 00 -> Remove from section
+ok 383 - mounted section keyboard scroll: {"metaKey":true} ArrowDown Section 00 -> Remove from section
+  ---
+  duration_ms: 54.534606
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {"metaKey":true} ArrowUp Section 29 -> Section 00
+ok 384 - mounted section keyboard scroll: {"metaKey":true} ArrowUp Section 29 -> Section 00
+  ---
+  duration_ms: 42.44836
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {} ArrowUp Section 00 -> Remove from section
+ok 385 - mounted section keyboard scroll: {} ArrowUp Section 00 -> Remove from section
+  ---
+  duration_ms: 45.15892
+  type: 'test'
+  ...
+# Subtest: mounted section keyboard scroll: {} ArrowDown Remove from section -> Section 00
+ok 386 - mounted section keyboard scroll: {} ArrowDown Remove from section -> Section 00
+  ---
+  duration_ms: 58.181207
+  type: 'test'
+  ...
+# Subtest: filtered result change at the same index scrolls the newly selected section
+ok 387 - filtered result change at the same index scrolls the newly selected section
+  ---
+  duration_ms: 44.397948
+  type: 'test'
+  ...
+# Subtest: control: ordinary command navigation still scrolls the regular list
+ok 388 - control: ordinary command navigation still scrolls the regular list
+  ---
+  duration_ms: 38.456463
+  type: 'test'
+  ...
+# Subtest: control: composition does not change selection or request scroll
+ok 389 - control: composition does not change selection or request scroll
+  ---
+  duration_ms: 48.523622
+  type: 'test'
+  ...
+# Subtest: control: enabled pointer selection changes the highlight without requesting scroll
+ok 390 - control: enabled pointer selection changes the highlight without requesting scroll
+  ---
+  duration_ms: 36.668688
+  type: 'test'
+  ...
+# Subtest: control: current section pointer callbacks cannot select, scroll or dispatch
+ok 391 - control: current section pointer callbacks cannot select, scroll or dispatch
+  ---
+  duration_ms: 35.85018
+  type: 'test'
+  ...
+# Subtest: control: empty filtered list does not scroll or assign
+ok 392 - control: empty filtered list does not scroll or assign
+  ---
+  duration_ms: 43.22352
+  type: 'test'
+  ...
+# Subtest: control: disabled-only filtered rows do not request scroll or dispatch
+ok 393 - control: disabled-only filtered rows do not request scroll or dispatch
+  ---
+  duration_ms: 39.363332
+  type: 'test'
+  ...
+# Subtest: control: selected enabled section still reaches the real Host assignment consumer
+ok 394 - control: selected enabled section still reaches the real Host assignment consumer
+  ---
+  duration_ms: 35.980972
+  type: 'test'
+  ...
+# (node:403) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted section entry chooses first enabled result, not the previous command index
+ok 395 - mounted section entry chooses first enabled result, not the previous command index
+  ---
+  duration_ms: 303.371599
+  type: 'test'
+  ...
+# Subtest: mounted enabled navigation: {} ArrowDown from Alpha selects Zeta
+ok 396 - mounted enabled navigation: {} ArrowDown from Alpha selects Zeta
+  ---
+  duration_ms: 109.716433
+  type: 'test'
+  ...
+# Subtest: mounted enabled navigation: {} ArrowUp from Zeta selects Alpha
+ok 397 - mounted enabled navigation: {} ArrowUp from Zeta selects Alpha
+  ---
+  duration_ms: 114.594434
+  type: 'test'
+  ...
+# Subtest: mounted enabled navigation: {"ctrlKey":true} j from Alpha selects Zeta
+ok 398 - mounted enabled navigation: {"ctrlKey":true} j from Alpha selects Zeta
+  ---
+  duration_ms: 84.439401
+  type: 'test'
+  ...
+# Subtest: mounted enabled navigation: {"ctrlKey":true} k from Zeta selects Alpha
+ok 399 - mounted enabled navigation: {"ctrlKey":true} k from Zeta selects Alpha
+  ---
+  duration_ms: 75.809563
+  type: 'test'
+  ...
+# Subtest: mounted enabled navigation: {} Home from Remove from section selects Alpha
+ok 400 - mounted enabled navigation: {} Home from Remove from section selects Alpha
+  ---
+  duration_ms: 68.957031
+  type: 'test'
+  ...
+# Subtest: mounted enabled navigation: {"metaKey":true} ArrowUp from Remove from section selects Alpha
+ok 401 - mounted enabled navigation: {"metaKey":true} ArrowUp from Remove from section selects Alpha
+  ---
+  duration_ms: 45.981626
+  type: 'test'
+  ...
+# Subtest: mounted enabled navigation: {} End from Alpha selects Remove from section
+ok 402 - mounted enabled navigation: {} End from Alpha selects Remove from section
+  ---
+  duration_ms: 58.833161
+  type: 'test'
+  ...
+# Subtest: mounted enabled navigation: {"metaKey":true} ArrowDown from Alpha selects Remove from section
+ok 403 - mounted enabled navigation: {"metaKey":true} ArrowDown from Alpha selects Remove from section
+  ---
+  duration_ms: 67.157609
+  type: 'test'
+  ...
+# Subtest: mounted enabled navigation: {} ArrowUp from Alpha selects Remove from section
+ok 404 - mounted enabled navigation: {} ArrowUp from Alpha selects Remove from section
+  ---
+  duration_ms: 58.011709
+  type: 'test'
+  ...
+# Subtest: mounted enabled navigation: {} ArrowDown from Remove from section selects Alpha
+ok 405 - mounted enabled navigation: {} ArrowDown from Remove from section selects Alpha
+  ---
+  duration_ms: 54.404136
+  type: 'test'
+  ...
+# Subtest: Home skips a disabled first section and Enter reaches the real Host assignment callback
+ok 406 - Home skips a disabled first section and Enter reaches the real Host assignment callback
+  ---
+  duration_ms: 54.788378
+  type: 'test'
+  ...
+# Subtest: disabled-only filtered results have no selection and cannot dispatch
+ok 407 - disabled-only filtered results have no selection and cannot dispatch
+  ---
+  duration_ms: 55.565318
+  type: 'test'
+  ...
+# Subtest: query reset chooses first enabled result after skipping the disabled match
+ok 408 - query reset chooses first enabled result after skipping the disabled match
+  ---
+  duration_ms: 51.840584
+  type: 'test'
+  ...
+# Subtest: current-only section list starts with New and cycles only enabled footer commands
+ok 409 - current-only section list starts with New and cycles only enabled footer commands
+  ---
+  duration_ms: 51.505406
+  type: 'test'
+  ...
+# Subtest: control: enabled query result dispatches once and leaves palette open
+ok 410 - control: enabled query result dispatches once and leaves palette open
+  ---
+  duration_ms: 63.394833
+  type: 'test'
+  ...
+# Subtest: control: disabled pointer handlers and composition remain inert
+ok 411 - control: disabled pointer handlers and composition remain inert
+  ---
+  duration_ms: 39.892794
+  type: 'test'
+  ...
+# Subtest: control: no matching sections have no selection or assignment
+ok 412 - control: no matching sections have no selection or assignment
+  ---
+  duration_ms: 38.999337
+  type: 'test'
+  ...
+# Subtest: control: no sections still selects and activates New
+ok 413 - control: no sections still selects and activates New
+  ---
+  duration_ms: 49.64576
+  type: 'test'
+  ...
+# Subtest: control: unassigned sections stay enabled and have no Remove command
+ok 414 - control: unassigned sections stay enabled and have no Remove command
+  ---
+  duration_ms: 50.601632
+  type: 'test'
+  ...
+# Subtest: control: New and Remove footer consumers are unchanged
+ok 415 - control: New and Remove footer consumers are unchanged
+  ---
+  duration_ms: 60.105264
+  type: 'test'
+  ...
+# (node:411) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the actual palette callback retains the last workspace repository after Home and reload
+ok 416 - the actual palette callback retains the last workspace repository after Home and reload
+  ---
+  duration_ms: 3.264772
+  type: 'test'
+  ...
+# Subtest: the actual palette callback keeps the requested repository setting row
+ok 417 - the actual palette callback keeps the requested repository setting row
+  ---
+  duration_ms: 0.547238
+  type: 'test'
+  ...
+# Subtest: a resolved selected workspace takes precedence over the saved route
+ok 418 - a resolved selected workspace takes precedence over the saved route
+  ---
+  duration_ms: 0.43571
+  type: 'test'
+  ...
+# Subtest: no route, an invalid route or a removed repository falls back to the first repository
+ok 419 - no route, an invalid route or a removed repository falls back to the first repository
+  ---
+  duration_ms: 0.571687
+  type: 'test'
+  ...
+# Subtest: the saved route selects its repository even if that workspace is no longer in the sidebar
+ok 420 - the saved route selects its repository even if that workspace is no longer in the sidebar
+  ---
+  duration_ms: 0.228638
+  type: 'test'
+  ...
+# Subtest: an empty repository list has no Settings target
+ok 421 - an empty repository list has no Settings target
+  ---
+  duration_ms: 0.32792
+  type: 'test'
+  ...
+# Subtest: an unresolved or wrong-repository selection does not create a saved workspace route
+ok 422 - an unresolved or wrong-repository selection does not create a saved workspace route
+  ---
+  duration_ms: 0.289476
+  type: 'test'
+  ...
+# Subtest: resolved unstarted and failed workspaces still establish their repository route
+ok 423 - resolved unstarted and failed workspaces still establish their repository route
+  ---
+  duration_ms: 0.185811
+  type: 'test'
+  ...
+# Subtest: only a full matching archived workspace can establish the selected route
+ok 424 - only a full matching archived workspace can establish the selected route
+  ---
+  duration_ms: 0.44152
+  type: 'test'
+  ...
+# Subtest: stale unresolved selection leaves the previous persisted route intact
+ok 425 - stale unresolved selection leaves the previous persisted route intact
+  ---
+  duration_ms: 0.456778
+  type: 'test'
+  ...
+# Subtest: the authoritative recent writer preserves the route and ordinary tab fields through reload
+ok 426 - the authoritative recent writer preserves the route and ordinary tab fields through reload
+  ---
+  duration_ms: 0.30037
+  type: 'test'
+  ...
+# Subtest: saving a route preserves recents and sibling fields from the latest ordinary write
+ok 427 - saving a route preserves recents and sibling fields from the latest ordinary write
+  ---
+  duration_ms: 0.350925
+  type: 'test'
+  ...
+# Subtest: persisted route parsing rejects malformed fields and non-workspace paths
+ok 428 - persisted route parsing rejects malformed fields and non-workspace paths
+  ---
+  duration_ms: 0.260469
+  type: 'test'
+  ...
+# Subtest: workspace routes accept a trailing slash and search without decoding opaque IDs
+ok 429 - workspace routes accept a trailing slash and search without decoding opaque IDs
+  ---
+  duration_ms: 0.13019
+  type: 'test'
+  ...
+# Subtest: storage denial does not throw or prevent in-memory repository selection
+ok 430 - storage denial does not throw or prevent in-memory repository selection
+  ---
+  duration_ms: 0.305524
+  type: 'test'
+  ...
+# Subtest: user pages, provider pages and unknown rows keep their existing callback behavior
+ok 431 - user pages, provider pages and unknown rows keep their existing callback behavior
+  ---
+  duration_ms: 0.61969
+  type: 'test'
+  ...
+# (node:419) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: settings search reaches every real Settings match, including the 62 shared reference rows
+ok 432 - settings search reaches every real Settings match, including the 62 shared reference rows
+  ---
+  duration_ms: 13.240413
+  type: 'test'
+  ...
+# Subtest: all search reaches every real Settings match, including the 62 shared reference rows
+ok 433 - all search reaches every real Settings match, including the 62 shared reference rows
+  ---
+  duration_ms: 8.952193
+  type: 'test'
+  ...
+# Subtest: empty Settings search lists pages only and a nonmatching query lists nothing
+ok 434 - empty Settings search lists pages only and a nonmatching query lists nothing
+  ---
+  duration_ms: 0.668708
+  type: 'test'
+  ...
+# (node:427) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: repo; filter=all; Focus=expanded: numbers target their labelled row
+ok 435 - repo; filter=all; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 3.712593
+  type: 'test'
+  ...
+# Subtest: repo; filter=all; Focus=collapsed: numbers target their labelled row
+ok 436 - repo; filter=all; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.322113
+  type: 'test'
+  ...
+# Subtest: repo; filter=alpha; Focus=expanded: numbers target their labelled row
+ok 437 - repo; filter=alpha; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 3.387254
+  type: 'test'
+  ...
+# Subtest: repo; filter=alpha; Focus=collapsed: numbers target their labelled row
+ok 438 - repo; filter=alpha; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.148546
+  type: 'test'
+  ...
+# Subtest: repo; filter=beta; Focus=expanded: numbers target their labelled row
+ok 439 - repo; filter=beta; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.189031
+  type: 'test'
+  ...
+# Subtest: repo; filter=beta; Focus=collapsed: numbers target their labelled row
+ok 440 - repo; filter=beta; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.106959
+  type: 'test'
+  ...
+# Subtest: status; filter=all; Focus=expanded: numbers target their labelled row
+ok 441 - status; filter=all; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.405256
+  type: 'test'
+  ...
+# Subtest: status; filter=all; Focus=collapsed: numbers target their labelled row
+ok 442 - status; filter=all; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.220002
+  type: 'test'
+  ...
+# Subtest: status; filter=alpha; Focus=expanded: numbers target their labelled row
+ok 443 - status; filter=alpha; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.335189
+  type: 'test'
+  ...
+# Subtest: status; filter=alpha; Focus=collapsed: numbers target their labelled row
+ok 444 - status; filter=alpha; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.314363
+  type: 'test'
+  ...
+# Subtest: status; filter=beta; Focus=expanded: numbers target their labelled row
+ok 445 - status; filter=beta; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.172677
+  type: 'test'
+  ...
+# Subtest: status; filter=beta; Focus=collapsed: numbers target their labelled row
+ok 446 - status; filter=beta; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.072093
+  type: 'test'
+  ...
+# (node:435) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: arrows, Enter and Escape drive the list
+ok 447 - arrows, Enter and Escape drive the list
+  ---
+  duration_ms: 0.821487
+  type: 'test'
+  ...
+# Subtest: Ctrl+J moves forward through results and wraps like Ctrl+N
+ok 448 - Ctrl+J moves forward through results and wraps like Ctrl+N
+  ---
+  duration_ms: 0.685726
+  type: 'test'
+  ...
+# Subtest: Ctrl+K moves backward through results and wraps like Ctrl+P
+ok 449 - Ctrl+K moves backward through results and wraps like Ctrl+P
+  ---
+  duration_ms: 0.386364
+  type: 'test'
+  ...
+# Subtest: Home selects the first result instead of moving only the text cursor
+ok 450 - Home selects the first result instead of moving only the text cursor
+  ---
+  duration_ms: 0.11346
+  type: 'test'
+  ...
+# Subtest: End selects the last result instead of moving only the text cursor
+ok 451 - End selects the last result instead of moving only the text cursor
+  ---
+  duration_ms: 0.101349
+  type: 'test'
+  ...
+# Subtest: modified Home and End keep their text-field behavior
+ok 452 - modified Home and End keep their text-field behavior
+  ---
+  duration_ms: 0.250633
+  type: 'test'
+  ...
+# Subtest: Tab and Shift+Tab switch tabs; Cmd+K closes; letters type
+ok 453 - Tab and Shift+Tab switch tabs; Cmd+K closes; letters type
+  ---
+  duration_ms: 0.183648
+  type: 'test'
+  ...
+# Subtest: rebinding the palette toggle changes what closes it
+ok 454 - rebinding the palette toggle changes what closes it
+  ---
+  duration_ms: 0.118889
+  type: 'test'
+  ...
+# Subtest: active row wraps and clamps
+ok 455 - active row wraps and clamps
+  ---
+  duration_ms: 0.274423
+  type: 'test'
+  ...
+# (node:443) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: All to Projects keeps the second selected project for Enter activation
+ok 456 - All to Projects keeps the second selected project for Enter activation
+  ---
+  duration_ms: 1.597821
+  type: 'test'
+  ...
+# Subtest: Projects to All keeps the selected project instead of selecting a command
+ok 457 - Projects to All keeps the selected project instead of selecting a command
+  ---
+  duration_ms: 0.264677
+  type: 'test'
+  ...
+# Subtest: a project absent from the destination falls back to its first result
+ok 458 - a project absent from the destination falls back to its first result
+  ---
+  duration_ms: 0.223973
+  type: 'test'
+  ...
+# Subtest: non-project tab transitions keep their existing initial selection
+ok 459 - non-project tab transitions keep their existing initial selection
+  ---
+  duration_ms: 0.254052
+  type: 'test'
+  ...
+# (node:451) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: View archived workspaces reveals archived rows from every project without saving over Home filters
+ok 460 - View archived workspaces reveals archived rows from every project without saving over Home filters
+  ---
+  duration_ms: 155.893769
+  type: 'test'
+  ...
+# Subtest: Enter on View archived workspaces clears its search and a saved Only archived project restriction
+ok 461 - Enter on View archived workspaces clears its search and a saved Only archived project restriction
+  ---
+  duration_ms: 51.74231
+  type: 'test'
+  ...
+# Subtest: View archived workspaces replaces a project restriction changed earlier in the same palette
+ok 462 - View archived workspaces replaces a project restriction changed earlier in the same palette
+  ---
+  duration_ms: 50.142126
+  type: 'test'
+  ...
+# Subtest: ordinary Workspaces tab navigation preserves filters and an ordinary action still selects and closes
+ok 463 - ordinary Workspaces tab navigation preserves filters and an ordinary action still selects and closes
+  ---
+  duration_ms: 34.015099
+  type: 'test'
+  ...
+# (node:459) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: rows are newest first; Hiding archived leaves archived workspaces out
+ok 464 - rows are newest first; Hiding archived leaves archived workspaces out
+  ---
+  duration_ms: 2.030571
+  type: 'test'
+  ...
+# Subtest: Showing all lists archived workspaces in their own group; Only archived lists only them
+ok 465 - Showing all lists archived workspaces in their own group; Only archived lists only them
+  ---
+  duration_ms: 0.409052
+  type: 'test'
+  ...
+# Subtest: the project filter and the query narrow the rows
+ok 466 - the project filter and the query narrow the rows
+  ---
+  duration_ms: 0.665604
+  type: 'test'
+  ...
+# Subtest: rows are capped at 50 (Conductor's GHe)
+ok 467 - rows are capped at 50 (Conductor's GHe)
+  ---
+  duration_ms: 0.267746
+  type: 'test'
+  ...
+# Subtest: Clear filters shows under the empty list whenever a filter is set, Hiding archived included
+ok 468 - Clear filters shows under the empty list whenever a filter is set, Hiding archived included
+  ---
+  duration_ms: 0.330893
+  type: 'test'
+  ...
+# Subtest: the compact project filter reads All projects, the project's name, or a count
+ok 469 - the compact project filter reads All projects, the project's name, or a count
+  ---
+  duration_ms: 1.357604
+  type: 'test'
+  ...
+# Subtest: with no row highlighted, the first move picks the first or the last row
+ok 470 - with no row highlighted, the first move picks the first or the last row
+  ---
+  duration_ms: 0.33943
+  type: 'test'
+  ...
+1..470
+# tests 470
+# suites 0
+# pass 470
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 29511.20874

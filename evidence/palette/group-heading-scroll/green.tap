@@ -1,0 +1,240 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pointer marker cannot leak through query reset (same-selected hover=false)
+ok 1 - pointer marker cannot leak through query reset (same-selected hover=false)
+  ---
+  duration_ms: 543.415284
+  type: 'test'
+  ...
+# Subtest: pointer marker cannot leak through tab change (same-selected hover=false)
+ok 2 - pointer marker cannot leak through tab change (same-selected hover=false)
+  ---
+  duration_ms: 186.006124
+  type: 'test'
+  ...
+# Subtest: pointer marker cannot leak through query reset (same-selected hover=true)
+ok 3 - pointer marker cannot leak through query reset (same-selected hover=true)
+  ---
+  duration_ms: 220.254751
+  type: 'test'
+  ...
+# Subtest: pointer marker cannot leak through tab change (same-selected hover=true)
+ok 4 - pointer marker cannot leak through tab change (same-selected hover=true)
+  ---
+  duration_ms: 151.977395
+  type: 'test'
+  ...
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Host All: Home reveals first row's heading before the option
+ok 5 - actual Host All: Home reveals first row's heading before the option
+  ---
+  duration_ms: 478.445327
+  type: 'test'
+  ...
+# Subtest: actual Host All: ArrowUp reveals first row's heading before the option
+ok 6 - actual Host All: ArrowUp reveals first row's heading before the option
+  ---
+  duration_ms: 327.818138
+  type: 'test'
+  ...
+# Subtest: actual Host Actions: Home reveals first row's heading before the option
+ok 7 - actual Host Actions: Home reveals first row's heading before the option
+  ---
+  duration_ms: 222.098094
+  type: 'test'
+  ...
+# Subtest: actual Host Actions: ArrowUp reveals first row's heading before the option
+ok 8 - actual Host Actions: ArrowUp reveals first row's heading before the option
+  ---
+  duration_ms: 157.965852
+  type: 'test'
+  ...
+# Subtest: actual Host Settings: Home reveals first row's heading before the option
+ok 9 - actual Host Settings: Home reveals first row's heading before the option
+  ---
+  duration_ms: 129.594285
+  type: 'test'
+  ...
+# Subtest: actual Host Settings: ArrowUp reveals first row's heading before the option
+ok 10 - actual Host Settings: ArrowUp reveals first row's heading before the option
+  ---
+  duration_ms: 115.807478
+  type: 'test'
+  ...
+# Subtest: actual Host Workspaces: Home reveals first row's heading before the option
+ok 11 - actual Host Workspaces: Home reveals first row's heading before the option
+  ---
+  duration_ms: 96.590528
+  type: 'test'
+  ...
+# Subtest: actual Host Workspaces: ArrowUp reveals first row's heading before the option
+ok 12 - actual Host Workspaces: ArrowUp reveals first row's heading before the option
+  ---
+  duration_ms: 80.916614
+  type: 'test'
+  ...
+# Subtest: actual Host: Option+ArrowDown reveals the destination group's heading
+ok 13 - actual Host: Option+ArrowDown reveals the destination group's heading
+  ---
+  duration_ms: 82.85491
+  type: 'test'
+  ...
+# Subtest: actual Host: Option+ArrowUp reveals the destination group's heading
+ok 14 - actual Host: Option+ArrowUp reveals the destination group's heading
+  ---
+  duration_ms: 68.924846
+  type: 'test'
+  ...
+# Subtest: control All: nonfirst row only reveals the option
+ok 15 - control All: nonfirst row only reveals the option
+  ---
+  duration_ms: 70.752812
+  type: 'test'
+  ...
+# Subtest: control Actions: nonfirst row only reveals the option
+ok 16 - control Actions: nonfirst row only reveals the option
+  ---
+  duration_ms: 92.995728
+  type: 'test'
+  ...
+# Subtest: control Settings: nonfirst row only reveals the option
+ok 17 - control Settings: nonfirst row only reveals the option
+  ---
+  duration_ms: 84.697927
+  type: 'test'
+  ...
+# Subtest: control Workspaces: nonfirst row only reveals the option
+ok 18 - control Workspaces: nonfirst row only reveals the option
+  ---
+  duration_ms: 79.26271
+  type: 'test'
+  ...
+# Subtest: control: headless Projects group only reveals its selected option
+ok 19 - control: headless Projects group only reveals its selected option
+  ---
+  duration_ms: 105.791952
+  type: 'test'
+  ...
+# Subtest: control: IME leaves selection and scroll calls untouched
+ok 20 - control: IME leaves selection and scroll calls untouched
+  ---
+  duration_ms: 50.96431
+  type: 'test'
+  ...
+# Subtest: control: empty/disabled rows produce no selection or scroll
+ok 21 - control: empty/disabled rows produce no selection or scroll
+  ---
+  duration_ms: 59.46321
+  type: 'test'
+  ...
+# Subtest: control: pointer selection never requests a group-heading scroll
+ok 22 - control: pointer selection never requests a group-heading scroll
+  ---
+  duration_ms: 61.190003
+  type: 'test'
+  ...
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Host All: pointer selection changes highlight without requesting scroll
+ok 23 - actual Host All: pointer selection changes highlight without requesting scroll
+  ---
+  duration_ms: 496.804647
+  type: 'test'
+  ...
+# Subtest: control All: pointer selection does not suppress the following keyboard scroll
+ok 24 - control All: pointer selection does not suppress the following keyboard scroll
+  ---
+  duration_ms: 114.852939
+  type: 'test'
+  ...
+# Subtest: actual Host Actions: pointer selection changes highlight without requesting scroll
+ok 25 - actual Host Actions: pointer selection changes highlight without requesting scroll
+  ---
+  duration_ms: 195.259364
+  type: 'test'
+  ...
+# Subtest: control Actions: pointer selection does not suppress the following keyboard scroll
+ok 26 - control Actions: pointer selection does not suppress the following keyboard scroll
+  ---
+  duration_ms: 215.315725
+  type: 'test'
+  ...
+# Subtest: actual Host Projects: pointer selection changes highlight without requesting scroll
+ok 27 - actual Host Projects: pointer selection changes highlight without requesting scroll
+  ---
+  duration_ms: 110.074727
+  type: 'test'
+  ...
+# Subtest: control Projects: pointer selection does not suppress the following keyboard scroll
+ok 28 - control Projects: pointer selection does not suppress the following keyboard scroll
+  ---
+  duration_ms: 109.576682
+  type: 'test'
+  ...
+# Subtest: actual Host Settings: pointer selection changes highlight without requesting scroll
+ok 29 - actual Host Settings: pointer selection changes highlight without requesting scroll
+  ---
+  duration_ms: 76.652684
+  type: 'test'
+  ...
+# Subtest: control Settings: pointer selection does not suppress the following keyboard scroll
+ok 30 - control Settings: pointer selection does not suppress the following keyboard scroll
+  ---
+  duration_ms: 80.445132
+  type: 'test'
+  ...
+# Subtest: actual Host Workspaces: pointer selection changes highlight without requesting scroll
+ok 31 - actual Host Workspaces: pointer selection changes highlight without requesting scroll
+  ---
+  duration_ms: 98.304974
+  type: 'test'
+  ...
+# Subtest: control Workspaces: pointer selection does not suppress the following keyboard scroll
+ok 32 - control Workspaces: pointer selection does not suppress the following keyboard scroll
+  ---
+  duration_ms: 78.791773
+  type: 'test'
+  ...
+# Subtest: control: hovering the already selected result cannot suppress the next keyboard scroll
+ok 33 - control: hovering the already selected result cannot suppress the next keyboard scroll
+  ---
+  duration_ms: 94.423139
+  type: 'test'
+  ...
+# Subtest: control: repeated pointer updates retain highlight and ordinary Enter activation
+ok 34 - control: repeated pointer updates retain highlight and ordinary Enter activation
+  ---
+  duration_ms: 100.26343
+  type: 'test'
+  ...
+# Subtest: control: composition preserves the pointer-selected result without scrolling
+ok 35 - control: composition preserves the pointer-selected result without scrolling
+  ---
+  duration_ms: 99.987021
+  type: 'test'
+  ...
+# Subtest: control: disabled empty-results row has no pointer selection or scroll callback
+ok 36 - control: disabled empty-results row has no pointer selection or scroll callback
+  ---
+  duration_ms: 76.965221
+  type: 'test'
+  ...
+# Subtest: control: section current-row pointer remains inert
+ok 37 - control: section current-row pointer remains inert
+  ---
+  duration_ms: 88.071607
+  type: 'test'
+  ...
+1..37
+# tests 37
+# suites 0
+# pass 37
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3136.959469
