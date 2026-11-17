@@ -96,7 +96,7 @@ export function GitHubRepoDialog({ target, onClose, onOpenSettings, onCreated, o
         <p className="muted">{dialogDescription(target.needsGitInit, target.existingOriginUrl)}</p>
         <label className="field">
           <span>Owner</span>
-          <select value={owner} disabled={!ready || pending} onChange={(e) => setOwner(e.target.value)}>
+          <select value={owner} disabled={!ready} onChange={(e) => setOwner(e.target.value)}>
             {!owner && <option value="">Select an owner</option>}
             {ready && owners.value.owners.map((o) => <option key={o.login} value={o.login}>{o.login}</option>)}
           </select>

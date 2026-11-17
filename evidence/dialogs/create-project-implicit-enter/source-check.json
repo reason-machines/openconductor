@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "main": "ea436c5ea0ce33338bd082df998ff61dc3e43460",
+  "assets": 2,
+  "reference_spans": 23,
+  "frozen_fixture_files": 6,
+  "current_source_pins": 7,
+  "claim": "Static source identity only; no original JavaScript or browser executed"
+}

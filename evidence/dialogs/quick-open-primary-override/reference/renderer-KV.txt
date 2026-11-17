@@ -1,0 +1,1 @@
+const KV=$.forwardRef((t,e)=>{const n=ne.c(9);let i,r;n[0]!==t?({className:i,...r}=t,n[0]=t,n[1]=i,n[2]=r):(i=n[1],r=n[2]);let o;n[3]!==i?(o=Xe("flex h-full w-full flex-col overflow-hidden rounded-md",i),n[3]=i,n[4]=o):o=n[4];let a;return n[5]!==r||n[6]!==e||n[7]!==o?(a=p.jsx(P6,{ref:e,className:o,...r}),n[5]=r,n[6]=e,n[7]=o,n[8]=a):a=n[8],a});KV.displayName=P6.displayName;

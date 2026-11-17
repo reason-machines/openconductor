@@ -5,6 +5,7 @@
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { Unicode11Addon } from "@xterm/addon-unicode11";
+import { WebLinksAddon } from "@xterm/addon-web-links";
 import { confirm } from "@tauri-apps/plugin-dialog";
 import { openUrl } from "../../backend";
 import { AckBatcher, type PtyEvent } from "./events";
@@ -340,6 +341,9 @@ async function startTab(
   term.unicode.activeVersion = "11";
   const fit = new FitAddon();
   term.loadAddon(fit);
+  term.loadAddon(new WebLinksAddon((event, url) => {
+    if (event.metaKey) void openUrl(url).catch((error: unknown) => { console.error("Failed to open terminal link", error); });
+  }));
   const host = document.createElement("div");
   host.className = "term-host";
   const ack = new AckBatcher((n) => void ptyAckBytes(id, n).catch(() => {}));

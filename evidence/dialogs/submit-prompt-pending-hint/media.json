@@ -1,0 +1,16 @@
+{
+  "baseline": {
+    "uploaded": true,
+    "kind": "image",
+    "embed_url": "https://api.reasonmachines.com/media/pr-screenshots/0ebc2c1d-c559-4866-b3fe-1b09bb4cf539/6985beae4b3c78e1094193eae296cbc1/browser-baseline-pending.png",
+    "markdown": "![Before: pending Submit prompt still shows the shortcut](https://api.reasonmachines.com/media/pr-screenshots/0ebc2c1d-c559-4866-b3fe-1b09bb4cf539/6985beae4b3c78e1094193eae296cbc1/browser-baseline-pending.png#w=1208&h=601)",
+    "note": "Uploaded. Put the returned markdown in the pull request body."
+  },
+  "treatment": {
+    "uploaded": true,
+    "kind": "image",
+    "embed_url": "https://api.reasonmachines.com/media/pr-screenshots/0ebc2c1d-c559-4866-b3fe-1b09bb4cf539/54793e52824e8cc202f8d45cde79f542/browser-treatment-pending.png",
+    "markdown": "![After: pending Submit prompt shows only Submitting](https://api.reasonmachines.com/media/pr-screenshots/0ebc2c1d-c559-4866-b3fe-1b09bb4cf539/54793e52824e8cc202f8d45cde79f542/browser-treatment-pending.png#w=1208&h=601)",
+    "note": "Uploaded. Put the returned markdown in the pull request body."
+  }
+}

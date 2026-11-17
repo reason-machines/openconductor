@@ -1,0 +1,22 @@
+[
+  {
+    "status": "fulfilled",
+    "value": {
+      "uploaded": true,
+      "kind": "image",
+      "embed_url": "https://api.reasonmachines.com/media/pr-screenshots/70ed6867-6d35-4cd0-b3f8-37f499b75116/e3db1b8d5a8115429d864d0c3b94dc9f/3955b967-be1f-43be-83ad-41695c151a5e.png",
+      "markdown": "![Create project after trusted plain Enter: zero requests, primary still enabled](https://api.reasonmachines.com/media/pr-screenshots/70ed6867-6d35-4cd0-b3f8-37f499b75116/e3db1b8d5a8115429d864d0c3b94dc9f/3955b967-be1f-43be-83ad-41695c151a5e.png#w=1208&h=601)",
+      "note": "Uploaded. Put the returned markdown in the pull request body."
+    }
+  },
+  {
+    "status": "fulfilled",
+    "value": {
+      "uploaded": true,
+      "kind": "image",
+      "embed_url": "https://api.reasonmachines.com/media/pr-screenshots/70ed6867-6d35-4cd0-b3f8-37f499b75116/1638945aafa2c51492621cf47155790a/5d17f8bc-2a27-44e7-8d38-26ea70f23a2d.png",
+      "markdown": "![Create project pending controls: one captured request, edited drafts remain available](https://api.reasonmachines.com/media/pr-screenshots/70ed6867-6d35-4cd0-b3f8-37f499b75116/1638945aafa2c51492621cf47155790a/5d17f8bc-2a27-44e7-8d38-26ea70f23a2d.png#w=1208&h=601)",
+      "note": "Uploaded. Put the returned markdown in the pull request body."
+    }
+  }
+]

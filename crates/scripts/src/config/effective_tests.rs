@@ -97,6 +97,83 @@ fn prompts_replace_by_layer_and_blank_is_unset() {
 }
 
 #[test]
+fn prompts_blank_override_retains_source_and_reset_reveals_inherited() {
+    for kind in PromptKind::ALL {
+        let f = Fixture::new();
+        let key = kind.key();
+        write(
+            &f.root.join(".conductor/settings.toml"),
+            &format!("[prompts]\n{key} = \"inherited instructions\"\n"),
+        );
+        let local = f.root.join(".conductor/settings.local.toml");
+        write(&local, "[scripts]\nsetup = \"keep\"\n");
+        for blank in ["", " \n "] {
+            set_local_value(
+                &f.root,
+                &["prompts", key],
+                Some(Value::String(blank.into())),
+            )
+            .unwrap();
+            let effective = f.load();
+            assert_eq!(
+                effective.prompts.get(kind),
+                None,
+                "{key}: blank suppresses inheritance"
+            );
+            let serialized = serde_json::to_value(&effective.prompts).unwrap();
+            assert_eq!(
+                serialized[key]["value"], blank,
+                "{key}: preserve configured value"
+            );
+            assert_eq!(
+                serialized[key]["layer"], "repo_local",
+                "{key}: preserve source"
+            );
+            let file: Table = fs::read_to_string(&local).unwrap().parse().unwrap();
+            assert_eq!(
+                file["prompts"][key].as_str(),
+                Some(blank),
+                "{key}: real TOML write"
+            );
+            assert_eq!(file["scripts"]["setup"].as_str(), Some("keep"));
+        }
+        set_local_value(&f.root, &["prompts", key], None).unwrap();
+        let effective = f.load();
+        assert_eq!(effective.prompts.get(kind), Some("inherited instructions"));
+        let serialized = serde_json::to_value(&effective.prompts).unwrap();
+        assert_eq!(serialized[key]["layer"], "repo_shared");
+        let file: Table = fs::read_to_string(&local).unwrap().parse().unwrap();
+        assert!(
+            !file.contains_key("prompts"),
+            "{key}: Reset removes the local key"
+        );
+        assert_eq!(file["scripts"]["setup"].as_str(), Some("keep"));
+    }
+}
+
+#[test]
+fn prompts_blank_managed_value_keeps_precedence_and_source() {
+    let f = Fixture::new();
+    write(
+        &f.root.join(".conductor/settings.local.toml"),
+        "[prompts]\ngeneral = \"local\"\n",
+    );
+    write(
+        &f.user.join("settings.managed.toml"),
+        "[prompts]\ngeneral = \"\"\n",
+    );
+    let effective = f.load();
+    assert_eq!(effective.prompts.get(PromptKind::General), None);
+    assert_eq!(
+        effective.prompts.general,
+        Some(Sourced {
+            value: "".into(),
+            layer: Layer::Managed
+        })
+    );
+}
+
+#[test]
 fn git_flags_and_branch_prefix_alias() {
     let f = Fixture::new();
     write(

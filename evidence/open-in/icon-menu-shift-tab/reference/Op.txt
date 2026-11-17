@@ -1,0 +1,1 @@
+function Op(t){const e=d3(MOr,t).current;return e.next=t,or(e.effect),e}

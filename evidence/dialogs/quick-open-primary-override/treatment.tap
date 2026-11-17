@@ -1,0 +1,86 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Quick open keeps the default primary shortcut in diff mode
+ok 1 - Quick open keeps the default primary shortcut in diff mode
+  ---
+  duration_ms: 323.675283
+  type: 'test'
+  ...
+# Subtest: Quick open keeps plain Enter in file mode
+ok 2 - Quick open keeps plain Enter in file mode
+  ---
+  duration_ms: 161.388891
+  type: 'test'
+  ...
+# Subtest: Quick open resolves a configured logical primary shortcut
+ok 3 - Quick open resolves a configured logical primary shortcut
+  ---
+  duration_ms: 102.551791
+  type: 'test'
+  ...
+# Subtest: Quick open removed default primary falls back to file selection
+ok 4 - Quick open removed default primary falls back to file selection
+  ---
+  duration_ms: 101.08473
+  type: 'test'
+  ...
+# Subtest: Quick open resolves physical primary keys despite layout output
+ok 5 - Quick open resolves physical primary keys despite layout output
+  ---
+  duration_ms: 117.8341
+  type: 'test'
+  ...
+# Subtest: Quick open resolves additional configured primary shortcuts
+ok 6 - Quick open resolves additional configured primary shortcuts
+  ---
+  duration_ms: 141.05613
+  type: 'test'
+  ...
+# Subtest: Quick open can configure plain Enter as the primary action
+ok 7 - Quick open can configure plain Enter as the primary action
+  ---
+  duration_ms: 104.701336
+  type: 'test'
+  ...
+# Subtest: Quick open configured primary precedes its navigation fallback
+ok 8 - Quick open configured primary precedes its navigation fallback
+  ---
+  duration_ms: 79.043191
+  type: 'test'
+  ...
+# Subtest: Quick open consumes live override replacement and reset
+ok 9 - Quick open consumes live override replacement and reset
+  ---
+  duration_ms: 82.41185
+  type: 'test'
+  ...
+# Subtest: Quick open keeps exact modifier matching
+ok 10 - Quick open keeps exact modifier matching
+  ---
+  duration_ms: 91.218868
+  type: 'test'
+  ...
+# Subtest: Quick open keeps navigation and click in file mode with custom primary
+ok 11 - Quick open keeps navigation and click in file mode with custom primary
+  ---
+  duration_ms: 93.567144
+  type: 'test'
+  ...
+# Subtest: Quick open custom primary with no result never opens or closes
+ok 12 - Quick open custom primary with no result never opens or closes
+  ---
+  duration_ms: 75.026533
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1876.001694

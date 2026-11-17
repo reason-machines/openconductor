@@ -1,0 +1,12 @@
+{
+  "inputCount": 189,
+  "sourceHashes": {
+    "src/components/CreateProjectDialog.tsx": "9837498bd312efec36a2f0717291a706b08dfabd5817557f1a7121bceb76effa",
+    "src/components/DialogFrame.tsx": "47734d523d725af2615c80a1f9995f28e78b2b2d8e6dd32a7303b97e69c670d5",
+    "src/keybindings/KeybindingsProvider.tsx": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6",
+    "src/keybindings/registry.ts": "b9df8f72c86c6c4e1cc05cade6b4719cd3abf26e557e690ffd574cbe2231ecb5",
+    "src/state/createProject.ts": "08be32e2b1697032c51759a4798db4abdf0bb0e1d2ee82ad548d0e47bb0cc283",
+    "src/state/cloneDialog.ts": "aa973b6dab60656c0977b4ff03f09860c95377aacc20d758214709a21ba6379d"
+  },
+  "io": "stubbed, graph checked"
+}

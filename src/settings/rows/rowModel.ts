@@ -57,11 +57,11 @@ export const PROMPT_PLACEHOLDER =
 
 /**
  * What saving a prompt textarea writes to the repository local file: the
- * trimmed text, or `null` to remove the key when it is blank (Conductor
- * deletes a blank string setting). `null` result: nothing to write.
+ * trimmed text, including an explicit empty override. Only Reset removes
+ * the local key; a `null` result here means there is nothing to write.
  */
 export function promptWrite(kind: PromptKind, saved: string | undefined, draft: string): { key: RepoLocalKey; value: string | null } | null {
   const next = draft.trim();
   if (next === (saved ?? "").trim()) return null;
-  return { key: `prompts.${kind}`, value: next === "" ? null : next };
+  return { key: `prompts.${kind}`, value: next };
 }

@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "frozen12_sha256": "1a9c9be790116983b0891d3d4e2838e5e53de1989bd9dae140ef18acef1d347b",
+  "v1_correction": "Actual Row selected by immutable path after recent-file reorder, not stale ordinal. No assertions changed. Original diagnostic fixture/log retained.",
+  "source_baseline": "9e3954625f01a9cb1a3ead3adbef429f27bcf099",
+  "baseline": {
+    "tests": 12,
+    "pass": 4,
+    "intended_fail": 8,
+    "skip": 0
+  },
+  "adjacent": {
+    "tests": 28,
+    "pass": 28
+  }
+}

@@ -103,7 +103,8 @@ impl PromptKind {
     }
 }
 
-/// Effective `[prompts]`; blank values count as unset.
+/// Effective `[prompts]`; retain configured blank values and their source for
+/// Settings, while action consumers read blank instructions as unset via `get`.
 #[derive(Debug, Clone, Default, PartialEq, Serialize)]
 pub struct Prompts {
     pub general: Option<Sourced<String>>,
@@ -116,7 +117,10 @@ pub struct Prompts {
 
 impl Prompts {
     pub fn get(&self, kind: PromptKind) -> Option<&str> {
-        self.slot(kind).as_ref().map(|s| s.value.as_str())
+        self.slot(kind)
+            .as_ref()
+            .map(|s| s.value.as_str())
+            .filter(|s| !s.trim().is_empty())
     }
 
     fn slot(&self, kind: PromptKind) -> &Option<Sourced<String>> {
@@ -428,8 +432,7 @@ pub fn resolve_effective(layers: &[EffectiveLayer]) -> EffectiveSettings {
     let w = &mut out.warnings;
 
     for kind in PromptKind::ALL {
-        *out.prompts.slot_mut(kind) =
-            pick(&ordered, &["prompts", kind.key()], w, as_string).filter(not_blank);
+        *out.prompts.slot_mut(kind) = pick(&ordered, &["prompts", kind.key()], w, as_string);
     }
     let git = &mut out.git;
     git.branch_prefix_type =

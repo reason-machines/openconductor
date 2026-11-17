@@ -1,0 +1,1 @@
+PASS: same 8 actual Chrome cases; plain Enter 1→0 in both fields; activation/blank/pending controls preserved; graph/assets/CSP and bounded cleanup intact

@@ -16,10 +16,14 @@
 // - Anything else: the block's own name and input, as Claude Code sends them.
 // Pure: no React, so `conductorTools.test.ts` covers it.
 
+import type { ReasonPath } from "./reason.ts";
+
 export interface ConductorTool {
   /** Claude Code tool name (`Bash`, `Read`, ...) or `mcp__server__tool`. */
   name: string;
   input: Record<string, unknown>;
+  /** The reported location of this row's file, not the current execution target. */
+  fileTarget?: ReasonPath;
 }
 
 /** Conductor's tool name -> row kind table (`D1o`), all 35 row kinds of its registry (`Qpo`). */
@@ -107,9 +111,21 @@ export function splitPatch(diff: string): { oldString: string; newString: string
   return { oldString: removed.join("\n"), newString: added.join("\n") };
 }
 
-interface ReasonPathInput {
-  raw?: string;
-  relative?: string | null;
+type ReasonPathInput = Partial<ReasonPath>;
+
+/** Associate only an unambiguous reported location with the rendered file path. */
+function withFileTarget(tool: ConductorTool, paths: ReasonPathInput[]): ConductorTool {
+  const path = tool.input.file_path;
+  if (typeof path !== "string") return tool;
+  const reported = paths.filter((p): p is ReasonPath =>
+    typeof p.raw === "string" && (p.relative === null || typeof p.relative === "string") &&
+    (p.place === "local" || p.place === "cloud" || p.place === "other") &&
+    (p.sessionId === undefined || typeof p.sessionId === "string"));
+  const exact = reported.filter((p) => p.raw === path);
+  const matches = exact.length > 0 ? exact : reported.filter((p) => p.relative === path);
+  const target = matches[0];
+  if (!target || matches.some((p) => p.raw !== target.raw || p.relative !== target.relative || p.place !== target.place || p.sessionId !== target.sessionId)) return tool;
+  return { ...tool, fileTarget: target };
 }
 
 interface ReasonDiffInput {
@@ -137,22 +153,26 @@ const NAME_BY_ACP_KIND: Record<string, string> = {
 
 function fromReason(input: Record<string, unknown>, blockName: string): ConductorTool[] {
   const toolName = str(input.toolName);
-  if (toolName && isRecord(input.rawInput)) return [{ name: toolName, input: input.rawInput }];
-  const title = str(input.title) ?? blockName;
-  const kind = str(input.kind) ?? "other";
   const paths = (Array.isArray(input.paths) ? input.paths : []).filter(isRecord) as ReasonPathInput[];
   const diffs = (Array.isArray(input.diffs) ? input.diffs : []).filter(isRecord) as ReasonDiffInput[];
+  const reported = [...paths, ...diffs.flatMap((d) => d.path ? [d.path] : [])];
+  if (toolName && isRecord(input.rawInput)) return [withFileTarget({ name: toolName, input: input.rawInput }, reported)];
+  const title = str(input.title) ?? blockName;
+  const kind = str(input.kind) ?? "other";
   const raw = isRecord(input.rawInput) ? input.rawInput : {};
   const t = splitTitle(title);
   const firstPath = paths[0]?.raw ?? diffs[0]?.path?.raw;
+  const primary = paths[0]?.raw !== undefined ? paths[0] : diffs[0]?.path;
+  const filePaths = raw.file_path === undefined ? (primary ? [primary] : []) : reported;
 
   if (kind === "edit" || t.name === "Edit" || t.name === "Write" || t.name === "MultiEdit") {
-    if (diffs.length === 0) return [{ name: t.name ?? "Edit", input: { file_path: firstPath ?? t.detail ?? "", ...raw } }];
-    return diffs.map((d) =>
+    if (diffs.length === 0) return [withFileTarget({ name: t.name ?? "Edit", input: { file_path: firstPath ?? t.detail ?? "", ...raw } }, filePaths)];
+    return diffs.map((d) => withFileTarget(
       d.oldText === null || d.oldText === undefined
         ? { name: "Write", input: { file_path: d.path?.raw ?? "", content: d.newText ?? "" } }
         : { name: "Edit", input: { file_path: d.path?.raw ?? "", old_string: d.oldText, new_string: d.newText ?? "" } },
-    );
+      d.path ? [d.path] : [],
+    ));
   }
   const name = t.name ?? NAME_BY_ACP_KIND[kind];
   const detail = t.detail ?? (t.name ? undefined : title);
@@ -161,7 +181,7 @@ function fromReason(input: Record<string, unknown>, blockName: string): Conducto
       return [{ name, input: { command: detail ?? "", ...raw } }];
     case "Read":
     case "NotebookRead":
-      return [{ name, input: { file_path: firstPath ?? detail ?? "", ...raw } }];
+      return [withFileTarget({ name, input: { file_path: firstPath ?? detail ?? "", ...raw } }, filePaths)];
     case "Grep":
     case "Glob":
       return [{ name, input: { pattern: detail ?? "", ...raw } }];

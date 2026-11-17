@@ -3,7 +3,12 @@
 #import <objc/runtime.h>
 #include "ArgParser.h"
 #include "Profile.h"
-#include "ResourceValidator.h"
+#include "HeldResources.h"
+#include "Lifecycle.h"
+#include <errno.h>
+#include <stdlib.h>
+#include <time.h>
+#include <unistd.h>
 
 static BOOL OCVMReject(NSError **error) {
     if (error != NULL) {
@@ -136,66 +141,208 @@ static bool OCVMConstruct(void *raw) {
 }
 @end
 
+/* No socket, network, console, share, disk-result reader, or guest agent is added.
+ * A workload/result protocol needs a separate reviewed profile and binding.
+ * Neither native admission nor this boundary has a CLI/environment override.
+ */
+static BOOL OCVMWorkloadChannelAvailable(void) { return NO; }
+
+static uint64_t OCVMNow(void) {
+    struct timespec value;
+    if (clock_gettime(CLOCK_MONOTONIC, &value) != 0 || value.tv_sec < 0 ||
+        (uint64_t)value.tv_sec > (UINT64_MAX - 999) / 1000) return 0;
+    return (uint64_t)value.tv_sec * 1000 + (uint64_t)value.tv_nsec / 1000000;
+}
+
+static NSData *OCVMReadIdentity(int fd) {
+    struct stat identity;
+    if (fstat(fd, &identity) != 0 || identity.st_size < 1 ||
+        identity.st_size > 1024 * 1024) return nil;
+    NSMutableData *data = [NSMutableData dataWithLength:(NSUInteger)identity.st_size];
+    size_t offset = 0;
+    while (offset < data.length) {
+        ssize_t count = pread(fd, (char *)data.mutableBytes + offset,
+            data.length - offset, (off_t)offset);
+        if (count < 0 && errno == EINTR) continue;
+        if (count <= 0) return nil;
+        offset += (size_t)count;
+    }
+    return data;
+}
+
+/* One invocation owns the validated FDs, configuration, VM and all callbacks.
+ * All VZ operations and state transitions use the main serial queue.
+ */
+@interface OCVMOwnedInvocation : NSObject <VZVirtualMachineDelegate> {
+    OCVMHeldResources _resources;
+    OCVMLifecycle _lifecycle;
+    VZVirtualMachine *_vm;
+    BOOL _startDispatched;
+}
++ (int)runWithArgs:(const OCVMArgs *)args;
+- (BOOL)prepareWithArgs:(const OCVMArgs *)args;
+- (void)beginStart;
+- (void)drive;
+- (void)unconfirmedStop;
+@end
+
+@implementation OCVMOwnedInvocation
+- (instancetype)init {
+    self = [super init];
+    if (self) OCVMInitResources(&_resources);
+    return self;
+}
+
+- (void)dealloc { OCVMReleaseResources(&_resources); }
+
+- (BOOL)prepareWithArgs:(const OCVMArgs *)args {
+    if (OCVMHoldResources(args, &_resources) != 0) return NO;
+    NSData *hardware = OCVMReadIdentity(_resources.fds[2]);
+    NSData *identifier = OCVMReadIdentity(_resources.fds[3]);
+    if (hardware == nil || identifier == nil || !OCVMResourcesMatch(&_resources)) return NO;
+    VZMacPlatformConfiguration *platform = [VZMacPlatformConfiguration new];
+    platform.hardwareModel = [[VZMacHardwareModel alloc] initWithDataRepresentation:hardware];
+    platform.machineIdentifier = [[VZMacMachineIdentifier alloc] initWithDataRepresentation:identifier];
+    if (platform.hardwareModel == nil || platform.machineIdentifier == nil) return NO;
+    /* VZ uses URLs, not the held FDs. Before/after snapshots detect observed
+     * mutations only; atomic identity-through-use remains an admission blocker.
+     */
+    NSURL *aux = [NSURL fileURLWithPath:@(args->aux)];
+    NSURL *disk = [NSURL fileURLWithPath:@(args->disk)];
+    platform.auxiliaryStorage = [[VZMacAuxiliaryStorage alloc] initWithURL:aux];
+    NSError *error = nil;
+    VZDiskImageStorageDeviceAttachment *attachment = [[VZDiskImageStorageDeviceAttachment alloc]
+        initWithURL:disk readOnly:NO error:&error];
+    if (attachment == nil || !OCVMResourcesMatch(&_resources)) return NO;
+    OCVMProfile profile = OCVMClosedProfile();
+    VZVirtualMachineConfiguration *configuration = [OCVMConfigurationFactory prepareProfile:&profile
+        platform:platform disk:attachment error:&error];
+    if (configuration == nil || !OCVMResourcesMatch(&_resources)) return NO;
+    _vm = [[VZVirtualMachine alloc]
+        initWithConfiguration:configuration queue:dispatch_get_main_queue()];
+    _vm.delegate = self;
+    return _vm != nil && OCVMLifecycleInit(&_lifecycle, (uintptr_t)(__bridge void *)_vm,
+        OCVMNow(), 60000, 10000);
+}
+
+- (void)unconfirmedStop {
+    fputs("{\"native_admission\":false,\"same_vm_stopped\":false,"
+          "\"error\":\"VM stop unconfirmed; invocation failed\"}\n", stderr);
+    fflush(stderr);
+    /* Never unwind the owner as though stop were confirmed. Process failure is
+     * bounded, but process exit is NOT evidence that VZ stopped the guest.
+     */
+    _Exit(75);
+}
+
+- (void)beginStart {
+    uintptr_t owner = (uintptr_t)(__bridge void *)_vm;
+    if (!OCVMLifecycleBeginStart(&_lifecycle, owner, OCVMNow())) [self unconfirmedStop];
+    if (!_vm.canStart) {
+        if (!OCVMLifecycleDidStart(&_lifecycle, owner, false, OCVMNow())) [self unconfirmedStop];
+        return;
+    }
+    VZVirtualMachine *ownedVM = _vm;
+    _startDispatched = YES;
+    [ownedVM startWithCompletionHandler:^(NSError *error) {
+        if (ownedVM != self->_vm || !OCVMLifecycleDidStart(&self->_lifecycle,
+                (uintptr_t)(__bridge void *)ownedVM, error == nil, OCVMNow())) {
+            [self unconfirmedStop];
+        }
+        /* No guest result can currently be obtained, including on successful boot. */
+        if (!OCVMLifecycleRequestStop(&self->_lifecycle, owner,
+                OC_VM_FAILURE_WORKLOAD_UNSUPPORTED, OCVMNow())) [self unconfirmedStop];
+        [self drive];
+    }];
+}
+
+- (void)drive {
+    uintptr_t owner = (uintptr_t)(__bridge void *)_vm;
+    if (!OCVMLifecycleTick(&_lifecycle, owner, OCVMNow())) [self unconfirmedStop];
+    if (_vm.state == VZVirtualMachineStateStopped &&
+        !_lifecycle.start_pending && !_lifecycle.stop_pending) {
+        if (!OCVMLifecycleObserveStopped(&_lifecycle, owner, OCVMNow())) [self unconfirmedStop];
+        return;
+    }
+    if (_lifecycle.phase == OC_VM_STOP_UNCONFIRMED) [self unconfirmedStop];
+    if (OCVMLifecycleNeedsStop(&_lifecycle) && _vm.canStop) {
+        if (!OCVMLifecycleBeginStop(&_lifecycle, owner, OCVMNow())) [self unconfirmedStop];
+        VZVirtualMachine *ownedVM = _vm;
+        [ownedVM stopWithCompletionHandler:^(NSError *error) {
+            if (ownedVM != self->_vm || !OCVMLifecycleDidStop(&self->_lifecycle,
+                    (uintptr_t)(__bridge void *)ownedVM, error == nil, OCVMNow())) {
+                [self unconfirmedStop];
+            }
+            /* Completion alone is not a stopped observation. */
+            [self drive];
+        }];
+    }
+}
+
+- (void)guestDidStopVirtualMachine:(VZVirtualMachine *)virtualMachine {
+    [self virtualMachine:virtualMachine didStopWithError:nil];
+}
+
+- (void)virtualMachine:(VZVirtualMachine *)virtualMachine didStopWithError:(NSError *)error {
+    (void)error;
+    if (virtualMachine != _vm || !OCVMLifecycleRequestStop(&_lifecycle,
+            (uintptr_t)(__bridge void *)virtualMachine, OC_VM_FAILURE_GUEST, OCVMNow())) {
+        [self unconfirmedStop];
+    }
+    [self drive];
+}
+
++ (int)runWithArgs:(const OCVMArgs *)args {
+    OCVMOwnedInvocation *invocation = [OCVMOwnedInvocation new];
+    if (![invocation prepareWithArgs:args]) {
+        fputs("VM preparation refused; native admission remains false.\n", stderr);
+        return 78;
+    }
+    if (!OCVMWorkloadChannelAvailable()) {
+        if (!OCVMLifecycleRequestStop(&invocation->_lifecycle,
+                (uintptr_t)(__bridge void *)invocation->_vm,
+                OC_VM_FAILURE_WORKLOAD_UNSUPPORTED, OCVMNow())) [invocation unconfirmedStop];
+    } else {
+        [invocation beginStart];
+    }
+    while (!OCVMLifecycleCanRelease(&invocation->_lifecycle)) {
+        [invocation drive];
+        if (!OCVMLifecycleCanRelease(&invocation->_lifecycle)) {
+            @autoreleasepool {
+                [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                    beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+            }
+        }
+    }
+    fprintf(stderr, "{\"native_admission\":false,\"same_vm_stopped\":true,"
+        "\"vm_start_dispatched\":%s,\"workload_result\":false,\"failure\":%u}\n",
+        invocation->_startDispatched ? "true" : "false", (unsigned)invocation->_lifecycle.failure);
+    return 78; /* Lifecycle observation is never workload success or native admission. */
+}
+@end
+
 static void OCVMUsage(const char *prog) {
     fprintf(stderr,
-        "Usage: %s --disk <path> --aux <path>\n"
-        "       %s          (probe: no arguments)\n",
-        prog, prog);
+        "Usage: %s --disk <path> --aux <path> --hardware-model <path> --machine-id <path>\n"
+        "       %s          (probe: no arguments)\n", prog, prog);
 }
 
 int main(int argc, char *argv[]) {
-    if (argc > 1) {
+    @autoreleasepool {
         OCVMArgs args;
         OCVMArgsStatus status = OCVMParseArgs(argc, argv, &args);
-        if (status != OC_VM_ARGS_OK) {
+        if (status != OC_VM_ARGS_OK && status != OC_VM_ARGS_PROBE) {
             OCVMUsage(argv[0]);
             return (int)status;
         }
-        int disk_fd = OCVMValidateResource(args.disk, OC_VM_RES_DISK);
-        if (disk_fd < 0) {
-            fprintf(stderr, "disk resource validation failed: %s\n", args.disk);
-            return 11;
+        /* Closed BEFORE opening guest files, constructing a VM or scheduling callbacks. */
+        if (!OCVMAdmitNative()) {
+            fputs("VM execution unavailable: atomic resource use, inherited-capability, "
+                  "effective confinement and native lifecycle acceptance remain unverified; "
+                  "workload/result channel unsupported.\n", stderr);
+            return 78;
         }
-        int aux_fd = OCVMValidateResource(args.aux, OC_VM_RES_AUX);
-        if (aux_fd < 0) {
-            fprintf(stderr, "aux resource validation failed: %s\n", args.aux);
-            OCVMReleaseResourceFd(disk_fd);
-            return 12;
-        }
-        /* Optional hardware identity resources (--hardware-model, --machine-id). */
-        int hw_fd = -1;
-        if (args.hardware_model != NULL) {
-            hw_fd = OCVMValidateResource(args.hardware_model, OC_VM_RES_AUX);
-            if (hw_fd < 0) {
-                fprintf(stderr, "hardware-model resource validation failed: %s\n",
-                        args.hardware_model);
-                OCVMReleaseResourceFd(disk_fd);
-                OCVMReleaseResourceFd(aux_fd);
-                return 13;
-            }
-        }
-        int mid_fd = -1;
-        if (args.machine_id != NULL) {
-            mid_fd = OCVMValidateResource(args.machine_id, OC_VM_RES_AUX);
-            if (mid_fd < 0) {
-                fprintf(stderr, "machine-id resource validation failed: %s\n",
-                        args.machine_id);
-                OCVMReleaseResourceFd(disk_fd);
-                OCVMReleaseResourceFd(aux_fd);
-                if (hw_fd >= 0) OCVMReleaseResourceFd(hw_fd);
-                return 14;
-            }
-        }
-        OCVMReleaseResourceFd(disk_fd);
-        OCVMReleaseResourceFd(aux_fd);
-        if (hw_fd  >= 0) OCVMReleaseResourceFd(hw_fd);
-        if (mid_fd >= 0) OCVMReleaseResourceFd(mid_fd);
+        if (status == OC_VM_ARGS_PROBE) return 78;
+        return [OCVMOwnedInvocation runWithArgs:&args];
     }
-    if (!OCVMAdmitNative()) {
-        fputs("VM execution is unavailable: resource identity, inherited-capability, "
-              "effective-profile and lifecycle acceptance are not implemented.\n", stderr);
-        return 78;
-    }
-    /* Unreachable until E1 satisfies native admission prerequisites. */
-    return 78;
 }

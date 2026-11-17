@@ -1,0 +1,136 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: GitHub repository dialog cancel button has data-dialog-cancel and closes before creation
+ok 1 - GitHub repository dialog cancel button has data-dialog-cancel and closes before creation
+  ---
+  duration_ms: 103.919946
+  type: 'test'
+  ...
+# Subtest: GitHub repository dialog cancel button has data-dialog-cancel and closes while creation is pending
+ok 2 - GitHub repository dialog cancel button has data-dialog-cancel and closes while creation is pending
+  ---
+  duration_ms: 75.078746
+  type: 'test'
+  ...
+# Subtest: ordinary Modal keeps its default backdrop dismissal
+ok 3 - ordinary Modal keeps its default backdrop dismissal
+  ---
+  duration_ms: 27.986558
+  type: 'test'
+  ...
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: GitHub private repo name "" stays neutral and cannot submit
+ok 4 - GitHub private repo name "" stays neutral and cannot submit
+  ---
+  duration_ms: 302.59379
+  type: 'test'
+  ...
+# Subtest: GitHub private repo name "   " stays neutral and cannot submit
+ok 5 - GitHub private repo name "   " stays neutral and cannot submit
+  ---
+  duration_ms: 49.848556
+  type: 'test'
+  ...
+# Subtest: GitHub private repo name "\\t \\n" stays neutral and cannot submit
+ok 6 - GitHub private repo name "\\t \\n" stays neutral and cannot submit
+  ---
+  duration_ms: 41.238942
+  type: 'test'
+  ...
+# Subtest: GitHub private repo name " " stays neutral and cannot submit
+ok 7 - GitHub private repo name " " stays neutral and cannot submit
+  ---
+  duration_ms: 17.884309
+  type: 'test'
+  ...
+# Subtest: GitHub private repo nonblank invalid name keeps its error and cannot submit
+ok 8 - GitHub private repo nonblank invalid name keeps its error and cannot submit
+  ---
+  duration_ms: 32.239289
+  type: 'test'
+  ...
+# Subtest: GitHub private repo normalizes a valid name and blocks repeated pending submission
+ok 9 - GitHub private repo normalizes a valid name and blocks repeated pending submission
+  ---
+  duration_ms: 89.114076
+  type: 'test'
+  ...
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: GitHub owner retry replaces a login absent from the refreshed owners before checking or creating
+ok 10 - GitHub owner retry replaces a login absent from the refreshed owners before checking or creating
+  ---
+  duration_ms: 278.395135
+  type: 'test'
+  ...
+# Subtest: GitHub owner retry preserves a selected login that remains in the refreshed owners
+ok 11 - GitHub owner retry preserves a selected login that remains in the refreshed owners
+  ---
+  duration_ms: 145.754314
+  type: 'test'
+  ...
+# Subtest: GitHub owners start empty and block submission until the first owner and availability arrive
+ok 12 - GitHub owners start empty and block submission until the first owner and availability arrive
+  ---
+  duration_ms: 96.645041
+  type: 'test'
+  ...
+# (node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: name input is not disabled while creation is pending and the captured request is unaffected by later edits
+ok 13 - name input is not disabled while creation is pending and the captured request is unaffected by later edits
+  ---
+  duration_ms: 168.035976
+  type: 'test'
+  ...
+# Subtest: duplicate submit is blocked while creation is pending regardless of name editability
+ok 14 - duplicate submit is blocked while creation is pending regardless of name editability
+  ---
+  duration_ms: 40.631304
+  type: 'test'
+  ...
+# (node:115) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: repo slug: lowercase, dashes for other characters, collapsed and trimmed, max 100
+ok 15 - repo slug: lowercase, dashes for other characters, collapsed and trimmed, max 100
+  ---
+  duration_ms: 0.847806
+  type: 'test'
+  ...
+# Subtest: status line follows loading, blank or invalid name, then the check for this exact slug
+ok 16 - status line follows loading, blank or invalid name, then the check for this exact slug
+  ---
+  duration_ms: 0.275654
+  type: 'test'
+  ...
+# Subtest: submit needs owners loaded, an owner, and the current slug confirmed available
+ok 17 - submit needs owners loaded, an owner, and the current slug confirmed available
+  ---
+  duration_ms: 0.12215
+  type: 'test'
+  ...
+# Subtest: submit label depends on git init and pending
+ok 18 - submit label depends on git init and pending
+  ---
+  duration_ms: 0.097855
+  type: 'test'
+  ...
+# Subtest: owner load errors are classified as SAML, scope, auth, or generic
+ok 19 - owner load errors are classified as SAML, scope, auth, or generic
+  ---
+  duration_ms: 0.25592
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2407.341166

@@ -17,7 +17,7 @@
 //
 // No JSX so `markdown.test.ts` can render it with react-dom/server.
 
-import { createElement as h, Fragment, useEffect, useState, type ComponentType, type ReactNode } from "react";
+import { createElement as h, Fragment, useState, type ComponentType, type ReactNode } from "react";
 import { MermaidBlock } from "./mermaid.ts";
 import type { ToastItem } from "../../components/toastTiming.ts";
 import { splitFrontmatter } from "./markdownFrontmatter.ts";
@@ -101,11 +101,6 @@ export function highlight(language: string | undefined, value: string): ReactNod
 
 function CopyCode({ text, notify }: { text: string; notify?: MarkdownOptions["notify"] }) {
   const [copied, setCopied] = useState(false);
-  useEffect(() => {
-    if (!copied) return;
-    const t = setTimeout(() => setCopied(false), 2000);
-    return () => clearTimeout(t);
-  }, [copied]);
   return h(
     "button",
     {
@@ -113,7 +108,11 @@ function CopyCode({ text, notify }: { text: string; notify?: MarkdownOptions["no
       className: "md-code-copy",
       "aria-label": copied ? "Copied" : "Copy code",
       title: copied ? "Copied" : "Copy",
-      onClick: () => void navigator.clipboard.writeText(text).then(() => setCopied(true), () => notify?.("error", "Failed to copy", { description: "Please try again." })),
+      onClick: () => void navigator.clipboard.writeText(text).then(() => {
+        setCopied(true);
+        // Conductor's t0 retains an independent reset for every successful copy.
+        setTimeout(() => setCopied(false), 2000);
+      }, () => notify?.("error", "Failed to copy", { description: "Please try again." })),
     },
     copied ? "Copied" : "Copy",
   );

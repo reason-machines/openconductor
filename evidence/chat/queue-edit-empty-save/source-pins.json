@@ -1,0 +1,104 @@
+{
+  "fixture": {
+    "path": "src/features/chat/composerQueueEditEmptySave.test.ts",
+    "bytes": 17423,
+    "sha256": "8739fb3f4ebbbdf4282b740ccce38f5a3572b213669b23a96016ec19535cb4e3"
+  },
+  "original_red_source": "c22e27d48a0940c5793842cfddc023b7e5f838c5",
+  "main_before_treatment": "3e54efdd71f44ab888ebd18d8fe37870e806a4ba",
+  "baseline_source_pins": [
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "sha256": "82aba37327b2ec32b96644fd0cf19923420b926ea9e2e2dbb4c4e851657da13a",
+      "bytes": 34266
+    },
+    {
+      "path": "src/features/chat/composerQueueFocus.test.ts",
+      "sha256": "399ade20e426496ab14a385f0439ed97aaad13504c97bd0839e4fbea547892c6",
+      "bytes": 17746
+    },
+    {
+      "path": "src/features/chat/queue.ts",
+      "sha256": "f08c481457eaf0389259d148c62c1c592cfc95612dc6b7576cb4c7c415e1e1a1",
+      "bytes": 12996
+    },
+    {
+      "path": "src/features/chat/queue.test.ts",
+      "sha256": "11868cc6ae58421f1e58b284a60909fab2bcaf4d1b7de2f6e623cf6c32acd552",
+      "bytes": 10973
+    },
+    {
+      "path": "src/features/chat/userContent.ts",
+      "sha256": "5bc4da24e8d193d68b85fd02f25c890ed6a2a44a3096ae51e008139900c3488c",
+      "bytes": 5105
+    },
+    {
+      "path": "src/features/chat/composerDocument.ts",
+      "sha256": "9228c3b05e08c41faffef50363e928d80636eda949003dbac34d197971d1a676",
+      "bytes": 2502
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "sha256": "b9df8f72c86c6c4e1cc05cade6b4719cd3abf26e557e690ffd574cbe2231ecb5",
+      "bytes": 28914
+    },
+    {
+      "path": "src/keybindings/shortcut.ts",
+      "sha256": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8",
+      "bytes": 5791
+    },
+    {
+      "path": "src/keybindings/overrides.ts",
+      "sha256": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193",
+      "bytes": 8207
+    },
+    {
+      "path": "src/features/chat/queueKeys.ts",
+      "sha256": "5e0ddfb22b9538056868dce47113fce9445d781b5fa23fe49b96cc2b1492c193",
+      "bytes": 2947
+    },
+    {
+      "path": "src/features/chat/slashCommands.ts",
+      "sha256": "f505f1a42b18162b37cc9adf46e2623bf47e61c77fdb77adb27a469cdb464c88",
+      "bytes": 9842
+    },
+    {
+      "path": "src/features/chat/composerSlashRange.ts",
+      "sha256": "7976d311ae93a640775995eaa184da9a754164ef483ddff9dee6e8e46cfb2902",
+      "bytes": 629
+    },
+    {
+      "path": "src/features/chat/fileMentions.ts",
+      "sha256": "82bcee9b4116b894fb5eb6ae2841c5b60f1f703db2907cb7347ae31bd5e79ca5",
+      "bytes": 2543
+    },
+    {
+      "path": "src/features/chat/types.ts",
+      "sha256": "28b0b229e3877338473a0232e678c479e6da4dfd3b59807e53b940e7469452d8",
+      "bytes": 3605
+    },
+    {
+      "path": "src/keybindings/types.ts",
+      "sha256": "20556563af7ebab6179ca9d0bf4912700fb967a4571f22d2baffaa98087433f7",
+      "bytes": 2072
+    }
+  ],
+  "original_plan_sha256": "37cc46c3bfcce539fb2017443c5456bf0c40e94eff93f9901f65e40b8cb82a6d",
+  "corrected_binding_sha256": "7cc2bc3db49e26b16a19a8c178f92750b1cc4104566d7b181c6f15e674996db0",
+  "original_receipt_note": "Legacy slice.sha256 was a REA directory-subject digest, not the slice file SHA. Original source-owner receipt remains unmodified; corrected binding explicitly supersedes that interpretation.",
+  "raw_red_bytes": 90398,
+  "raw_red_sha256": "5e5d2a3ba6c3ac04e7e6c65967e560a39119189e36a2411fa7a732d0e42c448d",
+  "reference_assets": {
+    "renderer": {
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "name": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "treatment_sha256": "8aca2474747054e9ed35885873c6ca9a5e21c76f276c6fd38fa0a090d3f5a3ad"
+}

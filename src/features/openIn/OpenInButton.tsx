@@ -163,6 +163,18 @@ export function OpenInButton({ path, notify, variant = "split", showShortcutHint
       return;
     }
     if (e.defaultPrevented) return;
+    // The icon dropdown's SLt handler returns Shift+Tab to its trigger.
+    if (!split && open && e.key === "Tab" && e.shiftKey) {
+      const eventPath = e.nativeEvent.composedPath?.();
+      const origin = eventPath?.[0] ?? e.nativeEvent.target;
+      const inside = menu.current && (menu.current.contains(origin as Node) || eventPath?.includes(menu.current));
+      if (origin && !inside) return;
+      e.preventDefault();
+      e.stopPropagation();
+      close();
+      wrap.current?.querySelector<HTMLElement>(".oi-chevron")?.focus();
+      return;
+    }
     // The icon menu's P9 → $li path types to focus, never to launch or copy.
     if (!split && open && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
       const typing = typeahead.current;

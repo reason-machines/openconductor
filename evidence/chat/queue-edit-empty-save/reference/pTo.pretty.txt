@@ -1,0 +1,1 @@
+function pTo({ attachmentsCount: t, disabled: e, hasPendingAttachmentStaging: n, hasPendingLegacyAttachments: i, inputValue: r, isGoalMode: o, isWorking: a, queueEditMode: c }) { return n ? !1 : c ? r.trim().length > 0 && e === "none" : o ? r.trim().length === 0 || e !== "none" ? !1 : !(a && i) : !(r.trim().length > 0 || t > 0) || e !== "none" ? !1 : !(a && i); }
