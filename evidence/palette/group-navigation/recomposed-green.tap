@@ -1,0 +1,231 @@
+(node:80) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:87) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:87) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: Option+ArrowDown: next sibling group skips an empty disabled-result group
+ok 1 - Option+ArrowDown: next sibling group skips an empty disabled-result group
+  ---
+  duration_ms: 11.615512
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: next sibling group starts at its first enabled row
+ok 2 - Option+ArrowDown: next sibling group starts at its first enabled row
+  ---
+  duration_ms: 2.959878
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: previous group selects its first row, not its last
+ok 3 - Option+ArrowUp: previous group selects its first row, not its last
+  ---
+  duration_ms: 7.840579
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: previous sibling skips empty disabled-result groups
+ok 4 - Option+ArrowUp: previous sibling skips empty disabled-result groups
+  ---
+  duration_ms: 5.530973
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: last group falls back to one row forward
+ok 5 - Option+ArrowDown: last group falls back to one row forward
+  ---
+  duration_ms: 6.371797
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: last row falls back to ordinary forward wrap
+ok 6 - Option+ArrowDown: last row falls back to ordinary forward wrap
+  ---
+  duration_ms: 5.342109
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: first group falls back to one row backward
+ok 7 - Option+ArrowUp: first group falls back to one row backward
+  ---
+  duration_ms: 3.015794
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: first row falls back to ordinary backward wrap
+ok 8 - Option+ArrowUp: first row falls back to ordinary backward wrap
+  ---
+  duration_ms: 2.027129
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: no selected row falls back to the first item
+ok 9 - Option+ArrowDown: no selected row falls back to the first item
+  ---
+  duration_ms: 5.929721
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: no selected row falls back to the last item
+ok 10 - Option+ArrowUp: no selected row falls back to the last item
+  ---
+  duration_ms: 20.727257
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: a single group moves one row forward
+ok 11 - Option+ArrowDown: a single group moves one row forward
+  ---
+  duration_ms: 9.052077
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: a single group moves one row backward
+ok 12 - Option+ArrowUp: a single group moves one row backward
+  ---
+  duration_ms: 8.32978
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: empty list consumes navigation without selecting
+ok 13 - Option+ArrowDown: empty list consumes navigation without selecting
+  ---
+  duration_ms: 5.203869
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: leading empty groups do not shift next-group offsets
+ok 14 - Option+ArrowDown: leading empty groups do not shift next-group offsets
+  ---
+  duration_ms: 1.542892
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: leading empty groups do not shift previous-group offsets
+ok 15 - Option+ArrowUp: leading empty groups do not shift previous-group offsets
+  ---
+  duration_ms: 1.671003
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: Workspaces active to Archived group
+ok 16 - Option+ArrowDown: Workspaces active to Archived group
+  ---
+  duration_ms: 9.469271
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: Workspaces Archived to active group
+ok 17 - Option+ArrowUp: Workspaces Archived to active group
+  ---
+  duration_ms: 1.762248
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: Projects single group keeps ordinary wrap
+ok 18 - Option+ArrowDown: Projects single group keeps ordinary wrap
+  ---
+  duration_ms: 6.051606
+  type: 'test'
+  ...
+# Subtest: control: {} ArrowDown keeps existing row/end navigation
+ok 19 - control: {} ArrowDown keeps existing row/end navigation
+  ---
+  duration_ms: 1.587083
+  type: 'test'
+  ...
+# Subtest: control: {} ArrowUp keeps existing row/end navigation
+ok 20 - control: {} ArrowUp keeps existing row/end navigation
+  ---
+  duration_ms: 0.763043
+  type: 'test'
+  ...
+# Subtest: control: {"metaKey":true} ArrowDown keeps existing row/end navigation
+ok 21 - control: {"metaKey":true} ArrowDown keeps existing row/end navigation
+  ---
+  duration_ms: 0.669394
+  type: 'test'
+  ...
+# Subtest: control: {"metaKey":true} ArrowUp keeps existing row/end navigation
+ok 22 - control: {"metaKey":true} ArrowUp keeps existing row/end navigation
+  ---
+  duration_ms: 0.780906
+  type: 'test'
+  ...
+# Subtest: control: {} Home keeps existing row/end navigation
+ok 23 - control: {} Home keeps existing row/end navigation
+  ---
+  duration_ms: 0.847629
+  type: 'test'
+  ...
+# Subtest: control: {} End keeps existing row/end navigation
+ok 24 - control: {} End keeps existing row/end navigation
+  ---
+  duration_ms: 2.279615
+  type: 'test'
+  ...
+# Subtest: control: {"ctrlKey":true} n keeps existing row/end navigation
+ok 25 - control: {"ctrlKey":true} n keeps existing row/end navigation
+  ---
+  duration_ms: 1.574778
+  type: 'test'
+  ...
+# Subtest: control: {"ctrlKey":true} j keeps existing row/end navigation
+ok 26 - control: {"ctrlKey":true} j keeps existing row/end navigation
+  ---
+  duration_ms: 1.329561
+  type: 'test'
+  ...
+# Subtest: control: {"ctrlKey":true} p keeps existing row/end navigation
+ok 27 - control: {"ctrlKey":true} p keeps existing row/end navigation
+  ---
+  duration_ms: 9.993903
+  type: 'test'
+  ...
+# Subtest: control: {"ctrlKey":true} k keeps existing row/end navigation
+ok 28 - control: {"ctrlKey":true} k keeps existing row/end navigation
+  ---
+  duration_ms: 5.974316
+  type: 'test'
+  ...
+# Subtest: control: composing Option+ArrowDown {"isComposing":true} remains unconsumed
+ok 29 - control: composing Option+ArrowDown {"isComposing":true} remains unconsumed
+  ---
+  duration_ms: 7.478308
+  type: 'test'
+  ...
+# Subtest: control: composing Option+ArrowUp {"isComposing":true} remains unconsumed
+ok 30 - control: composing Option+ArrowUp {"isComposing":true} remains unconsumed
+  ---
+  duration_ms: 6.409247
+  type: 'test'
+  ...
+# Subtest: control: composing Option+ArrowDown {"keyCode":229} remains unconsumed
+ok 31 - control: composing Option+ArrowDown {"keyCode":229} remains unconsumed
+  ---
+  duration_ms: 6.049359
+  type: 'test'
+  ...
+# Subtest: control: composing Option+ArrowUp {"keyCode":229} remains unconsumed
+ok 32 - control: composing Option+ArrowUp {"keyCode":229} remains unconsumed
+  ---
+  duration_ms: 5.868768
+  type: 'test'
+  ...
+# Subtest: control: Enter selects the active item
+ok 33 - control: Enter selects the active item
+  ---
+  duration_ms: 2.928126
+  type: 'test'
+  ...
+# Subtest: control: Escape closes instead of navigating
+ok 34 - control: Escape closes instead of navigating
+  ---
+  duration_ms: 2.935015
+  type: 'test'
+  ...
+# Subtest: control: a custom Option shortcut still switches tabs
+ok 35 - control: a custom Option shortcut still switches tabs
+  ---
+  duration_ms: 8.369603
+  type: 'test'
+  ...
+# Subtest: control: unrelated Option input stays in the search field
+ok 36 - control: unrelated Option input stays in the search field
+  ---
+  duration_ms: 1.856506
+  type: 'test'
+  ...
+1..36
+# tests 36
+# suites 0
+# pass 36
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 810.244523

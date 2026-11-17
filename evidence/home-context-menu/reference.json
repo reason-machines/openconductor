@@ -1,0 +1,472 @@
+{
+  "unit": "SAME271-home-ejo-source-qualification-v1",
+  "status": "SOURCE_CHAIN_COMPLETE_NOT_BEHAVIORAL",
+  "parent": {
+    "name": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "main": "6ceaa15f6d4bb5efb0ad5aa23acff3a6d8ae5ca9",
+  "spans": [
+    {
+      "symbol": "_Jo",
+      "utf8_span": [
+        9845318,
+        9849951
+      ],
+      "bytes": 4633,
+      "sha256": "e9d9cff5d2c849eeee2425d64cfb94bb6283ba19b2e3e836e07ab762510344ea",
+      "basis": "reused previously verified wrapper",
+      "source_text": "_Jo=$.memo(function(e){const n=ne.c(83),{workspace:i,displayBranch:r,repo:o,owner:a,showOwnerColumn:c,showRepositoryIcon:u,showCostColumn:d,workspaceStatusMatrixEnabled:h,onSelectWorkspace:m,fieldMatches:g}=e,_=i.state===\"archived\",v=i.state===\"unstarted\",x=OXo(i.localId);let w;n[0]!==i.aggregatedStatus||n[1]!==i.state?(w=oWt({aggregatedSessionStatus:i.aggregatedStatus,workspaceState:i.state}),n[0]=i.aggregatedStatus,n[1]=i.state,n[2]=w):w=n[2];const E=w,{data:k}=NYe(),I=g!==void 0,R=i.remoteState?.estimatedCostUsd;let O;n[3]!==m||n[4]!==i?(O=()=>{m(i)},n[3]=m,n[4]=i,n[5]=O):O=n[5];const D=O,P=i.localId;let L;n[6]!==x||n[7]!==h?(L=!h&&p.jsx(fWt,{gitStatus:x}),n[6]=x,n[7]=h,n[8]=L):L=n[8];let B;n[9]!==a||n[10]!==c||n[11]!==h?(B=!h&&c&&(a?p.jsx(rJn,{member:a,className:\"mt-0.5\"}):p.jsx(\"span\",{className:\"mt-0.5 size-4 shrink-0\"})),n[9]=a,n[10]=c,n[11]=h,n[12]=B):B=n[12];let F;n[13]!==x||n[14]!==_||n[15]!==v||n[16]!==o||n[17]!==u||n[18]!==E||n[19]!==i.hasUnread||n[20]!==i.origin||n[21]!==h?(F=h?p.jsx(hWt,{desktopGestures:!0,gitStatus:v?void 0:x,hasUnread:!_&&!v&&i.hasUnread,isAutomationRun:i.origin===\"routine\",status:_?\"branch\":E}):u&&o&&p.jsx(SJo,{repository:o}),n[13]=x,n[14]=_,n[15]=v,n[16]=o,n[17]=u,n[18]=E,n[19]=i.hasUnread,n[20]=i.origin,n[21]=h,n[22]=F):F=n[22];let H;n[23]!==g?.number||n[24]!==I||n[25]!==_||n[26]!==k||n[27]!==i.number?(H=k&&p.jsx(\"span\",{className:Xe(\"w-14 shrink-0 font-mono\",_?\"text-faint\":\"text-muted-foreground\"),children:i.number!==void 0&&p.jsx(u2,{match:g?.number,hasQuery:I,fallbackText:`W-${i.number}`})}),n[23]=g?.number,n[24]=I,n[25]=_,n[26]=k,n[27]=i.number,n[28]=H):H=n[28];const U=_?\"font-450 text-faint\":i.hasUnread?\"font-semibold text-foreground\":\"font-450 text-muted-foreground\";let z;n[29]!==U?(z=Xe(\"min-w-0\",U),n[29]=U,n[30]=z):z=n[30];const G=g?.name;let K;n[31]!==r||n[32]!==I||n[33]!==G?(K=p.jsx(u2,{match:G,hasQuery:I,fallbackText:r}),n[31]=r,n[32]=I,n[33]=G,n[34]=K):K=n[34];let X;n[35]!==r||n[36]!==K||n[37]!==z?(X=p.jsx(b6i,{className:z,title:r,children:K}),n[35]=r,n[36]=K,n[37]=z,n[38]=X):X=n[38];let Q;n[39]!==X||n[40]!==F||n[41]!==H?(Q=p.jsxs(\"div\",{className:\"flex min-w-0 flex-1 items-center gap-2.5\",children:[F,H,X]}),n[39]=X,n[40]=F,n[41]=H,n[42]=Q):Q=n[42];const J=h?d?c?\"grid-cols-[5.5rem_3.5rem_1rem_3rem]\":\"grid-cols-[5.5rem_3.5rem_3rem]\":c?\"grid-cols-[5.5rem_1rem_3rem]\":\"grid-cols-[5.5rem_3rem]\":d?\"grid-cols-[5.5rem_3.5rem_3rem]\":\"grid-cols-[5.5rem_3rem]\";let te;n[43]!==J?(te=Xe(\"grid shrink-0 items-center gap-x-2\",J),n[43]=J,n[44]=te):te=n[44];let Z;n[45]!==v||n[46]!==i?(Z=p.jsx(\"div\",{className:\"flex justify-end\",children:v?p.jsx(xJo,{workspace:i}):p.jsx(wJo,{localWorkspaceId:i.localId})}),n[45]=v,n[46]=i,n[47]=Z):Z=n[47];let se;n[48]!==R||n[49]!==d?(se=d&&p.jsx(\"div\",{className:\"flex justify-end\",children:R!==void 0&&R>0&&p.jsxs(Jn,{children:[p.jsx(Xn,{asChild:!0,children:p.jsx(\"span\",{className:\"flex\",children:p.jsx(Qu,{variant:\"tip\",className:\"h-5 shrink-0\",children:CJo(R)})})}),p.jsx(r8i,{heading:cZe.workspaceHeading})]})}),n[48]=R,n[49]=d,n[50]=se):se=n[50];let ce;n[51]!==a||n[52]!==c||n[53]!==h?(ce=h&&c&&p.jsx(\"div\",{className:\"flex justify-end\",children:a?p.jsx(rJn,{member:a}):p.jsx(\"span\",{className:\"size-4 shrink-0\"})}),n[51]=a,n[52]=c,n[53]=h,n[54]=ce):ce=n[54];let ae;n[55]!==_||n[56]!==E||n[57]!==i.lastActiveAt||n[58]!==i.localId||n[59]!==h?(ae=p.jsx(vJo,{localWorkspaceId:i.localId,isArchived:_,status:E,lastActiveAt:i.lastActiveAt,workspaceStatusMatrixEnabled:h}),n[55]=_,n[56]=E,n[57]=i.lastActiveAt,n[58]=i.localId,n[59]=h,n[60]=ae):ae=n[60];let de;n[61]!==te||n[62]!==Z||n[63]!==se||n[64]!==ce||n[65]!==ae?(de=p.jsxs(\"div\",{className:te,children:[Z,se,ce,ae]}),n[61]=te,n[62]=Z,n[63]=se,n[64]=ce,n[65]=ae,n[66]=de):de=n[66];let ue;n[67]!==Q||n[68]!==de?(ue=p.jsx(\"div\",{className:\"min-w-0 flex-1\",children:p.jsxs(\"div\",{className:\"flex h-5 min-w-0 items-center gap-2\",children:[Q,de]})}),n[67]=Q,n[68]=de,n[69]=ue):ue=n[69];let pe;n[70]!==ue||n[71]!==B?(pe=p.jsxs(\"div\",{className:\"flex w-full min-w-0 items-start gap-2\",children:[B,ue]}),n[70]=ue,n[71]=B,n[72]=pe):pe=n[72];let be;n[73]!==D||n[74]!==pe||n[75]!==L||n[76]!==i.localId?(be=p.jsx(SI,{...aF,children:p.jsxs($o,{value:P,onSelect:D,className:\"group cursor-pointer rounded-md px-2 py-2.5 text-sm hover:bg-sidebar-accent data-[selected=true]:border-border\",children:[L,pe]})}),n[73]=D,n[74]=pe,n[75]=L,n[76]=i.localId,n[77]=be):be=n[77];let he;n[78]!==i.localId?(he=p.jsx(EJo,{localWorkspaceId:i.localId}),n[78]=i.localId,n[79]=he):he=n[79];let ge;return n[80]!==be||n[81]!==he?(ge=p.jsxs(wI,{children:[be,he]}),n[80]=be,n[81]=he,n[82]=ge):ge=n[82],ge});"
+    },
+    {
+      "symbol": "wI",
+      "utf8_span": [
+        2214626,
+        2215128
+      ],
+      "bytes": 502,
+      "sha256": "b38247e518250721db86ae20122e9532598cf90b3e7c1bd85f5869988878395b",
+      "basis": "reused previously verified wrapper",
+      "source_text": "function wI(t){const[e,n]=$.useState({getBoundingClientRect(){return DOMRect.fromRect({width:0,height:0,x:0,y:0})}}),i=$.useRef(null),r=$.useRef(null),o=$.useRef(null),a=$.useRef(null),c=$.useRef(!0),u=$.useRef(null),d=Fj(),h=$.useMemo(()=>({anchor:e,setAnchor:n,actionsRef:o,backdropRef:i,internalBackdropRef:r,positionerRef:a,allowMouseUpTriggerRef:c,initialCursorPointRef:u,rootId:d}),[e,d]);return p.jsx(t0i.Provider,{value:h,children:p.jsx(dMt.Provider,{value:void 0,children:p.jsx(oF,{...t})})})}"
+    },
+    {
+      "symbol": "SI",
+      "utf8_span": [
+        2215142,
+        2216980
+      ],
+      "bytes": 1838,
+      "sha256": "9090e98500e998ff296aaa58d335583ee2c56a2e11b0e442284965ba0e13e6d1",
+      "basis": "reused previously verified wrapper",
+      "source_text": "SI=$.forwardRef(function(e,n){const{render:i,className:r,style:o,...a}=e,{setAnchor:c,actionsRef:u,internalBackdropRef:d,backdropRef:h,positionerRef:m,allowMouseUpTriggerRef:g,initialCursorPointRef:_,rootId:v}=mEe(!1),{store:x}=f5(!1),w=x.useState(\"open\"),E=x.useState(\"disabled\"),k=$.useRef(null),I=$.useRef(null),R=b0(),O=b0(),D=$.useRef(!1),P=$.useRef(null);function L(K,X,Q){const J=Q.type.startsWith(\"touch\");_.current={x:K,y:X},c({getBoundingClientRect(){return DOMRect.fromRect({width:J?10:0,height:J?10:0,x:K,y:X})}}),D.current=!1,u.current?.setOpen(!0,Ys(JA,Q)),O.start(DLn,()=>{D.current=!0})}function B(K){if(E)return;g.current=!0,Z_(K),L(K.clientX,K.clientY,K.nativeEvent);const X=Gl(k.current);P.current?.abort();const Q=new AbortController;P.current=Q,X.addEventListener(\"mouseup\",J=>{if(g.current=!1,!D.current)return;O.clear(),D.current=!1;const te=jf(J);oo(m.current,te)||v&&te&&bMt(te)===v||u.current?.setOpen(!1,Ys(ZPt,J))},{once:!0,signal:Q.signal})}function F(){R.clear(),I.current=null}function H(K){if(E){F();return}if(g.current=!1,K.touches.length!==1){F();return}K.stopPropagation();const X=K.touches[0],Q={x:X.clientX,y:X.clientY};I.current=Q,R.start(DLn,()=>{L(Q.x,Q.y,K.nativeEvent)})}function U(K){if(K.touches.length!==1){F();return}if(R.isStarted()&&I.current){const X=K.touches[0],Q=10,J=Math.abs(X.clientX-I.current.x),te=Math.abs(X.clientY-I.current.y);(J>Q||te>Q)&&F()}}return $.useEffect(()=>()=>{P.current?.abort()},[]),$.useEffect(()=>{function K(Q){if(E)return;const te=jf(Q);(oo(k.current,te)||oo(d.current,te)||oo(h.current,te))&&Q.preventDefault()}const X=Gl(k.current);return vc(X,\"contextmenu\",K)},[h,E,d]),Es(\"div\",e,{state:{open:w},ref:[k,n],props:[{onContextMenu:B,onTouchStart:H,onTouchMove:U,onTouchEnd:F,onTouchCancel:F,style:{WebkitTouchCallout:\"none\"}},a],stateAttributesMapping:Rce})})"
+    },
+    {
+      "symbol": "EJo",
+      "utf8_span": [
+        9855680,
+        9855911
+      ],
+      "bytes": 231,
+      "sha256": "1f9414aa3bc8f9c26a5fbd69b1a42ce095b8168387cfc12226f61a2d04e89d6f",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function EJo(t){const e=ne.c(2),{localWorkspaceId:n}=t;let i;return e[0]!==n?(i=p.jsx(g2,{children:p.jsx(b2,{children:p.jsx(m2,{className:`${my} min-w-[200px]`,children:p.jsx(D9e,{localWorkspaceId:n})})})}),e[0]=n,e[1]=i):i=e[1],i}"
+    },
+    {
+      "symbol": "D9e",
+      "utf8_span": [
+        7356258,
+        7357851
+      ],
+      "bytes": 1593,
+      "sha256": "6749cd651553318fd3c5bc1df59af226790e3e193e641e0fd4e747e716f78776",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function D9e(t){const e=ne.c(34),{localWorkspaceId:n}=t;let i;e[0]!==n?(i={localWorkspaceId:n},e[0]=n,e[1]=i):i=e[1];const{data:r}=Ms(i);let o;e[2]!==n?(o={localWorkspaceId:n},e[2]=n,e[3]=o):o=e[3];const{data:a}=N6(o,zao);let c;e[4]!==a?(c=a?.some(Uao)??!1,e[4]=a,e[5]=c):c=e[5];const u=c,d=r?.pinnedAt??void 0,{mutate:h}=uSe(),m=Ld(n),g=Vd()?.id;if(!r)return null;let _;e[6]!==r?(_=FYe(r),e[6]=r,e[7]=_):_=e[7];const v=_;let x;e[8]!==g||e[9]!==r.watcherUserIds?(x=g===void 0?void 0:r.watcherUserIds?.includes(g),e[8]=g,e[9]=r.watcherUserIds,e[10]=x):x=e[10];const w=x;let E;e[11]!==g||e[12]!==r?(E=g!==void 0&&HJ({workspace:r,userId:g}),e[11]=g,e[12]=r,e[13]=E):E=e[13];const k=E,I=r.state===\"archived\",R=r.state===\"unstarted\",O=r.remoteState?.workspacePublicUrl,D=r.access?.restricted===!1&&r.access.userPermission===\"admin\";let P;e[14]!==h||e[15]!==n?(P=()=>h({localWorkspaceId:n}),e[14]=h,e[15]=n,e[16]=P):P=e[16];let L;return e[17]!==v||e[18]!==u||e[19]!==k||e[20]!==w||e[21]!==n||e[22]!==m||e[23]!==d||e[24]!==D||e[25]!==P||e[26]!==I||e[27]!==R||e[28]!==O||e[29]!==r.description||e[30]!==r.host||e[31]!==r.id||e[32]!==r.orgId?(L=p.jsx(Aao,{localWorkspaceId:n,workspaceId:r.id,hasUnread:u,pinnedAt:d,effectiveStatus:v,isArchived:I,isUnstarted:R,description:r.description,isWatchedByMe:w,isAssignedToMe:k,workspaceOrganizationId:r.orgId,host:r.host,workspacePublicUrl:O,permissionLevel:m,canReassign:D,onArchive:P}),e[17]=v,e[18]=u,e[19]=k,e[20]=w,e[21]=n,e[22]=m,e[23]=d,e[24]=D,e[25]=P,e[26]=I,e[27]=R,e[28]=O,e[29]=r.description,e[30]=r.host,e[31]=r.id,e[32]=r.orgId,e[33]=L):L=e[33],L}"
+    },
+    {
+      "symbol": "Aao",
+      "utf8_span": [
+        7345831,
+        7354118
+      ],
+      "bytes": 8287,
+      "sha256": "9af62d9c3b16d666695a2d79ae20419105797c59f34f41682113acbdd19ca163",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function Aao(t){const e=ne.c(134),{localWorkspaceId:n,workspaceId:i,hasUnread:r,pinnedAt:o,effectiveStatus:a,isArchived:c,isUnstarted:u,description:d,isWatchedByMe:h,isAssignedToMe:m,workspaceOrganizationId:g,host:_,workspacePublicUrl:v,permissionLevel:x,canReassign:w,onArchive:E}=t,k=w===void 0?!1:w,I=wDt(),R=BYe(),O=SDt(),D=Eii(),P=ESe(),L=Rii(),B=nV(Lao),F=nV(Pao),H=fp(n),U=hy().data===!0,z=JZ(Dao),G=_!==gn,K=G&&!u,X=x!==\"read\",{organization:Q}=so();let J;e[0]!==Q?(J=Q!==void 0&&fc(Q)===\"cloud\",e[0]=Q,e[1]=J):J=e[1];const te=J;let Z;e[2]!==_||e[3]!==g?(Z={host:_,orgId:g},e[2]=_,e[3]=g,e[4]=Z):Z=e[4];const se=OYe(Z);let ce;e[5]!==se?(ce=se!==void 0&&fc(se)===\"cloud\",e[5]=se,e[6]=ce):ce=e[6];const ae=ce,de=NCi(n);let ue;e[7]!==n?(ue=()=>{XV({localWorkspaceId:n})},e[7]=n,e[8]=ue):ue=e[8];const pe=ue;let be;e[9]!==_||e[10]!==G||e[11]!==n?(be=()=>{RCi({localWorkspaceId:n,workspaceHostingServerUrl:G?_.hostingServerUrl:void 0}).then(Oao).then(()=>{er.success(\"Copied workspace info\",n)}).catch(()=>{er.error(\"Failed to copy workspace info\",n)}).fireAndForget()},e[9]=_,e[10]=G,e[11]=n,e[12]=be):be=e[12];const he=be;let ge;e[13]!==v?(ge=()=>{v!==void 0&&l1(v).then(()=>{er.success(\"Copied workspace public URL\",v)}).catch(()=>{er.error(\"Failed to copy workspace public URL\",v)}).fireAndForget()},e[13]=v,e[14]=ge):ge=e[14];const ve=ge;let ye;e[15]!==_||e[16]!==i?(ye=async()=>{if(_===gn)throw new Error(\"Workspace is not remote\");if(i===void 0)throw new Error(\"Workspace has not been registered yet.\");const Rt=await Uue({baseUrl:_.hostingServerUrl,path:`/workspaces/${i}/state`});if(!Rt.ok){const Ft=await Rt.text().catch(Nao);throw new Error(`Roundhouse returned ${Rt.status} when fetching workspace state${Ft?`: ${Ft}`:\"\"}`)}let Yt;try{Yt=await Rt.json()}catch{throw new Error(\"Roundhouse returned an invalid response body\")}const on=xxr.safeParse(Yt);if(!on.success)throw new Error(\"Unexpected response shape from Roundhouse /state endpoint\");const{externalId:jn}=on.data;if(!jn)throw new Error(\"No sandbox is associated with this workspace yet\");return{...on.data,externalId:jn}},e[15]=_,e[16]=i,e[17]=ye):ye=e[17];const xe=ye;let ke;e[18]!==n?(ke=[\"openSandboxLogs\",n],e[18]=n,e[19]=ke):ke=e[19];const Se=ke;let De;e[20]!==_||e[21]!==i?(De=async()=>{if(i===void 0)throw new Error(\"Workspace has not been registered yet.\");await vs(zoo({appType:lv,hostingServerUrl:_.hostingServerUrl,workspaceId:i}))},e[20]=_,e[21]=i,e[22]=De):De=e[22];let je;e[23]!==Se||e[24]!==De?(je={mutationKey:Se,mutationFn:De,onError:Rao},e[23]=Se,e[24]=De,e[25]=je):je=e[25];const Ne=Ao(je);let Le;e[26]!==n?(Le=[\"copySandboxId\",n],e[26]=n,e[27]=Le):Le=e[27];const ze=Le;let Ke;e[28]!==xe?(Ke=async()=>{const Rt=await xe();await l1(Rt.externalId),er.success(\"Copied sandbox id\",Rt.externalId)},e[28]=xe,e[29]=Ke):Ke=e[29];let Ze;e[30]!==ze||e[31]!==Ke?(Ze={mutationKey:ze,mutationFn:Ke,onError:Iao},e[30]=ze,e[31]=Ke,e[32]=Ze):Ze=e[32];const Ye=Ao(Ze);let Qe;e[33]!==r||e[34]!==n||e[35]!==o||e[36]!==H?(Qe=p.jsx(Fao,{localWorkspaceId:n,hasUnread:r,pinnedAt:o,selectedSessionId:H}),e[33]=r,e[34]=n,e[35]=o,e[36]=H,e[37]=Qe):Qe=e[37];let Ue;e[38]!==X||e[39]!==d||e[40]!==_||e[41]!==u||e[42]!==n||e[43]!==g?(Ue=u&&X&&p.jsx(Mao,{workspace:{localId:n,description:d,orgId:g,host:_}}),e[38]=X,e[39]=d,e[40]=_,e[41]=u,e[42]=n,e[43]=g,e[44]=Ue):Ue=e[44];let We;e[45]!==F||e[46]!==r||e[47]!==u||e[48]!==n||e[49]!==B||e[50]!==L||e[51]!==H||e[52]!==P?(We=u?null:r?p.jsxs(Pu,{className:yu,onClick:()=>{L.mutate(n),F(n)},children:[p.jsx(l1i,{}),\"Mark as read\",p.jsx(J4,{children:\"R\"})]}):H&&p.jsxs(Pu,{className:yu,onClick:()=>{P.mutate({sessionId:H,localWorkspaceId:n,unread:!0}),B({sessionId:H,localWorkspaceId:n})},children:[p.jsx(u1i,{}),\"Mark as unread\",p.jsx(J4,{children:\"R\"})]}),e[45]=F,e[46]=r,e[47]=u,e[48]=n,e[49]=B,e[50]=L,e[51]=H,e[52]=P,e[53]=We):We=e[53];let Ve;e[54]!==n||e[55]!==o||e[56]!==O?(Ve=()=>{O.mutate({localWorkspaceId:n,pinned:o===void 0})},e[54]=n,e[55]=o,e[56]=O,e[57]=Ve):Ve=e[57];let He;e[58]!==o?(He=o!==void 0?p.jsxs(p.Fragment,{children:[p.jsx(nfi,{}),\"Unpin\"]}):p.jsxs(p.Fragment,{children:[p.jsx(rfi,{}),\"Pin\"]}),e[58]=o,e[59]=He):He=e[59];let it;e[60]===Symbol.for(\"react.memo_cache_sentinel\")?(it=p.jsx(J4,{children:\"P\"}),e[60]=it):it=e[60];let ft;e[61]!==Ve||e[62]!==He?(ft=p.jsxs(Pu,{className:yu,onClick:Ve,children:[He,it]}),e[61]=Ve,e[62]=He,e[63]=ft):ft=e[63];let gt;e[64]===Symbol.for(\"react.memo_cache_sentinel\")?(gt=p.jsx(DCi,{}),e[64]=gt):gt=e[64];let Tt;e[65]===Symbol.for(\"react.memo_cache_sentinel\")?(Tt=p.jsxs(PV,{className:yu,children:[gt,\"Set status\",p.jsx(td,{className:\"ml-auto h-4 w-4\"})]}),e[65]=Tt):Tt=e[65];let Ct;e[66]!==a||e[67]!==n||e[68]!==I?(Ct=Nii.map(Rt=>{const Yt=Rt===a,on=sZe(Rt),jn=K5e(Rt);return p.jsxs(Pu,{className:yu,onClick:()=>{I.mutate({localWorkspaceId:n,status:Rt})},disabled:I.isPending&&Yt,children:[p.jsx(\"span\",{className:\"flex items-center\",children:jn}),p.jsx(\"span\",{className:\"flex-1\",children:on}),Yt&&p.jsx(Uo,{className:\"text-sidebar-muted-foreground\"})]},Rt)}),e[66]=a,e[67]=n,e[68]=I,e[69]=Ct):Ct=e[69];let _t;e[70]!==Ct?(_t=p.jsxs(PZ,{children:[Tt,p.jsx(g2,{children:p.jsx(b2,{children:p.jsx(m2,{className:`${my} w-44`,children:Ct})})})]}),e[70]=Ct,e[71]=_t):_t=e[71];let Vt;e[72]!==Q?.id||e[73]!==te||e[74]!==G||e[75]!==n||e[76]!==g?(Vt=(!G&&!te||g===Q?.id)&&p.jsx(Xoo,{localWorkspaceId:n}),e[72]=Q?.id,e[73]=te,e[74]=G,e[75]=n,e[76]=g,e[77]=Vt):Vt=e[77];let bt;e[78]!==m||e[79]!==ae||e[80]!==G||e[81]!==h||e[82]!==n||e[83]!==D?(bt=G&&ae&&!m&&p.jsx(Pu,{className:yu,onClick:()=>{D.mutate({localWorkspaceId:n,watched:!(h??!1)})},children:h??!1?p.jsxs(p.Fragment,{children:[p.jsx(d5,{}),\"Unfollow\"]}):p.jsxs(p.Fragment,{children:[p.jsx(ob,{}),\"Follow\"]})}),e[78]=m,e[79]=ae,e[80]=G,e[81]=h,e[82]=n,e[83]=D,e[84]=bt):bt=e[84];let wt;e[85]!==k||e[86]!==ae||e[87]!==G||e[88]!==n?(wt=G&&ae&&k&&p.jsx(Aoo,{localWorkspaceId:n}),e[85]=k,e[86]=ae,e[87]=G,e[88]=n,e[89]=wt):wt=e[89];let Nt;e[90]!==X||e[91]!==n?(Nt=X&&p.jsxs(Pu,{className:yu,onClick:()=>{nr.openDialog(sJ,{localWorkspaceId:n})},children:[p.jsx(Cm,{}),\"Rename\"]}),e[90]=X,e[91]=n,e[92]=Nt):Nt=e[92];let Wt;e[93]===Symbol.for(\"react.memo_cache_sentinel\")?(Wt=p.jsx($H,{}),e[93]=Wt):Wt=e[93];let Dn;e[94]!==de?(Dn=de&&p.jsx(J4,{children:\"\u2318\u21e7C\"}),e[94]=de,e[95]=Dn):Dn=e[95];let _n;e[96]!==pe||e[97]!==Dn?(_n=p.jsxs(Pu,{className:yu,onClick:pe,children:[Wt,\"Copy link\",Dn]}),e[96]=pe,e[97]=Dn,e[98]=_n):_n=e[98];let Vn;e[99]!==Ye||e[100]!==he||e[101]!==ve||e[102]!==K||e[103]!==U||e[104]!==z||e[105]!==Ne||e[106]!==v?(Vn=U&&!z&&p.jsxs(p.Fragment,{children:[p.jsx(dy,{className:bJ}),p.jsxs(Pu,{onClick:he,className:`${yu} text-internal`,children:[p.jsx(mj,{}),\"Copy workspace info\"]}),K&&p.jsxs(p.Fragment,{children:[v&&p.jsxs(Pu,{onClick:ve,className:`${yu} text-internal`,children:[p.jsx(mj,{}),\"Copy workspace public URL\"]}),p.jsxs(Pu,{onClick:()=>Ye.mutate(),disabled:Ye.isPending,className:`${yu} text-internal`,children:[p.jsx(mj,{}),\"Copy sandbox id\"]}),p.jsxs(Pu,{onClick:()=>Ne.mutate(),disabled:Ne.isPending,className:`${yu} text-internal`,children:[p.jsx(Fxe,{}),\"Open sandbox logs\"]})]})]}),e[99]=Ye,e[100]=he,e[101]=ve,e[102]=K,e[103]=U,e[104]=z,e[105]=Ne,e[106]=v,e[107]=Vn):Vn=e[107];let Zt;e[108]!==X||e[109]!==K||e[110]!==n?(Zt=K&&X&&p.jsx(jao,{localWorkspaceId:n}),e[108]=X,e[109]=K,e[110]=n,e[111]=Zt):Zt=e[111];let zt;e[112]===Symbol.for(\"react.memo_cache_sentinel\")?(zt=p.jsx(dy,{className:bJ}),e[112]=zt):zt=e[112];let ct;e[113]!==X||e[114]!==c||e[115]!==de||e[116]!==n||e[117]!==E||e[118]!==R?(ct=c?p.jsxs(Pu,{className:yu,onClick:()=>{R.mutate({localWorkspaceId:n})},disabled:!X||R.isPending,children:[p.jsx(nI,{}),\"Unarchive\"]}):p.jsxs(Pu,{className:yu,onClick:E,disabled:!X,children:[p.jsx(O9,{}),\"Archive\",de&&p.jsx(J4,{children:\"\u2318\u21e7A\"})]}),e[113]=X,e[114]=c,e[115]=de,e[116]=n,e[117]=E,e[118]=R,e[119]=ct):ct=e[119];let Pt;return e[120]!==Qe||e[121]!==Ue||e[122]!==We||e[123]!==ft||e[124]!==_t||e[125]!==Vt||e[126]!==bt||e[127]!==wt||e[128]!==Nt||e[129]!==_n||e[130]!==Vn||e[131]!==Zt||e[132]!==ct?(Pt=p.jsxs(p.Fragment,{children:[Qe,Ue,We,ft,_t,Vt,bt,wt,Nt,_n,Vn,Zt,zt,ct]}),e[120]=Qe,e[121]=Ue,e[122]=We,e[123]=ft,e[124]=_t,e[125]=Vt,e[126]=bt,e[127]=wt,e[128]=Nt,e[129]=_n,e[130]=Vn,e[131]=Zt,e[132]=ct,e[133]=Pt):Pt=e[133],Pt}"
+    },
+    {
+      "symbol": "Fao",
+      "utf8_span": [
+        7355459,
+        7356119
+      ],
+      "bytes": 660,
+      "sha256": "776eb8a83d99537b09c55d914a8234426102431685f85ff94e3119dc5921b97f",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function Fao(t){const e=ne.c(12),{localWorkspaceId:n,hasUnread:i,pinnedAt:r,selectedSessionId:o}=t,a=SDt(),c=ESe(),u=Rii(),d=nV($ao),h=nV(Bao);let m;e[0]!==h||e[1]!==i||e[2]!==n||e[3]!==d||e[4]!==u||e[5]!==o||e[6]!==c?(m=()=>{i?(u.mutate(n),h(n)):o&&(c.mutate({sessionId:o,localWorkspaceId:n,unread:!0}),d({sessionId:o,localWorkspaceId:n}))},e[0]=h,e[1]=i,e[2]=n,e[3]=d,e[4]=u,e[5]=o,e[6]=c,e[7]=m):m=e[7];const g=m;let _;e[8]!==n||e[9]!==r||e[10]!==a?(_=()=>{a.mutate({localWorkspaceId:n,pinned:r===void 0})},e[8]=n,e[9]=r,e[10]=a,e[11]=_):_=e[11];const v=_;return oi(\"workspace.contextMenu.toggleRead\",g,PVn),oi(\"workspace.contextMenu.togglePin\",v,PVn),null}"
+    },
+    {
+      "symbol": "PVn",
+      "utf8_span": [
+        7345698,
+        7345831
+      ],
+      "bytes": 133,
+      "sha256": "2d655491dc05abe9232feb1e75d17a8d04c61ec45809225cb52f57672fdb4533",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "const PVn={priority:vd.DIALOG,enableOnInputFocus:!0,enableOnDialogIds:null,isGlobal:!0,enableOnTerminalFocus:!1,allowWhileTyping:!1};"
+    },
+    {
+      "symbol": "Mao",
+      "utf8_span": [
+        7354482,
+        7354855
+      ],
+      "bytes": 373,
+      "sha256": "72c8e4d882084f0a285d1fe3810d05ed86b2f8abc7ddad988d40cee9b0d3ab30",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function Mao(t){const e=ne.c(7),{workspace:n}=t,{mutate:i,isPending:r}=Bzt();let o;e[0]!==i||e[1]!==n?(o=()=>i({workspace:n}),e[0]=i,e[1]=n,e[2]=o):o=e[2];let a;e[3]===Symbol.for(\"react.memo_cache_sentinel\")?(a=p.jsx(uy,{}),e[3]=a):a=e[3];let c;return e[4]!==r||e[5]!==o?(c=p.jsxs(Pu,{className:yu,disabled:r,onClick:o,children:[a,\"Start\"]}),e[4]=r,e[5]=o,e[6]=c):c=e[6],c}"
+    },
+    {
+      "symbol": "Bzt",
+      "utf8_span": [
+        7344379,
+        7345698
+      ],
+      "bytes": 1319,
+      "sha256": "ffac84505c15131bd4a20c7a118fa7d0926d55135e9a77870d8d7d45ca76f6ec",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function Bzt(){const{organization:t,baseUrl:e}=so(),n=t?.id,{data:i}=DD({baseUrl:e,organizationId:n}),r=Ku(u=>n===void 0?void 0:u.lastMachineRepositoryIdByOrg?.[n]),o=dZ(),a=g5(),c=aa();return Ao({mutationKey:[\"startUnstartedWorkspace\"],mutationFn:async({workspace:u,machine:d,launchOptions:h})=>{if(!Su(u.host)||u.orgId===void 0)throw new Error(\"Only a cloud backlog item can be started.\");const m=u.description??\"\",g=d??Fzt({defaultMachine:i,repositoryId:XCi({defaultMachine:i,rememberedMachineRepositoryId:r})});if(g===void 0)return{started:!1,reason:\"no-repository\"};const _=qCi({localWorkspaceId:u.localId,repositoryId:void 0,gitRemoteUrl:g.gitRemoteUrl,organizationId:u.orgId,initialPrompt:m,autoSendInitialPrompt:!0,onCreation:()=>{}});try{await GCi({draft:m,launchOptions:h??{model:void 0},hostingTarget:{kind:\"cloud\",serverUrl:u.host.hostingServerUrl},access:{restricted:!1},repositoryId:void 0,machine:g,localWorkspaceId:u.localId,createWorkspaceWithSetup:o,autoSendInitialPrompt:!0,..._.creationOptions})}catch(v){throw _.clear(),v}return{started:!0}},onSuccess:(u,{workspace:d})=>{u.started||(Ku.setState({draft:d.description??\"\",draftWorkspaceId:d.localId}),kt.error(\"No ready repository. Pick one to start this workspace.\"),a())},onError:u=>{if(WCi(u)){KAt({error:u,navigate:c});return}kt.error(rc(u))}})}"
+    },
+    {
+      "symbol": "Xoo",
+      "utf8_span": [
+        7325473,
+        7326040
+      ],
+      "bytes": 567,
+      "sha256": "18118230a5cae32386aa5d907eccf03dd470bfba3699b67dc3638e45d7dd6e4b",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function Xoo(t){const e=ne.c(5),{localWorkspaceId:n}=t,i=JV();if(i===void 0)return null;let r;e[0]===Symbol.for(\"react.memo_cache_sentinel\")?(r=p.jsx(WLt,{}),e[0]=r):r=e[0];let o;e[1]===Symbol.for(\"react.memo_cache_sentinel\")?(o=p.jsxs(PV,{className:yu,children:[r,\"Move to section\",p.jsx(td,{className:\"ml-auto size-4\"})]}),e[1]=o):o=e[1];let a;return e[2]!==n||e[3]!==i?(a=p.jsxs(PZ,{children:[o,p.jsx(g2,{children:p.jsx(b2,{children:p.jsx(m2,{className:`${my} min-w-44`,children:p.jsx(Joo,{localWorkspaceId:n,sectionKey:i})})})})]}),e[2]=n,e[3]=i,e[4]=a):a=e[4],a}"
+    },
+    {
+      "symbol": "Joo",
+      "utf8_span": [
+        7326040,
+        7328165
+      ],
+      "bytes": 2125,
+      "sha256": "90177cfa8ed955b5d98255cf8497eeeb19d81e4319906e5d3ed2b3eb1ac205c3",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function Joo(t){const e=ne.c(33),{localWorkspaceId:n,sectionKey:i}=t,r=R9e(i),o=Lzt(),a=Mzt();if(r.isPending){let w;return e[0]===Symbol.for(\"react.memo_cache_sentinel\")?(w=p.jsx(Pu,{className:yu,disabled:!0,children:\"Loading sections\u2026\"}),e[0]=w):w=e[0],w}if(r.isError){let w;return e[1]===Symbol.for(\"react.memo_cache_sentinel\")?(w=p.jsx(Pu,{className:yu,disabled:!0,children:\"Couldn't load sections\"}),e[1]=w):w=e[1],w}let c;e[2]!==n||e[3]!==r.data.sections?(c=r.data.sections.find(w=>w.workspaceIds.includes(n))?.id,e[2]=n,e[3]=r.data.sections,e[4]=c):c=e[4];const u=c;let d;if(e[5]!==u||e[6]!==n||e[7]!==i||e[8]!==r.data.sections||e[9]!==o){let w;e[11]!==u||e[12]!==n||e[13]!==i||e[14]!==o?(w=E=>{const k=E.id===u;return p.jsxs(Pu,{className:yu,disabled:o.isPending||k,onClick:()=>o.mutate({organizationId:i,localWorkspaceId:n,sectionId:E.id},{onError:eao}),children:[E.emoji!==void 0&&p.jsx(\"span\",{\"aria-hidden\":!0,className:\"flex size-4 shrink-0 items-center justify-center leading-none\",children:E.emoji}),p.jsx(\"span\",{className:\"min-w-0 flex-1 truncate\",children:E.name}),k&&p.jsx(Uo,{})]},E.id)},e[11]=u,e[12]=n,e[13]=i,e[14]=o,e[15]=w):w=e[15],d=r.data.sections.map(w),e[5]=u,e[6]=n,e[7]=i,e[8]=r.data.sections,e[9]=o,e[10]=d}else d=e[10];let h;e[16]!==r.data.sections.length?(h=r.data.sections.length>0&&p.jsx(dy,{className:bJ}),e[16]=r.data.sections.length,e[17]=h):h=e[17];let m;e[18]!==n?(m=()=>nr.openDialog(Ij,{mode:\"create\",localWorkspaceIdToMove:n}),e[18]=n,e[19]=m):m=e[19];let g;e[20]===Symbol.for(\"react.memo_cache_sentinel\")?(g=p.jsx(Qc,{}),e[20]=g):g=e[20];let _;e[21]!==m?(_=p.jsxs(Pu,{className:yu,onClick:m,children:[g,\"New section\u2026\"]}),e[21]=m,e[22]=_):_=e[22];let v;e[23]!==u||e[24]!==n||e[25]!==a||e[26]!==i?(v=u!==void 0&&p.jsxs(Pu,{className:yu,disabled:a.isPending,onClick:()=>a.mutate({organizationId:i,localWorkspaceId:n},{onError:Zoo}),children:[p.jsx(GLt,{}),\"Remove from section\"]}),e[23]=u,e[24]=n,e[25]=a,e[26]=i,e[27]=v):v=e[27];let x;return e[28]!==d||e[29]!==h||e[30]!==_||e[31]!==v?(x=p.jsxs(p.Fragment,{children:[d,h,_,v]}),e[28]=d,e[29]=h,e[30]=_,e[31]=v,e[32]=x):x=e[32],x}"
+    },
+    {
+      "symbol": "NCi",
+      "utf8_span": [
+        7315749,
+        7315887
+      ],
+      "bytes": 138,
+      "sha256": "6dd11e9bd3a3f972b63aa2fb5c9a94370f3572d3c0fb587bbe3f65c84a495812",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function NCi(t){const e=ne.c(2);let n;return e[0]!==t?(n={select:i=>t!==void 0&&I9e(i.location.pathname)===t},e[0]=t,e[1]=n):n=e[1],Vx(n)}"
+    },
+    {
+      "symbol": "XV",
+      "utf8_span": [
+        7280760,
+        7281138
+      ],
+      "bytes": 378,
+      "sha256": "5f88fde29d4d31ad49f6b89918ab354b8146be6b8249ed5ed1a5fb9712a503d3",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function XV({localWorkspaceId:t,sessionId:e}){ly.getWorkspace(t).then(async n=>{const i=!Su(n.host),r=i?n.localId:await ly.waitForWorkspaceId({localWorkspaceId:t});return l1(hxr({appType:lv,webappBaseUrl:cy.conductorProxyUrl,workspaceId:r,sessionId:e,isLocalWorkspace:i}))}).then(()=>{er.success(\"Copied link\",t)}).catch(()=>{er.error(\"Failed to copy link\",t)}).fireAndForget()}"
+    },
+    {
+      "symbol": "Pao",
+      "utf8_span": [
+        7354381,
+        7354438
+      ],
+      "bytes": 57,
+      "sha256": "53415c91e080b456688c5b9354ba716993f91afa153ba81dbefd06f48b33a920",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function Pao(t){return t.clearManuallyUnreadForWorkspace}"
+    },
+    {
+      "symbol": "Lao",
+      "utf8_span": [
+        7354438,
+        7354482
+      ],
+      "bytes": 44,
+      "sha256": "d38edd7a27012120d787c9272dc673b954fdb696b1788f82e38ee2360a1fc947",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function Lao(t){return t.markManuallyUnread}"
+    },
+    {
+      "symbol": "Bao",
+      "utf8_span": [
+        7356119,
+        7356176
+      ],
+      "bytes": 57,
+      "sha256": "04bee8b5489dcae791382a44b5d1e457d6daec8d1dfa640a699ce4e57c738391",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function Bao(t){return t.clearManuallyUnreadForWorkspace}"
+    },
+    {
+      "symbol": "$ao",
+      "utf8_span": [
+        7356176,
+        7356220
+      ],
+      "bytes": 44,
+      "sha256": "4983811784178744963b4a1271341c996c1d3ce5e53c73955ea9116e7331187b",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function $ao(t){return t.markManuallyUnread}"
+    },
+    {
+      "symbol": "Uao",
+      "utf8_span": [
+        7357851,
+        7357883
+      ],
+      "bytes": 32,
+      "sha256": "061636c6ae6512a5e3e8fe4581cb42dff34865a4779dc4da211164a2f7708850",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function Uao(t){return t.unread}"
+    },
+    {
+      "symbol": "zao",
+      "utf8_span": [
+        7356220,
+        7356258
+      ],
+      "bytes": 38,
+      "sha256": "ba538bd604bbc5012397e94a7b0f644f681e3a8b80f90656776d3e7bafd2ecf3",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "const zao=t=>t.filter(e=>!e.isHidden);"
+    },
+    {
+      "symbol": "HJ",
+      "utf8_span": [
+        7203468,
+        7203522
+      ],
+      "bytes": 54,
+      "sha256": "fc24a47f5024b9fa7dbde2ec91fd52435a225989e3a2eceb11ba66c437c5fba2",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function HJ({workspace:t,userId:e}){return T9e(t)===e}"
+    },
+    {
+      "symbol": "T9e",
+      "utf8_span": [
+        7203411,
+        7203468
+      ],
+      "bytes": 57,
+      "sha256": "b94eb4d1ca4f3192073011e69a571d7c732ef00c0faa2d174eabefea337f78b5",
+      "basis": "fresh complete render-layer/helper span",
+      "source_text": "function T9e(t){return t.assigneeUserId??t.creatorUserId}"
+    }
+  ],
+  "imports": [
+    {
+      "local": "Ms",
+      "export": "aJ",
+      "source": "./index-BGEQ8YjU.js",
+      "utf8_span": [
+        53892,
+        53900
+      ],
+      "bytes": 8,
+      "sha256": "335078c9d717e9e698e1b1cec978043283e6ed19556ed0bffce1db48b001e535",
+      "body_in_packet": false,
+      "source_text": "aJ as Ms"
+    },
+    {
+      "local": "N6",
+      "export": "fh",
+      "source": "./index-BGEQ8YjU.js",
+      "utf8_span": [
+        56726,
+        56734
+      ],
+      "bytes": 8,
+      "sha256": "e3d270c3ebe222e6f683f691d0060ad5f638e31d2e28b3fead8d927f7223948c",
+      "body_in_packet": false,
+      "source_text": "fh as N6"
+    },
+    {
+      "local": "FYe",
+      "export": "hE",
+      "source": "./index-BGEQ8YjU.js",
+      "utf8_span": [
+        58208,
+        58217
+      ],
+      "bytes": 9,
+      "sha256": "62ac6a595e1f915ed1262bd6b910168dd1d13f317c4ef7d513a9c7c38c607680",
+      "body_in_packet": false,
+      "source_text": "hE as FYe"
+    },
+    {
+      "local": "Ld",
+      "export": "dh",
+      "source": "./index-BGEQ8YjU.js",
+      "utf8_span": [
+        55486,
+        55494
+      ],
+      "bytes": 8,
+      "sha256": "2bae4f8faa863e119923495dbfde1ea4c64fd65aa41b763f87886641de540432",
+      "body_in_packet": false,
+      "source_text": "dh as Ld"
+    },
+    {
+      "local": "uSe",
+      "export": "e3",
+      "source": "./index-BGEQ8YjU.js",
+      "utf8_span": [
+        55962,
+        55971
+      ],
+      "bytes": 9,
+      "sha256": "fc0ee47659396b712177c9563d0aa5774bc0d9bab457ba670a23b6a5a766d517",
+      "body_in_packet": false,
+      "source_text": "e3 as uSe"
+    },
+    {
+      "local": "BYe",
+      "export": "hG",
+      "source": "./index-BGEQ8YjU.js",
+      "utf8_span": [
+        58228,
+        58237
+      ],
+      "bytes": 9,
+      "sha256": "f7cfde790024d0b085059f6a4e725b3e90fc2409e20d58d1a651a0ab4998f701",
+      "body_in_packet": false,
+      "source_text": "hG as BYe"
+    },
+    {
+      "local": "SDt",
+      "export": "hH",
+      "source": "./index-BGEQ8YjU.js",
+      "utf8_span": [
+        58238,
+        58247
+      ],
+      "bytes": 9,
+      "sha256": "36fb970fd447142bf1d963c4d4bea9f3f6978a56014af910b9fe539529367fce",
+      "body_in_packet": false,
+      "source_text": "hH as SDt"
+    },
+    {
+      "local": "Rii",
+      "export": "hJ",
+      "source": "./index-BGEQ8YjU.js",
+      "utf8_span": [
+        58258,
+        58267
+      ],
+      "bytes": 9,
+      "sha256": "2a14072639daef0d26587a4b8a295339d3e9a78721768d604c3a96c3099c5ec6",
+      "body_in_packet": false,
+      "source_text": "hJ as Rii"
+    },
+    {
+      "local": "ESe",
+      "export": "hI",
+      "source": "./index-BGEQ8YjU.js",
+      "utf8_span": [
+        58248,
+        58257
+      ],
+      "bytes": 9,
+      "sha256": "6a7465c2e82a720f040207c86735556379381f3ef6d95edf8556ba896231660d",
+      "body_in_packet": false,
+      "source_text": "hI as ESe"
+    },
+    {
+      "local": "wDt",
+      "export": "hF",
+      "source": "./index-BGEQ8YjU.js",
+      "utf8_span": [
+        58218,
+        58227
+      ],
+      "bytes": 9,
+      "sha256": "728ed2ae0cd6e1d72b9f4f6b019a77bcfc251ea183380cc4f01c1e510b70e315",
+      "body_in_packet": false,
+      "source_text": "hF as wDt"
+    },
+    {
+      "local": "Eii",
+      "export": "hj",
+      "source": "./index-BGEQ8YjU.js",
+      "utf8_span": [
+        58002,
+        58011
+      ],
+      "bytes": 9,
+      "sha256": "202cf7f9ac2d77a75a38585a0ceae9d58cd84dbe700499d946f674bd78eed034",
+      "body_in_packet": false,
+      "source_text": "hj as Eii"
+    },
+    {
+      "local": "Nii",
+      "export": "hK",
+      "source": "./index-BGEQ8YjU.js",
+      "utf8_span": [
+        58268,
+        58277
+      ],
+      "bytes": 9,
+      "sha256": "eb5e4fdeb845559d0d79c78069a28e117a43d551acdec6e39a7c33d739829901",
+      "body_in_packet": false,
+      "source_text": "hK as Nii"
+    },
+    {
+      "local": "gn",
+      "export": "V",
+      "source": "./index-BGEQ8YjU.js",
+      "utf8_span": [
+        53400,
+        53407
+      ],
+      "bytes": 7,
+      "sha256": "08377cc9d3d8483681a7eb6782cc8c6dbda3f59688730022a7a754022f3a545b",
+      "body_in_packet": false,
+      "source_text": "V as gn"
+    },
+    {
+      "local": "sJ",
+      "export": "hM",
+      "source": "./index-BGEQ8YjU.js",
+      "utf8_span": [
+        58288,
+        58296
+      ],
+      "bytes": 8,
+      "sha256": "faf0d0745276f058a3e9f27c7129d121b0d656fc72b4a7776e656f79b40bd801",
+      "body_in_packet": false,
+      "source_text": "hM as sJ"
+    }
+  ],
+  "current_sources": {
+    "src/components/AllWorkspaces.tsx": {
+      "bytes": 19289,
+      "sha256": "e9034a07af0fd243ecccad7c1ec4f34ff4f997f4c43de11c3b3140c3be56c7f8"
+    },
+    "src/components/WorkspaceContextMenu.tsx": {
+      "bytes": 2404,
+      "sha256": "b6996128b229fb889cb3b2bd206a6ab1b6d9d58d7d373cf6710abab92c4c33ab"
+    },
+    "src/components/WorkspaceActionsMenu.tsx": {
+      "bytes": 6814,
+      "sha256": "ed24fec534bb3cd56b110f23e5a693a290d1d68c5e39d452624d4f6bfd0c9359"
+    }
+  },
+  "import_source_literal": {
+    "utf8_span": [
+      66473,
+      66494
+    ],
+    "bytes": 21,
+    "sha256": "1faa235764f157b660063c5e9cdd5361646db7891777ab7953f135222af0259b",
+    "source_text": "\"./index-BGEQ8YjU.js\""
+  },
+  "checks": {
+    "original_identity": "PASS",
+    "byte_spans": "PASS",
+    "syntax_only": "PASS (vendor code never executed)",
+    "behavior": "NOT_RUN",
+    "frozen_RED": "ABSENT",
+    "product_or_test_edits": "NONE",
+    "native": "NOT_RUN",
+    "package": "UNVERIFIED"
+  },
+  "phase": "Retained-source qualification before mounted reproduction or repair; these checks describe that phase only."
+}

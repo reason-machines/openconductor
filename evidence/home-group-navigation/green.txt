@@ -1,0 +1,68 @@
+(node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home Alt+ArrowDown selects the adjacent date group's first row from initial selection
+ok 1 - Home Alt+ArrowDown selects the adjacent date group's first row from initial selection
+  ---
+  duration_ms: 193.886683
+  type: 'test'
+  ...
+# Subtest: Home Alt+ArrowUp selects the adjacent date group's first row from ArrowDown/ArrowDown/ArrowDown
+ok 2 - Home Alt+ArrowUp selects the adjacent date group's first row from ArrowDown/ArrowDown/ArrowDown
+  ---
+  duration_ms: 111.111392
+  type: 'test'
+  ...
+# Subtest: Home Alt+ArrowUp selects the adjacent date group's first row from End
+ok 3 - Home Alt+ArrowUp selects the adjacent date group's first row from End
+  ---
+  duration_ms: 110.222413
+  type: 'test'
+  ...
+# Subtest: Home Alt+Arrow uses only rendered date groups after filtering
+ok 4 - Home Alt+Arrow uses only rendered date groups after filtering
+  ---
+  duration_ms: 74.217643
+  type: 'test'
+  ...
+# Subtest: Home Alt+Arrow cancels both directions when no rows match
+ok 5 - Home Alt+Arrow cancels both directions when no rows match
+  ---
+  duration_ms: 78.169241
+  type: 'test'
+  ...
+# Subtest: Control: absent neighboring groups fall back to adjacent rows without wrapping
+ok 6 - Control: absent neighboring groups fall back to adjacent rows without wrapping
+  ---
+  duration_ms: 74.352061
+  type: 'test'
+  ...
+# Subtest: Control: plain arrows and Ctrl letters remain adjacent within a date group
+ok 7 - Control: plain arrows and Ctrl letters remain adjacent within a date group
+  ---
+  duration_ms: 69.239635
+  type: 'test'
+  ...
+# Subtest: Control: Meta endpoints take precedence over Alt group navigation
+ok 8 - Control: Meta endpoints take precedence over Alt group navigation
+  ---
+  duration_ms: 63.838208
+  type: 'test'
+  ...
+# Subtest: Control: consumed and composing Alt+Arrow events do not navigate
+ok 9 - Control: consumed and composing Alt+Arrow events do not navigate
+  ---
+  duration_ms: 43.655249
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1404.830467

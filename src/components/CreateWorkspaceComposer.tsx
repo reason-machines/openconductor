@@ -127,8 +127,10 @@ export function CreateWorkspaceComposer({
   const settings = loadout?.settings ?? null;
   const favorites = loadoutPicks(loadout?.slots ?? []);
   const modelEdited = useRef(false);
-  /** Whether the user toggled plan mode on before creating the workspace (REA a7i planMode). */
-  const [createPlanMode, setCreatePlanMode] = useState(false);
+  /** An explicit choice overrides the live default, including an explicit opt-out. */
+  const [selectedPlanMode, setSelectedPlanMode] = useState<boolean>();
+  const createPlanMode = selectedPlanMode ?? (settings?.models.default_plan_mode === true);
+  const toggleCreatePlanMode = () => setSelectedPlanMode((value) => !(value ?? (settings?.models.default_plan_mode === true)));
   /** Files attached in the create composer; delivered with the first message via queuePending. */
   const [createAttachments, setCreateAttachments] = useState<ComposerAttachment[]>([]);
   const [draftWorkspaceId] = useState(() => crypto.randomUUID());
@@ -212,7 +214,7 @@ export function CreateWorkspaceComposer({
   useKeybindings({
     "chat.togglePlanMode": () => {
       if (draft.agent !== "claude" || busy || !composerInputRef.current?.focused()) return false;
-      setCreatePlanMode((value) => !value);
+      toggleCreatePlanMode();
     },
   }, { enableOnDialogIds: eyebrowVariant === "attached" ? ["dialog"] : undefined });
 
@@ -295,12 +297,6 @@ export function CreateWorkspaceComposer({
       send({ type: "created", workspaceId: created.workspace.id });
       if (created.upstreamWarning) onWarning(created.upstreamWarning);
       const setupStarted = await startSetupScript(backendRepo, created, built.request.targetBranch);
-      // Keep creation busy through attachment materialization as well as setup.
-      // GAP-COMP-04 (plan mode): set initial plan mode on the new workspace's primary chat
-      // when the user toggled it on in the create composer (REA a7i planMode prop, wt path).
-      if (createPlanMode && draft.agent === "claude") {
-        void invoke<unknown>("local_plan_mode_set", { chatId: created.workspace.id, workspaceId: created.workspace.id, mode: "plan" });
-      }
       const { id, directoryName, branchName, path } = created.workspace;
       const { naming, firstSession } = built.request;
       const ws = {
@@ -332,27 +328,32 @@ export function CreateWorkspaceComposer({
         const effort = firstSession?.effort ?? draft.effort;
         configureReason(id, sessionConfig(model, effort));
       }
-      // Seed the first session. With attachments, queuePending delivers them together
-      // with the message via WorkspaceView.submit (which also handles renameAfterFirstMessage).
-      // Without attachments, the existing seedTranscript + direct renameAfterFirstMessage path
-      // is used unchanged.
-      if (createAttachments.length > 0) {
-        const text = firstSession?.message ?? "";
-        const queued: PromptAttachment[] = createAttachments.map(({ name, text: t, commentId }) =>
-          commentId ? { name, text: t, commentId } : { name, text: t },
-        );
-        try {
+      // Persist the effective Claude choice before exposing a workspace that can send.
+      // Both true and false matter: the backend otherwise seeds from the global default.
+      const text = firstSession?.message ?? "";
+      const promptAttachment = ({ name, text, commentId }: ComposerAttachment): PromptAttachment =>
+        commentId ? { name, text, commentId } : { name, text };
+      let seededFirstMessage = false;
+      let recovery = "Review Plan mode before sending";
+      try {
+        if (draft.agent === "claude") {
+          await invoke<unknown>("local_plan_mode_set", { chatId: id, workspaceId: id, mode: createPlanMode ? "plan" : "default" });
+        }
+        recovery = "Reattach the files and retry";
+        if (createAttachments.length > 0) {
           await materializeAttachments(path);
           // WorkspaceView's pending-send path bypasses its normal copy barrier.
-          queuePending(id, { kind: "send", text, attachments: queued });
-        } catch (err) {
-          // Creation succeeded: expose it, keep the text editable, and never auto-send
-          // a missing file. The existing store retains failed staged copies.
-          queuePending(id, { kind: "draft", text });
-          onWarning(`Workspace created, but the first message was not sent. Reattach the files and retry: ${errorText(err)}`);
+          queuePending(id, { kind: "send", text, attachments: createAttachments.map(promptAttachment) });
+        } else if (firstSession) {
+          seedTranscript(id, firstSession.message);
+          seededFirstMessage = true;
         }
-      } else if (firstSession) {
-        seedTranscript(id, firstSession.message);
+      } catch (err) {
+        // Creation succeeded: keep it reachable and editable without sending an
+        // unconfirmed mode or missing path. Inline UTF-8 files need no copy.
+        const inline = createAttachments.filter((attachment) => !attachment.staged).map(promptAttachment);
+        queuePending(id, { kind: "draft", text, ...(inline.length ? { attachments: inline } : {}) });
+        onWarning(`Workspace created, but the first message was not sent. ${recovery}: ${errorText(err)}`);
       }
       send({ type: "setup_detected", started: setupStarted });
       dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });
@@ -364,7 +365,7 @@ export function CreateWorkspaceComposer({
       if (!dismissedAtLaunch) onClose();
       // Rename placeholder after first message. Skipped when queuePending was used (attachments
       // present) because WorkspaceView.submit handles the rename in that path.
-      if (!createAttachments.length && firstSession) {
+      if (seededFirstMessage && firstSession) {
         const full = { ...ws, status: "idle" as const, diff: { added: 0, removed: 0 }, createdAt: Date.now() };
         void renameAfterFirstMessage(repo, full, firstSession.message, dispatch);
       }
@@ -573,7 +574,7 @@ export function CreateWorkspaceComposer({
             disabled={busy}
             hint={hint("chat.addAttachment") ?? ""}
             planHint={hint("chat.togglePlanMode") ?? ""}
-            planMode={draft.agent === "claude" ? { isPlanMode: createPlanMode, disabled: busy, onToggle: () => setCreatePlanMode((v) => !v) } : undefined}
+            planMode={draft.agent === "claude" ? { isPlanMode: createPlanMode, disabled: busy, onToggle: toggleCreatePlanMode } : undefined}
             onAddAttachment={() => fileInputRef.current?.click()}
           />
           <div className="create-split" role="group" aria-label="Create workspace">

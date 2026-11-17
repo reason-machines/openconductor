@@ -317,7 +317,16 @@ function SecretInput({ label, pending, onSubmit, onCancel }: { label: string; pe
         />
       </div>
       <button type="submit" className="ag-btn ag-primary" disabled={pending || value.trim() === ""}>
-        {pending ? "Saving…" : "Save"}
+        {pending ? (
+          <>
+            <svg className="sb-ws-loader" width={16} height={16} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" style={{ width: 16, height: 16, border: 0, borderRadius: 0, flexShrink: 0 }}>
+              <circle cx="3" cy="8" r="1.5" />
+              <circle cx="8" cy="8" r="1.5" />
+              <circle cx="13" cy="8" r="1.5" />
+            </svg>
+            <span className="ag-sr-only">Saving…</span>
+          </>
+        ) : "Save"}
       </button>
       {onCancel && (
         <button type="button" className="ag-btn ag-ghost" disabled={pending} onClick={onCancel}>

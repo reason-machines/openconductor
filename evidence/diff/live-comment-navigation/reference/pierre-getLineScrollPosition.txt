@@ -1,0 +1,1 @@
+getLineScrollPosition(e,n){return e.type==="diff"?e.instance.getLinePosition(n.lineNumber,n.side):e.instance.getLinePosition(n.lineNumber)}

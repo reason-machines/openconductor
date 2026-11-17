@@ -13,6 +13,7 @@ import { accessSync, constants, existsSync, mkdtempSync, mkdirSync, realpathSync
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import assert from "node:assert/strict";
+import { createRuntimeReceipt } from "./runtime-receipt.mjs";
 
 const app = process.argv[2] && resolve(process.argv[2]);
 if (!app) {
@@ -32,7 +33,9 @@ assert.equal(existsSync(cli), false);
 
 const env = { ...process.env, HOME: home, PATH, OPENCONDUCTOR_HOME: join(home, ".openconductor"), SHELL: "/bin/bash" };
 for (const k of ["XDG_DATA_HOME", "XDG_CONFIG_HOME", "REASON_API_KEY"]) delete env[k];
+const receipt = createRuntimeReceipt({ suite: "reason-cli-first-run", app, out, home });
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
+receipt.track(driver);
 const driverExited = new Promise((r) => driver.on("exit", r));
 
 const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
@@ -116,7 +119,9 @@ try {
   await wd("GET", "/screenshot", undefined, 20000).then((b) => writeFileSync(join(out, "cli-first-run-failure.png"), Buffer.from(b, "base64"))).catch(() => {});
   process.exitCode = 1;
 } finally {
+  await receipt.beforeTeardown((script) => wd("POST", "/execute/async", { script, args: [] }, 3000));
   if (sessionUrl) await wd("DELETE", "", undefined, 20000).catch(() => {});
   driver.kill();
   await driverExited;
+  await receipt.afterTeardown();
 }

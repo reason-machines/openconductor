@@ -1,0 +1,1 @@
+function Fp(){const t=$.useContext(TBt);if(t===void 0)throw new Error("useCurrentWorkspaceContext must be used within a WorkspaceProvider");return t}

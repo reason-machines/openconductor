@@ -1,0 +1,1 @@
+function Ttt(t){switch(t){case"Monitor":case"Bash":return"command";case"Workflow":return"script";default:return}}

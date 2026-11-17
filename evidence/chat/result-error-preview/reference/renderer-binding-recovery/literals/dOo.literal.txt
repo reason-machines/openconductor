@@ -1,0 +1,1 @@
+function dOo(t){return t?t.toLowerCase().includes("does not support this model"):!1}

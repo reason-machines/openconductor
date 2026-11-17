@@ -1,0 +1,251 @@
+{
+  "author": "Conductor Rebuild",
+  "dedupe": "DIFF-Q07-REA-MEASUREMENT-BINDING-DE6-01",
+  "disposition": "INERT_RETAINED_REFERENCE_BINDING_NOT_NATIVE_ACCEPTANCE",
+  "asset": {
+    "name": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "archive": {
+    "name": "retained-renderer-5199d392-original-bytes.tar.gz",
+    "bytes": 3475109,
+    "sha256": "ca33ccd3b7e25e947925c8f2f26c45cfe2f1eb66f05c6bc45c50f3a74b93d8d7",
+    "member": "renderApp-D_fmY7hW.js"
+  },
+  "baseline_main": "91de35a7e10199675bc43d9b29516cd8ec18f4a0",
+  "fixture": {
+    "path": "src/features/diff/liveCommentNavigation.test.ts",
+    "sha256": "76f19b8a6ade5f8d61ff6656efe2dce9a89970529da64fbff4831018bf63a08c",
+    "checkpoint": "8ac30187",
+    "original_checkpoint": "273cd4f8",
+    "type_only_correction": true,
+    "red": {
+      "passed": 3,
+      "failed": 6
+    },
+    "green": {
+      "passed": 9,
+      "failed": 0
+    }
+  },
+  "spans_total_bytes": 23163,
+  "spans": [
+    {
+      "name": "reading-line",
+      "range_utf8": [
+        9426647,
+        9426694
+      ],
+      "bytes": 47,
+      "sha256": "285d757e54938b4e6e11c992b3b842c69336c99a5fcc5efe60c6d45f92baf7ee",
+      "path": "reference/reading-line.txt",
+      "role": "56px offset and empty counts"
+    },
+    {
+      "name": "jVo",
+      "range_utf8": [
+        9426694,
+        9427225
+      ],
+      "bytes": 531,
+      "sha256": "5262a588f3d1327256d24e4031673bedea41dbff1e04253ebb1a9a0f1ab1cf7a",
+      "path": "reference/jVo.txt",
+      "role": "Sort measured comment positions; visible-band exclusion and previous/next target/count rules"
+    },
+    {
+      "name": "rEt",
+      "range_utf8": [
+        9427225,
+        9427612
+      ],
+      "bytes": 387,
+      "sha256": "5266c14e2c1ab83052fbd477021e87ced903b0ed15c33d3007e182a90416de69",
+      "path": "reference/rEt.txt",
+      "role": "CodeView/Pierre item and container measurement adapter"
+    },
+    {
+      "name": "QQn",
+      "range_utf8": [
+        9427612,
+        9427960
+      ],
+      "bytes": 348,
+      "sha256": "98e614f7f102d0c0039e949295c72f61a2e83477a665046c51b124422df64669",
+      "path": "reference/QQn.txt",
+      "role": "Side/line deduplication and item-relative line measurement"
+    },
+    {
+      "name": "BMi",
+      "range_utf8": [
+        9427960,
+        9429424
+      ],
+      "bytes": 1464,
+      "sha256": "af1d8935660d993406c47c83926cd5f3c796e2d71e2d70bdef342ac9781dcf53",
+      "path": "reference/BMi.txt",
+      "role": "Late current-annotation resolver for scroll/post-render refresh and navigation"
+    },
+    {
+      "name": "Mi",
+      "range_utf8": [
+        9429455,
+        9430800
+      ],
+      "bytes": 1345,
+      "sha256": "f329a09f62fc894bc1a565350986c8a96fd04dbf2be1d45ab0a8ca4cd3f8e7d0",
+      "path": "reference/Mi.txt",
+      "role": "Buttons and high-priority navigation consumer"
+    },
+    {
+      "name": "Vo",
+      "range_utf8": [
+        9431499,
+        9436022
+      ],
+      "bytes": 4523,
+      "sha256": "d908c703a9de4c3a3e2436109edebd53418afd8dca0543b6f3fbd4bd7bfe2e44",
+      "path": "reference/Vo.txt",
+      "role": "Read-only caller: handle, callbacks, post-render and visibility binding"
+    },
+    {
+      "name": "kqo",
+      "range_utf8": [
+        9628186,
+        9633515
+      ],
+      "bytes": 5329,
+      "sha256": "3af80b1ec23526b5f7da46310901c69f22cb9965ef67fba947801071ede1bcc1",
+      "path": "reference/kqo.txt",
+      "role": "Editable caller: pending annotation position map; late resolver; changes/completion; Pierre callbacks"
+    },
+    {
+      "name": "pierre-react-CodeView",
+      "range_utf8": [
+        1398157,
+        1403004
+      ],
+      "bytes": 4847,
+      "sha256": "eeb340dbd45128fb7f52da37c7bd3250831a61df38049ecb41f139da20203497",
+      "path": "reference/pierre-react-CodeView.txt",
+      "role": "Complete oXr React CodeView: forwards scroll subscription, imperative handle and getInstance"
+    },
+    {
+      "name": "pierre-getRenderedItems",
+      "range_utf8": [
+        1369960,
+        1370366
+      ],
+      "bytes": 406,
+      "sha256": "38efc2d9937c135659f2cb653ce48c43fdf0b6613f5b3c0afae35395e904ce32",
+      "path": "reference/pierre-getRenderedItems.txt",
+      "role": "Rendered item identity/type and instance"
+    },
+    {
+      "name": "pierre-subscribeToScroll",
+      "range_utf8": [
+        1370702,
+        1370795
+      ],
+      "bytes": 93,
+      "sha256": "3b0b9b63792b2ccd6aca5f70667af4783c8c8d6fbe9551d741a6cad97876eb6f",
+      "path": "reference/pierre-subscribeToScroll.txt",
+      "role": "Scroll listener subscription and cleanup"
+    },
+    {
+      "name": "pierre-getTopForItem",
+      "range_utf8": [
+        1370961,
+        1371055
+      ],
+      "bytes": 94,
+      "sha256": "f5b2993840885c79685dfb701b82eeffe006934793329336e14574e9399fc68f",
+      "path": "reference/pierre-getTopForItem.txt",
+      "role": "Item top in scroll coordinates"
+    },
+    {
+      "name": "pierre-container",
+      "range_utf8": [
+        1369829,
+        1369868
+      ],
+      "bytes": 39,
+      "sha256": "dec3362e7fc1a4656db28f1d722b00146310d05874506868e1e770f35b434a72",
+      "path": "reference/pierre-container.txt",
+      "role": "CodeView root container"
+    },
+    {
+      "name": "pierre-file-getLinePosition",
+      "range_utf8": [
+        1199616,
+        1200170
+      ],
+      "bytes": 554,
+      "sha256": "c3e81afa6f2d243e620cad30173e9f572a861f854dc6773aa1e8641c1418f54f",
+      "path": "reference/pierre-file-getLinePosition.txt",
+      "role": "Whole-file line measurement"
+    },
+    {
+      "name": "pierre-diff-getLinePosition",
+      "range_utf8": [
+        1328400,
+        1329815
+      ],
+      "bytes": 1415,
+      "sha256": "6776f6214c199c85935891e63388d2d8057a4ef5ae39848bb863a262dff85fbd",
+      "path": "reference/pierre-diff-getLinePosition.txt",
+      "role": "Diff line/side measurement"
+    },
+    {
+      "name": "pierre-scrollTo",
+      "range_utf8": [
+        1364272,
+        1364725
+      ],
+      "bytes": 453,
+      "sha256": "88c7e0f724a353fdab3b139788c67aca6c224b82edcc3bda700e6e1aebef89ae",
+      "path": "reference/pierre-scrollTo.txt",
+      "role": "Scroll request forwarded through CodeView target resolution"
+    },
+    {
+      "name": "pierre-resolveScrollTargetTop",
+      "range_utf8": [
+        1382200,
+        1383188
+      ],
+      "bytes": 988,
+      "sha256": "625e62ef65797eb833a7d6f4397c1ebea5acdb9c8815a8b0894eb97443d45f2e",
+      "path": "reference/pierre-resolveScrollTargetTop.txt",
+      "role": "Line target resolves item and line then alignment"
+    },
+    {
+      "name": "pierre-alignment",
+      "range_utf8": [
+        1383188,
+        1383349
+      ],
+      "bytes": 161,
+      "sha256": "314a0e48b138815bca794db14da083acf634e68c42756c026b9ad606aa861169",
+      "path": "reference/pierre-alignment.txt",
+      "role": "Start alignment subtracts requested offset"
+    },
+    {
+      "name": "pierre-getLineScrollPosition",
+      "range_utf8": [
+        1383349,
+        1383488
+      ],
+      "bytes": 139,
+      "sha256": "16f3bdb9aaa7910b5594129624f5d08148b625223611927e15712b752a7d3aeb",
+      "path": "reference/pierre-getLineScrollPosition.txt",
+      "role": "Diff-side/file line resolution"
+    }
+  ],
+  "limits": [
+    "Recovered already-held asset, not a new REA acquisition.",
+    "Original renderer never executed, imported or evaluated.",
+    "Existing REA large-renderer semantic-budget gap remains.",
+    "Source contracts and synthetic viewport tests do not prove installed native behavior.",
+    "No new runtime/executor/install/dispatch."
+  ]
+}

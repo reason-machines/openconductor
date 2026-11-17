@@ -1,0 +1,29 @@
+{
+  "main": "6ceaa15f6d4bb5efb0ad5aa23acff3a6d8ae5ca9",
+  "fixture_sha256": "000a0ac3eefce9da250cb31dcc535bd6965c192fd0a764b5debb18a42edb3818",
+  "baseline": {
+    "pass": 4,
+    "intended_fail": 3,
+    "reason": "active Home row lacks onContextMenu handler",
+    "exit": 1
+  },
+  "candidate": {
+    "frozen_pass": 7,
+    "frozen_fail": 0,
+    "focused_integration_pass": 4,
+    "adjacent_total_pass": 193,
+    "adjacent_fail": 0,
+    "skip": 0
+  },
+  "local_typecheck": {
+    "status": "PASS after documented npm ci dependency restoration",
+    "historical_failure": "src/features/chat/useWindowDragDrop.ts(20,26): Cannot find module '@tauri-apps/plugin-fs'",
+    "historical_failure_log": "typecheck.txt",
+    "restoration_receipt": "local-validation.json"
+  },
+  "build": "PASS (npm run build: branding, TypeScript and Vite; advisory chunk-size warning only)",
+  "browser": "NOT_RUN (no runtime admission)",
+  "native": "NOT_RUN",
+  "package": "UNVERIFIED",
+  "scope": "Active local Home row menus only; archived/unstarted context menus not implemented or claimed."
+}

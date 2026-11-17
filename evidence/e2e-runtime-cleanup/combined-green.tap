@@ -1,0 +1,362 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: fresh startup waits for setup, runs the fixture hook, and explicitly continues before shell readiness
+ok 1 - fresh startup waits for setup, runs the fixture hook, and explicitly continues before shell readiness
+  ---
+  duration_ms: 1010.623431
+  type: 'test'
+  ...
+# Subtest: a shell-only wait stalls on the first-run screen; the startup helper continues it
+ok 2 - a shell-only wait stalls on the first-run screen; the startup helper continues it
+  ---
+  duration_ms: 22.443943
+  type: 'test'
+  ...
+# Subtest: existing-install startup still waits for setup but does not click onboarding
+ok 3 - existing-install startup still waits for setup but does not click onboarding
+  ---
+  duration_ms: 252.228866
+  type: 'test'
+  ...
+# Subtest: setup failure is immediate, with no retry, fixture hook or Continue
+ok 4 - setup failure is immediate, with no retry, fixture hook or Continue
+  ---
+  duration_ms: 0.770351
+  type: 'test'
+  ...
+# Subtest: a leftover shell cannot bypass an active setup gate
+ok 5 - a leftover shell cannot bypass an active setup gate
+  ---
+  duration_ms: 252.053368
+  type: 'test'
+  ...
+# Subtest: navigation transport errors are retried while waiting for setup
+ok 6 - navigation transport errors are retried while waiting for setup
+  ---
+  duration_ms: 251.947078
+  type: 'test'
+  ...
+# Subtest: setup wait can stop at onboarding without continuing it
+ok 7 - setup wait can stop at onboarding without continuing it
+  ---
+  duration_ms: 0.493382
+  type: 'test'
+  ...
+# Subtest: fixture hook failure does not continue onboarding
+ok 8 - fixture hook failure does not continue onboarding
+  ---
+  duration_ms: 0.515835
+  type: 'test'
+  ...
+# Subtest: an asynchronous fixture hook is awaited before Continue
+ok 9 - an asynchronous fixture hook is awaited before Continue
+  ---
+  duration_ms: 1.608891
+  type: 'test'
+  ...
+# Subtest: a missing Continue fails instead of silently skipping onboarding
+ok 10 - a missing Continue fails instead of silently skipping onboarding
+  ---
+  duration_ms: 0.821651
+  type: 'test'
+  ...
+# Subtest: a stalled setup request is cancelled at the setup deadline
+ok 11 - a stalled setup request is cancelled at the setup deadline
+  ---
+  duration_ms: 22.592383
+  type: 'test'
+  ...
+# Subtest: shell startup failures remain failures after setup
+ok 12 - shell startup failures remain failures after setup
+  ---
+  duration_ms: 0.858442
+  type: 'test'
+  ...
+# Subtest: binary auto-retry's first 404 waits until the post-reload observer is ready
+ok 13 - binary auto-retry's first 404 waits until the post-reload observer is ready
+  ---
+  duration_ms: 18.361017
+  type: 'test'
+  ...
+# Subtest: binary release responses are released when startup throws
+ok 14 - binary release responses are released when startup throws
+  ---
+  duration_ms: 4.413384
+  type: 'test'
+  ...
+# Subtest: a stuck installer has a bounded diagnostic timeout
+ok 15 - a stuck installer has a bounded diagnostic timeout
+  ---
+  duration_ms: 20.095256
+  type: 'test'
+  ...
+# (node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: startup waits through a missing shell, loading, and busy ready state
+ok 16 - startup waits through a missing shell, loading, and busy ready state
+  ---
+  duration_ms: 757.239904
+  type: 'test'
+  ...
+# Subtest: startup errors fail before any later ready state
+ok 17 - startup errors fail before any later ready state
+  ---
+  duration_ms: 1.11272
+  type: 'test'
+  ...
+# Subtest: startup cancels a stalled readiness request at its deadline
+ok 18 - startup cancels a stalled readiness request at its deadline
+  ---
+  duration_ms: 22.113252
+  type: 'test'
+  ...
+# Subtest: ordinary POST /execute/sync cancels a stalled request
+ok 19 - ordinary POST /execute/sync cancels a stalled request
+  ---
+  duration_ms: 20.488299
+  type: 'test'
+  ...
+# Subtest: ordinary POST /elements cancels a stalled request
+ok 20 - ordinary POST /elements cancels a stalled request
+  ---
+  duration_ms: 21.300019
+  type: 'test'
+  ...
+# Subtest: ordinary POST /element/fixture/click cancels a stalled request
+ok 21 - ordinary POST /element/fixture/click cancels a stalled request
+  ---
+  duration_ms: 20.387596
+  type: 'test'
+  ...
+# Subtest: ordinary POST /actions cancels a stalled request
+ok 22 - ordinary POST /actions cancels a stalled request
+  ---
+  duration_ms: 20.982905
+  type: 'test'
+  ...
+# Subtest: ordinary DELETE session cancels a stalled request
+ok 23 - ordinary DELETE session cancels a stalled request
+  ---
+  duration_ms: 21.158485
+  type: 'test'
+  ...
+# Subtest: session creation has the existing built-app client's 45-second launch budget
+ok 24 - session creation has the existing built-app client's 45-second launch budget
+  ---
+  duration_ms: 2.306215
+  type: 'test'
+  ...
+# Subtest: session creation can outlast ordinary requests without disabling its deadline
+ok 25 - session creation can outlast ordinary requests without disabling its deadline
+  ---
+  duration_ms: 41.776838
+  type: 'test'
+  ...
+# Subtest: stalled session creation cancels at its explicit launch deadline
+ok 26 - stalled session creation cancels at its explicit launch deadline
+  ---
+  duration_ms: 21.549957
+  type: 'test'
+  ...
+# Subtest: a failed transport names its operation, preserves its cause, and omits the request body
+ok 27 - a failed transport names its operation, preserves its cause, and omits the request body
+  ---
+  duration_ms: 0.488539
+  type: 'test'
+  ...
+# Subtest: explicit execution deadlines allow a command longer than the default deadline
+ok 28 - explicit execution deadlines allow a command longer than the default deadline
+  ---
+  duration_ms: 41.927795
+  type: 'test'
+  ...
+# Subtest: WebDriver protocol errors retain their status and explanation
+ok 29 - WebDriver protocol errors retain their status and explanation
+  ---
+  duration_ms: 0.958624
+  type: 'test'
+  ...
+# Subtest: malformed response bodies fail with their operation instead of returning undefined
+ok 30 - malformed response bodies fail with their operation instead of returning undefined
+  ---
+  duration_ms: 0.747879
+  type: 'test'
+  ...
+# Subtest: a stalled response body is cancelled and cannot become a successful empty result
+ok 31 - a stalled response body is cancelled and cannot become a successful empty result
+  ---
+  duration_ms: 19.989505
+  type: 'test'
+  ...
+# Subtest: screenshot bounds a stalled repaint setup request
+ok 32 - screenshot bounds a stalled repaint setup request
+  ---
+  duration_ms: 21.500863
+  type: 'test'
+  ...
+# Subtest: screenshot bounds a stalled capture request
+ok 33 - screenshot bounds a stalled capture request
+  ---
+  duration_ms: 21.215278
+  type: 'test'
+  ...
+# Subtest: screenshot bounds a stalled repaint cleanup request
+ok 34 - screenshot bounds a stalled repaint cleanup request
+  ---
+  duration_ms: 21.37227
+  type: 'test'
+  ...
+# (node:100) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Reason chat fixture replaces the first-run Reason pin
+ok 35 - Reason chat fixture replaces the first-run Reason pin
+  ---
+  duration_ms: 3.490649
+  type: 'test'
+  ...
+# Subtest: Reason chat fixture replaces the first-run Reason pin and physical default slot
+ok 36 - Reason chat fixture replaces the first-run Reason pin and physical default slot
+  ---
+  duration_ms: 0.739788
+  type: 'test'
+  ...
+# (node:108) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: hashes exact executable bytes and canonicalizes symlinked roots without inventing absent paths
+ok 37 - hashes exact executable bytes and canonicalizes symlinked roots without inventing absent paths
+  ---
+  duration_ms: 5.554073
+  type: 'test'
+  ...
+# Subtest: observes owned listener, descendants, and actual open database path; no argv/env capture
+ok 38 - observes owned listener, descendants, and actual open database path; no argv/env capture
+  ---
+  duration_ms: 6.033695
+  type: 'test'
+  ...
+# Subtest: a listener outside the driver tree has unknown ownership, never clearance
+ok 39 - a listener outside the driver tree has unknown ownership, never clearance
+  ---
+  duration_ms: 2.81701
+  type: 'test'
+  ...
+# Subtest: missing proc data is unavailable, not an empty/released port
+ok 40 - missing proc data is unavailable, not an empty/released port
+  ---
+  duration_ms: 1.456765
+  type: 'test'
+  ...
+# Subtest: cleanup distinguishes live survivors, zombies, PID reuse, and port release
+ok 41 - cleanup distinguishes live survivors, zombies, PID reuse, and port release
+  ---
+  duration_ms: 4.142856
+  type: 'test'
+  ...
+# Subtest: records before launch, app-reported roots and observed post-teardown cleanup
+ok 42 - records before launch, app-reported roots and observed post-teardown cleanup
+  ---
+  duration_ms: 6.666699
+  type: 'test'
+  ...
+# Subtest: reparented children remain failed cleanup after the driver exits
+ok 43 - reparented children remain failed cleanup after the driver exits
+  ---
+  duration_ms: 6.169539
+  type: 'test'
+  ...
+# Subtest: returns observed driver identities for an explicit owner-scoped teardown
+ok 44 - returns observed driver identities for an explicit owner-scoped teardown
+  ---
+  duration_ms: 4.534695
+  type: 'test'
+  ...
+# Subtest: app-data receipts exclude browser cache databases in the driver descendant tree
+ok 45 - app-data receipts exclude browser cache databases in the driver descendant tree
+  ---
+  duration_ms: 5.464474
+  type: 'test'
+  ...
+# Subtest: an unavailable executable never falls back to attributing descendant databases to the app
+ok 46 - an unavailable executable never falls back to attributing descendant databases to the app
+  ---
+  duration_ms: 3.916418
+  type: 'test'
+  ...
+# Subtest: teardown stops only matching owned descendants, including reparented children
+ok 47 - teardown stops only matching owned descendants, including reparented children
+  ---
+  duration_ms: 5.20215
+  type: 'test'
+  ...
+# Subtest: teardown escalates an uncooperative owned process and reports an actual survivor
+ok 48 - teardown escalates an uncooperative owned process and reports an actual survivor
+  ---
+  duration_ms: 2.27838
+  type: 'test'
+  ...
+# Subtest: teardown never signals a reused PID, its descendants or zombies
+ok 49 - teardown never signals a reused PID, its descendants or zombies
+  ---
+  duration_ms: 3.269571
+  type: 'test'
+  ...
+# Subtest: missing observations cannot authorize cleanup or report verified release
+ok 50 - missing observations cannot authorize cleanup or report verified release
+  ---
+  duration_ms: 1.61956
+  type: 'test'
+  ...
+# Subtest: bounded teardown actually stops an inert child that ignores SIGTERM
+ok 51 - bounded teardown actually stops an inert child that ignores SIGTERM
+  ---
+  duration_ms: 199.704634
+  type: 'test'
+  ...
+# Subtest: the affected suites clean their captured identities before the final observation
+ok 52 - the affected suites clean their captured identities before the final observation
+  ---
+  duration_ms: 0.928622
+  type: 'test'
+  ...
+# Subtest: missing before-teardown observation stays unverified
+ok 53 - missing before-teardown observation stays unverified
+  ---
+  duration_ms: 2.486824
+  type: 'test'
+  ...
+# Subtest: early harness exit emits missing_teardown, preserving the original suite exit code
+ok 54 - early harness exit emits missing_teardown, preserving the original suite exit code
+  ---
+  duration_ms: 89.018757
+  type: 'test'
+  ...
+# Subtest: app root query returns only allowlisted paths, not repository metadata/settings
+ok 55 - app root query returns only allowlisted paths, not repository metadata/settings
+  ---
+  duration_ms: 0.566092
+  type: 'test'
+  ...
+# Subtest: WebDriver async receipt transport sends only the script and arguments
+ok 56 - WebDriver async receipt transport sends only the script and arguments
+  ---
+  duration_ms: 0.598965
+  type: 'test'
+  ...
+# Subtest: every hosted built-app suite emits receipts and both jobs upload them even on failure
+ok 57 - every hosted built-app suite emits receipts and both jobs upload them even on failure
+  ---
+  duration_ms: 1.663405
+  type: 'test'
+  ...
+1..57
+# tests 57
+# suites 0
+# pass 57
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3809.856434

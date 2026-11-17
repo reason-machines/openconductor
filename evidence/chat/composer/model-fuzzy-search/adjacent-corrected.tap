@@ -1,0 +1,884 @@
+(node:74) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:81) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: source-only: model results for "claude"
+ok 1 - source-only: model results for "claude"
+  ---
+  duration_ms: 2.515372
+  type: 'test'
+  ...
+# Subtest: source-only: model results for "codex"
+ok 2 - source-only: model results for "codex"
+  ---
+  duration_ms: 0.302381
+  type: 'test'
+  ...
+# Subtest: source-only: model results for "opus"
+ok 3 - source-only: model results for "opus"
+  ---
+  duration_ms: 0.127496
+  type: 'test'
+  ...
+# Subtest: source-only: model results for "gpt-5.6"
+ok 4 - source-only: model results for "gpt-5.6"
+  ---
+  duration_ms: 0.245033
+  type: 'test'
+  ...
+# Subtest: source-only: model results for ""
+ok 5 - source-only: model results for ""
+  ---
+  duration_ms: 0.138892
+  type: 'test'
+  ...
+# Subtest: source-only: model results for " \\t"
+ok 6 - source-only: model results for " \\t"
+  ---
+  duration_ms: 0.114487
+  type: 'test'
+  ...
+# Subtest: source-only: agent-label matching for " Claude CODE "
+ok 7 - source-only: agent-label matching for " Claude CODE "
+  ---
+  duration_ms: 0.221433
+  type: 'test'
+  ...
+# Subtest: source-only: agent-label matching for "not an agent"
+ok 8 - source-only: agent-label matching for "not an agent"
+  ---
+  duration_ms: 0.086268
+  type: 'test'
+  ...
+# Subtest: source-only: explicit and callback agent identities take precedence over model catalog inference
+ok 9 - source-only: explicit and callback agent identities take precedence over model catalog inference
+  ---
+  duration_ms: 0.603427
+  type: 'test'
+  ...
+# Subtest: source-only: agent search preserves matching input order and unknown IDs
+ok 10 - source-only: agent search preserves matching input order and unknown IDs
+  ---
+  duration_ms: 0.39369
+  type: 'test'
+  ...
+# Subtest: source-only: every model-search word matches the same result for "opus claude"
+ok 11 - source-only: every model-search word matches the same result for "opus claude"
+  ---
+  duration_ms: 0.152847
+  type: 'test'
+  ...
+# Subtest: source-only: every model-search word matches the same result for " CLAUDE\\t \\n opus "
+ok 12 - source-only: every model-search word matches the same result for " CLAUDE\\t \\n opus "
+  ---
+  duration_ms: 0.074727
+  type: 'test'
+  ...
+# Subtest: source-only: every model-search word matches the same result for "codex sol"
+ok 13 - source-only: every model-search word matches the same result for "codex sol"
+  ---
+  duration_ms: 0.068693
+  type: 'test'
+  ...
+# Subtest: source-only: every model-search word matches the same result for "gpt sol"
+ok 14 - source-only: every model-search word matches the same result for "gpt sol"
+  ---
+  duration_ms: 0.059435
+  type: 'test'
+  ...
+# Subtest: source-only: every model-search word matches the same result for "opus missing"
+ok 15 - source-only: every model-search word matches the same result for "opus missing"
+  ---
+  duration_ms: 0.054279
+  type: 'test'
+  ...
+# Subtest: source-only: every model-search word matches the same result for "claude gpt"
+ok 16 - source-only: every model-search word matches the same result for "claude gpt"
+  ---
+  duration_ms: 0.082491
+  type: 'test'
+  ...
+# Subtest: source-only: multiword search preserves matching input order
+ok 17 - source-only: multiword search preserves matching input order
+  ---
+  duration_ms: 0.100587
+  type: 'test'
+  ...
+# Subtest: source-only: multiword search preserves explicit and callback agent precedence
+ok 18 - source-only: multiword search preserves explicit and callback agent precedence
+  ---
+  duration_ms: 0.105425
+  type: 'test'
+  ...
+# Subtest: source-only: multiword search uses supplied names and keeps unknown model IDs
+ok 19 - source-only: multiword search uses supplied names and keeps unknown model IDs
+  ---
+  duration_ms: 0.138459
+  type: 'test'
+  ...
+# (node:89) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: an already-open model menu disables native result buttons for query ""
+ok 20 - an already-open model menu disables native result buttons for query ""
+  ---
+  duration_ms: 143.468961
+  type: 'test'
+  ...
+# Subtest: an already-open model menu disables native result buttons for query "sonnet"
+ok 21 - an already-open model menu disables native result buttons for query "sonnet"
+  ---
+  duration_ms: 92.160657
+  type: 'test'
+  ...
+# Subtest: an already-open model menu disables native result buttons for query "opus"
+ok 22 - an already-open model menu disables native result buttons for query "opus"
+  ---
+  duration_ms: 71.836378
+  type: 'test'
+  ...
+# Subtest: changing a search query while disabled keeps newly rendered results disabled
+ok 23 - changing a search query while disabled keeps newly rendered results disabled
+  ---
+  duration_ms: 46.392454
+  type: 'test'
+  ...
+# Subtest: reenabling preserves filtered mouse selection and the open menu
+ok 24 - reenabling preserves filtered mouse selection and the open menu
+  ---
+  duration_ms: 45.396831
+  type: 'test'
+  ...
+# (node:97) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: source-only: clicking effort high with fast=true applies once and closes only the submenu
+ok 25 - source-only: clicking effort high with fast=true applies once and closes only the submenu
+  ---
+  duration_ms: 1.601655
+  type: 'test'
+  ...
+# Subtest: source-only: clicking effort high with fast=false applies once and closes only the submenu
+ok 26 - source-only: clicking effort high with fast=false applies once and closes only the submenu
+  ---
+  duration_ms: 0.11797
+  type: 'test'
+  ...
+# Subtest: source-only: clicking effort medium with fast=true applies once and closes only the submenu
+ok 27 - source-only: clicking effort medium with fast=true applies once and closes only the submenu
+  ---
+  duration_ms: 0.079135
+  type: 'test'
+  ...
+# Subtest: source-only: clicking effort medium with fast=false applies once and closes only the submenu
+ok 28 - source-only: clicking effort medium with fast=false applies once and closes only the submenu
+  ---
+  duration_ms: 0.12575
+  type: 'test'
+  ...
+# (node:105) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:105) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: abbreviated model search retains the cld result
+ok 29 - abbreviated model search retains the cld result
+  ---
+  duration_ms: 4.68444
+  type: 'test'
+  ...
+# Subtest: abbreviated model search retains the cdx result
+ok 30 - abbreviated model search retains the cdx result
+  ---
+  duration_ms: 0.309205
+  type: 'test'
+  ...
+# Subtest: abbreviated model search retains the gpt56 result
+ok 31 - abbreviated model search retains the gpt56 result
+  ---
+  duration_ms: 0.242457
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing "opus" control
+ok 32 - model search preserves the existing "opus" control
+  ---
+  duration_ms: 0.191915
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing "codex" control
+ok 33 - model search preserves the existing "codex" control
+  ---
+  duration_ms: 0.992638
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing "opus claude" control
+ok 34 - model search preserves the existing "opus claude" control
+  ---
+  duration_ms: 0.169452
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing " CLAUDE\\t \\n opus " control
+ok 35 - model search preserves the existing " CLAUDE\\t \\n opus " control
+  ---
+  duration_ms: 0.161194
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing "" control
+ok 36 - model search preserves the existing "" control
+  ---
+  duration_ms: 0.077636
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing " \\t" control
+ok 37 - model search preserves the existing " \\t" control
+  ---
+  duration_ms: 0.251382
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing "no matching model" control
+ok 38 - model search preserves the existing "no matching model" control
+  ---
+  duration_ms: 1.675924
+  type: 'test'
+  ...
+# Subtest: literal model search preserves source order and choice identity
+ok 39 - literal model search preserves source order and choice identity
+  ---
+  duration_ms: 0.276963
+  type: 'test'
+  ...
+# Subtest: provider identity still uses the explicit agent and callback precedence
+ok 40 - provider identity still uses the explicit agent and callback precedence
+  ---
+  duration_ms: 0.165567
+  type: 'test'
+  ...
+# (node:113) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: source callback: keyCode 229 alone keeps composing Enter out of model commands
+ok 41 - source callback: keyCode 229 alone keeps composing Enter out of model commands
+  ---
+  duration_ms: 1.914652
+  type: 'test'
+  ...
+# Subtest: source callback: keyCode 229 alone keeps composing Escape out of model commands
+ok 42 - source callback: keyCode 229 alone keeps composing Escape out of model commands
+  ---
+  duration_ms: 0.250711
+  type: 'test'
+  ...
+# Subtest: source callback: which 229 alone keeps composing Enter out of model commands
+ok 43 - source callback: which 229 alone keeps composing Enter out of model commands
+  ---
+  duration_ms: 0.118845
+  type: 'test'
+  ...
+# Subtest: source callback: which 229 alone keeps composing Escape out of model commands
+ok 44 - source callback: which 229 alone keeps composing Escape out of model commands
+  ---
+  duration_ms: 0.099659
+  type: 'test'
+  ...
+# Subtest: source callback: nativeKeyCode 229 alone keeps composing Enter out of model commands
+ok 45 - source callback: nativeKeyCode 229 alone keeps composing Enter out of model commands
+  ---
+  duration_ms: 0.21017
+  type: 'test'
+  ...
+# Subtest: source callback: nativeKeyCode 229 alone keeps composing Escape out of model commands
+ok 46 - source callback: nativeKeyCode 229 alone keeps composing Escape out of model commands
+  ---
+  duration_ms: 0.082657
+  type: 'test'
+  ...
+# Subtest: source callback: nativeWhich 229 alone keeps composing Enter out of model commands
+ok 47 - source callback: nativeWhich 229 alone keeps composing Enter out of model commands
+  ---
+  duration_ms: 0.164281
+  type: 'test'
+  ...
+# Subtest: source callback: nativeWhich 229 alone keeps composing Escape out of model commands
+ok 48 - source callback: nativeWhich 229 alone keeps composing Escape out of model commands
+  ---
+  duration_ms: 0.081065
+  type: 'test'
+  ...
+# Subtest: source callback: isComposing keeps Enter out of model commands without a 229 code
+ok 49 - source callback: isComposing keeps Enter out of model commands without a 229 code
+  ---
+  duration_ms: 0.249905
+  type: 'test'
+  ...
+# Subtest: source callback: isComposing keeps Escape out of model commands without a 229 code
+ok 50 - source callback: isComposing keeps Escape out of model commands without a 229 code
+  ---
+  duration_ms: 0.276097
+  type: 'test'
+  ...
+# Subtest: source callback: nativeIsComposing keeps Enter out of model commands without a 229 code
+ok 51 - source callback: nativeIsComposing keeps Enter out of model commands without a 229 code
+  ---
+  duration_ms: 0.133369
+  type: 'test'
+  ...
+# Subtest: source callback: nativeIsComposing keeps Escape out of model commands without a 229 code
+ok 52 - source callback: nativeIsComposing keeps Escape out of model commands without a 229 code
+  ---
+  duration_ms: 0.059949
+  type: 'test'
+  ...
+# Subtest: source callback: ordinary Enter still selects the result and clears its query
+ok 53 - source callback: ordinary Enter still selects the result and clears its query
+  ---
+  duration_ms: 0.16409
+  type: 'test'
+  ...
+# Subtest: source callback: ordinary Escape still clears a query or closes an empty menu
+ok 54 - source callback: ordinary Escape still clears a query or closes an empty menu
+  ---
+  duration_ms: 0.094949
+  type: 'test'
+  ...
+# Subtest: source callback: already-prevented commands remain untouched
+ok 55 - source callback: already-prevented commands remain untouched
+  ---
+  duration_ms: 0.127389
+  type: 'test'
+  ...
+# Subtest: source callback: adjacent key codes do not suppress ordinary model commands
+ok 56 - source callback: adjacent key codes do not suppress ordinary model commands
+  ---
+  duration_ms: 0.096915
+  type: 'test'
+  ...
+# Subtest: source callback: composing navigation and editing keys do not move result focus
+ok 57 - source callback: composing navigation and editing keys do not move result focus
+  ---
+  duration_ms: 0.081743
+  type: 'test'
+  ...
+# Subtest: source callback: ordinary vertical navigation still focuses the next result
+ok 58 - source callback: ordinary vertical navigation still focuses the next result
+  ---
+  duration_ms: 0.083435
+  type: 'test'
+  ...
+# (node:121) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted loadout shortcut 1 applies the exact occupied slot and closes the model menu
+ok 59 - mounted loadout shortcut 1 applies the exact occupied slot and closes the model menu
+  ---
+  duration_ms: 148.21222
+  type: 'test'
+  ...
+# Subtest: mounted loadout shortcut 3 applies the exact occupied slot and closes the model menu
+ok 60 - mounted loadout shortcut 3 applies the exact occupied slot and closes the model menu
+  ---
+  duration_ms: 93.109942
+  type: 'test'
+  ...
+# Subtest: mounted loadout shortcut 5 applies the exact occupied slot and closes the model menu
+ok 61 - mounted loadout shortcut 5 applies the exact occupied slot and closes the model menu
+  ---
+  duration_ms: 56.094046
+  type: 'test'
+  ...
+# Subtest: mounted loadout shortcut selects the physical slot during a filtered model search and closes it
+ok 62 - mounted loadout shortcut selects the physical slot during a filtered model search and closes it
+  ---
+  duration_ms: 45.041898
+  type: 'test'
+  ...
+# Subtest: mounted loadout empty-slot control 2 keeps the menu open without a selection
+ok 63 - mounted loadout empty-slot control 2 keeps the menu open without a selection
+  ---
+  duration_ms: 42.247903
+  type: 'test'
+  ...
+# Subtest: mounted loadout empty-slot control 4 keeps the menu open without a selection
+ok 64 - mounted loadout empty-slot control 4 keeps the menu open without a selection
+  ---
+  duration_ms: 32.451081
+  type: 'test'
+  ...
+# Subtest: mounted loadout disabled control does not apply a shortcut or dismiss an already-open menu
+ok 65 - mounted loadout disabled control does not apply a shortcut or dismiss an already-open menu
+  ---
+  duration_ms: 37.872565
+  type: 'test'
+  ...
+# Subtest: mounted loadout closed-menu control applies an occupied slot while composer focus is inside
+ok 66 - mounted loadout closed-menu control applies an occupied slot while composer focus is inside
+  ---
+  duration_ms: 37.198736
+  type: 'test'
+  ...
+# Subtest: mounted loadout outside-focus control leaves a closed picker unchanged
+ok 67 - mounted loadout outside-focus control leaves a closed picker unchanged
+  ---
+  duration_ms: 26.922391
+  type: 'test'
+  ...
+# (node:129) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: source-only: clicking another model with query "sonnet"
+ok 68 - source-only: clicking another model with query "sonnet"
+  ---
+  duration_ms: 1.739602
+  type: 'test'
+  ...
+# Subtest: source-only: clicking another model with query " sonnet "
+ok 69 - source-only: clicking another model with query " sonnet "
+  ---
+  duration_ms: 0.11897
+  type: 'test'
+  ...
+# Subtest: source-only: clicking another model with query ""
+ok 70 - source-only: clicking another model with query ""
+  ---
+  duration_ms: 0.272787
+  type: 'test'
+  ...
+# Subtest: source-only: clicking another model with query " \\t"
+ok 71 - source-only: clicking another model with query " \\t"
+  ---
+  duration_ms: 0.106827
+  type: 'test'
+  ...
+# Subtest: source-only: clicking the current model with query "sonnet"
+ok 72 - source-only: clicking the current model with query "sonnet"
+  ---
+  duration_ms: 0.084659
+  type: 'test'
+  ...
+# Subtest: source-only: clicking the current model with query " sonnet "
+ok 73 - source-only: clicking the current model with query " sonnet "
+  ---
+  duration_ms: 0.073837
+  type: 'test'
+  ...
+# Subtest: source-only: clicking the current model with query ""
+ok 74 - source-only: clicking the current model with query ""
+  ---
+  duration_ms: 0.062836
+  type: 'test'
+  ...
+# Subtest: source-only: clicking the current model with query " \\t"
+ok 75 - source-only: clicking the current model with query " \\t"
+  ---
+  duration_ms: 0.057758
+  type: 'test'
+  ...
+# (node:137) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted model search finds the local Claude row for "claude:opus-5-1m"
+ok 76 - mounted model search finds the local Claude row for "claude:opus-5-1m"
+  ---
+  duration_ms: 141.900572
+  type: 'test'
+  ...
+# Subtest: mounted model search finds the local Claude row for "claude:opus"
+ok 77 - mounted model search finds the local Claude row for "claude:opus"
+  ---
+  duration_ms: 82.381028
+  type: 'test'
+  ...
+# Subtest: mounted model search finds the local Claude row for " CLAUDE:OPUS-5-1M "
+ok 78 - mounted model search finds the local Claude row for " CLAUDE:OPUS-5-1M "
+  ---
+  duration_ms: 59.462219
+  type: 'test'
+  ...
+# Subtest: mounted qualified model search excludes a mismatched agent or missing model
+ok 79 - mounted qualified model search excludes a mismatched agent or missing model
+  ---
+  duration_ms: 56.202941
+  type: 'test'
+  ...
+# Subtest: mounted qualified model search preserves raw IDs, agent labels, and blank results
+ok 80 - mounted qualified model search preserves raw IDs, agent labels, and blank results
+  ---
+  duration_ms: 33.343454
+  type: 'test'
+  ...
+# Subtest: mounted qualified model search preserves matching loadout order
+ok 81 - mounted qualified model search preserves matching loadout order
+  ---
+  duration_ms: 39.002326
+  type: 'test'
+  ...
+# Subtest: mounted qualified model search uses callback agent identity before explicit identity
+ok 82 - mounted qualified model search uses callback agent identity before explicit identity
+  ---
+  duration_ms: 35.785513
+  type: 'test'
+  ...
+# Subtest: mounted qualified model search uses explicit agent identity before catalog inference
+ok 83 - mounted qualified model search uses explicit agent identity before catalog inference
+  ---
+  duration_ms: 35.451124
+  type: 'test'
+  ...
+# Subtest: mounted qualified model search retains catalog agent inference
+ok 84 - mounted qualified model search retains catalog agent inference
+  ---
+  duration_ms: 29.429616
+  type: 'test'
+  ...
+# (node:145) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: source-only: model search mode treats blank and whitespace queries as the default menu
+ok 85 - source-only: model search mode treats blank and whitespace queries as the default menu
+  ---
+  duration_ms: 0.753842
+  type: 'test'
+  ...
+# Subtest: source-only: search excludes injected entries, Add models, effort, Fast and their separator
+ok 86 - source-only: search excludes injected entries, Add models, effort, Fast and their separator
+  ---
+  duration_ms: 0.310799
+  type: 'test'
+  ...
+# Subtest: source-only: model results, no-match text, search input and footer are not search-hidden
+ok 87 - source-only: model results, no-match text, search input and footer are not search-hidden
+  ---
+  duration_ms: 0.315218
+  type: 'test'
+  ...
+# (node:153) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted search result shows the selected Claude agent instead of effort
+ok 88 - mounted search result shows the selected Claude agent instead of effort
+  ---
+  duration_ms: 154.067234
+  type: 'test'
+  ...
+# Subtest: mounted search result shows the Codex agent instead of effort
+ok 89 - mounted search result shows the Codex agent instead of effort
+  ---
+  duration_ms: 88.7833
+  type: 'test'
+  ...
+# Subtest: mounted same-name search results retain loadout order and distinguish agents
+ok 90 - mounted same-name search results retain loadout order and distinguish agents
+  ---
+  duration_ms: 65.981161
+  type: 'test'
+  ...
+# Subtest: mounted search row label uses callback agent before explicit identity
+ok 91 - mounted search row label uses callback agent before explicit identity
+  ---
+  duration_ms: 45.525616
+  type: 'test'
+  ...
+# Subtest: mounted search row label uses explicit agent before catalog inference
+ok 92 - mounted search row label uses explicit agent before catalog inference
+  ---
+  duration_ms: 20.835858
+  type: 'test'
+  ...
+# Subtest: mounted search row label retains catalog agent inference
+ok 93 - mounted search row label retains catalog agent inference
+  ---
+  duration_ms: 43.462133
+  type: 'test'
+  ...
+# Subtest: mounted blank and whitespace queries preserve default effort details
+ok 94 - mounted blank and whitespace queries preserve default effort details
+  ---
+  duration_ms: 42.465782
+  type: 'test'
+  ...
+# Subtest: mounted clearing search restores default row text without selecting
+ok 95 - mounted clearing search restores default row text without selecting
+  ---
+  duration_ms: 32.335392
+  type: 'test'
+  ...
+# Subtest: mounted search selection preserves the original model identity and clears the query
+ok 96 - mounted search selection preserves the original model identity and clears the query
+  ---
+  duration_ms: 28.125531
+  type: 'test'
+  ...
+# (node:161) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: source-only: starting model search captures the default menu height before filtering
+ok 97 - source-only: starting model search captures the default menu height before filtering
+  ---
+  duration_ms: 1.948221
+  type: 'test'
+  ...
+# Subtest: source-only: refining a search keeps the original height even with no matching rows
+ok 98 - source-only: refining a search keeps the original height even with no matching rows
+  ---
+  duration_ms: 0.165573
+  type: 'test'
+  ...
+# Subtest: source-only: clearing search releases its height and the next search measures afresh
+ok 99 - source-only: clearing search releases its height and the next search measures afresh
+  ---
+  duration_ms: 0.272084
+  type: 'test'
+  ...
+# Subtest: source-only: the measured model-menu wrapper applies height only while searching
+ok 100 - source-only: the measured model-menu wrapper applies height only while searching
+  ---
+  duration_ms: 0.325873
+  type: 'test'
+  ...
+# Subtest: source-only: search input uses the height-aware query transition
+ok 101 - source-only: search input uses the height-aware query transition
+  ---
+  duration_ms: 0.191989
+  type: 'test'
+  ...
+# Subtest: source-only: selecting a model by Enter or click clears query and height together
+ok 102 - source-only: selecting a model by Enter or click clears query and height together
+  ---
+  duration_ms: 0.203884
+  type: 'test'
+  ...
+# Subtest: source-only: Escape and menu close release the height without changing their close behavior
+ok 103 - source-only: Escape and menu close release the height without changing their close behavior
+  ---
+  duration_ms: 0.137688
+  type: 'test'
+  ...
+# (node:169) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted model search input declares autoCorrect=off before and after typing
+ok 104 - mounted model search input declares autoCorrect=off before and after typing
+  ---
+  duration_ms: 170.8883
+  type: 'test'
+  ...
+# Subtest: mounted model search input declares autoCapitalize=off before and after typing
+ok 105 - mounted model search input declares autoCapitalize=off before and after typing
+  ---
+  duration_ms: 78.412323
+  type: 'test'
+  ...
+# Subtest: mounted model search retains its existing input attributes
+ok 106 - mounted model search retains its existing input attributes
+  ---
+  duration_ms: 64.305641
+  type: 'test'
+  ...
+# Subtest: mounted model search keeps typed model identifiers verbatim without selecting a model
+ok 107 - mounted model search keeps typed model identifiers verbatim without selecting a model
+  ---
+  duration_ms: 55.854773
+  type: 'test'
+  ...
+# (node:177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: source callback: search input contains "a" without preventing text editing
+ok 108 - source callback: search input contains "a" without preventing text editing
+  ---
+  duration_ms: 1.895242
+  type: 'test'
+  ...
+# Subtest: source callback: search input contains "Backspace" without preventing text editing
+ok 109 - source callback: search input contains "Backspace" without preventing text editing
+  ---
+  duration_ms: 0.238561
+  type: 'test'
+  ...
+# Subtest: source callback: search input contains "Delete" without preventing text editing
+ok 110 - source callback: search input contains "Delete" without preventing text editing
+  ---
+  duration_ms: 0.116194
+  type: 'test'
+  ...
+# Subtest: source callback: search input contains " " without preventing text editing
+ok 111 - source callback: search input contains " " without preventing text editing
+  ---
+  duration_ms: 0.115791
+  type: 'test'
+  ...
+# Subtest: source callback: search input contains "ArrowLeft" without preventing text editing
+ok 112 - source callback: search input contains "ArrowLeft" without preventing text editing
+  ---
+  duration_ms: 0.235143
+  type: 'test'
+  ...
+# Subtest: source callback: search input contains "ArrowRight" without preventing text editing
+ok 113 - source callback: search input contains "ArrowRight" without preventing text editing
+  ---
+  duration_ms: 0.08715
+  type: 'test'
+  ...
+# Subtest: source callback: ordinary keys outside the search input still propagate
+ok 114 - source callback: ordinary keys outside the search input still propagate
+  ---
+  duration_ms: 0.263542
+  type: 'test'
+  ...
+# Subtest: source callback: Tab remains available to default menu navigation
+ok 115 - source callback: Tab remains available to default menu navigation
+  ---
+  duration_ms: 0.11163
+  type: 'test'
+  ...
+# Subtest: source callback: blank search leaves vertical arrows to default menu navigation
+ok 116 - source callback: blank search leaves vertical arrows to default menu navigation
+  ---
+  duration_ms: 0.270306
+  type: 'test'
+  ...
+# Subtest: source callback: filtered search keeps its existing vertical result navigation
+ok 117 - source callback: filtered search keeps its existing vertical result navigation
+  ---
+  duration_ms: 0.448319
+  type: 'test'
+  ...
+# Subtest: source callback: Enter still chooses the first search result and clears the query
+ok 118 - source callback: Enter still chooses the first search result and clears the query
+  ---
+  duration_ms: 0.223346
+  type: 'test'
+  ...
+# Subtest: source callback: Escape preserves query-clear, menu-close and submenu-close precedence
+ok 119 - source callback: Escape preserves query-clear, menu-close and submenu-close precedence
+  ---
+  duration_ms: 0.137579
+  type: 'test'
+  ...
+# Subtest: source callback: composing search keys retain the existing early return
+ok 120 - source callback: composing search keys retain the existing early return
+  ---
+  duration_ms: 0.106504
+  type: 'test'
+  ...
+# Subtest: source callback: already-prevented keys retain the existing early return
+ok 121 - source callback: already-prevented keys retain the existing early return
+  ---
+  duration_ms: 0.091111
+  type: 'test'
+  ...
+# (node:185) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: source callback: starting model search returns a scrolled result viewport to the top
+ok 122 - source callback: starting model search returns a scrolled result viewport to the top
+  ---
+  duration_ms: 0.844738
+  type: 'test'
+  ...
+# Subtest: source callback: refining model search resets an independently scrolled result viewport
+ok 123 - source callback: refining model search resets an independently scrolled result viewport
+  ---
+  duration_ms: 0.172602
+  type: 'test'
+  ...
+# Subtest: source callback: replacing the query also resets the result viewport
+ok 124 - source callback: replacing the query also resets the result viewport
+  ---
+  duration_ms: 0.158361
+  type: 'test'
+  ...
+# Subtest: source callback: clearing model search resets the viewport for blank and whitespace queries
+ok 125 - source callback: clearing model search resets the viewport for blank and whitespace queries
+  ---
+  duration_ms: 0.159806
+  type: 'test'
+  ...
+# Subtest: source callback: rerendering an unchanged query preserves the user's scroll position
+ok 126 - source callback: rerendering an unchanged query preserves the user's scroll position
+  ---
+  duration_ms: 0.164186
+  type: 'test'
+  ...
+# Subtest: source callback: query changes do not reset the outer menu or a sibling viewport
+ok 127 - source callback: query changes do not reset the outer menu or a sibling viewport
+  ---
+  duration_ms: 0.150891
+  type: 'test'
+  ...
+# Subtest: source callback: query changes tolerate an unmounted picker or absent result viewport
+ok 128 - source callback: query changes tolerate an unmounted picker or absent result viewport
+  ---
+  duration_ms: 0.2834
+  type: 'test'
+  ...
+# (node:193) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted built-in haiku-4-5 explains unsupported Effort without activating it
+ok 129 - mounted built-in haiku-4-5 explains unsupported Effort without activating it
+  ---
+  duration_ms: 135.966554
+  type: 'test'
+  ...
+# Subtest: mounted built-in haiku explains unsupported Effort without activating it
+ok 130 - mounted built-in haiku explains unsupported Effort without activating it
+  ---
+  duration_ms: 40.04972
+  type: 'test'
+  ...
+# Subtest: mounted legacy Haiku without explicit agent uses its built-in capability
+ok 131 - mounted legacy Haiku without explicit agent uses its built-in capability
+  ---
+  duration_ms: 46.936388
+  type: 'test'
+  ...
+# Subtest: mounted unsupported Effort is hidden during search and restored on clear
+ok 132 - mounted unsupported Effort is hidden during search and restored on clear
+  ---
+  duration_ms: 87.145856
+  type: 'test'
+  ...
+# Subtest: mounted supported Effort still selects an effort with the same identity
+ok 133 - mounted supported Effort still selects an effort with the same identity
+  ---
+  duration_ms: 54.226183
+  type: 'test'
+  ...
+# Subtest: mounted supported Thinking still selects an effort with the same identity
+ok 134 - mounted supported Thinking still selects an effort with the same identity
+  ---
+  duration_ms: 48.980906
+  type: 'test'
+  ...
+# Subtest: mounted non-built-in choice unknown/custom-model stays unchanged
+ok 135 - mounted non-built-in choice unknown/custom-model stays unchanged
+  ---
+  duration_ms: 32.304058
+  type: 'test'
+  ...
+# Subtest: mounted non-built-in choice claude/claude-code stays unchanged
+ok 136 - mounted non-built-in choice claude/claude-code stays unchanged
+  ---
+  duration_ms: 33.10404
+  type: 'test'
+  ...
+# Subtest: mounted non-built-in choice reason/haiku-4-5 stays unchanged
+ok 137 - mounted non-built-in choice reason/haiku-4-5 stays unchanged
+  ---
+  duration_ms: 37.023852
+  type: 'test'
+  ...
+# Subtest: mounted non-built-in choice codex/haiku-4-5 stays unchanged
+ok 138 - mounted non-built-in choice codex/haiku-4-5 stays unchanged
+  ---
+  duration_ms: 33.411803
+  type: 'test'
+  ...
+# Subtest: mounted callback-resolved Reason agent does not acquire a built-in unsupported row
+ok 139 - mounted callback-resolved Reason agent does not acquire a built-in unsupported row
+  ---
+  duration_ms: 28.088283
+  type: 'test'
+  ...
+# Subtest: mounted unsupported row preserves favorite order and exact model selection identity
+ok 140 - mounted unsupported row preserves favorite order and exact model selection identity
+  ---
+  duration_ms: 26.366936
+  type: 'test'
+  ...
+1..140
+# tests 140
+# suites 0
+# pass 140
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6596.255939
