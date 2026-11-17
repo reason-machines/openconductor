@@ -72,6 +72,7 @@ function fixture() {
     const module: { exports: Exports } = { exports: {} };
     modules.set(name, module);
     const require = (dep: string): unknown => {
+      if (dep === "@xterm/addon-web-links") return deps(dep);
       if (dep === "react" || dep === "@xterm/addon-unicode11") return deps(dep);
       const key = dep.startsWith(".") ? resolve(dirname(file), dep).slice(process.cwd().length + 1).replace(/\.tsx?$/, "") : dep;
       return Object.prototype.hasOwnProperty.call(boundary, key) ? boundary[key] : load(key);

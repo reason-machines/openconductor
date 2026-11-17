@@ -1,0 +1,144 @@
+{
+  "author": "Conductor Rebuild",
+  "base": "9f676a74b9763eacfced2489b01a81163900bed9",
+  "loaders": [
+    {
+      "path": "src/features/terminal/alternateClear.test.ts",
+      "original": "loader-originals/alternateClear.test.ts.txt.gz",
+      "original_sha256": "cc240eeabb465894bcd5069c40ea4516e8263f569763bd536cd99c20baf98c9b",
+      "entry": "      if (dep === \"@xterm/addon-web-links\") return deps(dep);\n"
+    },
+    {
+      "path": "src/features/terminal/alternateLineEdit.test.ts",
+      "original": "loader-originals/alternateLineEdit.test.ts.txt.gz",
+      "original_sha256": "c3e64c13d509f3ce702006d5a15111a98f4d2195a17e491f33ee9df2c93c4d2c",
+      "entry": "      if (dep === \"@xterm/addon-web-links\") return deps(dep);\n"
+    },
+    {
+      "path": "src/features/terminal/clearRedraw.test.ts",
+      "original": "loader-originals/clearRedraw.test.ts.txt.gz",
+      "original_sha256": "bc9a0c10f618336257d3c9868b83d71da8b957943ed896ab95fed97f1ab3889e",
+      "entry": "      if (dep === \"@xterm/addon-web-links\") return deps(dep);\n"
+    },
+    {
+      "path": "src/features/terminal/cursorState.test.ts",
+      "original": "loader-originals/cursorState.test.ts.txt.gz",
+      "original_sha256": "e5102add5fd235579972d84a385b4c388cf49ebefc93fdd4229e541cdb983b92",
+      "entry": "      if (dep === \"@xterm/addon-web-links\") return deps(dep);\n"
+    },
+    {
+      "path": "src/features/terminal/nonrunningInput.test.ts",
+      "original": "loader-originals/nonrunningInput.test.ts.txt.gz",
+      "original_sha256": "40e16cd4d9a999a038e0b8797062d361846ca2a133c26601a5925ee7c0d0d751",
+      "entry": "      if (dep === \"@xterm/addon-web-links\") return deps(dep);\n"
+    },
+    {
+      "path": "src/features/terminal/ordinaryCopy.test.ts",
+      "original": "loader-originals/ordinaryCopy.test.ts.txt.gz",
+      "original_sha256": "aa67525808e83713de8001c8b2b16a39dbf346250d66619ab151436e3b5e01e0",
+      "entry": "      if (dep === \"@xterm/addon-web-links\") return deps(dep);\n"
+    },
+    {
+      "path": "src/features/terminal/ordinaryLinks.test.ts",
+      "original": "loader-originals/ordinaryLinks.test.ts.txt.gz",
+      "original_sha256": "50cf0952aafe318cd48681bf66afccced2fa41a4a606593b5314ce88b5ca4fcc",
+      "entry": "      if (dep === \"@xterm/addon-web-links\") return deps(dep);\n"
+    },
+    {
+      "path": "src/features/terminal/ordinaryThemeRefresh.test.ts",
+      "original": "loader-originals/ordinaryThemeRefresh.test.ts.txt.gz",
+      "original_sha256": "a5a1883324d08d10cc322379399bde080ba9e3234331ec6cd10dfe2e6112c857",
+      "entry": "      if (dep === \"@xterm/addon-web-links\") return deps(dep);\n"
+    },
+    {
+      "path": "evidence/resource-terminal-labels/regression.cjs",
+      "original": "loader-originals/regression.cjs.txt.gz",
+      "original_sha256": "15a8adf2483739cf1ea2e71be5ec5f5fede9aa96789b0bf7784e59d235bc702c",
+      "entry": "      if (name === '@xterm/addon-web-links') return deps(name);\n"
+    },
+    {
+      "path": "src/features/terminal/resizeState.test.ts",
+      "original": "loader-originals/resizeState.test.ts.txt.gz",
+      "original_sha256": "552c35170f5b7e7d1a50b2bc253bf07a7a0c5f825434d94bdf13464b2f0a5320",
+      "entry": "      if (dep === \"@xterm/addon-web-links\") return deps(dep);\n"
+    },
+    {
+      "path": "src/features/terminal/selectionTheme.test.ts",
+      "original": "loader-originals/selectionTheme.test.ts.txt.gz",
+      "original_sha256": "694f95675789ed9e1aad4c06be8c500df4c7c86cb66f42c62f106fa5a4dfc938",
+      "entry": "      if (dep === \"@xterm/addon-web-links\") return deps(dep);\n"
+    },
+    {
+      "path": "src/features/terminal/sessionLineFeed.test.ts",
+      "original": "loader-originals/sessionLineFeed.test.ts.txt.gz",
+      "original_sha256": "73dbb8fe0b80aa4fbea4e9e58341cd1b2d6feb70ff14bc03f934342fe901cd09",
+      "entry": "      if (dep === \"@xterm/addon-web-links\") return deps(dep);\n"
+    },
+    {
+      "path": "src/features/terminal/sessionUnicode.test.ts",
+      "original": "loader-originals/sessionUnicode.test.ts.txt.gz",
+      "original_sha256": "09dd943688e4c5a947991b4752e93240bce1515a7543a6bc91010f0e53d7e0bf",
+      "entry": "      if (dep === \"@xterm/addon-web-links\") return deps(dep);\n"
+    },
+    {
+      "path": "src/features/terminal/spawnFailure.test.ts",
+      "original": "loader-originals/spawnFailure.test.ts.txt.gz",
+      "original_sha256": "bf99455a4a3b977660f253e0010ca7035544b4cea0f1af158ba4cebbfdff3bca",
+      "entry": "      if (dep === \"@xterm/addon-web-links\") return deps(dep);\n"
+    },
+    {
+      "path": "src/features/terminal/startupCancellation.test.ts",
+      "original": "loader-originals/startupCancellation.test.ts.txt.gz",
+      "original_sha256": "1f9f6a72dd2900d904107af1ef72246cc5b99e2a09a4871d27add92c9e73eef7",
+      "entry": "      if (dep === \"@xterm/addon-web-links\") return deps(dep);\n"
+    },
+    {
+      "path": "src/features/terminal/startupDisposal.test.ts",
+      "original": "loader-originals/startupDisposal.test.ts.txt.gz",
+      "original_sha256": "c930e225caa3355eb7a09020f5cfb2fd9c5ceff364b948e9618600d9e6b2343e",
+      "entry": "      if (dep === \"@xterm/addon-web-links\") return deps(dep);\n"
+    },
+    {
+      "path": "src/features/terminal/terminalAnsiTheme.test.ts",
+      "original": "loader-originals/terminalAnsiTheme.test.ts.txt.gz",
+      "original_sha256": "3a45afb29c145e5419e329cd8102ac494639bc56dc355ec17183eb2cccd368ea",
+      "entry": "      if (dep === \"@xterm/addon-web-links\") return deps(dep);\n"
+    }
+  ],
+  "session_additions": [
+    "import { WebLinksAddon } from \"@xterm/addon-web-links\";\n",
+    "  term.loadAddon(new WebLinksAddon((event, url) => {\n    if (event.metaKey) void openUrl(url).catch((error: unknown) => { console.error(\"Failed to open terminal link\", error); });\n  }));\n"
+  ],
+  "addon_lock": {
+    "version": "0.12.0",
+    "resolved": "https://registry.npmjs.org/@xterm/addon-web-links/-/addon-web-links-0.12.0.tgz",
+    "integrity": "sha512-4Smom3RPyVp7ZMYOYDoC/9eGJJJqYhnPLGGqJ6wOBfB8VxPViJNSKdgRYb8NpaM6YSelEKbA2SStD7lGyqaobw==",
+    "license": "MIT"
+  },
+  "installed_hashes": {
+    "node_modules/@xterm/addon-web-links/package.json": "7795b7d952457ad5c7ee2e529ada66eb084581646d7791e6bfaaf242dd474d1f",
+    "node_modules/@xterm/addon-web-links/typings/addon-web-links.d.ts": "ed6a994db6dd137c518c4ce54eaf9751200135b950f0f843fff1438574b18387",
+    "node_modules/@xterm/addon-web-links/src/WebLinksAddon.ts": "eef7ed04e3455ea14be14da6a02e850e497240b666363ab9a593390ea6c6cff4",
+    "node_modules/@xterm/addon-web-links/src/WebLinkProvider.ts": "5cf83214d2bd19dd06a2492eefe7686d1bd66cbe61fea490513335f630bb8b8a",
+    "node_modules/@xterm/addon-web-links/lib/addon-web-links.js": "b74864125ef3889753b94e61eb4dabb99b2a27f920f0c9a7bd53cbe6d10f032a"
+  },
+  "evidence_hashes": {
+    "before.tap.gz": "d817aea5335357d1d8ca00d7b5b6bfe4026507ce87e1fa2e50d96b9d8c654829",
+    "fresh-main-red.tap.gz": "22187e86c8ddc74e9a881f7abe11ad20856fefea2079bb997e1d82aacfb91d30",
+    "fresh-main-session.ts.txt": "77c147318d22cd057ed8bb22f1ed9c03ffe932c4bda80f3c067191ddcebd8e64",
+    "fresh-main-package.json.txt": "3436671ba8bb422c26debf8149ed0cdd9e985b77262bf9316e09e79302c80118",
+    "baseline-package-lock.json.txt.gz": "243528dd95c389249f5601047798f64179b49b224c51927456f730948c8d4907",
+    "frozen-ordinaryPlainLinks.ts.txt": "f05513f25c8bd8bd2ceb137875a305d10a9f60111cf89c8cce9c06fa7aa1a0c2",
+    "green.tap.gz": "cbfdfa559b9df5f29467f4f407e854917835d7ce7623e120701f7936a4c142d2",
+    "loader-before.tap.gz": "611eb55c2f9c01f63b1e15708f6c82d563be50d83246f09e6595ae7c3514f319",
+    "loader-green.tap.gz": "426730401bf1d9b480427e0fd7145bb891d759ecc9453b2085e523451b51c3ea",
+    "adjacent.tap.gz": "4c22e5e8bd06b4f95c4968d26156e460ca129dd15f6e565ed3b2244882703955",
+    "lint-colors.log": "64805e2373b145f947815dcf8642f79adca7101810cd161ea11198acdfdfdd9e"
+  },
+  "not_run": [
+    "Local full typecheck/build: serialized admission not requested; exact-head hosted gate retained",
+    "Physical/native link hit testing and Command-click",
+    "Native opener/default browser delivery",
+    "Real PTY/provider and packaged acceptance"
+  ]
+}

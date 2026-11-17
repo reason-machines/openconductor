@@ -1,0 +1,15 @@
+{
+  "author": "Conductor Rebuild",
+  "main": "9f676a74b9763eacfced2489b01a81163900bed9",
+  "source_checks": 71,
+  "spans": 15,
+  "fixture_sha256": "f05513f25c8bd8bd2ceb137875a305d10a9f60111cf89c8cce9c06fa7aa1a0c2",
+  "tests": 10,
+  "pass": 3,
+  "intended_assertion_failures": 7,
+  "files": {
+    "fresh-main-red.tap": "eb404fb8b394b0779c6e5d6ee2013d8b6397902c3ce3a62f5ac382cbc016ff33",
+    "fresh-main-session.ts.txt": "77c147318d22cd057ed8bb22f1ed9c03ffe932c4bda80f3c067191ddcebd8e64",
+    "fresh-main-package.json.txt": "3436671ba8bb422c26debf8149ed0cdd9e985b77262bf9316e09e79302c80118"
+  }
+}
