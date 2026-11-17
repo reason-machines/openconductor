@@ -11,6 +11,7 @@ import * as workspaceNumber from "../state/workspaceNumber.ts";
 import * as allWorkspaces from "../home/allWorkspaces.ts";
 import * as adapter from "./fromAppState.ts";
 import * as search from "./search/model.ts";
+import * as sectionSearchScore from "./search/score.ts";
 import * as state from "./state.ts";
 import * as workspacesTab from "./workspacesTab.ts";
 import type { AppState } from "../state/types.ts";
@@ -40,7 +41,7 @@ function evaluate(file: string, imports: Record<string, unknown>) {
 }
 function loadHost(bindings: overrides.Overrides) {
   const icons = { ConductorIcon: inert };
-  const sections = evaluate("./MoveToSection.tsx", { "../components/ConductorIcon": icons });
+  const sections = evaluate("./MoveToSection.tsx", { "../components/ConductorIcon": icons, "./search/score.ts": sectionSearchScore });
   const rows = evaluate("./WorkspacesTab.tsx", {
     "../home/allWorkspaces.ts": allWorkspaces,
     "../state/chatUnread.ts": { isWorkspaceUnread: () => false },

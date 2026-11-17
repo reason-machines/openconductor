@@ -1,0 +1,243 @@
+{
+  "owner": "Conductor Rebuild / SAME15",
+  "unit": "SECTION-FOOTER-SEARCH-SAME15",
+  "baseMain": "2ada6e3e186391695cae1ce5694ac251a6323079",
+  "parent": {
+    "name": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "retained_REA_artifact_id": "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5"
+  },
+  "offsetConvention": "zero-based half-open UTF-8 bytes",
+  "records": [
+    {
+      "path": "Jba.txt",
+      "range": [
+        10877545,
+        10880908
+      ],
+      "bytes": 3363,
+      "sha256": "e5d76b4abadffdc8f9ea6350a230c242b38cfbe53ab5dd515e481a93045563d1",
+      "parsePrefix": ""
+    },
+    {
+      "path": "KV.txt",
+      "range": [
+        2913899,
+        2914244
+      ],
+      "bytes": 345,
+      "sha256": "12168391677891cbeaddc6307650dab1ee6e762cbd0f8114b28ff1a0339a97c4",
+      "parsePrefix": ""
+    },
+    {
+      "path": "P6.txt",
+      "range": [
+        2912384,
+        2912492
+      ],
+      "bytes": 108,
+      "sha256": "20b129f07752490e4c9ca33091b5d947173fb1de439bcda0f2b15b9e25deb4f6",
+      "parsePrefix": "const "
+    },
+    {
+      "path": "Xyi.txt",
+      "range": [
+        2903072,
+        2908580
+      ],
+      "bytes": 5508,
+      "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92",
+      "parsePrefix": "const "
+    },
+    {
+      "path": "M5s.txt",
+      "range": [
+        2908581,
+        2909564
+      ],
+      "bytes": 983,
+      "sha256": "84e0d537998fe7e8a40a285ca3b33d0aa3309933ceab0c4e0dca0dd6ad66acda",
+      "parsePrefix": "const "
+    },
+    {
+      "path": "j5s.txt",
+      "range": [
+        2909565,
+        2910190
+      ],
+      "bytes": 625,
+      "sha256": "d0160813e758af7d2dbe95f24ef9531cdb156ffb7284575a3da8d745e21dea1f",
+      "parsePrefix": "const "
+    },
+    {
+      "path": "F5s.txt",
+      "range": [
+        2910191,
+        2910379
+      ],
+      "bytes": 188,
+      "sha256": "61cf72db4ca6126fd90bc74c7a8409660633cc95d1b438b471c1fd6449c6d84a",
+      "parsePrefix": "const "
+    },
+    {
+      "path": "B5s.txt",
+      "range": [
+        2910380,
+        2910953
+      ],
+      "bytes": 573,
+      "sha256": "70fa9c07b0d8b605e648601e01cd266db15dadad0ac59b8cb5569cee58c02758",
+      "parsePrefix": "const "
+    },
+    {
+      "path": "Zyi.txt",
+      "range": [
+        2913001,
+        2913356
+      ],
+      "bytes": 355,
+      "sha256": "4b0a2f5d6eb1f9b91d99f987e0f85aeaa4abcdd1849f44ff769532113d74d44b",
+      "parsePrefix": ""
+    },
+    {
+      "path": "ff.txt",
+      "range": [
+        2918531,
+        2919028
+      ],
+      "bytes": 497,
+      "sha256": "a80e2e705615f9bd5dad6ce04138c20b5b068b1454d20cf1500d6b9f10c188f4",
+      "parsePrefix": ""
+    },
+    {
+      "path": "exi.txt",
+      "range": [
+        2919065,
+        2919387
+      ],
+      "bytes": 322,
+      "sha256": "d62a14cd75a13cf6a6509d956761e1efc4af96a80ed2a5b944b16b2e4e5c9620",
+      "parsePrefix": ""
+    },
+    {
+      "path": "item-wrapper.txt",
+      "range": [
+        2919429,
+        2920050
+      ],
+      "bytes": 621,
+      "sha256": "16192774c54e5a7b2d8844213229cd7dfc2ac1782b6a0922abdf5c7cb32f1948",
+      "parsePrefix": ""
+    },
+    {
+      "path": "filter.txt",
+      "range": [
+        10872078,
+        10872171
+      ],
+      "bytes": 93,
+      "sha256": "c6caa096acb780de71bd8f8dba8d9c024a72818fa62ac88a31ece75cb9913760",
+      "parsePrefix": ""
+    },
+    {
+      "path": "scorer.txt",
+      "range": [
+        8457894,
+        8458998
+      ],
+      "bytes": 1104,
+      "sha256": "7af03a8d22411decca30dfa14f8abe37b74900ac2e5b0664e9b01478925270a2",
+      "parsePrefix": ""
+    },
+    {
+      "path": "kI.txt",
+      "range": [
+        2916816,
+        2917726
+      ],
+      "bytes": 910,
+      "sha256": "970dc084f87ebeb0e3f1220debf849ee4115e11f0be19c8442dab05ba688decf",
+      "parsePrefix": ""
+    },
+    {
+      "path": "selectors.txt",
+      "range": [
+        2902726,
+        2902911
+      ],
+      "bytes": 185,
+      "sha256": "4c1ca9f92a6ff469c9873e119ab82f250882c6993b428432d81899e2bfca6129",
+      "parsePrefix": ""
+    }
+  ],
+  "fixture": {
+    "path": "src/palette/sectionFooterSearch.test.ts",
+    "sha256": "71c8d038ebe5abdb7910c7921dd7c8ce5c23e5bb5989b98c1847179dca50d8b7"
+  },
+  "baselinePins": {
+    "evidence/palette/group-navigation/binding-controls.test.ts": "3316acf73954164363ce99e7d3fdda7b69e89618ceb8869883dd710dc7940183",
+    "evidence/palette/pointer-selection-scroll/pointer-transition-controls.test.ts": "134231cd831a61e6b172f9c35650a3c77d7aad4c0505149d9c9ebb9b3f448c8c",
+    "evidence/palette/section-auto-scroll/pointer-controls.test.ts": "b78b8a85e8ab477075d8645287657bf6e83c5ce7e12a6fd9c6867dcec9b3774a",
+    "evidence/palette/shift-navigation/section-controls.test.ts": "bbd3cbe805fc444516517ff90a113c572745977ae7adbd240af960a511008712",
+    "src/keybindings/bind.test.ts": "e7d66f191a350162020c0e022bf22f6fdd3c439cf4fe4e8b837c24963d1de420",
+    "src/keybindings/conflicts.test.ts": "999b29fcf0710afc677aa79a2614531e904989622c2d90f35aaf5835a5306c8d",
+    "src/keybindings/dispatcher.test.ts": "e1e51ffd6d91e1cec3151c932c25a4a87d4b0d3fe5111683b810e0c1d1d43072",
+    "src/keybindings/editor.test.ts": "f1b856e6bba3453c3113a99b7c1dee5936a51f7fc54705286d4dc276bca025e3",
+    "src/keybindings/focusScope.test.ts": "7b8579d29d9d61c8c68e21b1f0ec94d9f2f4c891186f9012a66f49650ca3748b",
+    "src/keybindings/help.test.ts": "81366b2e88448dd84890e4b270abc3e7adc579efab28a228dacb77b0b5ab870c",
+    "src/keybindings/listeners.test.ts": "365482aba62355da9bd52d62eb0120b46b41213a5a08adf16a9dd8e3a086924c",
+    "src/keybindings/m16Handlers.test.ts": "b7d1ebf990457c9e1c0b0e03681eb6a6a623344c294457c32c6d88c50aaccc84",
+    "src/keybindings/overrides.test.ts": "7d324ccd881ec046af20beed0abf1e654b73174195bd86ebb654cab086f7af9e",
+    "src/keybindings/registry.test.ts": "495fc6763a107ea709f398738f4822b820b9bcee1b9c54c6124558b15b1cf9f5",
+    "src/keybindings/resolve.test.ts": "38e2d32f6c82087f7395a6339ae82dd4ec36d4d2dbe06d0ffe7c15d7645294cf",
+    "src/keybindings/selectAll.test.ts": "3d5dfcbd713fc5bcdc68c53089a726d8e3078ef91f90cecf93dae9b834915eed",
+    "src/keybindings/shortcut.test.ts": "8ef3bcf7e1cb551f8a4ba191a62c5cf7df402743df219d9a87652ca0161b8b79",
+    "src/keybindings/workspaceRunClose.test.ts": "b5f7caf2e0092e17faa12ece45ebadc3183c018897ddb568efd80022e2772bd3",
+    "src/palette/CommandPalette.tsx": "9d7531a543787c61375f7816d20c945068bd8e6204c4f8efceab5fb8f1195db8",
+    "src/palette/MoveToSection.tsx": "cfbd37df604a58468aed00c9ef9582e73d95b36907ebeddad5bd7f0eeaa03ffa",
+    "src/palette/PaletteHost.tsx": "78a4067ebb66ef016b7d5903c38e3b312bf8c569ffd5f00c2b11743b07fb8471",
+    "src/palette/activeDescendant.test.ts": "0f358cda74b6a85bf5daa68df514828e839c01c06fe2a606586106898ea4ea17",
+    "src/palette/activeDescendantControls.test.ts": "a578b2cbb8b26e62b24754711885be0117c72c8dce4c5c22d3ddfdeef2ff32cd",
+    "src/palette/createSection.test.ts": "1f11dd31e44ebbde8d66d67791f26d6ec81ccad9c99bf4de64d943a586110d56",
+    "src/palette/fromAppState.test.ts": "8c35d40de66823e2561c1602be00427395555a149d436b200f15a07117e268ba",
+    "src/palette/gitPanelActions.test.ts": "7fefb840fea2bd65c4240c55b390a141d1725c6955fb106614309b97e0d6ce83",
+    "src/palette/moveToSection.test.ts": "176da175e2836368becb4ade130d35f740de424ab6f8ecc53f7e2aac9c21756b",
+    "src/palette/openIn.test.ts": "5c0e7e5bd71145c5f15350f6616ca37b6eae8c944f8d8aa945b95bf95dbc5794",
+    "src/palette/paletteComposition.test.ts": "b2eb43bb787c35dd92b653c6d10fd9ace8734ce4d02dd0fecadb71852645a551",
+    "src/palette/paletteGroupHeadingScroll.test.ts": "b6e82caba5fbd821d0669dd10c531229bf83b38b1b2c9cc51cf976d2b4ad2fac",
+    "src/palette/paletteGroupNavigation.test.ts": "b89d551dba77bb2f3eb0c6d1a7590d84190f428af77a891a96aaa7f54fe3c52c",
+    "src/palette/paletteOpenInLifecycle.test.ts": "8dce9dcf06b1c2d15d1145df48ea832dd91ecd6f4d29cf2b70767edc0e1bf800",
+    "src/palette/paletteOpenInTarget.test.ts": "badd2cb8984551186f9dcdd9e9e85d45ff33dcdc6fb46a628cd9bec4fab12dff",
+    "src/palette/palettePointerScroll.test.ts": "1f7f9be48228daf8aa0f516f341b1548294ab36a06d07947c951b1f3a301cd4d",
+    "src/palette/paletteSettingsGroups.test.ts": "13da7a6fa7ebcc8e720ddba0237a800bcd1f4c41118bf65e283eb08bc54c9424",
+    "src/palette/paletteShiftNavigation.test.ts": "878a54f9469db23e4de2542a5df043f3e8bd9e5b2247900cdbcc5665f1886b58",
+    "src/palette/projectWorkspace.test.ts": "72b32e3a60d071a8fb532efc4aefd007c4ede9967d7c7316fdca7a11e638989b",
+    "src/palette/recentWorkspaces.test.ts": "99e99d6718f807af39264250e0a71b89df2999235149c7e1387aafcbb7594d8b",
+    "src/palette/search.test.ts": "776f1a9793e11cbcff90683a2bcb73f24251ecd0e8604eaf5b834384c1e6c7b0",
+    "src/palette/search/score.test.ts": "0a327416a2e19a378a51bf65a5552149ddab89d19a624400033f26d79ed204e9",
+    "src/palette/search/score.ts": "6919f4b3e6806687da56fa4ed13ca4c52bebcc2dd077586b80a6130520ef2e38",
+    "src/palette/search/scoreGap.test.ts": "5137ef699747c1e3b88bb6b702ee38fcafe022de99b0906d004ce961fcb298ef",
+    "src/palette/sectionAutoScroll.test.ts": "29d14849c86f6bd8f4bd4389f9b1eb6ee7b791e89dc235a9560d32e96de42220",
+    "src/palette/sectionEnabledNavigation.test.ts": "855ce5ff5e712d582ed86c1b1048f3d6c795ac103fba1dd59a1dde9b58ea59a4",
+    "src/palette/settingsRepository.test.ts": "2d73bd75e4e74909e892746a0e886ae8a3454b0988f7d0bc7bd38990dbef24f4",
+    "src/palette/settingsResultCap.test.ts": "678282527f14be0495af4dc65436654ca1981a97dccc954c494c2c715670e255",
+    "src/palette/shortcutOrder.test.ts": "819ac990d5a7af106cdf87eacc6f2c40a9a8166cfa7acff6695522c87e291f27",
+    "src/palette/state.test.ts": "73d95c02f171b1db97c0a23b053d4c15f276d672a525e6bfd4b6248ce6acf855",
+    "src/palette/state.ts": "aec2b7bf5a4e21d22e24409b43f7552f53338ba0f39e2f88ca823f3caa460533",
+    "src/palette/tabSelection.test.ts": "a304995d349cf15902bdf699fde7dcd56f3a35d4ca00672efc4b30f00c6d8ab0",
+    "src/palette/viewArchivedReset.test.ts": "d0c2dde58cef115ab551f74e5fa70a5927bb06814040ef95ff781bdcd2afe9df",
+    "src/palette/workspacesTab.test.ts": "1f5abe6bf6e0e88d1da03aafa2baec4513d29e95fb24cebf928396a01ea1ba9f"
+  },
+  "observedBaseline": {
+    "tests": 17,
+    "pass": 7,
+    "intendedAssertionFailures": 10,
+    "skipped": 0
+  },
+  "limits": [
+    "Retained REA bytes; no vendor JavaScript evaluation or fresh acquisition",
+    "Mounted synthetic source callbacks only; browser/native/package acceptance NOT_RUN",
+    "Existing optional #1442 historical VM failures separate, not a full-suite PASS"
+  ]
+}
