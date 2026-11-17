@@ -99,10 +99,22 @@ test("frozen whole-main graph qualifies semantic Caffeinate missing-effect RED w
     assert.equal(extraction.status, 0, extraction.stderr);
     assert.deepEqual(extractedFiles(folder).sort(), [...manifest.files.keys()].sort());
     for (const [path, hash] of manifest.files) assert.equal(sha256(readFileSync(join(folder, path))), hash, `historical bytes ${path}`);
-    for (const path of ["package.json", "package-lock.json"]) {
-      assert.equal(sha256(readFileSync(join(root, path))), manifest.files.get(path), `Fixture setup failure: dependency drift in ${path}; never classify as product RED`);
+    const dependencyFiles = ["package.json", "package-lock.json"];
+    const sameDependencies = dependencyFiles.every(path => sha256(readFileSync(join(root, path))) === manifest.files.get(path));
+    if (sameDependencies) {
+      symlinkSync(join(root, "node_modules"), join(folder, "node_modules"), "dir");
+    } else {
+      // Later app dependencies must not replace the frozen graph's dependency tree.
+      const install = spawnSync("npm", ["ci", "--ignore-scripts", "--no-audit", "--no-fund", "--include=dev", "--prefer-offline"], {
+        cwd: folder, encoding: "utf8", timeout: 180000, maxBuffer: 4 * 1024 * 1024,
+      });
+      assert.equal(install.error, undefined, `Fixture setup failure: frozen dependency install: ${String(install.error)}`);
+      assert.equal(install.signal, null, install.stdout + install.stderr);
+      assert.equal(install.status, 0, `Fixture setup failure: frozen dependency install; never classify as product RED\n${install.stdout}${install.stderr}`);
+      for (const path of dependencyFiles) {
+        assert.equal(sha256(readFileSync(join(folder, path))), manifest.files.get(path), `frozen install must preserve historical bytes ${path}`);
+      }
     }
-    symlinkSync(join(root, "node_modules"), join(folder, "node_modules"), "dir");
     const result = runGraph(folder, "baseline");
     assert.equal(result.status, 1, result.stdout + result.stderr);
     assertTap(result.stdout, [controlName, regressionName], 1);

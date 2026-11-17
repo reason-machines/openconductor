@@ -1,0 +1,17 @@
+{
+  "main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+  "preservedFooterCommit": "e547eede31c5",
+  "priorQueryPullRequest": 1448,
+  "priorQueryActualSquash": "ee7bb510506906a08e2acff5e196a484bffb1480",
+  "protectedUpstream": {
+    "src/palette/CommandPalette.tsx": {
+      "originalArchive": "integration/CommandPalette-original-base.tsx.gz",
+      "sha256": "6cfe30e7717ba84bd9fb117e5caebacde15020b0de6da65a669b0b039a293cc9",
+      "reason": "Upstream #1448 query-state split; no change from integrated main"
+    }
+  },
+  "loaderPins": {
+    "src/palette/sectionQueryIsolation.test.ts": "bfe699c1a96bf4346fe4e92874affbf3a563cdf13453959315d8efe254328b8b"
+  },
+  "note": "Historical source.json, frozen17, original red/green and original log identities remain unchanged. The now-landed #1448 mounted fixture receives only the real score import and one explicit loader-map entry; all test/assertion AST and counts must stay identical."
+}

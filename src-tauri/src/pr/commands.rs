@@ -116,6 +116,29 @@ pub fn pr_create_prompt(mut request: CreatePrPrompt) -> String {
     create_pr_prompt(&request.as_request())
 }
 
+/// Settings Actions preview: pure builders with placeholder context only.
+/// Unlike the ordinary action wrappers, this never reads settings, files or git.
+#[tauri::command]
+pub fn pr_action_prompt_preview(kind: String, custom: String) -> Result<String, String> {
+    match kind.as_str() {
+        "create_pr" => Ok(create_pr_prompt(&super::prompt::CreatePrRequest {
+            branch: "${YOUR_BRANCH}",
+            remote: "origin",
+            target_branch: "${TARGET_BRANCH}",
+            title: Some("${PR_TITLE}"),
+            description: Some("${PR_DESCRIPTION}"),
+            custom_instructions: Some(&custom),
+            ..Default::default()
+        })),
+        "resolve_merge_conflicts" => Ok(resolve_merge_conflicts_prompt(&ResolveConflictsRequest {
+            target_branch: "${TARGET_BRANCH}",
+            use_rebase: true,
+            custom_instructions: Some(&custom),
+        })),
+        _ => Err("Unsupported prompt preview kind".to_string()),
+    }
+}
+
 /// The repository's PR template from the workspace checkout, for Create PR.
 #[tauri::command]
 pub async fn pr_template(workspace_path: String) -> Result<Option<String>, String> {

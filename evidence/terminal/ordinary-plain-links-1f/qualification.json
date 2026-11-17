@@ -1,0 +1,196 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate": "ORDINARY-TERMINAL-PLAIN-LINK-ACTIVATION-1F",
+  "status": "SOURCE_QUALIFIED_RED_NO_PRODUCT_LEASE",
+  "main_checked": "9f676a74b9763eacfced2489b01a81163900bed9",
+  "rea_parent": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "index_sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+  "spans": [
+    {
+      "name": "WJs",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6581054,
+        6581330
+      ],
+      "bytes": 276,
+      "sha256": "087bf764dc88e66d261f0af2d509b9b7622a7d07d25bd46796f7c1863c0ee41e",
+      "file": "WJs.txt"
+    },
+    {
+      "name": "provider-computation",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6578946,
+        6580894
+      ],
+      "bytes": 1948,
+      "sha256": "04133fe440351486d7fb48b3001bac74cb93de12ed8b7d59f46bfac016ecd42b",
+      "file": "provider-computation.txt"
+    },
+    {
+      "name": "lSa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11171573,
+        11171911
+      ],
+      "bytes": 338,
+      "sha256": "cfab3b95d6f1316ab61b7016395f89925f66289ebe072451938c3f481c52ec2a",
+      "file": "lSa.txt"
+    },
+    {
+      "name": "eSa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11160762,
+        11165279
+      ],
+      "bytes": 4517,
+      "sha256": "7046b53ab7a925101dea1b4ed8aabaf67fe39d6842a9742efb4bf76d502548a4",
+      "file": "eSa.txt"
+    },
+    {
+      "name": "w9e",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6919236,
+        6922665
+      ],
+      "bytes": 3429,
+      "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32",
+      "file": "w9e.txt"
+    },
+    {
+      "name": "dno",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6915051,
+        6916770
+      ],
+      "bytes": 1719,
+      "sha256": "c1caf84211af0d4cdc09cc07d3b7ecfc9b0dde7cbfa84704e5f2ce24109fd318",
+      "file": "dno.txt"
+    },
+    {
+      "name": "uno",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6914630,
+        6915051
+      ],
+      "bytes": 421,
+      "sha256": "85acecc59c4b24eb7a08bf143dcdc68903fffba9180d78c83559bfea2f1eb35b",
+      "file": "uno.txt"
+    },
+    {
+      "name": "cno",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6914245,
+        6914630
+      ],
+      "bytes": 385,
+      "sha256": "d256449d670e3c7e000f82530a8d2cfb494986c8559831ac1b2f74a92ed35cd5",
+      "file": "cno.txt"
+    },
+    {
+      "name": "lno",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6913120,
+        6914245
+      ],
+      "bytes": 1125,
+      "sha256": "f0ce60ce9b64bb20c9526c841aec24bf2620c9c8bf1973dd083e218e8f4fd4a5",
+      "file": "lno.txt"
+    },
+    {
+      "name": "ano",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6912936,
+        6913087
+      ],
+      "bytes": 151,
+      "sha256": "16ea1cc81c8c4388e1e4596f3e91e1bce74ea61fd025e910f829b305fa01ff79",
+      "file": "ano.txt"
+    },
+    {
+      "name": "Rue",
+      "asset": "index",
+      "utf8_half_open": [
+        2543420,
+        2543494
+      ],
+      "bytes": 74,
+      "sha256": "0602e4646c67f7bc952c618aa736007efcca5dcac75450beb393e34a69811f54",
+      "file": "Rue.txt"
+    },
+    {
+      "name": "renderer-dG-vs",
+      "asset": "renderer",
+      "utf8_half_open": [
+        55716,
+        55724
+      ],
+      "bytes": 8,
+      "sha256": "851537e93cafa6a0ced2ec392c649c79aac23edf10649c10f53c45232cd44c5a",
+      "file": "renderer-dG-vs.txt"
+    },
+    {
+      "name": "index-Rue-dG",
+      "asset": "index",
+      "utf8_half_open": [
+        3482114,
+        3482123
+      ],
+      "bytes": 9,
+      "sha256": "9141a9550be7a24c042f7b7341e12c056ce2fd289d45b12a04f6c597728d5839",
+      "file": "index-Rue-dG.txt"
+    },
+    {
+      "name": "eno",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6907860,
+        6912485
+      ],
+      "bytes": 4625,
+      "sha256": "6490b51e8c12707c1cbb0aa1940d1c7274ada1a13f39debda86ed9b2e9858a94",
+      "file": "eno.txt",
+      "ast_type": "VariableDeclaration(ClassExpression)"
+    },
+    {
+      "name": "Kto",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6905050,
+        6905599
+      ],
+      "bytes": 549,
+      "sha256": "ac6efa15419b082e12e94f40b8ce4134b7861b4c37e986120a25ad83de288c27",
+      "file": "Kto.txt",
+      "ast_type": "VariableDeclaration(ClassExpression)"
+    }
+  ],
+  "checks": 71,
+  "baseline_session_sha256": "77c147318d22cd057ed8bb22f1ed9c03ffe932c4bda80f3c067191ddcebd8e64",
+  "baseline_package_sha256": "3436671ba8bb422c26debf8149ed0cdd9e985b77262bf9316e09e79302c80118",
+  "fixture_sha256": "f05513f25c8bd8bd2ceb137875a305d10a9f60111cf89c8cce9c06fa7aa1a0c2",
+  "red_receipt_sha256": "334dce6d22a2cc63ef6cff6264851d4d5266c4308ba8c4914b15b23d357e325a",
+  "frozen_red": {
+    "tests": 10,
+    "passed": 3,
+    "intended_assertion_failures": 7
+  },
+  "limits": [
+    "No new REA/native/runtime acquisition",
+    "Original source inspected as inert data, never evaluated",
+    "No dependency or production edits",
+    "No URL opening",
+    "No treatment GREEN yet",
+    "Native provider hit-testing/browser delivery unverified"
+  ]
+}

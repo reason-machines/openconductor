@@ -1,0 +1,1 @@
+function sli(t,e){return uLt(t)?t(e):t??cLt}

@@ -1,0 +1,49 @@
+{
+  "src/palette/sectionQueryIsolation.test.ts": [
+    "import * as sectionSearchScore from \"./search/score.ts\";\n",
+    ", \"./search/score.ts\": sectionSearchScore"
+  ],
+  "src/palette/activeDescendant.test.ts": [
+    "import * as sectionSearchScore from \"./search/score.ts\";\n",
+    "      if (name === \"./search/score.ts\") return sectionSearchScore;\n"
+  ],
+  "src/palette/activeDescendantControls.test.ts": [
+    "import * as sectionSearchScore from \"./search/score.ts\";\n",
+    "    if (name === \"./search/score.ts\") return sectionSearchScore;\n"
+  ],
+  "src/palette/createSection.test.ts": [
+    "import * as sectionSearchScore from \"./search/score.ts\";\n",
+    "      if (name === \"./search/score.ts\") return sectionSearchScore;\n"
+  ],
+  "src/palette/moveToSection.test.ts": [
+    "      if (name === \"./search/score.ts\") return searchScore;\n"
+  ],
+  "src/palette/paletteGroupHeadingScroll.test.ts": [
+    "import * as sectionSearchScore from \"./search/score.ts\";\n",
+    "      if (name === \"./search/score.ts\") return sectionSearchScore;\n"
+  ],
+  "src/palette/paletteOpenInTarget.test.ts": [
+    "import * as sectionSearchScore from \"./search/score.ts\";\n",
+    "      if (name === \"./search/score.ts\") return sectionSearchScore;\n"
+  ],
+  "src/palette/palettePointerScroll.test.ts": [
+    "import * as sectionSearchScore from \"./search/score.ts\";\n",
+    "      if (name === \"./search/score.ts\") return sectionSearchScore;\n"
+  ],
+  "src/palette/paletteShiftNavigation.test.ts": [
+    "import * as sectionSearchScore from \"./search/score.ts\";\n",
+    "      if (name === \"./search/score.ts\") return sectionSearchScore;\n"
+  ],
+  "src/palette/sectionAutoScroll.test.ts": [
+    "import * as sectionSearchScore from \"./search/score.ts\";\n",
+    "      if (name === \"./search/score.ts\") return sectionSearchScore;\n"
+  ],
+  "src/palette/sectionEnabledNavigation.test.ts": [
+    "import * as sectionSearchScore from \"./search/score.ts\";\n",
+    "      if (name === \"./search/score.ts\") return sectionSearchScore;\n"
+  ],
+  "evidence/palette/shift-navigation/section-controls.test.ts": [
+    "import * as sectionSearchScore from \"../../../src/palette/search/score.ts\";\n",
+    "      if (name === \"./search/score.ts\") return sectionSearchScore;\n"
+  ]
+}

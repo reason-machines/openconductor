@@ -100,6 +100,8 @@ async function fixture(input: Selection) {
   class Observer { observe() {} disconnect() {} }
   const boundaries: Record<string, unknown> = {
     "@xterm/xterm": { Terminal: Screen },
+    "@tauri-apps/plugin-dialog": { confirm: () => { throw new Error("No native dialog in terminal regression"); } },
+    "src/backend": { openUrl: () => { throw new Error("No browser in terminal regression"); } },
     "@xterm/addon-fit": { FitAddon: class { fit() {} } },
     "@xterm/addon-unicode11": { Unicode11Addon: class {} },
     "src/features/terminal/pty": {
@@ -130,6 +132,7 @@ async function fixture(input: Selection) {
     const module = { exports: {} };
     modules.set(name, module);
     const require = (dep: string): unknown => {
+      if (dep === "@xterm/addon-web-links") return deps(dep);
       const key = dep.startsWith(".") ? resolve(dirname(file), dep).slice(process.cwd().length + 1).replace(/\.tsx?$/, "") : dep;
       assert.ok(Object.prototype.hasOwnProperty.call(boundaries, key) || dep.startsWith("."), `unexpected package ${dep}`);
       return Object.prototype.hasOwnProperty.call(boundaries, key) ? boundaries[key] : load(key);

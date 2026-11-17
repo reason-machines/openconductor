@@ -1,0 +1,1 @@
+async function wXt(t,e){const s=typeof e=="string"?{title:e}:e;return await it("plugin:dialog|confirm",{message:t.toString(),title:s?.title?.toString(),kind:s?.kind,okButtonLabel:s?.okLabel?.toString(),cancelButtonLabel:s?.cancelLabel?.toString()})}

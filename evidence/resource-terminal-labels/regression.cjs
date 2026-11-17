@@ -34,6 +34,8 @@ function fixture({ enabled = true, desktop = true } = {}) {
     ] };
   }
   const boundaries = {
+    '@tauri-apps/plugin-dialog': { confirm: unexpected },
+    'src/backend': { openUrl: unexpected },
     '@xterm/xterm': { Terminal: class { constructor(options) { this.options = options; this.cols = 80; this.rows = 24; this.unicode = { activeVersion: '6' }; } loadAddon() {} resize() {} write() {} dispose() {} attachCustomKeyEventHandler() {} onData() {} onResize() {} } },
     '@xterm/addon-fit': { FitAddon: class {} },
     '@xterm/addon-unicode11': { Unicode11Addon: class {} },
@@ -71,6 +73,7 @@ function fixture({ enabled = true, desktop = true } = {}) {
     const module = { exports: {} }; modules.set(file, module);
     const { outputText } = ts.transpileModule(fs.readFileSync(source, 'utf8'), { fileName: source, compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021, jsx: ts.JsxEmit.ReactJSX } });
     function requireSource(name) {
+      if (name === '@xterm/addon-web-links') return deps(name);
       if (name === 'react' || name === 'react/jsx-runtime') return deps(name);
       if (name === 'react-dom') return { createPortal: children => children };
       if (Object.hasOwn(boundaries, name)) return boundaries[name];

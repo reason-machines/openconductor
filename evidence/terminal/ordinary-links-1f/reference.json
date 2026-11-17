@@ -1,0 +1,201 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate": "ORDINARY-TERMINAL-ENCODED-LINK-ACTIVATION-1F",
+  "main_checked": "c82bc60af7ac97c560d669c17178cf1fba2a0003",
+  "rea_parent": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "assets": {
+    "renderer": {
+      "path": ".oc-tmp/rerun-output-identity-source/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "path": ".oc-tmp/rerun-output-identity-source/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "spans": [
+    {
+      "name": "lSa",
+      "artifact": "renderer",
+      "file": "reference/lSa.txt",
+      "utf8_half_open": [
+        11171573,
+        11171911
+      ],
+      "bytes": 338,
+      "sha256": "cfab3b95d6f1316ab61b7016395f89925f66289ebe072451938c3f481c52ec2a",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "eSa",
+      "artifact": "renderer",
+      "file": "reference/eSa.txt",
+      "utf8_half_open": [
+        11160762,
+        11165279
+      ],
+      "bytes": 4517,
+      "sha256": "7046b53ab7a925101dea1b4ed8aabaf67fe39d6842a9742efb4bf76d502548a4",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "artifact": "renderer",
+      "name": "w9e",
+      "file": "reference/w9e.txt",
+      "utf8_half_open": [
+        6919236,
+        6922665
+      ],
+      "bytes": 3429,
+      "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32",
+      "extraction": "Unique named declaration anchor through next named declaration function dVn(; full text retained and manually inspected"
+    },
+    {
+      "asset": "renderer",
+      "name": "dno",
+      "utf8_half_open": [
+        6915051,
+        6916770
+      ],
+      "bytes": 1719,
+      "sha256": "c1caf84211af0d4cdc09cc07d3b7ecfc9b0dde7cbfa84704e5f2ce24109fd318",
+      "file": "reference/dno.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "uno",
+      "utf8_half_open": [
+        6914630,
+        6915051
+      ],
+      "bytes": 421,
+      "sha256": "85acecc59c4b24eb7a08bf143dcdc68903fffba9180d78c83559bfea2f1eb35b",
+      "file": "reference/uno.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "cno",
+      "utf8_half_open": [
+        6914245,
+        6914630
+      ],
+      "bytes": 385,
+      "sha256": "d256449d670e3c7e000f82530a8d2cfb494986c8559831ac1b2f74a92ed35cd5",
+      "file": "reference/cno.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "lno",
+      "utf8_half_open": [
+        6913120,
+        6914245
+      ],
+      "bytes": 1125,
+      "sha256": "f0ce60ce9b64bb20c9526c841aec24bf2620c9c8bf1973dd083e218e8f4fd4a5",
+      "file": "reference/lno.txt"
+    },
+    {
+      "name": "W5e",
+      "file": "reference/W5e.txt",
+      "utf8_half_open": [
+        6918847,
+        6919236
+      ],
+      "bytes": 389,
+      "sha256": "7829aaf4a1fdf9ed7789f958496e3f7f7274f69cfbd31997aeb7ae99de28a881",
+      "extraction": "unique named function anchor through next declaration; inspected as inert text"
+    },
+    {
+      "name": "uVn",
+      "file": "reference/uVn.txt",
+      "utf8_half_open": [
+        6918617,
+        6918847
+      ],
+      "bytes": 230,
+      "sha256": "ac48251fcbe99909fea8abc6d01ba6234dcb51496f742ee012debc4aa57c5e53",
+      "extraction": "unique named function anchor through next declaration; inspected as inert text"
+    },
+    {
+      "asset": "renderer",
+      "name": "ano",
+      "file": "reference/ano.txt",
+      "utf8_half_open": [
+        6912936,
+        6913087
+      ],
+      "bytes": 151,
+      "sha256": "16ea1cc81c8c4388e1e4596f3e91e1bce74ea61fd025e910f829b305fa01ff79"
+    },
+    {
+      "asset": "index",
+      "name": "Rue",
+      "file": "reference/Rue.txt",
+      "utf8_half_open": [
+        2543420,
+        2543494
+      ],
+      "bytes": 74,
+      "sha256": "0602e4646c67f7bc952c618aa736007efcca5dcac75450beb393e34a69811f54"
+    },
+    {
+      "asset": "index",
+      "name": "wXt",
+      "file": "reference/wXt.txt",
+      "utf8_half_open": [
+        3473419,
+        3473668
+      ],
+      "bytes": 249,
+      "sha256": "7b7a97fc0c2ba75c05d977376df6e5fe19cfd02c3336a85a438c044c6f8a8f18"
+    },
+    {
+      "asset": "renderer",
+      "name": "renderer-dG-vs",
+      "file": "reference/renderer-dG-vs.txt",
+      "utf8_half_open": [
+        55716,
+        55724
+      ],
+      "bytes": 8,
+      "sha256": "851537e93cafa6a0ced2ec392c649c79aac23edf10649c10f53c45232cd44c5a"
+    },
+    {
+      "asset": "renderer",
+      "name": "renderer-g9-Gyr",
+      "file": "reference/renderer-g9-Gyr.txt",
+      "utf8_half_open": [
+        57275,
+        57284
+      ],
+      "bytes": 9,
+      "sha256": "7d60c8a339a18b8cba7d46d2e8b5c0f6aea0f074dec70c471ce5d697625f8958"
+    },
+    {
+      "asset": "index",
+      "name": "index-Rue-dG",
+      "file": "reference/index-Rue-dG.txt",
+      "utf8_half_open": [
+        3482114,
+        3482123
+      ],
+      "bytes": 9,
+      "sha256": "9141a9550be7a24c042f7b7341e12c056ce2fd289d45b12a04f6c597728d5839"
+    },
+    {
+      "asset": "index",
+      "name": "index-wXt-g9",
+      "file": "reference/index-wXt-g9.txt",
+      "utf8_half_open": [
+        3483918,
+        3483927
+      ],
+      "bytes": 9,
+      "sha256": "1f772463750d2544abe8af610dd83d9d0f6d25619e67cd4b8bde613481b52fd1"
+    }
+  ],
+  "scope": "OSC8/encoded links only: ordinary lno meta-gated encoded-link handler \u2192 ano warning \u2192 vs/Rue opener. Plain-text WebLinksAddon deliberately separate/unqualified; no dependency/ScriptOutput/WorkspaceView edit.",
+  "rea_gap": "No new REA run. Existing REA parent and same-asset byte spans are retained; minified cross-chunk alias joins require explicit verification. Native pointer activation and system browser delivery unobserved."
+}
