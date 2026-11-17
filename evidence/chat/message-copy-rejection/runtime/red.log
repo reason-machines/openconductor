@@ -1,0 +1,196 @@
+(node:80) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:87) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Copy message: rejection requests error feedback without confirmation or a reset timer
+not ok 1 - Copy message: rejection requests error feedback without confirmation or a reset timer
+  ---
+  duration_ms: 76.337471
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/message-copy-rejection/src/features/chat/messageCopyFeedback.test.ts:118:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   [
+    -     'error',
+    -     'Failed to copy',
+    -     {
+    -       description: 'Please try again.'
+    -     }
+    -   ]
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'error'
+      1: 'Failed to copy'
+      2:
+        description: 'Please try again.'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/message-copy-rejection/src/features/chat/messageCopyFeedback.test.ts:127:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Copy message: rejection after success preserves its confirmation and original reset deadline
+not ok 2 - Copy message: rejection after success preserves its confirmation and original reset deadline
+  ---
+  duration_ms: 7.786645
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/message-copy-rejection/src/features/chat/messageCopyFeedback.test.ts:136:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'copy' !== 'check'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'check'
+  actual: 'copy'
+  operator: 'strictEqual'
+  stack: |-
+    state (file:///home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/message-copy-rejection/src/features/chat/messageCopyFeedback.test.ts:112:10)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/message-copy-rejection/src/features/chat/messageCopyFeedback.test.ts:146:7)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Copy message: ordinary success confirms only after fulfillment and resets at 2000ms
+ok 3 - Copy message: ordinary success confirms only after fulfillment and resets at 2000ms
+  ---
+  duration_ms: 7.612687
+  type: 'test'
+  ...
+# Subtest: Copy message: rejection without a notifier stays handled and creates no timer
+not ok 4 - Copy message: rejection without a notifier stays handled and creates no timer
+  ---
+  duration_ms: 6.728188
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/message-copy-rejection/src/features/chat/messageCopyFeedback.test.ts:177:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + "Couldn't copy"
+    - 'Copy message'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Copy message'
+  actual: "Couldn't copy"
+  operator: 'strictEqual'
+  stack: |-
+    state (file:///home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/message-copy-rejection/src/features/chat/messageCopyFeedback.test.ts:113:10)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/message-copy-rejection/src/features/chat/messageCopyFeedback.test.ts:183:7)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Copy final message: rejection requests error feedback without confirmation or a reset timer
+not ok 5 - Copy final message: rejection requests error feedback without confirmation or a reset timer
+  ---
+  duration_ms: 11.438913
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/message-copy-rejection/src/features/chat/messageCopyFeedback.test.ts:118:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   [
+    -     'error',
+    -     'Failed to copy',
+    -     {
+    -       description: 'Please try again.'
+    -     }
+    -   ]
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'error'
+      1: 'Failed to copy'
+      2:
+        description: 'Please try again.'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/message-copy-rejection/src/features/chat/messageCopyFeedback.test.ts:127:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Copy final message: rejection after success preserves its confirmation and original reset deadline
+not ok 6 - Copy final message: rejection after success preserves its confirmation and original reset deadline
+  ---
+  duration_ms: 5.296896
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/message-copy-rejection/src/features/chat/messageCopyFeedback.test.ts:136:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'copy' !== 'check'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'check'
+  actual: 'copy'
+  operator: 'strictEqual'
+  stack: |-
+    state (file:///home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/message-copy-rejection/src/features/chat/messageCopyFeedback.test.ts:112:10)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/message-copy-rejection/src/features/chat/messageCopyFeedback.test.ts:146:7)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Copy final message: ordinary success confirms only after fulfillment and resets at 2000ms
+ok 7 - Copy final message: ordinary success confirms only after fulfillment and resets at 2000ms
+  ---
+  duration_ms: 9.464508
+  type: 'test'
+  ...
+# Subtest: Copy final message: rejection without a notifier stays handled and creates no timer
+not ok 8 - Copy final message: rejection without a notifier stays handled and creates no timer
+  ---
+  duration_ms: 14.14462
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/message-copy-rejection/src/features/chat/messageCopyFeedback.test.ts:177:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + "Couldn't copy"
+    - 'Copy final message'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Copy final message'
+  actual: "Couldn't copy"
+  operator: 'strictEqual'
+  stack: |-
+    state (file:///home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/message-copy-rejection/src/features/chat/messageCopyFeedback.test.ts:113:10)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/message-copy-rejection/src/features/chat/messageCopyFeedback.test.ts:183:7)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 2
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1452.575111
