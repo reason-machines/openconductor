@@ -8,6 +8,9 @@
 //    with Conductor's placeholder, saved 2 s after typing and on blur, trimmed
 //    (`fGt`; a blank value removes the key).
 // Saving writes the repository's `.conductor/settings.local.toml`.
+import { DialogFrame } from "../../components/DialogFrame";
+import { Markdown } from "../../features/chat/markdown";
+import { actionPromptPreview } from "../actionPromptPreview.ts";
 import { usePendingEdit } from "../../lib/persistence/producer.ts";
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./rows.css";
@@ -33,6 +36,7 @@ export function RepoActionsRows({ repoPath }: { repoPath: string }) {
 function PromptRow({ spec, repoPath, effective }: { spec: PromptRowSpec; repoPath: string; effective: EffectiveSettings | null }) {
   const current = effective?.prompts[spec.kind] ?? null;
   const [open, setOpen] = useState(false);
+  const [preview, setPreview] = useState(false);
   const [draft, setDraft] = useState(current?.value ?? "");
   const [error, setError] = useState<string | null>(null);
   const saved = useRef(current?.value);
@@ -98,6 +102,15 @@ function PromptRow({ spec, repoPath, effective }: { spec: PromptRowSpec; repoPat
               commit(draft);
             }}
           />
+          {spec.kind !== "general" && (
+            <button type="button" className="oc-prompt-preview" onClick={() => setPreview(true)}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" />
+              </svg>
+              Preview
+            </button>
+          )}
+          {preview && <PromptPreview spec={spec} draft={draft} onClose={() => setPreview(false)} />}
           {current && current.layer !== "repo_local" && <p className="oc-prompt-source">Set in {layerLabel(current.layer)}; saving here overrides it for this repository.</p>}
           {error && (
             <p className="error small" role="alert">
@@ -107,5 +120,33 @@ function PromptRow({ spec, repoPath, effective }: { spec: PromptRowSpec; repoPat
         </div>
       )}
     </div>
+  );
+}
+
+/** The dialog owns asynchronous preview results; closing/changing a draft discards stale responses. */
+function PromptPreview({ spec, draft, onClose }: { spec: PromptRowSpec; draft: string; onClose: () => void }) {
+  const [result, setResult] = useState<{ text: string } | { error: true } | null>(null);
+  useEffect(() => {
+    let active = true;
+    setResult(null);
+    void actionPromptPreview(spec.kind, draft).then(
+      (text) => { if (active) setResult({ text }); },
+      () => { if (active) setResult({ error: true }); },
+    );
+    return () => { active = false; };
+  }, [spec.kind, draft]);
+  const titleId = `prompt-preview-${spec.kind}`;
+  return (
+    <DialogFrame kind="dialog" titleId={titleId} className="oc-prompt-preview-dialog" onClose={onClose}>
+      <div className="project-dialog-header">
+        <h2 id={titleId}>{spec.title} prompt</h2>
+        <button type="button" className="oc-prompt-preview-close" aria-label="Close preview" onClick={onClose}>×</button>
+      </div>
+      <div className="oc-prompt-preview-content">
+        {result === null ? <p role="status">Loading preview…</p> : "error" in result ? (
+          <p role="alert">Failed to load prompt preview.</p>
+        ) : <Markdown text={result.text} />}
+      </div>
+    </DialogFrame>
   );
 }

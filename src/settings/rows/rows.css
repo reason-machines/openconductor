@@ -78,6 +78,15 @@
 .settings .oc-prompt-panel textarea::placeholder { color: var(--s-muted); }
 .settings .oc-prompt-panel textarea:focus { border-color: var(--s-fg); }
 .settings .oc-prompt-source { margin: 0; font-size: 12px; line-height: 16px; color: var(--s-muted); }
+/* Actions Preview: xzi uses a muted 12px link and a max-w-2xl scrolling prompt dialog. */
+.settings .oc-prompt-preview { display: inline-flex; align-self: flex-start; align-items: center; gap: 4px; padding: 0; border: 0; background: none; color: var(--s-muted); font: inherit; font-size: 12px; line-height: 16px; cursor: pointer; }
+.settings .oc-prompt-preview:hover { color: var(--s-fg); }
+.modal.project-dialog.oc-prompt-preview-dialog { width: 672px; overflow: hidden; }
+.oc-prompt-preview-dialog .project-dialog-header { position: relative; padding-right: 24px; flex: none; }
+.oc-prompt-preview-close { position: absolute; top: 0; right: 0; border: 0; padding: 0; background: none; color: var(--muted); font: inherit; font-size: 20px; cursor: pointer; }
+.oc-prompt-preview-close:hover { color: var(--text); }
+.oc-prompt-preview-content { overflow-y: auto; min-height: 0; font-size: 12px; line-height: 16px; }
+
 .settings .oc-learn-how { display: inline-flex; align-items: center; padding: 0; border: 0; background: none; color: var(--s-fg); font: inherit; cursor: pointer; }
 .settings .oc-learn-how:hover { text-decoration: underline; }
 .settings .oc-learn-how svg { margin-left: 2px; }
