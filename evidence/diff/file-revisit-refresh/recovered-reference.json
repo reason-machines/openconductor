@@ -1,0 +1,39 @@
+{
+  "reference": {
+    "version": "Conductor 0.87.6",
+    "renderer": {
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "name": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "recovered": [
+    {
+      "name": "yLt",
+      "utf8": [
+        3177216,
+        3179015
+      ],
+      "sha256": "0c0639fac7f354a331f35da7e901c0c39701b0d624acbbf82a527ee175a89f0a",
+      "source_page": "https://reasonmachines.com/agents/de6c02f4-4880-4a0d-bf8f-9e3954522753?page=3b334f4b-a56c-4a0c-ad5e-c445fe22afe8",
+      "literal": "function yLt(t){const e=z.c(37),{controller:s,params:n}=t;let r,i;e[0]!==s.stableParamsCache||e[1]!==n?(r=n?rv(n):\"\",n&&r&&!s.stableParamsCache.has(r)&&s.stableParamsCache.set(r,n),i=r?s.stableParamsCache.get(r):void 0,e[0]=s.stableParamsCache,e[1]=n,e[2]=r,e[3]=i):(r=e[2],i=e[3]);const o=i;let a;e[4]!==r?(a=N=>r?N.entries[r]:void 0,e[4]=r,e[5]=a):a=e[5];const c=tt(s.store,a);let l;e[6]!==r||e[7]!==c?.data||e[8]!==n?(l=N=>{if(!n||c?.data!==void 0)return;const K=N.cacheKeyByFileIdentity[vd(n)];if(!(!K||K===r))return r0(N.entries[K])},e[6]=r,e[7]=c?.data,e[8]=n,e[9]=l):l=e[9];const u=tt(s.store,l),d=c?.data??u;let h;e[10]!==r?(h=()=>({cacheKey:r,didRetry:!1}),e[10]=r,e[11]=h):h=e[11];const[p,m]=$e.useState(h),v=c?.error!==void 0&&(p.cacheKey!==r||!p.didRetry),_=o!==void 0&&(c===void 0||v);let S,k;e[12]!==r?(S=()=>{m({cacheKey:r,didRetry:!1})},k=[r],e[12]=r,e[13]=S,e[14]=k):(S=e[13],k=e[14]),$e.useEffect(S,k);let A;e[15]!==r||e[16]!==s.store||e[17]!==c?.error||e[18]!==_||e[19]!==o?(A=()=>{_&&o&&(c?.error!==void 0&&m({cacheKey:r,didRetry:!0}),s.store.getState().fetch(o).fireAndForget())},e[15]=r,e[16]=s.store,e[17]=c?.error,e[18]=_,e[19]=o,e[20]=A):A=e[20];const I=c?.error;let C;e[21]!==r||e[22]!==s.store||e[23]!==_||e[24]!==o||e[25]!==I?(C=[r,s.store,I,_,o],e[21]=r,e[22]=s.store,e[23]=_,e[24]=o,e[25]=I,e[26]=C):C=e[26],$e.useEffect(A,C);const R=c?.isLoading??_,x=d?.fileDiff,O=R&&d!==void 0,G=c?.error,Z=d?.dataUpdatedAt??0;let re;e[27]!==s.store||e[28]!==o?(re=()=>{o&&s.store.getState().refetch(o).fireAndForget()},e[27]=s.store,e[28]=o,e[29]=re):re=e[29];let B;return e[30]!==R||e[31]!==x||e[32]!==O||e[33]!==G||e[34]!==Z||e[35]!==re?(B={data:x,isFetching:R,isRefetching:O,error:G,dataUpdatedAt:Z,refetch:re},e[30]=R,e[31]=x,e[32]=O,e[33]=G,e[34]=Z,e[35]=re,e[36]=B):B=e[36],B}"
+    },
+    {
+      "name": "vLt",
+      "utf8": [
+        3172383,
+        3177216
+      ],
+      "sha256": "a57aa542796bd483596be41eff24da40dfc2fe28a8537d3a4c32e05b0d7bf110",
+      "source_session": "de6c02f4-4880-4a0d-bf8f-9e3954522753",
+      "source_id": "42b46046-5191-4ea3-91d4-a206f1d20d9c",
+      "source_revision": 26944120,
+      "literal": "function vLt({load:t,cache:e,logger:s}){const n=s,r=new Map,{cacheFileDiff:i,evictFileDiffCacheByPrefix:o,getCachedFileDiff:a}=e;function c(R){return{path:R.filePath,viewMode:R.viewMode.type,host:R.workspaceHost===M?\"local\":R.workspaceHost.vmId,mergeBase:R.mergeBase,lastModifiedTime:R.lastModifiedTime,cacheKey:rv(R)}}const l=t,u=Ks(),d=new YL(fLt),h=new Map,p=new Set,m=new Map;function v(R,x){return m.set(R,x),x.finally(()=>{m.get(R)===x&&m.delete(R)})}function _(R){const x=h.get(R);if(x===void 0){p.add(R);return}x.promote()}async function S(R,x,O){const G=d.acquire(p.delete(R)?\"foreground\":x);h.set(R,G),await G.acquired;try{return await O()}finally{G.release(),h.get(R)===G&&h.delete(R)}}function k(R,x,O,G,Z=Date.now()){const re=vd(x);let B=!1;R(N=>{if(N.cacheKeyByFileIdentity[re]!==O)return{};B=!0;const K=r0(N.entries[O]);return G.hideReason===tn.FetchError&&(n.warn(\"[file-diff] fetch returned a FetchError result\",{...c(x),preservedLoadedContent:K!==void 0}),K)?{entries:{...N.entries,[O]:{data:K,error:new Error(\"Failed to refresh file contents\"),isLoading:!1}}}:{entries:{...N.entries,[O]:dt({fileDiff:G,dataUpdatedAt:Z})}}}),B&&cY(x)&&G.hideReason!==tn.FetchError&&i(x,O,G).fireAndForget()}function A(R,x,O,G){const Z=vd(x);R(re=>{if(re.cacheKeyByFileIdentity[Z]!==O)return{};const B=r0(re.entries[O]);return n.warn(\"[file-diff] fetch threw\",{...c(x),error:G instanceof Error?G.message:String(G),preservedLoadedContent:B!==void 0}),B?{entries:{...re.entries,[O]:{data:B,error:G instanceof Error?G:new Error(String(G)),isLoading:!1}}}:{entries:{...re.entries,[O]:Mr(G instanceof Error?G:new Error(String(G)))}}})}function I({cacheKey:R,entry:x,get:O,params:G,set:Z}){const re=vd(G),B=O().cacheKeyByFileIdentity[re],N=B&&B!==R?r0(O().entries[B]):void 0;B&&B!==R&&n.info(\"[file-diff] cache key changed; carrying previous in-memory diff\",{...c(G),hadLoadedData:N!==void 0,staleCacheKey:B}),Z(K=>{const V={...K.entries};return B&&B!==R&&delete V[B],V[R]=x.data===void 0&&N!==void 0?{...x,data:N}:x,{entries:V,cacheKeyByFileIdentity:{...K.cacheKeyByFileIdentity,[re]:R}}}),B&&B!==R&&r.delete(B)}return{store:Hs((R,x)=>({entries:{},cacheKeyByFileIdentity:{},prefetchSignatureByFileIdentity:{},fetch(O,G=\"foreground\"){const Z=rv(O),re=x().entries[Z];if(re!==void 0)return re.error!==void 0?x().refetch(O,G):(G===\"foreground\"&&_(Z),m.get(Z)??Promise.resolve());I({cacheKey:Z,entry:tr(),get:x,params:O,set:R});const B=cY(O),N=(B?a(Z):Promise.resolve(void 0)).then(K=>{if(K){p.delete(Z),k(R,O,Z,K,K.lastModified??0);return}return B&&n.info(\"[file-diff] no persisted cache; fetching from workspace host\",c(O)),u(Z,()=>S(Z,G,()=>l(O))).then(V=>k(R,O,Z,V))}).catch(K=>{p.delete(Z),A(R,O,Z,K)});return v(Z,N)},refetch(O,G=\"foreground\"){const Z=rv(O),re=x().entries[Z];G===\"foreground\"&&_(Z),I({cacheKey:Z,entry:{data:re?.data,error:void 0,isLoading:!0},get:x,params:O,set:R});const B=u(Z,()=>S(Z,G,()=>l(O))).then(N=>k(R,O,Z,N)).catch(N=>A(R,O,Z,N));return v(Z,B)},setContent({localWorkspaceId:O,filePath:G,scope:Z,updater:re}){const B=x().entries,N=aY(O,G),K={};for(const[V,D]of Object.entries(B))if(V.startsWith(N)&&D.data&&(Z!==\"working-tree\"||mLt(V))){const j=re(D.data.fileDiff);j&&j!==D.data.fileDiff&&(K[V]=dt({...D.data,fileDiff:j}))}Object.keys(K).length>0&&R(V=>({entries:{...V.entries,...K}}))},invalidate({localWorkspaceId:O,filePath:G}){const Z=x().entries,re=aY(O,G),B={};for(const[K,V]of Object.entries(Z))K.startsWith(re)?r.delete(K):B[K]=V;const N={};for(const[K,V]of Object.entries(x().cacheKeyByFileIdentity))V.startsWith(re)||(N[K]=V);R({entries:B,cacheKeyByFileIdentity:N,prefetchSignatureByFileIdentity:Object.fromEntries(Object.entries(x().prefetchSignatureByFileIdentity).filter(([K])=>N[K]))}),o(re).fireAndForget()},prefetch({files:O,localWorkspaceId:G,workspacePath:Z,workspaceHost:re,canPrefetchRemote:B=!0,viewMode:N,mergeBase:K,turnStartCheckpoint:V,turnEndCheckpoint:D,hideWhitespaceChanges:j,preferPatchForRemoteDiffs:Q}){const se=re!==M;if(se&&!B)return;let ge=hLt;for(const W of O){if(W.status===\"deleted\"&&Q!==!1)continue;if(se){const ue=W.fileSize&&W.fileSize>0?W.fileSize*2:(W.linesAdded+W.linesRemoved)*pLt;if(ue===0||ue>ge)continue;ge-=ue}const ie=uLt({file:W,localWorkspaceId:G,workspacePath:Z,workspaceHost:re,viewMode:N,mergeBase:K,turnStartCheckpoint:V,turnEndCheckpoint:D,hideWhitespaceChanges:j,preferPatchForRemoteDiffs:Q}),de=vd(ie),Se=gLt({file:W,viewMode:N,mergeBase:K}),J=x().prefetchSignatureByFileIdentity[de];R(ue=>({prefetchSignatureByFileIdentity:{...ue.prefetchSignatureByFileIdentity,[de]:Se}}));const te=J!==void 0&&J!==Se;se?te?x().refetch(ie,\"background\").fireAndForget():x().fetch(ie,\"background\").fireAndForget():Q===!1?x().fetch(ie,\"background\").fireAndForget():te&&x().entries[rv(ie)]!==void 0&&x().refetch(ie,\"background\").fireAndForget()}}})),stableParamsCache:r}}"
+    }
+  ]
+}
