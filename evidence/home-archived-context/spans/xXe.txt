@@ -1,0 +1,1 @@
+xXe=(t,{localWorkspaceId:e})=>{const s=t.workspacesByLocalId[e];if(s!==void 0)return s;if(t.allWorkspacesLoaded)return dt(void 0);if(Object.values(t.workspacePagesByOrganization).some(r=>r!==void 0&&r.loading&&r.localWorkspaceIds.includes(e)))return tr()}

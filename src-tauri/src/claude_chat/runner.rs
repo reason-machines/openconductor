@@ -51,6 +51,9 @@ pub struct ChatOptions {
     /// Effective local settings captured by the server, with redacted values.
     #[serde(skip)]
     pub local_env: Option<std::collections::BTreeMap<String, crate::agent::SecretString>>,
+    /// Resolved by the server once per turn, never accepted from chat IPC.
+    #[serde(skip)]
+    pub executable_path: Option<PathBuf>,
 }
 
 impl ChatOptions {
@@ -94,6 +97,14 @@ mod option_tests {
             "localEnv": {"PARITY_ENV": "caller-value"}
         })).unwrap();
         assert_eq!(options.local_env, None);
+    }
+
+    #[test]
+    fn executable_snapshot_is_not_deserialized_from_ipc() {
+        let options: ChatOptions = serde_json::from_value(serde_json::json!({
+            "executable_path": "/caller/path", "executablePath": "/caller/path"
+        })).unwrap();
+        assert_eq!(options.executable_path, None);
     }
 
     #[test]
@@ -398,7 +409,7 @@ impl ClaudeRunner {
                     return Ok(());
                 }
                 if !st.waiting.is_empty() {
-                    return Err("Wait for the current Claude Code turn to end before changing linked directories, environment, model, effort, Fast, Plan or Chrome mode.".into());
+                    return Err("Wait for the current Claude Code turn to end before changing the executable, linked directories, environment, model, effort, Fast, Plan or Chrome mode.".into());
                 }
             }
             if let Some(id) = st.mapper.session_id() {
@@ -411,6 +422,7 @@ impl ClaudeRunner {
         }
         chat.live = None;
         let mut launch = (self.launcher)(&chat.cwd, chat.resume.clone())?;
+        if let Some(path) = &options.executable_path { launch.executable = path.clone(); }
         launch.add_dirs = directories.to_vec();
         launch.model = options.model.clone();
         launch.effort = options.effort.clone();

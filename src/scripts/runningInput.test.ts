@@ -172,20 +172,29 @@ test("retained stopped script output remains read-only", async (t) => {
   assert.equal(f.screens.at(-1)?.options.disableStdin, true);
 });
 
-test("input follows running/stopping/rerun without remounting or reusing the old generation", async (t) => {
+test("input preserves the same run through stopping and isolates a replacement generation", async (t) => {
   const f = await fixture();
   t.after(f.close);
   const screen = f.screens.at(-1);
+  assert.ok(screen);
   await f.type("first\r");
-  await f.setState("stopping");
-  await f.type("not sent\r");
-  await f.setState("stopped");
-  await f.type("also not sent\r");
+  for (const state of ["stopping", "stopped"] satisfies RunState[]) {
+    await f.setState(state);
+    await f.type("not sent\r");
+    assert.equal(f.screens.at(-1), screen, "same-run status changes preserve the terminal buffer");
+    assert.equal(screen.disposed, false);
+    assert.equal(screen.options.disableStdin, true, state);
+  }
   await f.setState("running", "run-2");
+  const replacement = f.screens.at(-1);
+  assert.ok(replacement);
+  assert.notEqual(replacement, screen, "a new run owns a fresh terminal surface");
+  assert.equal(screen.disposed, true);
+  assert.equal(screen.inputs.size, 0, "the old generation has no input subscription");
   await f.type("second\r");
-  assert.equal(f.screens.at(-1), screen, "status changes preserve the terminal buffer");
+  screen.type("stale predecessor input\r");
   assert.deepEqual(f.writes.map(({ runId, data }) => ({ runId, data })), [{ runId: "run-1", data: "first\r" }, { runId: "run-2", data: "second\r" }]);
-  assert.equal(screen?.inputs.size, 1, "one current input subscription after a rerun");
+  assert.equal(replacement.inputs.size, 1, "one current input subscription after a rerun");
 });
 
 test("input targets the displayed workspace/script, never the disposed previous terminal", async (t) => {

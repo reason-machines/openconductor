@@ -1,0 +1,44 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate": "HOME-ARCHIVED-CONTEXT-271-05",
+  "lease": "ledger-confirmed sole writer",
+  "baseline": "29c82d0bf7b7f5b8f3e3a936a0f91eeb420ddac6",
+  "integrated_main": "93b9d53ce02970967a831b0ac93ecdbf17bdea31",
+  "fixture_sha256": "828088deea49b09aee131f138cb4436fc7fbc788c7d1351c8342151a8225557a",
+  "baseline_result": {
+    "pass": 4,
+    "intended_assertion_fail": 6,
+    "skip": 0
+  },
+  "green_result": {
+    "pass": 10,
+    "fail": 0,
+    "skip": 0
+  },
+  "integrated_tests_command": "node --max-old-space-size=768 --experimental-strip-types --test --test-concurrency=1 src/components/allWorkspaces*.test.ts src/components/home*.test.ts src/home/*.test.ts src/components/workspaceActions*.test.ts src/components/workspaceContext*.test.ts src/state/persisted.test.ts src/workspace/archivedList.test.ts src/components/sidebarArchiveBusyVisibility.test.ts src/components/sidebarArchiveShortcut.test.ts src/components/sidebarRowActivation.test.ts src/components/workspaceDetails.test.ts src/palette/moveToSection.test.ts src/palette/createSection.test.ts",
+  "integrated_tests": {
+    "pass": 321,
+    "fail": 0,
+    "skip": 0
+  },
+  "build": "npm run build: PASS (branding + TypeScript + Vite)",
+  "browser_fixture": {
+    "status": "OBSERVED",
+    "actual_components": true,
+    "supplied_archive_listing": true,
+    "dispatch_recorded_not_executed": true,
+    "menu": "https://api.reasonmachines.com/media/pr-screenshots/7783de16-b378-4499-8d5d-6ea5fd1a224c/e81d8b386ad6e4b2145d8a5ce06c420b/cd112bbe-dd00-42cd-9e62-6d7d927f2b0f.png",
+    "restore": "https://api.reasonmachines.com/media/pr-screenshots/7783de16-b378-4499-8d5d-6ea5fd1a224c/34b336ce557987f4ba1f0a2e92a7f502/b16525f8-d49a-4016-b36a-d3435bb4f6d4.png"
+  },
+  "production_paths": [
+    "src/components/AllWorkspaces.tsx",
+    "src/components/HomeWorkspaceScreen.tsx",
+    "src/components/WorkspaceContextMenu.tsx",
+    "src/components/WorkspaceActionsMenu.tsx"
+  ],
+  "unstarted_start": "EXCLUDED",
+  "provider_policy": "UNCHANGED_UNQUALIFIED",
+  "persistence_mutation": "NOT_VERIFIED",
+  "native": "NOT_RUN",
+  "containing_package": "NOT_RUN; 1791 excludes successor"
+}
