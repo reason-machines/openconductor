@@ -1,0 +1,2 @@
+function Ftt(t){if(t.content.type!=="user")return!1;const e=t.content.message.content;return typeof e=="string"?e.trim()==="/compact":Array.isArray(e)?e.filter(n=>n.type==="text").map(n=>n.text).join(`
+`).trim()==="/compact":!1}

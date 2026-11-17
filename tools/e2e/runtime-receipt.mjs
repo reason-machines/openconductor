@@ -28,7 +28,7 @@ export function executableIdentity(app) {
   } catch (error) { return unavailable(error); }
 }
 
-function readProcess(procRoot, pid) {
+export function readProcess(procRoot, pid) {
   const stat = readFileSync(join(procRoot, String(pid), "stat"), "utf8");
   // comm can contain spaces and parentheses; fields after its LAST ')' are stable.
   const fields = stat.slice(stat.lastIndexOf(")") + 2).trim().split(/\s+/);
@@ -36,7 +36,7 @@ function readProcess(procRoot, pid) {
   return { pid, ppid: Number(fields[1]), state: fields[0], startTicks: fields[19], executable: link("exe"), cwd: link("cwd") };
 }
 
-export function processSnapshot(driverPid, { procRoot = "/proc", port = 4444 } = {}) {
+export function processSnapshot(driverPid, { procRoot = "/proc", port = 4444, appPath } = {}) {
   try {
     const processes = readdirSync(procRoot).filter((n) => /^\d+$/.test(n)).flatMap((n) => {
       try { return [readProcess(procRoot, Number(n))]; } catch { return []; }
@@ -57,7 +57,7 @@ export function processSnapshot(driverPid, { procRoot = "/proc", port = 4444 } =
           try { target = readlinkSync(join(procRoot, String(p.pid), "fd", fd)); } catch { continue; }
           const socket = /^socket:\[(\d+)\]$/.exec(target);
           if (socket) socketOwners.set(socket[1], p.pid);
-          if (["conductor.db", "cache.db"].includes(basename(target))) databases.add(target);
+          if ((appPath === undefined || p.executable === appPath) && ["conductor.db", "cache.db"].includes(basename(target))) databases.add(target);
         }
       } catch { fdComplete = false; }
     }
@@ -130,7 +130,7 @@ export function createRuntimeReceipt({ suite, app, out, home, project, procRoot 
   const known = new Map();
   const save = (phase, data) => writeFileSync(join(out, `runtime-${phase}.json`), JSON.stringify({ ...identity, phase, observedAt: new Date().toISOString(), elapsedMs: Date.now() - startedAt, ...data }, null, 2) + "\n");
   const snapshot = () => {
-    const state = processSnapshot(driverPid, { procRoot });
+    const state = processSnapshot(driverPid, { procRoot, appPath: identity.executable.path ?? "" });
     if (state.status === "observed") {
       for (const p of state.tree) known.set(`${p.pid}:${p.startTicks}`, p);
       // Descendants can be reparented after driver.kill(); explicitly check
@@ -167,6 +167,7 @@ export function createRuntimeReceipt({ suite, app, out, home, project, procRoot 
         roots.appData = { status: roots.databases.status, paths: [...new Set(beforeTeardown.databases.filter((p) => p.status === "observed").map((p) => dirname(p.path)))].map(resolvedPath) };
       }
       try { save("before-teardown", { roots, processes: beforeTeardown }); } catch { console.error("runtime receipt: before-teardown write failed"); }
+      return beforeTeardown;
     },
     async afterTeardown() {
       try {

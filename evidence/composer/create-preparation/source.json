@@ -1,0 +1,67 @@
+{
+  "baseline_main": "fcbd2d2cb9e99dd9a66a94b8ee0b0b6780c400ac",
+  "baseline_component_sha256": "3a8a4d7df52ad93261de92f165984e22d708ab2eb4dbe234037e842c11401c14",
+  "reference_renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "reference_Hji_sha256": "3c5589cd46083bc08b635d4e752bfe1f93bc8456ae81e68c401dc6814948f567",
+  "reference_ranges": [
+    {
+      "name": "plan-default-inputs",
+      "utf8_half_open": [
+        9772879,
+        9773082
+      ],
+      "sha256": "ef7bbce4aea8849d073ac65ca78a66b05e05d18c3aa9104f087854725d22ad98",
+      "literal": "launchFastMode:_n,effectivePlanMode:Vn,launchPermissionMode:Zt}=lQo({effectiveModel:Ct,supportsPlanMode:wt,selectedFastMode:Nt?.fastMode,selectedPlanMode:bt,defaultFastModeSetting:ye,defaultPlanMode:De})"
+    },
+    {
+      "name": "plan-effective-toggle",
+      "utf8_half_open": [
+        9777028,
+        9777105
+      ],
+      "sha256": "b302daad8c18c347947448e7fa4c6abce5020426f8c3c2a12e19413a2ad59654",
+      "literal": "fo=$.useCallback(()=>{if(!wt)return!1;gr({selectedPlanMode:!Vn})},[wt,Vn,gr])"
+    },
+    {
+      "name": "backlog-description-input",
+      "utf8_half_open": [
+        9776032,
+        9776237
+      ],
+      "sha256": "d1b3fcc36dedb7c9fce111bca7175389ba3cb6328a40b89983ef683419eeffd8",
+      "literal": "ca=$.useCallback(async()=>{const Br=U,sl=G;if(!(B===void 0||!ba||Z.current)){Z.current=!0,te(!0),z(\"\"),K(h.rotateDraftWorkspaceId()),h.clearDraft(),Yr();try{await B({workspaceId:sl,description:Br.trim()})}"
+    }
+  ],
+  "scope": [
+    "COMP-1",
+    "COMP-2"
+  ],
+  "excluded": [
+    "COMP-3 metadata implementation",
+    "native or runtime parity claims"
+  ],
+  "checks": {
+    "frozen_regression_red": {
+      "passed": 5,
+      "failed": 11,
+      "skipped": 0
+    },
+    "combined_green": {
+      "passed": 46,
+      "failed": 0,
+      "skipped": 0
+    },
+    "adjacent": {
+      "passed": 71,
+      "failed": 0,
+      "skipped": 0
+    },
+    "dispatcher": {
+      "passed": 2,
+      "failed": 0
+    },
+    "build": "PASS",
+    "native": "NOT_RUN",
+    "package_containment": "NOT_VERIFIED"
+  }
+}

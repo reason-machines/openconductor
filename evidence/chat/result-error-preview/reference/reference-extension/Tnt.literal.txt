@@ -1,0 +1,1 @@
+function Tnt(t){return t.type!=="system"||t.subtype!=="task_started"||t.prompt===void 0||t.prompt.length<=v8?t:{...t,prompt:`${t.prompt.slice(0,v8)}…`}}

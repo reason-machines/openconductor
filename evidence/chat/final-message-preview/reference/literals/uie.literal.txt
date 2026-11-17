@@ -1,0 +1,1 @@
+function uie({block:t,potentialToolResultMessages:e}){return t.type==="text"?t.text.trim().length>0:Fa(t)?t.name==="collab__wait"?!1:t.name==="collab__closeAgent"?btt(t.id,e):!0:!0}

@@ -1,0 +1,1 @@
+function LDo(t){const e=[];for(const n of t){if(n.type==="summary"){e.push({type:"summary",item:n});continue}const i=e[e.length-1];i?.type==="messages"?i.items.push(n):e.push({type:"messages",items:[n]})}return e}

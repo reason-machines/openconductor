@@ -1,0 +1,1 @@
+function xtt(t,e){const s=Ttt(t);if(s===void 0||typeof e!="object"||e===null)return;const n=Reflect.get(e,s);return typeof n=="string"?n:void 0}

@@ -35,7 +35,7 @@ function workspaceChatHost(KeybindingScope: unknown, ChatPanel: unknown) {
   };
   visit(source);
   assert.equal(hosts.length, 1, "run the actual WorkspaceView chat host JSX, not a copied wrapper");
-  const compiled = ts.transpileModule(`function ChatHost({centerTerminal, showBrowser = false}) { return (${hosts[0]}); } module.exports = ChatHost;`, {
+  const compiled = ts.transpileModule(`function ChatHost({centerTerminal, showBrowser = false, focused = true, grouped = false}) { const auxiliary = null; return (${hosts[0]}); } module.exports = ChatHost;`, {
     fileName: path,
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021, jsx: ts.JsxEmit.ReactJSX },
   }).outputText;

@@ -95,6 +95,8 @@ export interface TurnStatusEvent {
   turnId: string;
   status: TurnStatus;
   error?: string;
+  /** Explicit terminal result error; generic failure and cancellation do not set this. */
+  resultError?: true;
   /**
    * When the status changed (RFC 3339 UTC). Stamped by the frontend runtime;
    * the Rust `ChatEvent::TurnStatus` does not carry it yet.

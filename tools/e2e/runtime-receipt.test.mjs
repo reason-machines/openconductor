@@ -3,10 +3,12 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, symlinkSync, unlinkSync, realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
+import { once } from "node:events";
 import { createHash } from "node:crypto";
 import { WebDriver } from "../../tests/e2e/webdriver.mjs";
 import { createRuntimeReceipt, executableIdentity, processSnapshot, cleanupObservation, resolvedPath, resolveAppRoots, ROOTS_SCRIPT } from "./runtime-receipt.mjs";
+import { stopObservedProcesses } from "./owned-processes.mjs";
 
 function fixture(t) {
   const root = realpathSync(mkdtempSync(join(tmpdir(), "oc-receipt-test-")));
@@ -92,6 +94,7 @@ test("records before launch, app-reported roots and observed post-teardown clean
   const config = join(f.root, "settings.toml"); writeFileSync(config, "secret = 'DO_NOT_RECORD'\n");
   const db = join(f.root, "conductor.db"); writeFileSync(db, "");
   symlinkSync(db, join(f.procRoot, "101/fd/4"));
+  unlinkSync(join(f.procRoot, "101/exe")); symlinkSync(f.app, join(f.procRoot, "101/exe"));
   const receipt = createRuntimeReceipt({ suite: "fixture", ...f, cleanupTimeoutMs: 0 });
   assert.equal(record(f, "before-launch").cleanup.status, "not_started");
   receipt.track({ pid: 100 });
@@ -126,6 +129,107 @@ test("reparented children remain failed cleanup after the driver exits", async (
   assert.deepEqual(after.cleanup.survivors.map((p) => p.pid), [101]);
   assert.equal(after.roots.status, "unavailable");
   assert.doesNotMatch(JSON.stringify(after), /DO_NOT_RECORD/);
+});
+
+test("returns observed driver identities for an explicit owner-scoped teardown", async (t) => {
+  const f = fixture(t); f.process(100, 1); f.process(101, 100);
+  const receipt = createRuntimeReceipt({ suite: "owned", ...f, cleanupTimeoutMs: 0 });
+  receipt.track({ pid: 100 });
+  const observed = await receipt.beforeTeardown(async () => ({}));
+  await receipt.afterTeardown();
+  assert.deepEqual(observed?.tree.map(({ pid, startTicks }) => ({ pid, startTicks })), [
+    { pid: 100, startTicks: "100" }, { pid: 101, startTicks: "100" },
+  ]);
+});
+
+test("app-data receipts exclude browser cache databases in the driver descendant tree", async (t) => {
+  const f = fixture(t); f.process(100, 1); f.process(101, 100); f.process(102, 101);
+  unlinkSync(join(f.procRoot, "101/exe")); symlinkSync(f.app, join(f.procRoot, "101/exe"));
+  const appData = join(f.root, "app-data"), browserData = join(f.root, "browser-cache");
+  for (const dir of [appData, browserData]) mkdirSync(dir);
+  for (const [pid, path] of [[101, join(appData, "conductor.db")], [101, join(appData, "cache.db")], [102, join(browserData, "cache.db")]]) {
+    writeFileSync(path, ""); symlinkSync(path, join(f.procRoot, String(pid), "fd", path.endsWith("conductor.db") ? "4" : "5"));
+  }
+  const receipt = createRuntimeReceipt({ suite: "app-data", ...f, cleanupTimeoutMs: 0 });
+  receipt.track({ pid: 100 });
+  await receipt.beforeTeardown(async () => ({}));
+  await receipt.afterTeardown();
+  assert.deepEqual(record(f, "before-teardown").roots.appData.paths, [{ status: "observed", path: appData }]);
+});
+
+test("an unavailable executable never falls back to attributing descendant databases to the app", async (t) => {
+  const f = fixture(t); f.process(100, 1);
+  const db = join(f.root, "cache.db"); writeFileSync(db, "");
+  symlinkSync(db, join(f.procRoot, "100/fd/4")); rmSync(f.app);
+  const receipt = createRuntimeReceipt({ suite: "missing-app", ...f, cleanupTimeoutMs: 0 });
+  receipt.track({ pid: 100 });
+  await receipt.beforeTeardown(async () => ({})); await receipt.afterTeardown();
+  assert.equal(record(f, "before-teardown").roots.appData.status, "not_observed");
+});
+
+test("teardown stops only matching owned descendants, including reparented children", async (t) => {
+  const f = fixture(t); f.process(100, 1); f.process(101, 100); f.process(900, 1);
+  const owned = processSnapshot(100, f);
+  rmSync(join(f.procRoot, "100"), { recursive: true });
+  f.process(101, 1); f.process(102, 101);
+  const calls = [];
+  const result = await stopObservedProcesses(owned, { ...f, graceMs: 0, signalProcess: (pid, signal) => {
+    calls.push([pid, signal]); rmSync(join(f.procRoot, String(pid)), { recursive: true });
+  } });
+  assert.equal(result.status, "stopped");
+  assert.deepEqual(calls.map(([pid]) => pid).sort(), [101, 102]);
+  assert.equal(processSnapshot(900, f).tree[0].pid, 900, "unrelated process is untouched");
+});
+
+test("teardown escalates an uncooperative owned process and reports an actual survivor", async (t) => {
+  const f = fixture(t); f.process(100, 1);
+  const owned = processSnapshot(100, f), calls = [];
+  const result = await stopObservedProcesses(owned, { ...f, graceMs: 0, signalProcess: (pid, signal) => calls.push([pid, signal]) });
+  assert.equal(result.status, "failed");
+  assert.deepEqual(calls, [[100, "SIGTERM"], [100, "SIGKILL"]]);
+  assert.deepEqual(result.survivors, [{ pid: 100, startTicks: "100" }]);
+});
+
+test("teardown never signals a reused PID, its descendants or zombies", async (t) => {
+  const f = fixture(t); f.process(100, 1); f.process(101, 100);
+  const owned = processSnapshot(100, f);
+  f.process(100, 1, "200"); f.process(101, 1, "100", "Z"); f.process(102, 100);
+  const calls = [];
+  assert.equal((await stopObservedProcesses(owned, { ...f, graceMs: 0, signalProcess: (pid) => calls.push(pid) })).status, "stopped");
+  assert.deepEqual(calls, []);
+});
+
+test("missing observations cannot authorize cleanup or report verified release", async (t) => {
+  const f = fixture(t), calls = [];
+  const options = { ...f, graceMs: 0, signalProcess: (pid) => calls.push(pid) };
+  assert.equal((await stopObservedProcesses(undefined, options)).status, "unverified");
+  assert.equal((await stopObservedProcesses({ status: "unavailable" }, options)).status, "unverified");
+  f.process(100, 1);
+  const owned = processSnapshot(100, f);
+  unlinkSync(join(f.procRoot, "100/stat")); mkdirSync(join(f.procRoot, "100/stat"));
+  assert.equal((await stopObservedProcesses(owned, options)).status, "unverified");
+  assert.deepEqual(calls, []);
+});
+
+test("bounded teardown actually stops an inert child that ignores SIGTERM", { timeout: 5000 }, async (t) => {
+  const child = spawn(process.execPath, ["-e", 'process.on("SIGTERM", () => {}); setInterval(() => {}, 1000); process.stdout.write("ready\\n");'], { stdio: ["ignore", "pipe", "ignore"] });
+  t.after(() => { if (child.exitCode === null && child.signalCode === null) child.kill("SIGKILL"); });
+  const exited = once(child, "exit");
+  await once(child.stdout, "data");
+  const owned = processSnapshot(child.pid);
+  assert.equal(owned.status, "observed");
+  assert.equal((await stopObservedProcesses(owned, { graceMs: 100, sampleMs: 10 })).status, "stopped");
+  await exited;
+  assert.equal(child.signalCode, "SIGKILL");
+});
+
+test("the affected suites clean their captured identities before the final observation", () => {
+  for (const suite of ["codex-chat.e2e.mjs", "../../tests/e2e/run.mjs"]) {
+    const source = readFileSync(new URL(suite, import.meta.url), "utf8");
+    assert.match(source, /const owned = await receipt\.beforeTeardown\(/);
+    assert.ok(source.indexOf("await stopObservedProcesses(owned)") > source.lastIndexOf("driver.kill()"));
+    assert.ok(source.indexOf("await stopObservedProcesses(owned)") < source.indexOf("await receipt.afterTeardown()"));
+  }
 });
 
 test("missing before-teardown observation stays unverified", async (t) => {

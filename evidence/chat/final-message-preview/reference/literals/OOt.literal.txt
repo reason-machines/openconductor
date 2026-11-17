@@ -1,0 +1,1 @@
+function OOt(t,e){const s=new Map;for(const i of t)for(const o of na(i))Fa(o)&&s.set(o.id,i.id);const n=new Map;let r=0;for(const i of e){const o=i.messages.filter(Wp).length;if(o===0)continue;const a=s.get(i.parentToolUseId);a===void 0?r+=o:n.set(a,(n.get(a)??0)+o)}return{countByMessageId:n,unattributedCount:r}}

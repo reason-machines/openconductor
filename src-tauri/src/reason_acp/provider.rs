@@ -222,6 +222,9 @@ pub enum TurnEnd {
     /// A follow-up sent during the turn took over the Session.
     Superseded,
     Failed(String),
+    /// Explicit Claude `result.is_error`, not inferred from a failure status or Stop.
+    /// It is the turn's terminal message, so preceding text is not its preview.
+    ResultError(String),
 }
 
 pub type Sink = Arc<dyn Fn(&str, ProviderEvent) + Send + Sync>;

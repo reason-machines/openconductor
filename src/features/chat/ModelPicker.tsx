@@ -5,6 +5,7 @@
 // ("Effort"/"Thinking"), the Fast toggle, and a footer with "Edit" and the
 // Cycle effort shortcut. ⌘/ opens it, ⌘⇧/ cycles the effort, ⌘⇧E toggles Fast.
 
+import fuzzysort from "fuzzysort";
 import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
@@ -85,7 +86,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
       const agent = itemAgent?.(f) ?? f.agent ?? agentForModel(f.model);
       const agentLabel = agent === "reason" ? "Reason" : agent ? AGENT_LABEL[agent] : "";
       const fields = [name(f), f.model, agentLabel, agent ? `${agent}:${f.model}` : ""].map((field) => field.toLowerCase());
-      return words.every((word) => fields.some((field) => field.includes(word)));
+      return words.every((word) => fields.some((field) => fuzzysort.single(word, field) !== null));
     }) : list;
   }, [favorites, value, query, itemLabel, models, modelName, itemAgent]);
 
