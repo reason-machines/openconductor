@@ -1,0 +1,88 @@
+{
+  "author": "Conductor Rebuild",
+  "fresh_main": "a0ed68ce45257c6a4eecc3b0e09bf974fef8ccda",
+  "contains_actual_1422_merge": "a0ed68ce45257c6a4eecc3b0e09bf974fef8ccda",
+  "product": "src/components/ScriptsPanel.tsx",
+  "baseline_product_sha256": "f6ae1bb27f24d4d616a39d9fa4ebbdcd850147975559aaa3fbb941b40dc6f2d8",
+  "treatment_product_sha256": "ae00d798fa797ceca841f88374bbbdabeeb829ea7826b4352868b264183a501e",
+  "fixture": "src/scripts/rerunOutputIdentity.test.ts",
+  "fixture_sha256": "1cd934ec24dee5607e7aacceaa8f85b3aac956e5e6c38a3c016a77594c18909f",
+  "baseline": {
+    "passed": 5,
+    "failed": 2,
+    "skipped": 0
+  },
+  "treatment": {
+    "passed": 7,
+    "failed": 0,
+    "skipped": 0
+  },
+  "adjacent": {
+    "passed": 64,
+    "failed": 0,
+    "skipped": 0
+  },
+  "log_receipts": {
+    "red": {
+      "command": "NODE_ENV=development node --test --test-concurrency=1 src/scripts/rerunOutputIdentity.test.ts (unchanged fresh-main ScriptsPanel)",
+      "exit_code": 1,
+      "raw_path": "fresh-main-red.raw.log.gz",
+      "raw_sha256": "026b14df728fab41779333cb4e19a9df670d68ac5dd7bbec3fdfea20661ea52d",
+      "compressed_sha256": "ea6269688e49d7f6d68341ceb5d8cb26df6d5718774cc5472d257a8e6326266c",
+      "display_path": "fresh-main-red.log",
+      "display_sha256": "76eea8e4326419a538c3ca28bcee01378efce98e117f44e346804535287c4e90"
+    },
+    "green": {
+      "command": "NODE_ENV=development node --test --test-concurrency=1 src/scripts/rerunOutputIdentity.test.ts (treatment)",
+      "exit_code": 0,
+      "raw_path": "fresh-main-green.raw.log.gz",
+      "raw_sha256": "202e63d420051dc0f31529fb5fd0c8e84b09d5bdb75ce4e20f9276fddee8afba",
+      "compressed_sha256": "0cbbb24356a31359fc512ffe104d2e6d6b3580dd56beda71f42ff2af4e9dee7b",
+      "display_path": "fresh-main-green.log",
+      "display_sha256": "202e63d420051dc0f31529fb5fd0c8e84b09d5bdb75ce4e20f9276fddee8afba"
+    },
+    "adjacent": {
+      "command": "NODE_ENV=development node --test --test-concurrency=1 src/scripts/model.test.ts src/scripts/runTab.test.ts src/scripts/runSelectionHistory.test.ts src/scripts/runCompletion.test.ts src/scripts/setupContext.test.ts src/scripts/runOutputSelection.test.ts src/scripts/runningInput.test.ts src/scripts/runningResize.test.ts src/scripts/cancelledWaitIdle.test.ts",
+      "exit_code": 0,
+      "raw_path": "fresh-main-adjacent.raw.log.gz",
+      "raw_sha256": "d18a9afe1c7d06cb7d0187e759055babcfcf8ba3a9626ac6c20462da3af78b62",
+      "compressed_sha256": "aa522aeb760e38b4588762e4bbf4bc6f9cf75a60a3992b4b4f5433056197ff3e",
+      "display_path": "fresh-main-adjacent.log",
+      "display_sha256": "d18a9afe1c7d06cb7d0187e759055babcfcf8ba3a9626ac6c20462da3af78b62"
+    },
+    "source-verification": {
+      "command": "python3 evidence/scripts/rerun-output-identity-1f/verify-reference.py <original-glob-archive>",
+      "exit_code": 0,
+      "raw_path": "fresh-main-source-verification.raw.log.gz",
+      "raw_sha256": "f2d47fa905eddef1f5d9e6e6cf380465fc5852c0b9aa5c93caafb67af5734b39",
+      "compressed_sha256": "8cc9218f1399d66b6a4ce61c952334e4235a8ab9f82d0cd26fc917eb4f509026",
+      "display_path": "fresh-main-source-verification.log",
+      "display_sha256": "f2d47fa905eddef1f5d9e6e6cf380465fc5852c0b9aa5c93caafb67af5734b39"
+    },
+    "typecheck": {
+      "command": "npm run typecheck",
+      "exit_code": 0,
+      "raw_path": "fresh-main-typecheck.raw.log.gz",
+      "raw_sha256": "055129263fd4f033a3cefb38259ae18d2db44d24d6924c7c26081864dce9a8b8",
+      "compressed_sha256": "4c335ef3c1cb11ae191eddf2817f56d170914608af77ec95a2f725e5db771bda",
+      "display_path": "fresh-main-typecheck.log",
+      "display_sha256": "055129263fd4f033a3cefb38259ae18d2db44d24d6924c7c26081864dce9a8b8"
+    },
+    "build": {
+      "command": "npm run build",
+      "exit_code": 0,
+      "raw_path": "fresh-main-build.raw.log.gz",
+      "raw_sha256": "647df862450d23aa2069d4194a2f66e5956f83ac02350b62e403cc6ce1f3cb13",
+      "compressed_sha256": "f72b76de8770f9e98d36bcc9368543edab12f09d7ad281394125ec78ad0e56d5",
+      "display_path": "fresh-main-build.log",
+      "display_sha256": "225433881d903290a0876c7804ac0ad6631a740830149b10a12e75b87702a5b5"
+    }
+  },
+  "boundary": "Source-only actual mounted React/IPC fixture, no process/PTY/browser/provider/app/package/native dispatch.",
+  "unverified": [
+    "Browser/native screenshots",
+    "Real setup/process/PTY/provider execution",
+    "Containing package and repair embedding/runtime",
+    "Native serializer and kill-worker ABI"
+  ]
+}

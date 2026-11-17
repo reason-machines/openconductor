@@ -1,0 +1,1 @@
+function J4e(){return Hs()(sr(()=>({allWorkspacesLoaded:!1,cloudWorkspaceSnapshotLoaded:!1,workspacePagesByOrganization:{},workspaceSummaryVersionsById:{},workspacesByLocalId:{},setupLogsByWorkspaceId:{},presenceByUserId:{},organizationPresenceByUserId:{},organizationPresenceSnapshotOrgId:void 0})))}

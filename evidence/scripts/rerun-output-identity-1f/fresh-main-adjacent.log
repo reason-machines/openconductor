@@ -1,0 +1,414 @@
+(node:147) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:154) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: cancelled queued Run returns to its idle start action without an output surface
+ok 1 - cancelled queued Run returns to its idle start action without an output surface
+  ---
+  duration_ms: 389.558223
+  type: 'test'
+  ...
+# Subtest: a completed Run keeps its empty output surface when its run ID exists
+ok 2 - a completed Run keeps its empty output surface when its run ID exists
+  ---
+  duration_ms: 163.016111
+  type: 'test'
+  ...
+# Subtest: cancelled queued Run stays idle after visiting another workspace's completed output
+ok 3 - cancelled queued Run stays idle after visiting another workspace's completed output
+  ---
+  duration_ms: 120.64286
+  type: 'test'
+  ...
+# Subtest: legacy output remains readable without adding a synthetic run identity
+ok 4 - legacy output remains readable without adding a synthetic run identity
+  ---
+  duration_ms: 113.180131
+  type: 'test'
+  ...
+# Subtest: rejected queue requests preserve the error and idle retry action
+ok 5 - rejected queue requests preserve the error and idle retry action
+  ---
+  duration_ms: 98.72886
+  type: 'test'
+  ...
+# (node:162) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: workspaceRef needs both paths
+ok 6 - workspaceRef needs both paths
+  ---
+  duration_ms: 1.849185
+  type: 'test'
+  ...
+# Subtest: default script prefers the default flag, local only
+ok 7 - default script prefers the default flag, local only
+  ---
+  duration_ms: 0.310987
+  type: 'test'
+  ...
+# Subtest: run button follows the active run
+ok 8 - run button follows the active run
+  ---
+  duration_ms: 0.245313
+  type: 'test'
+  ...
+# Subtest: exit text and output buffer
+ok 9 - exit text and output buffer
+  ---
+  duration_ms: 0.388142
+  type: 'test'
+  ...
+# (node:170) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Run panel isolates detected preview URLs and delayed snapshots across busy Dev to Test
+ok 10 - actual Run panel isolates detected preview URLs and delayed snapshots across busy Dev to Test
+  ---
+  duration_ms: 455.764886
+  type: 'test'
+  ...
+# Subtest: actual Run panel ignores obsolete output snapshots after switching workspaces with Dev busy
+ok 11 - actual Run panel ignores obsolete output snapshots after switching workspaces with Dev busy
+  ---
+  duration_ms: 203.770882
+  type: 'test'
+  ...
+# Subtest: actual Run panel ignores queued output delivery from a retired workspace subscription
+ok 12 - actual Run panel ignores queued output delivery from a retired workspace subscription
+  ---
+  duration_ms: 121.655676
+  type: 'test'
+  ...
+# Subtest: actual Run panel stops only the displayed busy Dev and keeps the picked Test
+ok 13 - actual Run panel stops only the displayed busy Dev and keeps the picked Test
+  ---
+  duration_ms: 104.475748
+  type: 'test'
+  ...
+# Subtest: actual Run panel returns to the picked Test after the displayed Dev exits naturally
+ok 14 - actual Run panel returns to the picked Test after the displayed Dev exits naturally
+  ---
+  duration_ms: 148.597241
+  type: 'test'
+  ...
+# Subtest: actual Run panel observes quiet queued Test admission after the early Setup completion refresh
+ok 15 - actual Run panel observes quiet queued Test admission after the early Setup completion refresh
+  ---
+  duration_ms: 101.294201
+  type: 'test'
+  ...
+# Subtest: actual Run panel observes quiet automatic Dev admission without another start action
+ok 16 - actual Run panel observes quiet automatic Dev admission without another start action
+  ---
+  duration_ms: 86.042876
+  type: 'test'
+  ...
+# Subtest: actual Run panel ignores foreign admission and reads current status rather than trusting its payload
+ok 17 - actual Run panel ignores foreign admission and reads current status rather than trusting its payload
+  ---
+  duration_ms: 85.42133
+  type: 'test'
+  ...
+# Subtest: actual Run panel observes natural exit 0, keeps output and restarts without Stop IPC
+ok 18 - actual Run panel observes natural exit 0, keeps output and restarts without Stop IPC
+  ---
+  duration_ms: 99.091835
+  type: 'test'
+  ...
+# Subtest: actual Run panel observes natural exit 7, keeps output and restarts without Stop IPC
+ok 19 - actual Run panel observes natural exit 7, keeps output and restarts without Stop IPC
+  ---
+  duration_ms: 76.153231
+  type: 'test'
+  ...
+# Subtest: actual Run panel retains the explicitly picked task after its natural completion
+ok 20 - actual Run panel retains the explicitly picked task after its natural completion
+  ---
+  duration_ms: 95.947521
+  type: 'test'
+  ...
+# Subtest: actual Run panel ignores completion from another workspace
+ok 21 - actual Run panel ignores completion from another workspace
+  ---
+  duration_ms: 91.226282
+  type: 'test'
+  ...
+# Subtest: actual Run panel reads current status instead of replacing a live run with a completion payload
+ok 22 - actual Run panel reads current status instead of replacing a live run with a completion payload
+  ---
+  duration_ms: 157.024065
+  type: 'test'
+  ...
+# (node:178) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Run output offers the action only for nonblank selection and a target chat
+ok 23 - actual Run output offers the action only for nonblank selection and a target chat
+  ---
+  duration_ms: 904.734122
+  type: 'test'
+  ...
+# Subtest: Run selection reaches the existing strip callback normalized and without truncation
+ok 24 - Run selection reaches the existing strip callback normalized and without truncation
+  ---
+  duration_ms: 269.409218
+  type: 'test'
+  ...
+# Subtest: stopping Run retains the action, output and terminal instance without enabling stdin
+ok 25 - stopping Run retains the action, output and terminal instance without enabling stdin
+  ---
+  duration_ms: 246.870306
+  type: 'test'
+  ...
+# Subtest: accepted Run selection clears action state without clearing xterm selection
+ok 26 - accepted Run selection clears action state without clearing xterm selection
+  ---
+  duration_ms: 215.733345
+  type: 'test'
+  ...
+# Subtest: a rejected Run selection callback retains the action for retry
+ok 27 - a rejected Run selection callback retains the action for retry
+  ---
+  duration_ms: 196.622928
+  type: 'test'
+  ...
+# Subtest: Run selection uses the current strip chat target instead of a stale callback
+ok 28 - Run selection uses the current strip chat target instead of a stale callback
+  ---
+  duration_ms: 125.93383
+  type: 'test'
+  ...
+# Subtest: Run workspace replacement and unmount release old selection subscriptions
+ok 29 - Run workspace replacement and unmount release old selection subscriptions
+  ---
+  duration_ms: 121.602172
+  type: 'test'
+  ...
+# Subtest: Setup output does not acquire the Run selection action
+ok 30 - Setup output does not acquire the Run selection action
+  ---
+  duration_ms: 152.455901
+  type: 'test'
+  ...
+# Subtest: Spotlight output does not acquire the ordinary Run selection action
+ok 31 - Spotlight output does not acquire the ordinary Run selection action
+  ---
+  duration_ms: 159.369815
+  type: 'test'
+  ...
+# Subtest: standalone output with input keeps its existing no-selection-action default
+ok 32 - standalone output with input keeps its existing no-selection-action default
+  ---
+  duration_ms: 98.08329
+  type: 'test'
+  ...
+# (node:186) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Run panel restores a workspace's nondefault history without starting a task
+ok 33 - actual Run panel restores a workspace's nondefault history without starting a task
+  ---
+  duration_ms: 564.707437
+  type: 'test'
+  ...
+# Subtest: actual Run panel restores each workspace history through A to B to A
+ok 34 - actual Run panel restores each workspace history through A to B to A
+  ---
+  duration_ms: 288.695197
+  type: 'test'
+  ...
+# Subtest: actual Run panel skips deleted history IDs before selecting a configured task
+ok 35 - actual Run panel skips deleted history IDs before selecting a configured task
+  ---
+  duration_ms: 189.671982
+  type: 'test'
+  ...
+# Subtest: actual Run panel falls back to Dev when all historical tasks were removed
+ok 36 - actual Run panel falls back to Dev when all historical tasks were removed
+  ---
+  duration_ms: 121.859623
+  type: 'test'
+  ...
+# Subtest: actual Run panel keeps a busy task projected over an idle historical selection
+ok 37 - actual Run panel keeps a busy task projected over an idle historical selection
+  ---
+  duration_ms: 164.654132
+  type: 'test'
+  ...
+# Subtest: actual Run panel keeps default selection inert when workspace history is empty
+ok 38 - actual Run panel keeps default selection inert when workspace history is empty
+  ---
+  duration_ms: 193.080023
+  type: 'test'
+  ...
+# (node:194) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: display projection yields an idle selection to the busy workspace task without changing the selection
+ok 39 - display projection yields an idle selection to the busy workspace task without changing the selection
+  ---
+  duration_ms: 0.648721
+  type: 'test'
+  ...
+# Subtest: display projection treats Spotlight as a task rather than changing selection policy
+ok 40 - display projection treats Spotlight as a task rather than changing selection policy
+  ---
+  duration_ms: 0.123513
+  type: 'test'
+  ...
+# Subtest: idle: Start <label> and Test your changes here; Spotlight and no task have their own wording
+ok 41 - idle: Start <label> and Test your changes here; Spotlight and no task have their own wording
+  ---
+  duration_ms: 1.219663
+  type: 'test'
+  ...
+# Subtest: pending lines show only before any output; a task that ran shows its output
+ok 42 - pending lines show only before any output; a task that ran shows its output
+  ---
+  duration_ms: 0.263388
+  type: 'test'
+  ...
+# Subtest: header: Run <label> when idle, Stop <label> while busy, Stopping... while it stops
+ok 43 - header: Run <label> when idle, Stop <label> while busy, Stopping... while it stops
+  ---
+  duration_ms: 0.203267
+  type: 'test'
+  ...
+# (node:202) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: running terminal input reaches the real panel/API route with exact bytes and run identity
+ok 44 - running terminal input reaches the real panel/API route with exact bytes and run identity
+  ---
+  duration_ms: 862.097021
+  type: 'test'
+  ...
+# Subtest: retained stopped script output remains read-only
+ok 45 - retained stopped script output remains read-only
+  ---
+  duration_ms: 215.069518
+  type: 'test'
+  ...
+# Subtest: input follows running/stopping/rerun without remounting or reusing the old generation
+ok 46 - input follows running/stopping/rerun without remounting or reusing the old generation
+  ---
+  duration_ms: 233.813057
+  type: 'test'
+  ...
+# Subtest: input targets the displayed workspace/script, never the disposed previous terminal
+ok 47 - input targets the displayed workspace/script, never the disposed previous terminal
+  ---
+  duration_ms: 239.796275
+  type: 'test'
+  ...
+# Subtest: unmount removes the input subscriber
+ok 48 - unmount removes the input subscriber
+  ---
+  duration_ms: 222.428778
+  type: 'test'
+  ...
+# Subtest: setup output is not routed to a run-script process
+ok 49 - setup output is not routed to a run-script process
+  ---
+  duration_ms: 182.64298
+  type: 'test'
+  ...
+# Subtest: running status without a live run identity cannot enable input
+ok 50 - running status without a live run identity cannot enable input
+  ---
+  duration_ms: 149.610361
+  type: 'test'
+  ...
+# (node:210) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: measured running-script geometry reaches the real panel and API with the current generation
+ok 51 - measured running-script geometry reaches the real panel and API with the current generation
+  ---
+  duration_ms: 720.101265
+  type: 'test'
+  ...
+# Subtest: identical 96x32 geometry never resizes a nonrunning run
+ok 52 - identical 96x32 geometry never resizes a nonrunning run
+  ---
+  duration_ms: 844.156292
+  type: 'test'
+  ...
+# Subtest: running without a generation does not send unqualified geometry
+ok 53 - running without a generation does not send unqualified geometry
+  ---
+  duration_ms: 118.178396
+  type: 'test'
+  ...
+# Subtest: same mounted screen disables resize on stop and sends measured geometry to a replacement generation
+ok 54 - same mounted screen disables resize on stop and sends measured geometry to a replacement generation
+  ---
+  duration_ms: 132.544477
+  type: 'test'
+  ...
+# Subtest: workspace replacement never retargets a disposed terminal
+ok 55 - workspace replacement never retargets a disposed terminal
+  ---
+  duration_ms: 167.404145
+  type: 'test'
+  ...
+# Subtest: a hidden zero-size host does not emit backend geometry and reveal uses its measured size
+ok 56 - a hidden zero-size host does not emit backend geometry and reveal uses its measured size
+  ---
+  duration_ms: 115.645957
+  type: 'test'
+  ...
+# Subtest: setup output fits locally without resizing a run-script PTY
+ok 57 - setup output fits locally without resizing a run-script PTY
+  ---
+  duration_ms: 125.825817
+  type: 'test'
+  ...
+# Subtest: unmount disposes geometry subscriptions without altering output bytes
+ok 58 - unmount disposes geometry subscriptions without altering output bytes
+  ---
+  duration_ms: 130.340722
+  type: 'test'
+  ...
+# (node:218) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Setup panel hides the previous workspace transcript and status while the new snapshot is pending
+ok 59 - actual Setup panel hides the previous workspace transcript and status while the new snapshot is pending
+  ---
+  duration_ms: 478.474823
+  type: 'test'
+  ...
+# Subtest: actual Setup panel starts a new workspace stream without the previous transcript
+ok 60 - actual Setup panel starts a new workspace stream without the previous transcript
+  ---
+  duration_ms: 158.460965
+  type: 'test'
+  ...
+# Subtest: actual Setup panel ignores an obsolete shared refresh after another workspace has loaded
+ok 61 - actual Setup panel ignores an obsolete shared refresh after another workspace has loaded
+  ---
+  duration_ms: 81.03588
+  type: 'test'
+  ...
+# Subtest: actual Setup panel keeps pending actions scoped to their workspace and request
+ok 62 - actual Setup panel keeps pending actions scoped to their workspace and request
+  ---
+  duration_ms: 105.954487
+  type: 'test'
+  ...
+# Subtest: actual Setup panel keeps the newest same-workspace snapshot
+ok 63 - actual Setup panel keeps the newest same-workspace snapshot
+  ---
+  duration_ms: 103.551547
+  type: 'test'
+  ...
+# Subtest: actual Setup panel keeps the newest same-workspace snapshot after leaving and returning
+ok 64 - actual Setup panel keeps the newest same-workspace snapshot after leaving and returning
+  ---
+  duration_ms: 103.394022
+  type: 'test'
+  ...
+1..64
+# tests 64
+# suites 0
+# pass 64
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15938.888425
