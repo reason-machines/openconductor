@@ -1,0 +1,1 @@
+Hfe=(t,e)=>t.key.kind==="physical"?e.code===t.key.code:Oy(t.key.value,e.key)

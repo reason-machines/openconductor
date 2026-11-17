@@ -11,6 +11,9 @@
 //  - "Want to share scripts with your team? Create a .conductor/settings.toml file" while
 //    no shared settings set any script.
 import { usePendingEdit } from "../../lib/persistence/producer.ts";
+import { useKeybindingOverrides } from "../../keybindings/KeybindingsProvider";
+import { effectiveShortcuts } from "../../keybindings/overrides";
+import { matchesEvent } from "../../keybindings/shortcut";
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { openUrl } from "../../backend";
 import { scriptsConfig } from "../../scripts/api";
@@ -319,6 +322,7 @@ function RunScriptDialog(props: {
   onSave: (form: ScriptForm) => void;
   onDelete: () => void;
 }) {
+  const { overrides } = useKeybindingOverrides();
   const [form, setForm] = useState(props.initial);
   const [shown, setShown] = useState(false);
   useEffect(() => {
@@ -341,7 +345,7 @@ function RunScriptDialog(props: {
           aria-label={title}
           onKeyDown={(e) => {
             if (e.key === "Escape") props.onCancel();
-            if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+            if (effectiveShortcuts("dialog.primaryAction", overrides).some((key) => matchesEvent(key, e.nativeEvent))) {
               e.preventDefault();
               submit();
             }
@@ -373,7 +377,6 @@ function RunScriptDialog(props: {
               value={form.commandLine}
               autoFocus={props.mode === "edit"}
               onChange={(commandLine) => setForm((f) => ({ ...f, commandLine }))}
-              onModEnter={submit}
             />
           </div>
           <div className="repo-dialog-footer">

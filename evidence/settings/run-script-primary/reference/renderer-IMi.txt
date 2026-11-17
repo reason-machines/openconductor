@@ -1,0 +1,1 @@
+function IMi(t,e){const n=fSr(t,{overrides:e}),{key:i,modifiers:r}=n;if(i.kind!=="logical")throw new Error(`CodeMirror command ${t} requires a logical shortcut`);return{key:i,modifiers:r}}
