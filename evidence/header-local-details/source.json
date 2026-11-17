@@ -1,0 +1,857 @@
+{
+  "schema": "openconductor.local-header-details.data-v4",
+  "owner": "Conductor Rebuild / SAME271",
+  "recorded_at_utc": "2026-11-12T14:41:44.665169+00:00",
+  "main": "85194324762be7c00ba8d092c4e00bdb564f1ac4",
+  "branch": "reason/openconductor-sol-home-s-27102e36",
+  "retained_rea_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "target_read_on_mac": {
+    "device_id": "d09524dc-bfc0-4cd6-b578-2bde6c0c7571",
+    "name": "sven m5 max",
+    "app": "/Applications/Conductor.app",
+    "version": "0.87.6",
+    "binary_bytes": 70194640,
+    "binary_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+    "check": "Read-only plist/binary SHA256 on 2026-11-12; no app launch or UI control."
+  },
+  "assets": {
+    "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "spans": [
+    {
+      "symbol": "Ece",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        430756,
+        430811
+      ],
+      "utf16_span": [
+        430752,
+        430807
+      ],
+      "sha256": "57c53308b5217d199e71d99ddb89eed0814e2ada7b5b9047da763ec88fe75665",
+      "bytes": 55,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function Ece(t){return t instanceof Date?t:new Date(t)}"
+    },
+    {
+      "symbol": "Nai",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        428543,
+        429839
+      ],
+      "utf16_span": [
+        428539,
+        429835
+      ],
+      "sha256": "d0f8b76b4b46c8ba52a423f2bd0d4167f40dfb61986ca49208c2a9af2033b94a",
+      "bytes": 1296,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function Nai(t,e,n){const i=Aai(),r=n?.locale??i.locale??Rai,o=2520,a=K4e(t,e);if(isNaN(a))throw new RangeError(\"Invalid time value\");const c=Object.assign({},n,{addSuffix:n?.addSuffix,comparison:a}),[u,d]=dQe(n?.in,...a>0?[e,t]:[t,e]),h=gNr(d,u),m=(NVe(d)-NVe(u))/1e3,g=Math.round((h-m)/60);let _;if(g<2)return n?.includeSeconds?h<5?r.formatDistance(\"lessThanXSeconds\",5,c):h<10?r.formatDistance(\"lessThanXSeconds\",10,c):h<20?r.formatDistance(\"lessThanXSeconds\",20,c):h<40?r.formatDistance(\"halfAMinute\",0,c):h<60?r.formatDistance(\"lessThanXMinutes\",1,c):r.formatDistance(\"xMinutes\",1,c):g===0?r.formatDistance(\"lessThanXMinutes\",1,c):r.formatDistance(\"xMinutes\",g,c);if(g<45)return r.formatDistance(\"xMinutes\",g,c);if(g<90)return r.formatDistance(\"aboutXHours\",1,c);if(g<RVe){const v=Math.round(g/60);return r.formatDistance(\"aboutXHours\",v,c)}else{if(g<o)return r.formatDistance(\"xDays\",1,c);if(g<Uae){const v=Math.round(g/RVe);return r.formatDistance(\"xDays\",v,c)}else if(g<Uae*2)return _=Math.round(g/Uae),r.formatDistance(\"aboutXMonths\",_,c)}if(_=mNr(d,u),_<12){const v=Math.round(g/Uae);return r.formatDistance(\"xMonths\",v,c)}else{const v=_%12,x=Math.trunc(_/12);return v<3?r.formatDistance(\"aboutXYears\",x,c):v<9?r.formatDistance(\"overXYears\",x,c):r.formatDistance(\"almostXYears\",x+1,c)}}"
+    },
+    {
+      "symbol": "SS",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        430811,
+        431488
+      ],
+      "utf16_span": [
+        430807,
+        431484
+      ],
+      "sha256": "021961e1c6ee6e4de1451c9f1f697e1295e43756d37fe970e28bc43e337f9d45",
+      "bytes": 677,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function SS(t,e=Date.now()){if(!t)return\"\";const n=Ece(t);if(!Number.isFinite(n.getTime()))return\"Invalid time\";const i=Ece(e).getTime();return Nai(Math.min(n.getTime(),i),i,{addSuffix:!0}).replace(/ seconds? ago/g,\"s ago\").replace(/ minutes? ago/g,\"m ago\").replace(/ hours? ago/g,\"h ago\").replace(/ days? ago/g,\"d ago\").replace(/ weeks? ago/g,\"w ago\").replace(/ months? ago/g,\"mo ago\").replace(/ years? ago/g,\"y ago\").replace(/about /g,\"\").replace(/less than am ago/g,\"just now\").replace(/a minute ago/g,\"1m ago\").replace(/an hour ago/g,\"1h ago\").replace(/a day ago/g,\"1d ago\").replace(/a week ago/g,\"1w ago\").replace(/a month ago/g,\"1mo ago\").replace(/a year ago/g,\"1y ago\")}"
+    },
+    {
+      "symbol": "Blo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        7411462,
+        7411917
+      ],
+      "utf16_span": [
+        7368412,
+        7368866
+      ],
+      "sha256": "1a4083c2167534335eec5674e51f1255b242021c4b15c3861d1113c05cd1c24c",
+      "bytes": 455,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function Blo(t){const e=ne.c(9),{createdAt:n,creatorUserId:i,trailing:r}=t;let o;e[0]!==i?(o={userId:i},e[0]=i,e[1]=o):o=e[1];const{data:a}=nSe(o),c=a?.name??a?.email;let u;e[2]===Symbol.for(\"react.memo_cache_sentinel\")?(u=p.jsx(bI,{}),e[2]=u):u=e[2];const d=c&&`${c} \u00b7 `;let h;e[3]!==n?(h=SS(n),e[3]=n,e[4]=h):h=e[4];let m;return e[5]!==d||e[6]!==h||e[7]!==r?(m=p.jsxs(qO,{icon:u,label:\"Created\",children:[d,h,r]}),e[5]=d,e[6]=h,e[7]=r,e[8]=m):m=e[8],m}"
+    },
+    {
+      "symbol": "Tai",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        420000,
+        420144
+      ],
+      "utf16_span": [
+        419996,
+        420140
+      ],
+      "sha256": "73a4579ae6806f69dcb7af391c849c17b6097900ea6095ee66ace00e9aedbe83",
+      "bytes": 144,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function Tai(t,e){return typeof t==\"function\"?t(e):t&&typeof t==\"object\"&&CIn in t?t[CIn](e):t instanceof Date?new t.constructor(e):new Date(e)}"
+    },
+    {
+      "symbol": "MH",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        420144,
+        420177
+      ],
+      "utf16_span": [
+        420140,
+        420173
+      ],
+      "sha256": "e4cfb2ac41c33f08f9daef32ecae108e9cf180a9983cf996e97479d25ca9c223",
+      "bytes": 33,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function MH(t,e){return Tai(t,t)}"
+    },
+    {
+      "symbol": "Aai",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        420188,
+        420214
+      ],
+      "utf16_span": [
+        420184,
+        420210
+      ],
+      "sha256": "ecbd4bbb4b77482b717930301c29aceb019787e4a93e94a3495366156d5d74ab",
+      "bytes": 26,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function Aai(){return cNr}"
+    },
+    {
+      "symbol": "NVe",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        420214,
+        420417
+      ],
+      "utf16_span": [
+        420210,
+        420413
+      ],
+      "sha256": "0b2353a64e5f4d32e680cf6bfba47e9d0322de5dd1036a5f0ee24432bd9ae42c",
+      "bytes": 203,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function NVe(t){const e=MH(t),n=new Date(Date.UTC(e.getFullYear(),e.getMonth(),e.getDate(),e.getHours(),e.getMinutes(),e.getSeconds(),e.getMilliseconds()));return n.setUTCFullYear(e.getFullYear()),+t-+n}"
+    },
+    {
+      "symbol": "dQe",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        420417,
+        420510
+      ],
+      "utf16_span": [
+        420413,
+        420506
+      ],
+      "sha256": "aa66742cd334c9ef312904d5b82643fff92652e1247ccc62775527939497260e",
+      "bytes": 93,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function dQe(t,...e){const n=Tai.bind(null,t||e.find(i=>typeof i==\"object\"));return e.map(n)}"
+    },
+    {
+      "symbol": "K4e",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        420510,
+        420572
+      ],
+      "utf16_span": [
+        420506,
+        420568
+      ],
+      "sha256": "142cccd216ac1e75714f4bca2f8d29cad03a93d5f4baa69214a5f38d56774959",
+      "bytes": 62,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function K4e(t,e){const n=+MH(t)-+MH(e);return n<0?-1:n>0?1:n}"
+    },
+    {
+      "symbol": "uNr",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        420572,
+        420694
+      ],
+      "utf16_span": [
+        420568,
+        420690
+      ],
+      "sha256": "6d6dd58c0176065043d6fcfa6bb2fca264ca8a55ad7b6aa6f98e43ecdc41740c",
+      "bytes": 122,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function uNr(t,e,n){const[i,r]=dQe(n?.in,t,e),o=i.getFullYear()-r.getFullYear(),a=i.getMonth()-r.getMonth();return o*12+a}"
+    },
+    {
+      "symbol": "Iai",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        420694,
+        420773
+      ],
+      "utf16_span": [
+        420690,
+        420769
+      ],
+      "sha256": "2451a0c429eeca24a539adfc5b168e141295a7114df2cba00b92b2fa9cf55577",
+      "bytes": 79,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function Iai(t){return e=>{const i=(t?Math[t]:Math.trunc)(e);return i===0?0:i}}"
+    },
+    {
+      "symbol": "dNr",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        420773,
+        420811
+      ],
+      "utf16_span": [
+        420769,
+        420807
+      ],
+      "sha256": "ae4f2151fb0ac510439393099448d17b7a7928dd5cb801ef6cf6d2ace9e98278",
+      "bytes": 38,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function dNr(t,e){return+MH(t)-+MH(e)}"
+    },
+    {
+      "symbol": "fNr",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        420811,
+        420877
+      ],
+      "utf16_span": [
+        420807,
+        420873
+      ],
+      "sha256": "680ea093c2c9f4127370829fbfa99f34e1c1eeb0d22489bbc43011ffbd96f9db",
+      "bytes": 66,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function fNr(t,e){const n=MH(t);return n.setHours(23,59,59,999),n}"
+    },
+    {
+      "symbol": "hNr",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        420877,
+        420995
+      ],
+      "utf16_span": [
+        420873,
+        420991
+      ],
+      "sha256": "f069863958bd8ca7f99e4cc8826526de5b67f5d2bb045b843b84ce5c02c06508",
+      "bytes": 118,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function hNr(t,e){const n=MH(t),i=n.getMonth();return n.setFullYear(n.getFullYear(),i+1,0),n.setHours(23,59,59,999),n}"
+    },
+    {
+      "symbol": "pNr",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        420995,
+        421050
+      ],
+      "utf16_span": [
+        420991,
+        421046
+      ],
+      "sha256": "37a755deb1038e46e8362d5e31bfbc0c5b3470b5554821c2987342ff77cf9879",
+      "bytes": 55,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function pNr(t,e){const n=MH(t);return+fNr(n)==+hNr(n)}"
+    },
+    {
+      "symbol": "mNr",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        421050,
+        421315
+      ],
+      "utf16_span": [
+        421046,
+        421311
+      ],
+      "sha256": "73f25f8c270753760376b52726d39b0347a1202098a94d5787aa873697a44a79",
+      "bytes": 265,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function mNr(t,e,n){const[i,r,o]=dQe(n?.in,t,t,e),a=K4e(r,o),c=Math.abs(uNr(r,o));if(c<1)return 0;r.getMonth()===1&&r.getDate()>27&&r.setDate(30),r.setMonth(r.getMonth()-a*c);let u=K4e(r,o)===-a;pNr(i)&&c===1&&K4e(i,o)===1&&(u=!1);const d=a*(c-+u);return d===0?0:d}"
+    },
+    {
+      "symbol": "gNr",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        421315,
+        421389
+      ],
+      "utf16_span": [
+        421311,
+        421385
+      ],
+      "sha256": "2aa5dbea9826e59ac6abb28c47fd24ffa209531e8adb7e73f393af5d07835091",
+      "bytes": 74,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function gNr(t,e,n){const i=dNr(t,e)/1e3;return Iai(n?.roundingMethod)(i)}"
+    },
+    {
+      "symbol": "ko",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_span": [
+        944324,
+        945545
+      ],
+      "utf16_span": [
+        944310,
+        945531
+      ],
+      "sha256": "e7641330d98aaf13a03c053afb6e193add5bfa56dd54c959968bdfd51587c592",
+      "bytes": 1221,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function ko({cacheKey:t,normalizeInput:e,selector:s,sideEffect:n,memoWith:r}){const i=new WeakMap,o=new Map,a=r??yn;return c=>{function l(u,d){const h=c(),p=typeof u==\"function\",m=p||u===void 0?{}:u,v=p?u:d,_=$e.useRef(void 0),S=$e.useRef(void 0),k=$e.useRef(new Set);let A,I,C;try{const B=e(m);B!==Ga&&(A=B.args,I=t(A))}catch(B){C=an(B)}let R=A;const x=I;if(R!==void 0&&x!==void 0){const B=`${h.cacheKeyPrefix}:${x}`,N=o.get(B);N!==void 0?R=N:o.set(B,R)}const O=a(B=>B),G=B=>{const N=_.current;if(N!==void 0&&Object.is(N.data,B)&&N.selector===v)return N.output;const K=v===void 0?B:v(B),V=O(K);return _.current={data:B,output:V,selector:v},V},Z={data:void 0,error:void 0,isLoading:!0,shouldFetch:!1},re=tt(h.store,yn(B=>R===void 0?Z:RVe(s(B,R),G)));return x!==void 0&&!k.current.has(x)&&(k.current.add(x),S.current=re.error!==void 0?x:void 0),$e.useEffect(()=>{if(R===void 0||x===void 0||n===void 0)return;const B=re.error!==void 0&&S.current===x;if(!re.shouldFetch&&!B)return;B&&(S.current=void 0);let N=i.get(h);N===void 0&&(N=new Set,i.set(h,N)),!N.has(x)&&(N.add(x),Promise.resolve(n(h,R)).catch(()=>{}).finally(()=>{N.delete(x)}).fireAndForget())},[R,x,re.error,re.shouldFetch,h]),Gv(C!==void 0?Mr(C):re)}return l}}"
+    },
+    {
+      "symbol": "RVe",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_span": [
+        944010,
+        944324
+      ],
+      "utf16_span": [
+        943996,
+        944310
+      ],
+      "sha256": "c9a4ef6cdf3c52b75e60009bd98762fa93ca520a7d5001147ef2aeeb9470d049",
+      "bytes": 314,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function RVe(t,e){return t===void 0||t.isLoading?{data:void 0,error:void 0,isLoading:!0,shouldFetch:t===void 0}:t.error!==void 0?{data:void 0,error:t.error,isLoading:!1,shouldFetch:!1}:t.data===void 0?{data:void 0,error:void 0,isLoading:!1,shouldFetch:!1}:{data:e(t.data),error:void 0,isLoading:!1,shouldFetch:!1}}"
+    },
+    {
+      "symbol": "w_",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_span": [
+        862181,
+        865564
+      ],
+      "utf16_span": [
+        862167,
+        865550
+      ],
+      "sha256": "1de40b67162a9c17f06d2f4f067a95406871d85ba820c366824fb688221e8b73",
+      "bytes": 3383,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function w_(t,e,s={}){const n=XKe(e.state),r={rootPath:e.root_path,storageVersion:e.storage_version||1,name:e.repo_name},i=e.secondary_directory_name??e.directory_name,o=t.dependencies.roundhouse.resolveWorkspaceHostingServerUrl(e.hosting_server_url),a=t9e({storedPermissionLevel:e.permission_level,isLocalWorkspace:o===void 0}),c=o===void 0?void 0:e.creator_user_id??void 0;let l,u,d;if(o===void 0)l=e.workspace_path??await aj(t,{localWorkspaceId:e.local_id,workspacePath:await cj(t,r,e.directory_name)}),u=i===e.directory_name?l:await cj(t,r,i);else if(n===\"unstarted\")l=void 0,u=\"\",d=void 0;else if(e.workspace_path===null&&s.resolveMissingRemotePath===!1)l=void 0,u=\"\",d=fP({storedState:e.state,normalizedState:n});else try{l=e.workspace_path??await aj(t,{localWorkspaceId:e.local_id,workspacePath:await t.dependencies.roundhouse.getRemoteWorkspacePath({baseUrl:o,localWorkspaceId:e.local_id})}),u=l,d=fP({storedState:e.state,normalizedState:n,pathResolutionFailed:!1})}catch(m){n!==\"initializing\"&&console.error(`[readWorkspace] failed to resolve remote path for ${e.local_id}:`,m),l=void 0,u=\"\",d=fP({storedState:e.state,normalizedState:n,pathResolutionFailed:!0,pathUnavailable:!0})}const h=e.restricted===null||e.restricted===void 0?void 0:e.restricted===1,p=s9e(e.access_level);return{localId:e.local_id,id:e.id??void 0,repositoryId:e.repository_id,directoryName:i,originalDirectoryName:e.directory_name,workspaceName:e.workspace_name??void 0,workspacePath:l,userVisiblePath:u,remoteState:d,host:IQ({hostingServerUrl:o,vmId:e.local_id}),storedHostingServerUrl:e.hosting_server_url??void 0,sandboxProvider:e9e(e.sandbox_provider),number:e.number??void 0,orgId:e.organization_id??void 0,workspaceTemplateId:e.workspace_template_id??void 0,isComputerAdmin:e.is_computer_admin===1,description:e.description??void 0,permissionLevel:a,access:h===void 0||p===void 0?void 0:h?{restricted:!0,userPermission:p}:void 0,sharedWithMe:c!==void 0&&s.currentUserId!==void 0&&c!==s.currentUserId,creatorUserId:c,assigneeUserId:e.assignee_user_id??void 0,watcherUserIds:zne({localWorkspaceId:e.local_id,value:e.watcher_user_ids}),state:n,remoteFileSyncEnabled:e.remote_file_sync_enabled===1,portForwardingEnabled:e.port_forwarding_enabled===1,autoForwardEnabled:e.auto_forward_enabled===1,createdByThisClient:e.creator_client_id!=null&&s.currentClientId!==void 0&&e.creator_client_id===s.currentClientId,activeSessionId:e.active_session_id??void 0,branch:e.branch??void 0,placeholderBranchName:e.placeholder_branch_name??void 0,userSetWorkspaceName:e.user_set_workspace_name===1,userSetBranchName:e.user_set_branch_name===1,initializationParentBranch:e.initialization_parent_branch??void 0,intendedTargetBranch:e.intended_target_branch??\"main\",unread:e.unread===1,notes:e.notes??void 0,setupLogPath:e.setup_log_path??void 0,initializationLogPath:e.initialization_log_path??void 0,initializationFilesCopied:e.initialization_files_copied??null,pinnedAt:e.pinned_at?Ys(e.pinned_at):void 0,linkedLocalWorkspaceIds:e.linked_workspace_ids?JSON.parse(e.linked_workspace_ids):[],linkedDirectoryPaths:e.linked_directory_paths?JSON.parse(e.linked_directory_paths):[],manualStatus:ZKe(e.manual_status),derivedStatus:QKe(e.derived_status)??Gne,archiveCommit:e.archive_commit??void 0,prTitle:e.pr_title??void 0,prDescription:e.pr_description??void 0,createdAt:Ys(e.created_at),updatedAt:Ys(e.updated_at)}}"
+    },
+    {
+      "symbol": "Ys",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_span": [
+        179856,
+        179895
+      ],
+      "utf16_span": [
+        179856,
+        179895
+      ],
+      "sha256": "0fe5d0581a699d8309a115759be24088a1a0b6fd49778882c839c773a0cc1d5d",
+      "bytes": 39,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "function Ys(t){return HMe(t).getTime()}"
+    },
+    {
+      "symbol": "creator-import",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        55067,
+        55076
+      ],
+      "utf16_span": [
+        55067,
+        55076
+      ],
+      "sha256": "2fb8f421e52eaa03b0d30b517560d1c60bcaeb6464145c981afe1bd3dd5c5f4e",
+      "bytes": 9,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "cC as nSe"
+    },
+    {
+      "symbol": "creator-export",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_span": [
+        3481444,
+        3481453
+      ],
+      "utf16_span": [
+        3480908,
+        3480917
+      ],
+      "sha256": "de7f00fb77405b20f50b56ebe42d38fccbb052d768e5814382083a7d2805a201",
+      "bytes": 9,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "rKt as cC"
+    },
+    {
+      "symbol": "creator-endpoint-binding",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_span": [
+        3071831,
+        3071867
+      ],
+      "utf16_span": [
+        3071337,
+        3071373
+      ],
+      "sha256": "cf0cba40010857e19e6ebd2370dd99cdb48959d7bac957ef04414686d2c5414a",
+      "bytes": 36,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "let Et=Xc.user;const rKt=PVe(()=>Et)"
+    },
+    {
+      "symbol": "creator-query-binding",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_span": [
+        945929,
+        946095
+      ],
+      "utf16_span": [
+        945915,
+        946081
+      ],
+      "sha256": "74b676980a37359d7498083c55d1ad11c07177b6c35121c8d5b160b5023f3111",
+      "bytes": 166,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "PVe=ko({cacheKey:({userId:t})=>`user-profile:${t}`,normalizeInput:({userId:t})=>t===void 0?Ga:{args:{userId:t}},selector:xVe,sideEffect:(t,{userId:e})=>t.getUser(e)})"
+    },
+    {
+      "symbol": "formatter-constants",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        419945,
+        419963
+      ],
+      "utf16_span": [
+        419941,
+        419959
+      ],
+      "sha256": "bf411b07b2966a4402ea8ea52a478b2d2cfbdee030cf85ac8056c3a6f4528842",
+      "bytes": 18,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "Uae=43200,RVe=1440"
+    },
+    {
+      "symbol": "formatter-locale",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        428399,
+        428435
+      ],
+      "utf16_span": [
+        428395,
+        428431
+      ],
+      "sha256": "f78841253c1868c390c92868c82859d5ae78eb69a5073bccfea9d186b85b1ac9",
+      "bytes": 36,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "Rai={code:\"en-US\",formatDistance:_Nr"
+    },
+    {
+      "symbol": "formatter-options-default",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        420177,
+        420188
+      ],
+      "utf16_span": [
+        420173,
+        420184
+      ],
+      "sha256": "92dff6ff8b74ed08f6f407c5f7896e81d2985dee97a69410066d3abe12874525",
+      "bytes": 11,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "let cNr={};"
+    },
+    {
+      "symbol": "creator-not-ready",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_span": [
+        943991,
+        944009
+      ],
+      "utf16_span": [
+        943977,
+        943995
+      ],
+      "sha256": "907f3866af46afa51f6862539a431a16ca87a6a6b1e97ff57b3d2b0a78946e63",
+      "bytes": 18,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "Ga=\"inputNotReady\""
+    },
+    {
+      "symbol": "creator-selector",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_span": [
+        945667,
+        945928
+      ],
+      "utf16_span": [
+        945653,
+        945914
+      ],
+      "sha256": "ef391f1db95712fe049c0c2f952fa5253c0e5c9678bc08c7668328eb8ca7533a",
+      "bytes": 261,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "xVe=(t,{userId:e})=>{if(t.isLoading)return tr();const s=t.usersById[e];if(s!==void 0)return dt(s);if(t.data===void 0)return dt(void 0);if(t.organizationMembersError!==void 0)return Mr(TVe(t.organizationMembersError));if(t.organizationMembersLoading)return tr()}"
+    },
+    {
+      "symbol": "formatter-english-distance",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_span": [
+        422304,
+        422488
+      ],
+      "utf16_span": [
+        422300,
+        422484
+      ],
+      "sha256": "e96a22a688f8400b99b64bcd315fefde6d3797112eceb4d41aaf4c9d4fd55263",
+      "bytes": 184,
+      "extraction": "Static balanced-body slice; not a JS parser or execution.",
+      "source": "_Nr=(t,e,n)=>{let i;const r=bNr[t];return typeof r==\"string\"?i=r:e===1?i=r.one:i=r.other.replace(\"{{count}}\",e.toString()),n?.addSuffix?n.comparison&&n.comparison>0?\"in \"+i:i+\" ago\":i}"
+    }
+  ],
+  "current_main_source_pins": {
+    "src/components/WorkspaceNameHeader.tsx": {
+      "sha256": "f3d487eb9e62229e6e5d03595a7f19ab9b69b60374bd9bf9f64ccc3560dd31dc",
+      "blob": "4d53de21bef0612f4c9d4f3ad42e9e089226c277"
+    },
+    "src/components/WorkspaceView.tsx": {
+      "sha256": "1f3029701b12d364024271fab334e799a79fd334848596b892ea9e8ee7d7f28a",
+      "blob": "3b4ad493285278b394b7cbaf26d4c6e60ae33c8e"
+    },
+    "src/home/dashboard.ts": {
+      "sha256": "963c3d49ca36e6110e33ca3c188ace8f80752b6c8b56435938dcfe405fcc1a91",
+      "blob": "53780784e5cd5e7187a6e406d38cfb8c5b346671"
+    },
+    "src/home/allWorkspaces.ts": {
+      "sha256": "1e61745c734863bc7930b7dc5f230729170f5b62590b1a0fc356ee86b3e2b350",
+      "blob": "d666476f788a3384fe4c84c1dfe7a17770b4a8ce"
+    },
+    "src/state/types.ts": {
+      "sha256": "fd8bf53604cc4aa6881cc4a1dae0763dae6ac5ff4ff0fc83ac1b2d18f762ea55",
+      "blob": "135456272213357a638a0b42bf865e8651eb1a66"
+    },
+    "src/state/persisted.ts": {
+      "sha256": "7a83f188ae1d5f7a375352feca0831d017a86472ae8048df40a93e38f6dc9209",
+      "blob": "bca4117e48fee8b0fa49f7818b2396dad877098e"
+    },
+    "src/components/WorkspaceContextMenu.tsx": {
+      "sha256": "b6996128b229fb889cb3b2bd206a6ab1b6d9d58d7d373cf6710abab92c4c33ab",
+      "blob": "8ef7fa4163443119911f575e340328044fd7206a"
+    },
+    "src/components/RenameWorkspaceDialog.tsx": {
+      "sha256": "7ef8ae1a2ffcb1286bd0d9050d8ef063ccbd363abf27cd392bf970c12a99c5cc",
+      "blob": "77e7673e0b5fda8d2b52813a8b25ecc73487a3a5"
+    },
+    "package.json": {
+      "sha256": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+      "blob": "34bdfad366d573840752bfd2f3b4ac9901182540"
+    },
+    "package-lock.json": {
+      "sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+      "blob": "1bed55d1ec28ba75431ffc8074b9a86471c01815"
+    }
+  },
+  "static_checks": {
+    "local-creator-omitted": true,
+    "native-created-time": true,
+    "creator-import-bound": true,
+    "creator-undefined-disables-query": true,
+    "creator-label-name-before-email": true,
+    "falsy-created-time-is-empty": true,
+    "invalid-date-is-labelled": true,
+    "future-time-is-clamped": true,
+    "distance-default-no-seconds": true,
+    "distance-thresholds": true,
+    "distance-timezone-and-months": true,
+    "default-english-locale": true,
+    "month-minute-constants": true,
+    "original-prefix9-unchanged": true,
+    "unmodified-src/home/dashboard.ts": true,
+    "unmodified-src/home/allWorkspaces.ts": true,
+    "unmodified-src/state/types.ts": true,
+    "unmodified-src/state/persisted.ts": true,
+    "unmodified-src/components/WorkspaceContextMenu.tsx": true,
+    "unmodified-src/components/RenameWorkspaceDialog.tsx": true,
+    "unmodified-package.json": true,
+    "unmodified-package-lock.json": true,
+    "frozen-baseline-exact": true,
+    "baseline-details-absent": true,
+    "caller-handoff-only": true
+  },
+  "conclusions": [
+    "Local native workspace construction omits creator identity explicitly. No account/profile API or new persisted identity is needed for this local-only popup.",
+    "Blo uses name, otherwise email, only when a creator profile resolves; neither placeholder nor separator is rendered without a label.",
+    "Reuse existing agoTime for finite valid local timestamps with SS falsy/invalid-range guards. Future-clamping, timezone offsets, rounding thresholds and full-month branches are source-aligned; executable equivalence remains unrun.",
+    "Single repo prop caller handoff stays inside DE6-cleared header range. Existing context actions and rename dialog are reused."
+  ],
+  "ownership": {
+    "ledger": "ddfc6518-d50f-46a6-b83c-c3a18aa07e43",
+    "clearance": "7f3c9092-1271-4932-8f2c-7f86dc6d3186",
+    "caller_owner": "de6c02f4-4880-4a0d-bf8f-9e3954522753",
+    "caller_clearance": "9fb2f185-8c84-4189-87ff-36ccebebf923",
+    "implementation_direction": "dcaa6e78-38bf-4c4d-8a00-c8c37ae600e3 / 62f4f42c-e441-476f-8cd6-af348cddc077",
+    "no_competing_owner": "ledger r926 / b7f28350-c409-4d8b-a5fc-78e6e22224a4"
+  },
+  "unchanged_frozen_inputs": {
+    "Prefix9": "894e0f32379cf3bade2d18f7b04b373ff62eab3a002dbeec8f05be1dff8bc3ce",
+    "Title4": "Separate follow-on; no product writes/fixture substitution in this change."
+  },
+  "verification_limits": [
+    "Static source/data qualification only at this checkpoint. No local Node, tests, typecheck, install, build, server, browser or native execution.",
+    "Mounted regression mocks popover transport and fixes the age helper clock; it does not prove native pixels, actual Base UI focus, touch or nested-menu dismissal.",
+    "Real app binary identity is rechecked, but retained JS extraction was not rerun; statements about source are not live behavior observations.",
+    "Excluded from unchanged #992 release cut. Package/native consumption belongs to existing release owner."
+  ],
+  "retained_popup_source": {
+    "main": "869d6efad0cdeb6a889538978f3e6416f0e3a2c2",
+    "spans": [
+      {
+        "symbol": "s8i",
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8_span": [
+          7400982,
+          7402380
+        ],
+        "utf16_span": [
+          7357934,
+          7359332
+        ],
+        "sha256": "efe8947600e1202a110410668db754764d881d52c2b1222cde5972a222c5fbfb",
+        "source": "function s8i(t){const e=ne.c(27),{localWorkspaceId:n}=t;let i;e[0]!==n?(i={localWorkspaceId:n},e[0]=n,e[1]=i):i=e[1];const{data:r}=Ms(i),o=pI(r??void 0),a=mI(),c=r?.repositoryId;let u;e[2]!==c?(u={repoId:c},e[2]=c,e[3]=u):u=e[3];const{data:d}=Y1(u),{organization:h}=so(),m=h===void 0?void 0:fc(h),{data:g}=EDt(),_=m===\"cloud\",v=r?.userSetWorkspaceName,x=r?.workspaceName,w=r?.directoryName,E=r?.prTitle,k=r?.intendedTargetBranch,I=r?.host;let R;e[4]!==o||e[5]!==a||e[6]!==v||e[7]!==x||e[8]!==w||e[9]!==E||e[10]!==k||e[11]!==I?(R=$V({userSetWorkspaceName:v,workspaceName:x,directoryName:w,prTitle:E,branch:o,branchPrefix:a,targetBranch:k,host:I}),e[4]=o,e[5]=a,e[6]=v,e[7]=x,e[8]=w,e[9]=E,e[10]=k,e[11]=I,e[12]=R):R=e[12];const O=R;let D;e[13]!==a||e[14]!==O||e[15]!==r?(D=O??(r?.placeholderBranchName?pGe({branch:r.placeholderBranchName,branchPrefix:a}):void 0),e[13]=a,e[14]=O,e[15]=r,e[16]=D):D=e[16];const P=D;if(!r)return null;if(r.host!==gn){const B=h===void 0?void 0:pPt({workspace:r,organizationHostingMode:m,legacyCloudWorkspaceWriteAccessEnabled:g});let F;return e[17]!==P||e[18]!==_||e[19]!==d||e[20]!==B||e[21]!==r?(F=p.jsx(Mlo,{workspace:r,repo:d,displayName:P,isCloudOrg:_,surfaceMode:B}),e[17]=P,e[18]=_,e[19]=d,e[20]=B,e[21]=r,e[22]=F):F=e[22],F}let L;return e[23]!==P||e[24]!==d||e[25]!==r?(L=p.jsx(Llo,{workspace:r,repo:d,displayName:P}),e[23]=P,e[24]=d,e[25]=r,e[26]=L):L=e[26],L}"
+      },
+      {
+        "symbol": "Llo",
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8_span": [
+          7403205,
+          7404470
+        ],
+        "utf16_span": [
+          7360157,
+          7361422
+        ],
+        "sha256": "67acfd9eb4a2c32287e6b5862b834805a71632df62d75d82d2bb0298f36b54cd",
+        "source": "function Llo(t){const e=ne.c(19),{workspace:n,repo:i,displayName:r}=t,[o,a]=$.useState(!1),c=$.useRef(null),{container:u,positionMethod:d}=hc();zf(o);let h;e[0]!==r?(h=p.jsx(\"span\",{className:\"block min-w-0 truncate text-xs font-medium\",children:r}),e[0]=r,e[1]=h):h=e[1];let m;e[2]!==h||e[3]!==n.localId?(m=p.jsx(o8i,{localWorkspaceId:n.localId,bare:!1,children:h}),e[2]=h,e[3]=n.localId,e[4]=m):m=e[4];let g;e[5]!==r||e[6]!==i||e[7]!==n?(g=p.jsx(E1,{ref:c,initialFocus:c,className:\"w-72 space-y-1 rounded-lg ring-1 ring-popover-ring bg-popover p-4 text-popover-foreground shadow-md outline-none origin-(--transform-origin) data-[starting-style]:opacity-0 data-[starting-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:scale-95 transition-[opacity,scale] duration-100\",children:p.jsx(a8i,{workspace:n,displayName:r,repo:i})}),e[5]=r,e[6]=i,e[7]=n,e[8]=g):g=e[8];let _;e[9]!==d||e[10]!==g?(_=p.jsx(S1,{className:\"z-50\",align:\"start\",sideOffset:4,positionMethod:d,children:g}),e[9]=d,e[10]=g,e[11]=_):_=e[11];let v;e[12]!==u||e[13]!==_?(v=p.jsx(w1,{container:u,children:_}),e[12]=u,e[13]=_,e[14]=v):v=e[14];let x;return e[15]!==o||e[16]!==m||e[17]!==v?(x=p.jsxs(X1,{open:o,onOpenChange:a,children:[m,v]}),e[15]=o,e[16]=m,e[17]=v,e[18]=x):x=e[18],x}"
+      },
+      {
+        "symbol": "o8i",
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8_span": [
+          7402380,
+          7403205
+        ],
+        "utf16_span": [
+          7359332,
+          7360157
+        ],
+        "sha256": "8f6d1b8893e9df53e311d5f0ef616f0761a5d3ecc40dfd27012356662e4dd3ea",
+        "source": "function o8i(t){const e=ne.c(11),{localWorkspaceId:n,ariaLabel:i,bare:r,children:o}=t,a=r?\"rounded-sm text-foreground\":\"rounded-md border border-input bg-background text-muted-foreground\";let c;e[0]!==a?(c=Xe(\"mx-1 flex h-6 min-w-0 cursor-pointer items-center px-1.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring hover:bg-accent hover:text-foreground\",a),e[0]=a,e[1]=c):c=e[1];let u;e[2]!==i||e[3]!==o||e[4]!==c?(u=p.jsx(ch,{nativeButton:!1,render:p.jsx(SI,{\"aria-label\":i,className:c,children:o})}),e[2]=i,e[3]=o,e[4]=c,e[5]=u):u=e[5];let d;e[6]!==n?(d=p.jsx(g2,{children:p.jsx(b2,{children:p.jsx(m2,{className:`${my} min-w-[200px]`,children:p.jsx(D9e,{localWorkspaceId:n})})})}),e[6]=n,e[7]=d):d=e[7];let h;return e[8]!==u||e[9]!==d?(h=p.jsxs(wI,{children:[u,d]}),e[8]=u,e[9]=d,e[10]=h):h=e[10],h}"
+      },
+      {
+        "symbol": "a8i",
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8_span": [
+          7408138,
+          7409700
+        ],
+        "utf16_span": [
+          7365088,
+          7366650
+        ],
+        "sha256": "4c66e913d772a730d2cc0752e8d7b206c6c9e9f578aec45d9bfb2b2c711ed5fa",
+        "source": "function a8i(t){const e=ne.c(30),{workspace:n,displayName:i,repo:r}=t,a=Ld(n.localId)!==\"read\",c=n.host!==gn;let u;e[0]!==i?(u=p.jsx(\"div\",{className:\"min-w-0 flex-1 break-words text-sm font-medium leading-snug\",children:i}),e[0]=i,e[1]=u):u=e[1];let d;e[2]!==a||e[3]!==n.localId?(d=a&&p.jsxs(Jn,{children:[p.jsx(Xn,{asChild:!0,children:p.jsx(tt,{variant:\"ghost\",size:\"iconXs\",\"aria-label\":\"Rename workspace\",className:\"shrink-0\",onClick:()=>{nr.openDialog(sJ,{localWorkspaceId:n.localId})},children:p.jsx(Cm,{className:\"size-3\"})})}),p.jsx(ni,{children:\"Rename\"})]}),e[2]=a,e[3]=n.localId,e[4]=d):d=e[4];let h;e[5]!==n.localId?(h=p.jsx(jlo,{localWorkspaceId:n.localId}),e[5]=n.localId,e[6]=h):h=e[6];let m;e[7]!==u||e[8]!==d||e[9]!==h?(m=p.jsxs(\"div\",{className:\"flex items-center gap-1\",children:[u,d,h]}),e[7]=u,e[8]=d,e[9]=h,e[10]=m):m=e[10];let g;e[11]!==r?(g=r&&p.jsx(Flo,{repo:r}),e[11]=r,e[12]=g):g=e[12];let _;e[13]!==n.createdAt||e[14]!==n.creatorUserId?(_=n.createdAt!==void 0&&p.jsx(Blo,{createdAt:n.createdAt,creatorUserId:n.creatorUserId}),e[13]=n.createdAt,e[14]=n.creatorUserId,e[15]=_):_=e[15];let v;e[16]!==c||e[17]!==n?(v=c&&p.jsx($lo,{workspace:n}),e[16]=c,e[17]=n,e[18]=v):v=e[18];let x;e[19]!==c||e[20]!==n?(x=c&&p.jsx(zlo,{workspace:n}),e[19]=c,e[20]=n,e[21]=x):x=e[21];let w;e[22]!==g||e[23]!==_||e[24]!==v||e[25]!==x?(w=p.jsxs(JCi,{children:[g,_,v,x]}),e[22]=g,e[23]=_,e[24]=v,e[25]=x,e[26]=w):w=e[26];let E;return e[27]!==m||e[28]!==w?(E=p.jsxs(\"div\",{className:\"flex flex-col gap-3\",children:[m,w]}),e[27]=m,e[28]=w,e[29]=E):E=e[29],E}"
+      },
+      {
+        "symbol": "jlo",
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8_span": [
+          7409700,
+          7410512
+        ],
+        "utf16_span": [
+          7366650,
+          7367462
+        ],
+        "sha256": "c94eb935720aff9e9756799274e46108436a87de38661169b3034e2bda6be2e4",
+        "source": "function jlo(t){const e=ne.c(9),{localWorkspaceId:n}=t,{container:i,positionMethod:r}=hc();let o;e[0]===Symbol.for(\"react.memo_cache_sentinel\")?(o=p.jsxs(Jn,{children:[p.jsx(Xn,{asChild:!0,children:p.jsx(Ede,{render:p.jsx(tt,{variant:\"ghost\",size:\"iconXs\",\"aria-label\":\"Workspace actions\",className:\"shrink-0\"}),children:p.jsx(iD,{className:\"size-3.5\"})})}),p.jsx(ni,{children:\"Workspace actions\"})]}),e[0]=o):o=e[0];let a;e[1]!==n?(a=p.jsx(m2,{className:`${my} min-w-[200px]`,children:p.jsx(D9e,{localWorkspaceId:n})}),e[1]=n,e[2]=a):a=e[2];let c;e[3]!==r||e[4]!==a?(c=p.jsx(b2,{className:\"z-[51]\",align:\"start\",sideOffset:4,positionMethod:r,children:a}),e[3]=r,e[4]=a,e[5]=c):c=e[5];let u;return e[6]!==i||e[7]!==c?(u=p.jsxs(oF,{children:[o,p.jsx(g2,{container:i,children:c})]}),e[6]=i,e[7]=c,e[8]=u):u=e[8],u}"
+      },
+      {
+        "symbol": "Flo",
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8_span": [
+          7410512,
+          7411462
+        ],
+        "utf16_span": [
+          7367462,
+          7368412
+        ],
+        "sha256": "ef06556344296ed88e24402402ad594588c55606856243b8757df95c4479926d",
+        "source": "function Flo(t){const e=ne.c(15),{repo:n}=t;let i;e[0]!==n.remoteUrl?(i=K9i(n.remoteUrl),e[0]=n.remoteUrl,e[1]=i):i=e[1];const r=i;let o;e[2]===Symbol.for(\"react.memo_cache_sentinel\")?(o=p.jsx(VLt,{}),e[2]=o):o=e[2];let a;e[3]!==r?(a=r&&p.jsxs(Jn,{children:[p.jsx(Xn,{asChild:!0,children:p.jsx(tt,{variant:\"ghost\",size:\"iconXs\",\"aria-label\":\"Open on GitHub\",onClick:()=>{vs(r).fireAndForget()},children:p.jsx(co,{className:\"size-3.5\"})})}),p.jsx(ni,{children:\"Open on GitHub\"})]}),e[3]=r,e[4]=a):a=e[4];let c;e[5]!==n?(c=p.jsx(U9,{repository:n}),e[5]=n,e[6]=c):c=e[6];let u;e[7]!==n.name?(u=p.jsx(\"span\",{className:\"min-w-0 truncate\",children:n.name}),e[7]=n.name,e[8]=u):u=e[8];let d;e[9]!==c||e[10]!==u?(d=p.jsxs(\"span\",{className:\"flex min-w-0 items-center gap-1.5\",children:[c,u]}),e[9]=c,e[10]=u,e[11]=d):d=e[11];let h;return e[12]!==a||e[13]!==d?(h=p.jsx(qO,{icon:o,label:\"Repository\",trailing:a,children:d}),e[12]=a,e[13]=d,e[14]=h):h=e[14],h}"
+      },
+      {
+        "symbol": "Blo",
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8_span": [
+          7411462,
+          7411917
+        ],
+        "utf16_span": [
+          7368412,
+          7368866
+        ],
+        "sha256": "1a4083c2167534335eec5674e51f1255b242021c4b15c3861d1113c05cd1c24c",
+        "source": "function Blo(t){const e=ne.c(9),{createdAt:n,creatorUserId:i,trailing:r}=t;let o;e[0]!==i?(o={userId:i},e[0]=i,e[1]=o):o=e[1];const{data:a}=nSe(o),c=a?.name??a?.email;let u;e[2]===Symbol.for(\"react.memo_cache_sentinel\")?(u=p.jsx(bI,{}),e[2]=u):u=e[2];const d=c&&`${c} \u00b7 `;let h;e[3]!==n?(h=SS(n),e[3]=n,e[4]=h):h=e[4];let m;return e[5]!==d||e[6]!==h||e[7]!==r?(m=p.jsxs(qO,{icon:u,label:\"Created\",children:[d,h,r]}),e[5]=d,e[6]=h,e[7]=r,e[8]=m):m=e[8],m}"
+      },
+      {
+        "symbol": "X1",
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8_span": [
+          2128438,
+          2128531
+        ],
+        "utf16_span": [
+          2128041,
+          2128134
+        ],
+        "sha256": "ebb9439e92465408584058b54de60eac1ff583bfb0f9105a992b5ebef502ab44",
+        "source": "function X1(t){return xI(!0)?p.jsx(hLn,{props:t}):p.jsx(mLt,{children:p.jsx(hLn,{props:t})})}"
+      },
+      {
+        "symbol": "cde",
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8_span": [
+          476886,
+          478101
+        ],
+        "utf16_span": [
+          476882,
+          478097
+        ],
+        "sha256": "f0c5759edb6750dc7a69f54fb5777dfcb15919a36aec01f0ee85d20bd1d1c499",
+        "source": "function cde(t,e={}){const{enabled:n=!0,event:i=\"click\",toggle:r=!0,ignoreMouse:o=!1,stickIfOpen:a=!0,touchOpenDelay:c=0,reason:u=JA}=e,d=\"rootStore\"in t?t.rootStore:t,h=d.context.dataRef,m=$.useRef(void 0),g=Mj(),_=b0(),v=$.useMemo(()=>{function x(E,k,I,R){const O=Ys(u,k,I);E&&R===\"touch\"&&c>0?_.start(c,()=>{d.setOpen(!0,O)}):d.setOpen(E,O)}function w(E,k,I){const R=h.current.openEvent,O=d.select(\"domReferenceElement\")!==k;return E&&O||!E||!r?!0:R&&a?!I(R.type):!1}return{onPointerDown(E){m.current=cH(E.pointerType,!0)&&GPt(E.nativeEvent)?\"virtual\":E.pointerType},onMouseDown(E){const k=m.current,I=E.nativeEvent,R=d.select(\"open\");if(E.button!==0||i===\"click\"||cH(k,!0)&&o)return;const O=w(R,E.currentTarget,L=>L===\"click\"||L===\"mousedown\"),D=jf(I);if(vQe(D)){x(O,I,D,k);return}const P=E.currentTarget;g.request(()=>{x(O,I,P,k)})},onClick(E){if(i===\"mousedown-only\")return;const k=m.current;if(i===\"mousedown\"&&k){m.current=void 0;return}if(cH(k,!0)&&o)return;const I=d.select(\"open\"),R=w(I,E.currentTarget,O=>O===\"click\"||O===\"mousedown\"||O===\"keydown\"||O===\"keyup\");x(R,E.nativeEvent,E.currentTarget,k)},onKeyDown(){m.current=void 0}}},[h,i,o,u,d,a,r,g,_,c]);return $.useMemo(()=>n?{reference:v}:pf,[n,v])}"
+      },
+      {
+        "symbol": "SS",
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8_span": [
+          430811,
+          431488
+        ],
+        "utf16_span": [
+          430807,
+          431484
+        ],
+        "sha256": "021961e1c6ee6e4de1451c9f1f697e1295e43756d37fe970e28bc43e337f9d45",
+        "source": "function SS(t,e=Date.now()){if(!t)return\"\";const n=Ece(t);if(!Number.isFinite(n.getTime()))return\"Invalid time\";const i=Ece(e).getTime();return Nai(Math.min(n.getTime(),i),i,{addSuffix:!0}).replace(/ seconds? ago/g,\"s ago\").replace(/ minutes? ago/g,\"m ago\").replace(/ hours? ago/g,\"h ago\").replace(/ days? ago/g,\"d ago\").replace(/ weeks? ago/g,\"w ago\").replace(/ months? ago/g,\"mo ago\").replace(/ years? ago/g,\"y ago\").replace(/about /g,\"\").replace(/less than am ago/g,\"just now\").replace(/a minute ago/g,\"1m ago\").replace(/an hour ago/g,\"1h ago\").replace(/a day ago/g,\"1d ago\").replace(/a week ago/g,\"1w ago\").replace(/a month ago/g,\"1mo ago\").replace(/a year ago/g,\"1y ago\")}"
+      },
+      {
+        "symbol": "ch popover trigger",
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8_span": [
+          2128943,
+          2130454
+        ],
+        "utf16_span": [
+          2128546,
+          2130057
+        ],
+        "sha256": "0b442f804e7f28bbfe0787325db2ebb232b53581e2df912d07a27887fb3bb711",
+        "source": "ch=$.forwardRef(function(e,n){const{render:i,className:r,style:o,disabled:a=!1,nativeButton:c=!0,handle:u,payload:d,openOnHover:h=!1,delay:m=mcs,closeDelay:g=0,id:_,...v}=e,x=xI(!0),E=tEe(u)??x;if(!E)throw new Error(jl(74));const k=Ff(_),I=E.useState(\"isTriggerActive\",k),R=E.useState(\"floatingRootContext\"),O=E.useState(\"isOpenedByTrigger\",k),D=E.useState(\"triggerPopupId\",k),P=$.useRef(null),{registerTrigger:L,isMountedByThisTrigger:B}=YSe(k,P,E,{payload:d,disabled:a,openOnHover:h,closeDelay:g}),F=E.useState(\"openChangeReason\"),H=E.useState(\"stickIfOpen\"),U=E.useState(\"openMethod\"),z=E.useState(\"focusManagerModal\"),G=nEe(R,{enabled:!a&&h&&(U!==\"touch\"||F!==JA),mouseOnly:!0,move:!1,handleClose:iEe(),restMs:m,delay:{close:g},triggerElementRef:P,isActiveTrigger:I,isClosing:()=>E.select(\"transitionStatus\")===\"ending\"}),K=cde(R,{stickIfOpen:H}),X=pMt(()=>E.select(\"open\"),be=>{E.set(\"openMethod\",be)}),Q=E.useState(\"triggerProps\",B),{getButtonProps:J,buttonRef:te}=O6({disabled:a,native:c}),Z={open(be){return be&&F===JA?Rce.open(be):dde.open(be)}},{preFocusGuardRef:se,handlePreFocusGuardFocus:ce,handleFocusTargetFocus:ae}=C0i(E,P),ue=Es(\"button\",e,{state:{disabled:a,open:O},ref:[te,n,L,P],props:[K.reference,G,Q,X,{[dLt]:\"\",id:k,\"aria-haspopup\":\"dialog\",\"aria-expanded\":O,\"aria-controls\":D},v,J],stateAttributesMapping:Z}),pe=p.jsx($.Fragment,{children:ue},k);return B&&!z?p.jsxs($.Fragment,{children:[p.jsx(jj,{ref:se,onFocus:ce}),pe,p.jsx(jj,{ref:E.context.triggerFocusTargetRef,onFocus:ae})]}):pe})"
+      },
+      {
+        "symbol": "gn import",
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8_span": [
+          53400,
+          53407
+        ],
+        "utf16_span": [
+          53400,
+          53407
+        ],
+        "sha256": "08377cc9d3d8483681a7eb6782cc8c6dbda3f59688730022a7a754022f3a545b",
+        "source": "V as gn"
+      },
+      {
+        "symbol": "gn export",
+        "asset": "index-BGEQ8YjU.js",
+        "utf8_span": [
+          3480033,
+          3480040
+        ],
+        "utf16_span": [
+          3479497,
+          3479504
+        ],
+        "sha256": "a39cbff262995f9ce196a882264865d55d9147f634e6baa6af54ede8a69015fa",
+        "source": "M as V,"
+      },
+      {
+        "symbol": "local host identity",
+        "asset": "index-BGEQ8YjU.js",
+        "utf8_span": [
+          2486,
+          2518
+        ],
+        "utf16_span": [
+          2486,
+          2518
+        ],
+        "sha256": "c6c2c126b133e40e2a7003c126515c141155ce965b7ffda0e359fea30c7a2a5b",
+        "source": "M={hostingServerUrl:I0e,vmId:\"\"}"
+      }
+    ]
+  },
+  "retained_focus_source": {
+    "main": "869d6efad0cdeb6a889538978f3e6416f0e3a2c2",
+    "static_checks": {
+      "local-controlled-root": true,
+      "root-nonmodal-default": true,
+      "popup-explicit-initial-focus": true,
+      "focus-ref-used-without-default-override": true,
+      "ref-resolution": true,
+      "popup-role-and-focusable": true,
+      "nonmodal-not-trap": true,
+      "nonmodal-dismiss-policy": true,
+      "escape-enabled-by-default": true,
+      "escape-composition-and-nesting-guards": true,
+      "escape-closes": true,
+      "outside-click-path": true,
+      "inside-popup-trigger-nested-exemptions": true,
+      "nonmodal-focusout-default": true,
+      "focusout-does-not-force-refocus": true,
+      "return-focus-default-not-unconditional": true,
+      "portal-mounted-only": true,
+      "portal-root-resolves-container-parent-body": true,
+      "content-portalled": true,
+      "context-container-implies-fixed": true,
+      "nested-layer-is-not-new-modality": true,
+      "trigger-is-composed-contextmenu": true,
+      "trigger-nonnative-button-semantics": true
+    }
+  }
+}

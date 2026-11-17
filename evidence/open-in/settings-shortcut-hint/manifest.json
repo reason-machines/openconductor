@@ -1,0 +1,47 @@
+{
+  "unit": "ICON-SETTINGS-SHORTCUT-HINT-15",
+  "status": "REGRESSION_FIRST_HOSTED_RED_PENDING",
+  "baseline_main": "405c19089cf3549502d9457b2821693bcaef5012",
+  "reference_packet": "evidence/open-in/icon-menu-numbering-caller/manifest.json",
+  "baseline_files": {
+    "src/features/openIn/OpenInButton.tsx": "1602d068126b038a20746bd8f321059d894a5e007d7bbf07df0daac6ed0ea49c",
+    "src/settings/rows/RepoMiscRows.tsx": "f6a1b5607c2c9ae3ffb6c283411516c03ee07f64343554013a876ee6af073a67"
+  },
+  "replacements": {
+    "src/features/openIn/OpenInButton.tsx": [
+      [
+        "variant?: \"split\" | \"icon\";",
+        "variant?: \"split\" | \"icon\";\n  showShortcutHint?: boolean;"
+      ],
+      [
+        "export function OpenInButton({ path, notify, variant = \"split\" }: Props)",
+        "export function OpenInButton({ path, notify, variant = \"split\", showShortcutHint = true }: Props)"
+      ],
+      [
+        "{a.id === defaultId && openKeyText && <span",
+        "{showShortcutHint && a.id === defaultId && openKeyText && <span"
+      ]
+    ],
+    "src/settings/rows/RepoMiscRows.tsx": [
+      [
+        "{workspaces && <PathLine path={workspaces} notify={actions.notify} />}",
+        "{workspaces && <PathLine path={workspaces} notify={actions.notify} showShortcutHint={false} />}"
+      ],
+      [
+        "function PathLine({ path, notify }: { path: string; notify: Notify })",
+        "function PathLine({ path, notify, showShortcutHint }: { path: string; notify: Notify; showShortcutHint?: boolean })"
+      ],
+      [
+        "<OpenInButton path={path} notify={notify} variant=\"icon\" />",
+        "<OpenInButton path={path} notify={notify} variant=\"icon\" showShortcutHint={showShortcutHint} />"
+      ]
+    ]
+  },
+  "regression_file": "src/features/openIn/settingsShortcutHint.test.ts",
+  "regression_sha256": "91e42404a9307de3ec7b2ece29e1211c1e6a7e66e922ec8574d84eab068050ca",
+  "regression_cases": 9,
+  "predicted_assertion_failures": 3,
+  "predicted_passing_controls": 6,
+  "native_gui": "NOT_RUN",
+  "local_node_rust_browser": "NOT_RUN"
+}

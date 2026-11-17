@@ -2,6 +2,7 @@
 // registry (renderApp-D_fmY7hW.js): Icon, Root path, Workspaces path, Preview
 // URLs, Files to copy, Remove repository. Each row is Conductor's `Al` with
 // its content stacked under the title and description.
+import { usePendingEdit } from "../../lib/persistence/producer.ts";
 import { useEffect, useRef, useState } from "react";
 import { Popover } from "@base-ui/react/popover";
 import type { Repo } from "../../state/types";
@@ -66,7 +67,7 @@ export function RepoMiscRows({ repo, actions }: { repo: Repo; actions: RepoMiscA
         {repo.path ? <PathLine path={repo.path} notify={actions.notify} /> : <span className="muted small">No local checkout</span>}
       </Row>
       <Row label={COPY.workspacesPath.title} help={<Warn text={COPY.workspacesPath.description} />} stacked>
-        {workspaces && <PathLine path={workspaces} notify={actions.notify} />}
+        {workspaces && <PathLine path={workspaces} notify={actions.notify} showShortcutHint={false} />}
       </Row>
       {repo.path && <PreviewUrlsRow repoPath={repo.path} />}
       <FilesToCopyRow repoPath={repo.path || null} />
@@ -85,7 +86,7 @@ function Warn({ text }: { text: string }) {
 }
 
 /** `bj` + `P9` (icon size): the muted directory, the last segment, and the Open in menu. */
-function PathLine({ path, notify }: { path: string; notify: Notify }) {
+function PathLine({ path, notify, showShortcutHint }: { path: string; notify: Notify; showShortcutHint?: boolean }) {
   const { directory, fileName } = splitPath(path);
   return (
     <div className="settings-misc-path" title={path}>
@@ -93,7 +94,7 @@ function PathLine({ path, notify }: { path: string; notify: Notify }) {
         <span className="settings-misc-path-dir">{directory}</span>
         <span className="settings-misc-path-name">{fileName}</span>
       </span>
-      <OpenInButton path={path} notify={notify} variant="icon" />
+      <OpenInButton path={path} notify={notify} variant="icon" showShortcutHint={showShortcutHint} />
     </div>
   );
 }
@@ -124,22 +125,16 @@ function IconRow({ repo, actions }: { repo: Repo; actions: RepoMiscActions }) {
 }
 
 /** Run `fn` `ms` after the last call; `flush` runs a pending call now. */
-function useDebounced<T>(fn: (value: T) => void, ms: number) {
+function useDebounced<T>(fn: (value: T) => Promise<unknown>, ms: number, scope: string) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const pending = useRef<{ value: T } | null>(null);
-  const latest = useRef(fn);
-  latest.current = fn;
-  const flush = () => {
+  const pending = usePendingEdit(scope, fn, () => {
     if (timer.current) clearTimeout(timer.current);
     timer.current = null;
-    const p = pending.current;
-    pending.current = null;
-    if (p) latest.current(p.value);
-  };
-  useEffect(() => flush, []);
+  }, true);
+  const flush = () => pending.flush();
   return {
     call: (value: T) => {
-      pending.current = { value };
+      pending.change(value);
       if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(flush, ms);
     },
@@ -161,11 +156,14 @@ function PreviewUrlsRow({ repoPath }: { repoPath: string }) {
       setRows(previewRows(saved));
     }
   }, [saved]);
-  const save = useDebounced((next: PreviewRow[]) => {
+  const save = useDebounced(async (next: PreviewRow[]) => {
     const value = previewValue(next);
     lastSaved.current = JSON.stringify(value);
-    repoSettingsSetLocal(repoPath, "preview_urls", value).then(notifyRepoSettingsChanged, () => setError("Failed to save preview URLs"));
-  }, 500);
+    await repoSettingsSetLocal(repoPath, "preview_urls", value).then(notifyRepoSettingsChanged, (error) => {
+      setError("Failed to save preview URLs");
+      throw error;
+    });
+  }, 500, `${repoPath}:preview`);
   const update = (next: PreviewRow[]) => {
     const list = next.length > 0 ? next : [emptyPreviewRow()];
     setError(null);
@@ -259,10 +257,13 @@ function FilesToCopyRow({ repoPath }: { repoPath: string | null }) {
       clearTimeout(t);
     };
   }, [repoPath, previewGlobs, refresh]);
-  const save = useDebounced((text: string) => {
-    if (!repoPath) return;
-    repoSettingsSetLocal(repoPath, "file_include_globs", text.trim() ? text : "").then(notifyRepoSettingsChanged, () => setError(COPY.filesToCopy.saveError));
-  }, 1000);
+  const save = useDebounced(async (text: string) => {
+    if (!repoPath) return false;
+    await repoSettingsSetLocal(repoPath, "file_include_globs", text.trim() ? text : "").then(notifyRepoSettingsChanged, (error) => {
+      setError(COPY.filesToCopy.saveError);
+      throw error;
+    });
+  }, 1000, `${repoPath}:files`);
   const help = (
     <>
       {COPY.filesToCopy.description}{" "}

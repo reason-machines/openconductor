@@ -1,0 +1,46 @@
+{
+  "author": "Conductor Rebuild",
+  "main_sha": "5852f41eb4df5c6da9b976d7b8ef830a892aed8d",
+  "current_sources": [
+    {
+      "path": "src/components/CreateProjectDialog.tsx",
+      "bytes": 7489,
+      "sha256": "b479aa472080abff49e3e58203d86bd762d9897e034092132988b3a5f7e25ec0",
+      "blob": "95da7f06ce2c44ac044d1cdce8176f5274bfa16c",
+      "checked_main": "5852f41eb4df5c6da9b976d7b8ef830a892aed8d"
+    },
+    {
+      "path": "src/components/DialogFrame.tsx",
+      "bytes": 2481,
+      "sha256": "f8b2d16d69e39dfdc0e33303f47bae20934e0cf94fc39e2f0cf327521c9acb7f",
+      "blob": "ed3ade90d5423fdd9352a413a4eb7dc2693519b9",
+      "checked_main": "5852f41eb4df5c6da9b976d7b8ef830a892aed8d"
+    },
+    {
+      "path": "src/state/createProject.ts",
+      "bytes": 3679,
+      "sha256": "08be32e2b1697032c51759a4798db4abdf0bb0e1d2ee82ad548d0e47bb0cc283",
+      "blob": "43086acd4239c71b108848be729000e3d59de7f3",
+      "checked_main": "5852f41eb4df5c6da9b976d7b8ef830a892aed8d"
+    },
+    {
+      "path": "src/backend.ts",
+      "bytes": 12743,
+      "sha256": "4b13170fcaffce5d828de400369164e2dfdcc3d3aaa818a3860e0a6e826ce237",
+      "blob": "c2be0fb3b9103d5e67ed1ce7718a746fcfb264aa",
+      "checked_main": "5852f41eb4df5c6da9b976d7b8ef830a892aed8d"
+    },
+    {
+      "path": "src/home/createFirstWorkspace.ts",
+      "bytes": 2141,
+      "sha256": "215f50301d3042de3dcd5b98a29b8f4eba2a113f054aad4822a739c5474c5ecf",
+      "blob": "a4c938407a36bd74ba94bc3460f6804194e10785",
+      "checked_main": "5852f41eb4df5c6da9b976d7b8ef830a892aed8d"
+    }
+  ],
+  "only_product_change": "Remove exactly four disabled={pending} properties from CreateProjectDialog.tsx",
+  "candidate_sha256": "9837498bd312efec36a2f0717291a706b08dfabd5817557f1a7121bceb76effa",
+  "fixture_sha256": "50dea0977358233e7299d2a481bbd57469a3e362d21696d5486a9660435d1d94",
+  "local_runtime_run": false,
+  "native_or_visual_verified": false
+}

@@ -1,0 +1,144 @@
+(node:95) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:102) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: custom branch prefix "myname-" agrees in Settings and workspace naming
+ok 1 - custom branch prefix "myname-" agrees in Settings and workspace naming
+  ---
+  duration_ms: 0.887925
+  type: 'test'
+  ...
+# Subtest: custom branch prefix "team_" agrees in Settings and workspace naming
+ok 2 - custom branch prefix "team_" agrees in Settings and workspace naming
+  ---
+  duration_ms: 0.168926
+  type: 'test'
+  ...
+# Subtest: custom branch prefix "team/ui-" agrees in Settings and workspace naming
+ok 3 - custom branch prefix "team/ui-" agrees in Settings and workspace naming
+  ---
+  duration_ms: 0.132369
+  type: 'test'
+  ...
+# Subtest: custom branch prefix "Team.UI-" agrees in Settings and workspace naming
+ok 4 - custom branch prefix "Team.UI-" agrees in Settings and workspace naming
+  ---
+  duration_ms: 0.095795
+  type: 'test'
+  ...
+# Subtest: custom branch prefix "feature/" agrees in Settings and workspace naming
+ok 5 - custom branch prefix "feature/" agrees in Settings and workspace naming
+  ---
+  duration_ms: 0.083885
+  type: 'test'
+  ...
+# Subtest: custom branch prefix "team" agrees in Settings and workspace naming
+ok 6 - custom branch prefix "team" agrees in Settings and workspace naming
+  ---
+  duration_ms: 0.070318
+  type: 'test'
+  ...
+# Subtest: custom-prefix handling leaves GitHub, None, and empty prefixes unchanged
+ok 7 - custom-prefix handling leaves GitHub, None, and empty prefixes unchanged
+  ---
+  duration_ms: 0.313634
+  type: 'test'
+  ...
+# (node:110) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted Git Settings input "myname-" saves and previews its creation branch
+ok 8 - mounted Git Settings input "myname-" saves and previews its creation branch
+  ---
+  duration_ms: 162.712138
+  type: 'test'
+  ...
+# Subtest: mounted Git Settings input "team_" saves and previews its creation branch
+ok 9 - mounted Git Settings input "team_" saves and previews its creation branch
+  ---
+  duration_ms: 74.221858
+  type: 'test'
+  ...
+# Subtest: mounted Git Settings input "team/ui-" saves and previews its creation branch
+ok 10 - mounted Git Settings input "team/ui-" saves and previews its creation branch
+  ---
+  duration_ms: 48.274616
+  type: 'test'
+  ...
+# Subtest: mounted Git Settings input "Team.UI-" saves and previews its creation branch
+ok 11 - mounted Git Settings input "Team.UI-" saves and previews its creation branch
+  ---
+  duration_ms: 45.083822
+  type: 'test'
+  ...
+# Subtest: mounted Git Settings input "feature/" saves and previews its creation branch
+ok 12 - mounted Git Settings input "feature/" saves and previews its creation branch
+  ---
+  duration_ms: 44.594869
+  type: 'test'
+  ...
+# Subtest: mounted Git Settings input "team" saves and previews its creation branch
+ok 13 - mounted Git Settings input "team" saves and previews its creation branch
+  ---
+  duration_ms: 37.386494
+  type: 'test'
+  ...
+# (node:118) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: withField changes one field and keeps everything else, unknown keys included
+ok 14 - withField changes one field and keeps everything else, unknown keys included
+  ---
+  duration_ms: 1.682887
+  type: 'test'
+  ...
+# Subtest: blank text inputs become null
+ok 15 - blank text inputs become null
+  ---
+  duration_ms: 0.121948
+  type: 'test'
+  ...
+# Subtest: branch prefix rules match the backend's
+ok 16 - branch prefix rules match the backend's
+  ---
+  duration_ms: 0.319992
+  type: 'test'
+  ...
+# Subtest: branch preview is the branch the Create-workspace flow would make
+ok 17 - branch preview is the branch the Create-workspace flow would make
+  ---
+  duration_ms: 0.435117
+  type: 'test'
+  ...
+# Subtest: custom prefixes drop the trailing slash the backend refuses
+ok 18 - custom prefixes drop the trailing slash the backend refuses
+  ---
+  duration_ms: 0.19223
+  type: 'test'
+  ...
+# Subtest: base URLs must be http(s) when set
+ok 19 - base URLs must be http(s) when set
+  ---
+  duration_ms: 0.16106
+  type: 'test'
+  ...
+# Subtest: C1 control characters are refused like the backend's char::is_control
+ok 20 - C1 control characters are refused like the backend's char::is_control
+  ---
+  duration_ms: 0.100443
+  type: 'test'
+  ...
+# Subtest: providers default to none configured, so every agent uses its CLI login
+ok 21 - providers default to none configured, so every agent uses its CLI login
+  ---
+  duration_ms: 0.087875
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1033.931946

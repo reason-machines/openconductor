@@ -1,0 +1,1 @@
+function pvs(t){return t.location.pathname.startsWith("/settings/repos/")}

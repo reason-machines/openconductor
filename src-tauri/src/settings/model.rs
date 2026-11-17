@@ -197,18 +197,31 @@ pub struct BigTerminalCustomCommand {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Theme {
-    #[default]
     System,
     Light,
+    #[default]
     Dark,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
+#[serde(rename_all = "kebab-case")]
 pub enum SoundType {
     #[default]
     Default,
+    #[serde(rename = "disabled", alias = "none")]
     None,
+    ChooChoo,
+    OdysseusPluck,
+    Fahhhh,
+    Quack,
+    SfMuniInboundTrainChime,
+    SfMuniNew,
+    NycMetroDoorChime,
+    NycSubwayDoorChime,
+    NycSubway,
+    ParisMetroChime,
+    ParisMetroPickpockets,
+    SncfJingle,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -224,7 +237,7 @@ pub struct General {
 impl Default for General {
     fn default() -> Self {
         General {
-            theme: Theme::System,
+            theme: Theme::Dark,
             send_native_notification: true,
             sound_type: SoundType::Default,
             extra: toml::Table::new(),

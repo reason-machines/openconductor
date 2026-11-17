@@ -1,0 +1,27 @@
+{
+  "owner": "Conductor Rebuild",
+  "entry": "SAME27994a6c",
+  "grant": "37fa2b01-86ed-4425-992e-911f77edd298",
+  "start_utc": "2026-11-12T16:50:48Z",
+  "terminal_utc": "2026-11-12T16:51:24Z",
+  "command": "RESTART_IDLE_SOURCE_ROOT=. NODE_OPTIONS=--max-old-space-size=768 nice -n19 timeout --kill-after=5s 120s node --test --test-concurrency=1 --test-reporter=tap evidence/settings/restart-when-idle/safetyIntegration.selector-loader.test.cjs",
+  "baseline": {
+    "exit": 1,
+    "tests": 27,
+    "pass": 14,
+    "intended_predicate_fail": 13,
+    "unrelated_errors": 0
+  },
+  "candidate": {
+    "exit": 0,
+    "tests": 27,
+    "pass": 27,
+    "fail": 0
+  },
+  "derivative_sha256": "b81486849e6da03bfd7cf4441d1f3177ca5fa49ea581cd9763fce0e9048f961d",
+  "original_fixture_sha256": "ce8740744706acc9d70e1fb4f1bc6702561cc45f30b8537f611e75f871031bbb",
+  "patch_sha256": "09b3e7cbf0f711ba09982e92f30df37bc13a3929d7b3345a1a1661b232aaa632",
+  "own_jobs": [],
+  "runtime_released": true,
+  "excluded": "No App4/coordinator32/Owner10 replay, install, retry, typecheck, build, browser, native, provider or package work."
+}

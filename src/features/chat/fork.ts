@@ -167,7 +167,7 @@ function completeMessage(m: ChatMessage, results: Map<string, string>, used: Set
       if (result !== undefined) used.add(b.id);
       out.push(toolLines(b.name, b.input, result));
     } else if (b.type === "tool_result" && !used.has(b.toolUseId)) {
-      out.push(resultLines(b.content));
+      if (b.content !== undefined) out.push(resultLines(b.content));
     }
   }
   return out.length === 0 ? null : out.join("\n\n");
@@ -193,7 +193,7 @@ export function completeTranscript(t: ChatTranscript): string | null {
     // A turn counts only with a prompt of the user's own (`KOt` skips a cancelled one).
     if (!messages.some(own)) continue;
     const results = new Map<string, string>();
-    for (const m of messages) for (const b of m.blocks) if (b.type === "tool_result") results.set(b.toolUseId, b.content);
+    for (const m of messages) for (const b of m.blocks) if (b.type === "tool_result" && b.content !== undefined) results.set(b.toolUseId, b.content);
     const used = new Set<string>();
     const entries: Entry[] = [];
     for (const m of messages) {

@@ -1,0 +1,40 @@
+{
+  "owner": "Conductor Rebuild / SAME15",
+  "execution": "Reason Cloud, provider-free mounted component tests",
+  "baseline_published_head": "01e8bfe7555c038cc4e80d8c58812e910a2c2362",
+  "fresh_main_checked": "1c8e9593099bce8ebfbc19d83052cbfd47df5ad0",
+  "fixture_sha256": "b2eb43bb787c35dd92b653c6d10fd9ace8734ce4d02dd0fecadb71852645a551",
+  "assertions_unchanged_between_red_green": true,
+  "baseline_product_sha256": "d2dbc82b596818dfb9684859017cdd23d8a694355fc48eef56bf74cfe376f111",
+  "fixed_product_sha256": "9bd695251570dc1578156d51f033eb3efe68eeeff589010f0586ce8dfbcf5afc",
+  "command": "node --experimental-strip-types --test src/palette/paletteComposition.test.ts",
+  "red": {
+    "exit_code": 1,
+    "pass": 15,
+    "fail": 18,
+    "log": "red.tap",
+    "sha256": "950d13f92e2f75cb6c11c391e5fabaa383d19bcb9f4781b07e7fc3e5d9befea4"
+  },
+  "green": {
+    "exit_code": 0,
+    "pass": 33,
+    "fail": 0,
+    "log": "green.tap",
+    "sha256": "a4242165bbdcc77af070596a840833d7ff845f71cbbfa395119afd0536001975"
+  },
+  "controls": {
+    "command": "node --experimental-strip-types --test src/palette/state.test.ts src/features/openIn/menuArrowIsolation.test.ts",
+    "exit_code": 0,
+    "pass": 18,
+    "fail": 0,
+    "log": "controls.tap",
+    "sha256": "0f1e2324bff1963fd1ae8a66b7aa54f132548b74aead3adbeba6622cb0fdd2fb"
+  },
+  "local_typecheck": "INCOMPLETE: unrelated untracked draft caused initial failure; excluding it while preserving bytes, retry timed out at 240 seconds without diagnostics.",
+  "hosted_fix_head_ci": "PENDING",
+  "browser": "NOT_RUN",
+  "physical_ime": "NOT_RUN",
+  "native_gui": "NOT_RUN",
+  "provider": "NOT_RUN",
+  "released_install": "NOT_RUN"
+}

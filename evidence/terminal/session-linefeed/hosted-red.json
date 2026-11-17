@@ -1,0 +1,109 @@
+{
+  "author": "Conductor Rebuild",
+  "pr_url": "https://github.com/reason-machines/openconductor/pull/1142",
+  "head_sha": "d0cf738771f7e4d81965ed963265dd1e4cb4bd03",
+  "workflow_run": 43167464077,
+  "unit_job": 131012576223,
+  "unit_url": "https://github.com/reason-machines/openconductor/actions/runs/43167464077/job/131012576223",
+  "build_job": 131012576237,
+  "build_url": "https://github.com/reason-machines/openconductor/actions/runs/43167464077/job/131012576237",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "fixture_sha256": "add72e265d5a913690d1f0ed126b786cadf3f8f2652681492c396874a7b594ab",
+  "unit_log_from_line": 13445,
+  "unit_results": [
+    {
+      "number": 2183,
+      "case": "ordinary panel LF starts the next line at column zero",
+      "status": "fail",
+      "failure_type": "AssertionError",
+      "assertion_line": 111,
+      "actual": "    right",
+      "expected": "right"
+    },
+    {
+      "number": 2184,
+      "case": "center terminal LF resets the column after wide output",
+      "status": "fail",
+      "failure_type": "AssertionError",
+      "assertion_line": 119,
+      "actual": "  ok",
+      "expected": "ok"
+    },
+    {
+      "number": 2185,
+      "case": "LF received in a separate PTY event resets the output column",
+      "status": "fail",
+      "failure_type": "AssertionError",
+      "assertion_line": 129,
+      "actual": "   z",
+      "expected": "z"
+    },
+    {
+      "number": 2186,
+      "case": "consecutive LF keep the following output aligned to column zero",
+      "status": "fail",
+      "failure_type": "AssertionError",
+      "assertion_line": 138,
+      "actual": "  c",
+      "expected": "c"
+    },
+    {
+      "number": 2187,
+      "case": "LF near the right margin starts the following row at column zero",
+      "status": "fail",
+      "failure_type": "AssertionError",
+      "assertion_line": 145,
+      "actual": "    Z",
+      "expected": "Z"
+    },
+    {
+      "number": 2188,
+      "case": "SGR around LF does not leave indentation on the next output line",
+      "status": "fail",
+      "failure_type": "AssertionError",
+      "assertion_line": 153,
+      "actual": "   D",
+      "expected": "D"
+    },
+    {
+      "number": 2189,
+      "case": "ordinary terminal CRLF retains its existing output alignment",
+      "status": "pass"
+    },
+    {
+      "number": 2190,
+      "case": "ordinary terminal CR still overwrites the current row",
+      "status": "pass"
+    },
+    {
+      "number": 2191,
+      "case": "ordinary terminal plain output keeps its original width",
+      "status": "pass"
+    },
+    {
+      "number": 2192,
+      "case": "disposing one ordinary terminal preserves sibling output",
+      "status": "pass"
+    }
+  ],
+  "unicode_controls": {
+    "cases": [2193, 2194, 2195, 2196, 2197, 2198, 2199, 2200, 2201, 2202],
+    "status": "all_passed"
+  },
+  "build_suite": {
+    "tests": 3401,
+    "passed": 3395,
+    "failed": 6,
+    "cancelled": 0,
+    "skipped": 0,
+    "typecheck": "passed_before_test_gate",
+    "build": "not_reached_after_test_failures"
+  },
+  "qualified": "All six intended counterexamples reached real output-row equality assertions. Four preservation controls passed. No fixture-loader or pre-assertion failure is counted as behavioral RED.",
+  "observed_at": "2026-11-12T06:26:00Z",
+  "limits": [
+    "Hosted production-module and real-xterm parser behavior, not native application proof.",
+    "Reference behavior is retained compiled REA source, not a fresh live observation.",
+    "No local JavaScript, browser, native, provider, dispatch or rerun was used."
+  ]
+}

@@ -87,7 +87,10 @@ function fixture(parts: document.ComposerPart[], caret = 3) {
       if (name === "./SlashMenu.tsx") return { SlashMenu: MenuBoundary };
       if (name === "./FileMentionMenu.tsx") return { FileMentionMenu: () => null };
       if (name === "./composerLongPaste.ts") return { longPasteAttachment: () => null };
+      if (name === "./composerPasteFilePaths.ts") return { readClipboardText: async () => null, readClipboardTextFromPlatform: async () => null };
       if (name.endsWith("/useBoolPref.ts")) return { useBoolPref: () => false };
+      if (name.endsWith("/useSettings.ts")) return { useSettings: () => ({ settings: null, save: () => Promise.resolve(true), error: null, reload: () => {} }) };
+      if (name.endsWith("/prefs.ts")) return { boolPref: () => false, withBoolPref: (s: unknown) => s };
       if (name === "../../backend") return { fuzzyFilterFiles: () => assert.fail("no file search in slash completion") };
       if (name === "./composerIcons.tsx") return Object.fromEntries(["ArrowUpIcon", "CornerDownLeftIcon", "PaperclipIcon", "PlusIcon", "StopCircleIcon"].map((key) => [key, () => null]));
       throw new Error(`Unexpected Composer dependency: ${name}`);
@@ -109,9 +112,12 @@ function fixture(parts: document.ComposerPart[], caret = 3) {
     snapshot: () => schema.partsFrom(editor.state.doc),
     pick(command = review) { act(() => renderer.root.findByType(MenuBoundary).props.onPick(command)); },
     key(key: string) {
-      let prevented = false;
-      act(() => editorProps.onKeyDown({ key, shiftKey: false, metaKey: false, ctrlKey: false, altKey: false, isComposing: false, preventDefault() { prevented = true; } }));
-      assert.ok(prevented);
+      const event = new Event("keydown", { bubbles: true, cancelable: true });
+      const fields = { key, shiftKey: false, metaKey: false, ctrlKey: false, altKey: false, isComposing: false };
+      Object.defineProperties(event, Object.fromEntries(Object.entries(fields).map(([name, value]) => [name, { value }])));
+      act(() => editorProps.onKeyDown(event));
+      assert.ok(event.defaultPrevented);
+      assert.ok(event.cancelBubble, "menu selection does not reach ancestor shortcuts");
     },
     close() { act(() => renderer.unmount()); editor.destroy(); },
   };

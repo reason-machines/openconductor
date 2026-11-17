@@ -1,0 +1,198 @@
+{
+  "author": "Conductor Rebuild",
+  "at_utc": "2026-11-12T11:01:09.213746+00:00",
+  "main_checked": "877aacbbec9084d4f71dd2aaf1bb0f3266a553f5",
+  "candidate_key": "ordinary-terminal-theme-refresh-1f",
+  "scope": "Ordinary terminal open-instance theme refresh on root appearance attributes; not ScriptOutput or token values",
+  "finding": "The retained Conductor w9e subscribes to root class changes through n9s and assigns a fresh IJe theme while retaining showCursor. Current ordinary-terminal session has no appearance observer or subscription; its 16 ANSI fields are constructor-only and ready/exit only replace cursor fields.",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "artifacts_rehashed": [
+    {
+      "artifact": "index",
+      "name": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    },
+    {
+      "artifact": "renderer",
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    }
+  ],
+  "source_spans": [
+    {
+      "symbol": "eSa",
+      "file": "reference/eSa.txt",
+      "utf8_half_open": [
+        11160762,
+        11165279
+      ],
+      "sha256": "7046b53ab7a925101dea1b4ed8aabaf67fe39d6842a9742efb4bf76d502548a4",
+      "bytes": 4517
+    },
+    {
+      "symbol": "w9e",
+      "file": "reference/w9e.txt",
+      "utf8_half_open": [
+        6919236,
+        6922665
+      ],
+      "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32",
+      "bytes": 3429
+    },
+    {
+      "symbol": "dno",
+      "file": "reference/dno.txt",
+      "utf8_half_open": [
+        6915051,
+        6916770
+      ],
+      "sha256": "c1caf84211af0d4cdc09cc07d3b7ecfc9b0dde7cbfa84704e5f2ce24109fd318",
+      "bytes": 1719
+    },
+    {
+      "symbol": "IJe",
+      "file": "reference/IJe.txt",
+      "utf8_half_open": [
+        3139253,
+        3140055
+      ],
+      "sha256": "ea65e840d4491339eaeeed4beda371d58fc6a87b78fc14e50c6a32ac9915d081",
+      "bytes": 802
+    },
+    {
+      "symbol": "n9s",
+      "file": "reference/n9s.txt",
+      "utf8_half_open": [
+        3140482,
+        3140707
+      ],
+      "sha256": "68d11a7db29bee26c56e8a05bade37cf7f66a8ba0a924f1bc5492f49c23a93e5",
+      "bytes": 225,
+      "boundary": "Unique declaration to next named function, bytes not executed"
+    },
+    {
+      "symbol": "F3",
+      "file": "reference/F3.txt",
+      "utf8_half_open": [
+        3138840,
+        3139137
+      ],
+      "sha256": "106c7a6024877413de767c03c118b06ab6724d55003afa4fc9b09961d9a2a0d0",
+      "bytes": 297,
+      "boundary": "Unique declaration to next named function, bytes not executed"
+    },
+    {
+      "symbol": "lno",
+      "file": "reference/lno.txt",
+      "utf8_half_open": [
+        6913120,
+        6914245
+      ],
+      "sha256": "f0ce60ce9b64bb20c9526c841aec24bf2620c9c8bf1973dd083e218e8f4fd4a5",
+      "bytes": 1125,
+      "boundary": "Full retained declaration uniquely rejoined to full original renderer bytes"
+    },
+    {
+      "symbol": "cno",
+      "file": "reference/cno.txt",
+      "utf8_half_open": [
+        6914245,
+        6914630
+      ],
+      "sha256": "d256449d670e3c7e000f82530a8d2cfb494986c8559831ac1b2f74a92ed35cd5",
+      "bytes": 385,
+      "boundary": "Full retained declaration uniquely rejoined to full original renderer bytes"
+    },
+    {
+      "symbol": "uno",
+      "file": "reference/uno.txt",
+      "utf8_half_open": [
+        6914630,
+        6915051
+      ],
+      "sha256": "85acecc59c4b24eb7a08bf143dcdc68903fffba9180d78c83559bfea2f1eb35b",
+      "bytes": 421,
+      "boundary": "Full retained declaration uniquely rejoined to full original renderer bytes"
+    },
+    {
+      "symbol": "$At",
+      "file": "reference/$At.txt",
+      "utf8_half_open": [
+        6916898,
+        6918617
+      ],
+      "sha256": "5d73083eabd52c3345aad238d153d0fc71dd52040b8084b7d93d8f120180cd14",
+      "bytes": 1719,
+      "boundary": "Unique declaration to next named top-level function; W5e includes its teardown registration"
+    },
+    {
+      "symbol": "uVn",
+      "file": "reference/uVn.txt",
+      "utf8_half_open": [
+        6918617,
+        6918847
+      ],
+      "sha256": "ac48251fcbe99909fea8abc6d01ba6234dcb51496f742ee012debc4aa57c5e53",
+      "bytes": 230,
+      "boundary": "Unique declaration to next named top-level function; W5e includes its teardown registration"
+    },
+    {
+      "symbol": "W5e",
+      "file": "reference/W5e.txt",
+      "utf8_half_open": [
+        6918847,
+        6919236
+      ],
+      "sha256": "7829aaf4a1fdf9ed7789f958496e3f7f7274f69cfbd31997aeb7ae99de28a881",
+      "bytes": 389,
+      "boundary": "Unique declaration to next named top-level function; W5e includes its teardown registration"
+    }
+  ],
+  "current_main_sources": {
+    "src/features/terminal/session.ts": {
+      "bytes": 21492,
+      "sha256": "8f14cb4d0bc1fd9fa9f70fe7383b47d18f28dd65720f6ad15686c24540c8cac0"
+    },
+    "src/settings/appearance.ts": {
+      "bytes": 5058,
+      "sha256": "e258f1f50eee95de3e2cd737ece50ac2edbded97c87c2ae948c2be7fdea235f2"
+    },
+    "src/components/ScriptOutput.tsx": {
+      "bytes": 7588,
+      "sha256": "5cad08e06c913556195df9063354fb2e50a90ee33e39a586ff72cfb747fe544f"
+    },
+    "src/theme/terminalAnsiThemeFixture.ts": {
+      "bytes": 1183,
+      "sha256": "aeca2daed1bbcc44cea8cb9484c503ce8b4a1e196a7aa9462cba214921874edf"
+    },
+    "package-lock.json": {
+      "bytes": 222137,
+      "sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a"
+    }
+  },
+  "lifecycle_closure": {
+    "create": "lno constructs xterm using IJe; cno registers the instance; uno returns an existing registered instance before creating one",
+    "attach": "w9e calls dno with current cursor/input refs; dno rejects stale/aborted results and refreshes IJe on warm attachment",
+    "live_appearance": "w9e effect owns n9s root-class observer and returns its disconnect cleanup; callback replaces the current terminal theme with IJe retaining showCursor",
+    "cursor_changes": "$At separately updates showCursor through IJe; eSa derives cursor and input states from current surface availability",
+    "detach": "w9e aborts attachment and clears terminal refs; uVn removes wrapper/resize work without disposing the retained terminal",
+    "destroy": "W5e guards attachment identity, disconnects resize work, unregisters, disposes terminal and deletes registry; registered with uii",
+    "reference_limit": "Retained static shipped bytes; no original runtime observed and no claim about callbacks while detached",
+    "target_limit": "OpenConductor keeps sessions alive across detach; this frozen unit proves appearance update on an existing headless xterm, not attachTab/rendered-native execution"
+  },
+  "source_integrity": "PASS",
+  "behavioral_regression": "NOT_RUN",
+  "native_or_rendered_colors": "NOT_RUN",
+  "product_edits": false,
+  "tests_or_install_started": false,
+  "limits": [
+    "Retained shipped-app REA bytes, not fresh acquisition or native execution",
+    "n9s observes class in Conductor; OpenConductor expresses appearance using class and data attributes",
+    "No OS media-query requirement claimed by this bounded source observation",
+    "Reattach refresh in dno corroborates reuse semantics but is not a second reserved product unit",
+    "No unchanged constructor, line-edit, clear, input, Unicode or convertEol behavior reopened",
+    "Current branch and tracked product files unchanged"
+  ]
+}

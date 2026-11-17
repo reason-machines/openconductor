@@ -1,0 +1,66 @@
+{
+  "owner": "Conductor Rebuild",
+  "unit": "SPLIT-OPEN-IN-ARROW-ISOLATION",
+  "main_checked": "1d9c4027909205d1dba9006031d922a5f2f2287a",
+  "product_path": "src/features/openIn/OpenInButton.tsx",
+  "product_sha256": "9c10773d6e7a0f6c00a36105d1607ec1cedfe654621df1f573f34b81a28afe5a",
+  "fixture_path": "src/features/openIn/menuArrowIsolation.test.ts",
+  "fixture_sha256": "f1dfd9d52e75917d804bd41c26f8075bfc4c4cbec7184ee8bada0ef1c54425ca",
+  "reference": {
+    "version": "0.87.6",
+    "rea_artifact_evidence_id": "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+    "asset": "renderApp-D_fmY7hW.js",
+    "asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "provenance": "Previously retained REA extraction of real Conductor. Re-read as inert bytes. No new native acquisition or execution.",
+    "spans": {
+      "reference-P9.txt": {
+        "utf8_half_open": [
+          2689481,
+          2697985
+        ],
+        "sha256": "4877a554fb6315f32141467dea32813a9be076b50b7c2b954208b4f3fdd311c9"
+      },
+      "reference-wrapper.txt": {
+        "utf8_half_open": [
+          674926,
+          674995
+        ],
+        "sha256": "4283e46687b05b8b24d9071e15301030bd57ac48bb3f7b129375606bfeaaca70"
+      },
+      "_vs": {
+        "utf8_half_open": [
+          2697526,
+          2697935
+        ],
+        "sha256": "dce548d78ca81b96e31a13107d48b3b4a484ab5dce0232e9f7634f37f4d66069"
+      }
+    },
+    "prior_asset_identity": {
+      "path": ".oc-tmp/chip-reference/renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    }
+  },
+  "scenarios": {
+    "expected_baseline_failures": [
+      "split Open in ignores already-prevented ArrowDown",
+      "split Open in ignores already-prevented ArrowUp",
+      "split Open in wraps ArrowDown and consumes its bubbling event",
+      "split Open in wraps ArrowUp and consumes its bubbling event"
+    ],
+    "expected_baseline_controls": [
+      "split Open in leaves ArrowDown untouched when focus is outside its rows",
+      "split Open in leaves ArrowUp untouched when focus is outside its rows",
+      "split Open in leaves unrelated keys untouched",
+      "split Open in preserves Escape close and trigger focus with defaultPrevented=false",
+      "split Open in preserves Escape close and trigger focus with defaultPrevented=true"
+    ]
+  },
+  "proof_limits": [
+    "Mounted actual component onKeyDown with fake DOM refs proves handler, focus and external-call contracts, not browser propagation.",
+    "Source establishes split/default P9. Icon and compact variants return earlier through another primitive and are not independently parity-proven here.",
+    "stopPropagation isolates later bubbling handlers, not document capture listeners. No global-shortcut interception fix is claimed.",
+    "Slider and switch rows in the reference selector are outside the current split Open in menu row domain and outside this repair.",
+    "Native GUI, real editor activation and released installation acceptance NOT_RUN; E1 retains the native execution lease."
+  ]
+}

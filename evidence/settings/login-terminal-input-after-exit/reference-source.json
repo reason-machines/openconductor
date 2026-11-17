@@ -1,0 +1,312 @@
+{
+  "author": "Conductor Rebuild",
+  "dedupe_key": "settings-login-input-after-exit",
+  "main_sha": "87e6da16d981de85ee26c16fac14c00a45c62025",
+  "verified_current_main_sha": "0e34c1287a73c41d3cecb37e9dc48ce34a5df381",
+  "archive_sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+  "assets": {
+    "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "retained_REA_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "REA_limit": "Earlier semantic renderer analysis exhausted heap; retained shipped bytes examined statically without executing reference JavaScript.",
+  "reference_spans": [
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "needle": "class tIr{",
+      "end_needle_excluded": "function Loi(",
+      "utf8_half_open": [
+        152421,
+        153322
+      ],
+      "sha256": "8d482044204b92f93c2ec366d8b3f6633b4779ca78a9850fdfb4ce2f30afe189",
+      "path": "reference/adapter.onInput.txt",
+      "complete_declaration": true
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "needle": "function Loi(",
+      "end_needle_excluded": "function o4t(",
+      "utf8_half_open": [
+        153322,
+        153620
+      ],
+      "sha256": "a8d5f70df75342a661ee53aca576bc785baba08e5a9a0353f9e2c2d717d336a9",
+      "path": "reference/Loi.input-binding.txt",
+      "complete_declaration": true
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "needle": "async createSession(e){const s=await this.environmentProvider.resolveLaunch(e)",
+      "end_needle_excluded": "destroySession(e,s){",
+      "utf8_half_open": [
+        2776910,
+        2777583
+      ],
+      "sha256": "d5349d3f2a0a3f1fd6b9803891808a58dd193e5bc32d5bb2bb89411b0fa4e41d",
+      "path": "reference/runtime.createSession.txt",
+      "complete_declaration": true
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "needle": "function MSt(",
+      "end_needle_excluded": "function OSt(",
+      "utf8_half_open": [
+        2559162,
+        2559422
+      ],
+      "sha256": "08ed5d04b469047ae0698f39d123e470614fe3b8355414ea7043894ebe225439",
+      "path": "reference/controller.bindInput.txt",
+      "complete_declaration": true
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "needle": "write(e){this.snapshot.connectionState",
+      "end_needle_excluded": "resize(e,s){",
+      "utf8_half_open": [
+        2760741,
+        2761060
+      ],
+      "sha256": "73b6232085f3d327f2d0bd1f853b70f3719234b8992c487daa34d2c3c64a9580",
+      "path": "reference/controller.write.txt",
+      "complete_declaration": true
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "needle": "async spawnBackendSession(e){",
+      "end_needle_excluded": "async handleData(e){",
+      "utf8_half_open": [
+        2764981,
+        2767877
+      ],
+      "sha256": "6a409e1603fbd389aa3576f88b36f03efa6ad93509c4a6b262186b13ffa457aa",
+      "path": "reference/controller.spawn-and-exit.txt",
+      "complete_declaration": true
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2558263,
+        2558398
+      ],
+      "sha256": "51e11b75bc9a21198844a42a99afb1df70cdef5b98eb04c9a4496cc06d20f420",
+      "path": "reference/input.enqueue-guard.txt",
+      "begin": "function TSt(",
+      "end_excluded": "async function xSt("
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2777874,
+        2778006
+      ],
+      "sha256": "fb9c34e7b657e42bfd6057b67f96fffb2ac99466de3e9a0d3d0c07d93e0d3377",
+      "path": "reference/runtime.attach-renderer.txt",
+      "begin": "attachRenderer(e,s){",
+      "end_excluded": "detachRenderer(e){"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2757652,
+        2757749
+      ],
+      "sha256": "faa847a8d87c1651230560cd9393017974edf14f9f96de443eb6372380f13f79",
+      "path": "reference/controller.ordered-input-binding.txt",
+      "begin": "rendererOrderedInput=new wkt(",
+      "end_excluded": ";controllerTaskQueue="
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2750774,
+        2751195
+      ],
+      "sha256": "75b526b6050069d15c65e501cb51f2382320b67d14c74adeae56a81364c50f74",
+      "path": "reference/input.ordered-queue.txt",
+      "begin": "class wkt{",
+      "end_excluded": "const Skt="
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2567127,
+        2567304
+      ],
+      "sha256": "2f6823cd83985d13825ad5b0cf32acb07fdcc89dd3beb5027a4fe3bbec4c0c5f",
+      "path": "reference/controller.task-queue.txt",
+      "begin": "class gbt{",
+      "end_excluded": "var Xn="
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2759373,
+        2760590
+      ],
+      "sha256": "a3c979fc2235807f63e71050a35605d3f668ce59e2722e77032d3f7a0057041d",
+      "path": "reference/controller.attach-renderer.txt",
+      "begin": "attachRenderer(e){this.detachRenderer();",
+      "end_excluded": "detachRenderer(){this.renderer?.inputDisposable"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2771025,
+        2771189
+      ],
+      "sha256": "bced3203627614ec92e057e91e74a87bae60c3fe192f386d89851e5e90e1be6e",
+      "path": "reference/controller.enqueue-task.txt",
+      "begin": "enqueueControllerTask(e,s){",
+      "end_excluded": "async restartInteractiveShell("
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2780690,
+        2781109
+      ],
+      "sha256": "5a3f8db82c69df6ba3af06a6a65c66f37a218dad3cd7c4e8ee82c9ee6999e6f0",
+      "path": "reference/runtime.bind-controller.txt",
+      "begin": "bindController(e,s){",
+      "end_excluded": "schedulePersistence(e,s){"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2781109,
+        2781899
+      ],
+      "sha256": "2936250951de561b50d18f9505ee30101579e1b583670ed46739af50a3ae871f",
+      "path": "reference/persistence.schedule-guard.txt",
+      "begin": "schedulePersistence(e,s){",
+      "end_excluded": "async flushScheduledPersistence("
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2555896,
+        2556171
+      ],
+      "sha256": "3a2f7e1ff2cf2575547ee6934e4222b38496c720a8d9537b00d42aba2a50d05f",
+      "path": "reference/persistence.restore-guard.txt",
+      "begin": "async getColdRestoreRecord(e){",
+      "end_excluded": "clearColdRestoreRecord(e){"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2828843,
+        2829218
+      ],
+      "sha256": "6d0ed70cda3275a8436e1b8015a10ba314622de6d627919eb41852472d1b447f",
+      "path": "reference/runtime.factory.txt",
+      "begin": "function DAt({backend:t=new FAt}",
+      "end_excluded": "function bI("
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "needle": "gh as qc",
+      "utf8_half_open": [
+        57354,
+        57861
+      ],
+      "sha256": "7edd35d2c134f1c655a50abe4ff626a1a0662d5fc8281608955c90650775acfb",
+      "path": "reference/alias.renderApp-D_fmY7hW.js.0.txt"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "needle": "ts as gh",
+      "utf8_half_open": [
+        3484259,
+        3484767
+      ],
+      "sha256": "fdbfb47b53aedfa142e98a48547d178ff214f7ad71b5a1176e96179f12364ef2",
+      "path": "reference/alias.index-BGEQ8YjU.js.0.txt"
+    },
+    {
+      "path": "reference/ONi.literal.txt",
+      "sha256": "e71e371aa7c0cba81c4fc9b737b606ae79ed2a17e80c196ad12f558d5a0074e7",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8641405,
+        8644209
+      ]
+    },
+    {
+      "path": "reference/nZe.literal.txt",
+      "sha256": "2a41065f57534a755e056ee604d13e86310605c60594b143ad8aca1cb8a9aab5",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        6922812,
+        6923921
+      ]
+    }
+  ],
+  "main_source_pins": [
+    {
+      "path": "src/settings/agents/parts.tsx",
+      "sha256": "2c362c341f5467ade0a32b1bd0ad50cce02528c767d6e200bd6ffb043f0999d4",
+      "git_blob": "52b26afa88ec447bd4a9d6a280dcb9fe303253af"
+    },
+    {
+      "path": "src/features/terminal/pty.ts",
+      "sha256": "6ae39f143a2ac74f846c08f02cefdbf7c0cba35c8336480e9e53dc47b9f61ec7",
+      "git_blob": "4ff0694a37b25cf23dbbb96489c29ab5ea987713"
+    },
+    {
+      "path": "src-tauri/src/terminal_commands.rs",
+      "sha256": "75a8725122182bf9313501ce5d1abba608bb252e0afc8f11bc0a8762b432d24e",
+      "git_blob": "5dfc355d790e81f3d78f38ba673117171e143777"
+    },
+    {
+      "path": "src-tauri/src/terminal/manager.rs",
+      "sha256": "9889795e54c7bf248d84a5336c2614272d906039a069366e92aa87d4c483a771",
+      "git_blob": "a6a1ac0d112148f54f51a3683ac495f106f60941"
+    },
+    {
+      "path": "src-tauri/src/terminal/spawn.rs",
+      "sha256": "1bbc474439ea21dd34c7a35418ce043cba9443cad5bc1c54583a1a0eb3e25b60",
+      "git_blob": "7194bbb3016b3ba776f679fe38596e7f83f9453a"
+    },
+    {
+      "path": "src/settings/agents/loginTerminal.test.ts",
+      "sha256": "b01b2a8d502fb7a1eba2b02e5ecfaf9ea2e7bbea28df81700e7b660772a305e7",
+      "git_blob": "100519c00c1b739611d42507c26cb4919d6e50ec"
+    },
+    {
+      "path": "src/features/terminal/writeQueue.ts",
+      "sha256": "3a20d651fb8f410cd9cf13cc3bc19b68d609d7acd189a2bd3ffa4992f856009b",
+      "git_blob": "7192faf62bec7c2f3209b556b440ec8546921f81"
+    }
+  ],
+  "baseline_sha256": "2c362c341f5467ade0a32b1bd0ad50cce02528c767d6e200bd6ffb043f0999d4",
+  "fixture_sha256": "64d426e2f94d8fc9541b43b8c45dffe9b47b7e71661e7b728bf9fe434cc35318",
+  "factory_sha256": "b01b2a8d502fb7a1eba2b02e5ecfaf9ea2e7bbea28df81700e7b660772a305e7",
+  "protected_files": [
+    {
+      "path": "src/settings/agents/loginTerminal.test.ts",
+      "sha256": "b01b2a8d502fb7a1eba2b02e5ecfaf9ea2e7bbea28df81700e7b660772a305e7"
+    },
+    {
+      "path": "src/settings/agents/loginTerminalAck.test.ts",
+      "sha256": "5821ea8f116268a176b3b3ad042dada17658024efdf3e754fc6e882d859afb09"
+    },
+    {
+      "path": "src/settings/agents/loginTerminalAckProof.test.ts",
+      "sha256": "47758335113b9e4af0ba802d1c4aed0160bc7c426094ece7ed9c7299eb84b2ab"
+    },
+    {
+      "path": "evidence/settings/login-terminal-output-ack/baseline-parts.tsx.txt",
+      "sha256": "624389bd708832a56fdaddb80e2ac567c2b0901002be3e9ca5501de91f73e778"
+    }
+  ],
+  "impact": "Frontend bridge dispatch only: the backend already returns NotRunning after exit.",
+  "excluded_schedules": [
+    "Input while backend create is pending: reference also gates startup, no mismatch qualified.",
+    "Input while post-exit output is still rendering: reference controller task ordering not yet matched.",
+    "Exit before native create resolves: reference native buffering join not established."
+  ],
+  "behavior": "NOT_RUN",
+  "native_provider_realIPC": "NOT_RUN"
+}

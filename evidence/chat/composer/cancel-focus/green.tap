@@ -1,0 +1,50 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: accepted keyboard cancellation stops then refocuses a blurred Composer
+ok 1 - accepted keyboard cancellation stops then refocuses a blurred Composer
+  ---
+  duration_ms: 168.386441
+  type: 'test'
+  ...
+# Subtest: keyboard cancellation preserves an already focused editor's selection
+ok 2 - keyboard cancellation preserves an already focused editor's selection
+  ---
+  duration_ms: 70.45713
+  type: 'test'
+  ...
+# Subtest: idle keyboard cancellation still declines without stopping or focusing
+ok 3 - idle keyboard cancellation still declines without stopping or focusing
+  ---
+  duration_ms: 53.640821
+  type: 'test'
+  ...
+# Subtest: pointer Stop retains its existing stop-only behavior
+ok 4 - pointer Stop retains its existing stop-only behavior
+  ---
+  duration_ms: 42.778129
+  type: 'test'
+  ...
+# Subtest: accepted cancellation still stops when the editor ref has detached
+ok 5 - accepted cancellation still stops when the editor ref has detached
+  ---
+  duration_ms: 39.221227
+  type: 'test'
+  ...
+# Subtest: keyboard cancellation isolates rich draft, attachment, queue, and another chat
+ok 6 - keyboard cancellation isolates rich draft, attachment, queue, and another chat
+  ---
+  duration_ms: 70.93367
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 839.890898

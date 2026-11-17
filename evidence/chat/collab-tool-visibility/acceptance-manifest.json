@@ -1,0 +1,22 @@
+{
+  "status": "SOURCE_PROPOSAL_NOT_APPLIED_BEHAVIOR_UNRUN",
+  "checked_main": "85194324762be7c00ba8d092c4e00bdb564f1ac4",
+  "frozen_v1_archive_sha256": "517a71d9ff239942cc7cb11c2d895ea1d17d132d3442e28e46e835223296cdc6",
+  "proposal_product_paths": [
+    "src/features/chat/view.ts",
+    "src/features/chat/toolGroups.ts"
+  ],
+  "fixture_scope": "18 frozen row cases plus supplemental production grouping controls; no React/browser/native execution",
+  "files": {
+    "HANDOFF.md": "31a70e6d25a4c5a7168239b996882030c251d99c235f50b24134d5820ff3ee86",
+    "PROPOSED-NOT-APPLIED.patch": "0013a932e0cb000c59b9af49b53a3a42ebe072a3ab2e937a2c7b88eb50716978",
+    "assistantToolVisibility.inputs.json": "476cccaed904614b3c446273765ea12349c872ee73fa02d635c86d2bdfcc11f0",
+    "assistantToolVisibility.test.ts": "213ef3a9a6d346e800cb5f94623cffa26c2e2f710415e65678a1444ceb2fc2e3",
+    "prepare_candidate.py": "48082dce89b774ecbb875d7cdb6651b337bad5ce7d42e36ef7803361373c2d7b",
+    "proposed/src/features/chat/toolGroups.ts": "6382ab565093c7cb71fc272e63ecc297cbe5163512900f1e6ac2572216e7e8be",
+    "proposed/src/features/chat/view.ts": "0d053de9092238c058bd04e261658b6b71d16637a830598326338b125c3a06e9",
+    "reference-wB.txt": "2061ef5afd371daeae34b2e2acf120508bed1993c3b8c5ea1841da5cf7a422c5",
+    "turn-scope-source.json": "0e547e2d1a6a79d2aca7d05a3cc123482b9735c200e7542d1a7da88bdc7b3394"
+  },
+  "actual_checks": []
+}

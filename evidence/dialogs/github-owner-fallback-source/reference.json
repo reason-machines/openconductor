@@ -1,0 +1,170 @@
+{
+  "author": "Conductor Rebuild",
+  "unit": "GitHub owner-load generic error fallback only",
+  "status": "SOURCE_QUALIFIED_CANDIDATE_UNAPPLIED_NOT_RUNTIME_RED",
+  "main": "6ab46a36752de4f57cb3c3441f4336d334ad1340",
+  "reference_version": "Conductor 0.87.6 retained shipped assets",
+  "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "assets": [
+    {
+      "name": "renderer",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    {
+      "name": "index",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  ],
+  "spans": [
+    {
+      "name": "local-dialog-mount-Gls",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2118911,
+        2120648
+      ],
+      "sha256": "916e8b7106c0d8db45b1084171514e606d696aaf0408b991c4e99123a1cf628c",
+      "path": "reference/local-dialog-mount-Gls.txt"
+    },
+    {
+      "name": "add-repository-mount-Isa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10109106,
+        10110824
+      ],
+      "sha256": "8e4e87d1a27340220ae099b918de1e2bf871ecee14e96cc9953667419b5f26d1",
+      "path": "reference/add-repository-mount-Isa.txt"
+    },
+    {
+      "name": "dialog-wrapper-dbi",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2028481,
+        2028894
+      ],
+      "sha256": "885a7fb6ae1c4e36285a2e8b348867f3afdc003adc473e40da5e57a12bfee83b",
+      "path": "reference/dialog-wrapper-dbi.txt"
+    },
+    {
+      "name": "owners-producer-Aos",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1981992,
+        1982600
+      ],
+      "sha256": "882bd6a4c6981b51f2cad8f722be02e9e26166b85bc4234f0ac47df6103de898",
+      "path": "reference/owners-producer-Aos.txt"
+    },
+    {
+      "name": "owners-query-H3i-Ros",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1983084,
+        1983474
+      ],
+      "sha256": "b72ddd00e9b030d464bdae023b0b85fe76c32df5dc3994652db9d45190e01a9c",
+      "path": "reference/owners-query-H3i-Ros.txt"
+    },
+    {
+      "name": "dialog-consumer-was",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2028894,
+        2035857
+      ],
+      "sha256": "094b63d901870ac438213f6ba4cf5bd1e4f843736c1ecd2b4fe87421893151d7",
+      "path": "reference/dialog-consumer-was.txt"
+    },
+    {
+      "name": "message-presenter-_as",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2027798,
+        2028260
+      ],
+      "sha256": "32bfd8eb8466d053e17fed3dc8cb65fc47bb9325240627b56086481f1cecce8c",
+      "path": "reference/message-presenter-_as.txt"
+    },
+    {
+      "name": "native-error-paragraph",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2032574,
+        2032639
+      ],
+      "sha256": "43ec714fe22b13b8c03332837a340c2e1c0711c986190f7e07dd26d68b6f5206",
+      "path": "reference/native-error-paragraph.txt"
+    },
+    {
+      "name": "classifier-import",
+      "asset": "renderer",
+      "utf8_half_open": [
+        55166,
+        55175
+      ],
+      "sha256": "717bec71faaa3938d45ce629d6b091c6e30e3369299a213ff8ac03543aec4923",
+      "path": "reference/classifier-import.txt"
+    },
+    {
+      "name": "classifier-export",
+      "asset": "index",
+      "utf8_half_open": [
+        3481543,
+        3481552
+      ],
+      "sha256": "4282d0e1a2d607f4bda818ca4fd29ca99153f4e8e697e226bcb60031c64ea13c",
+      "path": "reference/classifier-export.txt"
+    },
+    {
+      "name": "classifier-r2t",
+      "asset": "index",
+      "utf8_half_open": [
+        3324286,
+        3324657
+      ],
+      "sha256": "d13363267e137379e895cac6bebadbc432fde2f3f98e0853361e243fb4873610",
+      "path": "reference/classifier-r2t.txt"
+    }
+  ],
+  "current_source": [
+    {
+      "path": "src/state/githubRepoDialog.ts",
+      "sha256": "bb99a561510b4a35389ff90fd0ad15c55201d368bd89bb330f66fd5d8f3a0781",
+      "source_url": "https://github.com/reason-machines/openconductor/blob/6ab46a36752de4f57cb3c3441f4336d334ad1340/src/state/githubRepoDialog.ts"
+    },
+    {
+      "path": "src/state/githubRepoDialog.test.ts",
+      "sha256": "cf30a73ab722083f234cb72e8fce317cd57fdc6538c9144fd51cfecc16253388",
+      "source_url": "https://github.com/reason-machines/openconductor/blob/6ab46a36752de4f57cb3c3441f4336d334ad1340/src/state/githubRepoDialog.test.ts"
+    },
+    {
+      "path": "src/components/GitHubRepoDialog.tsx",
+      "sha256": "5f1c7b4598047f708abb86c7f6d160ac24543aaaa401eea315c4dda67f68d5a7",
+      "source_url": "https://github.com/reason-machines/openconductor/blob/6ab46a36752de4f57cb3c3441f4336d334ad1340/src/components/GitHubRepoDialog.tsx"
+    }
+  ],
+  "route": "Gls / Isa \u2192 dbi \u2192 Im / was; Aos failure \u2192 H3i.owners / Ros \u2192 was.error \u2192 _as \u2192 native paragraph. _as resolves classifier Nni via renderer cM import and index r2t export.",
+  "counterexample": {
+    "synthetic_detail": "timeout",
+    "reference_classification": "No r2t category matches this literal.",
+    "reference_message": "Couldn't load your GitHub accounts.",
+    "current_message": "Couldn't load GitHub owners: timeout",
+    "current_route": "githubRepoOwners \u2192 loadOwners rejection \u2192 ownersErrorMessage \u2192 OwnersState.error.message \u2192 p.error.small"
+  },
+  "scope": "Only the generic final return and its contrary existing assertion. Preserve SAML, scope and auth branches; owner retry, NAME7c pending-name, create submission, provider transport, shared Modal and all protected packets remain unchanged.",
+  "checks": {
+    "inert_asset_and_span_read": "PASS",
+    "fresh_main_source_read": "PASS",
+    "baseline_behavior": "NOT_RUN_PREDICTED_RED_ONLY",
+    "candidate_behavior": "NOT_RUN",
+    "typecheck_build_browser_native": "NOT_RUN"
+  },
+  "limits": "The original REA semantic renderer pass exhausted heap. This is a literal-byte supplement, not target execution or proof of currently installed identity. No credentials, network, or real GitHub operation is needed by the proposed unit fixture.",
+  "ownership": {
+    "ledger_message": "29664fd4-b718-4886-8651-d8e04a1d6fae",
+    "disposition": "Exact final generic fallback cleared for source preparation under existing SAME6013. No new row, runtime or native admission."
+  }
+}

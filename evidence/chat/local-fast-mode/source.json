@@ -1,0 +1,183 @@
+{
+  "author": "Conductor Rebuild",
+  "status": "PREPARED_NOT_EXECUTED",
+  "main": "6dbbc4fc3a08ede3d98b6d14811b018a929015e7",
+  "prepared_main": "f55d0330ff32e790c08a26d2e7aa83dbf2b8ea32",
+  "rea_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "original_assets": {
+    "R": {
+      "path": ".source-prep-13576/retained-originals/renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "B": {
+      "path": ".source-prep-13576/retained-originals/index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "rea_record": {
+    "path": "evidence/frontend/rea-analyze-javascript-application.json.gz",
+    "sha256": "b0ffc795bf955a3dd54fd9bfb15d7eadf23ef6768c330c2e2223cc8581c8578f",
+    "operation": "analyze_javascript_application",
+    "evidence_id_pointer": "/evidence_id",
+    "renderer_node": "/normalized_result/graph/nodes/8084",
+    "index_node": "/normalized_result/graph/nodes/4317",
+    "limits": "Retained directory-analysis record, not fresh installed-app extraction. Renderer parsing skipped; index parsing partial."
+  },
+  "coordinate_system": "zero-based UTF-8 bytes; half-open",
+  "original_windows": [
+    {
+      "label": "L7o_complete",
+      "asset": "R",
+      "start": 8603880,
+      "end": 8613595,
+      "sha256": "763d5d0e217d3fd22a7decbb99b3551df62c8356626dbb8a07d87585386c6f3c",
+      "utf8": "function L7o(t){const e=ne.c(157),{acpModelConfigOptions:n,acpModelConfigs:i,selectedAcpConfig:r,onAcpSessionConfigChange:o,maxHeight:a,fastModeShortcut:c,side:u,selectedModel:d,selectedAgentType:h,selectedAcpAgentId:m,selectedAcpModel:g,visibleBuiltInModelIds:_,visibleProviderModels:v,openCodeModels:x,showModelProviders:w,getRowConfiguration:E,isSessionLocked:k,currentModelHasSentMessage:I,isBusy:R,availability:O,acpAvailability:D,onSelect:P,onApplyConfiguration:L,onSelectAcpAgent:B,favorites:F,showFavorites:H,showAgentModel:U,showFastMode:z,onSelectFavorite:G,onReorderFavorites:K,isReorderingFavorites:X,onEditFavorites:Q,newModelCoachMark:J,selectedFavoriteFocusRef:te,getPreferredModelForAgent:Z,anchor:se}=t,ce=c===void 0?!1:c,ae=u===void 0?\"top\":u,de=w===void 0?!1:w,ue=I===void 0?!0:I,pe=F===void 0?[]:F,be=H===void 0?!0:H,he=U===void 0?!0:U,ge=z===void 0?!0:z,ve=X===void 0?!1:X,[ye]=$.useState(N7o);let xe;e[0]!==ue||e[1]!==k||e[2]!==m||e[3]!==h||e[4]!==d?(xe=Ft=>pRt({favorite:Ft,isSessionLocked:k,currentModelHasSentMessage:ue,selectedModel:d,selectedAgentType:h,selectedAcpAgentId:m}),e[0]=ue,e[1]=k,e[2]=m,e[3]=h,e[4]=d,e[5]=xe):xe=e[5];const ke=xe;let Se;e[6]!==ke?(Se=Ft=>ke({type:\"built-in\",configuration:{model:Ft}}),e[6]=ke,e[7]=Se):Se=e[7];const De=Se,je=d===void 0?void 0:E(d),{value:Ne,supported:Le}=O7o(je),ze=h===\"acp\"&&m!==void 0?_A[m]:h===\"acp\"?\"Agent\":_A[h];let Ke;e[8]!==x||e[9]!==m||e[10]!==g||e[11]!==h||e[12]!==d?(Ke=h===\"acp\"&&m!==void 0?NX({providerId:m,modelId:g,models:x}):d===void 0?\"Model\":x9[d],e[8]=x,e[9]=m,e[10]=g,e[11]=h,e[12]=d,e[13]=Ke):Ke=e[13];const Ze=Ke;let Ye;e[14]!==Z||e[15]!==_?(Ye=Ft=>{const Dt=Z?.(Ft);return Dt!==void 0&&_[Ft].includes(Dt)?Dt:_[Ft][0]},e[14]=Z,e[15]=_,e[16]=Ye):Ye=e[16];const Qe=Ye;let Ue;e[17]!==Qe||e[18]!==P?(Ue=Ft=>{const Dt=Qe(Ft);Dt!==void 0&&P(Dt,{focusComposer:!1})},e[17]=Qe,e[18]=P,e[19]=Ue):Ue=e[19];const We=Ue;let Ve;e[20]!==B||e[21]!==m||e[22]!==g?(Ve=Ft=>{m===void 0||g===void 0||B(m,g,{focusComposer:!1,acpConfig:Ft})},e[20]=B,e[21]=m,e[22]=g,e[23]=Ve):Ve=e[23];const He=Ve,it=pe.findIndex(Ft=>ZSo({favorite:Ft,selectedModel:d,selectedAgentType:h,selectedAcpAgentId:m,selectedAcpModel:g,selectedAcpConfig:r,currentConfiguration:je}));let ft,gt;if(e[24]!==D||e[25]!==O||e[26]!==pe||e[27]!==De||e[28]!==P||e[29]!==B||e[30]!==x||e[31]!==ke||e[32]!==m||e[33]!==g||e[34]!==h||e[35]!==d||e[36]!==_||e[37]!==v){const Ft=k7o({visibleProviderModels:v,selectedAgentType:h,selectedAcpAgentId:m,selectedAcpModel:g});let Dt;if(e[40]!==pe||e[41]!==m||e[42]!==g||e[43]!==h||e[44]!==d){let en;e[46]!==m||e[47]!==g||e[48]!==h||e[49]!==d?(en=Li=>mRi({favorite:Li,selectedModel:d,selectedAgentType:h,selectedAcpAgentId:m,selectedAcpModel:g}),e[46]=m,e[47]=g,e[48]=h,e[49]=d,e[50]=en):en=e[50],Dt=pe.some(en),e[40]=pe,e[41]=m,e[42]=g,e[43]=h,e[44]=d,e[45]=Dt}else Dt=e[45];ft=Dt;let Xt;e[51]!==O?(Xt=en=>O[en],e[51]=O,e[52]=Xt):Xt=e[52];let hn;e[53]!==De||e[54]!==P||e[55]!==h||e[56]!==d||e[57]!==_?(hn=en=>_[en].map(Li=>({id:`${en}:${Li}`,label:x9[Li],agentLabel:_A[en],icon:p.jsx(TNi,{agentType:en}),selected:h===en&&Li===d,tooltip:De(Li)?\"Opens in new chat\":void 0,onSelect:()=>P(Li,{focusComposer:!1})})),e[53]=De,e[54]=P,e[55]=h,e[56]=d,e[57]=_,e[58]=hn):hn=e[58];let Hn;e[59]!==D?(Hn=en=>D[en],e[59]=D,e[60]=Hn):Hn=e[60],gt=[...iKn.filter(Xt).flatMap(hn),...rKn.filter(Hn).flatMap(en=>Ft[en].map(Li=>({id:`${en}:${Li}`,label:NX({providerId:en,modelId:Li,models:x}),agentLabel:_A[en],icon:p.jsx(ANi,{acpAgentId:en}),selected:h===\"acp\"&&en===m&&Li===g,tooltip:ke({type:\"acp\",acpAgentId:en})?\"Opens in new chat\":void 0,onSelect:()=>B(en,Li,{focusComposer:!1})})))],e[24]=D,e[25]=O,e[26]=pe,e[27]=De,e[28]=P,e[29]=B,e[30]=x,e[31]=ke,e[32]=m,e[33]=g,e[34]=h,e[35]=d,e[36]=_,e[37]=v,e[38]=ft,e[39]=gt}else ft=e[38],gt=e[39];const Tt=gt;let Ct;e[61]!==Tt||e[62]!==ft?(Ct=ft?void 0:Tt.find(M7o),e[61]=Tt,e[62]=ft,e[63]=Ct):Ct=e[63];const _t=Ct,Vt=be,bt=be&&pe.length<3;let wt;e[64]!==J||e[65]!==Q?(wt=()=>{J?.onDismiss(),Q?.()},e[64]=J,e[65]=Q,e[66]=wt):wt=e[66];const Nt=wt;let Wt;e[67]!==n||e[68]!==i||e[69]!==ue||e[70]!==pe||e[71]!==Nt||e[72]!==R||e[73]!==ve||e[74]!==k||e[75]!==J||e[76]!==K||e[77]!==G||e[78]!==x||e[79]!==m||e[80]!==h||e[81]!==te||e[82]!==it||e[83]!==d||e[84]!==_t||e[85]!==bt||e[86]!==be?(Wt=be&&p.jsxs(\"div\",{children:[p.jsx(E7o,{favorites:pe,openCodeModels:x,acpModelConfigOptions:n,acpModelConfigs:i,isBusy:R,isSessionLocked:k,currentModelHasSentMessage:ue,selectedModel:d,selectedAgentType:h,selectedAcpAgentId:m,onSelectFavorite:G,onReorderFavorites:K,isReorderingFavorites:ve,selectedFavoriteFocusRef:te,selectedFavoriteIndex:it,selectedNonLoadoutModel:_t}),bt&&p.jsx(sKn,{coachMark:J,side:\"right\",children:p.jsxs(Pu,{label:\"Add models\",className:\"mt-1 flex w-full cursor-default items-center gap-2 rounded-md py-1.5 pr-3 text-left text-sm text-muted-foreground outline-none data-[highlighted]:bg-popover-accent\",onClick:Nt,children:[p.jsx(\"span\",{className:\"flex w-6 shrink-0 justify-center\",children:p.jsx(Qc,{className:\"size-3.5\",\"aria-hidden\":\"true\"})}),p.jsx(\"span\",{className:\"min-w-0 truncate\",children:\"Add models\"}),p.jsx(co,{className:\"ml-auto size-3.5 shrink-0\",\"aria-hidden\":\"true\"})]})})]}),e[67]=n,e[68]=i,e[69]=ue,e[70]=pe,e[71]=Nt,e[72]=R,e[73]=ve,e[74]=k,e[75]=J,e[76]=K,e[77]=G,e[78]=x,e[79]=m,e[80]=h,e[81]=te,e[82]=it,e[83]=d,e[84]=_t,e[85]=bt,e[86]=be,e[87]=Wt):Wt=e[87];let Dn;e[88]!==be?(Dn=be&&p.jsx(\"div\",{className:\"border-t border-border/70\"}),e[88]=be,e[89]=Dn):Dn=e[89];let _n;e[90]!==D||e[91]!==ze||e[92]!==O||e[93]!==Qe||e[94]!==We||e[95]!==R||e[96]!==De||e[97]!==B||e[98]!==ye||e[99]!==ke||e[100]!==m||e[101]!==h||e[102]!==he||e[103]!==v?(_n=he&&p.jsx(fHe,{label:\"Agent\",value:ze,openFlyout:ye,children:Ft=>p.jsxs(p.Fragment,{children:[iKn.filter(Dt=>O[Dt]).map(Dt=>{const Xt=Qe(Dt);return p.jsx(ZU,{label:_A[Dt],selected:h===Dt,disabled:R,closeOnClick:!1,tooltip:Xt!==void 0&&De(Xt)?\"Opens in new chat\":void 0,onSelect:()=>{Ft(),We(Dt)}},Dt)}),rKn.filter(Dt=>D[Dt]).map(Dt=>{const Xt=v[Dt][0];return p.jsx(ZU,{label:_A[Dt],selected:h===\"acp\"&&m===Dt,disabled:R||Xt===void 0,closeOnClick:!1,tooltip:ke({type:\"acp\",acpAgentId:Dt})?\"Opens in new chat\":void 0,onSelect:()=>{Xt!==void 0&&(Ft(),B(Dt,Xt,{focusComposer:!1}))}},Dt)})]})}),e[90]=D,e[91]=ze,e[92]=O,e[93]=Qe,e[94]=We,e[95]=R,e[96]=De,e[97]=B,e[98]=ye,e[99]=ke,e[100]=m,e[101]=h,e[102]=he,e[103]=v,e[104]=_n):_n=e[104];let Vn;e[105]!==R||e[106]!==Ze||e[107]!==De||e[108]!==P||e[109]!==B||e[110]!==x||e[111]!==ye||e[112]!==m||e[113]!==g||e[114]!==h||e[115]!==d||e[116]!==he||e[117]!==de||e[118]!==_||e[119]!==v?(Vn=he&&p.jsx(fHe,{label:\"Model\",value:Ze,openFlyout:ye,children:Ft=>p.jsxs(p.Fragment,{children:[h!==\"acp\"&&_[h].map(Dt=>p.jsx(ZU,{label:x9[Dt],selected:Dt===d,disabled:R,closeOnClick:!1,tooltip:De(Dt)?\"Opens in new chat\":void 0,onSelect:()=>{Ft(),P(Dt,{focusComposer:!1})}},Dt)),h===\"acp\"&&m!==void 0&&v[m].map(Dt=>p.jsx(ZU,{wrapLabel:!0,secondaryLabel:de&&m===\"opencode\"?x?.find(Xt=>Xt.id===Dt)?.provider?.label:void 0,label:NX({providerId:m,modelId:Dt,models:x}),selected:Dt===g,disabled:R,closeOnClick:!1,onSelect:()=>{Ft(),B(m,Dt,{focusComposer:!1})}},Dt))]})}),e[105]=R,e[106]=Ze,e[107]=De,e[108]=P,e[109]=B,e[110]=x,e[111]=ye,e[112]=m,e[113]=g,e[114]=h,e[115]=d,e[116]=he,e[117]=de,e[118]=_,e[119]=v,e[120]=Vn):Vn=e[120];let Zt;e[121]!==n||e[122]!==je||e[123]!==Le||e[124]!==Ne||e[125]!==ce||e[126]!==He||e[127]!==o||e[128]!==L||e[129]!==ye||e[130]!==m||e[131]!==r||e[132]!==h||e[133]!==ge?(Zt=h===\"acp\"?p.jsx(QSo,{openFlyout:ye,discovered:n,acpAgentId:m,config:r,onSelectConfig:He,onSessionConfigChange:o}):p.jsxs(p.Fragment,{children:[p.jsx(fHe,{label:\"Effort\",value:Ne,disabled:!Le,openOnHover:!0,openFlyout:ye,tooltip:Le?void 0:\"Not supported for this model\",children:Ft=>je!==void 0&&p.jsx(D7o,{configuration:je,closeSubmenu:Ft,onApply:L})}),ge&&p.jsx(P7o,{shortcut:ce,configuration:je,onApply:L})]}),e[121]=n,e[122]=je,e[123]=Le,e[124]=Ne,e[125]=ce,e[126]=He,e[127]=o,e[128]=L,e[129]=ye,e[130]=m,e[131]=r,e[132]=h,e[133]=ge,e[134]=Zt):Zt=e[134];let zt;e[135]!==Wt||e[136]!==Dn||e[137]!==_n||e[138]!==Vn||e[139]!==Zt?(zt=p.jsxs(p.Fragment,{children:[Wt,Dn,_n,Vn,Zt]}),e[135]=Wt,e[136]=Dn,e[137]=_n,e[138]=Vn,e[139]=Zt,e[140]=zt):zt=e[140];const ct=zt,Pt=Vt?\"flex w-[22rem] flex-col overflow-hidden bg-muted p-1\":\"grid w-[22rem] gap-1 overflow-y-auto p-1\",Rt=a??\"min(28rem, calc(100vh - 120px))\";let Yt;e[141]!==Rt?(Yt={maxHeight:Rt},e[141]=Rt,e[142]=Yt):Yt=e[142];let on;e[143]!==ct||e[144]!==Nt||e[145]!==R||e[146]!==Vt||e[147]!==J||e[148]!==Tt||e[149]!==bt?(on=Vt?p.jsxs(p.Fragment,{children:[p.jsx(\"div\",{className:\"flex min-h-0 flex-col rounded-md bg-popover p-1 ring-1 ring-popover-ring\",children:p.jsx(A7o,{searchableModels:Tt,isBusy:R,children:ct})}),p.jsxs(\"div\",{className:\"flex shrink-0 items-center gap-1.5 px-2 pt-2 pb-1 text-xs text-muted-foreground\",children:[p.jsx(sKn,{coachMark:bt?void 0:J,side:\"left\",children:p.jsxs(\"button\",{type:\"button\",className:\"flex items-center gap-1 rounded px-1 py-0.5 hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring\",onClick:Nt,children:[p.jsx(cv,{className:\"size-3\",\"aria-hidden\":\"true\"}),\"Edit\"]})}),p.jsx(Ss,{commandId:\"chat.toggleThinking\",className:\"rounded border border-border bg-popover px-1.5 py-px\"}),\"Cycle effort\"]})]}):ct,e[143]=ct,e[144]=Nt,e[145]=R,e[146]=Vt,e[147]=J,e[148]=Tt,e[149]=bt,e[150]=on):on=e[150];let jn;return e[151]!==se||e[152]!==ae||e[153]!==Pt||e[154]!==Yt||e[155]!==on?(jn=p.jsx(lp.Content,{finalFocus:!1,className:Pt,popupStyle:Yt,align:\"start\",side:ae,anchor:se,disableAnchorTracking:!1,children:on}),e[151]=se,e[152]=ae,e[153]=Pt,e[154]=Yt,e[155]=on,e[156]=jn):jn=e[156],jn}"
+    },
+    {
+      "label": "vmo_complete",
+      "asset": "R",
+      "start": 7897271,
+      "end": 7897575,
+      "sha256": "e69b8151703cf5e1c9aaf0b9b751cc848202136e010340ed95370a91af0984fa",
+      "utf8": "function vmo({isFastMode:t,agentType:e}){return{name:Wki,description:t?\"Disable fast mode\":`Enable ${e===\"codex\"?\"fast mode (uses credits 2x faster)\":e===\"cursor\"?\"fast mode (uses Cursor's faster variant)\":\"fast mode (uses extra credits)\"}`,argumentHint:\"\",effect:\"toggle_fast_mode\",supportedAgents:[e]}}"
+    },
+    {
+      "label": "Fl_complete",
+      "asset": "R",
+      "start": 8659951,
+      "end": 8660081,
+      "sha256": "ccb2120d5784bf8b42f84dd0435c28693de191832f1f8c0f816c5ff3dbd911e0",
+      "utf8": "const Fl=$.useCallback(()=>{if(!Ei||!Ye||it.isPending)return;const ln=!Ye.fastMode;it.mutate({sessionId:e,fastMode:ln})},[Ei,Ye,e,"
+    },
+    {
+      "label": "gZ_import",
+      "asset": "R",
+      "start": 59515,
+      "end": 59523,
+      "sha256": "aa1a438110a97e6db98e452f0b9d4321fbe52701592235807eb095f2e6f2e7f5",
+      "utf8": "jK as gZ"
+    },
+    {
+      "label": "jK_Kc_export",
+      "asset": "B",
+      "start": 3485912,
+      "end": 3485920,
+      "sha256": "677a421f8fadd3ac4831eeb123fd3f6a87562e48815dcbdefce921ef343210b0",
+      "utf8": "Kc as jK"
+    },
+    {
+      "label": "ugo_complete",
+      "asset": "R",
+      "start": 7938107,
+      "end": 7941360,
+      "sha256": "85eb5939de7690fb0bae21f88781fe668730a35d4460a3e3e7e3220b60e43c3e",
+      "utf8": "function ugo(t){const e=ne.c(51),{localWorkspaceId:n,selectedSessionId:i,selectedSession:r,selectedAgentType:o,selectedModel:a,selectedAcpAgentId:c,selectedAcpModel:u,currentModelHasSentMessage:d,isSessionLocked:h,focusComposer:m,navigateToSession:g}=t,_=d===void 0?!0:d,v=Wue(),{mutate:x,isPending:w}=g5r(i),{mutate:E,isPending:k}=b5r(),I=_5r(),R=w||k||v.isPending;let O;e[0]!==a||e[1]!==r?.fastMode||e[2]!==r?.thinkingLevel?(O=a===void 0?void 0:fUt({model:a,thinkingLevel:r?.thinkingLevel,fastMode:r?.fastMode??!1}),e[0]=a,e[1]=r?.fastMode,e[2]=r?.thinkingLevel,e[3]=O):O=e[3];const D=O,P=I.isPending&&I.variables?.sessionId===i?I.variables.configuration:D;let L;e[4]!==P||e[5]!==h||e[6]!==n||e[7]!==r?.thinkingLevel||e[8]!==i||e[9]!==I?(L=te=>{P!==void 0&&te.model===P.model&&te.agent===P.agent&&te.thinkingLevel===P.thinkingLevel&&te.fastMode===P.fastMode||(I.mutate({sessionId:i,localWorkspaceId:n,configuration:te}),h&&te.agent===\"claude\"&&te.thinkingLevel!==r?.thinkingLevel&&cgo({sessionId:i,model:te.model}))},e[4]=P,e[5]=h,e[6]=n,e[7]=r?.thinkingLevel,e[8]=i,e[9]=I,e[10]=L):L=e[10];const B=L;let F;e[11]!==B||e[12]!==v||e[13]!==_||e[14]!==m||e[15]!==h||e[16]!==n||e[17]!==g||e[18]!==o||e[19]!==a||e[20]!==r?.fastMode||e[21]!==i||e[22]!==x||e[23]!==E?(F=(te,Z)=>{const{model:se,configuration:ce}=te,ae=gu(se),de=o!==ae,ue=a!==se,pe=h&&noi({currentAgentType:o,currentModel:a,currentModelHasSentMessage:_,targetModel:se});if(h&&!pe&&!de&&ue&&yWn({sessionId:i}),pe){v.mutate({localWorkspaceId:n,model:se,thinkingLevel:ce?.thinkingLevel,fastMode:ce?.fastMode??r?.fastMode},{onSuccess:be=>{g(be.id)},onError:be=>{Bt.error(\"Failed to create session:\",be),er.error(rc(be),n)}});return}ce!==void 0?B(ce):de?x({localWorkspaceId:n,agentType:ae,model:se}):ue&&E({sessionId:i,localWorkspaceId:n,model:se}),Z?.focusComposer!==!1&&m()},e[11]=B,e[12]=v,e[13]=_,e[14]=m,e[15]=h,e[16]=n,e[17]=g,e[18]=o,e[19]=a,e[20]=r?.fastMode,e[21]=i,e[22]=x,e[23]=E,e[24]=F):F=e[24],r?.fastMode;const H=F;let U;e[25]!==B||e[26]!==o||e[27]!==a?(U=te=>{o===gu(te.model)&&NH(a)===NH(te.model)&&B(te)},e[25]=B,e[26]=o,e[27]=a,e[28]=U):U=e[28];const z=U;let G;e[29]!==v||e[30]!==m||e[31]!==h||e[32]!==n||e[33]!==g||e[34]!==c||e[35]!==u||e[36]!==o||e[37]!==i||e[38]!==x?(G=(te,Z,se)=>{const ce=o!==\"acp\",ae=c!==te,de=u!==Z;if(h&&(ce||ae)){v.mutate({localWorkspaceId:n,agentType:\"acp\",acpAgentId:te,model:Z,acpConfig:se?.acpConfig},{onSuccess:ue=>{g(ue.id)},onError:ue=>{Bt.error(\"Failed to create session:\",ue),er.error(rc(ue),n)}});return}h&&de&&yWn({sessionId:i}),x({localWorkspaceId:n,agentType:\"acp\",model:Z,acpAgentId:te,acpConfig:se?.acpConfig},{onError:ue=>er.error(rc(ue),n)}),se?.focusComposer!==!1&&m()},e[29]=v,e[30]=m,e[31]=h,e[32]=n,e[33]=g,e[34]=c,e[35]=u,e[36]=o,e[37]=i,e[38]=x,e[39]=G):G=e[39];const K=G;let X;e[40]!==B||e[41]!==P||e[42]!==r?(X=()=>{if(r===void 0||P===void 0)return!1;const te=ari(P);if(te===void 0)return!1;B(te)},e[40]=B,e[41]=P,e[42]=r,e[43]=X):X=e[43];const Q=X;let J;return e[44]!==P||e[45]!==K||e[46]!==z||e[47]!==H||e[48]!==Q||e[49]!==R?(J={configuration:P,isModelPickerBusy:R,handleModelSelect:H,handleApplyConfiguration:z,handleAcpAgentSelect:K,handleToggleThinking:Q},e[44]=P,e[45]=K,e[46]=z,e[47]=H,e[48]=Q,e[49]=R,e[50]=J):J=e[50],J}"
+    },
+    {
+      "label": "P7o_complete",
+      "asset": "R",
+      "start": 8603186,
+      "end": 8603880,
+      "sha256": "38eda803bc7eedc180637549aa08ea07f3eadd22ad202992448ce3d2b517b898",
+      "utf8": "function P7o(t){const e=ne.c(15),{shortcut:n,configuration:i,onApply:r}=t;let o;e[0]!==i?(o=i!==void 0&&gZ(i.model),e[0]=i,e[1]=o):o=e[1];const a=o,c=a&&i?.fastMode===!0,u=!a,d=a?void 0:\"Not supported for this model\";let h;e[2]!==n||e[3]!==a?(h=n&&a&&p.jsx(\"span\",{\"aria-hidden\":!0,children:p.jsx(Ss,{commandId:\"chat.toggleFastMode\"})}),e[2]=n,e[3]=a,e[4]=h):h=e[4];let m;e[5]!==i||e[6]!==r||e[7]!==a?(m=_=>{i!==void 0&&a&&r({...i,fastMode:_})},e[5]=i,e[6]=r,e[7]=a,e[8]=m):m=e[8];let g;return e[9]!==c||e[10]!==u||e[11]!==d||e[12]!==h||e[13]!==m?(g=p.jsx(fRi,{label:\"Fast\",checked:c,disabled:u,tooltip:d,trailing:h,onCheckedChange:m}),e[9]=c,e[10]=u,e[11]=d,e[12]=h,e[13]=m,e[14]=g):g=e[14],g}"
+    },
+    {
+      "label": "ITo_capability",
+      "asset": "R",
+      "start": 8658059,
+      "end": 8658690,
+      "sha256": "64896b5cf8766ab8a4abe0b267d13dd043694c4fc04c344ec103c16ca2bb74ba",
+      "utf8": "pl=bt===\"acp\"?void 0:Ye?.model??(tF(gt)?gt:void 0),Ws=pl!==void 0?rwr(pl):void 0,ea=Ye?.lastUserMessageAt!==null,ba=$.useCallback(ln=>eTr({messages:ln,model:Ws}),[Ws]),{data:Gs}=kk({sessionId:e},ba),Oi=Gs??ea,{configuration:gr,isModelPickerBusy:Yr,handleModelSelect:Bs,handleApplyConfiguration:la,handleAcpAgentSelect:ca,handleToggleThinking:Fc}=ugo({localWorkspaceId:r,selectedSessionId:e,selectedSession:Ye,selectedAgentType:bt,selectedModel:Ws,selectedAcpAgentId:Nt,selectedAcpModel:Wt,currentModelHasSentMessage:Oi,isSessionLocked:ea,focusComposer:de,navigateToSession:d}),lr=xTo(gr),Ei=!!Ye&&Ws!==void 0&&gZ(Ws),hi=P&&bt===\"co"
+    },
+    {
+      "label": "Kc_complete",
+      "asset": "B",
+      "start": 302025,
+      "end": 302092,
+      "sha256": "6beb3e9805cf4c630585b7e7e499b166612eaedd99b0094afcda03f57748d9be",
+      "utf8": "function Kc(t){return t.startsWith(\"opus\")||fs(t)===\"codex\"||Zy(t)}"
+    },
+    {
+      "label": "ITo_conditional_fast_command",
+      "asset": "R",
+      "start": 8659152,
+      "end": 8659380,
+      "sha256": "73c395b4c392d006fe85d7e3d47b83b0a110563b95433789e800782c4d25bf4e",
+      "utf8": "Eu=$.useMemo(()=>vmo({isFastMode:Ye?.fastMode??!1,agentType:bt}),[Ye?.fastMode,bt]),fo=!Su(a),Fo=$.useMemo(()=>[...mmo({isCloudWorkspace:!fo}).filter(ln=>P||ln.name!==Gki),...mo?[mo]:[],...Ei?[Eu]:[]],[fo,Ei,P,Eu,mo]),rl=$.useMe"
+    },
+    {
+      "label": "command_dispatch",
+      "asset": "R",
+      "start": 8670420,
+      "end": 8671130,
+      "sha256": "08031abb3d4c7b32475a5462c5c556bfa3142a52daf7425929cf9c2713700930",
+      "utf8": "=g.trim();const hr=x.map(Oa=>Oa.id);let Ns=Q;if(!w&&!Q){const Oa=gWn($r);if(Oa){if(Oa.name===\"goal\"&&bt===\"codex\")if(hi)if(Oa.args)$r=Oa.args,Ns=!0;else{const Vf=Yl(\"goal\");Vf&&(pe({discardAttachments:!0}),ua(Vf,\"\"));return}else{er.error(\"Codex goals are not available in this chat.\",r);return}if(Oa.name!==\"goal\"){const Vf=Yl(Oa.name);if(gmo(Oa.name)&&!Vf){er.error(\"This command isn't available in this workspace.\",r);return}if(Vf&&Vf.supportedAgents.includes(bt)){pe({discardAttachments:!0}),ua(Vf,Oa.args);return}if(Oa.name===\"plan\"){er.error(\"Plan mode is not available in this chat.\",r);return}const ub=bt===\"acp\"?Nt===void 0?\"this agent\":_A[Nt]:_A[bt];er.error(`/${Oa.name} is not available for ${ub}.`,"
+    },
+    {
+      "label": "ua_to_Fl",
+      "asset": "R",
+      "start": 8667418,
+      "end": 8667544,
+      "sha256": "918fbb7659e85b911d0d3d2f7f32a696b394ad5a30dd8871deff6cca8edf0d9b",
+      "utf8": "const ua=(ln,$r=\"\")=>{switch(ln.effect){case\"toggle_plan_mode\":return Jo?(Kl(),!0):!1;case\"toggle_fast_mode\":return Fl(),!0;ca"
+    },
+    {
+      "label": "yet_complete",
+      "asset": "B",
+      "start": 1113323,
+      "end": 1113682,
+      "sha256": "982f66537e3df2e235228b14cd042e0aa31204641ce322c5b0617b7d9479b85f",
+      "utf8": "async function yet(t,{sessionId:e,fastMode:s}){const n=t.dependencies.db,r=await Wo(t,e);if(r===void 0)throw new Error(`Cannot update fast mode for missing session ${e}`);if(s&&(!Qs(r.model)||!Kc(r.model)))throw new Error(`Fast mode is not supported by model ${r.model??\"unknown\"}`);await n.execute(\"UPDATE sessions SET fast_mode = ? WHERE id = ?\",[s?1:0,e])}"
+    }
+  ],
+  "current_files": [
+    {
+      "path": "src/features/chat/ChatModelPicker.tsx",
+      "sha256": "57a3e6ffd5d69b38e0d7b1ac217f5f2ae7ca1d3729d7061e004444b3180a11df",
+      "checkout_matches": true
+    },
+    {
+      "path": "src/features/chat/ModelPicker.tsx",
+      "sha256": "ce0208f4526d1c3ec580178ebcae77bec35bbd20a4f39c4df7c2b6f015134bc5",
+      "checkout_matches": true
+    },
+    {
+      "path": "src/features/chat/chatModelChoice.ts",
+      "sha256": "9e5c4b753ca59c4b853f6473ddec1aefbc8e0cb2f995495ce97d4cd99f397728",
+      "checkout_matches": true
+    },
+    {
+      "path": "src/features/chat/chatAgentChoice.ts",
+      "sha256": "205d78402404009c68f5485e2833dd2a6d294302072ffef3216854518c0e6712",
+      "checkout_matches": true
+    },
+    {
+      "path": "src/features/chat/composerModels.ts",
+      "sha256": "e9b1e5cb5d1bc04fed9b909300c5b7e29d3e159afec3fd31a27ac0ed21699cab",
+      "checkout_matches": true
+    },
+    {
+      "path": "src/features/chat/slashCommands.ts",
+      "sha256": "4f6c2586872a1275a8b983cd29b08ea4b54562e9432e90c40000350341887a50",
+      "checkout_matches": true
+    },
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "sha256": "3a520439bd8b09531e82e8dcb74e780c311cb5c079504b9c8796aeea12988fe2",
+      "checkout_matches": true
+    },
+    {
+      "path": "src/settings/agents/useLoadout.ts",
+      "sha256": "d180ccde34df8cdbb38eb863d3e8c093679ed6c92e7b06e238aae1b45b844eb4",
+      "checkout_matches": true
+    }
+  ],
+  "limits": [
+    "Retained real Conductor 0.87.6 static source only; no fresh native acquisition",
+    "Source semantic renderer worker exhausted heap historically; exact retained UTF-8 spans are used",
+    "No executed product RED or GREEN for this unit",
+    "No native/sidecar/provider or first/cold/already-live Fast application acceptance",
+    "No invented provider-facing option key or CLI flag",
+    "PR1111 actual merge and fresh-main reconciliation confirmed at 6dbbc4fc3a08ede3d98b6d14811b018a929015e7; successor hosted tests remain unexecuted"
+  ]
+}

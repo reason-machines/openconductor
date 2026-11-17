@@ -1,0 +1,83 @@
+{
+  "author": "Conductor Rebuild",
+  "kind": "STATIC_ACCESSIBLE_ACTION_LABEL_INQUIRY_NOT_BEHAVIOR",
+  "checked_main": "a66b72e9fc3790a0c93ac614a901da727929c5d9",
+  "original_archive_sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+  "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "retained_REA_lineage": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "REA_limit": "Historical semantic-renderer analysis exhausted heap. Exact original-upload bytes were freshly matched. No new REA analysis, app/archive reacquisition or reference evaluation.",
+  "reference_spans": [
+    {
+      "name": "jpa",
+      "utf8_half_open": [
+        10619879,
+        10624045
+      ],
+      "sha256": "f339bdf9702ca236ab96391682eeccb54f05f999690c91e2717e43f25d01535f",
+      "path": ".rea-work/auth-continuity-audit-current/jpa.literal.txt"
+    },
+    {
+      "name": "Fpa",
+      "utf8_half_open": [
+        10624045,
+        10629892
+      ],
+      "sha256": "91cfc778aef5e775a9fc3b2a1a60a2670a830f4de0bd4399e512e94a92c528ac",
+      "path": ".rea-work/auth-continuity-audit-current/Fpa.literal.txt"
+    },
+    {
+      "name": "YWt",
+      "utf8_half_open": [
+        10252774,
+        10254426
+      ],
+      "sha256": "e9c696637b6b19c5adf28ba025a7a8c026476840976293b67635917a95eda869",
+      "path": ".rea-work/next-signin-gap/YWt.literal.txt"
+    },
+    {
+      "name": "Zla",
+      "utf8_half_open": [
+        10250685,
+        10252749
+      ],
+      "sha256": "6538f2eac6a963a669d3a2d9f6c949c8728d2c7ce3405472a9c8f87ed05abf20",
+      "path": ".rea-work/next-signin-gap/Zla.literal.txt"
+    }
+  ],
+  "source_pins": [
+    {
+      "path": "src/settings/agents/kit.tsx",
+      "sha256": "aa00bc6c5bf131d2ff33d23ac39f8ac81636ec4f82a4e8937d7612162d94124b"
+    },
+    {
+      "path": "src/settings/agents/ClaudeTab.tsx",
+      "sha256": "6680823c5f7a08e1953177f17898eef2ecd7ff5c1ce4018eda27235b46b66e7c"
+    },
+    {
+      "path": "src/settings/agents/CodexTab.tsx",
+      "sha256": "a2a0fe9222f36dc2dcdbf3c49f9d1835a20466b1dab22457c6e03d615b3d6332"
+    },
+    {
+      "path": "src/settings/agents/ReasonTab.tsx",
+      "sha256": "12b1aeffa55130338828028331fe9aada7f6596affda65d98392dfd560e56f6e"
+    }
+  ],
+  "current_line": 253,
+  "reference_trace": [
+    "jpa/Fpa local API-key branches",
+    "YWt configured non-editing branch",
+    "Zla reveal action aria-label"
+  ],
+  "reference_hidden_action": "Reveal <label>",
+  "current_hidden_action": "Show <label>",
+  "visible_action_both": "Hide <label>",
+  "shared_consumer": "ReasonTab also uses SecretRow. This is a shared accessible-name hunk, not Reason authentication behavior evidence.",
+  "ownership_reference": "Ledger acec7049 reports no competing local sign-in/provider UI hunk, with partial coverage. Exact label inquiry was sent before any fix/regression preparation.",
+  "state": "SOURCE_DIFFERENCE_ONLY_NO_PRODUCT_PATCH_OR_REGRESSION",
+  "product_writes": false,
+  "reference_evaluated": false,
+  "tests_run": false,
+  "credentials_provider_native_browser": "NOT_RUN",
+  "queued_tab_label_packet": "1e51cafc unchanged; separate main a66 source-rebind sent to existing ACC",
+  "limitations": "No user-visible pixel, actual accessibility-tree, screen-reader, reveal/hide interaction, secret access, clipboard, persistence or native acceptance was exercised. Wording difference does not establish broken reveal behavior. Existing eight-case unit takes priority."
+}

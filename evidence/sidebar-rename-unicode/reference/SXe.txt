@@ -1,0 +1,7 @@
+function SXe(t){return{renameWorkspace:async e=>{const{workspace:s,newDirectoryName:n,workspaceNameToPersist:r,userSetWorkspaceName:i,newWorkspaceName:o}=e,a=s.localId;if(s.state==="initializing")throw new Error("Cannot rename while workspace is initializing");if((await kXe(t,{repositoryId:s.repositoryId,localWorkspaceId:a})).includes(n))throw new Error(`Name "${n}" is already used by another workspace`);const l=n===await bXe(t,a),u=await t.repo.getRepo(s.repositoryId);if(u.storageVersion<3)throw new Error("Rename is only supported for v3 workspaces");const d=await t.workspaceHelpers.getWorkspacePath({rootPath:u.rootPath,storageVersion:u.storageVersion,name:u.name},n),h=Is(s);if(d!==h&&await t.fs.exists({path:d,host:M})&&!await t.fs.isSymlink(d,M))throw new Error(`Directory "${n}" already exists on disk`);if(s.state==="ready"||s.state==="setting_up"){await EXe(t,{workspace:s,rename:{localWorkspaceId:a,newDirectoryName:n,workspaceNameToPersist:r,userSetWorkspaceName:i},workspacePath:h,newWorkspacePath:d,renamingBackToOriginal:l});return}await t.db.execute(`UPDATE workspaces
+                    SET directory_name = ?,
+                        secondary_directory_name = NULL,
+                        workspace_path = ?,
+                        workspace_name = ?,
+                        user_set_workspace_name = CASE WHEN ? = 1 THEN 1 ELSE user_set_workspace_name END
+                    WHERE local_id = ?`,[n,d,r,i,a])}}}

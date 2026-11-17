@@ -35,9 +35,19 @@ function replay(baseline: boolean) {
     assert.equal((result.stdout.match(/code: 'ERR_ASSERTION'/g) ?? []).length, 5, result.stdout);
     assert.doesNotMatch(result.stdout, /ReferenceError|TypeError|MODULE_NOT_FOUND|Unexpected FDA dependency|Forbidden boundary/);
   }
-  console.log(`${baseline ? "BASELINE" : "CANDIDATE"}\n${result.stdout}`);
+  process.stderr.write(`${baseline ? "BASELINE" : "CANDIDATE"}\n${result.stdout}`);
   return result.stdout;
 }
+
+test("Full Disk Access verifier protects the notification boundary after denial feedback", () => {
+  const result = spawnSync("python3", ["evidence/settings/full-disk-access/notification_guard_test.py"], {
+    cwd: root, encoding: "utf8", timeout: 15_000,
+  });
+  assert.ifError(result.error);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(result.stderr, /Ran 9 tests\b/);
+  assert.match(result.stderr, /\bOK\b/);
+});
 
 test("Full Disk Access: frozen seven-case fresh-main baseline and candidate", () => {
   const verified = spawnSync("python3", ["evidence/settings/full-disk-access/verify.py"], { cwd: root, encoding: "utf8", timeout: 15_000 });
@@ -74,4 +84,14 @@ test("Full Disk Access: source-backed opener rejection message", () => {
   assert.match(result.stdout, /ok 8 - FDA opener rejection keeps manual recovery message/);
   assert.match(result.stdout, /# pass 8\b/);
   assert.match(result.stdout, /# fail 0\b/);
+});
+
+test("Full Disk Access verifier permits only the exact Sync notification capture", () => {
+  const result = spawnSync("python3", ["evidence/settings/full-disk-access/config_sync_guard_test.py"], {
+    cwd: root, encoding: "utf8", timeout: 15_000,
+  });
+  assert.ifError(result.error);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(result.stderr, /Ran 6 tests\b/);
+  assert.match(result.stderr, /\bOK\b/);
 });

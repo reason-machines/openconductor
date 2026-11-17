@@ -1,0 +1,14 @@
+test_existing_producer_retains_witness_in_same_artifact (test_collect_macos_asset_witness.ProducerIntegrationTests.test_existing_producer_retains_witness_in_same_artifact) ... FAIL
+
+======================================================================
+FAIL: test_existing_producer_retains_witness_in_same_artifact (test_collect_macos_asset_witness.ProducerIntegrationTests.test_existing_producer_retains_witness_in_same_artifact)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/.ara-state/release/producer-retention/test_collect_macos_asset_witness.py", line 174, in test_existing_producer_retains_witness_in_same_artifact
+    self.assertIn("tools/collect_macos_asset_witness.py", workflow)
+AssertionError: 'tools/collect_macos_asset_witness.py' not found in 'name: Package (macOS)\n\non:\n  workflow_dispatch:\n\npermissions:\n  contents: read\n\njobs:\n  bundle:\n    name: Bundle and sign OpenConductor.app (ad-hoc)\n    runs-on: macos-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 22\n          cache: npm\n      - uses: dtolnay/rust-toolchain@stable\n      - uses: Swatinem/rust-cache@v2\n        with:\n          workspaces: src-tauri\n      # rust-cache restores target/ after checkout, so artifacts of the path crates\n      # (crates/scripts, crates/openconductor-db) look newer than their changed sources\n      # and Cargo reuses them stale. Rebuild them every run.\n      - name: Rebuild path crates\n        working-directory: src-tauri\n        run: cargo clean -p oc-scripts -p openconductor-db\n      - run: npm ci\n      - name: Build and sign (ad-hoc, hardened runtime)\n        run: scripts/package-macos.sh --identity -\n      - name: Check the bundle against the packaging contract\n        run: |\n          python3 tools/check_macos_bundle.py src-tauri/target/debug/bundle/macos/OpenConductor.app \\\n            --signing adhoc --report bundle-check.json\n      - name: Zip the bundle\n        run: ditto -c -k --keepParent src-tauri/target/debug/bundle/macos/OpenConductor.app OpenConductor-debug.zip\n      - uses: actions/upload-artifact@v4\n        if: always()\n        with:\n          name: OpenConductor-debug-macos\n          path: |\n            OpenConductor-debug.zip\n            bundle-check.json\n          retention-days: 7\n'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (failures=1)

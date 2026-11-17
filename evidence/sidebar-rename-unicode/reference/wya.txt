@@ -1,0 +1,1 @@
+function wya(){const t=ne.c(4),e=ib(sJ);let n;t[0]!==e?(n=e&&p.jsx(Sya,{localWorkspaceId:e.localWorkspaceId}),t[0]=e,t[1]=n):n=t[1];let i;return t[2]!==n?(i=p.jsx(kg,{id:sJ,children:p.jsx(nd,{className:"max-w-sm",overlayClassName:"backdrop-blur-none",children:n})}),t[2]=n,t[3]=i):i=t[3],i}

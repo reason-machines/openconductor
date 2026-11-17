@@ -1,0 +1,36 @@
+{
+  "status": "SOURCE_FIX_PENDING_CORRECTED_EXACT_HEAD_CI",
+  "ci_head": "8549d4790f69d0b3b9a76990836e96f30a6d87a3",
+  "job_id": 131285731506,
+  "files": [
+    {
+      "path": "src/features/diff/commentCancel.test.ts",
+      "original_sha256": "7081738042a7cc472aabc01acdc6f8da4aa63b479b5bb744babbccdef8ea8c8a",
+      "corrected_sha256": "2653fc217b0b5a84b16aa1898c9907e840bb4af9719f178a596e9cf27b6607a1",
+      "only_changes": [
+        "Import actual subscribeReviewComments",
+        "Bind actual subscribeReviewComments at strict VM boundary"
+      ],
+      "all_other_bytes_unchanged": true
+    },
+    {
+      "path": "src/features/diff/commentImeSubmit.test.ts",
+      "original_sha256": "f4df74049b561f325678c650ab3fa2737c683980b80d42369d8d62a8d5b591be",
+      "corrected_sha256": "11d997ab8694498f80c6e2708739251b098bc5a62615fc450c30c9fd50bb42f9",
+      "only_changes": [
+        "Import actual subscribeReviewComments",
+        "Bind actual subscribeReviewComments at strict VM boundary"
+      ],
+      "all_other_bytes_unchanged": true
+    }
+  ],
+  "product_changes": false,
+  "assertion_changes": false,
+  "guard_removals": false,
+  "type_suppressions": false,
+  "ci_failure_classification": "50 loader bootstrap failures, not business assertion failures",
+  "typecheck_at_ci_head": "PASS",
+  "local_pair_reproduction": "NOT_RUN_PENDING_EXISTING_SERIALIZED_REPLAY",
+  "corrected_local_replay": "NOT_RUN_PENDING_EXISTING_SERIALIZED_REPLAY",
+  "historical_original26_evidence": "UNCHANGED"
+}

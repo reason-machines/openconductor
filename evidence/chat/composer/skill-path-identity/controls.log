@@ -1,0 +1,194 @@
+(node:52) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Codex adapter keeps V1 separate from exact inline attachment text through queued drain
+ok 1 - Codex adapter keeps V1 separate from exact inline attachment text through queued drain
+  ---
+  duration_ms: 14.297582
+  type: 'test'
+  ...
+# Subtest: Codex sends each picked local loadout on dispatch, including queued changes and absent effort
+ok 2 - Codex sends each picked local loadout on dispatch, including queued changes and absent effort
+  ---
+  duration_ms: 15.681507
+  type: 'test'
+  ...
+# Subtest: an MCP elicitation asks for attention once; a second one while it waits asks again; a re-send does not
+ok 3 - an MCP elicitation asks for attention once; a second one while it waits asks again; a re-send does not
+  ---
+  duration_ms: 5.947851
+  type: 'test'
+  ...
+# Subtest: a consent while a tool approval waits asks for attention, as does the approval
+ok 4 - a consent while a tool approval waits asks for attention, as does the approval
+  ---
+  duration_ms: 5.77592
+  type: 'test'
+  ...
+# (node:68) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted slash choice preserves [{"kind":"file","path":"src/example.ts","label":"example.ts","directory":false},{"kind":"text","text":" keep suffix"}] through the actual adapter command
+ok 5 - mounted slash choice preserves [{"kind":"file","path":"src/example.ts","label":"example.ts","directory":false},{"kind":"text","text":" keep suffix"}] through the actual adapter command
+  ---
+  duration_ms: 471.133604
+  type: 'test'
+  ...
+# Subtest: mounted slash choice preserves [{"kind":"text","text":" "},{"kind":"file","path":"src/example.ts","label":"example.ts","directory":false},{"kind":"text","text":"\\n📄 keep suffix"}] through the actual adapter command
+ok 6 - mounted slash choice preserves [{"kind":"text","text":" "},{"kind":"file","path":"src/example.ts","label":"example.ts","directory":false},{"kind":"text","text":"\\n📄 keep suffix"}] through the actual adapter command
+  ---
+  duration_ms: 734.294486
+  type: 'test'
+  ...
+# Subtest: mounted slash choice preserves [{"kind":"file","path":"src/example.ts","label":"example.ts","directory":false},{"kind":"file","path":"src/other.ts","label":"other.ts","directory":false}] through the actual adapter command
+ok 7 - mounted slash choice preserves [{"kind":"file","path":"src/example.ts","label":"example.ts","directory":false},{"kind":"file","path":"src/other.ts","label":"other.ts","directory":false}] through the actual adapter command
+  ---
+  duration_ms: 84.078057
+  type: 'test'
+  ...
+# Subtest: mounted Enter picks the same bounded completion without flattening an atom
+ok 8 - mounted Enter picks the same bounded completion without flattening an atom
+  ---
+  duration_ms: 79.798336
+  type: 'test'
+  ...
+# Subtest: mounted Tab picks the same bounded completion without flattening an atom
+ok 9 - mounted Tab picks the same bounded completion without flattening an atom
+  ---
+  duration_ms: 78.124947
+  type: 'test'
+  ...
+# Subtest: plain-text completion replaces only text before the caret
+ok 10 - plain-text completion replaces only text before the caret
+  ---
+  duration_ms: 36.84817
+  type: 'test'
+  ...
+# Subtest: agent-specific insert text preserves the suffix file identity
+ok 11 - agent-specific insert text preserves the suffix file identity
+  ---
+  duration_ms: 70.086566
+  type: 'test'
+  ...
+# Subtest: stale query or nonempty selection cannot replace a mixed draft
+ok 12 - stale query or nonempty selection cannot replace a mixed draft
+  ---
+  duration_ms: 112.429475
+  type: 'test'
+  ...
+# (node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: built-in /add-dir Enter opens the existing directory picker without sending
+ok 13 - built-in /add-dir Enter opens the existing directory picker without sending
+  ---
+  duration_ms: 234.202857
+  type: 'test'
+  ...
+# Subtest: built-in /add-dir Tab opens the existing directory picker without sending
+ok 14 - built-in /add-dir Tab opens the existing directory picker without sending
+  ---
+  duration_ms: 403.68668
+  type: 'test'
+  ...
+# Subtest: built-in /add-dir menu choice opens the existing directory picker without sending
+ok 15 - built-in /add-dir menu choice opens the existing directory picker without sending
+  ---
+  duration_ms: 101.941126
+  type: 'test'
+  ...
+# Subtest: directory selection preserves suffix text and attachments
+ok 16 - directory selection preserves suffix text and attachments
+  ---
+  duration_ms: 56.614328
+  type: 'test'
+  ...
+# Subtest: directory selection retains adjacent file node identity and complete attributes
+ok 17 - directory selection retains adjacent file node identity and complete attributes
+  ---
+  duration_ms: 71.724012
+  type: 'test'
+  ...
+# Subtest: agent keeps ordinary bounded insertion rather than opening directories
+ok 18 - agent keeps ordinary bounded insertion rather than opening directories
+  ---
+  duration_ms: 50.637409
+  type: 'test'
+  ...
+# Subtest: skill keeps ordinary bounded insertion rather than opening directories
+ok 19 - skill keeps ordinary bounded insertion rather than opening directories
+  ---
+  duration_ms: 69.197446
+  type: 'test'
+  ...
+# Subtest: Plan and Fast selection remain bounded text insertion, not immediate actions
+ok 20 - Plan and Fast selection remain bounded text insertion, not immediate actions
+  ---
+  duration_ms: 74.422638
+  type: 'test'
+  ...
+# Subtest: stale, nonempty and composing live selections cannot edit or open directories
+ok 21 - stale, nonempty and composing live selections cannot edit or open directories
+  ---
+  duration_ms: 122.389571
+  type: 'test'
+  ...
+# Subtest: built-in /mcp-status Enter opens status without sending
+ok 22 - built-in /mcp-status Enter opens status without sending
+  ---
+  duration_ms: 41.555899
+  type: 'test'
+  ...
+# Subtest: built-in /mcp-status Tab opens status without sending
+ok 23 - built-in /mcp-status Tab opens status without sending
+  ---
+  duration_ms: 46.373378
+  type: 'test'
+  ...
+# Subtest: built-in /mcp-status menu choice opens status without sending
+ok 24 - built-in /mcp-status menu choice opens status without sending
+  ---
+  duration_ms: 31.573862
+  type: 'test'
+  ...
+# Subtest: MCP status rejects stale, nonempty and composing selections
+ok 25 - MCP status rejects stale, nonempty and composing selections
+  ---
+  duration_ms: 161.107
+  type: 'test'
+  ...
+# Subtest: MCP show_mcp_status without immediate capability preserves bounded insertion
+ok 26 - MCP show_mcp_status without immediate capability preserves bounded insertion
+  ---
+  duration_ms: 73.069603
+  type: 'test'
+  ...
+# Subtest: MCP agent without immediate capability preserves bounded insertion
+ok 27 - MCP agent without immediate capability preserves bounded insertion
+  ---
+  duration_ms: 42.417682
+  type: 'test'
+  ...
+# Subtest: MCP skill without immediate capability preserves bounded insertion
+ok 28 - MCP skill without immediate capability preserves bounded insertion
+  ---
+  duration_ms: 67.430437
+  type: 'test'
+  ...
+# Subtest: missing directory capability preserves ordinary text completion
+ok 29 - missing directory capability preserves ordinary text completion
+  ---
+  duration_ms: 59.79057
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5855.890879

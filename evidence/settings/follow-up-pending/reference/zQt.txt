@@ -1,0 +1,1 @@
+function zQt(){const t=z.c(2);let e;t[0]===Symbol.for("react.memo_cache_sentinel")?(e=["updateDefaultMessageSendMode"],t[0]=e):e=t[0];let s;return t[1]===Symbol.for("react.memo_cache_sentinel")?(s={mutationKey:e,mutationFn:JUt},t[1]=s):s=t[1],Be(s)}

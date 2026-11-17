@@ -1,0 +1,286 @@
+{
+  "owner": "Conductor Rebuild / 1f14fa82-4ec3-41fc-b085-32ec441b4228",
+  "kind": "source-only-script-output-cursor-reassessment",
+  "main_checked": "021aeaa4027770258b4daae127bc829d1575d0ab",
+  "previous_main_checked": "5852f41eb4df5c6da9b976d7b8ef830a892aed8d",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "original_identity": {
+    "name": "renderApp-D_fmY7hW.js",
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "bytes": 11600457,
+    "acquisition": "Historical retained REA real-app renderer, not a new installed-app observation"
+  },
+  "spans": [
+    {
+      "symbol": "rSa",
+      "utf8_half_open": [
+        11167486,
+        11170601
+      ],
+      "sha256": "55b02cfb58c1416fce68bf0cc9178e9b37bed4e03ccb0de73661b7787d99fc95",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "w9e",
+      "utf8_half_open": [
+        6919236,
+        6922665
+      ],
+      "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "dno",
+      "utf8_half_open": [
+        6915051,
+        6916770
+      ],
+      "sha256": "c1caf84211af0d4cdc09cc07d3b7ecfc9b0dde7cbfa84704e5f2ce24109fd318",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "uno",
+      "utf8_half_open": [
+        6914630,
+        6915051
+      ],
+      "sha256": "85acecc59c4b24eb7a08bf143dcdc68903fffba9180d78c83559bfea2f1eb35b",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "cno",
+      "utf8_half_open": [
+        6914245,
+        6914630
+      ],
+      "sha256": "d256449d670e3c7e000f82530a8d2cfb494986c8559831ac1b2f74a92ed35cd5",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "lno",
+      "utf8_half_open": [
+        6913120,
+        6914245
+      ],
+      "sha256": "f0ce60ce9b64bb20c9526c841aec24bf2620c9c8bf1973dd083e218e8f4fd4a5",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "IJe",
+      "utf8_half_open": [
+        3139253,
+        3140055
+      ],
+      "sha256": "ea65e840d4491339eaeeed4beda371d58fc6a87b78fc14e50c6a32ac9915d081",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "gno",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6926664,
+        6929046
+      ],
+      "sha256": "647b58ff6d4712742e8946fdf3d8ef2bb31e578b3047a7d0f0a9384395ea7db3",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "OJs",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6571868,
+        6572718
+      ],
+      "sha256": "5690f01ab02ec3aa205005c2775965062bbdcef532d855a294e14a719095dd41",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "xEi",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6568897,
+        6571703
+      ],
+      "sha256": "c9eafaa506a034b54ffb3e6f82f0635e7509d7a7e9672fc4aaca171b09303bc3",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "AJs",
+      "asset": "renderer",
+      "utf8_half_open": [
+        6571703,
+        6571748
+      ],
+      "sha256": "2a35b68dafaa319ea940d805be477f8002d9bc3aa0c439cfe9d84752af590f5e",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "aSa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11170916,
+        11171573
+      ],
+      "sha256": "68f370d7469b65a71859999fe41df5b274073483a74d21f2874fa84daa62ecce",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "lSa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11171573,
+        11171911
+      ],
+      "sha256": "cfab3b95d6f1316ab61b7016395f89925f66289ebe072451938c3f481c52ec2a",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "uSa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11171943,
+        11172105
+      ],
+      "sha256": "09da707923a705cc9c8f93572eb11724514f8a7d2e75bc45d89020a36fedd4e9",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "terminal-registry",
+      "asset": "index",
+      "utf8_half_open": [
+        3235824,
+        3238055
+      ],
+      "sha256": "06ca95b44c6f281770cfcfbe91db8e39ed25dffbe9eedd267c531d1f3cbf9fd3",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "terminal-registry-import-join",
+      "asset": "renderer",
+      "utf8_half_open": [
+        57236,
+        57244
+      ],
+      "sha256": "1e92eb0abc75e1519656ec4bf873c2b213163f66a6deff71f2182e6fede28d44",
+      "boundary": "Exact retained call/import fragment"
+    },
+    {
+      "symbol": "terminal-registry-export-join",
+      "asset": "index",
+      "utf8_half_open": [
+        3483880,
+        3483888
+      ],
+      "sha256": "960391331c3c835441e1261717616a0003a67ae9e1c0abdb4fe48480313ac71f",
+      "boundary": "Exact retained call/import fragment"
+    },
+    {
+      "symbol": "run-output-call",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7197564,
+        7197670
+      ],
+      "sha256": "79b678d8f2dc8a0784344b21810124a0ef65049f8a17fbf14d798f418d5d769b",
+      "boundary": "Exact retained call/import fragment"
+    }
+  ],
+  "supporting_original_identity": {
+    "asset": "index",
+    "name": "index-BGEQ8YjU.js",
+    "bytes": 3493297,
+    "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "current_source": [
+    {
+      "path": "src/components/ScriptOutput.tsx",
+      "sha256": "7c72ac02fadf5d358cb0a7e7a6b8a5375ebadf7baae6dfee694d1e6e1ee9af47",
+      "bytes": 6230,
+      "unchanged_from_previous_assessment": false
+    },
+    {
+      "path": "src/components/ScriptsPanel.tsx",
+      "sha256": "ca77d0fe79f399332a6737fa29b69339b0691bffcaf30055295a77cd76657bb0",
+      "bytes": 25193,
+      "unchanged_from_previous_assessment": false
+    },
+    {
+      "path": "src/theme/tokens.css",
+      "sha256": "6d78f6f09053db08211e122fb44da4e55e8f420480a0f426d1ad08bf70e05afb",
+      "bytes": 33442,
+      "unchanged_from_previous_assessment": true
+    },
+    {
+      "path": "src/theme/scriptTerminal.css",
+      "sha256": "020934f651ae79f419bf07083bac0249959702e54fa76b947297b589ce161cc7",
+      "bytes": 1705,
+      "unchanged_from_previous_assessment": true
+    },
+    {
+      "path": "src/components/scriptOutput.css",
+      "sha256": "f72e2247cce6f8eb2d7b785378744192b5b77765ec0cd9d7c036eb7520f552c2",
+      "bytes": 383,
+      "unchanged_from_previous_assessment": true
+    }
+  ],
+  "static_checks": {
+    "producer_renders_run_component": true,
+    "run_component_passes_run_config_to_anchor": true,
+    "anchor_registers_run_surface_config": true,
+    "registry_alias_export_import_join": true,
+    "registry_upsert_preserves_surface_config": true,
+    "consumer_reads_surface_configs_and_renders_wrapper": true,
+    "wrapper_selects_run_terminal_component": true,
+    "setup_explicitly_hides_cursor": true,
+    "run_cursor_default_independent_of_input_disable": true,
+    "current_separate_setup_spotlight_run_calls": true,
+    "run_calls_shared_hook_without_show_cursor_override": true,
+    "hook_defaults_show_cursor_true": true,
+    "hook_passes_show_cursor_to_attachment": true,
+    "attachment_passes_show_cursor_to_get_or_create": true,
+    "get_or_create_passes_show_cursor_to_async_create": true,
+    "async_create_passes_show_cursor_to_constructor": true,
+    "original_constructor_enables_blink": true,
+    "original_constructor_receives_cursor_theme": true,
+    "original_cursor_theme_foreground_unless_explicitly_false": true,
+    "original_theme_updates_also_receive_show_cursor": true,
+    "current_constructor_has_one_disabled_blink_assignment": true,
+    "current_theme_has_one_transparent_cursor_assignment": true,
+    "current_cursor_token_is_zero_alpha": true,
+    "running_wrapper_supplies_input_callback": true,
+    "input_effect_enables_stdin": true
+  },
+  "verdict": "SOURCE_OPTION_MISMATCH_REVALIDATED; BEHAVIORAL_DEFECT_NOT_QUALIFIED",
+  "finding": "Run output retains blinking foreground cursor options in the original source chain. Current ScriptOutput disables blinking and refreshes a zero-alpha cursor theme even while its running input callback enables stdin.",
+  "smallest_candidate": "A future correction must distinguish the Run role at ScriptsPanel from Setup and unchanged Spotlight output; ScriptOutput cursor visibility must not be derived only from onInput. Exact corrective/test/publication lease remains pending.",
+  "important_counterexample": "Original Setup gno explicitly passes showCursor:false. Run rSa omits it even when disableStdin is true after exit. An unconditional visible cursor or onInput-derived visibility would not match these source contracts.",
+  "counterevidence_and_limits": [
+    "Source options are not proof that a cursor was visibly rendered. Output escape sequences, DEC cursor modes, focus and xterm rendering remain unobserved.",
+    "No original or rebuilt application was launched in this assessment.",
+    "No actual behavioral RED, product tests, local runtime, hosted CI, native execution, new dispatch or watcher.",
+    "Test-only preparation and ordinary automatic hosted baseline cleared. Parent authorizes the minimum Run callsite correction after actual public-option assertion RED; no onInput-derived visibility."
+  ],
+  "excluded": [
+    "Settings LoginTerminal",
+    "disclosure repair",
+    "generic terminal cursor-state",
+    "font-ready",
+    "resize geometry",
+    "native acceptance"
+  ],
+  "product_edits": false,
+  "test_edits": true,
+  "behavioral_tests": "NOT_RUN",
+  "native_acceptance": "NOT_RUN",
+  "new_rea_gaps": [],
+  "branch_unchanged": false,
+  "phase": "TEST_ONLY_HOSTED_BASELINE_PREPARED",
+  "source_control_publication": false,
+  "fixture": {
+    "path": "src/scripts/outputCursor.test.ts",
+    "sha256": "389728b652cfc0956a2af7d18ab85bd8dd4e6487f9a3b02f9c60c952364f758d",
+    "cases": 8,
+    "execution": "NOT_RUN",
+    "command": "node --test src/scripts/outputCursor.test.ts"
+  }
+}

@@ -221,3 +221,121 @@ fn result_serializes_with_conductor_field_names() {
         })
     );
 }
+
+// ── grep_workspace ────────────────────────────────────────────────────────────
+
+#[test]
+fn grep_workspace_literal_match() {
+    let t = TempDir::new("grep-literal");
+    t.write("src/main.rs", "fn main() {\n    println!(\"hello\");\n}\n");
+    t.write("src/lib.rs", "pub fn greet() -> &'static str {\n    \"hello\"\n}\n");
+    let result = grep_workspace(&t.root(), "hello", false, false, false).unwrap();
+    assert_eq!(result.files_searched, 2);
+    assert_eq!(result.matches.len(), 2);
+    assert!(!result.truncated);
+    // Both matches are on the second line of their files.
+    for m in &result.matches {
+        assert_eq!(m.line_number, 2);
+        assert_eq!(m.submatches.len(), 1);
+        assert!(m.line_text.contains("hello"));
+    }
+}
+
+#[test]
+fn grep_workspace_case_insensitive_by_default() {
+    let t = TempDir::new("grep-case");
+    t.write("a.txt", "Hello World\n");
+    // case-insensitive (default) finds it; case-sensitive misses.
+    let found = grep_workspace(&t.root(), "hello", false, false, false).unwrap();
+    assert_eq!(found.matches.len(), 1);
+    let miss = grep_workspace(&t.root(), "hello", false, true, false).unwrap();
+    assert_eq!(miss.matches.len(), 0);
+    assert_eq!(miss.files_searched, 1);
+}
+
+#[test]
+fn grep_workspace_whole_word() {
+    let t = TempDir::new("grep-word");
+    t.write("a.txt", "foobar foo\n");
+    // whole-word only matches standalone "foo".
+    let result = grep_workspace(&t.root(), "foo", false, true, true).unwrap();
+    assert_eq!(result.matches.len(), 1);
+    assert_eq!(result.matches[0].submatches.len(), 1);
+    // The submatch should cover only the standalone "foo" at offset 7.
+    assert_eq!(result.matches[0].submatches[0].start, 7);
+    assert_eq!(result.matches[0].submatches[0].end, 10);
+}
+
+#[test]
+fn grep_workspace_regex() {
+    let t = TempDir::new("grep-regex");
+    t.write("a.rs", "let x: u32 = 42;\nlet y: i64 = 7;\n");
+    // Match any let binding.
+    let result = grep_workspace(&t.root(), r"let \w+:", true, true, false).unwrap();
+    assert_eq!(result.matches.len(), 2);
+    assert!(!result.truncated);
+}
+
+#[test]
+fn grep_workspace_invalid_regex_error() {
+    let t = TempDir::new("grep-bad");
+    t.write("a.txt", "line\n");
+    let err = grep_workspace(&t.root(), r"[", true, false, false).unwrap_err();
+    assert!(err.starts_with("Invalid pattern: "), "got: {err}");
+}
+
+#[test]
+fn grep_workspace_empty_query_returns_empty() {
+    let t = TempDir::new("grep-empty");
+    t.write("a.txt", "content\n");
+    let result = grep_workspace(&t.root(), "", false, false, false).unwrap();
+    assert_eq!(result.matches.len(), 0);
+    assert_eq!(result.files_searched, 0);
+    assert!(!result.truncated);
+}
+
+#[test]
+fn grep_workspace_skips_binary() {
+    let t = TempDir::new("grep-bin");
+    // A file containing a null byte must not appear in results.
+    let bin_path = t.0.join("binary.bin");
+    fs::write(&bin_path, b"match\x00binary").unwrap();
+    t.write("text.txt", "match\n");
+    let result = grep_workspace(&t.root(), "match", false, true, false).unwrap();
+    // Only text.txt was searched.
+    assert_eq!(result.files_searched, 1);
+    assert_eq!(result.matches.len(), 1);
+    assert_eq!(result.matches[0].relative_path, "text.txt");
+}
+
+#[test]
+fn grep_workspace_multiple_submatches_per_line() {
+    let t = TempDir::new("grep-multi");
+    t.write("a.txt", "foo bar foo baz foo\n");
+    let result = grep_workspace(&t.root(), "foo", false, true, false).unwrap();
+    assert_eq!(result.matches.len(), 1);
+    assert_eq!(result.matches[0].submatches.len(), 3);
+}
+
+#[test]
+fn grep_workspace_respects_gitignore() {
+    let t = TempDir::new("grep-gitignore");
+    t.write(".gitignore", "ignored/\n");
+    t.write("ignored/secret.txt", "needle\n");
+    t.write("src/main.rs", "needle\n");
+    // Need a .git dir for git_ignore to activate.
+    fs::create_dir_all(t.0.join(".git")).unwrap();
+    let result = grep_workspace(&t.root(), "needle", false, true, false).unwrap();
+    // Only src/main.rs should be matched; ignored/ is excluded.
+    assert_eq!(result.matches.len(), 1);
+    assert_eq!(result.matches[0].relative_path, "src/main.rs");
+}
+
+#[test]
+fn grep_workspace_line_numbers_are_one_based() {
+    let t = TempDir::new("grep-lineno");
+    t.write("a.txt", "skip\nmatch\nskip\n");
+    let result = grep_workspace(&t.root(), "match", false, true, false).unwrap();
+    assert_eq!(result.matches.len(), 1);
+    assert_eq!(result.matches[0].line_number, 2);
+}

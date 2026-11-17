@@ -1,0 +1,155 @@
+{
+  "author": "Conductor Rebuild",
+  "kind": "SOURCE_ONLY_INACTIVE_REMOVE_PENDING_CANDIDATE",
+  "checked_main": "e6836acf258d6b526b5fb1a6d057aa8ee017dc2e",
+  "checkout_head": "df2507e4e0782e36ef4c800fe62351d4b23a4dfa",
+  "archive_sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+  "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "retained_REA_evidence": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference_spans": [
+    {
+      "name": "jpa",
+      "utf8_half_open": [
+        10619879,
+        10624045
+      ],
+      "sha256": "f339bdf9702ca236ab96391682eeccb54f05f999690c91e2717e43f25d01535f"
+    },
+    {
+      "name": "Fpa",
+      "utf8_half_open": [
+        10624045,
+        10629892
+      ],
+      "sha256": "91cfc778aef5e775a9fc3b2a1a60a2670a830f4de0bd4399e512e94a92c528ac"
+    },
+    {
+      "name": "Lzi",
+      "utf8_half_open": [
+        10618856,
+        10619593
+      ],
+      "sha256": "b2f76d662621b8185e61f2a6a75d90578ec7283f26fc59656d0096478cba0298"
+    },
+    {
+      "name": "YWt",
+      "utf8_half_open": [
+        10252774,
+        10254426
+      ],
+      "sha256": "e9c696637b6b19c5adf28ba025a7a8c026476840976293b67635917a95eda869"
+    },
+    {
+      "name": "Zla",
+      "utf8_half_open": [
+        10250685,
+        10252749
+      ],
+      "sha256": "6538f2eac6a963a669d3a2d9f6c949c8728d2c7ce3405472a9c8f87ed05abf20"
+    },
+    {
+      "name": "ri",
+      "utf8_half_open": [
+        1946250,
+        1946886
+      ],
+      "sha256": "096119830cd7b23994d99b625ee93b8d755d563d31a6a7d269365ec6abe51130"
+    },
+    {
+      "name": "Kss",
+      "utf8_half_open": [
+        1946886,
+        1947094
+      ],
+      "sha256": "b26153de791b7d8025ee795a9dce0a4d583dc9443a2f1ac8ae31cd70684fff9a"
+    },
+    {
+      "name": "SEe",
+      "utf8_half_open": [
+        1779466,
+        1779679
+      ],
+      "sha256": "44da8c1796e9064019c1adf851979dca6e85bfe3fae83f5a96ae63b3441c857a"
+    },
+    {
+      "name": "sprite-registry",
+      "utf8_half_open": [
+        1771732,
+        1772999
+      ],
+      "sha256": "4268034b165487e12e544d56ade36bde021b9c8d3a4388035d6c3493ac9027c1"
+    }
+  ],
+  "source_pins": [
+    {
+      "path": "src/settings/agents/kit.tsx",
+      "sha256": "ef11588cdd58193d684a912eefd0b543e15bf3a238ba4f48b2762fd4969bec6f"
+    },
+    {
+      "path": "src/settings/agents/kitModel.ts",
+      "sha256": "be6a94abe11962ca756be5733b946f7b5d34acafc567db937a8e1ce688352937"
+    },
+    {
+      "path": "src/settings/agents/icons.tsx",
+      "sha256": "c9f2647fdc104fe25ebcd4227d3765e0dd2fe1c990a816700063dc6f28da3e24"
+    },
+    {
+      "path": "src/settings/agents/ClaudeTab.tsx",
+      "sha256": "6680823c5f7a08e1953177f17898eef2ecd7ff5c1ce4018eda27235b46b66e7c"
+    },
+    {
+      "path": "src/settings/agents/CodexTab.tsx",
+      "sha256": "a2a0fe9222f36dc2dcdbf3c49f9d1835a20466b1dab22457c6e03d615b3d6332"
+    },
+    {
+      "path": "src/settings/agents/ReasonTab.tsx",
+      "sha256": "12b1aeffa55130338828028331fe9aada7f6596affda65d98392dfd560e56f6e"
+    },
+    {
+      "path": "src/settings/agents/secretEditorKeyLink.test.ts",
+      "sha256": "37a6e0de84b4ecacfa31ff59467158eacc01f4c23ce75957f2d47676fe053686"
+    },
+    {
+      "path": "src/settings/agents/agents.css",
+      "sha256": "5a5782488458b385aa106b4120dbad9fdc73633848037c740312d3330c5de7a6"
+    },
+    {
+      "path": "src/features/chat/ResetChatDialog.tsx",
+      "sha256": "b8604094ea0d412fda7d36d9faa33774fe5e7c9e128e95d9bcf3aad4dcb0cdf5"
+    },
+    {
+      "path": "src/styles.css",
+      "sha256": "39e0d91146ab47ef9cc1962dc4e27afb351466b715992391fd1a5da881e193eb"
+    },
+    {
+      "path": "src/components/pendingWorkspaceRow.css",
+      "sha256": "3ff46e80e33840f1576133d7c2f96bf353090c210c3536d2494d78648b1f8026"
+    }
+  ],
+  "reservation": "Ledger 48a48c5f-e05e-40e5-ac4d-ded2de17c9bb reserves SAME64 SecretRow remove-operation identity leaf; current 815033fb-9252-4cc2-b88b-3588b497e698 confirms sole owner with no recorded competing owner or intervening delivery, partial coverage",
+  "candidate_patch_sha256": "16786423fa3d1f61434b562d230047c504ee5116a9f92d174d651c72a78a84dc",
+  "candidate_source_sha256": "71ffa6296de889dd112b9cee9379eb6293abcbc958c0b77fbf64eff2f714009e",
+  "regression_sha256": "d2b4030ff178c115fcd5bfbad3e8a1c4090e6c7337b9fb956661fdd6dae4e0aa",
+  "regression_cases": 4,
+  "counterexample": "Configured local API-key row, pending onRemove/onDelete. Retained YWt sets its removal flag before the promise and clears it in finally; Zla consumes that flag for its 16px working indicator. Current main disables the row through shared busy but always renders TrashIcon. This is a static difference, not observed execution.",
+  "design": "Add only a removal lifetime flag around existing onDelete. Preserve run/copy policy and error handling, disabling and labels. Use the existing ResetChatDialog decorative 16px SVG precedent; no exact sprite or animation parity assertion.",
+  "protected": {
+    ".rea-work/local-provider-action-label64/proposal-v1/product.patch": "ec531e2bed066b378ca0c3bfc862fd91a97a512585727a44241024efdd4a4581",
+    ".rea-work/local-provider-action-label64/proposal-v1/secretRevealLabel.test.ts.txt": "8db2461a8d82202cf3d9804803530ec604cb52d469fad90430ae9124e776cac3",
+    ".rea-work/local-provider-action-label64/validation-prep-v1/inspect_tap.py": "c829c363fbb855e64ab1ec7550456ac9f6ea6f2308e884dfc3075efe509a67e3",
+    ".rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs": "1b71c9d3a01ff6661914b6867f4dc1e5f2a269d7e898ec82c652f427c29cca87"
+  },
+  "source_checks": "PASS",
+  "behavioral_tests": "NOT_RUN",
+  "reference_execution": "NOT_RUN",
+  "product_applied": false,
+  "runtime_intake": false,
+  "browser_native_provider_credentials": "NOT_RUN",
+  "limits": [
+    "Exact original-upload bytes matched; installed app/archive not reacquired.",
+    "Historical REA semantic-renderer analysis exhausted heap; no new REA analysis or vendor execution.",
+    "No mounted test, typecheck, build, CSS/animation rendering, screenshot, provider action, clipboard, credential operation, native launch or packaging.",
+    "ReasonTab shares the primitive but reference evidence covers local Claude/Codex API-key presentation only, not Reason authentication.",
+    "Existing reveal-label successor remains ahead; this packet creates no runtime intake, runner or allocation."
+  ]
+}

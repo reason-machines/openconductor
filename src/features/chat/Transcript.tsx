@@ -67,6 +67,22 @@ export interface TranscriptProps {
   notify?: MarkdownOptions["notify"];
 }
 
+const toolDisclosure = (() => {
+  let expanded: ReadonlyMap<string, boolean> = new Map();
+  const listeners = new Set<() => void>();
+  return {
+    getSnapshot: () => expanded,
+    subscribe(listener: () => void) {
+      listeners.add(listener);
+      return () => { listeners.delete(listener); };
+    },
+    toggle(id: string, defaultOpen: boolean) {
+      expanded = new Map(expanded).set(id, !isToolExpanded(id, expanded, defaultOpen));
+      for (const listener of listeners) listener();
+    },
+  };
+})();
+
 export function Transcript({
   transcript,
   searchEnabled = false,
@@ -91,8 +107,8 @@ export function Transcript({
   const day = useSyncExternalStore(clock.subscribe, clock.getSnapshot, clock.getSnapshot);
   const rows = useMemo(() => foldAgentRows(buildRows(transcript), transcript.activeTurn), [transcript]);
   const turns = useMemo(() => groupTurns(rows), [rows]);
-  const [toggled, setToggled] = useState<ReadonlyMap<string, boolean>>(new Map());
-  const toggleTool = (id: string, defaultOpen = false) => setToggled((prev) => new Map(prev).set(id, !isToolExpanded(id, prev, expandToolsByDefault || defaultOpen)));
+  const toggled = useSyncExternalStore(toolDisclosure.subscribe, toolDisclosure.getSnapshot, toolDisclosure.getSnapshot);
+  const toggleTool = (id: string, defaultOpen = false) => toolDisclosure.toggle(id, expandToolsByDefault || defaultOpen);
   const [summaries, setSummaries] = useState<ReadonlyMap<string, "expanded" | "collapsed">>(new Map());
   const ctx: RowContext = {
     stripAbsolutelyRight,
@@ -110,6 +126,7 @@ export function Transcript({
     workspacePath,
     onOpenFile,
     now: () => day,
+    toolNow: now,
     onForkToNewTab,
     onForkToNewWorkspace,
     forkDisabled,
@@ -179,6 +196,7 @@ interface RowContext {
   workspacePath?: string;
   onOpenFile?: (path: string) => void;
   now: () => number;
+  toolNow: () => number;
   notify?: TranscriptProps["notify"];
   onForkToNewTab?: (turnId: string) => void;
   onForkToNewWorkspace?: (turnId: string) => void;
@@ -224,11 +242,13 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
   const actions: Partial<Record<TurnMenuItem["id"], () => void>> = { "fork-tab": fork, "fork-workspace": forkWorkspace, "reset-chat": reset };
   const menuItems = turnMenuItems({ canForkToTab: !!fork, canForkToWorkspace: !!forkWorkspace, canReset: !!reset, forkPending: forkDisabled, resetBlocked: resetDisabled });
   const when = turnTime(row.startedAt, row.endedAt, ctx.now(), "en-US");
+  const interrupted = row.status === "cancelled" || (row.status === "failed"
+    && (row.error?.includes("aborted by user") || row.error?.includes("Interrupted by user")));
   return (
     <div className={`chat-turn-end oc-turn-footer status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
       {when ? <TurnDetails when={when} agent={turnAgent ? turnAgentLabel(row.model, turnAgent) : undefined} usage={row.usage} /> : null}
-      {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
-      {row.status === "cancelled" ? <span className="chat-badge">Interrupted by user</span> : null}
+      {row.status === "failed" && !interrupted ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
+      {interrupted ? <span className="chat-badge">Interrupted by user</span> : null}
       <span className="chat-turn-actions">
         {row.finalText ? <CopyButton text={row.finalText} label="Copy final message" /> : null}
         {row.retryPrompt && onRetry ? (
@@ -375,6 +395,9 @@ function Part({ partKey, part, preview = false, group, ctx }: { partKey: string;
             tool={call.tool}
             status={call.status}
             result={call.result}
+            rawResult={call.rawResult}
+            resultCreatedAt={call.resultCreatedAt}
+            now={ctx.toolNow}
             isError={call.status === "error"}
             open={ctx.isOpen(call.id, opensByDefault(call.tool))}
             onToggle={() => ctx.onToggle(call.id, opensByDefault(call.tool))}

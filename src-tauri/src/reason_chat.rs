@@ -188,6 +188,17 @@ pub async fn reason_account_status(app: AppHandle) -> Result<Account, String> {
 /// `reason call` reads of the Reason HTTP API, run at the same time.
 #[tauri::command]
 pub async fn reason_cloud_setup(app: AppHandle) -> Result<CloudSetup, String> {
+    let service = app.state::<SettingsService>();
+    let settings = service.get().map_err(|e| e.to_string())?;
+    if settings
+        .experimental
+        .extra
+        .get("experimental_cloud_ui")
+        .and_then(|v| v.as_bool())
+        != Some(true)
+    {
+        return Err("Cloud UI is disabled in Settings › Experimental.".into());
+    }
     with_cli(&app, |l, dir| l.cloud_setup(dir)).await
 }
 
@@ -269,6 +280,21 @@ pub async fn reason_api_call(
         code: "reason_unavailable".into(),
         message,
     };
+    {
+        let service = app.state::<SettingsService>();
+        let settings = service.get().map_err(|e| unavailable(e.to_string()))?;
+        if settings
+            .experimental
+            .extra
+            .get("experimental_cloud_ui")
+            .and_then(|v| v.as_bool())
+            != Some(true)
+        {
+            return Err(unavailable(
+                "Cloud UI is disabled in Settings › Experimental.".into(),
+            ));
+        }
+    }
     let (launch, workspace) = configured(&app).map_err(unavailable)?;
     let launch = launch
         .in_workspace(workspace.as_deref())
@@ -299,7 +325,11 @@ pub fn reason_open_chat(
 ) -> Result<(), String> {
     let provider = state.provider(&app)?;
     let cwd = PathBuf::from(cwd);
-    provider.open_chat(&chat_id, &cwd, session_id);
+    // M7: inject workspace-local env vars into the Reason agent process.
+    // Applied only when a new agent starts for this workspace; concurrent
+    // chats in the same workspace share the existing agent and its env.
+    let local_env = crate::settings::effective::local_env_for_dir(&cwd);
+    provider.open_chat(&chat_id, &cwd, session_id, local_env);
     let config = config.unwrap_or_default().into_iter();
     let config = config.map(|c| ConfigChoice {
         id: c.id,
@@ -341,6 +371,7 @@ pub async fn reason_prompt(
     text: String,
     attachments: Option<Vec<AttachmentArg>>,
     turn: Option<TurnArg>,
+    on_handoff: tauri::ipc::Channel<()>,
 ) -> Result<Value, String> {
     let provider = state.provider(&app)?;
     let attachments: Vec<Attachment> = attachments
@@ -365,7 +396,15 @@ pub async fn reason_prompt(
             _ => None,
         };
         around_turn(target, || {
-            provider.prompt_expected(&chat_id, &text, &attachments, ticket)
+            provider.prompt_expected_with_handoff(
+                &chat_id,
+                &text,
+                &attachments,
+                ticket,
+                Some(Box::new(move || {
+                    let _ = on_handoff.send(());
+                })),
+            )
         })
     })
     .await

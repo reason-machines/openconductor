@@ -14,14 +14,14 @@
 // checkpoints never mix with the workspace's Reason chat, while its status
 // still counts toward the workspace's (state/workspaceSessions.ts).
 
-import { invoke, isTauri } from "@tauri-apps/api/core";
+import { Channel, invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { applyReasonPayload, permissionPrompt, type ReasonPayload } from "./reason.ts";
 import { createChatRuntime, type ChatBackend } from "./chatRuntime.ts";
 import { desktopHost } from "./desktopHost.ts";
 import { withAttachments } from "../diff/chatAttachment.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
-import { withGeneralPreferences } from "../../settings/prompts.ts";
+import { withGeneralPreferences, withRenameBranch } from "../../settings/prompts.ts";
 import { localModelOptions } from "./chatModelChoice.ts";
 
 const EVENT = "claude-chat-event";
@@ -60,10 +60,12 @@ export const claudeBackend: ChatBackend<null> = {
   // After Reset chat deleted turns, the runtime opens a new Claude session
   // and the first attachment is the kept conversation ("Earlier
   // conversation.md"), so it reaches Claude the same way.
-  async prompt({ chatId, cwd, text, attachments, turn, firstMessage, repoPath, workspaceId }) {
+  async prompt({ chatId, cwd, text, attachments, turn, firstMessage, repoPath, workspaceId, onHandoff }) {
     const withPrefs = firstMessage && repoPath ? await withGeneral(text, repoPath, cwd) : text;
     const options = localModelOptions(chatId.replace(/:claude$/, ""), "claude");
-    return invoke("claude_prompt", { chatId, text: withAttachments(withPrefs, attachments), turn, workspaceId, options });
+    const handoff = new Channel<null>();
+    handoff.onmessage = () => onHandoff?.();
+    return invoke("claude_prompt", { chatId, text: withAttachments(withPrefs, attachments), turn, workspaceId, options, onHandoff: handoff });
   },
   // The backend tells a first Stop from a second (interrupt, then kill).
   cancel(chatId) {
@@ -83,7 +85,8 @@ export const claudeBackend: ChatBackend<null> = {
 async function withGeneral(text: string, repoPath: string, cwd: string): Promise<string> {
   try {
     const settings = await repoSettingsEffective(repoPath, cwd);
-    return withGeneralPreferences(text, settings.prompts.general?.value);
+    const withGnrl = withGeneralPreferences(text, settings.prompts.general?.value);
+    return withRenameBranch(withGnrl, settings.prompts.rename_branch?.value);
   } catch (e) {
     console.warn("claude chat: general preferences not applied", e);
     return text;

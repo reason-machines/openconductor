@@ -43,6 +43,7 @@ export interface DbWorkspaceRow {
   unreadChats?: { id: string; updatedAt: string }[];
   /** The open chat tabs besides the main chat (review, fork, "+"), oldest first; absent from rows of an older backend. */
   chatTabs?: StoredChatTab[];
+  transcriptChats?: Workspace["transcriptChats"];
   /** The main chat's own title once renamed ("Rename chat"); absent otherwise and from rows of an older backend. */
   chatTitle?: string | null;
   primaryChatId?: string;
@@ -109,6 +110,7 @@ export function workspaceFromRow(w: DbWorkspaceRow): Workspace {
     userSetWorkspaceName: w.userSetWorkspaceName || undefined,
     chatTitle: w.chatTitle ?? undefined,
     primaryChatId: w.primaryChatId ?? w.id,
+    transcriptChats: w.transcriptChats,
     activeSessionId: w.activeSessionId ?? undefined,
   };
 }

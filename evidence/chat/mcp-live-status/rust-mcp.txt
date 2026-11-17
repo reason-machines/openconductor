@@ -1,0 +1,21 @@
+   Compiling agent-harness v0.0.0 (/tmp/agent-harness-mcp-53346)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 14.31s
+     Running unittests /home/runner/.reason/workspace/sessions/53346d38-8a16-4a5f-ac4e-4fd35160d90f/repo/src-tauri/src/agent/mod.rs (target/debug/deps/agent_harness-588c4fc08542d69d)
+
+running 12 tests
+test codex_runner::mcp_status_tests::mcp_status_all_existing_write_failure_paths_clear_only_query_state ... ok
+test codex_runner::mcp_status_tests::mcp_status_approval_and_consent_retain_existing_owners ... ok
+test codex_runner::mcp_status_tests::mcp_status_buffered_during_start_turn_and_interrupt_preserves_turns ... ok
+test codex_runner::mcp_status_tests::mcp_status_close_shutdown_drop_and_fatal_start_clear_pending ... ok
+test codex_runner::mcp_status_tests::mcp_status_deadlines_cover_enqueue_pagination_and_buffered_interrupt ... ok
+test codex_runner::mcp_status_tests::mcp_status_empty_terminal_cursors_rpc_and_schema_failures_are_query_results ... ok
+test codex_runner::mcp_status_tests::mcp_status_exact_typed_ids_overlap_malformed_and_retry ... ok
+test codex_runner::mcp_status_tests::mcp_status_no_live_never_launches_or_emits_turns_and_public_drop_is_bounded ... ok
+test codex_runner::mcp_status_tests::mcp_status_pages_use_shared_unique_ids_and_preserve_tools_without_events ... ok
+test mcp_status::tests::mcp_status_normalizes_only_actual_rows_and_preserves_tools ... ok
+test mcp_status::tests::mcp_status_receiver_rejects_already_queued_success_after_deadline ... ok
+test mcp_status::tests::mcp_status_strict_required_nullable_and_optional_nonnullable ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 86 filtered out; finished in 6.48s
+
+note: clippy not installed; lint skipped

@@ -1,0 +1,95 @@
+{
+  "head": "b8c0fd22b6e40bf923ac80156097738fe70315a3",
+  "job_id": 130906158065,
+  "run_id": 43134415900,
+  "normalization_cases": {
+    "available": true,
+    "text": null,
+    "original_chars": 1323892,
+    "reason": null,
+    "total_lines": 20186,
+    "match_count": 16,
+    "matches": [
+      {
+        "line": 18413,
+        "text": "2026-11-12T01:27:07.8522875Z # Subtest: clone basename normalization: HTTPS mixed case"
+      },
+      {
+        "line": 18414,
+        "text": "2026-11-12T01:27:07.8523458Z ok 2944 - clone basename normalization: HTTPS mixed case"
+      },
+      {
+        "line": 18419,
+        "text": "2026-11-12T01:27:07.8525616Z # Subtest: clone basename normalization: SCP mixed case"
+      },
+      {
+        "line": 18420,
+        "text": "2026-11-12T01:27:07.8526152Z ok 2945 - clone basename normalization: SCP mixed case"
+      },
+      {
+        "line": 18425,
+        "text": "2026-11-12T01:27:07.8528388Z # Subtest: clone basename normalization: HTTPS repeated hyphens and trailing slash"
+      },
+      {
+        "line": 18426,
+        "text": "2026-11-12T01:27:07.8529123Z ok 2946 - clone basename normalization: HTTPS repeated hyphens and trailing slash"
+      },
+      {
+        "line": 18431,
+        "text": "2026-11-12T01:27:07.8531170Z # Subtest: clone basename normalization: SCP mixed case with dots and underscores"
+      },
+      {
+        "line": 18432,
+        "text": "2026-11-12T01:27:07.8531920Z ok 2947 - clone basename normalization: SCP mixed case with dots and underscores"
+      },
+      {
+        "line": 18437,
+        "text": "2026-11-12T01:27:07.8533877Z # Subtest: clone basename control: lowercase HTTPS"
+      },
+      {
+        "line": 18438,
+        "text": "2026-11-12T01:27:07.8534475Z ok 2948 - clone basename control: lowercase HTTPS"
+      },
+      {
+        "line": 18443,
+        "text": "2026-11-12T01:27:07.8536318Z # Subtest: clone basename control: lowercase SCP"
+      },
+      {
+        "line": 18444,
+        "text": "2026-11-12T01:27:07.8537023Z ok 2949 - clone basename control: lowercase SCP"
+      },
+      {
+        "line": 18449,
+        "text": "2026-11-12T01:27:07.8539146Z # Subtest: clone basename control: dots and underscores"
+      },
+      {
+        "line": 18450,
+        "text": "2026-11-12T01:27:07.8539689Z ok 2950 - clone basename control: dots and underscores"
+      },
+      {
+        "line": 18455,
+        "text": "2026-11-12T01:27:07.8541432Z # Subtest: clone basename control: local path basename"
+      },
+      {
+        "line": 18456,
+        "text": "2026-11-12T01:27:07.8541942Z ok 2951 - clone basename control: local path basename"
+      }
+    ],
+    "truncated": false
+  },
+  "obsolete_expectations": {
+    "from_line": 500,
+    "text": "2026-11-12T01:25:49.9478969Z   type: 'test'\n2026-11-12T01:25:49.9479359Z   ...\n2026-11-12T01:25:49.9938950Z # Subtest: recent repository selection uses https before cloning\n2026-11-12T01:25:49.9997979Z ok 49 - recent repository selection uses https before cloning\n2026-11-12T01:25:50.0041833Z   ---\n2026-11-12T01:25:50.0067931Z   duration_ms: 189.739792\n2026-11-12T01:25:50.0068379Z   type: 'test'\n2026-11-12T01:25:50.0068783Z   ...\n2026-11-12T01:25:50.0069345Z # Subtest: recent https selection changes the form but not the pending clone\n2026-11-12T01:25:50.0069995Z not ok 50 - recent https selection changes the form but not the pending clone\n2026-11-12T01:25:50.0070517Z   ---\n2026-11-12T01:25:50.0070835Z   duration_ms: 137.330922\n2026-11-12T01:25:50.0071226Z   type: 'test'\n2026-11-12T01:25:50.0071887Z   location: '/home/runner/work/openconductor/openconductor/src/components/cloneRecentPendingSelection.test.ts:125:3'\n2026-11-12T01:25:50.0072685Z   failureType: 'testCodeFailure'\n2026-11-12T01:25:50.0099993Z   error: |-\n2026-11-12T01:25:50.0227159Z     Expected values to be strictly deep-equal:\n2026-11-12T01:25:50.0277739Z     + actual - expected\n2026-11-12T01:25:50.0307658Z     \n2026-11-12T01:25:50.0372983Z       [\n2026-11-12T01:25:50.0397846Z         {\n2026-11-12T01:25:50.0460521Z     +     name: 'first',\n2026-11-12T01:25:50.0497635Z     -     name: 'First',\n2026-11-12T01:25:50.0502447Z           path: '/synthetic/initial',\n2026-11-12T01:25:50.0527717Z           remoteUrl: 'https://github.com/Acme/First.git'\n2026-11-12T01:25:50.0528379Z         }\n2026-11-12T01:25:50.0528792Z       ]\n2026-11-12T01:25:50.0529255Z     \n2026-11-12T01:25:50.0529681Z   code: 'ERR_ASSERTION'\n2026-11-12T01:25:50.0530138Z   name: 'AssertionError'\n2026-11-12T01:25:50.0530694Z   expected:\n2026-11-12T01:25:50.0531153Z     0:\n2026-11-12T01:25:50.0531655Z       remoteUrl: 'https://github.com/Acme/First.git'\n2026-11-12T01:25:50.0532206Z       path: '/synthetic/initial'\n2026-11-12T01:25:50.0532700Z       name: 'First'\n2026-11-12T01:25:50.0533092Z   actual:\n2026-11-12T01:25:50.0533484Z     0:\n2026-11-12T01:25:50.0534005Z       remoteUrl: 'https://github.com/Acme/First.git'\n2026-11-12T01:25:50.0534529Z       path: '/synthetic/initial'\n2026-11-12T01:25:50.0535004Z       name: 'first'\n2026-11-12T01:25:50.0535468Z   operator: 'deepStrictEqual'\n2026-11-12T01:25:50.0535953Z   stack: |-\n2026-11-12T01:25:50.0536958Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/cloneRecentPendingSelection.test.ts:132:14)\n2026-11-12T01:25:50.0537931Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-12T01:25:50.0538641Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-12T01:25:50.0539611Z   ...\n2026-11-12T01:25:50.0540266Z # Subtest: clone retry uses the recent https selection made while pending\n2026-11-12T01:25:50.0541100Z not ok 51 - clone retry uses the recent https selection made while pending\n2026-11-12T01:25:50.0541725Z   ---\n2026-11-12T01:25:50.0542170Z   duration_ms: 80.736256\n2026-11-12T01:25:50.0542714Z   type: 'test'\n2026-11-12T01:25:50.0543515Z   location: '/home/runner/work/openconductor/openconductor/src/components/cloneRecentPendingSelection.test.ts:139:3'\n2026-11-12T01:25:50.0544299Z   failureType: 'testCodeFailure'\n2026-11-12T01:25:50.0544794Z   error: |-\n2026-11-12T01:25:50.0545262Z     Expected values to be strictly deep-equal:\n2026-11-12T01:25:50.0545755Z     + actual - expected\n2026-11-12T01:25:50.0546207Z     \n2026-11-12T01:25:50.0546549Z       {\n2026-11-12T01:25:50.0547071Z     +   name: 'recentrepo',\n2026-11-12T01:25:50.0547564Z     -   name: 'RecentRepo',\n2026-11-12T01:25:50.0548039Z         path: '/synthetic/initial',\n2026-11-12T01:25:50.0548595Z         remoteUrl: 'https://github.com/Acme/RecentRepo.git'\n2026-11-12T01:25:50.0549145Z       }\n2026-11-12T01:25:50.0549539Z     \n2026-11-12T01:25:50.0549913Z   code: 'ERR_ASSERTION'\n2026-11-12T01:25:50.0550423Z   name: 'AssertionError'\n2026-11-12T01:25:50.0550833Z   expected:\n2026-11-12T01:25:50.0551320Z     remoteUrl: 'https://github.com/Acme/RecentRepo.git'\n2026-11-12T01:25:50.0551924Z     path: '/synthetic/initial'\n2026-11-12T01:25:50.0552375Z     name: 'RecentRepo'\n2026-11-12T01:25:50.0552820Z   actual:\n2026-11-12T01:25:50.0553274Z     remoteUrl: 'https://github.com/Acme/RecentRepo.git'\n2026-11-12T01:25:50.0553850Z     path: '/synthetic/initial'\n2026-11-12T01:25:50.0554317Z     name: 'recentrepo'\n2026-11-12T01:25:50.0554752Z   operator: 'deepStrictEqual'\n2026-11-12T01:25:50.0555177Z   stack: |-\n2026-11-12T01:25:50.0556058Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/cloneRecentPendingSelection.test.ts:149:14)\n2026-11-12T01:25:50.0557086Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-12T01:25:50.0557737Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-12T01:25:50.0558355Z   ...\n2026-11-12T01:25:50.0971874Z # Subtest: recent repository selection uses ssh before cloning\n2026-11-12T01:25:50.1018068Z ok 52 - recent repository selection uses ssh before cloning\n2026-11-12T01:25:50.1068074Z   ---\n2026-11-12T01:25:50.1074631Z   duration_ms: 49.943419\n2026-11-12T01:25:50.1102801Z   type: 'test'\n2026-11-12T01:25:50.1127489Z   ...\n2026-11-12T01:25:50.1257695Z # Subtest: recent ssh selection changes the form but not the pending clone\n2026-11-12T01:25:50.1258584Z not ok 53 - recent ssh selection changes the form but not the pending clone\n2026-11-12T01:25:50.1259216Z   ---\n2026-11-12T01:25:50.1259633Z   duration_ms: 52.141664\n2026-11-12T01:25:50.1260165Z   type: 'test'\n2026-11-12T01:25:50.1260963Z   location: '/home/runner/work/openconductor/openconductor/src/components/cloneRecentPendingSelection.test.ts:125:3'\n2026-11-12T01:25:50.1261844Z   failureType: 'testCodeFailure'\n2026-11-12T01:25:50.1262466Z   error: |-\n2026-11-12T01:25:50.1262884Z     Expected values to be strictly deep-equal:\n2026-11-12T01:25:50.1263385Z     + actual - expected\n2026-11-12T01:25:50.1263722Z     \n2026-11-12T01:25:50.1264041Z       [\n2026-11-12T01:25:50.1264988Z         {\n2026-11-12T01:25:50.1265460Z     +     name: 'first',\n2026-11-12T01:25:50.1265842Z     -     name: 'First',\n2026-11-12T01:25:50.1266359Z           path: '/synthetic/initial',\n2026-11-12T01:25:50.1266955Z           remoteUrl: 'https://github.com/Acme/First.git'\n2026-11-12T01:25:50.1267455Z         }\n2026-11-12T01:25:50.1267777Z       ]\n2026-11-12T01:25:50.1268103Z     \n2026-11-12T01:25:50.1268419Z   code: 'ERR_ASSERTION'\n2026-11-12T01:25:50.1268814Z   name: 'AssertionError'\n2026-11-12T01:25:50.1277656Z   expected:\n2026-11-12T01:25:50.1278090Z     0:\n2026-11-12T01:25:50.1278673Z       remoteUrl: 'https://github.com/Acme/First.git'\n2026-11-12T01:25:50.1279188Z       path: '/synthetic/initial'\n2026-11-12T01:25:50.1279969Z       name: 'First'\n2026-11-12T01:25:50.1280393Z   actual:\n2026-11-12T01:25:50.1280696Z     0:\n2026-11-12T01:25:50.1281125Z       remoteUrl: 'https://github.com/Acme/First.git'\n2026-11-12T01:25:50.1281603Z       path: '/synthetic/initial'\n2026-11-12T01:25:50.1282033Z       name: 'first'\n2026-11-12T01:25:50.1282438Z   operator: 'deepStrictEqual'\n2026-11-12T01:25:50.1282860Z   stack: |-\n2026-11-12T01:25:50.1283645Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/cloneRecentPendingSelection.test.ts:132:14)\n2026-11-12T01:25:50.1284543Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-12T01:25:50.1285221Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-12T01:25:50.1285766Z   ...\n2026-11-12T01:25:50.1337787Z # Subtest: clone retry uses the recent ssh selection made while pending\n2026-11-12T01:25:50.1367532Z not ok 54 - clone retry uses the recent ssh selection made while pending\n2026-11-12T01:25:50.1368274Z   ---\n2026-11-12T01:25:50.1393805Z   duration_ms: 30.296352\n2026-11-12T01:25:50.1403667Z   type: 'test'\n2026-11-12T01:25:50.1426928Z   location: '/home/runner/work/openconductor/openconductor/src/components/cloneRecentPendingSelection.test.ts:139:3'\n2026-11-12T01:25:50.1435943Z   failureType: 'testCodeFailure'\n2026-11-12T01:25:50.1436607Z   error: |-\n2026-11-12T01:25:50.1437712Z     Expected values to be strictly deep-equal:\n2026-11-12T01:25:50.1438243Z     + actual - expected\n2026-11-12T01:25:50.1438562Z     \n2026-11-12T01:25:50.1438817Z       {\n2026-11-12T01:25:50.1439196Z     +   name: 'recentrepo',\n2026-11-12T01:25:50.1439541Z     -   name: 'RecentRepo',\n2026-11-12T01:25:50.1439934Z         path: '/synthetic/initial',\n2026-11-12T01:25:50.1440413Z         remoteUrl: 'git@github.com:Acme/RecentRepo.git'\n2026-11-12T01:25:50.1440811Z       }\n2026-11-12T01:25:50.1441103Z     \n2026-11-12T01:25:50.1441394Z   code: 'ERR_ASSERTION'\n2026-11-12T01:25:50.1441749Z   name: 'AssertionError'\n2026-11-12T01:25:50.1442077Z   expected:\n2026-11-12T01:25:50.1442512Z     remoteUrl: 'git@github.com:Acme/RecentRepo.git'\n2026-11-12T01:25:50.1442942Z     path: '/synthetic/initial'\n2026-11-12T01:25:50.1443265Z     name: 'RecentRepo'\n2026-11-12T01:25:50.1443626Z   actual:\n2026-11-12T01:25:50.1443981Z     remoteUrl: 'git@github.com:Acme/RecentRepo.git'\n2026-11-12T01:25:50.1444751Z     path: '/synthetic/initial'\n2026-11-12T01:25:50.1445091Z     name: 'recentrepo'\n2026-11-12T01:25:50.1445454Z   operator: 'deepStrictEqual'\n2026-11-12T01:25:50.1445828Z   stack: |-\n2026-11-12T01:25:50.1446631Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/cloneRecentPendingSelection.test.ts:149:14)\n2026-11-12T01:25:50.1447594Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-12T01:25:50.1448209Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-12T01:25:50.1448743Z   ...\n2026-11-12T01:25:50.1513063Z # Subtest: clone URL disables autoCorrect before cloning\n2026-11-12T01:25:50.1531750Z ok 55 - clone URL disables autoCorrect before cloning\n2026-11-12T01:25:50.1532444Z   ---\n2026-11-12T01:25:50.1532830Z   duration_ms: 122.081868\n2026-11-12T01:25:50.1533271Z   type: 'test'\n2026-11-12T01:25:50.1533712Z   ...\n2026-11-12T01:25:50.1534276Z # Subtest: clone URL disables autoCapitalize before cloning\n2026-11-12T01:25:50.1534941Z ok 56 - clone URL disables autoCapitalize before cloning\n2026-11-12T01:25:50.1535455Z   ---\n2026-11-12T01:25:50.1535856Z   duration_ms: 91.817094\n2026-11-12T01:25:50.1536260Z   type: 'test'\n2026-11-12T01:25:50.1536661Z   ...\n2026-11-12T01:25:50.1537644Z # Subtest: clone URL keeps its existing input controls before cloning\n2026-11-12T01:25:50.1538392Z ok 57 - clone URL keeps its existing input controls before cloning\n2026-11-12T01:25:50.1538930Z   ---\n2026-11-12T01:25:50.1539288Z   duration_ms: 85.06401\n2026-11-12T01:25:50.1539745Z   type: 'test'\n2026-11-12T01:25:50.1540108Z   ...\n2026-11-12T01:25:50.1540599Z # Subtest: clone URL disables autoCorrect while cloning\n2026-11-12T01:25:50.1541621Z ok 58 - clone URL disables autoCorrect while cloning\n2026-11-12T01:25:50.1542092Z   ---\n2026-11-12T01:25:50.1542473Z   duration_ms: 50.293065\n2026-11-12T01:25:50.1542889Z   type: 'test'\n2026-11-12T01:25:50.1543296Z   ...\n2026-11-12T01:25:50.1543779Z # Subtest: clone URL disables autoCapitalize while cloning\n2026-11-12T01:25:50.1544472Z ok 59 - clone URL disables autoCapitalize while cloning\n2026-11-12T01:25:50.1544950Z   ---\n2026-11-12T01:25:50.1545291Z   duration_ms: 46.894117\n2026-11-12T01:25:50.1545770Z   type: 'test'\n2026-11-12T01:25:50.1546125Z   ...\n2026-11-12T01:25:50.1546757Z # Subtest: clone URL keeps its existing input controls while cloning\n2026-11-12T01:25:50.1547497Z ok 60 - clone URL keeps its existing input controls while cloning\n2026-11-12T01:25:50.1566575Z   ---\n2026-11-12T01:25:50.1622057Z   duration_ms: 32.80235\n2026-11-12T01:25:50.1626610Z   type: 'test'\n2026-11-12T01:25:50.1627299Z   ...\n2026-11-12T01:25:50.1628003Z # Subtest: clone URL preserves mixed-case edits and the captured pending request\n2026-11-12T01:25:50.1628837Z not ok 61 - clone URL preserves mixed-case edits and the captured pending request\n2026-11-12T01:25:50.1629514Z   ---\n2026-11-12T01:25:50.1629960Z   duration_ms: 27.757922\n2026-11-12T01:25:50.1630360Z   type: 'test'\n2026-11-12T01:25:50.1631072Z   location: '/home/runner/work/openconductor/openconductor/src/components/cloneUrlTextCorrection.test.ts:123:1'\n2026-11-12T01:25:50.1631758Z   failureType: 'testCodeFailure'\n2026-11-12T01:25:50.1632142Z   error: |-\n2026-11-12T01:25:50.1632597Z     Expected values to be strictly deep-equal:\n2026-11-12T01:25:50.1633051Z     + actual - expected\n2026-11-12T01:25:50.1633447Z     \n2026-11-12T01:25:50.1633857Z       [\n2026-11-12T01:25:50.1634211Z         {\n2026-11-12T01:25:50.1634590Z     +     name: 'mixedcase',\n2026-11-12T01:25:50.1635053Z     -     name: 'MixedCase',\n2026-11-12T01:25:50.1635494Z           path: '/synthetic/initial',\n2026-11-12T01:25:50.1636062Z           remoteUrl: 'https://github.com/Acme/MixedCase.git'\n2026-11-12T01:25:50.1636530Z         }\n2026-11-12T01:25:50.1637124Z       ]\n2026-11-12T01:25:50.1637557Z     \n2026-11-12T01:25:50.1637942Z   code: 'ERR_ASSERTION'\n2026-11-12T01:25:50.1638393Z   name: 'AssertionError'\n2026-11-12T01:25:50.1638859Z   expected:\n2026-11-12T01:25:50.1639245Z     0:\n2026-11-12T01:25:50.1640189Z       remoteUrl: 'https://github.com/Acme/MixedCase.git'\n2026-11-12T01:25:50.1640900Z       path: '/synthetic/initial'\n2026-11-12T01:25:50.1641335Z       name: 'MixedCase'\n2026-11-12T01:25:50.1641743Z   actual:\n2026-11-12T01:25:50.1642162Z     0:\n2026-11-12T01:25:50.1642626Z       remoteUrl: 'https://github.com/Acme/MixedCase.git'\n2026-11-12T01:25:50.1643177Z       path: '/synthetic/initial'\n2026-11-12T01:25:50.1643626Z       name: 'mixedcase'\n2026-11-12T01:25:50.1644097Z   operator: 'deepStrictEqual'\n2026-11-12T01:25:50.1644517Z   stack: |-\n2026-11-12T01:25:50.1645412Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/cloneUrlTextCorrection.test.ts:129:12)\n2026-11-12T01:25:50.1646334Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-12T01:25:50.1647278Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-12T01:25:50.1647900Z   ...\n2026-11-12T01:25:50.1648375Z "
+  },
+  "typecheck": [
+    {
+      "name": "Run npm run typecheck",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 6,
+      "started_at": "2026-11-12T01:25:49Z",
+      "completed_at": "2026-11-12T01:26:00Z"
+    }
+  ],
+  "limits": "Hosted source/helper/component evidence only. No local Node/Cargo/native/visual execution."
+}

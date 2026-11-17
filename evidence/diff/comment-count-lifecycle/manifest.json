@@ -1,0 +1,23 @@
+{
+  "frontend_fixtures": {
+    "src/features/diff/fileCommentCountLifecycle.test.ts": "379312909e2a80ca96973643f1c7189144f53210e636dadb059a136a7eb9bbd4",
+    "src/features/chat/reviewCommentHandoff.test.ts": "870f5cca38eccd7af04542906839b77686dacfaaf0512d416c701b68eaf5e548",
+    "src/features/chat/desktopReviewHandoff.test.ts": "ff91dc4d00360a20a75dc4133aff56da79e28e65dbfdcc5da064fdf18e4fdd1d"
+  },
+  "source_baseline_sha": "cfe8c12d86fab877158bfd465f348813752e24e0",
+  "reference_main_checked": "9c276e2e86c0bd7ed97c8ccd0467f30c7a8ebcab",
+  "slot_releases": [
+    "5c39e622-7acd-4195-87d4-5f7fac6a10e4",
+    "ea5832d3-78f3-41fd-93ed-000ff3a46da1"
+  ],
+  "source_capsules": {
+    "file-comment-count-de6-02-lifecycle-source-v3.tar.gz": "a85dcbbf9570d2801cb02c6a3822ac289f4a5356a545ea8d33f9eefd5b540d1e",
+    "comment-lifecycle-prepared-v4.tar.gz": "4e5c552dbf01eff8ea51cf5d45d538c8177cf820d9a021689bcb25aba00e74a7"
+  },
+  "corrected_executable_frontend_fixtures": {
+    "src/features/diff/fileCommentCountLifecycle.test.ts": "36c98be91533ffea36b9088392c94bca981ea09393a1ee177cf1da5b9f15fe71",
+    "src/features/chat/reviewCommentHandoff.test.ts": "870f5cca38eccd7af04542906839b77686dacfaaf0512d416c701b68eaf5e548",
+    "src/features/chat/desktopReviewHandoff.test.ts": "3014d822ee608201b62a81799ce3708cab9f58473426d79c1195de66cc7e37f5"
+  },
+  "original_frontend_fixtures_role": "Historical frozen RED/GREEN inputs; inert originals retained in historical/*.original-v3.test.ts.txt"
+}

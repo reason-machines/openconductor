@@ -1,0 +1,1 @@
+function F3(t){const e=getComputedStyle(document.documentElement).getPropertyValue(t).trim();if(!e)return"#000000";if(e.startsWith("#")||e.startsWith("rgb("))return e;if(e.startsWith("hsl(")&&e.endsWith(")")){const i=q$n(e.slice(4,-1));return i?K$n(i):e}const n=q$n(e);return n?K$n(n):`hsl(${e})`}

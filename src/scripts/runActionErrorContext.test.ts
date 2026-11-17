@@ -25,9 +25,10 @@ const a: Props["workspace"] = { id: "run-action-a", name: "A", branch: "main", s
 const b: Props["workspace"] = { ...a, id: "run-action-b", name: "B", path: "/fixture/b" };
 const repo: Props["repo"] = { id: "run-action-repo", name: "Run action context", path: "/fixture/repo", defaultBranch: "main", workspaces: [a, b] };
 
-async function fixture(action: Action) {
+async function fixture(action: Action, completeStop = false) {
   const commands: Command[] = [];
   const pending: Pending[] = [];
+  const liveTasks = new Map([[a.id, "dev"], [b.id, "dev"]]);
   const modules = new Map<string, { exports: SourceExports }>();
   let currentWorkspace = a;
   async function invoke(name: string, args: Record<string, unknown>): Promise<unknown> {
@@ -52,6 +53,12 @@ async function fixture(action: Action) {
         const workspaceId = name === "run_script_stop" ? args.workspaceId
           : typeof workspace === "object" && workspace !== null && "workspaceId" in workspace ? workspace.workspaceId : null;
         assert.equal(typeof workspaceId, "string", "the command carries its actual workspace identity");
+        if (name === "run_script_stop" && completeStop) {
+          const liveTask = liveTasks.get(String(workspaceId));
+          const matches = liveTask !== undefined && (args.scriptId === null || args.scriptId === liveTask);
+          if (matches) liveTasks.delete(String(workspaceId));
+          return matches;
+        }
         return new Promise<unknown>((_resolve, reject) => { pending.push({ workspaceId: String(workspaceId), reject }); });
       }
       default: throw new Error(`Unexpected IPC: ${name}`);
@@ -107,6 +114,7 @@ async function fixture(action: Action) {
   const text = (node: Node | string): string => typeof node === "string" ? node : node.children.map(text).join("");
   return {
     commands,
+    liveTasks,
     errors: () => renderer.root.findAll((node) => node.props.className === "scripts-error").map(text).join("\n"),
     async issue() {
       if (action === "pick") {
@@ -168,9 +176,26 @@ for (const action of ["start", "stop", "pick"] as const) {
     await f.issue();
     assert.equal(f.commands.length, 1);
     assert.deepEqual(f.commands[0], action === "stop"
-      ? { name: "run_script_stop", args: { workspaceId: a.id, scriptId: null } }
+      ? { name: "run_script_stop", args: { workspaceId: a.id, scriptId: "dev" } }
       : { name: "run_script_start", args: { workspace: { workspaceId: a.id, repositoryId: repo.id, repoRoot: repo.path, workspacePath: a.path, workspaceName: a.name, defaultBranch: repo.defaultBranch, targetBranch: null }, scriptId: action === "pick" ? "test" : "dev" } });
     await f.reject(a.id, `visible ${action} failure`);
     assert.equal(f.errors(), `visible ${action} failure`);
   });
 }
+
+test("actual Stop Dev preserves a replacement Test behind an unrefreshed status snapshot", async (t) => {
+  const f = await fixture("stop", true);
+  t.after(f.close);
+  f.liveTasks.set(a.id, "test");
+  await f.issue();
+  assert.equal(f.liveTasks.get(a.id), "test", "Stop Dev must not stop the replacement Test task");
+  assert.deepEqual(f.commands, [{ name: "run_script_stop", args: { workspaceId: a.id, scriptId: "dev" } }]);
+});
+
+test("actual Stop Dev still stops Dev and preserves another workspace", async (t) => {
+  const f = await fixture("stop", true);
+  t.after(f.close);
+  await f.issue();
+  assert.equal(f.liveTasks.has(a.id), false, "the displayed Dev task is stopped");
+  assert.equal(f.liveTasks.get(b.id), "dev", "another workspace is untouched");
+});

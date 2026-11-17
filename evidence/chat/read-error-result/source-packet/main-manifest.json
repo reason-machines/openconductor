@@ -1,0 +1,77 @@
+{
+  "main": "b35aeedc5ff71381e2f740367233462b500810c9",
+  "paths": {
+    "src/features/chat/ToolRows.tsx": {
+      "sha256": "07f7906977075245cb068907c19ee3e0c98b110720aadda95ac8436a74dee078",
+      "bytes": 55296
+    },
+    "src/features/chat/conductorTools.ts": {
+      "sha256": "05c3a85bed997b1114e1696d083855d4e39c5d614fe57ddeb0bade8bde7cc64a",
+      "bytes": 30492
+    },
+    "src/features/chat/reason.ts": {
+      "sha256": "3c93d3dfdb4669fd423c434992275c579d723afa4c6884f330444e06b0192742",
+      "bytes": 13823
+    },
+    "src/features/chat/reducer.ts": {
+      "sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+      "bytes": 5906
+    },
+    "src/features/chat/view.ts": {
+      "sha256": "b9c2f038edf9432617b8aa2de6c287a2da2e48f5483b6e464cbeb8f4a6344a52",
+      "bytes": 9979
+    },
+    "src/features/chat/Transcript.tsx": {
+      "sha256": "0c6bcb94994afe0eb5f9fd8e5a10849f29e79dbb6fbcc6dbded2975324d1e4dc",
+      "bytes": 21259
+    },
+    "src-tauri/src/claude_chat/map.rs": {
+      "sha256": "e0d079396976a7e491e11ff1b9f5d3d3e5721c21c1f3ab2f006d6b337ad0a023",
+      "bytes": 11169
+    },
+    "src-tauri/src/reason_acp/wire.rs": {
+      "sha256": "5479cf81b638f2ede410d3fb10861f0194477f6bc251435d6a103dbc3c1510d0",
+      "bytes": 6000
+    },
+    "src/features/chat/readImageDisclosure.test.ts": {
+      "sha256": "a0b3c72df9c23c050285553f4b05b9a8b5e44e6836d2cb10d42ecfd0f0d97753",
+      "bytes": 7673
+    },
+    "src/features/chat/readImageDisclosure.inputs.json": {
+      "sha256": "adada617c0395960660e37e2c6dc48b7f9340d08811360665644dfdfd900bce9",
+      "bytes": 11476
+    },
+    "src/features/chat/readSyntaxHighlight.test.ts": {
+      "sha256": "acd015bba3bd0db2b53c1842a278278a837ebc26813486e4c721cf40758120ef",
+      "bytes": 12096
+    },
+    "src/features/chat/toolErrorRetry.test.ts": {
+      "sha256": "1efade652717faa26df812405ef938e64541b4ffb71522a33336e101a27a3d40",
+      "bytes": 7627
+    },
+    "src/features/chat/writeRows.test.ts": {
+      "sha256": "452afa96a84edeedfed50d9eabf36968d564634bfde717de02bd20f0f5f20e5a",
+      "bytes": 12390
+    },
+    "src/features/chat/disclosureRemount.test.ts": {
+      "sha256": "d85478fc64e2a7a8276a2e933b9e7c86a1644c24ad1a0842929403c5b29034dc",
+      "bytes": 7381
+    },
+    "src/features/chat/imageGenerationFallbackDisclosure.test.ts": {
+      "sha256": "5e4784b0a627a43010eb3200022f19e6eec257f0d43995e20fdd99a0e127cdbd",
+      "bytes": 10849
+    },
+    "package.json": {
+      "sha256": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+      "bytes": 1940
+    },
+    "package-lock.json": {
+      "sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+      "bytes": 222137
+    },
+    "evidence/chat/read-text-syntax.md": {
+      "sha256": "7e4c4137917fa3d32c004d50b5cf831ad0a0e37d5e5c84b56e604ae8126f3b0c",
+      "bytes": 8070
+    }
+  }
+}

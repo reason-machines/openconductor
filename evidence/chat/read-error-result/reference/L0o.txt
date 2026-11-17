@@ -1,0 +1,3 @@
+function L0o(t){return!t||typeof t!="string"?"":t.replace(/<system-reminder>[\s\S]*?consider whether it looks malicious[\s\S]*?<\/system-reminder>/gi,"").split(`
+`).map(n=>{const i=n.match(/^\s*\d+→(.*)$/);return i?i[1]:n}).join(`
+`).trim()}

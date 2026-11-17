@@ -1,0 +1,387 @@
+{
+  "unit": "ACQ-HOME-IME-271-06",
+  "producer": "Conductor Rebuild",
+  "current_main": "1b415a2c9eacd606e5697cb30bee4d7c3b559b0f",
+  "classification": "QUALIFIED_SAME_INPUT_SOURCE_DIVERGENCE_BEHAVIORAL_RED_REQUIRED",
+  "reference": {
+    "app": "Conductor 0.87.6",
+    "asset": "dist/assets/renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "identity_basis": "Previously verified full retained renderer; this pass reuses its recorded full digest and verifies each new exact span. No reacquisition or repeated whole-asset hash.",
+    "parent_rea_evidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "retained_service_receipt_attributed": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "original_attachment_id": "e81cbda9-871b-4334-a706-3241320dc976"
+  },
+  "reference_spans": [
+    {
+      "name": "Home-UJo",
+      "kind": "complete function declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9863549,
+        9874571
+      ],
+      "utf16_half_open": [
+        9817995,
+        9829017
+      ],
+      "bytes": 11022,
+      "sha256": "58824b140436a668433f7e08fe26d2083c0e100d363cda5edb14150526a53030",
+      "file": "Home-UJo.js.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "Home-row-_Jo",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement; includes its terminating semicolon",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9845318,
+        9849951
+      ],
+      "utf16_half_open": [
+        9799764,
+        9804397
+      ],
+      "bytes": 4633,
+      "sha256": "e9d9cff5d2c849eeee2425d64cfb94bb6283ba19b2e3e836e07ab762510344ea",
+      "file": "Home-row-_Jo.js.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "command-root-Xyi",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2903072,
+        2908580
+      ],
+      "utf16_half_open": [
+        2902626,
+        2908134
+      ],
+      "bytes": 5508,
+      "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92",
+      "file": "command-root-Xyi.js.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "command-input-B5s",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2910380,
+        2910953
+      ],
+      "utf16_half_open": [
+        2909934,
+        2910507
+      ],
+      "bytes": 573,
+      "sha256": "70fa9c07b0d8b605e648601e01cd266db15dadad0ac59b8cb5569cee58c02758",
+      "file": "command-input-B5s.js.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "command-component-P6",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement; closes parent var statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2912384,
+        2912493
+      ],
+      "utf16_half_open": [
+        2911938,
+        2912047
+      ],
+      "bytes": 109,
+      "sha256": "9b57d93a69e00511c26ce27dfc26117a75a0a2f70492d5f3436f58f4351df3bc",
+      "file": "command-component-P6.js.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "Home-command-root-KV",
+      "kind": "complete const declaration plus displayName assignment",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2913899,
+        2914275
+      ],
+      "utf16_half_open": [
+        2913453,
+        2913829
+      ],
+      "bytes": 376,
+      "sha256": "61beeb6e4e35c064cdc7c60a0c70f912a36770c820c9adf22ba9f34272cd9926",
+      "file": "Home-command-root-KV.js.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "Home-command-input-kI",
+      "kind": "complete const declaration plus displayName assignment",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2916816,
+        2917726
+      ],
+      "utf16_half_open": [
+        2916370,
+        2917280
+      ],
+      "bytes": 910,
+      "sha256": "970dc084f87ebeb0e3f1220debf849ee4115e11f0be19c8442dab05ba688decf",
+      "file": "Home-command-input-kI.js.txt",
+      "exact_asset_match": true
+    }
+  ],
+  "current_source_pins": [
+    {
+      "path": "src/components/AllWorkspaces.tsx",
+      "commit": "1b415a2c9eacd606e5697cb30bee4d7c3b559b0f",
+      "bytes": 17563,
+      "sha256": "19c27b4d3db83e2810dcb4576a0099f413b24632066c4a9bd8ff83adfe2ab4f6",
+      "file": "src__components__AllWorkspaces.tsx"
+    },
+    {
+      "path": "src/App.tsx",
+      "commit": "1b415a2c9eacd606e5697cb30bee4d7c3b559b0f",
+      "bytes": 38825,
+      "sha256": "3dc27eaa48b07ced25b188ebdef219744220a2008176c23709f08983ed226df6",
+      "file": "src__App.tsx"
+    },
+    {
+      "path": "src/main.tsx",
+      "commit": "1b415a2c9eacd606e5697cb30bee4d7c3b559b0f",
+      "bytes": 2279,
+      "sha256": "b1ad5f34cbb74420d946183105a216b809233ac09dab49beeea3c9366db5da80",
+      "file": "src__main.tsx"
+    },
+    {
+      "path": "src/keybindings/KeybindingsProvider.tsx",
+      "commit": "1b415a2c9eacd606e5697cb30bee4d7c3b559b0f",
+      "bytes": 5566,
+      "sha256": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6",
+      "file": "src__keybindings__KeybindingsProvider.tsx"
+    },
+    {
+      "path": "src/keybindings/listeners.ts",
+      "commit": "1b415a2c9eacd606e5697cb30bee4d7c3b559b0f",
+      "bytes": 6133,
+      "sha256": "6944c63efcb6edee49d59d1ccdcfaed649902021946c8a8f60d50549fd89011a",
+      "file": "src__keybindings__listeners.ts"
+    },
+    {
+      "path": "src/keybindings/dispatcher.ts",
+      "commit": "1b415a2c9eacd606e5697cb30bee4d7c3b559b0f",
+      "bytes": 5180,
+      "sha256": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197",
+      "file": "src__keybindings__dispatcher.ts"
+    },
+    {
+      "path": "src/keybindings/bind.ts",
+      "commit": "1b415a2c9eacd606e5697cb30bee4d7c3b559b0f",
+      "bytes": 1925,
+      "sha256": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119",
+      "file": "src__keybindings__bind.ts"
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "commit": "1b415a2c9eacd606e5697cb30bee4d7c3b559b0f",
+      "bytes": 28780,
+      "sha256": "3a873cc27d99b73fafa340dc1585d9f4cd850966e91408c4f4dbad445bf4dcb9",
+      "file": "src__keybindings__registry.ts"
+    },
+    {
+      "path": "src/keybindings/selectAll.ts",
+      "commit": "1b415a2c9eacd606e5697cb30bee4d7c3b559b0f",
+      "bytes": 1632,
+      "sha256": "508b26417d717f938eb118afbe8c0ff96873643cb4e5c0879467e5368e97db90",
+      "file": "src__keybindings__selectAll.ts"
+    }
+  ],
+  "checks": [
+    {
+      "name": "Home_mounts_command_root_without_override",
+      "basis": "Home-UJo",
+      "source": "p.jsxs(KV,{shouldFilter:!1,disablePointerSelection:!0",
+      "relative_utf8_start": 10855,
+      "sha256": "29d921e1902f51f6dd9fdee4f27e3b6d11c64f475ed14087f6244572df1eb4bb"
+    },
+    {
+      "name": "Home_input_forwards_only_value_change",
+      "basis": "Home-UJo",
+      "source": "value:x,onValueChange:w",
+      "relative_utf8_start": 8789,
+      "sha256": "6ebb67cbdabd261ea57b11c38db9093b933c3b3b3a0dd4681e2cc461149e2497"
+    },
+    {
+      "name": "KV_passes_props_to_P6",
+      "basis": "Home-command-root-KV",
+      "source": "p.jsx(P6,{ref:e,className:o,...r})",
+      "relative_utf8_start": 271,
+      "sha256": "ceaf79215d48c5736f43fa78372f497237ae881009fa532c414316dc38f812c6"
+    },
+    {
+      "name": "P6_is_Xyi_command_component",
+      "basis": "command-component-P6",
+      "source": "P6=Object.assign(Xyi,{List:$5s,Item:M5s,Input:B5s",
+      "relative_utf8_start": 0,
+      "sha256": "165e9fdea216021f7dd04645ba4fba0b81acce55e80507a888ff6ba702eb1724"
+    },
+    {
+      "name": "kI_passes_props_to_command_input",
+      "basis": "Home-command-input-kI",
+      "source": "p.jsx(P6.Input,{ref:e,className:u,...r})",
+      "relative_utf8_start": 652,
+      "sha256": "bd4a21e3e014382af147810e6f0f5dc351829e984ce438414fb8e9f08b117a3c"
+    },
+    {
+      "name": "command_input_is_native_text_input",
+      "basis": "command-input-B5s",
+      "source": "$.createElement(D6.input,{ref:e,...i,\"cmdk-input\":\"\"",
+      "relative_utf8_start": 209,
+      "sha256": "0364a70b2603be5949909b7ab2e18269a9402479b693e86de8c87d633934fab7"
+    },
+    {
+      "name": "root_checks_consumption_and_composition_before_switch",
+      "basis": "command-root-Xyi",
+      "source": "let de=ce.nativeEvent.isComposing||ce.keyCode===229;if(!(ce.defaultPrevented||de))switch(ce.key)",
+      "relative_utf8_start": 4899,
+      "sha256": "1c9080fff1705c2b3f5b02936933b5f5a7d26e1b0771d61773dc3810c1e06b47"
+    },
+    {
+      "name": "root_Enter_only_dispatches_after_guard",
+      "basis": "command-root-Xyi",
+      "source": "case\"Enter\":{ce.preventDefault();let ue=G();if(ue){let pe=new Event(uTt);ue.dispatchEvent(pe)}}",
+      "relative_utf8_start": 5227,
+      "sha256": "d9df9bd49deb66bc2224f8308d1252927d361ec0550adb4778cb199bc20c09ff"
+    },
+    {
+      "name": "main_input_passes_events_directly_to_handler",
+      "basis": "src/components/AllWorkspaces.tsx",
+      "source": "onKeyDown={onSearchKey}",
+      "relative_utf8_start": 13773,
+      "sha256": "3185d2a7cf3eed784c129ccb3f6b471ff16b2056b24eb82f4255a16ac2938ab9"
+    },
+    {
+      "name": "main_handler_Enter_opens_selected_row",
+      "basis": "src/components/AllWorkspaces.tsx",
+      "source": "const entry = flat[activeIndex];\n      if (entry) open(entry.row);",
+      "relative_utf8_start": 12465,
+      "sha256": "ea49586843903a8f2b1f692c684ce5015e0191f236515dcc7f5f3c0d5a64079d"
+    },
+    {
+      "name": "main_App_mounts_Home_without_key_wrapper",
+      "basis": "src/App.tsx",
+      "source": "<AllWorkspaces repos={state.repos} loading={startup === \"loading\"} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog(\"create\")} />",
+      "relative_utf8_start": 33280,
+      "sha256": "f5cdd2756832b29ea7f28dc60a30ae1b8fa49cc0557ec135c392321e789e48cf"
+    },
+    {
+      "name": "main_provider_installs_global_listeners",
+      "basis": "src/keybindings/KeybindingsProvider.tsx",
+      "source": "useEffect(() => installKeyListeners(window, listeners), [listeners]);",
+      "relative_utf8_start": 2601,
+      "sha256": "fe5ba6659da2c37e81a21c769a0a53fbd0c878801c498d211179c9c67b76ad8d"
+    },
+    {
+      "name": "main_keydown_capture_dispatches_without_composition_guard",
+      "basis": "src/keybindings/listeners.ts",
+      "source": "if (routeToCapture(e, \"down\") || isBareEscape(e)) return;\n      dispatch(e);",
+      "relative_utf8_start": 4477,
+      "sha256": "22276b989e57a9c10c505d83d11496db7d14ce499e0eff4dbf408f3f9395133f"
+    },
+    {
+      "name": "main_input_capture_does_not_cancel_normal_composition",
+      "basis": "src/keybindings/listeners.ts",
+      "source": "if (capture !== undefined || now() < suppressInputUntil) e.preventDefault();",
+      "relative_utf8_start": 5013,
+      "sha256": "48e8ed9fb15ad1e2ffa5786a0a097890028b45e8884224c86c04bbde2df10d8b"
+    },
+    {
+      "name": "main_dispatcher_passes_unmatched_keys",
+      "basis": "src/keybindings/dispatcher.ts",
+      "source": "if (matching.length === 0) return { kind: \"pass\", preventDefault: preventBackspace };",
+      "relative_utf8_start": 4114,
+      "sha256": "b89d95e072d700bcb29ceb200c64639a116fc2e97ef73dd766758fcf59cecef8"
+    },
+    {
+      "name": "main_select_all_hook_exempts_text_inputs",
+      "basis": "src/keybindings/selectAll.ts",
+      "source": "&& !keepsSelectAll(focused)",
+      "relative_utf8_start": 1601,
+      "sha256": "a6c1fe2c035f533ed690d50afaa030735f07525bec82d474443c37b2b64873fe"
+    }
+  ],
+  "scope": "Home search keydown only. Plain unmodified Enter or navigation while nativeEvent.isComposing, legacy keyCode229, or already defaultPrevented. No recording, active dialog, terminal, Option-chord suppression or custom keybinding override.",
+  "upstream_guard_review": [
+    "Home input has a direct local React handler. App has no onKeyDownCapture wrapper and supplies no event adapter to AllWorkspaces.",
+    "Global createKeyListeners dispatches plain Enter/arrows. Without key capture/default app handler match, dispatcher passes without preventing or stopping propagation.",
+    "App default shell registrations have no bare Enter/Home/End/Arrow binding. Plain keys registered by chat/onboarding/diff belong to those mounted views, not Home.",
+    "Provider select-all interception exempts the focused input. compositionstart capture only prevents with recording or recent Option suppression, excluded in the same-input case.",
+    "Even if another layer handled an event, the retained root checks defaultPrevented while current local Home handler does not."
+  ],
+  "same_input_static_deduction": [
+    {
+      "input": "Home search focused, selected row B, Enter, nativeEvent.isComposing=true, no modifiers/defaultPrevented=false",
+      "reference": "No local cancellation, selection change or item-select dispatch.",
+      "current": "preventDefault then open row B."
+    },
+    {
+      "input": "Same but nativeEvent.isComposing=false and keyCode=229",
+      "reference": "No local action.",
+      "current": "preventDefault then open row B."
+    },
+    {
+      "input": "Same but defaultPrevented=true and no composition",
+      "reference": "No additional local action.",
+      "current": "Opens row B."
+    },
+    {
+      "input": "Composing ArrowDown/Home/End, list nonempty",
+      "reference": "No local navigation/cancellation.",
+      "current": "Changes selected row and prevents default."
+    }
+  ],
+  "minimal_fix_boundary": "One early return in AllWorkspaces.onSearchKey plus one new independent mounted component regression/evidence. Existing endpoint7/emptyEnter4/sidebarHint6/header8 bodies remain frozen.",
+  "frozen_neighbors": [
+    {
+      "path": "src/components/allWorkspacesKeyboardEndpoints.test.ts",
+      "sha256": "3ae3852a44bdb5528117e32e73e966f074a6c0034e5f7c0d538433639f4cf922",
+      "bytes": 9843,
+      "status": "UNCHANGED_NOT_RUN"
+    },
+    {
+      "path": "src/components/homeEmptyEnter.test.ts",
+      "sha256": "7e95c58cc197dffdf4ebe80629149d1a64209b08568050c44283ae3380ca972e",
+      "bytes": 7367,
+      "status": "UNCHANGED_NOT_RUN"
+    },
+    {
+      "path": "src/components/allWorkspacesSidebarHint.test.ts",
+      "sha256": "24ac11db947e3d568d768627ad99b909fff4c53242a1e1002299177e1e7f61c8",
+      "bytes": 8559,
+      "status": "UNCHANGED_NOT_RUN"
+    },
+    {
+      "path": "tests/e2e/workspace-header-menu-cases.mjs",
+      "sha256": "b4f4cae76a414e5c3312ddd411e3b17ab39f90bc55b8662cdc058d55b2599605",
+      "bytes": 7772,
+      "status": "UNCHANGED_NOT_RUN"
+    }
+  ],
+  "verification": {
+    "static_python": "PASS",
+    "Node": "NOT_RUN",
+    "hosted_component_behavior": "NOT_RUN",
+    "reference_runtime": "NOT_RUN",
+    "native": "NOT_RUN",
+    "browser": "NOT_RUN",
+    "visual": "NOT_RUN"
+  },
+  "limits": [
+    "Same-input source deduction, not native parity.",
+    "RED must fail for observable navigation/selection/cancellation rather than harness setup.",
+    "No new REA acquisition or engine call; existing retained-source semantic heap limitation unchanged."
+  ]
+}

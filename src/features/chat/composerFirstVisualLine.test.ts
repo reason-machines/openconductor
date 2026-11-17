@@ -99,6 +99,7 @@ function fixture({ draft = "keep this draft", caret = 4, end = caret, up = true,
   const composerExports: Partial<Pick<typeof import("./Composer"), "Composer">> = {};
   runInNewContext(javascript("Composer.tsx"), {
     exports: composerExports, CSS: { escape: (value: string) => value },
+    queueMicrotask(_cb: () => void) { /* deferred; navigation tests do not observe edit-entry focus */ },
     require(name: string) {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
       if (name.endsWith(".css")) return {};
@@ -117,7 +118,10 @@ function fixture({ draft = "keep this draft", caret = 4, end = caret, up = true,
       if (name === "./SlashMenu.tsx") return { SlashMenu };
       if (name === "./FileMentionMenu.tsx") return { FileMentionMenu };
       if (name === "./composerLongPaste.ts") return { longPasteAttachment: () => null };
+      if (name === "./composerPasteFilePaths.ts") return { readClipboardText: async () => null, readClipboardTextFromPlatform: async () => null };
       if (name.endsWith("/useBoolPref.ts")) return { useBoolPref: () => false };
+      if (name.endsWith("/useSettings.ts")) return { useSettings: () => ({ settings: null, save: () => Promise.resolve(true), error: null, reload: () => {} }) };
+      if (name.endsWith("/prefs.ts")) return { boolPref: () => false, withBoolPref: (s: unknown) => s };
       if (name === "../../backend") return { fuzzyFilterFiles: (...args: FileSearch) => {
         assert.equal(workspacePath, mentionWorkspacePath, "queue navigation must not search files");
         assert.equal(draft, "@", "only the mention control may search files");

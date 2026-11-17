@@ -23,6 +23,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+import { createRuntimeReceipt } from "./runtime-receipt.mjs";
 import { WebDriver } from "../../tests/e2e/webdriver.mjs";
 import { finishStartup } from "../../tests/e2e/startup.mjs";
 
@@ -85,7 +86,9 @@ mkdirSync(env.OPENCONDUCTOR_HOME, { recursive: true });
 writeFileSync(join(env.OPENCONDUCTOR_HOME, "settings.toml"), `reason_executable_path = ${JSON.stringify(join(bin, "reason"))}\n`);
 delete env.REASON_CLI;
 delete env.XDG_DATA_HOME;
+const receipt = createRuntimeReceipt({ suite: "slash-menu", app, out, home, project });
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
+receipt.track(driver);
 const driverExited = new Promise((r) => driver.on("exit", r));
 
 const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
@@ -181,10 +184,16 @@ try {
   await waitFor("the model picker", () => chip());
 
   // Reason (the default agent), Claude Code, Codex.
+  // For Codex, skillCommand inserts [$name](path) directly (preserving the
+  // skill path so names can collide safely, Conductor's jI / #1162); the
+  // linkCodexSkills expansion step runs on submit, not on insert, so the
+  // composer holds the full bracket-link form, not just $name.
+  const checkInsert = (expected) =>
+    typeof expected === "function" ? expected : (v) => v === expected;
   const agents = [
     { id: "reason", label: null, insert: `/${FIXTURE} `, heading: true },
     { id: "claude", label: "Claude Code", insert: `/${FIXTURE} `, heading: false },
-    { id: "codex", label: "Codex", insert: `$${FIXTURE} `, heading: true },
+    { id: "codex", label: "Codex", insert: (v) => v?.startsWith(`[$${FIXTURE}](`) && v.endsWith(" ") ? v : null, heading: true },
   ];
   for (const a of agents) {
     if (a.label) await pickAgent(a.label);
@@ -213,9 +222,9 @@ try {
 
     const at = filtered.findIndex((r) => r.name === FIXTURE);
     await type("\uE015".repeat(at) + "\uE007");
-    await waitFor(`${a.id}: the picked skill in the draft`, () => composerValue().then((v) => v === a.insert));
+    const inserted = await waitFor(`${a.id}: the picked skill in the draft`, () => composerValue().then((v) => checkInsert(a.insert)(v)));
     assert.equal((await menu()).length, 0, `${a.id}: the menu closes after the pick`);
-    pass(`${a.id}: Enter puts ${JSON.stringify(a.insert)} in the draft`);
+    pass(`${a.id}: Enter puts the skill in the draft`);
     await clearComposer();
   }
   console.log(`\n${steps.length} checks passed`);
@@ -228,8 +237,10 @@ try {
   }
   process.exitCode = 1;
 } finally {
+  await receipt.beforeTeardown((script) => wd("POST", "/execute/async", { script, args: [] }, 3000));
   if (sessionUrl) await wd("DELETE", "").catch(() => {});
   restoreOfficialReason();
   driver.kill();
   await Promise.race([driverExited, sleep(3000)]);
+  await receipt.afterTeardown();
 }

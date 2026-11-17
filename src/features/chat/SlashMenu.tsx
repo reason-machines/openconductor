@@ -9,6 +9,7 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 import { commandId, isSkill, type SlashCommand, type SlashMatch } from "./slashCommands.ts";
+import { useSuggestionPointer } from "./useSuggestionPointer.ts";
 
 export interface SlashMenuProps {
   matches: readonly SlashMatch[];
@@ -20,6 +21,7 @@ export interface SlashMenuProps {
 
 export function SlashMenu({ matches, focused, hasQuery, onPick, onFocus }: SlashMenuProps) {
   const list = useRef<HTMLDivElement>(null);
+  const pointerEnter = useSuggestionPointer(focused, onFocus, matches.length > 0);
   useEffect(() => {
     list.current?.querySelector<HTMLElement>(`[data-list-index="${focused}"]`)?.scrollIntoView({ block: "nearest" });
   }, [focused]);
@@ -34,7 +36,7 @@ export function SlashMenu({ matches, focused, hasQuery, onPick, onFocus }: Slash
           data-list-index={i}
           className="oc-suggest-row"
           data-focused={i === focused || undefined}
-          onMouseMove={() => i !== focused && onFocus(i)}
+          onMouseEnter={() => pointerEnter(i)}
           data-skill={isSkill(m.command) || undefined}
           onMouseDown={(e) => {
             e.preventDefault();

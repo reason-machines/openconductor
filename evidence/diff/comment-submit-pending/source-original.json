@@ -1,0 +1,241 @@
+{
+  "unit": "SUBMIT-PENDING-IDENTITY-DE6-01",
+  "owner": "de6c02f4-4880-4a0d-bf8f-9e3954522753",
+  "scope": "bounded source-only qualification; no product/runtime/publisher lease",
+  "current_main": "27663930d063a4c0d73ee7c79774facb7302d69e",
+  "status": "SOURCE_QUALIFIED_COUNTEREXAMPLE_MOUNTED_NOT_RUN",
+  "original_version": "0.87.6",
+  "original_assets": {
+    "renderer": {
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    },
+    "index": {
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    }
+  },
+  "reference_spans": {
+    "OMi-create-and-annotations": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9403263,
+        9404772
+      ],
+      "bytes": 1509,
+      "sha256": "5816311e1b28c39a5e288be10ae0a77e3f5de4b5c74a47aec3d693e9af32c2f6"
+    },
+    "annotation-metadata": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9404772,
+        9404869
+      ],
+      "bytes": 97,
+      "sha256": "411276404fe6aec51daa906ccf8d736da52ce8c1efe0b9a42887fbf281ef87be"
+    },
+    "wet-draft-consumer": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9411602,
+        9413099
+      ],
+      "bytes": 1497,
+      "sha256": "cfe8f5dde3fc55ba71e0e07df39fdb3ba403285d7234074159b85b371a3aadb5"
+    },
+    "SVo-complete-editor": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9413099,
+        9416741
+      ],
+      "bytes": 3642,
+      "sha256": "1e6bca0b0cdf23c9b84cdb0c057e3b0929ad26176e714615132c938dd13f7e83"
+    },
+    "comment-create-and-persist": {
+      "asset": "index",
+      "utf8_half_open": [
+        2291998,
+        2293276
+      ],
+      "bytes": 1278,
+      "sha256": "405f617c99b55e05422bc167098317c3968fa007ad61f56476a537a76e18df7c"
+    },
+    "ready-and-delete-resets": {
+      "asset": "index",
+      "utf8_half_open": [
+        2295234,
+        2295957
+      ],
+      "bytes": 723,
+      "sha256": "4faf251678488ba5e3e3229b8f331821c25c731f3ba5bea7e35d68bb1c58a2e7"
+    },
+    "patch-view-annotation-caller": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9431499,
+        9436022
+      ],
+      "sha256": "d908c703a9de4c3a3e2436109edebd53418afd8dca0543b6f3fbd4bd7bfe2e44",
+      "bytes": 4523
+    },
+    "xSr-renderer-import": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        61595,
+        61604
+      ],
+      "bytes": 9,
+      "sha256": "68af3c16557bd663c57612e9750c549e076e7bc61b92b4aa887fdb2cf0b0b042"
+    },
+    "Q7t-index-export": {
+      "asset": "index",
+      "utf8_half_open": [
+        3487602,
+        3487611
+      ],
+      "bytes": 9,
+      "sha256": "258fe8a8e5bbaef72b7bb00267f75c40f404e7b110bb94ffe59be303ca663745"
+    },
+    "Q7t-ready-wrapper": {
+      "asset": "index",
+      "utf8_half_open": [
+        3060858,
+        3060913
+      ],
+      "bytes": 55,
+      "sha256": "83f4e8ce4b3aaee177c4f3d7ece5f53f902fb712cc0cd68bd2a5faf371d74fc4"
+    },
+    "create-renderer-import": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        61505,
+        61514
+      ],
+      "bytes": 9,
+      "sha256": "41fb74f67686935fe1450140724dd573bfcb94f163ada861177292ed5064d1fd"
+    },
+    "create-index-export": {
+      "asset": "index",
+      "utf8_half_open": [
+        3487885,
+        3487894
+      ],
+      "bytes": 9,
+      "sha256": "88a27a51da05a43f427b29eda3e9abd307ef2c70fe7a6316f73b12816d02a76c"
+    },
+    "create-wrapper": {
+      "asset": "index",
+      "utf8_half_open": [
+        3060414,
+        3060457
+      ],
+      "bytes": 43,
+      "sha256": "9fd6cf106ebe80a9aa247db9969a562e68063fa3b3ff395778a0422c2a79d54e"
+    }
+  },
+  "current_sources": {
+    "src/features/diff/ReviewComments.tsx": {
+      "snapshot": "current/ReviewComments.tsx",
+      "bytes": 26161,
+      "sha256": "5d61d8a59f1a500d31c399907b0f54c9a51089ed7b7a7442d6c9b890b6d3d564"
+    },
+    "src/features/diff/comments.ts": {
+      "snapshot": "current/comments.ts",
+      "bytes": 15847,
+      "sha256": "d8df4efefba44a94a7ddfd781075a08bba56fef93eea4aa377f6b872d4210800"
+    },
+    "src/features/diff/commentStore.ts": {
+      "snapshot": "current/commentStore.ts",
+      "bytes": 3227,
+      "sha256": "89b6dc1e8c4acd63482bdca83147d1eed286b06ef1bc40c25cbc25440c44af3c"
+    },
+    "src/features/diff/commentsApi.ts": {
+      "snapshot": "current/commentsApi.ts",
+      "bytes": 2080,
+      "sha256": "69de64da7711ed0b9f852244b4b1f5dcf09cff7b5a4c1cb19e81f49fd48ead43"
+    },
+    "src/features/diff/DiffViewer.tsx": {
+      "snapshot": "current/DiffViewer.tsx",
+      "bytes": 10370,
+      "sha256": "9bb3cc41406952e4163810cbb8f1115b724c0936e22dc58faf2c46b2b4f23da7"
+    },
+    "src/components/WorkspaceView.tsx": {
+      "snapshot": "current/WorkspaceView.tsx",
+      "bytes": 86701,
+      "sha256": "1f3029701b12d364024271fab334e799a79fd334848596b892ea9e8ee7d7f28a"
+    },
+    "src/features/diff/FileDiffView.tsx": {
+      "snapshot": "current/FileDiffView.tsx",
+      "bytes": 19196,
+      "sha256": "0904649c38d19a50a45552cddeb3f6469157cc0ba56e5d6e6c8f6bb57c4edc68"
+    },
+    "src-tauri/src/diff/comment_commands.rs": {
+      "snapshot": "current/comment_commands.rs",
+      "bytes": 17742,
+      "sha256": "228616f72107b296572fab4b86ac592fde27d67fdded74bf8bb5ee059d009933"
+    },
+    "crates/openconductor-db/src/diff_comments.rs": {
+      "snapshot": "current/diff_comments.rs",
+      "bytes": 15572,
+      "sha256": "4fd81373bafc8c00fd8c6446e5a1ffed59dcccd30b57bab987d0ada068a925c2"
+    }
+  },
+  "static_checks": {
+    "renderer_whole_asset_identity": true,
+    "index_whole_asset_identity": true,
+    "span_OMi-create-and-annotations": true,
+    "span_annotation-metadata": true,
+    "span_wet-draft-consumer": true,
+    "span_SVo-complete-editor": true,
+    "span_comment-create-and-persist": true,
+    "span_ready-and-delete-resets": true,
+    "span_patch-view-annotation-caller": true,
+    "unique_xSr-renderer-import": true,
+    "unique_Q7t-index-export": true,
+    "unique_Q7t-ready-wrapper": true,
+    "unique_create-renderer-import": true,
+    "unique_create-index-export": true,
+    "unique_create-wrapper": true,
+    "current_submit_guard_trim_only": true,
+    "current_submit_allocates_per_call": true,
+    "current_draft_removed_after_settlement": true,
+    "current_local_store_appends": true,
+    "current_native_plain_insert": true,
+    "reference_submit_captures_original_id": true,
+    "reference_guard_trim_only": true,
+    "reference_sql_updates_id": true
+  },
+  "counterexample": [
+    "Open one new inline review-comment draft with body A.",
+    "Invoke Comment, keeping the first native store.add promise unresolved.",
+    "Invoke Comment or the accepted submit shortcut again before settlement.",
+    "Current source constructs independent IDs and requests two INSERTs. The retained original source repeatedly updates the one existing draft ID."
+  ],
+  "verification": {
+    "source_integrity": "PASS",
+    "caller_data_path": "PASS_STATIC",
+    "mounted_regression": "NOT_RUN",
+    "native": "NOT_RUN",
+    "package": "NOT_RUN"
+  },
+  "limits": [
+    "Retained REA assets rehashed locally. No fresh installed Conductor extraction or UI observation.",
+    "No original JavaScript evaluated.",
+    "Historical REA renderer semantic-analysis heap exhaustion remains.",
+    "Repeated-submit behavior must be reproduced on the mounted current flow before a product fix.",
+    "Partial disk cleanup found no removable build/cache data in five inspected idle folders; no evidence/source deleted."
+  ],
+  "initially_checked_main": "f3a52c4aaa59d12e2d0050e2997174be30a59cac",
+  "fresh_main_snapshot_recheck": {
+    "src/features/diff/ReviewComments.tsx": true,
+    "src/features/diff/comments.ts": true,
+    "src/features/diff/commentStore.ts": true,
+    "src/features/diff/commentsApi.ts": true,
+    "src/features/diff/DiffViewer.tsx": true,
+    "src/components/WorkspaceView.tsx": true,
+    "src/features/diff/FileDiffView.tsx": true,
+    "src-tauri/src/diff/comment_commands.rs": true,
+    "crates/openconductor-db/src/diff_comments.rs": true
+  }
+}

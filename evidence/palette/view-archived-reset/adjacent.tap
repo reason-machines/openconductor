@@ -1,0 +1,592 @@
+(node:94) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:101) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: sidebar order spans repos in order, newest first inside a repo, as the sidebar shows them
+ok 1 - sidebar order spans repos in order, newest first inside a repo, as the sidebar shows them
+  ---
+  duration_ms: 2.249277
+  type: 'test'
+  ...
+# Subtest: Cmd+1..9 order puts Pinned first and skips collapsed repos
+ok 2 - Cmd+1..9 order puts Pinned first and skips collapsed repos
+  ---
+  duration_ms: 0.395669
+  type: 'test'
+  ...
+# Subtest: stepping wraps and starts at the ends when nothing is selected
+ok 3 - stepping wraps and starts at the ends when nothing is selected
+  ---
+  duration_ms: 0.388776
+  type: 'test'
+  ...
+# Subtest: recents drop unknown ids and outrank creation time in the Workspaces tab
+ok 4 - recents drop unknown ids and outrank creation time in the Workspaces tab
+  ---
+  duration_ms: 0.950522
+  type: 'test'
+  ...
+# Subtest: All search uses workspace updates while Recent and Workspaces keep their existing order
+ok 5 - All search uses workspace updates while Recent and Workspaces keep their existing order
+  ---
+  duration_ms: 1.54723
+  type: 'test'
+  ...
+# Subtest: workspace actions appear only with a workspace selected
+ok 6 - workspace actions appear only with a workspace selected
+  ---
+  duration_ms: 0.415863
+  type: 'test'
+  ...
+# Subtest: Archive workspace is absent for the open archived selection before archived results load
+ok 7 - Archive workspace is absent for the open archived selection before archived results load
+  ---
+  duration_ms: 0.878832
+  type: 'test'
+  ...
+# Subtest: Archive workspace is absent for the open archived selection after archived results load
+ok 8 - Archive workspace is absent for the open archived selection after archived results load
+  ---
+  duration_ms: 0.700415
+  type: 'test'
+  ...
+# Subtest: Archive workspace stays available for an active selection and hidden without a workspace despite a retained archived view
+ok 9 - Archive workspace stays available for an active selection and hidden without a workspace despite a retained archived view
+  ---
+  duration_ms: 2.277877
+  type: 'test'
+  ...
+# Subtest: File picker is absent for the open archived selection before archived results load
+ok 10 - File picker is absent for the open archived selection before archived results load
+  ---
+  duration_ms: 0.756346
+  type: 'test'
+  ...
+# Subtest: File picker is absent for the open archived selection after archived results load
+ok 11 - File picker is absent for the open archived selection after archived results load
+  ---
+  duration_ms: 0.380797
+  type: 'test'
+  ...
+# Subtest: File picker is absent for an unstarted local workspace even when its path is known
+ok 12 - File picker is absent for an unstarted local workspace even when its path is known
+  ---
+  duration_ms: 0.40484
+  type: 'test'
+  ...
+# Subtest: File picker stays available for active local states despite an unrelated retained archived view
+ok 13 - File picker stays available for active local states despite an unrelated retained archived view
+  ---
+  duration_ms: 1.617497
+  type: 'test'
+  ...
+# Subtest: File picker is absent for a missing workspace or without a workspace selection
+ok 14 - File picker is absent for a missing workspace or without a workspace selection
+  ---
+  duration_ms: 1.351313
+  type: 'test'
+  ...
+# Subtest: palette workspace entries carry workspaces.number for the W-<n> column
+ok 15 - palette workspace entries carry workspaces.number for the W-<n> column
+  ---
+  duration_ms: 0.238433
+  type: 'test'
+  ...
+# Subtest: archived workspaces from conductor.db join the palette data after the active ones; View archived workspaces is a Navigation action
+ok 16 - archived workspaces from conductor.db join the palette data after the active ones; View archived workspaces is a Navigation action
+  ---
+  duration_ms: 0.654915
+  type: 'test'
+  ...
+# Subtest: Recent workspaces keeps archived workspaces and drops deleted ones, as Conductor's palette does
+ok 17 - Recent workspaces keeps archived workspaces and drops deleted ones, as Conductor's palette does
+  ---
+  duration_ms: 0.237183
+  type: 'test'
+  ...
+# Subtest: Go to next unread is listed under Navigation only while a chat of a non-archived workspace is unread
+ok 18 - Go to next unread is listed under Navigation only while a chat of a non-archived workspace is unread
+  ---
+  duration_ms: 0.34405
+  type: 'test'
+  ...
+# Subtest: the All tab lists Conductor's Actions and Navigation commands in its order, with their shortcuts
+ok 19 - the All tab lists Conductor's Actions and Navigation commands in its order, with their shortcuts
+  ---
+  duration_ms: 0.154107
+  type: 'test'
+  ...
+# Subtest: View archived workspaces is listed only while a workspace is open, as Conductor's `Xt &&`
+ok 20 - View archived workspaces is listed only while a workspace is open, as Conductor's `Xt &&`
+  ---
+  duration_ms: 0.121069
+  type: 'test'
+  ...
+# Subtest: workspace rows carry the sidebar's display name, last activity and unread
+ok 21 - workspace rows carry the sidebar's display name, last activity and unread
+  ---
+  duration_ms: 0.123834
+  type: 'test'
+  ...
+# Subtest: settings pages are listed with no query and their rows join once there is one (Conductor's `[...We, ...query ? He : []]`)
+ok 22 - settings pages are listed with no query and their rows join once there is one (Conductor's `[...We, ...query ? He : []]`)
+  ---
+  duration_ms: 3.638717
+  type: 'test'
+  ...
+# Subtest: View archived workspaces is absent for startup placeholders before workspace hydration
+ok 23 - View archived workspaces is absent for startup placeholders before workspace hydration
+  ---
+  duration_ms: 0.396727
+  type: 'test'
+  ...
+# Subtest: View archived workspaces is absent for a missing selected workspace
+ok 24 - View archived workspaces is absent for a missing selected workspace
+  ---
+  duration_ms: 0.260564
+  type: 'test'
+  ...
+# Subtest: View archived workspaces is absent for a workspace found only in another repository
+ok 25 - View archived workspaces is absent for a workspace found only in another repository
+  ---
+  duration_ms: 0.237119
+  type: 'test'
+  ...
+# Subtest: View archived workspaces is absent for a missing selected repository
+ok 26 - View archived workspaces is absent for a missing selected repository
+  ---
+  duration_ms: 0.230583
+  type: 'test'
+  ...
+# Subtest: View archived workspaces does not resolve a selection from the archived list before results load
+ok 27 - View archived workspaces does not resolve a selection from the archived list before results load
+  ---
+  duration_ms: 0.395947
+  type: 'test'
+  ...
+# Subtest: View archived workspaces stays available for the resolved archived view before results load
+ok 28 - View archived workspaces stays available for the resolved archived view before results load
+  ---
+  duration_ms: 0.352679
+  type: 'test'
+  ...
+# Subtest: View archived workspaces does not resolve a selection from the archived list after results load
+ok 29 - View archived workspaces does not resolve a selection from the archived list after results load
+  ---
+  duration_ms: 0.28551
+  type: 'test'
+  ...
+# Subtest: View archived workspaces stays available for the resolved archived view after results load
+ok 30 - View archived workspaces stays available for the resolved archived view after results load
+  ---
+  duration_ms: 0.504088
+  type: 'test'
+  ...
+# Subtest: View archived workspaces requires presence rather than a ready-only lifecycle
+ok 31 - View archived workspaces requires presence rather than a ready-only lifecycle
+  ---
+  duration_ms: 1.675898
+  type: 'test'
+  ...
+# Subtest: View archived workspaces is absent without a workspace selection despite a retained archived view
+ok 32 - View archived workspaces is absent without a workspace selection despite a retained archived view
+  ---
+  duration_ms: 0.50176
+  type: 'test'
+  ...
+# Subtest: Copy URL is absent for startup placeholders before workspace hydration
+ok 33 - Copy URL is absent for startup placeholders before workspace hydration
+  ---
+  duration_ms: 0.595816
+  type: 'test'
+  ...
+# Subtest: Copy URL is absent for a missing selected workspace
+ok 34 - Copy URL is absent for a missing selected workspace
+  ---
+  duration_ms: 0.550033
+  type: 'test'
+  ...
+# Subtest: Copy URL is absent for a workspace found only in another repository
+ok 35 - Copy URL is absent for a workspace found only in another repository
+  ---
+  duration_ms: 0.877416
+  type: 'test'
+  ...
+# Subtest: Copy URL is absent for a missing selected repository
+ok 36 - Copy URL is absent for a missing selected repository
+  ---
+  duration_ms: 0.391535
+  type: 'test'
+  ...
+# Subtest: Copy URL does not resolve a selection from the archived list before results load
+ok 37 - Copy URL does not resolve a selection from the archived list before results load
+  ---
+  duration_ms: 0.425905
+  type: 'test'
+  ...
+# Subtest: Copy URL stays available for the resolved archived view before results load
+ok 38 - Copy URL stays available for the resolved archived view before results load
+  ---
+  duration_ms: 0.503904
+  type: 'test'
+  ...
+# Subtest: Copy URL does not resolve a selection from the archived list after results load
+ok 39 - Copy URL does not resolve a selection from the archived list after results load
+  ---
+  duration_ms: 0.364066
+  type: 'test'
+  ...
+# Subtest: Copy URL stays available for the resolved archived view after results load
+ok 40 - Copy URL stays available for the resolved archived view after results load
+  ---
+  duration_ms: 0.552422
+  type: 'test'
+  ...
+# Subtest: Copy URL requires presence rather than a path or a ready-only lifecycle
+ok 41 - Copy URL requires presence rather than a path or a ready-only lifecycle
+  ---
+  duration_ms: 3.618847
+  type: 'test'
+  ...
+# Subtest: Copy URL is absent without a workspace selection despite a retained archived view
+ok 42 - Copy URL is absent without a workspace selection despite a retained archived view
+  ---
+  duration_ms: 1.34151
+  type: 'test'
+  ...
+# (node:109) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: palette ignores Enter during native composition
+ok 43 - palette ignores Enter during native composition
+  ---
+  duration_ms: 137.814434
+  type: 'test'
+  ...
+# Subtest: palette ignores ArrowDown during native composition
+ok 44 - palette ignores ArrowDown during native composition
+  ---
+  duration_ms: 43.542597
+  type: 'test'
+  ...
+# Subtest: palette ignores ArrowUp during native composition
+ok 45 - palette ignores ArrowUp during native composition
+  ---
+  duration_ms: 42.668415
+  type: 'test'
+  ...
+# Subtest: palette ignores Home during native composition
+ok 46 - palette ignores Home during native composition
+  ---
+  duration_ms: 33.429299
+  type: 'test'
+  ...
+# Subtest: palette ignores End during native composition
+ok 47 - palette ignores End during native composition
+  ---
+  duration_ms: 27.017036
+  type: 'test'
+  ...
+# Subtest: palette ignores Meta+ArrowUp during native composition
+ok 48 - palette ignores Meta+ArrowUp during native composition
+  ---
+  duration_ms: 22.385676
+  type: 'test'
+  ...
+# Subtest: palette ignores Meta+ArrowDown during native composition
+ok 49 - palette ignores Meta+ArrowDown during native composition
+  ---
+  duration_ms: 28.039343
+  type: 'test'
+  ...
+# Subtest: palette ignores Control+n during native composition
+ok 50 - palette ignores Control+n during native composition
+  ---
+  duration_ms: 28.036842
+  type: 'test'
+  ...
+# Subtest: palette ignores Control+p during native composition
+ok 51 - palette ignores Control+p during native composition
+  ---
+  duration_ms: 25.7125
+  type: 'test'
+  ...
+# Subtest: palette ignores Enter during legacy keyCode 229
+ok 52 - palette ignores Enter during legacy keyCode 229
+  ---
+  duration_ms: 22.319058
+  type: 'test'
+  ...
+# Subtest: palette ignores ArrowDown during legacy keyCode 229
+ok 53 - palette ignores ArrowDown during legacy keyCode 229
+  ---
+  duration_ms: 23.981093
+  type: 'test'
+  ...
+# Subtest: palette ignores ArrowUp during legacy keyCode 229
+ok 54 - palette ignores ArrowUp during legacy keyCode 229
+  ---
+  duration_ms: 19.69845
+  type: 'test'
+  ...
+# Subtest: palette ignores Home during legacy keyCode 229
+ok 55 - palette ignores Home during legacy keyCode 229
+  ---
+  duration_ms: 17.494972
+  type: 'test'
+  ...
+# Subtest: palette ignores End during legacy keyCode 229
+ok 56 - palette ignores End during legacy keyCode 229
+  ---
+  duration_ms: 20.801196
+  type: 'test'
+  ...
+# Subtest: palette ignores Meta+ArrowUp during legacy keyCode 229
+ok 57 - palette ignores Meta+ArrowUp during legacy keyCode 229
+  ---
+  duration_ms: 18.162276
+  type: 'test'
+  ...
+# Subtest: palette ignores Meta+ArrowDown during legacy keyCode 229
+ok 58 - palette ignores Meta+ArrowDown during legacy keyCode 229
+  ---
+  duration_ms: 15.972028
+  type: 'test'
+  ...
+# Subtest: palette ignores Control+n during legacy keyCode 229
+ok 59 - palette ignores Control+n during legacy keyCode 229
+  ---
+  duration_ms: 19.927576
+  type: 'test'
+  ...
+# Subtest: palette ignores Control+p during legacy keyCode 229
+ok 60 - palette ignores Control+p during legacy keyCode 229
+  ---
+  duration_ms: 15.926562
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Enter
+ok 61 - palette preserves ordinary Enter
+  ---
+  duration_ms: 17.062432
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary ArrowDown
+ok 62 - palette preserves ordinary ArrowDown
+  ---
+  duration_ms: 22.861284
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary ArrowUp
+ok 63 - palette preserves ordinary ArrowUp
+  ---
+  duration_ms: 15.878824
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Home
+ok 64 - palette preserves ordinary Home
+  ---
+  duration_ms: 15.134868
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary End
+ok 65 - palette preserves ordinary End
+  ---
+  duration_ms: 21.084293
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Meta+ArrowUp
+ok 66 - palette preserves ordinary Meta+ArrowUp
+  ---
+  duration_ms: 20.232206
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Meta+ArrowDown
+ok 67 - palette preserves ordinary Meta+ArrowDown
+  ---
+  duration_ms: 14.398428
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Control+n
+ok 68 - palette preserves ordinary Control+n
+  ---
+  duration_ms: 16.004815
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Control+p
+ok 69 - palette preserves ordinary Control+p
+  ---
+  duration_ms: 14.376606
+  type: 'test'
+  ...
+# Subtest: palette preserves Escape close during native composition
+ok 70 - palette preserves Escape close during native composition
+  ---
+  duration_ms: 16.978874
+  type: 'test'
+  ...
+# Subtest: palette preserves a custom tab shortcut during native composition
+ok 71 - palette preserves a custom tab shortcut during native composition
+  ---
+  duration_ms: 15.139006
+  type: 'test'
+  ...
+# Subtest: palette leaves unrelated text keys untouched during native composition
+ok 72 - palette leaves unrelated text keys untouched during native composition
+  ---
+  duration_ms: 13.62423
+  type: 'test'
+  ...
+# Subtest: palette preserves Escape close during legacy keyCode 229
+ok 73 - palette preserves Escape close during legacy keyCode 229
+  ---
+  duration_ms: 17.181854
+  type: 'test'
+  ...
+# Subtest: palette preserves a custom tab shortcut during legacy keyCode 229
+ok 74 - palette preserves a custom tab shortcut during legacy keyCode 229
+  ---
+  duration_ms: 13.760597
+  type: 'test'
+  ...
+# Subtest: palette leaves unrelated text keys untouched during legacy keyCode 229
+ok 75 - palette leaves unrelated text keys untouched during legacy keyCode 229
+  ---
+  duration_ms: 13.407922
+  type: 'test'
+  ...
+# (node:117) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: arrows, Enter and Escape drive the list
+ok 76 - arrows, Enter and Escape drive the list
+  ---
+  duration_ms: 0.816136
+  type: 'test'
+  ...
+# Subtest: Ctrl+J moves forward through results and wraps like Ctrl+N
+ok 77 - Ctrl+J moves forward through results and wraps like Ctrl+N
+  ---
+  duration_ms: 0.642582
+  type: 'test'
+  ...
+# Subtest: Ctrl+K moves backward through results and wraps like Ctrl+P
+ok 78 - Ctrl+K moves backward through results and wraps like Ctrl+P
+  ---
+  duration_ms: 0.362108
+  type: 'test'
+  ...
+# Subtest: Home selects the first result instead of moving only the text cursor
+ok 79 - Home selects the first result instead of moving only the text cursor
+  ---
+  duration_ms: 0.122017
+  type: 'test'
+  ...
+# Subtest: End selects the last result instead of moving only the text cursor
+ok 80 - End selects the last result instead of moving only the text cursor
+  ---
+  duration_ms: 0.121053
+  type: 'test'
+  ...
+# Subtest: modified Home and End keep their text-field behavior
+ok 81 - modified Home and End keep their text-field behavior
+  ---
+  duration_ms: 0.224172
+  type: 'test'
+  ...
+# Subtest: Tab and Shift+Tab switch tabs; Cmd+K closes; letters type
+ok 82 - Tab and Shift+Tab switch tabs; Cmd+K closes; letters type
+  ---
+  duration_ms: 0.202208
+  type: 'test'
+  ...
+# Subtest: rebinding the palette toggle changes what closes it
+ok 83 - rebinding the palette toggle changes what closes it
+  ---
+  duration_ms: 0.120619
+  type: 'test'
+  ...
+# Subtest: active row wraps and clamps
+ok 84 - active row wraps and clamps
+  ---
+  duration_ms: 0.353318
+  type: 'test'
+  ...
+# (node:125) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: All to Projects keeps the second selected project for Enter activation
+ok 85 - All to Projects keeps the second selected project for Enter activation
+  ---
+  duration_ms: 1.535124
+  type: 'test'
+  ...
+# Subtest: Projects to All keeps the selected project instead of selecting a command
+ok 86 - Projects to All keeps the selected project instead of selecting a command
+  ---
+  duration_ms: 0.264665
+  type: 'test'
+  ...
+# Subtest: a project absent from the destination falls back to its first result
+ok 87 - a project absent from the destination falls back to its first result
+  ---
+  duration_ms: 0.201095
+  type: 'test'
+  ...
+# Subtest: non-project tab transitions keep their existing initial selection
+ok 88 - non-project tab transitions keep their existing initial selection
+  ---
+  duration_ms: 0.19612
+  type: 'test'
+  ...
+# (node:133) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: rows are newest first; Hiding archived leaves archived workspaces out
+ok 89 - rows are newest first; Hiding archived leaves archived workspaces out
+  ---
+  duration_ms: 1.959985
+  type: 'test'
+  ...
+# Subtest: Showing all lists archived workspaces in their own group; Only archived lists only them
+ok 90 - Showing all lists archived workspaces in their own group; Only archived lists only them
+  ---
+  duration_ms: 0.262659
+  type: 'test'
+  ...
+# Subtest: the project filter and the query narrow the rows
+ok 91 - the project filter and the query narrow the rows
+  ---
+  duration_ms: 0.753271
+  type: 'test'
+  ...
+# Subtest: rows are capped at 50 (Conductor's GHe)
+ok 92 - rows are capped at 50 (Conductor's GHe)
+  ---
+  duration_ms: 0.37887
+  type: 'test'
+  ...
+# Subtest: Clear filters shows under the empty list whenever a filter is set, Hiding archived included
+ok 93 - Clear filters shows under the empty list whenever a filter is set, Hiding archived included
+  ---
+  duration_ms: 0.128107
+  type: 'test'
+  ...
+# Subtest: the compact project filter reads All projects, the project's name, or a count
+ok 94 - the compact project filter reads All projects, the project's name, or a count
+  ---
+  duration_ms: 0.126207
+  type: 'test'
+  ...
+# Subtest: with no row highlighted, the first move picks the first or the last row
+ok 95 - with no row highlighted, the first move picks the first or the last row
+  ---
+  duration_ms: 0.987017
+  type: 'test'
+  ...
+1..95
+# tests 95
+# suites 0
+# pass 95
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2149.061754

@@ -1,0 +1,68 @@
+{
+  "author": "Conductor Rebuild",
+  "main_checked": "1c8e9593099bce8ebfbc19d83052cbfd47df5ad0",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference_manifest": "evidence/terminal/clear-redraw-1f/source/reference.json",
+  "reference_chain": [
+    "renderer-lSa",
+    "renderer-eSa",
+    "renderer-Xwa",
+    "renderer-Zwa",
+    "renderer-$wa",
+    "renderer-import-qc",
+    "index-export-gh",
+    "index-ts",
+    "index-DAt",
+    "index-$kt",
+    "index-V9"
+  ],
+  "mock_boundary_only": [
+    "src/features/terminal/clearRedraw.test.ts",
+    "src/features/terminal/nonrunningInput.test.ts"
+  ],
+  "preserved_files": [
+    "src/features/terminal/sessionUnicode.test.ts",
+    "src/features/terminal/sessionLineFeed.test.ts",
+    "src/features/terminal/shortcuts.ts",
+    "src/features/terminal/shellIntegration.ts",
+    "src/features/terminal/scrollback.ts",
+    "src/features/terminal/pty.ts",
+    "src/features/terminal/events.ts",
+    "package.json",
+    "package-lock.json"
+  ],
+  "verification": {
+    "red": {
+      "command": "node --test src/features/terminal/alternateClear.test.ts",
+      "passed": 7,
+      "failed": 3,
+      "reason": "Modes 47, 1047, 1049 consume the clear key instead of returning true"
+    },
+    "green": {
+      "command": "node --test src/features/terminal/alternateClear.test.ts",
+      "passed": 10,
+      "failed": 0,
+      "fixture": "unchanged SHA-256"
+    },
+    "focused": {
+      "command": "node --test --test-concurrency=1 src/features/terminal/*.test.ts",
+      "passed": 179,
+      "failed": 0
+    },
+    "local_typecheck": "Timed out twice without diagnostics. Initial combined command had a 240s timeout including 127s terminal tests. Standalone retry timed out at 240s. No local verdict.",
+    "browser": "not run",
+    "native": "not run",
+    "real_pty": "not run",
+    "visual": "not run"
+  },
+  "scope": "Only clear-scrollback keyboard dispatch; direct clearTab, tab/find, line editing, newline, Unicode, convertEol unchanged",
+  "rea_gaps": "Retained acquisition only; no fresh extraction, new AST pass, or native observation. Existing module tracing limitations retained in clear-redraw evidence.",
+  "log_normalization": {
+    "operation": "Remove trailing whitespace and blank EOF lines only",
+    "raw_sha256": {
+      "focused.tap": "657d659c65d66c2a7e4acdd40a7ce26624168cc0ef6abd4e8086008e4bb271eb",
+      "green.tap": "0367ff669ce0b034e1611e44167888e5100b005ce5a76ba4991c2175e63e2647",
+      "red.tap": "6c8cf2ac8f13445b400b48fc435e7bc636d90ec0ac0790824fe53c919551020f"
+    }
+  }
+}

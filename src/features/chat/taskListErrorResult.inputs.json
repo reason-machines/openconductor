@@ -1,0 +1,62 @@
+{
+  "candidate": "CHAT.TASKLIST-ERROR-RESULT-DETAILS",
+  "basis": "Frozen expectations from retained ipo/epo/Z0o/X0o/J0o/oUt source, not a runtime observation or copied product output.",
+  "cases": [
+    {
+      "id": "failed-json-array", "isError": true,
+      "result": "[{\"id\":\"17\",\"subject\":\"Pending task\",\"status\":\"pending\"},{\"id\":\"18\",\"subject\":\"Active task\",\"status\":\"in_progress\",\"activeForm\":\"Doing retained work\",\"description\":\"Retained detail\",\"owner\":\"Sven\"},{\"id\":\"19\",\"subject\":\"Finished task\",\"status\":\"completed\"}]",
+      "expected": { "label": "Task in progress", "header": "Doing retained work", "counts": "1 pending, 1 in progress, 1 completed", "subjects": ["Pending task", "Active task", "Finished task"], "notes": ["Retained detail", "Owner: Sven"], "statuses": ["pending", "in_progress", "completed"], "empty": [], "error_row": true }
+    },
+    {
+      "id": "failed-json-wrapper", "isError": true,
+      "result": "{\"tasks\":[{\"id\":\"18\",\"subject\":\"Active task\",\"status\":\"in_progress\",\"activeForm\":\"Doing retained work\",\"description\":\"Retained detail\",\"owner\":\"Sven\"}]}",
+      "expected": { "label": "Task in progress", "header": "Doing retained work", "counts": "1 in progress", "subjects": ["Active task"], "notes": ["Retained detail", "Owner: Sven"], "statuses": ["in_progress"], "empty": [], "error_row": true }
+    },
+    {
+      "id": "failed-task-text", "isError": true,
+      "result": "#17 [pending] Pending task [blocked by #18]\n#18 [in_progress] Active task\n#19 [completed] Finished task",
+      "expected": { "label": "Task in progress", "header": "Active task", "counts": "1 pending, 1 in progress, 1 completed", "subjects": ["Pending task", "Active task", "Finished task"], "notes": [], "statuses": ["pending", "in_progress", "completed"], "empty": [], "error_row": true }
+    },
+    {
+      "id": "failed-completed-and-deleted", "isError": true,
+      "result": "[{\"id\":\"19\",\"subject\":\"Finished task\",\"status\":\"completed\"},{\"id\":\"20\",\"subject\":\"Deleted task\",\"status\":\"deleted\"}]",
+      "expected": { "label": "Task list", "header": "1/2 completed", "counts": "1 completed", "subjects": ["Finished task", "Deleted task"], "notes": [], "statuses": ["completed", "deleted"], "empty": [], "error_row": true }
+    },
+    {
+      "id": "failed-pending-and-implicit", "isError": true,
+      "result": "[{\"id\":\"17\",\"subject\":\"Pending task\",\"status\":\"pending\"},{\"id\":\"21\",\"subject\":\"Implicit pending\"}]",
+      "expected": { "label": "Task list", "header": "0/2 completed", "counts": "2 pending", "subjects": ["Pending task", "Implicit pending"], "notes": [], "statuses": ["pending", "pending"], "empty": [], "error_row": true }
+    },
+    {
+      "id": "success-json-array", "isError": false,
+      "result": "[{\"id\":\"17\",\"subject\":\"Pending task\",\"status\":\"pending\"},{\"id\":\"18\",\"subject\":\"Active task\",\"status\":\"in_progress\",\"activeForm\":\"Doing retained work\",\"description\":\"Retained detail\",\"owner\":\"Sven\"},{\"id\":\"19\",\"subject\":\"Finished task\",\"status\":\"completed\"}]",
+      "expected": { "label": "Task in progress", "header": "Doing retained work", "counts": "1 pending, 1 in progress, 1 completed", "subjects": ["Pending task", "Active task", "Finished task"], "notes": ["Retained detail", "Owner: Sven"], "statuses": ["pending", "in_progress", "completed"], "empty": [], "error_row": false }
+    },
+    {
+      "id": "success-json-wrapper", "isError": false,
+      "result": "{\"tasks\":[{\"id\":\"18\",\"subject\":\"Active task\",\"status\":\"in_progress\",\"activeForm\":\"Doing retained work\",\"description\":\"Retained detail\",\"owner\":\"Sven\"}]}",
+      "expected": { "label": "Task in progress", "header": "Doing retained work", "counts": "1 in progress", "subjects": ["Active task"], "notes": ["Retained detail", "Owner: Sven"], "statuses": ["in_progress"], "empty": [], "error_row": false }
+    },
+    {
+      "id": "success-task-text", "isError": false,
+      "result": "#17 [pending] Pending task [blocked by #18]\n#18 [in_progress] Active task\n#19 [completed] Finished task",
+      "expected": { "label": "Task in progress", "header": "Active task", "counts": "1 pending, 1 in progress, 1 completed", "subjects": ["Pending task", "Active task", "Finished task"], "notes": [], "statuses": ["pending", "in_progress", "completed"], "empty": [], "error_row": false }
+    },
+    {
+      "id": "invalid-error", "isError": true, "result": "Task service unavailable",
+      "expected": { "label": "Task list", "header": "0/0 completed", "counts": "", "subjects": [], "notes": [], "statuses": [], "empty": ["No tasks"], "error_row": true }
+    },
+    {
+      "id": "pending", "isError": false,
+      "expected": { "label": "Task list", "header": "0/0 completed", "counts": "", "subjects": [], "notes": [], "statuses": [], "empty": ["No tasks"], "error_row": false }
+    },
+    {
+      "id": "empty-error", "isError": true, "result": "",
+      "expected": { "label": "Task list", "header": "0/0 completed", "counts": "", "subjects": [], "notes": [], "statuses": [], "empty": ["No tasks"], "error_row": false }
+    },
+    {
+      "id": "empty-success", "isError": false, "result": "",
+      "expected": { "label": "Task list", "header": "0/0 completed", "counts": "", "subjects": [], "notes": [], "statuses": [], "empty": ["No tasks"], "error_row": false }
+    }
+  ]
+}

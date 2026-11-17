@@ -1,0 +1,27 @@
+{
+  "owner": "Conductor Rebuild",
+  "source_base": "cf602c25",
+  "original": "src/features/diff/filePathChipAlacritty.test.ts",
+  "v1_archive": "filePathChipAlacritty.v1.test.ts.txt",
+  "v1_sha256": "97c62299ab7cae93bfe17379e56254c01a977cf5d66b06f93e9e38bd761783e2",
+  "v2_sha256": "28ab34e5a4b74bee749fd41de68cb775d3d6522d5bb57b00f54fbb94608e4d67",
+  "delta": "Only existing modified VS Code expected payload adds fileContext.workspacePath; actual payload is not normalized; all other fixture bytes match V1.",
+  "reference": [
+    "tee.txt",
+    "uD.txt",
+    "I8.txt",
+    "OGe.txt",
+    "vscode-catalog.txt"
+  ],
+  "reference_directory": "../reference",
+  "preserved": [
+    "sealed ten IPC cases and three mounted cases",
+    "deletedFinderContext.test.ts",
+    "historical JSON pins and digests",
+    "FileDiffView.tsx",
+    "openIn/apps.ts"
+  ],
+  "checker": "python3 evidence/open-in/vscode-workspace-context/fixture-migration-v2/verify.py",
+  "behavior": "HOSTED_GREEN_NOT_YET_RUN",
+  "native": "NOT_RUN"
+}

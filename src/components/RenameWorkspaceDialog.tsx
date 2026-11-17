@@ -76,7 +76,7 @@ export function RenameWorkspaceDialog({ repoId, workspace: ws, dispatch, onClose
       onError(`Failed to rename workspace: ${errorText(e)}`);
       return onClose();
     }
-    dispatch({ type: "renameWorkspace", ...ids, name, userSet: true, keepPlaceholder: true });
+    dispatch({ type: "renameWorkspace", ...ids, name, directoryName: plan.newDirectoryName, userSet: true, keepPlaceholder: true });
     if (alsoRenameBranch && branchRenamable) {
       const branch = renamedBranch(ws.branch, name);
       try {
@@ -117,7 +117,7 @@ export function RenameWorkspaceDialog({ repoId, workspace: ws, dispatch, onClose
           spellCheck={false}
         />
         <label className="rename-ws-branch">
-          <input type="checkbox" checked={alsoRenameBranch} disabled={!branchRenamable || pending} onChange={(e) => toggleBranch(e.target.checked)} />
+          <input type="checkbox" checked={alsoRenameBranch} disabled={!branchRenamable} onChange={(e) => toggleBranch(e.target.checked)} />
           Also rename branch
         </label>
         <div className="modal-actions">

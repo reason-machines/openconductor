@@ -1,0 +1,140 @@
+(node:53) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:60) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted notification denial feedback: disable bypasses denied permission
+ok 1 - mounted notification denial feedback: disable bypasses denied permission
+  ---
+  duration_ms: 633.398561
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: already granted enables without feedback
+ok 2 - mounted notification denial feedback: already granted enables without feedback
+  ---
+  duration_ms: 280.825768
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: native grant enables without feedback
+ok 3 - mounted notification denial feedback: native grant enables without feedback
+  ---
+  duration_ms: 155.555046
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: granted request enables without feedback
+ok 4 - mounted notification denial feedback: granted request enables without feedback
+  ---
+  duration_ms: 138.41611
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: denied request reports one error and writes nothing
+not ok 5 - mounted notification denial feedback: denied request reports one error and writes nothing
+  ---
+  duration_ms: 126.474363
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/c18e1b05-4951-4a98-a90b-a9f7405ecc2d/repo/evidence/settings/notification-permission/denial-feedback/replay.test.cjs:115:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    exact denial feedback
+    + actual - expected
+    
+    + []
+    - [
+    -   [
+    -     'error',
+    -     'Notification permission not granted'
+    -   ]
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'error'
+      1: 'Notification permission not granted'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/c18e1b05-4951-4a98-a90b-a9f7405ecc2d/repo/evidence/settings/notification-permission/denial-feedback/replay.test.cjs:144:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: mounted notification denial feedback: previously denied reports one error and writes nothing
+not ok 6 - mounted notification denial feedback: previously denied reports one error and writes nothing
+  ---
+  duration_ms: 179.099779
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/c18e1b05-4951-4a98-a90b-a9f7405ecc2d/repo/evidence/settings/notification-permission/denial-feedback/replay.test.cjs:115:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    exact denial feedback
+    + actual - expected
+    
+    + []
+    - [
+    -   [
+    -     'error',
+    -     'Notification permission not granted'
+    -   ]
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'error'
+      1: 'Notification permission not granted'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/c18e1b05-4951-4a98-a90b-a9f7405ecc2d/repo/evidence/settings/notification-permission/denial-feedback/replay.test.cjs:144:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: mounted notification denial feedback: pending denial is silent until settlement
+not ok 7 - mounted notification denial feedback: pending denial is silent until settlement
+  ---
+  duration_ms: 155.484635
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/c18e1b05-4951-4a98-a90b-a9f7405ecc2d/repo/evidence/settings/notification-permission/denial-feedback/replay.test.cjs:115:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    exact denial feedback
+    + actual - expected
+    
+    + []
+    - [
+    -   [
+    -     'error',
+    -     'Notification permission not granted'
+    -   ]
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'error'
+      1: 'Notification permission not granted'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/c18e1b05-4951-4a98-a90b-a9f7405ecc2d/repo/evidence/settings/notification-permission/denial-feedback/replay.test.cjs:144:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: mounted notification denial feedback: pending grant preserves latest settings without feedback
+ok 8 - mounted notification denial feedback: pending grant preserves latest settings without feedback
+  ---
+  duration_ms: 112.008487
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 5
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2392.469787

@@ -1,0 +1,226 @@
+{
+  "owner": "Conductor Rebuild / SAME49",
+  "checked_main": "09b1c998acb093f4d905d5ef844c80136ea987f6",
+  "source_path": "src/settings/GeneralPage.tsx",
+  "baseline_sha256": "72eb0193654acce1af05932e1ad104127ca6afd7094fa5fbf2c116baea16a45e",
+  "scope": "USER Follow-up behavior select pending disabled state only; no availability, defaults, value filtering, shared Select, persistence or chat-submit change.",
+  "reference_observation": "Historical registry passes W9r().isPending to Z5e.disabled. Z5e forwards disabled to ah; ah forwards remaining props to Hos. W9r imports zQt, whose mutationFn is JUt. JUt awaits the existing preference writer gee.",
+  "current_source_observation": "The checked GeneralPage Select has no pending state or disabled prop around the existing save promise.",
+  "retained_reference": {
+    "application": "Conductor 0.87.6",
+    "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "assets": {
+      "renderer": {
+        "bytes": 11600457,
+        "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+      },
+      "index": {
+        "bytes": 3493297,
+        "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+      }
+    },
+    "limits": "Original semantic renderer analysis exhausted heap. Read-only extraction from retained shipped original bytes. No reference JavaScript executed. Historical extraction only. No current installed-asset comparison, reference execution, native check or behavior observation."
+  },
+  "reference_spans": [
+    {
+      "path": "reference/ir.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10684545,
+        10685030
+      ],
+      "bytes": 485,
+      "sha256": "ad9ffd6eb87c9eb6ea074d69978c24606b246e13ef11cd1bea209545b858d60c"
+    },
+    {
+      "path": "reference/Z5e.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7756232,
+        7757201
+      ],
+      "bytes": 969,
+      "sha256": "22baa00c0ef57e566b9eb5efbdb6af43b7d34c3e1b35b95ca0d35b1f59948c1e"
+    },
+    {
+      "path": "reference/bho.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7757201,
+        7757275
+      ],
+      "bytes": 74,
+      "sha256": "e0e100e4e3b36eaff3bc166af609dc12f50be649bf03d0fd0bf133ba2f832f4f"
+    },
+    {
+      "path": "reference/ah.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2020251,
+        2023349
+      ],
+      "bytes": 3098,
+      "sha256": "6ce67bb147a05f622dd3b35353eddc11119dbd015f7e387a7d91a04725e1f3dc"
+    },
+    {
+      "path": "reference/Al.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7753241,
+        7755526
+      ],
+      "bytes": 2285,
+      "sha256": "5320667e3a791e0914f104196fbde878ec3852f5c46c9ae48802b671d082b97e"
+    },
+    {
+      "path": "reference/qQt.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        3400216,
+        3400388
+      ],
+      "bytes": 172,
+      "sha256": "730c30f8becf1a540267ed318962c151381f97b5238ff04080592ec002d50d40"
+    },
+    {
+      "path": "reference/zQt.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        3400388,
+        3400637
+      ],
+      "bytes": 249,
+      "sha256": "c48b77717680ad96c4debe27cbffff04a76335015cbb39ebaaf5aa32c9176541"
+    },
+    {
+      "path": "reference/JUt.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        3400637,
+        3400717
+      ],
+      "bytes": 80,
+      "sha256": "136ed3499e87d1017b5c5e39b0c602b1a8fb8c8bc824482b87ecf2d2ac400db2"
+    },
+    {
+      "path": "reference/Be.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        590697,
+        591255
+      ],
+      "bytes": 558,
+      "sha256": "ebf9f3033fa15042532c2901acb5d65a1dd4f226c9040bf0af05ef4bd305aac4"
+    },
+    {
+      "path": "reference/P5t.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        397304,
+        397477
+      ],
+      "bytes": 173,
+      "sha256": "2d94c654a77666f4d5e9ff8ab1b5daf86d4e36563e4a53fe9cc0f70b66a12b1d"
+    },
+    {
+      "path": "reference/registration.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10710882,
+        10711628
+      ],
+      "bytes": 746,
+      "sha256": "b399176b2fa013167807a411dcd4b8193fee38451bfa35d44dd61d07d871472c"
+    },
+    {
+      "path": "reference/import-value.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        60447,
+        60456
+      ],
+      "bytes": 9,
+      "sha256": "be970548aed45ce72eede93a1af21ac9cf8e8de37df67da8587563e8bd716c2f"
+    },
+    {
+      "path": "reference/export-value.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        3487357,
+        3487366
+      ],
+      "bytes": 9,
+      "sha256": "9a04ff53ac146054b01582160f6b1b319ce4da114f2864e5ee499462a05f69c5"
+    },
+    {
+      "path": "reference/import-mutation.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        63932,
+        63941
+      ],
+      "bytes": 9,
+      "sha256": "ab4ec37c93ac7bad31cd0f7475447d55cd4b028737c8377581ca4e17b295bfe0"
+    },
+    {
+      "path": "reference/export-mutation.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        3490325,
+        3490334
+      ],
+      "bytes": 9,
+      "sha256": "1d04aed61ae15d7b1bd55dee196b27854df53b5dc106ded78f840923e5650462"
+    },
+    {
+      "path": "reference/import-availability.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        60876,
+        60885
+      ],
+      "bytes": 9,
+      "sha256": "a7fe7cd4c5a419aa2830783c91f03693e76b6de55c700cb335cb0ba9caf6a907"
+    },
+    {
+      "path": "reference/export-availability.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        3487259,
+        3487268
+      ],
+      "bytes": 9,
+      "sha256": "beda4c918b67287cb2d6f6d2ec0b65975f321a5560f2e465a43f31557b757a2b"
+    },
+    {
+      "path": "reference/key.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        3396076,
+        3396106
+      ],
+      "bytes": 30,
+      "sha256": "cd4bb1b0d0d106cdd048f6669a2e771db667666021c6a95616430f150c68ce1e"
+    }
+  ],
+  "protected_checkpoint": "a0bde8e4",
+  "protected_product": {
+    "src/settings/GeneralPage.tsx": "ca9608c732381077907394df34c272c9ece37a81f3f0fbbbabab8fcb18470264",
+    "src/settings/rows/AppPrefRows.tsx": "daec6d0bac2569c123c747676ee0b8a5135ff0cff0e9ed12793d7af6e8bb0020",
+    "src/settings/ExperimentalPage.tsx": "bd3efd949c8aa153b88f5ccb53a080934e4a355ba91729f5bb147b9a2e6290d2",
+    "src/settings/EnvironmentPage.tsx": "c3f9403133d2c73f03621cfcc845cad15bf4dadfc1422fc8566feaba23ed1185",
+    "src/settings/sendKeySaveFeedback.test.ts": "9f98fe21f8731caf1533f336956c6d2f52c926af53fa41b7ce83e4913ad1c461",
+    "src/settings/graphiteLoadingHint.test.ts": "46d1423ebcf0fa968e588b413f3abb64761683122024e6b9e7c65e41276699ef",
+    "src/settings/autoRunAvailability.test.ts": "21408c1ca2236247b1037923272ddd8943c8873aae6a5d2ae48cf906e57672af",
+    "src/settings/userEnvFileEditor.test.ts": "5f38d3c0400c9cde3c063265ec4f9bade28ef4d372c019708fb53c2b99974ee8",
+    "src/settings/controls.tsx": "ac772d2f0c77f685d5d0c92f2a12b9f2239a8b196a9cf8a20cffda74fc7a13b7",
+    "evidence/settings/send-key-save-feedback/frozen.sha256": "a1ae017c840e18c3c5afd7662d5b2f0339166da49e2776e15544b5430be0979f",
+    "evidence/settings/graphite-loading-hint/frozen.sha256": "cb95b8e8a8bd3e90e23c3ee08d2e73e35d49440920e97e620e549be2b623bbb1",
+    "evidence/settings/auto-run-availability/frozen.sha256": "ef26b4523c1af60a93ca2c0d748b627f6d799bb8f54435d0cee45050aee02a77",
+    "evidence/settings/user-env-file-editor/frozen.sha256": "a16dbe6a6122f80b8b3f9269f9d0d77e95148482e134c3fccd9711eac001c22b"
+  },
+  "ledger_inquiry_message": "cbc82d69-b534-45b3-b8ba-19eae606fc13",
+  "ledger_disposition": "PENDING",
+  "preservation": "Existing a0bde8e4 product files and frozen packets are not modified. Source inquiry only until exact-consumer ledger disposition; no runtime/intake request.",
+  "status": "SOURCE_INQUIRY. No candidate edit, behavioral tests or typecheck run."
+}

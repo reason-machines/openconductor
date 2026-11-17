@@ -1,0 +1,15 @@
+--- ordinaryThemeRefresh.original-f1a6c42f.test.ts
++++ ordinaryThemeRefresh.v2.test.ts
+@@ -33,7 +33,11 @@
+     connected = false;
+     target: object | undefined;
+     attributes: string[] | undefined;
+-    constructor(readonly callback: () => void) { observers.push(this); }
++    readonly callback: () => void;
++    constructor(callback: () => void) {
++      this.callback = callback;
++      observers.push(this);
++    }
+     observe(target: object, options: { attributes?: boolean; attributeFilter?: string[] }) {
+       this.connected = options.attributes === true;
+       this.target = target;

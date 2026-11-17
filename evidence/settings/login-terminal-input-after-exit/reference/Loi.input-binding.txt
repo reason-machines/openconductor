@@ -1,0 +1,1 @@
+function Loi({disableInput:t=!1,inputScheduling:e,optimisticInput:n,runtime:i,sessionId:r,terminal:o}){const a=i.attachRenderer(r,new tIr({terminal:o,shouldDisableInput:eIr(t),skipInputSubscription:t===!0,inputScheduling:e,optimisticInput:n}));return{dispose:()=>{a.dispose(),i.detachRenderer(r)}}}

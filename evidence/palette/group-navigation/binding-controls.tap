@@ -1,0 +1,44 @@
+(node:157) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:164) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: binding control: ArrowDown {"commandPalette.nextTab":[{"key":{"kind":"logical","value":"ArrowDown"},"modifiers":["alt"]}]} resolves to next-tab
+ok 1 - binding control: ArrowDown {"commandPalette.nextTab":[{"key":{"kind":"logical","value":"ArrowDown"},"modifiers":["alt"]}]} resolves to next-tab
+  ---
+  duration_ms: 1.289363
+  type: 'test'
+  ...
+# Subtest: binding control: ArrowUp {"commandPalette.previousTab":[{"key":{"kind":"logical","value":"ArrowUp"},"modifiers":["alt"]}]} resolves to prev-tab
+ok 2 - binding control: ArrowUp {"commandPalette.previousTab":[{"key":{"kind":"logical","value":"ArrowUp"},"modifiers":["alt"]}]} resolves to prev-tab
+  ---
+  duration_ms: 0.14802
+  type: 'test'
+  ...
+# Subtest: binding control: ArrowDown {"toggleCommandPalette":[{"key":{"kind":"logical","value":"ArrowDown"},"modifiers":["alt"]}]} resolves to close
+ok 3 - binding control: ArrowDown {"toggleCommandPalette":[{"key":{"kind":"logical","value":"ArrowDown"},"modifiers":["alt"]}]} resolves to close
+  ---
+  duration_ms: 0.159073
+  type: 'test'
+  ...
+# Subtest: binding control: ArrowDown {} resolves to next-group
+ok 4 - binding control: ArrowDown {} resolves to next-group
+  ---
+  duration_ms: 0.186282
+  type: 'test'
+  ...
+# Subtest: binding control: ArrowUp {} resolves to prev-group
+ok 5 - binding control: ArrowUp {} resolves to prev-group
+  ---
+  duration_ms: 0.100307
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 182.354153

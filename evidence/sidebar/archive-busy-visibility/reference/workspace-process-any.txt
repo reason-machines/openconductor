@@ -1,0 +1,1 @@
+function XD({processStates:t,localWorkspaceId:e,predicate:s}){return Array.from(t.entries()).some(([n,r])=>Np(n,e)&&s(r))}

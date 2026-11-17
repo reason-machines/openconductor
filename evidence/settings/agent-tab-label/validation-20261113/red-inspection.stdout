@@ -1,0 +1,22 @@
+{
+  "phase": "red",
+  "classification": "QUALIFYING_RED",
+  "exit_code": 1,
+  "summary": {
+    "tests": 8,
+    "pass": 2,
+    "fail": 6,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "failures": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "raw_tap_sha256": "e91e836f42291e2df12bd2d6b9a3588ed9d37574883f99787ffe2c2829c1d6e8"
+}

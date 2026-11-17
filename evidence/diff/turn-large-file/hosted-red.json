@@ -1,0 +1,364 @@
+{
+  "phase": "unchanged-production hosted baseline",
+  "head_sha": "985fb33fbf85b9845fb11bd14cb00f1f42f71a20",
+  "backend": {
+    "run": {
+      "id": 43168799789,
+      "workflow_id": 415302942,
+      "repository_id": 1446810994,
+      "head_repository_id": 1446810994,
+      "workflow_name": "Diff large-file placeholder",
+      "workflow_path": ".github/workflows/diff-large-file-placeholder.yml",
+      "display_title": "fix(diff): apply the large-file policy to finished turns",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "failure",
+      "head_branch": "reason/openconductor-sol-diff-a-de6c02f4",
+      "head_sha": "985fb33fbf85b9845fb11bd14cb00f1f42f71a20",
+      "run_number": 24,
+      "run_attempt": 1,
+      "actor": "reason-machines[bot]",
+      "triggering_actor": "reason-machines[bot]",
+      "created_at": "2026-11-12T06:32:01Z",
+      "updated_at": "2026-11-12T06:32:36Z",
+      "run_started_at": "2026-11-12T06:32:01Z",
+      "html_url": "https://github.com/reason-machines/openconductor/actions/runs/43168799789",
+      "pull_requests": [
+        1143
+      ]
+    },
+    "job": {
+      "id": 131016859776,
+      "name": "Large-file backend DTO + mounted renderer",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-11-12T06:32:04Z",
+      "completed_at": "2026-11-12T06:32:35Z",
+      "html_url": "https://github.com/reason-machines/openconductor/actions/runs/43168799789/job/131016859776",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 2,
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 3,
+          "name": "Run dtolnay/rust-toolchain@stable",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 4,
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 5,
+          "name": "Run npm ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 6,
+          "name": "Verify frozen source and fixture pins",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 7,
+          "name": "Real tracked-file backend cases",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 8,
+          "name": "Mount actual backend DTOs",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 9,
+          "name": "Preserve producer and renderer proof",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 10,
+          "name": "Require both behavioral checks",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "number": 19,
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 20,
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 21,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "failed_steps": [
+        "Require both behavioral checks"
+      ]
+    },
+    "log": {
+      "path": "hosted-red-backend.log",
+      "available": true,
+      "truncated": true,
+      "from_line": null,
+      "next_line": null,
+      "original_chars": 44054
+    },
+    "cases": 8,
+    "failed": 4,
+    "controls_passed": 4,
+    "other_largefile_passed": 16,
+    "ignored": 0,
+    "filtered_out": 63
+  },
+  "preview": {
+    "run": {
+      "id": 43168799951,
+      "workflow_id": 407968109,
+      "repository_id": 1446810994,
+      "head_repository_id": 1446810994,
+      "workflow_name": "CI",
+      "workflow_path": ".github/workflows/ci.yml",
+      "display_title": "fix(diff): apply the large-file policy to finished turns",
+      "event": "pull_request",
+      "status": "in_progress",
+      "conclusion": null,
+      "head_branch": "reason/openconductor-sol-diff-a-de6c02f4",
+      "head_sha": "985fb33fbf85b9845fb11bd14cb00f1f42f71a20",
+      "run_number": 3209,
+      "run_attempt": 1,
+      "actor": "reason-machines[bot]",
+      "triggering_actor": "reason-machines[bot]",
+      "created_at": "2026-11-12T06:32:01Z",
+      "updated_at": "2026-11-12T06:32:07Z",
+      "run_started_at": "2026-11-12T06:32:01Z",
+      "html_url": "https://github.com/reason-machines/openconductor/actions/runs/43168799951",
+      "pull_requests": [
+        1143
+      ]
+    },
+    "job": {
+      "id": 131016861030,
+      "name": "Frontend unit tests (node --test)",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-11-12T06:32:05Z",
+      "completed_at": "2026-11-12T06:34:00Z",
+      "html_url": "https://github.com/reason-machines/openconductor/actions/runs/43168799951/job/131016861030",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 2,
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 3,
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 4,
+          "name": "Run npm ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 5,
+          "name": "Chat top-level find frozen component regression",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 6,
+          "name": "Pure TypeScript modules (Node strips types natively)",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "number": 7,
+          "name": "Custom branch-prefix unchanged-fixture baseline and candidate replay",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 8,
+          "name": "Script output copy and Unicode unchanged-fixture differential replays",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 9,
+          "name": "Retain script output differential receipts",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 10,
+          "name": "Onboarding persistence and nonblocking startup regressions",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 19,
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 20,
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 21,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "failed_steps": [
+        "Pure TypeScript modules (Node strips types natively)"
+      ]
+    },
+    "log": {
+      "path": "hosted-red-ui.log",
+      "available": true,
+      "truncated": true,
+      "from_line": 8318,
+      "next_line": 8417,
+      "original_chars": 1464810
+    },
+    "observed": "No diff available",
+    "required": "File too large to preview"
+  },
+  "formatting": {
+    "run": {
+      "id": 43168799971,
+      "workflow_id": 407998045,
+      "repository_id": 1446810994,
+      "head_repository_id": 1446810994,
+      "workflow_name": "Diff",
+      "workflow_path": ".github/workflows/diff.yml",
+      "display_title": "fix(diff): apply the large-file policy to finished turns",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "failure",
+      "head_branch": "reason/openconductor-sol-diff-a-de6c02f4",
+      "head_sha": "985fb33fbf85b9845fb11bd14cb00f1f42f71a20",
+      "run_number": 390,
+      "run_attempt": 1,
+      "actor": "reason-machines[bot]",
+      "triggering_actor": "reason-machines[bot]",
+      "created_at": "2026-11-12T06:32:01Z",
+      "updated_at": "2026-11-12T06:32:28Z",
+      "run_started_at": "2026-11-12T06:32:01Z",
+      "html_url": "https://github.com/reason-machines/openconductor/actions/runs/43168799971",
+      "pull_requests": [
+        1143
+      ]
+    },
+    "job": {
+      "id": 131016860517,
+      "name": "Diff Rust test + clippy (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-11-12T06:32:05Z",
+      "completed_at": "2026-11-12T06:32:17Z",
+      "html_url": "https://github.com/reason-machines/openconductor/actions/runs/43168799971/job/131016860517",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 2,
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 3,
+          "name": "Run dtolnay/rust-toolchain@stable",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 4,
+          "name": "Configure git identity for tests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 5,
+          "name": "rustfmt",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "number": 6,
+          "name": "Test diff module",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 12,
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 13,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "failed_steps": [
+        "rustfmt"
+      ]
+    },
+    "log": {
+      "path": "hosted-formatting.log",
+      "available": true,
+      "truncated": false,
+      "from_line": null,
+      "next_line": null,
+      "original_chars": 39695
+    },
+    "behavior": "not run in Diff job; actual Rust behavioral RED came from independent automatic large-file workflow"
+  }
+}

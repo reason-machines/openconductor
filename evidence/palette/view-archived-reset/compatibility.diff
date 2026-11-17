@@ -1,0 +1,33 @@
+--- evidence/palette/view-archived-reset/original.test.ts.txt	2026-11-12 15:41:32.512740471 +0000
++++ src/palette/viewArchivedReset.test.ts	2026-11-12 15:41:19.668739858 +0000
+@@ -13,11 +13,12 @@
+ import * as state from "./state.ts";
+ import * as workspacesTab from "./workspacesTab.ts";
+ import { VIEW_ARCHIVED_ACTION } from "./fromAppState.ts";
++import type { CommandPaletteProps } from "./CommandPalette.tsx";
+ 
+ const dependencies = createRequire(import.meta.url);
+ const { act, create } = dependencies("react-test-renderer");
+ const workspace = (id: string, archived = false): Workspace => ({
+-  id, name: id, userSetWorkspaceName: id, branch: id, status: archived ? "archived" : "idle",
++  id, name: id, userSetWorkspaceName: true, branch: id, status: archived ? "archived" : "idle",
+   diff: { added: 0, removed: 0 }, createdAt: 1,
+ });
+ const repos: Repo[] = ["project-a", "project-b"].map((id) => ({
+@@ -82,12 +83,13 @@
+       return imports[name];
+     },
+   });
+-  assert.ok(exported.CommandPalette);
++  const CommandPalette = exported.CommandPalette;
++  assert.ok(CommandPalette);
+   let renderer: ReturnType<typeof create>;
+   await act(async () => {
+-    renderer = create(React.createElement(exported.CommandPalette, {
++    renderer = create(React.createElement(CommandPalette, {
+       data, repos, archived,
+-      onSelect(item) { selected.push(item.id); },
++      onSelect(item: Parameters<CommandPaletteProps["onSelect"]>[0]) { selected.push(item.id); },
+       onClose() { closes += 1; },
+     }), {
+       createNodeMock(node: { props: Record<string, unknown> }) {

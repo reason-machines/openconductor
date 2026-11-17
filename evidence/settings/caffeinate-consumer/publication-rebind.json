@@ -1,0 +1,22 @@
+{
+  "producer": "Conductor Rebuild",
+  "source_baseline": "bbdca3e984f5b80183703daa9f9bb27bbaf0f47c",
+  "publication_main": "3e4f22d2e525187b1fbb4a940d34afbe227786e5",
+  "integration": "Merged the actual fetched default branch into the assigned branch without cherry-picking or changing frozen evidence.",
+  "unchanged_source_paths": [
+    "src/features/chat/chatRuntime.ts",
+    "src-tauri/src/session_status_commands.rs",
+    "crates/openconductor-db/src/sessions.rs",
+    "src/main.tsx"
+  ],
+  "checks": {
+    "git_source_diff_between_pins": "PASS_BYTE_IDENTICAL",
+    "original_assets_and_ten_source_spans": "PASS_STATIC_HASHES",
+    "new_test_typescript_parse": "PASS_STATIC_SYNTAX_ONLY",
+    "git_diff_check": "PASS",
+    "hosted_test_baseline": "NOT_RUN",
+    "local_behavioral_tests": "NOT_RUN",
+    "native_power_execution": "NOT_RUN"
+  },
+  "production_change": "NONE_TEST_FIRST_HEAD"
+}

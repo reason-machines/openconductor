@@ -1,0 +1,136 @@
+TAP version 13
+# (node:256) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: provider tabs have nonempty distinct DOM IDs
+not ok 1 - provider tabs have nonempty distinct DOM IDs
+  ---
+  duration_ms: 451.65468
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs:148:1'
+  failureType: 'testCodeFailure'
+  error: 'Every tab has one nonempty DOM ID'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs:152:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: the active Claude panel is labelled by its selected tab
+not ok 2 - the active Claude panel is labelled by its selected tab
+  ---
+  duration_ms: 223.874932
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs:157:1'
+  failureType: 'testCodeFailure'
+  error: 'The active panel must reference its selected tab'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: ~
+  operator: '=='
+  stack: |-
+    assertLinked (file:///home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs:142:10)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs:159:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: click selection updates the panel label without changing tab IDs
+not ok 3 - click selection updates the panel label without changing tab IDs
+  ---
+  duration_ms: 168.825189
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs:163:1'
+  failureType: 'testCodeFailure'
+  error: 'The active panel must reference its selected tab'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: ~
+  operator: '=='
+  stack: |-
+    assertLinked (file:///home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs:142:10)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs:168:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: keyboard selection updates the panel label without changing tab IDs
+not ok 4 - keyboard selection updates the panel label without changing tab IDs
+  ---
+  duration_ms: 123.908824
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs:173:1'
+  failureType: 'testCodeFailure'
+  error: 'The active panel must reference its selected tab'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: ~
+  operator: '=='
+  stack: |-
+    assertLinked (file:///home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs:142:10)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs:178:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: external route selection updates the panel label and preserves tab IDs
+not ok 5 - external route selection updates the panel label and preserves tab IDs
+  ---
+  duration_ms: 121.895264
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs:185:1'
+  failureType: 'testCodeFailure'
+  error: 'The active panel must reference its selected tab'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: ~
+  operator: '=='
+  stack: |-
+    assertLinked (file:///home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs:142:10)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs:190:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: separate mounted Agents pages have disjoint tab IDs and their own panel labels
+not ok 6 - separate mounted Agents pages have disjoint tab IDs and their own panel labels
+  ---
+  duration_ms: 120.968402
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs:196:1'
+  failureType: 'testCodeFailure'
+  error: 'Every mounted tab has a DOM ID'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-label64/source-v1/agentTabLabel.dom.test.mjs:200:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: existing panel labels and URL fields survive each route selection
+ok 7 - existing panel labels and URL fields survive each route selection
+  ---
+  duration_ms: 194.881538
+  type: 'test'
+  ...
+# Subtest: K1 focus activation and modified-key ownership remain unchanged
+ok 8 - K1 focus activation and modified-key ownership remain unchanged
+  ---
+  duration_ms: 197.482418
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 2
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2337.04405

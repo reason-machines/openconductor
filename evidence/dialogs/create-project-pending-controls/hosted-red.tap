@@ -1,0 +1,100 @@
+2026-11-12T00:09:56.0650186Z # Subtest: pending Create project name edits preserve the active request and survive rejection
+2026-11-12T00:09:56.0659415Z not ok 70 - pending Create project name edits preserve the active request and survive rejection
+2026-11-12T00:09:56.0679015Z   ---
+2026-11-12T00:09:56.0688966Z   duration_ms: 252.216865
+2026-11-12T00:09:56.0692553Z   type: 'test'
+2026-11-12T00:09:56.0693596Z   location: '/home/runner/work/openconductor/openconductor/src/components/createProjectPendingControls.test.ts:204:3'
+2026-11-12T00:09:56.0709095Z   failureType: 'testCodeFailure'
+2026-11-12T00:09:56.0723117Z   error: 'Pending name must remain editable'
+2026-11-12T00:09:56.0743299Z   code: 'ERR_ASSERTION'
+2026-11-12T00:09:56.0743786Z   name: 'AssertionError'
+2026-11-12T00:09:56.0744202Z   expected: true
+2026-11-12T00:09:56.0749572Z   actual: true
+2026-11-12T00:09:56.0750012Z   operator: 'notStrictEqual'
+2026-11-12T00:09:56.0750478Z   stack: |-
+2026-11-12T00:09:56.0751453Z     Object.edit (file:///home/runner/work/openconductor/openconductor/src/components/createProjectPendingControls.test.ts:156:12)
+2026-11-12T00:09:56.0753054Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/createProjectPendingControls.test.ts:209:12)
+2026-11-12T00:09:56.0754202Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T00:09:56.0755017Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-12T00:09:56.0755669Z   ...
+2026-11-12T00:09:56.1434817Z # Subtest: pending Create project parent edits preserve the active request and survive rejection
+2026-11-12T00:09:56.1486898Z not ok 71 - pending Create project parent edits preserve the active request and survive rejection
+2026-11-12T00:09:56.1505120Z   ---
+2026-11-12T00:09:56.1519348Z   duration_ms: 126.977884
+2026-11-12T00:09:56.1539621Z   type: 'test'
+2026-11-12T00:09:56.1540734Z   location: '/home/runner/work/openconductor/openconductor/src/components/createProjectPendingControls.test.ts:204:3'
+2026-11-12T00:09:56.1541870Z   failureType: 'testCodeFailure'
+2026-11-12T00:09:56.1542527Z   error: 'Pending parent must remain editable'
+2026-11-12T00:09:56.1543127Z   code: 'ERR_ASSERTION'
+2026-11-12T00:09:56.1543629Z   name: 'AssertionError'
+2026-11-12T00:09:56.1544130Z   expected: true
+2026-11-12T00:09:56.1544590Z   actual: true
+2026-11-12T00:09:56.1545096Z   operator: 'notStrictEqual'
+2026-11-12T00:09:56.1629664Z   stack: |-
+2026-11-12T00:09:56.1659739Z     Object.edit (file:///home/runner/work/openconductor/openconductor/src/components/createProjectPendingControls.test.ts:156:12)
+2026-11-12T00:09:56.1679830Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/createProjectPendingControls.test.ts:209:12)
+2026-11-12T00:09:56.1689148Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T00:09:56.1729333Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T00:09:56.1749209Z   ...
+2026-11-12T00:09:56.2069908Z # Subtest: pending Create project Browse updates only the draft and preserves Cancel
+2026-11-12T00:09:56.2089558Z not ok 72 - pending Create project Browse updates only the draft and preserves Cancel
+2026-11-12T00:09:56.2090412Z   ---
+2026-11-12T00:09:56.2090807Z   duration_ms: 84.10325
+2026-11-12T00:09:56.2091257Z   type: 'test'
+2026-11-12T00:09:56.2093013Z   location: '/home/runner/work/openconductor/openconductor/src/components/createProjectPendingControls.test.ts:221:1'
+2026-11-12T00:09:56.2093981Z   failureType: 'testCodeFailure'
+2026-11-12T00:09:56.2094554Z   error: 'Pending Browse must remain available'
+2026-11-12T00:09:56.2095071Z   code: 'ERR_ASSERTION'
+2026-11-12T00:09:56.2095516Z   name: 'AssertionError'
+2026-11-12T00:09:56.2095961Z   expected: true
+2026-11-12T00:09:56.2096346Z   actual: true
+2026-11-12T00:09:56.2096746Z   operator: 'notStrictEqual'
+2026-11-12T00:09:56.2097195Z   stack: |-
+2026-11-12T00:09:56.2098173Z     Object.pick (file:///home/runner/work/openconductor/openconductor/src/components/createProjectPendingControls.test.ts:172:14)
+2026-11-12T00:09:56.2099962Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/createProjectPendingControls.test.ts:225:16)
+2026-11-12T00:09:56.2125798Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T00:09:56.2126700Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T00:09:56.2127360Z   ...
+2026-11-12T00:09:56.2570006Z # Subtest: pending Create project template selection does not change the active pipeline
+2026-11-12T00:09:56.2599629Z not ok 73 - pending Create project template selection does not change the active pipeline
+2026-11-12T00:09:56.2628900Z   ---
+2026-11-12T00:09:56.2659108Z   duration_ms: 58.345109
+2026-11-12T00:09:56.2678882Z   type: 'test'
+2026-11-12T00:09:56.2679723Z   location: '/home/runner/work/openconductor/openconductor/src/components/createProjectPendingControls.test.ts:237:1'
+2026-11-12T00:09:56.2680545Z   failureType: 'testCodeFailure'
+2026-11-12T00:09:56.2680973Z   error: 'Pending templates must remain selectable'
+2026-11-12T00:09:56.2681393Z   code: 'ERR_ASSERTION'
+2026-11-12T00:09:56.2681692Z   name: 'AssertionError'
+2026-11-12T00:09:56.2681992Z   expected: true
+2026-11-12T00:09:56.2682274Z   actual: true
+2026-11-12T00:09:56.2682556Z   operator: 'notStrictEqual'
+2026-11-12T00:09:56.2682905Z   stack: |-
+2026-11-12T00:09:56.2683720Z     Object.select (file:///home/runner/work/openconductor/openconductor/src/components/createProjectPendingControls.test.ts:177:14)
+2026-11-12T00:09:56.2686053Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/createProjectPendingControls.test.ts:241:10)
+2026-11-12T00:09:56.2687078Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T00:09:56.2687740Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T00:09:56.2688251Z   ...
+2026-11-12T00:09:56.3039936Z # Subtest: pending Create project retains the primary, shortcut and duplicate-submit guards
+2026-11-12T00:09:56.3079722Z ok 74 - pending Create project retains the primary, shortcut and duplicate-submit guards
+2026-11-12T00:09:56.3091189Z   ---
+2026-11-12T00:09:56.3139229Z   duration_ms: 54.267575
+2026-11-12T00:09:56.3169178Z   type: 'test'
+2026-11-12T00:09:56.3199048Z   ...
+2026-11-12T00:09:56.3594096Z # Subtest: Create project success retains its captured request and completion callbacks
+2026-11-12T00:09:56.3620049Z ok 75 - Create project success retains its captured request and completion callbacks
+2026-11-12T00:09:56.3649358Z   ---
+2026-11-12T00:09:56.3679349Z   duration_ms: 45.042261
+2026-11-12T00:09:56.3709203Z   type: 'test'
+2026-11-12T00:09:56.3739115Z   ...
+2026-11-12T00:09:56.4066234Z # Subtest: Create project rejection preserves its draft and permits a new captured retry
+2026-11-12T00:09:56.4071720Z ok 76 - Create project rejection preserves its draft and permits a new captured retry
+2026-11-12T00:09:56.4072509Z   ---
+2026-11-12T00:09:56.4099173Z   duration_ms: 60.461383
+2026-11-12T00:09:56.4129096Z   type: 'test'
+2026-11-12T00:09:56.4139230Z   ...
+2026-11-12T00:09:56.4170325Z # Subtest: idle Create project Browse Cancel preserves the displayed folder without creating
+2026-11-12T00:09:56.4179887Z ok 77 - idle Create project Browse Cancel preserves the displayed folder without creating
+2026-11-12T00:09:56.4181307Z   ---
+2026-11-12T00:09:56.4181791Z   duration_ms: 45.591045
+2026-11-12T00:09:56.4182348Z   type: 'test'
+2026-11-12T00:09:56.4182792Z   ...

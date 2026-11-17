@@ -1,0 +1,74 @@
+{
+  "status": "OBSERVED_COMPONENT_GREEN",
+  "head": "624df197a1829f1afabfc87d0943fb7ea4157855",
+  "check_id": 130849972188,
+  "run_id": 43117738594,
+  "job_id": 130849972188,
+  "url": "https://github.com/reason-machines/openconductor/actions/runs/43117738594/job/130849972188",
+  "fixture_sha256": "366bacf14235f38d8aab739794c8f2d5debceffd512d989b8f2e6ff4c6a7279b",
+  "cases": [
+    {
+      "line": 1683,
+      "text": "2026-11-11T23:10:57.1707326Z ok 253 - multi draft distinct anchors render independent bodies"
+    },
+    {
+      "line": 1689,
+      "text": "2026-11-11T23:10:57.1711238Z ok 254 - multi draft reselect restores the existing body"
+    },
+    {
+      "line": 1695,
+      "text": "2026-11-11T23:10:57.1729956Z ok 255 - multi draft different paths retain independent bodies"
+    },
+    {
+      "line": 1701,
+      "text": "2026-11-11T23:10:57.1734323Z ok 256 - multi draft opposite sides retain independent bodies"
+    },
+    {
+      "line": 1707,
+      "text": "2026-11-11T23:10:57.1738812Z ok 257 - multi draft shared ending line retains each range body"
+    },
+    {
+      "line": 1713,
+      "text": "2026-11-11T23:10:57.1743237Z ok 258 - multi draft discard removes only the selected draft"
+    },
+    {
+      "line": 1719,
+      "text": "2026-11-11T23:10:57.1747185Z ok 259 - multi draft save removes only the saved draft"
+    },
+    {
+      "line": 1725,
+      "text": "2026-11-11T23:10:57.1751146Z ok 260 - multi draft hide remount retains all draft bodies"
+    },
+    {
+      "line": 1731,
+      "text": "2026-11-11T23:10:57.1755055Z ok 261 - multi draft failed save retains both bodies"
+    },
+    {
+      "line": 1737,
+      "text": "2026-11-11T23:10:57.1758891Z ok 262 - multi draft late save cannot clear another anchor"
+    },
+    {
+      "line": 1743,
+      "text": "2026-11-11T23:10:57.1762814Z ok 263 - multi draft same anchor click does not duplicate or reset"
+    },
+    {
+      "line": 1749,
+      "text": "2026-11-11T23:10:57.1766872Z ok 264 - multi draft workspace change does not leak draft bodies"
+    },
+    {
+      "line": 1755,
+      "text": "2026-11-11T23:10:57.1771191Z ok 265 - multi draft stale cancelled callbacks cannot replace a survivor"
+    }
+  ],
+  "passed": 13,
+  "failed": 0,
+  "scope": "Actual production useReviewComments hook and annotation Composer, real React. Same frozen fixture as baseline.",
+  "not_exercised": [
+    "Pierre hit testing",
+    "Browser/editor DOM",
+    "Native/visual",
+    "SQLite",
+    "App restart"
+  ],
+  "remaining": "Four prior paired-proof source pins need current-product maintenance and automatic historicalRED/currentGREEN rerun; every exact-head workflow still must pass before merge."
+}

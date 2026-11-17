@@ -1,0 +1,1 @@
+function PQt(t,e){return nh(t).some(s=>s.modifiers!==void 0&&s.modifiers.length>0&&s.modifiers.every(n=>zUt(n,e)))}

@@ -1,0 +1,1 @@
+nice -n 19 timeout --kill-after=5s 90s node --max-old-space-size=768 --experimental-strip-types --test --test-concurrency=1 --test-name-pattern='^Read image disclosure gate: no-inherited-constructor$' src/features/chat/readImageDisclosure.test.ts

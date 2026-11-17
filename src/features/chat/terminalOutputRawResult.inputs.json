@@ -1,0 +1,494 @@
+{
+  "candidate": "CHAT.GETTERMINALOUTPUT-STRUCTURED-RESULT-CONSUMER",
+  "author": "Conductor Rebuild",
+  "checked_main": "f3a52c4aaa59d12e2d0050e2997174be30a59cac",
+  "source": "Literal Dpo branch expectations; not a reimplementation test and not run.",
+  "cases": [
+    {
+      "id": "number-success",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "123"
+        }
+      ],
+      "output": "123",
+      "isError": false,
+      "input": {
+        "source": "terminal",
+        "maxLines": 20
+      },
+      "expected": {
+        "text": "123",
+        "expandable": true,
+        "note": "Source: terminal \u00b7 20 lines"
+      },
+      "predicted_current": {
+        "text": "",
+        "expandable": false
+      },
+      "qualification": "Static expectation only. No mounted execution."
+    },
+    {
+      "id": "number-error",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "123"
+        }
+      ],
+      "output": "123",
+      "isError": true,
+      "input": {
+        "source": "terminal",
+        "maxLines": 20
+      },
+      "expected": {
+        "text": "123",
+        "expandable": true,
+        "note": "Source: terminal \u00b7 20 lines"
+      },
+      "predicted_current": {
+        "text": "",
+        "expandable": false
+      },
+      "qualification": "Static expectation only. No mounted execution."
+    },
+    {
+      "id": "boolean-success",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "true"
+        }
+      ],
+      "output": "true",
+      "isError": false,
+      "input": {
+        "source": "terminal",
+        "maxLines": 20
+      },
+      "expected": {
+        "text": "true",
+        "expandable": true,
+        "note": "Source: terminal \u00b7 20 lines"
+      },
+      "predicted_current": {
+        "text": "",
+        "expandable": false
+      },
+      "qualification": "Static expectation only. No mounted execution."
+    },
+    {
+      "id": "boolean-error",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "true"
+        }
+      ],
+      "output": "true",
+      "isError": true,
+      "input": {
+        "source": "terminal",
+        "maxLines": 20
+      },
+      "expected": {
+        "text": "true",
+        "expandable": true,
+        "note": "Source: terminal \u00b7 20 lines"
+      },
+      "predicted_current": {
+        "text": "",
+        "expandable": false
+      },
+      "qualification": "Static expectation only. No mounted execution."
+    },
+    {
+      "id": "null-success",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "null"
+        }
+      ],
+      "output": "null",
+      "isError": false,
+      "input": {
+        "source": "terminal",
+        "maxLines": 20
+      },
+      "expected": {
+        "text": "null",
+        "expandable": true,
+        "note": "Source: terminal \u00b7 20 lines"
+      },
+      "predicted_current": {
+        "text": "",
+        "expandable": false
+      },
+      "qualification": "Static expectation only. No mounted execution."
+    },
+    {
+      "id": "null-error",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "null"
+        }
+      ],
+      "output": "null",
+      "isError": true,
+      "input": {
+        "source": "terminal",
+        "maxLines": 20
+      },
+      "expected": {
+        "text": "null",
+        "expandable": true,
+        "note": "Source: terminal \u00b7 20 lines"
+      },
+      "predicted_current": {
+        "text": "",
+        "expandable": false
+      },
+      "qualification": "Static expectation only. No mounted execution."
+    },
+    {
+      "id": "object-success",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "{\"answer\":42}"
+        }
+      ],
+      "output": "{\"answer\":42}",
+      "isError": false,
+      "input": {
+        "source": "terminal",
+        "maxLines": 20
+      },
+      "expected": {
+        "text": "{\"answer\":42}",
+        "expandable": true,
+        "note": "Source: terminal \u00b7 20 lines"
+      },
+      "predicted_current": {
+        "text": "",
+        "expandable": false
+      },
+      "qualification": "Static expectation only. No mounted execution."
+    },
+    {
+      "id": "object-error",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "{\"answer\":42}"
+        }
+      ],
+      "output": "{\"answer\":42}",
+      "isError": true,
+      "input": {
+        "source": "terminal",
+        "maxLines": 20
+      },
+      "expected": {
+        "text": "{\"answer\":42}",
+        "expandable": true,
+        "note": "Source: terminal \u00b7 20 lines"
+      },
+      "predicted_current": {
+        "text": "",
+        "expandable": false
+      },
+      "qualification": "Static expectation only. No mounted execution."
+    },
+    {
+      "id": "array-success",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "[1,2]"
+        }
+      ],
+      "output": "[1,2]",
+      "isError": false,
+      "input": {
+        "source": "terminal",
+        "maxLines": 20
+      },
+      "expected": {
+        "text": "[1,2]",
+        "expandable": true,
+        "note": "Source: terminal \u00b7 20 lines"
+      },
+      "predicted_current": {
+        "text": "",
+        "expandable": false
+      },
+      "qualification": "Static expectation only. No mounted execution."
+    },
+    {
+      "id": "array-error",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "[1,2]"
+        }
+      ],
+      "output": "[1,2]",
+      "isError": true,
+      "input": {
+        "source": "terminal",
+        "maxLines": 20
+      },
+      "expected": {
+        "text": "[1,2]",
+        "expandable": true,
+        "note": "Source: terminal \u00b7 20 lines"
+      },
+      "predicted_current": {
+        "text": "",
+        "expandable": false
+      },
+      "qualification": "Static expectation only. No mounted execution."
+    },
+    {
+      "id": "quoted-success",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "\"hello\""
+        }
+      ],
+      "output": "\"hello\"",
+      "isError": false,
+      "input": {
+        "source": "terminal",
+        "maxLines": 20
+      },
+      "expected": {
+        "text": "\"hello\"",
+        "expandable": true,
+        "note": "Source: terminal \u00b7 20 lines"
+      },
+      "predicted_current": {
+        "text": "",
+        "expandable": false
+      },
+      "qualification": "Static expectation only. No mounted execution."
+    },
+    {
+      "id": "quoted-error",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "\"hello\""
+        }
+      ],
+      "output": "\"hello\"",
+      "isError": true,
+      "input": {
+        "source": "terminal",
+        "maxLines": 20
+      },
+      "expected": {
+        "text": "\"hello\"",
+        "expandable": true,
+        "note": "Source: terminal \u00b7 20 lines"
+      },
+      "predicted_current": {
+        "text": "",
+        "expandable": false
+      },
+      "qualification": "Static expectation only. No mounted execution."
+    },
+    {
+      "id": "encoded-blocks-success",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "[{\"type\":\"text\",\"text\":\"keep me literal\"}]"
+        }
+      ],
+      "output": "[{\"type\":\"text\",\"text\":\"keep me literal\"}]",
+      "isError": false,
+      "input": {
+        "source": "terminal",
+        "maxLines": 20
+      },
+      "expected": {
+        "text": "[{\"type\":\"text\",\"text\":\"keep me literal\"}]",
+        "expandable": true,
+        "note": "Source: terminal \u00b7 20 lines"
+      },
+      "predicted_current": {
+        "text": "keep me literal",
+        "expandable": true
+      },
+      "qualification": "Static expectation only. No mounted execution."
+    },
+    {
+      "id": "encoded-blocks-error",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "[{\"type\":\"text\",\"text\":\"keep me literal\"}]"
+        }
+      ],
+      "output": "[{\"type\":\"text\",\"text\":\"keep me literal\"}]",
+      "isError": true,
+      "input": {
+        "source": "terminal",
+        "maxLines": 20
+      },
+      "expected": {
+        "text": "[{\"type\":\"text\",\"text\":\"keep me literal\"}]",
+        "expandable": true,
+        "note": "Source: terminal \u00b7 20 lines"
+      },
+      "predicted_current": {
+        "text": "keep me literal",
+        "expandable": true
+      },
+      "qualification": "Static expectation only. No mounted execution."
+    },
+    {
+      "id": "ordinary-array",
+      "rawResult": [
+        {
+          "type": "text",
+          "text": "alpha"
+        },
+        {
+          "type": "text",
+          "text": "beta"
+        }
+      ],
+      "output": "alpha\nbeta",
+      "expected": {
+        "text": "alpha\nbeta",
+        "expandable": true,
+        "note": "Source: auto \u00b7 0 lines"
+      },
+      "isError": false,
+      "input": {
+        "source": "auto",
+        "maxLines": 0
+      },
+      "qualification": "Static expected control only. No mounted execution."
+    },
+    {
+      "id": "ordinary-string",
+      "rawResult": "alpha\nbeta",
+      "output": "alpha\nbeta",
+      "expected": {
+        "text": "alpha\nbeta",
+        "expandable": true,
+        "note": "Source: auto \u00b7 0 lines"
+      },
+      "isError": false,
+      "input": {
+        "source": "auto",
+        "maxLines": 0
+      },
+      "qualification": "Static expected control only. No mounted execution."
+    },
+    {
+      "id": "string-number-remains-hidden",
+      "rawResult": "123",
+      "output": "123",
+      "expected": {
+        "text": "",
+        "expandable": false,
+        "note": "Source: auto \u00b7 0 lines"
+      },
+      "isError": false,
+      "input": {
+        "source": "auto",
+        "maxLines": 0
+      },
+      "qualification": "Static expected control only. No mounted execution."
+    },
+    {
+      "id": "string-json-blocks-decoded",
+      "rawResult": "[{\"type\":\"text\",\"text\":\"decoded\"}]",
+      "output": "[{\"type\":\"text\",\"text\":\"decoded\"}]",
+      "expected": {
+        "text": "decoded",
+        "expandable": true,
+        "note": "Source: auto \u00b7 0 lines"
+      },
+      "isError": false,
+      "input": {
+        "source": "auto",
+        "maxLines": 0
+      },
+      "qualification": "Static expected control only. No mounted execution."
+    },
+    {
+      "id": "empty-array",
+      "rawResult": [],
+      "output": "",
+      "expected": {
+        "text": "",
+        "expandable": false,
+        "note": "Source: auto \u00b7 0 lines"
+      },
+      "isError": false,
+      "input": {
+        "source": "auto",
+        "maxLines": 0
+      },
+      "qualification": "Static expected control only. No mounted execution."
+    },
+    {
+      "id": "pending",
+      "expected": {
+        "text": "",
+        "expandable": false,
+        "note": "Source: auto \u00b7 0 lines"
+      },
+      "isError": false,
+      "input": {
+        "source": "auto",
+        "maxLines": 0
+      },
+      "qualification": "Static expected control only. No mounted execution."
+    },
+    {
+      "id": "legacy-no-raw-result",
+      "output": "alpha",
+      "expected": {
+        "text": "alpha",
+        "expandable": true,
+        "note": "Source: auto \u00b7 0 lines"
+      },
+      "isError": false,
+      "input": {
+        "source": "auto",
+        "maxLines": 0
+      },
+      "qualification": "Static expected control only. No mounted execution."
+    },
+    {
+      "id": "unsupported-raw-object",
+      "rawResult": {
+        "text": "ignored"
+      },
+      "output": "{\"text\":\"ignored\"}",
+      "expected": {
+        "text": "",
+        "expandable": false,
+        "note": "Source: auto \u00b7 0 lines"
+      },
+      "isError": false,
+      "input": {
+        "source": "auto",
+        "maxLines": 0
+      },
+      "qualification": "Static expected control only. No mounted execution."
+    }
+  ]
+}

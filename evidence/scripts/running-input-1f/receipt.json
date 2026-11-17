@@ -1,0 +1,255 @@
+{
+  "owner": "Conductor Rebuild SAME1f",
+  "candidate": "SCRIPTS.RUNNING-STDIN-ROUTE",
+  "disposition": "SOURCE_QUALIFIED_MISSING_INPUT_ROUTE_RUNTIME_NOT_RUN",
+  "main_checked": "5653e04fa90f11cb0d387f40f8eaed5660085746",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "original_assets": {
+    "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "spans": [
+    {
+      "symbol": "rSa",
+      "asset": "renderApp-D_fmY7hW.js",
+      "path": "reference/rSa.txt",
+      "bytes": 3115,
+      "sha256": "55b02cfb58c1416fce68bf0cc9178e9b37bed4e03ccb0de73661b7787d99fc95",
+      "utf8_half_open": [
+        11167486,
+        11170601
+      ],
+      "boundary": "Complete run-output wrapper"
+    },
+    {
+      "symbol": "nZe",
+      "asset": "renderApp-D_fmY7hW.js",
+      "path": "reference/nZe.txt",
+      "bytes": 1109,
+      "sha256": "2a41065f57534a755e056ee604d13e86310605c60594b143ad8aca1cb8a9aab5",
+      "utf8_half_open": [
+        6922812,
+        6923921
+      ],
+      "boundary": "Complete live/persisted output hook"
+    },
+    {
+      "symbol": "tIr-Loi",
+      "asset": "renderApp-D_fmY7hW.js",
+      "path": "reference/tIr-Loi.txt",
+      "bytes": 1256,
+      "sha256": "aea40ad4e28233c110bc5958d1e4cdafe9aa0a5a21df027d0088bd5342bd23d9",
+      "utf8_half_open": [
+        152364,
+        153620
+      ],
+      "boundary": "Complete renderer adapter, input gate and attach helper"
+    },
+    {
+      "symbol": "MSt",
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/MSt.txt",
+      "bytes": 260,
+      "sha256": "08ed5d04b469047ae0698f39d123e470614fe3b8355414ea7043894ebe225439",
+      "utf8_half_open": [
+        2559162,
+        2559422
+      ],
+      "boundary": "Complete renderer input subscription helper"
+    },
+    {
+      "symbol": "TSt",
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/TSt.txt",
+      "bytes": 135,
+      "sha256": "51e11b75bc9a21198844a42a99afb1df70cdef5b98eb04c9a4496cc06d20f420",
+      "utf8_half_open": [
+        2558263,
+        2558398
+      ],
+      "boundary": "Complete ordered-input gate"
+    },
+    {
+      "symbol": "runtime-attachRenderer",
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/runtime-attachRenderer.txt",
+      "bytes": 1217,
+      "sha256": "a3c979fc2235807f63e71050a35605d3f668ce59e2722e77032d3f7a0057041d",
+      "utf8_half_open": [
+        2759373,
+        2760590
+      ],
+      "boundary": "Complete runtime method"
+    },
+    {
+      "symbol": "runtime-write",
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/runtime-write.txt",
+      "bytes": 319,
+      "sha256": "73b6232085f3d327f2d0bd1f853b70f3719234b8992c487daa34d2c3c64a9580",
+      "utf8_half_open": [
+        2760741,
+        2761060
+      ],
+      "boundary": "Complete runtime method"
+    },
+    {
+      "symbol": "runtime-spawn",
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/runtime-spawn.txt",
+      "bytes": 2896,
+      "sha256": "6a409e1603fbd389aa3576f88b36f03efa6ad93509c4a6b262186b13ffa457aa",
+      "utf8_half_open": [
+        2764981,
+        2767877
+      ],
+      "boundary": "Complete backend-session lifecycle method"
+    },
+    {
+      "symbol": "local-backend",
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/local-backend.txt",
+      "bytes": 3411,
+      "sha256": "7bd7df55ddbf55db2ed5863a00115af41e8696377bfb17a7ef5cb5e69ecb3913",
+      "utf8_half_open": [
+        2552188,
+        2555599
+      ],
+      "boundary": "Complete local backend session class"
+    },
+    {
+      "symbol": "local-backend-factory",
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/local-backend-factory.txt",
+      "bytes": 230,
+      "sha256": "220c80cb132288c1347b23170f7b822a54298827c54fb8bee0c703f70eeeb6f3",
+      "utf8_half_open": [
+        2555599,
+        2555829
+      ],
+      "boundary": "Complete local backend factory class"
+    },
+    {
+      "symbol": "backend-router",
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/backend-router.txt",
+      "bytes": 234,
+      "sha256": "1d4f53a1460b7fce389cc29b109d002f1ac997d08373fe71c25f1aad2c57f95f",
+      "utf8_half_open": [
+        2828546,
+        2828780
+      ],
+      "boundary": "Complete backend router class; local branch only assessed"
+    },
+    {
+      "symbol": "runtime-factory",
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/runtime-factory.txt",
+      "bytes": 375,
+      "sha256": "6d0ed70cda3275a8436e1b8015a10ba314622de6d627919eb41852472d1b447f",
+      "utf8_half_open": [
+        2828843,
+        2829218
+      ],
+      "boundary": "Complete runtime factory and shared ts instance"
+    },
+    {
+      "symbol": "renderer-qc-import",
+      "asset": "renderApp-D_fmY7hW.js",
+      "path": "reference/renderer-qc-import.txt",
+      "bytes": 8,
+      "sha256": "447426764ef0b8ca8f18e5bddd099b165145cc1c3967f959a75eaa90d90193ba",
+      "utf8_half_open": [
+        57354,
+        57362
+      ],
+      "boundary": "Exact import/export specifier, not a complete declaration"
+    },
+    {
+      "symbol": "index-ts-export",
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/index-ts-export.txt",
+      "bytes": 8,
+      "sha256": "2480388e61e8e7bc885632949b422000cfb3dd593b84dbbfaabb7cc110e4e860",
+      "utf8_half_open": [
+        3484259,
+        3484267
+      ],
+      "boundary": "Exact import/export specifier, not a complete declaration"
+    }
+  ],
+  "current_sources": [
+    {
+      "path": "src/components/ScriptOutput.tsx",
+      "file": "current/src/components/ScriptOutput.tsx",
+      "bytes": 4821,
+      "sha256": "457c704260558013306063815f21f8dc79aba56404283f165adfa07db61aafcf"
+    },
+    {
+      "path": "src/components/ScriptsPanel.tsx",
+      "file": "current/src/components/ScriptsPanel.tsx",
+      "bytes": 24172,
+      "sha256": "7da73eb9ef1e1c7e778fcaa956007d46d6ecb4606e8a8f46fc8657e82d8f5079"
+    },
+    {
+      "path": "src/scripts/api.ts",
+      "file": "current/src/scripts/api.ts",
+      "bytes": 7327,
+      "sha256": "271b21e1fe4cbc250b8e4281bd30395ba1cf7b6b29a1b95a7e60e60db0cf207b"
+    },
+    {
+      "path": "src-tauri/src/scripts.rs",
+      "file": "current/src-tauri/src/scripts.rs",
+      "bytes": 6051,
+      "sha256": "2818a2dce87fae8d02c331a37f81c3ff54f10c9606de43db2c91dc8aaecc9bcb"
+    },
+    {
+      "path": "src-tauri/src/lib.rs",
+      "file": "current/src-tauri/src/lib.rs",
+      "bytes": 29999,
+      "sha256": "6b7cc94ce8b0825192bfeb57a37b65d93e792dc703bb7bb2d5124261eab70ba3"
+    },
+    {
+      "path": "crates/scripts/src/launch.rs",
+      "file": "current/crates/scripts/src/launch.rs",
+      "bytes": 9957,
+      "sha256": "15b53a7fbb001df67e1fe0630c6634cfa5e314c512187df4d607e544454437b1"
+    },
+    {
+      "path": "crates/scripts/src/runner.rs",
+      "file": "current/crates/scripts/src/runner.rs",
+      "bytes": 12882,
+      "sha256": "5dc6df453b77aac5c21921f6608d9cc2742fed29d96984e811f47ff1cbcbc009"
+    },
+    {
+      "path": "crates/scripts/src/service.rs",
+      "file": "current/crates/scripts/src/service.rs",
+      "bytes": 15174,
+      "sha256": "cea7ea4700ac0ad8a831d3b5e4f33b2823353af4df357d4e5f55117178f59c97"
+    }
+  ],
+  "observed_source": [
+    "rSa derives both terminal disableStdin and nZe disableInput from whether the task process is running.",
+    "nZe attaches the live runtime session using tIr/Loi; tIr.onInput subscribes terminal.onData and applies the dynamic disableInput gate.",
+    "Runtime attachRenderer uses MSt/TSt input scheduling; spawnBackendSession enables input after readiness and disables it on exit. Runtime.write checks running and isInputEnabled before backendSession.write.",
+    "Shared qc import resolves to ts via gh. Default runtime factory DAt uses FAt; its local backend _St creates ySt, whose write method invokes pty_write.",
+    "Current ScriptsPanel supplies ScriptOutput with output only. ScriptOutput constructs xterm with disableStdin:true and no onData subscription.",
+    "Current scripts API/Tauri command declarations expose run start/stop/status/output but no write-input route.",
+    "Current launch::spawn gives the PTY master File to the reader thread; Process retains no writer. RunManager tracks the live Process by workspace/script and retains only transcript output after exit."
+  ],
+  "conclusion": "The checked current running-script path lacks the reference input route. A frontend-only enablement cannot reach the checked script Process. This is a source discrepancy, not a reproduced native failure.",
+  "unverified": [
+    "Native ability to enter a line and observe a waiting script consume it",
+    "Keyboard, paste, focus, geometry, provider execution and clipboard behavior",
+    "Behavioral RED/GREEN, full-application and concurrency acceptance",
+    "Native backend implementation beyond the original frontend pty_write command call"
+  ],
+  "scope": "Source-only inquiry. No product/test edit, runtime execution, PR, dispatch, rerun or new watcher. No SAME64 LoginTerminal overlap.",
+  "overflow_handoff": {
+    "attachment_id": "d5a086eb-229a-4ddd-861c-558ff0a73b23",
+    "sha256": "bb79a518d7f60edf86a252b072d0e6581695cd1ffd4402827b1c4deb0eca8e9b",
+    "publisher": "E09",
+    "product_edits": "NONE",
+    "fixture_execution": "NOT_RUN"
+  }
+}

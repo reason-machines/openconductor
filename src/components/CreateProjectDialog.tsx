@@ -109,7 +109,7 @@ export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) 
           <span>Project name</span>
           <input
             id="project-name" autoFocus autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
-            placeholder="my-awesome-project" value={name} disabled={pending}
+            placeholder="my-awesome-project" value={name}
             onChange={(e) => setName(e.target.value)}
           />
           {hint?.kind === "creates" && (
@@ -120,8 +120,8 @@ export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) 
         <label className="field">
           <span>Parent folder</span>
           <div className="field-row">
-            <input value={parent} disabled={pending} placeholder="Enter path or click to select" onChange={(e) => setParent(e.target.value)} />
-            <button type="button" className="btn" disabled={pending} onClick={() => void browse()}>Browse</button>
+            <input value={parent} placeholder="Enter path or click to select" onChange={(e) => setParent(e.target.value)} />
+            <button type="button" className="btn" onClick={() => void browse()}>Browse</button>
           </div>
         </label>
         <div className="field">
@@ -129,7 +129,7 @@ export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) 
           <div className="create-project-templates" role="radiogroup" aria-label="Template">
             {TEMPLATES.map((t) => (
               <button
-                key={t.id} type="button" role="radio" aria-checked={template === t.id} disabled={pending}
+                key={t.id} type="button" role="radio" aria-checked={template === t.id}
                 className={template === t.id ? "selected" : ""} onClick={() => setTemplate(t.id)}
               >
                 <span className="create-project-template-icon">{TEMPLATE_ICONS[t.id]()}</span>

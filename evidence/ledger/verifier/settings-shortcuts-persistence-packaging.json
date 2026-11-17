@@ -3,23 +3,23 @@
  "generated_by": "tools/parity_check.py check",
  "target": {
   "ref": "origin/main",
-  "sha": "274ac804c49b3b6a4a55c7bfddf0bd7bb7b890a4"
+  "sha": "6b94b9704eeda6f457784347d089a90d7fe55758"
  },
  "result_meaning": "pass = every item that evidences the obligation is matched on the target (static); fail = at least one item is partial, declared or missing. Static presence, not runtime behavior.",
  "areas": {
   "settings": {
    "total": 125,
-   "matched": 119,
-   "partial": 3,
-   "missing": 3,
-   "parity_pct": 96.4
+   "matched": 125,
+   "partial": 0,
+   "missing": 0,
+   "parity_pct": 100.0
   },
   "shortcuts": {
    "total": 172,
-   "matched": 74,
-   "partial": 98,
+   "matched": 119,
+   "partial": 53,
    "missing": 0,
-   "parity_pct": 71.5
+   "parity_pct": 84.6
   },
   "persistence": {
    "total": 44,
@@ -38,10 +38,10 @@
  },
  "overall": {
   "total": 419,
-  "matched": 301,
-  "partial": 101,
-  "missing": 17,
-  "parity_pct": 83.9
+  "matched": 352,
+  "partial": 53,
+  "missing": 14,
+  "parity_pct": 90.3
  },
  "evidence": {
   "report": "evidence/parity/parity-report.json",
@@ -304,46 +304,15 @@
    "area": "settings",
    "parent_obligation": "db.conductor-schema",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 29,
-    "matched": 23,
-    "partial": 3,
-    "missing": 3,
-    "parity_pct": 84.5
+    "matched": 29,
+    "partial": 0,
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "settings table key (deprecated)",
-     "id": "default_codex_thinking_level",
-     "status": "declared"
-    },
-    {
-     "group": "settings table key (deprecated)",
-     "id": "default_model",
-     "status": "declared"
-    },
-    {
-     "group": "settings table key",
-     "id": "file_backed_settings_migration_complete",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "repo_conductor_config_file_migration_v2_complete",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "repo_custom_prompt_file_migration_complete",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "review_codex_thinking_level",
-     "status": "declared"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "settings.toml.prompts",
@@ -434,37 +403,12 @@
    "result": "fail",
    "parity": {
     "total": 30,
-    "matched": 11,
-    "partial": 19,
+    "matched": 19,
+    "partial": 11,
     "missing": 0,
-    "parity_pct": 68.3
+    "parity_pct": 81.7
    },
    "gaps": [
-    {
-     "group": "General",
-     "id": "toggleTheme",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "quitApplication",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "dialog.primaryAction",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "diagnostics.close",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "openDebugTools",
-     "status": "declared"
-    },
     {
      "group": "General",
      "id": "openSidecarLogs",
@@ -473,21 +417,6 @@
     {
      "group": "General",
      "id": "openAppLogViewer",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "native.preventSelectAll",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "routine.save",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "onboarding.cloud.continue",
      "status": "declared"
     },
     {
@@ -543,15 +472,31 @@
    "area": "shortcuts",
    "parent_obligation": null,
    "owner": "builder",
-   "result": "pass",
+   "result": "fail",
    "parity": {
     "total": 7,
-    "matched": 7,
-    "partial": 0,
+    "matched": 4,
+    "partial": 3,
     "missing": 0,
-    "parity_pct": 100.0
+    "parity_pct": 78.6
    },
-   "gaps": []
+   "gaps": [
+    {
+     "group": "View",
+     "id": "view.toggleTerminalPanel",
+     "status": "declared"
+    },
+    {
+     "group": "View",
+     "id": "view.toggleZenMode",
+     "status": "declared"
+    },
+    {
+     "group": "View",
+     "id": "view.resetZoom",
+     "status": "declared"
+    }
+   ]
   },
   {
    "obligation_id": "keys.wire.navigation",
@@ -562,15 +507,20 @@
    "result": "fail",
    "parity": {
     "total": 20,
-    "matched": 6,
-    "partial": 14,
+    "matched": 16,
+    "partial": 4,
     "missing": 0,
-    "parity_pct": 65.0
+    "parity_pct": 90.0
    },
    "gaps": [
     {
      "group": "Navigation",
-     "id": "nav.closeTab",
+     "id": "nav.previousTab",
+     "status": "declared"
+    },
+    {
+     "group": "Navigation",
+     "id": "nav.nextTab",
      "status": "declared"
     },
     {
@@ -581,61 +531,6 @@
     {
      "group": "Navigation",
      "id": "nav.splitTab",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "nav.searchInFiles",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "nav.addRepository",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo1",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo2",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo3",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo4",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo5",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo6",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo7",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo8",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo9",
      "status": "declared"
     }
    ]
@@ -649,22 +544,12 @@
    "result": "fail",
    "parity": {
     "total": 51,
-    "matched": 12,
-    "partial": 39,
+    "matched": 33,
+    "partial": 18,
     "missing": 0,
-    "parity_pct": 61.8
+    "parity_pct": 82.4
    },
    "gaps": [
-    {
-     "group": "Chat",
-     "id": "nav.newTab",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.composer.pasteFilePaths",
-     "status": "declared"
-    },
     {
      "group": "Chat",
      "id": "chat.planResponse.submit",
@@ -673,16 +558,6 @@
     {
      "group": "Chat",
      "id": "chat.goal.save",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.question.previous",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.question.next",
      "status": "declared"
     },
     {
@@ -732,108 +607,28 @@
     },
     {
      "group": "Chat",
-     "id": "chat.question.focusOther",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.focus",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.togglePlanMode",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.approvePlan",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.approveToolCall",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.autoAcceptToolCall",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.denyToolCall",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.linkLinear",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.openModelPicker",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.toggleFastMode",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.toggleThinking",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
      "id": "chat.selectLoadout1",
-     "status": "declared"
+     "status": "partial"
     },
     {
      "group": "Chat",
      "id": "chat.selectLoadout2",
-     "status": "declared"
+     "status": "partial"
     },
     {
      "group": "Chat",
      "id": "chat.selectLoadout3",
-     "status": "declared"
+     "status": "partial"
     },
     {
      "group": "Chat",
      "id": "chat.selectLoadout4",
-     "status": "declared"
+     "status": "partial"
     },
     {
      "group": "Chat",
      "id": "chat.selectLoadout5",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.nextAttention",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.search",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.searchNext",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.searchPrevious",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.scrollToMatch",
-     "status": "declared"
+     "status": "partial"
     },
     {
      "group": "Chat",
@@ -843,11 +638,6 @@
     {
      "group": "Chat",
      "id": "chat.forkToNewTab",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.toggleSpeechToText",
      "status": "declared"
     }
    ]
@@ -861,22 +651,12 @@
    "result": "fail",
    "parity": {
     "total": 37,
-    "matched": 13,
-    "partial": 24,
+    "matched": 21,
+    "partial": 16,
     "missing": 0,
-    "parity_pct": 67.6
+    "parity_pct": 78.4
    },
    "gaps": [
-    {
-     "group": "Workspace",
-     "id": "workspace.createFromPRBranchIssue",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.addToBacklogFromComposer",
-     "status": "declared"
-    },
     {
      "group": "Workspace",
      "id": "workspace.startUnstartedWorkspace",
@@ -894,42 +674,7 @@
     },
     {
      "group": "Workspace",
-     "id": "workspace.toggleCreateFrom",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.openInApp",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.openRemoteInApp",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.openInMenu",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.toggleRun",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.togglePortForwarding",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.toggleFileEdit",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.contextMenu.toggleRead",
+     "id": "workspace.copyLink",
      "status": "declared"
     },
     {
@@ -974,12 +719,17 @@
     },
     {
      "group": "Workspace",
-     "id": "git.pull",
+     "id": "git.createPR",
      "status": "declared"
     },
     {
      "group": "Workspace",
-     "id": "git.fixErrors",
+     "id": "git.mergePR",
+     "status": "declared"
+    },
+    {
+     "group": "Workspace",
+     "id": "workspace.showUncommittedChanges",
      "status": "declared"
     },
     {
@@ -1006,7 +756,7 @@
    "gaps": [
     {
      "group": "Code review",
-     "id": "editor.openSearch",
+     "id": "diff.open",
      "status": "declared"
     }
    ]
@@ -1017,21 +767,15 @@
    "area": "shortcuts",
    "parent_obligation": null,
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 12,
-    "matched": 11,
-    "partial": 1,
+    "matched": 12,
+    "partial": 0,
     "missing": 0,
-    "parity_pct": 95.8
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "Terminal",
-     "id": "terminal.openLocalhost",
-     "status": "declared"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "keys.bindings-route",

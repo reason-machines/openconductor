@@ -1,0 +1,20 @@
+{
+  "head": "a6f37310223722dfbd7ae208c9a9e958a1e0af93",
+  "run": 43110308365,
+  "job": 130824242774,
+  "command": "node --test \"src/**/*.test.ts\"",
+  "suite": {
+    "tests": 3116,
+    "pass": 3113,
+    "fail": 3
+  },
+  "frozen_fixture_sha256": "5f02c1af0f5753a219e7749543beb6c2b6f6671d64c68a1bd9de1c43db8bdda1",
+  "frozen_cases": {
+    "pass": 4,
+    "fail": 3
+  },
+  "failure": "Expected live-generation typed/pasted bytes; actual IPC writes empty",
+  "typecheck_step": "PASS",
+  "product_at_baseline": "UNMODIFIED",
+  "native": "NOT_RUN"
+}

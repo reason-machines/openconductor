@@ -1,0 +1,26 @@
+[
+  {
+    "name": "cvs",
+    "asset": "renderer",
+    "start_utf8_byte": 2679439,
+    "end_utf8_byte": 2679787,
+    "bytes": 348,
+    "method": "retained lexical declaration boundary, not fresh REA"
+  },
+  {
+    "name": "SBt",
+    "asset": "renderer",
+    "start_utf8_byte": 2679787,
+    "end_utf8_byte": 2680206,
+    "bytes": 419,
+    "method": "retained lexical declaration boundary, not fresh REA"
+  },
+  {
+    "name": "dF",
+    "asset": "renderer",
+    "start_utf8_byte": 2678698,
+    "end_utf8_byte": 2678786,
+    "bytes": 88,
+    "method": "retained lexical declaration boundary, not fresh REA"
+  }
+]

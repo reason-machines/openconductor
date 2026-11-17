@@ -1,0 +1,8 @@
+.center-panel-groups { --center-tab-strip-height: 34px; position: relative; flex: 1; min-width: 0; min-height: 0; overflow: hidden; }
+.center-panel-group { position: absolute; box-sizing: border-box; border-right: 1px solid var(--border); overflow: hidden; pointer-events: none; }
+.center-panel-group > .main-tabs { position: relative; z-index: 1; box-sizing: border-box; height: var(--center-tab-strip-height); pointer-events: auto; }
+.center-panel-group[data-active] > .main-tabs { box-shadow: inset 0 -1px var(--accent); }
+.center-panel-content { position: absolute; box-sizing: border-box; display: flex; min-width: 0; min-height: 0; overflow: hidden; border-right: 1px solid var(--border); }
+.center-panel-content[hidden] { display: none; }
+.center-panel-content > .chat, .center-panel-content > .ws-chat-host, .center-panel-content > .center-terminal { flex: 1; min-width: 0; min-height: 0; }
+.center-panel-content > .center-terminal { display: flex; height: auto; border-top: 0; }

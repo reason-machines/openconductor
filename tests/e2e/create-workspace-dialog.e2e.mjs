@@ -99,25 +99,21 @@ test("New workspace: nested Create from consumes the first Escape, outer dialog 
   } finally { await page.close(); }
 });
 
-test("New workspace: pending creation blocks Escape and backdrop dismissal, failure re-enables dismissal", async (t) => {
+test("New workspace: accepted launch dismisses before creation settles and detached failure preserves a replacement dialog", async (t) => {
   const page = await open(t);
   try {
     const dialog = page.getByRole("dialog", { name: "New workspace", exact: true });
     await dialog.getByRole("group", { name: "Create workspace", exact: true }).getByRole("button", { name: "Create", exact: true }).click();
     await page.waitForFunction(() => document.documentElement.dataset.createPending === "true");
-    assert.equal(await dialog.getByRole("form", { name: "composer" }).getAttribute("aria-busy"), "true");
-    assert.equal(await page.getByRole("textbox", { name: "First message" }).isDisabled(), true);
-    await page.keyboard.press("Escape");
-    assert.equal(await dialog.count(), 1);
-    await page.mouse.click(10, 100);
-    assert.equal(await dialog.count(), 1);
-    assert.equal(await page.getByTestId("events").textContent(), "[]");
-    await page.evaluate(() => window.dispatchEvent(new Event("fixture:reject-create")));
-    await page.waitForFunction(() => document.querySelector('[aria-label="composer"]')?.getAttribute("aria-busy") === "false");
-    assert.match(await dialog.getByRole("status").textContent(), /Fixture creation failed/);
-    await page.getByRole("textbox", { name: "First message" }).focus();
-    await page.keyboard.press("Escape");
     await dialog.waitFor({ state: "detached" });
-    await page.waitForFunction(() => document.activeElement?.textContent === "workspace", null, { timeout: 1500 });
+    assert.equal(await page.getByTestId("events").textContent(), "[]");
+    await page.getByRole("button", { name: "archive", exact: true }).click();
+    const replacement = page.getByRole("dialog", { name: "Archive workspace?", exact: true });
+    await replacement.waitFor();
+    await page.evaluate(() => window.dispatchEvent(new Event("fixture:reject-create")));
+    await page.waitForFunction(() => document.querySelector('[data-testid="events"]')?.textContent?.includes("Fixture creation failed"));
+    assert.deepEqual(JSON.parse(await page.getByTestId("events").textContent()), ["Failed to create workspace: Fixture creation failed"]);
+    assert.equal(await replacement.count(), 1);
+    assert.equal(await dialog.count(), 0);
   } finally { await page.close(); }
 });

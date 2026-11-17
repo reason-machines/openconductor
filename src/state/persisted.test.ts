@@ -25,6 +25,24 @@ const ws = (repositoryId: string, dir: string, state = "ready", extra: Partial<D
   intendedTargetBranch: null, createdAt: "2026-11-05 12:00:00", ...extra,
 });
 
+test("retained transcript chats hydrate without opening tabs or counting hidden unread", () => {
+  const id = "r/retained-catalog";
+  const hidden = { id: `${id}:chat:closed`, title: "Closed source" };
+  const row = ws("r", "retained-catalog", "ready", {
+    transcriptChats: [hidden],
+    chatTabs: [],
+    unreadChats: [{ id: hidden.id, updatedAt: "2026-11-05 12:00:00" }],
+  });
+  restoreChatTabsOf([row]);
+  const restored = workspaceFromRow(row);
+  assert.deepEqual(restored.transcriptChats, [hidden]);
+  assert.deepEqual(restoredChatTabs(id), []);
+  assert.equal(restored.unreadChats, undefined);
+  assert.equal(restored.primaryChatId, id);
+  assert.equal(restored.activeSessionId, undefined);
+  assert.equal(workspaceFromRow(ws("r", "older")).transcriptChats, undefined);
+});
+
 test("maps rows in database order, marks hidden repos and drops archived workspaces", () => {
   const repos = reposFromDb(
     [repo("b"), repo("a"), repo("gone", { hidden: true })],

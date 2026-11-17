@@ -151,3 +151,69 @@ fn stdout_closing_fails_pending_and_later_calls() {
     assert!(matches!(log.last(), Some(Incoming::Closed { .. })));
     assert_eq!(log.len(), 1, "only the close was reported");
 }
+
+#[test]
+fn prompt_handoff_follows_flush_and_precedes_the_rpc_error() {
+    let (conn, mut from_us, mut to_us) = connect(Arc::new(Mutex::new(Vec::new())));
+    let (accepted, handoff) = mpsc::channel();
+    let turn = thread::spawn(move || {
+        conn.call_with_handoff(
+            "session/prompt",
+            json!({"sessionId": "s1"}),
+            T,
+            Some(Box::new(move || {
+                accepted.send(()).unwrap();
+            })),
+        )
+    });
+    handoff.recv_timeout(Duration::from_secs(5)).unwrap();
+    let request = read_msg(&mut from_us);
+    assert_eq!(request["method"], "session/prompt");
+    assert!(
+        !turn.is_finished(),
+        "handoff does not wait for an RPC result"
+    );
+    send(
+        &mut to_us,
+        json!({"jsonrpc": "2.0", "id": request["id"], "error": {"code": -32000, "message": "later failure"}}),
+    );
+    assert!(matches!(turn.join().unwrap(), Err(CallError::Rpc(_))));
+    assert!(handoff.try_recv().is_err(), "one request emits one handoff");
+}
+
+#[test]
+fn prompt_handoff_is_not_emitted_on_write_or_flush_failure() {
+    struct BrokenWriter {
+        flush_fails: bool,
+    }
+    impl Write for BrokenWriter {
+        fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+            if self.flush_fails {
+                Ok(bytes.len())
+            } else {
+                Err(io::Error::other("write failed"))
+            }
+        }
+        fn flush(&mut self) -> io::Result<()> {
+            Err(io::Error::other("flush failed"))
+        }
+    }
+    for flush_fails in [false, true] {
+        let (stdout, _keep_stdout_open) = io::pipe().unwrap();
+        let conn = RpcConnection::start(stdout, BrokenWriter { flush_fails }, Box::new(|_, _| {}));
+        let (accepted, handoff) = mpsc::channel();
+        let result = conn.call_with_handoff(
+            "session/prompt",
+            json!({}),
+            T,
+            Some(Box::new(move || {
+                accepted.send(()).unwrap();
+            })),
+        );
+        assert!(matches!(result, Err(CallError::Io(_))));
+        assert!(
+            handoff.try_recv().is_err(),
+            "failed flush is not proof of handoff"
+        );
+    }
+}

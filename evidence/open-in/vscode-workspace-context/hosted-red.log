@@ -1,0 +1,142 @@
+Conductor Rebuild: ordinary automatic hosted #1122 baseline.
+Rust job130934516176 run43143092453
+2026-11-12T02:45:49.5054470Z failures:
+2026-11-12T02:45:49.5055010Z 
+2026-11-12T02:45:49.5055510Z ---- open_in::vscode_workspace_context_ipc::completed_nonzero_fallback stdout ----
+2026-11-12T02:45:49.5055940Z 
+2026-11-12T02:45:49.5057520Z thread 'open_in::vscode_workspace_context_ipc::completed_nonzero_fallback' (27428) panicked at src/open_in/vscode_workspace_context_ipc.rs:81:5:
+2026-11-12T02:45:49.5058750Z assertion `left == right` failed: child argv for completed_nonzero_fallback; IPC response {"ok":true,"value":null}
+2026-11-12T02:45:49.5062880Z   left: Array [Array [String("open"), String("-a"), String("Visual Studio Code"), String("/tmp/oc vscode workspace/src/fallback.ts")]]
+2026-11-12T02:45:49.5075140Z  right: Array [Array [String("code"), String("/tmp/oc vscode workspace"), String("--goto"), String("/tmp/oc vscode workspace/src/fallback.ts")], Array [String("open"), String("-a"), String("Visual Studio Code"), String("/tmp/oc vscode workspace/src/fallback.ts")]]
+2026-11-12T02:45:49.5077440Z note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+2026-11-12T02:45:49.5078740Z 
+2026-11-12T02:45:49.5079660Z ---- open_in::vscode_workspace_context_ipc::fallback_error stdout ----
+2026-11-12T02:45:49.5080060Z 
+2026-11-12T02:45:49.5081370Z thread 'open_in::vscode_workspace_context_ipc::fallback_error' (27453) panicked at src/open_in/vscode_workspace_context_ipc.rs:81:5:
+2026-11-12T02:45:49.5082720Z assertion `left == right` failed: child argv for fallback_error; IPC response {"ok":false,"error":"open fixture failure"}
+2026-11-12T02:45:49.5083990Z   left: Array [Array [String("open"), String("-a"), String("Visual Studio Code"), String("/tmp/oc vscode workspace/src/failure.ts")]]
+2026-11-12T02:45:49.5086110Z  right: Array [Array [String("code"), String("/tmp/oc vscode workspace"), String("--goto"), String("/tmp/oc vscode workspace/src/failure.ts")], Array [String("open"), String("-a"), String("Visual Studio Code"), String("/tmp/oc vscode workspace/src/failure.ts")]]
+2026-11-12T02:45:49.5087170Z 
+2026-11-12T02:45:49.5087550Z ---- open_in::vscode_workspace_context_ipc::literal_path stdout ----
+2026-11-12T02:45:49.5087870Z 
+2026-11-12T02:45:49.5088560Z thread 'open_in::vscode_workspace_context_ipc::literal_path' (27459) panicked at src/open_in/vscode_workspace_context_ipc.rs:81:5:
+2026-11-12T02:45:49.5089580Z assertion `left == right` failed: child argv for literal_path; IPC response {"ok":true,"value":null}
+2026-11-12T02:45:49.5091130Z   left: Array [Array [String("open"), String("-a"), String("Visual Studio Code"), String("/tmp/oc vscode workspace/src/space ' $() ; file.ts")]]
+2026-11-12T02:45:49.5092360Z  right: Array [Array [String("code"), String("/tmp/oc vscode workspace"), String("--goto"), String("/tmp/oc vscode workspace/src/space ' $() ; file.ts")]]
+2026-11-12T02:45:49.5118430Z 
+2026-11-12T02:45:49.5119090Z ---- open_in::vscode_workspace_context_ipc::workspace_file stdout ----
+2026-11-12T02:45:49.5119450Z 
+2026-11-12T02:45:49.5120190Z thread 'open_in::vscode_workspace_context_ipc::workspace_file' (27506) panicked at src/open_in/vscode_workspace_context_ipc.rs:81:5:
+2026-11-12T02:45:49.5124020Z assertion `left == right` failed: child argv for workspace_file; IPC response {"ok":true,"value":null}
+2026-11-12T02:45:49.5125000Z   left: Array [Array [String("open"), String("-a"), String("Visual Studio Code"), String("/tmp/oc vscode workspace/src/present.ts")]]
+2026-11-12T02:45:49.5126130Z  right: Array [Array [String("code"), String("/tmp/oc vscode workspace"), String("--goto"), String("/tmp/oc vscode workspace/src/present.ts")]]
+2026-11-12T02:45:49.5126780Z 
+2026-11-12T02:45:49.5126800Z 
+2026-11-12T02:45:49.5126940Z failures:
+2026-11-12T02:45:49.5127360Z     open_in::vscode_workspace_context_ipc::completed_nonzero_fallback
+2026-11-12T02:45:49.5128000Z     open_in::vscode_workspace_context_ipc::fallback_error
+2026-11-12T02:45:49.5128520Z     open_in::vscode_workspace_context_ipc::literal_path
+2026-11-12T02:45:49.5129330Z     open_in::vscode_workspace_context_ipc::workspace_file
+2026-11-12T02:45:49.5129750Z 
+2026-11-12T02:45:49.5130230Z 
+Frontend job130934516027 run43143092453
+2026-11-12T02:42:33.6623366Z   ...
+2026-11-12T02:42:33.7062780Z # Subtest: VS Code workspace payload: workspace_file
+2026-11-12T02:42:33.7064260Z not ok 1839 - VS Code workspace payload: workspace_file
+2026-11-12T02:42:33.7065318Z   ---
+2026-11-12T02:42:33.7065856Z   duration_ms: 295.082929
+2026-11-12T02:42:33.7066346Z   type: 'test'
+2026-11-12T02:42:33.7067220Z   location: '/home/runner/work/openconductor/openconductor/src/features/diff/vscodeWorkspaceContext.test.ts:93:3'
+2026-11-12T02:42:33.7068155Z   failureType: 'testCodeFailure'
+2026-11-12T02:42:33.7068668Z   error: |-
+2026-11-12T02:42:33.7069163Z     Expected values to be strictly deep-equal:
+2026-11-12T02:42:33.7069711Z     + actual - expected
+2026-11-12T02:42:33.7070160Z     
+2026-11-12T02:42:33.7070545Z       [
+2026-11-12T02:42:33.7071131Z         {
+2026-11-12T02:42:33.7071549Z           args: {
+2026-11-12T02:42:33.7071983Z             appId: 'vscode',
+2026-11-12T02:42:33.7072445Z     -       fileContext: {
+2026-11-12T02:42:33.7073001Z     -         workspacePath: '/tmp/oc vscode workspace'
+2026-11-12T02:42:33.7073556Z     -       },
+2026-11-12T02:42:33.7074077Z             path: '/tmp/oc vscode workspace/src/present.ts'
+2026-11-12T02:42:33.7074650Z           },
+2026-11-12T02:42:33.7075083Z           command: 'open_in_app'
+2026-11-12T02:42:33.7075565Z         }
+2026-11-12T02:42:33.7075968Z       ]
+2026-11-12T02:42:33.7076351Z     
+2026-11-12T02:42:33.7076741Z   code: 'ERR_ASSERTION'
+2026-11-12T02:42:33.7077207Z   name: 'AssertionError'
+2026-11-12T02:42:33.7077656Z   expected:
+2026-11-12T02:42:33.7078047Z     0:
+2026-11-12T02:42:33.7078453Z       command: 'open_in_app'
+2026-11-12T02:42:33.7078897Z       args:
+2026-11-12T02:42:33.7079273Z         appId: 'vscode'
+2026-11-12T02:42:33.7079718Z         path: '/tmp/oc vscode workspace/src/present.ts'
+2026-11-12T02:42:33.7080519Z         fileContext:
+2026-11-12T02:42:33.7081202Z           workspacePath: '/tmp/oc vscode workspace'
+2026-11-12T02:42:33.7081736Z   actual:
+2026-11-12T02:42:33.7082112Z     0:
+2026-11-12T02:42:33.7082497Z       command: 'open_in_app'
+2026-11-12T02:42:33.7082951Z       args:
+2026-11-12T02:42:33.7083352Z         appId: 'vscode'
+2026-11-12T02:42:33.7083875Z         path: '/tmp/oc vscode workspace/src/present.ts'
+2026-11-12T02:42:33.7084446Z   operator: 'deepStrictEqual'
+2026-11-12T02:42:33.7084926Z   stack: |-
+2026-11-12T02:42:33.7085859Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/diff/vscodeWorkspaceContext.test.ts:99:12)
+2026-11-12T02:42:33.7086938Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T02:42:33.7087751Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-12T02:42:33.7088436Z   ...
+2026-11-12T02:42:33.7088975Z # Subtest: VS Code workspace payload: literal_path
+2026-11-12T02:42:33.7089672Z not ok 1840 - VS Code workspace payload: literal_path
+2026-11-12T02:42:33.7090231Z   ---
+2026-11-12T02:42:33.7090641Z   duration_ms: 108.773325
+2026-11-12T02:42:33.7091501Z   type: 'test'
+2026-11-12T02:42:33.7092357Z   location: '/home/runner/work/openconductor/openconductor/src/features/diff/vscodeWorkspaceContext.test.ts:93:3'
+2026-11-12T02:42:33.7093388Z   failureType: 'testCodeFailure'
+2026-11-12T02:42:33.7093901Z   error: |-
+2026-11-12T02:42:33.7094391Z     Expected values to be strictly deep-equal:
+2026-11-12T02:42:33.7094932Z     + actual - expected
+2026-11-12T02:42:33.7095358Z     
+2026-11-12T02:42:33.7095721Z       [
+2026-11-12T02:42:33.7096098Z         {
+2026-11-12T02:42:33.7096483Z           args: {
+2026-11-12T02:42:33.7096927Z             appId: 'vscode',
+2026-11-12T02:42:33.7097398Z     -       fileContext: {
+2026-11-12T02:42:33.7097925Z     -         workspacePath: '/tmp/oc vscode workspace'
+2026-11-12T02:42:33.7098463Z     -       },
+2026-11-12T02:42:33.7099012Z             path: "/tmp/oc vscode workspace/src/space ' $() ; file.ts"
+2026-11-12T02:42:33.7099593Z           },
+2026-11-12T02:42:33.7100209Z           command: 'open_in_app'
+2026-11-12T02:42:33.7100682Z         }
+2026-11-12T02:42:33.7101246Z       ]
+2026-11-12T02:42:33.7101646Z     
+2026-11-12T02:42:33.7102055Z   code: 'ERR_ASSERTION'
+2026-11-12T02:42:33.7102502Z   name: 'AssertionError'
+2026-11-12T02:42:33.7103220Z   expected:
+2026-11-12T02:42:33.7103655Z     0:
+2026-11-12T02:42:33.7104068Z       command: 'open_in_app'
+2026-11-12T02:42:33.7104523Z       args:
+2026-11-12T02:42:33.7104941Z         appId: 'vscode'
+2026-11-12T02:42:33.7105525Z         path: "/tmp/oc vscode workspace/src/space ' $() ; file.ts"
+2026-11-12T02:42:33.7106128Z         fileContext:
+2026-11-12T02:42:33.7106655Z           workspacePath: '/tmp/oc vscode workspace'
+2026-11-12T02:42:33.7107188Z   actual:
+2026-11-12T02:42:33.7107590Z     0:
+2026-11-12T02:42:33.7108005Z       command: 'open_in_app'
+2026-11-12T02:42:33.7108471Z       args:
+2026-11-12T02:42:33.7108875Z         appId: 'vscode'
+2026-11-12T02:42:33.7109443Z         path: "/tmp/oc vscode workspace/src/space ' $() ; file.ts"
+2026-11-12T02:42:33.7110067Z   operator: 'deepStrictEqual'
+2026-11-12T02:42:33.7110535Z   stack: |-
+2026-11-12T02:42:33.7111649Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/diff/vscodeWorkspaceContext.test.ts:99:12)
+2026-11-12T02:42:33.7112734Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T02:42:33.7113988Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T02:42:33.7114754Z   ...
+2026-11-12T02:42:33.7115290Z # Subtest: VS Code workspace payload: unrelated_app
+2026-11-12T02:42:33.7115997Z ok 1841 - VS Code workspace payload: unrelated_app
+2026-11-12T02:42:33.7116539Z   ---
+2026-11-12T02:42:33.7116954Z   duration_ms: 110.919668
+2026-11-12T02:42:33.7117411Z   type: 'test'
+2026-11-12T02:42:33.7117827Z   ...
+2026-11-12T02:42:34.2842615Z 

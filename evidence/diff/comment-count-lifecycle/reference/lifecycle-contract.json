@@ -1,0 +1,238 @@
+{
+  "unit": "DIFF-FILE-COMMENT-COUNT-DE6-02",
+  "status": "FROZEN_V3_FRONTEND_SOURCE_FIXTURES_NOT_EXECUTED",
+  "source_main": "a774da0c5b48b95637f3909b4de16a4021ed5e1f",
+  "reference": "Retained Conductor 0.87.6 assets and boundary/source.json exact byte/hash closure. Static code evidence, not observed native execution.",
+  "historical_fixture": {
+    "path": "src/features/diff/fileCommentCounts.test.ts",
+    "sha256": "f9655c388de541fd3963d82ec4f56901d4f7023e3d2175825642c32cdc45c180",
+    "preserved": true,
+    "role": "Historical OC compatibility, not parity acceptance. The count-clears-after-attachment assertion must not run as reference acceptance or be silently weakened. Original bytes and prior archives remain intact."
+  },
+  "supplemental_mounted_fixture": {
+    "path": "src/features/diff/fileCommentCountLifecycle.test.ts",
+    "status": "WRITTEN_NOT_RUN_FROZEN_FOR_REQUESTED_RED_GREEN",
+    "drives": [
+      "real useReviewComments",
+      "actual WorkspaceView RightPanel mount and implementation",
+      "real ChangesList",
+      "real localCommentStore",
+      "real ComposerSession attachment updates and restore"
+    ],
+    "coverage": [
+      "11 compatible historical count/control cases",
+      "attachment retains pending state and badge count; current attachment membership hides Add-all",
+      "removal before submission retains count and restores Add-all; reattach keeps one identity",
+      "restored composer preserves commentId",
+      "ready_for_review active; draft/hidden/reviewed/superseded inactive"
+    ],
+    "sha256": "379312909e2a80ca96973643f1c7189144f53210e636dadb059a136a7eb9bbd4"
+  },
+  "reference_vectors": [
+    {
+      "id": "pending-attach-remove",
+      "input": {
+        "filePath": "src/example.ts",
+        "state": "pending",
+        "isOutdated": false,
+        "isResolved": false
+      },
+      "steps": [
+        {
+          "action": "initial",
+          "state": "pending",
+          "count": 1
+        },
+        {
+          "action": "Add-all adds draft mention/attachment",
+          "state": "pending",
+          "count": 1,
+          "already_in_composer": true
+        },
+        {
+          "action": "remove unsent mention/attachment",
+          "state": "pending",
+          "count": 1,
+          "already_in_composer": false
+        }
+      ],
+      "evidence": [
+        "comments-header-add-all",
+        "composer-api-wrapper",
+        "local-attachment-service",
+        "remote-attachment-add-remove",
+        "source.json active-comment-predicate"
+      ],
+      "support": "Complete local add/remove code has no diff-comment state mutation. The per-file count predicate is independent of attachment membership."
+    },
+    {
+      "id": "ready-for-review-attachment",
+      "input": {
+        "filePath": "src/example.ts",
+        "state": "ready_for_review",
+        "isOutdated": false,
+        "isResolved": false
+      },
+      "steps": [
+        {
+          "action": "initial",
+          "state": "ready_for_review",
+          "count": 1
+        },
+        {
+          "action": "add to composer",
+          "state": "ready_for_review",
+          "count": 1
+        },
+        {
+          "action": "remove before handoff",
+          "state": "ready_for_review",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        "state-producers",
+        "local-attachment-service",
+        "source.json active-comment-predicate"
+      ],
+      "support": "markCommentReadyForReview writes this state; legacy add methods also write it, but each occurs once at its definition across both chunks. Actual UI attachment does not require a transition to this state."
+    },
+    {
+      "id": "successful-handoff",
+      "input": {
+        "state": "pending",
+        "linked_to_submitted_message": true
+      },
+      "steps": [
+        {
+          "action": "queued or preparing delivery",
+          "state": "pending",
+          "count": 1
+        },
+        {
+          "action": "successful sidecar notification handoff",
+          "state": "reviewed",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        "immediate-delivery-and-failure",
+        "queued-delivery-and-failure",
+        "agent-delivery-binding",
+        "agent-dispatch",
+        "local-dispatch-service",
+        "local-query-handoff",
+        "local-attachment-service"
+      ],
+      "support": "Immediate and queued paths mark linked message comment IDs reviewed after delivery function returns. Local executeSession calls vs.query, which calls Ke.notify QUERY without awaiting provider response. This is not proof of provider acknowledgement or completed agent work."
+    },
+    {
+      "id": "rejected-before-handoff-and-retry",
+      "input": {
+        "state": "pending",
+        "linked_to_submitted_message": true
+      },
+      "steps": [
+        {
+          "action": "pre-handoff preparation/dispatch rejects",
+          "state": "pending",
+          "count": 1
+        },
+        {
+          "action": "retry same comment and later handoff succeeds",
+          "state": "reviewed",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        "immediate-delivery-and-failure",
+        "queued-delivery-and-failure",
+        "local-attachment-service"
+      ],
+      "support": "Pre-handoff rejection exits before reviewed mutation. Retry expectation composes the same rejection/success boundaries; no native retry run has been observed."
+    },
+    {
+      "id": "failure-or-cancellation-after-handoff",
+      "input": {
+        "state": "reviewed",
+        "handoff_already_succeeded": true
+      },
+      "steps": [
+        {
+          "action": "later provider turn fails or is cancelled",
+          "state": "reviewed",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        "local-query-handoff",
+        "local-dispatch-service",
+        "state-producers",
+        "local-attachment-service"
+      ],
+      "support": "Reviewed mutation precedes provider turn completion on the local path. No unconditional restoration from turn failure/cancel is justified. Native provider failure/cancel routing remains unobserved."
+    },
+    {
+      "id": "superseded-does-not-revive",
+      "input": {
+        "state": "superseded",
+        "linked_to_submitted_message": true
+      },
+      "steps": [
+        {
+          "action": "initial",
+          "state": "superseded",
+          "count": 0
+        },
+        {
+          "action": "linked message handoff",
+          "state": "superseded",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        "state-producers",
+        "local-attachment-service",
+        "source.json active-comment-predicate"
+      ],
+      "support": "Reviewed SQL excludes superseded rows; the active predicate accepts only pending or ready_for_review."
+    }
+  ],
+  "explicit_gaps": [
+    "Conductor pre-handoff cancellation producer routing is not completely traced. A never-handed-off OpenConductor send must not receive handoff credit, but full native cancellation parity is not proven.",
+    "Source-backed expected outcomes are not executed regression results.",
+    "Delivery acknowledgement is not inferred from current agent.submit void, ComposerSession.send true, optimistic transcript start, or turn-end native command resolution.",
+    "Native signal implementation, native transport/IPC fixture execution and final persistence mapping have not run. The three frontend fixture files are frozen v3, not executed acceptance."
+  ],
+  "scope": {
+    "owner": "de6c02f4-4880-4a0d-bf8f-9e3954522753",
+    "existing_queue": "Existing ACC normal-tail entry after 1fV2 and before conditional135Cancel; no duplicate row, runner, publisher or priority jump.",
+    "handoff": "SAME135 transferred review membership/delivery hunks; modified-keys and Cancel hunks remain SAME135-owned and untouched.",
+    "native": "Coordinator authorized minimum actual handoff event producer and its frontend consumer; exact producer hunks are being reconciled. No provider behavior change.",
+    "frozen992": "UNCHANGED",
+    "runtime": "NOT_RUN",
+    "product_edits": "NONE"
+  },
+  "additional_fixtures": [
+    {
+      "path": "src/features/chat/reviewCommentHandoff.test.ts",
+      "sha256": "870f5cca38eccd7af04542906839b77686dacfaaf0512d416c701b68eaf5e548",
+      "cases": 8,
+      "role": "Actual shared runtime, real local store and fake transport/host boundary. Optimistic completion/no handoff; accepted once then failed/cancelled; rejected-before-handoff retry identity; pre-dispatch stop; captured workspace; queued ordering; superseded guard."
+    },
+    {
+      "path": "src/features/chat/desktopReviewHandoff.test.ts",
+      "sha256": "ff91dc4d00360a20a75dc4133aff56da79e28e65dbfdcc5da064fdf18e4fdd1d",
+      "cases": 3,
+      "role": "Actual desktopHost/commentsApi/commentStore source via boundary loader. Browser reviewed persistence/workspace isolation/superseded; native reviewed command payload; ordinary files do not mutate review state."
+    }
+  ],
+  "commands": {
+    "requested_red_identical_green": "nice -n 19 timeout --kill-after=5s 90s node --max-old-space-size=768 --test --test-concurrency=1 src/features/diff/fileCommentCountLifecycle.test.ts src/features/chat/reviewCommentHandoff.test.ts src/features/chat/desktopReviewHandoff.test.ts",
+    "proposed_native_verification_not_admitted": [
+      "CARGO_BUILD_JOBS=1 nice -n 19 timeout --kill-after=5s 180s bash tools/reason-acp/run-rust-tests.sh prompt_handoff -- --test-threads=1",
+      "CARGO_BUILD_JOBS=1 nice -n 19 timeout --kill-after=5s 180s bash tools/agent/run-rust-tests.sh prompt_handoff -- --test-threads=1"
+    ],
+    "limits": "All commands proposals to existing ACC row, NOT admission. Native producer/IPC tests added alongside implementation require success/failure/order verification. Claude runner and actual command Channel wiring are not covered by the existing standalone agent harness and need explicit verification coverage, not false credit."
+  }
+}

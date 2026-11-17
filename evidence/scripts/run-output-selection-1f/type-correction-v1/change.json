@@ -1,0 +1,37 @@
+{
+  "original_publication": "fd6d43eda6c9a0ce767e4d82b5cfd05b468e2311",
+  "original_fixture_sha256": "862521b30632d25b615c656a8e7e9523d7410255a847a4faeb7750cf9796c3ee",
+  "current_fixture_sha256": "ae6afb0674d394071a1e8079916a87c76d75ad849d88f3d2b2e61535f1089855",
+  "unchanged_scenario_tail_sha256": "af47dfd47939fd7783ff444275910df06111f0bcc21c6b4f6fb0708366d00139",
+  "changes": [
+    {
+      "before": "  assert.ok(Strip);\n  assert.ok(Output);\n  const host",
+      "after": "  assert.ok(Strip);\n  assert.ok(Output);\n  const ReadyStrip = Strip;\n  const ReadyOutput = Output;\n  const host"
+    },
+    {
+      "before": "React.createElement(Output,",
+      "after": "React.createElement(ReadyOutput,"
+    },
+    {
+      "before": "React.createElement(Strip,",
+      "after": "React.createElement(ReadyStrip,"
+    },
+    {
+      "before": "callbackEnabled ? (text) =>",
+      "after": "callbackEnabled ? (text: string) =>"
+    }
+  ],
+  "reason": "TypeScript does not retain optional-export narrowing in the nested element function. Capture narrowed aliases; explicitly annotate the string callback parameter.",
+  "hosted_failure": {
+    "run": 43139158437,
+    "job": 130921645037,
+    "observations": [
+      "TS2769 at lines 174 and 175: optional components in nested function",
+      "TS7006 at line 178: untyped callback parameter"
+    ]
+  },
+  "product_changes": false,
+  "scenario_or_assertion_changes": false,
+  "typecheck_after_correction": "PENDING_HOSTED",
+  "qualified_behavioral_red": "NOT_YET_CLAIMED"
+}

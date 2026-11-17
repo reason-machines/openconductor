@@ -4,6 +4,7 @@
 // workspace's tabs even while its panel is not mounted.
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
+import { Unicode11Addon } from "@xterm/addon-unicode11";
 import { AckBatcher, type PtyEvent } from "./events";
 import {
   onPtyEvent,
@@ -37,6 +38,9 @@ interface Live {
   host: HTMLDivElement;
   ack: AckBatcher;
   opened: boolean;
+  /** The current attachment alone owns its host and resize observer. */
+  attachment?: { detach: () => void; observer: ResizeObserver };
+  appearance?: MutationObserver;
   /**
    * Opened by the app, not the user (a workspace's first terminal, restored
    * tabs). Its first attach leaves the keyboard where the user is typing.
@@ -57,6 +61,13 @@ interface Live {
 
 const live = new Map<string, Live>();
 const tabsByWorkspace = new Map<string, TabsState>();
+const workspaceLifetimes = new Map<string, symbol>();
+
+function workspaceLifetime(workspaceId: string): symbol {
+  let lifetime = workspaceLifetimes.get(workspaceId);
+  if (lifetime === undefined) workspaceLifetimes.set(workspaceId, (lifetime = Symbol()));
+  return lifetime;
+}
 const panelWorkspaceOrder = new Set<string>();
 const subscribers = new Set<() => void>();
 const centerTabListeners = new Set<(workspaceId: string, id: string) => void>();
@@ -203,9 +214,6 @@ function cssVar(name: string): string | undefined {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || undefined;
 }
 
-/** `#rrggbb` plus an alpha byte; other colour forms pass through unchanged. */
-const withAlpha = (hex: string | undefined, alpha: string) => (hex && /^#[0-9a-f]{6}$/i.test(hex) ? hex + alpha : hex);
-
 /**
  * Open a new tab running the login shell in `cwd`; resolves to its id. `quiet`
  * when the app opens it by itself, so it does not take focus from a text field.
@@ -218,7 +226,9 @@ export const openTab = (workspaceId: string, cwd: string, initialCommand?: strin
  * Saved tabs restore first; their commands are never run again.
  */
 export async function openBigTab(workspaceId: string, cwd: string, run: { command: string | undefined }, initialCommand?: string): Promise<string> {
+  const lifetime = workspaceLifetime(workspaceId);
   await restoreWorkspaceTabs(workspaceId, cwd, initialCommand);
+  if (workspaceLifetimes.get(workspaceId) !== lifetime) throw new Error("Terminal startup cancelled");
   return startTab(workspaceId, cwd, initialCommand, undefined, run, false, "center");
 }
 
@@ -235,10 +245,13 @@ export function restoreWorkspaceTabs(workspaceId: string, cwd: string, initialCo
 const restoring = new Map<string, Promise<void>>();
 
 async function restoreOnce(workspaceId: string, cwd: string, initialCommand?: string): Promise<void> {
+  const lifetime = workspaceLifetime(workspaceId);
   const saved = await tabList.workspace(workspaceId);
+  if (workspaceLifetimes.get(workspaceId) !== lifetime) return;
   for (const tab of saved?.tabs ?? []) {
     if (live.has(tab.id)) continue;
     await startTab(workspaceId, cwd, initialCommand, { id: tab.id, title: tab.title }, undefined, true, tab.placement).catch(() => {});
+    if (workspaceLifetimes.get(workspaceId) !== lifetime) return;
   }
   hydrated.add(workspaceId);
   dispatch(workspaceId, { type: "restored", activeId: saved?.activeId ?? null, next: saved?.next ?? 1 });
@@ -258,6 +271,7 @@ async function startTab(
   quiet = false,
   placement: TerminalPlacement = "panel",
 ): Promise<string> {
+  const lifetime = workspaceLifetime(workspaceId);
   // Saved tabs come back as they were; new ones respect Tab Freak Mode's limit.
   const tabs = getTabs(workspaceId);
   if (!canOpen(tabs) || (!restore && !canOpenTerminal(tabs, getAppPrefs().experimental_tab_freak_mode)))
@@ -266,10 +280,13 @@ async function startTab(
   await listening;
   persistOnHide();
   const record: HistoryRecord | undefined = restore ? await ptyLoadTerminalHistory(restore.id).catch(() => undefined) : undefined;
+  if (workspaceLifetimes.get(workspaceId) !== lifetime) throw new Error("Terminal startup cancelled");
 
   const id = restore?.id ?? `term-${crypto.randomUUID()}`;
   const font = currentTerminalFont();
   const term = new Terminal({
+    allowProposedApi: true,
+    convertEol: true,
     disableStdin: true,
     cursorBlink: true,
     fontFamily: font.family,
@@ -281,13 +298,29 @@ async function startTab(
       foreground: cssVar("--text"),
       cursor: "transparent",
       cursorAccent: cssVar("--panel"),
-      // xterm's default selection is pale white, invisible on the light theme.
-      // The inactive colour matters for Find: the match is selected while the
-      // find input, not the terminal, has focus.
-      selectionBackground: withAlpha(cssVar("--accent"), "66"),
-      selectionInactiveBackground: withAlpha(cssVar("--accent"), "4d"),
+      // Match IJe and ScriptOutput: the primary pair also covers inactive selection.
+      selectionBackground: cssVar("--accent"),
+      selectionForeground: cssVar("--accent-text"),
+      black: cssVar("--terminal-black"),
+      red: cssVar("--terminal-red"),
+      green: cssVar("--terminal-green"),
+      yellow: cssVar("--terminal-yellow"),
+      blue: cssVar("--terminal-blue"),
+      magenta: cssVar("--terminal-magenta"),
+      cyan: cssVar("--terminal-cyan"),
+      white: cssVar("--terminal-white"),
+      brightBlack: cssVar("--terminal-bright-black"),
+      brightRed: cssVar("--terminal-bright-red"),
+      brightGreen: cssVar("--terminal-bright-green"),
+      brightYellow: cssVar("--terminal-bright-yellow"),
+      brightBlue: cssVar("--terminal-bright-blue"),
+      brightMagenta: cssVar("--terminal-bright-magenta"),
+      brightCyan: cssVar("--terminal-bright-cyan"),
+      brightWhite: cssVar("--terminal-bright-white"),
     },
   });
+  term.loadAddon(new Unicode11Addon());
+  term.unicode.activeVersion = "11";
   const fit = new FitAddon();
   term.loadAddon(fit);
   const host = document.createElement("div");
@@ -316,9 +349,46 @@ async function startTab(
     shell: emptyShellState(),
   };
   live.set(id, terminal);
+  if (typeof MutationObserver !== "undefined") {
+    terminal.appearance = new MutationObserver(() => {
+      if (live.get(id) !== terminal) return;
+      term.options.theme = {
+        background: cssVar("--panel"),
+        foreground: cssVar("--text"),
+        cursor: term.options.disableStdin ? "transparent" : cssVar("--text"),
+        cursorAccent: cssVar("--panel"),
+        selectionBackground: cssVar("--accent"),
+        selectionForeground: cssVar("--accent-text"),
+        black: cssVar("--terminal-black"),
+        red: cssVar("--terminal-red"),
+        green: cssVar("--terminal-green"),
+        yellow: cssVar("--terminal-yellow"),
+        blue: cssVar("--terminal-blue"),
+        magenta: cssVar("--terminal-magenta"),
+        cyan: cssVar("--terminal-cyan"),
+        white: cssVar("--terminal-white"),
+        brightBlack: cssVar("--terminal-bright-black"),
+        brightRed: cssVar("--terminal-bright-red"),
+        brightGreen: cssVar("--terminal-bright-green"),
+        brightYellow: cssVar("--terminal-bright-yellow"),
+        brightBlue: cssVar("--terminal-bright-blue"),
+        brightMagenta: cssVar("--terminal-bright-magenta"),
+        brightCyan: cssVar("--terminal-bright-cyan"),
+        brightWhite: cssVar("--terminal-bright-white"),
+      };
+    });
+    terminal.appearance.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class", "data-theme", "data-color-palette", "data-low-contrast"],
+    });
+  }
   term.attachCustomKeyEventHandler((e) => {
     const command = e.type === "keydown" ? terminalCommandFor(e) : undefined;
     if (command === undefined) return true;
+    if (
+      term.buffer.active !== term.buffer.normal &&
+      (command === "terminal.clearScrollback" || (command !== "terminal.insertNewline" && LINE_EDIT_BYTES[command] !== undefined))
+    ) return true;
     // Cancelling keydown also drops its keypress; stopping it keeps window shortcuts out.
     e.preventDefault();
     e.stopPropagation();
@@ -346,6 +416,7 @@ async function spawnTerminal(id: string, terminal: Live): Promise<void> {
         void ptyResize(id, terminal.term.cols, terminal.term.rows).catch(() => {});
       }
     });
+    if (live.get(id) !== terminal) void ptyKill(id).catch(() => {});
   } catch (error) {
     if (live.get(id) === terminal) {
       terminal.term.options.disableStdin = true;
@@ -387,6 +458,8 @@ export function onAttachFailure(f: (error: unknown) => void): () => void {
 export function attachTab(id: string, container: HTMLElement): () => void {
   const l = live.get(id);
   if (!l) return () => {};
+  l.attachment?.observer.disconnect();
+  l.attachment = undefined;
   container.appendChild(l.host);
   if (!l.opened) {
     try {
@@ -399,21 +472,25 @@ export function attachTab(id: string, container: HTMLElement): () => void {
     }
     l.opened = true;
   }
-  const refit = () => {
-    if (l.host.clientWidth > 0) l.fit.fit();
+  const detach = () => {
+    if (l.attachment?.detach !== detach) return;
+    l.attachment = undefined;
+    ro.disconnect();
+    l.host.remove();
   };
+  const refit = () => {
+    if (l.attachment?.detach === detach && l.host.clientWidth > 0) l.fit.fit();
+  };
+  const ro = new ResizeObserver(refit);
+  l.attachment = { detach, observer: ro };
+  ro.observe(container);
   refit();
   // A tab takes the keyboard when shown. A quiet tab's first showing lands a
   // moment after the workspace opens (it waits on the PTY listener), so it
   // leaves focus in a text field the user is typing in, such as the chat box.
   if (!(l.quiet && typingElsewhere())) l.term.focus();
   l.quiet = false;
-  const ro = new ResizeObserver(refit);
-  ro.observe(container);
-  return () => {
-    ro.disconnect();
-    l.host.remove();
-  };
+  return detach;
 }
 
 function writeInput(id: string, data: string) {
@@ -475,6 +552,8 @@ const forget = (id: string): Promise<void> => persist.drop(id, () => ptyDeleteTe
  * is archived or its repository removed (`destroyAllWorkspaceTerminalInstances`).
  */
 export async function destroyWorkspaceTerminals(workspaceId: string): Promise<void> {
+  workspaceLifetimes.delete(workspaceId);
+  restoring.delete(workspaceId);
   const ids = getTabs(workspaceId).tabs.map((t) => t.id);
   for (const id of ids) {
     void ptyKill(id).catch(() => {});
@@ -490,6 +569,8 @@ export async function destroyWorkspaceTerminals(workspaceId: string): Promise<vo
 }
 
 function dispose(id: string) {
+  live.get(id)?.attachment?.detach();
+  live.get(id)?.appearance?.disconnect();
   live.get(id)?.term.dispose();
   live.delete(id);
   findRequests.delete(id);

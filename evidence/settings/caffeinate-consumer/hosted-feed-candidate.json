@@ -1,0 +1,62 @@
+{
+  "producer": "Conductor Rebuild",
+  "pr": 1124,
+  "head": "d0f8ccedda548f1a06162e2ad55ecbbfd302e72c",
+  "run": 43151217080,
+  "fixture_sha256": "3d2b3117fde8b1ba0bcde75e146d7c8bc1a42e236efb7eae3feb06fd51fa611d",
+  "unit_job": 130960631202,
+  "focused": {
+    "tests": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0
+  },
+  "persistence": [
+    {
+      "kind": "db-linux",
+      "job": 130960631180,
+      "conclusion": "success",
+      "matches": [
+        {
+          "line": 604,
+          "text": "2026-11-12T03:54:57.1090350Z test sessions::caffeinate_status_tests::hidden_inclusive_statuses_keep_unowned_rows_without_changing_visible_reads ... ok"
+        }
+      ]
+    },
+    {
+      "kind": "db-macos",
+      "job": 130960631335,
+      "conclusion": "success",
+      "matches": [
+        {
+          "line": 662,
+          "text": "2026-11-12T03:55:27.1942980Z test sessions::caffeinate_status_tests::hidden_inclusive_statuses_keep_unowned_rows_without_changing_visible_reads ... ok"
+        }
+      ]
+    },
+    {
+      "kind": "option-linux",
+      "job": 130960631177,
+      "conclusion": "success",
+      "matches": [
+        {
+          "line": 3857,
+          "text": "2026-11-12T03:58:19.4974244Z test session_status_commands::tests::omitted_and_false_visibility_options_preserve_the_default_query ... ok"
+        }
+      ]
+    },
+    {
+      "kind": "option-macos",
+      "job": 130960631156,
+      "conclusion": "success",
+      "matches": [
+        {
+          "line": 3088,
+          "text": "2026-11-12T03:57:38.2468510Z test session_status_commands::tests::omitted_and_false_visibility_options_preserve_the_default_query ... ok"
+        }
+      ]
+    }
+  ],
+  "classification": "HOSTED_CANONICAL_FEED_AND_SQLITE_QUERY_GREEN_NOT_POWER_PROOF",
+  "native_power": "NOT_RUN"
+}

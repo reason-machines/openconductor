@@ -1,0 +1,197 @@
+{
+  "producer": "Conductor Rebuild",
+  "classification": "STATIC_SOURCE_GAP_BEHAVIORAL_BASELINE_PENDING",
+  "baseline_main": "fc5215e8b6e7fd5e12767155fdbb9d0bcc1e82f1",
+  "reference": {
+    "app": "Conductor 0.87.6",
+    "asset": "dist/assets/renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "identity_basis": "Previously verified full retained renderer; this pass reuses its recorded full digest and verifies each new exact span. No reacquisition or repeated whole-asset hash.",
+    "parent_rea_evidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "retained_service_receipt_attributed": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "original_attachment_id": "e81cbda9-871b-4334-a706-3241320dc976"
+  },
+  "reference_spans": [
+    {
+      "name": "Home-UJo",
+      "kind": "complete function declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9863549,
+        9874571
+      ],
+      "utf16_half_open": [
+        9817995,
+        9829017
+      ],
+      "bytes": 11022,
+      "sha256": "58824b140436a668433f7e08fe26d2083c0e100d363cda5edb14150526a53030",
+      "file": "Home-UJo.js.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "Home-row-_Jo",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement; includes its terminating semicolon",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9845318,
+        9849951
+      ],
+      "utf16_half_open": [
+        9799764,
+        9804397
+      ],
+      "bytes": 4633,
+      "sha256": "e9d9cff5d2c849eeee2425d64cfb94bb6283ba19b2e3e836e07ab762510344ea",
+      "file": "Home-row-_Jo.js.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "command-root-Xyi",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2903072,
+        2908580
+      ],
+      "utf16_half_open": [
+        2902626,
+        2908134
+      ],
+      "bytes": 5508,
+      "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92",
+      "file": "command-root-Xyi.js.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "command-input-B5s",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2910380,
+        2910953
+      ],
+      "utf16_half_open": [
+        2909934,
+        2910507
+      ],
+      "bytes": 573,
+      "sha256": "70fa9c07b0d8b605e648601e01cd266db15dadad0ac59b8cb5569cee58c02758",
+      "file": "command-input-B5s.js.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "command-component-P6",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement; closes parent var statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2912384,
+        2912493
+      ],
+      "utf16_half_open": [
+        2911938,
+        2912047
+      ],
+      "bytes": 109,
+      "sha256": "9b57d93a69e00511c26ce27dfc26117a75a0a2f70492d5f3436f58f4351df3bc",
+      "file": "command-component-P6.js.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "Home-command-root-KV",
+      "kind": "complete const declaration plus displayName assignment",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2913899,
+        2914275
+      ],
+      "utf16_half_open": [
+        2913453,
+        2913829
+      ],
+      "bytes": 376,
+      "sha256": "61beeb6e4e35c064cdc7c60a0c70f912a36770c820c9adf22ba9f34272cd9926",
+      "file": "Home-command-root-KV.js.txt",
+      "exact_asset_match": true
+    },
+    {
+      "name": "Home-command-input-kI",
+      "kind": "complete const declaration plus displayName assignment",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2916816,
+        2917726
+      ],
+      "utf16_half_open": [
+        2916370,
+        2917280
+      ],
+      "bytes": 910,
+      "sha256": "970dc084f87ebeb0e3f1220debf849ee4115e11f0be19c8442dab05ba688decf",
+      "file": "Home-command-input-kI.js.txt",
+      "exact_asset_match": true
+    }
+  ],
+  "inputs": [
+    {
+      "path": "src/components/AllWorkspaces.tsx",
+      "commit": "fc5215e8b6e7fd5e12767155fdbb9d0bcc1e82f1",
+      "bytes": 17476,
+      "sha256": "a25f2b34cf1dc8d89080791615dc4ea879f08c4b950a7e75120168fa323e7e96"
+    },
+    {
+      "path": "src/components/allWorkspacesKeyboardEndpoints.test.ts",
+      "commit": "fc5215e8b6e7fd5e12767155fdbb9d0bcc1e82f1",
+      "bytes": 9843,
+      "sha256": "3ae3852a44bdb5528117e32e73e966f074a6c0034e5f7c0d538433639f4cf922"
+    },
+    {
+      "path": "src/App.tsx",
+      "commit": "fc5215e8b6e7fd5e12767155fdbb9d0bcc1e82f1",
+      "bytes": 38937,
+      "sha256": "5376811866211058d8ce2b1430ea38b7dbbaa6286631b742aeefae83a7017709"
+    },
+    {
+      "path": "src/main.tsx",
+      "commit": "fc5215e8b6e7fd5e12767155fdbb9d0bcc1e82f1",
+      "bytes": 2279,
+      "sha256": "b1ad5f34cbb74420d946183105a216b809233ac09dab49beeea3c9366db5da80"
+    },
+    {
+      "path": "src/keybindings/KeybindingsProvider.tsx",
+      "commit": "fc5215e8b6e7fd5e12767155fdbb9d0bcc1e82f1",
+      "bytes": 5566,
+      "sha256": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6"
+    },
+    {
+      "path": "src/keybindings/listeners.ts",
+      "commit": "fc5215e8b6e7fd5e12767155fdbb9d0bcc1e82f1",
+      "bytes": 6133,
+      "sha256": "6944c63efcb6edee49d59d1ccdcfaed649902021946c8a8f60d50549fd89011a"
+    }
+  ],
+  "mechanism": {
+    "reference": "Home UJo mounts KV(P6=Xyi). Xyi ArrowDown calls Z: metaKey -> last item; ArrowUp calls se: metaKey -> first item.",
+    "candidate": "AllWorkspaces.onSearchKey guards consumed/composing events then always clamps activeIndex +/-1 for ArrowDown/Up, regardless of metaKey.",
+    "counterexample": "Ordered A/B/C from A, Meta+ArrowDown selects B rather than C; from C, Meta+ArrowUp selects B rather than A.",
+    "boundaries": "Local selection only. No activation before Enter. No global shortcut registry/resolver or Alt-navigation changes."
+  },
+  "verification": {
+    "full_retained_renderer_hash": "PASS",
+    "all_seven_retained_spans": "PASS",
+    "six_fresh_main_inputs": "PASS",
+    "behavioral_baseline": "NOT_RUN",
+    "native": "NOT_RUN"
+  },
+  "ownership": "Sole same271 onSearchKey modifier/endpoint plus NEW regression/evidence. Canonical ledger confirmed1133 sequencing park lifted.",
+  "original_reference_record_sha256": "40d59630b92937c5c31b6e7d2ba3a31ee5ce015c97f2041719b7fe6e7e77e7c2",
+  "expected_regression": "6 intended assertion failures and 3 controls, not yet observed",
+  "excluded": [
+    "global dispatch/resolver",
+    "Alt group navigation",
+    "filters/row production",
+    "frozen fixtures",
+    "runtime/native/dispatch"
+  ]
+}

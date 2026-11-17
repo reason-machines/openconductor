@@ -1,0 +1,1 @@
+RESTART_IDLE_SOURCE_ROOT=. NODE_OPTIONS=--max-old-space-size=768 nice -n19 timeout --kill-after=5s 120s node --test --test-concurrency=1 --test-reporter=tap evidence/settings/restart-when-idle/safetyIntegration.selector-loader.test.cjs

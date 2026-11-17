@@ -62,6 +62,16 @@ export async function stopRun(workspaceId: string, scriptId: string | null): Pro
   return invoke<boolean>("run_script_stop", { workspaceId, scriptId });
 }
 
+export async function writeRun(workspaceId: string, scriptId: string, runId: string, data: string): Promise<boolean> {
+  if (!inTauri()) return false;
+  return invoke<boolean>("run_script_write", { workspaceId, scriptId, runId, data });
+}
+
+export async function resizeRun(workspaceId: string, scriptId: string, runId: string, cols: number, rows: number): Promise<boolean> {
+  if (!inTauri()) return false;
+  return invoke<boolean>("run_script_resize", { workspaceId, scriptId, runId, cols, rows });
+}
+
 /** Settings › Experimental "Auto-run after setup" (user scope, off by default). */
 export async function autoRunAfterSetup(): Promise<boolean> {
   if (!inTauri()) return browser.config.autoRunAfterSetup;

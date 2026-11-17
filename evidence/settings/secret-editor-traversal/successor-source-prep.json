@@ -1,0 +1,43 @@
+{
+  "author": "Conductor Rebuild",
+  "checked_at": "2026-11-12T10:09:59.749447+00:00",
+  "checked_main": "f3a52c4aaa59d12e2d0050e2997174be30a59cac",
+  "computer_uuid": "00637189-5c55-416e-b457-ed7419fb739a",
+  "source_spans_verified": 11,
+  "source_identities": [
+    {
+      "path": "src/settings/AgentsPage.tsx",
+      "sha256": "2d9167dd3176f6220f6036aff0c4e8bf5125e1e6e575984c401e67cd83f7f0ee",
+      "blob": "1bd991ad236c6cb51c9f23df2f0ec30f7077b86c",
+      "same_as_prior": true
+    },
+    {
+      "path": "src/settings/agents/ClaudeTab.tsx",
+      "sha256": "84ae3c3277f9ef11f1bf79a1c2696444787a35097ddf405df5f50cb64faa5e4c",
+      "blob": "15ab6367503a61874e821a4e9aea3bba76716713",
+      "same_as_prior": true
+    },
+    {
+      "path": "src/settings/agents/kit.tsx",
+      "sha256": "e29c172d7e80263dbc1a020d0b6dd6c02e6471b7e09b4e2f1c1fbbf2a91e1b77",
+      "blob": "0948f5abf1fbce498cbd73997cfa1928cf3ea913",
+      "same_as_prior": false
+    },
+    {
+      "path": "src/settings/agents/agents.css",
+      "sha256": "5a5782488458b385aa106b4120dbad9fdc73633848037c740312d3330c5de7a6",
+      "blob": "3a4954485818d411a9a35e679e2b86e00adf5e1d",
+      "same_as_prior": true
+    },
+    {
+      "path": "src/settings/agents/kit.css",
+      "sha256": "38372a8ab51f98f32179d298c81d90b6da137a5e4fe5178b6b7ba2f0a2ea18ab",
+      "blob": "f47b83b918fbfa29f30f91edd83fab508bfa3ccc",
+      "same_as_prior": true
+    }
+  ],
+  "fixture_sha256": "1b6157500cf020ede46da5477325774f099ce0a47dff52c44560c1be36f4c53c",
+  "product_unchanged": true,
+  "dependencies_prefix_absent": true,
+  "execution": "SOURCE_PREP_ONLY; no install/tests/product patch"
+}

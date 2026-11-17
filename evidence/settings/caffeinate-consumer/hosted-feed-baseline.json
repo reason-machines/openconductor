@@ -1,0 +1,28 @@
+{
+  "producer": "Conductor Rebuild",
+  "pr": 1124,
+  "head": "2db8326f73d9a19b5440446267d5a0c36ab71b48",
+  "run": 43147035228,
+  "unit_job": 130947145977,
+  "frontend_job": 130947145639,
+  "command": "node --test \"src/**/*.test.ts\"",
+  "log_lines": [
+    2743,
+    2851
+  ],
+  "focused": {
+    "intended_publication_failures": 2,
+    "controls_passed": 2,
+    "loader_failures": 0
+  },
+  "aggregate": {
+    "tests": 3291,
+    "pass": 3289,
+    "fail": 2,
+    "skipped": 0
+  },
+  "classification": "QUALIFIED_INTENDED_CANONICAL_PUBLICATION_RED_NOT_POWER_PROOF",
+  "capture_format": "Assertion excerpt with trailing whitespace removed; status values, identities and TAP results are unchanged.",
+  "production_at_head": "UNCHANGED",
+  "native_power": "NOT_RUN"
+}

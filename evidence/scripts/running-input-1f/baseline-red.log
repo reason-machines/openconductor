@@ -1,0 +1,196 @@
+2026-11-11T22:17:36.6725395Z   type: 'test'
+2026-11-11T22:17:36.6751633Z   ...
+2026-11-11T22:17:36.7977003Z # Subtest: actual primary Spotlight Stop and Start retain their commands after a menu pick
+2026-11-11T22:17:36.8005333Z ok 2464 - actual primary Spotlight Stop and Start retain their commands after a menu pick
+2026-11-11T22:17:36.8005923Z   ---
+2026-11-11T22:17:36.8006173Z   duration_ms: 145.108708
+2026-11-11T22:17:36.8006513Z   type: 'test'
+2026-11-11T22:17:36.8006762Z   ...
+2026-11-11T22:17:36.8009928Z # Subtest: actual Run menu surfaces a rejected start through the existing panel error
+2026-11-11T22:17:36.8010712Z ok 2465 - actual Run menu surfaces a rejected start through the existing panel error
+2026-11-11T22:17:36.8011334Z   ---
+2026-11-11T22:17:36.8011906Z   duration_ms: 116.057322
+2026-11-11T22:17:36.8012508Z   type: 'test'
+2026-11-11T22:17:36.8013013Z   ...
+2026-11-11T22:17:36.9324071Z # Subtest: running terminal input reaches the real panel/API route with exact bytes and run identity
+2026-11-11T22:17:36.9325976Z not ok 2466 - running terminal input reaches the real panel/API route with exact bytes and run identity
+2026-11-11T22:17:36.9326870Z   ---
+2026-11-11T22:17:36.9327325Z   duration_ms: 533.24682
+2026-11-11T22:17:36.9327824Z   type: 'test'
+2026-11-11T22:17:36.9328621Z   location: '/home/runner/work/openconductor/openconductor/src/scripts/runningInput.test.ts:157:1'
+2026-11-11T22:17:36.9329526Z   failureType: 'testCodeFailure'
+2026-11-11T22:17:36.9330029Z   error: |-
+2026-11-11T22:17:36.9330688Z     typed/pasted bytes must reach the identified live script, not just its transcript
+2026-11-11T22:17:36.9331412Z     + actual - expected
+2026-11-11T22:17:36.9331843Z     
+2026-11-11T22:17:36.9332223Z     + []
+2026-11-11T22:17:36.9332623Z     - [
+2026-11-11T22:17:36.9333474Z     -   {
+2026-11-11T22:17:36.9333922Z     -     data: 'answer\r',
+2026-11-11T22:17:36.9334570Z     -     runId: 'run-1',
+2026-11-11T22:17:36.9335047Z     -     scriptId: 'dev',
+2026-11-11T22:17:36.9335556Z     -     workspaceId: 'input-a'
+2026-11-11T22:17:36.9336035Z     -   },
+2026-11-11T22:17:36.9336430Z     -   {
+2026-11-11T22:17:36.9336830Z     -     data: '\x1B[A',
+2026-11-11T22:17:36.9337311Z     -     runId: 'run-1',
+2026-11-11T22:17:36.9337766Z     -     scriptId: 'dev',
+2026-11-11T22:17:36.9338275Z     -     workspaceId: 'input-a'
+2026-11-11T22:17:36.9338744Z     -   },
+2026-11-11T22:17:36.9339140Z     -   {
+2026-11-11T22:17:36.9339581Z     -     data: '\x03',
+2026-11-11T22:17:36.9340040Z     -     runId: 'run-1',
+2026-11-11T22:17:36.9340496Z     -     scriptId: 'dev',
+2026-11-11T22:17:36.9340989Z     -     workspaceId: 'input-a'
+2026-11-11T22:17:36.9341466Z     -   },
+2026-11-11T22:17:36.9341860Z     -   {
+2026-11-11T22:17:36.9342555Z     -     data: 'é漢字\r',
+2026-11-11T22:17:36.9343057Z     -     runId: 'run-1',
+2026-11-11T22:17:36.9343513Z     -     scriptId: 'dev',
+2026-11-11T22:17:36.9344004Z     -     workspaceId: 'input-a'
+2026-11-11T22:17:36.9344656Z     -   },
+2026-11-11T22:17:36.9345055Z     -   {
+2026-11-11T22:17:36.9346407Z     -     data: '\x1B[200~multi\nline\x1B[201~',
+2026-11-11T22:17:36.9347008Z     -     runId: 'run-1',
+2026-11-11T22:17:36.9347491Z     -     scriptId: 'dev',
+2026-11-11T22:17:36.9347991Z     -     workspaceId: 'input-a'
+2026-11-11T22:17:36.9348472Z     -   }
+2026-11-11T22:17:36.9348862Z     - ]
+2026-11-11T22:17:36.9350962Z     
+2026-11-11T22:17:36.9351378Z   code: 'ERR_ASSERTION'
+2026-11-11T22:17:36.9352124Z   name: 'AssertionError'
+2026-11-11T22:17:36.9352800Z   expected:
+2026-11-11T22:17:36.9353215Z     0:
+2026-11-11T22:17:36.9353633Z       workspaceId: 'input-a'
+2026-11-11T22:17:36.9354103Z       scriptId: 'dev'
+2026-11-11T22:17:36.9354702Z       runId: 'run-1'
+2026-11-11T22:17:36.9355123Z       data: 'answer\r'
+2026-11-11T22:17:36.9355554Z     1:
+2026-11-11T22:17:36.9355970Z       workspaceId: 'input-a'
+2026-11-11T22:17:36.9356424Z       scriptId: 'dev'
+2026-11-11T22:17:36.9356839Z       runId: 'run-1'
+2026-11-11T22:17:36.9357249Z       data: '\x1B[A'
+2026-11-11T22:17:36.9357643Z     2:
+2026-11-11T22:17:36.9358046Z       workspaceId: 'input-a'
+2026-11-11T22:17:36.9358529Z       scriptId: 'dev'
+2026-11-11T22:17:36.9358969Z       runId: 'run-1'
+2026-11-11T22:17:36.9359393Z       data: '\x03'
+2026-11-11T22:17:36.9359814Z     3:
+2026-11-11T22:17:36.9360223Z       workspaceId: 'input-a'
+2026-11-11T22:17:36.9360700Z       scriptId: 'dev'
+2026-11-11T22:17:36.9361317Z       runId: 'run-1'
+2026-11-11T22:17:36.9361981Z       data: 'é漢字\r'
+2026-11-11T22:17:36.9362431Z     4:
+2026-11-11T22:17:36.9362835Z       workspaceId: 'input-a'
+2026-11-11T22:17:36.9363319Z       scriptId: 'dev'
+2026-11-11T22:17:36.9363755Z       runId: 'run-1'
+2026-11-11T22:17:36.9364332Z       data: |-
+2026-11-11T22:17:36.9364845Z         multi
+2026-11-11T22:17:36.9365333Z         line
+2026-11-11T22:17:36.9365738Z   actual:
+2026-11-11T22:17:36.9366146Z   operator: 'deepStrictEqual'
+2026-11-11T22:17:36.9366627Z   stack: |-
+2026-11-11T22:17:36.9367531Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/scripts/runningInput.test.ts:162:10)
+2026-11-11T22:17:36.9368566Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T22:17:36.9369400Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-11T22:17:36.9370093Z   ...
+2026-11-11T22:17:36.9370658Z # Subtest: retained stopped script output remains read-only
+2026-11-11T22:17:36.9371450Z ok 2467 - retained stopped script output remains read-only
+2026-11-11T22:17:36.9372022Z   ---
+2026-11-11T22:17:36.9372441Z   duration_ms: 242.957531
+2026-11-11T22:17:36.9372901Z   type: 'test'
+2026-11-11T22:17:36.9373308Z   ...
+2026-11-11T22:17:36.9374270Z # Subtest: input follows running/stopping/rerun without remounting or reusing the old generation
+2026-11-11T22:17:36.9375708Z not ok 2468 - input follows running/stopping/rerun without remounting or reusing the old generation
+2026-11-11T22:17:36.9376487Z   ---
+2026-11-11T22:17:36.9376907Z   duration_ms: 221.64718
+2026-11-11T22:17:36.9377353Z   type: 'test'
+2026-11-11T22:17:36.9378122Z   location: '/home/runner/work/openconductor/openconductor/src/scripts/runningInput.test.ts:174:1'
+2026-11-11T22:17:36.9378966Z   failureType: 'testCodeFailure'
+2026-11-11T22:17:36.9379444Z   error: |-
+2026-11-11T22:17:36.9379937Z     Expected values to be strictly deep-equal:
+2026-11-11T22:17:36.9380489Z     + actual - expected
+2026-11-11T22:17:36.9380921Z     
+2026-11-11T22:17:36.9381324Z     + []
+2026-11-11T22:17:36.9381716Z     - [
+2026-11-11T22:17:36.9382115Z     -   {
+2026-11-11T22:17:36.9382519Z     -     data: 'first\r',
+2026-11-11T22:17:36.9382992Z     -     runId: 'run-1'
+2026-11-11T22:17:36.9383441Z     -   },
+2026-11-11T22:17:36.9383829Z     -   {
+2026-11-11T22:17:36.9384395Z     -     data: 'second\r',
+2026-11-11T22:17:36.9384882Z     -     runId: 'run-2'
+2026-11-11T22:17:36.9385324Z     -   }
+2026-11-11T22:17:36.9385731Z     - ]
+2026-11-11T22:17:36.9386117Z     
+2026-11-11T22:17:36.9386510Z   code: 'ERR_ASSERTION'
+2026-11-11T22:17:36.9386976Z   name: 'AssertionError'
+2026-11-11T22:17:36.9387425Z   expected:
+2026-11-11T22:17:36.9387822Z     0:
+2026-11-11T22:17:36.9388234Z       runId: 'run-1'
+2026-11-11T22:17:36.9388665Z       data: 'first\r'
+2026-11-11T22:17:36.9389078Z     1:
+2026-11-11T22:17:36.9389486Z       runId: 'run-2'
+2026-11-11T22:17:36.9389892Z       data: 'second\r'
+2026-11-11T22:17:36.9390244Z   actual:
+2026-11-11T22:17:36.9390619Z   operator: 'deepStrictEqual'
+2026-11-11T22:17:36.9391287Z   stack: |-
+2026-11-11T22:17:36.9392090Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/scripts/runningInput.test.ts:186:10)
+2026-11-11T22:17:36.9393047Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T22:17:36.9393861Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T22:17:36.9449000Z   ...
+2026-11-11T22:17:37.1045861Z # Subtest: input targets the displayed workspace/script, never the disposed previous terminal
+2026-11-11T22:17:37.1051122Z not ok 2469 - input targets the displayed workspace/script, never the disposed previous terminal
+2026-11-11T22:17:37.1051928Z   ---
+2026-11-11T22:17:37.1052305Z   duration_ms: 178.530796
+2026-11-11T22:17:37.1052725Z   type: 'test'
+2026-11-11T22:17:37.1053434Z   location: '/home/runner/work/openconductor/openconductor/src/scripts/runningInput.test.ts:190:1'
+2026-11-11T22:17:37.1054357Z   failureType: 'testCodeFailure'
+2026-11-11T22:17:37.1054844Z   error: |-
+2026-11-11T22:17:37.1055272Z     Expected values to be strictly deep-equal:
+2026-11-11T22:17:37.1055760Z     + actual - expected
+2026-11-11T22:17:37.1056144Z     
+2026-11-11T22:17:37.1056481Z     + []
+2026-11-11T22:17:37.1056824Z     - [
+2026-11-11T22:17:37.1057178Z     -   {
+2026-11-11T22:17:37.1057562Z     -     data: 'B input\r',
+2026-11-11T22:17:37.1058018Z     -     runId: 'run-1',
+2026-11-11T22:17:37.1058425Z     -     scriptId: 'test',
+2026-11-11T22:17:37.1058892Z     -     workspaceId: 'input-b'
+2026-11-11T22:17:37.1059340Z     -   }
+2026-11-11T22:17:37.1059709Z     - ]
+2026-11-11T22:17:37.1060075Z     
+2026-11-11T22:17:37.1060451Z   code: 'ERR_ASSERTION'
+2026-11-11T22:17:37.1060890Z   name: 'AssertionError'
+2026-11-11T22:17:37.1061313Z   expected:
+2026-11-11T22:17:37.1061690Z     0:
+2026-11-11T22:17:37.1062098Z       workspaceId: 'input-b'
+2026-11-11T22:17:37.1062510Z       scriptId: 'test'
+2026-11-11T22:17:37.1062898Z       runId: 'run-1'
+2026-11-11T22:17:37.1063277Z       data: 'B input\r'
+2026-11-11T22:17:37.1063688Z   actual:
+2026-11-11T22:17:37.1064052Z   operator: 'deepStrictEqual'
+2026-11-11T22:17:37.1064662Z   stack: |-
+2026-11-11T22:17:37.1065525Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/scripts/runningInput.test.ts:197:10)
+2026-11-11T22:17:37.1066939Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T22:17:37.1068500Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T22:17:37.1069139Z   ...
+2026-11-11T22:17:37.2525883Z # Subtest: unmount removes the input subscriber
+2026-11-11T22:17:37.2539536Z ok 2470 - unmount removes the input subscriber
+2026-11-11T22:17:37.2547552Z   ---
+2026-11-11T22:17:37.2555087Z   duration_ms: 165.953194
+2026-11-11T22:17:37.2585426Z   type: 'test'
+2026-11-11T22:17:37.2595221Z   ...
+2026-11-11T22:17:37.4008481Z # Subtest: setup output is not routed to a run-script process
+2026-11-11T22:17:37.4126140Z ok 2471 - setup output is not routed to a run-script process
+2026-11-11T22:17:37.4154596Z   ---
+2026-11-11T22:17:37.4155043Z   duration_ms: 147.738927
+2026-11-11T22:17:37.4184719Z   type: 'test'
+2026-11-11T22:17:37.4204957Z   ...
+2026-11-11T22:17:37.4244976Z # Subtest: running status without a live run identity cannot enable input
+2026-11-11T22:17:37.4245970Z ok 2472 - running status without a live run identity cannot enable input
+2026-11-11T22:17:37.4274553Z   ---
+2026-11-11T22:17:37.4304715Z   duration_ms: 166.029842
+2026-11-11T22:17:37.4305170Z   type: 'test'
+2026-11-11T22:17:37.4311852Z   ...
+2026-11-11T22:17:37.4884525Z 

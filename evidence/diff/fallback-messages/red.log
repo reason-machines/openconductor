@@ -1,0 +1,182 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: unified: binary fallback uses Conductor's message
+not ok 1 - unified: binary fallback uses Conductor's message
+  ---
+  duration_ms: 113.864361
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/fallbackMessages.test.ts:72:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Binary file not shown.'
+    - 'Binary file changed'
+                   ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Binary file changed'
+  actual: 'Binary file not shown.'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/fallbackMessages.test.ts:79:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: unified: equal-text fallback uses Conductor's message
+not ok 2 - unified: equal-text fallback uses Conductor's message
+  ---
+  duration_ms: 14.25948
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/fallbackMessages.test.ts:72:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'No content changes in this file.'
+    - 'No changes in this file'
+           ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'No changes in this file'
+  actual: 'No content changes in this file.'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/fallbackMessages.test.ts:79:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: split: binary fallback uses Conductor's message
+not ok 3 - split: binary fallback uses Conductor's message
+  ---
+  duration_ms: 26.685202
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/fallbackMessages.test.ts:72:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Binary file not shown.'
+    - 'Binary file changed'
+                   ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Binary file changed'
+  actual: 'Binary file not shown.'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/fallbackMessages.test.ts:79:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: split: equal-text fallback uses Conductor's message
+not ok 4 - split: equal-text fallback uses Conductor's message
+  ---
+  duration_ms: 19.911832
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/fallbackMessages.test.ts:72:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'No content changes in this file.'
+    - 'No changes in this file'
+           ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'No changes in this file'
+  actual: 'No content changes in this file.'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/fallbackMessages.test.ts:79:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: file: binary fallback uses Conductor's message
+not ok 5 - file: binary fallback uses Conductor's message
+  ---
+  duration_ms: 13.598371
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/fallbackMessages.test.ts:72:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Binary file not shown.'
+    - 'Binary file changed'
+                   ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Binary file changed'
+  actual: 'Binary file not shown.'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/fallbackMessages.test.ts:79:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: file: equal-text fallback uses Conductor's message
+not ok 6 - file: equal-text fallback uses Conductor's message
+  ---
+  duration_ms: 19.021604
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/fallbackMessages.test.ts:72:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'No content changes in this file.'
+    - 'No changes in this file'
+           ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'No changes in this file'
+  actual: 'No content changes in this file.'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/fallbackMessages.test.ts:79:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: a size-hidden file keeps its higher-priority placeholder
+ok 7 - a size-hidden file keeps its higher-priority placeholder
+  ---
+  duration_ms: 2.852906
+  type: 'test'
+  ...
+# Subtest: whitespace-hidden empty text still delegates to the existing control
+ok 8 - whitespace-hidden empty text still delegates to the existing control
+  ---
+  duration_ms: 1.88995
+  type: 'test'
+  ...
+# Subtest: Viewed still collapses fallback content without losing the selected path
+ok 9 - Viewed still collapses fallback content without losing the selected path
+  ---
+  duration_ms: 19.116459
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 3
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5708.865609

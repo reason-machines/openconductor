@@ -1,0 +1,20 @@
+{
+  "path": "src/scripts/runOutputSelection.test.ts",
+  "sha256": "862521b30632d25b615c656a8e7e9523d7410255a847a4faeb7750cf9796c3ee",
+  "cases": [
+    "actual Run output offers the action only for nonblank selection and a target chat",
+    "Run selection reaches the existing strip callback normalized and without truncation",
+    "stopping Run retains the action, output and terminal instance without enabling stdin",
+    "accepted Run selection clears action state without clearing xterm selection",
+    "a rejected Run selection callback retains the action for retry",
+    "Run selection uses the current strip chat target instead of a stale callback",
+    "Run workspace replacement and unmount release old selection subscriptions",
+    "Setup output does not acquire the Run selection action",
+    "Spotlight output does not acquire the ordinary Run selection action",
+    "standalone output with input keeps its existing no-selection-action default"
+  ],
+  "baseline_main": "f55d0330ff32e790c08a26d2e7aa83dbf2b8ea32",
+  "status_at_freeze": "PREPARED_NOT_RUN",
+  "expected_assertion_failures": 7,
+  "expected_role_controls": 3
+}

@@ -1,0 +1,181 @@
+{
+  "producer": "Conductor Rebuild",
+  "unit": "SIDEBAR-ARCHIVE-TOOLTIP-REMAP-271",
+  "default_branch": "021aeaa4027770258b4daae127bc829d1575d0ab",
+  "reference_provenance": "Retained Conductor 0.87.6 real-app REA-decoded frontend. See evidence/help/shortcut-overrides/reference-provenance.md and reference-trace.txt. No new REA analysis or native execution.",
+  "reference_assets": {
+    "renderer": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "spans": [
+    {
+      "asset": "renderer",
+      "symbol": "DZo",
+      "start": 9902312,
+      "end": 9904865,
+      "sha256": "0c843ba16c3fca3fad506773632523fccbe7de547d77872b3ec15619fe7f254e",
+      "retained": "reference/DZo.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "iea",
+      "start": 9917057,
+      "end": 9918190,
+      "sha256": "682a19e8f5832790f47a114372eb21a11fcaacbd7c09e55150125eaecb859d53",
+      "retained": "reference/iea.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "nFt",
+      "start": 2116446,
+      "end": 2116557,
+      "sha256": "232b418db8dac40df593d699d4630aa31f605f45a3335346d8b76875a561333a",
+      "retained": "reference/nFt.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "jde",
+      "start": 2116331,
+      "end": 2116446,
+      "sha256": "143bbd76c1ac2000ab364f9fe29d76ef0884048338c3a89ca9d72e41faacc14e",
+      "retained": "reference/jde.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "Mde",
+      "start": 2116206,
+      "end": 2116331,
+      "sha256": "6ba3e7d736e6f61ae0f68f9c894099b2f6a7e91eb0b5fa5cb85e1a8397b75eef",
+      "retained": "reference/Mde.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "nh",
+      "start": 3393483,
+      "end": 3393608,
+      "sha256": "278fa92a1196832de0fd6002ab85c9e1fcbdcf6455591306c5d094efa4f2fd4b",
+      "retained": "reference/nh.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "GUt",
+      "start": 3395365,
+      "end": 3395496,
+      "sha256": "f93fe7f05a7a55bfd7ca10ccb2e9817e81f944daa7451098346dfc9c880ae8f4",
+      "retained": "reference/GUt.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "OQt",
+      "start": 3395496,
+      "end": 3395628,
+      "sha256": "253cb040fd5daad3583d324d6a903721197696943d2b5b6348e77e1200336ec1",
+      "retained": "reference/OQt.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "EUt",
+      "start": 3388902,
+      "end": 3389049,
+      "sha256": "e2f5dcbc7fa023726e19ce7fc81ea52ef8890f162906c78dcbd56ea67f333b94",
+      "retained": "reference/EUt.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "SQt",
+      "start": 3389049,
+      "end": 3389101,
+      "sha256": "79bc4a46132d81816c529e4e2a6aedb4cd3c22f9299f3b46236f89068541a062",
+      "retained": "reference/SQt.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "bQt",
+      "start": 3389101,
+      "end": 3389126,
+      "sha256": "53907b1ee09f0cb9184b86d4d3a6666a79009a233482a361f763b71470920516",
+      "retained": "reference/bQt.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "zfe",
+      "start": 3391333,
+      "end": 3392168,
+      "sha256": "65c80a74bc9d0b93cee05d5ae2df4e0d514970672676854a27ae7e072070a590",
+      "retained": "reference/zfe.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "SFi",
+      "start": 9927847,
+      "end": 9932703,
+      "sha256": "1ae8f546195edb7cf0a87bb045477a6bb50fcbd55d5f5a036eb8e153b64384fa",
+      "retained": "reference/SFi.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "archive-visual-caller",
+      "start": 9913495,
+      "end": 9915646,
+      "sha256": "d6ad7c4a28ce30b57494832b3e80a5941ff4e71c2e4103d1cdce1075103b315d",
+      "retained": "reference/archive-visual-caller.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "wFi",
+      "start": 9921016,
+      "end": 9925417,
+      "sha256": "b0f5cca323d01cba61e285c0d34ac98444aacf82dd11da0a308ed8fee1ae2f7e",
+      "retained": "reference/wFi.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "QZo",
+      "start": 9912971,
+      "end": 9913222,
+      "sha256": "335184a4077a4f46002fd1e5f2997db2c8154e45467b5e7450b415d2a95a425a",
+      "retained": "reference/QZo.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "resolver-import-aliases",
+      "start": 55238,
+      "end": 55362,
+      "sha256": "947f61d0126d8076ea3c5bf1de0aa6c5ad5c8b0416c8fb35dd03f1e901751518",
+      "retained": "reference/resolver-import-aliases.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "resolver-export-aliases",
+      "start": 3481616,
+      "end": 3481741,
+      "sha256": "2513ac3b5579ed31267403e9065aa4b1f89ae66fcf8cd11626a39ac809322cc8",
+      "retained": "reference/resolver-export-aliases.txt"
+    }
+  ],
+  "chain": "SFi calls DZo and passes the archive model into the visual caller; DZo nFt(\"workspace.archive\") -> nFt/jde/Mde -> index OQt/GUt/nh saved primary shortcut; selected-only shortcutLabel -> iea -> QZo label.",
+  "baseline_pins": {
+    "src/components/SidebarWorkspaceRow.tsx": "a1e8da72a0e928557600ae57ca64c29d2a1d936a3af267b306a0e17f8ce0f36c",
+    "src/components/Tooltip.tsx": "975aa045c39f25df9ca8e9474f3d1215eb2bbd20ea2b495f8b309b98fc823d76",
+    "src/keybindings/KeybindingsProvider.tsx": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6",
+    "src/keybindings/overrides.ts": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193",
+    "src/keybindings/shortcut.ts": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8",
+    "src/keybindings/registry.ts": "3a873cc27d99b73fafa340dc1585d9f4cd850966e91408c4f4dbad445bf4dcb9"
+  },
+  "fixture_sha256": "8ad78950e3a408f4adbeb432541064156e8ea6c016eeb6d5f5d034fb1ae17187",
+  "scope": "Only SidebarWorkspaceRow archive tooltip override subscription and primary label. Archive action, switch modifier hints, other rows and tooltip primitive unchanged.",
+  "source_prediction": {
+    "four_remap_assertions": "default shortcut remains where saved primary expected",
+    "three_controls": "default selected, unselected and archive callback expected pass"
+  },
+  "rea_gaps": [
+    "No new semantic graph run. Existing renderer heap and index graph-budget gaps are documented in retained provenance; bounded exact source spans provide this caller closure."
+  ],
+  "execution": {
+    "mounted_baseline": "HOSTED_ASSERTION_RED: 084472476b, four intended failures and three controls in both frontend jobs of 43133892679; see hosted-red.json",
+    "mounted_candidate": "PENDING",
+    "native": "NOT_RUN",
+    "visual": "NOT_RUN"
+  },
+  "lease": "Ledger ddfc6518 confirmed no competing writer, tooltip-only scope and ordinary automatic hosted regression publication. No local/native runtime or manual dispatch."
+}

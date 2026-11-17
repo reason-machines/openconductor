@@ -1,0 +1,91 @@
+{
+  "owner": "Conductor Rebuild",
+  "kind": "QUALIFIED_COMPONENT_LABEL_RED",
+  "head": "ced81c40e7f6fcb33ab135aaac20b20ed4c6ffff",
+  "run": 43148630096,
+  "job": 130952304907,
+  "url": "https://github.com/reason-machines/openconductor/actions/runs/43148630096/job/130952304907",
+  "command": "node --test (automatic existing frontend unit workflow)",
+  "test_sha256": "5133ae74238f3ca22b47fb45f598c28302aa48d5f3914066eef9cbd5a13df324",
+  "assertion": "strictEqual at grepResourceLabel.test.ts:170 compares actual mounted oc-tool-inline-code text",
+  "cases": [
+    {
+      "id": "inside-workspace-deep-absolute",
+      "status": "ASSERTION_RED"
+    },
+    {
+      "id": "outside-workspace-deep-absolute",
+      "status": "ASSERTION_RED"
+    },
+    {
+      "id": "deep-relative",
+      "status": "ASSERTION_RED"
+    },
+    {
+      "id": "short-relative-control",
+      "status": "PASS"
+    },
+    {
+      "id": "pathless-control",
+      "status": "PASS"
+    },
+    {
+      "id": "ordinary-read-control",
+      "status": "PASS"
+    },
+    {
+      "id": "root-slash",
+      "status": "PASS"
+    },
+    {
+      "id": "leading-slash-pair",
+      "status": "PASS"
+    },
+    {
+      "id": "workspace-trailing-slash",
+      "status": "ASSERTION_RED"
+    },
+    {
+      "id": "deep-trailing-slash",
+      "status": "ASSERTION_RED"
+    },
+    {
+      "id": "repeated-empty-segment",
+      "status": "ASSERTION_RED"
+    },
+    {
+      "id": "double-trailing-slash",
+      "status": "ASSERTION_RED"
+    },
+    {
+      "id": "unicode-segments",
+      "status": "ASSERTION_RED"
+    },
+    {
+      "id": "dot-relative-segments",
+      "status": "ASSERTION_RED"
+    },
+    {
+      "id": "backslashes-unchanged",
+      "status": "PASS"
+    }
+  ],
+  "summary": {
+    "total_tests": 3302,
+    "pass": 3293,
+    "fail": 9,
+    "other_top_level_failures": 0
+  },
+  "typecheck": {
+    "job": 130952304604,
+    "step": "Run npm run typecheck",
+    "conclusion": "success",
+    "failed_step": "Frontend unit tests",
+    "build": "skipped after expected unit failures"
+  },
+  "limits": [
+    "Some assertion message identifiers were redacted by the log reader; case names, expected/actual labels and assertion locations remain visible.",
+    "Synthetic controlled React component test only; no native, visual, real provider or IPC acceptance.",
+    "No local JavaScript or manual workflow dispatch/rerun."
+  ]
+}

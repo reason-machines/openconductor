@@ -1,0 +1,19 @@
+{
+  "status": "PROPOSED_SOURCE_CONTRACT_ONLY; no executable test or product mutation",
+  "owner": "Conductor Rebuild / BE7",
+  "checked_main": "508a1726dea81a508a853d2172ec5b1922803f2c",
+  "case_scope": "Only the rendered Grep resource path label, not resource identity/navigation or search execution",
+  "future_harness": "Use a whole production ConductorToolRow beneath normal controlled state with ordinary Grep toolName/rawInput preserved through the actual adapter/view, and inspect actual .oc-tool-inline-code text. Source-text checks cannot qualify behavioral RED. Keep each fixture unchanged across baseline and candidate.",
+  "cases": [
+    {"id":"inside-workspace-deep-absolute","role":"INTENDED_FAILURE","path":"/repo/packages/chat/src/render.ts","workspacePath":"/repo","pattern":"needle","include":"*.ts","expected_resource":"src/render.ts","current_source_prediction":"packages/chat/src/render.ts"},
+    {"id":"outside-workspace-deep-absolute","role":"INTENDED_FAILURE","path":"/external/project/packages/chat","workspacePath":"/repo","pattern":"needle","expected_resource":"packages/chat","current_source_prediction":"/external/project/packages/chat"},
+    {"id":"deep-relative","role":"INTENDED_FAILURE","path":"packages/chat/src","workspacePath":"/repo","pattern":"needle","expected_resource":"chat/src","current_source_prediction":"packages/chat/src"},
+    {"id":"short-relative-control","role":"CONTROL","path":"src/render.ts","workspacePath":"/repo","pattern":"needle","expected_resource":"src/render.ts"},
+    {"id":"pathless-control","role":"CONTROL","path":"","workspacePath":"/repo","pattern":"needle","expected_resource":null,"expected":"No in phrase or resource code element"},
+    {"id":"ordinary-read-control","role":"CONTROL","name":"Read","input":{"file_path":"/repo/example.ts","offset":7},"result":"     7→first\n     8→second","expected":"Existing Read label, cleaned text, line numbers 7/8, file target and disclosure unchanged"}
+  ],
+  "preserve": ["Exact include text, pattern text and match count", "Actual input path and resource identity", "Read syntax fixture and helper", "All current #1114 fixture bytes", "Scheduling and clock behavior", "Explicit closed disclosure state"],
+  "mutable_scope_not_yet_admitted": ["ToolRows Grep label call", "Only shortPath import binding removal after explicit coordination", "New isolated regression file", "New evidence directory"],
+  "excluded": ["Global shortPath/lastTwoSegments helper edits", "RowShell", "Image branches", "Schedule imports/timing", "Transcript", "Backend/OpenIn", "Fast", "Clear", "#847"],
+  "execution": "NOT_RUN; no tests, provider, local/native/browser runtime or publication authorized by this packet"
+}

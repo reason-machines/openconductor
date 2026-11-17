@@ -1,0 +1,1 @@
+function gXo(t){const e=ne.c(4),{localWorkspaceId:n}=t,{data:i}=oSe();if(!(i===void 0?!1:i)){let a;return e[0]!==n?(a=p.jsx(Dji,{localWorkspaceId:n}),e[0]=n,e[1]=a):a=e[1],a}let o;return e[2]!==n?(o=p.jsx(bXo,{localWorkspaceId:n}),e[2]=n,e[3]=o):o=e[3],o}

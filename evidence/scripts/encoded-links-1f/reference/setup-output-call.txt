@@ -1,0 +1,1 @@
+children:ct&&r?p.jsxs("div",{className:"relative h-full",children:[p.jsx(gno,{localWorkspaceId:r.localId}),

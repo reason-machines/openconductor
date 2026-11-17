@@ -1,9 +1,10 @@
 // Adapt the shell's AppState to palette data, and order workspaces the way
 // the sidebar shows them (Cmd+1..9 and Cmd+Alt+Up/Down follow this order).
 
+import { readyToMerge } from "../state/rowStatus.ts";
 import type { AppState, Workspace } from "../state/types.ts";
 import type { ActionEntry, PaletteData, SettingEntry, WorkspaceEntry } from "./search/model.ts";
-import type { OpenInApp } from "../features/openIn/apps.ts";
+import { supportsFileOpen, type OpenInApp, type openInApp } from "../features/openIn/apps.ts";
 import type { SearchItem } from "../settings/searchIndex.ts";
 import { labelTargetBranch, workspaceLabel } from "../components/sidebarLabel.ts";
 import { lastActiveAt as activityAt } from "../home/allWorkspaces.ts";
@@ -19,6 +20,41 @@ import { GIT_PANEL_ACTIONS, gitPanelWorkspace } from "./gitPanelActions.ts";
 export interface WorkspaceRef {
   repoId: string;
   workspace: Workspace;
+}
+
+export interface WorkspaceOpenInOwner {
+  readonly repoId: string;
+  readonly workspaceId: string;
+  readonly workspacePath: string;
+}
+
+export type WorkspaceOpenInTarget = WorkspaceOpenInOwner & (
+  | { readonly kind: "workspace" }
+  | { readonly kind: "file"; readonly relativePath: string }
+);
+
+export type OpenInTargetPublisher = (target: WorkspaceOpenInTarget) => () => void;
+
+export interface OpenInRequest {
+  path: string;
+  fileContext?: Parameters<typeof openInApp>[2];
+}
+
+export function paletteOpenInRequest(
+  appId: string,
+  owner: WorkspaceOpenInOwner,
+  target: WorkspaceOpenInTarget | null | undefined,
+): OpenInRequest {
+  const fallback = { path: owner.workspacePath };
+  if (!target || target.kind !== "file" || !supportsFileOpen(appId)
+    || target.repoId !== owner.repoId || target.workspaceId !== owner.workspaceId
+    || target.workspacePath !== owner.workspacePath) return fallback;
+  const parts = target.relativePath.split("/");
+  if (parts.some((part) => part === "" || part === "." || part === ".." || part.includes("\0"))) return fallback;
+  const path = `${owner.workspacePath.replace(/\/+$/, "")}/${target.relativePath}`;
+  return appId === "vscode" || appId === "finder"
+    ? { path, fileContext: { workspacePath: owner.workspacePath } }
+    : { path };
 }
 
 /** Workspaces in sidebar order: Pinned, then each repo's group, newest first (src/state/sidebarOrder.ts). */
@@ -44,14 +80,22 @@ export function stepWorkspace(state: AppState, delta: 1 | -1): WorkspaceRef | un
 /**
  * Conductor's command palette items (`m_a`, renderApp @10,909,900-10,918,150), in its order,
  * for a local user. Left out: Team and Routines (cloud organisations), Passport and
- * Check for updates (no OpenConductor counterpart yet), and the
- * workspace actions OpenConductor cannot run from here (Search in files, Show notes,
- * Link issue, Move to section and the PR actions).
+ * Check for updates (no OpenConductor counterpart yet), and Show notes (no notes field
+ * in the current Workspace model).
  */
 export const PALETTE_ACTIONS: readonly ActionEntry[] = [
   // Workspace actions: only while a workspace is open.
   { id: "quick-open", title: "File picker", group: "workspace-actions", bindingId: "nav.quickOpen", icon: "file", keywords: ["quick", "open", "file", "search", "find", "picker"] },
+  { id: "search-in-files", title: "Search in files", group: "workspace-actions", bindingId: "nav.searchInFiles", icon: "search", keywords: ["search", "find", "grep", "files", "code", "text"] },
+  // git panel actions (show-changes etc.) are injected here by workspacePaletteData.
+  { id: "link-issue", title: "Link issue", group: "workspace-actions", bindingId: "chat.linkLinear", icon: "link", keywords: ["link", "issue", "linear"] },
   { id: "copy-url", title: "Copy URL", group: "workspace-actions", bindingId: "workspace.copyLink", icon: "link", keywords: ["copy", "url", "link", "share", "workspace"] },
+  { id: "move-to-section", title: "Move to section", group: "workspace-actions", keywords: ["move", "to", "section", "organize", "workspace"] },
+  { id: "create-pull-request", title: "Create PR", group: "workspace-actions", bindingId: "git.createPR", icon: "git-pull-request", keywords: ["create", "pull", "request", "pr", "github"] },
+  { id: "open-pull-request", title: "Open pull request", group: "workspace-actions", bindingId: "git.openInGitHub", icon: "external-link", keywords: ["open", "pull", "request", "pr", "github", "linear"] },
+  { id: "merge-pull-request", title: "Merge PR", group: "workspace-actions", bindingId: "git.mergePR", icon: "git-pull-request", keywords: ["merge", "pull", "request", "pr"] },
+  { id: "ready-for-review", title: "Ready for review", group: "workspace-actions", icon: "git-pull-request", keywords: ["ready", "review", "draft", "pr", "pull", "request"] },
+  { id: "fix-errors", title: "Fix errors", group: "workspace-actions", bindingId: "git.fixErrors", icon: "circle-alert", keywords: ["fix", "errors", "checks", "ci", "failing", "pr"] },
   { id: "archive-workspace", title: "Archive workspace", group: "workspace-actions", bindingId: "workspace.archive", icon: "archive", keywords: ["archive", "current", "workspace"] },
   // Actions.
   { id: "new-workspace", title: "Create workspace", group: "actions", bindingId: "workspace.create", icon: "plus", keywords: ["new", "workspace", "create", "create workspace"] },
@@ -139,8 +183,11 @@ export function paletteDataFromState(
       activeAt: activityAt(a.workspace),
     });
   }
-  const activeWorkspaceId = state.selection.kind === "workspace" ? state.selection.workspaceId : null;
-  const selectedWorkspace = state.repos.flatMap((r) => r.workspaces).find((w) => w.id === activeWorkspaceId);
+  const selection = state.selection;
+  const activeWorkspaceId = selection.kind === "workspace" ? selection.workspaceId : null;
+  const selectedWorkspace = selection.kind === "workspace"
+    ? state.repos.find((repo) => repo.id === selection.repoId)?.workspaces.find((item) => item.id === selection.workspaceId)
+    : undefined;
   const openInActions: ActionEntry[] = selectedWorkspace?.path && selectedWorkspace.status !== "archived"
     ? openInApps.map((app) => ({ id: `open-in-${app.id}`, title: app.name, group: "open-in", keywords: ["open", "in", "open in", app.name, app.id], bindingId: app.id === defaultOpenIn ? "workspace.openInApp" : undefined }))
     : [];
@@ -148,7 +195,7 @@ export function paletteDataFromState(
     workspaces,
     projects: state.repos.map((r) => ({ id: r.id, name: r.name })),
     actions: [...PALETTE_ACTIONS.filter((a) => {
-      if (a.id === "quick-open") return gitPanelWorkspace(state) !== undefined;
+      if (a.id === "quick-open" || a.id === "search-in-files") return gitPanelWorkspace(state) !== undefined;
       if (a.id === "archive-workspace") return selectedWorkspace?.status !== "archived" && state.archivedOpen?.workspace.id !== activeWorkspaceId;
       if (a.id === "go-to-next-unread") return nextUnreadChat(state, { skipSelected: false }) !== undefined;
       // Conductor gates both rows on the resolved workspace (`Xt &&`).
@@ -158,6 +205,46 @@ export function paletteDataFromState(
         const workspace = state.repos.find((r) => r.id === sel.repoId)?.workspaces.find((w) => w.id === sel.workspaceId)
           ?? (state.archivedOpen?.workspace.id === sel.workspaceId ? state.archivedOpen.workspace : undefined);
         return workspace !== undefined;
+      }
+      if (a.id === "link-issue") {
+        const sel = state.selection;
+        if (sel.kind !== "workspace") return false;
+        const workspace = state.repos.find((r) => r.id === sel.repoId)?.workspaces.find((w) => w.id === sel.workspaceId)
+          ?? (state.archivedOpen?.workspace.id === sel.workspaceId ? state.archivedOpen.workspace : undefined);
+        return workspace !== undefined;
+      }
+      if (a.id === "move-to-section") {
+        const sel = state.selection;
+        if (sel.kind !== "workspace") return false;
+        const inRepos = state.repos.find((r) => r.id === sel.repoId)?.workspaces.find((w) => w.id === sel.workspaceId);
+        const inArchived = state.archivedOpen?.workspace.id === sel.workspaceId && state.archivedOpen.repoId === sel.repoId
+          ? state.archivedOpen.workspace : undefined;
+        return (inRepos ?? inArchived) !== undefined;
+      }
+      // PR actions: gated on PR state from the selected workspace.
+      if (a.id === "create-pull-request") {
+        // Show when no PR exists and the workspace is active (simplification: Conductor also
+        // checks for at least one ahead commit, which we do not track yet).
+        const ws = gitPanelWorkspace(state);
+        return ws !== undefined && !ws.pr?.number;
+      }
+      if (a.id === "open-pull-request") {
+        return Boolean(selectedWorkspace?.pr?.url && !selectedWorkspace.pr.isMerged);
+      }
+      if (a.id === "merge-pull-request") {
+        const pr = selectedWorkspace?.pr;
+        if (!pr?.number || pr.isMerged || pr.inMergeQueue || pr.isDraft || pr.viewerCanMerge === false) return false;
+        return readyToMerge(pr, pr.optionalChecksBlock ?? false);
+      }
+      if (a.id === "ready-for-review") {
+        const pr = selectedWorkspace?.pr;
+        return Boolean(pr?.number && !pr.isMerged && pr.isDraft && pr.viewerCanMerge !== false);
+      }
+      if (a.id === "fix-errors") {
+        const ws = gitPanelWorkspace(state);
+        if (!ws) return false;
+        const pr = ws.pr;
+        return Boolean(pr?.number && !pr.isMerged && pr.checks === "failing" && pr.failingChecks > 0);
       }
       return true;
     }), ...openInActions],
@@ -174,9 +261,11 @@ export function workspacePaletteData(...args: Parameters<typeof paletteDataFromS
   const data = paletteDataFromState(...args);
   if (!gitPanelWorkspace(args[0])) return data;
   const panelActions = GIT_PANEL_ACTIONS.map(({ entry }) => entry);
+  // Inject show-changes / show-uncommitted / show-all-files / show-checks immediately
+  // before link-issue, matching Conductor's workspace-actions order (renderApp @10,864,460).
   return {
     ...data,
-    actions: data.actions.flatMap((entry) => entry.id === "copy-url" ? [...panelActions, entry] : [entry]),
+    actions: data.actions.flatMap((entry) => entry.id === "link-issue" ? [...panelActions, entry] : [entry]),
   };
 }
 

@@ -1,0 +1,74 @@
+{
+  "kind": "qualified-hosted-baseline-red",
+  "pr": 1127,
+  "head_sha": "35fcc0bef38d97b4c87931bf2650084cceec580b",
+  "run_id": 43152920803,
+  "unit_job_id": 130966107936,
+  "build_job_id": 130966107744,
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43152920803/job/130966107936",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "suite": {
+    "tests": 3304,
+    "pass": 3298,
+    "fail": 6,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "fixture": "src/features/terminal/sessionUnicode.test.ts",
+  "intended_failure_cases": [
+    2096,
+    2097,
+    2098,
+    2099,
+    2103,
+    2104
+  ],
+  "passing_control_cases": [
+    2100,
+    2101,
+    2102,
+    2105
+  ],
+  "failure_type": "ERR_ASSERTION",
+  "counterexamples": [
+    {
+      "case": 2096,
+      "actual": 3,
+      "expected": 4
+    },
+    {
+      "case": 2097,
+      "actual": 3,
+      "expected": 5
+    },
+    {
+      "case": 2098,
+      "actual": "",
+      "expected": "Z"
+    },
+    {
+      "case": 2099,
+      "actual": 3,
+      "expected": 2
+    },
+    {
+      "case": 2103,
+      "actual": 3,
+      "expected": 4
+    },
+    {
+      "case": 2104,
+      "actual": 1,
+      "expected": 2
+    }
+  ],
+  "fresh_main_checked": "621ed16e9a24615a6bbecaf976be9589b70c0e5d",
+  "fresh_main_initializer_sha256": "8560deacd82ccec6a8442494b38c887a0e81fe44d271839c9e79888029a0a235",
+  "candidate": "not yet run",
+  "native_or_visual_acceptance": false,
+  "limits": [
+    "Real xterm parser with mocked PTY/DOM/preferences/storage/fit boundaries.",
+    "No glyph/font, installed-app or native delivery proof.",
+    "No local behavioral runtime or manual dispatch."
+  ]
+}

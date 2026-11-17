@@ -1,0 +1,17 @@
+{
+  "producer": "Conductor Rebuild",
+  "rejected_baseline": "207f932e3cf8ab07df341cd807e94af541cf19ec",
+  "classification": "FIXTURE_TYPECHECK_FAILURE_NOT_QUALIFIED_BEHAVIORAL_RED",
+  "workflow_run": 43133433690,
+  "frontend_job": 130902880700,
+  "keybindings_run": 43133433701,
+  "keybindings_job": 130902879697,
+  "observed_error": "sidebarArchiveShortcut.test.ts(104,95): TS2769. Property children is missing in type { loadOverrides } but required in Props.",
+  "repair": "Move the same Rows React element from createElement's third argument into KeybindingsProvider's children prop. No scenario, assertion, callback or product source change.",
+  "original_fixture_sha256": "0545e3d99ceed893c1d005aa46e8465d436c7788e0588f80e56580a671be741a",
+  "corrected_frozen_fixture_sha256": "8ad78950e3a408f4adbeb432541064156e8ea6c016eeb6d5f5d034fb1ae17187",
+  "static_check": "PASS: corrected fixture equals original fixture with exactly that one provider-mount replacement; all seven scenario bodies and assertions unchanged.",
+  "product_change": false,
+  "local_node_or_rust": "NOT_RUN",
+  "native_ui": "NOT_RUN"
+}

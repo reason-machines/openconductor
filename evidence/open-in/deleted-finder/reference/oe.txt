@@ -1,0 +1,1 @@
+async function oe(t,e={},s){return window.__TAURI_INTERNALS__.invoke(t,e,s)}

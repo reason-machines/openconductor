@@ -1,0 +1,1 @@
+function m$t(t){const e="[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d/#&.:=?%@~_]*)*)\\u0007?)|(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-nq-uy=><~]))",n="[\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F\\u007F]",i=new RegExp(e,"gu"),r=new RegExp(n,"gu");return t.replace(i,"").replace(r,"").trim()}

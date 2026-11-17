@@ -1,0 +1,1 @@
+Ac=async Gn=>{if(!mr){if(!Xt?.userVisiblePath){Xt&&er.error("No workspace path available",Xt.localId);return}eii(Gn).fireAndForget(),await SBt({appId:Gn,localWorkspaceId:Xt.localId,basePath:Xt.userVisiblePath,host:Xt.host,method:"click",routeLocation:Yt,localMirrorPath:Ei})}},t[174]=Xt,t[175]=mr,t[176]=Ei,t[177]=Yt,t[178]=Ac):Ac=t[178];const H9=Ac;

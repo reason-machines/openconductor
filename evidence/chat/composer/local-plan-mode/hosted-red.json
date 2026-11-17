@@ -1,0 +1,23 @@
+{
+  "owner": "Conductor Rebuild",
+  "pr": 1083,
+  "head": "678c434666f04bfd43c035f0b1a07f17da086542",
+  "run_id": 43088737298,
+  "job_id": 130759855596,
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43088737298/job/130759855596",
+  "result": "failure",
+  "decisive_failures": [
+    "local Claude Plan menu: local Claude must expose Plan mode",
+    "local Claude Plan slash: 'default' !== 'plan'",
+    "local Claude Plan shortcut: Plan shortcut must be registered",
+    "saved-mode exit: persisted Plan mode must survive remount",
+    "failed persistence case: expected Plan menu item absent",
+    "busy case: expected Plan menu item absent"
+  ],
+  "negative_controls": ["Reason does not claim a local Plan capability: passed", "Codex does not claim a local Plan capability: passed"],
+  "frontend_suite": {"passed": 3041, "failed": 6, "skipped": 0},
+  "production_changed_for_red": false,
+  "fixture_bytes_unchanged_for_candidate": true,
+  "local_execution": "NOT RUN",
+  "native_or_real_provider_behavior": "NOT RUN"
+}

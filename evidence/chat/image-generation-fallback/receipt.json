@@ -1,0 +1,318 @@
+{
+  "owner": "Conductor Rebuild / BE7",
+  "main": "021aeaa4027770258b4daae127bc829d1575d0ab",
+  "source_assets": {
+    "renderer": {
+      "path": ".rea-work/retained-reference/renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "size": 11600457
+    },
+    "index": {
+      "path": ".rea-work/retained-reference/index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "size": 3493297
+    }
+  },
+  "spans": [
+    {
+      "asset": "renderer",
+      "name": "Vpo",
+      "start_byte": 7868564,
+      "end_byte": 7871161,
+      "sha256": "6d911dd3b8b2545b1e6d92ba1a92ded17fd526ed610e3225ebe683613a698052",
+      "path": "reference/Vpo.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "Mu",
+      "start_byte": 7795403,
+      "end_byte": 7798463,
+      "sha256": "2a88a2516341f7a98563d2f4b2a602ac9c0acc584282cd01cf54a011e3e4231d",
+      "path": "reference/Mu.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "zpo",
+      "start_byte": 7868098,
+      "end_byte": 7868212,
+      "sha256": "7826ae5d33c1e134a23a63ce59d0baaaa4ae753c2f7a109bb9febe2db0d31bcc",
+      "path": "reference/zpo.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "yZe",
+      "start_byte": 7784153,
+      "end_byte": 7793330,
+      "sha256": "01dbd6e303744c4afe64f11cd62e68efccaa99474282581024941563fa676cc4",
+      "path": "reference/yZe.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "kind-registry",
+      "start_byte": 7587305,
+      "end_byte": 7588628,
+      "sha256": "82bf4797d8d524aad26778056a4701f782dd13d9238d46c756c192616dbb35fc",
+      "path": "reference/kind-registry.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "row-dispatch",
+      "start_byte": 7877182,
+      "end_byte": 7878325,
+      "sha256": "8615388276313440b915568298d71e793657568c52cb33cab6c55a0553d3b65a",
+      "path": "reference/row-dispatch.txt"
+    },
+    {
+      "asset": "index",
+      "name": "ole",
+      "start_byte": 2273193,
+      "end_byte": 2273314,
+      "sha256": "5e3f1e023c8544d37516cc55b8044e40aff945803ae2a56604178aaf747345fb",
+      "path": "reference/ole.txt"
+    },
+    {
+      "asset": "index",
+      "name": "image-registry",
+      "start_byte": 2272785,
+      "end_byte": 2273193,
+      "sha256": "c522187d85664c8e98c64f69dee4a4dab808a2d67438aeaee94f6aff3e842025",
+      "path": "reference/image-registry.txt"
+    }
+  ],
+  "current_main_files": {
+    "src/features/chat/ToolRows.tsx": {
+      "git_blob": "0772338ea078b080afbd552508a86bca8d1b3db2",
+      "sha256": "6aa1f21d4070ebcaf3f4cdbbbce1b9c61e3efe89351314297824eaa3251db4b3",
+      "size": 51107
+    },
+    "src/features/chat/conductorTools.ts": {
+      "git_blob": "1b899339620f130ecbb2f39a1131de8a4c04ea68",
+      "sha256": "df5a568960c64e53f4b1a40b9c634024b3fa78d34121cdced974a162742387b0",
+      "size": 29723
+    },
+    "src/features/chat/Transcript.tsx": {
+      "git_blob": "7db68a2b1786c20d0f6eb9d10860f2901cd3272c",
+      "sha256": "9eaed365c64969578273f4ab1f9af24ecb83f62eb32ed726a71ca35e4021d153",
+      "size": 21096
+    },
+    "src/features/chat/view.ts": {
+      "git_blob": "7cbdc5e96ce4c312e5cab71a1a47ee81be24ada1",
+      "sha256": "ad06d3dd52bd0b1a76bf9a02878ac6feb7079e88e9906350beb00b751da7d4db",
+      "size": 8612
+    }
+  },
+  "checks": [
+    {
+      "name": "renderer retained REA asset hash",
+      "passed": true
+    },
+    {
+      "name": "index retained REA asset hash",
+      "passed": true
+    },
+    {
+      "name": "Vpo exact byte slice",
+      "passed": true
+    },
+    {
+      "name": "Mu exact byte slice",
+      "passed": true
+    },
+    {
+      "name": "zpo exact byte slice",
+      "passed": true
+    },
+    {
+      "name": "yZe exact byte slice",
+      "passed": true
+    },
+    {
+      "name": "kind-registry exact byte slice",
+      "passed": true
+    },
+    {
+      "name": "row-dispatch exact byte slice",
+      "passed": true
+    },
+    {
+      "name": "ole exact byte slice",
+      "passed": true
+    },
+    {
+      "name": "image-registry exact byte slice",
+      "passed": true
+    },
+    {
+      "name": "kind ImageGeneration",
+      "passed": true
+    },
+    {
+      "name": "kind lookup",
+      "passed": true
+    },
+    {
+      "name": "row registry Vpo",
+      "passed": true
+    },
+    {
+      "name": "registry selection",
+      "passed": true
+    },
+    {
+      "name": "actual row result props",
+      "passed": true
+    },
+    {
+      "name": "plain result identity",
+      "passed": true
+    },
+    {
+      "name": "result trim",
+      "passed": true
+    },
+    {
+      "name": "path helper call",
+      "passed": true
+    },
+    {
+      "name": "collapsibility predicate",
+      "passed": true
+    },
+    {
+      "name": "fallback nonempty visibility",
+      "passed": true
+    },
+    {
+      "name": "fallback body",
+      "passed": true
+    },
+    {
+      "name": "shell predicate input",
+      "passed": true
+    },
+    {
+      "name": "shell persisted row id",
+      "passed": true
+    },
+    {
+      "name": "shell flag default",
+      "passed": true
+    },
+    {
+      "name": "shell pointer guard",
+      "passed": true
+    },
+    {
+      "name": "shell click guard",
+      "passed": true
+    },
+    {
+      "name": "shell icon swap guard",
+      "passed": true
+    },
+    {
+      "name": "shell body separate from collapse capability",
+      "passed": true
+    },
+    {
+      "name": "path relative resolution",
+      "passed": true
+    },
+    {
+      "name": "image extension predicate",
+      "passed": true
+    },
+    {
+      "name": "own image registry membership",
+      "passed": true
+    },
+    {
+      "name": "PNG registry entry",
+      "passed": true
+    },
+    {
+      "name": "TIFF registry entry",
+      "passed": true
+    },
+    {
+      "name": "renderer image predicate alias",
+      "passed": true
+    },
+    {
+      "name": "renderer index import identity",
+      "passed": true
+    },
+    {
+      "name": "index image predicate export",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/ToolRows.tsx snapshot Git byte readback",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/conductorTools.ts snapshot Git byte readback",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/Transcript.tsx snapshot Git byte readback",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/view.ts snapshot Git byte readback",
+      "passed": true
+    },
+    {
+      "name": "main ImageGeneration kind",
+      "passed": true
+    },
+    {
+      "name": "main plain result identity",
+      "passed": true
+    },
+    {
+      "name": "main image result trim",
+      "passed": true
+    },
+    {
+      "name": "main path nonempty body",
+      "passed": true
+    },
+    {
+      "name": "main all image rows open default",
+      "passed": true
+    },
+    {
+      "name": "main caller default-open projection",
+      "passed": true
+    },
+    {
+      "name": "main caller toggle projection",
+      "passed": true
+    },
+    {
+      "name": "main shell has-body predicate",
+      "passed": true
+    },
+    {
+      "name": "main shell click driven only by content",
+      "passed": true
+    },
+    {
+      "name": "main shell accessible toggle driven only by content",
+      "passed": true
+    },
+    {
+      "name": "main shell content follows open state",
+      "passed": true
+    },
+    {
+      "name": "main image branch lacks image type discrimination",
+      "passed": true
+    }
+  ],
+  "static_checks_passed": 52,
+  "runtime": "NOT_RUN",
+  "native": "NOT_RUN",
+  "qualification": "SOURCE_ONLY; ownership/execution not yet cleared; no product/test edits"
+}

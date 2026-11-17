@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import * as sectionShortcutOverrides from "../keybindings/overrides.ts";
+import * as sectionShortcutMatcher from "../keybindings/shortcut.ts";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { test } from "node:test";
@@ -22,8 +24,11 @@ function load(file: string): Record<string, unknown> {
     exports,
     require(name: string) {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
-      if (name === "./Dialogs") return { Modal: ({ children }: { children: ReactNode }) => children };
+      if (name === "./DialogFrame") return { DialogFrame: ({ children }: { children: ReactNode }) => children };
       if (name === "./sectionEmoji") return load("./sectionEmoji.ts");
+      if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }) };
+      if (name === "../keybindings/overrides") return sectionShortcutOverrides;
+      if (name === "../keybindings/shortcut") return sectionShortcutMatcher;
       throw new Error(`Unexpected section name input dependency: ${name}`);
     },
   });

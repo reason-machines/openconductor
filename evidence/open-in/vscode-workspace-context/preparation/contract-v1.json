@@ -1,0 +1,39 @@
+{
+  "unit": "EDITOR-WORKSPACE-CONTEXT-VSCODE-15",
+  "version": 1,
+  "state": "FROZEN_PREPARATION_ONLY",
+  "files": {
+    "cases.json": "df145ab890a3ae1b86d80843eff1933e1e62a8e9e4184a0cc99ff8a9d6b8a931",
+    "vscode_workspace_context_ipc.rs.txt": "a50de9936ac75e11a14e3b5474a6e8adf6819ab42c88231cf38d1321c18d9ad0",
+    "vscodeWorkspaceContext.test.ts.txt": "ec05234bd365d3ad296db4e6acc979079d58dc77a3eb9cbb16a7577e08925b29",
+    "registration.rs.txt": "4dcf130596b4fdc1ebb63eddb63deeb34b5aa54d13e7b4d9fa71b975c2542752"
+  },
+  "rust_expected_red": [
+    "workspace_file",
+    "literal_path",
+    "completed_nonzero_fallback",
+    "fallback_error"
+  ],
+  "rust_controls": [
+    "no_context",
+    "unrelated_app",
+    "directory",
+    "missing_target",
+    "relative_target",
+    "unknown_app"
+  ],
+  "frontend_expected_red": [
+    "workspace_file",
+    "literal_path"
+  ],
+  "frontend_controls": [
+    "unrelated_app"
+  ],
+  "destinations": {
+    "vscode_workspace_context_ipc.rs.txt": "src-tauri/src/open_in/vscode_workspace_context_ipc.rs",
+    "vscodeWorkspaceContext.test.ts.txt": "src/features/diff/vscodeWorkspaceContext.test.ts",
+    "cases.json": "evidence/open-in/vscode-workspace-context/cases.json"
+  },
+  "publication": "After actual #1100 main merge and fresh rebind; ordinary automatic hosted test-only baseline, no product before intended assertion RED",
+  "runtime": "NOT_RUN"
+}

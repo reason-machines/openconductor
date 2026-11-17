@@ -1,0 +1,205 @@
+{
+  "owner": "13576d11-76fb-4842-aa9b-c398f9ca26f3",
+  "leaf": "COMPOSER-SUGGESTION-MODIFIED-KEYS-135-01",
+  "baseline_main": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+  "runtime_release_message": "9e854823-825e-408d-b4c4-ef39bae9a3bd",
+  "runtime_release_time": "2026-11-12T15:36:43Z",
+  "ownjobs": [],
+  "original_fixture_preserved": true,
+  "original_fixture_sha256": "ac3f9b763e760005341e2b278763d62bf777b599f517e99ce58772cdfb6ddfa2",
+  "corrected_successor_sha256": "f5813de44aea1fbf56358415e754c7620ad908da00068491e7ed0f94eb6e72bf",
+  "assertions_and_36_case_declarations_changed": false,
+  "callback_repair": "Use a statement-bodied void callback. Array.push returned number1, which current Composer submit treats as a pending owner-managed result. This is a fixture contract repair, not an async race or product defect.",
+  "source_contract": "Current main Composer.tsx submit: const pending=onSubmit(...); if (pending) return; if (clearOnSubmit) setDraft(\"\"). Props require void|Promise<void>.",
+  "product_patch_scope": "Only four mention/slash navigation/acceptance predicates and stopPropagation for consumed keys. Preserve IME gate, no-menu plain queue guard, submit/newline, cancellation and AddMenu.",
+  "phases": {
+    "red": {
+      "phase": "RED",
+      "command": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--max-old-space-size=768",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/chat/composerSuggestionKeys.test.ts"
+      ],
+      "exit_code": 1,
+      "elapsed_seconds": 1.9936208220024128,
+      "head": "30342a5aa5b2d798b345e479c54c415c50f40473",
+      "baseline_main": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+      "fixture_sha256": "ac3f9b763e760005341e2b278763d62bf777b599f517e99ce58772cdfb6ddfa2",
+      "timing": "Python monotonic; /usr/bin/time previously observed absent; not a performance measurement",
+      "source_override": "unset"
+    },
+    "red-v2": {
+      "phase": "RED_V2_CALLBACK_CONTRACT_REPAIR",
+      "command": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--max-old-space-size=768",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/chat/composerSuggestionKeys.test.ts"
+      ],
+      "exit_code": 1,
+      "elapsed_seconds": 1.995962323009735,
+      "head": "30342a5aa5b2d798b345e479c54c415c50f40473",
+      "baseline_main": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+      "fixture_sha256": "f5813de44aea1fbf56358415e754c7620ad908da00068491e7ed0f94eb6e72bf",
+      "original_fixture_sha256": "ac3f9b763e760005341e2b278763d62bf777b599f517e99ce58772cdfb6ddfa2",
+      "repair": "Statement-bodied onSubmit callback returns void; all 36 case declarations and every assertion unchanged. Product source still unmodified."
+    },
+    "green": {
+      "phase": "green",
+      "command": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--max-old-space-size=768",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/chat/composerSuggestionKeys.test.ts"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.0450646660174243,
+      "head": "30342a5aa5b2d798b345e479c54c415c50f40473",
+      "baseline_main": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+      "fixture_sha256": "f5813de44aea1fbf56358415e754c7620ad908da00068491e7ed0f94eb6e72bf",
+      "product_source_sha256": "0664d45958836e58b36f847b6ba71cdeec37800a1f54a40d8287769c26fd9a2e",
+      "timing": "Python monotonic; not a performance measurement",
+      "source_override": "unset"
+    },
+    "adjacent": {
+      "phase": "adjacent",
+      "command": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--max-old-space-size=768",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/chat/composerQueueFocus.test.ts",
+        "src/features/chat/composerFirstVisualLine.test.ts",
+        "src/features/chat/composerSlashDirectory.test.ts",
+        "src/features/chat/composerMinimize.test.ts",
+        "src/features/chat/composerAsyncSubmit.test.ts",
+        "src/features/chat/composerCancelFocus.test.ts"
+      ],
+      "exit_code": 1,
+      "elapsed_seconds": 5.073470105009619,
+      "head": "30342a5aa5b2d798b345e479c54c415c50f40473",
+      "baseline_main": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+      "fixture_sha256": "f5813de44aea1fbf56358415e754c7620ad908da00068491e7ed0f94eb6e72bf",
+      "product_source_sha256": "0664d45958836e58b36f847b6ba71cdeec37800a1f54a40d8287769c26fd9a2e",
+      "timing": "Python monotonic; not a performance measurement",
+      "source_override": "unset"
+    },
+    "adjacent-v2": {
+      "phase": "adjacent_v2_valid_keyboard_events",
+      "command": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--max-old-space-size=768",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/chat/composerQueueFocus.test.ts",
+        "src/features/chat/composerFirstVisualLine.test.ts",
+        "src/features/chat/composerSlashDirectory.test.ts",
+        "src/features/chat/composerMinimize.test.ts",
+        "src/features/chat/composerAsyncSubmit.test.ts",
+        "src/features/chat/composerCancelFocus.test.ts",
+        "src/features/chat/composerSlashAtoms.test.ts",
+        "src/features/chat/composerSlashPrefix.test.ts"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 8.447897052014014,
+      "head": "30342a5aa5b2d798b345e479c54c415c50f40473",
+      "baseline_main": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+      "fixture_sha256": "f5813de44aea1fbf56358415e754c7620ad908da00068491e7ed0f94eb6e72bf",
+      "product_source_sha256": "0664d45958836e58b36f847b6ba71cdeec37800a1f54a40d8287769c26fd9a2e",
+      "timing": "Python monotonic; not a performance measurement",
+      "repairs": "Directory/atom fixtures use real cancelable bubbling Event with assertions for default prevention and propagation. Existing assertions retained."
+    }
+  },
+  "limits": [
+    "Retained Conductor 0.87.6 compiled-source spans, not fresh installed-app binding or live original-app observation.",
+    "Historical REA JavaScript worker heap/semantic parse failure retained; no new REA invocation or failure.",
+    "Synthetic Node keyboard events through actual Composer with mocked editor/menu/backend/preference boundaries.",
+    "No browser, native, Tiptap production dispatcher, ancestor listener, real IME, provider, local typecheck/build, install or package execution.",
+    "No distributed-package or native parity credit."
+  ],
+  "raw_logs": [
+    {
+      "path": "adjacent-v2.tap.gz",
+      "raw_bytes": 17901,
+      "raw_sha256": "e9088c8156f129c9a589b8a5d6b4fa914c70f155690cedf58f7de44c7fe14e21"
+    },
+    {
+      "path": "adjacent.tap.gz",
+      "raw_bytes": 18867,
+      "raw_sha256": "b2dc1a3f9f0827b387f8880436c2fd0a72d41e7a2553c186a287b079f26e9ebe"
+    },
+    {
+      "path": "green.tap.gz",
+      "raw_bytes": 8120,
+      "raw_sha256": "29e555e48e138aebc324196fc2cd013a172ebe5a37b6c74760575feb8466b847"
+    },
+    {
+      "path": "red-v2.tap.gz",
+      "raw_bytes": 24945,
+      "raw_sha256": "a00eb388a79dd52a5e2732c662af9cb0c2b68f84628bec1bf61a5d4dc69a0301"
+    },
+    {
+      "path": "red.tap.gz",
+      "raw_bytes": 25699,
+      "raw_sha256": "0a032e452ae78b3659128686a2aabd255e20cef8cf320b8e70291bd5b3b6fa82"
+    }
+  ],
+  "outcomes": {
+    "original_red": {
+      "pass": 11,
+      "fail": 25,
+      "fixture_contract_failures": 1
+    },
+    "corrected_red": {
+      "pass": 12,
+      "fail": 24
+    },
+    "identical_green": {
+      "pass": 36,
+      "fail": 0
+    },
+    "first_adjacent": {
+      "pass": 58,
+      "fail": 4,
+      "incomplete_event_double_failures": 4
+    },
+    "final_adjacent": {
+      "pass": 76,
+      "fail": 0
+    }
+  }
+}

@@ -1,0 +1,5 @@
+0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a  package-lock.json
+c53c2ae461901fe40c787a069dafb8cb8faef2eac0b133ce8f61d204242f841a  src/features/updates/restartWhenIdle.ts
+b81486849e6da03bfd7cf4441d1f3177ca5fa49ea581cd9763fce0e9048f961d  evidence/settings/restart-when-idle/safetyIntegration.selector-loader.test.cjs
+ce8740744706acc9d70e1fb4f1bc6702561cc45f30b8537f611e75f871031bbb  evidence/settings/restart-when-idle/safetyIntegration.test.cjs
+09b3e7cbf0f711ba09982e92f30df37bc13a3929d7b3345a1a1661b232aaa632  evidence/settings/restart-when-idle/fail-closed-candidate.patch

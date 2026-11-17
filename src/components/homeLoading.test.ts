@@ -38,11 +38,12 @@ async function fixture(options: { desktop: boolean; pending?: boolean; populated
   const window = Object.assign(new EventTarget(), { location: { pathname: "/all-workspaces", search: "" }, localStorage: storage });
   const cache = new Map<string, Record<string, unknown>>();
   const actual = new Set([
-    "src/App.tsx", "src/components/AllWorkspaces.tsx", "src/components/RowStatusIcon.tsx",
+    "src/App.tsx", "src/components/AllWorkspaces.tsx", "src/components/HomeWorkspaceScreen.tsx", "src/components/RowStatusIcon.tsx",
     "src/state/store.ts", "src/state/persisted.ts", "src/state/selectors.ts", "src/state/navigationSections.ts",
     "src/state/workspaceStatus.ts", "src/home/sidebarGroupBy.ts", "src/state/openChat.ts",
     "src/state/workspaceSessions.ts", "src/state/rowStatus.ts", "src/state/chatUnread.ts", "src/home/allWorkspaces.ts",
     "src/components/sidebarLabel.ts", "src/state/workspaceNumber.ts",
+    "src/lib/persistence/producer.ts", "src/lib/persistence/restartPersistence.ts", "src/lib/persistence/owner.ts",
   ]);
   const common: Record<string, unknown> = {
     inTauri: () => options.desktop,
@@ -58,6 +59,7 @@ async function fixture(options: { desktop: boolean; pending?: boolean; populated
     useSidebarVisiblePref: inert,
     useSidebarWidth: () => ({ style: {}, resizer: null }),
     useSetupWatch: inert,
+    useUpdates: inert,
     useInitIssues: inert,
     useArchiveOnMergeWatcher: inert,
     useKeybindings: inert,

@@ -1,0 +1,23 @@
+{
+  "owner": "Conductor Rebuild",
+  "pr": 1095,
+  "head": "db0f76cf5b7497749e0b468b2f81d0718778c75a",
+  "job": "https://github.com/reason-machines/openconductor/actions/runs/43112753173/job/130832796051",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "stage": "REGRESSION_ONLY_PRODUCT_UNCHANGED",
+  "fixture_sha256": "64d426e2f94d8fc9541b43b8c45dffe9b47b7e71661e7b728bf9fe434cc35318",
+  "qualification": {
+    "intended_failures": 2,
+    "passing_controls": 4,
+    "statuses": [
+      "not ok 2583 - exited login shells do not dispatch further input",
+      "not ok 2584 - a completed login shell stops dispatching input after its later exit",
+      "ok 2585 - running login shells still dispatch input to their own PTY",
+      "ok 2586 - completed but live login shells remain writable",
+      "ok 2587 - a foreign PTY exit cannot disable this login shell's input",
+      "ok 2588 - dismissed logins ignore stale matching exit callbacks"
+    ]
+  },
+  "source_main": "87e6da16d981de85ee26c16fac14c00a45c62025",
+  "native_provider_realIPC": "NOT_RUN"
+}

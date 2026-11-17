@@ -1,0 +1,117 @@
+2026-11-12T02:29:45.5559223Z # Subtest: Sidebar Archive busy visibility: starting hides Archive after an older stopped script
+2026-11-12T02:29:45.5589336Z not ok 279 - Sidebar Archive busy visibility: starting hides Archive after an older stopped script
+2026-11-12T02:29:45.5590419Z   ---
+2026-11-12T02:29:45.5590931Z   duration_ms: 126.370314
+2026-11-12T02:29:45.5591514Z   type: 'test'
+2026-11-12T02:29:45.5593124Z   location: '/home/runner/work/openconductor/openconductor/src/components/sidebarArchiveBusyVisibility.test.ts:149:3'
+2026-11-12T02:29:45.5594354Z   failureType: 'testCodeFailure'
+2026-11-12T02:29:45.5595006Z   error: |-
+2026-11-12T02:29:45.5595616Z     starting hides Archive on selected row
+2026-11-12T02:29:45.5596279Z
+2026-11-12T02:29:45.5596775Z     1 !== 0
+2026-11-12T02:29:45.5597242Z
+2026-11-12T02:29:45.5597960Z   code: 'ERR_ASSERTION'
+2026-11-12T02:29:45.5598629Z   name: 'AssertionError'
+2026-11-12T02:29:45.5599245Z   expected: 0
+2026-11-12T02:29:45.5599806Z   actual: 1
+2026-11-12T02:29:45.5600391Z   operator: 'strictEqual'
+2026-11-12T02:29:45.5601010Z   stack: |-
+2026-11-12T02:29:45.5602438Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sidebarArchiveBusyVisibility.test.ts:152:20)
+2026-11-12T02:29:45.5604033Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T02:29:45.5605169Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T02:29:45.5609542Z   ...
+2026-11-12T02:29:45.5610838Z # Subtest: Sidebar Archive busy visibility: waiting_for_setup hides Archive after an older stopped script
+2026-11-12T02:29:45.5612593Z not ok 280 - Sidebar Archive busy visibility: waiting_for_setup hides Archive after an older stopped script
+2026-11-12T02:29:45.5613725Z   ---
+2026-11-12T02:29:45.5614320Z   duration_ms: 70.078683
+2026-11-12T02:29:45.5614956Z   type: 'test'
+2026-11-12T02:29:45.5616213Z   location: '/home/runner/work/openconductor/openconductor/src/components/sidebarArchiveBusyVisibility.test.ts:149:3'
+2026-11-12T02:29:45.5617552Z   failureType: 'testCodeFailure'
+2026-11-12T02:29:45.5618448Z   error: |-
+2026-11-12T02:29:45.5619150Z     waiting_for_setup hides Archive on selected row
+2026-11-12T02:29:45.5619882Z
+2026-11-12T02:29:45.5620371Z     1 !== 0
+2026-11-12T02:29:45.5620870Z
+2026-11-12T02:29:45.5621369Z   code: 'ERR_ASSERTION'
+2026-11-12T02:29:45.5621972Z   name: 'AssertionError'
+2026-11-12T02:29:45.5622559Z   expected: 0
+2026-11-12T02:29:45.5623066Z   actual: 1
+2026-11-12T02:29:45.5623591Z   operator: 'strictEqual'
+2026-11-12T02:29:45.5624171Z   stack: |-
+2026-11-12T02:29:45.5625561Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sidebarArchiveBusyVisibility.test.ts:152:20)
+2026-11-12T02:29:45.5627332Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T02:29:45.5628597Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T02:29:45.5629460Z   ...
+2026-11-12T02:29:45.6107367Z # Subtest: Sidebar Archive busy visibility: running hides Archive after an older stopped script
+2026-11-12T02:29:45.6114212Z not ok 281 - Sidebar Archive busy visibility: running hides Archive after an older stopped script
+2026-11-12T02:29:45.6115447Z   ---
+2026-11-12T02:29:45.6116044Z   duration_ms: 90.734889
+2026-11-12T02:29:45.6116683Z   type: 'test'
+2026-11-12T02:29:45.6118106Z   location: '/home/runner/work/openconductor/openconductor/src/components/sidebarArchiveBusyVisibility.test.ts:149:3'
+2026-11-12T02:29:45.6119525Z   failureType: 'testCodeFailure'
+2026-11-12T02:29:45.6120223Z   error: |-
+2026-11-12T02:29:45.6120918Z     running hides Archive on selected row
+2026-11-12T02:29:45.6121661Z
+2026-11-12T02:29:45.6122233Z     1 !== 0
+2026-11-12T02:29:45.6122822Z
+2026-11-12T02:29:45.6123395Z   code: 'ERR_ASSERTION'
+2026-11-12T02:29:45.6124089Z   name: 'AssertionError'
+2026-11-12T02:29:45.6124791Z   expected: 0
+2026-11-12T02:29:45.6125414Z   actual: 1
+2026-11-12T02:29:45.6126044Z   operator: 'strictEqual'
+2026-11-12T02:29:45.6126723Z   stack: |-
+2026-11-12T02:29:45.6128382Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sidebarArchiveBusyVisibility.test.ts:152:20)
+2026-11-12T02:29:45.6130034Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T02:29:45.6131228Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T02:29:45.6132742Z   ...
+2026-11-12T02:29:45.6965158Z # Subtest: Sidebar Archive busy visibility: stopping hides Archive after an older stopped script
+2026-11-12T02:29:45.6966947Z not ok 282 - Sidebar Archive busy visibility: stopping hides Archive after an older stopped script
+2026-11-12T02:29:45.6998412Z   ---
+2026-11-12T02:29:45.7008793Z   duration_ms: 69.016214
+2026-11-12T02:29:45.7009246Z   type: 'test'
+2026-11-12T02:29:45.7010074Z   location: '/home/runner/work/openconductor/openconductor/src/components/sidebarArchiveBusyVisibility.test.ts:149:3'
+2026-11-12T02:29:45.7010698Z   failureType: 'testCodeFailure'
+2026-11-12T02:29:45.7010967Z   error: |-
+2026-11-12T02:29:45.7011215Z     stopping hides Archive on selected row
+2026-11-12T02:29:45.7011490Z
+2026-11-12T02:29:45.7011674Z     1 !== 0
+2026-11-12T02:29:45.7011858Z
+2026-11-12T02:29:45.7012046Z   code: 'ERR_ASSERTION'
+2026-11-12T02:29:45.7012283Z   name: 'AssertionError'
+2026-11-12T02:29:45.7012513Z   expected: 0
+2026-11-12T02:29:45.7012720Z   actual: 1
+2026-11-12T02:29:45.7012921Z   operator: 'strictEqual'
+2026-11-12T02:29:45.7013143Z   stack: |-
+2026-11-12T02:29:45.7013790Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sidebarArchiveBusyVisibility.test.ts:152:20)
+2026-11-12T02:29:45.7014535Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T02:29:45.7015019Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T02:29:45.7015426Z   ...
+2026-11-12T02:29:45.8225322Z # Subtest: Sidebar Archive busy visibility: another workspace's busy snapshot and events leave Archive available
+2026-11-12T02:29:45.8254417Z ok 283 - Sidebar Archive busy visibility: another workspace's busy snapshot and events leave Archive available
+2026-11-12T02:29:45.8278212Z   ---
+2026-11-12T02:29:45.8289531Z   duration_ms: 146.408282
+2026-11-12T02:29:45.8289970Z   type: 'test'
+2026-11-12T02:29:45.8290307Z   ...
+2026-11-12T02:29:45.8291214Z # Subtest: Sidebar Archive busy visibility: run start and finish hide then restore Archive on the same row
+2026-11-12T02:29:45.8292727Z not ok 284 - Sidebar Archive busy visibility: run start and finish hide then restore Archive on the same row
+2026-11-12T02:29:45.8293555Z   ---
+2026-11-12T02:29:45.8293910Z   duration_ms: 64.752582
+2026-11-12T02:29:45.8294292Z   type: 'test'
+2026-11-12T02:29:45.8295717Z   location: '/home/runner/work/openconductor/openconductor/src/components/sidebarArchiveBusyVisibility.test.ts:173:1'
+2026-11-12T02:29:45.8296815Z   failureType: 'testCodeFailure'
+2026-11-12T02:29:45.8297277Z   error: |-
+2026-11-12T02:29:45.8297726Z     runStarted hides Archive on selected row
+2026-11-12T02:29:45.8298436Z
+2026-11-12T02:29:45.8298755Z     1 !== 0
+2026-11-12T02:29:45.8299086Z
+2026-11-12T02:29:45.8299413Z   code: 'ERR_ASSERTION'
+2026-11-12T02:29:45.8299823Z   name: 'AssertionError'
+2026-11-12T02:29:45.8300228Z   expected: 0
+2026-11-12T02:29:45.8300592Z   actual: 1
+2026-11-12T02:29:45.8300998Z   operator: 'strictEqual'
+2026-11-12T02:29:45.8301432Z   stack: |-
+2026-11-12T02:29:45.8302609Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sidebarArchiveBusyVisibility.test.ts:180:14)
+2026-11-12T02:29:45.8303940Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T02:29:45.8304833Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T02:29:45.8305549Z   ...
+2026-11-12T02:29:45.8922939Z

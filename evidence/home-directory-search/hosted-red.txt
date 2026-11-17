@@ -1,0 +1,153 @@
+2026-11-12T15:14:36.8340451Z   ...
+2026-11-12T15:14:36.8341297Z # Subtest: archived rows of closed repositories, or already in the state, are not listed twice
+2026-11-12T15:14:36.8342433Z ok 2585 - archived rows of closed repositories, or already in the state, are not listed twice
+2026-11-12T15:14:36.8343249Z   ---
+2026-11-12T15:14:36.8343669Z   duration_ms: 0.198143
+2026-11-12T15:14:36.8344078Z   type: 'test'
+2026-11-12T15:14:36.8344442Z   ...
+2026-11-12T15:14:36.8345363Z # Subtest: a renamed archived workspace is found by its preserved directory without changing its displayed title
+2026-11-12T15:14:36.8346649Z not ok 2586 - a renamed archived workspace is found by its preserved directory without changing its displayed title
+2026-11-12T15:14:36.8347430Z   ---
+2026-11-12T15:14:36.8348071Z   duration_ms: 2.345137
+2026-11-12T15:14:36.8348537Z   type: 'test'
+2026-11-12T15:14:36.8349409Z   location: '/home/runner/work/openconductor/openconductor/src/home/allWorkspacesDirectorySearch.test.ts:21:1'
+2026-11-12T15:14:36.8350330Z   failureType: 'testCodeFailure'
+2026-11-12T15:14:36.8350834Z   error: |-
+2026-11-12T15:14:36.8351473Z     Expected values to be strictly equal:
+2026-11-12T15:14:36.8351976Z
+2026-11-12T15:14:36.8352365Z     0 !== 1
+2026-11-12T15:14:36.8352741Z
+2026-11-12T15:14:36.8353112Z   code: 'ERR_ASSERTION'
+2026-11-12T15:14:36.8353570Z   name: 'AssertionError'
+2026-11-12T15:14:36.8354028Z   expected: 1
+2026-11-12T15:14:36.8354422Z   actual: 0
+2026-11-12T15:14:36.8354834Z   operator: 'strictEqual'
+2026-11-12T15:14:36.8355269Z   stack: |-
+2026-11-12T15:14:36.8356226Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/home/allWorkspacesDirectorySearch.test.ts:24:10)
+2026-11-12T15:14:36.8358642Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-12T15:14:36.8359313Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-12T15:14:36.8359972Z     Test.start (node:internal/test_runner/test:944:17)
+2026-11-12T15:14:36.8360763Z     startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+2026-11-12T15:14:36.8361743Z   ...
+2026-11-12T15:14:36.8362427Z # Subtest: a renamed active workspace is found by its preserved directory
+2026-11-12T15:14:36.8363353Z not ok 2587 - a renamed active workspace is found by its preserved directory
+2026-11-12T15:14:36.8364041Z   ---
+2026-11-12T15:14:36.8364489Z   duration_ms: 1.259071
+2026-11-12T15:14:36.8364966Z   type: 'test'
+2026-11-12T15:14:36.8366054Z   location: '/home/runner/work/openconductor/openconductor/src/home/allWorkspacesDirectorySearch.test.ts:34:1'
+2026-11-12T15:14:36.8367000Z   failureType: 'testCodeFailure'
+2026-11-12T15:14:36.8367478Z   error: |-
+2026-11-12T15:14:36.8367956Z     Expected values to be strictly deep-equal:
+2026-11-12T15:14:36.8368531Z     + actual - expected
+2026-11-12T15:14:36.8368997Z
+2026-11-12T15:14:36.8369395Z     + []
+2026-11-12T15:14:36.8369806Z     - [
+2026-11-12T15:14:36.8370203Z     -   [
+2026-11-12T15:14:36.8370609Z     -     'renamed',
+2026-11-12T15:14:36.8371259Z     -     'Named'
+2026-11-12T15:14:36.8371686Z     -   ]
+2026-11-12T15:14:36.8372084Z     - ]
+2026-11-12T15:14:36.8372483Z
+2026-11-12T15:14:36.8372878Z   code: 'ERR_ASSERTION'
+2026-11-12T15:14:36.8373341Z   name: 'AssertionError'
+2026-11-12T15:14:36.8373804Z   expected:
+2026-11-12T15:14:36.8374211Z     0:
+2026-11-12T15:14:36.8374619Z       0: 'renamed'
+2026-11-12T15:14:36.8375056Z       1: 'Named'
+2026-11-12T15:14:36.8375469Z   actual:
+2026-11-12T15:14:36.8375902Z   operator: 'deepStrictEqual'
+2026-11-12T15:14:36.8376413Z   stack: |-
+2026-11-12T15:14:36.8377426Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/home/allWorkspacesDirectorySearch.test.ts:37:10)
+2026-11-12T15:14:36.8378561Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-12T15:14:36.8379275Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-12T15:14:36.8380032Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-12T15:14:36.8380860Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-12T15:14:36.8381689Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-12T15:14:36.8382503Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-12T15:14:36.8383291Z   ...
+2026-11-12T15:14:36.8383961Z # Subtest: directory matching remains case insensitive and trims the query
+2026-11-12T15:14:36.8385153Z not ok 2588 - directory matching remains case insensitive and trims the query
+2026-11-12T15:14:36.8385906Z   ---
+2026-11-12T15:14:36.8386309Z   duration_ms: 0.428344
+2026-11-12T15:14:36.8386746Z   type: 'test'
+2026-11-12T15:14:36.8387622Z   location: '/home/runner/work/openconductor/openconductor/src/home/allWorkspacesDirectorySearch.test.ts:41:1'
+2026-11-12T15:14:36.8388553Z   failureType: 'testCodeFailure'
+2026-11-12T15:14:36.8389328Z   error: |-
+2026-11-12T15:14:36.8389806Z     Expected values to be strictly deep-equal:
+2026-11-12T15:14:36.8390345Z     + actual - expected
+2026-11-12T15:14:36.8390776Z
+2026-11-12T15:14:36.8391303Z     + []
+2026-11-12T15:14:36.8391679Z     - [
+2026-11-12T15:14:36.8392077Z     -   'renamed'
+2026-11-12T15:14:36.8392470Z     - ]
+2026-11-12T15:14:36.8392843Z
+2026-11-12T15:14:36.8393224Z   code: 'ERR_ASSERTION'
+2026-11-12T15:14:36.8393670Z   name: 'AssertionError'
+2026-11-12T15:14:36.8394117Z   expected:
+2026-11-12T15:14:36.8394518Z     0: 'renamed'
+2026-11-12T15:14:36.8394927Z   actual:
+2026-11-12T15:14:36.8395341Z   operator: 'deepStrictEqual'
+2026-11-12T15:14:36.8395798Z   stack: |-
+2026-11-12T15:14:36.8396798Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/home/allWorkspacesDirectorySearch.test.ts:42:10)
+2026-11-12T15:14:36.8397868Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-12T15:14:36.8398517Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-12T15:14:36.8399277Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-12T15:14:36.8400065Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-12T15:14:36.8400732Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-12T15:14:36.8401695Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T15:14:36.8402364Z   ...
+2026-11-12T15:14:36.8402941Z # Subtest: directory and repository words can match together
+2026-11-12T15:14:36.8403719Z not ok 2589 - directory and repository words can match together
+2026-11-12T15:14:36.8404303Z   ---
+2026-11-12T15:14:36.8411567Z   duration_ms: 0.305862
+2026-11-12T15:14:36.8412058Z   type: 'test'
+2026-11-12T15:14:36.8412905Z   location: '/home/runner/work/openconductor/openconductor/src/home/allWorkspacesDirectorySearch.test.ts:45:1'
+2026-11-12T15:14:36.8413818Z   failureType: 'testCodeFailure'
+2026-11-12T15:14:36.8414284Z   error: |-
+2026-11-12T15:14:36.8414758Z     Expected values to be strictly deep-equal:
+2026-11-12T15:14:36.8415282Z     + actual - expected
+2026-11-12T15:14:36.8415711Z
+2026-11-12T15:14:36.8416084Z     + []
+2026-11-12T15:14:36.8416457Z     - [
+2026-11-12T15:14:36.8416831Z     -   'renamed'
+2026-11-12T15:14:36.8417229Z     - ]
+2026-11-12T15:14:36.8417590Z
+2026-11-12T15:14:36.8417966Z   code: 'ERR_ASSERTION'
+2026-11-12T15:14:36.8418409Z   name: 'AssertionError'
+2026-11-12T15:14:36.8418853Z   expected:
+2026-11-12T15:14:36.8419246Z     0: 'renamed'
+2026-11-12T15:14:36.8419643Z   actual:
+2026-11-12T15:14:36.8420067Z   operator: 'deepStrictEqual'
+2026-11-12T15:14:36.8420526Z   stack: |-
+2026-11-12T15:14:36.8421639Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/home/allWorkspacesDirectorySearch.test.ts:47:10)
+2026-11-12T15:14:36.8422721Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-12T15:14:36.8423428Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-12T15:14:36.8424208Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-12T15:14:36.8424985Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-12T15:14:36.8425637Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-12T15:14:36.8426480Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T15:14:36.8427166Z   ...
+2026-11-12T15:14:36.8427869Z # Subtest: control: stored display-name and branch queries remain searchable
+2026-11-12T15:14:36.8428872Z ok 2590 - control: stored display-name and branch queries remain searchable
+2026-11-12T15:14:36.8429576Z   ---
+2026-11-12T15:14:36.8430019Z   duration_ms: 0.941022
+2026-11-12T15:14:36.8430657Z   type: 'test'
+2026-11-12T15:14:36.8431439Z   ...
+2026-11-12T15:14:36.8432125Z # Subtest: control: an unmatched word still excludes the row
+2026-11-12T15:14:36.8432935Z ok 2591 - control: an unmatched word still excludes the row
+2026-11-12T15:14:36.8433557Z   ---
+2026-11-12T15:14:36.8433996Z   duration_ms: 0.260896
+2026-11-12T15:14:36.8434729Z   type: 'test'
+2026-11-12T15:14:36.8435163Z   ...
+2026-11-12T15:14:36.8435950Z # Subtest: control: matching a directory does not bypass archive or project filters
+2026-11-12T15:14:36.8437052Z ok 2592 - control: matching a directory does not bypass archive or project filters
+2026-11-12T15:14:36.8437775Z   ---
+2026-11-12T15:14:36.8438209Z   duration_ms: 0.318962
+2026-11-12T15:14:36.8438687Z   type: 'test'
+2026-11-12T15:14:36.8439080Z   ...
+2026-11-12T15:14:36.8439797Z # Subtest: control: legacy workspaces without a separate directory retain name search
+2026-11-12T15:14:36.8440879Z ok 2593 - control: legacy workspaces without a separate directory retain name search
+2026-11-12T15:14:36.8441687Z   ---
+2026-11-12T15:14:36.8442073Z   duration_ms: 0.36478
+2026-11-12T15:14:36.8442498Z   type: 'test'
+2026-11-12T15:14:36.8442901Z   ...

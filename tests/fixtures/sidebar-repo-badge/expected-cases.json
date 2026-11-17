@@ -1,0 +1,61 @@
+{
+  "status": "Frozen source-derived contract only; no component test written or executed.",
+  "cases": [
+    {
+      "id": "folded-one-ordinary-one-pinned",
+      "referenceBadge": 1,
+      "currentBadge": 2,
+      "pendingRows": 0,
+      "normalRowsRevealed": 0
+    },
+    {
+      "id": "folded-only-pinned",
+      "referenceBadge": null,
+      "currentBadge": 1,
+      "pendingRows": 0,
+      "normalRowsRevealed": 0
+    },
+    {
+      "id": "folded-one-ordinary-one-sectioned",
+      "referenceBadge": 1,
+      "currentBadge": 2,
+      "pendingRows": 0,
+      "normalRowsRevealed": 0
+    },
+    {
+      "id": "folded-only-sectioned",
+      "referenceBadge": null,
+      "currentBadge": 1,
+      "pendingRows": 0,
+      "normalRowsRevealed": 0
+    },
+    {
+      "id": "folded-two-ordinary-control",
+      "referenceBadge": 2,
+      "currentBadge": 2,
+      "pendingRows": 0,
+      "normalRowsRevealed": 0
+    },
+    {
+      "id": "folded-empty-control",
+      "referenceBadge": null,
+      "currentBadge": null,
+      "pendingRows": 0,
+      "normalRowsRevealed": 0
+    },
+    {
+      "id": "expanded-mixed-control",
+      "referenceBadge": null,
+      "currentBadge": null,
+      "pendingRows": 0,
+      "normalRowsRevealed": 1
+    },
+    {
+      "id": "folded-mixed-with-pending",
+      "referenceBadge": 1,
+      "currentBadge": 2,
+      "pendingRows": 1,
+      "normalRowsRevealed": 0
+    }
+  ]
+}

@@ -2,12 +2,12 @@
 // Conductor does (evidence/chat/README.md, `_jt` / `Ntt` / `mjt` / `yjt` in its
 // index chunk):
 //
-// - The turn's final text (its last non-empty text part) is a "preview" item:
-//   it always shows and is never collapsed.
+// - Plan/question messages are protected previews and always stay inline.
+//   The final text-bearing message is a preview unless a later request supersedes it.
 // - The other items are batched between previews. A batch from 3 or more
 //   visible messages becomes one summary row; shorter batches stay as they are.
-// - A summary counts tool calls and other messages (text or thinking with
-//   content); its label leaves out zero counts.
+// - A summary counts tool calls and distinct tool-free messages (text or
+//   thinking with content); its label leaves out zero counts.
 // - Nothing collapses while the turn runs, or when "Don't collapse tool calls"
 //   is on. Otherwise a summary is closed until the user opens it.
 // Pure: no React, so `toolGroups.test.ts` covers it.
@@ -33,7 +33,7 @@ export interface KeyedPart {
   part: PartView;
 }
 
-/** `preview`: the turn's final text, which Conductor draws in full colour; other text is muted. */
+/** `preview`: protected plan/question messages or the final text-bearing message, drawn in full colour. */
 export type GroupedPart = ({ kind: "part"; preview?: boolean } & KeyedPart) | { kind: "summary"; summary: ToolSummary; parts: KeyedPart[] };
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
@@ -47,28 +47,32 @@ export function summaryLabel(s: Pick<ToolSummary, "toolCallsCount" | "otherMessa
 }
 
 function visible(part: PartView): boolean {
-  return part.kind === "tool" || part.text.trim().length > 0;
+  return part.kind === "tool" ? !part.hidden : part.text.trim().length > 0;
 }
 
-/** Index of the turn's final text part, or -1. */
-function previewIndex(parts: KeyedPart[]): number {
+/** Final text-bearing message, unless a later protected message supersedes it. */
+function previewMessageKey(parts: KeyedPart[], protectedMessages: Set<string>): string | undefined {
   for (let i = parts.length - 1; i >= 0; i--) {
-    const p = parts[i]!.part;
-    if (p.kind === "text" && p.text.trim()) return i;
+    const { part, messageKey } = parts[i]!;
+    if (protectedMessages.has(messageKey)) return undefined;
+    if (part.kind === "text" && part.text.trim()) return messageKey;
   }
-  return -1;
+  return undefined;
 }
 
 function summarize(id: string, batch: KeyedPart[]): ToolSummary | undefined {
   let toolCallsCount = 0;
-  let otherMessagesCount = 0;
+  const otherMessages = new Set(batch.map((p) => p.messageKey));
   const toolNames: string[] = [];
-  for (const { part: p } of batch) {
+  for (const { part: p, messageKey } of batch) {
     if (p.kind === "tool") {
       toolCallsCount++;
+      // Text/thinking alongside a tool does not make a second message.
+      otherMessages.delete(messageKey);
       if (!toolNames.includes(p.call.name)) toolNames.push(p.call.name);
-    } else otherMessagesCount++;
+    }
   }
+  const otherMessagesCount = otherMessages.size;
   if (toolCallsCount === 0 && otherMessagesCount === 0) return undefined;
   return { id, toolCallsCount, otherMessagesCount, toolNames };
 }
@@ -79,8 +83,12 @@ function summarize(id: string, batch: KeyedPart[]): ToolSummary | undefined {
  * makes summary ids stable per turn.
  */
 export function groupParts(parts: KeyedPart[], keyPrefix: string, hasFinalText = true): GroupedPart[] {
-  const items = parts.filter((p) => visible(p.part));
-  const preview = hasFinalText ? previewIndex(items) : -1;
+  const visibleMessages = new Set(parts.filter((p) => visible(p.part)).map((p) => p.messageKey));
+  const items = parts.filter((p) => visible(p.part) || (p.part.kind === "tool" && p.part.hidden && visibleMessages.has(p.messageKey)));
+  const protectedMessages = new Set(items
+    .filter(({ part }) => part.kind === "tool" && (part.call.name === "ExitPlanMode" || part.call.name === "AskUserQuestion"))
+    .map(({ messageKey }) => messageKey));
+  const preview = hasFinalText ? previewMessageKey(items, protectedMessages) : undefined;
   const out: GroupedPart[] = [];
   let batch: KeyedPart[] = [];
   let batchStart = 0;
@@ -88,14 +96,15 @@ export function groupParts(parts: KeyedPart[], keyPrefix: string, hasFinalText =
     if (batch.length === 0) return;
     const messageCount = new Set(batch.map((p) => p.messageKey)).size;
     const summary = messageCount >= MIN_COLLAPSED_ITEMS ? summarize(`${keyPrefix}:collapse-${batchStart}`, batch) : undefined;
-    if (summary) out.push({ kind: "summary", summary, parts: batch });
-    else for (const p of batch) out.push({ kind: "part", ...p });
+    const displayed = batch.filter((p) => visible(p.part));
+    if (summary) out.push({ kind: "summary", summary, parts: displayed });
+    else for (const p of displayed) out.push({ kind: "part", ...p });
     batch = [];
   };
   items.forEach((part, i) => {
-    if (i === preview) {
+    if (part.messageKey === preview || protectedMessages.has(part.messageKey)) {
       flush();
-      out.push({ kind: "part", ...part, preview: true });
+      if (visible(part.part)) out.push({ kind: "part", ...part, preview: true });
       return;
     }
     if (batch.length === 0) batchStart = i;

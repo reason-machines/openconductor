@@ -1,0 +1,18 @@
+{
+  "bootstrap": "new exact-pin bootstrap; scripts disabled; one install",
+  "pins": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-test-renderer": "18.3.1",
+    "typescript": "5.9.3",
+    "jsdom": "26.1.0",
+    "@testing-library/user-event": "14.6.1",
+    "@testing-library/dom": "10.4.1"
+  },
+  "lock_sha256": "33bfaf38a46cedeb4c28f81d702e0a8c44416e3dec55583b9568d8c4a88569db",
+  "root_package_unchanged": true,
+  "root_lock_unchanged": true,
+  "baseline_product_unchanged": true,
+  "fixture_sha256": "1b6157500cf020ede46da5477325774f099ce0a47dff52c44560c1be36f4c53c",
+  "metadata_capture_note": "Initial metadata-only Python quoting failed before RED. RED ran exactly once; this corrected read-only metadata capture ran after RED and before any product edit."
+}

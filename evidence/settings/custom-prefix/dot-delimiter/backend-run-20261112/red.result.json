@@ -1,0 +1,13 @@
+{
+  "phase": "red",
+  "command": "CARGO_BUILD_JOBS=1 CARGO_PROFILE_DEV_DEBUG=0 CARGO_PROFILE_TEST_DEBUG=0 CARGO_TARGET_DIR=e2e-artifacts/dot-prefix-c18/rust-target nice -n 19 timeout --kill-after=5s 120s cargo test --locked --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml dot_prefix_ -- --nocapture",
+  "started_at_utc": "2026-11-12T11:49:40.523990+00:00",
+  "ended_at_utc": "2026-11-12T11:49:55.689844+00:00",
+  "elapsed_seconds": 15.166,
+  "exit_code": 101,
+  "timeout": false,
+  "log_sha256": "12de49b3e8f9348b2cafd4592616d7dcf768da6287f739a73bb73e14268e9e80",
+  "lock_sha256": "ae1cc2d76efd6ed9867bce919be1ff06d20efff0ac88ac2ba7869df9153ed71b",
+  "target_bytes": 97617627,
+  "home_free_bytes": 32737140736
+}

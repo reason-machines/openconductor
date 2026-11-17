@@ -1,0 +1,5 @@
+{
+  "own_jobs": [],
+  "runtime_released": true,
+  "reason": "Owner10 passed; safety baseline has 13 intended predicate assertion failures plus one independent fixture TypeError; no candidate execution or automatic retry."
+}

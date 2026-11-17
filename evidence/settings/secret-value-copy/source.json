@@ -1,0 +1,236 @@
+{
+  "author": "Conductor Rebuild",
+  "kind": "stored-key-copy-source-qualification",
+  "checked_main": "5d182b1e374d1b8b2676b17da59c45b6e74834f8",
+  "archive_sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+  "assets": {
+    "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "retained_REA_lineage": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "REA_limit": "Historical semantic renderer analysis exhausted heap; retained real-app shipped bytes inspected statically. No reference JavaScript evaluated.",
+  "spans": [
+    {
+      "name": "$pa",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10629937,
+        10632219
+      ],
+      "sha256": "947269304b3f82358a188e874d19db74e187b8abee4e9845172210ed7cdeffd3",
+      "file": "dollar-pa.txt"
+    },
+    {
+      "name": "jpa",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10619879,
+        10624045
+      ],
+      "sha256": "f339bdf9702ca236ab96391682eeccb54f05f999690c91e2717e43f25d01535f",
+      "file": "jpa.txt"
+    },
+    {
+      "name": "Dzi",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10618506,
+        10618798
+      ],
+      "sha256": "ce21333678392c43caa94e63807c0d82b815fcedac89011e89fb7a8eea5a6858",
+      "file": "Dzi.txt"
+    },
+    {
+      "name": "Nj-alias",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        60061,
+        60069
+      ],
+      "sha256": "1a60810097616340f977d64b1d7a883dd90baab89edf1fcc0da411b23d67fee3",
+      "file": "Nj-alias.txt"
+    },
+    {
+      "name": "ng-export",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3486455,
+        3486463
+      ],
+      "sha256": "4b98f41dc7c12ff194ef5ff886b88ef7ccf77204dec03b04a654e34d267b5727",
+      "file": "ng-export.txt"
+    },
+    {
+      "name": "oO",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        422945,
+        423502
+      ],
+      "sha256": "1144dff840e4efa32edb572c150ced7307f6a160d9eedf9a176ea29570507f61",
+      "file": "oO.txt"
+    },
+    {
+      "name": "ng",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        423502,
+        423863
+      ],
+      "sha256": "e85104dbca9ce97b109cbdcb67f08ca8f418c7ae359cb345fd3ef5670a53e926",
+      "file": "ng.txt"
+    },
+    {
+      "name": "xz",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        423863,
+        424140
+      ],
+      "sha256": "bdef4aead060d039ef39c925471c4a55bf04aecc51d5df0ef664eadf2185b60d",
+      "file": "xz.txt"
+    },
+    {
+      "name": "YWt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10252774,
+        10254426
+      ],
+      "sha256": "e9c696637b6b19c5adf28ba025a7a8c026476840976293b67635917a95eda869",
+      "file": "YWt.txt"
+    },
+    {
+      "name": "Jla",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10250623,
+        10250685
+      ],
+      "sha256": "80d5ace7e28ee33933783a7869a8f1dd1f04cbfca76dacc015c7770a39189e79",
+      "file": "Jla.txt"
+    },
+    {
+      "name": "Zla",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10250685,
+        10252749
+      ],
+      "sha256": "6538f2eac6a963a669d3a2d9f6c949c8728d2c7ce3405472a9c8f87ed05abf20",
+      "file": "Zla.txt"
+    },
+    {
+      "name": "lXe",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        739171,
+        739223
+      ],
+      "sha256": "5e967bde88f91185431c7e60f27a74b5c95d5cc23c100739a3d911bb1ff20642",
+      "file": "lXe.txt"
+    },
+    {
+      "name": "l1",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        739306,
+        739397
+      ],
+      "sha256": "232a30bd33deacf7baf3cf7cce95a19f385c2a361832a65b34bff3e1ecbf6f57",
+      "file": "l1.txt"
+    },
+    {
+      "name": "xni-alias",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        54602,
+        54611
+      ],
+      "sha256": "67719e8902d7b099f835e3d98d2396789967a2310924426f11420a77ad62a4c9",
+      "file": "xni-alias.txt"
+    },
+    {
+      "name": "Q0e-export",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3480977,
+        3480986
+      ],
+      "sha256": "b556a35bc99763c4aac94ff001881ac3cb6e00172c12d53c4c466363e4e3f5ef",
+      "file": "Q0e-export.txt"
+    },
+    {
+      "name": "Q0e",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        22597,
+        22693
+      ],
+      "sha256": "ef650097ef93c85a9024683f11a91682609f73342cc864d5b38713b1bc12e581",
+      "file": "Q0e.txt"
+    },
+    {
+      "name": "it",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        22349,
+        22425
+      ],
+      "sha256": "aa52e7b4558278a6c0c2c4038d75875eb26798fce5cd61b42bdea95ff58e6ef4",
+      "file": "it.txt"
+    }
+  ],
+  "current_main_sources": [
+    {
+      "path": "src/settings/agents/kit.tsx",
+      "sha256": "a0926a79d9a60384e04cc4ff26482336e411c5bf07c93da1755284baecaf37cb",
+      "git_blob": "53dd944ab53ef2056a107c47544252feb3aa86d7"
+    },
+    {
+      "path": "src/settings/agents/ClaudeTab.tsx",
+      "sha256": "84ae3c3277f9ef11f1bf79a1c2696444787a35097ddf405df5f50cb64faa5e4c",
+      "git_blob": "15ab6367503a61874e821a4e9aea3bba76716713"
+    },
+    {
+      "path": "src/settings/agents/useAgentStatus.ts",
+      "sha256": "ac7f6dad2335abe4bb9d151b64ee836119a723f79b7744c0710d9462a842453e",
+      "git_blob": "73c264b4070eb6f0140ea4146a1ace0a2dc62171"
+    },
+    {
+      "path": "src/settings/types.ts",
+      "sha256": "66214090aad60a4403f7cfd5aaf0e620cf5717f5c8cd525bc86dff7dea814b6c",
+      "git_blob": "2e53c280e2a1ac7898a5f5c5629eedc4606df4c7"
+    },
+    {
+      "path": "src/settings/api.ts",
+      "sha256": "dad7fe498fc3ad00121742f7fe5c6639d0a192cb63410bbdce2cfcf007021496",
+      "git_blob": "bcaf983de1165c90a7541a6f0a83dd99478bc96f"
+    },
+    {
+      "path": "src-tauri/src/settings/service.rs",
+      "sha256": "c71ca2038728293779ccc61d76d3a1aa28afe157923ec9e4f3da277e24f5662d",
+      "git_blob": "90b04b001b0018484283969e3260f5e5c1036230"
+    }
+  ],
+  "frozen_tests": [
+    {
+      "path": "tests/chat-search/secretValueCopy.dom.test.mjs",
+      "sha256": "6918a0e64c0439f82c7f90d1a3fd6604f7cf1dbd5d0c6ae435a1130d98d23298"
+    },
+    {
+      "path": "src/settings/agents/secretEditorKeyLink.test.ts",
+      "sha256": "37a6e0de84b4ecacfa31ff59467158eacc01f4c23ce75957f2d47676fe053686"
+    }
+  ],
+  "original_join": "$pa \u2192 jpa \u2192 Dzi/Nj(index ng/kB) \u2192 oO/xz full stored values; jpa ANTHROPIC_API_KEY \u2192 YWt configuredKey \u2192 Zla value \u2192 l1 \u2192 browser clipboard or xni(index Q0e/bS) \u2192 it/native clipboard-manager invoke",
+  "current_join": "ClaudeTab canonical key selection \u2192 production useAgentStatus/storedSecret presence+hint \u2192 SecretRow noninteractive value span; explicit reveal API \u2192 native current-provider key allowlist returns full value",
+  "qualified_gap": "Explicit masked or revealed stored-value activation cannot copy; do not copy last-four hint. Preserve lazy retrieval and masked presentation.",
+  "lease": "Ledger ddfc6518: SAME64 sole kit.tsx SecretRow masked/revealed value control+lazy-copy handler; NEW mounted test and evidence only. No caller/status/native/provider expansion or existing fixture changes.",
+  "counterexample": "fixture-only-not-a-key-1234 with hint1234 and canonical Anthropic API-key provider; original value button passes full value to clipboard helper, current span has no action",
+  "product_runtime_native_provider_credentials": "NOT_RUN",
+  "limits": "Static original declarations, not observed original behavior. Fresh main source pins; no reference JavaScript execution. Automated simulated DOM RED/GREEN recorded separately.",
+  "previous_checked_main": "7dc8bbd014ccfeb2202fdd153c33aa3e9060dcb3",
+  "checked_at": "2026-11-12T09:26:54Z",
+  "baseline_checkout": "a5add3c72adc3a5b15e355d9699bd7ec0a29a28e"
+}

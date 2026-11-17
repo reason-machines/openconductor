@@ -1,4 +1,4 @@
-import { Node, type JSONContent } from "@tiptap/core";
+import { Node, type JSONContent, type NodeViewRendererProps } from "@tiptap/core";
 import type { Node as ProseMirrorNode, Fragment } from "@tiptap/pm/model";
 import { fileIconName, folderIconName, materialIconUrl } from "../../components/fileIconNames.ts";
 import { readComposerDraft, type ComposerPart } from "./composerDocument.ts";
@@ -13,6 +13,64 @@ export const FileAtom = Node.create({
     return ["span", { class: "oc-file-chip", "data-mention-path": path, contenteditable: "false", title: path },
       ["img", { src: materialIconUrl(icon), width: 12, height: 12, alt: "", draggable: "false", "aria-hidden": "true" }],
       ["span", {}, label]];
+  },
+  addNodeView() {
+    return ({ node, getPos, editor }: NodeViewRendererProps) => {
+      const dom = document.createElement("span");
+      dom.className = "oc-file-chip";
+      dom.setAttribute("contenteditable", "false");
+
+      const img = document.createElement("img");
+      img.width = 12;
+      img.height = 12;
+      img.alt = "";
+      img.setAttribute("draggable", "false");
+      img.setAttribute("aria-hidden", "true");
+
+      const labelSpan = document.createElement("span");
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "oc-file-chip-remove";
+      removeBtn.setAttribute("aria-label", "Remove");
+      removeBtn.setAttribute("tabindex", "-1");
+      removeBtn.setAttribute("contenteditable", "false");
+      removeBtn.textContent = "\u00d7";
+      removeBtn.addEventListener("mousedown", (e) => { e.preventDefault(); });
+      removeBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const pos = typeof getPos === "function" ? getPos() : undefined;
+        if (typeof pos === "number") editor.chain().focus().deleteRange({ from: pos, to: pos + node.nodeSize }).run();
+      });
+
+      dom.appendChild(img);
+      dom.appendChild(labelSpan);
+      dom.appendChild(removeBtn);
+
+      function sync(n: typeof node) {
+        const path = String(n.attrs.path);
+        const icon = n.attrs.directory ? folderIconName(false) : fileIconName(path);
+        dom.setAttribute("data-mention-path", path);
+        dom.title = path;
+        img.src = materialIconUrl(icon);
+        labelSpan.textContent = String(n.attrs.label);
+      }
+      sync(node);
+
+      return {
+        dom,
+        update(updatedNode) {
+          if (updatedNode.type.name !== "fileMention") return false;
+          sync(updatedNode);
+          return true;
+        },
+        stopEvent(event: Event) {
+          return event.target instanceof Element && removeBtn.contains(event.target);
+        },
+        ignoreMutation() { return true; },
+      };
+    };
   },
 });
 

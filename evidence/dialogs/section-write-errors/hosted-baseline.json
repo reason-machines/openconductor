@@ -1,0 +1,49 @@
+{
+  "author": "Conductor Rebuild",
+  "baseline": "27fc9769ac98e22d395bd847ced484ebf707b542",
+  "fresh_main": "1a0a2bef734686d3dbfc9c11155562595d9df9e6",
+  "main_scoped_source_hashes": "All five match source.json; checked before product patch",
+  "unit_job": "https://github.com/reason-machines/openconductor/actions/runs/43113588611/job/130835709919",
+  "workflow_run": 43113588611,
+  "fixture": {
+    "failed": 4,
+    "passed": 8,
+    "failures": [
+      "out-of-order section writes retain mode-specific feedback",
+      "coalesced write retains both callbacks",
+      "create rejected after unmount",
+      "edit rejected after unmount"
+    ],
+    "assertion": "[] instead of the mode-specific create/edit error toast",
+    "controls": [
+      "create/edit success stays quiet",
+      "create/edit superseded layout reloads without a toast",
+      "create/edit Cancel neither writes nor toasts",
+      "create/edit subsequent unrelated failure has no stale callback"
+    ]
+  },
+  "suite": {
+    "passed": 3137,
+    "failed": 4
+  },
+  "successful_build": {
+    "job": "https://github.com/reason-machines/openconductor/actions/runs/43113588727/job/130835710559",
+    "conclusion": "success",
+    "step": {
+      "name": "Build",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 8,
+      "started_at": "2026-11-11T22:39:48Z",
+      "completed_at": "2026-11-11T22:40:23Z"
+    },
+    "output": [
+      {
+        "line": 2569,
+        "text": "2026-11-11T22:40:23.4674095Z ✓ built in 24.21s"
+      }
+    ]
+  },
+  "limits": "Hosted synthetic database rejection and component renderer only. No local Node, browser, native, physical IME or visual execution.",
+  "candidate": "Optional create/edit Action onError; drain the pending callbacks into each persistence invocation; invoke only on rejection. App binds the original mode-specific toast message. Unchanged fixture.sha256 and frozen files required."
+}

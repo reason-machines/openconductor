@@ -1,0 +1,37 @@
+{
+  "status": "ACTUAL_CANDIDATE_RESULT",
+  "admission": "5c2b6c62-0770-4139-9abc-251413697058",
+  "source_sha": "0d5f6dfbc7043f9d889945ded377e4bdae4eb789",
+  "started_at": "2026-11-12T15:10:42.844022+00:00",
+  "ended_at": "2026-11-12T15:10:46.752491+00:00",
+  "elapsed_seconds": 3.908498476987006,
+  "command": [
+    "nice",
+    "-n",
+    "19",
+    "timeout",
+    "--kill-after=5s",
+    "90s",
+    "node",
+    "--max-old-space-size=768",
+    "--test",
+    "--test-concurrency=1",
+    "src/features/diff/fileCommentCountLifecycle.test.ts",
+    "src/features/chat/reviewCommentHandoff.test.ts",
+    "src/features/chat/desktopReviewHandoff.test.ts"
+  ],
+  "exit_code": 0,
+  "fixture_sha256": {
+    "src/features/diff/fileCommentCountLifecycle.test.ts": "379312909e2a80ca96973643f1c7189144f53210e636dadb059a136a7eb9bbd4",
+    "src/features/chat/reviewCommentHandoff.test.ts": "870f5cca38eccd7af04542906839b77686dacfaaf0512d416c701b68eaf5e548",
+    "src/features/chat/desktopReviewHandoff.test.ts": "ff91dc4d00360a20a75dc4133aff56da79e28e65dbfdcc5da064fdf18e4fdd1d"
+  },
+  "candidate-green-01.stdout.tap": {
+    "bytes": 6763,
+    "sha256": "04f6b772df08724b13c1646ba8a69f8ebcf7eb54b41623ebb2af6333115b0cd0"
+  },
+  "candidate-green-01.stderr.txt": {
+    "bytes": 175,
+    "sha256": "afe0234d33108b24ba239e7ceb8d0f18c2dc2386bdf6298c3e57075cb50e5552"
+  }
+}

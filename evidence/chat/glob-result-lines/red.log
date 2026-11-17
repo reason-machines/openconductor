@@ -1,0 +1,260 @@
+(node:52) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Glob projected block lines: padded
+not ok 1 - Glob projected block lines: padded
+  ---
+  duration_ms: 178.678035
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/globResultLines.test.ts:112:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    GLOB_LINE_TEXT_padded
+    + actual - expected
+    
+    + '\n  /repo/a.ts  \n\t\n/repo/b.ts\n'
+    - '/repo/a.ts/repo/b.ts'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '/repo/a.ts/repo/b.ts'
+  actual: |-
+    
+      /repo/a.ts  
+    	
+    /repo/b.ts
+    
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/globResultLines.test.ts:121:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Glob projected block lines: interior-blanks
+not ok 2 - Glob projected block lines: interior-blanks
+  ---
+  duration_ms: 20.746012
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/globResultLines.test.ts:112:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    GLOB_LINE_TEXT_interior-blanks
+    + actual - expected
+    
+    + '/repo/a.ts\n\n  \n/repo/b.ts'
+    - '/repo/a.ts/repo/b.ts'
+                 ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '/repo/a.ts/repo/b.ts'
+  actual: |-
+    /repo/a.ts
+    
+      
+    /repo/b.ts
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/globResultLines.test.ts:121:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Glob projected block lines: crlf-tabs
+not ok 3 - Glob projected block lines: crlf-tabs
+  ---
+  duration_ms: 37.441093
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/globResultLines.test.ts:112:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    GLOB_LINE_TEXT_crlf-tabs
+    + actual - expected
+    
+    + '\t/repo/a.ts\t\r\n/repo/b.ts\r\n'
+    - '/repo/a.ts/repo/b.ts'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '/repo/a.ts/repo/b.ts'
+  actual: |-
+    	/repo/a.ts	
+    /repo/b.ts
+    
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/globResultLines.test.ts:121:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Glob projected block lines: spaces-preserved
+not ok 4 - Glob projected block lines: spaces-preserved
+  ---
+  duration_ms: 3.474543
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/globResultLines.test.ts:112:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    GLOB_LINE_TEXT_spaces-preserved
+    + actual - expected
+    
+    + '  /repo/my file.ts  \n/repo/no-space.ts'
+    - '  /repo/my file.ts  /repo/no-space.ts'
+                           ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '  /repo/my file.ts  /repo/no-space.ts'
+  actual: |-
+      /repo/my file.ts  
+    /repo/no-space.ts
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/globResultLines.test.ts:121:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Glob projected block lines: order-duplicates
+not ok 5 - Glob projected block lines: order-duplicates
+  ---
+  duration_ms: 26.911321
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/globResultLines.test.ts:112:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    GLOB_LINE_TEXT_order-duplicates
+    + actual - expected
+    
+    + '/repo/b.ts\n/repo/a.ts\n/repo/b.ts'
+    - '/repo/b.ts/repo/a.ts/repo/b.ts'
+                 ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '/repo/b.ts/repo/a.ts/repo/b.ts'
+  actual: |-
+    /repo/b.ts
+    /repo/a.ts
+    /repo/b.ts
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/globResultLines.test.ts:121:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Glob projected block lines: whitespace-only
+not ok 6 - Glob projected block lines: whitespace-only
+  ---
+  duration_ms: 12.637689
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/globResultLines.test.ts:112:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    GLOB_LINE_TEXT_whitespace-only
+    
+    '\n \t\r\n \n' !== ''
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ''
+  actual: |-
+    
+     	
+     
+    
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/globResultLines.test.ts:121:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Glob projected block lines: internal-tabs
+not ok 7 - Glob projected block lines: internal-tabs
+  ---
+  duration_ms: 1.779808
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/globResultLines.test.ts:112:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    GLOB_LINE_TEXT_internal-tabs
+    + actual - expected
+    
+    + '\t/repo/my\tfile.ts\t'
+    - '/repo/my\tfile.ts'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '/repo/my\tfile.ts'
+  actual: '\t/repo/my\tfile.ts\t'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/globResultLines.test.ts:121:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Glob projected block lines: literal-markup
+not ok 8 - Glob projected block lines: literal-markup
+  ---
+  duration_ms: 1.707835
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/globResultLines.test.ts:112:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    GLOB_LINE_TEXT_literal-markup
+    + actual - expected
+    
+    + ' <b>file</b> \n&plain.ts'
+    - '<b>file</b>&plain.ts'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '<b>file</b>&plain.ts'
+  actual: |-
+     <b>file</b> 
+    &plain.ts
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/globResultLines.test.ts:121:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Glob no successful body control: empty
+ok 9 - Glob no successful body control: empty
+  ---
+  duration_ms: 37.815342
+  type: 'test'
+  ...
+# Subtest: Glob no successful body control: pending
+ok 10 - Glob no successful body control: pending
+  ---
+  duration_ms: 7.368417
+  type: 'test'
+  ...
+# Subtest: Glob no successful body control: error
+ok 11 - Glob no successful body control: error
+  ---
+  duration_ms: 0.940072
+  type: 'test'
+  ...
+# Subtest: Non-Glob raw result control: ls-raw
+ok 12 - Non-Glob raw result control: ls-raw
+  ---
+  duration_ms: 1.573323
+  type: 'test'
+  ...
+# Subtest: Non-Glob raw result control: grep-raw
+ok 13 - Non-Glob raw result control: grep-raw
+  ---
+  duration_ms: 27.143746
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 5
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6713.809331

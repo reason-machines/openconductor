@@ -33,6 +33,7 @@ export interface FileChange {
 }
 
 export interface FileDiff extends FileChange {
+  hide_reason?: "file_too_large";
   hunks: Hunk[];
 }
 

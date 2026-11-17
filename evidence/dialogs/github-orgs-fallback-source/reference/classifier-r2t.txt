@@ -1,0 +1,1 @@
+function r2t(t){const e=t.toLowerCase();if(e.includes("bad credentials")||e.includes("http 401")||e.includes('"status": "401"')||e.includes('"status":"401"'))return"unauthorized";if(e.includes("saml enforcement"))return"saml-sso-required";if((e.includes("http 403")||e.includes('"status": "403"')||e.includes('"status":"403"'))&&e.includes("scope"))return"missing-scope"}

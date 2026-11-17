@@ -1,0 +1,89 @@
+{
+  "unit": "FINISHED-TURN-SNAPSHOT-SIZE-DE6",
+  "classification": "SOURCE_QUALIFIED_DIFFERENCE_NOT_BEHAVIORALLY_REPRODUCED",
+  "main_sha": "7f9aa8ab8875abd571db7ac6ff37fc20be95ca20",
+  "original_rea_evidence_id": "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+  "asset_sha256": {
+    "index": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+    "renderer": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "source_spans": {
+    "bLt-and-helpers": {
+      "asset": "index",
+      "utf8_half_open": [
+        3179015,
+        3185298
+      ],
+      "sha256": "2a8742e768caa34cd958df61cd05a342657d8f3810249b73cfc789d70faff7f3"
+    },
+    "Fje": {
+      "asset": "index",
+      "utf8_half_open": [
+        743037,
+        745066
+      ],
+      "sha256": "d438301fe44fa78e1552413b7168c4c51c6dca5fef38ed471fc36bc7a0a92d1e"
+    },
+    "Y9t": {
+      "asset": "index",
+      "utf8_half_open": [
+        3199214,
+        3200829
+      ],
+      "sha256": "d275afb03c1b74e04d37c8a6f46e9edfcf82d43d4b889bbf6cf013c1eb73f740"
+    },
+    "bDo": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        8912726,
+        8914498
+      ],
+      "sha256": "c3b6c6edfeb89702256f1116e290a908b095925a640ffd44bb41d21769fa4161"
+    },
+    "Mqo": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9637614,
+        9641484
+      ],
+      "sha256": "ba9e64973b294335d69d20e19ffd1ef4eaf63f3c209dd380beacf5ecc509393c"
+    }
+  },
+  "main_file_sha256": {
+    "src-tauri/src/diff/git.rs": "e478a1ce98043cf6991d1a490650900e3d195fba5dc1045dd036a1ec288be6dd",
+    "src-tauri/src/diff/commands.rs": "45077d028f5cead68779111b9f7828f698c06ad5a7ab3dcf564d2784db3d09f3",
+    "src-tauri/src/diff/model.rs": "e56c0c051f5b5ad59c79930eb8f5a5336d9c979325a3e82ab4b95d770f7c3c9b",
+    "src/features/diff/api.ts": "abbc4950ec46258c7cd76c447ce63f5a923b80a9d9313e6c13c2e4a6d02e5c7a",
+    "src/features/diff/FileDiffView.tsx": "c1cab11aa6141f1c12f923aaf7e60353e4b13067cf91dc93a7245d3d21872a6c",
+    "src/features/chat/turnFilePreview.ts": "a0060e994ecf0e1c559295825cb0cce29d5a38b4ba61d8aeaf88bb1d719c7f11"
+  },
+  "checks": {
+    "reference_turn_caller_uses_loader": true,
+    "reference_loader_import_export_join": true,
+    "reference_caller_passes_both_checkpoints": true,
+    "reference_endpoint_policy_is_shared": true,
+    "reference_turn_comparison_uses_saved_end": true,
+    "reference_sparse_exception_has_exact_limits": true,
+    "reference_count_producer_uses_both_refs": true,
+    "reference_turn_placeholder_is_explicit": true,
+    "main_turn_branch_returns_before_commit_policy": true,
+    "main_turn_size_policy_is_absent": true,
+    "main_turn_preview_has_no_size_branch": true,
+    "main_full_view_already_supports_size": true
+  },
+  "same_input": "A finished turn with valid saved start/end checkpoint refs, changed nonmedia nonbinary text larger than 5 MiB at either saved endpoint, and a small or absent current worktree file. No cloud, remote patch, unavailable Git read or unfinished turn is claimed.",
+  "proposed_product_hunks": [
+    "src-tauri/src/diff/git.rs::turn_diff tail, reuse existing endpoint policy without changing counts/membership/whitespace",
+    "src/features/chat/turnFilePreview.ts::Preview/contents/selected-result classification only"
+  ],
+  "not_run": [
+    "behavioral regression",
+    "hosted test",
+    "installed app",
+    "native macOS",
+    "visual parity",
+    "provider",
+    "checkpoint runtime"
+  ],
+  "product_and_tests": "UNCHANGED; awaiting ownership reconciliation, then frozen test-first proof"
+}

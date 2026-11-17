@@ -1,0 +1,114 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted notification denial feedback: disable bypasses denied permission
+ok 1 - mounted notification denial feedback: disable bypasses denied permission
+  ---
+  duration_ms: 244.406929
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: already granted enables without feedback
+ok 2 - mounted notification denial feedback: already granted enables without feedback
+  ---
+  duration_ms: 84.775041
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: native grant enables without feedback
+ok 3 - mounted notification denial feedback: native grant enables without feedback
+  ---
+  duration_ms: 74.479027
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: granted request enables without feedback
+ok 4 - mounted notification denial feedback: granted request enables without feedback
+  ---
+  duration_ms: 65.114625
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: denied request reports one error and writes nothing
+ok 5 - mounted notification denial feedback: denied request reports one error and writes nothing
+  ---
+  duration_ms: 55.298873
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: previously denied reports one error and writes nothing
+ok 6 - mounted notification denial feedback: previously denied reports one error and writes nothing
+  ---
+  duration_ms: 60.052727
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: pending denial is silent until settlement
+ok 7 - mounted notification denial feedback: pending denial is silent until settlement
+  ---
+  duration_ms: 51.634679
+  type: 'test'
+  ...
+# Subtest: mounted notification denial feedback: pending grant preserves latest settings without feedback
+ok 8 - mounted notification denial feedback: pending grant preserves latest settings without feedback
+  ---
+  duration_ms: 62.87915
+  type: 'test'
+  ...
+# (node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pending notification grant preserves an intervening parent settings update
+ok 9 - pending notification grant preserves an intervening parent settings update
+  ---
+  duration_ms: 288.188014
+  type: 'test'
+  ...
+# (node:100) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted General Settings: disable-with-denied-permission
+ok 10 - mounted General Settings: disable-with-denied-permission
+  ---
+  duration_ms: 261.313044
+  type: 'test'
+  ...
+# Subtest: mounted General Settings: enable-already-granted
+ok 11 - mounted General Settings: enable-already-granted
+  ---
+  duration_ms: 113.237643
+  type: 'test'
+  ...
+# Subtest: mounted General Settings: enable-default-native-granted
+ok 12 - mounted General Settings: enable-default-native-granted
+  ---
+  duration_ms: 123.324552
+  type: 'test'
+  ...
+# Subtest: mounted General Settings: enable-default-request-granted
+ok 13 - mounted General Settings: enable-default-request-granted
+  ---
+  duration_ms: 71.944268
+  type: 'test'
+  ...
+# Subtest: mounted General Settings: enable-default-request-denied
+ok 14 - mounted General Settings: enable-default-request-denied
+  ---
+  duration_ms: 111.943007
+  type: 'test'
+  ...
+# Subtest: mounted General Settings: enable-denied-request-denied
+ok 15 - mounted General Settings: enable-denied-request-denied
+  ---
+  duration_ms: 103.533221
+  type: 'test'
+  ...
+# Subtest: mounted General Settings: enable-awaits-request-settlement
+ok 16 - mounted General Settings: enable-awaits-request-settlement
+  ---
+  duration_ms: 77.896105
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2827.406707

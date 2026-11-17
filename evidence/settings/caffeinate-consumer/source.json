@@ -1,0 +1,132 @@
+{
+  "id": "SETTINGS49-CAFFEINATE-STATUS-FEED-04",
+  "producer": "Conductor Rebuild",
+  "checked_main": "bbdca3e984f5b80183703daa9f9bb27bbaf0f47c",
+  "source_blobs": {
+    "src/features/chat/chatRuntime.ts": "120a1a0437f36882169bd7c43cd970f1c77e85b4",
+    "src-tauri/src/session_status_commands.rs": "fe34b4028d492ea5be3eae171263bc1d81e31579",
+    "crates/openconductor-db/src/sessions.rs": "b5f85543d9ee2f178d51d40d2f88adedc6ac1cbb",
+    "src/main.tsx": "a4aad8167fcf00a271a2448bb2c251d9ebd61759"
+  },
+  "original_assets": {
+    "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "reference_spans": [
+    {
+      "path": "reference/caffeinate-service.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        11545566,
+        11548707
+      ],
+      "sha256": "6cffde502bc498c1b931c3099bd693ccd8c5317d08186d94252818471c611059",
+      "bytes": 3141
+    },
+    {
+      "path": "reference/battery-parser-and-poll.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        11548707,
+        11550343
+      ],
+      "sha256": "6b90c1931fb668241c75e870e002d89cd83c886c947bca2b3a52d5c398df5f98",
+      "bytes": 1636
+    },
+    {
+      "path": "reference/all-session-query.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1105511,
+        1105892
+      ],
+      "sha256": "a85bc14278b2689d110ab48760d73e8ef77cc533a97defd1042ff0ab46913c86",
+      "bytes": 381
+    },
+    {
+      "path": "reference/session-row-mapping.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1106458,
+        1107437
+      ],
+      "sha256": "6b5cc4915f6f95bba176355d49168cd15cbfa9ba727784b9992af4536d475b42",
+      "bytes": 979
+    },
+    {
+      "path": "reference/session-store-upsert.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1128268,
+        1129086
+      ],
+      "sha256": "3580e28a08fb0ee7dca8d5dbcf10db0915d1f4a68fdab734d6ffdc45c170f6dd",
+      "bytes": 818
+    },
+    {
+      "path": "reference/all-session-hydration.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1509515,
+        1509987
+      ],
+      "sha256": "cac985fcf10d814d927a34e753f57eaf14abdfa8cb512cba1d9e92acf0560938",
+      "bytes": 472
+    },
+    {
+      "path": "reference/session-hide-sql.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1140977,
+        1141633
+      ],
+      "sha256": "65e0705e8a5eddcf99d584b7461f79f68fd11c56b22fb7fb04c546f990fafcfb",
+      "bytes": 656
+    },
+    {
+      "path": "reference/session-hide-service.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1512238,
+        1512849
+      ],
+      "sha256": "4b1624eb99b67b01141efbac5b70f6630dd948d7b67a56194fcea02d1e3fa1ad",
+      "bytes": 611
+    },
+    {
+      "path": "reference/session-refresh.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1533814,
+        1534090
+      ],
+      "sha256": "4e4a3f749057b6a46b95ebdca4fb976d0ab149aa88781b3f583371cb6786d20e",
+      "bytes": 276
+    },
+    {
+      "path": "reference/close-and-separate-cancel.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3147388,
+        3148584
+      ],
+      "sha256": "6e2a7eeb35d4fe1fab026053fd6430a37d5f02833d64fa87ed08b60ffef1a327",
+      "bytes": 1196
+    }
+  ],
+  "source_findings": {
+    "predicate": "The original service examines all store-resident sessions for working or waiting; hidden is not excluded.",
+    "hydration": "Successful getSessions hydration queries every database session row and unconditionally upserts each, without a workspace/repository/hidden/orphan join.",
+    "timing_limit": "Initial store is empty and hydration is cached; exact startup completion timing was not established.",
+    "current_gap": "The current reportChatStatus hidden guard returns before persistStatus; session_statuses currently queries visible-only active_statuses.",
+    "separation": "A canonical hidden status must be published without restoring its sidebar/Home visibility or emitting hidden-chat attention.",
+    "membership_limit": "Workspace disappearance alone does not prove session deletion. No new deletion/orphan-eviction policy is introduced."
+  },
+  "verification": {
+    "original_asset_and_span_hashes": "PASS_STATIC_ONLY",
+    "focused_hosted_regression": "NOT_RUN",
+    "candidate": "NOT_IMPLEMENTED",
+    "native_power": "NOT_RUN"
+  },
+  "rea_limit": "Retained REA extraction used because the original semantic renderer analysis exhausted its heap. Extracted original JavaScript was read as untrusted bytes and never evaluated."
+}

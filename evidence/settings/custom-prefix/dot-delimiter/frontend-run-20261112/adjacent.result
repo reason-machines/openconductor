@@ -1,0 +1,4 @@
+command=timeout 120s node --test --test-concurrency=1 src/settings/customPrefix.test.ts src/settings/customPrefixInput.test.ts src/settings/model.test.ts
+start=2026-11-12T11:12:11.995980476Z
+end=2026-11-12T11:12:13.208147807Z
+exit=0

@@ -1,0 +1,10 @@
+{
+  "main_sha": "070cad25c36e0cbf068313ea182a849249f0da3c",
+  "preservation": "PASS: removing only diagnostic labels/error serialization reproduces entire current-main host byte-for-byte",
+  "unchanged": "graph assertions, waits, deadlines, native boundary, callbacks, cleanup and Error.cause",
+  "saved_repair_identical": true,
+  "fixtures_unchanged": true,
+  "original_host_sha256": "f3692e899aed2fd345fc65376420e9ccb8e2b811066bd764108eea9d2d2591dd",
+  "current_host_sha256": "887d655ea48a768b96e2536667b29456623335c6be6ecdadbf36e21fc8e248f0",
+  "runtime_operations": 0
+}

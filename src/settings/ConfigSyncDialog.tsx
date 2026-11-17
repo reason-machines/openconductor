@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Modal } from "../components/Dialogs";
+import { DialogFrame } from "../components/DialogFrame";
+import { CloseIcon } from "../components/Icons";
 import { configSyncApi } from "./configSyncApi";
 import { CONFIG_SYNC_CATEGORIES, CONFIG_SYNC_DIRECTIONS, configSyncItems, configSyncKey, type ConfigSyncCategory, type ConfigSyncDiff, type ConfigSyncResult } from "./configSync";
 import "./configSync.css";
@@ -12,7 +13,7 @@ type State =
 
 const message = (error: unknown) => error instanceof Error ? error.message : "Couldn't sync your local agent configs.";
 
-export function ConfigSyncDialog({ onClose }: { onClose: () => void }) {
+export function ConfigSyncDialog({ onClose, notify }: { onClose: () => void; notify?: (kind: "info", message: string) => void }) {
   const [state, setState] = useState<State>({ kind: "loading" });
   const [deselected, setDeselected] = useState<Set<string>>(() => new Set());
   const [expanded, setExpanded] = useState<Set<ConfigSyncCategory>>(() => new Set());
@@ -53,6 +54,7 @@ export function ConfigSyncDialog({ onClose }: { onClose: () => void }) {
     try {
       const result = await configSyncApi.sync(selected);
       if (!mounted.current) return;
+      if (result.successes > 0) notify?.("info", result.successes === 1 ? "Synced 1 item" : `Synced ${result.successes} items`);
       if (result.failures.length === 0 && result.unsupportedMcp.length === 0) {
         pending.current = false;
         onClose();
@@ -66,7 +68,11 @@ export function ConfigSyncDialog({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <Modal title="Sync agent configs" dialogId="sync-agent-configs-dialog" onClose={close} disablePointerDismissal={state.kind === "syncing"}>
+    <DialogFrame kind="dialog" titleId="config-sync-title" onClose={() => { if (state.kind !== "syncing") close(); }}>
+      <div className="modal-header">
+        <h2 id="config-sync-title">Sync agent configs</h2>
+        <button type="button" className="icon-btn" aria-label="Close" onClick={close}><CloseIcon size={16} /></button>
+      </div>
       <div className="config-sync-body" aria-busy={state.kind === "syncing" || state.kind === "loading"}>
         <p className="config-sync-description">Copy skills, slash commands, and MCP servers between Claude Code and Codex.</p>
         <p className="config-sync-note">Copies stay on this Mac. Existing items are not overwritten. Selected MCP definitions can include environment and header values.</p>
@@ -86,7 +92,7 @@ export function ConfigSyncDialog({ onClose }: { onClose: () => void }) {
                 <input
                   type="checkbox" aria-label={`Select ${title}`} checked={all} aria-checked={some ? "mixed" : all}
                   ref={(input) => { if (input) input.indeterminate = some; }}
-                  disabled={state.kind !== "ready" || categoryItems.length === 0} onChange={() => toggleCategory(id)}
+                  disabled={!diff || categoryItems.length === 0} onChange={() => toggleCategory(id)}
                 />
                 <button type="button" className="config-sync-expand" aria-expanded={open} aria-controls={`config-sync-${id}`} disabled={!category || categoryItems.length === 0} onClick={() => setExpanded((current) => {
                   const next = new Set(current);
@@ -103,7 +109,7 @@ export function ConfigSyncDialog({ onClose }: { onClose: () => void }) {
                   const key = configSyncKey({ category: id, direction, name });
                   const from = direction === "ccToCodex" ? "Claude Code" : "Codex";
                   return <label className="config-sync-item" key={key}>
-                    <input type="checkbox" aria-label={`${name} from ${from}`} checked={!deselected.has(key)} disabled={state.kind !== "ready"} onChange={() => toggleItem(key)} />
+                    <input type="checkbox" aria-label={`${name} from ${from}`} checked={!deselected.has(key)} disabled={!diff} onChange={() => toggleItem(key)} />
                     <span className="config-sync-from">From {from}</span><span className="config-sync-name">{name}</span>
                   </label>;
                 }))}
@@ -118,9 +124,9 @@ export function ConfigSyncDialog({ onClose }: { onClose: () => void }) {
         </div>}
       </div>
       <div className="modal-actions">
-        <button type="button" className="btn btn-ghost" autoFocus disabled={state.kind === "syncing"} onClick={close}>Cancel</button>
+        <button type="button" className="btn btn-ghost" data-dialog-cancel disabled={state.kind === "syncing"} onClick={close}>Cancel</button>
         <button type="button" className="btn btn-primary" data-primary-action disabled={state.kind !== "ready" || selected.length === 0} onClick={() => void sync()}>{state.kind === "syncing" ? "Syncing…" : "Sync"}</button>
       </div>
-    </Modal>
+    </DialogFrame>
   );
 }

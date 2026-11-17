@@ -1,0 +1,148 @@
+# Subtest: login acknowledges raw chunk bytes only after xterm consumes them
+not ok 2548 - login acknowledges raw chunk bytes only after xterm consumes them
+  ---
+  duration_ms: 342.157852
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalAck.test.ts:73:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Rendered output must acknowledge raw bytes, not decoded text or backing-buffer size
+    + actual - expected
+
+    + []
+    - [
+    -   {
+    -     bytes: 5,
+    -     id: 'login-pty'
+    -   }
+    - ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      id: 'login-pty'
+      bytes: 5
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalAck.test.ts:84:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: login acknowledges output before the spawn promise resolves
+not ok 2549 - login acknowledges output before the spawn promise resolves
+  ---
+  duration_ms: 98.642249
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalAck.test.ts:92:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Fast rendered output must acknowledge the reserved terminal identity
+    + actual - expected
+
+    + []
+    - [
+    -   {
+    -     bytes: 3,
+    -     id: 'login-pty'
+    -   }
+    - ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      id: 'login-pty'
+      bytes: 3
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalAck.test.ts:98:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: rendered login output releases flow credit beyond the high watermark
+not ok 2550 - rendered login output releases flow credit beyond the high watermark
+  ---
+  duration_ms: 126.407605
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalAck.test.ts:103:1'
+  failureType: 'testCodeFailure'
+  error: 'Rendered login output must release flow credit before the next chunk is blocked'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalAck.test.ts:111:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: rejected login acknowledgements do not interrupt completion or cleanup
+not ok 2551 - rejected login acknowledgements do not interrupt completion or cleanup
+  ---
+  duration_ms: 61.364985
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalAck.test.ts:121:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Rendered output must attempt acknowledgement even when the bridge rejects it
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalAck.test.ts:127:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: login ignores foreign, pre-spawn, lifecycle and empty output for byte credit
+ok 2552 - login ignores foreign, pre-spawn, lifecycle and empty output for byte credit
+  ---
+  duration_ms: 61.370178
+  type: 'test'
+  ...
+# Subtest: dismissed login output cannot acknowledge a late xterm callback
+ok 2553 - dismissed login output cannot acknowledge a late xterm callback
+  ---
+  duration_ms: 42.537322
+  type: 'test'
+  ...
+# Subtest: completed login shells keep acknowledging output until Done
+not ok 2554 - completed login shells keep acknowledging output until Done
+  ---
+  duration_ms: 46.003034
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalAck.test.ts:168:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    A completed but usable login shell must keep acknowledging rendered output
+    + actual - expected
+
+    + []
+    - [
+    -   {
+    -     bytes: 2,
+    -     id: 'login-pty'
+    -   }
+    - ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      id: 'login-pty'
+      bytes: 2
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalAck.test.ts:175:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...

@@ -1,0 +1,1 @@
+function Cya(){return nr.closeDialog(sJ)}

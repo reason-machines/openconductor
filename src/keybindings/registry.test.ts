@@ -40,7 +40,7 @@ test("registry shape: 165 unique ids, known categories and modifiers", () => {
     }
   }
   assert.equal(COMMANDS.filter((c) => c.configurable).length, 142);
-  assert.equal(COMMANDS.filter((c) => c.hidden).length, 61);
+  assert.equal(COMMANDS.filter((c) => c.hidden).length, 63);
 });
 
 test("every id in scopes, presets and aliases names a command", () => {

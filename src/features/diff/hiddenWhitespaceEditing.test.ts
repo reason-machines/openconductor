@@ -23,7 +23,7 @@ const candidateFiles = new Set([
 const allowed = new Set([
   ...candidateFiles, "src/features/diff/api.ts", "src/features/diff/types.ts", "src/features/diff/target.ts",
   "src/features/diff/nav.ts", "src/features/diff/changesTree.ts", "src/features/diff/changesFilter.ts",
-  "src/features/diff/viewed.ts", "src/features/diff/EditInViewer.ts", "src/features/diff/editorContents.ts",
+  "src/features/diff/viewed.ts", "src/features/diff/EditInViewer.ts", "src/features/diff/editorContents.ts", "src/features/diff/draftStorage.ts",
   "src/features/diff/copyFile.ts", "src/features/files/tree.ts", "src/lib/keyedCache.ts", "src/keybindings/fuzzy.ts",
   "src/keybindings/overrides.ts", "src/keybindings/registry.ts", "src/keybindings/shortcut.ts", "src/keybindings/types.ts",
 ].map((path) => resolve(root, path)));
@@ -126,6 +126,7 @@ async function fixture(layout: DiffLayout, newline = true, kind: Kind = "modifie
         },
       };
       if (name === "../../keybindings/KeybindingsProvider.tsx") return { useKeybindings: () => undefined, useKeybindingOverrides: () => ({ overrides: {} }) };
+      if (name === "./wrapLinesPref.ts") return { useWrapLinesPref: () => ({ value: true, save: () => {} }) };
       if (name === "./useChangesPresentation.ts") return { useChangesPresentation: () => ({ presentation: { filePathFilter: "", diffFileListMode: "flat" } }) };
       if (name === "./useDiffTheme.ts") return { useDiffTheme: () => "github-dark" };
       if (name === "./CommentNav") return { CommentNav: () => null, useCommentNavigation: () => ({ previousCount: 0, nextCount: 0, refresh: () => undefined }) };
@@ -133,6 +134,7 @@ async function fixture(layout: DiffLayout, newline = true, kind: Kind = "modifie
       if (name === "./DiscardDialog") return { DiscardDialog: () => null, RevertIcon: () => null };
       if (name === "./FilePathChip") return { FilePathChip: () => null };
       if (name === "./Whitespace") return { ViewOptionsMenu: () => null, WhitespaceOnly: () => React.createElement("whitespace-only") };
+      if (name === "./commentMarkdown.ts") return { CommentMarkdown: () => null };
       if (name === "../../components/ConductorIcon") return { ConductorIcon: () => null };
       if (name === "../../components/Icons.tsx") return { CopyIcon: () => null, CheckIcon: () => null };
       if (name === "../../components/ui/Tooltip.tsx") return { Tooltip: ({ children }: { children: unknown }) => children };

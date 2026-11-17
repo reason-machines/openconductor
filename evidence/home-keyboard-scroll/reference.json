@@ -1,0 +1,236 @@
+{
+  "unit": "HOME-KEYBOARD-SCROLL-INTO-VIEW-271",
+  "producer": "Conductor Rebuild",
+  "measured_main": "b22fa9adaf67fa79fc3dddf72914cae01f352b08",
+  "measured_main_component_sha256": "22ac2e190bcfab6a02b86d6f4d3ae74990a4965e428f76fef63654f728eca1b0",
+  "revalidated_main": "bcb3ce4f0c0cf92f6a238c1cc6e4d0d54856a24f",
+  "revalidated_main_component_sha256": "22ac2e190bcfab6a02b86d6f4d3ae74990a4965e428f76fef63654f728eca1b0",
+  "revalidation": "Main merged after provider-confirmed #1382 merge; frozen test unchanged, 164/164 integrated source units pass; local tsc repeats sole missing plugin-fs diagnostic.",
+  "reference": {
+    "app": "Conductor 0.87.6",
+    "asset": {
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "rea_parent_evidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "identity_basis": "Historical retained REA source; whole asset identity inherited, not reacquired or rehashed in this pass."
+  },
+  "retained_receipts": [
+    {
+      "path": "evidence/home-keyboard-endpoints/retained-reference.json",
+      "bytes": 29153,
+      "sha256": "a844bf663720caf0b3f8b2a209335bcddb64f305930fb67a1c7c4ae790489224"
+    },
+    {
+      "path": "evidence/home-ime/source.json",
+      "sha256": "40d59630b92937c5c31b6e7d2ba3a31ee5ce015c97f2041719b7fe6e7e77e7c2"
+    }
+  ],
+  "verified_spans": [
+    {
+      "name": "Home-UJo",
+      "kind": "complete function declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9863549,
+        9874571
+      ],
+      "utf16_half_open": [
+        9817995,
+        9829017
+      ],
+      "bytes": 11022,
+      "sha256": "58824b140436a668433f7e08fe26d2083c0e100d363cda5edb14150526a53030"
+    },
+    {
+      "name": "Home-command-root-KV",
+      "kind": "complete const declaration plus displayName assignment",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2913899,
+        2914275
+      ],
+      "utf16_half_open": [
+        2913453,
+        2913829
+      ],
+      "bytes": 376,
+      "sha256": "61beeb6e4e35c064cdc7c60a0c70f912a36770c820c9adf22ba9f34272cd9926"
+    },
+    {
+      "name": "command-root-Xyi",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2903072,
+        2908580
+      ],
+      "utf16_half_open": [
+        2902626,
+        2908134
+      ],
+      "bytes": 5508,
+      "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92"
+    },
+    {
+      "name": "Home-command-input-kI",
+      "kind": "complete const declaration plus displayName assignment",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2916816,
+        2917726
+      ],
+      "utf16_half_open": [
+        2916370,
+        2917280
+      ],
+      "bytes": 910,
+      "sha256": "970dc084f87ebeb0e3f1220debf849ee4115e11f0be19c8442dab05ba688decf"
+    },
+    {
+      "name": "command-input-B5s",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2910380,
+        2910953
+      ],
+      "utf16_half_open": [
+        2909934,
+        2910507
+      ],
+      "bytes": 573,
+      "sha256": "70fa9c07b0d8b605e648601e01cd266db15dadad0ac59b8cb5569cee58c02758"
+    },
+    {
+      "name": "Home-date-group-iJn",
+      "kind": "complete const declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9853380,
+        9854813
+      ],
+      "utf16_half_open": [
+        9807826,
+        9809259
+      ],
+      "bytes": 1433,
+      "sha256": "61151c52d3cdb19b23cde95477b57653c1ced39142e1735151b43b03bda14e2a"
+    },
+    {
+      "name": "Home-row-_Jo",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement; includes its terminating semicolon",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9845318,
+        9849951
+      ],
+      "utf16_half_open": [
+        9799764,
+        9804397
+      ],
+      "bytes": 4633,
+      "sha256": "e9d9cff5d2c849eeee2425d64cfb94bb6283ba19b2e3e836e07ab762510344ea"
+    },
+    {
+      "name": "command-component-P6",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement; closes parent var statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2912384,
+        2912493
+      ],
+      "utf16_half_open": [
+        2911938,
+        2912047
+      ],
+      "bytes": 109,
+      "sha256": "9b57d93a69e00511c26ce27dfc26117a75a0a2f70492d5f3436f58f4351df3bc",
+      "file": "command-component-P6.js.txt",
+      "exact_asset_match": true
+    }
+  ],
+  "verified_fragments": [
+    {
+      "span": "Home-UJo",
+      "source": "p.jsxs(KV,{shouldFilter:!1,disablePointerSelection:!0",
+      "relative_utf8_start": 10855,
+      "sha256": "29d921e1902f51f6dd9fdee4f27e3b6d11c64f475ed14087f6244572df1eb4bb"
+    },
+    {
+      "span": "Home-command-root-KV",
+      "source": "p.jsx(P6,{ref:e,className:o,...r})",
+      "relative_utf8_start": 271,
+      "sha256": "ceaf79215d48c5736f43fa78372f497237ae881009fa532c414316dc38f812c6"
+    },
+    {
+      "span": "command-component-P6",
+      "source": "P6=Object.assign(Xyi,{List:$5s,Item:M5s,Input:B5s,Group:j5s,Separator:F5s,Dialog:z5s,Empty:U5s,Loading:H5s});",
+      "relative_utf8_start": 0,
+      "sha256": "9b57d93a69e00511c26ce27dfc26117a75a0a2f70492d5f3436f58f4351df3bc"
+    },
+    {
+      "span": "command-root-Xyi",
+      "source": "DJ(()=>{D(6,z)},[])",
+      "relative_utf8_start": 534,
+      "sha256": "b2c373f249b7bb1b64680765efc520cf17e0a4668ccd7b08d92b7de5addf8726"
+    },
+    {
+      "span": "command-root-Xyi",
+      "source": "de||D(5,z)",
+      "relative_utf8_start": 1085,
+      "sha256": "6108a9c0efe9c937c2ce9b0c21300838835fd2e5fb4241286c0a14cc72eb235a"
+    },
+    {
+      "span": "command-root-Xyi",
+      "source": "function z(){var ce,ae,de;let ue=G();ue&&(((ce=ue.parentElement)==null?void 0:ce.firstChild)===ue&&((de=(ae=ue.closest(Eve))==null?void 0:ae.querySelector(P5s))==null||de.scrollIntoView({block:\"nearest\"})),ue.scrollIntoView({block:\"nearest\"}))}",
+      "relative_utf8_start": 3700,
+      "sha256": "162c83f9584d92ac4a7b279439a7c35bb8f895fd2af52807cd379c9ba023b66b"
+    },
+    {
+      "span": "command-root-Xyi",
+      "source": "function X(ce){let ae=K()[ce];ae&&P.setState(\"value\",ae.getAttribute(bae))}",
+      "relative_utf8_start": 4145,
+      "sha256": "2fde2fd4b6e2a309a9af4b7a69325259efee6c4b8d555003de7099f890735442"
+    },
+    {
+      "span": "Home-date-group-iJn",
+      "source": "heading:_",
+      "relative_utf8_start": 1207,
+      "sha256": "0458fb94cf764f6cfc0f88d3a04f1c67caab826834773301fd74d56963df22c6"
+    }
+  ],
+  "frozen_test": {
+    "path": "src/components/homeKeyboardScroll.test.ts",
+    "sha256": "85dd53c167303f33f520d37830a3ff62fcd389ace61c0bc8583879e49532358a"
+  },
+  "source_unit_results": {
+    "red": {
+      "pass": 3,
+      "fail": 5
+    },
+    "green": {
+      "pass": 8,
+      "fail": 0
+    },
+    "adjacent": {
+      "pass": 94,
+      "fail": 0
+    },
+    "integrated": {
+      "pass": 164,
+      "fail": 0
+    }
+  },
+  "browser": "NOT_RUN",
+  "native": "NOT_RUN",
+  "package": "NOT_VERIFIED",
+  "limits": [
+    "Spans treated as untrusted data, not executed.",
+    "DOM scrolling is a spy on the mounted production component, not a DOM layout or viewport observation.",
+    "No new REA acquisition or semantic analysis; previous semantic-heap REA gap unchanged.",
+    "No browser, Mac/native, server, app runtime, dependency install, package, workflow dispatch or rerun.",
+    "Selector-symbol declarations Eve/P5s are not in the retained endpoint receipt; date-group heading interpretation is source-level, not observed native acceptance."
+  ]
+}

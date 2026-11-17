@@ -1,0 +1,117 @@
+(node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:89) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: section creation unpins its captured workspace without changing unrelated pins or old section membership
+not ok 1 - section creation unpins its captured workspace without changing unrelated pins or old section membership
+  ---
+  duration_ms: 158.871765
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/.oc-tmp/census-1148/1033-baseline/src/state/createSectionUnpin.test.ts:63:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    10 !== undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual: 10
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/.oc-tmp/census-1148/1033-baseline/src/state/createSectionUnpin.test.ts:66:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: removing a workspace after section creation does not resurrect its previous pin
+not ok 2 - removing a workspace after section creation does not resurrect its previous pin
+  ---
+  duration_ms: 81.177634
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/.oc-tmp/census-1148/1033-baseline/src/state/createSectionUnpin.test.ts:73:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    10 !== undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual: 10
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/.oc-tmp/census-1148/1033-baseline/src/state/createSectionUnpin.test.ts:77:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: plain section creation preserves every existing pin
+ok 3 - plain section creation preserves every existing pin
+  ---
+  duration_ms: 45.160918
+  type: 'test'
+  ...
+# Subtest: actual desktop store persists creation's unpin and keeps it after remove and hydration
+not ok 4 - actual desktop store persists creation's unpin and keeps it after remove and hydration
+  ---
+  duration_ms: 68.342261
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/.oc-tmp/census-1148/1033-baseline/src/state/createSectionUnpin.test.ts:158:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    creation must write the unpin, not merely hide a pinned row in the section
+    + actual - expected
+    
+    + '2026-01-01 00:00:00'
+    - null
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ~
+  actual: '2026-01-01 00:00:00'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/.oc-tmp/census-1148/1033-baseline/src/state/createSectionUnpin.test.ts:162:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: actual desktop plain creation writes no unpin
+ok 5 - actual desktop plain creation writes no unpin
+  ---
+  duration_ms: 46.932465
+  type: 'test'
+  ...
+# conductor.db: could not save sidebar sections Error: Synthetic rejected layout write
+#     at invoke (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/.oc-tmp/census-1148/1033-baseline/src/state/createSectionUnpin.test.ts:102:49)
+#     at evalmachine.<anonymous>:352:27
+#     at commitHookEffectListMount (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:13038:26)
+#     at commitPassiveMountOnFiber (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14461:11)
+#     at commitPassiveMountEffects_complete (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14421:9)
+#     at commitPassiveMountEffects_begin (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14408:7)
+#     at commitPassiveMountEffects (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14396:3)
+#     at flushPassiveEffectsImpl (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16287:3)
+#     at flushPassiveEffects (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16236:14)
+#     at /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16051:9
+# Subtest: rejected section creation does not persist an unpin and preserves its existing error callback
+ok 6 - rejected section creation does not persist an unpin and preserves its existing error callback
+  ---
+  duration_ms: 63.384743
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 3
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1022.826162

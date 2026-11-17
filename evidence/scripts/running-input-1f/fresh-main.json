@@ -1,0 +1,48 @@
+{
+  "head": "15e87440daa703030f4c402e7a41b9221a149768",
+  "checks": [
+    {
+      "path": "src/components/ScriptOutput.tsx",
+      "sha256": "457c704260558013306063815f21f8dc79aba56404283f165adfa07db61aafcf",
+      "unchanged_from_qualified_snapshot": true
+    },
+    {
+      "path": "src/components/ScriptsPanel.tsx",
+      "sha256": "7da73eb9ef1e1c7e778fcaa956007d46d6ecb4606e8a8f46fc8657e82d8f5079",
+      "unchanged_from_qualified_snapshot": true
+    },
+    {
+      "path": "src/scripts/api.ts",
+      "sha256": "271b21e1fe4cbc250b8e4281bd30395ba1cf7b6b29a1b95a7e60e60db0cf207b",
+      "unchanged_from_qualified_snapshot": true
+    },
+    {
+      "path": "src-tauri/src/scripts.rs",
+      "sha256": "2818a2dce87fae8d02c331a37f81c3ff54f10c9606de43db2c91dc8aaecc9bcb",
+      "unchanged_from_qualified_snapshot": true
+    },
+    {
+      "path": "src-tauri/src/lib.rs",
+      "sha256": "6b7cc94ce8b0825192bfeb57a37b65d93e792dc703bb7bb2d5124261eab70ba3",
+      "unchanged_from_qualified_snapshot": true
+    },
+    {
+      "path": "crates/scripts/src/launch.rs",
+      "sha256": "15b53a7fbb001df67e1fe0630c6634cfa5e314c512187df4d607e544454437b1",
+      "unchanged_from_qualified_snapshot": true
+    },
+    {
+      "path": "crates/scripts/src/runner.rs",
+      "sha256": "5dc6df453b77aac5c21921f6608d9cc2742fed29d96984e811f47ff1cbcbc009",
+      "unchanged_from_qualified_snapshot": true
+    },
+    {
+      "path": "crates/scripts/src/service.rs",
+      "sha256": "cea7ea4700ac0ad8a831d3b5e4f33b2823353af4df357d4e5f55117178f59c97",
+      "unchanged_from_qualified_snapshot": true
+    }
+  ],
+  "fixture_sha256": "5f02c1af0f5753a219e7749543beb6c2b6f6671d64c68a1bd9de1c43db8bdda1",
+  "fixture_status": "PREPARED_NOT_RUN",
+  "native": "NOT_RUN"
+}

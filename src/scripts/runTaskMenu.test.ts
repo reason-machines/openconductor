@@ -196,14 +196,14 @@ test("actual Run menu Configure opens settings without starting a task", async (
   assert.equal(f.shown(), 0);
 });
 
-test("actual primary Run and Stop retain their existing script commands", async (t) => {
+test("actual primary Run retains its command and Stop targets the displayed task", async (t) => {
   const f = await fixture();
   t.after(f.close);
   await f.primary("Run Dev");
   await f.primary("Stop Dev");
   assert.deepEqual(f.commands, [
     { name: "run_script_start", args: { workspace: expectedRef, scriptId: "dev" } },
-    { name: "run_script_stop", args: { workspaceId: workspace.id, scriptId: null } },
+    { name: "run_script_stop", args: { workspaceId: workspace.id, scriptId: "dev" } },
   ]);
 });
 

@@ -1,0 +1,86 @@
+(node:97) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:104) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# chat: transcript not saved Error: synthetic save failure
+#     at ChatSaver.save (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/ownerDrain.test.ts:75:74)
+#     at ChatSaver.writePending (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/persist.ts:208:20)
+#     at ChatSaver.flush (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/features/chat/persist.ts:190:26)
+#     at TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/ownerDrain.test.ts:77:15)
+#     at Test.runInAsyncScope (node:async_hooks:214:14)
+#     at Test.run (node:internal/test_runner/test:1047:25)
+#     at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+#     at Test.postRun (node:internal/test_runner/test:1173:19)
+#     at Test.run (node:internal/test_runner/test:1101:12)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+# (node:104) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+# Subtest: actual ChatSaver drain waits for a write already started by background flush
+ok 1 - actual ChatSaver drain waits for a write already started by background flush
+  ---
+  duration_ms: 12.424424
+  type: 'test'
+  ...
+# Subtest: actual ChatSaver drain includes a transcript queued while its first save is active
+ok 2 - actual ChatSaver drain includes a transcript queued while its first save is active
+  ---
+  duration_ms: 2.347448
+  type: 'test'
+  ...
+# Subtest: actual ChatSaver drain reports a rejected save without changing background retry policy
+ok 3 - actual ChatSaver drain reports a rejected save without changing background retry policy
+  ---
+  duration_ms: 16.655522
+  type: 'test'
+  ...
+# Subtest: actual LocalStorageClient drain waits for an in-flight mutating IPC
+ok 4 - actual LocalStorageClient drain waits for an in-flight mutating IPC
+  ---
+  duration_ms: 5.947495
+  type: 'test'
+  ...
+# Subtest: actual LocalStorageClient drain cannot translate a logical refusal into success
+ok 5 - actual LocalStorageClient drain cannot translate a logical refusal into success
+  ---
+  duration_ms: 0.442327
+  type: 'test'
+  ...
+# Subtest: actual ComposerDrafts drain includes work queued before the local-storage client sees it
+ok 6 - actual ComposerDrafts drain includes work queued before the local-storage client sees it
+  ---
+  duration_ms: 0.701613
+  type: 'test'
+  ...
+# Subtest: actual ComposerDrafts drain preserves a false save result despite its fulfilled continuation tail
+ok 7 - actual ComposerDrafts drain preserves a false save result despite its fulfilled continuation tail
+  ---
+  duration_ms: 118.426708
+  type: 'test'
+  ...
+# Subtest: actual ComposerSession drain submits its debounced text and waits for acknowledgment
+ok 8 - actual ComposerSession drain submits its debounced text and waits for acknowledgment
+  ---
+  duration_ms: 17.551299
+  type: 'test'
+  ...
+# Subtest: actual ComposerSession drain treats a refused draft save as unsafe
+ok 9 - actual ComposerSession drain treats a refused draft save as unsafe
+  ---
+  duration_ms: 4.525498
+  type: 'test'
+  ...
+# Subtest: actual ComposerSession disconnect cannot erase a pending persistence obligation
+ok 10 - actual ComposerSession disconnect cannot erase a pending persistence obligation
+  ---
+  duration_ms: 3.35969
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2452.142679

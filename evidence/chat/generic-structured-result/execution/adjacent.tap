@@ -1,0 +1,338 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude Code, Reason and Codex give Conductor the same tool calls for one turn
+ok 1 - Claude Code, Reason and Codex give Conductor the same tool calls for one turn
+  ---
+  duration_ms: 3.125115
+  type: 'test'
+  ...
+# Subtest: Codex: the shell wrapper is dropped and single command actions become Read/Grep/LS (Conductor's Kst)
+ok 2 - Codex: the shell wrapper is dropped and single command actions become Read/Grep/LS (Conductor's Kst)
+  ---
+  duration_ms: 0.353093
+  type: 'test'
+  ...
+# Subtest: Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)
+ok 3 - Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)
+  ---
+  duration_ms: 0.266498
+  type: 'test'
+  ...
+# Subtest: Codex: MCP tool calls are mcp__server__tool with their arguments
+ok 4 - Codex: MCP tool calls are mcp__server__tool with their arguments
+  ---
+  duration_ms: 0.367575
+  type: 'test'
+  ...
+# Subtest: Reason: a tool with no Claude Code counterpart keeps its title for Conductor's generic row
+ok 5 - Reason: a tool with no Claude Code counterpart keeps its title for Conductor's generic row
+  ---
+  duration_ms: 0.179882
+  type: 'test'
+  ...
+# Subtest: row text: Read lines, Grep matches, generic summary
+ok 6 - row text: Read lines, Grep matches, generic summary
+  ---
+  duration_ms: 1.111941
+  type: 'test'
+  ...
+# Subtest: line counts follow a line diff
+ok 7 - line counts follow a line diff
+  ---
+  duration_ms: 0.217837
+  type: 'test'
+  ...
+# Subtest: every kind in Conductor's registry resolves by name or prefix (D1o, P1o)
+ok 8 - every kind in Conductor's registry resolves by name or prefix (D1o, P1o)
+  ---
+  duration_ms: 0.291065
+  type: 'test'
+  ...
+# Subtest: Skill and SlashCommand labels (_po, Cpo)
+ok 9 - Skill and SlashCommand labels (_po, Cpo)
+  ---
+  duration_ms: 0.691925
+  type: 'test'
+  ...
+# Subtest: a sub-agent row needs a type other than general-purpose (bpo vs Ypo)
+ok 10 - a sub-agent row needs a type other than general-purpose (bpo vs Ypo)
+  ---
+  duration_ms: 0.426466
+  type: 'test'
+  ...
+# Subtest: AskUserQuestion results (Tpo)
+ok 11 - AskUserQuestion results (Tpo)
+  ---
+  duration_ms: 0.419233
+  type: 'test'
+  ...
+# Subtest: task results parse from JSON and from Claude Code's text (epo, jki)
+ok 12 - task results parse from JSON and from Claude Code's text (epo, jki)
+  ---
+  duration_ms: 0.716613
+  type: 'test'
+  ...
+# Subtest: terminal output, background status and file names (Dpo, R0o, xZe)
+ok 13 - terminal output, background status and file names (Dpo, R0o, xZe)
+  ---
+  duration_ms: 0.260623
+  type: 'test'
+  ...
+# Subtest: swarm messages and wake-ups (qpo, Spo)
+ok 14 - swarm messages and wake-ups (qpo, Spo)
+  ---
+  duration_ms: 0.285261
+  type: 'test'
+  ...
+# Subtest: Codex collaboration calls (_0o)
+ok 15 - Codex collaboration calls (_0o)
+  ---
+  duration_ms: 0.599917
+  type: 'test'
+  ...
+# (node:93) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: generic tool title matches shipped literal: tool-search
+ok 16 - generic tool title matches shipped literal: tool-search
+  ---
+  duration_ms: 385.572441
+  type: 'test'
+  ...
+# Subtest: generic tool title matches shipped literal: monitor
+ok 17 - generic tool title matches shipped literal: monitor
+  ---
+  duration_ms: 154.838851
+  type: 'test'
+  ...
+# Subtest: generic tool title matches shipped literal: conductor-read-config
+ok 18 - generic tool title matches shipped literal: conductor-read-config
+  ---
+  duration_ms: 164.331868
+  type: 'test'
+  ...
+# Subtest: generic tool title matches shipped literal: conductor-read-build
+ok 19 - generic tool title matches shipped literal: conductor-read-build
+  ---
+  duration_ms: 64.225735
+  type: 'test'
+  ...
+# Subtest: generic tool title matches shipped literal: conductor-workspace-control
+ok 20 - generic tool title matches shipped literal: conductor-workspace-control
+  ---
+  duration_ms: 70.590124
+  type: 'test'
+  ...
+# Subtest: generic tool title matches shipped literal: conductor-list-control
+ok 21 - generic tool title matches shipped literal: conductor-list-control
+  ---
+  duration_ms: 43.514615
+  type: 'test'
+  ...
+# Subtest: generic tool title matches shipped literal: conductor-create-control
+ok 22 - generic tool title matches shipped literal: conductor-create-control
+  ---
+  duration_ms: 43.343086
+  type: 'test'
+  ...
+# Subtest: generic tool title matches shipped literal: conductor-update-control
+ok 23 - generic tool title matches shipped literal: conductor-update-control
+  ---
+  duration_ms: 49.932928
+  type: 'test'
+  ...
+# Subtest: generic tool title matches shipped literal: ordinary-mcp-words-control
+ok 24 - generic tool title matches shipped literal: ordinary-mcp-words-control
+  ---
+  duration_ms: 51.835199
+  type: 'test'
+  ...
+# Subtest: generic tool title matches shipped literal: ordinary-mcp-prefix-control
+ok 25 - generic tool title matches shipped literal: ordinary-mcp-prefix-control
+  ---
+  duration_ms: 47.048201
+  type: 'test'
+  ...
+# Subtest: generic tool title matches shipped literal: ordinary-mcp-camel-control
+ok 26 - generic tool title matches shipped literal: ordinary-mcp-camel-control
+  ---
+  duration_ms: 40.862418
+  type: 'test'
+  ...
+# (node:101) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: generated-image disclosure: plain-explanation
+ok 27 - generated-image disclosure: plain-explanation
+  ---
+  duration_ms: 249.381434
+  type: 'test'
+  ...
+# Subtest: generated-image disclosure: unsupported-svg
+ok 28 - generated-image disclosure: unsupported-svg
+  ---
+  duration_ms: 108.248775
+  type: 'test'
+  ...
+# Subtest: generated-image disclosure: recognized-png
+ok 29 - generated-image disclosure: recognized-png
+  ---
+  duration_ms: 86.832489
+  type: 'test'
+  ...
+# Subtest: generated-image disclosure: pending-no-result
+ok 30 - generated-image disclosure: pending-no-result
+  ---
+  duration_ms: 57.942741
+  type: 'test'
+  ...
+# Subtest: generated-image disclosure: read-still-collapsible
+ok 31 - generated-image disclosure: read-still-collapsible
+  ---
+  duration_ms: 50.560231
+  type: 'test'
+  ...
+# (node:109) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Terminal output raw-result disclosure: number-success
+ok 32 - Terminal output raw-result disclosure: number-success
+  ---
+  duration_ms: 24.396444
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: number-error
+ok 33 - Terminal output raw-result disclosure: number-error
+  ---
+  duration_ms: 3.720828
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: boolean-success
+ok 34 - Terminal output raw-result disclosure: boolean-success
+  ---
+  duration_ms: 2.609363
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: boolean-error
+ok 35 - Terminal output raw-result disclosure: boolean-error
+  ---
+  duration_ms: 2.118698
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: null-success
+ok 36 - Terminal output raw-result disclosure: null-success
+  ---
+  duration_ms: 2.229401
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: null-error
+ok 37 - Terminal output raw-result disclosure: null-error
+  ---
+  duration_ms: 2.01901
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: object-success
+ok 38 - Terminal output raw-result disclosure: object-success
+  ---
+  duration_ms: 2.065334
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: object-error
+ok 39 - Terminal output raw-result disclosure: object-error
+  ---
+  duration_ms: 2.009002
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: array-success
+ok 40 - Terminal output raw-result disclosure: array-success
+  ---
+  duration_ms: 2.354932
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: array-error
+ok 41 - Terminal output raw-result disclosure: array-error
+  ---
+  duration_ms: 2.223765
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: quoted-success
+ok 42 - Terminal output raw-result disclosure: quoted-success
+  ---
+  duration_ms: 2.094018
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: quoted-error
+ok 43 - Terminal output raw-result disclosure: quoted-error
+  ---
+  duration_ms: 1.897079
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: encoded-blocks-success
+ok 44 - Terminal output raw-result disclosure: encoded-blocks-success
+  ---
+  duration_ms: 1.757112
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: encoded-blocks-error
+ok 45 - Terminal output raw-result disclosure: encoded-blocks-error
+  ---
+  duration_ms: 1.653986
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: ordinary-array
+ok 46 - Terminal output raw-result disclosure: ordinary-array
+  ---
+  duration_ms: 1.513105
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: ordinary-string
+ok 47 - Terminal output raw-result disclosure: ordinary-string
+  ---
+  duration_ms: 1.754977
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: string-number-remains-hidden
+ok 48 - Terminal output raw-result disclosure: string-number-remains-hidden
+  ---
+  duration_ms: 0.885733
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: string-json-blocks-decoded
+ok 49 - Terminal output raw-result disclosure: string-json-blocks-decoded
+  ---
+  duration_ms: 1.842226
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: empty-array
+ok 50 - Terminal output raw-result disclosure: empty-array
+  ---
+  duration_ms: 0.867028
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: pending
+ok 51 - Terminal output raw-result disclosure: pending
+  ---
+  duration_ms: 0.773676
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: legacy-no-raw-result
+ok 52 - Terminal output raw-result disclosure: legacy-no-raw-result
+  ---
+  duration_ms: 1.655261
+  type: 'test'
+  ...
+# Subtest: Terminal output raw-result disclosure: unsupported-raw-object
+ok 53 - Terminal output raw-result disclosure: unsupported-raw-object
+  ---
+  duration_ms: 1.027729
+  type: 'test'
+  ...
+1..53
+# tests 53
+# suites 0
+# pass 53
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3640.505765

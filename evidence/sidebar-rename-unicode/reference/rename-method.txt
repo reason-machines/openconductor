@@ -1,0 +1,1 @@
+async renameWorkspace(e){await this.queueTaskForWorkspace(e.localWorkspaceId,()=>JQe(this,e))}

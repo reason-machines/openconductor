@@ -1,0 +1,82 @@
+{
+  "author": "Conductor Rebuild",
+  "source_session_id": "acc3b5c5-8a01-407e-b474-42e914e3cf90",
+  "message_id": "a02e9766-b7a9-473b-ad9f-fea250ce41f1",
+  "grant": "SAME c18 PR1170 sole bounded std-V2 backend execution",
+  "computer_id": "00637189-5c55-416e-b457-ed7419fb739a",
+  "assigned_branch": "reason/openconductor-notificati-c18e1b05",
+  "starting_head": "307ab9f7c9ddc41b27dcf346da365a1184c9f539",
+  "commands_once_serial": {
+    "restore": {
+      "command": "nice -n 19 timeout --kill-after=5s 120s cargo fetch --locked --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "stable"
+      }
+    },
+    "lock": {
+      "command": "nice -n 19 timeout --kill-after=5s 60s cargo generate-lockfile --offline --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend-std-v2/Cargo.toml",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "stable"
+      }
+    },
+    "red": {
+      "command": "nice -n 19 timeout --kill-after=5s 120s cargo test --locked --offline --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend-std-v2/Cargo.toml dot_prefix_ -- --nocapture",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "stable",
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_PROFILE_DEV_DEBUG": "0",
+        "CARGO_PROFILE_TEST_DEBUG": "0",
+        "CARGO_TARGET_DIR": "e2e-artifacts/dot-prefix-c18/rust-target"
+      }
+    },
+    "green": {
+      "command": "nice -n 19 timeout --kill-after=5s 120s cargo test --locked --offline --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend-std-v2/Cargo.toml dot_prefix_ -- --nocapture",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "stable",
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_PROFILE_DEV_DEBUG": "0",
+        "CARGO_PROFILE_TEST_DEBUG": "0",
+        "CARGO_TARGET_DIR": "e2e-artifacts/dot-prefix-c18/rust-target"
+      }
+    }
+  },
+  "limits": {
+    "target_max_bytes": 2147483648,
+    "build_jobs": 1,
+    "debug_info": 0,
+    "no_retry": true,
+    "no_native_package_provider_frontend_or_other_tests": true
+  },
+  "source_pins": [
+    {
+      "path": "evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml",
+      "bytes": 453,
+      "sha256": "e5ba2cba5878e85564af9f5c0ff97281528356747f26dacceed8ddc31d5c2253"
+    },
+    {
+      "path": "evidence/settings/custom-prefix/dot-delimiter/backend/harness.rs",
+      "bytes": 2858,
+      "sha256": "92bcfae25ee96df34a6687b450e84b4690800b3b0eaa4104c645f9e1386579ef"
+    },
+    {
+      "path": "src-tauri/src/settings/validate.rs",
+      "bytes": 5934,
+      "sha256": "e24c044bcd53405df27e2f784235afadce5f5a138f19bc97c1aa122b8946e8bb"
+    },
+    {
+      "path": "src-tauri/src/settings/model.rs",
+      "bytes": 26621,
+      "sha256": "9ce17cafd1aa17e6ff71591ee4a24cc41a904ac43fea39bba101d9b8a8041315"
+    },
+    {
+      "path": "src-tauri/src/workspace/naming.rs",
+      "bytes": 4351,
+      "sha256": "23ed6b387df42984a0e51d15dd9df2d3a8edff432b2ef28b0535ff2cd84110db"
+    },
+    {
+      "path": "crates/scripts/Cargo.toml",
+      "bytes": 558,
+      "sha256": "84c91a9383b674e6e2a79eff1e57ea66378ebb7e91d1d5ed91bdb5e6f6e2fcc7"
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: directory name: trimmed, lower-case, spaces to hyphens, other symbols dropped
+ok 1 - directory name: trimmed, lower-case, spaces to hyphens, other symbols dropped
+  ---
+  duration_ms: 2.103413
+  type: 'test'
+  ...
+# Subtest: validation messages match Conductor's
+ok 2 - validation messages match Conductor's
+  ---
+  duration_ms: 0.479083
+  type: 'test'
+  ...
+# Subtest: plan: unchanged, invalid, and what workspace_name becomes
+ok 3 - plan: unchanged, invalid, and what workspace_name becomes
+  ---
+  duration_ms: 1.675631
+  type: 'test'
+  ...
+# Subtest: dialog default: stored name, else directory name
+ok 4 - dialog default: stored name, else directory name
+  ---
+  duration_ms: 0.147073
+  type: 'test'
+  ...
+# Subtest: Also rename branch keeps the prefix up to the last slash
+ok 5 - Also rename branch keeps the prefix up to the last slash
+  ---
+  duration_ms: 0.223512
+  type: 'test'
+  ...
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: workspace rename preserves an NFC-stable nonspacing mark accepted by Conductor
+ok 6 - workspace rename preserves an NFC-stable nonspacing mark accepted by Conductor
+  ---
+  duration_ms: 11.838207
+  type: 'test'
+  ...
+# Subtest: workspace rename preserves an NFC-stable enclosing mark accepted by Conductor
+ok 7 - workspace rename preserves an NFC-stable enclosing mark accepted by Conductor
+  ---
+  duration_ms: 0.892209
+  type: 'test'
+  ...
+# Subtest: workspace rename preserves an NFC-stable spacing mark accepted by Conductor
+ok 8 - workspace rename preserves an NFC-stable spacing mark accepted by Conductor
+  ---
+  duration_ms: 0.788542
+  type: 'test'
+  ...
+# Subtest: ordinary rename normalization still matches the retained Conductor helpers
+ok 9 - ordinary rename normalization still matches the retained Conductor helpers
+  ---
+  duration_ms: 6.05351
+  type: 'test'
+  ...
+# (node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: branchNameFromMessage keeps the first content words and drops filler
+ok 10 - branchNameFromMessage keeps the first content words and drops filler
+  ---
+  duration_ms: 2.675577
+  type: 'test'
+  ...
+# Subtest: branchNameFromMessage skips code, URLs, headings and empty lines
+ok 11 - branchNameFromMessage skips code, URLs, headings and empty lines
+  ---
+  duration_ms: 0.383611
+  type: 'test'
+  ...
+# Subtest: branchNameFromMessage is empty when nothing usable is left
+ok 12 - branchNameFromMessage is empty when nothing usable is left
+  ---
+  duration_ms: 0.214145
+  type: 'test'
+  ...
+# Subtest: prefixOf keeps the branch prefix of the placeholder
+ok 13 - prefixOf keeps the branch prefix of the placeholder
+  ---
+  duration_ms: 0.117722
+  type: 'test'
+  ...
+# Subtest: planWorkspaceRename renames a placeholder city to the generated name
+ok 14 - planWorkspaceRename renames a placeholder city to the generated name
+  ---
+  duration_ms: 1.380683
+  type: 'test'
+  ...
+# Subtest: planWorkspaceRename keeps the branch prefix and stays unique among other workspaces
+ok 15 - planWorkspaceRename keeps the branch prefix and stays unique among other workspaces
+  ---
+  duration_ms: 0.202205
+  type: 'test'
+  ...
+# Subtest: planWorkspaceRename leaves user-set names, resolved placeholders and empty messages alone
+ok 16 - planWorkspaceRename leaves user-set names, resolved placeholders and empty messages alone
+  ---
+  duration_ms: 0.170364
+  type: 'test'
+  ...
+# Subtest: planWorkspaceRename renames only the branch when auto-rename is off
+ok 17 - planWorkspaceRename renames only the branch when auto-rename is off
+  ---
+  duration_ms: 0.122383
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 193.082797

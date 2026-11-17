@@ -1,0 +1,162 @@
+{
+  "grant_message_id": "07bb1609-1610-478d-a425-45a21cbb8b4a",
+  "terminal_utc": "2026-11-12T19:57:40.089608+00:00",
+  "result": "QUALIFIED_BASELINE_RED_CANDIDATE_2_PASS_CONTROLS_26_PASS",
+  "error": null,
+  "total_wall_seconds": 207.0842162980116,
+  "phases": [
+    {
+      "name": "BASELINE",
+      "argv": [
+        "env",
+        "DIFF_WORKSPACE_READ_REF=06500f5ef1230513090e42aebe0222fd4f83a72d",
+        "nice",
+        "-n",
+        "19",
+        "timeout",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--max-old-space-size=768",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/diff/workspaceCommentReadIsolation.test.ts"
+      ],
+      "start_utc": "2026-11-12T19:54:14.767927+00:00",
+      "pid": 150,
+      "exit": 1,
+      "end_utc": "2026-11-12T19:54:46.780475+00:00",
+      "wall_seconds": 32.01257455800078,
+      "counters": {
+        "tests": 2,
+        "pass": 1,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "CANDIDATE",
+      "argv": [
+        "env",
+        "-u",
+        "DIFF_WORKSPACE_READ_REF",
+        "nice",
+        "-n",
+        "19",
+        "timeout",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--max-old-space-size=768",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/diff/workspaceCommentReadIsolation.test.ts"
+      ],
+      "start_utc": "2026-11-12T19:54:46.794839+00:00",
+      "pid": 169,
+      "exit": 0,
+      "end_utc": "2026-11-12T19:55:04.400966+00:00",
+      "wall_seconds": 17.606155668996507,
+      "counters": {
+        "tests": 2,
+        "pass": 2,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "CONTROLS",
+      "argv": [
+        "env",
+        "-u",
+        "DIFF_WORKSPACE_READ_REF",
+        "nice",
+        "-n",
+        "19",
+        "timeout",
+        "--kill-after=5s",
+        "210s",
+        "node",
+        "--max-old-space-size=768",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/diff/fileCommentCountLifecycle.test.ts",
+        "src/features/chat/reviewCommentHandoff.test.ts",
+        "src/features/chat/desktopReviewHandoff.test.ts"
+      ],
+      "start_utc": "2026-11-12T19:55:04.401483+00:00",
+      "pid": 185,
+      "exit": 0,
+      "end_utc": "2026-11-12T19:57:40.087296+00:00",
+      "wall_seconds": 155.68584311401355,
+      "counters": {
+        "tests": 26,
+        "pass": 26,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    }
+  ],
+  "before": {
+    "package.json": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+    "src/features/diff/commentCancel.test.ts": "2653fc217b0b5a84b16aa1898c9907e840bb4af9719f178a596e9cf27b6607a1",
+    "src/features/diff/commentImeSubmit.test.ts": "11d997ab8694498f80c6e2708739251b098bc5a62615fc450c30c9fd50bb42f9",
+    "src/features/diff/fileCommentCountLifecycle.test.ts": "36c98be91533ffea36b9088392c94bca981ea09393a1ee177cf1da5b9f15fe71",
+    "src/features/chat/reviewCommentHandoff.test.ts": "870f5cca38eccd7af04542906839b77686dacfaaf0512d416c701b68eaf5e548",
+    "src/features/chat/desktopReviewHandoff.test.ts": "3014d822ee608201b62a81799ce3708cab9f58473426d79c1195de66cc7e37f5",
+    ".oc-tmp/diff-workspace-read-census/workspaceCommentReadIsolation.test.ts": "dffb8c0ec4cc77ebaa2916b856aced6a235ad1d63f1d5e5b27ead3ebc95cbfbd",
+    ".oc-tmp/diff-workspace-read-census/candidate.patch": "4ba95d57616775777a259687935f8b8e635e785424cac9a70fb6f4951796018f",
+    ".oc-tmp/diff-workspace-read-isolation-de6-04-source.tar.gz": "ad267de2375656f9d36fe851f2efb61d55f0a0958516e5e0d132bb9806bdcd49",
+    ".oc-tmp/diff-workspace-read-census/same275-de6-04-execution-proposal.json": "8bd96b62de591231c0fe6c694994f9ac5ee36249a12540b3940dcd8b88382b35",
+    "src/features/diff/ReviewComments.tsx": "d99a86bf5af6febefb896b85a39c717f6104a88393e4d98f09bb455eba96c1c0",
+    "src/features/diff/commentsApi.ts": "349e6916b1f4007e8d600a94e56614ca72d75acbca21617e69c93d4499c2f089",
+    "src/features/diff/commentStore.ts": "0a56b2277ef69c96dc29278865c6294aa0f6469e5afabd1d17590b9f5c674197",
+    "src/features/diff/comments.ts": "85505f99fc0f57ab7975b20b8c2670d963c713802b338235a738c2574ff0e1f8",
+    "src/features/diff/nav.ts": "f986ec599ffeaab0f6892382d1fa618522eca69f74b0f8827a6fa64c4a30b79c",
+    "assigned_head": "390027eede5f6375af67480ad42a74b628882f38",
+    "resources": {
+      "available_memory_mib": 23548.98046875,
+      "free_disk_gib": 6.134246826171875
+    },
+    "versions": {
+      "react": "18.3.1",
+      "react-test-renderer": "18.3.1",
+      "typescript": "5.9.3",
+      "fuzzysort": "3.1.0"
+    }
+  },
+  "after": {
+    "package.json": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+    "src/features/diff/commentCancel.test.ts": "2653fc217b0b5a84b16aa1898c9907e840bb4af9719f178a596e9cf27b6607a1",
+    "src/features/diff/commentImeSubmit.test.ts": "11d997ab8694498f80c6e2708739251b098bc5a62615fc450c30c9fd50bb42f9",
+    "src/features/diff/fileCommentCountLifecycle.test.ts": "36c98be91533ffea36b9088392c94bca981ea09393a1ee177cf1da5b9f15fe71",
+    "src/features/chat/reviewCommentHandoff.test.ts": "870f5cca38eccd7af04542906839b77686dacfaaf0512d416c701b68eaf5e548",
+    "src/features/chat/desktopReviewHandoff.test.ts": "3014d822ee608201b62a81799ce3708cab9f58473426d79c1195de66cc7e37f5",
+    ".oc-tmp/diff-workspace-read-census/workspaceCommentReadIsolation.test.ts": "dffb8c0ec4cc77ebaa2916b856aced6a235ad1d63f1d5e5b27ead3ebc95cbfbd",
+    ".oc-tmp/diff-workspace-read-census/candidate.patch": "4ba95d57616775777a259687935f8b8e635e785424cac9a70fb6f4951796018f",
+    ".oc-tmp/diff-workspace-read-isolation-de6-04-source.tar.gz": "ad267de2375656f9d36fe851f2efb61d55f0a0958516e5e0d132bb9806bdcd49",
+    ".oc-tmp/diff-workspace-read-census/same275-de6-04-execution-proposal.json": "8bd96b62de591231c0fe6c694994f9ac5ee36249a12540b3940dcd8b88382b35",
+    "src/features/diff/ReviewComments.tsx": "e679a1986a3dc94f870be4173f0dabc92cce9dfb8923f1b158a996edd89a5a4d",
+    "src/features/diff/commentsApi.ts": "349e6916b1f4007e8d600a94e56614ca72d75acbca21617e69c93d4499c2f089",
+    "src/features/diff/commentStore.ts": "0a56b2277ef69c96dc29278865c6294aa0f6469e5afabd1d17590b9f5c674197",
+    "src/features/diff/comments.ts": "85505f99fc0f57ab7975b20b8c2670d963c713802b338235a738c2574ff0e1f8",
+    "src/features/diff/nav.ts": "f986ec599ffeaab0f6892382d1fa618522eca69f74b0f8827a6fa64c4a30b79c",
+    "src/features/diff/workspaceCommentReadIsolation.test.ts": "dffb8c0ec4cc77ebaa2916b856aced6a235ad1d63f1d5e5b27ead3ebc95cbfbd"
+  },
+  "owned_process_groups": [
+    150,
+    169,
+    185
+  ],
+  "ownjobs": [],
+  "explicit_release": true,
+  "source_native_distinction": "NODE_REACT_NATIVE_ADAPTER_BOUNDARY_ONLY_NO_BROWSER_OR_MAC_EXECUTION"
+}

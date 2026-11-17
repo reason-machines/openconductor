@@ -1,0 +1,10 @@
+{
+  "classification": "SOURCE_REPAIR_UNRUN",
+  "original_fixture_sha256": "cf209ea9f3d1d3fad6c9b0824a904aa7d8519d4e95903c4d1c80742ca46ce592",
+  "revised_fixture_sha256": "d1c833003f89e3ff475f12ccdb3f72387387c7b418cf12b786b2115bf44859ce",
+  "ten_case_bodies_byte_identical": true,
+  "product_candidate_byte_identical": true,
+  "repair": "FixtureDocument models attribute-presence selection in document order and first modal-role/aria-modal match; its explicit element collection contains no dialogs for Home. Real provider, bind.ts traversal, dispatcher and Tooltip Escape listener remain active. Unsupported selectors fail, rather than blanket empty responses.",
+  "revalidation": "NOT_RUN_WAITING_EXISTING_ACC_CONTINUATION",
+  "prior_release": "2026-11-13T02:49:20Z"
+}

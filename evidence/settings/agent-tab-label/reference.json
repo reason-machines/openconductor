@@ -1,0 +1,165 @@
+{
+  "author": "Conductor Rebuild",
+  "kind": "RETAINED_BYTE_STATIC_SOURCE_ONLY",
+  "asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "original_upload_sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+  "retained_REA_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "spans": [
+    {
+      "name": "$pa",
+      "utf8_half_open": [
+        10629937,
+        10632219
+      ],
+      "sha256": "947269304b3f82358a188e874d19db74e187b8abee4e9845172210ed7cdeffd3",
+      "path": "reference/$pa.literal.txt"
+    },
+    {
+      "name": "vy",
+      "utf8_half_open": [
+        6940517,
+        6941594
+      ],
+      "sha256": "62d92d85a85f06580ecefd6329fe29cafcd1a5338354a3001b8b610ce7f5290a",
+      "path": "reference/vy.literal.txt"
+    },
+    {
+      "name": "Q1",
+      "utf8_half_open": [
+        6943291,
+        6943834
+      ],
+      "sha256": "b3be5063a7e5496d6fde85130085a700e4b7c1789f95b9706e1b06ee864392d4",
+      "path": "reference/Q1.literal.txt"
+    },
+    {
+      "name": "yno",
+      "utf8_half_open": [
+        6933469,
+        6935062
+      ],
+      "sha256": "8d7c2055039fc5a27148050e999c9f0d5deacc1b2e72f1231bd86d47e5e4bf72",
+      "path": "reference/yno.literal.txt"
+    },
+    {
+      "name": "_no",
+      "utf8_half_open": [
+        6930560,
+        6932869
+      ],
+      "sha256": "f433f524bef5000968e946443f5f841c4d3cd5341caddb72c79e5690a6034921",
+      "path": "reference/_no.literal.txt"
+    },
+    {
+      "name": "wm",
+      "utf8_half_open": [
+        6945432,
+        6945984
+      ],
+      "sha256": "2c2e92d2153da016a36dc8af94be9b150b9416f57f0d677e0d82c5637d4e7203",
+      "path": "reference/wm.literal.txt"
+    },
+    {
+      "name": "Tno",
+      "utf8_half_open": [
+        6935384,
+        6936061
+      ],
+      "sha256": "3304d44e901cb318f66974bab9378f24ec5c11a0b454117bb12878d0dcefd283",
+      "path": "reference/Tno.literal.txt"
+    },
+    {
+      "name": "hS",
+      "utf8_half_open": [
+        7750189,
+        7750427
+      ],
+      "sha256": "d6c84344a4083660502c6426e7ba778ac841358d8147137a40e4c9494602be9c",
+      "path": "reference/hS.literal.txt"
+    },
+    {
+      "name": "E0i",
+      "utf8_half_open": [
+        727538,
+        727904
+      ],
+      "sha256": "9ee61bf96f73871cefbed555eb666c7ada8f57f72f7353261df32a596c785480",
+      "path": "reference/E0i.literal.txt"
+    },
+    {
+      "name": "wD",
+      "utf8_half_open": [
+        698015,
+        698570
+      ],
+      "sha256": "a9f6d9eaac70ae3b8c9a4235e1807254a43dd79bedf7ff73182637ab8f9261ef",
+      "path": "reference/wD.literal.txt"
+    },
+    {
+      "name": "Sde",
+      "utf8_half_open": [
+        705854,
+        707350
+      ],
+      "sha256": "bcde61d268f35c26f4b5e28ea0eda54c276724af58e022fb8bc509841f6a68b8",
+      "path": "reference/Sde.literal.txt"
+    },
+    {
+      "name": "m9i",
+      "utf8_half_open": [
+        6939238,
+        6940413
+      ],
+      "sha256": "5f096ffe4489fbf3ca5c223a1653dce3fec81d69bbd1db6edd0af0bc054e987a",
+      "path": "reference/m9i.literal.txt"
+    },
+    {
+      "name": "mzt",
+      "utf8_half_open": [
+        6938274,
+        6939232
+      ],
+      "sha256": "d8e2d8c6c1b2357548161c9e6a0053d850eeab6439723893b8098009bff89243",
+      "path": "reference/mzt.literal.txt"
+    },
+    {
+      "name": "Ff",
+      "utf8_half_open": [
+        544855,
+        544893
+      ],
+      "sha256": "bd42b15a37bcc9a1ce900434d64feae84d5b1e0546d156fd498662639adaf454",
+      "path": "reference/Ff.literal.txt"
+    },
+    {
+      "name": "Fj",
+      "utf8_half_open": [
+        463076,
+        463323
+      ],
+      "sha256": "9fa822cc3db13f862c0b6aae9090959c2cbfd7aa99417dc52065c3c4d1d270ab",
+      "path": "reference/Fj.literal.txt"
+    },
+    {
+      "name": "prop-merge",
+      "utf8_half_open": [
+        463925,
+        465319
+      ],
+      "sha256": "5cf6e4a5da9d8413f9d2419d993015f42636d077ad8f9cb8654e393d17cd7f06",
+      "path": "reference/prop-merge.literal.txt"
+    },
+    {
+      "name": "Es-render",
+      "utf8_half_open": [
+        465319,
+        466387
+      ],
+      "sha256": "7f39c0705567d476943e1872d89c8d230668965dfcc7da26017a0a4f910a8c5e",
+      "path": "reference/Es-render.literal.txt"
+    }
+  ],
+  "qualified": "Selected panel aria-labelledby resolves via tab metadata registry to actual selected tab ID.",
+  "not_qualified": "Reciprocal aria-controls resolution: later hS id overrides rendered panel id while registry keeps generated panel id.",
+  "limit": "Original app/archive not freshly opened or revalidated; retained shipped bytes freshly hashed. No reference JavaScript evaluation or native observation. Historical semantic REA renderer analysis exhausted heap; static retained-span boundary only."
+}

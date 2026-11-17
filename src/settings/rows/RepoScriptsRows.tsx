@@ -10,6 +10,7 @@
 //    Delete (repository-local scripts), Cancel, Save ⌘↵;
 //  - "Want to share scripts with your team? Create a .conductor/settings.toml file" while
 //    no shared settings set any script.
+import { usePendingEdit } from "../../lib/persistence/producer.ts";
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { openUrl } from "../../backend";
 import { scriptsConfig } from "../../scripts/api";
@@ -88,6 +89,7 @@ export function RepoScriptsRows({ repo, notify }: { repo: Repo; notify?: Notify 
       <div className="settings-rows">
         <ScriptRow
           id="setup_script"
+          scope={repo.path}
           title="Setup script"
           description="Runs when a new workspace is created"
           filePath="setup.sh"
@@ -97,6 +99,7 @@ export function RepoScriptsRows({ repo, notify }: { repo: Repo; notify?: Notify 
         />
         <ScriptRow
           id="archive_script"
+          scope={repo.path}
           title="Archive script"
           description="Runs before a workspace is archived"
           filePath="archive.sh"
@@ -126,7 +129,7 @@ export function RepoScriptsRows({ repo, notify }: { repo: Repo; notify?: Notify 
 }
 
 /** Conductor's `fei`: a titled shell editor that saves itself. */
-function ScriptRow(props: { id: string; title: string; description: string; filePath: string; value: string; disabled: boolean; onSave: (v: string) => Promise<boolean> }) {
+function ScriptRow(props: { id: string; scope: string; title: string; description: string; filePath: string; value: string; disabled: boolean; onSave: (v: string) => Promise<boolean> }) {
   const { value, onSave, disabled } = props;
   const [local, setLocal] = useState(value);
   const saved = useRef(value);
@@ -137,16 +140,17 @@ function ScriptRow(props: { id: string; title: string; description: string; file
     if (!focused.current && value !== saved.current) setLocal(value);
     saved.current = value;
   }, [value]);
-  const save = useCallback(
-    (v: string) => {
+  const persist = useCallback(
+    async (v: string) => {
       window.clearTimeout(timer.current);
       if (v === saved.current) return;
       saved.current = v;
-      void onSave(v);
+      return onSave(v);
     },
     [onSave],
   );
-  useEffect(() => () => window.clearTimeout(timer.current), []);
+  const pending = usePendingEdit(`${props.scope}:${props.id}`, persist, () => window.clearTimeout(timer.current));
+  const save = useCallback((value: string) => { pending.change(value); pending.flush(); }, [pending]);
   return (
     <Row label={props.title} help={props.description} stacked>
       <ScriptEditor
@@ -161,6 +165,7 @@ function ScriptRow(props: { id: string; title: string; description: string; file
         }}
         onChange={(v) => {
           setLocal(v);
+          pending.change(v);
           window.clearTimeout(timer.current);
           timer.current = window.setTimeout(() => save(v), SAVE_DEBOUNCE_MS);
         }}

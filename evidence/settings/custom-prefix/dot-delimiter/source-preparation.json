@@ -1,0 +1,368 @@
+{
+  "author": "Conductor Rebuild",
+  "unit": "DOT-PREFIX-DELIMITER-49-02",
+  "checked_main": "fdcb381d07c3252c3c3e20bc6af881a6d2d43a0a",
+  "checkout_tree_matches_main": true,
+  "sealed_packet_sha256": "1b162d2f6faea64ec71f207b181b6ca4f0c4c33e61237be30eb01ea150223b04",
+  "sealed_source_owner": "49e3976d-9553-42d8-8101-2504177fbb97",
+  "assets": [
+    {
+      "name": "renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    },
+    {
+      "name": "index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    }
+  ],
+  "retained_reference_spans": [
+    {
+      "name": "Joi",
+      "asset": "renderer",
+      "utf8_half_open": [
+        173776,
+        173984
+      ],
+      "sha256": "9400ed2135c1563a622cc2167b36240572eafbce087a49df8ff9207971746874",
+      "bytes": 208,
+      "path": "spans/Joi.txt",
+      "file": "Joi.txt"
+    },
+    {
+      "name": "nIn",
+      "asset": "renderer",
+      "utf8_half_open": [
+        173984,
+        174048
+      ],
+      "sha256": "95e982ba1d991a1404db4dde4f1e6c1ced0d66007e3b295f9378a96cc3915361",
+      "bytes": 64,
+      "path": "spans/nIn.txt",
+      "file": "nIn.txt"
+    },
+    {
+      "name": "Pga",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10733921,
+        10733992
+      ],
+      "sha256": "577ecb1265b4c3745a64a8eed5ba67237e0e91648f660d9b17fa9f8c14590a31",
+      "bytes": 71,
+      "path": "spans/Pga.txt",
+      "file": "Pga.txt"
+    },
+    {
+      "name": "E6t",
+      "asset": "index",
+      "utf8_half_open": [
+        414482,
+        414551
+      ],
+      "sha256": "c25e06bbd9b563c5d32d65740bf1b88b5e0aef56271bca2df08a3593cd7d5822",
+      "bytes": 69,
+      "path": "spans/E6t.txt",
+      "file": "E6t.txt"
+    },
+    {
+      "name": "A6t",
+      "asset": "index",
+      "utf8_half_open": [
+        414551,
+        414622
+      ],
+      "sha256": "f9f8714be2b00001704dabbfd84ffad2ef46fac2576b662f49488c44373dd1bd",
+      "bytes": 71,
+      "path": "spans/A6t.txt",
+      "file": "A6t.txt"
+    },
+    {
+      "name": "C2",
+      "asset": "index",
+      "utf8_half_open": [
+        3078819,
+        3079114
+      ],
+      "sha256": "82a863084d02ea5f64a1cb6da7faf25e77351f218431f3ecc6d9c053a5a429cc",
+      "bytes": 295,
+      "path": "spans/C2.txt",
+      "file": "C2.txt"
+    },
+    {
+      "name": "$Wt",
+      "asset": "index",
+      "utf8_half_open": [
+        3314068,
+        3314889
+      ],
+      "sha256": "5f2a3040900ebda989278d778b0907b6c3a341e64452c10f9718b566261701d3",
+      "bytes": 821,
+      "path": "spans/$Wt.txt",
+      "file": "$Wt.txt"
+    },
+    {
+      "name": "row-branch_prefix_type",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10728348,
+        10729848
+      ],
+      "sha256": "ade75753f7efe5c4854fbe526777b973f8d400b136c7015ab438b96c151650a3",
+      "bytes": 1500,
+      "path": "spans/row-branch_prefix_type.txt",
+      "file": "row-branch_prefix_type.txt"
+    },
+    {
+      "name": "prefix-custom-import",
+      "asset": "renderer",
+      "utf8_half_open": [
+        64142,
+        64151
+      ],
+      "sha256": "3338282a1434e181b3581b52d1007a48286fcc38ef1d256743f2f430106c386f",
+      "bytes": 9,
+      "path": "spans/prefix-custom-import.txt",
+      "file": "prefix-custom-import.txt"
+    },
+    {
+      "name": "prefix-type-import",
+      "asset": "renderer",
+      "utf8_half_open": [
+        64152,
+        64161
+      ],
+      "sha256": "4eac9c11facdc2d409f3e750f5ac69765f8482295ed3838bbe26bbe76ce4de58",
+      "bytes": 9,
+      "path": "spans/prefix-type-import.txt",
+      "file": "prefix-type-import.txt"
+    },
+    {
+      "name": "prefix-custom-export",
+      "asset": "index",
+      "utf8_half_open": [
+        3490159,
+        3490168
+      ],
+      "sha256": "baa0a56e0b6d6c70c65e5d520d6951b8fac62421ad0005e0d49a4af7a49b1e7b",
+      "bytes": 9,
+      "path": "spans/prefix-custom-export.txt",
+      "file": "prefix-custom-export.txt"
+    },
+    {
+      "name": "prefix-type-export",
+      "asset": "index",
+      "utf8_half_open": [
+        3490809,
+        3490818
+      ],
+      "sha256": "f89725ae758131ccff91fc0564c56ee30d46fb7206c3735c393759cf6a7b5ec7",
+      "bytes": 9,
+      "path": "spans/prefix-type-export.txt",
+      "file": "prefix-type-export.txt"
+    }
+  ],
+  "source_pins": [
+    {
+      "path": "src/components/CreateWorkspaceComposer.tsx",
+      "sha256": "f5556c21dd0bea700fbce5f87d5338ab247a1c3873fdccc75c6e4a0dc2c068e8",
+      "bytes": 18882,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/components/useBranchPrefix.ts",
+      "sha256": "b2c8c2b543f50d81d580a93eb1b0456812b3f29dfc7c94601b3bd52de2a0c28a",
+      "bytes": 1064,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/home/createFirstWorkspace.ts",
+      "sha256": "215f50301d3042de3dcd5b98a29b8f4eba2a113f054aad4822a739c5474c5ecf",
+      "bytes": 2141,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/home/firstWorkspace.ts",
+      "sha256": "6c26fb5f748ec2c66503a1798f890e24c11e2f21dce879987ce14af3115a6b95",
+      "bytes": 2694,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/settings/ConfigSyncDialog.tsx",
+      "sha256": "090b22ec9a11250bbbc680c5603c8e452fe03c84bf75055bc88aec0985f439e8",
+      "bytes": 7484,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/settings/GeneralPage.tsx",
+      "sha256": "9ea8990dbf1037d8f55ca2fe2a9fff33eee070dfd7a93b0c0c4fdccaa909d70b",
+      "bytes": 11258,
+      "matches_sealed": false
+    },
+    {
+      "path": "src/settings/GitPage.tsx",
+      "sha256": "60aeff4b79509b944d544ec2a4d8e72ae3f69b3662ccfb3dddfdad6fedd902fa",
+      "bytes": 7641,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/settings/SettingsView.tsx",
+      "sha256": "09a70e9c559eaebe074d1fe83c4c3c8af699763765933a8f91be2a93d469301f",
+      "bytes": 18843,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/settings/configSync.ts",
+      "sha256": "69dbee933f81f50e71cb031a7a11392dff31e82bbd39725f5c22d305491d0aac",
+      "bytes": 3738,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/settings/configSyncApi.ts",
+      "sha256": "7e566a5738d01c9fbcef988c2f03526c87e492850768d2149988b3bc97e6a1ef",
+      "bytes": 606,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/settings/configSyncHarness.cjs",
+      "sha256": "0b91715b67adbb76345f2ce2aa5ec0c131c8cd8c5542eca55f071096999565e3",
+      "bytes": 4686,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/settings/customPrefix.test.ts",
+      "sha256": "8b04f0fbe90ddd1d241ff2e0495263193868f27f2e4fc2c5df7e389c503b3d30",
+      "bytes": 1699,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/settings/customPrefixInput.test.ts",
+      "sha256": "7e378f757d7838440955733c9d1d9b907a64fd6a80b03b26768f5e7201f45e26",
+      "bytes": 4610,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/settings/model.ts",
+      "sha256": "9c718b4561c5f9925b5101ca941a6b1f3b017950ddf7a5231f1488659b40254f",
+      "bytes": 2300,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/settings/prefs.ts",
+      "sha256": "c29549a90cd52e0b69d1381fead957aec44d83ee971751bd2aee5b8a7981d663",
+      "bytes": 4731,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/settings/rows/RepoGitRows.tsx",
+      "sha256": "39d30b59f842848c452fa2d1e035e701d11891492b06f5269f4bc18398ba10ca",
+      "bytes": 4744,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/settings/types.ts",
+      "sha256": "66214090aad60a4403f7cfd5aaf0e620cf5717f5c8cd525bc86dff7dea814b6c",
+      "bytes": 8151,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/settings/useSettings.ts",
+      "sha256": "c1b933e09a3f8bb42dd39136e58b6ce32f14c669f180a1ad09a63cc37cc47211",
+      "bytes": 4404,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/workspace/api.ts",
+      "sha256": "7ffebf424d3a6cd7e6be0086d8e9dd3e14b6c41b23365f6553bbb03f9e521899",
+      "bytes": 9892,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/workspace/createFlow.ts",
+      "sha256": "c8c44d5552fdbf1d91ec4f65496ba820ee30cb7895c34944f228e76ce95e4a1c",
+      "bytes": 9693,
+      "matches_sealed": true
+    },
+    {
+      "path": "src/workspace/naming.ts",
+      "sha256": "0f51121ec08c5b14b5f5e638e0244dd002b473cafde15ee0f19a52a19597bf5e",
+      "bytes": 12743,
+      "matches_sealed": true
+    },
+    {
+      "path": "src-tauri/src/lib.rs",
+      "sha256": "a5543af825b4dd278f8fd7b53f22190c90ebfc8d436414d0b14f4a385c9d5f72",
+      "bytes": 30398,
+      "matches_sealed": true
+    },
+    {
+      "path": "src-tauri/src/settings/validate.rs",
+      "sha256": "e24c044bcd53405df27e2f784235afadce5f5a138f19bc97c1aa122b8946e8bb",
+      "bytes": 5934,
+      "matches_sealed": true
+    },
+    {
+      "path": "src-tauri/src/workspace/mod.rs",
+      "sha256": "4f9d6bea7998b10a6adbdbbb87dbda76f9574de913b007f0d13ae937e80c1bc3",
+      "bytes": 34250,
+      "matches_sealed": true
+    },
+    {
+      "path": "src-tauri/src/workspace/naming.rs",
+      "sha256": "23ed6b387df42984a0e51d15dd9df2d3a8edff432b2ef28b0535ff2cd84110db",
+      "bytes": 4351,
+      "matches_sealed": true
+    }
+  ],
+  "frozen_fixture_pins": [
+    {
+      "path": "src/settings/customPrefix.test.ts",
+      "sha256": "8b04f0fbe90ddd1d241ff2e0495263193868f27f2e4fc2c5df7e389c503b3d30",
+      "bytes": 1699,
+      "modified": false
+    },
+    {
+      "path": "src/settings/customPrefixInput.test.ts",
+      "sha256": "7e378f757d7838440955733c9d1d9b907a64fd6a80b03b26768f5e7201f45e26",
+      "bytes": 4610,
+      "modified": false
+    },
+    {
+      "path": "evidence/settings/custom-prefix/fixture/prefix.rs",
+      "sha256": "64eb03864e32c7d4108f133cc45366c9886f0edf47dd672f3d6cd9980a5ada0c",
+      "bytes": 355,
+      "modified": false
+    }
+  ],
+  "new_regression_pins": [
+    {
+      "path": "src/settings/customPrefixDotDelimiter.test.ts",
+      "sha256": "8323215cfdfb705889d4f1e419c166652dfebe97e94421bab4340b535da2e5e9",
+      "bytes": 6883
+    },
+    {
+      "path": "evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml",
+      "sha256": "e5ba2cba5878e85564af9f5c0ff97281528356747f26dacceed8ddc31d5c2253",
+      "bytes": 453
+    },
+    {
+      "path": "evidence/settings/custom-prefix/dot-delimiter/backend/harness.rs",
+      "sha256": "92bcfae25ee96df34a6687b450e84b4690800b3b0eaa4104c645f9e1386579ef",
+      "bytes": 2858
+    }
+  ],
+  "source_joins": "row \u2192 Joi/nIn \u2192 wAn/q$/A6t \u2192 branch_prefix_custom \u2192 C2 \u2192 $Wt; frontend settings/model/naming/createFlow and Rust settings/validate/naming reread at checked_main",
+  "source_drift": [
+    "src/settings/GeneralPage.tsx"
+  ],
+  "source_drift_reason": "GeneralPage notification-denial #1160; DOT input, validation, naming, creation and settings-save sources unchanged",
+  "publication_route": "Existing assigned branch retained; ordinary merge of current main gives identical tree. Declared cloud pr_open supports a new standalone PR after saved prior PR is merged. Provider successor publication not attempted yet. No branch rebind, reset, extra checkout or new publisher.",
+  "status": "SOURCE_PREP_ONLY; new frontend/Rust RED/GREEN, dependencies, Cargo lock generation and typecheck NOT_RUN; direct ACC allowance required",
+  "limits": [
+    "Retained real Conductor 0.87.6 REA excerpts only; original whole assets unavailable here. No original extracted JavaScript evaluated.",
+    "REA renderer semantic-analysis heap exhaustion retained in original source manifest.",
+    "No native setting/storage acceptance, screenshot, side-by-side UI, real Git worktree or provider operation observed.",
+    "No sanitizer, live-write timing, caret or IME changes/claims. No package/release-cut expansion. Frozen39c untouched."
+  ]
+}

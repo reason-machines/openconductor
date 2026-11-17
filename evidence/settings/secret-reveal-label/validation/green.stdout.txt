@@ -1,0 +1,36 @@
+TAP version 13
+# (node:133) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the hidden Anthropic API key action is named Reveal
+ok 1 - the hidden Anthropic API key action is named Reveal
+  ---
+  duration_ms: 158.297988
+  type: 'test'
+  ...
+# Subtest: the hidden OpenAI API key action is named Reveal
+ok 2 - the hidden OpenAI API key action is named Reveal
+  ---
+  duration_ms: 100.472474
+  type: 'test'
+  ...
+# Subtest: a configured row without a reveal callback has no reveal toggle
+ok 3 - a configured row without a reveal callback has no reveal toggle
+  ---
+  duration_ms: 64.15284
+  type: 'test'
+  ...
+# Subtest: the visible action keeps its Hide name and pressed state
+ok 4 - the visible action keeps its Hide name and pressed state
+  ---
+  duration_ms: 45.276086
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 729.19157

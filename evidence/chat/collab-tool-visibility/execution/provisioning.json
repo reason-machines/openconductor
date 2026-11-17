@@ -1,0 +1,41 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate": "CHAT.COLLAB-TOOL-VISIBILITY",
+  "grant": "a9281b04-749a-4788-abf3-b12906d932d3 narrowed by dc43762b-cf77-47e3-aaeb-3f602bdf5804",
+  "scope": "One project-scoped dependency restore only; no test admission",
+  "checkout": "reason/chat-grouping-preserve-m-838e891e",
+  "checkout_head": "554b42a269163c64ea1d274eceb8136885f0d25a",
+  "consuming_main": "3c722bf1e460157e5f3b259905bc91d09fba1e67",
+  "command": "nice -n 19 timeout --kill-after=5s 600s npm ci --ignore-scripts --no-audit --no-fund",
+  "exit_code": 0,
+  "reported_packages_added": 394,
+  "lockfile_sha256_before": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+  "lockfile_sha256_after": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+  "presence_checks_passed": [
+    "node_modules/.bin/tsc is executable",
+    "node_modules/typescript/bin/tsc exists",
+    "node_modules/@types/react/package.json exists",
+    "node_modules/react/package.json exists"
+  ],
+  "fixture_sha256": "213ef3a9a6d346e800cb5f94623cffa26c2e2f710415e65678a1444ceb2fc2e3",
+  "inputs_sha256": "476cccaed904614b3c446273765ea12349c872ee73fa02d635c86d2bdfcc11f0",
+  "product_changes": [],
+  "test_cases_executed": 0,
+  "baseline": "NOT_RUN",
+  "candidate_product": "NOT_APPLIED",
+  "green": "NOT_RUN",
+  "adjacent": "NOT_RUN",
+  "typecheck": "NOT_RUN",
+  "release_message_id": "47b7b48a-145c-42af-80c0-8d8e522df66b",
+  "ownjobs": [],
+  "limits": [
+    "Dependency presence is not behavioral verification or a typecheck.",
+    "No install retry, build, browser, native, provider, or package execution.",
+    "Foreground testing requires fresh direct admission for the existing intake."
+  ],
+  "raw_log": "restore.txt.gz",
+  "log_sha256": "101328ed339f76a5c1cee0e9c92b9e9c943efe659dcd779fe0e9def9a13b7b1a",
+  "encoding": "gzip",
+  "uncompressed_sha256": "101328ed339f76a5c1cee0e9c92b9e9c943efe659dcd779fe0e9def9a13b7b1a",
+  "stored_sha256": "0f2240ffccb10d14b244ea6ea3729946412910b70592b85792dd4a55f74a85f4"
+}

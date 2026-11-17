@@ -1,0 +1,27 @@
+{
+  "owner": "Conductor Rebuild",
+  "pr": 1081,
+  "head_sha": "80f89542d848ff9039467cfa09c496d83e1084f3",
+  "run_id": 43086658246,
+  "job_id": 130752700024,
+  "fixture_sha256": "3192bf5f922283695507ee459b3699c84a79c24355675611bb9cbaf2c635dc29",
+  "result": "intended_red",
+  "same_title": {
+    "expected": 2,
+    "actual": 1
+  },
+  "controls": {
+    "distinct_title": "passed",
+    "target_isolation_and_switchback": "passed"
+  },
+  "suite": {
+    "tests": 3041,
+    "passed": 3040,
+    "failed": 1
+  },
+  "log_excerpt": "2026-11-11T19:23:24.7583552Z   ---\n2026-11-11T19:23:24.7583839Z   duration_ms: 0.359096\n2026-11-11T19:23:24.7584157Z   type: 'test'\n2026-11-11T19:23:24.7584450Z   ...\n2026-11-11T19:23:25.0832896Z # Subtest: mounted recent-chat chips retain both same-title source transcripts in one target\n2026-11-11T19:23:25.0847414Z not ok 975 - mounted recent-chat chips retain both same-title source transcripts in one target\n2026-11-11T19:23:25.0875045Z   ---\n2026-11-11T19:23:25.0905034Z   duration_ms: 1008.299191\n2026-11-11T19:23:25.0927551Z   type: 'test'\n2026-11-11T19:23:25.0928164Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/recentTranscriptIdentity.test.ts:175:1'\n2026-11-11T19:23:25.0928811Z   failureType: 'testCodeFailure'\n2026-11-11T19:23:25.0935049Z   error: |-\n2026-11-11T19:23:25.0968119Z     two source chats must retain two attachments even when their titles coincide\n2026-11-11T19:23:25.1005009Z     \n2026-11-11T19:23:25.1014930Z     1 !== 2\n2026-11-11T19:23:25.1024932Z     \n2026-11-11T19:23:25.1054977Z   code: 'ERR_ASSERTION'\n2026-11-11T19:23:25.1075108Z   name: 'AssertionError'\n2026-11-11T19:23:25.1105035Z   expected: 2\n2026-11-11T19:23:25.1114953Z   actual: 1\n2026-11-11T19:23:25.1165000Z   operator: 'strictEqual'\n2026-11-11T19:23:25.1165485Z   stack: |-\n2026-11-11T19:23:25.1176917Z     assertBodies (file:///home/runner/work/openconductor/openconductor/src/features/chat/recentTranscriptIdentity.test.ts:167:10)\n2026-11-11T19:23:25.1196043Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/recentTranscriptIdentity.test.ts:183:5)\n2026-11-11T19:23:25.1196957Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-11T19:23:25.1197522Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n2026-11-11T19:23:25.1197948Z   ...\n2026-11-11T19:23:25.1198516Z # Subtest: mounted distinct-title recent-chat chips retain their own bodies and readable labels\n2026-11-11T19:23:25.1199274Z ok 976 - mounted distinct-title recent-chat chips retain their own bodies and readable labels\n2026-11-11T19:23:25.1199783Z   ---\n2026-11-11T19:23:25.1200049Z   duration_ms: 721.925969\n2026-11-11T19:23:25.1200374Z   type: 'test'\n2026-11-11T19:23:25.1200622Z   ...\n2026-11-11T19:23:25.1201315Z # Subtest: mounted recent-chat attachments remain isolated from another empty target and survive target switching\n2026-11-11T19:23:25.1202173Z ok 977 - mounted recent-chat attachments remain isolated from another empty target and survive target switching\n2026-11-11T19:23:25.1202727Z   ---\n2026-11-11T19:23:25.1202986Z   duration_ms: 597.18421\n2026-11-11T19:23:25.1203351Z   type: 'test'\n",
+  "limits": [
+    "Automatic hosted mounted test only",
+    "No local JavaScript, native app, provider or geometry execution"
+  ]
+}

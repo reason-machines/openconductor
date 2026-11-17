@@ -1,0 +1,1 @@
+yD=typeof CSS<"u"&&!!CSS.supports?.("-webkit-backdrop-filter:none")

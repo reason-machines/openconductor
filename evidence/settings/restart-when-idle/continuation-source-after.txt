@@ -1,0 +1,10 @@
+2026-11-12T16:40:21Z
+0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a  package-lock.json
+e9e378112804b56318edfed9b7a33925a4e3de42b77187315d233d72012a6d5f  src/features/updates/restartWhenIdle.ts
+0839e315b74003736dba89c3f3c08dc0f7bea2fe3cba2e7a37252d4ac4a9abe6  src/lib/persistence/owner.ts
+43563650aa075939f9f87adaaf79ac708783623a29c9c4c07a48bd64f32eff9b  src/lib/persistence/producer.ts
+e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/updateApp.test.ts: OK
+e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/updateAppHarness.cjs: OK
+e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/ownerDrain.test.ts: OK
+e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs: OK
+e2e-artifacts/settings-restart-idle-source-49-06/candidate/restartWhenIdle.test.ts: OK

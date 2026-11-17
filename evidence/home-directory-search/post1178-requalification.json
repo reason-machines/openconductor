@@ -1,0 +1,45 @@
+{
+  "main": "9c276e2e86c0bd7ed97c8ccd0467f30c7a8ebcab",
+  "checks": {
+    "current-main:src/home/allWorkspaces.ts": true,
+    "current-main:src/state/persisted.ts": true,
+    "current-main:src/state/types.ts": true,
+    "current-main:src/workspace/archivedList.ts": true,
+    "current-main:src/components/AllWorkspaces.tsx": true,
+    "frozen-fixture-unchanged": true,
+    "real-rea-full-asset": true,
+    "retained:AJo": true,
+    "retained:pFi": true,
+    "retained:UJo searchFields": true,
+    "minimal-patch-still-applies": true
+  },
+  "static_passed": true,
+  "fixture_executed": false,
+  "product_edited": false,
+  "reason": "Requalify retained UJo directoryName search mapping and current-main persisted\u2192archivedFromRows\u2192homeRows caller at post1178 merge; custom display title remains separate",
+  "reference": {
+    "mode": "Retained decoded shipped JavaScript only; no target execution",
+    "app": "Conductor 0.87.6",
+    "asset": "renderApp-D_fmY7hW.js",
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "parentReaEvidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "excerpts": [
+      {
+        "symbol": "AJo",
+        "utf16Offset": 9811102,
+        "excerpt": "function AJo({query:t,fields:e}){const n=[...sJn.map(o=>e[o]),e.prNumber===void 0?\"\":`#${e.prNumber}`].join(\" \").toLowerCase();if(!hFi(t).every(o=>n.includes(o)))return;const r={};for(const o of sJn){const a=TJo({query:t,text:e[o]});a&&(r[o]=a)}return r}"
+      },
+      {
+        "symbol": "pFi",
+        "utf16Offset": 9811356,
+        "excerpt": "function pFi({query:t,fields:e}){const n=t.trim().toLowerCase(),i=e.number===void 0?void 0:kJo({normalizedQuery:n,number:e.number}),r=AJo({query:t,fields:e});return i===void 0?r:{...r,number:i}}"
+      },
+      {
+        "symbol": "UJo searchFields",
+        "utf16Offset": 9822370,
+        "excerpt": "Fo={name:Eu,branch:Ra??hi.branch??\"\",directory:hi.directoryName,repo:fo,number:hi.number,prNumber:v.workspacePrNumber[hi.localId]}"
+      }
+    ]
+  },
+  "runtime_status": "Not run; existing allocator only; no new queue or executor"
+}

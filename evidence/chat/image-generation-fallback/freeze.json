@@ -1,0 +1,113 @@
+{
+  "status": "FROZEN_BEFORE_FIRST_AUTOMATIC_HOSTED_PUSH; BEHAVIOR_NOT_RUN",
+  "main": "382da31580a5698feb223e1a3607fc79119fb77a",
+  "integration_head": "2bed32b3de514ef94463e37048a402f841394ac5",
+  "branch": "reason/openconductor-omit-nonco-8e693aec",
+  "packet_sha256": "6a067db8dc28e21227f90aac9657c4f32034d608671f4a5edf52961adacac138",
+  "case_count": 5,
+  "required_red": [
+    "IMAGE_FALLBACK_TEXT_MUST_NOT_TOGGLE",
+    "IMAGE_FALLBACK_SVG_MUST_NOT_TOGGLE"
+  ],
+  "required_controls": [
+    "recognized-png",
+    "pending-no-result",
+    "read-still-collapsible"
+  ],
+  "files": {
+    "src/features/chat/imageGenerationFallbackDisclosure.test.ts": {
+      "sha256": "fda98fbf25946d1a56c60c735829f578b4cebbd0391beae977c8ed358070e274",
+      "git_blob": "09cbe8eea13d2320245824e2b7ebbf8a142c0f42",
+      "size": 10849
+    },
+    "evidence/chat/image-generation-fallback/contract.json": {
+      "sha256": "c55f8c098fe30fe859da3f65cbfd99d2db0ca6cf8efa0ad829564d018d197720",
+      "git_blob": "519ada7b7b60cb3b8b3f6a358003f6de512c5bb2",
+      "size": 2742
+    },
+    "evidence/chat/image-generation-fallback/reference/Mu.txt": {
+      "sha256": "2a88a2516341f7a98563d2f4b2a602ac9c0acc584282cd01cf54a011e3e4231d",
+      "git_blob": "27718f8c55aa34c317a0d6e59fe2ca20c1530443",
+      "size": 3060
+    },
+    "evidence/chat/image-generation-fallback/reference/Vpo.txt": {
+      "sha256": "6d911dd3b8b2545b1e6d92ba1a92ded17fd526ed610e3225ebe683613a698052",
+      "git_blob": "0456a6717daffa52833576af5718fdf1497eb0ca",
+      "size": 2597
+    },
+    "evidence/chat/image-generation-fallback/reference/image-registry.txt": {
+      "sha256": "c522187d85664c8e98c64f69dee4a4dab808a2d67438aeaee94f6aff3e842025",
+      "git_blob": "313cd48a895bdd751f9e138e399eb1f08463d8a8",
+      "size": 408
+    },
+    "evidence/chat/image-generation-fallback/reference/kind-registry.txt": {
+      "sha256": "82bf4797d8d524aad26778056a4701f782dd13d9238d46c756c192616dbb35fc",
+      "git_blob": "3a6da56ca3f51ef77edcc70c874698e3016859ec",
+      "size": 1323
+    },
+    "evidence/chat/image-generation-fallback/reference/ole.txt": {
+      "sha256": "5e3f1e023c8544d37516cc55b8044e40aff945803ae2a56604178aaf747345fb",
+      "git_blob": "29d785eaa7a7635568cfecd2ffaba3dc51367251",
+      "size": 121
+    },
+    "evidence/chat/image-generation-fallback/reference/row-dispatch.txt": {
+      "sha256": "8615388276313440b915568298d71e793657568c52cb33cab6c55a0553d3b65a",
+      "git_blob": "49322e0c62efbdbacc57c4b17cf148373f946d00",
+      "size": 1143
+    },
+    "evidence/chat/image-generation-fallback/reference/yZe.txt": {
+      "sha256": "01dbd6e303744c4afe64f11cd62e68efccaa99474282581024941563fa676cc4",
+      "git_blob": "8e5da3000844cb143be35792273bdb1e471e3e73",
+      "size": 9177
+    },
+    "evidence/chat/image-generation-fallback/reference/zpo.txt": {
+      "sha256": "7826ae5d33c1e134a23a63ce59d0baaaa4ae753c2f7a109bb9febe2db0d31bcc",
+      "git_blob": "a434af5c474ebda230ec5469d38eb7bdcb0c0f0a",
+      "size": 114
+    }
+  },
+  "production_unchanged": {
+    "src/features/chat/ToolRows.tsx": {
+      "sha256": "6aa1f21d4070ebcaf3f4cdbbbce1b9c61e3efe89351314297824eaa3251db4b3",
+      "git_blob": "0772338ea078b080afbd552508a86bca8d1b3db2",
+      "size": 51107
+    },
+    "src/features/chat/Transcript.tsx": {
+      "sha256": "9eaed365c64969578273f4ab1f9af24ecb83f62eb32ed726a71ca35e4021d153",
+      "git_blob": "7db68a2b1786c20d0f6eb9d10860f2901cd3272c",
+      "size": 21096
+    },
+    "src/features/chat/conductorTools.ts": {
+      "sha256": "df5a568960c64e53f4b1a40b9c634024b3fa78d34121cdced974a162742387b0",
+      "git_blob": "1b899339620f130ecbb2f39a1131de8a4c04ea68",
+      "size": 29723
+    },
+    "src/features/chat/toolIconData.ts": {
+      "sha256": "ffe817145ad34b2934ebd204f17456b040d76f999f7758e8de1feba1388429f9",
+      "git_blob": "49ea630c09583bdfe1e7277f8d819b1004e83d4b",
+      "size": 31316
+    },
+    "src/features/chat/thinkingChip.ts": {
+      "sha256": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9",
+      "git_blob": "d5c20ab6cc0b81d6e1aa0482bc91d21f19dc1afb",
+      "size": 453
+    },
+    "src/features/chat/reason.ts": {
+      "sha256": "403e62172114f30d3cc8d10801a74f99036f0f1dfa1adde24a7081fb92ffca77",
+      "git_blob": "e151fc11c5488e29fdc4af684b45e168a25249fe",
+      "size": 13429
+    },
+    "src/features/chat/reducer.ts": {
+      "sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+      "git_blob": "aa9847dcc0b5030b82f1e72496f408834db9d064",
+      "size": 5906
+    },
+    "src/features/chat/view.ts": {
+      "sha256": "ad06d3dd52bd0b1a76bf9a02878ac6feb7079e88e9906350beb00b751da7d4db",
+      "git_blob": "7cbdc5e96ce4c312e5cab71a1a47ee81be24ada1",
+      "size": 8612
+    }
+  },
+  "local_execution": "NOT_RUN; SOURCE_PYTHON_GIT_ONLY",
+  "native_visual_acceptance": "NOT_RUN"
+}

@@ -1,0 +1,38 @@
+(node:52) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual MCP dialog loads only results and retains rows beside refresh errors
+ok 1 - actual MCP dialog loads only results and retains rows beside refresh errors
+  ---
+  duration_ms: 188.286359
+  type: 'test'
+  ...
+# Subtest: actual dialog ignores completions after chat change, close and unmount
+ok 2 - actual dialog ignores completions after chat change, close and unmount
+  ---
+  duration_ms: 188.119415
+  type: 'test'
+  ...
+# Subtest: bounded request reports timeout and rejects late completions
+ok 3 - bounded request reports timeout and rejects late completions
+  ---
+  duration_ms: 21.487464
+  type: 'test'
+  ...
+# Subtest: actual Workspace typed command dispatch is Codex-only and respects collisions
+ok 4 - actual Workspace typed command dispatch is Codex-only and respects collisions
+  ---
+  duration_ms: 731.054584
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4146.859219

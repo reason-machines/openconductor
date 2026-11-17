@@ -1,0 +1,1 @@
+function x$t({actions:t,sectionsWorkspaceService:e}){const s=k$t({actions:t,sectionsWorkspaceService:e});return{create:A$t({actions:t,sectionsWorkspaceService:e}),edit:R$t({actions:t}),reorder:T$t({actions:t}),delete:I$t({actions:t}),assign:s.assign,assignPendingWorkspace:s.assignPendingWorkspace,unassign:s.unassign}}

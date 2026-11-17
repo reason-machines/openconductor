@@ -1,0 +1,118 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: only eligible local workspaces from other repositories are grouped in input order
+ok 1 - only eligible local workspaces from other repositories are grouped in input order
+  ---
+  duration_ms: 1.884089
+  type: 'test'
+  ...
+# Subtest: search matches directory, branch or repository case-insensitively, not display title
+ok 2 - search matches directory, branch or repository case-insensitively, not display title
+  ---
+  duration_ms: 0.326904
+  type: 'test'
+  ...
+# Subtest: excluded paths hide already selected rows and empty groups
+ok 3 - excluded paths hide already selected rows and empty groups
+  ---
+  duration_ms: 0.14085
+  type: 'test'
+  ...
+# Subtest: local path validation rejects URLs, relative paths, traversal and controls without trimming names
+ok 4 - local path validation rejects URLs, relative paths, traversal and controls without trimming names
+  ---
+  duration_ms: 0.185328
+  type: 'test'
+  ...
+# Subtest: choosing an existing directory returns only its validated local path
+ok 5 - choosing an existing directory returns only its validated local path
+  ---
+  duration_ms: 0.27634
+  type: 'test'
+  ...
+# Subtest: cancel does not inspect, and invalid or excluded selections cannot escape validation
+ok 6 - cancel does not inspect, and invalid or excluded selections cannot escape validation
+  ---
+  duration_ms: 0.490556
+  type: 'test'
+  ...
+# Subtest: deleted directories and inspection failures do not become selections
+ok 7 - deleted directories and inspection failures do not become selections
+  ---
+  duration_ms: 0.273383
+  type: 'test'
+  ...
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: End then Enter toggles the final workspace, not the previously selected workspace
+ok 8 - End then Enter toggles the final workspace, not the previously selected workspace
+  ---
+  duration_ms: 2.107194
+  type: 'test'
+  ...
+# Subtest: Home then Enter selects Browse without prematurely opening it
+ok 9 - Home then Enter selects Browse without prematurely opening it
+  ---
+  duration_ms: 0.202056
+  type: 'test'
+  ...
+# Subtest: End accounts for existing directory rows before workspace rows
+ok 10 - End accounts for existing directory rows before workspace rows
+  ---
+  duration_ms: 0.120281
+  type: 'test'
+  ...
+# Subtest: End selects the final directory when no workspace matches the search
+ok 11 - End selects the final directory when no workspace matches the search
+  ---
+  duration_ms: 0.181957
+  type: 'test'
+  ...
+# Subtest: Home and End safely select Browse when it is the only result
+ok 12 - Home and End safely select Browse when it is the only result
+  ---
+  duration_ms: 0.210548
+  type: 'test'
+  ...
+# Subtest: isComposing keeps navigation and activation inert
+ok 13 - isComposing keeps navigation and activation inert
+  ---
+  duration_ms: 0.115466
+  type: 'test'
+  ...
+# Subtest: defaultPrevented keeps navigation and activation inert
+ok 14 - defaultPrevented keeps navigation and activation inert
+  ---
+  duration_ms: 0.134789
+  type: 'test'
+  ...
+# Subtest: ordinary arrow navigation still wraps both ends
+ok 15 - ordinary arrow navigation still wraps both ends
+  ---
+  duration_ms: 0.116251
+  type: 'test'
+  ...
+# Subtest: ordinary Enter still activates the selected workspace
+ok 16 - ordinary Enter still activates the selected workspace
+  ---
+  duration_ms: 47.034889
+  type: 'test'
+  ...
+# Subtest: unrelated editing keys neither navigate nor activate
+ok 17 - unrelated editing keys neither navigate nor activate
+  ---
+  duration_ms: 0.395556
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2233.254684

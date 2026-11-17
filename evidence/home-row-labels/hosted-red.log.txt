@@ -1,0 +1,96 @@
+2026-11-11T22:46:54.6880503Z # Subtest: Home row label: stored name precedes PR title
+2026-11-11T22:46:54.6881070Z not ok 163 - Home row label: stored name precedes PR title
+2026-11-11T22:46:54.6881648Z   ---
+2026-11-11T22:46:54.6881970Z   duration_ms: 150.104001
+2026-11-11T22:46:54.6882318Z   type: 'test'
+2026-11-11T22:46:54.6882942Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeRowLabels.test.ts:103:3'
+2026-11-11T22:46:54.6883583Z   failureType: 'testCodeFailure'
+2026-11-11T22:46:54.6883998Z   error: |-
+2026-11-11T22:46:54.6884382Z     Expected values to be strictly deep-equal:
+2026-11-11T22:46:54.6884802Z     + actual - expected
+2026-11-11T22:46:54.6885138Z
+2026-11-11T22:46:54.6885443Z       {
+2026-11-11T22:46:54.6885775Z         repositoryContexts: 1,
+2026-11-11T22:46:54.6886171Z     +   text: 'Pull request title',
+2026-11-11T22:46:54.6886587Z     +   title: 'Pull request title'
+2026-11-11T22:46:54.6886983Z     -   text: 'Stored display',
+2026-11-11T22:46:54.6887371Z     -   title: 'Stored display'
+2026-11-11T22:46:54.6887729Z       }
+2026-11-11T22:46:54.6888015Z
+2026-11-11T22:46:54.6888327Z   code: 'ERR_ASSERTION'
+2026-11-11T22:46:54.6888747Z   name: 'AssertionError'
+2026-11-11T22:46:54.6889115Z   expected:
+2026-11-11T22:46:54.6889442Z     title: 'Stored display'
+2026-11-11T22:46:54.6889804Z     text: 'Stored display'
+2026-11-11T22:46:54.6890171Z     repositoryContexts: 1
+2026-11-11T22:46:54.6890516Z   actual:
+2026-11-11T22:46:54.6890865Z     title: 'Pull request title'
+2026-11-11T22:46:54.6891386Z     text: 'Pull request title'
+2026-11-11T22:46:54.6891806Z     repositoryContexts: 1
+2026-11-11T22:46:54.6892166Z   operator: 'deepStrictEqual'
+2026-11-11T22:46:54.6892523Z   stack: |-
+2026-11-11T22:46:54.6893221Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeRowLabels.test.ts:106:14)
+2026-11-11T22:46:54.6894239Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T22:46:54.6894875Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-11T22:46:54.6895386Z   ...
+2026-11-11T22:46:54.6895809Z # Subtest: Home row label: stored name precedes branch
+2026-11-11T22:46:54.6896349Z not ok 164 - Home row label: stored name precedes branch
+2026-11-11T22:46:54.6896768Z   ---
+2026-11-11T22:46:54.6897067Z   duration_ms: 73.933713
+2026-11-11T22:46:54.6897387Z   type: 'test'
+2026-11-11T22:46:54.6898030Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeRowLabels.test.ts:103:3'
+2026-11-11T22:46:54.6898689Z   failureType: 'testCodeFailure'
+2026-11-11T22:46:54.6899053Z   error: |-
+2026-11-11T22:46:54.6899432Z     Expected values to be strictly deep-equal:
+2026-11-11T22:46:54.6899835Z     + actual - expected
+2026-11-11T22:46:54.6900157Z
+2026-11-11T22:46:54.6900457Z       {
+2026-11-11T22:46:54.6900796Z         repositoryContexts: 1,
+2026-11-11T22:46:54.6901173Z     +   text: 'Topic/different name',
+2026-11-11T22:46:54.6901870Z     +   title: 'Topic/different name'
+2026-11-11T22:46:54.6902271Z     -   text: 'Stored display',
+2026-11-11T22:46:54.6902623Z     -   title: 'Stored display'
+2026-11-11T22:46:54.6902957Z       }
+2026-11-11T22:46:54.6903245Z
+2026-11-11T22:46:54.6903546Z   code: 'ERR_ASSERTION'
+2026-11-11T22:46:54.6903897Z   name: 'AssertionError'
+2026-11-11T22:46:54.6904239Z   expected:
+2026-11-11T22:46:54.6904557Z     title: 'Stored display'
+2026-11-11T22:46:54.6904900Z     text: 'Stored display'
+2026-11-11T22:46:54.6905453Z     repositoryContexts: 1
+2026-11-11T22:46:54.6905769Z   actual:
+2026-11-11T22:46:54.6906090Z     title: 'Topic/different name'
+2026-11-11T22:46:54.6906461Z     text: 'Topic/different name'
+2026-11-11T22:46:54.6906808Z     repositoryContexts: 1
+2026-11-11T22:46:54.6907166Z   operator: 'deepStrictEqual'
+2026-11-11T22:46:54.6907498Z   stack: |-
+2026-11-11T22:46:54.6908141Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeRowLabels.test.ts:106:14)
+2026-11-11T22:46:54.6908884Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T22:46:54.6909443Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T22:46:54.6909903Z   ...
+2026-11-11T22:46:54.7272344Z # Subtest: Home row label: explicit user name remains first
+2026-11-11T22:46:54.7285043Z ok 165 - Home row label: explicit user name remains first
+2026-11-11T22:46:54.7312106Z   ---
+2026-11-11T22:46:54.7342138Z   duration_ms: 74.4608
+2026-11-11T22:46:54.7372142Z   type: 'test'
+2026-11-11T22:46:54.7372579Z   ...
+2026-11-11T22:46:54.7560171Z # Subtest: Home row label: null stored name falls through to PR title
+2026-11-11T22:46:54.7561023Z ok 166 - Home row label: null stored name falls through to PR title
+2026-11-11T22:46:54.7561678Z   ---
+2026-11-11T22:46:54.7562012Z   duration_ms: 43.538697
+2026-11-11T22:46:54.7562362Z   type: 'test'
+2026-11-11T22:46:54.7562747Z   ...
+2026-11-11T22:46:54.8062788Z # Subtest: Home row label: null stored name falls through to branch
+2026-11-11T22:46:54.8097492Z ok 167 - Home row label: null stored name falls through to branch
+2026-11-11T22:46:54.8101906Z   ---
+2026-11-11T22:46:54.8102309Z   duration_ms: 36.501614
+2026-11-11T22:46:54.8102763Z   type: 'test'
+2026-11-11T22:46:54.8103111Z   ...
+2026-11-11T22:46:54.8103765Z # Subtest: Home row label: null stored name and target branch fall through to directory
+2026-11-11T22:46:54.8104512Z ok 168 - Home row label: null stored name and target branch fall through to directory
+2026-11-11T22:46:54.8105076Z   ---
+2026-11-11T22:46:54.8105408Z   duration_ms: 39.275084
+2026-11-11T22:46:54.8105762Z   type: 'test'
+2026-11-11T22:46:54.8106080Z   ...
+2026-11-11T22:46:54.8497804Z # Subtest: Home sidebar toggle retains its default hint and click action
+2026-11-11T22:46:54.8540398Z ok 169 - Home sidebar toggle retains its default hint and click action

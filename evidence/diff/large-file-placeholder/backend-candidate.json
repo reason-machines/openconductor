@@ -1,0 +1,59 @@
+{
+  "unit": "DIFF-LARGE-FILE-PLACEHOLDER-DE6",
+  "fresh_main": "a2ef261711b439e7ab00a25b3cb3275a5b55c823",
+  "fresh_main_product_sha256": {
+    "src-tauri/src/diff/git.rs": "841fe26a5eb54d4c71d2d04748ec790bfa9080d50008681bd74a9f830d49e955",
+    "src-tauri/src/diff/model.rs": "3c794269be0b8c0e1c7cc0eef1f5632d676f439d165f94679ca2a5b8b28a49ce",
+    "src/features/diff/types.ts": "37f4ee973e762d4818b517a53c0b0eb4a548aa87ac8cafbf738feba58bc0794b",
+    "src/features/diff/FileDiffView.tsx": "8e3dc981b01b2e5f8b19f51e1fd0e7c05691f2174d2d37b1fe7faf9455ecc6da"
+  },
+  "qualified_red": "corrected-hosted-red.json",
+  "policy": "Uncommitted regular tracked nonbinary nonmedia current file: hide above 1 MiB when above 5 MiB or plain changed-line count is unavailable or exceeds 500.",
+  "changed_lines": "Actual git diff --numstat without whitespace filtering, with literal old and current pathspecs; no hunks/counts/status/path/membership rewrite beyond clearing hidden hunks.",
+  "model": "Optional snake_case hide_reason=file_too_large, omitted from legacy/default DTOs and changes-list summaries.",
+  "media_source": {
+    "asset_sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+    "spans": {
+      "reference/reference-index-image-extensions.txt": {
+        "utf8_half_open": [
+          2272785,
+          2272944
+        ],
+        "sha256": "c0e968ad85f057b38a6c065858816aa345bbe0910cd077d5d0f74eab0af7bc2b"
+      },
+      "reference/reference-index-image-predicate.txt": {
+        "utf8_half_open": [
+          2273193,
+          2273314
+        ],
+        "sha256": "5e3f1e023c8544d37516cc55b8044e40aff945803ae2a56604178aaf747345fb"
+      },
+      "reference/reference-index-video-extensions-and-predicate.txt": {
+        "utf8_half_open": [
+          3168056,
+          3168271
+        ],
+        "sha256": "9f17870cdf5d59706a05c66f0f429dd8057393902275b7301f1464abdada82a3"
+      }
+    }
+  },
+  "candidate_product_sha256": {
+    "src-tauri/src/diff/git.rs": "dd047fa202dd36e50938aa81ae16d60c50454b7eb61f49e7eed9496b21342b97",
+    "src-tauri/src/diff/model.rs": "e56c0c051f5b5ad59c79930eb8f5a5336d9c979325a3e82ab4b95d770f7c3c9b",
+    "src/features/diff/types.ts": "a3ebcbdbd00f86620d61cfa608a58061b64c686280a43dd2bb7d8bc5edd64254"
+  },
+  "renderer": "UNCHANGED; read-only pending actual #1100 merge and owner handoff. Backend candidate alone cannot make the mounted placeholder assertions pass.",
+  "frozen_fixtures": "source.json and all three frozen cases/assertion files unchanged",
+  "verification": {
+    "static_source_and_fixture_integrity": "PASS",
+    "hosted_candidate": "PENDING",
+    "local_behavioral": "NOT_RUN",
+    "native_ui_sqlite_restart": "NOT_RUN"
+  },
+  "residuals": [
+    "All/historical/turn scopes, missing or small current files with large old content remain outside this bounded repair.",
+    "Untracked/media/symlink behavior is excluded, not new size-policy coverage.",
+    "Git still obtains/parses the full patch before the policy; no early acquisition or native performance claim.",
+    "Same-end/empty-editor comment residuals remain unchanged."
+  ]
+}

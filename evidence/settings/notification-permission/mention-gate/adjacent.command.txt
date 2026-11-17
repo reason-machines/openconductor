@@ -1,0 +1,1 @@
+NOTIFICATION_DEPS="$PWD" NOTIFICATION_SOURCE_ROOT="$PWD" nice -n 19 timeout --kill-after=5s 60s node --test --test-concurrency=1 evidence/settings/notification-permission/replay/notificationGate.test.cjs evidence/settings/notification-permission/replay/concurrentSettings.test.cjs evidence/settings/notification-permission/denial-feedback/replay.test.cjs

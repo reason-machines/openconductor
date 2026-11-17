@@ -8,7 +8,8 @@
 import { useEffect, useState, type Dispatch } from "react";
 import { ArchiveIcon, BranchIcon } from "./Icons";
 import { Transcript } from "../features/chat/Transcript";
-import { chatSnapshot, subscribeChat } from "../features/chat/reasonChat";
+import { CHAT_AGENTS } from "../features/chat/agents";
+import { savedAgent } from "../features/chat/agentChoice";
 import type { ChatSnapshot } from "../features/chat/chatRuntime";
 import type { Action } from "../state/store";
 import type { Repo, Workspace } from "../state/types";
@@ -21,10 +22,16 @@ interface Props {
 }
 
 export function ArchivedWorkspaceView({ repo, workspace, dispatch }: Props) {
-  const [{ transcript }, setSnapshot] = useState<ChatSnapshot>(() => chatSnapshot(workspace.id));
+  const agent = CHAT_AGENTS[savedAgent(workspace.id)];
+  const chatId = agent.chatId(workspace.id);
+  const [{ transcript }, setSnapshot] = useState<ChatSnapshot>(
+    () => agent.snapshot(chatId) as ChatSnapshot,
+  );
   useEffect(() => {
-    setSnapshot(chatSnapshot(workspace.id));
-    return subscribeChat(workspace.id, setSnapshot);
+    const a = CHAT_AGENTS[savedAgent(workspace.id)];
+    const id = a.chatId(workspace.id);
+    setSnapshot(a.snapshot(id) as ChatSnapshot);
+    return a.subscribe(id, (s) => setSnapshot(s as ChatSnapshot));
   }, [workspace.id]);
   const [pending, setPending] = useState(false);
   useEffect(
@@ -44,7 +51,7 @@ export function ArchivedWorkspaceView({ repo, workspace, dispatch }: Props) {
       <header className="ws-header" data-tauri-drag-region="deep">
         <div className="ws-title">
           <span className="crumb">{repo.name}</span>
-          <span className="crumb-sep">/</span>
+          <span className="crumb-sep">›</span>
           <strong>{workspace.name}</strong>
           <span className="chip">
             <BranchIcon size={12} /> {workspace.branch}

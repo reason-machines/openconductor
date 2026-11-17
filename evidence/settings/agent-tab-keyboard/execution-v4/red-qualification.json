@@ -1,0 +1,20 @@
+{
+  "cases": 22,
+  "failed_cases": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    22
+  ],
+  "controls": 11,
+  "unchanged_case_names": true,
+  "skip_todo_cancelled": 0,
+  "result": "QUALIFYING_RED"
+}

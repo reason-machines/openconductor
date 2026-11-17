@@ -1,0 +1,72 @@
+TAP version 13
+# (node:252) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home sidebar toggle retains its default hint and click action
+ok 1 - Home sidebar toggle retains its default hint and click action
+  ---
+  duration_ms: 162.256216
+  type: 'test'
+  ...
+# Subtest: mounted Home sidebar hint follows persisted primary and additional shortcuts after hydration
+ok 2 - mounted Home sidebar hint follows persisted primary and additional shortcuts after hydration
+  ---
+  duration_ms: 108.047389
+  type: 'test'
+  ...
+# Subtest: mounted Home sidebar hint follows live provider changes and reset without parent rerender
+ok 3 - mounted Home sidebar hint follows live provider changes and reset without parent rerender
+  ---
+  duration_ms: 64.682854
+  type: 'test'
+  ...
+# Subtest: Home sidebar hint replaces defaults with a single saved shortcut
+ok 4 - Home sidebar hint replaces defaults with a single saved shortcut
+  ---
+  duration_ms: 63.568322
+  type: 'test'
+  ...
+# Subtest: Home sidebar hint keeps defaults when the persisted setting is malformed
+ok 5 - Home sidebar hint keeps defaults when the persisted setting is malformed
+  ---
+  duration_ms: 41.877005
+  type: 'test'
+  ...
+# Subtest: Home omits the toggle while the sidebar is visible, including after hydration
+ok 6 - Home omits the toggle while the sidebar is visible, including after hydration
+  ---
+  duration_ms: 37.723998
+  type: 'test'
+  ...
+# Subtest: Home sidebar toggle has no competing native title
+ok 7 - Home sidebar toggle has no competing native title
+  ---
+  duration_ms: 36.272926
+  type: 'test'
+  ...
+# Subtest: Home sidebar tooltip dismisses on pointer leave
+ok 8 - Home sidebar tooltip dismisses on pointer leave
+  ---
+  duration_ms: 30.740763
+  type: 'test'
+  ...
+# Subtest: Home sidebar tooltip does not open for touch
+ok 9 - Home sidebar tooltip does not open for touch
+  ---
+  duration_ms: 44.189367
+  type: 'test'
+  ...
+# Subtest: Home sidebar tooltip dismisses on Escape
+ok 10 - Home sidebar tooltip dismisses on Escape
+  ---
+  duration_ms: 28.130937
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1238.53717

@@ -1,0 +1,23 @@
+name: Inert storage probe fixtures
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fixtures:
+    name: Inert role fixtures (not OS enforcement)
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: >-
+          python3 -W error::ResourceWarning -m unittest
+          tools.test_inert_storage_probe tools.test_hosted_inert_storage_probe -v

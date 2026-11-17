@@ -5,6 +5,8 @@
 // (sending it) removes the entry; a value equal to the last one written is
 // not written again; writes for one store run one at a time.
 
+import { WriteBarrier } from "../persistence/owner.ts";
+import { registerPersistenceOwner } from "../persistence/restartPersistence.ts";
 import type { LocalStorageClient } from "./client.ts";
 import { COMPOSER_DRAFTS } from "./subsystems.ts";
 
@@ -29,15 +31,20 @@ export class ComposerDrafts {
   private readonly client: LocalStorageClient;
   private readonly lastSerialized = new Map<string, string>();
   private queue: Promise<unknown> = Promise.resolve();
+  private readonly writes = new WriteBarrier();
   private readonly log: (msg: string) => void;
 
   constructor(client: LocalStorageClient, log: (msg: string) => void = (m) => console.error(m)) {
     this.client = client;
     this.log = log;
+    registerPersistenceOwner(this.writes);
   }
 
-  private run<T>(task: () => Promise<T>): Promise<T> {
-    const next = this.queue.catch(() => undefined).then(task);
+  drain(): Promise<void> { return this.writes.drain(); }
+
+  private run<T>(task: () => Promise<T>, key?: string): Promise<T> {
+    const queued = () => this.queue.catch(() => undefined).then(task);
+    const next = key === undefined ? queued() : this.writes.run(queued, (result) => result !== false, key);
     this.queue = next.catch(() => undefined);
     return next;
   }
@@ -75,7 +82,7 @@ export class ComposerDrafts {
       }
       this.lastSerialized.set(sessionId, serialized);
       return true;
-    });
+    }, sessionId);
   }
 
   /** Forgets the session's draft (after it is sent). */
@@ -84,6 +91,6 @@ export class ComposerDrafts {
       if (!this.lastSerialized.has(sessionId)) return;
       await this.client.removeEntry({ subsystem: COMPOSER_DRAFTS.name, id: sessionId });
       this.lastSerialized.delete(sessionId);
-    });
+    }, sessionId);
   }
 }

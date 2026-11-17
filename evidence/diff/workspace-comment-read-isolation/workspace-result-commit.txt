@@ -1,0 +1,1 @@
+setWorkspaceComments({localWorkspaceId:e,comments:s}){this.__store.setState(n=>{const r={...n.commentsById};for(const i of n.commentsByWorkspace[e]??[])delete r[i.id];for(const i of s)r[i.id]=i;return{commentsById:r,commentsByWorkspace:{...n.commentsByWorkspace,[e]:s}}})}}

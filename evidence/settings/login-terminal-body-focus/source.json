@@ -1,0 +1,166 @@
+{
+  "author": "Conductor Rebuild",
+  "dedupe_key": "settings-login-terminal-body-focus",
+  "baseline_main_commit": "26f8345401efb021bef2f12b17815eba6c57170c",
+  "source_archive": {
+    "attachment_id": "078ccf87-1bdc-43a9-b085-ea94babc5839",
+    "sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084"
+  },
+  "asset": {
+    "name": "renderApp-D_fmY7hW.js",
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "retained_REA_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference_spans": [
+    {
+      "name": "ONi",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8641405,
+        8644209
+      ],
+      "utf16_half_open": [
+        8595931,
+        8598735
+      ],
+      "sha256": "e71e371aa7c0cba81c4fc9b737b606ae79ed2a17e80c196ad12f558d5a0074e7",
+      "path": "ONi.literal.txt"
+    },
+    {
+      "name": "Met",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10254426,
+        10255772
+      ],
+      "utf16_half_open": [
+        10208811,
+        10210157
+      ],
+      "sha256": "e8ff33ba929c09102a235ff68ef6db78a6e0d9c66db5c85df6496c13b2e3ffde",
+      "path": "Met.literal.txt"
+    },
+    {
+      "name": "w9e",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        6919236,
+        6922665
+      ],
+      "utf16_half_open": [
+        6876229,
+        6879658
+      ],
+      "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32",
+      "path": "w9e.literal.txt"
+    },
+    {
+      "name": "jpa",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10619879,
+        10624045
+      ],
+      "utf16_half_open": [
+        10574145,
+        10578311
+      ],
+      "sha256": "f339bdf9702ca236ab96391682eeccb54f05f999690c91e2717e43f25d01535f",
+      "path": "jpa.literal.txt"
+    }
+  ],
+  "source_pins": [
+    {
+      "path": "src/settings/agents/parts.tsx",
+      "sha256": "f1beaf7154c896d822e735060671783a8d8b8a7a92037c071e806e5d974b65bd",
+      "snapshot": "baseline/parts.tsx.txt"
+    },
+    {
+      "path": "src/settings/agents/agents.css",
+      "sha256": "5a5782488458b385aa106b4120dbad9fdc73633848037c740312d3330c5de7a6",
+      "snapshot": null
+    },
+    {
+      "path": "src/settings/agents/ClaudeTab.tsx",
+      "sha256": "1227bb223bcb2c9f0b5af5d063440f28a37a7380f102ba20c5c37b3d8898452e",
+      "snapshot": null
+    },
+    {
+      "path": "src/settings/agents/CodexTab.tsx",
+      "sha256": "8f814442b65aa82f4a3e295bfe9079c0f52f80db1160d650198daab3d263a54d",
+      "snapshot": null
+    },
+    {
+      "path": "src/settings/agents/kit.tsx",
+      "sha256": "a0926a79d9a60384e04cc4ff26482336e411c5bf07c93da1755284baecaf37cb",
+      "snapshot": null
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+      "snapshot": null
+    }
+  ],
+  "fixture": {
+    "path": "tests/chat-search/loginTerminalFocus.dom.test.mjs",
+    "sha256": "ccf31e78a273547d153bbcfdd98ba76a5413b4da030df3fcfa7037aac0a16253"
+  },
+  "expected_hosted_baseline": {
+    "intended_focus_assertion_failures": 2,
+    "passing_controls": 3
+  },
+  "behavioral_result": "HOSTED_BASELINE_QUALIFIED: two intended focus failures and three passing controls; candidate pending",
+  "fresh_default_main_commit": "873e24f94a3b07a1ebcd351ac3b095f2cff561d0",
+  "fresh_default_source_pins": "All six byte-identical to frozen baseline",
+  "limits": [
+    "Static shipped source is not native observation. The hosted fixture mounts production LoginButton and real xterm 6.0.0 in jsdom, with inert PTY adapters and painting-only canvas substitutes.",
+    "No app, provider, credential, native PTY, or local/cloud behavioral runtime was started in this preparation.",
+    "Historical REA semantic renderer analysis exhausted heap; this packet verifies retained original bytes and does not repeat that analysis.",
+    "OS focus, actual xterm geometry, installed-app behavior, and visual acceptance remain unverified."
+  ],
+  "xterm": {
+    "version": "6.0.0",
+    "resolved": "https://registry.npmjs.org/@xterm/xterm/-/xterm-6.0.0.tgz",
+    "integrity": "sha512-TQwDdQGtwwDt+2cgKDLn0IRaSxYu1tSUjgKarSDkUM0ZNiSRXFpjxEsvc/Zgc5kq5omJ+V0a8/kIM2WD3sMOYg==",
+    "source_member": "package/src/browser/CoreBrowserTerminal.ts",
+    "source_sha256": "15c1149d38db18e9aa2c4a896e6c69c5cc40fb73a3fa01bb0602828cae3210a1",
+    "spans": [
+      {
+        "path": "xterm-child-element.txt",
+        "lines_inclusive": [
+          412,
+          421
+        ],
+        "utf8_half_open": [
+          18604,
+          19062
+        ],
+        "sha256": "e3be4df7bf4667c4cbf53b48bbc589c8f2e3d088b28e3dadf736a5710504b46b"
+      },
+      {
+        "path": "xterm-mouse-target.txt",
+        "lines_inclusive": [
+          601,
+          608
+        ],
+        "utf8_half_open": [
+          28419,
+          28640
+        ],
+        "sha256": "64f03518b3c3bb9d050a1ae2350970caa6ffe4212b3d15bd324f2454973d9a4f"
+      },
+      {
+        "path": "xterm-child-mousedown-focus.txt",
+        "lines_inclusive": [
+          775,
+          803
+        ],
+        "utf8_half_open": [
+          34797,
+          35854
+        ],
+        "sha256": "2dd26bc81c9cbef94f8816889e26196d38378f270a9ee66f3877f34b94def0ea"
+      }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+--- a/src/state/githubRepoDialog.ts
++++ b/src/state/githubRepoDialog.ts
+@@ -79,3 +79,3 @@
+   }
+-  return `Couldn't load GitHub owners: ${detail}`;
++  return "Couldn't load your GitHub accounts.";
+ }
+--- a/src/state/githubRepoDialog.test.ts
++++ b/src/state/githubRepoDialog.test.ts
+@@ -46,3 +46,3 @@
+   assert.match(ownersErrorMessage("To get started with GitHub CLI, please run:  gh auth login"), /not signed in/);
+-  assert.equal(ownersErrorMessage("timeout"), "Couldn't load GitHub owners: timeout");
++  assert.equal(ownersErrorMessage("timeout"), "Couldn't load your GitHub accounts.");
+ });

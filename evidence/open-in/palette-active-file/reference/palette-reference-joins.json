@@ -1,0 +1,16 @@
+[
+  {
+    "name": "palette-launch-callback",
+    "asset": "renderer",
+    "start_utf8_byte": 10901734,
+    "end_utf8_byte": 10902084,
+    "path": "reference/palette-launch-callback.txt"
+  },
+  {
+    "name": "palette-openin-dispatch",
+    "asset": "renderer",
+    "start_utf8_byte": 10904238,
+    "end_utf8_byte": 10904359,
+    "path": "reference/palette-openin-dispatch.txt"
+  }
+]

@@ -1,0 +1,201 @@
+{
+  "app": "OpenConductor.app",
+  "ok": true,
+  "checks": [
+    {
+      "check": "CFBundleIdentifier",
+      "ok": true,
+      "detail": "'com.reasonmachines.openconductor' (want 'com.reasonmachines.openconductor')"
+    },
+    {
+      "check": "CFBundleName",
+      "ok": true,
+      "detail": "'OpenConductor' (want 'OpenConductor')"
+    },
+    {
+      "check": "CFBundleShortVersionString",
+      "ok": true,
+      "detail": "'0.1.0' (want '0.1.0')"
+    },
+    {
+      "check": "LSMinimumSystemVersion",
+      "ok": true,
+      "detail": "'12.0' (want '12.0')"
+    },
+    {
+      "check": "executable",
+      "ok": true,
+      "detail": "Contents/MacOS/openconductor"
+    },
+    {
+      "check": "icon",
+      "ok": true,
+      "detail": "icon.icns"
+    },
+    {
+      "check": "url-scheme",
+      "ok": true,
+      "detail": "schemes=['openconductor']"
+    },
+    {
+      "check": "prompt:NSDesktopFolderUsageDescription",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "check": "prompt:NSDocumentsFolderUsageDescription",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "check": "prompt:NSDownloadsFolderUsageDescription",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "check": "prompt:NSMicrophoneUsageDescription",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "check": "parity:CFBundleDevelopmentRegion",
+      "ok": true,
+      "detail": "type string (Conductor: string)"
+    },
+    {
+      "check": "parity:CFBundleDisplayName",
+      "ok": true,
+      "detail": "type string (Conductor: string)"
+    },
+    {
+      "check": "parity:CFBundleExecutable",
+      "ok": true,
+      "detail": "type string (Conductor: string)"
+    },
+    {
+      "check": "parity:CFBundleIconFile",
+      "ok": true,
+      "detail": "type string (Conductor: string)"
+    },
+    {
+      "check": "parity:CFBundleIdentifier",
+      "ok": true,
+      "detail": "type string (Conductor: string)"
+    },
+    {
+      "check": "parity:CFBundleInfoDictionaryVersion",
+      "ok": true,
+      "detail": "type string (Conductor: string)"
+    },
+    {
+      "check": "parity:CFBundleName",
+      "ok": true,
+      "detail": "type string (Conductor: string)"
+    },
+    {
+      "check": "parity:CFBundlePackageType",
+      "ok": true,
+      "detail": "type string (Conductor: string)"
+    },
+    {
+      "check": "parity:CFBundleShortVersionString",
+      "ok": true,
+      "detail": "type string (Conductor: string)"
+    },
+    {
+      "check": "parity:CFBundleURLTypes",
+      "ok": true,
+      "detail": "type array (Conductor: array)"
+    },
+    {
+      "check": "parity:CFBundleVersion",
+      "ok": true,
+      "detail": "type string (Conductor: string)"
+    },
+    {
+      "check": "parity:CSResourcesFileMapped",
+      "ok": true,
+      "detail": "type bool (Conductor: bool)"
+    },
+    {
+      "check": "parity:LSMinimumSystemVersion",
+      "ok": true,
+      "detail": "type string (Conductor: string)"
+    },
+    {
+      "check": "parity:LSRequiresCarbon",
+      "ok": true,
+      "detail": "type bool (Conductor: bool)"
+    },
+    {
+      "check": "parity:NSAutoFillRequiresTextContentTypeForOneTimeCodeOnMac",
+      "ok": true,
+      "detail": "type bool (Conductor: bool)"
+    },
+    {
+      "check": "parity:NSDesktopFolderUsageDescription",
+      "ok": true,
+      "detail": "type string (Conductor: string)"
+    },
+    {
+      "check": "parity:NSDocumentsFolderUsageDescription",
+      "ok": true,
+      "detail": "type string (Conductor: string)"
+    },
+    {
+      "check": "parity:NSDownloadsFolderUsageDescription",
+      "ok": true,
+      "detail": "type string (Conductor: string)"
+    },
+    {
+      "check": "parity:NSHighResolutionCapable",
+      "ok": true,
+      "detail": "type bool (Conductor: bool)"
+    },
+    {
+      "check": "parity:NSMicrophoneUsageDescription",
+      "ok": true,
+      "detail": "type string (Conductor: string)"
+    },
+    {
+      "check": "parity:extra-keys",
+      "ok": true,
+      "detail": "LSApplicationCategoryType"
+    },
+    {
+      "check": "resource:bin/gh",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "check": "codesign-verify",
+      "ok": true,
+      "detail": "/Users/runner/work/openconductor/openconductor/src-tauri/target/debug/bundle/macos/OpenConductor.app: satisfies its Designated Requirement"
+    },
+    {
+      "check": "hardened-runtime",
+      "ok": true,
+      "detail": "flags=['adhoc', 'runtime']"
+    },
+    {
+      "check": "signing-kind",
+      "ok": true,
+      "detail": "adhoc (want adhoc)"
+    },
+    {
+      "check": "entitlement:com.apple.security.cs.allow-jit",
+      "ok": true,
+      "detail": "True (Conductor: True)"
+    },
+    {
+      "check": "entitlement:com.apple.security.cs.allow-unsigned-executable-memory",
+      "ok": true,
+      "detail": "True (Conductor: True)"
+    },
+    {
+      "check": "entitlement:com.apple.security.device.audio-input",
+      "ok": true,
+      "detail": "True (Conductor: True)"
+    }
+  ]
+}

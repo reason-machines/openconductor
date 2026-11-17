@@ -1,0 +1,109 @@
+{
+  "head": "d6244f20d2e5e226558c9a171492e1a80b3f587b",
+  "run": 43166102600,
+  "checks": [
+    {
+      "check": {
+        "id": 131008221452,
+        "name": "Frontend unit tests (node --test)",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/reason-machines/openconductor/actions/runs/43166102600/job/131008221452",
+        "details_url": "https://github.com/reason-machines/openconductor/actions/runs/43166102600/job/131008221452",
+        "started_at": "2026-11-12T06:09:05Z",
+        "completed_at": "2026-11-12T06:11:58Z",
+        "app_slug": "github-actions",
+        "output": {
+          "title": null,
+          "summary": null,
+          "text": null,
+          "annotations_count": 3
+        }
+      },
+      "failed_steps": [
+        {
+          "name": "Pure TypeScript modules (Node strips types natively)",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 6,
+          "started_at": "2026-11-12T06:09:24Z",
+          "completed_at": "2026-11-12T06:11:54Z"
+        }
+      ],
+      "failures": [
+        {
+          "line": 4596,
+          "text": "2026-11-12T06:10:37.3368017Z not ok 716 - native producer -> reducer -> persisted/live Transcript Part -> Edit: object-result-precedes-input"
+        },
+        {
+          "line": 4634,
+          "text": "2026-11-12T06:10:37.9630285Z not ok 718 - native producer -> reducer -> persisted/live Transcript Part -> Edit: context-and-file-headers"
+        },
+        {
+          "line": 4670,
+          "text": "2026-11-12T06:10:38.1452097Z not ok 719 - native producer -> reducer -> persisted/live Transcript Part -> Edit: result-can-supply-empty-input"
+        },
+        {
+          "line": 4727,
+          "text": "2026-11-12T06:10:40.1730469Z not ok 725 - native producer -> reducer -> persisted/live Transcript Part -> Edit: failed-result-still-selects-diff"
+        },
+        {
+          "line": 4759,
+          "text": "2026-11-12T06:10:40.3650605Z not ok 726 - native producer -> reducer -> persisted/live Transcript Part -> Edit: truthy-headers-only-suppress-input"
+        }
+      ]
+    },
+    {
+      "check": {
+        "id": 131008221227,
+        "name": "Frontend typecheck + build",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/reason-machines/openconductor/actions/runs/43166102600/job/131008221227",
+        "details_url": "https://github.com/reason-machines/openconductor/actions/runs/43166102600/job/131008221227",
+        "started_at": "2026-11-12T06:09:04Z",
+        "completed_at": "2026-11-12T06:12:21Z",
+        "app_slug": "github-actions",
+        "output": {
+          "title": null,
+          "summary": null,
+          "text": null,
+          "annotations_count": 3
+        }
+      },
+      "failed_steps": [
+        {
+          "name": "Frontend unit tests",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 8,
+          "started_at": "2026-11-12T06:09:48Z",
+          "completed_at": "2026-11-12T06:12:18Z"
+        }
+      ],
+      "failures": [
+        {
+          "line": 4636,
+          "text": "2026-11-12T06:10:37.9168121Z not ok 716 - native producer -> reducer -> persisted/live Transcript Part -> Edit: object-result-precedes-input"
+        },
+        {
+          "line": 4674,
+          "text": "2026-11-12T06:10:38.6574779Z not ok 718 - native producer -> reducer -> persisted/live Transcript Part -> Edit: context-and-file-headers"
+        },
+        {
+          "line": 4710,
+          "text": "2026-11-12T06:10:38.9107382Z not ok 719 - native producer -> reducer -> persisted/live Transcript Part -> Edit: result-can-supply-empty-input"
+        },
+        {
+          "line": 4767,
+          "text": "2026-11-12T06:10:41.2715831Z not ok 725 - native producer -> reducer -> persisted/live Transcript Part -> Edit: failed-result-still-selects-diff"
+        },
+        {
+          "line": 4799,
+          "text": "2026-11-12T06:10:41.4387143Z not ok 726 - native producer -> reducer -> persisted/live Transcript Part -> Edit: truthy-headers-only-suppress-input"
+        }
+      ]
+    }
+  ],
+  "qualified_excerpt": "2026-11-12T06:10:06.5342688Z   ...\n2026-11-12T06:10:06.5343776Z # Subtest: Edit hover cancels short entry, bridges pointer leave and closes on Escape\n2026-11-12T06:10:06.5345233Z ok 712 - Edit hover cancels short entry, bridges pointer leave and closes on Escape\n2026-11-12T06:10:06.5346224Z   ---\n2026-11-12T06:10:06.5346806Z   duration_ms: 170.353603\n2026-11-12T06:10:06.5347434Z   type: 'test'\n2026-11-12T06:10:06.5347991Z   ...\n2026-11-12T06:10:06.5349260Z # Subtest: Edit focus and touch stay closed, rows stay independent and unmount clears timers\n2026-11-12T06:10:06.5350815Z ok 713 - Edit focus and touch stay closed, rows stay independent and unmount clears timers\n2026-11-12T06:10:06.5351817Z   ---\n2026-11-12T06:10:06.5352399Z   duration_ms: 90.720349\n2026-11-12T06:10:06.5353030Z   type: 'test'\n2026-11-12T06:10:06.5353590Z   ...\n2026-11-12T06:10:06.5354587Z # Subtest: ordinary Read with Edit-shaped raw fields does not acquire an Edit hover\n2026-11-12T06:10:06.5356009Z ok 714 - ordinary Read with Edit-shaped raw fields does not acquire an Edit hover\n2026-11-12T06:10:06.5356934Z   ---\n2026-11-12T06:10:06.5357462Z   duration_ms: 106.556297\n2026-11-12T06:10:06.5358079Z   type: 'test'\n2026-11-12T06:10:06.5358635Z   ...\n2026-11-12T06:10:36.9154280Z # Subtest: actual native mapper preserves the colliding display-text control\n2026-11-12T06:10:36.9253115Z ok 715 - actual native mapper preserves the colliding display-text control\n2026-11-12T06:10:36.9310002Z   ---\n2026-11-12T06:10:36.9330491Z   duration_ms: 1.262333\n2026-11-12T06:10:36.9359827Z   type: 'test'\n2026-11-12T06:10:36.9383477Z   ...\n2026-11-12T06:10:37.3359769Z # Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: object-result-precedes-input\n2026-11-12T06:10:37.3368017Z not ok 716 - native producer -> reducer -> persisted/live Transcript Part -> Edit: object-result-precedes-input\n2026-11-12T06:10:37.3369507Z   ---\n2026-11-12T06:10:37.3369900Z   duration_ms: 762.690387\n2026-11-12T06:10:37.3370316Z   type: 'test'\n2026-11-12T06:10:37.3371285Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/editResultPipeline.test.ts:144:28'\n2026-11-12T06:10:37.3372305Z   failureType: 'testCodeFailure'\n2026-11-12T06:10:37.3372772Z   error: |-\n2026-11-12T06:10:37.3373197Z     live result-selected hover sides\n2026-11-12T06:10:37.3373544Z     + actual - expected\n2026-11-12T06:10:37.3373776Z     \n2026-11-12T06:10:37.3373961Z       [\n2026-11-12T06:10:37.3374174Z     +   '-input-old',\n2026-11-12T06:10:37.3374398Z     +   '+input-new'\n2026-11-12T06:10:37.3374627Z     -   '-result-old',\n2026-11-12T06:10:37.3374863Z     -   '+result-new'\n2026-11-12T06:10:37.3375076Z       ]\n2026-11-12T06:10:37.3375261Z     \n2026-11-12T06:10:37.3375459Z   code: 'ERR_ASSERTION'\n2026-11-12T06:10:37.3375711Z   name: 'AssertionError'\n2026-11-12T06:10:37.3375949Z   expected:\n2026-11-12T06:10:37.3376161Z     0: '-result-old'\n2026-11-12T06:10:37.3380199Z     1: '+result-new'\n2026-11-12T06:10:37.3380603Z   actual:\n2026-11-12T06:10:37.3380976Z     0: '-input-old'\n2026-11-12T06:10:37.3381364Z     1: '+input-new'\n2026-11-12T06:10:37.3381807Z   operator: 'deepStrictEqual'\n2026-11-12T06:10:37.3382277Z   stack: |-\n2026-11-12T06:10:37.3383467Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/editResultPipeline.test.ts:156:16)\n2026-11-12T06:10:37.3384852Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-12T06:10:37.3385822Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-12T06:10:37.3386571Z   ...\n2026-11-12T06:10:37.7885944Z # Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: json-looking-text-is-not-object\n2026-11-12T06:10:37.7986835Z ok 717 - native producer -> reducer -> persisted/live Transcript Part -> Edit: json-looking-text-is-not-object\n2026-11-12T06:10:37.8039646Z   ---\n2026-11-12T06:10:37.8069545Z   duration_ms: 637.847837\n2026-11-12T06:10:37.8105336Z   type: 'test'\n2026-11-12T06:10:37.8106102Z   ...\n2026-11-12T06:10:37.9600976Z # Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: context-and-file-headers\n2026-11-12T06:10:37.9630285Z not ok 718 - native producer -> reducer -> persisted/live Transcript Part -> Edit: context-and-file-headers\n2026-11-12T06:10:37.9645254Z   ---\n2026-11-12T06:10:37.9652259Z   duration_ms: 209.114291\n2026-11-12T06:10:37.9652907Z   type: 'test'\n2026-11-12T06:10:37.9654113Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/editResultPipeline.test.ts:144:28'\n2026-11-12T06:10:37.9655523Z   failureType: 'testCodeFailure'\n2026-11-12T06:10:37.9656211Z   error: |-\n2026-11-12T06:10:37.9656858Z     live result-selected hover sides\n2026-11-12T06:10:37.9657612Z     + actual - expected\n2026-11-12T06:10:37.9658249Z     \n2026-11-12T06:10:37.9658819Z       [\n2026-11-12T06:10:37.9659645Z     +   '-input-old',\n2026-11-12T06:10:37.9660342Z     +   '+input-new'\n2026-11-12T06:10:37.9660957Z     -   '-keep',\n2026-11-12T06:10:37.9661538Z     -   '-result-old',\n2026-11-12T06:10:37.9662156Z     -   '+keep',\n2026-11-12T06:10:37.9662804Z     -   '+result-new'\n2026-11-12T06:10:37.9663422Z       ]\n2026-11-12T06:10:37.9663979Z     \n2026-11-12T06:10:37.9664545Z   code: 'ERR_ASSERTION'\n2026-11-12T06:10:37.9665222Z   name: 'AssertionError'\n2026-11-12T06:10:37.9665881Z   expected:\n2026-11-12T06:10:37.9666920Z     0: '-keep'\n2026-11-12T06:10:37.9667632Z     1: '-result-old'\n2026-11-12T06:10:37.9668288Z     2: '+keep'\n2026-11-12T06:10:37.9668916Z     3: '+result-new'\n2026-11-12T06:10:37.9669769Z   actual:\n2026-11-12T06:10:37.9670375Z     0: '-input-old'\n2026-11-12T06:10:37.9671013Z     1: '+input-new'\n2026-11-12T06:10:37.9671666Z   operator: 'deepStrictEqual'\n2026-11-12T06:10:37.9672378Z   stack: |-\n2026-11-12T06:10:37.9673771Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/editResultPipeline.test.ts:156:16)\n2026-11-12T06:10:37.9675272Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-12T06:10:37.9676348Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-12T06:10:37.9677219Z   ...\n2026-11-12T06:10:38.1442846Z # Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: result-can-supply-empty-input\n2026-11-12T06:10:38.1452097Z not ok 719 - native producer -> reducer -> persisted/live Transcript Part -> Edit: result-can-supply-empty-input\n2026-11-12T06:10:38.1453329Z   ---\n2026-11-12T06:10:38.1453935Z   duration_ms: 166.784254\n2026-11-12T06:10:38.1454613Z   type: 'test'\n2026-11-12T06:10:38.1455808Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/editResultPipeline.test.ts:144:28'\n2026-11-12T06:10:38.1457155Z   failureType: 'testCodeFailure'\n2026-11-12T06:10:38.1457817Z   error: |-\n2026-11-12T06:10:38.1458404Z     live selected-side counts\n2026-11-12T06:10:38.1459459Z     + actual - expected\n2026-11-12T06:10:38.1460682Z     \n2026-11-12T06:10:38.1461234Z     + []\n2026-11-12T06:10:38.1461760Z     - [\n2026-11-12T06:10:38.1462283Z     -   '10'\n2026-11-12T06:10:38.1462808Z     - ]\n2026-11-12T06:10:38.1463331Z     \n2026-11-12T06:10:38.1463847Z   code: 'ERR_ASSERTION'\n2026-11-12T06:10:38.1464512Z   name: 'AssertionError'\n2026-11-12T06:10:38.1465152Z   expected:\n2026-11-12T06:10:38.1465705Z     0: '10'\n2026-11-12T06:10:38.1466256Z   actual:\n2026-11-12T06:10:38.1466886Z   operator: 'deepStrictEqual'\n2026-11-12T06:10:38.1467536Z   stack: |-\n2026-11-12T06:10:38.1468915Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/editResultPipeline.test.ts:149:14)\n2026-11-12T06:10:38.1470716Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-12T06:10:38.1471875Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-12T06:10:38.1472824Z   ...\n2026-11-12T06:10:38.5154612Z # Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: empty-diff-falls-back\n2026-11-12T06:10:38.5200394Z ok 720 - native producer -> reducer -> persisted/live Transcript Part -> Edit: empty-diff-falls-back\n2026-11-12T06:10:38.5201520Z   ---\n2026-11-12T06:10:38.5229608Z   duration_ms: 382.775283\n2026-11-12T06:10:38.5259531Z   type: 'test'\n2026-11-12T06:10:38.5289577Z   ...\n2026-11-12T06:10:38.9017039Z # Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: non-string-diff-falls-back\n2026-11-12T06:10:38.9033242Z ok 721 - native producer -> reducer -> persisted/live Transcript Part -> Edit: non-string-diff-falls-back\n2026-11-12T06:10:38.9038474Z   ---\n2026-11-12T06:10:38.9039210Z   duration_ms: 373.517863\n2026-11-12T06:10:38.9039941Z   type: 'test'\n2026-11-12T06:10:38.9040503Z   ...\n2026-11-12T06:10:39.2340999Z # Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: array-does-not-select-nested-object\n2026-11-12T06:10:39.2400745Z ok 722 - native producer -> reducer -> persisted/live Transcript Part -> Edit: array-does-not-select-nested-object\n2026-11-12T06:10:39.2459664Z   ---\n2026-11-12T06:10:39.2549788Z   duration_ms: 364.612138\n2026-11-12T06:10:39.2639929Z   type: 'test'\n2026-11-12T06:10:39.2719942Z   ...\n2026-11-12T06:10:39.6940693Z # Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: plain-text-falls-back\n2026-11-12T06:10:39.6990666Z ok 723 - native producer -> reducer -> persisted/live Transcript Part -> Edit: plain-text-falls-back\n2026-11-12T06:10:39.7001287Z   ---\n2026-11-12T06:10:39.7019965Z   duration_ms: 416.042451\n2026-11-12T06:10:39.7029567Z   type: 'test'\n2026-11-12T06:10:39.7029953Z   ...\n2026-11-12T06:10:40.0103664Z # Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: null-result-falls-back\n2026-11-12T06:10:40.0113278Z ok 724 - native producer -> reducer -> persisted/live Transcript Part -> Edit: null-result-falls-back\n2026-11-12T06:10:40.0130184Z   ---\n2026-11-12T06:10:40.0130767Z   duration_ms: 367.493402\n2026-11-12T06:10:40.0131488Z   type: 'test'\n2026-11-12T06:10:40.0132104Z   ...\n2026-11-12T06:10:40.1681710Z # Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: failed-result-still-selects-diff\n2026-11-12T06:10:40.1730469Z not ok 725 - native producer -> reducer -> persisted/live Transcript Part -> Edit: failed-result-still-selects-diff\n2026-11-12T06:10:40.1759667Z   ---\n2026-11-12T06:10:40.1819567Z   duration_ms: 142.773975\n2026-11-12T06:10:40.1849651Z   type: 'test'\n2026-11-12T06:10:40.1889191Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/editResultPipeline.test.ts:144:28'\n2026-11-12T06:10:40.1919892Z   failureType: 'testCodeFailure'\n2026-11-12T06:10:40.1949549Z   error: |-\n2026-11-12T06:10:40.1950265Z     live result-selected hover sides\n2026-11-12T06:10:40.1979674Z     + actual - expected\n2026-11-12T06:10:40.2001696Z     \n2026-11-12T06:10:40.2040024Z       [\n2026-11-12T06:10:40.2040696Z     +   '-input-old',\n2026-11-12T06:10:40.2061539Z     +   '+input-new'\n2026-11-12T06:10:40.2062690Z     -   '-result-old',\n2026-11-12T06:10:40.2063283Z     -   '+result-new'\n2026-11-12T06:10:40.2063877Z       ]\n2026-11-12T06:10:40.2064379Z     \n2026-11-12T06:10:40.2064877Z   code: 'ERR_ASSERTION'\n2026-11-12T06:10:40.2065379Z   name: 'AssertionError'\n2026-11-12T06:10:40.2065877Z   expected:\n2026-11-12T06:10:40.2066349Z     0: '-result-old'\n2026-11-12T06:10:40.2066829Z     1: '+result-new'\n2026-11-12T06:10:40.2067374Z   actual:\n2026-11-12T06:10:40.2067915Z     0: '-input-old'\n2026-11-12T06:10:40.2068440Z     1: '+input-new'\n2026-11-12T06:10:40.2068983Z   operator: 'deepStrictEqual'\n2026-11-12T06:10:40.2069800Z   stack: |-\n2026-11-12T06:10:40.2071022Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/editResultPipeline.test.ts:156:16)\n2026-11-12T06:10:40.2072396Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-12T06:10:40.2073425Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-12T06:10:40.2074285Z   ...\n2026-11-12T06:10:40.3632083Z # Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: truthy-headers-only-suppress-input\n2026-11-12T06:10:40.3650605Z not ok 726 - native producer -> reducer -> persisted/live Transcript Part -> Edit: truthy-headers-only-suppress-input\n2026-11-12T06:10:40.3691690Z   ---\n2026-11-12T06:10:40.3719747Z   duration_ms: 161.823589\n2026-11-12T06:10:40.3742176Z   type: 'test'\n2026-11-12T06:10:40.3759871Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/editResultPipeline.test.ts:144:28'\n2026-11-12T06:10:40.3799818Z   failureType: 'testCodeFailure'\n2026-11-12T06:10:40.3800649Z   error: |-\n2026-11-12T06:10:40.3849633Z     live selected-side counts\n2026-11-12T06:10:40.3879686Z     + actual - expected\n2026-11-12T06:10:40.3909521Z     \n2026-11-12T06:10:40.3910113Z     + [\n2026-11-12T06:10:40.3919900Z     +   '11'\n2026-11-12T06:10:40.3920846Z     + ]\n2026-11-12T06:10:40.3921408Z     - []\n2026-11-12T06:10:40.3921979Z     \n2026-11-12T06:10:40.3922579Z   code: 'ERR_ASSERTION'\n2026-11-12T06:10:40.3923277Z   name: 'AssertionError'\n2026-11-12T06:10:40.3923955Z   expected:\n2026-11-12T06:10:40.3924549Z   actual:\n2026-11-12T06:10:40.3925085Z     0: '11'\n2026-11-12T06:10:40.3925667Z   operator: 'deepStrictEqual'\n2026-11-12T06:10:40.3926323Z   stack: |-\n2026-11-12T06:10:40.3928122Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/editResultPipeline.test.ts:149:14)\n2026-11-12T06:10:40.3930012Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-12T06:10:40.3931221Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-12T06:10:40.3932180Z   ...\n2026-11-12T06:10:40.5951018Z # Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: input-marker-control\n2026-11-12T06:10:40.5953021Z ok 727 - native producer -> reducer -> persisted/live Transcript Part -> Edit: input-marker-control\n2026-11-12T06:10:40.5954165Z   ---\n2026-11-12T06:10:40.5954846Z   duration_ms: 427.303634\n2026-11-12T06:10:40.5955539Z   type: 'test'\n2026-11-12T06:10:40.5956163Z   ...\n2026-11-12T06:10:40.6661001Z "
+}

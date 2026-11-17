@@ -1,0 +1,29 @@
+
+    /**
+     * "Always on" event listeners.
+     */
+    this._register(addDisposableListener(el, 'mousedown', (ev: MouseEvent) => {
+      ev.preventDefault();
+      this.focus();
+
+      // Don't send the mouse button to the pty if mouse events are disabled or
+      // if the selection manager is having selection forced (ie. a modifier is
+      // held).
+      if (!this.coreMouseService.areMouseEventsActive || this._selectionService!.shouldForceSelection(ev)) {
+        return;
+      }
+
+      sendEvent(ev);
+
+      // Register additional global handlers which should keep reporting outside
+      // of the terminal element.
+      // Note: Other emulators also do this for 'mousedown' while a button
+      // is held, we currently limit 'mousedown' to the terminal only.
+      if (requestedEvents.mouseup) {
+        this._document!.addEventListener('mouseup', requestedEvents.mouseup);
+      }
+      if (requestedEvents.mousedrag) {
+        this._document!.addEventListener('mousemove', requestedEvents.mousedrag);
+      }
+
+      return this.cancel(ev);

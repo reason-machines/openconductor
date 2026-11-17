@@ -1,0 +1,79 @@
+{
+  "producer": "Conductor Rebuild",
+  "candidate": "SAME271-EMPTY-SIDEBAR-GUIDANCE-01",
+  "grant": "ordinary-empty-sidebar-271-grant.json / ACC message0f9e8a27-3532-47fa-9364-34b38b896acb",
+  "computer": "00637189-5c55-416e-b457-ed7419fb739a",
+  "branch": "reason/openconductor-sol-home-s-27102e36",
+  "testedHeadBeforeRegression": "8f1359d13b43382f70d8bcc2e36098157c866954",
+  "regressionFirstCommit": "e00b70b7",
+  "publicationMain": "7d5c13c394e5599c32dd9678625202911f74ebf7",
+  "freshMainBaselinePins": "all original leased product/adjacent/package hashes match freeze.json",
+  "phases": {
+    "red": {
+      "command": "timeout 90s node --max-old-space-size=768 --experimental-strip-types --test --test-concurrency=1 src/components/sidebarEmptyGuidance.test.ts",
+      "exit": 1,
+      "tests": 11,
+      "passed": 6,
+      "failed": 5,
+      "skipped": 0,
+      "cancelled": 0,
+      "terminal": "RED start=2026-11-12T12:19:46.278080833Z end=2026-11-12T12:19:47.160304236Z exit=1",
+      "log": "red.tap.gz",
+      "logSha256": "41378b4d0d08ef7345bcaed23a90fba6ed05147e400035f5acfad8407b30fd00",
+      "compressedLogSha256": "e7e61aa04d29c60d53bc29c986aabb330e29a4f1d662497dedf7ad5736834871"
+    },
+    "green": {
+      "command": "timeout 90s node --max-old-space-size=768 --experimental-strip-types --test --test-concurrency=1 src/components/sidebarEmptyGuidance.test.ts",
+      "exit": 0,
+      "tests": 11,
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "terminal": "GREEN start=2026-11-12T12:20:19.567019867Z end=2026-11-12T12:20:20.424565055Z exit=0",
+      "log": "green.tap.gz",
+      "logSha256": "053e2e6bfbde8e4862c5b0fd5e9b3e88c89a77be5324a9813254254cb906e529",
+      "compressedLogSha256": "451648aa1c463b42b7f62b772d53b6ee667f6e2f291d9857d39c868282f3bb64"
+    },
+    "adjacent": {
+      "command": "timeout 90s node --max-old-space-size=768 --experimental-strip-types --test --test-concurrency=1 src/components/sidebarRepoBadgeCount.test.ts src/state/customSectionCollapse.test.ts src/home/repoFilter.test.ts src/state/sidebarOrder.test.ts",
+      "exit": 0,
+      "tests": 38,
+      "passed": 38,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "terminal": "ADJACENT start=2026-11-12T12:20:20.455591236Z end=2026-11-12T12:20:21.847943627Z exit=0",
+      "log": "adjacent.tap.gz",
+      "logSha256": "a2a046d64b10dd61368ca14e5d814e5f37d48dc03ca56f3f53fb8f211b2ad42c",
+      "compressedLogSha256": "adb52453aa711f24eee698509e7dd88538aefb3a927335ce3fb4d2faa5a4ec4c"
+    }
+  },
+  "unchangedHashes": {
+    "src/components/sidebarEmptyGuidance.test.ts": "e2b394583e53a0768dbb4642602a4800c87d4256d167356e115e770ab25283d5",
+    "evidence/sidebar/empty-guidance/expected-cases.json": "a1942f64fa21dff44be7e9f0ac4814a442a80423c9f977cb9970544918356115",
+    "package.json": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+    "src/components/sidebarRepoBadgeCount.test.ts": "992cc94a1de7832df281655944bc1250d9707c640b20d5377d99e5ae86014548",
+    "src/state/customSectionCollapse.test.ts": "f321ec67cb0cb9dd2280468dad3fbcfd71b42d4ecb934cf3b5fffe73965a80b7",
+    "src/home/repoFilter.test.ts": "3e40ccd32d99bf546d170c16a94327660cc9c20aefd45cf8437d64d2efd1c696",
+    "src/state/sidebarOrder.test.ts": "09bfd74769ba808d4694540bb0f7613b57d7c44a6b367bd2cd614c3016e85520"
+  },
+  "fixedSidebarSha256": "02fa4b41eb93eac32ddedbf14bee679c1a77da32973f83285cf43f0635800831",
+  "productChange": "Remove collapse suppression only from state.repos.length === 0 guidance predicate. #1168 displayedWorkspaces projection/count/map, groups, navigation, stores and actions unchanged.",
+  "releasedAt": "2026-11-12T12:20:21.872555321Z",
+  "ownJobsAtRelease": "No Node/npm/server process; only sandbox/transport/shell/ps visible. Own namespace only, not host-wide.",
+  "notRun": [
+    "install",
+    "local typecheck",
+    "lint",
+    "build",
+    "browser/server",
+    "original native runtime",
+    "provider",
+    "E2E",
+    "package",
+    "release verification"
+  ],
+  "releaseScope": "Outside unchanged fixed #992 cut; existing 992 release/E1 native ownership retained."
+}

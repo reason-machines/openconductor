@@ -1,6 +1,7 @@
 // App preferences kept in conductor.db's `settings` table (src-tauri/src/app_prefs),
 // not in settings.toml: Conductor registers these keys as non-file-backed. One shared
 // store per window; every write goes through a typed `set_app_pref` update.
+import { persistenceOwner } from "../lib/persistence/restartPersistence.ts";
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { useSyncExternalStore } from "react";
 import type { SendKeyMode } from "../keybindings/registry.ts";
@@ -132,9 +133,11 @@ function publish(next: AppPrefs): void {
 let confirmed = current;
 const pendingWrites = new Set<{ update: AppPrefUpdate }>();
 let nativeOperations = Promise.resolve();
+const preferenceWrites = persistenceOwner();
 
-function enqueueNative<T>(operation: () => Promise<T>): Promise<T> {
-  const result = nativeOperations.then(operation);
+function enqueueNative<T>(operation: () => Promise<T>, key?: string): Promise<T> {
+  const queued = () => nativeOperations.then(operation);
+  const result = key === undefined ? queued() : preferenceWrites.run(queued, undefined, key);
   nativeOperations = result.then(() => undefined, () => undefined);
   return result;
 }
@@ -183,7 +186,7 @@ export async function setAppPref(update: AppPrefUpdate): Promise<AppPrefs> {
       publishConfirmed(prefs);
       throw err;
     }
-  });
+  }, update.key);
 }
 
 /** "Open in <app>": makes it the default and moves it to the front of the MRU order. */
@@ -191,7 +194,7 @@ export async function recordOpenIn(appId: string, isRemote?: boolean): Promise<A
   if (!isTauri()) return current;
   return enqueueNative(async () => publishConfirmed(
     await invoke<AppPrefs>("record_open_in", { appId, isRemote: isRemote ?? null }),
-  ));
+  ), "openIn");
 }
 
 export function getAppPrefs(): AppPrefs {

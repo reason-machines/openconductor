@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { usePersistenceProducer } from "../lib/persistence/producer.ts";
+import { persistenceOwner } from "../lib/persistence/restartPersistence.ts";
 import { errorText, getSettings, updateSettings } from "./api";
 import { applyAppearance, DEFAULT_ZOOM, SETTINGS_CHANGED, withAppearance, zoomStep } from "./appearance";
 import { withField } from "./model";
@@ -20,6 +22,7 @@ export function rememberSettings(s: Settings): Settings {
  * applied to the document as soon as a change is made.
  */
 export function useSettings() {
+  const persistence = usePersistenceProducer();
   const [settings, setSettingsState] = useState<Settings | null>(() => lastSettings);
   const setSettings = useCallback((s: Settings | null) => {
     if (s) rememberSettings(s);
@@ -55,7 +58,7 @@ export function useSettings() {
       const savedAt = ++revision.current;
       setSettings(next);
       applyAppearance(next);
-      const run = writes.current.then(async () => {
+      const run = persistence.run(() => writes.current.then(async () => {
         try {
           const stored = await updateSettings(next);
           confirmed.current = stored;
@@ -73,11 +76,11 @@ export function useSettings() {
           }
           return false;
         }
-      });
+      }), (result) => result);
       writes.current = run.then(() => undefined);
       return run;
     },
-    [setSettings],
+    [setSettings, persistence],
   );
 
   return { settings, error, save, reload };
@@ -85,17 +88,18 @@ export function useSettings() {
 
 // Zoom changes run one after another, so held or quick repeated keys each move a step.
 let zoomQueue: Promise<void> = Promise.resolve();
+const appearanceWrites = persistenceOwner();
 
 /** ⌘+ / ⌘− / ⌘0: one zoom step (or back to 100%), saved and applied app-wide. */
 export function changeZoom(direction: "in" | "out" | "reset"): Promise<void> {
-  const run = zoomQueue.then(async () => {
+  const run = appearanceWrites.run(() => zoomQueue.then(async () => {
     const s = await getSettings();
     const zoom = direction === "reset" ? DEFAULT_ZOOM : zoomStep(s.appearance.zoom_level_v2, direction);
     if (zoom === s.appearance.zoom_level_v2) return;
     const stored = await updateSettings(withAppearance(s, "zoom_level_v2", zoom));
     applyAppearance(rememberSettings(stored));
     window.dispatchEvent(new Event(SETTINGS_CHANGED));
-  });
+  }));
   zoomQueue = run.catch(() => undefined);
   return run;
 }
@@ -105,9 +109,11 @@ export function changeZoom(direction: "in" | "out" | "reset"): Promise<void> {
  * theme (Conductor's `i(n === "dark" ? "light" : "dark")`, renderApp @10,904,339).
  */
 export async function toggleTheme(): Promise<void> {
+  return appearanceWrites.run(async () => {
   const s = await getSettings();
   const dark = resolveDark(s.general.theme === "system" ? undefined : s.general.theme, window.matchMedia("(prefers-color-scheme: dark)").matches);
   const stored = await updateSettings(withField(s, "general", "theme", dark ? "light" : "dark"));
   applyAppearance(rememberSettings(stored));
   window.dispatchEvent(new Event(SETTINGS_CHANGED));
+  });
 }

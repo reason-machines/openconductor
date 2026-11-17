@@ -1,0 +1,1 @@
+async function I8(t,e,n){(await Kc({command:`${OGe(n)}${t}`,host:gn})).code!==0&&(Bt.warn(`CLI not available for ${n.appName}. Falling back.`),await o4e(e,n))}

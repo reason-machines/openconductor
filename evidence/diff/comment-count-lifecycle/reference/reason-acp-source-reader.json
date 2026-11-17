@@ -1,0 +1,24 @@
+{
+  "source": "be7a40e4-7a95-4b4b-a75d-41eaf9426f8b",
+  "message": "551321cd-e0ff-4c67-b92a-44b18d1384a3",
+  "checked_main": "6ccc31ab3020d6b147bde1b980497276fa3ce1a9",
+  "status": "INDEPENDENT_SOURCE_READ_NOT_RUNTIME_OR_REA_EQUIVALENCE",
+  "observations": [
+    "expect_prompt only allocates a cancellation ticket. SessionStarted and local turn seq precede the prompt transport and are not successful-handoff signals.",
+    "RpcConnection::call registers the request waiter, writes JSONRPC through write_line, then waits for a matching response. The successful local handoff point is after write_line Ok and before rx.recv.",
+    "write_line serializes, appends newline, performs write_all and returns flush. Production writer is ChildStdin. This proves only local write/flush success, not ACP parse/accept, cloud execution or completion.",
+    "A stopped ticket or session-open failure can return before session/prompt is written. A later RPC error or stdout closure can follow successful write and cause a failed turn.",
+    "Write/flush failure gives no confirmed handoff; partial bytes may nevertheless have reached the child.",
+    "RPC request ids are connection-local, not global across restarts. Existing checkpoint turn ids are not passed to the provider prompt. A request-owned IPC channel retains caller correlation without relying on the current chat, ticket, seq or rpc id.",
+    "Current native command resolves after turn completion and may return Rust Ok containing failed/cancelled/superseded outcomes. No current event exposes prompt write success. App.emit failure is ignored on the existing event path."
+  ],
+  "source_locations": [
+    "src-tauri/src/reason_acp/provider.rs:485-520,548-634,726-790",
+    "src-tauri/src/reason_acp/rpc.rs:146-201,203-275",
+    "src-tauri/src/reason_acp/cli.rs:444-447",
+    "src-tauri/src/reason_chat.rs:325-377"
+  ],
+  "tests": "NOT_RUN",
+  "product_edits": "NONE",
+  "provider_calls": "NONE"
+}

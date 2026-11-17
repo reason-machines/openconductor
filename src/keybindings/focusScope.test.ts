@@ -35,7 +35,7 @@ function workspaceChatHost(KeybindingScope: unknown, ChatPanel: unknown) {
   };
   visit(source);
   assert.equal(hosts.length, 1, "run the actual WorkspaceView chat host JSX, not a copied wrapper");
-  const compiled = ts.transpileModule(`function ChatHost({centerTerminal, showBrowser = false}) { return (${hosts[0]}); } module.exports = ChatHost;`, {
+  const compiled = ts.transpileModule(`function ChatHost({centerTerminal, showBrowser = false, focused = true, grouped = false}) { const auxiliary = null; return (${hosts[0]}); } module.exports = ChatHost;`, {
     fileName: path,
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021, jsx: ts.JsxEmit.ReactJSX },
   }).outputText;
@@ -45,7 +45,9 @@ function workspaceChatHost(KeybindingScope: unknown, ChatPanel: unknown) {
     activeReview: undefined, primaryId: "workspace", workspace: { id: "workspace", name: "Workspace" }, repo: {},
     dispatch: () => {}, notify: undefined, chatBridge: {}, setAgentWorking: () => {}, diff: {},
     prBase: undefined, hasNextUnread: undefined, selectedChat: "workspace", onNextUnread: undefined,
-    reviews: { tabs: [], fork: () => {} }, showFile: false, showDiff: false, showPr: false,
+    reviews: { tabs: [], fork: () => {} }, transcriptChats: [{ id: "workspace", title: "Workspace" }],
+    showFile: false, showDiff: false, showPr: false, onOpenAccountSettings: undefined,
+    linkIssueTrigger: 0, openFileOrViewer: undefined,
   })(createRequire(path), module, module.exports);
   return module.exports;
 }

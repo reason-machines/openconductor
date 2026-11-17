@@ -1,0 +1,1 @@
+function zf(t){const e=ne.c(5),n=dFt(),i=$.useId();let r,o;e[0]!==i||e[1]!==n||e[2]!==t?(r=()=>{if(!(!t||n===void 0))return n.onNestedLayerOpenChange({layerId:i,open:!0}),()=>{n.onNestedLayerOpenChange({layerId:i,open:!1})}},o=[i,n,t],e[0]=i,e[1]=n,e[2]=t,e[3]=r,e[4]=o):(r=e[3],o=e[4]),$.useEffect(r,o)}

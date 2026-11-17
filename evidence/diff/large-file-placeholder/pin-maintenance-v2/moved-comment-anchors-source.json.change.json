@@ -1,0 +1,10 @@
+{
+  "manifest": "evidence/diff/moved-comment-anchors/source.json",
+  "before_sha256": "ab2c033d03f71b39bb8916528ee5ea2a110156544b1aa89b8b375a2c8d0b2431",
+  "json_path": [
+    "product",
+    "src/features/diff/FileDiffView.tsx",
+    "candidate"
+  ],
+  "after": "518b579630903c24ef7f2431c91d014fdd46fad8732c1b1a6895375fd3ee2f26"
+}

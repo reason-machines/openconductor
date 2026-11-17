@@ -1,0 +1,1 @@
+function E0o(t,e){const n=t.trim();return n&&!n.includes(" ")?p.jsx("div",{children:n},e):p.jsx("div",{children:t},e)}

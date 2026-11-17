@@ -1,0 +1,1 @@
+const eva=26;function tva(){return NSe()==="macos"&&Number.parseInt(OSe(),10)>=eva}

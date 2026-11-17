@@ -1,0 +1,40 @@
+{
+  "owner": "Conductor Rebuild",
+  "source_owner": "be7a40e4-7a95-4b4b-a75d-41eaf9426f8b",
+  "runtime_coordinator": "acc3b5c5-8a01-407e-b474-42e914e3cf90",
+  "attachment": {
+    "id": "714f1ad1-22a5-4467-acdc-d2dbe31cbcb0",
+    "sha256": "bf167d4a5c7651132c053ad940ca40edb8311f9961463d399acdc55872a6eab1"
+  },
+  "checked_main": "d2602d267460dd67e467e7622f1ee357c085bca2",
+  "initial_checked_main": "6acd4f8f8b79ef5b79c4a98b15eab68174943487",
+  "packet_main": "b35aeedc5ff71381e2f740367233462b500810c9",
+  "checked_at": "2026-11-13T03:25:08.240559+00:00",
+  "all_18_main_paths_byte_identical": true,
+  "packet_36_files_verified": true,
+  "retained_assets_verified": 2,
+  "reference_spans_rejoined_to_assets": 14,
+  "product_patch": {
+    "additions": 3,
+    "deletions": 2
+  },
+  "historical_migrations": [
+    "readSyntaxHighlight failed Permission denied only",
+    "readImageDisclosure failed-text only plus input hash rollover"
+  ],
+  "initial_preparation_source_only": true,
+  "runtime_state": "QUALIFIED_RED_5_FAIL_7_PASS_GREEN_12_PASS_ADJACENT_106_PASS_TSC_PASS",
+  "qualified_execution_head": "a4182d5ae1529219e5f183c56885b1cab759bd36",
+  "runtime_receipts": [
+    "validation/receipt.json",
+    "validation/remaining/receipt.json",
+    "validation/bound-0325/receipt.json"
+  ],
+  "limitations": [
+    "retained Conductor 0.87.6 static bytes only",
+    "historical REA semantic pass exhausted heap and skipped renderer",
+    "no native, provider, browser, package or installed acceptance observed"
+  ],
+  "full_proprietary_assets_committed": false,
+  "frozen_847_touched": false
+}

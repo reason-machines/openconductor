@@ -1,0 +1,1 @@
+function Ott(t){return typeof t!="string"&&t.type==="tool_result"}

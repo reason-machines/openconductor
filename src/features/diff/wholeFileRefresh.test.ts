@@ -19,7 +19,7 @@ const allowed = new Set([
   "src/features/diff/DiffViewer.tsx", "src/features/diff/useWorkspaceDiff.ts", "src/features/diff/api.ts",
   "src/features/diff/types.ts", "src/features/diff/target.ts", "src/features/diff/nav.ts",
   "src/features/diff/changesTree.ts", "src/features/diff/changesFilter.ts", "src/features/diff/viewed.ts",
-  "src/features/diff/EditInViewer.ts", "src/features/diff/editable.ts", "src/features/diff/editorContents.ts",
+  "src/features/diff/EditInViewer.ts", "src/features/diff/editable.ts", "src/features/diff/editorContents.ts", "src/features/diff/draftStorage.ts",
   "src/features/diff/copyFile.ts", "src/features/diff/pierre.ts", "src/features/files/tree.ts", "src/lib/keyedCache.ts", "src/keybindings/fuzzy.ts",
 ].map((path) => resolve(root, path)));
 const patch = (revision = 1, over: Partial<FileDiff> = {}): FileDiff => ({
@@ -78,12 +78,14 @@ async function fixture() {
       };
       if (name === "@pierre/diffs/edit") return { Editor: class { constructor() { assert.fail("No DOM editor in the component test"); } } };
       if (name === "../../keybindings/KeybindingsProvider.tsx") return { useKeybindings: () => undefined };
+      if (name === "./wrapLinesPref.ts") return { useWrapLinesPref: () => ({ value: true, save: () => {} }) };
       if (name === "./useChangesPresentation.ts") return {
         useChangesPresentation: () => ({ presentation: { filePathFilter: "", diffFileListMode: "flat" } }),
       };
       if (name === "./FileDiffView") return { FileDiffView: (props: ViewProps) => React.createElement("diff-view", props) };
       if (name === "./ChangesList") return {};
       if (name === "./DiscardDialog") return { DiscardDialog: () => assert.fail("Unrelated discard dialog") };
+      if (name === "./commentMarkdown.ts") return { CommentMarkdown: () => null };
       if (name === "./Whitespace") return { ViewOptionsMenu: () => null };
       if (name === "../../components/ConductorIcon") return { ConductorIcon: () => null };
       if (name === "../../components/ui/Tooltip.tsx") return { Tooltip: ({ children }: { children: unknown }) => children };

@@ -1,0 +1,360 @@
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -30,7 +30,18 @@
+       - run: npm run typecheck
+       - name: No colour literals outside src/theme/
+         run: npm run lint:colors
++      - name: Isolated DOM test dependencies
++        timeout-minutes: 3
++        shell: bash
++        env:
++          ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
++        run: |
++          npm install --prefix "$ONBOARDING_DOM_DEPS" --cache "$RUNNER_TEMP/onboarding-dom-cache" \
++            --ignore-scripts --no-audit --no-fund --package-lock=false --save-exact jsdom@26.1.0
+       - name: Frontend unit tests
++        env:
++          NODE_ENV: development
++          ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
+         run: node --test "src/**/*.test.ts"
+       - name: Window fill across interface zoom and resize
+         run: node --test tests/e2e/window-fill.e2e.mjs
+@@ -210,7 +221,19 @@
+       - run: npm ci
+       - name: Chat top-level find frozen component regression
+         run: node --test --test-reporter=tap tests/chat-search/transcriptFind.component.test.mjs
++      - name: Isolated DOM test dependencies
++        timeout-minutes: 3
++        shell: bash
++        env:
++          ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
++        run: |
++          npm install --prefix "$ONBOARDING_DOM_DEPS" --cache "$RUNNER_TEMP/onboarding-dom-cache" \
++            --ignore-scripts --no-audit --no-fund --package-lock=false --save-exact \
++            react@18.3.1 react-dom@18.3.1 typescript@5.9.3 jsdom@26.1.0
+       - name: Pure TypeScript modules (Node strips types natively)
++        env:
++          NODE_ENV: development
++          ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
+         run: node --test "src/**/*.test.ts"
+       - name: Custom branch-prefix unchanged-fixture baseline and candidate replay
+         timeout-minutes: 3
+@@ -242,9 +265,6 @@
+           ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
+           REACT_EFFECTS_DEPS: ${{ github.workspace }}/node_modules
+         run: |
+-          npm install --prefix "$ONBOARDING_DOM_DEPS" --cache "$RUNNER_TEMP/onboarding-dom-cache" \
+-            --ignore-scripts --no-audit --no-fund --package-lock=false --save-exact \
+-            react@18.3.1 react-dom@18.3.1 typescript@5.9.3 jsdom@26.1.0
+           echo "Onboarding source commit: $(git rev-parse HEAD)"
+           node --check tests/onboarding-strict-effects.test.mjs
+           node --test --test-reporter=tap tests/onboarding-effects.test.mjs tests/onboarding-strict-effects.test.mjs tests/onboarding-selected-slide.test.mjs
+--- /dev/null
++++ b/src/settings/agents/agentTabKeyboard.test.ts
+@@ -0,0 +1,67 @@
++import assert from "node:assert/strict";
++import { spawnSync } from "node:child_process";
++import { createHash } from "node:crypto";
++import { readFileSync } from "node:fs";
++import { fileURLToPath } from "node:url";
++import { test } from "node:test";
++
++const root = fileURLToPath(new URL("../../../", import.meta.url));
++const fixture = fileURLToPath(new URL("../../../evidence/settings/agent-tab-keyboard/agentTabsKeyboard.dom.test.mjs", import.meta.url));
++const expectedCases = [
++  "only the selected reason tab participates in Tab order",
++  "only the selected claude tab participates in Tab order",
++  "only the selected codex tab participates in Tab order",
++  "ArrowRight moves focus and automatically activates claude from reason",
++  "ArrowLeft moves focus and automatically activates claude from codex",
++  "ArrowRight moves focus and automatically activates reason from codex",
++  "ArrowLeft moves focus and automatically activates codex from reason",
++  "Home moves focus and automatically activates reason from codex",
++  "End moves focus and automatically activates codex from reason",
++  "focusing another tab activates its panel and route",
++  "clicking another tab still activates its panel and route",
++  "shiftKey leaves tab navigation to its existing owner",
++  "altKey leaves tab navigation to its existing owner",
++  "ctrlKey leaves tab navigation to its existing owner",
++  "metaKey leaves tab navigation to its existing owner",
++  "ArrowUp is not consumed by the horizontal tab row",
++  "ArrowDown is not consumed by the horizontal tab row",
++  "Tab is not consumed by the horizontal tab row",
++  "Escape still reaches settings.close through the real global dispatcher",
++  "Home at the reason boundary preserves focus without consuming the event",
++  "End at the codex boundary preserves focus without consuming the event",
++  "a route change updates the sole tab stop without stealing focus from elsewhere",
++];
++
++test("Agents tabs pass the unchanged 22-case keyboard and focus fixture", { timeout: 120_000 }, (context) => {
++  assert.equal(createHash("sha256").update(readFileSync(fixture)).digest("hex"), "833644d93d3c45c4846800c2d923540ff53c57b22d2aa1f53aaf99dbc1789d51");
++  const domPrefix = process.env.ONBOARDING_DOM_DEPS;
++  assert.ok(domPrefix, "K1 requires the existing isolated jsdom@26.1.0 prefix in ONBOARDING_DOM_DEPS; no install, fallback, or skip is permitted");
++  const env = { ...process.env };
++  delete env.NODE_TEST_CONTEXT;
++  const result = spawnSync(process.execPath, ["--test", "--test-concurrency=1", "--test-reporter=tap", fixture], {
++    cwd: root,
++    env: {
++      ...env,
++      NODE_ENV: "development",
++      NODE_OPTIONS: "--max-old-space-size=768",
++      ONBOARDING_DOM_DEPS: domPrefix,
++      AGENT_TABS_SOURCE_ROOT: root,
++    },
++    encoding: "utf8",
++    timeout: 115_000,
++    killSignal: "SIGKILL",
++    maxBuffer: 4 * 1024 * 1024,
++  });
++  assert.ifError(result.error);
++  assert.equal(result.signal, null, result.stdout + result.stderr);
++  assert.equal(result.status, 0, result.stdout + result.stderr);
++  for (const [name, expected] of Object.entries({ tests: 22, pass: 22, fail: 0, cancelled: 0, skipped: 0, todo: 0 })) {
++    const matches = [...result.stdout.matchAll(new RegExp(`^# ${name} (\\d+)$`, "gm"))];
++    assert.equal(matches.length, 1, `Missing or ambiguous TAP summary for ${name}`);
++    assert.equal(Number(matches[0][1]), expected);
++  }
++  assert.match(result.stdout, /^1\.\.22$/m);
++  assert.deepEqual([...result.stdout.matchAll(/^ok \d+ - (.+)$/gm)].map((match) => match[1]), expectedCases);
++  assert.doesNotMatch(result.stdout, /^not ok /m);
++  context.diagnostic(result.stdout);
++});
+--- /dev/null
++++ b/evidence/settings/agent-tab-keyboard/agentTabsKeyboard.dom.test.mjs
+@@ -0,0 +1,236 @@
++import assert from 'node:assert/strict';
++import { createRequire } from 'node:module';
++import { existsSync, readFileSync } from 'node:fs';
++import { dirname, relative, resolve } from 'node:path';
++import { after, test } from 'node:test';
++import { runInNewContext } from 'node:vm';
++
++const deps = createRequire(resolve('package.json'));
++assert.ok(process.env.ONBOARDING_DOM_DEPS, 'Use the admitted isolated jsdom prefix');
++const domDeps = createRequire(resolve(process.env.ONBOARDING_DOM_DEPS, 'package.json'));
++const { JSDOM } = domDeps('jsdom');
++const dom = new JSDOM('<!doctype html><body></body>', { url: 'http://localhost/' });
++for (const key of ['window', 'document', 'navigator', 'HTMLElement', 'Element', 'Node', 'Document', 'Event', 'MouseEvent', 'KeyboardEvent', 'PopStateEvent']) {
++  Object.defineProperty(globalThis, key, { configurable: true, value: dom.window[key] });
++}
++globalThis.IS_REACT_ACT_ENVIRONMENT = true;
++const React = deps('react');
++const { act } = React;
++const { createRoot } = deps('react-dom/client');
++const ts = deps('typescript');
++const sourceRoot = resolve(process.env.AGENT_TABS_SOURCE_ROOT ?? '.');
++after(() => dom.window.close());
++
++const IDS = ['reason', 'claude', 'codex'];
++const LABELS = ['Reason', 'Claude Code', 'Codex'];
++
++async function fixture(initial = 'reason') {
++  const originalUrl = window.location.href;
++  const originalState = window.history.state;
++  window.history.replaceState({ fixture: 'provider-free' }, '', `/settings?keep=fixture&providerTab=${initial}#retained`);
++  const container = document.createElement('div');
++  document.body.append(container);
++  const calls = { forbidden: [], bubbled: [], shortcuts: [] };
++  const forbid = name => () => { calls.forbidden.push(name); throw new Error(`Unexpected external action: ${name}`); };
++  const inert = () => null;
++  const provider = label => () => React.createElement('p', { 'data-testid': 'provider-leaf' }, label);
++  const boundaries = new Map([
++    ['src/components/Icons', { CopyIcon: inert }],
++    ['src/components/Toast', { Toaster: inert, useToasts: () => ({ toasts: [], dismiss() {}, show: forbid('toast') }) }],
++    ['src/features/openIn/OpenInButton', { AppIcon: inert }],
++    ['src/features/openIn/apps', { loadOpenInApps: async () => [], defaultAppId: () => null, openInApp: forbid('openInApp') }],
++    ['src/settings/appPrefs', { useAppPrefs: () => ({ default_open_in: null }), recordOpenIn: forbid('recordOpenIn') }],
++    ['src/settings/api', { settingsFilePath: async () => null }],
++    ['src/settings/agents/ClaudeTab', { ClaudeTab: provider('Claude Code') }],
++    ['src/settings/agents/CodexTab', { CodexTab: provider('Codex') }],
++    ['src/settings/agents/ReasonTab', { ReasonTab: provider('Reason') }],
++    ['src/settings/agents/icons', { AgentMark: inert, ReasonMark: inert, CheckIcon: inert, ChevronDownIcon: inert, ExternalIcon: inert, EyeIcon: inert, PencilIcon: inert, TrashIcon: inert }],
++    ['src/settings/agents/parts', {}],
++    ['src/settings/rows/AgentOptionRows', {}],
++    ['src/backend', { openUrl: forbid('openUrl') }],
++  ]);
++  const modules = new Map();
++  function load(modulePath) {
++    if (boundaries.has(modulePath)) return boundaries.get(modulePath);
++    if (modules.has(modulePath)) return modules.get(modulePath);
++    const fileName = `${modulePath}.${existsSync(resolve(sourceRoot, `${modulePath}.tsx`)) ? 'tsx' : 'ts'}`;
++    const compiled = ts.transpileModule(readFileSync(resolve(sourceRoot, fileName), 'utf8'), {
++      fileName,
++      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
++      reportDiagnostics: true,
++    });
++    assert.deepEqual(compiled.diagnostics?.filter(d => d.category === ts.DiagnosticCategory.Error), [], `Production module must transpile: ${fileName}`);
++    const exports = {};
++    modules.set(modulePath, exports);
++    runInNewContext(compiled.outputText, {
++      exports, console, window, document, navigator, HTMLElement, Element, Node, Event, KeyboardEvent,
++      setTimeout, clearTimeout, queueMicrotask,
++      require(name) {
++        if (name === 'react' || name === 'react/jsx-runtime') return deps(name);
++        if (name.endsWith('.css')) return {};
++        if (name === '@tauri-apps/api/core') return { invoke: forbid('invoke'), isTauri: () => false };
++        assert.ok(name.startsWith('.'), `Unexpected dependency: ${name}`);
++        return load(relative(sourceRoot, resolve(dirname(resolve(sourceRoot, fileName)), name)).replace(/\.tsx?$/, ''));
++      },
++    });
++    return exports;
++  }
++  const { AgentsPage } = load('src/settings/AgentsPage');
++  const { KeybindingsProvider, useKeybindings } = load('src/keybindings/KeybindingsProvider');
++  function SettingsHost() {
++    useKeybindings({
++      'settings.close': () => { calls.shortcuts.push('settings.close'); },
++      'nav.back': () => { calls.shortcuts.push('nav.back'); },
++      'nav.forward': () => { calls.shortcuts.push('nav.forward'); },
++    });
++    return React.createElement(AgentsPage, {});
++  }
++  const onDocumentKeyDown = event => calls.bubbled.push(event.key);
++  document.addEventListener('keydown', onDocumentKeyDown);
++  const root = createRoot(container);
++  await act(async () => { root.render(React.createElement(KeybindingsProvider, null, React.createElement(SettingsHost))); });
++  const tabs = () => [...container.querySelectorAll('[role="tab"]')];
++  const tab = id => tabs()[IDS.indexOf(id)];
++  const selected = () => tabs().filter(node => node.getAttribute('aria-selected') === 'true').map(node => node.textContent);
++  return {
++    calls, tabs, tab, selected,
++    panel: () => container.querySelector('[role="tabpanel"]'),
++    async focus(id) { await act(async () => { tab(id).focus(); }); },
++    async press(id, key, modifiers = {}) {
++      await act(async () => { tab(id).focus(); });
++      const event = new window.KeyboardEvent('keydown', { key, bubbles: true, cancelable: true, ...modifiers });
++      await act(async () => { tab(id).dispatchEvent(event); });
++      return event;
++    },
++    async click(id) { await act(async () => { tab(id).click(); }); },
++    async route(id) {
++      await act(async () => {
++        const url = new URL(window.location.href);
++        url.searchParams.set('providerTab', id);
++        window.history.replaceState(window.history.state, '', url);
++        window.dispatchEvent(new window.PopStateEvent('popstate'));
++      });
++    },
++    async close() {
++      await act(async () => { root.unmount(); });
++      document.removeEventListener('keydown', onDocumentKeyDown);
++      container.remove();
++      window.history.replaceState(originalState, '', originalUrl);
++      assert.deepEqual(calls.forbidden, [], 'No provider, backend, clipboard, or external launch may run');
++    },
++  };
++}
++
++function assertActive(view, id, focused = false) {
++  const index = IDS.indexOf(id);
++  assert.deepEqual(view.selected(), [LABELS[index]]);
++  assert.equal(view.panel().getAttribute('aria-label'), LABELS[index]);
++  assert.equal(view.panel().textContent, LABELS[index]);
++  assert.equal(new URL(window.location.href).searchParams.get('providerTab'), id);
++  assert.equal(new URL(window.location.href).searchParams.get('keep'), 'fixture');
++  assert.equal(window.location.hash, '#retained');
++  assert.deepEqual(window.history.state, { fixture: 'provider-free' });
++  if (focused) assert.equal(document.activeElement, view.tab(id));
++}
++
++for (const id of IDS) {
++  test(`only the selected ${id} tab participates in Tab order`, async () => {
++    const view = await fixture(id);
++    try {
++      assertActive(view, id);
++      assert.deepEqual(view.tabs().map(node => node.tabIndex), IDS.map(value => value === id ? 0 : -1));
++    } finally { await view.close(); }
++  });
++}
++
++for (const [from, key, to] of [
++  ['reason', 'ArrowRight', 'claude'],
++  ['codex', 'ArrowLeft', 'claude'],
++  ['codex', 'ArrowRight', 'reason'],
++  ['reason', 'ArrowLeft', 'codex'],
++  ['codex', 'Home', 'reason'],
++  ['reason', 'End', 'codex'],
++]) {
++  test(`${key} moves focus and automatically activates ${to} from ${from}`, async () => {
++    const view = await fixture(from);
++    try {
++      const event = await view.press(from, key);
++      assertActive(view, to, true);
++      assert.equal(event.defaultPrevented, true);
++      assert.deepEqual(view.calls.bubbled, []);
++      assert.deepEqual(view.calls.shortcuts, []);
++      assert.deepEqual(view.tabs().map(node => node.tabIndex), IDS.map(value => value === to ? 0 : -1));
++    } finally { await view.close(); }
++  });
++}
++
++test('focusing another tab activates its panel and route', async () => {
++  const view = await fixture();
++  try { await view.focus('codex'); assertActive(view, 'codex', true); }
++  finally { await view.close(); }
++});
++
++test('clicking another tab still activates its panel and route', async () => {
++  const view = await fixture();
++  try { await view.click('claude'); assertActive(view, 'claude'); }
++  finally { await view.close(); }
++});
++
++for (const modifier of ['shiftKey', 'altKey', 'ctrlKey', 'metaKey']) {
++  test(`${modifier} leaves tab navigation to its existing owner`, async () => {
++    const view = await fixture();
++    try {
++      const event = await view.press('reason', 'ArrowRight', { [modifier]: true });
++      assertActive(view, 'reason', true);
++      assert.equal(event.defaultPrevented, false);
++      assert.deepEqual(view.calls.bubbled, ['ArrowRight']);
++    } finally { await view.close(); }
++  });
++}
++
++for (const key of ['ArrowUp', 'ArrowDown', 'Tab']) {
++  test(`${key} is not consumed by the horizontal tab row`, async () => {
++    const view = await fixture();
++    try {
++      const event = await view.press('reason', key);
++      assertActive(view, 'reason', true);
++      assert.equal(event.defaultPrevented, false);
++      assert.deepEqual(view.calls.bubbled, [key]);
++    } finally { await view.close(); }
++  });
++}
++
++test('Escape still reaches settings.close through the real global dispatcher', async () => {
++  const view = await fixture();
++  try {
++    const event = await view.press('reason', 'Escape');
++    assertActive(view, 'reason', true);
++    assert.equal(event.defaultPrevented, true);
++    assert.deepEqual(view.calls.shortcuts, ['settings.close']);
++  } finally { await view.close(); }
++});
++
++for (const [id, key] of [['reason', 'Home'], ['codex', 'End']]) {
++  test(`${key} at the ${id} boundary preserves focus without consuming the event`, async () => {
++    const view = await fixture(id);
++    try {
++      const event = await view.press(id, key);
++      assertActive(view, id, true);
++      assert.equal(event.defaultPrevented, false);
++      assert.deepEqual(view.calls.bubbled, [key]);
++    } finally { await view.close(); }
++  });
++}
++
++test('a route change updates the sole tab stop without stealing focus from elsewhere', async () => {
++  const view = await fixture();
++  const outside = document.createElement('button');
++  document.body.append(outside);
++  try {
++    outside.focus();
++    await view.route('codex');
++    assertActive(view, 'codex');
++    assert.equal(document.activeElement, outside);
++    assert.deepEqual(view.tabs().map(node => node.tabIndex), [-1, -1, 0]);
++  } finally { outside.remove(); await view.close(); }
++});

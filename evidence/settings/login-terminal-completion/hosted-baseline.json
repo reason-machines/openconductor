@@ -1,0 +1,61 @@
+{
+  "result": "qualified behavioral RED",
+  "head_sha": "a03427ac60561dd261d09f86cc7a35937b065df7",
+  "run_id": 43082827122,
+  "job_id": 130739522725,
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43082827122/job/130739522725",
+  "fixture_sha256": "b01b2a8d502fb7a1eba2b02e5ecfaf9ea2e7bbea28df81700e7b660772a305e7",
+  "cases": [
+    {
+      "name": "login bootstrap keeps the shell alive and marks command completion",
+      "result": "FAIL"
+    },
+    {
+      "name": "command completion enables Done while shell input remains usable",
+      "result": "FAIL"
+    },
+    {
+      "name": "shell exit before completion reports the premature exit",
+      "result": "FAIL"
+    },
+    {
+      "name": "other completion markers cannot complete this login",
+      "result": "PASS"
+    },
+    {
+      "name": "late ready and shell exit cannot erase observed command completion",
+      "result": "PASS"
+    },
+    {
+      "name": "Close dismisses the terminal without refreshing authentication",
+      "result": "PASS"
+    },
+    {
+      "name": "spawn failure stays distinct from command completion",
+      "result": "PASS"
+    },
+    {
+      "name": "login waits for terminal observation before spawning",
+      "result": "FAIL"
+    },
+    {
+      "name": "spawn resolution cannot erase a fast command completion",
+      "result": "FAIL"
+    },
+    {
+      "name": "unmount during spawn kills the late PTY without refreshing authentication",
+      "result": "PASS"
+    }
+  ],
+  "aggregate": {
+    "tests": 3025,
+    "pass": 3020,
+    "fail": 5,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "source_main_rechecked": "58fc17bc1f6a61db0624eb9a6aba85d2b3cbf5a9",
+  "source_pins_unchanged": 7,
+  "native_provider_credentials": false
+}

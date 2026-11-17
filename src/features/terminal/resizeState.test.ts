@@ -23,6 +23,7 @@ function fixture() {
   const screens: Screen[] = [];
   const noop = () => {};
   class Screen {
+    unicode = { activeVersion: "6" };
     cols = 80;
     rows = 24;
     options: ITerminalOptions;
@@ -44,6 +45,7 @@ function fixture() {
   const boundary: Record<string, unknown> = {
     "@xterm/xterm": { Terminal: Screen },
     "@xterm/addon-fit": { FitAddon: class { fit() {} dispose() {} } },
+    "@xterm/addon-unicode11": { Unicode11Addon: class {} },
     "src/features/terminal/pty": {
       onPtyEvent: async (callback: (event: PtyEvent) => void) => { event = callback; return noop; },
       ptySpawn: (args: SpawnArgs) => new Promise<string>((resolve, reject) => { spawns.push({ args, resolve, reject }); }),

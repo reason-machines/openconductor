@@ -1,0 +1,153 @@
+{
+  "author": "Conductor Rebuild",
+  "main": "492bc5c78f2e168924f9003bfb68c7023b4aa931",
+  "kind": "source candidate, not runtime intake",
+  "ownership_message": "19427ce2-2b1d-45fc-8388-7d5ac5aefc8b",
+  "reference": {
+    "asset": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "archive_attachment_id": "9bba4171-4ff7-4ded-83e7-5a62a9f75350",
+    "archive_sha256": "c007a6ac77d57b56cdfe8158817ffbcffee6a8f5e7f4a63e2eaef65cbf21b30d",
+    "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2"
+  },
+  "spans": [
+    {
+      "name": "n6a",
+      "utf8_half_open": [
+        10948507,
+        10953485
+      ],
+      "sha256": "25a11259c1ad67003f27a7ad58aec15540531fb329f03dea6b9a4befa8d5f87b",
+      "path": "reference/n6a.txt"
+    },
+    {
+      "name": "a6a",
+      "utf8_half_open": [
+        10953690,
+        10956803
+      ],
+      "sha256": "321cf8d967cb45b2147a3a519cf3f03211251f086454d1711ab31236618dcde5",
+      "path": "reference/a6a.txt"
+    },
+    {
+      "name": "zei",
+      "utf8_half_open": [
+        10956846,
+        10957876
+      ],
+      "sha256": "d3dda3dd8be727b34119197cd6b01652459570b8e40bd3d2d4e217cb5d76050d",
+      "path": "reference/zei.txt"
+    },
+    {
+      "name": "Yva",
+      "utf8_half_open": [
+        10944354,
+        10944695
+      ],
+      "sha256": "0257e22ae8094dab3bab0836e1be3d9f53804e65b628113ccc28d81097c15f3a",
+      "path": "reference/Yva.txt"
+    },
+    {
+      "name": "Bxa",
+      "utf8_half_open": [
+        11099076,
+        11100569
+      ],
+      "sha256": "5c72d08c45f2bf94cdd85d4e573191e1cce39d0459165a1a39b30aae684adae0",
+      "path": "reference/Bxa.txt"
+    },
+    {
+      "name": "pv-checkbox",
+      "utf8_half_open": [
+        2223390,
+        2224873
+      ],
+      "sha256": "6b6361334a702bbfe64ddabc8f9bc212b423bbc2ca31d0a7d9bc76a80632a06a",
+      "path": "reference/pv-checkbox.txt"
+    },
+    {
+      "name": "nds-checkbox-root",
+      "utf8_half_open": [
+        2218830,
+        2222474
+      ],
+      "sha256": "1a31464056a0a825e7f1583b8423799cea545745f9aa825804abe4937732a1d7",
+      "path": "reference/nds-checkbox-root.txt"
+    },
+    {
+      "name": "fieldset-default",
+      "utf8_half_open": [
+        2218095,
+        2218176
+      ],
+      "sha256": "09694cf013871c5c0dd133a637c9daee2e7570fdaebeb7d3fead4bb0e0c0b20d",
+      "path": "reference/fieldset-default.txt"
+    },
+    {
+      "name": "checkboxgroup-default",
+      "utf8_half_open": [
+        2218610,
+        2218684
+      ],
+      "sha256": "dcd7d96e014eedae01a597745a790987055a3cd338830422b2ffc9572a7a315c",
+      "path": "reference/checkboxgroup-default.txt"
+    },
+    {
+      "name": "field-defaults",
+      "utf8_half_open": [
+        1992808,
+        1993278
+      ],
+      "sha256": "7b46360a9c47c242ae9ad02c65ea99c725a72221695adbf9c63ff294157ae21c",
+      "path": "reference/field-defaults.txt"
+    }
+  ],
+  "baseline": {
+    "path": "src/settings/ConfigSyncDialog.tsx",
+    "sha256": "08d6ac334235243eca181c34cba997052e51a8cf32d1c28441679e77684f6b8a"
+  },
+  "candidate": {
+    "path": "candidate.patch",
+    "sha256": "5a392fe4f5318dbb060f896808ef9c1d09456c76b20c88fb4f375f474ae3a683",
+    "result_sha256": "0420a9d43f944994198f96120717a9d44fb3b75246fd8dbfd1d66dbf7a79c7e0"
+  },
+  "regression": {
+    "path": "src/settings/configSyncPendingSelection.test.ts",
+    "sha256": "883113258391d073898b2ab12e74e71d5eed7b151d0afd15440acfcb5b3f98e8",
+    "cases": 2,
+    "execution": "NOT_RUN"
+  },
+  "protected": [
+    {
+      "path": "src/settings/configSyncHarness.cjs",
+      "sha256": "4e2c22d3f6a15ae5aa4be099728583e71ae75139e203e6a305df8a0c98f0cafd"
+    },
+    {
+      "path": "src/settings/configSyncSuccessFeedback.test.ts",
+      "sha256": "9c54d196fab103c146a81fef497ff2fab86b875e0e59cf1ac9d0c6afef725b43"
+    },
+    {
+      "path": "src/settings/configSyncDialog.test.ts",
+      "sha256": "e49d1924b035c2fa2b2399e1b990eedb50b7f25d891c9fe3fa764ea558269245"
+    },
+    {
+      "path": "src/settings/configSyncApi.ts",
+      "sha256": "7e566a5738d01c9fbcef988c2f03526c87e492850768d2149988b3bc97e6a1ef"
+    },
+    {
+      "path": "src/settings/configSync.ts",
+      "sha256": "69dbee933f81f50e71cb031a7a11392dff31e82bbd39725f5c22d305491d0aac"
+    },
+    {
+      "path": "src/components/Dialogs.tsx",
+      "sha256": "ecbffa963b0e61be7da873e62f8d67af27fc0dfc802def7abaa8b278355cf203"
+    }
+  ],
+  "limits": [
+    "Retained shipped bytes were read as data, not executed.",
+    "Historical renderer semantic analysis exhausted heap.",
+    "Current installed app identity, native behavior, application RED/GREEN, typecheck and build are unverified.",
+    "No new runtime row, admission, driver or provisioning is requested."
+  ]
+}

@@ -1,0 +1,21 @@
+--- frozen-v1/outputLinks.test.ts
++++ syntax-unicode-v2/outputLinks.test.ts
+@@ -30,7 +30,9 @@
+     writes: string[] = [];
+     disposed = 0;
+     rows = 24;
+-    constructor(public options: ITerminalOptions) { screens.push(this); }
++    unicode = { activeVersion: "6" };
++    options: ITerminalOptions;
++    constructor(options: ITerminalOptions) { this.options = options; screens.push(this); }
+     loadAddon() {}
+     open() {}
+     write(text: string) { this.writes.push(text); }
+@@ -88,6 +90,7 @@
+       if (name === "react" || name === "react/jsx-runtime") return deps(name);
+       if (name === "@xterm/xterm") return { Terminal: Screen };
+       if (name === "@xterm/addon-fit") return { FitAddon: class { fit() {} } };
++      if (name === "@xterm/addon-unicode11") return { Unicode11Addon: class {} };
+       if (name === "@tauri-apps/api/core") return { invoke, isTauri: () => true, Channel: class {} };
+       if (name === "@tauri-apps/plugin-dialog") return load(name);
+       if (name.endsWith(".css")) return {};

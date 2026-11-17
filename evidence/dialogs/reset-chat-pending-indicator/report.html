@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reset chat pending feedback</title><style>
+:root{color-scheme:light dark}body{margin:0;font:14px/1.5 var(--font-sans,system-ui);color:var(--foreground)}h1{font-size:22px;line-height:28px;font-weight:500;margin:0 0 12px}h2{font-size:17px;line-height:24px;font-weight:500;margin:24px 0 8px}p{margin:8px 0}ul{padding-left:20px;margin:8px 0}li{margin:6px 0}.muted{color:var(--muted-foreground)}.label{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted-foreground);margin:0 0 8px}.finding{border-left:3px solid var(--chart-1);padding-left:16px;margin:16px 0}.bound{padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:8px;margin:16px 0}code,pre{font-family:var(--font-mono,monospace);font-size:12px}code{overflow-wrap:anywhere}pre{white-space:pre-wrap;padding:12px;background:var(--code-background);color:var(--code-foreground);border-radius:8px}a{color:var(--accent);text-underline-offset:3px}details{border-top:1px solid var(--border);padding-top:12px;margin-top:20px}summary{cursor:pointer}footer{margin-top:24px;padding-top:12px;border-top:1px solid var(--border);font-size:12px;color:var(--muted-foreground)}
+</style></head><body>
+<p class="label">Conductor Rebuild · finite source investigation</p>
+<h1>Reset chat omits its pending working indicator</h1>
+<p class="muted">Source-level finding at fetched main <code>a66b72e9fc3790a0c93ac614a901da727929c5d9</code>. This is not visible or native parity verification.</p>
+<div class="finding"><p>Conductor's complete Reset-chat declaration renders a 16px working indicator beside <code>Resetting...</code>. OpenConductor's primary button renders only that text while pending.</p></div>
+<h2>Evidence</h2>
+<ul>
+<li>Retained Conductor 0.87.6 renderer, complete <code>dDo [8909638,8912447)</code>. Its pending branch includes <code>ri</code> with <code>type:"working"</code> and <code>h-4 w-4 mr-2</code>.</li>
+<li>Complete <code>ri [1946250,1946886)</code>, <code>Kss [1946886,1947094)</code> and <code>SEe [1779466,1779679)</code> select and render the <code>working-loader</code> sprite. Static and normal render paths both retain an indicator element.</li>
+<li><a href="https://github.com/reason-machines/openconductor/blob/a66b72e9fc3790a0c93ac614a901da727929c5d9/src/features/chat/ResetChatDialog.tsx#L103-L113">Current ResetChatDialog primary button</a> changes the label and removes the shortcut, but supplies no pending indicator. Its applicable styles do not synthesize one.</li>
+</ul>
+<h2>Correction boundary</h2>
+<p>Restore a pending-only indicator inside this button using the existing working-loader precedent, without changing the busy state, reset payload, Cancel, Escape, dismissal, focus, preferences or backend.</p>
+<div class="bound"><p>The seven-line unapplied candidate reuses the existing three-dot SVG precedent. Local inline dimensions, border and shrink declarations isolate the global loader class's 14px ring rules. The retained source selects a sprite, so this fallback targets feedback presence, not matching sprite appearance or animation.</p></div>
+<h2>Regression target</h2>
+<p>Mount the actual dialog with a deferred confirmation. Check idle, pending indicator and label, disabled duplicate confirmation, absent pending shortcut, and failure returning to the idle action. On success, check one close request. A callback-counting fixture does not unmount the dialog itself.</p>
+<h2>Closed hypothesis</h2>
+<p>The changed-file count does not depend on the “Also reset files” value in either implementation. Unchecking that preference is not a new count-visibility gap.</p>
+<h2>Validation and ownership</h2>
+<p>Passed: retained renderer SHA-256, seven exact spans, six protected counterparts, current-main source readback, test syntax, patch applicability and whitespace. Ledger confirmed no conflicting exact-hunk reservation in its retained reports, with partial coverage. A seven-line unapplied candidate and a dedicated two-case deferred-confirmation regression are prepared. No product change, runtime, test execution, new intake or admission has occurred.</p>
+<p>ConfigSync and the five existing frozen units remain unchanged. Behavioral RED/GREEN, typecheck, build, screenshot, real animation and native delivery are not run.</p>
+<details><summary>Reference identity and limitations</summary><p>Renderer <code>renderApp-D_fmY7hW.js</code>, 11,600,457 bytes, SHA-256 <code>5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde</code>. Retained REA lineage <code>ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2</code>. Complete renderer semantic analysis historically exhausted heap; these conclusions use verified retained bytes as data, not target execution. Current installed Conductor identity and live behavior are unverified.</p><p>Current component SHA-256 <code>c469a06fa9ba28320ce3a6d48b7c613fb7e42bcd0bedbc35dcac6304fe9e8514</code>. Current chat stylesheet SHA-256 <code>d392d298dc9e08a6874f64ffadf389682b6b693af743cb13943d70f0c0ac837a</code>.</p></details>
+<footer>Conductor Rebuild · Source-only inquiry on Reason Cloud 352 · No app screenshot or simulation is presented.</footer>
+</body></html>

@@ -1,0 +1,28 @@
+{
+  "candidate": "CHAT.COLLAB-TOOL-VISIBILITY",
+  "author": "Conductor Rebuild",
+  "checked_main": "9c276e2e86c0bd7ed97c8ccd0467f30c7a8ebcab",
+  "source_archive_sha256": "517a71d9ff239942cc7cb11c2d895ea1d17d132d3442e28e46e835223296cdc6",
+  "acceptance_archive_sha256": "fd3af04cbe26a07d91c11df5813b454b470b6011192d87f354cea7adfce73335",
+  "manifest_checks": {
+    "source_entries": 31,
+    "acceptance_entries": 9,
+    "all_hashes_match": true
+  },
+  "baseline_product": {
+    "src/features/chat/view.ts": "d318201a7a5078a576ee9f4c1da2481768c8d1894f4d066b009492216cada331",
+    "src/features/chat/toolGroups.ts": "eadaab0dd0636ca31a0570074920905ba00edcff7963e4828e7b51299ac79252"
+  },
+  "frozen_fixture": {
+    "src/features/chat/assistantToolVisibility.test.ts": "213ef3a9a6d346e800cb5f94623cffa26c2e2f710415e65678a1444ceb2fc2e3",
+    "src/features/chat/assistantToolVisibility.inputs.json": "476cccaed904614b3c446273765ea12349c872ee73fa02d635c86d2bdfcc11f0"
+  },
+  "declared_test_count": 21,
+  "execution": "NOT_RUN",
+  "actual_checks": [],
+  "limits": [
+    "Historical Conductor 0.87.6 static REA spans, not fresh installed identity.",
+    "Native collabAgentToolCall normalization is outside this change.",
+    "No mounted, browser, package or native check."
+  ]
+}

@@ -36,6 +36,8 @@ pub struct KnownRepo {
     pub name: String,
     pub root: String,
     pub default_branch: String,
+    /// Git `origin` remote URL; `None` when unavailable at registration time.
+    pub remote_url: Option<String>,
 }
 
 /// A worktree the workspace service created.
@@ -50,16 +52,24 @@ pub struct KnownWorkspace {
 }
 
 /// Record a registered repository. Adding a hidden one again unhides it.
+/// Back-fills `remote_url` on an existing row when the column was previously null.
 pub async fn record_repository(pool: &SqlitePool, repo: &KnownRepo) -> Result<()> {
     match repos::get(pool, &repo.id).await? {
         Some(existing) if existing.hidden => repos::set_hidden(pool, &repo.id, false).await,
-        Some(_) => Ok(()),
+        Some(_) => {
+            // Back-fill remote_url on rows written before it was persisted.
+            if let Some(url) = &repo.remote_url {
+                repos::fill_remote_url(pool, &repo.id, url).await?;
+            }
+            Ok(())
+        }
         None => {
             let new = repos::NewRepo {
                 id: repo.id.clone(),
                 name: repo.name.clone(),
                 root_path: repo.root.clone(),
                 default_branch: Some(repo.default_branch.clone()),
+                remote_url: repo.remote_url.clone(),
                 ..Default::default()
             };
             repos::insert(pool, &new).await.map(drop)
@@ -245,6 +255,8 @@ pub struct WorkspaceRow {
     /// The workspace's open chat tabs besides its main chat, oldest first:
     /// they come back after a restart with their unread, as Conductor's do.
     pub chat_tabs: Vec<ChatTabRow>,
+    /// Retained UI chats for transcript attachments, including hidden tabs.
+    pub transcript_chats: Vec<ChatTabRow>,
     pub primary_chat_id: String,
     pub active_session_id: Option<String>,
     /// The main chat's own title once the user renamed it (`sessions::main_chat_titles`);
@@ -304,6 +316,30 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
             title: t.title,
         });
     }
+    let mut transcript_chats: std::collections::HashMap<String, Vec<ChatTabRow>> =
+        std::collections::HashMap::new();
+    for session in sessions::list(pool).await? {
+        let Some(workspace_id) = session.workspace_id else {
+            continue;
+        };
+        if session.id.ends_with(":claude")
+            || !(session.id == workspace_id
+                || session.id.starts_with(&format!("{workspace_id}:review:"))
+                || session.id.starts_with(&format!("{workspace_id}:chat:")))
+        {
+            continue;
+        }
+        transcript_chats
+            .entry(workspace_id)
+            .or_default()
+            .push(ChatTabRow {
+                id: session.id,
+                title: session.title,
+            });
+    }
+    for chats in transcript_chats.values_mut() {
+        chats.sort_by(|a, b| a.id.cmp(&b.id));
+    }
     let mut titles: std::collections::HashMap<String, String> = sessions::main_chat_titles(pool)
         .await?
         .into_iter()
@@ -319,7 +355,12 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
             rows.push(WorkspaceRow {
                 linked_workspace_ids: decode_links(w.linked_workspace_ids.as_deref())?,
                 linked_directory_paths: decode_links(w.linked_directory_paths.as_deref())?,
-                directory_name: w.directory_name.unwrap_or_default(),
+                // For ready/setting_up workspaces that were renamed, the user-visible
+                // name lives in secondary_directory_name; primary directory_name is the
+                // original worktree folder and must not revert the rename on restart.
+                directory_name: w.secondary_directory_name
+                    .or(w.directory_name)
+                    .unwrap_or_default(),
                 workspace_name: w.workspace_name,
                 user_set_workspace_name: w.user_set_workspace_name,
                 branch: w.branch.unwrap_or_default(),
@@ -333,6 +374,7 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 unread: w.unread,
                 unread_chats: unread.remove(&w.local_id).unwrap_or_default(),
                 chat_tabs,
+                transcript_chats: transcript_chats.remove(&w.local_id).unwrap_or_default(),
                 chat_title,
                 primary_chat_id,
                 active_session_id,

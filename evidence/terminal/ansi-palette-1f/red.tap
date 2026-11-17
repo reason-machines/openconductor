@@ -1,0 +1,422 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary terminal uses computed black and retains it through ready and exit
+not ok 1 - ordinary terminal uses computed black and retains it through ready and exit
+  ---
+  duration_ms: 317.991802
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - '#201e1c'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '#201e1c'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:129:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: ordinary terminal uses computed red and retains it through ready and exit
+not ok 2 - ordinary terminal uses computed red and retains it through ready and exit
+  ---
+  duration_ms: 8.32531
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - '#da2424'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '#da2424'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:129:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary terminal uses computed green and retains it through ready and exit
+not ok 3 - ordinary terminal uses computed green and retains it through ready and exit
+  ---
+  duration_ms: 8.335637
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - '#119745'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '#119745'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:129:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary terminal uses computed yellow and retains it through ready and exit
+not ok 4 - ordinary terminal uses computed yellow and retains it through ready and exit
+  ---
+  duration_ms: 7.992656
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - '#f3d127'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '#f3d127'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:129:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary terminal uses computed blue and retains it through ready and exit
+not ok 5 - ordinary terminal uses computed blue and retains it through ready and exit
+  ---
+  duration_ms: 8.178442
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - '#1b5fe0'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '#1b5fe0'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:129:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary terminal uses computed magenta and retains it through ready and exit
+not ok 6 - ordinary terminal uses computed magenta and retains it through ready and exit
+  ---
+  duration_ms: 7.77648
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - '#be09dd'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '#be09dd'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:129:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary terminal uses computed cyan and retains it through ready and exit
+not ok 7 - ordinary terminal uses computed cyan and retains it through ready and exit
+  ---
+  duration_ms: 7.617628
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - '#0b879f'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '#0b879f'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:129:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary terminal uses computed white and retains it through ready and exit
+not ok 8 - ordinary terminal uses computed white and retains it through ready and exit
+  ---
+  duration_ms: 7.879315
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - '#dedcda'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '#dedcda'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:129:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary terminal uses computed brightBlack and retains it through ready and exit
+not ok 9 - ordinary terminal uses computed brightBlack and retains it through ready and exit
+  ---
+  duration_ms: 8.126226
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - '#746b66'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '#746b66'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:129:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary terminal uses computed brightRed and retains it through ready and exit
+not ok 10 - ordinary terminal uses computed brightRed and retains it through ready and exit
+  ---
+  duration_ms: 13.717636
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - '#ee3b3b'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '#ee3b3b'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:129:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary terminal uses computed brightGreen and retains it through ready and exit
+not ok 11 - ordinary terminal uses computed brightGreen and retains it through ready and exit
+  ---
+  duration_ms: 9.447994
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - '#1bbe56'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '#1bbe56'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:129:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary terminal uses computed brightYellow and retains it through ready and exit
+not ok 12 - ordinary terminal uses computed brightYellow and retains it through ready and exit
+  ---
+  duration_ms: 6.973718
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - '#f9e05a'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '#f9e05a'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:129:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary terminal uses computed brightBlue and retains it through ready and exit
+not ok 13 - ordinary terminal uses computed brightBlue and retains it through ready and exit
+  ---
+  duration_ms: 13.96532
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - '#5487ed'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '#5487ed'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:129:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary terminal uses computed brightMagenta and retains it through ready and exit
+not ok 14 - ordinary terminal uses computed brightMagenta and retains it through ready and exit
+  ---
+  duration_ms: 7.431215
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - '#d94df2'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '#d94df2'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:129:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary terminal uses computed brightCyan and retains it through ready and exit
+not ok 15 - ordinary terminal uses computed brightCyan and retains it through ready and exit
+  ---
+  duration_ms: 7.299227
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - '#31bcd7'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '#31bcd7'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:129:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary terminal uses computed brightWhite and retains it through ready and exit
+not ok 16 - ordinary terminal uses computed brightWhite and retains it through ready and exit
+  ---
+  duration_ms: 8.681923
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - '#f6f4f2'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '#f6f4f2'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/terminalAnsiTheme.test.ts:129:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: unset ANSI CSS tokens retain xterm's default palette
+ok 17 - unset ANSI CSS tokens retain xterm's default palette
+  ---
+  duration_ms: 9.493497
+  type: 'test'
+  ...
+# Subtest: the palette does not change the existing cursor and input lifecycle
+ok 18 - the palette does not change the existing cursor and input lifecycle
+  ---
+  duration_ms: 8.80293
+  type: 'test'
+  ...
+# Subtest: ordinary terminal keeps line-feed conversion and Unicode 11
+ok 19 - ordinary terminal keeps line-feed conversion and Unicode 11
+  ---
+  duration_ms: 7.313924
+  type: 'test'
+  ...
+# Subtest: palette initialization does not change another terminal's options
+ok 20 - palette initialization does not change another terminal's options
+  ---
+  duration_ms: 8.253737
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 4
+# fail 16
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 870.032711

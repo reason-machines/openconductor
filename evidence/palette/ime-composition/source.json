@@ -1,0 +1,142 @@
+{
+  "owner": "Conductor Rebuild / SAME15",
+  "unit": "PALETTE-IME-COMPOSITION-15",
+  "main_checked": "d745c5259712b49f90ab47ecb2bad674a66c3c89",
+  "verdict": "SOURCE_QUALIFIED_MOUNTED_RED_GREEN",
+  "rechecked_main": "1c8e9593099bce8ebfbc19d83052cbfd47df5ad0",
+  "reference": {
+    "app": "Conductor 0.87.6",
+    "asset": "renderApp-D_fmY7hW.js",
+    "asset_bytes": 11600457,
+    "asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "retained_REA_artifact_id": "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+    "prior_REA_lineage": [
+      "ev_31e784ad5df9eb3adf831a9480513725777adf14dc854992d2aeeeff178d3524"
+    ],
+    "identity_basis": "Retained real-app extraction rehashed in full; no fresh acquisition or original-code execution.",
+    "call_chain": [
+      "h_a",
+      "qZ",
+      "Y5s",
+      "KV",
+      "P6 = Xyi",
+      "cmdk root onKeyDown"
+    ],
+    "spans": [
+      {
+        "role": "Xyi-root",
+        "utf8_half_open": [
+          2903072,
+          2908580
+        ],
+        "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92",
+        "path": "Xyi-root.txt"
+      },
+      {
+        "role": "P6-alias",
+        "utf8_half_open": [
+          2912384,
+          2912492
+        ],
+        "sha256": "20b129f07752490e4c9ca33091b5d947173fb1de439bcda0f2b15b9e25deb4f6",
+        "path": "P6-alias.txt"
+      },
+      {
+        "role": "KV-wrapper",
+        "utf8_half_open": [
+          2913899,
+          2914244
+        ],
+        "sha256": "12168391677891cbeaddc6307650dab1ee6e762cbd0f8114b28ff1a0339a97c4",
+        "path": "KV-wrapper.txt"
+      },
+      {
+        "role": "qZ-dialog",
+        "utf8_half_open": [
+          2914275,
+          2914883
+        ],
+        "sha256": "8d7253f154bad3c2441e4850e50b961b2e2870a2c38d7424a9b15cdd6a7f8768",
+        "path": "qZ-dialog.txt"
+      },
+      {
+        "role": "Y5s-content",
+        "utf8_half_open": [
+          2914884,
+          2916816
+        ],
+        "sha256": "1f343b0f6340b44087d7914fc114f67311554dd62c7b60c549241f3645c4ea29",
+        "path": "Y5s-content.txt"
+      },
+      {
+        "role": "h_a-palette-caller",
+        "utf8_half_open": [
+          10888832,
+          10889073
+        ],
+        "sha256": "db46eeae9e65f9feee9a554863994313bfa6fbabdf9653f1fbb11b2d34d7d55b",
+        "path": "h_a-palette-caller.txt"
+      }
+    ]
+  },
+  "current": [
+    {
+      "path": "src/palette/CommandPalette.tsx",
+      "sha256": "d2dbc82b596818dfb9684859017cdd23d8a694355fc48eef56bf74cfe376f111",
+      "snapshot": "main-CommandPalette.tsx"
+    },
+    {
+      "path": "src/palette/state.ts",
+      "sha256": "26afbc98aed1f0157bcf2f25ba6f5668ee5829f25437865fbdd71fa5cac36838",
+      "snapshot": "main-state.ts"
+    }
+  ],
+  "mechanism": "The actual input handler resolves composing Enter as select, then chooses the active action and closes. The original cmdk root bypasses native navigation/selection for nativeEvent.isComposing or keyCode 229.",
+  "proposed_lease": {
+    "product": "src/palette/CommandPalette.tsx:onKeyDown after command resolution, composition suppression for cmdk-native navigation/select only",
+    "test": "NEW src/palette/paletteComposition.test.ts",
+    "evidence": "NEW evidence/palette/ime-composition/",
+    "exclusions": [
+      "Escape close contract",
+      "custom tab shortcuts",
+      "defaultPrevented arrow guard owned elsewhere",
+      "state.ts",
+      "dispatcher",
+      "all existing frozen fixtures",
+      "GlobalMenus",
+      "Composer",
+      "LinkedDirectoryPicker"
+    ]
+  },
+  "expected_repro": [
+    "Composing Enter must not call onSelect or onClose.",
+    "keyCode 229 Enter must not call onSelect or onClose.",
+    "Composing cmdk navigation must leave the active result and event consumption unchanged.",
+    "Uncomposed Enter and navigation remain operational.",
+    "Escape and tab handling remain their existing distinct contracts."
+  ],
+  "limits": [
+    "Retained REA source trace only; original Conductor code was not executed.",
+    "Mounted baseline reproduced 18 intended failures with 15 passing controls after correcting the custom shortcut input type; assertions unchanged.",
+    "Provider-free foreground Node execution only; no browser/native/provider execution or workflow dispatch/rerun.",
+    "Native, browser propagation, physical IME and released-install acceptance NOT_RUN."
+  ],
+  "stage": "MOUNTED_GREEN_EXACT_HEAD_CI_PENDING",
+  "binding": {
+    "previous_pr": 1134,
+    "previous_pr_merged_main": "5d9d47ac046a8650576e059ef18f3f8847e6e963",
+    "baseline_main": "d745c5259712b49f90ab47ecb2bad674a66c3c89"
+  },
+  "fixture": {
+    "path": "src/palette/paletteComposition.test.ts",
+    "matrix": {
+      "composition": 18,
+      "noncomposing": 9,
+      "other_controls": 6
+    },
+    "status": "RED_18_EXPECTED_FAILURES_15_CONTROLS_PASS_THEN_GREEN_33_OF_33",
+    "initial_fixture_sha256": "13189752cfb234540187dc1d5b85d44b8208de885d48855a87b453f90adc2366",
+    "qualified_fixture_sha256": "b2eb43bb787c35dd92b653c6d10fd9ace8734ce4d02dd0fecadb71852645a551",
+    "correction": "Custom next-tab shortcut string corrected to the existing logical-key type before behavioral qualification; assertions unchanged."
+  }
+}

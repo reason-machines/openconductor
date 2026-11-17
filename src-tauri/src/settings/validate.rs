@@ -145,10 +145,13 @@ fn valid_font_family(f: &str) -> bool {
 /// A conservative subset of `git check-ref-format` for one path component.
 /// One trailing `/` is allowed: Conductor's own example is `feature/`.
 fn valid_branch_prefix(p: &str) -> bool {
+    if p.ends_with("./") {
+        return false;
+    }
     let p = p.strip_suffix('/').unwrap_or(p);
     !p.is_empty()
         && !p.starts_with(['.', '/', '-'])
-        && !p.ends_with(['.', '/'])
+        && !p.ends_with('/')
         && !p.ends_with(".lock")
         && !p.contains("..")
         && !p.contains("//")

@@ -1,0 +1,71 @@
+[1m[92m    Updating[0m crates.io index
+[1m[92m     Locking[0m 11 packages to highest compatible versions
+[1m[92m Downloading[0m crates ...
+[1m[92m  Downloaded[0m proc-macro2 v1.0.107
+[1m[92m  Downloaded[0m itoa v1.0.19
+[1m[92m  Downloaded[0m serde v1.0.229
+[1m[92m  Downloaded[0m unicode-ident v1.0.27
+[1m[92m  Downloaded[0m serde_derive v1.0.229
+[1m[92m  Downloaded[0m memchr v2.8.3
+[1m[92m  Downloaded[0m serde_json v1.0.154
+[1m[92m  Downloaded[0m syn v3.0.10
+[1m[92m  Downloaded[0m zmij v1.0.23
+[1m[92m  Downloaded[0m quote v1.0.47
+[1m[92m  Downloaded[0m serde_core v1.0.229
+[1m[92m   Compiling[0m proc-macro2 v1.0.107
+[1m[92m   Compiling[0m quote v1.0.47
+[1m[92m   Compiling[0m unicode-ident v1.0.27
+[1m[92m   Compiling[0m serde_core v1.0.229
+[1m[92m   Compiling[0m zmij v1.0.23
+[1m[92m   Compiling[0m serde_json v1.0.154
+[1m[92m   Compiling[0m serde v1.0.229
+[1m[92m   Compiling[0m itoa v1.0.19
+[1m[92m   Compiling[0m memchr v2.8.3
+[1m[92m   Compiling[0m syn v3.0.10
+[1m[92m   Compiling[0m serde_derive v1.0.229
+[1m[92m   Compiling[0m diff-harness v0.0.0 (/home/runner/work/_temp/large-file-harness)
+[1m[92m    Finished[0m `test` profile [unoptimized + debuginfo] target(s) in 7.57s
+[1m[92m     Running[0m unittests /home/runner/work/openconductor/openconductor/src-tauri/src/diff/mod.rs (target/debug/deps/diff_harness-207cc8bced35b5bf)
+
+running 8 tests
+test git_tests::large_file_placeholder::one_mib_dense ... ok
+
+thread 'git_tests::large_file_placeholder::one_mib_plus_one_dense' (3402) panicked at /home/runner/work/openconductor/openconductor/src-tauri/src/diff/large_file_tests.rs:81:5:
+assertion `left == right` failed: 1048577 bytes, 501 changed lines must preserve the reference size policy
+  left: None
+ right: Some("file_too_large")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test git_tests::large_file_placeholder::one_mib_plus_one_dense ... FAILED
+
+thread 'git_tests::large_file_placeholder::five_mib_dense' (3360) panicked at /home/runner/work/openconductor/openconductor/src-tauri/src/diff/large_file_tests.rs:81:5:
+assertion `left == right` failed: 5242880 bytes, 501 changed lines must preserve the reference size policy
+  left: None
+ right: Some("file_too_large")
+test git_tests::large_file_placeholder::five_mib_dense ... FAILED
+
+thread 'git_tests::large_file_placeholder::five_mib_plus_one_sparse' (3361) panicked at /home/runner/work/openconductor/openconductor/src-tauri/src/diff/large_file_tests.rs:81:5:
+assertion `left == right` failed: 5242881 bytes, 2 changed lines must preserve the reference size policy
+  left: None
+ right: Some("file_too_large")
+test git_tests::large_file_placeholder::five_mib_plus_one_sparse ... FAILED
+test git_tests::large_file_placeholder::five_mib_sparse ... ok
+test git_tests::large_file_placeholder::two_mib_sparse ... ok
+test git_tests::large_file_placeholder::six_mib_binary ... ok
+
+thread 'git_tests::large_file_placeholder::six_mib_sparse' (3460) panicked at /home/runner/work/openconductor/openconductor/src-tauri/src/diff/large_file_tests.rs:81:5:
+assertion `left == right` failed: 6291456 bytes, 2 changed lines must preserve the reference size policy
+  left: None
+ right: Some("file_too_large")
+test git_tests::large_file_placeholder::six_mib_sparse ... FAILED
+
+failures:
+
+failures:
+    git_tests::large_file_placeholder::five_mib_dense
+    git_tests::large_file_placeholder::five_mib_plus_one_sparse
+    git_tests::large_file_placeholder::one_mib_plus_one_dense
+    git_tests::large_file_placeholder::six_mib_sparse
+
+test result: FAILED. 4 passed; 4 failed; 0 ignored; 0 measured; 55 filtered out; finished in 0.60s
+
+[1m[91merror[0m: test failed, to rerun pass `--lib`

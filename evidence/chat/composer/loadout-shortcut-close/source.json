@@ -1,0 +1,73 @@
+{
+  "author": "Conductor Rebuild",
+  "baseline": "140d8bb2ec417d381433074b104a50a5c20cba81",
+  "kind": "retained REA source, not fresh native observation",
+  "rea_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "rea_record_sha256": "b0ffc795bf955a3dd54fd9bfb15d7eadf23ef6768c330c2e2223cc8581c8578f",
+  "coordinate_system": "zero-based half-open UTF-8 bytes",
+  "assets": {
+    "renderer": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "spans": [
+    {
+      "name": "n7i",
+      "start": 7937468,
+      "end": 7937581,
+      "sha256": "ecdc4caae55016d535b4a7ca9df5273fac04bb7a4c44ea1e2d391091deca3735",
+      "path": "reference-n7i.txt"
+    },
+    {
+      "name": "RNi",
+      "start": 8617661,
+      "end": 8623873,
+      "sha256": "d3d66fcdcef43ef2ae30e74b0fb35553aa8e5e8c59850535353696f174880eb7",
+      "path": "reference-RNi.txt"
+    },
+    {
+      "name": "cJe",
+      "start": 2681862,
+      "end": 2684010,
+      "sha256": "09e0a67482193efa833e356284a314cc47b6604c5cd487d2d16c8c6d3aa31b6f",
+      "path": "reference-cJe.txt"
+    }
+  ],
+  "current_source": [
+    {
+      "path": "src/features/chat/ModelPicker.tsx",
+      "sha256": "6f96bc0ea3867c12b141b69ef83c273f04ab912eebfda1dd3a19555403994446"
+    },
+    {
+      "path": "src/features/chat/loadoutChoices.ts",
+      "sha256": "6f598e35d99d142e63711db22e0e189096cb0162410f1daf73a35833311c354c"
+    },
+    {
+      "path": "src/features/chat/ChatModelPicker.tsx",
+      "sha256": "50c71e7c456bc03ca67abb586c2cdef0f51ce31fc793411b2179ea3e5a4f56f1"
+    },
+    {
+      "path": "src/keybindings/bind.ts",
+      "sha256": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119"
+    },
+    {
+      "path": "src/keybindings/dispatcher.ts",
+      "sha256": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197"
+    }
+  ],
+  "finding": "RNi numeric occupied loadout callback applies the complete favorite configuration and sets picker-open false. Current ModelPicker selectSlot applies the occupied choice without closing its menu.",
+  "exclusions": [
+    "Empty-slot consumption and workspace fallback are preserved, not changed or claimed equivalent.",
+    "#856 effort-selection callbacks are untouched.",
+    "No native/provider/browser/runtime acquisition or execution."
+  ],
+  "expected_regression": {
+    "cases": 9,
+    "intended_failures": 4,
+    "independent_controls": 5
+  },
+  "limits": [
+    "Retained directory analysis skipped renderer parsing and partially parsed index. Source windows are direct decoded byte reads, not successful semantic REA analysis.",
+    "Mounted React host output with real dispatcher and binding logic, not DOM, OS keyboard dispatch or native behavior.",
+    "Tooltip, presence, keybinding React registration and focus containment are test adapters."
+  ]
+}

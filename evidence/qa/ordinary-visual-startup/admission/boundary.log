@@ -1,0 +1,2 @@
+PASS: visual opt-in refused before startup callback, normal no-root path preserved, tool guard, dormant restricted composition and pinned dependency contract
+NOT_RUN: native resolver/write observation, actual WebKit readback, installed/package/visual/clone/provider acceptance

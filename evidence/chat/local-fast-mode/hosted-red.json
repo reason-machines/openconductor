@@ -1,0 +1,153 @@
+{
+  "author": "Conductor Rebuild",
+  "status": "QUALIFIED_HOSTED_FRONTEND_RED",
+  "pr": 1120,
+  "head_sha": "24680cdd83ed7ada5c1f8b9d77fcaacc6fc5b820",
+  "workflow": 43142202259,
+  "job": 130931584345,
+  "url": "https://github.com/reason-machines/openconductor/actions/runs/43142202259/job/130931584345",
+  "machine": "ordinary automatic GitHub Actions ubuntu-latest; Node/jsdom, inert transport",
+  "commands": [
+    "node --test \"src/**/*.test.ts\"",
+    "node --test --test-reporter=tap tests/chat-search/*.dom.test.mjs"
+  ],
+  "source_pins": "source.json",
+  "fixture_manifest": "fixture.sha256",
+  "pure": {
+    "passed": 10,
+    "failed": 0,
+    "tests": [
+      {
+        "line": 4583,
+        "status": "pass",
+        "name": "local Fast source control: recognized claude/opus-5-1m capability"
+      },
+      {
+        "line": 4589,
+        "status": "pass",
+        "name": "local Fast storage control: claude keeps explicit identity through on/off"
+      },
+      {
+        "line": 4595,
+        "status": "pass",
+        "name": "local Fast routing control: explicit Reason opus-5-1m stays outside local options"
+      },
+      {
+        "line": 4601,
+        "status": "pass",
+        "name": "local Fast command constructor control: claude remains conditional and reported commands shadow it"
+      },
+      {
+        "line": 4607,
+        "status": "pass",
+        "name": "local Fast source control: recognized codex/gpt-5.4 capability"
+      },
+      {
+        "line": 4613,
+        "status": "pass",
+        "name": "local Fast storage control: codex keeps explicit identity through on/off"
+      },
+      {
+        "line": 4619,
+        "status": "pass",
+        "name": "local Fast routing control: explicit Reason gpt-5.4 stays outside local options"
+      },
+      {
+        "line": 4625,
+        "status": "pass",
+        "name": "local Fast command constructor control: codex remains conditional and reported commands shadow it"
+      },
+      {
+        "line": 4631,
+        "status": "pass",
+        "name": "local Fast source control: recognized unsupported Claude sonnet-5-1m"
+      },
+      {
+        "line": 4637,
+        "status": "pass",
+        "name": "local Fast source control: recognized unsupported Claude haiku-4-5"
+      }
+    ]
+  },
+  "mounted": {
+    "passed": 6,
+    "failed": 6,
+    "skipped": 0,
+    "tests": [
+      {
+        "line": 21525,
+        "status": "fail",
+        "name": "mounted local Fast picker: claude/opus-5-1m saves one explicit toggle without changing identity"
+      },
+      {
+        "line": 21543,
+        "status": "fail",
+        "name": "mounted local Fast command: claude/opus-5-1m changes session choice instead of submitting a prompt"
+      },
+      {
+        "line": 21565,
+        "status": "pass",
+        "name": "mounted local Fast precedence control: claude agent-reported command remains an agent prompt"
+      },
+      {
+        "line": 21571,
+        "status": "fail",
+        "name": "mounted local Fast picker: codex/gpt-5.4 saves one explicit toggle without changing identity"
+      },
+      {
+        "line": 21589,
+        "status": "fail",
+        "name": "mounted local Fast command: codex/gpt-5.4 changes session choice instead of submitting a prompt"
+      },
+      {
+        "line": 21611,
+        "status": "pass",
+        "name": "mounted local Fast precedence control: codex agent-reported command remains an agent prompt"
+      },
+      {
+        "line": 21617,
+        "status": "fail",
+        "name": "mounted local Fast unsupported control: Claude sonnet-5-1m keeps a disabled row and cannot enable Fast"
+      },
+      {
+        "line": 21635,
+        "status": "pass",
+        "name": "mounted local Fast unsupported command control: Claude sonnet-5-1m cannot enable Fast or deliver the app-owned command"
+      },
+      {
+        "line": 21641,
+        "status": "fail",
+        "name": "mounted local Fast unsupported control: Claude haiku-4-5 keeps a disabled row and cannot enable Fast"
+      },
+      {
+        "line": 21659,
+        "status": "pass",
+        "name": "mounted local Fast unsupported command control: Claude haiku-4-5 cannot enable Fast or deliver the app-owned command"
+      },
+      {
+        "line": 21665,
+        "status": "pass",
+        "name": "mounted local Fast Reason/ACP control: raw opus-5-1m does not inherit local capability"
+      },
+      {
+        "line": 21671,
+        "status": "pass",
+        "name": "mounted local Fast Reason/ACP control: raw gpt-5.4 does not inherit local capability"
+      }
+    ]
+  },
+  "classification": {
+    "picker": "Two supported local Fast rows absent at intended assertions",
+    "command": "Two supported app-owned /fast commands leave saved Fast off at intended assertions",
+    "unsupported": "Two recognized unsupported local rows absent, not disabled",
+    "safety": "Agent-reported precedence, unsupported command rejection and explicit Reason exclusion all passed"
+  },
+  "limits": [
+    "No harness or import failure observed in these twelve mounted cases",
+    "Unsupported row absence failure does not credit its later disabled-click assertions",
+    "No native, provider, CLI, first/resume, sidecar translation or visual acceptance",
+    "No new local behavioral execution; fixture bytes preserved"
+  ],
+  "tested_merge_sha": "056032d7b5e1b818546ed814115b32221eb30f7d",
+  "tested_merge_ref_note": "GitHub automatic PR merge ref; checks are attached to head_sha. Relevant baseline source equals pinned main."
+}

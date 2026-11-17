@@ -1,0 +1,400 @@
+(node:52) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a recorded turn becomes one assistant message with tools between its texts
+ok 1 - a recorded turn becomes one assistant message with tools between its texts
+  ---
+  duration_ms: 3.849388
+  type: 'test'
+  ...
+# Subtest: approvals are kept until answered or the turn ends
+ok 2 - approvals are kept until answered or the turn ends
+  ---
+  duration_ms: 0.484871
+  type: 'test'
+  ...
+# Subtest: consents (MCP elicitation, permissions) are kept until resolved or the turn ends
+ok 3 - consents (MCP elicitation, permissions) are kept until resolved or the turn ends
+  ---
+  duration_ms: 0.522642
+  type: 'test'
+  ...
+# Subtest: declined and failing tools are errors; failures end the turn with Codex's message
+ok 4 - declined and failing tools are errors; failures end the turn with Codex's message
+  ---
+  duration_ms: 0.285173
+  type: 'test'
+  ...
+# Subtest: prompts queue: content goes to the oldest open turn and turnEnded closes it
+ok 5 - prompts queue: content goes to the oldest open turn and turnEnded closes it
+  ---
+  duration_ms: 2.028084
+  type: 'test'
+  ...
+# Subtest: retry notices replace each other; other notices are separate system rows
+ok 6 - retry notices replace each other; other notices are separate system rows
+  ---
+  duration_ms: 0.247324
+  type: 'test'
+  ...
+# Subtest: a prompt that never reached Codex fails its own turn only
+ok 7 - a prompt that never reached Codex fails its own turn only
+  ---
+  duration_ms: 0.269974
+  type: 'test'
+  ...
+# (node:60) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude result wire usage survives final upserts, persistence and replay without duplication
+ok 8 - Claude result wire usage survives final upserts, persistence and replay without duplication
+  ---
+  duration_ms: 4.382216
+  type: 'test'
+  ...
+# Subtest: usage absence, explicit zero and partial counts remain distinct
+ok 9 - usage absence, explicit zero and partial counts remain distinct
+  ---
+  duration_ms: 0.999158
+  type: 'test'
+  ...
+# Subtest: an empty successful Reason turn is a retryable failure, not a timestamp-only reply
+ok 10 - an empty successful Reason turn is a retryable failure, not a timestamp-only reply
+  ---
+  duration_ms: 0.471815
+  type: 'test'
+  ...
+# Subtest: one chat shows a local home path, then a cloud /repo path in a follow-up
+ok 11 - one chat shows a local home path, then a cloud /repo path in a follow-up
+  ---
+  duration_ms: 1.12371
+  type: 'test'
+  ...
+# Subtest: a tool row updates in place and text after it starts a new block
+ok 12 - a tool row updates in place and text after it starts a new block
+  ---
+  duration_ms: 0.365005
+  type: 'test'
+  ...
+# Subtest: device_not_found fails the turn with the error, not a reply
+ok 13 - device_not_found fails the turn with the error, not a reply
+  ---
+  duration_ms: 0.20854
+  type: 'test'
+  ...
+# Subtest: a follow-up during a turn supersedes it; the end goes to the older turn
+ok 14 - a follow-up during a turn supersedes it; the end goes to the older turn
+  ---
+  duration_ms: 0.299485
+  type: 'test'
+  ...
+# Subtest: a mid-turn report is attributed to another session, never the user
+ok 15 - a mid-turn report is attributed to another session, never the user
+  ---
+  duration_ms: 0.186363
+  type: 'test'
+  ...
+# Subtest: Stop ends the turn cancelled with the prompt offered again; a failed call fails it
+ok 16 - Stop ends the turn cancelled with the prompt offered again; a failed call fails it
+  ---
+  duration_ms: 0.449097
+  type: 'test'
+  ...
+# Subtest: a stopped turn marks its prompt cancelled and records start and end times
+ok 17 - a stopped turn marks its prompt cancelled and records start and end times
+  ---
+  duration_ms: 0.431017
+  type: 'test'
+  ...
+# Subtest: a turn stopped before its prompt reached Reason ends cancelled, leaving earlier open turns running
+ok 18 - a turn stopped before its prompt reached Reason ends cancelled, leaving earlier open turns running
+  ---
+  duration_ms: 0.2662
+  type: 'test'
+  ...
+# Subtest: a notice is a system message in the running turn
+ok 19 - a notice is a system message in the running turn
+  ---
+  duration_ms: 0.131056
+  type: 'test'
+  ...
+# Subtest: attachments show by name under the prompt
+ok 20 - attachments show by name under the prompt
+  ---
+  duration_ms: 0.114953
+  type: 'test'
+  ...
+# Subtest: startTurn can take the turn id that names the turn's checkpoints
+ok 21 - startTurn can take the turn id that names the turn's checkpoints
+  ---
+  duration_ms: 0.074799
+  type: 'test'
+  ...
+# (node:67) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: wire JSON from the backend parses into the mirror types
+ok 22 - wire JSON from the backend parses into the mirror types
+  ---
+  duration_ms: 1.08239
+  type: 'test'
+  ...
+# Subtest: plainText joins text blocks only
+ok 23 - plainText joins text blocks only
+  ---
+  duration_ms: 0.1903
+  type: 'test'
+  ...
+# Subtest: upsert appends, then replaces in place
+ok 24 - upsert appends, then replaces in place
+  ---
+  duration_ms: 1.270051
+  type: 'test'
+  ...
+# Subtest: text_delta starts and grows text blocks without mutating the previous transcript
+ok 25 - text_delta starts and grows text blocks without mutating the previous transcript
+  ---
+  duration_ms: 0.282638
+  type: 'test'
+  ...
+# Subtest: text_delta grows thinking blocks
+ok 26 - text_delta grows thinking blocks
+  ---
+  duration_ms: 0.198369
+  type: 'test'
+  ...
+# Subtest: bad deltas are rejected without changes
+ok 27 - bad deltas are rejected without changes
+  ---
+  duration_ms: 0.211387
+  type: 'test'
+  ...
+# Subtest: events for another session are rejected
+ok 28 - events for another session are rejected
+  ---
+  duration_ms: 0.153442
+  type: 'test'
+  ...
+# Subtest: turn_status tracks the active turn and keeps the error
+ok 29 - turn_status tracks the active turn and keeps the error
+  ---
+  duration_ms: 0.219349
+  type: 'test'
+  ...
+# Subtest: transcriptFromMessages keeps this session's messages and lets later copies win
+ok 30 - transcriptFromMessages keeps this session's messages and lets later copies win
+  ---
+  duration_ms: 0.364063
+  type: 'test'
+  ...
+# Subtest: sender fields parse from the wire and decide the origin
+ok 31 - sender fields parse from the wire and decide the origin
+  ---
+  duration_ms: 0.383382
+  type: 'test'
+  ...
+# Subtest: a session report arriving mid-turn leaves the active turn running
+ok 32 - a session report arriving mid-turn leaves the active turn running
+  ---
+  duration_ms: 0.191013
+  type: 'test'
+  ...
+# Subtest: turn status keeps start and end times
+ok 33 - turn status keeps start and end times
+  ---
+  duration_ms: 0.150434
+  type: 'test'
+  ...
+# Subtest: truncateAfterTurn keeps the turn and everything before it, and drops later turns' statuses
+ok 34 - truncateAfterTurn keeps the turn and everything before it, and drops later turns' statuses
+  ---
+  duration_ms: 0.375546
+  type: 'test'
+  ...
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual failed-turn footer presents "Request aborted by user" as an outline interruption
+ok 35 - actual failed-turn footer presents "Request aborted by user" as an outline interruption
+  ---
+  duration_ms: 5.102706
+  type: 'test'
+  ...
+# Subtest: actual failed-turn footer presents "Interrupted by user" as an outline interruption
+ok 36 - actual failed-turn footer presents "Interrupted by user" as an outline interruption
+  ---
+  duration_ms: 0.606931
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "Provider unavailable"
+ok 37 - actual footer preserves nonmatching failure "Provider unavailable"
+  ---
+  duration_ms: 0.534913
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "Aborted by user"
+ok 38 - actual footer preserves nonmatching failure "Aborted by user"
+  ---
+  duration_ms: 0.380357
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "interrupted by user"
+ok 39 - actual footer preserves nonmatching failure "interrupted by user"
+  ---
+  duration_ms: 0.262588
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "Session cancelled: stopped"
+ok 40 - actual footer preserves nonmatching failure "Session cancelled: stopped"
+  ---
+  duration_ms: 0.24681
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "request cancelled"
+ok 41 - actual footer preserves nonmatching failure "request cancelled"
+  ---
+  duration_ms: 0.349506
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "[codex-mcp-consent] user_canceled"
+ok 42 - actual footer preserves nonmatching failure "[codex-mcp-consent] user_canceled"
+  ---
+  duration_ms: 0.282932
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure ""
+ok 43 - actual footer preserves nonmatching failure ""
+  ---
+  duration_ms: 0.780702
+  type: 'test'
+  ...
+# Subtest: actual footer retains the missing-error fallback
+ok 44 - actual footer retains the missing-error fallback
+  ---
+  duration_ms: 0.59154
+  type: 'test'
+  ...
+# Subtest: actual cancelled footer keeps exactly one interruption badge and no raw error
+ok 45 - actual cancelled footer keeps exactly one interruption badge and no raw error
+  ---
+  duration_ms: 0.35407
+  type: 'test'
+  ...
+# Subtest: a completed turn does not gain an interruption badge from its error field
+ok 46 - a completed turn does not gain an interruption badge from its error field
+  ---
+  duration_ms: 0.220342
+  type: 'test'
+  ...
+# Subtest: actual footer keeps ordinary Codex sign-in guidance
+ok 47 - actual footer keeps ordinary Codex sign-in guidance
+  ---
+  duration_ms: 0.58399
+  type: 'test'
+  ...
+# Subtest: actual interruption footer retries the unchanged prompt and turn id
+ok 48 - actual interruption footer retries the unchanged prompt and turn id
+  ---
+  duration_ms: 1.333584
+  type: 'test'
+  ...
+# (node:89) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: turn usage sums distinct result messages only, replayed upserts replace rather than add
+ok 49 - turn usage sums distinct result messages only, replayed upserts replace rather than add
+  ---
+  duration_ms: 2.655546
+  type: 'test'
+  ...
+# Subtest: turn attribution uses the first truthy assistant model, not a later assistant or another turn
+ok 50 - turn attribution uses the first truthy assistant model, not a later assistant or another turn
+  ---
+  duration_ms: 6.36106
+  type: 'test'
+  ...
+# Subtest: turn attribution falls back only to its original user's snapshot, not steering, reports or system data
+ok 51 - turn attribution falls back only to its original user's snapshot, not steering, reports or system data
+  ---
+  duration_ms: 0.46809
+  type: 'test'
+  ...
+# Subtest: missing historical models stay unknown, even when a later steering message has a model
+ok 52 - missing historical models stay unknown, even when a later steering message has a model
+  ---
+  duration_ms: 0.300057
+  type: 'test'
+  ...
+# Subtest: historical turn models survive the existing full-message save and restore boundary
+ok 53 - historical turn models survive the existing full-message save and restore boundary
+  ---
+  duration_ms: 0.637495
+  type: 'test'
+  ...
+# Subtest: a streaming assistant message marks its last text part as streaming and has no footer yet
+ok 54 - a streaming assistant message marks its last text part as streaming and has no footer yet
+  ---
+  duration_ms: 0.409511
+  type: 'test'
+  ...
+# Subtest: an empty assistant message shows while streaming (typing state) and is dropped once the turn ends
+ok 55 - an empty assistant message shows while streaming (typing state) and is dropped once the turn ends
+  ---
+  duration_ms: 0.267686
+  type: 'test'
+  ...
+# Subtest: tool calls pair with their results and tool-result carriers never render as user messages
+ok 56 - tool calls pair with their results and tool-result carriers never render as user messages
+  ---
+  duration_ms: 0.658666
+  type: 'test'
+  ...
+# Subtest: a tool call with no result after its turn ended is interrupted
+ok 57 - a tool call with no result after its turn ended is interrupted
+  ---
+  duration_ms: 0.447643
+  type: 'test'
+  ...
+# Subtest: a mid-turn child-session report renders as a report, not user input, and the turn keeps streaming
+ok 58 - a mid-turn child-session report renders as a report, not user input, and the turn keeps streaming
+  ---
+  duration_ms: 0.576312
+  type: 'test'
+  ...
+# Subtest: a finished turn ends with a footer carrying its final text; a failed turn also offers retry with the prompt
+ok 59 - a finished turn ends with a footer carrying its final text; a failed turn also offers retry with the prompt
+  ---
+  duration_ms: 0.365279
+  type: 'test'
+  ...
+# Subtest: a user toggle on a tool row wins over the expand-by-default setting
+ok 60 - a user toggle on a tool row wins over the expand-by-default setting
+  ---
+  duration_ms: 0.139825
+  type: 'test'
+  ...
+# Subtest: Reset chat applies to every turn with a reply except the chat's last
+ok 61 - Reset chat applies to every turn with a reply except the chat's last
+  ---
+  duration_ms: 0.215084
+  type: 'test'
+  ...
+# Subtest: a stopped turn's prompt is marked cancelled (Conductor's "Cancelled" caption); others are not
+ok 62 - a stopped turn's prompt is marked cancelled (Conductor's "Cancelled" caption); others are not
+  ---
+  duration_ms: 0.253303
+  type: 'test'
+  ...
+# Subtest: a finished turn's footer carries when the turn started and ended
+ok 63 - a finished turn's footer carries when the turn started and ended
+  ---
+  duration_ms: 0.195511
+  type: 'test'
+  ...
+1..63
+# tests 63
+# suites 0
+# pass 63
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 972.255882

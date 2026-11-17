@@ -1,11 +1,7 @@
 name: Moved comment anchors proof
 
 on:
-  pull_request:
-    paths:
-      - "src/features/diff/**"
-      - "evidence/diff/moved-comment-anchors/**"
-      - ".github/workflows/diff-moved-comment-anchors.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read

@@ -1,0 +1,37 @@
+{
+  "backend_product_head": "affae5a66890336f2e385d49ef1b7045a897ef8e",
+  "backend_hosted": {
+    "run": 43128851507,
+    "job": 130887703444,
+    "artifact": 13903169778,
+    "result": "8 passed; 0 failed",
+    "renderer_at_backend_head": "4 intended placeholder assertion failures; 4 passing controls"
+  },
+  "renderer_handoff": {
+    "owner": "15faf4d8-d257-49ef-874d-8008c5c78aaf",
+    "message_id": "89e30d31-f253-4286-aef9-7310b16b7b45",
+    "kind": "explicit body-only edit lease release; #1100 remains unmerged",
+    "excluded": "header/FilePathChip/openIn/deleted caller"
+  },
+  "renderer_diff": "Add file_too_large note branch before existing binary/empty/Code body selection; preserve header byte-for-byte.",
+  "product_sha256": {
+    "src-tauri/src/diff/git.rs": "dd047fa202dd36e50938aa81ae16d60c50454b7eb61f49e7eed9496b21342b97",
+    "src-tauri/src/diff/model.rs": "e56c0c051f5b5ad59c79930eb8f5a5336d9c979325a3e82ab4b95d770f7c3c9b",
+    "src/features/diff/types.ts": "a3ebcbdbd00f86620d61cfa608a58061b64c686280a43dd2bb7d8bc5edd64254",
+    "src/features/diff/FileDiffView.tsx": "518b579630903c24ef7f2431c91d014fdd46fad8732c1b1a6895375fd3ee2f26"
+  },
+  "protected_sha256": {
+    "evidence/diff/large-file-placeholder/source.json": "960a32e565d16ee1ee179c1c4eb80a05cd7eae781853677d0ab3378afbb8f428",
+    "evidence/diff/large-file-placeholder/cases.json": "4746c6cc86d8961e52eaa65aafa171ff5958e0f97549ade86833d23d633b8b0f",
+    "src-tauri/src/diff/large_file_tests.rs": "8eeb9b8527632a2ed4391ec37ed9e3b716d53f3dd24f8a3fd785b86ab363d454",
+    "tests/diff/largeFilePlaceholder.mounted.test.mjs": "3fc448a1f7302ba75bb3e49b334037b11d6be1099b62965cb639e281dd75c4b9",
+    "evidence/diff/hidden-whitespace-editing/run-paired.py": "536c9bf687c2915f26def363aa282ef457d568d875a03306da8fd0d43bc0d9db",
+    "evidence/diff/moved-comment-anchors/run-paired.py": "b11223a9904d4df076041c77a753eb6c4a4c0c642ece35b13ba2be6facb69013",
+    "src/features/diff/hiddenWhitespaceEditing.test.ts": "6e0b9c57c9d1f2ab99f517104e6b262ea643b517d9d3aeef81be6f4fa4c52ca1"
+  },
+  "pin_maintenance": "Only three candidate scalars: types.ts and FileDiffView.tsx in hidden-whitespace manifest, FileDiffView.tsx in moved-anchor manifest. Full before manifests retained in v1/v2. No runner, fixture, baseline, predicate or expected-outcome changes.",
+  "candidate_hosted": "PENDING",
+  "native_ui_sqlite_restart": "NOT_RUN",
+  "screenshot": "NOT_RUN; no browser/native admission",
+  "merge_gate": "Every exact-head workflow positively passes, including same frozen 8 backend and 8 renderer cases and paired historical RED/current GREEN."
+}

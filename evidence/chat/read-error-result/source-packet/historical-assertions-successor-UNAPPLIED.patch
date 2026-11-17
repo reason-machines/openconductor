@@ -1,0 +1,64 @@
+--- a/src/features/chat/readSyntaxHighlight.test.ts
++++ b/src/features/chat/readSyntaxHighlight.test.ts
+@@ -215,12 +215,28 @@
+ });
+ 
+ for (const read of [{ output: "" }, { output: "Permission denied", error: true }]) {
+-  test(`Read ${read.error ? "error" : "empty result"} retains its non-content header`, async () => {
++  test(read.error ? "Read error exposes its retained result text" : "Read empty result retains its non-content header", async () => {
+     const view = await fixture(read);
+     try {
+-      assert.equal(view.header().props["aria-expanded"], undefined);
+-      assert.equal(view.header().props.onClick, undefined);
+-      assert.deepEqual(view.lines(), []);
++      if (read.error) {
++        assert.equal(view.header().props["aria-expanded"], false);
++        assert.equal(typeof view.header().props.onClick, "function");
++        assert.equal(text(view.one((node) => hasClass(node, "oc-tool-left"))), "Read 1 lines");
++        assert.equal(view.one((node) => hasClass(node, "oc-tool")).props["data-status"], "error");
++        await view.toggle();
++        assert.equal(view.header().props["aria-expanded"], true);
++        assert.deepEqual(view.lines().map((line) => ({ number: text(line.children[0]!), text: text(code(line)) })), [{ number: "7", text: "Permission denied" }]);
++        assert.equal(view.all((node) => hasClass(node, "oc-error-chip")).length, 0);
++        await view.toggle();
++        assert.equal(view.header().props["aria-expanded"], false);
++        assert.deepEqual(view.lines(), []);
++        await view.toggle();
++        assert.deepEqual(view.lines().map((line) => text(code(line))), ["Permission denied"]);
++      } else {
++        assert.equal(view.header().props["aria-expanded"], undefined);
++        assert.equal(view.header().props.onClick, undefined);
++        assert.deepEqual(view.lines(), []);
++      }
+     } finally { await view.close(); }
+   });
+ }
+--- a/src/features/chat/readImageDisclosure.inputs.json
++++ b/src/features/chat/readImageDisclosure.inputs.json
+@@ -443,8 +443,13 @@
+       "state": "error",
+       "offset": 7,
+       "expected": {
+-        "expandable": false,
+-        "lines": [],
++        "expandable": true,
++        "lines": [
++          {
++            "number": "7",
++            "text": "Cannot read text"
++          }
++        ],
+         "errorRows": 0
+       },
+       "baseline_prediction": "CONTROL",
+--- a/src/features/chat/readImageDisclosure.test.ts
++++ b/src/features/chat/readImageDisclosure.test.ts
+@@ -14,7 +14,7 @@
+ import { buildRows } from "./view.ts";
+ 
+ const inputBytes = readFileSync(new URL("./readImageDisclosure.inputs.json", import.meta.url));
+-assert.equal(createHash("sha256").update(inputBytes).digest("hex"), "adada617c0395960660e37e2c6dc48b7f9340d08811360665644dfdfd900bce9");
++assert.equal(createHash("sha256").update(inputBytes).digest("hex"), "62c74254f7a30225802a6bb79a3cccb2c64a0cfd4d110fdb00d87af700eaef67");
+ const dependencies = createRequire(import.meta.url);
+ const React = dependencies("react");
+ const { act, create } = dependencies("react-test-renderer");

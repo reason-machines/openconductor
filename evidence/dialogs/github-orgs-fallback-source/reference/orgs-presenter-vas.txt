@@ -1,0 +1,1 @@
+function vas(t){return Nni(t)==="missing-scope"?"Couldn't load your GitHub organizations. Your token may be missing the read:org scope.":"Couldn't load your GitHub organizations. You can still use your personal account."}

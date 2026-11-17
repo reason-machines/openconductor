@@ -1,0 +1,32 @@
+{
+  "grant": "ACC_DE6_CORE33_CANDIDATE_20261113T0122",
+  "stage": "typecheck",
+  "argv": [
+    "nice",
+    "-n",
+    "19",
+    "npm",
+    "run",
+    "typecheck"
+  ],
+  "environment_additions": {
+    "CARGO_BUILD_JOBS": "1",
+    "RUST_TEST_THREADS": "1",
+    "NODE_OPTIONS": "--max-old-space-size=1536"
+  },
+  "start_utc": "2026-11-13T01:31:58.951779+00:00",
+  "elapsed_seconds": 36.98267149925232,
+  "exit": 0,
+  "stop_reason": null,
+  "wall_bound_seconds": 180,
+  "kill_grace_seconds": 5,
+  "rss_tree_peak_sampled_bytes": 1286565888,
+  "rss_budget_bytes": 2147483648,
+  "accounting": "PARTIAL: sampled owned live /proc descendants at 250ms; no private cgroup memory controller exposed; not exact peak or proof of private capacity",
+  "remaining_owned_runtime": [],
+  "baseline": "NOT_DEFINED/NOT_AUTHORED",
+  "log_sha256": {
+    "typecheck.stdout": "e32468d673226efc3e600e4299a050492e1bddc8c03156e4c3188c8ffd9f16ea",
+    "typecheck.stderr": "664dfc87d37b3d4ed609574b4d8898956c73f8a10fe103435ec13e691100b4a5"
+  }
+}

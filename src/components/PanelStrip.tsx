@@ -30,9 +30,11 @@ interface Props {
   /** Setup's "Ask agent": sends the setup-script prompt to the workspace's chat; absent when it can't. */
   onAskSetupAgent?: () => void;
   onOpenPreview?: (workspaceId: string, url: string) => boolean;
+  chatSessionId?: string;
+  onAddTerminalSelection?: (text: string) => boolean;
 }
 
-export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd, onAskSetupAgent, onOpenPreview }: Props) {
+export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd, onAskSetupAgent, onOpenPreview, chatSessionId, onAddTerminalSelection }: Props) {
   const wsId = workspace.id;
   const inAppBrowser = useBoolPref("experimental_in_app_browser_preview");
   const terms = useSyncExternalStore(subscribeTabs, () => getTabs(wsId));
@@ -170,11 +172,11 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd,
       {open && error && <div className="term-error">{error}</div>}
       {/* Kept mounted while hidden, so run output and the setup state keep coming in. */}
       <div className="ws-strip-body" hidden={!open || view === "terminal"}>
-        <ScriptsPanel repo={repo} workspace={workspace} tab={view === "setup" ? "setup" : "run"} active={view === "run"} actionsSlot={actionsEl} onSetupState={onSetupState} onAddRunScript={addRunScript} onAskAgent={onAskSetupAgent} onShowRun={showRun} onOpenPreview={inAppBrowser ? onOpenPreview : undefined} />
+        <ScriptsPanel repo={repo} workspace={workspace} tab={view === "setup" ? "setup" : "run"} active={view === "run"} actionsSlot={actionsEl} onSetupState={onSetupState} onAddRunScript={addRunScript} onAskAgent={onAskSetupAgent} onShowRun={showRun} onOpenPreview={inAppBrowser ? onOpenPreview : undefined} sessionId={chatSessionId} onAddToChat={onAddTerminalSelection} />
       </div>
       {showTerminal && (
         <section className="terminal-panel" aria-label="Terminal">
-          <TerminalHost key={activeTerm.id} id={activeTerm.id} status={activeTerm.status} />
+          <TerminalHost key={activeTerm.id} id={activeTerm.id} status={activeTerm.status} sessionId={chatSessionId} onAddToChat={onAddTerminalSelection} />
         </section>
       )}
     </section>

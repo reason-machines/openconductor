@@ -1,0 +1,216 @@
+(node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual native mapper preserves the colliding display-text control
+ok 1 - actual native mapper preserves the colliding display-text control
+  ---
+  duration_ms: 0.850565
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: object-result-precedes-input
+not ok 2 - native producer -> reducer -> persisted/live Transcript Part -> Edit: object-result-precedes-input
+  ---
+  duration_ms: 378.698795
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/fe179653-a527-4b95-baec-3d1a0042ae92/.ara-state/tmp/oc-edit-baseline-fe179653/src/features/chat/editResultPipeline.test.ts:144:28'
+  failureType: 'testCodeFailure'
+  error: |-
+    live result-selected hover sides
+    + actual - expected
+    
+      [
+    +   '-input-old',
+    +   '+input-new'
+    -   '-result-old',
+    -   '+result-new'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: '-result-old'
+    1: '+result-new'
+  actual:
+    0: '-input-old'
+    1: '+input-new'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/fe179653-a527-4b95-baec-3d1a0042ae92/.ara-state/tmp/oc-edit-baseline-fe179653/src/features/chat/editResultPipeline.test.ts:156:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: json-looking-text-is-not-object
+ok 3 - native producer -> reducer -> persisted/live Transcript Part -> Edit: json-looking-text-is-not-object
+  ---
+  duration_ms: 250.499434
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: context-and-file-headers
+not ok 4 - native producer -> reducer -> persisted/live Transcript Part -> Edit: context-and-file-headers
+  ---
+  duration_ms: 93.967477
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/fe179653-a527-4b95-baec-3d1a0042ae92/.ara-state/tmp/oc-edit-baseline-fe179653/src/features/chat/editResultPipeline.test.ts:144:28'
+  failureType: 'testCodeFailure'
+  error: |-
+    live result-selected hover sides
+    + actual - expected
+    
+      [
+    +   '-input-old',
+    +   '+input-new'
+    -   '-keep',
+    -   '-result-old',
+    -   '+keep',
+    -   '+result-new'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: '-keep'
+    1: '-result-old'
+    2: '+keep'
+    3: '+result-new'
+  actual:
+    0: '-input-old'
+    1: '+input-new'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/fe179653-a527-4b95-baec-3d1a0042ae92/.ara-state/tmp/oc-edit-baseline-fe179653/src/features/chat/editResultPipeline.test.ts:156:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: result-can-supply-empty-input
+not ok 5 - native producer -> reducer -> persisted/live Transcript Part -> Edit: result-can-supply-empty-input
+  ---
+  duration_ms: 92.878254
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/fe179653-a527-4b95-baec-3d1a0042ae92/.ara-state/tmp/oc-edit-baseline-fe179653/src/features/chat/editResultPipeline.test.ts:144:28'
+  failureType: 'testCodeFailure'
+  error: |-
+    live selected-side counts
+    + actual - expected
+    
+    + []
+    - [
+    -   '10'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: '10'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/fe179653-a527-4b95-baec-3d1a0042ae92/.ara-state/tmp/oc-edit-baseline-fe179653/src/features/chat/editResultPipeline.test.ts:149:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: empty-diff-falls-back
+ok 6 - native producer -> reducer -> persisted/live Transcript Part -> Edit: empty-diff-falls-back
+  ---
+  duration_ms: 166.771414
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: non-string-diff-falls-back
+ok 7 - native producer -> reducer -> persisted/live Transcript Part -> Edit: non-string-diff-falls-back
+  ---
+  duration_ms: 186.269331
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: array-does-not-select-nested-object
+ok 8 - native producer -> reducer -> persisted/live Transcript Part -> Edit: array-does-not-select-nested-object
+  ---
+  duration_ms: 193.339446
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: plain-text-falls-back
+ok 9 - native producer -> reducer -> persisted/live Transcript Part -> Edit: plain-text-falls-back
+  ---
+  duration_ms: 342.438917
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: null-result-falls-back
+ok 10 - native producer -> reducer -> persisted/live Transcript Part -> Edit: null-result-falls-back
+  ---
+  duration_ms: 185.552181
+  type: 'test'
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: failed-result-still-selects-diff
+not ok 11 - native producer -> reducer -> persisted/live Transcript Part -> Edit: failed-result-still-selects-diff
+  ---
+  duration_ms: 81.917375
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/fe179653-a527-4b95-baec-3d1a0042ae92/.ara-state/tmp/oc-edit-baseline-fe179653/src/features/chat/editResultPipeline.test.ts:144:28'
+  failureType: 'testCodeFailure'
+  error: |-
+    live result-selected hover sides
+    + actual - expected
+    
+      [
+    +   '-input-old',
+    +   '+input-new'
+    -   '-result-old',
+    -   '+result-new'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: '-result-old'
+    1: '+result-new'
+  actual:
+    0: '-input-old'
+    1: '+input-new'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/fe179653-a527-4b95-baec-3d1a0042ae92/.ara-state/tmp/oc-edit-baseline-fe179653/src/features/chat/editResultPipeline.test.ts:156:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: truthy-headers-only-suppress-input
+not ok 12 - native producer -> reducer -> persisted/live Transcript Part -> Edit: truthy-headers-only-suppress-input
+  ---
+  duration_ms: 129.403991
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/fe179653-a527-4b95-baec-3d1a0042ae92/.ara-state/tmp/oc-edit-baseline-fe179653/src/features/chat/editResultPipeline.test.ts:144:28'
+  failureType: 'testCodeFailure'
+  error: |-
+    live selected-side counts
+    + actual - expected
+    
+    + [
+    +   '11'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: '11'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/fe179653-a527-4b95-baec-3d1a0042ae92/.ara-state/tmp/oc-edit-baseline-fe179653/src/features/chat/editResultPipeline.test.ts:149:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: native producer -> reducer -> persisted/live Transcript Part -> Edit: input-marker-control
+ok 13 - native producer -> reducer -> persisted/live Transcript Part -> Edit: input-marker-control
+  ---
+  duration_ms: 235.059943
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 8
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13054.992126

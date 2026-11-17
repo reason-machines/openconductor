@@ -91,7 +91,11 @@ export type PaletteIcon =
   | "home"
   | "archive"
   | "file"
-  | "link";
+  | "link"
+  | "search"
+  | "git-pull-request"
+  | "external-link"
+  | "circle-alert";
 
 export interface ActionEntry {
   id: string;

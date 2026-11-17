@@ -1,0 +1,36 @@
+{
+  "status": "SOURCE_ONLY_UNAPPLIED",
+  "files": [
+    {
+      "path": "evidence/settings/full-disk-access/verify.py",
+      "edits": [
+        {
+          "oldText": "    stop = '      <PrefSwitchRow settings={settings} save={save} pref=\"mention_notifications_enabled\"'\n    baseline_block = baseline[baseline.index(start):baseline.index(stop)]\n    old = '            if (on && !await notificationPermissionGranted()) return;'\n    new = '''            if (on && !await notificationPermissionGranted()) {\n              notify?.(\"error\", \"Notification permission not granted\");\n              return;\n            }'''\n    assert baseline_block.count(old) == 1\n    assert page[page.index(start):page.index(stop)] == baseline_block.replace(old, new, 1)",
+          "newText": "    stop = '      <Row label=\"Completion sound\"'\n    baseline_block = baseline[baseline.index(start):baseline.index(stop)]\n    old = '            if (on && !await notificationPermissionGranted()) return;'\n    new = '''            if (on && !await notificationPermissionGranted()) {\n              notify?.(\"error\", \"Notification permission not granted\");\n              return;\n            }'''\n    original_mention = '      <PrefSwitchRow settings={settings} save={save} pref=\"mention_notifications_enabled\" label=\"@ notifications\" help=\"Get notified when a teammate mentions you.\" />\\n'\n    gated_mention = '''      <Row label=\"@ notifications\" help=\"Get notified when a teammate mentions you.\">\n        <Toggle\n          label=\"@ notifications\"\n          checked={boolPref(settings, \"mention_notifications_enabled\")}\n          onChange={async (on) => {\n            if (on && !await notificationPermissionGranted()) {\n              notify?.(\"error\", \"Notification permission not granted\");\n              return;\n            }\n            await save(withBoolPref(latestSettings.current, \"mention_notifications_enabled\", on));\n          }}\n        />\n      </Row>\n'''\n    assert baseline_block.count(old) == 1\n    assert baseline_block.count(original_mention) == 1\n    expected = baseline_block.replace(old, new, 1).replace(original_mention, gated_mention, 1)\n    assert page.count(start) == 1 and page.count(stop) == 1\n    assert page[page.index(start):page.index(stop)] == expected"
+        }
+      ]
+    },
+    {
+      "path": "evidence/settings/full-disk-access/notification_guard_test.py",
+      "edits": [
+        {
+          "oldText": "    def reject_change(self, old, new):\n        self.assertEqual(self.page.count(old), 1)\n        mutated = self.page.replace(old, new, 1)\n        with self.assertRaises(AssertionError):\n            verify_notification_block(mutated, self.baseline)",
+          "newText": "    def row(self, label):\n        start = self.page.index(f'      <Row label=\"{label}\"')\n        stop = self.page.index('      </Row>\\n', start) + len('      </Row>\\n')\n        return self.page[start:stop]\n\n    def reject_change(self, old, new, labels=('Agent notifications', '@ notifications')):\n        for label in labels:\n            with self.subTest(row=label):\n                row = self.row(label)\n                self.assertEqual(row.count(old), 1)\n                mutated = self.page.replace(row, row.replace(old, new, 1), 1)\n                with self.assertRaises(AssertionError):\n                    verify_notification_block(mutated, self.baseline)"
+        },
+        {
+          "oldText": "        self.reject_change('save(withField(latestSettings.current, \"general\", \"send_native_notification\", on))', 'save(withField(settings, \"general\", \"send_native_notification\", on))')",
+          "newText": "        self.reject_change('save(withField(latestSettings.current, \"general\", \"send_native_notification\", on))', 'save(withField(settings, \"general\", \"send_native_notification\", on))', ('Agent notifications',))\n        self.reject_change('save(withBoolPref(latestSettings.current, \"mention_notifications_enabled\", on))', 'save(withBoolPref(settings, \"mention_notifications_enabled\", on))', ('@ notifications',))\n\n    def test_rejects_ungated_mention_row(self):\n        original = next(line + '\\n' for line in self.baseline.splitlines() if 'pref=\"mention_notifications_enabled\"' in line)\n        mutated = self.page.replace(self.row('@ notifications'), original, 1)\n        with self.assertRaises(AssertionError):\n            verify_notification_block(mutated, self.baseline)\n\n    def test_rejects_wrong_mention_preference(self):\n        self.reject_change('checked={boolPref(settings, \"mention_notifications_enabled\")}', 'checked={boolPref(settings, \"auto_convert_long_text\")}', ('@ notifications',))\n        self.reject_change('save(withBoolPref(latestSettings.current, \"mention_notifications_enabled\", on))', 'save(withBoolPref(latestSettings.current, \"auto_convert_long_text\", on))', ('@ notifications',))\n\n    def test_rejects_extra_row_content(self):\n        self.reject_change('        />\\n', '        />\\n        <span>Unexpected notification content</span>\\n')"
+        }
+      ]
+    },
+    {
+      "path": "src/settings/fullDiskAccess.test.ts",
+      "edits": [
+        {
+          "oldText": "  assert.match(result.stderr, /Ran 6 tests\\b/);\n  assert.match(result.stderr, /\\bOK\\b/);\n});\n\ntest(\"Full Disk Access: frozen seven-case fresh-main baseline and candidate\"",
+          "newText": "  assert.match(result.stderr, /Ran 9 tests\\b/);\n  assert.match(result.stderr, /\\bOK\\b/);\n});\n\ntest(\"Full Disk Access: frozen seven-case fresh-main baseline and candidate\""
+        }
+      ]
+    }
+  ]
+}

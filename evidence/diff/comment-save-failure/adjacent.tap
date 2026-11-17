@@ -1,0 +1,396 @@
+COMMAND: timeout 120s node --test --test-concurrency=1 src/features/diff/commentEditDrafts.test.ts src/features/diff/commentImeSubmit.test.ts src/features/diff/commentCancel.test.ts src/features/diff/comments.test.ts src/features/diff/commentStore.test.ts
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual comment Composer Cancel: saved comment cleared
+ok 1 - actual comment Composer Cancel: saved comment cleared
+  ---
+  duration_ms: 14.366183
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Cancel: saved comment replaced with whitespace
+ok 2 - actual comment Composer Cancel: saved comment replaced with whitespace
+  ---
+  duration_ms: 2.509351
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Cancel: saved comment gains surrounding spaces
+ok 3 - actual comment Composer Cancel: saved comment gains surrounding spaces
+  ---
+  duration_ms: 1.931296
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Cancel: saved comment gains a trailing newline
+ok 4 - actual comment Composer Cancel: saved comment gains a trailing newline
+  ---
+  duration_ms: 1.774729
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Cancel: saved comment changes words
+ok 5 - actual comment Composer Cancel: saved comment changes words
+  ---
+  duration_ms: 2.04407
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Cancel: saved comment unchanged
+ok 6 - actual comment Composer Cancel: saved comment unchanged
+  ---
+  duration_ms: 1.172169
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Cancel: new draft empty
+ok 7 - actual comment Composer Cancel: new draft empty
+  ---
+  duration_ms: 1.13485
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Cancel: new draft only whitespace
+ok 8 - actual comment Composer Cancel: new draft only whitespace
+  ---
+  duration_ms: 1.253522
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Cancel: new draft has text
+ok 9 - actual comment Composer Cancel: new draft has text
+  ---
+  duration_ms: 1.986068
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Cancel: accepting discard of a cleared saved comment dismisses once
+ok 10 - actual comment Composer Cancel: accepting discard of a cleared saved comment dismisses once
+  ---
+  duration_ms: 1.843369
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Cancel: new draft can keep editing, reopen and discard
+ok 11 - actual comment Composer Cancel: new draft can keep editing, reopen and discard
+  ---
+  duration_ms: 1.828877
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Cancel: closing the new draft alert preserves the composer
+ok 12 - actual comment Composer Cancel: closing the new draft alert preserves the composer
+  ---
+  duration_ms: 1.438631
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Cancel: saved draft can keep editing, reopen and discard
+ok 13 - actual comment Composer Cancel: saved draft can keep editing, reopen and discard
+  ---
+  duration_ms: 1.735234
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Cancel: closing the saved draft alert preserves the composer
+ok 14 - actual comment Composer Cancel: closing the saved draft alert preserves the composer
+  ---
+  duration_ms: 1.343407
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Escape: saved comment cleared
+ok 15 - actual comment Composer Escape: saved comment cleared
+  ---
+  duration_ms: 1.543189
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Escape: saved comment replaced with whitespace
+ok 16 - actual comment Composer Escape: saved comment replaced with whitespace
+  ---
+  duration_ms: 2.086309
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Escape: saved comment gains surrounding spaces
+ok 17 - actual comment Composer Escape: saved comment gains surrounding spaces
+  ---
+  duration_ms: 4.168125
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Escape: saved comment gains a trailing newline
+ok 18 - actual comment Composer Escape: saved comment gains a trailing newline
+  ---
+  duration_ms: 1.43303
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Escape: saved comment changes words
+ok 19 - actual comment Composer Escape: saved comment changes words
+  ---
+  duration_ms: 1.434641
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Escape: saved comment unchanged
+ok 20 - actual comment Composer Escape: saved comment unchanged
+  ---
+  duration_ms: 1.014742
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Escape: new draft empty
+ok 21 - actual comment Composer Escape: new draft empty
+  ---
+  duration_ms: 0.884322
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Escape: new draft only whitespace
+ok 22 - actual comment Composer Escape: new draft only whitespace
+  ---
+  duration_ms: 1.106074
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Escape: new draft has text
+ok 23 - actual comment Composer Escape: new draft has text
+  ---
+  duration_ms: 1.389941
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Escape: accepting discard of a cleared saved comment dismisses once
+ok 24 - actual comment Composer Escape: accepting discard of a cleared saved comment dismisses once
+  ---
+  duration_ms: 1.392468
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Escape: new draft can keep editing, reopen and discard
+ok 25 - actual comment Composer Escape: new draft can keep editing, reopen and discard
+  ---
+  duration_ms: 5.97523
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Escape: closing the new draft alert preserves the composer
+ok 26 - actual comment Composer Escape: closing the new draft alert preserves the composer
+  ---
+  duration_ms: 1.447024
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Escape: saved draft can keep editing, reopen and discard
+ok 27 - actual comment Composer Escape: saved draft can keep editing, reopen and discard
+  ---
+  duration_ms: 1.309412
+  type: 'test'
+  ...
+# Subtest: actual comment Composer Escape: closing the saved draft alert preserves the composer
+ok 28 - actual comment Composer Escape: closing the saved draft alert preserves the composer
+  ---
+  duration_ms: 1.256943
+  type: 'test'
+  ...
+# (node:93) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: comment edit survives annotation unmount with nonempty draft
+ok 29 - comment edit survives annotation unmount with nonempty draft
+  ---
+  duration_ms: 261.309572
+  type: 'test'
+  ...
+# Subtest: comment edit survives annotation unmount with empty draft
+ok 30 - comment edit survives annotation unmount with empty draft
+  ---
+  duration_ms: 112.51477
+  type: 'test'
+  ...
+# Subtest: comment edit survives full review remount and stays isolated by comment and workspace
+ok 31 - comment edit survives full review remount and stays isolated by comment and workspace
+  ---
+  duration_ms: 113.316163
+  type: 'test'
+  ...
+# Subtest: successful save persists body and clears only the edited draft
+ok 32 - successful save persists body and clears only the edited draft
+  ---
+  duration_ms: 72.588065
+  type: 'test'
+  ...
+# Subtest: failed save retains unpersisted draft across review remount
+ok 33 - failed save retains unpersisted draft across review remount
+  ---
+  duration_ms: 86.093399
+  type: 'test'
+  ...
+# Subtest: cancel keeps dirty draft until explicit discard and never writes stored body
+ok 34 - cancel keeps dirty draft until explicit discard and never writes stored body
+  ---
+  duration_ms: 81.925593
+  type: 'test'
+  ...
+# (node:101) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: comment IME native blocks metaKey Enter
+ok 35 - comment IME native blocks metaKey Enter
+  ---
+  duration_ms: 13.146676
+  type: 'test'
+  ...
+# Subtest: comment IME lifecycle blocks metaKey Enter
+ok 36 - comment IME lifecycle blocks metaKey Enter
+  ---
+  duration_ms: 2.203846
+  type: 'test'
+  ...
+# Subtest: comment IME keyCode blocks metaKey Enter
+ok 37 - comment IME keyCode blocks metaKey Enter
+  ---
+  duration_ms: 1.987667
+  type: 'test'
+  ...
+# Subtest: comment IME which blocks metaKey Enter
+ok 38 - comment IME which blocks metaKey Enter
+  ---
+  duration_ms: 1.454344
+  type: 'test'
+  ...
+# Subtest: comment non-IME metaKey Enter saves exact text once
+ok 39 - comment non-IME metaKey Enter saves exact text once
+  ---
+  duration_ms: 2.602872
+  type: 'test'
+  ...
+# Subtest: comment IME native blocks ctrlKey Enter
+ok 40 - comment IME native blocks ctrlKey Enter
+  ---
+  duration_ms: 1.642933
+  type: 'test'
+  ...
+# Subtest: comment IME lifecycle blocks ctrlKey Enter
+ok 41 - comment IME lifecycle blocks ctrlKey Enter
+  ---
+  duration_ms: 1.458508
+  type: 'test'
+  ...
+# Subtest: comment IME keyCode blocks ctrlKey Enter
+ok 42 - comment IME keyCode blocks ctrlKey Enter
+  ---
+  duration_ms: 1.493311
+  type: 'test'
+  ...
+# Subtest: comment IME which blocks ctrlKey Enter
+ok 43 - comment IME which blocks ctrlKey Enter
+  ---
+  duration_ms: 1.967738
+  type: 'test'
+  ...
+# Subtest: comment non-IME ctrlKey Enter saves exact text once
+ok 44 - comment non-IME ctrlKey Enter saves exact text once
+  ---
+  duration_ms: 7.262878
+  type: 'test'
+  ...
+# Subtest: comment IME native blocks Escape cancellation
+ok 45 - comment IME native blocks Escape cancellation
+  ---
+  duration_ms: 1.260061
+  type: 'test'
+  ...
+# Subtest: comment IME lifecycle blocks Escape cancellation
+ok 46 - comment IME lifecycle blocks Escape cancellation
+  ---
+  duration_ms: 0.982838
+  type: 'test'
+  ...
+# Subtest: comment IME legacy blocks Escape cancellation
+ok 47 - comment IME legacy blocks Escape cancellation
+  ---
+  duration_ms: 0.965635
+  type: 'test'
+  ...
+# Subtest: comment composition end and blur restore normal shortcuts
+ok 48 - comment composition end and blur restore normal shortcuts
+  ---
+  duration_ms: 2.172065
+  type: 'test'
+  ...
+# Subtest: comment blank submit remains disabled after composition
+ok 49 - comment blank submit remains disabled after composition
+  ---
+  duration_ms: 1.148552
+  type: 'test'
+  ...
+# Subtest: comment non-IME Escape still confirms dirty cancellation
+ok 50 - comment non-IME Escape still confirms dirty cancellation
+  ---
+  duration_ms: 1.639823
+  type: 'test'
+  ...
+# (node:109) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: local store keeps a thread: add, reply, resolve whole thread, mark sent
+ok 51 - local store keeps a thread: add, reply, resolve whole thread, mark sent
+  ---
+  duration_ms: 2.196449
+  type: 'test'
+  ...
+# Subtest: local store edits, deletes a root with its replies, and rejects empty bodies
+ok 52 - local store edits, deletes a root with its replies, and rejects empty bodies
+  ---
+  duration_ms: 0.601231
+  type: 'test'
+  ...
+# Subtest: local store ignores corrupt storage
+ok 53 - local store ignores corrupt storage
+  ---
+  duration_ms: 0.136803
+  type: 'test'
+  ...
+# Subtest: local store reads comments saved with the old side as "base" as "original"
+ok 54 - local store reads comments saved with the old side as "base" as "original"
+  ---
+  duration_ms: 0.153862
+  type: 'test'
+  ...
+# Subtest: local store deletes a GitHub comment here only, leaving the rest of its thread
+ok 55 - local store deletes a GitHub comment here only, leaving the rest of its thread
+  ---
+  duration_ms: 0.247665
+  type: 'test'
+  ...
+# (node:117) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: new comments normalise ranges and trim the body
+ok 56 - new comments normalise ranges and trim the body
+  ---
+  duration_ms: 0.733498
+  type: 'test'
+  ...
+# Subtest: replies join their root's thread and threads anchor on the range end
+ok 57 - replies join their root's thread and threads anchor on the range end
+  ---
+  duration_ms: 1.315162
+  type: 'test'
+  ...
+# Subtest: local comments go outdated when their lines leave the diff; GitHub ones keep their flag
+ok 58 - local comments go outdated when their lines leave the diff; GitHub ones keep their flag
+  ---
+  duration_ms: 0.346838
+  type: 'test'
+  ...
+# Subtest: a comment goes to the chat as Conductor's review attachment; sent and resolved comments are not pending
+ok 59 - a comment goes to the chat as Conductor's review attachment; sent and resolved comments are not pending
+  ---
+  duration_ms: 0.635252
+  type: 'test'
+  ...
+# Subtest: navigation wraps and orders comments by file then line
+ok 60 - navigation wraps and orders comments by file then line
+  ---
+  duration_ms: 0.331636
+  type: 'test'
+  ...
+# Subtest: stored values match the REA-observed diff_comments values
+ok 61 - stored values match the REA-observed diff_comments values
+  ---
+  duration_ms: 0.251065
+  type: 'test'
+  ...
+# Subtest: rows stored with the old side as "base" read as Conductor's "original"
+ok 62 - rows stored with the old side as "base" read as Conductor's "original"
+  ---
+  duration_ms: 0.228095
+  type: 'test'
+  ...
+1..62
+# tests 62
+# suites 0
+# pass 62
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2543.391381
+EXIT: 0

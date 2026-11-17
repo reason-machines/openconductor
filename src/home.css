@@ -55,7 +55,7 @@
 .allws-row:hover .allws-unarchive-hover, .allws-unarchive:focus-visible .allws-unarchive-hover { display: block; }
 /* The row's agent or setup status in place of the time (Conductor's RCe at size-3.5, dWt colours). */
 .allws-status { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; color: var(--sidebar-muted-foreground, var(--muted)); }
-.allws-status[data-color="destructive"] { color: var(--diff-del); }
+.allws-status[data-color="destructive"] { color: var(--destructive); }
 .allws-more { height: 24px; }
 .allws-loading { display: flex; justify-content: center; padding: 24px 0; color: var(--muted); }
 .allws-empty { padding: 24px 0; display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 14px; color: var(--muted); }

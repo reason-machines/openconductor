@@ -1,0 +1,17 @@
+{
+  "main": "167492e56dbbb90850efbadf1db2848dae7622f2",
+  "pins": 132,
+  "changed": [
+    {
+      "path": "src/state/store.ts",
+      "old": "6071be71368fa5a141ded7e6de42398ba86900638fe719fd2e44c296545cde96",
+      "new": "8ad80d70741dc80f2f2fd42d1f340f61ff5f5a34dd434353a045e45e22acaea9"
+    }
+  ],
+  "fixture_sha256": {
+    "wv-host.mjs": "142034cadd43ce96c9c312038df7959bbfee9b44b574bb0d4eaa802ebb2bb405",
+    "disclosureRemount.component.test.mjs": "affb87195267009c80fcd727441b25a1e4290c29af91d45c7a9f71b8fd4e7d53",
+    "proof-loader.mjs": "6cc037b72369a3ac70016986626492fbd4d2d829f1ac9aeadb7d1bcf9d4deab4"
+  },
+  "runtime": "NOT_RUN"
+}

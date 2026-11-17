@@ -6,7 +6,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../../backend";
 import { migrateLocations, type DiffComment } from "./comments.ts";
-import { localCommentStore, type CommentStore, type GithubSyncReport } from "./commentStore.ts";
+import { localCommentStore, reviewCommentsChanged, type CommentStore, type GithubSyncReport } from "./commentStore.ts";
 
 function tauriCommentStore(workspaceId: string, workspacePath: string | null): CommentStore {
   const github: Pick<CommentStore, "syncGithub" | "resolveOnGithub"> = workspacePath
@@ -30,6 +30,10 @@ function tauriCommentStore(workspaceId: string, workspacePath: string | null): C
     },
     resolve: async (threadId, resolved) => {
       await invoke("diff_comment_resolve", { threadId, resolved });
+    },
+    markReviewed: async (ids) => {
+      await invoke("diff_comments_mark_reviewed", { workspaceId, ids });
+      reviewCommentsChanged(workspaceId);
     },
     markSent: async (ids) => {
       await invoke("diff_comments_mark_sent", { ids });

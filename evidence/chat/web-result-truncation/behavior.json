@@ -1,0 +1,92 @@
+{
+  "author": "Conductor Rebuild",
+  "baseline_main": "d745c5259712b49f90ab47ecb2bad674a66c3c89",
+  "packet_static_checks": 51,
+  "packet_archive_sha256": "973f9186fa0c8e1a3c5a54c656108401380519e287553f3dfa91cb4e09f88f59",
+  "frozen_files": {
+    "src/features/chat/webResultTruncation.test.ts": "5d3a7cd8d7ede02947b7e055a90821846b46ea4d76c3c1abd6c1c5fd8c1d8146",
+    "src/features/chat/webResultTruncation.inputs.json": "0da49f177c57bc269af49bf22061677879683dc5f752bb74eebedd3b3d74c5ed",
+    "src/features/chat/webFetchPrompt.test.ts": "836d8f41c20f90a2956989a52249dd4ad823e5299c4c62622f82c96ef4eb9197"
+  },
+  "command": "node --test src/features/chat/webResultTruncation.test.ts src/features/chat/webFetchPrompt.test.ts",
+  "execution": "Reason Linux cloud; mounted React, actual payload/reducer/view/row path; no native/provider/browser",
+  "runs": {
+    "red": {
+      "exit_code": 1,
+      "log_sha256": "f55b88b6d66a8ad66b61da5c8e068fdfdd04e8ba6dc583898ffddd29bd0ece03",
+      "result_lines": [
+        "ok 1 - ordinary Claude WebFetch discloses exact prompt before the unchanged result: \"Find the supported configuration keys.\"",
+        "ok 2 - ordinary Claude WebFetch discloses exact prompt before the unchanged result: \"  Keep spacing.\\\\nAnd this line.  \"",
+        "ok 3 - WebFetch keeps HTML-like prompt and result text literal",
+        "ok 4 - WebFetch with missing prompt keeps its output-only disclosure",
+        "ok 5 - WebFetch with empty prompt keeps its output-only disclosure",
+        "ok 6 - completed WebSearch without prompt keeps its query and result disclosure",
+        "ok 7 - a completed WebFetch prompt alone does not open an empty result",
+        "ok 8 - web result cap matches shipped UTF-16 boundary: empty-fetch",
+        "ok 9 - web result cap matches shipped UTF-16 boundary: short-fetch-prompt",
+        "ok 10 - web result cap matches shipped UTF-16 boundary: below-cap",
+        "ok 11 - web result cap matches shipped UTF-16 boundary: exact-cap",
+        "not ok 12 - web result cap matches shipped UTF-16 boundary: above-cap-fetch",
+        "not ok 13 - web result cap matches shipped UTF-16 boundary: above-cap-search",
+        "not ok 14 - web result cap matches shipped UTF-16 boundary: long-with-prompt",
+        "not ok 15 - web result cap matches shipped UTF-16 boundary: astral-pair-completes-at-cap",
+        "not ok 16 - web result cap matches shipped UTF-16 boundary: astral-pair-bisected-at-cap",
+        "not ok 17 - web result cap matches shipped UTF-16 boundary: astral-only",
+        "not ok 18 - web result cap matches shipped UTF-16 boundary: combining-crlf",
+        "not ok 19 - web result cap matches shipped UTF-16 boundary: literal-markup",
+        "ok 20 - web result cap matches shipped UTF-16 boundary: prompt-not-capped",
+        "# tests 20",
+        "# pass 12",
+        "# fail 8",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ]
+    },
+    "green": {
+      "exit_code": 0,
+      "log_sha256": "bfacd1bcef5213bee022510d00ee12f8439a2edbba00fb2541620b4428135731",
+      "result_lines": [
+        "ok 1 - ordinary Claude WebFetch discloses exact prompt before the unchanged result: \"Find the supported configuration keys.\"",
+        "ok 2 - ordinary Claude WebFetch discloses exact prompt before the unchanged result: \"  Keep spacing.\\\\nAnd this line.  \"",
+        "ok 3 - WebFetch keeps HTML-like prompt and result text literal",
+        "ok 4 - WebFetch with missing prompt keeps its output-only disclosure",
+        "ok 5 - WebFetch with empty prompt keeps its output-only disclosure",
+        "ok 6 - completed WebSearch without prompt keeps its query and result disclosure",
+        "ok 7 - a completed WebFetch prompt alone does not open an empty result",
+        "ok 8 - web result cap matches shipped UTF-16 boundary: empty-fetch",
+        "ok 9 - web result cap matches shipped UTF-16 boundary: short-fetch-prompt",
+        "ok 10 - web result cap matches shipped UTF-16 boundary: below-cap",
+        "ok 11 - web result cap matches shipped UTF-16 boundary: exact-cap",
+        "ok 12 - web result cap matches shipped UTF-16 boundary: above-cap-fetch",
+        "ok 13 - web result cap matches shipped UTF-16 boundary: above-cap-search",
+        "ok 14 - web result cap matches shipped UTF-16 boundary: long-with-prompt",
+        "ok 15 - web result cap matches shipped UTF-16 boundary: astral-pair-completes-at-cap",
+        "ok 16 - web result cap matches shipped UTF-16 boundary: astral-pair-bisected-at-cap",
+        "ok 17 - web result cap matches shipped UTF-16 boundary: astral-only",
+        "ok 18 - web result cap matches shipped UTF-16 boundary: combining-crlf",
+        "ok 19 - web result cap matches shipped UTF-16 boundary: literal-markup",
+        "ok 20 - web result cap matches shipped UTF-16 boundary: prompt-not-capped",
+        "# tests 20",
+        "# pass 20",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ]
+    }
+  },
+  "red_failure": "expanded real web row must cap only its result and conditionally report original UTF-16 length",
+  "other_checks": {
+    "npm run typecheck": "passed",
+    "npm run build": "passed with bundle-size warning",
+    "git diff --check": "passed"
+  },
+  "not_run": [
+    "browser screenshot",
+    "native app",
+    "real provider",
+    "manual E2E",
+    "installed package"
+  ]
+}

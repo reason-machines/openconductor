@@ -237,6 +237,11 @@ pub struct SessionInfo {
 #[derive(Default)]
 struct Chat {
     cwd: PathBuf,
+    /// M7: local env vars from the workspace's settings, applied to the agent
+    /// process when it is first started for this workspace. Provider secrets
+    /// (e.g. REASON_API_KEY) are set before these in `configured()` and so
+    /// retain precedence unless also present here.
+    local_env: std::collections::BTreeMap<String, String>,
     session_id: Option<String>,
     /// Agent process generation the Session is open in.
     open_in: Option<u64>,
@@ -425,7 +430,18 @@ impl ReasonProvider {
 
     /// Registers a chat working in `cwd`, with its stored Session id when
     /// it had one before a restart. No process is started yet.
-    pub fn open_chat(&self, chat: &str, cwd: &Path, session_id: Option<String>) {
+    ///
+    /// `local_env`: workspace-local env vars (from Settings › Environment and
+    /// `.conductor/settings.toml`) to inject into the agent when it starts.
+    /// Applied only when a new agent process is spawned for the workspace;
+    /// concurrent chats in the same workspace share that agent and its env.
+    pub fn open_chat(
+        &self,
+        chat: &str,
+        cwd: &Path,
+        session_id: Option<String>,
+        local_env: std::collections::BTreeMap<String, String>,
+    ) {
         let workspace = session_id
             .as_deref()
             .and_then(|id| self.workspaces.lock().unwrap().get(id));
@@ -437,6 +453,7 @@ impl ReasonProvider {
             chat.into(),
             Chat {
                 cwd: cwd.into(),
+                local_env,
                 session_id,
                 workspace,
                 ..Chat::default()
@@ -448,7 +465,7 @@ impl ReasonProvider {
     pub fn models(&self) -> Result<ModelList, String> {
         self.restart_if_stale();
         let workspace = self.workspace_for_new()?;
-        let (conn, _) = self.ensure_agent(Some(&workspace))?;
+        let (conn, _) = self.ensure_agent(Some(&workspace), &Default::default())?;
         let base = json!({ "cwd": self.dir, "mcpServers": [] });
         let v = conn
             .call("session/new", base, SETUP_TIMEOUT)
@@ -499,7 +516,18 @@ impl ReasonProvider {
         attachments: &[Attachment],
         ticket: Option<u64>,
     ) -> TurnEnd {
-        let end = self.run_prompt(chat, text, attachments, ticket);
+        self.prompt_expected_with_handoff(chat, text, attachments, ticket, None)
+    }
+
+    pub fn prompt_expected_with_handoff(
+        &self,
+        chat: &str,
+        text: &str,
+        attachments: &[Attachment],
+        ticket: Option<u64>,
+        on_handoff: Option<Box<dyn FnOnce() + Send>>,
+    ) -> TurnEnd {
+        let end = self.run_prompt(chat, text, attachments, ticket, on_handoff);
         let idle = {
             let mut s = self.shared.lock().unwrap();
             if let Some(c) = s.chats.get_mut(chat) {
@@ -551,6 +579,7 @@ impl ReasonProvider {
         text: &str,
         attachments: &[Attachment],
         ticket: Option<u64>,
+        on_handoff: Option<Box<dyn FnOnce() + Send>>,
     ) -> TurnEnd {
         self.restart_if_stale();
         let (conn, session_id) = match self.ensure_session(chat) {
@@ -583,7 +612,7 @@ impl ReasonProvider {
         };
         let params = json!({ "sessionId": session_id,
             "prompt": prompt_blocks(text, attachments, &cwd) });
-        let result = conn.call("session/prompt", params, None);
+        let result = conn.call_with_handoff("session/prompt", params, None, on_handoff);
 
         let mut s = self.shared.lock().unwrap();
         let c = s.chats.get_mut(chat).expect("chat");
@@ -698,7 +727,7 @@ impl ReasonProvider {
 
     /// Recent Sessions in the signed-in Workspace, newest first.
     pub fn list_sessions(&self) -> Result<Vec<SessionInfo>, String> {
-        let agent = self.ensure_agent(None)?;
+        let agent = self.ensure_agent(None, &Default::default())?;
         let params = json!({ "cwd": self.dir });
         let v = agent.0.call("session/list", params, SETUP_TIMEOUT);
         let v = v.map_err(|e| e.to_string())?;
@@ -724,7 +753,7 @@ impl ReasonProvider {
     /// The chat's Session, open in the running agent process of its
     /// workspace, with the chat's config options set on it.
     fn ensure_session(&self, chat: &str) -> Result<(Arc<RpcConnection>, String), String> {
-        let (cwd, known, open_in, workspace) = {
+        let (cwd, known, open_in, workspace, local_env) = {
             let s = self.shared.lock().unwrap();
             let c = s.chats.get(chat).ok_or("unknown chat")?;
             (
@@ -732,6 +761,7 @@ impl ReasonProvider {
                 c.session_id.clone(),
                 c.open_in,
                 c.workspace.clone(),
+                c.local_env.clone(),
             )
         };
         if let (Some(id), Some(open_in)) = (&known, open_in) {
@@ -746,7 +776,7 @@ impl ReasonProvider {
         let (conn, generation, id, workspace, options) = match known {
             Some(id) => {
                 let workspace = self.locate(&id, workspace)?;
-                let (conn, generation) = self.ensure_agent(workspace.as_deref())?;
+                let (conn, generation) = self.ensure_agent(workspace.as_deref(), &local_env)?;
                 let mut params = base;
                 params["sessionId"] = json!(id);
                 let v = conn
@@ -756,7 +786,7 @@ impl ReasonProvider {
             }
             None => {
                 let workspace = Some(self.workspace_for_new()?);
-                let (conn, generation) = self.ensure_agent(workspace.as_deref())?;
+                let (conn, generation) = self.ensure_agent(workspace.as_deref(), &local_env)?;
                 let v = conn
                     .call("session/new", base, SETUP_TIMEOUT)
                     .map_err(|e| e.to_string())?;
@@ -890,16 +920,30 @@ impl ReasonProvider {
     }
 
     /// The running agent, started and initialized when needed.
-    fn ensure_agent(&self, workspace: Option<&str>) -> Result<(Arc<RpcConnection>, u64), String> {
+    fn ensure_agent(
+        &self,
+        workspace: Option<&str>,
+        local_env: &std::collections::BTreeMap<String, String>,
+    ) -> Result<(Arc<RpcConnection>, u64), String> {
         let key = workspace.map(str::to_string);
         let mut agents = self.agents.lock().unwrap();
         if let Some(a) = agents.get(&key).filter(|a| !a.conn.is_closed()) {
+            // Agent already running: its env was set at start time and cannot
+            // change without a restart. Concurrent chats in the same workspace
+            // share this agent and its env (first-open-chat wins).
             return Ok((a.conn.clone(), a.generation));
         }
-        let launch = self
+        // M7: merge workspace-local env vars on top of the provider-level env.
+        // Provider secrets (REASON_API_KEY etc.) were already set in configured()
+        // and are overwritten here only if the workspace settings define the same
+        // key; in practice those two sets do not overlap.
+        let mut launch = self
             .launch()
             .in_workspace(workspace)
             .map_err(|e| e.to_string())?;
+        for (k, v) in local_env {
+            launch.set_env(k, v);
+        }
         let (process, stdin, stdout) = AgentProcess::spawn(&launch, &self.dir)
             .map_err(|e| format!("Could not start {}: {e}", launch.cli().display()))?;
         let generation = {

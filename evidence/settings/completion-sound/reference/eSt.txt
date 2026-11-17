@@ -1,0 +1,1 @@
+async function eSt(t,e){try{const n=await(await fetch(e)).arrayBuffer(),r=await t.decodeAudioData(n),i=t.createBufferSource();i.buffer=r;const o=t.createGain();o.gain.value=.5,i.connect(o),o.connect(t.destination),i.onended=()=>t.close().fireAndForget(),i.start(0)}catch(s){Y.error("Failed to play completion sound file:",s)}}

@@ -1,0 +1,61 @@
+{
+  "producer": "Conductor Rebuild",
+  "main": "838ab2a1c76d11f8048a89c9d4c01ba822db2204",
+  "baseline": "15e87440daa703030f4c402e7a41b9221a149768",
+  "source_pins": [
+    {
+      "path": "src/components/AllWorkspaces.tsx",
+      "sha256": "f01926bb3f3436ff8bf148bf66c4d840127117ea7598cd146baeb9828d92fb69",
+      "unchanged": true
+    },
+    {
+      "path": "src/home/allWorkspaces.ts",
+      "sha256": "d0f085b570f531b0b2d0679473b30d70b133a3280f164ad871fdb6aff8eec20b",
+      "unchanged": true
+    },
+    {
+      "path": "src/state/store.ts",
+      "sha256": "6071be71368fa5a141ded7e6de42398ba86900638fe719fd2e44c296545cde96",
+      "unchanged": true
+    },
+    {
+      "path": "src/state/persisted.ts",
+      "sha256": "7a83f188ae1d5f7a375352feca0831d017a86472ae8048df40a93e38f6dc9209",
+      "unchanged": true
+    },
+    {
+      "path": "src/workspace/archive.ts",
+      "sha256": "26e187412bbadd452fd380261cb9e4deea31c17b452384c5818ff46e3967dfa0",
+      "unchanged": true
+    },
+    {
+      "path": "src/workspace/archivedList.ts",
+      "sha256": "5d5c2d74f3f2bcd2a0b1109cc22c3465a276bdd04edc71031689f1fc0a7942eb",
+      "unchanged": true
+    },
+    {
+      "path": "src-tauri/src/persistence_commands.rs",
+      "sha256": "26154ade996b875fdf340c803b013daa0234f288de1f6fd142bc43404573edca",
+      "unchanged": true
+    },
+    {
+      "path": "src-tauri/src/persistence/mod.rs",
+      "sha256": "f82a17bbac3c7f055d4dc7433a83c1828e754728bed87e4a0597c2c476f17266",
+      "unchanged": true
+    },
+    {
+      "path": "crates/openconductor-db/src/workspaces.rs",
+      "sha256": "5551996a52e93fe6f64f1e90967877d285511fbb9282bae7678564e89406a96f",
+      "unchanged": true
+    }
+  ],
+  "fixture_sha256": "490743c5a88da1af06b08b1e677ed23639a427fa8ecf93445cbc04ffb28a4bb0",
+  "changed_product_files": [
+    "src/components/AllWorkspaces.tsx",
+    "src/home/allWorkspaces.ts"
+  ],
+  "static_scope": "PASS",
+  "local_runtime": "NOT_RUN",
+  "hosted_green": "PENDING",
+  "native": "NOT_RUN"
+}

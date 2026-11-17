@@ -1,0 +1,452 @@
+TAP version 13
+# (node:109) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: real runtime persists each rich sent snapshot without changing provider prompt or attachments
+ok 1 - real runtime persists each rich sent snapshot without changing provider prompt or attachments
+  ---
+  duration_ms: 412.357172
+  type: 'test'
+  ...
+# Subtest: a queued message is prompted once the running turn ends
+ok 2 - a queued message is prompted once the running turn ends
+  ---
+  duration_ms: 1.807082
+  type: 'test'
+  ...
+# Subtest: an empty Reason completion fails the queue visibly and preserves the prompt for retry
+ok 3 - an empty Reason completion fails the queue visibly and preserves the prompt for retry
+  ---
+  duration_ms: 0.86831
+  type: 'test'
+  ...
+# Subtest: a pick in a chat whose session is open goes to that session; before it opens, open carries it
+ok 4 - a pick in a chat whose session is open goes to that session; before it opens, open carries it
+  ---
+  duration_ms: 1.080529
+  type: 'test'
+  ...
+# Subtest: a steered follow-up goes to the backend while the turn runs
+ok 5 - a steered follow-up goes to the backend while the turn runs
+  ---
+  duration_ms: 0.940627
+  type: 'test'
+  ...
+# Subtest: Stop cancels, a second Stop cancels hard, and the queue moves on
+ok 6 - Stop cancels, a second Stop cancels hard, and the queue moves on
+  ---
+  duration_ms: 0.947353
+  type: 'test'
+  ...
+# Subtest: a Stop before the prompt reached the backend ends the turn cancelled without sending it
+ok 7 - a Stop before the prompt reached the backend ends the turn cancelled without sending it
+  ---
+  duration_ms: 0.890599
+  type: 'test'
+  ...
+# Subtest: a prompt the backend rejects fails its turn
+ok 8 - a prompt the backend rejects fails its turn
+  ---
+  duration_ms: 0.925472
+  type: 'test'
+  ...
+# Subtest: Reset chat restores the turn's end checkpoint, then drops later turns
+ok 9 - Reset chat restores the turn's end checkpoint, then drops later turns
+  ---
+  duration_ms: 1.755537
+  type: 'test'
+  ...
+# Subtest: chat statuses span runtimes, and a hidden chat drops out
+ok 10 - chat statuses span runtimes, and a hidden chat drops out
+  ---
+  duration_ms: 1.134967
+  type: 'test'
+  ...
+# Subtest: a chat entering plan review or user input asks for attention once, as Conductor's _p after updateSessionStatus
+ok 11 - a chat entering plan review or user input asks for attention once, as Conductor's _p after updateSessionStatus
+  ---
+  duration_ms: 0.324358
+  type: 'test'
+  ...
+# (node:117) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:117) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude sends base-chat local loadout picks on every prompt without changing another chat
+ok 12 - Claude sends base-chat local loadout picks on every prompt without changing another chat
+  ---
+  duration_ms: 2.276628
+  type: 'test'
+  ...
+# Subtest: Claude ignores a saved selection belonging to another agent
+ok 13 - Claude ignores a saved selection belonging to another agent
+  ---
+  duration_ms: 0.185171
+  type: 'test'
+  ...
+# Subtest: Claude handoff uses the real native channel after command completion
+ok 14 - Claude handoff uses the real native channel after command completion
+  ---
+  duration_ms: 5.130179
+  type: 'test'
+  ...
+# (node:126) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:126) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Codex adapter keeps V1 separate from exact inline attachment text through queued drain
+ok 15 - Codex adapter keeps V1 separate from exact inline attachment text through queued drain
+  ---
+  duration_ms: 18.107739
+  type: 'test'
+  ...
+# Subtest: Codex sends each picked local loadout on dispatch, including queued changes and absent effort
+ok 16 - Codex sends each picked local loadout on dispatch, including queued changes and absent effort
+  ---
+  duration_ms: 15.045665
+  type: 'test'
+  ...
+# Subtest: an MCP elicitation asks for attention once; a second one while it waits asks again; a re-send does not
+ok 17 - an MCP elicitation asks for attention once; a second one while it waits asks again; a re-send does not
+  ---
+  duration_ms: 5.108387
+  type: 'test'
+  ...
+# Subtest: a consent while a tool approval waits asks for attention, as does the approval
+ok 18 - a consent while a tool approval waits asks for attention, as does the approval
+  ---
+  duration_ms: 5.055984
+  type: 'test'
+  ...
+# (node:135) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: an attached file goes to .context/attachments/<random 6>/<name> in the workspace
+ok 19 - an attached file goes to .context/attachments/<random 6>/<name> in the workspace
+  ---
+  duration_ms: 0.892033
+  type: 'test'
+  ...
+# Subtest: file names cannot leave their folder or hide
+ok 20 - file names cannot leave their folder or hide
+  ---
+  duration_ms: 0.187583
+  type: 'test'
+  ...
+# Subtest: UTF-8 text goes inline; binary and oversized files are pointed at by path
+ok 21 - UTF-8 text goes inline; binary and oversized files are pointed at by path
+  ---
+  duration_ms: 0.98952
+  type: 'test'
+  ...
+# Subtest: persisted attachment chips retain display, inline content and staged IDs
+ok 22 - persisted attachment chips retain display, inline content and staged IDs
+  ---
+  duration_ms: 1.224194
+  type: 'test'
+  ...
+# Subtest: malformed persisted chips and unsafe staged paths are not restored
+ok 23 - malformed persisted chips and unsafe staged paths are not restored
+  ---
+  duration_ms: 0.221471
+  type: 'test'
+  ...
+# Subtest: files over the size limit are refused with a reason
+ok 24 - files over the size limit are refused with a reason
+  ---
+  duration_ms: 0.12879
+  type: 'test'
+  ...
+# (node:143) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: send mode: steering by default, the opposite key queues, non-steering agents always queue
+ok 25 - send mode: steering by default, the opposite key queues, non-steering agents always queue
+  ---
+  duration_ms: 0.838802
+  type: 'test'
+  ...
+# Subtest: idle submit starts a turn; blank text does nothing
+ok 26 - idle submit starts a turn; blank text does nothing
+  ---
+  duration_ms: 1.258447
+  type: 'test'
+  ...
+# Subtest: attachment-only messages start, steer, queue and survive a blank queue edit
+ok 27 - attachment-only messages start, steer, queue and survive a blank queue edit
+  ---
+  duration_ms: 0.753582
+  type: 'test'
+  ...
+# Subtest: while working, steer goes into the turn and queue waits for the turn to end
+ok 28 - while working, steer goes into the turn and queue waits for the turn to end
+  ---
+  duration_ms: 0.208295
+  type: 'test'
+  ...
+# Subtest: a completed turn sends the head, one per turn, in order
+ok 29 - a completed turn sends the head, one per turn, in order
+  ---
+  duration_ms: 0.238698
+  type: 'test'
+  ...
+# Subtest: a superseded turn keeps the session working and sends nothing
+ok 30 - a superseded turn keeps the session working and sends nothing
+  ---
+  duration_ms: 0.123991
+  type: 'test'
+  ...
+# Subtest: a failed turn pauses a non-empty queue; resume sends the head
+ok 31 - a failed turn pauses a non-empty queue; resume sends the head
+  ---
+  duration_ms: 0.240454
+  type: 'test'
+  ...
+# Subtest: a failed turn with nothing queued leaves the next message free to start
+ok 32 - a failed turn with nothing queued leaves the next message free to start
+  ---
+  duration_ms: 0.247134
+  type: 'test'
+  ...
+# Subtest: a cancelled turn does not pause: the head sends after the cancellation
+ok 33 - a cancelled turn does not pause: the head sends after the cancellation
+  ---
+  duration_ms: 0.394156
+  type: 'test'
+  ...
+# Subtest: Stop: second press is a hard stop; idle Stop does nothing
+ok 34 - Stop: second press is a hard stop; idle Stop does nothing
+  ---
+  duration_ms: 0.442031
+  type: 'test'
+  ...
+# Subtest: delete, reorder and move queued messages
+ok 35 - delete, reorder and move queued messages
+  ---
+  duration_ms: 0.380996
+  type: 'test'
+  ...
+# Subtest: deleting the last item while idle and paused leaves nothing to send
+ok 36 - deleting the last item while idle and paused leaves nothing to send
+  ---
+  duration_ms: 0.118963
+  type: 'test'
+  ...
+# Subtest: an edited head does not send until the edit is saved or cancelled
+ok 37 - an edited head does not send until the edit is saved or cancelled
+  ---
+  duration_ms: 0.203989
+  type: 'test'
+  ...
+# Subtest: save and steer sends the edited text into the running turn
+ok 38 - save and steer sends the edited text into the running turn
+  ---
+  duration_ms: 0.176677
+  type: 'test'
+  ...
+# Subtest: saving an edit as blank deletes the message
+ok 39 - saving an edit as blank deletes the message
+  ---
+  duration_ms: 0.08778
+  type: 'test'
+  ...
+# Subtest: steer a queued message: into the running turn, or start it when idle
+ok 40 - steer a queued message: into the running turn, or start it when idle
+  ---
+  duration_ms: 0.145833
+  type: 'test'
+  ...
+# Subtest: a queued message keeps its attachments until it sends
+ok 41 - a queued message keeps its attachments until it sends
+  ---
+  duration_ms: 0.105836
+  type: 'test'
+  ...
+# Subtest: a permission request holds the turn: follow-ups queue, Stop cancels, an answer resumes working
+ok 42 - a permission request holds the turn: follow-ups queue, Stop cancels, an answer resumes working
+  ---
+  duration_ms: 0.333304
+  type: 'test'
+  ...
+# Subtest: queue-panel actions run through actionStep (shared by the Reason and Codex chats)
+ok 43 - queue-panel actions run through actionStep (shared by the Reason and Codex chats)
+  ---
+  duration_ms: 0.200688
+  type: 'test'
+  ...
+# (node:151) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:151) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a prompt sent while the stored transcript loads waits for it, then runs after the stored turns on the stored Session
+ok 44 - a prompt sent while the stored transcript loads waits for it, then runs after the stored turns on the stored Session
+  ---
+  duration_ms: 12.109334
+  type: 'test'
+  ...
+# Subtest: signed-out Reason preserves the original turn without starting ACP, then retry uses the same chat
+ok 45 - signed-out Reason preserves the original turn without starting ACP, then retry uses the same chat
+  ---
+  duration_ms: 13.875833
+  type: 'test'
+  ...
+# Subtest: Stop while the stored transcript loads cancels the prompt without sending it
+ok 46 - Stop while the stored transcript loads cancels the prompt without sending it
+  ---
+  duration_ms: 7.370684
+  type: 'test'
+  ...
+# Subtest: the chat's Session is created with its model and effort, waiting for options still being read
+ok 47 - the chat's Session is created with its model and effort, waiting for options still being read
+  ---
+  duration_ms: 6.088446
+  type: 'test'
+  ...
+# Subtest: a chat's picked options win over the Settings defaults and are kept for a later Session
+ok 48 - a chat's picked options win over the Settings defaults and are kept for a later Session
+  ---
+  duration_ms: 6.183909
+  type: 'test'
+  ...
+# Subtest: Reset chat rewinds the agent: the next prompt opens a new Session that carries only the kept turns
+ok 49 - Reset chat rewinds the agent: the next prompt opens a new Session that carries only the kept turns
+  ---
+  duration_ms: 306.950371
+  type: 'test'
+  ...
+# Subtest: a turn that completes with nothing queued asks for attention; one with a follow-up queued does not
+ok 50 - a turn that completes with nothing queued asks for attention; one with a follow-up queued does not
+  ---
+  duration_ms: 12.106786
+  type: 'test'
+  ...
+# Subtest: a new permission request asks for attention once, while the turn still runs
+ok 51 - a new permission request asks for attention once, while the turn still runs
+  ---
+  duration_ms: 6.640469
+  type: 'test'
+  ...
+# Subtest: a plan request asks for attention once, though it both opens a request and enters plan review
+ok 52 - a plan request asks for attention once, though it both opens a request and enters plan review
+  ---
+  duration_ms: 6.589992
+  type: 'test'
+  ...
+# Subtest: a request offering only allow choices is a question: needs_user_input, unread once, working once answered
+ok 53 - a request offering only allow choices is a question: needs_user_input, unread once, working once answered
+  ---
+  duration_ms: 6.664302
+  type: 'test'
+  ...
+# Subtest: stored statuses show at start, outside writes are applied and the chat's own writes do not echo
+ok 54 - stored statuses show at start, outside writes are applied and the chat's own writes do not echo
+  ---
+  duration_ms: 0.333075
+  type: 'test'
+  ...
+# Subtest: a permission request makes the chat needs_user_permission until it is answered, and each status is stored
+ok 55 - a permission request makes the chat needs_user_permission until it is answered, and each status is stored
+  ---
+  duration_ms: 37.399061
+  type: 'test'
+  ...
+# Subtest: plan and question requests make the chat needs_plan_response and needs_user_input; the most urgent open one wins
+ok 56 - plan and question requests make the chat needs_plan_response and needs_user_input; the most urgent open one wins
+  ---
+  duration_ms: 5.246609
+  type: 'test'
+  ...
+# Subtest: a request Reason no longer holds closes at once
+ok 57 - a request Reason no longer holds closes at once
+  ---
+  duration_ms: 5.230976
+  type: 'test'
+  ...
+# Subtest: needs_user_permission never outlives its request: Stop withdraws it, and a turn that ends unanswered clears it
+ok 58 - needs_user_permission never outlives its request: Stop withdraws it, and a turn that ends unanswered clears it
+  ---
+  duration_ms: 17.010668
+  type: 'test'
+  ...
+# (node:160) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: local store keeps a thread: add, reply, resolve whole thread, mark sent
+ok 59 - local store keeps a thread: add, reply, resolve whole thread, mark sent
+  ---
+  duration_ms: 2.278613
+  type: 'test'
+  ...
+# Subtest: local store edits, deletes a root with its replies, and rejects empty bodies
+ok 60 - local store edits, deletes a root with its replies, and rejects empty bodies
+  ---
+  duration_ms: 0.599283
+  type: 'test'
+  ...
+# Subtest: local store ignores corrupt storage
+ok 61 - local store ignores corrupt storage
+  ---
+  duration_ms: 0.152674
+  type: 'test'
+  ...
+# Subtest: local store reads comments saved with the old side as "base" as "original"
+ok 62 - local store reads comments saved with the old side as "base" as "original"
+  ---
+  duration_ms: 0.175483
+  type: 'test'
+  ...
+# Subtest: local store deletes a GitHub comment here only, leaving the rest of its thread
+ok 63 - local store deletes a GitHub comment here only, leaving the rest of its thread
+  ---
+  duration_ms: 0.275488
+  type: 'test'
+  ...
+# (node:168) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: new comments normalise ranges and trim the body
+ok 64 - new comments normalise ranges and trim the body
+  ---
+  duration_ms: 0.724772
+  type: 'test'
+  ...
+# Subtest: replies join their root's thread and threads anchor on the range end
+ok 65 - replies join their root's thread and threads anchor on the range end
+  ---
+  duration_ms: 1.46606
+  type: 'test'
+  ...
+# Subtest: local comments go outdated when their lines leave the diff; GitHub ones keep their flag
+ok 66 - local comments go outdated when their lines leave the diff; GitHub ones keep their flag
+  ---
+  duration_ms: 0.339689
+  type: 'test'
+  ...
+# Subtest: a comment goes to the chat as Conductor's review attachment; sent and resolved comments are not pending
+ok 67 - a comment goes to the chat as Conductor's review attachment; sent and resolved comments are not pending
+  ---
+  duration_ms: 0.5962
+  type: 'test'
+  ...
+# Subtest: navigation wraps and orders comments by file then line
+ok 68 - navigation wraps and orders comments by file then line
+  ---
+  duration_ms: 0.345244
+  type: 'test'
+  ...
+# Subtest: stored values match the REA-observed diff_comments values
+ok 69 - stored values match the REA-observed diff_comments values
+  ---
+  duration_ms: 0.228764
+  type: 'test'
+  ...
+# Subtest: rows stored with the old side as "base" read as Conductor's "original"
+ok 70 - rows stored with the old side as "base" read as Conductor's "original"
+  ---
+  duration_ms: 0.209105
+  type: 'test'
+  ...
+1..70
+# tests 70
+# suites 0
+# pass 70
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3271.310655

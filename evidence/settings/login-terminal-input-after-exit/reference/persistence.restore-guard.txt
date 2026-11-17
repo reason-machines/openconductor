@@ -1,0 +1,1 @@
+async getColdRestoreRecord(e){if(e.kind!=="interactive"||e.persistence!=="warm_and_cold"||e.metadata?.allowColdRestore!==!0)return;const s=e.id??e.metadata?.terminalId;if(!s)return;await this.historyStore.flushNow();const n=await this.historyStore.getOrLoad(s);if(n)return n}

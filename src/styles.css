@@ -131,6 +131,8 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .sb-ws-list { display: flex; flex-direction: column; gap: 4px; }
 .sb-ws { display: flex; align-items: center; gap: 6px; width: calc(100% - 2px); min-width: 0; padding: 8px 6px 8px 20px; border-radius: 6px; text-align: left; color: var(--sidebar-foreground); cursor: pointer; }
 .sb-ws:hover, .sb-ws[data-active] { background: var(--sidebar-accent); }
+/* Conductor's `wFi` applies opacity-50 (`ue = I && "opacity-50"`, isSetupActive = state==setting_up). */
+.sb-ws[data-setup-active] { opacity: 0.5; }
 /* Conductor's row is a group: hovering anywhere on it (the Archive button included) highlights it,
    fades the diff stat and shows Archive at the right end (iea: absolute inset-y-0 right-1, invisible group-hover:visible). */
 .sb-ws-row { position: relative; display: flex; min-width: 0; }
@@ -363,7 +365,11 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .create-card { position: relative; display: flex; flex-direction: column; min-height: 216px; padding: 12px 16px 12px 18px; border: 1px solid var(--border); border-radius: 12px; background: var(--secondary); color: var(--text); cursor: text; }
 .create-ws-attached .create-card { border-radius: 0 0 12px 12px; }
 .create-ws-floating .create-card { padding-left: 16px; }
-.create-editor { flex: 1; width: 100%; min-height: 142px; max-height: 312px; padding: 4px 0; border: 0; outline: 0; resize: none; background: transparent; color: inherit; font: inherit; font-size: 14px; line-height: 1.5; }
+.create-editor { flex: 1; width: 100%; min-height: 142px; max-height: 312px; padding: 4px 0; border: 0; outline: 0; resize: none; background: transparent; color: inherit; font: inherit; font-size: 14px; line-height: 1.5; overflow-y: auto; }
+/* TipTap (ComposerEditor) inside the create composer — mirrors .composer.oc-composer .tiptap rules. */
+.create-editor .tiptap { outline: 0; position: relative; word-break: break-word; overflow-wrap: break-word; cursor: text; }
+.create-editor .tiptap p { margin: 0; min-height: 1em; }
+.create-editor .tiptap[data-empty="true"]::before { content: attr(data-placeholder); color: var(--oc-c-faint); pointer-events: none; position: absolute; top: 0; }
 /* Footer controls sit 12px in from the card's sides (Conductor: model trigger and Create at card edge + 12). */
 .create-card-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 8px -4px 0; }
 .create-ws-attached .create-card-bar { margin-left: -6px; }
@@ -454,6 +460,34 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .qo-tag { margin-left: auto; color: var(--muted); font-size: 11px; }
 .qo-empty { padding: 18px 16px; color: var(--muted); font-size: 13px; }
 .qo-hint { border-top: 1px solid var(--border); padding: 6px 12px; color: var(--muted); font-size: 11px; }
+
+/* Search in files dialog (nav.searchInFiles, ⌘⇧F) */
+/* REA evidence: renderApp-D_fmY7hW.js $co/zco/Vco; max-w-2xl max-h-[70vh] top-2 */
+.sif-backdrop { place-items: start center; padding-top: 8px; }
+.sif { width: min(672px, calc(100vw - 48px)); overflow: hidden; display: flex; flex-direction: column; max-height: min(70vh, calc(100vh - 32px)); }
+.sif-input { border: 0; border-bottom: 1px solid var(--border); background: transparent; color: inherit; font: inherit; font-size: 15px; padding: 10px 16px; outline: none; height: 32px; box-sizing: content-box; }
+/* Options row: toggles + match count (py-1 px-2 gap-0.5 border-b flex items-center) */
+.sif-options-row { display: flex; align-items: center; gap: 2px; border-bottom: 1px solid var(--border); padding: 4px 8px; }
+/* Toggle button: size-6 p-0 ghost, pressed = text-foreground */
+.sif-toggle { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 4px; background: transparent; color: var(--muted); cursor: default; flex-shrink: 0; }
+.sif-toggle:hover { background: var(--hover); color: var(--foreground); }
+.sif-toggle--on { color: var(--foreground); background: var(--hover); }
+/* Match count (ml-auto text-xs text-muted tabular-nums) */
+.sif-count { margin-left: auto; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* Results list (flex-1 overflow-y-auto max-h-none) */
+.sif-results { overflow-y: auto; flex: 1; }
+.sif-empty { padding: 18px 16px; color: var(--muted); font-size: 13px; }
+/* File group heading: file-icon + filename + dir + match count */
+.sif-file-heading { display: flex; align-items: center; gap: 6px; padding: 6px 10px 3px; min-width: 0; position: sticky; top: 0; background: var(--modal); }
+.sif-filename { color: var(--foreground); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sif-dir { color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1; }
+.sif-file-count { margin-left: auto; color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+/* Match rows: pl-7 font-mono text-xs (py-[3px]) */
+.sif-match-row { display: block; width: 100%; text-align: left; border: 0; background: transparent; color: inherit; font: inherit; font-family: var(--font-mono, monospace); font-size: 12px; padding: 3px 10px 3px 28px; cursor: default; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sif-match-row:hover { background: var(--hover); }
+/* Highlighted submatch: rounded-[2px] bg-accent font-semibold text-foreground */
+.sif-mark { background: var(--accent); border-radius: 2px; font-weight: 600; color: var(--foreground); }
+.sif-line-text { color: color-mix(in srgb, var(--foreground) 80%, transparent); }
 
 /* Settings */
 .settings { display: grid; grid-template-columns: 256px 1fr; height: 100%; min-height: 0; flex: 1; overflow: hidden; }

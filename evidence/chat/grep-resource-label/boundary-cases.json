@@ -1,0 +1,68 @@
+{
+  "purpose": "Frozen rendered-label edge cases from exact retained xZe slash splitting; no normalization",
+  "cases": [
+    {
+      "id": "root-slash",
+      "path": "/",
+      "expected_resource": "/",
+      "workspacePath": "/repo",
+      "pattern": "needle"
+    },
+    {
+      "id": "leading-slash-pair",
+      "path": "/file.ts",
+      "expected_resource": "/file.ts",
+      "workspacePath": "/repo",
+      "pattern": "needle"
+    },
+    {
+      "id": "workspace-trailing-slash",
+      "path": "/repo/",
+      "expected_resource": "repo/",
+      "workspacePath": "/repo",
+      "pattern": "needle"
+    },
+    {
+      "id": "deep-trailing-slash",
+      "path": "/repo/packages/chat/",
+      "expected_resource": "chat/",
+      "workspacePath": "/repo",
+      "pattern": "needle"
+    },
+    {
+      "id": "repeated-empty-segment",
+      "path": "/repo//src/file.ts",
+      "expected_resource": "src/file.ts",
+      "workspacePath": "/repo",
+      "pattern": "needle"
+    },
+    {
+      "id": "double-trailing-slash",
+      "path": "/repo/chat//",
+      "expected_resource": "/",
+      "workspacePath": "/repo",
+      "pattern": "needle"
+    },
+    {
+      "id": "unicode-segments",
+      "path": "/repo/工程/组件/文件.ts",
+      "expected_resource": "组件/文件.ts",
+      "workspacePath": "/repo",
+      "pattern": "needle"
+    },
+    {
+      "id": "dot-relative-segments",
+      "path": "../packages/chat/src",
+      "expected_resource": "chat/src",
+      "workspacePath": "/repo",
+      "pattern": "needle"
+    },
+    {
+      "id": "backslashes-unchanged",
+      "path": "C:\\repo\\src\\file.ts",
+      "expected_resource": "C:\\repo\\src\\file.ts",
+      "workspacePath": "/repo",
+      "pattern": "needle"
+    }
+  ]
+}

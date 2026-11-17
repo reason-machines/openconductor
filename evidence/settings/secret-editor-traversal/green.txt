@@ -1,0 +1,51 @@
+(node:54) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:61) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: editing a stored key places keyboard focus on Save after one Tab from a nonempty input
+ok 1 - editing a stored key places keyboard focus on Save after one Tab from a nonempty input
+  ---
+  duration_ms: 721.905981
+  type: 'test'
+  ...
+# Subtest: Tab then Enter saves the trimmed fake replacement rather than discarding the editor
+ok 2 - Tab then Enter saves the trimmed fake replacement rather than discarding the editor
+  ---
+  duration_ms: 491.289743
+  type: 'test'
+  ...
+# Subtest: direct Enter in the input still submits exactly one trimmed fake replacement
+ok 3 - direct Enter in the input still submits exactly one trimmed fake replacement
+  ---
+  duration_ms: 230.976283
+  type: 'test'
+  ...
+# Subtest: explicit Cancel closes the dirty editor without saving or retrieving the stored value
+ok 4 - explicit Cancel closes the dirty editor without saving or retrieving the stored value
+  ---
+  duration_ms: 244.194054
+  type: 'test'
+  ...
+# Subtest: pending save disables input, Save and Cancel and cannot submit twice
+ok 5 - pending save disables input, Save and Cancel and cannot submit twice
+  ---
+  duration_ms: 209.605683
+  type: 'test'
+  ...
+# Subtest: whitespace-only input cannot save and keyboard traversal skips its disabled Save action
+ok 6 - whitespace-only input cannot save and keyboard traversal skips its disabled Save action
+  ---
+  duration_ms: 161.014176
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2958.901989
+EXIT_CODE=0

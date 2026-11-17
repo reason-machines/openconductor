@@ -149,6 +149,16 @@ impl RpcConnection {
         params: Value,
         timeout: Option<Duration>,
     ) -> Result<Value, CallError> {
+        self.call_with_handoff(method, params, timeout, None)
+    }
+
+    pub fn call_with_handoff(
+        &self,
+        method: &str,
+        params: Value,
+        timeout: Option<Duration>,
+        on_handoff: Option<Box<dyn FnOnce() + Send>>,
+    ) -> Result<Value, CallError> {
         let id = self.next_id.fetch_add(1, Ordering::Relaxed);
         let (tx, rx) = mpsc::channel();
         {
@@ -162,6 +172,9 @@ impl RpcConnection {
         if let Err(e) = write_line(&self.writer, &msg) {
             self.pending.lock().unwrap().waiters.remove(&id);
             return Err(CallError::Io(e.to_string()));
+        }
+        if let Some(on_handoff) = on_handoff {
+            on_handoff();
         }
         let answer = match timeout {
             None => rx.recv().map_err(|_| RecvTimeoutError::Disconnected),

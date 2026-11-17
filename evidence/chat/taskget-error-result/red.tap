@@ -1,0 +1,138 @@
+(node:79) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: TaskGet result details: failed-json-task
+not ok 1 - TaskGet result details: failed-json-task
+  ---
+  duration_ms: 187.515618
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/taskGetErrorResult.test.ts:64:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    TASKGET_RENDERED_DETAILS_failed-json-task
+    + actual - expected
+    
+      {
+    +   header: 'Task ID: 17',
+    +   loading: [
+    +     'Loading task...'
+    -   header: 'Recover checkout',
+    -   loading: [],
+    -   notes: [
+    -     'Retain diagnostics',
+    -     'Owner: worker'
+        ],
+    +   notes: [],
+    +   subjects: []
+    -   subjects: [
+    -     'Recover checkout'
+    -   ]
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    header: 'Recover checkout'
+    subjects:
+      0: 'Recover checkout'
+    notes:
+      0: 'Retain diagnostics'
+      1: 'Owner: worker'
+    loading:
+  actual:
+    header: 'Task ID: 17'
+    subjects:
+    notes:
+    loading:
+      0: 'Loading task...'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/taskGetErrorResult.test.ts:135:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: TaskGet result details: failed-text-task
+not ok 2 - TaskGet result details: failed-text-task
+  ---
+  duration_ms: 50.68259
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/taskGetErrorResult.test.ts:64:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    TASKGET_RENDERED_DETAILS_failed-text-task
+    + actual - expected
+    
+      {
+    +   header: 'Task ID: 17',
+    +   loading: [
+    +     'Loading task...'
+    -   header: 'Recover checkout',
+    -   loading: [],
+    -   notes: [
+    -     'Retain diagnostics',
+    -     'Owner: worker'
+        ],
+    +   notes: [],
+    +   subjects: []
+    -   subjects: [
+    -     'Recover checkout'
+    -   ]
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    header: 'Recover checkout'
+    subjects:
+      0: 'Recover checkout'
+    notes:
+      0: 'Retain diagnostics'
+      1: 'Owner: worker'
+    loading:
+  actual:
+    header: 'Task ID: 17'
+    subjects:
+    notes:
+    loading:
+      0: 'Loading task...'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/992a715e-aafd-49b0-88ba-9cabca1a3126/repo/src/features/chat/taskGetErrorResult.test.ts:135:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: TaskGet result details: successful-json-task
+ok 3 - TaskGet result details: successful-json-task
+  ---
+  duration_ms: 19.898173
+  type: 'test'
+  ...
+# Subtest: TaskGet result details: plain-failed-result
+ok 4 - TaskGet result details: plain-failed-result
+  ---
+  duration_ms: 27.532769
+  type: 'test'
+  ...
+# Subtest: TaskGet result details: pending-task
+ok 5 - TaskGet result details: pending-task
+  ---
+  duration_ms: 15.409687
+  type: 'test'
+  ...
+# Subtest: TaskGet result details: empty-failed-result
+ok 6 - TaskGet result details: empty-failed-result
+  ---
+  duration_ms: 17.322954
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 4
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5313.934612

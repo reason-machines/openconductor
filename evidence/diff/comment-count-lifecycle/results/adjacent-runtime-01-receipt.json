@@ -1,0 +1,35 @@
+{
+  "status": "ACTUAL_ADJACENT_RESULT",
+  "started_at": "2026-11-12T15:12:25.695817+00:00",
+  "elapsed_seconds": 3.362724000005983,
+  "ended_at": "2026-11-12T15:12:29.058548+00:00",
+  "command": [
+    "nice",
+    "-n",
+    "19",
+    "timeout",
+    "--kill-after=5s",
+    "120s",
+    "node",
+    "--max-old-space-size=768",
+    "--test",
+    "--test-concurrency=1",
+    "src/features/chat/claudeChat.test.ts",
+    "src/features/chat/reasonChat.test.ts",
+    "src/features/chat/codexChat.test.ts",
+    "src/features/chat/chatRuntime.test.ts",
+    "src/features/chat/queue.test.ts",
+    "src/features/diff/comments.test.ts",
+    "src/features/diff/commentStore.test.ts",
+    "src/features/chat/composerAttachments.test.ts"
+  ],
+  "exit_code": 0,
+  "adjacent-runtime-01.stdout.tap": {
+    "bytes": 17606,
+    "sha256": "6610f07e97ed429aca9bd7ea108a07ef7f2f69d3cc7c903287a7b27bce09361d"
+  },
+  "adjacent-runtime-01.stderr.txt": {
+    "bytes": 176,
+    "sha256": "234dd9d86243c62e29d8e3a162eaa0c0c74ab775167888c6c423af849e7545bc"
+  }
+}

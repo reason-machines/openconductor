@@ -1,0 +1,342 @@
+{
+  "candidate": "CHAT.READ-FAILED-RESULT-CONTENT",
+  "version": "Read-error-successor-v2",
+  "state": "SOURCE_READY_UNAPPLIED_NOT_EXECUTED",
+  "main": "b35aeedc5ff71381e2f740367233462b500810c9",
+  "original_cfc2fe64_preserved": true,
+  "scope": "Exact tool.name Read only; NotebookRead retains the old output selector. Shared output, helpers, parser, shell, NumberedCode, CSS and image gating unchanged.",
+  "historical_provenance": {
+    "1004": {
+      "scope": "Read syntax only; failed Permission denied was a baseline/control, not the syntax defect",
+      "feedback": "complete provider snapshot has no discussion, review, inline comment or thread"
+    },
+    "1200": {
+      "scope": "Read image disclosure gating only; failed-text was a passing status control",
+      "feedback": "complete provider snapshot has no discussion, review, inline comment or thread"
+    }
+  },
+  "source_only_verification": {
+    "original_reference_spans": 14,
+    "original_assets": 2,
+    "fresh_main_sources": 18,
+    "unchanged_image_cases": 27,
+    "new_regression_cases": 12,
+    "unchanged_syntax_test_prefix": true,
+    "exact_image_fixture_hash_rollover": true,
+    "tracked_and_staged_diff_empty": true
+  },
+  "predicted_not_measured": {
+    "new_regression_baseline": {
+      "intended_label_failures": [
+        "failed-permission",
+        "failed-numbered",
+        "failed-literal",
+        "failed-reminder",
+        "failed-image"
+      ],
+      "passing_controls": 7
+    },
+    "new_regression_candidate": {
+      "passing_cases": 12
+    },
+    "legacy_original_after_fix": "Two identified suppression controls would conflict; original files remain archived, successor migrations make their positive content contract explicit."
+  },
+  "supplemental_assertions": "Within failed-permission GREEN: unchanged failed NotebookRead and Read with structured rawResult using flattened text, not an extra top-level test.",
+  "source_receipt": {
+    "candidate": "CHAT.READ-FAILED-RESULT-CONTENT",
+    "state": "SOURCE_PROPOSAL_UNAPPLIED_TEST_MIGRATION_UNRESOLVED",
+    "author": "Conductor Rebuild",
+    "checked_main": "ee120e2a0ecfd668efad398bef71f41e6d6e0047",
+    "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "limits": "Retained Conductor 0.87.6 bytes. Historical renderer semantic pass exhausted heap. No original/product JavaScript, provider, native or test execution in this inquiry.",
+    "assets": {
+      "renderApp-D_fmY7hW.js": {
+        "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+        "bytes": 11600457
+      },
+      "index-BGEQ8YjU.js": {
+        "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+        "bytes": 3493297
+      }
+    },
+    "reference_spans": {
+      "O0o": {
+        "utf8_half_open": [
+          7816650,
+          7817911
+        ],
+        "sha256": "93420505827520da576eb0ad4b434c6ea440bf2daea0d69d187c727f50d02c13"
+      },
+      "L0o": {
+        "utf8_half_open": [
+          7819811,
+          7820054
+        ],
+        "sha256": "dc6336e43fceded629accedc76218b8475b8aa73625352895280914441665a89"
+      },
+      "w0o": {
+        "utf8_half_open": [
+          7801811,
+          7802965
+        ],
+        "sha256": "35d3a9c669ec460ede7a2d124299b4ee4c52681759d22917609042b0a755b13c"
+      },
+      "Mu": {
+        "utf8_half_open": [
+          7795403,
+          7798463
+        ],
+        "sha256": "2a88a2516341f7a98563d2f4b2a602ac9c0acc584282cd01cf54a011e3e4231d"
+      },
+      "B0o": {
+        "utf8_half_open": [
+          7823360,
+          7823740
+        ],
+        "sha256": "14c08d80a60bbf6de92eddb639b34beb7ea7f59bb32d845f55d1f1f8dbaab5ce"
+      },
+      "O1o": {
+        "utf8_half_open": [
+          7587305,
+          7588525
+        ],
+        "sha256": "9f3ff5dc1b79f4690ad7b89b8911acbd083c2b97a4b3268f14f18cd964972184"
+      },
+      "L1o": {
+        "utf8_half_open": [
+          7588525,
+          7588936
+        ],
+        "sha256": "38f9343e156728f1decb69430d406c3c1ff29482da74e69e24b6d5c538834f25"
+      },
+      "hIt": {
+        "utf8_half_open": [
+          7877770,
+          7878325
+        ],
+        "sha256": "8c45bb6e5892cce46330f820a54460ee896d1c14c19ad134dab20b9f20b75340"
+      },
+      "Qpo": {
+        "utf8_half_open": [
+          7877188,
+          7877770
+        ],
+        "sha256": "200844523cd3dbdb0e9e1fde14816c920725a8cd8a6dca635a72d82483b989cc"
+      },
+      "D1o": {
+        "utf8_half_open": [
+          7587411,
+          7588525
+        ],
+        "sha256": "a876a183063f86f6c4d79c2d1c889f5523f939138010670c1fe8c7d34ff50ded"
+      },
+      "image-import": {
+        "asset": "renderer",
+        "utf8_half_open": [
+          59241,
+          59316
+        ],
+        "sha256": "09d7ecce834eb59c6785c41ed3f32822bf95a068a47df7dec6b1686620484663"
+      },
+      "image-export": {
+        "asset": "index",
+        "utf8_half_open": [
+          3486157,
+          3486232
+        ],
+        "sha256": "b7d6cb1cbee2cb04762f61d3adacc41330b257335a2f5c1e5583e7bc37eea0ca"
+      },
+      "image-registry": {
+        "asset": "index",
+        "utf8_half_open": [
+          2272785,
+          2272944
+        ],
+        "sha256": "c0e968ad85f057b38a6c065858816aa345bbe0910cd077d5d0f74eab0af7bc2b"
+      },
+      "ole": {
+        "asset": "index",
+        "utf8_half_open": [
+          2273193,
+          2273314
+        ],
+        "sha256": "5e3f1e023c8544d37516cc55b8044e40aff945803ae2a56604178aaf747345fb"
+      }
+    },
+    "main_sources": {
+      "src/features/chat/ToolRows.tsx": {
+        "sha256": "07f7906977075245cb068907c19ee3e0c98b110720aadda95ac8436a74dee078",
+        "bytes": 55296
+      },
+      "src/features/chat/conductorTools.ts": {
+        "sha256": "05c3a85bed997b1114e1696d083855d4e39c5d614fe57ddeb0bade8bde7cc64a",
+        "bytes": 30492
+      },
+      "src/features/chat/reason.ts": {
+        "sha256": "3c93d3dfdb4669fd423c434992275c579d723afa4c6884f330444e06b0192742",
+        "bytes": 13823
+      },
+      "src/features/chat/reducer.ts": {
+        "sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+        "bytes": 5906
+      },
+      "src/features/chat/view.ts": {
+        "sha256": "b9c2f038edf9432617b8aa2de6c287a2da2e48f5483b6e464cbeb8f4a6344a52",
+        "bytes": 9979
+      },
+      "src/features/chat/Transcript.tsx": {
+        "sha256": "0c6bcb94994afe0eb5f9fd8e5a10849f29e79dbb6fbcc6dbded2975324d1e4dc",
+        "bytes": 21259
+      },
+      "src-tauri/src/claude_chat/map.rs": {
+        "sha256": "e0d079396976a7e491e11ff1b9f5d3d3e5721c21c1f3ab2f006d6b337ad0a023",
+        "bytes": 11169
+      },
+      "src-tauri/src/reason_acp/wire.rs": {
+        "sha256": "5479cf81b638f2ede410d3fb10861f0194477f6bc251435d6a103dbc3c1510d0",
+        "bytes": 6000
+      },
+      "src/features/chat/readImageDisclosure.test.ts": {
+        "sha256": "a0b3c72df9c23c050285553f4b05b9a8b5e44e6836d2cb10d42ecfd0f0d97753",
+        "bytes": 7673
+      },
+      "src/features/chat/readImageDisclosure.inputs.json": {
+        "sha256": "adada617c0395960660e37e2c6dc48b7f9340d08811360665644dfdfd900bce9",
+        "bytes": 11476
+      },
+      "src/features/chat/readSyntaxHighlight.test.ts": {
+        "sha256": "acd015bba3bd0db2b53c1842a278278a837ebc26813486e4c721cf40758120ef",
+        "bytes": 12096
+      },
+      "evidence/chat/read-text-syntax.md": {
+        "sha256": "7e4c4137917fa3d32c004d50b5cf831ad0a0e37d5e5c84b56e604ae8126f3b0c",
+        "bytes": 8070
+      }
+    },
+    "checks": {
+      "original_uses_content_without_error_gate": true,
+      "original_renders_numbered_lines": true,
+      "registry_selects_read": true,
+      "name_maps_read": true,
+      "caller_forwards_result": true,
+      "main_suppresses_error_output": true,
+      "main_read_has_no_separate_error": true,
+      "claude_failure_retains_output": true,
+      "wire_preserves_output": true,
+      "reason_preserves_failed_text": true,
+      "view_preserves_error_and_text": true,
+      "transcript_passes_original_result": true,
+      "original_nonimage_path_is_collapsible": true,
+      "claude_original_name_input_retained": true,
+      "reducer_retains_complete_message": true
+    },
+    "historical_test_conflicts": [
+      {
+        "file": "src/features/chat/readImageDisclosure.inputs.json",
+        "case": "failed-text",
+        "current_expectation": {
+          "expandable": false,
+          "lines": [],
+          "errorRows": 0
+        },
+        "proposed_expectation": {
+          "expandable": true,
+          "lines": [
+            {
+              "number": "7",
+              "text": "Cannot read text"
+            }
+          ],
+          "errorRows": 0
+        },
+        "disposition": "successor expectation migration required; original bytes untouched"
+      },
+      {
+        "file": "src/features/chat/readSyntaxHighlight.test.ts",
+        "case": "Read error retains its non-content header",
+        "current_expectation": "no aria-expanded, click or code lines",
+        "proposed_expectation": "collapsed clickable header; expand to exact Permission denied at line 7; no ErrorRow",
+        "disposition": "narrow successor assertion required; original frozen packet untouched"
+      }
+    ],
+    "checks_executed": "Python byte identities, exact source spans/joins and two-line patch preparation only",
+    "not_run": [
+      "mounted baseline",
+      "mounted candidate",
+      "typecheck",
+      "build",
+      "CI",
+      "browser",
+      "native",
+      "provider",
+      "package"
+    ],
+    "product_changed": false,
+    "tracked_diff": ""
+  },
+  "archive": {
+    "readImageDisclosure.inputs.json": {
+      "sha256": "adada617c0395960660e37e2c6dc48b7f9340d08811360665644dfdfd900bce9",
+      "bytes": 11476
+    },
+    "readImageDisclosure.test.ts": {
+      "sha256": "a0b3c72df9c23c050285553f4b05b9a8b5e44e6836d2cb10d42ecfd0f0d97753",
+      "bytes": 7673
+    },
+    "readSyntaxHighlight.test.ts": {
+      "sha256": "acd015bba3bd0db2b53c1842a278278a837ebc26813486e4c721cf40758120ef",
+      "bytes": 12096
+    }
+  },
+  "successor": {
+    "src/features/chat/ToolRows.tsx": {
+      "sha256": "be436770e81a1340f94445b7f6eb416f1510255e44fcd3d25af2f080a925736f",
+      "bytes": 55368
+    },
+    "src/features/chat/readErrorResult.inputs.json": {
+      "sha256": "4d730391c2eb79bb00b78bb9022a022bc5062422c785de1f76acc4f7ebb96986",
+      "bytes": 4042
+    },
+    "src/features/chat/readErrorResult.test.ts": {
+      "sha256": "9ffff7830e778962648422c06044a6c10693b6dbb08ae6f85d810caea1a77ccf",
+      "bytes": 9322
+    },
+    "src/features/chat/readImageDisclosure.inputs.json": {
+      "sha256": "62c74254f7a30225802a6bb79a3cccb2c64a0cfd4d110fdb00d87af700eaef67",
+      "bytes": 11574
+    },
+    "src/features/chat/readImageDisclosure.test.ts": {
+      "sha256": "08a3667c129d1809f101f1562cd3524f920c265bfc1536b5796619087241d59d",
+      "bytes": 7673
+    },
+    "src/features/chat/readSyntaxHighlight.test.ts": {
+      "sha256": "2bc1948d00d15705aecd7e16973434404e255ed218ae7f11f1ef17898f642fbe",
+      "bytes": 13121
+    }
+  },
+  "patches": {
+    "historical-assertions-successor-UNAPPLIED.patch": {
+      "sha256": "21adbe8ff1fd79bd29875a1f813133468f46c9f2048ae7bb1f61018d72850a0a",
+      "bytes": 3083
+    },
+    "read-only-result-selection-UNAPPLIED.patch": {
+      "sha256": "6dff07d61295cc67ba10cd1259cdfc4324df683c372057330ca9336a5e6ed9b6",
+      "bytes": 938
+    }
+  },
+  "not_run": [
+    "TypeScript syntax/parser check",
+    "mounted RED",
+    "mounted GREEN",
+    "adjacent tests",
+    "typecheck",
+    "build",
+    "CI",
+    "browser",
+    "native",
+    "provider",
+    "package",
+    "deployment"
+  ],
+  "publication_blocker": "Assigned live BE7 branch still binds OPEN frozen PR847. pr_open would adopt it; no supported independent publication-target selection is advertised. Do not mutate847, change the assigned branch or create a replacement Session."
+}

@@ -358,3 +358,53 @@ async fn pr_metadata_round_trips_and_clears() {
         Err(Error::NotFound)
     ));
 }
+
+#[tokio::test]
+async fn update_setup_log_round_trips() {
+    let pool = setup().await;
+    workspaces::insert(&pool, &new_ws("a", WorkspaceState::Ready))
+        .await
+        .unwrap();
+
+    let log = |pool: SqlitePool| async move {
+        let w = workspaces::get(&pool, "a")
+            .await
+            .unwrap()
+            .unwrap()
+            .workspace;
+        (w.setup_log_path, w.setup_log_state)
+    };
+
+    // Initially both are None.
+    assert_eq!(log(pool.clone()).await, (None, None));
+
+    // After a finished run they are both set.
+    workspaces::update_setup_log(&pool, "a", "/tmp/conductor-setup-a.log", "completed")
+        .await
+        .unwrap();
+    assert_eq!(
+        log(pool.clone()).await,
+        (
+            Some("/tmp/conductor-setup-a.log".into()),
+            Some("completed".into())
+        )
+    );
+
+    // A subsequent failed run overwrites both.
+    workspaces::update_setup_log(&pool, "a", "/tmp/conductor-setup-a.log", "failed")
+        .await
+        .unwrap();
+    assert_eq!(
+        log(pool.clone()).await,
+        (
+            Some("/tmp/conductor-setup-a.log".into()),
+            Some("failed".into())
+        )
+    );
+
+    // Returns NotFound for an unknown workspace id.
+    assert!(matches!(
+        workspaces::update_setup_log(&pool, "nope", "/tmp/x.log", "completed").await,
+        Err(Error::NotFound)
+    ));
+}

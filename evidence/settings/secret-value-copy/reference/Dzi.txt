@@ -1,0 +1,1 @@
+function Dzi(t){const e=ne.c(7);let n;e[0]!==t?(n=bGt.sharedLocal(t),e[0]=t,e[1]=n):n=e[1];let i;e[2]!==t?(i=()=>Nj(zo,{scope:"shared",context:"local",workspaceContext:pGt(t)}),e[2]=t,e[3]=i):i=e[3];let r;return e[4]!==n||e[5]!==i?(r={queryKey:n,queryFn:i},e[4]=n,e[5]=i,e[6]=r):r=e[6],qi(r)}

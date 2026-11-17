@@ -1,0 +1,79 @@
+{
+  "candidate": "CHAT.GENERIC-NONMCP-STRUCTURED-RESULT",
+  "author": "Conductor Rebuild",
+  "execution_machine": "Reason Cloud computer 313",
+  "execution_date": "2026-11-12",
+  "base_main": "4b6bc34e93c4fa9ab3eaa042e855b77bd712a926",
+  "baseline_head": "4a6ec6bbf024bf0c17c000cacd92263d0cc236b3",
+  "admission_message": "507fe775-7c37-473c-b1ab-d834488b8113",
+  "release_message": "db76871e-cdd6-4ef1-b7f6-0ca41619936f",
+  "frozen_test_sha256": "ff5d97c3480bc149c2e0d270bcfe04108add26b2521c9582a46775e2668d655a",
+  "frozen_inputs_sha256": "d6af06d2d52d236942bac11425f043a7ec40727129c5eeb8899ba24e263987da",
+  "lockfile_sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+  "product_after_sha256": "adcda687584183f2cd8c75b4f1d8bcb9411c5f3cf744c1ca07b4dd8f9d3dbd5e",
+  "runtime": {
+    "node": "22.23.4",
+    "npm": "10.9.9",
+    "max_dependency_kib": 458048,
+    "cleanup": "Own node_modules removed; all commands terminal; own jobs empty at 2026-11-12T15:55:50Z",
+    "setup_failures": 0,
+    "fixture_migrations": 0
+  },
+  "checks": [
+    {
+      "phase": "restore",
+      "command": "timeout 600s npm ci --ignore-scripts --no-audit --no-fund",
+      "exit": 0,
+      "log": "restore.txt",
+      "sha256": "35cea4ba553d68dcb65112dad6676b8fc449e137bb54dc03a4614087f5bdc4fd"
+    },
+    {
+      "phase": "baseline",
+      "command": "timeout 180s node --test --test-concurrency=1 src/features/chat/genericStructuredResult.test.ts",
+      "exit": 1,
+      "tests": 16,
+      "pass": 9,
+      "fail": 7,
+      "skipped": 0,
+      "result": "Expected behavioral RED, not setup failure",
+      "log": "red.tap",
+      "sha256": "44fee0f0f5acfe1d00ee1055df7d7b3eeb4d35ece419e776a0dad726f7ba9620"
+    },
+    {
+      "phase": "corrected",
+      "command": "timeout 180s node --test --test-concurrency=1 src/features/chat/genericStructuredResult.test.ts",
+      "exit": 0,
+      "tests": 16,
+      "pass": 16,
+      "fail": 0,
+      "skipped": 0,
+      "result": "Identical frozen GREEN",
+      "log": "green.tap",
+      "sha256": "45140706b9975caedd94e0c4e98306974acac5792e37520066216f3b602ef47b"
+    },
+    {
+      "phase": "adjacent",
+      "command": "timeout 180s node --test --test-concurrency=1 src/features/chat/genericToolLabels.test.ts src/features/chat/conductorTools.test.ts src/features/chat/terminalOutputRawResult.test.ts src/features/chat/imageGenerationFallbackDisclosure.test.ts",
+      "exit": 0,
+      "tests": 53,
+      "pass": 53,
+      "fail": 0,
+      "skipped": 0,
+      "log": "adjacent.tap",
+      "sha256": "46f1aa4f73eafb3e2f27d4687ec8d9a4dcacf8d4712c4be1747ac43a455f153d"
+    },
+    {
+      "phase": "typecheck",
+      "command": "timeout 180s node_modules/.bin/tsc --noEmit --incremental false",
+      "exit": 0,
+      "log": "typecheck.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "gaps": [
+    "No browser or native screenshot: serialized admission excluded browser, server, and native execution.",
+    "No real provider emission, fresh installed Conductor identity, complete Transcript parent mount, original side-by-side layout, native I/O, package inclusion, or release acceptance.",
+    "Hosted exact-head workflows and merge were pending when this local receipt was written."
+  ],
+  "native_delivery": "Existing release owner 992a715e and E1 native owner e1e2b6b9 retain later containing-artifact verification; no package cut or new executor."
+}

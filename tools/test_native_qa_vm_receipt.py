@@ -6,6 +6,7 @@ import io
 import json
 import os
 from pathlib import Path
+import plistlib
 import stat
 import subprocess
 import tempfile
@@ -400,6 +401,129 @@ class ProducerTests(unittest.TestCase):
         self.assertFalse((self.output / "build.json").exists())
 
 
+class RetainedBundleTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name).resolve()
+        self.bundle = self.root / "OpenConductorQAVMRunner.app"
+        self.executable = b"signed fixture"
+        receipt, manifest = documents()
+        self.members = {
+            "receipt.json": receipt,
+            "build.json": canonical(manifest),
+            "OpenConductorQAVMRunner.app/Contents/Info.plist": plistlib.dumps({
+                "CFBundleIdentifier": policy.BUNDLE_ID,
+                "CFBundleExecutable": "OpenConductorQAVMRunner"}),
+            "OpenConductorQAVMRunner.app/Contents/MacOS/OpenConductorQAVMRunner": self.executable,
+            "OpenConductorQAVMRunner.app/Contents/_CodeSignature/CodeResources": b"synthetic signature metadata",
+        }
+        self.receipts = self.root / "receipts"
+        self.receipts.mkdir()
+        for name, data in self.members.items():
+            target = self.receipts / name if name.endswith(".json") else self.root / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
+        self.output = self.root / "bundle.zip"
+
+    def pack(self, members=None, modes=None):
+        stream = io.BytesIO()
+        with zipfile.ZipFile(stream, "w", compression=zipfile.ZIP_STORED) as output:
+            for name, data in (self.members if members is None else members).items():
+                item = zipfile.ZipInfo(name)
+                item.create_system = 3
+                permission = 0o755 if "/MacOS/" in name else 0o600 if name.endswith(".json") else 0o644
+                item.external_attr = ((modes or {}).get(name, stat.S_IFREG | permission)) << 16
+                output.writestr(item, data)
+        return stream.getvalue()
+
+    def inspect(self, data=None, source=SOURCE, build_id=BUILD_ID):
+        return policy.inspect_retained_bundle(self.pack() if data is None else data,
+            expected_source=source, expected_build_id=build_id)
+
+    def test_retention_preserves_actual_candidate_bytes_and_bound_documents(self):
+        with patch.object(policy, "verify_build_identity") as verify:
+            result = policy.retain_ci_bundle(self.bundle, receipt_directory=self.receipts,
+                output_file=self.output, expected_source=SOURCE, expected_build_id=BUILD_ID)
+        self.assertGreaterEqual(verify.call_count, 1)
+        with zipfile.ZipFile(self.output) as retained:
+            self.assertEqual(set(retained.namelist()), set(self.members))
+            for name, data in self.members.items():
+                self.assertEqual(retained.read(name), data)
+            executable = retained.getinfo("OpenConductorQAVMRunner.app/Contents/MacOS/OpenConductorQAVMRunner")
+            self.assertEqual(executable.external_attr >> 16, stat.S_IFREG | 0o755)
+        self.assertEqual(result, self.inspect(self.output.read_bytes()))
+        self.assertEqual(result.executable_sha256, hashlib.sha256(self.executable).hexdigest())
+        self.assertFalse(hasattr(result, "launch"))
+        self.assertFalse(hasattr(result, "admission"))
+
+    def test_receipt_only_and_each_missing_bundle_member_refuse(self):
+        with self.assertRaises(ValueError):
+            self.inspect(archive())
+        for name in self.members:
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                self.inspect(self.pack({key: data for key, data in self.members.items() if key != name}))
+
+    def test_wrong_build_source_binary_and_receipt_binding_refuse(self):
+        for source, build_id in ((OTHER_SOURCE, BUILD_ID), (SOURCE, "github-actions:42:102:2:compile-sign")):
+            with self.subTest(source=source, build=build_id), self.assertRaises(ValueError):
+                self.inspect(source=source, build_id=build_id)
+        for name in ("OpenConductorQAVMRunner.app/Contents/MacOS/OpenConductorQAVMRunner", "receipt.json"):
+            changed = dict(self.members)
+            changed[name] += b"substituted"
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                self.inspect(self.pack(changed))
+
+    def test_unexpected_paths_links_and_unsafe_modes_refuse_without_extraction(self):
+        for name in ("../escape", "/absolute", "extra", "OpenConductorQAVMRunner.app/Contents/extra"):
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                self.inspect(self.pack({**self.members, name: b"not allowed"}))
+        name = "OpenConductorQAVMRunner.app/Contents/MacOS/OpenConductorQAVMRunner"
+        for mode in (stat.S_IFLNK | 0o777, stat.S_IFREG | 0o4755, stat.S_IFREG | 0o644):
+            with self.subTest(mode=mode), self.assertRaises(ValueError):
+                self.inspect(self.pack(modes={name: mode}))
+        self.assertFalse((self.root / "escape").exists())
+
+    def test_duplicate_members_and_oversized_archive_refuse(self):
+        data = io.BytesIO(self.pack())
+        with zipfile.ZipFile(data, "a") as output:
+            with self.assertWarns(UserWarning):
+                output.writestr("receipt.json", self.members["receipt.json"])
+        with self.assertRaises(ValueError):
+            self.inspect(data.getvalue())
+        with patch.object(policy, "MAX_BUNDLE_ARCHIVE", 100), self.assertRaises(ValueError):
+            self.inspect()
+
+    def test_wrong_candidate_or_signature_failure_cannot_publish_archive(self):
+        binary = self.bundle / policy.EXECUTABLE
+        binary.write_bytes(b"wrong build")
+        with patch.object(policy, "verify_build_identity"), self.assertRaises(ValueError):
+            policy.retain_ci_bundle(self.bundle, receipt_directory=self.receipts,
+                output_file=self.output, expected_source=SOURCE, expected_build_id=BUILD_ID)
+        self.assertFalse(self.output.exists())
+        binary.write_bytes(self.executable)
+        with patch.object(policy, "verify_build_identity", side_effect=ValueError("signature rejected")):
+            with self.assertRaises(ValueError):
+                policy.retain_ci_bundle(self.bundle, receipt_directory=self.receipts,
+                    output_file=self.output, expected_source=SOURCE, expected_build_id=BUILD_ID)
+        self.assertFalse(self.output.exists())
+
+    def test_existing_output_and_linked_input_refuse(self):
+        self.output.write_bytes(b"previous output")
+        with patch.object(policy, "verify_build_identity"), self.assertRaises((ValueError, FileExistsError)):
+            policy.retain_ci_bundle(self.bundle, receipt_directory=self.receipts,
+                output_file=self.output, expected_source=SOURCE, expected_build_id=BUILD_ID)
+        self.assertEqual(self.output.read_bytes(), b"previous output")
+        self.output.unlink()
+        path = self.bundle / policy.EXECUTABLE
+        path.unlink()
+        path.symlink_to(self.receipts / "receipt.json")
+        with patch.object(policy, "verify_build_identity"), self.assertRaises(ValueError):
+            policy.retain_ci_bundle(self.bundle, receipt_directory=self.receipts,
+                output_file=self.output, expected_source=SOURCE, expected_build_id=BUILD_ID)
+        self.assertFalse(self.output.exists())
+
+
 class WorkflowContractTests(unittest.TestCase):
     def test_existing_workflow_has_only_two_jobs_no_new_trigger_or_permissions(self):
         source = (ROOT / WORKFLOW).read_text()
@@ -407,17 +531,15 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertEqual([line.strip() for line in jobs.splitlines()
                           if line.startswith("  ") and not line.startswith("   ")],
                          ["portable:", "compile-sign:"])
-        self.assertNotIn("workflow_dispatch", source)
+        self.assertIn("on:\n  workflow_dispatch:\n", source)  # dispatch-only CI cost policy
         self.assertIn("permissions:\n  contents: read\n", source)
         self.assertNotIn("id-token:", source)
         self.assertNotIn("actions: write", source)
 
-    def test_receipt_workflow_is_push_main_only_and_exactly_two_json_uploads(self):
+    def test_receipt_workflow_is_dispatch_main_only_and_exactly_two_json_uploads(self):
         source = (ROOT / WORKFLOW).read_text()
-        self.assertEqual(source.count("'tools/native_qa_vm_receipt.py'"), 2)
-        self.assertEqual(source.count("'tools/test_native_qa_vm_receipt.py'"), 2)
         self.assertIn("tools.test_native_qa_vm_receipt", source)
-        self.assertIn("github.event_name == 'push'", source)
+        self.assertIn("github.event_name == 'workflow_dispatch'", source)
         self.assertIn("github.ref == 'refs/heads/main'", source)
         self.assertIn("github.repository == 'reason-machines/openconductor'", source)
         self.assertIn("--ci-receipt-dir", source)
@@ -431,6 +553,19 @@ class WorkflowContractTests(unittest.TestCase):
             ["${{ runner.temp }}/oc-vm-receipt/receipt.json", "${{ runner.temp }}/oc-vm-receipt/build.json"])
         for control in ("retention-days: 7", "if-no-files-found: error", "overwrite: false"):
             self.assertIn(control, upload)
+
+    def test_signed_bundle_is_retained_separately_without_changing_receipt_allowlist(self):
+        source = (ROOT / WORKFLOW).read_text()
+        self.assertEqual(source.count("uses: actions/upload-artifact@"), 2)
+        bundle = source.split("- name: Publish retained signed bundle", 1)[1]
+        self.assertIn("github.event_name == 'workflow_dispatch'", bundle)
+        self.assertIn("github.ref == 'refs/heads/main'", bundle)
+        self.assertIn("oc-qa-vm-bundle-${{ github.run_id }}-${{ github.run_attempt }}", bundle)
+        self.assertIn("${{ runner.temp }}/oc-vm-bundle/bundle.zip", bundle)
+        self.assertIn("overwrite: false", bundle)
+        package = (ROOT / "scripts/package-native-qa-vm-runner.sh").read_text()
+        self.assertLess(package.index(" emit "), package.index(" retain "))
+        self.assertIn("--ci-bundle-archive", source)
 
     def test_package_preflight_precedes_compiler_and_emit_follows_signature(self):
         source = (ROOT / "scripts/package-native-qa-vm-runner.sh").read_text()

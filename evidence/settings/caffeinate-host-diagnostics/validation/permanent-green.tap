@@ -1,0 +1,50 @@
+(node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:99) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: setup diagnostic identifies original navigate failure
+ok 1 - setup diagnostic identifies original navigate failure
+  ---
+  duration_ms: 3.433846
+  type: 'test'
+  ...
+# Subtest: setup diagnostic identifies original initialize failure
+ok 2 - setup diagnostic identifies original initialize failure
+  ---
+  duration_ms: 0.90355
+  type: 'test'
+  ...
+# Subtest: setup diagnostic identifies original toggle-visible failure
+ok 3 - setup diagnostic identifies original toggle-visible failure
+  ---
+  duration_ms: 0.93414
+  type: 'test'
+  ...
+# Subtest: setup diagnostic identifies original hydrate failure
+ok 4 - setup diagnostic identifies original hydrate failure
+  ---
+  duration_ms: 0.840694
+  type: 'test'
+  ...
+# Subtest: setup diagnostic identifies original statuses failure
+ok 5 - setup diagnostic identifies original statuses failure
+  ---
+  duration_ms: 0.849311
+  type: 'test'
+  ...
+# Subtest: setup diagnostic identifies original disk-access failure
+ok 6 - setup diagnostic identifies original disk-access failure
+  ---
+  duration_ms: 0.820154
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 198.023946

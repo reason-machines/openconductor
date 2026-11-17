@@ -1,0 +1,197 @@
+{
+  "result": "PASS",
+  "start": "2026-11-13T00:57:59.022676+00:00",
+  "release": "2026-11-13T00:58:39.460280+00:00",
+  "elapsed_s": 40.44317128100374,
+  "events": [
+    {
+      "time": "2026-11-13T00:57:59.022676+00:00",
+      "elapsed_s": 0.005124,
+      "name": "actual-start",
+      "token": "ACC-MATCHED-REQUIRED",
+      "branch": "reason/openconductor-sol-open-i-15faf4d8",
+      "head": "4bca2f385e66a1da3322bef2528dabb7c42142da",
+      "main": "492bc5c78f2e168924f9003bfb68c7023b4aa931"
+    },
+    {
+      "time": "2026-11-13T00:57:59.039168+00:00",
+      "elapsed_s": 0.021592,
+      "name": "baseline-start",
+      "argv": [
+        "timeout",
+        "-k",
+        "5s",
+        "120s",
+        "nice",
+        "-n",
+        "19",
+        "env",
+        "NODE_OPTIONS=--max-old-space-size=1024",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/diff/viewed.test.ts"
+      ]
+    },
+    {
+      "time": "2026-11-13T00:58:00.823488+00:00",
+      "elapsed_s": 1.805944,
+      "name": "baseline-end",
+      "code": 1,
+      "raw_sha256": "e72ac38258051a347689abcaa51c906e3e0c2208e392a69423abe085c6536f7f"
+    },
+    {
+      "time": "2026-11-13T00:58:00.825611+00:00",
+      "elapsed_s": 1.808033,
+      "name": "baseline-qualified",
+      "totals": {
+        "tests": 65,
+        "pass": 58,
+        "fail": 7,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failures": [
+        "mounted DiffTab and actual owner wiring auto-close a populated-to-empty raw list without reopen history",
+        "mounted DiffTab and actual owner wiring close an initially empty loaded list once",
+        "mounted DiffTab never auto-closes loading, failed or filtered-nonempty raw lists",
+        "automatic empty Diff close returns to the previously viewed review chat",
+        "automatic empty Diff close falls back to the workspace chat if its previous review closed",
+        "a stale automatic Diff close cannot steal an inactive tab or another workspace",
+        "manual Diff close still records a reopenable Diff tab"
+      ]
+    },
+    {
+      "time": "2026-11-13T00:58:00.829429+00:00",
+      "elapsed_s": 1.81185,
+      "name": "green-start",
+      "argv": [
+        "timeout",
+        "-k",
+        "5s",
+        "120s",
+        "nice",
+        "-n",
+        "19",
+        "env",
+        "NODE_OPTIONS=--max-old-space-size=1024",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/diff/viewed.test.ts"
+      ]
+    },
+    {
+      "time": "2026-11-13T00:58:02.846799+00:00",
+      "elapsed_s": 3.82923,
+      "name": "green-end",
+      "code": 0,
+      "raw_sha256": "4826cfed4889ca48e835aceb04ea578671e6604568e6d52615eded6a56b2450d"
+    },
+    {
+      "time": "2026-11-13T00:58:02.847836+00:00",
+      "elapsed_s": 3.830255,
+      "name": "diff-green-qualified",
+      "totals": {
+        "tests": 65,
+        "pass": 65,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "time": "2026-11-13T00:58:02.848036+00:00",
+      "elapsed_s": 3.830453,
+      "name": "frozen15-start",
+      "argv": [
+        "timeout",
+        "-k",
+        "5s",
+        "120s",
+        "nice",
+        "-n",
+        "19",
+        "env",
+        "NODE_OPTIONS=--max-old-space-size=1024",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/palette/paletteOpenInTarget.test.ts",
+        "src/palette/paletteOpenInLifecycle.test.ts"
+      ]
+    },
+    {
+      "time": "2026-11-13T00:58:09.571213+00:00",
+      "elapsed_s": 10.553645,
+      "name": "frozen15-end",
+      "code": 0,
+      "raw_sha256": "29558b3c2e7bcfca096acc6c03542b17735c6c181c79c00ffd2efb60b3365d05"
+    },
+    {
+      "time": "2026-11-13T00:58:09.572605+00:00",
+      "elapsed_s": 10.555023,
+      "name": "frozen15-qualified",
+      "totals": {
+        "tests": 15,
+        "pass": 15,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "time": "2026-11-13T00:58:09.572918+00:00",
+      "elapsed_s": 10.555335,
+      "name": "typecheck-start",
+      "argv": [
+        "timeout",
+        "-k",
+        "5s",
+        "180s",
+        "nice",
+        "-n",
+        "19",
+        "env",
+        "NODE_OPTIONS=--max-old-space-size=1536",
+        "npm",
+        "run",
+        "typecheck"
+      ]
+    },
+    {
+      "time": "2026-11-13T00:58:39.430740+00:00",
+      "elapsed_s": 40.413172,
+      "name": "typecheck-end",
+      "code": 0,
+      "raw_sha256": "75d14e94a4ca99c22181c216315155ede272f2a7652e0f358b79479fce4749bd"
+    },
+    {
+      "time": "2026-11-13T00:58:39.460280+00:00",
+      "elapsed_s": 40.442707,
+      "name": "actual-release",
+      "result": "PASS",
+      "jobs": [],
+      "servers": [],
+      "ownruntime": [],
+      "killed_own_groups": [],
+      "hashes": {
+        "src/App.tsx": "7d48ec516a1eb032f63e31defd892e22311e2f406d544526646eab7ba13f6c3c",
+        "src/components/WorkspaceView.tsx": "1a3f151052cb823e5ec9dbdfc1109370ab2cf8a7a769d32c9d27e9db2fd479a8",
+        "src/palette/fromAppState.ts": "c1aaac1863aa2b63482c62112a405ed839c7f9eb553e795fcf390b667c27a1f0",
+        "src/palette/PaletteHost.tsx": "a23db7719c106466e9f65e9ccd8b59a0d4ab337bf73b3444ad44fb223f801511",
+        "src/palette/paletteOpenInTarget.test.ts": "7cd7c92081e0c29c5a175b442ded33f14dda51f97a571cc37a111699a0683e5d",
+        "src/palette/paletteOpenInLifecycle.test.ts": "b53a3b4df10bcff2ddcdf90e0e45ab9f1722e7a3f564911b5606841294b65da8",
+        "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+        "node_modules/.package-lock.json": "8c9d7f5ab16c0cf37576836e6159e30ea64922151429156971bdc43875e139ba",
+        "src/features/diff/viewed.test.ts": "aee7da552d48934ad801f6cafa1755f238331d2502cd8c615472fa213c9b9340"
+      }
+    }
+  ]
+}

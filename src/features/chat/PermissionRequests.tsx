@@ -184,6 +184,7 @@ function QuestionCard({ questions, onAnswer, onStop }: { questions: Question[]; 
     if (canSubmit(drafts)) onAnswer({ kind: "answers", answers: questionAnswers(drafts) });
   };
   const next = () => (last ? submit() : setPage(page + 1));
+  const otherRef = useRef<HTMLInputElement | null>(null);
   const select = (n: number) => () => {
     const o = q?.options[n];
     if (!q || !d || !o) return false;
@@ -193,6 +194,7 @@ function QuestionCard({ questions, onAnswer, onStop }: { questions: Question[]; 
     "chat.question.submit": () => (canSubmit(drafts) ? next() : false),
     "chat.question.previous": () => (page > 0 ? setPage(page - 1) : false),
     "chat.question.next": () => (!last ? setPage(page + 1) : false),
+    "chat.question.focusOther": () => { otherRef.current?.focus(); return true; },
     ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [`chat.question.selectOption${i + 1}`, select(i)])),
   });
   if (!q || !d) return null;
@@ -222,7 +224,7 @@ function QuestionCard({ questions, onAnswer, onStop }: { questions: Question[]; 
             </button>
           );
         })}
-        <input className="prompt-other" placeholder="Other…" aria-label="Other response" value={d.other} onChange={(e) => set(typeOther(q, d, e.target.value))} />
+        <input ref={otherRef} className="prompt-other" placeholder="Other…" aria-label="Other response" value={d.other} onChange={(e) => set(typeOther(q, d, e.target.value))} />
       </div>
       <div className="prompt-question-foot">
         <button type="button" className="prompt-small" onClick={onStop}>

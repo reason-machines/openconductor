@@ -1,0 +1,1 @@
+NODE_OPTIONS=--max-old-space-size=1024 NOTIFICATION_DEPS="$PWD" NOTIFICATION_SOURCE_ROOT="$PWD" nice -n19 timeout --kill-after=5s 180s node --test --test-concurrency=1 evidence/settings/notification-permission/mention-gate/replay.test.cjs

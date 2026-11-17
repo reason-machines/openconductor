@@ -2,10 +2,12 @@
 // (vite dev, previews) settings live in localStorage so the pages are usable
 // without the app; provider keys are never stored there, so the preview
 // reports providers as unavailable instead of pretending to hold a key.
+import { persistenceOwner } from "../lib/persistence/restartPersistence.ts";
 import { invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../backend";
 import { DEFAULT_PROVIDER, DEFAULT_SETTINGS, type AgentKind, type ProviderConfig, type ProviderStatus, type SecretInput, type Settings } from "./types";
 
+const settingsWrites = persistenceOwner();
 const LS_KEY = "openconductor.settings.preview";
 export const PREVIEW_NO_KEYS = "Provider keys are stored only by the desktop app.";
 
@@ -17,7 +19,7 @@ export async function getSettings(): Promise<Settings> {
 
 /** Validates and saves; resolves to what was stored, rejects with the backend's message. */
 export async function updateSettings(settings: Settings): Promise<Settings> {
-  if (inTauri()) return invoke<Settings>("update_settings", { settings });
+  if (inTauri()) return settingsWrites.run(() => invoke<Settings>("update_settings", { settings }));
   localStorage.setItem(LS_KEY, JSON.stringify(settings));
   return settings;
 }

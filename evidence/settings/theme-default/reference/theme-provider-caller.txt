@@ -1,0 +1,1 @@
+function $Ta(){const t=ne.c(2);let e;t[0]===Symbol.for("react.memo_cache_sentinel")?(e=[],t[0]=e):e=t[0],$.useEffect(zTa,e);let n;return t[1]===Symbol.for("react.memo_cache_sentinel")?(n=p.jsx(kkr,{client:So,children:p.jsx(oOr,{storageKey:"melty-theme",children:p.jsx(FTa,{children:p.jsx(jTa,{})})})}),t[1]=n):n=t[1],n}

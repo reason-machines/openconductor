@@ -30,11 +30,15 @@ import { fileMentionQuery, mentionItems, type MentionItem } from "./fileMentions
 import { ComposerEditor, type ComposerEditorHandle, type ComposerSelection } from "./ComposerEditor.tsx";
 import { composerPrompt } from "./composerDocument.ts";
 import { longPasteAttachment } from "./composerLongPaste.ts";
+import { readClipboardTextFromPlatform } from "./composerPasteFilePaths.ts";
 import { useBoolPref } from "../../settings/useBoolPref.ts";
+import { useSettings } from "../../settings/useSettings.ts";
+import { withBoolPref } from "../../settings/prefs.ts";
 import { queuedUserDraft, submittedUserPrompt, type SentUserContentV1, type UserPrompt } from "./userContent.ts";
 import { FileMentionMenu } from "./FileMentionMenu.tsx";
-import { ArrowUpIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
+import { ArrowUpIcon, CircleDotIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
 import type { ComposerMinimize } from "./useComposerMinimize.ts";
+import type { PlanModeControl } from "./useLocalPlanMode.ts";
 import "./queue.css";
 import "./composer.css";
 
@@ -60,11 +64,15 @@ export interface ComposerProps {
   /** Files going out with the next message, shown above the message box. */
   attachments?: ReactNode;
   hasAttachments?: boolean;
+  onEditorInteraction?: () => void;
   workspacePath?: string;
   /** Takes files the user attaches; without it the "+" menu has no Add attachment. */
   onAttachFiles?: (files: File[]) => void;
   onLinkWorkspaces?: () => void;
+  onLinkIssue?: () => void;
+  onMcpStatus?: () => void;
   onAttachTerminalOutput?: () => void;
+  planMode?: PlanModeControl;
   /** The model picker (or another agent's picker), at the box's bottom left. */
   picker?: ReactNode;
   /** More pickers after it (an agent's access mode), in the same row. */
@@ -94,16 +102,23 @@ export function Composer({
   onQueue,
   attachments,
   hasAttachments = false,
+  onEditorInteraction,
   workspacePath,
   onAttachFiles,
   onLinkWorkspaces,
+  onLinkIssue,
+  onMcpStatus,
   onAttachTerminalOutput,
+  planMode,
   picker,
   controls,
   slashCommands = [],
   onCommand,
   minimize,
 }: ComposerProps) {
+  // Full speech parity requires agent.speech entitlement (NSMicrophoneUsageDescription); this PR covers the keybinding handler only.
+  const { settings: voiceSettings, save: saveVoiceSettings } = useSettings();
+  const voiceModeEnabled = useBoolPref("voice_mode");
   const autoConvertLongText = useBoolPref("auto_convert_long_text");
   const minimized = minimize?.minimized ?? false;
   const fileInput = useRef<HTMLInputElement>(null);
@@ -136,6 +151,9 @@ export function Composer({
 
   const slash = focused ? composerSlashRange(selection.text, selection.start, selection.end) : null;
   const query = slash?.query ?? null;
+  useLayoutEffect(() => {
+    setSlashIndex(0);
+  }, [query]);
   const slashKey = slash ? `${slash.start}:${slash.end}:${slash.query}` : null;
   const slashMatches = useMemo(() => (query === null || slashKey === slashDismissed ? [] : matchCommands(slashCommands, query)), [query, slashKey, slashDismissed, slashCommands]);
   const slashOpen = slashMatches.length > 0;
@@ -188,7 +206,15 @@ export function Composer({
     const current = box.selection();
     const range = composerSlashRange(current.text, current.start, current.end);
     if (!range || range.start !== slash.start || range.end !== slash.end || range.query !== slash.query) return;
-    if (!box.replaceRange(range, `${command.insert ?? `/${command.name}`} `)) return;
+    if (command.effect === "pick_linked_directory" && onLinkWorkspaces) {
+      if (!box.deleteRange(range)) return;
+      setSlashDismissed(slashKey);
+      onLinkWorkspaces();
+    } else if (command.effect === "show_mcp_status" && onMcpStatus) {
+      if (!box.deleteRange(range)) return;
+      setSlashDismissed(slashKey);
+      onMcpStatus();
+    } else if (!box.replaceRange(range, `${command.insert ?? `/${command.name}`} `)) return;
     setSlashIndex(0);
   }
 
@@ -206,12 +232,35 @@ export function Composer({
   }
 
   useKeybindings({
-    "chat.cancel": () => (working ? onStop() : false),
+    "chat.cancel": () => {
+      if (!working) return false;
+      onStop();
+      inputRef.current?.focus();
+    },
     "chat.addAttachment": () => (onAttachFiles ? fileInput.current?.click() : false),
     "chat.focus": () => {
       const box = inputRef.current;
       if (!box || !box.visible()) return false;
       box.focus();
+    },
+    "chat.toggleSpeechToText": () => {
+      if (!voiceSettings) return false;
+      void saveVoiceSettings(withBoolPref(voiceSettings, "voice_mode", !voiceModeEnabled));
+    },
+    "chat.composer.pasteFilePaths": () => {
+      const box = inputRef.current;
+      if (!box) return false;
+      // Read clipboard text via the platform adapter (Tauri clipboard-manager plugin
+      // in desktop, navigator.clipboard in browser). The adapter is imported from
+      // composerPasteFilePaths.ts so Composer.tsx does not need a direct
+      // @tauri-apps/api/core import (the add-menu keyboard test VMs this file and
+      // blocks unexpected platform dependencies).
+      void readClipboardTextFromPlatform().then((text) => {
+        if (!text) return;
+        box.focus();
+        const sel = box.selection();
+        box.replaceRange({ start: sel.start, end: sel.end }, text);
+      });
     },
   });
 
@@ -246,15 +295,17 @@ export function Composer({
     const hit = (id: string) => keys(id).some((s) => matchesEvent(s, ev));
     if (ev.isComposing) return;
     const plain = !e.shiftKey && !e.metaKey && !e.altKey && !e.ctrlKey;
-    if (mentionOpen && plain && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+    if (mentionOpen && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
       e.preventDefault();
+      e.stopPropagation();
       setMentionIndex((mentionFocus + (e.key === "ArrowDown" ? 1 : mentionMatches.length - 1)) % mentionMatches.length);
       return;
     }
-    if (mentionOpen && plain && (e.key === "Enter" || e.key === "Tab")) {
+    if (mentionOpen && (e.key === "Enter" || e.key === "Tab")) {
       const selected = mentionMatches[mentionFocus];
       if (selected) {
         e.preventDefault();
+        e.stopPropagation();
         pickMention(selected);
       }
       return;
@@ -265,14 +316,16 @@ export function Composer({
       setMentionDismissed(mentionKey);
       return;
     }
-    if (slashOpen && plain && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+    if (slashOpen && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
       e.preventDefault();
+      e.stopPropagation();
       const n = slashMatches.length;
       setSlashIndex((slashFocus + (e.key === "ArrowDown" ? 1 : n - 1)) % n);
       return;
     }
-    if (slashOpen && plain && (e.key === "Enter" || e.key === "Tab")) {
+    if (slashOpen && (e.key === "Enter" || e.key === "Tab")) {
       e.preventDefault();
+      e.stopPropagation();
       pickCommand(slashMatches[slashFocus]!.command);
       return;
     }
@@ -367,6 +420,7 @@ export function Composer({
                 minimize?.expand();
               }}
               onBlur={() => setFocused(false)}
+              onInteraction={onEditorInteraction}
               onKeyDown={onKeyDown}
               onPasteFiles={takeFiles}
             />
@@ -379,7 +433,7 @@ export function Composer({
           </div>
           <div className="oc-composer-right" onClick={(e) => e.stopPropagation()}>
             <span className="oc-composer-fade">
-              <AddMenu hint={hint("chat.addAttachment")} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} onLinkWorkspaces={onLinkWorkspaces} />
+              <AddMenu hint={hint("chat.addAttachment")} linkIssueHint={hint("chat.linkLinear")} planHint={hint("chat.togglePlanMode")} planMode={planMode} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} onLinkIssue={onLinkIssue} onLinkWorkspaces={onLinkWorkspaces} />
             </span>
             {showFocusPill && minimized ? focusPill(true) : null}
             {onAttachFiles ? (
@@ -424,11 +478,20 @@ export function Composer({
   );
 }
 
-function AddMenu({ hint, onAddAttachment, onLinkWorkspaces }: { hint: string; onAddAttachment?: () => void; onLinkWorkspaces?: () => void }) {
+function AddMenu({ hint, linkIssueHint, planHint, planMode, onAddAttachment, onLinkIssue, onLinkWorkspaces }: { hint: string; linkIssueHint: string; planHint: string; planMode?: PlanModeControl; onAddAttachment?: () => void; onLinkIssue?: () => void; onLinkWorkspaces?: () => void }) {
   const [open, setOpen] = useState(false);
   const popup = usePresence(open);
   const ref = useRef<HTMLSpanElement>(null);
-  if (!onAddAttachment && !onLinkWorkspaces) return null;
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const focusEdge = useRef<"first" | "last" | null>(null);
+  const menuItems = () => Array.from(ref.current?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]:not(:disabled)') ?? []);
+  useLayoutEffect(() => {
+    if (!open || focusEdge.current === null) return;
+    const items = menuItems();
+    (focusEdge.current === "first" ? items[0] : items[items.length - 1])?.focus();
+    focusEdge.current = null;
+  }, [open]);
+  if (!onAddAttachment && !onLinkIssue && !onLinkWorkspaces && !planMode) return null;
   return (
     <span
       className="oc-add-menu"
@@ -437,14 +500,36 @@ function AddMenu({ hint, onAddAttachment, onLinkWorkspaces }: { hint: string; on
         if (!ref.current?.contains(e.relatedTarget as Node)) setOpen(false);
       }}
       onKeyDown={(e) => {
-        if (e.key === "Escape" && open) {
+        if (e.nativeEvent?.isComposing) return;
+        const arrow = e.key === "ArrowDown" || e.key === "ArrowUp";
+        if (arrow || (open && (e.key === "Home" || e.key === "End"))) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!open) {
+            focusEdge.current = e.key === "ArrowDown" ? "first" : "last";
+            setOpen(true);
+          } else {
+            const items = menuItems();
+            if (items.length === 0) return;
+            const current = items.findIndex((item) => item === e.target);
+            let next = current + (e.key === "ArrowDown" ? 1 : -1);
+            if (e.key === "Home") next = 0;
+            else if (e.key === "End" || (current === -1 && e.key === "ArrowUp")) next = items.length - 1;
+            items[(next + items.length) % items.length]?.focus();
+          }
+        } else if (e.key === "Escape" && open) {
+          e.preventDefault();
           e.stopPropagation();
           setOpen(false);
+          triggerRef.current?.focus();
         }
       }}
     >
       <Tooltip content={<p>Add attachments and more</p>}>
-        <button type="button" className="oc-icon-btn oc-add-btn" aria-label="Add" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        <button ref={triggerRef} type="button" className="oc-icon-btn oc-add-btn" aria-label="Add" aria-haspopup="menu" aria-expanded={open} onClick={(e) => {
+          if (!open && e?.detail === 0) focusEdge.current = "first";
+          setOpen((o) => !o);
+        }}>
           <PlusIcon size={16} strokeWidth={1.5} />
         </button>
       </Tooltip>
@@ -463,8 +548,18 @@ function AddMenu({ hint, onAddAttachment, onLinkWorkspaces }: { hint: string; on
             <span className="oc-menu-item-label">Add attachment</span>
             <span className="oc-kbd-hint">{hint}</span>
           </button> : null}
+          {onLinkIssue ? <button type="button" role="menuitem" className="oc-menu-item" onClick={() => { setOpen(false); onLinkIssue(); }}>
+            <CircleDotIcon size={16} />
+            <span className="oc-menu-item-label">Link issue</span>
+            <span className="oc-kbd-hint">{linkIssueHint}</span>
+          </button> : null}
           {onLinkWorkspaces ? <button type="button" role="menuitem" className="oc-menu-item" onClick={() => { setOpen(false); onLinkWorkspaces(); }}>
             <PlusIcon size={16} /><span className="oc-menu-item-label">Link workspaces</span>
+          </button> : null}
+          {planMode ? <button type="button" role="menuitem" className="oc-menu-item" disabled={planMode.disabled} title={planMode.disabled ? "Wait for the current Claude Code turn to end" : undefined} onClick={() => { setOpen(false); planMode.onToggle(); }}>
+            <svg className={planMode.isPlanMode ? "oc-plan-active" : undefined} width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3M9 12l3 3L22 5" /></svg>
+            <span className={`oc-menu-item-label${planMode.isPlanMode ? " oc-plan-active" : ""}`}>{planMode.isPlanMode ? "Exit plan mode" : "Plan mode"}</span>
+            <span className="oc-kbd-hint">{planHint}</span>
           </button> : null}
         </div>
       ) : null}
@@ -493,7 +588,8 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
     if (e.target !== e.currentTarget || e.nativeEvent.isComposing) return;
     const ev = e.nativeEvent;
     const hit = (command: QueueCommand) => keys(command).some((s) => matchesEvent(s, ev));
-    const r = queueRowKey(ids, id, e.key, hit, canSteer);
+    const navigationKey = e.metaKey || e.ctrlKey || e.altKey || e.shiftKey ? "" : e.key;
+    const r = queueRowKey(ids, id, navigationKey, hit, canSteer);
     if (!r) return;
     e.preventDefault();
     e.stopPropagation();
@@ -597,7 +693,7 @@ function QueueRow({ id, text, userContent, attachmentNames, first, last, editing
   useLayoutEffect(() => {
     if (!editing) return;
     setValue(queuedUserDraft({ text, userContent }));
-    editor.current?.focus();
+    queueMicrotask(() => { editor.current?.focus("end"); });
   }, [editing, text, userContent]);
   if (editing) {
     return (

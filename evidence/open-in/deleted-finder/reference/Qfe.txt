@@ -1,0 +1,1 @@
+async function Qfe(t){if(Y_()!=="darwin")return{command:t};const e=await Bfe();if(e.fellBack)return{command:t};const s=[`export PATH=${ce(e.path)}`];for(const[n,r]of Object.entries(e.env))s.push(`export ${n}=${ce(r)}`);return{command:`${s.join(" && ")} && ${t}`,noRcs:!0}}

@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import * as sectionShortcutOverrides from "../keybindings/overrides.ts";
+import * as sectionShortcutMatcher from "../keybindings/shortcut.ts";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { test } from "node:test";
@@ -12,6 +14,7 @@ import * as navigationSections from "../state/navigationSections.ts";
 import * as adapter from "./fromAppState.ts";
 import * as search from "./search/model.ts";
 import { GIT_PANEL_ACTIONS } from "./gitPanelActions.ts";
+import * as persistence from "../lib/persistence/producer.ts";
 
 const dependencies = createRequire(import.meta.url);
 const { act, create } = dependencies("react-test-renderer");
@@ -36,6 +39,7 @@ function evaluate(file: string, imports: Readonly<Record<string, unknown>>, expo
     ...globals, exports, URLSearchParams, Date, console,
     require(name: string) {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      if (name === "../lib/persistence/producer.ts") return persistence;
       assert.ok(name in imports, `Unexpected ${file} dependency: ${name}`);
       return imports[name];
     },
@@ -101,13 +105,14 @@ function actualHost(observe: (props: PaletteProps) => void = noop) {
   const exports: Partial<typeof import("./PaletteHost")> = {};
   const imports = {
     "./CommandPalette.tsx": { CommandPalette: (props: PaletteProps) => { observe(props); return React.createElement(Palette, props); } },
-    "../keybindings/KeybindingsProvider.tsx": { useKeybindings: noop },
+    "../keybindings/KeybindingsProvider.tsx": { useKeybindings: noop, useKeybindingOverrides: () => ({ overrides: {} }) },
     "./fromAppState.ts": adapter,
     "../settings/searchIndex": { buildSearchIndex: () => [] },
     "../settings/pages": { settingsGroups: () => [] },
     "../settings/SettingsView": { AGENT_SEARCH_TABS: [], scrollToRow: forbidden, searchIcon: inert },
     "../features/chat/ChatModelPicker": { openAgentSettings: forbidden, openRepoSettingsPage: forbidden, openSettingsPage: forbidden },
     "../settings/useBoolPref.ts": { useBoolPref: () => false },
+    "../settings/useSettings.ts": { useSettings: () => ({ settings: undefined }) },
     "./recentWorkspaces.ts": { loadRecentWorkspaceIds: () => [], saveRecentWorkspaceIds: noop, recordViewedWorkspace: (ids: string[]) => ids },
     "./settingsRepository.ts": { loadLastWorkspaceRoute: () => null, selectedWorkspaceRoute: () => null, saveLastWorkspaceRoute: noop, settingsRepositoryId: forbidden },
     "../workspace/archive": { listArchivedWorkspaces: async () => [] },
@@ -119,6 +124,7 @@ function actualHost(observe: (props: PaletteProps) => void = noop) {
     "../components/Toast": { Toaster: inert, useToasts: () => ({ toasts: [], show: forbidden, dismiss: noop }) },
     "../components/ConductorIcon": { ConductorIcon: inert },
     "./gitPanelActions.ts": { GIT_PANEL_ACTIONS, requestGitPanelAction: forbidden },
+    "./MoveToSection.tsx": { MoveToSection: inert, sectionItems: () => [] },
   };
   evaluate("./PaletteHost.tsx", imports, exports);
   assert.ok(exports.PaletteHost);
@@ -175,10 +181,13 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
   const window = Object.assign(new EventTarget(), { location: { pathname: "/", search: "?palette=1" }, history: { state: null, replaceState: noop } });
   const dialog: Partial<typeof import("../components/SectionDialog")> = {};
   const emojis: Partial<typeof import("../components/sectionEmoji")> = {};
-  const modal: Partial<typeof import("../components/Dialogs")> = {};
   evaluate("../components/sectionEmoji.ts", {}, emojis);
-  evaluate("../components/Dialogs.tsx", { "./Icons": { CloseIcon: inert }, "./motion/dialogMotion": { useDialogMotion: () => React.useRef(null) } }, modal);
-  evaluate("../components/SectionDialog.tsx", { "./Dialogs": modal, "./sectionEmoji": emojis }, dialog);
+  evaluate("../components/SectionDialog.tsx", {
+    "./DialogFrame": { DialogFrame: ({ titleId, children }: { titleId: string; children: React.ReactNode }) => React.createElement("div", { role: "dialog", "aria-labelledby": titleId }, children) }, "./sectionEmoji": emojis,
+    "../keybindings/KeybindingsProvider": { useKeybindingOverrides: () => ({ overrides: {} }) },
+    "../keybindings/overrides": sectionShortcutOverrides,
+    "../keybindings/shortcut": sectionShortcutMatcher,
+  }, dialog);
   const Host = actualHost();
   const imports: Record<string, unknown> = {
     "@tauri-apps/api/core": { invoke: forbidden },
@@ -207,6 +216,7 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
     "./components/Toast": { Toaster: inert, useToasts: () => ({ toasts: [], show: noop, dismiss: noop }) },
     "./features/pr/useArchiveOnMerge": { useArchiveOnMergeWatcher: noop },
     "./workspace/useSetupWatch": { useSetupWatch: noop },
+    "./features/updates/useUpdates": { useUpdates: noop },
     "./workspace/archive": { onArchiveEvent: () => noop },
     "./workspace/useInitIssues": { useInitIssues: noop },
     "./components/helpMenuItems": { CHANGELOG_URL: "unused", DOCS_URL: "unused" },
@@ -240,15 +250,17 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
   };
   for (const [file, name] of Object.entries({
     "./components/HomeScreen": "HomeScreen", "./components/SubmitPromptDialog": "SubmitPromptDialog", "./components/FeedbackDialog": "FeedbackDialog",
-    "./diagnostics/DiagnosticsPage": "DiagnosticsPage", "./components/AllWorkspaces": "AllWorkspaces", "./components/Dashboard": "Dashboard",
+    "./diagnostics/DiagnosticsPage": "DiagnosticsPage", "./components/HomeWorkspaceScreen": "HomeWorkspaceScreen", "./components/Dashboard": "Dashboard",
     "./components/WorkspaceView": "WorkspaceView", "./features/browser/BrowserPreview": "BrowserPreviewHost", "./components/CreateProjectDialog": "CreateProjectDialog",
     "./components/CloneGitHubRepoDialog": "CloneGitHubRepoDialog", "./components/CreateWorkspaceDialog": "CreateWorkspaceDialog", "./components/CreateWorkspacePage": "CreateWorkspacePage",
     "./components/RemoveRepositoryDialog": "RemoveRepositoryDialog", "./components/ArchiveRunningDialog": "ArchiveRunningDialog", "./components/ArchivedWorkspaceView": "ArchivedWorkspaceView",
-    "./components/RestoreWorkspaceDialog": "RestoreWorkspaceDialog", "./components/QuickOpenDialog": "QuickOpenDialog", "./features/quit/QuitDialog": "QuitDialog",
+    "./components/RestoreWorkspaceDialog": "RestoreWorkspaceDialog", "./components/QuickOpenDialog": "QuickOpenDialog", "./components/SearchInFilesDialog": "SearchInFilesDialog", "./features/quit/QuitDialog": "QuitDialog",
     "./components/GitHubRepoDialog": "GitHubRepoDialog", "./settings/SettingsView": "SettingsView", "./features/routines/RoutinesPage": "RoutinesPage",
     "./features/routines/RoutineEditor": "RoutineEditor", "./components/KeyboardShortcutsDialog": "KeyboardShortcutsDialog",
   })) imports[file] = { [name]: inert };
   imports["./state/createProject"] = {};
+  imports["./palette/fileOpenActions"] = { requestFileOpen: noop };
+  imports["./palette/prPaletteActions"] = { requestPrPaletteAction: noop };
   const exports: Partial<typeof import("../App")> = {};
   evaluate("../App.tsx", imports, exports, { window });
   const App = exports.default;
@@ -261,7 +273,7 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
     state: () => state,
     palette: requirePalette,
     sidebar() { assert.ok(sidebar); return sidebar; },
-    dialogs: () => renderer.root.findAllByProps({ role: "dialog" }).filter((node: { props: { "aria-label"?: string } }) => node.props["aria-label"] === "New section" || node.props["aria-label"] === "Edit section"),
+    dialogs: () => renderer.root.findAllByProps({ role: "dialog", "aria-labelledby": "section-dialog-title" }),
     sidebarCount: () => renderer.root.findAllByType("sidebar-probe").length,
     open() {
       act(() => requirePalette().onOpenChange(true));

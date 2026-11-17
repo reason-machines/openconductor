@@ -1,0 +1,21 @@
+{
+  "manifest": "evidence/diff/hidden-whitespace-editing/execution-source-manifest.json",
+  "before_sha256": "adad3a1a8d5cf13586ecf3dd2f70683f86099f71b4618cbddeb7678838d72a9e",
+  "before_git_blob": "09254bf088a58aa4e1828bede4f900edecc47adf",
+  "product_head": "affae5a66890336f2e385d49ef1b7045a897ef8e",
+  "observed_failure": {
+    "run": 43128851773,
+    "job": 130887704756,
+    "message": "Sealed candidate/dependency changed: src/features/diff/types.ts"
+  },
+  "only_change": {
+    "json_path": [
+      "files",
+      "candidate/src/features/diff/types.ts"
+    ],
+    "before": "37f4ee973e762d4818b517a53c0b0eb4a548aa87ac8cafbf738feba58bc0794b",
+    "after": "a3ebcbdbd00f86620d61cfa608a58061b64c686280a43dd2bb7d8bc5edd64254"
+  },
+  "protected": "All baseline refs/pins, fixture bytes/assertions, runners, expected RED/GREEN and other candidate/dependency scalars unchanged",
+  "paired_behavior": "PENDING; preflight hash repair is not behavioral GREEN"
+}

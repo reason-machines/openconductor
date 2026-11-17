@@ -5,9 +5,8 @@ import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
 import type { AppInfo } from "../backend";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, FolderPlusIcon, HomeIcon, LayoutGridIcon, MoreIcon, PlayIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
-import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
-import { effectiveShortcuts } from "../keybindings/overrides";
+import { effectiveShortcuts, type Overrides } from "../keybindings/overrides";
 import { HelpMenu } from "./HelpMenu";
 import { RepoIcon } from "./RepoIcon";
 import { RenameWorkspaceDialog } from "./RenameWorkspaceDialog";
@@ -34,7 +33,8 @@ import { useKeybindings, useKeybindingOverrides } from "../keybindings/Keybindin
 import { AccountMenu } from "./AccountMenu";
 import { AppMark } from "./AppMark";
 import { ResourceUsagePill } from "./ResourceUsagePill";
-import { Tooltip, titleWithShortcut } from "./Tooltip";
+import { Tooltip } from "./ui/Tooltip";
+import { titleWithShortcut } from "./Tooltip";
 import { ContextMenu, MenuItem as CtxItem, MenuSeparator } from "./menu/ContextMenu";
 import { useRoutinesAvailable } from "../features/routines/useRoutinesAvailable";
 import { EyeIcon, EyeOffIcon, Link2Icon, PencilIcon, PlusIcon as MenuPlusIcon, SettingsIcon as MenuSettingsIcon, Trash2Icon } from "./menu/menuIcons";
@@ -47,9 +47,9 @@ import { SidebarActionsMenu, type SidebarMenuAction } from "./SidebarActionsMenu
 export const OPEN_ADD_PROJECT_MENU = "openconductor:open-add-project-menu";
 
 /** Default shortcut glyphs for a registered command, e.g. "⌘N" for workspace.create. */
-function hint(commandId: string): string {
-  const c = COMMANDS.find((cmd) => cmd.id === commandId);
-  return c ? glyphs(c.key) : "";
+function hint(commandId: string, overrides: Overrides = {}): string {
+  const shortcuts = effectiveShortcuts(commandId, overrides);
+  return shortcuts.length > 0 ? glyphs(shortcuts[0]) : "";
 }
 
 export interface NavControls {
@@ -328,9 +328,9 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
   const repoMenu = (repo: AppState["repos"][number]): MenuEntry[] => {
     const active = sel.kind === "workspace" && sel.repoId === repo.id;
     return [
-      { label: "Create workspace", icon: <MenuPlusIcon />, contextShortcut: active ? hint("workspace.create") : undefined, onSelect: () => onOpenDialog("create", repo.id) },
-      ...(onCreateFrom ? [{ label: "Create from...", icon: <Link2Icon />, contextShortcut: hint("workspace.createFromPRBranchIssue"), onSelect: () => onCreateFrom(repo.id) }] : []),
-      ...(onOpenRepoSettings ? [{ label: "Configuration", icon: <MenuSettingsIcon />, contextShortcut: hint("openSettings"), onSelect: () => onOpenRepoSettings(repo.id) }] : []),
+      { label: "Create workspace", icon: <MenuPlusIcon />, contextShortcut: active ? hint("workspace.create", overrides) : undefined, onSelect: () => onOpenDialog("create", repo.id) },
+      ...(onCreateFrom ? [{ label: "Create from...", icon: <Link2Icon />, contextShortcut: hint("workspace.createFromPRBranchIssue", overrides), onSelect: () => onCreateFrom(repo.id) }] : []),
+      ...(onOpenRepoSettings ? [{ label: "Configuration", icon: <MenuSettingsIcon />, contextShortcut: hint("openSettings", overrides), onSelect: () => onOpenRepoSettings(repo.id) }] : []),
       { label: repo.hidden ? "Unhide repository" : "Hide repository", icon: repo.hidden ? <EyeIcon /> : <EyeOffIcon />, onSelect: () => dispatch({ type: "setRepoHidden", repoId: repo.id, hidden: !repo.hidden }) },
       ...(onRemoveRepository ? ["-" as const, { label: "Remove repository", icon: <Trash2Icon />, destructive: true, onSelect: () => onRemoveRepository(repo.id) }] : []),
     ];
@@ -372,24 +372,29 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
           Top bar holds the sidebar toggle, back/forward at the top right. */}
       <div className="sb-header" data-tauri-drag-region="deep">
         <div className="sb-topbar">
-          <button
-            type="button"
-            className="sb-toggle"
-            aria-label="Toggle left sidebar"
-            title={titleWithShortcut("Toggle left sidebar", hint("view.toggleLeftSidebar"))}
-            onClick={() => dispatch({ type: "toggleSidebar" })}
-          >
-            <SidebarIcon size={16} />
-          </button>
+          <Tooltip content="Toggle left sidebar" shortcut="view.toggleLeftSidebar">
+            <button
+              type="button"
+              className="sb-toggle"
+              aria-label="Toggle left sidebar"
+              onClick={() => dispatch({ type: "toggleSidebar" })}
+            >
+              <SidebarIcon size={16} />
+            </button>
+          </Tooltip>
         </div>
         <div className="sb-history">
           <ResourceUsagePill workspaces={usageWorkspaces} />
-          <button type="button" className="sb-icon-btn" aria-label="Go back" title={titleWithShortcut("Go back", hint("nav.back"))} disabled={!nav.canBack} onClick={nav.onBack}>
-            <ArrowLeftIcon size={12} />
-          </button>
-          <button type="button" className="sb-icon-btn" aria-label="Go forward" title={titleWithShortcut("Go forward", hint("nav.forward"))} disabled={!nav.canForward} onClick={nav.onForward}>
-            <ArrowRightIcon size={12} />
-          </button>
+          <Tooltip content="Go back" shortcut="nav.back">
+            <button type="button" className="sb-icon-btn" aria-label="Go back" disabled={!nav.canBack} onClick={nav.onBack}>
+              <ArrowLeftIcon size={12} />
+            </button>
+          </Tooltip>
+          <Tooltip content="Go forward" shortcut="nav.forward">
+            <button type="button" className="sb-icon-btn" aria-label="Go forward" disabled={!nav.canForward} onClick={nav.onForward}>
+              <ArrowRightIcon size={12} />
+            </button>
+          </Tooltip>
         </div>
 
         <div className="sb-primary">
@@ -409,7 +414,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
         </div>
       </div>
 
-      <nav className="repo-list" ref={scrollRoot}>
+      <nav className="repo-list" ref={scrollRoot} data-sidebar-scroll-root>
         {pinned.length > 0 && (
           <SidebarGroup label="Pinned" count={pinned.length} collapsed={builtinCollapsed.has(PINNED_COLLAPSE_KEY)} onToggle={() => toggleBuiltin(PINNED_COLLAPSE_KEY)} pinnedDropZone isDropTarget={dropTarget?.type === "pinned"}>
             <SidebarPresence>{pinned.map((entry, index) => row(entry, index))}</SidebarPresence>
@@ -474,7 +479,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
             onAddProjectAt={(path) => onAddProjectAt?.(path)}
           />
         </div>
-        {!groupCollapsed && state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
+        {state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
         {!groupCollapsed && state.sidebarGroupBy === "status" && <SidebarStatusGroups state={state} dispatch={dispatch} renderRow={(entry, index) => row(entry, index, !repoFilter)} />}
         {!groupCollapsed && state.sidebarGroupBy !== "status" && (
           <DragDropContext onDragEnd={onRepoDragEnd}>
@@ -483,6 +488,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
           <div className="sb-repo-groups" ref={drop.innerRef} {...drop.droppableProps} data-dragging-over={dropState.isDraggingOver || undefined}>
             {listed.map((repo, repoIndex) => {
               const folded = isRepoCollapsed(repo, sel, sectioned);
+              const displayedWorkspaces = repoGroupWorkspaces(repo.workspaces, sectioned, state.sidebarSort);
               return (
           <Draggable key={repo.id} draggableId={repo.id} index={repoIndex} isDragDisabled={!canDrag}>
             {(drag, dragState) => (
@@ -513,7 +519,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
                     <span className="sb-repo-chevron" aria-hidden>{folded ? <ChevronIcon size={12} /> : <ChevronDownIcon size={12} />}</span>
                   </span>
                   <span className="sb-repo-name" data-hidden={repo.hidden || undefined}>{repo.name}</span>
-                  {folded && repo.workspaces.length > 0 && <span className="sb-repo-count">{repo.workspaces.length}</span>}
+                  {folded && displayedWorkspaces.length > 0 && <span className="sb-repo-count">{displayedWorkspaces.length}</span>}
                 </div>
                 <span className="sb-repo-spacer" aria-hidden />
                 <button
@@ -532,7 +538,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
             {/* An unfolded group with no rows is empty, with no placeholder line (Conductor's `Dra`). */}
             <RepoWorkspaceList repoId={repo.id} collapsed={folded} isEmpty={repo.workspaces.length === 0} empty={null}>
               <SidebarPresence>
-                {repoGroupWorkspaces(repo.workspaces, sectioned, state.sidebarSort).map((ws, i) => (
+                {displayedWorkspaces.map((ws, i) => (
                   <SidebarRowMotion key={ws.id} listIndex={i}>
                     <SidebarWorkspaceRow workspace={ws} targetBranch={repo.defaultBranch} hasRemote={Boolean(repo.remote)} {...rows.rowProps(repo.id, ws)} />
                   </SidebarRowMotion>
@@ -570,7 +576,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
         <div className="sb-footer-actions">
           <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} onSendFeedback={onSendFeedback} onSubmitPrompt={onSubmitPrompt} onOpenDiagnostics={onOpenDiagnostics} />
           {/* Conductor's footer Settings (`Nna`): Tooltip "Settings" with the openSettings shortcut. */}
-          <Tooltip content="Settings" shortcut={hint("openSettings")}>
+          <Tooltip content="Settings" shortcut="openSettings">
             <button type="button" className="sb-footer-btn" aria-label="Settings" onClick={onOpenSettings}>
               <SettingsIcon size={16} strokeWidth={1.5} />
             </button>

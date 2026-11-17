@@ -1,0 +1,1 @@
+function N$t({organizationContext:t,options:e}){switch(t.hostingMode){case"local":return e.backends.createLocal(t);case"cloud":return e.backends.createCloud(t)}}

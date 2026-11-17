@@ -1,0 +1,136 @@
+{
+  "author": "Conductor Rebuild",
+  "kind": "BOUNDED_SOURCE_CENSUS_NOT_EXECUTION_PACKET",
+  "checked_main": "c313e39f865694fdaf206220069f41ad063167df",
+  "retained_REA_evidence": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference": {
+    "version": "Conductor 0.87.6",
+    "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "spans": [
+      {
+        "name": "$pa",
+        "file": "$pa.literal.txt",
+        "utf8_half_open": [
+          10629937,
+          10632219
+        ],
+        "bytes": 2282,
+        "sha256": "947269304b3f82358a188e874d19db74e187b8abee4e9845172210ed7cdeffd3"
+      },
+      {
+        "name": "vy",
+        "file": "vy.literal.txt",
+        "utf8_half_open": [
+          6940517,
+          6941594
+        ],
+        "bytes": 1077,
+        "sha256": "62d92d85a85f06580ecefd6329fe29cafcd1a5338354a3001b8b610ce7f5290a"
+      },
+      {
+        "name": "yy",
+        "file": "yy.literal.txt",
+        "utf8_half_open": [
+          6941766,
+          6942455
+        ],
+        "bytes": 689,
+        "sha256": "32fe411dc7ba813c01a03f665c5a0d894f49c62e802566c5e85fd18cb03fecf4"
+      },
+      {
+        "name": "m9i",
+        "file": "m9i.literal.txt",
+        "utf8_half_open": [
+          6939238,
+          6940413
+        ],
+        "bytes": 1175,
+        "sha256": "5f096ffe4489fbf3ca5c223a1653dce3fec81d69bbd1db6edd0af0bc054e987a"
+      },
+      {
+        "name": "mzt",
+        "file": "mzt.literal.txt",
+        "utf8_half_open": [
+          6938274,
+          6939232
+        ],
+        "bytes": 958,
+        "sha256": "d8e2d8c6c1b2357548161c9e6a0053d850eeab6439723893b8098009bff89243"
+      },
+      {
+        "name": "Ino",
+        "file": "Ino.literal.txt",
+        "utf8_half_open": [
+          6936069,
+          6938178
+        ],
+        "bytes": 2109,
+        "sha256": "9cffc1b4bc27b16068a100999e87b79e421cd88a3b4c16b18b167cda563f131b"
+      },
+      {
+        "name": "Q1",
+        "file": "Q1.literal.txt",
+        "utf8_half_open": [
+          6943291,
+          6943834
+        ],
+        "bytes": 543,
+        "sha256": "b3be5063a7e5496d6fde85130085a700e4b7c1789f95b9706e1b06ee864392d4"
+      },
+      {
+        "name": "yno",
+        "file": "yno.literal.txt",
+        "utf8_half_open": [
+          6933469,
+          6935062
+        ],
+        "bytes": 1593,
+        "sha256": "8d7c2055039fc5a27148050e999c9f0d5deacc1b2e72f1231bd86d47e5e4bf72"
+      },
+      {
+        "name": "E0i",
+        "file": "E0i.literal.txt",
+        "utf8_half_open": [
+          727538,
+          727904
+        ],
+        "bytes": 366,
+        "sha256": "9ee61bf96f73871cefbed555eb666c7ada8f57f72f7353261df32a596c785480"
+      }
+    ],
+    "key_constants": {
+      "JVe": "ArrowRight",
+      "XVe": "ArrowLeft",
+      "QVe": "ArrowDown",
+      "YVe": "ArrowUp",
+      "ZVe": "Home",
+      "eWe": "End"
+    }
+  },
+  "current_source": [
+    {
+      "path": "src/settings/agents/kit.tsx",
+      "sha256": "1c8ed18fac67ff8ebc44572621e1740332c0b00f639eed7f7986ba53b6532dd8",
+      "bytes": 14761
+    },
+    {
+      "path": "src/settings/AgentsPage.tsx",
+      "sha256": "2d9167dd3176f6220f6036aff0c4e8bf5125e1e6e575984c401e67cd83f7f0ee",
+      "bytes": 1817
+    },
+    {
+      "path": "src/settings/providerTab.ts",
+      "sha256": "da932b8fe4c9da6edd9e95b1f35032c373e3429a83fcc3f833ccedf62fef0e8c",
+      "bytes": 1088
+    }
+  ],
+  "candidate_leaf": "Agents provider-tab keyboard navigation and roving focus, not OpenInSplit or menus",
+  "source_observation": "$pa uses vy without activationMode override. vy defaults automatic activation. yy loops focus and forwards automatic activation to m9i. m9i enables Home/End through mzt/Ino. Ino moves focus after navigation. Q1 uses yno, which uses E0i roving tabIndex and selects on focus. Current AgentTabRow supplies only onClick, with no keyboard handler, focus activation, or roving tabIndex.",
+  "source_predicted_effect": "Arrow navigation and Home/End do not move or select the current Agents tabs as the reference implementation declares; every current tab remains in ordinary Tab order.",
+  "ownership": "LEDGER_REPLY_PENDING_NOT_CLAIMED_UNOWNED",
+  "admission": "NONE_REQUESTED",
+  "frozen_fixture": "NONE_CREATED",
+  "product_patch": "NONE",
+  "runtime": "NOT_RUN",
+  "limits": "Static declarations only. No original JavaScript evaluated, no provider/auth/credentials, no live browser/native/key execution. Existing REA semantic-renderer heap limit remains. Original11 a9e54829 remains unchanged and LAST; this census is not another row or runner."
+}

@@ -1,0 +1,147 @@
+2026-11-11T22:12:50.3882068Z TAP version 13
+2026-11-11T22:12:51.0553119Z # Warning: `ReactDOMTestUtils.act` is deprecated in favor of `React.act`. Import `act` from `react` instead of `react-dom/test-utils`. See https://react.dev/warnings/react-dom-test-utils for more info.
+2026-11-11T22:12:51.5555535Z # Subtest: the installed Popover supports this DOM harness's dismissal and keyboard focus checks
+2026-11-11T22:12:51.5571947Z ok 1 - the installed Popover supports this DOM harness's dismissal and keyboard focus checks
+2026-11-11T22:12:51.5572817Z   ---
+2026-11-11T22:12:51.5578173Z   duration_ms: 600.806335
+2026-11-11T22:12:51.5578711Z   type: 'test'
+2026-11-11T22:12:51.5579192Z   ...
+2026-11-11T22:12:51.6013782Z # Subtest: six recent chats initially show four chips and one +2 overflow trigger
+2026-11-11T22:12:51.6015113Z ok 2 - six recent chats initially show four chips and one +2 overflow trigger
+2026-11-11T22:12:51.6015772Z   ---
+2026-11-11T22:12:51.6016156Z   duration_ms: 47.417155
+2026-11-11T22:12:51.6016464Z   type: 'test'
+2026-11-11T22:12:51.6016726Z   ...
+2026-11-11T22:12:51.6888814Z # Subtest: opening recent-chat overflow retains its trigger and portals only overflow chips
+2026-11-11T22:12:51.6893261Z not ok 3 - opening recent-chat overflow retains its trigger and portals only overflow chips
+2026-11-11T22:12:51.6893734Z   ---
+2026-11-11T22:12:51.6893982Z   duration_ms: 86.45058
+2026-11-11T22:12:51.6894297Z   type: 'test'
+2026-11-11T22:12:51.6895146Z   location: '/home/runner/work/openconductor/openconductor/tests/chat-search/recentChatOverflow.dom.test.mjs:184:1'
+2026-11-11T22:12:51.6895907Z   failureType: 'testCodeFailure'
+2026-11-11T22:12:51.6896376Z   error: '+2 more stays available while its popup is open'
+2026-11-11T22:12:51.6896802Z   code: 'ERR_ASSERTION'
+2026-11-11T22:12:51.6897106Z   name: 'AssertionError'
+2026-11-11T22:12:51.6897410Z   expected: true
+2026-11-11T22:12:51.6897687Z   operator: '=='
+2026-11-11T22:12:51.6897972Z   stack: |-
+2026-11-11T22:12:51.6898790Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/tests/chat-search/recentChatOverflow.dom.test.mjs:188:12)
+2026-11-11T22:12:51.6899722Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T22:12:51.6900143Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T22:12:51.6900465Z   ...
+2026-11-11T22:12:51.7754981Z # Subtest: Escape dismisses recent-chat overflow and returns keyboard focus to its retained trigger
+2026-11-11T22:12:51.7756327Z not ok 4 - Escape dismisses recent-chat overflow and returns keyboard focus to its retained trigger
+2026-11-11T22:12:51.7756831Z   ---
+2026-11-11T22:12:51.7757171Z   duration_ms: 86.957923
+2026-11-11T22:12:51.7757540Z   type: 'test'
+2026-11-11T22:12:51.7758242Z   location: '/home/runner/work/openconductor/openconductor/tests/chat-search/recentChatOverflow.dom.test.mjs:197:1'
+2026-11-11T22:12:51.7758830Z   failureType: 'testCodeFailure'
+2026-11-11T22:12:51.7759448Z   error: 'An actual popup must be open before Escape'
+2026-11-11T22:12:51.7759846Z   code: 'ERR_ASSERTION'
+2026-11-11T22:12:51.7760214Z   name: 'AssertionError'
+2026-11-11T22:12:51.7760570Z   expected: true
+2026-11-11T22:12:51.7761032Z   actual: ~
+2026-11-11T22:12:51.7761736Z   operator: '=='
+2026-11-11T22:12:51.7762057Z   stack: |-
+2026-11-11T22:12:51.7762877Z     Object.escape (file:///home/runner/work/openconductor/openconductor/tests/chat-search/recentChatOverflow.dom.test.mjs:118:14)
+2026-11-11T22:12:51.7764280Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/tests/chat-search/recentChatOverflow.dom.test.mjs:200:29)
+2026-11-11T22:12:51.7765288Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T22:12:51.7765984Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T22:12:51.7766522Z   ...
+2026-11-11T22:12:51.8646496Z # Subtest: an outside press dismisses the actual recent-chat popup without selecting a transcript
+2026-11-11T22:12:51.8648072Z not ok 5 - an outside press dismisses the actual recent-chat popup without selecting a transcript
+2026-11-11T22:12:51.8648537Z   ---
+2026-11-11T22:12:51.8648858Z   duration_ms: 89.149043
+2026-11-11T22:12:51.8649226Z   type: 'test'
+2026-11-11T22:12:51.8649978Z   location: '/home/runner/work/openconductor/openconductor/tests/chat-search/recentChatOverflow.dom.test.mjs:208:1'
+2026-11-11T22:12:51.8650891Z   failureType: 'testCodeFailure'
+2026-11-11T22:12:51.8651204Z   error: |-
+2026-11-11T22:12:51.8651432Z     The expression evaluated to a falsy value:
+2026-11-11T22:12:51.8651677Z
+2026-11-11T22:12:51.8651873Z       assert.ok(f.popup())
+2026-11-11T22:12:51.8652073Z
+2026-11-11T22:12:51.8652239Z   code: 'ERR_ASSERTION'
+2026-11-11T22:12:51.8652449Z   name: 'AssertionError'
+2026-11-11T22:12:51.8652657Z   expected: true
+2026-11-11T22:12:51.8652842Z   actual: ~
+2026-11-11T22:12:51.8653010Z   operator: '=='
+2026-11-11T22:12:51.8653193Z   stack: |-
+2026-11-11T22:12:51.8653695Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/tests/chat-search/recentChatOverflow.dom.test.mjs:212:12)
+2026-11-11T22:12:51.8654259Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T22:12:51.8654659Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T22:12:51.8654973Z   ...
+2026-11-11T22:12:51.9508937Z # Subtest: an overflow source chip reports its own identity without replacing the inline group
+2026-11-11T22:12:51.9509955Z not ok 6 - an overflow source chip reports its own identity without replacing the inline group
+2026-11-11T22:12:51.9510385Z   ---
+2026-11-11T22:12:51.9510566Z   duration_ms: 86.272381
+2026-11-11T22:12:51.9510927Z   type: 'test'
+2026-11-11T22:12:51.9511386Z   location: '/home/runner/work/openconductor/openconductor/tests/chat-search/recentChatOverflow.dom.test.mjs:221:1'
+2026-11-11T22:12:51.9511864Z   failureType: 'testCodeFailure'
+2026-11-11T22:12:51.9512091Z   error: |-
+2026-11-11T22:12:51.9512329Z     The expression evaluated to a falsy value:
+2026-11-11T22:12:51.9512568Z
+2026-11-11T22:12:51.9512747Z       assert.ok(f.popup())
+2026-11-11T22:12:51.9512950Z
+2026-11-11T22:12:51.9513108Z   code: 'ERR_ASSERTION'
+2026-11-11T22:12:51.9513314Z   name: 'AssertionError'
+2026-11-11T22:12:51.9513505Z   expected: true
+2026-11-11T22:12:51.9513697Z   actual: ~
+2026-11-11T22:12:51.9513869Z   operator: '=='
+2026-11-11T22:12:51.9514041Z   stack: |-
+2026-11-11T22:12:51.9514562Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/tests/chat-search/recentChatOverflow.dom.test.mjs:225:12)
+2026-11-11T22:12:51.9515490Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T22:12:51.9515911Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T22:12:51.9516223Z   ...
+2026-11-11T22:12:52.0369743Z # Subtest: recent-chat overflow can reopen and dismiss again without duplicating chips
+2026-11-11T22:12:52.0371398Z not ok 7 - recent-chat overflow can reopen and dismiss again without duplicating chips
+2026-11-11T22:12:52.0371915Z   ---
+2026-11-11T22:12:52.0372189Z   duration_ms: 85.915375
+2026-11-11T22:12:52.0372507Z   type: 'test'
+2026-11-11T22:12:52.0373248Z   location: '/home/runner/work/openconductor/openconductor/tests/chat-search/recentChatOverflow.dom.test.mjs:235:1'
+2026-11-11T22:12:52.0373990Z   failureType: 'testCodeFailure'
+2026-11-11T22:12:52.0374415Z   error: 'An actual popup must be open before Escape'
+2026-11-11T22:12:52.0374821Z   code: 'ERR_ASSERTION'
+2026-11-11T22:12:52.0375129Z   name: 'AssertionError'
+2026-11-11T22:12:52.0375463Z   expected: true
+2026-11-11T22:12:52.0375723Z   actual: ~
+2026-11-11T22:12:52.0375984Z   operator: '=='
+2026-11-11T22:12:52.0376246Z   stack: |-
+2026-11-11T22:12:52.0377010Z     Object.escape (file:///home/runner/work/openconductor/openconductor/tests/chat-search/recentChatOverflow.dom.test.mjs:118:14)
+2026-11-11T22:12:52.0378101Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/tests/chat-search/recentChatOverflow.dom.test.mjs:238:29)
+2026-11-11T22:12:52.0378680Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T22:12:52.0379082Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T22:12:52.0379407Z   ...
+2026-11-11T22:12:52.0793042Z # Subtest: five fitting recent chats need no overflow trigger or popup
+2026-11-11T22:12:52.0793901Z ok 8 - five fitting recent chats need no overflow trigger or popup
+2026-11-11T22:12:52.0794358Z   ---
+2026-11-11T22:12:52.0794633Z   duration_ms: 44.197109
+2026-11-11T22:12:52.0794938Z   type: 'test'
+2026-11-11T22:12:52.0795253Z   ...
+2026-11-11T22:12:52.0969812Z # Warning: `ReactDOMTestUtils.act` is deprecated in favor of `React.act`. Import `act` from `react` instead of `react-dom/test-utils`. See https://react.dev/warnings/react-dom-test-utils for more info.
+2026-11-11T22:12:52.0971132Z # Subtest: actual Transcript DOM highlights only top-level text, centers selection, and cleans up on updates/close
+2026-11-11T22:12:52.0972065Z ok 9 - actual Transcript DOM highlights only top-level text, centers selection, and cleans up on updates/close
+2026-11-11T22:12:52.0972533Z   ---
+2026-11-11T22:12:52.0972716Z   duration_ms: 128.929842
+2026-11-11T22:12:52.0973038Z   type: 'test'
+2026-11-11T22:12:52.0973263Z   ...
+2026-11-11T22:12:52.0973828Z # Subtest: actual keybinding provider honors overrides, terminal exclusion, inactive scopes, and reopening focus
+2026-11-11T22:12:52.0974759Z ok 10 - actual keybinding provider honors overrides, terminal exclusion, inactive scopes, and reopening focus
+2026-11-11T22:12:52.0975252Z   ---
+2026-11-11T22:12:52.0975496Z   duration_ms: 19.888622
+2026-11-11T22:12:52.0975755Z   type: 'test'
+2026-11-11T22:12:52.0975966Z   ...
+2026-11-11T22:12:52.0976373Z # Subtest: query changes and passive streaming refresh marks without pulling the viewport
+2026-11-11T22:12:52.0976894Z ok 11 - query changes and passive streaming refresh marks without pulling the viewport
+2026-11-11T22:12:52.0977227Z   ---
+2026-11-11T22:12:52.0977405Z   duration_ms: 45.346107
+2026-11-11T22:12:52.0977606Z   type: 'test'
+2026-11-11T22:12:52.0977780Z   ...
+2026-11-11T22:12:52.0977944Z 1..11
+2026-11-11T22:12:52.0978103Z # tests 11
+2026-11-11T22:12:52.0978273Z # suites 0
+2026-11-11T22:12:52.0978431Z # pass 6
+2026-11-11T22:12:52.0978595Z # fail 5
+2026-11-11T22:12:52.0978759Z # cancelled 0
+2026-11-11T22:12:52.0978928Z # skipped 0
+2026-11-11T22:12:52.0979094Z # todo 0
+2026-11-11T22:12:52.0979281Z # duration_ms 1721.537283

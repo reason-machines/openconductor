@@ -1,0 +1,435 @@
+{
+  "status": "PREPARED_UNRUN_NOT_A_TEST_RESULT",
+  "cases": [
+    {
+      "id": "wait-pending",
+      "tool_name": "collab__wait",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "wait",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [],
+      "active": true,
+      "source": "persisted_named_tool",
+      "expected_row_visible": false,
+      "expected_visible_status": null,
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "wait-success",
+      "tool_name": "collab__wait",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "wait",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [
+        {
+          "tool_use_id": "call-1",
+          "is_error": false,
+          "content": "retained output"
+        }
+      ],
+      "active": false,
+      "source": "persisted_named_tool",
+      "expected_row_visible": false,
+      "expected_visible_status": null,
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "wait-error",
+      "tool_name": "collab__wait",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "wait",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [
+        {
+          "tool_use_id": "call-1",
+          "is_error": true,
+          "content": "retained output"
+        }
+      ],
+      "active": false,
+      "source": "persisted_named_tool",
+      "expected_row_visible": false,
+      "expected_visible_status": null,
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "close-pending",
+      "tool_name": "collab__closeAgent",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "closeAgent",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [],
+      "active": true,
+      "source": "persisted_named_tool",
+      "expected_row_visible": false,
+      "expected_visible_status": null,
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "close-success",
+      "tool_name": "collab__closeAgent",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "closeAgent",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [
+        {
+          "tool_use_id": "call-1",
+          "is_error": false,
+          "content": "retained output"
+        }
+      ],
+      "active": false,
+      "source": "persisted_named_tool",
+      "expected_row_visible": false,
+      "expected_visible_status": null,
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "close-failed",
+      "tool_name": "collab__closeAgent",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "closeAgent",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [
+        {
+          "tool_use_id": "call-1",
+          "is_error": true,
+          "content": "retained output"
+        }
+      ],
+      "active": false,
+      "source": "persisted_named_tool",
+      "expected_row_visible": true,
+      "expected_visible_status": "error",
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "close-unrelated-error",
+      "tool_name": "collab__closeAgent",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "closeAgent",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [
+        {
+          "tool_use_id": "other-call",
+          "is_error": true,
+          "content": "retained output"
+        }
+      ],
+      "active": false,
+      "source": "persisted_named_tool",
+      "expected_row_visible": false,
+      "expected_visible_status": null,
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "close-prior-error-latest-success",
+      "tool_name": "collab__closeAgent",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "closeAgent",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [
+        {
+          "tool_use_id": "call-1",
+          "is_error": true,
+          "content": "retained output"
+        },
+        {
+          "tool_use_id": "call-1",
+          "is_error": false,
+          "content": "retained output"
+        }
+      ],
+      "active": false,
+      "source": "persisted_named_tool",
+      "expected_row_visible": true,
+      "expected_visible_status": "done",
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "close-prior-success-latest-error",
+      "tool_name": "collab__closeAgent",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "closeAgent",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [
+        {
+          "tool_use_id": "call-1",
+          "is_error": false,
+          "content": "retained output"
+        },
+        {
+          "tool_use_id": "call-1",
+          "is_error": true,
+          "content": "retained output"
+        }
+      ],
+      "active": false,
+      "source": "persisted_named_tool",
+      "expected_row_visible": true,
+      "expected_visible_status": "error",
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "case-sensitive-close-name",
+      "tool_name": "collab__closeagent",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "closeagent",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [
+        {
+          "tool_use_id": "call-1",
+          "is_error": false,
+          "content": "retained output"
+        }
+      ],
+      "active": false,
+      "source": "persisted_named_tool",
+      "expected_row_visible": true,
+      "expected_visible_status": "done",
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "wait-prefix-not-exact",
+      "tool_name": "collab__wait_more",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "wait_more",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [
+        {
+          "tool_use_id": "call-1",
+          "is_error": false,
+          "content": "retained output"
+        }
+      ],
+      "active": false,
+      "source": "persisted_named_tool",
+      "expected_row_visible": true,
+      "expected_visible_status": "done",
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "spawn-control",
+      "tool_name": "collab__spawnAgent",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "spawnAgent",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [
+        {
+          "tool_use_id": "call-1",
+          "is_error": false,
+          "content": "retained output"
+        }
+      ],
+      "active": false,
+      "source": "persisted_named_tool",
+      "expected_row_visible": true,
+      "expected_visible_status": "done",
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "send-input-error-control",
+      "tool_name": "collab__sendInput",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "sendInput",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [
+        {
+          "tool_use_id": "call-1",
+          "is_error": true,
+          "content": "retained output"
+        }
+      ],
+      "active": false,
+      "source": "persisted_named_tool",
+      "expected_row_visible": true,
+      "expected_visible_status": "error",
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "resume-control",
+      "tool_name": "collab__resumeAgent",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "resumeAgent",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [
+        {
+          "tool_use_id": "call-1",
+          "is_error": false,
+          "content": "retained output"
+        }
+      ],
+      "active": false,
+      "source": "persisted_named_tool",
+      "expected_row_visible": true,
+      "expected_visible_status": "done",
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "ordinary-bash-control",
+      "tool_name": "Bash",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "Bash",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [
+        {
+          "tool_use_id": "call-1",
+          "is_error": false,
+          "content": "retained output"
+        }
+      ],
+      "active": false,
+      "source": "persisted_named_tool",
+      "expected_row_visible": true,
+      "expected_visible_status": "done",
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "reason-wrapper-close-success",
+      "tool_name": "collab__closeAgent",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "closeAgent",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [
+        {
+          "tool_use_id": "call-1",
+          "is_error": false,
+          "content": "retained output"
+        }
+      ],
+      "active": false,
+      "source": "applyReasonPayload_named_raw_input",
+      "expected_row_visible": false,
+      "expected_visible_status": null,
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "reason-wrapper-wait-error",
+      "tool_name": "collab__wait",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "wait",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [
+        {
+          "tool_use_id": "call-1",
+          "is_error": true,
+          "content": "retained output"
+        }
+      ],
+      "active": false,
+      "source": "applyReasonPayload_named_raw_input",
+      "expected_row_visible": false,
+      "expected_visible_status": null,
+      "stored_content_must_remain_exact": true
+    },
+    {
+      "id": "close-failed-empty-content",
+      "tool_name": "collab__closeAgent",
+      "tool_use_id": "call-1",
+      "input": {
+        "operation": "closeAgent",
+        "receiver_thread_ids": [
+          "agent-1"
+        ]
+      },
+      "result_messages": [
+        {
+          "tool_use_id": "call-1",
+          "is_error": true,
+          "content": ""
+        }
+      ],
+      "active": false,
+      "source": "persisted_named_tool",
+      "expected_row_visible": true,
+      "expected_visible_status": "error",
+      "stored_content_must_remain_exact": true
+    }
+  ],
+  "mixed_message_constraint": {
+    "source": "bB -> _jt -> Ntt -> pie; ROo -> uie",
+    "message_visibility": "A tool-only wait/successful close message is omitted from the visible message sequence.",
+    "mixed_message": "If a message also has visible text or another visible block, pie still counts ALL tool_use blocks in that retained message. ROo still omits the individual hidden tool row.",
+    "acceptance": [
+      "Three assistant messages consisting of two ordinary tool-only messages and one wait-only message do not reach the three-visible-message summary threshold.",
+      "Three otherwise visible mixed assistant messages, one containing a wait tool, retain pie's tool count/icon semantics while the wait row itself stays absent when expanded.",
+      "Copy/fork/storage keep original blocks unchanged; only display visibility changes."
+    ]
+  },
+  "not_exercised": [
+    "Actual product JavaScript",
+    "Rust mapper",
+    "provider emission",
+    "native Codex mapping",
+    "browser/geometry",
+    "native/package"
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "unit": "EDITOR-WORKSPACE-CONTEXT-VSCODE-15",
+  "main_checked": "382da31580a5698feb223e1a3607fc79119fb77a",
+  "owner": "Conductor Rebuild",
+  "source_identity": {
+    "version": "0.87.6",
+    "rea_artifact_evidence_id": "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+    "provenance": "Existing retained REA-extracted bytes; no new Mac read, app acquisition or native observation in this pass."
+  },
+  "spans": {
+    "NPo": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        8961924,
+        8963208
+      ],
+      "bytes": 1284,
+      "sha256": "9c4539afe7b84bcf4773d421760c7149b81f32b9f4480b3b5555ffe7c7993d7d"
+    },
+    "tee": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        7777001,
+        7782029
+      ],
+      "bytes": 5028,
+      "sha256": "38d4a2efa99fd08a87b2540dfb48add94860e8932a56c644132fcecf20165bf0"
+    },
+    "uD": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        2674155,
+        2678639
+      ],
+      "bytes": 4484,
+      "sha256": "8d8f9856246124d0d3219722109cfb451ce244480c343f3de6d420fdcfdea16b"
+    },
+    "I8": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        2672569,
+        2672728
+      ],
+      "sha256": "8625ac2e383db210166d30d1499410ceb0047cced53cecc2c31fd7f742273a91",
+      "bytes": 159
+    },
+    "OGe": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        2672421,
+        2672569
+      ],
+      "sha256": "db9b2dcb6aa84255fa1cac05cf8ab38e03f6d7ccc69e3b1e66627d96216424ad",
+      "bytes": 148
+    },
+    "o4e": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        2673055,
+        2673178
+      ],
+      "sha256": "d19d25adf90c32c81a43f0292ba9cc05d7d838c8a855a00befe9a993cac5f418",
+      "bytes": 123
+    },
+    "vscode-catalog": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        567581,
+        567773
+      ],
+      "sha256": "6acec3d4095f3082130527aa52119b9cc39dd63e758ef9dd420fdf3dc9b7f5d9",
+      "bytes": 192
+    },
+    "AZ": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        573231,
+        573274
+      ],
+      "sha256": "85880f296f214b081d897f3309299740dec7d12cd0a74f4af6628ffef6f4f8a6",
+      "bytes": 43
+    }
+  },
+  "main_sources": {
+    "src/features/diff/FilePathChip.tsx": {
+      "sha256": "c91a799ae58adc61a2d144050c51b71dbdd23e0a4f7f74b20e52a8fbc595fea5",
+      "git_blob": "fac0da43e6f4d41e3f2f5897c2565e7d0280b469"
+    },
+    "src/features/diff/FileDiffView.tsx": {
+      "sha256": "8e3dc981b01b2e5f8b19f51e1fd0e7c05691f2174d2d37b1fe7faf9455ecc6da",
+      "git_blob": "17816ea30f5fe4bc01e18a469a9aefe5ec476ddd"
+    },
+    "src/features/openIn/apps.ts": {
+      "sha256": "ffb9bdf5e6b21894768d4f36ca3132b00061ea77c9e538b44c40dfbec065a924",
+      "git_blob": "301872e0ca425065d8a1f542bce9bdc720010734"
+    },
+    "src-tauri/src/open_in/commands.rs": {
+      "sha256": "20d04acb44cd56091c39d060f1e16ee7582633771d9abf6ff44b127dded23a0e",
+      "git_blob": "8b8d3f1607fac84c6dd7e1bdcb8c881b2543e912"
+    },
+    "src-tauri/src/open_in/mod.rs": {
+      "sha256": "92edae3828c10358dd89a92ad49a1e76470276460efb18238688b9e0efc0238e",
+      "git_blob": "8a2c0fe13fe772ad9f8d6dbde41dadba99641bbd"
+    }
+  },
+  "checks": {
+    "asset:renderer": true,
+    "asset:index": true,
+    "original-registered-span:NPo": true,
+    "original-retained-reference:NPo": true,
+    "unique-source-span:NPo": true,
+    "original-registered-span:tee": true,
+    "original-retained-reference:tee": true,
+    "unique-source-span:tee": true,
+    "original-registered-span:uD": true,
+    "original-retained-reference:uD": true,
+    "unique-source-span:uD": true,
+    "unique-source-span:I8": true,
+    "unique-source-span:OGe": true,
+    "unique-source-span:o4e": true,
+    "unique-source-span:vscode-catalog": true,
+    "unique-source-span:AZ": true,
+    "original-primary-header-selects-tee": true,
+    "original-chip-loads-workspace-and-visible-path": true,
+    "original-chip-primary-avoids-internal-navigation": true,
+    "original-chip-calls-open-with-workspace-context": true,
+    "original-selected-app-lookup": true,
+    "original-vscode-supports-line-numbers": true,
+    "original-vscode-cli-path-catalog": true,
+    "original-local-context-branch": true,
+    "original-workspace-and-file-are-separate-quoted-args": true,
+    "original-vscode-root-goto-and-file-only-fallback": true,
+    "original-I8-runs-cli-with-catalog-path": true,
+    "original-I8-fallback-only-after-nonzero-completion": true,
+    "original-searches-system-and-user-app-cli-folders": true,
+    "original-o4e-fallback-opens-file-in-selected-app": true,
+    "current-main-snapshot:src/features/diff/FilePathChip.tsx": true,
+    "current-main-snapshot:src/features/diff/FileDiffView.tsx": true,
+    "current-main-snapshot:src/features/openIn/apps.ts": true,
+    "current-main-snapshot:src-tauri/src/open_in/commands.rs": true,
+    "current-main-snapshot:src-tauri/src/open_in/mod.rs": true,
+    "main-header-instantiates-chip-with-worktree": true,
+    "main-chip-builds-full-file-path": true,
+    "main-chip-passes-only-default-app-and-target-path": true,
+    "main-IPC-helper-only-app-and-path": true,
+    "main-IPC-command-no-workspace-context": true,
+    "main-file-dispatch-enters-run-macos-open": true,
+    "main-code-file-dispatches-generic-open": true,
+    "main-generic-open-has-no-root-or-goto": true,
+    "main-no-vscode-special-case-in-command": true,
+    "frozen-working-bytes-unchanged:src-tauri/src/open_in/deleted_finder_ipc.rs": true,
+    "frozen-working-bytes-unchanged:evidence/open-in/deleted-finder/fixture-v1.rs.txt": true,
+    "frozen-working-bytes-unchanged:src/features/openIn/iconMenuNumbering.test.ts": true,
+    "frozen-working-bytes-unchanged:src/features/openIn/settingsShortcutHint.test.ts": true
+  },
+  "failed": [],
+  "conclusion": "SOURCE_GAP_CANDIDATE_NOT_BEHAVIORALLY_REPRODUCED",
+  "source_contract": "Local primary diff chip + VS Code + workspace + existing file: Conductor attempts code <workspace> --goto <file>, then open -a Visual Studio Code <file> only after nonzero CLI completion. Current main goes directly to open -a Visual Studio Code <file>.",
+  "next_proof": "After #1100 lands and separate hosted admission: unchanged mounted chip -> real IPC payload -> backend/fake child argv and nonzero fallback cases, with no-context existing-file and unrelated-app controls. No editor GUI acceptance inferred.",
+  "design_not_original": "Any IPC representation of workspace/file context is OpenConductor design, not original API or trusted path authorization. Preserve absolute/existing path and containment checks.",
+  "excluded": [
+    "Finder #1100",
+    "#1080/#1086 frozen controls",
+    "other editors",
+    "remote/cloud UI",
+    "line-number suffix parsing",
+    "preference writes/order",
+    "clipboard",
+    "native runtime"
+  ],
+  "frozen": {
+    "src-tauri/src/open_in/deleted_finder_ipc.rs": "873df7d98a6dbf9d4b685c2e35ceffd7aae09060637ed1c7960d947d99b24070",
+    "evidence/open-in/deleted-finder/fixture-v1.rs.txt": "873df7d98a6dbf9d4b685c2e35ceffd7aae09060637ed1c7960d947d99b24070",
+    "src/features/openIn/iconMenuNumbering.test.ts": "44eb051c160108ab818bf1c5045838df306a623c87cbb9350abed02feac4ffa3",
+    "src/features/openIn/settingsShortcutHint.test.ts": "91e42404a9307de3ec7b2ece29e1211c1e6a7e66e922ec8574d84eab068050ca"
+  },
+  "runtime": "NOT_RUN",
+  "behavioral_RED_GREEN": "NOT_RUN",
+  "product_test_or_repository_publication": "NONE",
+  "REA_limits": "Retained REA extraction of Conductor 0.87.6 checked against full asset hashes and exact byte spans. No new REA/Mac/native observation. Static token checks prove only recorded source boundaries, not execution."
+}

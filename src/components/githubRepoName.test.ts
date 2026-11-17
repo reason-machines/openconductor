@@ -38,7 +38,7 @@ async function fixture() {
     require(name: string) {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
       if (name === "../state/githubRepoDialog") return model;
-      if (name === "./Dialogs") return { Modal: ({ children }: { children: ReactNode }) => children };
+      if (name === "./DialogFrame") return { DialogFrame: ({ children }: { children: ReactNode }) => children };
       if (name === "../backend") return {
         githubRepoOwners: () => new Promise<GitHubOwners>((resolve) => { resolveOwners = resolve; }),
         async githubRepoAvailability(owner: string, slug: string) {
@@ -140,7 +140,9 @@ test("GitHub private repo normalizes a valid name and blocks repeated pending su
     assert.equal(view.input()["aria-invalid"], false);
     assert.equal(view.submitDisabled(), false);
     await view.submit();
-    assert.equal(view.input().disabled, true);
+    // Conductor does not disable the name input during a pending creation (census github-name-pending-census-6013);
+    // the already-captured repositoryName argument is unaffected by later edits.
+    assert.equal(view.input().disabled, undefined, "name input is not disabled while creation is pending");
     assert.equal(view.submitDisabled(), true);
     await view.submit();
     assert.deepEqual(view.creations, [{ owner: "me", repoPath: "/synthetic/project", repositoryName: "my-notes" }]);

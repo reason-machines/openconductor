@@ -64,9 +64,9 @@ export const isSkill = (c: SlashCommand): boolean => c.effect === "skill";
 export const commandId = (c: SlashCommand): string => c.id ?? c.name;
 
 /**
- * A skill as a menu item (Conductor's `jI`). Codex runs a skill named in the
- * prompt as `$name` (its own composer's mention); Reason and Claude Code as
- * `/name`.
+ * A skill as a menu item (Conductor's `jI`). Codex's path-qualified prompt
+ * link keeps the selected skill's identity when names collide. Reason and
+ * Claude Code use `/name`.
  */
 export function skillCommand(skill: AgentSkillInput, agent: ComposerAgent): SlashCommand {
   return {
@@ -76,29 +76,24 @@ export function skillCommand(skill: AgentSkillInput, agent: ComposerAgent): Slas
     argumentHint: "",
     effect: "skill",
     supportedAgents: [agent],
-    insert: `${agent === "codex" ? "$" : "/"}${skill.name}`,
+    insert: agent === "codex" ? `[$${skill.name}](${skill.path})` : `/${skill.name}`,
   };
 }
 
 const BOTH: ComposerAgent[] = ["claude", "codex"];
 export const ADD_DIR = "add-dir";
 
-/** Conductor's `_qe`, in its order. */
+/**
+ * Conductor's `_qe`, filtered to commands that have a working submit handler
+ * in WorkspaceView (clear, add-dir, mcp-status, plan, fast). Commands whose
+ * handler is not yet wired — restart, compact, ultracode, open-terminal group,
+ * personality, goal — are omitted so they never appear in autocomplete and
+ * silently clear the draft without executing (M13 fix).
+ */
 export const BUILTIN_COMMANDS: readonly SlashCommand[] = [
   { name: "clear", description: "Close this tab and start a fresh chat", argumentHint: "", effect: "clear_session", supportedAgents: BOTH },
-  { name: "restart", description: "Restart the agent process. Useful to pick up config changes.", argumentHint: "", effect: "restart_agent", supportedAgents: BOTH },
   { name: ADD_DIR, description: "Link a directory or workspace", argumentHint: "", effect: "pick_linked_directory", supportedAgents: BOTH },
-  { name: "personality", description: "Choose Codex's personality for this session and future ones", argumentHint: "", effect: "pick_personality", supportedAgents: ["codex"] },
-  { name: "goal", description: "Set the objective Codex should keep working toward", argumentHint: "objective", effect: "set_goal", supportedAgents: ["codex"] },
   { name: "mcp-status", description: "View MCP server connection status", argumentHint: "", effect: "show_mcp_status", supportedAgents: BOTH },
-  { name: "mcp", description: "Manage MCP servers (opens terminal)", argumentHint: "", effect: "open_terminal", supportedAgents: BOTH },
-  { name: "agents", description: "Manage agents (opens terminal)", argumentHint: "", effect: "open_terminal", supportedAgents: ["claude"] },
-  { name: "hooks", description: "Manage hooks (opens terminal)", argumentHint: "", effect: "open_terminal", supportedAgents: ["claude"] },
-  { name: "memory", description: "Manage memory (opens terminal)", argumentHint: "", effect: "open_terminal", supportedAgents: ["claude"] },
-  { name: "permissions", description: "Manage permissions (opens terminal)", argumentHint: "", effect: "open_terminal", supportedAgents: ["claude"] },
-  { name: "plugins", description: "Manage plugins (opens terminal)", argumentHint: "", effect: "open_terminal", supportedAgents: ["claude"] },
-  { name: "compact", description: "Compact the context window", argumentHint: "", effect: "compact_session", supportedAgents: BOTH },
-  { name: "ultracode", description: "Enable Ultracode", argumentHint: "", effect: "enable_ultracode", supportedAgents: ["claude"] },
 ];
 
 /** Conductor's `_mo`. */

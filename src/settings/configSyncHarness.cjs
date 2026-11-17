@@ -12,7 +12,7 @@ const sourceRoot = resolve(process.env.CONFIG_SYNC_SOURCE_ROOT ?? repository);
 const inert = () => null;
 
 function mount(options = {}) {
-  const calls = { reads: 0, writes: [], boundaries: [] };
+  const calls = { reads: 0, writes: [], boundaries: [], notifications: [] };
   const modules = new Map();
   const empty = () => ({ ccToCodex: [], codexToCc: [], error: null });
   const diff = {
@@ -36,6 +36,7 @@ function mount(options = {}) {
     "./prefs": { enumPref: () => "steering", withEnumPref: blocked("withEnumPref"), boolPref: () => false },
     "./rows/AppPrefRows": { GeneralAppPrefRows: inert },
     "./sound": { playCompletionSound: blocked("playCompletionSound"), SOUND_OPTIONS: [{ value: "none", label: "None" }] },
+    "./SoundSelect": { SoundSelect: inert },
     "./icons": new Proxy({}, { get: () => inert }),
     "./useSettingsOverrideStore": { useSettingsOverrideStore: () => ({ updateMany: blocked("updateMany") }) },
     "./configSyncApi": {
@@ -50,6 +51,8 @@ function mount(options = {}) {
     },
     "./motion/dialogMotion": { useDialogMotion: () => React.useRef(null) },
     "./Icons": { CloseIcon: inert },
+    "../components/DialogFrame": { DialogFrame: ({ titleId, children }) => React.createElement("div", { role: "dialog", "aria-modal": "true", "aria-labelledby": titleId }, children) },
+    "../components/Icons": { CloseIcon: inert },
   };
   function load(relativePath) {
     const filename = resolve(sourceRoot, relativePath);
@@ -78,6 +81,7 @@ function mount(options = {}) {
   let renderer;
   act(() => { renderer = create(React.createElement(GeneralPage, {
     settings: { general: { sound_type: "none", send_native_notification: false } }, save: blocked("save"),
+    notify: (kind, message) => calls.notifications.push({ kind, message }),
   })); });
   return {
     calls, diff,

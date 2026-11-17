@@ -1,0 +1,33 @@
+{
+  "head": "204c9a3c98b52ba630d4026da4da14ef44313166",
+  "job": "https://github.com/reason-machines/openconductor/actions/runs/43257494478/job/131319575943",
+  "observed": {
+    "typecheck": "PASS",
+    "frontend_unit_tests": {
+      "command": "node --test \"src/**/*.test.ts\"",
+      "exit": 1,
+      "tests": 3733,
+      "pass": 3640,
+      "fail": 93
+    },
+    "build": "SKIPPED_AFTER_TEST_FAILURE"
+  },
+  "errors": [
+    "  error: 'Unexpected dependency call src/state/store.ts: ../lib/persistence/producer.ts.usePersistenceProducer'",
+    "  error: 'Unexpected section write dependency: ../lib/persistence/producer.ts'",
+    "      error: 'Unqualified source import: ../../lib/persistence/restartPersistence.ts from /home/runner/work/openconductor/openconductor/src/features/chat/chatRuntime.ts'",
+    "  error: 'Unexpected Settings shortcut dependency: ../../lib/persistence/producer.ts'",
+    "  error: 'Unexpected ../state/store.ts dependency: ../lib/persistence/producer.ts'",
+    "  error: 'unexpected preference dependency ../lib/persistence/restartPersistence.ts'",
+    "  error: 'Unexpected dependency: ../lib/persistence/producer.ts'",
+    "  error: 'Unexpected repository icon popup dependency: ../../lib/persistence/producer.ts'",
+    "  error: 'Unexpected ./store.ts dependency: ../lib/persistence/producer.ts'"
+  ],
+  "syntax": {
+    "path": "src/lib/persistence/owner.ts",
+    "line": 18,
+    "message": "SyntaxError [ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX]: TypeScript parameter property is not supported in strip-only mode",
+    "node": "v22.23.4"
+  },
+  "verification_limit": "These are observations of the failed hosted head, not passing evidence for the compatibility correction. No local runtime executed for this increment."
+}

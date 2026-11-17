@@ -1,0 +1,72 @@
+{
+  "phase": "HOSTED_OPTION_CONTRACT_RED_CONFIRMED",
+  "repository": "reason-machines/openconductor",
+  "pull_request": 1110,
+  "head_sha": "44c342d62e1531a63077bd199561eca4596ce394",
+  "source_main": "021aeaa4027770258b4daae127bc829d1575d0ab",
+  "workflow_run": 43131363704,
+  "job_id": 130896038145,
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43131363704/job/130896038145",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "fixture_sha256": "389728b652cfc0956a2af7d18ab85bd8dd4e6487f9a3b02f9c60c952364f758d",
+  "frozen_cases": 8,
+  "case_results": [
+    {
+      "name": "running Run output supplies foreground cursor colors to xterm",
+      "result": "FAIL",
+      "observed": "transparent cursor; cursorAccent undefined"
+    },
+    {
+      "name": "Run output requests cursor blinking at the terminal constructor boundary",
+      "result": "FAIL",
+      "observed": "cursorBlink false, expected true"
+    },
+    {
+      "name": "a stopped Run retains its cursor colors without enabling stdin",
+      "result": "FAIL",
+      "observed": "stdin remains disabled; transparent cursor; cursorAccent undefined"
+    },
+    {
+      "name": "Run cursor policy survives input disable on the same terminal",
+      "result": "FAIL",
+      "observed": "same instance/output and stdin assertions passed; cursor assertion failed"
+    },
+    {
+      "name": "the output click delegates focus without replacing Run cursor policy",
+      "result": "FAIL",
+      "observed": "public focus call passed; cursor assertion failed"
+    },
+    {
+      "name": "palette changes refresh Run cursor and accent from current theme tokens",
+      "result": "FAIL",
+      "observed": "transparent cursor; cursorAccent undefined after palette refresh"
+    },
+    {
+      "name": "Setup output remains read-only with a transparent cursor after a palette change",
+      "result": "PASS"
+    },
+    {
+      "name": "default standalone output with input preserves transparent cursor configuration",
+      "result": "PASS"
+    }
+  ],
+  "suite": {
+    "tests": 3231,
+    "pass": 3224,
+    "fail": 7,
+    "additional_failure": "Disclosure proof-loader rejects historical src/scripts/api.ts hash drift; existing owner64baa6b6, PR1109. No duplicate repair."
+  },
+  "correction": {
+    "product_paths": [
+      "src/components/ScriptOutput.tsx",
+      "src/components/ScriptsPanel.tsx"
+    ],
+    "frozen_tests_changed": false,
+    "candidate_hosted_execution": "PENDING"
+  },
+  "limits": {
+    "local_node_rust_browser_provider_native": "NOT_RUN",
+    "visible_native_focus_blink_DEC_parity": "NOT_RUN",
+    "full_app_acceptance": "NOT_RUN"
+  }
+}

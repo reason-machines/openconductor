@@ -1,0 +1,1 @@
+class FAt{tauriBackend=new _St({getMaxBufferedBytes:Rk});cloudBackend=new _Et({getMaxBufferedBytes:Rk});createSession(e,s){return e.metadata?.hostingServerUrl?this.cloudBackend.createSession(e,s):this.tauriBackend.createSession(e,s)}}

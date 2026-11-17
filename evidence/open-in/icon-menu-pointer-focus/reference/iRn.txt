@@ -1,0 +1,1 @@
+function iRn(t){return yD&&t.movementX===0&&t.movementY===0}

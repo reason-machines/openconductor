@@ -1,0 +1,7 @@
+.ara-state/runtime/fileglyph-own-key/correction.patch: OK
+src/features/chat/fileGlyph.test.ts: OK
+.ara-state/nextgap/read-image-gate/readImageDisclosure.test.ts: OK
+.ara-state/nextgap/read-image-gate/readImageDisclosure.inputs.json: OK
+.ara-state/nextgap/read-image-gate/read-image-proposed.patch: OK
+.ara-state/nextgap/read-image-gate/freeze.json: OK
+package-lock.json: OK

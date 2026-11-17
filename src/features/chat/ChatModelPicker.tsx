@@ -23,6 +23,7 @@ import { defaultModelChoice, loadModelChoice, saveModelChoice } from "./chatMode
 import { agentEntryLabel, agentForPick, pickerState } from "./chatAgentChoice.ts";
 import type { ChatAgentId } from "./agentChoice.ts";
 import type { ModelChoice } from "./composerModels.ts";
+import { agentForModel } from "../../settings/models.ts";
 import { ModelPicker } from "./ModelPicker.tsx";
 
 /** Asks the app shell to open a settings page (App.tsx listens). */
@@ -46,9 +47,10 @@ export interface ChatModelPickerProps {
   agent?: ChatAgentId;
   /** Set when the chat can switch agents (the CLIs run here): picking Codex, Claude Code or a model calls it. */
   onAgentChange?: (next: ChatAgentId) => void;
+  selection?: { value: ModelChoice | null; onChange: (next: ModelChoice) => void };
 }
 
-export function ChatModelPicker({ chatId, disabled = false, agent = "reason", onAgentChange }: ChatModelPickerProps) {
+export function ChatModelPicker({ chatId, disabled = false, agent = "reason", onAgentChange, selection }: ChatModelPickerProps) {
   const [choice, setChoice] = useState<ModelChoice | null>(() => loadModelChoice(chatId));
   const [fallback, setFallback] = useState<ModelChoice | null>(null);
   const [running, setRunning] = useState<RunningModel | null>(() => loadRunningModel(chatId));
@@ -80,7 +82,7 @@ export function ChatModelPicker({ chatId, disabled = false, agent = "reason", on
     setFallback(loadout.slots[0]?.type === "built-in" ? loadoutChoices(loadout.slots)[0] ?? null : loadout.settings.models.default_initialized === false ? { model: AUTO, effort: null, agent: "reason" } : defaultModelChoice(loadout.settings));
   }, [loadout]);
 
-  const picked = choice ?? fallback;
+  const picked = (selection ? selection.value : choice) ?? fallback;
   if (!picked) return null;
   const pickedAuto = reasonChoice(picked).model === AUTO;
   const shown = agent === "reason" ? { ...shownModel(running, picked, models), agent } : picked;
@@ -92,20 +94,24 @@ export function ChatModelPicker({ chatId, disabled = false, agent = "reason", on
       favorites={state.favorites}
       loadout={slots}
       models={modelEntries(models).map((pick) => ({ ...pick, agent: "reason" }))}
-      modelName={(m) => reasonModelName(m, models)}
+      modelName={(m) => agent !== "reason" && m === state.value.model ? undefined : reasonModelName(m, models)}
       modelDescription={(m) => models.find((o) => o.value === m)?.description}
       itemLabel={agentEntryLabel}
       itemAgent={agentForPick}
       disabled={disabled}
+      fastSupported={agent !== "reason" && picked.agent === agent && agentForModel(picked.model) === agent}
       onOpenSettings={() => openSettingsPage("models")}
       onChange={(next) => {
         const nextAgent = agentForPick(next);
         if (nextAgent !== agent && !onAgentChange) return;
         // An effort change for Auto's running model keeps the chat on Auto; a loadout pick is explicit.
         const pick = nextAgent === "reason" && !slots.includes(next) && pickedAuto && running && next.model === running.model ? { ...next, model: AUTO } : next;
-        setChoice(pick);
+        if (selection) selection.onChange(pick);
+        else {
+          setChoice(pick);
+          saveModelChoice(chatId, pick);
+        }
         setRunning(null);
-        saveModelChoice(chatId, pick);
         if (nextAgent !== agent) onAgentChange?.(nextAgent);
         if (nextAgent === "reason") pickReasonModel(chatId, sessionConfig(pick.model, pick.effort));
       }}

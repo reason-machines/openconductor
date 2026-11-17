@@ -1,0 +1,102 @@
+{
+  "owner": "Conductor Rebuild",
+  "kind": "retained-original-source-only",
+  "asset_sha256": {
+    "renderer": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "rea_evidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "limits": "Original frontend semantic parsing exhausted heap. Exact retained UTF8 span joins are compiled-source evidence only, not rendered pixels, successful auth, URL reachability or observed runtime. Auth execution is excluded from current implementation scope.",
+  "spans": [
+    {
+      "name": "status-row",
+      "asset": "renderer",
+      "utf8_bytes": [
+        7492754,
+        7494580
+      ],
+      "sha256": "d2b7f9d31f257470dd3406be5237b646062aeb5382cbfc2841f8ba3ae118a8ad",
+      "source": "const cuo=$.memo(function(e){const n=ne.c(24),{server:i,onAuthClick:r,className:o}=e;let a;n[0]!==i.status?(a=()=>{switch(i.status){case\"connected\":return p.jsx(py,{className:\"h-3 w-3 text-positive\"});case\"failed\":return p.jsx(yl,{className:\"h-3 w-3 text-destructive\"});case\"needs-auth\":return p.jsx(eb,{className:\"h-3 w-3 text-yellow-600\"});case\"pending\":return p.jsx(bI,{className:\"h-3 w-3 text-blue-500\"});case\"disabled\":return p.jsx(OQe,{className:\"h-3 w-3 text-muted-foreground\"});default:return null}},n[0]=i.status,n[1]=a):a=n[1];const c=a,u=i.status===\"needs-auth\"||i.status===\"failed\",d=u&&r!==void 0;let h;n[2]!==u||n[3]!==r||n[4]!==i.name?(h=()=>{u&&r&&r(i.name)},n[2]=u,n[3]=r,n[4]=i.name,n[5]=h):h=n[5];const m=h,g=d&&\"cursor-pointer\";let _;n[6]!==o||n[7]!==g?(_=Xe(\"flex items-center gap-1 text-xs transition-colors ring-0 focus:ring-0\",\"bg-background hover:bg-muted/50 border-border\",g,o),n[6]=o,n[7]=g,n[8]=_):_=n[8];const v=d?\"button\":void 0,x=d?0:void 0,w=u&&!d?\"Update this server in Settings → MCP\":void 0;let E;n[9]!==c?(E=c(),n[9]=c,n[10]=E):E=n[10];let k;n[11]!==i.name?(k=p.jsx(\"span\",{className:\"truncate min-w-0\",children:i.name}),n[11]=i.name,n[12]=k):k=n[12];let I;n[13]!==i.status?(I=(i.status===\"needs-auth\"||i.status===\"failed\"||i.status===\"pending\"||i.status===\"disabled\")&&p.jsx(\"span\",{className:\"text-[10px] opacity-75 whitespace-nowrap\",children:i.status===\"needs-auth\"?\"(needs auth)\":i.status===\"failed\"?\"(error)\":i.status===\"disabled\"?\"(disabled)\":\"(awaiting status)\"}),n[13]=i.status,n[14]=I):I=n[14];let R;return n[15]!==m||n[16]!==I||n[17]!==_||n[18]!==v||n[19]!==x||n[20]!==w||n[21]!==E||n[22]!==k?(R=p.jsxs(Qu,{variant:\"outline\",className:_,onClick:m,role:v,tabIndex:x,title:w,children:[E,k,I]}),n[15]=m,n[16]=I,n[17]=_,n[18]=v,n[19]=x,n[20]=w,n[21]=E,n[22]=k,n[23]=R):R=n[23],R});"
+    },
+    {
+      "name": "message-selector",
+      "asset": "renderer",
+      "utf8_bytes": [
+        7494580,
+        7495353
+      ],
+      "sha256": "755b9caba127fcbc2133f2f14cfd3306459931a34f1243367de0df0424a83336",
+      "source": "function R8i({isWorkspaceReady:t,workspaceState:e,remoteStatus:n,serverCount:i,isPending:r,canRefresh:o,error:a,warning:c}){if(!t)return n===\"restarting\"?{text:\"Workspace restarting…\",isLoading:!0}:e===void 0||e===\"initializing\"||e===\"setting_up\"||n===\"initializing\"?{text:\"Waiting for workspace…\",isLoading:!0}:{text:\"MCP status unavailable.\"};if(r)return i!==void 0&&i>0?void 0:{text:\"Loading MCP servers…\",isLoading:!0};if(a!=null)return uI(a)&&a.code===HYe.WORKSPACE_NOT_READY?{text:\"Workspace isn't ready yet.\"}:{text:o?\"Couldn't load MCP servers. Try refreshing.\":\"Couldn't load MCP servers.\",isError:!0};if(c!==void 0)return{text:c,isError:!0};if(i===void 0)return{text:\"Loading MCP servers…\",isLoading:!0};if(i===0)return{text:\"No MCP servers configured.\"}}"
+    },
+    {
+      "name": "message-presentation",
+      "asset": "renderer",
+      "utf8_bytes": [
+        7495353,
+        7495920
+      ],
+      "sha256": "469f77c094f9be9ffb23b982bc3b193a8e4b5200091cac93f9cb7450fce672f5",
+      "source": "function N8i(t){const e=ne.c(12),{text:n,isLoading:i,isError:r,className:o}=t,a=r?\"alert\":\"status\",c=r?\"text-destructive\":\"text-muted-foreground\";let u;e[0]!==o||e[1]!==c?(u=Xe(\"flex items-center gap-2 px-1.5 py-2 text-xs\",c,o),e[0]=o,e[1]=c,e[2]=u):u=e[2];let d;e[3]!==i?(d=i&&p.jsx(ri,{type:\"working\",className:\"size-3\"}),e[3]=i,e[4]=d):d=e[4];let h;e[5]!==n?(h=p.jsx(\"span\",{children:n}),e[5]=n,e[6]=h):h=e[6];let m;return e[7]!==a||e[8]!==u||e[9]!==d||e[10]!==h?(m=p.jsxs(\"div\",{role:a,className:u,children:[d,h]}),e[7]=a,e[8]=u,e[9]=d,e[10]=h,e[11]=m):m=e[11],m}"
+    },
+    {
+      "name": "original-auth-action",
+      "asset": "renderer",
+      "utf8_bytes": [
+        7495920,
+        7496196
+      ],
+      "sha256": "6325784b581608ffe4ad948457cc425e05e13da09751da21bfdafa13dfefa95d",
+      "source": "function O8i({localWorkspaceId:t,agentType:e,serverName:n}){const i=e===\"codex\"?`codex mcp login ${uuo(n)}`:\"claude /mcp\",r=Sh.createTerminalWithCommand({localWorkspaceId:t,command:i});return Sh.setActiveTerminal(t,r.id),r}function uuo(t){return`'${t.replace(/'/g,\"'\\\\''\")}'`}"
+    },
+    {
+      "name": "docs-action",
+      "asset": "renderer",
+      "utf8_bytes": [
+        7499997,
+        7500039
+      ],
+      "sha256": "bb12347066228ce0cb0dcf8401dc7b81ef19bcf434cb2048033d5ec949aabed0",
+      "source": "function fuo(){vs(l3.mcp).fireAndForget()}"
+    },
+    {
+      "name": "docs-button",
+      "asset": "renderer",
+      "utf8_bytes": [
+        7499496,
+        7499636
+      ],
+      "sha256": "18a0d9310a9a0b0c3091b0c2b9aca4532e4e1f28656d1b703ad03a3af620969b",
+      "source": "Le=p.jsxs(tt,{variant:\"ghost\",size:\"sm\",onClick:be,className:\"text-xs\",children:[p.jsx(co,{className:\"h-3 w-3 mr-1\"}),\"Read the MCP docs\"]})"
+    },
+    {
+      "name": "badge-primitive",
+      "asset": "renderer",
+      "utf8_bytes": [
+        2035978,
+        2037050
+      ],
+      "sha256": "6a7a1aa5f43e26d2af195574b79992e5fb8527f5af97f4a47564978b47a8e698",
+      "source": "Cas=FV(\"inline-flex items-center rounded-md px-2 py-0.5 text-xs focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 font-mono tracking-wider uppercase border border-border\",{variants:{variant:{default:\"border-transparent bg-foreground text-background shadow\",secondary:\"border-transparent bg-secondary text-secondary-foreground \",destructive:\"border-transparent bg-destructive/10 text-destructive shadow\",outline:\"border\",highlight:\"bg-highlight text-highlight-foreground  border !border-highlight-foreground/25\",tip:\"bg-tip-secondary border !border-tip-secondary-border text-tip-muted rounded-xs px-1 py-0.5\",\"tip-outline\":\"bg-transparent border !border-tip-secondary-border text-tip-muted rounded-xs\"}},defaultVariants:{variant:\"default\"}});function Qu(t){const e=ne.c(10);let n,i,r;e[0]!==t?({className:n,variant:r,...i}=t,e[0]=t,e[1]=n,e[2]=i,e[3]=r):(n=e[1],i=e[2],r=e[3]);let o;e[4]!==n||e[5]!==r?(o=Xe(Cas({variant:r}),n),e[4]=n,e[5]=r,e[6]=o):o=e[6];let a;return e[7]!==i||e[8]!==o?(a=p.jsx(\"div\",{className:o,...i}),e[7]=i,e[8]=o,e[9]=a):a=e[9],a}"
+    },
+    {
+      "name": "docs-url",
+      "asset": "index",
+      "utf8_bytes": [
+        2543203,
+        2543255
+      ],
+      "sha256": "8d4ae060acdef832b5ecbccdc132bff8e42883b0db05cd518938e01adabd00ab",
+      "source": "mcp:\"https://www.conductor.build/docs/reference/mcp\""
+    },
+    {
+      "name": "opener",
+      "asset": "index",
+      "utf8_bytes": [
+        2543420,
+        2543494
+      ],
+      "sha256": "0602e4646c67f7bc952c618aa736007efcca5dcac75450beb393e34a69811f54",
+      "source": "async function Rue(t,e){await it(\"plugin:opener|open_url\",{url:t,with:e})}"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+async function Zwt(t="default"){try{if(Eue(t))return;const e=new(window.AudioContext||window.webkitAudioContext);e.state==="suspended"&&await e.resume();const s=p9(t)??p9("default");if(!s?.path)throw new Error("Default completion sound is missing");await eSt(e,s.path)}catch(e){Y.error("Failed to play completion sound:",e)}}

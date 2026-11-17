@@ -1,0 +1,161 @@
+{
+  "unit": "SUBMIT-PENDING-IDENTITY-DE6-01",
+  "entry": "b00314e2",
+  "owner": "de6c02f4-4880-4a0d-bf8f-9e3954522753",
+  "computer_id": "00637189-5c55-416e-b457-ed7419fb739a",
+  "local_head": "84a3153cbca1c25e210c3835ea9314f54e9f6c36",
+  "live_default_main": "7d5c13c394e5599c32dd9678625202911f74ebf7",
+  "frozen_test_sha256": "64517648ce4ba555bb7bb61e42eab5d866e76e099b63ed65b173b27358e56424",
+  "root_lock_sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+  "installed_lock_sha256": "8c9d7f5ab16c0cf37576836e6159e30ea64922151429156971bdc43875e139ba",
+  "final_review_sha256": "98fe4f940144d60f1c15375068772647dfa2f36f71743fb0f0e197af39396ec9",
+  "static_scope": "PASS: live-main plus exactly per-draft ref and new-submit wrapper; other eight sources, six adjacent tests, manifests, frozen seven unchanged",
+  "phases": [
+    {
+      "name": "install",
+      "command": [
+        "env",
+        "NODE_OPTIONS=--max-old-space-size=768",
+        "nice",
+        "-n",
+        "19",
+        "timeout",
+        "--kill-after=5s",
+        "180s",
+        "npm",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "started_at": "2026-11-12T12:08:23.176792+00:00",
+      "finished_at": "2026-11-12T12:08:27.975779+00:00",
+      "wall_seconds": 4.799,
+      "exit_code": 0,
+      "log_sha256": "f08f6e60d2c2a99a8e119aa9884060c2344d956f127d7b77926c28814a02bc58",
+      "counts": null
+    },
+    {
+      "name": "red",
+      "command": [
+        "nice",
+        "-n",
+        "19",
+        "timeout",
+        "--kill-after=5s",
+        "60s",
+        "node",
+        "--max-old-space-size=768",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/diff/commentSubmitPending.test.ts"
+      ],
+      "started_at": "2026-11-12T12:08:38.333585+00:00",
+      "finished_at": "2026-11-12T12:08:39.524293+00:00",
+      "wall_seconds": 1.191,
+      "exit_code": 1,
+      "log_sha256": "43d8deec0c227bfb8aeea7dd5bf8c24e087f91fff1832fca665ccc9c447fc133",
+      "counts": {
+        "tests": 7,
+        "pass": 5,
+        "fail": 2,
+        "skipped": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "green",
+      "command": [
+        "nice",
+        "-n",
+        "19",
+        "timeout",
+        "--kill-after=5s",
+        "60s",
+        "node",
+        "--max-old-space-size=768",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/diff/commentSubmitPending.test.ts"
+      ],
+      "started_at": "2026-11-12T12:09:08.575631+00:00",
+      "finished_at": "2026-11-12T12:09:09.802630+00:00",
+      "wall_seconds": 1.227,
+      "exit_code": 0,
+      "log_sha256": "709f49f4159c9255f528551a892df80173a0ef1b49e7fb5ab1feef182794264f",
+      "counts": {
+        "tests": 7,
+        "pass": 7,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "adjacent",
+      "command": [
+        "nice",
+        "-n",
+        "19",
+        "timeout",
+        "--kill-after=5s",
+        "120s",
+        "node",
+        "--max-old-space-size=768",
+        "--test",
+        "--test-concurrency=1",
+        "src/features/diff/commentEditDrafts.test.ts",
+        "src/features/diff/commentImeSubmit.test.ts",
+        "src/features/diff/commentCancel.test.ts",
+        "src/features/diff/commentSaveFailure.test.ts",
+        "src/features/diff/comments.test.ts",
+        "src/features/diff/commentStore.test.ts"
+      ],
+      "started_at": "2026-11-12T12:09:16.747495+00:00",
+      "finished_at": "2026-11-12T12:09:20.165477+00:00",
+      "wall_seconds": 3.418,
+      "exit_code": 0,
+      "log_sha256": "2203d0ce234ece3d53e293e8aa819ad558fac8f7667f8a7e2eb7423a72f0cd30",
+      "counts": {
+        "tests": 69,
+        "pass": 69,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "env",
+        "NODE_OPTIONS=--max-old-space-size=768",
+        "nice",
+        "-n",
+        "19",
+        "timeout",
+        "--kill-after=5s",
+        "120s",
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "started_at": "2026-11-12T12:09:24.313388+00:00",
+      "finished_at": "2026-11-12T12:09:45.571376+00:00",
+      "wall_seconds": 21.258,
+      "exit_code": 134,
+      "log_sha256": "7f2da3e16835a281b05c232e4ffe8294073c2b94d3e22a55f92aa2d0abfc2e56",
+      "counts": null
+    }
+  ],
+  "runtime_terminal": "STOPPED_AT_TYPECHECK_HEAP_LIMIT_NO_RETRY",
+  "slot_released_at": "2026-11-12T12:10:28.633192Z",
+  "installed_kib": 457588,
+  "available_disk_bytes": 27797180416,
+  "own_jobs": "No Node/npm/tsc/test jobs observed in subsequent sandbox census; host-wide jobs unverified",
+  "execution_archive_sha256": "9d3e085f5b54ac42dfe77189afbeff1b4e240b6e6334b71000677ee7e1a4d8b1",
+  "native": "NOT_RUN",
+  "browser": "NOT_RUN",
+  "local_build": "NOT_RUN",
+  "package": "NOT_RUN",
+  "frozen_992": "UNCHANGED"
+}

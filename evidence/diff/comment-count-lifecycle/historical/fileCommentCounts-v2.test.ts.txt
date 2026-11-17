@@ -1,0 +1,258 @@
+import assert from "node:assert/strict";
+import { randomUUID } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { dirname, resolve } from "node:path";
+import { test } from "node:test";
+import { runInNewContext } from "node:vm";
+import type { CommentStore } from "./commentStore.ts";
+import type { DiffComment } from "./comments.ts";
+import type { useReviewComments } from "./ReviewComments.tsx";
+import type { FileDiff } from "./types.ts";
+
+const dependencies = createRequire(import.meta.url);
+const React = dependencies("react");
+const { act, create } = dependencies("react-test-renderer");
+const ts = dependencies("typescript");
+const root = resolve(".");
+const ownerPath = resolve(root, "src/components/WorkspaceView.tsx");
+const products = new Set([
+  "ReviewComments.tsx", "comments.ts", "commentStore.ts", "nav.ts", "ChangesList.tsx",
+  "changesFilter.ts", "changesTree.ts", "renameDisplayPath.ts", "fileCopyPaths.ts",
+].map((name) => resolve(root, "src/features/diff", name)));
+products.add(resolve(root, "src/features/files/tree.ts"));
+products.add(resolve(root, "src/keybindings/fuzzy.ts"));
+const unexpected = () => assert.fail("Unrelated action in file-comment-count fixture");
+const inert = () => null;
+const paths = ["src/example.ts", "test/example.ts", "zero.ts"];
+const files: FileDiff[] = paths.map((path) => ({
+  path, old_path: null, status: "modified", additions: 1, deletions: 0, binary: false, hunks: [],
+}));
+const comment = (id: string, patch: Partial<DiffComment> = {}): DiffComment => ({
+  id, workspace_id: "one", file_path: paths[0], line_number: 1, end_line_number: null,
+  body: `Comment ${id}`, state: "pending", location: "modified", file_level: false,
+  created_at: 1, updated_at: null, remote_url: null, author: null, author_avatar_url: null,
+  thread_id: null, reply_to_comment_id: null, is_outdated: false, is_resolved: false,
+  suggestion_base_code: null, ...patch,
+});
+type TextNode = string | { children: readonly TextNode[] } | TextNode[];
+const text = (node: TextNode): string => typeof node === "string" ? node : (Array.isArray(node) ? node : node.children).map(text).join("");
+
+function evaluate(source: string, filename: string, require: (name: string) => unknown, globals: Record<string, unknown> = {}) {
+  const javascript = ts.transpileModule(source, { fileName: filename, compilerOptions: {
+    jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true,
+  } }).outputText;
+  const module: { exports: Record<string, unknown> } = { exports: {} };
+  runInNewContext(`(function(require, module, exports) {\n${javascript}\n})`, {
+    console, Map, Set, Error, crypto: { randomUUID },
+    setInterval: unexpected, clearInterval: unexpected, ...globals,
+  }, { filename })(require, module, module.exports);
+  return module.exports;
+}
+
+async function fixture(rows: DiffComment[], initial: { mode?: "flat" | "tree"; query?: string } = {}) {
+  const modules = new Map<string, Record<string, unknown>>();
+  const storage = new Map<string, string>();
+  for (const workspace of ["one", "two"]) storage.set(`openconductor.diff.comments.${workspace}`, JSON.stringify(rows.filter((row) => row.workspace_id === workspace)));
+  const stores = new Map<string, CommentStore>();
+  const attached: unknown[] = [];
+  const opened: string[] = [];
+  const chat = { insert: unexpected, send: unexpected, attach: (value: unknown) => attached.push(value) };
+  let input = { workspace: { id: "one", path: "/work/one", status: "active" }, mode: initial.mode ?? "flat", query: initial.query ?? "" };
+  const chipPath = resolve(root, "src/features/diff/FilePathChip.tsx");
+  const chipSource = ts.createSourceFile(chipPath, readFileSync(chipPath, "utf8"), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const formatter = chipSource.statements.find((node: { name?: { text: string } }) => ts.isFunctionDeclaration(node) && node.name?.text === "splitPath");
+  assert.ok(formatter, "Actual path formatter exists");
+  const chip = evaluate(formatter.getText(chipSource), chipPath, unexpected);
+  function load(filename: string): Record<string, unknown> {
+    assert.ok(products.has(filename), `Unexpected production dependency ${filename}`);
+    const cached = modules.get(filename);
+    if (cached) return cached;
+    const result = evaluate(readFileSync(filename, "utf8"), filename, (name) => {
+      if (["react", "react/jsx-runtime", "fuzzysort"].includes(name)) return dependencies(name);
+      if (name.endsWith(".css")) return {};
+      if (name === "../../backend") return { openUrl: unexpected };
+      if (name === "../../components/DialogFrame") return { DialogFrame: ({ children }: { children: unknown }) => React.createElement("dialog", null, children) };
+      if (name === "../../components/ui/Tooltip.tsx") return { Tooltip: ({ children }: { children: unknown }) => children };
+      if (name === "../../keybindings/KeybindingsProvider.tsx") return { useKeybindings: () => undefined };
+      if (name === "./commentsApi.ts") return { commentStoreFor: (workspace: string) => { const store = stores.get(workspace); assert.ok(store); return store; } };
+      if (name === "./commentMarkdown.ts") return { CommentMarkdown: ({ text }: { text: string }) => React.createElement("comment-body", null, text) };
+      if (name === "./FileDiffView") return { revealLine: unexpected };
+      if (name === "./DiscardDialog") return { RevertIcon: inert };
+      if (name === "./FileContextMenu") return { FileContextMenu: unexpected };
+      if (name === "../openIn/apps") return { copyText: unexpected, openInApp: unexpected };
+      if (name === "./FilePathChip") return chip;
+      if (name === "../files/panelIcons") return { SearchIcon: inert, XIcon: inert };
+      const base = resolve(dirname(filename), name);
+      const found = [base, `${base}.ts`, `${base}.tsx`].find((path) => products.has(path));
+      assert.ok(found, `Unexpected import ${name}`);
+      return load(found);
+    });
+    modules.set(filename, result);
+    return result;
+  }
+  const storeModule = load(resolve(root, "src/features/diff/commentStore.ts"));
+  assert.ok(typeof storeModule.localCommentStore === "function");
+  for (const workspace of ["one", "two"]) stores.set(workspace, storeModule.localCommentStore({
+    getItem: (key: string) => storage.get(key) ?? null,
+    setItem: (key: string, value: string) => storage.set(key, value),
+  }, workspace));
+  const reviewModule = load(resolve(root, "src/features/diff/ReviewComments.tsx"));
+  const listModule = load(resolve(root, "src/features/diff/ChangesList.tsx"));
+  assert.ok(typeof reviewModule.useReviewComments === "function" && typeof listModule.ChangesList === "function");
+  const owner = ts.createSourceFile(ownerPath, readFileSync(ownerPath, "utf8"), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const declaration = (name: string) => {
+    const node = owner.statements.find((entry: { name?: { text: string } }) => ts.isFunctionDeclaration(entry) && entry.name?.text === name);
+    assert.ok(node?.body, `Actual ${name} exists`);
+    return node;
+  };
+  let mount = "";
+  const findMount = (node: { getText(source: unknown): string; tagName?: { getText(source: unknown): string } }) => {
+    if (ts.isJsxSelfClosingElement(node) && node.tagName?.getText(owner) === "RightPanel") {
+      assert.equal(mount, "", "One actual owner-to-panel mount");
+      mount = node.getText(owner);
+    }
+    ts.forEachChild(node, findMount);
+  };
+  findMount(declaration("WorkspaceView"));
+  assert.notEqual(mount, "");
+  let review: ReturnType<typeof useReviewComments>;
+  const diff = {
+    load: { state: "ready", files }, files, totals: { a: 3, d: 0 }, current: 0, selected: files[0],
+    opts: { scope: "all" }, turn: null, isViewed: () => false, uncommittedPaths: new Set(), canDiscard: false,
+    openPath: (path: string) => opened.push(path), askDiscard: unexpected, refresh: unexpected,
+  };
+  const compiled = evaluate(`
+    const { useState, useEffect, useRef } = React;
+    ${declaration("RightPanel").getText(owner)}
+    function Probe({ workspace }) {
+      const review = useReviewComments(workspace.id, chat);
+      React.useEffect(() => review.onLoaded(diff.files, "all"), [review.onLoaded]);
+      capture(review);
+      const openMarkdown = unrelated; const showDiff = true; const showFile = false; const fileTarget = null;
+      const gitPanelTab = "changes"; const setGitPanelTab = unrelated;
+      const target = {}; const pickingChangesTarget = false; const setPickingChangesTarget = unrelated; const repo = {};
+      const pullRequest = { pr: null, refresh: unrelated }; const reviews = { start: unrelated, error: null };
+      const fixErrors = {}; const notify = undefined; const pullLatest = {}; const agentWorking = false;
+      return React.createElement(React.Fragment, null, (${mount}),
+        React.createElement("review-actions", null, review.actions()),
+        React.createElement("draft-anchor", null, review.annotations(diff.files[0], { side: "new", line: 1 })));
+    }
+    module.exports = { Probe };
+  `, ownerPath, dependencies, {
+    React, chat, diff, useReviewComments: reviewModule.useReviewComments, ChangesList: listModule.ChangesList,
+    capture: (value: ReturnType<typeof useReviewComments>) => { review = value; },
+    useChangesPresentation: () => ({ ready: true, presentation: { diffFileListMode: input.mode, filePathFilter: input.query, collapsedDirectoryPaths: [] }, update: unexpected }),
+    useFilesToolbar: () => ({}), useKeybindings: () => undefined,
+    filterActive: (open: boolean, query: string) => open || query.trim().length > 0,
+    filterToggleShown: () => false, ancestors: () => [],
+    FilesToolbarButtons: inert, AllFilesTree: unexpected, ChecksTab: unexpected, ChangesToolbar: inert,
+    Tooltip: ({ children }: { children: unknown }) => children,
+    ReviewButton: inert, TargetChip: inert, PullLatestButton: inert, unrelated: unexpected,
+  });
+  assert.ok(typeof compiled.Probe === "function");
+  let renderer: ReturnType<typeof create>;
+  await act(async () => { renderer = create(React.createElement(compiled.Probe, { workspace: input.workspace }), {
+    createNodeMock: () => ({ scrollIntoView() {}, focus() {} }),
+  }); });
+  const row = (path: string) => renderer.root.findByProps({ title: `Open ${path}` });
+  const counts = (path: string) => row(path).findAll((node: { type: unknown; props: { "aria-label"?: string } }) =>
+    node.type === "span" && /^\d+ comments?$/.test(node.props["aria-label"] ?? "")).map((node: TextNode) => text(node));
+  return {
+    counts, row, attached, opened,
+    allText: () => text(renderer.root),
+    saveDraft: async (body: string) => {
+      await act(async () => { review.onLineClick(files[0], { side: "new", start: 1, line: 1 }); });
+      const anchor = renderer.root.findByType("draft-anchor");
+      await act(async () => anchor.findByType("textarea").props.onChange({ target: { value: body } }));
+      await act(async () => anchor.find((node: { type: unknown; props: { children: unknown } }) => node.type === "button" && node.props.children === "Comment").props.onClick());
+    },
+    addAll: async () => {
+      const actions = renderer.root.findByType("review-actions");
+      await act(async () => actions.find((node: { type: unknown; props: { children: unknown } }) => node.type === "button" && node.props.children === "Add all comments to chat").props.onClick());
+    },
+    update: async (patch: { mode?: "flat" | "tree"; query?: string; workspace?: string }) => {
+      input = { ...input, ...patch, workspace: patch.workspace ? { ...input.workspace, id: patch.workspace, path: `/work/${patch.workspace}` } : input.workspace };
+      await act(async () => renderer.update(React.createElement(compiled.Probe, { workspace: input.workspace })));
+    },
+    saved: () => { const store = stores.get(input.workspace.id); assert.ok(store); return store.list(); },
+    close: async () => { await act(async () => renderer.unmount()); },
+  };
+}
+
+for (const mode of ["flat", "tree"] satisfies ("flat" | "tree")[]) {
+  test(`${mode} rows count active local and remote comments, not sent, resolved, outdated or PR-level rows`, async (t) => {
+    const f = await fixture([
+      comment("local"), comment("remote", { remote_url: "https://github.com/example/repo/pull/1#discussion_r2", author: "reviewer" }),
+      comment("sent", { state: "sent" }), comment("resolved", { is_resolved: true }),
+      comment("outdated", { is_outdated: true }), comment("pr", { file_path: "", file_level: true }),
+    ], { mode }); t.after(f.close);
+    assert.deepEqual(f.counts(paths[0]), ["2"]);
+    assert.deepEqual(f.counts(paths[1]), []);
+  });
+  test(`${mode} zero-comment rows keep their ordinary diff counts and no comment badge`, async (t) => {
+    const f = await fixture([], { mode }); t.after(f.close);
+    assert.deepEqual(f.counts(paths[0]), []);
+    assert.ok(text(f.row(paths[0])).includes("+1"));
+    assert.equal(f.row(paths[0]).findByProps({ "aria-label": "modified" }).type, "svg");
+  });
+}
+
+test("counts stay keyed by exact path when basenames match and replies add another comment", async (t) => {
+  const f = await fixture([comment("root"), comment("reply", { thread_id: "root", reply_to_comment_id: "root" }), comment("other", { file_path: paths[1] })]); t.after(f.close);
+  assert.deepEqual(f.counts(paths[0]), ["2"]);
+  assert.deepEqual(f.counts(paths[1]), ["1"]);
+});
+
+test("the count predicate does not invent a nonempty-body or visible-diff-line requirement", async (t) => {
+  const f = await fixture([comment("empty", { body: "", line_number: 999 })]); t.after(f.close);
+  assert.deepEqual(f.counts(paths[0]), ["1"]);
+});
+
+test("saving through the actual new-draft composer updates the row count and normal payload", async (t) => {
+  const f = await fixture([]); t.after(f.close);
+  await f.saveDraft("new review comment");
+  const saved = await f.saved();
+  assert.equal(saved.length, 1);
+  assert.equal(saved[0].body, "new review comment");
+  assert.equal(saved[0].file_path, paths[0]);
+  assert.deepEqual(f.counts(paths[0]), ["1"]);
+});
+
+test("adding comments to chat preserves the real attachment and leaves no pending count", async (t) => {
+  const f = await fixture([comment("whole", { file_level: true })]); t.after(f.close);
+  await f.addAll();
+  assert.equal(f.attached.length, 1);
+  assert.equal((await f.saved())[0].state, "sent");
+  assert.deepEqual(f.counts(paths[0]), []);
+});
+
+test("switching workspaces replaces the counts for identical relative paths", async (t) => {
+  const f = await fixture([comment("one"), comment("two-a", { workspace_id: "two" }), comment("two-b", { workspace_id: "two" })]); t.after(f.close);
+  assert.deepEqual(f.counts(paths[0]), ["1"]);
+  await f.update({ workspace: "two" });
+  assert.deepEqual(f.counts(paths[0]), ["2"]);
+  await f.update({ workspace: "one" });
+  assert.deepEqual(f.counts(paths[0]), ["1"]);
+});
+
+test("filtering and changing list modes preserve each visible file's count", async (t) => {
+  const f = await fixture([comment("a"), comment("b", { file_path: paths[1] })]); t.after(f.close);
+  await f.update({ query: "test/example.ts", mode: "tree" });
+  assert.deepEqual(f.counts(paths[1]), ["1"]);
+  await f.update({ query: "", mode: "flat" });
+  assert.deepEqual(f.counts(paths[0]), ["1"]);
+  assert.deepEqual(f.counts(paths[1]), ["1"]);
+});
+
+test("ordinary file selection still reaches the existing navigation action", async (t) => {
+  const f = await fixture([]); t.after(f.close);
+  await act(async () => f.row(paths[1]).props.onClick());
+  assert.deepEqual(f.opened, [paths[1]]);
+});
+
+test("the existing multi-file summary remains independent of comment counts", async (t) => {
+  const f = await fixture([]); t.after(f.close);
+  assert.ok(f.allText().includes("3 files changed"));
+  assert.ok(f.allText().includes("+3"));
+});

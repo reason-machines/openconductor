@@ -1,0 +1,204 @@
+(node:52) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: built-in /add-dir Enter opens the existing directory picker without sending
+ok 1 - built-in /add-dir Enter opens the existing directory picker without sending
+  ---
+  duration_ms: 2059.867074
+  type: 'test'
+  ...
+# Subtest: built-in /add-dir Tab opens the existing directory picker without sending
+ok 2 - built-in /add-dir Tab opens the existing directory picker without sending
+  ---
+  duration_ms: 203.775176
+  type: 'test'
+  ...
+# Subtest: built-in /add-dir menu choice opens the existing directory picker without sending
+ok 3 - built-in /add-dir menu choice opens the existing directory picker without sending
+  ---
+  duration_ms: 748.336973
+  type: 'test'
+  ...
+# Subtest: directory selection preserves suffix text and attachments
+ok 4 - directory selection preserves suffix text and attachments
+  ---
+  duration_ms: 127.697289
+  type: 'test'
+  ...
+# Subtest: directory selection retains adjacent file node identity and complete attributes
+ok 5 - directory selection retains adjacent file node identity and complete attributes
+  ---
+  duration_ms: 483.781479
+  type: 'test'
+  ...
+# Subtest: agent keeps ordinary bounded insertion rather than opening directories
+ok 6 - agent keeps ordinary bounded insertion rather than opening directories
+  ---
+  duration_ms: 1152.901718
+  type: 'test'
+  ...
+# Subtest: skill keeps ordinary bounded insertion rather than opening directories
+ok 7 - skill keeps ordinary bounded insertion rather than opening directories
+  ---
+  duration_ms: 446.876687
+  type: 'test'
+  ...
+# Subtest: Plan and Fast selection remain bounded text insertion, not immediate actions
+ok 8 - Plan and Fast selection remain bounded text insertion, not immediate actions
+  ---
+  duration_ms: 979.481273
+  type: 'test'
+  ...
+# Subtest: stale, nonempty and composing live selections cannot edit or open directories
+ok 9 - stale, nonempty and composing live selections cannot edit or open directories
+  ---
+  duration_ms: 765.22707
+  type: 'test'
+  ...
+# Subtest: built-in /mcp-status Enter opens status without sending
+ok 10 - built-in /mcp-status Enter opens status without sending
+  ---
+  duration_ms: 826.932959
+  type: 'test'
+  ...
+# Subtest: built-in /mcp-status Tab opens status without sending
+ok 11 - built-in /mcp-status Tab opens status without sending
+  ---
+  duration_ms: 599.810033
+  type: 'test'
+  ...
+# Subtest: built-in /mcp-status menu choice opens status without sending
+ok 12 - built-in /mcp-status menu choice opens status without sending
+  ---
+  duration_ms: 537.979841
+  type: 'test'
+  ...
+# Subtest: MCP status rejects stale, nonempty and composing selections
+ok 13 - MCP status rejects stale, nonempty and composing selections
+  ---
+  duration_ms: 856.917507
+  type: 'test'
+  ...
+# Subtest: MCP show_mcp_status without immediate capability preserves bounded insertion
+ok 14 - MCP show_mcp_status without immediate capability preserves bounded insertion
+  ---
+  duration_ms: 627.97609
+  type: 'test'
+  ...
+# Subtest: MCP agent without immediate capability preserves bounded insertion
+ok 15 - MCP agent without immediate capability preserves bounded insertion
+  ---
+  duration_ms: 576.902469
+  type: 'test'
+  ...
+# Subtest: MCP skill without immediate capability preserves bounded insertion
+ok 16 - MCP skill without immediate capability preserves bounded insertion
+  ---
+  duration_ms: 632.57399
+  type: 'test'
+  ...
+# Subtest: missing directory capability preserves ordinary text completion
+ok 17 - missing directory capability preserves ordinary text completion
+  ---
+  duration_ms: 586.366688
+  type: 'test'
+  ...
+# (node:67) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual MCP dialog loads only results and retains rows beside refresh errors
+ok 18 - actual MCP dialog loads only results and retains rows beside refresh errors
+  ---
+  duration_ms: 228.195746
+  type: 'test'
+  ...
+# Subtest: actual dialog ignores completions after chat change, close and unmount
+ok 19 - actual dialog ignores completions after chat change, close and unmount
+  ---
+  duration_ms: 63.804751
+  type: 'test'
+  ...
+# Subtest: bounded request reports timeout and rejects late completions
+ok 20 - bounded request reports timeout and rejects late completions
+  ---
+  duration_ms: 15.387482
+  type: 'test'
+  ...
+# Subtest: actual Workspace typed command dispatch is Codex-only and respects collisions
+ok 21 - actual Workspace typed command dispatch is Codex-only and respects collisions
+  ---
+  duration_ms: 725.241814
+  type: 'test'
+  ...
+# (node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude's '/' menu lists Conductor's commands in its order, then fast
+ok 22 - Claude's '/' menu lists Conductor's commands in its order, then fast
+  ---
+  duration_ms: 89.257402
+  type: 'test'
+  ...
+# Subtest: Codex gets personality, goal only when enabled, no Claude-only commands
+ok 23 - Codex gets personality, goal only when enabled, no Claude-only commands
+  ---
+  duration_ms: 0.287023
+  type: 'test'
+  ...
+# Subtest: an ACP agent (Reason) sees only its own commands, plan and fast
+ok 24 - an ACP agent (Reason) sees only its own commands, plan and fast
+  ---
+  duration_ms: 52.414601
+  type: 'test'
+  ...
+# Subtest: agent commands come first and hide a built-in of the same name; cloud drops add-dir
+ok 25 - agent commands come first and hide a built-in of the same name; cloud drops add-dir
+  ---
+  duration_ms: 0.249407
+  type: 'test'
+  ...
+# Subtest: matching: empty query keeps order, exact name first
+ok 26 - matching: empty query keeps order, exact name first
+  ---
+  duration_ms: 1.37646
+  type: 'test'
+  ...
+# Subtest: the menu is open while the caret is in a leading /word
+ok 27 - the menu is open while the caret is in a leading /word
+  ---
+  duration_ms: 0.200162
+  type: 'test'
+  ...
+# Subtest: picking completes the name and keeps arguments
+ok 28 - picking completes the name and keeps arguments
+  ---
+  duration_ms: 0.215279
+  type: 'test'
+  ...
+# Subtest: parse: /name args and /[name](command) args
+ok 29 - parse: /name args and /[name](command) args
+  ---
+  duration_ms: 0.30422
+  type: 'test'
+  ...
+# Subtest: skills follow every command, keyed by name and path, and insert /name or Codex's $name
+ok 30 - skills follow every command, keyed by name and path, and insert /name or Codex's $name
+  ---
+  duration_ms: 0.503793
+  type: 'test'
+  ...
+# Subtest: filtering keeps commands before skills (Conductor's jNi)
+ok 31 - filtering keeps commands before skills (Conductor's jNi)
+  ---
+  duration_ms: 65.419418
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 23971.269954

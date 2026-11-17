@@ -1,0 +1,346 @@
+{
+  "author": "Conductor Rebuild",
+  "kind": "task-specific-stop-with-mounted-component-validation",
+  "main_checked": "492bc5c78f2e168924f9003bfb68c7023b4aa931",
+  "rea_acquisition": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference_provenance": "Retained real Conductor 0.87.6 shipped-source extraction, not a new app acquisition or native observation.",
+  "reference_assets": {
+    "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "reference_windows": [
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        57739,
+        57747
+      ],
+      "sha256": "ea39fd570a2d4497e9acf83c28dc20bb9f39498beaa9a7e8765b597155e01030",
+      "text": "gU as q_"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7172488,
+        7172517
+      ],
+      "sha256": "db450c29bde9046b62a634748eab57c98736fb5a1fb954594915378bb596f74c",
+      "text": "ke=Yio({selectedTaskId:ve?.id"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7172988,
+        7172993
+      ],
+      "sha256": "5d61c25619a7bee09cbbbf5464f545fc0c6e293e447773fe6882d146e1fdc30f",
+      "text": "We=je"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7183537,
+        7183616
+      ],
+      "sha256": "4cc02dd8169aba67c0b3f1c876fb927037a867d2f6b060b758502ab4928aa96d",
+      "text": "B1=async()=>{const bi=We?ke:ve?.id;!r||!bi||await q_.killProcess(r.localId,bi)}"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3484123,
+        3484132
+      ],
+      "sha256": "782454771bf148f2f79b4740691ac68d42fbcc0ccc906b816321de7e18865977",
+      "text": "ARt as gU"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2934759,
+        2934808
+      ],
+      "sha256": "fab0a3be55570f1c764d099b8cb2a7a25699ea4f404ce608bd184b140e2b0716",
+      "text": "killProcess:(t,e)=>js.getState().killProcess(t,e)"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2921433,
+        2921472
+      ],
+      "sha256": "d9a74feaaa95fa0ad4053121f2fc8c04785c5abce2f6363bae73afb84fb77a2f",
+      "text": "killProcess:async(s,n)=>{if(n===void 0)"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2923294,
+        2923347
+      ],
+      "sha256": "07d10aeb765bea65adc44953c28648c16d907802eb69e8ccea9d844259a57859",
+      "text": "if(await e().killProcess(s),e().clearWorkspaceRuns(s)"
+    }
+  ],
+  "scope": [
+    "src/components/ScriptsPanel.tsx",
+    "src/scripts/runActionErrorContext.test.ts"
+  ],
+  "identities": {
+    "baseline_product_sha256": "78f0429253ddf506adbfba4da73f48cabf4ac4802100861dfeed7658aa87d0ea",
+    "candidate_product_sha256": "092f31ca358a04510d9fd77e56dd0a6b65eed9e883d11d9208639ef13f9444f5",
+    "original_test_sha256": "1d6fd68c6743517fc21a60023339a440f5b65aae53d87b472e96f30b4fed2ee6",
+    "successor_test_sha256": "604e459b1186bad03190014a970473a564341fa9f18414d9d33253fd4cea30cb",
+    "original_cases": 9,
+    "successor_cases": 11
+  },
+  "historical_source_expectations": {
+    "baseline_with_successor": "Two intended failures and nine passing controls; setup failures are not regression evidence.",
+    "candidate_with_identical_successor": "Eleven passing cases with zero skips/cancellations/todo.",
+    "failing_cases": [
+      "actual Run stop keeps same-workspace errors and exact command identity",
+      "actual Stop Dev preserves a replacement Test behind an unrefreshed status snapshot"
+    ]
+  },
+  "static_qualification": "PASS: reference hashes/import/export joins, exact one-operand production change, original/successor test identities, existing bridge/runner semantics and excluded source paths.",
+  "reference_window_correction": "The historical generator selected the first We=je substring at 1953807. The published reference window now points to We=je at 7172988 in the same nro task-selector/Stop scope. The substring hash, reference asset bytes, product and test identities are unchanged.",
+  "behavioral_red_green": "PASS: baseline successor11 9 pass / 2 intended assertion failures; identical successor11 candidate 11 pass / 0 failures. Original9 retained, not executed.",
+  "typecheck_build_browser_native": "Typecheck PASS. Build, browser and native NOT RUN.",
+  "validation_20261113": {
+    "receipt": {
+      "token": "ACC_1F_STOP11_20261113T0231",
+      "actual_start_utc": "2026-11-13T02:31:34.256545+00:00",
+      "phases": [
+        {
+          "name": "setup",
+          "started_utc": "2026-11-13T02:34:09.986123+00:00",
+          "remaining_inclusive_seconds": 924.2704327106476,
+          "argv": [
+            "nice",
+            "-n",
+            "19",
+            "timeout",
+            "--signal=TERM",
+            "--kill-after=5s",
+            "600s",
+            "npm",
+            "ci",
+            "--ignore-scripts",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "NODE_OPTIONS": "--max-old-space-size=1024",
+          "own_process_group": 84,
+          "exit": 0,
+          "ended_utc": "2026-11-13T02:34:22.769694+00:00",
+          "elapsed_seconds": 12.783604706986807
+        },
+        {
+          "name": "resolution",
+          "started_utc": "2026-11-13T02:34:22.770413+00:00",
+          "remaining_inclusive_seconds": 911.4861381053925,
+          "argv": [
+            "node",
+            "-e",
+            "const r=require('react/package.json');const t=require('react-test-renderer/package.json');const s=require('typescript/package.json');if(!r.version.startsWith('18.')||!t.version.startsWith('18.'))process.exit(2);console.log(JSON.stringify({react:r.version,renderer:t.version,typescript:s.version,reactPath:require.resolve('react'),rendererPath:require.resolve('react-test-renderer'),typescriptPath:require.resolve('typescript')}))"
+          ],
+          "NODE_OPTIONS": "--max-old-space-size=512",
+          "own_process_group": 97,
+          "exit": 0,
+          "ended_utc": "2026-11-13T02:34:22.885241+00:00",
+          "elapsed_seconds": 0.11485377099597827
+        },
+        {
+          "name": "red",
+          "started_utc": "2026-11-13T02:34:22.885908+00:00",
+          "remaining_inclusive_seconds": 911.3706409931183,
+          "argv": [
+            "nice",
+            "-n",
+            "19",
+            "timeout",
+            "--signal=TERM",
+            "--kill-after=5s",
+            "60s",
+            "node",
+            "--test",
+            "--test-concurrency=1",
+            "--test-reporter=tap",
+            "src/scripts/runActionErrorContext.test.ts"
+          ],
+          "NODE_OPTIONS": "--max-old-space-size=512",
+          "own_process_group": 105,
+          "exit": 1,
+          "ended_utc": "2026-11-13T02:34:24.810083+00:00",
+          "elapsed_seconds": 1.9242043569975067,
+          "counts": {
+            "tests": 11,
+            "suites": 0,
+            "pass": 9,
+            "fail": 2,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "failed_cases": [
+            "actual Run stop keeps same-workspace errors and exact command identity",
+            "actual Stop Dev preserves a replacement Test behind an unrefreshed status snapshot"
+          ]
+        },
+        {
+          "name": "green",
+          "started_utc": "2026-11-13T02:34:24.811403+00:00",
+          "remaining_inclusive_seconds": 909.445148229599,
+          "argv": [
+            "nice",
+            "-n",
+            "19",
+            "timeout",
+            "--signal=TERM",
+            "--kill-after=5s",
+            "60s",
+            "node",
+            "--test",
+            "--test-concurrency=1",
+            "--test-reporter=tap",
+            "src/scripts/runActionErrorContext.test.ts"
+          ],
+          "NODE_OPTIONS": "--max-old-space-size=512",
+          "own_process_group": 121,
+          "exit": 0,
+          "ended_utc": "2026-11-13T02:34:27.893679+00:00",
+          "elapsed_seconds": 3.082308020995697,
+          "counts": {
+            "tests": 11,
+            "suites": 0,
+            "pass": 11,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "failed_cases": []
+        },
+        {
+          "name": "adjacent",
+          "started_utc": "2026-11-13T02:34:27.894386+00:00",
+          "remaining_inclusive_seconds": 906.362163066864,
+          "argv": [
+            "nice",
+            "-n",
+            "19",
+            "timeout",
+            "--signal=TERM",
+            "--kill-after=5s",
+            "60s",
+            "node",
+            "--test",
+            "--test-concurrency=1",
+            "--test-reporter=tap",
+            "src/scripts/runSelectionHistory.test.ts",
+            "src/scripts/runTab.test.ts"
+          ],
+          "NODE_OPTIONS": "--max-old-space-size=512",
+          "own_process_group": 137,
+          "exit": 0,
+          "ended_utc": "2026-11-13T02:34:31.822328+00:00",
+          "elapsed_seconds": 3.9279774090100545,
+          "counts": {
+            "tests": 11,
+            "suites": 0,
+            "pass": 11,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "failed_cases": []
+        },
+        {
+          "name": "tsc",
+          "started_utc": "2026-11-13T02:34:31.823083+00:00",
+          "remaining_inclusive_seconds": 902.4334671497345,
+          "argv": [
+            "nice",
+            "-n",
+            "19",
+            "timeout",
+            "--signal=TERM",
+            "--kill-after=5s",
+            "120s",
+            "node",
+            "node_modules/typescript/bin/tsc",
+            "--noEmit"
+          ],
+          "NODE_OPTIONS": "--max-old-space-size=2048",
+          "own_process_group": 161,
+          "exit": 0,
+          "ended_utc": "2026-11-13T02:35:03.981694+00:00",
+          "elapsed_seconds": 32.158653399004834
+        }
+      ],
+      "status": "PASS",
+      "head": "ff580a069cc68f7c7595ae85ccff78ee03772677",
+      "baseline_main": "975fce431b3d6448f0a20faeca1819a14bef05be",
+      "source_hashes": {
+        "baseline": "78f0429253ddf506adbfba4da73f48cabf4ac4802100861dfeed7658aa87d0ea",
+        "candidate": "092f31ca358a04510d9fd77e56dd0a6b65eed9e883d11d9208639ef13f9444f5",
+        "original9": "1d6fd68c6743517fc21a60023339a440f5b65aae53d87b472e96f30b4fed2ee6",
+        "successor11": "604e459b1186bad03190014a970473a564341fa9f18414d9d33253fd4cea30cb",
+        "package_lock": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+        "package": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac"
+      },
+      "net_files": [
+        "evidence/run-scripts/task-stop-id/README.md",
+        "evidence/run-scripts/task-stop-id/source.json",
+        "src/components/ScriptsPanel.tsx",
+        "src/scripts/runActionErrorContext.test.ts"
+      ],
+      "node": "v22.23.4",
+      "dependencies": {
+        "react": "18.3.1",
+        "renderer": "18.3.1",
+        "typescript": "5.9.3",
+        "reactPath": "/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/node_modules/react/index.js",
+        "rendererPath": "/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/node_modules/react-test-renderer/index.js",
+        "typescriptPath": "/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/node_modules/typescript/lib/typescript.js"
+      },
+      "restored_candidate_sha256": "092f31ca358a04510d9fd77e56dd0a6b65eed9e883d11d9208639ef13f9444f5",
+      "successor_unchanged": "604e459b1186bad03190014a970473a564341fa9f18414d9d33253fd4cea30cb",
+      "own_jobs_remaining": [],
+      "cleanup_seconds": 0.0006113940034992993,
+      "released_utc": "2026-11-13T02:35:03.982969+00:00",
+      "inclusive_elapsed_seconds": 209.7264382839203,
+      "own_jobs_check": "ps -eo pid,ppid,pgid,comm found no process in owned groups 84,97,105,121,137,161 after completion"
+    },
+    "raw": {
+      "setup": {
+        "stdout": "\nadded 394 packages in 13s\n",
+        "stderr": "(node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+      },
+      "resolution": {
+        "stdout": "{\"react\":\"18.3.1\",\"renderer\":\"18.3.1\",\"typescript\":\"5.9.3\",\"reactPath\":\"/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/node_modules/react/index.js\",\"rendererPath\":\"/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/node_modules/react-test-renderer/index.js\",\"typescriptPath\":\"/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/node_modules/typescript/lib/typescript.js\"}\n",
+        "stderr": "(node:97) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+      },
+      "red": {
+        "stdout": "TAP version 13\n# (node:113) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: actual Run start does not publish A's late error in B\nok 1 - actual Run start does not publish A's late error in B\n  ---\n  duration_ms: 416.37616\n  type: 'test'\n  ...\n# Subtest: actual Run start preserves B's own error when an older A command rejects\nok 2 - actual Run start preserves B's own error when an older A command rejects\n  ---\n  duration_ms: 176.527165\n  type: 'test'\n  ...\n# Subtest: actual Run start keeps same-workspace errors and exact command identity\nok 3 - actual Run start keeps same-workspace errors and exact command identity\n  ---\n  duration_ms: 127.661084\n  type: 'test'\n  ...\n# Subtest: actual Run stop does not publish A's late error in B\nok 4 - actual Run stop does not publish A's late error in B\n  ---\n  duration_ms: 107.024551\n  type: 'test'\n  ...\n# Subtest: actual Run stop preserves B's own error when an older A command rejects\nok 5 - actual Run stop preserves B's own error when an older A command rejects\n  ---\n  duration_ms: 101.376764\n  type: 'test'\n  ...\n# Subtest: actual Run stop keeps same-workspace errors and exact command identity\nnot ok 6 - actual Run stop keeps same-workspace errors and exact command identity\n  ---\n  duration_ms: 89.923015\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/scripts/runActionErrorContext.test.ts:173:3'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly deep-equal:\n    + actual - expected\n    \n      {\n        args: {\n    +     scriptId: null,\n    -     scriptId: 'dev',\n          workspaceId: 'run-action-a'\n        },\n        name: 'run_script_stop'\n      }\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected:\n    name: 'run_script_stop'\n    args:\n      workspaceId: 'run-action-a'\n      scriptId: 'dev'\n  actual:\n    name: 'run_script_stop'\n    args:\n      workspaceId: 'run-action-a'\n      scriptId: ~\n  operator: 'deepStrictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/scripts/runActionErrorContext.test.ts:178:12)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: actual Run pick does not publish A's late error in B\nok 7 - actual Run pick does not publish A's late error in B\n  ---\n  duration_ms: 95.383083\n  type: 'test'\n  ...\n# Subtest: actual Run pick preserves B's own error when an older A command rejects\nok 8 - actual Run pick preserves B's own error when an older A command rejects\n  ---\n  duration_ms: 83.244042\n  type: 'test'\n  ...\n# Subtest: actual Run pick keeps same-workspace errors and exact command identity\nok 9 - actual Run pick keeps same-workspace errors and exact command identity\n  ---\n  duration_ms: 71.913126\n  type: 'test'\n  ...\n# Subtest: actual Stop Dev preserves a replacement Test behind an unrefreshed status snapshot\nnot ok 10 - actual Stop Dev preserves a replacement Test behind an unrefreshed status snapshot\n  ---\n  duration_ms: 80.543168\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/scripts/runActionErrorContext.test.ts:186:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Stop Dev must not stop the replacement Test task\n    + actual - expected\n    \n    + undefined\n    - 'test'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'test'\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/scripts/runActionErrorContext.test.ts:191:10)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: actual Stop Dev still stops Dev and preserves another workspace\nok 11 - actual Stop Dev still stops Dev and preserves another workspace\n  ---\n  duration_ms: 87.013313\n  type: 'test'\n  ...\n1..11\n# tests 11\n# suites 0\n# pass 9\n# fail 2\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1808.361014\n",
+        "stderr": "(node:106) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+      },
+      "green": {
+        "stdout": "TAP version 13\n# (node:129) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: actual Run start does not publish A's late error in B\nok 1 - actual Run start does not publish A's late error in B\n  ---\n  duration_ms: 563.554377\n  type: 'test'\n  ...\n# Subtest: actual Run start preserves B's own error when an older A command rejects\nok 2 - actual Run start preserves B's own error when an older A command rejects\n  ---\n  duration_ms: 229.46515\n  type: 'test'\n  ...\n# Subtest: actual Run start keeps same-workspace errors and exact command identity\nok 3 - actual Run start keeps same-workspace errors and exact command identity\n  ---\n  duration_ms: 165.642858\n  type: 'test'\n  ...\n# Subtest: actual Run stop does not publish A's late error in B\nok 4 - actual Run stop does not publish A's late error in B\n  ---\n  duration_ms: 132.152954\n  type: 'test'\n  ...\n# Subtest: actual Run stop preserves B's own error when an older A command rejects\nok 5 - actual Run stop preserves B's own error when an older A command rejects\n  ---\n  duration_ms: 164.660159\n  type: 'test'\n  ...\n# Subtest: actual Run stop keeps same-workspace errors and exact command identity\nok 6 - actual Run stop keeps same-workspace errors and exact command identity\n  ---\n  duration_ms: 151.478416\n  type: 'test'\n  ...\n# Subtest: actual Run pick does not publish A's late error in B\nok 7 - actual Run pick does not publish A's late error in B\n  ---\n  duration_ms: 190.427199\n  type: 'test'\n  ...\n# Subtest: actual Run pick preserves B's own error when an older A command rejects\nok 8 - actual Run pick preserves B's own error when an older A command rejects\n  ---\n  duration_ms: 125.146996\n  type: 'test'\n  ...\n# Subtest: actual Run pick keeps same-workspace errors and exact command identity\nok 9 - actual Run pick keeps same-workspace errors and exact command identity\n  ---\n  duration_ms: 162.857623\n  type: 'test'\n  ...\n# Subtest: actual Stop Dev preserves a replacement Test behind an unrefreshed status snapshot\nok 10 - actual Stop Dev preserves a replacement Test behind an unrefreshed status snapshot\n  ---\n  duration_ms: 396.217611\n  type: 'test'\n  ...\n# Subtest: actual Stop Dev still stops Dev and preserves another workspace\nok 11 - actual Stop Dev still stops Dev and preserves another workspace\n  ---\n  duration_ms: 227.411606\n  type: 'test'\n  ...\n1..11\n# tests 11\n# suites 0\n# pass 11\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 2919.26325\n",
+        "stderr": "(node:122) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+      },
+      "adjacent": {
+        "stdout": "TAP version 13\n# (node:145) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: actual Run panel restores a workspace's nondefault history without starting a task\nok 1 - actual Run panel restores a workspace's nondefault history without starting a task\n  ---\n  duration_ms: 1104.760303\n  type: 'test'\n  ...\n# Subtest: actual Run panel restores each workspace history through A to B to A\nok 2 - actual Run panel restores each workspace history through A to B to A\n  ---\n  duration_ms: 329.198566\n  type: 'test'\n  ...\n# Subtest: actual Run panel skips deleted history IDs before selecting a configured task\nok 3 - actual Run panel skips deleted history IDs before selecting a configured task\n  ---\n  duration_ms: 453.750981\n  type: 'test'\n  ...\n# Subtest: actual Run panel falls back to Dev when all historical tasks were removed\nok 4 - actual Run panel falls back to Dev when all historical tasks were removed\n  ---\n  duration_ms: 190.367366\n  type: 'test'\n  ...\n# Subtest: actual Run panel keeps a busy task projected over an idle historical selection\nok 5 - actual Run panel keeps a busy task projected over an idle historical selection\n  ---\n  duration_ms: 164.529508\n  type: 'test'\n  ...\n# Subtest: actual Run panel keeps default selection inert when workspace history is empty\nok 6 - actual Run panel keeps default selection inert when workspace history is empty\n  ---\n  duration_ms: 118.440424\n  type: 'test'\n  ...\n# (node:153) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: display projection yields an idle selection to the busy workspace task without changing the selection\nok 7 - display projection yields an idle selection to the busy workspace task without changing the selection\n  ---\n  duration_ms: 0.663426\n  type: 'test'\n  ...\n# Subtest: display projection treats Spotlight as a task rather than changing selection policy\nok 8 - display projection treats Spotlight as a task rather than changing selection policy\n  ---\n  duration_ms: 0.12666\n  type: 'test'\n  ...\n# Subtest: idle: Start <label> and Test your changes here; Spotlight and no task have their own wording\nok 9 - idle: Start <label> and Test your changes here; Spotlight and no task have their own wording\n  ---\n  duration_ms: 1.168928\n  type: 'test'\n  ...\n# Subtest: pending lines show only before any output; a task that ran shows its output\nok 10 - pending lines show only before any output; a task that ran shows its output\n  ---\n  duration_ms: 0.261857\n  type: 'test'\n  ...\n# Subtest: header: Run <label> when idle, Stop <label> while busy, Stopping... while it stops\nok 11 - header: Run <label> when idle, Stop <label> while busy, Stopping... while it stops\n  ---\n  duration_ms: 0.207312\n  type: 'test'\n  ...\n1..11\n# tests 11\n# suites 0\n# pass 11\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 3553.624348\n",
+        "stderr": "(node:138) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+      },
+      "tsc": {
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  },
+  "ordering_claim": "The regression constructs a stale status snapshot and a newer task at a modeled native boundary. Actual event ordering and native process preservation are unobserved.",
+  "concurrency_claim": "None. Both starts stop other runs in the same workspace.",
+  "serialization": "Existing sole ACC only. This source supplement is not intake or admission, adds no queue row, and does not alter Copy13 before input21 or their frozen bindings."
+}

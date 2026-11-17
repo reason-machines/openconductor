@@ -1,0 +1,476 @@
+{
+  "key": "composer-local-mcp-status-immediate-selection",
+  "owner": "13576d11-76fb-4842-aa9b-c398f9ca26f3",
+  "stage": "SOURCE_QUALIFICATION_ONLY_NOT_IMPLEMENTATION_ADMITTED",
+  "main_sha_checked": "bce99cb5023d22bdc2fa6eac203b74cb915b6208",
+  "asset_identity": {
+    "renderApp-D_fmY7hW.js": {
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index-BGEQ8YjU.js": {
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "rea": {
+    "retained_record": "evidence/frontend/rea-analyze-javascript-application.json.gz",
+    "evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "limit": "Renderer semantic parsing skipped after worker heap exhaustion. These are inert compiled-source joins. No freshly observed installed binary or original-app execution."
+  },
+  "coordinate_units": "zero-based half-open UTF-8 byte offsets",
+  "spans": [
+    {
+      "name": "immediate-effect-set",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_bytes": [
+        7894479,
+        7894576
+      ],
+      "bytes": 97,
+      "sha256": "65f1d0c011f7c366552995e1819a85c97966df37d429dfac547dbe3eccda0c32",
+      "source": "const hmo=new Set([\"pick_linked_directory\",\"pick_personality\",\"show_mcp_status\",\"open_terminal\"])"
+    },
+    {
+      "name": "slash-selection",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_bytes": [
+        8680979,
+        8681312
+      ],
+      "bytes": 333,
+      "sha256": "5dc71c8ec1c60ebc796992fa488b6c0f53bca3cd78f3779aee39ef324a46a367",
+      "source": "{char:\"/\",query:z6,renderItem:(ln,$r,hr)=>uRt(ln)?FNi({item:ln,focused:hr}):null,onSelect:(ln,$r,hr)=>{const Ns=String(hr.id);if(MNi(Ns)){BNi(ln,$r,hr);return}const Oa=Yl(Ns);if(Oa&&hmo.has(Oa.effect)){ln.chain().focus().deleteRange($r).run(),ua(Oa);return}const Vf=hr.label??Ns;ln.chain().focus().insertContentAt($r,`/${Vf} `).run()"
+    },
+    {
+      "name": "command-handler",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_bytes": [
+        8667418,
+        8668977
+      ],
+      "bytes": 1559,
+      "sha256": "db2715648fcf0e18b92b448bfaf99b322fb777864ac8e859e06cf09beff45611",
+      "source": "const ua=(ln,$r=\"\")=>{switch(ln.effect){case\"toggle_plan_mode\":return Jo?(Kl(),!0):!1;case\"toggle_fast_mode\":return Fl(),!0;case\"set_goal\":return hi?($r.trim()&&_($r.trim()),J(!0),de(),!0):(er.error(\"Codex goals are not available in this chat.\",r),!0);case\"enable_ultracode\":return bt===\"claude\"&&ft.mutate({sessionId:e,localWorkspaceId:r,agentType:\"claude\",thinkingLevel:\"ultracode\"}),!0;case\"pick_linked_directory\":return $r.trim()?(ja.mutate({localWorkspaceId:r,directoryPath:$r.trim()}),!0):(nr.openDialog(ICt),!0);case\"pick_personality\":return ke(!0),!0;case\"show_mcp_status\":return nr.openDialog(Tle,{sessionId:e}),!0;case\"clear_session\":return Ye&&Ve.mutate({sessionId:Ye.id,localWorkspaceId:r,agentType:Ye.agentType,acpAgentId:Ye.acpAgentId,acpConfig:Ye.acpConfig,model:Ye.model??void 0,thinkingLevel:Ye.thinkingLevel,codexPersonality:Ye.codexPersonality},{onSuccess:hr=>{d(hr.id)}}),!0;case\"restart_agent\":if(!Ye)return!0;{const hr=bt===\"codex\"?\"Codex\":\"Claude Code\";(async()=>{await Kh.resetGenerator({id:Ye.id,agentType:bt}),Q5e.clearMcpServers(Ye.id),await So.invalidateQueries({queryKey:aS.slashCommands(r,bt,Ye.id,Nt)}),await So.invalidateQueries({queryKey:aS.availableMcp(r,bt)}),er.success(`Restarted ${hr}`,r)})().catch(Ns=>{Bt.error(\"Failed to refresh workspace config:\",Ns),er.error(`Failed to restart ${hr}`,r)}).fireAndForget()}return!0;case\"open_terminal\":return Ne({command:ln,stage:\"pending\"}),!0;case\"compact_session\":return Ye&&nc.sendMessage({sessionId:Ye.id,localWorkspaceId:r,message:\"/compact\",mode:\"queue\"}).fireAndForget(),!0}}"
+    },
+    {
+      "name": "status-dialog",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_bytes": [
+        7496196,
+        7499997
+      ],
+      "bytes": 3801,
+      "sha256": "9c98e00281300c84709b11af3f1d8467dacdc4cb97db36cb0d665bec970c2973",
+      "source": "function duo(t){const e=ne.c(66),{localWorkspaceId:n}=t;let i;e[0]!==n?(i={localWorkspaceId:n},e[0]=n,e[1]=i):i=e[1];const{data:r}=Ms(i),o=x1(huo),c=ib(Tle)?.sessionId,u=k8i(c);let d;e[2]!==c?(d={sessionId:c},e[2]=c,e[3]=d):d=e[3];const{data:h,error:m}=Cg(d);let g,_,v,x,w,E,k,I;e[4]!==n||e[5]!==h||e[6]!==c||e[7]!==r?.host||e[8]!==r?.remoteState||e[9]!==r?.state||e[10]!==r?.workspacePath?(w=(h&&(h.agentType??gu(h.model)))??\"claude\",v=h?.lastUserMessageAt!=null,E={localWorkspaceId:n,workspacePath:r?.workspacePath,workspaceHost:r?.host,workspaceState:r?.state,workspaceRemoteState:r?.remoteState,agentType:w},x=j9e(E)!==void 0,_=c===void 0||h!==void 0,g=x&&_,I=qi,k=Uzt(E),e[4]=n,e[5]=h,e[6]=c,e[7]=r?.host,e[8]=r?.remoteState,e[9]=r?.state,e[10]=r?.workspacePath,e[11]=g,e[12]=_,e[13]=v,e[14]=x,e[15]=w,e[16]=E,e[17]=k,e[18]=I):(g=e[11],_=e[12],v=e[13],x=e[14],w=e[15],E=e[16],k=e[17],I=e[18]);const R=o&&!v&&_;let O;e[19]!==k||e[20]!==R?(O={...k,enabled:R},e[19]=k,e[20]=R,e[21]=O):O=e[21];const D=I(O),P=A8i(E);let L;e[22]!==v||e[23]!==o||e[24]!==c||e[25]!==E?(L={...E,sessionId:c,isOpen:o,hasStarted:v},e[22]=v,e[23]=o,e[24]=c,e[25]=E,e[26]=L):L=e[26];const B=I8i(L),F=v?B:P,H=v&&B.data?.source===\"workspace\",U=_?H?B.data?.mcpServers:v?u:D.data?.mcpServers:void 0,z=u!==void 0,G=_&&(F.isPending||!v&&D.isFetching),K=m??(_?F.error??(v?void 0:D.error):void 0),X=r?.state,Q=r?.remoteState?.status,J=U?.length,te=v?B.data?.warning:D.data?.warning;let Z;e[27]!==g||e[28]!==K||e[29]!==G||e[30]!==x||e[31]!==J||e[32]!==te||e[33]!==X||e[34]!==Q?(Z=R8i({isWorkspaceReady:x,workspaceState:X,remoteStatus:Q,serverCount:J,isPending:G,canRefresh:g,error:K,warning:te}),e[27]=g,e[28]=K,e[29]=G,e[30]=x,e[31]=J,e[32]=te,e[33]=X,e[34]=Q,e[35]=Z):Z=e[35];const se=Z;let ce;e[36]!==n||e[37]!==w?(ce=Ze=>{n&&(nr.closeDialog(Tle),O8i({localWorkspaceId:n,agentType:w,serverName:Ze}))},e[36]=n,e[37]=w,e[38]=ce):ce=e[38];const ae=ce;let de;e[39]!==F?(de=()=>{F.mutate()},e[39]=F,e[40]=de):de=e[40];const ue=de,pe=K instanceof Error?K.message:void 0,be=fuo;if(!o)return null;const he=r?.remoteState!==void 0;let ge;e[41]===Symbol.for(\"react.memo_cache_sentinel\")?(ge=p.jsx(Bu,{children:\"MCP status\"}),e[41]=ge):ge=e[41];const ve=z&&!H?\"Server status reported by the running session.\":\"Refresh to check current server status.\";let ye;e[42]!==ve?(ye=p.jsxs(Hd,{children:[ge,p.jsx(wg,{children:ve})]}),e[42]=ve,e[43]=ye):ye=e[43];let xe;e[44]!==ae||e[45]!==he||e[46]!==U||e[47]!==se?(xe=U!==void 0&&U.length>0&&(se===void 0||se.isError)&&p.jsx(\"div\",{className:\"space-y-2 py-2\",children:U.map(Ze=>p.jsx(\"div\",{className:\"flex items-center justify-between\",children:p.jsx(cuo,{server:Ze,onAuthClick:he?void 0:ae,className:\"flex-1\"})},Ze.name))}),e[44]=ae,e[45]=he,e[46]=U,e[47]=se,e[48]=xe):xe=e[48];let ke;e[49]!==se?(ke=se&&p.jsx(N8i,{...se,className:\"py-4 text-sm\"}),e[49]=se,e[50]=ke):ke=e[50];const Se=G||!g,De=`h-3 w-3 mr-1 ${G?\"animate-spin\":\"\"}`;let je;e[51]!==De?(je=p.jsx(iv,{className:De}),e[51]=De,e[52]=je):je=e[52];let Ne;e[53]!==ue||e[54]!==pe||e[55]!==Se||e[56]!==je?(Ne=p.jsxs(tt,{variant:\"ghost\",size:\"sm\",onClick:ue,disabled:Se,title:pe,className:\"text-xs\",children:[je,\"Refresh status\"]}),e[53]=ue,e[54]=pe,e[55]=Se,e[56]=je,e[57]=Ne):Ne=e[57];let Le;e[58]===Symbol.for(\"react.memo_cache_sentinel\")?(Le=p.jsxs(tt,{variant:\"ghost\",size:\"sm\",onClick:be,className:\"text-xs\",children:[p.jsx(co,{className:\"h-3 w-3 mr-1\"}),\"Read the MCP docs\"]}),e[58]=Le):Le=e[58];let ze;e[59]!==Ne?(ze=p.jsxs(\"div\",{className:\"flex justify-between pt-2 border-t\",children:[Ne,Le]}),e[59]=Ne,e[60]=ze):ze=e[60];let Ke;return e[61]!==ye||e[62]!==xe||e[63]!==ke||e[64]!==ze?(Ke=p.jsx(kg,{id:Tle,children:p.jsxs(nd,{className:\"sm:max-w-md\",children:[ye,xe,ke,ze]})}),e[61]=ye,e[62]=xe,e[63]=ke,e[64]=ze,e[65]=Ke):Ke=e[65],Ke}"
+    },
+    {
+      "name": "session-refresh",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_bytes": [
+        7490723,
+        7491923
+      ],
+      "bytes": 1200,
+      "sha256": "49bf3efc89ac145617f66763af4f281333d867347ad134e3c83ea05f1f2a7892",
+      "source": "function ouo(t){const e=ne.c(15);let n,i,r,o,a;e[0]!==t?({sessionId:r,...n}=t,i=j9e(n),a=Ao,o=[...aS.availableMcp(n.localWorkspaceId,n.agentType),r],e[0]=t,e[1]=n,e[2]=i,e[3]=r,e[4]=o,e[5]=a):(n=e[1],i=e[2],r=e[3],o=e[4],a=e[5]);let c;e[6]!==i||e[7]!==r?(c=async()=>{if(r===void 0||i===void 0)return;const h={localWorkspaceId:i.localWorkspaceId,workingDir:i.workspacePath,host:i.workspaceHost,agentType:i.agentType,forceRefresh:!0};try{return{...await Kb.fetchAvailableMCP({...h,sessionId:r}),sessionId:r,source:\"session\"}}catch(m){const g=m;if(i.workspaceHost===gn||!(g instanceof Error)||g.message!==`Cannot fetch MCP status: session ${r} is not running`)throw g;return{...await Kb.fetchAvailableMCP(h),sessionId:r,source:\"workspace\"}}},e[6]=i,e[7]=r,e[8]=c):c=e[8];let u;e[9]!==n?(u=(h,m)=>n.workspaceHost!==gn||h>=5?!1:(m instanceof Error?m.message:\"\").includes(\"is not running\"),e[9]=n,e[10]=u):u=e[10];let d;return e[11]!==o||e[12]!==c||e[13]!==u?(d={mutationKey:o,mutationFn:c,retry:u,retryDelay:luo,onSuccess:auo},e[11]=o,e[12]=c,e[13]=u,e[14]=d):d=e[14],a(d)}function auo(t){!t||t.source!==\"session\"||Q5e.setMcpServers(t.sessionId,t.mcpServers)}function luo(t){return Math.min(500*2**t,5e3)}"
+    },
+    {
+      "name": "session-refresh-on-open",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_bytes": [
+        7491923,
+        7492754
+      ],
+      "bytes": 831,
+      "sha256": "9617b39f0593a87b883b018d24c2104e60b5c09f9b6eb0efa1a6dc31f3cc5280",
+      "source": "function I8i(t){const e=ne.c(19);let n,i,r;e[0]!==t?({isOpen:i,hasStarted:n,...r}=t,e[0]=t,e[1]=n,e[2]=i,e[3]=r):(n=e[1],i=e[2],r=e[3]);const o=ouo(r),[a,c]=$.useState(),u=a!==void 0&&a===r.sessionId,d=o.mutate;let h;e[4]!==n||e[5]!==r?(h=n&&r.sessionId!==void 0&&j9e(r)!==void 0,e[4]=n,e[5]=r,e[6]=h):h=e[6];const m=h;let g,_;e[7]!==m||e[8]!==i||e[9]!==r.sessionId||e[10]!==o.isPending||e[11]!==u||e[12]!==d?(g=()=>{if(!i||!m){c(void 0);return}u||o.isPending||(c(r.sessionId),d())},_=[m,i,o.isPending,u,r.sessionId,d],e[7]=m,e[8]=i,e[9]=r.sessionId,e[10]=o.isPending,e[11]=u,e[12]=d,e[13]=g,e[14]=_):(g=e[13],_=e[14]),$.useEffect(g,_);const v=o.data?.sessionId===r.sessionId?o.data:void 0,x=o.isPending||i&&m&&!u;let w;return e[15]!==o||e[16]!==v||e[17]!==x?(w={...o,data:v,isPending:x},e[15]=o,e[16]=v,e[17]=x,e[18]=w):w=e[18],w}"
+    },
+    {
+      "name": "configured-refresh",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_bytes": [
+        7490160,
+        7490723
+      ],
+      "bytes": 563,
+      "sha256": "c6c4c7efbba7dd60e56c7501317fbde8f68e0af48d0fcb6cef3ff64f3435d389",
+      "source": "function A8i(t){const e=ne.c(10),n=_0();let i;e[0]!==t?(i=j9e(t),e[0]=t,e[1]=i):i=e[1];const r=i;let o;e[2]!==r?(o=async()=>{if(r!==void 0)return Kb.fetchAvailableMCP({localWorkspaceId:r.localWorkspaceId,workingDir:r.workspacePath,host:r.workspaceHost,agentType:r.agentType,forceRefresh:!0})},e[2]=r,e[3]=o):o=e[3];let a;e[4]!==t||e[5]!==n?(a=u=>{if(!u)return;const d=aS.availableMcp(t.localWorkspaceId,t.agentType);n.setQueryData(d,u)},e[4]=t,e[5]=n,e[6]=a):a=e[6];let c;return e[7]!==o||e[8]!==a?(c={mutationFn:o,onSuccess:a},e[7]=o,e[8]=a,e[9]=c):c=e[9],Ao(c)}"
+    },
+    {
+      "name": "status-presentation",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_bytes": [
+        7494580,
+        7495353
+      ],
+      "bytes": 773,
+      "sha256": "755b9caba127fcbc2133f2f14cfd3306459931a34f1243367de0df0424a83336",
+      "source": "function R8i({isWorkspaceReady:t,workspaceState:e,remoteStatus:n,serverCount:i,isPending:r,canRefresh:o,error:a,warning:c}){if(!t)return n===\"restarting\"?{text:\"Workspace restarting…\",isLoading:!0}:e===void 0||e===\"initializing\"||e===\"setting_up\"||n===\"initializing\"?{text:\"Waiting for workspace…\",isLoading:!0}:{text:\"MCP status unavailable.\"};if(r)return i!==void 0&&i>0?void 0:{text:\"Loading MCP servers…\",isLoading:!0};if(a!=null)return uI(a)&&a.code===HYe.WORKSPACE_NOT_READY?{text:\"Workspace isn't ready yet.\"}:{text:o?\"Couldn't load MCP servers. Try refreshing.\":\"Couldn't load MCP servers.\",isError:!0};if(c!==void 0)return{text:c,isError:!0};if(i===void 0)return{text:\"Loading MCP servers…\",isLoading:!0};if(i===0)return{text:\"No MCP servers configured.\"}}"
+    },
+    {
+      "name": "rpc-response-schema",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes": [
+        1086710,
+        1086859
+      ],
+      "bytes": 149,
+      "sha256": "ddbc061d1fc323ede5915564627e02c5951f842cc1acfae6d1abe90652a66f34",
+      "source": "yJe=b({type:w(\"fetch_available_mcp_output\"),id:f(),agent:b({agentType:Lr,mcpServers:U(Nre).optional(),warning:f().optional(),error:f().optional()})})"
+    },
+    {
+      "name": "rpc-request-schema",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes": [
+        1089296,
+        1089418
+      ],
+      "bytes": 122,
+      "sha256": "59791bef1fb353ae825f010b1ff1bb2c854c697c454b6deb2c695a91681330b6",
+      "source": "IJe=b({type:w(\"fetch_available_mcp\"),id:f(),agentType:Lr,options:gg,forceRefresh:H().optional(),sessionId:f().optional()})"
+    },
+    {
+      "name": "server-schema",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes": [
+        1085104,
+        1085317
+      ],
+      "bytes": 213,
+      "sha256": "5df57997e57c1ceed78c9ba7962dfe953d6f3102c5bbfd58ed361e58bddd1075",
+      "source": "Nre=b({name:f(),status:q([w(\"connected\"),w(\"failed\"),w(\"needs-auth\"),w(\"pending\"),w(\"disabled\")]),serverInfo:b({name:f(),version:f()}).optional(),error:f().optional(),scope:f().optional(),tools:U(aJe).optional()})"
+    },
+    {
+      "name": "rpc-transport",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes": [
+        2956259,
+        2956427
+      ],
+      "bytes": 168,
+      "sha256": "644048a299726866ebe00097eec85e3d0d296cb8d4486bf0205617db62633b03",
+      "source": "async fetchAvailableMCP(e){return this.ensureTunnelStarted(),Ke.requestWithTimeout(ds.FETCH_AVAILABLE_MCP,{type:\"fetch_available_mcp\",...e},12e4).then(n=>yJe.parse(n))}"
+    },
+    {
+      "name": "workspace-to-local-rpc",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes": [
+        3024929,
+        3025801
+      ],
+      "bytes": 872,
+      "sha256": "fdee421a78b454324239098690c111781a34e14ca691b4f66bffa535bf19ecfd",
+      "source": "async fetchAvailableMCP({localWorkspaceId:e,workingDir:s,host:n,agentType:r,forceRefresh:i,sessionId:o}){const a=`${hPt}${e}-${r}`;if(n!==M){const d=await fe.cloud.fetchAvailableMcp({id:a,localWorkspaceId:e,baseUrl:n.hostingServerUrl,agentType:r,sessionId:o});if(d.agent.error)throw new Error(d.agent.error);return{agentType:r,mcpServers:d.agent.mcpServers??[],warning:d.agent.warning}}await qc(e);const c=await this.getInitOptions({workingDir:s,host:n,localWorkspaceId:e});lb.info(\"fetchAvailableMCP: sending JSON-RPC request\");const l=performance.now(),u=await vs.fetchAvailableMCP({id:a,agentType:r,options:{...c},forceRefresh:i,sessionId:o});if(lb.info(`fetchAvailableMCP: JSON-RPC response received in ${(performance.now()-l).toFixed(1)}ms`,u),u.agent.error)throw new Error(u.agent.error);return{agentType:r,mcpServers:u.agent.mcpServers??[],warning:u.agent.warning}}"
+    },
+    {
+      "name": "renderer dialog import",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_bytes": [
+        58822,
+        58831
+      ],
+      "bytes": 9,
+      "sha256": "10e9910ef8c99e195a7ccbae714d6c65130ed921c310e2773af82b5de4a508b4",
+      "source": "iE as Tle"
+    },
+    {
+      "name": "index dialog export",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes": [
+        3485237,
+        3485246
+      ],
+      "bytes": 9,
+      "sha256": "e2788a2905d47fa3a3055f0c0d10507c65470de5ece7bef2cf608f46c057c7e5",
+      "source": "FVt as iE"
+    },
+    {
+      "name": "index dialog identifier",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes": [
+        3261510,
+        3261533
+      ],
+      "bytes": 23,
+      "sha256": "d436104b1706271f50a4a362d26744d802e4f9920538dca728f22db31d9fe751",
+      "source": "FVt=\"mcp-status-dialog\""
+    }
+  ],
+  "checks": [
+    {
+      "name": "renderApp-D_fmY7hW.js complete size",
+      "passed": true
+    },
+    {
+      "name": "renderApp-D_fmY7hW.js complete SHA256",
+      "passed": true
+    },
+    {
+      "name": "index-BGEQ8YjU.js complete size",
+      "passed": true
+    },
+    {
+      "name": "index-BGEQ8YjU.js complete SHA256",
+      "passed": true
+    },
+    {
+      "name": "immediate-effect-set unique start marker",
+      "passed": true
+    },
+    {
+      "name": "immediate-effect-set nonempty UTF-8 span",
+      "passed": true
+    },
+    {
+      "name": "slash-selection unique start marker",
+      "passed": true
+    },
+    {
+      "name": "slash-selection nonempty UTF-8 span",
+      "passed": true
+    },
+    {
+      "name": "command-handler unique start marker",
+      "passed": true
+    },
+    {
+      "name": "command-handler nonempty UTF-8 span",
+      "passed": true
+    },
+    {
+      "name": "status-dialog unique start marker",
+      "passed": true
+    },
+    {
+      "name": "status-dialog nonempty UTF-8 span",
+      "passed": true
+    },
+    {
+      "name": "session-refresh unique start marker",
+      "passed": true
+    },
+    {
+      "name": "session-refresh nonempty UTF-8 span",
+      "passed": true
+    },
+    {
+      "name": "session-refresh-on-open unique start marker",
+      "passed": true
+    },
+    {
+      "name": "session-refresh-on-open nonempty UTF-8 span",
+      "passed": true
+    },
+    {
+      "name": "configured-refresh unique start marker",
+      "passed": true
+    },
+    {
+      "name": "configured-refresh nonempty UTF-8 span",
+      "passed": true
+    },
+    {
+      "name": "status-presentation unique start marker",
+      "passed": true
+    },
+    {
+      "name": "status-presentation nonempty UTF-8 span",
+      "passed": true
+    },
+    {
+      "name": "rpc-response-schema unique start marker",
+      "passed": true
+    },
+    {
+      "name": "rpc-response-schema nonempty UTF-8 span",
+      "passed": true
+    },
+    {
+      "name": "rpc-request-schema unique start marker",
+      "passed": true
+    },
+    {
+      "name": "rpc-request-schema nonempty UTF-8 span",
+      "passed": true
+    },
+    {
+      "name": "server-schema unique start marker",
+      "passed": true
+    },
+    {
+      "name": "server-schema nonempty UTF-8 span",
+      "passed": true
+    },
+    {
+      "name": "rpc-transport unique start marker",
+      "passed": true
+    },
+    {
+      "name": "rpc-transport nonempty UTF-8 span",
+      "passed": true
+    },
+    {
+      "name": "workspace-to-local-rpc unique start marker",
+      "passed": true
+    },
+    {
+      "name": "workspace-to-local-rpc nonempty UTF-8 span",
+      "passed": true
+    },
+    {
+      "name": "original immediate set includes MCP status",
+      "passed": true
+    },
+    {
+      "name": "selection deletes supplied slash range before dispatch",
+      "passed": true
+    },
+    {
+      "name": "MCP status dispatch carries current session ID",
+      "passed": true
+    },
+    {
+      "name": "renderer dialog import unique exact bytes",
+      "passed": true
+    },
+    {
+      "name": "index dialog export unique exact bytes",
+      "passed": true
+    },
+    {
+      "name": "index dialog identifier unique exact bytes",
+      "passed": true
+    },
+    {
+      "name": "dialog distinguishes started from unstarted sessions",
+      "passed": true
+    },
+    {
+      "name": "dialog does not invent a row when session data is absent",
+      "passed": true
+    },
+    {
+      "name": "dialog labels reported-session versus refresh status",
+      "passed": true
+    },
+    {
+      "name": "live refresh passes sessionId and forceRefresh",
+      "passed": true
+    },
+    {
+      "name": "local missing-session error is not a workspace fallback",
+      "passed": true
+    },
+    {
+      "name": "only session-sourced results update session cache",
+      "passed": true
+    },
+    {
+      "name": "opening refresh is session-tagged",
+      "passed": true
+    },
+    {
+      "name": "configured refresh does not claim a session",
+      "passed": true
+    },
+    {
+      "name": "request schema exposes optional session and force-refresh",
+      "passed": true
+    },
+    {
+      "name": "response keeps warning and error optional",
+      "passed": true
+    },
+    {
+      "name": "server schema has five named statuses",
+      "passed": true
+    },
+    {
+      "name": "RPC transport sends fetch_available_mcp and parses response",
+      "passed": true
+    },
+    {
+      "name": "local bridge forwards sessionId rather than replacing it with workspace",
+      "passed": true
+    },
+    {
+      "name": "local bridge surfaces helper error before rows",
+      "passed": true
+    },
+    {
+      "name": "presentation distinguishes absent rows and empty rows",
+      "passed": true
+    },
+    {
+      "name": "current picker only has existing directory immediate effect",
+      "passed": true
+    },
+    {
+      "name": "current picker does not invoke general command callback",
+      "passed": true
+    },
+    {
+      "name": "current workspace callback contains no MCP status action",
+      "passed": true
+    },
+    {
+      "name": "current workspace callback retains unavailable result",
+      "passed": true
+    },
+    {
+      "name": "current menu still offers built-in MCP status",
+      "passed": true
+    }
+  ],
+  "current_source": {
+    "src/features/chat/Composer.tsx": {
+      "bytes": 30055,
+      "sha256": "c31a7479f629560c0162791619034a56ee039d31db1344f16433221b7b3e8849"
+    },
+    "src/features/chat/ComposerEditor.tsx": {
+      "bytes": 10088,
+      "sha256": "721329425ae44ff6d75f1a1c755c492b4c67954ef1cca298815d97794780cc3c"
+    },
+    "src/features/chat/slashCommands.ts": {
+      "bytes": 11089,
+      "sha256": "4f6c2586872a1275a8b983cd29b08ea4b54562e9432e90c40000350341887a50"
+    },
+    "src/components/WorkspaceView.tsx": {
+      "bytes": 86090,
+      "sha256": "823da1986980e5a90bd11ff636772085fabdfe5e364ec3b02947916d264e4dcf"
+    },
+    "src/backend.ts": {
+      "bytes": 12743,
+      "sha256": "4b13170fcaffce5d828de400369164e2dfdcc3d3aaa818a3860e0a6e826ce237"
+    }
+  },
+  "current_command_callback": "        onCommand={(text) => {\n          // Agent commands and skills shadow the built-ins.\n          const cmd = parseSlashCommand(text, isKnownCommand);\n          if (!cmd || slashCommands.some((c) => c.name === cmd.name && (c.effect === \"agent\" || c.effect === \"skill\"))) return false;\n          if (slashCommands.some((c) => c.name === cmd.name && c.effect === \"pick_linked_directory\")) { void openLinks(); return true; }\n          if (cmd.name === \"plan\" && planMode) {\n            if (planMode.disabled) setAttachError(\"Wait for the current Claude Code turn to end before changing Plan mode.\");\n            else planMode.onToggle();\n            return true;\n          }\n          if (cmd.name === \"fast\" && fastMode && modelChoice) {\n            pickModel({ ...modelChoice, fast: !fastMode.isFastMode });\n            return true;\n          }\n          if (cmd.name === \"clear\" && (agentId === \"claude\" || agentId === \"codex\")) {\n            if (clearing.current) return true;\n            if (workspace.status === \"archived\" || running || queue.status !== \"idle\" || queue.items.length > 0 || permissions.length > 0 || approvals.length > 0 || consents.length > 0) {\n              setAttachError(\"Only an idle local chat can be cleared.\");\n              return true;\n            }\n            clearing.current = true;\n            void clearLocalChat(workspace.id, chatId, agentId)\n              .then((replacement) => onClearLocal(chatId, replacement))\n              .catch((error: unknown) => setAttachError(error instanceof Error ? error.message : String(error)))\n              .finally(() => { clearing.current = false; });\n            return true;\n          }\n          const who = agentId === \"reason\" ? \"Reason\" : AGENT_NAMES[COMPOSER_AGENT[agentId]];\n          setAttachError(cmd.name === \"plan\" ? \"Plan mode is not available in this chat.\" : `/${cmd.name} is not available for ${who}.`);\n          return true;\n        }}",
+  "missing_original_link": "Matching local bundled helper handler for fetch_available_mcp, including Claude/Codex provider operation, per-session admission, forceRefresh/cache policy, status normalization, warnings and failures. The frontend request/response schema does not prove how the helper obtains live status.",
+  "missing_current_link": "The audited local provider parsers/Rust wire variants/RPC commands/frontend stores have no end-to-end local server-status carrier; no existing live status capability can be reused by a selection-only change.",
+  "not_run": [
+    "RED regression",
+    "candidate GREEN",
+    "provider",
+    "app or browser",
+    "native picker or IME",
+    "workflow dispatch or rerun"
+  ],
+  "product_edits": [],
+  "admission": "Lease reconciliation and complete real status capability contract remain prerequisites. No placeholder dialog, invented statuses or configuration-as-connected substitution.",
+  "current_capability_audit": {
+    "session_id": "50084e71-aac1-470c-9e4d-68a6861d81b0",
+    "url": "https://reasonmachines.com/agents/50084e71-aac1-470c-9e4d-68a6861d81b0",
+    "ref": "bce99cb5023d22bdc2fa6eac203b74cb915b6208",
+    "method": "Independent read-only repository source audit; no network refresh or execution",
+    "claude": "ClaudeEvent::Init drops MCP server metadata; TurnMapper/ProviderEvent/event_json and ReasonPayload/ChatSnapshot expose no server-status carrier.",
+    "codex": "ClientRequest has no MCP-status request; unknown notifications are discarded by notification_payloads; CodexSnapshot has no server-status data.",
+    "frontend": "mcp_status_indicator_enabled has no Composer consumer. Unshadowed mcp-status submission reaches the unavailable fallback.",
+    "not_a_substitute": [
+      "MCP tool calls and elicitation consent",
+      "configuration-name diffs",
+      "Reason organization connectionState API"
+    ],
+    "limit": "Bounded source audit of local provider status paths, not proof about a running installed app."
+  }
+}

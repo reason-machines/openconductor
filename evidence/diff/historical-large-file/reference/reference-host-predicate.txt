@@ -1,0 +1,1 @@
+function Ht(t){return t.hostingServerUrl!==M.hostingServerUrl}function Us(t){return Ht(t)?"cloud":"local"}

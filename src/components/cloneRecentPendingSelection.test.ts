@@ -129,7 +129,7 @@ for (const protocol of ["https", "ssh"] satisfies model.GitProtocol[]) {
       view.select();
       assert.equal(view.input().props.value, expectedUrl);
       assert.equal(view.recent().props["aria-pressed"], true);
-      assert.deepEqual(view.requests, [{ remoteUrl: "https://github.com/Acme/First.git", path: "/synthetic/initial", name: "First" }]);
+      assert.deepEqual(view.requests, [{ remoteUrl: "https://github.com/Acme/First.git", path: "/synthetic/initial", name: "first" }]);
       await view.submit();
       assert.equal(view.requests.length, 1, "Selection must not submit a second pending clone");
       assert.equal(view.primary().props.disabled, true);
@@ -146,7 +146,7 @@ for (const protocol of ["https", "ssh"] satisfies model.GitProtocol[]) {
       assert.equal(view.input().props.value, expectedUrl);
       assert.equal(view.primary().props.disabled, false);
       await view.submit();
-      assert.deepEqual(view.requests[1], { remoteUrl: expectedUrl, path: "/synthetic/initial", name: "RecentRepo" });
+      assert.deepEqual(view.requests[1], { remoteUrl: expectedUrl, path: "/synthetic/initial", name: "recentrepo" });
     } finally { view.dispose(); }
   });
 }

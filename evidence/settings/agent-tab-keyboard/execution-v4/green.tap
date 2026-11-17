@@ -1,0 +1,144 @@
+TAP version 13
+# (node:183) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: only the selected reason tab participates in Tab order
+ok 1 - only the selected reason tab participates in Tab order
+  ---
+  duration_ms: 436.297548
+  type: 'test'
+  ...
+# Subtest: only the selected claude tab participates in Tab order
+ok 2 - only the selected claude tab participates in Tab order
+  ---
+  duration_ms: 217.333714
+  type: 'test'
+  ...
+# Subtest: only the selected codex tab participates in Tab order
+ok 3 - only the selected codex tab participates in Tab order
+  ---
+  duration_ms: 170.471665
+  type: 'test'
+  ...
+# Subtest: ArrowRight moves focus and automatically activates claude from reason
+ok 4 - ArrowRight moves focus and automatically activates claude from reason
+  ---
+  duration_ms: 128.453762
+  type: 'test'
+  ...
+# Subtest: ArrowLeft moves focus and automatically activates claude from codex
+ok 5 - ArrowLeft moves focus and automatically activates claude from codex
+  ---
+  duration_ms: 120.781875
+  type: 'test'
+  ...
+# Subtest: ArrowRight moves focus and automatically activates reason from codex
+ok 6 - ArrowRight moves focus and automatically activates reason from codex
+  ---
+  duration_ms: 133.869237
+  type: 'test'
+  ...
+# Subtest: ArrowLeft moves focus and automatically activates codex from reason
+ok 7 - ArrowLeft moves focus and automatically activates codex from reason
+  ---
+  duration_ms: 137.011799
+  type: 'test'
+  ...
+# Subtest: Home moves focus and automatically activates reason from codex
+ok 8 - Home moves focus and automatically activates reason from codex
+  ---
+  duration_ms: 127.377788
+  type: 'test'
+  ...
+# Subtest: End moves focus and automatically activates codex from reason
+ok 9 - End moves focus and automatically activates codex from reason
+  ---
+  duration_ms: 98.258011
+  type: 'test'
+  ...
+# Subtest: focusing another tab activates its panel and route
+ok 10 - focusing another tab activates its panel and route
+  ---
+  duration_ms: 105.426547
+  type: 'test'
+  ...
+# Subtest: clicking another tab still activates its panel and route
+ok 11 - clicking another tab still activates its panel and route
+  ---
+  duration_ms: 139.138434
+  type: 'test'
+  ...
+# Subtest: shiftKey leaves tab navigation to its existing owner
+ok 12 - shiftKey leaves tab navigation to its existing owner
+  ---
+  duration_ms: 95.9217
+  type: 'test'
+  ...
+# Subtest: altKey leaves tab navigation to its existing owner
+ok 13 - altKey leaves tab navigation to its existing owner
+  ---
+  duration_ms: 96.358171
+  type: 'test'
+  ...
+# Subtest: ctrlKey leaves tab navigation to its existing owner
+ok 14 - ctrlKey leaves tab navigation to its existing owner
+  ---
+  duration_ms: 98.944129
+  type: 'test'
+  ...
+# Subtest: metaKey leaves tab navigation to its existing owner
+ok 15 - metaKey leaves tab navigation to its existing owner
+  ---
+  duration_ms: 110.925035
+  type: 'test'
+  ...
+# Subtest: ArrowUp is not consumed by the horizontal tab row
+ok 16 - ArrowUp is not consumed by the horizontal tab row
+  ---
+  duration_ms: 122.017937
+  type: 'test'
+  ...
+# Subtest: ArrowDown is not consumed by the horizontal tab row
+ok 17 - ArrowDown is not consumed by the horizontal tab row
+  ---
+  duration_ms: 123.372184
+  type: 'test'
+  ...
+# Subtest: Tab is not consumed by the horizontal tab row
+ok 18 - Tab is not consumed by the horizontal tab row
+  ---
+  duration_ms: 125.790427
+  type: 'test'
+  ...
+# Subtest: Escape still reaches settings.close through the real global dispatcher
+ok 19 - Escape still reaches settings.close through the real global dispatcher
+  ---
+  duration_ms: 121.122784
+  type: 'test'
+  ...
+# Subtest: Home at the reason boundary preserves focus without consuming the event
+ok 20 - Home at the reason boundary preserves focus without consuming the event
+  ---
+  duration_ms: 117.949061
+  type: 'test'
+  ...
+# Subtest: End at the codex boundary preserves focus without consuming the event
+ok 21 - End at the codex boundary preserves focus without consuming the event
+  ---
+  duration_ms: 104.661297
+  type: 'test'
+  ...
+# Subtest: a route change updates the sole tab stop without stealing focus from elsewhere
+ok 22 - a route change updates the sole tab stop without stealing focus from elsewhere
+  ---
+  duration_ms: 138.425528
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3748.448431

@@ -1,0 +1,1 @@
+function fCe(){return new VHt(BO(),window.__TAURI_INTERNALS__.metadata.currentWebview.label,{skip:!0})}

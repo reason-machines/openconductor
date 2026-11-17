@@ -1,0 +1,21 @@
+{
+  "owner": "Conductor Rebuild",
+  "pr": 1100,
+  "consumed_main": "382da31580a5698feb223e1a3607fc79119fb77a",
+  "previous_candidate": "99ba5295dfb1588979b120a83279502fa930c6d6",
+  "local_integration_commit": "bc2ead5459789d8250182f4e42fee26809a53301",
+  "integration": "ordinary merge of actual main, no cherry-pick or repin",
+  "scoped_product_and_frozen_finder_bytes": "git diff 99ba529 HEAD -- src-tauri/src/open_in src/features/diff/FileDiffView.tsx src/features/diff/FilePathChip.tsx src/features/openIn/apps.ts produced no changes",
+  "all_shared_repair_files_equal_to_consumed_main": true,
+  "checks": {
+    "python3 evidence/open-in/deleted-finder/verify_source.py": "PASS 71/71 static",
+    "python3 evidence/open-in/deleted-finder/verify_candidate.py": "PASS 27/27 static",
+    "python3 evidence/open-in/deleted-finder/verify_pin_maintenance.py": "PASS 30/30 static, including both unchanged candidate manifests",
+    "python3 evidence/chat/tool-disclosure-remount/verify_baseline_root.py": "PASS source-only; 132 original pins, 214 archived files, five frozen helper files; observed live drift in src/scripts/api.ts and src/features/openIn/apps.ts remains outside isolated historical root",
+    "git diff --check": "PASS"
+  },
+  "refreshed_head_hosted_behavior": "PENDING",
+  "local_node_rust": "NOT_RUN",
+  "native_gui": "NOT_RUN",
+  "consuming_main_package": "PENDING_AFTER_MERGE"
+}

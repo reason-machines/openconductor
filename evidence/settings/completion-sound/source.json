@@ -1,0 +1,262 @@
+{
+  "owner": "Conductor Rebuild / SAME49",
+  "status": "SOURCE_ONLY_CANDIDATE_NOT_APPLIED",
+  "checked_main": "b7aba818b106c5029595f07498963be246ff15b2",
+  "runtime_grant": null,
+  "reference": {
+    "application": "Conductor 0.87.6",
+    "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "limits": "Historical REA-extracted source only. No original JavaScript executed, installed-asset refresh, audio listening or native parity observation. Original semantic renderer analysis exhausted heap."
+  },
+  "reference_spans": [
+    {
+      "path": "reference/u5t.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        394000,
+        394149
+      ],
+      "sha256": "506f27cfda3f8684d22baf7f07f95cbce3b0700864799b747cd057df58d89b53",
+      "bytes": 149
+    },
+    {
+      "path": "reference/Gzt.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        411447,
+        411508
+      ],
+      "sha256": "63797a6f4bcdf6efd00472584037553559acbd33ab4282cec0d37141024aae46",
+      "bytes": 61
+    },
+    {
+      "path": "reference/Zwt.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        2540318,
+        2540643
+      ],
+      "sha256": "c420b609e42ff3ab9dbfa285c31517f89e90aed7dcee6ea938567da61cf38fa2",
+      "bytes": 325
+    },
+    {
+      "path": "reference/p9.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        2537707,
+        2537751
+      ],
+      "sha256": "20c3a9f1f48c6caf56e85770705a7ba80a5460be5f1f61edeea0b2c04b178153",
+      "bytes": 44
+    },
+    {
+      "path": "reference/Eue.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        2537751,
+        2537782
+      ],
+      "sha256": "0e52de3b02630670c85d8f95c401dc251148a597996f049493ec51ed77bea626",
+      "bytes": 31
+    },
+    {
+      "path": "reference/E8t.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        2537782,
+        2538380
+      ],
+      "sha256": "1641233f19db7c21f5a4792b9ee8530908e7b175507a8ac32ece3d35d21be5cd",
+      "bytes": 598
+    },
+    {
+      "path": "reference/eSt.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        2540643,
+        2540969
+      ],
+      "sha256": "4e42f4bb7c3ae3d45a480b352abc85d6dcaa067603a1577676ec2003ebf9bcec",
+      "bytes": 326
+    },
+    {
+      "path": "reference/rga.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10706171,
+        10706767
+      ],
+      "sha256": "bd77ec58dc01aaa7c3159de8bc5ad996c189af2497c8889eba9bb376bb4b9ab1",
+      "bytes": 596
+    },
+    {
+      "path": "reference/catalog.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        2536382,
+        2537706
+      ],
+      "sha256": "f857ec868e8f0ec7ffdb420cf1e7d3451ed3c61e738ba4c0acfc336edf4b8a98",
+      "bytes": 1324
+    },
+    {
+      "path": "reference/registration.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10712245,
+        10712835
+      ],
+      "sha256": "e30d509f66c73a76519b14c870d5562987028b73e51438d7c031b0be62f633d7",
+      "bytes": 590
+    },
+    {
+      "path": "reference/binding-10.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        63862,
+        63871
+      ],
+      "sha256": "f08845b5f694b89517a48d0a9e2b026ed938bc51f43d1758febc984bcbb9c94d",
+      "bytes": 9
+    },
+    {
+      "path": "reference/binding-11.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        63942,
+        63951
+      ],
+      "sha256": "8bb43f8d68eb3bbe4c1c26d476894c2a2f6fd11e3b5399ed764ce817ccf3341f",
+      "bytes": 9
+    },
+    {
+      "path": "reference/binding-12.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        63952,
+        63961
+      ],
+      "sha256": "ddf106322ff66916ee5b2d58cd29b126df24d27e5e97096b6fd6bc162369ff82",
+      "bytes": 9
+    },
+    {
+      "path": "reference/binding-13.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        63962,
+        63971
+      ],
+      "sha256": "75a23cce7c4d017b701d250a6135d6ee34886603f165d8737e127fcf00c8f69e",
+      "bytes": 9
+    },
+    {
+      "path": "reference/binding-14.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        63972,
+        63981
+      ],
+      "sha256": "6d74e9cc43872f987e699414311b29ee2c0427ecdd88d1f73f518f9ef0e9d81c",
+      "bytes": 9
+    },
+    {
+      "path": "reference/binding-15.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10705318,
+        10705327
+      ],
+      "sha256": "a5b43ce5caf39a741cd423aab2e7ff8c18bc385697fcfac87e7adda308ef93bf",
+      "bytes": 9
+    },
+    {
+      "path": "reference/binding-16.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        3490782,
+        3490791
+      ],
+      "sha256": "13b7fec2662b813616f9d3b4282be2b4e45868a64d1678186e6348ca00176647",
+      "bytes": 9
+    },
+    {
+      "path": "reference/binding-17.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        3490335,
+        3490344
+      ],
+      "sha256": "2ec4256dbe7fa722b5ee5ae9c60cc73da371333d270e76d08499af8989e18e2f",
+      "bytes": 9
+    },
+    {
+      "path": "reference/binding-18.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        3490345,
+        3490354
+      ],
+      "sha256": "cdc8ee03f573e29a22e61b6072d8d1aa6da2147a7527bf4af3609ba7523ace2d",
+      "bytes": 9
+    },
+    {
+      "path": "reference/binding-19.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        3490355,
+        3490364
+      ],
+      "sha256": "4b6fa4509fccb71ec56a02c606b430556e559e73cb9774b824773fe5f8caa96b",
+      "bytes": 9
+    },
+    {
+      "path": "reference/binding-20.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        3490365,
+        3490374
+      ],
+      "sha256": "551802598c9c9e5c5afabe3ba206e884fdaaf524cea6878dfbddc17ff927a34c",
+      "bytes": 9
+    }
+  ],
+  "baseline_sha256": {
+    "src/settings/GeneralPage.tsx": "72eb0193654acce1af05932e1ad104127ca6afd7094fa5fbf2c116baea16a45e",
+    "src/settings/sound.ts": "eee61f0b48ad9dbd3d4a3622332ab9678217c2085142f6c30ac0536a38a6a063",
+    "src/settings/types.ts": "66214090aad60a4403f7cfd5aaf0e620cf5717f5c8cd525bc86dff7dea814b6c",
+    "src-tauri/src/settings/model.rs": "9ce17cafd1aa17e6ff71591ee4a24cc41a904ac43fea39bba101d9b8a8041315",
+    "src-tauri/src/settings/tests.rs": "feee279a976a521292657c2b91300846143e1151bfb0a41afb103c7a845588be"
+  },
+  "candidate_sha256": {
+    "src/settings/GeneralPage.tsx": "8fe7cd660cd4088945f78c20c3766a17f03405523b25a8dbc6067700fd0f4078",
+    "src/settings/sound.ts": "998b3675370d06f2c3baef3037c784cac6fa4ea1d6fee47c49a2de5e1b415328",
+    "src/settings/types.ts": "4f7178596986078e76105cd49ceec5ac08ae846db47e1df399c787edbff7a965",
+    "src-tauri/src/settings/model.rs": "4e0be46927a5f198b6666d54d8429fb53ede250d0a11217a686feaaf343be997",
+    "src-tauri/src/settings/tests.rs": "1714b20f807c500e79da69a4ff0b06975aa0c4c626cc0dfc7cecdd9c43788ab5"
+  },
+  "composition": {
+    "send_key_checkpoint": "07f2494f",
+    "follow_up_checkpoint": "5d4e0c16",
+    "frozen_general_page": "ca9608c732381077907394df34c272c9ece37a81f3f0fbbbabab8fcb18470264",
+    "follow_up_general_page": "c263f459781f91ba9fafbb7f1870e1f06b043c9ef2c86d241c695175b0022ecd",
+    "current_successor_general_page": "e05efde5d4fbd2bdbc2d4e963a324d0241458fe73e7dfa1d2198a79e43ccf977",
+    "integrated_general_page": "1fe6fd6d60e2a3b7ae4fef076b1398bf85a0df4d7651fc9cef7e902a889eff52",
+    "changed_intervals_disjoint": true,
+    "both_application_orders_equal": true
+  },
+  "scope": "Completion sound catalog, grouped row, frontend type and Rust serde known-ID persistence only. No agent completion dispatch, notification permission, shared Select, SendKey, Follow-up, native process or original MP3 copying.",
+  "audio_gap": "All audible choices retain OpenConductor synthesized-chime fallback. This is explicitly disclosed in the row. Original recordings, logos, loudness, timing and fidelity are not recreated or claimed.",
+  "asset_boundary": "No tracked audio assets found in public/, src/ or src-tauri/ at checked_main. This is not a global asset-availability claim.",
+  "protected_binding": {
+    "path": "evidence/settings/follow-up-integration/binding.json",
+    "sha256": "2227b5dbc4b40c9003ae4071f643aad89de4f6784d3e4fd718b16fb9975eca7c",
+    "files": 156
+  },
+  "validation": {
+    "source": "PENDING",
+    "product_tests": "NOT_RUN",
+    "rust_tests": "NOT_RUN",
+    "typecheck": "NOT_RUN",
+    "native_parity": "UNVERIFIED"
+  }
+}

@@ -1,5 +1,8 @@
-import { useState } from "react";
-import { Modal } from "./Dialogs";
+import { useEffect, useRef, useState } from "react";
+import { DialogFrame } from "./DialogFrame";
+import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
+import { effectiveShortcuts } from "../keybindings/overrides";
+import { matchesEvent } from "../keybindings/shortcut";
 import { searchSectionEmoji } from "./sectionEmoji";
 
 export { SECTION_EMOJIS } from "./sectionEmoji";
@@ -15,11 +18,18 @@ interface Props {
 }
 
 export function SectionDialog({ data, onSubmit, onClose }: Props) {
+  const { overrides } = useKeybindingOverrides();
+  const primaryShortcuts = effectiveShortcuts("dialog.primaryAction", overrides);
   const creating = data.mode === "create";
   const [name, setName] = useState(data.mode === "edit" ? data.name : "");
   const [emoji, setEmoji] = useState<string | undefined>(data.mode === "edit" ? data.emoji : undefined);
   const [picking, setPicking] = useState(false);
   const [emojiQuery, setEmojiQuery] = useState("");
+  const composing = useRef(false);
+  const compositionEndTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => {
+    if (compositionEndTimer.current !== undefined) clearTimeout(compositionEndTimer.current);
+  }, []);
   const emojiChoices = searchSectionEmoji(emojiQuery);
   const trimmed = name.trim();
   const submit = () => {
@@ -28,8 +38,27 @@ export function SectionDialog({ data, onSubmit, onClose }: Props) {
     onClose();
   };
   return (
-    <Modal title={creating ? "New section" : "Edit section"} onClose={onClose}>
-      <div className="modal-body section-dialog">
+    <DialogFrame kind="dialog" titleId="section-dialog-title" onClose={onClose}>
+      <h2 id="section-dialog-title">{creating ? "New section" : "Edit section"}</h2>
+      <div
+        className="modal-body section-dialog"
+        onCompositionStart={() => {
+          clearTimeout(compositionEndTimer.current);
+          compositionEndTimer.current = undefined;
+          composing.current = true;
+        }}
+        onCompositionEnd={() => {
+          clearTimeout(compositionEndTimer.current);
+          const delay = typeof CSS !== "undefined" && CSS.supports?.("-webkit-backdrop-filter:none") ? 5 : 0;
+          compositionEndTimer.current = setTimeout(() => {
+            compositionEndTimer.current = undefined;
+            composing.current = false;
+          }, delay);
+        }}
+        onKeyDownCapture={(event) => {
+          if (event.key === "Escape" && composing.current) event.stopPropagation();
+        }}
+      >
         <div className="section-dialog-row">
           <button
             type="button"
@@ -61,7 +90,9 @@ export function SectionDialog({ data, onSubmit, onClose }: Props) {
           />
         </div>
         {picking && (
-          <div>
+          <div onKeyDown={(event) => {
+            if (primaryShortcuts.some((key) => matchesEvent(key, event.nativeEvent))) event.stopPropagation();
+          }}>
             <div className="repo-icon-search">
               <input
                 aria-label="Search emoji"
@@ -116,6 +147,6 @@ export function SectionDialog({ data, onSubmit, onClose }: Props) {
           </button>
         </div>
       </div>
-    </Modal>
+    </DialogFrame>
   );
 }

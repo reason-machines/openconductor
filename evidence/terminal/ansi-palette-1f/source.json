@@ -1,0 +1,129 @@
+{
+  "author": "Conductor Rebuild",
+  "main_checked": "e89bede5597767d131b1c4c9199fb38403d31209",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "status": "SOURCE_QUALIFIED_NOT_BEHAVIORALLY_TESTED",
+  "candidate": "ordinary terminal constructor omits all 16 ANSI palette fields",
+  "exact_candidate_hunk": "src/features/terminal/session.ts startTab constructor theme",
+  "assets_rehashed": 2,
+  "caller_spans_revalidated": [
+    {
+      "symbol": "w9e",
+      "utf8_half_open": [
+        6919236,
+        6922665
+      ],
+      "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "dno",
+      "utf8_half_open": [
+        6915051,
+        6916770
+      ],
+      "sha256": "c1caf84211af0d4cdc09cc07d3b7ecfc9b0dde7cbfa84704e5f2ce24109fd318",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "uno",
+      "utf8_half_open": [
+        6914630,
+        6915051
+      ],
+      "sha256": "85acecc59c4b24eb7a08bf143dcdc68903fffba9180d78c83559bfea2f1eb35b",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "cno",
+      "utf8_half_open": [
+        6914245,
+        6914630
+      ],
+      "sha256": "d256449d670e3c7e000f82530a8d2cfb494986c8559831ac1b2f74a92ed35cd5",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "lno",
+      "utf8_half_open": [
+        6913120,
+        6914245
+      ],
+      "sha256": "f0ce60ce9b64bb20c9526c841aec24bf2620c9c8bf1973dd083e218e8f4fd4a5",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "symbol": "IJe",
+      "utf8_half_open": [
+        3139253,
+        3140055
+      ],
+      "sha256": "ea65e840d4491339eaeeed4beda371d58fc6a87b78fc14e50c6a32ac9915d081",
+      "boundary": "Complete retained declaration"
+    },
+    {
+      "artifact": "renderer",
+      "name": "eSa",
+      "file": "spans/renderer-eSa.txt",
+      "utf8_half_open": [
+        11160762,
+        11165279
+      ],
+      "bytes": 4517,
+      "sha256": "7046b53ab7a925101dea1b4ed8aabaf67fe39d6842a9742efb4bf76d502548a4",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes"
+    }
+  ],
+  "source_chain": [
+    "eSa",
+    "w9e",
+    "dno",
+    "uno",
+    "cno",
+    "lno",
+    "IJe"
+  ],
+  "color_mapping": {
+    "black": "black",
+    "red": "red",
+    "green": "green",
+    "yellow": "yellow",
+    "blue": "blue",
+    "magenta": "magenta",
+    "cyan": "cyan",
+    "white": "white",
+    "brightBlack": "bright-black",
+    "brightRed": "bright-red",
+    "brightGreen": "bright-green",
+    "brightYellow": "bright-yellow",
+    "brightBlue": "bright-blue",
+    "brightMagenta": "bright-magenta",
+    "brightCyan": "bright-cyan",
+    "brightWhite": "bright-white"
+  },
+  "main_sources": {
+    "src/features/terminal/session.ts": {
+      "bytes": 20736,
+      "sha256": "6cfb77ebb58a42942f386604e073928cd13d60a0b4730721112d553dcbec3f89"
+    },
+    "src/components/ScriptOutput.tsx": {
+      "bytes": 7588,
+      "sha256": "5cad08e06c913556195df9063354fb2e50a90ee33e39a586ff72cfb747fe544f"
+    },
+    "src/theme/scriptTerminal.css": {
+      "bytes": 1705,
+      "sha256": "020934f651ae79f419bf07083bac0249959702e54fa76b947297b589ce161cc7"
+    }
+  },
+  "frozen_contract": "For each of 16 fields, the installed session constructor must expose the computed CSS palette value through the real xterm public options.theme; ready/exit must retain it. Keep cursor/input/linefeed/Unicode/sibling controls.",
+  "rejected_candidate": "Clear resets internal command history differently, but no exposed command-history consumer was found and the reference also preserves runningProgram. No material title mismatch established.",
+  "behavioral_red_green": "NOT_RUN",
+  "product_edits": false,
+  "limits": [
+    "Retained shipped bytes, not fresh acquisition or runtime observation",
+    "No app/browser/PTY/provider/native/build/E2E run",
+    "Constructor theme only; live-theme handling is not included",
+    "Original CSS-to-computed-value helper F3 is a reference boundary; this proves the supplied option mapping, not rendered color",
+    "Historical REA renderer semantic heap and full-Babel timeout limitations remain, no new REA operation"
+  ]
+}

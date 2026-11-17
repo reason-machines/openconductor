@@ -1,0 +1,75 @@
+{
+  "author": "Conductor Rebuild",
+  "status": "SOURCE_ONLY_RECOVERY_REQUEST_NOT_ADMITTED",
+  "as_of_utc": "2026-11-12T11:53:08.095605+00:00",
+  "main_checked": "1286465cb69763efaa1367c49fdebc88ab4da86d",
+  "pr": 1170,
+  "original_setup_failure": {
+    "exit_code": 101,
+    "tests_executed": 0,
+    "log_sha256": "12de49b3e8f9348b2cafd4592616d7dcf768da6287f739a73bb73e14268e9e80"
+  },
+  "diagnosis": {
+    "compiled_rustix_features": [
+      "alloc",
+      "fs",
+      "process",
+      "pty",
+      "stdio",
+      "termios"
+    ],
+    "compiled_feature_receipt_sha256": "06d1ec294e1c92337b2eb1d45023490972027d10c2e37b0c86e8830b448c0841",
+    "rustix_openpty_disables_rustix_default_features": true,
+    "rustix_std_defines_errno_io_error_conversion": true,
+    "rustix_std_reexports_std_ownedfd": true,
+    "recovery_runtime_proven": false
+  },
+  "downloaded_source_pins": [
+    {
+      "registry_source": "registry/src/index.crates.io-1949cf8c6b5b557f/rustix-1.1.6/Cargo.toml",
+      "sha256": "43d4bcaf19bf857aaa17ada056e7561a50abdcb3201a1722770948ce050c77cb",
+      "bytes": 10263
+    },
+    {
+      "registry_source": "registry/src/index.crates.io-1949cf8c6b5b557f/rustix-1.1.6/src/io/errno.rs",
+      "sha256": "d014b6a4a4d92cda1e75873a074226101b58bccb4b787985ab00517a3dd9b926",
+      "bytes": 1952
+    },
+    {
+      "registry_source": "registry/src/index.crates.io-1949cf8c6b5b557f/rustix-1.1.6/src/maybe_polyfill/std/mod.rs",
+      "sha256": "d0261b88ece984c9947896a89d7f3ff3470603e5bb5681169ebdb56cbd98a9a6",
+      "bytes": 1242
+    },
+    {
+      "registry_source": "registry/src/index.crates.io-1949cf8c6b5b557f/rustix-openpty-0.2.0/Cargo.toml",
+      "sha256": "4be1ccba9c3530f160d9cf53da49b4756351f8ac9831fa87430fc13e5220c4bc",
+      "bytes": 1919
+    }
+  ],
+  "original_manifest_sha256": "e5ba2cba5878e85564af9f5c0ff97281528356747f26dacceed8ddc31d5c2253",
+  "original_lock_sha256": "ae1cc2d76efd6ed9867bce919be1ff06d20efff0ac88ac2ba7869df9153ed71b",
+  "frozen_harness_sha256": "92bcfae25ee96df34a6687b450e84b4690800b3b0eaa4104c645f9e1386579ef",
+  "proposed_manifest_sha256": "5dedf99ee94a0524aa18408f55e6d93146a7d114f73445c03788350f1e148c9c",
+  "manifest_changes": [
+    "lib path points to same immutable ../backend/harness.rs",
+    "Unix-only rustix =1.1.6, default-features=false, features=[std]; same version already resolved"
+  ],
+  "unchanged": [
+    "all original direct dependencies and exact versions",
+    "original manifest/lock/harness",
+    "production sources and frontend",
+    "all three tests/assertions"
+  ],
+  "command_caps_seconds": {
+    "lock_offline": 60,
+    "red": 120,
+    "green": 120
+  },
+  "artifact_budget_bytes": 2147483648,
+  "commands_requested": [
+    "nice -n 19 timeout --kill-after=5s 60s cargo generate-lockfile --offline --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend-std-v2/Cargo.toml",
+    "CARGO_BUILD_JOBS=1 CARGO_PROFILE_DEV_DEBUG=0 CARGO_PROFILE_TEST_DEBUG=0 CARGO_TARGET_DIR=e2e-artifacts/dot-prefix-c18/rust-target nice -n 19 timeout --kill-after=5s 120s cargo test --locked --offline --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend-std-v2/Cargo.toml dot_prefix_ -- --nocapture"
+  ],
+  "red_green": "Use identical second command for RED then GREEN; only after intended1FAIL+2controls apply sole valid_branch_prefix hunk; no other commands/fetch or runtime currently admitted",
+  "expected_package_change": "Only root dependency-list addition of already-locked rustix; require all original package name/version/source/checksum tuples unchanged before RED"
+}

@@ -1,0 +1,15 @@
+{
+  "status": "SOURCE_INTEGRATION_COMPLETE; HOSTED_GREEN_PENDING",
+  "main": "649f47b9d80eb1d7510c2b405b25e026ffddf78b",
+  "method": "ordinary merge origin/main on existing assigned branch; no cherry-pick or stacked base",
+  "integration_local": "cebf616700fde8d4c5d4ca655441f9643eba4802",
+  "first_candidate_published": "fab7907ad7b39303a9d8524cca3adf179bc9d0ac",
+  "qualified_red_published": "615d7bf4eccbf343a196cd1b4ad28c15848b0693",
+  "test_blob": "4e76ae2a0c18815fc05bc84d9c25360a517d42d1",
+  "test_sha256": "5e4784b0a627a43010eb3200022f19e6eec257f0d43995e20fdd99a0e127cdbd",
+  "contract_sha256": "c55f8c098fe30fe859da3f65cbfd99d2db0ca6cf8efa0ad829564d018d197720",
+  "historical_pins": "Original freeze.json, references, inputs and repaired test remain unchanged. Verify original production pins against original main, not the current candidate.",
+  "preserved": "All #1108 ScheduleWakeup/resultCreatedAt/clock/import/Transcript hunks and all frozen fixtures. Excluded current production equals actual merged main.",
+  "allowed_delta": "Optional RowShell capability/default; independent body visibility; private exact image-generation extension membership used only for disclosure.",
+  "excluded_execution": "No local Node/React/build/provider/native/browser; no dispatch/rerun/watch. No #1108 tail observer; no #847 action."
+}

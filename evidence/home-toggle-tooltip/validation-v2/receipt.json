@@ -1,0 +1,152 @@
+{
+  "grant": "ACC_271_HOME_TOOLTIP10_FIXTURE_V2_20261113T0300",
+  "actual_start": "2026-11-13T03:02:20.100699+00:00",
+  "inclusive_budget_seconds": 1800,
+  "phases": [
+    {
+      "phase": "red",
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "src/components/homeSidebarHint.test.ts"
+      ],
+      "NODE_OPTIONS": "--max-old-space-size=768",
+      "started_at": "2026-11-13T03:02:21.002504+00:00",
+      "exit_code": 1,
+      "duration_seconds": 2.138,
+      "ended_at": "2026-11-13T03:02:23.140077+00:00",
+      "stdout": "red.stdout.txt",
+      "stderr": "red.stderr.txt"
+    },
+    {
+      "phase": "green",
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "src/components/homeSidebarHint.test.ts"
+      ],
+      "NODE_OPTIONS": "--max-old-space-size=768",
+      "started_at": "2026-11-13T03:02:23.142300+00:00",
+      "exit_code": 0,
+      "duration_seconds": 1.345,
+      "ended_at": "2026-11-13T03:02:24.487694+00:00",
+      "stdout": "green.stdout.txt",
+      "stderr": "green.stderr.txt"
+    },
+    {
+      "phase": "adjacent",
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "120s",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "src/components/tooltipPlacement.test.ts",
+        "src/keybindings/overrides.test.ts",
+        "src/components/allWorkspacesSidebarHint.test.ts"
+      ],
+      "NODE_OPTIONS": "--max-old-space-size=768",
+      "started_at": "2026-11-13T03:02:24.488927+00:00",
+      "exit_code": 0,
+      "duration_seconds": 1.649,
+      "ended_at": "2026-11-13T03:02:26.137886+00:00",
+      "stdout": "adjacent.stdout.txt",
+      "stderr": "adjacent.stderr.txt"
+    },
+    {
+      "phase": "typecheck",
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "180s",
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "NODE_OPTIONS": "--max-old-space-size=1536",
+      "started_at": "2026-11-13T03:02:26.138581+00:00",
+      "exit_code": 0,
+      "duration_seconds": 30.737,
+      "ended_at": "2026-11-13T03:02:56.875991+00:00",
+      "stdout": "typecheck.stdout.txt",
+      "stderr": "typecheck.stderr.txt"
+    },
+    {
+      "phase": "build",
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "480s",
+        "npm",
+        "run",
+        "build"
+      ],
+      "NODE_OPTIONS": "--max-old-space-size=1536",
+      "started_at": "2026-11-13T03:02:56.876660+00:00",
+      "exit_code": 0,
+      "duration_seconds": 76.988,
+      "ended_at": "2026-11-13T03:04:13.864849+00:00",
+      "stdout": "build.stdout.txt",
+      "stderr": "build.stderr.txt"
+    }
+  ],
+  "status": "PASS",
+  "base": "e6836acf258d6b526b5fb1a6d057aa8ee017dc2e",
+  "source_changes_since_old_base": [
+    ".github/workflows/ci.yml",
+    "src-tauri/src/agent/codex_mcp_status_tests.rs"
+  ],
+  "standalone_scope": [
+    "evidence/home-toggle-tooltip/README.md",
+    "evidence/home-toggle-tooltip/reference.json",
+    "evidence/home-toggle-tooltip/validation/fixture-repair.json",
+    "evidence/home-toggle-tooltip/validation/green.stderr.txt",
+    "evidence/home-toggle-tooltip/validation/green.stdout.txt",
+    "evidence/home-toggle-tooltip/validation/npm-ci.stderr.txt",
+    "evidence/home-toggle-tooltip/validation/npm-ci.stdout.txt",
+    "evidence/home-toggle-tooltip/validation/original-ten-cases.test.ts.txt",
+    "evidence/home-toggle-tooltip/validation/receipt.json",
+    "evidence/home-toggle-tooltip/validation/red.stderr.txt",
+    "evidence/home-toggle-tooltip/validation/red.stdout.txt",
+    "evidence/home-toggle-tooltip/verify_reference.py",
+    "src/components/HomeScreen.tsx",
+    "src/components/homeSidebarHint.test.ts"
+  ],
+  "candidate_before": "eb463ce9ce4cd1d6e316582057d4a77b290a0060",
+  "candidate_after_rebase": "a35e3be01b478bdedf9b3652a3719ea96e905aed",
+  "source_duration_seconds": 0.865,
+  "test_sha256": "d1c833003f89e3ff475f12ccdb3f72387387c7b418cf12b786b2115bf44859ce",
+  "lock_sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+  "dependency_setup": "NOT_RUN_OWN_UNCHANGED_LOCK_DEPENDENCIES_PRESENT",
+  "red_classification": "8 expected assertion failures: seven missing app tooltip; one retained native title. Two controls pass.",
+  "candidate_restored": true,
+  "test_unchanged": true,
+  "lock_unchanged": true,
+  "driver_duration_seconds": 113.767,
+  "ended_at": "2026-11-13T03:04:13.867280+00:00",
+  "owned_process_check": "owned-process-check.txt"
+}

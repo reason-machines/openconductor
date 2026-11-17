@@ -1,0 +1,35 @@
+{
+  "producer": "Conductor Rebuild",
+  "publisher": "27102e36-8b7f-4f1b-9ada-1e0503d3fede",
+  "branch": "reason/openconductor-sol-home-s-27102e36",
+  "main": "84a3153cbca1c25e210c3835ea9314f54e9f6c36",
+  "head": "8f1359d13b43382f70d8bcc2e36098157c866954",
+  "computer": "00637189-5c55-416e-b457-ed7419fb739a",
+  "hashes": {
+    "src/components/sidebarEmptyGuidance.test.ts": "e2b394583e53a0768dbb4642602a4800c87d4256d167356e115e770ab25283d5",
+    "evidence/sidebar/empty-guidance/expected-cases.json": "a1942f64fa21dff44be7e9f0ac4814a442a80423c9f977cb9970544918356115",
+    "src/components/Sidebar.tsx": "50c3c3eebb2e3ca253b35964fc95a00d65757b6372591961b98de078dc424a43",
+    "package.json": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+    "src/components/sidebarRepoBadgeCount.test.ts": "992cc94a1de7832df281655944bc1250d9707c640b20d5377d99e5ae86014548",
+    "src/state/customSectionCollapse.test.ts": "f321ec67cb0cb9dd2280468dad3fbcfd71b42d4ecb934cf3b5fffe73965a80b7",
+    "src/home/repoFilter.test.ts": "3e40ccd32d99bf546d170c16a94327660cc9c20aefd45cf8437d64d2efd1c696",
+    "src/state/sidebarOrder.test.ts": "09bfd74769ba808d4694540bb0f7613b57d7c44a6b367bd2cd614c3016e85520"
+  },
+  "cases": {
+    "frozen": 8,
+    "additional": 3
+  },
+  "commands": {
+    "redAndGreen": "timeout 90s node --max-old-space-size=768 --experimental-strip-types --test --test-concurrency=1 src/components/sidebarEmptyGuidance.test.ts",
+    "adjacent": "timeout 90s node --max-old-space-size=768 --experimental-strip-types --test --test-concurrency=1 src/components/sidebarRepoBadgeCount.test.ts src/state/customSectionCollapse.test.ts src/home/repoFilter.test.ts src/state/sidebarOrder.test.ts"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-test-renderer": "18.3.1",
+    "typescript": "5.9.3"
+  },
+  "install": "not requested: own existing node_modules; root lock unchanged at currentmain",
+  "runtime": "NOT_RUN: awaiting ACC serialized normal-tail admission",
+  "boundary": "Real Sidebar + builtin collapse hook/store + repo filter hook/projection. Memory storage and preference boundary, inert unrelated providers/menus/DnD/status/pending/row presentation. Existing frozen stale-filter case uses an empty path repository placeholder (matching Sidebar loading producer) so real reconciliation retains the missing filter until load."
+}

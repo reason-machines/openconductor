@@ -17,7 +17,7 @@ const ts = dependencies("typescript");
 const root = resolve(".");
 const allowed = new Set([
   "DiffViewer.tsx", "FileDiffView.tsx", "useWorkspaceDiff.ts", "api.ts", "types.ts", "target.ts", "nav.ts",
-  "changesTree.ts", "changesFilter.ts", "viewed.ts", "EditInViewer.ts", "editable.ts", "editorContents.ts", "copyFile.ts", "pierre.ts",
+  "changesTree.ts", "changesFilter.ts", "viewed.ts", "EditInViewer.ts", "editable.ts", "editorContents.ts", "draftStorage.ts", "copyFile.ts", "pierre.ts",
 ].map((path) => resolve(root, "src/features/diff", path)).concat([
   "src/features/files/tree.ts", "src/lib/keyedCache.ts", "src/keybindings/fuzzy.ts",
 ].map((path) => resolve(root, path))));
@@ -82,6 +82,7 @@ async function fixture() {
       };
       if (name === "@pierre/diffs/edit") return { Editor: class { constructor() { assert.fail("No DOM editor in this test"); } } };
       if (name === "../../keybindings/KeybindingsProvider.tsx") return { useKeybindings: () => undefined, useKeybindingOverrides: () => ({ overrides: {} }) };
+      if (name === "./wrapLinesPref.ts") return { useWrapLinesPref: () => ({ value: true, save: () => {} }) };
       if (name === "../../keybindings/overrides.ts") return { effectiveShortcuts: () => [] };
       if (name === "../../keybindings/shortcut.ts") return { matchesEvent: () => false };
       if (name === "./useChangesPresentation.ts") return { useChangesPresentation: () => ({ presentation: { filePathFilter: "", diffFileListMode: "flat" } }) };
@@ -91,6 +92,7 @@ async function fixture() {
       if (name === "./FilePathChip") return { FilePathChip: () => null };
       if (name === "./useDiffTheme.ts") return { useDiffTheme: () => "test-theme" };
       if (name === "./CommentNav") return { CommentNav: () => null, useCommentNavigation: () => ({ refresh: () => undefined, previousCount: 0, nextCount: 0 }) };
+      if (name === "./commentMarkdown.ts") return { CommentMarkdown: () => null };
       if (name === "../../components/ConductorIcon") return { ConductorIcon: () => null };
       if (name === "../../components/Icons.tsx") return { CheckIcon: () => null, CopyIcon: () => null };
       if (name === "../../components/ui/Tooltip.tsx") return { Tooltip: ({ children }: { children: unknown }) => children };

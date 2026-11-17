@@ -1,0 +1,74 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mixed text/tool messages do not count as other messages
+ok 1 - mixed text/tool messages do not count as other messages
+  ---
+  duration_ms: 60.342637
+  type: 'test'
+  ...
+# Subtest: thinking and text in one tool-free message count once
+ok 2 - thinking and text in one tool-free message count once
+  ---
+  duration_ms: 0.564045
+  type: 'test'
+  ...
+# Subtest: separate text blocks in one tool-free message count once
+ok 3 - separate text blocks in one tool-free message count once
+  ---
+  duration_ms: 0.335773
+  type: 'test'
+  ...
+# Subtest: mixed hidden wait retains tool metadata without other-message inflation
+ok 4 - mixed hidden wait retains tool metadata without other-message inflation
+  ---
+  duration_ms: 11.608176
+  type: 'test'
+  ...
+# Subtest: distinct tool-free messages still count separately
+ok 5 - distinct tool-free messages still count separately
+  ---
+  duration_ms: 0.518687
+  type: 'test'
+  ...
+# Subtest: tool-only summary stays unchanged
+ok 6 - tool-only summary stays unchanged
+  ---
+  duration_ms: 0.228102
+  type: 'test'
+  ...
+# Subtest: two mixed messages stay below the summary threshold
+ok 7 - two mixed messages stay below the summary threshold
+  ---
+  duration_ms: 0.292396
+  type: 'test'
+  ...
+# Subtest: hidden-only tools and empty text cannot bring two visible messages to the threshold
+ok 8 - hidden-only tools and empty text cannot bring two visible messages to the threshold
+  ---
+  duration_ms: 0.218492
+  type: 'test'
+  ...
+# Subtest: visible thinking-only messages count once and remain in expanded children
+ok 9 - visible thinking-only messages count once and remain in expanded children
+  ---
+  duration_ms: 0.437212
+  type: 'test'
+  ...
+# Subtest: identical text in separate message identities is not deduplicated by content
+ok 10 - identical text in separate message identities is not deduplicated by content
+  ---
+  duration_ms: 0.383465
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 724.123686

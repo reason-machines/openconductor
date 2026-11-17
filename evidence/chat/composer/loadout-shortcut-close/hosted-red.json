@@ -1,0 +1,54 @@
+{
+  "author": "Conductor Rebuild",
+  "status": "QUALIFIED_HOSTED_RED",
+  "head": "20e1a71ca52355e8f7cbd1b618187f431551bc97",
+  "run_id": 43150684988,
+  "run_url": "https://github.com/reason-machines/openconductor/actions/runs/43150684988",
+  "fixture_sha256": "efaf13f1e1e43f2b9a5ea8d848e853ed353cbbca71aadbee5183eb02361e8faf",
+  "jobs": [
+    {
+      "id": 130958851265,
+      "name": "Frontend unit tests (node --test)",
+      "url": "https://github.com/reason-machines/openconductor/actions/runs/43150684988/job/130958851265",
+      "conclusion": "failure",
+      "target_log_lines": [5521, 5653]
+    },
+    {
+      "id": 130958851223,
+      "name": "Frontend typecheck + build",
+      "url": "https://github.com/reason-machines/openconductor/actions/runs/43150684988/job/130958851223",
+      "conclusion": "failure",
+      "target_log_lines": [5560, 5692],
+      "typecheck": "success",
+      "build": "skipped after frontend unit test failure"
+    }
+  ],
+  "full_suite": { "tests": 3303, "passed": 3299, "failed": 4, "cancelled": 0, "skipped": 0 },
+  "failures": [
+    "mounted loadout shortcut 1 applies the exact occupied slot and closes the model menu",
+    "mounted loadout shortcut 3 applies the exact occupied slot and closes the model menu",
+    "mounted loadout shortcut 5 applies the exact occupied slot and closes the model menu",
+    "mounted loadout shortcut selects the physical slot during a filtered model search and closes it"
+  ],
+  "failure_detail": {
+    "passed_before_failure": ["dispatcher result kind ran", "exact complete occupied-slot configuration applied once"],
+    "assertion": "rendered model menu count",
+    "expected": 0,
+    "actual": 1,
+    "error": "ERR_ASSERTION",
+    "setup_or_import_failure": false
+  },
+  "passing_controls": [
+    "mounted loadout empty-slot control 2 keeps the menu open without a selection",
+    "mounted loadout empty-slot control 4 keeps the menu open without a selection",
+    "mounted loadout disabled control does not apply a shortcut or dismiss an already-open menu",
+    "mounted loadout closed-menu control applies an occupied slot while composer focus is inside",
+    "mounted loadout outside-focus control leaves a closed picker unchanged"
+  ],
+  "correction_scope": "ModelPicker.selectSlot occupied-choice callback only; fixture unchanged",
+  "limits": [
+    "Mounted React host output with actual ModelPicker, real bindCommands and dispatcher, not a browser or native event stream.",
+    "Presence, tooltip, focus containment and keybinding registration use adapters.",
+    "No native Mac, real provider, sidecar, first/resume, pixel parity or deployment acceptance."
+  ]
+}

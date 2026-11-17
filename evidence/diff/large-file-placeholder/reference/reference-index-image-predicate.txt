@@ -1,0 +1,1 @@
+function ole(t){const e=t.split(".").pop()?.toLowerCase();return e!==void 0&&Object.prototype.hasOwnProperty.call(ile,e)}

@@ -1,0 +1,74 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Command-click warns through the real dialog bridge before native opening
+ok 1 - Command-click warns through the real dialog bridge before native opening
+  ---
+  duration_ms: 259.056466
+  type: 'test'
+  ...
+# Subtest: cancelling the warning never opens the encoded target
+ok 2 - cancelling the warning never opens the encoded target
+  ---
+  duration_ms: 110.610193
+  type: 'test'
+  ...
+# Subtest: unmodified and Control-only clicks do not prompt or open
+ok 3 - unmodified and Control-only clicks do not prompt or open
+  ---
+  duration_ms: 69.135592
+  type: 'test'
+  ...
+# Subtest: Command-click preserves an HTTP localhost target for the native opener
+ok 4 - Command-click preserves an HTTP localhost target for the native opener
+  ---
+  duration_ms: 68.361043
+  type: 'test'
+  ...
+# Subtest: non-web and invalid encoded targets never reach dialog or opener
+ok 5 - non-web and invalid encoded targets never reach dialog or opener
+  ---
+  duration_ms: 44.361443
+  type: 'test'
+  ...
+# Subtest: a rejected native warning does not open or escape as an unhandled rejection
+ok 6 - a rejected native warning does not open or escape as an unhandled rejection
+  ---
+  duration_ms: 42.668564
+  type: 'test'
+  ...
+# Subtest: a rejected native opener is handled after the confirmed target
+ok 7 - a rejected native opener is handled after the confirmed target
+  ---
+  duration_ms: 36.872703
+  type: 'test'
+  ...
+# Subtest: output updates still append through the production outputUpdate module
+ok 8 - output updates still append through the production outputUpdate module
+  ---
+  duration_ms: 51.352434
+  type: 'test'
+  ...
+# Subtest: rerun output replaces the old transcript without remounting the terminal
+ok 9 - rerun output replaces the old transcript without remounting the terminal
+  ---
+  duration_ms: 38.025894
+  type: 'test'
+  ...
+# Subtest: unmount still disposes the terminal and its subscriptions once
+ok 10 - unmount still disposes the terminal and its subscriptions once
+  ---
+  duration_ms: 452.659188
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1543.125525

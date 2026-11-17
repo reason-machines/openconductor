@@ -1,0 +1,98 @@
+(node:52) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual failed-turn footer presents "Request aborted by user" as an outline interruption
+ok 1 - actual failed-turn footer presents "Request aborted by user" as an outline interruption
+  ---
+  duration_ms: 4.962288
+  type: 'test'
+  ...
+# Subtest: actual failed-turn footer presents "Interrupted by user" as an outline interruption
+ok 2 - actual failed-turn footer presents "Interrupted by user" as an outline interruption
+  ---
+  duration_ms: 0.575501
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "Provider unavailable"
+ok 3 - actual footer preserves nonmatching failure "Provider unavailable"
+  ---
+  duration_ms: 0.576201
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "Aborted by user"
+ok 4 - actual footer preserves nonmatching failure "Aborted by user"
+  ---
+  duration_ms: 0.374867
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "interrupted by user"
+ok 5 - actual footer preserves nonmatching failure "interrupted by user"
+  ---
+  duration_ms: 0.251386
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "Session cancelled: stopped"
+ok 6 - actual footer preserves nonmatching failure "Session cancelled: stopped"
+  ---
+  duration_ms: 0.21373
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "request cancelled"
+ok 7 - actual footer preserves nonmatching failure "request cancelled"
+  ---
+  duration_ms: 0.345184
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "[codex-mcp-consent] user_canceled"
+ok 8 - actual footer preserves nonmatching failure "[codex-mcp-consent] user_canceled"
+  ---
+  duration_ms: 0.279555
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure ""
+ok 9 - actual footer preserves nonmatching failure ""
+  ---
+  duration_ms: 0.733897
+  type: 'test'
+  ...
+# Subtest: actual footer retains the missing-error fallback
+ok 10 - actual footer retains the missing-error fallback
+  ---
+  duration_ms: 0.605567
+  type: 'test'
+  ...
+# Subtest: actual cancelled footer keeps exactly one interruption badge and no raw error
+ok 11 - actual cancelled footer keeps exactly one interruption badge and no raw error
+  ---
+  duration_ms: 0.417497
+  type: 'test'
+  ...
+# Subtest: a completed turn does not gain an interruption badge from its error field
+ok 12 - a completed turn does not gain an interruption badge from its error field
+  ---
+  duration_ms: 0.24125
+  type: 'test'
+  ...
+# Subtest: actual footer keeps ordinary Codex sign-in guidance
+ok 13 - actual footer keeps ordinary Codex sign-in guidance
+  ---
+  duration_ms: 0.585101
+  type: 'test'
+  ...
+# Subtest: actual interruption footer retries the unchanged prompt and turn id
+ok 14 - actual interruption footer retries the unchanged prompt and turn id
+  ---
+  duration_ms: 1.293796
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 911.105897

@@ -1,0 +1,31 @@
+{
+  "owner": "Conductor Rebuild",
+  "result": "QUALIFIED_BEHAVIORAL_RED",
+  "pr": 1093,
+  "head_sha": "0d676cea995d9d4b35eaa85ac7dc1e7a1d9d528d",
+  "baseline_main": "47463ddaf959a7ee394d3d64a5b22e3eccbda74c",
+  "fixture_sha256": "99c2b6265d5e15450fbd1cd8dec34a793bf49358e32559b190a4736cbcdbc7e9",
+  "workflow_run_id": 43106501465,
+  "run_attempt": 1,
+  "job_id": 130811105974,
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43106501465/job/130811105974",
+  "job_conclusion": "failure",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "failed_step": "Pure TypeScript modules (Node strips types natively)",
+  "completed_at": "2026-11-11T21:51:50Z",
+  "suite": { "tests": 3111, "pass": 3108, "fail": 3, "cancelled": 0, "skipped": 0, "todo": 0 },
+  "cases": [
+    { "id": "canonical-claude", "tap_number": 402, "result": "FAIL_EXPECTED", "error": "Collapsed chip must show Opus 4.8; got opus-4-8 High", "log_line": 2630 },
+    { "id": "alias-claude", "tap_number": 403, "result": "FAIL_EXPECTED", "error": "Collapsed chip must show Opus 4.8; got opus Medium", "log_line": 2648 },
+    { "id": "supported-codex-control", "tap_number": 404, "result": "PASS" },
+    { "id": "unknown-local-extension-control-not-original-parity", "tap_number": 405, "result": "PASS" },
+    { "id": "nonfavorite-catalog-search", "tap_number": 406, "result": "FAIL_EXPECTED", "expected": "Opus 4.8", "actual": "opus-4-8", "log_line": 2678 }
+  ],
+  "execution_limit": "Baseline label failures stop later actions in those cases. Unchanged-fixture GREEN must exercise the remaining catalog/search/accessible-name assertions.",
+  "product_changes_on_red_head": [],
+  "candidate_scope": "Only let the current explicit local model use ModelPicker's existing local-label fallback; keep Reason naming for Reason and other entries.",
+  "candidate_green": "PENDING",
+  "native": "NOT_RUN",
+  "provider": "NOT_RUN",
+  "browser_visual": "NOT_RUN"
+}

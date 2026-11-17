@@ -4,6 +4,7 @@
 // /<dir>." and chips that attach another chat's transcript.
 
 import { useState } from "react";
+import { Popover } from "@base-ui/react/popover";
 import { BranchIcon, FolderIcon } from "../../components/Icons";
 import { ModelGlyph } from "./composerIcons.tsx";
 import { emptyState, type OtherChat } from "./chatEmptyState.ts";
@@ -86,17 +87,22 @@ function TranscriptChip({ chat, onAttach }: { chat: OtherChat; onAttach: (c: Oth
 
 function MoreChats({ chats, onAttach }: { chats: readonly OtherChat[]; onAttach: (c: OtherChat) => void }) {
   const [open, setOpen] = useState(false);
-  if (!open)
-    return (
-      <button type="button" className="oc-transcript-chip oc-transcript-more" onClick={() => setOpen(true)}>
-        +{chats.length} more
-      </button>
-    );
   return (
-    <>
-      {chats.map((c) => (
-        <TranscriptChip key={c.chatId} chat={c} onAttach={onAttach} />
-      ))}
-    </>
+    <Popover.Root open={open} onOpenChange={setOpen}>
+      <Popover.Trigger className="oc-transcript-chip oc-transcript-more">
+        +{chats.length} more
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Positioner className="oc-transcript-overflow-positioner" side="bottom" align="start" sideOffset={4}>
+          <Popover.Popup className="oc-transcript-overflow-popup" aria-label="More chat transcripts">
+            <div className="oc-transcript-overflow-list">
+              {chats.map((c) => (
+                <TranscriptChip key={c.chatId} chat={c} onAttach={onAttach} />
+              ))}
+            </div>
+          </Popover.Popup>
+        </Popover.Positioner>
+      </Popover.Portal>
+    </Popover.Root>
   );
 }

@@ -1,0 +1,48 @@
+{
+  "owner": "Conductor Rebuild",
+  "baseline_main": "838ab2a1c76d11f8048a89c9d4c01ba822db2204",
+  "scope": "test-only actual-service-path attachment settlement verification",
+  "fixture": "src/features/chat/composerAttachmentSettlement.test.ts",
+  "fixture_sha256": "75e243c4dfc9900a8385c76c205dbe4ad532a473b9ef497cc54f9af889f3b7d2",
+  "production_sha256": {
+    "src/features/chat/Composer.tsx": "9b0be2bd905db1360da1eb4e2dc45748d3ea978132c6f0296366d0e0f3ce64a8",
+    "src/components/WorkspaceView.tsx": "23fbfe1161afc4b5ae13cff20fcfdcd07beadba76df4c436131254e15237f7e0",
+    "src/features/chat/composerSession.ts": "7d2091a307e8b31b57ec95c0672fc4433b3588b8c470b12db0fb4b5ac38eac09",
+    "src/features/chat/localClear.ts": "36773e89380caca36d3c25c42c3e5d7c2c7ac6f29510e53f1930f24520d42890",
+    "src/features/draft-attachments/staging.ts": "59778d93e351cc374d2dfe0f04f2bfa4bd685cd9df513cff9fa1b0f79dd86f54",
+    "src/lib/local-storage/composerDrafts.ts": "fdf9614728397728c4fb87985c1b8bfe54c62199957891e989ba3d74d08e12c5"
+  },
+  "production_ast_bindings": ["WorkspaceView.attachFiles", "WorkspaceView.removeAttachment", "WorkspaceView.onSubmit", "WorkspaceView Composer.onCommand initializer", "Composer.submit", "localClear.clearLocalChat", "staging.draftAttachments"],
+  "actual_service_imports": ["ComposerSession via composerSessionFor", "ComposerDrafts", "LocalStorageClient", "memoryInvoke", "slashCommands", "submittedUserPrompt", "withSentAttachmentDisplay"],
+  "simulated_boundaries": ["native database replacement IPC", "native draft-file staging/removal/upload IPC", "model preferences", "panel replacement lifecycle callback"],
+  "groups": [
+    {"id": "remove-a-b-pending", "cases": ["claude-read", "reason-read", "reason-write"], "result": "NOT_RUN"},
+    {"id": "local-clear-b-read", "cases": ["claude-read"], "result": "NOT_RUN", "oracle": "OpenConductor chat-owner isolation; not Conductor hidden-draft parity"},
+    {"id": "local-clear-copy", "cases": ["claude-persisted-staged-attachment"], "result": "NOT_RUN", "input_limit": "explicit persisted metadata and simulated staged bytes, not ordinary local intake"},
+    {"id": "leave-remount", "cases": ["reason-read", "reason-write"], "result": "NOT_RUN"}
+  ],
+  "unsupported_cases": [
+    {"case": "local-clear-during-ordinary-local-write", "reason": "local intake has no writer; Reason staging does not expose local clear"},
+    {"case": "ordinary-local-paste-during-workspace-copy", "reason": "ordinary local intake creates no staged metadata"}
+  ],
+  "reference": {
+    "scope": "retained REA-extracted Conductor 0.87.6 source; no fresh native acquisition",
+    "audit_page_id": "51b247f6-f8d6-4c93-abcf-6ceb321a52d2",
+    "unproven": ["universal clear-cancels-upload contract", "exact original hidden-draft retention after clear"]
+  },
+  "checks": {
+    "staged_diff_whitespace": "PASS",
+    "product_diff_against_baseline": "NONE",
+    "local_node_rust_native_provider_execution": "NOT_RUN",
+    "hosted_behavior": "PENDING",
+    "typecheck": "NOT_RUN",
+    "visual": "NOT_RUN"
+  },
+  "focused_command": "node --test src/features/chat/composerAttachmentSettlement.test.ts",
+  "automatic_command": "node --test \"src/**/*.test.ts\"",
+  "production_edits": [],
+  "existing_tests_changed": [],
+  "new_workflows": [],
+  "manual_dispatches": [],
+  "new_watches": []
+}

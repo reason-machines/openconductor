@@ -1,0 +1,48 @@
+{
+  "observed_at_utc": "2026-11-13T01:55:05.886694+00:00",
+  "runtime_receipt_sha256": "373d0d7a7e33c19c53b2d857304ce529fc2cd40daed3240604a7b9ade0355ba4",
+  "current_main_after_validation": "cafd9bab667f34127aacd01ec8189324463c237f",
+  "all_18_runtime_source_pins_unchanged_at_publication_main": true,
+  "postvalidation_main_only_changes": [
+    "evidence/qa/ordinary-visual-startup/README.md",
+    "evidence/qa/ordinary-visual-startup/admission/boundary.log",
+    "evidence/qa/ordinary-visual-startup/admission/green.log.gz",
+    "evidence/qa/ordinary-visual-startup/admission/red.log.gz",
+    "evidence/qa/ordinary-visual-startup/verify_boundary.py",
+    "src-tauri/Cargo.lock",
+    "src-tauri/src/visual_qa_profile.rs"
+  ],
+  "source_fingerprint_seconds_in_original_receipt": 1.783163,
+  "complete_prebaseline_setup_seconds": 115.491279,
+  "source_setup_cap_seconds": 120,
+  "source_setup_within_cap": true,
+  "total_seconds": 166.86599350799952,
+  "total_cap_seconds": 1200,
+  "rss_observation": "Partial process-group samples, not a full-memory proof",
+  "mounted_test_sha256": "bc34a5eaeec73fc04db48aa2a4399905baca03912dd26583b86f4fbbfea3e4fd",
+  "mounted_input_sha256": "16a3503a1260bf448a01c790e44d7edcbe88a1b6ccf759aac4a3d51bbc16a41a",
+  "baseline": {
+    "tests": 22,
+    "pass": 4,
+    "intended_ERR_ASSERTION_failures": 18
+  },
+  "candidate": {
+    "tests": 22,
+    "pass": 22,
+    "fail": 0
+  },
+  "adjacent": {
+    "tests": 43,
+    "pass": 43,
+    "fail": 0
+  },
+  "actual_checkout_typecheck": "PASS with unchanged held untracked malformedMcpLabels.test.ts included",
+  "runtime_released": "2026-11-13T01:52:27.108726+00:00",
+  "owned_runtime_remaining": {},
+  "not_run": [
+    "browser/native/screenshots",
+    "real-provider acceptance",
+    "Rust",
+    "build/package/release"
+  ]
+}

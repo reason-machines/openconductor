@@ -1,0 +1,38 @@
+(node:91) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:98) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual App consumes a downloaded update and restarts only after the persistence acknowledgment
+ok 1 - actual App consumes a downloaded update and restarts only after the persistence acknowledgment
+  ---
+  duration_ms: 401.56221
+  type: 'test'
+  ...
+# Subtest: actual App reports an available update without installing when the preference is disabled
+ok 2 - actual App reports an available update without installing when the preference is disabled
+  ---
+  duration_ms: 118.010788
+  type: 'test'
+  ...
+# Subtest: an active session never reaches install or restart through App
+ok 3 - an active session never reaches install or restart through App
+  ---
+  duration_ms: 86.393559
+  type: 'test'
+  ...
+# Subtest: unknown initial session readiness never reaches install or restart through App
+ok 4 - unknown initial session readiness never reaches install or restart through App
+  ---
+  duration_ms: 83.582952
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1113.323299

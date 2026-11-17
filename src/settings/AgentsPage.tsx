@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { settingsFilePath } from "./api";
 import { ClaudeTab, type AgentTabProps } from "./agents/ClaudeTab";
 import { CodexTab } from "./agents/CodexTab";
@@ -23,6 +23,7 @@ const TABS: readonly TabSpec<AgentsTab>[] = AGENTS_TABS.map((id) => ({
  */
 export function AgentsPage(props: AgentTabProps) {
   const tab = useProviderTab();
+  const tabIdPrefix = useId();
   const [settingsPath, setSettingsPath] = useState<string | null>(null);
   useEffect(() => {
     settingsFilePath().then(setSettingsPath, () => setSettingsPath(null));
@@ -30,8 +31,8 @@ export function AgentsPage(props: AgentTabProps) {
   return (
     <div className="oc-ag ag-page">
       <AgentsHeader settingsPath={settingsPath} />
-      <AgentTabRow tabs={TABS} value={tab} onChange={selectProviderTab} />
-      <section role="tabpanel" aria-label={AGENTS_TAB_LABEL[tab]}>
+      <AgentTabRow tabs={TABS} value={tab} onChange={selectProviderTab} tabIdPrefix={tabIdPrefix} />
+      <section role="tabpanel" aria-label={AGENTS_TAB_LABEL[tab]} aria-labelledby={`${tabIdPrefix}-${tab}`}>
         {tab === "reason" && <ReasonTab {...props} />}
         {tab === "claude" && <ClaudeTab {...props} />}
         {tab === "codex" && <CodexTab {...props} />}

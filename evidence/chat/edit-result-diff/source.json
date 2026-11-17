@@ -1,0 +1,105 @@
+{
+  "candidate": "EDIT-RESULT-DIFF-BE7-07",
+  "baseline": "c3b79b39bfafbdde2e7b2c4546b14385bf379b5f",
+  "reference_version": "Conductor 0.87.6",
+  "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "originals": [
+    {
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    {
+      "name": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  ],
+  "reference_spans": [
+    {
+      "name": "Edit-F0o-complete",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7821278,
+        7823360
+      ],
+      "bytes": 2082,
+      "sha256": "cdc0e2040029e55c5c45119879784658d59ba81c3aef8a771766ea351222b636",
+      "literal": "function F0o(t){const e=ne.c(47),{toolCall:n,toolResult:i,localWorkspaceId:r}=t,o=n.input?.file_path||\"\",a=n.input?.old_string,c=n.input?.new_string;let u,d;e[0]!==i?.content?(d=sUt(i?.content,\"diffString\"),u=d?j0o(d):void 0,e[0]=i?.content,e[1]=u,e[2]=d):(u=e[1],d=e[2]);const h=u;let m;e[3]!==h?.oldContent||e[4]!==a?(m=h?.oldContent??oV(typeof a==\"string\"?a:\"\"),e[3]=h?.oldContent,e[4]=a,e[5]=m):m=e[5];const g=m;let _;e[6]!==h?.newContent||e[7]!==c?(_=h?.newContent??oV(typeof c==\"string\"?c:\"\"),e[6]=h?.newContent,e[7]=c,e[8]=_):_=e[8];const v=_;let x;e[9]!==v||e[10]!==g?(x=rUt(g,v),e[9]=v,e[10]=g,e[11]=x):x=e[11];const{addedLines:w,removedLines:E}=x,k=g.length>0||v.length>0;let I,R;e[12]===Symbol.for(\"react.memo_cache_sentinel\")?(I=p.jsx(Ju,{name:\"Edit\"}),R=p.jsx(\"span\",{children:\"Edit\"}),e[12]=I,e[13]=R):(I=e[12],R=e[13]);let O;e[14]!==o||e[15]!==k||e[16]!==v||e[17]!==g||e[18]!==d?(O=k?p.jsx(sV,{oldContent:g,newContent:v,filePath:o,patch:d}):void 0,e[14]=o,e[15]=k,e[16]=v,e[17]=g,e[18]=d,e[19]=O):O=e[19];let D;e[20]!==o||e[21]!==r||e[22]!==O?(D=p.jsx(tee,{filePath:o,localWorkspaceId:r,inline:!1,hoverCardContent:O}),e[20]=o,e[21]=r,e[22]=O,e[23]=D):D=e[23];let P;e[24]!==w||e[25]!==k||e[26]!==E?(P=k&&p.jsx(fIt,{addedLines:w,removedLines:E}),e[24]=w,e[25]=k,e[26]=E,e[27]=P):P=e[27];let L;e[28]!==D||e[29]!==P?(L=p.jsxs(\"div\",{className:\"flex items-center gap-2\",children:[D,P]}),e[28]=D,e[29]=P,e[30]=L):L=e[30];let B;e[31]!==o||e[32]!==k||e[33]!==v||e[34]!==g||e[35]!==d?(B=k&&p.jsx(sV,{oldContent:g,newContent:v,filePath:o,patch:d}),e[31]=o,e[32]=k,e[33]=v,e[34]=g,e[35]=d,e[36]=B):B=e[36];let F;e[37]!==k||e[38]!==L||e[39]!==B||e[40]!==n.id?(F=p.jsx(Mu,{icon:I,leftContent:R,contentAlignment:\"center\",rightContent:L,isCodeBlock:!0,alwaysShowRightContent:!0,isCollapsible:k,persistKey:n.id,children:B}),e[37]=k,e[38]=L,e[39]=B,e[40]=n.id,e[41]=F):F=e[41];let H;e[42]!==i?(H=i?.is_error&&i?.content&&p.jsx(AI,{content:i.content}),e[42]=i,e[43]=H):H=e[43];let U;return e[44]!==F||e[45]!==H?(U=p.jsxs(p.Fragment,{children:[F,H]}),e[44]=F,e[45]=H,e[46]=U):U=e[46],U}"
+    },
+    {
+      "name": "result-object-selection-sUt-M0o-complete",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7820054,
+        7820203
+      ],
+      "bytes": 149,
+      "sha256": "2248f7f672ac07a9692677f6018a48201285c40e8627df57de956e2b2db9f645",
+      "literal": "function sUt(t,e){if(!M0o(t))return;const n=t[e];return typeof n==\"string\"?n:void 0}function M0o(t){return!!t&&typeof t==\"object\"&&!Array.isArray(t)}"
+    },
+    {
+      "name": "result-diff-j0o-complete",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7820203,
+        7820535
+      ],
+      "bytes": 332,
+      "sha256": "3d2439beca8afe386289c516fc78e788d34ac8c8ace4f70de4faba51ce201fcc",
+      "literal": "function j0o(t){const e=[],n=[];for(const i of t.split(`\n`))if(!(i.startsWith(\"--- \")||i.startsWith(\"+++ \")||i.startsWith(\"@@\")))if(i.startsWith(\"-\"))e.push(i.slice(1));else if(i.startsWith(\"+\"))n.push(i.slice(1));else{const r=i.startsWith(\" \")?i.slice(1):i;e.push(r),n.push(r)}return{oldContent:e.join(`\n`),newContent:n.join(`\n`)}}"
+    },
+    {
+      "name": "input-marker-normalization-oV-complete",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7819708,
+        7819811
+      ],
+      "bytes": 103,
+      "sha256": "526ea731df5736946c84a167c3e36ab7a5a21816baf9eb51fb8818c72633e963",
+      "literal": "function oV(t){return!t||typeof t!=\"string\"?\"\":t.split(`\n`).map(e=>e.replace(/^[-+]\\s*/,\"\")).join(`\n`)}"
+    }
+  ],
+  "fixture_sha256": "7d600865d2019d247938172fef1d2c751087b9e17c1f3d525782f85e69f2e662",
+  "checks": [
+    "renderApp-D_fmY7hW.js",
+    "index-BGEQ8YjU.js",
+    "Edit-F0o-complete",
+    "result-object-selection-sUt-M0o-complete",
+    "result-diff-j0o-complete",
+    "input-marker-normalization-oV-complete",
+    "inline-diff-sV-complete",
+    "FileBadge-tee-complete",
+    "row-shell-Mu-complete",
+    "registry-complete",
+    "dispatcher-hIt-complete",
+    "tool-name-resolution-complete",
+    "tool-input-normalization-complete",
+    "assistant-block-ROo-complete",
+    "renderer-index-import-complete",
+    "visible-block-uie-complete",
+    "index-uie-export-mc",
+    "baseline .github/workflows/ci.yml",
+    "baseline evidence/chat/edit-file-hover.md",
+    "baseline package.json",
+    "baseline src/features/chat/ToolRows.tsx",
+    "baseline src/features/chat/Transcript.tsx",
+    "baseline src/features/chat/claudeChat.ts",
+    "baseline src/features/chat/conductorTools.test.ts",
+    "baseline src/features/chat/conductorTools.ts",
+    "baseline src/features/chat/editFileHover.test.ts",
+    "baseline src/features/chat/multiEditHover.test.ts",
+    "baseline src/features/chat/reason.ts",
+    "baseline src/features/chat/types.ts",
+    "baseline src/features/chat/view.ts",
+    "baseline src/features/chat/writeHover.test.ts",
+    "baseline src-tauri/src/claude_chat/map.rs",
+    "baseline src-tauri/src/reason_acp/updates.rs",
+    "sealed fixture unchanged",
+    "unchanged adjacent editFileHover.test.ts",
+    "unchanged adjacent multiEditHover.test.ts",
+    "unchanged adjacent writeHover.test.ts"
+  ],
+  "limits": "Retained shipped bytes, not a fresh installed-app acquisition. Renderer semantic analysis exhausted heap. No reference JavaScript, provider or native execution. Accepted synthetic producer events do not prove a live CLI emitted an object result."
+}

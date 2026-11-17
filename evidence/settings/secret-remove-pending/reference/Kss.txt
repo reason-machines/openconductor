@@ -1,0 +1,1 @@
+function Kss(t){return t==="setting-up"?{sprite:"setting-up-loader"}:t==="typing"?{sprite:"typing"}:t==="typing-detailed"?{sprite:"typing-detailed"}:t==="waiting"?{sprite:"waiting"}:{sprite:"working-loader"}}

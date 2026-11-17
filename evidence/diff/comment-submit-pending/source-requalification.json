@@ -1,0 +1,102 @@
+{
+  "unit": "SUBMIT-PENDING-IDENTITY-DE6-01",
+  "owner": "de6c02f4-4880-4a0d-bf8f-9e3954522753",
+  "current_main": "7d5c13c394e5599c32dd9678625202911f74ebf7",
+  "status": "SOURCE_REQUALIFIED_RUNTIME_NOT_RUN",
+  "static_checks": {
+    "renderer_whole_asset_identity": true,
+    "index_whole_asset_identity": true,
+    "span_OMi-create-and-annotations": true,
+    "span_annotation-metadata": true,
+    "span_wet-draft-consumer": true,
+    "span_SVo-complete-editor": true,
+    "span_comment-create-and-persist": true,
+    "span_ready-and-delete-resets": true,
+    "span_patch-view-annotation-caller": true,
+    "unique_xSr-renderer-import": true,
+    "unique_Q7t-index-export": true,
+    "unique_Q7t-ready-wrapper": true,
+    "unique_create-renderer-import": true,
+    "unique_create-index-export": true,
+    "unique_create-wrapper": true,
+    "current_submit_guard_trim_only": true,
+    "current_submit_allocates_per_call": true,
+    "current_draft_removed_after_settlement": true,
+    "current_local_store_appends": true,
+    "current_native_plain_insert": true,
+    "reference_submit_captures_original_id": true,
+    "reference_guard_trim_only": true,
+    "reference_sql_updates_id": true
+  },
+  "static_passed": 23,
+  "retained_span_readbacks": 13,
+  "current_sources": {
+    "src/features/diff/ReviewComments.tsx": {
+      "sha256": "9d9c3c2c27e6a875455c9e7937410858e7e26415bd3e8880837b42a3d236cb75",
+      "bytes": 26305,
+      "unchanged": false,
+      "only_delta": "#1167 existing-edit catch/notify/rethrow"
+    },
+    "src/features/diff/comments.ts": {
+      "sha256": "d8df4efefba44a94a7ddfd781075a08bba56fef93eea4aa377f6b872d4210800",
+      "bytes": 15847,
+      "unchanged": true
+    },
+    "src/features/diff/commentStore.ts": {
+      "sha256": "89b6dc1e8c4acd63482bdca83147d1eed286b06ef1bc40c25cbc25440c44af3c",
+      "bytes": 3227,
+      "unchanged": true
+    },
+    "src/features/diff/commentsApi.ts": {
+      "sha256": "69de64da7711ed0b9f852244b4b1f5dcf09cff7b5a4c1cb19e81f49fd48ead43",
+      "bytes": 2080,
+      "unchanged": true
+    },
+    "src/features/diff/DiffViewer.tsx": {
+      "sha256": "9bb3cc41406952e4163810cbb8f1115b724c0936e22dc58faf2c46b2b4f23da7",
+      "bytes": 10370,
+      "unchanged": true
+    },
+    "src/components/WorkspaceView.tsx": {
+      "sha256": "1f3029701b12d364024271fab334e799a79fd334848596b892ea9e8ee7d7f28a",
+      "bytes": 86701,
+      "unchanged": true
+    },
+    "src/features/diff/FileDiffView.tsx": {
+      "sha256": "0904649c38d19a50a45552cddeb3f6469157cc0ba56e5d6e6c8f6bb57c4edc68",
+      "bytes": 19196,
+      "unchanged": true
+    },
+    "src-tauri/src/diff/comment_commands.rs": {
+      "sha256": "228616f72107b296572fab4b86ac592fde27d67fdded74bf8bb5ee059d009933",
+      "bytes": 17742,
+      "unchanged": true
+    },
+    "crates/openconductor-db/src/diff_comments.rs": {
+      "sha256": "4fd81373bafc8c00fd8c6446e5a1ffed59dcccd30b57bab987d0ada068a925c2",
+      "bytes": 15572,
+      "unchanged": true
+    }
+  },
+  "frozen_regression_spec_sha256": "ef584bca9111f8babcb89a53eb7802fa567052459aa805e3277c20701747c633",
+  "frozen_case_count": 7,
+  "fixture_hashes": {
+    "src/features/diff/commentEditDrafts.test.ts": "487a0b6d0bb87c7325c865c864e0664f060c16d6e51d48981c250b511ec5ddf7",
+    "src/features/diff/commentImeSubmit.test.ts": "f4df74049b561f325678c650ab3fa2737c683980b80d42369d8d62a8d5b591be",
+    "src/features/diff/commentCancel.test.ts": "7081738042a7cc472aabc01acdc6f8da4aa63b479b5bb744babbccdef8ea8c8a",
+    "src/features/diff/commentSaveFailure.test.ts": "74fd947c45301a43a5c4a07b769cd7782fec2438b7938f7cbc9ccfc79ef7bbbe",
+    "src/features/diff/comments.test.ts": "1bb0fad4bb38a6a9a8beb5838eb931524d27a238166bcbd73b459d9f712b56b8",
+    "src/features/diff/commentStore.test.ts": "f085967452542239076fa1fc88bb4cf0b42ca0b17b61849d2d8ab19da2d725e2",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a"
+  },
+  "mounted": "NOT_RUN",
+  "native": "NOT_RUN",
+  "package": "NOT_RUN",
+  "limits": [
+    "Original retained REA assets were read, never evaluated.",
+    "No fresh Mac extraction or UI observation.",
+    "Historical REA renderer semantic-analysis heap exhaustion remains.",
+    "Product-file ownership reconciliation and ACC serialized runtime admission are pending.",
+    "Frozen #992 release scope is unchanged."
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "observer": "Conductor Rebuild / 6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+  "head_sha": "99b56beaee35781d7ed0db6d2261a2a2d79201a3",
+  "workflow_run": "https://github.com/reason-machines/openconductor/actions/runs/43252856882",
+  "job": "https://github.com/reason-machines/openconductor/actions/runs/43252856882/job/131303120186",
+  "observed_job_conclusion": "success",
+  "commands_passed": ["npm run typecheck", "node --test \"src/**/*.test.ts\"", "npm run build"],
+  "component_source_sha256": "60b7fe9e506d7e936a9e9b1cef4127a631f8e44c18a4d29fbcffb9ff3194faf3",
+  "component_log_lines": [721, 780],
+  "component_cases_passed": [
+    "accepted modal launch closes after pending registration and before repository registration settles",
+    "late modal success does not close a replacement dialog",
+    "detached creation failure stays visible through the persistent warning surface",
+    "full-page creation remains mounted until success and suppresses a pending duplicate",
+    "full-page creation failure stays inline and clears the pending row",
+    "invalid does not close or create a workspace",
+    "missing-checkout does not close or create a workspace",
+    "no-repository does not close or create a workspace",
+    "detached launch preserves first message, section and setup success",
+    "detached launch preserves first message, section and setup failure"
+  ],
+  "baseline_component_run": "NOT_RUN",
+  "browser_run": "NOT_RUN",
+  "packaged_app": "NOT_RUN",
+  "native_acceptance": "NOT_RUN",
+  "limitation": "Historical hosted candidate result on the named head, not an exact-head result for later commits. The ten lifecycle cases use controlled external dependencies and synthetic dialog primitives. No local component, typecheck, build or browser process was started to obtain this receipt."
+}

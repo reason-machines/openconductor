@@ -39,6 +39,7 @@ function fixture(spawn: (args: SpawnArgs) => Promise<string>, saved = false) {
   const writes: string[] = [];
   const screens: Screen[] = [];
   class Screen {
+    unicode = { activeVersion: "6" };
     cols = 80;
     rows = 24;
     options: Record<string, unknown>;
@@ -49,6 +50,8 @@ function fixture(spawn: (args: SpawnArgs) => Promise<string>, saved = false) {
     attachCustomKeyEventHandler() {}
     onData(input: (text: string) => void) { this.input = input; }
     onResize() {}
+    onSelectionChange() { return { dispose() {} }; }
+    getSelection() { return ""; }
     write() {}
     resize(cols: number, rows: number) { this.cols = cols; this.rows = rows; }
     dispose() { this.disposed = true; }
@@ -62,6 +65,7 @@ function fixture(spawn: (args: SpawnArgs) => Promise<string>, saved = false) {
   const boundary: Record<string, unknown> = {
     "@xterm/xterm": { Terminal: Screen },
     "@xterm/addon-fit": { FitAddon: class { fit() {} dispose() {} } },
+    "@xterm/addon-unicode11": { Unicode11Addon: class {} },
     "src/features/terminal/pty": {
       onPtyEvent: async (callback: (event: PtyEvent) => void) => { event = callback; return noop; },
       ptySpawn: async (args: SpawnArgs) => { calls.push(args); return spawn(args); },

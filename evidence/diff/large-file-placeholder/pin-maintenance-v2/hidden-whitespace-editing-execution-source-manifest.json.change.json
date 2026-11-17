@@ -1,0 +1,9 @@
+{
+  "manifest": "evidence/diff/hidden-whitespace-editing/execution-source-manifest.json",
+  "before_sha256": "437772cdb94834b391dd09fec6e0dbed68d35a0df5e5c530258fbff1bf6be90d",
+  "json_path": [
+    "files",
+    "candidate/src/features/diff/FileDiffView.tsx"
+  ],
+  "after": "518b579630903c24ef7f2431c91d014fdd46fad8732c1b1a6895375fd3ee2f26"
+}

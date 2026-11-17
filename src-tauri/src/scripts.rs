@@ -8,21 +8,54 @@ use oc_scripts::runner::RunStatus;
 use oc_scripts::service::{ScriptEvent, ScriptService, WorkspaceRef};
 use oc_scripts::setup::{SetupOutcome, SetupState};
 use serde::Serialize;
-use tauri::{AppHandle, Emitter, State};
+use tauri::{AppHandle, Emitter, Manager, State};
+// openconductor_db is a direct dependency of this crate (Cargo.toml) so we can
+// reference workspaces::update_setup_log and SqlitePool without going through tauri state.
 
 /// Event name the frontend listens on.
 pub const EVENT: &str = "scripts://event";
 
 /// Build the service; events go to every window.
+/// Also persists the log path and outcome state to the database when setup
+/// finishes, so the transcript survives a restart.
 pub fn service(app: &AppHandle) -> ScriptService {
     let home = std::env::var_os("HOME")
         .map(std::path::PathBuf::from)
         .unwrap_or_default();
     let emitter = app.clone();
+    // DB pool captured; persists setup outcome (path + state) on SetupFinished so the transcript survives a restart.
+    let pool = app.state::<crate::db::Db>().0.clone();
     let service = ScriptService::new(
         home.join(".conductor"),
         std::env::temp_dir(),
         std::sync::Arc::new(move |event: ScriptEvent| {
+            if let ScriptEvent::SetupFinished(ref outcome) = event {
+                let (pool, workspace_id) = (pool.clone(), outcome.workspace_id.clone());
+                let log_path = outcome.log_path.to_string_lossy().into_owned();
+                let state_str = match outcome.state {
+                    SetupState::Completed => "completed",
+                    SetupState::Failed => "failed",
+                    SetupState::Cancelled => "cancelled",
+                    _ => "failed",
+                };
+                let state_str = state_str.to_string();
+                tauri::async_runtime::spawn(async move {
+                    if let Err(e) = openconductor_db::workspaces::update_setup_log(
+                        &pool,
+                        &workspace_id,
+                        &log_path,
+                        &state_str,
+                    )
+                    .await
+                    {
+                        eprintln!("Could not persist setup log for {workspace_id}: {e}");
+                    }
+                    // M17: finish_setup clears setting_up so local_plan_mode and /clear unblock.
+                    if let Err(e) = openconductor_db::workspaces::finish_setup(&pool, &workspace_id).await {
+                        eprintln!("Could not finish setup for {workspace_id}: {e}");
+                    }
+                });
+            }
             let _ = emitter.emit(EVENT, event);
         }),
     );
@@ -30,6 +63,39 @@ pub fn service(app: &AppHandle) -> ScriptService {
     // user settings file as the user layer.
     service.set_settings_env(crate::settings::effective::script_env_hook());
     service
+}
+
+/// At app startup, restore every workspace whose setup outcome was persisted
+/// so the Setup tab shows the previous run's transcript without re-running setup.
+pub async fn restore_setup_transcripts(
+    pool: &openconductor_db::SqlitePool,
+    scripts: &ScriptService,
+) {
+    let workspaces = match openconductor_db::workspaces::list(pool).await {
+        Ok(ws) => ws,
+        Err(e) => {
+            eprintln!("Could not list workspaces for setup restore: {e}");
+            return;
+        }
+    };
+    for w in workspaces {
+        let (path, state_str) = match (
+            w.workspace.setup_log_path,
+            w.workspace.setup_log_state,
+        ) {
+            (Some(p), Some(s)) => (p, s),
+            _ => continue,
+        };
+        let state = match state_str.as_str() {
+            "completed" => SetupState::Completed,
+            "failed" => SetupState::Failed,
+            "cancelled" => SetupState::Cancelled,
+            _ => continue, // unknown value from an older schema version
+        };
+        scripts
+            .setup
+            .restore(&w.workspace.local_id, state, std::path::PathBuf::from(path));
+    }
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -126,6 +192,41 @@ pub fn run_script_stop(
     script_id: Option<String>,
 ) -> bool {
     scripts.runs.stop(&workspace_id, script_id.as_deref())
+}
+
+#[tauri::command]
+pub async fn run_script_write(
+    scripts: State<'_, ScriptService>,
+    workspace_id: String,
+    script_id: String,
+    run_id: String,
+    data: String,
+) -> Result<bool, String> {
+    let runs = scripts.runs.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        runs.write(&workspace_id, &script_id, &run_id, data.as_bytes())
+    })
+    .await
+    .map_err(|e| e.to_string())?
+    .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn run_script_resize(
+    scripts: State<'_, ScriptService>,
+    workspace_id: String,
+    script_id: String,
+    run_id: String,
+    cols: u16,
+    rows: u16,
+) -> Result<bool, String> {
+    let runs = scripts.runs.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        runs.resize(&workspace_id, &script_id, &run_id, cols, rows)
+    })
+    .await
+    .map_err(|e| e.to_string())?
+    .map_err(|e| e.to_string())
 }
 
 #[tauri::command]

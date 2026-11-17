@@ -1,0 +1,11 @@
+{
+  "phase": "typecheck",
+  "command": "timeout 120s npm run typecheck",
+  "start": "2026-11-12T11:28:53.325937+00:00",
+  "end": "2026-11-12T11:29:10.778434+00:00",
+  "exit": 0,
+  "elapsed_seconds": 17.452,
+  "timeout": false,
+  "log": "typecheck.txt",
+  "log_sha256": "25d09b0e63f80f99101e9c79fd1568717a776d0cf41f09daf2e04e010c2f40af"
+}

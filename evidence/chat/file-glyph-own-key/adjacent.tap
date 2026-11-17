@@ -1,0 +1,239 @@
+TAP version 13
+# (node:87) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude Code, Reason and Codex give Conductor the same tool calls for one turn
+ok 1 - Claude Code, Reason and Codex give Conductor the same tool calls for one turn
+  ---
+  duration_ms: 4.32061
+  type: 'test'
+  ...
+# Subtest: Codex: the shell wrapper is dropped and single command actions become Read/Grep/LS (Conductor's Kst)
+ok 2 - Codex: the shell wrapper is dropped and single command actions become Read/Grep/LS (Conductor's Kst)
+  ---
+  duration_ms: 0.465765
+  type: 'test'
+  ...
+# Subtest: Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)
+ok 3 - Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)
+  ---
+  duration_ms: 0.274336
+  type: 'test'
+  ...
+# Subtest: Codex: MCP tool calls are mcp__server__tool with their arguments
+ok 4 - Codex: MCP tool calls are mcp__server__tool with their arguments
+  ---
+  duration_ms: 0.334696
+  type: 'test'
+  ...
+# Subtest: Reason: a tool with no Claude Code counterpart keeps its title for Conductor's generic row
+ok 5 - Reason: a tool with no Claude Code counterpart keeps its title for Conductor's generic row
+  ---
+  duration_ms: 0.223188
+  type: 'test'
+  ...
+# Subtest: row text: Read lines, Grep matches, generic summary
+ok 6 - row text: Read lines, Grep matches, generic summary
+  ---
+  duration_ms: 2.874436
+  type: 'test'
+  ...
+# Subtest: line counts follow a line diff
+ok 7 - line counts follow a line diff
+  ---
+  duration_ms: 0.339863
+  type: 'test'
+  ...
+# Subtest: every kind in Conductor's registry resolves by name or prefix (D1o, P1o)
+ok 8 - every kind in Conductor's registry resolves by name or prefix (D1o, P1o)
+  ---
+  duration_ms: 0.321543
+  type: 'test'
+  ...
+# Subtest: Skill and SlashCommand labels (_po, Cpo)
+ok 9 - Skill and SlashCommand labels (_po, Cpo)
+  ---
+  duration_ms: 0.332099
+  type: 'test'
+  ...
+# Subtest: a sub-agent row needs a type other than general-purpose (bpo vs Ypo)
+ok 10 - a sub-agent row needs a type other than general-purpose (bpo vs Ypo)
+  ---
+  duration_ms: 0.554738
+  type: 'test'
+  ...
+# Subtest: AskUserQuestion results (Tpo)
+ok 11 - AskUserQuestion results (Tpo)
+  ---
+  duration_ms: 0.413572
+  type: 'test'
+  ...
+# Subtest: task results parse from JSON and from Claude Code's text (epo, jki)
+ok 12 - task results parse from JSON and from Claude Code's text (epo, jki)
+  ---
+  duration_ms: 0.733096
+  type: 'test'
+  ...
+# Subtest: terminal output, background status and file names (Dpo, R0o, xZe)
+ok 13 - terminal output, background status and file names (Dpo, R0o, xZe)
+  ---
+  duration_ms: 0.253247
+  type: 'test'
+  ...
+# Subtest: swarm messages and wake-ups (qpo, Spo)
+ok 14 - swarm messages and wake-ups (qpo, Spo)
+  ---
+  duration_ms: 0.338453
+  type: 'test'
+  ...
+# Subtest: Codex collaboration calls (_0o)
+ok 15 - Codex collaboration calls (_0o)
+  ---
+  duration_ms: 0.599373
+  type: 'test'
+  ...
+# (node:95) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary Claude Read opens highlighted TypeScript with exact cleaned text and offset numbers
+ok 16 - ordinary Claude Read opens highlighted TypeScript with exact cleaned text and offset numbers
+  ---
+  duration_ms: 4429.506799
+  type: 'test'
+  ...
+# Subtest: ordinary Read .js uses canonical javascript syntax
+ok 17 - ordinary Read .js uses canonical javascript syntax
+  ---
+  duration_ms: 1514.979241
+  type: 'test'
+  ...
+# Subtest: ordinary Read .jsx uses canonical javascript syntax
+ok 18 - ordinary Read .jsx uses canonical javascript syntax
+  ---
+  duration_ms: 1556.007492
+  type: 'test'
+  ...
+# Subtest: ordinary Read .ts uses canonical typescript syntax
+ok 19 - ordinary Read .ts uses canonical typescript syntax
+  ---
+  duration_ms: 911.445245
+  type: 'test'
+  ...
+# Subtest: ordinary Read .tsx uses canonical typescript syntax
+ok 20 - ordinary Read .tsx uses canonical typescript syntax
+  ---
+  duration_ms: 788.339417
+  type: 'test'
+  ...
+# Subtest: ordinary Read .TSX uses canonical typescript syntax
+ok 21 - ordinary Read .TSX uses canonical typescript syntax
+  ---
+  duration_ms: 321.202024
+  type: 'test'
+  ...
+# Subtest: ordinary Read .py uses canonical python syntax
+ok 22 - ordinary Read .py uses canonical python syntax
+  ---
+  duration_ms: 1428.210038
+  type: 'test'
+  ...
+# Subtest: ordinary Read .rs uses canonical rust syntax
+ok 23 - ordinary Read .rs uses canonical rust syntax
+  ---
+  duration_ms: 1520.304838
+  type: 'test'
+  ...
+# Subtest: ordinary Read .json uses canonical json syntax
+ok 24 - ordinary Read .json uses canonical json syntax
+  ---
+  duration_ms: 2150.674976
+  type: 'test'
+  ...
+# Subtest: ordinary Read .yml uses canonical yaml syntax
+ok 25 - ordinary Read .yml uses canonical yaml syntax
+  ---
+  duration_ms: 3415.139929
+  type: 'test'
+  ...
+# Subtest: ordinary Read .yaml uses canonical yaml syntax
+ok 26 - ordinary Read .yaml uses canonical yaml syntax
+  ---
+  duration_ms: 1935.180508
+  type: 'test'
+  ...
+# Subtest: ordinary Read .css uses canonical css syntax
+ok 27 - ordinary Read .css uses canonical css syntax
+  ---
+  duration_ms: 1638.252393
+  type: 'test'
+  ...
+# Subtest: ordinary Read .html uses canonical html syntax
+ok 28 - ordinary Read .html uses canonical html syntax
+  ---
+  duration_ms: 1778.204262
+  type: 'test'
+  ...
+# Subtest: ordinary Read .htm uses canonical html syntax
+ok 29 - ordinary Read .htm uses canonical html syntax
+  ---
+  duration_ms: 1966.070742
+  type: 'test'
+  ...
+# Subtest: ordinary Read .xml uses canonical xml syntax
+ok 30 - ordinary Read .xml uses canonical xml syntax
+  ---
+  duration_ms: 855.793718
+  type: 'test'
+  ...
+# Subtest: ordinary Read .sh uses canonical bash syntax
+ok 31 - ordinary Read .sh uses canonical bash syntax
+  ---
+  duration_ms: 656.588401
+  type: 'test'
+  ...
+# Subtest: ordinary Read .bash uses canonical bash syntax
+ok 32 - ordinary Read .bash uses canonical bash syntax
+  ---
+  duration_ms: 9960.761452
+  type: 'test'
+  ...
+# Subtest: Read unmapped path "/repo/README" keeps literal text without guessed syntax
+ok 33 - Read unmapped path "/repo/README" keeps literal text without guessed syntax
+  ---
+  duration_ms: 1548.167017
+  type: 'test'
+  ...
+# Subtest: Read unmapped path "/repo/example.unknown" keeps literal text without guessed syntax
+ok 34 - Read unmapped path "/repo/example.unknown" keeps literal text without guessed syntax
+  ---
+  duration_ms: 1134.112432
+  type: 'test'
+  ...
+# Subtest: Read unmapped path "/repo/example.go" keeps literal text without guessed syntax
+ok 35 - Read unmapped path "/repo/example.go" keeps literal text without guessed syntax
+  ---
+  duration_ms: 865.513798
+  type: 'test'
+  ...
+# Subtest: Read unmapped path "/repo/example.dart" keeps literal text without guessed syntax
+ok 36 - Read unmapped path "/repo/example.dart" keeps literal text without guessed syntax
+  ---
+  duration_ms: 247.498545
+  type: 'test'
+  ...
+# Subtest: Read unmapped path "" keeps literal text without guessed syntax
+ok 37 - Read unmapped path "" keeps literal text without guessed syntax
+  ---
+  duration_ms: 444.109133
+  type: 'test'
+  ...
+# Subtest: Read highlights each result line independently rather than carrying comment state
+ok 38 - Read highlights each result line independently rather than carrying comment state
+  ---
+  duration_ms: 1875.944686
+  type: 'test'
+  ...
+# Subtest: Read applies the highlight cutoff to each line, not their combined result
+ok 39 - Read applies the highlight cutoff to each line, not their combined result
+  ---
+  duration_ms: 276.183077
+  type: 'test'
+  ...

@@ -1,0 +1,250 @@
+{
+  "owner": "Conductor Rebuild",
+  "head": "71fa7a64c0cd3530c9664de22ecb4f864c7b932d",
+  "state": "FOCUSED_BEHAVIOR_GREEN_NOT_ALL_WORKFLOWS_TERMINAL",
+  "observations": [
+    {
+      "job": 130960645742,
+      "search": "vscode_workspace_context",
+      "log": {
+        "available": true,
+        "text": null,
+        "original_chars": 485052,
+        "reason": null,
+        "total_lines": 3526,
+        "match_count": 29,
+        "matches": [
+          {
+            "line": 2774,
+            "text": "2026-11-12T03:58:46.7775320Z test open_in::commands::vscode_workspace_context_safety::broken_leaf_link ... ok"
+          },
+          {
+            "line": 2775,
+            "text": "2026-11-12T03:58:46.7777410Z test open_in::commands::vscode_workspace_context_safety::cli_search_path_retains_inherited_then_system_and_user_bundles ... ok"
+          },
+          {
+            "line": 2776,
+            "text": "2026-11-12T03:58:46.7781900Z test open_in::commands::vscode_workspace_context_safety::cli_search_path_without_home_keeps_the_system_bundle ... ok"
+          },
+          {
+            "line": 2777,
+            "text": "2026-11-12T03:58:46.7868800Z test open_in::commands::vscode_workspace_context_safety::file_as_workspace ... ok"
+          },
+          {
+            "line": 2778,
+            "text": "2026-11-12T03:58:46.7878070Z test open_in::commands::vscode_workspace_context_safety::missing_cli_is_a_spawn_error_without_open_fallback ... ok"
+          },
+          {
+            "line": 2779,
+            "text": "2026-11-12T03:58:46.7913430Z test open_in::commands::vscode_workspace_context_safety::missing_target ... ok"
+          },
+          {
+            "line": 2780,
+            "text": "2026-11-12T03:58:46.7936550Z test open_in::commands::vscode_workspace_context_safety::missing_workspace ... ok"
+          },
+          {
+            "line": 2781,
+            "text": "2026-11-12T03:58:46.7945770Z test open_in::commands::vscode_workspace_context_safety::nonexecutable_cli_is_a_spawn_error_without_open_fallback ... ok"
+          },
+          {
+            "line": 2782,
+            "text": "2026-11-12T03:58:46.8126400Z test open_in::commands::vscode_workspace_context_safety::outside_workspace ... ok"
+          },
+          {
+            "line": 2783,
+            "text": "2026-11-12T03:58:46.8277330Z test open_in::commands::vscode_workspace_context_safety::prefix_sibling ... ok"
+          },
+          {
+            "line": 2784,
+            "text": "2026-11-12T03:58:46.8411300Z test open_in::commands::vscode_workspace_context_safety::relative_target ... ok"
+          },
+          {
+            "line": 2785,
+            "text": "2026-11-12T03:58:46.8539970Z test open_in::commands::vscode_workspace_context_safety::relative_workspace ... ok"
+          },
+          {
+            "line": 2786,
+            "text": "2026-11-12T03:58:46.8675120Z test open_in::commands::vscode_workspace_context_safety::symlinked_leaf ... ok"
+          },
+          {
+            "line": 2787,
+            "text": "2026-11-12T03:58:46.8902420Z test open_in::commands::vscode_workspace_context_safety::symlinked_parent ... ok"
+          },
+          {
+            "line": 2788,
+            "text": "2026-11-12T03:58:46.9009850Z test open_in::commands::vscode_workspace_context_safety::symlinked_workspace ... ok"
+          },
+          {
+            "line": 2789,
+            "text": "2026-11-12T03:58:46.9115900Z test open_in::commands::vscode_workspace_context_safety::target_traversal ... ok"
+          },
+          {
+            "line": 2790,
+            "text": "2026-11-12T03:58:46.9281780Z test open_in::commands::vscode_workspace_context_safety::valid_context_runs_code_without_open_fallback ... ok"
+          },
+          {
+            "line": 2792,
+            "text": "2026-11-12T03:58:46.9381430Z test open_in::commands::vscode_workspace_context_safety::workspace_traversal ... ok"
+          },
+          {
+            "line": 2830,
+            "text": "2026-11-12T03:58:47.1385700Z test open_in::vscode_workspace_context_ipc::completed_nonzero_fallback ... ok"
+          },
+          {
+            "line": 2831,
+            "text": "2026-11-12T03:58:47.1389410Z test open_in::vscode_workspace_context_ipc::ipc_child ... ok"
+          },
+          {
+            "line": 2832,
+            "text": "2026-11-12T03:58:47.1463850Z test open_in::vscode_workspace_context_ipc::directory ... ok"
+          },
+          {
+            "line": 2833,
+            "text": "2026-11-12T03:58:47.1555220Z test open_in::vscode_workspace_context_ipc::literal_path ... ok"
+          },
+          {
+            "line": 2834,
+            "text": "2026-11-12T03:58:47.1587910Z test open_in::vscode_workspace_context_ipc::missing_target ... ok"
+          },
+          {
+            "line": 2835,
+            "text": "2026-11-12T03:58:47.1593720Z test open_in::vscode_workspace_context_ipc::fallback_error ... ok"
+          },
+          {
+            "line": 2836,
+            "text": "2026-11-12T03:58:47.1738020Z test open_in::vscode_workspace_context_ipc::relative_target ... ok"
+          },
+          {
+            "line": 2837,
+            "text": "2026-11-12T03:58:47.1783450Z test open_in::vscode_workspace_context_ipc::unknown_app ... ok"
+          },
+          {
+            "line": 2838,
+            "text": "2026-11-12T03:58:47.1806320Z test open_in::vscode_workspace_context_ipc::no_context ... ok"
+          },
+          {
+            "line": 2840,
+            "text": "2026-11-12T03:58:47.1871120Z test open_in::vscode_workspace_context_ipc::unrelated_app ... ok"
+          },
+          {
+            "line": 2841,
+            "text": "2026-11-12T03:58:47.1893900Z test open_in::vscode_workspace_context_ipc::workspace_file ... ok"
+          }
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "job": 130960645710,
+      "search": "VS Code workspace payload",
+      "log": {
+        "available": true,
+        "text": null,
+        "original_chars": 1554726,
+        "reason": null,
+        "total_lines": 22353,
+        "match_count": 6,
+        "matches": [
+          {
+            "line": 11484,
+            "text": "2026-11-12T03:56:04.7388859Z # Subtest: VS Code workspace payload: workspace_file"
+          },
+          {
+            "line": 11485,
+            "text": "2026-11-12T03:56:04.7390241Z ok 1856 - VS Code workspace payload: workspace_file"
+          },
+          {
+            "line": 11490,
+            "text": "2026-11-12T03:56:04.7393690Z # Subtest: VS Code workspace payload: literal_path"
+          },
+          {
+            "line": 11491,
+            "text": "2026-11-12T03:56:04.7394705Z ok 1857 - VS Code workspace payload: literal_path"
+          },
+          {
+            "line": 11496,
+            "text": "2026-11-12T03:56:04.7398235Z # Subtest: VS Code workspace payload: unrelated_app"
+          },
+          {
+            "line": 11497,
+            "text": "2026-11-12T03:56:04.7399756Z ok 1858 - VS Code workspace payload: unrelated_app"
+          }
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "job": 130960645710,
+      "search": "primary diff header preserves",
+      "log": {
+        "available": true,
+        "text": null,
+        "original_chars": 1554726,
+        "reason": null,
+        "total_lines": 22353,
+        "match_count": 6,
+        "matches": [
+          {
+            "line": 10113,
+            "text": "2026-11-12T03:55:53.3766597Z # Subtest: primary diff header preserves the exact file payload for finder"
+          },
+          {
+            "line": 10114,
+            "text": "2026-11-12T03:55:53.3768088Z ok 1629 - primary diff header preserves the exact file payload for finder"
+          },
+          {
+            "line": 10119,
+            "text": "2026-11-12T03:55:53.4506540Z # Subtest: primary diff header preserves the exact file payload for vscode"
+          },
+          {
+            "line": 10120,
+            "text": "2026-11-12T03:55:53.4536041Z ok 1630 - primary diff header preserves the exact file payload for vscode"
+          },
+          {
+            "line": 10131,
+            "text": "2026-11-12T03:55:53.5252873Z # Subtest: primary diff header preserves Alacritty failure notification"
+          },
+          {
+            "line": 10132,
+            "text": "2026-11-12T03:55:53.5254134Z ok 1632 - primary diff header preserves Alacritty failure notification"
+          }
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "job": 130960645710,
+      "search": "deleted vscode",
+      "log": {
+        "available": true,
+        "text": null,
+        "original_chars": 1554726,
+        "reason": null,
+        "total_lines": 22353,
+        "match_count": 2,
+        "matches": [
+          {
+            "line": 9855,
+            "text": "2026-11-12T03:55:51.9771956Z # Subtest: deleted vscode header preserves its prior IPC payload"
+          },
+          {
+            "line": 9856,
+            "text": "2026-11-12T03:55:51.9772423Z ok 1586 - deleted vscode header preserves its prior IPC payload"
+          }
+        ],
+        "truncated": false
+      }
+    }
+  ],
+  "qualification": {
+    "frozen_rust_ipc_cases": 10,
+    "mounted_header_cases": 3,
+    "additional_macos_safety_executor_path_cases": 18,
+    "additional_case_scope": "13 invalid-path IPC cases + 1 valid-launch IPC control + 2 private-executor spawn-error policy cases + 2 pure PATH composition cases",
+    "v1_v2_controls": "Finder, VSCode, Alacritty error and deleted-VSCode rows pass in frontend job; V2 changes only expected context"
+  },
+  "later_change": "Historical Python checker restoration and evidence only; all checks must be green again on the final exact head.",
+  "native": "NOT_RUN",
+  "local_runtime": "NOT_RUN",
+  "installation_discovery": "NOT_RUN"
+}

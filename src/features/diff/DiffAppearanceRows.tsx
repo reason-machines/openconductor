@@ -47,7 +47,7 @@ export function DiffColorRows({ settings, save }: Props) {
           ))}
         </select>
       </Row>
-      <Row label="Code theme" help="Syntax highlighting colors for code blocks and editors.">
+      <Row label="Code theme" help="Syntax highlighting theme for code and diffs.">
         <select className="settings-select" style={{ width: 220 }} aria-label="Code theme" value={theme} onChange={(e) => save(withAppearance(settings, "code_theme", codeThemeFrom(e.target.value) as CodeTheme))}>
           <option value="default">Default</option>
           {CODE_THEME_IDS.map((id) => (

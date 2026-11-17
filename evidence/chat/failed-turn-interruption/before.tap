@@ -1,0 +1,138 @@
+(node:52) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual failed-turn footer presents "Request aborted by user" as an outline interruption
+not ok 1 - actual failed-turn footer presents "Request aborted by user" as an outline interruption
+  ---
+  duration_ms: 5.379514
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/fa4d3743-b35d-40b9-ae28-77c68502849c/repo/src/features/chat/turnInterruption.test.ts:64:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /class="chat-badge">Interrupted by user<\/span>/. Input:
+    
+    '<div class="chat-turn-end oc-turn-footer status-failed" data-turn-id="interruption-chat:t1"><span class="chat-turn-error">Request aborted by user</span><span class="chat-turn-actions"></span></div>'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<div class="chat-turn-end oc-turn-footer status-failed" data-turn-id="interruption-chat:t1"><span class="chat-turn-error">Request aborted by user</span><span class="chat-turn-actions"></span></div>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/fa4d3743-b35d-40b9-ae28-77c68502849c/repo/src/features/chat/turnInterruption.test.ts:67:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: actual failed-turn footer presents "Interrupted by user" as an outline interruption
+not ok 2 - actual failed-turn footer presents "Interrupted by user" as an outline interruption
+  ---
+  duration_ms: 0.708407
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/fa4d3743-b35d-40b9-ae28-77c68502849c/repo/src/features/chat/turnInterruption.test.ts:64:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /class="chat-badge">Interrupted by user<\/span>/. Input:
+    
+    '<div class="chat-turn-end oc-turn-footer status-failed" data-turn-id="interruption-chat:t1"><span class="chat-turn-error">Interrupted by user</span><span class="chat-turn-actions"></span></div>'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<div class="chat-turn-end oc-turn-footer status-failed" data-turn-id="interruption-chat:t1"><span class="chat-turn-error">Interrupted by user</span><span class="chat-turn-actions"></span></div>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/fa4d3743-b35d-40b9-ae28-77c68502849c/repo/src/features/chat/turnInterruption.test.ts:67:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: actual footer preserves nonmatching failure "Provider unavailable"
+ok 3 - actual footer preserves nonmatching failure "Provider unavailable"
+  ---
+  duration_ms: 0.653833
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "Aborted by user"
+ok 4 - actual footer preserves nonmatching failure "Aborted by user"
+  ---
+  duration_ms: 0.356364
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "interrupted by user"
+ok 5 - actual footer preserves nonmatching failure "interrupted by user"
+  ---
+  duration_ms: 0.314663
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "Session cancelled: stopped"
+ok 6 - actual footer preserves nonmatching failure "Session cancelled: stopped"
+  ---
+  duration_ms: 0.222494
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "request cancelled"
+ok 7 - actual footer preserves nonmatching failure "request cancelled"
+  ---
+  duration_ms: 0.415658
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure "[codex-mcp-consent] user_canceled"
+ok 8 - actual footer preserves nonmatching failure "[codex-mcp-consent] user_canceled"
+  ---
+  duration_ms: 0.279805
+  type: 'test'
+  ...
+# Subtest: actual footer preserves nonmatching failure ""
+ok 9 - actual footer preserves nonmatching failure ""
+  ---
+  duration_ms: 0.722068
+  type: 'test'
+  ...
+# Subtest: actual footer retains the missing-error fallback
+ok 10 - actual footer retains the missing-error fallback
+  ---
+  duration_ms: 0.63871
+  type: 'test'
+  ...
+# Subtest: actual cancelled footer keeps exactly one interruption badge and no raw error
+ok 11 - actual cancelled footer keeps exactly one interruption badge and no raw error
+  ---
+  duration_ms: 0.353197
+  type: 'test'
+  ...
+# Subtest: a completed turn does not gain an interruption badge from its error field
+ok 12 - a completed turn does not gain an interruption badge from its error field
+  ---
+  duration_ms: 0.248665
+  type: 'test'
+  ...
+# Subtest: actual footer keeps ordinary Codex sign-in guidance
+ok 13 - actual footer keeps ordinary Codex sign-in guidance
+  ---
+  duration_ms: 0.58243
+  type: 'test'
+  ...
+# Subtest: actual interruption footer retries the unchanged prompt and turn id
+ok 14 - actual interruption footer retries the unchanged prompt and turn id
+  ---
+  duration_ms: 1.333281
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 12
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 855.3278

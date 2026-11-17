@@ -1,0 +1,1 @@
+async function o4e(t,e){if(Hde()==="linux"){await Que(t,e.appName);return}await wBt(`open -a ${nl(e.appName)} ${nl(t)}`,e)}

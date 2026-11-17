@@ -1,0 +1,251 @@
+{
+  "status": "INERT_REGRESSION_DESIGN_ONLY_NO_EXECUTABLE_TEST_LEASE",
+  "checked_main": "5852f41eb4df5c6da9b976d7b8ef830a892aed8d",
+  "reference_boundary": "Per normalized result-message first persistence-ingestion creation time, not CLI completion",
+  "real_graph": "reasonChat\u2192startTurn\u2192applyReasonPayload\u2192applyChatEvents\u2192actual Transcript\u2192ToolRows RowShell; no synthetic separate result messages or copied handler",
+  "initialization": {
+    "call": "actual reasonChat/startTurn",
+    "at": "2026-11-11T11:59:55.000Z",
+    "chatId": "wakeup-source-fixture",
+    "userPrompt": "Synthetic wake-up timing fixture"
+  },
+  "fixed_clock": "UTC, replace Date/setTimeout only at admitted external host boundary; invoke actual source functions",
+  "cases": [
+    {
+      "id": "actual-adapter-first-result-time",
+      "role": "INTENDED_RED",
+      "assertion": "WAKE_RESULT_TIME_NOT_PROJECTED",
+      "frames": [
+        {
+          "at": "2026-11-11T12:00:00.000Z",
+          "payload": {
+            "type": "tool",
+            "id": "wake-result-clock-1",
+            "title": "ScheduleWakeup",
+            "kind": "other",
+            "status": "running",
+            "output": null,
+            "diffs": [],
+            "locations": [],
+            "toolName": "ScheduleWakeup",
+            "rawInput": {
+              "delaySeconds": 120,
+              "reason": "synthetic timing source fixture"
+            }
+          }
+        },
+        {
+          "at": "2026-11-11T12:00:30.000Z",
+          "payload": {
+            "type": "tool",
+            "id": "wake-result-clock-1",
+            "title": "ScheduleWakeup",
+            "kind": "other",
+            "status": "completed",
+            "output": "Wake-up scheduled (in 90s)",
+            "diffs": [],
+            "locations": [],
+            "toolName": "ScheduleWakeup",
+            "rawInput": {
+              "delaySeconds": 120,
+              "reason": "synthetic timing source fixture"
+            }
+          }
+        }
+      ],
+      "expected": {
+        "label": "Waiting until 12:02 PM",
+        "wakeAt": "2026-11-11T12:02:00.000Z",
+        "notAssistantStartDeadline": "2026-11-11T12:01:30.000Z"
+      },
+      "repeatControl": {
+        "frame": {
+          "at": "2026-11-11T12:01:00.000Z",
+          "payload": {
+            "type": "tool",
+            "id": "wake-result-clock-1",
+            "title": "ScheduleWakeup",
+            "kind": "other",
+            "status": "completed",
+            "output": "Wake-up scheduled (in 90s)",
+            "diffs": [],
+            "locations": [],
+            "toolName": "ScheduleWakeup",
+            "rawInput": {
+              "delaySeconds": 120,
+              "reason": "synthetic timing source fixture"
+            }
+          }
+        },
+        "expectedWakeAt": "2026-11-11T12:02:00.000Z",
+        "meaning": "Repeated terminal payload must not reset persisted creation time"
+      }
+    },
+    {
+      "id": "actual-mounted-deadline-and-dispose",
+      "role": "INTENDED_RED",
+      "assertion": "WAKE_DEADLINE_TRANSITION_MISSING",
+      "frames": [
+        {
+          "at": "2026-11-11T12:00:00.000Z",
+          "payload": {
+            "type": "tool",
+            "id": "wake-result-clock-1",
+            "title": "ScheduleWakeup",
+            "kind": "other",
+            "status": "running",
+            "output": null,
+            "diffs": [],
+            "locations": [],
+            "toolName": "ScheduleWakeup",
+            "rawInput": {
+              "delaySeconds": 120,
+              "reason": "synthetic timing source fixture"
+            }
+          }
+        },
+        {
+          "at": "2026-11-11T12:00:30.000Z",
+          "payload": {
+            "type": "tool",
+            "id": "wake-result-clock-1",
+            "title": "ScheduleWakeup",
+            "kind": "other",
+            "status": "completed",
+            "output": "Wake-up scheduled (in 90s)",
+            "diffs": [],
+            "locations": [],
+            "toolName": "ScheduleWakeup",
+            "rawInput": {
+              "delaySeconds": 120,
+              "reason": "synthetic timing source fixture"
+            }
+          }
+        }
+      ],
+      "advanceClockTo": "2026-11-11T12:02:00.250Z",
+      "expected": "Waited until 12:02 PM with no new transcript update; future pending deadline canceled on unmount"
+    },
+    {
+      "id": "pending-control",
+      "role": "CONTROL",
+      "frames": [
+        {
+          "at": "2026-11-11T12:00:00.000Z",
+          "payload": {
+            "type": "tool",
+            "id": "wake-result-clock-1",
+            "title": "ScheduleWakeup",
+            "kind": "other",
+            "status": "running",
+            "output": null,
+            "diffs": [],
+            "locations": [],
+            "toolName": "ScheduleWakeup",
+            "rawInput": {
+              "delaySeconds": 120,
+              "reason": "synthetic timing source fixture"
+            }
+          }
+        }
+      ],
+      "expected": "Scheduling wake-up; no result-time deadline"
+    },
+    {
+      "id": "stop-control",
+      "role": "CONTROL",
+      "frames": [
+        {
+          "at": "2026-11-11T12:00:00.000Z",
+          "payload": {
+            "type": "tool",
+            "id": "wake-result-clock-1",
+            "title": "ScheduleWakeup",
+            "kind": "other",
+            "status": "running",
+            "output": null,
+            "diffs": [],
+            "locations": [],
+            "toolName": "ScheduleWakeup",
+            "rawInput": {
+              "stop": true
+            }
+          }
+        },
+        {
+          "at": "2026-11-11T12:00:30.000Z",
+          "payload": {
+            "type": "tool",
+            "id": "wake-result-clock-1",
+            "title": "ScheduleWakeup",
+            "kind": "other",
+            "status": "completed",
+            "output": "Stopped",
+            "diffs": [],
+            "locations": [],
+            "toolName": "ScheduleWakeup",
+            "rawInput": {
+              "stop": true
+            }
+          }
+        }
+      ],
+      "expected": [
+        "Stopping scheduled wake-ups",
+        "Stopped scheduled wake-ups"
+      ],
+      "timer": "none"
+    },
+    {
+      "id": "error-control",
+      "role": "CONTROL",
+      "frames": [
+        {
+          "at": "2026-11-11T12:00:00.000Z",
+          "payload": {
+            "type": "tool",
+            "id": "wake-result-clock-1",
+            "title": "ScheduleWakeup",
+            "kind": "other",
+            "status": "running",
+            "output": null,
+            "diffs": [],
+            "locations": [],
+            "toolName": "ScheduleWakeup",
+            "rawInput": {
+              "delaySeconds": 120,
+              "reason": "synthetic timing source fixture"
+            }
+          }
+        },
+        {
+          "at": "2026-11-11T12:00:30.000Z",
+          "payload": {
+            "type": "tool",
+            "id": "wake-result-clock-1",
+            "title": "ScheduleWakeup",
+            "kind": "other",
+            "status": "failed",
+            "output": "Synthetic failed wake-up",
+            "diffs": [],
+            "locations": [],
+            "toolName": "ScheduleWakeup",
+            "rawInput": {
+              "delaySeconds": 120,
+              "reason": "synthetic timing source fixture"
+            }
+          }
+        }
+      ],
+      "expected": "real generic/error content retained, no waiting deadline"
+    }
+  ],
+  "unexercised_requirements": [
+    "Legacy restored results without an explicit result-creation field",
+    "Actual SQLite round trip",
+    "Multiple tool results from one native source frame",
+    "Original/current visible native clock/timeout scheduling",
+    "Failed-persistence retry semantics"
+  ],
+  "prohibited": "Do not change product before intended actual RED + controls; no runtime/test/publication admission from this JSON"
+}

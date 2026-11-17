@@ -1,0 +1,9 @@
+{
+  "encoding": "gzip, lossless",
+  "original_bytes": 744,
+  "original_sha256": "1ca5564007d2a2d7cc5655b7543af7985e369ca1263c18dc7b8a1883c064c12b",
+  "compressed_bytes": 440,
+  "compressed_sha256": "558cdd8334f96e517ddbf6522b3b8c36a1f7ef9a77313ed7bb8c5e18cc67d1f0",
+  "decompression_equals_original": true,
+  "reason": "Preserve exact terminal bytes, including final blank line, without a text-diff whitespace error. Original raw file retained locally."
+}

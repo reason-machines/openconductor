@@ -1,0 +1,1 @@
+function E0i(t={}){const{highlightItemOnHover:e,highlightedIndex:n,onHighlightedIndexChange:i}=NQe(),{ref:r,index:o}=wD(t),a=n===o,c=$.useRef(null),u=e5(r,c);return{compositeProps:{tabIndex:a?0:-1,onFocus(){i(o)},onMouseMove(){const h=c.current;if(!e||!h)return;const m=h.hasAttribute("disabled")||h.ariaDisabled==="true";!a&&!m&&h.focus()}},compositeRef:u,index:o}}

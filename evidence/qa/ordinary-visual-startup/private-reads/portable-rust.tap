@@ -1,0 +1,14 @@
+
+running 9 tests
+test tests::existing_state_is_never_imported_or_reused ... ok
+test tests::absent_request_is_a_noop_even_in_release ... ok
+test tests::resolver_escape_and_parent_components_are_rejected ... ok
+test tests::shared_root_is_rejected_before_mutation ... ok
+test tests::release_refuses_before_touching_disk ... ok
+test tests::symlink_roots_and_descendants_are_rejected ... ok
+test tests::invalid_paths_fail_without_creating_them ... ok
+test tests::private_roots_are_real_and_separate_per_launch ... ok
+test tests::simultaneous_requests_admit_exactly_one_profile ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+

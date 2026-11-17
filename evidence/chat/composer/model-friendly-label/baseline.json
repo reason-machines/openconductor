@@ -1,0 +1,42 @@
+{
+  "owner": "Conductor Rebuild",
+  "baseline_main": "47463ddaf959a7ee394d3d64a5b22e3eccbda74c",
+  "original_packet_main": "838ab2a1c76d11f8048a89c9d4c01ba822db2204",
+  "packet_sha256": "5aaaa93a98590aa9ba911b593b115dfa10e35ea1e52ac85783d64a5e7cb7bbf0",
+  "packet_size_bytes": 87221,
+  "current_source_rebind": "PASS: all ten snapshots byte-identical",
+  "current_source_sha256": {
+    "src/features/chat/ChatModelPicker.tsx": "17a6ce1601d1ecc0a4b1ef642f3e74ec5bc2a39ea418e1f904d41951ba4f17b9",
+    "src/features/chat/ModelPicker.tsx": "ce0208f4526d1c3ec580178ebcae77bec35bbd20a4f39c4df7c2b6f015134bc5",
+    "src/features/chat/chatAgentChoice.test.ts": "03bfcd6a8a50d1f1818afb91220ae1c8f57477d01604978cd655284727718f46",
+    "src/features/chat/chatAgentChoice.ts": "205d78402404009c68f5485e2833dd2a6d294302072ffef3216854518c0e6712",
+    "src/features/chat/chatModelChoice.ts": "9e5c4b753ca59c4b853f6473ddec1aefbc8e0cb2f995495ce97d4cd99f397728",
+    "src/features/chat/composerModels.ts": "e9b1e5cb5d1bc04fed9b909300c5b7e29d3e159afec3fd31a27ac0ed21699cab",
+    "src/features/chat/loadoutChoices.test.ts": "0105c5bd094eda7bae7f687dcaa6ce4eee4a4f21a13ded0ca61bdf1070ba9688",
+    "src/features/chat/loadoutChoices.ts": "6f598e35d99d142e63711db22e0e189096cb0162410f1daf73a35833311c354c",
+    "src/features/chat/reasonModels.ts": "942ce39db481ba67af00bd87e07f0dfc96d0ea9fd60e61344433c03472b56851",
+    "src/settings/models.ts": "bfe92c614ec2076b61055a35ef402cfe06e9b407ac424ca55c8a70c8a89f4939"
+  },
+  "fixture": "src/features/chat/chatModelFriendlyLabel.test.ts",
+  "fixture_sha256": "99c2b6265d5e15450fbd1cd8dec34a793bf49358e32559b190a4736cbcdbc7e9",
+  "case_count": 5,
+  "behavioral_red": "NOT_RUN",
+  "behavioral_green": "NOT_RUN",
+  "typecheck": "NOT_RUN",
+  "native_provider_visual": "NOT_RUN",
+  "product_changes": [],
+  "existing_tests_changed": [],
+  "workflow_changes": [],
+  "focused_command": "node --test src/features/chat/chatModelFriendlyLabel.test.ts",
+  "predicted_only": {
+    "label_failures": [
+      "canonical Claude",
+      "alias Claude",
+      "catalog/search friendly label"
+    ],
+    "controls": [
+      "Codex omitted catalog",
+      "unknown local extension"
+    ]
+  }
+}

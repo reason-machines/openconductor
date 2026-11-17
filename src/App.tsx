@@ -1,5 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { WorkspaceOpenInTarget } from "./palette/fromAppState.ts";
+import { useUpdates } from "./features/updates/useUpdates";
 import { useAppStore } from "./state/store";
 import { useCustomSectionCollapse } from "./state/useCustomSectionCollapse";
 import { ATTACH_FAILED, destroyWorkspaceTerminals, onAttachFailure } from "./features/terminal/session";
@@ -15,7 +17,7 @@ import { glyphs } from "./keybindings/shortcut";
 import { SubmitPromptDialog } from "./components/SubmitPromptDialog";
 import { FeedbackDialog } from "./components/FeedbackDialog";
 import { DiagnosticsPage } from "./diagnostics/DiagnosticsPage";
-import { AllWorkspaces } from "./components/AllWorkspaces";
+import { HomeWorkspaceScreen } from "./components/HomeWorkspaceScreen";
 import { Dashboard } from "./components/Dashboard";
 import "./home.css";
 import { WorkspaceView } from "./components/WorkspaceView";
@@ -42,7 +44,10 @@ import { RestoreWorkspaceDialog, type RestoreRequest } from "./components/Restor
 import type { Action } from "./state/store";
 import { useInitIssues } from "./workspace/useInitIssues";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
-import { CHANGELOG_URL, DOCS_URL } from "./components/helpMenuItems";
+import { SearchInFilesDialog } from "./components/SearchInFilesDialog";
+import { requestFileOpen } from "./palette/fileOpenActions";
+import { requestPrPaletteAction } from "./palette/prPaletteActions";
+import { CHANGELOG_URL, DOCS_URL, REPO_URL } from "./components/helpMenuItems";
 import {
   openInTerminalScript,
   XCODE_LICENSE_COMMAND,
@@ -97,14 +102,21 @@ export default function App() {
     },
     [storeDispatch],
   );
+  const [activeOpenInTarget, setActiveOpenInTarget] = useState<WorkspaceOpenInTarget | null>(null);
+  const registerOpenInTarget = useCallback((target: WorkspaceOpenInTarget) => {
+    setActiveOpenInTarget(target);
+    return () => setActiveOpenInTarget((current) => current === target ? null : current);
+  }, []);
   const [sectionDialog, setSectionDialog] = useState<SectionDialogMode | null>(null);
+  /** Set when the section dialog was opened from the palette move-to-section flow; on close, reopen the palette. */
+  const paletteSectionWorkspaceRef = useRef<string | null>(null);
   const submitSection = (mode: SectionDialogMode, value: { name: string; emoji?: string }) => {
     if (mode.mode === "edit") {
-      dispatch({ type: "editSection", sectionId: mode.sectionId, ...value });
+      dispatch({ type: "editSection", sectionId: mode.sectionId, ...value, onError: () => show("error", "Couldn't edit section") });
       return;
     }
     const section = { id: newId(), ...value, workspaceIds: mode.workspaceIdToMove === undefined ? [] : [mode.workspaceIdToMove] };
-    dispatch({ type: "createSection", section, beforeSectionId: mode.beforeSectionId });
+    dispatch({ type: "createSection", section, beforeSectionId: mode.beforeSectionId, onError: () => show("error", "Couldn't create section") });
   };
   const prefs = useAppPrefs();
   const cloudUI = useBoolPrefState("experimental_cloud_ui");
@@ -162,6 +174,7 @@ export default function App() {
   const [submitPromptOpen, setSubmitPromptOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const { toasts, show, dismiss } = useToasts();
+  useUpdates({ repos: state.repos, startup, notify: show });
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
   // A terminal screen that could not attach (Conductor's "Failed to attach terminal" toast).
@@ -332,6 +345,7 @@ export default function App() {
     onAddProjectAt: addProjectAt,
   };
   const [quickOpen, setQuickOpen] = useState(false);
+  const [searchInFiles, setSearchInFiles] = useState(false);
   // ⌥⌘/ and the native Help > Keyboard Shortcuts item both toggle the help dialog.
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const { overrides } = useKeybindingOverrides();
@@ -381,6 +395,22 @@ export default function App() {
       offs.forEach((off) => void off.then((f) => f()));
     };
   }, []);
+  // Native Help menu items (src-tauri/src/menu.rs): Documentation,
+  // Best Practices, Changelog open URLs; Send Feedback / Submit a Prompt /
+  // Diagnostics toggle dialogs already present in the render tree.
+  // Evidence: binary strings, Conductor 0.87.6, re-read 2026-11-15.
+  useEffect(() => {
+    if (!inTauri()) return;
+    const offs = [
+      listen("open_documentation_url",    () => void openUrl(DOCS_URL)),
+      listen("open_best_practices_url",   () => void openUrl(`${REPO_URL}/tree/main/docs`)),
+      listen("open_changelog_url",        () => void openUrl(CHANGELOG_URL)),
+      listen("open_feedback_dialog",      () => setFeedbackOpen(true)),
+      listen("open_submit_prompt_dialog", () => setSubmitPromptOpen(true)),
+      listen("open_diagnostics_page",     () => setDiagnosticsOpen(true)),
+    ];
+    return () => offs.forEach((off) => void off.then((f) => f()));
+  }, []);
   const quitDialog = quitConfirm !== null && <QuitDialog running={quitConfirm} onConfirm={confirmQuit} onClose={() => setQuitConfirm(null)} />;
 
   const sel = state.selection;
@@ -393,6 +423,8 @@ export default function App() {
   // Quick open needs an active (not archived) workspace, like the reference.
   const canQuickOpen = !!workspace && workspace.status !== "archived";
   const workspacePath = workspace?.path || repo?.path || (inTauri() ? null : "/demo");
+  // Active (not archived) workspace required: Conductor gates search-in-files on a live workspace.
+  const canSearchInFiles = !!workspacePath && workspace?.status !== "archived";
 
   // Every app-shell shortcut goes through the one dispatcher (src/keybindings).
   useKeybindings({
@@ -409,7 +441,9 @@ export default function App() {
     "view.toggleRightSidebar": toggleRightPanel,
     "view.toggleZenMode": () => toggleZenMode(isSidebarVisible(state), dispatch),
     "toggleGarryMode": toggleGarryMode,
+    "openSidecarLogs": () => setDiagnosticsOpen(true),
     "nav.quickOpen": () => setQuickOpen((open) => !open && canQuickOpen),
+    "nav.searchInFiles": () => setSearchInFiles((open) => !open && canSearchInFiles),
     "workspace.create": () => openDialog("create"),
     "workspace.createFromPRBranchIssue": () => openDialog("create", undefined, undefined, true),
     "quitApplication": requestQuit,
@@ -433,6 +467,10 @@ export default function App() {
   // What the command palette's items run: the same handlers as their shortcuts.
   const paletteCommands: PaletteCommands = {
     createSection: startup === "ready" ? () => setSectionDialog({ mode: "create" }) : undefined,
+    createSectionWithWorkspace: startup === "ready" ? (workspaceId: string) => {
+      paletteSectionWorkspaceRef.current = workspaceId;
+      setSectionDialog({ mode: "create", workspaceIdToMove: workspaceId });
+    } : undefined,
     addProject: () => (isSidebarVisible(state) ? window.dispatchEvent(new Event(OPEN_ADD_PROJECT_MENU)) : openProject()),
     toggleTheme: () => void toggleTheme().catch((e) => show("error", errorText(e))),
     toggleLeftSidebar: () => dispatch({ type: "toggleSidebar" }),
@@ -448,6 +486,16 @@ export default function App() {
     copyUrl: () => {
       if (workspace) copyLink(workspace.id);
     },
+    // Opens the PR URL in the system browser — available immediately.
+    openPullRequest: (url: string) => void openUrl(url).catch((e) => show("error", errorText(e))),
+    // Opens the search-in-files dialog (REA evidence: renderApp-D_fmY7hW.js _Se/$co).
+    searchInFiles: canSearchInFiles ? () => setSearchInFiles(true) : undefined,
+    // PR actions: dispatched to the active WorkspaceView via prPaletteActions pub/sub.
+    linkIssue: workspace && workspace.status !== "archived" && repo ? () => requestPrPaletteAction(repo.id, workspace.id, "linkIssue") : undefined,
+    createPullRequest: workspace && workspace.status !== "archived" && repo ? () => requestPrPaletteAction(repo.id, workspace.id, "createPullRequest") : undefined,
+    mergePullRequest: workspace && workspace.status !== "archived" && repo ? () => requestPrPaletteAction(repo.id, workspace.id, "mergePullRequest") : undefined,
+    markPrReady: workspace && workspace.status !== "archived" && repo ? () => requestPrPaletteAction(repo.id, workspace.id, "markPrReady") : undefined,
+    fixErrors: workspace && workspace.status !== "archived" && repo ? () => requestPrPaletteAction(repo.id, workspace.id, "fixErrors") : undefined,
   };
 
   const [prefix, setPrefix] = useState<{ settings: BranchPrefixSettings; githubUsername: string | null }>({ settings: {}, githubUsername: null });
@@ -564,6 +612,8 @@ export default function App() {
           <ArchivedWorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
         ) : repo && workspace ? (
           <WorkspaceView
+            onOpenInTarget={registerOpenInTarget}
+            onOpenAccountSettings={() => navigateSettings({ scope: "user", page: "account" })}
             repo={repo}
             workspace={workspace}
             sections={state.sections ?? []}
@@ -574,7 +624,17 @@ export default function App() {
             onNextUnread={() => void openNextUnread(state, dispatch, { skipSelected: true })}
           />
         ) : sel.kind === "home" ? (
-          <AllWorkspaces repos={state.repos} loading={startup === "loading"} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
+          <HomeWorkspaceScreen
+            repos={state.repos}
+            loading={startup === "loading"}
+            sidebarVisible={isSidebarVisible(state)}
+            dispatch={dispatch}
+            onCreateWorkspace={() => openDialog("create")}
+            sections={state.sections ?? []}
+            onNewSection={(ws) => setSectionDialog({ mode: "create", workspaceIdToMove: ws.id })}
+            onCopyLink={(ws) => copyLink(ws.id)}
+            onError={(message) => show("error", message)}
+          />
         ) : sel.kind === "routines" && cloudUI === true ? (
           sel.page ? (
             <RoutineEditor
@@ -618,7 +678,10 @@ export default function App() {
           onClose={() => setDialog(null)}
           onRepoAdded={({ id, ...repo }) => dispatch({ type: "addRepo", id, repo })}
           onCreated={(repoId, first, githubUrl) => {
-            dispatch({ type: "addWorkspace", repoId, workspace: first.workspace });
+            // GAP-SB-01c: pass state so the sidebar row dims while setup runs and
+            // clears immediately when no setup script starts (store default is
+            // "setting_up", which would leave the row permanently dimmed).
+            dispatch({ type: "addWorkspace", repoId, workspace: { ...first.workspace, state: first.setupStarted ? "setting_up" : "ready" } });
             show("info", SUCCESS_TOAST, { action: { label: OPEN_IN_GITHUB, onClick: () => void openUrl(githubUrl) } });
           }}
         />
@@ -655,7 +718,21 @@ export default function App() {
           repoId={repo.id}
           workspacePath={workspacePath}
           onClose={() => setQuickOpen(false)}
-          onOpen={(path, mode) => show("info", `${mode === "diff" ? "Diff of" : "Opened"} ${path} (file viewer not built yet)`)}
+          onOpen={(path, mode) => {
+            if (!workspace || !repo) return;
+            requestFileOpen(repo.id, workspace.id, { path, mode });
+          }}
+        />
+      )}
+      {searchInFiles && repo && (
+        <SearchInFilesDialog
+          repoId={repo.id}
+          workspacePath={workspacePath}
+          onClose={() => setSearchInFiles(false)}
+          onOpen={(path, lineNumber) => {
+            if (!workspace || !repo) return;
+            requestFileOpen(repo.id, workspace.id, { path, line: lineNumber, mode: "file" });
+          }}
         />
       )}
       {githubRepo && (
@@ -675,10 +752,16 @@ export default function App() {
           key={sectionDialog.mode === "edit" ? sectionDialog.sectionId : `create-${sectionDialog.workspaceIdToMove ?? "empty"}`}
           data={sectionDialog}
           onSubmit={(value) => submitSection(sectionDialog, value)}
-          onClose={() => setSectionDialog(null)}
+          onClose={() => {
+            setSectionDialog(null);
+            if (paletteSectionWorkspaceRef.current !== null) {
+              paletteSectionWorkspaceRef.current = null;
+              setPaletteOpen(true);
+            }
+          }}
         />
       )}
-      <PaletteHost state={state} collapsedSections={collapsedSections} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} commands={paletteCommands} />
+      <PaletteHost state={state} collapsedSections={collapsedSections} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} commands={paletteCommands} activeOpenInTarget={createPage ? null : activeOpenInTarget} />
       {archiveOverAgents && (
         <ArchiveRunningDialog
           onClose={() => setArchiveOverAgents(null)}

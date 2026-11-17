@@ -1,0 +1,1 @@
+async queueSessionTask(e,s){return await this.queueSessionTaskWithoutRefresh(e,async()=>{const n=await s(),r=await Wo(this,e);return r?this.__store.setState(i=>Bl(this,e,r,i)):(this.__store.setState(i=>sF(this,e,i)),this.dependencies.composer.drafts.clear({sessionId:e})),n})}

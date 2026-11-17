@@ -1,0 +1,1 @@
+claude_executable_path:Me({fileKey:"claude_code_executable_path"})

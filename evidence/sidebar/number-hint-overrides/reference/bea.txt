@@ -1,0 +1,1 @@
+function bea(t){const e=ne.c(3),n=$.useContext(EFi);if(t===void 0)return;const i=n.localWorkspaceIds.indexOf(t);let r;return e[0]!==n.visible||e[1]!==i?(r=i===-1?void 0:{number:i+1,visible:n.visible},e[0]=n.visible,e[1]=i,e[2]=r):r=e[2],r}

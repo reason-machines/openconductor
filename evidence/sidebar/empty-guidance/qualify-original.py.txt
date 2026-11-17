@@ -1,0 +1,136 @@
+"""Inert source-integrity comparison only; never imports or executes application code."""
+from pathlib import Path
+from datetime import datetime, timezone
+import hashlib
+import json
+import re
+import subprocess
+
+out = Path(__file__).parent
+assets = Path('.ara-state/focus-census/original/.rea-work/retained-reference')
+main = subprocess.check_output(['git', 'rev-parse', 'origin/main'], text=True).strip()
+original = {}
+reference = {'evidenceId': 'ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367', 'assets': {}, 'spans': {}}
+for name, digest in {
+    'renderApp-D_fmY7hW.js': '5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde',
+    'index-BGEQ8YjU.js': 'b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3',
+}.items():
+    data = (assets / name).read_bytes()
+    assert hashlib.sha256(data).hexdigest() == digest, name
+    original[name] = data.decode()
+    reference['assets'][name] = {'bytes': len(data), 'sha256': digest}
+r = original['renderApp-D_fmY7hW.js']
+i = original['index-BGEQ8YjU.js']
+
+def retain(name, text, asset='renderApp-D_fmY7hW.js'):
+    whole = original[asset]
+    assert whole.count(text) == 1, name
+    start = whole.index(text)
+    data = text.encode()
+    (out / (name + '.txt')).write_bytes(data)
+    reference['spans'][name] = {'asset': asset, 'utf8Start': len(whole[:start].encode()), 'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
+    return text
+
+def declaration(symbol, asset='renderApp-D_fmY7hW.js'):
+    whole = original[asset]
+    hits = list(re.finditer(r'(?:async )?function ' + re.escape(symbol) + r'\(', whole))
+    assert len(hits) == 1, symbol
+    m = hits[0]
+    n = re.search(r'(?:async )?function [\w$]+\(', whole[m.end():])
+    assert n
+    return retain(symbol, whole[m.start():m.end() + n.start()], asset)
+
+hbi, gra, lbi, dsa, fsa, aw = [declaration(x) for x in ['hBi', 'Gra', 'lBi', 'dsa', 'fsa', 'aW']]
+repo_hook = declaration('dQt', 'index-BGEQ8YjU.js')
+repo_selector = declaration('I2t', 'index-BGEQ8YjU.js')
+retain('repo-hook-import', 'dm as bv')
+retain('repo-hook-export', 'dQt as dm', 'index-BGEQ8YjU.js')
+retain('repo-source-binding', 'q2t=A2t(()=>_n)', 'index-BGEQ8YjU.js')
+paths = [
+    'src/components/Sidebar.tsx',
+    'src/state/useCustomSectionCollapse.ts',
+    'src/state/customSectionCollapse.ts',
+    'src/state/store.ts',
+    'src/state/repoOrder.ts',
+    'src/App.tsx',
+]
+current = {}
+snapshots = {}
+for path in paths:
+    data = subprocess.check_output(['git', 'show', main + ':' + path])
+    name = path.replace('/', '__')
+    (out / name).write_bytes(data)
+    snapshots[path] = {'snapshot': name, 'sha256': hashlib.sha256(data).hexdigest()}
+    current[path] = data.decode()
+sidebar, hook, collapse, store, order, app = [current[x] for x in paths]
+header_button_start = sidebar.index('<button type="button" className="sb-section-toggle" aria-expanded={!groupCollapsed}')
+header_button_end = sidebar.index('</button>', header_button_start)
+header = sidebar[header_button_start:header_button_end]
+remove_start = store.index('case "removeRepo":')
+remove_end = store.index('case "toggleRepo":', remove_start)
+checks = {
+    'original local empty predicate has no collapse dependency': 'Ze=(!I||n===void 0)&&c.length===0&&ue.length===0&&!Ke' in hbi and 'navigation-section-main' not in hbi,
+    'original local organization makes Ke false': 'Ne=it=>I&&it.some(' in hbi and 'Ke=ze===void 0?!1:ze' in hbi,
+    'original repository hook import and export joined': 'dm as bv' in r and 'dQt as dm' in i,
+    'original repository hook selects linked repos and does not filter hidden': 'const r=I2t(n);return t?t(r):r' in repo_hook and 'return t.filter(e=>!e.isUnlinked)' in repo_selector,
+    'original empty render branch precedes local Gra or dBi': 'children:Ze?p.jsx("div"' in hbi and hbi.index('children:Ze?') < hbi.index('P&&K!==void 0?p.jsx(Gra'),
+    'original empty branch contains intended message': 'children:"Add a project to get started."' in hbi,
+    'original Gra alone reads main-group collapse for grouped body': 'aW("navigation-section-main",h)' in gra and 'h={defaultCollapsed:!1}' in gra,
+    'original Gra collapse hides body not parent hBi branch': 'p.jsx("div",{hidden:m,children:k})' in gra,
+    'original main-group header delegates toggle': 'onToggleCollapse:g' in gra and 'onClick:i' in lbi,
+    'original persisted collapse key does not require repositories': 'r=n[t]??e' in aw and 'i({...n,[t]:!r})' in aw,
+    'original parent mounts hBi without collapse guard': 'p.jsx(hBi,{})' in dsa and 'p.jsx(hBi,{sectionData:i,scrollRootRef:r})' in fsa,
+    'current empty predicate includes group collapse gate': '!groupCollapsed && state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>' in sidebar,
+    'current main collapse reads independent existing store': 'const [builtinCollapsed, toggleBuiltin] = useBuiltinSectionCollapse();' in sidebar and 'const groupCollapsed = builtinCollapsed.has(MAIN_COLLAPSE_KEY);' in sidebar,
+    'current empty header remains directly clickable': 'aria-expanded={!groupCollapsed} onClick={() => toggleBuiltin(MAIN_COLLAPSE_KEY)}' in header and 'disabled=' not in header,
+    'current main collapse uses same semantic key': 'MAIN_COLLAPSE_KEY = "navigation-section-main"' in collapse,
+    'current builtin hook independent of repository state': 'return useSectionCollapse(BUILTIN_SECTION_COLLAPSE_ID);' in hook and 'function useSectionCollapse(storageId: string)' in hook and 'AppState' not in hook and 'repos' not in hook,
+    'current toggle can set main collapse with zero repos': 'if (!collapsed.delete(id)) collapsed.add(id);' in collapse and 'repo' not in collapse.lower(),
+    'current hook loads and flushes retained collapse': 'store.load().then(() => store.flush())' in hook and 'store.toggle(id);' in hook,
+    'current repo removal does not clear independent collapse': 'repos: state.repos' not in store[remove_start:remove_end] and 'return { ...state, repos, selection: sel };' in store[remove_start:remove_end] and 'collapse' not in store[remove_start:remove_end].lower(),
+    'current real App remove callback dispatches actual removeRepo': 'dispatch({ type: "removeRepo", repoId: removingRepo.id });' in app,
+    'current original message remains independent of groupBy type': sidebar.index('!groupCollapsed && state.repos.length === 0') < sidebar.index('!groupCollapsed && state.sidebarGroupBy === "status"'),
+}
+assert all(checks.values()), [k for k, v in checks.items() if not v]
+cases = [
+    {'id': 'empty-repo-expanded', 'repos': [], 'groupBy': 'repo', 'mainCollapsed': False, 'referenceMessage': True, 'currentSourceMessage': True},
+    {'id': 'empty-repo-collapsed', 'repos': [], 'groupBy': 'repo', 'mainCollapsed': True, 'referenceMessage': True, 'currentSourceMessage': False},
+    {'id': 'empty-status-expanded', 'repos': [], 'groupBy': 'status', 'mainCollapsed': False, 'referenceMessage': True, 'currentSourceMessage': True},
+    {'id': 'empty-status-collapsed', 'repos': [], 'groupBy': 'status', 'mainCollapsed': True, 'referenceMessage': True, 'currentSourceMessage': False},
+    {'id': 'one-linked-empty-repo-expanded', 'repos': [{'id': 'r1', 'hidden': False, 'workspaces': []}], 'groupBy': 'repo', 'mainCollapsed': False, 'referenceMessage': False, 'currentSourceMessage': False},
+    {'id': 'one-linked-empty-repo-collapsed', 'repos': [{'id': 'r1', 'hidden': False, 'workspaces': []}], 'groupBy': 'repo', 'mainCollapsed': True, 'referenceMessage': False, 'currentSourceMessage': False},
+    {'id': 'hidden-only-repo', 'repos': [{'id': 'r1', 'hidden': True, 'workspaces': []}], 'groupBy': 'repo', 'mainCollapsed': False, 'referenceMessage': False, 'currentSourceMessage': False},
+    {'id': 'nonmatching-filter-nonempty-repos', 'repos': [{'id': 'r1', 'hidden': False, 'workspaces': []}], 'filter': 'r2', 'groupBy': 'repo', 'mainCollapsed': False, 'referenceMessage': False, 'currentSourceMessage': False},
+]
+contract = {'scope': 'Local organization only; zero visible/shared workspaces. No original code execution. Source-inferred expected cases, NOT an executed regression.', 'cases': cases}
+contract_data = (json.dumps(contract, indent=2) + '\n').encode()
+contract_path = out / 'expected-cases.json'
+if contract_path.exists():
+    assert contract_path.read_bytes() == contract_data, 'frozen expected cases changed'
+else:
+    contract_path.write_bytes(contract_data)
+receipt = {
+    'checkedAt': datetime.now(timezone.utc).isoformat(),
+    'producer': 'Conductor Rebuild',
+    'main': main,
+    'verdict': 'QUALIFIED_SOURCE_COUNTEREXAMPLE',
+    'leaf': 'empty-state:add-a-project-to-get-started / main-collapse visibility only',
+    'reference': reference,
+    'snapshots': snapshots,
+    'sourceChecks': checks,
+    'frozenContract': {'cases': 8, 'sha256': hashlib.sha256(contract_data).hexdigest(), 'runtimeExecution': 'NOT_RUN'},
+    'counterexample': 'Local app, no repositories or visible/shared workspaces, main-collapse key true: original hBi empty branch renders message before Gra is considered; current Sidebar suppresses it. Current always-enabled main-header toggle makes this input reachable directly with repos=[], independently of native removal or persistence assumptions.',
+    'proposedFix': 'If ledger dedupe confirms this leaf is unowned, remove only the !groupCollapsed gate from the existing zero-repo message. No header/store/grouping/action/badge change.',
+    'coordination': 'Ledger ddfc confirmed no competing exact source leaf in message4bd6b836: SAME271 cleared SOURCE ONLY for this empty-state census. Home entry-card closed NO_QUALIFIED_SOURCE_GAP at c5557726. Sidebar product writer3b/PR1168 remains exclusive through merge; no product lease/runtime/new publisher.',
+    'limits': [
+        'Retained Conductor 0.87.6 assets are static evidence, not fresh original runtime or native observation.',
+        'Only inert byte/source checks ran on Reason Cloud352. No application JavaScript, fixture, tests, dependency install, browser, native app, build, E2E or package execution.',
+        'Eight expected cases are source-inferred and frozen but UNRUN; no RED/GREEN behavior claim.',
+        'No screenshot: no UI/native admission; source-only analysis.',
+        'No tracked product/source edits, new publisher or duplicate badge work. Existing badge PR1168 remains separate.',
+        'Original shared/cloud organizations, dialog internals, Recents, archived rows, collapse persistence implementation changes, drag/drop, header actions, section stores, keyboard and native visuals excluded.',
+        'Earlier REA whole-renderer semantic-analysis limit remains historical; no new REA error or gap occurred.',
+    ],
+}
+(out / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
+print(json.dumps({'main': main, 'sourceChecksPassed': len(checks), 'frozenCases': 8, 'frozenSha256': receipt['frozenContract']['sha256'], 'runtime': 'NOT_RUN', 'verdict': receipt['verdict']}, indent=2))

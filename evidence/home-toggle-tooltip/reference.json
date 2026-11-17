@@ -1,0 +1,36 @@
+{
+  "classification": "retained shipped-source comparison only; no behavioral RED or native observation",
+  "source_main": "ee120e2a0ecfd668efad398bef71f41e6d6e0047",
+  "source_head_before_increment": "0df0ae4b0f7d3d2ea7448f212d5eccd34e7264be",
+  "rea_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "binary_receipt": "../home-sidebar-hint/reference-caller.json",
+  "asset": {
+    "key": "/assets/renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "ranges": "zero-based half-open UTF-8 byte ranges",
+  "spans": [
+    { "label": "Home caller Gls", "utf8": [2118911, 2120648], "sha256": "916e8b7106c0d8db45b1084171514e606d696aaf0408b991c4e99123a1cf628c" },
+    { "label": "Tooltip root Jn", "utf8": [564117, 564724], "sha256": "c8648ff5b661a516612e2682855c72cc7d555ef6b77396a4ece840d32110236f" },
+    { "label": "Tooltip trigger Xn", "utf8": [564725, 565182], "sha256": "dd781ea4851792ea4f22462517bfdeaf2713aeb3f9a30765221fcd86b12f1315" },
+    { "label": "Tooltip content ni", "utf8": [565214, 566590], "sha256": "63ad7f88cd584046420b7dcb313c66a17b97b401d7473891f2f7ab3af335c8b2" },
+    { "label": "Shortcut presentation Ss", "utf8": [2117989, 2118414], "sha256": "9f79ade31ae59c83e8605a9a80cc8568defcd00175eb0e0a651d189e799de3f9" }
+  ],
+  "baseline_files": {
+    "src/components/HomeScreen.tsx": "6244cae401a7542e3079b8cbfcfdb221280449e487364a312b2ea988b94ae6dc",
+    "src/components/homeSidebarHint.test.ts": "a9fd797d163c8c703133b05e643bff43a74cbecbeaff0a26f8d682fb44b34b62",
+    "src/components/Tooltip.tsx": "975aa045c39f25df9ca8e9474f3d1215eb2bbd20ea2b495f8b309b98fc823d76",
+    "src/components/tooltipPlacement.ts": "35eb034f8778d0db408db412c081edc262db9f2e8d0d03bca93a682690196a0b"
+  },
+  "preserved": {
+    "evidence/home-sidebar-hint/README.md": "597d05dccf0e65716b30ef1112d842ba359bb9e5edf1eb1aaac6860c2aee19ad",
+    "evidence/home-sidebar-hint/reference-caller.json": "30065d8635cc40e28c3549e17227d49802f05c6be57e91c87864a3cbea0917e9",
+    "evidence/home-sidebar-hint/verify-reference.py": "c829bdecb68f51eb191e0554052cbe1e6b3a226a548cf1d425b890b7b6ab5543"
+  },
+  "ownership_disposition": "631580ca-322d-4999-b21b-004d9d2d3abb",
+  "limitations": [
+    "REA static inspection confirmed the executable identity but did not enumerate embedded Tauri assets. Literal spans are retained raw-bundle evidence, not a semantic graph or runtime capture.",
+    "Source matching does not prove tooltip timing, layout, focus, browser portal behavior or native parity."
+  ]
+}

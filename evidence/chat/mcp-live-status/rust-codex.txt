@@ -1,0 +1,60 @@
+   Compiling agent-harness v0.0.0 (/tmp/agent-harness-mcp-53346)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.83s
+     Running unittests /home/runner/.reason/workspace/sessions/53346d38-8a16-4a5f-ac4e-4fd35160d90f/repo/src-tauri/src/agent/mod.rs (target/debug/deps/agent_harness-588c4fc08542d69d)
+
+running 50 tests
+test codex_cli::tests::command_sets_cwd_and_provider_env_without_args_leaking_secrets ... ok
+test codex_cli::tests::finds_codex_on_path_then_in_local_bin ... ok
+test codex_cli::tests::inherit_is_both_unset_and_serializes_empty ... ok
+test codex_cli::tests::launch_runs_the_stdio_app_server_with_config_overrides ... ok
+test codex_cli::tests::policy_strings_round_trip_through_str_and_json ... ok
+test codex_consent::tests::a_form_elicitation_is_read_with_its_schema ... ok
+test codex_consent::tests::a_permission_request_is_codex_asking ... ok
+test codex_consent::tests::answers_map_to_codex_results ... ok
+test codex_consent::tests::openai_form_and_url_modes_are_kept_and_unknown_modes_are_not_consents ... ok
+test codex_consent::tests::stop_cancels_an_elicitation_and_declines_permissions ... ok
+test codex_events::tests::approval_requests_parse_and_replies_use_schema_decisions ... ok
+test codex_events::tests::parses_recorded_responses_and_errors ... ok
+test codex_events::tests::parses_recorded_turn_notifications ... ok
+test codex_events::tests::rejects_lines_that_are_not_messages ... ok
+test codex_rpc::tests::api_key_login_line_carries_the_key_and_debug_hides_it ... ok
+test codex_rpc::tests::fast_service_tier_preserves_absent_fast_and_explicit_null_for_each_ordinary_request ... ok
+test codex_rpc::tests::handshake_lines_match_the_recorded_session ... ok
+test codex_rpc::tests::thread_and_turn_requests_carry_only_what_is_set ... ok
+test codex_runner::mcp_status_tests::mcp_status_all_existing_write_failure_paths_clear_only_query_state ... ok
+test codex_runner::mcp_status_tests::mcp_status_approval_and_consent_retain_existing_owners ... ok
+test codex_runner::mcp_status_tests::mcp_status_buffered_during_start_turn_and_interrupt_preserves_turns ... ok
+test codex_runner::mcp_status_tests::mcp_status_close_shutdown_drop_and_fatal_start_clear_pending ... ok
+test codex_runner::mcp_status_tests::mcp_status_deadlines_cover_enqueue_pagination_and_buffered_interrupt ... ok
+test codex_runner::mcp_status_tests::mcp_status_empty_terminal_cursors_rpc_and_schema_failures_are_query_results ... ok
+test codex_runner::mcp_status_tests::mcp_status_exact_typed_ids_overlap_malformed_and_retry ... ok
+test codex_runner::mcp_status_tests::mcp_status_no_live_never_launches_or_emits_turns_and_public_drop_is_bounded ... ok
+test codex_runner::mcp_status_tests::mcp_status_pages_use_shared_unique_ids_and_preserve_tools_without_events ... ok
+test codex_runner::mcp_status_tests::mcp_status_public_worker_times_out_and_drops_a_live_pending_query ... ok
+test codex_runner::tests::a_missing_codex_fails_the_prompt_with_its_path ... ok
+test codex_runner::tests::a_permission_request_waits_for_the_users_grant ... ok
+test codex_runner::tests::a_prompt_runs_through_approval_to_its_end ... ok
+test codex_runner::tests::cancel_interrupts_the_turn_and_drops_queued_prompts ... ok
+test codex_runner::tests::fast_off_reaches_reopening_after_a_process_exit ... ok
+test codex_runner::tests::fast_off_reaches_saved_resume_and_failed_resume_fallback ... ok
+test codex_runner::tests::fast_snapshots_reach_initial_and_queued_turns_without_restarting ... ok
+test codex_runner::tests::live_signed_in_codex_answers_a_prompt ... ok
+test codex_runner::tests::resumes_a_saved_thread_or_starts_fresh ... ok
+test codex_runner::tests::stop_cancels_an_open_elicitation_before_interrupting ... ok
+test codex_runner::tests::unsupported_requests_are_declined_and_exits_fail_the_turn ... ok
+test codex_session::tests::api_key_launch_logs_in_with_the_key_after_initialized ... ok
+test codex_session::tests::calls_time_out_or_report_an_exited_server ... ok
+test codex_session::tests::handshake_turn_approval_and_interrupt ... ok
+test codex_session::tests::live_codex_app_server_runs_a_turn_to_completion ... ok
+test codex_session::tests::login_launch_sends_no_api_key_login ... ok
+test codex_session::tests::missing_executable_names_the_path_and_drop_kills ... kill: (1052): No such process
+ok
+test codex_wire::tests::approval_requests_offer_the_servers_decisions ... ok
+test codex_wire::tests::command_rows_drop_the_shell_wrapper_and_carry_output ... ok
+test codex_wire::tests::file_changes_reasoning_and_notices ... ok
+test codex_wire::tests::reply_text_streams_then_settles_with_its_phase ... ok
+test codex_wire::tests::turn_end_serializes_flat ... ok
+
+test result: ok. 50 passed; 0 failed; 0 ignored; 0 measured; 49 filtered out; finished in 27.75s
+
+note: clippy not installed; lint skipped

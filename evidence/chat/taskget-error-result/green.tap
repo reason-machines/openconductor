@@ -1,0 +1,412 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude Code, Reason and Codex give Conductor the same tool calls for one turn
+ok 1 - Claude Code, Reason and Codex give Conductor the same tool calls for one turn
+  ---
+  duration_ms: 52.076844
+  type: 'test'
+  ...
+# Subtest: Codex: the shell wrapper is dropped and single command actions become Read/Grep/LS (Conductor's Kst)
+ok 2 - Codex: the shell wrapper is dropped and single command actions become Read/Grep/LS (Conductor's Kst)
+  ---
+  duration_ms: 0.349817
+  type: 'test'
+  ...
+# Subtest: Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)
+ok 3 - Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)
+  ---
+  duration_ms: 0.248054
+  type: 'test'
+  ...
+# Subtest: Codex: MCP tool calls are mcp__server__tool with their arguments
+ok 4 - Codex: MCP tool calls are mcp__server__tool with their arguments
+  ---
+  duration_ms: 0.296748
+  type: 'test'
+  ...
+# Subtest: Reason: a tool with no Claude Code counterpart keeps its title for Conductor's generic row
+ok 5 - Reason: a tool with no Claude Code counterpart keeps its title for Conductor's generic row
+  ---
+  duration_ms: 0.172668
+  type: 'test'
+  ...
+# Subtest: row text: Read lines, Grep matches, generic summary
+ok 6 - row text: Read lines, Grep matches, generic summary
+  ---
+  duration_ms: 69.273329
+  type: 'test'
+  ...
+# Subtest: line counts follow a line diff
+ok 7 - line counts follow a line diff
+  ---
+  duration_ms: 0.254134
+  type: 'test'
+  ...
+# Subtest: every kind in Conductor's registry resolves by name or prefix (D1o, P1o)
+ok 8 - every kind in Conductor's registry resolves by name or prefix (D1o, P1o)
+  ---
+  duration_ms: 17.625587
+  type: 'test'
+  ...
+# Subtest: Skill and SlashCommand labels (_po, Cpo)
+ok 9 - Skill and SlashCommand labels (_po, Cpo)
+  ---
+  duration_ms: 0.37531
+  type: 'test'
+  ...
+# Subtest: a sub-agent row needs a type other than general-purpose (bpo vs Ypo)
+ok 10 - a sub-agent row needs a type other than general-purpose (bpo vs Ypo)
+  ---
+  duration_ms: 0.414566
+  type: 'test'
+  ...
+# Subtest: AskUserQuestion results (Tpo)
+ok 11 - AskUserQuestion results (Tpo)
+  ---
+  duration_ms: 0.410132
+  type: 'test'
+  ...
+# Subtest: task results parse from JSON and from Claude Code's text (epo, jki)
+ok 12 - task results parse from JSON and from Claude Code's text (epo, jki)
+  ---
+  duration_ms: 0.564507
+  type: 'test'
+  ...
+# Subtest: terminal output, background status and file names (Dpo, R0o, xZe)
+ok 13 - terminal output, background status and file names (Dpo, R0o, xZe)
+  ---
+  duration_ms: 0.239084
+  type: 'test'
+  ...
+# Subtest: swarm messages and wake-ups (qpo, Spo)
+ok 14 - swarm messages and wake-ups (qpo, Spo)
+  ---
+  duration_ms: 0.274356
+  type: 'test'
+  ...
+# Subtest: Codex collaboration calls (_0o)
+ok 15 - Codex collaboration calls (_0o)
+  ---
+  duration_ms: 60.971015
+  type: 'test'
+  ...
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Glob projected block lines: padded
+ok 16 - Glob projected block lines: padded
+  ---
+  duration_ms: 125.784277
+  type: 'test'
+  ...
+# Subtest: Glob projected block lines: interior-blanks
+ok 17 - Glob projected block lines: interior-blanks
+  ---
+  duration_ms: 19.67875
+  type: 'test'
+  ...
+# Subtest: Glob projected block lines: crlf-tabs
+ok 18 - Glob projected block lines: crlf-tabs
+  ---
+  duration_ms: 25.224065
+  type: 'test'
+  ...
+# Subtest: Glob projected block lines: spaces-preserved
+ok 19 - Glob projected block lines: spaces-preserved
+  ---
+  duration_ms: 9.851832
+  type: 'test'
+  ...
+# Subtest: Glob projected block lines: order-duplicates
+ok 20 - Glob projected block lines: order-duplicates
+  ---
+  duration_ms: 2.886042
+  type: 'test'
+  ...
+# Subtest: Glob projected block lines: whitespace-only
+ok 21 - Glob projected block lines: whitespace-only
+  ---
+  duration_ms: 3.032394
+  type: 'test'
+  ...
+# Subtest: Glob projected block lines: internal-tabs
+ok 22 - Glob projected block lines: internal-tabs
+  ---
+  duration_ms: 18.403928
+  type: 'test'
+  ...
+# Subtest: Glob projected block lines: literal-markup
+ok 23 - Glob projected block lines: literal-markup
+  ---
+  duration_ms: 10.223742
+  type: 'test'
+  ...
+# Subtest: Glob no successful body control: empty
+ok 24 - Glob no successful body control: empty
+  ---
+  duration_ms: 6.859623
+  type: 'test'
+  ...
+# Subtest: Glob no successful body control: pending
+ok 25 - Glob no successful body control: pending
+  ---
+  duration_ms: 3.855096
+  type: 'test'
+  ...
+# Subtest: Glob no successful body control: error
+ok 26 - Glob no successful body control: error
+  ---
+  duration_ms: 5.159751
+  type: 'test'
+  ...
+# Subtest: Non-Glob raw result control: ls-raw
+ok 27 - Non-Glob raw result control: ls-raw
+  ---
+  duration_ms: 6.535381
+  type: 'test'
+  ...
+# Subtest: Non-Glob raw result control: grep-raw
+ok 28 - Non-Glob raw result control: grep-raw
+  ---
+  duration_ms: 15.421566
+  type: 'test'
+  ...
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Grep resource label: inside-workspace-deep-absolute
+ok 29 - Grep resource label: inside-workspace-deep-absolute
+  ---
+  duration_ms: 815.978832
+  type: 'test'
+  ...
+# Subtest: Grep resource label: outside-workspace-deep-absolute
+ok 30 - Grep resource label: outside-workspace-deep-absolute
+  ---
+  duration_ms: 719.345914
+  type: 'test'
+  ...
+# Subtest: Grep resource label: deep-relative
+ok 31 - Grep resource label: deep-relative
+  ---
+  duration_ms: 421.863872
+  type: 'test'
+  ...
+# Subtest: Grep resource label: short-relative-control
+ok 32 - Grep resource label: short-relative-control
+  ---
+  duration_ms: 518.270398
+  type: 'test'
+  ...
+# Subtest: Grep resource label: pathless-control
+ok 33 - Grep resource label: pathless-control
+  ---
+  duration_ms: 380.913235
+  type: 'test'
+  ...
+# Subtest: Grep resource label: ordinary-read-control
+ok 34 - Grep resource label: ordinary-read-control
+  ---
+  duration_ms: 327.579901
+  type: 'test'
+  ...
+# Subtest: Grep resource label: root-slash
+ok 35 - Grep resource label: root-slash
+  ---
+  duration_ms: 282.90182
+  type: 'test'
+  ...
+# Subtest: Grep resource label: leading-slash-pair
+ok 36 - Grep resource label: leading-slash-pair
+  ---
+  duration_ms: 399.497698
+  type: 'test'
+  ...
+# Subtest: Grep resource label: workspace-trailing-slash
+ok 37 - Grep resource label: workspace-trailing-slash
+  ---
+  duration_ms: 533.028445
+  type: 'test'
+  ...
+# Subtest: Grep resource label: deep-trailing-slash
+ok 38 - Grep resource label: deep-trailing-slash
+  ---
+  duration_ms: 378.388837
+  type: 'test'
+  ...
+# Subtest: Grep resource label: repeated-empty-segment
+ok 39 - Grep resource label: repeated-empty-segment
+  ---
+  duration_ms: 330.067589
+  type: 'test'
+  ...
+# Subtest: Grep resource label: double-trailing-slash
+ok 40 - Grep resource label: double-trailing-slash
+  ---
+  duration_ms: 341.307381
+  type: 'test'
+  ...
+# Subtest: Grep resource label: unicode-segments
+ok 41 - Grep resource label: unicode-segments
+  ---
+  duration_ms: 314.383504
+  type: 'test'
+  ...
+# Subtest: Grep resource label: dot-relative-segments
+ok 42 - Grep resource label: dot-relative-segments
+  ---
+  duration_ms: 367.215299
+  type: 'test'
+  ...
+# Subtest: Grep resource label: backslashes-unchanged
+ok 43 - Grep resource label: backslashes-unchanged
+  ---
+  duration_ms: 362.483728
+  type: 'test'
+  ...
+# (node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: TaskGet result details: failed-json-task
+ok 44 - TaskGet result details: failed-json-task
+  ---
+  duration_ms: 158.512419
+  type: 'test'
+  ...
+# Subtest: TaskGet result details: failed-text-task
+ok 45 - TaskGet result details: failed-text-task
+  ---
+  duration_ms: 47.133824
+  type: 'test'
+  ...
+# Subtest: TaskGet result details: successful-json-task
+ok 46 - TaskGet result details: successful-json-task
+  ---
+  duration_ms: 32.535164
+  type: 'test'
+  ...
+# Subtest: TaskGet result details: plain-failed-result
+ok 47 - TaskGet result details: plain-failed-result
+  ---
+  duration_ms: 5.570935
+  type: 'test'
+  ...
+# Subtest: TaskGet result details: pending-task
+ok 48 - TaskGet result details: pending-task
+  ---
+  duration_ms: 30.798784
+  type: 'test'
+  ...
+# Subtest: TaskGet result details: empty-failed-result
+ok 49 - TaskGet result details: empty-failed-result
+  ---
+  duration_ms: 2.11719
+  type: 'test'
+  ...
+# (node:115) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Edit exact read-before-write failure shows only the retry explanation
+ok 50 - Edit exact read-before-write failure shows only the retry explanation
+  ---
+  duration_ms: 2028.271252
+  type: 'test'
+  ...
+# Subtest: Edit embedded read-before-write failure shows only the retry explanation
+ok 51 - Edit embedded read-before-write failure shows only the retry explanation
+  ---
+  duration_ms: 848.99667
+  type: 'test'
+  ...
+# Subtest: Edit ordinary error keeps its independent disclosure and raw text
+ok 52 - Edit ordinary error keeps its independent disclosure and raw text
+  ---
+  duration_ms: 510.611993
+  type: 'test'
+  ...
+# Subtest: Edit case near miss error keeps its independent disclosure and raw text
+ok 53 - Edit case near miss error keeps its independent disclosure and raw text
+  ---
+  duration_ms: 655.457595
+  type: 'test'
+  ...
+# Subtest: Edit punctuation near miss error keeps its independent disclosure and raw text
+ok 54 - Edit punctuation near miss error keeps its independent disclosure and raw text
+  ---
+  duration_ms: 413.576575
+  type: 'test'
+  ...
+# Subtest: Edit successful matching result does not add an error or retry explanation
+ok 55 - Edit successful matching result does not add an error or retry explanation
+  ---
+  duration_ms: 470.474978
+  type: 'test'
+  ...
+# Subtest: Edit empty failed result does not add an error or retry explanation
+ok 56 - Edit empty failed result does not add an error or retry explanation
+  ---
+  duration_ms: 371.590147
+  type: 'test'
+  ...
+# Subtest: Edit same mounted error survives trigger to generic to trigger without changing hook order
+ok 57 - Edit same mounted error survives trigger to generic to trigger without changing hook order
+  ---
+  duration_ms: 478.100605
+  type: 'test'
+  ...
+# Subtest: Write exact read-before-write failure shows only the retry explanation
+ok 58 - Write exact read-before-write failure shows only the retry explanation
+  ---
+  duration_ms: 410.327362
+  type: 'test'
+  ...
+# Subtest: Write embedded read-before-write failure shows only the retry explanation
+ok 59 - Write embedded read-before-write failure shows only the retry explanation
+  ---
+  duration_ms: 474.889957
+  type: 'test'
+  ...
+# Subtest: Write ordinary error keeps its independent disclosure and raw text
+ok 60 - Write ordinary error keeps its independent disclosure and raw text
+  ---
+  duration_ms: 523.125041
+  type: 'test'
+  ...
+# Subtest: Write case near miss error keeps its independent disclosure and raw text
+ok 61 - Write case near miss error keeps its independent disclosure and raw text
+  ---
+  duration_ms: 617.480406
+  type: 'test'
+  ...
+# Subtest: Write punctuation near miss error keeps its independent disclosure and raw text
+ok 62 - Write punctuation near miss error keeps its independent disclosure and raw text
+  ---
+  duration_ms: 292.516023
+  type: 'test'
+  ...
+# Subtest: Write successful matching result does not add an error or retry explanation
+ok 63 - Write successful matching result does not add an error or retry explanation
+  ---
+  duration_ms: 317.537798
+  type: 'test'
+  ...
+# Subtest: Write empty failed result does not add an error or retry explanation
+ok 64 - Write empty failed result does not add an error or retry explanation
+  ---
+  duration_ms: 331.111032
+  type: 'test'
+  ...
+# Subtest: Write same mounted error survives trigger to generic to trigger without changing hook order
+ok 65 - Write same mounted error survives trigger to generic to trigger without changing hook order
+  ---
+  duration_ms: 384.447785
+  type: 'test'
+  ...
+1..65
+# tests 65
+# suites 0
+# pass 65
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19210.803191

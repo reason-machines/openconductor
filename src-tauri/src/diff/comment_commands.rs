@@ -62,7 +62,12 @@ impl From<store::DiffComment> for CommentDto {
             // Rows written by the reference app may leave these NULL.
             state: match c.state {
                 Some(State::Sent) => "sent",
-                _ => "pending",
+                Some(State::Draft) => "draft",
+                Some(State::ReadyForReview) => "ready_for_review",
+                Some(State::Reviewed) => "reviewed",
+                Some(State::Hidden) => "hidden",
+                Some(State::Superseded) => "superseded",
+                Some(State::Pending) | None => "pending",
             },
             location: match (file_level, c.location) {
                 (true, _) => "file",
@@ -231,6 +236,17 @@ pub async fn diff_comment_resolve(
 #[tauri::command]
 pub async fn diff_comments_mark_sent(db: Managed<'_, Db>, ids: Vec<String>) -> Result<u64, String> {
     store::mark_sent(&db.0, &ids, now_ms()).await.map_err(err)
+}
+
+#[tauri::command]
+pub async fn diff_comments_mark_reviewed(
+    db: Managed<'_, Db>,
+    workspace_id: String,
+    ids: Vec<String>,
+) -> Result<u64, String> {
+    store::mark_reviewed(&db.0, &workspace_id, &ids, now_ms())
+        .await
+        .map_err(err)
 }
 
 /// What a GitHub comment sync did.

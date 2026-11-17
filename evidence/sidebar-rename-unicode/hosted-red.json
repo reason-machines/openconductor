@@ -1,0 +1,91 @@
+{
+  "producer": "Conductor Rebuild",
+  "pr": 1082,
+  "pr_head": "95273fda1856d36398e25fac5955a8ad195ff33a",
+  "run": 43088012201,
+  "rust_job": 130757376387,
+  "rust_command": "cargo check --locked --all-targets; cargo test --locked; cargo clippy --locked --all-targets -- -D warnings",
+  "rust_outcome": "cargo check passed; cargo test failed in the two intended assertions before clippy ran",
+  "rust_summary": {
+    "passed": 1036,
+    "failed": 2,
+    "ignored": 1
+  },
+  "rust_matches": [
+    {
+      "line": 3074,
+      "text": "2026-11-11T19:34:13.1801720Z test sidebar_rename_commands::tests::directory_name_accepts_nfc_stable_nonspacing_mark ... FAILED"
+    },
+    {
+      "line": 3075,
+      "text": "2026-11-11T19:34:13.1802980Z test sidebar_rename_commands::tests::directory_name_accepts_nfc_stable_enclosing_mark ... FAILED"
+    },
+    {
+      "line": 3076,
+      "text": "2026-11-11T19:34:13.1804360Z test sidebar_rename_commands::tests::directory_name_accepts_nfc_stable_spacing_mark ... ok"
+    },
+    {
+      "line": 3077,
+      "text": "2026-11-11T19:34:13.1805240Z test sidebar_rename_commands::tests::directory_name_rejects_non_mark_unicode_controls ... ok"
+    },
+    {
+      "line": 3078,
+      "text": "2026-11-11T19:34:13.1820300Z test sidebar_rename_commands::tests::directory_names_follow_conductors_rule ... ok"
+    },
+    {
+      "line": 3351,
+      "text": "2026-11-11T19:34:40.8197160Z ---- sidebar_rename_commands::tests::directory_name_accepts_nfc_stable_nonspacing_mark stdout ----"
+    },
+    {
+      "line": 3353,
+      "text": "2026-11-11T19:34:40.8202430Z thread 'sidebar_rename_commands::tests::directory_name_accepts_nfc_stable_nonspacing_mark' (26810) panicked at src/sidebar_rename_commands.rs:178:9:"
+    },
+    {
+      "line": 3356,
+      "text": "2026-11-11T19:34:40.8204640Z ---- sidebar_rename_commands::tests::directory_name_accepts_nfc_stable_enclosing_mark stdout ----"
+    },
+    {
+      "line": 3358,
+      "text": "2026-11-11T19:34:40.8205650Z thread 'sidebar_rename_commands::tests::directory_name_accepts_nfc_stable_enclosing_mark' (26809) panicked at src/sidebar_rename_commands.rs:183:9:"
+    },
+    {
+      "line": 3364,
+      "text": "2026-11-11T19:34:40.8207780Z     sidebar_rename_commands::tests::directory_name_accepts_nfc_stable_enclosing_mark"
+    },
+    {
+      "line": 3365,
+      "text": "2026-11-11T19:34:40.8208390Z     sidebar_rename_commands::tests::directory_name_accepts_nfc_stable_nonspacing_mark"
+    }
+  ],
+  "frontend_job": 130757376343,
+  "frontend_command": "node --test \"src/**/*.test.ts\"",
+  "frontend_conclusion": "success",
+  "frontend_matches": [
+    {
+      "line": 18004,
+      "text": "2026-11-11T19:33:13.9243008Z # Subtest: workspace rename preserves an NFC-stable nonspacing mark accepted by Conductor"
+    },
+    {
+      "line": 18005,
+      "text": "2026-11-11T19:33:13.9246714Z ok 2910 - workspace rename preserves an NFC-stable nonspacing mark accepted by Conductor"
+    },
+    {
+      "line": 18010,
+      "text": "2026-11-11T19:33:13.9249889Z # Subtest: workspace rename preserves an NFC-stable enclosing mark accepted by Conductor"
+    },
+    {
+      "line": 18011,
+      "text": "2026-11-11T19:33:13.9251133Z ok 2911 - workspace rename preserves an NFC-stable enclosing mark accepted by Conductor"
+    },
+    {
+      "line": 18016,
+      "text": "2026-11-11T19:33:13.9256182Z # Subtest: workspace rename preserves an NFC-stable spacing mark accepted by Conductor"
+    },
+    {
+      "line": 18017,
+      "text": "2026-11-11T19:33:13.9257197Z ok 2912 - workspace rename preserves an NFC-stable spacing mark accepted by Conductor"
+    }
+  ],
+  "classification": "EXECUTED_SOURCE_AND_VALIDATOR_MISMATCH_NOT_NATIVE_REPRODUCTION",
+  "native": "NOT_RUN"
+}

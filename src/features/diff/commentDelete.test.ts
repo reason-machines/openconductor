@@ -5,6 +5,7 @@ import { resolve } from "node:path";
 import { test } from "node:test";
 import { runInNewContext } from "node:vm";
 import * as comments from "./comments.ts";
+import { subscribeReviewComments } from "./commentStore.ts";
 import * as navigation from "./nav.ts";
 import type { DiffComment } from "./comments.ts";
 
@@ -28,6 +29,7 @@ function fixture(comment: DiffComment) {
     "../../keybindings/KeybindingsProvider.tsx": { useKeybindings: unexpected },
     "./commentsApi.ts": { commentStoreFor: unexpected },
     "./comments.ts": comments,
+    "./commentStore.ts": { subscribeReviewComments },
     "./commentMarkdown.ts": { CommentMarkdown: ({ text }: { text: string }) => React.createElement("p", null, text) },
     "../chat/chat.css": {},
     "./comments-github.css": {},

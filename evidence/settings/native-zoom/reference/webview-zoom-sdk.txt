@@ -1,0 +1,1 @@
+async setZoom(e){return tl("plugin:webview|set_webview_zoom",{label:this.label,value:e})}

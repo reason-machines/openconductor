@@ -9,7 +9,7 @@
 
 use sqlx::SqlitePool;
 
-use crate::{exec_one, Error, Result};
+use crate::{exec, exec_one, Error, Result};
 
 /// One row of `repos`, with the reference's NULL fallbacks applied.
 #[derive(Debug, Clone, PartialEq, Eq, sqlx::FromRow)]
@@ -118,6 +118,24 @@ pub async fn set_default_branch(pool: &SqlitePool, id: &str, branch: &str) -> Re
         pool,
     )
     .await
+}
+
+/// Persist `remote_url` when it is not yet stored (first registration, or
+/// an older database row that never had it). A no-op when already set.
+pub async fn fill_remote_url(pool: &SqlitePool, id: &str, remote_url: &str) -> Result<()> {
+    // Use `exec` (not `exec_one`) because 0 rows affected is not an error:
+    // the condition `remote_url IS NULL OR remote_url = ''` deliberately
+    // skips rows that already have a URL, so skipping is the success case.
+    exec(
+        sqlx::query(
+            "UPDATE repos SET remote_url = ? WHERE id = ? AND (remote_url IS NULL OR remote_url = '')",
+        )
+        .bind(remote_url)
+        .bind(id),
+        pool,
+    )
+    .await
+    .map(drop)
 }
 
 /// Set the git remote name and its URL together.
@@ -247,9 +265,47 @@ pub async fn delete_if_unused(pool: &SqlitePool, id: &str) -> Result<bool> {
     Ok(done.rows_affected() > 0)
 }
 
-/// Delete a repository together with all of its workspace rows.
+/// Delete a repository together with all of its workspace rows, plus all
+/// workspace-scoped and session-scoped rows that would otherwise be orphaned:
+/// sessions, session_messages, diff_comments, terminal_sessions,
+/// port_forwards, navigation_section_memberships, outbox rows.
 pub async fn delete_with_workspaces(pool: &SqlitePool, id: &str) -> Result<()> {
     let mut tx = pool.begin().await?;
+
+    // Session-level dependents (must come before sessions are deleted).
+    for table in &[
+        "session_messages",
+        "session_messages_outbox",
+        "session_messages_outbox_state",
+        "attachments",
+    ] {
+        sqlx::query(&format!(
+            "DELETE FROM {table} WHERE session_id IN \
+             (SELECT id FROM sessions WHERE workspace_id IN \
+             (SELECT id FROM workspaces WHERE repository_id = ?))",
+        ))
+        .bind(id)
+        .execute(&mut *tx)
+        .await?;
+    }
+
+    // Workspace-level dependents.
+    for table in &[
+        "sessions",
+        "diff_comments",
+        "terminal_sessions",
+        "port_forwards",
+        "navigation_section_memberships",
+    ] {
+        sqlx::query(&format!(
+            "DELETE FROM {table} WHERE workspace_id IN \
+             (SELECT id FROM workspaces WHERE repository_id = ?)",
+        ))
+        .bind(id)
+        .execute(&mut *tx)
+        .await?;
+    }
+
     sqlx::query("DELETE FROM workspaces WHERE repository_id = ?")
         .bind(id)
         .execute(&mut *tx)

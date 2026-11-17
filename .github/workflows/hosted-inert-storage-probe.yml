@@ -1,0 +1,48 @@
+name: Hosted inert two-principal observations
+
+on:
+  workflow_dispatch:
+    inputs:
+      expected_head:
+        description: 'Exact selected 40-character commit SHA; E1-authorized inert unit only'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hosted-inert-two-principal
+  cancel-in-progress: false
+
+jobs:
+  inert:
+    name: Direct non-elevated caller syscalls (not native admission)
+    runs-on: macos-15
+    timeout-minutes: 8
+    env:
+      OC_EXPECTED_HEAD: ${{ inputs.expected_head }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Existing-principal inert observations; no account or service provisioning
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/oc-inert-two-principal"
+          python3 -W error::ResourceWarning -m tools.hosted_inert_storage_probe \
+            --execute-hosted-prerequisite --expected-head "$OC_EXPECTED_HEAD" \
+            > "$RUNNER_TEMP/oc-inert-two-principal/observations.json"
+      - name: Retain bounded output, including failed or unavailable invocations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: inert-direct-syscalls-not-admission-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/oc-inert-two-principal/observations.json
+          if-no-files-found: error
+          retention-days: 7

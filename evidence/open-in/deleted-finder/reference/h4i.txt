@@ -1,0 +1,1 @@
+function h4i(t,e){const n=ele(t),i=ele(e);return n===i||n.startsWith(`${i}/`)}

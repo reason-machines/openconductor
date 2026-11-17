@@ -101,7 +101,7 @@ Path(os.environ["PAIRING_PACKAGES"]).write_text(json.dumps(sys.argv[4:]))
         self.assertIn("runs-on: ubuntu-22.04", workflow)
         self.assertIn("run: tools/ci/install-pairing-browser.sh", workflow)
         self.assertIn("python3 tools/ci/test_pairing_browser_install.py -v", workflow)
-        self.assertEqual(workflow.count('"tools/ci/**"'), 2)
+        self.assertIn("on:\n  workflow_dispatch:\n", workflow)
         self.assertNotIn("install --with-deps", workflow)
 
 

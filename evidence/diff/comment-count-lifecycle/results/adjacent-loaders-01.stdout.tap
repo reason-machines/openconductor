@@ -1,0 +1,188 @@
+TAP version 13
+# (node:87) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: multi draft distinct anchors render independent bodies
+ok 1 - multi draft distinct anchors render independent bodies
+  ---
+  duration_ms: 20.317254
+  type: 'test'
+  ...
+# Subtest: multi draft reselect restores the existing body
+ok 2 - multi draft reselect restores the existing body
+  ---
+  duration_ms: 4.749731
+  type: 'test'
+  ...
+# Subtest: multi draft different paths retain independent bodies
+ok 3 - multi draft different paths retain independent bodies
+  ---
+  duration_ms: 4.307693
+  type: 'test'
+  ...
+# Subtest: multi draft opposite sides retain independent bodies
+ok 4 - multi draft opposite sides retain independent bodies
+  ---
+  duration_ms: 3.478104
+  type: 'test'
+  ...
+# Subtest: multi draft shared ending line retains each range body
+ok 5 - multi draft shared ending line retains each range body
+  ---
+  duration_ms: 3.973701
+  type: 'test'
+  ...
+# Subtest: multi draft discard removes only the selected draft
+ok 6 - multi draft discard removes only the selected draft
+  ---
+  duration_ms: 4.73579
+  type: 'test'
+  ...
+# Subtest: multi draft save removes only the saved draft
+ok 7 - multi draft save removes only the saved draft
+  ---
+  duration_ms: 4.184759
+  type: 'test'
+  ...
+# Subtest: multi draft hide remount retains all draft bodies
+ok 8 - multi draft hide remount retains all draft bodies
+  ---
+  duration_ms: 3.767516
+  type: 'test'
+  ...
+# Subtest: multi draft failed save retains both bodies
+ok 9 - multi draft failed save retains both bodies
+  ---
+  duration_ms: 4.438184
+  type: 'test'
+  ...
+# Subtest: multi draft late save cannot clear another anchor
+ok 10 - multi draft late save cannot clear another anchor
+  ---
+  duration_ms: 4.062453
+  type: 'test'
+  ...
+# Subtest: multi draft same anchor click does not duplicate or reset
+ok 11 - multi draft same anchor click does not duplicate or reset
+  ---
+  duration_ms: 2.847387
+  type: 'test'
+  ...
+# Subtest: multi draft workspace change does not leak draft bodies
+ok 12 - multi draft workspace change does not leak draft bodies
+  ---
+  duration_ms: 5.400796
+  type: 'test'
+  ...
+# Subtest: multi draft stale cancelled callbacks cannot replace a survivor
+ok 13 - multi draft stale cancelled callbacks cannot replace a survivor
+  ---
+  duration_ms: 3.191282
+  type: 'test'
+  ...
+# (node:95) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: new draft hide remount retains exact body
+ok 14 - new draft hide remount retains exact body
+  ---
+  duration_ms: 19.638399
+  type: 'test'
+  ...
+# Subtest: new draft annotation eviction retains exact body
+ok 15 - new draft annotation eviction retains exact body
+  ---
+  duration_ms: 3.749029
+  type: 'test'
+  ...
+# Subtest: new draft same anchor click preserves body on remount
+ok 16 - new draft same anchor click preserves body on remount
+  ---
+  duration_ms: 3.31922
+  type: 'test'
+  ...
+# Subtest: new draft path identity is isolated
+ok 17 - new draft path identity is isolated
+  ---
+  duration_ms: 3.663141
+  type: 'test'
+  ...
+# Subtest: new draft side identity is isolated
+ok 18 - new draft side identity is isolated
+  ---
+  duration_ms: 3.389265
+  type: 'test'
+  ...
+# Subtest: new draft start identity is isolated
+ok 19 - new draft start identity is isolated
+  ---
+  duration_ms: 3.12807
+  type: 'test'
+  ...
+# Subtest: new draft end identity is isolated
+ok 20 - new draft end identity is isolated
+  ---
+  duration_ms: 3.250984
+  type: 'test'
+  ...
+# Subtest: new draft workspace identity is isolated
+ok 21 - new draft workspace identity is isolated
+  ---
+  duration_ms: 3.762652
+  type: 'test'
+  ...
+# Subtest: new draft explicit discard clears body
+ok 22 - new draft explicit discard clears body
+  ---
+  duration_ms: 3.970474
+  type: 'test'
+  ...
+# Subtest: new draft keep editing retains body after remount
+ok 23 - new draft keep editing retains body after remount
+  ---
+  duration_ms: 3.386813
+  type: 'test'
+  ...
+# Subtest: new draft successful submit clears only saved draft
+ok 24 - new draft successful submit clears only saved draft
+  ---
+  duration_ms: 3.623956
+  type: 'test'
+  ...
+# Subtest: new draft failed submit retains body after remount
+ok 25 - new draft failed submit retains body after remount
+  ---
+  duration_ms: 3.022983
+  type: 'test'
+  ...
+# Subtest: new draft late old submit cannot clear different anchor
+ok 26 - new draft late old submit cannot clear different anchor
+  ---
+  duration_ms: 3.476366
+  type: 'test'
+  ...
+# Subtest: new draft late old submit cannot clear replacement at same anchor
+ok 27 - new draft late old submit cannot clear replacement at same anchor
+  ---
+  duration_ms: 3.870015
+  type: 'test'
+  ...
+# Subtest: new draft late old submit cannot clear other workspace
+ok 28 - new draft late old submit cannot clear other workspace
+  ---
+  duration_ms: 6.532785
+  type: 'test'
+  ...
+# Subtest: new draft stale callbacks cannot overwrite replacement
+ok 29 - new draft stale callbacks cannot overwrite replacement
+  ---
+  duration_ms: 3.078979
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1141.108952

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "name": "sidebar-row-click-activation-v1",
+  "status": "frozen source-qualified contract; NOT EXECUTED",
+  "reference": {
+    "reaEvidenceId": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "rendererSha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "lineage": "local sidebar row lJn -> NCi selected-state lookup -> SFi -> wFi forwardRef -> anchor onClick:P -> SFi onNavigate:He",
+    "guard": "!(event.defaultPrevented || event.button !== 0 || event.metaKey || event.altKey || event.ctrlKey || event.shiftKey)"
+  },
+  "eventDefaults": {"button": 0, "defaultPrevented": false, "metaKey": false, "altKey": false, "ctrlKey": false, "shiftKey": false},
+  "blockedEventExpectation": {
+    "selectDispatches": 0,
+    "attentionChatRequests": 0,
+    "markUnreadFalseDispatches": 0,
+    "newPreventDefaultCalls": 0,
+    "newStopPropagationCalls": 0
+  },
+  "cases": [
+    {"id": "already-prevented", "eventOverrides": {"defaultPrevented": true}, "expected": "blockedEventExpectation"},
+    {"id": "middle-button", "eventOverrides": {"button": 1}, "expected": "blockedEventExpectation"},
+    {"id": "secondary-button", "eventOverrides": {"button": 2}, "expected": "blockedEventExpectation"},
+    {"id": "meta-primary", "eventOverrides": {"metaKey": true}, "expected": "blockedEventExpectation"},
+    {"id": "alt-primary", "eventOverrides": {"altKey": true}, "expected": "blockedEventExpectation"},
+    {"id": "ctrl-primary", "eventOverrides": {"ctrlKey": true}, "expected": "blockedEventExpectation"},
+    {"id": "shift-primary", "eventOverrides": {"shiftKey": true}, "expected": "blockedEventExpectation"},
+    {"id": "ordinary-primary-different-workspace", "eventOverrides": {}, "setup": "An available local workspace different from the current selection", "expected": {"selectDispatches": 1, "selection": "the clicked repoId and workspaceId", "attentionChatRequests": 0}},
+    {"id": "ordinary-primary-current-unread-chat", "eventOverrides": {}, "setup": "The current workspace has one existing unread attention chat", "expected": {"selectDispatches": 0, "markUnreadFalseDispatches": 1, "attentionChatRequests": 1, "chat": "the same existing attention chat"}},
+    {"id": "ordinary-primary-current-waiting-chat", "eventOverrides": {}, "setup": "The current workspace has one existing waiting-on-user chat that is not unread", "expected": {"selectDispatches": 0, "markUnreadFalseDispatches": 0, "attentionChatRequests": 1, "chat": "the same existing attention chat"}}
+  ],
+  "executionContract": [
+    "Exercise the actual production row event handler, not a duplicated predicate or static regex as a behavior substitute.",
+    "Keep every expected value identical before and after any future product patch.",
+    "Attribute blocked-case baseline failures to actual selection/chat callback activity, not setup/import/navigation failures.",
+    "The ordinary primary controls must pass on baseline and candidate.",
+    "A non-primary event must reach the real production callback to test its guard. A browser not delivering a click for that button is not a passing guard check.",
+    "Do not infer anchor default navigation, popup behavior, macOS WebKit parity or native acceptance from these cases."
+  ],
+  "exclusions": ["dispatcher", "shortcut hints", "IME", "timestamps", "branch rename/editor selection", "startup and private-profile hydration", "native runtime", "provider runtime", "cloud UI"],
+  "scopeStatus": "Source qualification only. No product lease or runtime admission."
+}

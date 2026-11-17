@@ -1,0 +1,104 @@
+{
+  "main": "649f47b9d80eb1d7510c2b405b25e026ffddf78b",
+  "source_pins": [
+    {
+      "path": "src/settings/agents/parts.tsx",
+      "sha256": "ed7b41ca2d480d83b015ba3498af2ea65a90dbddbefdc080e9e56632cf3c6f36",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/settings/agents/kit.tsx",
+      "sha256": "a0926a79d9a60384e04cc4ff26482336e411c5bf07c93da1755284baecaf37cb",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/settings/agents/ClaudeTab.tsx",
+      "sha256": "1227bb223bcb2c9f0b5af5d063440f28a37a7380f102ba20c5c37b3d8898452e",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/settings/agents/CodexTab.tsx",
+      "sha256": "8f814442b65aa82f4a3e295bfe9079c0f52f80db1160d650198daab3d263a54d",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/settings/agents/useAgentStatus.ts",
+      "sha256": "ac7f6dad2335abe4bb9d151b64ee836119a723f79b7744c0710d9462a842453e",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/settings/agents/agentStatusLoader.ts",
+      "sha256": "b0ac1b1e282f6fc3b64e2853cf814efd9be4738ee7910a402ee491cf37fe9a45",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/settings/agents/api.ts",
+      "sha256": "84b02ba11bdd6d487654926992e76f45696728b91e1b875f9efb3d88b6366a6c",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/settings/api.ts",
+      "sha256": "dad7fe498fc3ad00121742f7fe5c6639d0a192cb63410bbdce2cfcf007021496",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/features/terminal/pty.ts",
+      "sha256": "6ae39f143a2ac74f846c08f02cefdbf7c0cba35c8336480e9e53dc47b9f61ec7",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/features/terminal/writeQueue.ts",
+      "sha256": "3a20d651fb8f410cd9cf13cc3bc19b68d609d7acd189a2bd3ffa4992f856009b",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/features/terminal/events.ts",
+      "sha256": "31401ad8918a9ed628ea2d4cdd934341ffb0bd0cd618b633f7a4b919e1504e68",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src-tauri/src/terminal_commands.rs",
+      "sha256": "75a8725122182bf9313501ce5d1abba608bb252e0afc8f11bc0a8762b432d24e",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src-tauri/src/terminal/manager.rs",
+      "sha256": "9889795e54c7bf248d84a5336c2614272d906039a069366e92aa87d4c483a771",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src-tauri/src/terminal/spawn.rs",
+      "sha256": "1bbc474439ea21dd34c7a35418ce043cba9443cad5bc1c54583a1a0eb3e25b60",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src-tauri/src/agent_settings_commands.rs",
+      "sha256": "8d35cb53820ef081befe0cb826b93fb391da8cca70a1f9402595db458e348df9",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src-tauri/src/settings/commands.rs",
+      "sha256": "2f38b4e87c6ffeccc108a89ccb09c68c7b9a037be907b4347d1061b57da5bc38",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src-tauri/src/settings/service.rs",
+      "sha256": "c71ca2038728293779ccc61d76d3a1aa28afe157923ec9e4f3da277e24f5662d",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src-tauri/src/agent/byok.rs",
+      "sha256": "dcc22b744087391f6a9eafd90cdce36c3db4e27478027383a37e5038ef35d00b",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src-tauri/src/agent/provider.rs",
+      "sha256": "d323f3ed51557f2ab91a0301177a3fa4ba4b70e2c1a048b5e50d939c6a82b7f2",
+      "matches_frozen_baseline": true
+    }
+  ],
+  "parts_matches_baseline": true,
+  "author": "Conductor Rebuild",
+  "historical_pins_changed": false,
+  "scope": "All 19 historical source files match fresh default-branch head before the onResize-only guard."
+}

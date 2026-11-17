@@ -1,0 +1,4 @@
+command=timeout 120s node --test --test-concurrency=1 --test-reporter=tap src/settings/customPrefixDotDelimiterV2.test.ts
+start=2026-11-12T11:10:55.246202762Z
+end=2026-11-12T11:10:56.065044789Z
+exit=1

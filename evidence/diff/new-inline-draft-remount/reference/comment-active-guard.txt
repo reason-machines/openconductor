@@ -1,0 +1,1 @@
+function kle(t){return!t.isOutdated&&!t.isResolved}

@@ -1,39 +1,7 @@
 name: Reason browser pairing
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "src/onboarding/**"
-      - "src/settings/agents/ReasonTab.tsx"
-      - "src/settings/agents/reasonModes.ts"
-      - "src/features/chat/Transcript.tsx"
-      - "src/features/chat/agentSignIn.ts"
-      - "src/backend.ts"
-      - "src-tauri/src/reason_acp/**"
-      - "src-tauri/src/reason_chat.rs"
-      - "tools/reason-pairing/**"
-      - "tests/e2e/reason-pairing.e2e.mjs"
-      - "package.json"
-      - "package-lock.json"
-      - ".github/workflows/reason-pairing.yml"
-      - "tools/ci/**"
-  pull_request:
-    paths:
-      - "src/onboarding/**"
-      - "src/settings/agents/ReasonTab.tsx"
-      - "src/settings/agents/reasonModes.ts"
-      - "src/features/chat/Transcript.tsx"
-      - "src/features/chat/agentSignIn.ts"
-      - "src/backend.ts"
-      - "src-tauri/src/reason_acp/**"
-      - "src-tauri/src/reason_chat.rs"
-      - "tools/reason-pairing/**"
-      - "tests/e2e/reason-pairing.e2e.mjs"
-      - "package.json"
-      - "package-lock.json"
-      - ".github/workflows/reason-pairing.yml"
-      - "tools/ci/**"
+  workflow_dispatch:
 
 permissions:
   contents: read

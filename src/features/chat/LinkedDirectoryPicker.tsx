@@ -94,6 +94,9 @@ export function LinkedDirectoryPicker({ repos, repositoryId, excludedPaths = NO_
       const delta = event.key === "ArrowDown" ? 1 : -1;
       const count = rows.length + linkedDirectoryPaths.length + 1;
       setFocused((activeIndex + delta + count) % count);
+    } else if (event.key === "Home" || event.key === "End") {
+      event.preventDefault();
+      setFocused(event.key === "Home" ? 0 : rows.length + linkedDirectoryPaths.length);
     } else if (event.key === "Enter") {
       event.preventDefault();
       const directory = linkedDirectoryPaths[activeIndex - 1];

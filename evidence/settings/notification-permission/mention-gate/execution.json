@@ -1,0 +1,79 @@
+{
+  "producer": "Conductor Rebuild",
+  "candidate": "NOTIFY-MENTION-PERMISSION-C18-03",
+  "grant_message": "7fafef23-325f-435b-952a-292306e7535a",
+  "existing_request": "6238a3c9",
+  "baseline_main": "2dfe64b7564f48281d79da5e203ab30c6e12a51b",
+  "baseline_head": "9528cc600b0c9d2498caf07c3af64a5253b2b200",
+  "regression_commit": "c01a983beb480c7ac21a372b60b04aa7140d4733",
+  "machine": "Cloud352 00637189-5c55-416e-b457-ed7419fb739a",
+  "started_at": "2026-11-12T16:03:04Z",
+  "finished_at": "2026-11-12T16:05:26Z",
+  "environment": {
+    "NODE_OPTIONS": "--max-old-space-size=1024",
+    "dependency_install": "NOT RUN; unchanged-lock installed dependency versions matched"
+  },
+  "results": {
+    "red": {
+      "exit": 1,
+      "tests": 8,
+      "pass": 2,
+      "fail": 6,
+      "setup_failures": 0,
+      "skipped": 0
+    },
+    "green": {
+      "exit": 0,
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "skipped": 0
+    },
+    "adjacent": {
+      "exit": 0,
+      "tests": 16,
+      "pass": 16,
+      "fail": 0,
+      "skipped": 0
+    },
+    "typecheck": {
+      "exit": 0
+    }
+  },
+  "integrity": {
+    "preserved_notification_evidence": true,
+    "frozen_new_inputs": true,
+    "untouched_production": true,
+    "candidate_exact": true
+  },
+  "limits": [
+    "No browser/server/native/provider/auth/build/package execution",
+    "No screenshot: this grant excluded browser/server/native execution",
+    "Mounted React tests substitute permission APIs and persistence; actual macOS permission and delivery unverified",
+    "Frozen #992 cut and existing release/E1 owners unchanged"
+  ],
+  "cleanup": {
+    "background_jobs": [],
+    "servers": [],
+    "created_build_outputs": [],
+    "dependencies": "preexisting, not removed",
+    "runtime_released": true
+  },
+  "evidence_generation_note": "An initial diff-text comparison rejected different unified-diff context widths. No runtime command was retried and no fixture changed. The final product bytes match the prepared candidate SHA-256 exactly.",
+  "artifacts": {
+    "adjacent.command.txt": "1cac4c98ab75cccf16daee3ddc2f3ef7489997f8dfad55e21ac5119ee27ed060",
+    "adjacent.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "adjacent.tap": "8aa53aac9d98dd15f3c60cc730d82585e3741d2fa7b7f86e7c53d901ca9a6440",
+    "green.command.txt": "ea2b7e88b12de5ef43e46a84230e4f813d83f3bdc8cd7823736bf6608addf573",
+    "green.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "green.tap": "2b71c0c0615346ee09ba0ec0d98038fccb48a6802bf527ae1ecff024fbc369b7",
+    "red.command.txt": "ea2b7e88b12de5ef43e46a84230e4f813d83f3bdc8cd7823736bf6608addf573",
+    "red.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "red.raw-sha256.txt": "74b2f76111e062700c123425c4fa02eb3fa5e06cf9f03e08af7946ceca7df6e5",
+    "red.tap.gz": "4606a8406f9a4b308bbebf5f44b823bbd2df15c3929355138868b177038d5e43",
+    "runtime.started.txt": "dfffaa359d0243dec12130768dc8a400aee2769275cc6657c97d01766b8422b2",
+    "typecheck.command.txt": "6ae8e7f95991f73a67d003ef766144d8a48cc13eea07bba4fe1b315da6ec71bc",
+    "typecheck.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "typecheck.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "status": "BEHAVIOR_GREEN",
+  "head": "7133ea55d70fb22e95700ef2d6160ea87e99ab8a",
+  "workflow": 43144671903,
+  "job": 130939576051,
+  "artifact": 13911460708,
+  "digest": "sha256:1faf0d52a44acbbb030e56d2813cd7e73380b8f1ea89e27806fb1324fae8b3a4",
+  "command": "bash tools/diff/run-rust-tests.sh large_file_placeholder -- --nocapture",
+  "historical": 8,
+  "worktree": 8,
+  "ignored": 0,
+  "existing_renderer": 8,
+  "limits": "This proves the frozen ASCII backend cases and the prior worktree DTO renderer cases. It does not exercise the selected-commit native UI, rename/add/delete/whitespace/decoding edges, or performance.",
+  "remaining": "Separate Diff jobs failed rustfmt at helper signature. Formatting-only correction published next; all exact-head workflows must pass before merge.",
+  "native": "NOT_RUN"
+}

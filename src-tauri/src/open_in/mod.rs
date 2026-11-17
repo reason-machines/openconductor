@@ -14,6 +14,8 @@
 
 pub mod commands;
 pub mod icon;
+#[cfg(all(test, unix))]
+mod deleted_finder_ipc;
 #[cfg(test)]
 mod tests;
 #[cfg(test)]
@@ -24,6 +26,8 @@ mod alacritty_status_tests;
 mod kaleidoscope_tests;
 #[cfg(all(test, target_os = "macos"))]
 mod wezterm_folder_tests;
+#[cfg(all(test, target_os = "macos"))]
+mod vscode_workspace_context_ipc;
 
 use std::ffi::{OsStr, OsString};
 use std::path::{Path, PathBuf};

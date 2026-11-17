@@ -1,0 +1,24 @@
+2026-11-12T03:54:40.4880190Z # Subtest: visible status publication keeps ordering, duplicate suppression and presentation
+2026-11-12T03:54:40.4881358Z ok 428 - visible status publication keeps ordering, duplicate suppression and presentation
+2026-11-12T03:54:40.4882382Z   ---
+2026-11-12T03:54:40.4882801Z   duration_ms: 5.356474
+2026-11-12T03:54:40.4883227Z   type: 'test'
+2026-11-12T03:54:40.4883605Z   ...
+2026-11-12T03:54:40.4884235Z # Subtest: hidden status transitions still publish their canonical ordered native feed
+2026-11-12T03:54:40.4885147Z ok 429 - hidden status transitions still publish their canonical ordered native feed
+2026-11-12T03:54:40.4885812Z   ---
+2026-11-12T03:54:40.4886197Z   duration_ms: 1.382172
+2026-11-12T03:54:40.4886606Z   type: 'test'
+2026-11-12T03:54:40.4886983Z   ...
+2026-11-12T03:54:40.4887715Z # Subtest: hidden status publication does not restore presentation rows or request attention
+2026-11-12T03:54:40.4888834Z ok 430 - hidden status publication does not restore presentation rows or request attention
+2026-11-12T03:54:40.4889653Z   ---
+2026-11-12T03:54:40.4890060Z   duration_ms: 1.110139
+2026-11-12T03:54:40.4890542Z   type: 'test'
+2026-11-12T03:54:40.4890913Z   ...
+2026-11-12T03:54:40.4891615Z # Subtest: closing a visible chat does not prevent later canonical settlement publication
+2026-11-12T03:54:40.4892603Z ok 431 - closing a visible chat does not prevent later canonical settlement publication
+2026-11-12T03:54:40.4899882Z   ---
+2026-11-12T03:54:40.4900243Z   duration_ms: 1.268604
+2026-11-12T03:54:40.4900623Z   type: 'test'
+2026-11-12T03:54:40.4900949Z   ...

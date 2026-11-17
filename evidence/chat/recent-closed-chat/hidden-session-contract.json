@@ -1,0 +1,45 @@
+{
+  "author": "Conductor Rebuild",
+  "status": "PROPOSED_SOURCE_BOUNDARY_NOT_IMPLEMENTED_OR_EXECUTED",
+  "main": "87e6da16d981de85ee26c16fac14c00a45c62025",
+  "current_registered_command": {"name": "db_list_workspaces", "args": null, "serialization": "no arguments, not {}"},
+  "proposed_response_addition": {
+    "field": "transcriptChats",
+    "enclosing_object": "WorkspaceRow / DbWorkspaceRow for one workspace",
+    "row_shape": {"id": "stable UI chat ID", "title": "stored UI chat title, Untitled fallback"},
+    "membership": "all retained UI chat sessions of that workspace, visible and hidden, including primary, without duplicate Claude transcript alias rows",
+    "independent_of": ["chatTabs", "unreadChats", "activeSessionId", "closed-tab history"],
+    "legacy_response": "optional on the frontend; older backend rows may omit it"
+  },
+  "source_joins": [
+    "Conductor h9t combines W2 and MFt; ylt and _lt request hidden false and true for the same localWorkspaceId",
+    "Conductor QZe selects all sessions WHERE workspace_id = ?; hidden is a view flag, not deletion",
+    "Current sessions::list and sessions::list_for_workspace already return hidden rows as well as visible rows",
+    "Current sessions::open_tabs deliberately excludes hidden rows and :claude transcript aliases",
+    "Current db_list_workspaces calls persistence::list_workspaces, which constructs WorkspaceRow.chat_tabs only from sessions::open_tabs",
+    "Current loadReposFromDb invokes db_list_workspaces with no arguments, restores only chatTabs and decodes through reposFromDb/workspaceFromRow",
+    "Current WorkspaceView.otherChat retains current source identity, agent snapshot and last-user filter; do not replace the live helper with copied fixture logic"
+  ],
+  "implementation_preparation": [
+    "Project a separate id/title catalog from retained DB sessions by workspace. Do not widen sessions::open_tabs or chatTabs.",
+    "Expose the separate catalog as transcriptChats in WorkspaceRow and decode it in DbWorkspaceRow/workspaceFromRow to the Workspace model.",
+    "Merge the persisted catalog with current live primary/review/fork/new-chat tabs by UI ID before building otherChats. Live titles should take precedence and current-chat exclusion must remain.",
+    "Closing an eligible tab must not remove it from this catalog. Reopen/reclose must not duplicate it. Browser-only session retention, if needed, must not be inferred from native IPC.",
+    "Keep existing lastUserMessageAt filtering and source transcript formatter/attachment path in the five warm-transcript cases.",
+    "Add a real Rust DB/DTO regression before claiming production hidden-session hydration. A mocked IPC field alone is not database proof."
+  ],
+  "fixture_delta": "Only seed transcriptChats separately on the existing db_list_workspaces rows. The same five case bodies, assertions, transport commands and RED markers remain byte-identical. No hidden row is injected into chatTabs.",
+  "execution_owner": "e09b0500-c793-4cce-bfd8-f466192cad81, sequentially after overflow",
+  "unresolved_before_freeze": [
+    "Rebind to actual post-overflow consuming main and classify any new imports without mocking the popup acceptance path.",
+    "Publisher must implement and verify the proposed DTO projection/initializer join or explicitly rebind a different read contract before freezing baseline and candidate together.",
+    "No Node syntax/typecheck or mounted execution has run; baseline may expose loader errors and earns no RED credit until exact intended assertions fail."
+  ],
+  "not_proven_by_five_cases": [
+    "actual SQLite/Tauri execution or response serialization",
+    "cold-start hidden transcript loading or persisted lastUserMessageAt authority",
+    "local Claude :claude alias normalization and saved-agent restoration",
+    "browser/native visual parity, focus or providers",
+    "archive/delete behavior, hidden primary replacement or multi-window refresh"
+  ]
+}

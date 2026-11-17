@@ -1,0 +1,286 @@
+{
+  "author": "Conductor Rebuild",
+  "token": "ACC_64_REVEAL4_20261113T0332",
+  "actual_start": "2026-11-13T03:35:18.331109+00:00",
+  "driver_start": "2026-11-13T03:38:24.918272+00:00",
+  "phases": [
+    {
+      "name": "red",
+      "start": "2026-11-13T03:38:24.986387+00:00",
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/settings/agents/secretRevealLabel.test.ts"
+      ],
+      "env_nonsecret": {
+        "NODE_ENV": "development",
+        "NODE_OPTIONS": "--max-old-space-size=768"
+      },
+      "stdout": "red.stdout.txt",
+      "stderr": "red.stderr.txt",
+      "pgid": 106,
+      "end": "2026-11-13T03:38:26.281987+00:00",
+      "elapsed_seconds": 1.295438049994118,
+      "exit_code": 1,
+      "stdout_sha256": "e61944bfe1c402f44134a60b8ab86b0d9172a67618ec12b28a6a120de0c7feac",
+      "stderr_sha256": "2b06562bc6fc67d41ba4a9eb31484badb314a5e4e0a845cf2621178815f3b50c"
+    },
+    {
+      "name": "inspect-red",
+      "start": "2026-11-13T03:38:26.282644+00:00",
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "10s",
+        "python3",
+        "-B",
+        "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/local-provider-action-label64/validation-prep-v1/inspect_tap.py",
+        "--phase",
+        "red",
+        "--exit-code",
+        "1",
+        "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/local-provider-action-label64/validation-0332/red.stdout.txt"
+      ],
+      "env_nonsecret": {},
+      "stdout": "inspect-red.stdout.txt",
+      "stderr": "inspect-red.stderr.txt",
+      "pgid": 122,
+      "end": "2026-11-13T03:38:26.347069+00:00",
+      "elapsed_seconds": 0.06426754999847617,
+      "exit_code": 0,
+      "stdout_sha256": "ffa22e1090c23a7930ba0cc17eaa1d9152864692cb2a27ba5cd12267cac89d42",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "green",
+      "start": "2026-11-13T03:38:26.349984+00:00",
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/settings/agents/secretRevealLabel.test.ts"
+      ],
+      "env_nonsecret": {
+        "NODE_ENV": "development",
+        "NODE_OPTIONS": "--max-old-space-size=768"
+      },
+      "stdout": "green.stdout.txt",
+      "stderr": "green.stderr.txt",
+      "pgid": 125,
+      "end": "2026-11-13T03:38:27.230762+00:00",
+      "elapsed_seconds": 0.8805493230029242,
+      "exit_code": 0,
+      "stdout_sha256": "e1cb01f21fbce5e28c177634ec1884d8b43ccc58a36d9e84048e3af13115185c",
+      "stderr_sha256": "f02dbfc8ffee96ee445b4f739bc4353bdb575a0d4ad7dfd81f81594d886610f7"
+    },
+    {
+      "name": "inspect-green",
+      "start": "2026-11-13T03:38:27.231507+00:00",
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "10s",
+        "python3",
+        "-B",
+        "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/local-provider-action-label64/validation-prep-v1/inspect_tap.py",
+        "--phase",
+        "green",
+        "--exit-code",
+        "0",
+        "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/local-provider-action-label64/validation-0332/green.stdout.txt"
+      ],
+      "env_nonsecret": {},
+      "stdout": "inspect-green.stdout.txt",
+      "stderr": "inspect-green.stderr.txt",
+      "pgid": 141,
+      "end": "2026-11-13T03:38:27.296712+00:00",
+      "elapsed_seconds": 0.0648903440014692,
+      "exit_code": 0,
+      "stdout_sha256": "775b006346fcfce0309409b1ab82cd4ed7258488ae291ac23ca2c1c99b944543",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "adjacent",
+      "start": "2026-11-13T03:38:27.297679+00:00",
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "120s",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "src/settings/agents/secretEditorKeyLink.test.ts",
+        "src/settings/agents/kitModel.test.ts"
+      ],
+      "env_nonsecret": {
+        "NODE_ENV": "development",
+        "NODE_OPTIONS": "--max-old-space-size=768"
+      },
+      "stdout": "adjacent.stdout.txt",
+      "stderr": "adjacent.stderr.txt",
+      "pgid": 143,
+      "end": "2026-11-13T03:38:28.480852+00:00",
+      "elapsed_seconds": 1.1829815370001597,
+      "exit_code": 0,
+      "stdout_sha256": "dbf942748f805ad572002f06d8044338b8a9753b8a1a97eadeaa9df25d5f1e5f",
+      "stderr_sha256": "c910bf4887281809d8b682b6641ce6f35bb33ed377a5f2a25df4a9a40785fc99"
+    },
+    {
+      "name": "typecheck",
+      "start": "2026-11-13T03:38:28.482083+00:00",
+      "argv": [
+        "nice",
+        "-n19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "180s",
+        "npx",
+        "--no-install",
+        "tsc",
+        "--noEmit"
+      ],
+      "env_nonsecret": {
+        "NODE_ENV": "development",
+        "NODE_OPTIONS": "--max-old-space-size=1536"
+      },
+      "stdout": "typecheck.stdout.txt",
+      "stderr": "typecheck.stderr.txt",
+      "pgid": 167,
+      "end": "2026-11-13T03:39:07.764132+00:00",
+      "elapsed_seconds": 39.281819594994886,
+      "exit_code": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "d03b16a54a1fa2a664ac901dfae8b692baf6a105b5b804c3b4e7208923a80c4c"
+    }
+  ],
+  "status": "PASS",
+  "remove_executed": false,
+  "rss": "NOT_SAMPLED; no complete process-tree peak RSS claim",
+  "qualified_head": "22e8971cd655175e95515ccad6a76b21c8ffb169",
+  "qualified_tree": "d025236263a19cb6c6ab837eb50fb6927a640b8c",
+  "qualified_main": "efcaf69210c3b389ee5c077f4272df0c8809e40a",
+  "admitted_main": "d2602d267460dd67e467e7622f1ee357c085bca2",
+  "input_sha256": {
+    "src/settings/agents/kit.tsx": "ef11588cdd58193d684a912eefd0b543e15bf3a238ba4f48b2762fd4969bec6f",
+    "src/settings/agents/kitModel.ts": "be6a94abe11962ca756be5733b946f7b5d34acafc567db937a8e1ce688352937",
+    "src/settings/agents/secretEditorKeyLink.test.ts": "37a6e0de84b4ecacfa31ff59467158eacc01f4c23ce75957f2d47676fe053686",
+    "src/settings/agents/kitModel.test.ts": "c0395304a83a792ef7ddc85c27a294c280fab87b52919dbbeebddd1c90207c2d",
+    "package.json": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+    "tsconfig.json": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5"
+  },
+  "root_versions": {
+    "react": {
+      "version": "18.3.1",
+      "sha256": "d4e68a5c96babb20cad1daafea8b78822eae45b341552cf5418d06a5304fa64c"
+    },
+    "react-dom": {
+      "version": "18.3.1",
+      "sha256": "d2f29e31bd48b833e48cd7bbf41f192e8ee4ff8da249fdbe10d4ac4114b8b12e"
+    },
+    "react-test-renderer": {
+      "version": "18.3.1",
+      "sha256": "e3b09e5a62e134d5241b520715de45b63ff3568ccbbeeeb70601607c3136c811"
+    },
+    "typescript": {
+      "version": "5.9.3",
+      "sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    }
+  },
+  "fixture_sha256": "8db2461a8d82202cf3d9804803530ec604cb52d469fad90430ae9124e776cac3",
+  "inspector_sha256": "c829c363fbb855e64ab1ec7550456ac9f6ea6f2308e884dfc3075efe509a67e3",
+  "driver_sha256": "130ac40f9911bb31af7ae4902214fa6b64f0fc4c8492c630abb9e380724d79ee",
+  "setup": "NOT_NEEDED; own root dependencies reused",
+  "source_guard_elapsed_seconds": 0.06738778099679621,
+  "red_classification": {
+    "author": "Conductor Rebuild",
+    "phase": "red",
+    "classification": "QUALIFYING_RED",
+    "exit_code": 1,
+    "summary": {
+      "tests": 4,
+      "pass": 2,
+      "fail": 2,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "failures": [
+      1,
+      2
+    ],
+    "raw_tap_sha256": "e61944bfe1c402f44134a60b8ab86b0d9172a67618ec12b28a6a120de0c7feac",
+    "test_execution_performed_by_inspector": false
+  },
+  "candidate_kit_sha256": "3d308bbec4c3874b4f54b41d9fafcc2c2b8c411ee9c470788f5de4dd16beb7c6",
+  "green_classification": {
+    "author": "Conductor Rebuild",
+    "phase": "green",
+    "classification": "VALID_GREEN",
+    "exit_code": 0,
+    "summary": {
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "failures": [],
+    "raw_tap_sha256": "e1cb01f21fbce5e28c177634ec1884d8b43ccc58a36d9e84048e3af13115185c",
+    "test_execution_performed_by_inspector": false
+  },
+  "adjacent_summary": {
+    "tests": [
+      "9"
+    ],
+    "pass": [
+      "9"
+    ],
+    "fail": [
+      "0"
+    ],
+    "cancelled": [
+      "0"
+    ],
+    "skipped": [
+      "0"
+    ],
+    "todo": [
+      "0"
+    ]
+  },
+  "terminal": "2026-11-13T03:39:07.765133+00:00",
+  "inclusive_elapsed_seconds": 229.43403720855713,
+  "candidate_restored": true,
+  "own_process_groups_absent": true,
+  "groups_remaining": [],
+  "fixture_inactive": true,
+  "release": "EXPLICIT_RELEASE"
+}

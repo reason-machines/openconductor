@@ -1,0 +1,52 @@
+{
+  "baseline_main": "8e1c32c3f05efc1562177ea91ad3adccc940c7fe",
+  "node": "v22.23.4",
+  "machine": "Reason Cloud Linux; source units only",
+  "frozen_regression": {
+    "red": {
+      "pass": 2,
+      "fail": 3,
+      "loading_failures": 0
+    },
+    "green": {
+      "pass": 5,
+      "fail": 0
+    },
+    "sha256": "5f29c98db7b890125d9099afd034ed457c40085540d6e9cbab0d2d995b5bf271"
+  },
+  "supplemental": {
+    "red": {
+      "pass": 3,
+      "fail": 2
+    },
+    "green": {
+      "pass": 5,
+      "fail": 0
+    }
+  },
+  "adjacent": {
+    "status": "PARTIAL_FAILED_DEPENDENCY_LOAD",
+    "pass": 42,
+    "failed_files": 1,
+    "cause": "Cannot find module 'typescript'",
+    "assertion_failures": 0
+  },
+  "typecheck_build_integrated": "NOT_RUN; missing dependencies, no installs authorized",
+  "package": "NOT_VERIFIED",
+  "native": "NOT_RUN",
+  "hashes": {
+    "src/features/terminal/session.ts": "b1f0a4a4fc616bd0dbe6f1e1b51a5374cb716c73841a31830c6351df9db8177b",
+    "src/features/terminal/attachmentOwnership.test.mjs": "5f29c98db7b890125d9099afd034ed457c40085540d6e9cbab0d2d995b5bf271",
+    "evidence/terminal/attachment-ownership-1f/README.md": "89ba89d88408b190ce13b4b55cf5b0ff68d8d925a6b3e2c861c9dc06904c4e07",
+    "evidence/terminal/attachment-ownership-1f/adjacent.tap": "cbee84cef1aa3b384f9319a6d8ca9f725ef4ec6eda8e859009bea3bd6d540929",
+    "evidence/terminal/attachment-ownership-1f/colors.txt": "e1e0c59b30bbc64aec70408cd174049e8763a4630b08cb94dd6ca003d0adf0aa",
+    "evidence/terminal/attachment-ownership-1f/combined-green.tap": "d67a88227702c099a66c32c0259c8ee8cd7d868b9c14d0871ee98110c66cacf0",
+    "evidence/terminal/attachment-ownership-1f/frozen.json": "b8c8a296c69a9fb63621b2b7902b8167aba90a775bdb2006649efa84e5101d12",
+    "evidence/terminal/attachment-ownership-1f/green.tap": "40c477b5e9e0573b09f00125b60f39a0e9163373ec898f11a5dc006a06505c5f",
+    "evidence/terminal/attachment-ownership-1f/ownershipEdges.test.mjs": "a117deed0cf5ac162cf85e6ded6b106541ad14b555dbca0bf6b50357826ff162",
+    "evidence/terminal/attachment-ownership-1f/provenance.txt": "08e180e616cdd0b18a0c6005a54455e8e07299d898b801212e9807da100afc36",
+    "evidence/terminal/attachment-ownership-1f/red.tap.gz": "6dfb9e882b0524e7f40b7938fdd52d329941347b225f54cc24c276bac35c60f3",
+    "evidence/terminal/attachment-ownership-1f/supplemental-red.tap.gz": "5f6aa2cdaf95c9d3ca4850665cc548670c15e1336e4be528bf5c60951a2b1912",
+    "evidence/terminal/attachment-ownership-1f/verify.py": "a4f8bce25b25449a7c199fc81c47bd12c19b7edbf972bad92d4915e478f448fa"
+  }
+}

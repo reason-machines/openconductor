@@ -1,0 +1,11 @@
+{
+  "phase": "fetch",
+  "command": "nice -n 19 timeout --kill-after=5s 120s cargo fetch --locked --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml",
+  "started_at_utc": "2026-11-12T11:49:24.332642+00:00",
+  "ended_at_utc": "2026-11-12T11:49:24.802866+00:00",
+  "elapsed_seconds": 0.47,
+  "exit_code": 0,
+  "timeout": false,
+  "log_sha256": "bb9ce95f36c5d684423d46f26991066029bc2ba5c9b123a8bcce27ba94ca5112",
+  "lock_sha256": "ae1cc2d76efd6ed9867bce919be1ff06d20efff0ac88ac2ba7869df9153ed71b"
+}

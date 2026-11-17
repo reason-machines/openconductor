@@ -1,0 +1,1076 @@
+{
+  "owner": "Conductor Rebuild",
+  "scope": "SOURCE_ONLY exact registration hunk; no product/test/runtime execution",
+  "main_checked": "6e1c5e9d38c4d35aa7042edbbcfb6eed0b6d891c",
+  "workspace_path": "src/components/WorkspaceView.tsx",
+  "base_sha256": "1a3f151052cb823e5ec9dbdfc1109370ab2cf8a7a769d32c9d27e9db2fd479a8",
+  "candidate_sha256": "596cc0bab7214b96d5acde184b6e84ff5e71c46c4c7fdb2ee1a18a76251b7a53",
+  "candidate_patch_sha256": "4968d5400047198801988322a6ba9537ba06a6159a9581dba054c041c7c3cb38",
+  "nine_case_test_sha256": "99c2b99a0fe425076c39453fdce9064503820f59041d10f10bb9a2d9676ec4fe",
+  "original_composer_manifest_sha256": "e48f529d662fdf52d4ad85ed1ba802da23e4bc1cc793e41f0b1e5e85daadd349",
+  "packets": {
+    "nav-close9": {
+      "sha256": "4968d5400047198801988322a6ba9537ba06a6159a9581dba054c041c7c3cb38",
+      "WorkspaceView_hunks": 1,
+      "base_edit_ranges": [
+        {
+          "start_line": 1347,
+          "end_line_exclusive": 1347,
+          "old_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "new_sha256": "0dc4b9322ac1a41944fe6c17e0a74a7e4fa215a1495cff3227fe734091e37303"
+        },
+        {
+          "start_line": 1349,
+          "end_line_exclusive": 1357,
+          "old_sha256": "0a1631ed2426a76ea23923ce7a05c8e4db050701e8975015ba2d0aadae000b71",
+          "new_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    "caller187f": {
+      "sha256": "5c64aafed353292b821d3150b48463cc0b09a977001cc037c42e13058cbf77f5",
+      "WorkspaceView_hunks": 7,
+      "base_edit_ranges": [
+        {
+          "start_line": 116,
+          "end_line_exclusive": 116,
+          "old_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "new_sha256": "5d7d6c67cb94035b59e1e9c6928a0e0f89cb792245fb475415881b2c7845373a"
+        },
+        {
+          "start_line": 184,
+          "end_line_exclusive": 184,
+          "old_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "new_sha256": "3fde93f23e7fe07690db8f1bd31a5a5354c1a3dce3dfa484cbcc92ab52990419"
+        },
+        {
+          "start_line": 227,
+          "end_line_exclusive": 228,
+          "old_sha256": "748a494fc8ff68902e1b187d34d9c877617851df19a8a031ca6494df54292719",
+          "new_sha256": "a6ab7ad4e668cb7830ba72eaac009656fabd97341a3fbe546a2dee077fdae362"
+        },
+        {
+          "start_line": 676,
+          "end_line_exclusive": 676,
+          "old_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "new_sha256": "5f5dfca963848df8bde7b75a8a347004bf6de7744aed9c411e66473a1d692149"
+        },
+        {
+          "start_line": 1076,
+          "end_line_exclusive": 1078,
+          "old_sha256": "a152d654e89bccdbaa9e72594f6a6854e9611adb0a092db9fc63acad6228c9a7",
+          "new_sha256": "5c3624f1a74e6aa95756c9d74a73f81bcfca7ead971a36391008dbd746277524"
+        },
+        {
+          "start_line": 1531,
+          "end_line_exclusive": 1531,
+          "old_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "new_sha256": "d8abdcca64e719f7de5f7394353c78365810c8b59e696bcc493fe7350a63a676"
+        },
+        {
+          "start_line": 1537,
+          "end_line_exclusive": 1538,
+          "old_sha256": "788dfd8c6920d85a6acd4167c3cfd52bafb3f45de1254cba0ba06e4920ffca01",
+          "new_sha256": "5d158e48cfaacc95e56c8af6ae6a57cd064eb8ef65f96d386986463e9459aac7"
+        },
+        {
+          "start_line": 1568,
+          "end_line_exclusive": 1569,
+          "old_sha256": "ec990645b915d26f04cff2aebb3813e1040e07774ed74b602a382af172a3362c",
+          "new_sha256": "463b23932fb3a5f97fd233559f31c5be0bf17b4834843cd60a9f659d6a7fd061"
+        }
+      ]
+    },
+    "draft-preview-r2": {
+      "sha256": "83b4123ac5a74c3b5d89cd5f1f088bd729454ec3c75af289ce977a7744022c8e",
+      "WorkspaceView_hunks": 3,
+      "base_edit_ranges": [
+        {
+          "start_line": 35,
+          "end_line_exclusive": 35,
+          "old_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "new_sha256": "c6de14c70f14c8f6fcb9f227775633c32149f3af97201caf1b6bbb5b89f8f5a4"
+        },
+        {
+          "start_line": 232,
+          "end_line_exclusive": 232,
+          "old_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "new_sha256": "7871de89975375616b62a39fb796b384bc902348fdac627580806e0c3ed3e360"
+        },
+        {
+          "start_line": 762,
+          "end_line_exclusive": 762,
+          "old_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "new_sha256": "080d23e12c64821fe699fb4fc4a7a80cc3ad0fe55b0ddd6b35bbb8ccbcdba93d"
+        },
+        {
+          "start_line": 766,
+          "end_line_exclusive": 772,
+          "old_sha256": "b80679f880ced487967d3fb336aa126ee9e10b1e57320d4a837229e2e216e0c6",
+          "new_sha256": "9e035d1b12251719a9e191ea39c02f647ec922def5cf6847cd480cc66d16cf69"
+        }
+      ]
+    }
+  },
+  "active_file1205": {
+    "already_contained": true,
+    "merge_prefix": "a66b72e9",
+    "WorkspaceView_bytes_identical": true,
+    "reapplied": false
+  },
+  "results": [
+    {
+      "order": [
+        "nav-close9",
+        "caller187f"
+      ],
+      "result": "PASS",
+      "sha256": "3550f6bf30e0b7f50393e13e5e888688cbd742e1b49d2f0289d3ebc4225265ac",
+      "path": "nav-close9__caller187f.tsx.txt",
+      "applications": [
+        {
+          "packet": "nav-close9",
+          "hunks": [
+            {
+              "header": "@@ -1344,16 +1344,20 @@",
+              "start_byte": 73954,
+              "end_byte": 74790,
+              "old_sha256": "742a4cc150e384dc5110d2cb13156af3a945890a3ba966a4de5d0d17723f6c1d",
+              "new_sha256": "725a4d7a8c0ca61ab10405ccf3acb32d1839d261f4c9b3cedcc51b4fb2dd5393"
+            }
+          ]
+        },
+        {
+          "packet": "caller187f",
+          "hunks": [
+            {
+              "header": "@@ -112,6 +112,8 @@ import { fixShortcutApplies } from \"../features/pr/checks/fixErrors\";",
+              "start_byte": 8692,
+              "end_byte": 9124,
+              "old_sha256": "00717d8db786ee91b9c665a52ac0c108982cb3d49b07b8b36e54c1654250ef66",
+              "new_sha256": "e990f2b7856eeaf7cd0399e3415a9f755b69a07e5075d0327c4fad774ba7955c"
+            },
+            {
+              "header": "@@ -179,6 +181,7 @@ interface ChatPanelProps extends Props {",
+              "start_byte": 12427,
+              "end_byte": 12969,
+              "old_sha256": "d6381d5dd49c8906ab84faf48194e20b1c509c18a509457af459acdda9b503a6",
+              "new_sha256": "b644fa2e3e680885de5e4a13dedbb598730bc2bb472486533de45d0266749550"
+            },
+            {
+              "header": "@@ -222,7 +225,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe",
+              "start_byte": 14957,
+              "end_byte": 15589,
+              "old_sha256": "5fa396f982e82c1291cf506c34fad375c0dffb856d1f899d4cd9b685623b36d8",
+              "new_sha256": "a0134e88ffebdd440a4121560ff05a1ccbf1c04a4ab7adbc5592258c41184836"
+            },
+            {
+              "header": "@@ -671,6 +674,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge,",
+              "start_byte": 38473,
+              "end_byte": 38687,
+              "old_sha256": "a5d656104b17272e7d35ef1760b69728467ff918eb9c38dbdd3f3c221fa4097d",
+              "new_sha256": "d171ede8e49b1611a8c0e8e23d0bc933bda40c2b45b9a5416b381c99b280d642"
+            },
+            {
+              "header": "@@ -1069,8 +1073,8 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 59019,
+              "end_byte": 59412,
+              "old_sha256": "7b065dd9ba2e569d239ab034a8b764cefabd36d1426da6075f63d2ee87e1567b",
+              "new_sha256": "de28ae993063a59c98f33a1434fb283a455cd418556ac8ce849bdbd75849f69e"
+            },
+            {
+              "header": "@@ -1508,13 +1512,18 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 85618,
+              "end_byte": 86675,
+              "old_sha256": "9b007ef5189a6f732ddff4b9498584004852ac1d931616e5e297735cd71fc184",
+              "new_sha256": "fa431396852061fa0022da5ce67f1cb1043fa7913ae9f4d4a484729ac1a76213"
+            },
+            {
+              "header": "@@ -1545,7 +1554,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 88040,
+              "end_byte": 88389,
+              "old_sha256": "13c8eb93c02d7ad9300d11610982ed5acb4bcb46cf2f1d5f38e6a12b990a4872",
+              "new_sha256": "8a135422aba41094826f4e1c9b2e2e034a9831f9e9590333bf5430799521639b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": [
+        "caller187f",
+        "nav-close9"
+      ],
+      "result": "PASS",
+      "sha256": "3550f6bf30e0b7f50393e13e5e888688cbd742e1b49d2f0289d3ebc4225265ac",
+      "path": "caller187f__nav-close9.tsx.txt",
+      "applications": [
+        {
+          "packet": "caller187f",
+          "hunks": [
+            {
+              "header": "@@ -112,6 +112,8 @@ import { fixShortcutApplies } from \"../features/pr/checks/fixErrors\";",
+              "start_byte": 8692,
+              "end_byte": 9124,
+              "old_sha256": "00717d8db786ee91b9c665a52ac0c108982cb3d49b07b8b36e54c1654250ef66",
+              "new_sha256": "e990f2b7856eeaf7cd0399e3415a9f755b69a07e5075d0327c4fad774ba7955c"
+            },
+            {
+              "header": "@@ -179,6 +181,7 @@ interface ChatPanelProps extends Props {",
+              "start_byte": 12427,
+              "end_byte": 12969,
+              "old_sha256": "d6381d5dd49c8906ab84faf48194e20b1c509c18a509457af459acdda9b503a6",
+              "new_sha256": "b644fa2e3e680885de5e4a13dedbb598730bc2bb472486533de45d0266749550"
+            },
+            {
+              "header": "@@ -222,7 +225,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe",
+              "start_byte": 14957,
+              "end_byte": 15589,
+              "old_sha256": "5fa396f982e82c1291cf506c34fad375c0dffb856d1f899d4cd9b685623b36d8",
+              "new_sha256": "a0134e88ffebdd440a4121560ff05a1ccbf1c04a4ab7adbc5592258c41184836"
+            },
+            {
+              "header": "@@ -671,6 +674,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge,",
+              "start_byte": 38473,
+              "end_byte": 38687,
+              "old_sha256": "a5d656104b17272e7d35ef1760b69728467ff918eb9c38dbdd3f3c221fa4097d",
+              "new_sha256": "d171ede8e49b1611a8c0e8e23d0bc933bda40c2b45b9a5416b381c99b280d642"
+            },
+            {
+              "header": "@@ -1069,8 +1073,8 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 59019,
+              "end_byte": 59412,
+              "old_sha256": "7b065dd9ba2e569d239ab034a8b764cefabd36d1426da6075f63d2ee87e1567b",
+              "new_sha256": "de28ae993063a59c98f33a1434fb283a455cd418556ac8ce849bdbd75849f69e"
+            },
+            {
+              "header": "@@ -1508,13 +1512,18 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 85431,
+              "end_byte": 86488,
+              "old_sha256": "9b007ef5189a6f732ddff4b9498584004852ac1d931616e5e297735cd71fc184",
+              "new_sha256": "fa431396852061fa0022da5ce67f1cb1043fa7913ae9f4d4a484729ac1a76213"
+            },
+            {
+              "header": "@@ -1545,7 +1554,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 87853,
+              "end_byte": 88202,
+              "old_sha256": "13c8eb93c02d7ad9300d11610982ed5acb4bcb46cf2f1d5f38e6a12b990a4872",
+              "new_sha256": "8a135422aba41094826f4e1c9b2e2e034a9831f9e9590333bf5430799521639b"
+            }
+          ]
+        },
+        {
+          "packet": "nav-close9",
+          "hunks": [
+            {
+              "header": "@@ -1344,16 +1344,20 @@",
+              "start_byte": 74288,
+              "end_byte": 75124,
+              "old_sha256": "742a4cc150e384dc5110d2cb13156af3a945890a3ba966a4de5d0d17723f6c1d",
+              "new_sha256": "725a4d7a8c0ca61ab10405ccf3acb32d1839d261f4c9b3cedcc51b4fb2dd5393"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": [
+        "nav-close9",
+        "draft-preview-r2"
+      ],
+      "result": "PASS",
+      "sha256": "e94354186c69f20081248da1d062528089dd65c1423f443a60a6b692325f9d66",
+      "path": "nav-close9__draft-preview-r2.tsx.txt",
+      "applications": [
+        {
+          "packet": "nav-close9",
+          "hunks": [
+            {
+              "header": "@@ -1344,16 +1344,20 @@",
+              "start_byte": 73954,
+              "end_byte": 74790,
+              "old_sha256": "742a4cc150e384dc5110d2cb13156af3a945890a3ba966a4de5d0d17723f6c1d",
+              "new_sha256": "725a4d7a8c0ca61ab10405ccf3acb32d1839d261f4c9b3cedcc51b4fb2dd5393"
+            }
+          ]
+        },
+        {
+          "packet": "draft-preview-r2",
+          "hunks": [
+            {
+              "header": "@@ -31,6 +31,7 @@",
+              "start_byte": 2517,
+              "end_byte": 2932,
+              "old_sha256": "f5f143870c9976361db51c7ebcdd202ecabc1dd65432c0234bc3332a48a04cec",
+              "new_sha256": "f10af4ae45f33c19ae58b6fc0cd0b817738142d30b95d1f52f5ccf540e157890"
+            },
+            {
+              "header": "@@ -227,6 +228,8 @@",
+              "start_byte": 15385,
+              "end_byte": 15599,
+              "old_sha256": "edfd7cacf3b7fa889f2e3322a1d8880af08ff3059857064306e7c290f985b027",
+              "new_sha256": "369a29e90a55099586f267a7766d4c10251e05811b78d7b54b2d0088bcf43b6c"
+            },
+            {
+              "header": "@@ -757,16 +760,12 @@",
+              "start_byte": 43347,
+              "end_byte": 44080,
+              "old_sha256": "4c896d9076c37a70ca14cd102e7bcc98c486f1d5ade34054559bc81475d6e1a7",
+              "new_sha256": "999fb848fa2cb9effe62816ba26725061bd7739d4a55a2b39494850b61c61b5e"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": [
+        "draft-preview-r2",
+        "nav-close9"
+      ],
+      "result": "PASS",
+      "sha256": "e94354186c69f20081248da1d062528089dd65c1423f443a60a6b692325f9d66",
+      "path": "draft-preview-r2__nav-close9.tsx.txt",
+      "applications": [
+        {
+          "packet": "draft-preview-r2",
+          "hunks": [
+            {
+              "header": "@@ -31,6 +31,7 @@",
+              "start_byte": 2517,
+              "end_byte": 2932,
+              "old_sha256": "f5f143870c9976361db51c7ebcdd202ecabc1dd65432c0234bc3332a48a04cec",
+              "new_sha256": "f10af4ae45f33c19ae58b6fc0cd0b817738142d30b95d1f52f5ccf540e157890"
+            },
+            {
+              "header": "@@ -227,6 +228,8 @@",
+              "start_byte": 15385,
+              "end_byte": 15599,
+              "old_sha256": "edfd7cacf3b7fa889f2e3322a1d8880af08ff3059857064306e7c290f985b027",
+              "new_sha256": "369a29e90a55099586f267a7766d4c10251e05811b78d7b54b2d0088bcf43b6c"
+            },
+            {
+              "header": "@@ -757,16 +760,12 @@",
+              "start_byte": 43347,
+              "end_byte": 44080,
+              "old_sha256": "4c896d9076c37a70ca14cd102e7bcc98c486f1d5ade34054559bc81475d6e1a7",
+              "new_sha256": "999fb848fa2cb9effe62816ba26725061bd7739d4a55a2b39494850b61c61b5e"
+            }
+          ]
+        },
+        {
+          "packet": "nav-close9",
+          "hunks": [
+            {
+              "header": "@@ -1344,16 +1344,20 @@",
+              "start_byte": 74087,
+              "end_byte": 74923,
+              "old_sha256": "742a4cc150e384dc5110d2cb13156af3a945890a3ba966a4de5d0d17723f6c1d",
+              "new_sha256": "725a4d7a8c0ca61ab10405ccf3acb32d1839d261f4c9b3cedcc51b4fb2dd5393"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": [
+        "nav-close9",
+        "caller187f",
+        "draft-preview-r2"
+      ],
+      "result": "PASS",
+      "sha256": "c0d8428cd071806c62a683ccce69dca4080e574d78b4d22090c2ae8ddf05cd2c",
+      "path": "nav-close9__caller187f__draft-preview-r2.tsx.txt",
+      "applications": [
+        {
+          "packet": "nav-close9",
+          "hunks": [
+            {
+              "header": "@@ -1344,16 +1344,20 @@",
+              "start_byte": 73954,
+              "end_byte": 74790,
+              "old_sha256": "742a4cc150e384dc5110d2cb13156af3a945890a3ba966a4de5d0d17723f6c1d",
+              "new_sha256": "725a4d7a8c0ca61ab10405ccf3acb32d1839d261f4c9b3cedcc51b4fb2dd5393"
+            }
+          ]
+        },
+        {
+          "packet": "caller187f",
+          "hunks": [
+            {
+              "header": "@@ -112,6 +112,8 @@ import { fixShortcutApplies } from \"../features/pr/checks/fixErrors\";",
+              "start_byte": 8692,
+              "end_byte": 9124,
+              "old_sha256": "00717d8db786ee91b9c665a52ac0c108982cb3d49b07b8b36e54c1654250ef66",
+              "new_sha256": "e990f2b7856eeaf7cd0399e3415a9f755b69a07e5075d0327c4fad774ba7955c"
+            },
+            {
+              "header": "@@ -179,6 +181,7 @@ interface ChatPanelProps extends Props {",
+              "start_byte": 12427,
+              "end_byte": 12969,
+              "old_sha256": "d6381d5dd49c8906ab84faf48194e20b1c509c18a509457af459acdda9b503a6",
+              "new_sha256": "b644fa2e3e680885de5e4a13dedbb598730bc2bb472486533de45d0266749550"
+            },
+            {
+              "header": "@@ -222,7 +225,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe",
+              "start_byte": 14957,
+              "end_byte": 15589,
+              "old_sha256": "5fa396f982e82c1291cf506c34fad375c0dffb856d1f899d4cd9b685623b36d8",
+              "new_sha256": "a0134e88ffebdd440a4121560ff05a1ccbf1c04a4ab7adbc5592258c41184836"
+            },
+            {
+              "header": "@@ -671,6 +674,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge,",
+              "start_byte": 38473,
+              "end_byte": 38687,
+              "old_sha256": "a5d656104b17272e7d35ef1760b69728467ff918eb9c38dbdd3f3c221fa4097d",
+              "new_sha256": "d171ede8e49b1611a8c0e8e23d0bc933bda40c2b45b9a5416b381c99b280d642"
+            },
+            {
+              "header": "@@ -1069,8 +1073,8 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 59019,
+              "end_byte": 59412,
+              "old_sha256": "7b065dd9ba2e569d239ab034a8b764cefabd36d1426da6075f63d2ee87e1567b",
+              "new_sha256": "de28ae993063a59c98f33a1434fb283a455cd418556ac8ce849bdbd75849f69e"
+            },
+            {
+              "header": "@@ -1508,13 +1512,18 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 85618,
+              "end_byte": 86675,
+              "old_sha256": "9b007ef5189a6f732ddff4b9498584004852ac1d931616e5e297735cd71fc184",
+              "new_sha256": "fa431396852061fa0022da5ce67f1cb1043fa7913ae9f4d4a484729ac1a76213"
+            },
+            {
+              "header": "@@ -1545,7 +1554,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 88040,
+              "end_byte": 88389,
+              "old_sha256": "13c8eb93c02d7ad9300d11610982ed5acb4bcb46cf2f1d5f38e6a12b990a4872",
+              "new_sha256": "8a135422aba41094826f4e1c9b2e2e034a9831f9e9590333bf5430799521639b"
+            }
+          ]
+        },
+        {
+          "packet": "draft-preview-r2",
+          "hunks": [
+            {
+              "header": "@@ -31,6 +31,7 @@",
+              "start_byte": 2517,
+              "end_byte": 2932,
+              "old_sha256": "f5f143870c9976361db51c7ebcdd202ecabc1dd65432c0234bc3332a48a04cec",
+              "new_sha256": "f10af4ae45f33c19ae58b6fc0cd0b817738142d30b95d1f52f5ccf540e157890"
+            },
+            {
+              "header": "@@ -227,6 +228,8 @@",
+              "start_byte": 15583,
+              "end_byte": 15797,
+              "old_sha256": "edfd7cacf3b7fa889f2e3322a1d8880af08ff3059857064306e7c290f985b027",
+              "new_sha256": "369a29e90a55099586f267a7766d4c10251e05811b78d7b54b2d0088bcf43b6c"
+            },
+            {
+              "header": "@@ -757,16 +760,12 @@",
+              "start_byte": 43583,
+              "end_byte": 44316,
+              "old_sha256": "4c896d9076c37a70ca14cd102e7bcc98c486f1d5ade34054559bc81475d6e1a7",
+              "new_sha256": "999fb848fa2cb9effe62816ba26725061bd7739d4a55a2b39494850b61c61b5e"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": [
+        "nav-close9",
+        "draft-preview-r2",
+        "caller187f"
+      ],
+      "result": "PASS",
+      "sha256": "c0d8428cd071806c62a683ccce69dca4080e574d78b4d22090c2ae8ddf05cd2c",
+      "path": "nav-close9__draft-preview-r2__caller187f.tsx.txt",
+      "applications": [
+        {
+          "packet": "nav-close9",
+          "hunks": [
+            {
+              "header": "@@ -1344,16 +1344,20 @@",
+              "start_byte": 73954,
+              "end_byte": 74790,
+              "old_sha256": "742a4cc150e384dc5110d2cb13156af3a945890a3ba966a4de5d0d17723f6c1d",
+              "new_sha256": "725a4d7a8c0ca61ab10405ccf3acb32d1839d261f4c9b3cedcc51b4fb2dd5393"
+            }
+          ]
+        },
+        {
+          "packet": "draft-preview-r2",
+          "hunks": [
+            {
+              "header": "@@ -31,6 +31,7 @@",
+              "start_byte": 2517,
+              "end_byte": 2932,
+              "old_sha256": "f5f143870c9976361db51c7ebcdd202ecabc1dd65432c0234bc3332a48a04cec",
+              "new_sha256": "f10af4ae45f33c19ae58b6fc0cd0b817738142d30b95d1f52f5ccf540e157890"
+            },
+            {
+              "header": "@@ -227,6 +228,8 @@",
+              "start_byte": 15385,
+              "end_byte": 15599,
+              "old_sha256": "edfd7cacf3b7fa889f2e3322a1d8880af08ff3059857064306e7c290f985b027",
+              "new_sha256": "369a29e90a55099586f267a7766d4c10251e05811b78d7b54b2d0088bcf43b6c"
+            },
+            {
+              "header": "@@ -757,16 +760,12 @@",
+              "start_byte": 43347,
+              "end_byte": 44080,
+              "old_sha256": "4c896d9076c37a70ca14cd102e7bcc98c486f1d5ade34054559bc81475d6e1a7",
+              "new_sha256": "999fb848fa2cb9effe62816ba26725061bd7739d4a55a2b39494850b61c61b5e"
+            }
+          ]
+        },
+        {
+          "packet": "caller187f",
+          "hunks": [
+            {
+              "header": "@@ -112,6 +112,8 @@ import { fixShortcutApplies } from \"../features/pr/checks/fixErrors\";",
+              "start_byte": 8778,
+              "end_byte": 9210,
+              "old_sha256": "00717d8db786ee91b9c665a52ac0c108982cb3d49b07b8b36e54c1654250ef66",
+              "new_sha256": "e990f2b7856eeaf7cd0399e3415a9f755b69a07e5075d0327c4fad774ba7955c"
+            },
+            {
+              "header": "@@ -179,6 +181,7 @@ interface ChatPanelProps extends Props {",
+              "start_byte": 12513,
+              "end_byte": 13055,
+              "old_sha256": "d6381d5dd49c8906ab84faf48194e20b1c509c18a509457af459acdda9b503a6",
+              "new_sha256": "b644fa2e3e680885de5e4a13dedbb598730bc2bb472486533de45d0266749550"
+            },
+            {
+              "header": "@@ -222,7 +225,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe",
+              "start_byte": 15043,
+              "end_byte": 15675,
+              "old_sha256": "5fa396f982e82c1291cf506c34fad375c0dffb856d1f899d4cd9b685623b36d8",
+              "new_sha256": "a0134e88ffebdd440a4121560ff05a1ccbf1c04a4ab7adbc5592258c41184836"
+            },
+            {
+              "header": "@@ -671,6 +674,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge,",
+              "start_byte": 38741,
+              "end_byte": 38955,
+              "old_sha256": "a5d656104b17272e7d35ef1760b69728467ff918eb9c38dbdd3f3c221fa4097d",
+              "new_sha256": "d171ede8e49b1611a8c0e8e23d0bc933bda40c2b45b9a5416b381c99b280d642"
+            },
+            {
+              "header": "@@ -1069,8 +1073,8 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 59152,
+              "end_byte": 59545,
+              "old_sha256": "7b065dd9ba2e569d239ab034a8b764cefabd36d1426da6075f63d2ee87e1567b",
+              "new_sha256": "de28ae993063a59c98f33a1434fb283a455cd418556ac8ce849bdbd75849f69e"
+            },
+            {
+              "header": "@@ -1508,13 +1512,18 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 85751,
+              "end_byte": 86808,
+              "old_sha256": "9b007ef5189a6f732ddff4b9498584004852ac1d931616e5e297735cd71fc184",
+              "new_sha256": "fa431396852061fa0022da5ce67f1cb1043fa7913ae9f4d4a484729ac1a76213"
+            },
+            {
+              "header": "@@ -1545,7 +1554,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 88173,
+              "end_byte": 88522,
+              "old_sha256": "13c8eb93c02d7ad9300d11610982ed5acb4bcb46cf2f1d5f38e6a12b990a4872",
+              "new_sha256": "8a135422aba41094826f4e1c9b2e2e034a9831f9e9590333bf5430799521639b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": [
+        "caller187f",
+        "nav-close9",
+        "draft-preview-r2"
+      ],
+      "result": "PASS",
+      "sha256": "c0d8428cd071806c62a683ccce69dca4080e574d78b4d22090c2ae8ddf05cd2c",
+      "path": "caller187f__nav-close9__draft-preview-r2.tsx.txt",
+      "applications": [
+        {
+          "packet": "caller187f",
+          "hunks": [
+            {
+              "header": "@@ -112,6 +112,8 @@ import { fixShortcutApplies } from \"../features/pr/checks/fixErrors\";",
+              "start_byte": 8692,
+              "end_byte": 9124,
+              "old_sha256": "00717d8db786ee91b9c665a52ac0c108982cb3d49b07b8b36e54c1654250ef66",
+              "new_sha256": "e990f2b7856eeaf7cd0399e3415a9f755b69a07e5075d0327c4fad774ba7955c"
+            },
+            {
+              "header": "@@ -179,6 +181,7 @@ interface ChatPanelProps extends Props {",
+              "start_byte": 12427,
+              "end_byte": 12969,
+              "old_sha256": "d6381d5dd49c8906ab84faf48194e20b1c509c18a509457af459acdda9b503a6",
+              "new_sha256": "b644fa2e3e680885de5e4a13dedbb598730bc2bb472486533de45d0266749550"
+            },
+            {
+              "header": "@@ -222,7 +225,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe",
+              "start_byte": 14957,
+              "end_byte": 15589,
+              "old_sha256": "5fa396f982e82c1291cf506c34fad375c0dffb856d1f899d4cd9b685623b36d8",
+              "new_sha256": "a0134e88ffebdd440a4121560ff05a1ccbf1c04a4ab7adbc5592258c41184836"
+            },
+            {
+              "header": "@@ -671,6 +674,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge,",
+              "start_byte": 38473,
+              "end_byte": 38687,
+              "old_sha256": "a5d656104b17272e7d35ef1760b69728467ff918eb9c38dbdd3f3c221fa4097d",
+              "new_sha256": "d171ede8e49b1611a8c0e8e23d0bc933bda40c2b45b9a5416b381c99b280d642"
+            },
+            {
+              "header": "@@ -1069,8 +1073,8 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 59019,
+              "end_byte": 59412,
+              "old_sha256": "7b065dd9ba2e569d239ab034a8b764cefabd36d1426da6075f63d2ee87e1567b",
+              "new_sha256": "de28ae993063a59c98f33a1434fb283a455cd418556ac8ce849bdbd75849f69e"
+            },
+            {
+              "header": "@@ -1508,13 +1512,18 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 85431,
+              "end_byte": 86488,
+              "old_sha256": "9b007ef5189a6f732ddff4b9498584004852ac1d931616e5e297735cd71fc184",
+              "new_sha256": "fa431396852061fa0022da5ce67f1cb1043fa7913ae9f4d4a484729ac1a76213"
+            },
+            {
+              "header": "@@ -1545,7 +1554,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 87853,
+              "end_byte": 88202,
+              "old_sha256": "13c8eb93c02d7ad9300d11610982ed5acb4bcb46cf2f1d5f38e6a12b990a4872",
+              "new_sha256": "8a135422aba41094826f4e1c9b2e2e034a9831f9e9590333bf5430799521639b"
+            }
+          ]
+        },
+        {
+          "packet": "nav-close9",
+          "hunks": [
+            {
+              "header": "@@ -1344,16 +1344,20 @@",
+              "start_byte": 74288,
+              "end_byte": 75124,
+              "old_sha256": "742a4cc150e384dc5110d2cb13156af3a945890a3ba966a4de5d0d17723f6c1d",
+              "new_sha256": "725a4d7a8c0ca61ab10405ccf3acb32d1839d261f4c9b3cedcc51b4fb2dd5393"
+            }
+          ]
+        },
+        {
+          "packet": "draft-preview-r2",
+          "hunks": [
+            {
+              "header": "@@ -31,6 +31,7 @@",
+              "start_byte": 2517,
+              "end_byte": 2932,
+              "old_sha256": "f5f143870c9976361db51c7ebcdd202ecabc1dd65432c0234bc3332a48a04cec",
+              "new_sha256": "f10af4ae45f33c19ae58b6fc0cd0b817738142d30b95d1f52f5ccf540e157890"
+            },
+            {
+              "header": "@@ -227,6 +228,8 @@",
+              "start_byte": 15583,
+              "end_byte": 15797,
+              "old_sha256": "edfd7cacf3b7fa889f2e3322a1d8880af08ff3059857064306e7c290f985b027",
+              "new_sha256": "369a29e90a55099586f267a7766d4c10251e05811b78d7b54b2d0088bcf43b6c"
+            },
+            {
+              "header": "@@ -757,16 +760,12 @@",
+              "start_byte": 43583,
+              "end_byte": 44316,
+              "old_sha256": "4c896d9076c37a70ca14cd102e7bcc98c486f1d5ade34054559bc81475d6e1a7",
+              "new_sha256": "999fb848fa2cb9effe62816ba26725061bd7739d4a55a2b39494850b61c61b5e"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": [
+        "caller187f",
+        "draft-preview-r2",
+        "nav-close9"
+      ],
+      "result": "PASS",
+      "sha256": "c0d8428cd071806c62a683ccce69dca4080e574d78b4d22090c2ae8ddf05cd2c",
+      "path": "caller187f__draft-preview-r2__nav-close9.tsx.txt",
+      "applications": [
+        {
+          "packet": "caller187f",
+          "hunks": [
+            {
+              "header": "@@ -112,6 +112,8 @@ import { fixShortcutApplies } from \"../features/pr/checks/fixErrors\";",
+              "start_byte": 8692,
+              "end_byte": 9124,
+              "old_sha256": "00717d8db786ee91b9c665a52ac0c108982cb3d49b07b8b36e54c1654250ef66",
+              "new_sha256": "e990f2b7856eeaf7cd0399e3415a9f755b69a07e5075d0327c4fad774ba7955c"
+            },
+            {
+              "header": "@@ -179,6 +181,7 @@ interface ChatPanelProps extends Props {",
+              "start_byte": 12427,
+              "end_byte": 12969,
+              "old_sha256": "d6381d5dd49c8906ab84faf48194e20b1c509c18a509457af459acdda9b503a6",
+              "new_sha256": "b644fa2e3e680885de5e4a13dedbb598730bc2bb472486533de45d0266749550"
+            },
+            {
+              "header": "@@ -222,7 +225,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe",
+              "start_byte": 14957,
+              "end_byte": 15589,
+              "old_sha256": "5fa396f982e82c1291cf506c34fad375c0dffb856d1f899d4cd9b685623b36d8",
+              "new_sha256": "a0134e88ffebdd440a4121560ff05a1ccbf1c04a4ab7adbc5592258c41184836"
+            },
+            {
+              "header": "@@ -671,6 +674,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge,",
+              "start_byte": 38473,
+              "end_byte": 38687,
+              "old_sha256": "a5d656104b17272e7d35ef1760b69728467ff918eb9c38dbdd3f3c221fa4097d",
+              "new_sha256": "d171ede8e49b1611a8c0e8e23d0bc933bda40c2b45b9a5416b381c99b280d642"
+            },
+            {
+              "header": "@@ -1069,8 +1073,8 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 59019,
+              "end_byte": 59412,
+              "old_sha256": "7b065dd9ba2e569d239ab034a8b764cefabd36d1426da6075f63d2ee87e1567b",
+              "new_sha256": "de28ae993063a59c98f33a1434fb283a455cd418556ac8ce849bdbd75849f69e"
+            },
+            {
+              "header": "@@ -1508,13 +1512,18 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 85431,
+              "end_byte": 86488,
+              "old_sha256": "9b007ef5189a6f732ddff4b9498584004852ac1d931616e5e297735cd71fc184",
+              "new_sha256": "fa431396852061fa0022da5ce67f1cb1043fa7913ae9f4d4a484729ac1a76213"
+            },
+            {
+              "header": "@@ -1545,7 +1554,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 87853,
+              "end_byte": 88202,
+              "old_sha256": "13c8eb93c02d7ad9300d11610982ed5acb4bcb46cf2f1d5f38e6a12b990a4872",
+              "new_sha256": "8a135422aba41094826f4e1c9b2e2e034a9831f9e9590333bf5430799521639b"
+            }
+          ]
+        },
+        {
+          "packet": "draft-preview-r2",
+          "hunks": [
+            {
+              "header": "@@ -31,6 +31,7 @@",
+              "start_byte": 2517,
+              "end_byte": 2932,
+              "old_sha256": "f5f143870c9976361db51c7ebcdd202ecabc1dd65432c0234bc3332a48a04cec",
+              "new_sha256": "f10af4ae45f33c19ae58b6fc0cd0b817738142d30b95d1f52f5ccf540e157890"
+            },
+            {
+              "header": "@@ -227,6 +228,8 @@",
+              "start_byte": 15583,
+              "end_byte": 15797,
+              "old_sha256": "edfd7cacf3b7fa889f2e3322a1d8880af08ff3059857064306e7c290f985b027",
+              "new_sha256": "369a29e90a55099586f267a7766d4c10251e05811b78d7b54b2d0088bcf43b6c"
+            },
+            {
+              "header": "@@ -757,16 +760,12 @@",
+              "start_byte": 43583,
+              "end_byte": 44316,
+              "old_sha256": "4c896d9076c37a70ca14cd102e7bcc98c486f1d5ade34054559bc81475d6e1a7",
+              "new_sha256": "999fb848fa2cb9effe62816ba26725061bd7739d4a55a2b39494850b61c61b5e"
+            }
+          ]
+        },
+        {
+          "packet": "nav-close9",
+          "hunks": [
+            {
+              "header": "@@ -1344,16 +1344,20 @@",
+              "start_byte": 74421,
+              "end_byte": 75257,
+              "old_sha256": "742a4cc150e384dc5110d2cb13156af3a945890a3ba966a4de5d0d17723f6c1d",
+              "new_sha256": "725a4d7a8c0ca61ab10405ccf3acb32d1839d261f4c9b3cedcc51b4fb2dd5393"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": [
+        "draft-preview-r2",
+        "nav-close9",
+        "caller187f"
+      ],
+      "result": "PASS",
+      "sha256": "c0d8428cd071806c62a683ccce69dca4080e574d78b4d22090c2ae8ddf05cd2c",
+      "path": "draft-preview-r2__nav-close9__caller187f.tsx.txt",
+      "applications": [
+        {
+          "packet": "draft-preview-r2",
+          "hunks": [
+            {
+              "header": "@@ -31,6 +31,7 @@",
+              "start_byte": 2517,
+              "end_byte": 2932,
+              "old_sha256": "f5f143870c9976361db51c7ebcdd202ecabc1dd65432c0234bc3332a48a04cec",
+              "new_sha256": "f10af4ae45f33c19ae58b6fc0cd0b817738142d30b95d1f52f5ccf540e157890"
+            },
+            {
+              "header": "@@ -227,6 +228,8 @@",
+              "start_byte": 15385,
+              "end_byte": 15599,
+              "old_sha256": "edfd7cacf3b7fa889f2e3322a1d8880af08ff3059857064306e7c290f985b027",
+              "new_sha256": "369a29e90a55099586f267a7766d4c10251e05811b78d7b54b2d0088bcf43b6c"
+            },
+            {
+              "header": "@@ -757,16 +760,12 @@",
+              "start_byte": 43347,
+              "end_byte": 44080,
+              "old_sha256": "4c896d9076c37a70ca14cd102e7bcc98c486f1d5ade34054559bc81475d6e1a7",
+              "new_sha256": "999fb848fa2cb9effe62816ba26725061bd7739d4a55a2b39494850b61c61b5e"
+            }
+          ]
+        },
+        {
+          "packet": "nav-close9",
+          "hunks": [
+            {
+              "header": "@@ -1344,16 +1344,20 @@",
+              "start_byte": 74087,
+              "end_byte": 74923,
+              "old_sha256": "742a4cc150e384dc5110d2cb13156af3a945890a3ba966a4de5d0d17723f6c1d",
+              "new_sha256": "725a4d7a8c0ca61ab10405ccf3acb32d1839d261f4c9b3cedcc51b4fb2dd5393"
+            }
+          ]
+        },
+        {
+          "packet": "caller187f",
+          "hunks": [
+            {
+              "header": "@@ -112,6 +112,8 @@ import { fixShortcutApplies } from \"../features/pr/checks/fixErrors\";",
+              "start_byte": 8778,
+              "end_byte": 9210,
+              "old_sha256": "00717d8db786ee91b9c665a52ac0c108982cb3d49b07b8b36e54c1654250ef66",
+              "new_sha256": "e990f2b7856eeaf7cd0399e3415a9f755b69a07e5075d0327c4fad774ba7955c"
+            },
+            {
+              "header": "@@ -179,6 +181,7 @@ interface ChatPanelProps extends Props {",
+              "start_byte": 12513,
+              "end_byte": 13055,
+              "old_sha256": "d6381d5dd49c8906ab84faf48194e20b1c509c18a509457af459acdda9b503a6",
+              "new_sha256": "b644fa2e3e680885de5e4a13dedbb598730bc2bb472486533de45d0266749550"
+            },
+            {
+              "header": "@@ -222,7 +225,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe",
+              "start_byte": 15043,
+              "end_byte": 15675,
+              "old_sha256": "5fa396f982e82c1291cf506c34fad375c0dffb856d1f899d4cd9b685623b36d8",
+              "new_sha256": "a0134e88ffebdd440a4121560ff05a1ccbf1c04a4ab7adbc5592258c41184836"
+            },
+            {
+              "header": "@@ -671,6 +674,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge,",
+              "start_byte": 38741,
+              "end_byte": 38955,
+              "old_sha256": "a5d656104b17272e7d35ef1760b69728467ff918eb9c38dbdd3f3c221fa4097d",
+              "new_sha256": "d171ede8e49b1611a8c0e8e23d0bc933bda40c2b45b9a5416b381c99b280d642"
+            },
+            {
+              "header": "@@ -1069,8 +1073,8 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 59152,
+              "end_byte": 59545,
+              "old_sha256": "7b065dd9ba2e569d239ab034a8b764cefabd36d1426da6075f63d2ee87e1567b",
+              "new_sha256": "de28ae993063a59c98f33a1434fb283a455cd418556ac8ce849bdbd75849f69e"
+            },
+            {
+              "header": "@@ -1508,13 +1512,18 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 85751,
+              "end_byte": 86808,
+              "old_sha256": "9b007ef5189a6f732ddff4b9498584004852ac1d931616e5e297735cd71fc184",
+              "new_sha256": "fa431396852061fa0022da5ce67f1cb1043fa7913ae9f4d4a484729ac1a76213"
+            },
+            {
+              "header": "@@ -1545,7 +1554,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 88173,
+              "end_byte": 88522,
+              "old_sha256": "13c8eb93c02d7ad9300d11610982ed5acb4bcb46cf2f1d5f38e6a12b990a4872",
+              "new_sha256": "8a135422aba41094826f4e1c9b2e2e034a9831f9e9590333bf5430799521639b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": [
+        "draft-preview-r2",
+        "caller187f",
+        "nav-close9"
+      ],
+      "result": "PASS",
+      "sha256": "c0d8428cd071806c62a683ccce69dca4080e574d78b4d22090c2ae8ddf05cd2c",
+      "path": "draft-preview-r2__caller187f__nav-close9.tsx.txt",
+      "applications": [
+        {
+          "packet": "draft-preview-r2",
+          "hunks": [
+            {
+              "header": "@@ -31,6 +31,7 @@",
+              "start_byte": 2517,
+              "end_byte": 2932,
+              "old_sha256": "f5f143870c9976361db51c7ebcdd202ecabc1dd65432c0234bc3332a48a04cec",
+              "new_sha256": "f10af4ae45f33c19ae58b6fc0cd0b817738142d30b95d1f52f5ccf540e157890"
+            },
+            {
+              "header": "@@ -227,6 +228,8 @@",
+              "start_byte": 15385,
+              "end_byte": 15599,
+              "old_sha256": "edfd7cacf3b7fa889f2e3322a1d8880af08ff3059857064306e7c290f985b027",
+              "new_sha256": "369a29e90a55099586f267a7766d4c10251e05811b78d7b54b2d0088bcf43b6c"
+            },
+            {
+              "header": "@@ -757,16 +760,12 @@",
+              "start_byte": 43347,
+              "end_byte": 44080,
+              "old_sha256": "4c896d9076c37a70ca14cd102e7bcc98c486f1d5ade34054559bc81475d6e1a7",
+              "new_sha256": "999fb848fa2cb9effe62816ba26725061bd7739d4a55a2b39494850b61c61b5e"
+            }
+          ]
+        },
+        {
+          "packet": "caller187f",
+          "hunks": [
+            {
+              "header": "@@ -112,6 +112,8 @@ import { fixShortcutApplies } from \"../features/pr/checks/fixErrors\";",
+              "start_byte": 8778,
+              "end_byte": 9210,
+              "old_sha256": "00717d8db786ee91b9c665a52ac0c108982cb3d49b07b8b36e54c1654250ef66",
+              "new_sha256": "e990f2b7856eeaf7cd0399e3415a9f755b69a07e5075d0327c4fad774ba7955c"
+            },
+            {
+              "header": "@@ -179,6 +181,7 @@ interface ChatPanelProps extends Props {",
+              "start_byte": 12513,
+              "end_byte": 13055,
+              "old_sha256": "d6381d5dd49c8906ab84faf48194e20b1c509c18a509457af459acdda9b503a6",
+              "new_sha256": "b644fa2e3e680885de5e4a13dedbb598730bc2bb472486533de45d0266749550"
+            },
+            {
+              "header": "@@ -222,7 +225,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe",
+              "start_byte": 15043,
+              "end_byte": 15675,
+              "old_sha256": "5fa396f982e82c1291cf506c34fad375c0dffb856d1f899d4cd9b685623b36d8",
+              "new_sha256": "a0134e88ffebdd440a4121560ff05a1ccbf1c04a4ab7adbc5592258c41184836"
+            },
+            {
+              "header": "@@ -671,6 +674,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge,",
+              "start_byte": 38741,
+              "end_byte": 38955,
+              "old_sha256": "a5d656104b17272e7d35ef1760b69728467ff918eb9c38dbdd3f3c221fa4097d",
+              "new_sha256": "d171ede8e49b1611a8c0e8e23d0bc933bda40c2b45b9a5416b381c99b280d642"
+            },
+            {
+              "header": "@@ -1069,8 +1073,8 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 59152,
+              "end_byte": 59545,
+              "old_sha256": "7b065dd9ba2e569d239ab034a8b764cefabd36d1426da6075f63d2ee87e1567b",
+              "new_sha256": "de28ae993063a59c98f33a1434fb283a455cd418556ac8ce849bdbd75849f69e"
+            },
+            {
+              "header": "@@ -1508,13 +1512,18 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 85564,
+              "end_byte": 86621,
+              "old_sha256": "9b007ef5189a6f732ddff4b9498584004852ac1d931616e5e297735cd71fc184",
+              "new_sha256": "fa431396852061fa0022da5ce67f1cb1043fa7913ae9f4d4a484729ac1a76213"
+            },
+            {
+              "header": "@@ -1545,7 +1554,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN",
+              "start_byte": 87986,
+              "end_byte": 88335,
+              "old_sha256": "13c8eb93c02d7ad9300d11610982ed5acb4bcb46cf2f1d5f38e6a12b990a4872",
+              "new_sha256": "8a135422aba41094826f4e1c9b2e2e034a9831f9e9590333bf5430799521639b"
+            }
+          ]
+        },
+        {
+          "packet": "nav-close9",
+          "hunks": [
+            {
+              "header": "@@ -1344,16 +1344,20 @@",
+              "start_byte": 74421,
+              "end_byte": 75257,
+              "old_sha256": "742a4cc150e384dc5110d2cb13156af3a945890a3ba966a4de5d0d17723f6c1d",
+              "new_sha256": "725a4d7a8c0ca61ab10405ccf3acb32d1839d261f4c9b3cedcc51b4fb2dd5393"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "failures": [],
+  "exact_hunks_non_overlapping": true,
+  "both_orders_byte_identical": true,
+  "tracked_files_edited": false,
+  "REA": {
+    "acquisition_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "reference_version": "Conductor 0.87.6, retained real-app extraction, not a fresh native observation",
+    "retained_asset_hashes_verified": {
+      "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    },
+    "scope": "Default local workspace layout only; experimental high-priority Bsa pane-tab path excluded",
+    "chain": [
+      "Registry binds nav.closeTab Cmd+W without a terminal-disable override",
+      "oi defaults enableOnTerminalFocus true; a false callback passes to the next handler",
+      "Right-panel terminal.closeTab has TERMINAL priority and returns false for m$e(RUN/SETUP)",
+      "Workspace normal-priority nav.closeTab has no terminal-focus override",
+      "Current generic close/reopen registration disables terminal focus; Run/Setup output has data-terminal and script-output markers",
+      "Candidate splits only the close registration and keeps reopen restriction plus ordinary/center terminal guard"
+    ],
+    "native_observation": "NOT_RUN"
+  },
+  "criteria": [
+    {
+      "id": 1,
+      "criterion": "Cmd+W in Run output closes the displayed changes tab",
+      "status": "PREPARED_NOT_RUN"
+    },
+    {
+      "id": 2,
+      "criterion": "Cmd+W in Setup output closes the displayed changes tab",
+      "status": "PREPARED_NOT_RUN"
+    },
+    {
+      "id": 3,
+      "criterion": "Ordinary panel terminal retains its existing consumer, with no workspace close",
+      "status": "PREPARED_NOT_RUN"
+    },
+    {
+      "id": 4,
+      "criterion": "Center terminal retains its existing consumer, with no workspace fallback close",
+      "status": "PREPARED_NOT_RUN"
+    },
+    {
+      "id": 5,
+      "criterion": "Nonterminal Cmd+W still closes the displayed changes tab",
+      "status": "PREPARED_NOT_RUN"
+    },
+    {
+      "id": 6,
+      "criterion": "An open dialog blocks Run-focus workspace close",
+      "status": "PREPARED_NOT_RUN"
+    },
+    {
+      "id": 7,
+      "criterion": "Run focus leaves the primary chat and unrelated terminal intact",
+      "status": "PREPARED_NOT_RUN"
+    },
+    {
+      "id": 8,
+      "criterion": "Cmd+Shift+T stays disabled in terminal output",
+      "status": "PREPARED_NOT_RUN"
+    },
+    {
+      "id": 9,
+      "criterion": "Nonterminal Cmd+Shift+T reaches the existing reopen consumer",
+      "status": "PREPARED_NOT_RUN"
+    }
+  ],
+  "principles": {
+    "Laziness Protocol": "One registration-only amendment, no terminal restructuring",
+    "Prove It Works": "Exact preserved packet bytes in every source order, with no behavioral credit"
+  },
+  "nine_behavioral_cases": "PREPARED_NOT_RUN",
+  "typecheck": "NOT_RUN",
+  "native": "NOT_RUN",
+  "package": "UNVERIFIED, retained #1217 SAME992 route unchanged"
+}

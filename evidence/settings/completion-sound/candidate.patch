@@ -1,0 +1,195 @@
+--- a/src/settings/GeneralPage.tsx
++++ b/src/settings/GeneralPage.tsx
+@@ -15,7 +15,7 @@
+ import { boolPref, enumPref, withBoolPref, withEnumPref } from "./prefs";
+ import { GeneralAppPrefRows } from "./rows/AppPrefRows";
+ import { playCompletionSound, SOUND_OPTIONS } from "./sound";
+-import type { Settings, SoundType } from "./types";
++import type { Settings } from "./types";
+ import { useSettingsOverrideStore } from "./useSettingsOverrideStore";
+
+ interface Props {
+@@ -97,16 +97,30 @@
+           }}
+         />
+       </Row>
+-      <Row label="Completion sound" help="Choose what plays when AI finishes working in a chat.">
++      <Row
++        label="Completion sound"
++        help="Choose what plays when AI finishes working in a chat."
++        detail="Original recordings are not included. Playback uses a synthesized chime."
++      >
+         <span className="settings-inline">
+-          <Select<SoundType>
+-            label="Completion sound"
+-            width={190}
++          <select
++            className="settings-select"
++            aria-label="Completion sound"
++            style={{ width: 190 }}
+             value={g.sound_type}
+-            options={SOUND_OPTIONS}
+-            onChange={(v) => save(withField(settings, "general", "sound_type", v))}
+-          />
+-          <button type="button" className="btn btn-ghost settings-test" disabled={g.sound_type === "none"} onClick={() => playCompletionSound(g.sound_type)}>
++            onChange={(event) => {
++              const sound = SOUND_OPTIONS.find((option) => option.value === event.currentTarget.value);
++              if (sound) void save(withField(settings, "general", "sound_type", sound.value));
++            }}
++          >
++            {[...new Set(SOUND_OPTIONS.map((option) => option.group))].map((group) => {
++              const options = SOUND_OPTIONS.filter((option) => option.group === group).map((option) => (
++                <option key={option.value} value={option.value}>{option.label}</option>
++              ));
++              return group ? <optgroup key={group} label={group}>{options}</optgroup> : options;
++            })}
++          </select>
++          <button type="button" className="btn btn-ghost settings-test" disabled={g.sound_type === "disabled"} onClick={() => playCompletionSound(g.sound_type)}>
+             <VolumeIcon />
+             Test
+           </button>
+--- a/src/settings/sound.ts
++++ b/src/settings/sound.ts
+@@ -1,19 +1,27 @@
+-// The completion sound. Conductor ships its own recordings (`kue` in
+-// index-BGEQ8YjU.js: "No sound", "Chime", "Choo Choo", transit chimes); those
+-// are its assets, so OpenConductor offers "No sound" and a "Chime" it
+-// synthesizes with WebAudio.
+-import type { SoundType } from "./types";
++export const SOUND_OPTIONS = [
++  { value: "disabled", label: "No sound", group: "" },
++  { value: "default", label: "Chime", group: "Classic" },
++  { value: "choo-choo", label: "Choo Choo", group: "Classic" },
++  { value: "odysseus-pluck", label: "Odysseus's Pluck", group: "Novelty" },
++  { value: "fahhhh", label: "Fahhhh", group: "Novelty" },
++  { value: "quack", label: "Quack", group: "Novelty" },
++  { value: "sf-muni-inbound-train-chime", label: "Inbound train", group: "SF Muni" },
++  { value: "sf-muni-new", label: "Gong", group: "SF Muni" },
++  { value: "nyc-metro-door-chime", label: "Chime 1", group: "NYC MTA" },
++  { value: "nyc-subway-door-chime", label: "Chime 2", group: "NYC MTA" },
++  { value: "nyc-subway", label: "Stand clear", group: "NYC MTA" },
++  { value: "paris-metro-chime", label: "Chime", group: "Paris Métro" },
++  { value: "paris-metro-pickpockets", label: "Attention aux pickpockets", group: "Paris Métro" },
++  { value: "sncf-jingle", label: "Jingle", group: "SNCF" },
++] as const;
+
+-export const SOUND_OPTIONS: { value: SoundType; label: string }[] = [
+-  { value: "none", label: "No sound" },
+-  { value: "default", label: "Chime" },
+-];
++export type SoundType = (typeof SOUND_OPTIONS)[number]["value"];
+
+ let ctx: AudioContext | null = null;
+
+-/** Two soft sine notes (E6 then A6); nothing for "none" or without WebAudio. */
+-export function playCompletionSound(sound: SoundType): void {
+-  if (sound === "none" || typeof AudioContext === "undefined") return;
++/** Original recordings are not distributed; audible IDs use this synthesized fallback. */
++export function playCompletionSound(sound: string): void {
++  if (sound === "disabled" || sound === "none" || typeof AudioContext === "undefined") return;
+   ctx ??= new AudioContext();
+   const now = ctx.currentTime;
+   [1318.5, 1760].forEach((freq, i) => {
+--- a/src/settings/types.ts
++++ b/src/settings/types.ts
+@@ -4,8 +4,9 @@
+
+ import type { CodeTheme } from "../features/diff/codeThemes.ts";
+ import type { PaletteId } from "../theme/palettes.ts";
++import type { SoundType } from "./sound";
+ export type Theme = "system" | "light" | "dark";
+-export type SoundType = "default" | "none";
++export type { SoundType } from "./sound";
+ export type BranchPrefixType = "github_username" | "custom" | "none";
+ /** Codex reasoning effort; Conductor's levels plus our earlier `minimal`. */
+ export type ThinkingLevel = "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max" | "ultra";
+--- a/src-tauri/src/settings/model.rs
++++ b/src-tauri/src/settings/model.rs
+@@ -204,11 +204,24 @@
+ }
+
+ #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+-#[serde(rename_all = "snake_case")]
++#[serde(rename_all = "kebab-case")]
+ pub enum SoundType {
+     #[default]
+     Default,
++    #[serde(rename = "disabled", alias = "none")]
+     None,
++    ChooChoo,
++    OdysseusPluck,
++    Fahhhh,
++    Quack,
++    SfMuniInboundTrainChime,
++    SfMuniNew,
++    NycMetroDoorChime,
++    NycSubwayDoorChime,
++    NycSubway,
++    ParisMetroChime,
++    ParisMetroPickpockets,
++    SncfJingle,
+ }
+
+ #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+--- a/src-tauri/src/settings/tests.rs
++++ b/src-tauri/src/settings/tests.rs
+@@ -37,6 +37,59 @@
+         save(&path, &settings).unwrap();
+         assert_eq!(load(&path).unwrap(), settings);
+     }
++}
++
++#[test]
++fn completion_sound_catalog_ids_survive_load_save_and_reload() {
++    let path = temp_dir().join(FILE_NAME);
++    for (id, expected) in [
++        ("disabled", SoundType::None),
++        ("default", SoundType::Default),
++        ("choo-choo", SoundType::ChooChoo),
++        ("odysseus-pluck", SoundType::OdysseusPluck),
++        ("fahhhh", SoundType::Fahhhh),
++        ("quack", SoundType::Quack),
++        ("sf-muni-inbound-train-chime", SoundType::SfMuniInboundTrainChime),
++        ("sf-muni-new", SoundType::SfMuniNew),
++        ("nyc-metro-door-chime", SoundType::NycMetroDoorChime),
++        ("nyc-subway-door-chime", SoundType::NycSubwayDoorChime),
++        ("nyc-subway", SoundType::NycSubway),
++        ("paris-metro-chime", SoundType::ParisMetroChime),
++        ("paris-metro-pickpockets", SoundType::ParisMetroPickpockets),
++        ("sncf-jingle", SoundType::SncfJingle),
++    ] {
++        fs::write(
++            &path,
++            format!("[general]\nsound_type = \"{id}\"\nfuture_sound_key = 42\n"),
++        )
++        .unwrap();
++        let settings = load(&path).unwrap();
++        assert_eq!(settings.general.sound_type, expected, "{id}");
++        save(&path, &settings).unwrap();
++        let saved: toml::Value = fs::read_to_string(&path).unwrap().parse().unwrap();
++        assert_eq!(saved["general"]["sound_type"].as_str(), Some(id));
++        assert_eq!(saved["general"]["future_sound_key"].as_integer(), Some(42));
++        assert_eq!(load(&path).unwrap(), settings);
++    }
++}
++
++#[test]
++fn completion_sound_legacy_none_saves_as_disabled() {
++    let path = temp_dir().join(FILE_NAME);
++    fs::write(&path, "[general]\nsound_type = \"none\"\n").unwrap();
++    let settings = load(&path).unwrap();
++    assert_eq!(settings.general.sound_type, SoundType::None);
++    save(&path, &settings).unwrap();
++    let saved: toml::Value = fs::read_to_string(&path).unwrap().parse().unwrap();
++    assert_eq!(saved["general"]["sound_type"].as_str(), Some("disabled"));
++    assert_eq!(load(&path).unwrap(), settings);
++}
++
++#[test]
++fn completion_sound_missing_value_uses_default() {
++    let path = temp_dir().join(FILE_NAME);
++    fs::write(&path, "[general]\n").unwrap();
++    assert_eq!(load(&path).unwrap().general.sound_type, SoundType::Default);
+ }
+
+ #[test]

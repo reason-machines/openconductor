@@ -45,8 +45,12 @@ pub enum Block {
     ToolResult {
         tool_use_id: String,
         content: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        raw_result: Option<Value>,
         #[serde(default)]
         is_error: bool,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        result_created_at: Option<String>,
     },
 }
 

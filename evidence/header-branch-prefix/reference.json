@@ -1,0 +1,147 @@
+{
+  "producer": "Conductor Rebuild",
+  "main": "2ffcb278ff76c92716e98c5f9de6f90b49027b39",
+  "provenance": {
+    "rea_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "analysis": "Retained real-Conductor REA-decoded assets, inert text only. No new REA invocation or app execution."
+  },
+  "assets": {
+    "renderApp-D_fmY7hW.js": {
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index-BGEQ8YjU.js": {
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "spans": [
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "ACi",
+      "utf8_span": [
+        7301403,
+        7302745
+      ],
+      "utf16_span": [
+        7258373,
+        7259715
+      ],
+      "sha256": "65b22fd8020950ae952f8b396b3ce83fc5c3590b481f26ff89a9241ce82289e9",
+      "source": "function ACi(t){const e=ne.c(22),{localWorkspaceId:n}=t;let i;e[0]!==n?(i={localWorkspaceId:n},e[0]=n,e[1]=i):i=e[1];const{data:r}=Ms(i,ed(voo)),o=r?.repositoryId;let a;e[2]!==o?(a={repoId:o},e[2]=o,e[3]=a):a=e[3];const{data:c}=Y1(a);if(!c||!r)return null;let u;e[4]===Symbol.for(\"react.memo_cache_sentinel\")?(u=p.jsx(Ozt,{}),e[4]=u):u=e[4];let d;e[5]!==c?(d=p.jsx(xoo,{repo:c}),e[5]=c,e[6]=d):d=e[6];let h;e[7]===Symbol.for(\"react.memo_cache_sentinel\")?(h=p.jsx(td,{className:\"size-3 text-muted-foreground shrink-0\",\"data-tauri-drag-region\":!0}),e[7]=h):h=e[7];let m;e[8]!==n||e[9]!==r.isArchived?(m=r.isArchived?p.jsx(yoo,{localWorkspaceId:n}):p.jsx(bro,{localWorkspaceId:n}),e[8]=n,e[9]=r.isArchived,e[10]=m):m=e[10];let g;e[11]!==n?(g=p.jsx(woo,{localWorkspaceId:n}),e[11]=n,e[12]=g):g=e[12];let _;e[13]!==d||e[14]!==m||e[15]!==g?(_=p.jsxs(\"div\",{className:\"flex items-center gap-2 min-w-0 shrink overflow-hidden mr-3\",\"data-tauri-drag-region\":!0,children:[u,d,h,m,g]}),e[13]=d,e[14]=m,e[15]=g,e[16]=_):_=e[16];let v;e[17]!==n?(v=p.jsx(ICi,{localWorkspaceId:n}),e[17]=n,e[18]=v):v=e[18];let x;return e[19]!==v||e[20]!==_?(x=p.jsxs(\"div\",{className:\"flex justify-between items-center pl-4 pr-2 py-2 h-10 bg-sidebar-background relative border-b border-border\",\"data-tauri-drag-region\":!0,children:[_,v]}),e[19]=v,e[20]=_,e[21]=x):x=e[21],x}"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "bro",
+      "utf8_span": [
+        7206225,
+        7209202
+      ],
+      "utf16_span": [
+        7163198,
+        7166175
+      ],
+      "sha256": "ef7bdf8d88ab7587123cab8ccf81848f4bed54685987b2fe2373ff4cbbcd613b",
+      "source": "function bro(t){const e=ne.c(51),{localWorkspaceId:n}=t,i=AYe(n),r=yDt(),[o,a]=$.useState(\"\"),[c,u]=$.useState(!1),[d,h]=$.useState(0),m=pI(i??void 0),g=mI();let _;e[0]!==n?(_={localWorkspaceId:n},e[0]=n,e[1]=_):_=e[1];const v=Gue(Ko,_);let x;e[2]!==v||e[3]!==m?(x=m!==void 0&&!!v&&!QO(v),e[2]=v,e[3]=m,e[4]=x):x=e[4];const w=x;if(!i)return null;let E;e[5]!==m||e[6]!==o||e[7]!==r||e[8]!==i?(E=()=>{if(!o||r.isPending)return;const de=ZTn(o);de!==m&&r.mutate({localWorkspaceId:i.localId,branchName:de}),u(!1)},e[5]=m,e[6]=o,e[7]=r,e[8]=i,e[9]=E):E=e[9];const k=E;let I;e[10]===Symbol.for(\"react.memo_cache_sentinel\")?(I=()=>{a(\"\"),u(!1)},e[10]=I):I=e[10];const R=I;let O;e[11]!==w||e[12]!==m?(O=()=>{if(!w)return;const de=m??\"\";a(de),h(SVn(de)),u(!0)},e[11]=w,e[12]=m,e[13]=O):O=e[13];const D=O;let P;e[14]!==k?(P=_v(de=>{de.key===\"Enter\"?k():de.key===\"Escape\"&&(de.stopPropagation(),R())}),e[14]=k,e[15]=P):P=e[15];const L=P;if(c){let de;e[16]===Symbol.for(\"react.memo_cache_sentinel\")?(de=he=>{const ge=he.target,ve=ge.selectionStart??0,ye=ZTn(ge.value);a(ye),h(SVn(ye)),queueMicrotask(()=>{ge.setSelectionRange(ve,ve)})},e[16]=de):de=e[16];const ue=`${d}px`;let pe;e[17]!==ue?(pe={width:ue,maxWidth:\"100%\"},e[17]=ue,e[18]=pe):pe=e[18];let be;return e[19]!==o||e[20]!==L||e[21]!==k||e[22]!==r.isPending||e[23]!==pe?(be=p.jsx(\"input\",{disabled:r.isPending,type:\"text\",value:o,onChange:de,onBlur:k,onKeyDown:L,autoComplete:\"new-password\",spellCheck:!1,autoFocus:!0,style:pe,className:\"bg-transparent border-none outline outline-1 outline-muted-foreground rounded-sm text-sm font-medium min-w-0 px-1 -mx-1 box-content\"}),e[19]=o,e[20]=L,e[21]=k,e[22]=r.isPending,e[23]=pe,e[24]=be):be=e[24],be}let B;e[25]!==g||e[26]!==m||e[27]!==i?(B=m?zce({branch:m,branchPrefix:g}):i.placeholderBranchName?zce({branch:i.placeholderBranchName,branchPrefix:g}):void 0,e[25]=g,e[26]=m,e[27]=i,e[28]=B):B=e[28];const F=B,H=w?D:void 0,U=w&&\"cursor-pointer\";let z;e[29]!==U?(z=Xe(\"min-w-0 truncate text-sm font-medium text-muted-foreground\",U),e[29]=U,e[30]=z):z=e[30];let G;e[31]!==F||e[32]!==z||e[33]!==H?(G=p.jsx(A6,{asChild:!0,children:p.jsx(\"span\",{onClick:H,title:F,className:z,children:F})}),e[31]=F,e[32]=z,e[33]=H,e[34]=G):G=e[34];const K=!m;let X;e[35]!==m?(X=()=>{m&&n5(m,\"branch name\").fireAndForget()},e[35]=m,e[36]=X):X=e[36];let Q;e[37]===Symbol.for(\"react.memo_cache_sentinel\")?(Q=p.jsx(J4,{children:\"C\"}),e[37]=Q):Q=e[37];let J;e[38]!==K||e[39]!==X?(J=p.jsxs(L1,{disabled:K,onClick:X,children:[\"Copy\",Q]}),e[38]=K,e[39]=X,e[40]=J):J=e[40];const te=!w;let Z;e[41]===Symbol.for(\"react.memo_cache_sentinel\")?(Z=p.jsx(J4,{children:\"R\"}),e[41]=Z):Z=e[41];let se;e[42]!==D||e[43]!==te?(se=p.jsxs(L1,{disabled:te,onClick:D,children:[\"Rename\",Z]}),e[42]=D,e[43]=te,e[44]=se):se=e[44];let ce;e[45]!==J||e[46]!==se?(ce=p.jsxs(gy,{children:[J,se]}),e[45]=J,e[46]=se,e[47]=ce):ce=e[47];let ae;return e[48]!==G||e[49]!==ce?(ae=p.jsxs(kS,{children:[G,ce]}),e[48]=G,e[49]=ce,e[50]=ae):ae=e[50],ae}"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "yoo",
+      "utf8_span": [
+        7302745,
+        7303279
+      ],
+      "utf16_span": [
+        7259715,
+        7260249
+      ],
+      "sha256": "4b38a7af16b277110bdea0f3fe14b333e5646d2d2a489d0d23ec53edc4ef9e75",
+      "source": "function yoo(t){const e=ne.c(8),{localWorkspaceId:n}=t;let i;e[0]!==n?(i={localWorkspaceId:n},e[0]=n,e[1]=i):i=e[1];const{data:r}=Ms(i),o=pI(r??void 0),a=mI();let c;e[2]!==a||e[3]!==o||e[4]!==r?(c=o?zce({branch:o,branchPrefix:a}):r?.placeholderBranchName?zce({branch:r.placeholderBranchName,branchPrefix:a}):void 0,e[2]=a,e[3]=o,e[4]=r,e[5]=c):c=e[5];const u=c;if(!u)return null;let d;return e[6]!==u?(d=p.jsx(\"span\",{className:\"min-w-0 truncate text-sm font-medium text-muted-foreground\",title:u,children:u}),e[6]=u,e[7]=d):d=e[7],d}"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "zce",
+      "utf8_span": [
+        2153685,
+        2153763
+      ],
+      "utf16_span": [
+        2153288,
+        2153366
+      ],
+      "sha256": "af28f00b8948dd206a24d10a9d2c0d49037c2e75c403061d6b2838f694932bc6",
+      "source": "function zce({branch:t,branchPrefix:e}){return zcs({branch:t,branchPrefix:e})}"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "zcs",
+      "utf8_span": [
+        2153599,
+        2153685
+      ],
+      "utf16_span": [
+        2153202,
+        2153288
+      ],
+      "sha256": "882a3c3868af550a8db9f882795eff27bd6e68ea1e55c40aa5f921231a4721e5",
+      "source": "function zcs({branch:t,branchPrefix:e}){return e&&t.startsWith(e)?t.slice(e.length):t}"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "mI import",
+      "utf8_span": [
+        55457,
+        55465
+      ],
+      "utf16_span": [
+        55457,
+        55465
+      ],
+      "sha256": "b36989f698db76c5d0c8f93f8afaad726fa1332e3ce5940bc3298c3fffa4d0aa",
+      "source": "de as mI"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "index import source",
+      "utf8_span": [
+        66469,
+        66494
+      ],
+      "utf16_span": [
+        66469,
+        66494
+      ],
+      "sha256": "4916b28b7109beb24572b5f403ab381aa9a78ef9bdfe014bf23d68f26398bd49",
+      "source": "from\"./index-BGEQ8YjU.js\""
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "symbol": "DQt export",
+      "utf8_span": [
+        3482357,
+        3482366
+      ],
+      "utf16_span": [
+        3481821,
+        3481830
+      ],
+      "sha256": "e6d04a2a34ff7e3c49cb34b5c4bfc17a7038f0bb5464bf3d8c5c44d8b10d4a3f",
+      "source": "DQt as de"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "symbol": "DQt prefix getter",
+      "utf8_span": [
+        3396107,
+        3396324
+      ],
+      "utf16_span": [
+        3395585,
+        3395802
+      ],
+      "sha256": "d7b9362beb2b58073a43d0f53cb86ba929de5cc61075f6a0cba5ce43bfef8ab5",
+      "source": "function DQt(){const{data:t}=ln(\"branch_prefix_type\"),{data:e}=ln(\"branch_prefix_custom\"),{data:s}=G_();if(t===\"custom\")return e||void 0;if(t===\"github_username\")return s?.githubUsername?`${s.githubUsername}/`:void 0}"
+    }
+  ],
+  "checks": "Exact retained REA asset identities and all excerpt digests passed; static only."
+}

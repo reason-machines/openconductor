@@ -1,0 +1,1 @@
+async function xz(t,{context:e,storedEntries:s,workspaceContext:n}){const r={},i=await od(t,n);Object.assign(r,i.envVarsByContext[e]);for(const o of s){const a=i.envVarSourcesByContext[e][o.key],c=i.envVarDefinedSourcesByContext[e][o.key];oN(a??c)||(r[o.key]=o.value)}return r}

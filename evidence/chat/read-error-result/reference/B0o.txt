@@ -1,0 +1,1 @@
+function B0o(t){switch(t?t.split(".").pop()?.toLowerCase():"text"){case"js":case"jsx":return"javascript";case"ts":case"tsx":return"typescript";case"py":return"python";case"rs":return"rust";case"json":return"json";case"yml":case"yaml":return"yaml";case"css":return"css";case"html":case"htm":return"html";case"xml":return"xml";case"sh":case"bash":return"bash";default:return"text"}}

@@ -1,0 +1,68 @@
+{
+  "scope": "Source-qualified generated-image non-image fallback disclosure, not image preview",
+  "execution": "NOT_RUN; no local/native/provider lease; hosted lease not yet reconciled",
+  "harness_contract": "Mount whole production ConductorToolRow with a real controlled open-state parent; use current production kind/default-open helper; no source-text assertions as RED. Click actual rendered head when it has an onClick handler and inspect visible fallback plus callback count. Keep fixtures unchanged across baseline/candidate.",
+  "cases": [
+    {
+      "id": "plain-explanation",
+      "role": "INTENDED_RED",
+      "name": "ImageGeneration",
+      "result": "Image generation is unavailable",
+      "isError": false,
+      "expected": "Plain fallback remains visible and head cannot toggle it; no toggle callback."
+    },
+    {
+      "id": "unsupported-svg",
+      "role": "INTENDED_RED",
+      "name": "ImageGeneration",
+      "result": "/synthetic/output/vector.svg",
+      "isError": false,
+      "expected": "SVG is absent from the exact ole image registry; fallback remains visible and non-toggleable."
+    },
+    {
+      "id": "recognized-png",
+      "role": "CONTROL",
+      "name": "ImageGeneration",
+      "result": "/synthetic/output/image.PNG",
+      "isError": false,
+      "expected": "Recognized image branch remains collapsible; same existing path presentation, no preview feature added."
+    },
+    {
+      "id": "pending-no-result",
+      "role": "CONTROL",
+      "name": "ImageGeneration",
+      "result": null,
+      "isError": false,
+      "expected": "Generating image; no content toggle or fallback body."
+    },
+    {
+      "id": "read-still-collapsible",
+      "role": "CONTROL",
+      "name": "Read",
+      "input": {
+        "file_path": "/synthetic/read.txt"
+      },
+      "result": "read body",
+      "isError": false,
+      "expected": "Existing non-image tool disclosure still toggles; do not change global store/default semantics."
+    }
+  ],
+  "additional_before_implementation": [
+    "Rebind to latest default head.",
+    "Obtain ledger exclusive RowShell/image-generation hunks and ordinary hosted test-first publication lease.",
+    "Enumerate shared shell call sites.",
+    "Preserve previously stored expansion semantics; do not force fallback open independently of persisted false."
+  ],
+  "excluded": [
+    "Image fetching/preview",
+    "Path/open/copy actions",
+    "provider invocation",
+    "native acceptance",
+    "CSS/visual parity claims",
+    "ScheduleWakeup producer or row",
+    "disclosure baseline owner repair",
+    "PR847",
+    "frozen fixtures owned by others"
+  ],
+  "source_prediction": "Two image fallback cases should fail on current source; this is not observed RED."
+}

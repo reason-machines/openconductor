@@ -1,0 +1,365 @@
+{
+  "gap_key": "SAME15-ALACRITTY-DIFF-PRIMARY-INVOCATION-V1",
+  "baseline_main": "9524569976a69a3151be1f2a3cac17bfac935312",
+  "reference": {
+    "app": "Conductor 0.87.6 /Applications/Conductor.app on sven m5 max",
+    "native_binary_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+    "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "retained_rea_evidence": "ev_338577609e67c31212d529d59606e90597850528ea9a2f9559d23a4876c960d1",
+    "limitations": "Retained REA bounded-slice lineage; manual inert source joins, not a fresh REA acquisition, automatic call-graph proof or behavioral observation."
+  },
+  "reference_spans": [
+    {
+      "role": "uD",
+      "file": "original-uD.txt",
+      "utf8_byte_range": [
+        2674155,
+        2678698
+      ],
+      "bytes": 4543,
+      "sha256": "272d373e491a760dacfb797c5abe1cc969360b93bfb37b26976f01b7317cea0f"
+    },
+    {
+      "role": "OGe",
+      "file": "original-OGe.txt",
+      "utf8_byte_range": [
+        2672421,
+        2672569
+      ],
+      "bytes": 148,
+      "sha256": "db9b2dcb6aa84255fa1cac05cf8ab38e03f6d7ccc69e3b1e66627d96216424ad"
+    },
+    {
+      "role": "I8",
+      "file": "original-I8.txt",
+      "utf8_byte_range": [
+        2672569,
+        2672728
+      ],
+      "bytes": 159,
+      "sha256": "8625ac2e383db210166d30d1499410ceb0047cced53cecc2c31fd7f742273a91"
+    },
+    {
+      "role": "o4e",
+      "file": "original-o4e.txt",
+      "utf8_byte_range": [
+        2673055,
+        2673178
+      ],
+      "bytes": 123,
+      "sha256": "d19d25adf90c32c81a43f0292ba9cc05d7d838c8a855a00befe9a993cac5f418"
+    },
+    {
+      "role": "ICi",
+      "file": "original-ICi.txt",
+      "utf8_byte_range": [
+        7306771,
+        7310204
+      ],
+      "bytes": 3433,
+      "sha256": "57c76b8d88d0d77ebaa532d58de89dbbe1e7ff447f7d110729af9f18d438989a"
+    },
+    {
+      "role": "P9",
+      "file": "original-P9.txt",
+      "utf8_byte_range": [
+        2689481,
+        2697526
+      ],
+      "bytes": 8045,
+      "sha256": "bf2bd3507c56618ed2d218f4c6efe656926ed3d4a523f8fd16ce5cffd153aede"
+    },
+    {
+      "role": "AZ",
+      "file": "original-AZ.txt",
+      "utf8_byte_range": [
+        573231,
+        573274
+      ],
+      "bytes": 43,
+      "sha256": "85880f296f214b081d897f3309299740dec7d12cd0a74f4af6628ffef6f4f8a6"
+    },
+    {
+      "role": "Z_s",
+      "file": "original-Z_s.txt",
+      "utf8_byte_range": [
+        2670076,
+        2671176
+      ],
+      "bytes": 1100,
+      "sha256": "6ee4b683e118c050b07d334b0462be0b691e9674a7bccbf49b2f0af07e7bce34"
+    },
+    {
+      "role": "ele",
+      "file": "original-ele.txt",
+      "utf8_byte_range": [
+        2672116,
+        2672183
+      ],
+      "bytes": 67,
+      "sha256": "408dcebdced1b1264e98718d2bfcd6a69c073de6167c5e9757fb450ff3d1201f"
+    },
+    {
+      "role": "_xt",
+      "file": "original-_xt.txt",
+      "utf8_byte_range": [
+        2671866,
+        2671940
+      ],
+      "bytes": 74,
+      "sha256": "64b693f5ef165e1e024227e11769ace98c8b69042b2cafbe3f670600177d57f0"
+    },
+    {
+      "role": "h4i",
+      "file": "original-h4i.txt",
+      "utf8_byte_range": [
+        2672183,
+        2672261
+      ],
+      "bytes": 78,
+      "sha256": "899edbe75c0ed7cb074c7338533fe93bce20030b67fd0b2dc34cb6ca698fccd7"
+    },
+    {
+      "role": "rvs",
+      "file": "original-rvs.txt",
+      "utf8_byte_range": [
+        2672261,
+        2672299
+      ],
+      "bytes": 38,
+      "sha256": "7cc39c2ca2626adee395c97fc69a3950a12b883ba8bed565ead02940b9d12310"
+    },
+    {
+      "role": "alacritty-catalog-entry",
+      "file": "original-alacritty-catalog-entry.txt",
+      "utf8_byte_range": [
+        571309,
+        571448
+      ],
+      "bytes": 139,
+      "sha256": "c4803ae10ebc68f66545364293167132fd9743611cf18c5907d09f4c95124ef2"
+    },
+    {
+      "symbol": "tee",
+      "file": "original-tee.txt",
+      "byte_start": 7777001,
+      "byte_end": 7782029,
+      "sha256": "38d4a2efa99fd08a87b2540dfb48add94860e8932a56c644132fcecf20165bf0",
+      "bytes": 5028
+    },
+    {
+      "symbol": "SBt",
+      "file": "original-SBt.txt",
+      "byte_start": 2679787,
+      "byte_end": 2680206,
+      "sha256": "7dcf7a1403363fa3be3604c46709ce312e7a34738ecb298a28fe9fb29d2ec6ec",
+      "bytes": 419
+    },
+    {
+      "symbol": "NPo",
+      "file": "original-NPo.txt",
+      "byte_start": 8961924,
+      "byte_end": 8963208,
+      "sha256": "9c4539afe7b84bcf4773d421760c7149b81f32b9f4480b3b5555ffe7c7993d7d",
+      "bytes": 1284
+    },
+    {
+      "symbol": "pLr",
+      "file": "original-pLr.txt",
+      "byte_start": 573274,
+      "byte_end": 573340,
+      "sha256": "d0e3ab5446a32119f603625bcb6a4c57588128de9b5cbdceb00a2ce841e8cb13",
+      "bytes": 66
+    },
+    {
+      "symbol": "Gce",
+      "file": "original-Gce.txt",
+      "byte_start": 2671637,
+      "byte_end": 2671866,
+      "sha256": "0eaeefefaf5a7196737e6afa3e9df64f840b6a2f032030d2bf4c9679a6ed6fab",
+      "bytes": 229
+    }
+  ],
+  "files": [
+    {
+      "path": "source-v1/original-uD.txt",
+      "bytes": 4543,
+      "sha256": "272d373e491a760dacfb797c5abe1cc969360b93bfb37b26976f01b7317cea0f"
+    },
+    {
+      "path": "source-v1/original-OGe.txt",
+      "bytes": 148,
+      "sha256": "db9b2dcb6aa84255fa1cac05cf8ab38e03f6d7ccc69e3b1e66627d96216424ad"
+    },
+    {
+      "path": "source-v1/original-I8.txt",
+      "bytes": 159,
+      "sha256": "8625ac2e383db210166d30d1499410ceb0047cced53cecc2c31fd7f742273a91"
+    },
+    {
+      "path": "source-v1/original-o4e.txt",
+      "bytes": 123,
+      "sha256": "d19d25adf90c32c81a43f0292ba9cc05d7d838c8a855a00befe9a993cac5f418"
+    },
+    {
+      "path": "source-v1/original-ICi.txt",
+      "bytes": 3433,
+      "sha256": "57c76b8d88d0d77ebaa532d58de89dbbe1e7ff447f7d110729af9f18d438989a"
+    },
+    {
+      "path": "source-v1/original-P9.txt",
+      "bytes": 8045,
+      "sha256": "bf2bd3507c56618ed2d218f4c6efe656926ed3d4a523f8fd16ce5cffd153aede"
+    },
+    {
+      "path": "source-v1/original-AZ.txt",
+      "bytes": 43,
+      "sha256": "85880f296f214b081d897f3309299740dec7d12cd0a74f4af6628ffef6f4f8a6"
+    },
+    {
+      "path": "source-v1/original-Z_s.txt",
+      "bytes": 1100,
+      "sha256": "6ee4b683e118c050b07d334b0462be0b691e9674a7bccbf49b2f0af07e7bce34"
+    },
+    {
+      "path": "source-v1/original-ele.txt",
+      "bytes": 67,
+      "sha256": "408dcebdced1b1264e98718d2bfcd6a69c073de6167c5e9757fb450ff3d1201f"
+    },
+    {
+      "path": "source-v1/original-_xt.txt",
+      "bytes": 74,
+      "sha256": "64b693f5ef165e1e024227e11769ace98c8b69042b2cafbe3f670600177d57f0"
+    },
+    {
+      "path": "source-v1/original-h4i.txt",
+      "bytes": 78,
+      "sha256": "899edbe75c0ed7cb074c7338533fe93bce20030b67fd0b2dc34cb6ca698fccd7"
+    },
+    {
+      "path": "source-v1/original-rvs.txt",
+      "bytes": 38,
+      "sha256": "7cc39c2ca2626adee395c97fc69a3950a12b883ba8bed565ead02940b9d12310"
+    },
+    {
+      "path": "source-v1/original-alacritty-catalog-entry.txt",
+      "bytes": 139,
+      "sha256": "c4803ae10ebc68f66545364293167132fd9743611cf18c5907d09f4c95124ef2"
+    },
+    {
+      "path": "source-v1/original-tee.txt",
+      "bytes": 5028,
+      "sha256": "38d4a2efa99fd08a87b2540dfb48add94860e8932a56c644132fcecf20165bf0"
+    },
+    {
+      "path": "source-v1/original-SBt.txt",
+      "bytes": 419,
+      "sha256": "7dcf7a1403363fa3be3604c46709ce312e7a34738ecb298a28fe9fb29d2ec6ec"
+    },
+    {
+      "path": "source-v1/original-NPo.txt",
+      "bytes": 1284,
+      "sha256": "9c4539afe7b84bcf4773d421760c7149b81f32b9f4480b3b5555ffe7c7993d7d"
+    },
+    {
+      "path": "source-v1/original-pLr.txt",
+      "bytes": 66,
+      "sha256": "d0e3ab5446a32119f603625bcb6a4c57588128de9b5cbdceb00a2ce841e8cb13"
+    },
+    {
+      "path": "source-v1/original-Gce.txt",
+      "bytes": 229,
+      "sha256": "0eaeefefaf5a7196737e6afa3e9df64f840b6a2f032030d2bf4c9679a6ed6fab"
+    },
+    {
+      "path": "source-v1/baseline-src__features__diff__FileDiffView.tsx.txt",
+      "bytes": 19052,
+      "sha256": "8e3dc981b01b2e5f8b19f51e1fd0e7c05691f2174d2d37b1fe7faf9455ecc6da"
+    },
+    {
+      "path": "source-v1/baseline-src__features__diff__FilePathChip.tsx.txt",
+      "bytes": 2855,
+      "sha256": "0cbc5906f7e8ce258e5e2f13c9d0baf0363dd26d77a71317b7209db09efa0a62"
+    },
+    {
+      "path": "source-v1/baseline-src__features__diff__FileContextMenu.tsx.txt",
+      "bytes": 3950,
+      "sha256": "620f7bffb3332cd07982866452ebf9fe87d841feb376c57b39a6543eab535cc1"
+    },
+    {
+      "path": "source-v1/baseline-src__features__openIn__apps.ts.txt",
+      "bytes": 3318,
+      "sha256": "ffb9bdf5e6b21894768d4f36ca3132b00061ea77c9e538b44c40dfbec065a924"
+    },
+    {
+      "path": "source-v1/baseline-src-tauri__src__open_in__commands.rs.txt",
+      "bytes": 9453,
+      "sha256": "20d04acb44cd56091c39d060f1e16ee7582633771d9abf6ff44b127dded23a0e"
+    },
+    {
+      "path": "source-v1/baseline-src-tauri__src__open_in__mod.rs.txt",
+      "bytes": 13612,
+      "sha256": "92edae3828c10358dd89a92ad49a1e76470276460efb18238688b9e0efc0238e"
+    }
+  ],
+  "joins": [
+    {
+      "path": "source-v1/original-NPo.txt",
+      "text": "fileIsPrimary:!0,inline:!1"
+    },
+    {
+      "path": "source-v1/original-tee.txt",
+      "text": "uD(I,z,P||void 0,{type:w?\"file-primary\":\"file-secondary\""
+    },
+    {
+      "path": "source-v1/original-tee.txt",
+      "text": "openWithinPath:P,directoryFallbackPath:P"
+    },
+    {
+      "path": "source-v1/original-uD.txt",
+      "text": "L=D&&a&&i.directoryFallbackPath&&_?i.directoryFallbackPath:P;return _?rvs(L,m):L"
+    },
+    {
+      "path": "source-v1/original-uD.txt",
+      "text": "else if(r===\"alacritty\"){const D=v({preferDirectoryFallbackPath:!0}),P=nl(D);"
+    },
+    {
+      "path": "source-v1/original-uD.txt",
+      "text": "alacritty msg create-window --working-directory ${P}"
+    },
+    {
+      "path": "source-v1/original-uD.txt",
+      "text": "open -na Alacritty --args --working-directory ${P}"
+    },
+    {
+      "path": "source-v1/baseline-src__features__diff__FileDiffView.tsx.txt",
+      "text": "<FilePathChip path={file.path} oldPath={file.old_path} worktree={worktree} notify={notify} />"
+    },
+    {
+      "path": "source-v1/baseline-src__features__diff__FilePathChip.tsx.txt",
+      "text": "openInApp(appId, full)"
+    },
+    {
+      "path": "source-v1/baseline-src__features__openIn__apps.ts.txt",
+      "text": "await invoke(\"open_in_app\", { appId, path });"
+    },
+    {
+      "path": "source-v1/baseline-src-tauri__src__open_in__commands.rs.txt",
+      "text": "if app.id == \"alacritty\" && !is_file"
+    },
+    {
+      "path": "source-v1/baseline-src-tauri__src__open_in__mod.rs.txt",
+      "text": "IconType::Terminal => macos_open_command(app, file.parent().unwrap_or(file))"
+    },
+    {
+      "path": "source-v1/baseline-src__features__diff__FileContextMenu.tsx.txt",
+      "text": "all.filter((a) => supportsFileOpen(a.id))"
+    }
+  ],
+  "regression_sha256": "97c62299ab7cae93bfe17379e56254c01a977cf5d66b06f93e9e38bd761783e2",
+  "limits": [
+    "Manual inert source joins with retained real-app REA lineage, not a fresh REA acquisition or automatic callgraph.",
+    "No local runtime, native app, browser, Alacritty or GUI execution.",
+    "New test uses actual FileDiffView, FilePathChip and openInApp; it records Tauri IPC rather than launching Alacritty."
+  ]
+}

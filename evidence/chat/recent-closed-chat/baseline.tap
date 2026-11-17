@@ -1,0 +1,95 @@
+2026-11-11T23:44:59.4112429Z TAP version 13
+2026-11-11T23:45:02.4257843Z # Subtest: CLOSED_ELIGIBLE: closing a user chat keeps its transcript suggestion in an empty target
+2026-11-11T23:45:02.4312319Z not ok 1 - CLOSED_ELIGIBLE: closing a user chat keeps its transcript suggestion in an empty target
+2026-11-11T23:45:02.4341824Z   ---
+2026-11-11T23:45:02.4371761Z   duration_ms: 2079.087732
+2026-11-11T23:45:02.4401574Z   type: 'test'
+2026-11-11T23:45:02.4402814Z   location: '/home/runner/work/openconductor/openconductor/evidence/chat/recent-closed-chat/recentClosedChatEligibility.test.mjs:243:1'
+2026-11-11T23:45:02.4403964Z   failureType: 'testCodeFailure'
+2026-11-11T23:45:02.4404419Z   error: |-
+2026-11-11T23:45:02.4404803Z     closed user source is missing
+2026-11-11T23:45:02.4405257Z     + actual - expected
+2026-11-11T23:45:02.4405607Z
+2026-11-11T23:45:02.4405905Z     + []
+2026-11-11T23:45:02.4406230Z     - [
+2026-11-11T23:45:02.4406618Z     -   'closed-fixture-w1:chat:source'
+2026-11-11T23:45:02.4407067Z     - ]
+2026-11-11T23:45:02.4407358Z
+2026-11-11T23:45:02.4407772Z   code: 'ERR_ASSERTION'
+2026-11-11T23:45:02.4431479Z   name: 'AssertionError'
+2026-11-11T23:45:02.4461576Z   expected:
+2026-11-11T23:45:02.4491590Z     0: 'closed-fixture-w1:chat:source'
+2026-11-11T23:45:02.4492095Z   actual:
+2026-11-11T23:45:02.4492466Z   operator: 'deepStrictEqual'
+2026-11-11T23:45:02.4492900Z   stack: |-
+2026-11-11T23:45:02.4494165Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/evidence/chat/recent-closed-chat/recentClosedChatEligibility.test.mjs:254:12)
+2026-11-11T23:45:02.4495529Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:45:02.4496385Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-11T23:45:02.4497087Z   ...
+2026-11-11T23:45:03.0175261Z # Subtest: OPEN_CONTROL: an open user chat is suggested without including either empty target
+2026-11-11T23:45:03.0177309Z ok 2 - OPEN_CONTROL: an open user chat is suggested without including either empty target
+2026-11-11T23:45:03.0178357Z   ---
+2026-11-11T23:45:03.0178709Z   duration_ms: 663.928911
+2026-11-11T23:45:03.0179105Z   type: 'test'
+2026-11-11T23:45:03.0179460Z   ...
+2026-11-11T23:45:04.0338299Z # Subtest: NO_USER_CONTROL: assistant-only and child-sender-only chats stay ineligible when closed
+2026-11-11T23:45:04.0340143Z ok 3 - NO_USER_CONTROL: assistant-only and child-sender-only chats stay ineligible when closed
+2026-11-11T23:45:04.0342105Z   ---
+2026-11-11T23:45:04.0342511Z   duration_ms: 1095.614801
+2026-11-11T23:45:04.0342936Z   type: 'test'
+2026-11-11T23:45:04.0343295Z   ...
+2026-11-11T23:45:04.0426983Z # conductor.db: select chat failed Chat is not visible in this workspace
+2026-11-11T23:45:04.5192642Z # Subtest: WORKSPACE_CONTROL: same-title closed suggestions do not cross workspace switches
+2026-11-11T23:45:04.5242628Z not ok 4 - WORKSPACE_CONTROL: same-title closed suggestions do not cross workspace switches
+2026-11-11T23:45:04.5243793Z   ---
+2026-11-11T23:45:04.5244414Z   duration_ms: 519.774326
+2026-11-11T23:45:04.5245018Z   type: 'test'
+2026-11-11T23:45:04.5246110Z   location: '/home/runner/work/openconductor/openconductor/evidence/chat/recent-closed-chat/recentClosedChatEligibility.test.mjs:288:1'
+2026-11-11T23:45:04.5247179Z   failureType: 'testCodeFailure'
+2026-11-11T23:45:04.5247592Z   error: |-
+2026-11-11T23:45:04.5247981Z     own workspace closed source is missing
+2026-11-11T23:45:04.5248444Z     + actual - expected
+2026-11-11T23:45:04.5248826Z
+2026-11-11T23:45:04.5249124Z     + []
+2026-11-11T23:45:04.5249418Z     - [
+2026-11-11T23:45:04.5249785Z     -   'closed-fixture-w2:chat:source'
+2026-11-11T23:45:04.5250220Z     - ]
+2026-11-11T23:45:04.5250500Z
+2026-11-11T23:45:04.5251003Z   code: 'ERR_ASSERTION'
+2026-11-11T23:45:04.5251262Z   name: 'AssertionError'
+2026-11-11T23:45:04.5251514Z   expected:
+2026-11-11T23:45:04.5251769Z     0: 'closed-fixture-w2:chat:source'
+2026-11-11T23:45:04.5252047Z   actual:
+2026-11-11T23:45:04.5252273Z   operator: 'deepStrictEqual'
+2026-11-11T23:45:04.5252531Z   stack: |-
+2026-11-11T23:45:04.5253275Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/evidence/chat/recent-closed-chat/recentClosedChatEligibility.test.mjs:300:12)
+2026-11-11T23:45:04.5254069Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:45:04.5254580Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T23:45:04.5254992Z   ...
+2026-11-11T23:45:04.5353812Z # Subtest: REOPEN_AND_ATTACH: reclose deduplicates the suggestion and attaches the original body
+2026-11-11T23:45:04.5355234Z not ok 5 - REOPEN_AND_ATTACH: reclose deduplicates the suggestion and attaches the original body
+2026-11-11T23:45:04.5356012Z   ---
+2026-11-11T23:45:04.5356372Z   duration_ms: 487.735063
+2026-11-11T23:45:04.5356787Z   type: 'test'
+2026-11-11T23:45:04.5357884Z   location: '/home/runner/work/openconductor/openconductor/evidence/chat/recent-closed-chat/recentClosedChatEligibility.test.mjs:309:1'
+2026-11-11T23:45:04.5358997Z   failureType: 'testCodeFailure'
+2026-11-11T23:45:04.5359426Z   error: |-
+2026-11-11T23:45:04.5359845Z     reclosed user source is missing
+2026-11-11T23:45:04.5360310Z     + actual - expected
+2026-11-11T23:45:04.5360688Z
+2026-11-11T23:45:04.5361213Z     + []
+2026-11-11T23:45:04.5361528Z     - [
+2026-11-11T23:45:04.5361931Z     -   'closed-fixture-w1:chat:source'
+2026-11-11T23:45:04.5362382Z     - ]
+2026-11-11T23:45:04.5362693Z
+2026-11-11T23:45:04.5363029Z   code: 'ERR_ASSERTION'
+2026-11-11T23:45:04.5363420Z   name: 'AssertionError'
+2026-11-11T23:45:04.5363814Z   expected:
+2026-11-11T23:45:04.5364219Z     0: 'closed-fixture-w1:chat:source'
+2026-11-11T23:45:04.5364663Z   actual:
+2026-11-11T23:45:04.5365012Z   operator: 'deepStrictEqual'
+2026-11-11T23:45:04.5365431Z   stack: |-
+2026-11-11T23:45:04.5366683Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/evidence/chat/recent-closed-chat/recentClosedChatEligibility.test.mjs:320:12)
+2026-11-11T23:45:04.5368081Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:45:04.5368912Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T23:45:04.5369573Z   ...

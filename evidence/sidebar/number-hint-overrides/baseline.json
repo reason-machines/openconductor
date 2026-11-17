@@ -1,0 +1,34 @@
+{
+  "producer": "Conductor Rebuild",
+  "phase": "HOSTED_BASELINE_RED",
+  "head_sha": "7dfef22016f4470c805f0cc4c06419fd54f8ba0c",
+  "fresh_main_before_fix": "1d9c4027909205d1dba9006031d922a5f2f2287a",
+  "workflow_run": 43157329475,
+  "unit_job": 130980191251,
+  "build_job": 130980191300,
+  "unit_url": "https://github.com/reason-machines/openconductor/actions/runs/43157329475/job/130980191251",
+  "build_url": "https://github.com/reason-machines/openconductor/actions/runs/43157329475/job/130980191300",
+  "fixture": "src/components/sidebarNumberHintOverrides.test.ts",
+  "observed": {
+    "cases": 9,
+    "intended_assertion_failures": 6,
+    "passing_controls": 3,
+    "failure_code": "ERR_ASSERTION",
+    "failed_cases": [
+      "saved primary Control modifier reveals hints",
+      "a saved replacement no longer accepts default Command",
+      "an additional physical shortcut can reveal hints",
+      "extra held modifiers do not hide an eligible chord",
+      "shortcuts with no modifiers never reveal hints",
+      "provider updates and reset affect the next event without remounting"
+    ],
+    "passing_cases": [
+      "default modifier waits 500ms and hides on release",
+      "pointer release cancels a pending default hint",
+      "focus loss hides a visible default hint"
+    ]
+  },
+  "candidate_green": "pending",
+  "native_acceptance": "not_run",
+  "new_runtime_or_dispatch": false
+}

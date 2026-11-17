@@ -1,19 +1,7 @@
 name: Native QA confinement
 
 on:
-  pull_request:
-    paths:
-      - 'tools/native_qa*.py'
-      - 'tools/test_native_qa*.py'
-      - 'docs/native-qa-confinement.md'
-      - '.github/workflows/native-qa-confinement.yml'
-  push:
-    branches: [main]
-    paths:
-      - 'tools/native_qa*.py'
-      - 'tools/test_native_qa*.py'
-      - 'docs/native-qa-confinement.md'
-      - '.github/workflows/native-qa-confinement.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read

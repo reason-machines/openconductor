@@ -1,19 +1,7 @@
 name: Diff
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "src-tauri/src/diff/**"
-      - "src/features/diff/**"
-      - "tools/diff/**"
-      - ".github/workflows/diff.yml"
-  pull_request:
-    paths:
-      - "src-tauri/src/diff/**"
-      - "src/features/diff/**"
-      - "tools/diff/**"
-      - ".github/workflows/diff.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read

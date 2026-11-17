@@ -1,0 +1,1 @@
+NODE_OPTIONS=--max-old-space-size=1024 nice -n19 timeout --kill-after=5s 180s node node_modules/typescript/bin/tsc --noEmit

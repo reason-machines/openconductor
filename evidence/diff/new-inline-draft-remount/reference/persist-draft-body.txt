@@ -1,0 +1,1 @@
+async persistDraftBody({commentId:e,body:s}){await this.dependencies.db.execute("UPDATE diff_comments SET body = ? WHERE id = ? AND state = 'draft'",[s,e])}

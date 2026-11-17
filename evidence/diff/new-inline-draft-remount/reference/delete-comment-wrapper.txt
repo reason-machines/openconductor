@@ -1,0 +1,1 @@
+function X7t(t,e){return zn.deleteComment({localWorkspaceId:t,commentId:e})}

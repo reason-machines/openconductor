@@ -1,0 +1,1 @@
+function n9s(t){const e=new MutationObserver(n=>{n.forEach(i=>{i.type==="attributes"&&i.attributeName==="class"&&t()})});return e.observe(document.documentElement,{attributes:!0,attributeFilter:["class"]}),()=>e.disconnect()}

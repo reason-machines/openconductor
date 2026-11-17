@@ -1,0 +1,427 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: needs_plan_response blocks restart before-install
+not ok 1 - needs_plan_response blocks restart before-install
+  ---
+  duration_ms: 89.216501
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:60:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:72:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: needs_plan_response blocks restart after-install
+not ok 2 - needs_plan_response blocks restart after-install
+  ---
+  duration_ms: 15.638961
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:60:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:72:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: needs_plan_response blocks restart after-drain
+not ok 3 - needs_plan_response blocks restart after-drain
+  ---
+  duration_ms: 14.01045
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:60:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:72:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: needs_user_permission blocks restart before-install
+not ok 4 - needs_user_permission blocks restart before-install
+  ---
+  duration_ms: 12.669697
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:60:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:72:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: needs_user_permission blocks restart after-install
+not ok 5 - needs_user_permission blocks restart after-install
+  ---
+  duration_ms: 17.871914
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:60:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:72:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: needs_user_permission blocks restart after-drain
+not ok 6 - needs_user_permission blocks restart after-drain
+  ---
+  duration_ms: 15.469496
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:60:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:72:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: needs_user_input blocks restart before-install
+not ok 7 - needs_user_input blocks restart before-install
+  ---
+  duration_ms: 23.957291
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:60:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:72:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: needs_user_input blocks restart after-install
+not ok 8 - needs_user_input blocks restart after-install
+  ---
+  duration_ms: 14.93466
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:60:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:72:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: needs_user_input blocks restart after-drain
+not ok 9 - needs_user_input blocks restart after-drain
+  ---
+  duration_ms: 18.040209
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:60:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:72:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: unrecognized blocks restart before-install
+not ok 10 - unrecognized blocks restart before-install
+  ---
+  duration_ms: 19.462356
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:60:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:72:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: unrecognized blocks restart after-install
+not ok 11 - unrecognized blocks restart after-install
+  ---
+  duration_ms: 39.271004
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:60:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:72:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: unrecognized blocks restart after-drain
+not ok 12 - unrecognized blocks restart after-drain
+  ---
+  duration_ms: 12.838938
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:60:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:72:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: an unrecognized workspace state cannot establish idle readiness
+not ok 13 - an unrecognized workspace state cannot establish idle readiness
+  ---
+  duration_ms: 7.236806
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:80:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:82:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: real registry invalidates its receipt synchronously when an owner becomes dirty
+ok 14 - real registry invalidates its receipt synchronously when an owner becomes dirty
+  ---
+  duration_ms: 33.056223
+  type: 'test'
+  ...
+# Subtest: real registry retains a dirty owner after unmount until its acknowledgment arrives
+ok 15 - real registry retains a dirty owner after unmount until its acknowledgment arrives
+  ---
+  duration_ms: 24.449126
+  type: 'test'
+  ...
+# Subtest: real barrier does not erase a newer failure when an older write succeeds
+ok 16 - real barrier does not erase a newer failure when an older write succeeds
+  ---
+  duration_ms: 22.803643
+  type: 'test'
+  ...
+# Subtest: real editor drain submits the latest debounce value and waits for the save
+ok 17 - real editor drain submits the latest debounce value and waits for the save
+  ---
+  duration_ms: 37.89899
+  type: 'test'
+  ...
+# Subtest: real editor unmount cannot discard an unsaved obligation
+ok 18 - real editor unmount cannot discard an unsaved obligation
+  ---
+  duration_ms: 47.19985
+  type: 'test'
+  ...
+# Subtest: real readiness remains unknown until chat hydration succeeds and reads workspaces outside the rendered sidebar
+ok 19 - real readiness remains unknown until chat hydration succeeds and reads workspaces outside the rendered sidebar
+  ---
+  duration_ms: 42.514505
+  type: 'test'
+  ...
+# Subtest: real readiness rejects inventory invalidated while setup status is in flight
+ok 20 - real readiness rejects inventory invalidated while setup status is in flight
+  ---
+  duration_ms: 12.922527
+  type: 'test'
+  ...
+# Subtest: real readiness rejects a refresh completed after disposal
+ok 21 - real readiness rejects a refresh completed after disposal
+  ---
+  duration_ms: 26.233651
+  type: 'test'
+  ...
+# Subtest: real toast dismissal calls the updater cancellation exactly once
+ok 22 - real toast dismissal calls the updater cancellation exactly once
+  ---
+  duration_ms: 23.371744
+  type: 'test'
+  ...
+# The above error occurred in the <Probe> component:
+#     at Probe (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:281:33)
+# Consider adding an error boundary to your tree to customize error handling behavior.
+# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+# Subtest: real store dirties the registry before React commits its dispatch
+not ok 23 - real store dirties the registry before React commits its dispatch
+  ---
+  duration_ms: 125.962406
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:293:1'
+  failureType: 'testCodeFailure'
+  error: '(0 , selectors_1.isSidebarVisible) is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    reducer (evalmachine.<anonymous>:153:53)
+    reduceCommit (evalmachine.<anonymous>:307:53)
+    updateReducer (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5955:22)
+    Object.useReducer (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7129:16)
+    useReducer (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/node_modules/react/cjs/react.development.js:1626:21)
+    useAppStore (evalmachine.<anonymous>:311:53)
+    Probe (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:281:33)
+    renderWithHooks (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5608:18)
+    updateFunctionComponent (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9512:20)
+    beginWork (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11365:16)
+  ...
+# Subtest: real store drain includes section writes and their dependent workspace unpins
+ok 24 - real store drain includes section writes and their dependent workspace unpins
+  ---
+  duration_ms: 173.412188
+  type: 'test'
+  ...
+# Subtest: real store drain waits for declined-layout reconciliation and the correlated React commit
+ok 25 - real store drain waits for declined-layout reconciliation and the correlated React commit
+  ---
+  duration_ms: 158.943266
+  type: 'test'
+  ...
+# Subtest: real panel preference drain remains pending through hydration and the deferred visibility save
+ok 26 - real panel preference drain remains pending through hydration and the deferred visibility save
+  ---
+  duration_ms: 67.985909
+  type: 'test'
+  ...
+# could not save panel layout Error: fixture read failed
+#     at /home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:387:49
+#     at act (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/node_modules/react/cjs/react.development.js:2512:16)
+#     at TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs:387:11)
+#     at async Test.run (node:internal/test_runner/test:1054:7)
+#     at async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+# Subtest: real panel preference read failure cannot become a successful drain
+ok 27 - real panel preference read failure cannot become a successful drain
+  ---
+  duration_ms: 36.310817
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 13
+# fail 14
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1476.794117

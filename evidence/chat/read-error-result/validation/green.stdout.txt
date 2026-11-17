@@ -1,0 +1,84 @@
+TAP version 13
+# (node:167) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Read error result: failed-permission
+ok 1 - Read error result: failed-permission
+  ---
+  duration_ms: 25.751332
+  type: 'test'
+  ...
+# Subtest: Read error result: failed-numbered
+ok 2 - Read error result: failed-numbered
+  ---
+  duration_ms: 4.224016
+  type: 'test'
+  ...
+# Subtest: Read error result: failed-literal
+ok 3 - Read error result: failed-literal
+  ---
+  duration_ms: 3.571384
+  type: 'test'
+  ...
+# Subtest: Read error result: failed-reminder
+ok 4 - Read error result: failed-reminder
+  ---
+  duration_ms: 3.481913
+  type: 'test'
+  ...
+# Subtest: Read error result: success-permission-text
+ok 5 - Read error result: success-permission-text
+  ---
+  duration_ms: 3.395646
+  type: 'test'
+  ...
+# Subtest: Read error result: success-numbered
+ok 6 - Read error result: success-numbered
+  ---
+  duration_ms: 3.293177
+  type: 'test'
+  ...
+# Subtest: Read error result: pending
+ok 7 - Read error result: pending
+  ---
+  duration_ms: 1.658651
+  type: 'test'
+  ...
+# Subtest: Read error result: empty-success
+ok 8 - Read error result: empty-success
+  ---
+  duration_ms: 1.525963
+  type: 'test'
+  ...
+# Subtest: Read error result: empty-failure
+ok 9 - Read error result: empty-failure
+  ---
+  duration_ms: 1.750466
+  type: 'test'
+  ...
+# Subtest: Read error result: whitespace-failure
+ok 10 - Read error result: whitespace-failure
+  ---
+  duration_ms: 1.448038
+  type: 'test'
+  ...
+# Subtest: Read error result: successful-image
+ok 11 - Read error result: successful-image
+  ---
+  duration_ms: 1.146318
+  type: 'test'
+  ...
+# Subtest: Read error result: failed-image
+ok 12 - Read error result: failed-image
+  ---
+  duration_ms: 1.066812
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 800.032934

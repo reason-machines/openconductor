@@ -1,0 +1,22 @@
+{
+  "command": "nice -n 19 timeout --kill-after=5s 120s cargo fetch --locked --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml",
+  "environment": {
+    "RUSTUP_TOOLCHAIN": "stable"
+  },
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_seconds": 0.814265,
+  "pre": {
+    "utc": "2026-11-12T13:15:47.359078+00:00",
+    "target_bytes": 0,
+    "disk_free_bytes": 40591925248,
+    "own_runtime_jobs": []
+  },
+  "post": {
+    "utc": "2026-11-12T13:15:48.168152+00:00",
+    "target_bytes": 0,
+    "disk_free_bytes": 40517197824,
+    "own_runtime_jobs": []
+  },
+  "guarded_source_drift": []
+}

@@ -66,6 +66,12 @@ async fn workspace_read_markdown(repo: String, path: String) -> Result<String, S
         .await
         .map_err(|e| format!("File read task failed: {e}"))?
 }
+#[tauri::command]
+async fn workspace_read_text(repo: String, path: String) -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(move || workspace_file::read_text(std::path::Path::new(&repo), &path))
+        .await
+        .map_err(|e| format!("File read task failed: {e}"))?
+}
 mod recent_local_repos_commands;
 mod sidebar_repo_commands;
 mod repo_misc_commands;
@@ -86,9 +92,11 @@ pub mod menu;
 mod model_catalog;
 pub mod pr;
 mod local_storage_commands;
+mod local_plan_mode;
 mod onboarding_commands;
 mod native_qa;
 mod native_qa_cache;
+pub mod visual_qa_profile;
 pub mod open_in;
 pub mod project;
 pub mod quick_open;
@@ -286,7 +294,8 @@ fn updater_plugin<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R, tauri_pl
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     native_qa::reject_release_request();
-    let context = native_qa::before_startup(tauri::generate_context!());
+    let context = visual_qa_profile::before_startup(tauri::generate_context!());
+    let context = native_qa::before_startup(context);
     let builder = native_qa::guard_builder(tauri::Builder::default());
     // Conductor is macOS-only; elsewhere keep Tauri's no-menu default.
     #[cfg(target_os = "macos")]
@@ -344,6 +353,12 @@ pub fn run() {
             let transparent_window = sidebar_transparency::startup_enabled(&db.0);
             app.manage(db::open_cache(&data_dir));
             spotlight_commands::migrate_legacy_setting(&db);
+            // Mark Conductor's one-time file-format migration flags complete
+            // and deprecate model keys that moved to settings.toml.
+            let _migrations_pool = db.0.clone();
+            tauri::async_runtime::spawn(async move {
+                settings::startup_migrations::run(&_migrations_pool).await;
+            });
             app.manage(terminal_commands::history_state(&data_dir));
             // Conductor's sidecar opens its session event outbox at start and
             // carries on without it if that fails (sidecar_stores/).
@@ -378,6 +393,7 @@ pub fn run() {
             app.manage(codex_chat::CodexChats::with_binaries(binaries));
             app.manage(codex_account::CodexLogins::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
+            app.manage(local_plan_mode::LocalPlanModes::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
             // Appearance keys Conductor keeps in conductor.db live in its settings table.
@@ -391,9 +407,25 @@ pub fn run() {
             }
             app.manage(settings_service);
             let scripts = scripts::service(app.handle());
+            // Wire stored env_vars (conductor.db) into the scripts service so
+            // setup/run/archive scripts see the same environment as terminals
+            // and agent launchers. Without this hook, `settings_env()` calls
+            // `vars()` (file-only); with it, `local_env` calls
+            // `vars_with_stored` and applies the SQLite env_vars table on top
+            // of file values, as Conductor's ng(…,{context:"local"}) does
+            // (evidence/settings/NOTES.md "Environment", "Consumers").
+            scripts.set_settings_env(::std::sync::Arc::new(|ws: &oc_scripts::service::WorkspaceRef| {
+                crate::settings::effective::local_env(&ws.repo_root, Some(&ws.workspace_path))
+            }));
             let spotlight = spotlight_commands::service(app.handle());
             scripts.set_auto_run_spotlight(spotlight::auto_run::hook(spotlight.clone()));
             app.manage(scripts);
+            // Restore persisted setup transcripts so the Setup tab shows the
+            // previous run's transcript after a restart without re-running setup.
+            tauri::async_runtime::block_on(scripts::restore_setup_transcripts(
+                &app.state::<db::Db>().0,
+                app.state::<oc_scripts::service::ScriptService>().inner(),
+            ));
             app.manage(spotlight);
             spawn_push_upstream_backfill(app.handle().clone());
             // tauri.conf.json leaves the main window to us (`"create": false`) so it can be
@@ -406,6 +438,7 @@ pub fn run() {
         .manage(app_quit::QuitHandler::default())
         .invoke_handler(tauri::generate_handler![
             workspace_read_markdown,
+            workspace_read_text,
             app_quit::set_quit_handler_ready,
             app_quit::quit_app,
             root_path_commands::get_conductor_root,
@@ -448,6 +481,8 @@ pub fn run() {
             archive_on_merge_commands::repo_archive_on_merge,
             sidebar_repo_commands::db_set_repo_hidden,
             sidebar_repo_commands::db_reorder_repos,
+            sidebar_repo_commands::db_set_repo_default_branch,
+            sidebar_repo_commands::db_set_repo_remote,
             sidebar_section_commands::db_read_navigation_sections,
             sidebar_section_commands::db_write_navigation_sections,
             sidebar_workspace_commands::db_set_workspace_pinned,
@@ -482,11 +517,13 @@ pub fn run() {
             diff::comment_commands::diff_comment_delete,
             diff::comment_commands::diff_comment_resolve,
             diff::comment_commands::diff_comments_mark_sent,
+            diff::comment_commands::diff_comments_mark_reviewed,
             turn_checkpoint_commands::checkpoint_turn_changes,
             diff::comment_commands::diff_comments_sync_github,
             diff::comment_commands::diff_comment_resolve_github,
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
+            quick_open::commands::grep_workspace,
             reason_chat::reason_cli_path,
             reason_chat::reason_cli_ensure_current,
             reason_chat::reason_account_status,
@@ -515,6 +552,7 @@ pub fn run() {
             codex_chat::codex_cli_path,
             codex_chat::codex_open_chat,
             codex_chat::codex_prompt,
+            codex_chat::codex_mcp_status,
             codex_chat::codex_cancel,
             codex_chat::codex_answer,
             codex_chat::codex_respond,
@@ -525,6 +563,8 @@ pub fn run() {
             agent_settings_commands::favorite_models_replace,
             config_sync_commands::config_sync_diff,
             config_sync_commands::config_sync_apply,
+            local_plan_mode::local_plan_mode_get,
+            local_plan_mode::local_plan_mode_set,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
             claude_chat::commands::claude_cancel,
@@ -617,6 +657,8 @@ pub fn run() {
             scripts::run_script_stop,
             scripts::run_script_status,
             scripts::run_script_output,
+            scripts::run_script_write,
+            scripts::run_script_resize,
             scripts::run_script_preview_env,
             scripts::archive_script_run,
             scripts::auto_run_after_setup_get,

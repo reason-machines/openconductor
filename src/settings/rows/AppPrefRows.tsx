@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { Row } from "../GeneralPage";
 import { setAppPref, useAppPrefs, type AppPrefUpdate } from "../appPrefs";
-import { effectiveShortcuts } from "../../keybindings/overrides";
+import { effectiveShortcuts, type Overrides } from "../../keybindings/overrides";
 import { glyphs } from "../../keybindings/shortcut";
 import { setDashboardEnabled, useDashboardEnabled } from "../../home/useDashboardEnabled";
 
@@ -26,15 +26,14 @@ function Switch({ label, checked, disabled, onChange }: { label: string; checked
   );
 }
 
-const GARRY_HINT = effectiveShortcuts("toggleGarryMode").map(glyphs).join(" or ");
-
 /** General: Don't collapse tool calls (Garry Mode). */
-export function GeneralAppPrefRows() {
+export function GeneralAppPrefRows({ overrides }: { overrides: Overrides }) {
   const p = useAppPrefs();
+  const garryHint = effectiveShortcuts("toggleGarryMode", overrides).map(glyphs).join(" or ");
   return (
     <Row
       label="Don't collapse tool calls (Garry Mode)"
-      help={`Show all tool calls expanded by default instead of collapsed. Toggle with ${GARRY_HINT}.`}
+      help={`Show all tool calls expanded by default instead of collapsed. Toggle with ${garryHint}.`}
     >
       <Switch label="Don't collapse tool calls (Garry Mode)" checked={p.garry_mode} onChange={(value) => save({ key: "garry_mode", value })} />
     </Row>

@@ -1,0 +1,20 @@
+{
+  "author": "Conductor Rebuild",
+  "phase": "red",
+  "classification": "QUALIFYING_RED",
+  "exit_code": 1,
+  "summary": {
+    "tests": 4,
+    "pass": 2,
+    "fail": 2,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "failures": [
+    1,
+    2
+  ],
+  "raw_tap_sha256": "e61944bfe1c402f44134a60b8ab86b0d9172a67618ec12b28a6a120de0c7feac",
+  "test_execution_performed_by_inspector": false
+}

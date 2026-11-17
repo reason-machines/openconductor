@@ -1,0 +1,1 @@
+async function YZe(t){return(await t.dependencies.db.select("SELECT * FROM sessions ORDER BY updated_at DESC")).map(pB)}async function Wo(t,e){const n=await t.dependencies.db.select("SELECT * FROM sessions WHERE id = ?",[e]);if(n.length!==0)return pB(n[0])}async function QZe(t,e){return(await t.dependencies.db.select("SELECT * FROM sessions WHERE workspace_id = ?",[e])).map(pB)}

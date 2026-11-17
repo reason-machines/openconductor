@@ -1,0 +1,26 @@
+{
+  "owner": "Conductor Rebuild",
+  "default_branch_checked": "1c8e9593099bce8ebfbc19d83052cbfd47df5ad0",
+  "profile_sha256": "56b0edd413b58fb2591b2d279d77d2c9161c8d391f13f5852c1254ba2e8c28c7",
+  "current_main_profile_and_hydration_match_local": true,
+  "command": "node --test src/state/visualQaStartup.test.ts",
+  "baseline": {"tests": 7, "passed": 4, "failed": 3},
+  "intended_failures": [
+    "Actual useAppStore hydration reports error instead of ready for synthetic empty DB responses gated by the real restricted handler list",
+    "Actual LocalStorageClient read rejects because local_storage_get_entry is not registered",
+    "Restricted profile lacks managed SubsystemStore before ordinary frontend construction"
+  ],
+  "controls": [
+    "Repository read error remains visible",
+    "Workspace read error remains visible",
+    "Navigation-section read error remains visible",
+    "Provider/process/clone/storage-write commands remain unavailable"
+  ],
+  "scope": "React and client behavior with synthetic IPC, plus static managed-state order; not a native Tauri dispatcher or real private-DB invocation",
+  "typecheck": "Timed out after 120 seconds on saturated shared cloud computer; no diagnostics emitted",
+  "product_modified": false,
+  "publication_dependency": "Keep PR #1146 exact head 53e5d30c2f270b8a1968a52564c5a43f94a03251 immutable until scheduled protected merge callback, then publish separate main-based correction",
+  "native_behavior": "NOT_RUN by this Session; existing c27 package has no successful empty Home/sidebar acceptance",
+  "package_owner": "992a715e-aafd-49b0-88ba-9cabca1a3126",
+  "native_owner": "e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46"
+}

@@ -38,6 +38,7 @@ import { applyChatEvents, emptyTranscript, truncateAfterTurn, type ChatTranscrip
 import { restoreCheckpoint, turnCheckpointRef, type Invoke } from "./checkpoints.ts";
 import { cancelUnsent, failTurn, openTurns, reasonChat, restartUnsentTurn, startTurn, type PromptAttachment, type ReasonChatState, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
+import { registerPersistenceOwner } from "../../lib/persistence/restartPersistence.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
 import { chatWantsAttention, enteredWait, turnSettled } from "./attention.ts";
 import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
@@ -168,6 +169,7 @@ export interface PromptRequest {
   /** Repository the chat's workspace belongs to, if known. */
   repoPath: string | null;
   workspaceId?: string;
+  onHandoff?: () => void;
 }
 
 /** An agent the runtime runs chats on. */
@@ -212,12 +214,14 @@ export interface ChatHost {
   persist: boolean;
   /** Caches the files a finished turn changed, for the chips under the turn. */
   recordTurnChanges(turn: { sessionId: string; turnId: string }, files: FileChange[]): void;
+  onPromptHandoff?(workspaceId: string, attachments: readonly PromptAttachment[]): Promise<void>;
   storage: Pick<Storage, "getItem" | "setItem" | "removeItem">;
 }
 
 export interface ChatSnapshot {
   transcript: ChatTranscript;
   queue: Q.ChatQueue;
+  inFlightAttachments?: readonly PromptAttachment[];
   /** Open permission requests, oldest first. */
   permissions: readonly PermissionPrompt[];
 }
@@ -288,6 +292,7 @@ interface Chat<Config> {
   unsent: Set<string>;
   /** Unsent turns the user stopped: they end cancelled instead of being sent. */
   stopped: Set<string>;
+  deliveries: Map<string, { attachments: PromptAttachment[]; workspaceId?: string; handedOff: boolean; active: boolean }>;
   listeners: Set<(s: ChatSnapshot) => void>;
   permissions: PermissionPrompt[];
 }
@@ -300,6 +305,8 @@ interface Chat<Config> {
 let statuses: ReadonlyMap<string, Q.SessionStatus> = new Map();
 const hiddenChats = new Set<string>();
 const statusListeners = new Set<() => void>();
+let statusesHydrated = false;
+export const chatStatusesReady = (): boolean => statusesHydrated;
 
 function setStatus(chatId: string, status: Q.SessionStatus | undefined) {
   if (statuses.get(chatId) === status) return;
@@ -315,10 +322,10 @@ function setStatus(chatId: string, status: Q.SessionStatus | undefined) {
  * and, once the store is connected, `conductor.db` keeps it.
  */
 export function reportChatStatus(chatId: string, status: Q.SessionStatus): void {
+  persistStatus(chatId, status);
   if (hiddenChats.has(chatId)) return setStatus(chatId, undefined);
   const prev = statuses.get(chatId);
   setStatus(chatId, status);
-  persistStatus(chatId, status);
   // Conductor calls `_p` right after setting plan review or user input (attention.ts).
   if (enteredWait(prev, status)) chatWantsAttention(chatId);
 }
@@ -394,12 +401,13 @@ interface StoredStatus {
 }
 
 function receivedStatus({ chatId, status }: StoredStatus) {
-  if (!SESSION_STATUSES.has(status) || hiddenChats.has(chatId)) return;
+  if (!SESSION_STATUSES.has(status)) return;
   const w = writes.get(chatId);
   if (w && w.inFlight > 0) {
     w.inFlight--;
     return;
   }
+  if (hiddenChats.has(chatId)) return;
   setStatus(chatId, status as Q.SessionStatus);
 }
 
@@ -415,8 +423,14 @@ function syncStatuses() {
     .then((rows) => {
       // A chat that changed in this run already shows its own status.
       for (const r of rows ?? []) if (!writes.has(r.chatId) && !statuses.has(r.chatId)) receivedStatus(r);
+      statusesHydrated = Array.isArray(rows) && rows.every((row) => typeof row.chatId === "string" && SESSION_STATUSES.has(row.status));
+      for (const fn of statusListeners) fn();
     })
-    .catch((e) => console.warn("chat: stored session statuses not loaded", e));
+    .catch((e) => {
+      statusesHydrated = false;
+      for (const fn of statusListeners) fn();
+      console.warn("chat: stored session statuses not loaded", e);
+    });
 }
 
 export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: ChatHost): ChatRuntime<Config> {
@@ -424,6 +438,20 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
   const savers = new Map<string, ChatSaver>();
   /** Settles once a chat's stored transcript and session id are in (or failed to load). */
   const loads = new Map<string, Promise<void>>();
+  const drainedLoads = new Set<Promise<void>>();
+  registerPersistenceOwner({
+    get revision() { return chats.size + loads.size + [...savers.values()].reduce((sum, saver) => sum + saver.revision, 0); },
+    ready: () => [...loads.values()].every((load) => drainedLoads.has(load)) && [...savers.values()].every((saver) => saver.ready()),
+    async drain() {
+      for (;;) {
+        const pending = [...loads.values()];
+        await Promise.all(pending);
+        for (const load of pending) drainedLoads.add(load);
+        await Promise.all([...savers.values()].map((saver) => saver.drain()));
+        if ([...loads.values()].every((load) => drainedLoads.has(load))) return;
+      }
+    },
+  });
   let listening: Promise<unknown> | null = null;
   const sessionKey = backend.sessionKey;
 
@@ -450,6 +478,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
         configured: saved !== null,
         unsent: new Set(),
         stopped: new Set(),
+        deliveries: new Map(),
         listeners: new Set(),
         permissions: [],
       };
@@ -490,7 +519,9 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     return saver;
   }
 
-  const snapshot = (c: Chat<Config>): ChatSnapshot => ({ transcript: c.transcript, queue: c.queue, permissions: c.permissions });
+  const snapshot = (c: Chat<Config>): ChatSnapshot => ({ transcript: c.transcript, queue: c.queue, permissions: c.permissions,
+    inFlightAttachments: [...c.deliveries.values()].flatMap((delivery) => delivery.active ? delivery.attachments : []),
+  });
   const notify = (c: Chat<Config>) => {
     const s = snapshot(c);
     for (const fn of c.listeners) fn(s);
@@ -594,6 +625,9 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     // A random turn id, so a turn's checkpoints and cached changes never
     // collide with a turn from an earlier app run.
     const turnId = retryUser?.turnId ?? `${chatId}:${crypto.randomUUID()}`;
+    const delivery = { attachments: attachments.map((attachment) => ({ ...attachment })), workspaceId: c.workspaceId, handedOff: false, active: true };
+    c.deliveries.set(turnId, delivery);
+    const repoPath = c.repoPath;
     // Stop is shown from here on, but the backend only learns of the turn
     // once `prompt` runs; a Stop before that is held in `c.stopped`.
     c.unsent.add(turnId);
@@ -625,12 +659,21 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       // changed. Resolves after the turn ended; a rejection means the turn
       // never started (no CLI, no process), so no event will end it.
       const turn = turnCheckpointRef(chatId, turnId);
-      const end = await backend.prompt({ chatId, cwd, text, attachments: carried ? [carried, ...attachments] : attachments, turn, firstMessage, repoPath: c.repoPath, workspaceId: c.workspaceId });
+      const onHandoff = () => {
+        if (delivery.handedOff) return;
+        delivery.handedOff = true;
+        if (delivery.workspaceId) void host.onPromptHandoff?.(delivery.workspaceId, delivery.attachments)
+          .catch((error) => console.warn("chat: review handoff was not saved", error));
+      };
+      const end = await backend.prompt({ chatId, cwd, text, attachments: carried ? [carried, ...delivery.attachments] : delivery.attachments, turn, firstMessage, repoPath, workspaceId: delivery.workspaceId, onHandoff });
       if (end.turnChanges) host.recordTurnChanges(turn, end.turnChanges);
     } catch (e) {
       c.unsent.delete(turnId);
       c.stopped.delete(turnId);
       apply(c, failTurn(c.state, turnId, String(e)));
+    } finally {
+      delivery.active = false;
+      notify(c);
     }
   }
 
@@ -647,16 +690,18 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       c.cwd = cwd;
       if (repoPath) c.repoPath = repoPath;
       if (workspaceId) c.workspaceId = workspaceId;
-      setQueue(c, Q.submit(c.queue, input, mode, new Date(), attachments));
+      setQueue(c, Q.submit(c.queue, input, mode, new Date(), attachments.map((attachment) => ({ ...attachment }))));
     },
     retryUnsent(chatId, cwd, input, turnId) {
       const c = chat(chatId);
       if (c.transcript.turns[turnId]?.status !== "failed" || c.queue.items.some((item) => item.retryTurnId === turnId)) return false;
       const messages = c.transcript.messages.filter((message) => message.turnId === turnId);
       const user = messages.find((message) => message.role === "user");
-      if (!user || messages.some((message) => message.role === "assistant")) return false;
+      const delivery = c.deliveries.get(turnId);
+      if (!user || delivery?.handedOff || messages.some((message) => message.role === "assistant")) return false;
       c.cwd = cwd;
-      setQueue(c, Q.retry(c.queue, input, turnId));
+      if (delivery?.workspaceId) c.workspaceId = delivery.workspaceId;
+      setQueue(c, Q.retry(c.queue, input, turnId, new Date(), delivery?.attachments ?? []));
       return true;
     },
     stop(chatId) {

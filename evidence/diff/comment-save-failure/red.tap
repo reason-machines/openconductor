@@ -1,0 +1,188 @@
+COMMAND: timeout 60s node --test --test-concurrency=1 src/features/diff/commentSaveFailure.test.ts
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: existing-comment Error save rejection notifies once and retains body and draft
+not ok 1 - existing-comment Error save rejection notifies once and retains body and draft
+  ---
+  duration_ms: 239.090997
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/d2a7d3dd-1af3-4afb-9fc3-7274c968395c/repo/src/features/diff/commentSaveFailure.test.ts:100:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   {
+    -     kind: 'error',
+    -     message: 'Failed to save comment: disk full'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'error'
+      message: 'Failed to save comment: disk full'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/d2a7d3dd-1af3-4afb-9fc3-7274c968395c/repo/src/features/diff/commentSaveFailure.test.ts:107:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: existing-comment string save rejection notifies once and retains body and draft
+not ok 2 - existing-comment string save rejection notifies once and retains body and draft
+  ---
+  duration_ms: 106.685104
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/d2a7d3dd-1af3-4afb-9fc3-7274c968395c/repo/src/features/diff/commentSaveFailure.test.ts:100:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   {
+    -     kind: 'error',
+    -     message: 'Failed to save comment: disk full'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'error'
+      message: 'Failed to save comment: disk full'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/d2a7d3dd-1af3-4afb-9fc3-7274c968395c/repo/src/features/diff/commentSaveFailure.test.ts:107:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pending save has no early feedback or dismissal, then notifies once on rejection
+not ok 3 - pending save has no early feedback or dismissal, then notifies once on rejection
+  ---
+  duration_ms: 72.026472
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/d2a7d3dd-1af3-4afb-9fc3-7274c968395c/repo/src/features/diff/commentSaveFailure.test.ts:111:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   {
+    -     kind: 'error',
+    -     message: 'Failed to save comment: write delayed'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'error'
+      message: 'Failed to save comment: write delayed'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/d2a7d3dd-1af3-4afb-9fc3-7274c968395c/repo/src/features/diff/commentSaveFailure.test.ts:123:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: successful save persists and closes only the edited draft without failure feedback
+ok 4 - successful save persists and closes only the edited draft without failure feedback
+  ---
+  duration_ms: 53.883811
+  type: 'test'
+  ...
+# Subtest: rejected save followed by successful retry adds no extra notification
+not ok 5 - rejected save followed by successful retry adds no extra notification
+  ---
+  duration_ms: 56.753037
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/d2a7d3dd-1af3-4afb-9fc3-7274c968395c/repo/src/features/diff/commentSaveFailure.test.ts:139:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   {
+    -     kind: 'error',
+    -     message: 'Failed to save comment: disk full'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'error'
+      message: 'Failed to save comment: disk full'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/d2a7d3dd-1af3-4afb-9fc3-7274c968395c/repo/src/features/diff/commentSaveFailure.test.ts:151:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: dirty cancellation, keep, discard and blank controls never save or notify
+ok 6 - dirty cancellation, keep, discard and blank controls never save or notify
+  ---
+  duration_ms: 49.686939
+  type: 'test'
+  ...
+# Subtest: one failed save neither persists nor clears the other comment's draft
+not ok 7 - one failed save neither persists nor clears the other comment's draft
+  ---
+  duration_ms: 45.84674
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/d2a7d3dd-1af3-4afb-9fc3-7274c968395c/repo/src/features/diff/commentSaveFailure.test.ts:177:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   {
+    -     kind: 'error',
+    -     message: 'Failed to save comment: read only'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'error'
+      message: 'Failed to save comment: read only'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/d2a7d3dd-1af3-4afb-9fc3-7274c968395c/repo/src/features/diff/commentSaveFailure.test.ts:187:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 2
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 955.454536
+EXIT: 1

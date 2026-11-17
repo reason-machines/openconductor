@@ -1,0 +1,1 @@
+function rOr(t){return t==="light"||t==="dark"||t==="system"}

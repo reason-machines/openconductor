@@ -1,7 +1,7 @@
 {
  "ref": "origin/main",
- "sha": "274ac804c49b3b6a4a55c7bfddf0bd7bb7b890a4",
- "source_files_scanned": 693,
+ "sha": "6b94b9704eeda6f457784347d089a90d7fe55758",
+ "source_files_scanned": 1705,
  "reference": {
   "conductor_version": "0.87.6",
   "keybindings_source": {
@@ -13,18 +13,18 @@
  },
  "overall": {
   "total": 419,
-  "matched": 301,
-  "partial": 101,
-  "missing": 17,
-  "parity_pct": 83.9
+  "matched": 352,
+  "partial": 53,
+  "missing": 14,
+  "parity_pct": 90.3
  },
  "areas": {
   "settings": {
    "total": 125,
-   "matched": 119,
-   "partial": 3,
-   "missing": 3,
-   "parity_pct": 96.4,
+   "matched": 125,
+   "partial": 0,
+   "missing": 0,
+   "parity_pct": 100.0,
    "groups": {
     "user settings.toml": {
      "total": 43,
@@ -42,17 +42,17 @@
     },
     "settings table key (deprecated)": {
      "total": 3,
-     "matched": 1,
-     "partial": 2,
+     "matched": 3,
+     "partial": 0,
      "missing": 0,
-     "parity_pct": 66.7
+     "parity_pct": 100.0
     },
     "settings table key": {
      "total": 26,
-     "matched": 22,
-     "partial": 1,
-     "missing": 3,
-     "parity_pct": 86.5
+     "matched": 26,
+     "partial": 0,
+     "missing": 0,
+     "parity_pct": 100.0
     },
     "settings file": {
      "total": 5,
@@ -72,45 +72,45 @@
   },
   "shortcuts": {
    "total": 172,
-   "matched": 74,
-   "partial": 98,
+   "matched": 119,
+   "partial": 53,
    "missing": 0,
-   "parity_pct": 71.5,
+   "parity_pct": 84.6,
    "groups": {
     "General": {
      "total": 30,
-     "matched": 11,
-     "partial": 19,
+     "matched": 19,
+     "partial": 11,
      "missing": 0,
-     "parity_pct": 68.3
+     "parity_pct": 81.7
     },
     "View": {
      "total": 7,
-     "matched": 7,
-     "partial": 0,
+     "matched": 4,
+     "partial": 3,
      "missing": 0,
-     "parity_pct": 100.0
+     "parity_pct": 78.6
     },
     "Navigation": {
      "total": 20,
-     "matched": 6,
-     "partial": 14,
+     "matched": 16,
+     "partial": 4,
      "missing": 0,
-     "parity_pct": 65.0
+     "parity_pct": 90.0
     },
     "Chat": {
      "total": 51,
-     "matched": 12,
-     "partial": 39,
+     "matched": 33,
+     "partial": 18,
      "missing": 0,
-     "parity_pct": 61.8
+     "parity_pct": 82.4
     },
     "Workspace": {
      "total": 37,
-     "matched": 13,
-     "partial": 24,
+     "matched": 21,
+     "partial": 16,
      "missing": 0,
-     "parity_pct": 67.6
+     "parity_pct": 78.4
     },
     "Code review": {
      "total": 8,
@@ -121,10 +121,10 @@
     },
     "Terminal": {
      "total": 12,
-     "matched": 11,
-     "partial": 1,
+     "matched": 12,
+     "partial": 0,
      "missing": 0,
-     "parity_pct": 95.8
+     "parity_pct": 100.0
     },
     "feature": {
      "total": 7,
@@ -240,7 +240,7 @@
  },
  "persistence_meta": {
   "conductor_rebuild": {
-   "migrations": 5,
+   "migrations": 6,
    "errors": [],
    "schema_source": "PRAGMA table_info"
   },
@@ -664,46 +664,15 @@
    "area": "settings",
    "parent_obligation": "db.conductor-schema",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 29,
-    "matched": 23,
-    "partial": 3,
-    "missing": 3,
-    "parity_pct": 84.5
+    "matched": 29,
+    "partial": 0,
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "settings table key (deprecated)",
-     "id": "default_codex_thinking_level",
-     "status": "declared"
-    },
-    {
-     "group": "settings table key (deprecated)",
-     "id": "default_model",
-     "status": "declared"
-    },
-    {
-     "group": "settings table key",
-     "id": "file_backed_settings_migration_complete",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "repo_conductor_config_file_migration_v2_complete",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "repo_custom_prompt_file_migration_complete",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "review_codex_thinking_level",
-     "status": "declared"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "settings.toml.prompts",
@@ -794,37 +763,12 @@
    "result": "fail",
    "parity": {
     "total": 30,
-    "matched": 11,
-    "partial": 19,
+    "matched": 19,
+    "partial": 11,
     "missing": 0,
-    "parity_pct": 68.3
+    "parity_pct": 81.7
    },
    "gaps": [
-    {
-     "group": "General",
-     "id": "toggleTheme",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "quitApplication",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "dialog.primaryAction",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "diagnostics.close",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "openDebugTools",
-     "status": "declared"
-    },
     {
      "group": "General",
      "id": "openSidecarLogs",
@@ -833,21 +777,6 @@
     {
      "group": "General",
      "id": "openAppLogViewer",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "native.preventSelectAll",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "routine.save",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "onboarding.cloud.continue",
      "status": "declared"
     },
     {
@@ -903,15 +832,31 @@
    "area": "shortcuts",
    "parent_obligation": null,
    "owner": "builder",
-   "result": "pass",
+   "result": "fail",
    "parity": {
     "total": 7,
-    "matched": 7,
-    "partial": 0,
+    "matched": 4,
+    "partial": 3,
     "missing": 0,
-    "parity_pct": 100.0
+    "parity_pct": 78.6
    },
-   "gaps": []
+   "gaps": [
+    {
+     "group": "View",
+     "id": "view.toggleTerminalPanel",
+     "status": "declared"
+    },
+    {
+     "group": "View",
+     "id": "view.toggleZenMode",
+     "status": "declared"
+    },
+    {
+     "group": "View",
+     "id": "view.resetZoom",
+     "status": "declared"
+    }
+   ]
   },
   {
    "obligation_id": "keys.wire.navigation",
@@ -922,15 +867,20 @@
    "result": "fail",
    "parity": {
     "total": 20,
-    "matched": 6,
-    "partial": 14,
+    "matched": 16,
+    "partial": 4,
     "missing": 0,
-    "parity_pct": 65.0
+    "parity_pct": 90.0
    },
    "gaps": [
     {
      "group": "Navigation",
-     "id": "nav.closeTab",
+     "id": "nav.previousTab",
+     "status": "declared"
+    },
+    {
+     "group": "Navigation",
+     "id": "nav.nextTab",
      "status": "declared"
     },
     {
@@ -941,61 +891,6 @@
     {
      "group": "Navigation",
      "id": "nav.splitTab",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "nav.searchInFiles",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "nav.addRepository",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo1",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo2",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo3",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo4",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo5",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo6",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo7",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo8",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "org.switchTo9",
      "status": "declared"
     }
    ]
@@ -1009,22 +904,12 @@
    "result": "fail",
    "parity": {
     "total": 51,
-    "matched": 12,
-    "partial": 39,
+    "matched": 33,
+    "partial": 18,
     "missing": 0,
-    "parity_pct": 61.8
+    "parity_pct": 82.4
    },
    "gaps": [
-    {
-     "group": "Chat",
-     "id": "nav.newTab",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.composer.pasteFilePaths",
-     "status": "declared"
-    },
     {
      "group": "Chat",
      "id": "chat.planResponse.submit",
@@ -1033,16 +918,6 @@
     {
      "group": "Chat",
      "id": "chat.goal.save",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.question.previous",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.question.next",
      "status": "declared"
     },
     {
@@ -1092,108 +967,28 @@
     },
     {
      "group": "Chat",
-     "id": "chat.question.focusOther",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.focus",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.togglePlanMode",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.approvePlan",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.approveToolCall",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.autoAcceptToolCall",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.denyToolCall",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.linkLinear",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.openModelPicker",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.toggleFastMode",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.toggleThinking",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
      "id": "chat.selectLoadout1",
-     "status": "declared"
+     "status": "partial"
     },
     {
      "group": "Chat",
      "id": "chat.selectLoadout2",
-     "status": "declared"
+     "status": "partial"
     },
     {
      "group": "Chat",
      "id": "chat.selectLoadout3",
-     "status": "declared"
+     "status": "partial"
     },
     {
      "group": "Chat",
      "id": "chat.selectLoadout4",
-     "status": "declared"
+     "status": "partial"
     },
     {
      "group": "Chat",
      "id": "chat.selectLoadout5",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.nextAttention",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.search",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.searchNext",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.searchPrevious",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.scrollToMatch",
-     "status": "declared"
+     "status": "partial"
     },
     {
      "group": "Chat",
@@ -1203,11 +998,6 @@
     {
      "group": "Chat",
      "id": "chat.forkToNewTab",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.toggleSpeechToText",
      "status": "declared"
     }
    ]
@@ -1221,22 +1011,12 @@
    "result": "fail",
    "parity": {
     "total": 37,
-    "matched": 13,
-    "partial": 24,
+    "matched": 21,
+    "partial": 16,
     "missing": 0,
-    "parity_pct": 67.6
+    "parity_pct": 78.4
    },
    "gaps": [
-    {
-     "group": "Workspace",
-     "id": "workspace.createFromPRBranchIssue",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.addToBacklogFromComposer",
-     "status": "declared"
-    },
     {
      "group": "Workspace",
      "id": "workspace.startUnstartedWorkspace",
@@ -1254,42 +1034,7 @@
     },
     {
      "group": "Workspace",
-     "id": "workspace.toggleCreateFrom",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.openInApp",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.openRemoteInApp",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.openInMenu",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.toggleRun",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.togglePortForwarding",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.toggleFileEdit",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.contextMenu.toggleRead",
+     "id": "workspace.copyLink",
      "status": "declared"
     },
     {
@@ -1334,12 +1079,17 @@
     },
     {
      "group": "Workspace",
-     "id": "git.pull",
+     "id": "git.createPR",
      "status": "declared"
     },
     {
      "group": "Workspace",
-     "id": "git.fixErrors",
+     "id": "git.mergePR",
+     "status": "declared"
+    },
+    {
+     "group": "Workspace",
+     "id": "workspace.showUncommittedChanges",
      "status": "declared"
     },
     {
@@ -1366,7 +1116,7 @@
    "gaps": [
     {
      "group": "Code review",
-     "id": "editor.openSearch",
+     "id": "diff.open",
      "status": "declared"
     }
    ]
@@ -1377,21 +1127,15 @@
    "area": "shortcuts",
    "parent_obligation": null,
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 12,
-    "matched": 11,
-    "partial": 1,
+    "matched": 12,
+    "partial": 0,
     "missing": 0,
-    "parity_pct": 95.8
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "Terminal",
-     "id": "terminal.openLocalhost",
-     "status": "declared"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "keys.bindings-route",
@@ -2361,14 +2105,14 @@
    "area": "settings",
    "group": "settings table key (deprecated)",
    "id": "default_codex_thinking_level",
-   "status": "declared",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings table key (deprecated)",
    "id": "default_model",
-   "status": "declared",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -2396,7 +2140,7 @@
    "area": "settings",
    "group": "settings table key",
    "id": "file_backed_settings_migration_complete",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -2487,14 +2231,14 @@
    "area": "settings",
    "group": "settings table key",
    "id": "repo_conductor_config_file_migration_v2_complete",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings table key",
    "id": "repo_custom_prompt_file_migration_complete",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -2508,7 +2252,7 @@
    "area": "settings",
    "group": "settings table key",
    "id": "review_codex_thinking_level",
-   "status": "declared",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -2704,8 +2448,8 @@
    "area": "shortcuts",
    "group": "General",
    "id": "toggleTheme",
-   "status": "declared",
-   "detail": "meta+alt+T (KeyT); no handler references this id"
+   "status": "matched",
+   "detail": "meta+alt+T (KeyT)"
   },
   {
    "area": "shortcuts",
@@ -2725,8 +2469,8 @@
    "area": "shortcuts",
    "group": "General",
    "id": "quitApplication",
-   "status": "declared",
-   "detail": "meta+q; no handler references this id"
+   "status": "matched",
+   "detail": "meta+q"
   },
   {
    "area": "shortcuts",
@@ -2746,15 +2490,15 @@
    "area": "shortcuts",
    "group": "General",
    "id": "dialog.primaryAction",
-   "status": "declared",
-   "detail": "meta+Enter; no handler references this id"
+   "status": "matched",
+   "detail": "meta+Enter"
   },
   {
    "area": "shortcuts",
    "group": "General",
    "id": "diagnostics.close",
-   "status": "declared",
-   "detail": "meta+Escape; no handler references this id"
+   "status": "matched",
+   "detail": "meta+Escape"
   },
   {
    "area": "shortcuts",
@@ -2767,8 +2511,8 @@
    "area": "shortcuts",
    "group": "General",
    "id": "openDebugTools",
-   "status": "declared",
-   "detail": "meta+alt+I (KeyI); no handler references this id"
+   "status": "matched",
+   "detail": "meta+alt+I (KeyI)"
   },
   {
    "area": "shortcuts",
@@ -2788,8 +2532,8 @@
    "area": "shortcuts",
    "group": "General",
    "id": "native.preventSelectAll",
-   "status": "declared",
-   "detail": "meta+a; no handler references this id"
+   "status": "matched",
+   "detail": "meta+a"
   },
   {
    "area": "shortcuts",
@@ -2816,15 +2560,15 @@
    "area": "shortcuts",
    "group": "View",
    "id": "view.toggleTerminalPanel",
-   "status": "matched",
-   "detail": "meta+j"
+   "status": "declared",
+   "detail": "meta+j; no handler references this id"
   },
   {
    "area": "shortcuts",
    "group": "View",
    "id": "view.toggleZenMode",
-   "status": "matched",
-   "detail": "meta+."
+   "status": "declared",
+   "detail": "meta+.; no handler references this id"
   },
   {
    "area": "shortcuts",
@@ -2844,8 +2588,8 @@
    "area": "shortcuts",
    "group": "View",
    "id": "view.resetZoom",
-   "status": "matched",
-   "detail": "meta+0"
+   "status": "declared",
+   "detail": "meta+0; no handler references this id"
   },
   {
    "area": "shortcuts",
@@ -2872,22 +2616,22 @@
    "area": "shortcuts",
    "group": "Navigation",
    "id": "nav.previousTab",
-   "status": "matched",
-   "detail": "ctrl+shift+Tab | meta+shift+[ (BracketLeft) | meta+alt+ArrowLeft"
+   "status": "declared",
+   "detail": "ctrl+shift+Tab | meta+shift+[ (BracketLeft) | meta+alt+ArrowLeft; no handler references this id"
   },
   {
    "area": "shortcuts",
    "group": "Navigation",
    "id": "nav.nextTab",
-   "status": "matched",
-   "detail": "ctrl+Tab | meta+shift+] (BracketRight) | meta+alt+ArrowRight"
+   "status": "declared",
+   "detail": "ctrl+Tab | meta+shift+] (BracketRight) | meta+alt+ArrowRight; no handler references this id"
   },
   {
    "area": "shortcuts",
    "group": "Navigation",
    "id": "nav.closeTab",
-   "status": "declared",
-   "detail": "meta+w; no handler references this id"
+   "status": "matched",
+   "detail": "meta+w"
   },
   {
    "area": "shortcuts",
@@ -2900,8 +2644,8 @@
    "area": "shortcuts",
    "group": "Chat",
    "id": "nav.newTab",
-   "status": "declared",
-   "detail": "meta+t; no handler references this id"
+   "status": "matched",
+   "detail": "meta+t"
   },
   {
    "area": "shortcuts",
@@ -2921,78 +2665,78 @@
    "area": "shortcuts",
    "group": "Navigation",
    "id": "nav.searchInFiles",
-   "status": "declared",
-   "detail": "meta+shift+f; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+f"
   },
   {
    "area": "shortcuts",
    "group": "Navigation",
    "id": "nav.addRepository",
-   "status": "declared",
-   "detail": "meta+alt+A (KeyA); no handler references this id"
+   "status": "matched",
+   "detail": "meta+alt+A (KeyA)"
   },
   {
    "area": "shortcuts",
    "group": "Navigation",
    "id": "org.switchTo1",
-   "status": "declared",
-   "detail": "ctrl+1; no handler references this id"
+   "status": "matched",
+   "detail": "ctrl+1"
   },
   {
    "area": "shortcuts",
    "group": "Navigation",
    "id": "org.switchTo2",
-   "status": "declared",
-   "detail": "ctrl+2; no handler references this id"
+   "status": "matched",
+   "detail": "ctrl+2"
   },
   {
    "area": "shortcuts",
    "group": "Navigation",
    "id": "org.switchTo3",
-   "status": "declared",
-   "detail": "ctrl+3; no handler references this id"
+   "status": "matched",
+   "detail": "ctrl+3"
   },
   {
    "area": "shortcuts",
    "group": "Navigation",
    "id": "org.switchTo4",
-   "status": "declared",
-   "detail": "ctrl+4; no handler references this id"
+   "status": "matched",
+   "detail": "ctrl+4"
   },
   {
    "area": "shortcuts",
    "group": "Navigation",
    "id": "org.switchTo5",
-   "status": "declared",
-   "detail": "ctrl+5; no handler references this id"
+   "status": "matched",
+   "detail": "ctrl+5"
   },
   {
    "area": "shortcuts",
    "group": "Navigation",
    "id": "org.switchTo6",
-   "status": "declared",
-   "detail": "ctrl+6; no handler references this id"
+   "status": "matched",
+   "detail": "ctrl+6"
   },
   {
    "area": "shortcuts",
    "group": "Navigation",
    "id": "org.switchTo7",
-   "status": "declared",
-   "detail": "ctrl+7; no handler references this id"
+   "status": "matched",
+   "detail": "ctrl+7"
   },
   {
    "area": "shortcuts",
    "group": "Navigation",
    "id": "org.switchTo8",
-   "status": "declared",
-   "detail": "ctrl+8; no handler references this id"
+   "status": "matched",
+   "detail": "ctrl+8"
   },
   {
    "area": "shortcuts",
    "group": "Navigation",
    "id": "org.switchTo9",
-   "status": "declared",
-   "detail": "ctrl+9; no handler references this id"
+   "status": "matched",
+   "detail": "ctrl+9"
   },
   {
    "area": "shortcuts",
@@ -3005,15 +2749,15 @@
    "area": "shortcuts",
    "group": "Workspace",
    "id": "workspace.createFromPRBranchIssue",
-   "status": "declared",
-   "detail": "meta+shift+n; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+n"
   },
   {
    "area": "shortcuts",
    "group": "Workspace",
    "id": "workspace.addToBacklogFromComposer",
-   "status": "declared",
-   "detail": "alt+Enter; no handler references this id"
+   "status": "matched",
+   "detail": "alt+Enter"
   },
   {
    "area": "shortcuts",
@@ -3040,8 +2784,8 @@
    "area": "shortcuts",
    "group": "Workspace",
    "id": "workspace.toggleCreateFrom",
-   "status": "declared",
-   "detail": "meta+i; no handler references this id"
+   "status": "matched",
+   "detail": "meta+i"
   },
   {
    "area": "shortcuts",
@@ -3054,57 +2798,57 @@
    "area": "shortcuts",
    "group": "Workspace",
    "id": "workspace.openInApp",
-   "status": "declared",
-   "detail": "meta+o; no handler references this id"
+   "status": "matched",
+   "detail": "meta+o"
   },
   {
    "area": "shortcuts",
    "group": "Workspace",
    "id": "workspace.openRemoteInApp",
-   "status": "declared",
-   "detail": "meta+alt+O (KeyO); no handler references this id"
+   "status": "matched",
+   "detail": "meta+alt+O (KeyO)"
   },
   {
    "area": "shortcuts",
    "group": "Workspace",
    "id": "workspace.openInMenu",
-   "status": "declared",
-   "detail": "meta+shift+o; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+o"
   },
   {
    "area": "shortcuts",
    "group": "Workspace",
    "id": "workspace.copyLink",
-   "status": "matched",
-   "detail": "meta+shift+c"
+   "status": "declared",
+   "detail": "meta+shift+c; no handler references this id"
   },
   {
    "area": "shortcuts",
    "group": "Workspace",
    "id": "workspace.toggleRun",
-   "status": "declared",
-   "detail": "meta+r; no handler references this id"
+   "status": "matched",
+   "detail": "meta+r"
   },
   {
    "area": "shortcuts",
    "group": "Workspace",
    "id": "workspace.togglePortForwarding",
-   "status": "declared",
-   "detail": "meta+y; no handler references this id"
+   "status": "matched",
+   "detail": "meta+y"
   },
   {
    "area": "shortcuts",
    "group": "Workspace",
    "id": "workspace.toggleFileEdit",
-   "status": "declared",
-   "detail": "meta+e; no handler references this id"
+   "status": "matched",
+   "detail": "meta+e"
   },
   {
    "area": "shortcuts",
    "group": "Workspace",
    "id": "workspace.contextMenu.toggleRead",
-   "status": "declared",
-   "detail": "r; no handler references this id"
+   "status": "matched",
+   "detail": "r"
   },
   {
    "area": "shortcuts",
@@ -3250,8 +2994,8 @@
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.composer.pasteFilePaths",
-   "status": "declared",
-   "detail": "meta+shift+v; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+v"
   },
   {
    "area": "shortcuts",
@@ -3278,15 +3022,15 @@
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.question.previous",
-   "status": "declared",
-   "detail": "ArrowLeft; no handler references this id"
+   "status": "matched",
+   "detail": "ArrowLeft"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.question.next",
-   "status": "declared",
-   "detail": "ArrowRight; no handler references this id"
+   "status": "matched",
+   "detail": "ArrowRight"
   },
   {
    "area": "shortcuts",
@@ -3355,8 +3099,8 @@
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.question.focusOther",
-   "status": "declared",
-   "detail": "0; no handler references this id"
+   "status": "matched",
+   "detail": "0"
   },
   {
    "area": "shortcuts",
@@ -3369,43 +3113,43 @@
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.focus",
-   "status": "declared",
-   "detail": "meta+l; no handler references this id"
+   "status": "matched",
+   "detail": "meta+l"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.togglePlanMode",
-   "status": "declared",
-   "detail": "shift+Tab; no handler references this id"
+   "status": "matched",
+   "detail": "shift+Tab"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.approvePlan",
-   "status": "declared",
-   "detail": "meta+shift+Enter; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+Enter"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.approveToolCall",
-   "status": "declared",
-   "detail": "Enter; no handler references this id"
+   "status": "matched",
+   "detail": "Enter"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.autoAcceptToolCall",
-   "status": "declared",
-   "detail": "meta+Enter; no handler references this id"
+   "status": "matched",
+   "detail": "meta+Enter"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.denyToolCall",
-   "status": "declared",
-   "detail": "Backspace; no handler references this id"
+   "status": "matched",
+   "detail": "Backspace"
   },
   {
    "area": "shortcuts",
@@ -3418,8 +3162,8 @@
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.linkLinear",
-   "status": "declared",
-   "detail": "meta+i; no handler references this id"
+   "status": "matched",
+   "detail": "meta+i"
   },
   {
    "area": "shortcuts",
@@ -3432,92 +3176,92 @@
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.openModelPicker",
-   "status": "declared",
-   "detail": "meta+/; no handler references this id"
+   "status": "matched",
+   "detail": "meta+/"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.toggleFastMode",
-   "status": "declared",
-   "detail": "meta+shift+e; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+e"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.toggleThinking",
-   "status": "declared",
-   "detail": "meta+shift+/; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+/"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.selectLoadout1",
-   "status": "declared",
-   "detail": "meta+ctrl+1 (Digit1); no handler references this id"
+   "status": "partial",
+   "detail": "meta+ctrl+1 (Digit1)"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.selectLoadout2",
-   "status": "declared",
-   "detail": "meta+ctrl+2 (Digit2); no handler references this id"
+   "status": "partial",
+   "detail": "meta+ctrl+2 (Digit2)"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.selectLoadout3",
-   "status": "declared",
-   "detail": "meta+ctrl+3 (Digit3); no handler references this id"
+   "status": "partial",
+   "detail": "meta+ctrl+3 (Digit3)"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.selectLoadout4",
-   "status": "declared",
-   "detail": "meta+ctrl+4 (Digit4); no handler references this id"
+   "status": "partial",
+   "detail": "meta+ctrl+4 (Digit4)"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.selectLoadout5",
-   "status": "declared",
-   "detail": "meta+ctrl+5 (Digit5); no handler references this id"
+   "status": "partial",
+   "detail": "meta+ctrl+5 (Digit5)"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.nextAttention",
-   "status": "declared",
-   "detail": "meta+alt+L (KeyL); no handler references this id"
+   "status": "matched",
+   "detail": "meta+alt+L (KeyL)"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.search",
-   "status": "declared",
-   "detail": "meta+f; no handler references this id"
+   "status": "matched",
+   "detail": "meta+f"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.searchNext",
-   "status": "declared",
-   "detail": "meta+g; no handler references this id"
+   "status": "matched",
+   "detail": "meta+g"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.searchPrevious",
-   "status": "declared",
-   "detail": "meta+shift+g; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+g"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.scrollToMatch",
-   "status": "declared",
-   "detail": "meta+alt+J (KeyJ); no handler references this id"
+   "status": "matched",
+   "detail": "meta+alt+J (KeyJ)"
   },
   {
    "area": "shortcuts",
@@ -3537,15 +3281,15 @@
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.toggleSpeechToText",
-   "status": "declared",
-   "detail": "ctrl+shift+d; no handler references this id"
+   "status": "matched",
+   "detail": "ctrl+shift+d"
   },
   {
    "area": "shortcuts",
    "group": "Workspace",
    "id": "git.createPR",
-   "status": "matched",
-   "detail": "meta+shift+p"
+   "status": "declared",
+   "detail": "meta+shift+p; no handler references this id"
   },
   {
    "area": "shortcuts",
@@ -3558,22 +3302,22 @@
    "area": "shortcuts",
    "group": "Workspace",
    "id": "git.pull",
-   "status": "declared",
-   "detail": "meta+shift+l; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+l"
   },
   {
    "area": "shortcuts",
    "group": "Workspace",
    "id": "git.mergePR",
-   "status": "matched",
-   "detail": "meta+shift+m"
+   "status": "declared",
+   "detail": "meta+shift+m; no handler references this id"
   },
   {
    "area": "shortcuts",
    "group": "Workspace",
    "id": "git.fixErrors",
-   "status": "declared",
-   "detail": "meta+shift+x; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+x"
   },
   {
    "area": "shortcuts",
@@ -3593,15 +3337,15 @@
    "area": "shortcuts",
    "group": "Workspace",
    "id": "workspace.showUncommittedChanges",
-   "status": "matched",
-   "detail": "meta+alt+U (KeyU)"
+   "status": "declared",
+   "detail": "meta+alt+U (KeyU); no handler references this id"
   },
   {
    "area": "shortcuts",
    "group": "General",
    "id": "routine.save",
-   "status": "declared",
-   "detail": "meta+s; no handler references this id"
+   "status": "matched",
+   "detail": "meta+s"
   },
   {
    "area": "shortcuts",
@@ -3614,15 +3358,15 @@
    "area": "shortcuts",
    "group": "Code review",
    "id": "editor.openSearch",
-   "status": "declared",
-   "detail": "meta+f; no handler references this id"
+   "status": "matched",
+   "detail": "meta+f; native delegation: CodeMirror default keymap: openSearchPanel (Mod-f/Mod-F)"
   },
   {
    "area": "shortcuts",
    "group": "Code review",
    "id": "diff.open",
-   "status": "matched",
-   "detail": "meta+shift+d"
+   "status": "declared",
+   "detail": "meta+shift+d; no handler references this id"
   },
   {
    "area": "shortcuts",
@@ -3684,8 +3428,8 @@
    "area": "shortcuts",
    "group": "Terminal",
    "id": "terminal.openLocalhost",
-   "status": "declared",
-   "detail": "meta+shift+b; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+b"
   },
   {
    "area": "shortcuts",
@@ -3768,8 +3512,8 @@
    "area": "shortcuts",
    "group": "General",
    "id": "onboarding.cloud.continue",
-   "status": "declared",
-   "detail": "Enter; no handler references this id"
+   "status": "matched",
+   "detail": "Enter"
   },
   {
    "area": "shortcuts",
@@ -3895,7 +3639,7 @@
    "group": "conductor.db table",
    "id": "workspaces",
    "status": "matched",
-   "detail": "columns match"
+   "detail": "+setup_log_state"
   },
   {
    "area": "persistence",

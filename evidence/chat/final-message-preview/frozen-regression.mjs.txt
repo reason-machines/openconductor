@@ -1,0 +1,52 @@
+// Source-derived grouping contract only. No vendor module is evaluated.
+// Qualified pinned _jt marks each selected message by ID before batching.
+// Expectations stop at groupParts output, not mounted/cross-chunk rendering.
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { groupParts } from './toolGroups.ts';
+const text = (text) => ({kind:'text', text, streaming:false});
+const thinking = (text) => ({kind:'thinking', text, streaming:false});
+const tool = (id, name='Read') => ({kind:'tool',call:{id,name,input:{},tool:{name,input:{}},status:'done'}});
+const message = (messageKey, ...parts) => parts.map((part,i)=>({key:`${messageKey}:${i}`,messageKey,part}));
+const history = () => ['a','b','c'].flatMap((id)=>message(id,tool(id)));
+const previewKeys = (items) => items.filter((g)=>g.kind==='part'&&g.preview).map((g)=>g.key);
+const summarized = (items) => items.flatMap((g)=>g.kind==='summary'?g.parts.map((p)=>p.key):[]);
+
+test('qualified _jt message membership: all final text parts are protected',()=>{
+  const items=groupParts([...history(),...message('final',text('first paragraph'),text('second paragraph'))],'turn');
+  assert.deepEqual(previewKeys(items),['final:0','final:1']);
+  assert.deepEqual(summarized(items),['a:0','b:0','c:0']);
+});
+test('qualified _jt message membership: mixed final text/tool/text is one protected message',()=>{
+  const items=groupParts([...history(),...message('final',text('before'),tool('final-tool'),text('after'))],'turn');
+  assert.deepEqual(previewKeys(items),['final:0','final:1','final:2']);
+  assert.deepEqual(summarized(items),['a:0','b:0','c:0']);
+});
+test('qualified _jt message membership: already-visible thinking stays with selected message',()=>{
+  const items=groupParts([...history(),...message('final',thinking('reasoning'),text('answer'))],'turn');
+  assert.deepEqual(previewKeys(items),['final:0','final:1']);
+  assert.deepEqual(summarized(items),['a:0','b:0','c:0']);
+});
+test('control: a single final text stays selected',()=>{
+  assert.deepEqual(previewKeys(groupParts([...history(),...message('final',text('answer'))],'turn')),['final:0']);
+});
+test('control: the later ordinary message supersedes older text',()=>{
+  assert.deepEqual(previewKeys(groupParts([...message('older',text('older')),...message('later',text('later'))],'turn')),['later:0']);
+});
+test('control: a later ordinary tool-only message does not inhibit text',()=>{
+  assert.deepEqual(previewKeys(groupParts([...message('final',text('answer')),...message('tool',tool('read'))],'turn')),['final:0']);
+});
+test('control: later AskUserQuestion protects its message and inhibits earlier text',()=>{
+  assert.deepEqual(previewKeys(groupParts([...message('older',text('older')),...message('question',text('prompt'),tool('question','AskUserQuestion'))],'turn')),['question:0','question:1']);
+});
+test('control: later text after a request remains selected too',()=>{
+  assert.deepEqual(previewKeys(groupParts([...message('plan',tool('plan','ExitPlanMode')),...message('final',text('answer'))],'turn')),['plan:0','final:0']);
+});
+test('control: a nonfinal block does not gain an ordinary preview',()=>{
+  assert.deepEqual(previewKeys(groupParts([...history(),...message('not-final',text('one'),text('two'))],'turn',false)),[]);
+});
+test('control: blank final parts do not render or displace real text',()=>{
+  const items=groupParts([...history(),...message('final',text('answer'),text('  '),thinking('\n'))],'turn');
+  assert.deepEqual(previewKeys(items),['final:0']);
+  assert.deepEqual(summarized(items),['a:0','b:0','c:0']);
+});

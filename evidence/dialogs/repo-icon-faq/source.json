@@ -1,0 +1,150 @@
+{
+  "author": "Conductor Rebuild",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "original_archive_sha256": "c007a6ac77d57b56cdfe8158817ffbcffee6a8f5e7f4a63e2eaef65cbf21b30d",
+  "limits": "Retained shipped Conductor 0.87.6 bytes only. Historical renderer semantic analysis exhausted heap. No target code is evaluated. Static source does not prove runtime rendering or native URL launch.",
+  "assets": {
+    "renderer": {
+      "file": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "file": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "spans": [
+    {
+      "asset": "renderer",
+      "name": "dialog",
+      "utf8_half_open": [
+        11061103,
+        11061989
+      ],
+      "bytes": 886,
+      "sha256": "cae1f90a30cecb9708ddf4b36a0278403ed5a5fa428e845bff2e2bf7b73ed695",
+      "file": "reference/dialog.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "tabs",
+      "utf8_half_open": [
+        10851437,
+        10852953
+      ],
+      "bytes": 1516,
+      "sha256": "cff9673cb8228bdfacecd367fbc8bcfc5c6037de1245b20fef4aff8013651acc",
+      "file": "reference/tabs.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "favicon",
+      "utf8_half_open": [
+        10844201,
+        10846368
+      ],
+      "bytes": 2167,
+      "sha256": "95e0c433ee0bbf27dc4a9d9c8deff6d0e6a0a59f9acae6ce12a90fe983547a42",
+      "file": "reference/favicon.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "learn-more",
+      "utf8_half_open": [
+        10846368,
+        10846418
+      ],
+      "bytes": 50,
+      "sha256": "22838731736f3a9ee1360baeed0540c178b1a292a0b4a84ad948adc27bd1479d",
+      "file": "reference/learn-more.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "urls-import",
+      "utf8_half_open": [
+        58832,
+        58840
+      ],
+      "bytes": 8,
+      "sha256": "8c10e5473022db76d433df1c8d32e6179b1ab54fbe8ba37a76243a18287a8d04",
+      "file": "reference/urls-import.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "opener-import",
+      "utf8_half_open": [
+        55716,
+        55724
+      ],
+      "bytes": 8,
+      "sha256": "851537e93cafa6a0ced2ec392c649c79aac23edf10649c10f53c45232cd44c5a",
+      "file": "reference/opener-import.txt"
+    },
+    {
+      "asset": "index",
+      "name": "urls-export",
+      "utf8_half_open": [
+        3485247,
+        3485256
+      ],
+      "bytes": 9,
+      "sha256": "157ad1f99431690eb81eb3fde84f45d089a85de288c7dbc7491ec6db50810205",
+      "file": "reference/urls-export.txt"
+    },
+    {
+      "asset": "index",
+      "name": "opener-export",
+      "utf8_half_open": [
+        3482114,
+        3482123
+      ],
+      "bytes": 9,
+      "sha256": "9141a9550be7a24c042f7b7341e12c056ce2fd289d45b12a04f6c597728d5839",
+      "file": "reference/opener-export.txt"
+    },
+    {
+      "asset": "index",
+      "name": "urls",
+      "utf8_half_open": [
+        2542488,
+        2543420
+      ],
+      "bytes": 932,
+      "sha256": "05638cc0720d256fbf418dc06a166a46f861cb1a88ceba9fda8e932b4a0dadc4",
+      "file": "reference/urls.txt"
+    },
+    {
+      "asset": "index",
+      "name": "opener",
+      "utf8_half_open": [
+        2543420,
+        2543494
+      ],
+      "bytes": 74,
+      "sha256": "0602e4646c67f7bc952c618aa736007efcca5dcac75450beb393e34a69811f54",
+      "file": "reference/opener.txt"
+    }
+  ],
+  "baseline_commit": "26f8345401efb021bef2f12b17815eba6c57170c",
+  "baseline": [
+    {
+      "file": "src/components/RepoIconDialog.tsx",
+      "sha256": "f984f3b08e33b35c3ea111b5cd421f3267c9cfca51e2e2746f72d5b32c3f75e9"
+    },
+    {
+      "file": "src/backend.ts",
+      "sha256": "4b13170fcaffce5d828de400369164e2dfdcc3d3aaa818a3860e0a6e826ce237"
+    },
+    {
+      "file": "src/state/repoIcon.ts",
+      "sha256": "35a2330839a3a9280793cbaf25cfb54ca4f336978d1e6da631187093662801c4"
+    },
+    {
+      "file": "src-tauri/src/sidebar_repo_commands.rs",
+      "sha256": "fb72a08e7712b0670043009568999bb81a64fa55a8fd5362d56456eec13c3cbc"
+    }
+  ],
+  "destination_adaptation": "Preserve the declared Learn more action but open OpenConductor-owned repository-icon documentation, not the vendor FAQ. The document describes the current implementation."
+}

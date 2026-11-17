@@ -1,0 +1,62 @@
+(node:156) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:163) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted mention notification permission: disable bypasses denied permission
+ok 1 - mounted mention notification permission: disable bypasses denied permission
+  ---
+  duration_ms: 283.828753
+  type: 'test'
+  ...
+# Subtest: mounted mention notification permission: already granted enables without feedback
+ok 2 - mounted mention notification permission: already granted enables without feedback
+  ---
+  duration_ms: 113.792052
+  type: 'test'
+  ...
+# Subtest: mounted mention notification permission: native grant enables without feedback
+ok 3 - mounted mention notification permission: native grant enables without feedback
+  ---
+  duration_ms: 72.359359
+  type: 'test'
+  ...
+# Subtest: mounted mention notification permission: granted request enables without feedback
+ok 4 - mounted mention notification permission: granted request enables without feedback
+  ---
+  duration_ms: 77.346643
+  type: 'test'
+  ...
+# Subtest: mounted mention notification permission: denied request reports one error and writes nothing
+ok 5 - mounted mention notification permission: denied request reports one error and writes nothing
+  ---
+  duration_ms: 70.610934
+  type: 'test'
+  ...
+# Subtest: mounted mention notification permission: previously denied reports one error and writes nothing
+ok 6 - mounted mention notification permission: previously denied reports one error and writes nothing
+  ---
+  duration_ms: 59.276666
+  type: 'test'
+  ...
+# Subtest: mounted mention notification permission: pending denial is silent until settlement
+ok 7 - mounted mention notification permission: pending denial is silent until settlement
+  ---
+  duration_ms: 50.995105
+  type: 'test'
+  ...
+# Subtest: mounted mention notification permission: pending grant preserves latest settings without feedback
+ok 8 - mounted mention notification permission: pending grant preserves latest settings without feedback
+  ---
+  duration_ms: 48.408789
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1069.84619

@@ -47,6 +47,7 @@ interface Props {
   sidebarVisible: boolean;
   dispatch: Dispatch<Action>;
   onCreateWorkspace: () => void;
+  onWorkspaceContextMenu?: (row: HomeRow, at: { x: number; y: number }) => void;
 }
 
 function Highlight({ match, fallback }: { match?: FieldMatch; fallback: string }) {
@@ -159,6 +160,7 @@ function Row({
   now,
   onOpen,
   dispatch,
+  onWorkspaceContextMenu,
 }: {
   row: HomeRow;
   showRepoIcon: boolean;
@@ -167,6 +169,7 @@ function Row({
   now: number;
   onOpen: () => void;
   dispatch: Dispatch<Action>;
+  onWorkspaceContextMenu?: Props["onWorkspaceContextMenu"];
 }) {
   const { workspace: ws, repo, archived, matches } = row;
   const tone = archived ? "is-archived" : isWorkspaceUnread(ws) ? "is-unread" : "";
@@ -185,6 +188,10 @@ function Row({
       data-selected={active || undefined}
       className="allws-row"
       onClick={onOpen}
+      onContextMenu={!archived && !unstarted && onWorkspaceContextMenu ? (event) => {
+        event.preventDefault();
+        onWorkspaceContextMenu(row, { x: event.clientX, y: event.clientY });
+      } : undefined}
       title={row.title}
     >
       <div className="allws-row-main">
@@ -237,7 +244,7 @@ function Row({
   );
 }
 
-export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch, onCreateWorkspace }: Props) {
+export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch, onCreateWorkspace, onWorkspaceContextMenu }: Props) {
   const { overrides } = useKeybindingOverrides();
   const [query, setQuery] = useState("");
   const repoIds = useMemo(() => new Set(repos.map((r) => r.id)), [repos]);
@@ -248,19 +255,16 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
   };
   const [limit, setLimit] = useState(PAGE_SIZE);
   const [activeKey, setActiveKey] = useState<string>();
+  const list = useRef<HTMLDivElement>(null);
   const sentinel = useRef<HTMLDivElement>(null);
   const now = Date.now();
   const showNumbers = useBoolPref("experimental_show_workspace_numbers");
 
   useEffect(() => setLimit(PAGE_SIZE), [query, filters]);
 
-  // Archived workspaces are not in the sidebar state; read them from
-  // conductor.db when the archive filter shows them, and again after an
-  // archive or unarchive changes the repos.
+  // Project choices include archived-only repositories even while archived rows are hidden.
   const [archivedRows, setArchivedRows] = useState<ArchivedWorkspace[]>([]);
-  const showsArchived = filters.archiveFilter !== "active";
   useEffect(() => {
-    if (!showsArchived) return;
     let live = true;
     listArchivedWorkspaces().then(
       (rows) => live && setArchivedRows(rows),
@@ -269,7 +273,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
     return () => {
       live = false;
     };
-  }, [showsArchived, repos]);
+  }, [repos]);
 
   const rows = useMemo(() => homeRows(repos, filters, query, archivedRows), [repos, filters, query, archivedRows]);
   const shown = rows.slice(0, limit);
@@ -277,11 +281,22 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
   const groups = groupByDate(shown, now);
   const flat = groups.flatMap((g) => g.rows.map((row) => ({ row, key: `${g.bucket}:${row.workspace.id}` })));
   const activeIndex = Math.max(0, flat.findIndex((entry) => entry.key === activeKey));
-  const projectChoices = reposWithWorkspaces(repos);
+  const projectChoices = reposWithWorkspaces(repos, archivedRows);
   const empty = emptyAction(repos, filters);
 
   useEffect(() => setActiveKey(flat[activeIndex]?.key), [activeIndex, flat]);
   useEffect(() => setActiveKey(undefined), [query]);
+
+  const selectedKey = flat[activeIndex]?.key;
+  useEffect(() => {
+    const row = list.current?.querySelector<HTMLElement>('[role="option"][aria-selected="true"]');
+    if (!row) return;
+    const group = row.closest(".allws-group");
+    if (group?.querySelector('[role="option"]') === row) {
+      group.querySelector<HTMLElement>(".allws-group-heading")?.scrollIntoView({ block: "nearest" });
+    }
+    row.scrollIntoView({ block: "nearest" });
+  }, [selectedKey, loading]);
 
   useEffect(() => {
     const el = sentinel.current;
@@ -298,22 +313,40 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
       : dispatch({ type: "select", selection: { kind: "workspace", repoId: row.repo.id, workspaceId: row.workspace.id } });
 
   const onSearchKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Home" || e.key === "End") {
+    if (e.defaultPrevented || e.nativeEvent?.isComposing || e.keyCode === 229) return;
+    if (e.key === "Home" || e.key === "End" || (e.metaKey && (e.key === "ArrowUp" || e.key === "ArrowDown"))) {
       e.preventDefault();
-      const entry = flat[e.key === "Home" ? 0 : flat.length - 1];
+      const entry = flat[e.key === "Home" || e.key === "ArrowUp" ? 0 : flat.length - 1];
       if (entry) setActiveKey(entry.key);
       return;
     }
+    const ctrlLetter = e.ctrlKey && !e.metaKey && !e.altKey;
+    const ctrlNext = ctrlLetter && (e.key === "n" || e.key === "j");
+    const ctrlPrevious = ctrlLetter && (e.key === "p" || e.key === "k");
     if (flat.length === 0) {
-      if (e.key === "Enter") e.preventDefault();
+      if ((e.key === "Enter" && !e.metaKey) || ctrlNext || ctrlPrevious ||
+        (e.altKey && (e.key === "ArrowDown" || e.key === "ArrowUp"))) e.preventDefault();
       return;
     }
-    if (e.key === "ArrowDown") {
+    if (e.key === "ArrowDown" || ctrlNext || e.key === "ArrowUp" || ctrlPrevious) {
       e.preventDefault();
-      setActiveKey(flat[Math.min(activeIndex + 1, flat.length - 1)].key);
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setActiveKey(flat[Math.max(activeIndex - 1, 0)].key);
+      const direction = e.key === "ArrowDown" || ctrlNext ? 1 : -1;
+      const nextGroup = e.altKey
+        ? groups[groups.findIndex((group) => group.rows.includes(flat[activeIndex].row)) + direction]
+        : undefined;
+      setActiveKey(nextGroup
+        ? `${nextGroup.bucket}:${nextGroup.rows[0].workspace.id}`
+        : flat[Math.max(0, Math.min(activeIndex + direction, flat.length - 1))].key);
+    } else if (e.key === "Enter" && e.metaKey) {
+      // workspace.startUnstartedWorkspace (⌘↩): open a backlog workspace from
+      // the Home list (Conductor's "Backlog page" displayScope). Only fires for
+      // a focused row whose workspace is in the backlog; plain ↩ handles the
+      // rest. Evidence: keybindings/registry.ts displayScope "Backlog page".
+      const entry = flat[activeIndex];
+      if (entry && !entry.row.archived && entry.row.workspace.manualStatus === "backlog") {
+        e.preventDefault();
+        open(entry.row);
+      }
     } else if (e.key === "Enter") {
       e.preventDefault();
       const entry = flat[activeIndex];
@@ -328,15 +361,16 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
     <div className="allws">
       <div className="allws-top" data-tauri-drag-region>
         {!sidebarVisible && (
-          <button
-            type="button"
-            className="home-sidebar-toggle"
-            title={`Toggle left sidebar (${toggleHint})`}
-            aria-label="Toggle left sidebar"
-            onClick={() => dispatch({ type: "toggleSidebar" })}
-          >
-            <SidebarIcon size={16} />
-          </button>
+          <Tooltip content="Toggle left sidebar" shortcut={toggleHint}>
+            <button
+              type="button"
+              className="home-sidebar-toggle"
+              aria-label="Toggle left sidebar"
+              onClick={() => dispatch({ type: "toggleSidebar" })}
+            >
+              <SidebarIcon size={16} />
+            </button>
+          </Tooltip>
         )}
         <div className="allws-header">
           <h1 className="allws-title">Home</h1>
@@ -357,7 +391,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
                 onKeyDown={onSearchKey}
               />
             </label>
-            {showProjectFilter(repos) && (
+            {showProjectFilter(repos, archivedRows) && (
               <Menu ariaLabel="Projects" label={projectFilterLabel(repos, filters.projects)} icon={<FolderIcon size={14} />}>
                 {() => (
                   <>
@@ -394,7 +428,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
         </div>
       </div>
       <div className="allws-scroll">
-        <div className="allws-list" role="listbox" aria-label="Workspaces">
+        <div ref={list} className="allws-list" role="listbox" aria-label="Workspaces">
           {loading ? (
             <div className="allws-loading" role="status" aria-label="Loading workspaces">
               <RowStatusIcon status="working" size={16} />
@@ -422,6 +456,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
                           open(row);
                         }}
                         dispatch={dispatch}
+                        onWorkspaceContextMenu={onWorkspaceContextMenu}
                       />
                     );
                   })}

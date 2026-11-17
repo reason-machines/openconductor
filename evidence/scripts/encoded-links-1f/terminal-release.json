@@ -1,0 +1,51 @@
+{
+  "author": "Conductor Rebuild",
+  "owner_session": "1f14fa82-4ec3-41fc-b085-32ec441b4228",
+  "grant_message_id": "b047e9d7-2df6-4874-b43a-80b088653e1a",
+  "released_at_utc": "2026-11-12T15:43:51.323568+00:00",
+  "terminal_release": true,
+  "ownjobs": [],
+  "preview_or_browser_started": false,
+  "dependency_restore_needed": false,
+  "red": {
+    "exit": 1,
+    "intended_failures": 7,
+    "passing_controls": 3
+  },
+  "green": {
+    "exit": 0,
+    "pass": 10,
+    "fail": 0
+  },
+  "adjacent": {
+    "exit": 0,
+    "files": 8,
+    "pass": 57,
+    "fail": 0
+  },
+  "fixture_sha256": "2c5b3e9f3074d743531169870ea0131e210e90a6478590ee5d294787126127f0",
+  "lock_sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+  "resources": {
+    "/proc/pressure/cpu": "some avg10=5.60 avg60=8.85 avg300=7.52 total=6857946060\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "/proc/pressure/memory": "some avg10=0.42 avg60=0.85 avg300=0.44 total=939571253\nfull avg10=0.42 avg60=0.79 avg300=0.39 total=515282570\n",
+    "/proc/pressure/io": "some avg10=0.81 avg60=1.03 avg300=0.69 total=734674703\nfull avg10=0.57 avg60=0.60 avg300=0.37 total=293431246\n",
+    "/proc/meminfo": "MemTotal:       33391248 kB\nMemFree:         1696504 kB\nMemAvailable:   28587504 kB\nBuffers:         1386524 kB\nCached:         24113892 kB\nSwapCached:            0 kB\nActive:         15402040 kB\nInactive:       11361284 kB\nActive(anon):     296088 kB\nInactive(anon):  2082876 kB\nActive(file):   15105952 kB\nInactive(file):  9278408 kB\nUnevictable:           0 kB\nMlocked:               0 kB\nSwapTotal:             0 kB\nSwapFree:              0 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:                92 kB\nWriteback:             0 kB\nAnonPages:       1262704 kB\nMapped:           295236 kB\nShmem:           1116496 kB\nKReclaimable:    3825456 kB\nSlab:            4383520 kB\nSReclaimable:    3825456 kB\nSUnreclaim:       558064 kB\nKernelStack:        8008 kB\nPageTables:        26536 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    16695624 kB\nCommitted_AS:    9800732 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:       12932 kB\nVmallocChunk:          0 kB\nPercpu:             6656 kB\nAnonHugePages:         0 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:     1548288 kB\nDirectMap2M:    32006144 kB\nDirectMap1G:     2097152 kB\n",
+    "/proc/self/cgroup": "0::/reason-payload/vm-hands/b-40f6f912-4ca0-489d-96da-2f9e71f1eb7c\n",
+    "/sys/fs/cgroup/memory.max": {
+      "unavailable": "[Errno 2] No such file or directory: '/sys/fs/cgroup/memory.max'"
+    },
+    "/sys/fs/cgroup/memory.current": {
+      "unavailable": "[Errno 2] No such file or directory: '/sys/fs/cgroup/memory.current'"
+    },
+    "/sys/fs/cgroup/memory.pressure": "some avg10=0.42 avg60=0.85 avg300=0.44 total=939571253\nfull avg10=0.42 avg60=0.79 avg300=0.39 total=515282570\n",
+    "/sys/fs/cgroup/cpu.max": {
+      "unavailable": "[Errno 2] No such file or directory: '/sys/fs/cgroup/cpu.max'"
+    },
+    "/sys/fs/cgroup/pids.max": {
+      "unavailable": "[Errno 2] No such file or directory: '/sys/fs/cgroup/pids.max'"
+    }
+  },
+  "namespace_limits": "memory.max, memory.current, cpu.max, and pids.max unavailable; root memory.pressure matches the host snapshot, not isolated own-cgroup clearance",
+  "publication": "continues source-only after release",
+  "no_extra_runtime": true
+}

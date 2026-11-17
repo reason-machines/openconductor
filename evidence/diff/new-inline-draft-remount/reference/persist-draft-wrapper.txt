@@ -1,0 +1,1 @@
+function V7t(t){return zn.persistDraftBody(t)}

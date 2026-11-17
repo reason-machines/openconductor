@@ -1,0 +1,25 @@
+{
+  "command": "nice -n 19 timeout --kill-after=5s 60s cargo generate-lockfile --offline --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend-std-v2/Cargo.toml",
+  "environment": {
+    "RUSTUP_TOOLCHAIN": "stable"
+  },
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_seconds": 0.105005,
+  "pre": {
+    "utc": "2026-11-12T13:16:46.072783+00:00",
+    "target_bytes": 0,
+    "disk_free_bytes": 40521216000,
+    "own_runtime_jobs": []
+  },
+  "post": {
+    "utc": "2026-11-12T13:16:46.177979+00:00",
+    "target_bytes": 0,
+    "disk_free_bytes": 40521203712,
+    "own_runtime_jobs": []
+  },
+  "new_lock_sha256": "453112cddc4865307bcbfc8bbc52f01884b76d533e9b5526c12cc61d6499d186",
+  "original_registry_tuples_unchanged": true,
+  "registry_package_count": 28,
+  "guarded_source_drift": []
+}

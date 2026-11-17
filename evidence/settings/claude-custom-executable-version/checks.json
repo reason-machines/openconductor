@@ -1,0 +1,56 @@
+{
+  "author": "Conductor Rebuild",
+  "checked_main": "4b6bc34e93c4fa9ab3eaa042e855b77bd712a926",
+  "baseline_checkout": "378505861c2a164f17f386d7477b8198519d2e52",
+  "computer": "Reason Cloud355 / 212eb2a5-e87b-4b2d-9797-78cfa6a9902c",
+  "grant_message": "e095fad4-f9de-4168-af6f-c8c9d3703e20",
+  "explicit_release_message": "545d557d-d1ba-45d0-8132-ce314b4524bf",
+  "started": "2026-11-12T15:49:04Z",
+  "finished": "2026-11-12T15:49:50Z",
+  "ownjobs": [],
+  "commands": {
+    "restore": "NODE_OPTIONS=--max-old-space-size=768 npm_config_jobs=1 timeout --kill-after=10s 600s nice -n 19 npm ci --ignore-scripts --no-audit --no-fund",
+    "red": "NODE_OPTIONS=--max-old-space-size=768 timeout --kill-after=10s 120s nice -n 19 node --test --test-concurrency=1 src/settings/agents/claudeCustomExecutableVersion.test.ts",
+    "green": "NODE_OPTIONS=--max-old-space-size=768 timeout --kill-after=10s 120s nice -n 19 node --test --test-concurrency=1 src/settings/agents/claudeCustomExecutableVersion.test.ts",
+    "adjacent": "NODE_OPTIONS=--max-old-space-size=768 timeout --kill-after=10s 120s nice -n 19 node --test --test-concurrency=1 src/settings/agents/claudeLoginVisibility.test.ts src/settings/agents/codexLoginVisibility.test.ts src/settings/agents/agents.test.ts src/settings/agents/agentStatusLoader.test.ts"
+  },
+  "exits": {
+    "restore": 0,
+    "red": 1,
+    "green": 0,
+    "adjacent": 0
+  },
+  "baseline": {
+    "intended_failures": 4,
+    "passing_controls": 6
+  },
+  "candidate": {
+    "passed": 10,
+    "failed": 0
+  },
+  "adjacent": {
+    "passed": 23,
+    "failed": 0
+  },
+  "fixture_sha256": "70b1d5ead8ba243c5579e6e54e7ec3add78242ef48af07a6ba167adea47ce0cf",
+  "source_fixture_lock_integrity": "PASS",
+  "native_browser_package": "NOT_RUN",
+  "local_full_typecheck_build": "NOT_RUN",
+  "raw_transcript_processing": "NONE; exact bytes in runtime-records.tar.gz",
+  "runtime_files": {
+    "adjacent.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "adjacent.tap": "873ab9540cf3936ea328136c0503a61f5ccba2cd569bb0eb0c4e094cc99fd37b",
+    "after.sha256": "25de2b227b7e7050b91e087f9558db127d2905fe815610399898f656d89c0e5f",
+    "before.sha256": "25de2b227b7e7050b91e087f9558db127d2905fe815610399898f656d89c0e5f",
+    "binding.txt": "d638b40800100dee74e4f862eae4e39845e2752dd3f5c35eafc0f0d2379b3e26",
+    "commands.json": "6f7baee0667a5d1305d852963fc7da769cc6dedaeef321d54a92752c19ab2320",
+    "finished.txt": "4239f7fc4665640150e3557a9b9761deeeb4d42f8ce7d1ee2d27719ff36adcfe",
+    "green.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "green.tap": "210905348add9e1d1dd9b949a1453304495dd2e692ce95c92917bd6d1ea8b55f",
+    "red.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "red.tap": "1d775abb2987547f40c851482ffcf6a7d2744b4c6b3bac80b42a71a9ca63374d",
+    "restore.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "restore.log": "adb366361831092ca43bb43876bf56a52e2b57519955e58c15560d7619463497",
+    "started.txt": "7fe1cc0ef61273323592ced80c684571a4946d373a334ae2778f5d9ba268344a"
+  }
+}

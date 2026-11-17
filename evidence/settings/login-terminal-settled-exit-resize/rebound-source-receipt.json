@@ -1,0 +1,306 @@
+{
+  "author": "Conductor Rebuild",
+  "kind": "BOUNDED_READ_ONLY_SOURCE_QUALIFICATION",
+  "dedupe_key": "settings-login-settled-exit-resize-dispatch",
+  "main_sha": "f55d0330ff32e790c08a26d2e7aa83dbf2b8ea32",
+  "assigned_branch": "reason/task-64baa6b6",
+  "archive_sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+  "asset_sha256": {
+    "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "retained_REA_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference_spans": [
+    {
+      "name": "ONi",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8641405,
+        8644209
+      ],
+      "sha256": "e71e371aa7c0cba81c4fc9b737b606ae79ed2a17e80c196ad12f558d5a0074e7",
+      "path": "ONi.literal.txt"
+    },
+    {
+      "name": "Met",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10254426,
+        10255772
+      ],
+      "sha256": "e8ff33ba929c09102a235ff68ef6db78a6e0d9c66db5c85df6496c13b2e3ffde",
+      "path": "Met.literal.txt"
+    },
+    {
+      "name": "rTo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8641105,
+        8641405
+      ],
+      "sha256": "0263870953f80c7ea2b45ad98eb3006482aa21fd6a10509d60b3d6644f428b84",
+      "path": "rTo.literal.txt"
+    },
+    {
+      "name": "nZe",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        6922812,
+        6923921
+      ],
+      "sha256": "2a41065f57534a755e056ee604d13e86310605c60594b143ad8aca1cb8a9aab5",
+      "path": "nZe.literal.txt"
+    },
+    {
+      "name": "ySt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2552188,
+        2555599
+      ],
+      "sha256": "7bd7df55ddbf55db2ed5863a00115af41e8696377bfb17a7ef5cb5e69ecb3913",
+      "path": "ySt.literal.txt"
+    },
+    {
+      "name": "controller-io-destroy",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2760741,
+        2761786
+      ],
+      "sha256": "19fc8ed31f2ed1bd87da3cee15b83b65f900825106d6c280a49278eb273fbe08",
+      "path": "controller-io-destroy.literal.txt"
+    },
+    {
+      "name": "controller-spawn-exit",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2764981,
+        2767877
+      ],
+      "sha256": "6a409e1603fbd389aa3576f88b36f03efa6ad93509c4a6b262186b13ffa457aa",
+      "path": "controller-spawn-exit.literal.txt"
+    },
+    {
+      "name": "runtime-create",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2776910,
+        2777583
+      ],
+      "sha256": "d5349d3f2a0a3f1fd6b9803891808a58dd193e5bc32d5bb2bb89411b0fa4e41d",
+      "path": "runtime-create.literal.txt"
+    },
+    {
+      "name": "runtime-resize",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2778695,
+        2778743
+      ],
+      "sha256": "199ee66542dd3c9681a6e48fb4b153253a6629cbf56e941b1ce5b15c9e9c5312",
+      "path": "runtime-resize.literal.txt"
+    },
+    {
+      "name": "FAt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2828546,
+        2828780
+      ],
+      "sha256": "1d4f53a1460b7fce389cc29b109d002f1ac997d08373fe71c25f1aad2c57f95f",
+      "path": "FAt.literal.txt"
+    },
+    {
+      "name": "DAt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2828843,
+        2829218
+      ],
+      "sha256": "6d0ed70cda3275a8436e1b8015a10ba314622de6d627919eb41852472d1b447f",
+      "path": "DAt.literal.txt"
+    },
+    {
+      "name": "index-runtime-export",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3484259,
+        3484267
+      ],
+      "sha256": "2480388e61e8e7bc885632949b422000cfb3dd593b84dbbfaabb7cc110e4e860",
+      "path": "index-runtime-export.literal.txt"
+    },
+    {
+      "name": "renderer-runtime-import-alias",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        57354,
+        57362
+      ],
+      "sha256": "447426764ef0b8ca8f18e5bddd099b165145cc1c3967f959a75eaa90d90193ba",
+      "path": "renderer-runtime-import-alias.literal.txt"
+    }
+  ],
+  "source_pins": [
+    {
+      "path": "src/settings/agents/parts.tsx",
+      "sha256": "ed7b41ca2d480d83b015ba3498af2ea65a90dbddbefdc080e9e56632cf3c6f36",
+      "git_blob": "cca34989ea483540300014950f5cb33254831f56",
+      "snapshot": "src_settings_agents_parts.tsx"
+    },
+    {
+      "path": "src/settings/agents/kit.tsx",
+      "sha256": "a0926a79d9a60384e04cc4ff26482336e411c5bf07c93da1755284baecaf37cb",
+      "git_blob": "53dd944ab53ef2056a107c47544252feb3aa86d7",
+      "snapshot": "src_settings_agents_kit.tsx"
+    },
+    {
+      "path": "src/settings/agents/ClaudeTab.tsx",
+      "sha256": "1227bb223bcb2c9f0b5af5d063440f28a37a7380f102ba20c5c37b3d8898452e",
+      "git_blob": "f58ce1c904526ec1893e838ad134fc6dedf73f4f",
+      "snapshot": "src_settings_agents_ClaudeTab.tsx"
+    },
+    {
+      "path": "src/settings/agents/CodexTab.tsx",
+      "sha256": "8f814442b65aa82f4a3e295bfe9079c0f52f80db1160d650198daab3d263a54d",
+      "git_blob": "c12638919569f1b267838f241f9c84f4929284b9",
+      "snapshot": "src_settings_agents_CodexTab.tsx"
+    },
+    {
+      "path": "src/settings/agents/useAgentStatus.ts",
+      "sha256": "ac7f6dad2335abe4bb9d151b64ee836119a723f79b7744c0710d9462a842453e",
+      "git_blob": "73c264b4070eb6f0140ea4146a1ace0a2dc62171",
+      "snapshot": "src_settings_agents_useAgentStatus.ts"
+    },
+    {
+      "path": "src/settings/agents/agentStatusLoader.ts",
+      "sha256": "b0ac1b1e282f6fc3b64e2853cf814efd9be4738ee7910a402ee491cf37fe9a45",
+      "git_blob": "c6e8763ee427efd401bfddd95964388a38193e20",
+      "snapshot": "src_settings_agents_agentStatusLoader.ts"
+    },
+    {
+      "path": "src/settings/agents/api.ts",
+      "sha256": "84b02ba11bdd6d487654926992e76f45696728b91e1b875f9efb3d88b6366a6c",
+      "git_blob": "7c5e3b8a4ca700fc2e39e2acf96100f0057a2264",
+      "snapshot": "src_settings_agents_api.ts"
+    },
+    {
+      "path": "src/settings/api.ts",
+      "sha256": "dad7fe498fc3ad00121742f7fe5c6639d0a192cb63410bbdce2cfcf007021496",
+      "git_blob": "bcaf983de1165c90a7541a6f0a83dd99478bc96f",
+      "snapshot": "src_settings_api.ts"
+    },
+    {
+      "path": "src/features/terminal/pty.ts",
+      "sha256": "6ae39f143a2ac74f846c08f02cefdbf7c0cba35c8336480e9e53dc47b9f61ec7",
+      "git_blob": "4ff0694a37b25cf23dbbb96489c29ab5ea987713",
+      "snapshot": "src_features_terminal_pty.ts"
+    },
+    {
+      "path": "src/features/terminal/writeQueue.ts",
+      "sha256": "3a20d651fb8f410cd9cf13cc3bc19b68d609d7acd189a2bd3ffa4992f856009b",
+      "git_blob": "7192faf62bec7c2f3209b556b440ec8546921f81",
+      "snapshot": "src_features_terminal_writeQueue.ts"
+    },
+    {
+      "path": "src/features/terminal/events.ts",
+      "sha256": "31401ad8918a9ed628ea2d4cdd934341ffb0bd0cd618b633f7a4b919e1504e68",
+      "git_blob": "72adbee2ace40e8b94c36fc1e144fc9c3841a48d",
+      "snapshot": "src_features_terminal_events.ts"
+    },
+    {
+      "path": "src-tauri/src/terminal_commands.rs",
+      "sha256": "75a8725122182bf9313501ce5d1abba608bb252e0afc8f11bc0a8762b432d24e",
+      "git_blob": "5dfc355d790e81f3d78f38ba673117171e143777",
+      "snapshot": "src-tauri_src_terminal_commands.rs"
+    },
+    {
+      "path": "src-tauri/src/terminal/manager.rs",
+      "sha256": "9889795e54c7bf248d84a5336c2614272d906039a069366e92aa87d4c483a771",
+      "git_blob": "a6a1ac0d112148f54f51a3683ac495f106f60941",
+      "snapshot": "src-tauri_src_terminal_manager.rs"
+    },
+    {
+      "path": "src-tauri/src/terminal/spawn.rs",
+      "sha256": "1bbc474439ea21dd34c7a35418ce043cba9443cad5bc1c54583a1a0eb3e25b60",
+      "git_blob": "7194bbb3016b3ba776f679fe38596e7f83f9453a",
+      "snapshot": "src-tauri_src_terminal_spawn.rs"
+    },
+    {
+      "path": "src-tauri/src/agent_settings_commands.rs",
+      "sha256": "8d35cb53820ef081befe0cb826b93fb391da8cca70a1f9402595db458e348df9",
+      "git_blob": "bff1969f059d97d62de5002f43e2e2ddf1a1cd43",
+      "snapshot": "src-tauri_src_agent_settings_commands.rs"
+    },
+    {
+      "path": "src-tauri/src/settings/commands.rs",
+      "sha256": "2f38b4e87c6ffeccc108a89ccb09c68c7b9a037be907b4347d1061b57da5bc38",
+      "git_blob": "d10751a887c35ffdf4e347abefad27dd9ee684ef",
+      "snapshot": "src-tauri_src_settings_commands.rs"
+    },
+    {
+      "path": "src-tauri/src/settings/service.rs",
+      "sha256": "c71ca2038728293779ccc61d76d3a1aa28afe157923ec9e4f3da277e24f5662d",
+      "git_blob": "90b04b001b0018484283969e3260f5e5c1036230",
+      "snapshot": "src-tauri_src_settings_service.rs"
+    },
+    {
+      "path": "src-tauri/src/agent/byok.rs",
+      "sha256": "dcc22b744087391f6a9eafd90cdce36c3db4e27478027383a37e5038ef35d00b",
+      "git_blob": "3b3c615871cbb6309b63bac6917c5386c7b240a6",
+      "snapshot": "src-tauri_src_agent_byok.rs"
+    },
+    {
+      "path": "src-tauri/src/agent/provider.rs",
+      "sha256": "d323f3ed51557f2ab91a0301177a3fa4ba4b70e2c1a048b5e50d939c6a82b7f2",
+      "git_blob": "9dc972820b65ad9a03c5d714d2df089d9c8590ad",
+      "snapshot": "src-tauri_src_agent_provider.rs"
+    }
+  ],
+  "static_checks": {
+    "reference_local_backend_selected": true,
+    "reference_runtime_controller_join": true,
+    "reference_exit_marks_dead_before_notification": true,
+    "reference_backend_resize_gates_dead_session": true,
+    "reference_controller_preserves_screen_resize": true,
+    "reference_controller_exit_disables_input": true,
+    "reference_embedded_terminal_dispatches_resize": true,
+    "current_onresize_gates_id_only": true,
+    "current_bridge_dispatches_resize": true,
+    "current_native_wrapper_dispatches_resize": true,
+    "current_resize_has_no_exit_gate": true,
+    "current_stdin_guard_retained": true,
+    "current_write_backend_exit_guard_retained": true,
+    "reference_embedded_persistence_none": true,
+    "current_embedded_persistence_not_called": true,
+    "reference_done_refresh_not_dismiss": true,
+    "current_done_refresh_not_dismiss": true,
+    "current_done_refresh_callback_join": true,
+    "current_provider_status_native_join": true,
+    "current_cli_status_native_join": true,
+    "reference_destroy_and_late_spawn_cleanup": true,
+    "current_destroy_and_late_spawn_cleanup": true,
+    "reference_completed_and_exited_remain_distinct": true,
+    "current_completed_and_exited_remain_distinct": true
+  },
+  "negative_control": "PASS: one-byte reference mutation rejected",
+  "verdict": "SOURCE_DELTA_ONLY_NOT_A_DEMONSTRATED_PRODUCT_DEFECT",
+  "observed_delta": "The local reference backend suppresses resize dispatch after its matching exit. Current LoginTerminal resize reaches native master.resize after exit because neither callback nor manager resize checks exit state.",
+  "impact": "Frontend/native dispatch difference only. No resized process, crash, stale UI, IPC rejection, or user-visible failure was demonstrated.",
+  "persistence_callback_result": "Embedded reference session declares persistence none. Both implementations distinguish Done refresh from dismiss and dispose late-spawn sessions. Current refresh traced through providerStatus and cliLoginStatus to native command declarations, without execution.",
+  "runtime_native_provider_realIPC": "NOT_RUN",
+  "behavioral_RED_GREEN": "NOT_RUN",
+  "product_edits": false,
+  "permission_boundary": "Source qualification only. Native acceptance and other owners remain excluded. No new worker, watcher, dispatch, application launch, CLI invocation, credential read, or installation.",
+  "REA_gaps": [
+    "Historical semantic renderer analysis exhausted heap. This pass reads authenticated retained shipped bytes statically, not fresh native observations.",
+    "Matching shipped native PTY resize handler and macOS return/error behavior are not established by the retained frontend assets."
+  ],
+  "excluded": [
+    "early-input NONDEFECT",
+    "already merged stdin-after-exit guard",
+    "already merged output acknowledgement proof",
+    "native/provider acceptance"
+  ]
+}

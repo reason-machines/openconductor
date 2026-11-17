@@ -1,0 +1,96 @@
+(node:53) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:60) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: General Sync opens a local selection dialog without copying files
+ok 1 - General Sync opens a local selection dialog without copying files
+  ---
+  duration_ms: 509.429526
+  type: 'test'
+  ...
+# (node:62) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: selection copies exactly the selected direction and successful completion closes
+ok 2 - selection copies exactly the selected direction and successful completion closes
+  ---
+  duration_ms: 666.857139
+  type: 'test'
+  ...
+# Subtest: select-none disables Sync; cancel and reopen reset selections and reload the diff
+ok 3 - select-none disables Sync; cancel and reopen reset selections and reload the diff
+  ---
+  duration_ms: 233.891605
+  type: 'test'
+  ...
+# Subtest: pending copy suppresses repeat submit, cancel and Modal close
+ok 4 - pending copy suppresses repeat submit, cancel and Modal close
+  ---
+  duration_ms: 241.592395
+  type: 'test'
+  ...
+# Subtest: partial copy failure stays visible and refreshes the diff
+ok 5 - partial copy failure stays visible and refreshes the diff
+  ---
+  duration_ms: 223.154047
+  type: 'test'
+  ...
+# Subtest: mutation error stays visible without losing the selection
+ok 6 - mutation error stays visible without losing the selection
+  ---
+  duration_ms: 141.030781
+  type: 'test'
+  ...
+# Subtest: read failure is visible and never offers a write
+ok 7 - read failure is visible and never offers a write
+  ---
+  duration_ms: 202.257947
+  type: 'test'
+  ...
+# (node:67) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: local diff response admits names only and isolates a failed category
+ok 8 - local diff response admits names only and isolates a failed category
+  ---
+  duration_ms: 2.193763
+  type: 'test'
+  ...
+# Subtest: IPC rejects malformed diffs and mutation responses instead of claiming a copy
+ok 9 - IPC rejects malformed diffs and mutation responses instead of claiming a copy
+  ---
+  duration_ms: 0.623258
+  type: 'test'
+  ...
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Pending notification grant preserves concurrent settings
+ok 10 - Pending notification grant preserves concurrent settings
+  ---
+  duration_ms: 2313.156235
+  type: 'test'
+  ...
+# (node:99) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Notification denial reports an error without persisting an enabled preference
+ok 11 - Notification denial reports an error without persisting an enabled preference
+  ---
+  duration_ms: 2942.746525
+  type: 'test'
+  ...
+# (node:130) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: General Settings permission gate passes the unchanged seven-case replay
+ok 12 - General Settings permission gate passes the unchanged seven-case replay
+  ---
+  duration_ms: 2969.977275
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6262.935373

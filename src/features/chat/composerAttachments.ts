@@ -25,6 +25,7 @@ export const MAX_INLINE_TEXT_BYTES = 512 * 1024;
 export interface ComposerAttachment extends TextAttachment {
   /** Shown on the chip; `name` when absent. */
   label?: string;
+  preview?: "text";
   /** A staged file: its workspace-relative path (`.context/attachments/…`), which is also its `name`. */
   staged?: string;
 }
@@ -33,6 +34,8 @@ export interface ComposerAttachment extends TextAttachment {
 export function restoreComposerAttachments(values: readonly unknown[]): ComposerAttachment[] {
   return values.flatMap((value) => {
     if (!value || typeof value !== "object" || !("name" in value) || typeof value.name !== "string" || value.name === "" || !("text" in value) || typeof value.text !== "string") return [];
+    const commentId = "commentId" in value ? value.commentId : undefined;
+    if (commentId !== undefined && (typeof commentId !== "string" || commentId === "")) return [];
     const label = "label" in value ? value.label : undefined;
     const staged = "staged" in value ? value.staged : undefined;
     if (label !== undefined && typeof label !== "string") return [];
@@ -40,6 +43,8 @@ export function restoreComposerAttachments(values: readonly unknown[]): Composer
     return [{
       name: value.name,
       text: value.text,
+      ...("preview" in value && value.preview === "text" ? { preview: "text" } : {}),
+      ...(commentId !== undefined ? { commentId } : {}),
       ...(label !== undefined ? { label } : {}),
       ...(staged !== undefined ? { staged } : {}),
     }];

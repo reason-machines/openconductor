@@ -1,0 +1,205 @@
+{
+  "candidate": "CHAT.GETTERMINALOUTPUT-STRUCTURED-RESULT-CONSUMER",
+  "author": "Conductor Rebuild",
+  "checked_main": "1286465cb69763efaa1367c49fdebc88ab4da86d",
+  "recorded_app": "Conductor 0.87.6",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "index_sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+  "provenance_limits": "Complete retained shipped assets only. Original REA semantic renderer pass exhausted heap and skipped asset. No fresh installed/native identity or live provider emission claimed. Prior string-domain NO_GAP remains unchanged.",
+  "spans": {
+    "Dpo": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        7863027,
+        7864323
+      ],
+      "sha256": "34ac5115f54fdcea4170efab348e97320695f0148ab37659b1aa1683631f4f92",
+      "bytes": 1296,
+      "end_boundary": "function "
+    },
+    "jpo": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        7864422,
+        7864461
+      ],
+      "sha256": "8b2146762e62e8686e535bbfb53b0a8e154793349516ce354782cf2c3ab8e0c9",
+      "bytes": 39,
+      "end_boundary": "function "
+    },
+    "Mpo": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        7864392,
+        7864422
+      ],
+      "sha256": "e6104a95cc2eb4514133d3e1e91304a0884d4c99ff5b07de681592286096c35f",
+      "bytes": 30,
+      "end_boundary": "function "
+    },
+    "Lpo": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        7864353,
+        7864392
+      ],
+      "sha256": "cbdcc4fdcde6d9c793d46d0b85322ad64b077485a88cdd40388d130d38c583d8",
+      "bytes": 39,
+      "end_boundary": "function "
+    },
+    "Ppo": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        7864323,
+        7864353
+      ],
+      "sha256": "f1ddaca0fa1fd7cb0f332688e326c4925c67063ada56d442b7822088908061a4",
+      "bytes": 30,
+      "end_boundary": "function "
+    },
+    "TOo": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        8865983,
+        8866426
+      ],
+      "sha256": "4e920d1f6814b732618ad039f643c613e29652f89fd4b22d4d21ae38f7bd8b76",
+      "bytes": 443,
+      "end_boundary": "function "
+    },
+    "cTr": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        76538,
+        76601
+      ],
+      "sha256": "b7e90c5047c22ae93d2fb72e4096106d5ff049309cf51206635dda9928f87627",
+      "bytes": 63,
+      "end_boundary": "function "
+    },
+    "lTr": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        76433,
+        76538
+      ],
+      "sha256": "ad793f6d731d3c98c9eee95b63d80e174dc9d21b5f98034389fbc187f2342a71",
+      "bytes": 105,
+      "end_boundary": "function "
+    },
+    "hIt": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        7877770,
+        7878325
+      ],
+      "sha256": "8c45bb6e5892cce46330f820a54460ee896d1c14c19ad134dab20b9f20b75340",
+      "bytes": 555,
+      "end_boundary": "function "
+    },
+    "ioi": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        76601,
+        76663
+      ],
+      "sha256": "26490e6b30b8a0ecc587ac088ec573156805fe584e9ddc7d0f8185a997de62d2",
+      "bytes": 62,
+      "end_boundary": "const uTr="
+    },
+    "ROo": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        8870021,
+        8872955
+      ],
+      "sha256": "4b020f575c8024708d1576ab02d0154a6690a710abe1fbe5e603fd7731e69afe",
+      "bytes": 2934,
+      "end_boundary": "function "
+    },
+    "O1o": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        7587305,
+        7587405
+      ],
+      "sha256": "a872adaad571fbc1d1b42548e8a112e12fdb0378316c8e6cf1325feaea8e0e81",
+      "bytes": 100,
+      "end_boundary": "const D1o="
+    },
+    "D1o": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        7587405,
+        7588524
+      ],
+      "sha256": "f262bc45b6b432b6c2d202cc40ba21555037558e2d109ac511931f4687085fa8",
+      "bytes": 1119,
+      "end_boundary": ";function L1o("
+    },
+    "L1o": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        7588525,
+        7588628
+      ],
+      "sha256": "86ced124065a7ea81f3d266906603d416cec7facd64287010e771de3557b01a8",
+      "bytes": 103,
+      "end_boundary": "const M1o="
+    },
+    "Qpo": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        7877182,
+        7877770
+      ],
+      "sha256": "94305b7588c4a5551656594289bc17ddb6934ed298cb76fc48181a2731105310",
+      "bytes": 588,
+      "end_boundary": "function hIt("
+    },
+    "uie": {
+      "asset": "index",
+      "utf8_half_open": [
+        1148415,
+        1148596
+      ],
+      "sha256": "bba1207f3241d3cd24b8e70dceafa842f7d2b327961299151c9692888053b34e",
+      "bytes": 181,
+      "end_boundary": "function "
+    }
+  },
+  "qualified_main": "582028e6607cf943441bde6f6a2ce709fe8a60cd",
+  "qualified_head": "f94b065a24ca5fa6ef166d3efef51a02467b65b0",
+  "baseline_source_sha256": {
+    "src/features/chat/ToolRows.tsx": "ad411f8f3f0aaed996d4417e91ab72054f7ae8f54225846cc7bdc447c751fe89",
+    "src/features/chat/conductorTools.ts": "d4bcf857f36b78c17eeba19ebf92383fe1917f0b536ffb098eaed0f4ce035d45",
+    "src/features/chat/Transcript.tsx": "0c6bcb94994afe0eb5f9fd8e5a10849f29e79dbb6fbcc6dbded2975324d1e4dc",
+    "src/features/chat/view.ts": "d318201a7a5078a576ee9f4c1da2481768c8d1894f4d066b009492216cada331",
+    "src/features/chat/types.ts": "a20668440de9c41b8952a1ef1c7864624e2624b60108cd2d9afafba89ca7a5e0",
+    "src/features/chat/reason.ts": "e5588994a8fbe290512a45579efd96c86663a1455eb9dd3413fc8452416483ee",
+    "src/features/chat/reducer.ts": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+    "src-tauri/src/claude_chat/map.rs": "e0d079396976a7e491e11ff1b9f5d3d3e5721c21c1f3ab2f006d6b337ad0a023",
+    "src-tauri/src/agent/claude_stream.rs": "bcf1bf9d841c0aa778cddd6e0d6a97a283e38fbe94888c8c6b056d07a57192ed",
+    "src-tauri/src/reason_acp/wire.rs": "5479cf81b638f2ede410d3fb10861f0194477f6bc251435d6a103dbc3c1510d0",
+    "src-tauri/src/chat/model.rs": "3a40eec32a0405a2a71652956c4da3bedee95367b38b2670199876bba7928635"
+  },
+  "neighbor_sha256": {
+    "src/features/chat/conductorTools.test.ts": "fb109e78c31f11c30ce1da6efd6ee736bc685e6c9059bcf2fe5ad719068acf40",
+    "src/features/chat/taskGetErrorResult.test.ts": "0c8cadac40b262e95e9927a5278aec722dfbf621376606f872bc194da1ba37dd",
+    "src/features/chat/taskListErrorResult.test.ts": "c95ebfc481610f722c98603bc1987e3fc930cbaa92bcd85922d7cec437421db6",
+    "src/features/chat/taskUpdateErrorResult.test.ts": "e1acd1e4641ef808c2e2b47795610ec8f5643710366ce1bc432f4ef1070ff001",
+    "src/features/chat/typedSubagentErrorResult.test.ts": "c02bef14a8da8b334303870fc90fe33bad288f12f01dea3b58c00ae7c3e64dc3",
+    "src/features/chat/typedSubagentLinks.test.ts": "27aab97bcf3c655965202e3acdb00732872aa41434991d5f3efc2412615454a7",
+    "src/features/chat/genericToolLabels.test.ts": "f7a5610ec93ee528a4e08dc8d8f7f6d691b1efd5dc35a8cf0166678c70f203a4",
+    "src/features/chat/typedSubagentErrorResult.inputs.json": "822dd89682e766b9dfa4fae06bdd63cb2e9984ca4f368cf2f54a9198dceea5ce",
+    "src/features/chat/toolIconData.ts": "ffe817145ad34b2934ebd204f17456b040d76f999f7758e8de1feba1388429f9",
+    "src/features/chat/thinkingChip.ts": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9"
+  },
+  "manifest_entries_pass": 35,
+  "retained_spans_pass": 16,
+  "archive_regular_files_pass": 36,
+  "fixture_sha256": "cf4cd97bd5b3d3928dc47128a501f354d4f04dbf0fe8d5347ae325fbbd64a55a",
+  "inputs_sha256": "f74e08121b76dc08240926a0054f3aca5349d50e46856b18a4334683b9cac54c",
+  "root_lock_sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a"
+}

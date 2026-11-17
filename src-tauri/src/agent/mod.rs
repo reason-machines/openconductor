@@ -59,6 +59,7 @@ pub mod codex_rpc;
 pub mod codex_runner;
 pub mod codex_session;
 pub mod codex_wire;
+pub mod mcp_status;
 pub mod env;
 pub mod keychain;
 pub mod provider;

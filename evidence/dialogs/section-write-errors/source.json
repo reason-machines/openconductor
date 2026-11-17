@@ -1,0 +1,443 @@
+{
+  "author": "Conductor Rebuild",
+  "scope": "Exclusive source inquiry, SectionDialog create/edit settlement only",
+  "current_main": "405c19089cf3549502d9457b2821693bcaef5012",
+  "rea_lineage": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "retained_archive_sha256": "c007a6ac77d57b56cdfe8158817ffbcffee6a8f5e7f4a63e2eaef65cbf21b30d",
+  "assets": {
+    "renderer": {
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    },
+    "index": {
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    }
+  },
+  "spans": [
+    {
+      "name": "Uoo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7322612,
+        7322742
+      ],
+      "bytes": 130,
+      "sha256": "baf4a1eee77ef0491d6a231275548fa3e721c58a803b7330dd2bd083782fb02b",
+      "file": "reference/Uoo.txt"
+    },
+    {
+      "name": "lwt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7322742,
+        7322980
+      ],
+      "bytes": 238,
+      "sha256": "5a0e25bb34ff5a8d8f491cebb1c32437b8913580f2d50433530241589673815d",
+      "file": "reference/lwt.txt"
+    },
+    {
+      "name": "p1e",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7322980,
+        7323593
+      ],
+      "bytes": 613,
+      "sha256": "98518802ec8511ec9cbf9e5dc6e567a89a854dfdbb7799b2b726954b183a1362",
+      "file": "reference/p1e.txt"
+    },
+    {
+      "name": "Hoo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7323593,
+        7323688
+      ],
+      "bytes": 95,
+      "sha256": "6440776290f1b7d06a8ca912db2c5789dd43846d0e3a55a06a83bf8fffc2425c",
+      "file": "reference/Hoo.txt"
+    },
+    {
+      "name": "Goo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7324289,
+        7324360
+      ],
+      "bytes": 71,
+      "sha256": "10b316925e40dce22b7135ab986335092eb5da94b321fee83ea7c4c9df430e9c",
+      "file": "reference/Goo.txt"
+    },
+    {
+      "name": "qoo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7324360,
+        7324536
+      ],
+      "bytes": 176,
+      "sha256": "061a40f917b75379e5a1625ea173d287563ff749c642cf2f9909bbb86a166d3b",
+      "file": "reference/qoo.txt"
+    },
+    {
+      "name": "Koo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7324536,
+        7324714
+      ],
+      "bytes": 178,
+      "sha256": "197147f0da064bb8a67ce3e70e7b9ea05ca6e2e38391d0407d0e14b0d0240489",
+      "file": "reference/Koo.txt"
+    },
+    {
+      "name": "kya",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11054301,
+        11054936
+      ],
+      "bytes": 635,
+      "sha256": "3ebd4ff9b3f73088701dd554ccb401e5ad5a56f223729d87ff5e5e7d37cc2d94",
+      "file": "reference/kya.txt"
+    },
+    {
+      "name": "Tya",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11054936,
+        11056145
+      ],
+      "bytes": 1209,
+      "sha256": "27ab9fe6fc9eafa2055b7bd44b61365181da1af8fba0b4740b83e6dab28c49ac",
+      "file": "reference/Tya.txt"
+    },
+    {
+      "name": "Aya",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11056145,
+        11058891
+      ],
+      "bytes": 2746,
+      "sha256": "3217043d3c0b71c509cdd3c786d814a7f6045d159b05c1f0c1980535a42eddfa",
+      "file": "reference/Aya.txt"
+    },
+    {
+      "name": "rIn",
+      "asset": "renderer",
+      "utf8_half_open": [
+        176266,
+        176379
+      ],
+      "bytes": 113,
+      "sha256": "352d3eae248d0b290900b35749c2ec2b5e21b59d3b24a26840927f9634d80d14",
+      "file": "reference/rIn.txt"
+    },
+    {
+      "name": "eai",
+      "asset": "renderer",
+      "utf8_half_open": [
+        180306,
+        180623
+      ],
+      "bytes": 317,
+      "sha256": "8502c65e1f46922806a5224620e04ce47e184c0a505f603068e56c869e2dd065",
+      "file": "reference/eai.txt"
+    },
+    {
+      "name": "tve",
+      "asset": "renderer",
+      "utf8_half_open": [
+        183506,
+        183711
+      ],
+      "bytes": 205,
+      "sha256": "5ea8f28828bc043f23665691aaf90d704882598aec8c42452d0bb191822920a7",
+      "file": "reference/tve.txt"
+    },
+    {
+      "name": "WIr",
+      "asset": "renderer",
+      "utf8_half_open": [
+        183711,
+        184995
+      ],
+      "bytes": 1284,
+      "sha256": "f0125b8a096d133ded72c27f715cea9ab2f4f1814987aca9ed463781fe1d6733",
+      "file": "reference/WIr.txt"
+    },
+    {
+      "name": "qIr",
+      "asset": "renderer",
+      "utf8_half_open": [
+        185209,
+        185695
+      ],
+      "bytes": 486,
+      "sha256": "b04ca817905b3cf06074059f063790ad907f6768610fd17f1a2c2f8ef1d9c6f8",
+      "file": "reference/qIr.txt"
+    },
+    {
+      "name": "ASt",
+      "asset": "index",
+      "utf8_half_open": [
+        3246157,
+        3246974
+      ],
+      "bytes": 817,
+      "sha256": "a1c9c39a33f69470a314fbe1548ca7cfdb98ab662d6356b9311fc37f8184e129",
+      "file": "reference/ASt.txt"
+    },
+    {
+      "name": "RSt",
+      "asset": "index",
+      "utf8_half_open": [
+        3247346,
+        3247670
+      ],
+      "bytes": 324,
+      "sha256": "4bfdbcf2f05be7c981e05d07c59bb8789a30f5e9078fb7d94ed2868c2556aaa6",
+      "file": "reference/RSt.txt"
+    },
+    {
+      "name": "xSt",
+      "asset": "index",
+      "utf8_half_open": [
+        3247980,
+        3248299
+      ],
+      "bytes": 319,
+      "sha256": "af45c9dedfcd3a98b445e4cc22baa6b6de26cd9fac2a2fe06e02d211a56d8823",
+      "file": "reference/xSt.txt"
+    },
+    {
+      "name": "PSt",
+      "asset": "index",
+      "utf8_half_open": [
+        3248299,
+        3249039
+      ],
+      "bytes": 740,
+      "sha256": "69325ece26b35a3c07d8be493e1bafa27c3a8104f461bdb86c0ddb111e5a73b0",
+      "file": "reference/PSt.txt"
+    },
+    {
+      "name": "LSt",
+      "asset": "index",
+      "utf8_half_open": [
+        3250026,
+        3252211
+      ],
+      "bytes": 2185,
+      "sha256": "9b87b80140eb0f5e67aaae1491e8cec30ea1efbeda5ff2126add1562628a8796",
+      "file": "reference/LSt.txt"
+    },
+    {
+      "name": "NSt",
+      "asset": "index",
+      "utf8_half_open": [
+        3252211,
+        3252372
+      ],
+      "bytes": 161,
+      "sha256": "cff100ad1adc55ac459fb485db151eedb5d29d4c0fceba434deb6d05c32f6923",
+      "file": "reference/NSt.txt"
+    },
+    {
+      "name": "SVt",
+      "asset": "index",
+      "utf8_half_open": [
+        3252372,
+        3252874
+      ],
+      "bytes": 502,
+      "sha256": "e5c58e4a0b9cfbf240f0844a2fd8e21ae8e36d842ccdabfe65a55c3812a0540c",
+      "file": "reference/SVt.txt"
+    },
+    {
+      "name": "service-facade",
+      "asset": "index",
+      "utf8_half_open": [
+        3252881,
+        3253308
+      ],
+      "bytes": 427,
+      "sha256": "fb3eee80643ac6c7445160dda6f3785cea2df923314ad8d26fbc859698ac1a1d",
+      "file": "reference/service-facade.txt"
+    },
+    {
+      "name": "service-import",
+      "asset": "renderer",
+      "utf8_half_open": [
+        58062,
+        58070
+      ],
+      "bytes": 8,
+      "sha256": "b130b4eedaf7d3416fda5ce73347e1a59d7a1eefd7022f7ea949ad5ca2b2e2de",
+      "file": "reference/service-import.txt"
+    },
+    {
+      "name": "service-export",
+      "asset": "index",
+      "utf8_half_open": [
+        3484973,
+        3484982
+      ],
+      "bytes": 9,
+      "sha256": "4284a334c3f9c12e43656f793c0e083a66f4de60ad82177806906e26bf036307",
+      "file": "reference/service-export.txt"
+    },
+    {
+      "name": "factory-import",
+      "asset": "renderer",
+      "utf8_half_open": [
+        54147,
+        54156
+      ],
+      "bytes": 9,
+      "sha256": "288105115028f2cd69b9d18d23c6e439d4ec98899604b40fbd98a79723cd5bd4",
+      "file": "reference/factory-import.txt"
+    },
+    {
+      "name": "factory-export",
+      "asset": "index",
+      "utf8_half_open": [
+        3480778,
+        3480787
+      ],
+      "bytes": 9,
+      "sha256": "19457bc95c782f6aab0c6dbe2735cdfca0e60061b28fcac296820e0aa63c0678",
+      "file": "reference/factory-export.txt"
+    },
+    {
+      "name": "installer-import",
+      "asset": "renderer",
+      "utf8_half_open": [
+        66209,
+        66218
+      ],
+      "bytes": 9,
+      "sha256": "061d5c0af05bc59258bb80881797ac81c4d35159c062bec5ecb1b35964863139",
+      "file": "reference/installer-import.txt"
+    },
+    {
+      "name": "installer-export",
+      "asset": "index",
+      "utf8_half_open": [
+        3492890,
+        3492899
+      ],
+      "bytes": 9,
+      "sha256": "06482516ab0418832be5511333d751ef5085dada53c078e43a8bc7ff5d90c6e9",
+      "file": "reference/installer-export.txt"
+    },
+    {
+      "name": "service-installation",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11596435,
+        11596577
+      ],
+      "bytes": 142,
+      "sha256": "3f0e9e0f72694ef52ed69be195e7328332870df208db30a035886288f10132a5",
+      "file": "reference/service-installation.txt"
+    }
+  ],
+  "current_sources": [
+    {
+      "repository_path": "src/components/SectionDialog.tsx",
+      "git_blob": "77e8779e79c6d19d50ba564b206e66e8ac72ebcd",
+      "sha256": "611c30f21afb1f0c2efcd0e8f73e2e6849b85a5b80c608ed53d7caedc7a390dc",
+      "retained_snapshot": false
+    },
+    {
+      "repository_path": "src/App.tsx",
+      "git_blob": "62a525d4b26ed2e48274e62341c7784b95750306",
+      "sha256": "3dc27eaa48b07ced25b188ebdef219744220a2008176c23709f08983ed226df6",
+      "retained_snapshot": false
+    },
+    {
+      "repository_path": "src/state/store.ts",
+      "git_blob": "f1930f13e1eaa16a77f88263eb1d282ff1747380",
+      "sha256": "6071be71368fa5a141ded7e6de42398ba86900638fe719fd2e44c296545cde96",
+      "retained_snapshot": false
+    },
+    {
+      "repository_path": "src/state/navigationSections.ts",
+      "git_blob": "3b72301372e68f965d4eece327c3b1ef7b7f9908",
+      "sha256": "876c4b8bb79dbf558f91f90186f60604b16ab627fbedb37bb45d6b6a4b4a0b49",
+      "retained_snapshot": false
+    },
+    {
+      "repository_path": "src-tauri/src/sidebar_section_commands.rs",
+      "git_blob": "8e09d18ec550c687566f19d8256f3291d6cdecfe",
+      "sha256": "5c6b33f05ba1f07c7df52ac877208dd1d49d155256b4dc5247bdc1653d3f15b6",
+      "retained_snapshot": false
+    }
+  ],
+  "static_assertions": {
+    "original_create_and_edit_close_after_mutate_without_await": true,
+    "original_error_callbacks_are_mode_specific": true,
+    "original_mutate_schedules_action_and_retains_callbacks": true,
+    "original_create_and_edit_await_backend": true,
+    "original_projected_run_rolls_back_and_rethrows": true,
+    "original_service_awaits_projected_action": true,
+    "original_local_backend_awaits_storage": true,
+    "original_storage_exposes_serial_queue_promise": true,
+    "current_form_submits_then_closes": true,
+    "current_caller_dispatches_create_and_edit": true,
+    "current_reducer_and_effect_own_persistence": true,
+    "current_rejection_logs_and_reloads": true,
+    "current_store_has_no_toast_or_section_error_callback": true
+  },
+  "frozen_files": [
+    {
+      "path": "src/components/sectionNameInput.test.ts",
+      "sha256": "006cabec6907c845ca308f3a258e64085fa196b84bc5a8b892e079d5f05701c3"
+    },
+    {
+      "path": "evidence/dialogs/section-name-input/README.md",
+      "sha256": "258b35096e09e59d66d13b48ca4e5f452649fd30c8edcf61a170944840b07424"
+    },
+    {
+      "path": "evidence/dialogs/section-name-input/green.tap",
+      "sha256": "78e28f03c8c4bf22bb2989b6c332fea9e0c0ca053f51ecd11b859669bb8e7feb"
+    },
+    {
+      "path": "evidence/dialogs/section-name-input/historical-red.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": "evidence/dialogs/section-name-input/historical-red.tap",
+      "sha256": "0d7b7ba4826bb47dd3872140be605e657eddb3564941db9aa00106722c8e3b9c"
+    },
+    {
+      "path": "evidence/dialogs/section-name-input/neighbors.tap",
+      "sha256": "4a8fe0e6223b3253d3286bddc36a9dc254f50980e1f70b076c24e947fe76e685"
+    },
+    {
+      "path": "evidence/dialogs/section-name-input/reference.json",
+      "sha256": "d9d7b8e31f4893781b224b3848f96f18a6d3d2841fa4b593d0ae17eea718a89d"
+    },
+    {
+      "path": "evidence/dialogs/section-name-input/verify_source.py",
+      "sha256": "c176f1b019efa7a5e8c1b298385418b2995d50aa3ab145f5b4af7827cf3c0197"
+    }
+  ],
+  "findings": {
+    "awaited_close": "NONDEFECT. Both declarations submit then close without waiting for settlement.",
+    "busy_repeated_submit_cancel": "No qualified same-input counterexample. The original uses an action pending store, but closes after scheduling; the current callback is a synchronous reducer. No pending/form patch justified.",
+    "rejection_feedback": "SOURCE-QUALIFIED CANDIDATE ONLY. Original mutation callback reports create/edit failure after close. Current DB-write rejection logs and reloads without a toast channel. No observed behavioral RED or implementation lease yet."
+  },
+  "trace_boundary": "Original caller through service facade, action scheduling, optimistic rollback/rethrow and local backend awaiting its storage/serial-queue boundary. Native database execution, queue implementation and actual event delivery were not exercised.",
+  "runtime_tests_run": false,
+  "product_edits": false,
+  "native_physical_visual_verified": false,
+  "rea_limit": "Uses previously REA-extracted, identity-checked shipped assets as inert bytes. No new acquisition or target execution. Historical renderer semantic-analysis heap failure remains a limit.",
+  "requalified_main": "838ab2a1c76d11f8048a89c9d4c01ba822db2204",
+  "requalification": "All five scoped source files identical between405c190 and838ab2a; git diff --exit-code passed before the new test.",
+  "phase": "Test-only hosted baseline; no behavioral RED observed yet."
+}

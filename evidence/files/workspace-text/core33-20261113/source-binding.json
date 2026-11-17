@@ -1,0 +1,27 @@
+{
+  "grant": "ACC_DE6_CORE33_CANDIDATE_20261113T0122",
+  "utc": "2026-11-13T01:29:36.752126+00:00",
+  "main": "a66b72e9fc3790a0c93ac614a901da727929c5d9",
+  "head": "7adf542cb1fddc7ebd36f9ad3cb71283088ed697",
+  "core_tip": "669170efe013ea32fa60fff782a1a5ca242026a5",
+  "net_paths": [
+    "src-tauri/src/lib.rs",
+    "src-tauri/src/workspace_file.rs",
+    "src/features/diff/EditInViewer.ts",
+    "src/features/files/WorkspaceFileView.test.ts",
+    "src/features/files/WorkspaceFileView.tsx",
+    "src/features/files/readMarkdown.ts",
+    "src/features/files/readText.test.ts",
+    "src/features/files/readText.ts",
+    "src/features/files/workspaceFile.css"
+  ],
+  "original_nine_file_bytes": "UNCHANGED",
+  "frozen_input_hashes_checked": 419,
+  "lock_hashes": {
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+    "src-tauri/Cargo.lock": "dafe38296f9db1bd0cf19e2dd997576786aea1527ef6c1c5ad2495063100446f"
+  },
+  "baseline": "NOT_DEFINED/NOT_AUTHORED",
+  "private_cgroup_memory_capacity": "NOT_EXPOSED",
+  "host_MemAvailable_kB": "MemAvailable:   11199796 kB"
+}

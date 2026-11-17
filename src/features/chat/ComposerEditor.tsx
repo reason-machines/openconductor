@@ -12,7 +12,7 @@ import { FileAtom, composerContent, inlineContent, linearDocument, partsFrom } f
 
 export interface ComposerSelection { text: string; start: number; end: number }
 export interface ComposerEditorHandle {
-  focus(): void;
+  focus(position?: "end"): void;
   blur(): void;
   visible(): boolean;
   focused(): boolean;
@@ -35,6 +35,7 @@ interface Props {
   onFocus(): void;
   onBlur(): void;
   onPasteFiles(files: FileList): boolean;
+  onInteraction?(): void;
 }
 
 function snapshot(editor: Editor): ComposerSelection {
@@ -111,7 +112,8 @@ export function ComposerEditor(props: Props) {
       },
       onSelectionUpdate: emitSelection,
       onFocus: () => { current.current.onFocus(); emitSelection(); },
-      onBlur: () => current.current.onBlur(),
+      onTransaction: () => current.current.onInteraction?.(),
+      onBlur: () => { current.current.onBlur(); current.current.onInteraction?.(); },
     });
     instance.current = editor;
     function updateAttributes() {
@@ -145,7 +147,10 @@ export function ComposerEditor(props: Props) {
       return true;
     }
     const handle: ComposerEditorHandle = {
-      focus: () => { editor.view.focus(); },
+      focus: (position) => {
+        if (position === "end") editor.view.dispatch(editor.state.tr.setSelection(TextSelection.atEnd(editor.state.doc)));
+        editor.view.focus();
+      },
       blur: () => { editor.view.dom.blur(); },
       visible: () => editor.view.dom.offsetParent !== null,
       focused: () => editor.isFocused,

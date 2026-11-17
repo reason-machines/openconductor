@@ -1,0 +1,60 @@
+TAP version 13
+# (node:317) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: provider tabs have nonempty distinct DOM IDs
+ok 1 - provider tabs have nonempty distinct DOM IDs
+  ---
+  duration_ms: 540.002743
+  type: 'test'
+  ...
+# Subtest: the active Claude panel is labelled by its selected tab
+ok 2 - the active Claude panel is labelled by its selected tab
+  ---
+  duration_ms: 310.615701
+  type: 'test'
+  ...
+# Subtest: click selection updates the panel label without changing tab IDs
+ok 3 - click selection updates the panel label without changing tab IDs
+  ---
+  duration_ms: 223.226689
+  type: 'test'
+  ...
+# Subtest: keyboard selection updates the panel label without changing tab IDs
+ok 4 - keyboard selection updates the panel label without changing tab IDs
+  ---
+  duration_ms: 137.907696
+  type: 'test'
+  ...
+# Subtest: external route selection updates the panel label and preserves tab IDs
+ok 5 - external route selection updates the panel label and preserves tab IDs
+  ---
+  duration_ms: 120.79504
+  type: 'test'
+  ...
+# Subtest: separate mounted Agents pages have disjoint tab IDs and their own panel labels
+ok 6 - separate mounted Agents pages have disjoint tab IDs and their own panel labels
+  ---
+  duration_ms: 126.852898
+  type: 'test'
+  ...
+# Subtest: existing panel labels and URL fields survive each route selection
+ok 7 - existing panel labels and URL fields survive each route selection
+  ---
+  duration_ms: 148.766302
+  type: 'test'
+  ...
+# Subtest: K1 focus activation and modified-key ownership remain unchanged
+ok 8 - K1 focus activation and modified-key ownership remain unchanged
+  ---
+  duration_ms: 141.590512
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2418.691739

@@ -1,0 +1,47 @@
+{
+  "owner": "Conductor Rebuild",
+  "pr": "https://github.com/reason-machines/openconductor/pull/1119",
+  "stage": "QUALIFIED_INTENDED_RED",
+  "head": "f24c4a32554be54d98b0edc49a88c199dfe1cfb9",
+  "run": 43141735967,
+  "fixture_sha256": "6be914881b28ce6f221da2e2cf0d4cd555a2808d17eb7ad294e347b56f2a3eea",
+  "typecheck": "PASS",
+  "retained_log_presentation": "Trailing whitespace stripped from the two log excerpts; assertions, values, line order and timestamps unchanged.",
+  "jobs": [
+    {
+      "id": 130930085784,
+      "lines": "1882-2003",
+      "conclusion": "failure"
+    },
+    {
+      "id": 130930085679,
+      "lines": "1923-2044",
+      "conclusion": "failure"
+    }
+  ],
+  "result": {
+    "cases": 7,
+    "intended_failures": 5,
+    "passing_controls": 2,
+    "error": "ERR_ASSERTION",
+    "actual": 1,
+    "expected": 0,
+    "failures": [
+      "starting",
+      "waiting_for_setup",
+      "running",
+      "stopping",
+      "live runStarted"
+    ],
+    "controls": [
+      "idle/stopped archive callback and propagation, selected and unselected",
+      "other-workspace snapshot/start/finish, selected and unselected"
+    ],
+    "scope_limit": "The five failing cases stop at their selected-row assertion. Their unselected iterations and live restore assertion await candidate execution, not baseline acceptance."
+  },
+  "fresh_main_before_fix": "78fb7b664e1d88f31c28d050fad2ecba5cd1c1dc",
+  "fresh_row_api_model_diff": "NONE vs frozen source base649f47b9d",
+  "candidate_behavior": "PENDING",
+  "native_ui": "NOT_RUN",
+  "local_node_rust": "NOT_RUN"
+}

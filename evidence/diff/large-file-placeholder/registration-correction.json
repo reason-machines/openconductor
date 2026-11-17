@@ -1,0 +1,11 @@
+{
+  "previous_published_head": "adce7147736c24c4a3a6f820c3270436e150f855",
+  "previous_source": "registration-v1/source.json",
+  "previous_fixture": "registration-v1/large_file_tests.rs.txt",
+  "fixture_change": "Only rustfmt-required assertion wrapping; exact string replacement asserted; cases, expectations and predicates unchanged.",
+  "old_fixture_sha256": "c8899ca3cf9cd6c4d305d5e3d9a896d9bd1625e9ebb91214ae5f3dfd27760573",
+  "new_fixture_sha256": "8eeb9b8527632a2ed4391ec37ed9e3b716d53f3dd24f8a3fd785b86ab363d454",
+  "workflow_change": "Move runner.temp contexts from job env to step env; no behavioral command or outcome requirement changed.",
+  "observed_previous_run": 43125825388,
+  "behavioral_red": "NOT_YET_ESTABLISHED"
+}

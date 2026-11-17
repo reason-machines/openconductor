@@ -1,0 +1,24 @@
+{
+  "producer": "Conductor Rebuild",
+  "pr": 1173,
+  "failedHead": "d0f50fb37de8a3a5bedeb96ac2bf54741447fc0c",
+  "failedCheck": {
+    "id": 131180474875,
+    "name": "Frontend typecheck + build",
+    "exit": 2,
+    "error": "src/components/sidebarEmptyGuidance.test.ts(174,60): TS2345: string is not assignable to SidebarGroupBy | undefined"
+  },
+  "change": "Type-only SidebarGroupBy import and explicit validated map callback return type. No runtime expression, assertion, fixture value or product change.",
+  "originalTestSha256": "e2b394583e53a0768dbb4642602a4800c87d4256d167356e115e770ab25283d5",
+  "correctedTestSha256": "5c2fa5527d3ab4da5ba8845bba79d903fdd9ddbe0cd722a85cf709653d1b91cf",
+  "frozen8Sha256": "a1942f64fa21dff44be7e9f0ac4814a442a80423c9f977cb9970544918356115",
+  "staticVerification": {
+    "exactOriginalReconstructionAfterRemovingOnlyAddedTypes": "PASS",
+    "frozen8AdjacentTestsPackageAndLockHashes": "UNCHANGED",
+    "productSidebarHash": "UNCHANGED",
+    "diffWhitespace": "PASS"
+  },
+  "historicalVerification": "execution.json and all original TAP/freeze evidence are unchanged. Their RED/GREEN results apply to the original test hash, not an execution of the corrected hash.",
+  "correctedRuntimeVerification": "NOT_RUN locally. Hosted exact-head CI will typecheck and run the corrected full11 with the existing frontend unit suite. No local runtime admission or retry.",
+  "releaseScope": "Outside unchanged fixed #992 cut; no native/package claim."
+}

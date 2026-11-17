@@ -1,0 +1,1 @@
+class _St{constructor(e={}){this.options=e}async createSession(e,s){const n=crypto.randomUUID(),r=await this.options.getMaxBufferedBytes?.(),i=new ySt(n,e.id,e.executable,e.cols,e.rows,s?.debugLogger,r);return await i.spawn(e),i}}

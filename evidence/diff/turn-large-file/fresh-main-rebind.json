@@ -1,0 +1,13 @@
+{
+  "fresh_default_sha": "85ec32f94664d4bb46b0b70d45ff5355595517c9",
+  "initial_inspected_default_sha": "7f9aa8ab8875abd571db7ac6ff37fc20be95ca20",
+  "scoped_baseline_files_unchanged": {
+    "src-tauri/src/diff/git.rs": "e478a1ce98043cf6991d1a490650900e3d195fba5dc1045dd036a1ec288be6dd",
+    "src-tauri/src/diff/commands.rs": "45077d028f5cead68779111b9f7828f698c06ad5a7ab3dcf564d2784db3d09f3",
+    "src-tauri/src/diff/model.rs": "e56c0c051f5b5ad59c79930eb8f5a5336d9c979325a3e82ab4b95d770f7c3c9b",
+    "src/features/diff/api.ts": "abbc4950ec46258c7cd76c447ce63f5a923b80a9d9313e6c13c2e4a6d02e5c7a",
+    "src/features/diff/FileDiffView.tsx": "c1cab11aa6141f1c12f923aaf7e60353e4b13067cf91dc93a7245d3d21872a6c",
+    "src/features/chat/turnFilePreview.ts": "a0060e994ecf0e1c559295825cb0cce29d5a38b4ba61d8aeaf88bb1d719c7f11"
+  },
+  "product_change": "only the documented turn_diff and preview handling hunks"
+}

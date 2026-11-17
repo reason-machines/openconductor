@@ -1,0 +1,1 @@
+["env", "DIFF_WORKSPACE_READ_REF=06500f5ef1230513090e42aebe0222fd4f83a72d", "nice", "-n", "19", "timeout", "--kill-after=5s", "90s", "node", "--max-old-space-size=768", "--test", "--test-concurrency=1", "src/features/diff/workspaceCommentReadIsolation.test.ts"]

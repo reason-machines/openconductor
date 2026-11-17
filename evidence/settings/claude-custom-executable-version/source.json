@@ -1,0 +1,118 @@
+{
+  "author": "Conductor Rebuild",
+  "leaf": "claude-custom-executable-version-row-64",
+  "reference_version": "Conductor 0.87.6",
+  "reference_archive_sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+  "asset_hashes": {
+    "renderer": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "rea_evidence": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "rea_limit": "Retained exact shipped source bytes from the original upload. No fresh native acquisition. Historical semantic-renderer heap exhaustion is recorded; these declarations were inspected without evaluating reference JavaScript.",
+  "spans": [
+    {
+      "name": "jpa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10619879,
+        10624045
+      ],
+      "sha256": "f339bdf9702ca236ab96391682eeccb54f05f999690c91e2717e43f25d01535f",
+      "file": "jpa.literal.txt"
+    },
+    {
+      "name": "Yki",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7901313,
+        7902057
+      ],
+      "sha256": "1cb4520cdcdc641160bfe038bccfaef23ca7adc9705b2f0c665f8a1af255069c",
+      "file": "Yki.literal.txt"
+    },
+    {
+      "name": "dxe",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10618330,
+        10618506
+      ],
+      "sha256": "3807c1004b972a99b43cfb97a1ac123e4481993d3a153bdebb95d7f87f2961cd",
+      "file": "dxe.literal.txt"
+    },
+    {
+      "name": "bundled-version",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7901133,
+        7901253
+      ],
+      "sha256": "1fe08254b8da86c1a282afc5f1b24c413d2aa025e3a1766a52b8454de90eb3ae",
+      "file": "bundled-version.literal.txt"
+    },
+    {
+      "name": "executable-key-map",
+      "asset": "index",
+      "utf8_half_open": [
+        286849,
+        286915
+      ],
+      "sha256": "ca388a6d2635500ff9dbe41ffdeb087567d8526784a01b9a0f92facf18d5c6b2",
+      "file": "executable-key-map.literal.txt"
+    }
+  ],
+  "observed_reference": "jpa reads the Claude executable override through dxe, maps it to claude_code_executable_path, and calls Yki with false when the override is truthy. Yki includes Version only for a truthy version argument. Its default is the bundled 2.1.284 constant. Other rows use their existing rules.",
+  "observed_current": "ClaudeTab calls claudeAuthState with the original login regardless of custom executable, and auth rules include any truthy version. StatusLine forwards the rows to the authenticated-only AuthStatus table.",
+  "display_choice": "Keep the existing local status version source for the default executable. Omit only its display version when a truthy override is set. Do not manufacture the reference bundled version or infer account metadata.",
+  "fixture_sha256": "70b1d5ead8ba243c5579e6e54e7ec3add78242ef48af07a6ba167adea47ce0cf",
+  "frozen_expected_baseline": {
+    "cases": 10,
+    "intended_failures": 4,
+    "controls_pass": 6
+  },
+  "expected_red_tests": [
+    "custom Claude executable omits only Version in cli mode",
+    "custom Claude executable omits only Version in apikey mode",
+    "raw truthy executable override follows the reference visibility rule",
+    "a mounted tab removes Version when an override arrives without a status reload"
+  ],
+  "source_only_checks": "PASS: original archive/asset/span identity; current20 source pins and24 declarations; source pin equality with prior supplier qualification; fixture/packet readback; patch applicability.",
+  "behavioral_red_green": "OBSERVED: baseline4 intended failures/6 controls pass; identical candidate10 pass",
+  "browser_native_package": "NOT_RUN",
+  "unchanged_boundaries": [
+    "authentication boolean and guard",
+    "credential and metadata suppliers",
+    "every non-Version row value and ordering",
+    "provider choices and API-key policy",
+    "source login object",
+    "Codex and Reason behavior"
+  ],
+  "source_qualification_main": "de5839587adb7de758ad89bb8878c93d13d77599",
+  "checked_main": "4b6bc34e93c4fa9ab3eaa042e855b77bd712a926",
+  "current_main_frozen_source_pins": [
+    {
+      "path": "src/settings/agents/ClaudeTab.tsx",
+      "sha256": "84ae3c3277f9ef11f1bf79a1c2696444787a35097ddf405df5f50cb64faa5e4c"
+    },
+    {
+      "path": "src/settings/agents/agentAuth.ts",
+      "sha256": "957697af99b2595e78fe802b7c185bcdfe3fb4be719851609e35b4a3d81fbe5f"
+    },
+    {
+      "path": "src/settings/agents/parts.tsx",
+      "sha256": "69bd22e77de8cd3861ed4ba01a66d45ebca502da4a5f6ee0cc7c63c6f1e8b679"
+    },
+    {
+      "path": "src/settings/types.ts",
+      "sha256": "66214090aad60a4403f7cfd5aaf0e620cf5717f5c8cd525bc86dff7dea814b6c"
+    },
+    {
+      "path": "package.json",
+      "sha256": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a"
+    }
+  ]
+}

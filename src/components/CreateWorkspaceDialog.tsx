@@ -3,13 +3,13 @@ import { Dialog } from "@base-ui/react/dialog";
 import { CreateWorkspaceComposer, type CreateWorkspaceComposerProps } from "./CreateWorkspaceComposer";
 import { useDialogMotion } from "./motion/dialogMotion";
 
-type Props = Omit<CreateWorkspaceComposerProps, "eyebrowVariant" | "onBusyChange">;
+type Props = Omit<CreateWorkspaceComposerProps, "eyebrowVariant" | "onBusyChange" | "onLaunchStart">;
 
 /**
  * "New workspace": Conductor's create dialog (`pya`), a borderless panel
  * anchored to the top of the window that holds only the composer, with its
  * title and description for screen readers. Escape or a click outside
- * closes it, except while the workspace is being created.
+ * closes it. An accepted launch dismisses the dialog before creation settles.
  */
 export function CreateWorkspaceDialog(props: Props) {
   const [busy, setBusy] = useState(false);
@@ -38,7 +38,7 @@ export function CreateWorkspaceDialog(props: Props) {
           >
             <h2 id="create-dialog-title" className="sr-only">New workspace</h2>
             <p id="create-dialog-description" className="sr-only">Draft the first message, then create and send it.</p>
-            <CreateWorkspaceComposer {...props} eyebrowVariant="attached" onBusyChange={setBusy} />
+            <CreateWorkspaceComposer {...props} eyebrowVariant="attached" onLaunchStart={props.onClose} onBusyChange={setBusy} />
           </Dialog.Popup>
         </div>
       </Dialog.Portal>

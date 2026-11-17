@@ -1,0 +1,23 @@
+{
+  "phase": "RED",
+  "command": [
+    "nice",
+    "-n19",
+    "timeout",
+    "--kill-after=5s",
+    "90s",
+    "node",
+    "--max-old-space-size=768",
+    "--experimental-strip-types",
+    "--test",
+    "--test-concurrency=1",
+    "src/features/chat/composerSuggestionKeys.test.ts"
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 1.9936208220024128,
+  "head": "30342a5aa5b2d798b345e479c54c415c50f40473",
+  "baseline_main": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+  "fixture_sha256": "ac3f9b763e760005341e2b278763d62bf777b599f517e99ce58772cdfb6ddfa2",
+  "timing": "Python monotonic; /usr/bin/time previously observed absent; not a performance measurement",
+  "source_override": "unset"
+}

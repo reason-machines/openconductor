@@ -11,6 +11,7 @@ type Position = { left: number; top: number };
 type Preview = { kind: "closed" } | ({ at: Position } & (
   | { kind: "loading" }
   | { kind: "missing" }
+  | { kind: "too_large" }
   | { kind: "binary" }
   | { kind: "text"; file: FileDiff }
 ));
@@ -28,6 +29,7 @@ function contents(preview: Preview): ReactNode {
     case "closed": return null;
     case "loading": return h("div", { className: "chat-file-preview-message", role: "status" }, "Loading…");
     case "missing": return h("div", { className: "chat-file-preview-message" }, "No diff available");
+    case "too_large": return h("div", { className: "chat-file-preview-message" }, "File too large to preview");
     case "binary": return h("div", { className: "chat-file-preview-message" }, "Binary file changed");
     case "text": return h("div", { className: "chat-file-preview-diff" }, preview.file.hunks.map((hunk, index) =>
       h("div", { key: index },
@@ -88,6 +90,7 @@ export function TurnFilePreview({ file, turn, worktree, onOpenFile, children }: 
       setPreview((state) => {
         if (state.kind === "closed") return state;
         if (!selected) return { kind: "missing", at: state.at };
+        if (selected.hide_reason === "file_too_large") return { kind: "too_large", at: state.at };
         if (selected.binary) return { kind: "binary", at: state.at };
         if (!selected.hunks.some((hunk) => hunk.lines.length > 0)) return { kind: "missing", at: state.at };
         return { kind: "text", at: state.at, file: selected };

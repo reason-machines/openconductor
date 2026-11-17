@@ -1,0 +1,33 @@
+{
+  "owner": "Conductor Rebuild",
+  "checked_main": "7b99088f24c54ffca941fe6d5528260633328d0e",
+  "scope": "Read-only source comparison; no native/private-DB dispatcher or protected-path observation",
+  "product_composition_delta_lines": 3,
+  "underlying_sources_unchanged_from_checked_main": [
+    {
+      "path": "src-tauri/src/local_storage_commands.rs",
+      "sha256": "e5919b29bad4078d32f476dca317423bcdf72393bbfdc03f94f85de367b05e24",
+      "definitions": "state lines 51-53 creates Arc<SubsystemStore> from data_dir; local_storage_get_entry lines 84-97 clones managed Store and invokes get_entry in spawn_blocking"
+    },
+    {
+      "path": "src-tauri/src/terminal/history_store.rs",
+      "sha256": "5fa12d30891eba14b4b3dd47ea98118b11dc8d39e0fcb26f4e70d41414689feb",
+      "definitions": "SubsystemStore::new lines 418-420 retains its root; get_entry lines 519 onward reads the root index and encoded subsystem store file; writes are separate set_entry/remove methods and remain unregistered"
+    },
+    {
+      "path": "src-tauri/src/sidebar_section_commands.rs",
+      "sha256": "5c6b33f05ba1f07c7df52ac877208dd1d49d155256b4dc5247bdc1653d3f15b6",
+      "definitions": "db_read_navigation_sections lines 78-83 reads navigation::read_layout(&db.0, &local_scope()); the separate db_write_navigation_sections remains unregistered"
+    }
+  ],
+  "validation": {
+    "original_fixture_sha256": "775f9da8b70cac58f5db04e39d33d7bf3b4e91a621f20b4c0865943dc528bff4",
+    "revised_fixture_sha256": "2f6e2fabec04e7e848d27c6ef98b00b1ca9b01e94061c39b8a221c7542f2bded",
+    "revised_red": {"passed": 4, "failed": 3},
+    "revised_green": {"passed": 7, "failed": 0},
+    "typecheck": "PASS locally after capture of validated hook in a stable local binding",
+    "portable_rust": "PASS 9; not the macOS-gated Tauri adapter",
+    "compiled_artifact": "NOT_BUILT",
+    "native": "NOT_RUN"
+  }
+}

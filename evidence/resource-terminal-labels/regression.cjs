@@ -34,8 +34,9 @@ function fixture({ enabled = true, desktop = true } = {}) {
     ] };
   }
   const boundaries = {
-    '@xterm/xterm': { Terminal: class { constructor(options) { this.options = options; this.cols = 80; this.rows = 24; } loadAddon() {} resize() {} write() {} dispose() {} attachCustomKeyEventHandler() {} onData() {} onResize() {} } },
+    '@xterm/xterm': { Terminal: class { constructor(options) { this.options = options; this.cols = 80; this.rows = 24; this.unicode = { activeVersion: '6' }; } loadAddon() {} resize() {} write() {} dispose() {} attachCustomKeyEventHandler() {} onData() {} onResize() {} } },
     '@xterm/addon-fit': { FitAddon: class {} },
+    '@xterm/addon-unicode11': { Unicode11Addon: class {} },
     'src/features/terminal/events': { AckBatcher: class {} },
     'src/features/terminal/pty': new Proxy({
       onPtyEvent: async () => noOp,

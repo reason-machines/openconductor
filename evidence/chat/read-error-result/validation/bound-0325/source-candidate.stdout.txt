@@ -1,0 +1,2 @@
+PASS candidate: 18 pinned sources, originals, exact successor bytes, 28 image controls, 14 retained REA spans
+Source checks only. No JavaScript, native app, provider, package or installed behavior executed.

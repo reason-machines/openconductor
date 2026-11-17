@@ -1,0 +1,116 @@
+{
+  "baseline_head": "b21dcb9fc2046da3480f1576d535c203cb6d9f7f",
+  "workflow_run": 43120883546,
+  "fixture_sha256": "873df7d98a6dbf9d4b685c2e35ceffd7aae09060637ed1c7960d947d99b24070",
+  "observed": {
+    "macos": {
+      "job_id": 130860737593,
+      "url": "https://github.com/reason-machines/openconductor/actions/runs/43120883546/job/130860737593",
+      "case_lines": [
+        {
+          "line": 2764,
+          "text": "2026-11-11T23:39:42.7149710Z test open_in::deleted_finder_ipc::deleted_file_opens_immediate_parent ... FAILED"
+        },
+        {
+          "line": 2765,
+          "text": "2026-11-11T23:39:42.7150370Z test open_in::deleted_finder_ipc::deleted_path_outside_context_stays_rejected ... ok"
+        },
+        {
+          "line": 2766,
+          "text": "2026-11-11T23:39:42.7151080Z test open_in::deleted_finder_ipc::deleted_workspace_root_file_opens_workspace ... FAILED"
+        },
+        {
+          "line": 2767,
+          "text": "2026-11-11T23:39:42.7151780Z test open_in::deleted_finder_ipc::existing_directory_keeps_exact_target ... ok"
+        },
+        {
+          "line": 2768,
+          "text": "2026-11-11T23:39:42.7152430Z test open_in::deleted_finder_ipc::existing_file_keeps_reveal_target ... ok"
+        },
+        {
+          "line": 2769,
+          "text": "2026-11-11T23:39:42.7153080Z test open_in::deleted_finder_ipc::extensionless_deleted_file_uses_explicit_file_context ... FAILED"
+        },
+        {
+          "line": 2770,
+          "text": "2026-11-11T23:39:42.7153670Z test open_in::deleted_finder_ipc::ipc_child ... ok"
+        },
+        {
+          "line": 2771,
+          "text": "2026-11-11T23:39:42.7154210Z test open_in::deleted_finder_ipc::missing_editor_target_stays_rejected ... ok"
+        },
+        {
+          "line": 2772,
+          "text": "2026-11-11T23:39:42.7154900Z test open_in::deleted_finder_ipc::missing_parent_is_attempted_without_ancestor_search ... FAILED"
+        },
+        {
+          "line": 2773,
+          "text": "2026-11-11T23:39:42.7155520Z test open_in::deleted_finder_ipc::relative_target_stays_rejected ... ok"
+        },
+        {
+          "line": 2774,
+          "text": "2026-11-11T23:39:42.7413430Z test open_in::deleted_finder_ipc::unknown_app_stays_rejected ... ok"
+        }
+      ]
+    },
+    "ubuntu": {
+      "job_id": 130860737680,
+      "url": "https://github.com/reason-machines/openconductor/actions/runs/43120883546/job/130860737680",
+      "case_lines": [
+        {
+          "line": 3559,
+          "text": "2026-11-11T23:41:20.1019903Z test open_in::deleted_finder_ipc::deleted_file_opens_immediate_parent ... FAILED"
+        },
+        {
+          "line": 3560,
+          "text": "2026-11-11T23:41:20.1050201Z test open_in::deleted_finder_ipc::deleted_path_outside_context_stays_rejected ... ok"
+        },
+        {
+          "line": 3561,
+          "text": "2026-11-11T23:41:20.1202330Z test open_in::deleted_finder_ipc::deleted_workspace_root_file_opens_workspace ... FAILED"
+        },
+        {
+          "line": 3562,
+          "text": "2026-11-11T23:41:20.1231191Z test open_in::deleted_finder_ipc::existing_directory_keeps_exact_target ... ok"
+        },
+        {
+          "line": 3564,
+          "text": "2026-11-11T23:41:20.1341497Z test open_in::deleted_finder_ipc::ipc_child ... ok"
+        },
+        {
+          "line": 3565,
+          "text": "2026-11-11T23:41:20.1419426Z test open_in::deleted_finder_ipc::extensionless_deleted_file_uses_explicit_file_context ... FAILED"
+        },
+        {
+          "line": 3566,
+          "text": "2026-11-11T23:41:20.1448946Z test open_in::deleted_finder_ipc::existing_file_keeps_reveal_target ... ok"
+        },
+        {
+          "line": 3568,
+          "text": "2026-11-11T23:41:20.1528928Z test open_in::deleted_finder_ipc::missing_editor_target_stays_rejected ... ok"
+        },
+        {
+          "line": 3572,
+          "text": "2026-11-11T23:41:20.1581822Z test open_in::deleted_finder_ipc::missing_parent_is_attempted_without_ancestor_search ... FAILED"
+        },
+        {
+          "line": 3586,
+          "text": "2026-11-11T23:41:20.1633137Z test open_in::deleted_finder_ipc::relative_target_stays_rejected ... ok"
+        },
+        {
+          "line": 3587,
+          "text": "2026-11-11T23:41:20.1692429Z test open_in::deleted_finder_ipc::unknown_app_stays_rejected ... ok"
+        }
+      ]
+    }
+  },
+  "intended_failed_cases": [
+    "deleted_file_opens_immediate_parent",
+    "extensionless_deleted_file_uses_explicit_file_context",
+    "deleted_workspace_root_file_opens_workspace",
+    "missing_parent_is_attempted_without_ancestor_search"
+  ],
+  "controls_passed": 6,
+  "child_entry_passed": true,
+  "claim": "Observed assertion-level RED on both hosted platforms; no native Finder app executed."
+}

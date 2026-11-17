@@ -1,0 +1,291 @@
+{
+  "author": "Conductor Rebuild",
+  "scope": "Exclusive source-only clone URL -> derived name -> override -> submitted args inquiry; no execution of Conductor, OpenConductor, git clone, provider or picker.",
+  "main_sha": "021aeaa4027770258b4daae127bc829d1575d0ab",
+  "archive_sha256": "c007a6ac77d57b56cdfe8158817ffbcffee6a8f5e7f4a63e2eaef65cbf21b30d",
+  "rea_lineage": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "rea_limit": "Historical semantic renderer analysis exhausted heap; retained shipped bytes are read as data. No fresh binary hash or runtime REA observation.",
+  "assets": {
+    "renderer": {
+      "member": ".rea-work/retained-reference/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "member": ".rea-work/retained-reference/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "spans": [
+    {
+      "name": "los-complete",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1963117,
+        1968331
+      ],
+      "bytes": 5214,
+      "sha256": "f45ab83ee49f7c246b1ceefcba2d9e452cd43a978729d048d73baa37df8e1e32",
+      "path": "reference/los-complete.txt"
+    },
+    {
+      "name": "hook-import",
+      "asset": "renderer",
+      "utf8_half_open": [
+        54700,
+        54709
+      ],
+      "bytes": 9,
+      "sha256": "f32622d0cda53894c2e6f8dbc1ded7b6b7e4e7862f8fbab5cbeab6cc1a2411da",
+      "path": "reference/hook-import.txt"
+    },
+    {
+      "name": "hook-export",
+      "asset": "index",
+      "utf8_half_open": [
+        3481328,
+        3481337
+      ],
+      "bytes": 9,
+      "sha256": "ed3c7d40edd21b01436b796d674821c524d2b182b2a536e18e33fbba23fff5cc",
+      "path": "reference/hook-export.txt"
+    },
+    {
+      "name": "tQt-complete",
+      "asset": "index",
+      "utf8_half_open": [
+        3344969,
+        3346660
+      ],
+      "bytes": 1691,
+      "sha256": "74e1cf9d3145109059e0ac4b7bd898071900beeb048c46658fe7774dbdfda67a",
+      "path": "reference/tQt-complete.txt"
+    },
+    {
+      "name": "g2t-complete",
+      "asset": "index",
+      "utf8_half_open": [
+        3331212,
+        3335117
+      ],
+      "bytes": 3905,
+      "sha256": "1d3859e8dfe88cbcb4cbb5845a8ac9722be7fe63e9ad6bae4fd4db6fb059beb5",
+      "path": "reference/g2t-complete.txt"
+    },
+    {
+      "name": "UM-complete",
+      "asset": "index",
+      "utf8_half_open": [
+        185080,
+        185310
+      ],
+      "bytes": 230,
+      "sha256": "01f25cb9febd9252ae011e60fcbb4b640e1a7a90e6bcc5132c0b0457d21917ff",
+      "path": "reference/UM-complete.txt"
+    },
+    {
+      "name": "Wy-complete",
+      "asset": "index",
+      "utf8_half_open": [
+        185310,
+        185845
+      ],
+      "bytes": 535,
+      "sha256": "a8f9da9b2616e0d65e8b1c024d563ddbdfca96d5f5c963d4a9664b72c0865a86",
+      "path": "reference/Wy-complete.txt"
+    },
+    {
+      "name": "repo-class-complete",
+      "asset": "index",
+      "utf8_half_open": [
+        3338037,
+        3343634
+      ],
+      "bytes": 5597,
+      "sha256": "8f3207a68755f25e3b06c9076e7ff46e28f0e0e228d0ff27fc41056272c59908",
+      "path": "reference/repo-class-complete.txt"
+    },
+    {
+      "name": "repo-factory",
+      "asset": "index",
+      "utf8_half_open": [
+        3343634,
+        3343663
+      ],
+      "bytes": 29,
+      "sha256": "9c54ccb5f5328ef7edb390f7dd535501a6cde419a492e467ab970dc778984bb4",
+      "path": "reference/repo-factory.txt"
+    },
+    {
+      "name": "repo-singleton-and-installer",
+      "asset": "index",
+      "utf8_half_open": [
+        3349266,
+        3350116
+      ],
+      "bytes": 850,
+      "sha256": "ce61d393d21e797aadff293e4e1da26e508a60ee136eeb97b02b0addeb6def07",
+      "path": "reference/repo-singleton-and-installer.txt"
+    },
+    {
+      "name": "C2t-complete",
+      "asset": "index",
+      "utf8_half_open": [
+        3344140,
+        3344440
+      ],
+      "bytes": 300,
+      "sha256": "567eebe02f50d1e79f14c3a41d5992b9639786e104dfdeb2b0dedb7b91657e43",
+      "path": "reference/C2t-complete.txt"
+    },
+    {
+      "name": "R2t-complete",
+      "asset": "index",
+      "utf8_half_open": [
+        3344440,
+        3344548
+      ],
+      "bytes": 108,
+      "sha256": "184d5c99a319bc01aeb647e9ef916410acc5e7e6b3596aa873e8f563bffa00ca",
+      "path": "reference/R2t-complete.txt"
+    },
+    {
+      "name": "installer-export",
+      "asset": "index",
+      "utf8_half_open": [
+        3492940,
+        3492949
+      ],
+      "bytes": 9,
+      "sha256": "898cf38200ac3c4b9d90c75d3e90c373e995c630ef5bb1ba18ff5d41c2666f00",
+      "path": "reference/installer-export.txt"
+    },
+    {
+      "name": "installer-import",
+      "asset": "renderer",
+      "utf8_half_open": [
+        66259,
+        66268
+      ],
+      "bytes": 9,
+      "sha256": "5699359fbef08a660858099ca7c5caf9f67b46f4787ed29847a9bedd882ec1d2",
+      "path": "reference/installer-import.txt"
+    },
+    {
+      "name": "service-composition-complete",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11595743,
+        11596603
+      ],
+      "bytes": 860,
+      "sha256": "b3fae3568b71ebef9b34d040bc6bbb2b58f079f4c06bca2e0fac7daf0e4d41b1",
+      "path": "reference/service-composition-complete.txt"
+    }
+  ],
+  "current": [
+    {
+      "path": "src/components/CloneGitHubRepoDialog.tsx",
+      "snapshot": "current-src__components__CloneGitHubRepoDialog.tsx",
+      "bytes": 6422,
+      "sha256": "a08a7b7dafadf78d80589b7d7ad7cad22a132f18a26a497ca6744df53adc3fac",
+      "git_blob": "9a24acf43f58d67932728999ad2f3ca9ffc8d6c1"
+    },
+    {
+      "path": "src/state/cloneDialog.ts",
+      "snapshot": "current-src__state__cloneDialog.ts",
+      "bytes": 4411,
+      "sha256": "71d15fdffe2446d741894218cf6a0dd8c5814d6332b55a4bfe15bfb8a703be3a",
+      "git_blob": "e0ebc5aa85c39ca5b5eb8a653f71ab83e7f485ec"
+    },
+    {
+      "path": "src/workspace/api.ts",
+      "snapshot": "current-src__workspace__api.ts",
+      "bytes": 9892,
+      "sha256": "7ffebf424d3a6cd7e6be0086d8e9dd3e14b6c41b23365f6553bbb03f9e521899",
+      "git_blob": "60f7d437196b0acc0ecee4539798c914bf0244c8"
+    },
+    {
+      "path": "src-tauri/src/workspace/commands.rs",
+      "snapshot": "current-src-tauri__src__workspace__commands.rs",
+      "bytes": 11971,
+      "sha256": "5be91cdc50ca3ccec02f88f95d11fc23f068ea7a9d476fbd97b6a8256959f3ab",
+      "git_blob": "1ef315b361215b7f31ca901153b3185112c9546c"
+    },
+    {
+      "path": "src-tauri/src/workspace/service.rs",
+      "snapshot": "current-src-tauri__src__workspace__service.rs",
+      "bytes": 13638,
+      "sha256": "114afa3507618fb8384775fcd150f34d1cc52c151a3f6831fce1491e2b457453",
+      "git_blob": "0f4c858c13e6a480aaa986bba0e46e025db302b9"
+    },
+    {
+      "path": "src-tauri/src/workspace/naming.rs",
+      "snapshot": "current-src-tauri__src__workspace__naming.rs",
+      "bytes": 3659,
+      "sha256": "d2387675677ffeeae6621f52e5d0bc3d18e9fc89fdb5a875e1c4222a70622f90",
+      "git_blob": "1df8e680ad9c48bc2a5e74d3f9bb98161b463475"
+    }
+  ],
+  "conclusions": {
+    "dialog_name_override": "MATCHED bounded absence: complete los and current dialog expose independent URL and Location, no separate suggested-name/manual-name control. No new name field is justified.",
+    "service_name_override": "g2t accepts e.name ahead of the derived basename, but los does not provide name. Do not infer a user-facing override from the service option.",
+    "derived_name": "Qualified static source difference, not behavioral RED: original Wy -> UM -> g2t -> injected R2t lowercases and sanitizes the basename before uniqueness and path join; current cloneTargetName and native repo_name_from_url preserve case and repeated hyphens.",
+    "proposed_scope": "Only align derived-name sanitation in src/state/cloneDialog.ts::cloneTargetName and src-tauri/src/workspace/naming.rs::repo_name_from_url if separately admitted. Preserve URL/parent request values, validation, guards, mutation, uniqueness, filesystem handling and callback semantics. No UI addition."
+  },
+  "source_derived_cases_not_executed": [
+    {
+      "url": "https://github.com/acme/MyRepo.git",
+      "original": "myrepo",
+      "current": "MyRepo"
+    },
+    {
+      "url": "git@github.com:acme/MyRepo.git",
+      "original": "myrepo",
+      "current": "MyRepo"
+    },
+    {
+      "url": "https://github.com/acme/my--repo.git/",
+      "original": "my-repo",
+      "current": "my--repo"
+    },
+    {
+      "url": "git@github.com:acme/Repo_With.Mixed.git",
+      "original": "repo_with.mixed",
+      "current": "Repo_With.Mixed"
+    }
+  ],
+  "checks": {
+    "archive_identity": "PASS",
+    "retained_assets": "PASS 2/2",
+    "spans": "PASS 15",
+    "current_snapshots": "PASS 6"
+  },
+  "not_run": [
+    "behavioral regression",
+    "product correction",
+    "local Node/browser/native execution",
+    "clone/network/picker",
+    "physical or visual acceptance"
+  ],
+  "phase": "Ready test-only baseline. No behavioral RED has run yet. Product helpers unchanged.",
+  "controls_not_executed": [
+    {
+      "url": "https://github.com/acme/my-repo.git",
+      "expected": "my-repo"
+    },
+    {
+      "url": "git@github.com:acme/my-repo.git",
+      "expected": "my-repo"
+    },
+    {
+      "url": "https://github.com/acme/repo_with.mixed.git",
+      "expected": "repo_with.mixed"
+    },
+    {
+      "url": "/synthetic/remotes/My App",
+      "expected": "My App"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-//! Bounded UTF-8 reads for the internal Markdown file viewer.
+//! Bounded, descriptor-confined UTF-8 reads for workspace file viewers.
 use std::io::Read;
 use std::path::{Component, Path};
 
@@ -13,6 +13,22 @@ pub fn read_markdown(repo: &Path, path: &str) -> Result<String, String> {
     if !extension.eq_ignore_ascii_case("md") && !extension.eq_ignore_ascii_case("mdx") {
         return Err("Only Markdown files can be previewed".into());
     }
+    read_utf8(repo, relative, "Markdown preview is limited to 4 MiB; open this file externally")
+}
+
+pub fn read_text(repo: &Path, path: &str) -> Result<String, String> {
+    let relative = Path::new(path);
+    if path.is_empty() || !relative.components().all(|part| matches!(part, Component::Normal(_))) {
+        return Err("Expected a workspace-relative file path".into());
+    }
+    let text = read_utf8(repo, relative, "Text preview is limited to 4 MiB; open this file externally")?;
+    if text.contains('\0') {
+        return Err("Binary files cannot be edited as text; open this file externally".into());
+    }
+    Ok(text)
+}
+
+fn read_utf8(repo: &Path, relative: &Path, too_large: &str) -> Result<String, String> {
     let file = open_confined(repo, relative)?;
     if !file.metadata().map_err(|e| e.to_string())?.is_file() {
         return Err("Expected a regular file".into());
@@ -20,7 +36,7 @@ pub fn read_markdown(repo: &Path, path: &str) -> Result<String, String> {
     let mut bytes = Vec::new();
     file.take(MAX_BYTES + 1).read_to_end(&mut bytes).map_err(|e| e.to_string())?;
     if bytes.len() as u64 > MAX_BYTES {
-        return Err("Markdown preview is limited to 4 MiB; open this file externally".into());
+        return Err(too_large.into());
     }
     String::from_utf8(bytes).map_err(|_| "File is not valid UTF-8; open it externally".into())
 }
@@ -78,6 +94,65 @@ mod tests {
         }
     }
     impl Drop for Fixture { fn drop(&mut self) { let _ = std::fs::remove_dir_all(&self.0); } }
+    #[test]
+    fn generic_reader_needs_no_git_diff_or_markdown_extension() {
+        let f = Fixture::new();
+        std::fs::create_dir(f.0.join("src")).unwrap();
+        for (path, text) in [("src/example.ts", "const café = '海';\r\n"), ("LICENSE", "license without final newline"), ("empty.txt", "")] {
+            std::fs::write(f.0.join(path), text).unwrap();
+            assert_eq!(read_text(&f.0, path).unwrap(), text);
+        }
+        assert!(!f.0.join(".git").exists());
+        assert!(read_markdown(&f.0, "src/example.ts").is_err());
+    }
+    #[test]
+    fn generic_reader_refuses_unsafe_missing_and_nonregular_paths() {
+        let f = Fixture::new();
+        std::fs::create_dir(f.0.join("directory.txt")).unwrap();
+        for path in ["", "../outside.txt", "/tmp/outside.txt", "./file.txt", "directory.txt", "missing.txt"] {
+            assert!(read_text(&f.0, path).is_err(), "{path}");
+        }
+    }
+    #[test]
+    fn generic_reader_refuses_binary_nul_and_invalid_utf8() {
+        let f = Fixture::new();
+        std::fs::write(f.0.join("nul.txt"), b"valid UTF-8\0binary").unwrap();
+        assert!(read_text(&f.0, "nul.txt").unwrap_err().contains("Binary"));
+        std::fs::write(f.0.join("invalid.txt"), [0xff, 0xfe]).unwrap();
+        assert!(read_text(&f.0, "invalid.txt").unwrap_err().contains("UTF-8"));
+    }
+    #[test]
+    fn generic_reader_enforces_the_exact_byte_bound() {
+        let f = Fixture::new();
+        let exact = "x".repeat(MAX_BYTES as usize);
+        std::fs::write(f.0.join("exact.txt"), exact.as_bytes()).unwrap();
+        assert_eq!(read_text(&f.0, "exact.txt").unwrap(), exact);
+        std::fs::write(f.0.join("large.txt"), vec![b'x'; MAX_BYTES as usize + 1]).unwrap();
+        assert!(read_text(&f.0, "large.txt").unwrap_err().contains("4 MiB"));
+    }
+    #[cfg(unix)]
+    #[test]
+    fn generic_reader_refuses_file_and_parent_symlinks() {
+        let f = Fixture::new();
+        let outside = Fixture::new();
+        std::fs::write(f.0.join("inside.txt"), "inside").unwrap();
+        std::fs::write(outside.0.join("outside.txt"), "outside").unwrap();
+        std::os::unix::fs::symlink("inside.txt", f.0.join("alias.txt")).unwrap();
+        std::os::unix::fs::symlink(outside.0.join("outside.txt"), f.0.join("escape.txt")).unwrap();
+        std::os::unix::fs::symlink(&outside.0, f.0.join("parent")).unwrap();
+        for path in ["alias.txt", "escape.txt", "parent/outside.txt"] {
+            assert!(read_text(&f.0, path).is_err(), "{path}");
+        }
+    }
+    #[cfg(unix)]
+    #[test]
+    fn generic_reader_rejects_fifo_without_waiting_for_a_writer() {
+        use std::os::unix::ffi::OsStrExt;
+        let f = Fixture::new();
+        let path = std::ffi::CString::new(f.0.join("pipe.txt").as_os_str().as_bytes()).unwrap();
+        assert_eq!(unsafe { libc::mkfifo(path.as_ptr(), 0o600) }, 0);
+        assert!(read_text(&f.0, "pipe.txt").unwrap_err().contains("regular file"));
+    }
     #[test]
     fn parallel_fixtures_own_distinct_directories() {
         let fixtures: Vec<_> = (0..32).map(|_| std::thread::spawn(Fixture::new)).collect();

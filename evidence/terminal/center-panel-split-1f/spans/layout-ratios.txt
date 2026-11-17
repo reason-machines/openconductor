@@ -1,0 +1,1 @@
+function rYo({node:t}){const e=[],n=[],i=(r,o,a,c)=>{if(r.type==="group"){e.push({group:r,left:a,width:c});return}const u=r.firstSize??50,d=c*u/100;i(r.first,`${o}:first`,a,d),n.push({splitPath:o,left:a+d,splitLeft:a,splitWidth:c}),i(r.second,`${o}:second`,a+d,c-d)};return i(t,"root",0,100),{panes:e,boundaries:n}}

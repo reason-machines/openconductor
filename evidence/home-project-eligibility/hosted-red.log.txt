@@ -1,0 +1,93 @@
+2026-11-11T20:53:01.8238450Z # Subtest: Home Projects includes two archived-only linked repositories in Only archived
+2026-11-11T20:53:01.8265989Z not ok 151 - Home Projects includes two archived-only linked repositories in Only archived
+2026-11-11T20:53:01.8289925Z   ---
+2026-11-11T20:53:01.8318936Z   duration_ms: 246.939388
+2026-11-11T20:53:01.8320040Z   type: 'test'
+2026-11-11T20:53:01.8321196Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeProjectEligibility.test.ts:97:1'
+2026-11-11T20:53:01.8322306Z   failureType: 'testCodeFailure'
+2026-11-11T20:53:01.8323308Z   error: |-
+2026-11-11T20:53:01.8324000Z     Projects must be available for both represented repositories
+2026-11-11T20:53:01.8324745Z
+2026-11-11T20:53:01.8325305Z     0 !== 1
+2026-11-11T20:53:01.8326326Z
+2026-11-11T20:53:01.8326924Z   code: 'ERR_ASSERTION'
+2026-11-11T20:53:01.8327557Z   name: 'AssertionError'
+2026-11-11T20:53:01.8328244Z   expected: 1
+2026-11-11T20:53:01.8328773Z   actual: 0
+2026-11-11T20:53:01.8329368Z   operator: 'strictEqual'
+2026-11-11T20:53:01.8330150Z   stack: |-
+2026-11-11T20:53:01.8331417Z     Object.choices (file:///home/runner/work/openconductor/openconductor/src/components/homeProjectEligibility.test.ts:83:14)
+2026-11-11T20:53:01.8333297Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeProjectEligibility.test.ts:101:33)
+2026-11-11T20:53:01.8334696Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T20:53:01.8335835Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-11T20:53:01.8336697Z   ...
+2026-11-11T20:53:01.8337734Z # Subtest: Home Projects includes an archived-only repository beside a live repository
+2026-11-11T20:53:01.8339026Z not ok 152 - Home Projects includes an archived-only repository beside a live repository
+2026-11-11T20:53:01.8340040Z   ---
+2026-11-11T20:53:01.8340682Z   duration_ms: 151.961811
+2026-11-11T20:53:01.8341263Z   type: 'test'
+2026-11-11T20:53:01.8342394Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeProjectEligibility.test.ts:107:1'
+2026-11-11T20:53:01.8343574Z   failureType: 'testCodeFailure'
+2026-11-11T20:53:01.8344202Z   error: |-
+2026-11-11T20:53:01.8344928Z     Projects must be available for both represented repositories
+2026-11-11T20:53:01.8345708Z
+2026-11-11T20:53:01.8346281Z     0 !== 1
+2026-11-11T20:53:01.8346785Z
+2026-11-11T20:53:01.8347373Z   code: 'ERR_ASSERTION'
+2026-11-11T20:53:01.8348516Z   name: 'AssertionError'
+2026-11-11T20:53:01.8356465Z   expected: 1
+2026-11-11T20:53:01.8357306Z   actual: 0
+2026-11-11T20:53:01.8357891Z   operator: 'strictEqual'
+2026-11-11T20:53:01.8358594Z   stack: |-
+2026-11-11T20:53:01.8359937Z     Object.choices (file:///home/runner/work/openconductor/openconductor/src/components/homeProjectEligibility.test.ts:83:14)
+2026-11-11T20:53:01.8361662Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeProjectEligibility.test.ts:111:33)
+2026-11-11T20:53:01.8362925Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T20:53:01.8363951Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T20:53:01.8364856Z   ...
+2026-11-11T20:53:01.8365788Z # Subtest: Home Projects eligibility does not disappear when archived rows are hidden
+2026-11-11T20:53:01.8367668Z not ok 153 - Home Projects eligibility does not disappear when archived rows are hidden
+2026-11-11T20:53:01.8368856Z   ---
+2026-11-11T20:53:01.8369433Z   duration_ms: 147.252619
+2026-11-11T20:53:01.8370468Z   type: 'test'
+2026-11-11T20:53:01.8371565Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeProjectEligibility.test.ts:115:1'
+2026-11-11T20:53:01.8372655Z   failureType: 'testCodeFailure'
+2026-11-11T20:53:01.8373468Z   error: |-
+2026-11-11T20:53:01.8374263Z     Projects must be available for both represented repositories
+2026-11-11T20:53:01.8375074Z
+2026-11-11T20:53:01.8375655Z     0 !== 1
+2026-11-11T20:53:01.8376160Z
+2026-11-11T20:53:01.8376662Z   code: 'ERR_ASSERTION'
+2026-11-11T20:53:01.8377297Z   name: 'AssertionError'
+2026-11-11T20:53:01.8377972Z   expected: 1
+2026-11-11T20:53:01.8378530Z   actual: 0
+2026-11-11T20:53:01.8379067Z   operator: 'strictEqual'
+2026-11-11T20:53:01.8379870Z   stack: |-
+2026-11-11T20:53:01.8381050Z     Object.choices (file:///home/runner/work/openconductor/openconductor/src/components/homeProjectEligibility.test.ts:83:14)
+2026-11-11T20:53:01.8382784Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeProjectEligibility.test.ts:119:33)
+2026-11-11T20:53:01.8384270Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T20:53:01.8385326Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T20:53:01.8386165Z   ...
+2026-11-11T20:53:01.8387155Z # Subtest: Home Projects live-only choices preserve repository order and omit an empty repository
+2026-11-11T20:53:01.8388494Z ok 154 - Home Projects live-only choices preserve repository order and omit an empty repository
+2026-11-11T20:53:01.8389396Z   ---
+2026-11-11T20:53:01.8390093Z   duration_ms: 95.992369
+2026-11-11T20:53:01.8390792Z   type: 'test'
+2026-11-11T20:53:01.8391316Z   ...
+2026-11-11T20:53:01.8392332Z # Subtest: Home Projects stays absent for multiple archived workspaces in one repository
+2026-11-11T20:53:01.8393590Z ok 155 - Home Projects stays absent for multiple archived workspaces in one repository
+2026-11-11T20:53:01.8394415Z   ---
+2026-11-11T20:53:01.8395072Z   duration_ms: 100.917401
+2026-11-11T20:53:01.8395657Z   type: 'test'
+2026-11-11T20:53:01.8396208Z   ...
+2026-11-11T20:53:01.8396972Z # Subtest: Home Projects stays absent for one live repository
+2026-11-11T20:53:01.8397897Z ok 156 - Home Projects stays absent for one live repository
+2026-11-11T20:53:01.8398706Z   ---
+2026-11-11T20:53:01.8399354Z   duration_ms: 68.921439
+2026-11-11T20:53:01.8400154Z   type: 'test'
+2026-11-11T20:53:01.8400687Z   ...
+2026-11-11T20:53:01.8401592Z # Subtest: Home Projects ignores archived rows from closed repositories
+2026-11-11T20:53:01.8402719Z ok 157 - Home Projects ignores archived rows from closed repositories
+2026-11-11T20:53:01.8403475Z   ---
+2026-11-11T20:53:01.8404119Z   duration_ms: 49.407061
+2026-11-11T20:53:01.8404790Z   type: 'test'
+2026-11-11T20:53:01.8405464Z   ...

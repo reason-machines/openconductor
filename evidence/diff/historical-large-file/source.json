@@ -1,0 +1,125 @@
+{
+  "inspected_main": "649f47b9d80eb1d7510c2b405b25e026ffddf78b",
+  "original": {
+    "version": "0.87.6",
+    "rea_artifact_evidence_id": "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+    "assets": {
+      "index": {
+        "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+        "bytes": 3493297
+      },
+      "renderer": {
+        "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+        "bytes": 11600457
+      }
+    }
+  },
+  "spans": {
+    "loader": {
+      "asset": "index",
+      "utf8_half_open": [
+        3179015,
+        3185298
+      ],
+      "sha256": "2a8742e768caa34cd958df61cd05a342657d8f3810249b73cfc789d70faff7f3"
+    },
+    "local-versus-patch": {
+      "asset": "index",
+      "utf8_half_open": [
+        3169191,
+        3169342
+      ],
+      "sha256": "9071780837d3720a905ae955030ed6c620c58cc091f7d1b03a36951887798b57"
+    },
+    "renderer-body": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9637614,
+        9641484
+      ],
+      "sha256": "ba9e64973b294335d69d20e19ffd1ef4eaf63f3c209dd380beacf5ecc509393c"
+    },
+    "gitHistory-producer": {
+      "asset": "index",
+      "utf8_half_open": [
+        743037,
+        745066
+      ],
+      "sha256": "d438301fe44fa78e1552413b7168c4c51c6dca5fef38ed471fc36bc7a0a92d1e"
+    },
+    "diffService-binding": {
+      "asset": "index",
+      "utf8_half_open": [
+        3232467,
+        3232929
+      ],
+      "sha256": "cfadd2e6b8ba6c1822ce0782d8b950639e2a98d8eef5449c84fd474674d92bfc"
+    },
+    "Y9t": {
+      "asset": "index",
+      "utf8_half_open": [
+        3199214,
+        3200829
+      ],
+      "sha256": "d275afb03c1b74e04d37c8a6f46e9edfcf82d43d4b889bbf6cf013c1eb73f740"
+    },
+    "bji": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9643145,
+        9646819
+      ],
+      "sha256": "2d2b8aac64bada5ead6bc143ac6bb272544791374a9b71b38e57eab55c8f5688"
+    },
+    "Jqo": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9652565,
+        9658452
+      ],
+      "sha256": "0e24efc52f0ab809283b07a30fbb5e615db81ab56a03f12dad7e298d15a81a87"
+    },
+    "host-predicate": {
+      "asset": "index",
+      "utf8_half_open": [
+        2519,
+        2625
+      ],
+      "sha256": "53f27b6ea3acfb9c4efdd53e98bc67e0fd299cd419b71a87f2bdb56fff54df59"
+    }
+  },
+  "baseline": {
+    "src-tauri/src/diff/git.rs": {
+      "snapshot": "baseline/git.rs.txt",
+      "sha256": "dd047fa202dd36e50938aa81ae16d60c50454b7eb61f49e7eed9496b21342b97"
+    }
+  },
+  "fixture": {
+    "path": "src-tauri/src/diff/historical_large_file_tests.rs",
+    "cases": 8,
+    "expected_red": 4,
+    "controls": 4,
+    "inert_sha256": "e1ec4661c681a0750621dffbbfbb79a45270232158442b0728553d668f7ade6e",
+    "pre_freeze_change": "Layout and formatting trailing commas only. All other non-whitespace fixture bytes equal the inert preparation.",
+    "formatting_setup": {
+      "initial_pr_head": "dc06e502bbddb9e4036926a78bc076e2c56943ea",
+      "initial_fixture_sha256": "b1bd74f5ab172285d054e4bd22377cad442a9e14901b15191542404d30f293d8",
+      "retained_initial_snapshot": "fixture-initial.rs.txt",
+      "failure_job": 130933739212,
+      "result": "rustfmt failed before behavior; NOT qualified RED",
+      "correction": "Only two rustfmt layout corrections and a formatting trailing comma; assertions/case values unchanged"
+    }
+  },
+  "frozen_files": {
+    "evidence/diff/large-file-placeholder/cases.json": "4746c6cc86d8961e52eaa65aafa171ff5958e0f97549ade86833d23d633b8b0f",
+    "src-tauri/src/diff/large_file_tests.rs": "8eeb9b8527632a2ed4391ec37ed9e3b716d53f3dd24f8a3fd785b86ab363d454",
+    "tests/diff/largeFilePlaceholder.mounted.test.mjs": "3fc448a1f7302ba75bb3e49b334037b11d6be1099b62965cb639e281dd75c4b9",
+    "src-tauri/src/diff/historical_large_file_tests.rs": "4a3c8c0c58c663f05a052f83f43eded130471bac952827dd1e2b4136b9acd0f1"
+  },
+  "measurement": "Maximum UTF-8 length of decoded parent oldPath-or-path and selected path contents, never current worktree stat or raw Git blob size",
+  "runtime": "QUALIFIED_INTENDED_RED at dc06e502; fix GREEN pending",
+  "rea_limits": [
+    "Static extracted JavaScript is not observed Conductor execution.",
+    "No REA tool call or new REA gap was required; existing evidence retained without repin."
+  ]
+}

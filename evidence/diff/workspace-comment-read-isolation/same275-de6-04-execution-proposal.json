@@ -1,0 +1,110 @@
+{
+  "unit": "DIFF-WORKSPACE-COMMENT-READ-ISOLATION-DE6-04",
+  "row": "27521a5c",
+  "owner": "de6c02f4-4880-4a0d-bf8f-9e3954522753",
+  "status": "SOURCE_ONLY_PROPOSAL_NOT_ADMITTED_NOT_RUN",
+  "dependency": "Full unchanged core grant694a6e3c exited0 with26pass/0fail/0cancelled/0skipped/0todo, frozen5/package/lock unchanged and explicit terminal release19:30:39.348294Z. This proposal does not hold a runtime slot.",
+  "frozen_original_capsule": {
+    "attachment_id": "9387e378-a514-4f0a-a78a-25c74de4f094",
+    "path": ".oc-tmp/diff-workspace-read-isolation-de6-04-source.tar.gz",
+    "sha256": "ad267de2375656f9d36fe851f2efb61d55f0a0958516e5e0d132bb9806bdcd49"
+  },
+  "frozen_fixture": {
+    "prepared_path": ".oc-tmp/diff-workspace-read-census/workspaceCommentReadIsolation.test.ts",
+    "execution_path": "src/features/diff/workspaceCommentReadIsolation.test.ts",
+    "sha256": "dffb8c0ec4cc77ebaa2916b856aced6a235ad1d63f1d5e5b27ead3ebc95cbfbd",
+    "case_names": [
+      "late native A read cannot replace B inline comments or PR count on the surviving hook",
+      "an unchanged-workspace rerender still accepts its pending native read without remounting"
+    ],
+    "case_count": 2,
+    "assertion_changes": false,
+    "selector_changes": false,
+    "execution_path_currently_tracked": false
+  },
+  "candidate": {
+    "path": ".oc-tmp/diff-workspace-read-census/candidate.patch",
+    "sha256": "4ba95d57616775777a259687935f8b8e635e785424cac9a70fb6f4951796018f",
+    "product_path": "src/features/diff/ReviewComments.tsx",
+    "current_baseline_sha256": "d99a86bf5af6febefb896b85a39c717f6104a88393e4d98f09bb455eba96c1c0",
+    "prospective_candidate_sha256": "e679a1986a3dc94f870be4173f0dabc92cce9dfb8923f1b158a996edd89a5a4d",
+    "data_shape": "Partial<Record<string, DiffComment[]>>, selection by current workspace and functional merge into captured request workspace.",
+    "preserves": "Global error behavior, same-workspace completion order, current workspace reset, comment counts/handoff subscription and frozen1181/03/footer bytes.",
+    "product_applied": false
+  },
+  "source_compatibility": {
+    "fresh_fetch_main": "06500f5ef1230513090e42aebe0222fd4f83a72d",
+    "assigned_head": "390027eede5f6375af67480ad42a74b628882f38",
+    "original_source_main": "2ffcb278ff76c92716e98c5f9de6f90b49027b39",
+    "original_snapshot_stale": true,
+    "current_main_source_reread": "ReviewComments.tsx useReviewComments and commentsApi.ts actual invoke adapter reread. Original2ff source drift is1181 lifecycle/subscriptions/counts. Patch adds only workspace buckets and captured setter dependency; it retains the new subscriptions and lifecycle behavior.",
+    "fixture_transitive_five_paths_equal_main_and_worktree": true,
+    "candidate_git_apply_check": "PASS",
+    "source_only_git_merge_tree_HEAD_main": "PASS, no conflict, virtual treea9aa01b30ac104a4c945faa4146b51356479ed07; no worktree or branch mutation.",
+    "details": ".oc-tmp/diff-workspace-read-census/same275-current-main-compatibility.json",
+    "before_any_future_execution": "Non-destructively merge the checked main into the assigned branch, preserving other owners and source files; no reset, checkout replacement or new branch. Stop on conflict or any five-path drift from the sealed compatibility. If main changes in those paths, source-requalify instead of improvising. All frozen assertions and original artifacts remain unchanged."
+  },
+  "reference": {
+    "kind": "RETAINED_REAL_APP_REA_SOURCE_ONLY_NOT_FRESH_NATIVE_OBSERVATION",
+    "asset": "index-BGEQ8YjU.js",
+    "asset_sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+    "binding": ".oc-tmp/diff-workspace-read-census/binding.json",
+    "behavior_source": "Svt.getWorkspaceComments captures localWorkspaceId; setWorkspaceComments commits commentsByWorkspace[e]; q7t selects commentsByWorkspace[currentWorkspace]. Error isolation is not claimed."
+  },
+  "budget": {
+    "kind": "NEW_PROSPECTIVE_FINITE_BUDGET_NOT_RECOVERED_HISTORICAL_EXECUTION",
+    "total_seconds": 480,
+    "parent_timeout_seconds": 480,
+    "fresh_preflight_seconds": 20,
+    "source_reconciliation_and_frozen_fixture_copy_seconds": 20,
+    "baseline_with_kill_seconds": 95,
+    "candidate_patch_seconds": 5,
+    "candidate_with_kill_seconds": 95,
+    "controls_with_kill_seconds": 215,
+    "postflight_seconds": 10,
+    "cleanup_and_receipt_seconds": 20,
+    "nice": 19,
+    "node_heap_mib": 768,
+    "node_concurrency": 1,
+    "process_policy": "One serial owned process group at a time. TERM/KILL/reap only its own tree, record ownjobs and exact surviving owned-group processes, explicit terminal release immediately; no slot held for reporting.",
+    "existing_dependencies_only": true,
+    "retry": false,
+    "bound_rationale": "Both unchanged two-case phases have new90-second caps, not measurements or claims that90 seconds was historically qualified. Their source graph loads five small production modules through TypeScript. The26-case controls keep the already-qualified210-second cap. Actual current full-core target wall time was73.940 seconds under that cap; this does not identify the historical timeout cause or predict the new fixture's duration."
+  },
+  "preflight": "Marker first. Check frozen2-case fixture, patch, original capsule, five1181 fixtures, package/lock, exact4locked package versions and local ignored non-symlink node_modules boundary. Observe fresh own-target memory/disk and ownjobs. Minimum1536MiB available RAM/4GiB disk; CPU/PSI alone is not denial. No broad git status, Node import probe, install or restore. Stop on mismatch, missing deps, shared/external target or proven shortage. Capture all bindings and command argv before executing any assertion.",
+  "staging_after_explicit_admission_only": [
+    "git merge --no-edit 06500f5ef1230513090e42aebe0222fd4f83a72d",
+    "Copy the frozen fixture bytes, without edits, to the absent src/features/diff/workspaceCommentReadIsolation.test.ts; verify dffb8c0ec4cc77ebaa2916b856aced6a235ad1d63f1d5e5b27ead3ebc95cbfbd. Refuse to overwrite an existing different file."
+  ],
+  "phases": [
+    {
+      "name": "BASELINE_AND_POSITIVE_CONTROL",
+      "exact_argv": "env DIFF_WORKSPACE_READ_REF=06500f5ef1230513090e42aebe0222fd4f83a72d nice -n 19 timeout --kill-after=5s 90s node --max-old-space-size=768 --test --test-concurrency=1 src/features/diff/workspaceCommentReadIsolation.test.ts",
+      "required_actual_result_before_advancing": "Exit1, tests2/pass1/fail1/cancelled0/skipped0/todo0. The A-late-after-B case fails only its B-inline/comment-count retention assertion after A settles; unchanged-workspace case passes. Setup/import failure, earlier assertion failure, timeout or other nonzero is not behavioralRED and stops."
+    },
+    {
+      "name": "APPLY_REVIEWED_CANDIDATE_ONLY_AFTER_VALID_RED",
+      "exact_argv": "git apply .oc-tmp/diff-workspace-read-census/candidate.patch",
+      "required_actual_result_before_advancing": "Exit0 and ReviewComments.tsx sha256e679a1986a3dc94f870be4173f0dabc92cce9dfb8923f1b158a996edd89a5a4d; all other source/fixture hashes unchanged."
+    },
+    {
+      "name": "CANDIDATE_BOTH_UNCHANGED_CASES",
+      "exact_argv": "env -u DIFF_WORKSPACE_READ_REF nice -n 19 timeout --kill-after=5s 90s node --max-old-space-size=768 --test --test-concurrency=1 src/features/diff/workspaceCommentReadIsolation.test.ts",
+      "required_actual_result_before_advancing": "Exit0, tests2/pass2/fail0/cancelled0/skipped0/todo0 and identical frozen fixture hash."
+    },
+    {
+      "name": "EXISTING_1181_CORE_CONTROLS_AFTER_CANDIDATE",
+      "exact_argv": "env -u DIFF_WORKSPACE_READ_REF nice -n 19 timeout --kill-after=5s 210s node --max-old-space-size=768 --test --test-concurrency=1 src/features/diff/fileCommentCountLifecycle.test.ts src/features/chat/reviewCommentHandoff.test.ts src/features/chat/desktopReviewHandoff.test.ts",
+      "required_actual_result_before_advancing": "Exit0, tests26/pass26/fail0/cancelled0/skipped0/todo0. All five frozen1181 fixture hashes and package/lock unchanged."
+    }
+  ],
+  "terminal": "Record exact commands, numeric exits, UTC phase starts/ends, raw TAP and stderr even on failure, actual counts without inventing missing summaries, all before/after hashes, own group reaping and explicit RELEASE immediately. Stop on first unexpected outcome; no retry, assertion/selector adaptation or blind timeout increase. Do not revert other owners' edits or overwrite frozen artifacts.",
+  "not_in_scope": [
+    "DE6-03 or footer patch/application",
+    "Additional tests, typecheck or build without separate admission",
+    "Browser/server, provider, native application, Mac, package or hosted dispatch",
+    "Any source claim that Node adapter tests constitute native UI or installed-artifact proof",
+    "A new row, source owner, executor, watcher or recurring request"
+  ],
+  "delivery_after_qualified_result": "Keep assigned branch. Deliver only the focused reviewed workspace-bucket patch, frozen two-case regression and necessary retained proof as a ready standalone main PR. Follow repository checks on the exact published head and merge only after all enabled workflows pass. Runtime checks outside the admitted phases need their own existingACC admission; native/package verification remains with existing owners."
+}

@@ -1,0 +1,76 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling syn v3.0.10
+   Compiling serde v1.0.229
+   Compiling serde_derive v1.0.229
+   Compiling hashbrown v0.17.1
+   Compiling equivalent v1.0.3
+   Compiling indexmap v2.14.2
+   Compiling rustix v1.1.6
+   Compiling zmij v1.0.23
+   Compiling toml_datetime v0.6.11
+   Compiling serde_spanned v0.6.9
+   Compiling libc v0.2.191
+   Compiling serde_json v1.0.154
+   Compiling linux-raw-sys v0.12.1
+   Compiling bitflags v2.13.2
+   Compiling winnow v0.5.40
+   Compiling toml_edit v0.20.7
+   Compiling itoa v1.0.19
+   Compiling memchr v2.8.3
+   Compiling foldhash v0.2.0
+   Compiling rustix-openpty v0.2.0
+   Compiling toml v0.8.2
+   Compiling oc-scripts v0.1.0 (/home/runner/.reason/workspace/sessions/c18e1b05-4951-4a98-a90b-a9f7405ecc2d/repo/crates/scripts)
+error[E0277]: `?` couldn't convert the error to `std::io::Error`
+   --> /home/runner/.reason/workspace/sessions/c18e1b05-4951-4a98-a90b-a9f7405ecc2d/repo/crates/scripts/src/launch.rs:219:6
+    |
+210 |   fn spawn_pty(spec: &LaunchSpec) -> io::Result<(Child, File, File)> {
+    |                                      ------------------------------- expected `std::io::Error` because of this
+211 |       let pair = rustix_openpty::openpty(
+    |  ________________-
+212 | |         None,
+213 | |         Some(&rustix_openpty::rustix::termios::Winsize {
+214 | |             ws_row: 24,
+...   |
+218 | |         }),
+219 | |     )?;
+    | |     -^ the trait `From<Errno>` is not implemented for `std::io::Error`
+    | |_____|
+    |       this can't be annotated with `?` because it has type `Result<_, Errno>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: `std::io::Error` implements trait `From<T>`:
+              From<ErrorKind>
+              From<IntoInnerError<W>>
+              From<NulError>
+              From<TryReserveError>
+              From<serde_json::Error>
+              From<std::fs::TryLockError>
+
+error[E0277]: the trait bound `File: From<rustix_openpty::rustix::fd::OwnedFd>` is not satisfied
+   --> /home/runner/.reason/workspace/sessions/c18e1b05-4951-4a98-a90b-a9f7405ecc2d/repo/crates/scripts/src/launch.rs:220:17
+    |
+220 |     let slave = File::from(pair.user);
+    |                 ^^^^ the trait `From<rustix_openpty::rustix::fd::OwnedFd>` is not implemented for `File`
+    |
+help: the trait `From<rustix_openpty::rustix::fd::OwnedFd>` is not implemented for `File`
+      but trait `From<std::os::fd::OwnedFd>` is implemented for it
+   --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/std/src/os/fd/owned.rs:338:0
+    = help: for that trait implementation, expected `std::os::fd::OwnedFd`, found `rustix_openpty::rustix::fd::OwnedFd`
+
+error[E0277]: the trait bound `File: From<rustix_openpty::rustix::fd::OwnedFd>` is not satisfied
+   --> /home/runner/.reason/workspace/sessions/c18e1b05-4951-4a98-a90b-a9f7405ecc2d/repo/crates/scripts/src/launch.rs:239:22
+    |
+239 |     let controller = File::from(pair.controller);
+    |                      ^^^^ the trait `From<rustix_openpty::rustix::fd::OwnedFd>` is not implemented for `File`
+    |
+help: the trait `From<rustix_openpty::rustix::fd::OwnedFd>` is not implemented for `File`
+      but trait `From<std::os::fd::OwnedFd>` is implemented for it
+   --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/std/src/os/fd/owned.rs:338:0
+    = help: for that trait implementation, expected `std::os::fd::OwnedFd`, found `rustix_openpty::rustix::fd::OwnedFd`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `oc-scripts` (lib) due to 3 previous errors

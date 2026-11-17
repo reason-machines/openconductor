@@ -1,0 +1,1 @@
+nice -n 19 timeout --kill-after=5s 90s node node_modules/typescript/bin/tsc --noEmit

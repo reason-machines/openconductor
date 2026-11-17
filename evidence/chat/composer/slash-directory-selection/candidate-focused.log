@@ -1,0 +1,275 @@
+(node:116) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:123) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:123) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: actual mentionItems offers add directory for @add even without file results
+ok 1 - actual mentionItems offers add directory for @add even without file results
+  ---
+  duration_ms: 1.679909
+  type: 'test'
+  ...
+# Subtest: actual mentionItems omits add directory without capability and preserves existing file/terminal entries
+ok 2 - actual mentionItems omits add directory without capability and preserves existing file/terminal entries
+  ---
+  duration_ms: 0.180971
+  type: 'test'
+  ...
+# Subtest: actual mentionItems matches the directory label and orders terminal, directory, then existing files
+ok 3 - actual mentionItems matches the directory label and orders terminal, directory, then existing files
+  ---
+  duration_ms: 0.269035
+  type: 'test'
+  ...
+# Subtest: actual Composer passes directory capability into the real mention selector
+ok 4 - actual Composer passes directory capability into the real mention selector
+  ---
+  duration_ms: 0.484421
+  type: 'test'
+  ...
+# Subtest: actual directory pick deletes only the live query before opening the existing picker once
+ok 5 - actual directory pick deletes only the live query before opening the existing picker once
+  ---
+  duration_ms: 1.158601
+  type: 'test'
+  ...
+# Subtest: actual directory pick ignores composition and stale queries
+ok 6 - actual directory pick ignores composition and stale queries
+  ---
+  duration_ms: 1.222658
+  type: 'test'
+  ...
+# Subtest: actual directory pick does not delete or open a picker without capability
+ok 7 - actual directory pick does not delete or open a picker without capability
+  ---
+  duration_ms: 0.63025
+  type: 'test'
+  ...
+# Subtest: actual directory pick does not dismiss or open a picker when query deletion fails
+ok 8 - actual directory pick does not dismiss or open a picker when query deletion fails
+  ---
+  duration_ms: 0.49611
+  type: 'test'
+  ...
+# (node:131) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted slash choice preserves [{"kind":"file","path":"src/example.ts","label":"example.ts","directory":false},{"kind":"text","text":" keep suffix"}] through the actual adapter command
+ok 9 - mounted slash choice preserves [{"kind":"file","path":"src/example.ts","label":"example.ts","directory":false},{"kind":"text","text":" keep suffix"}] through the actual adapter command
+  ---
+  duration_ms: 184.543186
+  type: 'test'
+  ...
+# Subtest: mounted slash choice preserves [{"kind":"text","text":" "},{"kind":"file","path":"src/example.ts","label":"example.ts","directory":false},{"kind":"text","text":"\\n📄 keep suffix"}] through the actual adapter command
+ok 10 - mounted slash choice preserves [{"kind":"text","text":" "},{"kind":"file","path":"src/example.ts","label":"example.ts","directory":false},{"kind":"text","text":"\\n📄 keep suffix"}] through the actual adapter command
+  ---
+  duration_ms: 83.098525
+  type: 'test'
+  ...
+# Subtest: mounted slash choice preserves [{"kind":"file","path":"src/example.ts","label":"example.ts","directory":false},{"kind":"file","path":"src/other.ts","label":"other.ts","directory":false}] through the actual adapter command
+ok 11 - mounted slash choice preserves [{"kind":"file","path":"src/example.ts","label":"example.ts","directory":false},{"kind":"file","path":"src/other.ts","label":"other.ts","directory":false}] through the actual adapter command
+  ---
+  duration_ms: 76.059132
+  type: 'test'
+  ...
+# Subtest: mounted Enter picks the same bounded completion without flattening an atom
+ok 12 - mounted Enter picks the same bounded completion without flattening an atom
+  ---
+  duration_ms: 50.460803
+  type: 'test'
+  ...
+# Subtest: mounted Tab picks the same bounded completion without flattening an atom
+ok 13 - mounted Tab picks the same bounded completion without flattening an atom
+  ---
+  duration_ms: 41.011322
+  type: 'test'
+  ...
+# Subtest: plain-text completion replaces only text before the caret
+ok 14 - plain-text completion replaces only text before the caret
+  ---
+  duration_ms: 38.00689
+  type: 'test'
+  ...
+# Subtest: agent-specific insert text preserves the suffix file identity
+ok 15 - agent-specific insert text preserves the suffix file identity
+  ---
+  duration_ms: 40.159969
+  type: 'test'
+  ...
+# Subtest: stale query or nonempty selection cannot replace a mixed draft
+ok 16 - stale query or nonempty selection cannot replace a mixed draft
+  ---
+  duration_ms: 59.390897
+  type: 'test'
+  ...
+# (node:139) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: built-in /add-dir Enter opens the existing directory picker without sending
+ok 17 - built-in /add-dir Enter opens the existing directory picker without sending
+  ---
+  duration_ms: 156.011603
+  type: 'test'
+  ...
+# Subtest: built-in /add-dir Tab opens the existing directory picker without sending
+ok 18 - built-in /add-dir Tab opens the existing directory picker without sending
+  ---
+  duration_ms: 64.693758
+  type: 'test'
+  ...
+# Subtest: built-in /add-dir menu choice opens the existing directory picker without sending
+ok 19 - built-in /add-dir menu choice opens the existing directory picker without sending
+  ---
+  duration_ms: 46.403857
+  type: 'test'
+  ...
+# Subtest: directory selection preserves suffix text and attachments
+ok 20 - directory selection preserves suffix text and attachments
+  ---
+  duration_ms: 38.164117
+  type: 'test'
+  ...
+# Subtest: directory selection retains adjacent file node identity and complete attributes
+ok 21 - directory selection retains adjacent file node identity and complete attributes
+  ---
+  duration_ms: 34.940499
+  type: 'test'
+  ...
+# Subtest: agent keeps ordinary bounded insertion rather than opening directories
+ok 22 - agent keeps ordinary bounded insertion rather than opening directories
+  ---
+  duration_ms: 28.472207
+  type: 'test'
+  ...
+# Subtest: skill keeps ordinary bounded insertion rather than opening directories
+ok 23 - skill keeps ordinary bounded insertion rather than opening directories
+  ---
+  duration_ms: 31.511525
+  type: 'test'
+  ...
+# Subtest: Plan and Fast selection remain bounded text insertion, not immediate actions
+ok 24 - Plan and Fast selection remain bounded text insertion, not immediate actions
+  ---
+  duration_ms: 56.091615
+  type: 'test'
+  ...
+# Subtest: stale, nonempty and composing live selections cannot edit or open directories
+ok 25 - stale, nonempty and composing live selections cannot edit or open directories
+  ---
+  duration_ms: 82.606977
+  type: 'test'
+  ...
+# Subtest: missing directory capability preserves ordinary text completion
+ok 26 - missing directory capability preserves ordinary text completion
+  ---
+  duration_ms: 26.17787
+  type: 'test'
+  ...
+# (node:147) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: space-prefixed slash opens the actual Composer menu and replaces only its live range
+ok 27 - space-prefixed slash opens the actual Composer menu and replaces only its live range
+  ---
+  duration_ms: 145.113378
+  type: 'test'
+  ...
+# Subtest: space-prefixed Enter completes the command without replacing the prefix
+ok 28 - space-prefixed Enter completes the command without replacing the prefix
+  ---
+  duration_ms: 65.656772
+  type: 'test'
+  ...
+# Subtest: space-prefixed Tab completes the command without replacing the prefix
+ok 29 - space-prefixed Tab completes the command without replacing the prefix
+  ---
+  duration_ms: 50.256709
+  type: 'test'
+  ...
+# Subtest: a cached menu cannot replace a different equal-query live range
+ok 30 - a cached menu cannot replace a different equal-query live range
+  ---
+  duration_ms: 29.527736
+  type: 'test'
+  ...
+# Subtest: Escape dismisses one range, not another equal query
+ok 31 - Escape dismisses one range, not another equal query
+  ---
+  duration_ms: 33.552861
+  type: 'test'
+  ...
+# Subtest: active slash ranges respect text-node boundaries, allowed prefixes and UTF-16 offsets
+ok 32 - active slash ranges respect text-node boundaries, allowed prefixes and UTF-16 offsets
+  ---
+  duration_ms: 0.24235
+  type: 'test'
+  ...
+# (node:155) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude's '/' menu lists Conductor's commands in its order, then fast
+ok 33 - Claude's '/' menu lists Conductor's commands in its order, then fast
+  ---
+  duration_ms: 2.01624
+  type: 'test'
+  ...
+# Subtest: Codex gets personality, goal only when enabled, no Claude-only commands
+ok 34 - Codex gets personality, goal only when enabled, no Claude-only commands
+  ---
+  duration_ms: 0.37051
+  type: 'test'
+  ...
+# Subtest: an ACP agent (Reason) sees only its own commands, plan and fast
+ok 35 - an ACP agent (Reason) sees only its own commands, plan and fast
+  ---
+  duration_ms: 0.278649
+  type: 'test'
+  ...
+# Subtest: agent commands come first and hide a built-in of the same name; cloud drops add-dir
+ok 36 - agent commands come first and hide a built-in of the same name; cloud drops add-dir
+  ---
+  duration_ms: 0.149381
+  type: 'test'
+  ...
+# Subtest: matching: empty query keeps order, exact name first
+ok 37 - matching: empty query keeps order, exact name first
+  ---
+  duration_ms: 1.369317
+  type: 'test'
+  ...
+# Subtest: the menu is open while the caret is in a leading /word
+ok 38 - the menu is open while the caret is in a leading /word
+  ---
+  duration_ms: 0.195912
+  type: 'test'
+  ...
+# Subtest: picking completes the name and keeps arguments
+ok 39 - picking completes the name and keeps arguments
+  ---
+  duration_ms: 0.213542
+  type: 'test'
+  ...
+# Subtest: parse: /name args and /[name](command) args
+ok 40 - parse: /name args and /[name](command) args
+  ---
+  duration_ms: 0.261518
+  type: 'test'
+  ...
+# Subtest: skills follow every command, keyed by name and path, and insert /name or Codex's $name
+ok 41 - skills follow every command, keyed by name and path, and insert /name or Codex's $name
+  ---
+  duration_ms: 0.604412
+  type: 'test'
+  ...
+# Subtest: filtering keeps commands before skills (Conductor's jNi)
+ok 42 - filtering keeps commands before skills (Conductor's jNi)
+  ---
+  duration_ms: 0.739639
+  type: 'test'
+  ...
+1..42
+# tests 42
+# suites 0
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2942.879506

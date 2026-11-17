@@ -1,0 +1,307 @@
+(node:97) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:104) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: palette ignores Enter during native composition
+ok 1 - palette ignores Enter during native composition
+  ---
+  duration_ms: 202.27313
+  type: 'test'
+  ...
+# Subtest: palette ignores ArrowDown during native composition
+ok 2 - palette ignores ArrowDown during native composition
+  ---
+  duration_ms: 163.997992
+  type: 'test'
+  ...
+# Subtest: palette ignores ArrowUp during native composition
+ok 3 - palette ignores ArrowUp during native composition
+  ---
+  duration_ms: 87.304946
+  type: 'test'
+  ...
+# Subtest: palette ignores Home during native composition
+ok 4 - palette ignores Home during native composition
+  ---
+  duration_ms: 97.001484
+  type: 'test'
+  ...
+# Subtest: palette ignores End during native composition
+ok 5 - palette ignores End during native composition
+  ---
+  duration_ms: 31.159837
+  type: 'test'
+  ...
+# Subtest: palette ignores Meta+ArrowUp during native composition
+ok 6 - palette ignores Meta+ArrowUp during native composition
+  ---
+  duration_ms: 44.641483
+  type: 'test'
+  ...
+# Subtest: palette ignores Meta+ArrowDown during native composition
+ok 7 - palette ignores Meta+ArrowDown during native composition
+  ---
+  duration_ms: 44.283011
+  type: 'test'
+  ...
+# Subtest: palette ignores Control+n during native composition
+ok 8 - palette ignores Control+n during native composition
+  ---
+  duration_ms: 43.303687
+  type: 'test'
+  ...
+# Subtest: palette ignores Control+p during native composition
+ok 9 - palette ignores Control+p during native composition
+  ---
+  duration_ms: 62.140493
+  type: 'test'
+  ...
+# Subtest: palette ignores Enter during legacy keyCode 229
+ok 10 - palette ignores Enter during legacy keyCode 229
+  ---
+  duration_ms: 68.701637
+  type: 'test'
+  ...
+# Subtest: palette ignores ArrowDown during legacy keyCode 229
+ok 11 - palette ignores ArrowDown during legacy keyCode 229
+  ---
+  duration_ms: 35.204607
+  type: 'test'
+  ...
+# Subtest: palette ignores ArrowUp during legacy keyCode 229
+ok 12 - palette ignores ArrowUp during legacy keyCode 229
+  ---
+  duration_ms: 18.486777
+  type: 'test'
+  ...
+# Subtest: palette ignores Home during legacy keyCode 229
+ok 13 - palette ignores Home during legacy keyCode 229
+  ---
+  duration_ms: 25.943879
+  type: 'test'
+  ...
+# Subtest: palette ignores End during legacy keyCode 229
+ok 14 - palette ignores End during legacy keyCode 229
+  ---
+  duration_ms: 24.594089
+  type: 'test'
+  ...
+# Subtest: palette ignores Meta+ArrowUp during legacy keyCode 229
+ok 15 - palette ignores Meta+ArrowUp during legacy keyCode 229
+  ---
+  duration_ms: 14.634656
+  type: 'test'
+  ...
+# Subtest: palette ignores Meta+ArrowDown during legacy keyCode 229
+ok 16 - palette ignores Meta+ArrowDown during legacy keyCode 229
+  ---
+  duration_ms: 24.502609
+  type: 'test'
+  ...
+# Subtest: palette ignores Control+n during legacy keyCode 229
+ok 17 - palette ignores Control+n during legacy keyCode 229
+  ---
+  duration_ms: 15.531513
+  type: 'test'
+  ...
+# Subtest: palette ignores Control+p during legacy keyCode 229
+ok 18 - palette ignores Control+p during legacy keyCode 229
+  ---
+  duration_ms: 31.228659
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Enter
+ok 19 - palette preserves ordinary Enter
+  ---
+  duration_ms: 21.646304
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary ArrowDown
+ok 20 - palette preserves ordinary ArrowDown
+  ---
+  duration_ms: 24.954764
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary ArrowUp
+ok 21 - palette preserves ordinary ArrowUp
+  ---
+  duration_ms: 14.431117
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Home
+ok 22 - palette preserves ordinary Home
+  ---
+  duration_ms: 23.730465
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary End
+ok 23 - palette preserves ordinary End
+  ---
+  duration_ms: 16.424328
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Meta+ArrowUp
+ok 24 - palette preserves ordinary Meta+ArrowUp
+  ---
+  duration_ms: 17.205156
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Meta+ArrowDown
+ok 25 - palette preserves ordinary Meta+ArrowDown
+  ---
+  duration_ms: 27.03313
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Control+n
+ok 26 - palette preserves ordinary Control+n
+  ---
+  duration_ms: 38.643805
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Control+p
+ok 27 - palette preserves ordinary Control+p
+  ---
+  duration_ms: 15.43783
+  type: 'test'
+  ...
+# Subtest: palette preserves Escape close during native composition
+ok 28 - palette preserves Escape close during native composition
+  ---
+  duration_ms: 25.292433
+  type: 'test'
+  ...
+# Subtest: palette preserves a custom tab shortcut during native composition
+ok 29 - palette preserves a custom tab shortcut during native composition
+  ---
+  duration_ms: 12.910761
+  type: 'test'
+  ...
+# Subtest: palette leaves unrelated text keys untouched during native composition
+ok 30 - palette leaves unrelated text keys untouched during native composition
+  ---
+  duration_ms: 12.201695
+  type: 'test'
+  ...
+# Subtest: palette preserves Escape close during legacy keyCode 229
+ok 31 - palette preserves Escape close during legacy keyCode 229
+  ---
+  duration_ms: 15.009382
+  type: 'test'
+  ...
+# Subtest: palette preserves a custom tab shortcut during legacy keyCode 229
+ok 32 - palette preserves a custom tab shortcut during legacy keyCode 229
+  ---
+  duration_ms: 12.863512
+  type: 'test'
+  ...
+# Subtest: palette leaves unrelated text keys untouched during legacy keyCode 229
+ok 33 - palette leaves unrelated text keys untouched during legacy keyCode 229
+  ---
+  duration_ms: 16.121053
+  type: 'test'
+  ...
+# (node:105) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: section creation unpins its captured workspace without changing unrelated pins or old section membership
+ok 34 - section creation unpins its captured workspace without changing unrelated pins or old section membership
+  ---
+  duration_ms: 277.610395
+  type: 'test'
+  ...
+# Subtest: removing a workspace after section creation does not resurrect its previous pin
+ok 35 - removing a workspace after section creation does not resurrect its previous pin
+  ---
+  duration_ms: 167.162942
+  type: 'test'
+  ...
+# Subtest: plain section creation preserves every existing pin
+ok 36 - plain section creation preserves every existing pin
+  ---
+  duration_ms: 125.138888
+  type: 'test'
+  ...
+# Subtest: actual desktop store persists creation's unpin and keeps it after remove and hydration
+ok 37 - actual desktop store persists creation's unpin and keeps it after remove and hydration
+  ---
+  duration_ms: 177.149284
+  type: 'test'
+  ...
+# Subtest: actual desktop plain creation writes no unpin
+ok 38 - actual desktop plain creation writes no unpin
+  ---
+  duration_ms: 84.368356
+  type: 'test'
+  ...
+# conductor.db: could not save sidebar sections Error: Synthetic rejected layout write
+#     at invoke (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/state/createSectionUnpin.test.ts:102:49)
+#     at evalmachine.<anonymous>:362:27
+#     at commitHookEffectListMount (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:13038:26)
+#     at commitPassiveMountOnFiber (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14461:11)
+#     at commitPassiveMountEffects_complete (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14421:9)
+#     at commitPassiveMountEffects_begin (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14408:7)
+#     at commitPassiveMountEffects (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14396:3)
+#     at flushPassiveEffectsImpl (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16287:3)
+#     at flushPassiveEffects (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16236:14)
+#     at /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16051:9
+# Subtest: rejected section creation does not persist an unpin and preserves its existing error callback
+ok 39 - rejected section creation does not persist an unpin and preserves its existing error callback
+  ---
+  duration_ms: 77.621527
+  type: 'test'
+  ...
+# (node:111) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: create appends, or inserts before a section, and takes its members out of other sections
+ok 40 - create appends, or inserts before a section, and takes its members out of other sections
+  ---
+  duration_ms: 1.792883
+  type: 'test'
+  ...
+# Subtest: edit renames and sets the emoji, but an edit without an emoji keeps the stored one (Conductor's SY)
+ok 41 - edit renames and sets the emoji, but an edit without an emoji keeps the stored one (Conductor's SY)
+  ---
+  duration_ms: 0.294132
+  type: 'test'
+  ...
+# Subtest: delete drops the section; reorder moves it to an index of the list without it
+ok 42 - delete drops the section; reorder moves it to an index of the list without it
+  ---
+  duration_ms: 0.179662
+  type: 'test'
+  ...
+# Subtest: assign moves a workspace to the end of one section; null takes it out
+ok 43 - assign moves a workspace to the end of one section; null takes it out
+  ---
+  duration_ms: 0.282705
+  type: 'test'
+  ...
+# Subtest: the layout stamp always moves forward
+ok 44 - the layout stamp always moves forward
+  ---
+  duration_ms: 0.120475
+  type: 'test'
+  ...
+# Subtest: projection: first section wins, unlisted rows are left out, newest activity first
+ok 45 - projection: first section wins, unlisted rows are left out, newest activity first
+  ---
+  duration_ms: 0.272038
+  type: 'test'
+  ...
+# (node:128) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: row actions map to their conductor.db commands
+ok 46 - row actions map to their conductor.db commands
+  ---
+  duration_ms: 1.799167
+  type: 'test'
+  ...
+1..46
+# tests 46
+# suites 0
+# pass 46
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2130.347004

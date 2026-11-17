@@ -1,0 +1,42 @@
+{
+  "original_head": "202c4119f25bb0214578c7efb9c08ccbe5652175",
+  "before_fixture_sha256": "ae6afb0674d394071a1e8079916a87c76d75ad849d88f3d2b2e61535f1089855",
+  "after_fixture_sha256": "4fa88980ea767ebfbf9e46fe208b9129295303f52754cf9183464c91f78c044f",
+  "changes": [
+    {
+      "before": "  const listeners = new Set<WireListener>();\n  const documentElement",
+      "after": "  const listeners = new Set<WireListener>();\n  const spotlightListeners = new Set<WireListener>();\n  const documentElement"
+    },
+    {
+      "before": "    \"src/components/ui/Tooltip\": { ShortcutHint: inert },",
+      "after": "    \"src/components/ui/Tooltip\": { ShortcutHint: inert, Tooltip: ({ children }: { children: ReactNode }) => children },"
+    },
+    {
+      "before": "          if (event === \"scripts://event\") listeners.add(listener);\n          return () => listeners.delete(listener);",
+      "after": "          if (event === \"scripts://event\") listeners.add(listener);\n          if (event === \"spotlight://event\") spotlightListeners.add(listener);\n          return () => { listeners.delete(listener); spotlightListeners.delete(listener); };"
+    },
+    {
+      "before": "  await act(async () => { renderer = create(element(), { createNodeMock: () => host }); });\n  function screen()",
+      "after": "  await act(async () => { renderer = create(element(), { createNodeMock: () => host }); });\n  if (spotlight) await act(async () => {\n    for (const listener of spotlightListeners) listener({ payload: { type: \"started\", repoRoot: repo.path, workspaceId: activeWorkspace.id, leftoverRestoreError: null } });\n  });\n  function screen()"
+    }
+  ],
+  "hosted_run": 43139872812,
+  "unit_job": 130924002692,
+  "observations": [
+    "Seven Run cases and Setup stopped before selection assertions: RunSplitButton could not render the omitted Tooltip export.",
+    "Spotlight status alone produces an empty log; no ScriptOutput existed for that control. Feed the real started event to its actual reducer.",
+    "Standalone control passed. Nine failures/one passing control do not qualify as the intended seven-failure/three-control product baseline.",
+    "Typecheck no longer reported TS errors; the build job failed at the same unit suite."
+  ],
+  "product_changes": false,
+  "scenario_or_assertion_changes": false,
+  "source_inspected": [
+    "src/components/RunSplitButton.tsx",
+    "src/components/PreviewOpenButton.tsx",
+    "src/components/ScriptsPanel.tsx",
+    "src/spotlight/testing.ts",
+    "src/spotlight/testingApi.ts"
+  ],
+  "local_JS_native": "NOT_RUN",
+  "corrected_hosted_baseline": "PENDING"
+}

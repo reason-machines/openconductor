@@ -1,0 +1,1 @@
+{id:"alacritty",displayName:"Alacritty",appName:"Alacritty",iconType:"terminal",icon:"/app-icons/alacritty.png",cliBinDir:"Contents/MacOS"}

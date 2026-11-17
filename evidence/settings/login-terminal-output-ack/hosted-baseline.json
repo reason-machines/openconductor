@@ -1,0 +1,27 @@
+{
+  "author": "Conductor Rebuild",
+  "pr": 1084,
+  "head_sha": "b36169859965e6a5a9379b96681d5f77feb27bda",
+  "run_id": 43094148011,
+  "job_id": 130778542227,
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43094148011/job/130778542227",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "qualification": "Five intended ACK assertion failures; both filtering/dismissal controls passed. This retained segment is not the whole suite TAP.",
+  "failures": [
+    "login acknowledges raw chunk bytes only after xterm consumes them",
+    "login acknowledges output before the spawn promise resolves",
+    "rendered login output releases flow credit beyond the high watermark",
+    "rejected login acknowledgements do not interrupt completion or cleanup",
+    "completed login shells keep acknowledging output until Done"
+  ],
+  "controls": [
+    "login ignores foreign, pre-spawn, lifecycle and empty output for byte credit",
+    "dismissed login output cannot acknowledge a late xterm callback"
+  ],
+  "fixture_sha256": "5821ea8f116268a176b3b3ad042dada17658024efdf3e754fc6e882d859afb09",
+  "completion_fixture_sha256": "b01b2a8d502fb7a1eba2b02e5ecfaf9ea2e7bbea28df81700e7b660772a305e7",
+  "baseline_source_sha256": "624389bd708832a56fdaddb80e2ac567c2b0901002be3e9ca5501de91f73e778",
+  "candidate_hosted": "PENDING",
+  "native_provider_realIPC": "NOT_RUN",
+  "pressure_model": "simulated credit counter; not the Rust FlowGate"
+}

@@ -1,0 +1,1 @@
+function AZ(t){return sX.find(e=>e.id===t)}

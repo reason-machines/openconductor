@@ -1,0 +1,84 @@
+{
+  "unit": "PALETTE-VIEW-ARCHIVED-RESET-PROJECTS-15-03",
+  "reference": {
+    "retained_rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "source": "Retained original Conductor 0.87.6 renderer bytes, full hash verified this turn; no native operation or reference JS execution.",
+    "spans": [
+      {
+        "name": "m_a",
+        "asset": "renderApp-D_fmY7hW.js",
+        "asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+        "utf8_half_open": [
+          10889115,
+          10920819
+        ],
+        "bytes": 31704,
+        "sha256": "cd07cfad2d86afe0717c73433656bd3f8d144b8e84dfd2368646ded0f30d1c3e"
+      },
+      {
+        "name": "l_a",
+        "asset": "renderApp-D_fmY7hW.js",
+        "asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+        "utf8_half_open": [
+          10884027,
+          10888607
+        ],
+        "bytes": 4580,
+        "sha256": "f8f43fb5a1d78b072731b5cbe99f0c330acbf16685901821a8b3860985b20d96"
+      },
+      {
+        "name": "mFi",
+        "asset": "renderApp-D_fmY7hW.js",
+        "asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+        "utf8_half_open": [
+          9859767,
+          9860278
+        ],
+        "bytes": 511,
+        "sha256": "9635e1f76a54222c2cb94d1a86eeacdf6e1d2099c72eb043ccfa1ffd4a886a99"
+      },
+      {
+        "name": "nFi",
+        "asset": "renderApp-D_fmY7hW.js",
+        "asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+        "utf8_half_open": [
+          9820611,
+          9824705
+        ],
+        "bytes": 4094,
+        "sha256": "e8064ef68babed91e936ed903442e09407fa15cef1ff3031f15d0aecfee61263"
+      },
+      {
+        "name": "Kba",
+        "asset": "renderApp-D_fmY7hW.js",
+        "asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+        "utf8_half_open": [
+          10875642,
+          10876174
+        ],
+        "bytes": 532,
+        "sha256": "db9898feb78cc75900d3b2b0bd33c8f5eca83a23f00ffd90d7b610de8b83e5ba"
+      },
+      {
+        "name": "Gba",
+        "asset": "renderApp-D_fmY7hW.js",
+        "asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+        "utf8_half_open": [
+          10875438,
+          10875615
+        ],
+        "bytes": 177,
+        "sha256": "27aa02fb8e18af53423ee355e1ded1e05c78ad5d3aead5b9347fcc28fb499a60"
+      }
+    ]
+  },
+  "checked_main": "f62f81ab",
+  "baseline_branch_head": "52dea811",
+  "original_fixture_sha256": "8b8bcf8f59d3038643ac80c6a652e2a27232c2b1102608e3f54f93a4d698d153",
+  "corrected_test_sha256": "d0c2dde58cef115ab551f74e5fa70a5927bb06814040ef95ff781bdcd2afe9df",
+  "limits": [
+    "Retained static REA source; not fresh native observation",
+    "No original reference code executed",
+    "No new REA operation or gap encountered during this delivery"
+  ]
+}

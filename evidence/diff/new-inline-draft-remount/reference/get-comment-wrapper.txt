@@ -1,0 +1,1 @@
+function ppe(t){return zn.getComment({id:t})}

@@ -1,0 +1,204 @@
+{
+  "read_at": "2026-11-13",
+  "pr": {
+    "number": 1004,
+    "title": "fix(chat): highlight ordinary Read result lines",
+    "body": "## Change and current state\nConductor Rebuild fixes ordinary Read syntax highlighting. The hosted test-only commit reproduced exactly 21 missing-syntax failures with seven new controls and 2,439 other tests passing. The minimal production fix now selects the retained path aliases and reuses the existing guarded highlighter independently for each numbered line. The regression remains byte-frozen. Its Read cases passed at fc29433d; the full suite confirmed a missing real highlight export in the existing Write VM fixture. That two-line fixture-seam repair is now published at cb2309e3; full-suite GREEN and merge await hosted CI.\n\nThe three core paths are ToolRows.tsx Read arm/Read-only NumberedCode plus existing highlight import, new readSyntaxHighlight.test.ts, and new evidence/chat/read-text-syntax.md. The conditionally authorized fourth path, writeRows.test.ts, only imports the real existing highlight and exposes it from the VM seam after its actual hosted execution failure was confirmed. Every assertion, expected value, fixture call, case and timeout is unchanged. Shared primitives, Markdown implementation, CSS, the Read regression and both #994 fixtures are unchanged. Main target, never stacked.\n\n## Evidence\nOriginal source archive: 4,564,369 bytes; SHA-256 be4d818ce814c572dee9f346fd3e6b526a4f4723bffb308a6874959802786578. Reviewed stdlib verification PASS: two full retained Conductor assets, 22 reference spans, nine source snapshots, 15 main spans and 30 source joins. Retained REA receipt ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2; renderer semantic analysis historically exhausted heap. Static shipped-byte evidence is not native observation. No reference JS execution.\n\nFresh-main zero-net preflight at 39c05c2b52a96254e504821d6f25142c5d5eaee6 preceded test edits. Actual ordinary Claude applyReasonPayload → reducer → buildRows/conductorTools → ConductorToolRow → Read/NumberedCode runs with real React/test-renderer and the **real** markdown.ts highlight implementation, not a syntax mock. Cases preserve cleaned text/blank lines/offsets, collapse and file navigation; cover canonical extension aliases, unmapped/pathless fallbacks, independent-line grammar and per-line cutoff, exact/over-limit, literal markup and empty/error controls.\n\n## Verification\n- python3 .rea-work/read-syntax-handoff/verify-packet.py: PASS for identities, spans and joins.\n- node --check src/features/chat/readSyntaxHighlight.test.ts: PASS, syntax only.\n- git diff --check: PASS.\n- Frozen regression SHA-256 acd015bba3bd0db2b53c1842a278278a837ebc26813486e4c721cf40758120ef.\n- Mounted RED: verified in [run 42964298224](https://github.com/reason-machines/openconductor/actions/runs/42964298224/job/130337818401), with 21 intended assertion failures and 2,446 passes (2,467 total) using `node --test \"src/**/*.test.ts\"`.\n- Minimal production patch published only after RED; the frozen Read cases passed at fc29433d. Full suite stopped on `(0 , markdown_ts_1.highlight) is not a function` at writeRows.test.ts:218 in [run 42965112061](https://github.com/reason-machines/openconductor/actions/runs/42965112061/job/130340408749). The build job stopped at that same unit-test error, not a compiler/build error.\n- Seam repair cb2309e3: actual highlight import plus VM export only. Write test SHA-256 deliberately changes from `e12f212147c419c9eed38eae60c72c2535b46181edd7d97e72c332bc7fce27ff` to `452afa96a84edeedfed50d9eabf36968d564634bfde717de02bd20f0f5f20e5a`; this Write file is not claimed byte-frozen. Exact two-substitution comparison and complete test-case suffix byte comparison: PASS. `node --check src/features/chat/writeRows.test.ts` and `git diff --check`: PASS. Read regression and both #994 fixture hash checks: PASS. Full suite/typecheck/build on this repaired head: pending hosted CI.\n- Local dependency-backed tests/build: NOT RUN; no dependency installation or heavy local build.\n- Native/browser/visual/real-provider/installed-package acceptance: NOT RUN, excluded from this scoped unit; no screenshot.\n\nShared primitives, Markdown implementation, CSS, image behavior, Edit/Write/MultiEdit and #847 remain unchanged. Both delivered #994 fixture hashes stay frozen. Sole builder retains protected merge and containing-main CI/macOS package verification after GREEN.\n\n[Source and validation record](https://github.com/reason-machines/openconductor/blob/reason/openconductor-copycode-r-6c9f1b05/evidence/chat/read-text-syntax.md)\n\nConductor Rebuild",
+    "state": "closed",
+    "draft": false,
+    "merged": true,
+    "head_sha": "cb2309e3703f66254311eeb28f5ed19cfff62464",
+    "base_sha": "56e4c7a980dd5df18b66e9dc61daccc3f39937ae",
+    "head_ref": "reason/openconductor-copycode-r-6c9f1b05",
+    "head_repo": "reason-machines/openconductor",
+    "base_ref": "main",
+    "html_url": "https://github.com/reason-machines/openconductor/pull/1004",
+    "author": {
+      "login": "reason-machines[bot]",
+      "avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4"
+    },
+    "created_at": "2026-11-11T05:13:07Z",
+    "updated_at": "2026-11-11T05:47:28Z",
+    "mergeable": null,
+    "mergeable_state": "unknown",
+    "additions": 289,
+    "deletions": 5,
+    "changed_files": 4,
+    "labels": [],
+    "assignees": [],
+    "requested_reviewers": [],
+    "body_truncated": false
+  },
+  "commits": [
+    {
+      "sha": "b21d5c777b8e01388a7f6f309b440447a9d0b1d4",
+      "message": "fix(chat): show code-copy rejection feedback\n\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>\nCo-authored-by: qa-runner2-star <319404260+qa-runner2-star@users.noreply.github.com>",
+      "author_name": "reason-machines[bot]",
+      "author_login": "reason-machines[bot]",
+      "author_avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4",
+      "committed_at": "2026-11-11T01:59:53Z",
+      "html_url": "https://github.com/reason-machines/openconductor/commit/b21d5c777b8e01388a7f6f309b440447a9d0b1d4"
+    },
+    {
+      "sha": "ef735acd4bc8d652376423f26f7ff9917198f432",
+      "message": "test(chat): reproduce ordinary Edit file hover omission\n\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>\nCo-authored-by: qa-runner2-star <319404260+qa-runner2-star@users.noreply.github.com>",
+      "author_name": "reason-machines[bot]",
+      "author_login": "reason-machines[bot]",
+      "author_avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4",
+      "committed_at": "2026-11-11T04:13:39Z",
+      "html_url": "https://github.com/reason-machines/openconductor/commit/ef735acd4bc8d652376423f26f7ff9917198f432"
+    },
+    {
+      "sha": "3971f97ca86d0ae1b7b78c5b15ef4c7b8b580003",
+      "message": "fix(chat): attach ordinary Edit diff hover\n\nFeed the file badge the same normalized sides as the expanded diff, only when existing content is present. Hosted test-only RED: 8 missing-preview failures and 4 controls passing; fixture unchanged at 2f6aab47c4a4bb8c13fd5a457a0c68246be64d1f8fd6451717019c99a3a9442e.\n\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>\nCo-authored-by: qa-runner2-star <319404260+qa-runner2-star@users.noreply.github.com>",
+      "author_name": "reason-machines[bot]",
+      "author_login": "reason-machines[bot]",
+      "author_avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4",
+      "committed_at": "2026-11-11T04:20:03Z",
+      "html_url": "https://github.com/reason-machines/openconductor/commit/3971f97ca86d0ae1b7b78c5b15ef4c7b8b580003"
+    },
+    {
+      "sha": "43bc4a35e591356d25ae045fb6821a2d7e256c42",
+      "message": "test(chat): align selected Edit hover expectations\n\nPreserve Read/Bash negatives and Write/tool-identity controls while asserting Edit's own selected sides. Temporarily remove only the new Edit hoverContent prop for hosted RED against current-main-equivalent ToolRows; restore it unchanged after the two revised tests fail. Frozen fixture 2f6aab47 remains unchanged.\n\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>\nCo-authored-by: qa-runner2-star <319404260+qa-runner2-star@users.noreply.github.com>",
+      "author_name": "reason-machines[bot]",
+      "author_login": "reason-machines[bot]",
+      "author_avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4",
+      "committed_at": "2026-11-11T04:35:09Z",
+      "html_url": "https://github.com/reason-machines/openconductor/commit/43bc4a35e591356d25ae045fb6821a2d7e256c42"
+    },
+    {
+      "sha": "a1d05de78e95970daba706ff4c06922e10a3fa01",
+      "message": "fix(chat): restore verified ordinary Edit hover\n\nRevised existing controls reproduced missing Edit previews in hosted run 42960207054 (10 expected failures, 2404 passes). Restore the identical hoverContent call; both fixtures remain byte-frozen. Hosted GREEN is pending.\n\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>\nCo-authored-by: qa-runner2-star <319404260+qa-runner2-star@users.noreply.github.com>",
+      "author_name": "reason-machines[bot]",
+      "author_login": "reason-machines[bot]",
+      "author_avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4",
+      "committed_at": "2026-11-11T04:42:45Z",
+      "html_url": "https://github.com/reason-machines/openconductor/commit/a1d05de78e95970daba706ff4c06922e10a3fa01"
+    },
+    {
+      "sha": "c53cbb9afddf21bba8ceb6ef37ce10beeceafdc8",
+      "message": "test(chat): reproduce unhighlighted ordinary Read results\n\nMount the real ordinary Claude reducer/view/Read path with the existing real highlight helper. Production is unchanged for hosted missing-syntax RED; freeze fixture acd015bb through the minimal fix. Retained source packet verification passes; no native/browser/provider run or local dependency installation.\n\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>\nCo-authored-by: qa-runner2-star <319404260+qa-runner2-star@users.noreply.github.com>",
+      "author_name": "reason-machines[bot]",
+      "author_login": "reason-machines[bot]",
+      "author_avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4",
+      "committed_at": "2026-11-11T05:13:05Z",
+      "html_url": "https://github.com/reason-machines/openconductor/commit/c53cbb9afddf21bba8ceb6ef37ce10beeceafdc8"
+    },
+    {
+      "sha": "fc29433d2115b34ce74f1cde6e3a8aee0a7b2c50",
+      "message": "fix(chat): highlight ordinary Read lines by path\n\nHosted mounted RED at c53cbb9a: 21 missing-syntax failures and 7 fallback/empty/error controls pass in run 42964298224. Reuse the existing guarded highlighter per line, preserving the frozen acd015bb regression and both #994 fixtures. Hosted GREEN remains pending.\n\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>\nCo-authored-by: qa-runner2-star <319404260+qa-runner2-star@users.noreply.github.com>",
+      "author_name": "reason-machines[bot]",
+      "author_login": "reason-machines[bot]",
+      "author_avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4",
+      "committed_at": "2026-11-11T05:20:21Z",
+      "html_url": "https://github.com/reason-machines/openconductor/commit/fc29433d2115b34ce74f1cde6e3a8aee0a7b2c50"
+    },
+    {
+      "sha": "cb2309e3703f66254311eeb28f5ed19cfff62464",
+      "message": "test(chat): expose real highlight in Write fixture seam\n\nHosted fc29433d confirms the existing cross-tool Write fixture loads Read without highlight. Import and export the real helper only; every assertion and fixture call is byte-identical. Write SHA e12f2121 -> 452afa96 is deliberate; Read acd015bb and both #994 fixtures stay frozen. Hosted full GREEN pending.\n\nCo-authored-by: svemyh <40596752+svemyh@users.noreply.github.com>\nCo-authored-by: qa-runner2-star <319404260+qa-runner2-star@users.noreply.github.com>",
+      "author_name": "reason-machines[bot]",
+      "author_login": "reason-machines[bot]",
+      "author_avatar_url": "https://avatars.githubusercontent.com/in/4049964?v=4",
+      "committed_at": "2026-11-11T05:26:24Z",
+      "html_url": "https://github.com/reason-machines/openconductor/commit/cb2309e3703f66254311eeb28f5ed19cfff62464"
+    }
+  ],
+  "discussion": [],
+  "reviews": [],
+  "inline_comments": [],
+  "review_threads": [],
+  "feedback_page": {
+    "offset": 0,
+    "limit": 50,
+    "reviews_total": 0,
+    "reviews_next_offset": null,
+    "inline_comments_total": 0,
+    "inline_comments_next_offset": null,
+    "review_threads_total": 0,
+    "review_threads_next_offset": null,
+    "discussion_total": 0,
+    "discussion_next_offset": null
+  },
+  "sections": {
+    "commits": {
+      "status": "complete"
+    },
+    "files": {
+      "status": "complete"
+    },
+    "checks": {
+      "status": "complete"
+    },
+    "combined_status": {
+      "status": "complete"
+    },
+    "required_checks": {
+      "status": "complete"
+    },
+    "discussion": {
+      "status": "complete"
+    },
+    "reviews": {
+      "status": "complete"
+    },
+    "inline_comments": {
+      "status": "complete"
+    },
+    "review_threads": {
+      "status": "complete"
+    },
+    "options": {
+      "status": "complete"
+    },
+    "evidence": {
+      "status": "unsupported",
+      "error": "named_pull_request"
+    }
+  },
+  "files": [
+    {
+      "filename": "evidence/chat/read-text-syntax.md",
+      "status": "added",
+      "additions": 51,
+      "deletions": 0,
+      "patch": "@@ -0,0 +1,51 @@\n+# Ordinary Read text syntax\n+\n+Conductor Rebuild, READ-TEXT-SYNTAX-BE7-07; sole builder 6c9f, source owner be7. Core scope: ToolRows Read arm, Read-only NumberedCode and the existing guarded highlight import; new readSyntaxHighlight.test.ts; this evidence note. The conditional fourth-path repair in writeRows.test.ts exposes the real existing highlighter to its VM seam only. No image, Markdown implementation, shared RowShell/FileBadge, CSS, provider, Edit/Write/MultiEdit production or frozen #847 changes.\n+\n+## Source and fresh-main check\n+\n+The original handoff archive is 4,564,369 bytes, SHA-256 `be4d818ce814c572dee9f346fd3e6b526a4f4723bffb308a6874959802786578`. All 15 members were checked as regular files with safe relative paths before copying. Its reviewed standard-library verifier independently checked two retained full assets, 22 reference spans, nine source snapshots, 15 main spans and 30 declarative source joins: PASS. No reference JavaScript was executed.\n+\n+Historical REA receipt `ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2` covers the Conductor 0.87.6 retained bytes. The renderer semantic analysis exhausted heap and skipped that asset. This is retained static source evidence, not new semantic analysis or observed native behavior.\n+\n+- Renderer: 11,600,457 bytes, SHA-256 `5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde`.\n+- Companion index: 3,493,297 bytes, SHA-256 `b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3`.\n+- Ordinary Read `O0o`, UTF-8 range `[7816650,7817911)`, cleans the result, selects the path language with `B0o`, and supplies the numbered lines to `w0o`.\n+- Language selector `B0o`, `[7823360,7823740)`, maps js/jsx to javascript, ts/tsx to typescript, py to python, rs to rust, json to json, yml/yaml to yaml, css to css, html/htm to html, xml to xml, sh/bash to bash; otherwise text. Extensions are case-insensitive.\n+- `w0o`, `[7801811,7802965)`, invokes inline `i1e` separately for each line. The complete mapper/highlighter span `[4514423,4516402)` guards registration and the 100,000-character cutoff before highlighting. No grammar state or combined-result cutoff crosses lines.\n+\n+The packet's main snapshot is `887964ad496b1069e6ef0fb54f16df373e82932a`. Fresh main was fetched and merged into the assigned branch before test edits; tracked net diff to `39c05c2b52a96254e504821d6f25142c5d5eaee6` was zero. Its actual ordinary Claude Read path still reaches the same Read arm and raw-span NumberedCode. The existing markdown.ts highlight helper already implements the registration/cutoff guard and real lowlight syntax spans; its source is unchanged.\n+\n+The preceding Edit-hover #994 is merged as `de772b84c4be571ffc51dabf8b327b9291534742`. Its 23 PR checks, exact-main CI and exact macOS package contract/byte identities passed. Its two fixtures remain unchanged at SHA-256 `2f6aab47c4a4bb8c13fd5a457a0c68246be64d1f8fd6451717019c99a3a9442e` and `66fb7ad9f7a9cc53c222c83e4397f8673c0e5fd55aff5c090a638c5202ccb733`.\n+\n+## Mounted regression before production edits\n+\n+The fixture executes actual applyReasonPayload → reducer → buildRows/conductorTools → ConductorToolRow → Read/NumberedCode, using ordinary Claude toolName/rawInput and real React/react-test-renderer. The real existing markdown.ts highlight implementation is imported, not stubbed; only unrelated Markdown/link/external-open leaves throw. This is component execution, not a provider, browser or native app run.\n+\n+The primary example has file_path `/repo/src/example.ts`, offset 7 and numbered result lines. Assertions preserve cleaned text, the blank line, exact line numbers and the collapsed/expanded toggle, then require real const/true syntax spans. Canonical extension aliases, unmapped/registered-but-unmapped/pathless fallbacks, per-line grammar reset, per-line combined-result cutoff, exact/over-limit fallback, safe literal markup, file navigation and empty/error controls are covered.\n+\n+Hosted test-only commit `c53cbb9afddf21bba8ceb6ef37ce10beeceafdc8` reproduced the failure before production edits. [CI run 42964298224](https://github.com/reason-machines/openconductor/actions/runs/42964298224/job/130337818401) reported exactly 21 missing-syntax assertion failures and all seven new fallback/empty/error controls passing. The primary failure was `ordinary Read highlights the TypeScript const keyword`; the other syntax cases failed with `ordinary Read renders real syntax spans, not a plain line`. No fixture load or normalization failure occurred.\n+\n+The minimal patch selects the retained extension aliases in the Read arm, passes the language only to Read's NumberedCode, and reuses `highlight(language, line) ?? line` independently per line. Shared primitives and Markdown stay unchanged. Fresh main `56e4c7a980dd5df18b66e9dc61daccc3f39937ae` still has the same raw-span Read implementation and was merged before publication. The regression fixture remains unchanged for hosted GREEN.\n+\n+## Confirmed Write-fixture seam repair\n+\n+The first production-fix head `fc29433d2115b34ce74f1cde6e3a8aee0a7b2c50` made the frozen Read regression pass, but hosted full-suite execution confirmed one existing fixture-load failure. In [run 42965112061](https://github.com/reason-machines/openconductor/actions/runs/42965112061/job/130340408749), `Read, Edit and MultiEdit keep their own body contracts without Write disclosure controls` failed at writeRows.test.ts:218 with `(0 , markdown_ts_1.highlight) is not a function`. The frontend build job stopped at the same unit-test failure before typecheck/build. Its VM supplied only Markdown, while the actual production Read now legitimately imports highlight.\n+\n+The authorized fourth path changes exactly two lines: import the real `highlight` from unchanged markdown.ts, and export it from that fixture's existing `./markdown.ts` VM seam. No production guard or optional call was added. Every test case, fixture call, assertion, expected value, skip setting and timeout remains byte-identical. The Read regression and both #994 fixtures remain frozen.\n+\n+The Write fixture's SHA-256 deliberately changes from `e12f212147c419c9eed38eae60c72c2535b46181edd7d97e72c332bc7fce27ff` to `452afa96a84edeedfed50d9eabf36968d564634bfde717de02bd20f0f5f20e5a`; it is not claimed byte-frozen. An exact two-substitution comparison against the pre-repair file and byte comparison of the complete test-case suffix passed. `node --check src/features/chat/writeRows.test.ts` and `git diff --check` passed on Reason cloud. Hosted full-suite GREEN after this seam repair remains pending; no local dependency installation or dependency-backed execution was performed.\n+\n+## Validation record\n+\n+- `python3 .rea-work/read-syntax-handoff/verify-packet.py`: PASS, retained identities/spans and 30 joins only.\n+- `node --check src/features/chat/readSyntaxHighlight.test.ts`: PASS, syntax only.\n+- `git diff --check`: PASS. ToolRows, markdown.ts and both #994 fixtures remain byte-identical to fresh main before RED.\n+- New regression fixture frozen at SHA-256 `acd015bba3bd0db2b53c1842a278278a837ebc26813486e4c721cf40758120ef` before test-only publication.\n+- Hosted mounted RED: PASS as a reproduction; 21 intended syntax failures, seven new controls passing, 2,439 other tests passing (2,467 total). Command: `node --test \"src/**/*.test.ts\"`.\n+- Production fix added only after that RED. Frozen Read GREEN passed at fc29433d; full-suite execution then failed on the confirmed Write VM seam above. After its two-line seam repair, full suite/typecheck/build remain pending hosted CI. No local dependency installation or heavy build.\n+- Containing-main CI and macOS package verification: pending delivery.\n+\n+## Limits\n+\n+No dependency installation or heavy local build. No native/browser/visual/actual-provider/installed-package acceptance; no screenshot because these app surfaces are excluded from this unit. Static reference evidence does not establish pixel, theme or token-for-token parity with a running Conductor. An eventual hosted macOS artifact is not an installation or native acceptance.",
+      "previous_filename": null,
+      "patch_truncated": false
+    },
+    {
+      "filename": "src/features/chat/ToolRows.tsx",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 4,
+      "patch": "@@ -38,7 +38,7 @@ import {\n   type ConductorTool,\n   type TaskItem,\n } from \"./conductorTools.ts\";\n-import { Markdown } from \"./markdown.ts\";\n+import { highlight, Markdown } from \"./markdown.ts\";\n import { LinkWithMenu } from \"./LinkMenu.tsx\";\n import { openUrl } from \"../../backend.ts\";\n import { thinkingChipText } from \"./thinkingChip.ts\";\n@@ -410,6 +410,12 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO\n     case \"read\": {\n       const path = s(input.file_path);\n       const text = output === undefined ? undefined : readContent(output);\n+      const languages: Record<string, string> = {\n+        js: \"javascript\", jsx: \"javascript\", ts: \"typescript\", tsx: \"typescript\",\n+        py: \"python\", rs: \"rust\", json: \"json\", yml: \"yaml\", yaml: \"yaml\",\n+        css: \"css\", html: \"html\", htm: \"html\", xml: \"xml\", sh: \"bash\", bash: \"bash\",\n+      };\n+      const language = languages[path.split(\".\").pop()?.toLowerCase() ?? \"\"];\n       return (\n         <RowShell\n           {...shell}\n@@ -418,7 +424,7 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO\n           keepRight\n           align=\"center\"\n           bareContent\n-          content={text ? <NumberedCode text={text} start={typeof input.offset === \"number\" ? input.offset : 1} /> : undefined}\n+          content={text ? <NumberedCode text={text} start={typeof input.offset === \"number\" ? input.offset : 1} language={language} /> : undefined}\n         />\n       );\n     }\n@@ -614,14 +620,14 @@ function BashRow({ input, output, ...shell }: ShellBase & { input: Record<string\n   );\n }\n \n-function NumberedCode({ text, start }: { text: string; start: number }) {\n+function NumberedCode({ text, start, language }: { text: string; start: number; language?: string }) {\n   const lines = text.split(\"\\n\");\n   return (\n     <pre className=\"oc-tool-code numbered\">\n       {lines.map((l, i) => (\n         <div key={i} className=\"oc-code-line\">\n           <span className=\"oc-code-ln\">{start + i}</span>\n-          <span>{l}</span>\n+          <span>{highlight(language, l) ?? l}</span>\n         </div>\n       ))}\n     </pre>",
+      "previous_filename": null,
+      "patch_truncated": false
+    },
+    {
+      "filename": "src/features/chat/readSyntaxHighlight.test.ts",
+      "status": "added",
+      "additions": 226,
+      "deletions": 0,
+      "patch": "@@ -0,0 +1,226 @@\n+import assert from \"node:assert/strict\";\n+import { readFileSync } from \"node:fs\";\n+import { createRequire } from \"node:module\";\n+import { test } from \"node:test\";\n+import { runInNewContext } from \"node:vm\";\n+import { renderToStaticMarkup } from \"react-dom/server\";\n+import type { ReactElement } from \"react\";\n+import type { ToolRowProps } from \"./ToolRows.tsx\";\n+import * as tools from \"./conductorTools.ts\";\n+import * as icons from \"./toolIconData.ts\";\n+import { highlight, MAX_HIGHLIGHT_CHARS } from \"./markdown.ts\";\n+import { thinkingChipText } from \"./thinkingChip.ts\";\n+import { applyReasonPayload, reasonChat, startTurn } from \"./reason.ts\";\n+import { applyChatEvents, emptyTranscript } from \"./reducer.ts\";\n+import { buildRows } from \"./view.ts\";\n+\n+const dependencies = createRequire(import.meta.url);\n+const React = dependencies(\"react\");\n+const { act, create } = dependencies(\"react-test-renderer\");\n+const ts = dependencies(\"typescript\");\n+type Node = { type: unknown; props: Record<string, unknown>; children: Array<Node | string>; findAll: (predicate: (node: Node) => boolean) => Node[] };\n+type Read = { path?: string; output: string; offset?: number; error?: boolean };\n+const text = (node: Node | string): string => typeof node === \"string\" ? node : node.children.map(text).join(\"\");\n+const hasClass = (node: Node, name: string): boolean => String(node.props.className).split(\" \").includes(name);\n+const syntax = (node: Node): Node[] => node.findAll((child) => child.type === \"span\" && String(child.props.className).includes(\"hljs-\"));\n+function host(node: Node): ReactElement {\n+  assert.equal(typeof node.type, \"string\");\n+  return React.createElement(node.type, node.props, ...node.children.map((child) => typeof child === \"string\" ? child : host(child)));\n+}\n+\n+function normalizedRead(read: Read) {\n+  const chatId = \"workspace:claude\";\n+  const at = new Date(0);\n+  const started = startTurn(reasonChat(chatId), \"Read the file\", at);\n+  const rawInput = { file_path: read.path ?? \"/repo/src/example.ts\", offset: read.offset ?? 7 };\n+  const step = applyReasonPayload(started.state, {\n+    chatId, type: \"tool\", id: \"ordinary-read\", title: \"Read file\", kind: \"read\",\n+    toolName: \"Read\", rawInput, status: read.error ? \"failed\" : \"completed\",\n+    output: read.output, diffs: [], locations: [],\n+  }, at);\n+  const reduced = applyChatEvents(emptyTranscript(chatId), [...started.events, ...step.events]);\n+  assert.ok(reduced.ok);\n+  const assistant = buildRows(reduced.transcript).find((row) => row.kind === \"assistant\");\n+  assert.ok(assistant?.kind === \"assistant\");\n+  const part = assistant.parts.find((part) => part.kind === \"tool\");\n+  assert.ok(part?.kind === \"tool\");\n+  assert.deepEqual(part.call.tool, { name: \"Read\", input: rawInput });\n+  return part.call;\n+}\n+\n+async function fixture(read: Read) {\n+  const production: Record<string, unknown> = {};\n+  const compiled = ts.transpileModule(readFileSync(new URL(\"./ToolRows.tsx\", import.meta.url), \"utf8\"), {\n+    fileName: \"ToolRows.tsx\",\n+    compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022 },\n+    reportDiagnostics: true,\n+  });\n+  assert.equal(compiled.diagnostics?.filter((d: { category: number }) => d.category === ts.DiagnosticCategory.Error).length, 0);\n+  runInNewContext(compiled.outputText, {\n+    exports: production,\n+    require(name: string) {\n+      switch (name) {\n+        case \"react\": case \"react/jsx-runtime\": return dependencies(name);\n+        case \"./conductorTools.ts\": return tools;\n+        case \"./toolIconData.ts\": return icons;\n+        case \"./thinkingChip.ts\": return { thinkingChipText };\n+        case \"./markdown.ts\": return { highlight, Markdown: () => { throw new Error(\"Unrelated Markdown leaf\"); } };\n+        case \"./LinkMenu.tsx\": return { LinkWithMenu: () => { throw new Error(\"Unrelated link menu\"); } };\n+        case \"../../backend.ts\": return { openUrl: () => { throw new Error(\"Unrelated external opener\"); } };\n+        default: throw new Error(`Unexpected ToolRows dependency: ${name}`);\n+      }\n+    },\n+  }, { filename: \"ToolRows.tsx\" });\n+  const call = normalizedRead(read);\n+  const opened: string[] = [];\n+  function Scene() {\n+    const [open, setOpen] = React.useState(false);\n+    const props: ToolRowProps = {\n+      tool: call.tool, status: call.status, result: call.result, isError: call.status === \"error\",\n+      open, onToggle: () => setOpen((value: boolean) => !value), onOpenFile: (path) => opened.push(path),\n+    };\n+    return React.createElement(production.ConductorToolRow, props);\n+  }\n+  let renderer: ReturnType<typeof create>;\n+  await act(async () => { renderer = create(React.createElement(Scene)); });\n+  const all = (predicate: (node: Node) => boolean): Node[] => renderer.root.findAll((node: Node) => typeof node.type === \"string\" && predicate(node));\n+  const one = (predicate: (node: Node) => boolean): Node => {\n+    const found = all(predicate); assert.equal(found.length, 1); return found[0]!;\n+  };\n+  return {\n+    opened, all, one,\n+    header: () => one((node) => hasClass(node, \"oc-tool-head\")),\n+    lines: () => all((node) => hasClass(node, \"oc-code-line\")),\n+    async toggle() {\n+      const callback = this.header().props.onClick;\n+      assert.equal(typeof callback, \"function\");\n+      if (typeof callback === \"function\") await act(async () => { callback(); });\n+    },\n+    async close() { await act(async () => { renderer.unmount(); }); },\n+  };\n+}\n+\n+function code(line: Node): Node {\n+  assert.equal(line.children.length, 2);\n+  const child = line.children[1]!;\n+  assert.notEqual(typeof child, \"string\");\n+  assert.ok(typeof child !== \"string\");\n+  return child;\n+}\n+\n+function sameHighlightedLine(line: Node, language: string, value: string) {\n+  const expected = highlight(language, value);\n+  assert.ok(expected, \"the real registered highlighter accepts the control\");\n+  assert.ok(syntax(code(line)).length > 0, \"ordinary Read renders real syntax spans, not a plain line\");\n+  assert.equal(renderToStaticMarkup(host(code(line))), renderToStaticMarkup(React.createElement(\"span\", null, expected)));\n+  assert.equal(text(code(line)), value);\n+}\n+\n+test(\"ordinary Claude Read opens highlighted TypeScript with exact cleaned text and offset numbers\", async () => {\n+  const view = await fixture({ output: \"    7→const enabled: boolean = true;\\n    8→\\n    9→console.log(enabled);\" });\n+  try {\n+    assert.equal(view.header().props[\"aria-expanded\"], false);\n+    assert.deepEqual(view.lines(), []);\n+    await view.toggle();\n+    assert.equal(view.header().props[\"aria-expanded\"], true);\n+    const lines = view.lines();\n+    assert.deepEqual(lines.map((line) => text(line.children[0]!)), [\"7\", \"8\", \"9\"]);\n+    assert.deepEqual(lines.map((line) => text(code(line))), [\"const enabled: boolean = true;\", \"\", \"console.log(enabled);\"]);\n+    assert.ok(syntax(code(lines[0]!)).some((node) => hasClass(node, \"hljs-keyword\") && text(node) === \"const\"), \"ordinary Read highlights the TypeScript const keyword\");\n+    assert.ok(syntax(code(lines[0]!)).some((node) => hasClass(node, \"hljs-literal\") && text(node) === \"true\"));\n+    sameHighlightedLine(lines[0]!, \"typescript\", \"const enabled: boolean = true;\");\n+    await view.toggle(); assert.deepEqual(view.lines(), []);\n+  } finally { await view.close(); }\n+});\n+\n+for (const [extensions, language, value] of [\n+  [[\"js\", \"jsx\"], \"javascript\", \"const enabled = true;\"],\n+  [[\"ts\", \"tsx\", \"TSX\"], \"typescript\", \"const enabled: boolean = true;\"],\n+  [[\"py\"], \"python\", \"def enabled(): return True\"],\n+  [[\"rs\"], \"rust\", \"let enabled = true;\"],\n+  [[\"json\"], \"json\", '{\"enabled\":true}'],\n+  [[\"yml\", \"yaml\"], \"yaml\", \"enabled: true\"],\n+  [[\"css\"], \"css\", \"main { color: red; }\"],\n+  [[\"html\", \"htm\"], \"html\", \"<main>Hello</main>\"],\n+  [[\"xml\"], \"xml\", \"<main>Hello</main>\"],\n+  [[\"sh\", \"bash\"], \"bash\", 'echo \"hello\"'],\n+] satisfies Array<[string[], string, string]>) {\n+  for (const extension of extensions) {\n+    test(`ordinary Read .${extension} uses canonical ${language} syntax`, async () => {\n+      const view = await fixture({ path: `/repo/example.${extension}`, output: value });\n+      try { await view.toggle(); sameHighlightedLine(view.lines()[0]!, language, value); }\n+      finally { await view.close(); }\n+    });\n+  }\n+}\n+\n+for (const path of [\"/repo/README\", \"/repo/example.unknown\", \"/repo/example.go\", \"/repo/example.dart\", \"\"]) {\n+  test(`Read unmapped path ${JSON.stringify(path)} keeps literal text without guessed syntax`, async () => {\n+    const value = \"const enabled = true;\";\n+    const view = await fixture({ path, output: value, offset: 1 });\n+    try {\n+      await view.toggle(); const line = view.lines()[0]!;\n+      assert.equal(text(line.children[0]!), \"1\"); assert.equal(text(code(line)), value); assert.deepEqual(syntax(code(line)), []);\n+      if (!path) assert.equal(view.all((node) => hasClass(node, \"oc-file-badge\")).length, 0);\n+    } finally { await view.close(); }\n+  });\n+}\n+\n+test(\"Read highlights each result line independently rather than carrying comment state\", async () => {\n+  const view = await fixture({ output: \"/* unfinished comment\\nconst enabled = true;\" });\n+  try {\n+    await view.toggle(); const lines = view.lines();\n+    sameHighlightedLine(lines[0]!, \"typescript\", \"/* unfinished comment\");\n+    sameHighlightedLine(lines[1]!, \"typescript\", \"const enabled = true;\");\n+    assert.ok(syntax(code(lines[1]!)).some((node) => hasClass(node, \"hljs-keyword\") && text(node) === \"const\"));\n+  } finally { await view.close(); }\n+});\n+\n+test(\"Read applies the highlight cutoff to each line, not their combined result\", async () => {\n+  const values = [\"first\", \"second\"].map((name) => `const ${name} = \"${\"x\".repeat(50_010)}\";`);\n+  assert.ok(values.join(\"\\n\").length > MAX_HIGHLIGHT_CHARS);\n+  const view = await fixture({ output: values.join(\"\\n\") });\n+  try { await view.toggle(); values.forEach((value, index) => sameHighlightedLine(view.lines()[index]!, \"typescript\", value)); }\n+  finally { await view.close(); }\n+});\n+\n+test(\"Read highlights a line at the cutoff but leaves an overlong line plain without suppressing its neighbor\", async () => {\n+  const prefix = 'const value = \"', suffix = '\";';\n+  const atLimit = prefix + \"x\".repeat(MAX_HIGHLIGHT_CHARS - prefix.length - suffix.length) + suffix;\n+  const overLimit = atLimit + \";\";\n+  const view = await fixture({ output: `${atLimit}\\n${overLimit}\\nconst next = true;` });\n+  try {\n+    await view.toggle(); const lines = view.lines();\n+    sameHighlightedLine(lines[0]!, \"typescript\", atLimit);\n+    assert.equal(text(code(lines[1]!)), overLimit); assert.deepEqual(syntax(code(lines[1]!)), []);\n+    sameHighlightedLine(lines[2]!, \"typescript\", \"const next = true;\");\n+  } finally { await view.close(); }\n+});\n+\n+test(\"Read syntax keeps markup literal and badge navigation does not expand or collapse the row\", async () => {\n+  const value = 'const literal = \"</span><script>unsafe()</script>\";';\n+  const view = await fixture({ output: value });\n+  try {\n+    const badge = () => view.one((node) => node.type === \"button\" && hasClass(node, \"oc-file-badge\"));\n+    let stopped = 0;\n+    const click = badge().props.onClick;\n+    assert.equal(typeof click, \"function\");\n+    if (typeof click === \"function\") await act(async () => { click({ stopPropagation: () => { stopped++; } }); });\n+    assert.equal(stopped, 1); assert.deepEqual(view.opened, [\"/repo/src/example.ts\"]);\n+    assert.equal(view.header().props[\"aria-expanded\"], false);\n+    await view.toggle(); sameHighlightedLine(view.lines()[0]!, \"typescript\", value);\n+    assert.equal(badge().props.title, \"/repo/src/example.ts\");\n+    assert.equal(view.all((node) => node.type === \"script\" || \"dangerouslySetInnerHTML\" in node.props).length, 0);\n+  } finally { await view.close(); }\n+});\n+\n+for (const read of [{ output: \"\" }, { output: \"Permission denied\", error: true }]) {\n+  test(`Read ${read.error ? \"error\" : \"empty result\"} retains its non-content header`, async () => {\n+    const view = await fixture(read);\n+    try {\n+      assert.equal(view.header().props[\"aria-expanded\"], undefined);\n+      assert.equal(view.header().props.onClick, undefined);\n+      assert.deepEqual(view.lines(), []);\n+    } finally { await view.close(); }\n+  });\n+}",
+      "previous_filename": null,
+      "patch_truncated": false
+    },
+    {
+      "filename": "src/features/chat/writeRows.test.ts",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "patch": "@@ -7,6 +7,7 @@ import type { ToolRowProps } from \"./ToolRows.tsx\";\n import * as tools from \"./conductorTools.ts\";\n import * as icons from \"./toolIconData.ts\";\n import { thinkingChipText } from \"./thinkingChip.ts\";\n+import { highlight } from \"./markdown.ts\";\n \n // Mount the production row and its real React hooks, as multiEditHover.test.ts\n // does. Only the unrelated Markdown leaf is excluded; no row is mocked.\n@@ -39,7 +40,7 @@ async function fixture(rows: Row[]) {\n         case \"./conductorTools.ts\": return tools;\n         case \"./toolIconData.ts\": return icons;\n         case \"./thinkingChip.ts\": return { thinkingChipText };\n-        case \"./markdown.ts\": return { Markdown: () => { throw new Error(\"Unrelated Markdown leaf\"); } };\n+        case \"./markdown.ts\": return { highlight, Markdown: () => { throw new Error(\"Unrelated Markdown leaf\"); } };\n         case \"./LinkMenu.tsx\": return { LinkWithMenu: () => { throw new Error(\"Unrelated link menu rendered\"); } };\n         case \"../../backend.ts\": return { openUrl: () => { throw new Error(\"Unrelated external opener invoked\"); } };\n         default: throw new Error(`Unexpected ToolRows dependency: ${name}`);",
+      "previous_filename": null,
+      "patch_truncated": false
+    }
+  ],
+  "files_page": {
+    "offset": 0,
+    "limit": 4,
+    "returned": 4,
+    "total": 4,
+    "next_offset": null,
+    "provider_truncated": false
+  }
+}

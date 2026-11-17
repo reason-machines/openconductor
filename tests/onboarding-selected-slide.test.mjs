@@ -15,10 +15,7 @@ assert.equal(deps("react-test-renderer/package.json").version, "18.3.1");
 
 async function fixture() {
   const intervals = new Map(), modules = new Map(), continued = [];
-  let now = 100_000, serial = 0, bindings, root;
-  class ClockDate extends Date {
-    static now() { return now; }
-  }
+  let serial = 0, bindings, root;
   const window = {
     setInterval(callback) { const id = ++serial; intervals.set(id, callback); return id; },
     clearInterval(id) { intervals.delete(id); },
@@ -45,7 +42,7 @@ async function fixture() {
       throw new Error(`Unexpected source dependency ${name}`);
     };
     runInNewContext(`(function(require,module,exports){${javascript}\n})`, {
-      Date: ClockDate, window, console,
+      window, console,
     }, { filename: path })(require, module, module.exports);
     return module.exports;
   }
@@ -70,13 +67,11 @@ async function fixture() {
         width: root.root.findByProps({ className: "onb-progress-fill" }).props.style.width,
       };
     },
+    video: () => root.root.findByType("video"),
     async clickSlide(index) { await act(async () => { slides()[index].props.onClick(); }); },
-    async advance(milliseconds) {
-      await act(async () => {
-        now += milliseconds;
-        for (const callback of [...intervals.values()]) callback();
-      });
-    },
+    async time(currentTime, duration) { await act(async () => { root.root.findByType("video").props.onTimeUpdate({ currentTarget: { currentTime, duration } }); }); },
+    async load() { await act(async () => { root.root.findByType("video").props.onLoadedData(); }); },
+    async end() { await act(async () => { root.root.findByType("video").props.onEnded(); }); },
     async next() { await act(async () => { bindings["onboarding.nextSlide"](); }); },
     async chooseAgent(agent) { await act(async () => { root.root.findByProps({ type: "radio", value: agent }).props.onChange(); }); },
     async continueWithKey() { await act(async () => { bindings["onboarding.continue"](); }); },
@@ -93,16 +88,16 @@ for (const [index, name] of ["repo", "agents", "conduct"].entries()) {
     const f = await fixture();
     try {
       await f.clickSlide(index);
-      await f.advance(2000);
+      await f.time(3, 12);
       assert.equal(f.selected(), index);
       assert.deepEqual(f.progress(), { value: 25, width: "25%" });
       await f.clickSlide(index);
       assert.equal(f.selected(), index);
-      assert.deepEqual(f.progress(), { value: 25, width: "25%" }, "clicking the selected slide must not rewind its visible progress");
+      assert.deepEqual(f.progress(), { value: 25, width: "25%" }, "clicking the selected slide must not remount or rewind media");
       await f.rerender();
       assert.deepEqual(f.progress(), { value: 25, width: "25%" });
-      await f.advance(2000);
-      assert.deepEqual(f.progress(), { value: 50, width: "50%" }, "the original elapsed-time origin is retained");
+      await f.time(6, 12);
+      assert.deepEqual(f.progress(), { value: 50, width: "50%" }, "continued playback retains independent progress");
       t.diagnostic(`FirstRunOnboarding.tsx SHA256 ${f.sourceSha256}`);
     } finally { await f.close(); }
   });
@@ -111,15 +106,16 @@ for (const [index, name] of ["repo", "agents", "conduct"].entries()) {
 test("selecting another slide resets progress and starts a full slide duration", async () => {
   const f = await fixture();
   try {
-    await f.advance(6000);
+    await f.time(9, 12);
     assert.deepEqual(f.progress(), { value: 75, width: "75%" });
     await f.clickSlide(1);
+    await f.load();
     assert.equal(f.selected(), 1);
     assert.deepEqual(f.progress(), { value: 0, width: "0%" });
-    await f.advance(2000);
+    await f.time(3, 12);
     assert.equal(f.selected(), 1);
     assert.deepEqual(f.progress(), { value: 25, width: "25%" });
-    await f.advance(6000);
+    await f.end();
     assert.equal(f.selected(), 2);
     assert.deepEqual(f.progress(), { value: 0, width: "0%" });
   } finally { await f.close(); }
@@ -129,7 +125,7 @@ test("next-slide keybinding and elapsed completion wrap while retaining agent ch
   const f = await fixture();
   try {
     await f.chooseAgent("codex");
-    await f.advance(2000);
+    await f.time(3, 12);
     await f.next();
     assert.equal(f.selected(), 1);
     assert.deepEqual(f.progress(), { value: 0, width: "0%" });
@@ -138,7 +134,7 @@ test("next-slide keybinding and elapsed completion wrap while retaining agent ch
     await f.next();
     assert.equal(f.selected(), 0);
     await f.clickSlide(2);
-    await f.advance(8000);
+    await f.end();
     assert.equal(f.selected(), 0);
     assert.deepEqual(f.progress(), { value: 0, width: "0%" });
     assert.equal(f.root.root.findByProps({ type: "radio", value: "codex" }).props.checked, true);

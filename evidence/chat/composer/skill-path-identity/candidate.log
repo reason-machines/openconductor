@@ -1,0 +1,112 @@
+(node:52) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude's '/' menu lists Conductor's commands in its order, then fast
+ok 1 - Claude's '/' menu lists Conductor's commands in its order, then fast
+  ---
+  duration_ms: 1.890524
+  type: 'test'
+  ...
+# Subtest: Codex gets personality, goal only when enabled, no Claude-only commands
+ok 2 - Codex gets personality, goal only when enabled, no Claude-only commands
+  ---
+  duration_ms: 3.573037
+  type: 'test'
+  ...
+# Subtest: an ACP agent (Reason) sees only its own commands, plan and fast
+ok 3 - an ACP agent (Reason) sees only its own commands, plan and fast
+  ---
+  duration_ms: 0.29032
+  type: 'test'
+  ...
+# Subtest: agent commands come first and hide a built-in of the same name; cloud drops add-dir
+ok 4 - agent commands come first and hide a built-in of the same name; cloud drops add-dir
+  ---
+  duration_ms: 0.155565
+  type: 'test'
+  ...
+# Subtest: matching: empty query keeps order, exact name first
+ok 5 - matching: empty query keeps order, exact name first
+  ---
+  duration_ms: 1.292281
+  type: 'test'
+  ...
+# Subtest: the menu is open while the caret is in a leading /word
+ok 6 - the menu is open while the caret is in a leading /word
+  ---
+  duration_ms: 0.187425
+  type: 'test'
+  ...
+# Subtest: picking completes the name and keeps arguments
+ok 7 - picking completes the name and keeps arguments
+  ---
+  duration_ms: 0.224066
+  type: 'test'
+  ...
+# Subtest: parse: /name args and /[name](command) args
+ok 8 - parse: /name args and /[name](command) args
+  ---
+  duration_ms: 0.25842
+  type: 'test'
+  ...
+# Subtest: skills follow every command, keyed by name and path, and Codex inserts the selected path
+ok 9 - skills follow every command, keyed by name and path, and Codex inserts the selected path
+  ---
+  duration_ms: 0.511026
+  type: 'test'
+  ...
+# Subtest: filtering keeps commands before skills (Conductor's jNi)
+ok 10 - filtering keeps commands before skills (Conductor's jNi)
+  ---
+  duration_ms: 0.682645
+  type: 'test'
+  ...
+# (node:67) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a known $skill becomes a link to its SKILL.md; others stay as typed
+ok 11 - a known $skill becomes a link to its SKILL.md; others stay as typed
+  ---
+  duration_ms: 0.831331
+  type: 'test'
+  ...
+# Subtest: picking either same-name Codex skill preserves its path through draft completion and send conversion
+ok 12 - picking either same-name Codex skill preserves its path through draft completion and send conversion
+  ---
+  duration_ms: 0.61344
+  type: 'test'
+  ...
+# Subtest: an explicit picked skill is preserved beside a typed name and typed names keep their existing first-match rule
+ok 13 - an explicit picked skill is preserved beside a typed name and typed names keep their existing first-match rule
+  ---
+  duration_ms: 0.182806
+  type: 'test'
+  ...
+# Subtest: Claude and Reason skill insertion keeps its existing slash form
+ok 14 - Claude and Reason skill insertion keeps its existing slash form
+  ---
+  duration_ms: 0.270985
+  type: 'test'
+  ...
+# Subtest: one backend call per agent and folder; the answer is cached
+ok 15 - one backend call per agent and folder; the answer is cached
+  ---
+  duration_ms: 17.360215
+  type: 'test'
+  ...
+# Subtest: a failed call is not cached
+ok 16 - a failed call is not cached
+  ---
+  duration_ms: 0.39664
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 942.394033

@@ -1,0 +1,26 @@
+{
+  "status": "FROZEN_SOURCE_CONTRACT_NOT_EXECUTED",
+  "owner": "SAME15",
+  "main_checked": "efcaf69210c3b389ee5c077f4272df0c8809e40a",
+  "scope": "Icon-only OpenInButton rendered app and Copy path row mouse-move focus synchronization",
+  "source_chain": "P9.icon -> h2 -> oF.highlightItemOnHover=true -> SLt.item.onMouseMove -> De -> activeIndex -> SLt.ke -> qze(sync=true,preventScroll=true); oF.itemProps -> Pu[I,m,R] -> eXe/r0i/O6 -> Yc/cFn rendered rows",
+  "source_filter": "iRn ignores movementX=0 and movementY=0 only when CSS.supports('-webkit-backdrop-filter:none') is truthy",
+  "source_limits": "Retained Conductor 0.87.6 static renderer evidence. No new native observation or evaluated extracted JavaScript.",
+  "preserved": ["original14", "Escape22", "typeahead24 d3550db8 original packet", "closed-trigger15 e41c6b30 original packet", "split menu", "onMenuKey", "onTriggerKey", "open effects", "blur handlers", "global guards", "IPC", "Tab/Reveal", "palette"],
+  "cases": [
+    {"id": 1, "name": "WebKit horizontal mouse movement focuses Cursor without scrolling or consumption", "predicted_baseline": "ASSERTION_FAILURE"},
+    {"id": 2, "name": "WebKit vertical mouse movement focuses Cursor without side effects", "predicted_baseline": "ASSERTION_FAILURE"},
+    {"id": 3, "name": "Copy path participates in mouse movement focus", "predicted_baseline": "ASSERTION_FAILURE"},
+    {"id": 4, "name": "ArrowDown continues after the moved-to row", "predicted_baseline": "ASSERTION_FAILURE"},
+    {"id": 5, "name": "ArrowUp continues before the moved-to row", "predicted_baseline": "ASSERTION_FAILURE"},
+    {"id": 6, "name": "Non-WebKit zero movement is not filtered", "predicted_baseline": "ASSERTION_FAILURE"},
+    {"id": 7, "name": "WebKit zero movement preserves keyboard focus and event propagation", "predicted_baseline": "PASS_CONTROL"},
+    {"id": 8, "name": "Split rows retain existing mouse-movement behavior", "predicted_baseline": "PASS_CONTROL"},
+    {"id": 9, "name": "Movement within the focused row does not repeat focus", "predicted_baseline": "PASS_CONTROL"},
+    {"id": 10, "name": "Original Home and End endpoints remain available", "predicted_baseline": "PASS_CONTROL"},
+    {"id": 11, "name": "Mouse movement never launches; app click retains exact preference and native calls", "predicted_baseline": "PASS_CONTROL"},
+    {"id": 12, "name": "Mouse movement never copies; Copy path click retains exact native call", "predicted_baseline": "PASS_CONTROL"}
+  ],
+  "expected_measurement": "Identical original12 before and after candidate application under a future ACC finite matched admission; six predicted assertion failures plus six controls before; twelve passes after; zero skips/cancels/TODO. Predictions are not execution results.",
+  "not_in_scope": ["pointer leave focus or index reset", "touch dispatch policy", "new menu close/focus-return policy", "arbitrary hidden/disabled app inventory", "native physical mouse or keyboard evidence", "runtime admission", "runner", "queue row", "publication"]
+}

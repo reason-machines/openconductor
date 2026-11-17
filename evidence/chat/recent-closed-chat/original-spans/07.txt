@@ -1,0 +1,1 @@
+async function QZe(t,e){return(await t.dependencies.db.select("SELECT * FROM sessions WHERE workspace_id = ?",[e])).map(pB)}

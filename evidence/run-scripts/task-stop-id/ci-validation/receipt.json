@@ -1,0 +1,78 @@
+{
+  "token": "ACC_1F_STOP1217_CI2_20261113T0250",
+  "actual_start": "2026-11-13T02:51:51.375271+00:00",
+  "bound_seconds": 900,
+  "phases": [
+    {
+      "name": "setup",
+      "argv": [
+        "nice",
+        "-n",
+        "19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "600s",
+        "npm",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "node_options": "--max-old-space-size=1024",
+      "exit_code": 0,
+      "seconds": 6.659
+    },
+    {
+      "name": "five-files",
+      "argv": [
+        "nice",
+        "-n",
+        "19",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "60s",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "src/scripts/runCompletion.test.ts",
+        "src/scripts/runTaskMenu.test.ts",
+        "src/scripts/runActionErrorContext.test.ts",
+        "src/scripts/runSelectionHistory.test.ts",
+        "src/scripts/runTab.test.ts"
+      ],
+      "node_options": "--max-old-space-size=512",
+      "exit_code": 0,
+      "seconds": 7.108
+    }
+  ],
+  "owned_groups": [
+    79,
+    92
+  ],
+  "source_hashes_before": {
+    "package.json": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+    "src/components/ScriptsPanel.tsx": "092f31ca358a04510d9fd77e56dd0a6b65eed9e883d11d9208639ef13f9444f5",
+    "src/scripts/runActionErrorContext.test.ts": "604e459b1186bad03190014a970473a564341fa9f18414d9d33253fd4cea30cb",
+    "src/scripts/runCompletion.test.ts": "0beacef84397ad22e65d674fc56ebdc446a34a600faac165a357ca8ea2601fee",
+    "src/scripts/runTaskMenu.test.ts": "46b95bf14fa8486bfa8537ef07c9b8fcc5322b39b8f246756efc26a3f5fba01e"
+  },
+  "source_qualification_seconds": 0.001,
+  "counts": {
+    "tests": 43,
+    "pass": 43,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "result": "stopped",
+  "error": "{'tests': 43, 'pass': 43, 'fail': 0, 'cancelled': 0, 'skipped': 0, 'todo': 0}",
+  "ownjobs": [],
+  "inclusive_seconds": 13.771,
+  "released_at": "2026-11-13T02:52:05.146163+00:00",
+  "released": true
+}

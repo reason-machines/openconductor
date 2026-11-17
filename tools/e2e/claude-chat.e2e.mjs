@@ -39,6 +39,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+import { createRuntimeReceipt } from "./runtime-receipt.mjs";
 import { WebDriver } from "../../tests/e2e/webdriver.mjs";
 import { finishStartup } from "../../tests/e2e/startup.mjs";
 
@@ -84,7 +85,9 @@ for (const k of ["XDG_DATA_HOME", "XDG_CONFIG_HOME", "CLAUDE_CONFIG_DIR", "CLAUD
 env.ANTHROPIC_API_KEY = "sk-ant-e2e-left-in-the-shell";
 env.ANTHROPIC_BASE_URL = "https://stale.example";
 env.BROWSER = "true";
+const receipt = createRuntimeReceipt({ suite: "claude-chat", app, out, home, project });
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
+receipt.track(driver);
 const driverExited = new Promise((r) => driver.on("exit", r));
 
 const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
@@ -336,7 +339,9 @@ try {
   console.error(`fake claude log:\n${requests().map((r) => JSON.stringify(r)).join("\n")}`);
   process.exitCode = 1;
 } finally {
+  await receipt.beforeTeardown((script) => wd("POST", "/execute/async", { script, args: [] }, 3000));
   if (sessionUrl) await wd("DELETE", "").catch(() => {});
   driver.kill();
   await Promise.race([driverExited, sleep(3000)]);
+  await receipt.afterTeardown();
 }

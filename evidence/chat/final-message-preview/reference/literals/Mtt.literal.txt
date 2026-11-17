@@ -1,0 +1,1 @@
+function Mtt(t,e){if(t.type!=="system"||t.subtype!=="task_started"||t.skip_transcript===!0||Rtt(t))return null;const s=t.tool_use_id!==void 0&&e!==void 0?Ptt({toolUseId:t.tool_use_id,turnMessages:e}):void 0;return{label:"Background Task",description:t.description||void 0,prompt:t.prompt||void 0,source:s}}

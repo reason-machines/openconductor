@@ -1,0 +1,370 @@
+(node:94) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:101) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: frozen shipped-project baseline cannot send script input
+ok 1 - frozen shipped-project baseline cannot send script input
+  ---
+  duration_ms: 100.080554
+  type: 'test'
+  ...
+# Subtest: the input queue preserves event order while the first write is pending
+ok 2 - the input queue preserves event order while the first write is pending
+  ---
+  duration_ms: 47.020388
+  type: 'test'
+  ...
+# Subtest: stopping input cancels bytes queued behind an in-flight write
+ok 3 - stopping input cancels bytes queued behind an in-flight write
+  ---
+  duration_ms: 38.023645
+  type: 'test'
+  ...
+# Subtest: unmount cancels queued bytes after the current write completes
+ok 4 - unmount cancels queued bytes after the current write completes
+  ---
+  duration_ms: 30.485613
+  type: 'test'
+  ...
+# (node:109) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: growing snapshots append only the new bytes, preserving split ANSI sequences
+ok 5 - growing snapshots append only the new bytes, preserving split ANSI sequences
+  ---
+  duration_ms: 1.624486
+  type: 'test'
+  ...
+# Subtest: a rerun or a trimmed snapshot replaces the screen instead of retaining stale rows
+ok 6 - a rerun or a trimmed snapshot replaces the screen instead of retaining stale rows
+  ---
+  duration_ms: 0.18447
+  type: 'test'
+  ...
+# (node:117) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: copy trims a selection ending in spaces before later terminal text
+ok 7 - copy trims a selection ending in spaces before later terminal text
+  ---
+  duration_ms: 61.227481
+  type: 'test'
+  ...
+# Subtest: copy trims each selected line without removing indentation or internal spacing
+ok 8 - copy trims each selected line without removing indentation or internal spacing
+  ---
+  duration_ms: 45.221446
+  type: 'test'
+  ...
+# Subtest: copying only selected spaces produces an empty plain-text value
+ok 9 - copying only selected spaces produces an empty plain-text value
+  ---
+  duration_ms: 37.667508
+  type: 'test'
+  ...
+# Subtest: copy preserves selected blank lines rather than trimming the complete selection
+ok 10 - copy preserves selected blank lines rather than trimming the complete selection
+  ---
+  duration_ms: 30.477748
+  type: 'test'
+  ...
+# Subtest: copy keeps leading and internal spaces when no line ends in whitespace
+ok 11 - copy keeps leading and internal spaces when no line ends in whitespace
+  ---
+  duration_ms: 45.163723
+  type: 'test'
+  ...
+# Subtest: a collapsed terminal selection leaves clipboard contents and the default action alone
+ok 12 - a collapsed terminal selection leaves clipboard contents and the default action alone
+  ---
+  duration_ms: 35.275682
+  type: 'test'
+  ...
+# Subtest: copy outside the terminal is not intercepted
+ok 13 - copy outside the terminal is not intercepted
+  ---
+  duration_ms: 29.131179
+  type: 'test'
+  ...
+# Subtest: copy without clipboard data does not throw
+ok 14 - copy without clipboard data does not throw
+  ---
+  duration_ms: 30.020473
+  type: 'test'
+  ...
+# Subtest: unmount leaves an old terminal unable to rewrite a later copy event
+ok 15 - unmount leaves an old terminal unable to rewrite a later copy event
+  ---
+  duration_ms: 31.817406
+  type: 'test'
+  ...
+# (node:125) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: running Run output supplies foreground cursor colors to xterm
+ok 16 - running Run output supplies foreground cursor colors to xterm
+  ---
+  duration_ms: 326.513488
+  type: 'test'
+  ...
+# Subtest: Run output requests cursor blinking at the terminal constructor boundary
+ok 17 - Run output requests cursor blinking at the terminal constructor boundary
+  ---
+  duration_ms: 141.586565
+  type: 'test'
+  ...
+# Subtest: a stopped Run retains its cursor colors without enabling stdin
+ok 18 - a stopped Run retains its cursor colors without enabling stdin
+  ---
+  duration_ms: 111.983227
+  type: 'test'
+  ...
+# Subtest: Run cursor policy survives input disable on the same terminal
+ok 19 - Run cursor policy survives input disable on the same terminal
+  ---
+  duration_ms: 110.878152
+  type: 'test'
+  ...
+# Subtest: the output click delegates focus without replacing Run cursor policy
+ok 20 - the output click delegates focus without replacing Run cursor policy
+  ---
+  duration_ms: 102.97389
+  type: 'test'
+  ...
+# Subtest: palette changes refresh Run cursor and accent from current theme tokens
+ok 21 - palette changes refresh Run cursor and accent from current theme tokens
+  ---
+  duration_ms: 91.387699
+  type: 'test'
+  ...
+# Subtest: Setup output remains read-only with a transparent cursor after a palette change
+ok 22 - Setup output remains read-only with a transparent cursor after a palette change
+  ---
+  duration_ms: 93.995712
+  type: 'test'
+  ...
+# Subtest: default standalone output with input preserves transparent cursor configuration
+ok 23 - default standalone output with input preserves transparent cursor configuration
+  ---
+  duration_ms: 100.773846
+  type: 'test'
+  ...
+# (node:133) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Run and Setup output reserve two cells for a Unicode 11 emoji
+ok 24 - Run and Setup output reserve two cells for a Unicode 11 emoji
+  ---
+  duration_ms: 125.24704
+  type: 'test'
+  ...
+# Subtest: adjacent Unicode 11 emoji preserve the following output column
+ok 25 - adjacent Unicode 11 emoji preserve the following output column
+  ---
+  duration_ms: 43.16539
+  type: 'test'
+  ...
+# Subtest: wide Unicode 11 output wraps the next character onto the next row
+ok 26 - wide Unicode 11 output wraps the next character onto the next row
+  ---
+  duration_ms: 39.573054
+  type: 'test'
+  ...
+# Subtest: Unicode 11 combining marks do not advance the output cursor
+ok 27 - Unicode 11 combining marks do not advance the output cursor
+  ---
+  duration_ms: 33.7159
+  type: 'test'
+  ...
+# Subtest: ASCII output keeps its original cell width
+ok 28 - ASCII output keeps its original cell width
+  ---
+  duration_ms: 30.6518
+  type: 'test'
+  ...
+# Subtest: CJK output keeps its existing wide-cell behavior
+ok 29 - CJK output keeps its existing wide-cell behavior
+  ---
+  duration_ms: 24.511921
+  type: 'test'
+  ...
+# Subtest: existing combining accents keep their existing zero-cell behavior
+ok 30 - existing combining accents keep their existing zero-cell behavior
+  ---
+  duration_ms: 33.438699
+  type: 'test'
+  ...
+# Subtest: empty output leaves the terminal at its initial position
+ok 31 - empty output leaves the terminal at its initial position
+  ---
+  duration_ms: 19.182551
+  type: 'test'
+  ...
+# Subtest: output replacement and cleanup still use the real terminal lifecycle
+ok 32 - output replacement and cleanup still use the real terminal lifecycle
+  ---
+  duration_ms: 23.653471
+  type: 'test'
+  ...
+# (node:141) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Run output offers the action only for nonblank selection and a target chat
+ok 33 - actual Run output offers the action only for nonblank selection and a target chat
+  ---
+  duration_ms: 360.333071
+  type: 'test'
+  ...
+# Subtest: Run selection reaches the existing strip callback normalized and without truncation
+ok 34 - Run selection reaches the existing strip callback normalized and without truncation
+  ---
+  duration_ms: 164.831373
+  type: 'test'
+  ...
+# Subtest: stopping Run retains the action, output and terminal instance without enabling stdin
+ok 35 - stopping Run retains the action, output and terminal instance without enabling stdin
+  ---
+  duration_ms: 130.804637
+  type: 'test'
+  ...
+# Subtest: accepted Run selection clears action state without clearing xterm selection
+ok 36 - accepted Run selection clears action state without clearing xterm selection
+  ---
+  duration_ms: 114.419262
+  type: 'test'
+  ...
+# Subtest: a rejected Run selection callback retains the action for retry
+ok 37 - a rejected Run selection callback retains the action for retry
+  ---
+  duration_ms: 111.206154
+  type: 'test'
+  ...
+# Subtest: Run selection uses the current strip chat target instead of a stale callback
+ok 38 - Run selection uses the current strip chat target instead of a stale callback
+  ---
+  duration_ms: 104.647307
+  type: 'test'
+  ...
+# Subtest: Run workspace replacement and unmount release old selection subscriptions
+ok 39 - Run workspace replacement and unmount release old selection subscriptions
+  ---
+  duration_ms: 98.117511
+  type: 'test'
+  ...
+# Subtest: Setup output does not acquire the Run selection action
+ok 40 - Setup output does not acquire the Run selection action
+  ---
+  duration_ms: 102.197044
+  type: 'test'
+  ...
+# Subtest: Spotlight output does not acquire the ordinary Run selection action
+ok 41 - Spotlight output does not acquire the ordinary Run selection action
+  ---
+  duration_ms: 102.213872
+  type: 'test'
+  ...
+# Subtest: standalone output with input keeps its existing no-selection-action default
+ok 42 - standalone output with input keeps its existing no-selection-action default
+  ---
+  duration_ms: 88.661398
+  type: 'test'
+  ...
+# (node:149) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: running terminal input reaches the real panel/API route with exact bytes and run identity
+ok 43 - running terminal input reaches the real panel/API route with exact bytes and run identity
+  ---
+  duration_ms: 331.735708
+  type: 'test'
+  ...
+# Subtest: retained stopped script output remains read-only
+ok 44 - retained stopped script output remains read-only
+  ---
+  duration_ms: 137.523383
+  type: 'test'
+  ...
+# Subtest: input follows running/stopping/rerun without remounting or reusing the old generation
+ok 45 - input follows running/stopping/rerun without remounting or reusing the old generation
+  ---
+  duration_ms: 132.175944
+  type: 'test'
+  ...
+# Subtest: input targets the displayed workspace/script, never the disposed previous terminal
+ok 46 - input targets the displayed workspace/script, never the disposed previous terminal
+  ---
+  duration_ms: 146.529349
+  type: 'test'
+  ...
+# Subtest: unmount removes the input subscriber
+ok 47 - unmount removes the input subscriber
+  ---
+  duration_ms: 136.672068
+  type: 'test'
+  ...
+# Subtest: setup output is not routed to a run-script process
+ok 48 - setup output is not routed to a run-script process
+  ---
+  duration_ms: 124.830208
+  type: 'test'
+  ...
+# Subtest: running status without a live run identity cannot enable input
+ok 49 - running status without a live run identity cannot enable input
+  ---
+  duration_ms: 105.066846
+  type: 'test'
+  ...
+# (node:157) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: measured running-script geometry reaches the real panel and API with the current generation
+ok 50 - measured running-script geometry reaches the real panel and API with the current generation
+  ---
+  duration_ms: 402.665564
+  type: 'test'
+  ...
+# Subtest: identical 96x32 geometry never resizes a nonrunning run
+ok 51 - identical 96x32 geometry never resizes a nonrunning run
+  ---
+  duration_ms: 523.709738
+  type: 'test'
+  ...
+# Subtest: running without a generation does not send unqualified geometry
+ok 52 - running without a generation does not send unqualified geometry
+  ---
+  duration_ms: 100.925108
+  type: 'test'
+  ...
+# Subtest: same mounted screen disables resize on stop and sends measured geometry to a replacement generation
+ok 53 - same mounted screen disables resize on stop and sends measured geometry to a replacement generation
+  ---
+  duration_ms: 123.331237
+  type: 'test'
+  ...
+# Subtest: workspace replacement never retargets a disposed terminal
+ok 54 - workspace replacement never retargets a disposed terminal
+  ---
+  duration_ms: 130.939822
+  type: 'test'
+  ...
+# Subtest: a hidden zero-size host does not emit backend geometry and reveal uses its measured size
+ok 55 - a hidden zero-size host does not emit backend geometry and reveal uses its measured size
+  ---
+  duration_ms: 141.284543
+  type: 'test'
+  ...
+# Subtest: setup output fits locally without resizing a run-script PTY
+ok 56 - setup output fits locally without resizing a run-script PTY
+  ---
+  duration_ms: 110.785536
+  type: 'test'
+  ...
+# Subtest: unmount disposes geometry subscriptions without altering output bytes
+ok 57 - unmount disposes geometry subscriptions without altering output bytes
+  ---
+  duration_ms: 115.724973
+  type: 'test'
+  ...
+1..57
+# tests 57
+# suites 0
+# pass 57
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9414.467156

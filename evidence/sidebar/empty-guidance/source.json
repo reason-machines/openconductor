@@ -1,0 +1,154 @@
+{
+  "checkedAt": "2026-11-12T11:08:28.221299+00:00",
+  "producer": "Conductor Rebuild",
+  "main": "84a3153cbca1c25e210c3835ea9314f54e9f6c36",
+  "verdict": "QUALIFIED_SOURCE_COUNTEREXAMPLE",
+  "leaf": "empty-state:add-a-project-to-get-started / main-collapse visibility only",
+  "reference": {
+    "evidenceId": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "assets": {
+      "renderApp-D_fmY7hW.js": {
+        "bytes": 11600457,
+        "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+      },
+      "index-BGEQ8YjU.js": {
+        "bytes": 3493297,
+        "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+      }
+    },
+    "spans": {
+      "hBi": {
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8Start": 10101417,
+        "bytes": 5346,
+        "sha256": "7067608ebeaae54a7005b9ad75e5b212029ed36d23ecd6fe4b3886324efcc11a"
+      },
+      "Gra": {
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8Start": 10089186,
+        "bytes": 1420,
+        "sha256": "22312381fdc801b5a07f5a2966825b3561d66ffff32582df4c5ef966400d1b38"
+      },
+      "lBi": {
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8Start": 10067836,
+        "bytes": 1876,
+        "sha256": "e87dca0f94edf5e72a9bd8fbc735c210658bae8d724c59f6e1a1653e7bbae8f0"
+      },
+      "dsa": {
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8Start": 10100822,
+        "bytes": 222,
+        "sha256": "84ca38007ba86f966d3e145498cd972a99ea74871fa5f5abe3a57d3b98326c92"
+      },
+      "fsa": {
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8Start": 10101044,
+        "bytes": 373,
+        "sha256": "ddfc1750924645942c31337d5d40fd490fe4b2ac568fcce131fd5ee69b8e0721"
+      },
+      "aW": {
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8Start": 10035062,
+        "bytes": 186,
+        "sha256": "54918e82e28401153aa6a7784f3f64eb97198e97dc27240cd73325e518f7700d"
+      },
+      "dQt": {
+        "asset": "index-BGEQ8YjU.js",
+        "utf8Start": 3350117,
+        "bytes": 561,
+        "sha256": "aa338a216dcf8a0271310530b3534532d8bf8d4d99eb8c78d9d94656afdedfbb"
+      },
+      "I2t": {
+        "asset": "index-BGEQ8YjU.js",
+        "utf8Start": 3344090,
+        "bytes": 50,
+        "sha256": "94e5efcdce4d1787a4482a11218a59abeb947fdb4eb51f684011e506c70a0b89"
+      },
+      "repo-hook-import": {
+        "asset": "renderApp-D_fmY7hW.js",
+        "utf8Start": 55535,
+        "bytes": 8,
+        "sha256": "8157cc28e8bb7bdd9aa0dacb06a325cb49c8361ba4e109e67b13517ccb698702"
+      },
+      "repo-hook-export": {
+        "asset": "index-BGEQ8YjU.js",
+        "utf8Start": 3482436,
+        "bytes": 9,
+        "sha256": "6d1258a39c7081a3c20236edf59d27b41834c9ae5441a18a35b6f4f4236b3564"
+      },
+      "repo-source-binding": {
+        "asset": "index-BGEQ8YjU.js",
+        "utf8Start": 3349302,
+        "bytes": 15,
+        "sha256": "74b821d343a1616730194c79aca6728f97bf1eba19ac3eb19fcca62ec806fc31"
+      }
+    }
+  },
+  "snapshots": {
+    "src/components/Sidebar.tsx": {
+      "snapshot": "src__components__Sidebar.tsx",
+      "sha256": "50c3c3eebb2e3ca253b35964fc95a00d65757b6372591961b98de078dc424a43"
+    },
+    "src/state/useCustomSectionCollapse.ts": {
+      "snapshot": "src__state__useCustomSectionCollapse.ts",
+      "sha256": "e52fbd48b0ce15db9634095feee43aca64631b311398021429969d895f017c3d"
+    },
+    "src/state/customSectionCollapse.ts": {
+      "snapshot": "src__state__customSectionCollapse.ts",
+      "sha256": "a7d9de3901da0841d50f1bbd5218d1ad7fa53196e17e398ccbf7eb04615d252d"
+    },
+    "src/state/store.ts": {
+      "snapshot": "src__state__store.ts",
+      "sha256": "c6683a7a4de8a5a466af2b68fd088d5eb2df7d9f9b7d8d76bd837642586e7619"
+    },
+    "src/state/repoOrder.ts": {
+      "snapshot": "src__state__repoOrder.ts",
+      "sha256": "f86d871434560f6bce266cc47b90dd078138cc6910e9ca1eefda40660af6b20a"
+    },
+    "src/App.tsx": {
+      "snapshot": "src__App.tsx",
+      "sha256": "5376811866211058d8ce2b1430ea38b7dbbaa6286631b742aeefae83a7017709"
+    }
+  },
+  "sourceChecks": {
+    "original local empty predicate has no collapse dependency": true,
+    "original local organization makes Ke false": true,
+    "original repository hook import and export joined": true,
+    "original repository hook selects linked repos and does not filter hidden": true,
+    "original empty render branch precedes local Gra or dBi": true,
+    "original empty branch contains intended message": true,
+    "original Gra alone reads main-group collapse for grouped body": true,
+    "original Gra collapse hides body not parent hBi branch": true,
+    "original main-group header delegates toggle": true,
+    "original persisted collapse key does not require repositories": true,
+    "original parent mounts hBi without collapse guard": true,
+    "current empty predicate includes group collapse gate": true,
+    "current main collapse reads independent existing store": true,
+    "current empty header remains directly clickable": true,
+    "current main collapse uses same semantic key": true,
+    "current builtin hook independent of repository state": true,
+    "current toggle can set main collapse with zero repos": true,
+    "current hook loads and flushes retained collapse": true,
+    "current repo removal does not clear independent collapse": true,
+    "current real App remove callback dispatches actual removeRepo": true,
+    "current original message remains independent of groupBy type": true
+  },
+  "frozenContract": {
+    "cases": 8,
+    "sha256": "a1942f64fa21dff44be7e9f0ac4814a442a80423c9f977cb9970544918356115",
+    "runtimeExecution": "NOT_RUN"
+  },
+  "counterexample": "Local app, no repositories or visible/shared workspaces, main-collapse key true: original hBi empty branch renders message before Gra is considered; current Sidebar suppresses it. Current always-enabled main-header toggle makes this input reachable directly with repos=[], independently of native removal or persistence assumptions.",
+  "proposedFix": "If ledger dedupe confirms this leaf is unowned, remove only the !groupCollapsed gate from the existing zero-repo message. No header/store/grouping/action/badge change.",
+  "coordination": "Ledger ddfc confirmed no competing exact source leaf in message4bd6b836: SAME271 cleared SOURCE ONLY for this empty-state census. Home entry-card closed NO_QUALIFIED_SOURCE_GAP at c5557726. Sidebar product writer3b/PR1168 remains exclusive through merge; no product lease/runtime/new publisher.",
+  "limits": [
+    "Retained Conductor 0.87.6 assets are static evidence, not fresh original runtime or native observation.",
+    "Only inert byte/source checks ran on Reason Cloud352. No application JavaScript, fixture, tests, dependency install, browser, native app, build, E2E or package execution.",
+    "Eight expected cases are source-inferred and frozen but UNRUN; no RED/GREEN behavior claim.",
+    "No screenshot: no UI/native admission; source-only analysis.",
+    "No tracked product/source edits, new publisher or duplicate badge work. Existing badge PR1168 remains separate.",
+    "Original shared/cloud organizations, dialog internals, Recents, archived rows, collapse persistence implementation changes, drag/drop, header actions, section stores, keyboard and native visuals excluded.",
+    "Earlier REA whole-renderer semantic-analysis limit remains historical; no new REA error or gap occurred."
+  ]
+}

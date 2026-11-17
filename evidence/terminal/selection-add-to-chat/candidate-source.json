@@ -1,0 +1,34 @@
+{
+  "main_checked": "c25670504400771e2fb31e01560db249ea4bd06c",
+  "contains_1065": true,
+  "editor_135_sha256": "f875a66fb8219d768bc69c1c4aa001c3e7b2624359d7a295f775eae1d5186c74",
+  "files": [
+    {
+      "path": "src/features/terminal/TerminalPanel.tsx",
+      "main_bytes": 1469,
+      "main_sha256": "b2623583505c976f1738785ebf5e05f7c3690b9cdffe05139050b7a795ee1b40",
+      "candidate_sha256": "8d130fcd3c7836ca54eb341c41dc0a6be3b3f7ca8a218dc30dddf47548657e06"
+    },
+    {
+      "path": "src/components/PanelStrip.tsx",
+      "main_bytes": 8592,
+      "main_sha256": "98ffac9be8c66304edd0a5b9fe9fd6465ebbd2d52ef8f6fc8a8532da8f9457de",
+      "candidate_sha256": "171024c6fc5ba70a45ae130acd0d15bf285226f892e8de9270a77e0102ff4172"
+    },
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "main_bytes": 83347,
+      "main_sha256": "c0753403e6c9c2481b51e87c45e291910fc17cf979519cc772aa36a84e4b3b8e",
+      "candidate_sha256": "84db31a06895072552494f000f0e849f92100200da186536db8f9a62f514347a"
+    },
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "main_bytes": 9927,
+      "main_sha256": "f875a66fb8219d768bc69c1c4aa001c3e7b2624359d7a295f775eae1d5186c74",
+      "candidate_sha256": "721329425ae44ff6d75f1a1c755c492b4c67954ef1cca298815d97794780cc3c"
+    }
+  ],
+  "fixture_identity": "PASS by verify-source.py",
+  "hosted_candidate": "NOT_RUN",
+  "local_node_browser_native": "NOT_RUN"
+}

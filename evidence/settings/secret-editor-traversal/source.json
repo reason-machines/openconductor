@@ -1,0 +1,152 @@
+{
+  "author": "Conductor Rebuild",
+  "checked_main": "e89bede5597767d131b1c4c9199fb38403d31209",
+  "checked_at": "2026-11-12T09:47:33Z",
+  "archive_sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+  "assets": {
+    "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "spans": [
+    {
+      "name": "$pa",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10629937,
+        10632219
+      ],
+      "sha256": "947269304b3f82358a188e874d19db74e187b8abee4e9845172210ed7cdeffd3",
+      "file": "_pa.literal.txt"
+    },
+    {
+      "name": "jpa",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10619879,
+        10624045
+      ],
+      "sha256": "f339bdf9702ca236ab96391682eeccb54f05f999690c91e2717e43f25d01535f",
+      "file": "jpa.literal.txt"
+    },
+    {
+      "name": "Lzi",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10618856,
+        10619593
+      ],
+      "sha256": "b2f76d662621b8185e61f2a6a75d90578ec7283f26fc59656d0096478cba0298",
+      "file": "Lzi.literal.txt"
+    },
+    {
+      "name": "YWt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10252774,
+        10254426
+      ],
+      "sha256": "e9c696637b6b19c5adf28ba025a7a8c026476840976293b67635917a95eda869",
+      "file": "YWt.literal.txt"
+    },
+    {
+      "name": "Zla",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10250685,
+        10252749
+      ],
+      "sha256": "6538f2eac6a963a669d3a2d9f6c949c8728d2c7ce3405472a9c8f87ed05abf20",
+      "file": "Zla.literal.txt"
+    },
+    {
+      "name": "n$i",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10248914,
+        10250561
+      ],
+      "sha256": "9ce4d9ed2540c2120b38bbce3b03730e84c132f8ef64097843ee39a06a9f2035",
+      "file": "n_i.literal.txt"
+    },
+    {
+      "name": "Qo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        1934438,
+        1935194
+      ],
+      "sha256": "f059e0af88042c5591d17aa65da5e9614dc6f63d0351dc60fe9b504516bf0fcc",
+      "file": "Qo.literal.txt"
+    },
+    {
+      "name": "tt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        1923125,
+        1923712
+      ],
+      "sha256": "9675a9385ebb0461b4c5254a558b4bb82368ababa1146cf9a6fca02d3921f72c",
+      "file": "tt.literal.txt"
+    },
+    {
+      "name": "S3i",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        1920998,
+        1921053
+      ],
+      "sha256": "ddd119d405884d670467e1c1690f8ae012c20705de121e26c34bc1f688939bf6",
+      "file": "S3i.literal.txt"
+    },
+    {
+      "name": "prop-merge",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        463925,
+        465319
+      ],
+      "sha256": "5cf6e4a5da9d8413f9d2419d993015f42636d077ad8f9cb8654e393d17cd7f06",
+      "file": "prop-merge.literal.txt"
+    },
+    {
+      "name": "native-render",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        465319,
+        466387
+      ],
+      "sha256": "7f39c0705567d476943e1872d89c8d230668965dfcc7da26017a0a4f910a8c5e",
+      "file": "native-render.literal.txt"
+    }
+  ],
+  "current_main_sources": [
+    {
+      "path": "src/settings/AgentsPage.tsx",
+      "sha256": "2d9167dd3176f6220f6036aff0c4e8bf5125e1e6e575984c401e67cd83f7f0ee",
+      "blob": "1bd991ad236c6cb51c9f23df2f0ec30f7077b86c"
+    },
+    {
+      "path": "src/settings/agents/ClaudeTab.tsx",
+      "sha256": "84ae3c3277f9ef11f1bf79a1c2696444787a35097ddf405df5f50cb64faa5e4c",
+      "blob": "15ab6367503a61874e821a4e9aea3bba76716713"
+    },
+    {
+      "path": "src/settings/agents/kit.tsx",
+      "sha256": "a0926a79d9a60384e04cc4ff26482336e411c5bf07c93da1755284baecaf37cb",
+      "blob": "53dd944ab53ef2056a107c47544252feb3aa86d7"
+    },
+    {
+      "path": "src/settings/agents/agents.css",
+      "sha256": "5a5782488458b385aa106b4120dbad9fdc73633848037c740312d3330c5de7a6",
+      "blob": "3a4954485818d411a9a35e679e2b86e00adf5e1d"
+    },
+    {
+      "path": "src/settings/agents/kit.css",
+      "sha256": "38372a8ab51f98f32179d298c81d90b6da137a5e4fe5178b6b7ba2f0a2ea18ab",
+      "blob": "f47b83b918fbfa29f30f91edd83fab508bfa3ccc"
+    }
+  ],
+  "retained_REA_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "contract": "Retained source order is input, Save, then Cancel and Get key. Current configured editor declares input, Cancel, Save, then Get key. No runtime or native traversal observed.",
+  "execution": false
+}

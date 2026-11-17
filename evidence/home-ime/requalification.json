@@ -1,0 +1,68 @@
+{
+  "unit": "ACQ-HOME-IME-271-06",
+  "producer": "Conductor Rebuild",
+  "fresh_main": "9524569976a69a3151be1f2a3cac17bfac935312",
+  "original_qualification_main": "1b415a2c9eacd606e5697cb30bee4d7c3b559b0f",
+  "current_source_comparison": [
+    {
+      "path": "src/components/AllWorkspaces.tsx",
+      "bytes": 17563,
+      "sha256": "19c27b4d3db83e2810dcb4576a0099f413b24632066c4a9bd8ff83adfe2ab4f6",
+      "matches_original_pin": true
+    },
+    {
+      "path": "src/App.tsx",
+      "bytes": 38825,
+      "sha256": "3dc27eaa48b07ced25b188ebdef219744220a2008176c23709f08983ed226df6",
+      "matches_original_pin": true
+    },
+    {
+      "path": "src/main.tsx",
+      "bytes": 2279,
+      "sha256": "b1ad5f34cbb74420d946183105a216b809233ac09dab49beeea3c9366db5da80",
+      "matches_original_pin": true
+    },
+    {
+      "path": "src/keybindings/KeybindingsProvider.tsx",
+      "bytes": 5566,
+      "sha256": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6",
+      "matches_original_pin": true
+    },
+    {
+      "path": "src/keybindings/listeners.ts",
+      "bytes": 6133,
+      "sha256": "6944c63efcb6edee49d59d1ccdcfaed649902021946c8a8f60d50549fd89011a",
+      "matches_original_pin": true
+    },
+    {
+      "path": "src/keybindings/dispatcher.ts",
+      "bytes": 5180,
+      "sha256": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197",
+      "matches_original_pin": true
+    },
+    {
+      "path": "src/keybindings/bind.ts",
+      "bytes": 1925,
+      "sha256": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119",
+      "matches_original_pin": true
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "bytes": 28780,
+      "sha256": "3a873cc27d99b73fafa340dc1585d9f4cd850966e91408c4f4dbad445bf4dcb9",
+      "matches_original_pin": true
+    },
+    {
+      "path": "src/keybindings/selectAll.ts",
+      "bytes": 1632,
+      "sha256": "508b26417d717f938eb118afbe8c0ff96873643cb4e5c0879467e5368e97db90",
+      "matches_original_pin": true
+    }
+  ],
+  "result": "ALL_9_FRESH_MAIN_PINS_IDENTICAL",
+  "reference_spans_and_frozen_neighbors": "verified by verify-source.py --phase guarded",
+  "product_change": "Only one early return at the start of AllWorkspaces.onSearchKey",
+  "native_event_access": "Optional nativeEvent access accepts existing direct KeyboardEvent fixtures as well as React events. Real React events supply nativeEvent. Existing endpoint and empty-list tests stay byte-identical.",
+  "fixture_sha256": "f972b0a3707f54f8709b36aeacc01efe3c1fc4a015e6f8a4ddb85fb7d1638d7f",
+  "runtime": "No local Node, browser or native run"
+}

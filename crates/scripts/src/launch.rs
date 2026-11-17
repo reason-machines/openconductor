@@ -142,6 +142,7 @@ pub struct Process {
     child: Child,
     reader: Option<JoinHandle<()>>,
     reader_stop: Arc<AtomicBool>,
+    writer: Option<File>,
     script_path: PathBuf,
     pub transcript: Transcript,
 }
@@ -152,7 +153,7 @@ pub fn spawn(spec: &LaunchSpec, sink: Option<OutputSink>) -> io::Result<Process>
         fs::create_dir_all(dir)?;
     }
     fs::write(&spec.script_path, &spec.script)?;
-    let (child, mut reader) = match spawn_pty(spec) {
+    let (child, mut reader, writer) = match spawn_pty(spec) {
         Ok(pair) => pair,
         Err(e) => {
             let _ = fs::remove_file(&spec.script_path);
@@ -200,12 +201,13 @@ pub fn spawn(spec: &LaunchSpec, sink: Option<OutputSink>) -> io::Result<Process>
         child,
         reader: Some(reader_thread),
         reader_stop,
+        writer: Some(writer),
         script_path: spec.script_path.clone(),
         transcript,
     })
 }
 
-fn spawn_pty(spec: &LaunchSpec) -> io::Result<(Child, File)> {
+fn spawn_pty(spec: &LaunchSpec) -> io::Result<(Child, File, File)> {
     let pair = rustix_openpty::openpty(
         None,
         Some(&rustix_openpty::rustix::termios::Winsize {
@@ -234,13 +236,44 @@ fn spawn_pty(spec: &LaunchSpec) -> io::Result<(Child, File)> {
             Ok(())
         });
     }
+    let controller = File::from(pair.controller);
+    let writer = controller.try_clone()?;
     let child = cmd.spawn()?;
-    Ok((child, File::from(pair.controller)))
+    Ok((child, controller, writer))
 }
 
 impl Process {
     pub fn pid(&self) -> u32 {
         self.child.id()
+    }
+
+    /// Clone the live input handle so writes do not hold the process lock.
+    pub(crate) fn input_writer(&mut self) -> io::Result<Option<File>> {
+        if self.try_wait()?.is_some() {
+            return Ok(None);
+        }
+        self.writer.as_ref().map(File::try_clone).transpose()
+    }
+
+    pub(crate) fn resize(&mut self, cols: u16, rows: u16) -> io::Result<bool> {
+        if self.try_wait()?.is_some() {
+            return Ok(false);
+        }
+        let Some(master) = &self.writer else {
+            return Ok(false);
+        };
+        let size = libc::winsize {
+            ws_row: rows,
+            ws_col: cols,
+            ws_xpixel: 0,
+            ws_ypixel: 0,
+        };
+        // SAFETY: master owns a live PTY descriptor and size is a valid winsize.
+        let result = unsafe { libc::ioctl(master.as_raw_fd(), libc::TIOCSWINSZ, &size) };
+        if result == -1 {
+            return Err(io::Error::last_os_error());
+        }
+        Ok(true)
     }
 
     /// The exit, if the process has ended.
@@ -288,6 +321,7 @@ impl Process {
     }
 
     fn finish(&mut self, status: std::process::ExitStatus) -> Exit {
+        self.writer.take();
         // Descendants can retain the slave after the script exits. Bound the
         // drain and close the master instead of leaving a reader behind.
         if let Some(reader) = self.reader.take() {

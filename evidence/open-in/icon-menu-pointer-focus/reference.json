@@ -1,0 +1,152 @@
+{
+  "status": "SOURCE_INQUIRY_NOT_EXECUTED",
+  "main_checked": "c79a81086c3a0e5ba81f1a9a53ec63a4f4dde7ba",
+  "product_sha256": "985d3eb1eb714a964c8e04514689d19d1a60a1b8453d08d303a1d85da3f4fe60",
+  "asset": {
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "retained_rea_evidence_id": "ev_338577609e67c31212d529d59606e90597850528ea9a2f9559d23a4876c960d1"
+  },
+  "spans": [
+    {
+      "symbol": "P9",
+      "path": "reference/P9.txt",
+      "start_utf8_byte": 2689481,
+      "end_utf8_byte": 2697526,
+      "sha256": "bf2bd3507c56618ed2d218f4c6efe656926ed3d4a523f8fd16ce5cffd153aede"
+    },
+    {
+      "symbol": "h2-Sg",
+      "path": "reference/h2-Sg.txt",
+      "start_utf8_byte": 2224899,
+      "end_utf8_byte": 2225951,
+      "sha256": "ba4b23b02a933218f3ec551422d7e2afac0ac8080b9fc054029dd231a59dd988"
+    },
+    {
+      "symbol": "Tm",
+      "path": "reference/Tm.txt",
+      "start_utf8_byte": 2227697,
+      "end_utf8_byte": 2230675,
+      "sha256": "96862b9cc8037a369b7c2906a0a27f7328c28b28b337bf0ca8ea0929ce15fbc5"
+    },
+    {
+      "symbol": "m2",
+      "path": "reference/m2.txt",
+      "start_utf8_byte": 703915,
+      "end_utf8_byte": 705553,
+      "sha256": "33148f13f8585ac860359220268f5a2c7e5ea0573f33efc5e924c6491beb185b"
+    },
+    {
+      "symbol": "oF",
+      "path": "reference/oF.txt",
+      "start_utf8_byte": 721779,
+      "end_utf8_byte": 726747,
+      "sha256": "584d6e5f9dd7c2293a3c3a92edcf3f924b8f84599bf0fc5491b4937c156ad946"
+    },
+    {
+      "symbol": "SLt",
+      "path": "reference/SLt.txt",
+      "start_utf8_byte": 531356,
+      "end_utf8_byte": 536840,
+      "sha256": "639dff80215201bdcf7b13dc95b69b4fb63010d8e480c03fadd009b46400570e"
+    },
+    {
+      "symbol": "cFn",
+      "path": "reference/cFn.txt",
+      "start_utf8_byte": 2686373,
+      "end_utf8_byte": 2687659,
+      "sha256": "e97a00b92f89f1593a47e40029d9dcad399c48304f42c2b34eedc1c3f986c248"
+    },
+    {
+      "symbol": "Yc",
+      "path": "reference/Yc.txt",
+      "start_utf8_byte": 2231400,
+      "end_utf8_byte": 2232272,
+      "sha256": "34efee668aa3b543ee3a0840323d9b3c3bfa0b6a7b2bb39f55491d89bb396246"
+    },
+    {
+      "symbol": "Pu",
+      "path": "reference/Pu.txt",
+      "start_utf8_byte": 700703,
+      "end_utf8_byte": 701216,
+      "sha256": "e6153e0780bcd6d512055d5af34ba5daa8e7eab9d69417825087e414f5489215"
+    },
+    {
+      "symbol": "register-item",
+      "path": "reference/register-item.txt",
+      "start_utf8_byte": 698015,
+      "end_utf8_byte": 698570,
+      "sha256": "a9f6d9eaac70ae3b8c9a4235e1807254a43dd79bedf7ff73182637ab8f9261ef"
+    },
+    {
+      "symbol": "collect-items",
+      "path": "reference/collect-items.txt",
+      "start_utf8_byte": 705854,
+      "end_utf8_byte": 707350,
+      "sha256": "bcde61d268f35c26f4b5e28ea0eda54c276724af58e022fb8bc509841f6a68b8"
+    },
+    {
+      "symbol": "item-order",
+      "path": "reference/item-order.txt",
+      "start_utf8_byte": 707410,
+      "end_utf8_byte": 708089,
+      "sha256": "1bb79f30f38fe6aa103b1bce36a26eaf1f46ee6a3a6fe2d83ebc1ce56e7c3e4f"
+    },
+    {
+      "symbol": "focus-item",
+      "path": "reference/focus-item.txt",
+      "start_utf8_byte": 461160,
+      "end_utf8_byte": 461421,
+      "sha256": "005eef0adac96874d230de3b4031f3caa91e82f826e5830991b8d02346424ae1"
+    },
+    {
+      "symbol": "merge-handlers",
+      "path": "reference/merge-handlers.txt",
+      "start_utf8_byte": 463925,
+      "end_utf8_byte": 465319,
+      "sha256": "5cf6e4a5da9d8413f9d2419d993015f42636d077ad8f9cb8654e393d17cd7f06"
+    },
+    {
+      "symbol": "eXe",
+      "path": "reference/eXe.txt",
+      "start_utf8_byte": 697334,
+      "end_utf8_byte": 697975,
+      "sha256": "e1b9257a6f79b66c162106bd0639ae93f5be9f6329943943c34488a7b3fc06c1"
+    },
+    {
+      "symbol": "iRn",
+      "path": "reference/iRn.txt",
+      "start_utf8_byte": 530871,
+      "end_utf8_byte": 530931,
+      "sha256": "5b33b636e7c2b357fa5b3833ca2de11e9253f5dd01a2a5063cd3a17911a554f5"
+    },
+    {
+      "symbol": "r0i",
+      "path": "reference/r0i.txt",
+      "start_utf8_byte": 696510,
+      "end_utf8_byte": 697334,
+      "sha256": "6d70b3eb855bde025ac197e7129d91f5d939368650340e29c5e6a0979ebdd15c"
+    },
+    {
+      "symbol": "O6",
+      "path": "reference/O6.txt",
+      "start_utf8_byte": 592323,
+      "end_utf8_byte": 593854,
+      "sha256": "f8ff51bdccbb867c1ccd804968380bf548eb19fcbd9e5097b1a861948f1befc0"
+    },
+    {
+      "symbol": "webkit-zero-movement",
+      "path": "reference/webkit-zero-movement.txt",
+      "start_utf8_byte": 443006,
+      "end_utf8_byte": 443073,
+      "sha256": "9d869b7ceb7747e866481810a8c886df30a05aed8693858e511bc5a7916a2c2c"
+    },
+    {
+      "symbol": "focus-primitive-complete",
+      "path": "reference/focus-primitive-complete.txt",
+      "start_utf8_byte": 461160,
+      "end_utf8_byte": 461421,
+      "sha256": "005eef0adac96874d230de3b4031f3caa91e82f826e5830991b8d02346424ae1"
+    }
+  ]
+}

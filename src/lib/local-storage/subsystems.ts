@@ -1,4 +1,4 @@
-// The local-storage subsystems Conductor keeps (all 11 but its OpenCode model discovery) as
+// The local-storage subsystems Conductor keeps (all 12, including OpenCode model discovery) as
 // `local-storage.subsystem.<name>.json` next to conductor.db, with the size
 // limits, entry ids and persist names its frontend uses
 // (evidence/persistence/local-storage/NOTES.md). All are unencrypted
@@ -27,6 +27,8 @@ export const ROUTE_USER_STATE: Subsystem = { name: "route-user-state", sizeLimit
 export const RUN_SCRIPT_HISTORY: Subsystem = { name: "run-script-history", sizeLimit: 5 * MiB };
 /** Terminal panel tabs, one persisted entry. */
 export const TERMINAL: Subsystem = { name: "terminal", sizeLimit: 100 * MiB };
+/** Discovered OpenCode models and their config options per [repoId, mainWorktreePath, opencodeExecutablePath]. */
+export const OPENCODE_MODEL_DISCOVERY: Subsystem = { name: "opencode-model-discovery-v1", sizeLimit: 4 * MiB };
 /** File changes of one agent turn. */
 export const TURN_CHANGES_CACHE: Subsystem = { name: "turn-changes-cache", sizeLimit: 5 * MiB };
 
@@ -36,6 +38,7 @@ export const SUBSYSTEMS: readonly Subsystem[] = [
   COMPOSER_DRAFTS,
   DISPATCHER_STATE,
   MODEL_PICKER_CONFIGS,
+  OPENCODE_MODEL_DISCOVERY,
   PRE_WORKSPACE_COMPLETIONS,
   ROUTE_USER_STATE,
   RUN_SCRIPT_HISTORY,

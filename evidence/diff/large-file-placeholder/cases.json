@@ -1,0 +1,10 @@
+[
+  { "name": "one_mib_dense", "bytes": 1048576, "changed_lines": 501, "hidden": false, "binary": false },
+  { "name": "one_mib_plus_one_dense", "bytes": 1048577, "changed_lines": 501, "hidden": true, "binary": false },
+  { "name": "two_mib_sparse", "bytes": 2097152, "changed_lines": 500, "hidden": false, "binary": false },
+  { "name": "five_mib_sparse", "bytes": 5242880, "changed_lines": 500, "hidden": false, "binary": false },
+  { "name": "five_mib_dense", "bytes": 5242880, "changed_lines": 501, "hidden": true, "binary": false },
+  { "name": "five_mib_plus_one_sparse", "bytes": 5242881, "changed_lines": 2, "hidden": true, "binary": false },
+  { "name": "six_mib_sparse", "bytes": 6291456, "changed_lines": 2, "hidden": true, "binary": false },
+  { "name": "six_mib_binary", "bytes": 6291456, "changed_lines": 0, "hidden": false, "binary": true }
+]

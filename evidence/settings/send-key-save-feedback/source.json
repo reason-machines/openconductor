@@ -1,0 +1,104 @@
+{
+  "owner": "Conductor Rebuild / SAME49",
+  "scope": "GeneralPage.SendKeyRow USER save-failure notification caller only. No shared Select, keybinding provider, override store, persistence service, or chat-submit changes.",
+  "checked_main": "6ab46a36752de4f57cb3c3441f4336d334ad1340",
+  "baseline_sha256": "72eb0193654acce1af05932e1ad104127ca6afd7094fa5fbf2c116baea16a45e",
+  "retained_reference": {
+    "application": "Conductor 0.87.6",
+    "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "assets": {
+      "renderer": {
+        "bytes": 11600457,
+        "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+      },
+      "index": {
+        "bytes": 3493297,
+        "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+      }
+    },
+    "limits": "Original semantic renderer analysis exhausted heap. Read-only extraction from retained shipped original bytes. No reference JavaScript executed. Current installed version, renderer equality, and native behavior remain unverified."
+  },
+  "reference_spans": [
+    {
+      "path": "reference/Z5e.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7756232,
+        7757201
+      ],
+      "bytes": 969,
+      "sha256": "22baa00c0ef57e566b9eb5efbdb6af43b7d34c3e1b35b95ca0d35b1f59948c1e"
+    },
+    {
+      "path": "reference/bga.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10717261,
+        10717320
+      ],
+      "bytes": 59,
+      "sha256": "8cbd129d0d7ce7f797867588e976d3d68e857359285ee5b7ccf27f0e5ee14a53"
+    },
+    {
+      "path": "reference/RQt.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        3394221,
+        3394417
+      ],
+      "bytes": 196,
+      "sha256": "db211c5d2e55eeaabee376892f8d33a08a903a6358df91aeffe2c42bc91d2319"
+    },
+    {
+      "path": "reference/BUt.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        3393357,
+        3393417
+      ],
+      "bytes": 60,
+      "sha256": "b07aa0a7a837c4c92a1e55c7cc87129b30ce1f1a5ad00dfd6fc759bcc31de92a"
+    },
+    {
+      "path": "reference/registration.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10710018,
+        10710881
+      ],
+      "bytes": 863,
+      "sha256": "0ae234ad75cdf6f9ba472d6c4bf186955aaed55177a70c4d0f9229e7d14349cc"
+    },
+    {
+      "path": "reference/import-save.txt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        63922,
+        63931
+      ],
+      "bytes": 9,
+      "sha256": "b08460d50e8f8f1218e13e7cf3fb0d8c03af06f07536bc08af2e28d033f002a9"
+    },
+    {
+      "path": "reference/export-save.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        3490315,
+        3490324
+      ],
+      "bytes": 9,
+      "sha256": "26246596fa06c41ee131a36c93bc27e1975554f428548b2b8905666b81497152"
+    }
+  ],
+  "unchanged_boundaries": {
+    "src/settings/SettingsView.tsx": "09a70e9c559eaebe074d1fe83c4c3c8af699763765933a8f91be2a93d469301f",
+    "src/settings/composerSettings.ts": "ce4eb13bcf7edf5942d88f1b4b31f6264e4432cfe475153b024b07d93c661a9b",
+    "src/settings/useSettingsOverrideStore.ts": "2da87ab1d95d87684d1552c03a52086f732c45e05713fa8e2fea9feb1bba798a",
+    "src/settings/keybindingOverrides.ts": "85bb4de83e3856be498b8b72073b31ceec2c86f63454e989b73d90cfcb987691",
+    "src/settings/appPrefs.ts": "f1e26ccb5e481a093d17230bb65d20f8bb10cb5a6977ed5a989e9b3dd00b8972",
+    "src/settings/controls.tsx": "ac772d2f0c77f685d5d0c92f2a12b9f2239a8b196a9cf8a20cffda74fc7a13b7",
+    "src/keybindings/overrides.ts": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193"
+  },
+  "fixture_boundary": "Synthetic registry registration, memo cache, elements, notification callback, keybinding preset and persistence boundaries. RQt/BUt and original registration callbacks execute only when admitted. Z5e event relay retained for source inspection, not full shared Select execution.",
+  "status": "SOURCE_ONLY. Product, reference, typecheck, screenshot and native checks NOT_RUN pending serialized ACC admission."
+}

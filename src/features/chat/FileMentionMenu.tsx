@@ -2,6 +2,7 @@ import { useEffect, useRef, type MouseEvent } from "react";
 import { FileTypeIcon, FolderTypeIcon } from "../../components/FileIcons";
 import { TerminalIcon } from "../../components/Icons";
 import { mentionHighlights, type MentionItem } from "./fileMentions.ts";
+import { useSuggestionPointer } from "./useSuggestionPointer.ts";
 
 interface Props {
   matches: readonly MentionItem[];
@@ -13,6 +14,7 @@ interface Props {
 
 export function FileMentionMenu({ matches, focused, hasQuery, onPick, onFocus }: Props) {
   const list = useRef<HTMLDivElement>(null);
+  const pointerEnter = useSuggestionPointer(focused, onFocus, matches.length > 0);
   useEffect(() => {
     list.current?.querySelector<HTMLElement>(`[data-list-index="${focused}"]`)?.scrollIntoView({ block: "nearest" });
   }, [focused]);
@@ -20,7 +22,7 @@ export function FileMentionMenu({ matches, focused, hasQuery, onPick, onFocus }:
     <div className="oc-suggest oc-file-mentions" role="listbox" aria-label="Mention files" data-suggestion-popup ref={list}>
       {matches.map((item, index) => {
         const events = {
-          onMouseMove: () => index !== focused && onFocus(index),
+          onMouseEnter: () => pointerEnter(index),
           onMouseDown: (event: MouseEvent) => { event.preventDefault(); onPick(item); },
         };
         if (item.kind === "add-directory") return (

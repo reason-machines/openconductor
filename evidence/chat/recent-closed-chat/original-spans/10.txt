@@ -1,0 +1,1 @@
+async function sDt(t){const e=await fe.getSession(t.sessionId);await qpe({sessions:[e],localWorkspaceId:t.localWorkspaceId});const s=await fe.hideSession(t);return zpe(t.sessionId),s}

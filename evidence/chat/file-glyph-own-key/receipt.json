@@ -1,0 +1,53 @@
+{
+  "owner": "Conductor Rebuild",
+  "scope": "FileGlyph own-property correction only",
+  "checked_main": "349b49a75d90abe3a8ff25f10937c7a2e05a724f",
+  "assigned_reconciled_head": "6f2eeae4eb6d1badf1d27f5b5f7b9a8d89e53bf3",
+  "grant": "e8f52fb4-b909-48af-83b6-ca7943eb8be2",
+  "total_limit_seconds": 630,
+  "started": "2026-11-12T18:01:33Z",
+  "released": "2026-11-12T18:06:34Z",
+  "total_elapsed_seconds": 301,
+  "baseline": {
+    "tests": 6,
+    "pass": 4,
+    "fail": 2,
+    "exit": 1,
+    "intended_failures": [
+      "constructor",
+      "__proto__"
+    ]
+  },
+  "candidate": {
+    "tests": 6,
+    "pass": 6,
+    "fail": 0,
+    "exit": 0,
+    "same_command_and_fixture": true
+  },
+  "original_constructor": {
+    "tests_exercised": 1,
+    "pass": 1,
+    "exit": 0,
+    "other27": "NOT_RUN"
+  },
+  "adjacent": {
+    "status": "PARTIAL_TIMEOUT",
+    "exit": 124,
+    "observed_passing_subtests": 39,
+    "final_tap_summary": false,
+    "cause": "UNKNOWN"
+  },
+  "local_typecheck": "NOT_RUN_AFTER_STOP",
+  "disclosure_patch_applied": false,
+  "copy26": "NOT_RUN",
+  "cleanup": {
+    "own_jobs": [],
+    "zombies": [],
+    "servers": [],
+    "staged_sealed_copies_removed": true,
+    "frozen_identities_preserved": true
+  },
+  "native_browser_package_build": "NOT_RUN",
+  "publication": "outside_released_slot"
+}

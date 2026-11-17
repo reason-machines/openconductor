@@ -1,0 +1,23 @@
+test_existing_producer_retains_witness_in_same_artifact (test_collect_macos_asset_witness.ProducerIntegrationTests.test_existing_producer_retains_witness_in_same_artifact) ... ok
+test_failure_during_copy_removes_only_own_partial_output (test_collect_macos_asset_witness.WitnessTests.test_failure_during_copy_removes_only_own_partial_output) ... ok
+test_rejects_dirty_source (test_collect_macos_asset_witness.WitnessTests.test_rejects_dirty_source) ... ok
+test_rejects_existing_output_without_overwrite (test_collect_macos_asset_witness.WitnessTests.test_rejects_existing_output_without_overwrite) ... ok
+test_rejects_failing_bundle_check (test_collect_macos_asset_witness.WitnessTests.test_rejects_failing_bundle_check) ... ok
+test_rejects_missing_codegen (test_collect_macos_asset_witness.WitnessTests.test_rejects_missing_codegen) ... ok
+test_rejects_missing_codesign_check (test_collect_macos_asset_witness.WitnessTests.test_rejects_missing_codesign_check) ... ok
+test_rejects_missing_maps (test_collect_macos_asset_witness.WitnessTests.test_rejects_missing_maps) ... ok
+test_rejects_over_limit_asset (test_collect_macos_asset_witness.WitnessTests.test_rejects_over_limit_asset) ... ok
+test_rejects_symlink_asset (test_collect_macos_asset_witness.WitnessTests.test_rejects_symlink_asset) ... ok
+test_rejects_symlink_directory (test_collect_macos_asset_witness.WitnessTests.test_rejects_symlink_directory) ... ok
+test_rejects_unsafe_zip (test_collect_macos_asset_witness.WitnessTests.test_rejects_unsafe_zip) ... ok
+test_rejects_wrong_cut (test_collect_macos_asset_witness.WitnessTests.test_rejects_wrong_cut) ... ok
+test_rejects_zip_executable_mismatch (test_collect_macos_asset_witness.WitnessTests.test_rejects_zip_executable_mismatch) ... ok
+test_rejects_zip_same_size_executable_mismatch (test_collect_macos_asset_witness.WitnessTests.test_rejects_zip_same_size_executable_mismatch) ... ok
+test_release_profile_supported (test_collect_macos_asset_witness.WitnessTests.test_release_profile_supported) ... ok
+test_retains_exact_original_assets_and_signed_bundle_binding (test_collect_macos_asset_witness.WitnessTests.test_retains_exact_original_assets_and_signed_bundle_binding) ... ok
+test_retains_non_js_assets_and_multiple_original_cache_directories (test_collect_macos_asset_witness.WitnessTests.test_retains_non_js_assets_and_multiple_original_cache_directories) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.902s
+
+OK

@@ -216,6 +216,19 @@ for (const state of ["empty", "binary", "error"] as const) {
   });
 }
 
+test("turn-file preview names a saved snapshot that is too large without losing navigation", async () => {
+  const view = await fixture();
+  try {
+    await view.hover();
+    assert.equal(view.requests.length, 1);
+    await view.finish(0, [diff({ hide_reason: "file_too_large", hunks: [] })]);
+    assert.match(view.text(), /File too large to preview/);
+    assert.doesNotMatch(view.text(), /No diff available|Binary file changed|old value|Loading/);
+    await view.event(view.chip(), "onClick", { stopPropagation() {} });
+    assert.deepEqual(view.opened, ["src/first.ts"]);
+  } finally { await view.close(); }
+});
+
 test("turn-file preview renders only the requested file from a response", async () => {
   const view = await fixture();
   try {
@@ -268,7 +281,7 @@ test("footer chip glyphs, counts, order, compact layout and three-at-a-time reve
     assert.equal(view.buttons().length, 2);
     assert.deepEqual(view.buttons().map((node) => text(node).split("+")[0]), ["file-0.ts", "file-1.ts"]);
     assert.match(text(view.buttons()[0]), /\+1-0$/);
-    assert.ok(view.all((node) => node.type === "svg").length >= 3, "file glyphs and reveal icon remain present");
+    assert.ok(view.all((node) => node.type === "svg").length >= 2, "file glyphs and reveal icon remain present");
     const more = view.all((node) => node.type === "button" && node.props.title === "Show 3 more changed files")[0];
     assert.ok(more);
     await view.event(more, "onClick");

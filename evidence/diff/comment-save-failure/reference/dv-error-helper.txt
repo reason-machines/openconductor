@@ -1,0 +1,1 @@
+function dv(t,e){const n=e?.description?`${t}: ${e.description}`:t;return kt.error(t,{...e,description:e?.description,action:p.jsx(t0,{text:n,tooltip:"Copy error",className:"text-muted-foreground hover:text-foreground"})})}

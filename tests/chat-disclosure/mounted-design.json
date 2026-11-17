@@ -1,0 +1,52 @@
+{
+  "candidate": "CHAT.TOOL-DISCLOSURE-REMOUNT",
+  "status": "DESIGN_ONLY_NOT_RUN",
+  "baseline_main": "167492e56dbbb90850efbadf1db2848dae7622f2",
+  "shape": {
+    "inputs": "Two distinct ChatTranscript.sessionId values A and B, unique tool_use IDs per case, unchanged transcript objects on A return.",
+    "lifetime": "Use the actual production ChatPanel key expression activeReview?.chatId ?? primaryId. Mount actual Transcript and actual ConductorToolRow. A-to-B-to-A must destroy A's component instance but retain the loaded production module graph.",
+    "rows": "Use one assistant message carrying one Read or ExitPlanMode call and one successful result. At most two visible assistant messages avoids summary grouping. Real buildRows, foldAgentRows, isToolExpanded, opensByDefault and RowShell must run.",
+    "assertion": "Observe actual oc-tool-head aria-expanded and presence/absence of the actual content node. Do not inspect toggle maps or use source-string assertions as behavioral evidence."
+  },
+  "cases": [
+    {
+      "id": "read-open-return",
+      "role": "INTENDED_RED",
+      "actions": ["Mount A with default-collapsed Read", "Open Read through its real row onClick", "Select B through the keyed lifetime", "Select A again"],
+      "expected": "Read remains expanded and its code result is visible.",
+      "original_support": ["O0o-read persistKey:n.id", "Mu reads/writes dIt", "dIt-store module lifetime"]
+    },
+    {
+      "id": "plan-closed-return",
+      "role": "INTENDED_RED",
+      "actions": ["Mount A with default-open ExitPlanMode", "Close plan through its real row onClick", "Select B", "Select A again"],
+      "expected": "Plan remains collapsed and its body is absent.",
+      "original_support": ["gpo-plan defaultCollapsed:false and persistKey:n.id", "Mu preserves explicitly stored false"]
+    },
+    {
+      "id": "different-tool-id-isolation",
+      "role": "CONTROL",
+      "actions": ["Open Read in A", "Select B with a distinct Read tool ID"],
+      "expected": "Untouched B remains collapsed. A's explicit state does not globally change defaults."
+    },
+    {
+      "id": "same-mounted-chat-rerender",
+      "role": "CONTROL",
+      "actions": ["Open Read in A", "Rerender the same keyed A with a fresh equal transcript object"],
+      "expected": "Read stays open without requiring a remount."
+    },
+    {
+      "id": "expanded-setting-manual-override",
+      "role": "CURRENT_CALLER_CONTROL_NO_NEW_ORIGINAL_PARITY_CLAIM",
+      "actions": ["Mount fresh A with expandToolsByDefault:true and dontCollapseToolCalls:true", "Assert Read starts expanded", "Manually close Read", "Rerender A while setting remains true"],
+      "expected": "Manual false remains false. New untouched IDs still inherit true. No setting/default migration is authorized."
+    }
+  ],
+  "controlled_original_callers": "Mu explicit isCollapsed overrides store state and onToggleCollapse delegates rather than writing the store. The investigated Read/plan callers supply neither prop. Do not generalize this gap to controlled callers.",
+  "allowed_mocks": ["Native IPC settings reads at getSettings boundary", "Markdown syntax decoration and animation only", "Tooltip/clipboard leaves unrelated to expansion"],
+  "forbidden_mocks": ["Transcript", "Row", "Part", "ConductorToolRow", "RowShell", "buildRows", "foldAgentRows", "isToolExpanded", "opensByDefault", "the actual chat-key lifetime"],
+  "publication_requirements": ["Exclusive ledger ownership and clean main-based publisher; #847 remains frozen", "Serialized hosted execution admission", "Actual baseline fails only the two named assertions while controls pass", "Only then a minimal product state-lifetime fix", "Identical fixture bytes pass against candidate", "All exact-head workflows pass before merge"],
+  "remaining_loader_dependencies": ["Select full-module or AST production loader without copying row/toggle handlers", "Preserve actual React module cache across keyed chat changes", "Expose actual ChatPanel key from WorkspaceView, not an invented remount", "Retain real garry_mode caller wiring without treating its current control as original parity proof"],
+  "not_run": ["Node", "mounted React", "browser", "database", "native macOS", "provider", "workflows"],
+  "protected": ["#847", "E09 overflow and closed-chat source/product files", "#1093 labels", "shared wrapper and aggregate ledger files"]
+}

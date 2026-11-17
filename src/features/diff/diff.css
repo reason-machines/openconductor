@@ -59,6 +59,13 @@
 .oc-count .a { color: var(--oc-diff-addition); }
 .oc-count .d { color: var(--oc-diff-deletion); margin-left: 4px; }
 
+/* Markdown/HTML rendered preview in file (whole-file) layout: Conductor's bji isPreviewing=true. */
+.oc-md-preview { padding: 20px 28px; }
+.oc-md-preview .oc-md { font-size: 14px; line-height: 1.6; color: var(--text); }
+/* HTML preview (GAP-DIFF-01): sandboxed iframe so .html/.htm diffs render actual HTML. */
+.oc-html-preview { padding: 0; }
+.oc-html-preview-frame { width: 100%; min-height: 400px; border: none; display: block; }
+
 /* Right panel: toolbar over the list. Main-area tab: one file filling the tab. */
 .oc-diff.oc-diff-list, .oc-diff.oc-diff-tab { grid-template-columns: minmax(0, 1fr); }
 .oc-diff.oc-diff-tab { grid-template-rows: minmax(0, 1fr); position: relative; }
@@ -74,6 +81,8 @@
 .oc-diff-list .oc-count .d { margin-left: 0; }
 .oc-diff-list .oc-status { width: 12px; height: 12px; flex: none; }
 .oc-diff-list .oc-status.untracked { color: var(--muted); }
+.oc-change-comment-count { display: inline-flex; align-items: center; gap: 3px; color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.oc-change-comment-count svg { flex: none; }
 .oc-change-meta { display: inline-flex; align-items: center; justify-content: flex-end; gap: 4px; padding: 0 6px; min-width: 40px; flex: none; }
 .oc-change-uncommitted { font-size: 12px; font-weight: 500; color: var(--text); }
 .oc-change-actions { position: absolute; right: 0; top: 0; height: 100%; display: inline-flex; align-items: center; visibility: hidden; }

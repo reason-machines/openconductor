@@ -1,0 +1,7 @@
+(node:74) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> openconductor@0.1.0 typecheck
+> tsc --noEmit
+
+src/features/chat/useWindowDragDrop.ts(20,26): error TS2307: Cannot find module '@tauri-apps/plugin-fs' or its corresponding type declarations.

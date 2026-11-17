@@ -1,0 +1,5 @@
+a3a24029239f3d3c0d44dcdf4235e19aa67f6334b033c1596df4561ba3f1f6bf  evidence/chat/composer/cancel-focus/source.json
+758d5f32b004b97e8eabcad1a7e2a5e5a454fc6c5c13bd3b14f099a8a0cdb0e8  evidence/chat/composer/cancel-focus/red.tap
+11e288daac86d73d2149275f713b06c7cf146a8b4a725aa0e06fed36b0268f8b  evidence/chat/composer/cancel-focus/green.tap
+c2d56813033955968a7f8870c2a9262824d5174ac9b4d7a74ed9f2c16cc0caa7  evidence/chat/composer/cancel-focus/adjacent.tap
+d496b631ae63976b9128405eba09bc61c6fd6d4fd4d5e6ece6b70ed1ba823f42  src/features/chat/composerCancelFocus.test.ts

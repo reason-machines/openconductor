@@ -2,6 +2,12 @@
 // browser (vite dev / preview) so the shell can be developed without Tauri.
 import { Channel, invoke, isTauri } from "@tauri-apps/api/core";
 import type { FileMatch } from "./spotlight/quickOpen";
+import type { LocalMcpServer } from "./features/chat/localMcpStatus.ts";
+
+export async function codexMcpStatus(chatId: string): Promise<LocalMcpServer[]> {
+  if (!inTauri()) throw new Error("Live Codex MCP status requires the desktop app.");
+  return invoke<LocalMcpServer[]>("codex_mcp_status", { chatId });
+}
 import type { GitHubOwners } from "./state/githubRepoDialog";
 import type { GitProtocol, RecentRepo } from "./state/cloneDialog";
 import { STEP, targetPath, type RepoScripts, type TemplateId } from "./state/createProject";
@@ -202,6 +208,49 @@ function demoMatch(query: string, root: string): FileMatch[] {
 export async function fuzzyFilterFiles(workspacePath: string, query: string, excludeDirectories: boolean): Promise<FileMatch[]> {
   if (!inTauri()) return demoMatch(query, workspacePath);
   return invoke<FileMatch[]>("fuzzy_filter_files", { workspacePath, query, excludeDirectories });
+}
+
+// Workspace content search (Rust `grep_workspace`).
+// REA evidence: index-BGEQ8YjU.js bytes 2265460-2266400 (Tmt / grepWorkspace).
+
+/** One character range within a matching line (UTF-8 byte offsets). */
+export interface GrepSubmatch {
+  start: number;
+  end: number;
+}
+
+/** One line that matched a workspace grep query. */
+export interface GrepMatch {
+  relative_path: string;
+  line_number: number;
+  line_text: string;
+  submatches: GrepSubmatch[];
+}
+
+/** Return value of `grepWorkspace`. */
+export interface GrepResult {
+  matches: GrepMatch[];
+  truncated: boolean;
+  files_searched: number;
+}
+
+/**
+ * Search file contents in `workspacePath` for `query` (Rust `grep_workspace`).
+ * Returns an empty result outside Tauri (no demo data for content search).
+ */
+export async function grepWorkspace(
+  workspacePath: string,
+  query: string,
+  options: { isRegex?: boolean; caseSensitive?: boolean; wholeWord?: boolean } = {},
+): Promise<GrepResult> {
+  if (!inTauri()) return { matches: [], truncated: false, files_searched: 0 };
+  return invoke<GrepResult>("grep_workspace", {
+    workspacePath,
+    query,
+    isRegex: options.isRegex,
+    caseSensitive: options.caseSensitive,
+    wholeWord: options.wholeWord,
+  });
 }
 
 // Clone dialog helpers (evidence/screens/clone-dialog.md). Outside Tauri they

@@ -1,0 +1,1 @@
+function QQe(t){return t.trim().normalize("NFC").toLowerCase().replace(/\s+/g,"-").replace(/[^\p{Letter}\p{Number}\p{Mark}_-]/gu,"")}

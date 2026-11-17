@@ -1,0 +1,37 @@
+{
+  "author": "Conductor Rebuild",
+  "phase": "baseline",
+  "verdict": "EXPECTED_BEHAVIORAL_RED",
+  "commit": "94ee4ccac85d59bb2fd94d9bb68db74a083879c5",
+  "baseline_main": "53eaf50ba4811a96fce1f8c2026e2abb442b5ba6",
+  "fixture_sha256": "e05ce56a4a6a726de870f7f1a8e9ec6aace8e13242db64f1f475be9f24bee547",
+  "tap_sha256": "c8a2ce8919a031281da98ad3cdbd823776642149f7f13e93c51716f38c83129e",
+  "cases": [
+    {
+      "id": "CLOSED_ELIGIBLE",
+      "passed": false,
+      "intended_assertion": true
+    },
+    {
+      "id": "OPEN_CONTROL",
+      "passed": true,
+      "intended_assertion": true
+    },
+    {
+      "id": "NO_USER_CONTROL",
+      "passed": true,
+      "intended_assertion": true
+    },
+    {
+      "id": "WORKSPACE_CONTROL",
+      "passed": false,
+      "intended_assertion": true
+    },
+    {
+      "id": "REOPEN_AND_ATTACH",
+      "passed": false,
+      "intended_assertion": true
+    }
+  ],
+  "scope": "Mounted React warm-snapshot cases only; no DB/native/provider/cold-start credit"
+}

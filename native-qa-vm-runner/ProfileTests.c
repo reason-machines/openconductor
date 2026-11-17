@@ -82,5 +82,11 @@ int main(void) {
     check(!OCVMPrepareConfiguration(&profile, NULL, NULL),
           "missing builder must be refused");
     puts("PASS: closed-profile construction, forbidden attachments, unknown keys, budgets, no retry");
+
+    /* OCVMAdmitNative must return false (fail-closed admission gate). */
+    check(!OCVMAdmitNative(),
+          "OCVMAdmitNative must return false until E1 satisfies native prerequisites");
+    puts("PASS: OCVMAdmitNative fail-closed");
+
     return 0;
 }

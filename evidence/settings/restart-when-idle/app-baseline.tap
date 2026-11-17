@@ -1,0 +1,90 @@
+(node:79) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual App consumes a downloaded update and restarts only after the persistence acknowledgment
+not ok 1 - actual App consumes a downloaded update and restarts only after the persistence acknowledgment
+  ---
+  duration_ms: 269.314893
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/updateApp.test.ts:8:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   'check',
+    -   'download',
+    -   'install',
+    -   'flush',
+    -   'restart'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'check'
+    1: 'download'
+    2: 'install'
+    3: 'flush'
+    4: 'restart'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/updateApp.test.ts:11:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: actual App reports an available update without installing when the preference is disabled
+not ok 2 - actual App reports an available update without installing when the preference is disabled
+  ---
+  duration_ms: 151.120605
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/updateApp.test.ts:16:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   'check',
+    -   'download'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'check'
+    1: 'download'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/updateApp.test.ts:19:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: an active session never reaches install or restart through App
+ok 3 - an active session never reaches install or restart through App
+  ---
+  duration_ms: 94.415935
+  type: 'test'
+  ...
+# Subtest: unknown initial session readiness never reaches install or restart through App
+ok 4 - unknown initial session readiness never reaches install or restart through App
+  ---
+  duration_ms: 65.471682
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 2
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 949.040497

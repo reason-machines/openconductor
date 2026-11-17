@@ -1,0 +1,116 @@
+(node:114) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:121) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: built-in /add-dir Enter opens the existing directory picker without sending
+ok 1 - built-in /add-dir Enter opens the existing directory picker without sending
+  ---
+  duration_ms: 2113.589209
+  type: 'test'
+  ...
+# Subtest: built-in /add-dir Tab opens the existing directory picker without sending
+ok 2 - built-in /add-dir Tab opens the existing directory picker without sending
+  ---
+  duration_ms: 405.202381
+  type: 'test'
+  ...
+# Subtest: built-in /add-dir menu choice opens the existing directory picker without sending
+ok 3 - built-in /add-dir menu choice opens the existing directory picker without sending
+  ---
+  duration_ms: 295.384752
+  type: 'test'
+  ...
+# Subtest: directory selection preserves suffix text and attachments
+ok 4 - directory selection preserves suffix text and attachments
+  ---
+  duration_ms: 362.989527
+  type: 'test'
+  ...
+# Subtest: directory selection retains adjacent file node identity and complete attributes
+ok 5 - directory selection retains adjacent file node identity and complete attributes
+  ---
+  duration_ms: 581.339131
+  type: 'test'
+  ...
+# Subtest: agent keeps ordinary bounded insertion rather than opening directories
+ok 6 - agent keeps ordinary bounded insertion rather than opening directories
+  ---
+  duration_ms: 398.790171
+  type: 'test'
+  ...
+# Subtest: skill keeps ordinary bounded insertion rather than opening directories
+ok 7 - skill keeps ordinary bounded insertion rather than opening directories
+  ---
+  duration_ms: 371.122287
+  type: 'test'
+  ...
+# Subtest: Plan and Fast selection remain bounded text insertion, not immediate actions
+ok 8 - Plan and Fast selection remain bounded text insertion, not immediate actions
+  ---
+  duration_ms: 903.004783
+  type: 'test'
+  ...
+# Subtest: stale, nonempty and composing live selections cannot edit or open directories
+ok 9 - stale, nonempty and composing live selections cannot edit or open directories
+  ---
+  duration_ms: 1112.177866
+  type: 'test'
+  ...
+# Subtest: built-in /mcp-status Enter opens status without sending
+ok 10 - built-in /mcp-status Enter opens status without sending
+  ---
+  duration_ms: 451.54905
+  type: 'test'
+  ...
+# Subtest: built-in /mcp-status Tab opens status without sending
+ok 11 - built-in /mcp-status Tab opens status without sending
+  ---
+  duration_ms: 184.659567
+  type: 'test'
+  ...
+# Subtest: built-in /mcp-status menu choice opens status without sending
+ok 12 - built-in /mcp-status menu choice opens status without sending
+  ---
+  duration_ms: 103.526579
+  type: 'test'
+  ...
+# Subtest: MCP status rejects stale, nonempty and composing selections
+ok 13 - MCP status rejects stale, nonempty and composing selections
+  ---
+  duration_ms: 284.097264
+  type: 'test'
+  ...
+# Subtest: MCP show_mcp_status without immediate capability preserves bounded insertion
+ok 14 - MCP show_mcp_status without immediate capability preserves bounded insertion
+  ---
+  duration_ms: 133.546568
+  type: 'test'
+  ...
+# Subtest: MCP agent without immediate capability preserves bounded insertion
+ok 15 - MCP agent without immediate capability preserves bounded insertion
+  ---
+  duration_ms: 166.556782
+  type: 'test'
+  ...
+# Subtest: MCP skill without immediate capability preserves bounded insertion
+ok 16 - MCP skill without immediate capability preserves bounded insertion
+  ---
+  duration_ms: 136.787777
+  type: 'test'
+  ...
+# Subtest: missing directory capability preserves ordinary text completion
+ok 17 - missing directory capability preserves ordinary text completion
+  ---
+  duration_ms: 131.01901
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12076.342524

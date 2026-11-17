@@ -30,6 +30,7 @@ import {
 } from "../home/dashboard";
 import { useDashboardEnabled } from "../home/useDashboardEnabled";
 import { effectiveShortcuts } from "../keybindings/overrides";
+import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { glyphs } from "../keybindings/shortcut";
 import { openUrl } from "../backend";
 import { ChevronDownIcon, ExternalIcon, SidebarIcon } from "./Icons";
@@ -84,7 +85,8 @@ export function Dashboard({ repos, repo, sidebarVisible, dispatch, onCreateWorks
   };
 
   const renamingWs = renaming && repos.find((r) => r.id === renaming.repoId)?.workspaces.find((w) => w.id === renaming.workspaceId);
-  const toggleHint = effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or ");
+  const { overrides } = useKeybindingOverrides();
+  const toggleHint = effectiveShortcuts("view.toggleLeftSidebar", overrides).map(glyphs).join(" or ");
   if (ready && !enabled) return null;
 
   return (

@@ -1,0 +1,349 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate": "CHAT.RECENT-CLOSED-CHAT-ELIGIBILITY",
+  "disposition": "SOURCE_QUALIFIED_LEAD_NOT_PRODUCT_BEHAVIOR_PROOF",
+  "main": "838ab2a1c76d11f8048a89c9d4c01ba822db2204",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "retained_assets": [
+    {
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    {
+      "name": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  ],
+  "spans": [
+    {
+      "label": "empty-state full caller",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8940379,
+        8941693
+      ],
+      "sha256": "7fde5b9442fb1ee86f7bea98d5ea52ec815263fed8e311dd34a527899bc3bf9b",
+      "file": "spans/01.txt"
+    },
+    {
+      "label": "first-state predicate",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8941693,
+        8941743
+      ],
+      "sha256": "ee105fb08c44ccf47365c4af90eefed5e8afdc20a5e1775e73aa6b50a8fd692e",
+      "file": "spans/02.txt"
+    },
+    {
+      "label": "recent transcripts full caller",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8768553,
+        8770589
+      ],
+      "sha256": "a6c6ab107d56f48e2af9fd63eccf0d2dd15c9a740c62727fefb06e65338944ef",
+      "file": "spans/03.txt"
+    },
+    {
+      "label": "all-workspace session hook",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3145108,
+        3145550
+      ],
+      "sha256": "4abe9a8fca42931ba493b558eafe4dab0e7fbdb9697d7f64b0e64b4b796d4f9e",
+      "file": "spans/04.txt"
+    },
+    {
+      "label": "visible and hidden query definitions",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1537690,
+        1538273
+      ],
+      "sha256": "069b1686240fc23af6463859041c5190838d5c1f538709b45121a0793c08373f",
+      "file": "spans/05.txt"
+    },
+    {
+      "label": "visible and hidden hook bindings",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3139202,
+        3139360
+      ],
+      "sha256": "f2963cda2efecc83eb9783534db3edfe63eacfd01db9c642ed00d0bf1d2e2ca7",
+      "file": "spans/06.txt"
+    },
+    {
+      "label": "workspace database loader",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1105768,
+        1105892
+      ],
+      "sha256": "0f91e3f00e5fd04ec2ae5afd84293f5b628b38b12fc675a9ce876a792f01e889",
+      "file": "spans/07.txt"
+    },
+    {
+      "label": "stored-session decoder",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1106458,
+        1107437
+      ],
+      "sha256": "6b5cc4915f6f95bba176355d49168cd15cbfa9ba727784b9992af4536d475b42",
+      "file": "spans/08.txt"
+    },
+    {
+      "label": "visible selector",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1128306,
+        1128421
+      ],
+      "sha256": "a966da315052c353696b270f55594ed5aa71a6a7aac22021353a572303a55e67",
+      "file": "spans/09.txt"
+    },
+    {
+      "label": "session close mutation",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3147388,
+        3147571
+      ],
+      "sha256": "2142aa6cccca70795b4643e35f786b5feab8ec13b572693ecb436ed6e8bc4a46",
+      "file": "spans/10.txt"
+    },
+    {
+      "label": "local/cloud close guard",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3147778,
+        3148251
+      ],
+      "sha256": "8c12bd0583088f615603ee9343d57bfac4ccca27faa155b96ad660315df5c87e",
+      "file": "spans/11.txt"
+    },
+    {
+      "label": "close hook",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3148584,
+        3149075
+      ],
+      "sha256": "f4d88b07d5df7ab5cd521019f00f94ecff63f84d0f787eaacdc55b680e249a87",
+      "file": "spans/12.txt"
+    },
+    {
+      "label": "hide backend operation",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1140977,
+        1141633
+      ],
+      "sha256": "65e0705e8a5eddcf99d584b7461f79f68fd11c56b22fb7fb04c546f990fafcfb",
+      "file": "spans/13.txt"
+    },
+    {
+      "label": "cached-workspace loader",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1510447,
+        1511344
+      ],
+      "sha256": "75bc3014d79c87a00549bae40cc7c4df1bf526541419068aed8deeaf34886f1f",
+      "file": "spans/14.txt"
+    },
+    {
+      "label": "query-state workspace selectors",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1535881,
+        1536154
+      ],
+      "sha256": "0b8b38db85e5141e7153ce7bca5273a6f975f7a88d65bfb4b456f53022300ec3",
+      "file": "spans/15.txt"
+    },
+    {
+      "label": "recent hook import",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        60966,
+        60976
+      ],
+      "sha256": "f3295e9716641ae00e8e17459a16f27a7f0627f081f0ec18b0b8c868114e075e",
+      "file": "spans/16.txt"
+    },
+    {
+      "label": "all-session hook export",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3487612,
+        3487622
+      ],
+      "sha256": "d42a359186f1d29e30cc737898d48391972feed5403c7094dba30a6169a5776b",
+      "file": "spans/17.txt"
+    },
+    {
+      "label": "hide mutation import",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        58605,
+        58615
+      ],
+      "sha256": "6831f832efaf580c439399ba91443435b192092361215cd160ceacf45af147ff",
+      "file": "spans/18.txt"
+    },
+    {
+      "label": "hide mutation export",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3485520,
+        3485530
+      ],
+      "sha256": "0d641f80f5a994f3b8a332dda2dc030b87f7e8dc3656ba94ab8e720aa855848c",
+      "file": "spans/19.txt"
+    },
+    {
+      "label": "legacy close callback",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7443623,
+        7444104
+      ],
+      "sha256": "f99cb7f729e76dbc057d5e7bd35b20c8147b9bffba67395575035e943149e922",
+      "file": "spans/20.txt"
+    },
+    {
+      "label": "service hide dispatch",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1512238,
+        1512323
+      ],
+      "sha256": "27bfa26d83192398bec8c23f8cdf1480a7ca33446d7d18265a70c00bc77ef055",
+      "file": "spans/21.txt"
+    },
+    {
+      "label": "query-state selectors",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1536154,
+        1536688
+      ],
+      "sha256": "e5855006e59704cd4006536d1778375f5fc6a75be134af2caf69f31cfebff4a5",
+      "file": "spans/22.txt"
+    },
+    {
+      "label": "legacy close-hook binding",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7437780,
+        7437844
+      ],
+      "sha256": "d56b7dbfa703bfef11876dac3a3d05b2a9914b18a2b4e3223d90f93c6c77cf43",
+      "file": "spans/23.txt"
+    },
+    {
+      "label": "grouped close-hook binding",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9727793,
+        9727849
+      ],
+      "sha256": "45d1d626569fa88ef46422c421abcf8670ac59cfbc51d7188730dd7f208a4a87",
+      "file": "spans/24.txt"
+    },
+    {
+      "label": "grouped close callback",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9730989,
+        9731531
+      ],
+      "sha256": "e573fac5e49a400f88acabe2e8e7251cf8d8a8c405d27a0d5f32510ba29b6477",
+      "file": "spans/25.txt"
+    }
+  ],
+  "current": [
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "bytes": 85017,
+      "sha256": "23fbfe1161afc4b5ae13cff20fcfdcd07beadba76df4c436131254e15237f7e0",
+      "file": "main/src/components/WorkspaceView.tsx"
+    },
+    {
+      "path": "src/features/diff/ReviewButton.tsx",
+      "bytes": 11920,
+      "sha256": "fa910a5751fd53ddd2d32a74177af4c378ae4bcb91fc43e3bf7569e236642a8c",
+      "file": "main/src/features/diff/ReviewButton.tsx"
+    },
+    {
+      "path": "src/state/openChat.ts",
+      "bytes": 5268,
+      "sha256": "40a9ea9f4719fa4c8602e4bc2611c47051c54a317131f458a324cddfc072a152",
+      "file": "main/src/state/openChat.ts"
+    },
+    {
+      "path": "src/features/chat/chatEmptyState.ts",
+      "bytes": 2747,
+      "sha256": "4010ad862ee542c7a474e9588f09398326720a73e5175e2cb9a23779deb1ee23",
+      "file": "main/src/features/chat/chatEmptyState.ts"
+    },
+    {
+      "path": "src/features/chat/chatRuntime.ts",
+      "bytes": 30931,
+      "sha256": "3be9dec9988fa9d07ea06145995ef648ab66f23307557ffd7cc4abf7b8293ba0",
+      "file": "main/src/features/chat/chatRuntime.ts"
+    },
+    {
+      "path": "src-tauri/src/sidebar_workspace_commands.rs",
+      "bytes": 25517,
+      "sha256": "91e1d8bb5f411d07bc4d94a998637d75617cae29ba25975896117e50c0083b24",
+      "file": "main/src-tauri/src/sidebar_workspace_commands.rs"
+    },
+    {
+      "path": "crates/openconductor-db/src/sessions.rs",
+      "bytes": 34350,
+      "sha256": "d5c259cb6488138768bc39595db01484cace267399bde5b5b7a15291c6e0c140",
+      "file": "main/crates/openconductor-db/src/sessions.rs"
+    },
+    {
+      "path": "src/features/chat/workspaceLocalClear.test.ts",
+      "bytes": 22804,
+      "sha256": "b026606ec58fc9ee41d96bfb519c558f0435239705ae5643423d94cf4f8e1e94",
+      "file": "main/src/features/chat/workspaceLocalClear.test.ts"
+    }
+  ],
+  "ownership": {
+    "source_owner": "be7a40e4-7a95-4b4b-a75d-41eaf9426f8b",
+    "queued_delivery_owner": "e09b0500-c793-4cce-bfd8-f466192cad81",
+    "order": "After #1081 and the already-reserved overflow repair; reconcile clean-main file ownership before edits.",
+    "excluded": [
+      "#847",
+      "source-ID attachment producer",
+      "MoreChats popup",
+      "MoreChats eight-case fixture",
+      "global Popover or CSS",
+      "native/runtime/infrastructure executor"
+    ]
+  },
+  "finding": "The original empty-chat picker includes hidden workspace sessions with a last user message. The current caller supplies primary plus open review/chat tabs only. Closing the sole eligible source removes its suggestion and causes a first-workspace intro for a fully loaded empty target.",
+  "not_run": [
+    "original/product JavaScript",
+    "mounted or DOM tests",
+    "native/browser",
+    "provider/credential operations",
+    "CI dispatch or rerun",
+    "build/package"
+  ],
+  "limits": [
+    "Retained source only; no new REA acquisition or native acceptance.",
+    "No product repair or executable regression fixture is included.",
+    "The full original assets are not copied into this packet; full hashes and exact original spans are included. --original can rebind them.",
+    "This selected source packet is not a workspace checkpoint or backup."
+  ]
+}

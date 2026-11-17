@@ -1,0 +1,75 @@
+{
+  "unit": "ICON-OPEN-IN-NUMBERS-15",
+  "head_sha": "64c034c8dc3eb6d30005fa306c8899b19ed7fb33",
+  "run_id": 43084203604,
+  "job_id": 130744224553,
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43084203604/job/130744224553",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "regression_sha256": "44eb051c160108ab818bf1c5045838df306a623c87cbb9350abed02feac4ffa3",
+  "cases": [
+    {
+      "number": 1761,
+      "name": "icon Open in has no numbered app or copy badges at /Users/demo/code/tide-web",
+      "outcome": "FAIL"
+    },
+    {
+      "number": 1762,
+      "name": "icon Open in registers no numbered selection handlers at /Users/demo/code/tide-web",
+      "outcome": "FAIL"
+    },
+    {
+      "number": 1763,
+      "name": "icon pointer launch and copy preserve the exact Settings path /Users/demo/code/tide-web",
+      "outcome": "PASS"
+    },
+    {
+      "number": 1764,
+      "name": "icon Open in has no numbered app or copy badges at /Users/demo/.openconductor/workspaces/tide-web",
+      "outcome": "FAIL"
+    },
+    {
+      "number": 1765,
+      "name": "icon Open in registers no numbered selection handlers at /Users/demo/.openconductor/workspaces/tide-web",
+      "outcome": "FAIL"
+    },
+    {
+      "number": 1766,
+      "name": "icon pointer launch and copy preserve the exact Settings path /Users/demo/.openconductor/workspaces/tide-web",
+      "outcome": "PASS"
+    },
+    {
+      "number": 1767,
+      "name": "split Open in keeps numbered app and Copy path badges",
+      "outcome": "PASS"
+    },
+    {
+      "number": 1768,
+      "name": "split digits still record and launch an app, then copy its workspace path",
+      "outcome": "PASS"
+    },
+    {
+      "number": 1769,
+      "name": "icon Open in preserves the default-app shortcut hint",
+      "outcome": "PASS"
+    },
+    {
+      "number": 1770,
+      "name": "split Open in preserves the default-app shortcut hint",
+      "outcome": "PASS"
+    },
+    {
+      "number": 1771,
+      "name": "split Open in retains its nine-row numbering limit",
+      "outcome": "PASS"
+    }
+  ],
+  "intended_assertion_failures": 4,
+  "passing_controls": 7,
+  "typecheck": {
+    "job_id": 130744224519,
+    "step": "Run npm run typecheck",
+    "conclusion": "success"
+  },
+  "assertion_boundary": "Actual OpenInButton render and outgoing keybinding registrations; actual apps.ts IPC payload route with recording boundaries.",
+  "limits": "No DOM/browser/native execution, physical key delivery, real clipboard or external-app activation."
+}

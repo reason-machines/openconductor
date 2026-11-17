@@ -1,0 +1,34 @@
+{
+  "schema": "openconductor.home-directory-search.hosted-red-v1",
+  "head": "222830deb42f450eb9be283f27983ea8d3a025a6",
+  "run_id": 43245241038,
+  "job_id": 131276024170,
+  "url": "https://github.com/reason-machines/openconductor/actions/runs/43245241038/job/131276024170",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "fixture_sha256": "eeabf181e31d90c4be5fd1f78bea489439e96841731807de0422ff5ab138ed69",
+  "focused": {
+    "tests": 8,
+    "fail": 4,
+    "pass": 4
+  },
+  "suite": {
+    "tests": 3791,
+    "pass": 3787,
+    "fail": 4,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "preceding_steps": {
+    "typecheck": "passed",
+    "color_lint": "passed"
+  },
+  "build": "not run after expected regression failures",
+  "failures": [
+    "a renamed archived workspace is found by its preserved directory without changing its displayed title",
+    "a renamed active workspace is found by its preserved directory",
+    "directory matching remains case insensitive and trims the query",
+    "directory and repository words can match together"
+  ],
+  "requalified_main": "9c276e2e86c0bd7ed97c8ccd0467f30c7a8ebcab",
+  "local_runtime": "not run; existing ACC serialization retained"
+}

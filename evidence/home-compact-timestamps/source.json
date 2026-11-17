@@ -1,0 +1,299 @@
+{
+  "producer": "Conductor Rebuild",
+  "unit": "HOME-COMPACT-TIMESTAMPS-271",
+  "qualification": "COMPLETE_STATIC_JOIN_WITH_SAME_INPUT_PREDICTIONS_NOT_BEHAVIORAL_RED",
+  "main": "167492e56dbbb90850efbadf1db2848dae7622f2",
+  "reference_asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "reference_chain": "vJo -> BPt -> SS -> Ece/Nai -> Aai/cNr/Rai/_Nr/bNr; Nai -> K4e/dQe/gNr/NVe/mNr; mNr -> uNr/pNr/fNr/hNr; date construction -> Tai/MH",
+  "source_spans": 19,
+  "current_file_pins": {
+    "src/home/allWorkspaces.ts": "c67533d549c785377ec9306cb435077f24dc1f1a17a43617989cff3a69f2454d",
+    "src/components/AllWorkspaces.tsx": "a25f2b34cf1dc8d89080791615dc4ea879f08c4b950a7e75120168fa323e7e96"
+  },
+  "witnesses": [
+    {
+      "name": "spring local-clock boundary",
+      "timezone": "America/New_York",
+      "at": "2026-03-08T01:00:00-05:00",
+      "now": "2026-03-08T04:00:00-04:00",
+      "at_ms": 1772949600000,
+      "now_ms": 1772956800000,
+      "elapsed_minutes": 120,
+      "reference_normalized_minutes": 180,
+      "reference_source_prediction": "3h",
+      "current_source_prediction": "2h",
+      "source_reason": "Timezone offset subtraction adds 60 local-clock minutes: 120 -> 180.",
+      "behavioral_execution": "NOT_RUN"
+    },
+    {
+      "name": "fall local-clock boundary",
+      "timezone": "America/New_York",
+      "at": "2026-11-01T00:30:00-04:00",
+      "now": "2026-11-01T02:30:00-05:00",
+      "at_ms": 1793507400000,
+      "now_ms": 1793518200000,
+      "elapsed_minutes": 180,
+      "reference_normalized_minutes": 120,
+      "reference_source_prediction": "2h",
+      "current_source_prediction": "3h",
+      "source_reason": "Timezone offset subtraction removes 60 local-clock minutes: 180 -> 120.",
+      "behavioral_execution": "NOT_RUN"
+    },
+    {
+      "name": "leap-day full year at February end",
+      "timezone": "UTC",
+      "at": "2024-02-29T12:00:00Z",
+      "now": "2025-02-28T12:00:00Z",
+      "at_ms": 1709208000000,
+      "now_ms": 1740744000000,
+      "elapsed_minutes": 525600,
+      "reference_normalized_minutes": 525600,
+      "reference_source_prediction": "1y",
+      "current_source_prediction": "12mo",
+      "source_reason": "mNr normalizes February 28 to March 2 before subtracting 12 months; full months=12. Current day-only comparison subtracts one: months=11.",
+      "behavioral_execution": "NOT_RUN"
+    },
+    {
+      "name": "year boundary before full month clock time",
+      "timezone": "UTC",
+      "at": "2025-01-01T13:00:00Z",
+      "now": "2026-01-01T12:00:00Z",
+      "at_ms": 1735736400000,
+      "now_ms": 1767268800000,
+      "elapsed_minutes": 525540,
+      "reference_normalized_minutes": 525540,
+      "reference_source_prediction": "12mo",
+      "current_source_prediction": "1y",
+      "source_reason": "mNr compares the full date after subtracting 12 months: 12:00 is before 13:00, so full months=11. Current compares dates only and retains 12.",
+      "behavioral_execution": "NOT_RUN"
+    },
+    {
+      "name": "ordinary same-offset hours control",
+      "timezone": "America/New_York",
+      "at": "2026-03-07T01:00:00-05:00",
+      "now": "2026-03-07T04:00:00-05:00",
+      "at_ms": 1772863200000,
+      "now_ms": 1772874000000,
+      "elapsed_minutes": 180,
+      "reference_normalized_minutes": 180,
+      "reference_source_prediction": "3h",
+      "current_source_prediction": "3h",
+      "source_reason": "Same offset, so elapsed minutes equal normalized minutes.",
+      "behavioral_execution": "NOT_RUN"
+    },
+    {
+      "name": "complete ordinary year control",
+      "timezone": "UTC",
+      "at": "2025-01-01T12:00:00Z",
+      "now": "2026-01-01T12:00:00Z",
+      "at_ms": 1735732800000,
+      "now_ms": 1767268800000,
+      "elapsed_minutes": 525600,
+      "reference_normalized_minutes": 525600,
+      "reference_source_prediction": "1y",
+      "current_source_prediction": "1y",
+      "source_reason": "Complete 12 months under both source branches.",
+      "behavioral_execution": "NOT_RUN"
+    }
+  ],
+  "fixture": {
+    "path": "src/components/homeCompactTime.test.ts (prepared only)",
+    "sha256": "13bda10e86ef6ca2170bd79b6e7634c5cd94f553feb3b2fce2617120d8ea761e",
+    "cases": 6,
+    "expected_failures": 4,
+    "expected_controls_passing": 2,
+    "execution": "NOT_RUN",
+    "scope": "Mount real AllWorkspaces, reposFromDb, homeRows, shortRelativeTime. Inject only clock, preferences/archive transport/state hooks/decorative leaves. Assert the actual allws-when row text; preserve real time and label path."
+  },
+  "reserved_product_scope_requested": [
+    "src/home/allWorkspaces.ts shortRelativeTime/monthsBetween only"
+  ],
+  "excluded": [
+    "dateBucket",
+    "BUCKET_LABELS",
+    "BUCKET_ORDER",
+    "repository icons",
+    "other screens",
+    "all existing frozen regressions"
+  ],
+  "gates": [
+    "ledger exact file lease",
+    "serialized runtime admission",
+    "actual intended hosted RED before any product correction",
+    "byte-identical fixture GREEN",
+    "all exact-head checks and workflows completed success before protected merge"
+  ],
+  "native": "NOT_RUN",
+  "visual": "NOT_RUN",
+  "product_edits": false,
+  "test_publication": false,
+  "spans": [
+    {
+      "name": "vJo",
+      "start_utf8": 9849951,
+      "end_utf8": 9850506,
+      "sha256": "c48d5ba04701700e44731251da3529dca058a88a7941205d54aa0e0a4b415141",
+      "source": "function vJo(t){const e=ne.c(6),{localWorkspaceId:n,isArchived:i,status:r,lastActiveAt:o,workspaceStatusMatrixEnabled:a}=t;let c;return e[0]!==i||e[1]!==o||e[2]!==n||e[3]!==r||e[4]!==a?(c=p.jsx(\"div\",{className:\"flex w-12 shrink-0 items-center justify-end\",children:i?p.jsx(yJo,{localWorkspaceId:n}):!a&&aWt(r)?p.jsx(\"span\",{className:\"flex size-4 items-center justify-center [&_svg]:size-3.5\",children:p.jsx(RCe,{status:r})}):p.jsx(\"span\",{className:\"text-xs text-muted-foreground\",children:BPt(o)})}),e[0]=i,e[1]=o,e[2]=n,e[3]=r,e[4]=a,e[5]=c):c=e[5],c}"
+    },
+    {
+      "name": "BPt",
+      "start_utf8": 432698,
+      "end_utf8": 433050,
+      "sha256": "49b15c3b45b11fdc6db96e649bc2753ead400267df46e9744e18ab03f2227175",
+      "source": "function BPt(t,e){return SS(t,e).replace(/ ago$/,\"\").replace(/^just now$/,\"now\")}const Zg=t=>{const[e,n,i]=t.split(\" \").map((c,u)=>parseInt(u===0?c:c.replace(\"%\",\"\"))),r=i/100,o=n*Math.min(r,1-r)/100,a=c=>{const u=(c+e/30)%12,d=r-o*Math.max(Math.min(u-3,9-u,1),-1);return Math.round(255*d).toString(16).padStart(2,\"0\")};return`#${a(0)}${a(8)}${a(4)}`};"
+    },
+    {
+      "name": "SS",
+      "start_utf8": 430811,
+      "end_utf8": 431488,
+      "sha256": "021961e1c6ee6e4de1451c9f1f697e1295e43756d37fe970e28bc43e337f9d45",
+      "source": "function SS(t,e=Date.now()){if(!t)return\"\";const n=Ece(t);if(!Number.isFinite(n.getTime()))return\"Invalid time\";const i=Ece(e).getTime();return Nai(Math.min(n.getTime(),i),i,{addSuffix:!0}).replace(/ seconds? ago/g,\"s ago\").replace(/ minutes? ago/g,\"m ago\").replace(/ hours? ago/g,\"h ago\").replace(/ days? ago/g,\"d ago\").replace(/ weeks? ago/g,\"w ago\").replace(/ months? ago/g,\"mo ago\").replace(/ years? ago/g,\"y ago\").replace(/about /g,\"\").replace(/less than am ago/g,\"just now\").replace(/a minute ago/g,\"1m ago\").replace(/an hour ago/g,\"1h ago\").replace(/a day ago/g,\"1d ago\").replace(/a week ago/g,\"1w ago\").replace(/a month ago/g,\"1mo ago\").replace(/a year ago/g,\"1y ago\")}"
+    },
+    {
+      "name": "Nai",
+      "start_utf8": 428543,
+      "end_utf8": 429839,
+      "sha256": "d0f8b76b4b46c8ba52a423f2bd0d4167f40dfb61986ca49208c2a9af2033b94a",
+      "source": "function Nai(t,e,n){const i=Aai(),r=n?.locale??i.locale??Rai,o=2520,a=K4e(t,e);if(isNaN(a))throw new RangeError(\"Invalid time value\");const c=Object.assign({},n,{addSuffix:n?.addSuffix,comparison:a}),[u,d]=dQe(n?.in,...a>0?[e,t]:[t,e]),h=gNr(d,u),m=(NVe(d)-NVe(u))/1e3,g=Math.round((h-m)/60);let _;if(g<2)return n?.includeSeconds?h<5?r.formatDistance(\"lessThanXSeconds\",5,c):h<10?r.formatDistance(\"lessThanXSeconds\",10,c):h<20?r.formatDistance(\"lessThanXSeconds\",20,c):h<40?r.formatDistance(\"halfAMinute\",0,c):h<60?r.formatDistance(\"lessThanXMinutes\",1,c):r.formatDistance(\"xMinutes\",1,c):g===0?r.formatDistance(\"lessThanXMinutes\",1,c):r.formatDistance(\"xMinutes\",g,c);if(g<45)return r.formatDistance(\"xMinutes\",g,c);if(g<90)return r.formatDistance(\"aboutXHours\",1,c);if(g<RVe){const v=Math.round(g/60);return r.formatDistance(\"aboutXHours\",v,c)}else{if(g<o)return r.formatDistance(\"xDays\",1,c);if(g<Uae){const v=Math.round(g/RVe);return r.formatDistance(\"xDays\",v,c)}else if(g<Uae*2)return _=Math.round(g/Uae),r.formatDistance(\"aboutXMonths\",_,c)}if(_=mNr(d,u),_<12){const v=Math.round(g/Uae);return r.formatDistance(\"xMonths\",v,c)}else{const v=_%12,x=Math.trunc(_/12);return v<3?r.formatDistance(\"aboutXYears\",x,c):v<9?r.formatDistance(\"overXYears\",x,c):r.formatDistance(\"almostXYears\",x+1,c)}}"
+    },
+    {
+      "name": "Ece",
+      "start_utf8": 430756,
+      "end_utf8": 430811,
+      "sha256": "57c53308b5217d199e71d99ddb89eed0814e2ada7b5b9047da763ec88fe75665",
+      "source": "function Ece(t){return t instanceof Date?t:new Date(t)}"
+    },
+    {
+      "name": "Aai",
+      "start_utf8": 420188,
+      "end_utf8": 420214,
+      "sha256": "ecbd4bbb4b77482b717930301c29aceb019787e4a93e94a3495366156d5d74ab",
+      "source": "function Aai(){return cNr}"
+    },
+    {
+      "name": "K4e",
+      "start_utf8": 420510,
+      "end_utf8": 420572,
+      "sha256": "142cccd216ac1e75714f4bca2f8d29cad03a93d5f4baa69214a5f38d56774959",
+      "source": "function K4e(t,e){const n=+MH(t)-+MH(e);return n<0?-1:n>0?1:n}"
+    },
+    {
+      "name": "dQe",
+      "start_utf8": 420417,
+      "end_utf8": 420510,
+      "sha256": "aa66742cd334c9ef312904d5b82643fff92652e1247ccc62775527939497260e",
+      "source": "function dQe(t,...e){const n=Tai.bind(null,t||e.find(i=>typeof i==\"object\"));return e.map(n)}"
+    },
+    {
+      "name": "gNr",
+      "start_utf8": 421315,
+      "end_utf8": 422489,
+      "sha256": "c52a086d3708a193aa8677788c7afd1916b7f09431c642ba825e629242c786db",
+      "source": "function gNr(t,e,n){const i=dNr(t,e)/1e3;return Iai(n?.roundingMethod)(i)}const bNr={lessThanXSeconds:{one:\"less than a second\",other:\"less than {{count}} seconds\"},xSeconds:{one:\"1 second\",other:\"{{count}} seconds\"},halfAMinute:\"half a minute\",lessThanXMinutes:{one:\"less than a minute\",other:\"less than {{count}} minutes\"},xMinutes:{one:\"1 minute\",other:\"{{count}} minutes\"},aboutXHours:{one:\"about 1 hour\",other:\"about {{count}} hours\"},xHours:{one:\"1 hour\",other:\"{{count}} hours\"},xDays:{one:\"1 day\",other:\"{{count}} days\"},aboutXWeeks:{one:\"about 1 week\",other:\"about {{count}} weeks\"},xWeeks:{one:\"1 week\",other:\"{{count}} weeks\"},aboutXMonths:{one:\"about 1 month\",other:\"about {{count}} months\"},xMonths:{one:\"1 month\",other:\"{{count}} months\"},aboutXYears:{one:\"about 1 year\",other:\"about {{count}} years\"},xYears:{one:\"1 year\",other:\"{{count}} years\"},overXYears:{one:\"over 1 year\",other:\"over {{count}} years\"},almostXYears:{one:\"almost 1 year\",other:\"almost {{count}} years\"}},_Nr=(t,e,n)=>{let i;const r=bNr[t];return typeof r==\"string\"?i=r:e===1?i=r.one:i=r.other.replace(\"{{count}}\",e.toString()),n?.addSuffix?n.comparison&&n.comparison>0?\"in \"+i:i+\" ago\":i};"
+    },
+    {
+      "name": "NVe",
+      "start_utf8": 420214,
+      "end_utf8": 420417,
+      "sha256": "0b2353a64e5f4d32e680cf6bfba47e9d0322de5dd1036a5f0ee24432bd9ae42c",
+      "source": "function NVe(t){const e=MH(t),n=new Date(Date.UTC(e.getFullYear(),e.getMonth(),e.getDate(),e.getHours(),e.getMinutes(),e.getSeconds(),e.getMilliseconds()));return n.setUTCFullYear(e.getFullYear()),+t-+n}"
+    },
+    {
+      "name": "mNr",
+      "start_utf8": 421050,
+      "end_utf8": 421315,
+      "sha256": "73f25f8c270753760376b52726d39b0347a1202098a94d5787aa873697a44a79",
+      "source": "function mNr(t,e,n){const[i,r,o]=dQe(n?.in,t,t,e),a=K4e(r,o),c=Math.abs(uNr(r,o));if(c<1)return 0;r.getMonth()===1&&r.getDate()>27&&r.setDate(30),r.setMonth(r.getMonth()-a*c);let u=K4e(r,o)===-a;pNr(i)&&c===1&&K4e(i,o)===1&&(u=!1);const d=a*(c-+u);return d===0?0:d}"
+    },
+    {
+      "name": "Rai",
+      "assignments": [
+        {
+          "offset_utf8": 428399,
+          "context": "hWidth:\"wide\",parsePatterns:WNr,defaultParseWidth:\"any\"}),dayPeriod:sve({matchPatterns:GNr,defaultMatchWidth:\"any\",parsePatterns:qNr,defaultParseWidth:\"any\"})},Rai={code:\"en-US\",formatDistance:_Nr,formatLong:wNr,formatRelative:ENr,localize:ONr,match:KNr,options:{weekStartsOn:0,firstWeekContainsDate:1}};function Nai(t,e,n){const i=Aai(),r=n?.locale??i.locale??Rai,o=2520,a=K4e(t,e);if(isNaN(a))throw new RangeError(\"Invalid time value\");const c=Object.assign({},n,{addSuffix:n?.addSuffix,comparison:a}),[u,d]=dQe(n?.in,...a>0?[e,t]:[t,e]),h=gNr(d,u),m=(NVe(d)-NVe(u))/1e3,g=Math.round((h-m)/60);let _;if(g<2)return n?.includeSeconds?h<5?r.formatDistance(\"lessThanXSeconds\",5,c):h<10?r.formatDistance(\"lessThanXSeconds\",10,c):h<20?r.formatDistance(\"lessThanXSeconds\",20,c):h<40?r.formatDistance(\"halfAMinute\",0,c):"
+        }
+      ]
+    },
+    {
+      "name": "RVe",
+      "assignments": [
+        {
+          "offset_utf8": 419955,
+          "context": "after\",\"backdrop\",\"before\",\"details-content\",\"file\",\"first-letter\",\"first-line\",\"marker\",\"placeholder\",\"selection\"]}},jPt=zRr(lNr),SIn=6e4,EIn=525600,Uae=43200,RVe=1440,CIn=Symbol.for(\"constructDateFrom\");function Tai(t,e){return typeof t==\"function\"?t(e):t&&typeof t==\"object\"&&CIn in t?t[CIn](e):t instanceof Date?new t.constructor(e):new Date(e)}function MH(t,e){return Tai(t,t)}let cNr={};function Aai(){return cNr}function NVe(t){const e=MH(t),n=new Date(Date.UTC(e.getFullYear(),e.getMonth(),e.getDate(),e.getHours(),e.getMinutes(),e.getSeconds(),e.getMilliseconds()));return n.setUTCFullYear(e.getFullYear()),+t-+n}function dQe(t,...e){const n=Tai.bind(null,t||e.find(i=>typeof i==\"object\"));return e.map(n)}function K4e(t,e){const n=+MH(t)-+MH(e);return n<0?-1:n>0?1:n}function uNr(t,e,n){const[i,r]=dQe(n?"
+        }
+      ]
+    },
+    {
+      "name": "Uae",
+      "assignments": [
+        {
+          "offset_utf8": 419945,
+          "context": "\"*\",\"**\",\"after\",\"backdrop\",\"before\",\"details-content\",\"file\",\"first-letter\",\"first-line\",\"marker\",\"placeholder\",\"selection\"]}},jPt=zRr(lNr),SIn=6e4,EIn=525600,Uae=43200,RVe=1440,CIn=Symbol.for(\"constructDateFrom\");function Tai(t,e){return typeof t==\"function\"?t(e):t&&typeof t==\"object\"&&CIn in t?t[CIn](e):t instanceof Date?new t.constructor(e):new Date(e)}function MH(t,e){return Tai(t,t)}let cNr={};function Aai(){return cNr}function NVe(t){const e=MH(t),n=new Date(Date.UTC(e.getFullYear(),e.getMonth(),e.getDate(),e.getHours(),e.getMinutes(),e.getSeconds(),e.getMilliseconds()));return n.setUTCFullYear(e.getFullYear()),+t-+n}function dQe(t,...e){const n=Tai.bind(null,t||e.find(i=>typeof i==\"object\"));return e.map(n)}function K4e(t,e){const n=+MH(t)-+MH(e);return n<0?-1:n>0?1:n}function uNr(t,e,n){const[i"
+        }
+      ]
+    },
+    {
+      "name": "MH",
+      "start_utf8": 420144,
+      "end_utf8": 420188,
+      "sha256": "5fd6ddb55f76b4a457dcf798e9bf974f3217eb24b52448582fae34351e1a7be8",
+      "source": "function MH(t,e){return Tai(t,t)}let cNr={};"
+    },
+    {
+      "name": "Tai",
+      "start_utf8": 420000,
+      "end_utf8": 420144,
+      "sha256": "73a4579ae6806f69dcb7af391c849c17b6097900ea6095ee66ace00e9aedbe83",
+      "source": "function Tai(t,e){return typeof t==\"function\"?t(e):t&&typeof t==\"object\"&&CIn in t?t[CIn](e):t instanceof Date?new t.constructor(e):new Date(e)}"
+    },
+    {
+      "name": "uNr",
+      "start_utf8": 420572,
+      "end_utf8": 420694,
+      "sha256": "6d6dd58c0176065043d6fcfa6bb2fca264ca8a55ad7b6aa6f98e43ecdc41740c",
+      "source": "function uNr(t,e,n){const[i,r]=dQe(n?.in,t,e),o=i.getFullYear()-r.getFullYear(),a=i.getMonth()-r.getMonth();return o*12+a}"
+    },
+    {
+      "name": "pNr",
+      "start_utf8": 420995,
+      "end_utf8": 421050,
+      "sha256": "37a755deb1038e46e8362d5e31bfbc0c5b3470b5554821c2987342ff77cf9879",
+      "source": "function pNr(t,e){const n=MH(t);return+fNr(n)==+hNr(n)}"
+    },
+    {
+      "name": "dNr",
+      "start_utf8": 420773,
+      "end_utf8": 420811,
+      "sha256": "ae4f2151fb0ac510439393099448d17b7a7928dd5cb801ef6cf6d2ace9e98278",
+      "source": "function dNr(t,e){return+MH(t)-+MH(e)}"
+    },
+    {
+      "name": "Iai",
+      "start_utf8": 420694,
+      "end_utf8": 420773,
+      "sha256": "2451a0c429eeca24a539adfc5b168e141295a7114df2cba00b92b2fa9cf55577",
+      "source": "function Iai(t){return e=>{const i=(t?Math[t]:Math.trunc)(e);return i===0?0:i}}"
+    },
+    {
+      "name": "cNr_references",
+      "matches": [
+        "new t.constructor(e):new Date(e)}function MH(t,e){return Tai(t,t)}let cNr={};function Aai(){return cNr}function NVe(t){const e=MH(t),n=new Date(Date.UTC(e.getFullYear(),e.ge",
+        "(e)}function MH(t,e){return Tai(t,t)}let cNr={};function Aai(){return cNr}function NVe(t){const e=MH(t),n=new Date(Date.UTC(e.getFullYear(),e.getMonth(),e.getDate(),e.getHou"
+      ]
+    },
+    {
+      "name": "fNr",
+      "start_utf8": 420811,
+      "end_utf8": 420877,
+      "sha256": "680ea093c2c9f4127370829fbfa99f34e1c1eeb0d22489bbc43011ffbd96f9db",
+      "source": "function fNr(t,e){const n=MH(t);return n.setHours(23,59,59,999),n}"
+    },
+    {
+      "name": "hNr",
+      "start_utf8": 420877,
+      "end_utf8": 420995,
+      "sha256": "f069863958bd8ca7f99e4cc8826526de5b67f5d2bb045b843b84ce5c02c06508",
+      "source": "function hNr(t,e){const n=MH(t),i=n.getMonth();return n.setFullYear(n.getFullYear(),i+1,0),n.setHours(23,59,59,999),n}"
+    }
+  ]
+}

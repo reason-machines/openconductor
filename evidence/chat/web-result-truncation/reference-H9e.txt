@@ -1,0 +1,1 @@
+function H9e(t,e){return t.length<=e?{text:t,wasTruncated:!1}:{text:t.substring(0,e),wasTruncated:!0}}

@@ -1,0 +1,1 @@
+function p9(t){return kue.find(e=>e.id===t)}

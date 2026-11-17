@@ -1,0 +1,1 @@
+class gbt{queue=Promise.resolve();enqueue({flushPendingData:e,task:s}){e?.();const n=this.queue.then(()=>Promise.resolve(s()));return this.queue=n.then(()=>{}).catch(()=>{}),n}}

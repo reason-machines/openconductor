@@ -1,0 +1,34 @@
+{
+  "token": "ACC_1F_STOP1217_TSC_20261113T0254",
+  "actual_start": "2026-11-13T02:56:30.846576+00:00",
+  "bound_seconds": 240,
+  "argv": [
+    "nice",
+    "-n",
+    "19",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "120s",
+    "node",
+    "--max-old-space-size=2048",
+    "node_modules/typescript/bin/tsc",
+    "--noEmit"
+  ],
+  "source_hashes": {
+    "src/components/ScriptsPanel.tsx": "092f31ca358a04510d9fd77e56dd0a6b65eed9e883d11d9208639ef13f9444f5",
+    "src/scripts/runActionErrorContext.test.ts": "604e459b1186bad03190014a970473a564341fa9f18414d9d33253fd4cea30cb",
+    "src/scripts/runCompletion.test.ts": "0beacef84397ad22e65d674fc56ebdc446a34a600faac165a357ca8ea2601fee",
+    "src/scripts/runTaskMenu.test.ts": "46b95bf14fa8486bfa8537ef07c9b8fcc5322b39b8f246756efc26a3f5fba01e",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a"
+  },
+  "source_qualification_seconds": 0.002,
+  "owned_group": 78,
+  "exit_code": 0,
+  "command_seconds": 33.936,
+  "result": "passed",
+  "ownjobs": [],
+  "released": true,
+  "released_at": "2026-11-13T02:57:04.784850+00:00",
+  "inclusive_seconds": 33.938
+}

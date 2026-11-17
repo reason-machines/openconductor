@@ -1,0 +1,10 @@
+    if (this.options.documentOverride && this.options.documentOverride instanceof Document) {
+      this._document = this.optionsService.rawOptions.documentOverride as Document;
+    }
+
+    // Create main element container
+    this.element = this._document.createElement('div');
+    this.element.dir = 'ltr';   // xterm.css assumes LTR
+    this.element.classList.add('terminal');
+    this.element.classList.add('xterm');
+    parent.appendChild(this.element);

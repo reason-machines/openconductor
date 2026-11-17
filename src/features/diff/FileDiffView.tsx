@@ -21,7 +21,19 @@ import { WhitespaceOnly } from "./Whitespace";
 import { useKeybindingOverrides } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { matchesEvent } from "../../keybindings/shortcut.ts";
-import { createEditor, type FileEdit } from "./EditInViewer.ts";
+import { createEditor, editableContents, type FileEdit } from "./EditInViewer.ts";
+import { CommentMarkdown } from "./commentMarkdown.ts";
+// parity:diff.edit-in-viewer:preview — inline to avoid an extra test-boundary import.
+// Conductor's bji isPreviewing gate renders markdown/HTML in file (whole-file) layout.
+const PREVIEW_EXT = new Set(["md", "markdown", "html", "htm"]);
+function isPreviewablePath(path: string): boolean {
+  return PREVIEW_EXT.has(path.split(".").pop()?.toLowerCase() ?? "");
+}
+/** True for .html/.htm — rendered via srcdoc iframe, not CommentMarkdown. */
+function isHtmlPath(path: string): boolean {
+  const ext = path.split(".").pop()?.toLowerCase() ?? "";
+  return ext === "html" || ext === "htm";
+}
 import { CommentNav, useCommentNavigation } from "./CommentNav";
 import { RevertIcon } from "./DiscardDialog";
 import { FilePathChip } from "./FilePathChip";
@@ -70,6 +82,19 @@ interface Props {
   onShowWhitespace?: () => void;
   /** Enable editing from complete current contents; absent for read-only files and history. */
   edit?: FileEdit;
+  /**
+   * Render markdown/HTML in preview mode instead of source diff.
+   * Controlled by the parent (OpenFile) via workspace.toggleFileEdit (⌘E).
+   * Only meaningful in "file" layout for previewable paths.
+   */
+  isPreviewing?: boolean;
+  /** Toggle between preview and source (called by the header button and ⌘E keybinding in the parent). */
+  onTogglePreview?: () => void;
+  /**
+   * Toggle between read-only view and edit mode for non-previewable files (⌘E).
+   * When present, an Edit/View button appears in the header.
+   */
+  onToggleEdit?: () => void;
   /** The whole new file, for the header's "Copy file contents" button. */
   loadText?: () => Promise<string>;
   /** Shows a toast (a failed copy). */
@@ -156,6 +181,10 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
     return "accept" as const;
   }, [observeAnchors]);
   const { overrides } = useKeybindingOverrides();
+  // editor.openSearch (⌘F, registry.ts) passes through without a useKeybindings handler:
+  // the dispatcher only prevents default when a handler returns a truthy value; with no live
+  // handler registered for this command, dispatch() returns {kind:'pass'} and Pierre's own
+  // "cmdOrCtrl+f": "openSearchPanel" keymap entry opens the search panel natively.
   const onKeyDown = (e: React.KeyboardEvent) => {
     // Only the save shortcut: other keys belong to the editor, CommentNav and the comment box.
     if (!editing || !effectiveShortcuts("editor.saveFile", overrides).some((s) => matchesEvent(s, e.nativeEvent))) return;
@@ -254,10 +283,29 @@ function useCodeViewItem(file: FileDiff, meta: ReturnType<typeof processFile>, l
 export function FileDiffView(props: Props) {
   const { file, ignoreWhitespace, viewed, onToggleViewed, refreshStatus, onDiscard, tools, options, worktree, onShowWhitespace, edit, loadText, notify } = props;
   const copy = copySource(file, { draft: edit?.current, loadText });
+
+  // Conductor's bji isPreviewing gate: show rendered preview for markdown/HTML in file layout.
+  // isPreviewing is controlled by the parent (OpenFile) via workspace.toggleFileEdit (⌘E).
+  const isPreviewable = props.layout === "file" && !file.binary && !file.hide_reason &&
+    file.hunks.length > 0 && isPreviewablePath(file.path);
+  const isPreviewing = props.isPreviewing ?? false;
+  // Whole-file text for the preview: editableContents reads it synchronously from the diff data
+  // in file layout (all hunks are present, no extra fetch needed).
+  const previewText = isPreviewing
+    ? editableContents(file, props.layout, ignoreWhitespace) ?? null
+    : null;
+
   let body: ReactNode;
-  if (file.binary) body = <div className="oc-file-note">Binary file not shown.</div>;
+  if (file.hide_reason === "file_too_large") body = <div className="oc-file-note">File too large to display</div>;
+  else if (file.binary) body = <div className="oc-file-note">Binary file changed</div>;
   else if (file.hunks.length === 0)
-    body = ignoreWhitespace ? <WhitespaceOnly onShow={onShowWhitespace} /> : <div className="oc-file-note">No content changes in this file.</div>;
+    body = ignoreWhitespace ? <WhitespaceOnly onShow={onShowWhitespace} /> : <div className="oc-file-note">No changes in this file</div>;
+  else if (isPreviewing && previewText !== null)
+    // parity:diff.edit-in-viewer:preview — HTML files rendered via sandboxed iframe;
+    // markdown via CommentMarkdown. Avoids escaped tags for .html/.htm (GAP-DIFF-01).
+    body = isHtmlPath(file.path)
+      ? <div className="oc-html-preview oc-code-scroll"><iframe srcDoc={previewText} sandbox="allow-same-origin" title={`Preview of ${file.path}`} className="oc-html-preview-frame" /></div>
+      : <div className="oc-md-preview oc-code-scroll"><CommentMarkdown text={previewText} /></div>;
   else
     body = (
       <div className="oc-code-scroll">
@@ -271,7 +319,7 @@ export function FileDiffView(props: Props) {
           then revert, copy, the layout group, Viewed and the View options menu (its Pierre order). */}
       <header className="oc-file-header">
         <div className="oc-file-lead">
-          <FilePathChip path={file.path} oldPath={file.old_path} worktree={worktree} notify={notify} />
+          <FilePathChip path={file.path} oldPath={file.old_path} worktree={worktree} deleted={file.status === "deleted"} notify={notify} />
           {edit?.dirty && (
             <Tooltip content="Unsaved changes">
               <span className="oc-unsaved" role="img" aria-label="Unsaved changes" />
@@ -287,6 +335,31 @@ export function FileDiffView(props: Props) {
             </Tooltip>
           )}
           {copy && <CopyFileButton path={file.path} read={copy} notify={notify} />}
+          {!isPreviewable && props.onToggleEdit && (
+            // parity:diff.edit-in-viewer — ⌘E read-only↔edit toggle for code files (GAP-DIFF-01).
+            <Tooltip content={edit !== undefined ? "View read-only (\u2318E)" : "Edit (\u2318E)"}>
+              <button type="button" className="icon-btn" aria-label={edit !== undefined ? "View read-only" : "Edit"}
+                aria-pressed={edit !== undefined} onClick={props.onToggleEdit}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  {edit !== undefined
+                    ? <><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></>
+                    : <><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z" /></>}
+                  </svg>
+              </button>
+            </Tooltip>
+          )}
+          {isPreviewable && props.onTogglePreview && (
+            <Tooltip content={isPreviewing ? "Show source (\u2318E)" : "Show preview (\u2318E)"}> 
+              <button type="button" className="icon-btn" aria-label={isPreviewing ? "Show source" : "Show preview"}
+                aria-pressed={isPreviewing} onClick={props.onTogglePreview}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  {isPreviewing
+                    ? <><path d="M17 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z" /><path d="M9 7h6M9 11h6M9 15h4" /></>
+                    : <><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></>}
+                </svg>
+              </button>
+            </Tooltip>
+          )}
           {tools}
           {refreshStatus?.type === "updating" ? (
             <span className="oc-file-refresh-status" role="status"><span className="clone-spinner" aria-hidden />Updating…</span>

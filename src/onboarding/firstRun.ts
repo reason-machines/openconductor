@@ -55,17 +55,14 @@ export interface Slide {
   id: "repo" | "agents" | "conduct";
   title: string;
   description: string;
+  src: string;
 }
 
-/**
- * The three slides (`y6e` @10148397), copy verbatim except "Conductor" ->
- * "OpenConductor". The reference plays /ConductorOnboarding{1,2,3}.mp4 for
- * each; those are Conductor's own videos and are not shipped here.
- */
+/** `y6e` slide copy, with original OpenConductor illustrations instead of proprietary videos. */
 export const SLIDES: readonly Slide[] = [
-  { id: "repo", title: "Get coding agents working in parallel", description: "Each agent you spin up gets an isolated workspace." },
-  { id: "agents", title: "See at a glance what each agent is working on", description: "See who's working, what needs attention, and what's planned." },
-  { id: "conduct", title: "Review changes and create PRs", description: "Review, comment, and merge from OpenConductor." },
+  { id: "repo", title: "Get coding agents working in parallel", description: "Each agent you spin up gets an isolated workspace.", src: "/onboarding/workspaces.mp4" },
+  { id: "agents", title: "See at a glance what each agent is working on", description: "See who's working, what needs attention, and what's planned.", src: "/onboarding/agents.mp4" },
+  { id: "conduct", title: "Review changes and create PRs", description: "Review, comment, and merge from OpenConductor.", src: "/onboarding/review.mp4" },
 ];
 
 /** `onboarding.nextSlide` and the end of a slide: the next one, wrapping to the first. */

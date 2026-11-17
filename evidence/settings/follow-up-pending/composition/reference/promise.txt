@@ -1,0 +1,1 @@
+function CO(){let t,e;const s=new Promise((r,i)=>{t=r,e=i});s.status="pending",s.catch(()=>{});function n(r){Object.assign(s,r),delete s.resolve,delete s.reject}return s.resolve=r=>{n({status:"fulfilled",value:r}),t(r)},s.reject=r=>{n({status:"rejected",reason:r}),e(r)},s}

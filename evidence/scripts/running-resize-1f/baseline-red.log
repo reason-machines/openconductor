@@ -1,0 +1,176 @@
+2026-11-11T23:33:25.9434230Z # Subtest: measured running-script geometry reaches the real panel and API with the current generation
+2026-11-11T23:33:25.9473737Z not ok 2516 - measured running-script geometry reaches the real panel and API with the current generation
+2026-11-11T23:33:25.9479098Z   ---
+2026-11-11T23:33:25.9503147Z   duration_ms: 688.97583
+2026-11-11T23:33:25.9531968Z   type: 'test'
+2026-11-11T23:33:25.9543381Z   location: '/home/runner/work/openconductor/openconductor/src/scripts/runningResize.test.ts:197:1'
+2026-11-11T23:33:25.9563119Z   failureType: 'testCodeFailure'
+2026-11-11T23:33:25.9593041Z   error: |-
+2026-11-11T23:33:25.9623242Z     the current source must reach the resize IPC, not only fit local output
+2026-11-11T23:33:25.9632847Z     + actual - expected
+2026-11-11T23:33:25.9653005Z
+2026-11-11T23:33:25.9683040Z     + []
+2026-11-11T23:33:25.9713062Z     - [
+2026-11-11T23:33:25.9713633Z     -   {
+2026-11-11T23:33:25.9714335Z     -     cols: 96,
+2026-11-11T23:33:25.9714942Z     -     rows: 32,
+2026-11-11T23:33:25.9715493Z     -     runId: 'run-1',
+2026-11-11T23:33:25.9716081Z     -     scriptId: 'dev',
+2026-11-11T23:33:25.9716720Z     -     workspaceId: 'input-a'
+2026-11-11T23:33:25.9717394Z     -   }
+2026-11-11T23:33:25.9763081Z     - ]
+2026-11-11T23:33:25.9763705Z
+2026-11-11T23:33:25.9764261Z   code: 'ERR_ASSERTION'
+2026-11-11T23:33:25.9764865Z   name: 'AssertionError'
+2026-11-11T23:33:25.9765466Z   expected:
+2026-11-11T23:33:25.9765974Z     0:
+2026-11-11T23:33:25.9766545Z       workspaceId: 'input-a'
+2026-11-11T23:33:25.9767174Z       scriptId: 'dev'
+2026-11-11T23:33:25.9767763Z       runId: 'run-1'
+2026-11-11T23:33:25.9768285Z       cols: 96
+2026-11-11T23:33:25.9768814Z       rows: 32
+2026-11-11T23:33:25.9769302Z   actual:
+2026-11-11T23:33:25.9792859Z   operator: 'deepStrictEqual'
+2026-11-11T23:33:25.9793411Z   stack: |-
+2026-11-11T23:33:25.9806861Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/scripts/runningResize.test.ts:204:10)
+2026-11-11T23:33:25.9808478Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:33:25.9809605Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-11T23:33:25.9810581Z   ...
+2026-11-11T23:33:26.6884807Z # Subtest: identical 96x32 geometry never resizes a nonrunning run
+2026-11-11T23:33:26.6886419Z ok 2517 - identical 96x32 geometry never resizes a nonrunning run
+2026-11-11T23:33:26.6887330Z   ---
+2026-11-11T23:33:26.6887931Z   duration_ms: 657.749139
+2026-11-11T23:33:26.6888567Z   type: 'test'
+2026-11-11T23:33:26.6889172Z   ...
+2026-11-11T23:33:26.9726564Z # Subtest: running without a generation does not send unqualified geometry
+2026-11-11T23:33:26.9822868Z ok 2518 - running without a generation does not send unqualified geometry
+2026-11-11T23:33:26.9843392Z   ---
+2026-11-11T23:33:26.9844242Z   duration_ms: 291.606043
+2026-11-11T23:33:26.9844953Z   type: 'test'
+2026-11-11T23:33:26.9845503Z   ...
+2026-11-11T23:33:27.2221168Z # Subtest: same mounted screen disables resize on stop and sends measured geometry to a replacement generation
+2026-11-11T23:33:27.2283793Z not ok 2519 - same mounted screen disables resize on stop and sends measured geometry to a replacement generation
+2026-11-11T23:33:27.2299787Z   ---
+2026-11-11T23:33:27.2323167Z   duration_ms: 299.186379
+2026-11-11T23:33:27.2350820Z   type: 'test'
+2026-11-11T23:33:27.2352069Z   location: '/home/runner/work/openconductor/openconductor/src/scripts/runningResize.test.ts:227:1'
+2026-11-11T23:33:27.2353527Z   failureType: 'testCodeFailure'
+2026-11-11T23:33:27.2354837Z   error: |-
+2026-11-11T23:33:27.2355556Z     Expected values to be strictly deep-equal:
+2026-11-11T23:33:27.2356321Z     + actual - expected
+2026-11-11T23:33:27.2356923Z
+2026-11-11T23:33:27.2357452Z     + []
+2026-11-11T23:33:27.2357968Z     - [
+2026-11-11T23:33:27.2358495Z     -   {
+2026-11-11T23:33:27.2359014Z     -     cols: 96,
+2026-11-11T23:33:27.2359592Z     -     rows: 32,
+2026-11-11T23:33:27.2360177Z     -     runId: 'run-1',
+2026-11-11T23:33:27.2360792Z     -     scriptId: 'dev',
+2026-11-11T23:33:27.2361472Z     -     workspaceId: 'input-a'
+2026-11-11T23:33:27.2362140Z     -   }
+2026-11-11T23:33:27.2362896Z     - ]
+2026-11-11T23:33:27.2363414Z
+2026-11-11T23:33:27.2364038Z   code: 'ERR_ASSERTION'
+2026-11-11T23:33:27.2364665Z   name: 'AssertionError'
+2026-11-11T23:33:27.2365274Z   expected:
+2026-11-11T23:33:27.2365803Z     0:
+2026-11-11T23:33:27.2366354Z       workspaceId: 'input-a'
+2026-11-11T23:33:27.2367005Z       scriptId: 'dev'
+2026-11-11T23:33:27.2367616Z       runId: 'run-1'
+2026-11-11T23:33:27.2368184Z       cols: 96
+2026-11-11T23:33:27.2368734Z       rows: 32
+2026-11-11T23:33:27.2369296Z   actual:
+2026-11-11T23:33:27.2369853Z   operator: 'deepStrictEqual'
+2026-11-11T23:33:27.2370500Z   stack: |-
+2026-11-11T23:33:27.2371763Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/scripts/runningResize.test.ts:233:10)
+2026-11-11T23:33:27.2380831Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:33:27.2382002Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T23:33:27.2383146Z   ...
+2026-11-11T23:33:27.3913909Z # Subtest: workspace replacement never retargets a disposed terminal
+2026-11-11T23:33:27.3943557Z not ok 2520 - workspace replacement never retargets a disposed terminal
+2026-11-11T23:33:27.3944962Z   ---
+2026-11-11T23:33:27.4003069Z   duration_ms: 240.997245
+2026-11-11T23:33:27.4033150Z   type: 'test'
+2026-11-11T23:33:27.4041338Z   location: '/home/runner/work/openconductor/openconductor/src/scripts/runningResize.test.ts:247:1'
+2026-11-11T23:33:27.4042852Z   failureType: 'testCodeFailure'
+2026-11-11T23:33:27.4043584Z   error: |-
+2026-11-11T23:33:27.4044281Z     Expected values to be strictly deep-equal:
+2026-11-11T23:33:27.4045058Z     + actual - expected
+2026-11-11T23:33:27.4045667Z
+2026-11-11T23:33:27.4046200Z     + []
+2026-11-11T23:33:27.4047287Z     - [
+2026-11-11T23:33:27.4047883Z     -   {
+2026-11-11T23:33:27.4048431Z     -     cols: 96,
+2026-11-11T23:33:27.4049026Z     -     rows: 32,
+2026-11-11T23:33:27.4049611Z     -     runId: 'run-1',
+2026-11-11T23:33:27.4050268Z     -     scriptId: 'test',
+2026-11-11T23:33:27.4050967Z     -     workspaceId: 'input-b'
+2026-11-11T23:33:27.4051632Z     -   }
+2026-11-11T23:33:27.4052171Z     - ]
+2026-11-11T23:33:27.4052901Z
+2026-11-11T23:33:27.4053453Z   code: 'ERR_ASSERTION'
+2026-11-11T23:33:27.4054082Z   name: 'AssertionError'
+2026-11-11T23:33:27.4054698Z   expected:
+2026-11-11T23:33:27.4055227Z     0:
+2026-11-11T23:33:27.4055803Z       workspaceId: 'input-b'
+2026-11-11T23:33:27.4056459Z       scriptId: 'test'
+2026-11-11T23:33:27.4057052Z       runId: 'run-1'
+2026-11-11T23:33:27.4057605Z       cols: 96
+2026-11-11T23:33:27.4058144Z       rows: 32
+2026-11-11T23:33:27.4058676Z   actual:
+2026-11-11T23:33:27.4059235Z   operator: 'deepStrictEqual'
+2026-11-11T23:33:27.4059860Z   stack: |-
+2026-11-11T23:33:27.4061115Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/scripts/runningResize.test.ts:256:10)
+2026-11-11T23:33:27.4062743Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:33:27.4063900Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T23:33:27.4064776Z   ...
+2026-11-11T23:33:27.5995913Z # Subtest: a hidden zero-size host does not emit backend geometry and reveal uses its measured size
+2026-11-11T23:33:27.6023797Z not ok 2521 - a hidden zero-size host does not emit backend geometry and reveal uses its measured size
+2026-11-11T23:33:27.6052858Z   ---
+2026-11-11T23:33:27.6079400Z   duration_ms: 166.678126
+2026-11-11T23:33:27.6083060Z   type: 'test'
+2026-11-11T23:33:27.6113576Z   location: '/home/runner/work/openconductor/openconductor/src/scripts/runningResize.test.ts:263:1'
+2026-11-11T23:33:27.6172718Z   failureType: 'testCodeFailure'
+2026-11-11T23:33:27.6173406Z   error: |-
+2026-11-11T23:33:27.6174026Z     Expected values to be strictly deep-equal:
+2026-11-11T23:33:27.6174801Z     + actual - expected
+2026-11-11T23:33:27.6175384Z
+2026-11-11T23:33:27.6175915Z     + []
+2026-11-11T23:33:27.6176448Z     - [
+2026-11-11T23:33:27.6176898Z     -   {
+2026-11-11T23:33:27.6177341Z     -     cols: 96,
+2026-11-11T23:33:27.6177839Z     -     rows: 32,
+2026-11-11T23:33:27.6178364Z     -     runId: 'run-1',
+2026-11-11T23:33:27.6178961Z     -     scriptId: 'dev',
+2026-11-11T23:33:27.6179583Z     -     workspaceId: 'input-a'
+2026-11-11T23:33:27.6222972Z     -   }
+2026-11-11T23:33:27.6223868Z     - ]
+2026-11-11T23:33:27.6252886Z
+2026-11-11T23:33:27.6282857Z   code: 'ERR_ASSERTION'
+2026-11-11T23:33:27.6305041Z   name: 'AssertionError'
+2026-11-11T23:33:27.6332961Z   expected:
+2026-11-11T23:33:27.6362920Z     0:
+2026-11-11T23:33:27.6372863Z       workspaceId: 'input-a'
+2026-11-11T23:33:27.6403024Z       scriptId: 'dev'
+2026-11-11T23:33:27.6413276Z       runId: 'run-1'
+2026-11-11T23:33:27.6413991Z       cols: 96
+2026-11-11T23:33:27.6414514Z       rows: 32
+2026-11-11T23:33:27.6414992Z   actual:
+2026-11-11T23:33:27.6415570Z   operator: 'deepStrictEqual'
+2026-11-11T23:33:27.6416233Z   stack: |-
+2026-11-11T23:33:27.6417444Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/scripts/runningResize.test.ts:271:10)
+2026-11-11T23:33:27.6419763Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:33:27.6543613Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T23:33:27.6623339Z   ...
+2026-11-11T23:33:27.7348046Z # Subtest: setup output fits locally without resizing a run-script PTY
+2026-11-11T23:33:27.7396155Z ok 2522 - setup output fits locally without resizing a run-script PTY
+2026-11-11T23:33:27.7453068Z   ---
+2026-11-11T23:33:27.7495438Z   duration_ms: 199.603612
+2026-11-11T23:33:27.7522934Z   type: 'test'
+2026-11-11T23:33:27.7583041Z   ...
+2026-11-11T23:33:27.7623912Z # Subtest: unmount disposes geometry subscriptions without altering output bytes
+2026-11-11T23:33:27.7653238Z ok 2523 - unmount disposes geometry subscriptions without altering output bytes
+2026-11-11T23:33:27.7679858Z   ---
+2026-11-11T23:33:27.7688481Z   duration_ms: 144.537587
+2026-11-11T23:33:27.7689089Z   type: 'test'
+2026-11-11T23:33:27.7690275Z   ...

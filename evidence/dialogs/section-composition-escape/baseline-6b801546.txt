@@ -1,0 +1,281 @@
+# GitHub Actions job 130737614706, baseline 6b8015461e3096e89355c13d213b25923a21487a
+# Excerpt from declared pr_checks log; trailing whitespace trimmed. Not a raw-byte log attestation.
+2026-11-11T18:55:31.5441875Z   duration_ms: 0.11375
+2026-11-11T18:55:31.5442211Z   type: 'test'
+2026-11-11T18:55:31.5442527Z   ...
+2026-11-11T18:55:31.5442939Z # Subtest: the containment policy is loaded by the app
+2026-11-11T18:55:31.5443457Z ok 198 - the containment policy is loaded by the app
+2026-11-11T18:55:31.5443874Z   ---
+2026-11-11T18:55:31.5444183Z   duration_ms: 0.148652
+2026-11-11T18:55:31.5444511Z   type: 'test'
+2026-11-11T18:55:31.5444822Z   ...
+2026-11-11T18:55:32.5880630Z # Subtest: section create keeps the name and dialog open during composition Escape
+2026-11-11T18:55:32.5940328Z not ok 199 - section create keeps the name and dialog open during composition Escape
+2026-11-11T18:55:32.5970167Z   ---
+2026-11-11T18:55:32.5987803Z   duration_ms: 173.56929
+2026-11-11T18:55:32.6009859Z   type: 'test'
+2026-11-11T18:55:32.6035612Z   location: '/home/runner/work/openconductor/openconductor/src/components/sectionCompositionEscape.test.ts:123:3'
+2026-11-11T18:55:32.6049965Z   failureType: 'testCodeFailure'
+2026-11-11T18:55:32.6050447Z   error: |-
+2026-11-11T18:55:32.6051419Z     Composition Escape must not close or submit the section
+2026-11-11T18:55:32.6052005Z     + actual - expected
+2026-11-11T18:55:32.6052374Z
+2026-11-11T18:55:32.6052690Z     + [
+2026-11-11T18:55:32.6053028Z     +   'close'
+2026-11-11T18:55:32.6053383Z     + ]
+2026-11-11T18:55:32.6053718Z     - []
+2026-11-11T18:55:32.6054048Z
+2026-11-11T18:55:32.6054394Z   code: 'ERR_ASSERTION'
+2026-11-11T18:55:32.6054770Z   name: 'AssertionError'
+2026-11-11T18:55:32.6055147Z   expected:
+2026-11-11T18:55:32.6055486Z   actual:
+2026-11-11T18:55:32.6055850Z     0: 'close'
+2026-11-11T18:55:32.6056234Z   operator: 'deepStrictEqual'
+2026-11-11T18:55:32.6056633Z   stack: |-
+2026-11-11T18:55:32.6057430Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sectionCompositionEscape.test.ts:129:14)
+2026-11-11T18:55:32.6058253Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T18:55:32.6058780Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T18:55:32.6059443Z     Test.start (node:internal/test_runner/test:944:17)
+2026-11-11T18:55:32.6060057Z     startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+2026-11-11T18:55:32.6060591Z   ...
+2026-11-11T18:55:32.6061183Z # Subtest: section create keeps Escape guarded until the 0ms composition-end timer
+2026-11-11T18:55:32.6061982Z not ok 200 - section create keeps Escape guarded until the 0ms composition-end timer
+2026-11-11T18:55:32.6062549Z   ---
+2026-11-11T18:55:32.6062903Z   duration_ms: 147.453763
+2026-11-11T18:55:32.6063304Z   type: 'test'
+2026-11-11T18:55:32.6064215Z   location: '/home/runner/work/openconductor/openconductor/src/components/sectionCompositionEscape.test.ts:140:5'
+2026-11-11T18:55:32.6065012Z   failureType: 'testCodeFailure'
+2026-11-11T18:55:32.6065459Z   error: |-
+2026-11-11T18:55:32.6065974Z     Immediate post-composition Escape must not close the section
+2026-11-11T18:55:32.6066530Z     + actual - expected
+2026-11-11T18:55:32.6066933Z
+2026-11-11T18:55:32.6067298Z     + [
+2026-11-11T18:55:32.6067678Z     +   'close'
+2026-11-11T18:55:32.6068070Z     + ]
+2026-11-11T18:55:32.6068444Z     - []
+2026-11-11T18:55:32.6068808Z
+2026-11-11T18:55:32.6069335Z   code: 'ERR_ASSERTION'
+2026-11-11T18:55:32.6069756Z   name: 'AssertionError'
+2026-11-11T18:55:32.6070173Z   expected:
+2026-11-11T18:55:32.6070548Z   actual:
+2026-11-11T18:55:32.6070909Z     0: 'close'
+2026-11-11T18:55:32.6071305Z   operator: 'deepStrictEqual'
+2026-11-11T18:55:32.6071733Z   stack: |-
+2026-11-11T18:55:32.6072499Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sectionCompositionEscape.test.ts:147:16)
+2026-11-11T18:55:32.6073370Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T18:55:32.6073921Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T18:55:32.6074566Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T18:55:32.6075397Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T18:55:32.6089896Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T18:55:32.6090560Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-11T18:55:32.6091139Z   ...
+2026-11-11T18:55:32.6091705Z # Subtest: section create keeps Escape guarded until the 5ms composition-end timer
+2026-11-11T18:55:32.6092512Z not ok 201 - section create keeps Escape guarded until the 5ms composition-end timer
+2026-11-11T18:55:32.6093060Z   ---
+2026-11-11T18:55:32.6093418Z   duration_ms: 121.467895
+2026-11-11T18:55:32.6093816Z   type: 'test'
+2026-11-11T18:55:32.6094518Z   location: '/home/runner/work/openconductor/openconductor/src/components/sectionCompositionEscape.test.ts:140:5'
+2026-11-11T18:55:32.6095235Z   failureType: 'testCodeFailure'
+2026-11-11T18:55:32.6095662Z   error: |-
+2026-11-11T18:55:32.6096138Z     Immediate post-composition Escape must not close the section
+2026-11-11T18:55:32.6096650Z     + actual - expected
+2026-11-11T18:55:32.6097030Z
+2026-11-11T18:55:32.6097373Z     + [
+2026-11-11T18:55:32.6097990Z     +   'close'
+2026-11-11T18:55:32.6098432Z     + ]
+2026-11-11T18:55:32.6098837Z     - []
+2026-11-11T18:55:32.6099258Z
+2026-11-11T18:55:32.6099617Z   code: 'ERR_ASSERTION'
+2026-11-11T18:55:32.6100005Z   name: 'AssertionError'
+2026-11-11T18:55:32.6100430Z   expected:
+2026-11-11T18:55:32.6100811Z   actual:
+2026-11-11T18:55:32.6101176Z     0: 'close'
+2026-11-11T18:55:32.6101572Z   operator: 'deepStrictEqual'
+2026-11-11T18:55:32.6102020Z   stack: |-
+2026-11-11T18:55:32.6102825Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sectionCompositionEscape.test.ts:147:16)
+2026-11-11T18:55:32.6103721Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T18:55:32.6104271Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T18:55:32.6104908Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T18:55:32.6105581Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T18:55:32.6106165Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T18:55:32.6106825Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T18:55:32.6107399Z   ...
+2026-11-11T18:55:32.6107974Z # Subtest: section create restarts composition without a stale dismissal timer
+2026-11-11T18:55:32.6108735Z not ok 202 - section create restarts composition without a stale dismissal timer
+2026-11-11T18:55:32.6109406Z   ---
+2026-11-11T18:55:32.6109717Z   duration_ms: 113.035417
+2026-11-11T18:55:32.6110045Z   type: 'test'
+2026-11-11T18:55:32.6110905Z   location: '/home/runner/work/openconductor/openconductor/src/components/sectionCompositionEscape.test.ts:158:3'
+2026-11-11T18:55:32.6111582Z   failureType: 'testCodeFailure'
+2026-11-11T18:55:32.6111928Z   error: |-
+2026-11-11T18:55:32.6112361Z     A prior composition-end timer must not end the new composition
+2026-11-11T18:55:32.6112872Z     + actual - expected
+2026-11-11T18:55:32.6119425Z
+2026-11-11T18:55:32.6119774Z     + [
+2026-11-11T18:55:32.6120121Z     +   'close'
+2026-11-11T18:55:32.6120426Z     + ]
+2026-11-11T18:55:32.6120678Z     - []
+2026-11-11T18:55:32.6120944Z
+2026-11-11T18:55:32.6121218Z   code: 'ERR_ASSERTION'
+2026-11-11T18:55:32.6129800Z   name: 'AssertionError'
+2026-11-11T18:55:32.6130381Z   expected:
+2026-11-11T18:55:32.6130739Z   actual:
+2026-11-11T18:55:32.6131082Z     0: 'close'
+2026-11-11T18:55:32.6131459Z   operator: 'deepStrictEqual'
+2026-11-11T18:55:32.6131869Z   stack: |-
+2026-11-11T18:55:32.6132687Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sectionCompositionEscape.test.ts:166:14)
+2026-11-11T18:55:32.6133568Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T18:55:32.6134210Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T18:55:32.6134843Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T18:55:32.6135511Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T18:55:32.6136067Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T18:55:32.6136697Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T18:55:32.6137262Z   ...
+2026-11-11T18:55:32.6137855Z # Subtest: section create preserves composing Enter, ordinary Enter and idle Escape
+2026-11-11T18:55:32.6138680Z ok 203 - section create preserves composing Enter, ordinary Enter and idle Escape
+2026-11-11T18:55:32.6139382Z   ---
+2026-11-11T18:55:32.6139872Z   duration_ms: 112.517022
+2026-11-11T18:55:32.6140179Z   type: 'test'
+2026-11-11T18:55:32.6140402Z   ...
+2026-11-11T18:55:32.6140848Z # Subtest: section create preserves explicit Cancel and clears its timer on unmount
+2026-11-11T18:55:32.6141463Z ok 204 - section create preserves explicit Cancel and clears its timer on unmount
+2026-11-11T18:55:32.6141870Z   ---
+2026-11-11T18:55:32.6142065Z   duration_ms: 94.310771
+2026-11-11T18:55:32.6142313Z   type: 'test'
+2026-11-11T18:55:32.6142491Z   ...
+2026-11-11T18:55:32.6143166Z # Subtest: section edit keeps the name and dialog open during composition Escape
+2026-11-11T18:55:32.6143774Z not ok 205 - section edit keeps the name and dialog open during composition Escape
+2026-11-11T18:55:32.6144159Z   ---
+2026-11-11T18:55:32.6144338Z   duration_ms: 72.868114
+2026-11-11T18:55:32.6144578Z   type: 'test'
+2026-11-11T18:55:32.6145100Z   location: '/home/runner/work/openconductor/openconductor/src/components/sectionCompositionEscape.test.ts:123:3'
+2026-11-11T18:55:32.6145679Z   failureType: 'testCodeFailure'
+2026-11-11T18:55:32.6145942Z   error: |-
+2026-11-11T18:55:32.6146253Z     Composition Escape must not close or submit the section
+2026-11-11T18:55:32.6146586Z     + actual - expected
+2026-11-11T18:55:32.6146803Z
+2026-11-11T18:55:32.6146995Z     + [
+2026-11-11T18:55:32.6147179Z     +   'close'
+2026-11-11T18:55:32.6147388Z     + ]
+2026-11-11T18:55:32.6147561Z     - []
+2026-11-11T18:55:32.6147764Z
+2026-11-11T18:55:32.6147935Z   code: 'ERR_ASSERTION'
+2026-11-11T18:55:32.6148187Z   name: 'AssertionError'
+2026-11-11T18:55:32.6148417Z   expected:
+2026-11-11T18:55:32.6148605Z   actual:
+2026-11-11T18:55:32.6148810Z     0: 'close'
+2026-11-11T18:55:32.6150021Z   operator: 'deepStrictEqual'
+2026-11-11T18:55:32.6150341Z   stack: |-
+2026-11-11T18:55:32.6150956Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sectionCompositionEscape.test.ts:129:14)
+2026-11-11T18:55:32.6151648Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T18:55:32.6152029Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T18:55:32.6152684Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T18:55:32.6153143Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T18:55:32.6153491Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T18:55:32.6153966Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T18:55:32.6154355Z   ...
+2026-11-11T18:55:32.6154761Z # Subtest: section edit keeps Escape guarded until the 0ms composition-end timer
+2026-11-11T18:55:32.6155371Z not ok 206 - section edit keeps Escape guarded until the 0ms composition-end timer
+2026-11-11T18:55:32.6155759Z   ---
+2026-11-11T18:55:32.6155940Z   duration_ms: 44.616683
+2026-11-11T18:55:32.6156180Z   type: 'test'
+2026-11-11T18:55:32.6156727Z   location: '/home/runner/work/openconductor/openconductor/src/components/sectionCompositionEscape.test.ts:140:5'
+2026-11-11T18:55:32.6157276Z   failureType: 'testCodeFailure'
+2026-11-11T18:55:32.6157533Z   error: |-
+2026-11-11T18:55:32.6157883Z     Immediate post-composition Escape must not close the section
+2026-11-11T18:55:32.6158210Z     + actual - expected
+2026-11-11T18:55:32.6158410Z
+2026-11-11T18:55:32.6158599Z     + [
+2026-11-11T18:55:32.6158807Z     +   'close'
+2026-11-11T18:55:32.6159099Z     + ]
+2026-11-11T18:55:32.6159269Z     - []
+2026-11-11T18:55:32.6159437Z
+2026-11-11T18:55:32.6159666Z   code: 'ERR_ASSERTION'
+2026-11-11T18:55:32.6159886Z   name: 'AssertionError'
+2026-11-11T18:55:32.6160102Z   expected:
+2026-11-11T18:55:32.6160280Z   actual:
+2026-11-11T18:55:32.6160505Z     0: 'close'
+2026-11-11T18:55:32.6160737Z   operator: 'deepStrictEqual'
+2026-11-11T18:55:32.6160966Z   stack: |-
+2026-11-11T18:55:32.6161567Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sectionCompositionEscape.test.ts:147:16)
+2026-11-11T18:55:32.6162255Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T18:55:32.6162608Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T18:55:32.6163075Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T18:55:32.6163504Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T18:55:32.6163916Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T18:55:32.6164392Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T18:55:32.6164753Z   ...
+2026-11-11T18:55:32.6165332Z # Subtest: section edit keeps Escape guarded until the 5ms composition-end timer
+2026-11-11T18:55:32.6165931Z not ok 207 - section edit keeps Escape guarded until the 5ms composition-end timer
+2026-11-11T18:55:32.6166289Z   ---
+2026-11-11T18:55:32.6166515Z   duration_ms: 48.893996
+2026-11-11T18:55:32.6166740Z   type: 'test'
+2026-11-11T18:55:32.6167269Z   location: '/home/runner/work/openconductor/openconductor/src/components/sectionCompositionEscape.test.ts:140:5'
+2026-11-11T18:55:32.6167818Z   failureType: 'testCodeFailure'
+2026-11-11T18:55:32.6168091Z   error: |-
+2026-11-11T18:55:32.6168409Z     Immediate post-composition Escape must not close the section
+2026-11-11T18:55:32.6168756Z     + actual - expected
+2026-11-11T18:55:32.6168968Z
+2026-11-11T18:55:32.6169277Z     + [
+2026-11-11T18:55:32.6169474Z     +   'close'
+2026-11-11T18:55:32.6169661Z     + ]
+2026-11-11T18:55:32.6169865Z     - []
+2026-11-11T18:55:32.6170034Z
+2026-11-11T18:55:32.6170232Z   code: 'ERR_ASSERTION'
+2026-11-11T18:55:32.6170451Z   name: 'AssertionError'
+2026-11-11T18:55:32.6170693Z   expected:
+2026-11-11T18:55:32.6170869Z   actual:
+2026-11-11T18:55:32.6171081Z     0: 'close'
+2026-11-11T18:55:32.6171287Z   operator: 'deepStrictEqual'
+2026-11-11T18:55:32.6171544Z   stack: |-
+2026-11-11T18:55:32.6172137Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sectionCompositionEscape.test.ts:147:16)
+2026-11-11T18:55:32.6172790Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T18:55:32.6173184Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T18:55:32.6173770Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T18:55:32.6174180Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T18:55:32.6174527Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T18:55:32.6174950Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T18:55:32.6175292Z   ...
+2026-11-11T18:55:32.6175667Z # Subtest: section edit restarts composition without a stale dismissal timer
+2026-11-11T18:55:32.6176200Z not ok 208 - section edit restarts composition without a stale dismissal timer
+2026-11-11T18:55:32.6176545Z   ---
+2026-11-11T18:55:32.6176727Z   duration_ms: 42.647524
+2026-11-11T18:55:32.6176939Z   type: 'test'
+2026-11-11T18:55:32.6177420Z   location: '/home/runner/work/openconductor/openconductor/src/components/sectionCompositionEscape.test.ts:158:3'
+2026-11-11T18:55:32.6177965Z   failureType: 'testCodeFailure'
+2026-11-11T18:55:32.6178197Z   error: |-
+2026-11-11T18:55:32.6178522Z     A prior composition-end timer must not end the new composition
+2026-11-11T18:55:32.6178879Z     + actual - expected
+2026-11-11T18:55:32.6179483Z
+2026-11-11T18:55:32.6179651Z     + [
+2026-11-11T18:55:32.6179819Z     +   'close'
+2026-11-11T18:55:32.6180000Z     + ]
+2026-11-11T18:55:32.6180172Z     - []
+2026-11-11T18:55:32.6180348Z
+2026-11-11T18:55:32.6180524Z   code: 'ERR_ASSERTION'
+2026-11-11T18:55:32.6180728Z   name: 'AssertionError'
+2026-11-11T18:55:32.6180941Z   expected:
+2026-11-11T18:55:32.6181112Z   actual:
+2026-11-11T18:55:32.6181282Z     0: 'close'
+2026-11-11T18:55:32.6181475Z   operator: 'deepStrictEqual'
+2026-11-11T18:55:32.6181698Z   stack: |-
+2026-11-11T18:55:32.6182242Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sectionCompositionEscape.test.ts:166:14)
+2026-11-11T18:55:32.6182843Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T18:55:32.6183228Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T18:55:32.6183644Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T18:55:32.6184095Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T18:55:32.6184580Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T18:55:32.6185109Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T18:55:32.6185491Z   ...
+2026-11-11T18:55:32.6186002Z # Subtest: section edit preserves composing Enter, ordinary Enter and idle Escape
+2026-11-11T18:55:32.6186559Z ok 209 - section edit preserves composing Enter, ordinary Enter and idle Escape
+2026-11-11T18:55:32.6186905Z   ---
+2026-11-11T18:55:32.6187086Z   duration_ms: 117.779237
+2026-11-11T18:55:32.6187299Z   type: 'test'
+2026-11-11T18:55:32.6187473Z   ...
+2026-11-11T18:55:32.6187888Z # Subtest: section edit preserves explicit Cancel and clears its timer on unmount
+2026-11-11T18:55:32.6188493Z ok 210 - section edit preserves explicit Cancel and clears its timer on unmount
+2026-11-11T18:55:32.6188868Z   ---
+2026-11-11T18:55:32.6189192Z   duration_ms: 41.86063
+2026-11-11T18:55:32.6189408Z   type: 'test'
+2026-11-11T18:55:32.6189614Z   ...

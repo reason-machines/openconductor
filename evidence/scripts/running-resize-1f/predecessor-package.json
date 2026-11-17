@@ -1,0 +1,78 @@
+{
+  "owner_session": "1f14fa82-4ec3-41fc-b085-32ec441b4228",
+  "pr": "https://github.com/reason-machines/openconductor/pull/1085",
+  "state": "merged; consuming package qualified; native acceptance not run",
+  "candidate_head": "27857b68d1d139ad57885a8cbc7169d2e4b94076",
+  "premerge_checks": {
+    "passed": 26,
+    "failed": 0,
+    "source": "live pr_get snapshot after merge"
+  },
+  "consuming_main_sha": "5d287a11fcec2b8e831615a8b807d89f74ab9c6c",
+  "main_identity": "repos_compare_commits reported identical to main",
+  "package": {
+    "run_id": 43116959653,
+    "job_id": 130847310369,
+    "url": "https://github.com/reason-machines/openconductor/actions/runs/43116959653",
+    "status": "success",
+    "artifact": "not yet available",
+    "artifact_id": 13899571426,
+    "artifact_sha256": "19afd93b4454691d57b8f8574a2e7f47d9dc3ba0dd1c6be4fbe0760c9588d258",
+    "artifact_size": 64509407,
+    "checkout_log_line": 148,
+    "bundle_contract": {
+      "ok": true,
+      "checks": 39,
+      "report": "predecessor-bundle-check.json"
+    }
+  },
+  "consuming_ci": {
+    "run_id": 43116959707,
+    "url": "https://github.com/reason-machines/openconductor/actions/runs/43116959707",
+    "frontend_unit_job": 130847312036,
+    "pure_typescript_step": {
+      "passed": 3156,
+      "failed": 0,
+      "log_from_line": 19480
+    },
+    "frontend_typecheck_build_job": {
+      "id": 130847311849,
+      "conclusion": "success"
+    },
+    "scripts_crate_linux_job": {
+      "id": 130847312171,
+      "conclusion": "success"
+    },
+    "scripts_crate_macos_job": {
+      "id": 130847312109,
+      "conclusion": "success"
+    },
+    "real_pty_input": {
+      "passed": 4,
+      "failed": 0,
+      "job": 130847312109,
+      "log_from_line": 608
+    },
+    "distinct_failure": {
+      "step": "Custom branch-prefix unchanged-fixture baseline and candidate replay",
+      "cause_observed": "subprocess.TimeoutExpired: rustc --edition 2021 --test -A dead_code prefix.rs -o prefix-tests timed out after 60 seconds",
+      "log_from_line": 19765,
+      "scope": "replay aborted before candidate; printed eight prefix assertion failures are intended frozen baseline RED, not candidate regressions",
+      "coordination": "exact evidence sent to existing ledger ddfc6518-d50f-46a6-b83c-c3a18aa07e43 for existing prefix/CI owner; no duplicate fixer created"
+    }
+  },
+  "followup": {
+    "id": "a7c32b6d-9b44-419e-9a61-1a04dcb4186f",
+    "at": "2026-11-11T23:18:38.870Z",
+    "scope": "exact consuming package artifact and main CI",
+    "state": "ended; package verified; no duplicate watcher"
+  },
+  "not_run": [
+    "native keyboard/paste/focus/selection/clipboard",
+    "visual parity",
+    "full-app asynchronous acceptance",
+    "in-flight backend stop/backpressure races",
+    "resize successor runtime"
+  ],
+  "execution_boundary": "read-only source/API verification on Reason cloud; no local Node/Rust/app/provider/native runtime and no manual dispatch/rerun"
+}

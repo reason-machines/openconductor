@@ -1,0 +1,23 @@
+{
+  "main_sha": "7b99088f24c54ffca941fe6d5528260633328d0e",
+  "main_files": {
+    "src-tauri/src/diff/git.rs": "47dd4fa45618d583bb294917f6a8db01f9a17208e3827443181b70af22d4657f",
+    "src-tauri/src/diff/model.rs": "e56c0c051f5b5ad59c79930eb8f5a5336d9c979325a3e82ab4b95d770f7c3c9b",
+    "src-tauri/src/diff/parse.rs": "92ab857a43e002c47765f3211c650b23570440089768009c6a1d57bedd34c71f",
+    "src/features/chat/turnFilePreview.ts": "5388b82f3257d52f3603d93cbb1bf0cddfbfc46c9db9d1ee6e7d5dfa4da809d1",
+    "src/features/diff/FileDiffView.tsx": "c1cab11aa6141f1c12f923aaf7e60353e4b13067cf91dc93a7245d3d21872a6c",
+    "tests/diff/largeFilePlaceholder.mounted.test.mjs": "3fc448a1f7302ba75bb3e49b334037b11d6be1099b62965cb639e281dd75c4b9"
+  },
+  "original_asset_and_span_hashes": "PASS",
+  "frozen_test_and_baseline_hashes": "PASS",
+  "exact_two_string_product_diff": "PASS",
+  "exact_one_string_fixture_maintenance": "PASS",
+  "pr1143_merge_sha": "4f632b826b6a09c714a4db2947b223b6ea284e63",
+  "pr1143_consuming_main_source": {
+    "src-tauri/src/diff/git.rs": "47dd4fa45618d583bb294917f6a8db01f9a17208e3827443181b70af22d4657f",
+    "src-tauri/src/diff/turn_large_file_tests.rs": "5786990f1ea740de9e03477a4ef0cf3d3b7e133cce055fb8fa5e1d091d2fbdae",
+    "src/features/chat/turnFilePreview.ts": "5388b82f3257d52f3603d93cbb1bf0cddfbfc46c9db9d1ee6e7d5dfa4da809d1",
+    "src/features/chat/turnFilePreview.test.ts": "7fed050eef12c5d16f7867040048742b991d786fc98afdf297059d9bdc240261"
+  },
+  "pr1143_main_behavior_package_native": "NOT_RUN; manual-only workflows and no runtime admission"
+}

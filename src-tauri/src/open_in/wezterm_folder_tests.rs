@@ -152,7 +152,7 @@ fn launch_child() {
         .enable_all()
         .build()
         .unwrap()
-        .block_on(open_in_app("wezterm".to_string(), dir_string));
+        .block_on(open_in_app("wezterm".to_string(), dir_string, None));
     let calls: Vec<Vec<String>> = fs::read_to_string(root.join("calls"))
         .unwrap_or_default()
         .split("--END--\n")

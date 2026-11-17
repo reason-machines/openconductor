@@ -1,0 +1,237 @@
+{
+  "author": "Conductor Rebuild",
+  "existing_unit": "SAME64 K1 v2 + publication-v2/amendment1202",
+  "admission": "ACC_SAME64_REUSE_RED_CANDIDATE_GREEN_20261113T0031",
+  "started_utc": "2026-11-13T00:33:39.789418+00:00",
+  "remaining_ceiling_seconds": 355,
+  "shared_non_test_ceiling_seconds": 59,
+  "cleanup_reserve_seconds": 60,
+  "phases": [
+    {
+      "name": "setup-rebind",
+      "exit": 0,
+      "elapsed_seconds": 0.12729884700092953
+    },
+    {
+      "name": "candidate-source",
+      "argv": [
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "8s",
+        "nice",
+        "-n",
+        "19",
+        "bash",
+        "-c",
+        "set -eu\ngit apply --check \"$1\"\ngit apply \"$1\"\npython3 -B evidence/settings/agent-tab-keyboard/activation-v3/verify_source.py --main \"$2\" --phase candidate\n",
+        "k1-candidate",
+        "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-census64/keyboard-candidate-v1/candidate.patch",
+        "4fe392155011727e0728ebc2c668db37ee98c48c"
+      ],
+      "started_utc": "2026-11-13T00:33:39.916960+00:00",
+      "own_process_group": 119,
+      "exit": 0,
+      "finished_utc": "2026-11-13T00:33:40.032173+00:00",
+      "elapsed_seconds": 0.11498050199588761
+    },
+    {
+      "name": "green",
+      "argv": [
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "115s",
+        "nice",
+        "-n",
+        "19",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-census64/agentTabsKeyboard.dom.test.mjs"
+      ],
+      "started_utc": "2026-11-13T00:33:40.043002+00:00",
+      "own_process_group": 175,
+      "exit": 0,
+      "finished_utc": "2026-11-13T00:33:43.918833+00:00",
+      "elapsed_seconds": 3.875542508001672
+    }
+  ],
+  "red": "REUSED_EXACT_BOUND_QUALIFYING_11_FAILURES_11_CONTROLS",
+  "green": "GREEN_22_PASS_ZERO_SKIP_TODO_CANCEL",
+  "candidate_applied": true,
+  "activation_applied": true,
+  "ownjobs": [],
+  "servers": [],
+  "support": [],
+  "setup": "PASS",
+  "source_pins": 21,
+  "retained_metadata": 44,
+  "test_argv": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "115s",
+    "nice",
+    "-n",
+    "19",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/settings-tab-census64/agentTabsKeyboard.dom.test.mjs"
+  ],
+  "environment": {
+    "NODE_ENV": "development",
+    "NODE_OPTIONS": "--max-old-space-size=768",
+    "AGENT_TABS_SOURCE_ROOT": "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo",
+    "ONBOARDING_DOM_DEPS": "/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.rea-work/open-in-escape64/proposal-v2/dom-deps"
+  },
+  "baseline_binding_sha256": "01898fd1ff560bda6480f05fe0a3bdbdc4cb024a4bb6262f6714a442a8aa221b",
+  "head": "308751bb69df97ad73e9e3f639eef83cb7ad1e18",
+  "main": "4fe392155011727e0728ebc2c668db37ee98c48c",
+  "tree": "1ee77e0a74d2930888735403a1c577b089e1d478",
+  "executable_loader_sha256": "ececae31184996182e88a8608bffec216ee055fe83a8c03e38d789a09f18e8fa",
+  "protected_before": {
+    ".rea-work/settings-tab-census64/agentTabsKeyboard.dom.test.mjs": "833644d93d3c45c4846800c2d923540ff53c57b22d2aa1f53aaf99dbc1789d51",
+    ".rea-work/settings-tab-census64/keyboard-candidate-v1/candidate.patch": "722b674f6f6ea92dd9ae95b9f352589195c8192ae2da384c1b0f1db36a46fd7a",
+    "evidence/settings/agent-tab-keyboard/activation-v3/activation.patch": "08cbdc5bec20ca69a105ccc3ce8d3394d1274562313e1cf6634988afc55c1eaf",
+    ".rea-work/settings-tab-census64/keyboard-contract-v2/PREREQUISITE-CORRECTION.md": "45a4ab6bb6aca34bf811460831fd37d8cb6c0d6aa437c9b2a34822e30323325f",
+    ".rea-work/open-in-escape64/openInEscape.dom.test.mjs": "a2a71ce42e5a65db1c35b600af37bbbf783585aba9dcb472761ee8865585b96d",
+    ".rea-work/open-in-escape64/candidate.patch": "dfb11e4edcd5a5aba7475c4f1f8fc2f65eccd89d13efa49166cd008480644c3c",
+    "package.json": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+    ".rea-work/open-in-escape64/proposal-v2/current-main-qualification.json": "4bd4e3bde3217794b8e8fd856392cc56961c02a6592f45e39b21a1dc9296970a",
+    ".rea-work/open-in-escape64/proposal-v2/COMMAND-PROPOSAL.md": "58c98aaae84a93246264e927568d93b5922fdae8befd6a26d5823d8e30987473",
+    ".rea-work/open-in-escape64/proposal-v2/manifest.json": "9feb7dc1533106b363eabbd29a0883251375436110af87e9ffa30fbc4650eb5f",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/package.json": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/features/openIn/apps.ts": "b37b0fec869cb0308437cf23df36ecd9f4cb356deb495564fb64c3b0d44a26a6",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/keybindings/selectAll.ts": "508b26417d717f938eb118afbe8c0ff96873643cb4e5c0879467e5368e97db90",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/keybindings/listeners.ts": "6944c63efcb6edee49d59d1ccdcfaed649902021946c8a8f60d50549fd89011a",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/keybindings/registry.ts": "3a873cc27d99b73fafa340dc1585d9f4cd850966e91408c4f4dbad445bf4dcb9",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/keybindings/KeybindingsProvider.tsx": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/keybindings/shortcut.ts": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/keybindings/bind.ts": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/keybindings/help.ts": "e7b5685513f3dca610159c2121ccb4cd041be04d6c9450fe15bdec7b8d97b88c",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/keybindings/conflicts.ts": "282562172120ea4406bd0fd8c9b74412ab003c93067b6222e2336b9ca2d4d68d",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/keybindings/overrides.ts": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/keybindings/editor.ts": "092b462b67401aadb33ec16c3c49a8aeab013971c313ce6a83ac7c17ac9f0958",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/keybindings/resolve.ts": "f8818d52d1af70bc788f5bda2d162b5b1634402592807bc78b5233ad4e1142bc",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/keybindings/types.ts": "cdfcd723ed324b7f32698d36496fbc6bf6514c78f61e4d562c81b302207c4ecb",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/keybindings/fuzzy.ts": "1bcbf1f4058508f23d5d079235d5b96ed6ed800582aae6de50db6a182d5c2c1c",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/keybindings/dispatcher.ts": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/settings/SettingsView.tsx": "09a70e9c559eaebe074d1fe83c4c3c8af699763765933a8f91be2a93d469301f",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/settings/AgentsPage.tsx": "2d9167dd3176f6220f6036aff0c4e8bf5125e1e6e575984c401e67cd83f7f0ee",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/settings/agents/kitModel.ts": "be6a94abe11962ca756be5733b946f7b5d34acafc567db937a8e1ce688352937",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/settings/agents/icons.tsx": "c9f2647fdc104fe25ebcd4227d3765e0dd2fe1c990a816700063dc6f28da3e24",
+    ".rea-work/open-in-escape64/proposal-v2/current-main/src/settings/agents/kit.tsx": "1c8ed18fac67ff8ebc44572621e1740332c0b00f639eed7f7986ba53b6532dd8",
+    "evidence/settings/agent-tab-keyboard/publication.patch": "325e991868d0068c7159b3910b9e1c427cb4659e6d3f76fa1771d50ee13baf01",
+    "evidence/settings/agent-tab-keyboard/README.md": "12ff4c0ba9423958cac7c2e0c88008cdaae5cacf0555ddd904e8b9fc7eea6ba7",
+    "evidence/settings/agent-tab-keyboard/agentTabsKeyboard.dom.test.mjs": "833644d93d3c45c4846800c2d923540ff53c57b22d2aa1f53aaf99dbc1789d51",
+    "evidence/settings/agent-tab-keyboard/checkpoint.json": "2266fc0d6703d0052cbeba62007ff6dbe63b59af4f89f01a77ed23eaaec97e77",
+    "evidence/settings/agent-tab-keyboard/product.patch.gz": "28951f8927cca5c30d63cf0b3b3caeba44e05b01781b5ebc9f9646f2b67af78d",
+    "evidence/settings/agent-tab-keyboard/verify-source.py": "cf00e294a41224ef4928d02a470008064f5ed90b98aff4cd70d6019522c21ac6",
+    "evidence/settings/agent-tab-keyboard/agentTabKeyboard.test.ts.txt": "32bf0a1afbdba8e47069f1829e908afc755efc683628bae27f9640556ae265a4",
+    "evidence/settings/agent-tab-keyboard/historical/source-contract-v2.md": "33604e8f2413b3f6e14288f8f2d689d2eb30f0a5aef63858e6dbbaac8e606db0",
+    "evidence/settings/agent-tab-keyboard/historical/publication-status-v2.json": "55c4c10d91ef5204913b26eb7a510cab75fb3ae955f6cc2a73c889b7f5d736c7",
+    "evidence/settings/agent-tab-keyboard/historical/source-receipt-v1.json": "9b09971b653887b53c4260d465eef8139c1736ab2c825f8a8872a74af04195b1",
+    "evidence/settings/agent-tab-keyboard/reference/E0i.literal.txt": "9ee61bf96f73871cefbed555eb666c7ada8f57f72f7353261df32a596c785480",
+    "evidence/settings/agent-tab-keyboard/reference/$pa.literal.txt": "947269304b3f82358a188e874d19db74e187b8abee4e9845172210ed7cdeffd3",
+    "evidence/settings/agent-tab-keyboard/reference/Q1.literal.txt": "b3be5063a7e5496d6fde85130085a700e4b7c1789f95b9706e1b06ee864392d4",
+    "evidence/settings/agent-tab-keyboard/reference/_no.literal.txt": "f433f524bef5000968e946443f5f841c4d3cd5341caddb72c79e5690a6034921",
+    "evidence/settings/agent-tab-keyboard/reference/Ino.literal.txt": "9cffc1b4bc27b16068a100999e87b79e421cd88a3b4c16b18b167cda563f131b",
+    "evidence/settings/agent-tab-keyboard/reference/Rno.literal.txt": "72fda1b0ab77ec2bf4e9ab02b464230b91dadaf70beea441ae2474f7a73f98c2",
+    "evidence/settings/agent-tab-keyboard/reference/m9i.literal.txt": "5f096ffe4489fbf3ca5c223a1653dce3fec81d69bbd1db6edd0af0bc054e987a",
+    "evidence/settings/agent-tab-keyboard/reference/vy.literal.txt": "62d92d85a85f06580ecefd6329fe29cafcd1a5338354a3001b8b610ce7f5290a",
+    "evidence/settings/agent-tab-keyboard/reference/mzt.literal.txt": "d8e2d8c6c1b2357548161c9e6a0053d850eeab6439723893b8098009bff89243",
+    "evidence/settings/agent-tab-keyboard/reference/yy.literal.txt": "32fe411dc7ba813c01a03f665c5a0d894f49c62e802566c5e85fd18cb03fecf4",
+    "evidence/settings/agent-tab-keyboard/reference/gI.literal.txt": "9e3cb6f7b622537bcd40fd5d9ec7436065a2c5177aff05a6393802791ba6bd25",
+    "evidence/settings/agent-tab-keyboard/reference/yno.literal.txt": "8d7c2055039fc5a27148050e999c9f0d5deacc1b2e72f1231bd86d47e5e4bf72",
+    "evidence/settings/agent-tab-keyboard/reference/census.json": "f43ffb3f84c7b3b5e232ed9700d8e8aea4734201f26caf82dd7302f56378332f",
+    "evidence/settings/agent-tab-keyboard/activation-v3/README.md": "1add69a6285a4b9a1e8b06bc763fb045e6f66fc97707adf7f1a9c3c175191d5e",
+    "evidence/settings/agent-tab-keyboard/activation-v3/verify_source.py": "1b3a29118ec5df9ef15b39096c23a8d68ccbf544788845d73996ab90f3c67b0f"
+  },
+  "status": "VERIFIED_REUSED_RED_CANDIDATE_GREEN_PUBLICATION_APPLIED",
+  "cleanup_started_utc": "2026-11-13T00:33:43.955325+00:00",
+  "scratch_cleanup": "GUARDED_OWN_SCRATCH_RESTORED_ORIGINAL833",
+  "protected_changed": [],
+  "frozen_canonical_sha256": "833644d93d3c45c4846800c2d923540ff53c57b22d2aa1f53aaf99dbc1789d51",
+  "restored_scratch_sha256": "833644d93d3c45c4846800c2d923540ff53c57b22d2aa1f53aaf99dbc1789d51",
+  "prefix": "RETAINED_PREEXISTING_SUCCESSFUL_NO_INSTALL",
+  "tracked_after": "M .github/workflows/ci.yml\n M src/settings/agents/kit.tsx",
+  "cleanup_elapsed_seconds": 0.023723313999653328,
+  "non_test_seconds": 0.2781647379961214,
+  "elapsed_seconds": 4.189633390997187,
+  "remaining_inclusive_seconds": 350.8103666090028,
+  "release": "RELEASED",
+  "released_utc": "2026-11-13T00:33:43.979051+00:00",
+  "artifacts": [
+    {
+      "path": "candidate-source.exit",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "candidate-source.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "candidate-source.stdout",
+      "bytes": 631,
+      "sha256": "cb2fcfdcdb2abea31169370bf2b1ed9082cc787d600daec4db0d9c07827a65eb"
+    },
+    {
+      "path": "continue.py",
+      "bytes": 12597,
+      "sha256": "c3103b8ec826a0bc4d25bd828dcdaf9daabbbc0ca796a5dae2571a50ad1f38a4"
+    },
+    {
+      "path": "green-qualification.json",
+      "bytes": 149,
+      "sha256": "cc7e4fe0af067feede5922c13d00f7914b2ab9e4ed8580e66e4fdb42ab673483"
+    },
+    {
+      "path": "green.exit",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "green.stderr",
+      "bytes": 176,
+      "sha256": "42f43c4dea85afac8ed2cf6b06eb983710f28c99a131f5fc6842b6b8f897a7cf"
+    },
+    {
+      "path": "green.stdout",
+      "bytes": 4512,
+      "sha256": "3e473c142fadd15a946a8352a372908abf8d4f2eb48eca9ea7eb4a86904d847b"
+    },
+    {
+      "path": "red-qualification.json",
+      "bytes": 229,
+      "sha256": "c908c37d54f444a21e02b52c4e6e8c7890e0ab1f4e21235de697896667199775"
+    },
+    {
+      "path": "red.stderr",
+      "bytes": 176,
+      "sha256": "4e68a6933f4ad92d0e5371e8833ca6eff49845280cebc521d89c5a0b3c79920e"
+    },
+    {
+      "path": "red.stdout",
+      "bytes": 14909,
+      "sha256": "a02cecb372b1222ab08311aba176ab0dbd8a50307deed1f5a8399e52f318b04e"
+    },
+    {
+      "path": "scratch-backup.json",
+      "bytes": 306,
+      "sha256": "9e1c3f923057801bec17fd0e79b4e11e51005f40a30e7d4435ea2827983af72b"
+    },
+    {
+      "path": "scratch-original.mjs.txt",
+      "bytes": 11097,
+      "sha256": "833644d93d3c45c4846800c2d923540ff53c57b22d2aa1f53aaf99dbc1789d51"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "author": "Conductor Rebuild",
+  "kind": "SOURCE_REBIND_ONLY_NOT_RUNTIME_ADMISSION",
+  "status": "SOURCE_GUARDS_PASS",
+  "phase": "baseline",
+  "main": "ee120e2a0ecfd668efad398bef71f41e6d6e0047",
+  "head": "9982164766c2ac142e800925d18629a6a7ff8409",
+  "tree": "424996ff88df7948a38a42d405301cc3276bd640",
+  "original_main": "492bc5c78f2e168924f9003bfb68c7023b4aa931",
+  "original_packet_sha256": "1e51cafc003c2fd7ad8abd2da8de964224c54480dedb27f6567ba0653529731a",
+  "original_binding_sha256": "58e84ba4d2e661aff40b84fffd160235aad03d10ae43e51df704cc67e0d6b24e",
+  "source_pins_unchanged": 21,
+  "protected_unchanged": 7,
+  "proposal_files_unchanged": 26,
+  "isolated_metadata_unchanged": 44,
+  "fixture_sha256": "1b71c9d3a01ff6661914b6867f4dc1e5f2a269d7e898ec82c652f427c29cca87",
+  "product_patch_sha256": "6bf688c4786c20ce24dec5fff92e470300391546e44b6c27124f0ae742831456",
+  "publication_wrapper_sha256": "2b8aaaf1ba4515ec069f2db1393ea721dc812e762eceaefa417979f2a15663b1",
+  "tests_run": false,
+  "runtime_admitted": false,
+  "product_applied": false
+}

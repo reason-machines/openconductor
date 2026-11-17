@@ -1,0 +1,1 @@
+function tve({storage:t,apply:e}){const n=await t.readPersisted(),i=e({sections:n?.sections??[]}),r=Math.max(Date.now(),(n?.updatedAt??0)+1);await t.writePersisted({sections:i.sections,updatedAt:r})}

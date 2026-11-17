@@ -1,0 +1,75 @@
+{
+  "unit": "DIFF-MULTI-ANCHOR-NEW-DRAFTS-DE6",
+  "status": "OBSERVED_BEHAVIORAL_RED",
+  "head": "09fa14eebc236ab7d02abb6cffbcb7a4f1b7385d",
+  "run_id": 43115355531,
+  "job_id": 130841811973,
+  "url": "https://github.com/reason-machines/openconductor/actions/runs/43115355531/job/130841811973",
+  "command": "node --experimental-strip-types --test --test-concurrency=1 --test-reporter=tap \"src/features/diff/**/*.test.ts\"",
+  "fixture_sha256": "366bacf14235f38d8aab739794c8f2d5debceffd512d989b8f2e6ff4c6a7279b",
+  "intended_failures": [
+    {
+      "line": 1682,
+      "text": "2026-11-11T22:53:05.4853752Z not ok 253 - multi draft distinct anchors render independent bodies"
+    },
+    {
+      "line": 1707,
+      "text": "2026-11-11T22:53:05.5118389Z not ok 254 - multi draft reselect restores the existing body"
+    },
+    {
+      "line": 1733,
+      "text": "2026-11-11T22:53:05.5131066Z not ok 255 - multi draft different paths retain independent bodies"
+    },
+    {
+      "line": 1758,
+      "text": "2026-11-11T22:53:05.5150077Z not ok 256 - multi draft opposite sides retain independent bodies"
+    },
+    {
+      "line": 1783,
+      "text": "2026-11-11T22:53:05.5163246Z not ok 257 - multi draft shared ending line retains each range body"
+    },
+    {
+      "line": 1809,
+      "text": "2026-11-11T22:53:05.5176022Z not ok 258 - multi draft discard removes only the selected draft"
+    },
+    {
+      "line": 1834,
+      "text": "2026-11-11T22:53:05.5196356Z not ok 259 - multi draft save removes only the saved draft"
+    },
+    {
+      "line": 1859,
+      "text": "2026-11-11T22:53:05.5434275Z not ok 260 - multi draft hide remount retains all draft bodies"
+    },
+    {
+      "line": 1884,
+      "text": "2026-11-11T22:53:05.5592984Z not ok 261 - multi draft failed save retains both bodies"
+    }
+  ],
+  "passing_controls": [
+    {
+      "line": 1909,
+      "text": "2026-11-11T22:53:05.5606079Z ok 262 - multi draft late save cannot clear another anchor"
+    },
+    {
+      "line": 1915,
+      "text": "2026-11-11T22:53:05.5608744Z ok 263 - multi draft same anchor click does not duplicate or reset"
+    },
+    {
+      "line": 1921,
+      "text": "2026-11-11T22:53:05.5611446Z ok 264 - multi draft workspace change does not leak draft bodies"
+    },
+    {
+      "line": 1927,
+      "text": "2026-11-11T22:53:05.5722822Z ok 265 - multi draft stale cancelled callbacks cannot replace a survivor"
+    }
+  ],
+  "diff_suite": {
+    "tests": 457,
+    "passed": 448,
+    "failed": 9,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "assertions": "All nine fail with ERR_ASSERTION on a lost earlier draft body; actual undefined or empty string instead of the exact typed body. No import, setup, timeout or startup error.",
+  "runtime": "Automatic hosted Diff frontend unit tests. No local, browser DOM, native, visual or SQLite acceptance run."
+}

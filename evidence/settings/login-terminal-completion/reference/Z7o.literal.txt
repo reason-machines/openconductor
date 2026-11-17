@@ -1,0 +1,1 @@
+function Z7o({command:t,completionMarkerId:e}){return e?`${t}; printf '\\033]633;Conductor;CommandDone;${e}\\a'\r`:`${t}\r`}

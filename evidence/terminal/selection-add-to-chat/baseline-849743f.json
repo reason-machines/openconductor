@@ -1,0 +1,14 @@
+{
+  "pr_head": "849743fcc5d06b8d438e201e2d65aa576019619c",
+  "merge_checkout": "de107224cc80049383d9eab106cb5cd6f43bec5c",
+  "run": 43071424924,
+  "job": 130700041006,
+  "assertion_failures": 17,
+  "controls_passed": 3,
+  "source_region_unavailable_cases": 4,
+  "typecheck": "FAILED fixture target variable inferred string; assigning undefined at line88",
+  "test_assertions_changed": false,
+  "product_changes": "NONE",
+  "log_window_sha256": "ad3c96e17b301bee9b92ba3acf1bce79960d7dd5b678576b8c702c97ec24f4c4",
+  "local_node_browser_native": "NOT_RUN"
+}

@@ -1,0 +1,222 @@
+{
+  "owner": "Conductor Rebuild / SAME49",
+  "checked_main": "09b1c998acb093f4d905d5ef844c80136ea987f6",
+  "checkpoint_preserved": "47b70f9d",
+  "integration_base": "a0bde8e4",
+  "send_key_checkpoint": "07f2494f",
+  "ledger_disposition_message": "2e068345-1d23-4150-bf23-966889c45ed9",
+  "ledger_scope": "No other owner recorded. Existing SAME49 lane; no new approval gate or runtime admission.",
+  "retained_reference": {
+    "application": "Conductor 0.87.6",
+    "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "assets": {
+      "renderer": {
+        "bytes": 11600457,
+        "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+      },
+      "index": {
+        "bytes": 3493297,
+        "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+      }
+    },
+    "limits": "Original semantic renderer analysis exhausted heap. Read-only extraction from retained shipped original bytes. No reference JavaScript executed. Historical extraction only. No current installed-asset comparison, reference execution, native check or behavior observation."
+  },
+  "reference_spans": [
+    {
+      "path": "reference/observer.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        585103,
+        586585
+      ],
+      "bytes": 1482,
+      "sha256": "bbcb1f16505bda3bedaf442a49b875cd9e950c540bae365bf853634a09be5e9a"
+    },
+    {
+      "path": "reference/mutation.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        566486,
+        569399
+      ],
+      "bytes": 2913,
+      "sha256": "857fe69b086afd61cd84f54d8eeb82327d9f50376491ab88cb0691b51df109d9"
+    },
+    {
+      "path": "reference/initial-state.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        569399,
+        569551
+      ],
+      "bytes": 152,
+      "sha256": "edabc647fdf89699b37d774faf222a6a25b3b350656c2782acdb6a3c1f7f3884"
+    },
+    {
+      "path": "reference/mutation-cache.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        569555,
+        570954
+      ],
+      "bytes": 1399,
+      "sha256": "db69dd2d749e356de76b6f69330c509e5734f7234be15a1ab8c93fe70ba7746d"
+    },
+    {
+      "path": "reference/retryer.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        558074,
+        559028
+      ],
+      "bytes": 954,
+      "sha256": "4ed283f09219c194754c6253eec23e3574cd47192d6938b610e31b40dea72796"
+    },
+    {
+      "path": "reference/promise.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        557539,
+        557812
+      ],
+      "bytes": 273,
+      "sha256": "24fa2d62cfc1eae7e282e1605df65e4a281bf6189fc16548cf23855388eaa02a"
+    },
+    {
+      "path": "reference/retry-environment.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        557812,
+        557922
+      ],
+      "bytes": 110,
+      "sha256": "ea11637e8616d8ac7ddc266d3463228f0950af8614247ce6f668286bec66b0e2"
+    },
+    {
+      "path": "reference/cancellation.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        557922,
+        558074
+      ],
+      "bytes": 152,
+      "sha256": "fd055a4802eba3234ee01b338e0c67a3332a6137502c9763ed7149f05aa63fe9"
+    },
+    {
+      "path": "reference/delay.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        555619,
+        555676
+      ],
+      "bytes": 57,
+      "sha256": "55eedf01ef044005e658348c2987cc3b4a211f96f5e7a58d8db11ee5bbad253d"
+    },
+    {
+      "path": "reference/writer.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        408349,
+        408408
+      ],
+      "bytes": 59,
+      "sha256": "5ea3dc65e8f6c2438eb814e2789aaa3bb7ba01a8149b859e6847abd1d9dcfa69"
+    },
+    {
+      "path": "reference/client-configuration.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        813849,
+        814288
+      ],
+      "bytes": 439,
+      "sha256": "6ef1df2d2df3f056f5f0c3632787de03f18b08fa8f3b1b066d29b9f7ae0ba257"
+    },
+    {
+      "path": "reference/query-client.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        572360,
+        576451
+      ],
+      "bytes": 4091,
+      "sha256": "8a2060dfffb9e5bac64701c80677e5e5002b95e2e95ed8eed607dfedd8b69b64"
+    },
+    {
+      "path": "reference/update-setting.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        363131,
+        364790
+      ],
+      "bytes": 1659,
+      "sha256": "41067d3270f789d3b843c898dc1644a450414ce623787771946a9d338d042c9d"
+    },
+    {
+      "path": "reference/service-binding.txt",
+      "asset": "index",
+      "utf8_half_open": [
+        374287,
+        374395
+      ],
+      "bytes": 108,
+      "sha256": "74140de1932bce6123aac5d888a6411b172cb24a6d875576a309c042c1a01f05"
+    }
+  ],
+  "composition": {
+    "base_sha256": "72eb0193654acce1af05932e1ad104127ca6afd7094fa5fbf2c116baea16a45e",
+    "send_key_sha256": "ca9608c732381077907394df34c272c9ece37a81f3f0fbbbabab8fcb18470264",
+    "candidate_sha256": "c263f459781f91ba9fafbb7f1870e1f06b043c9ef2c86d241c695175b0022ecd",
+    "follow_up_base_line_intervals_half_open_zero_index": [
+      [
+        43,
+        43
+      ],
+      [
+        60,
+        60
+      ],
+      [
+        65,
+        68
+      ],
+      [
+        69,
+        71
+      ]
+    ],
+    "send_key_base_line_intervals_half_open_zero_index": [
+      [
+        48,
+        49
+      ],
+      [
+        210,
+        211
+      ],
+      [
+        216,
+        218
+      ]
+    ],
+    "both_orders_equal": true
+  },
+  "protected_product": {
+    "src/settings/GeneralPage.tsx": "ca9608c732381077907394df34c272c9ece37a81f3f0fbbbabab8fcb18470264",
+    "src/settings/rows/AppPrefRows.tsx": "daec6d0bac2569c123c747676ee0b8a5135ff0cff0e9ed12793d7af6e8bb0020",
+    "src/settings/ExperimentalPage.tsx": "bd3efd949c8aa153b88f5ccb53a080934e4a355ba91729f5bb147b9a2e6290d2",
+    "src/settings/EnvironmentPage.tsx": "c3f9403133d2c73f03621cfcc845cad15bf4dadfc1422fc8566feaba23ed1185",
+    "src/settings/sendKeySaveFeedback.test.ts": "9f98fe21f8731caf1533f336956c6d2f52c926af53fa41b7ce83e4913ad1c461",
+    "src/settings/graphiteLoadingHint.test.ts": "46d1423ebcf0fa968e588b413f3abb64761683122024e6b9e7c65e41276699ef",
+    "src/settings/autoRunAvailability.test.ts": "21408c1ca2236247b1037923272ddd8943c8873aae6a5d2ae48cf906e57672af",
+    "src/settings/userEnvFileEditor.test.ts": "5f38d3c0400c9cde3c063265ec4f9bade28ef4d372c019708fb53c2b99974ee8",
+    "src/settings/controls.tsx": "ac772d2f0c77f685d5d0c92f2a12b9f2239a8b196a9cf8a20cffda74fc7a13b7",
+    "evidence/settings/send-key-save-feedback/frozen.sha256": "a1ae017c840e18c3c5afd7662d5b2f0339166da49e2776e15544b5430be0979f",
+    "evidence/settings/graphite-loading-hint/frozen.sha256": "cb95b8e8a8bd3e90e23c3ee08d2e73e35d49440920e97e620e549be2b623bbb1",
+    "evidence/settings/auto-run-availability/frozen.sha256": "ef26b4523c1af60a93ca2c0d748b627f6d799bb8f54435d0cee45050aee02a77",
+    "evidence/settings/user-env-file-editor/frozen.sha256": "a16dbe6a6122f80b8b3f9269f9d0d77e95148482e134c3fccd9711eac001c22b"
+  },
+  "scope": "One GeneralPage local pending boolean and Follow-up Select disabled/try-finally settlement. Candidate file and patches only. No product file applied.",
+  "validation": "STATIC_ONLY. No JavaScript, tests, typecheck, install or native process run. Tests authored, not executed. Existing ACC position unchanged.",
+  "native_parity": "UNVERIFIED"
+}
