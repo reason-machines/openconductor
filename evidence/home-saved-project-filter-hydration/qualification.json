@@ -1,0 +1,71 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate": "HOME-SAVED-PROJECT-FILTER-HYDRATION-271",
+  "lease": "ledger-confirmed sole AllWorkspaces writer; activated after actual #1429 merge",
+  "baseline": "d14e1307fe225f4bf9128545551ae36709b1b4cd",
+  "integrated_main": "08be22cfcb0034e23171fe9b5f3b0a5df93585f3",
+  "baseline_product_blob": "c0b226895d569c060ee9d1531dde67fd1c37efee",
+  "integrated_product_blob": "c0b226895d569c060ee9d1531dde67fd1c37efee",
+  "fixture_sha256": "aa3264f1cc330057277b52c8932ef0ede10850ef49ffa6b66ee1358c8e4ed5ec",
+  "red": {
+    "pass": 5,
+    "intended_assertion_fail": 5,
+    "skip": 0
+  },
+  "green": {
+    "pass": 10,
+    "fail": 0,
+    "skip": 0
+  },
+  "supplemental_guards": {
+    "pass": 4,
+    "fail": 0
+  },
+  "affected_command": "node --max-old-space-size=768 --experimental-strip-types --test --test-concurrency=1 src/components/allWorkspaces*.test.ts src/components/home*.test.ts src/home/*.test.ts src/components/workspaceActions*.test.ts src/components/workspaceContext*.test.ts src/state/persisted.test.ts src/workspace/archivedList.test.ts src/components/sidebarArchiveBusyVisibility.test.ts src/components/sidebarArchiveShortcut.test.ts src/components/sidebarRowActivation.test.ts src/components/workspaceDetails.test.ts src/palette/moveToSection.test.ts src/palette/createSection.test.ts src/palette/sectionAutoScroll.test.ts evidence/home-saved-project-filter-hydration/guards.test.ts",
+  "affected": {
+    "pass": 353,
+    "fail": 0,
+    "skip": 0
+  },
+  "earlier_affected": {
+    "pass": 335,
+    "fail": 0,
+    "skip": 0
+  },
+  "build": "npm run build: PASS (branding + TypeScript + Vite); repeated after integration in integrated-build.log.gz",
+  "source": {
+    "checks": 64,
+    "spans": 25,
+    "vendor_evaluated": false,
+    "storage_boundary": "Conductor app-data subsystem storage is not OpenConductor localStorage; no equivalence or first-paint timing claim"
+  },
+  "production_paths": [
+    "src/components/AllWorkspaces.tsx"
+  ],
+  "production_diff": "+8/-0",
+  "browser": {
+    "status": "OBSERVED_BOUNDED",
+    "real_components": true,
+    "real_load_parse_save_path": true,
+    "user_selected_project_via_ui": true,
+    "pending_then_ready_same_instance": true,
+    "label": "In Project B",
+    "rows": [
+      "Working B"
+    ],
+    "enter_selection": {
+      "kind": "workspace",
+      "repoId": "hydration-b",
+      "workspaceId": "workspace-b"
+    },
+    "screenshot": "https://api.reasonmachines.com/media/pr-screenshots/c962f6df-dbb7-4e57-bf70-d1b1a04c9164/7ec507f8e13affa819e02cff2c0f92e1/56015eca-bc52-4d19-baea-d344b7046efc.png",
+    "supplied_repositories": true,
+    "real_native_ipc": false
+  },
+  "native": "NOT_RUN",
+  "provider": "UNCHANGED_NOT_RUN",
+  "installed_persistence": "NOT_VERIFIED",
+  "first_paint": "NOT_VERIFIED",
+  "package": "NOT_RUN; #1791 excludes successor",
+  "release_custody": "existing serialized custodian; no duplicate package/runtime job or watcher"
+}

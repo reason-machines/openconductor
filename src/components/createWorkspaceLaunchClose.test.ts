@@ -10,6 +10,30 @@ const React = dependencies("react");
 const { act, create } = dependencies("react-test-renderer");
 const ts: typeof import("typescript") = dependencies("typescript");
 const root = resolve(import.meta.dirname, "../..");
+// Additive real-module paths introduced by Create suggestions. Existing I/O
+// boundaries and every lifecycle/attachment assertion remain unchanged.
+const suggestionModules: Record<string, string> = {
+  "../features/chat/composerDocument.ts": "src/features/chat/composerDocument.ts",
+  "../features/chat/preWorkspaceCompletions.ts": "src/features/chat/preWorkspaceCompletions.ts",
+  "./create/CreateWorkspaceSuggestions.tsx": "src/components/create/CreateWorkspaceSuggestions.tsx",
+  "../../workspace/createFlow.ts": "src/workspace/createFlow.ts",
+  "../../features/chat/preWorkspaceCompletions.ts": "src/features/chat/preWorkspaceCompletions.ts",
+  "../../features/chat/FileMentionMenu.tsx": "src/features/chat/FileMentionMenu.tsx",
+  "../../features/chat/SlashMenu.tsx": "src/features/chat/SlashMenu.tsx",
+  "../../features/chat/fileMentions.ts": "src/features/chat/fileMentions.ts",
+  "../../features/chat/slashCommands.ts": "src/features/chat/slashCommands.ts",
+  "./composerSlashRange.ts": "src/features/chat/composerSlashRange.ts",
+  "./fileMentions.ts": "src/features/chat/fileMentions.ts",
+  "./slashCommands.ts": "src/features/chat/slashCommands.ts",
+  "./useSuggestionPointer.ts": "src/features/chat/useSuggestionPointer.ts",
+  "../../components/FileIcons": "src/components/FileIcons.tsx",
+  "../../components/Icons": "src/components/Icons.tsx",
+  "./fileIconNames": "src/components/fileIconNames.ts",
+  "./Icons": "src/components/Icons.tsx",
+  "./ConductorIcon": "src/components/ConductorIcon.tsx",
+  "./AppMark": "src/components/AppMark.tsx",
+  "./conductorIcons.generated": "src/components/conductorIcons.generated.ts",
+};
 type Host = { props: Record<string, unknown> };
 
 function deferred<T>() {
@@ -50,12 +74,13 @@ async function fixture({ agent = "reason", page = false, path = "/synthetic/proj
     const source = readFileSync(resolve(sourceRoot, file), "utf8");
     runInNewContext(ts.transpileModule(source, {
       fileName: file,
-      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true },
     }).outputText, {
       exports, console, TextDecoder, TextEncoder, Uint8Array, crypto: { randomUUID: () => "pending-launch" },
       document: { activeElement: null }, HTMLElement: class {},
       require(name: string) {
-        if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+        if (name === "react" || name === "react/jsx-runtime" || name === "fuzzysort" || name === "vscode-material-icons") return dependencies(name);
+        if (suggestionModules[name]) return load(suggestionModules[name]);
         if (name === "./CreateWorkspaceComposer") return load("src/components/CreateWorkspaceComposer.tsx");
         if (name === "./CreateWorkspaceDialog") return load("src/components/CreateWorkspaceDialog.tsx");
         if (name === "../workspace/createFlow") return load("src/workspace/createFlow.ts");
@@ -96,7 +121,7 @@ async function fixture({ agent = "reason", page = false, path = "/synthetic/proj
         if (name === "../features/diff/ReviewButton") return { queuePending: (_id: string, message: typeof queued[number]) => { queued.push(message); events.push("queue"); } };
         if (name === "../features/chat/composerIcons") return { PaperclipIcon: () => null, PlusIcon: () => null };
         if (name === "../features/chat/composer.css") return {};
-        if (name === "@tauri-apps/api/core") return { invoke: async () => {} };
+        if (name === "@tauri-apps/api/core") return { isTauri: () => false, invoke: async () => {} };
         if (name === "../workspace/api") return {
           ensureRepository() {
             if (submitting) { events.push("register"); return registration.promise; }
@@ -539,12 +564,13 @@ async function backlogFixture() {
     const source = readFileSync(resolve(root, file), "utf8");
     runInNewContext(ts.transpileModule(source, {
       fileName: file,
-      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true },
     }).outputText, {
       exports, console, crypto: { randomUUID: () => "pending-launch" },
       document: { activeElement: null }, HTMLElement: class {},
       require(name: string) {
-        if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+        if (name === "react" || name === "react/jsx-runtime" || name === "fuzzysort" || name === "vscode-material-icons") return dependencies(name);
+        if (suggestionModules[name]) return load(suggestionModules[name]);
         if (name === "../workspace/createFlow") return load("src/workspace/createFlow.ts");
         if (name === "../workspace/createInSection") return load("src/workspace/createInSection.ts");
         if (name === "./naming.ts" || name === "../workspace/naming") return load("src/workspace/naming.ts");
@@ -592,7 +618,7 @@ async function backlogFixture() {
         if (name === "../features/diff/ReviewButton") return { queuePending: () => {} };
         if (name === "../features/chat/composerIcons") return { PaperclipIcon: () => null, PlusIcon: () => null };
         if (name === "../features/chat/composer.css") return {};
-        if (name === "@tauri-apps/api/core") return { invoke: async () => {} };
+        if (name === "@tauri-apps/api/core") return { isTauri: () => false, invoke: async () => {} };
         if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }), useKeybindings: () => {} };
         if (name === "../keybindings/overrides") return {
           effectiveShortcuts(id: string) {

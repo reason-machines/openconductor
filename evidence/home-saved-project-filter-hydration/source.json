@@ -1,0 +1,292 @@
+{
+  "assets": {
+    "renderer": {
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "source": [
+    {
+      "asset": "renderer",
+      "name": "route-state-storage-hook",
+      "utf8_half_open": [
+        2708245,
+        2709881
+      ],
+      "sha256": "6a3b3b9bc2d7c4329a36a901ae0798d1f6b5c7411630ed9dd6e3005286490c9f",
+      "bytes": 1636,
+      "file": "spans/route-state-storage-hook.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "filter-schema",
+      "utf8_half_open": [
+        9818927,
+        9819132
+      ],
+      "sha256": "174113c7dd2bb32bf93b5329ed311c7a4d384c61da380228fe6dea80a69b1bd2",
+      "bytes": 205,
+      "file": "spans/filter-schema.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "filter-defaults",
+      "utf8_half_open": [
+        9859706,
+        9859767
+      ],
+      "sha256": "91031f3908197fd4f40a357c818265515ca91e3dcc1ef8a413c259cbfab9db82",
+      "bytes": 61,
+      "file": "spans/filter-defaults.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "mFi",
+      "utf8_half_open": [
+        9859767,
+        9860278
+      ],
+      "sha256": "9635e1f76a54222c2cb94d1a86eeacdf6e1d2099c72eb043ccfa1ffd4a886a99",
+      "bytes": 511,
+      "file": "spans/mFi.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "MJo",
+      "utf8_half_open": [
+        9860278,
+        9862126
+      ],
+      "sha256": "7e75df8888bf9d63c869ce04c489d322f385442a92eeef71253a9cee4f51bfe9",
+      "bytes": 1848,
+      "file": "spans/MJo.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "UJo",
+      "utf8_half_open": [
+        9863549,
+        9874571
+      ],
+      "sha256": "58824b140436a668433f7e08fe26d2083c0e100d363cda5edb14150526a53030",
+      "bytes": 11022,
+      "file": "spans/UJo.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "import-store",
+      "utf8_half_open": [
+        54652,
+        54660
+      ],
+      "sha256": "957891c32c2b20fb1b48a6dcd58d8cc4c7ecae038701c15e2940970ac54d2306",
+      "bytes": 8,
+      "file": "spans/import-store.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "import-persist",
+      "utf8_half_open": [
+        55379,
+        55388
+      ],
+      "sha256": "5ba33640f4f777af4209cbe25eb6773af406d5ece3def9b33328e00429c8566b",
+      "bytes": 9,
+      "file": "spans/import-persist.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "import-json-storage",
+      "utf8_half_open": [
+        56443,
+        56452
+      ],
+      "sha256": "d5192961d93a8b04f4598b9fd625eb7900eab74b26884eef6a23178f7f028aa7",
+      "bytes": 9,
+      "file": "spans/import-json-storage.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "import-subsystem-storage",
+      "utf8_half_open": [
+        56453,
+        56462
+      ],
+      "sha256": "f2ca1cb084ffab5c2dfa82fbcf3f8149cb639e7493894b93b21655d27448e784",
+      "bytes": 9,
+      "file": "spans/import-subsystem-storage.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "index-module",
+      "utf8_half_open": [
+        66468,
+        66495
+      ],
+      "sha256": "a3ee2f597109824593693f6ac4deb5a1b61d490ef3df64b4965dbb332f199492",
+      "bytes": 27,
+      "file": "spans/index-module.txt"
+    },
+    {
+      "asset": "index",
+      "name": "export-store",
+      "utf8_half_open": [
+        3481027,
+        3481035
+      ],
+      "sha256": "9edad5124b6315c5dccdb66d3dadc1c0f2b0aafb00480fbe46ff37748de57b58",
+      "bytes": 8,
+      "file": "spans/export-store.txt"
+    },
+    {
+      "asset": "index",
+      "name": "export-persist",
+      "utf8_half_open": [
+        3482018,
+        3482026
+      ],
+      "sha256": "cd49fd6a738fa13da0b5d12a677d4caae5ab9b35be91f1c56dfeead4fd65c19f",
+      "bytes": 8,
+      "file": "spans/export-persist.txt"
+    },
+    {
+      "asset": "index",
+      "name": "export-json-storage",
+      "utf8_half_open": [
+        3482836,
+        3482844
+      ],
+      "sha256": "63c1edcad89d49a8b10abdf240e02d59aa2ba129263730dbacce85f11ecf587a",
+      "bytes": 8,
+      "file": "spans/export-json-storage.txt"
+    },
+    {
+      "asset": "index",
+      "name": "export-subsystem-storage",
+      "utf8_half_open": [
+        3482845,
+        3482853
+      ],
+      "sha256": "7408034f280e1f5ee7e6220f239ea69cb3aa5c879001b979d3c1ae0f4d33a2e3",
+      "bytes": 8,
+      "file": "spans/export-subsystem-storage.txt"
+    },
+    {
+      "asset": "index",
+      "name": "store-hook",
+      "utf8_half_open": [
+        383617,
+        383845
+      ],
+      "sha256": "bef4d83ec4a5375a15364de5615d81d5ae8b167708f4e38e4af507edc9d51d3c",
+      "bytes": 228,
+      "file": "spans/store-hook.txt"
+    },
+    {
+      "asset": "index",
+      "name": "store-core",
+      "utf8_half_open": [
+        255286,
+        255610
+      ],
+      "sha256": "25d1deabc3870e513c0ecd965aff3bd625e327e55cfa3eca678cd081b6e41bee",
+      "bytes": 324,
+      "file": "spans/store-core.txt"
+    },
+    {
+      "asset": "index",
+      "name": "json-storage",
+      "utf8_half_open": [
+        255854,
+        256131
+      ],
+      "sha256": "a159ab86c9526dbb22dffc9f67ab0e9b5346748544adbfd52146a3eb2687251c",
+      "bytes": 277,
+      "file": "spans/json-storage.txt"
+    },
+    {
+      "asset": "index",
+      "name": "persistence",
+      "utf8_half_open": [
+        256131,
+        257834
+      ],
+      "sha256": "399044756714be6de91d0648beac7bf82f6344b868b502816097994f1e03b96e",
+      "bytes": 1703,
+      "file": "spans/persistence.txt"
+    },
+    {
+      "asset": "index",
+      "name": "subsystem-storage",
+      "utf8_half_open": [
+        2805969,
+        2806363
+      ],
+      "sha256": "1fb82657a84e58a8d0a22d4ac8f676f4394ef78e3b683c251ad499b7fbb3b1c2",
+      "bytes": 394,
+      "file": "spans/subsystem-storage.txt"
+    },
+    {
+      "asset": "index",
+      "name": "storage-root",
+      "utf8_half_open": [
+        235507,
+        235557
+      ],
+      "sha256": "2fff659afb133598758311c707627ff26bd399e1bbf29eb727ff98cc8aa5929a",
+      "bytes": 50,
+      "file": "spans/storage-root.txt"
+    },
+    {
+      "asset": "index",
+      "name": "storage-manager",
+      "utf8_half_open": [
+        226825,
+        231110
+      ],
+      "sha256": "de59d0c39ce0e779e9cda5a4ee7d44c3c81cc547359fb7dcab3a38b89cd2a0e6",
+      "bytes": 4285,
+      "file": "spans/storage-manager.txt"
+    },
+    {
+      "asset": "index",
+      "name": "storage-bridge",
+      "utf8_half_open": [
+        231110,
+        235308
+      ],
+      "sha256": "0ec5b2d948fa6546994515cc7e68999078457d3e8939f5a4f8bb13d0a68b8287",
+      "bytes": 4198,
+      "file": "spans/storage-bridge.txt"
+    },
+    {
+      "asset": "index",
+      "name": "schema-array",
+      "utf8_half_open": [
+        109854,
+        109890
+      ],
+      "sha256": "704a21c07581141b551f0d63c6d42a1cc30c1e6821301b869be9169526861aff",
+      "bytes": 36,
+      "file": "spans/schema-array.txt"
+    },
+    {
+      "asset": "index",
+      "name": "schema-string",
+      "utf8_half_open": [
+        106339,
+        106371
+      ],
+      "sha256": "2e44bdd3a8ebee4686d379b91b082cca500c7fbb5205e40ab1555676512996f1",
+      "bytes": 32,
+      "file": "spans/schema-string.txt"
+    }
+  ],
+  "checks_passed": 64,
+  "parent_rea_evidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "boundary": "Syntax/byte evidence from retained real-app assets. No vendor evaluation, no new acquisition. Stable personal preference scope, no overriding Home URL filters. Eventual preference recovery, not native startup or first-paint timing. Original uses app-data subsystem storage; OpenConductor uses its existing localStorage filter key."
+}

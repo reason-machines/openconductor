@@ -1193,7 +1193,8 @@ function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isErr
       return <ScheduleWakeupRow {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle }} />;
     case "image-generation": {
       // `Vpo`: the generated image's path (the image itself is not drawn yet).
-      const path = result === undefined ? "" : resultText(result).trim();
+      const content = rawResult === undefined ? result : rawResult;
+      const path = content === undefined ? "" : resultText(content).trim();
       const imageExtensions = { png: true, jpg: true, jpeg: true, gif: true, webp: true, tif: true, tiff: true, avif: true, bmp: true };
       const extension = path.split(".").pop()?.toLowerCase();
       const isCollapsible = extension !== undefined && Object.prototype.hasOwnProperty.call(imageExtensions, extension);
@@ -1210,14 +1211,15 @@ function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isErr
     case "node-repl-js": {
       // `Kpo`
       const title = s(input.title);
-      const nodeOutput = rawResult !== undefined ? (typeof rawResult === "string" ? rawResult : JSON.stringify(rawResult, null, 2)) : result;
+      const content = rawResult === undefined ? result : rawResult;
+      const nodeOutput = typeof content === "string" ? content : content ? JSON.stringify(content, null, 2) : undefined;
       return (
         <RowShell
           {...shell}
           left={<span>Node REPL</span>}
           right={title ? <CodeChip text={title} /> : undefined}
           align="center"
-          content={Object.keys(input).length > 0 || nodeOutput !== undefined ? <InputOutput input={input} result={nodeOutput} isError={isError} /> : undefined}
+          content={Object.keys(input).length > 0 || content ? <InputOutput input={input} result={nodeOutput} isError={isError} /> : undefined}
         />
       );
     }

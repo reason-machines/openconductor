@@ -1,0 +1,48 @@
+{
+  "candidate": "HOME-SAVED-PROJECT-FILTER-HYDRATION-271-LEAD",
+  "main": "810a79d40a7205a52e730ae5cc6da2f84401c063",
+  "frozen_fixture_sha256": "aa3264f1cc330057277b52c8932ef0ede10850ef49ffa6b66ee1358c8e4ed5ec",
+  "baseline": {
+    "pass": 5,
+    "fail": 5,
+    "skip": 0,
+    "note": "Expected label loss, no setup/import errors. Initial draft label-prefix mistakes are disqualified and not accepted RED."
+  },
+  "current_files": [
+    {
+      "path": "src/App.tsx",
+      "git_blob": "c71b6fcd0ea0b178cf7f46b30f37911dbffd7d37",
+      "sha256": "02fcf52e537ecd85aefcf4f5f7a6d676abc0300e6d610f321b19be9762e32d4a"
+    },
+    {
+      "path": "src/components/HomeWorkspaceScreen.tsx",
+      "git_blob": "9f535feb0f156033e1c9308151e64d611953c070",
+      "sha256": "a04528bb6a82e291df2d12e8132331c4480e83d42ba81244071c368d89f55297"
+    },
+    {
+      "path": "src/components/AllWorkspaces.tsx",
+      "git_blob": "6a5c6b9f92b3235e1791856300ec37adfa459ff4",
+      "sha256": "26a44b1ce7f391fd17ba6d7bc25bf6992d7a8e2066763e30edc902109104ef86"
+    },
+    {
+      "path": "src/home/allWorkspaces.ts",
+      "git_blob": "c94ef8d1dbcf4db3bf899af569196c84a1b088c8",
+      "sha256": "2c7db5229277156c9f27d4145ce35849e445b6cc0cf0b91baf1fd55ff844ed57"
+    },
+    {
+      "path": "src/state/store.ts",
+      "git_blob": "1072ed97772793688a2aa64d7bdb3680ddfe9f26",
+      "sha256": "a6f2d578588d8b4afbce6af9095b6ef1d474bfbd9c7692c4d7d9eaa11e15ae87"
+    },
+    {
+      "path": "src/state/persisted.ts",
+      "git_blob": "e2cf08abaacdf7dc7242223245973bb5699d0045",
+      "sha256": "e05b71987a5e37a5b2e86f013c8b53fd1ccec6e29717a4408237206d73593da2"
+    },
+    {
+      "path": "src/state/selectors.ts",
+      "git_blob": "5b9e17ec2141a4084b5d71d0a6ec1fd3753ffb4d",
+      "sha256": "37f68b0305f898b2cdf575e05bd0a0ebf89983eb527b96526cf4f9406da2302d"
+    }
+  ]
+}

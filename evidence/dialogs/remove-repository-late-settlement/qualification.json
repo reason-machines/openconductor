@@ -1,0 +1,99 @@
+{
+  "candidate": "REMOVE-REPO-LATE-SETTLEMENT-6013",
+  "baseline": "e6f9dfcb2eb9e12dc3b1c67c41baa268236f7269",
+  "source_only": true,
+  "reference_spans": [
+    {
+      "label": "repository-row",
+      "asset": "renderer",
+      "start": 10078590,
+      "end": 10084752,
+      "sha256": "ce74998d935a19a67e5c620887af56bd2573a2e9488d737447cddeec9156044a"
+    },
+    {
+      "label": "keyed-repository-parent",
+      "asset": "renderer",
+      "start": 10085016,
+      "end": 10088805,
+      "sha256": "4981a5c0897f3b4214f47e48ad309fc19bd30f8c17a07a0e034be6a452f5a708"
+    },
+    {
+      "label": "renderer-delete-import",
+      "asset": "renderer",
+      "start": 62369,
+      "end": 62378,
+      "sha256": "772ca4b36bb4fc017e445242d11ff4781c3d3576dbf81060d2a536e713ec6441"
+    },
+    {
+      "label": "index-delete-export",
+      "asset": "index",
+      "start": 3489281,
+      "end": 3489290,
+      "sha256": "3c980ab599e31b5d193204429e351b739ae85733a7a633c0f9b73232ccc8b2fb"
+    },
+    {
+      "label": "delete-mutation-hook",
+      "asset": "index",
+      "start": 3346875,
+      "end": 3347271,
+      "sha256": "d2a52d0a967373069d3fb9a75c01ab9a8c6ff9099a0693187a7abcc476564b3c"
+    },
+    {
+      "label": "delete-mutation-success",
+      "asset": "index",
+      "start": 3347271,
+      "end": 3347311,
+      "sha256": "b0ce16165de81b08948ed2e9f45b3ed4637197df052d188d4660648121731604"
+    }
+  ],
+  "source_pins": {
+    "src/App.tsx": "02fcf52e537ecd85aefcf4f5f7a6d676abc0300e6d610f321b19be9762e32d4a",
+    "src/components/RemoveRepositoryDialog.tsx": "440b30bdda86e78131bf71b392d96e8a6e0e1d68d933b58134b6a8592ac14267",
+    "src/components/ConfirmationDialog.tsx": "e1b7cef3375b30a5bcc2f3e09e7de009096bb1ce3406824e6c2ed7a717894cfe",
+    "src/settings/repoMisc.ts": "201c0d32a3efc7389fa7656d921608ae67d71833eed275d9f5bd81e79c5add67",
+    "src/state/store.ts": "a6f2d578588d8b4afbce6af9095b6ef1d474bfbd9c7692c4d7d9eaa11e15ae87"
+  },
+  "fixture_sha256": "8e3285f0fc2effa0d4ef85ed928677c358878e47301a59847c1e55002567d3dc",
+  "red": {
+    "pass": 3,
+    "fail": 2,
+    "skip": 0,
+    "setup_failure": false,
+    "messages": [
+      "late A settlement must not close B's removal dialog",
+      "late A must not dismiss pending B"
+    ]
+  },
+  "limits": [
+    "Mounted production source projection, not whole App",
+    "Frame DOM/focus boundary stubbed",
+    "Synthetic deferred IPC only; no real deletion",
+    "No browser/native/package acceptance"
+  ],
+  "test_first_commit": "2759e32cd",
+  "green": {
+    "focused_pass": 5,
+    "combined_pass": 9,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "fixture_sha256": "8e3285f0fc2effa0d4ef85ed928677c358878e47301a59847c1e55002567d3dc"
+  },
+  "checks": {
+    "source_bindings": "PASS 6",
+    "typecheck": "PASS",
+    "build": "PASS branding/tsc/vite",
+    "untouched_source_pins": "PASS 4",
+    "browser": "NOT RUN: no admission",
+    "full_app": "NOT RUN",
+    "native": "NOT RUN",
+    "package_inclusion": "UNVERIFIED"
+  },
+  "log_sha256": {
+    "adjacent-before.tap": "e0b10d8024377abe47b9ef36964fcca1730bf3c1bdef735712f5c378ffb58fa9",
+    "build.log.gz": "3a373e27cfe68a3670a3a18435ec627b8f13a260c651473ce79b62c61b2dd82c",
+    "green-adjacent.tap": "a127f7f809db334bfaff44a3d52307f8fe4b1ace1e2df89bd45206e31f836498",
+    "red.tap": "276382ee9b9636cf372574e0dddf95f1ac14e13bb914683a458e8a4a16683fb1",
+    "typecheck.log.gz": "3dab33f3e1435f50f07d7117cfb5486935e94dcaf78488e10f86896f00f0f0ff"
+  }
+}

@@ -1,0 +1,1 @@
+function tt(t,e=sBe){const s=R0.useSyncExternalStore(t.subscribe,()=>e(t.getState()),()=>e(t.getInitialState()));return R0.useDebugValue(s),s}const Rz=t=>{const e=Hs(t),s=n=>tt(e,n);return Object.assign(s,e),s},nr=t=>t?Rz(t):Rz;
