@@ -1,0 +1,41 @@
+{
+  "reservation": "SAME135-QUEUE-EMPTY-RED-20261117-211827",
+  "reserved_cpu": 0,
+  "start_deadline_utc": "2026-11-17T21:23:27.049443+00:00",
+  "started_preflight_utc": "2026-11-17T21:19:03.619018+00:00",
+  "fixture_sha256": "8739fb3f4ebbbdf4282b740ccce38f5a3572b213669b23a96016ec19535cb4e3",
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "env",
+    "NODE_OPTIONS=--max-old-space-size=768",
+    "COMPOSER_QUEUE_EDIT_EMPTY_SOURCE_REF=c22e27d48a0940c5793842cfddc023b7e5f838c5",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "src/features/chat/composerQueueEditEmptySave.test.ts"
+  ],
+  "test_ran": true,
+  "disk_before_bytes": 16637497344,
+  "allowed_affinity": [
+    0,
+    1
+  ],
+  "static_preflight_exit": 0,
+  "node_capability_exit": 0,
+  "test_started_utc": "2026-11-17T21:19:03.807445+00:00",
+  "process_group": 88,
+  "test_exit": 1,
+  "test_terminated_utc": "2026-11-17T21:19:05.625102+00:00",
+  "max_child_rss_kib": 165272,
+  "leftover_pids_at_cleanup": [],
+  "disk_after_bytes": 16637386752,
+  "own_artifact_bytes": 91117,
+  "fixture_unchanged": true,
+  "actual_release_utc": "2026-11-17T21:19:05.626044+00:00"
+}

@@ -1,0 +1,110 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: code_review: Reset removes only the local override and reveals inherited instructions
+ok 1 - code_review: Reset removes only the local override and reveals inherited instructions
+  ---
+  duration_ms: 853.981764
+  type: 'test'
+  ...
+# Subtest: code_review: clearing the draft saves an explicit empty override, not inherited instructions
+ok 2 - code_review: clearing the draft saves an explicit empty override, not inherited instructions
+  ---
+  duration_ms: 229.265156
+  type: 'test'
+  ...
+# Subtest: create_pr: Reset removes only the local override and reveals inherited instructions
+ok 3 - create_pr: Reset removes only the local override and reveals inherited instructions
+  ---
+  duration_ms: 149.511149
+  type: 'test'
+  ...
+# Subtest: create_pr: clearing the draft saves an explicit empty override, not inherited instructions
+ok 4 - create_pr: clearing the draft saves an explicit empty override, not inherited instructions
+  ---
+  duration_ms: 73.823252
+  type: 'test'
+  ...
+# Subtest: fix_errors: Reset removes only the local override and reveals inherited instructions
+ok 5 - fix_errors: Reset removes only the local override and reveals inherited instructions
+  ---
+  duration_ms: 131.515407
+  type: 'test'
+  ...
+# Subtest: fix_errors: clearing the draft saves an explicit empty override, not inherited instructions
+ok 6 - fix_errors: clearing the draft saves an explicit empty override, not inherited instructions
+  ---
+  duration_ms: 215.457388
+  type: 'test'
+  ...
+# Subtest: resolve_merge_conflicts: Reset removes only the local override and reveals inherited instructions
+ok 7 - resolve_merge_conflicts: Reset removes only the local override and reveals inherited instructions
+  ---
+  duration_ms: 147.925128
+  type: 'test'
+  ...
+# Subtest: resolve_merge_conflicts: clearing the draft saves an explicit empty override, not inherited instructions
+ok 8 - resolve_merge_conflicts: clearing the draft saves an explicit empty override, not inherited instructions
+  ---
+  duration_ms: 159.069346
+  type: 'test'
+  ...
+# Subtest: rename_branch: Reset removes only the local override and reveals inherited instructions
+ok 9 - rename_branch: Reset removes only the local override and reveals inherited instructions
+  ---
+  duration_ms: 108.53409
+  type: 'test'
+  ...
+# Subtest: rename_branch: clearing the draft saves an explicit empty override, not inherited instructions
+ok 10 - rename_branch: clearing the draft saves an explicit empty override, not inherited instructions
+  ---
+  duration_ms: 160.769859
+  type: 'test'
+  ...
+# Subtest: general: Reset removes only the local override and reveals inherited instructions
+ok 11 - general: Reset removes only the local override and reveals inherited instructions
+  ---
+  duration_ms: 205.38679
+  type: 'test'
+  ...
+# Subtest: general: clearing the draft saves an explicit empty override, not inherited instructions
+ok 12 - general: clearing the draft saves an explicit empty override, not inherited instructions
+  ---
+  duration_ms: 223.320852
+  type: 'test'
+  ...
+# Subtest: an explicit empty local override stays customized and resettable
+ok 13 - an explicit empty local override stays customized and resettable
+  ---
+  duration_ms: 141.58776
+  type: 'test'
+  ...
+# Subtest: inherited instructions have no local Reset and unchanged blur writes nothing
+ok 14 - inherited instructions have no local Reset and unchanged blur writes nothing
+  ---
+  duration_ms: 195.251894
+  type: 'test'
+  ...
+# Subtest: absent instructions have no badge or Reset and unchanged blur writes nothing
+ok 15 - absent instructions have no badge or Reset and unchanged blur writes nothing
+  ---
+  duration_ms: 282.809511
+  type: 'test'
+  ...
+# Subtest: prompt writes preserve blank overrides, trim nonblank edits and skip no-ops
+ok 16 - prompt writes preserve blank overrides, trim nonblank edits and skip no-ops
+  ---
+  duration_ms: 1.473474
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4107.427345

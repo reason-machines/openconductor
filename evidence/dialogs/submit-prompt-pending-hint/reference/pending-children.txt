@@ -1,0 +1,1 @@
+children:r?"Submitting...":p.jsxs(p.Fragment,{children:["Submit prompt",p.jsxs("span",{className:"ml-2 inline-flex items-center opacity-60",children:["⌘",p.jsx(gf,{})]})]})

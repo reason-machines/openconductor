@@ -4,6 +4,9 @@
 
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { fuzzyFilterFiles } from "../backend";
+import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
+import { effectiveShortcuts } from "../keybindings/overrides";
+import { matchesEvent } from "../keybindings/shortcut";
 import {
   buildRows,
   emptyMessage,
@@ -73,6 +76,7 @@ function Row(props: { id: string; row: QuickOpenRow; selected: boolean; onHover:
 }
 
 export function QuickOpenDialog({ repoId, workspacePath, onClose, onOpen }: Props) {
+  const { overrides } = useKeybindingOverrides();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<FileMatch[]>([]);
   const [loading, setLoading] = useState(true);
@@ -114,13 +118,19 @@ export function QuickOpenDialog({ repoId, workspacePath, onClose, onOpen }: Prop
   }
 
   function onKeyDown(e: KeyboardEvent) {
+    if (effectiveShortcuts("dialog.primaryAction", overrides).some((key) => matchesEvent(key, e.nativeEvent))) {
+      e.preventDefault();
+      e.stopPropagation();
+      pick(rows[selected], "diff");
+      return;
+    }
     const k = quickOpenKey(e);
     if (!k) return;
     e.preventDefault();
     e.stopPropagation();
     if (k.kind === "move") setSelected((i) => moveSelection(i, k.delta, rows.length));
     else if (k.kind === "edge") setSelected(k.to === "first" ? 0 : Math.max(rows.length - 1, 0));
-    else if (k.kind === "open") pick(rows[selected], k.mode);
+    else if (k.kind === "open") pick(rows[selected], "file");
     else onClose();
   }
 

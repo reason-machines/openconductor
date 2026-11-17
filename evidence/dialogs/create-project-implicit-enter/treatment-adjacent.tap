@@ -1,0 +1,346 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Clone url has no implicit native-form activation path
+ok 1 - Clone url has no implicit native-form activation path
+  ---
+  duration_ms: 91.486559
+  type: 'test'
+  ...
+# Subtest: Clone location has no implicit native-form activation path
+ok 2 - Clone location has no implicit native-form activation path
+  ---
+  duration_ms: 39.272415
+  type: 'test'
+  ...
+# Subtest: Clone explicit primary activation captures valid inputs once
+ok 3 - Clone explicit primary activation captures valid inputs once
+  ---
+  duration_ms: 22.339368
+  type: 'test'
+  ...
+# Subtest: Clone pending guard survives repeated explicit primary activation
+ok 4 - Clone pending guard survives repeated explicit primary activation
+  ---
+  duration_ms: 19.769627
+  type: 'test'
+  ...
+# Subtest: Clone blank URL keeps the primary action disabled and transport unused
+ok 5 - Clone blank URL keeps the primary action disabled and transport unused
+  ---
+  duration_ms: 28.800789
+  type: 'test'
+  ...
+# Subtest: Clone rejection permits explicit retry with the latest inputs
+ok 6 - Clone rejection permits explicit retry with the latest inputs
+  ---
+  duration_ms: 21.269637
+  type: 'test'
+  ...
+# (node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: clone inputs accept edits before submission
+ok 7 - clone inputs accept edits before submission
+  ---
+  duration_ms: 112.231901
+  type: 'test'
+  ...
+# Subtest: clone url remains editable while its captured request is unresolved
+ok 8 - clone url remains editable while its captured request is unresolved
+  ---
+  duration_ms: 48.41658
+  type: 'test'
+  ...
+# Subtest: clone location remains editable while its captured request is unresolved
+ok 9 - clone location remains editable while its captured request is unresolved
+  ---
+  duration_ms: 33.741925
+  type: 'test'
+  ...
+# Subtest: clone Browse remains enabled while its captured request is unresolved
+ok 10 - clone Browse remains enabled while its captured request is unresolved
+  ---
+  duration_ms: 25.388307
+  type: 'test'
+  ...
+# Subtest: pending clone keeps its submit guard and progress with recent selection enabled
+ok 11 - pending clone keeps its submit guard and progress with recent selection enabled
+  ---
+  duration_ms: 25.200771
+  type: 'test'
+  ...
+# Subtest: clone rejection allows a retry with the latest form values
+ok 12 - clone rejection allows a retry with the latest form values
+  ---
+  duration_ms: 21.321486
+  type: 'test'
+  ...
+# (node:100) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: recent repository selection uses https before cloning
+ok 13 - recent repository selection uses https before cloning
+  ---
+  duration_ms: 107.057914
+  type: 'test'
+  ...
+# Subtest: recent https selection changes the form but not the pending clone
+ok 14 - recent https selection changes the form but not the pending clone
+  ---
+  duration_ms: 46.553332
+  type: 'test'
+  ...
+# Subtest: clone retry uses the recent https selection made while pending
+ok 15 - clone retry uses the recent https selection made while pending
+  ---
+  duration_ms: 34.356209
+  type: 'test'
+  ...
+# Subtest: recent repository selection uses ssh before cloning
+ok 16 - recent repository selection uses ssh before cloning
+  ---
+  duration_ms: 24.938168
+  type: 'test'
+  ...
+# Subtest: recent ssh selection changes the form but not the pending clone
+ok 17 - recent ssh selection changes the form but not the pending clone
+  ---
+  duration_ms: 34.098733
+  type: 'test'
+  ...
+# Subtest: clone retry uses the recent ssh selection made while pending
+ok 18 - clone retry uses the recent ssh selection made while pending
+  ---
+  duration_ms: 21.999909
+  type: 'test'
+  ...
+# (node:108) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: clone URL disables autoCorrect before cloning
+ok 19 - clone URL disables autoCorrect before cloning
+  ---
+  duration_ms: 112.481715
+  type: 'test'
+  ...
+# Subtest: clone URL disables autoCapitalize before cloning
+ok 20 - clone URL disables autoCapitalize before cloning
+  ---
+  duration_ms: 44.759362
+  type: 'test'
+  ...
+# Subtest: clone URL keeps its existing input controls before cloning
+ok 21 - clone URL keeps its existing input controls before cloning
+  ---
+  duration_ms: 25.512401
+  type: 'test'
+  ...
+# Subtest: clone URL disables autoCorrect while cloning
+ok 22 - clone URL disables autoCorrect while cloning
+  ---
+  duration_ms: 24.727169
+  type: 'test'
+  ...
+# Subtest: clone URL disables autoCapitalize while cloning
+ok 23 - clone URL disables autoCapitalize while cloning
+  ---
+  duration_ms: 25.932913
+  type: 'test'
+  ...
+# Subtest: clone URL keeps its existing input controls while cloning
+ok 24 - clone URL keeps its existing input controls while cloning
+  ---
+  duration_ms: 21.731111
+  type: 'test'
+  ...
+# Subtest: clone URL preserves mixed-case edits and the captured pending request
+ok 25 - clone URL preserves mixed-case edits and the captured pending request
+  ---
+  duration_ms: 20.772819
+  type: 'test'
+  ...
+# (node:116) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Create project name has no implicit native-form activation path
+ok 26 - Create project name has no implicit native-form activation path
+  ---
+  duration_ms: 101.935506
+  type: 'test'
+  ...
+# Subtest: Create project parent has no implicit native-form activation path
+ok 27 - Create project parent has no implicit native-form activation path
+  ---
+  duration_ms: 28.930897
+  type: 'test'
+  ...
+# Subtest: Create project explicit primary activation captures valid inputs once
+ok 28 - Create project explicit primary activation captures valid inputs once
+  ---
+  duration_ms: 22.618865
+  type: 'test'
+  ...
+# Subtest: Create project pending guard survives repeated explicit primary activation
+ok 29 - Create project pending guard survives repeated explicit primary activation
+  ---
+  duration_ms: 17.862842
+  type: 'test'
+  ...
+# Subtest: Create project blank name keeps the primary disabled and transport unused
+ok 30 - Create project blank name keeps the primary disabled and transport unused
+  ---
+  duration_ms: 19.105584
+  type: 'test'
+  ...
+# Subtest: Create project rejection permits explicit retry with the latest inputs
+ok 31 - Create project rejection permits explicit retry with the latest inputs
+  ---
+  duration_ms: 26.207535
+  type: 'test'
+  ...
+# (node:124) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pending Create project name edits preserve the active request and survive rejection
+ok 32 - pending Create project name edits preserve the active request and survive rejection
+  ---
+  duration_ms: 163.073369
+  type: 'test'
+  ...
+# Subtest: pending Create project parent edits preserve the active request and survive rejection
+ok 33 - pending Create project parent edits preserve the active request and survive rejection
+  ---
+  duration_ms: 50.60355
+  type: 'test'
+  ...
+# Subtest: pending Create project Browse updates only the draft and preserves Cancel
+ok 34 - pending Create project Browse updates only the draft and preserves Cancel
+  ---
+  duration_ms: 47.795792
+  type: 'test'
+  ...
+# Subtest: pending Create project template selection does not change the active pipeline
+ok 35 - pending Create project template selection does not change the active pipeline
+  ---
+  duration_ms: 31.916941
+  type: 'test'
+  ...
+# Subtest: pending Create project retains the primary, shortcut and duplicate-submit guards
+ok 36 - pending Create project retains the primary, shortcut and duplicate-submit guards
+  ---
+  duration_ms: 36.002125
+  type: 'test'
+  ...
+# Subtest: Create project success retains its captured request and completion callbacks
+ok 37 - Create project success retains its captured request and completion callbacks
+  ---
+  duration_ms: 28.533392
+  type: 'test'
+  ...
+# Subtest: Create project rejection preserves its draft and permits a new captured retry
+ok 38 - Create project rejection preserves its draft and permits a new captured retry
+  ---
+  duration_ms: 35.761835
+  type: 'test'
+  ...
+# Subtest: idle Create project Browse Cancel preserves the displayed folder without creating
+ok 39 - idle Create project Browse Cancel preserves the displayed folder without creating
+  ---
+  duration_ms: 28.950892
+  type: 'test'
+  ...
+# (node:132) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: placeholder follows gh's git_protocol
+ok 40 - placeholder follows gh's git_protocol
+  ---
+  duration_ms: 0.697653
+  type: 'test'
+  ...
+# Subtest: validation reports the URL first, then the location
+ok 41 - validation reports the URL first, then the location
+  ---
+  duration_ms: 0.144268
+  type: 'test'
+  ...
+# Subtest: recent repo picks the URL for the protocol and highlights either form
+ok 42 - recent repo picks the URL for the protocol and highlights either form
+  ---
+  duration_ms: 0.1108
+  type: 'test'
+  ...
+# Subtest: progress log keeps the newest lines and shows the newest first
+ok 43 - progress log keeps the newest lines and shows the newest first
+  ---
+  duration_ms: 0.211086
+  type: 'test'
+  ...
+# Subtest: location: saved folder if it still exists, else the default
+ok 44 - location: saved folder if it still exists, else the default
+  ---
+  duration_ms: 0.098698
+  type: 'test'
+  ...
+# Subtest: URL conversion between HTTPS and SSH
+ok 45 - URL conversion between HTTPS and SSH
+  ---
+  duration_ms: 0.359919
+  type: 'test'
+  ...
+# Subtest: clone errors map to repo-not-found, HTTPS auth, SSH key, or the raw message
+ok 46 - clone errors map to repo-not-found, HTTPS auth, SSH key, or the raw message
+  ---
+  duration_ms: 0.356666
+  type: 'test'
+  ...
+# Subtest: cloneTargetName takes the last path segment without .git
+ok 47 - cloneTargetName takes the last path segment without .git
+  ---
+  duration_ms: 0.340673
+  type: 'test'
+  ...
+# (node:140) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: name hint shows the slug, an error for a name without letters or numbers, or nothing
+ok 48 - name hint shows the slug, an error for a name without letters or numbers, or nothing
+  ---
+  duration_ms: 1.886547
+  type: 'test'
+  ...
+# Subtest: templates are Empty then Next.js; gstack waits for a decision
+ok 49 - templates are Empty then Next.js; gstack waits for a decision
+  ---
+  duration_ms: 0.202442
+  type: 'test'
+  ...
+# Subtest: validation checks the name, then the parent folder
+ok 50 - validation checks the name, then the parent folder
+  ---
+  duration_ms: 0.1273
+  type: 'test'
+  ...
+# Subtest: pipeline steps per template
+ok 51 - pipeline steps per template
+  ---
+  duration_ms: 0.180356
+  type: 'test'
+  ...
+# Subtest: only Next.js sets scripts
+ok 52 - only Next.js sets scripts
+  ---
+  duration_ms: 0.158417
+  type: 'test'
+  ...
+# Subtest: paths and messages
+ok 53 - paths and messages
+  ---
+  duration_ms: 0.188005
+  type: 'test'
+  ...
+1..53
+# tests 53
+# suites 0
+# pass 53
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4035.535412

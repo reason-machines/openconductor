@@ -1,0 +1,14 @@
+{
+  "source_id": "bde4ad1f-150f-4f12-96ec-29c0b99c1b32",
+  "revision": 21891147,
+  "session_id": "1a72a8da-f339-4b7b-ab11-f65a8514910a",
+  "role": "tool_input",
+  "tool": "codemode",
+  "source_seq": 1799,
+  "capture": "complete",
+  "offset": 0,
+  "end": 1376,
+  "text": "{\"code\":\"const cmd = `cd ~/oc-chat-queue-rea && python3 - <<'EOF'\\nimport json,re,collections\\nd=json.load(open('slice-app.json')); ev=d.get('data',d); n=ev['normalized_result']; sg=n['semantic_graph']\\nnames=['setPaused','steerMessage','cancelMessage','discardMessage','retryMessage','reorderMessages','beginQueuedMessageEdit','cancelQueuedMessageEdit','saveQueuedMessageEdit','sendMessage','cancelSession','drafts']\\nout=collections.defaultdict(list)\\nfor u in sg['unknowns']:\\n  m=re.search(r'property /([A-Za-z]+)',u.get('detail',''))\\n  if m and m.group(1) in names:\\n    loc=u['evidence']['location']\\n    v=loc.get('value',{}) if loc.get('available') else {}\\n    out[m.group(1)].append({'unknown_id':u['unknown_id'],'reason':u['reason'],'line':v.get('start',{}).get('line'),'column':v.get('start',{}).get('column')})\\nres={'evidence_id':ev['evidence_id'],'slice':{'source':'renderApp-D_fmY7hW.js','byte_start':8599657,'byte_end':8761291,'sha256':ev['subject']['digest']['sha256']},'unknowns_total':len(sg['unknowns']),'nodes_total':len(sg['nodes']),'sites':out}\\njson.dump(res,open('queue-sites.json','w'),indent=1)\\nprint(json.dumps({k:len(v) for k,v in out.items()}), len(sg['unknowns']), len(sg['nodes']))\\nEOF`;\\nconst r = await tools.devices_exec({device_id:\\\"d09524dc-bfc0-4cd6-b578-2bde6c0c7571\\\", command:cmd, timeout_ms:50000});\\nreturn r.stdout + r.stderr;\"}",
+  "total_chars": 1376,
+  "next_offset": null
+}

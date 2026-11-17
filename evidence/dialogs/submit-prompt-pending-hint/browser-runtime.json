@@ -1,0 +1,19 @@
+{
+  "server_id": "fc099f4b-8bd9-49d8-9bad-ab642f375d31",
+  "port": 48733,
+  "started_at": "2026-11-17T18:53:57.913Z",
+  "deadline": "2026-11-17T19:08:57.913Z",
+  "prior_tabs": [],
+  "prior_own_previews": "all stopped/listening null",
+  "independent_bind": "PASS (separate command network namespace)",
+  "tab_id": 1440146779,
+  "released_at": "2026-11-17T19:00:57.238358+00:00",
+  "cleanup": {
+    "tabs": [],
+    "own_server_processes": [],
+    "independent_bind": "PASS (separate command network namespace)",
+    "preview_state": "stopped",
+    "preview_listening": null,
+    "worker_receipt": "Each stopped server's process group has ended on the computer, so its port is free for preview_start."
+  }
+}

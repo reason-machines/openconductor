@@ -1,0 +1,14 @@
+{
+  "result": "PASS",
+  "main_checked": "9e3954625f01a9cb1a3ead3adbef429f27bcf099",
+  "assets": 2,
+  "source_bindings": 24,
+  "current_source_pins": 8,
+  "product_replacements": 4,
+  "legacy_test_edits": 0,
+  "frozen12_sha256": "1a9c9be790116983b0891d3d4e2838e5e53de1989bd9dae140ef18acef1d347b",
+  "baseline": "4 pass / 8 intended failures",
+  "treatment": "12 pass",
+  "adjacent_before_and_after": "28 pass",
+  "limits": "Source/mounted callback evidence only; no original, native or packaged runtime claimed"
+}

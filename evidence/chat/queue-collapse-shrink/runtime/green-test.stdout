@@ -1,0 +1,120 @@
+TAP version 13
+# (node:139) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: shrink/collapsed completion 2-to-1 reveals the remaining row
+ok 1 - shrink/collapsed completion 2-to-1 reveals the remaining row
+  ---
+  duration_ms: 14.666046
+  type: 'test'
+  ...
+# Subtest: shrink/collapsed 2-to-1-to-2 regrows expanded
+ok 2 - shrink/collapsed 2-to-1-to-2 regrows expanded
+  ---
+  duration_ms: 3.199091
+  type: 'test'
+  ...
+# Subtest: shrink/singleton initially has no collapse toggle
+ok 3 - shrink/singleton initially has no collapse toggle
+  ---
+  duration_ms: 1.04186
+  type: 'test'
+  ...
+# Subtest: shrink/expanded completion 2-to-1 removes the toggle
+ok 4 - shrink/expanded completion 2-to-1 removes the toggle
+  ---
+  duration_ms: 1.631044
+  type: 'test'
+  ...
+# Subtest: shrink/collapsed explicit deletion 2-to-1 reveals the survivor
+ok 5 - shrink/collapsed explicit deletion 2-to-1 reveals the survivor
+  ---
+  duration_ms: 2.98918
+  type: 'test'
+  ...
+# Subtest: control/multiple rows initially expanded
+ok 6 - control/multiple rows initially expanded
+  ---
+  duration_ms: 1.016027
+  type: 'test'
+  ...
+# Subtest: control/collapsed multiple rows survive ordinary rerender
+ok 7 - control/collapsed multiple rows survive ordinary rerender
+  ---
+  duration_ms: 1.434706
+  type: 'test'
+  ...
+# Subtest: control/collapsed 3-to-2 stays collapsed
+ok 8 - control/collapsed 3-to-2 stays collapsed
+  ---
+  duration_ms: 3.882569
+  type: 'test'
+  ...
+# Subtest: control/reordering multiple collapsed rows preserves collapse
+ok 9 - control/reordering multiple collapsed rows preserves collapse
+  ---
+  duration_ms: 2.162034
+  type: 'test'
+  ...
+# Subtest: control/manual expand preserves complete queued items
+ok 10 - control/manual expand preserves complete queued items
+  ---
+  duration_ms: 2.097118
+  type: 'test'
+  ...
+# Subtest: control/zero-item unmount then new queue starts expanded
+ok 11 - control/zero-item unmount then new queue starts expanded
+  ---
+  duration_ms: 2.80736
+  type: 'test'
+  ...
+# Subtest: control/pause and resume while collapsed do not change count or collapse
+ok 12 - control/pause and resume while collapsed do not change count or collapse
+  ---
+  duration_ms: 1.638331
+  type: 'test'
+  ...
+# Subtest: control/ordinary queued edit still saves
+ok 13 - control/ordinary queued edit still saves
+  ---
+  duration_ms: 2.755672
+  type: 'test'
+  ...
+# Subtest: control/1474 blank Save stays disabled
+ok 14 - control/1474 blank Save stays disabled
+  ---
+  duration_ms: 2.83553
+  type: 'test'
+  ...
+# Subtest: control/1474 blank Save and steer stays disabled
+ok 15 - control/1474 blank Save and steer stays disabled
+  ---
+  duration_ms: 1.650521
+  type: 'test'
+  ...
+# Subtest: control/direct blank reducer deletion remains intentional
+ok 16 - control/direct blank reducer deletion remains intentional
+  ---
+  duration_ms: 0.196099
+  type: 'test'
+  ...
+# Subtest: control/no-steer retains collapse and both queued items
+ok 17 - control/no-steer retains collapse and both queued items
+  ---
+  duration_ms: 1.176523
+  type: 'test'
+  ...
+# Subtest: control/expanded 3-to-2 keeps both remaining rows visible
+ok 18 - control/expanded 3-to-2 keeps both remaining rows visible
+  ---
+  duration_ms: 1.319153
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 903.789146

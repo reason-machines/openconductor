@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { addRepository, createNewProject, folderExists, lastCloneDirectory, pickFolder, saveLastCloneDirectory, saveRepoScripts } from "../backend";
 import { defaultCloneDirectory } from "../workspace/api";
 import { appendLog, initialLocation, logText } from "../state/cloneDialog";
@@ -64,8 +64,7 @@ export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) 
     if (picked) setParent(picked);
   }
 
-  async function submit(e?: FormEvent) {
-    e?.preventDefault();
+  async function submit() {
     if (pending) return;
     setError(null);
     const parentDir = parent.trim();
@@ -104,7 +103,7 @@ export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) 
         <h2 id="create-project-title">Create project</h2>
         <p id="create-project-description" className="create-project-subtitle">Create a local folder, private GitHub repo, and first workspace.</p>
       </div>
-      <form onSubmit={submit} className="create-project-dialog">
+      <div className="create-project-dialog">
         <label className="field">
           <span>Project name</span>
           <input
@@ -147,12 +146,12 @@ export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) 
         )}
         {error && <div className="clone-error" role="alert">{error}</div>}
         <div className="modal-actions">
-          <button type="submit" className="btn btn-primary" data-primary-action disabled={!canCreate(slug, parent.trim(), pending)}>
+          <button type="button" className="btn btn-primary" data-primary-action onClick={() => void submit()} disabled={!canCreate(slug, parent.trim(), pending)}>
             {createButtonLabel(pending)}
             {!pending && <kbd className="clone-kbd">⌘↵</kbd>}
           </button>
         </div>
-      </form>
+      </div>
     </DialogFrame>
   );
 }

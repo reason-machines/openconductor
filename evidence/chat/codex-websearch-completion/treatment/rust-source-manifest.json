@@ -1,0 +1,9 @@
+{
+  "src-tauri/src/agent/secret.rs": "6e98f410bcda2eb9aa94384810e270b1e190eaeb04cb6e54302b01cc4951a39f",
+  "src-tauri/src/agent/env.rs": "4c01e6933219ef59dbbe2deee435aaebed48fd19644a7fc2c47d63fdf0cb184e",
+  "src-tauri/src/agent/codex_cli.rs": "924d0ec3bbe92df358d4558e82f1144ba6a96b63b026cf9521867906fe80db36",
+  "src-tauri/src/agent/codex_rpc.rs": "1e492ba3ade6f1f1ce745a66c3d0b95060019aeab22683b6bc9f3d1e0b02fe94",
+  "src-tauri/src/agent/codex_consent.rs": "46b903c0e115b06e6225fbb04950cdfd7161dcd0f1355a6318ef3063b2acaf0f",
+  "src-tauri/src/agent/codex_events.rs": "8a3d63513dd21c84535e9484847788713ff8adf72436a2fdbbb1bfd9916f243f",
+  "src-tauri/src/agent/codex_wire.rs": "9a90b3ccba1e13c550b43edd0f3273dfe7781aaeebc1c112d188d123acbe4cfd"
+}

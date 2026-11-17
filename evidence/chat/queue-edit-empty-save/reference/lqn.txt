@@ -1,0 +1,1 @@
+function lqn(t){return"event"in t?t.matchesCommand({command:"queueEditSaveAndSteer",event:t.event,messageSendKey:t.messageSendKey})?{shouldSend:!0,sendModeOverride:"steering"}:t.matchesCommand({command:"queueEditSave",event:t.event,messageSendKey:t.messageSendKey})?{shouldSend:!0}:{shouldSend:!1}:M5o(t)}

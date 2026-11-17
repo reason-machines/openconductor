@@ -1,0 +1,145 @@
+{
+  "candidate": "CHAT-CODE-COPY-OVERLAPPING-RESET-BE7",
+  "author": "Conductor Rebuild",
+  "evidence_kind": "retained REA static source, not native observation",
+  "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "checkpoint_attachment": {
+    "attachment_id": "4db32769-6ddc-468a-b8da-37ee7cd4cc12",
+    "sha256": "5f9359889985aa5664f4f53b6b8c4f64fc9c8f9e46d42f5bcf13eccbf1c1d196"
+  },
+  "parent": {
+    "asset": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "whole_parent_verified": true
+  },
+  "ranges": "half-open raw UTF-8 byte offsets",
+  "spans": [
+    {
+      "symbol": "t0",
+      "start": 1793169,
+      "end": 1794797,
+      "bytes": 1628,
+      "sha256": "9e4e5cb96dda0b523c89505b4492941918848d3643470b6199b0a71ba8014b5e",
+      "file": "reference/t0.js.json",
+      "encoding": "JSON raw_utf8 field; digest applies to decoded UTF-8 bytes"
+    },
+    {
+      "symbol": "WJe",
+      "start": 4516402,
+      "end": 4518213,
+      "bytes": 1811,
+      "sha256": "8bca789a22bf92ce0f0efb9123b88c4923c80f7e2a18044974f4a7d28244a179",
+      "file": "reference/WJe.js.json",
+      "encoding": "JSON raw_utf8 field; digest applies to decoded UTF-8 bytes"
+    },
+    {
+      "symbol": "$Xs",
+      "start": 6545913,
+      "end": 6546798,
+      "bytes": 885,
+      "sha256": "d664b4d77b4eca45ae9bcc75a67ab0480580ae5dc8be64e32aa0fec09c5d8562",
+      "file": "reference/dollar-Xs.js.json",
+      "encoding": "JSON raw_utf8 field; digest applies to decoded UTF-8 bytes"
+    },
+    {
+      "symbol": "VXs",
+      "start": 6547974,
+      "end": 6548057,
+      "bytes": 83,
+      "sha256": "ec902458b654c416413688b1de6382d7cad107b47c185bb19690661ef394a018",
+      "file": "reference/VXs.js.json",
+      "encoding": "JSON raw_utf8 field; digest applies to decoded UTF-8 bytes"
+    },
+    {
+      "symbol": "dHn",
+      "start": 6548274,
+      "end": 6548567,
+      "bytes": 293,
+      "sha256": "86a76ce15009f4a3a4dd16419d083462484430dbbf2ba8f8c54ccdfa4615d534",
+      "file": "reference/dHn.js.json",
+      "encoding": "JSON raw_utf8 field; digest applies to decoded UTF-8 bytes"
+    },
+    {
+      "symbol": "pEi",
+      "start": 6548725,
+      "end": 6550420,
+      "bytes": 1695,
+      "sha256": "efae9424849d941421c66cf6e9b644ef73ecb1a797ef638be08b3046358ede15",
+      "file": "reference/pEi.js.json",
+      "encoding": "JSON raw_utf8 field; digest applies to decoded UTF-8 bytes"
+    },
+    {
+      "symbol": "xS",
+      "start": 6550612,
+      "end": 6551722,
+      "bytes": 1110,
+      "sha256": "9912a5bd7f235ac2351b161575bfcc4abb2fa3c9e7392ab0666833652c364c64",
+      "file": "reference/xS.js.json",
+      "encoding": "JSON raw_utf8 field; digest applies to decoded UTF-8 bytes"
+    },
+    {
+      "symbol": "ROo",
+      "start": 8870021,
+      "end": 8872955,
+      "bytes": 2934,
+      "sha256": "4b020f575c8024708d1576ab02d0154a6690a710abe1fbe5e603fd7731e69afe",
+      "file": "reference/ROo.js.json",
+      "encoding": "JSON raw_utf8 field; digest applies to decoded UTF-8 bytes"
+    },
+    {
+      "symbol": "l1",
+      "start": 739306,
+      "end": 739397,
+      "bytes": 91,
+      "sha256": "232a30bd33deacf7baf3cf7cce95a19f385c2a361832a65b34bff3e1ecbf6f57",
+      "file": "reference/l1.js.json",
+      "encoding": "JSON raw_utf8 field; digest applies to decoded UTF-8 bytes"
+    }
+  ],
+  "baseline": {
+    "commit": "c22e27d48a0940c5793842cfddc023b7e5f838c5",
+    "files": [
+      {
+        "path": "src/features/chat/copyCodeFeedback.test.ts",
+        "file": "baseline/src/features/chat/copyCodeFeedback.test.ts.txt",
+        "bytes": 8898,
+        "sha256": "5e99cc9f652a18249c33fbcf9e2260c7e320b6a025f44e708a9c9ecd55f6f86b"
+      },
+      {
+        "path": "src/features/chat/markdown.ts",
+        "file": "baseline/src/features/chat/markdown.ts.txt",
+        "bytes": 11568,
+        "sha256": "06354820fa6722b771c0e626a3dffc2cee5f34f0917366ca25ec47cdddab17b4"
+      },
+      {
+        "path": "src/features/chat/Transcript.tsx",
+        "file": "baseline/src/features/chat/Transcript.tsx.txt",
+        "bytes": 21591,
+        "sha256": "b543001eeb48ab956140a164646554862ad314ae3511bda7abdfd5238d7eeac0"
+      },
+      {
+        "path": "package.json",
+        "file": "baseline/package.json.txt",
+        "bytes": 2019,
+        "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91"
+      },
+      {
+        "path": "package-lock.json",
+        "binding": "Git baseline commit and SHA-256 only; unchanged lockfile not duplicated",
+        "bytes": 222962,
+        "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+      }
+    ]
+  },
+  "execution": "NOT_RUN; no test, fixture, Node, build, typecheck, browser, native, provider or acquisition execution admitted",
+  "reference_limit": "ordinary non-Mermaid multiline fenced code; WJe supplies no tooltip; retained confirmation is icon-only, not Copied text/tooltip parity",
+  "frozen_fixture": {
+    "path": "src/features/chat/copyCodeFeedback.test.ts",
+    "sha256": "720e650d15b131230353f0673cb307fe1a935e0d8ece4415379ef8df96de91c2",
+    "bytes": 11601,
+    "test_count": 5,
+    "new_cases": 1,
+    "existing_four_control_bodies_unchanged": true
+  }
+}

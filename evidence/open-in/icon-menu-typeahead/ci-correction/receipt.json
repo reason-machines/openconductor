@@ -1,0 +1,34 @@
+{
+  "owner": "Conductor Rebuild SAME15",
+  "hosted_head": "1b8f00212cba5c2510630a93168ddeefbe5f3599",
+  "hosted_run": 44127148673,
+  "hosted_tests": {
+    "passed": 5409,
+    "failed": 1
+  },
+  "local_red": {
+    "passed": 6,
+    "failed": 1
+  },
+  "local_green": {
+    "passed": 114,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "source_checks": 288,
+  "source_correction": "only existing drag opt-out attribute order; all JSX props and handlers unchanged",
+  "local_heavy": {
+    "checked_tree": "6e682d536aae76a16d05fbd664cbba6533af488d",
+    "equal_to_hosted_head": true,
+    "typecheck": "PASS",
+    "default_build": "PASS",
+    "branding": "PASS",
+    "vite_seconds": 45.98,
+    "ended_at": "2026-11-17T16:43:56Z",
+    "own_heavy_processes": [],
+    "slot": "EXPLICITLY_RELEASED",
+    "final_reorder_build": "NOT_RUN; new exact-head hosted check required"
+  },
+  "browser_native_package": "NOT_RUN"
+}

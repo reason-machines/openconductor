@@ -1,0 +1,408 @@
+{
+  "author": "Conductor Rebuild",
+  "lead": "SETTINGS-ACTION-PREVIEW-49",
+  "status": "SOURCE_QUALIFICATION_ONLY; no product edit or lease",
+  "main": "073c7b4e2287598f795c350b8fdb5358122c4a06",
+  "assets": {
+    "renderer": {
+      "path": ".oc-tmp/settings-loader-reference/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "path": ".oc-tmp/settings-coverage-current/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "spans": [
+    {
+      "asset": "renderer",
+      "label": "import:cSe",
+      "utf8_half_open": [
+        55892,
+        55901
+      ],
+      "bytes": 9,
+      "sha256": "43a3e5673161434b058abc37cf913747910622c0a1ac09c7c819117d19ce7d52",
+      "text": "dY as cSe"
+    },
+    {
+      "asset": "renderer",
+      "label": "import:xsi",
+      "utf8_half_open": [
+        63157,
+        63166
+      ],
+      "bytes": 9,
+      "sha256": "f4d0593c5b6b96628c0ca4071d1ce18c9b9bd348d75e8e6987c7eafd78dbd50e",
+      "text": "ps as xsi"
+    },
+    {
+      "asset": "renderer",
+      "label": "import:KEr",
+      "utf8_half_open": [
+        63197,
+        63206
+      ],
+      "bytes": 9,
+      "sha256": "6cdc5d5daa7d6c6364e39efa957b90baceb7e79f52c5e833b0c3d0cfb5d26088",
+      "text": "pw as KEr"
+    },
+    {
+      "asset": "renderer",
+      "label": "eee",
+      "utf8_half_open": [
+        7522995,
+        7523518
+      ],
+      "bytes": 523,
+      "sha256": "3adcf1f5071286305372b6a379038db3362dcff2f65ce9dd72af938792942fc0",
+      "text": "function eee(t){const e=ne.c(13);let n,i,r,o;e[0]!==t?({text:i,tufte:r,default:n,...o}=t,e[0]=t,e[1]=n,e[2]=i,e[3]=r,e[4]=o):(n=e[1],i=e[2],r=e[3],o=e[4]);const{data:a}=us(\"markdown_style\"),c=a===\"tufte\",u=c?Yuo:xS,d=c?r:n,h=d?.className;let m;e[5]!==u||e[6]!==h||e[7]!==i||e[8]!==o?(m=p.jsx(u,{text:i,className:h,...o}),e[5]=u,e[6]=h,e[7]=i,e[8]=o,e[9]=m):m=e[9];const g=m;let _;return e[10]!==g||e[11]!==d?(_=d?.wrapperClassName?p.jsx(\"div\",{className:d.wrapperClassName,children:g}):g,e[10]=g,e[11]=d,e[12]=_):_=e[12],_}"
+    },
+    {
+      "asset": "renderer",
+      "label": "vho",
+      "utf8_half_open": [
+        7758506,
+        7760184
+      ],
+      "bytes": 1678,
+      "sha256": "147ead0ac5b2526b2c12b55ecfe2dd2eaaaa05ddca246b06e06843e719c7fbf8",
+      "text": "function vho(t){const e=ne.c(35),{title:n,description:i,badge:r,open:o,onOpenChange:a,settingKey:c,repoScope:u,onReset:d,resetLabel:h,showReset:m,resetActions:g,sourceInfo:_,disabled:v,children:x}=t;let w;e[0]!==n?(w=p.jsx(\"span\",{className:\"font-medium\",children:n}),e[0]=n,e[1]=w):w=e[1];let E;e[2]===Symbol.for(\"react.memo_cache_sentinel\")?(E=p.jsx(Ski,{}),e[2]=E):E=e[2];let k;e[3]!==r||e[4]!==w?(k=p.jsxs(\"div\",{className:\"flex items-center gap-2\",children:[w,E,r]}),e[3]=r,e[4]=w,e[5]=k):k=e[5];let I;e[6]!==i?(I=i!==void 0&&p.jsx(\"div\",{className:\"text-sm text-muted-foreground\",children:i}),e[6]=i,e[7]=I):I=e[7];let R;e[8]!==k||e[9]!==I?(R=p.jsxs(\"div\",{className:\"min-w-0 space-y-0.5\",children:[k,I]}),e[8]=k,e[9]=I,e[10]=R):R=e[10];const O=o&&\"rotate-180\";let D;e[11]!==O?(D=Xe(\"size-4 shrink-0 text-muted-foreground transition-transform\",O),e[11]=O,e[12]=D):D=e[12];let P;e[13]!==D?(P=p.jsx(Ml,{className:D}),e[13]=D,e[14]=P):P=e[14];let L;e[15]!==R||e[16]!==P?(L=p.jsxs(z9,{className:\"flex w-full items-center justify-between gap-4 py-0 text-left\",children:[R,P]}),e[15]=R,e[16]=P,e[17]=L):L=e[17];let B;e[18]!==x?(B=p.jsx(AS,{className:\"pt-3\",children:x}),e[18]=x,e[19]=B):B=e[19];let F;e[20]!==a||e[21]!==o||e[22]!==B||e[23]!==L?(F=p.jsxs(TS,{open:o,onOpenChange:a,children:[L,B]}),e[20]=a,e[21]=o,e[22]=B,e[23]=L,e[24]=F):F=e[24];let H;return e[25]!==v||e[26]!==d||e[27]!==u||e[28]!==g||e[29]!==h||e[30]!==c||e[31]!==m||e[32]!==_||e[33]!==F?(H=p.jsx(Al,{settingKey:c,repoScope:u,onReset:d,resetLabel:h,showReset:m,resetActions:g,resetDisabled:v,sourceInfo:_,children:F}),e[25]=v,e[26]=d,e[27]=u,e[28]=g,e[29]=h,e[30]=c,e[31]=m,e[32]=_,e[33]=F,e[34]=H):H=e[34],H}"
+    },
+    {
+      "asset": "renderer",
+      "label": "fGt",
+      "utf8_half_open": [
+        10562763,
+        10564328
+      ],
+      "bytes": 1565,
+      "sha256": "43d009069041c932c5c5d42f1f5b5d07df45c7892c3c265da1f83cf5b269cf84",
+      "text": "function fGt(t){const e=ne.c(45);let n,i,r,o,a,c,u,d,h,m;e[0]!==t?({value:m,onSave:o,debounceMs:u,disabled:d,isLocked:h,placeholder:a,ariaLabel:n,className:i,errorMessage:r,...c}=t,e[0]=t,e[1]=n,e[2]=i,e[3]=r,e[4]=o,e[5]=a,e[6]=c,e[7]=u,e[8]=d,e[9]=h,e[10]=m):(n=e[1],i=e[2],r=e[3],o=e[4],a=e[5],c=e[6],u=e[7],d=e[8],h=e[9],m=e[10]);const g=u===void 0?x0a:u,_=d===void 0?!1:d,v=h===void 0?!1:h;let x;e[11]!==r||e[12]!==o||e[13]!==m?(x={value:m,onSave:o,errorMessage:r},e[11]=r,e[12]=o,e[13]=m,e[14]=x):x=e[14];const{localValue:w,setLocalValue:E,handleFocus:k,handleBlur:I,save:R}=y0a(x);let O;e[15]!==R?(O=X=>{R(X).fireAndForget()},e[15]=R,e[16]=O):O=e[16];let D;e[17]!==g?(D={wait:g,onUnmount:w0a},e[17]=g,e[18]=D):D=e[18];const P=aD(O,D),L=v;let B;e[19]!==P||e[20]!==_||e[21]!==L||e[22]!==E?(B=X=>{E(X),!(_||L)&&P.maybeExecute(X)},e[19]=P,e[20]=_,e[21]=L,e[22]=E,e[23]=B):B=e[23];const F=B;let H;e[24]!==P||e[25]!==_||e[26]!==I||e[27]!==w||e[28]!==L||e[29]!==R?(H=()=>{I(),!(_||L)&&(P.cancel(),R(w).fireAndForget())},e[24]=P,e[25]=_,e[26]=I,e[27]=w,e[28]=L,e[29]=R,e[30]=H):H=e[30];const U=H;let z;e[31]!==n||e[32]!==i||e[33]!==_||e[34]!==F||e[35]!==U||e[36]!==k||e[37]!==w||e[38]!==a||e[39]!==L?(z={value:w,onChange:F,onFocus:k,onBlur:U,disabled:_,readOnly:L,placeholder:a,\"aria-label\":n,className:i},e[31]=n,e[32]=i,e[33]=_,e[34]=F,e[35]=U,e[36]=k,e[37]=w,e[38]=a,e[39]=L,e[40]=z):z=e[40];const G=z;let K;return e[41]!==G||e[42]!==c.as||e[43]!==c.render?(K=p.jsx(v0a,{as:c.as,render:c.render,renderProps:G}),e[41]=G,e[42]=c.as,e[43]=c.render,e[44]=K):K=e[44],K}"
+    },
+    {
+      "asset": "renderer",
+      "label": "vzi",
+      "utf8_half_open": [
+        10564367,
+        10564486
+      ],
+      "bytes": 119,
+      "sha256": "5c77d59d59964cf118e2b232b6d97ae9afd920e7756d0510528a8a556ca45860",
+      "text": "vzi=\"Add your preferences here. The agent will be told to prioritize these instructions over its default instructions.\""
+    },
+    {
+      "asset": "renderer",
+      "label": "yzi",
+      "utf8_half_open": [
+        10564487,
+        10565681
+      ],
+      "bytes": 1194,
+      "sha256": "a33c0b76d3cb70bfd1ff88d103a988980334ba3c3c2906ac94cfb1f3fa6d26b6",
+      "text": "function yzi(t){const e=ne.c(28),{repositoryId:n,repoPath:i,promptType:r,title:o,description:a,showPreview:c,placeholder:u}=t,d=c===void 0?!0:c,h=u===void 0?vzi:u;let m;e[0]!==r?(m=xsi(r),e[0]=r,e[1]=m):m=e[1];const g=m;let _;e[2]!==i||e[3]!==n?(_={id:n,mainWorktreePath:i},e[2]=i,e[3]=n,e[4]=_):_=e[4];let v;e[5]!==g||e[6]!==_?(v={key:g,for:_},e[5]=g,e[6]=_,e[7]=v):v=e[7];const x=us(v),w=x.data?.configurations[\"repo-local\"],E=x.data?.effective.value,k=w?.setValue;let I;e[8]!==k?(I=async H=>k===void 0?!0:k(H.trim()),e[8]=k,e[9]=I):I=e[9];const R=I,O=x.isLoading,D=k===void 0,P=x.data?.configurations;let L;e[10]!==P?(L=_Ze(P),e[10]=P,e[11]=L):L=e[11];let B;e[12]!==x.data?(B=Xzt(x.data),e[12]=x.data,e[13]=B):B=e[13];let F;return e[14]!==a||e[15]!==R||e[16]!==h||e[17]!==r||e[18]!==n||e[19]!==E||e[20]!==x.isLoading||e[21]!==g||e[22]!==d||e[23]!==L||e[24]!==B||e[25]!==D||e[26]!==o?(F=p.jsx(xzi,{repositoryKey:n,promptType:r,title:o,description:a,value:E,onSave:R,disabled:O,isLocked:D,settingKey:g,resetActions:L,sourceInfo:B,showPreview:d,placeholder:h}),e[14]=a,e[15]=R,e[16]=h,e[17]=r,e[18]=n,e[19]=E,e[20]=x.isLoading,e[21]=g,e[22]=d,e[23]=L,e[24]=B,e[25]=D,e[26]=o,e[27]=F):F=e[27],F}"
+    },
+    {
+      "asset": "renderer",
+      "label": "xzi",
+      "utf8_half_open": [
+        10565681,
+        10567992
+      ],
+      "bytes": 2311,
+      "sha256": "cee230b6bce1b836787dd558d33c523b9f96dfdd4615ee9f96a8178ceab9a6df",
+      "text": "function xzi(t){const e=ne.c(29),{getPreviewPreferences:n,repositoryKey:i,promptType:r,title:o,description:a,value:c,onSave:u,disabled:d,isLocked:h,settingKey:m,resetActions:g,sourceInfo:_,showPreview:v,placeholder:x}=t,w=d===void 0?!1:d,E=h===void 0?!1:h,k=v===void 0?!0:v,I=x===void 0?vzi:x,[R,O]=$.useState(!1);let D;e[0]!==r||e[1]!==i?(D=KEr(i,r),e[0]=r,e[1]=i,e[2]=D):D=e[2];const P=D,L=w||E;let B;e[3]!==c?(B=c!==void 0?p.jsx(\"span\",{className:\"rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground\",children:\"Customized\"}):void 0,e[3]=c,e[4]=B):B=e[4];const F=c??\"\",H=`${o} prompt`;let U;e[5]!==P||e[6]!==n||e[7]!==r||e[8]!==k||e[9]!==o?(U=K=>p.jsxs(p.Fragment,{children:[p.jsx(wS,{value:K.value,onChange:X=>K.onChange(X.target.value),onFocus:K.onFocus,onBlur:K.onBlur,disabled:K.disabled,readOnly:K.readOnly,placeholder:K.placeholder,\"aria-label\":K[\"aria-label\"],className:K.className,autoComplete:\"off\",autoCorrect:\"off\",autoCapitalize:\"off\",spellCheck:!1}),k?p.jsxs(p.Fragment,{children:[p.jsxs(\"button\",{type:\"button\",className:\"text-xs text-muted-foreground hover:text-foreground flex items-center gap-1\",onClick:()=>nr.openDialog(P),children:[p.jsx(ob,{className:\"size-3\"}),\"Preview\"]}),p.jsx(kg,{id:P,children:p.jsxs(nd,{className:\"max-w-2xl overflow-hidden flex flex-col\",children:[p.jsx(Hd,{children:p.jsxs(Bu,{children:[o,\" prompt\"]})}),p.jsx(\"div\",{className:\"overflow-y-auto flex-1 text-xs\",children:p.jsx(eee,{text:r!==\"general\"?cSe.getPromptPreview(r,n!==void 0?n(K.value):K.value):\"\"})})]})})]}):null]}),e[5]=P,e[6]=n,e[7]=r,e[8]=k,e[9]=o,e[10]=U):U=e[10];let z;e[11]!==w||e[12]!==E||e[13]!==u||e[14]!==I||e[15]!==U||e[16]!==F||e[17]!==H?(z=p.jsx(\"div\",{className:\"w-full space-y-3\",children:p.jsx(fGt,{value:F,onSave:u,disabled:w,isLocked:E,placeholder:I,className:\"w-full min-h-[120px] font-mono text-xs\",ariaLabel:H,errorMessage:\"Failed to save custom prompt\",render:U})}),e[11]=w,e[12]=E,e[13]=u,e[14]=I,e[15]=U,e[16]=F,e[17]=H,e[18]=z):z=e[18];let G;return e[19]!==a||e[20]!==R||e[21]!==g||e[22]!==m||e[23]!==_||e[24]!==z||e[25]!==L||e[26]!==B||e[27]!==o?(G=p.jsx(vho,{title:o,description:a,open:R,onOpenChange:O,settingKey:m,resetActions:g,sourceInfo:_,disabled:L,badge:B,children:z}),e[19]=a,e[20]=R,e[21]=g,e[22]=m,e[23]=_,e[24]=z,e[25]=L,e[26]=B,e[27]=o,e[28]=G):G=e[28],G}"
+    },
+    {
+      "asset": "renderer",
+      "label": "Q3a",
+      "utf8_half_open": [
+        10824812,
+        10827365
+      ],
+      "bytes": 2553,
+      "sha256": "533e0d7bc71a840efc265fd30617afe2e967bd8afb84aa9e68039196942f0134",
+      "text": "Q3a=[ir({tab:\"actions\",settingKey:\"spotlight_testing\",scopes:[\"workspace\"],title:\"Use spotlight testing\",description:\"Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.\",render:function({title:e,description:n,settingKey:i,repoContext:r}){const o=H9i(),a=us({key:\"spotlight_testing\",for:r}),c=a.data?.configurations[\"repo-local\"],u=$.useCallback(d=>{r!==void 0&&c?.setValue?.call(c,String(d)).then(async()=>{await q_.killProcessesForRepository(r.id)}).catch(()=>{kt.error(\"Failed to update spotlight testing\")}).fireAndForget()},[r,c]);return o?p.jsx(Zb,{title:e,description:p.jsxs(p.Fragment,{children:[n,\" \",p.jsxs(\"button\",{type:\"button\",className:\"inline-flex items-center text-foreground hover:underline\",onClick:()=>vs(l3.spotlightTesting).fireAndForget(),children:[\"Learn how\",p.jsx(co,{className:\"ml-0.5 size-3\"})]})]}),settingKey:i,resetActions:_Ze(a.data?.configurations),sourceInfo:Xzt(a.data),checked:a.data?.effective.value===\"true\",disabled:a.isLoading||c?.setValue===void 0,onCheckedChange:u}):null}}),S6e({settingKey:\"custom_prompt_code_review\",promptType:\"codeReview\",title:\"Code review preferences\",description:\"Add custom instructions sent to the agent when you click the Review button.\"}),S6e({settingKey:\"custom_prompt_create_pr\",promptType:\"createPR\",title:\"Create PR preferences\",description:\"Add custom instructions sent to the agent when you click the Create PR button.\"}),S6e({settingKey:\"custom_prompt_fix_errors\",promptType:\"fixErrors\",title:\"Fix errors preferences\",description:\"Add custom instructions sent to the agent when you click the Fix errors button.\"}),S6e({settingKey:\"custom_prompt_resolve_merge_conflicts\",promptType:\"resolveMergeConflicts\",title:\"Resolve conflicts preferences\",description:\"Add custom instructions sent to the agent when you click the Resolve conflicts button.\"}),S6e({settingKey:\"custom_prompt_rename_branch\",promptType:\"renameBranch\",title:\"Branch rename preferences\",description:\"Add custom instructions for generating branch names from your messages.\"}),ir({tab:\"actions\",settingKey:\"custom_prompt_general\",scopes:[\"workspace\"],title:\"General preferences\",description:\"Add custom instructions sent to the agent at the start of every new chat.\",render:function({title:e,description:n,repoContext:i}){return i===void 0?null:p.jsx(yzi,{repositoryId:i.id,repoPath:i.mainWorktreePath,promptType:\"general\",title:e,description:n??\"\",showPreview:!1,placeholder:\"Add custom instructions for all agents working in this repo.\"},`${i.id}-general`)}})]"
+    },
+    {
+      "asset": "renderer",
+      "label": "S6e",
+      "utf8_half_open": [
+        10827366,
+        10827705
+      ],
+      "bytes": 339,
+      "sha256": "1e22b4ee406d220a7facdd786521642be7652ef7306f472258ebc50c931c61ee",
+      "text": "function S6e({settingKey:t,promptType:e,title:n,description:i}){return ir({tab:\"actions\",settingKey:t,scopes:[\"workspace\"],title:n,description:i,render:function({title:o,description:a,repoContext:c}){return c===void 0?null:p.jsx(yzi,{repositoryId:c.id,repoPath:c.mainWorktreePath,promptType:e,title:o,description:a??\"\"},`${c.id}-${e}`)}})}"
+    },
+    {
+      "asset": "index",
+      "label": "_g",
+      "utf8_half_open": [
+        2496144,
+        2496929
+      ],
+      "bytes": 785,
+      "sha256": "dae2993d3db3a4c79ac6f9752ac7e10470ea41ef901e5fda50fa78b753459dd0",
+      "text": "function _g(t){if(t===void 0)return\"\";if(typeof t==\"string\")return t.trim()?`\nIMPORTANT: The following are the user's custom preferences. These preferences take precedence over any default guidelines or instructions provided above. When there is a conflict, always follow the user's preferences.\n## User Preferences\n<user-preferences>\n${t}\n</user-preferences>`:\"\";const e=[];return t.organization?.trim()&&e.push(`## Organization prompt\n\nBelow are the organization's preferences. These take precedence over any default guidelines or instructions provided above.\n\n${t.organization}`),t.user?.trim()&&e.push(`## User prompt\n\nBelow are the user's preferences. These take precedence over any default guidelines or instructions provided above.\n\n${t.user}`),e.length>0?`\n${e.join(`\n\n`)}`:\"\"}"
+    },
+    {
+      "asset": "index",
+      "label": "hue",
+      "utf8_half_open": [
+        2496929,
+        2498834
+      ],
+      "bytes": 1905,
+      "sha256": "89e931b2ccc63d3aedc152d57dffdea5b8cbc5c8f2a652e850e6a3b8ed93e31b",
+      "text": "function hue({branch:t,remoteName:e,targetBranch:s,isDraft:n,templateContent:r,agentType:i,userPreferences:o,prTitle:a,prDescription:c}){const l=i===\"claude\"?\"Use the `mcp__conductor__GetWorkspaceDiff` tool to review the PR diff\":`Use \\`git diff ${e}/${s}...\\` to review the PR diff`;let u=`Use \\`gh pr create --base ${s}`;a&&(u+=\" --title <title>\"),c&&(u+=\" --body <description>\"),u+=\"` to create a PR onto the target branch.\",a||(u+=\" Keep the title under 80 characters.\"),c||(u+=\" Keep the description under five sentences, unless the user instructed you otherwise. Describe not just changes made in this session but ALL changes in the workspace diff.\");const d=[\"If you have any skills related to creating PRs, invoke them now. Instructions there should take precedence over these instructions.\",\"Run `git status` to check for uncommitted changes. If there are any, review them with `git diff` and commit them. Follow any instructions the user gave you about writing commit messages.\",`If the branch has no upstream or has unpushed commits, push with \\`git push -u ${e} HEAD\\`. If the branch tracks a remote branch with a different name or on a different remote, push to that upstream instead.`,l,u];let h=`The user likes the current state of the code.\n\nThe current branch is ${t}.\nThe target branch is ${e}/${s}.\nThe user requested a ${n?\"draft \":\"\"}PR.\n\nFollow these steps to create a PR:\n\n${d.map(p=>`- ${p}`).join(`\n`)}\n\nIf any of these steps fail, ask the user for help.`;return a&&(h+=`\n\n## PR Title\n\nThe user has provided this PR title. Use it exactly as-is:\n${a}`),c&&(h+=`\n\n## PR Description\n\nThe user has provided this PR description. Use it exactly as-is:\n${c}`),r&&!c&&(h+=`\n\n## PR Description Template\n\nThis workspace has a PR template, which is provided below. Use it for writing the PR description, filling it in based on the changes made.\n\n\\`\\`\\`markdown\n${r}\n\\`\\`\\``),`${h}\n${_g(o)}`}"
+    },
+    {
+      "asset": "index",
+      "label": "fue",
+      "utf8_half_open": [
+        2498945,
+        2500179
+      ],
+      "bytes": 1234,
+      "sha256": "90883a21db7bc7dd6fd92f4bb632b2f1f27c75c64786d1ccf6ef2e765ddb6c09",
+      "text": "fue=({branchPrefix:t,userPreferences:e})=>{const s=t?`Include the prefix \"${t}\" before the branch name.`:\"Do not include any prefix in the branch name.\";return`You are generating a short conversation title.\n\nReturn only the title. Do not include backticks, explanations, quotes, markdown, or \\`git branch -m\\`.\n\nIf the user's message truly does not contain enough information to derive an acceptable title (for example, it is a greeting or otherwise contentless), respond with exactly the string ${pue} and nothing else. Do not include any prefix when using this escape hatch. The caller will discard that response and try again on the next message. Only use this escape hatch when no reasonable title can be inferred; do not use it just because the message is short or because it is a question rather than a task.\n\nRequirements:\n- Base the title on the user's latest message\n- Use concrete, specific language\n- Avoid abstract nouns\n- Keep it concise (<30 characters when possible)\n- Use lowercase words separated by hyphens\n- Do not reuse the current placeholder branch name\n- If the ideal title may collide with an existing branch, prefer the unsuffixed base name anyway; the caller will dedupe with -vN if needed\n- ${s}\n${_g(e)}\n`}"
+    },
+    {
+      "asset": "index",
+      "label": "gue",
+      "utf8_half_open": [
+        2500180,
+        2506424
+      ],
+      "bytes": 6244,
+      "sha256": "4204600bcdf8657660df374f6f52d39793c0d4ad645bb48f7276b2fce405f888",
+      "text": "gue=({remoteName:t,parentBranch:e,userPreferences:s})=>`# Review guidelines:\n\nYou are acting as a reviewer for a proposed code change made by another engineer.\n\nBelow are some default guidelines for determining whether the original author would appreciate the issue being flagged.\n\nThese are not the final word in determining whether an issue is a bug. In many cases, you will encounter other, more specific guidelines. These may be present elsewhere in a developer message, a user message, a file, or even elsewhere in this system message.\nThose guidelines should be considered to override these general instructions.\n\nHere are the general guidelines for determining whether something is a bug and should be flagged.\n\n1. It meaningfully impacts the accuracy, performance, security, or maintainability of the code.\n2. The bug is discrete and actionable (i.e. not a general issue with the codebase or a combination of multiple issues).\n3. Fixing the bug does not demand a level of rigor that is not present in the rest of the codebase (e.g. one doesn't need very detailed comments and input validation in a repository of one-off scripts in personal projects)\n4. The bug was introduced in the commit (pre-existing bugs should not be flagged).\n5. The author of the original PR would likely fix the issue if they were made aware of it.\n6. The bug does not rely on unstated assumptions about the codebase or author's intent.\n7. It is not enough to speculate that a change may disrupt another part of the codebase, to be considered a bug, one must identify the other parts of the code that are provably affected.\n8. The bug is clearly not just an intentional change by the original author.\n\nWhen flagging a bug, you will also provide an accompanying comment. Once again, these guidelines are not the final word on how to construct a comment -- defer to any subsequent guidelines that you encounter.\n\n1. The comment should be clear about why the issue is a bug.\n2. The comment should appropriately communicate the severity of the issue. It should not claim that an issue is more severe than it actually is.\n3. The comment should be brief. The body should be at most 1 paragraph. It should not introduce line breaks within the natural language flow unless it is necessary for the code fragment.\n4. The comment should not include any chunks of code longer than 3 lines. Any code chunks should be wrapped in markdown inline code tags or a code block.\n5. The comment should clearly and explicitly communicate the scenarios, environments, or inputs that are necessary for the bug to arise. The comment should immediately indicate that the issue's severity depends on these factors.\n6. The comment's tone should be matter-of-fact and not accusatory or overly positive. It should read as a helpful AI assistant suggestion without sounding too much like a human reviewer.\n7. The comment should be written such that the original author can immediately grasp the idea without close reading.\n8. The comment should avoid excessive flattery and comments that are not helpful to the original author. The comment should avoid phrasing like \"Great job ...\", \"Thanks for ...\".\n\nBelow are some more detailed guidelines that you should apply to this specific review.\n\nHOW MANY FINDINGS TO RETURN:\n\nOutput all findings that the original author would fix if they knew about it. If there is no finding that a person would definitely love to see and fix, prefer outputting no findings. Do not stop at the first qualifying finding. Continue until you've listed every qualifying finding.\n\nGUIDELINES:\n\n- Ignore trivial style unless it obscures meaning or violates documented standards.\n- Use one comment per distinct issue (or a multi-line range if necessary).\n- Use \\`\\`\\`suggestion blocks ONLY for concrete replacement code (minimal lines; no commentary inside the block).\n- In every \\`\\`\\`suggestion block, preserve the exact leading whitespace of the replaced lines (spaces vs tabs, number of spaces).\n- Do NOT introduce or remove outer indentation levels unless that is the actual fix.\n\nThe comments will be presented in the code review as inline comments. You should avoid providing unnecessary location details in the comment body. Always keep the line range as short as possible for interpreting the issue. Avoid ranges longer than 5–10 lines; instead, choose the most suitable subrange that pinpoints the problem.\n\n## Getting the diff\n\nUse the \\`mcp__conductor__GetWorkspaceDiff\\` tool to review the workspace diff. Start with \\`stat: true\\` to understand the files that changed, then request specific files as needed.\n\nIf the user asks you to address or read the comments on the diff (the comments shown in Conductor's Changes panel), use the \\`mcp__conductor__GetDiffComments\\` tool to read them. Pass \\`file: 'path/to/file'\\` to read the comments on a single file, or call it with no arguments to read every comment. Reading comments does not resolve or change them.\n\n## Fallback: if you don't have access to the workspace diff tool\n\nIf you don't have access to the \\`mcp__conductor__GetWorkspaceDiff\\` tool, use the following git commands to get the diff:\n\n\\`\\`\\`bash\n# Get the merge base between this branch and the target\nMERGE_BASE=$(git merge-base ${t}/${e} HEAD)\n\n# Get the committed diff against the merge base\ngit diff $MERGE_BASE HEAD\n\n# Get any uncommitted changes (staged and unstaged)\ngit diff HEAD\n\\`\\`\\`\n\nReview the combination of both outputs: the first shows all committed changes on this branch relative to the target, and the second shows any uncommitted work in progress.\n\nNo need to mention in your report whether or not you used one of the fallback strategies; it's usually irrelevant.\n\n## Output format\n\nPost inline comments for each issue using mcp__conductor__DiffComment:\n\n**IMPORTANT: Only post ONE comment per unique issue.**\n\nWrite out a list of issues found, along with the location of the comment. For example:\n\n<example>\n### **#1 Empty input causes crash**\n\nIf the input field is empty when page loads, the app will crash.\n\nFile: src/client/frontends/desktop/ui/Input.tsx\n\n### **#2 Dead code**\n\nThe getUserData function is now unused. It should be deleted.\n\nFile: src/client/frontends/desktop/core/UserData.ts\n</example>\n\n${_g(s)}`"
+    },
+    {
+      "asset": "index",
+      "label": "mue",
+      "utf8_half_open": [
+        2506425,
+        2506523
+      ],
+      "bytes": 98,
+      "sha256": "ffd199638fe8fcbc30c249b85839026bd8c2d668f767204d30704d40f4826e7d",
+      "text": "mue=({userPreferences:t})=>`Fix the failing CI actions. I've attached the failure logs.\n\n${_g(t)}`"
+    },
+    {
+      "asset": "index",
+      "label": "vue",
+      "utf8_half_open": [
+        2506524,
+        2506587
+      ],
+      "bytes": 63,
+      "sha256": "2f0bca1129d979fa02d3ba4a6aeeb112fe11cd1f15c521a562f959a46c726eff",
+      "text": "vue=({actionInstruction:t,userPreferences:e})=>`${t}\n\n${_g(e)}`"
+    },
+    {
+      "asset": "index",
+      "label": "fm",
+      "utf8_half_open": [
+        2513395,
+        2513427
+      ],
+      "bytes": 32,
+      "sha256": "23dbe01cba2610e2c452a2a6ff909788caf5a6afb4259996e61a7ee5d6d6f346",
+      "text": "fm=\"${YOUR_CUSTOM_INSTRUCTIONS}\""
+    },
+    {
+      "asset": "index",
+      "label": "Twt",
+      "utf8_half_open": [
+        2513428,
+        2514288
+      ],
+      "bytes": 860,
+      "sha256": "42a4af927ebe3753c3e4a07f79ae99d642d2e4cbd4d184bbe6fd237860f09a44",
+      "text": "Twt=(t,e)=>{switch(t){case\"codeReview\":return gue({remoteName:\"origin\",parentBranch:\"${TARGET_BRANCH}\",userPreferences:e??fm});case\"createPR\":return hue({branch:\"${YOUR_BRANCH}\",remoteName:\"origin\",targetBranch:\"${TARGET_BRANCH}\",isDraft:!1,templateContent:\"${PR_TEMPLATE from pull_request_template.md, .github/pull_request_template.md, or docs/pull_request_template.md}\",agentType:\"claude\",userPreferences:e??fm,prTitle:\"${PR_TITLE}\",prDescription:\"${PR_DESCRIPTION}\"});case\"fixErrors\":return mue({userPreferences:e??fm});case\"resolveMergeConflicts\":return vue({actionInstruction:\"Rebase your branch onto the remote branch (${TARGET_BRANCH}) and resolve conflicts. Stage the resolved files and run `git rebase --continue`, then push --force-with-lease.\",userPreferences:e??fm});case\"renameBranch\":return fue({branchPrefix:\"${PREFIX}\",userPreferences:e??fm})}}"
+    },
+    {
+      "asset": "index",
+      "label": "wg",
+      "utf8_half_open": [
+        2514582,
+        2515054
+      ],
+      "bytes": 472,
+      "sha256": "a771c1e8f56a89618869569f29f28ce77859fbf7ef8bbf2a7cefd24972904c72",
+      "text": "wg={doSuggestBranchNameFromMessage:fue,doCodeReview:gue,doCreatePR:hue,doCreateSetupScript:Pwt,doFixErrors:mue,doFixSetupScript:xwt,doResolveMergeConflicts:vue,contextBasic:_wt,contextCloudEnvironment:wwt,contextAttachments:Swt,contextLinkedDirectories:bwt,contextGeneralPreferences:kwt,contextFileReverted:Awt,contextBranchContinuedAfterMerge:Iwt,contextDiffComments:Cwt,contextFileComments:Rwt,doSummarizeConversation:ywt,doGenerateSessionTitle:Ewt,getPromptPreview:Twt}"
+    },
+    {
+      "asset": "index",
+      "label": "Vxt",
+      "utf8_half_open": [
+        3008849,
+        3009102
+      ],
+      "bytes": 253,
+      "sha256": "bd85b665f2fc97b3fb55092e894570831294646f76b17eba5a950d73e893517d",
+      "text": "Vxt={codeReview:\"custom_prompt_code_review\",createPR:\"custom_prompt_create_pr\",fixErrors:\"custom_prompt_fix_errors\",resolveMergeConflicts:\"custom_prompt_resolve_merge_conflicts\",renameBranch:\"custom_prompt_rename_branch\",general:\"custom_prompt_general\"}"
+    },
+    {
+      "asset": "index",
+      "label": "Ghe",
+      "utf8_half_open": [
+        3009103,
+        3009133
+      ],
+      "bytes": 30,
+      "sha256": "953d71c748a77d4b20aaa895cd7c6771cb8fa75c03537774a5c8b9672b5e9e87",
+      "text": "function Ghe(t){return Vxt[t]}"
+    },
+    {
+      "asset": "index",
+      "label": "rYt",
+      "utf8_half_open": [
+        3262310,
+        3262347
+      ],
+      "bytes": 37,
+      "sha256": "031f421d64b298bdc27f89a32d6d17212a260d3ca01807a3d0b0299a6218aa87",
+      "text": "rYt=(t,e)=>`prompt-preview-${t}-${e}`"
+    },
+    {
+      "asset": "index",
+      "label": "export:dY",
+      "utf8_half_open": [
+        3482289,
+        3482297
+      ],
+      "bytes": 8,
+      "sha256": "4fd8cc651c46efa8321448a1625dae63b897eb8822f3e2e182f2b6387049945c",
+      "text": "wg as dY"
+    },
+    {
+      "asset": "index",
+      "label": "export:ps",
+      "utf8_half_open": [
+        3490071,
+        3490080
+      ],
+      "bytes": 9,
+      "sha256": "3b2bee6c13777dfb7695586fbb648fa20a21fcf96ccf81930d181e2b34d7bae5",
+      "text": "Ghe as ps"
+    },
+    {
+      "asset": "index",
+      "label": "export:pw",
+      "utf8_half_open": [
+        3490110,
+        3490119
+      ],
+      "bytes": 9,
+      "sha256": "5728663e6e8e97e637e75b5ca47907cf708ce5ee671badb842d546c05222911d",
+      "text": "rYt as pw"
+    },
+    {
+      "asset": "index",
+      "label": "normal-consumer:doSuggestBranchNameFromMessage",
+      "utf8_half_open": [
+        2989970,
+        2990504
+      ],
+      "bytes": 534,
+      "sha256": "8c3a4ef727f5ab15a9c9f84eddb4699c429a1cd7f2c948a799e379d2ed47c04b",
+      "text": "async function sxt({message:t,branchPrefix:e,agentType:s,model:n,workspace:r,mainWorktreePath:i,messageId:o,userPreferences:a}){if(s!==\"claude\"&&s!==\"codex\"&&s!==\"cursor\"&&s!==\"acp\"||s===\"acp\"&&r.host!==M)return;const c=await nxt({message:t,messageId:o,workspace:r});return await JTt({agentType:s,prompt:`${wg.doSuggestBranchNameFromMessage({branchPrefix:e,userPreferences:a})}\n\nUser message:\n${c}`,workingDirectory:Is(r),host:r.host,model:n,workspaceContext:{host:r.host,mainWorktreePath:i,selectedWorkspacePath:Is(r)},workspace:r})}"
+    },
+    {
+      "asset": "index",
+      "label": "normal-consumer:doCreatePR",
+      "utf8_half_open": [
+        3212899,
+        3214321
+      ],
+      "bytes": 1422,
+      "sha256": "8349d6a87b75564cb165456c96ffd39c510d36fd8b828269085f32a1981d1d75",
+      "text": "async function gNt(t){const{localWorkspaceId:e,sessionId:s,isDraft:n,agentType:r}=t,i=n===void 0?!1:n,o=await Ba(e),a=Is(o),c=await ls(o.repositoryId),l=O$(zt.state,{localWorkspaceId:e});if(l!==void 0&&cs(l))throw new Error(\"Cannot create PR from detached HEAD\");const u=mpe({localWorkspaceId:e,fileName:\"PR instructions.md\"}),d=async()=>{const S=l!==void 0&&!cs(l)?l:await sh(e);if(cs(S))throw new Error(\"Cannot create PR from detached HEAD\");const k=await Ye.ensureQueryData(Jpe(a,o.host)),A=await bg({promptType:\"createPR\",repo:c,workspace:o,settingsService:Ie});return wg.doCreatePR({branch:S,remoteName:c.remoteName,targetBranch:o.intendedTargetBranch,isDraft:i,templateContent:k,agentType:r,userPreferences:A,prTitle:o.prTitle,prDescription:o.prDescription})},h=My({message:`Create a PR ${Kk({workspacePath:a,path:u.path,originalName:u.originalName})}`,sessionId:s,localWorkspaceId:e});h.catch(vNt);const m=(async()=>{let S;try{S=await d()}catch(k){const A=k;try{await Zpe({sessionId:s,mentionPath:u.path,pendingSend:h}),u.cancel()}catch{u.cancel({failed:!0})}throw Ct.error(`Failed to create PR: ${We(A)}`,e),A}await u.finishWithContent(S)})();m.catch(mNt);const[v,_]=await Promise.allSettled([h,m]);if(_.status===\"rejected\")throw u.cancel({failed:!0}),_.reason;if(v.status===\"rejected\")throw u.cancel({failed:!0}),v.reason;return Gt(\"git_create_pr\",{success:!0,method:\"agent\",workspace_id:e}),{localWorkspaceId:e}}"
+    },
+    {
+      "asset": "index",
+      "label": "normal-consumer:doResolveMergeConflicts",
+      "utf8_half_open": [
+        3218784,
+        3219142
+      ],
+      "bytes": 358,
+      "sha256": "70fc1c51d34ef44e3864a2fe60b40c8beea990d2bf9498e34dc760fc7cc8a98b",
+      "text": "async function lVt({localWorkspaceId:t,targetBranch:e,useRebase:s}){const n=await Ba(t),r=await ls(n.repositoryId),i=await bg({promptType:\"resolveMergeConflicts\",repo:r,workspace:n,settingsService:Ie});return wg.doResolveMergeConflicts({actionInstruction:sa(r.gitForge).resolveMergeConflictsAgentInstruction({targetBranch:e,useRebase:s}),userPreferences:i})}"
+    },
+    {
+      "asset": "index",
+      "label": "normal-consumer:doFixErrors",
+      "utf8_half_open": [
+        3219597,
+        3220642
+      ],
+      "bytes": 1045,
+      "sha256": "dad84fa664f9f44929e285f2564d2798a389c2a0e3f33f85f59bf989547ea19e",
+      "text": "async function RNt(t){const{workspacePath:e,workspaceHost:s,sessionId:n,localWorkspaceId:r,failingStatusCheckRollups:i}=t,o=await Ba(r),a=await ls(o.repositoryId),c=i.map(m=>jpe(s,m)),u=(await Promise.all(c)).map(m=>{if(!m)return;const v=`${m.name?.replace(/[^a-zA-Z0-9-_]/g,\"_\")}_${m.jobId}`,_=m.kind===\"logs\"?`${v}.log`:`${v}_status.txt`,S=m.kind===\"logs\"?`=== LOGS (last 1000 lines) ===\n${m.logs}`:`=== JOB STATUS ===\n${m.message}${m.annotation!==void 0?`\n\n=== GITHUB ANNOTATION ===\n${m.annotation}`:\"\"}`,k=`Failing Job Name: ${m.name}\nGitHub Job ID: ${m.jobId}\n\n${S}`,A=Bf(r,_,k);return Kk({workspacePath:e,path:A.path,originalName:A.originalName})}).filter(TNt),d=await bg({promptType:\"fixErrors\",repo:a,workspace:o,settingsService:Ie}),h=wg.doFixErrors({userPreferences:d}),p=Bf(r,\"Fix errors instructions.md\",h);return u.push(Kk({workspacePath:e,path:p.path,originalName:p.originalName})),await My({message:`Fix the failing CI actions. I've attached the failure logs. ${u.join(\" \")}`,sessionId:n,localWorkspaceId:r}),{localWorkspaceId:r}}"
+    },
+    {
+      "asset": "index",
+      "label": "normal-consumer:doCodeReview",
+      "utf8_half_open": [
+        3223765,
+        3225721
+      ],
+      "bytes": 1956,
+      "sha256": "4210a204755de2b0369459a00d2c7acec3b145a25b0a38f41df5a306311267e6",
+      "text": "async function GNt(t){const{localWorkspaceId:e,editBeforeSending:s}=t,n=await Ba(e),r=Is(n),i=await ls(n.repositoryId),o=O$(zt.state,{localWorkspaceId:e});if(o!==void 0&&cs(o))throw new Error(\"Cannot review: HEAD is detached\");const[a,c,l,u]=await Promise.all([pb({key:\"review_model\",repo:i,workspace:n}),pb({key:\"review_codex_thinking_level\",repo:i,workspace:n}),pb({key:\"review_claude_effort_level\",repo:i,workspace:n}),pb({key:\"review_fast_mode\",repo:i,workspace:n})]),d=Ra(a),h=qN(c),p=Zf(l),m=EN(d),v=await fe.createSession({localWorkspaceId:e,model:d,permissionMode:\"default\",thinkingLevel:m===\"codex\"?h:m===\"claude\"?p:void 0,fastMode:HNt({reviewFastModeSetting:u}),getTerminalTabCount:()=>zc.getWorkspaceTerminals(e).length}),_=mpe({localWorkspaceId:e,fileName:\"Review request.md\"}),S=`${efe} ${Kk({workspacePath:r,path:_.path,originalName:_.originalName})}`,k=async()=>{if(o===void 0){const C=await sh(e);if(cs(C))throw new Error(\"Cannot review: HEAD is detached\")}const I=await bg({promptType:\"codeReview\",repo:i,workspace:n,settingsService:Ie});return wg.doCodeReview({remoteName:i.remoteName,parentBranch:n.intendedTargetBranch,userPreferences:I})},A=async I=>{const{pendingSend:C}=I===void 0?{}:I;let R;try{R=await k()}catch(x){const O=x;try{vpe({sessionId:v.id,mentionPath:_.path}),await Zpe({sessionId:v.id,mentionPath:_.path,pendingSend:C}),_.cancel(),await UNt({sessionId:v.id,localWorkspaceId:e})}catch{_.cancel({failed:!0})}throw Ct.error(`Failed to start review: ${We(O)}`,e),O}await _.finishWithContent(R)};if(s)kt.drafts.set({sessionId:v.id,draft:S}),A().catch(VNt).fireAndForget();else{const I=kt.sendMessage({sessionId:v.id,localWorkspaceId:n.localId,message:S,mode:\"queue\"});I.catch(KNt);const C=A({pendingSend:I});C.catch(jNt);const[R,x]=await Promise.allSettled([I,C]);if(x.status===\"rejected\")throw _.cancel({failed:!0}),x.reason;if(R.status===\"rejected\")throw _.cancel({failed:!0}),R.reason}return{localWorkspaceId:e,session:v}}"
+    }
+  ],
+  "production": [
+    {
+      "path": "src/settings/RepoSettingsPage.tsx",
+      "bytes": 4446,
+      "sha256": "17d01f471d821c6fd23bdfe2f3efb2ba26354fb1b0c1a6982f40138b4df4331b",
+      "git_blob": "4d3f33f5d3ed5df786cabd0cab57de487d5f113c"
+    },
+    {
+      "path": "src/settings/rows/PromptRows.tsx",
+      "bytes": 5009,
+      "sha256": "5bdcf500f5d5019b4c2f21e5787870988f008ad230d8a18735c05312b938df34",
+      "git_blob": "340ac3b4563bc4efe88fdb2ff780ec26a508d4e9"
+    },
+    {
+      "path": "src/settings/rows/rowModel.ts",
+      "bytes": 2719,
+      "sha256": "84b5f89bd99617cb839430e690eb9cd085bc039061c4f0df5df2a1e4f5a2184d",
+      "git_blob": "f09958b3d71ce476ce8ce89d5d84aaefe5d43fcb"
+    },
+    {
+      "path": "src/settings/prompts.ts",
+      "bytes": 1812,
+      "sha256": "e5e14a07e57c11f9665e21857d09f6ca5ed44fcc916278e412ad4c6e65800f4c",
+      "git_blob": "b5cc9edffce8d9f1028cd6bd1fa82f49b6c6c2b8"
+    },
+    {
+      "path": "src/lib/persistence/producer.ts",
+      "bytes": 2128,
+      "sha256": "43563650aa075939f9f87adaaf79ac708783623a29c9c4c07a48bd64f32eff9b",
+      "git_blob": "42160a58860765171b67d7de3f4146078dfba458"
+    }
+  ],
+  "dedupe": "Ledger qualification-only clearance 2026-11-17: PromptRows has no current writer; five action Preview affordances versus General suppression are unreserved. Distinct from closed async, scrollback, search repository memory, search reveal, font and completion. Historical NOTES.md lists preview unbuilt, not a closure. No product lease granted.",
+  "contract": [
+    "Local repository Actions Q3a calls S6e for five action kinds and yzi with showPreview:false for General.",
+    "S6e/yzi forward repository kind, effective value and trimmed local save into xzi.",
+    "xzi disclosure opens fGt editor. Five action editors expose Preview; General suppresses it.",
+    "Preview opens a prompt-titled dialog and renders cSe.getPromptPreview(kind, current editor value) through eee. Preview itself does not execute the agent/action.",
+    "Renderer import dY as cSe resolves index export wg as dY; wg.getPromptPreview is Twt.",
+    "Twt supplies placeholder branch/target/template context to the same action prompt builders and the current draft as user preferences; _g omits blank preference text."
+  ],
+  "limits": [
+    "Original source parsed and hashed only, never evaluated.",
+    "No native/browser/runtime/package work or geometry/focus acceptance.",
+    "No assertion of full Settings parity or real persistence.",
+    "Action template text in OpenConductor may be an intentional local-agent adaptation; exact original prompt-text copying is not an acceptance condition of this UI gap."
+  ]
+}

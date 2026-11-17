@@ -1,0 +1,14 @@
+{
+  "source_id": "0299d310-8747-4fd7-a18a-49ef79e3345b",
+  "revision": 21879295,
+  "session_id": "1a72a8da-f339-4b7b-ab11-f65a8514910a",
+  "role": "tool_output",
+  "tool": "codemode",
+  "source_seq": 746,
+  "capture": "complete",
+  "offset": 0,
+  "end": 79,
+  "text": "Script completed\nWall time 5.7 seconds\nOutput:\n\n8599657 8761291 161634\nchecked\n",
+  "total_chars": 79,
+  "next_offset": null
+}

@@ -1,0 +1,33 @@
+{
+  "result": "PASS",
+  "original_readbacks": 12,
+  "outcomes": {
+    "baseline": {
+      "idle": true,
+      "default-pending": false,
+      "custom-pending": false,
+      "rejected": true,
+      "resolved": true,
+      "blank": true
+    },
+    "treatment": {
+      "idle": true,
+      "default-pending": true,
+      "custom-pending": true,
+      "rejected": true,
+      "resolved": true,
+      "blank": true
+    }
+  },
+  "baseline": "4/6 (two expected pending-hint failures)",
+  "treatment": "6/6",
+  "input_counts": [
+    28,
+    28
+  ],
+  "frozen_fixture_sources": 5,
+  "all_captured_events_trusted": true,
+  "cleanup_before_deadline": true,
+  "blank_click_note": "Disabled primary has pointer-events:none; real click hit footer, no submit or request.",
+  "limits": "Inert actual-component Linux Chrome; no original/full-App/native/provider/package acceptance"
+}

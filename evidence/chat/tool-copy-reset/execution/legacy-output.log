@@ -1,0 +1,364 @@
+(node:88) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:95) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Typed subagent failed-result disclosure: failed-task
+ok 1 - Typed subagent failed-result disclosure: failed-task
+  ---
+  duration_ms: 51.846168
+  type: 'test'
+  ...
+# Subtest: Typed subagent failed-result disclosure: success-task
+ok 2 - Typed subagent failed-result disclosure: success-task
+  ---
+  duration_ms: 11.678575
+  type: 'test'
+  ...
+# Subtest: Typed subagent failed-result disclosure: pending-task
+ok 3 - Typed subagent failed-result disclosure: pending-task
+  ---
+  duration_ms: 4.247879
+  type: 'test'
+  ...
+# Subtest: Typed subagent failed-result disclosure: empty-error-task
+ok 4 - Typed subagent failed-result disclosure: empty-error-task
+  ---
+  duration_ms: 3.809737
+  type: 'test'
+  ...
+# Subtest: Typed subagent failed-result disclosure: empty-success-task
+ok 5 - Typed subagent failed-result disclosure: empty-success-task
+  ---
+  duration_ms: 3.489939
+  type: 'test'
+  ...
+# Subtest: Typed subagent failed-result disclosure: untyped-missing-task
+ok 6 - Typed subagent failed-result disclosure: untyped-missing-task
+  ---
+  duration_ms: 7.070146
+  type: 'test'
+  ...
+# Subtest: Typed subagent failed-result disclosure: untyped-empty-task
+ok 7 - Typed subagent failed-result disclosure: untyped-empty-task
+  ---
+  duration_ms: 4.670609
+  type: 'test'
+  ...
+# Subtest: Typed subagent failed-result disclosure: untyped-general-purpose-task
+ok 8 - Typed subagent failed-result disclosure: untyped-general-purpose-task
+  ---
+  duration_ms: 4.360217
+  type: 'test'
+  ...
+# Subtest: Typed subagent failed-result disclosure: failed-agent
+ok 9 - Typed subagent failed-result disclosure: failed-agent
+  ---
+  duration_ms: 13.416539
+  type: 'test'
+  ...
+# Subtest: Typed subagent failed-result disclosure: success-agent
+ok 10 - Typed subagent failed-result disclosure: success-agent
+  ---
+  duration_ms: 39.927645
+  type: 'test'
+  ...
+# Subtest: Typed subagent failed-result disclosure: pending-agent
+ok 11 - Typed subagent failed-result disclosure: pending-agent
+  ---
+  duration_ms: 3.095217
+  type: 'test'
+  ...
+# Subtest: Typed subagent failed-result disclosure: empty-error-agent
+ok 12 - Typed subagent failed-result disclosure: empty-error-agent
+  ---
+  duration_ms: 2.79839
+  type: 'test'
+  ...
+# Subtest: Typed subagent failed-result disclosure: empty-success-agent
+ok 13 - Typed subagent failed-result disclosure: empty-success-agent
+  ---
+  duration_ms: 6.355622
+  type: 'test'
+  ...
+# Subtest: Typed subagent failed-result disclosure: untyped-missing-agent
+ok 14 - Typed subagent failed-result disclosure: untyped-missing-agent
+  ---
+  duration_ms: 5.475671
+  type: 'test'
+  ...
+# Subtest: Typed subagent failed-result disclosure: untyped-empty-agent
+ok 15 - Typed subagent failed-result disclosure: untyped-empty-agent
+  ---
+  duration_ms: 13.654788
+  type: 'test'
+  ...
+# Subtest: Typed subagent failed-result disclosure: untyped-general-purpose-agent
+ok 16 - Typed subagent failed-result disclosure: untyped-general-purpose-agent
+  ---
+  duration_ms: 3.545457
+  type: 'test'
+  ...
+# (node:103) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: typed subagent raw result: Task:text-blocks-concatenate
+ok 17 - typed subagent raw result: Task:text-blocks-concatenate
+  ---
+  duration_ms: 103.189836
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Task:verbatim-raw-string
+ok 18 - typed subagent raw result: Task:verbatim-raw-string
+  ---
+  duration_ms: 22.708184
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Task:object-text
+ok 19 - typed subagent raw result: Task:object-text
+  ---
+  duration_ms: 20.465273
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Task:structured-object
+ok 20 - typed subagent raw result: Task:structured-object
+  ---
+  duration_ms: 43.201574
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Task:empty-array-keeps-controls
+ok 21 - typed subagent raw result: Task:empty-array-keeps-controls
+  ---
+  duration_ms: 16.311007
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Task:explicit-null
+ok 22 - typed subagent raw result: Task:explicit-null
+  ---
+  duration_ms: 3.810537
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Task:explicit-false
+ok 23 - typed subagent raw result: Task:explicit-false
+  ---
+  duration_ms: 3.53328
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Task:explicit-zero
+ok 24 - typed subagent raw result: Task:explicit-zero
+  ---
+  duration_ms: 6.080076
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Task:explicit-empty-string
+ok 25 - typed subagent raw result: Task:explicit-empty-string
+  ---
+  duration_ms: 10.466203
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Task:legacy-success
+ok 26 - typed subagent raw result: Task:legacy-success
+  ---
+  duration_ms: 39.004267
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Task:legacy-error
+ok 27 - typed subagent raw result: Task:legacy-error
+  ---
+  duration_ms: 23.373596
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Task:pending
+ok 28 - typed subagent raw result: Task:pending
+  ---
+  duration_ms: 14.990369
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Task:raw-true-control
+ok 29 - typed subagent raw result: Task:raw-true-control
+  ---
+  duration_ms: 18.582286
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Task:matching-text-array-control
+ok 30 - typed subagent raw result: Task:matching-text-array-control
+  ---
+  duration_ms: 15.670571
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Agent:text-blocks-concatenate
+ok 31 - typed subagent raw result: Agent:text-blocks-concatenate
+  ---
+  duration_ms: 9.136689
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Agent:verbatim-raw-string
+ok 32 - typed subagent raw result: Agent:verbatim-raw-string
+  ---
+  duration_ms: 16.512787
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Agent:object-text
+ok 33 - typed subagent raw result: Agent:object-text
+  ---
+  duration_ms: 25.551422
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Agent:structured-object
+ok 34 - typed subagent raw result: Agent:structured-object
+  ---
+  duration_ms: 41.016822
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Agent:empty-array-keeps-controls
+ok 35 - typed subagent raw result: Agent:empty-array-keeps-controls
+  ---
+  duration_ms: 18.55708
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Agent:explicit-null
+ok 36 - typed subagent raw result: Agent:explicit-null
+  ---
+  duration_ms: 7.362467
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Agent:explicit-false
+ok 37 - typed subagent raw result: Agent:explicit-false
+  ---
+  duration_ms: 7.617231
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Agent:explicit-zero
+ok 38 - typed subagent raw result: Agent:explicit-zero
+  ---
+  duration_ms: 12.693904
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Agent:explicit-empty-string
+ok 39 - typed subagent raw result: Agent:explicit-empty-string
+  ---
+  duration_ms: 3.458007
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Agent:legacy-success
+ok 40 - typed subagent raw result: Agent:legacy-success
+  ---
+  duration_ms: 8.64683
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Agent:legacy-error
+ok 41 - typed subagent raw result: Agent:legacy-error
+  ---
+  duration_ms: 9.817928
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Agent:pending
+ok 42 - typed subagent raw result: Agent:pending
+  ---
+  duration_ms: 6.230675
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Agent:raw-true-control
+ok 43 - typed subagent raw result: Agent:raw-true-control
+  ---
+  duration_ms: 8.322445
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: Agent:matching-text-array-control
+ok 44 - typed subagent raw result: Agent:matching-text-array-control
+  ---
+  duration_ms: 10.96077
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: sub-agent:text-blocks-concatenate
+ok 45 - typed subagent raw result: sub-agent:text-blocks-concatenate
+  ---
+  duration_ms: 10.089041
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: sub-agent:verbatim-raw-string
+ok 46 - typed subagent raw result: sub-agent:verbatim-raw-string
+  ---
+  duration_ms: 11.314143
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: sub-agent:object-text
+ok 47 - typed subagent raw result: sub-agent:object-text
+  ---
+  duration_ms: 7.115084
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: sub-agent:structured-object
+ok 48 - typed subagent raw result: sub-agent:structured-object
+  ---
+  duration_ms: 9.958941
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: sub-agent:empty-array-keeps-controls
+ok 49 - typed subagent raw result: sub-agent:empty-array-keeps-controls
+  ---
+  duration_ms: 11.333951
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: sub-agent:explicit-null
+ok 50 - typed subagent raw result: sub-agent:explicit-null
+  ---
+  duration_ms: 2.571029
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: sub-agent:explicit-false
+ok 51 - typed subagent raw result: sub-agent:explicit-false
+  ---
+  duration_ms: 3.419053
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: sub-agent:explicit-zero
+ok 52 - typed subagent raw result: sub-agent:explicit-zero
+  ---
+  duration_ms: 4.859475
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: sub-agent:explicit-empty-string
+ok 53 - typed subagent raw result: sub-agent:explicit-empty-string
+  ---
+  duration_ms: 3.599491
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: sub-agent:legacy-success
+ok 54 - typed subagent raw result: sub-agent:legacy-success
+  ---
+  duration_ms: 22.414427
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: sub-agent:legacy-error
+ok 55 - typed subagent raw result: sub-agent:legacy-error
+  ---
+  duration_ms: 31.406477
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: sub-agent:pending
+ok 56 - typed subagent raw result: sub-agent:pending
+  ---
+  duration_ms: 2.865135
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: sub-agent:raw-true-control
+ok 57 - typed subagent raw result: sub-agent:raw-true-control
+  ---
+  duration_ms: 11.97241
+  type: 'test'
+  ...
+# Subtest: typed subagent raw result: sub-agent:matching-text-array-control
+ok 58 - typed subagent raw result: sub-agent:matching-text-array-control
+  ---
+  duration_ms: 13.490145
+  type: 'test'
+  ...
+1..58
+# tests 58
+# suites 0
+# pass 58
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3497.097113

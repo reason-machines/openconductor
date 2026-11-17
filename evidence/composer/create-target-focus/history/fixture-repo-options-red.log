@@ -1,0 +1,1 @@
+src/components/createWorkspaceTargetFocus.test.ts(4,10): error TS6133: 'dirname' is declared but its value is never read.

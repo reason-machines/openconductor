@@ -1,0 +1,17 @@
+{
+  "released_at": "2026-11-17T20:00:16.500769Z",
+  "deadline": "2026-11-17T20:04:41.287276Z",
+  "owned_tab_id": 1440146781,
+  "owned_tabs": [],
+  "preview_server_id": "f7e0902f-c952-478d-907f-7cfa8c45bbc8",
+  "preview_state": "stopped",
+  "listening": null,
+  "own_server_ps": [],
+  "independent_port48733_bind": "PASS",
+  "mem_available_kib": 26251928,
+  "release_recipients": [
+    "ddfc6518-d50f-46a6-b83c-c3a18aa07e43",
+    "49e3976d-9553-42d8-8101-2504177fbb97"
+  ],
+  "limits": "Cloud-only actual-component fixture; no native/Mac/provider/full-App or real repository creation."
+}

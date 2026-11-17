@@ -53,7 +53,7 @@ for (const input of fixtures.cases) {
       exports: production,
       navigator: { clipboard: { writeText: async (value: string) => { copied.push(value); } } },
       setTimeout(callback: () => void, delay: number) {
-        assert.equal(delay, 1500, "Only the copy confirmation timer reaches this boundary");
+        assert.equal(delay, 2000, "Only the copy confirmation timer reaches this boundary");
         timers.push(callback);
         return timers.length;
       },

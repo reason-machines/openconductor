@@ -1,0 +1,11 @@
+{
+  "files": {
+    "cases.json": "1e9488d2e5ee3b3042dafe1d6710cd36f705e032ed67a3ce6de831ede32d9e2b",
+    "probe.rs": "b0915674084f8856e2f61b84a3e31a9abd04e79901362f7a9c359677eb43de9f",
+    "fixture.test.ts": "3f12dbc9fc6d588e45794a3ed68777bd047cddcff23fb9001831aaf3cc1a4bfc"
+  },
+  "source_packet": "7f5de4bc5b3543972e4ae0af2305ce356a70d26e795ce5fba211ddc29c8e2a17",
+  "stage": "FROZEN_BEFORE_BASELINE",
+  "assertions": "6 native producer tests + 6 actual mounted frontend route tests",
+  "source": "normal item started/completed with string query only; no mapped payload synthesis"
+}

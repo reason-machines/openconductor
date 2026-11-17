@@ -77,7 +77,7 @@ async function fixture({ agent = "reason", page = false, path = "/synthetic/proj
       compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true },
     }).outputText, {
       exports, console, TextDecoder, TextEncoder, Uint8Array, crypto: { randomUUID: () => "pending-launch" },
-      document: { activeElement: null }, HTMLElement: class {},
+      document: { activeElement: null, addEventListener() {}, removeEventListener() {} }, HTMLElement: class {},
       require(name: string) {
         if (name === "react" || name === "react/jsx-runtime" || name === "fuzzysort" || name === "vscode-material-icons") return dependencies(name);
         if (suggestionModules[name]) return load(suggestionModules[name]);

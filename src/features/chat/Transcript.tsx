@@ -12,6 +12,7 @@ import { EllipsisIcon, MessageSquarePlusIcon, SplitIcon, Undo2Icon } from "../..
 import { turnMenuItems, TURN_MENU_TOOLTIP, TURN_MENU_TRIGGER_LABEL, type TurnMenuItem } from "./turnMenu.ts";
 import { LinkMenuNotify, LinkWithMenu } from "./LinkMenu.tsx";
 import type { ChatTranscript } from "./reducer.ts";
+import type { ReasonPath } from "./reason.ts";
 import { buildRows, isToolExpanded, type PartView, type ReportOrigin } from "./view.ts";
 import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBlock, type DisplayRow, type ToolSummary } from "./toolGroups.ts";
 import { Markdown, type MarkdownOptions } from "./markdown.ts";
@@ -60,7 +61,7 @@ export interface TranscriptProps {
   /** The workspace folder, so tool rows show paths inside it relative. */
   workspacePath?: string;
   /** A file badge in a tool row was clicked. */
-  onOpenFile?: (path: string) => void;
+  onOpenFile?: (path: string, target?: ReasonPath) => void;
   /** Clock for the footer's time of day (tests pin it). */
   now?: () => number;
   /** Toasts, e.g. a markdown link's "Copy link address" (LinkMenu.tsx). */
@@ -194,7 +195,7 @@ interface RowContext {
   resetDisabled: boolean;
   turnFooter?: (turnId: string) => ReactNode;
   workspacePath?: string;
-  onOpenFile?: (path: string) => void;
+  onOpenFile?: (path: string, target?: ReasonPath) => void;
   now: () => number;
   toolNow: () => number;
   notify?: TranscriptProps["notify"];
@@ -213,7 +214,7 @@ function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowConte
           <div className="oc-user-col">
             <div className="chat-bubble oc-bubble">
               <div className="oc-user-text">{row.message.userContent ? <SentUserContent content={row.message.userContent} workspacePath={ctx.workspacePath} onOpenFile={ctx.onOpenFile} /> : <UserText text={row.text} />}</div>
-              <MessageActions text={userMessageCopyText(row.message)} />
+              <MessageActions text={userMessageCopyText(row.message)} notify={ctx.notify} />
             </div>
             {row.cancelled ? <div className="chat-cancelled">Cancelled</div> : null}
           </div>
@@ -250,7 +251,7 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
       {row.status === "failed" && !interrupted ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
       {interrupted ? <span className="chat-badge">Interrupted by user</span> : null}
       <span className="chat-turn-actions">
-        {row.finalText ? <CopyButton text={row.finalText} label="Copy final message" /> : null}
+        {row.finalText ? <CopyButton text={row.finalText} label="Copy final message" notify={ctx.notify} /> : null}
         {row.retryPrompt && onRetry ? (
           <button type="button" className="chat-action oc-text-action" onClick={() => onRetry(row.retryPrompt!, row.turnId)}>
             Retry
@@ -406,7 +407,7 @@ function Part({ partKey, part, preview = false, group, ctx }: { partKey: string;
               started: { open: ctx.isOpen(`${call.id}-started`), onToggle: () => ctx.onToggle(`${call.id}-started`) },
             } : undefined}
             workspacePath={ctx.workspacePath}
-            onOpenFile={ctx.onOpenFile}
+            onOpenFile={ctx.onOpenFile ? (path) => ctx.onOpenFile?.(path, call.tool.fileTarget) : undefined}
           />
         </div>
       );
@@ -455,27 +456,27 @@ function ThinkingRow({ id, text, streaming, group, ctx }: { id: string; text: st
   );
 }
 
-function MessageActions({ text }: { text: string }) {
+function MessageActions({ text, notify }: { text: string; notify?: TranscriptProps["notify"] }) {
   return (
     <div className="chat-msg-actions">
-      <CopyButton text={text} label="Copy message" />
+      <CopyButton text={text} label="Copy message" notify={notify} />
     </div>
   );
 }
 
-function CopyButton({ text, label }: { text: string; label: string }) {
-  const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
+function CopyButton({ text, label, notify }: { text: string; label: string; notify?: TranscriptProps["notify"] }) {
+  const [state, setState] = useState<"idle" | "copied">("idle");
   async function copy() {
     try {
       await navigator.clipboard.writeText(text);
       setState("copied");
+      // Conductor's SimpleCopyButton (`t0`) resets only successful copies after 2s.
+      setTimeout(() => setState("idle"), 2000);
     } catch {
-      setState("failed");
+      notify?.("error", "Failed to copy", { description: "Please try again." });
     }
-    // Conductor's SimpleCopyButton (`t0`) shows the check and "Copied!" for 2s.
-    setTimeout(() => setState("idle"), 2000);
   }
-  const title = state === "copied" ? "Copied!" : state === "failed" ? "Couldn't copy" : label;
+  const title = state === "copied" ? "Copied!" : label;
   return (
     <Tooltip content={title}>
       <button type="button" className="oc-icon-action" onClick={copy} aria-label={label}>

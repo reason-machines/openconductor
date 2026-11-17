@@ -1,0 +1,16 @@
+{
+  "before": {
+    "uploaded": true,
+    "kind": "image",
+    "embed_url": "https://api.reasonmachines.com/media/pr-screenshots/979ba491-301e-404a-bd0b-360e5e9f9bb2/99ef5a1d3cdb2f5430eaa45f09b4d0ee/7c55dcab-8f8e-4494-b8b2-e01f53cfda0e.png",
+    "markdown": "![Before: custom Meta+D leaves Quick open unchanged](https://api.reasonmachines.com/media/pr-screenshots/979ba491-301e-404a-bd0b-360e5e9f9bb2/99ef5a1d3cdb2f5430eaa45f09b4d0ee/7c55dcab-8f8e-4494-b8b2-e01f53cfda0e.png#w=1208&h=601)",
+    "note": "Uploaded. Put the returned markdown in the pull request body."
+  },
+  "after": {
+    "uploaded": true,
+    "kind": "image",
+    "embed_url": "https://api.reasonmachines.com/media/pr-screenshots/979ba491-301e-404a-bd0b-360e5e9f9bb2/5746e36762362af93e2ce720445568e7/17155f7b-46e7-4384-ac13-07a87264e455.png",
+    "markdown": "![After: the same custom Meta+D opens the selected diff](https://api.reasonmachines.com/media/pr-screenshots/979ba491-301e-404a-bd0b-360e5e9f9bb2/5746e36762362af93e2ce720445568e7/17155f7b-46e7-4384-ac13-07a87264e455.png#w=1208&h=601)",
+    "note": "Uploaded. Put the returned markdown in the pull request body."
+  }
+}

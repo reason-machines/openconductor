@@ -1,0 +1,20 @@
+[
+  {
+    "file": "install.log.gz",
+    "raw_bytes": 202,
+    "raw_sha256": "432250fdad86d1ae1b850bc9ef75717267bb932979e7ceb5de781a4c61a15145",
+    "gzip_sha256": "3fc16865564382e4576dc12709e64c27af13e39f2803bd26604a71804d996886"
+  },
+  {
+    "file": "build.log.gz",
+    "raw_bytes": 180551,
+    "raw_sha256": "739191926d218789512e3b126f2e08044d167c83f4ec7f87f26393ebf4c62d29",
+    "gzip_sha256": "ab80e66aa48e541c8bf381aa20fe02246f43fc28c19b639243ec91a87241823c"
+  },
+  {
+    "file": "colors.log.gz",
+    "raw_bytes": 2205,
+    "raw_sha256": "de9eb3a0d77db546d28cc70f31fe049bf6632b8b60a283e0ab466e96aa5ec976",
+    "gzip_sha256": "3c396a754634b87d6d3aefd852792ba1721790c1dd2489847bc237953ebe2c2a"
+  }
+]

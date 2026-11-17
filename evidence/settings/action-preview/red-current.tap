@@ -1,0 +1,136 @@
+(node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:88) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: code_review: expanded action Preview displays the current unsaved draft without launching or saving
+not ok 1 - code_review: expanded action Preview displays the current unsaved draft without launching or saving
+  ---
+  duration_ms: 104.57461
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-action-preview/preview.test.cjs:58:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Code review preferences exposes one Preview button
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-action-preview/preview.test.cjs:65:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: create_pr: expanded action Preview displays the current unsaved draft without launching or saving
+not ok 2 - create_pr: expanded action Preview displays the current unsaved draft without launching or saving
+  ---
+  duration_ms: 36.575395
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-action-preview/preview.test.cjs:58:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Create PR preferences exposes one Preview button
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-action-preview/preview.test.cjs:65:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: fix_errors: expanded action Preview displays the current unsaved draft without launching or saving
+not ok 3 - fix_errors: expanded action Preview displays the current unsaved draft without launching or saving
+  ---
+  duration_ms: 40.321315
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-action-preview/preview.test.cjs:58:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Fix errors preferences exposes one Preview button
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-action-preview/preview.test.cjs:65:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: resolve_merge_conflicts: expanded action Preview displays the current unsaved draft without launching or saving
+not ok 4 - resolve_merge_conflicts: expanded action Preview displays the current unsaved draft without launching or saving
+  ---
+  duration_ms: 21.986268
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-action-preview/preview.test.cjs:58:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Resolve conflicts preferences exposes one Preview button
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-action-preview/preview.test.cjs:65:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: rename_branch: expanded action Preview displays the current unsaved draft without launching or saving
+not ok 5 - rename_branch: expanded action Preview displays the current unsaved draft without launching or saving
+  ---
+  duration_ms: 18.914969
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-action-preview/preview.test.cjs:58:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Branch rename preferences exposes one Preview button
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-action-preview/preview.test.cjs:65:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: General preferences explicitly suppress Preview even when expanded and customized
+ok 6 - General preferences explicitly suppress Preview even when expanded and customized
+  ---
+  duration_ms: 17.35897
+  type: 'test'
+  ...
+# Subtest: collapsed action editors expose no Preview and preserve the six-row order
+ok 7 - collapsed action editors expose no Preview and preserve the six-row order
+  ---
+  duration_ms: 25.467651
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 2
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 577.981336

@@ -1,0 +1,28 @@
+{
+  "admission": "RUN-SCRIPT-DIALOG-PRIMARY-1F-RED-20261117T222344099Z",
+  "start_utc": "2026-11-17T22:24:07.501225255Z",
+  "release_utc": "2026-11-17T22:24:12.699556643Z",
+  "exit": 1,
+  "tests": 15,
+  "pass": 8,
+  "fail": 7,
+  "target_failure_tests": [
+    1,
+    2,
+    4,
+    5,
+    7,
+    8
+  ],
+  "additional_control_failure": {
+    "test": 6,
+    "actual_writes": 2,
+    "expected_writes": 1
+  },
+  "skipped": 0,
+  "cancelled": 0,
+  "todo": 0,
+  "setup_failures": 0,
+  "no_survivors_observed": true,
+  "rss": "not sampled;1024MiB V8 oldspace per process is not group RSS cap"
+}

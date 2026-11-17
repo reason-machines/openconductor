@@ -1,0 +1,1 @@
+function iEt(t,e){const n=IMi(t,e),i=(n.modifiers??[]).map(r=>{switch(r){case"meta":return"Meta";case"ctrl":return"Ctrl";case"alt":return"Alt";case"shift":return"Shift"}}).join("-");return i===""?n.key.value:`${i}-${n.key.value}`}

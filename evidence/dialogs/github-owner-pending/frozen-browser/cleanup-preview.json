@@ -1,0 +1,225 @@
+{
+  "servers": [
+    {
+      "server_id": "f7e0902f-c952-478d-907f-7cfa8c45bbc8",
+      "port": 48733,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-17T19:50:09.678Z",
+      "expires_at": "2026-11-18T07:50:09.724Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n127.0.0.1 - - [17/Nov/2026 19:50:15] \"GET /baseline.html HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 19:50:15] \"GET /baseline.css HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 19:50:15] \"GET /baseline.js HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 19:51:46] \"GET /baseline.html HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:51:46] \"GET /baseline.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:51:46] \"GET /baseline.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:53:06] \"GET /baseline.html HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:53:06] \"GET /baseline.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:53:06] \"GET /baseline.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:54:11] \"GET /baseline.html HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:54:11] \"GET /baseline.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:54:11] \"GET /baseline.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:54:58] \"GET /treatment.html HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 19:54:58] \"GET /treatment.css HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 19:54:58] \"GET /treatment.js HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 19:56:50] \"GET /treatment.html HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:56:50] \"GET /treatment.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:56:50] \"GET /treatment.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:58:55] \"GET /treatment.html HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:58:55] \"GET /treatment.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:58:55] \"GET /treatment.css HTTP/1.1\" 304 -\n",
+      "listening": null
+    },
+    {
+      "server_id": "fc099f4b-8bd9-49d8-9bad-ab642f375d31",
+      "port": 48733,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-17T18:53:57.913Z",
+      "expires_at": "2026-11-18T06:53:57.999Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n127.0.0.1 - - [17/Nov/2026 18:54:12] \"GET /baseline.html HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:54:12] \"GET /baseline.css HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:54:12] \"GET /baseline.js HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:55:30] \"GET /baseline.html?shortcut=custom HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:55:30] \"GET /baseline.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:55:30] \"GET /baseline.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:55:54] \"GET /baseline.html HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:55:54] \"GET /baseline.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:55:54] \"GET /baseline.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:56:28] \"GET /baseline.html HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:56:28] \"GET /baseline.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:56:28] \"GET /baseline.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:57:02] \"GET /baseline.html HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:57:02] \"GET /baseline.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:57:02] \"GET /baseline.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:57:36] \"GET /treatment.html HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:57:36] \"GET /treatment.js HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:57:36] \"GET /treatment.css HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:58:13] \"GET /treatment.html?shortcut=custom HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:58:13] \"GET /treatment.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:58:13] \"GET /treatment.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:58:41] \"GET /treatment.html HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:58:41] \"GET /treatment.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:58:41] \"GET /treatment.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:59:23] \"GET /treatment.html HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:59:24] \"GET /treatment.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:59:24] \"GET /treatment.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:00:06] \"GET /treatment.html HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:00:06] \"GET /treatment.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 19:00:06] \"GET /treatment.css HTTP/1.1\" 304 -\n",
+      "listening": null
+    },
+    {
+      "server_id": "6ee12688-422c-44e0-938f-bc446dabac86",
+      "port": 48733,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-17T18:08:30.076Z",
+      "expires_at": "2026-11-18T06:08:30.121Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n127.0.0.1 - - [17/Nov/2026 18:08:36] \"GET /baseline.html?scenario=default HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:08:36] \"GET /baseline.css HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:08:36] \"GET /baseline.js HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:10:29] \"GET /baseline.html?scenario=custom HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:10:29] \"GET /baseline.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:10:29] \"GET /baseline.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:10:52] \"GET /baseline.html?scenario=custom&case=removed-default HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:11:04] \"GET /baseline.html?scenario=custom&case=plain-enter HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:11:04] \"GET /baseline.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:11:04] \"GET /baseline.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:11:16] \"GET /baseline.html?scenario=additional HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:11:29] \"GET /baseline.html?scenario=physical HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:11:42] \"GET /baseline.html?scenario=custom&case=navigation-click HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:11:42] \"GET /baseline.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:11:42] \"GET /baseline.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:12:17] \"GET /baseline.html?scenario=empty HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:12:29] \"GET /treatment.html?scenario=default HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:12:29] \"GET /treatment.css HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:12:29] \"GET /treatment.js HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:12:48] \"GET /treatment.html?scenario=custom HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:13:33] \"GET /treatment.html?scenario=custom&case=removed-default HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:13:33] \"GET /treatment.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:13:33] \"GET /treatment.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:13:44] \"GET /treatment.html?scenario=custom&case=plain-enter HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:13:55] \"GET /treatment.html?scenario=additional HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:14:09] \"GET /treatment.html?scenario=physical HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:14:18] \"GET /treatment.html?scenario=custom&case=navigation-click HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:14:40] \"GET /treatment.html?scenario=empty HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:14:40] \"GET /treatment.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:14:40] \"GET /treatment.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:14:58] \"GET /baseline.html?scenario=empty&case=settled-observer HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 18:14:58] \"GET /baseline.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 18:14:58] \"GET /baseline.js HTTP/1.1\" 304 -\n",
+      "listening": null
+    },
+    {
+      "server_id": "628ba776-2c07-4cd2-b74d-fb16dd2ac87f",
+      "port": 48733,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-17T17:22:36.388Z",
+      "expires_at": "2026-11-18T05:22:36.443Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n127.0.0.1 - - [17/Nov/2026 17:22:46] \"GET /?mode=capability HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 17:22:46] \"GET /fixture.css HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 17:22:46] \"GET /fixture.js HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 17:23:54] \"GET / HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 17:23:54] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 17:23:54] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 17:24:30] \"GET / HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 17:24:30] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 17:24:30] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 17:25:13] \"GET / HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 17:25:13] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 17:25:13] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 17:26:13] \"GET / HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 17:26:13] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 17:26:13] \"GET /fixture.js HTTP/1.1\" 304 -\n",
+      "listening": null
+    },
+    {
+      "server_id": "b50854eb-0a78-4fa7-ae4c-0e72a837fd54",
+      "port": 48733,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-17T17:00:00.090Z",
+      "expires_at": "2026-11-18T05:00:00.153Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n127.0.0.1 - - [17/Nov/2026 17:00:05] \"GET /?mode=capability HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 17:00:05] \"GET /fixture.css HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 17:00:05] \"GET /fixture.js HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 17:01:16] \"GET / HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 17:02:01] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 17:02:01] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 17:03:26] \"GET / HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 17:04:26] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 17:04:26] \"GET /fixture.js HTTP/1.1\" 304 -\n",
+      "listening": null
+    },
+    {
+      "server_id": "9b614d45-a3de-4c40-8293-6f038a63824c",
+      "port": 48733,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-17T15:49:00.066Z",
+      "expires_at": "2026-11-18T03:49:00.120Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n127.0.0.1 - - [17/Nov/2026 15:49:08] \"GET /?mode=capability&treatment=1 HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:49:08] \"GET /fixture.css HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:49:08] \"GET /fixture.js HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:50:18] \"GET /?case=treatment-url-enter HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:50:18] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:50:18] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:51:04] \"GET /?case=treatment-location-enter HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:51:04] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:51:04] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:51:30] \"GET /?case=treatment-location-meta-enter HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:51:30] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:51:30] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:51:55] \"GET /?case=treatment-url-meta-enter HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:51:55] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:51:55] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:53:22] \"GET /?case=treatment-primary-click HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:53:22] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:53:22] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:53:50] \"GET /?case=treatment-blank HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:53:50] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:53:50] \"GET /fixture.js HTTP/1.1\" 304 -\n",
+      "listening": null
+    },
+    {
+      "server_id": "79d5c549-2aa2-4acd-88e3-79358ab0762b",
+      "port": 48733,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-17T15:30:04.086Z",
+      "expires_at": "2026-11-18T03:30:04.157Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n127.0.0.1 - - [17/Nov/2026 15:30:14] \"GET /?mode=capability HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:30:14] \"GET /fixture.css HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:30:14] \"GET /fixture.js HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:32:27] \"GET /?case=actual-url-enter HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:32:27] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:32:27] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:34:03] \"GET /?case=actual-location-enter HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:34:03] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:34:03] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:34:33] \"GET /?case=actual-url-meta-enter HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:35:07] \"GET /?case=actual-location-meta-enter HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:35:07] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:35:07] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:35:37] \"GET /?case=actual-primary-click HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:36:10] \"GET /?case=actual-blank HTTP/1.1\" 200 -\n",
+      "listening": null
+    },
+    {
+      "server_id": "14dffc87-6ead-4a05-8833-42822a265e41",
+      "port": 4521,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-07T20:03:28.489Z",
+      "expires_at": "2026-11-08T08:03:28.677Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:5470) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nRe-optimizing dependencies because vite config has changed\nDialog preview listening on 4521\n8:04:56 PM [vite] page reload .rea-work/onboarding-bounded.html\n8:04:56 PM [vite] page reload .rea-work/onboarding-bounded.html\n",
+      "listening": null
+    },
+    {
+      "server_id": "8bf2d0b9-87cd-4981-bcf9-520ed8e2b0aa",
+      "port": 4392,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-07T19:12:45.815Z",
+      "expires_at": "2026-11-08T07:12:45.999Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:27169) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nRe-optimizing dependencies because vite config has changed\nDialog preview listening on 4392\nDialog captures exited 0\n",
+      "listening": null
+    },
+    {
+      "server_id": "41892b56-e1b1-4ba2-a2db-7d00bbf3079a",
+      "port": 4392,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-07T19:10:48.670Z",
+      "expires_at": "2026-11-08T07:10:48.809Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:25003) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nRe-optimizing dependencies because vite config has changed\nDialog preview listening on 4392\n7:11:14 PM [vite] page reload evidence/dialogs/picker-location/oc-create.html\n7:11:25 PM [vite] page reload evidence/dialogs/picker-location/oc-clone.html\nDialog captures exited 0\n",
+      "listening": null
+    },
+    {
+      "server_id": "a27cb3f7-55bc-4082-9cef-b75f4c2b7981",
+      "port": 4392,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-07T19:09:23.303Z",
+      "expires_at": "2026-11-08T07:09:23.537Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:5968) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nRe-optimizing dependencies because vite config has changed\nDialog preview listening on 4392\n7:09:51 PM [vite] page reload evidence/dialogs/picker-location/oc-create.html\n7:09:59 PM [vite] page reload evidence/dialogs/picker-location/oc-clone.html\nDialog captures exited 0\n",
+      "listening": null
+    },
+    {
+      "server_id": "c5444761-9b52-4d4f-a9a2-aa30e92215a9",
+      "port": 4392,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-07T19:06:35.535Z",
+      "expires_at": "2026-11-08T07:06:35.728Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:1449) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nDialog preview listening on 4392\nDialog checks exited 0\n",
+      "listening": null
+    },
+    {
+      "server_id": "1dbe19e9-c706-48ad-84f0-be15bad4520c",
+      "port": 4392,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-07T19:05:45.872Z",
+      "expires_at": "2026-11-08T07:05:46.013Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:16696) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nDialog preview listening on 4392\nDialog checks exited 1\n7:06:21 PM [vite] hmr update /src/components/RenameWorkspaceDialog.tsx, /src/components/CloneGitHubRepoDialog.tsx, /src/components/CreateProjectDialog.tsx, /src/components/RestoreWorkspaceDialog.tsx, /src/components/ArchiveRunningDialog.tsx\n7:06:25 PM [vite] hmr update /src/components/CreateProjectDialog.tsx\n7:06:30 PM [vite] hmr update /src/components/CloneGitHubRepoDialog.tsx\n",
+      "listening": null
+    },
+    {
+      "server_id": "7829db13-7a87-4ebf-8650-f6911e55c359",
+      "port": 4392,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-07T19:03:42.960Z",
+      "expires_at": "2026-11-08T07:03:43.080Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:12916) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nDialog preview listening on 4392\n",
+      "listening": null
+    },
+    {
+      "server_id": "989d86ed-cb6f-4ec2-80ed-fcc836ec333a",
+      "port": 4392,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-07T19:02:56.248Z",
+      "expires_at": "2026-11-08T07:02:56.324Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:31760) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nDialog preview listening on 4392\n",
+      "listening": null
+    },
+    {
+      "server_id": "a88448f0-6c24-477d-8095-afe1193e8d1f",
+      "port": 4392,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-06T23:50:47.222Z",
+      "expires_at": "2026-11-07T11:50:47.286Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:15809) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nDialog preview listening on 4392\n11:50:52 PM [vite] page reload .rea-work/archive-proof/ref.html\nDialog captures exited 0\n",
+      "listening": null
+    },
+    {
+      "server_id": "8a607799-361e-40ec-b4b1-2690c764e026",
+      "port": 4392,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-06T23:49:54.951Z",
+      "expires_at": "2026-11-07T11:49:54.998Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:7902) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nDialog preview listening on 4392\n11:50:10 PM [vite] page reload .rea-work/archive-proof/oc.html\nDialog captures exited 0\n",
+      "listening": null
+    },
+    {
+      "server_id": "0d56ee89-1405-4c8c-aa38-d99e95bd11f9",
+      "port": 4392,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-06T23:45:56.190Z",
+      "expires_at": "2026-11-07T11:45:56.307Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:2631) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nDialog preview listening on 4392\n",
+      "listening": null
+    },
+    {
+      "server_id": "b9109006-e4d3-4575-904e-098233bfccad",
+      "port": 4392,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-06T23:38:46.297Z",
+      "expires_at": "2026-11-07T11:38:46.423Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:22606) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nRe-optimizing dependencies because vite config has changed\nDialog preview listening on 4392\n",
+      "listening": null
+    },
+    {
+      "server_id": "d1ffb06a-6578-4c77-b334-902204047fba",
+      "port": 4392,
+      "state": "stopped",
+      "exit_code": null,
+      "reason_code": null,
+      "started_at": "2026-11-06T22:36:47.685Z",
+      "expires_at": "2026-11-07T10:36:47.805Z",
+      "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:3457) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nRe-optimizing dependencies because vite config has changed\nDialog preview listening on 4392\nDialog checks exited 0\n",
+      "listening": null
+    }
+  ],
+  "guidance": "No server is running in this Session. Start one with preview_start."
+}

@@ -1,0 +1,13 @@
+{
+  "kind": "static verification, no runtime execution",
+  "parent_identity": "PASS",
+  "decoded_spans": "9/9 PASS",
+  "c22_baseline_snapshots": "4/4 PASS",
+  "c22_lockfile_identity": "PASS",
+  "existing_four_control_bodies": "byte-for-byte PASS",
+  "frozen_case_count": 5,
+  "product_and_dependency_manifests_unchanged": "PASS",
+  "fixture_sha256": "720e650d15b131230353f0673cb307fe1a935e0d8ece4415379ef8df96de91c2",
+  "behavioral_execution": "NOT_RUN",
+  "red_green": "NOT_RUN"
+}
