@@ -583,6 +583,16 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
   const [dragged, setDragged] = useState<string | null>(null);
   const canCollapse = queue.items.length > 1;
   const ids = queue.items.map((m) => m.id);
+  const previousEditingId = useRef(queue.editingId);
+
+  // Restore the surviving edited row, not a removed row or another session.
+  useLayoutEffect(() => {
+    const previous = previousEditingId.current;
+    previousEditingId.current = queue.editingId;
+    if (previous !== null && queue.editingId === null && queue.items.some((m) => m.id === previous)) {
+      focus({ row: previous });
+    }
+  }, [queue.editingId, queue.items, focus]);
 
   useEffect(() => {
     if (!canCollapse) setCollapsed(false);

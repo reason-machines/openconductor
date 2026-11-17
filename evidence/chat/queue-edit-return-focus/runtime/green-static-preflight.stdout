@@ -1,0 +1,39 @@
+{
+  "utc": "2026-11-17T22:58:01.659237+00:00",
+  "main": "6792a09a2d4826a57d8afd7c7e4243de052529bf",
+  "head": "727d210fa102e7ce9921846b1464b22c11afcaca",
+  "fixture": {
+    "path": ".qa/queue-edit-return-focus-135/composerQueueEditReturnFocus.test.ts",
+    "bytes": 21078,
+    "sha256": "e275647b5174feb78281ff3ae2c0a5c3c735ccf2207da9815e66a3d965bf86be"
+  },
+  "oracle": {
+    "path": ".qa/queue-edit-return-focus-135/frozen-oracle.json",
+    "sha256": "d9f1d9b1a11764422c57ad3dbba7331c09d2b90edcf4dc5b0f21b7368f840979"
+  },
+  "treatment": {
+    "path": "src/features/chat/Composer.tsx",
+    "sha256": "60484a0072e816fe61f4abbc19f236c3d5c9e1bc4807fe3d4bcd69bbf2a5d6c8",
+    "bytes": 34875
+  },
+  "treatment_diff_sha256": "69475239c8b33dc6ec38fbb8d5a7b946e975b6ed5672bf091cc05d58f7e53b2d",
+  "unchanged_other_source_pins": 14,
+  "installed_file_pins": 217,
+  "package_contracts": 2,
+  "checks_passed": 267,
+  "failures": [],
+  "host": {
+    "utc": "2026-11-17T22:58:01.659187+00:00",
+    "hostname": "ws-zh5pmwqtgx3uglxhwaae5q2k",
+    "allowed_cpu_affinity": [
+      0,
+      1
+    ],
+    "free_disk_bytes": 16559415296,
+    "own_workload_processes": [],
+    "own_active_runtime_reservation": null,
+    "preview_or_browser_started_this_unit": false
+  },
+  "node_or_parser_invoked": false,
+  "test_executed": false
+}
