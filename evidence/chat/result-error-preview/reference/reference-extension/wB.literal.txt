@@ -1,0 +1,1 @@
+function wB(t){return[t.userMessage,...t.steeringMessages??[],...t.aiMessages].sort(SB)}
