@@ -38,6 +38,7 @@ function fixture({ disabled = false, focusInside = true } = {}) {
     document: { activeElement: editor, addEventListener() {}, removeEventListener() {} },
     require(name: string) {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      if (name === "fuzzysort") return { default: dependencies(name) };
       if (name === "../../components/ui/Tooltip.tsx") return {
         Tooltip: ({ children }: { children: ReactNode }) => children,
         ShortcutHint: () => null,
