@@ -62,6 +62,9 @@
 /* Markdown/HTML rendered preview in file (whole-file) layout: Conductor's bji isPreviewing=true. */
 .oc-md-preview { padding: 20px 28px; }
 .oc-md-preview .oc-md { font-size: 14px; line-height: 1.6; color: var(--text); }
+/* HTML preview (GAP-DIFF-01): sandboxed iframe so .html/.htm diffs render actual HTML. */
+.oc-html-preview { padding: 0; }
+.oc-html-preview-frame { width: 100%; min-height: 400px; border: none; display: block; }
 
 /* Right panel: toolbar over the list. Main-area tab: one file filling the tab. */
 .oc-diff.oc-diff-list, .oc-diff.oc-diff-tab { grid-template-columns: minmax(0, 1fr); }
