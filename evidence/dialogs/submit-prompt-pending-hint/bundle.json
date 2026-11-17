@@ -1,0 +1,93 @@
+{
+  "head": "ff097b9b9666e097454db7d310181e41346eab3e",
+  "records": [
+    {
+      "version": "baseline",
+      "componentSha256": "7615b3b7d060aee6a1205a56fd2e686767b1acc6b770d15bc1ad0b4085be8d8c",
+      "inputCount": 28,
+      "inputs": {
+        "evidence/dialogs/submit-prompt-pending-hint/frozen-browser/entry.tsx": "5ccf28270f7061b8e649e59a2e13c4f23d8d7b7a0107cee0f31a3a4e0e3d35a0",
+        "evidence/dialogs/submit-prompt-pending-hint/frozen-browser/fixture.css": "0541de69ecc60c3a9436bffdb9ce65d5dfa738edbe60fe0a9af0346e4649ac84",
+        "evidence/dialogs/submit-prompt-pending-hint/frozen-browser/io.ts": "5f24ac1aacab277ff91995050547c5b21950720eb2907950af7eb37e9624cf92",
+        "node_modules/react-dom/cjs/react-dom.development.js": "1459b808bc6991de5a1ec3a86d8beee32dbb6c14282cf13f84e00dfebfbdc025",
+        "node_modules/react-dom/client.js": "a510041dfc40d69b3aa574e5e111864186c711fbeb3db41aa2f27196b27c429f",
+        "node_modules/react-dom/index.js": "f26fcb81b5d1dc32c6edea34645c75b60d259916293d3208c8be48ac33e882e4",
+        "node_modules/react/cjs/react-jsx-runtime.development.js": "581f93fa33c32b3aa7ea35b85b80258922517de046f5447236047dcc2845d9ff",
+        "node_modules/react/cjs/react.development.js": "1ff3a1d9861a87984329584fa1172aea920855d79eb57dae0d1cebe54093d7e3",
+        "node_modules/react/index.js": "a216c390bf956cbb906c66d29fdb2e2ad6999464a5ca83e476533a6f25ad0ef3",
+        "node_modules/react/jsx-runtime.js": "28170e60f2ff0bc045bc7d175f5849e86f68dd02d76d7255369420718b30295a",
+        "node_modules/scheduler/cjs/scheduler.development.js": "22e3d959dc9f9cd59fca4e1fc95fecb9fde4d2cb8ecadbd279137ada995983ac",
+        "node_modules/scheduler/index.js": "b413b3aac7bd209fd82cbe2241fda1467558daaef830744f45ed8396fac9185e",
+        "src/components/SubmitPromptDialog.tsx": "7615b3b7d060aee6a1205a56fd2e686767b1acc6b770d15bc1ad0b4085be8d8c",
+        "src/components/helpMenuItems.ts": "aab847d1b8882752db7b45e9d106bd11fedef68e4eb796ad5424f7f196787103",
+        "src/components/motion/dialogMotion.ts": "0f9c5b9ee51ab9bd5e822e31a1d764676e3622c434103de2ca29ea2d8bd14839",
+        "src/components/submitPrompt.ts": "6fd371b34d841445a05cb0fa759e44248f3209124f0593811ffbc9cbb8d3cc5d",
+        "src/keybindings/KeybindingsProvider.tsx": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6",
+        "src/keybindings/bind.ts": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119",
+        "src/keybindings/dispatcher.ts": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197",
+        "src/keybindings/listeners.ts": "6944c63efcb6edee49d59d1ccdcfaed649902021946c8a8f60d50549fd89011a",
+        "src/keybindings/overrides.ts": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193",
+        "src/keybindings/registry.ts": "b9df8f72c86c6c4e1cc05cade6b4719cd3abf26e557e690ffd574cbe2231ecb5",
+        "src/keybindings/resolve.ts": "f8818d52d1af70bc788f5bda2d162b5b1634402592807bc78b5233ad4e1142bc",
+        "src/keybindings/selectAll.ts": "508b26417d717f938eb118afbe8c0ff96873643cb4e5c0879467e5368e97db90",
+        "src/keybindings/shortcut.ts": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8",
+        "src/keybindings/types.ts": "20556563af7ebab6179ca9d0bf4912700fb967a4571f22d2baffaa98087433f7",
+        "src/styles.css": "8a3b3093c56c9e310d02c97ffc496f46372226f1d4cc890c7077208fd9e5d233",
+        "src/theme/tokens.css": "6d78f6f09053db08211e122fb44da4e55e8f420480a0f426d1ad08bf70e05afb"
+      },
+      "served": {
+        "baseline.js": "c0b2d148b775a670c378cf0cc9062e34dd1f21ba26ee597f793ca752019d42ed",
+        "baseline.css": "d44eb48ce8da1dfca066513ba755a9feaa23d66d9edf0eae41f19600b4d4b498",
+        "baseline.html": "fe995df04d1c9b64940144fabf158c95544f7e130a3fca13ec01e3eaa74b07d1"
+      }
+    },
+    {
+      "version": "treatment",
+      "componentSha256": "af04c8ff02eada9311a8844b43c691d7082003608107018afe661a6cc92e6077",
+      "inputCount": 28,
+      "inputs": {
+        "evidence/dialogs/submit-prompt-pending-hint/frozen-browser/entry.tsx": "5ccf28270f7061b8e649e59a2e13c4f23d8d7b7a0107cee0f31a3a4e0e3d35a0",
+        "evidence/dialogs/submit-prompt-pending-hint/frozen-browser/fixture.css": "0541de69ecc60c3a9436bffdb9ce65d5dfa738edbe60fe0a9af0346e4649ac84",
+        "evidence/dialogs/submit-prompt-pending-hint/frozen-browser/io.ts": "5f24ac1aacab277ff91995050547c5b21950720eb2907950af7eb37e9624cf92",
+        "node_modules/react-dom/cjs/react-dom.development.js": "1459b808bc6991de5a1ec3a86d8beee32dbb6c14282cf13f84e00dfebfbdc025",
+        "node_modules/react-dom/client.js": "a510041dfc40d69b3aa574e5e111864186c711fbeb3db41aa2f27196b27c429f",
+        "node_modules/react-dom/index.js": "f26fcb81b5d1dc32c6edea34645c75b60d259916293d3208c8be48ac33e882e4",
+        "node_modules/react/cjs/react-jsx-runtime.development.js": "581f93fa33c32b3aa7ea35b85b80258922517de046f5447236047dcc2845d9ff",
+        "node_modules/react/cjs/react.development.js": "1ff3a1d9861a87984329584fa1172aea920855d79eb57dae0d1cebe54093d7e3",
+        "node_modules/react/index.js": "a216c390bf956cbb906c66d29fdb2e2ad6999464a5ca83e476533a6f25ad0ef3",
+        "node_modules/react/jsx-runtime.js": "28170e60f2ff0bc045bc7d175f5849e86f68dd02d76d7255369420718b30295a",
+        "node_modules/scheduler/cjs/scheduler.development.js": "22e3d959dc9f9cd59fca4e1fc95fecb9fde4d2cb8ecadbd279137ada995983ac",
+        "node_modules/scheduler/index.js": "b413b3aac7bd209fd82cbe2241fda1467558daaef830744f45ed8396fac9185e",
+        "src/components/SubmitPromptDialog.tsx": "af04c8ff02eada9311a8844b43c691d7082003608107018afe661a6cc92e6077",
+        "src/components/helpMenuItems.ts": "aab847d1b8882752db7b45e9d106bd11fedef68e4eb796ad5424f7f196787103",
+        "src/components/motion/dialogMotion.ts": "0f9c5b9ee51ab9bd5e822e31a1d764676e3622c434103de2ca29ea2d8bd14839",
+        "src/components/submitPrompt.ts": "6fd371b34d841445a05cb0fa759e44248f3209124f0593811ffbc9cbb8d3cc5d",
+        "src/keybindings/KeybindingsProvider.tsx": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6",
+        "src/keybindings/bind.ts": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119",
+        "src/keybindings/dispatcher.ts": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197",
+        "src/keybindings/listeners.ts": "6944c63efcb6edee49d59d1ccdcfaed649902021946c8a8f60d50549fd89011a",
+        "src/keybindings/overrides.ts": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193",
+        "src/keybindings/registry.ts": "b9df8f72c86c6c4e1cc05cade6b4719cd3abf26e557e690ffd574cbe2231ecb5",
+        "src/keybindings/resolve.ts": "f8818d52d1af70bc788f5bda2d162b5b1634402592807bc78b5233ad4e1142bc",
+        "src/keybindings/selectAll.ts": "508b26417d717f938eb118afbe8c0ff96873643cb4e5c0879467e5368e97db90",
+        "src/keybindings/shortcut.ts": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8",
+        "src/keybindings/types.ts": "20556563af7ebab6179ca9d0bf4912700fb967a4571f22d2baffaa98087433f7",
+        "src/styles.css": "8a3b3093c56c9e310d02c97ffc496f46372226f1d4cc890c7077208fd9e5d233",
+        "src/theme/tokens.css": "6d78f6f09053db08211e122fb44da4e55e8f420480a0f426d1ad08bf70e05afb"
+      },
+      "served": {
+        "treatment.js": "3f087e8792fd6b459947cabe0cbf7574ea11a11cc1c464c23e18f0323c7c09bb",
+        "treatment.css": "d44eb48ce8da1dfca066513ba755a9feaa23d66d9edf0eae41f19600b4d4b498",
+        "treatment.html": "73e3f6d655f40e4cd6899ebad5520c6d141dd9c4cc2fdb8af60a238deef4b5e9"
+      }
+    }
+  ],
+  "fixture": {
+    "entry.tsx": "5ccf28270f7061b8e649e59a2e13c4f23d8d7b7a0107cee0f31a3a4e0e3d35a0",
+    "io.ts": "5f24ac1aacab277ff91995050547c5b21950720eb2907950af7eb37e9624cf92",
+    "fixture.css": "0541de69ecc60c3a9436bffdb9ce65d5dfa738edbe60fe0a9af0346e4649ac84",
+    "build.mjs": "8aaebd4a21e54e111d1b901d0fc3adae9015b44f274f53e46cdf166ea9d3d8c2",
+    "PLAN.md": "382ad1982ca18f15185cfa9be837a64f4875bd5c53de79e0f8408fb14837efc8"
+  },
+  "isolation": "Actual component/KeybindingsProvider/motion/styles; only backend import replaced with synthetic deferred opener; no full App/native/real backend/provider IO; CSP connect/form none"
+}

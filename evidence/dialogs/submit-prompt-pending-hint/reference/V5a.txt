@@ -1,0 +1,5 @@
+async function V5a(t){const e=await yYe(),n=`${t.message}
+
+----
+App Version: ${e}
+OS: macos ${OSe()}`,i=await gv(`${cy.conductorProxyUrl}/api/feedback`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:t.email,message:n})});if(!i.ok){const r=await i.text();throw new Error(`Failed to submit prompt: ${r}`)}}
