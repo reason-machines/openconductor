@@ -2,9 +2,11 @@
 
 Conductor Rebuild — `HOME-FILTER-MENU-KEYBOARD-271`.
 
-## Qualification only
+## Qualification and correction
 
-At freshly read default-branch commit `1e483efabf7798579c72587365d3ae0c93bd689d`, Home's Projects menu has pointer toggles but no arrow-opening, roving keyboard navigation, Home/End or typeahead handlers. This packet contains a frozen regression and retained-source checks. **No production correction is included yet.** PR #1433 is a separate, frozen startup-hydration change; this qualification must not be appended to it.
+At freshly read default-branch commit `1e483efabf7798579c72587365d3ae0c93bd689d`, Home's Projects menu had pointer toggles but no arrow-opening, roving keyboard navigation, Home/End or typeahead handlers. The test-first qualification was committed as `12e60b2b5f` before any production edit. PR #1433 is the separate, merged startup-hydration change, actual squash `a5642f15442e177b0409b3bb6a44036d4efb859f`.
+
+After ledger confirmation of the precise Projects-only lease, fresh main `e6f9dfcb2eb9e12dc3b1c67c41baa268236f7269` reproduced **3 controls passed / 9 intended assertion failures** with the unchanged frozen fixture (`integrated-red.tap.gz`). The correction adds opt-in keyboard handling to the existing local Menu and enables it only for Projects. ArrowDown/Up opens and focuses first/last; popup arrows wrap, Home/End jump, and case-insensitive label-prefix typeahead moves focus without selecting. Pointer multi-select, callback/storage behavior, Escape and native Space/Enter activation remain intact. Archive has no opt-in; no imports, shared primitives, global/search handlers or archive paths changed.
 
 ## Reachable source contract
 
@@ -43,4 +45,11 @@ Actual RED result, retained in `red.tap.gz`: **3 passed, 9 intended assertion fa
 
 This establishes a mounted OpenConductor defect against retained source, not an observed Conductor interaction, browser focus behavior, native input delivery or side-by-side parity. Browser and native execution are not run in this qualification. Archived-select keyboard behavior, global/search shortcuts, backend/provider, storage schema/path, installed persistence, first paint and containing-package acceptance are outside the correction lease. Existing REA gaps are inherited unchanged; no new REA operation ran.
 
-The test is frozen before any correction. A future fix must replay it unchanged on fresh main after actual #1433 merge, preserve the controls, and remain separate from that pull request. No new runtime, native/provider job, package dispatch or watcher was created.
+## Correction verification on Reason cloud
+
+- **Frozen 12/12 passed**, unchanged fixture SHA-256 above, after the fresh-main 3-pass/9-failure reproduction.
+- **Nine supplemental mounted guards passed** in `keyboard-controls.test.ts`: Ctrl/Meta/Alt, composition and keycode 229, native Space/Enter and unrelated keys, accumulated prefixes/repeated-letter cycling/reopen reset, open-trigger refocus, and Archive remaining opted out. These reuse the frozen harness declarations without altering the regression or evaluating vendor code.
+- **374/374 affected checks passed, zero skipped/cancelled**; exact command and results in `qualification.json`, retained log `affected.tap.gz`.
+- **Passed:** `npm run build` (branding, full TypeScript and Vite production build; existing chunk-size advisory only), supplemental fixture typecheck, 127 retained-source checks/37 spans, frozen manifest integrity and `git diff --check`.
+
+Browser proof and screenshot are **NOT_RUN** for this unit: the ledger's serialized browser campaign is closed and explicitly did not admit a new server/restart/runtime slot. The existing `browser.html`/`browser.tsx` are an unexecuted fixture, not evidence. Source/component focus mocks are not actual browser/native focus delivery. Installed persistence, first paint, native/provider, full-app and package/embedding/runtime acceptance remain unverified or not run. Package #1791 remains unchanged and excludes successors; existing canonical Part 4 release custody remains responsible for a future containing-build and behavior check. No new runtime, native/provider job, package dispatch or watcher was created.
