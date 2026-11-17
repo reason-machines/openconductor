@@ -1,0 +1,350 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the prompt diffs against the merge base with the target branch, uncommitted work included
+ok 1 - the prompt diffs against the merge base with the target branch, uncommitted work included
+  ---
+  duration_ms: 0.83175
+  type: 'test'
+  ...
+# Subtest: the repository's review prompt is appended last, trimmed, and wins over the defaults
+ok 2 - the repository's review prompt is appended last, trimmed, and wins over the defaults
+  ---
+  duration_ms: 0.310142
+  type: 'test'
+  ...
+# Subtest: an unset review model falls back to Conductor's built-in review default, not the chat default
+ok 3 - an unset review model falls back to Conductor's built-in review default, not the chat default
+  ---
+  duration_ms: 0.154295
+  type: 'test'
+  ...
+# Subtest: Conductor model ids map to Reason model ids
+ok 4 - Conductor model ids map to Reason model ids
+  ---
+  duration_ms: 0.242131
+  type: 'test'
+  ...
+# Subtest: Claude reviews use the Claude review effort, Codex reviews the Codex one
+ok 5 - Claude reviews use the Claude review effort, Codex reviews the Codex one
+  ---
+  duration_ms: 1.413588
+  type: 'test'
+  ...
+# Subtest: no effort setting leaves Reason's default; ultracode becomes Reason's top level
+ok 6 - no effort setting leaves Reason's default; ultracode becomes Reason's top level
+  ---
+  duration_ms: 0.161891
+  type: 'test'
+  ...
+# Subtest: a model Reason cannot name runs on Reason's default with no options set
+ok 7 - a model Reason cannot name runs on Reason's default with no options set
+  ---
+  duration_ms: 0.219038
+  type: 'test'
+  ...
+# Subtest: review tabs are numbered after the first
+ok 8 - review tabs are numbered after the first
+  ---
+  duration_ms: 0.102911
+  type: 'test'
+  ...
+# Subtest: edit before sending puts the whole instructions in the draft, without pointing at an attachment
+ok 9 - edit before sending puts the whole instructions in the draft, without pointing at an attachment
+  ---
+  duration_ms: 0.319838
+  type: 'test'
+  ...
+# (node:91) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Fix errors needs a failing check with a details URL, Actions job or not
+ok 10 - Fix errors needs a failing check with a details URL, Actions job or not
+  ---
+  duration_ms: 0.676365
+  type: 'test'
+  ...
+# Subtest: log files are named after the job, as Conductor names them
+ok 11 - log files are named after the job, as Conductor names them
+  ---
+  duration_ms: 0.183008
+  type: 'test'
+  ...
+# Subtest: a log file carries the job name, id and the last lines or the job status
+ok 12 - a log file carries the job name, id and the last lines or the job status
+  ---
+  duration_ms: 0.227136
+  type: 'test'
+  ...
+# Subtest: the repository's fix-errors prompt goes last, and a blank one adds nothing
+ok 13 - the repository's fix-errors prompt goes last, and a blank one adds nothing
+  ---
+  duration_ms: 0.133041
+  type: 'test'
+  ...
+# Subtest: attachments are the fetched logs in order, then the instructions
+ok 14 - attachments are the fetched logs in order, then the instructions
+  ---
+  duration_ms: 1.168572
+  type: 'test'
+  ...
+# Subtest: git.fixErrors runs only with a failing check that has a details URL, no fix in flight, and a live workspace
+ok 15 - git.fixErrors runs only with a failing check that has a details URL, no fix in flight, and a live workspace
+  ---
+  duration_ms: 0.14203
+  type: 'test'
+  ...
+# Subtest: the shortcut and the button send the same thing: Actions job logs (failed fetches left out), then the instructions with the repo prompt
+ok 16 - the shortcut and the button send the same thing: Actions job logs (failed fetches left out), then the instructions with the repo prompt
+  ---
+  duration_ms: 0.494234
+  type: 'test'
+  ...
+# (node:99) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: code_review: expanded action Preview displays the current unsaved draft without launching or saving
+ok 17 - code_review: expanded action Preview displays the current unsaved draft without launching or saving
+  ---
+  duration_ms: 162.726973
+  type: 'test'
+  ...
+# Subtest: create_pr: expanded action Preview displays the current unsaved draft without launching or saving
+ok 18 - create_pr: expanded action Preview displays the current unsaved draft without launching or saving
+  ---
+  duration_ms: 78.32007
+  type: 'test'
+  ...
+# Subtest: fix_errors: expanded action Preview displays the current unsaved draft without launching or saving
+ok 19 - fix_errors: expanded action Preview displays the current unsaved draft without launching or saving
+  ---
+  duration_ms: 55.313349
+  type: 'test'
+  ...
+# Subtest: resolve_merge_conflicts: expanded action Preview displays the current unsaved draft without launching or saving
+ok 20 - resolve_merge_conflicts: expanded action Preview displays the current unsaved draft without launching or saving
+  ---
+  duration_ms: 54.753382
+  type: 'test'
+  ...
+# Subtest: rename_branch: expanded action Preview displays the current unsaved draft without launching or saving
+ok 21 - rename_branch: expanded action Preview displays the current unsaved draft without launching or saving
+  ---
+  duration_ms: 44.000383
+  type: 'test'
+  ...
+# Subtest: General preferences explicitly suppress Preview even when expanded and customized
+ok 22 - General preferences explicitly suppress Preview even when expanded and customized
+  ---
+  duration_ms: 44.558127
+  type: 'test'
+  ...
+# Subtest: collapsed action editors expose no Preview and preserve the six-row order
+ok 23 - collapsed action editors expose no Preview and preserve the six-row order
+  ---
+  duration_ms: 40.827718
+  type: 'test'
+  ...
+# Subtest: preview uses the real TS builders with draft ""
+ok 24 - preview uses the real TS builders with draft ""
+  ---
+  duration_ms: 40.108111
+  type: 'test'
+  ...
+# Subtest: preview uses the real TS builders with draft "  \\n "
+ok 25 - preview uses the real TS builders with draft "  \\n "
+  ---
+  duration_ms: 41.335393
+  type: 'test'
+  ...
+# Subtest: preview uses the real TS builders with draft "  Synthetic action preferences.\\nKeep the final line.  "
+ok 26 - preview uses the real TS builders with draft "  Synthetic action preferences.\\nKeep the final line.  "
+  ---
+  duration_ms: 40.079947
+  type: 'test'
+  ...
+# Subtest: create_pr: bridge only sends the current draft and kind, never repository context
+ok 27 - create_pr: bridge only sends the current draft and kind, never repository context
+  ---
+  duration_ms: 38.84016
+  type: 'test'
+  ...
+# Subtest: resolve_merge_conflicts: bridge only sends the current draft and kind, never repository context
+ok 28 - resolve_merge_conflicts: bridge only sends the current draft and kind, never repository context
+  ---
+  duration_ms: 38.629495
+  type: 'test'
+  ...
+# Subtest: preview shows an IPC failure without action fallback, saving or stale Markdown
+ok 29 - preview shows an IPC failure without action fallback, saving or stale Markdown
+  ---
+  duration_ms: 37.905133
+  type: 'test'
+  ...
+# Subtest: closing and reopening isolates pending preview responses and uses the latest draft
+ok 30 - closing and reopening isolates pending preview responses and uses the latest draft
+  ---
+  duration_ms: 38.396114
+  type: 'test'
+  ...
+# (node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: action prompts append the instructions after their own text
+ok 31 - action prompts append the instructions after their own text
+  ---
+  duration_ms: 0.696052
+  type: 'test'
+  ...
+# Subtest: the first message carries the general instructions like Conductor's runtime
+ok 32 - the first message carries the general instructions like Conductor's runtime
+  ---
+  duration_ms: 0.121699
+  type: 'test'
+  ...
+# Subtest: withRenameBranch appends branch-naming instructions on the first message
+ok 33 - withRenameBranch appends branch-naming instructions on the first message
+  ---
+  duration_ms: 0.137598
+  type: 'test'
+  ...
+# (node:115) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: prompt rows follow Conductor's Actions order
+ok 34 - prompt rows follow Conductor's Actions order
+  ---
+  duration_ms: 1.583877
+  type: 'test'
+  ...
+# Subtest: prompt saves write trimmed text, remove blanks and skip no-ops
+ok 35 - prompt saves write trimmed text, remove blanks and skip no-ops
+  ---
+  duration_ms: 0.184275
+  type: 'test'
+  ...
+# (node:123) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: clicking Scripts from personal settings preserves last visited Beta
+ok 36 - clicking Scripts from personal settings preserves last visited Beta
+  ---
+  duration_ms: 306.224209
+  type: 'test'
+  ...
+# Subtest: clicking Actions from personal settings preserves last visited Beta
+ok 37 - clicking Actions from personal settings preserves last visited Beta
+  ---
+  duration_ms: 148.26771
+  type: 'test'
+  ...
+# Subtest: clicking Misc from personal settings preserves last visited Beta
+ok 38 - clicking Misc from personal settings preserves last visited Beta
+  ---
+  duration_ms: 108.430925
+  type: 'test'
+  ...
+# Subtest: Enter activation uses the same remembered repository as click
+ok 39 - Enter activation uses the same remembered repository as click
+  ---
+  duration_ms: 107.055713
+  type: 'test'
+  ...
+# Subtest: without repo history, search uses the first selectable repository
+ok 40 - without repo history, search uses the first selectable repository
+  ---
+  duration_ms: 96.432251
+  type: 'test'
+  ...
+# Subtest: while viewing Beta, a repo result stays in Beta
+ok 41 - while viewing Beta, a repo result stays in Beta
+  ---
+  duration_ms: 105.277247
+  type: 'test'
+  ...
+# Subtest: removing the remembered repo falls back to the first remaining repo
+ok 42 - removing the remembered repo falls back to the first remaining repo
+  ---
+  duration_ms: 99.008325
+  type: 'test'
+  ...
+# Subtest: the most recently viewed repo replaces previous history
+ok 43 - the most recently viewed repo replaces previous history
+  ---
+  duration_ms: 104.719722
+  type: 'test'
+  ...
+# Subtest: personal page results remain personal after remembering Beta
+ok 44 - personal page results remain personal after remembering Beta
+  ---
+  duration_ms: 109.628384
+  type: 'test'
+  ...
+# (node:131) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual helper centers its exact matched row
+ok 45 - actual helper centers its exact matched row
+  ---
+  duration_ms: 311.016641
+  type: 'test'
+  ...
+# Subtest: actual helper animates the direct reveal frame, not its outer row
+ok 46 - actual helper animates the direct reveal frame, not its outer row
+  ---
+  duration_ms: 127.690894
+  type: 'test'
+  ...
+# Subtest: actual helper falls back to animating the row when no reveal frame exists
+ok 47 - actual helper falls back to animating the row when no reveal frame exists
+  ---
+  duration_ms: 110.901483
+  type: 'test'
+  ...
+# Subtest: without Web Animations support, revealing a row does not throw
+ok 48 - without Web Animations support, revealing a row does not throw
+  ---
+  duration_ms: 98.685379
+  type: 'test'
+  ...
+# Subtest: mounted actual SettingsSearch activation reveals the target (click)
+ok 49 - mounted actual SettingsSearch activation reveals the target (click)
+  ---
+  duration_ms: 109.438443
+  type: 'test'
+  ...
+# Subtest: mounted actual SettingsSearch activation reveals the target (Enter)
+ok 50 - mounted actual SettingsSearch activation reveals the target (Enter)
+  ---
+  duration_ms: 95.691827
+  type: 'test'
+  ...
+# Subtest: a mounted page result with no row schedules no reveal
+ok 51 - a mounted page result with no row schedules no reveal
+  ---
+  duration_ms: 101.634381
+  type: 'test'
+  ...
+# Subtest: existing delayed-row retry still reveals the target exactly once when it appears
+ok 52 - existing delayed-row retry still reveals the target exactly once when it appears
+  ---
+  duration_ms: 94.187644
+  type: 'test'
+  ...
+# Subtest: an absent row remains a bounded harmless no-op
+ok 53 - an absent row remains a bounded harmless no-op
+  ---
+  duration_ms: 99.196863
+  type: 'test'
+  ...
+# Subtest: first exact match is still selected, not an unrelated or later duplicate row
+ok 54 - first exact match is still selected, not an unrelated or later duplicate row
+  ---
+  duration_ms: 96.866888
+  type: 'test'
+  ...
+1..54
+# tests 54
+# suites 0
+# pass 54
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4771.911473

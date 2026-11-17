@@ -1,0 +1,1 @@
+function hDr(t,e){if(!e)return t;for(const n in e){const i=e[n];switch(n){case"style":{t[n]=p8t(t.style,i);break}case"className":{t[n]=ali(t.className,i);break}default:rli(n,i)?t[n]=pDr(t[n],i):t[n]=i}}return t}

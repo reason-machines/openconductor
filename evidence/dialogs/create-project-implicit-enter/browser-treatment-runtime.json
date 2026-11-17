@@ -1,0 +1,16 @@
+{
+  "server_id": "628ba776-2c07-4cd2-b74d-fb16dd2ac87f",
+  "port": 48733,
+  "tab_id": 1440146774,
+  "started_at": "2026-11-17T17:22:36.388Z",
+  "deadline": "2026-11-17T17:37:36.388Z",
+  "released_at": "2026-11-17T17:28:58.394316+00:00",
+  "cleanup": {
+    "tabs": [],
+    "preview_state": "stopped",
+    "preview_listening": null,
+    "worker_receipt": "Each stopped server's process group has ended on the computer, so its port is free for preview_start.",
+    "independent_bash_namespace_bind48733": "PASS (not the preview network namespace)",
+    "own_fixture_processes": []
+  }
+}

@@ -1,0 +1,1 @@
+function xQe(t,e=t?Zx(t):null){return!t||!t.isConnected||!e||QOr(e)?!1:typeof t.checkVisibility=="function"?t.checkVisibility():e.display!=="none"&&e.display!=="contents"}

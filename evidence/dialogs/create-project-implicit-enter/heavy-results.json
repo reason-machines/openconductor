@@ -1,0 +1,8 @@
+{
+  "result": "PASS",
+  "finished_at": "2026-11-17T17:34:05.061620+00:00",
+  "default_build": "PASS (branding + tsc --noEmit + Vite production build)",
+  "colors": "PASS",
+  "extra_tsc": "NOT_RUN: default build already runs full tsc",
+  "own_processes": []
+}

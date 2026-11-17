@@ -3,6 +3,7 @@ from pathlib import Path
 import gzip
 import hashlib
 import json
+import subprocess
 
 root = Path(__file__).parent
 records = json.loads((root / 'browser-baseline-raw.json').read_text())
@@ -51,9 +52,22 @@ assert [item['value'] for item in pending['values']] == ['pending-draft', '/synt
 assert all(item['disabled'] is False for item in pending['values'])
 assert len([event for event in pending['witness']['events'] if event['type'] == 'submit']) == 1
 
+# Verify the frozen baseline, not the later treatment's live component/bundle.
+# The unmodified baseline commit predates every production/harness correction.
+baseline_commit = 'ce44fd2a8a8c'
+repo_root = Path(subprocess.check_output(['git', 'rev-parse', '--show-toplevel'], text=True).strip())
+relative_root = root.resolve().relative_to(repo_root).as_posix()
+for name in ('browser-baseline-raw.json', 'baseline-input-identities.json',
+             'baseline-fixture.js.gz', 'baseline-fixture.css.gz', 'baseline-index.html.gz'):
+    assert (root / name).read_bytes() == subprocess.check_output([
+        'git', 'show', f'{baseline_commit}:{relative_root}/{name}',
+    ]), name
 for item in json.loads((root / 'baseline-input-identities.json').read_text()):
-    assert hashlib.sha256(Path(item['path']).read_bytes()).hexdigest() == item['sha256'], item['path']
-for name, target in [('baseline-fixture.js.gz', 'fixture.js'), ('baseline-fixture.css.gz', 'fixture.css'), ('baseline-index.html.gz', 'index.html')]:
-    assert gzip.decompress((root / name).read_bytes()) == (Path('.ara-state/create-project-enter-6013/public') / target).read_bytes()
+    path = Path(item['path'])
+    if item['path'] == 'src/components/CreateProjectDialog.tsx':
+        path = root / 'baseline' / item['path']
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == item['sha256'], item['path']
+for name in ('baseline-fixture.js.gz', 'baseline-fixture.css.gz', 'baseline-index.html.gz'):
+    assert gzip.decompress((root / name).read_bytes()), name
 
 print('PASS: 8 exported browser cases; 2 observed implicit-Enter discrepancies; controls and frozen inputs intact')

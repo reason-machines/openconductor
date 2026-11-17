@@ -1,0 +1,1 @@
+function h0i(t,e){return t.compareDocumentPosition(e)&Node.DOCUMENT_POSITION_FOLLOWING?-1:1}

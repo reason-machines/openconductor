@@ -1,10 +1,10 @@
-# Create project implicit Enter — qualification only
+# Create project — explicit primary activation
 
 Conductor Rebuild / SAME6013 / `CREATE-PROJECT-IMPLICIT-ENTER-6013`.
 
 ## Current result
 
-Fresh main checked: `ea436c5ea0ce33338bd082df998ff61dc3e43460`.
+Fresh main checked before treatment: `74c004a95d7b10072f54f71ca611f22c50944f64`.
 All seven relevant current files are byte-identical to qualification main
 `073c7b4e2287598f795c350b8fdb5358122c4a06`.
 
@@ -14,12 +14,32 @@ setup failure, cancellation or skip. This establishes the mounted topology,
 **not** actual browser implicit submission. Adjacent Create project pending
 controls and state tests passed **14/14** unchanged.
 
-There is no production correction yet. The separately admitted trusted-key
-Chrome baseline now reproduces both discrepancies: plain Enter from name and
-parent each starts **one inert creation request**, versus the retained reference
-contract of zero. The eight-case control results, full original browser tool
-readbacks and cleanup receipt are preserved in `browser-baseline-*.json`.
-Native, live-original side-by-side and packaged acceptance are **NOT_RUN**.
+The trusted-key Chrome baseline reproduced both discrepancies: plain Enter
+from name and parent each started **one inert creation request**, versus the
+retained reference contract of zero. All eight baseline records and original
+assets remain preserved without modification.
+
+The leased production correction replaces only the native form with the same-class
+div and wires the existing primary button explicitly, matching Clone's established
+pattern. The configured shortcut remains owned by the unchanged DialogFrame.
+The unchanged frozen Node regression is now **6/6 PASS**; adjacent tests are
+**14/14 PASS**. Fixture-scoped TypeScript checking, the 189-input bundle graph,
+and reference/source verification also **PASS**. The separately admitted browser
+treatment ran all eight frozen cases and **PASS**: plain Enter in both fields
+now makes zero requests while explicit activation and every disabled/pending
+control retain their baseline outcomes. Combined affected Create project/Clone
+tests pass **53/53**. Admitted sequential `npm run build` **PASS**
+(branding + full TypeScript + Vite 40.08s), then `npm run lint:colors` **PASS**
+(six checker tests + 1,265-file scan). No compiler/build/lint processes remain.
+Full-app, live-original side-by-side, macOS/WebKit and packaged acceptance are
+**NOT_RUN**.
+
+`verify-treatment.cjs` proves exactly five product replacements and two legacy
+harness selector/transport ports. All **54 legacy assertion calls** and **seven
+complete test declarations** remain byte-identical. The original harness is
+archived under `baseline/`; the six-case test remains byte-identical to its
+frozen copy. `pre-treatment-*.{tap,json}` preserve the immediate pre-edit checks;
+`treatment-focused.tap` records all 20 passing tests.
 
 ## Trusted Chrome baseline — 2026-11-17
 
@@ -55,6 +75,38 @@ https://reasonmachines.com/agents/6013adf2-e94a-4a6d-9be7-bbd07622cf3c?page=f30d
 A production/harness lease and separately serialized treatment slot were
 requested from the ledger; this baseline grant does not admit treatment.
 
+## Trusted Chrome treatment — 2026-11-17
+
+- Same frozen eight cases, normal CDP key/mouse input and synthetic values.
+  No test code invoked a click/submit adapter. The real DialogFrame shortcut
+  still supplies its programmatic primary click.
+- Independent capability form still recorded **1/2/3** trusted submits.
+- Name and parent plain Enter: **one baseline request → zero**, trusted
+  keydown/keyup only, with the primary still enabled.
+- Name/parent Meta+Enter and real primary mouse click: **one request** each.
+- Blank plain/Meta+Enter: **zero**. Pending Enter/Meta+Enter/disabled-button
+  mouse click: **one total**, both drafts editable, captured request unchanged.
+- All eight raw readbacks retain their original tool-output source/revision.
+  `verify-browser-treatment.py` validates raw/decoded identity, values,
+  shortcuts, actual events and request counts. The baseline blank record stores
+  values as strings and parent focus as outerHTML; treatment records element
+  metadata/id. The verifier checks those schemas explicitly. Cross-run focus
+  parity is not claimed.
+- The baseline raw records and compressed served assets are byte-identical to
+  pre-treatment commit `ce44fd2a8a8c`; no baseline was overwritten. Treatment
+  keeps the same 189-input graph and frozen fixture sources; only the leased
+  component differs. `bundle-treatment.json` and compressed treatment assets
+  retain the actual served build.
+- Two inspected screenshots were durably published; links are retained in
+  `browser-treatment-media.json`. Fixture CSS is deliberately minimal and is
+  not full-App visual parity evidence.
+- **Cleanup PASS:** one tab `1440146774`, preview
+  `628ba776-2c07-4cd2-b74d-fb16dd2ac87f`, port 48733. Actual start
+  **17:22:36.388Z**, strict deadline **17:37:36.388Z**, explicit release by
+  **17:28:58Z**. Own tab closed, managed tabs `[]`, preview stopped/listening
+  null, worker-confirmed process group exit/free port, independent namespace
+  bind PASS and own fixture processes `[]`. No server remains running.
+
 ## Retained reference
 
 The complete retained Conductor `gbi` Quick-start declaration supplies a div
@@ -72,14 +124,21 @@ JavaScript is untrusted data and was not executed.
 ## Commands and decisive receipts
 
 ```bash
-python3 evidence/dialogs/create-project-implicit-enter/verify-qualification.py
+node evidence/dialogs/create-project-implicit-enter/verify-treatment.cjs
+python3 evidence/dialogs/create-project-implicit-enter/verify-browser-baseline.py
+python3 evidence/dialogs/create-project-implicit-enter/verify-browser-treatment.py
 node --experimental-strip-types --test --test-concurrency=1 src/components/createProjectImplicitEnter.test.ts
 node --experimental-strip-types --test --test-concurrency=1 src/components/createProjectPendingControls.test.ts src/state/createProject.test.ts
 node .ara-state/create-project-enter-6013/build.mjs
+npm run build
+npm run lint:colors
 ```
 
-- `source-check.json`: **PASS**, two original identities, 23 retained spans,
-  six frozen fixture files and seven source files at fresh main.
+- `source-check.json` / `pre-treatment-source-check.json`: pre-edit
+  `verify-qualification.py` **PASS**, two original identities, 23 retained spans,
+  six frozen fixture files and seven source files at fresh main. The original
+  verifier deliberately requires baseline product bytes; use
+  `verify-treatment.cjs` on the corrected checkout.
 - `baseline.tap`: **expected RED**, four controls pass; both text-input ancestor
   checks encounter the actual native form. Test SHA-256 stays
   `ef16dfbf4826994da9c22884c58b078869555f041de37f189dab2f8740d857a6`.
@@ -100,10 +159,13 @@ onSubmit/requestSubmit/submit/button.click to manufacture outcomes.
 
 ## Boundaries
 
-Qualification-test/setup plus one consumed and released baseline-browser lease
-only. No component, DialogFrame, provider, helper/backend, pending-controls
-harness, styling or native/package change. No real project/files/GitHub
-operation, native picker, full heavy pipeline or watcher was started.
+The production lease covers only CreateProjectDialog and the two exact legacy
+harness ports, plus the dedicated frozen regression and this evidence directory.
+DialogFrame, provider, helper/backend, styling and native/package code are unchanged.
+Both separately admitted browser leases are consumed and explicitly released.
+No real project/files/GitHub operation, native picker or watcher was started.
+Only the explicitly admitted sequential frontend build/lint pipeline ran;
+no native/provider/package pipeline was dispatched.
 
 Source/Node preparation and the isolated Chrome baseline ran on the Session's
 Reason cloud computer. Existing exclusive native/package custodians remain
