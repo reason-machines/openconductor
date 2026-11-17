@@ -1,0 +1,91 @@
+{
+  "author": "Conductor Rebuild",
+  "baseline": "a77e6efe35ea17dafc185fc9391de0cebca39fad",
+  "original_red_baseline": "1d8c37ab634e4eca9f86d54c138dc73fb0ee3fb5",
+  "qualification": "Retained inert REA-subject source, no new acquisition/evaluation/runtime",
+  "bundle_sha256": "f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab",
+  "inherited": [
+    {
+      "path": "evidence/settings/auto-permission/reference.json",
+      "sha256": "c919ff2c8387adc42fb90320171939677291634005c300179ee2a2a3b30b9bed"
+    },
+    {
+      "path": "evidence/settings/chrome-reconcile/reference.json",
+      "sha256": "69ad4f7ff2da280c9ffbea4da0086da80c277a3e0a648371690bb6783067e9c3"
+    }
+  ],
+  "frozen_fixture_sha256": "2442793b8b979b8633779f6407776c7dd4d7406e6df5c38a6f75fd2f159b10a4",
+  "frozen_driver_sha256": "0587d8822a69b6ad06a5b288c9fbfe38444f39176308b073e23f722704c27600",
+  "archived_chrome_fixture_sha256": "f3c262c066bbb5dd717ccb6d10b4e04767130148908cf900e5eb5dfc1a148f9b",
+  "chrome_successor_fixture_sha256": "5860d00356843824c9d4873ad962de6dcfe9c5b5e3e6145b9cd7cea6851bc2cb",
+  "local_spans": [
+    {
+      "label": "local-directory-resolution",
+      "path": "src-tauri/src/claude_chat/commands.rs",
+      "start": 5923,
+      "end": 7311,
+      "bytes": 1388,
+      "sha256": "be3546fec9cc72d02b51bc73d9bd0c707410852c3d14dff9798bb86e8790c974",
+      "source": "    let directories: Result<Vec<PathBuf>, String> = async {\n        if let Some(id) = workspace_id {\n            let db = app.state::<crate::db::Db>();\n            let source = openconductor_db::workspaces::get(&db.0, &id)\n                .await\n                .map_err(|e| e.to_string())?\n                .ok_or_else(|| \"The source workspace no longer exists.\".to_string())?;\n            let expected = source\n                .workspace\n                .workspace_path\n                .or(source.root_path)\n                .map(PathBuf::from);\n            if expected.is_none() || expected != cwd {\n                return Err(\"The chat folder does not match the source workspace.\".into());\n            }\n            let paths = openconductor_db::workspace_links::resolve(&db.0, &id)\n                .await\n                .map_err(|e| e.to_string())?;\n            let paths: Vec<PathBuf> = paths.into_iter().map(PathBuf::from).collect();\n            if paths.iter().any(|path| !path.is_absolute()) {\n                return Err(\"Saved workspace links contain a non-local directory.\".into());\n            }\n            Ok(paths)\n        } else {\n            Ok(Vec::new())\n        }\n    }\n    .await;\n    let directories = match directories {\n        Ok(paths) => paths,\n        Err(error) => {\n            runner.abandon_prompt(&chat_id);\n            return Err(error);\n        }\n    };\n"
+    },
+    {
+      "label": "local-dispatch",
+      "path": "src-tauri/src/claude_chat/commands.rs",
+      "start": 7685,
+      "end": 7954,
+      "bytes": 269,
+      "sha256": "fe215ee76e6d72c232c67885082c238ae2bdc68934e574a38060307f09763750",
+      "source": "            runner.prompt_with_handoff(\n                &chat_id,\n                &text,\n                &directories,\n                &options,\n                Some(Box::new(move || {\n                    let _ = on_handoff.send(());\n                })),\n            )\n"
+    },
+    {
+      "label": "local-launch-directory-args",
+      "path": "src-tauri/src/agent/claude_cli.rs",
+      "start": 7374,
+      "end": 7493,
+      "bytes": 119,
+      "sha256": "57d189fefe53bc1f00fa126945aa52276da306e9db280746fe01c1669735e1a5",
+      "source": "        for dir in &self.add_dirs {\n            args.extend([\"--add-dir\".into(), dir.display().to_string()]);\n        }"
+    }
+  ],
+  "unchanged_production": [
+    {
+      "path": "src-tauri/src/claude_chat/commands.rs",
+      "sha256": "25ade991a1cb5d3d51c5ce1433bc624ee22d112b5810e74b4653d52bbbf4a37a"
+    },
+    {
+      "path": "src-tauri/src/local_plan_mode.rs",
+      "sha256": "0d471198ab5572a0259b7b9580adfc905f1d7c3accd523d3e5ca2711d5df9120"
+    },
+    {
+      "path": "src-tauri/src/settings/launch.rs",
+      "sha256": "2a306a3dd1f03a2ea319e96f77919662e1ce56a91975f7ac4e324674261679f5"
+    },
+    {
+      "path": "src-tauri/src/claude_chat/interact.rs",
+      "sha256": "f65c973f343ae70295cc97600cfcabf0440ccf753f4cd44b854ba9faf794cdcd"
+    },
+    {
+      "path": "src-tauri/src/agent/claude_stream.rs",
+      "sha256": "a33f9adba6dec46f2774aead479f2783b70ab8c9362823c59a53b7fba2494276"
+    },
+    {
+      "path": "src-tauri/src/agent/claude_cli.rs",
+      "sha256": "00d8b6691499f12305ba5b48bf673c71d9720fe21710adba116d0f69da90e0fa"
+    },
+    {
+      "path": "src-tauri/src/codex_chat.rs",
+      "sha256": "6bea10f81ee4dae4d4ab7400e65051b88d417abd074abf0a8d231a7b02168566"
+    },
+    {
+      "path": "src-tauri/src/app_prefs/commands.rs",
+      "sha256": "97c46f26c1ed8fd2c36290041bae7f47364b48f204ba75e38554ed7ac5da8803"
+    }
+  ],
+  "limits": [
+    "Retained parent binary/bundle identity is inherited, not remeasured",
+    "SQLite workspace resolution is static caller binding, not executed",
+    "Pure preparation prefix stops before spawn; kill/wait are counters",
+    "Existing process-based runner test updated but not executed",
+    "No native/provider/process/app/package/runtime dispatch"
+  ]
+}

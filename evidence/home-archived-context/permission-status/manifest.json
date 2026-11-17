@@ -1,0 +1,294 @@
+{
+  "author": "Conductor Rebuild",
+  "unit": "SAME15-Ld-Nii-source-qualification-v1",
+  "disposition": "SOURCE_ONLY_BINDINGS_AND_VALUE_DEPENDENCIES_QUALIFIED_PERMISSION_DOMAIN_UNPROVED",
+  "range_convention": "Zero-based half-open UTF-8 byte ranges. Raw source bytes, no added newline/normalization.",
+  "index_asset": {
+    "name": "index-BGEQ8YjU.js",
+    "received_name": "retained-original-index-BGEQ8YjU.js",
+    "attachment_id": "3aff3764-9967-4046-8b73-576fa8b13eba",
+    "bytes": 3493297,
+    "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+    "direct_observation": "Supplied upload bytes and digest on Reason Cloud, not installed-app identity.",
+    "reported_provenance": "Ledger reports unchanged prior retained extraction asset copied on authorized sven m5 max; no fresh extraction."
+  },
+  "input_packet": {
+    "name": "same271-home-ejo-source-qualified-v1.tar.gz",
+    "attachment_id": "e91f4473-0c09-4f10-9d79-78b9b402f710",
+    "bytes": 18040,
+    "sha256": "572f57218808cf98aa1c654101aa6dc8943dd35cab9e939ec6196483c3cc98ee",
+    "renderer_parent_reported": {
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "verification_limit": "Archive identity and selected supplied literals checked; full renderer asset not checked here."
+  },
+  "renderer_imports": [
+    {
+      "local": "Ld",
+      "export": "dh",
+      "source": "./index-BGEQ8YjU.js",
+      "utf8_span": [
+        55486,
+        55494
+      ],
+      "bytes": 8,
+      "sha256": "2bae4f8faa863e119923495dbfde1ea4c64fd65aa41b763f87886641de540432",
+      "file": "imports/Ld.txt",
+      "body_in_packet": false
+    },
+    {
+      "local": "Nii",
+      "export": "hK",
+      "source": "./index-BGEQ8YjU.js",
+      "utf8_span": [
+        58268,
+        58277
+      ],
+      "bytes": 9,
+      "sha256": "eb5e4fdeb845559d0d79c78069a28e117a43d551acdec6e39a7c33d739829901",
+      "file": "imports/Nii.txt",
+      "body_in_packet": false
+    }
+  ],
+  "renderer_import_source": {
+    "file": "imports/source-literal.txt",
+    "utf8_span": [
+      66473,
+      66494
+    ],
+    "bytes": 21,
+    "sha256": "1faa235764f157b660063c5e9cdd5361646db7891777ab7953f135222af0259b"
+  },
+  "index_spans": [
+    {
+      "name": "kYt",
+      "kind": "complete-function",
+      "role": "Complete permission hook exported as dh; renderer imports dh as Ld.",
+      "utf8_span": [
+        3286981,
+        3287099
+      ],
+      "bytes": 118,
+      "sha256": "7f5b906c85f313f2e4bd1747a928421be0b3075b88b14820cb275157139b8a84",
+      "file": "literals/kYt.txt"
+    },
+    {
+      "name": "ZBt",
+      "kind": "complete-function",
+      "role": "Direct optional permission field selector; no fallback or enum.",
+      "utf8_span": [
+        3287099,
+        3287141
+      ],
+      "bytes": 42,
+      "sha256": "67f0e80e53508ed8091ed95b9defc59dd3a4e188d3eb69bfad7d17fe5bda1eb7",
+      "file": "literals/ZBt.txt"
+    },
+    {
+      "name": "yn",
+      "kind": "complete-function",
+      "role": "Selector memoization; equality helper below.",
+      "utf8_span": [
+        769344,
+        769455
+      ],
+      "bytes": 111,
+      "sha256": "66316a13fac9a483a12d7e884e5ef30e4af606998f959e2670db089d662e954c",
+      "file": "literals/yn.txt"
+    },
+    {
+      "name": "q0",
+      "kind": "complete-function",
+      "role": "Primitive identity/type equality branches; object-only helper branches not expanded.",
+      "utf8_span": [
+        769076,
+        769344
+      ],
+      "bytes": 268,
+      "sha256": "8e04d50a3761cef60bfc60937cf83b21cb296665b78e5e62e9f5da9c588b8651",
+      "file": "literals/q0.txt"
+    },
+    {
+      "name": "ko",
+      "kind": "complete-function",
+      "role": "Generic query factory; selected value and query status wrappers only. Side-effect implementation not expanded.",
+      "utf8_span": [
+        944324,
+        945545
+      ],
+      "bytes": 1221,
+      "sha256": "e7641330d98aaf13a03c053afb6e193add5bfa56dd54c959968bdfd51587c592",
+      "file": "literals/ko.txt"
+    },
+    {
+      "name": "RVe",
+      "kind": "complete-function",
+      "role": "Query cell to result; maps absent/loading/error to undefined and defined data through selector.",
+      "utf8_span": [
+        944010,
+        944324
+      ],
+      "bytes": 314,
+      "sha256": "c9a4ef6cdf3c52b75e60009bd98762fa93ca520a7d5001147ef2aeeb9470d049",
+      "file": "literals/RVe.txt"
+    },
+    {
+      "name": "Gv",
+      "kind": "complete-function",
+      "role": "Status flags; selected data spread unchanged.",
+      "utf8_span": [
+        384017,
+        384249
+      ],
+      "bytes": 232,
+      "sha256": "2e9443525a513677934351ac9f7ed57486933249ab30f52a43d3ec67a73032c8",
+      "file": "literals/Gv.txt"
+    },
+    {
+      "name": "dt",
+      "kind": "complete-function",
+      "role": "Loaded query-cell wrapper; no permission default.",
+      "utf8_span": [
+        383845,
+        383901
+      ],
+      "bytes": 56,
+      "sha256": "a4abc4fa6fe3d3806fd5d14e07fbb9662bb272647adc49a088dacfc143c20f13",
+      "file": "literals/dt.txt"
+    },
+    {
+      "name": "tr",
+      "kind": "complete-function",
+      "role": "Loading query-cell wrapper.",
+      "utf8_span": [
+        383957,
+        384017
+      ],
+      "bytes": 60,
+      "sha256": "cfaaa92ef82baa409b0d3977ece5b59c7e916283c689545336d7044f84f45247",
+      "file": "literals/tr.txt"
+    },
+    {
+      "name": "gYt-status-list",
+      "kind": "complete-const-statement",
+      "role": "Five literal statuses in preserved order; no enum object or imported dependency.",
+      "utf8_span": [
+        3277363,
+        3277429
+      ],
+      "bytes": 66,
+      "sha256": "b7dc8cf2c7de1d0579560c043d1880069ce6029e1992ec92fa5e8ff84c8c3d17",
+      "file": "literals/gYt-status-list.txt"
+    },
+    {
+      "name": "index-export-dh",
+      "kind": "export-specifier",
+      "role": "Index binding for renderer Ld; index-local Ld is unrelated.",
+      "utf8_span": [
+        3482387,
+        3482396
+      ],
+      "bytes": 9,
+      "sha256": "c62b6a011774e208ebe649b67c1ae7fcece9b2d344e3c8a62b402a72b8df1633",
+      "file": "literals/index-export-dh.txt"
+    },
+    {
+      "name": "index-export-hK",
+      "kind": "export-specifier",
+      "role": "Index binding for renderer Nii.",
+      "utf8_span": [
+        3484656,
+        3484665
+      ],
+      "bytes": 9,
+      "sha256": "a1ff73af1e0b1d14b7ef20933843fc889900af7b1d717228197c89087c03ef74",
+      "file": "literals/index-export-hK.txt"
+    },
+    {
+      "name": "il-binding",
+      "kind": "complete-variable-declarator",
+      "role": "Workspace query binding; opaque provider we is the stop boundary.",
+      "utf8_span": [
+        3277937,
+        3277951
+      ],
+      "bytes": 14,
+      "sha256": "bd619ec8af378e51089b5252d6c2f02e29d6131fdc00f70015ddd25e1d2d4cde",
+      "file": "literals/il-binding.txt"
+    },
+    {
+      "name": "MXe-binding",
+      "kind": "complete-variable-declarator",
+      "role": "Input/cache key and direct selector. getWorkspace callback body outside scope.",
+      "utf8_span": [
+        1074638,
+        1074846
+      ],
+      "bytes": 208,
+      "sha256": "ceb522a5edcdc4a9241ebabb67a201f37a54962025ca4f15c07ecafa181292b4",
+      "file": "literals/MXe-binding.txt"
+    },
+    {
+      "name": "xXe-selector",
+      "kind": "complete-variable-declarator",
+      "role": "Workspace query-cell selector; no host/permission-specific branch.",
+      "utf8_span": [
+        1074261,
+        1074516
+      ],
+      "bytes": 255,
+      "sha256": "9ebe380bfcd75cae685bb7e4a5ea0a9d937e6c8888ca9f62fb639bbb2af18682",
+      "file": "literals/xXe-selector.txt"
+    },
+    {
+      "name": "Ga-input-sentinel",
+      "kind": "complete-variable-declarator",
+      "role": "Missing-ID input sentinel, not a permission value.",
+      "utf8_span": [
+        943991,
+        944009
+      ],
+      "bytes": 18,
+      "sha256": "907f3866af46afa51f6862539a431a16ca87a6a6b1e97ff57b3d2b0a78946e63",
+      "file": "literals/Ga-input-sentinel.txt"
+    }
+  ],
+  "chains": {
+    "permission": "renderer Ld <- dh <- index kYt -> il(s,yn(ZBt)).data; il=MXe(()=>we); MXe=ko(...selector:xXe...); xXe -> workspace query cell; RVe -> selection; ZBt -> t?.permissionLevel",
+    "status": "renderer Nii <- hK <- index gYt literal array"
+  },
+  "qualified_values": {
+    "statuses_in_order": [
+      "backlog",
+      "in-progress",
+      "in-review",
+      "done",
+      "canceled"
+    ],
+    "permission_accessor": "Unvalidated pass-through of stored permissionLevel or undefined; no accessor default, enum conversion or host branch. No finite permission domain is declared.",
+    "renderer_guard_context": "Supplied Aao uses permissionLevel !== \"read\" for X. read is a consumer guard, not a complete provider enum. Undefined !== read is expression semantics, not an observed loading/runtime state.",
+    "local_host_permission_default": "NOT_ESTABLISHED. Do not infer write/admin from a non-read guard."
+  },
+  "stop_boundaries": [
+    "we provider/store population and getWorkspace implementation: not expanded; backend/persistence excluded.",
+    "Ancillary reactive hooks/error wrappers z/$e/R0/tt/an/Mr not expanded; no permission values inferred.",
+    "q0 object comparison helpers LG/NG/$G/t8e not expanded; string/undefined identity/type comparison terminates before those branches.",
+    "No unresolved module import remains for the two requested renderer bindings; no unrelated renderer import expansion/acquisition."
+  ],
+  "not_proved": [
+    "Finite permission enum or supported backend permission values",
+    "Local-host permission default or store population/persistence",
+    "Status labels/icons/effectiveStatus, mutations or transition legality",
+    "Current product mismatch/RED",
+    "Installed-app identity/version or mounted/native/package behavior"
+  ],
+  "execution": {
+    "vendor_javascript_execution_import_eval": "NOT_RUN",
+    "current_main_comparison": "NOT_RUN (outside assigned scope)",
+    "product_tests_typecheck_build": "NOT_RUN",
+    "mounted_native_package": "NOT_RUN",
+    "source_test_product_tracked_edits": "NONE"
+  }
+}

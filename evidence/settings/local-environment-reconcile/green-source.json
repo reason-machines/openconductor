@@ -1,0 +1,21 @@
+{
+  "source_ref": "c3c9ab420f62edb08159f6bcbbcc921ca57f52f3",
+  "runner_sha256": "977b1b13c79c39a8c6147a21b5b126d16ae29da804a4919fb27f892e5f50b1ce",
+  "commands_sha256": "d7cd53350e3c3a6197d4b89b08efb9eb1f5c7e48f6a8caf9ac640bebcea68d49",
+  "fixture_sha256": "8e663e6df3a40c96f7854fdf6705434f26b593ab941f265e43bb7ce16f4fd0fc",
+  "prefix_sha256": "2f01feaffbb41d2537aae5434e9e9791f94d7bbad4bccb4e75391c5fd239cc30",
+  "turn_env_sha256": "177675c64f5fed235a6b6ed725f9218751f855163373ab5468b7c03b35b41d09",
+  "launcher_env_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "secret_string_sha256": "2956eb49208dacd321873c31990135247fcc76ba1cbec6470410a9447161a5c5",
+  "transforms": [
+    "Result<(), String> -> Result<Option<ClaudeLaunch>, String>",
+    "early Ok(()) -> Ok(None)",
+    "stop before spawn; return prepared launch"
+  ],
+  "adapters": [
+    "launch DTO and env setters",
+    "live state/mapper DTOs",
+    "counter-only session kill/wait",
+    "synthetic effective-env loader"
+  ]
+}

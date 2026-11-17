@@ -1,0 +1,1 @@
+function tr(){return{data:void 0,error:void 0,isLoading:!0}}

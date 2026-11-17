@@ -140,6 +140,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
   const [tab, setTab] = useState<PaletteTab>(initialTab);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(initialTab === "workspaces" ? -1 : 0);
+  const [sectionActive, setSectionActive] = useState(0);
   const [filters, setFiltersState] = useState<HomeFilters>(() => {
     const saved = loadFilters(new Set(repos.map((r) => r.id)));
     return initialArchiveFilter ? { ...saved, archiveFilter: initialArchiveFilter } : saved;
@@ -168,7 +169,15 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     () => (tab === "workspaces" ? [...wsRows.active, ...wsRows.archived].map(rowItem) : groups.flatMap((g) => g.items)),
     [tab, wsRows, groups],
   );
-  const activeItem = inSectionMode ? SectionPicker && sectionFlatItems[active] : flat[active];
+  // Like cmdk's enabled-item selector, retain display indices but navigate only
+  // actionable rows. The current section remains visible, checked and disabled.
+  const enabledSectionIndices = sectionFlatItems.flatMap((item, index) =>
+    item.kind === "section" && item.section.workspaceIds.includes(moveToSection!.workspaceId) ? [] : [index],
+  );
+  const selectedSectionIndex = enabledSectionIndices.includes(sectionActive) ? sectionActive : enabledSectionIndices[0] ?? -1;
+  const activeIndex = inSectionMode ? selectedSectionIndex : active;
+  const activeItem = inSectionMode ? SectionPicker && sectionFlatItems[activeIndex] : flat[activeIndex];
+  useEffect(() => { setSectionActive(0); }, [query, sectionKey]);
 
   function changeTab(next: PaletteTab) {
     if (next === tab) return;
@@ -246,9 +255,10 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
       if (cmd === "close" || cmd === "prev-tab") {
         moveToSection.onBack();
       } else if (cmd === "select") {
-        chooseSectionAt(active);
+        chooseSectionAt(selectedSectionIndex);
       } else {
-        setActive((a) => moveActive(a, sectionFlatItems.length, cmd));
+        const next = moveActive(enabledSectionIndices.indexOf(selectedSectionIndex), enabledSectionIndices.length, cmd);
+        setSectionActive(enabledSectionIndices[next] ?? -1);
       }
       return;
     }
@@ -282,7 +292,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
             onKeyDown={onKeyDown}
             role="combobox"
             aria-autocomplete="list"
-            aria-activedescendant={activeItem ? optionId(active) : undefined}
+            aria-activedescendant={activeItem ? optionId(activeIndex) : undefined}
             aria-expanded="true"
             aria-controls="palette-list"
           />
@@ -292,9 +302,9 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
             workspaceId={moveToSection.workspaceId}
             sections={moveToSection.sections}
             query={query}
-            active={active}
+            active={selectedSectionIndex}
             optionId={optionId}
-            onActive={setActive}
+            onActive={setSectionActive}
             onSelectAt={chooseSectionAt}
             onBack={moveToSection.onBack}
           />
