@@ -1,0 +1,12 @@
+(node:56) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  "declarations": 9,
+  "bindings": 15,
+  "baseline": "217498aae38dfd63b97919b1a0ab4097462c691e",
+  "fixture": {
+    "path": "worktree/src/features/chat/composerPasteLifetime.test.ts",
+    "sha256": "fd1a42f871d8324250ba1ae886cd772bd74ce4c7c5ca66eedd419336ea93b301"
+  },
+  "pass": true
+}

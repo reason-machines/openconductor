@@ -16,14 +16,14 @@ const state: AppState = {
   ],
 };
 
-test("pinned workspaces leave their repo group and sort by pin time", () => {
-  assert.deepEqual(pinnedEntries(state).map((e) => e.workspace.id), ["b1", "a2"]);
+test("pinned workspaces leave their repo group and sort newest pin first", () => {
+  assert.deepEqual(pinnedEntries(state).map((e) => e.workspace.id), ["a2", "b1"]);
   assert.deepEqual(repoGroupWorkspaces(state.repos[0].workspaces).map((w) => w.id), ["a3", "a1"]);
 });
 
 test("sidebar order is pinned, then each repo newest first; visibleOnly skips collapsed repos", () => {
-  assert.deepEqual(sidebarEntries(state).map((e) => e.workspace.id), ["b1", "a2", "a3", "a1", "b2"]);
-  assert.deepEqual(sidebarEntries(state, { visibleOnly: true }).map((e) => e.workspace.id), ["b1", "a2", "a3", "a1"]);
+  assert.deepEqual(sidebarEntries(state).map((e) => e.workspace.id), ["a2", "b1", "a3", "a1", "b2"]);
+  assert.deepEqual(sidebarEntries(state, { visibleOnly: true }).map((e) => e.workspace.id), ["a2", "b1", "a3", "a1"]);
   assert.deepEqual(sidebarEntries(state, { visibleOnly: true, pinnedCollapsed: true }).map((e) => e.workspace.id), ["a3", "a1"]);
 });
 
@@ -92,7 +92,7 @@ test("toggling stores the opposite of what the group shows", () => {
 
 test("visibleOnly numbers only rows of unfolded groups: Home folds untoggled groups", () => {
   const s: AppState = { ...state, repos: state.repos.map((r) => ({ ...r, collapsed: undefined })) };
-  assert.deepEqual(sidebarEntries(s, { visibleOnly: true }).map((e) => e.workspace.id), ["b1", "a2"]);
+  assert.deepEqual(sidebarEntries(s, { visibleOnly: true }).map((e) => e.workspace.id), ["a2", "b1"]);
   const open: AppState = { ...s, selection: { kind: "workspace", repoId: "a", workspaceId: "a3" } };
-  assert.deepEqual(sidebarEntries(open, { visibleOnly: true }).map((e) => e.workspace.id), ["b1", "a2", "a3", "a1"]);
+  assert.deepEqual(sidebarEntries(open, { visibleOnly: true }).map((e) => e.workspace.id), ["a2", "b1", "a3", "a1"]);
 });

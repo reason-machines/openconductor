@@ -1,0 +1,1 @@
+function XQ({view:t,text:e,parseWorkspaceLink:n}){const{schema:i,tr:r}=t.state,o=(zxo(e,n).content??[]).map(c=>i.nodeFromJSON(c)),a=new Po(ts.from(o),1,1);t.dispatch(ZIt(r.replaceSelection(a).scrollIntoView().setMeta("uiEvent","paste")))}

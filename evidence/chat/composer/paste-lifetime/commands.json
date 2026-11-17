@@ -1,0 +1,63 @@
+{
+  "candidate": "COMPOSER-PASTE-LIFETIME-135",
+  "executor": "Conductor Rebuild on Reason cloud",
+  "baseline": "217498aae38dfd63b97919b1a0ab4097462c691e",
+  "fixtureSha256": "fd1a42f871d8324250ba1ae886cd772bd74ce4c7c5ca66eedd419336ea93b301",
+  "treatedComposerSha256": "82aba37327b2ec32b96644fd0cf19923420b926ea9e2e2dbb4c4e851657da13a",
+  "checks": [
+    {
+      "command": "node .qa/composer-refill-1500/qualify-source.mjs",
+      "exitCode": 0,
+      "result": "9 complete original declarations and 15 binding assertions passed; generated qualification JSON byte-identical to supplied packet",
+      "log": "source-verifier.txt"
+    },
+    {
+      "command": "sha256sum -c .qa/composer-paste-lifetime-qualified/frozen-before-run.sha256",
+      "exitCode": 0,
+      "result": "Both exact baseline hashes passed before and after RED; this baseline manifest is not a treatment manifest"
+    },
+    {
+      "command": "node --experimental-strip-types --test src/features/chat/composerPasteLifetime.test.ts",
+      "phase": "baseline before production edit",
+      "exitCode": 1,
+      "passed": 6,
+      "failed": 1,
+      "skipped": 0,
+      "cancelled": 0,
+      "result": "Intended detached-handle focus/insertion assertion failure",
+      "log": "baseline.tap.gz"
+    },
+    {
+      "command": "node --experimental-strip-types --test src/features/chat/composerPasteLifetime.test.ts",
+      "phase": "one-line treatment; exact unchanged fixture",
+      "exitCode": 0,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "log": "green.tap"
+    },
+    {
+      "command": "node --experimental-strip-types --test --test-concurrency=2 src/features/chat/composerPasteFilePaths.test.ts src/features/chat/composerLongPaste.test.ts src/features/chat/composerCancelFocus.test.ts src/features/chat/composerAsyncSubmit.test.ts src/features/chat/composerSubmit.test.ts src/features/chat/composerAttachments.test.ts src/features/chat/composerAttachmentPreview.test.ts src/features/chat/composerAttachmentSettlement.test.ts src/features/chat/composerSession.test.ts src/features/chat/composerSuggestionKeys.test.ts src/features/chat/composerSuggestionPointer.test.ts",
+      "exitCode": 0,
+      "passed": 124,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "log": "adjacent.tap"
+    },
+    { "command": "npm run typecheck", "exitCode": 0, "log": "typecheck.log" },
+    { "command": "npm run build", "exitCode": 0, "result": "Branding, TypeScript and frontend Vite build passed; import/chunk advisories retained", "log": "build.log" },
+    { "command": "npm run lint:colors", "exitCode": 0, "result": "Six checker tests and source scan passed", "log": "color-lint.log" },
+    { "command": "node evidence/chat/composer/paste-lifetime/verify.mjs .qa/create-suggestions-135/retained/renderApp-D_fmY7hW.js", "exitCode": 0, "log": "verify.log" },
+    { "command": "sha256sum -c evidence/chat/composer/paste-lifetime/SHA256SUMS", "exitCode": 0 },
+    { "command": "git diff --check", "exitCode": 0 }
+  ],
+  "notRun": [
+    "Browser/native/app launch or screenshot",
+    "OS clipboard, real TipTap focus/selection/destroyed-editor acceptance",
+    "Native readers, provider final input, normalized file paths",
+    "Handle replacement as a separate mounted test case",
+    "Native/package build, release dispatch, package containment, installed behavior"
+  ]
+}

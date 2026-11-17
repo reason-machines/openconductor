@@ -1,0 +1,251 @@
+{
+  "key": "SIDEBAR-PINNED-NEWEST-FIRST-271-01",
+  "author": "Conductor Rebuild",
+  "mode": "retained REA source, inert bytes only; no vendor JavaScript evaluation",
+  "app": "Conductor 0.87.6",
+  "rea_parent_evidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "assets": {
+    "renderer": {
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "name": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "baseline": "6cc9a9c75cb2ee4cdec678bc51f6b2960dac2280",
+  "spans": [
+    {
+      "name": "Pia",
+      "asset": "renderer",
+      "utf8_span": [
+        10035594,
+        10038138
+      ],
+      "bytes": 2544,
+      "sha256": "a2ea0a15362e952c2807180f8582ed9c1e4ac96504b0dd891bab529919543ddc",
+      "file": "reference/Pia.txt"
+    },
+    {
+      "name": "Lia",
+      "asset": "renderer",
+      "utf8_span": [
+        10038138,
+        10038248
+      ],
+      "bytes": 110,
+      "sha256": "92fbbb676484a5e3c02010158f408ef9acd58ee6d3c50e5c5e0ce59df18563ef",
+      "file": "reference/Lia.txt"
+    },
+    {
+      "name": "Mia",
+      "asset": "renderer",
+      "utf8_span": [
+        10038248,
+        10038281
+      ],
+      "bytes": 33,
+      "sha256": "a070db8fa45c1ddfc3d61eec86dd1bd7493310a676974e5a22a49af9ba76078f",
+      "file": "reference/Mia.txt"
+    },
+    {
+      "name": "jia",
+      "asset": "renderer",
+      "utf8_span": [
+        10038281,
+        10038328
+      ],
+      "bytes": 47,
+      "sha256": "b17dd3cffef1b07286f0883906ec5aba4ade27bedbc3f4d4d77dbc421ec900d4",
+      "file": "reference/jia.txt"
+    },
+    {
+      "name": "Fia",
+      "asset": "renderer",
+      "utf8_span": [
+        10038328,
+        10038403
+      ],
+      "bytes": 75,
+      "sha256": "47a2de1612585c0c1b0ef6d8f54fd1cbac4f00f1b396d2c040423a16a9576237",
+      "file": "reference/Fia.txt"
+    },
+    {
+      "name": "hBi",
+      "asset": "renderer",
+      "utf8_span": [
+        10101417,
+        10106763
+      ],
+      "bytes": 5346,
+      "sha256": "7067608ebeaae54a7005b9ad75e5b212029ed36d23ecd6fe4b3886324efcc11a",
+      "file": "reference/hBi.txt"
+    },
+    {
+      "name": "hBi-local-mount",
+      "asset": "renderer",
+      "utf8_span": [
+        10105258,
+        10105325
+      ],
+      "bytes": 67,
+      "sha256": "3c95b42c0f19d38ca5ca74963f66e28e089d14f44c9999fe9b0e94647613efd7",
+      "file": "reference/hBi-local-mount.txt"
+    },
+    {
+      "name": "bsa",
+      "asset": "renderer",
+      "utf8_span": [
+        10106981,
+        10107028
+      ],
+      "bytes": 47,
+      "sha256": "3f7045e679db584b1eab2c837e6347a3390f5091ef58a846efc033fca6c0f5f1",
+      "file": "reference/bsa.txt"
+    },
+    {
+      "name": "Xh-import",
+      "asset": "renderer",
+      "utf8_span": [
+        54804,
+        54812
+      ],
+      "bytes": 8,
+      "sha256": "c78fd1de48e6bff7f077e067acce8e79e0346d82ecc2ad60914e94a3f85eddb7",
+      "file": "reference/Xh-import.txt"
+    },
+    {
+      "name": "Xh-export",
+      "asset": "index",
+      "utf8_span": [
+        3481701,
+        3481710
+      ],
+      "bytes": 9,
+      "sha256": "6482888a94bd6537fe8a0132b074db3468ff9764387ef15a9f301e99b9fbff45",
+      "file": "reference/Xh-export.txt"
+    },
+    {
+      "name": "reference-workspace-query",
+      "asset": "index",
+      "utf8_span": [
+        3284737,
+        3285851
+      ],
+      "bytes": 1114,
+      "sha256": "95635092bcbc111c89f8a06b001ab0e2305938606157af400da28bdf0d8c9251",
+      "file": "reference/reference-workspace-query.txt"
+    },
+    {
+      "name": "query-positional-stabilization",
+      "asset": "index",
+      "utf8_span": [
+        770267,
+        770569
+      ],
+      "bytes": 302,
+      "sha256": "ba6c676981ab999e8c5593ea7a898c35d4491ebdf135c729bf0a3a938d687a68",
+      "file": "reference/query-positional-stabilization.txt"
+    },
+    {
+      "name": "NO",
+      "asset": "index",
+      "utf8_span": [
+        827209,
+        827653
+      ],
+      "bytes": 444,
+      "sha256": "76d00b5d9a48bc0094b481e8162a858b9b941db5c7155dd0097488d895302471",
+      "file": "reference/NO.txt"
+    },
+    {
+      "name": "u5",
+      "asset": "renderer",
+      "utf8_span": [
+        9734923,
+        9735028
+      ],
+      "bytes": 105,
+      "sha256": "cd4882c0a7bad0623b06eefda207578fafa15df5427e517f48659409e3071ea6",
+      "file": "reference/u5.txt"
+    },
+    {
+      "name": "EA",
+      "asset": "index",
+      "utf8_span": [
+        827653,
+        827685
+      ],
+      "bytes": 32,
+      "sha256": "a570df3cd5c03f89ea40040469c62b6e291f83de0bd8df5632c57285bcd7b7f8",
+      "file": "reference/EA.txt"
+    },
+    {
+      "name": "OSr-import",
+      "asset": "renderer",
+      "utf8_span": [
+        61755,
+        61764
+      ],
+      "bytes": 9,
+      "sha256": "d92608bc881c9af43d5a863e31ff53dee7f157386cae52c2b9977647db664d8c",
+      "file": "reference/OSr-import.txt"
+    },
+    {
+      "name": "OSr-export",
+      "asset": "index",
+      "utf8_span": [
+        3488660,
+        3488668
+      ],
+      "bytes": 8,
+      "sha256": "4b8c570d9fdee0a374a5d169e2530311afaccffcfebe11ec8c71e2b9ee6ddf7a",
+      "file": "reference/OSr-export.txt"
+    }
+  ],
+  "baseline_product_sha256": "ff14d6605b1ced7f965ece3e7578694a2e6d7018d4adff343f4e6ed0ae1aef4a",
+  "legacy_fixture_sha256": "09bfd74769ba808d4694540bb0f7613b57d7c44a6b367bd2cd614c3016e85520",
+  "fixture_v1_sha256": "611ebc8bf5bfe6f3cfd440144565f4e89819969dac7e3e7661f03ff0fc6f24f6",
+  "fixture_v2_sha256": "908182954bbbe26d07315b6e139feced0d5fef44d9d7ba1af60875f29ce38644",
+  "v1_to_v2_only_change": {
+    "old": "{ RepoWorkspaceList: ({ renderWorkspace }: { renderWorkspace: unknown }) => null }",
+    "new": "{ RepoWorkspaceList: () => null }"
+  },
+  "checks": {
+    "frozen_v1_red": {
+      "pass": 7,
+      "fail": 5,
+      "harness_errors": 0
+    },
+    "frozen_v1_green": {
+      "pass": 12,
+      "fail": 0
+    },
+    "frozen_v2_red": {
+      "pass": 7,
+      "fail": 5,
+      "harness_errors": 0
+    },
+    "frozen_v2_green": {
+      "pass": 12,
+      "fail": 0
+    },
+    "affected": {
+      "pass": 205,
+      "fail": 0
+    },
+    "build": "PASS after unused fixture parameter correction; initial TS6133 retained",
+    "color_lint": "PASS 6/6 and1248 files"
+  },
+  "scope": "Pinned comparator and matching doc only; existing legacy pin-order expectations migrated only. REPO predicate, pin membership, sections, collapse and all other source functions unchanged.",
+  "limits": [
+    "React component boundary with inert leaf rows and unrelated adapters, not browser/native rendering.",
+    "Archived/hidden controls cover unpinned/unrelated rows only; no claim of full hidden/archive pin-membership parity.",
+    "No real pin persistence, OS shortcut, full-App, provider or installed package acceptance.",
+    "No browser/screenshot because existing exclusive runtime/native custody was not admitted or duplicated.",
+    "No new native REA call or gap; reuse historical extraction provenance only."
+  ]
+}
