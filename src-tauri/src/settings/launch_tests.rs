@@ -345,6 +345,33 @@ fn claude_launch_uses_the_settings() {
 }
 
 #[test]
+fn claude_auto_permission_obeys_plan_and_approval_precedence() {
+    let store = MemorySecretStore::new();
+    for plan in [false, true] {
+        for approvals in [false, true] {
+            for auto in [false, true] {
+                let mut settings = Settings::default();
+                settings.models.default_plan_mode = plan;
+                settings.tool_approvals_enabled = approvals;
+                settings.experimental.extra.insert("experimental_auto_permission_mode".into(), toml::Value::Boolean(auto));
+                let execution = if !approvals { PermissionMode::BypassPermissions } else if auto { PermissionMode::Auto } else { PermissionMode::Default };
+                for purpose in [Purpose::Chat, Purpose::Review] {
+                    let expected = if plan && purpose == Purpose::Chat { PermissionMode::Plan } else { execution };
+                    let mut launch = launch::claude_launch(&settings, Path::new("/synthetic/workspace"), &store, purpose).unwrap();
+                    for resume in [None, Some("synthetic-resume".into())] {
+                        launch.resume = resume;
+                        assert_eq!(flag(&launch.args(), "--permission-mode"), Some(expected.as_str()));
+                    }
+                }
+                // An existing chat's explicit Plan state, not the initial default.
+                assert_eq!(settings.claude_permission_mode(false), execution);
+                assert_eq!(settings.claude_permission_mode(true), PermissionMode::Plan);
+            }
+        }
+    }
+}
+
+#[test]
 fn codex_launch_uses_the_settings() {
     let s = parse(CONDUCTOR_FILE);
     let store = MemorySecretStore::new();

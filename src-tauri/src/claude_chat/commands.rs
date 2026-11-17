@@ -128,7 +128,7 @@ pub async fn claude_prompt(
         crate::local_plan_mode::load(&db.0, &logical_id, settings.models.default_plan_mode).await?;
     options.permission_mode = Some(crate::local_plan_mode::claude_permission(
         mode,
-        settings.tool_approvals_enabled,
+        &settings,
     ));
     let state = app.state::<ClaudeChats>();
     let runner = state.runner(&app);
@@ -226,6 +226,12 @@ pub async fn claude_respond(
     let _mode_lease = gate.lock_owned().await;
     let runner = state.runner(&app);
     let approved = runner.approves_plan(&chat_id, &id, &answer);
+    let post_plan_mode = if approved {
+        let settings = app.state::<SettingsService>().get().map_err(|e| e.to_string())?;
+        Some(settings.claude_permission_mode(false))
+    } else {
+        None
+    };
     let db = app.state::<crate::db::Db>();
     let previous = if approved {
         let previous = crate::local_plan_mode::load(&db.0, logical_id, false).await?;
@@ -239,7 +245,7 @@ pub async fn claude_respond(
     } else {
         None
     };
-    if let Err(error) = runner.respond(&chat_id, &id, &answer) {
+    if let Err(error) = runner.respond(&chat_id, &id, &answer, post_plan_mode) {
         if let Some(previous) = previous {
             crate::local_plan_mode::save(&db.0, logical_id, previous).await?;
         }

@@ -1,0 +1,14 @@
+   Compiling settings-auto-permission-unit v0.0.0 (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/auto-permission-unit/current/harness)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.80s
+     Running unittests src/lib.rs (.oc-tmp/settings-auto-permission-binding/harness/target/debug/build/settings-auto-permission-unit/dda2fa8575ded66e/out/settings_auto_permission_unit-dda2fa8575ded66e)
+
+running 7 tests
+test interact_tests::a_mode_target_cannot_approve_a_tool_or_a_rejected_plan ... ok
+test interact_tests::answers_parse_from_the_ui_json ... ok
+test interact_tests::answers_become_allow_or_deny_decisions ... ok
+test interact_tests::any_other_tool_is_a_yes_or_no_permission_titled_by_its_input ... ok
+test interact_tests::exit_plan_mode_is_a_plan_and_ask_user_question_its_questions ... ok
+test interact_tests::question_answers_go_back_in_the_input_by_question_text ... ok
+test interact_tests::approved_plan_restores_only_a_configured_execution_mode ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 115 filtered out; finished in 0.00s

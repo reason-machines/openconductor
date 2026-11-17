@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { WebDriver } from "./webdriver.mjs";
 
 test("startup waits through a missing shell, loading, and busy ready state", async (t) => {
@@ -210,6 +212,61 @@ test("a stalled response body is cancelled and cannot become a successful empty 
   await assert.rejects(wd.execute("return null"), /POST \/session\/fixture\/execute\/sync.*timed out after 20 ms/);
   assert.equal(aborted, true);
 });
+
+// Exercise only each suite's screenshot wrapper, not its app/driver entry point.
+// An idle-page transport fixture requires a repaint before it can return a PNG.
+for (const [suite, budget, args] of [
+  ["codex-chat", 45000, []],
+  ["codex-chat", 10000, [10000]],
+  ["agent-binary-banner", 20000, []],
+]) {
+  test(`${suite} capture primes repaint and retains its ${budget} ms budget`, async (t) => {
+    const source = readFileSync(new URL(`../../tools/e2e/${suite}.e2e.mjs`, import.meta.url), "utf8");
+    const wrapper = source.match(/^async function screenshot\([^]*?^\}/m)?.[0];
+    assert.ok(wrapper, "the suite's actual screenshot wrapper is present");
+    const client = new WebDriver("http://fixture.invalid");
+    client.sessionId = "fixture";
+    const png = Buffer.from("fixture PNG");
+    const stages = [];
+    const deadlines = [];
+    const writes = [];
+    let repainting = false;
+    const timeout = AbortSignal.timeout;
+    t.mock.method(AbortSignal, "timeout", (ms) => {
+      deadlines.push(ms);
+      return timeout(ms);
+    });
+    t.mock.method(globalThis, "fetch", async (url, options) => {
+      if (url.endsWith("/execute/sync")) {
+        const { script } = JSON.parse(options.body);
+        assert.match(script, /__oc_e2e_repaint/);
+        repainting = script.includes("setInterval(");
+        stages.push(repainting ? "repaint start" : "repaint stop");
+        return Response.json({ value: null });
+      }
+      assert.ok(url.endsWith("/session/fixture/screenshot"));
+      assert.equal(repainting, true, "an idle page needs repaint primed before capture");
+      stages.push("capture");
+      return Response.json({ value: png.toString("base64") });
+    });
+    const rawRequest = async (method, path, _body, timeoutMs = 45000) => {
+      const response = await fetch(`http://fixture.invalid/session/fixture${path}`, {
+        method, signal: AbortSignal.timeout(timeoutMs),
+      });
+      return (await response.json()).value;
+    };
+    const capture = new Function("startup", "wd", "join", "out", "writeFileSync", "console", `return (${wrapper});`)(
+      client, rawRequest, join, "/fixture", (path, data) => writes.push({ path, data }), { log() {} },
+    );
+    await capture("idle", ...args);
+    assert.deepEqual(writes, [{ path: "/fixture/idle.png", data: png }]);
+    assert.deepEqual(stages, ["repaint start", "capture", "repaint stop"]);
+    assert.equal(repainting, false);
+    assert.equal(deadlines.length, 3);
+    assert.ok(deadlines.every((ms) => ms > 0 && ms <= budget), JSON.stringify(deadlines));
+    assert.ok(deadlines[0] > budget - 1000, "retain the existing capture budget, not the helper default");
+  });
+}
 
 for (const stalledStage of ["repaint setup", "capture", "repaint cleanup"]) {
   test(`screenshot bounds a stalled ${stalledStage} request`, async (t) => {

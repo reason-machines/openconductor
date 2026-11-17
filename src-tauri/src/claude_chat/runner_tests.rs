@@ -428,15 +428,15 @@ fn a_plan_prompt_waits_for_the_user_and_the_answer_goes_back() {
     assert_eq!(asked["plan"], "1. build it");
     let wrong = Answer::Option("allow".into());
     assert!(
-        h.runner.respond("c1", "req-1", &wrong).is_err(),
+        h.runner.respond("c1", "req-1", &wrong, None).is_err(),
         "a plan takes a plan answer"
     );
-    assert!(h.runner.respond("c1", "nope", &Answer::Cancel).is_err());
+    assert!(h.runner.respond("c1", "nope", &Answer::Cancel, None).is_err());
     let approve = Answer::Plan {
         approved: true,
         feedback: None,
     };
-    h.runner.respond("c1", "req-1", &approve).unwrap();
+    h.runner.respond("c1", "req-1", &approve, None).unwrap();
     assert_eq!(turn.join().unwrap(), TurnEnd::Completed);
     // The waiter hears of the end just before the event is emitted.
     wait_for_type(&h, "turnEnded");

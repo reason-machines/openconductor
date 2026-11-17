@@ -1,0 +1,1 @@
+resolveAlignedScrollPosition(e,n,i,r=0,o=0){e+=this.getItemTopOffset();const a=this.getHeight();return i==="center"&&n+r<a?e-(a-n)/2+r:i==="end"?e-(a-n)+r:e-o-r}

@@ -795,9 +795,12 @@ function InputOutput({ input, result, isError }: { input: Record<string, unknown
 }
 
 /** `iUt`: an MCP tool's row; a failed call turns red and shows its error on the right. */
-function McpRow({ name, input, result, isError, left, right, ...shell }: ShellBase & { name: string; input: Record<string, unknown>; result?: string; isError: boolean; left: ReactNode; right?: ReactNode }) {
-  const error = isError && result !== undefined ? result.slice(0, RESULT_LIMIT) : undefined;
-  const hasBody = Object.keys(input).length > 0 || !!result;
+function McpRow({ name, input, result, rawResult, isError, left, right, ...shell }: ShellBase & { name: string; input: Record<string, unknown>; result?: string; rawResult?: unknown; isError: boolean; left: ReactNode; right?: ReactNode }) {
+  const content = rawResult === undefined ? result : rawResult;
+  const output = typeof content === "string" ? content : content ? JSON.stringify(content, null, 2) : undefined;
+  const errorText = isError && content !== undefined ? typeof content === "string" ? content : JSON.stringify(content) : undefined;
+  const error = errorText?.slice(0, RESULT_LIMIT);
+  const hasBody = Object.keys(input).length > 0 || !!content;
   return (
     <RowShell
       {...shell}
@@ -809,7 +812,7 @@ function McpRow({ name, input, result, isError, left, right, ...shell }: ShellBa
         hasBody ? (
           <div className="oc-io">
             <div className="oc-io-label mono">Tool: {name}</div>
-            <InputOutput input={input} result={result} isError={isError} />
+            <InputOutput input={input} result={output} isError={isError} />
           </div>
         ) : undefined
       }
@@ -1226,7 +1229,7 @@ function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isErr
         : name === "mcp__context7__resolve-library-id" ? s(input.libraryName)
         : name === "mcp__context7__get-library-docs" ? s(input.topic)
         : "";
-      return <McpRow {...shell} name={name} input={input} result={result} isError={isError} left={<span>{mcpLabel(name)}</span>} right={chip ? <CodeChip text={chip} /> : undefined} />;
+      return <McpRow {...shell} name={name} input={input} result={result} rawResult={rawResult} isError={isError} left={<span>{mcpLabel(name)}</span>} right={chip ? <CodeChip text={chip} /> : undefined} />;
     }
     case "codex-collab":
       return <CollabRow name={name} input={input} result={result} isError={isError} />;

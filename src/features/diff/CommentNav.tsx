@@ -36,33 +36,36 @@ export interface CommentNavigation {
 }
 
 /** Counts and navigation for the comments of one CodeView item, kept current as it scrolls. */
-export function useCommentNavigation(handle: AnyHandle | null, itemId: string, anchors: readonly LineAnchor[]): CommentNavigation {
+export function useCommentNavigation(handle: AnyHandle | null, itemId: string, anchors: readonly LineAnchor[], getCurrentAnchors?: () => readonly LineAnchor[]): CommentNavigation {
   const [win, setWin] = useState<CommentWindow<LineAnchor>>(NONE);
-  const latest = useRef({ handle, itemId, anchors });
-  latest.current = { handle, itemId, anchors };
+  const latest = useRef({ handle, itemId, anchors, getCurrentAnchors });
+  latest.current = { handle, itemId, anchors, getCurrentAnchors };
 
   const apply = useCallback((next: CommentWindow<LineAnchor>) => {
     setWin((cur) => (cur.previousCount === next.previousCount && cur.nextCount === next.nextCount ? cur : next));
   }, []);
 
   const refresh = useCallback(() => {
-    const { handle: h, itemId: id, anchors: a } = latest.current;
+    const { handle: h, itemId: id, anchors: a, getCurrentAnchors: current } = latest.current;
     const view = h?.getInstance();
-    apply(view ? measureComments(view, id, a) : NONE);
+    apply(view ? measureComments(view, id, current?.() ?? a) : NONE);
   }, [apply]);
 
   const view = handle?.getInstance();
   useEffect(() => {
     if (!view) return;
     refresh();
-    return view.subscribeToScroll((scrollTop, v) => apply(measureComments(v, latest.current.itemId, latest.current.anchors, scrollTop)));
+    return view.subscribeToScroll((scrollTop, v) => {
+      const { itemId, anchors, getCurrentAnchors } = latest.current;
+      apply(measureComments(v, itemId, getCurrentAnchors?.() ?? anchors, scrollTop));
+    });
   }, [view, apply, refresh]);
-  useEffect(refresh, [refresh, anchors, itemId]);
+  useEffect(refresh, [refresh, anchors, itemId, getCurrentAnchors]);
 
   const navigate = useCallback((dir: CommentDirection) => {
-    const { handle: h, itemId: id, anchors: a } = latest.current;
+    const { handle: h, itemId: id, anchors: a, getCurrentAnchors: current } = latest.current;
     const v = h?.getInstance();
-    const target = v ? measureComments(v, id, a)[dir] : undefined;
+    const target = v ? measureComments(v, id, current?.() ?? a)[dir] : undefined;
     if (!h || !target) return false;
     h.scrollTo({ type: "line", id, lineNumber: target.line, side: toPierreSide(target.side), align: "start", offset: COMMENT_SCROLL_OFFSET, behavior: "smooth" });
     return true;
