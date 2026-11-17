@@ -1,0 +1,370 @@
+(node:104) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:111) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Clone url has no implicit native-form activation path
+ok 1 - Clone url has no implicit native-form activation path
+  ---
+  duration_ms: 299.605461
+  type: 'test'
+  ...
+# Subtest: Clone location has no implicit native-form activation path
+ok 2 - Clone location has no implicit native-form activation path
+  ---
+  duration_ms: 121.20914
+  type: 'test'
+  ...
+# Subtest: Clone explicit primary activation captures valid inputs once
+ok 3 - Clone explicit primary activation captures valid inputs once
+  ---
+  duration_ms: 122.833253
+  type: 'test'
+  ...
+# Subtest: Clone pending guard survives repeated explicit primary activation
+ok 4 - Clone pending guard survives repeated explicit primary activation
+  ---
+  duration_ms: 118.853039
+  type: 'test'
+  ...
+# Subtest: Clone blank URL keeps the primary action disabled and transport unused
+ok 5 - Clone blank URL keeps the primary action disabled and transport unused
+  ---
+  duration_ms: 62.27065
+  type: 'test'
+  ...
+# Subtest: Clone rejection permits explicit retry with the latest inputs
+ok 6 - Clone rejection permits explicit retry with the latest inputs
+  ---
+  duration_ms: 56.253233
+  type: 'test'
+  ...
+# (node:112) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: clone inputs accept edits before submission
+ok 7 - clone inputs accept edits before submission
+  ---
+  duration_ms: 210.281555
+  type: 'test'
+  ...
+# Subtest: clone url remains editable while its captured request is unresolved
+ok 8 - clone url remains editable while its captured request is unresolved
+  ---
+  duration_ms: 165.045412
+  type: 'test'
+  ...
+# Subtest: clone location remains editable while its captured request is unresolved
+ok 9 - clone location remains editable while its captured request is unresolved
+  ---
+  duration_ms: 143.616887
+  type: 'test'
+  ...
+# Subtest: clone Browse remains enabled while its captured request is unresolved
+ok 10 - clone Browse remains enabled while its captured request is unresolved
+  ---
+  duration_ms: 101.210301
+  type: 'test'
+  ...
+# Subtest: pending clone keeps its submit guard and progress with recent selection enabled
+ok 11 - pending clone keeps its submit guard and progress with recent selection enabled
+  ---
+  duration_ms: 80.856297
+  type: 'test'
+  ...
+# Subtest: clone rejection allows a retry with the latest form values
+ok 12 - clone rejection allows a retry with the latest form values
+  ---
+  duration_ms: 65.80486
+  type: 'test'
+  ...
+# (node:127) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: recent repository selection uses https before cloning
+ok 13 - recent repository selection uses https before cloning
+  ---
+  duration_ms: 199.239263
+  type: 'test'
+  ...
+# Subtest: recent https selection changes the form but not the pending clone
+ok 14 - recent https selection changes the form but not the pending clone
+  ---
+  duration_ms: 115.711187
+  type: 'test'
+  ...
+# Subtest: clone retry uses the recent https selection made while pending
+ok 15 - clone retry uses the recent https selection made while pending
+  ---
+  duration_ms: 75.957438
+  type: 'test'
+  ...
+# Subtest: recent repository selection uses ssh before cloning
+ok 16 - recent repository selection uses ssh before cloning
+  ---
+  duration_ms: 37.537783
+  type: 'test'
+  ...
+# Subtest: recent ssh selection changes the form but not the pending clone
+ok 17 - recent ssh selection changes the form but not the pending clone
+  ---
+  duration_ms: 71.080195
+  type: 'test'
+  ...
+# Subtest: clone retry uses the recent ssh selection made while pending
+ok 18 - clone retry uses the recent ssh selection made while pending
+  ---
+  duration_ms: 43.825697
+  type: 'test'
+  ...
+# (node:134) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: clone URL disables autoCorrect before cloning
+ok 19 - clone URL disables autoCorrect before cloning
+  ---
+  duration_ms: 185.710538
+  type: 'test'
+  ...
+# Subtest: clone URL disables autoCapitalize before cloning
+ok 20 - clone URL disables autoCapitalize before cloning
+  ---
+  duration_ms: 116.772498
+  type: 'test'
+  ...
+# Subtest: clone URL keeps its existing input controls before cloning
+ok 21 - clone URL keeps its existing input controls before cloning
+  ---
+  duration_ms: 84.087663
+  type: 'test'
+  ...
+# Subtest: clone URL disables autoCorrect while cloning
+ok 22 - clone URL disables autoCorrect while cloning
+  ---
+  duration_ms: 42.81408
+  type: 'test'
+  ...
+# Subtest: clone URL disables autoCapitalize while cloning
+ok 23 - clone URL disables autoCapitalize while cloning
+  ---
+  duration_ms: 60.720162
+  type: 'test'
+  ...
+# Subtest: clone URL keeps its existing input controls while cloning
+ok 24 - clone URL keeps its existing input controls while cloning
+  ---
+  duration_ms: 38.142625
+  type: 'test'
+  ...
+# Subtest: clone URL preserves mixed-case edits and the captured pending request
+ok 25 - clone URL preserves mixed-case edits and the captured pending request
+  ---
+  duration_ms: 29.468032
+  type: 'test'
+  ...
+# (node:143) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: bad documents give no overrides
+ok 26 - bad documents give no overrides
+  ---
+  duration_ms: 1.833405
+  type: 'test'
+  ...
+# Subtest: shortcut parsing canonicalizes modifiers and rejects junk
+ok 27 - shortcut parsing canonicalizes modifiers and rejects junk
+  ---
+  duration_ms: 0.411215
+  type: 'test'
+  ...
+# Subtest: unknown, non-configurable and invalid entries are dropped
+ok 28 - unknown, non-configurable and invalid entries are dropped
+  ---
+  duration_ms: 0.366006
+  type: 'test'
+  ...
+# Subtest: legacy ids migrate to their replacements
+ok 29 - legacy ids migrate to their replacements
+  ---
+  duration_ms: 0.293249
+  type: 'test'
+  ...
+# Subtest: old cmd-enter setups regain Shift+Enter for new line
+ok 30 - old cmd-enter setups regain Shift+Enter for new line
+  ---
+  duration_ms: 0.507235
+  type: 'test'
+  ...
+# Subtest: serialize stores singles bare, lists as arrays, and deletes resets
+ok 31 - serialize stores singles bare, lists as arrays, and deletes resets
+  ---
+  duration_ms: 0.189512
+  type: 'test'
+  ...
+# Subtest: effective shortcuts fall back to key plus additionalKeys
+ok 32 - effective shortcuts fall back to key plus additionalKeys
+  ---
+  duration_ms: 0.335835
+  type: 'test'
+  ...
+# Subtest: store serializes concurrent updates without losing either
+ok 33 - store serializes concurrent updates without losing either
+  ---
+  duration_ms: 21.655036
+  type: 'test'
+  ...
+# (node:150) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: parts are modifiers in ctrl, meta, shift, alt order, then the key
+ok 34 - parts are modifiers in ctrl, meta, shift, alt order, then the key
+  ---
+  duration_ms: 1.748442
+  type: 'test'
+  ...
+# Subtest: glyphs and spoken labels
+ok 35 - glyphs and spoken labels
+  ---
+  duration_ms: 0.246295
+  type: 'test'
+  ...
+# Subtest: search tokens include modifier aliases and glyphs
+ok 36 - search tokens include modifier aliases and glyphs
+  ---
+  duration_ms: 0.461178
+  type: 'test'
+  ...
+# Subtest: logical keys match case-insensitively with exact modifiers
+ok 37 - logical keys match case-insensitively with exact modifiers
+  ---
+  duration_ms: 0.705817
+  type: 'test'
+  ...
+# Subtest: symbols tolerate the Shift or Option that produced them
+ok 38 - symbols tolerate the Shift or Option that produced them
+  ---
+  duration_ms: 0.145686
+  type: 'test'
+  ...
+# Subtest: physical keys match by code whatever the layout types
+ok 39 - physical keys match by code whatever the layout types
+  ---
+  duration_ms: 0.124763
+  type: 'test'
+  ...
+# Subtest: sameShortcut is exact; equivalent bridges logical and physical
+ok 40 - sameShortcut is exact; equivalent bridges logical and physical
+  ---
+  duration_ms: 0.243109
+  type: 'test'
+  ...
+# Subtest: recording: Option letter chords become physical, dead keys are refused
+ok 41 - recording: Option letter chords become physical, dead keys are refused
+  ---
+  duration_ms: 0.372965
+  type: 'test'
+  ...
+# (node:159) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: placeholder follows gh's git_protocol
+ok 42 - placeholder follows gh's git_protocol
+  ---
+  duration_ms: 0.711592
+  type: 'test'
+  ...
+# Subtest: validation reports the URL first, then the location
+ok 43 - validation reports the URL first, then the location
+  ---
+  duration_ms: 0.14197
+  type: 'test'
+  ...
+# Subtest: recent repo picks the URL for the protocol and highlights either form
+ok 44 - recent repo picks the URL for the protocol and highlights either form
+  ---
+  duration_ms: 0.106626
+  type: 'test'
+  ...
+# Subtest: progress log keeps the newest lines and shows the newest first
+ok 45 - progress log keeps the newest lines and shows the newest first
+  ---
+  duration_ms: 0.237163
+  type: 'test'
+  ...
+# Subtest: location: saved folder if it still exists, else the default
+ok 46 - location: saved folder if it still exists, else the default
+  ---
+  duration_ms: 0.10676
+  type: 'test'
+  ...
+# Subtest: URL conversion between HTTPS and SSH
+ok 47 - URL conversion between HTTPS and SSH
+  ---
+  duration_ms: 0.397633
+  type: 'test'
+  ...
+# Subtest: clone errors map to repo-not-found, HTTPS auth, SSH key, or the raw message
+ok 48 - clone errors map to repo-not-found, HTTPS auth, SSH key, or the raw message
+  ---
+  duration_ms: 0.345525
+  type: 'test'
+  ...
+# Subtest: cloneTargetName takes the last path segment without .git
+ok 49 - cloneTargetName takes the last path segment without .git
+  ---
+  duration_ms: 0.336566
+  type: 'test'
+  ...
+# (node:166) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: clone basename normalization: HTTPS mixed case
+ok 50 - clone basename normalization: HTTPS mixed case
+  ---
+  duration_ms: 0.913577
+  type: 'test'
+  ...
+# Subtest: clone basename normalization: SCP mixed case
+ok 51 - clone basename normalization: SCP mixed case
+  ---
+  duration_ms: 0.220724
+  type: 'test'
+  ...
+# Subtest: clone basename normalization: HTTPS repeated hyphens and trailing slash
+ok 52 - clone basename normalization: HTTPS repeated hyphens and trailing slash
+  ---
+  duration_ms: 0.084986
+  type: 'test'
+  ...
+# Subtest: clone basename normalization: SCP mixed case with dots and underscores
+ok 53 - clone basename normalization: SCP mixed case with dots and underscores
+  ---
+  duration_ms: 0.113001
+  type: 'test'
+  ...
+# Subtest: clone basename control: lowercase HTTPS
+ok 54 - clone basename control: lowercase HTTPS
+  ---
+  duration_ms: 0.169378
+  type: 'test'
+  ...
+# Subtest: clone basename control: lowercase SCP
+ok 55 - clone basename control: lowercase SCP
+  ---
+  duration_ms: 0.078132
+  type: 'test'
+  ...
+# Subtest: clone basename control: dots and underscores
+ok 56 - clone basename control: dots and underscores
+  ---
+  duration_ms: 0.122003
+  type: 'test'
+  ...
+# Subtest: clone basename control: local path basename
+ok 57 - clone basename control: local path basename
+  ---
+  duration_ms: 0.058272
+  type: 'test'
+  ...
+1..57
+# tests 57
+# suites 0
+# pass 57
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2929.21749

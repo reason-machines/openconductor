@@ -1,0 +1,63 @@
+{
+  "author": "Conductor Rebuild",
+  "main_checked": "d90bed88174656d577adfa793d3850d28eaea7e2",
+  "fixture_sha256": "50cf0952aafe318cd48681bf66afccced2fa41a4a606593b5314ce88b5ca4fcc",
+  "legacy_loader_files": [
+    "alternateLineEdit.test.ts",
+    "alternateClear.test.ts",
+    "clearRedraw.test.ts",
+    "cursorState.test.ts",
+    "nonrunningInput.test.ts",
+    "ordinaryCopy.test.ts",
+    "ordinaryThemeRefresh.test.ts",
+    "resizeState.test.ts",
+    "sessionLineFeed.test.ts",
+    "sessionUnicode.test.ts",
+    "spawnFailure.test.ts",
+    "startupCancellation.test.ts",
+    "startupDisposal.test.ts",
+    "terminalAnsiTheme.test.ts"
+  ],
+  "product_lines_added": 16,
+  "commands": {
+    "frozen": "timeout 180s nice -n 19 node --max-old-space-size=512 --test src/features/terminal/ordinaryLinks.test.ts",
+    "adjacent": "timeout 180s nice -n 19 node --max-old-space-size=512 --test --test-concurrency=1 src/features/terminal/{ordinaryLinks,alternateLineEdit,alternateClear,clearRedraw,cursorState,nonrunningInput,ordinaryCopy,ordinaryThemeRefresh,resizeState,sessionLineFeed,sessionUnicode,spawnFailure,startupCancellation,startupDisposal,terminalAnsiTheme,selectionTheme}.test.ts",
+    "script": "timeout 180s nice -n 19 node --max-old-space-size=512 --test src/scripts/outputLinks.test.ts",
+    "lint": "timeout 90s nice -n 19 npm run lint:colors"
+  },
+  "baseline": {
+    "pass": 4,
+    "intended_assertion_fail": 8,
+    "harness_fail": 0
+  },
+  "treatment": {
+    "pass": 12,
+    "fail": 0
+  },
+  "adjacent": {
+    "pass": 196,
+    "fail": 0
+  },
+  "script_output": {
+    "pass": 10,
+    "fail": 0
+  },
+  "local_typecheck_build": "NOT_RUN: ledger-serialized heavy-check admission not granted; hosted exact-head checks required before merge",
+  "runtime_acceptance": "NOT_RUN: existing exclusive release custody; no actual URL opened, no native/browser/PTY/provider/package dispatch",
+  "legacy_loader_baseline_sha256": {
+    "alternateLineEdit.test.ts": "2e3e0444627eed8a2130950b1555cc948ac640a629fdd761363844e767fdbbde",
+    "alternateClear.test.ts": "f063cd986571574b96c4e72f7d46e9838ce2e843c45c42d4f7b1675d87d73978",
+    "clearRedraw.test.ts": "6ee13ecbb58e646692fd7c0bfd65488415f3a98395e40a4cdb86dd41307b22ec",
+    "cursorState.test.ts": "f77c0e9f356cb379b65688d5d456766bbddb249e7e009dcc404d4d0cbdbc1ca9",
+    "nonrunningInput.test.ts": "3a06d7fce5864296537c7ea86bb9a1115f50c6d9f4ba5ec72a82847921db0a53",
+    "ordinaryCopy.test.ts": "a625b99094a1d976a8d36f55eecc04bd5b87817d7ba13eba654f5ec294c581e5",
+    "ordinaryThemeRefresh.test.ts": "b7d95be0759e62fdc51e5cafed0575b2abf88cdf7e858c24245f6f2a55ef3450",
+    "resizeState.test.ts": "c28f5b946d81e3a4d6327fd40b8c4fa408e3c85adca7bc131ff224859c0f35bc",
+    "sessionLineFeed.test.ts": "add72e265d5a913690d1f0ed126b786cadf3f8f2652681492c396874a7b594ab",
+    "sessionUnicode.test.ts": "af1932238a19c36c76adeb8d0968bb8dc66f98e7ba26707e7a6406c09591b99e",
+    "spawnFailure.test.ts": "c0160f217f40f0bd436eb68de8f3df9820e1d2c55e9cb2d43473c0d9e43fafc4",
+    "startupCancellation.test.ts": "e5ae14f46d67a7bdbdf9ff67e01cd244eacd3579569771d29ae1251436e7e3ed",
+    "startupDisposal.test.ts": "2676d79f3527e152c7fa1aaa8dd094a774acd4891d4a1a1c6eed87a34aa727c0",
+    "terminalAnsiTheme.test.ts": "0ce57ef0be266d4e371ff8c14c5b4da5e27e6d0b574502b17eb1b7ea165dc725"
+  }
+}

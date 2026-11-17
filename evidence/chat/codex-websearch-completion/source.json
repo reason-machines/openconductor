@@ -1,0 +1,377 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate": "CODEX-WEBSEARCH-COMPLETION-RESULT-BE7",
+  "checked_main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+  "retained_rea": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference_version": "Conductor 0.87.6 (retained verified assets; no new acquisition)",
+  "parents": {
+    "renderer": {
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    },
+    "index": {
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    }
+  },
+  "spans": [
+    {
+      "asset": "renderer",
+      "name": "lTr",
+      "start_byte": 76433,
+      "end_byte": 76538,
+      "sha256": "ad793f6d731d3c98c9eee95b63d80e174dc9d21b5f98034389fbc187f2342a71",
+      "text": "function lTr(t){if(t&&typeof t==\"object\"&&!Array.isArray(t))return Object.fromEntries(Object.entries(t))}"
+    },
+    {
+      "asset": "renderer",
+      "name": "cTr",
+      "start_byte": 76538,
+      "end_byte": 76601,
+      "sha256": "b7e90c5047c22ae93d2fb72e4096106d5ff049309cf51206635dda9928f87627",
+      "text": "function cTr(t){return{id:t.id,name:t.name,input:lTr(t.input)}}"
+    },
+    {
+      "asset": "renderer",
+      "name": "Mu",
+      "start_byte": 7795403,
+      "end_byte": 7798463,
+      "sha256": "2a88a2516341f7a98563d2f4b2a602ac9c0acc584282cd01cf54a011e3e4231d",
+      "text": "function Mu(t){const e=ne.c(63),{icon:n,className:i,mainColor:r,rightContentColor:o,iconColor:a,leftContent:c,leftContentClassName:u,rightContent:d,contentAlignment:h,statusContent:m,children:g,isCollapsible:_,defaultCollapsed:v,isCollapsed:x,onToggleCollapse:w,persistKey:E,showContent:k,isCodeBlock:I,contentClassName:R,alwaysShowRightContent:O}=t,D=h===void 0?\"baseline\":h,P=_===void 0?!0:_,L=v===void 0?!0:v,B=k===void 0?!0:k,F=I===void 0?!1:I,H=O===void 0?!1:O,[U,z]=$.useState(L);let G;e[0]!==E?(G=Se=>E!==void 0?Se.expanded[E]:void 0,e[0]=E,e[1]=G):G=e[1];const K=dIt(G),X=dIt(y0o);let Q;e[2]!==x||e[3]!==L||e[4]!==U||e[5]!==E||e[6]!==K?(x!==void 0?Q=x:E!==void 0?Q=K!==void 0?!K:L:Q=U,e[2]=x,e[3]=L,e[4]=U,e[5]=E,e[6]=K,e[7]=Q):Q=e[7];let J;e[8]!==x||e[9]!==U||e[10]!==Q||e[11]!==w||e[12]!==E||e[13]!==X?(J=()=>{if(w){w();return}if(x===void 0){if(E!==void 0){X(E,Q);return}z(!U)}},e[8]=x,e[9]=U,e[10]=Q,e[11]=w,e[12]=E,e[13]=X,e[14]=J):J=e[14];const te=J,Z=P&&B&&\"cursor-pointer\";let se;e[15]!==i||e[16]!==Z?(se=Xe(\"inline-flex items-center gap-2 py-1.5 px-2 -mx-2 rounded-sm group/collapsible max-w-full hover:bg-muted/50\",Z,i),e[15]=i,e[16]=Z,e[17]=se):se=e[17];let ce;e[18]!==te||e[19]!==P||e[20]!==B?(ce=()=>P&&B&&te(),e[18]=te,e[19]=P,e[20]=B,e[21]=ce):ce=e[21];let ae;e[22]!==n||e[23]!==a||e[24]!==Q||e[25]!==P||e[26]!==B?(ae=p.jsx(\"div\",{className:\"shrink-0\",children:P&&B?p.jsx(Iki,{icon:n,isCollapsed:Q,iconClassName:a}):p.jsx(\"div\",{className:a,children:n})}),e[22]=n,e[23]=a,e[24]=Q,e[25]=P,e[26]=B,e[27]=ae):ae=e[27];const de=D===\"center\"?\"items-center\":\"items-baseline\";let ue;e[28]!==de?(ue=Xe(\"flex gap-2 min-w-0 flex-1\",de),e[28]=de,e[29]=ue):ue=e[29];let pe;e[30]!==u||e[31]!==r?(pe=Xe(\"text-sm truncate\",r,u),e[30]=u,e[31]=r,e[32]=pe):pe=e[32];let be;e[33]!==c||e[34]!==pe?(be=p.jsx(\"div\",{className:pe,children:c}),e[33]=c,e[34]=pe,e[35]=be):be=e[35];let he;e[36]!==Q||e[37]!==m?(he=Q&&m&&p.jsx(\"div\",{className:\"shrink-0 self-center\",children:m}),e[36]=Q,e[37]=m,e[38]=he):he=e[38];let ge;e[39]!==H||e[40]!==Q||e[41]!==d||e[42]!==o?(ge=d&&p.jsx(\"div\",{className:Xe(\"font-mono font-medium text-xs truncate max-w-[400px]\",o||\"text-muted-foreground\",!H&&!Q&&\"invisible\"),children:d}),e[39]=H,e[40]=Q,e[41]=d,e[42]=o,e[43]=ge):ge=e[43];let ve;e[44]!==ue||e[45]!==be||e[46]!==he||e[47]!==ge?(ve=p.jsxs(\"div\",{className:ue,children:[be,he,ge]}),e[44]=ue,e[45]=be,e[46]=he,e[47]=ge,e[48]=ve):ve=e[48];let ye;e[49]!==se||e[50]!==ce||e[51]!==ae||e[52]!==ve?(ye=p.jsxs(\"div\",{className:se,onClick:ce,children:[ae,ve]}),e[49]=se,e[50]=ce,e[51]=ae,e[52]=ve,e[53]=ye):ye=e[53];let xe;e[54]!==g||e[55]!==R||e[56]!==F||e[57]!==Q||e[58]!==B?(xe=B&&!Q&&g&&p.jsx(\"div\",{className:Xe(\"mt-2 select-text\",R??(!F&&\"font-mono text-xs font-medium whitespace-pre-wrap break-words text-accent-foreground bg-accent p-3 rounded-md border border-border\")),children:g}),e[54]=g,e[55]=R,e[56]=F,e[57]=Q,e[58]=B,e[59]=xe):xe=e[59];let ke;return e[60]!==ye||e[61]!==xe?(ke=p.jsxs(\"div\",{className:\"w-full\",children:[ye,xe]}),e[60]=ye,e[61]=xe,e[62]=ke):ke=e[62],ke}"
+    },
+    {
+      "asset": "renderer",
+      "name": "hIt",
+      "start_byte": 7877770,
+      "end_byte": 7878325,
+      "sha256": "8c45bb6e5892cce46330f820a54460ee896d1c14c19ad134dab20b9f20b75340",
+      "text": "function hIt(t){const e=ne.c(12),{toolCall:n,toolResult:i,toolResultCreatedAt:r,sessionId:o,localWorkspaceId:a}=t;let c;e[0]!==n.name?(c=O1o({kind:L1o(n.name),registry:Qpo}),e[0]=n.name,e[1]=c):c=e[1];const u=c;if(u===void 0){let h;return e[2]!==n||e[3]!==i?(h=p.jsx(aUt,{toolCall:n,toolResult:i}),e[2]=n,e[3]=i,e[4]=h):h=e[4],h}let d;return e[5]!==u||e[6]!==a||e[7]!==o||e[8]!==n||e[9]!==i||e[10]!==r?(d=p.jsx(u,{toolCall:n,toolResult:i,toolResultCreatedAt:r,sessionId:o,localWorkspaceId:a}),e[5]=u,e[6]=a,e[7]=o,e[8]=n,e[9]=i,e[10]=r,e[11]=d):d=e[11],d}"
+    },
+    {
+      "asset": "renderer",
+      "name": "L1o",
+      "start_byte": 7588525,
+      "end_byte": 7588628,
+      "sha256": "86ced124065a7ea81f3d266906603d416cec7facd64287010e771de3557b01a8",
+      "text": "function L1o(t){const e=D1o[t];if(e!==void 0)return e;for(const[n,i]of P1o)if(t.startsWith(n))return i}"
+    },
+    {
+      "asset": "renderer",
+      "name": "O1o",
+      "start_byte": 7587305,
+      "end_byte": 7587405,
+      "sha256": "a872adaad571fbc1d1b42548e8a112e12fdb0378316c8e6cf1325feaea8e0e81",
+      "text": "function O1o({kind:t,registry:e}){if(t===void 0)return;const n=e[t];return n===\"unhandled\"?void 0:n}"
+    },
+    {
+      "asset": "renderer",
+      "name": "D1o",
+      "start_byte": 7587411,
+      "end_byte": 7588424,
+      "sha256": "eb016b11917cdafc5ebcb83618ab0ea8f25d5bd7841ea33abe85c251dcefbf65",
+      "text": "D1o={Agent:\"sub-agent\",AskUserQuestion:\"ask-user-question\",Bash:\"bash\",BashOutput:\"bash-output\",Edit:\"edit\",EnterPlanMode:\"enter-plan-mode\",ExitPlanMode:\"exit-plan-mode\",Glob:\"glob\",Grep:\"grep\",ImageGeneration:\"image-generation\",LS:\"ls\",MultiEdit:\"multi-edit\",NotebookEdit:\"multi-edit\",NotebookRead:\"read\",Read:\"read\",ScheduleWakeup:\"schedule-wakeup\",SendMessage:\"send-message\",Skill:\"skill\",SlashCommand:\"slash-command\",Task:\"sub-agent\",TaskCreate:\"task-create\",TaskGet:\"task-get\",TaskList:\"task-list\",TaskUpdate:\"task-update\",Teammate:\"teammate\",Thinking:\"thinking\",TodoRead:\"todo\",TodoWrite:\"todo\",WebFetch:\"web\",WebSearch:\"web\",Write:\"write\",mcp__conductor__AskUserQuestion:\"ask-user-question\",mcp__conductor__DiffComment:\"diff-comment\",mcp__conductor__GetDiffComments:\"get-diff-comments\",mcp__conductor__GetTerminalOutput:\"get-terminal-output\",mcp__conductor__GetWorkspaceDiff:\"get-workspace-diff\",mcp__conductor__RunLocalCommand:\"run-local-command\",mcp__node_repl__js:\"node-repl-js\",\"sub-agent\":\"sub-agent\"}"
+    },
+    {
+      "asset": "renderer",
+      "name": "Qpo",
+      "start_byte": 7877188,
+      "end_byte": 7877769,
+      "sha256": "2069b4386a6836e70bb2e0b95fa117eb94e8fed89b21548037481846a8b5d3c6",
+      "text": "Qpo={\"ask-user-question\":Tpo,bash:Lki,\"bash-output\":N0o,\"codex-collab\":_0o,\"context7-mcp\":$ki,\"diff-comment\":Ipo,edit:F0o,\"enter-plan-mode\":mpo,\"exit-plan-mode\":gpo,\"get-diff-comments\":Opo,\"get-terminal-output\":Dpo,\"get-workspace-diff\":Npo,glob:dpo,grep:D0o,\"image-generation\":Vpo,\"linear-mcp\":Bki,ls:fpo,\"multi-edit\":$0o,\"node-repl-js\":Kpo,read:O0o,\"run-local-command\":I0o,\"schedule-wakeup\":Epo,\"send-message\":qpo,skill:vpo,\"slash-command\":kpo,\"sub-agent\":bpo,\"task-create\":npo,\"task-get\":lpo,\"task-list\":ipo,\"task-update\":cpo,teammate:Gpo,thinking:ppo,todo:G0o,web:upo,write:hpo}"
+    },
+    {
+      "asset": "renderer",
+      "name": "normal-block-consumer:ROo",
+      "start_byte": 8870027,
+      "end_byte": 8872954,
+      "sha256": "261002822cee5b28992e89b05e739232ef677047b7ef6b4c3b1d7123f10cac40",
+      "text": "ROo=$.memo(function(e){const n=ne.c(51),{block:i,idx:r,messageId:o,potentialToolResultMessages:a,isPreviewMessage:c,sessionId:u,localWorkspaceId:d,subAgentExecutions:h}=e,m=c===void 0?!1:c;let g;n[0]!==h?(g=h===void 0?[]:h,n[0]=h,n[1]=g):g=n[1];const _=g,{data:v}=us(\"not_absolutely_right\"),{currentWorkspace:x}=Fp(),{data:w}=x,E=UDt(u)[0],k=fSe(u);let I;n[2]!==i?(I=i.type===\"tool_use\"?cTr(i):void 0,n[2]=i,n[3]=I):I=n[3];const R=I;if(!Mwr({block:i,potentialToolResultMessages:a}))return null;if(i.type===\"text\"&&\"text\"in i){let D,P;if(n[4]!==i.text||n[5]!==k||n[6]!==v){const H=kKn(i.text,v);D=k?roi(H):H,P=D.trim(),n[4]=i.text,n[5]=k,n[6]=v,n[7]=D,n[8]=P}else D=n[7],P=n[8];if(!P)return null;const L=!m,B=w?.workspacePath;let F;return n[9]!==d||n[10]!==D||n[11]!==L||n[12]!==B?(F=p.jsx(yOo,{\"data-searchable\":\"true\",children:p.jsx(xS,{text:D,muted:L,localWorkspaceId:d,workspacePath:B})}),n[9]=d,n[10]=D,n[11]=L,n[12]=B,n[13]=F):F=n[13],F}if(\"type\"in i&&i.type===\"thinking\"){let D,P;if(n[14]!==i.thinking||n[15]!==v?(D=kKn(i.thinking,v),P=D.trim(),n[14]=i.thinking,n[15]=v,n[16]=D,n[17]=P):(D=n[16],P=n[17]),!P)return null;const L=`${o}-thinking-${r}`;let B;n[18]!==D?(B={thinking:D},n[18]=D,n[19]=B):B=n[19];let F;n[20]!==L||n[21]!==B?(F={id:L,name:\"Thinking\",input:B},n[20]=L,n[21]=B,n[22]=F):F=n[22];const H=F;let U;return n[23]!==d||n[24]!==u||n[25]!==H?(U=p.jsx(\"div\",{className:\"w-full\",children:p.jsx(hIt,{toolCall:H,toolResult:null,sessionId:u,localWorkspaceId:d})}),n[23]=d,n[24]=u,n[25]=H,n[26]=U):U=n[26],U}if(i.type===\"tool_use\"&&R!==void 0){const D=\"id\"in i?i.id:\"\";let P;if(n[27]!==_||n[28]!==D){let G;n[30]!==D?(G=K=>K.parentToolUseId===D,n[30]=D,n[31]=G):G=n[31],P=_.find(G),n[27]=_,n[28]=D,n[29]=P}else P=n[29];const L=P;if(L){let G;return n[32]!==d||n[33]!==u||n[34]!==L?(G=p.jsx(\"div\",{className:\"w-full\",children:p.jsx(qNo,{subAgentExecution:L,sessionId:u,localWorkspaceId:d})}),n[32]=d,n[33]=u,n[34]=L,n[35]=G):G=n[35],G}let B;n[36]!==a||n[37]!==D?(B=TOo(D,a),n[36]=a,n[37]=D,n[38]=B):B=n[38];const F=B;if(F===null&&E?.toolUseId===D)return null;const H=F?.toolResult??null,U=F?.createdAt;let z;return n[39]!==d||n[40]!==u||n[41]!==H||n[42]!==U||n[43]!==R?(z=p.jsx(\"div\",{className:\"w-full\",children:p.jsx(hIt,{toolCall:R,toolResult:H,toolResultCreatedAt:U,sessionId:u,localWorkspaceId:d})}),n[39]=d,n[40]=u,n[41]=H,n[42]=U,n[43]=R,n[44]=z):z=n[44],z}if(i.type===\"fallback\"){const D=i.from?.model,P=i.to?.model;let L;n[45]!==D||n[46]!==P?(L=D&&P?`Switched from ${aAn(D)} to ${aAn(P)} for this response.`:\"Switched models for this response.\",n[45]=D,n[46]=P,n[47]=L):L=n[47];const B=L;let F;return n[48]!==B?(F=p.jsx(\"p\",{className:\"text-sm italic text-muted-foreground\",children:B}),n[48]=B,n[49]=F):F=n[49],F}let O;return n[50]===Symbol.for(\"react.memo_cache_sentinel\")?(O=p.jsx(\"p\",{className:\"text-sm italic text-muted-foreground\",children:\"This content could not be displayed.\"}),n[50]=O):O=n[50],O})"
+    },
+    {
+      "asset": "renderer",
+      "name": "upo",
+      "start_byte": 7842303,
+      "end_byte": 7844170,
+      "sha256": "03f614bf3830760c8865284a75eb61880d57d2fca854e5a59adb286dc6eecc66",
+      "text": "function upo(t){const e=ne.c(35),{toolCall:n,toolResult:i}=t,r=n.input?.url||n.input?.query||\"\",o=n.input?.prompt||\"\",a=n.name===\"WebSearch\";let c;e[0]!==i?(c=i?.content?typeof i.content==\"string\"?i.content:JSON.stringify(i.content,null,2):\"\",e[0]=i,e[1]=c):c=e[1];const u=c;let d;e[2]!==i?(d=typeof i?.content==\"string\"?o5r(i.content):void 0,e[2]=i,e[3]=d):d=e[3];const m=r||d||\"\";let g;e[4]!==u?(g=H9e(u,U9e),e[4]=u,e[5]=g):g=e[5];const{text:_,wasTruncated:v}=g;let x;e[6]!==n.name?(x=p.jsx(Ju,{name:n.name}),e[6]=n.name,e[7]=x):x=e[7];const w=a?\"Search\":\"Browse\";let E;e[8]!==w?(E=p.jsxs(\"span\",{children:[\"Web \",w]}),e[8]=w,e[9]=E):E=e[9];let k;e[10]!==m?(k=m?p.jsx(LD,{text:m}):void 0,e[10]=m,e[11]=k):k=e[11];const I=!!(i&&i.content);let R;e[12]!==o?(R=o&&p.jsxs(\"li\",{className:\"\",children:[p.jsx(ZLt,{className:\"size-3 mb-1 mr-1 inline\"}),\" \",\"Prompt:\",\" \",p.jsx(\"code\",{className:\"font-mono break-all ml-1 inline\",children:o})]}),e[12]=o,e[13]=R):R=e[13];let O;e[14]!==R?(O=p.jsx(\"ul\",{className:\"text-xs text-muted-foreground mb-2 space-y-1\",children:R}),e[14]=R,e[15]=O):O=e[15];let D;e[16]!==_?(D=p.jsx(xS,{text:_}),e[16]=_,e[17]=D):D=e[17];let P;e[18]!==u||e[19]!==v?(P=v&&p.jsxs(\"div\",{className:\"text-xs text-muted-foreground mt-2 italic\",children:[\"Content truncated (\",u.length.toLocaleString(),\" \",\"chars total)\"]}),e[18]=u,e[19]=v,e[20]=P):P=e[20];let L;e[21]!==O||e[22]!==D||e[23]!==P||e[24]!==x||e[25]!==E||e[26]!==k||e[27]!==I||e[28]!==n.id?(L=p.jsxs(Mu,{icon:x,leftContent:E,contentAlignment:\"center\",rightContent:k,showContent:I,persistKey:n.id,children:[O,D,P]}),e[21]=O,e[22]=D,e[23]=P,e[24]=x,e[25]=E,e[26]=k,e[27]=I,e[28]=n.id,e[29]=L):L=e[29];let B;e[30]!==i?(B=i?.is_error&&p.jsx(AI,{content:i.content}),e[30]=i,e[31]=B):B=e[31];let F;return e[32]!==L||e[33]!==B?(F=p.jsxs(p.Fragment,{children:[L,B]}),e[32]=L,e[33]=B,e[34]=F):F=e[34],F}"
+    },
+    {
+      "asset": "renderer",
+      "name": "TOo",
+      "start_byte": 8865983,
+      "end_byte": 8866426,
+      "sha256": "4e920d1f6814b732618ad039f643c613e29652f89fd4b22d4d21ae38f7bd8b76",
+      "text": "function TOo(t,e){const n=e.find(o=>{const a=o.content;if(a.type!==\"user\"||!(\"message\"in a))return!1;const c=a.message?.content;return Array.isArray(c)?c.some(u=>u.type===\"tool_result\"&&\"tool_use_id\"in u&&u.tool_use_id===t):!1}),i=n&&\"message\"in n.content?n.content.message?.content:null,r=Array.isArray(i)?i.find(o=>o.type===\"tool_result\"&&\"tool_use_id\"in o&&o.tool_use_id===t):null;return r&&n?{toolResult:ioi(r),createdAt:n.createdAt}:null}"
+    },
+    {
+      "asset": "renderer",
+      "name": "ioi",
+      "start_byte": 76601,
+      "end_byte": 76805,
+      "sha256": "0f4748d455c2893c539eb8a60f75dc460912f47bf6bff8c117bf2398e017ab91",
+      "text": "function ioi(t){return{content:t.content,is_error:t.is_error}}const uTr=/(?:\\n\\s*)?Goal complete\\.(?:\\s+Usage:[^.]*?about [^.]+\\.)?\\s*$/i,dTr=/(?:^|\\n)Goal complete\\.(?:\\s+Usage:[^.]*?about ([^.]+)\\.)?/i;"
+    },
+    {
+      "asset": "index",
+      "name": "Pie",
+      "start_byte": 1277476,
+      "end_byte": 1277520,
+      "sha256": "37852f263ac7c326ac63c9d493262e17111469dba6526f069bff59c1d30afd31",
+      "text": "function Pie(t){return t.type===\"webSearch\"}"
+    },
+    {
+      "asset": "index",
+      "name": "qst",
+      "start_byte": 1277520,
+      "end_byte": 1277809,
+      "sha256": "72a6c9561c7366198a25d464eaa1e4d82725dff43bb2430ed7312d6b4f8ad81f",
+      "text": "function qst(t){if(!Pie(t))return t.query;switch(t.action?.type){case\"openPage\":return t.action.url||t.query;case\"findInPage\":return t.action.url||t.query;case\"search\":return t.query||t.action.query||t.action.queries?.find(e=>e.trim().length>0)||\"\";case\"other\":case void 0:return t.query}}"
+    },
+    {
+      "asset": "index",
+      "name": "Wst",
+      "start_byte": 1276187,
+      "end_byte": 1276247,
+      "sha256": "f47786e724794e91f94f4acc64e261d9c76c488dbf3583d6d380161bfa83628b",
+      "text": "function Wst(t){return t?`${aF}${t}`:\"Web search completed\"}"
+    },
+    {
+      "asset": "index",
+      "name": "Sjt",
+      "start_byte": 1276247,
+      "end_byte": 1276322,
+      "sha256": "37818ae6abcdc9f25ac271e270572f4a581db552be5d8ab88f32637ec2f71945",
+      "text": "function Sjt(t){return t.startsWith(aF)&&t.slice(aF.length).trim()||void 0}"
+    },
+    {
+      "asset": "index",
+      "name": "Zc",
+      "start_byte": 1276322,
+      "end_byte": 1276490,
+      "sha256": "e03176c26e50d671f135fa116247f9e8314c414c1c63cc8e78aec6d5a890e62e",
+      "text": "function Zc({sessionThreadId:t,id:e,name:s,input:n}){return[{type:\"assistant\",session_id:t,message:{role:\"assistant\",content:[{type:\"tool_use\",id:e,name:s,input:n}]}}]}"
+    },
+    {
+      "asset": "index",
+      "name": "el",
+      "start_byte": 1276490,
+      "end_byte": 1276678,
+      "sha256": "6628652ddd2505b47568447ed5e737bf737bde746aa8def9ac7c9d69d50cf528",
+      "text": "function el({sessionThreadId:t,toolUseId:e,content:s,isError:n}){return[{type:\"user\",session_id:t,message:{role:\"user\",content:[{type:\"tool_result\",tool_use_id:e,content:s,is_error:n}]}}]}"
+    },
+    {
+      "asset": "index",
+      "name": "tnt",
+      "start_byte": 1280651,
+      "end_byte": 1281158,
+      "sha256": "73774927c07f995f95d06f33a433d8ee4c4fd1a619745934d701c811f524a333",
+      "text": "function tnt({item:t,sessionThreadId:e,eventType:s}){const n=Pie(t),r=qst(t),i=n&&(t.action?.type===\"openPage\"||t.action?.type===\"findInPage\")?\"WebFetch\":\"WebSearch\",o=n&&t.action?.type===\"openPage\"?{url:r}:n&&t.action?.type===\"findInPage\"?{url:r,prompt:t.action.pattern??void 0}:{query:r},a=[];return(s===\"item.started\"||!n&&s===\"item.completed\")&&a.push(...Zc({sessionThreadId:e,id:t.id,name:i,input:o})),s===\"item.completed\"&&a.push(...el({sessionThreadId:e,toolUseId:t.id,content:Wst(r),isError:!1})),a}"
+    },
+    {
+      "asset": "index",
+      "name": "completion-prefix",
+      "start_byte": 1276149,
+      "end_byte": 1276187,
+      "sha256": "dfbebcfb00bb981ccf3bb5689610d214122fd71f0eb37c91a7f47181a177e416",
+      "text": "const aF=\"Web search completed for: \";"
+    },
+    {
+      "asset": "index",
+      "name": "helper-export",
+      "start_byte": 3486212,
+      "end_byte": 3486221,
+      "sha256": "62237f06921e08e480f8dc31b4995a00c9060699fdd34b690cb669f784377d9e",
+      "text": "Sjt as jo"
+    },
+    {
+      "asset": "renderer",
+      "name": "helper-import",
+      "start_byte": 59295,
+      "end_byte": 59304,
+      "sha256": "440ca71af87ce00dd532f5e835550ee46183a3cae6711eb415ba7a4ceec1fd2f",
+      "text": "jo as o5r"
+    },
+    {
+      "asset": "index",
+      "name": "item-dispatch",
+      "start_byte": 1287588,
+      "end_byte": 1288874,
+      "sha256": "99230ee9d83c363bce969fb354281cec6e2e60342458d176498d0047c8fe838d",
+      "text": "function PP(t,e,s){if(s===\"item.updated\"&&t.type!==\"fileChange\")return[];switch(t.type){case\"agent_message\":case\"agentMessage\":return Ent(t,e);case\"reasoning\":return Snt(t,e);case\"command_execution\":case\"commandExecution\":return Yst({item:t,sessionThreadId:e,eventType:s});case\"file_change\":case\"fileChange\":return ent({item:t,sessionThreadId:e,eventType:s});case\"mcp_tool_call\":case\"mcpToolCall\":return snt({item:t,sessionThreadId:e,eventType:s});case\"web_search\":case\"webSearch\":return tnt({item:t,sessionThreadId:e,eventType:s});case\"dynamicToolCall\":return nnt({item:t,sessionThreadId:e,eventType:s});case\"imageView\":return rnt({item:t,sessionThreadId:e,eventType:s});case\"imageGeneration\":return int({item:t,sessionThreadId:e,eventType:s});case\"collabAgentToolCall\":return ont({item:t,sessionThreadId:e,eventType:s});case\"subAgentActivity\":return ant({item:t,sessionThreadId:e,eventType:s});case\"sleep\":return[];case\"todo_list\":return bnt(t,e,s);case\"plan\":return s===\"item.completed\"?knt(t,e):[];case\"contextCompaction\":return _nt({item:t,sessionThreadId:e,eventType:s});case\"userMessage\":case\"hookPrompt\":case\"functionCallOutput\":case\"enteredReviewMode\":case\"exitedReviewMode\":return[];case\"error\":return[{type:\"error\",session_id:e??\"\",content:t.message}];default:return Fie(t)}}"
+    }
+  ],
+  "reference_joins": [
+    [
+      "item-dispatch",
+      "case\"web_search\":case\"webSearch\":return tnt({item:t,sessionThreadId:e,eventType:s})"
+    ],
+    [
+      "tnt",
+      "r=qst(t)"
+    ],
+    [
+      "tnt",
+      "\"WebFetch\":\"WebSearch\""
+    ],
+    [
+      "tnt",
+      "content:Wst(r),isError:!1"
+    ],
+    [
+      "tnt",
+      "s===\"item.completed\"&&a.push(...el("
+    ],
+    [
+      "Wst",
+      "t?`${aF}${t}`:\"Web search completed\""
+    ],
+    [
+      "qst",
+      "case\"search\":return t.query||t.action.query||t.action.queries?.find(e=>e.trim().length>0)||\"\""
+    ],
+    [
+      "el",
+      "type:\"tool_result\",tool_use_id:e,content:s,is_error:n"
+    ],
+    [
+      "TOo",
+      "u.tool_use_id===t"
+    ],
+    [
+      "TOo",
+      "toolResult:ioi(r)"
+    ],
+    [
+      "ioi",
+      "content:t.content,is_error:t.is_error"
+    ],
+    [
+      "normal-block-consumer:ROo",
+      "B=TOo(D,a)"
+    ],
+    [
+      "normal-block-consumer:ROo",
+      "H=F?.toolResult??null"
+    ],
+    [
+      "normal-block-consumer:ROo",
+      "p.jsx(hIt,{toolCall:R,toolResult:H"
+    ],
+    [
+      "hIt",
+      "O1o({kind:L1o(n.name),registry:Qpo})"
+    ],
+    [
+      "D1o",
+      "WebFetch:\"web\",WebSearch:\"web\""
+    ],
+    [
+      "Qpo",
+      "web:upo"
+    ],
+    [
+      "upo",
+      "r=n.input?.url||n.input?.query||\"\""
+    ],
+    [
+      "upo",
+      "o5r(i.content)"
+    ],
+    [
+      "upo",
+      "m=r||d||\"\""
+    ],
+    [
+      "upo",
+      "const I=!!(i&&i.content)"
+    ],
+    [
+      "upo",
+      "text:_"
+    ],
+    [
+      "Sjt",
+      "t.startsWith(aF)&&t.slice(aF.length).trim()||void 0"
+    ],
+    [
+      "Mu",
+      "ce=()=>P&&B&&te()"
+    ]
+  ],
+  "current_files": {
+    "src-tauri/src/agent/codex_wire.rs": "0a5ee4c13980decf87d70a5a2c3bee74b3cc21760cab4b9da649259689628c28",
+    "src-tauri/src/agent/codex_events.rs": "8a3d63513dd21c84535e9484847788713ff8adf72436a2fdbbb1bfd9916f243f",
+    "src/features/chat/codex.ts": "7bfd9bafe0bb820d8be8fb44d42e25be3f7e8c4d39245838c25d0f3d376c5eb7",
+    "src/features/chat/reducer.ts": "9b4783c08f496b05ebdc99a141f52b13c06a4b46f3f1a240a780ef5535d22ec4",
+    "src/features/chat/view.ts": "132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43",
+    "src/features/chat/conductorTools.ts": "05c3a85bed997b1114e1696d083855d4e39c5d614fe57ddeb0bade8bde7cc64a",
+    "src/features/chat/Transcript.tsx": "8b13f23d0fec69db4fa1311cb901fdf936c18a267f8f7f47f56aafca1747f1e8",
+    "src/features/chat/ToolRows.tsx": "399c0f2bd7bf1dbb57ae7c70252d6875e92e4414683146a8cd7964208259fb1b"
+  },
+  "current_joins": [
+    [
+      "src-tauri/src/agent/codex_wire.rs",
+      "\"webSearch\" => ("
+    ],
+    [
+      "src-tauri/src/agent/codex_wire.rs",
+      "json!({ \"query\": item.get(\"query\") }),\n            None,\n            None,"
+    ],
+    [
+      "src-tauri/src/agent/codex_wire.rs",
+      "_ => tool(item, started).map(Payload::Tool).into_iter().collect()"
+    ],
+    [
+      "src/features/chat/codex.ts",
+      "let content = t.output ?? \"\""
+    ],
+    [
+      "src/features/chat/codex.ts",
+      "content, isError: t.status !== \"completed\""
+    ],
+    [
+      "src/features/chat/codex.ts",
+      "blocks: toolBlocks(blocks, p)"
+    ],
+    [
+      "src/features/chat/view.ts",
+      "content: b.content, rawResult: b.rawResult"
+    ],
+    [
+      "src/features/chat/view.ts",
+      "const tools = conductorTools(b.name, b.input)"
+    ],
+    [
+      "src/features/chat/conductorTools.ts",
+      "blockName.startsWith(\"Search the web: \") && typeof input.query === \"string\""
+    ],
+    [
+      "src/features/chat/Transcript.tsx",
+      "tool={call.tool}"
+    ],
+    [
+      "src/features/chat/Transcript.tsx",
+      "result={call.result}"
+    ],
+    [
+      "src/features/chat/ToolRows.tsx",
+      "const output = isError ? undefined : result"
+    ],
+    [
+      "src/features/chat/ToolRows.tsx",
+      "content={output ? (prompt ?"
+    ],
+    [
+      "src/features/chat/ToolRows.tsx",
+      "const target = s(input.url) || s(input.query)"
+    ]
+  ],
+  "rejected_header_only": "Current normal Codex producer has no completion output at all and updates query input. A current missing-input prefix-output fallback oracle would invent an unjoined producer. No header-only repair is qualified.",
+  "limits": [
+    "Retained original REA shipped source only; no current native identity or behavior observation.",
+    "Historical REA semantic renderer analysis exhausted its heap; no new REA acquisition or analysis was run.",
+    "Rust producer and frontend joins are static; frozen behavioral baseline not yet run.",
+    "No browser/native/provider/runtime/package/heavy execution was admitted.",
+    "Qualification candidate only; production source is untouched."
+  ]
+}

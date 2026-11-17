@@ -1,0 +1,40 @@
+{
+  "checked_main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+  "baseline": {
+    "tests": 12,
+    "pass": 4,
+    "intended_fail": 8,
+    "cancelled": 0,
+    "skipped": 0,
+    "all_failure_codes": "ERR_ASSERTION",
+    "unintended_failures": 0
+  },
+  "adjacent": {
+    "tests": 42,
+    "pass": 42,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "freeze": {
+    "files": {
+      "cases.json": "1e9488d2e5ee3b3042dafe1d6710cd36f705e032ed67a3ce6de831ede32d9e2b",
+      "probe.rs": "b0915674084f8856e2f61b84a3e31a9abd04e79901362f7a9c359677eb43de9f",
+      "fixture.test.ts": "3f12dbc9fc6d588e45794a3ed68777bd047cddcff23fb9001831aaf3cc1a4bfc"
+    },
+    "source_packet": "7f5de4bc5b3543972e4ae0af2305ce356a70d26e795ce5fba211ddc29c8e2a17",
+    "stage": "FROZEN_BEFORE_BASELINE",
+    "assertions": "6 native producer tests + 6 actual mounted frontend route tests",
+    "source": "normal item started/completed with string query only; no mapped payload synthesis"
+  },
+  "actual_payloads_sha256": "4dbac6cd3292bc9bdcb0339042650f246f8a3648d464135a0af83cb806ce8153",
+  "baseline_log_sha256": "80ce1892a99f7317e767317ce4ad1b906f11c7eb6c754c32781287785b238bb7",
+  "adjacent_log_sha256": "e867e795f307301b562a2820f967b9d1a8919a6e781ae955216df7723b4e3e5d",
+  "driver_compile": "PASS, offline --jobs1, 9.60s; compute slot explicitly released",
+  "limits": [
+    "Actual production Rust parser/mapper ran on generated native notifications only; no provider/app/native process was started.",
+    "Mounted frontend test uses real React and actual production adapter/reducer/view/ToolRows; unrelated decorative dependencies throw.",
+    "Not browser/native/package acceptance. No build/typecheck or full-chat completion is claimed.",
+    "No production edit or product lease yet."
+  ]
+}

@@ -1,0 +1,1 @@
+F5s=$.forwardRef((t,e)=>{let{alwaysRender:n,...i}=t,r=$.useRef(null),o=QH(a=>!a.search);return!n&&!o?null:$.createElement(D6.div,{ref:qce(r,e),...i,"cmdk-separator":"",role:"separator"})})

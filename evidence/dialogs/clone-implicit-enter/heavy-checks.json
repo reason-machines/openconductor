@@ -1,0 +1,8 @@
+{
+  "results": {
+    "typecheck": 0,
+    "build": 0,
+    "colorLint": 0
+  },
+  "mode": "one foreground sequential pipeline; no parallel tests"
+}

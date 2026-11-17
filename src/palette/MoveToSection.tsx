@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { ConductorIcon } from "../components/ConductorIcon";
+import { filterScore } from "./search/score.ts";
 import type { NavSection } from "../state/navigationSections";
 
 export interface MoveToSectionProps {
@@ -17,27 +18,32 @@ export type SectionItem =
   | { kind: "remove" };
 
 /**
- * Build the flat item list for a given query.
- * With a query: only show name-matching sections (no New/Remove footer rows).
- * Without a query: all sections, then "New section…", then "Remove from section"
- * if the workspace is currently in a section.
+ * Sections and footer commands share Conductor's value/keyword filter.
+ * Search ranks items within their groups, then groups by their best match.
+ * Empty search preserves the original sections, New, Remove order.
  */
 export function sectionItems(
   sections: readonly NavSection[],
   workspaceId: string,
   query: string,
 ): SectionItem[] {
-  const q = query.toLowerCase();
-  const filtered = q
-    ? sections.filter((s) => s.name.toLowerCase().includes(q))
-    : sections;
-  if (q) return filtered.map((s): SectionItem => ({ kind: "section", section: s }));
-  const inSection = sections.some((s) => s.workspaceIds.includes(workspaceId));
-  return [
-    ...filtered.map((s): SectionItem => ({ kind: "section", section: s })),
-    { kind: "new" },
-    ...(inSection ? [{ kind: "remove" } as SectionItem] : []),
+  const currentSectionId = sections.find((s) => s.workspaceIds.includes(workspaceId))?.id;
+  const groups: SectionItem[][] = [
+    sections.map((section) => ({ kind: "section", section })),
+    [{ kind: "new" }, ...(currentSectionId !== undefined ? [{ kind: "remove" } as SectionItem] : [])],
   ];
+  if (!query) return groups.flat();
+  return groups.map((items) => items.map((item) => ({
+    item,
+    disabled: item.kind === "section" && item.section.id === currentSectionId,
+    score: item.kind === "section"
+      ? filterScore(item.section.id, query, [item.section.name])
+      : item.kind === "new"
+        ? filterScore("new-section", query, ["create", "new", "section"])
+        : filterScore("remove-from-section", query, ["remove", "from", "section"]),
+  })).filter(({ score }) => score > 0).sort((a, b) => Number(b.disabled) - Number(a.disabled) || b.score - a.score))
+    .sort((a, b) => Math.max(0, ...b.map(({ score }) => score)) - Math.max(0, ...a.map(({ score }) => score)))
+    .flatMap((items) => items.map(({ item }) => item));
 }
 
 interface RenderProps {
@@ -125,7 +131,7 @@ export function MoveToSection({
           const isFirstFooter = i === sectionCount;
           return (
             <div key={item.kind} className="palette-section-footer-row">
-              {isFirstFooter && sectionCount > 0 && <hr role="separator" />}
+              {!query && isFirstFooter && sectionCount > 0 && <hr role="separator" />}
               <div
                 id={optionId?.(i)}
                 role="option"
