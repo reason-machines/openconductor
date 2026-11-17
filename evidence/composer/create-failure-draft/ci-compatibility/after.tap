@@ -1,0 +1,172 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: local section action has the reference row contract without requiring a project or workspace
+ok 1 - local section action has the reference row contract without requiring a project or workspace
+  ---
+  duration_ms: 9.456946
+  type: 'test'
+  ...
+# Subtest: actual PaletteHost selects the local section handler exactly once
+ok 2 - actual PaletteHost selects the local section handler exactly once
+  ---
+  duration_ms: 191.459493
+  type: 'test'
+  ...
+# Subtest: actual PaletteHost omits the row without the shell's local-section capability
+ok 3 - actual PaletteHost omits the row without the shell's local-section capability
+  ---
+  duration_ms: 88.292253
+  type: 'test'
+  ...
+# Subtest: mounted App opens one shared section dialog with hidden Sidebar at root
+ok 4 - mounted App opens one shared section dialog with hidden Sidebar at root
+  ---
+  duration_ms: 323.838189
+  type: 'test'
+  ...
+# Subtest: mounted App opens one shared section dialog with hidden Sidebar at home
+ok 5 - mounted App opens one shared section dialog with hidden Sidebar at home
+  ---
+  duration_ms: 155.230533
+  type: 'test'
+  ...
+# Subtest: mounted App creates in the local section store without moving the selected workspace
+ok 6 - mounted App creates in the local section store without moving the selected workspace
+  ---
+  duration_ms: 147.678706
+  type: 'test'
+  ...
+# Subtest: mounted App Cancel and repeated opens do not write a section or duplicate the dialog
+ok 7 - mounted App Cancel and repeated opens do not write a section or duplicate the dialog
+  ---
+  duration_ms: 127.537552
+  type: 'test'
+  ...
+# Subtest: mounted App with loading local store withholds creation until ready
+ok 8 - mounted App with loading local store withholds creation until ready
+  ---
+  duration_ms: 106.996369
+  type: 'test'
+  ...
+# Subtest: mounted App with error local store withholds creation until ready
+ok 9 - mounted App with error local store withholds creation until ready
+  ---
+  duration_ms: 124.481738
+  type: 'test'
+  ...
+# Subtest: shared shell owner preserves Sidebar create-before, workspace move and edit contracts
+ok 10 - shared shell owner preserves Sidebar create-before, workspace move and edit contracts
+  ---
+  duration_ms: 148.602986
+  type: 'test'
+  ...
+# (node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: M01 actual adapter, All/Actions search and mounted palette expose the reference Move to section command
+ok 11 - M01 actual adapter, All/Actions search and mounted palette expose the reference Move to section command
+  ---
+  duration_ms: 529.198971
+  type: 'test'
+  ...
+# Subtest: M02 eligibility resolves only the selected repository and does not reuse editable/status guards
+ok 12 - M02 eligibility resolves only the selected repository and does not reuse editable/status guards
+  ---
+  duration_ms: 0.578944
+  type: 'test'
+  ...
+# Subtest: M03 negative route and same-id other-repository controls never expose a usable Move to section action
+ok 13 - M03 negative route and same-id other-repository controls never expose a usable Move to section action
+  ---
+  duration_ms: 0.281677
+  type: 'test'
+  ...
+# Subtest: M03 mounted loading local hydration withholds the row until ready
+ok 14 - M03 mounted loading local hydration withholds the row until ready
+  ---
+  duration_ms: 241.377645
+  type: 'test'
+  ...
+# Subtest: M03 mounted error local hydration withholds the row until ready
+ok 15 - M03 mounted error local hydration withholds the row until ready
+  ---
+  duration_ms: 174.109323
+  type: 'test'
+  ...
+# Subtest: M04 sections retain stored order; current membership is checked and disabled, with New and conditional Remove
+ok 16 - M04 sections retain stored order; current membership is checked and disabled, with New and conditional Remove
+  ---
+  duration_ms: 407.545122
+  type: 'test'
+  ...
+# Subtest: M05 choosing an existing section reuses the reducer, removes old membership, unpins and retains the palette
+ok 17 - M05 choosing an existing section reuses the reducer, removes old membership, unpins and retains the palette
+  ---
+  duration_ms: 167.417423
+  type: 'test'
+  ...
+# Subtest: M06 Remove from section uses the existing null assignment without repinning or dismissing
+ok 18 - M06 Remove from section uses the existing null assignment without repinning or dismissing
+  ---
+  duration_ms: 116.355471
+  type: 'test'
+  ...
+# Subtest: M07 Escape, empty Backspace and explicit Back return to commands, not out of the palette
+ok 19 - M07 Escape, empty Backspace and explicit Back return to commands, not out of the palette
+  ---
+  duration_ms: 146.963024
+  type: 'test'
+  ...
+# Subtest: M08 complete-name query filters eligible sections and Enter cannot activate the disabled current section
+ok 20 - M08 complete-name query filters eligible sections and Enter cannot activate the disabled current section
+  ---
+  duration_ms: 152.450328
+  type: 'test'
+  ...
+# Subtest: M09 New section closes the palette and opens exactly one existing dialog for the captured workspace
+ok 21 - M09 New section closes the palette and opens exactly one existing dialog for the captured workspace
+  ---
+  duration_ms: 104.802602
+  type: 'test'
+  ...
+# Subtest: M10 explicit Cancel returns to the same section screen without writes; stale selection is not restored
+ok 22 - M10 explicit Cancel returns to the same section screen without writes; stale selection is not restored
+  ---
+  duration_ms: 124.611654
+  type: 'test'
+  ...
+# Subtest: M11 valid Create reuses the captured-workspace creator with trimmed name/emoji, unpins and restores the screen
+ok 23 - M11 valid Create reuses the captured-workspace creator with trimmed name/emoji, unpins and restores the screen
+  ---
+  duration_ms: 107.290861
+  type: 'test'
+  ...
+# Subtest: M12 plain Home Create section and ordinary Cancel remain independent of section navigation
+ok 24 - M12 plain Home Create section and ordinary Cancel remain independent of section navigation
+  ---
+  duration_ms: 97.579709
+  type: 'test'
+  ...
+# Subtest: M12 base adapter action equality and archived/Open in context stay unchanged
+ok 25 - M12 base adapter action equality and archived/Open in context stay unchanged
+  ---
+  duration_ms: 0.451487
+  type: 'test'
+  ...
+# Subtest: M13 no-match query renders the empty state and suppresses all options
+ok 26 - M13 no-match query renders the empty state and suppresses all options
+  ---
+  duration_ms: 110.903845
+  type: 'test'
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5031.074385

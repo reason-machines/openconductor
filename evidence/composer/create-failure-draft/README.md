@@ -42,6 +42,23 @@ git diff --check
 
 For baseline replay, create a detached worktree at the named `74c004a95d7b10072f54f71ca611f22c50944f64` commit and run the current fixture with `OC_CREATE_FAILURE_SOURCE_ROOT` set to that worktree's absolute root. The fixture imports its React/TypeScript test dependencies from this checkout but loads product source from the pinned root. Expected result is exactly 6P/2F, exit 1. `verify.mjs` checks all ten named baseline identities against that commit and checks both archived original product blobs. It reads retained reference spans as data, never executes vendor JavaScript.
 
+## Hosted CI compatibility correction — 17 November 2026
+
+Hosted head `4e3768a61f0ef92acb6d9debcdcc98efa1cfc3c3` passed typecheck and colour lint, then failed the frontend suite with **5452 pass / 20 fail**. All twenty failures were strict App-shell fixture dependency errors, not recovery assertions: `Unexpected ../App.tsx dependency: ./features/openIn/apps.ts`. The skipped build step is not a build pass.
+
+The two existing Palette fixtures (`createSection.test.ts` and `moveToSection.test.ts`) now each allow exactly the newly imported module with `{ copyText: forbidden }`. The adapter function throws if called: no clipboard success is fabricated, no production path changes, and their original scenarios/assertions/invocations remain byte/AST identical. Both complete originals, the twenty-error hosted log window, and local paired receipts are archived in `ci-compatibility/`.
+
+- Reproduced before correction: those two files **6 pass / 20 fail**, all twenty missing-import errors.
+- Passed after correction: unchanged **26/26** tests, no skipped or cancelled tests.
+- Passed: frozen recovery eight plus original 147 adjacent tests, **155/155**; actual-adapter clipboard controls **8/8**.
+- Passed: `node evidence/composer/create-failure-draft/ci-compatibility/verify.mjs` checks exact single-line ports, complete original file identities, unchanged test-call bytes/ASTs, all twenty hosted/local error identities, paired receipts and unchanged production/frozen fixture hashes.
+- Passed: original source/scope verifier, both frozen fixture manifests and whitespace checks. No additional full local frontend pipeline, browser, native, real clipboard or package dispatch ran. Corrected exact-head hosted results are reported on the PR separately.
+
+```bash
+node --experimental-strip-types --test --test-concurrency=1 src/palette/createSection.test.ts src/palette/moveToSection.test.ts
+node evidence/composer/create-failure-draft/ci-compatibility/verify.mjs
+```
+
 ## Acceptance limits
 
 No screenshot or recording exists: this source-only admission explicitly excludes a browser/server, runtime/native execution or real clipboard access. Tests prove callback/data-flow behavior through inert boundaries, not visible geometry, native focus, actual macOS clipboard permission or engine behavior. No full-app typecheck/build, Rust checks, provider run, package/release dispatch or duplicate watcher was started. Exact-head hosted CI remains a separate delivery check. Package inclusion and native acceptance, including existing #1458 obligations, stay with the existing canonical release custodians; merge and package/native acceptance are distinct facts.

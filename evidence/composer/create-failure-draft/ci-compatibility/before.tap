@@ -1,0 +1,552 @@
+(node:79) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: local section action has the reference row contract without requiring a project or workspace
+ok 1 - local section action has the reference row contract without requiring a project or workspace
+  ---
+  duration_ms: 5.447438
+  type: 'test'
+  ...
+# Subtest: actual PaletteHost selects the local section handler exactly once
+ok 2 - actual PaletteHost selects the local section handler exactly once
+  ---
+  duration_ms: 205.054323
+  type: 'test'
+  ...
+# Subtest: actual PaletteHost omits the row without the shell's local-section capability
+ok 3 - actual PaletteHost omits the row without the shell's local-section capability
+  ---
+  duration_ms: 92.672751
+  type: 'test'
+  ...
+# Subtest: mounted App opens one shared section dialog with hidden Sidebar at root
+not ok 4 - mounted App opens one shared section dialog with hidden Sidebar at root
+  ---
+  duration_ms: 279.332531
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:299:3'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:45:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:39:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:267:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:300:24)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: mounted App opens one shared section dialog with hidden Sidebar at home
+not ok 5 - mounted App opens one shared section dialog with hidden Sidebar at home
+  ---
+  duration_ms: 189.340468
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:299:3'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:45:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:39:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:267:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:300:24)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: mounted App creates in the local section store without moving the selected workspace
+not ok 6 - mounted App creates in the local section store without moving the selected workspace
+  ---
+  duration_ms: 144.611374
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:325:1'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:45:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:39:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:267:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:326:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: mounted App Cancel and repeated opens do not write a section or duplicate the dialog
+not ok 7 - mounted App Cancel and repeated opens do not write a section or duplicate the dialog
+  ---
+  duration_ms: 130.06906
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:342:1'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:45:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:39:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:267:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:343:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: mounted App with loading local store withholds creation until ready
+not ok 8 - mounted App with loading local store withholds creation until ready
+  ---
+  duration_ms: 118.227507
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:362:3'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:45:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:39:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:267:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:363:24)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: mounted App with error local store withholds creation until ready
+not ok 9 - mounted App with error local store withholds creation until ready
+  ---
+  duration_ms: 103.393978
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:362:3'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:45:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:39:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:267:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:363:24)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: shared shell owner preserves Sidebar create-before, workspace move and edit contracts
+not ok 10 - shared shell owner preserves Sidebar create-before, workspace move and edit contracts
+  ---
+  duration_ms: 84.251995
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:375:1'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:45:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:39:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:267:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/createSection.test.ts:377:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# (node:94) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: M01 actual adapter, All/Actions search and mounted palette expose the reference Move to section command
+not ok 11 - M01 actual adapter, All/Actions search and mounted palette expose the reference Move to section command
+  ---
+  duration_ms: 534.180056
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:315:1'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:47:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:42:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:230:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:328:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: M02 eligibility resolves only the selected repository and does not reuse editable/status guards
+ok 12 - M02 eligibility resolves only the selected repository and does not reuse editable/status guards
+  ---
+  duration_ms: 0.472073
+  type: 'test'
+  ...
+# Subtest: M03 negative route and same-id other-repository controls never expose a usable Move to section action
+ok 13 - M03 negative route and same-id other-repository controls never expose a usable Move to section action
+  ---
+  duration_ms: 0.47357
+  type: 'test'
+  ...
+# Subtest: M03 mounted loading local hydration withholds the row until ready
+not ok 14 - M03 mounted loading local hydration withholds the row until ready
+  ---
+  duration_ms: 215.766994
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:357:3'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:47:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:42:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:230:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:358:24)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: M03 mounted error local hydration withholds the row until ready
+not ok 15 - M03 mounted error local hydration withholds the row until ready
+  ---
+  duration_ms: 189.513736
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:357:3'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:47:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:42:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:230:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:358:24)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: M04 sections retain stored order; current membership is checked and disabled, with New and conditional Remove
+not ok 16 - M04 sections retain stored order; current membership is checked and disabled, with New and conditional Remove
+  ---
+  duration_ms: 120.22061
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:369:1'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:47:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:42:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:230:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:370:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: M05 choosing an existing section reuses the reducer, removes old membership, unpins and retains the palette
+not ok 17 - M05 choosing an existing section reuses the reducer, removes old membership, unpins and retains the palette
+  ---
+  duration_ms: 115.410814
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:393:1'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:47:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:42:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:230:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:394:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: M06 Remove from section uses the existing null assignment without repinning or dismissing
+not ok 18 - M06 Remove from section uses the existing null assignment without repinning or dismissing
+  ---
+  duration_ms: 147.554446
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:415:1'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:47:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:42:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:230:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:417:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: M07 Escape, empty Backspace and explicit Back return to commands, not out of the palette
+not ok 19 - M07 Escape, empty Backspace and explicit Back return to commands, not out of the palette
+  ---
+  duration_ms: 144.838526
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:434:1'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:47:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:42:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:230:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:435:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: M08 complete-name query filters eligible sections and Enter cannot activate the disabled current section
+not ok 20 - M08 complete-name query filters eligible sections and Enter cannot activate the disabled current section
+  ---
+  duration_ms: 89.632065
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:456:1'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:47:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:42:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:230:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:457:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: M09 New section closes the palette and opens exactly one existing dialog for the captured workspace
+not ok 21 - M09 New section closes the palette and opens exactly one existing dialog for the captured workspace
+  ---
+  duration_ms: 104.367801
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:472:1'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:47:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:42:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:230:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:473:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: M10 explicit Cancel returns to the same section screen without writes; stale selection is not restored
+not ok 22 - M10 explicit Cancel returns to the same section screen without writes; stale selection is not restored
+  ---
+  duration_ms: 111.444138
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:483:1'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:47:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:42:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:230:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:484:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: M11 valid Create reuses the captured-workspace creator with trimmed name/emoji, unpins and restores the screen
+not ok 23 - M11 valid Create reuses the captured-workspace creator with trimmed name/emoji, unpins and restores the screen
+  ---
+  duration_ms: 92.909241
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:503:1'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:47:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:42:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:230:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:504:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: M12 plain Home Create section and ordinary Cancel remain independent of section navigation
+not ok 24 - M12 plain Home Create section and ordinary Cancel remain independent of section navigation
+  ---
+  duration_ms: 96.306124
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:532:1'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:47:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:42:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:230:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:533:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: M12 base adapter action equality and archived/Open in context stay unchanged
+ok 25 - M12 base adapter action equality and archived/Open in context stay unchanged
+  ---
+  duration_ms: 0.690805
+  type: 'test'
+  ...
+# Subtest: M13 no-match query renders the empty state and suppresses all options
+not ok 26 - M13 no-match query renders the empty state and suppresses all options
+  ---
+  duration_ms: 118.270398
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:563:1'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected ../App.tsx dependency: ./features/openIn/apps.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    require (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:47:14)
+    evalmachine.<anonymous>:64:19
+    Script.runInContext (node:vm:149:12)
+    Script.runInNewContext (node:vm:154:17)
+    runInNewContext (node:vm:310:38)
+    evaluate (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:42:3)
+    shellFixture (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:230:3)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/palette/moveToSection.test.ts:564:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 6
+# fail 20
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4629.438685
