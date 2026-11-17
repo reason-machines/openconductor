@@ -1,0 +1,17 @@
+{
+  "author": "Conductor Rebuild",
+  "disposition": "ALREADY_HELD_RENDERER_LOCATOR_AND_ORIGINAL_BYTE_HANDOFF_ONLY",
+  "raw_file": "renderApp-D_fmY7hW.js",
+  "bytes": 11600457,
+  "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "retained_archive_name": "settings-result-cache-v1.tar.gz",
+  "retained_archive_sha256": "f8e1df1ac213881feb36802439649548eeb0bc98591bbb524376feba82ab0b95",
+  "retained_member": "settings-result-cache-v1/be7-source/cache-token-result-source-closure/originals/renderApp-D_fmY7hW.js",
+  "limits": [
+    "Already-held staged bytes, not a new acquisition/capture.",
+    "No installed reference identity or current native behavior proven.",
+    "No vendor/product execution.",
+    "Existing source owner qualifies chat binding; Diffde6 retains Q07 qualification.",
+    "No native owner acknowledgement or runtime admission."
+  ]
+}

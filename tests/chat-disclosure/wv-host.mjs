@@ -165,7 +165,7 @@ export function fixture({ kind = "Read", garry = false } = {}) {
     "src/features/pr/checks/useFixErrors": { useFixErrors: () => ({}) },
     "src/features/pr/usePullLatest": { PullLatestButton: () => null, usePullLatest: () => ({ shortcut: noop }) },
   };
-  const actualTsx = new Set(["src/components/WorkspaceView", "src/features/chat/ChatEmptyState", "src/features/chat/Composer", "src/features/diff/ReviewButton", "src/features/chat/Transcript", "src/features/chat/ToolRows"]);
+  const actualTsx = new Set(["src/features/workspace/CenterPanelGroups", "src/components/WorkspaceView", "src/features/chat/ChatEmptyState", "src/features/chat/Composer", "src/features/diff/ReviewButton", "src/features/chat/Transcript", "src/features/chat/ToolRows"]);
   function load(filename) {
     const key = filename.slice(root.length + 1).replace(/\.(tsx?|css)$/, "");
     if (key === "src/features/chat/agents") return { ...load(resolve(root, "src/features/chat/agentChoice.ts")), CHAT_AGENTS: agents };

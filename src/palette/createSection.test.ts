@@ -250,7 +250,7 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
   };
   for (const [file, name] of Object.entries({
     "./components/HomeScreen": "HomeScreen", "./components/SubmitPromptDialog": "SubmitPromptDialog", "./components/FeedbackDialog": "FeedbackDialog",
-    "./diagnostics/DiagnosticsPage": "DiagnosticsPage", "./components/AllWorkspaces": "AllWorkspaces", "./components/Dashboard": "Dashboard",
+    "./diagnostics/DiagnosticsPage": "DiagnosticsPage", "./components/HomeWorkspaceScreen": "HomeWorkspaceScreen", "./components/Dashboard": "Dashboard",
     "./components/WorkspaceView": "WorkspaceView", "./features/browser/BrowserPreview": "BrowserPreviewHost", "./components/CreateProjectDialog": "CreateProjectDialog",
     "./components/CloneGitHubRepoDialog": "CloneGitHubRepoDialog", "./components/CreateWorkspaceDialog": "CreateWorkspaceDialog", "./components/CreateWorkspacePage": "CreateWorkspacePage",
     "./components/RemoveRepositoryDialog": "RemoveRepositoryDialog", "./components/ArchiveRunningDialog": "ArchiveRunningDialog", "./components/ArchivedWorkspaceView": "ArchivedWorkspaceView",

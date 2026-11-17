@@ -1,0 +1,1 @@
+function Utt(t){const e=t.content;return e.type==="system"&&"subtype"in e&&e.subtype==="compact_boundary"}

@@ -1,0 +1,52 @@
+{
+  "producer": "Conductor Rebuild / SAME271",
+  "machine": "Reason Cloud computer1; local source-unit only",
+  "main": "da5d179229db0ed3333b98235310928038bd2a26",
+  "baseline_component_sha256": "506ca08bed3e46b8478d2f90d60e1d0f5ddd7c4ddf2b379f4877a42e03692327",
+  "fixed_component_sha256": "e9034a07af0fd243ecccad7c1ec4f34ff4f997f4c43de11c3b3140c3be56c7f8",
+  "fixture_sha256": "28690ba41c9a4cf66595c06832815ee151c211b8b70a8ed58ee12d759f12c874",
+  "unchanged_fixture": true,
+  "portable_case_bodies_identical_to_scratch": true,
+  "red": {
+    "pass": 4,
+    "fail": 5,
+    "exit": 1,
+    "setup_failures": 0,
+    "path": "red.txt.gz",
+    "uncompressed_sha256": "29a38f4d269c2c24130e06741bc4bfcff126f12333f411ef5690ce54a8755331"
+  },
+  "green": {
+    "pass": 9,
+    "fail": 0,
+    "exit": 0,
+    "path": "green.txt",
+    "sha256": "366f11103838f1d278d5da3513a7e688ea804e79e6115f5b14b15da75f2c0006"
+  },
+  "adjacent": {
+    "pass": 182,
+    "fail": 0,
+    "skip": 0,
+    "exit": 0,
+    "path": "adjacent.txt",
+    "sha256": "ec3eccf82c7d209cc78853b5ca61ced6c2d58f59f8ff2117767eef01b0001d38"
+  },
+  "typecheck": {
+    "exit": 2,
+    "path": "typecheck.txt",
+    "sha256": "f43a410e000c94dcab0c614a11d22daf856316f95315e2fd5c31166fada09911",
+    "limitation": "Existing TS2307 missing @tauri-apps/plugin-fs at src/features/chat/useWindowDragDrop.ts:20; no installation/shim/manifest change"
+  },
+  "not_run": [
+    "browser",
+    "app/package/native",
+    "physical key propagation/OS interception",
+    "visual/scroll geometry",
+    "combined Ctrl+Alt letter behavior"
+  ],
+  "ownership": [
+    "AllWorkspaces.tsx onSearchKey ONLY",
+    "NEW homeGroupNavigation.test.ts",
+    "NEW evidence/home-group-navigation/"
+  ],
+  "sole_package_recheck_preserved": "2026-11-17T09:36:22Z; no duplicate"
+}

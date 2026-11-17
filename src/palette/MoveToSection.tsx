@@ -44,13 +44,14 @@ interface RenderProps {
   sections: readonly NavSection[];
   query: string;
   active: number;
+  optionId?: (index: number) => string;
   onActive: (index: number) => void;
   onSelectAt: (index: number) => void;
   onBack: () => void;
 }
 
 export function MoveToSection({
-  workspaceId, sections, query, active, onActive, onSelectAt, onBack,
+  workspaceId, sections, query, active, optionId, onActive, onSelectAt, onBack,
 }: RenderProps) {
   const currentSectionId =
     sections.find((s) => s.workspaceIds.includes(workspaceId))?.id ?? null;
@@ -80,6 +81,7 @@ export function MoveToSection({
             return (
               <div
                 key={item.section.id}
+                id={optionId?.(i)}
                 role="option"
                 aria-selected={i === active}
                 aria-disabled={isCurrent || undefined}
@@ -109,6 +111,7 @@ export function MoveToSection({
             <div key={item.kind} className="palette-section-footer-row">
               {isFirstFooter && sectionCount > 0 && <hr role="separator" />}
               <div
+                id={optionId?.(i)}
                 role="option"
                 aria-selected={i === active}
                 className={i === active ? "palette-item active" : "palette-item"}

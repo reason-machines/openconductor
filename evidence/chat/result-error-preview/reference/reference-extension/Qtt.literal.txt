@@ -1,0 +1,1 @@
+function Qtt(t,e,s){const n=t.content.parent_tool_use_id??void 0;if(n)return n;const r=t.content;if(r.type!=="system"||r.tool_use_id===void 0)return;const i=e.get(r.tool_use_id);return i!==void 0?i.ownerGroup:s?.get(r.tool_use_id)?.ownerGroup}

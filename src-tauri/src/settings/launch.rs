@@ -155,6 +155,25 @@ impl Settings {
         }
     }
 
+    /// Conductor's Mc3/zn4 policy: Plan wins; Auto only applies when
+    /// approvals are required. Used at launch and again for each chat turn.
+    /// Source: evidence/settings/auto-permission/reference.json.
+    pub fn claude_permission_mode(&self, plan: bool) -> PermissionMode {
+        if plan {
+            PermissionMode::Plan
+        } else if !self.tool_approvals_enabled {
+            PermissionMode::BypassPermissions
+        } else if self.experimental.extra
+            .get("experimental_auto_permission_mode")
+            .and_then(toml::Value::as_bool)
+            .unwrap_or(false)
+        {
+            PermissionMode::Auto
+        } else {
+            PermissionMode::Default
+        }
+    }
+
     /// The answer to every Codex approval request when the user chose
     /// "always approve" (Conductor answers `always_allow` for Codex
     /// sessions), else `None`: ask the user.
@@ -169,10 +188,9 @@ impl Settings {
 /// A Claude Code session in `cwd`, configured by `settings`.
 ///
 /// Permission mode: plan for a new chat with "Default to plan mode" on;
-/// otherwise `default` (Claude Code asks before tools) when "Claude Code
-/// tool approvals" is on, `bypassPermissions` when it is off, as
-/// Conductor's own Claude command (`claude --dangerously-skip-permissions`
-/// unless approvals are required).
+/// otherwise `auto` when approvals and experimental Auto permission mode
+/// are on, `default` when only approvals are on, or `bypassPermissions`
+/// when approvals are off. The same policy is applied for each chat turn.
 pub fn claude_launch(
     settings: &Settings,
     cwd: &Path,
@@ -186,13 +204,9 @@ pub fn claude_launch(
     if model_agent(model) == AgentKind::Claude {
         launch.model = Some(claude_cli_model(model));
     }
-    launch.permission_mode = if purpose == Purpose::Chat && settings.models.default_plan_mode {
-        PermissionMode::Plan
-    } else if settings.tool_approvals_enabled {
-        PermissionMode::Default
-    } else {
-        PermissionMode::BypassPermissions
-    };
+    launch.permission_mode = settings.claude_permission_mode(
+        purpose == Purpose::Chat && settings.models.default_plan_mode,
+    );
     let cc = &settings.models.claude_code;
     let effort = match purpose {
         Purpose::Chat => cc.default_effort_level,

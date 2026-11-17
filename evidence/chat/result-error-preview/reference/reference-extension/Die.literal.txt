@@ -1,0 +1,1 @@
+function Die(t){return t.type==="assistant"||t.type==="result"||t.type==="system"||t.type==="error"||t.type==="codex_goal_updated"||t.type==="codex_goal_cleared"||Int(t)||t.type==="user"&&"message"in t&&t.message&&typeof t.message=="object"&&"content"in t.message&&Array.isArray(t.message.content)&&t.message.content.some(e=>e.type==="tool_result")}

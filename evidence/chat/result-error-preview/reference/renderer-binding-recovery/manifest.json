@@ -1,0 +1,659 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate": "CHAT-TERMINAL-ERROR-PREVIEW-EVIDENCE",
+  "disposition": "REQUESTED_TWO_RETAINED_SOURCE_BINDINGS_RESOLVED_NOT_A_DEFECT_VERDICT",
+  "scope": "Evidence extraction only; BE7 owns chat comparison/RED/repair; Diff owns its separate retained-byte qualification.",
+  "repository_head_observed": "5bda41de89e29b4d504766afad41b01f20d6ee22",
+  "repository_note": "No refreshed-main comparison, product audit or tests performed in this source-only turn.",
+  "assets": {
+    "index": {
+      "name": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "complete_parent_verified_here": true
+    },
+    "renderer": {
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "complete_parent_verified_here": true
+    }
+  },
+  "upstream_locator": {
+    "author": "Conductor Rebuild",
+    "disposition": "ALREADY_HELD_RENDERER_LOCATOR_AND_ORIGINAL_BYTE_HANDOFF_ONLY",
+    "raw_file": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "retained_archive_name": "settings-result-cache-v1.tar.gz",
+    "retained_archive_sha256": "f8e1df1ac213881feb36802439649548eeb0bc98591bbb524376feba82ab0b95",
+    "retained_member": "settings-result-cache-v1/be7-source/cache-token-result-source-closure/originals/renderApp-D_fmY7hW.js",
+    "limits": [
+      "Already-held staged bytes, not a new acquisition/capture.",
+      "No installed reference identity or current native behavior proven.",
+      "No vendor/product execution.",
+      "Existing source owner qualifies chat binding; Diffde6 retains Q07 qualification.",
+      "No native owner acknowledgement or runtime admission."
+    ]
+  },
+  "input_archive": {
+    "name": "retained-renderer-5199d392-original-bytes.tar.gz",
+    "bytes": 3475109,
+    "sha256": "ca33ccd3b7e25e947925c8f2f26c45cfe2f1eb66f05c6bc45c50f3a74b93d8d7",
+    "attachment_id": "fb21a22e-e0d3-4e8f-85c0-a8b6cb9d65f2"
+  },
+  "rea_lineage": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "rea_limits": "Historical retained extraction lineage only. Original renderer analysis had heap exhaustion. No new REA invocation, failure, capture or installed-identity check.",
+  "records": [
+    {
+      "symbol": "na",
+      "asset": "index",
+      "utf8_half_open": [
+        1148057,
+        1148224
+      ],
+      "bytes": 167,
+      "sha256": "7673a785165ce3c671210fa21a1e1a0a836ccda502ece16b01fe4cc93d6b87bb",
+      "path": "literals/na.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "Fa",
+      "asset": "index",
+      "utf8_half_open": [
+        1148224,
+        1148305
+      ],
+      "bytes": 81,
+      "sha256": "26475e8ddf9c5f5292ca8e385429f41b1893267e4599b2fef7055b93f51a7407",
+      "path": "literals/Fa.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "die",
+      "asset": "index",
+      "utf8_half_open": [
+        1148681,
+        1148755
+      ],
+      "bytes": 74,
+      "sha256": "04936ad02551fcbfc2dff5bb11d147651464598b9ddda84892177c785050bb9c",
+      "path": "literals/die.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "hie",
+      "asset": "index",
+      "utf8_half_open": [
+        1148755,
+        1148849
+      ],
+      "bytes": 94,
+      "sha256": "8a711327171a0bed272961eb073858cef00d02da972697bd5ae912f8c11f4a7d",
+      "path": "literals/hie.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "Ett",
+      "asset": "index",
+      "utf8_half_open": [
+        1148849,
+        1149033
+      ],
+      "bytes": 184,
+      "sha256": "1cc88e4d4cbd22bd69303b64ea6ddf447f10347a4f35f65ea4fd245b64838ff1",
+      "path": "literals/Ett.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "Att",
+      "asset": "index",
+      "utf8_half_open": [
+        1149033,
+        1149431
+      ],
+      "bytes": 398,
+      "sha256": "ad83bdd40d7ce09c1fab5180892be86b2786181336619db39f575926e2026a06",
+      "path": "literals/Att.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "btt",
+      "asset": "index",
+      "utf8_half_open": [
+        1148305,
+        1148415
+      ],
+      "bytes": 110,
+      "sha256": "6831a23f1c59e1c76445797aba43b4a075878a9750733048e5e3b7f8bd434e0a",
+      "path": "literals/btt.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "uie",
+      "asset": "index",
+      "utf8_half_open": [
+        1148415,
+        1148596
+      ],
+      "bytes": 181,
+      "sha256": "bba1207f3241d3cd24b8e70dceafa842f7d2b327961299151c9692888053b34e",
+      "path": "literals/uie.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "bB",
+      "asset": "index",
+      "utf8_half_open": [
+        1152714,
+        1153123
+      ],
+      "bytes": 409,
+      "sha256": "e7f1f75c7784f033a2be1c38499d83c69b2f64cdd628faf26c33d3781132ba0c",
+      "path": "literals/bB.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "_jt",
+      "asset": "index",
+      "utf8_half_open": [
+        1153746,
+        1154246
+      ],
+      "bytes": 500,
+      "sha256": "1806109603caa218b2bc48dac7cb3ed18126790e4ec12f8d3bd578b765e17964",
+      "path": "literals/_jt.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "export-presentation",
+      "asset": "index",
+      "utf8_half_open": [
+        3488207,
+        3488216
+      ],
+      "bytes": 9,
+      "sha256": "0e661c369e10f2cc566d95fc93a2246748d655007fc340ba921835bda1b331b8",
+      "path": "literals/export-presentation.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "predicate",
+      "asset": "renderer",
+      "utf8_half_open": [
+        77337,
+        77425
+      ],
+      "bytes": 88,
+      "sha256": "51abad2eb7aa4e53f6f7f4b591c1491db58f11d1d33ef3d6d6882200c803b4d9",
+      "path": "literals/predicate.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "normalization",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8876511,
+        8876941
+      ],
+      "bytes": 430,
+      "sha256": "0cdec82c337480e09da3bb16cf5ba4bd3b609f8ff8d1ec09320c0151bf47ecb7",
+      "path": "literals/normalization.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "presentation",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8877084,
+        8883958
+      ],
+      "bytes": 6874,
+      "sha256": "7df5d5701ce986ee980d0a9ae4e4938e495c5e78eccf728c89d0dfb80c95a9c9",
+      "path": "literals/presentation.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "error-message-dispatcher",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8903418,
+        8906202
+      ],
+      "bytes": 2784,
+      "sha256": "8caa30cad8cd2212c85c1cc5500f1913726d670ff9c3dc7f0f34c43373762d84",
+      "path": "literals/error-message-dispatcher.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "MDo-turn-renderer",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8929760,
+        8933359
+      ],
+      "bytes": 3599,
+      "sha256": "2984cf19657bcceee5d85b8d23bf50b532f1c4cf46e6444c83021e873db65d1f",
+      "path": "literals/MDo-turn-renderer.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "FDo-summary-guard",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8933389,
+        8933431
+      ],
+      "bytes": 42,
+      "sha256": "d9836a423ef6b06b2b4e86dfb6f24b304d65da350bc2e3f085dc76b4a10f657a",
+      "path": "literals/FDo-summary-guard.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "LDo-group-dispatch",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8929547,
+        8929760
+      ],
+      "bytes": 213,
+      "sha256": "ec8f66eea44c7560eb07963ae8f42eb6a5d86a91bc3b59a06ba29e23602258a9",
+      "path": "literals/LDo-group-dispatch.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "assistant-block-ROo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8870021,
+        8872955
+      ],
+      "bytes": 2934,
+      "sha256": "4b020f575c8024708d1576ab02d0154a6690a710abe1fbe5e603fd7731e69afe",
+      "path": "literals/assistant-block-ROo.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "assistant-message-GOo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8895884,
+        8896973
+      ],
+      "bytes": 1089,
+      "sha256": "4ccc42483a6dcf792da1f6bfd7a9495387221c975cd7f13f325d9d3f59d99f47",
+      "path": "literals/assistant-message-GOo.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "JOo-result-dispatcher",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8903418,
+        8903978
+      ],
+      "bytes": 560,
+      "sha256": "49096d7b76945272d16b5a7ca424684f0fb1d1d5f2fee3aaf8316a15142622ac",
+      "path": "literals/JOo-result-dispatcher.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "lVt-message-dispatcher",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8903978,
+        8906202
+      ],
+      "bytes": 2224,
+      "sha256": "10a1604623b0767fa215c3e8e8c71aaf09761e89f4185791eb0cfc600e72b475",
+      "path": "literals/lVt-message-dispatcher.literal.txt",
+      "role": "Existing source chain, now checked against full exact parent.",
+      "kind": "literal",
+      "inherited": true
+    },
+    {
+      "symbol": "renderer-index-import",
+      "asset": "renderer",
+      "utf8_half_open": [
+        52991,
+        66495
+      ],
+      "bytes": 13504,
+      "sha256": "711b96377098ad3838934209f1710cb85acfc256abecae07605139daf0670ed5",
+      "path": "literals/renderer-index-import.literal.txt",
+      "role": "Complete static import declaration including my as Zwr and exact module path.",
+      "kind": "module-declaration",
+      "inherited": false
+    },
+    {
+      "symbol": "renderer-my-as-Zwr",
+      "asset": "renderer",
+      "utf8_half_open": [
+        61305,
+        61314
+      ],
+      "bytes": 9,
+      "sha256": "5e10237b94c7f5923ca44c829ed5ff306d722ef4ac68d4b02ae7c185445b5d7e",
+      "path": "literals/renderer-my-as-Zwr.literal.txt",
+      "role": "Exact local alias inside the retained complete import.",
+      "kind": "alias",
+      "inherited": false
+    },
+    {
+      "symbol": "index-complete-export",
+      "asset": "index",
+      "utf8_half_open": [
+        3479840,
+        3493154
+      ],
+      "bytes": 13314,
+      "sha256": "710a19a503aab13b4d7560f27759db8f34c043680e13aefc77a5b1e289891530",
+      "path": "literals/index-complete-export.literal.txt",
+      "role": "Complete export declaration includes _jt as my, fs as b, Ht as i, xFt as aI.",
+      "kind": "module-declaration",
+      "inherited": false
+    },
+    {
+      "symbol": "QOo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8901673,
+        8903362
+      ],
+      "bytes": 1689,
+      "sha256": "85fde3e15d77b5eaecdc69c8c054ef18f560d9f07e5b2c002d1d0c8f9fd945ad",
+      "path": "literals/QOo.literal.txt",
+      "role": "Complete result-error component: session/provider label, diagnostic filter, auth/model delegation, error text and all-errors tooltip.",
+      "kind": "function",
+      "inherited": false
+    },
+    {
+      "symbol": "XOo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8903362,
+        8903418
+      ],
+      "bytes": 56,
+      "sha256": "98c6548e851a81965cf8a64668334f1f1616e5bf18db3681f9daeb9f431394ff",
+      "path": "literals/XOo.literal.txt",
+      "role": "Filter only strings starting with [ede_diagnostic].",
+      "kind": "function",
+      "inherited": false
+    },
+    {
+      "symbol": "dDi",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8876511,
+        8876941
+      ],
+      "bytes": 430,
+      "sha256": "0cdec82c337480e09da3bb16cf5ba4bd3b609f8ff8d1ec09320c0151bf47ecb7",
+      "path": "literals/dDi.literal.txt",
+      "role": "Error text normalization only; no preview selection.",
+      "kind": "function",
+      "inherited": false
+    },
+    {
+      "symbol": "lDi",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8860201,
+        8860327
+      ],
+      "bytes": 126,
+      "sha256": "9bb682ed04340e3c49f14a89dba9baa6ccb4f7905d7aa13d0941d17dc850575a",
+      "path": "literals/lDi.literal.txt",
+      "role": "Result/success/error auth fallback predicate.",
+      "kind": "function",
+      "inherited": false
+    },
+    {
+      "symbol": "oVt",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8860002,
+        8860201
+      ],
+      "bytes": 199,
+      "sha256": "3f4d8dfc1286aa3570ffa2ce82bffd8da64ba790cd224e5700aeaeeabcce471f",
+      "path": "literals/oVt.literal.txt",
+      "role": "Direct lDi authentication-text predicate.",
+      "kind": "function",
+      "inherited": false
+    },
+    {
+      "symbol": "fDi",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8877016,
+        8877084
+      ],
+      "bytes": 68,
+      "sha256": "a10c38978b8584870c31a48361df7addab74f989920dde9ce92152481ae647c7",
+      "path": "literals/fDi.literal.txt",
+      "role": "Unsupported-model fallback predicate; imported Su host accessor remains an external value boundary.",
+      "kind": "function",
+      "inherited": false
+    },
+    {
+      "symbol": "dOo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8860362,
+        8860446
+      ],
+      "bytes": 84,
+      "sha256": "38359132c924af96e1421f25f0f9441c97e2ecb6898cfb2efe81af69644460e9",
+      "path": "literals/dOo.literal.txt",
+      "role": "Direct fDi unsupported-model-text predicate.",
+      "kind": "function",
+      "inherited": false
+    },
+    {
+      "symbol": "EHe",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8873406,
+        8875731
+      ],
+      "bytes": 2325,
+      "sha256": "7930e8c8d6398671b75e4c22bf4c5474fe9fbf8912dcd82820972e70db743ca8",
+      "path": "literals/EHe.literal.txt",
+      "role": "Complete directly called error-display component. Interaction/backend handlers retained inertly, not exercised or separately qualified.",
+      "kind": "function",
+      "inherited": false
+    },
+    {
+      "symbol": "Fp",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2701289,
+        2701438
+      ],
+      "bytes": 149,
+      "sha256": "60e406ea40013d58f5e6d8c3bd20af863d7877a3b27123d1966c4aeca4a68c1b",
+      "path": "literals/Fp.literal.txt",
+      "role": "Current-workspace context accessor; provider value is external.",
+      "kind": "function",
+      "inherited": false
+    },
+    {
+      "symbol": "fs",
+      "asset": "index",
+      "utf8_half_open": [
+        305222,
+        305282
+      ],
+      "bytes": 60,
+      "sha256": "466d08444bff3ed63e1a59acb4d3b05b59e0b5f6cca402de597a399a26cb259d",
+      "path": "literals/fs.literal.txt",
+      "role": "Imported gu provider-name fallback uses eg/Zy model predicates, which are not expanded.",
+      "kind": "function",
+      "inherited": false
+    },
+    {
+      "symbol": "Ht",
+      "asset": "index",
+      "utf8_half_open": [
+        2519,
+        2581
+      ],
+      "bytes": 62,
+      "sha256": "8312b9967b2a1f8991751195f8a745c82b8cde68274b4a2f870b08af4add2a5c",
+      "path": "literals/Ht.literal.txt",
+      "role": "Imported Su host accessor compares hostingServerUrl to imported local baseline M; no host policy/config expansion.",
+      "kind": "function",
+      "inherited": false
+    }
+  ],
+  "verification": {
+    "parent_assets": 2,
+    "previous_records_fresh_parent_matched": 22,
+    "all_records": 36,
+    "syntax_only": [
+      {
+        "symbol": "renderer-index-import",
+        "check": "node --check <exact-literal.mjs>",
+        "status": "passed"
+      },
+      {
+        "symbol": "index-complete-export",
+        "check": "node --input-type=module --check < exact-full-index",
+        "status": "passed"
+      },
+      {
+        "symbol": "QOo",
+        "check": "node --check <exact-literal.mjs>",
+        "status": "passed"
+      },
+      {
+        "symbol": "XOo",
+        "check": "node --check <exact-literal.mjs>",
+        "status": "passed"
+      },
+      {
+        "symbol": "dDi",
+        "check": "node --check <exact-literal.mjs>",
+        "status": "passed"
+      },
+      {
+        "symbol": "lDi",
+        "check": "node --check <exact-literal.mjs>",
+        "status": "passed"
+      },
+      {
+        "symbol": "oVt",
+        "check": "node --check <exact-literal.mjs>",
+        "status": "passed"
+      },
+      {
+        "symbol": "fDi",
+        "check": "node --check <exact-literal.mjs>",
+        "status": "passed"
+      },
+      {
+        "symbol": "dOo",
+        "check": "node --check <exact-literal.mjs>",
+        "status": "passed"
+      },
+      {
+        "symbol": "EHe",
+        "check": "node --check <exact-literal.mjs>",
+        "status": "passed"
+      },
+      {
+        "symbol": "Fp",
+        "check": "node --check <exact-literal.mjs>",
+        "status": "passed"
+      },
+      {
+        "symbol": "fs",
+        "check": "node --check <exact-literal.mjs>",
+        "status": "passed"
+      },
+      {
+        "symbol": "Ht",
+        "check": "node --check <exact-literal.mjs>",
+        "status": "passed"
+      },
+      {
+        "symbol": "hDi (presentation)",
+        "check": "node --check <exact-literal.mjs>",
+        "status": "passed"
+      }
+    ]
+  },
+  "resolved": [
+    "Exact complete renderer import from ./index-BGEQ8YjU.js contains my as Zwr; complete digest-pinned index export contains _jt as my.",
+    "QOo complete named component body recovered, its JOo caller and minimum direct presentation helpers retained. hDi previously retained complete body now matches full renderer."
+  ],
+  "source_conclusions": [
+    "The formerly missing producer join is explicit: _jt -> export my -> renderer import Zwr -> MDo -> lVt -> GOo -> ROo text muted=!isPreviewMessage.",
+    "QOo is reached from JOo only for a truthy top-level result.is_error; index selector die independently requires is_error===true.",
+    "QOo labels agent errors Codex, Cursor, otherwise Claude Code from session agentType or gu(model); no isPreviewMessage/collapse input or decision in this body.",
+    "QOo uses errors??[], removes [ede_diagnostic]-prefixed entries, normalizes the first remaining error or result via dDi, and suppresses diagnostic-only nonempty errors arrays unless the earlier Claude auth/unsupported-model branch takes precedence.",
+    "Claude auth/unsupported-model cases delegate to hDi; ordinary cases render EHe with a provider-prefixed errorText. Multiple visible errors add an All errors tooltip. Interactions and provider/store value population were not exercised.",
+    "Top-level content.error uses a different lVt->hDi route, with no preview flag passed. Its exact earlier retained dispatcher/presentation records now match the full renderer."
+  ],
+  "residual_gaps": [
+    "Mapping original top-level error/result content to OpenConductor normalized ChatMessage/turn_status/turn_end is not established; nested original tool_result.is_error and normalized tool_result.isError are distinct.",
+    "Imported session/workspace hooks and component library behavior are external boundaries. This bounded source recovery does not establish state population, provider behavior, retries, backend policy or native effects.",
+    "Reference-source ordering can inhibit prior ordinary preview and produce summary eligibility, but mounted emphasis/collapse depends on component/settings/turn expansion state. No real failed-turn capture, exact installed build identity, containing-package proof or native behavior is established.",
+    "No current-main differential RED or material product defect is claimed; comparison/repair remains solely with BE7."
+  ],
+  "not_run": [
+    "vendor JavaScript execution/import/eval",
+    "behavioral tests",
+    "current-main product comparison",
+    "typecheck/build",
+    "new REA or source acquisition",
+    "browser/provider/native/package execution",
+    "runtime admission/dispatch",
+    "product/test edits",
+    "new watcher"
+  ]
+}

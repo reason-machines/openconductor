@@ -1,0 +1,1 @@
+function fie(t){const e=new Map;for(const s of t){const n=s.content.parent_tool_use_id??void 0;for(const r of na(s))if(Fa(r)){const i=e.get(r.id);if(i!==void 0&&i.ownerGroup===void 0&&n!==void 0)continue;e.set(r.id,{block:r,ownerGroup:n})}else if(Btt(r)){const i=e.get(r.tool_use_id);i&&(i.resultMessage=s)}}return e}

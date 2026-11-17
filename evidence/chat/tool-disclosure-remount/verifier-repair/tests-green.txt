@@ -1,0 +1,16 @@
+test_absent_classifier_is_required_when_host_loaded (test_verify_baseline_root.BaselineRootVerifierTests.test_absent_classifier_is_required_when_host_loaded) ... ok
+test_absent_classifier_is_required_when_imported (test_verify_baseline_root.BaselineRootVerifierTests.test_absent_classifier_is_required_when_imported) ... ok
+test_absent_classifier_is_required_when_overridden (test_verify_baseline_root.BaselineRootVerifierTests.test_absent_classifier_is_required_when_overridden) ... ok
+test_cli_checks_existing_archive_and_preserves_frozen_bytes (test_verify_baseline_root.BaselineRootVerifierTests.test_cli_checks_existing_archive_and_preserves_frozen_bytes) ... ok
+test_imports_of_host_bootstrap_are_required (test_verify_baseline_root.BaselineRootVerifierTests.test_imports_of_host_bootstrap_are_required) ... ok
+test_known_classifier_resolves_normally_when_source_exists (test_verify_baseline_root.BaselineRootVerifierTests.test_known_classifier_resolves_normally_when_source_exists) ... ok
+test_missing_pinned_source_fails_clearly (test_verify_baseline_root.BaselineRootVerifierTests.test_missing_pinned_source_fails_clearly) ... ok
+test_only_three_known_absent_decorative_classifiers_are_optional (test_verify_baseline_root.BaselineRootVerifierTests.test_only_three_known_absent_decorative_classifiers_are_optional) ... ok
+test_real_historical_required_host_cannot_be_omitted (test_verify_baseline_root.BaselineRootVerifierTests.test_real_historical_required_host_cannot_be_omitted) ... ok
+test_supported_resolution_forms_and_required_controls (test_verify_baseline_root.BaselineRootVerifierTests.test_supported_resolution_forms_and_required_controls) ... ok
+test_unknown_absent_decorative_classifier_fails (test_verify_baseline_root.BaselineRootVerifierTests.test_unknown_absent_decorative_classifier_fails) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 6.967s
+
+OK
