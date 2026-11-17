@@ -1,0 +1,244 @@
+{
+  "author": "Conductor Rebuild",
+  "dedupe": "DIFF-UNSUBMITTED-ANCHOR-MOVEMENT-DE6-01",
+  "baseline_main": "eef01e9b287472280fb3f4a585bc697d5f1f8f51",
+  "asset": {
+    "file": "renderApp-D_fmY7hW.js",
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "bytes": 11600457
+  },
+  "rea_identity": {
+    "version": "0.87.6",
+    "binary_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+    "binary_bytes": 70194640,
+    "rea_artifact_evidence_id": "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+    "mac_identity_observation": "Read-only devices_exec in this Session on 2026-11-11 around 17:56Z rehashed installed binary and existing extracted renderer; this Python check does not itself contact the Mac"
+  },
+  "spans": [
+    {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9403263,
+        9404772
+      ],
+      "bytes": 1509,
+      "sha256": "5816311e1b28c39a5e288be10ae0a77e3f5de4b5c74a47aec3d693e9af32c2f6",
+      "name": "OMi-create-and-annotations",
+      "path": "evidence/diff/new-inline-draft-remount/reference/OMi-create-and-annotations.txt"
+    },
+    {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9404772,
+        9404869
+      ],
+      "bytes": 97,
+      "sha256": "411276404fe6aec51daa906ccf8d736da52ce8c1efe0b9a42887fbf281ef87be",
+      "name": "annotation-metadata",
+      "path": "evidence/diff/new-inline-draft-remount/reference/annotation-metadata.txt"
+    },
+    {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9411602,
+        9413099
+      ],
+      "bytes": 1497,
+      "sha256": "cfe8f5dde3fc55ba71e0e07df39fdb3ba403285d7234074159b85b371a3aadb5",
+      "name": "wet-draft-consumer",
+      "path": "evidence/diff/new-inline-draft-remount/reference/wet-draft-consumer.txt"
+    },
+    {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9413099,
+        9416741
+      ],
+      "bytes": 3642,
+      "sha256": "1e6bca0b0cdf23c9b84cdb0c057e3b0929ad26176e714615132c938dd13f7e83",
+      "name": "SVo-complete-editor",
+      "path": "evidence/diff/new-inline-draft-remount/reference/SVo-complete-editor.txt"
+    },
+    {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9628186,
+        9633977
+      ],
+      "bytes": 5791,
+      "sha256": "b83b970b85f2e050656d5cdc5b27e3510df8d1907a3e8673924a901f7975e7e6",
+      "name": "editable-view-annotation-caller",
+      "path": "evidence/diff/new-inline-draft-remount/reference/editable-view-annotation-caller.txt"
+    },
+    {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9431499,
+        9436022
+      ],
+      "bytes": 4523,
+      "sha256": "d908c703a9de4c3a3e2436109edebd53418afd8dca0543b6f3fbd4bd7bfe2e44",
+      "name": "patch-view-annotation-caller",
+      "path": "evidence/diff/new-inline-draft-remount/reference/patch-view-annotation-caller.txt"
+    },
+    {
+      "name": "comment-active-guard",
+      "path": "evidence/diff/new-inline-draft-remount/reference/comment-active-guard.txt",
+      "bytes": 51,
+      "sha256": "97de8c615ec5b2e2954a3043879bc1c8560f988ec4a8d2634a112a9dbe2ce097",
+      "range_status": "Prior retained complete kle body; raw index range not re-established in this increment"
+    },
+    {
+      "name": "BMi",
+      "bytes": 1464,
+      "sha256": "af1d8935660d993406c47c83926cd5f3c796e2d71e2d70bdef342ac9781dcf53",
+      "path": "evidence/diff/live-comment-navigation/reference/BMi.txt",
+      "role": "Late current-annotation resolver for scroll/post-render refresh and navigation",
+      "utf8_half_open": [
+        9427960,
+        9429424
+      ]
+    }
+  ],
+  "joins": [
+    {
+      "span": "OMi-create-and-annotations",
+      "literal": "state:\"draft\""
+    },
+    {
+      "span": "OMi-create-and-annotations",
+      "literal": "id:uVo()"
+    },
+    {
+      "span": "OMi-create-and-annotations",
+      "literal": "a=v.map(dVo)"
+    },
+    {
+      "span": "OMi-create-and-annotations",
+      "literal": "&&Tj(x)"
+    },
+    {
+      "span": "OMi-create-and-annotations",
+      "literal": "pSr({localWorkspaceId:t,comment:I})"
+    },
+    {
+      "span": "OMi-create-and-annotations",
+      "literal": "const E=_.get(w.id)"
+    },
+    {
+      "span": "OMi-create-and-annotations",
+      "literal": "if(E==null)continue"
+    },
+    {
+      "span": "OMi-create-and-annotations",
+      "literal": "const I=E-k"
+    },
+    {
+      "span": "annotation-metadata",
+      "literal": "lineNumber:t.endLineNumber??t.lineNumber"
+    },
+    {
+      "span": "annotation-metadata",
+      "literal": "metadata:t"
+    },
+    {
+      "span": "comment-active-guard",
+      "literal": "function kle(t){return!t.isOutdated&&!t.isResolved}"
+    },
+    {
+      "span": "wet-draft-consumer",
+      "literal": "_=i.state===\"draft\""
+    },
+    {
+      "span": "wet-draft-consumer",
+      "literal": "p.jsx(SVo,{comment:i"
+    },
+    {
+      "span": "SVo-complete-editor",
+      "literal": "await xSr({localWorkspaceId:i,commentId:n.id,body:_})"
+    },
+    {
+      "span": "editable-view-annotation-caller",
+      "literal": "}=OMi(e,t)"
+    },
+    {
+      "span": "editable-view-annotation-caller",
+      "literal": "jn.set(Dt.metadata.id,Dt.lineNumber)"
+    },
+    {
+      "span": "editable-view-annotation-caller",
+      "literal": "Ft.has(Dt.metadata.id)||jn.set(Dt.metadata.id,null)"
+    },
+    {
+      "span": "editable-view-annotation-caller",
+      "literal": "const Dt=on.get(Ft.metadata.id)"
+    },
+    {
+      "span": "editable-view-annotation-caller",
+      "literal": "Dt!==null&&jn.push"
+    },
+    {
+      "span": "editable-view-annotation-caller",
+      "literal": "getCurrentLineAnnotations:pe"
+    },
+    {
+      "span": "editable-view-annotation-caller",
+      "literal": "F(on),k(D.current)"
+    },
+    {
+      "span": "editable-view-annotation-caller",
+      "literal": "k(D.current),u(on)"
+    },
+    {
+      "span": "patch-view-annotation-caller",
+      "literal": "}=OMi(g,c)"
+    },
+    {
+      "span": "patch-view-annotation-caller",
+      "literal": "lineAnnotations:v"
+    },
+    {
+      "span": "patch-view-annotation-caller",
+      "literal": "}=BMi(I)"
+    },
+    {
+      "span": "BMi",
+      "literal": "getCurrentLineAnnotations:i"
+    },
+    {
+      "span": "BMi",
+      "literal": "d=$.useCallback(()=>i?.()??n,[i,n])"
+    },
+    {
+      "span": "BMi",
+      "literal": "lineAnnotations:d()"
+    }
+  ],
+  "historical_alias": {
+    "renderer_import": "dD as Tj",
+    "renderer_offset": 55688,
+    "index_export": "kle as dD",
+    "index_offset": 3482085
+  },
+  "fixture": {
+    "path": "src/features/diff/unsubmittedAnchorMovement.test.ts",
+    "sha256": "13d5d967cd8456b92bc48076f103fce2967fc910b2007b1b4099057efdfea429",
+    "red": {
+      "passed": 12,
+      "failed": 12
+    },
+    "original_checkpoint": "57b71441",
+    "original_sha256": "8ded2ee6b43f5f33629e0e63d172f7e0712b38522225c45f8d9adee4cca21fcf",
+    "green": {
+      "passed": 24,
+      "failed": 0
+    },
+    "v2_correction": "Exactly two post-submit row lookups use body.trim(), matching unchanged comments.ts newLocalComment; all movement/identity/exact-unsubmitted-body assertions retained."
+  },
+  "limits": [
+    "Retained same-build REA-derived source only; no original JS executed or fresh Mac/REA capture.",
+    "Tj import/export alias uses prior verified manifest; full raw assets not re-read this increment.",
+    "Real React review hook/viewer/nav and Pierre TextDocument+annotation mapper; CodeView geometry/chrome/IO are deterministic boundaries.",
+    "No browser/editor DOM/native scroll, runtime, installation, package or native acceptance."
+  ]
+}

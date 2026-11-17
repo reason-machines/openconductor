@@ -244,6 +244,120 @@ fn waits_for_setup_then_starts() {
     );
 }
 
+// Seed a completed run so retention can be tested without launching a PTY.
+fn completed_run(manager: &RunManager, workspace: &str, script: &str) {
+    let key = (workspace.to_string(), script.to_string());
+    let mut inner = manager.lock();
+    inner.states.insert(key.clone(), RunState::Stopped);
+    inner.repos.insert(key.clone(), "r".into());
+    inner.run_ids.insert(key.clone(), "previous-run".into());
+    inner
+        .last_output
+        .insert(key.clone(), "previous output\r\n".into());
+    inner.last_exit.insert(
+        key.clone(),
+        Exit {
+            code: Some(7),
+            signal: None,
+        },
+    );
+    inner.started_at.insert(key, SystemTime::UNIX_EPOCH);
+    inner.history.insert(workspace.into(), vec![script.into()]);
+}
+
+#[test]
+fn retention_new_task_clears_previous_workspace_run_before_setup_wait() {
+    let tmp = tempfile::tempdir().unwrap();
+    let manager = RunManager::default();
+    completed_run(&manager, "w1", "dev");
+
+    manager
+        .start(
+            req(tmp.path(), "w1", "r", "test", "must not execute", true),
+            SetupState::Running,
+        )
+        .unwrap();
+
+    assert_eq!(
+        manager.output("w1", "dev"),
+        None,
+        "an old task's transcript must not survive a new start"
+    );
+    let statuses = manager.statuses("w1");
+    assert_eq!(statuses.len(), 1);
+    assert_eq!(statuses[0].script_id, "test");
+    assert_eq!(statuses[0].state, RunState::WaitingForSetup);
+    assert!(
+        !tmp.path().join(".conductor").exists(),
+        "the queued path never launches a script"
+    );
+}
+
+#[test]
+fn retention_same_task_clears_old_transcript_and_exit_before_setup_wait() {
+    let tmp = tempfile::tempdir().unwrap();
+    let manager = RunManager::default();
+    completed_run(&manager, "w1", "dev");
+
+    manager
+        .start(
+            req(tmp.path(), "w1", "r", "dev", "must not execute", true),
+            SetupState::Running,
+        )
+        .unwrap();
+
+    assert_eq!(
+        manager.output("w1", "dev"),
+        None,
+        "a queued rerun must not expose its previous transcript"
+    );
+    let status = manager.statuses("w1").remove(0);
+    assert_eq!(status.exit, None);
+    assert_eq!(status.run_id, None);
+    assert_eq!(status.state, RunState::WaitingForSetup);
+    assert!(!tmp.path().join(".conductor").exists());
+}
+
+#[test]
+fn retention_new_start_preserves_selection_history_and_other_workspace() {
+    let tmp = tempfile::tempdir().unwrap();
+    let manager = RunManager::default();
+    completed_run(&manager, "w1", "dev");
+    completed_run(&manager, "w2", "dev");
+    let other_status = manager.statuses("w2");
+    let other_latest = manager.latest("w2");
+
+    manager
+        .start(
+            req(tmp.path(), "w1", "r", "test", "must not execute", true),
+            SetupState::Running,
+        )
+        .unwrap();
+
+    assert_eq!(manager.history("w1"), ["test", "dev"]);
+    assert_eq!(manager.history("w2"), ["dev"]);
+    assert_eq!(manager.statuses("w2"), other_status);
+    assert_eq!(manager.latest("w2"), other_latest);
+    assert!(!tmp.path().join(".conductor").exists());
+}
+
+#[test]
+fn retention_completed_output_remains_until_another_start() {
+    let manager = RunManager::default();
+    completed_run(&manager, "w1", "dev");
+
+    assert_eq!(
+        manager.output("w1", "dev").as_deref(),
+        Some("previous output\r\n")
+    );
+    assert_eq!(manager.statuses("w1")[0].exit, Some((Some(7), None)));
+    assert!(!manager.stop("w1", Some("dev")));
+    assert_eq!(
+        manager.output("w1", "dev").as_deref(),
+        Some("previous output\r\n")
+    );
+}
+
 #[test]
 fn auto_run_rule() {
     use SetupState::*;

@@ -1,0 +1,74 @@
+(node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home persisted archived-only list offers Clear filters with query ""
+ok 1 - Home persisted archived-only list offers Clear filters with query ""
+  ---
+  duration_ms: 217.8463
+  type: 'test'
+  ...
+# Subtest: Home persisted archived-only list offers Clear filters with query "Saved"
+ok 2 - Home persisted archived-only list offers Clear filters with query "Saved"
+  ---
+  duration_ms: 85.994971
+  type: 'test'
+  ...
+# Subtest: Home persisted archived-only list offers Clear filters with query "missing-query"
+ok 3 - Home persisted archived-only list offers Clear filters with query "missing-query"
+  ---
+  duration_ms: 59.351385
+  type: 'test'
+  ...
+# Subtest: Home counts archived workspaces across linked repositories before filtering
+ok 4 - Home counts archived workspaces across linked repositories before filtering
+  ---
+  duration_ms: 88.285074
+  type: 'test'
+  ...
+# Subtest: Home Clear filters reveals the persisted archived row without creating or restoring it
+ok 5 - Home Clear filters reveals the persisted archived row without creating or restoring it
+  ---
+  duration_ms: 78.601998
+  type: 'test'
+  ...
+# Subtest: Home truly empty persisted list still offers Create
+ok 6 - Home truly empty persisted list still offers Create
+  ---
+  duration_ms: 65.14747
+  type: 'test'
+  ...
+# Subtest: Home does not count archived rows belonging to an unlinked repository
+ok 7 - Home does not count archived rows belonging to an unlinked repository
+  ---
+  duration_ms: 60.482765
+  type: 'test'
+  ...
+# Subtest: Home active query miss still clears filters without changing its query
+ok 8 - Home active query miss still clears filters without changing its query
+  ---
+  duration_ms: 50.903557
+  type: 'test'
+  ...
+# Subtest: Home empty unfiltered all-mode list still has no empty-state action
+ok 9 - Home empty unfiltered all-mode list still has no empty-state action
+  ---
+  duration_ms: 64.170874
+  type: 'test'
+  ...
+# Subtest: Home empty archived-mode list still offers Clear filters
+ok 10 - Home empty archived-mode list still offers Clear filters
+  ---
+  duration_ms: 53.750191
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1526.569393

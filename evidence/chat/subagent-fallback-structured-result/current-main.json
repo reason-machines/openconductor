@@ -1,0 +1,25 @@
+{
+  "author": "Conductor Rebuild",
+  "baseline_main": "1d8c37ab634e4eca9f86d54c138dc73fb0ee3fb5",
+  "prefix_mcp_pr": 1410,
+  "prefix_mcp_actual_merge": "1d8c37ab634e4eca9f86d54c138dc73fb0ee3fb5",
+  "baseline_toolrows_sha256": "8253959e451d12a0510ea284b7e06abbc728e9c3016a171f3d3a73a398e83909",
+  "fixture_sha256": "63d0454a0e67d18b893abef483e9b7b35403df94f43f96f008b3eb8ec522c65a",
+  "red": {
+    "tests": 30,
+    "pass": 12,
+    "fail": 18,
+    "skipped": 0,
+    "cancelled": 0,
+    "exit": 1,
+    "all_failures": "ERR_ASSERTION"
+  },
+  "green": {
+    "tests": 30,
+    "pass": 30,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "exit": 0
+  }
+}

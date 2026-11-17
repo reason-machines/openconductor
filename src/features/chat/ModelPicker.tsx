@@ -187,8 +187,13 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
   };
 
   const onMenuKey = (e: KeyboardEvent) => {
-    if (e.defaultPrevented || ("isComposing" in e && e.isComposing === true) || e.nativeEvent.isComposing === true
-      || e.keyCode === 229 || e.which === 229 || e.nativeEvent.keyCode === 229 || e.nativeEvent.which === 229) return;
+    if (e.defaultPrevented) return;
+    if (("isComposing" in e && e.isComposing === true) || e.nativeEvent.isComposing === true
+      || e.keyCode === 229 || e.which === 229 || e.nativeEvent.keyCode === 229 || e.nativeEvent.which === 229) {
+      // The search input owns IME keys, including Escape, not enclosing dialogs.
+      if (e.target === search.current) e.stopPropagation();
+      return;
+    }
     const resultIndex = e.target instanceof HTMLButtonElement ? e.target.dataset.modelResult : undefined;
     const inSearch = e.target === search.current || (query.trim() !== "" && resultIndex !== undefined);
     if (query.trim() && inSearch && (e.key === "ArrowDown" || e.key === "ArrowUp")) {

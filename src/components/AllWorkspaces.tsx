@@ -291,7 +291,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
   const flat = groups.flatMap((g) => g.rows.map((row) => ({ row, key: `${g.bucket}:${row.workspace.id}` })));
   const activeIndex = Math.max(0, flat.findIndex((entry) => entry.key === activeKey));
   const projectChoices = reposWithWorkspaces(repos, archivedRows);
-  const empty = emptyAction(repos, filters);
+  const empty = emptyAction(repos, filters, archivedRows);
 
   useEffect(() => setActiveKey(flat[activeIndex]?.key), [activeIndex, flat]);
   useEffect(() => setActiveKey(undefined), [query]);
