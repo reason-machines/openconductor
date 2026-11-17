@@ -10,7 +10,7 @@ import type { PaletteTab, ResultItem } from "./search/model.ts";
 
 export const COMMAND_PALETTE_DIALOG_ID = "command-palette-dialog";
 
-export type PaletteCommand = "next-item" | "prev-item" | "first-item" | "last-item" | "select" | "close" | "next-tab" | "prev-tab";
+export type PaletteCommand = "next-item" | "prev-item" | "next-group" | "prev-group" | "first-item" | "last-item" | "select" | "close" | "next-tab" | "prev-tab";
 
 const PALETTE_FOCUS: FocusContext = { activeDialogId: COMMAND_PALETTE_DIALOG_ID, typing: true, inTerminal: false };
 const PALETTE_COMMANDS = ["commandPalette.nextTab", "commandPalette.previousTab", "toggleCommandPalette"];
@@ -42,6 +42,17 @@ export function paletteCommandFor(e: KeyEventLike, overrides: Overrides = {}): P
     case "toggleCommandPalette":
       return "close";
     default:
+      // Explicit bindings take priority over cmdk's built-in navigation.
+      if (plain && e.shiftKey) {
+        if (e.key === "ArrowDown") return "next-item";
+        if (e.key === "ArrowUp") return "prev-item";
+        if (e.key === "Home") return "first-item";
+        if (e.key === "End") return "last-item";
+      }
+      if (e.altKey && !e.metaKey && !e.ctrlKey && !e.shiftKey) {
+        if (e.key === "ArrowDown") return "next-group";
+        if (e.key === "ArrowUp") return "prev-group";
+      }
       return null;
   }
 }
@@ -60,10 +71,24 @@ export function tabSelectionIndex({ from, to, selected, results }: {
 }
 
 /** New active index after a movement command; the list wraps around. */
-export function moveActive(active: number, count: number, cmd: PaletteCommand): number {
+export function moveActive(active: number, count: number, cmd: PaletteCommand, groupLengths: readonly number[] = []): number {
   if (count === 0) return 0;
   // No row highlighted yet (the Workspaces tab opens that way): the first move picks an end.
-  if (active < 0) return cmd === "prev-item" || cmd === "last-item" ? count - 1 : 0;
+  if (active < 0) return cmd === "prev-item" || cmd === "prev-group" || cmd === "last-item" ? count - 1 : 0;
+  if (cmd === "next-group" || cmd === "prev-group") {
+    // Retained cmdk J: first enabled row of a sibling group, not group wrapping.
+    const starts: number[] = [];
+    let offset = 0;
+    for (const length of groupLengths) {
+      if (length > 0) starts.push(offset);
+      offset += length;
+    }
+    const current = starts.findIndex((start, i) => active >= start && active < (starts[i + 1] ?? count));
+    const target = starts[current + (cmd === "next-group" ? 1 : -1)];
+    if (current >= 0 && target !== undefined) return target;
+    // No sibling group: use ordinary one-row movement, including edge wrap.
+    return moveActive(active, count, cmd === "next-group" ? "next-item" : "prev-item");
+  }
   switch (cmd) {
     case "next-item":
       return (active + 1) % count;

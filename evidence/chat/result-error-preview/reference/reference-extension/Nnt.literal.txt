@@ -1,0 +1,1 @@
+function Nnt(t){const e=oo(t,"message");if(!Kp(e)||typeof e.content!="string")return t;const s=e.content.match(/<local-command-stdout>([\s\S]*?)<\/local-command-stdout>/);return{type:"assistant",message:{role:"assistant",content:[{type:"text",text:s?s[1].trim():e.content}]},session_id:Wie(t,"session_id")}}

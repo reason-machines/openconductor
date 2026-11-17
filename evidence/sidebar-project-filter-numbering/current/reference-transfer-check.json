@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "whole_renderer": "not supplied; retained spans only",
+  "spans": 25,
+  "span_bytes": 25251,
+  "literal_joins": 23,
+  "predicate_controls": 8,
+  "consumer_controls": 6,
+  "vendor_javascript_executed": false,
+  "scope": "Local non-cloud branch, no workspace-tabs substitution, normal nonsectioned Project view, loaded/expanded local repositories, ordinary nonarchived/unpinned/unshared rows. The minimal two-project/one-row-each witness isolates one selected-project row.",
+  "transfer_sha256": "verified both exact original uploads"
+}

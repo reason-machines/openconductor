@@ -1,0 +1,1 @@
+function jf(t){return"composedPath"in t?t.composedPath()[0]:t.target}

@@ -1,0 +1,56 @@
+{
+  "author": "Conductor Rebuild",
+  "machine": "Reason Cloud Linux",
+  "baseline": "1b2d83e6c2e2b3fa2eb251fc25a56d96401d96f1",
+  "frozen_fixture_commit": "576088ea9",
+  "frozen_witness": {
+    "before": {
+      "tests": 12,
+      "passed": 5,
+      "assertion_failures": 7,
+      "harness_errors": 0
+    },
+    "after": {
+      "tests": 12,
+      "passed": 12,
+      "failed": 0
+    }
+  },
+  "adjacent_preservation_controls": {
+    "tests": 23,
+    "passed": 23,
+    "initial_harness_path_error_corrected": true
+  },
+  "adjacent_legacy": {
+    "tests": 1372,
+    "passed": 1372,
+    "failed": 0,
+    "skipped": 0,
+    "raw_log_sha256": "b2e7195d9aab719884a18f948437a9c45f87845360f2ed4488852426607d7f29",
+    "lossless_gzip": true
+  },
+  "typecheck": "PASS",
+  "build": "PASS; Vite chunk-size advisory only",
+  "lint_colors": "PASS; 6 tests plus source scan",
+  "log_sha256": {
+    "adjacent-controls.tap": "2a0f21b22419bca773d9fd2b740654a8869af520d46f2574bc00ed4aeca78d13",
+    "adjacent-controls-initial-harness-error.tap": "de1512b9c06895bb58dbd4f1a44bec7b2903dd90422faf0972601551f88226ae",
+    "adjacent-legacy.tap.gz": "65c151b600a64c451d2e8754adf098600f39889b27d879fb058496d06123bf90",
+    "typecheck.log": "91c9fe8679639260822d83ee7e81d6f3da39f84dad13a146ce6cfe8ac11c5994",
+    "build.log": "c0187f1e9ee6231fccbac20a3ce211cd25b105d6cdd9ecba7437870d8f8fd6f7",
+    "lint-colors.log": "d64a9d6db6e2410b5eb62583be9d4bf6c2d244547c40e4f824872aef9f03b61e"
+  },
+  "reference_upload_hashes": "PASS; original packet reused, no re-extraction",
+  "not_run": [
+    "browser/screenshot",
+    "OS keyboard delivery",
+    "native/SQLite persistence",
+    "provider",
+    "package",
+    "runtime",
+    "release dispatch"
+  ],
+  "production_files": [
+    "src/state/sidebarOrder.ts: sidebarEntries repository-group arm only"
+  ]
+}

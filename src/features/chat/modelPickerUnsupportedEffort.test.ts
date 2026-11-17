@@ -45,6 +45,7 @@ function fixture(props: Partial<Omit<ModelPickerProps, "onChange">> = {}) {
     document: { addEventListener() {}, removeEventListener() {} },
     require(specifier: string) {
       if (specifier === "react" || specifier === "react/jsx-runtime") return dependencies(specifier);
+      if (specifier === "fuzzysort") return { default: dependencies(specifier) };
       if (specifier === "../../components/ui/Tooltip.tsx") return {
         Tooltip: ({ content, side, children }: { content: ReactNode; side?: string; children: ReactNode }) =>
           React.createElement("span", { "data-tooltip": content, "data-tooltip-side": side }, children),

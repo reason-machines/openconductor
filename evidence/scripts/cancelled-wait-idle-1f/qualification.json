@@ -1,0 +1,53 @@
+{
+  "author": "Conductor Rebuild",
+  "fresh_main": "51e6b1be397ebd294a11f5c827a68abbb7f57c3f",
+  "prior_fix_merged": "0096e6631af993882d2e353f485904537f9dce00",
+  "baseline_component_sha256": "092f31ca358a04510d9fd77e56dd0a6b65eed9e883d11d9208639ef13f9444f5",
+  "frozen_fixture_sha256": "960cf79f44df116b97c0253008ac10a6eaddc46ca17b118b4128a93f48369450",
+  "baseline": {
+    "passed": 3,
+    "failed": 2,
+    "skipped": 0,
+    "exit_code": 1
+  },
+  "fixed": {
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "adjacent": {
+    "passed": 44,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "checks": {
+    "npm run typecheck": "passed",
+    "npm run build": "passed, existing large-chunk advisory",
+    "git diff --check": "passed"
+  },
+  "boundary": "React mounted in-memory unit fixture only; no real browser, native app, PTY, provider or package execution",
+  "receipts": {
+    "fresh-main-red.log.gz": {
+      "uncompressed_sha256": "74673c5f7cd8dbbbcbf62dcd630955845f043451528437a60e63606f3c75a738",
+      "compressed_sha256": "fcb68d3dbeeb9bcfa4a8ff954f4f1b95d6ef515a17930476ee791aa45b82a4ad"
+    },
+    "fresh-main-green.log.gz": {
+      "uncompressed_sha256": "503ee616b3c32f49f293588ba6c654ca108578392769180e924bc1f90e0470d3",
+      "compressed_sha256": "54a7f3f8faf2b8c847ec24f576281a41e925b9f00d5c55a5eb22284fbd775648"
+    },
+    "fresh-main-adjacent.log.gz": {
+      "uncompressed_sha256": "887821438cf0e418475d1ba21d90b69c0703b3214d3e74e2a37cf85a8aa8df93",
+      "compressed_sha256": "4cf46c5fc8464c8adebbb08bcc2bfcb6a7ff259c03b2514c5658b64dd2b2c2f9"
+    },
+    "fresh-main-typecheck.log.gz": {
+      "uncompressed_sha256": "99326f9ae7dd7b72a2b0ff08c90ddb4910ded2fb835d28ea5819c1668cfd2ab1",
+      "compressed_sha256": "f33320f020c48c2c333aa03b51e6acf321946bf3aa514e531b9dbd8d986a40e2"
+    },
+    "fresh-main-build.log.gz": {
+      "uncompressed_sha256": "b403dca553e06d6b29387cb55f6d7a34ad9871ac517f84bdf13fdbddbe457f87",
+      "compressed_sha256": "bb6dd6de393bcc0fdcb4c672ad246702bf0fe8a5aa76683e6bb7a08da455bf79"
+    }
+  }
+}

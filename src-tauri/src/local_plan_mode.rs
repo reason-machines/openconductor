@@ -25,12 +25,8 @@ impl LocalPlanModes {
     }
 }
 
-pub fn claude_permission(mode: PermissionMode, approvals: bool) -> crate::agent::PermissionMode {
-    match mode {
-        PermissionMode::Plan => crate::agent::PermissionMode::Plan,
-        PermissionMode::Default if approvals => crate::agent::PermissionMode::Default,
-        PermissionMode::Default => crate::agent::PermissionMode::BypassPermissions,
-    }
+pub fn claude_permission(mode: PermissionMode, settings: &crate::settings::Settings) -> crate::agent::PermissionMode {
+    settings.claude_permission_mode(matches!(mode, PermissionMode::Plan))
 }
 
 pub fn wire(mode: PermissionMode) -> &'static str {
@@ -104,10 +100,16 @@ mod tests {
     #[test]
     fn leaving_plan_restores_the_existing_approvals_policy() {
         use crate::agent::PermissionMode as Cli;
-        assert_eq!(claude_permission(PermissionMode::Plan, false), Cli::Plan);
-        assert_eq!(claude_permission(PermissionMode::Plan, true), Cli::Plan);
-        assert_eq!(claude_permission(PermissionMode::Default, true), Cli::Default);
-        assert_eq!(claude_permission(PermissionMode::Default, false), Cli::BypassPermissions);
+        let mut settings = crate::settings::Settings::default();
+        for auto in [false, true] {
+            settings.experimental.extra.insert("experimental_auto_permission_mode".into(), toml::Value::Boolean(auto));
+            for approvals in [false, true] {
+                settings.tool_approvals_enabled = approvals;
+                assert_eq!(claude_permission(PermissionMode::Plan, &settings), Cli::Plan);
+                let expected = if !approvals { Cli::BypassPermissions } else if auto { Cli::Auto } else { Cli::Default };
+                assert_eq!(claude_permission(PermissionMode::Default, &settings), expected);
+            }
+        }
     }
 
     #[tokio::test]

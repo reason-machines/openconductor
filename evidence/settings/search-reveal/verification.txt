@@ -1,0 +1,1 @@
+PASS: 101 source/freeze/fresh-main/scope/receipt checks

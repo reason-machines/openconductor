@@ -93,6 +93,7 @@ async function fixture(choice: ModelChoice) {
           invoke: (...args: unknown[]) => { actions.push({ name: "invoke", args }); return Promise.resolve(undefined); },
           isTauri: () => true,
         };
+        if (specifier === "fuzzysort") return { default: dependencies(specifier) };
         if (!specifier.startsWith(".")) return dependencies(specifier);
         const base = resolve(dirname(filename), specifier);
         const path = [base, `${base}.ts`, `${base}.tsx`, `${base}/index.ts`].find(existsSync);

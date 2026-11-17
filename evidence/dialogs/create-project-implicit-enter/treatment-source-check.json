@@ -1,0 +1,13 @@
+{
+  "result": "PASS",
+  "main": "74c004a95d7b10072f54f71ca611f22c50944f64",
+  "assets": 2,
+  "retainedBindings": 23,
+  "frozenFixtureFiles": 6,
+  "baselineSourcePins": 7,
+  "productReplacements": 5,
+  "legacyTransportSelectorPorts": 2,
+  "unchangedLegacyAssertionCalls": 54,
+  "unchangedLegacyTestInvocations": 7,
+  "frozenNode6Sha256": "ef16dfbf4826994da9c22884c58b078869555f041de37f189dab2f8740d857a6"
+}

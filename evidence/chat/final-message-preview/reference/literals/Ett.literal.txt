@@ -1,0 +1,1 @@
+function Ett(t){const e=[];let s=[];for(const n of t)n.role==="user"&&s.length>0&&(e.push(s),s=[]),s.push(n),n.content.type==="result"&&(e.push(s),s=[]);return s.length>0&&e.push(s),e}

@@ -1,0 +1,1 @@
+function QOr(t){return t.visibility==="hidden"||t.visibility==="collapse"}

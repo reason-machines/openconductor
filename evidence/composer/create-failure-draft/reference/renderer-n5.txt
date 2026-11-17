@@ -1,0 +1,1 @@
+async function n5(t,e){if(t)try{await l1(t),kt.success(`Copied ${e} to clipboard`)}catch{kt.error("Failed to copy to clipboard")}}

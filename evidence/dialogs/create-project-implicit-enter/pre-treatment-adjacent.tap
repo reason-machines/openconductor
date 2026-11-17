@@ -1,0 +1,100 @@
+(node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:91) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pending Create project name edits preserve the active request and survive rejection
+ok 1 - pending Create project name edits preserve the active request and survive rejection
+  ---
+  duration_ms: 229.134103
+  type: 'test'
+  ...
+# Subtest: pending Create project parent edits preserve the active request and survive rejection
+ok 2 - pending Create project parent edits preserve the active request and survive rejection
+  ---
+  duration_ms: 141.960592
+  type: 'test'
+  ...
+# Subtest: pending Create project Browse updates only the draft and preserves Cancel
+ok 3 - pending Create project Browse updates only the draft and preserves Cancel
+  ---
+  duration_ms: 67.75674
+  type: 'test'
+  ...
+# Subtest: pending Create project template selection does not change the active pipeline
+ok 4 - pending Create project template selection does not change the active pipeline
+  ---
+  duration_ms: 70.035809
+  type: 'test'
+  ...
+# Subtest: pending Create project retains the primary, shortcut and duplicate-submit guards
+ok 5 - pending Create project retains the primary, shortcut and duplicate-submit guards
+  ---
+  duration_ms: 69.461162
+  type: 'test'
+  ...
+# Subtest: Create project success retains its captured request and completion callbacks
+ok 6 - Create project success retains its captured request and completion callbacks
+  ---
+  duration_ms: 81.971594
+  type: 'test'
+  ...
+# Subtest: Create project rejection preserves its draft and permits a new captured retry
+ok 7 - Create project rejection preserves its draft and permits a new captured retry
+  ---
+  duration_ms: 50.350745
+  type: 'test'
+  ...
+# Subtest: idle Create project Browse Cancel preserves the displayed folder without creating
+ok 8 - idle Create project Browse Cancel preserves the displayed folder without creating
+  ---
+  duration_ms: 35.905859
+  type: 'test'
+  ...
+# (node:99) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: name hint shows the slug, an error for a name without letters or numbers, or nothing
+ok 9 - name hint shows the slug, an error for a name without letters or numbers, or nothing
+  ---
+  duration_ms: 10.836723
+  type: 'test'
+  ...
+# Subtest: templates are Empty then Next.js; gstack waits for a decision
+ok 10 - templates are Empty then Next.js; gstack waits for a decision
+  ---
+  duration_ms: 0.19302
+  type: 'test'
+  ...
+# Subtest: validation checks the name, then the parent folder
+ok 11 - validation checks the name, then the parent folder
+  ---
+  duration_ms: 0.124282
+  type: 'test'
+  ...
+# Subtest: pipeline steps per template
+ok 12 - pipeline steps per template
+  ---
+  duration_ms: 0.187861
+  type: 'test'
+  ...
+# Subtest: only Next.js sets scripts
+ok 13 - only Next.js sets scripts
+  ---
+  duration_ms: 0.169138
+  type: 'test'
+  ...
+# Subtest: paths and messages
+ok 14 - paths and messages
+  ---
+  duration_ms: 0.19077
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1343.266646

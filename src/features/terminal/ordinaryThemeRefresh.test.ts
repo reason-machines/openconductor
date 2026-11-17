@@ -72,6 +72,8 @@ function fixture(withPalette = true) {
   }
   const boundary: Record<string, unknown> = {
     "@xterm/xterm": { Terminal: Screen },
+    "@tauri-apps/plugin-dialog": { confirm: () => { throw new Error("No native dialog in terminal regression"); } },
+    "src/backend": { openUrl: () => { throw new Error("No browser in terminal regression"); } },
     "@xterm/addon-fit": { FitAddon: class { activate() {} dispose() {} fit() {} } },
     "src/features/terminal/pty": {
       onPtyEvent: async (callback: (event: PtyEvent) => void) => { event = callback; return noop; },
@@ -101,6 +103,7 @@ function fixture(withPalette = true) {
     const module: { exports: Exports } = { exports: {} };
     modules.set(name, module);
     const require = (dep: string): unknown => {
+      if (dep === "@xterm/addon-web-links") return deps(dep);
       if (dep === "react" || dep === "@xterm/addon-unicode11") return deps(dep);
       const key = dep.startsWith(".") ? resolve(dirname(file), dep).slice(process.cwd().length + 1).replace(/\.tsx?$/, "") : dep;
       return Object.prototype.hasOwnProperty.call(boundary, key) ? boundary[key] : load(key);
@@ -150,8 +153,8 @@ for (const [index, [field, token, initial]] of palette.entries()) {
     assert.equal(screen.options.theme?.foreground, fixtureColors.background);
     assert.equal(screen.options.theme?.cursor, fixtureColors.background);
     assert.equal(screen.options.theme?.cursorAccent, fixtureColors.foreground);
-    assert.equal(screen.options.theme?.selectionBackground, `${fixtureColors.replacement}66`);
-    assert.equal(screen.options.theme?.selectionInactiveBackground, `${fixtureColors.replacement}4d`);
+    assert.equal(screen.options.theme?.selectionBackground, fixtureColors.replacement);
+    assert.equal(screen.options.theme?.selectionInactiveBackground, undefined);
     assert.equal(screen.options.disableStdin, false);
     assert.equal(screen.options.convertEol, true);
     assert.equal(screen.unicode.activeVersion, "11");

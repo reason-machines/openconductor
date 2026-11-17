@@ -54,6 +54,9 @@ import { CREATE_IN_SECTION, SECTION_ASSIGN_FAILED, canCreateIn, sectionChoice } 
 import "../features/chat/composer.css";
 import { ComposerEditor, type ComposerEditorHandle } from "../features/chat/ComposerEditor.tsx";
 import type { PlanModeControl } from "../features/chat/useLocalPlanMode.ts";
+import { composerPrompt } from "../features/chat/composerDocument.ts";
+import { preWorkspaceRef } from "../features/chat/preWorkspaceCompletions.ts";
+import { CreateWorkspaceSuggestions, useCreateWorkspaceSuggestions } from "./create/CreateWorkspaceSuggestions.tsx";
 
 /**
  * Where the repo / branch / create-from row sits (Conductor's `eyebrowVariant`):
@@ -75,8 +78,8 @@ export interface CreateWorkspaceComposerProps {
   onBusyChange?: (busy: boolean) => void;
   /** The repo picker's "Add project" menu: Open project, Open GitHub project, Quick start, Recents. */
   addActions: AddRepositoryActions;
-  /** Persistent launch errors and non-fatal workspace creation issues. */
-  onWarning: (message: string) => void;
+  /** Persistent launch errors; detached creation failures can recover their submitted prompt. */
+  onWarning: (message: string, recovery?: { prompt: string }) => void;
   dispatch: Dispatch<Action>;
   /** The sidebar's sections, for "Create in section". */
   sections?: readonly NavSection[];
@@ -127,8 +130,10 @@ export function CreateWorkspaceComposer({
   const settings = loadout?.settings ?? null;
   const favorites = loadoutPicks(loadout?.slots ?? []);
   const modelEdited = useRef(false);
-  /** Whether the user toggled plan mode on before creating the workspace (REA a7i planMode). */
-  const [createPlanMode, setCreatePlanMode] = useState(false);
+  /** An explicit choice overrides the live default, including an explicit opt-out. */
+  const [selectedPlanMode, setSelectedPlanMode] = useState<boolean>();
+  const createPlanMode = selectedPlanMode ?? (settings?.models.default_plan_mode === true);
+  const toggleCreatePlanMode = () => setSelectedPlanMode((value) => !(value ?? (settings?.models.default_plan_mode === true)));
   /** Files attached in the create composer; delivered with the first message via queuePending. */
   const [createAttachments, setCreateAttachments] = useState<ComposerAttachment[]>([]);
   const [draftWorkspaceId] = useState(() => crypto.randomUUID());
@@ -148,13 +153,38 @@ export function CreateWorkspaceComposer({
   const [branchSrc, setBranchSrc] = useState<SourceState<BranchDto>>({ status: "loading" });
   const [progress, send] = useReducer(reduceProgress, { step: "idle" });
   const repo = repos.find((r) => r.id === draft.repoId);
+  const [waitingForTargetFocus, setWaitingForTargetFocus] = useState(!startRepo);
+  // Hji/dQo: an arriving target restores focus only before the user navigates away.
+  useEffect(() => {
+    if (!waitingForTargetFocus) return;
+    const editor = composerInputRef.current;
+    if (repo && editor) {
+      setWaitingForTargetFocus(false);
+      editor.focus();
+      return;
+    }
+    const cancel = () => setWaitingForTargetFocus(false);
+    const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Tab") cancel(); };
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", cancel);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", cancel);
+    };
+  }, [repo, waitingForTargetFocus]);
   const prefix = useMemo(() => resolveBranchPrefix(prefixSettings, githubUsername), [prefixSettings, githubUsername]);
   const [branchAttempt, setBranchAttempt] = useState(0);
   const busy = stagingFiles > 0 || progress.step === "creating" || progress.step === "detecting_setup";
+  const suggestions = useCreateWorkspaceSuggestions({
+    identity: repo?.path && branchSrc.status !== "loading" ? { repositoryId: repo.id, ref: preWorkspaceRef(draft.from, draft.baseBranch), agentType: draft.agent } : null,
+    inputRef: composerInputRef,
+    disabled: busy,
+  });
   useEffect(() => onBusyChange?.(busy), [busy, onBusyChange]);
   const { overrides } = useKeybindingOverrides();
   const submitKeys = [...effectiveShortcuts("chat.submitMessage", overrides), ...effectiveShortcuts("chat.submitOppositeFollowUp", overrides)];
   const backlogKeys = effectiveShortcuts("workspace.addToBacklogFromComposer", overrides);
+  const newlineKeys = effectiveShortcuts("chat.newLine", overrides);
   const submitShortcut = effectiveShortcuts("chat.submitMessage", overrides)[0];
   const submitHint = submitShortcut ? glyphs(submitShortcut) : "↵";
   const hint = (commandId: string) => {
@@ -207,6 +237,14 @@ export function CreateWorkspaceComposer({
   useKeybindings({
     "chat.addAttachment": () => { if (!busy) fileInputRef.current?.click(); },
   });
+
+  // Hji binds Plan mode only while its editor is focused; the menu owns the same state.
+  useKeybindings({
+    "chat.togglePlanMode": () => {
+      if (draft.agent !== "claude" || busy || !composerInputRef.current?.focused()) return false;
+      toggleCreatePlanMode();
+    },
+  }, { enableOnDialogIds: eyebrowVariant === "attached" ? ["dialog"] : undefined });
 
   /** Stage binary bytes under this draft's identity before a workspace exists. */
   async function attachFiles(files: File[]) {
@@ -268,7 +306,8 @@ export function CreateWorkspaceComposer({
   async function submit(e?: FormEvent, sectionId: string | undefined = choice.sectionId) {
     e?.preventDefault();
     if (busy || pendingFiles.current > 0 || !repo || !canCreateIn(sectionsRef.current, sectionId)) return;
-    const built = buildCreateRequest(draft, prefix);
+    const submittedPrompt = draft.firstMessage;
+    const built = buildCreateRequest({ ...draft, firstMessage: composerPrompt(draft.firstMessage) }, prefix);
     if (!built.ok) return setErrors(built.errors);
     setErrors({});
     send({ type: "submit" });
@@ -287,12 +326,6 @@ export function CreateWorkspaceComposer({
       send({ type: "created", workspaceId: created.workspace.id });
       if (created.upstreamWarning) onWarning(created.upstreamWarning);
       const setupStarted = await startSetupScript(backendRepo, created, built.request.targetBranch);
-      // Keep creation busy through attachment materialization as well as setup.
-      // GAP-COMP-04 (plan mode): set initial plan mode on the new workspace's primary chat
-      // when the user toggled it on in the create composer (REA a7i planMode prop, wt path).
-      if (createPlanMode && draft.agent === "claude") {
-        void invoke<unknown>("local_plan_mode_set", { chatId: created.workspace.id, workspaceId: created.workspace.id, mode: "plan" });
-      }
       const { id, directoryName, branchName, path } = created.workspace;
       const { naming, firstSession } = built.request;
       const ws = {
@@ -324,27 +357,32 @@ export function CreateWorkspaceComposer({
         const effort = firstSession?.effort ?? draft.effort;
         configureReason(id, sessionConfig(model, effort));
       }
-      // Seed the first session. With attachments, queuePending delivers them together
-      // with the message via WorkspaceView.submit (which also handles renameAfterFirstMessage).
-      // Without attachments, the existing seedTranscript + direct renameAfterFirstMessage path
-      // is used unchanged.
-      if (createAttachments.length > 0) {
-        const text = firstSession?.message ?? "";
-        const queued: PromptAttachment[] = createAttachments.map(({ name, text: t, commentId }) =>
-          commentId ? { name, text: t, commentId } : { name, text: t },
-        );
-        try {
+      // Persist the effective Claude choice before exposing a workspace that can send.
+      // Both true and false matter: the backend otherwise seeds from the global default.
+      const text = firstSession?.message ?? "";
+      const promptAttachment = ({ name, text, commentId }: ComposerAttachment): PromptAttachment =>
+        commentId ? { name, text, commentId } : { name, text };
+      let seededFirstMessage = false;
+      let recovery = "Review Plan mode before sending";
+      try {
+        if (draft.agent === "claude") {
+          await invoke<unknown>("local_plan_mode_set", { chatId: id, workspaceId: id, mode: createPlanMode ? "plan" : "default" });
+        }
+        recovery = "Reattach the files and retry";
+        if (createAttachments.length > 0) {
           await materializeAttachments(path);
           // WorkspaceView's pending-send path bypasses its normal copy barrier.
-          queuePending(id, { kind: "send", text, attachments: queued });
-        } catch (err) {
-          // Creation succeeded: expose it, keep the text editable, and never auto-send
-          // a missing file. The existing store retains failed staged copies.
-          queuePending(id, { kind: "draft", text });
-          onWarning(`Workspace created, but the first message was not sent. Reattach the files and retry: ${errorText(err)}`);
+          queuePending(id, { kind: "send", text, attachments: createAttachments.map(promptAttachment) });
+        } else if (firstSession) {
+          seedTranscript(id, firstSession.message);
+          seededFirstMessage = true;
         }
-      } else if (firstSession) {
-        seedTranscript(id, firstSession.message);
+      } catch (err) {
+        // Creation succeeded: keep it reachable and editable without sending an
+        // unconfirmed mode or missing path. Inline UTF-8 files need no copy.
+        const inline = createAttachments.filter((attachment) => !attachment.staged).map(promptAttachment);
+        queuePending(id, { kind: "draft", text, ...(inline.length ? { attachments: inline } : {}) });
+        onWarning(`Workspace created, but the first message was not sent. ${recovery}: ${errorText(err)}`);
       }
       send({ type: "setup_detected", started: setupStarted });
       dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });
@@ -356,13 +394,13 @@ export function CreateWorkspaceComposer({
       if (!dismissedAtLaunch) onClose();
       // Rename placeholder after first message. Skipped when queuePending was used (attachments
       // present) because WorkspaceView.submit handles the rename in that path.
-      if (!createAttachments.length && firstSession) {
+      if (seededFirstMessage && firstSession) {
         const full = { ...ws, status: "idle" as const, diff: { added: 0, removed: 0 }, createdAt: Date.now() };
         void renameAfterFirstMessage(repo, full, firstSession.message, dispatch);
       }
     } catch (err) {
       const message = `${FAILED_TO_CREATE}: ${errorText(err)}`;
-      if (dismissedAtLaunch) onWarning(message);
+      if (dismissedAtLaunch) onWarning(message, submittedPrompt ? { prompt: submittedPrompt } : undefined);
       else send({ type: "create_failed", error: message });
     } finally {
       removePendingLaunch(pendingId);
@@ -401,7 +439,7 @@ export function CreateWorkspaceComposer({
    */
   async function addToBacklog() {
     if (busy || pendingFiles.current > 0 || !repo) return;
-    const built = buildCreateRequest(draft, prefix);
+    const built = buildCreateRequest({ ...draft, firstMessage: composerPrompt(draft.firstMessage) }, prefix);
     if (!built.ok) return setErrors(built.errors);
     setErrors({});
     send({ type: "submit" });
@@ -446,7 +484,7 @@ export function CreateWorkspaceComposer({
 
   // ComposerEditor fires the native KeyboardEvent directly (no React synthetic wrapper).
   function onKeyDown(e: globalThis.KeyboardEvent) {
-    if (e.isComposing) return;
+    if (e.isComposing || suggestions.onKeyDown(e)) return;
     // ⌥↩ adds to backlog without opening a chat session (Conductor `workspace.addToBacklogFromComposer`).
     if (backlogKeys.some((s) => matchesEvent(s, e))) {
       e.preventDefault();
@@ -454,10 +492,12 @@ export function CreateWorkspaceComposer({
       void addToBacklog();
       return;
     }
-    // `chat.newLine` (Shift+Enter, or Enter under the ⌘Enter preset) falls through to the editor.
     if (submitKeys.some((s) => matchesEvent(s, e))) {
       e.preventDefault();
       void submit();
+    } else if (newlineKeys.some((s) => matchesEvent(s, e))) {
+      e.preventDefault();
+      composerInputRef.current?.newline();
     }
   }
 
@@ -517,24 +557,20 @@ export function CreateWorkspaceComposer({
         }}
       />
       <div className="create-card">
-        {/* GAP-COMP-04 (create.editor): replaced <textarea> with ComposerEditor (TipTap) to match
-            Conductor's Hji create-workspace composer, which uses the same rich-text editor as
-            the main chat composer (lHt with Conductor's ComposerEditor equivalent). The @-mention
-            and /-slash triggers that Conductor wires to repository files are omitted here because
-            they require an existing workspace checkout; the structural parity (TipTap vs textarea)
-            is the gap being closed. Sub-gap 2 ("Link issue" in AddMenu) is not a gap: REA shows
-            allowIssueLinks=false in Conductor's a7i for Hji. Binary files use the existing
-            draft-attachments store, then materialize before the initial prompt is queued. */}
+        {/* Hji/PQo: selected repository/ref suggestions exist before a workspace.
+            Our local adapter reads immutable Git objects, not a workspace checkout.
+            Binary files still use the existing draft-attachments barrier. */}
+        <CreateWorkspaceSuggestions state={suggestions} />
         <div className="create-editor">
           <ComposerEditor
             inputRef={composerInputRef}
             value={draft.firstMessage}
             placeholder={CREATE_PLACEHOLDER}
             onChange={(v) => setDraft((d) => ({ ...d, firstMessage: v }))}
-            onSelection={() => {}}
+            onSelection={suggestions.onSelection}
             onKeyDown={onKeyDown}
-            onFocus={() => {}}
-            onBlur={() => {}}
+            onFocus={suggestions.onFocus}
+            onBlur={suggestions.onBlur}
             onPasteFiles={(files) => {
               if (files.length === 0) return false;
               void attachFiles(Array.from(files));
@@ -565,7 +601,7 @@ export function CreateWorkspaceComposer({
             disabled={busy}
             hint={hint("chat.addAttachment") ?? ""}
             planHint={hint("chat.togglePlanMode") ?? ""}
-            planMode={draft.agent === "claude" ? { isPlanMode: createPlanMode, disabled: busy, onToggle: () => setCreatePlanMode((v) => !v) } : undefined}
+            planMode={draft.agent === "claude" ? { isPlanMode: createPlanMode, disabled: busy, onToggle: toggleCreatePlanMode } : undefined}
             onAddAttachment={() => fileInputRef.current?.click()}
           />
           <div className="create-split" role="group" aria-label="Create workspace">

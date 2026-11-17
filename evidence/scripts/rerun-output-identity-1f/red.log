@@ -1,0 +1,96 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: same-task dev rerun hides the previous run's transcript before the replacement output read resolves
+not ok 1 - same-task dev rerun hides the previous run's transcript before the replacement output read resolves
+  ---
+  duration_ms: 271.532017
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/.oc-tmp/rerun-output-identity-1f/src/scripts/rerunOutputIdentity.test.ts:145:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    the replacement must not borrow the previous run's transcript while its read is pending
+    + actual - expected
+
+    + 'previous transcript\n'
+    - ''
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ''
+  actual: |-
+    previous transcript
+
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/.oc-tmp/rerun-output-identity-1f/src/scripts/rerunOutputIdentity.test.ts:153:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: same-task test rerun hides the previous run's transcript before the replacement output read resolves
+not ok 2 - same-task test rerun hides the previous run's transcript before the replacement output read resolves
+  ---
+  duration_ms: 135.106009
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/.oc-tmp/rerun-output-identity-1f/src/scripts/rerunOutputIdentity.test.ts:145:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    the replacement must not borrow the previous run's transcript while its read is pending
+    + actual - expected
+
+    + 'previous transcript\n'
+    - ''
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ''
+  actual: |-
+    previous transcript
+
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/.oc-tmp/rerun-output-identity-1f/src/scripts/rerunOutputIdentity.test.ts:153:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: same-run refresh and completion retain its transcript while fresh reads are pending
+ok 3 - same-run refresh and completion retain its transcript while fresh reads are pending
+  ---
+  duration_ms: 97.052765
+  type: 'test'
+  ...
+# Subtest: a late previous-run output read cannot overwrite the replacement transcript
+ok 4 - a late previous-run output read cannot overwrite the replacement transcript
+  ---
+  duration_ms: 84.771792
+  type: 'test'
+  ...
+# Subtest: equal run IDs in different workspaces cannot share output
+ok 5 - equal run IDs in different workspaces cannot share output
+  ---
+  duration_ms: 72.030141
+  type: 'test'
+  ...
+# Subtest: legacy output and completed empty output stay readable without inventing identities
+ok 6 - legacy output and completed empty output stay readable without inventing identities
+  ---
+  duration_ms: 134.68587
+  type: 'test'
+  ...
+# Subtest: a rejected replacement keeps the prior run and the action error
+ok 7 - a rejected replacement keeps the prior run and the action error
+  ---
+  duration_ms: 73.574582
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 5
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1238.024424

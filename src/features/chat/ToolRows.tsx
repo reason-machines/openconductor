@@ -587,11 +587,11 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
           </>
         );
       }
-      const nonmixedRead = name === "TodoRead" && todos.length > 0 && !(active && done > 0 && done < todos.length);
-      const label = nonmixedRead
-        ? active ? "Todo started" : done === todos.length ? "Todo list completed" : done > 0 ? "Todo completed" : "Todo list created"
+      const stateHeader = (name === "TodoWrite" || todos.length > 0) && !(active && done > 0 && done < todos.length);
+      const label = stateHeader
+        ? todos.length === 0 ? "Todo list created" : active ? "Todo started" : done === todos.length ? "Todo list completed" : done > 0 ? "Todo completed" : "Todo list created"
         : done > 0 && done < todos.length ? "Todo completed" : "Update todos";
-      const summary = nonmixedRead
+      const summary = stateHeader
         ? active ? `${activeIndex + 1}. ${s(active.content) || "todo"}` : `${todos.length} ${todos.length === 1 ? "todo" : "todos"}`
         : todos.length > 0 ? `${done}/${todos.length} completed` : undefined;
       return (
@@ -795,9 +795,12 @@ function InputOutput({ input, result, isError }: { input: Record<string, unknown
 }
 
 /** `iUt`: an MCP tool's row; a failed call turns red and shows its error on the right. */
-function McpRow({ name, input, result, isError, left, right, ...shell }: ShellBase & { name: string; input: Record<string, unknown>; result?: string; isError: boolean; left: ReactNode; right?: ReactNode }) {
-  const error = isError && result !== undefined ? result.slice(0, RESULT_LIMIT) : undefined;
-  const hasBody = Object.keys(input).length > 0 || !!result;
+function McpRow({ name, input, result, rawResult, isError, left, right, ...shell }: ShellBase & { name: string; input: Record<string, unknown>; result?: string; rawResult?: unknown; isError: boolean; left: ReactNode; right?: ReactNode }) {
+  const content = rawResult === undefined ? result : rawResult;
+  const output = typeof content === "string" ? content : content ? JSON.stringify(content, null, 2) : undefined;
+  const errorText = isError && content !== undefined ? typeof content === "string" ? content : JSON.stringify(content) : undefined;
+  const error = errorText?.slice(0, RESULT_LIMIT);
+  const hasBody = Object.keys(input).length > 0 || !!content;
   return (
     <RowShell
       {...shell}
@@ -809,7 +812,7 @@ function McpRow({ name, input, result, isError, left, right, ...shell }: ShellBa
         hasBody ? (
           <div className="oc-io">
             <div className="oc-io-label mono">Tool: {name}</div>
-            <InputOutput input={input} result={result} isError={isError} />
+            <InputOutput input={input} result={output} isError={isError} />
           </div>
         ) : undefined
       }
@@ -1190,7 +1193,8 @@ function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isErr
       return <ScheduleWakeupRow {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle }} />;
     case "image-generation": {
       // `Vpo`: the generated image's path (the image itself is not drawn yet).
-      const path = result === undefined ? "" : resultText(result).trim();
+      const content = rawResult === undefined ? result : rawResult;
+      const path = content === undefined ? "" : resultText(content).trim();
       const imageExtensions = { png: true, jpg: true, jpeg: true, gif: true, webp: true, tif: true, tiff: true, avif: true, bmp: true };
       const extension = path.split(".").pop()?.toLowerCase();
       const isCollapsible = extension !== undefined && Object.prototype.hasOwnProperty.call(imageExtensions, extension);
@@ -1207,14 +1211,15 @@ function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isErr
     case "node-repl-js": {
       // `Kpo`
       const title = s(input.title);
-      const nodeOutput = rawResult !== undefined ? (typeof rawResult === "string" ? rawResult : JSON.stringify(rawResult, null, 2)) : result;
+      const content = rawResult === undefined ? result : rawResult;
+      const nodeOutput = typeof content === "string" ? content : content ? JSON.stringify(content, null, 2) : undefined;
       return (
         <RowShell
           {...shell}
           left={<span>Node REPL</span>}
           right={title ? <CodeChip text={title} /> : undefined}
           align="center"
-          content={Object.keys(input).length > 0 || nodeOutput !== undefined ? <InputOutput input={input} result={nodeOutput} isError={isError} /> : undefined}
+          content={Object.keys(input).length > 0 || content ? <InputOutput input={input} result={nodeOutput} isError={isError} /> : undefined}
         />
       );
     }
@@ -1226,14 +1231,14 @@ function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isErr
         : name === "mcp__context7__resolve-library-id" ? s(input.libraryName)
         : name === "mcp__context7__get-library-docs" ? s(input.topic)
         : "";
-      return <McpRow {...shell} name={name} input={input} result={result} isError={isError} left={<span>{mcpLabel(name)}</span>} right={chip ? <CodeChip text={chip} /> : undefined} />;
+      return <McpRow {...shell} name={name} input={input} result={result} rawResult={rawResult} isError={isError} left={<span>{mcpLabel(name)}</span>} right={chip ? <CodeChip text={chip} /> : undefined} />;
     }
     case "codex-collab":
       return <CollabRow name={name} input={input} result={result} isError={isError} />;
     case "sub-agent":
-      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={result} />;
+      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={result} rawResult={rawResult} />;
       if (name.startsWith("mcp__linear__") || name.startsWith("mcp__context7__")) return <MoreRows {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
-      return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
+      return <GenericRow {...{ tool, status, result, rawResult, isError, open, onToggle }} />;
     default:
       return <GenericRow {...{ tool, status, result, rawResult, isError, open, onToggle }} />;
   }
@@ -1264,12 +1269,13 @@ function GenericRow({ tool, status, result, rawResult, isError, open, onToggle }
 }
 
 /** `bpo`: a typed sub-agent (Explore, Plan, ...): its type and model, its description, its answer. */
-function SubagentRow({ input, result, ...shell }: ShellBase & { input: Record<string, unknown>; result?: string }) {
+function SubagentRow({ input, result, rawResult, ...shell }: ShellBase & { input: Record<string, unknown>; result?: string; rawResult?: unknown }) {
   const [raw, setRaw] = useState(false);
   const type = s(input.subagent_type);
   const model = s(input.model);
   const description = subagentDescription(s(input.description), model || undefined);
-  const text = result === undefined ? "" : resultText(result);
+  const content = rawResult === undefined ? result : rawResult;
+  const text = content ? resultText(content) : "";
   return (
     <RowShell
       {...shell}
@@ -1288,7 +1294,7 @@ function SubagentRow({ input, result, ...shell }: ShellBase & { input: Record<st
       right={description ? <span className="oc-tool-count">{description}</span> : undefined}
       plainContent
       content={
-        text ? (
+        content ? (
           <div className="oc-subagent-result">
             <div className="oc-subagent-tabs">
               <div className="oc-subagent-tab-group">

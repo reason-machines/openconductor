@@ -298,14 +298,37 @@ for (const kind of ["text", "thinking"] satisfies Block["type"][]) {
 }
 
 test("enabled display filters intermediate and preview text without changing their emphasis", () => {
-  const o = render(assistantTranscript([
-    said("You're absolutely right! Intermediate"),
-    said("You're absolutely right. Final"),
-  ]), {}, 0, true);
+  // Emphasis belongs to message membership, not the position of a text part.
+  const input = transcript([
+    status("filter", "running"),
+    message("filter", "user", "user", [said("Filter display only")]),
+    message("filter", "intermediate", "assistant", [said("You're absolutely right! Intermediate")]),
+    message("filter", "final", "assistant", [said("You're absolutely right. Final")]),
+    status("filter", "completed"),
+  ]);
+  const before = JSON.stringify(input);
+  const o = render(input, {}, 0, true);
   assert.deepEqual(markdownTexts(o.html), ["Intermediate", "Final"]);
   assert.match(o.html, /class="oc-prose chat-text muted">Intermediate/);
   assert.match(o.html, /class="oc-prose chat-text">Final/);
+  assert.equal(JSON.stringify(input), before, "display preserves both raw messages");
 });
+
+for (const enabled of [false, true]) {
+  test(`multipart preview keeps every text part emphasized with display filter enabled=${enabled}`, () => {
+    const raw = ["You're absolutely right! First paragraph", "You're absolutely right. Final paragraph"];
+    const input = assistantTranscript(raw.map(said));
+    const before = JSON.stringify(input);
+    const o = render(input, {}, 0, enabled);
+    const expected = enabled ? ["First paragraph", "Final paragraph"] : raw;
+    assert.deepEqual(markdownTexts(o.html), expected.map(escapeText));
+    for (const text of expected) {
+      assert.ok(o.html.includes(`class="oc-prose chat-text">${escapeText(text)}</span>`), "each selected message part keeps preview emphasis");
+    }
+    assert.doesNotMatch(o.html, /class="oc-prose chat-text muted"/);
+    assert.equal(JSON.stringify(input), before, "display preserves every raw preview block");
+  });
+}
 
 test("enabled display leaves user, report, system and tool payloads and raw copy/fork data untouched", () => {
   const raw = "You're absolutely right! Keep raw.";

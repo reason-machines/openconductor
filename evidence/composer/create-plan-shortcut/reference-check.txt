@@ -1,0 +1,9 @@
+PASS focus_state: [9771709, 9771731)
+PASS plan_setter: [9777028, 9777105)
+PASS command_binding: [9777156, 9777197)
+PASS editor_focus_blur: [9779628, 9779664)
+PASS editor_caller: [9779507, 9779533)
+PASS menu_caller: [9778186, 9778232)
+PASS launch_store_update: [9774600, 9774649)
+PASS retained Hji span SHA256 and all seven byte-range checks
+QUALIFIED retained source only; no fresh REA or native interaction

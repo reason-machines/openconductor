@@ -1,0 +1,1 @@
+function die(t){return t.type==="result"&&"is_error"in t&&t.is_error===!0}

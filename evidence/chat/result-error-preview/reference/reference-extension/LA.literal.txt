@@ -1,0 +1,22 @@
+async function LA(t,e){const s=vg({service:t,storage:e.presentationStorage}),n=e.content,r=e.messageId;if(r!==void 0){const I=(await s.select(`
+            SELECT id, role, content
+            FROM session_messages
+            WHERE id = ?
+              AND session_id = ?
+            LIMIT 1
+            `,[r,e.sessionId]))[0];if(I!==void 0){if(I.role==="assistant")return I.content!==n&&ys.warn({sessionId:e.sessionId,messageId:r,existingMessageId:I.id},"addAssistantMessage: retaining existing message for replayed feed event with drifted content"),I.id;throw ys.error({sessionId:e.sessionId,messageId:r,existingMessageId:I.id,existingRole:I.role},"addAssistantMessage: deterministic message ID collision with a different persisted message"),new Error(`addAssistantMessage: deterministic message ID collision (sessionId=${e.sessionId}, messageId=${r})`)}}const i=e.sdkMessageId??void 0;if(i!==void 0){const I=(await s.select(`
+            SELECT id
+            FROM session_messages
+            WHERE session_id = ?
+              AND role = 'assistant'
+              AND sdk_message_id = ?
+            LIMIT 1
+            `,[e.sessionId,i]))[0]?.id;if(I!==void 0)return ys.warn({sessionId:e.sessionId,sdkMessageId:i,existingMessageId:I},"addAssistantMessage: skipped duplicate delivery of an already-persisted sdk message"),I}const o=r??crypto.randomUUID(),a=e.createdAt??new Date,c=a.toISOString(),l=await vst({service:t,params:e});if(l.length===0)throw ys.error({sessionId:e.sessionId,requestedTurnId:e.turnId},"addAssistantMessage: no active turn found; user message is missing from DB or not marked sent/cancelled"),new Error(`addAssistantMessage: cannot save assistant message without an active turn (sessionId=${e.sessionId}, providedTurnId=${e.turnId??"<latest>"})`);const u=l[0].id;if(e.dedupeByContentInTurn===!0){const I=(await s.select(`
+            SELECT id
+            FROM session_messages
+            WHERE session_id = ?
+              AND role = 'assistant'
+              AND turn_id = ?
+              AND content = ?
+            LIMIT 1
+            `,[e.sessionId,u,n]))[0]?.id;if(I!==void 0)return ys.info({sessionId:e.sessionId,turnId:u,existingMessageId:I},"addAssistantMessage: skipped re-delivered row already present in the turn"),I}e.quietLifecycleLogs!==!0&&ys.info({sessionId:e.sessionId,messageId:o,turnId:u,sdkMessageId:e.sdkMessageId,requestedTurnId:e.turnId},"addAssistantMessage: resolved turn");const h=Mb({id:o,sessionId:e.sessionId,content:n,createdAt:a,turnId:u,fullMessage:e.fullMessage,model:e.model,sdkMessageId:e.sdkMessageId,isResumableMessage:e.isResumableMessage}),p=e.presentationStorage==="client-cache"&&e.deferMessageCacheUpdates!==!0,m=p?t.state.state.sessionsMessages[e.sessionId]:void 0;p&&zo(t,e.sessionId,A=>rF(A,h));const v=p?t.state.state.sessionsMessages[e.sessionId]:void 0,_={id:o,session_id:e.sessionId,role:"assistant",content:e.content,sent_at:c,created_at:c,full_message:e.fullMessage??null,model:e.model??null,sdk_message_id:e.sdkMessageId??null,turn_id:u,last_assistant_message_id:null,cancelled_at:null,is_resumable_message:e.isResumableMessage?1:null,queue_order:null,sender_id:null,sender_session_id:null,sender_api_key_name:null};let S;try{S=e.presentationStorage==="client-cache"?await(async()=>(await gB(s,{..._,source_rowid:null}),o))():await vie(s,_)}catch(A){throw v!==void 0&&t.projectedStore.setState(I=>{if(I.sessionsMessages[e.sessionId]!==v)return I;const C={...I.sessionsMessages};return m===void 0?delete C[e.sessionId]:C[e.sessionId]=m,{...I,sessionsMessages:C}}),p&&t.refreshLoadedSessionMessages(e.sessionId).catch(I=>{console.error("Failed to repair session messages after client cache write failure",{sessionId:e.sessionId,error:I})}),A}if(e.presentationStorage!=="client-cache"&&Yre({service:t,sessionId:e.sessionId,messageId:S}),e.deferMessageCacheUpdates===!0)return S;p||zo(t,e.sessionId,A=>rF(A,h));const k=t.state.state.sessionsMessages[e.sessionId]?.data;return k===void 0?e.quietLifecycleLogs!==!0&&ys.info({sessionId:e.sessionId,messageId:S,turnId:u},"addAssistantMessage: saved (no cache loaded; will surface on next session load)"):k.turns.some(A=>A.id===u)?e.quietLifecycleLogs!==!0&&ys.info({sessionId:e.sessionId,messageId:S,turnId:u},"addAssistantMessage: saved and appended to cache"):(ys.warn({sessionId:e.sessionId,messageId:S,turnId:u,cachedTurnIds:k.turns.map(A=>A.id),cachedQueueIds:k.queue.map(A=>A.id)},"addAssistantMessage: turn missing from cache after save; reloading from DB"),t.refreshLoadedSessionMessages(e.sessionId).fireAndForget()),S}

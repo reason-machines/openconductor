@@ -1,0 +1,32 @@
+{
+  "author": "Conductor Rebuild",
+  "main_commit": "fcbd2d2cb9e99dd9a66a94b8ee0b0b6780c400ac",
+  "pre_fix_commit": "b5e9ee40d269f084d1ae9badd6bd1730d3cedb3f",
+  "prior_pr_merge": "802324ec1eeb3c25b27d7accbe8a0357b767342d",
+  "asset_bytes": 3493297,
+  "asset_sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+  "verified_literal_spans": 33,
+  "product_main_pins": [
+    {
+      "path": "src/features/chat/toolGroups.ts",
+      "sha256": "b4526fc4e8407f497e9220df20dbe2ce8b193065ae39f397e19091127dba8de3"
+    },
+    {
+      "path": "src/features/chat/types.ts",
+      "sha256": "3014952a29ee66057157191c8f8f91ec5bf3293cbaf06c179ea9752e4b3cbd97"
+    },
+    {
+      "path": "src/features/chat/view.ts",
+      "sha256": "dc3032c160c83d53fbfc08cbcd4fc88ff9abc99811f19f25f10dc7cb39010f6f"
+    }
+  ],
+  "frozen_fixture_sha256": "3a9bca3c929b42cd6064e459fd0836b04c36b22999d6a29604fbd7956daeb705",
+  "baseline": {
+    "tests": 10,
+    "pass": 7,
+    "intended_fail": 3,
+    "skipped": 0
+  },
+  "vendor_executed": false,
+  "mounted_native_package_verified": false
+}

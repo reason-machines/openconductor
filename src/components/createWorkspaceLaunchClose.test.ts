@@ -10,6 +10,30 @@ const React = dependencies("react");
 const { act, create } = dependencies("react-test-renderer");
 const ts: typeof import("typescript") = dependencies("typescript");
 const root = resolve(import.meta.dirname, "../..");
+// Additive real-module paths introduced by Create suggestions. Existing I/O
+// boundaries and every lifecycle/attachment assertion remain unchanged.
+const suggestionModules: Record<string, string> = {
+  "../features/chat/composerDocument.ts": "src/features/chat/composerDocument.ts",
+  "../features/chat/preWorkspaceCompletions.ts": "src/features/chat/preWorkspaceCompletions.ts",
+  "./create/CreateWorkspaceSuggestions.tsx": "src/components/create/CreateWorkspaceSuggestions.tsx",
+  "../../workspace/createFlow.ts": "src/workspace/createFlow.ts",
+  "../../features/chat/preWorkspaceCompletions.ts": "src/features/chat/preWorkspaceCompletions.ts",
+  "../../features/chat/FileMentionMenu.tsx": "src/features/chat/FileMentionMenu.tsx",
+  "../../features/chat/SlashMenu.tsx": "src/features/chat/SlashMenu.tsx",
+  "../../features/chat/fileMentions.ts": "src/features/chat/fileMentions.ts",
+  "../../features/chat/slashCommands.ts": "src/features/chat/slashCommands.ts",
+  "./composerSlashRange.ts": "src/features/chat/composerSlashRange.ts",
+  "./fileMentions.ts": "src/features/chat/fileMentions.ts",
+  "./slashCommands.ts": "src/features/chat/slashCommands.ts",
+  "./useSuggestionPointer.ts": "src/features/chat/useSuggestionPointer.ts",
+  "../../components/FileIcons": "src/components/FileIcons.tsx",
+  "../../components/Icons": "src/components/Icons.tsx",
+  "./fileIconNames": "src/components/fileIconNames.ts",
+  "./Icons": "src/components/Icons.tsx",
+  "./ConductorIcon": "src/components/ConductorIcon.tsx",
+  "./AppMark": "src/components/AppMark.tsx",
+  "./conductorIcons.generated": "src/components/conductorIcons.generated.ts",
+};
 type Host = { props: Record<string, unknown> };
 
 function deferred<T>() {
@@ -19,7 +43,9 @@ function deferred<T>() {
   return { promise, resolve, reject };
 }
 
-async function fixture({ page = false, path = "/synthetic/project", repos = true, setup = false, setupFails = false, section = false, writeFails = false, copyFails = false, holdCopy = false, holdWrite = false, missingCopy = false, copyThrows = false } = {}) {
+async function fixture({ agent = "reason", page = false, path = "/synthetic/project", repos = true, setup = false, setupFails = false, section = false, writeFails = false, copyFails = false, holdCopy = false, holdWrite = false, missingCopy = false, copyThrows = false } = {}) {
+  const keys = new Map<string, (() => unknown) | undefined>();
+  let editorFocused = false;
   const events: string[] = [];
   const warnings: string[] = [];
   const actions: { type: string; workspace?: { id: string }; sectionId?: string }[] = [];
@@ -48,12 +74,13 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
     const source = readFileSync(resolve(sourceRoot, file), "utf8");
     runInNewContext(ts.transpileModule(source, {
       fileName: file,
-      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true },
     }).outputText, {
       exports, console, TextDecoder, TextEncoder, Uint8Array, crypto: { randomUUID: () => "pending-launch" },
-      document: { activeElement: null }, HTMLElement: class {},
+      document: { activeElement: null, addEventListener() {}, removeEventListener() {} }, HTMLElement: class {},
       require(name: string) {
-        if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+        if (name === "react" || name === "react/jsx-runtime" || name === "fuzzysort" || name === "vscode-material-icons") return dependencies(name);
+        if (suggestionModules[name]) return load(suggestionModules[name]);
         if (name === "./CreateWorkspaceComposer") return load("src/components/CreateWorkspaceComposer.tsx");
         if (name === "./CreateWorkspaceDialog") return load("src/components/CreateWorkspaceDialog.tsx");
         if (name === "../workspace/createFlow") return load("src/workspace/createFlow.ts");
@@ -94,7 +121,7 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
         if (name === "../features/diff/ReviewButton") return { queuePending: (_id: string, message: typeof queued[number]) => { queued.push(message); events.push("queue"); } };
         if (name === "../features/chat/composerIcons") return { PaperclipIcon: () => null, PlusIcon: () => null };
         if (name === "../features/chat/composer.css") return {};
-        if (name === "@tauri-apps/api/core") return { invoke: async () => {} };
+        if (name === "@tauri-apps/api/core") return { isTauri: () => false, invoke: async () => {} };
         if (name === "../workspace/api") return {
           ensureRepository() {
             if (submitting) { events.push("register"); return registration.promise; }
@@ -120,7 +147,7 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
         if (name === "../workspace/firstMessage") return { renameAfterFirstMessage: () => events.push("rename") };
         if (name === "../features/chat/chatModelChoice") return { saveModelChoice: () => events.push("model") };
         if (name === "../features/chat/agentChoice") return { saveAgent: () => events.push("agent") };
-        if (name === "../workspace/launchModel") return { launchDefaults: () => ({ agent: "reason", model: "fixture", effort: "" }), loadoutPicks: () => [] };
+        if (name === "../workspace/launchModel") return { launchDefaults: () => ({ agent, model: "fixture", effort: "" }), loadoutPicks: () => [] };
         if (name === "../settings/agents/useLoadout") return { useLoadout: () => null };
         if (name === "../features/chat/loadoutChoices") return { loadoutChoices: () => [] };
         if (name === "../features/chat/ModelPicker") return { ModelPicker: () => null };
@@ -129,7 +156,7 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
         if (name === "./create/RepoSelect") return { RepoSelect: () => null };
         if (name === "./create/TargetBranchButton") return { TargetBranchButton: ({ onChange }: { onChange: (value: string) => void }) => React.createElement("input", { "aria-label": "Target branch", onChange }) };
         if (name === "./CreateFromPicker") return { CreateFromPicker: () => null };
-        if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }), useKeybindings: () => {} };
+        if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }), useKeybindings: (handlers: Record<string, (() => unknown) | undefined>) => { for (const [id, handler] of Object.entries(handlers)) keys.set(id, handler); } };
         if (name === "../keybindings/overrides") return { effectiveShortcuts: () => [] };
         if (name === "../keybindings/shortcut") return { glyphs: () => "", matchesEvent: () => false };
         if (name.endsWith("/ComposerEditor.tsx") || name.endsWith("/ComposerEditor")) {
@@ -137,8 +164,8 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
             ComposerEditor({ inputRef, value, onChange, onKeyDown }: Record<string, ((...a: unknown[]) => unknown) & string>) {
               React.useLayoutEffect(() => {
                 const handle = {
-                  focus: () => {}, blur: () => {}, visible: () => true,
-                  focused: () => false, composing: () => false,
+                  focus: () => { editorFocused = true; }, blur: () => { editorFocused = false; }, visible: () => true,
+                  focused: () => editorFocused, composing: () => false,
                   selection: () => ({ text: String(value), start: 0, end: 0 }),
                   replaceRange: () => false, insertFile: () => {}, deleteRange: () => false, newline: () => {},
                 };
@@ -182,7 +209,15 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
     if (typeof handler === "function") return handler(value);
   }
   return {
-    events, warnings, actions, pending, staged, copied, queued,
+    events, warnings, actions, pending, staged, copied, queued, keys,
+    focusEditor(focused: boolean) { editorFocused = focused; },
+    async shortcut() {
+      const handler = keys.get("chat.togglePlanMode");
+      assert.equal(typeof handler, "function", "Create must register the displayed Plan mode command");
+      let result: unknown;
+      await act(async () => { result = handler?.(); });
+      return result;
+    },
     async finishCopy() { await act(async () => copyGate.resolve()); },
     async finishWrite() { await act(async () => writeGate.resolve()); },
     chips: () => renderer.root.findAll((node: { type: unknown }) => typeof node.type === "function" && node.type.name === "ComposerAttachmentChip"),
@@ -529,12 +564,13 @@ async function backlogFixture() {
     const source = readFileSync(resolve(root, file), "utf8");
     runInNewContext(ts.transpileModule(source, {
       fileName: file,
-      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true },
     }).outputText, {
       exports, console, crypto: { randomUUID: () => "pending-launch" },
       document: { activeElement: null }, HTMLElement: class {},
       require(name: string) {
-        if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+        if (name === "react" || name === "react/jsx-runtime" || name === "fuzzysort" || name === "vscode-material-icons") return dependencies(name);
+        if (suggestionModules[name]) return load(suggestionModules[name]);
         if (name === "../workspace/createFlow") return load("src/workspace/createFlow.ts");
         if (name === "../workspace/createInSection") return load("src/workspace/createInSection.ts");
         if (name === "./naming.ts" || name === "../workspace/naming") return load("src/workspace/naming.ts");
@@ -582,7 +618,7 @@ async function backlogFixture() {
         if (name === "../features/diff/ReviewButton") return { queuePending: () => {} };
         if (name === "../features/chat/composerIcons") return { PaperclipIcon: () => null, PlusIcon: () => null };
         if (name === "../features/chat/composer.css") return {};
-        if (name === "@tauri-apps/api/core") return { invoke: async () => {} };
+        if (name === "@tauri-apps/api/core") return { isTauri: () => false, invoke: async () => {} };
         if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }), useKeybindings: () => {} };
         if (name === "../keybindings/overrides") return {
           effectiveShortcuts(id: string) {
@@ -689,3 +725,57 @@ test("Alt+Enter (addToBacklogFromComposer) creates workspace idle, sets backlog 
     assert.equal(view.closes, 1);
   } finally { view.dispose(); }
 });
+
+for (const page of [false, true]) {
+  test(`create Plan shortcut toggles the existing menu state while editor-focused (page=${page})`, async () => {
+    const view = await fixture({ page, agent: "claude" });
+    try {
+      view.focusEditor(true);
+      assert.match(view.rendered(), /Plan mode/);
+      await view.shortcut();
+      assert.match(view.rendered(), /Exit plan mode/);
+      await view.shortcut();
+      assert.doesNotMatch(view.rendered(), /Exit plan mode/);
+      assert.equal(view.requests, 0);
+      assert.equal(view.queued.length, 0);
+    } finally { view.dispose(); }
+  });
+}
+test("create Plan shortcut leaves an unfocused editor unchanged", async () => {
+  const view = await fixture({ page: true, agent: "claude" });
+  try {
+    view.focusEditor(false);
+    const handler = view.keys.get("chat.togglePlanMode");
+    if (handler) assert.equal(await view.shortcut(), false);
+    assert.doesNotMatch(view.rendered(), /Exit plan mode/);
+    view.focusEditor(true);
+    await view.shortcut();
+    assert.match(view.rendered(), /Exit plan mode/);
+    view.focusEditor(false);
+    assert.equal(await view.shortcut(), false);
+    assert.match(view.rendered(), /Exit plan mode/);
+  } finally { view.dispose(); }
+});
+test("create Plan shortcut does not change launch controls while creating", async () => {
+  const view = await fixture({ page: true, agent: "claude" });
+  try {
+    view.focusEditor(true);
+    await view.shortcut();
+    await view.submit();
+    assert.equal(await view.shortcut(), false);
+    assert.match(view.rendered(), /Exit plan mode/);
+    assert.equal(view.requests, 0);
+  } finally { view.dispose(); }
+});
+for (const agent of ["reason", "codex"]) {
+  test(`create Plan shortcut never exposes unsupported agent controls (${agent})`, async () => {
+    const view = await fixture({ page: true, agent });
+    try {
+      view.focusEditor(true);
+      const handler = view.keys.get("chat.togglePlanMode");
+      if (handler) assert.equal(await view.shortcut(), false);
+      assert.doesNotMatch(view.rendered(), /Exit plan mode/);
+      assert.equal(view.requests, 0);
+    } finally { view.dispose(); }
+  });
+}

@@ -1,0 +1,12 @@
+{
+  "result": "PASS",
+  "inputCounts": [
+    30,
+    30
+  ],
+  "components": [
+    "417b8cda0da9d6967b992bd6184fe846e015ee5078f7087044deb4fc2427455c",
+    "7a34d148c43e9082b5adbb784f107f7ee0b657d2ceee24284a99c1e07bdc1790"
+  ],
+  "isolation": "Only synthetic backend stub; no App/native/provider/real backend module; CSP connect/form none"
+}

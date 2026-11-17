@@ -1,0 +1,458 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate": "TODO-WRITE-NONMIXED-HEADER-BE7",
+  "checked_main": "217498aae38dfd63b97919b1a0ab4097462c691e",
+  "retained_rea": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference_version": "Conductor 0.87.6 (retained verified assets; no new acquisition)",
+  "parents": {
+    "renderer": {
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    },
+    "index": {
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    }
+  },
+  "spans": [
+    {
+      "asset": "renderer",
+      "name": "lTr",
+      "start_byte": 76433,
+      "end_byte": 76538,
+      "sha256": "ad793f6d731d3c98c9eee95b63d80e174dc9d21b5f98034389fbc187f2342a71",
+      "text": "function lTr(t){if(t&&typeof t==\"object\"&&!Array.isArray(t))return Object.fromEntries(Object.entries(t))}"
+    },
+    {
+      "asset": "renderer",
+      "name": "cTr",
+      "start_byte": 76538,
+      "end_byte": 76601,
+      "sha256": "b7e90c5047c22ae93d2fb72e4096106d5ff049309cf51206635dda9928f87627",
+      "text": "function cTr(t){return{id:t.id,name:t.name,input:lTr(t.input)}}"
+    },
+    {
+      "asset": "renderer",
+      "name": "G0o",
+      "start_byte": 7827910,
+      "end_byte": 7830986,
+      "sha256": "3daccc4e090952dba72d1f3892ad706828427c4d15b5ee6dd77f1a1b20f5c92a",
+      "text": "function G0o(t){const e=ne.c(57),{toolCall:n,toolResult:i}=t;let r;e[0]!==n.input?.todos?(r=n.input?.todos||[],e[0]=n.input?.todos,e[1]=r):r=e[1];const o=r,a=n.name===\"TodoRead\";let c;e[2]===Symbol.for(\"react.memo_cache_sentinel\")?(c=[],e[2]=c):c=e[2];let u;if(e[3]!==a||e[4]!==o||e[5]!==i){if(u=c,a&&i&&i.content)if(typeof i.content==\"string\")try{const P=i.content.match(/\\[[\\s\\S]*\\]/);P&&(u=JSON.parse(P[0]))}catch(P){const L=P;Bt.error(\"Failed to parse todo list from string:\",L);let B;e[7]===Symbol.for(\"react.memo_cache_sentinel\")?(B=[],e[7]=B):B=e[7],u=B}else{let P;e[8]!==i.content?(P=Array.isArray(i.content)?i.content:[],e[8]=i.content,e[9]=P):P=e[9],u=P}else a||(u=o);e[3]=a,e[4]=o,e[5]=i,e[6]=u}else u=e[6];let d;e[10]!==u?(d=u.find(Y0o),e[10]=u,e[11]=d):d=e[11];const h=d,m=u.findIndex(K0o);let g;e[12]!==u?(g=u.filter(q0o),e[12]=u,e[13]=g):g=e[13];const _=g.length,v=u.length;if(h&&_>0&&_<v){const P=m+1,L=h.content||\"todo\";let B;e[14]!==n.name?(B=p.jsx(Ju,{name:n.name}),e[14]=n.name,e[15]=B):B=e[15];let F;e[16]===Symbol.for(\"react.memo_cache_sentinel\")?(F=p.jsx(p.Fragment,{children:\"Todo completed\"}),e[16]=F):F=e[16];let H;e[17]!==_||e[18]!==v?(H=p.jsxs(\"span\",{className:\"text-xs text-muted-foreground\",children:[_,\"/\",v,\" completed\"]}),e[17]=_,e[18]=v,e[19]=H):H=e[19];const U=n.id?`${n.id}-completed`:void 0;let z;e[20]!==u?(z=p.jsx(bwt,{todoList:u}),e[20]=u,e[21]=z):z=e[21];let G;e[22]!==B||e[23]!==H||e[24]!==U||e[25]!==z?(G=p.jsx(Mu,{icon:B,leftContent:F,rightContent:H,persistKey:U,children:z}),e[22]=B,e[23]=H,e[24]=U,e[25]=z,e[26]=G):G=e[26];let K;e[27]!==n.name?(K=p.jsx(Ju,{name:n.name}),e[27]=n.name,e[28]=K):K=e[28];let X;e[29]===Symbol.for(\"react.memo_cache_sentinel\")?(X=p.jsx(p.Fragment,{children:\"Todo started\"}),e[29]=X):X=e[29];let Q;e[30]!==L||e[31]!==P?(Q=p.jsxs(\"span\",{className:\"text-xs text-muted-foreground\",children:[P,\". \",L]}),e[30]=L,e[31]=P,e[32]=Q):Q=e[32];const J=n.id?`${n.id}-started`:void 0;let te;e[33]!==u?(te=p.jsx(bwt,{todoList:u}),e[33]=u,e[34]=te):te=e[34];let Z;e[35]!==K||e[36]!==Q||e[37]!==J||e[38]!==te?(Z=p.jsx(Mu,{icon:K,leftContent:X,rightContent:Q,persistKey:J,children:te}),e[35]=K,e[36]=Q,e[37]=J,e[38]=te,e[39]=Z):Z=e[39];let se;return e[40]!==G||e[41]!==Z?(se=p.jsxs(p.Fragment,{children:[G,Z]}),e[40]=G,e[41]=Z,e[42]=se):se=e[42],se}let w;v===0?w=\"Todo list created\":h?w=\"Todo started\":_===v?w=\"Todo list completed\":_>0?w=\"Todo completed\":w=\"Todo list created\";let E;if(h){const P=m+1,L=h.content||\"todo\";E=`${P}. ${L}`}else E=`${v} ${v===1?\"todo\":\"todos\"}`;let k;e[43]!==n.name?(k=p.jsx(Ju,{name:n.name}),e[43]=n.name,e[44]=k):k=e[44];let I;e[45]!==w?(I=p.jsx(p.Fragment,{children:w}),e[45]=w,e[46]=I):I=e[46];let R;e[47]!==E?(R=p.jsx(\"span\",{className:\"text-xs text-muted-foreground\",children:E}),e[47]=E,e[48]=R):R=e[48];let O;e[49]!==u?(O=p.jsx(bwt,{todoList:u}),e[49]=u,e[50]=O):O=e[50];let D;return e[51]!==k||e[52]!==I||e[53]!==R||e[54]!==O||e[55]!==n.id?(D=p.jsx(Mu,{icon:k,leftContent:I,rightContent:R,persistKey:n.id,children:O}),e[51]=k,e[52]=I,e[53]=R,e[54]=O,e[55]=n.id,e[56]=D):D=e[56],D}"
+    },
+    {
+      "asset": "renderer",
+      "name": "Y0o",
+      "start_byte": 7831080,
+      "end_byte": 7831128,
+      "sha256": "de4058fc424085b2a7c51757da5372c53b92ea534c09c355e57dd5f02bf8ccae",
+      "text": "function Y0o(t){return t.status===\"in_progress\"}"
+    },
+    {
+      "asset": "renderer",
+      "name": "K0o",
+      "start_byte": 7831032,
+      "end_byte": 7831080,
+      "sha256": "74656b1681ec1c9da0cdc8105b6d3ace9e4a767b9148c30c788f7577bca95c34",
+      "text": "function K0o(t){return t.status===\"in_progress\"}"
+    },
+    {
+      "asset": "renderer",
+      "name": "q0o",
+      "start_byte": 7830986,
+      "end_byte": 7831032,
+      "sha256": "288f4a2d93e82b8a3d9888b119314317f810832d39ac6807844be3288c24dfa8",
+      "text": "function q0o(t){return t.status===\"completed\"}"
+    },
+    {
+      "asset": "renderer",
+      "name": "bwt",
+      "start_byte": 7827167,
+      "end_byte": 7827545,
+      "sha256": "84fdb01924625022ad7943664fc239f6c09d885e0246307c2165bc8bd0cb7c03",
+      "text": "function bwt(t){const e=ne.c(5),{todoList:n}=t;if(n.length===0){let o;return e[0]===Symbol.for(\"react.memo_cache_sentinel\")?(o=p.jsx(\"p\",{className:\"text-xs text-muted-foreground italic p-3\",children:\"No todos\"}),e[0]=o):o=e[0],o}let i;e[1]!==n?(i=n.map(W0o),e[1]=n,e[2]=i):i=e[2];let r;return e[3]!==i?(r=p.jsx(\"div\",{className:\"space-y-2\",children:i}),e[3]=i,e[4]=r):r=e[4],r}"
+    },
+    {
+      "asset": "renderer",
+      "name": "W0o",
+      "start_byte": 7827545,
+      "end_byte": 7827910,
+      "sha256": "6c7838450fa5f498a585d798215be4fb1464612ed49622017afd2170fae6b552",
+      "text": "function W0o(t,e){return p.jsxs(\"div\",{className:Xe(\"flex items-center gap-2 transition-opacity\",t.status===\"completed\"&&\"opacity-60\"),children:[p.jsx(\"div\",{className:\"mt-0.5\",children:V0o(t.status)}),p.jsx(\"div\",{className:\"flex-1 min-w-0\",children:p.jsx(\"p\",{className:Xe(\"text-xs break-words\",t.status===\"completed\"&&\"line-through\"),children:t.content})})]},e)}"
+    },
+    {
+      "asset": "renderer",
+      "name": "Mu",
+      "start_byte": 7795403,
+      "end_byte": 7798463,
+      "sha256": "2a88a2516341f7a98563d2f4b2a602ac9c0acc584282cd01cf54a011e3e4231d",
+      "text": "function Mu(t){const e=ne.c(63),{icon:n,className:i,mainColor:r,rightContentColor:o,iconColor:a,leftContent:c,leftContentClassName:u,rightContent:d,contentAlignment:h,statusContent:m,children:g,isCollapsible:_,defaultCollapsed:v,isCollapsed:x,onToggleCollapse:w,persistKey:E,showContent:k,isCodeBlock:I,contentClassName:R,alwaysShowRightContent:O}=t,D=h===void 0?\"baseline\":h,P=_===void 0?!0:_,L=v===void 0?!0:v,B=k===void 0?!0:k,F=I===void 0?!1:I,H=O===void 0?!1:O,[U,z]=$.useState(L);let G;e[0]!==E?(G=Se=>E!==void 0?Se.expanded[E]:void 0,e[0]=E,e[1]=G):G=e[1];const K=dIt(G),X=dIt(y0o);let Q;e[2]!==x||e[3]!==L||e[4]!==U||e[5]!==E||e[6]!==K?(x!==void 0?Q=x:E!==void 0?Q=K!==void 0?!K:L:Q=U,e[2]=x,e[3]=L,e[4]=U,e[5]=E,e[6]=K,e[7]=Q):Q=e[7];let J;e[8]!==x||e[9]!==U||e[10]!==Q||e[11]!==w||e[12]!==E||e[13]!==X?(J=()=>{if(w){w();return}if(x===void 0){if(E!==void 0){X(E,Q);return}z(!U)}},e[8]=x,e[9]=U,e[10]=Q,e[11]=w,e[12]=E,e[13]=X,e[14]=J):J=e[14];const te=J,Z=P&&B&&\"cursor-pointer\";let se;e[15]!==i||e[16]!==Z?(se=Xe(\"inline-flex items-center gap-2 py-1.5 px-2 -mx-2 rounded-sm group/collapsible max-w-full hover:bg-muted/50\",Z,i),e[15]=i,e[16]=Z,e[17]=se):se=e[17];let ce;e[18]!==te||e[19]!==P||e[20]!==B?(ce=()=>P&&B&&te(),e[18]=te,e[19]=P,e[20]=B,e[21]=ce):ce=e[21];let ae;e[22]!==n||e[23]!==a||e[24]!==Q||e[25]!==P||e[26]!==B?(ae=p.jsx(\"div\",{className:\"shrink-0\",children:P&&B?p.jsx(Iki,{icon:n,isCollapsed:Q,iconClassName:a}):p.jsx(\"div\",{className:a,children:n})}),e[22]=n,e[23]=a,e[24]=Q,e[25]=P,e[26]=B,e[27]=ae):ae=e[27];const de=D===\"center\"?\"items-center\":\"items-baseline\";let ue;e[28]!==de?(ue=Xe(\"flex gap-2 min-w-0 flex-1\",de),e[28]=de,e[29]=ue):ue=e[29];let pe;e[30]!==u||e[31]!==r?(pe=Xe(\"text-sm truncate\",r,u),e[30]=u,e[31]=r,e[32]=pe):pe=e[32];let be;e[33]!==c||e[34]!==pe?(be=p.jsx(\"div\",{className:pe,children:c}),e[33]=c,e[34]=pe,e[35]=be):be=e[35];let he;e[36]!==Q||e[37]!==m?(he=Q&&m&&p.jsx(\"div\",{className:\"shrink-0 self-center\",children:m}),e[36]=Q,e[37]=m,e[38]=he):he=e[38];let ge;e[39]!==H||e[40]!==Q||e[41]!==d||e[42]!==o?(ge=d&&p.jsx(\"div\",{className:Xe(\"font-mono font-medium text-xs truncate max-w-[400px]\",o||\"text-muted-foreground\",!H&&!Q&&\"invisible\"),children:d}),e[39]=H,e[40]=Q,e[41]=d,e[42]=o,e[43]=ge):ge=e[43];let ve;e[44]!==ue||e[45]!==be||e[46]!==he||e[47]!==ge?(ve=p.jsxs(\"div\",{className:ue,children:[be,he,ge]}),e[44]=ue,e[45]=be,e[46]=he,e[47]=ge,e[48]=ve):ve=e[48];let ye;e[49]!==se||e[50]!==ce||e[51]!==ae||e[52]!==ve?(ye=p.jsxs(\"div\",{className:se,onClick:ce,children:[ae,ve]}),e[49]=se,e[50]=ce,e[51]=ae,e[52]=ve,e[53]=ye):ye=e[53];let xe;e[54]!==g||e[55]!==R||e[56]!==F||e[57]!==Q||e[58]!==B?(xe=B&&!Q&&g&&p.jsx(\"div\",{className:Xe(\"mt-2 select-text\",R??(!F&&\"font-mono text-xs font-medium whitespace-pre-wrap break-words text-accent-foreground bg-accent p-3 rounded-md border border-border\")),children:g}),e[54]=g,e[55]=R,e[56]=F,e[57]=Q,e[58]=B,e[59]=xe):xe=e[59];let ke;return e[60]!==ye||e[61]!==xe?(ke=p.jsxs(\"div\",{className:\"w-full\",children:[ye,xe]}),e[60]=ye,e[61]=xe,e[62]=ke):ke=e[62],ke}"
+    },
+    {
+      "asset": "renderer",
+      "name": "hIt",
+      "start_byte": 7877770,
+      "end_byte": 7878325,
+      "sha256": "8c45bb6e5892cce46330f820a54460ee896d1c14c19ad134dab20b9f20b75340",
+      "text": "function hIt(t){const e=ne.c(12),{toolCall:n,toolResult:i,toolResultCreatedAt:r,sessionId:o,localWorkspaceId:a}=t;let c;e[0]!==n.name?(c=O1o({kind:L1o(n.name),registry:Qpo}),e[0]=n.name,e[1]=c):c=e[1];const u=c;if(u===void 0){let h;return e[2]!==n||e[3]!==i?(h=p.jsx(aUt,{toolCall:n,toolResult:i}),e[2]=n,e[3]=i,e[4]=h):h=e[4],h}let d;return e[5]!==u||e[6]!==a||e[7]!==o||e[8]!==n||e[9]!==i||e[10]!==r?(d=p.jsx(u,{toolCall:n,toolResult:i,toolResultCreatedAt:r,sessionId:o,localWorkspaceId:a}),e[5]=u,e[6]=a,e[7]=o,e[8]=n,e[9]=i,e[10]=r,e[11]=d):d=e[11],d}"
+    },
+    {
+      "asset": "renderer",
+      "name": "L1o",
+      "start_byte": 7588525,
+      "end_byte": 7588628,
+      "sha256": "86ced124065a7ea81f3d266906603d416cec7facd64287010e771de3557b01a8",
+      "text": "function L1o(t){const e=D1o[t];if(e!==void 0)return e;for(const[n,i]of P1o)if(t.startsWith(n))return i}"
+    },
+    {
+      "asset": "renderer",
+      "name": "O1o",
+      "start_byte": 7587305,
+      "end_byte": 7587405,
+      "sha256": "a872adaad571fbc1d1b42548e8a112e12fdb0378316c8e6cf1325feaea8e0e81",
+      "text": "function O1o({kind:t,registry:e}){if(t===void 0)return;const n=e[t];return n===\"unhandled\"?void 0:n}"
+    },
+    {
+      "asset": "renderer",
+      "name": "D1o",
+      "start_byte": 7587411,
+      "end_byte": 7588424,
+      "sha256": "eb016b11917cdafc5ebcb83618ab0ea8f25d5bd7841ea33abe85c251dcefbf65",
+      "text": "D1o={Agent:\"sub-agent\",AskUserQuestion:\"ask-user-question\",Bash:\"bash\",BashOutput:\"bash-output\",Edit:\"edit\",EnterPlanMode:\"enter-plan-mode\",ExitPlanMode:\"exit-plan-mode\",Glob:\"glob\",Grep:\"grep\",ImageGeneration:\"image-generation\",LS:\"ls\",MultiEdit:\"multi-edit\",NotebookEdit:\"multi-edit\",NotebookRead:\"read\",Read:\"read\",ScheduleWakeup:\"schedule-wakeup\",SendMessage:\"send-message\",Skill:\"skill\",SlashCommand:\"slash-command\",Task:\"sub-agent\",TaskCreate:\"task-create\",TaskGet:\"task-get\",TaskList:\"task-list\",TaskUpdate:\"task-update\",Teammate:\"teammate\",Thinking:\"thinking\",TodoRead:\"todo\",TodoWrite:\"todo\",WebFetch:\"web\",WebSearch:\"web\",Write:\"write\",mcp__conductor__AskUserQuestion:\"ask-user-question\",mcp__conductor__DiffComment:\"diff-comment\",mcp__conductor__GetDiffComments:\"get-diff-comments\",mcp__conductor__GetTerminalOutput:\"get-terminal-output\",mcp__conductor__GetWorkspaceDiff:\"get-workspace-diff\",mcp__conductor__RunLocalCommand:\"run-local-command\",mcp__node_repl__js:\"node-repl-js\",\"sub-agent\":\"sub-agent\"}"
+    },
+    {
+      "asset": "renderer",
+      "name": "Qpo",
+      "start_byte": 7877188,
+      "end_byte": 7877769,
+      "sha256": "2069b4386a6836e70bb2e0b95fa117eb94e8fed89b21548037481846a8b5d3c6",
+      "text": "Qpo={\"ask-user-question\":Tpo,bash:Lki,\"bash-output\":N0o,\"codex-collab\":_0o,\"context7-mcp\":$ki,\"diff-comment\":Ipo,edit:F0o,\"enter-plan-mode\":mpo,\"exit-plan-mode\":gpo,\"get-diff-comments\":Opo,\"get-terminal-output\":Dpo,\"get-workspace-diff\":Npo,glob:dpo,grep:D0o,\"image-generation\":Vpo,\"linear-mcp\":Bki,ls:fpo,\"multi-edit\":$0o,\"node-repl-js\":Kpo,read:O0o,\"run-local-command\":I0o,\"schedule-wakeup\":Epo,\"send-message\":qpo,skill:vpo,\"slash-command\":kpo,\"sub-agent\":bpo,\"task-create\":npo,\"task-get\":lpo,\"task-list\":ipo,\"task-update\":cpo,teammate:Gpo,thinking:ppo,todo:G0o,web:upo,write:hpo}"
+    },
+    {
+      "asset": "renderer",
+      "name": "normal-block-consumer:ROo",
+      "start_byte": 8870027,
+      "end_byte": 8872954,
+      "sha256": "261002822cee5b28992e89b05e739232ef677047b7ef6b4c3b1d7123f10cac40",
+      "text": "ROo=$.memo(function(e){const n=ne.c(51),{block:i,idx:r,messageId:o,potentialToolResultMessages:a,isPreviewMessage:c,sessionId:u,localWorkspaceId:d,subAgentExecutions:h}=e,m=c===void 0?!1:c;let g;n[0]!==h?(g=h===void 0?[]:h,n[0]=h,n[1]=g):g=n[1];const _=g,{data:v}=us(\"not_absolutely_right\"),{currentWorkspace:x}=Fp(),{data:w}=x,E=UDt(u)[0],k=fSe(u);let I;n[2]!==i?(I=i.type===\"tool_use\"?cTr(i):void 0,n[2]=i,n[3]=I):I=n[3];const R=I;if(!Mwr({block:i,potentialToolResultMessages:a}))return null;if(i.type===\"text\"&&\"text\"in i){let D,P;if(n[4]!==i.text||n[5]!==k||n[6]!==v){const H=kKn(i.text,v);D=k?roi(H):H,P=D.trim(),n[4]=i.text,n[5]=k,n[6]=v,n[7]=D,n[8]=P}else D=n[7],P=n[8];if(!P)return null;const L=!m,B=w?.workspacePath;let F;return n[9]!==d||n[10]!==D||n[11]!==L||n[12]!==B?(F=p.jsx(yOo,{\"data-searchable\":\"true\",children:p.jsx(xS,{text:D,muted:L,localWorkspaceId:d,workspacePath:B})}),n[9]=d,n[10]=D,n[11]=L,n[12]=B,n[13]=F):F=n[13],F}if(\"type\"in i&&i.type===\"thinking\"){let D,P;if(n[14]!==i.thinking||n[15]!==v?(D=kKn(i.thinking,v),P=D.trim(),n[14]=i.thinking,n[15]=v,n[16]=D,n[17]=P):(D=n[16],P=n[17]),!P)return null;const L=`${o}-thinking-${r}`;let B;n[18]!==D?(B={thinking:D},n[18]=D,n[19]=B):B=n[19];let F;n[20]!==L||n[21]!==B?(F={id:L,name:\"Thinking\",input:B},n[20]=L,n[21]=B,n[22]=F):F=n[22];const H=F;let U;return n[23]!==d||n[24]!==u||n[25]!==H?(U=p.jsx(\"div\",{className:\"w-full\",children:p.jsx(hIt,{toolCall:H,toolResult:null,sessionId:u,localWorkspaceId:d})}),n[23]=d,n[24]=u,n[25]=H,n[26]=U):U=n[26],U}if(i.type===\"tool_use\"&&R!==void 0){const D=\"id\"in i?i.id:\"\";let P;if(n[27]!==_||n[28]!==D){let G;n[30]!==D?(G=K=>K.parentToolUseId===D,n[30]=D,n[31]=G):G=n[31],P=_.find(G),n[27]=_,n[28]=D,n[29]=P}else P=n[29];const L=P;if(L){let G;return n[32]!==d||n[33]!==u||n[34]!==L?(G=p.jsx(\"div\",{className:\"w-full\",children:p.jsx(qNo,{subAgentExecution:L,sessionId:u,localWorkspaceId:d})}),n[32]=d,n[33]=u,n[34]=L,n[35]=G):G=n[35],G}let B;n[36]!==a||n[37]!==D?(B=TOo(D,a),n[36]=a,n[37]=D,n[38]=B):B=n[38];const F=B;if(F===null&&E?.toolUseId===D)return null;const H=F?.toolResult??null,U=F?.createdAt;let z;return n[39]!==d||n[40]!==u||n[41]!==H||n[42]!==U||n[43]!==R?(z=p.jsx(\"div\",{className:\"w-full\",children:p.jsx(hIt,{toolCall:R,toolResult:H,toolResultCreatedAt:U,sessionId:u,localWorkspaceId:d})}),n[39]=d,n[40]=u,n[41]=H,n[42]=U,n[43]=R,n[44]=z):z=n[44],z}if(i.type===\"fallback\"){const D=i.from?.model,P=i.to?.model;let L;n[45]!==D||n[46]!==P?(L=D&&P?`Switched from ${aAn(D)} to ${aAn(P)} for this response.`:\"Switched models for this response.\",n[45]=D,n[46]=P,n[47]=L):L=n[47];const B=L;let F;return n[48]!==B?(F=p.jsx(\"p\",{className:\"text-sm italic text-muted-foreground\",children:B}),n[48]=B,n[49]=F):F=n[49],F}let O;return n[50]===Symbol.for(\"react.memo_cache_sentinel\")?(O=p.jsx(\"p\",{className:\"text-sm italic text-muted-foreground\",children:\"This content could not be displayed.\"}),n[50]=O):O=n[50],O})"
+    },
+    {
+      "asset": "renderer",
+      "name": "uie-import-binding",
+      "start_byte": 61086,
+      "end_byte": 61095,
+      "sha256": "6167d2cc1e08f46f339106a793891946bed1335e1728872a702172b44d6ddfcf",
+      "text": "mc as Mwr"
+    },
+    {
+      "asset": "index",
+      "name": "uie-export-binding",
+      "start_byte": 3487993,
+      "end_byte": 3488002,
+      "sha256": "6aabc9a2e5b004703b7033382a6a7607fe45fabd83a135c67b8b59fe2ad68b8f",
+      "text": "uie as mc"
+    },
+    {
+      "asset": "index",
+      "name": "na",
+      "start_byte": 1148057,
+      "end_byte": 1148224,
+      "sha256": "7673a785165ce3c671210fa21a1e1a0a836ccda502ece16b01fe4cc93d6b87bb",
+      "text": "function na(t){const e=t.content;if((e.type===\"assistant\"||e.type===\"user\")&&\"message\"in e&&e.message){const s=e.message.content;return Array.isArray(s)?s:[]}return[]}"
+    },
+    {
+      "asset": "index",
+      "name": "Fa",
+      "start_byte": 1148224,
+      "end_byte": 1148305,
+      "sha256": "26475e8ddf9c5f5292ca8e385429f41b1893267e4599b2fef7055b93f51a7407",
+      "text": "function Fa(t,e){return!(typeof t==\"string\"||t.type!==\"tool_use\"||e&&t.name!==e)}"
+    },
+    {
+      "asset": "index",
+      "name": "uie",
+      "start_byte": 1148415,
+      "end_byte": 1148596,
+      "sha256": "bba1207f3241d3cd24b8e70dceafa842f7d2b327961299151c9692888053b34e",
+      "text": "function uie({block:t,potentialToolResultMessages:e}){return t.type===\"text\"?t.text.trim().length>0:Fa(t)?t.name===\"collab__wait\"?!1:t.name===\"collab__closeAgent\"?btt(t.id,e):!0:!0}"
+    },
+    {
+      "asset": "index",
+      "name": "ctt",
+      "start_byte": 1142921,
+      "end_byte": 1142975,
+      "sha256": "75f09ab94a7f3abf1c858c0f52897f632c54add278fcf3e0319966e264dfa0ca",
+      "text": "ctt=b({type:w(\"tool_use\"),id:f(),name:f(),input:st()})"
+    },
+    {
+      "asset": "index",
+      "name": "i8",
+      "start_byte": 1145201,
+      "end_byte": 1145244,
+      "sha256": "a4c976f77434667e943ed802a6e74ab875bd92ad735e34523c8ccc411f72e459",
+      "text": "i8=q([rie,ctt,ptt,aie,cie,dtt,iie,oie,htt])"
+    },
+    {
+      "asset": "index",
+      "name": "yB",
+      "start_byte": 1145245,
+      "end_byte": 1147997,
+      "sha256": "181ee4821cd93653e08ab3e3943275942352080824874b6344f2b813ba26291c",
+      "text": "yB=q([b({type:w(\"error\"),errorCode:f().optional(),content:f().optional(),session_id:f().optional(),timestamp:f().optional(),parent_tool_use_id:f().optional().nullable(),willRetry:H().optional(),isNonTerminal:H().optional(),errorInfo:st().optional(),structuredErrorPayload:lie.optional(),additionalDetails:f().optional()}),b({type:w(\"system\"),subtype:f().optional(),session_id:f().optional(),uuid:f().optional(),content:f().optional(),apiKeySource:f().optional(),total_cost_usd:F().optional(),status:f().optional().nullable(),attempt:F().optional(),max_retries:F().optional(),retry_delay_ms:F().optional(),error_status:F().optional().nullable(),error:f().optional(),task_id:f().optional(),tool_use_id:f().optional(),description:f().optional(),subagent_type:f().optional(),task_type:f().optional(),prompt:f().optional(),skip_transcript:H().optional(),mcp_servers:U(b({name:f(),status:f()})).optional(),compact_metadata:b({trigger:q([w(\"manual\"),w(\"auto\")]),pre_tokens:F()}).optional(),parent_tool_use_id:f().optional().nullable()}),b({type:w(\"result\"),session_id:f().optional(),total_cost_usd:F().optional(),fast_mode_state:q([w(\"off\"),w(\"cooldown\"),w(\"on\")]).optional(),conductor_sdk_metadata:Stt.optional(),origin:b({kind:f()}).optional(),num_turns:F().optional(),usage:b({input_tokens:F().optional(),output_tokens:F().optional(),cache_read_input_tokens:F().optional(),cache_creation_input_tokens:F().optional(),service_tier:f().optional().nullable(),speed:f().optional().nullable()}).optional(),modelUsage:Oe(f(),b({contextWindow:F().optional()})).optional(),parent_tool_use_id:f().optional().nullable(),is_error:H().optional(),result:f().optional(),errors:U(f()).optional(),subtype:f().optional()}),b({type:w(\"assistant\"),codex_async_questions:b({id:f(),questions:U(b({question:f(),options:U(f())}))}).optional(),uuid:f().optional(),message:b({role:f().optional(),model:f().optional(),content:U(i8),usage:b({cache_read_input_tokens:F().optional().nullable(),cache_creation_input_tokens:F().optional().nullable(),input_tokens:F().optional().nullable(),output_tokens:F().optional().nullable(),service_tier:f().optional().nullable(),speed:f().optional().nullable()}).optional()}),session_id:f().optional(),timestamp:f().optional(),parent_tool_use_id:f().optional().nullable()}),b({type:w(\"user\"),uuid:f().optional(),message:b({role:f().optional(),content:q([f(),U(i8)])}),session_id:f().optional(),timestamp:f().optional(),parent_tool_use_id:f().optional().nullable()}),b({type:w(\"codex_goal_updated\"),goal:ytt,session_id:f().optional(),timestamp:f().optional(),parent_tool_use_id:f().optional().nullable()}),b({type:w(\"codex_goal_cleared\"),threadId:f(),session_id:f().optional(),timestamp:f().optional(),parent_tool_use_id:f().optional().nullable()})])"
+    }
+  ],
+  "joins": [
+    [
+      "renderer",
+      "uie-import-binding",
+      "mc as Mwr"
+    ],
+    [
+      "index",
+      "uie-export-binding",
+      "uie as mc"
+    ],
+    [
+      "renderer",
+      "lTr",
+      "Object.fromEntries(Object.entries(t))"
+    ],
+    [
+      "renderer",
+      "cTr",
+      "return{id:t.id,name:t.name,input:lTr(t.input)}"
+    ],
+    [
+      "renderer",
+      "D1o",
+      "TodoWrite:\"todo\""
+    ],
+    [
+      "renderer",
+      "D1o",
+      "TodoRead:\"todo\""
+    ],
+    [
+      "renderer",
+      "Qpo",
+      "todo:G0o"
+    ],
+    [
+      "renderer",
+      "hIt",
+      "kind:L1o(n.name),registry:Qpo"
+    ],
+    [
+      "renderer",
+      "hIt",
+      "toolCall:n,toolResult:i"
+    ],
+    [
+      "renderer",
+      "normal-block-consumer:ROo",
+      "i.type===\"tool_use\"?cTr(i):void 0"
+    ],
+    [
+      "renderer",
+      "normal-block-consumer:ROo",
+      "toolCall:R,toolResult:H"
+    ],
+    [
+      "renderer",
+      "G0o",
+      "r=n.input?.todos||[]"
+    ],
+    [
+      "renderer",
+      "G0o",
+      "a=n.name===\"TodoRead\""
+    ],
+    [
+      "renderer",
+      "G0o",
+      "else a||(u=o)"
+    ],
+    [
+      "renderer",
+      "G0o",
+      "d=u.find(Y0o)"
+    ],
+    [
+      "renderer",
+      "G0o",
+      "m=u.findIndex(K0o)"
+    ],
+    [
+      "renderer",
+      "G0o",
+      "g=u.filter(q0o)"
+    ],
+    [
+      "renderer",
+      "G0o",
+      "if(h&&_>0&&_<v)"
+    ],
+    [
+      "renderer",
+      "G0o",
+      "v===0?w=\"Todo list created\":h?w=\"Todo started\":_===v?w=\"Todo list completed\":_>0?w=\"Todo completed\":w=\"Todo list created\""
+    ],
+    [
+      "renderer",
+      "G0o",
+      "E=`${P}. ${L}`"
+    ],
+    [
+      "renderer",
+      "G0o",
+      "E=`${v} ${v===1?\"todo\":\"todos\"}`"
+    ],
+    [
+      "renderer",
+      "G0o",
+      "rightContent:R,persistKey:n.id,children:O"
+    ],
+    [
+      "renderer",
+      "Y0o",
+      "t.status===\"in_progress\""
+    ],
+    [
+      "renderer",
+      "K0o",
+      "t.status===\"in_progress\""
+    ],
+    [
+      "renderer",
+      "q0o",
+      "t.status===\"completed\""
+    ],
+    [
+      "index",
+      "ctt",
+      "type:w(\"tool_use\"),id:f(),name:f(),input:st()"
+    ],
+    [
+      "index",
+      "i8",
+      "ctt"
+    ],
+    [
+      "index",
+      "yB",
+      "type:w(\"assistant\")"
+    ],
+    [
+      "index",
+      "yB",
+      "content:U(i8)"
+    ],
+    [
+      "index",
+      "na",
+      "return Array.isArray(s)?s:[]"
+    ],
+    [
+      "index",
+      "Fa",
+      "t.type!==\"tool_use\""
+    ],
+    [
+      "index",
+      "uie",
+      "Fa(t)?t.name===\"collab__wait\"?!1"
+    ]
+  ],
+  "fresh_files": [
+    {
+      "path": "src-tauri/src/claude_chat/map.rs",
+      "sha256": "76d8e4ea0e93b4fe624f5b25975bda8febfd2d18d01df9372772149ba58a6d52"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/wire.rs",
+      "sha256": "96dee0f64c933bcaa9c60bc992f30a2fe190a625db540bfb8c350d6a4f6933dd"
+    },
+    {
+      "path": "src/features/chat/reason.ts",
+      "sha256": "cb07a5ec7dc2a8406d9021848280cf9acc83445c371390b94c6a57a290b1cf5b"
+    },
+    {
+      "path": "src/features/chat/reducer.ts",
+      "sha256": "9b4783c08f496b05ebdc99a141f52b13c06a4b46f3f1a240a780ef5535d22ec4"
+    },
+    {
+      "path": "src/features/chat/view.ts",
+      "sha256": "132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43"
+    },
+    {
+      "path": "src/features/chat/conductorTools.ts",
+      "sha256": "05c3a85bed997b1114e1696d083855d4e39c5d614fe57ddeb0bade8bde7cc64a"
+    },
+    {
+      "path": "src/features/chat/Transcript.tsx",
+      "sha256": "8b13f23d0fec69db4fa1311cb901fdf936c18a267f8f7f47f56aafca1747f1e8"
+    },
+    {
+      "path": "src/features/chat/ToolRows.tsx",
+      "sha256": "a31773ad0d2479cdea6683fe75a7219d9852fbc1ff2b66587e6c7dbb9175766d"
+    }
+  ],
+  "fresh_joins": [
+    [
+      "src-tauri/src/claude_chat/map.rs",
+      "let row = tool_row(tool_id, name, &block[\"input\"], &self.cwd);"
+    ],
+    [
+      "src-tauri/src/claude_chat/map.rs",
+      "tool_name: Some(name.to_owned()),"
+    ],
+    [
+      "src-tauri/src/claude_chat/map.rs",
+      "raw_input: Some(input.clone()),"
+    ],
+    [
+      "src-tauri/src/reason_acp/wire.rs",
+      "\"rawInput\": r.raw_input,"
+    ],
+    [
+      "src/features/chat/reason.ts",
+      "...(t.rawInput !== undefined && t.rawInput !== null ? { rawInput: t.rawInput } : {})"
+    ],
+    [
+      "src/features/chat/reason.ts",
+      "input: toolInput(p)"
+    ],
+    [
+      "src/features/chat/conductorTools.ts",
+      "if (toolName && isRecord(input.rawInput)) return [{ name: toolName, input: input.rawInput }]"
+    ],
+    [
+      "src/features/chat/view.ts",
+      "const tools = conductorTools(b.name, b.input);"
+    ],
+    [
+      "src/features/chat/Transcript.tsx",
+      "tool={call.tool}"
+    ],
+    [
+      "src/features/chat/ToolRows.tsx",
+      "let todoSource: unknown = input.todos;"
+    ],
+    [
+      "src/features/chat/ToolRows.tsx",
+      "const nonmixedRead = name === \"TodoRead\""
+    ]
+  ],
+  "frozen_inputs_sha256": "8baed89bb331a64fa96f6de8019c7116d55c0e1b7c8d31efd16dc2090d95f901",
+  "frozen_test_sha256": "f807024a4b397b059f7e98525469a0d5a76d06d114838cb367c7c0d3344992dc",
+  "baseline": {
+    "tests": 20,
+    "passed": 8,
+    "intended_failures": 12,
+    "harness_failures": 0
+  },
+  "scope": "TodoWrite nonmixed left and right header only. Mixed TodoWrite, TodoRead, bodies, disclosure, styles, normalization, providers and native unchanged.",
+  "limits": [
+    "Reference renderer was skipped by retained REA due to worker heap exhaustion; exact raw spans verified and statically inspected, never executed.",
+    "Native provider emission, browser visuals, installed package and release acceptance were not run."
+  ]
+}

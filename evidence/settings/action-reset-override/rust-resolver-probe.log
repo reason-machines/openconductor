@@ -1,0 +1,51 @@
+baseline: defaults_without_any_file: PASS
+baseline: prompts_replace_by_layer_and_blank_is_unset: PASS
+
+thread 'main' (77) panicked at src/main.rs:140:13:
+assertion `left == right` failed: general: preserve configured value
+  left: Null
+ right: ""
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+baseline: prompts_blank_override_retains_source_and_reset_reveals_inherited: EXPECTED ASSERTION FAILURE
+
+thread 'main' (77) panicked at src/main.rs:182:5:
+assertion `left == right` failed
+  left: None
+ right: Some(Sourced { value: "", layer: Managed })
+baseline: prompts_blank_managed_value_keeps_precedence_and_source: EXPECTED ASSERTION FAILURE
+baseline: git_flags_and_branch_prefix_alias: PASS
+baseline: branch_prefix_prefers_new_name_within_a_layer: PASS
+baseline: preview_urls_parse_tables_and_legacy_strings: PASS
+baseline: file_include_globs_is_a_string_the_repository_local_file_overrides: PASS
+baseline: dotenv_parsing_matches_the_reference_rules: PASS
+baseline: env_files_then_tables_layer_by_layer: PASS
+baseline: managed_env_applies_last_and_only_per_context: PASS
+baseline: json_repo_layers_rank_below_toml: PASS
+baseline: env_file_paths_resolve_like_the_reference: PASS
+baseline: prompt_kinds_round_trip_their_keys: PASS
+baseline: local_writes_set_and_remove_only_known_keys: PASS
+baseline: local_writes_edit_the_repository_scripts: PASS
+baseline: stored_variables_replace_user_file_values_but_not_repository_ones: PASS
+baseline: a_repository_unset_also_hides_a_stored_variable: PASS
+baseline: a_later_layer_setting_a_variable_clears_its_unset: PASS
+baseline: user_env_keeps_the_users_value_a_repository_overrides: PASS
+treatment: defaults_without_any_file: PASS
+treatment: prompts_replace_by_layer_and_blank_is_unset: PASS
+treatment: prompts_blank_override_retains_source_and_reset_reveals_inherited: PASS
+treatment: prompts_blank_managed_value_keeps_precedence_and_source: PASS
+treatment: git_flags_and_branch_prefix_alias: PASS
+treatment: branch_prefix_prefers_new_name_within_a_layer: PASS
+treatment: preview_urls_parse_tables_and_legacy_strings: PASS
+treatment: file_include_globs_is_a_string_the_repository_local_file_overrides: PASS
+treatment: dotenv_parsing_matches_the_reference_rules: PASS
+treatment: env_files_then_tables_layer_by_layer: PASS
+treatment: managed_env_applies_last_and_only_per_context: PASS
+treatment: json_repo_layers_rank_below_toml: PASS
+treatment: env_file_paths_resolve_like_the_reference: PASS
+treatment: prompt_kinds_round_trip_their_keys: PASS
+treatment: local_writes_set_and_remove_only_known_keys: PASS
+treatment: local_writes_edit_the_repository_scripts: PASS
+treatment: stored_variables_replace_user_file_values_but_not_repository_ones: PASS
+treatment: a_repository_unset_also_hides_a_stored_variable: PASS
+treatment: a_later_layer_setting_a_variable_clears_its_unset: PASS
+treatment: user_env_keeps_the_users_value_a_repository_overrides: PASS

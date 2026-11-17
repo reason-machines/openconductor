@@ -1,0 +1,1 @@
+function QQn({source:t,lineAnnotations:e}){if(e.length===0)return HKe;const n=[],i=new Set;for(const r of e){const o=`${r.side}:${r.lineNumber}`;if(i.has(o))continue;i.add(o);const a=t.getLinePosition(r);a&&n.push({annotation:r,top:t.top+a.top,height:a.height})}return jVo({measuredTargets:n,scrollTop:t.scrollTop,viewportHeight:t.viewportHeight})}

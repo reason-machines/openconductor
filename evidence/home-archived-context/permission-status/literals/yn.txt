@@ -1,0 +1,1 @@
+function yn(t){const e=R0.useRef(void 0);return s=>{const n=t(s);return q0(e.current,n)?e.current:e.current=n}}

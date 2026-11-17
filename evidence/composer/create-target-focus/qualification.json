@@ -1,0 +1,174 @@
+{
+  "candidate": "CREATE-TARGET-FOCUS-135",
+  "classification": "SOURCE_QUALIFICATION_ONLY",
+  "main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+  "parent": {
+    "path": ".qa/create-suggestions-135/retained/renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "spans": [
+    {
+      "name": "oya",
+      "file": "reference/renderer-oya.txt",
+      "kind": "function",
+      "utf16": [
+        10989632,
+        11002945
+      ],
+      "utf8": [
+        11035422,
+        11048735
+      ],
+      "bytes": 13313,
+      "sha256": "5d1d20ebff606a7a1cedb8dd6989333df4f698cc74edfd6b5925dd3b0f2980f4",
+      "completeSyntax": true
+    },
+    {
+      "name": "K4a",
+      "file": "reference/renderer-K4a.txt",
+      "kind": "function",
+      "utf16": [
+        10981748,
+        10983005
+      ],
+      "utf8": [
+        11027538,
+        11028795
+      ],
+      "bytes": 1257,
+      "sha256": "64b2b0991931251a11502866b3cc8d29600b0201aede7a9c600e07a71c1f0e2e",
+      "completeSyntax": true
+    },
+    {
+      "name": "q4a",
+      "file": "reference/renderer-q4a.txt",
+      "kind": "function",
+      "utf16": [
+        10981322,
+        10981748
+      ],
+      "utf8": [
+        11027112,
+        11027538
+      ],
+      "bytes": 426,
+      "sha256": "d7ef1a1fba597eeffdd63aee053bebb5eac37050d99cff6f62bad87589219750",
+      "completeSyntax": true
+    },
+    {
+      "name": "Hji",
+      "file": "reference/renderer-Hji.txt",
+      "kind": "function",
+      "utf16": [
+        9725310,
+        9734397
+      ],
+      "utf8": [
+        9770840,
+        9779927
+      ],
+      "bytes": 9087,
+      "sha256": "3c5589cd46083bc08b635d4e752bfe1f93bc8456ae81e68c401dc6814948f567",
+      "completeSyntax": true
+    },
+    {
+      "name": "dQo",
+      "file": "reference/renderer-dQo.txt",
+      "kind": "function",
+      "utf16": [
+        9717739,
+        9718303
+      ],
+      "utf8": [
+        9763269,
+        9763833
+      ],
+      "bytes": 564,
+      "sha256": "20271005e263b458f1e0c9b44af3f22f910a7a67dec3d417c08aa42d3d84ccc3",
+      "completeSyntax": true
+    },
+    {
+      "name": "hEe",
+      "file": "reference/renderer-hEe.txt",
+      "kind": "function",
+      "utf16": [
+        674922,
+        674947
+      ],
+      "utf8": [
+        674926,
+        674951
+      ],
+      "bytes": 25,
+      "sha256": "f4586b0ea0458a4bc4cbec25db1764f45a1e67eb97f9fbbe73376b37483a643c",
+      "completeSyntax": true
+    },
+    {
+      "name": "lHt",
+      "file": "reference/renderer-lHt.txt",
+      "kind": "function",
+      "utf16": [
+        8373279,
+        8380719
+      ],
+      "utf8": [
+        8418728,
+        8426168
+      ],
+      "bytes": 7440,
+      "sha256": "2b86481687009f77ff169d0e5f52e349ee541b80a71c205e07d691862e938215",
+      "completeSyntax": true
+    },
+    {
+      "name": "pEe-alias",
+      "file": "reference/renderer-pEe-alias.txt",
+      "kind": "variable statement",
+      "utf16": [
+        674947,
+        674991
+      ],
+      "utf8": [
+        674951,
+        674995
+      ],
+      "bytes": 44,
+      "sha256": "1be5eb822f0877f53f2b3a0ae39812a44cbc1ab616a40f0da3af730a2b08ce0d",
+      "completeSyntax": true
+    }
+  ],
+  "checks": {
+    "localRepoListIsReactive": true,
+    "requestedRepoInitialState": true,
+    "repoAvailabilityFeedsSelection": true,
+    "localTargetMembership": true,
+    "targetForwardedIntoCreate": true,
+    "localTargetBoolean": true,
+    "focusHookCalled": true,
+    "actualEditorRegistered": true,
+    "hookInitiallyWaitsOnlyIfNoTarget": true,
+    "oneShotLiveEditorFocus": true,
+    "tabCancelsOnly": true,
+    "pointerCancelsAndCleans": true,
+    "keyCallbackIdentity": true,
+    "sharedEditorReadyCallback": true,
+    "sharedEditorAutoFocus": true,
+    "currentSelectsRepoWhenAvailable": true,
+    "currentActualRepoMembership": true,
+    "currentExistingMountFocus": true,
+    "currentLiveEditorHandle": true,
+    "currentCleanupDetachesHandle": true,
+    "bothCurrentSurfacesShareCreate": true
+  },
+  "fixture": {
+    "path": "src/components/createWorkspaceTargetFocus.test.ts",
+    "sha256": "2c013fd034d0c4000f12d77680d65e8116cfda57b601d8b6ab63a5b0d6e69720"
+  },
+  "limits": [
+    "Actual Create and actual shared ComposerEditor mounted with inert TipTap DOM engine",
+    "Repository response, surrounding controls and suggestions are inert ports; no creation or delivery",
+    "Vendor original is inert data never evaluated",
+    "No browser focus, native macOS, installed/package/provider acceptance",
+    "This is a local repository arrival contract; no Conductor cloud UI scope"
+  ]
+}

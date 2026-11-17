@@ -1,0 +1,74 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: qualified _jt message membership: all final text parts are protected
+ok 1 - qualified _jt message membership: all final text parts are protected
+  ---
+  duration_ms: 2.241728
+  type: 'test'
+  ...
+# Subtest: qualified _jt message membership: mixed final text/tool/text is one protected message
+ok 2 - qualified _jt message membership: mixed final text/tool/text is one protected message
+  ---
+  duration_ms: 0.438493
+  type: 'test'
+  ...
+# Subtest: qualified _jt message membership: already-visible thinking stays with selected message
+ok 3 - qualified _jt message membership: already-visible thinking stays with selected message
+  ---
+  duration_ms: 0.281119
+  type: 'test'
+  ...
+# Subtest: control: a single final text stays selected
+ok 4 - control: a single final text stays selected
+  ---
+  duration_ms: 0.186101
+  type: 'test'
+  ...
+# Subtest: control: the later ordinary message supersedes older text
+ok 5 - control: the later ordinary message supersedes older text
+  ---
+  duration_ms: 0.126083
+  type: 'test'
+  ...
+# Subtest: control: a later ordinary tool-only message does not inhibit text
+ok 6 - control: a later ordinary tool-only message does not inhibit text
+  ---
+  duration_ms: 0.169184
+  type: 'test'
+  ...
+# Subtest: control: later AskUserQuestion protects its message and inhibits earlier text
+ok 7 - control: later AskUserQuestion protects its message and inhibits earlier text
+  ---
+  duration_ms: 0.165957
+  type: 'test'
+  ...
+# Subtest: control: later text after a request remains selected too
+ok 8 - control: later text after a request remains selected too
+  ---
+  duration_ms: 0.09454
+  type: 'test'
+  ...
+# Subtest: control: a nonfinal block does not gain an ordinary preview
+ok 9 - control: a nonfinal block does not gain an ordinary preview
+  ---
+  duration_ms: 0.333507
+  type: 'test'
+  ...
+# Subtest: control: blank final parts do not render or displace real text
+ok 10 - control: blank final parts do not render or displace real text
+  ---
+  duration_ms: 0.372063
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 662.367855

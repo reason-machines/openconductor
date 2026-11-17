@@ -125,12 +125,12 @@ function IconRow({ repo, actions }: { repo: Repo; actions: RepoMiscActions }) {
 }
 
 /** Run `fn` `ms` after the last call; `flush` runs a pending call now. */
-function useDebounced<T>(fn: (value: T) => Promise<unknown>, ms: number, scope: string) {
+function useDebounced<T>(fn: (value: T) => Promise<unknown>, ms: number, scope: string, unmountPolicy: boolean | "discard" = true) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pending = usePendingEdit(scope, fn, () => {
     if (timer.current) clearTimeout(timer.current);
     timer.current = null;
-  }, true);
+  }, unmountPolicy);
   const flush = () => pending.flush();
   return {
     call: (value: T) => {
@@ -163,7 +163,7 @@ function PreviewUrlsRow({ repoPath }: { repoPath: string }) {
       setError("Failed to save preview URLs");
       throw error;
     });
-  }, 500, `${repoPath}:preview`);
+  }, 500, `${repoPath}:preview`, "discard");
   const update = (next: PreviewRow[]) => {
     const list = next.length > 0 ? next : [emptyPreviewRow()];
     setError(null);

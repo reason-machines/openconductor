@@ -1,0 +1,200 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: frozen source-valid inputs retain all local/cloud and return-to-local controls
+ok 1 - frozen source-valid inputs retain all local/cloud and return-to-local controls
+  ---
+  duration_ms: 0.927092
+  type: 'test'
+  ...
+# Subtest: actual Rust routing/wire and Reason listener keep one chat/session, reject unknown session
+ok 2 - actual Rust routing/wire and Reason listener keep one chat/session, reject unknown session
+  ---
+  duration_ms: 1.472604
+  type: 'test'
+  ...
+# Subtest: adapter/reducer preserve local/cloud path, parent/child session and result identity
+ok 3 - adapter/reducer preserve local/cloud path, parent/child session and result identity
+  ---
+  duration_ms: 2.694442
+  type: 'test'
+  ...
+# Subtest: save/restore preserves path and output identity in the same conversation
+ok 4 - save/restore preserves path and output identity in the same conversation
+  ---
+  duration_ms: 1.531152
+  type: 'test'
+  ...
+# Subtest: live file target: local-read-diff\#0 (local, diff)
+ok 5 - live file target: local-read-diff\#0 (local, diff)
+  ---
+  duration_ms: 60.901315
+  type: 'test'
+  ...
+# Subtest: live file target: local-read-viewer\#0 (local, viewer)
+ok 6 - live file target: local-read-viewer\#0 (local, viewer)
+  ---
+  duration_ms: 72.192788
+  type: 'test'
+  ...
+# Subtest: live file target: cloud-read-diff\#0 (cloud, diff)
+ok 7 - live file target: cloud-read-diff\#0 (cloud, diff)
+  ---
+  duration_ms: 49.666069
+  type: 'test'
+  ...
+# Subtest: live file target: cloud-read-viewer\#0 (cloud, viewer)
+ok 8 - live file target: cloud-read-viewer\#0 (cloud, viewer)
+  ---
+  duration_ms: 47.770184
+  type: 'test'
+  ...
+# Subtest: live file target: cloud-write-viewer\#0 (cloud, viewer)
+ok 9 - live file target: cloud-write-viewer\#0 (cloud, viewer)
+  ---
+  duration_ms: 40.187934
+  type: 'test'
+  ...
+# Subtest: live file target: cloud-edit-diff\#0 (cloud, diff)
+ok 10 - live file target: cloud-edit-diff\#0 (cloud, diff)
+  ---
+  duration_ms: 35.484067
+  type: 'test'
+  ...
+# Subtest: live file target: cloud-multiple-diffs\#0 (cloud, diff)
+ok 11 - live file target: cloud-multiple-diffs\#0 (cloud, diff)
+  ---
+  duration_ms: 25.801504
+  type: 'test'
+  ...
+# Subtest: live file target: cloud-multiple-diffs\#1 (cloud, diff)
+ok 12 - live file target: cloud-multiple-diffs\#1 (cloud, diff)
+  ---
+  duration_ms: 39.214312
+  type: 'test'
+  ...
+# Subtest: live file target: child-literal-viewer\#0 (cloud, viewer)
+ok 13 - live file target: child-literal-viewer\#0 (cloud, viewer)
+  ---
+  duration_ms: 23.007414
+  type: 'test'
+  ...
+# Subtest: live file target: child-literal-diff\#0 (cloud, diff)
+ok 14 - live file target: child-literal-diff\#0 (cloud, diff)
+  ---
+  duration_ms: 27.701517
+  type: 'test'
+  ...
+# Subtest: live file target: local-read-after-return\#0 (local, viewer)
+ok 15 - live file target: local-read-after-return\#0 (local, viewer)
+  ---
+  duration_ms: 21.792841
+  type: 'test'
+  ...
+# Subtest: live file target: local-write-after-return\#0 (local, viewer)
+ok 16 - live file target: local-write-after-return\#0 (local, viewer)
+  ---
+  duration_ms: 20.065728
+  type: 'test'
+  ...
+# Subtest: live file target: local-edit-after-return\#0 (local, diff)
+ok 17 - live file target: local-edit-after-return\#0 (local, diff)
+  ---
+  duration_ms: 29.636596
+  type: 'test'
+  ...
+# Subtest: restored file target: local-read-diff\#0 (local, diff)
+ok 18 - restored file target: local-read-diff\#0 (local, diff)
+  ---
+  duration_ms: 24.465295
+  type: 'test'
+  ...
+# Subtest: restored file target: local-read-viewer\#0 (local, viewer)
+ok 19 - restored file target: local-read-viewer\#0 (local, viewer)
+  ---
+  duration_ms: 34.117999
+  type: 'test'
+  ...
+# Subtest: restored file target: cloud-read-diff\#0 (cloud, diff)
+ok 20 - restored file target: cloud-read-diff\#0 (cloud, diff)
+  ---
+  duration_ms: 22.392096
+  type: 'test'
+  ...
+# Subtest: restored file target: cloud-read-viewer\#0 (cloud, viewer)
+ok 21 - restored file target: cloud-read-viewer\#0 (cloud, viewer)
+  ---
+  duration_ms: 18.440729
+  type: 'test'
+  ...
+# Subtest: restored file target: cloud-write-viewer\#0 (cloud, viewer)
+ok 22 - restored file target: cloud-write-viewer\#0 (cloud, viewer)
+  ---
+  duration_ms: 30.526866
+  type: 'test'
+  ...
+# Subtest: restored file target: cloud-edit-diff\#0 (cloud, diff)
+ok 23 - restored file target: cloud-edit-diff\#0 (cloud, diff)
+  ---
+  duration_ms: 17.112448
+  type: 'test'
+  ...
+# Subtest: restored file target: cloud-multiple-diffs\#0 (cloud, diff)
+ok 24 - restored file target: cloud-multiple-diffs\#0 (cloud, diff)
+  ---
+  duration_ms: 28.93265
+  type: 'test'
+  ...
+# Subtest: restored file target: cloud-multiple-diffs\#1 (cloud, diff)
+ok 25 - restored file target: cloud-multiple-diffs\#1 (cloud, diff)
+  ---
+  duration_ms: 27.890331
+  type: 'test'
+  ...
+# Subtest: restored file target: child-literal-viewer\#0 (cloud, viewer)
+ok 26 - restored file target: child-literal-viewer\#0 (cloud, viewer)
+  ---
+  duration_ms: 30.774677
+  type: 'test'
+  ...
+# Subtest: restored file target: child-literal-diff\#0 (cloud, diff)
+ok 27 - restored file target: child-literal-diff\#0 (cloud, diff)
+  ---
+  duration_ms: 17.788299
+  type: 'test'
+  ...
+# Subtest: restored file target: local-read-after-return\#0 (local, viewer)
+ok 28 - restored file target: local-read-after-return\#0 (local, viewer)
+  ---
+  duration_ms: 19.350955
+  type: 'test'
+  ...
+# Subtest: restored file target: local-write-after-return\#0 (local, viewer)
+ok 29 - restored file target: local-write-after-return\#0 (local, viewer)
+  ---
+  duration_ms: 32.175913
+  type: 'test'
+  ...
+# Subtest: restored file target: local-edit-after-return\#0 (local, diff)
+ok 30 - restored file target: local-edit-after-return\#0 (local, diff)
+  ---
+  duration_ms: 20.958983
+  type: 'test'
+  ...
+# Subtest: write frozen reproduction witnesses and exact extracted callback identities
+ok 31 - write frozen reproduction witnesses and exact extracted callback identities
+  ---
+  duration_ms: 0.683963
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1927.072789

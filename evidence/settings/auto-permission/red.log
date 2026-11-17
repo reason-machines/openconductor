@@ -1,0 +1,59 @@
+ Downloading crates ...
+  Downloaded errno v0.3.15
+   Compiling rustix v1.1.6
+   Compiling bitflags v2.13.2
+   Compiling rustix-openpty v0.2.0
+   Compiling oc-scripts v0.1.0 (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/crates/scripts)
+   Compiling settings-auto-permission-unit v0.0.0 (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-auto-permission-binding/harness)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.13s
+     Running unittests src/lib.rs (.oc-tmp/settings-auto-permission-binding/harness/target/debug/build/settings-auto-permission-unit/dda2fa8575ded66e/out/settings_auto_permission_unit-dda2fa8575ded66e)
+
+running 9 tests
+test regression::auto_permission_default_is_unchanged_for_absent_false_or_invalid_flag ... ok
+test regression::auto_permission_does_not_change_codex_launch ... ok
+test regression::auto_permission_never_enables_approvals_by_itself ... ok
+
+thread 'regression::auto_permission_per_turn_honors_enabled_classifier' (608) panicked at /home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-auto-permission-binding/regression.rs:21:5:
+assertion `left == right` failed
+  left: Default
+ right: Auto
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test regression::auto_permission_per_turn_honors_enabled_classifier ... FAILED
+
+thread 'regression::auto_permission_persisted_opt_out_wins_over_initial_plan_default' (609) panicked at /home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-auto-permission-binding/regression.rs:52:5:
+assertion `left == right` failed
+  left: Default
+ right: Auto
+test regression::auto_permission_persisted_opt_out_wins_over_initial_plan_default ... FAILED
+test regression::auto_permission_plan_precedes_both_flags ... ok
+
+thread 'regression::auto_permission_review_ignores_chat_plan_default_but_keeps_approval_policy' (611) panicked at /home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-auto-permission-binding/regression.rs:65:5:
+assertion `left == right` failed
+  left: Default
+ right: Auto
+test regression::auto_permission_review_ignores_chat_plan_default_but_keeps_approval_policy ... FAILED
+
+thread 'regression::auto_permission_launch_honors_enabled_classifier' (606) panicked at /home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-auto-permission-binding/regression.rs:17:5:
+assertion `left == right` failed
+  left: Default
+ right: Auto
+test regression::auto_permission_launch_honors_enabled_classifier ... FAILED
+
+thread 'regression::auto_permission_follow_up_reads_latest_approval_and_auto_flags' (605) panicked at /home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-auto-permission-binding/regression.rs:59:5:
+assertion `left == right` failed
+  left: Default
+ right: Auto
+test regression::auto_permission_follow_up_reads_latest_approval_and_auto_flags ... FAILED
+
+failures:
+
+failures:
+    regression::auto_permission_follow_up_reads_latest_approval_and_auto_flags
+    regression::auto_permission_launch_honors_enabled_classifier
+    regression::auto_permission_per_turn_honors_enabled_classifier
+    regression::auto_permission_persisted_opt_out_wins_over_initial_plan_default
+    regression::auto_permission_review_ignores_chat_plan_default_but_keeps_approval_policy
+
+test result: FAILED. 4 passed; 5 failed; 0 ignored; 0 measured; 101 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`

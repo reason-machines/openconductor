@@ -1,0 +1,1 @@
+function hjt(t){if(t.role!=="assistant"||t.content.type!=="assistant")return;const e=na(t);if(!e.some(s=>Fa(s,"ExitPlanMode")))for(let s=e.length-1;s>=0;s--){const n=e[s];if(typeof n!="string"&&n.type==="text"&&n.text.trim())return n.text}}

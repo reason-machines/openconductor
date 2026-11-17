@@ -1,0 +1,1 @@
+function Fia(t){const{localId:e,pinnedAt:n}=t;return{localId:e,pinnedAt:n}}

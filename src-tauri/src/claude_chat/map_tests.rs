@@ -19,6 +19,34 @@ fn result(is_error: bool, text: &str) -> ClaudeEvent {
 }
 
 #[test]
+fn result_error_provenance_survives_only_the_explicit_unstopped_result() {
+    let raw: Vec<Value> = serde_json::from_str(include_str!(
+        "../../../evidence/chat/result-error-preview/raw.json"
+    ))
+    .unwrap();
+    let expected: Vec<Value> = serde_json::from_str(include_str!(
+        "../../../evidence/chat/result-error-preview/wire.json"
+    ))
+    .unwrap();
+    for (case, expected) in raw.iter().zip(&expected) {
+        assert_eq!(case["id"], expected["id"]);
+        let mut mapper = TurnMapper::new(CWD, Some("source-only-chat".into()));
+        if case["stopping"] == true {
+            mapper.stop_requested();
+        }
+        let out = mapper.map(&ev(case["raw"].clone()));
+        let wire: Vec<_> = out
+            .iter()
+            .map(|event| crate::reason_acp::wire::event_json("source-only-chat", event))
+            .collect();
+        assert_eq!(wire.len(), 1, "{}", case["id"]);
+        assert_eq!(wire[0]["end"], expected["end"], "{}", case["id"]);
+        println!("{}", json!({ "id": case["id"], "actual": wire[0]["end"] }));
+    }
+    assert_eq!(raw.len(), expected.len());
+}
+
+#[test]
 fn completed_turn_usage_survives_sdk_result_to_wire() {
     let mut mapper = TurnMapper::new(CWD, None);
     let result = ClaudeEvent::parse(include_str!(
@@ -226,7 +254,7 @@ fn a_usage_limit_fails_the_turn_instead_of_replying() {
     assert!(texts(&out).is_empty());
     assert_eq!(
         m.map(&result(true, limit)),
-        vec![ProviderEvent::TurnEnded(TurnEnd::Failed(limit.into()))]
+        vec![ProviderEvent::TurnEnded(TurnEnd::ResultError(limit.into()))]
     );
 }
 
@@ -244,7 +272,7 @@ fn a_stopped_turn_ends_cancelled_and_the_next_one_is_normal() {
     );
     assert_eq!(
         m.map(&interrupted),
-        vec![ProviderEvent::TurnEnded(TurnEnd::Failed(
+        vec![ProviderEvent::TurnEnded(TurnEnd::ResultError(
             "Claude Code ended the turn: error_during_execution".into()
         ))]
     );

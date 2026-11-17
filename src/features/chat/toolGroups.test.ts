@@ -99,9 +99,9 @@ const referenceTurn = [
   m("a5", "assistant", [said("Fixed.")]),
 ];
 
-test("a turn's messages fold into one block that collapses across messages", () => {
+test("a turn's mixed tool/text messages collapse without double-counting messages", () => {
   const rows = fold([running("t1"), ...referenceTurn, done("t1")]);
-  assert.deepEqual(describe(rows), ["user", '[4 tool calls, 2 messages] "Fixed."', "turn_end"]);
+  assert.deepEqual(describe(rows), ["user", '[4 tool calls] "Fixed."', "turn_end"]);
   const agent = rows[1]!;
   assert.ok(agent.kind === "agent" && !agent.running && agent.copyText === "Fixed.");
 });

@@ -1,0 +1,8 @@
+{
+  "status": "PASS_SOURCE_AND_FIXTURE_INTEGRITY",
+  "checks": 288,
+  "retained_spans": 42,
+  "main_checked": "d90bed88174656d577adfa793d3850d28eaea7e2",
+  "frozen_sha256": "5de8fc5655468b118cd6efda351fa486a27913a694b7ea330dd3b5895129784a",
+  "browser_native_package": "NOT_RUN"
+}

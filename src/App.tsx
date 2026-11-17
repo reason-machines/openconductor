@@ -17,7 +17,7 @@ import { glyphs } from "./keybindings/shortcut";
 import { SubmitPromptDialog } from "./components/SubmitPromptDialog";
 import { FeedbackDialog } from "./components/FeedbackDialog";
 import { DiagnosticsPage } from "./diagnostics/DiagnosticsPage";
-import { AllWorkspaces } from "./components/AllWorkspaces";
+import { HomeWorkspaceScreen } from "./components/HomeWorkspaceScreen";
 import { Dashboard } from "./components/Dashboard";
 import "./home.css";
 import { WorkspaceView } from "./components/WorkspaceView";
@@ -68,6 +68,7 @@ import { PaletteHost, type PaletteCommands } from "./palette/PaletteHost";
 import { useKeybindingOverrides, useKeybindings } from "./keybindings/KeybindingsProvider";
 import { PRIORITY } from "./keybindings/dispatcher";
 import { copyWorkspaceLink } from "./workspace/link";
+import { copyText } from "./features/openIn/apps.ts";
 import { SettingsView } from "./settings/SettingsView";
 import { USER_PAGES } from "./settings/pages";
 import { OPEN_SETTINGS_EVENT, openAgentSettings } from "./features/chat/ChatModelPicker.tsx";
@@ -605,7 +606,16 @@ export default function App() {
             sidebarVisible={isSidebarVisible(state)}
             onClose={() => setCreatePage(null)}
             addActions={createAddActions}
-            onWarning={(message) => show("error", message, { sticky: true })}
+            onWarning={(message, recovery) => show("error", message, {
+              sticky: true,
+              action: recovery ? {
+                label: "Recover prompt",
+                onClick: () => void copyText(recovery.prompt).then(
+                  () => show("info", "Copied prompt to clipboard"),
+                  () => show("error", "Failed to copy to clipboard"),
+                ),
+              } : undefined,
+            })}
             dispatch={dispatch}
           />
         ) : repo && workspace?.status === "archived" ? (
@@ -624,7 +634,17 @@ export default function App() {
             onNextUnread={() => void openNextUnread(state, dispatch, { skipSelected: true })}
           />
         ) : sel.kind === "home" ? (
-          <AllWorkspaces repos={state.repos} loading={startup === "loading"} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
+          <HomeWorkspaceScreen
+            repos={state.repos}
+            loading={startup === "loading"}
+            sidebarVisible={isSidebarVisible(state)}
+            dispatch={dispatch}
+            onCreateWorkspace={() => openDialog("create")}
+            sections={state.sections ?? []}
+            onNewSection={(ws) => setSectionDialog({ mode: "create", workspaceIdToMove: ws.id })}
+            onCopyLink={(ws) => copyLink(ws.id)}
+            onError={(message) => show("error", message)}
+          />
         ) : sel.kind === "routines" && cloudUI === true ? (
           sel.page ? (
             <RoutineEditor
@@ -681,7 +701,7 @@ export default function App() {
           repo={removingRepo}
           onClose={() => setRemovingRepoId(null)}
           onRemoved={() => {
-            setRemovingRepoId(null);
+            setRemovingRepoId((current) => current === removingRepo.id ? null : current);
             show("info", MISC_COPY.remove.removed);
             dispatch({ type: "removeRepo", repoId: removingRepo.id });
           }}
@@ -699,7 +719,16 @@ export default function App() {
           githubUsername={prefix.githubUsername}
           onClose={() => setDialog(null)}
           addActions={createAddActions}
-          onWarning={(message) => show("error", message, { sticky: true })}
+          onWarning={(message, recovery) => show("error", message, {
+            sticky: true,
+            action: recovery ? {
+              label: "Recover prompt",
+              onClick: () => void copyText(recovery.prompt).then(
+                () => show("info", "Copied prompt to clipboard"),
+                () => show("error", "Failed to copy to clipboard"),
+              ),
+            } : undefined,
+          })}
           dispatch={dispatch}
         />
       )}
@@ -758,7 +787,7 @@ export default function App() {
           onConfirm={() => dispatch({ ...archiveOverAgents, stopRunningAgents: true })}
         />
       )}
-      {restoreRequest && <RestoreWorkspaceDialog request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
+      {restoreRequest && <RestoreWorkspaceDialog key={restoreRequest.workspaceId} request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
       {quitDialog}
     </div>
     <BrowserPreviewHost />

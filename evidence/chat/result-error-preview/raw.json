@@ -1,0 +1,6 @@
+[
+  {"id":"explicit error result","stopping":false,"raw":{"type":"result","session_id":"source-only-chat","subtype":"error_during_execution","is_error":true,"result":"Synthetic result failure."}},
+  {"id":"success control","stopping":false,"raw":{"type":"result","session_id":"source-only-chat","subtype":"success","is_error":false,"result":"Done."}},
+  {"id":"stopping control","stopping":true,"raw":{"type":"result","session_id":"source-only-chat","subtype":"error_during_execution","is_error":true,"result":"Synthetic result failure."}},
+  {"id":"failure subtype without an error result","stopping":false,"raw":{"type":"result","session_id":"source-only-chat","subtype":"error_during_execution","is_error":false,"result":"Synthetic result failure."}}
+]

@@ -1,0 +1,266 @@
+(node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:99) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the actual palette callback retains the last workspace repository after Home and reload
+ok 1 - the actual palette callback retains the last workspace repository after Home and reload
+  ---
+  duration_ms: 2.798839
+  type: 'test'
+  ...
+# Subtest: the actual palette callback keeps the requested repository setting row
+ok 2 - the actual palette callback keeps the requested repository setting row
+  ---
+  duration_ms: 0.501827
+  type: 'test'
+  ...
+# Subtest: a resolved selected workspace takes precedence over the saved route
+ok 3 - a resolved selected workspace takes precedence over the saved route
+  ---
+  duration_ms: 0.309039
+  type: 'test'
+  ...
+# Subtest: no route, an invalid route or a removed repository falls back to the first repository
+ok 4 - no route, an invalid route or a removed repository falls back to the first repository
+  ---
+  duration_ms: 0.529212
+  type: 'test'
+  ...
+# Subtest: the saved route selects its repository even if that workspace is no longer in the sidebar
+ok 5 - the saved route selects its repository even if that workspace is no longer in the sidebar
+  ---
+  duration_ms: 0.216983
+  type: 'test'
+  ...
+# Subtest: an empty repository list has no Settings target
+ok 6 - an empty repository list has no Settings target
+  ---
+  duration_ms: 0.250234
+  type: 'test'
+  ...
+# Subtest: an unresolved or wrong-repository selection does not create a saved workspace route
+ok 7 - an unresolved or wrong-repository selection does not create a saved workspace route
+  ---
+  duration_ms: 0.216271
+  type: 'test'
+  ...
+# Subtest: resolved unstarted and failed workspaces still establish their repository route
+ok 8 - resolved unstarted and failed workspaces still establish their repository route
+  ---
+  duration_ms: 0.168618
+  type: 'test'
+  ...
+# Subtest: only a full matching archived workspace can establish the selected route
+ok 9 - only a full matching archived workspace can establish the selected route
+  ---
+  duration_ms: 0.301281
+  type: 'test'
+  ...
+# Subtest: stale unresolved selection leaves the previous persisted route intact
+ok 10 - stale unresolved selection leaves the previous persisted route intact
+  ---
+  duration_ms: 0.429989
+  type: 'test'
+  ...
+# Subtest: the authoritative recent writer preserves the route and ordinary tab fields through reload
+ok 11 - the authoritative recent writer preserves the route and ordinary tab fields through reload
+  ---
+  duration_ms: 0.300893
+  type: 'test'
+  ...
+# Subtest: saving a route preserves recents and sibling fields from the latest ordinary write
+ok 12 - saving a route preserves recents and sibling fields from the latest ordinary write
+  ---
+  duration_ms: 0.252044
+  type: 'test'
+  ...
+# Subtest: persisted route parsing rejects malformed fields and non-workspace paths
+ok 13 - persisted route parsing rejects malformed fields and non-workspace paths
+  ---
+  duration_ms: 0.232526
+  type: 'test'
+  ...
+# Subtest: workspace routes accept a trailing slash and search without decoding opaque IDs
+ok 14 - workspace routes accept a trailing slash and search without decoding opaque IDs
+  ---
+  duration_ms: 0.11864
+  type: 'test'
+  ...
+# Subtest: storage denial does not throw or prevent in-memory repository selection
+ok 15 - storage denial does not throw or prevent in-memory repository selection
+  ---
+  duration_ms: 0.211246
+  type: 'test'
+  ...
+# Subtest: user pages, provider pages and unknown rows keep their existing callback behavior
+ok 16 - user pages, provider pages and unknown rows keep their existing callback behavior
+  ---
+  duration_ms: 0.461189
+  type: 'test'
+  ...
+# (node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: provider selections notify an already-subscribed tab and preserve other URL state
+ok 17 - provider selections notify an already-subscribed tab and preserve other URL state
+  ---
+  duration_ms: 2.439586
+  type: 'test'
+  ...
+# Subtest: browser history also notifies provider tab subscribers
+ok 18 - browser history also notifies provider tab subscribers
+  ---
+  duration_ms: 0.32615
+  type: 'test'
+  ...
+# Subtest: obsolete or missing provider names use Reason
+ok 19 - obsolete or missing provider names use Reason
+  ---
+  duration_ms: 0.484747
+  type: 'test'
+  ...
+# (node:115) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: non-settings paths open no settings
+ok 20 - non-settings paths open no settings
+  ---
+  duration_ms: 0.90068
+  type: 'test'
+  ...
+# Subtest: /settings and /settings/user open General
+ok 21 - /settings and /settings/user open General
+  ---
+  duration_ms: 0.405732
+  type: 'test'
+  ...
+# Subtest: every built user page has its own route
+ok 22 - every built user page has its own route
+  ---
+  duration_ms: 0.415118
+  type: 'test'
+  ...
+# Subtest: unknown and gated user tabs open General
+ok 23 - unknown and gated user tabs open General
+  ---
+  duration_ms: 0.174227
+  type: 'test'
+  ...
+# Subtest: cloud and organization routes need a cloud org, so they open General
+ok 24 - cloud and organization routes need a cloud org, so they open General
+  ---
+  duration_ms: 0.529236
+  type: 'test'
+  ...
+# Subtest: with a Reason workspace active, the organization pages open (Conductor's PI routes)
+ok 25 - with a Reason workspace active, the organization pages open (Conductor's PI routes)
+  ---
+  duration_ms: 0.482386
+  type: 'test'
+  ...
+# Subtest: opted-in Cloud setup has its own route, outside /settings/user
+ok 26 - opted-in Cloud setup has its own route, outside /settings/user
+  ---
+  duration_ms: 0.273657
+  type: 'test'
+  ...
+# Subtest: /settings/repos opens the last-viewed repository, else the first, else General
+ok 27 - /settings/repos opens the last-viewed repository, else the first, else General
+  ---
+  duration_ms: 0.212581
+  type: 'test'
+  ...
+# Subtest: repository sections
+ok 28 - repository sections
+  ---
+  duration_ms: 0.444049
+  type: 'test'
+  ...
+# Subtest: the /settings index redirect (?tab=, ?repoId=)
+ok 29 - the /settings index redirect (?tab=, ?repoId=)
+  ---
+  duration_ms: 1.100603
+  type: 'test'
+  ...
+# Subtest: repo ids are URL-encoded both ways
+ok 30 - repo ids are URL-encoded both ways
+  ---
+  duration_ms: 0.203561
+  type: 'test'
+  ...
+# Subtest: a resolved URL keeps unrelated search parameters only
+ok 31 - a resolved URL keeps unrelated search parameters only
+  ---
+  duration_ms: 0.159694
+  type: 'test'
+  ...
+# Subtest: resolved Agents URLs retain only a supported provider tab
+ok 32 - resolved Agents URLs retain only a supported provider tab
+  ---
+  duration_ms: 0.267627
+  type: 'test'
+  ...
+# Subtest: Copy link on a settings page copies its deep link (Conductor's TGt)
+ok 33 - Copy link on a settings page copies its deep link (Conductor's TGt)
+  ---
+  duration_ms: 0.083228
+  type: 'test'
+  ...
+# (node:123) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Conductor's `qet` keywords: settings, the label, its words, then extras
+ok 34 - Conductor's `qet` keywords: settings, the label, its words, then extras
+  ---
+  duration_ms: 1.835094
+  type: 'test'
+  ...
+# Subtest: pages come first in nav order, agent tabs right after Agents
+ok 35 - pages come first in nav order, agent tabs right after Agents
+  ---
+  duration_ms: 0.180795
+  type: 'test'
+  ...
+# Subtest: a blank query shows nothing; a query ranks pages and rows
+ok 36 - a blank query shows nothing; a query ranks pages and rows
+  ---
+  duration_ms: 4.348423
+  type: 'test'
+  ...
+# Subtest: a row opens its page and names the row to scroll to
+ok 37 - a row opens its page and names the row to scroll to
+  ---
+  duration_ms: 0.700095
+  type: 'test'
+  ...
+# Subtest: repository rows and sections need a repository
+ok 38 - repository rows and sections need a repository
+  ---
+  duration_ms: 0.921933
+  type: 'test'
+  ...
+# Subtest: an agent tab result opens Agents on that tab
+ok 39 - an agent tab result opens Agents on that tab
+  ---
+  duration_ms: 0.498737
+  type: 'test'
+  ...
+# Subtest: at most 30 results
+ok 40 - at most 30 results
+  ---
+  duration_ms: 1.766802
+  type: 'test'
+  ...
+# Subtest: rows only for pages that are listed (no Big terminal rows while the mode is off)
+ok 41 - rows only for pages that are listed (no Big terminal rows while the mode is off)
+  ---
+  duration_ms: 0.143659
+  type: 'test'
+  ...
+1..41
+# tests 41
+# suites 0
+# pass 41
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 686.139886

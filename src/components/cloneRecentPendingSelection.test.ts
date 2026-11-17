@@ -87,16 +87,16 @@ async function fixture(protocol: model.GitProtocol) {
   const input = () => renderer.root.findByProps({ id: "git-url" });
   const recent = () => renderer.root.findAllByType("button").find((node: { props: { "aria-pressed"?: boolean } }) => typeof node.props["aria-pressed"] === "boolean");
   const submit = async () => {
-    await act(async () => { void renderer.root.findByType("form").props.onSubmit({ preventDefault() {} }); });
+    await act(async () => { void renderer.root.findByProps({ "data-primary-action": true }).props.onClick(); });
   };
   return {
     requests, input, recent, submit,
-    primary: () => renderer.root.findByProps({ type: "submit" }),
+    primary: () => renderer.root.findByProps({ "data-primary-action": true }),
     async start() {
       act(() => input().props.onChange({ target: { value: "https://github.com/Acme/First.git" } }));
       await submit();
       assert.equal(requests.length, 1);
-      assert.equal(renderer.root.findByProps({ type: "submit" }).props.disabled, true);
+      assert.equal(renderer.root.findByProps({ "data-primary-action": true }).props.disabled, true);
     },
     select() {
       assert.notEqual(recent().props.disabled, true, "Recent repositories must remain selectable while cloning");

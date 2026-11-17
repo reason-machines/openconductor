@@ -1,0 +1,45 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:85) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: control: initial attach opens once, fits, and mounts in its container
+ok 1 - control: initial attach opens once, fits, and mounts in its container
+  ---
+  duration_ms: 1.711415
+  type: 'test'
+  ...
+# Subtest: control: the active detach removes its mount and disconnects its observer
+ok 2 - control: the active detach removes its mount and disconnects its observer
+  ---
+  duration_ms: 0.623194
+  type: 'test'
+  ...
+# Subtest: stale detach must not remove a newer attachment in another container
+ok 3 - stale detach must not remove a newer attachment in another container
+  ---
+  duration_ms: 0.574353
+  type: 'test'
+  ...
+# Subtest: stale detach must not remove a newer attachment in the same container
+ok 4 - stale detach must not remove a newer attachment in the same container
+  ---
+  duration_ms: 0.652242
+  type: 'test'
+  ...
+# Subtest: replacing an attachment disconnects the old resize observer immediately
+ok 5 - replacing an attachment disconnects the old resize observer immediately
+  ---
+  duration_ms: 1.50564
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 173.041754

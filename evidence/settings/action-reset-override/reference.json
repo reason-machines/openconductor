@@ -1,0 +1,557 @@
+{
+  "author": "Conductor Rebuild",
+  "lead": "ACTIONS-RESET-OVERRIDE-49",
+  "main": "74c004a95d7b10072f54f71ca611f22c50944f64",
+  "status": "RED qualification only; product unchanged; collision clearance requested",
+  "assets": {
+    "renderer": {
+      "path": ".oc-tmp/settings-loader-reference/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "path": ".oc-tmp/settings-coverage-current/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "spans": [
+    {
+      "asset": "renderer",
+      "label": "import:us",
+      "utf8_half_open": [
+        53544,
+        53552
+      ],
+      "bytes": 8,
+      "sha256": "c5eeadf0c586e2b2e1be16f1510303491b7eaf59e297fa63e286862d0fc556ac",
+      "text": "a9 as us"
+    },
+    {
+      "asset": "renderer",
+      "label": "Xzt",
+      "utf8_half_open": [
+        7745589,
+        7745869
+      ],
+      "bytes": 280,
+      "sha256": "0e559bdd5dfdf9b58260abbcff9cc5039f52d73c98781022265a6e0fb6a2c3df",
+      "text": "function Xzt(t){if(t===void 0)return{source:void 0,overrides:[]};const e=[t.configurations[\"repo-local\"],t.configurations[\"repo-shared\"],t.configurations.user].filter(n=>n.isConfigured).map(n=>n.source).filter(n=>n!==void 0);return{source:t.effective.source,overrides:e.slice(1)}}"
+    },
+    {
+      "asset": "renderer",
+      "label": "_Ze",
+      "utf8_half_open": [
+        7749558,
+        7749718
+      ],
+      "bytes": 160,
+      "sha256": "8096342812f59363f8ff2863004955813cf0110e9cc2b5d176d6021c79aa57d7",
+      "text": "function _Ze(t){if(t===void 0)return;const e=t[\"repo-local\"].resetToInherited;if(e!==void 0)return[{id:\"reset\",label:\"Reset\",onSelect:()=>e().fireAndForget()}]}"
+    },
+    {
+      "asset": "renderer",
+      "label": "mho",
+      "utf8_half_open": [
+        7751304,
+        7753190
+      ],
+      "bytes": 1886,
+      "sha256": "3451ca637c7e65fd968f62ee6afbb939e7a67db9ecd8985de072af81f444e5b7",
+      "text": "function mho(t){const e=ne.c(29),{settingKey:n,onReset:i,resetLabel:r,showReset:o,resetActions:a,disabled:c}=t,u=r===void 0?\"Reset\":r,d=o===void 0?!0:o,h=$.useId(),{openActionId:m,setOpenActionId:g}=hho(),_=m===h;let v;e[0]!==c||e[1]!==i||e[2]!==n?(v=()=>{if(c!==!0){if(i!==void 0){i();return}n!==void 0&&zo.deleteSetting(n).catch(gho).fireAndForget()}},e[0]=c,e[1]=i,e[2]=n,e[3]=v):v=e[3];const x=v;let w;e[4]!==c?(w=B=>{c!==!0&&B.onSelect()},e[4]=c,e[5]=w):w=e[5];const E=w;let k;e[6]!==h||e[7]!==g?(k=B=>g(B?h:void 0),e[6]=h,e[7]=g,e[8]=k):k=e[8];let I;e[9]===Symbol.for(\"react.memo_cache_sentinel\")?(I=p.jsx(cv,{className:\"size-4\"}),e[9]=I):I=e[9];let R;e[10]!==c?(R=p.jsx(Sg,{asChild:!0,children:p.jsx(\"button\",{type:\"button\",className:\"pointer-events-auto flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50\",\"aria-label\":\"Setting actions\",disabled:c,children:I})}),e[10]=c,e[11]=R):R=e[11];let O;e[12]!==c||e[13]!==E||e[14]!==x||e[15]!==a||e[16]!==u||e[17]!==d?(O=a!==void 0?a.map(B=>p.jsx(Yc,{onSelect:()=>E(B),disabled:c,children:B.label},B.id)):p.jsx(p.Fragment,{children:d&&p.jsx(Yc,{onSelect:x,disabled:c,children:u})}),e[12]=c,e[13]=E,e[14]=x,e[15]=a,e[16]=u,e[17]=d,e[18]=O):O=e[18];let D;e[19]!==O?(D=p.jsx(Tm,{align:\"end\",children:O}),e[19]=O,e[20]=D):D=e[20];let P;e[21]!==_||e[22]!==k||e[23]!==R||e[24]!==D?(P=p.jsxs(h2,{open:_,onOpenChange:k,children:[R,D]}),e[21]=_,e[22]=k,e[23]=R,e[24]=D,e[25]=P):P=e[25];let L;return e[26]!==_||e[27]!==P?(L=p.jsx(\"div\",{\"data-setting-row-action\":!0,\"data-open\":_,className:\"pointer-events-none flex size-7 items-center justify-center opacity-0 transition-opacity group-hover/settings-row:opacity-100 group-focus-within/settings-row:opacity-100 data-[open=true]:opacity-100\",children:P}),e[26]=_,e[27]=P,e[28]=L):L=e[28],L}"
+    },
+    {
+      "asset": "renderer",
+      "label": "Al",
+      "utf8_half_open": [
+        7753241,
+        7755288
+      ],
+      "bytes": 2047,
+      "sha256": "4a5dedcb364712276136cf7e5aee0d6bc63b9eeb8c29687514b9a3dc0ed10ff9",
+      "text": "function Al({title:t,description:e,detail:n,settingKey:i,repoScope:r,onReset:o,resetLabel:a,showReset:c=!0,resetActions:u,resetDisabled:d,sourceInfo:h,control:m,children:g,align:_=n===void 0?\"center\":\"start\",className:v,contentClassName:x}){const w=eUt(),E=hS(i),k=w??E,I=cVe(i??\"\"),R=N9(i??\"\"),O=us({key:i,for:r}),D=r!==void 0?O.data?.configurations[\"repo-local\"]:void 0,P=Qzt(),L=r!==void 0?Xzt(O.data):void 0,B=r!==void 0?O.data?.effective.source:I,F=h?.source??B,H=h?.overrides??L?.overrides,U=u??(r!==void 0&&o===void 0?_Ze(O.data?.configurations):void 0),z=i!==void 0&&(r!==void 0?D?.isConfigured===!0:h!==void 0?F!==void 0&&P?.isCurrentSettingsSource(F)===!0:lho({source:I,navigation:P,currentValue:R.data})),G=c&&(z||i===void 0&&o!==void 0),K=U!==void 0?U.length>0:G,X=t!==void 0||e!==void 0||m!==void 0,Q=K?p.jsx(mho,{settingKey:i,onReset:o,resetLabel:a,showReset:G,resetActions:U,disabled:d}):null,J=t===void 0&&Q!==null,te=$.useMemo(()=>({isConfiguredInCurrentScope:z,effectiveSource:F,overrides:H}),[z,F,H]);return p.jsx(yki.Provider,{value:te,children:p.jsx(tho,{target:w?.pageTarget,children:p.jsx(\"div\",{id:k.id,ref:k.ref,\"data-settings-row\":!0,className:Xe(\"group/settings-row relative border-t pt-5\",v),children:p.jsxs(\"div\",{\"data-reveal-frame\":!0,className:Xe(\"relative min-w-0\",x),children:[J&&p.jsx(\"div\",{className:\"absolute right-0 top-0 z-10\",children:Q}),X&&p.jsxs(\"div\",{className:Xe(\"flex justify-between gap-8\",_===\"start\"?\"items-start\":\"items-center\"),children:[p.jsxs(\"div\",{className:\"min-w-0 flex-1\",children:[t!==void 0&&p.jsxs(\"div\",{className:\"flex min-h-7 items-center gap-2 font-medium\",children:[p.jsx(\"div\",{className:\"min-w-0\",children:t}),p.jsx(xki,{source:F}),p.jsx(Ski,{}),Q]}),e!==void 0&&p.jsx(\"div\",{className:\"mt-0.5 text-sm text-muted-foreground\",children:e}),n!==void 0&&p.jsx(\"div\",{className:\"mt-1 text-xs text-muted-foreground\",children:n})]}),m!==void 0&&p.jsx(\"div\",{className:\"shrink-0\",children:m})]}),g!==void 0&&g!==!1&&p.jsx(\"div\",{className:Xe(X&&\"mt-3\",J&&\"pr-8\"),children:g})]})})})})}"
+    },
+    {
+      "asset": "renderer",
+      "label": "vho",
+      "utf8_half_open": [
+        7758506,
+        7760184
+      ],
+      "bytes": 1678,
+      "sha256": "147ead0ac5b2526b2c12b55ecfe2dd2eaaaa05ddca246b06e06843e719c7fbf8",
+      "text": "function vho(t){const e=ne.c(35),{title:n,description:i,badge:r,open:o,onOpenChange:a,settingKey:c,repoScope:u,onReset:d,resetLabel:h,showReset:m,resetActions:g,sourceInfo:_,disabled:v,children:x}=t;let w;e[0]!==n?(w=p.jsx(\"span\",{className:\"font-medium\",children:n}),e[0]=n,e[1]=w):w=e[1];let E;e[2]===Symbol.for(\"react.memo_cache_sentinel\")?(E=p.jsx(Ski,{}),e[2]=E):E=e[2];let k;e[3]!==r||e[4]!==w?(k=p.jsxs(\"div\",{className:\"flex items-center gap-2\",children:[w,E,r]}),e[3]=r,e[4]=w,e[5]=k):k=e[5];let I;e[6]!==i?(I=i!==void 0&&p.jsx(\"div\",{className:\"text-sm text-muted-foreground\",children:i}),e[6]=i,e[7]=I):I=e[7];let R;e[8]!==k||e[9]!==I?(R=p.jsxs(\"div\",{className:\"min-w-0 space-y-0.5\",children:[k,I]}),e[8]=k,e[9]=I,e[10]=R):R=e[10];const O=o&&\"rotate-180\";let D;e[11]!==O?(D=Xe(\"size-4 shrink-0 text-muted-foreground transition-transform\",O),e[11]=O,e[12]=D):D=e[12];let P;e[13]!==D?(P=p.jsx(Ml,{className:D}),e[13]=D,e[14]=P):P=e[14];let L;e[15]!==R||e[16]!==P?(L=p.jsxs(z9,{className:\"flex w-full items-center justify-between gap-4 py-0 text-left\",children:[R,P]}),e[15]=R,e[16]=P,e[17]=L):L=e[17];let B;e[18]!==x?(B=p.jsx(AS,{className:\"pt-3\",children:x}),e[18]=x,e[19]=B):B=e[19];let F;e[20]!==a||e[21]!==o||e[22]!==B||e[23]!==L?(F=p.jsxs(TS,{open:o,onOpenChange:a,children:[L,B]}),e[20]=a,e[21]=o,e[22]=B,e[23]=L,e[24]=F):F=e[24];let H;return e[25]!==v||e[26]!==d||e[27]!==u||e[28]!==g||e[29]!==h||e[30]!==c||e[31]!==m||e[32]!==_||e[33]!==F?(H=p.jsx(Al,{settingKey:c,repoScope:u,onReset:d,resetLabel:h,showReset:m,resetActions:g,resetDisabled:v,sourceInfo:_,children:F}),e[25]=v,e[26]=d,e[27]=u,e[28]=g,e[29]=h,e[30]=c,e[31]=m,e[32]=_,e[33]=F,e[34]=H):H=e[34],H}"
+    },
+    {
+      "asset": "renderer",
+      "label": "yzi",
+      "utf8_half_open": [
+        10564487,
+        10565681
+      ],
+      "bytes": 1194,
+      "sha256": "a33c0b76d3cb70bfd1ff88d103a988980334ba3c3c2906ac94cfb1f3fa6d26b6",
+      "text": "function yzi(t){const e=ne.c(28),{repositoryId:n,repoPath:i,promptType:r,title:o,description:a,showPreview:c,placeholder:u}=t,d=c===void 0?!0:c,h=u===void 0?vzi:u;let m;e[0]!==r?(m=xsi(r),e[0]=r,e[1]=m):m=e[1];const g=m;let _;e[2]!==i||e[3]!==n?(_={id:n,mainWorktreePath:i},e[2]=i,e[3]=n,e[4]=_):_=e[4];let v;e[5]!==g||e[6]!==_?(v={key:g,for:_},e[5]=g,e[6]=_,e[7]=v):v=e[7];const x=us(v),w=x.data?.configurations[\"repo-local\"],E=x.data?.effective.value,k=w?.setValue;let I;e[8]!==k?(I=async H=>k===void 0?!0:k(H.trim()),e[8]=k,e[9]=I):I=e[9];const R=I,O=x.isLoading,D=k===void 0,P=x.data?.configurations;let L;e[10]!==P?(L=_Ze(P),e[10]=P,e[11]=L):L=e[11];let B;e[12]!==x.data?(B=Xzt(x.data),e[12]=x.data,e[13]=B):B=e[13];let F;return e[14]!==a||e[15]!==R||e[16]!==h||e[17]!==r||e[18]!==n||e[19]!==E||e[20]!==x.isLoading||e[21]!==g||e[22]!==d||e[23]!==L||e[24]!==B||e[25]!==D||e[26]!==o?(F=p.jsx(xzi,{repositoryKey:n,promptType:r,title:o,description:a,value:E,onSave:R,disabled:O,isLocked:D,settingKey:g,resetActions:L,sourceInfo:B,showPreview:d,placeholder:h}),e[14]=a,e[15]=R,e[16]=h,e[17]=r,e[18]=n,e[19]=E,e[20]=x.isLoading,e[21]=g,e[22]=d,e[23]=L,e[24]=B,e[25]=D,e[26]=o,e[27]=F):F=e[27],F}"
+    },
+    {
+      "asset": "renderer",
+      "label": "xzi",
+      "utf8_half_open": [
+        10565681,
+        10567992
+      ],
+      "bytes": 2311,
+      "sha256": "cee230b6bce1b836787dd558d33c523b9f96dfdd4615ee9f96a8178ceab9a6df",
+      "text": "function xzi(t){const e=ne.c(29),{getPreviewPreferences:n,repositoryKey:i,promptType:r,title:o,description:a,value:c,onSave:u,disabled:d,isLocked:h,settingKey:m,resetActions:g,sourceInfo:_,showPreview:v,placeholder:x}=t,w=d===void 0?!1:d,E=h===void 0?!1:h,k=v===void 0?!0:v,I=x===void 0?vzi:x,[R,O]=$.useState(!1);let D;e[0]!==r||e[1]!==i?(D=KEr(i,r),e[0]=r,e[1]=i,e[2]=D):D=e[2];const P=D,L=w||E;let B;e[3]!==c?(B=c!==void 0?p.jsx(\"span\",{className:\"rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground\",children:\"Customized\"}):void 0,e[3]=c,e[4]=B):B=e[4];const F=c??\"\",H=`${o} prompt`;let U;e[5]!==P||e[6]!==n||e[7]!==r||e[8]!==k||e[9]!==o?(U=K=>p.jsxs(p.Fragment,{children:[p.jsx(wS,{value:K.value,onChange:X=>K.onChange(X.target.value),onFocus:K.onFocus,onBlur:K.onBlur,disabled:K.disabled,readOnly:K.readOnly,placeholder:K.placeholder,\"aria-label\":K[\"aria-label\"],className:K.className,autoComplete:\"off\",autoCorrect:\"off\",autoCapitalize:\"off\",spellCheck:!1}),k?p.jsxs(p.Fragment,{children:[p.jsxs(\"button\",{type:\"button\",className:\"text-xs text-muted-foreground hover:text-foreground flex items-center gap-1\",onClick:()=>nr.openDialog(P),children:[p.jsx(ob,{className:\"size-3\"}),\"Preview\"]}),p.jsx(kg,{id:P,children:p.jsxs(nd,{className:\"max-w-2xl overflow-hidden flex flex-col\",children:[p.jsx(Hd,{children:p.jsxs(Bu,{children:[o,\" prompt\"]})}),p.jsx(\"div\",{className:\"overflow-y-auto flex-1 text-xs\",children:p.jsx(eee,{text:r!==\"general\"?cSe.getPromptPreview(r,n!==void 0?n(K.value):K.value):\"\"})})]})})]}):null]}),e[5]=P,e[6]=n,e[7]=r,e[8]=k,e[9]=o,e[10]=U):U=e[10];let z;e[11]!==w||e[12]!==E||e[13]!==u||e[14]!==I||e[15]!==U||e[16]!==F||e[17]!==H?(z=p.jsx(\"div\",{className:\"w-full space-y-3\",children:p.jsx(fGt,{value:F,onSave:u,disabled:w,isLocked:E,placeholder:I,className:\"w-full min-h-[120px] font-mono text-xs\",ariaLabel:H,errorMessage:\"Failed to save custom prompt\",render:U})}),e[11]=w,e[12]=E,e[13]=u,e[14]=I,e[15]=U,e[16]=F,e[17]=H,e[18]=z):z=e[18];let G;return e[19]!==a||e[20]!==R||e[21]!==g||e[22]!==m||e[23]!==_||e[24]!==z||e[25]!==L||e[26]!==B||e[27]!==o?(G=p.jsx(vho,{title:o,description:a,open:R,onOpenChange:O,settingKey:m,resetActions:g,sourceInfo:_,disabled:L,badge:B,children:z}),e[19]=a,e[20]=R,e[21]=g,e[22]=m,e[23]=_,e[24]=z,e[25]=L,e[26]=B,e[27]=o,e[28]=G):G=e[28],G}"
+    },
+    {
+      "asset": "index",
+      "label": "oN",
+      "utf8_half_open": [
+        257891,
+        257948
+      ],
+      "bytes": 57,
+      "sha256": "5b111f777ea1bea7daddc90cb11e4a6ef85ff8d8fb121bc2ef672b40df4bbcd4",
+      "text": "function oN(t){return t?.type===\"file\"&&t.scope===\"repo\"}"
+    },
+    {
+      "asset": "index",
+      "label": "aN",
+      "utf8_half_open": [
+        258000,
+        258050
+      ],
+      "bytes": 50,
+      "sha256": "d9a2460d04a2dd8535652cb53a99b7e0fe64a19727fdcaea362439d20bcd3d6e",
+      "text": "function aN(t){return oN(t)&&t.locality===\"local\"}"
+    },
+    {
+      "asset": "index",
+      "label": "hN",
+      "utf8_half_open": [
+        270397,
+        270540
+      ],
+      "bytes": 143,
+      "sha256": "e979ccce71f8a73ce0aae66cf2b6577fcceeb9cbc1c065c45008e860a986f6e5",
+      "text": "function hN(t,e,s){delete t[e];const n=e.split(\".\");let r=t;for(const o of n.slice(0,-1))r=vLe(r,o);const i=n[n.length-1];i!==void 0&&(r[i]=s)}"
+    },
+    {
+      "asset": "index",
+      "label": "OE",
+      "utf8_half_open": [
+        270540,
+        270590
+      ],
+      "bytes": 50,
+      "sha256": "ce79ed1de79e509650d5829fd7fecd5ae5a0f4a39e3116fca7f1c81e8b8d318f",
+      "text": "function OE(t,e){delete t[e],tZ(t,e.split(\".\"),0)}"
+    },
+    {
+      "asset": "index",
+      "label": "lLe",
+      "utf8_half_open": [
+        270590,
+        270974
+      ],
+      "bytes": 384,
+      "sha256": "557a71e3324679d99ee6a6f0325086a76105fbf1a1fc86b6518335d3602b068a",
+      "text": "function lLe(t,e){if(t.fileKey===\"environment_variable_files\")return e.split(/\\r?\\n/).map(n=>n.trim()).filter(n=>n.length>0);if(t.fileKey===\"preview_urls\")return sLe(e);if(e===\"true\"||e===\"false\"){const n=e===\"true\";if(t.schema.safeParse(n).success)return n}const s=Number(e);return e.trim()!==\"\"&&Number.isFinite(s)&&t.schema.safeParse(s).success?s:(t.schema.safeParse(e).success,e)}"
+    },
+    {
+      "asset": "index",
+      "label": "vLe",
+      "utf8_half_open": [
+        272919,
+        272995
+      ],
+      "bytes": 76,
+      "sha256": "ca4b57688ad88cb4b64a5e4e41c9b6053000fcbd6f346ab33bd6f977cdb86919",
+      "text": "function vLe(t,e){const s=t[e];if(_s(s))return s;const n={};return t[e]=n,n}"
+    },
+    {
+      "asset": "index",
+      "label": "tZ",
+      "utf8_half_open": [
+        272995,
+        273187
+      ],
+      "bytes": 192,
+      "sha256": "a8c4b7214cbf8c95cd328fc9288480f98fa7a92c9e4e6bf1a6d7a93e87d8c2c8",
+      "text": "function tZ(t,e,s){const n=e[s];if(n===void 0)return Object.keys(t).length===0;if(s===e.length-1)delete t[n];else{const r=t[n];_s(r)&&tZ(r,e,s+1)&&delete t[n]}return Object.keys(t).length===0}"
+    },
+    {
+      "asset": "index",
+      "label": "wN",
+      "utf8_half_open": [
+        277229,
+        283250
+      ],
+      "bytes": 6021,
+      "sha256": "cb1792daa8f8b0314213df14cf46e0bd3313601e3c4f7e140579e95b94fbc4c0",
+      "text": "wN=[Pe(\"default_model\"),Pe(\"review_model\"),Te(\"default_fast_mode\",!1),Te(\"review_fast_mode\"),Te(\"default_plan_mode\"),Pe(\"default_codex_thinking_level\"),Pe(\"review_codex_thinking_level\"),Pe(\"default_codex_personality\"),yl(\"default_claude_personality\",vN,\"default\"),Pe(\"default_claude_effort_level\"),Pe(\"review_claude_effort_level\"),Pe(\"visible_provider_models\"),Pe(\"setup_script\"),Pe(\"run_script\"),Pe(\"archive_script\"),Pe(\"run_script_mode\"),Te(\"auto_run_after_setup\",!1),Pe(\"environment_variable_files\"),Te(\"enterprise_data_privacy\",!1),Pe(\"file_include_globs\"),Te(\"spotlight_testing\"),Pe(\"custom_prompt_code_review\"),Pe(\"custom_prompt_create_pr\"),Pe(\"custom_prompt_fix_errors\"),Pe(\"custom_prompt_resolve_merge_conflicts\"),Pe(\"custom_prompt_rename_branch\"),Pe(\"custom_prompt_general\"),Te(\"tool_approvals_enabled\",!1),yl(\"codex_tool_approval_policy\",yN,\"default\"),Pe(\"claude_executable_path\"),Pe(\"codex_executable_path\"),Pe(\"opencode_executable_path\"),Pe(\"claude_provider\"),Pe(\"codex_provider\"),Pe(\"bedrock_region\"),Pe(\"vertex_project_id\"),Pe(\"ssh_key_path\"),Te(\"delete_branch_on_archive\",!1),Te(\"archive_on_merge\"),Te(\"worktree_push_auto_setup_remote\"),Pe(\"branch_prefix_type\",\"github_username\"),Pe(\"branch_prefix_custom\"),Te(\"always_allow_local_execution\",!1),Te(\"auto_sync_files_in_new_cloud_workspaces\",!0),Te(\"always_show_context_wheel\"),Te(\"auto_convert_long_text\"),Te(\"auto_rename_workspace_on_branch_name_set\"),Te(\"auto_restart_on_update_when_idle\",!1),Te(\"automations_enabled\"),Te(\"automerge_enabled\"),Te(\"treat_optional_checks_as_blocking\"),Te(\"github_stacked_prs_enabled\",!0),Pe(\"big_terminal_custom_commands\"),Pe(\"big_terminal_preset\"),Te(\"caffeinate_while_agents_running\",!1),Te(\"chrome_mode_enabled\"),Te(\"claude_subscription_sign_in_enabled\"),Te(\"codex_chatgpt_sign_in_enabled\"),Pe(\"client_instance_id\"),Te(\"codex_goals_disabled\"),yl(\"code_theme\",_N,\"default\"),Pe(\"codex_api_key\"),Pe(\"codex_base_url\"),yl(\"color_vision\",fN,\"default\"),Te(\"cloud_in_data_privacy_mode_enabled\"),Te(\"legacy_cloud_workspace_creation_enabled\"),Te(\"legacy_cloud_workspace_write_access_enabled\"),Te(\"private_workspace_enabled\"),Te(\"queue_messages_disabled\"),Te(\"routine_webhook_triggers_enabled\"),Te(\"routine_github_filters_enabled\"),Te(\"new_model_sonnet_5_5_enabled\"),Te(\"colored_sidebar_diffs\",!1),Pe(\"conductor_api_token\"),Pe(\"opencode_provider_api_keys\"),Te(\"conductor_config_repo_root_migration_complete\"),Pe(\"conductor_json_migration_dismissed_repos\"),Pe(\"conductor_root_path\"),Te(\"dashboard_enabled\"),Pe(\"default_message_send_mode\"),Pe(\"default_open_in\"),Te(\"default_thinking_enabled\"),Te(\"disable_external_logging\"),Te(\"kill_switch_presence_enabled\"),Te(\"experimental_auto_permission_mode\",!1),Te(\"experimental_big_terminal_mode\",!1),Te(\"experimental_cloud_desktop\",!1),Te(\"experimental_configurable_center_panel\",!1),Te(\"experimental_new_workspace_page\",!1),Te(\"experimental_fork_to_new_tab\",!1),Te(\"experimental_in_app_browser_preview\",!1),Te(\"experimental_legacy_file_preview_and_editing\",!1),Te(\"experimental_show_agent_cost\",!1),Te(\"experimental_show_workspace_numbers\",!1),Te(\"experimental_sidebar_transparency\",!1),Te(\"experimental_tab_freak_mode\",!1),Te(\"file_ligatures_enabled\"),Pe(\"first_time_onboarding_step\"),Te(\"garry_mode\",!1),Pe(\"gh_auth_method\"),Pe(\"gh_pat_expires_at\"),Pe(\"gh_pat_token\"),Pe(\"gh_token\"),Pe(\"gh_token_app_client_id\"),Pe(\"gh_token_expires_at\"),Pe(\"gh_token_source\"),Pe(\"gh_cloud_auth_method\"),Pe(\"gh_cloud_pat_expires_at\"),Pe(\"gh_cloud_pat_token\"),Pe(\"gh_cloud_token\"),Pe(\"gh_cloud_token_app_client_id\"),Pe(\"gh_cloud_token_expires_at\"),Pe(\"gh_cloud_token_source\"),Te(\"graphite_disabled\"),Te(\"hide_whitespace_changes\",!1),Pe(\"http_proxy\"),Te(\"internal_codex_message_log\"),Te(\"internal_developer_metrics\",!1),Pe(\"internal_codex_initial_permission_config\"),Te(\"internal_frame_drop_logging\"),Te(\"internal_claude_token_usage_tracking\"),Pe(\"internal_claude_initial_permission_mode\"),Te(\"internal_cloud_workspaces_independent_of_local_repos\",!1),Pe(\"internal_remote_file_sync_mode\"),Te(\"internal_verbose_logging\"),Te(\"internal_sidecar_exp_session_log\"),Te(\"internal_terminal_render_debug_log\"),Te(\"internal_remote_local_execution_mcp\"),Te(\"internal_request_metadata\"),Te(\"internal_paginated_desktop_workspace_sync\",!1),Te(\"internal_settings_enabled\"),Te(\"internal_settings_use_defaults\"),Pe(\"internal_tauri_http_proxy_url\"),Te(\"internal_workspace_tabs\"),Te(\"internal_workspace_status_matrix\",!1),Te(\"local_repositories_without_github_enabled\"),Te(\"local_git_forge_enabled\"),Te(\"local_env_vars_import_banner_dismissed\",!1),Pe(\"last_clone_directory\"),Pe(\"last_seen_announcement\"),Pe(\"keybinding_overrides_v1\"),Te(\"left_panel_visible\"),Pe(\"left_panel_width\"),Te(\"low_contrast_dark_mode\",!1),yl(\"markdown_style\",gN,\"default\"),Te(\"mcp_status_indicator_enabled\",!1),yl(\"message_send_key\",mN,\"enter\"),Pe(\"mono_font\"),Te(\"not_absolutely_right\",!1),Te(\"notifications_enabled\",!0),Te(\"session_feed_batch_ingestion_enabled\",!1),Te(\"mention_notifications_enabled\",!0),Pe(\"onboarding_step\"),Pe(\"onboarding_workspace_id\"),Pe(\"open_url_template\"),Pe(\"open_in_mru_order\"),yl(\"pull_request_open_target\",FE,\"github\"),yl(\"pr_activity_sort_order\",rZ,\"newest-first\"),Te(\"react_profiler_enabled\"),Te(\"review_thinking_enabled\"),Te(\"right_panel_visible\"),Pe(\"roundhouse_client_url_override\"),Pe(\"roundhouse_client_user_id\"),Pe(\"roundhouse_credentials\"),Te(\"repo_conductor_config_file_migration_complete\"),Te(\"repo_conductor_config_file_migration_v2_complete\"),Te(\"repo_custom_prompt_file_migration_complete\"),Te(\"repo_local_settings_file_migration_complete\"),Pe(\"sample_project_onboarding_seed_status\"),Pe(\"sidebar_group_by\"),Pe(\"sidebar_repo_filter\"),Pe(\"sidebar_sort_by\"),Te(\"sidecar_inspect\",!1),Te(\"sidecar_inspect_brk\",!1),Te(\"sidebar_resource_usage\",!1),Pe(\"sound_type\"),Pe(\"terminal_font_family\"),Pe(\"terminal_font_size\"),J5(\"terminal_max_buffered_lines\"),J5(\"terminal_scrollback_limit_bytes\",1e7),Te(\"using_split_view\",!1),Te(\"voice_mode\"),Te(\"unstarted_workspaces_enabled\",!1),Te(\"wrap_lines\",!0),Pe(\"zoom_level_v2\")]"
+    },
+    {
+      "asset": "index",
+      "label": "iZ",
+      "utf8_half_open": [
+        283251,
+        283270
+      ],
+      "bytes": 19,
+      "sha256": "2e627bd7a708a5cd6cc7258079f330a77d72c5a58002409fe5d67e190b5110ae",
+      "text": "iZ=wN.map(t=>t.key)"
+    },
+    {
+      "asset": "index",
+      "label": "av",
+      "utf8_half_open": [
+        283339,
+        283777
+      ],
+      "bytes": 438,
+      "sha256": "9e8a833d504a631d38f280f06f396003d37d10ede6c409af1a6ea701fffdc541",
+      "text": "function av(t,e){const s=wN.find(n=>n.key===t);if(s===void 0)throw new Error(`Unknown setting key ${t}`);if(e===void 0)return s.defaultValue;switch(s.valueType){case\"boolean\":return e===\"true\";case\"number\":{const n=Number(e);if(Number.isNaN(n))throw new Error(`Invalid number setting value for ${t}`);return n}case\"string\":{if(s.supportedValues===void 0)return e;for(const n of s.supportedValues)if(e===n)return n;return s.defaultValue}}}"
+    },
+    {
+      "asset": "index",
+      "label": "Pe",
+      "utf8_half_open": [
+        283862,
+        283966
+      ],
+      "bytes": 104,
+      "sha256": "6cc36d64f755461001e49614df06b788484bf4165de4e4876d23b2f7e828cb65",
+      "text": "function Pe(t,e){return e===void 0?{key:t,valueType:\"string\"}:{key:t,valueType:\"string\",defaultValue:e}}"
+    },
+    {
+      "asset": "index",
+      "label": "Z5",
+      "utf8_half_open": [
+        284182,
+        284259
+      ],
+      "bytes": 77,
+      "sha256": "a2561d2e9cfdeee0ea8c3509e09b01b7967ad01a1b061928d9251eb323d1b717",
+      "text": "Z5={safeParse(t){return typeof t==\"string\"?{success:!0,data:t}:{success:!1}}}"
+    },
+    {
+      "asset": "index",
+      "label": "oZ",
+      "utf8_half_open": [
+        284679,
+        292095
+      ],
+      "bytes": 7416,
+      "sha256": "51a281255b74a12944023ae56d76b9f7b74b08c9d67eed9177cd1581b26c32db",
+      "text": "oZ={default_model:Me({fileKey:\"models.default\",workspaceConfigurable:!1}),review_model:Me({fileKey:\"models.review\",workspaceConfigurable:!1}),default_fast_mode:xe({fileKey:\"models.default_fast_mode\",workspaceConfigurable:!1}),review_fast_mode:xe({fileKey:\"models.review_fast_mode\",workspaceConfigurable:!1}),default_plan_mode:xe({fileKey:\"models.default_plan_mode\",workspaceConfigurable:!1}),default_codex_thinking_level:Me({fileKey:\"models.codex.default_thinking_level\",workspaceConfigurable:!1}),review_codex_thinking_level:Me({fileKey:\"models.codex.review_thinking_level\",workspaceConfigurable:!1}),default_codex_personality:Me({fileKey:\"models.codex.personality\",workspaceConfigurable:!1}),default_claude_personality:_l(vN,{fileKey:\"models.claude_code.personality\",workspaceConfigurable:!1}),default_claude_effort_level:Me({fileKey:\"models.claude_code.default_effort_level\",workspaceConfigurable:!1}),review_claude_effort_level:Me({fileKey:\"models.claude_code.review_effort_level\",workspaceConfigurable:!1}),codex_tool_approval_policy:_l(yN,{fileKey:\"models.codex.tool_approval_policy\",workspaceConfigurable:!1}),visible_provider_models:Me({fileKey:\"models.visible_provider_models\",workspaceConfigurable:!0}),setup_script:Me({fileKey:\"scripts.setup\"}),run_script:Me({fileKey:\"scripts.run\"}),archive_script:Me({fileKey:\"scripts.archive\"}),run_script_mode:Me({fileKey:\"scripts.run_mode\"}),auto_run_after_setup:xe({fileKey:\"scripts.auto_run_after_setup\"}),environment_variable_files:Me({fileKey:\"environment_variable_files\"}),enterprise_data_privacy:xe({fileKey:\"enterprise_data_privacy\"}),file_include_globs:Me({fileKey:\"file_include_globs\"}),spotlight_testing:xe({fileKey:\"spotlight_testing\"}),custom_prompt_code_review:Me({fileKey:\"prompts.code_review\"}),custom_prompt_create_pr:Me({fileKey:\"prompts.create_pr\"}),custom_prompt_fix_errors:Me({fileKey:\"prompts.fix_errors\"}),custom_prompt_resolve_merge_conflicts:Me({fileKey:\"prompts.resolve_merge_conflicts\"}),custom_prompt_rename_branch:Me({fileKey:\"prompts.rename_branch\"}),custom_prompt_general:Me({fileKey:\"prompts.general\"}),tool_approvals_enabled:xe({fileKey:\"tool_approvals_enabled\",workspaceConfigurable:!1}),claude_executable_path:Me({fileKey:\"claude_code_executable_path\"}),codex_executable_path:Me({fileKey:\"codex_executable_path\"}),opencode_executable_path:Me({fileKey:\"opencode_executable_path\"}),claude_provider:Me({fileKey:\"claude_provider\"}),codex_provider:Me({fileKey:\"codex_provider\"}),bedrock_region:Me({fileKey:\"bedrock_region\"}),vertex_project_id:Me({fileKey:\"vertex_project_id\"}),ssh_key_path:Me({fileKey:\"ssh_key_path\"}),delete_branch_on_archive:xe({fileKey:\"git.delete_branch_on_archive\"}),archive_on_merge:xe({fileKey:\"git.archive_on_merge\"}),worktree_push_auto_setup_remote:xe({fileKey:\"git.worktree_push_auto_setup_remote\"}),branch_prefix_type:Me({fileKey:\"git.branch_prefix_type\"}),branch_prefix_custom:Me({fileKey:\"git.branch_prefix\"}),always_allow_local_execution:xe(),auto_sync_files_in_new_cloud_workspaces:xe(),always_show_context_wheel:xe(),auto_convert_long_text:xe(),auto_rename_workspace_on_branch_name_set:xe(),auto_restart_on_update_when_idle:xe(),automations_enabled:xe(),automerge_enabled:xe(),treat_optional_checks_as_blocking:xe(),github_stacked_prs_enabled:xe(),big_terminal_custom_commands:Me(),big_terminal_preset:Me(),caffeinate_while_agents_running:xe(),chrome_mode_enabled:xe(),claude_subscription_sign_in_enabled:xe(),codex_chatgpt_sign_in_enabled:xe(),client_instance_id:Me(),codex_goals_disabled:xe(),code_theme:_l(_N),codex_api_key:Me(),codex_base_url:Me(),color_vision:_l(fN),colored_sidebar_diffs:xe(),conductor_api_token:Me(),opencode_provider_api_keys:Me(),conductor_config_repo_root_migration_complete:xe(),conductor_json_migration_dismissed_repos:Me(),conductor_root_path:Me(),dashboard_enabled:xe(),default_message_send_mode:Me(),default_open_in:Me(),default_thinking_enabled:xe(),disable_external_logging:xe(),kill_switch_presence_enabled:xe(),cloud_in_data_privacy_mode_enabled:xe(),legacy_cloud_workspace_creation_enabled:xe(),legacy_cloud_workspace_write_access_enabled:xe(),private_workspace_enabled:xe(),queue_messages_disabled:xe(),routine_webhook_triggers_enabled:xe(),routine_github_filters_enabled:xe(),new_model_sonnet_5_5_enabled:xe(),experimental_auto_permission_mode:xe(),experimental_big_terminal_mode:xe(),experimental_cloud_desktop:xe(),experimental_configurable_center_panel:xe(),experimental_new_workspace_page:xe(),experimental_fork_to_new_tab:xe(),experimental_in_app_browser_preview:xe(),experimental_legacy_file_preview_and_editing:xe(),experimental_show_agent_cost:xe(),experimental_show_workspace_numbers:xe(),experimental_sidebar_transparency:xe(),experimental_tab_freak_mode:xe(),file_ligatures_enabled:xe(),first_time_onboarding_step:Me(),garry_mode:xe(),gh_auth_method:Me(),gh_pat_expires_at:Me(),gh_pat_token:Me(),gh_token:Me(),gh_token_app_client_id:Me(),gh_token_expires_at:Me(),gh_token_source:Me(),gh_cloud_auth_method:Me(),gh_cloud_pat_expires_at:Me(),gh_cloud_pat_token:Me(),gh_cloud_token:Me(),gh_cloud_token_app_client_id:Me(),gh_cloud_token_expires_at:Me(),gh_cloud_token_source:Me(),graphite_disabled:xe(),hide_whitespace_changes:xe(),http_proxy:Me(),internal_codex_message_log:xe(),internal_developer_metrics:xe(),internal_codex_initial_permission_config:Me(),internal_frame_drop_logging:xe(),internal_claude_token_usage_tracking:xe(),internal_claude_initial_permission_mode:Me(),internal_cloud_workspaces_independent_of_local_repos:xe(),internal_remote_file_sync_mode:Me(),internal_verbose_logging:xe(),internal_sidecar_exp_session_log:xe(),internal_terminal_render_debug_log:xe(),internal_remote_local_execution_mcp:xe(),internal_request_metadata:xe(),internal_paginated_desktop_workspace_sync:xe(),internal_settings_enabled:xe(),internal_settings_use_defaults:xe(),internal_tauri_http_proxy_url:Me(),internal_workspace_tabs:xe(),internal_workspace_status_matrix:xe(),local_repositories_without_github_enabled:xe(),local_git_forge_enabled:xe(),local_env_vars_import_banner_dismissed:xe(),last_clone_directory:Me(),last_seen_announcement:Me(),keybinding_overrides_v1:Me(),left_panel_visible:xe(),left_panel_width:Me(),low_contrast_dark_mode:xe(),markdown_style:_l(gN),mcp_status_indicator_enabled:xe(),message_send_key:_l(mN),mono_font:Me(),not_absolutely_right:xe(),notifications_enabled:xe(),session_feed_batch_ingestion_enabled:xe(),mention_notifications_enabled:xe(),onboarding_step:Me(),onboarding_workspace_id:Me(),open_url_template:BLe({fileKey:\"preview_urls\"}),open_in_mru_order:Me(),pull_request_open_target:_l(FE),pr_activity_sort_order:_l(rZ),react_profiler_enabled:xe(),review_thinking_enabled:xe(),right_panel_visible:xe(),roundhouse_client_url_override:Me(),roundhouse_client_user_id:Me(),roundhouse_credentials:Me(),repo_conductor_config_file_migration_complete:xe(),repo_conductor_config_file_migration_v2_complete:xe(),repo_custom_prompt_file_migration_complete:xe(),repo_local_settings_file_migration_complete:xe(),sample_project_onboarding_seed_status:Me(),sidebar_group_by:Me(),sidebar_repo_filter:Me(),sidebar_sort_by:Me(),sidecar_inspect:xe(),sidecar_inspect_brk:xe(),sidebar_resource_usage:xe(),sound_type:Me(),terminal_font_family:Me(),terminal_font_size:Me(),terminal_max_buffered_lines:sz(),terminal_scrollback_limit_bytes:sz(),using_split_view:xe(),voice_mode:xe(),unstarted_workspaces_enabled:xe(),wrap_lines:xe(),zoom_level_v2:Me()}"
+    },
+    {
+      "asset": "index",
+      "label": "DE",
+      "utf8_half_open": [
+        292096,
+        292128
+      ],
+      "bytes": 32,
+      "sha256": "4c1364f17f23e81054455dfecfd330c48a894cd2cd736718bb6b0a499b15b8cc",
+      "text": "DE=new Map(iZ.map(t=>[t,oZ[t]]))"
+    },
+    {
+      "asset": "index",
+      "label": "cv",
+      "utf8_half_open": [
+        292225,
+        292319
+      ],
+      "bytes": 94,
+      "sha256": "cf4f8da6d79c434edd6ee516a6449e1623fbb7b9fdeeecb267138bd86a75c7c0",
+      "text": "function cv(t){const e=DE.get(t);return e?.type===\"file-backed\"&&e.workspaceConfigurable===!0}"
+    },
+    {
+      "asset": "index",
+      "label": "NLe",
+      "utf8_half_open": [
+        292358,
+        292404
+      ],
+      "bytes": 46,
+      "sha256": "1c2a1535f1debdb94bad4d4ffa0314338a027abccebeba40cb49dfae22c1f145",
+      "text": "function NLe(t){return t.valueType===\"string\"}"
+    },
+    {
+      "asset": "index",
+      "label": "Me",
+      "utf8_half_open": [
+        292654,
+        292865
+      ],
+      "bytes": 211,
+      "sha256": "9c8a40c4a5e1d8f2304386737cbfdbde9c9a8cb56b793a041d09109686f564cf",
+      "text": "function Me({fileKey:t,workspaceConfigurable:e=!0}={}){return t===void 0?{type:\"non-file-backed\",schema:Z5,valueType:\"string\"}:{type:\"file-backed\",fileKey:t,workspaceConfigurable:e,schema:Z5,valueType:\"string\"}}"
+    },
+    {
+      "asset": "index",
+      "label": "JM",
+      "utf8_half_open": [
+        324508,
+        324788
+      ],
+      "bytes": 280,
+      "sha256": "cd2302a875b3767d6e31cc95198214c6ac6176d3e3c90f6838a7ce89cd9edff1",
+      "text": "function JM({key:t,value:e,deleteValue:s=!1}){const n=DE.get(t);if(n===void 0||!SN(n))throw new Error(`Setting is not file-backed: ${t}`);const r=s||t===\"environment_variable_files\"&&e.trim()===\"\"||!NLe(n)&&e.trim()===\"\",i=lLe(n,e);return o=>{r?OE(o,n.fileKey):hN(o,n.fileKey,i)}}"
+    },
+    {
+      "asset": "index",
+      "label": "sg",
+      "utf8_half_open": [
+        335570,
+        335649
+      ],
+      "bytes": 79,
+      "sha256": "f865d146885c60e9d61afd6c40c975ab3e3d1b57be39a77d3dc24eeff1d15a8a",
+      "text": "function sg({settingsByKey:t,key:e}){return t[VE]===\"true\"&&e in _z?_z[e]:t[e]}"
+    },
+    {
+      "asset": "index",
+      "label": "wz",
+      "utf8_half_open": [
+        337403,
+        337661
+      ],
+      "bytes": 258,
+      "sha256": "3b83b935ffe1985872b5e9b36991920f86069e55e9417143a96bf4b58ada6e30",
+      "text": "function wz({key:t,settingsByKey:e,fileBackedSourcesByKey:s,lockedKeys:n,state:r}){return{value:sg({settingsByKey:e,key:t}),source:tO({key:t,fileBackedSourcesByKey:s,state:r}),isLocked:n.has(t)||r.managedSettingsByKey[t]!==void 0||r.isFeatureFlagSetting(t)}}"
+    },
+    {
+      "asset": "index",
+      "label": "tO",
+      "utf8_half_open": [
+        337661,
+        338056
+      ],
+      "bytes": 395,
+      "sha256": "c610c2f2e1ba9dda7856b422c59082ea1d66764c429749f110ddb7e71836975e",
+      "text": "function tO({key:t,fileBackedSourcesByKey:e,state:s}){if(s.managedSettingsByKey[t]!==void 0)return{type:\"managed\",label:\"managed\",system:!0,path:s.managedSettingsSourcePath};if(s.featureFlagsByKey[t]!==void 0)return{type:\"feature-flag\",label:\"feature flag\",system:!0};const n=e[t];if(n!==void 0)return n;if(s.dbSettingsByKey[t]!==void 0)return{type:\"database\",label:\"legacy database\",system:!1}}"
+    },
+    {
+      "asset": "index",
+      "label": "HN",
+      "utf8_half_open": [
+        345556,
+        373940
+      ],
+      "bytes": 28384,
+      "sha256": "4c1ee15a457abeba1edb433aac175a69cd70d1bb296fb4d56d920132ea21a7f9",
+      "text": "class HN{constructor(e,s){this.__store=e,this.dependencies=s,this.remoteRepoSharedSettingsCache=new P$e(s),this.initialLoadPromise=new Promise(n=>{this.resolveInitialLoad=n}),this.__store.subscribe((n,r)=>{this.logSettingsStateChange(n,r)})}initialLoadPromise;resolveInitialLoad;loadGeneration=0;dbSettingsByKey={};featureFlagsByKey={};lastRawFlags={};featureFlagOverridesByFlag={};managedSettingsByKey={};managedEnvVarsByContext=hd();managedSettingsSourcePath;fileBackedSettingsByKey={};fileBackedSettingSourcesByKey={};lockedFileBackedSettingKeys=new Set;inFlightOptimisticFileWrites=new Map;optimisticFileWriteCounter=0;settingsRevision=0;debouncedPersistByKey=new Map;repoResolutionByRepoId=new Map;inFlightRepoResolution=new Map;repoResolutionErrorByRepoId=new Map;hiddenRunScriptUpdateByRepoId=new Map;remoteRepoSharedSettingsCache;workspaceResolutionByKey=new Map;inFlightWorkspaceResolution=new Map;workspaceResolutionErrorByKey=new Map;fileBackedSettingsRefreshInterval;subscriberRenotifyTimeout;subscriberRenotifyAttempts=0;lastGoodParsedByPath=new Map;logSettingsStateChange(e,s){if(e.settingsByKey===s.settingsByKey)return;const n=j$e(s.settingsByKey,e.settingsByKey,this.dependencies.sensitiveSettingKeys);n.length!==0&&Zs(this.dependencies).info(\"Settings state changed\",{revision:e.settingsRevision,changes:n})}get isDevMode(){return this.dependencies.isDevMode}get state(){return this.__store.getState()}get store(){return this.__store}start(e){const s=++this.loadGeneration;(async()=>{const r=await n$e(this);return e?.preloadedSettings!==void 0&&!r.invalidatedLegacyFileBackedRows?e.preloadedSettings:S$e(this.dependencies)})().then(async r=>{const i=await this.dependencies.fetchManagedSettings?.(),o=await od(this);this.loadGeneration===s&&(this.dbSettingsByKey={...r,...this.dbSettingsByKey},this.featureFlagOverridesByFlag=this.loadFeatureFlagOverridesFromDb(),this.managedSettingsByKey=i?.settingsByKey??{},this.managedEnvVarsByContext=i?.envVarsByContext??hd(),this.fileBackedSettingsByKey=Lx(o),this.fileBackedSettingSourcesByKey=Nx(o),this.lockedFileBackedSettingKeys=$x(o),this.managedSettingsSourcePath=i?.sourcePath,this.recomputeFeatureFlags(),this.__store.setState({settingsByKey:this.getMergedSettingsByKey(),settingSourcesByKey:this.getMergedSettingSourcesByKey(),settingsRevision:this.nextSettingsRevision(),featureFlagOverrides:this.featureFlagOverridesByFlag,initialLoadInProgress:!1}),Zs(this.dependencies).info(\"Settings loaded\",{dbCount:Object.keys(r).length,fileBackedCount:Object.keys(this.fileBackedSettingsByKey).filter(a=>this.fileBackedSettingsByKey[a]!==void 0).length,managedCount:Object.keys(this.managedSettingsByKey).length}),ZZ(this),this.resolveInitialLoad())}).catch(r=>{this.loadGeneration===s&&(Zs(this.dependencies).error(\"Failed to load initial settings\",r),this.__store.setState({initialLoadInProgress:!1,settingsRevision:this.nextSettingsRevision()}),this.dependencies.feedback.error(\"Failed to load settings\"),this.resolveInitialLoad())})}stop(){this.loadGeneration++,this.stopFileBackedSettingsRefreshInterval(),this.subscriberRenotifyTimeout!==void 0&&(clearTimeout(this.subscriberRenotifyTimeout),this.subscriberRenotifyTimeout=void 0),this.subscriberRenotifyAttempts=0;for(const e of this.debouncedPersistByKey.values())e.cancel();this.dbSettingsByKey={},this.featureFlagsByKey={},this.lastRawFlags={},this.featureFlagOverridesByFlag={},this.managedSettingsByKey={},this.managedEnvVarsByContext=hd(),this.managedSettingsSourcePath=void 0,this.fileBackedSettingsByKey={},this.fileBackedSettingSourcesByKey={},this.lockedFileBackedSettingKeys=new Set,this.repoResolutionByRepoId.clear(),this.inFlightRepoResolution.clear(),this.repoResolutionErrorByRepoId.clear(),this.hiddenRunScriptUpdateByRepoId.clear(),this.remoteRepoSharedSettingsCache.clear(),this.workspaceResolutionByKey.clear(),this.inFlightWorkspaceResolution.clear(),this.workspaceResolutionErrorByKey.clear(),this.lastGoodParsedByPath.clear(),this.settingsRevision=0,this.__store.setState(YJ()),this.initialLoadPromise=new Promise(e=>{this.resolveInitialLoad=e})}async getUserSetting(e,s){return(await this.getUserSettingWithSource(e,s)).value}async getSettingForUserV2(e){return av(e,await this.getUserSetting(e))}async getUserSettingWithSource(e,s){return await this.initialLoadPromise,s!==void 0?this.readSettingFromTarget({key:e,target:s}):wz({key:e,settingsByKey:this.getMergedUserSettingsByKey(),fileBackedSourcesByKey:this.fileBackedSettingSourcesByKey,lockedKeys:this.lockedFileBackedSettingKeys,state:this.getSourceResolutionState()})}async getSetting(e){return this.getUserSetting(e)}async getSettingForRepo(e,s){return s===void 0||!cv(e)?this.getUserSetting(e):(this.ensureRepoSettingsResolved(s).fireAndForget(),this.getSettingForWorkspace(e,{host:M,mainWorktreePath:s.mainWorktreePath,selectedWorkspacePath:s.mainWorktreePath}))}async getSettingForRepoV2(e,s){return av(e,await this.getSettingForRepo(e,s))}async getSettingForWorkspaceV2(e,s){return av(e,await this.getSettingForWorkspace(e,s))}async getTasksForRepo(e){if(await this.initialLoadPromise,e===void 0){const s=await od(this);return bz(s.tasksById,new Set)}return await this.ensureRepoSettingsResolved(e),this.getRepoTasks(e)}async getSettingForWorkspace(e,s){if(!cv(e))return this.getUserSetting(e);await this.initialLoadPromise;const n=await od(this,s);return this.resolveFromLoadResult(e,n).value}async readSettingFromTarget({key:e,target:s}){const n=await this.dependencies.resolveSettingsFileTarget(s),r=await dd(this,n);return this.resolveFromLoadResult(e,r)}resolveFromLoadResult(e,s){return wz({key:e,settingsByKey:{...this.getDbSettingsByKey(),...Lx(s),...this.featureFlagsByKey,...this.managedSettingsByKey},fileBackedSourcesByKey:Nx(s),lockedKeys:$x(s),state:this.getSourceResolutionState()})}async ensureRepoSettingsResolved(e,s){const n=this.loadGeneration;if(await this.initialLoadPromise,this.dependencies.platformConfig.supportsRepositorySettingsFiles===!1)return;if(!s?.force&&this.repoResolutionByRepoId.has(e.id)){s?.refreshRemote===!0&&await this.refreshRemoteRepoSharedSettings(e);return}const r=this.inFlightRepoResolution.get(e.id);if(r!==void 0&&s?.force!==!0){await r,s?.refreshRemote===!0&&await this.refreshRemoteRepoSharedSettings(e);return}const i=(r??Promise.resolve()).catch(()=>{}).then(()=>{if(this.loadGeneration===n)return this.loadRepoResolutionWithRetry(e)});this.inFlightRepoResolution.set(e.id,i);try{await i}finally{this.inFlightRepoResolution.get(e.id)===i&&this.inFlightRepoResolution.delete(e.id)}s?.refreshRemote===!0&&await this.refreshRemoteRepoSharedSettings(e)}async loadRepoResolutionWithRetry(e){this.repoResolutionErrorByRepoId.delete(e.id)&&this.bumpSettingsRevision();const s=this.loadGeneration,n=[250,1e3,3e3];for(const r of n)try{return await this.loadRepoResolution(e)}catch(i){if(Zs(this.dependencies).warn(`Failed to resolve repo settings for \"${e.id}\"; retrying in ${r}ms`,{error:hp(i)}),await new Promise(o=>setTimeout(o,r)),this.loadGeneration!==s)return}try{return await this.loadRepoResolution(e)}catch(r){if(this.loadGeneration!==s)return;throw this.repoResolutionByRepoId.has(e.id)||(this.repoResolutionErrorByRepoId.set(e.id,{repo:e,error:an(r)}),this.startFileBackedSettingsRefreshInterval(),this.bumpSettingsRevision()),r}}async loadRepoResolution(e){const s=this.loadGeneration,[n,r,i]=await Promise.all([this.dependencies.resolveSettingsFileTarget({scope:\"user\",locality:\"shared\"}),this.dependencies.resolveSettingsFileTarget({scope:\"workspace-template\",locality:\"shared\",repoId:e.id}),this.dependencies.resolveSettingsFileTarget({scope:\"workspace-template\",locality:\"local\",repoId:e.id})]),o=this.requireRepoSettingsFileTarget(r),a=this.requireRepoSettingsFileTarget(i),[c,l,u,d]=await Promise.all([dd(this,n),dd(this,r),dd(this,a),this.loadHiddenRunScriptIds(e.id)]);let h=l;if(this.remoteRepoSharedSettingsCache.hasRemoteSettings(e.id)){const k=Ox(c,this.remoteRepoSharedSettingsCache.load({repoId:e.id,repoSharedTarget:o,baseTasksById:c.tasksById}));h=Ox(k,{...N$e(l,this.repoSharedSettingsFilePaths(o)),tasksById:await O$e({dependencies:this.dependencies,repoSharedTarget:o,baseTasksById:k.tasksById})})}const p=Ox(h,{...L$e(u,this.repoLocalSettingsTomlPath(a)),tasksById:await M$e({dependencies:this.dependencies,repoLocalTarget:a,baseTasksById:h.tasksById})}),m=p;if(this.loadGeneration!==s)return;const v=this.repoResolutionErrorByRepoId.delete(e.id),_={repo:e,effective:m,user:c,repoShared:h,repoLocal:p,hiddenRunScriptIds:d},S=this.repoResolutionByRepoId.get(e.id);this.repoResolutionByRepoId.set(e.id,_),this.startFileBackedSettingsRefreshInterval(),!(!v&&S!==void 0&&eS(S,_))&&(Zs(this.dependencies).info(`Resolved repo settings for \"${e.id}\"`,{keys:Object.values(m.settingsByKey).filter(k=>k?.value!==void 0).length}),this.bumpSettingsRevision())}repoLocalSettingsTomlPath(e){return this.dependencies.platformFs.join(e.mainWorktreePath,\".conductor\",\"settings.local.toml\")}repoSharedSettingsFilePaths(e){const s=this.dependencies.platformFs.join(e.mainWorktreePath,\".conductor\");return[this.dependencies.platformFs.join(s,\"settings.toml\"),this.dependencies.platformFs.join(s,\"settings.json\")]}requireRepoSettingsFileTarget(e){if(e.scope!==\"repo\")throw new Error(\"Expected repository settings file target\");return e}refreshRemoteRepoSharedSettings(e){return this.remoteRepoSharedSettingsCache.refresh(e,()=>this.ensureRepoSettingsResolved(e,{force:!0}))}async ensureWorkspaceSettingsResolved(e,s){const n=this.loadGeneration;await this.initialLoadPromise;const r=this.getWorkspaceResolutionKey(e);if(!s?.force&&this.workspaceResolutionByKey.has(r))return;const i=this.inFlightWorkspaceResolution.get(r);if(i!==void 0&&s?.force!==!0)return i;const o=(i??Promise.resolve()).catch(()=>{}).then(()=>{if(this.loadGeneration===n)return this.loadWorkspaceResolutionWithRetry(e)});this.inFlightWorkspaceResolution.set(r,o);try{await o}finally{this.inFlightWorkspaceResolution.get(r)===o&&this.inFlightWorkspaceResolution.delete(r)}}async loadWorkspaceResolutionWithRetry(e){const s=this.getWorkspaceResolutionKey(e);this.workspaceResolutionErrorByKey.delete(s)&&this.bumpSettingsRevision();const n=this.loadGeneration,r=[250,1e3,3e3];for(const i of r)try{return await this.loadWorkspaceResolution(e)}catch(o){if(Zs(this.dependencies).warn(`Failed to resolve workspace settings for \"${e.selectedWorkspacePath}\"; retrying in ${i}ms`,{error:hp(o)}),await new Promise(a=>setTimeout(a,i)),this.loadGeneration!==n)return}try{return await this.loadWorkspaceResolution(e)}catch(i){if(this.loadGeneration!==n)return;throw this.workspaceResolutionByKey.has(s)||(this.workspaceResolutionErrorByKey.set(s,{context:e,error:an(i)}),this.startFileBackedSettingsRefreshInterval(),this.bumpSettingsRevision()),i}}async loadWorkspaceResolution(e){const s=this.loadGeneration,n=await od(this,e);if(this.loadGeneration!==s)return;const r=this.getWorkspaceResolutionKey(e),i=this.workspaceResolutionErrorByKey.delete(r),o={context:e,effective:n},a=this.workspaceResolutionByKey.get(r);this.workspaceResolutionByKey.set(r,o),this.startFileBackedSettingsRefreshInterval(),!(!i&&a!==void 0&&eS(a,o))&&(Zs(this.dependencies).info(\"Resolved workspace settings\",{key:r,keys:Object.values(n.settingsByKey).filter(c=>c?.value!==void 0).length}),this.bumpSettingsRevision())}getRepoSettingResolution(e,s){const n=this.repoResolutionByRepoId.get(s.id);if(n!==void 0)return{effective:this.resolveFromLoadResult(e,n.effective),user:this.resolveFromLoadResult(e,n.user),repoShared:this.resolveFromLoadResult(e,n.repoShared),repoLocal:this.resolveFromLoadResult(e,n.repoLocal)}}getWorkspaceSettingResolution(e,s){const n=this.workspaceResolutionByKey.get(this.getWorkspaceResolutionKey(s));if(n!==void 0)return this.resolveFromLoadResult(e,n.effective)}getWorkspaceResolutionError(e){return this.workspaceResolutionErrorByKey.get(this.getWorkspaceResolutionKey(e))?.error}getRepoTasks(e){const s=this.repoResolutionByRepoId.get(e.id);return s===void 0?[]:bz(s.effective.tasksById,s.hiddenRunScriptIds)}getRepoResolutionError(e){return this.repoResolutionErrorByRepoId.get(e.id)?.error}getRepoTasksResolution(e){const s=this.repoResolutionByRepoId.get(e.id);if(s!==void 0)return{effective:lee(DN(s.effective.tasksById),s.hiddenRunScriptIds),user:Dx({tasksById:s.user.tasksById,scope:\"user\",locality:\"shared\",hiddenTaskIds:s.hiddenRunScriptIds}),repoShared:Dx({tasksById:s.repoShared.tasksById,scope:\"repo\",locality:\"shared\",hiddenTaskIds:s.hiddenRunScriptIds}),repoLocal:Dx({tasksById:s.effective.tasksById,scope:\"repo\",locality:\"local\",hiddenTaskIds:s.hiddenRunScriptIds})}}async loadHiddenRunScriptIds(e){let s;try{s=await Ms().getEntry({subsystem:Fx,id:e})}catch(n){return Zs(this.dependencies).warn(\"Failed to read hidden run scripts from local storage\",{repoId:e,error:hp(n)}),new Set}return Array.isArray(s)?new Set(s.filter(n=>typeof n==\"string\"&&n.length>0)):new Set}async persistHiddenRunScriptIds({repositoryId:e,hiddenRunScriptIds:s}){if(s.size===0){await Ms().removeEntry({subsystem:Fx,id:e});return}const n=await Ms().setEntry({subsystem:Fx,sizeLimit:z$e,id:e,content:[...s].sort()});if(!n.success)throw new Error(`Failed to persist hidden run scripts: ${n.reason}`)}async updateRunScriptHidden({repositoryId:e,taskId:s,previousTaskId:n,hidden:r}){await this.initialLoadPromise;const i=this.loadGeneration,o=lo(s);if(o===void 0)throw new Error(\"Task id is required\");const a=n===void 0?void 0:lo(n);Zs(this.dependencies).info(`updateRunScriptHidden \"${s}\"`,{destination:\"local-storage\",repositoryId:e,hidden:r});const l=async()=>{const h=await this.loadHiddenRunScriptIds(e);a!==void 0&&h.delete(a),r?h.add(o):h.delete(o),await this.persistHiddenRunScriptIds({repositoryId:e,hiddenRunScriptIds:h});const p=this.inFlightRepoResolution.get(e);if(p!==void 0&&await p,this.loadGeneration!==i)return;const m=this.repoResolutionByRepoId.get(e);m!==void 0&&this.repoResolutionByRepoId.set(e,{...m,hiddenRunScriptIds:h}),this.bumpSettingsRevision()},d=(this.hiddenRunScriptUpdateByRepoId.get(e)??Promise.resolve()).catch(()=>{}).then(l);this.hiddenRunScriptUpdateByRepoId.set(e,d);try{await d}finally{this.hiddenRunScriptUpdateByRepoId.get(e)===d&&this.hiddenRunScriptUpdateByRepoId.delete(e)}return!0}async updateTask(e,s,n,r){await this.initialLoadPromise;const i=Zs(this.dependencies),o=await this.dependencies.resolveSettingsFileTarget(n);return i.info(`updateTask \"${e}\"`,{destination:\"file\",scope:o.scope,locality:\"locality\"in o?o.locality:void 0,action:s===void 0?\"delete\":\"set\"}),await this.mutateSettingsFile({fileTarget:o,transform:a=>{FNe({data:a,id:e,task:s,position:r?.position??\"last\",replaceId:r?.replaceId})},migrateLegacyRunScripts:!0,logLabel:`Writing task \"${e}\"`,force:r?.force??!1,onForce:()=>this.updateTask(e,s,n,{...r,force:!0})})}async writeEnvVarToFile({key:e,fileValue:s,fileTarget:n,force:r=!1}){return await this.initialLoadPromise,Zs(this.dependencies).info(`writeEnvVarToFile \"${e}\"`,{destination:\"file\",scope:n.scope,locality:\"locality\"in n?n.locality:void 0,action:s===void 0?\"delete\":\"set\"}),await this.mutateSettingsFile({fileTarget:n,transform:s$e({key:e,fileValue:s}),migrateLegacyRunScripts:!0,logLabel:`Writing env var \"${e}\"`,force:r,onForce:()=>this.writeEnvVarToFile({key:e,fileValue:s,fileTarget:n,force:!0})})}async ensureSettingsFileExists(e){await this.initialLoadPromise;const s=await this.dependencies.resolveSettingsFileTarget(e);return await this.mutateSettingsFile({fileTarget:s,transform:()=>{},logLabel:\"Seeding settings file\",skipIfFileExists:!0,onForce:()=>this.ensureSettingsFileExists(e)})}async waitForInitialLoad(){await this.initialLoadPromise}isSettingManaged(e){return this.lockedFileBackedSettingKeys.has(e)||this.managedSettingsByKey[e]!==void 0}getSettingSource(e){return tO({key:e,fileBackedSourcesByKey:this.fileBackedSettingSourcesByKey,state:this.getSourceResolutionState()})}getManagedSettingsSourcePath(){return this.managedSettingsSourcePath}getManagedEnvVars(e){return this.managedEnvVarsByContext[e]}updateFeatureFlags(e){const s=this.featureFlagsByKey;this.lastRawFlags=e,this.recomputeFeatureFlags(),this.publishStoreState({settingsByKey:this.getMergedSettingsByKey(),settingSourcesByKey:this.getMergedSettingSourcesByKey(),settingsRevision:this.nextSettingsRevision(),featureFlags:e,featureFlagsLoaded:!0}),this.__store.getState().initialLoadInProgress||C$e({service:this,previousFeatureFlagsByKey:s,featureFlagsByKey:this.featureFlagsByKey})}isSettingFromFeatureFlag(e){return B$e.has(e)}getSourceResolutionState(){return{managedSettingsByKey:this.managedSettingsByKey,managedSettingsSourcePath:this.managedSettingsSourcePath,featureFlagsByKey:this.featureFlagsByKey,dbSettingsByKey:this.dbSettingsByKey,isFeatureFlagSetting:e=>this.isSettingFromFeatureFlag(e)}}async setFeatureFlagOverride(e,s){const n=a$e(e);if(s===void 0){const{[e]:r,...i}=this.featureFlagOverridesByFlag;this.featureFlagOverridesByFlag=i;const{[n]:o,...a}=this.dbSettingsByKey;this.dbSettingsByKey=a,await this.dependencies.db.execute(\"DELETE FROM settings WHERE key = ?\",[n])}else this.featureFlagOverridesByFlag={...this.featureFlagOverridesByFlag,[e]:s},this.dbSettingsByKey={...this.dbSettingsByKey,[n]:String(s)},await this.dependencies.db.execute(\"INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)\",[n,String(s)]);this.recomputeFeatureFlags(),this.publishStoreState({settingsByKey:this.getMergedSettingsByKey(),settingSourcesByKey:this.getMergedSettingSourcesByKey(),settingsRevision:this.nextSettingsRevision(),featureFlagOverrides:this.featureFlagOverridesByFlag})}async updateSetting(e,s,n,r){const i=kz(n)?void 0:n,o=kz(n)?n:r;await this.initialLoadPromise;const a=Zs(this.dependencies),c=sO(e,s,this.dependencies.sensitiveSettingKeys);if(this.isSettingManaged(e))return a.warn(`updateSetting \"${e}\" blocked: managed by organization`),this.dependencies.feedback.error(\"Setting is managed by your organization\"),!1;if(this.isSettingFromFeatureFlag(e))return a.warn(`updateSetting \"${e}\" blocked: controlled by feature flag`),this.dependencies.feedback.error(\"Setting is controlled by a feature flag\"),!1;if(this.cancelPendingPersist(e),this.shouldWriteSettingToFile(e,i)){const l=await this.getFileWriteTargetForSetting(e,i);a.info(`updateSetting \"${e}\" \u2192 \"${c}\"`,{destination:\"file\",scope:l.scope,locality:\"locality\"in l?l.locality:void 0}),ZM({key:e,scope:l.scope});const u=l.scope===\"user\"?this.applyOptimisticFileBackedWrite({key:e,value:s}):void 0;try{const d=await this.mutateSettingsFile({fileTarget:l,transform:JM({key:e,value:s}),migrateLegacyRunScripts:!0,migrationOrder:\"after-transform\",logLabel:`Writing setting \"${e}\"`,force:o?.force??!1,onForce:()=>this.updateSetting(e,s,i,{...o,force:!0})});return d?dp(this,e):u!==void 0&&(this.retireOptimisticFileBackedWrite({key:e,optimisticWriteId:u}),await this.refreshFileBackedSettings()),d}finally{this.retireOptimisticFileBackedWrite({key:e,optimisticWriteId:u})}}return o?.debounce?(a.info(`updateSetting \"${e}\" \u2192 \"${c}\"`,{destination:\"db\",debounced:!0}),this.setStoreValue(e,s),dp(this,e),this.getPersistDebouncer(e)(s),!0):(a.info(`updateSetting \"${e}\" \u2192 \"${c}\"`,{destination:\"db\",debounced:!1}),await vz(this,e,s),this.setStoreValue(e,s),dp(this,e),!0)}async deleteSetting(e,s,n){await this.initialLoadPromise;const r=Zs(this.dependencies);if(this.isSettingManaged(e))return r.warn(`deleteSetting \"${e}\" blocked: managed by organization`),this.dependencies.feedback.error(\"Setting is managed by your organization\"),!1;if(this.isSettingFromFeatureFlag(e))return r.warn(`deleteSetting \"${e}\" blocked: controlled by feature flag`),this.dependencies.feedback.error(\"Setting is controlled by a feature flag\"),!1;if(this.cancelPendingPersist(e),this.shouldWriteSettingToFile(e,s)){const i=await this.getFileWriteTargetForSetting(e,s);r.info(`deleteSetting \"${e}\"`,{destination:\"file\",scope:i.scope,locality:\"locality\"in i?i.locality:void 0}),ZM({key:e,scope:i.scope});const o=await this.mutateSettingsFile({fileTarget:i,transform:JM({key:e,value:\"\",deleteValue:!0}),migrateLegacyRunScripts:!0,migrationOrder:\"after-transform\",logLabel:`Deleting setting \"${e}\"`,force:n?.force??!1,onForce:()=>this.deleteSetting(e,s,{force:!0})});return o&&dp(this,e),o}return r.info(`deleteSetting \"${e}\"`,{destination:\"db\"}),tg(this.dependencies,e)&&await QZ(this.dependencies,e),await this.dependencies.db.execute(\"DELETE FROM settings WHERE key = ?\",[e]),this.setStoreValue(e,\"\"),dp(this,e),!0}recomputeFeatureFlags(){const e={};for(const[s,n]of Object.entries(WN)){const r=this.featureFlagOverridesByFlag[s];r!==void 0?e[n]=String(r):s in this.lastRawFlags&&(e[n]=String(this.lastRawFlags[s]===!0))}this.featureFlagsByKey=e}loadFeatureFlagOverridesFromDb(){const e={};for(const[s,n]of Object.entries(this.dbSettingsByKey)){if(!pz(s))continue;const r=s.replace(\"feature_flag_override:\",\"\");e[r]=n===\"true\"}return e}setStoreValue(e,s){if(!s||s.trim()===\"\"){const{[e]:n,...r}=this.dbSettingsByKey;this.dbSettingsByKey=r,this.publishEffectiveSettings();return}this.dbSettingsByKey={...this.dbSettingsByKey,[e]:s},this.publishEffectiveSettings()}applyOptimisticFileBackedWrite({key:e,value:s}){const n=this.optimisticFileWriteCounter+=1;return this.inFlightOptimisticFileWrites.set(e,{id:n,value:s.trim()===\"\"?void 0:s,source:this.fileBackedSettingSourcesByKey[e]}),this.applyInFlightOptimisticFileWrites(),this.publishEffectiveSettings(),n}retireOptimisticFileBackedWrite({key:e,optimisticWriteId:s}){s!==void 0&&this.inFlightOptimisticFileWrites.get(e)?.id===s&&this.inFlightOptimisticFileWrites.delete(e)}applyInFlightOptimisticFileWrites(){for(const[e,s]of this.inFlightOptimisticFileWrites)this.fileBackedSettingsByKey[e]=s.value,s.source!==void 0&&(this.fileBackedSettingSourcesByKey[e]=s.source)}getDbSettingsByKey(){const e={};for(const[s,n]of Object.entries(this.dbSettingsByKey))pz(s)||(e[s]=n);return e}getMergedUserSettingsByKey(){return{...this.getDbSettingsByKey(),...this.fileBackedSettingsByKey,...this.featureFlagsByKey,...this.managedSettingsByKey}}getMergedSettingsByKey(){return this.getMergedUserSettingsByKey()}getMergedSettingSourcesByKey(){const e=this.fileBackedSettingSourcesByKey,s=this.getSourceResolutionState(),n=new Set([...Object.keys(this.getMergedSettingsByKey()),...Object.keys(e),...Object.keys(this.dbSettingsByKey),...Object.keys(this.featureFlagsByKey),...Object.keys(this.managedSettingsByKey)]),r={};for(const i of n){const o=tO({key:i,fileBackedSourcesByKey:e,state:s});o!==void 0&&(r[i]=o)}return r}publishEffectiveSettings(){const e=this.getMergedSettingsByKey(),s=this.getMergedSettingSourcesByKey(),n=this.__store.getState();eS(n.settingsByKey,e)&&eS(n.settingSourcesByKey,s)||this.publishStoreState({settingsByKey:e,settingSourcesByKey:s,settingsRevision:this.nextSettingsRevision()})}nextSettingsRevision(){return this.settingsRevision+=1,this.settingsRevision}bumpSettingsRevision(){this.publishStoreState({settingsRevision:this.nextSettingsRevision()})}publishStoreState(e){try{this.__store.setState(e)}catch(s){Zs(this.dependencies).error(\"A settings store subscriber threw while being notified\",s),this.subscriberRenotifyAttempts=0,this.scheduleSubscriberRenotify()}}scheduleSubscriberRenotify(){this.subscriberRenotifyTimeout===void 0&&(this.subscriberRenotifyTimeout=setTimeout(()=>{this.subscriberRenotifyTimeout=void 0,this.subscriberRenotifyAttempts+=1;try{this.__store.setState({settingsRevision:this.nextSettingsRevision()}),this.subscriberRenotifyAttempts=0}catch{if(this.subscriberRenotifyAttempts>=q$e){Zs(this.dependencies).warn(\"Giving up on re-notifying settings store subscribers after repeated failures\");return}this.scheduleSubscriberRenotify()}},H$e))}async mutateSettingsFile({fileTarget:e,transform:s,migrateLegacyRunScripts:n=!1,migrationOrder:r=\"before-transform\",logLabel:i,force:o=!1,skipIfFileExists:a=!1,onForce:c}){const l=Zs(this.dependencies);let u;try{u=await MZ(this,e)}catch(h){return l.error(`${i} failed to resolve file target`,h),Sz(this.dependencies,h,void 0),!1}let d=!1;try{await So({key:`settings-file:${u.tomlPath}`,operationName:i,operation:async()=>{if(a&&await this.dependencies.platformFs.exists({path:u.tomlPath,host:u.layer.host})){d=!0;return}const h=await this.readSettingsFileDataForWrite({resolved:u,force:o});await FZ(this,{resolved:u,data:h,transform:s,migrateLegacyRunScripts:n,migrationOrder:r,logLabel:i})}})}catch(h){l.error(`${i} write failed`,h);const p=!o&&this.lastGoodParsedByPath.has(u.tomlPath);return Sz(this.dependencies,h,p?c:void 0),!1}return d||await this.reResolve(),!0}async readSettingsFileDataForWrite({resolved:e,force:s}){if(s){const r=this.lastGoodParsedByPath.get(e.tomlPath);if(r===void 0)throw new Error(`Cannot force-overwrite ${e.tomlPath}: no last-known-good parse of the file is available`);return structuredClone(r)}const n=await OZ(this,e);return this.lastGoodParsedByPath.set(e.tomlPath,structuredClone(n)),n}async reResolve(){await So({key:\"settings-file:__reresolve__\",operationName:\"reResolve settings\",operation:async()=>{await this.refreshFileBackedSettings(),await Promise.all([this.reloadResolvedRepoSettings(),this.reloadResolvedWorkspaceSettings()])}})}async reloadResolvedRepoSettings(){for(const{repo:s}of this.repoResolutionErrorByRepoId.values())this.ensureRepoSettingsResolved(s,{force:!0}).catch(n=>{Zs(this.dependencies).warn(\"Retried repo settings resolution still failing\",{repoId:s.id,error:hp(n)})});const e=[...this.repoResolutionByRepoId.values()].map(s=>s.repo);await Promise.all(e.map(s=>this.ensureRepoSettingsResolved(s,{force:!0})))}async reloadResolvedWorkspaceSettings(){for(const{context:s}of this.workspaceResolutionErrorByKey.values())this.ensureWorkspaceSettingsResolved(s,{force:!0}).catch(n=>{Zs(this.dependencies).warn(\"Retried workspace settings resolution still failing\",{selectedWorkspacePath:s.selectedWorkspacePath,error:hp(n)})});const e=[...this.workspaceResolutionByKey.values()].map(s=>s.context);for(const s of e.filter(n=>Ht(n.host)))this.ensureWorkspaceSettingsResolved(s,{force:!0}).catch(n=>{Zs(this.dependencies).error(\"Failed to refresh remote workspace settings\",n)});await Promise.all(e.filter(s=>!Ht(s.host)).map(s=>this.ensureWorkspaceSettingsResolved(s,{force:!0})))}getWorkspaceResolutionKey(e){return[e.host.hostingServerUrl,e.host.vmId,e.mainWorktreePath,e.selectedWorkspacePath??\"\"].join(\"\\0\")}startFileBackedSettingsRefreshInterval(){this.stopFileBackedSettingsRefreshInterval(),this.fileBackedSettingsRefreshInterval=setInterval(()=>{this.reResolve().catch(e=>{Zs(this.dependencies).error(\"Failed to refresh file-backed settings\",e)}).fireAndForget()},U$e)}stopFileBackedSettingsRefreshInterval(){this.fileBackedSettingsRefreshInterval!==void 0&&(clearInterval(this.fileBackedSettingsRefreshInterval),this.fileBackedSettingsRefreshInterval=void 0)}shouldWriteSettingToFile(e,s){if(!aZ(e))return!1;const n=this.dependencies.platformFs.mkdir!==void 0&&this.dependencies.platformFs.writeTextFile!==void 0;return n||Zs(this.dependencies).warn(`File-backed setting \"${e}\" will be stored in db: filesystem write not supported in this context`),n}getFileWriteTargetForSetting(e,s){return s?.scope===\"workspace-template\"&&!cv(e)?this.dependencies.resolveSettingsFileTarget({scope:\"user\",locality:\"shared\"}):this.dependencies.resolveSettingsFileTarget(s??{scope:\"user\",locality:\"shared\"})}async reloadSettingsFromDisk(){const e=await this.dependencies.fetchManagedSettings?.();this.managedSettingsByKey=e?.settingsByKey??{},this.managedEnvVarsByContext=e?.envVarsByContext??hd(),this.managedSettingsSourcePath=e?.sourcePath,await this.reResolve()}async refreshFileBackedSettings(){const e=await od(this);this.fileBackedSettingsByKey=Lx(e),this.fileBackedSettingSourcesByKey=Nx(e),this.lockedFileBackedSettingKeys=$x(e),this.applyInFlightOptimisticFileWrites(),Zs(this.dependencies).info(\"File-backed settings refreshed\",{count:Object.keys(this.fileBackedSettingsByKey).filter(s=>this.fileBackedSettingsByKey[s]!==void 0).length}),this.publishEffectiveSettings()}getPersistDebouncer(e){const s=this.debouncedPersistByKey.get(e);if(s)return s;const n=wFe(r=>{vz(this,e,r).catch(i=>{Zs(this.dependencies).error(`Failed to persist debounced setting \"${e}\"`,i),this.dependencies.feedback.error(\"Failed to save setting\")})},W$e);return this.debouncedPersistByKey.set(e,n),n}cancelPendingPersist(e){this.debouncedPersistByKey.get(e)?.cancel()}}"
+    },
+    {
+      "asset": "index",
+      "label": "Lx",
+      "utf8_half_open": [
+        373940,
+        374038
+      ],
+      "bytes": 98,
+      "sha256": "0d00c3984b29520f7e9a2cb13125cc7afccbb554307967c34060d5042e5e0cda",
+      "text": "function Lx(t){const e={};for(const[s,n]of Object.entries(t.settingsByKey))e[s]=n?.value;return e}"
+    },
+    {
+      "asset": "index",
+      "label": "Nx",
+      "utf8_half_open": [
+        374038,
+        374137
+      ],
+      "bytes": 99,
+      "sha256": "83e0c02de3a526f49dc8ec1990918dbb49ddbbbde587b4ee1c6b8da502ac2dc2",
+      "text": "function Nx(t){const e={};for(const[s,n]of Object.entries(t.settingsByKey))e[s]=n?.source;return e}"
+    },
+    {
+      "asset": "index",
+      "label": "ln",
+      "utf8_half_open": [
+        385083,
+        385204
+      ],
+      "bytes": 121,
+      "sha256": "c7496d4d23a13f293ec1e25c28c689cf0c33c103000c18e55d7c3318d9eb9240",
+      "text": "function ln(t){const e=iBe(typeof t==\"string\"?t:void 0),s=aBe(typeof t==\"string\"?void 0:t);return typeof t==\"string\"?e:s}"
+    },
+    {
+      "asset": "index",
+      "label": "iBe",
+      "utf8_half_open": [
+        386038,
+        386561
+      ],
+      "bytes": 523,
+      "sha256": "522c4509fe67da457e1e77c7612ae7262763a5a2a80189829105a20fe32f38d7",
+      "text": "function iBe(t){const e=z.c(11),s=tt(ee.store,oBe);let n;e[0]!==t?(n=l=>t===void 0?void 0:sg({settingsByKey:l.settingsByKey,key:t}),e[0]=t,e[1]=n):n=e[1];const r=tt(ee.store,n);if(t===void 0){let l;return e[2]===Symbol.for(\"react.memo_cache_sentinel\")?(l=tr(),e[2]=l):l=e[2],l}let i;e[3]!==t||e[4]!==r?(i=av(t,r),e[3]=t,e[4]=r,e[5]=i):i=e[5];let o;e[6]!==i?(o={data:i,error:void 0,isLoading:!1},e[6]=i,e[7]=o):o=e[7];const a=o;if(OLe(t))return a;let c;return e[8]!==s||e[9]!==a?(c=s?tr():a,e[8]=s,e[9]=a,e[10]=c):c=e[10],c}"
+    },
+    {
+      "asset": "index",
+      "label": "aBe",
+      "utf8_half_open": [
+        386608,
+        387068
+      ],
+      "bytes": 460,
+      "sha256": "d078361f79be2999c4276e9f745aec63291cd19c8dd459f3f75d0f9e77d53830",
+      "text": "function aBe(t){const e=t?.key,s=t?.for,n=$e.useRef(s);n.current=s;const r=s?.id,i=s?.mainWorktreePath,o=tt(ee.store,c=>c.initialLoadInProgress);if(tt(ee.store,c=>c.settingsRevision),$e.useEffect(()=>{const c=n.current;e===void 0||c===void 0||ee.ensureRepoSettingsResolved(c,{refreshRemote:!0}).fireAndForget()},[e,r,i]),e===void 0||s===void 0||o)return tr();const a=ee.getRepoSettingResolution(e,s);return a===void 0?tr():dt(cBe({key:e,repo:s,resolution:a}))}"
+    },
+    {
+      "asset": "index",
+      "label": "cBe",
+      "utf8_half_open": [
+        387068,
+        387605
+      ],
+      "bytes": 537,
+      "sha256": "a1d1ac866377b2069a1e96c1ff5d3c1647d50856d710d8708ccd76557f2e937f",
+      "text": "function cBe({key:t,repo:e,resolution:s}){const{effective:n,user:r,repoShared:i,repoLocal:o}=s,a=Hx({level:\"user\",key:t,repo:e,setting:r,canSetValue:!r.isLocked,canResetToInherited:!1}),c=Hx({level:\"repo-shared\",key:t,repo:e,setting:i,canSetValue:!i.isLocked&&cv(t),canResetToInherited:iO(\"repo-shared\",i)}),l=iO(\"repo-local\",o),u=Hx({level:\"repo-local\",key:t,repo:e,setting:o,canSetValue:!o.isLocked&&cv(t),canResetToInherited:l});return{effective:{value:n.value,source:n.source},configurations:{user:a,\"repo-shared\":c,\"repo-local\":u}}}"
+    },
+    {
+      "asset": "index",
+      "label": "Hx",
+      "utf8_half_open": [
+        387605,
+        387967
+      ],
+      "bytes": 362,
+      "sha256": "41cc388a0ea98bfc5ccda220c9865014b2ca1502e60ee373899cf0b62e04f883",
+      "text": "function Hx({level:t,key:e,repo:s,setting:n,canSetValue:r,canResetToInherited:i}){const o=iO(t,n),a=o?n.source:void 0;return{level:t,value:o?n.value:void 0,source:a,isConfigured:o,isLocked:n.isLocked,setValue:r&&!n.isLocked?c=>ee.updateSetting(e,c,Tz({level:t,repo:s})):void 0,resetToInherited:i&&!n.isLocked?()=>ee.deleteSetting(e,Tz({level:t,repo:s})):void 0}}"
+    },
+    {
+      "asset": "index",
+      "label": "iO",
+      "utf8_half_open": [
+        387967,
+        388007
+      ],
+      "bytes": 40,
+      "sha256": "0280a2ce37052543707a2b65af7b832084de69e8c1fdf6ba3156430f8257dc7c",
+      "text": "function iO(t,e){return lBe(t,e.source)}"
+    },
+    {
+      "asset": "index",
+      "label": "lBe",
+      "utf8_half_open": [
+        388007,
+        388174
+      ],
+      "bytes": 167,
+      "sha256": "dedc258db46bf834e44626b5d96bdd4bcd461df25fa85d3e67dc43b3aff16c75",
+      "text": "function lBe(t,e){if(e===void 0)return!1;switch(t){case\"user\":return jM(e)||e.label===\"legacy database\";case\"repo-shared\":return LDe(e);case\"repo-local\":return aN(e)}}"
+    },
+    {
+      "asset": "index",
+      "label": "Tz",
+      "utf8_half_open": [
+        388174,
+        388429
+      ],
+      "bytes": 255,
+      "sha256": "732d147277b74e7f9d217e0494f494244c15620760a00752d640ce4d5cc1b070",
+      "text": "function Tz({level:t,repo:e}){switch(t){case\"user\":return{scope:\"user\",locality:\"shared\"};case\"repo-shared\":return{scope:\"workspace-template\",locality:\"shared\",repoId:e.id};case\"repo-local\":return{scope:\"workspace-template\",locality:\"local\",repoId:e.id}}}"
+    },
+    {
+      "asset": "index",
+      "label": "export:a9",
+      "utf8_half_open": [
+        3480186,
+        3480194
+      ],
+      "bytes": 8,
+      "sha256": "6a5b1aa7722982e14e556fb3cfaec8a28d6080f687b43024016524f29faf3df2",
+      "text": "ln as a9"
+    }
+  ],
+  "production": [
+    {
+      "path": "src/settings/rows/PromptRows.tsx",
+      "bytes": 7076,
+      "sha256": "81c6e5553145a29e74df51f14401a6f913780310415417f405c6fedc98fbcb1f"
+    },
+    {
+      "path": "src/settings/rows/rowModel.ts",
+      "bytes": 2719,
+      "sha256": "84b5f89bd99617cb839430e690eb9cd085bc039061c4f0df5df2a1e4f5a2184d"
+    },
+    {
+      "path": "src/settings/rows/rowModel.test.ts",
+      "bytes": 795,
+      "sha256": "a9c3c4d31128f9eb94df8de6f6cdf19924e2c05a9d1c46be0239774711887b96"
+    },
+    {
+      "path": "src/settings/repoSettings.ts",
+      "bytes": 3538,
+      "sha256": "907529a9d07a35c88e0bb62957d906d7b1aed5664640d5c3fad332bb166574cc"
+    },
+    {
+      "path": "src/settings/useRepoSettings.ts",
+      "bytes": 1341,
+      "sha256": "8a0fd5f8fe1be6f43ff440cc8f05c590cb2123e65a1edbc3ebad94faa46e22c2"
+    },
+    {
+      "path": "src/lib/persistence/producer.ts",
+      "bytes": 2128,
+      "sha256": "43563650aa075939f9f87adaaf79ac708783623a29c9c4c07a48bd64f32eff9b"
+    },
+    {
+      "path": "src/lib/persistence/owner.ts",
+      "bytes": 2360,
+      "sha256": "0839e315b74003736dba89c3f3c08dc0f7bea2fe3cba2e7a37252d4ac4a9abe6"
+    },
+    {
+      "path": "src/lib/persistence/restartPersistence.ts",
+      "bytes": 1865,
+      "sha256": "931accd8ac4c43621ae0235e16000688587ce448acdfc2989284d098ebc70a03"
+    },
+    {
+      "path": "src/settings/rows/RepoGitRows.tsx",
+      "bytes": 8487,
+      "sha256": "b2eb98ba03cf2dd5ba84d4d55b187d7016caedea371918b679f80d18b2568ecc"
+    },
+    {
+      "path": "src/settings/rows/rows.css",
+      "bytes": 9604,
+      "sha256": "340c0e2c6898c0fc8ac0c3028b855399a39bf342248a75b6fa27b04196f728c6"
+    },
+    {
+      "path": "crates/scripts/src/config/effective.rs",
+      "bytes": 33567,
+      "sha256": "d3fd96d92d66d9ab92923aee2496042af93229776e249c4b2c9ba7c3f82ae33c"
+    },
+    {
+      "path": "crates/scripts/src/config/effective_tests.rs",
+      "bytes": 18491,
+      "sha256": "c67e618e24d7087b7229cbfb27d3cd64e5a9ec3f11b1fc6e1054dade53b44749"
+    },
+    {
+      "path": "src-tauri/src/settings/effective.rs",
+      "bytes": 10050,
+      "sha256": "cf7bd5b7adbf70f8af3650a8b32cd3f2a5d962bd8691f8e5ee8e21728a58c4ff"
+    },
+    {
+      "path": "evidence/settings/action-preview/mounted.cjs",
+      "bytes": 7569,
+      "sha256": "9a5676cae021929c29a1d60c54e4fef38ea80831f540c110dffbda3a663a8a52"
+    }
+  ],
+  "frozen_fixture_sha256": "4ea16788681cd57c7b06a680e09260e5d00fe2878c4b76257c839e100ee9a1a1",
+  "dedupe": [
+    "rowModel old blank\u2192null expectation is opposite to complete original string-write contract, retained before correction",
+    "repoGitDeleteReset covers another row/flag only",
+    "defaults-clear covers Reason model defaults only",
+    "generic PendingEdit/WriteBarrier tests do not establish Actions Reset/empty override semantics",
+    "Preview/reveal/async/repo-memory/font/completion are outside this gap"
+  ],
+  "limits": [
+    "Original JS parsed and hashed, never evaluated",
+    "Controlled in-memory IPC is not Rust, disk or Tauri transport",
+    "Native/physical/geometry/package acceptance unverified; no runtime/native dispatch",
+    "No product edit lease or Rust/heavy admission yet"
+  ]
+}

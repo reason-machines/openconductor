@@ -1,0 +1,99 @@
+   Compiling settings-auto-permission-unit v0.0.0 (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-auto-permission-binding/harness)
+warning: unused variable: `post_plan_mode`
+  --> src/lib.rs:86:85
+   |
+86 | ...interact::Answer, post_plan_mode: Option<agent::PermissionMode>) -> Result<agent::claude_stream::PermissionDecision, String> {
+   |                      ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_post_plan_mode`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `PermissionRequest` is never constructed
+  --> src/lib.rs:33:12
+   |
+33 | pub struct PermissionRequest {
+   |            ^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: enum `Ask` is never used
+  --> src/lib.rs:48:10
+   |
+48 | pub enum Ask {
+   |          ^^^
+
+warning: struct `PermissionOption` is never constructed
+  --> src/lib.rs:75:12
+   |
+75 | pub struct PermissionOption {
+   |            ^^^^^^^^^^^^^^^^
+
+warning: variant `Answers` is never constructed
+  --> /home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src-tauri/src/claude_chat/interact.rs:37:5
+   |
+28 | pub enum Answer {
+   |          ------ variant in this enum
+...
+37 |     Answers(Vec<Vec<String>>),
+   |     ^^^^^^^
+   |
+   = note: `Answer` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: associated function `from_json` is never used
+  --> /home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src-tauri/src/claude_chat/interact.rs:43:12
+   |
+42 | impl Answer {
+   | ----------- associated function in this implementation
+43 |     pub fn from_json(v: &Value) -> Result<Answer, String> {
+   |            ^^^^^^^^^
+
+warning: function `request_of` is never used
+  --> /home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src-tauri/src/claude_chat/interact.rs:80:8
+   |
+80 | pub fn request_of(request_id: String, tool: &str, input: &Value) -> PermissionRequest {
+   |        ^^^^^^^^^^
+
+warning: function `title` is never used
+   --> /home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src-tauri/src/claude_chat/interact.rs:197:4
+    |
+197 | fn title(tool: &str, input: &Value) -> String {
+    |    ^^^^^
+
+warning: `settings-auto-permission-unit` (lib test) generated 8 warnings (run `cargo fix --lib -p settings-auto-permission-unit --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.72s
+     Running unittests src/lib.rs (.oc-tmp/settings-auto-permission-binding/harness/target/debug/build/settings-auto-permission-unit/dda2fa8575ded66e/out/settings_auto_permission_unit-dda2fa8575ded66e)
+
+running 13 tests
+
+thread 'protocol_regression::protocol_approved_plan_restores_non_auto_policy' (358) panicked at /home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-auto-permission-binding/protocol-regression.rs:17:9:
+assertion `left == right` failed
+  left: Null
+ right: "default"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test protocol_regression::protocol_approved_plan_restores_non_auto_policy ... FAILED
+test regression::auto_permission_default_is_unchanged_for_absent_false_or_invalid_flag ... ok
+test regression::auto_permission_does_not_change_codex_launch ... ok
+test regression::auto_permission_follow_up_reads_latest_approval_and_auto_flags ... ok
+test regression::auto_permission_launch_honors_enabled_classifier ... ok
+test regression::auto_permission_never_enables_approvals_by_itself ... ok
+test regression::auto_permission_per_turn_honors_enabled_classifier ... ok
+test regression::auto_permission_persisted_opt_out_wins_over_initial_plan_default ... ok
+test regression::auto_permission_plan_precedes_both_flags ... ok
+test regression::auto_permission_review_ignores_chat_plan_default_but_keeps_approval_policy ... ok
+test protocol_regression::protocol_denied_cancelled_and_ordinary_tools_never_change_mode ... ok
+
+thread 'protocol_regression::protocol_approved_plan_restores_auto_in_same_reply' (357) panicked at /home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/settings-auto-permission-binding/protocol-regression.rs:11:5:
+assertion `left == right` failed
+  left: Object {"behavior": String("allow"), "updatedInput": Object {"plan": String("approved plan")}}
+ right: Object {"behavior": String("allow"), "updatedInput": Object {"plan": String("approved plan"), "_targetMode": String("auto")}, "updatedPermissions": Array [Object {"type": String("setMode"), "mode": String("auto"), "destination": String("session")}]}
+test protocol_regression::protocol_approved_plan_restores_auto_in_same_reply ... FAILED
+test protocol_regression::protocol_absent_mode_preserves_legacy_reply ... ok
+
+failures:
+
+failures:
+    protocol_regression::protocol_approved_plan_restores_auto_in_same_reply
+    protocol_regression::protocol_approved_plan_restores_non_auto_policy
+
+test result: FAILED. 11 passed; 2 failed; 0 ignored; 0 measured; 101 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `--lib`

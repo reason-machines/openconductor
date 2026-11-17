@@ -36,6 +36,7 @@ macro_rules! eprintln {
 pub mod agent;
 pub mod agent_binaries;
 pub mod agent_commands;
+mod pre_workspace_completions;
 pub mod agent_launch;
 pub mod agent_options;
 pub mod app_quit;
@@ -570,6 +571,7 @@ pub fn run() {
             claude_chat::commands::claude_cancel,
             claude_chat::commands::claude_respond,
             agent_commands::agent_slash_commands,
+            pre_workspace_completions::pre_workspace_completions,
             e2e::e2e_report,
             e2e::e2e_secret,
             terminal_commands::pty_spawn,
@@ -636,6 +638,7 @@ pub fn run() {
             pr::commands::pr_pull_latest_from_target,
             pr::commands::pr_header_state,
             pr::commands::pr_create_prompt,
+            pr::commands::pr_action_prompt_preview,
             pr::commands::pr_template,
             pr::commands::pr_commit_and_push_prompt,
             pr::commands::pr_resolve_conflicts_prompt,

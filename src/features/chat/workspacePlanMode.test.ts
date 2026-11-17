@@ -88,7 +88,7 @@ function fixture(agent = "claude", initial: Mode = "default", reject = false, bu
     if (/^(claude_|codex_|chat_)/.test(command)) throw new Error("Provider execution forbidden: " + command);
     return undefined;
   }
-  const actual = new Set(["src/components/WorkspaceView", "src/features/chat/Composer", "src/features/diff/ReviewButton"]);
+  const actual = new Set(["src/features/workspace/CenterPanelGroups", "src/components/WorkspaceView", "src/features/chat/Composer", "src/features/diff/ReviewButton"]);
   function load(filename: string): Record<string, unknown> {
     const key = filename.slice(root.length).replace(/\.(tsx?|css)$/, "");
     if (key === "src/features/chat/agents") return { ...load(resolve(root, "src/features/chat/agentChoice.ts")), CHAT_AGENTS: agents };

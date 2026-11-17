@@ -1,0 +1,1 @@
+async function vwo(){try{const t=await tl("execute_shell_command",{shell:"/bin/zsh",command:"/usr/bin/pbpaste",noRcs:!0});return t.stdout.length>0?t.stdout:void 0}catch(t){Bt.debug("[composer-clipboard] native clipboard text read failed",{error:t instanceof Error?t.message:String(t)});return}}

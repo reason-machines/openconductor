@@ -1,0 +1,62 @@
+(node:93) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:100) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a rejected dismissed modal exposes exact captured prompt through the real toast action
+ok 1 - a rejected dismissed modal exposes exact captured prompt through the real toast action
+  ---
+  duration_ms: 476.931285
+  type: 'test'
+  ...
+# Subtest: recovering a detached failure never replaces the new composer's draft or selected target
+ok 2 - recovering a detached failure never replaces the new composer's draft or selected target
+  ---
+  duration_ms: 198.973382
+  type: 'test'
+  ...
+# Subtest: full-page rejection retains an editable draft and the same repository and target
+ok 3 - full-page rejection retains an editable draft and the same repository and target
+  ---
+  duration_ms: 138.536588
+  type: 'test'
+  ...
+# Subtest: pending full-page creation suppresses duplicate submit and keeps the captured request
+ok 4 - pending full-page creation suppresses duplicate submit and keeps the captured request
+  ---
+  duration_ms: 132.444749
+  type: 'test'
+  ...
+# Subtest: empty modal prompt reports the error without a recover action
+ok 5 - empty modal prompt reports the error without a recover action
+  ---
+  duration_ms: 126.659096
+  type: 'test'
+  ...
+# Subtest: string rejection uses the actual errorText formatter and leaves no pending row
+ok 6 - string rejection uses the actual errorText formatter and leaves no pending row
+  ---
+  duration_ms: 100.921962
+  type: 'test'
+  ...
+# Subtest: successful modal creation produces no failure recovery or clipboard write
+ok 7 - successful modal creation produces no failure recovery or clipboard write
+  ---
+  duration_ms: 106.110938
+  type: 'test'
+  ...
+# Subtest: no selected repository never launches or emits a recovery error
+ok 8 - no selected repository never launches or emits a recovery error
+  ---
+  duration_ms: 95.62165
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1725.639178

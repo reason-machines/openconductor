@@ -1,0 +1,454 @@
+(node:74) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: an attached file goes to .context/attachments/<random 6>/<name> in the workspace
+ok 1 - an attached file goes to .context/attachments/<random 6>/<name> in the workspace
+  ---
+  duration_ms: 0.900243
+  type: 'test'
+  ...
+# Subtest: file names cannot leave their folder or hide
+ok 2 - file names cannot leave their folder or hide
+  ---
+  duration_ms: 0.192136
+  type: 'test'
+  ...
+# Subtest: UTF-8 text goes inline; binary and oversized files are pointed at by path
+ok 3 - UTF-8 text goes inline; binary and oversized files are pointed at by path
+  ---
+  duration_ms: 0.306537
+  type: 'test'
+  ...
+# Subtest: persisted attachment chips retain display, inline content and staged IDs
+ok 4 - persisted attachment chips retain display, inline content and staged IDs
+  ---
+  duration_ms: 1.234876
+  type: 'test'
+  ...
+# Subtest: malformed persisted chips and unsafe staged paths are not restored
+ok 5 - malformed persisted chips and unsafe staged paths are not restored
+  ---
+  duration_ms: 0.240138
+  type: 'test'
+  ...
+# Subtest: files over the size limit are refused with a reason
+ok 6 - files over the size limit are refused with a reason
+  ---
+  duration_ms: 0.120745
+  type: 'test'
+  ...
+# (node:89) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: late mode reads cannot replace the selected chat's state
+ok 7 - late mode reads cannot replace the selected chat's state
+  ---
+  duration_ms: 72.441981
+  type: 'test'
+  ...
+# Subtest: late mode saves stay bound to their original chat and switchback rehydrates
+ok 8 - late mode saves stay bound to their original chat and switchback rehydrates
+  ---
+  duration_ms: 23.530124
+  type: 'test'
+  ...
+# Subtest: a stale toggle callback cannot mutate a chat after selection changes
+ok 9 - a stale toggle callback cannot mutate a chat after selection changes
+  ---
+  duration_ms: 14.1079
+  type: 'test'
+  ...
+# Subtest: a committed plan exit event outranks an earlier mode read
+ok 10 - a committed plan exit event outranks an earlier mode read
+  ---
+  duration_ms: 12.070199
+  type: 'test'
+  ...
+# (node:97) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: local Claude Plan menu persists the selected chat's mode
+ok 11 - local Claude Plan menu persists the selected chat's mode
+  ---
+  duration_ms: 1525.589396
+  type: 'test'
+  ...
+# Subtest: local Claude Plan slash persists the selected chat's mode
+ok 12 - local Claude Plan slash persists the selected chat's mode
+  ---
+  duration_ms: 759.518885
+  type: 'test'
+  ...
+# Subtest: local Claude Plan shortcut persists the selected chat's mode
+ok 13 - local Claude Plan shortcut persists the selected chat's mode
+  ---
+  duration_ms: 691.266444
+  type: 'test'
+  ...
+# Subtest: a saved Claude Plan mode is read back and exits to default
+ok 14 - a saved Claude Plan mode is read back and exits to default
+  ---
+  duration_ms: 798.024936
+  type: 'test'
+  ...
+# Subtest: failed mode persistence retains the confirmed state and reports the error
+ok 15 - failed mode persistence retains the confirmed state and reports the error
+  ---
+  duration_ms: 780.699649
+  type: 'test'
+  ...
+# Subtest: reason does not claim a local Plan capability
+ok 16 - reason does not claim a local Plan capability
+  ---
+  duration_ms: 686.23348
+  type: 'test'
+  ...
+# Subtest: codex does not claim a local Plan capability
+ok 17 - codex does not claim a local Plan capability
+  ---
+  duration_ms: 536.365461
+  type: 'test'
+  ...
+# Subtest: busy Claude cannot change Plan mode
+ok 18 - busy Claude cannot change Plan mode
+  ---
+  duration_ms: 582.025763
+  type: 'test'
+  ...
+# Subtest: persisted active Plan accents its icon and label, not its shortcut
+ok 19 - persisted active Plan accents its icon and label, not its shortcut
+  ---
+  duration_ms: 562.711909
+  type: 'test'
+  ...
+# Subtest: inactive Plan retains ordinary icon and label presentation
+ok 20 - inactive Plan retains ordinary icon and label presentation
+  ---
+  duration_ms: 831.678442
+  type: 'test'
+  ...
+# Subtest: entering Plan accents the icon and label after the existing save confirms
+ok 21 - entering Plan accents the icon and label after the existing save confirms
+  ---
+  duration_ms: 597.835962
+  type: 'test'
+  ...
+# Subtest: exiting Plan removes the icon and label accent after the existing save confirms
+ok 22 - exiting Plan removes the icon and label accent after the existing save confirms
+  ---
+  duration_ms: 573.100928
+  type: 'test'
+  ...
+# Subtest: busy active Plan keeps its confirmed presentation and disabled guard
+ok 23 - busy active Plan keeps its confirmed presentation and disabled guard
+  ---
+  duration_ms: 487.628303
+  type: 'test'
+  ...
+# Subtest: Plan presentation changes add no capability to Codex or Reason
+ok 24 - Plan presentation changes add no capability to Codex or Reason
+  ---
+  duration_ms: 995.043555
+  type: 'test'
+  ...
+# (node:105) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: constants match Conductor's draft-attachments store
+ok 25 - constants match Conductor's draft-attachments store
+  ---
+  duration_ms: 0.605486
+  type: 'test'
+  ...
+# Subtest: only paths below .context/attachments/ can be staged
+ok 26 - only paths below .context/attachments/ can be staged
+  ---
+  duration_ms: 0.153202
+  type: 'test'
+  ...
+# Subtest: each call maps to its Rust command with camelCase args
+ok 27 - each call maps to its Rust command with camelCase args
+  ---
+  duration_ms: 1.404996
+  type: 'test'
+  ...
+# (node:113) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: bindCommands registers every default shortcut of a command
+ok 28 - bindCommands registers every default shortcut of a command
+  ---
+  duration_ms: 1.492503
+  type: 'test'
+  ...
+# Subtest: a bare-key shortcut does not fire while typing; its modifier shortcut does
+ok 29 - a bare-key shortcut does not fire while typing; its modifier shortcut does
+  ---
+  duration_ms: 0.249103
+  type: 'test'
+  ...
+# Subtest: a non-global command stays off while a dialog is open; a global one runs
+ok 30 - a non-global command stays off while a dialog is open; a global one runs
+  ---
+  duration_ms: 9.325263
+  type: 'test'
+  ...
+# Subtest: overrides replace the default shortcut
+ok 31 - overrides replace the default shortcut
+  ---
+  duration_ms: 0.288174
+  type: 'test'
+  ...
+# Subtest: undefined callbacks are skipped and the remover takes back only its own handlers
+ok 32 - undefined callbacks are skipped and the remover takes back only its own handlers
+  ---
+  duration_ms: 0.270747
+  type: 'test'
+  ...
+# Subtest: a callback returning false passes the key on
+ok 33 - a callback returning false passes the key on
+  ---
+  duration_ms: 0.137178
+  type: 'test'
+  ...
+# Subtest: unknown command ids throw
+ok 34 - unknown command ids throw
+  ---
+  duration_ms: 0.412009
+  type: 'test'
+  ...
+# Subtest: hidden chat bindings cannot cancel or attach from a center terminal
+ok 35 - hidden chat bindings cannot cancel or attach from a center terminal
+  ---
+  duration_ms: 0.24153
+  type: 'test'
+  ...
+# Subtest: focused chat shortcuts still work while its panel terminal has keyboard focus
+ok 36 - focused chat shortcuts still work while its panel terminal has keyboard focus
+  ---
+  duration_ms: 0.406386
+  type: 'test'
+  ...
+# Subtest: activeDialogIdFromDom: the last tagged dialog, else any modal, else none
+ok 37 - activeDialogIdFromDom: the last tagged dialog, else any modal, else none
+  ---
+  duration_ms: 0.40751
+  type: 'test'
+  ...
+# Subtest: a higher-priority binding runs first and passes the key on by returning false
+ok 38 - a higher-priority binding runs first and passes the key on by returning false
+  ---
+  duration_ms: 0.246766
+  type: 'test'
+  ...
+# (node:121) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a bare key is off while typing unless allowWhileTyping
+ok 39 - a bare key is off while typing unless allowWhileTyping
+  ---
+  duration_ms: 0.791586
+  type: 'test'
+  ...
+# Subtest: a modified key needs enableOnInputFocus or isGlobal while typing
+ok 40 - a modified key needs enableOnInputFocus or isGlobal while typing
+  ---
+  duration_ms: 0.165057
+  type: 'test'
+  ...
+# Subtest: terminal focus gates enableOnTerminalFocus and requireTerminalFocus
+ok 41 - terminal focus gates enableOnTerminalFocus and requireTerminalFocus
+  ---
+  duration_ms: 0.115785
+  type: 'test'
+  ...
+# Subtest: dialogs: only listed dialog ids, and nothing unlisted while a dialog is open
+ok 42 - dialogs: only listed dialog ids, and nothing unlisted while a dialog is open
+  ---
+  duration_ms: 0.13209
+  type: 'test'
+  ...
+# Subtest: higher priority runs first, then more modifiers; false passes on
+ok 43 - higher priority runs first, then more modifiers; false passes on
+  ---
+  duration_ms: 1.817421
+  type: 'test'
+  ...
+# Subtest: telemetry carries the dialog id and context only when present
+ok 44 - telemetry carries the dialog id and context only when present
+  ---
+  duration_ms: 0.248319
+  type: 'test'
+  ...
+# Subtest: held-key repeats are swallowed unless a handler allows repeat
+ok 45 - held-key repeats are swallowed unless a handler allows repeat
+  ---
+  duration_ms: 0.215106
+  type: 'test'
+  ...
+# Subtest: Escape blurs a focused input before any handler; not in the terminal
+ok 46 - Escape blurs a focused input before any handler; not in the terminal
+  ---
+  duration_ms: 0.137373
+  type: 'test'
+  ...
+# Subtest: recorder, lone modifiers, unfocused scopes and unregister all pass
+ok 47 - recorder, lone modifiers, unfocused scopes and unregister all pass
+  ---
+  duration_ms: 0.310719
+  type: 'test'
+  ...
+# Subtest: Backspace outside a text field is prevented even when nothing handles it
+ok 48 - Backspace outside a text field is prevented even when nothing handles it
+  ---
+  duration_ms: 0.357566
+  type: 'test'
+  ...
+# (node:129) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: registration defaults: input and terminal focus on, NORMAL priority, not global
+ok 49 - registration defaults: input and terminal focus on, NORMAL priority, not global
+  ---
+  duration_ms: 1.856853
+  type: 'test'
+  ...
+# Subtest: one binding per effective shortcut; call-site options win over the command's when
+ok 50 - one binding per effective shortcut; call-site options win over the command's when
+  ---
+  duration_ms: 0.336179
+  type: 'test'
+  ...
+# Subtest: Cmd+K opens the palette idle, while typing and inside the palette
+ok 51 - Cmd+K opens the palette idle, while typing and inside the palette
+  ---
+  duration_ms: 0.981721
+  type: 'test'
+  ...
+# Subtest: terminal-only commands need terminal focus
+ok 52 - terminal-only commands need terminal focus
+  ---
+  duration_ms: 0.143536
+  type: 'test'
+  ...
+# Subtest: Tab cycles palette tabs only while the palette is open
+ok 53 - Tab cycles palette tabs only while the palette is open
+  ---
+  duration_ms: 0.171081
+  type: 'test'
+  ...
+# Subtest: an open dialog blocks non-global commands
+ok 54 - an open dialog blocks non-global commands
+  ---
+  duration_ms: 0.20794
+  type: 'test'
+  ...
+# Subtest: bare keys need allowWhileTyping; Cmd chords and Cmd+1..9 fire while typing
+ok 55 - bare keys need allowWhileTyping; Cmd chords and Cmd+1..9 fire while typing
+  ---
+  duration_ms: 0.251633
+  type: 'test'
+  ...
+# Subtest: overrides rebind what resolves
+ok 56 - overrides rebind what resolves
+  ---
+  duration_ms: 0.140035
+  type: 'test'
+  ...
+# (node:137) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: new drafts default the base branch to the repo default branch
+ok 57 - new drafts default the base branch to the repo default branch
+  ---
+  duration_ms: 0.912874
+  type: 'test'
+  ...
+# Subtest: a generated city name becomes a placeholder branch with the prefix
+ok 58 - a generated city name becomes a placeholder branch with the prefix
+  ---
+  duration_ms: 1.543233
+  type: 'test'
+  ...
+# Subtest: no first session without a first message
+ok 59 - no first session without a first message
+  ---
+  duration_ms: 0.220322
+  type: 'test'
+  ...
+# Subtest: a typed name is user-set and never a placeholder
+ok 60 - a typed name is user-set and never a placeholder
+  ---
+  duration_ms: 0.130787
+  type: 'test'
+  ...
+# Subtest: validation errors: repo, workspace name, base branch
+ok 61 - validation errors: repo, workspace name, base branch
+  ---
+  duration_ms: 0.158256
+  type: 'test'
+  ...
+# Subtest: create from PR starts on the PR branch and targets the PR base
+ok 62 - create from PR starts on the PR branch and targets the PR base
+  ---
+  duration_ms: 0.180047
+  type: 'test'
+  ...
+# Subtest: create from branch checks out that branch; a bad branch is an error
+ok 63 - create from branch checks out that branch; a bad branch is an error
+  ---
+  duration_ms: 0.228175
+  type: 'test'
+  ...
+# Subtest: create from issue seeds the composer, and clearing removes only the seed
+ok 64 - create from issue seeds the composer, and clearing removes only the seed
+  ---
+  duration_ms: 0.304221
+  type: 'test'
+  ...
+# Subtest: lifecycle with a setup script: initializing -> setting_up, and setup keeps running after the dialog
+ok 65 - lifecycle with a setup script: initializing -> setting_up, and setup keeps running after the dialog
+  ---
+  duration_ms: 0.453158
+  type: 'test'
+  ...
+# Subtest: no setup script goes straight to ready
+ok 66 - no setup script goes straight to ready
+  ---
+  duration_ms: 0.340415
+  type: 'test'
+  ...
+# Subtest: create failure shows the backend error or the generic one, and allows resubmit
+ok 67 - create failure shows the backend error or the generic one, and allows resubmit
+  ---
+  duration_ms: 0.160891
+  type: 'test'
+  ...
+# Subtest: out-of-order events are ignored
+ok 68 - out-of-order events are ignored
+  ---
+  duration_ms: 0.09115
+  type: 'test'
+  ...
+# Subtest: requests map onto create_workspace arguments
+ok 69 - requests map onto create_workspace arguments
+  ---
+  duration_ms: 0.172893
+  type: 'test'
+  ...
+# Subtest: create from a PR or branch asks create_workspace to check that branch out
+ok 70 - create from a PR or branch asks create_workspace to check that branch out
+  ---
+  duration_ms: 0.134668
+  type: 'test'
+  ...
+# Subtest: a fork PR is checked out as <owner>/<branch> and sends its PR number
+ok 71 - a fork PR is checked out as <owner>/<branch> and sends its PR number
+  ---
+  duration_ms: 0.11881
+  type: 'test'
+  ...
+1..71
+# tests 71
+# suites 0
+# pass 71
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12362.15873

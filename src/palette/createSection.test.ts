@@ -7,6 +7,7 @@ import { test } from "node:test";
 import { runInNewContext } from "node:vm";
 import * as React from "react";
 import ts from "typescript";
+import * as sectionSearchScore from "./search/score.ts";
 import type { ComponentProps } from "react";
 import type { Action, StoreStartup } from "../state/store";
 import type { AppState } from "../state/types";
@@ -38,6 +39,7 @@ function evaluate(file: string, imports: Readonly<Record<string, unknown>>, expo
   runInNewContext(javascript, {
     ...globals, exports, URLSearchParams, Date, console,
     require(name: string) {
+      if (name === "./search/score.ts") return sectionSearchScore;
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
       if (name === "../lib/persistence/producer.ts") return persistence;
       assert.ok(name in imports, `Unexpected ${file} dependency: ${name}`);
@@ -230,6 +232,7 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
     "./keybindings/KeybindingsProvider": { useKeybindings: noop, useKeybindingOverrides: () => ({ overrides: {} }) },
     "./keybindings/dispatcher": { PRIORITY: { DIALOG: 100 } },
     "./workspace/link": { copyWorkspaceLink: forbidden },
+    "./features/openIn/apps.ts": { copyText: forbidden },
     "./settings/pages": { USER_PAGES: [] },
     "./features/chat/ChatModelPicker.tsx": { OPEN_SETTINGS_EVENT: "unused-open-settings" },
     "./settings/routes": { resolveSettingsUrl: () => null, keptSearch: () => "" },
@@ -250,7 +253,7 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
   };
   for (const [file, name] of Object.entries({
     "./components/HomeScreen": "HomeScreen", "./components/SubmitPromptDialog": "SubmitPromptDialog", "./components/FeedbackDialog": "FeedbackDialog",
-    "./diagnostics/DiagnosticsPage": "DiagnosticsPage", "./components/AllWorkspaces": "AllWorkspaces", "./components/Dashboard": "Dashboard",
+    "./diagnostics/DiagnosticsPage": "DiagnosticsPage", "./components/HomeWorkspaceScreen": "HomeWorkspaceScreen", "./components/Dashboard": "Dashboard",
     "./components/WorkspaceView": "WorkspaceView", "./features/browser/BrowserPreview": "BrowserPreviewHost", "./components/CreateProjectDialog": "CreateProjectDialog",
     "./components/CloneGitHubRepoDialog": "CloneGitHubRepoDialog", "./components/CreateWorkspaceDialog": "CreateWorkspaceDialog", "./components/CreateWorkspacePage": "CreateWorkspacePage",
     "./components/RemoveRepositoryDialog": "RemoveRepositoryDialog", "./components/ArchiveRunningDialog": "ArchiveRunningDialog", "./components/ArchivedWorkspaceView": "ArchivedWorkspaceView",

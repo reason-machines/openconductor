@@ -1,0 +1,105 @@
+{
+  "commit": "91de35a7e10199675bc43d9b29516cd8ec18f4a0",
+  "records": [
+    {
+      "path": "src/features/chat/Transcript.tsx",
+      "bytes": 21433,
+      "sha256": "8b13f23d0fec69db4fa1311cb901fdf936c18a267f8f7f47f56aafca1747f1e8"
+    },
+    {
+      "path": "src/features/chat/agentSignIn.ts",
+      "bytes": 2133,
+      "sha256": "0ac95bb2d28e00a0108b274374e3b35b7e1c547508cf027cd524eb2cc546a3f7"
+    },
+    {
+      "path": "src/features/chat/chatRuntime.ts",
+      "bytes": 33403,
+      "sha256": "ce7c3cb29940ccfa4fedce7e3b49d2c835db6644c9c40330bebbbf6111723816"
+    },
+    {
+      "path": "src/features/chat/claudeChat.ts",
+      "bytes": 4835,
+      "sha256": "32ea86b365e7dc366800f5e97f563b623c1da93d8293ec864ad22f92e6b3fbd7"
+    },
+    {
+      "path": "src/features/chat/finalMessageCopy.test.ts",
+      "bytes": 5511,
+      "sha256": "70463bb886db01a2db4642883a29c21b2efa2fbc7941c27e12b21acc798814c7"
+    },
+    {
+      "path": "src/features/chat/reason.test.ts",
+      "bytes": 11935,
+      "sha256": "f26dfcc8a0db8fa5ebbfe81b6e16b75e64bdf74d6eefbba3cfc1ac54567dcb92"
+    },
+    {
+      "path": "src/features/chat/reason.ts",
+      "bytes": 13830,
+      "sha256": "f07517deda7a715fcdc974d7d6147e65c28efa44c451f890777da233039fa572"
+    },
+    {
+      "path": "src/features/chat/reasonChat.ts",
+      "bytes": 14193,
+      "sha256": "06cb361e2298c25f708553ba1256a20d092318dc50e2bdd127db8a19736640fb"
+    },
+    {
+      "path": "src/features/chat/reducer.ts",
+      "bytes": 5906,
+      "sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a"
+    },
+    {
+      "path": "src/features/chat/toolGroups.ts",
+      "bytes": 7939,
+      "sha256": "6571fbd245514d7022a57fc25002803418ed755bac9b374972b39856c9476083"
+    },
+    {
+      "path": "src/features/chat/transcriptAgentSummary.test.ts",
+      "bytes": 20057,
+      "sha256": "599279879837727bf2e6c919dfd857c2c0d8151c340f93bbcb62a43364e8287e"
+    },
+    {
+      "path": "src/features/chat/turnInterruption.test.ts",
+      "bytes": 6936,
+      "sha256": "33411e7cf3ca6f644e00408090b71ce8227d582c84ce2bbd17c088cb32817931"
+    },
+    {
+      "path": "src/features/chat/types.ts",
+      "bytes": 3492,
+      "sha256": "3014952a29ee66057157191c8f8f91ec5bf3293cbaf06c179ea9752e4b3cbd97"
+    },
+    {
+      "path": "src/features/chat/view.ts",
+      "bytes": 10031,
+      "sha256": "dc3032c160c83d53fbfc08cbcd4fc88ff9abc99811f19f25f10dc7cb39010f6f"
+    },
+    {
+      "path": "src-tauri/src/agent/claude_stream.rs",
+      "bytes": 17112,
+      "sha256": "bcf1bf9d841c0aa778cddd6e0d6a97a283e38fbe94888c8c6b056d07a57192ed"
+    },
+    {
+      "path": "src-tauri/src/claude_chat/commands.rs",
+      "bytes": 9749,
+      "sha256": "1db844fed47db6bf1732265e84544eef9127bcddda6a2c6fe5b14de87ddded74"
+    },
+    {
+      "path": "src-tauri/src/claude_chat/map.rs",
+      "bytes": 11169,
+      "sha256": "e0d079396976a7e491e11ff1b9f5d3d3e5721c21c1f3ab2f006d6b337ad0a023"
+    },
+    {
+      "path": "src-tauri/src/claude_chat/map_tests.rs",
+      "bytes": 10943,
+      "sha256": "d69b7ad8a51bf89882f8e3659bc21e5f47db805c0a3facd732f5882063fe767f"
+    },
+    {
+      "path": "src-tauri/src/claude_chat/runner.rs",
+      "bytes": 18703,
+      "sha256": "49d732179fbd4e4f56eb98797e70063f19f080b65464ef4395d487f9ddb111b3"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/wire.rs",
+      "bytes": 6000,
+      "sha256": "5479cf81b638f2ede410d3fb10861f0194477f6bc251435d6a103dbc3c1510d0"
+    }
+  ]
+}

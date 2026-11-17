@@ -1,0 +1,1 @@
+function Wp(t){return t.cancelledAt===null}

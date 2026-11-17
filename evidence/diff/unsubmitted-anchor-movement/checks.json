@@ -1,0 +1,84 @@
+{
+  "baseline": "eef01e9b287472280fb3f4a585bc697d5f1f8f51",
+  "fixture_checkpoint": "9900f381",
+  "red": {
+    "passed": 12,
+    "failed": 12
+  },
+  "green": {
+    "passed": 24,
+    "failed": 0
+  },
+  "adjacent": {
+    "passed": 570,
+    "failed": 0
+  },
+  "full_diff": {
+    "passed": 594,
+    "failed": 0
+  },
+  "build": "PASS branding/tsc/Vite; initial180s timeout partial, completed retry passes",
+  "files": {
+    "src/features/diff/ReviewComments.tsx": {
+      "bytes": 27578,
+      "sha256": "6292f30482d7b49e4bfb66660f63eeed5d92d1b19c386f3e69dda173c686bfac"
+    },
+    "src/features/diff/unsubmittedAnchorMovement.test.ts": {
+      "bytes": 16907,
+      "sha256": "13d5d967cd8456b92bc48076f103fce2967fc910b2007b1b4099057efdfea429"
+    },
+    "evidence/diff/unsubmitted-anchor-movement/build-timeout.log.gz": {
+      "bytes": 1767,
+      "sha256": "8151047f6ab53ddbdaf603f991477cf62c6de43929b046b2cf68d0b1b0171e78",
+      "uncompressed": {
+        "bytes": 18285,
+        "sha256": "d9cd277783ad453578a6a2bb691952b8e521ca77b915d4be8affe14783190d3a"
+      }
+    },
+    "evidence/diff/unsubmitted-anchor-movement/adjacent.tap.gz": {
+      "bytes": 20965,
+      "sha256": "754cc1272719b860c4c1276339e2b9543f1beffdd7dc744dea58896194844377",
+      "uncompressed": {
+        "bytes": 131569,
+        "sha256": "2ee3d97d61a5a4bffb0f93a547db2ec46b84646088f41f91f0694e07c9e58c6b"
+      }
+    },
+    "evidence/diff/unsubmitted-anchor-movement/red.tap.gz": {
+      "bytes": 1616,
+      "sha256": "05a66dee43a9583a0ba6f25b620c2fbff53805505cb4e8ac494acc5da7cb4e1b",
+      "uncompressed": {
+        "bytes": 14727,
+        "sha256": "dbc54e1fca9b598ac1c20ae1ba534715fbf688a988e5aabe90093b07f8b46c90"
+      }
+    },
+    "evidence/diff/unsubmitted-anchor-movement/green.tap.gz": {
+      "bytes": 964,
+      "sha256": "084220034daf5c00e6c3cdfff8d342319223eee9d5f5eb2ac0f8e5c8ecb861b6",
+      "uncompressed": {
+        "bytes": 5427,
+        "sha256": "cc3b9850c4a34cdb05ec94450035035fd8e0304f0df53bb437b37a9b50890c57"
+      }
+    },
+    "evidence/diff/unsubmitted-anchor-movement/build.log.gz": {
+      "bytes": 26560,
+      "sha256": "eddd666291a3fd8efe023b12610886d5417c311e94d3f82a499b20b933a48828",
+      "uncompressed": {
+        "bytes": 180188,
+        "sha256": "f2830ce648a5beead01e02b47b85264125b442278e3ceee7df6b88afbc0a61ad"
+      }
+    },
+    "evidence/diff/unsubmitted-anchor-movement/full-diff.tap.gz": {
+      "bytes": 21578,
+      "sha256": "af2a8681125a4f5bec1b09cb715f3a778bf7c20d285e8ceddded1b1a110054ad",
+      "uncompressed": {
+        "bytes": 136720,
+        "sha256": "f66fc0c70dca90656592e50d0f03e259f07cacdc910db5c2c57d9b87e98dcfef"
+      }
+    }
+  },
+  "not_run": [
+    "Real browser/WebKit editor DOM",
+    "macOS/native key/scroll/clipboard",
+    "package/install/provider/side-by-side"
+  ]
+}

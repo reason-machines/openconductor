@@ -1,0 +1,25 @@
+{
+  "head": "d90bed88174656d577adfa793d3850d28eaea7e2",
+  "files": [
+    {
+      "path": "src/components/CreateWorkspaceComposer.tsx",
+      "sha256": "afc5a12646b19e45e1ec61f949151afb51fd6f5ce563c0de89ee915c32af4e95",
+      "unchanged": true
+    },
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "sha256": "7e8f7f7426164d2e707d9507a2af87336607b88db891fb864c55f28b8ab34fdf",
+      "unchanged": true
+    },
+    {
+      "path": "src/components/CreateWorkspaceDialog.tsx",
+      "sha256": "85edc785f6dc05a9daafa966e4610b1b4165fb68e1d5a5596e02b80fdd219475",
+      "unchanged": true
+    },
+    {
+      "path": "src/components/CreateWorkspacePage.tsx",
+      "sha256": "90b197aea3a348d4fb49a2e7982bd8c67d8b3b46d70947e0566b65c4da6b3f6a",
+      "unchanged": true
+    }
+  ]
+}

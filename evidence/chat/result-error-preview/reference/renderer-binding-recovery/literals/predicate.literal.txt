@@ -1,0 +1,1 @@
+function gTr(t){return t.includes("aborted by user")||t.includes("Interrupted by user")}

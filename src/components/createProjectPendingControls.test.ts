@@ -115,14 +115,14 @@ async function fixture() {
   }
   const { CreateProjectDialog } = load("./CreateProjectDialog.tsx");
   assert.ok(typeof CreateProjectDialog === "function");
-  const primary = (): Host => renderer.root.findByProps({ type: "submit" });
+  const primary = (): Host => renderer.root.findByProps({ "data-primary-action": true });
   const send = (host: Host, event: string, value?: unknown) => {
     const handler = host.props[event];
     assert.ok(typeof handler === "function", `Missing ${event} handler`);
     return handler(value);
   };
   const submit = async () => {
-    await act(async () => { void send(renderer.root.findByType("form"), "onSubmit", { preventDefault() {} }); });
+    await act(async () => { void send(primary(), "onClick"); });
   };
   await act(async () => {
     renderer = create(React.createElement(CreateProjectDialog, {

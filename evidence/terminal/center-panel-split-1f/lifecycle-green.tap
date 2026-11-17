@@ -1,0 +1,158 @@
+(node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:89) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:89) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: ordinary false: Cmd+D passes, tab order remains intact
+ok 1 - ordinary false: Cmd+D passes, tab order remains intact
+  ---
+  duration_ms: 4.012625
+  type: 'test'
+  ...
+# Subtest: ordinary undefined: Cmd+D passes, tab order remains intact
+ok 2 - ordinary undefined: Cmd+D passes, tab order remains intact
+  ---
+  duration_ms: 0.86712
+  type: 'test'
+  ...
+# Subtest: control: next and previous tab remain bound
+ok 3 - control: next and previous tab remain bound
+  ---
+  duration_ms: 0.826196
+  type: 'test'
+  ...
+# Subtest: control: plain typing and active dialogs pass split key
+ok 4 - control: plain typing and active dialogs pass split key
+  ---
+  duration_ms: 1.302738
+  type: 'test'
+  ...
+# Subtest: enabled Cmd+D moves existing active tab; terminal=false
+ok 5 - enabled Cmd+D moves existing active tab; terminal=false
+  ---
+  duration_ms: 1.016414
+  type: 'test'
+  ...
+# Subtest: enabled Cmd+D moves existing active tab; terminal=true
+ok 6 - enabled Cmd+D moves existing active tab; terminal=true
+  ---
+  duration_ms: 0.904889
+  type: 'test'
+  ...
+# Subtest: enabled configured shortcut dispatches split, old key passes
+ok 7 - enabled configured shortcut dispatches split, old key passes
+  ---
+  duration_ms: 1.799812
+  type: 'test'
+  ...
+# Subtest: enabled one-tab guard consumes key without manufacturing another tab
+ok 8 - enabled one-tab guard consumes key without manufacturing another tab
+  ---
+  duration_ms: 0.891
+  type: 'test'
+  ...
+# (node:90) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:105) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:90) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: existing identity transfers once into a horizontal second 50/50 group
+ok 9 - existing identity transfers once into a horizontal second 50/50 group
+  ---
+  duration_ms: 2.240026
+  type: 'test'
+  ...
+# Subtest: no root, missing group, missing active tab, one tab, duplicate new id are no-ops
+ok 10 - no root, missing group, missing active tab, one tab, duplicate new id are no-ops
+  ---
+  duration_ms: 0.219931
+  type: 'test'
+  ...
+# Subtest: closing the only tab in either pane collapses the split and chooses a surviving active group
+ok 11 - closing the only tab in either pane collapses the split and chooses a surviving active group
+  ---
+  duration_ms: 0.204627
+  type: 'test'
+  ...
+# Subtest: nested splits replace only the selected group; unrelated siblings keep identity
+ok 12 - nested splits replace only the selected group; unrelated siblings keep identity
+  ---
+  duration_ms: 0.287877
+  type: 'test'
+  ...
+# Subtest: reconcile keeps valid active selections and adds new tabs to the active group
+ok 13 - reconcile keeps valid active selections and adds new tabs to the active group
+  ---
+  duration_ms: 0.22651
+  type: 'test'
+  ...
+# Subtest: malformed/duplicate/deep/unbounded persisted trees are rejected
+ok 14 - malformed/duplicate/deep/unbounded persisted trees are rejected
+  ---
+  duration_ms: 0.404594
+  type: 'test'
+  ...
+# Subtest: workspace-keyed persistence roundtrips, preserves other workspaces, hydrates/collapses stale tabs
+ok 15 - workspace-keyed persistence roundtrips, preserves other workspaces, hydrates/collapses stale tabs
+  ---
+  duration_ms: 0.638723
+  type: 'test'
+  ...
+# Subtest: ordinary false: no mutations, no writes and no split
+ok 16 - ordinary false: no mutations, no writes and no split
+  ---
+  duration_ms: 0.219
+  type: 'test'
+  ...
+# Subtest: ordinary undefined: no mutations, no writes and no split
+ok 17 - ordinary undefined: no mutations, no writes and no split
+  ---
+  duration_ms: 0.331205
+  type: 'test'
+  ...
+# Subtest: live preference disable preserves split state without writes; reenabling keeps it
+ok 18 - live preference disable preserves split state without writes; reenabling keeps it
+  ---
+  duration_ms: 0.472163
+  type: 'test'
+  ...
+# Subtest: blocked storage cannot prevent split, select or notification cleanup
+ok 19 - blocked storage cannot prevent split, select or notification cleanup
+  ---
+  duration_ms: 0.340371
+  type: 'test'
+  ...
+# Subtest: source wiring consumes the existing preference and preserves the ordinary branch
+ok 20 - source wiring consumes the existing preference and preserves the ordinary branch
+  ---
+  duration_ms: 0.799555
+  type: 'test'
+  ...
+# Subtest: actual drop handler routes native paths to just the selected chat
+ok 21 - actual drop handler routes native paths to just the selected chat
+  ---
+  duration_ms: 2.553901
+  type: 'test'
+  ...
+# Subtest: frozen source-dispatch regression also runs in the standard .test.ts CI suite
+ok 22 - frozen source-dispatch regression also runs in the standard .test.ts CI suite
+  ---
+  duration_ms: 291.986083
+  type: 'test'
+  ...
+# Subtest: corrupt storage and prototype-looking workspace ids fail safe
+ok 23 - corrupt storage and prototype-looking workspace ids fail safe
+  ---
+  duration_ms: 0.331215
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 501.693606
