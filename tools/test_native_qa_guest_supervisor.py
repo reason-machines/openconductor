@@ -2,8 +2,10 @@
 
 These exercise source control flow, not native prevention or guest acceptance.
 """
+import contextlib
 from dataclasses import FrozenInstanceError
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -163,8 +165,21 @@ class SupervisorTests(unittest.TestCase):
             "Path('descendant-pid').write_text(str(child.pid))",
             "time.sleep(10)",
         ))
-        receipt = supervisor.supervise(self.plan(self.step(code=code), max_wall_seconds=.4))
-        self.assertEqual(receipt.outcome, "timed_out")
+        # This tests descendant cleanup, not interpreter startup speed. Wait
+        # for the parent to install its reaper before requesting cancellation.
+        marker = Path(self.cwd) / "descendant-pid"
+        cancel = threading.Event()
+        popen = subprocess.Popen
+        def start(*args, **kwargs):
+            process = popen(*args, **kwargs)
+            ready_by = time.monotonic() + 5
+            while not marker.exists() and process.poll() is None and time.monotonic() < ready_by:
+                time.sleep(.01)
+            cancel.set()
+            return process
+        with mock.patch.object(supervisor.subprocess, "Popen", side_effect=start):
+            receipt = supervisor.supervise(self.plan(self.step(code=code), max_wall_seconds=10), cancel=cancel)
+        self.assertEqual(receipt.outcome, "cancelled")
         step = receipt.steps[0]
         self.assertTrue(step.leader_reaped)
         self.assertTrue(step.process_group_absent)
@@ -265,7 +280,77 @@ class SupervisorTests(unittest.TestCase):
         receipt = json.loads(result.stdout)
         self.assertEqual(receipt["outcome"], "completed")
         self.assertFalse(receipt["native_admission"])
+        self.assertTrue(receipt["step_receipts_complete"])
         self.assertNotIn("ok", receipt["steps"][0])
+
+    def assert_incomplete_cli_receipt(self, stdout):
+        self.assertEqual(len(stdout.splitlines()), 1)
+        receipt = json.loads(stdout)
+        self.assertEqual(receipt["outcome"], "supervision_failed")
+        self.assertFalse(receipt["commands_passed"])
+        self.assertFalse(receipt["step_receipts_complete"])
+        self.assertEqual(receipt["steps"], [])  # No inferred start, reap or EOF.
+        for flag in ("native_admission", "host_filesystem_coverage_verified",
+                     "guest_location_verified", "vm_stopped_verified", "process_tree_verified"):
+            self.assertFalse(receipt[flag])
+        self.assertGreaterEqual(receipt["wall_seconds"], 0)
+        self.assertNotIn("sensitive-error", stdout)
+        return receipt
+
+    def test_cli_expected_supervision_errors_return_incomplete_terminal_receipt(self):
+        document = self.document()
+        manifest = Path(self.cwd) / "failure.json"
+        manifest.write_text(json.dumps(document))
+        plan = supervisor.parse_plan(manifest.read_bytes())
+        expected_digest = hashlib.sha256(json.dumps(
+            supervisor.asdict(plan), sort_keys=True, separators=(",", ":")
+        ).encode()).hexdigest()
+        before = {sig: signal.getsignal(sig) for sig in (signal.SIGINT, signal.SIGTERM)}
+        for error in (OSError("sensitive-error"), subprocess.TimeoutExpired("sensitive-error", 1)):
+            with self.subTest(error=type(error).__name__):
+                stdout = io.StringIO()
+                with mock.patch.object(supervisor, "supervise", side_effect=error), contextlib.redirect_stdout(stdout):
+                    code = supervisor.main(["--plan", str(manifest)])
+                self.assertEqual(code, 1)
+                receipt = self.assert_incomplete_cli_receipt(stdout.getvalue())
+                self.assertEqual(receipt["plan_sha256"], expected_digest)
+                self.assertEqual({sig: signal.getsignal(sig) for sig in before}, before)
+
+    def test_cli_real_child_read_failure_keeps_cleanup_and_reports_missing_evidence(self):
+        manifest = Path(self.cwd) / "read-failure.json"
+        document = self.document()
+        document["steps"][0]["argv"][-1] = "import time; time.sleep(10)"
+        document["steps"].append({"name": "unreachable", "argv": [
+            sys.executable, "-B", "-c", "from pathlib import Path; Path('bad').touch()"
+        ]})
+        manifest.write_text(json.dumps(document))
+        created = []
+        popen = subprocess.Popen
+        def start(*args, **kwargs):
+            process = popen(*args, **kwargs)
+            created.append(process)
+            return process
+        stdout = io.StringIO()
+        with mock.patch.object(supervisor.subprocess, "Popen", side_effect=start), mock.patch.object(supervisor._Output, "drain", side_effect=OSError("sensitive-error")), contextlib.redirect_stdout(stdout):
+            code = supervisor.main(["--plan", str(manifest)])
+        self.assertEqual(code, 1)
+        self.assert_incomplete_cli_receipt(stdout.getvalue())
+        self.assertEqual(len(created), 1)
+        self.assertIsNotNone(created[0].returncode)
+        self.assertTrue(created[0].stdout.closed)
+        self.assertTrue(created[0].stderr.closed)
+        self.assertFalse((Path(self.cwd) / "bad").exists())
+
+    def test_cli_unknown_programming_error_still_propagates_and_restores_handlers(self):
+        manifest = Path(self.cwd) / "programming-error.json"
+        manifest.write_text(json.dumps(self.document()))
+        before = {sig: signal.getsignal(sig) for sig in (signal.SIGINT, signal.SIGTERM)}
+        stdout = io.StringIO()
+        with mock.patch.object(supervisor, "supervise", side_effect=RuntimeError("synthetic bug")), contextlib.redirect_stdout(stdout):
+            with self.assertRaisesRegex(RuntimeError, "synthetic bug"):
+                supervisor.main(["--plan", str(manifest)])
+        self.assertEqual(stdout.getvalue(), "")
+        self.assertEqual({sig: signal.getsignal(sig) for sig in before}, before)
 
     def test_cli_sigterm_returns_cancellation_receipt_in_same_call(self):
         manifest = Path(self.cwd) / "cancel.json"
@@ -287,6 +372,7 @@ class SupervisorTests(unittest.TestCase):
         self.assertEqual(process.returncode, 1, stderr)
         receipt = json.loads(stdout)
         self.assertEqual(receipt["outcome"], "cancelled")
+        self.assertTrue(receipt["step_receipts_complete"])
         self.assertTrue(receipt["steps"][0]["leader_reaped"])
         self.assertTrue(receipt["steps"][0]["process_group_absent"])
 
