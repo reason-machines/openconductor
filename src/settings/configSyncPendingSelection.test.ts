@@ -37,7 +37,7 @@ function assertPendingGuards(view: View) {
     view.button("Cancel").props.onClick();
   });
   assert.equal(view.calls.writes.length, 1, "pending Sync cannot submit the changed selection");
-  assert.equal(view.root().findAllByProps({ role: "dialog", "aria-label": "Sync agent configs" }).length, 1);
+  assert.equal(view.root().findAllByProps({ role: "dialog", "aria-labelledby": "config-sync-title" }).length, 1);
 }
 
 test("category selection stays editable during copy without changing its submitted snapshot", async () => {

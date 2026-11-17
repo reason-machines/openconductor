@@ -13,6 +13,7 @@ import { AGENT_SEARCH_TABS, scrollToRow, searchIcon } from "../settings/Settings
 import { openAgentSettings, openRepoSettingsPage, openSettingsPage } from "../features/chat/ChatModelPicker";
 import type { ResultItem } from "./search/model.ts";
 import { useBoolPref } from "../settings/useBoolPref.ts";
+import { useSettings } from "../settings/useSettings.ts";
 import { loadRecentWorkspaceIds, recordViewedWorkspace, saveRecentWorkspaceIds } from "./recentWorkspaces.ts";
 import { loadLastWorkspaceRoute, saveLastWorkspaceRoute, selectedWorkspaceRoute, settingsRepositoryId } from "./settingsRepository.ts";
 import { listArchivedWorkspaces, type ArchivedWorkspace } from "../workspace/archive";
@@ -111,10 +112,16 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
   }, [open, state.repos]);
   // Conductor's palette lists the settings pages, and with a query their rows (`yUi`, `xUi`):
   // the same index as Settings' own search.
+  // Follow SettingsView's live-pref pattern (SettingsView.tsx:134,140): read
+  // experimental_big_terminal_mode so the "Big terminal" page appears in the
+  // palette search when the mode is on, matching Conductor's behaviour.
+  // Cloud is excluded per OpenConductor architecture (no cloud/remote UI).
+  const { settings } = useSettings();
+  const bigTerminal = settings?.experimental?.experimental_big_terminal_mode === true;
   const hasRepos = state.repos.length > 0;
   const settingsIndex = useMemo(
-    () => buildSearchIndex({ pages: settingsGroups(false).flatMap((g) => g.pages), agentTabs: AGENT_SEARCH_TABS, hasRepos }),
-    [hasRepos],
+    () => buildSearchIndex({ pages: settingsGroups(bigTerminal).flatMap((g) => g.pages), agentTabs: AGENT_SEARCH_TABS, hasRepos }),
+    [bigTerminal, hasRepos],
   );
   const settingEntries = useMemo(() => paletteSettings(settingsIndex), [settingsIndex]);
   const apps = useInstalledApps();

@@ -38,7 +38,7 @@ async function fixture() {
     require(name: string) {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
       if (name === "../state/githubRepoDialog") return model;
-      if (name === "./Dialogs") return { Modal: ({ children }: { children: ReactNode }) => children };
+      if (name === "./DialogFrame") return { DialogFrame: ({ children }: { children: ReactNode }) => children };
       if (name === "../backend") return {
         githubRepoOwners: () => new Promise<GitHubOwners>((resolve) => requests.push(resolve)),
         async githubRepoAvailability(owner: string, slug: string) {

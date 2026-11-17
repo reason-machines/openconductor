@@ -22,7 +22,7 @@ const product = new Set([
   "ReviewComments.tsx", "FileDiffView.tsx", "DiffViewer.tsx", "comments.ts", "commentStore.ts", "commentsApi.ts", "pierre.ts",
 ].map((name) => `src/features/diff/${name}`));
 const allowed = new Set([
-  ...product, "src/features/diff/EditInViewer.ts", "src/features/diff/editorContents.ts", "src/features/diff/editable.ts",
+  ...product, "src/features/diff/EditInViewer.ts", "src/features/diff/editorContents.ts", "src/features/diff/editable.ts", "src/features/diff/draftStorage.ts",
   "src/features/diff/copyFile.ts", "src/features/diff/nav.ts", "src/keybindings/overrides.ts",
   "src/keybindings/registry.ts", "src/keybindings/shortcut.ts", "src/keybindings/types.ts", "src/keybindings/fuzzy.ts",
 ].map((name) => resolve(root, name)));

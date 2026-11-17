@@ -330,7 +330,10 @@ test("settings pages are listed with no query and their rows join once there is 
   const data = paletteDataFromState(state, [], [], paletteSettings(index));
   const settings = (q: string) => buildResults("settings", q, data).find((g) => g.id === "settings")?.items.map((i) => (i.kind === "setting" ? i.setting.title : "")) ?? [];
   const pages = settings("");
-  assert.deepEqual(pages.slice(0, 4), ["General", "Account", "Appearance", "Keyboard shortcuts"]);
+  // key-bindings is not in SETTINGS_GROUPS (Conductor: internal builds only); Default models is 4th.
+  assert.deepEqual(pages.slice(0, 4), ["General", "Account", "Appearance", "Default models"]);
+  // key-bindings is not in default nav so it does not appear in the palette settings list.
+  assert.ok(!pages.includes("Keyboard shortcuts"), "key-bindings absent from default palette nav");
   assert.ok(pages.includes("Claude Code"));
   // Conductor's nav order (`jWt`): Environment, then the repository sections, then More.
   assert.deepEqual(pages.slice(pages.indexOf("Environment")), ["Environment", "Scripts", "Actions", "Misc", "Experimental", "Advanced"]);

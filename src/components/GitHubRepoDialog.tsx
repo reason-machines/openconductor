@@ -4,7 +4,7 @@ import {
   canSubmit, dialogDescription, orgsErrorMessage, ownersErrorMessage, repoSlug, statusLine, submitLabel,
   type AvailabilityState, type GitHubOwners,
 } from "../state/githubRepoDialog";
-import { Modal } from "./Dialogs";
+import { DialogFrame } from "./DialogFrame";
 
 export interface GitHubRepoTarget {
   path: string;
@@ -90,7 +90,8 @@ export function GitHubRepoDialog({ target, onClose, onOpenSettings, onCreated, o
   }
 
   return (
-    <Modal title="Create a private GitHub repo?" onClose={onClose} motion="alert" disablePointerDismissal>
+    <DialogFrame kind="alert" titleId="github-repo-title" onClose={onClose}>
+      <h2 id="github-repo-title">Create a private GitHub repo?</h2>
       <form onSubmit={submit} className="modal-body github-repo">
         <p className="muted">{dialogDescription(target.needsGitInit, target.existingOriginUrl)}</p>
         <label className="field">
@@ -120,12 +121,12 @@ export function GitHubRepoDialog({ target, onClose, onOpenSettings, onCreated, o
         {owner && slug && <p className="muted small">Will create <code>{owner}/{slug}</code></p>}
         {owners.kind !== "error" && status && <p className={`small ${status.tone === "error" ? "error" : status.tone === "ok" ? "add" : "muted"}`} role="status">{status.text}</p>}
         <div className="modal-actions">
-          <button type="button" className="btn" onClick={onClose}>Cancel</button>
-          <button type="submit" className="btn btn-primary" disabled={!canSubmit(owner, slug, ready, availability, pending)}>
+          <button type="button" className="btn" data-dialog-cancel onClick={onClose}>Cancel</button>
+          <button type="submit" className="btn btn-primary" data-primary-action disabled={!canSubmit(owner, slug, ready, availability, pending)}>
             {submitLabel(target.needsGitInit, pending)}
           </button>
         </div>
       </form>
-    </Modal>
+    </DialogFrame>
   );
 }

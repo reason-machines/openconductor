@@ -35,7 +35,7 @@ export function DialogFrame({ kind, titleId, descriptionId, className = "", blur
               aria-modal="true"
               aria-labelledby={titleId}
               aria-describedby={descriptionId}
-              initialFocus={() => popup.current?.querySelector<HTMLElement>(kind === "alert" ? "[data-dialog-cancel]" : "input:not([disabled]), button:not([disabled])")}
+              initialFocus={() => popup.current?.querySelector<HTMLElement>(kind === "alert" ? "[data-dialog-cancel]" : "input:not([disabled]), textarea:not([disabled]), button:not([disabled])")  }
               finalFocus={returnFocus}
               onKeyDown={(event) => {
                 if (event.defaultPrevented || event.nativeEvent.isComposing) return;

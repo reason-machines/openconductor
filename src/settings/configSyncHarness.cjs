@@ -51,6 +51,8 @@ function mount(options = {}) {
     },
     "./motion/dialogMotion": { useDialogMotion: () => React.useRef(null) },
     "./Icons": { CloseIcon: inert },
+    "../components/DialogFrame": { DialogFrame: ({ titleId, children }) => React.createElement("div", { role: "dialog", "aria-modal": "true", "aria-labelledby": titleId }, children) },
+    "../components/Icons": { CloseIcon: inert },
   };
   function load(relativePath) {
     const filename = resolve(sourceRoot, relativePath);

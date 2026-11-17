@@ -9,8 +9,11 @@
 
 import { useEffect, useState } from "react";
 import { CornerDownLeftIcon } from "../../components/menu/menuIcons";
-import { useDialogMotion } from "../../components/motion/dialogMotion";
+import { DialogFrame } from "../../components/DialogFrame.tsx";
 import { RESET_FILES_KEY, parseResetFilesPreference } from "./checkpoints.ts";
+
+const RESET_CHAT_TITLE_ID = "reset-chat-title";
+const RESET_CHAT_DESC_ID = "reset-chat-desc";
 
 interface Props {
   /** Files that differ from the turn's end checkpoint; a rejection hides the count. */
@@ -33,7 +36,6 @@ export function ResetChatDialog({ loadChangedCount, onConfirm, onClose }: Props)
   const [count, setCount] = useState<{ state: "pending" } | { state: "success"; n: number } | { state: "error" }>({ state: "pending" });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const motionRef = useDialogMotion<HTMLDivElement>();
 
   useEffect(() => {
     let live = true;
@@ -70,24 +72,11 @@ export function ResetChatDialog({ loadChangedCount, onConfirm, onClose }: Props)
   // header `space-y-2` (text-lg title, text-sm muted description), footer `justify-end space-x-2`
   // with an outline Cancel and a destructive Reset.
   return (
-    <div className="modal-backdrop oc-alert-backdrop" ref={motionRef} data-dialog-motion="alert">
-      <div
-        className="oc-alert oc-reset-chat"
-        role="alertdialog"
-        aria-modal="true"
-        aria-labelledby="reset-chat-title"
-        aria-describedby="reset-chat-desc"
-        onKeyDown={(e) => {
-          if (e.key === "Escape") onClose();
-          if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-            e.preventDefault();
-            confirm();
-          }
-        }}
-      >
+    <DialogFrame kind="alert" titleId={RESET_CHAT_TITLE_ID} descriptionId={RESET_CHAT_DESC_ID} onClose={onClose}>
+      <div className="oc-alert oc-reset-chat">
         <div className="oc-alert-header">
-          <h2 id="reset-chat-title">Reset chat?</h2>
-          <p id="reset-chat-desc">Later messages will be deleted.</p>
+          <h2 id={RESET_CHAT_TITLE_ID}>Reset chat?</h2>
+          <p id={RESET_CHAT_DESC_ID}>Later messages will be deleted.</p>
         </div>
         <label className="oc-reset-files">
           <input type="checkbox" aria-label="Also reset files" checked={resetFiles} onChange={(e) => toggle(e.target.checked)} />
@@ -97,10 +86,10 @@ export function ResetChatDialog({ loadChangedCount, onConfirm, onClose }: Props)
         </label>
         {error && <p className="error small">{error}</p>}
         <div className="oc-alert-footer">
-          <button type="button" className="oc-alert-btn oc-alert-cancel" onClick={onClose} autoFocus>
+          <button type="button" className="btn" data-dialog-cancel onClick={onClose}>
             Cancel
           </button>
-          <button type="button" className="oc-alert-btn oc-alert-destructive" data-primary-action onClick={confirm} disabled={busy} title="Reset (⌘↵)">
+          <button type="button" className="btn btn-danger" data-primary-action onClick={confirm} disabled={busy} title="Reset (⌘↵)">
             {busy && (
               <svg className="sb-ws-loader" width={16} height={16} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" style={{ width: 16, height: 16, border: 0, borderRadius: 0, flexShrink: 0 }}>
                 <circle cx="3" cy="8" r="1.5" />
@@ -110,13 +99,13 @@ export function ResetChatDialog({ loadChangedCount, onConfirm, onClose }: Props)
             )}
             {busy ? "Resetting..." : "Reset"} {busy ? null : (
               // Conductor: `ml-2 inline-flex items-center opacity-60` with "⌘" and its 12px Enter icon (`gf`).
-              <span className="oc-alert-kbd">
+              <span className="project-confirmation-kbd">
                 ⌘<CornerDownLeftIcon className="oc-alert-enter" />
               </span>
             )}
           </button>
         </div>
       </div>
-    </div>
+    </DialogFrame>
   );
 }
