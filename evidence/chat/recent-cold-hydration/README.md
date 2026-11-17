@@ -36,13 +36,19 @@ node --experimental-vm-modules --test artifacts/workspace-chat-candidates-curren
 
 The new automatic-glob fixture loads the actual complete `WorkspaceView`, `ChatEmptyState`, Composer, attachment projection and per-target composer sessions with React's real test renderer. The agent snapshot/subscription boundary starts source transcripts empty and later supplies the retained source plus notifications to its real subscribers. This models the independently checked production runtime boundary; it does not replace the caller or eligibility reducer. Providers/native transport and unrelated decoration remain disposable boundaries.
 
-The three mounted cases require a cold retained source to become visible and attach its exact body without an unrelated target update; preserve an assistant-only source as ineligible; and preserve hydrated eligibility plus target attachment isolation across a target round trip. Production source remains unchanged in the first publication. The unchanged fixture must reach its intended missing-chip assertion before the subscription repair is published; a loader, dependency, type, transport or mount failure is not qualifying mounted RED.
+The three mounted cases require a cold retained source to become visible and attach its exact body without an unrelated target update; preserve an assistant-only source as ineligible; and preserve hydrated eligibility plus target attachment isolation across a target round trip. Production source remained unchanged in the first publication. Hosted head `33b690114cf25bbcb754e06b373349d9f94689b6` reached the intended missing-chip assertion: actual `[]`, expected `['source-a']`. Both controls passed. The complete frontend suite had 4,586 passing tests and this one failure; typecheck passed. [Hosted RED excerpt](hosted-red.txt), [full job](https://github.com/reason-machines/openconductor/actions/runs/44029746186/job/133858536048). This is mounted caller RED, not a loader/dependency/type/transport failure.
 
 ```bash
 node --test src/features/chat/recentColdHydration.test.ts
 ```
 
-Mounted RED/GREEN and exact-head automatic workflows are **PENDING** at test-only publication. Fixture SHA-256 is pinned in qualification.json.
+## Narrow repair
+
+The empty target now subscribes to the other catalogued chats using the same saved-agent selection and agent-specific chat-ID mapping as the transcript projection. Source updates invalidate only the recent-chip projection; they do not replace the target snapshot, drafts, attachments or active subscription. A refresh after installing listeners covers restoration between render and effect. Listeners are removed on target/catalog changes, when the target becomes nonempty, and on unmount.
+
+Fresh main `4cbaa9f6cdf995f3654ec8d6a49e984050ee9784` was fetched before the repair; `WorkspaceView.tsx` and the relevant runtime source were unchanged from the mounted baseline. The mounted fixture remains byte-for-byte unchanged, SHA-256 `7b5169bae2619147538678a2ae9ba686e2dc635a8e33b2c986ca41f7653e805e`.
+
+The dependency-free caller harness was extended to evaluate the new subscription effect against the same complete runtime modules and three original assertions: **3/3 passed**. This harness adjustment is not an unchanged mounted GREEN claim. Hosted mounted GREEN and exact-head automatic workflows are **PENDING** for the repair publication.
 
 ## Checks and limits
 

@@ -115,7 +115,24 @@
     }
   },
   "mounted_fixture_sha256": "7b5169bae2619147538678a2ae9ba686e2dc635a8e33b2c986ca41f7653e805e",
-  "mounted_baseline": "NOT_RUN; ordinary hosted CI requested with test-only publication",
+  "mounted_baseline": {
+    "head": "33b690114cf25bbcb754e06b373349d9f94689b6",
+    "job": "https://github.com/reason-machines/openconductor/actions/runs/44029746186/job/133858536048",
+    "command": "node --test \"src/**/*.test.ts\"",
+    "intended_failures": 1,
+    "passing_controls": 2,
+    "full_suite_passed": 4586,
+    "full_suite_failed": 1,
+    "typecheck": "PASS",
+    "decisive_assertion": "cold source hydration must invalidate the empty target; actual [], expected ['source-a']"
+  },
+  "repair": {
+    "fresh_main": "4cbaa9f6cdf995f3654ec8d6a49e984050ee9784",
+    "leased_source_unchanged_at_fresh_main": true,
+    "mounted_fixture_unchanged": true,
+    "source_unit_green": "3/3 PASS; harness extended to evaluate the new subscription effect with original assertions",
+    "hosted_green": "PENDING"
+  },
   "limits": [
     "No full original artifact reacquisition or full-asset rehash in this pass",
     "Static retained reference spans, not observed native reference behavior",
