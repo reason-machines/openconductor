@@ -2,6 +2,12 @@ name: VM runner source prerequisite
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - 'native-qa-vm-runner/**'
+      - 'scripts/package-native-qa-vm-runner.sh'
+      - 'tools/test_native_qa_vm_runner_source.py'
+      - '.github/workflows/native-qa-vm-runner.yml'
 
 permissions:
   contents: read
@@ -35,8 +41,19 @@ jobs:
             native-qa-vm-runner/Profile.c native-qa-vm-runner/ProfileTests.c \
             -o "${RUNNER_TEMP}/vm-profile-tests"
           "${RUNNER_TEMP}/vm-profile-tests"
+          cc -std=c11 -Wall -Wextra -Werror -pedantic \
+            native-qa-vm-runner/Lifecycle.c native-qa-vm-runner/LifecycleTests.c \
+            -o "${RUNNER_TEMP}/vm-lifecycle-tests"
+          "${RUNNER_TEMP}/vm-lifecycle-tests"
+          cc -std=c11 -Wall -Wextra -Werror -pedantic \
+            native-qa-vm-runner/ResourceValidator.c native-qa-vm-runner/HeldResources.c \
+            native-qa-vm-runner/Lifecycle.c native-qa-vm-runner/HeldResourcesTests.c \
+            -o "${RUNNER_TEMP}/vm-held-resources-tests"
+          "${RUNNER_TEMP}/vm-held-resources-tests"
+          python3 -m unittest tools.test_native_qa_vm_runner_source -v
           python3 -W error::ResourceWarning -m unittest tools.test_native_qa_vm_signing tools.test_native_qa_vm_receipt tools.test_native_qa_vm_github tools.test_native_qa_vm_staging tools.test_native_qa_vm_broker tools.test_native_qa_vm_executor tools.test_native_qa_vm_alloc tools.test_native_qa_vm_allocation tools.test_native_qa_identity_through_use tools.test_native_qa_vz_bridge tools.test_native_qa_vm_lifecycle tools.test_native_qa_authority_contract -v
   compile-sign:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     needs: portable
     name: VM runner compile and signature readback (no execution)
     runs-on: macos-15
