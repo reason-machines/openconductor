@@ -19,7 +19,9 @@ function deferred<T>() {
   return { promise, resolve, reject };
 }
 
-async function fixture({ page = false, path = "/synthetic/project", repos = true, setup = false, setupFails = false, section = false, writeFails = false, copyFails = false, holdCopy = false, holdWrite = false, missingCopy = false, copyThrows = false } = {}) {
+async function fixture({ agent = "reason", page = false, path = "/synthetic/project", repos = true, setup = false, setupFails = false, section = false, writeFails = false, copyFails = false, holdCopy = false, holdWrite = false, missingCopy = false, copyThrows = false } = {}) {
+  const keys = new Map<string, (() => unknown) | undefined>();
+  let editorFocused = false;
   const events: string[] = [];
   const warnings: string[] = [];
   const actions: { type: string; workspace?: { id: string }; sectionId?: string }[] = [];
@@ -120,7 +122,7 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
         if (name === "../workspace/firstMessage") return { renameAfterFirstMessage: () => events.push("rename") };
         if (name === "../features/chat/chatModelChoice") return { saveModelChoice: () => events.push("model") };
         if (name === "../features/chat/agentChoice") return { saveAgent: () => events.push("agent") };
-        if (name === "../workspace/launchModel") return { launchDefaults: () => ({ agent: "reason", model: "fixture", effort: "" }), loadoutPicks: () => [] };
+        if (name === "../workspace/launchModel") return { launchDefaults: () => ({ agent, model: "fixture", effort: "" }), loadoutPicks: () => [] };
         if (name === "../settings/agents/useLoadout") return { useLoadout: () => null };
         if (name === "../features/chat/loadoutChoices") return { loadoutChoices: () => [] };
         if (name === "../features/chat/ModelPicker") return { ModelPicker: () => null };
@@ -129,7 +131,7 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
         if (name === "./create/RepoSelect") return { RepoSelect: () => null };
         if (name === "./create/TargetBranchButton") return { TargetBranchButton: ({ onChange }: { onChange: (value: string) => void }) => React.createElement("input", { "aria-label": "Target branch", onChange }) };
         if (name === "./CreateFromPicker") return { CreateFromPicker: () => null };
-        if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }), useKeybindings: () => {} };
+        if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }), useKeybindings: (handlers: Record<string, (() => unknown) | undefined>) => { for (const [id, handler] of Object.entries(handlers)) keys.set(id, handler); } };
         if (name === "../keybindings/overrides") return { effectiveShortcuts: () => [] };
         if (name === "../keybindings/shortcut") return { glyphs: () => "", matchesEvent: () => false };
         if (name.endsWith("/ComposerEditor.tsx") || name.endsWith("/ComposerEditor")) {
@@ -137,8 +139,8 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
             ComposerEditor({ inputRef, value, onChange, onKeyDown }: Record<string, ((...a: unknown[]) => unknown) & string>) {
               React.useLayoutEffect(() => {
                 const handle = {
-                  focus: () => {}, blur: () => {}, visible: () => true,
-                  focused: () => false, composing: () => false,
+                  focus: () => { editorFocused = true; }, blur: () => { editorFocused = false; }, visible: () => true,
+                  focused: () => editorFocused, composing: () => false,
                   selection: () => ({ text: String(value), start: 0, end: 0 }),
                   replaceRange: () => false, insertFile: () => {}, deleteRange: () => false, newline: () => {},
                 };
@@ -182,7 +184,15 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
     if (typeof handler === "function") return handler(value);
   }
   return {
-    events, warnings, actions, pending, staged, copied, queued,
+    events, warnings, actions, pending, staged, copied, queued, keys,
+    focusEditor(focused: boolean) { editorFocused = focused; },
+    async shortcut() {
+      const handler = keys.get("chat.togglePlanMode");
+      assert.equal(typeof handler, "function", "Create must register the displayed Plan mode command");
+      let result: unknown;
+      await act(async () => { result = handler?.(); });
+      return result;
+    },
     async finishCopy() { await act(async () => copyGate.resolve()); },
     async finishWrite() { await act(async () => writeGate.resolve()); },
     chips: () => renderer.root.findAll((node: { type: unknown }) => typeof node.type === "function" && node.type.name === "ComposerAttachmentChip"),
@@ -689,3 +699,57 @@ test("Alt+Enter (addToBacklogFromComposer) creates workspace idle, sets backlog 
     assert.equal(view.closes, 1);
   } finally { view.dispose(); }
 });
+
+for (const page of [false, true]) {
+  test(`create Plan shortcut toggles the existing menu state while editor-focused (page=${page})`, async () => {
+    const view = await fixture({ page, agent: "claude" });
+    try {
+      view.focusEditor(true);
+      assert.match(view.rendered(), /Plan mode/);
+      await view.shortcut();
+      assert.match(view.rendered(), /Exit plan mode/);
+      await view.shortcut();
+      assert.doesNotMatch(view.rendered(), /Exit plan mode/);
+      assert.equal(view.requests, 0);
+      assert.equal(view.queued.length, 0);
+    } finally { view.dispose(); }
+  });
+}
+test("create Plan shortcut leaves an unfocused editor unchanged", async () => {
+  const view = await fixture({ page: true, agent: "claude" });
+  try {
+    view.focusEditor(false);
+    const handler = view.keys.get("chat.togglePlanMode");
+    if (handler) assert.equal(await view.shortcut(), false);
+    assert.doesNotMatch(view.rendered(), /Exit plan mode/);
+    view.focusEditor(true);
+    await view.shortcut();
+    assert.match(view.rendered(), /Exit plan mode/);
+    view.focusEditor(false);
+    assert.equal(await view.shortcut(), false);
+    assert.match(view.rendered(), /Exit plan mode/);
+  } finally { view.dispose(); }
+});
+test("create Plan shortcut does not change launch controls while creating", async () => {
+  const view = await fixture({ page: true, agent: "claude" });
+  try {
+    view.focusEditor(true);
+    await view.shortcut();
+    await view.submit();
+    assert.equal(await view.shortcut(), false);
+    assert.match(view.rendered(), /Exit plan mode/);
+    assert.equal(view.requests, 0);
+  } finally { view.dispose(); }
+});
+for (const agent of ["reason", "codex"]) {
+  test(`create Plan shortcut never exposes unsupported agent controls (${agent})`, async () => {
+    const view = await fixture({ page: true, agent });
+    try {
+      view.focusEditor(true);
+      const handler = view.keys.get("chat.togglePlanMode");
+      if (handler) assert.equal(await view.shortcut(), false);
+      assert.doesNotMatch(view.rendered(), /Exit plan mode/);
+      assert.equal(view.requests, 0);
+    } finally { view.dispose(); }
+  });
+}
