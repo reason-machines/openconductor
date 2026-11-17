@@ -63,6 +63,7 @@ function fixture(initialVoiceMode: boolean) {
       if (name === "./SlashMenu.tsx") return { SlashMenu: () => null };
       if (name === "./FileMentionMenu.tsx") return { FileMentionMenu: () => null };
       if (name === "./composerLongPaste.ts") return { longPasteAttachment: () => null };
+      if (name === "./composerPasteFilePaths.ts") return { readClipboardText: async () => null, readClipboardTextFromPlatform: async () => null };
       if (name.endsWith("/useBoolPref.ts")) return { useBoolPref: (key: string) => key === "voice_mode" ? currentVoiceMode : false };
       if (name.endsWith("/useSettings.ts")) return {
         useSettings: () => ({
