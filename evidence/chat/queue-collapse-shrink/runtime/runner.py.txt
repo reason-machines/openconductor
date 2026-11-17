@@ -1,0 +1,82 @@
+"""Run only with the ledger's explicit, current standalone slot admission."""
+from pathlib import Path
+import argparse, datetime, hashlib, json, os, resource, signal, subprocess, time
+
+D = Path('.qa/queue-collapse-shrink-135')
+p = argparse.ArgumentParser()
+p.add_argument('--phase', choices=['red', 'green'], required=True)
+p.add_argument('--reservation', required=True)
+p.add_argument('--deadline', required=True)
+a = p.parse_args()
+now = lambda: datetime.datetime.now(datetime.timezone.utc)
+deadline = datetime.datetime.fromisoformat(a.deadline.replace('Z', '+00:00'))
+assert now() < deadline, 'start deadline passed; do not execute'
+out = D / ('runtime-' + a.phase)
+out.mkdir(exist_ok=False)
+r = json.loads((D/'fixture-freeze/request.json').read_text())
+command = r['command']
+receipt = {'reservation': a.reservation, 'phase': a.phase, 'start_deadline': a.deadline,
+           'started_utc': now().isoformat(), 'command': command,
+           'fixture_sha256': hashlib.sha256(Path(r['fixture']['path']).read_bytes()).hexdigest(),
+           'source_sha256': hashlib.sha256(Path(r['baseline_source']['path']).read_bytes()).hexdigest(),
+           'node_test_executed': False, 'groups': [], 'surviving_pids': []}
+
+def members(group):
+    found = []
+    for proc in Path('/proc').iterdir():
+        if not proc.name.isdigit(): continue
+        try:
+            fields = (proc/'stat').read_text().rsplit(')', 1)[1].split()
+            if int(fields[2]) == group and fields[0] != 'Z': found.append(int(proc.name))
+        except (OSError, ValueError): pass
+    return found
+
+def run(label, argv, timeout):
+    def limits():
+        resource.setrlimit(resource.RLIMIT_FSIZE, (8*1024**2, 8*1024**2))
+    with (out/(label+'.stdout')).open('wb') as stdout, (out/(label+'.stderr')).open('wb') as stderr:
+        proc = subprocess.Popen(argv, stdout=stdout, stderr=stderr, start_new_session=True, preexec_fn=limits)
+        receipt['groups'].append(proc.pid)
+        try:
+            result = proc.wait(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            os.killpg(proc.pid, signal.SIGTERM)
+            try: proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                os.killpg(proc.pid, signal.SIGKILL)
+                proc.wait(timeout=5)
+            raise RuntimeError(label+' exceeded wrapper bound')
+        finally:
+            survivors = members(proc.pid)
+            if survivors:
+                os.killpg(proc.pid, signal.SIGTERM)
+                time.sleep(0.2)
+                if members(proc.pid): os.killpg(proc.pid, signal.SIGKILL)
+            receipt['surviving_pids'].extend(members(proc.pid))
+    receipt[label+'_exit_code'] = result
+    return result
+
+try:
+    assert receipt['fixture_sha256'] == r['fixture']['sha256'], 'fixture changed'
+    if a.phase == 'red':
+        gate = ['python3', str(D/'fixture-freeze/preflight.py'), '--require-main', '--check-host']
+    else:
+        gate = ['python3', str(D/'green-preflight.py')]
+    assert run('static-preflight', gate, 10) == 0, 'static setup gate failed; not semantic RED'
+    assert now() < deadline, 'start deadline passed during preflight'
+    capability = ['taskset', '-c', '0', 'node', '--input-type=module', '-e',
+                  'if (!process.features.typescript) process.exit(42); console.log(JSON.stringify({version:process.version,typescript:process.features.typescript}));']
+    assert run('node-capability', capability, 5) == 0, 'Node capability gate failed; not semantic RED'
+    assert now() < deadline, 'start deadline passed during capability gate'
+    receipt['test_started_utc'] = now().isoformat()
+    receipt['node_test_executed'] = True
+    run('test', command, 67)
+    receipt['test_terminated_utc'] = now().isoformat()
+except Exception as error:
+    receipt['setup_or_wrapper_error'] = str(error)
+finally:
+    receipt['own_incremental_evidence_bytes'] = sum(f.stat().st_size for f in out.iterdir() if f.is_file())
+    receipt['child_maxrss_kib_not_aggregate'] = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
+    receipt['actual_release_utc'] = now().isoformat()
+    (out/'receipt.json').write_text(json.dumps(receipt, indent=2)+'\n')
+    print(json.dumps(receipt, indent=2))

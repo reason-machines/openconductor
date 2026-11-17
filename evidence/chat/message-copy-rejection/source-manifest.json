@@ -1,0 +1,140 @@
+{
+  "candidate": "MESSAGE-COPY-REJECTION-BE7",
+  "author": "Conductor Rebuild",
+  "evidence_kind": "retained REA-associated decoded source, NOT native observation or new semantic REA",
+  "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "checkpoint_attachment": {
+    "attachment_id": "4db32769-6ddc-468a-b8da-37ee7cd4cc12",
+    "sha256": "5f9359889985aa5664f4f53b6b8c4f64fc9c8f9e46d42f5bcf13eccbf1c1d196"
+  },
+  "parent": {
+    "asset": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "ranges": "half-open original UTF-8 byte offsets",
+  "spans": [
+    {
+      "symbol": "WOo",
+      "start": 8888340,
+      "end": 8895883,
+      "bytes": 7543,
+      "sha256": "4b90b5a2139db4f56e35ecbb311d00f586d41c24ce1c6e0d1a61d4d5072173c3",
+      "file": "reference/WOo.js.json",
+      "encoding": "JSON raw_utf8 decoded UTF-8"
+    },
+    {
+      "symbol": "TDo",
+      "start": 8919506,
+      "end": 8927404,
+      "bytes": 7898,
+      "sha256": "de83e26c19d4a782733240a5a86a62142cd18cda9301bdb4d2ddc5861e7e7e0e",
+      "file": "reference/TDo.js.json",
+      "encoding": "JSON raw_utf8 decoded UTF-8"
+    },
+    {
+      "symbol": "t0",
+      "start": 1793169,
+      "end": 1794797,
+      "bytes": 1628,
+      "sha256": "9e4e5cb96dda0b523c89505b4492941918848d3643470b6199b0a71ba8014b5e",
+      "file": "reference/t0.js.json",
+      "encoding": "JSON raw_utf8 decoded UTF-8"
+    },
+    {
+      "symbol": "hZr",
+      "start": 1794797,
+      "end": 1794905,
+      "bytes": 108,
+      "sha256": "73db96f11470171b67c4495eb52e07f55c2dd0b75647b4a7149e42c25e6be166",
+      "file": "reference/hZr.js.json",
+      "encoding": "JSON raw_utf8 decoded UTF-8"
+    },
+    {
+      "symbol": "l1",
+      "start": 739306,
+      "end": 739397,
+      "bytes": 91,
+      "sha256": "232a30bd33deacf7baf3cf7cce95a19f385c2a361832a65b34bff3e1ecbf6f57",
+      "file": "reference/l1.js.json",
+      "encoding": "JSON raw_utf8 decoded UTF-8"
+    }
+  ],
+  "baseline": {
+    "commit": "c22e27d48a0940c5793842cfddc023b7e5f838c5",
+    "files": [
+      {
+        "path": "src/features/chat/Transcript.tsx",
+        "snapshot": "baseline/src/features/chat/Transcript.tsx.txt",
+        "bytes": 21591,
+        "sha256": "b543001eeb48ab956140a164646554862ad314ae3511bda7abdfd5238d7eeac0"
+      },
+      {
+        "path": "src/features/chat/userMessageCopy.test.ts",
+        "snapshot": "baseline/src/features/chat/userMessageCopy.test.ts.txt",
+        "bytes": 10266,
+        "sha256": "3f7278c0afe64b2ad5b210f212a5d715cdfe2f02ddfec269ecc89b53bd4ae7be"
+      },
+      {
+        "path": "src/features/chat/finalMessageCopy.test.ts",
+        "snapshot": "baseline/src/features/chat/finalMessageCopy.test.ts.txt",
+        "bytes": 5511,
+        "sha256": "70463bb886db01a2db4642883a29c21b2efa2fbc7941c27e12b21acc798814c7"
+      },
+      {
+        "path": "src/features/chat/copyCodeFeedback.test.ts",
+        "snapshot": "baseline/src/features/chat/copyCodeFeedback.test.ts.txt",
+        "bytes": 8898,
+        "sha256": "5e99cc9f652a18249c33fbcf9e2260c7e320b6a025f44e708a9c9ecd55f6f86b"
+      },
+      {
+        "path": "src/features/chat/userMessageCopy.ts",
+        "snapshot": "baseline/src/features/chat/userMessageCopy.ts.txt",
+        "bytes": 857,
+        "sha256": "6cbe180e992dfe7acf753fe9aeee63c035e8be0b44501a75a698e12faac7c25f"
+      },
+      {
+        "path": "src/features/chat/view.ts",
+        "snapshot": "baseline/src/features/chat/view.ts.txt",
+        "bytes": 10115,
+        "sha256": "132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43"
+      },
+      {
+        "path": "src/App.tsx",
+        "snapshot": "baseline/src/App.tsx.txt",
+        "bytes": 44874,
+        "sha256": "e92b6d4418579c64b45a7dc596c0f41bd866be74f59469a395b134d57163f7ab"
+      },
+      {
+        "path": "src/components/WorkspaceView.tsx",
+        "snapshot": "baseline/src/components/WorkspaceView.tsx.txt",
+        "bytes": 102922,
+        "sha256": "4520e46b632d50ef6feaf78398ec08cf7e8a58697605067b707af50d3c1f8214"
+      },
+      {
+        "path": "src/components/Toast.tsx",
+        "snapshot": "baseline/src/components/Toast.tsx.txt",
+        "bytes": 4974,
+        "sha256": "7b3690a70397c44a8fb1a1623c8bc6d083c5b8f4d104c4915975b951ea199b0d"
+      },
+      {
+        "path": "package.json",
+        "snapshot": "baseline/package.json.txt",
+        "bytes": 2019,
+        "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91"
+      },
+      {
+        "path": "package-lock.json",
+        "snapshot": "baseline/package-lock.json.txt",
+        "bytes": 222962,
+        "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+      }
+    ]
+  },
+  "fixture": {
+    "path": "src/features/chat/messageCopyFeedback.test.ts",
+    "bytes": 9727,
+    "sha256": "9a60c39ee956463257d6c35dd184923e6a35802179851cb21624470eb2b4a7d1"
+  },
+  "runtime": "NOT_RUN; static preparation only"
+}

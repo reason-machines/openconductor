@@ -581,7 +581,12 @@ interface QueuePanelProps {
 function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePanelProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [dragged, setDragged] = useState<string | null>(null);
+  const canCollapse = queue.items.length > 1;
   const ids = queue.items.map((m) => m.id);
+
+  useEffect(() => {
+    if (!canCollapse) setCollapsed(false);
+  }, [canCollapse]);
 
   // The focused row's keys (the row itself, not its buttons): edit, delete, steer and moving between rows.
   function onRowKeyDown(e: KeyboardEvent<HTMLLIElement>, id: string) {
@@ -641,12 +646,14 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
               Pause
             </button>
           )}
-          <button type="button" className="chat-action" aria-expanded={!collapsed} onClick={() => setCollapsed((c) => !c)}>
-            {collapsed ? "Expand queue" : "Collapse queue"}
-          </button>
+          {canCollapse ? (
+            <button type="button" className="chat-action" aria-expanded={!collapsed} onClick={() => setCollapsed((c) => !c)}>
+              {collapsed ? "Expand queue" : "Collapse queue"}
+            </button>
+          ) : null}
         </span>
       </div>
-      {collapsed ? null : (
+      {canCollapse && collapsed ? null : (
         <ol className="queue-list" aria-label="Queued messages" ref={listRef} data-keybinding-local="true">
           {queue.items.map((m, i) => (
             <QueueRow

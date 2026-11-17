@@ -1,0 +1,20 @@
+{
+  "utc": "2026-11-17T21:58:44.457884+00:00",
+  "host": "ws-zh5pmwqtgx3uglxhwaae5q2k",
+  "affinity": [
+    0,
+    1
+  ],
+  "free_disk_bytes": 16606351360,
+  "own_workloads": [],
+  "baseline_main": "5397204995280d90903e17dae3f391759bcde1d9",
+  "branch_contains_baseline": true,
+  "intended_only_product_delta": "11\t4\tsrc/features/chat/Composer.tsx",
+  "fixture_sha256": "948310bd9247754387556adc910acec1cc3174c26bdff38b2dff3b65e0d77cad",
+  "treatment_sha256": "5dde290a9c73845b334a4b0daa26733ae76ed06f037df770fdbee2062dcf238c",
+  "green_preflight_passed": 249,
+  "unchanged_other_source": 14,
+  "unchanged_dependencies": 217,
+  "unchanged_packages": 2,
+  "node_invoked": false
+}
