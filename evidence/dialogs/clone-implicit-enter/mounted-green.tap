@@ -1,0 +1,170 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Clone url has no implicit native-form activation path
+ok 1 - Clone url has no implicit native-form activation path
+  ---
+  duration_ms: 480.62295
+  type: 'test'
+  ...
+# Subtest: Clone location has no implicit native-form activation path
+ok 2 - Clone location has no implicit native-form activation path
+  ---
+  duration_ms: 166.869376
+  type: 'test'
+  ...
+# Subtest: Clone explicit primary activation captures valid inputs once
+ok 3 - Clone explicit primary activation captures valid inputs once
+  ---
+  duration_ms: 26.970564
+  type: 'test'
+  ...
+# Subtest: Clone pending guard survives repeated explicit primary activation
+ok 4 - Clone pending guard survives repeated explicit primary activation
+  ---
+  duration_ms: 170.425747
+  type: 'test'
+  ...
+# Subtest: Clone blank URL keeps the primary action disabled and transport unused
+ok 5 - Clone blank URL keeps the primary action disabled and transport unused
+  ---
+  duration_ms: 86.233425
+  type: 'test'
+  ...
+# Subtest: Clone rejection permits explicit retry with the latest inputs
+ok 6 - Clone rejection permits explicit retry with the latest inputs
+  ---
+  duration_ms: 80.986727
+  type: 'test'
+  ...
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: clone inputs accept edits before submission
+ok 7 - clone inputs accept edits before submission
+  ---
+  duration_ms: 427.429326
+  type: 'test'
+  ...
+# Subtest: clone url remains editable while its captured request is unresolved
+ok 8 - clone url remains editable while its captured request is unresolved
+  ---
+  duration_ms: 63.537149
+  type: 'test'
+  ...
+# Subtest: clone location remains editable while its captured request is unresolved
+ok 9 - clone location remains editable while its captured request is unresolved
+  ---
+  duration_ms: 410.182209
+  type: 'test'
+  ...
+# Subtest: clone Browse remains enabled while its captured request is unresolved
+ok 10 - clone Browse remains enabled while its captured request is unresolved
+  ---
+  duration_ms: 233.173634
+  type: 'test'
+  ...
+# Subtest: pending clone keeps its submit guard and progress with recent selection enabled
+ok 11 - pending clone keeps its submit guard and progress with recent selection enabled
+  ---
+  duration_ms: 356.922719
+  type: 'test'
+  ...
+# Subtest: clone rejection allows a retry with the latest form values
+ok 12 - clone rejection allows a retry with the latest form values
+  ---
+  duration_ms: 144.604133
+  type: 'test'
+  ...
+# (node:87) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: recent repository selection uses https before cloning
+ok 13 - recent repository selection uses https before cloning
+  ---
+  duration_ms: 775.324572
+  type: 'test'
+  ...
+# Subtest: recent https selection changes the form but not the pending clone
+ok 14 - recent https selection changes the form but not the pending clone
+  ---
+  duration_ms: 158.79683
+  type: 'test'
+  ...
+# Subtest: clone retry uses the recent https selection made while pending
+ok 15 - clone retry uses the recent https selection made while pending
+  ---
+  duration_ms: 42.439959
+  type: 'test'
+  ...
+# Subtest: recent repository selection uses ssh before cloning
+ok 16 - recent repository selection uses ssh before cloning
+  ---
+  duration_ms: 65.062965
+  type: 'test'
+  ...
+# Subtest: recent ssh selection changes the form but not the pending clone
+ok 17 - recent ssh selection changes the form but not the pending clone
+  ---
+  duration_ms: 185.580935
+  type: 'test'
+  ...
+# Subtest: clone retry uses the recent ssh selection made while pending
+ok 18 - clone retry uses the recent ssh selection made while pending
+  ---
+  duration_ms: 21.926151
+  type: 'test'
+  ...
+# (node:108) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: clone URL disables autoCorrect before cloning
+ok 19 - clone URL disables autoCorrect before cloning
+  ---
+  duration_ms: 252.102579
+  type: 'test'
+  ...
+# Subtest: clone URL disables autoCapitalize before cloning
+ok 20 - clone URL disables autoCapitalize before cloning
+  ---
+  duration_ms: 110.150535
+  type: 'test'
+  ...
+# Subtest: clone URL keeps its existing input controls before cloning
+ok 21 - clone URL keeps its existing input controls before cloning
+  ---
+  duration_ms: 150.324401
+  type: 'test'
+  ...
+# Subtest: clone URL disables autoCorrect while cloning
+ok 22 - clone URL disables autoCorrect while cloning
+  ---
+  duration_ms: 51.595834
+  type: 'test'
+  ...
+# Subtest: clone URL disables autoCapitalize while cloning
+ok 23 - clone URL disables autoCapitalize while cloning
+  ---
+  duration_ms: 48.763981
+  type: 'test'
+  ...
+# Subtest: clone URL keeps its existing input controls while cloning
+ok 24 - clone URL keeps its existing input controls while cloning
+  ---
+  duration_ms: 28.285549
+  type: 'test'
+  ...
+# Subtest: clone URL preserves mixed-case edits and the captured pending request
+ok 25 - clone URL preserves mixed-case edits and the captured pending request
+  ---
+  duration_ms: 22.477034
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3745.277786

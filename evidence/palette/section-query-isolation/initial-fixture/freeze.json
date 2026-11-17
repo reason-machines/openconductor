@@ -1,0 +1,5 @@
+{
+  "main": "217498aae38dfd63b97919b1a0ab4097462c691e",
+  "fixture_sha256": "90fdfccae592d22d6159b95918c7da044261f27a3dc78808628e2cfbe83fd12a",
+  "fixture": "src/palette/sectionQueryIsolation.test.ts"
+}

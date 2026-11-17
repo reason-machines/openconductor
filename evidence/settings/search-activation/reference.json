@@ -1,0 +1,270 @@
+{
+  "author": "Conductor Rebuild",
+  "main": "2ada6e3e186391695cae1ce5694ac251a6323079",
+  "asset": {
+    "path": ".oc-tmp/settings-loader-reference/renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "spans": [
+    {
+      "label": "Eki",
+      "utf8_half_open": [
+        7749718,
+        7750087
+      ],
+      "bytes": 369,
+      "sha256": "0f397f25df98c4b517b508ad034f3f54ae5928cec0ebd495b80030a7e31a7281",
+      "text": "function Eki(t){t.scrollIntoView({block:\"center\"});const e=t.querySelector(\":scope > [data-reveal-frame]\")??t;typeof e.animate==\"function\"&&e.animate([{outline:\"2px solid var(--ring)\",outlineOffset:\"8px\",offset:0},{outline:\"2px solid var(--ring)\",outlineOffset:\"8px\",offset:.55},{outline:\"2px solid transparent\",outlineOffset:\"8px\"}],{duration:1400,easing:\"ease-out\"})}"
+    },
+    {
+      "label": "Tet",
+      "utf8_half_open": [
+        9951380,
+        9951447
+      ],
+      "bytes": 67,
+      "sha256": "6043a7446c19da773b33704d39e5558b66e26d622a988c8ab2327f424a526e1b",
+      "text": "function Tet(t){return!t.isUnlinked&&!(t.hidden&&t.rootPath===rta)}"
+    },
+    {
+      "label": "k1e",
+      "utf8_half_open": [
+        9951447,
+        9951484
+      ],
+      "bytes": 37,
+      "sha256": "c0e591347c84f232f0f732c73153d348ed37bd90dc85a49d2371e0ed7220ebd0",
+      "text": "function k1e(t){return t.filter(Tet)}"
+    },
+    {
+      "label": "pUi",
+      "utf8_half_open": [
+        10864423,
+        10864799
+      ],
+      "bytes": 376,
+      "sha256": "5c0e9ed6ec43b42536916ea4b718476b9eed4c88c4855cd22961c0c84398c040",
+      "text": "function pUi(t){const e=xGt(t.id);if(e!==void 0)return{page:\"providers\",providerTab:e};const{tab:n}=t;return n===\"scripts\"||n===\"actions\"||n===\"misc\"?{page:\"repo\",section:n,scrollTo:t.id}:(n===\"environment\"||n===\"git\")&&t.scopes!==void 0&&!t.scopes.includes(\"user\")?{page:\"repo\",section:n,scrollTo:t.id}:n===\"providers\"?{page:\"providers\",scrollTo:t.id}:{page:n,scrollTo:t.id}}"
+    },
+    {
+      "label": "BCe",
+      "utf8_half_open": [
+        10865177,
+        10865386
+      ],
+      "bytes": 209,
+      "sha256": "07835609ebf5e148b47164e14e57a1618c1a1283622d1b2ec41bc799d29cad73",
+      "text": "BCe={environment:\"/settings/repos/$repoId/environment\",git:\"/settings/repos/$repoId/git\",scripts:\"/settings/repos/$repoId/scripts\",actions:\"/settings/repos/$repoId/actions\",misc:\"/settings/repos/$repoId/misc\"}"
+    },
+    {
+      "label": "oYe",
+      "utf8_half_open": [
+        10865387,
+        10865404
+      ],
+      "bytes": 17,
+      "sha256": "c99a9f2c49129cbaf54a421002079037236348b2b2c8c48b1f4e4689e7946b5e",
+      "text": "oYe=\"environment\""
+    },
+    {
+      "label": "gUi",
+      "utf8_half_open": [
+        10865537,
+        10865685
+      ],
+      "bytes": 148,
+      "sha256": "122109512a955c2ab8b9e61a556a6027dfd74d88160015220860279544d30f39",
+      "text": "function gUi(){const t=au.getLastRoute();if(t===void 0)return;const{pathname:e}=new URL(t.href,\"http://conductor.local\");return dF(e)?.repositoryId}"
+    },
+    {
+      "label": "bUi",
+      "utf8_half_open": [
+        10865685,
+        10865767
+      ],
+      "bytes": 82,
+      "sha256": "870ed0fd891f4939dcb473203ae990306a78bb2b52be8e5a85e2129d2364a663",
+      "text": "function bUi({selectableRepos:t,lastViewedId:e}){return t.find(n=>n.id===e)??t[0]}"
+    },
+    {
+      "label": "wGt",
+      "utf8_half_open": [
+        10866145,
+        10866683
+      ],
+      "bytes": 538,
+      "sha256": "62bdba7204c58b4ce4f486ed54d97f1e194023382857279e5806eab97a847fd3",
+      "text": "function wGt({navigate:t,target:e,replace:n,currentRepoId:i}){switch(e.type){case\"page\":t({to:e.to,search:{scrollTo:e.scrollTo},hash:e.hash,replace:n}).fireAndForget();return;case\"providers\":t({to:\"/settings/user/providers\",search:{providerTab:e.providerTab},replace:n}).fireAndForget();return;case\"repo-section\":if(i!==void 0){t({to:BCe[e.section],params:{repoId:i},search:{scrollTo:e.scrollTo},replace:n}).fireAndForget();return}t({to:\"/settings/repos\",search:{section:e.section,scrollTo:e.scrollTo},replace:n}).fireAndForget();return}}"
+    },
+    {
+      "label": "Dba",
+      "utf8_half_open": [
+        10866718,
+        10867060
+      ],
+      "bytes": 342,
+      "sha256": "b5bda79a4e086ced07f70811c03086ca7ffc4fbc6d60f7e612c50d9718e75958",
+      "text": "function Dba(t){switch(t.page){case\"providers\":return t.providerTab!==void 0?{type:\"providers\",providerTab:t.providerTab}:{type:\"page\",to:\"/settings/user/providers\",scrollTo:t.scrollTo};case\"repo\":return{type:\"repo-section\",section:t.section,scrollTo:t.scrollTo};default:return{type:\"page\",to:`/settings/${ode[t.page]}`,scrollTo:t.scrollTo}}}"
+    },
+    {
+      "label": "xUi",
+      "utf8_half_open": [
+        10871526,
+        10872078
+      ],
+      "bytes": 552,
+      "sha256": "fe9940e7da0cee64962a796fe741077a7ef6bf273bd288245e28596b3ea1590c",
+      "text": "function xUi(t){const e=[];for(const n of fUi){if(n.id.endsWith(\"-panel\")||n.excludeFromSearch===!0||xGt(n.id)!==void 0||!mUi({definition:n,cloudOrganizationActive:t.cloudOrganizationActive}))continue;const i=_Ui(n);if(!Uba({definition:n,target:i,gates:t}))continue;const r=zba.get(n.tab),o=n.settingKey===\"default_model\"?\"Edit models\":n.title;e.push({id:`row-${n.id}`,label:o,icon:r?.icon??cv,tabLabel:r?.label,description:n.description,keywords:qet({label:o,extra:[...r===void 0?[]:[r.label.toLowerCase()],...n.searchTerms??[]]}),target:i})}return e}"
+    },
+    {
+      "label": "mSa",
+      "utf8_half_open": [
+        11174217,
+        11174986
+      ],
+      "bytes": 769,
+      "sha256": "49d36370157cc896eed562b034f6cf861f8b7e698c29b5def13d643d0f7e0737",
+      "text": "function mSa(t){const e=ne.c(19),{definition:n,repoContext:i,scrollTo:r}=t;let o;e[0]!==n.id||e[1]!==r?(o=v=>{v!==null&&r===n.id&&Eki(v)},e[0]=n.id,e[1]=r,e[2]=o):o=e[2];const a=o,c=n.id;let u;e[3]!==n?(u=pUi(n),e[3]=n,e[4]=u):u=e[4];let d;e[5]!==n.id||e[6]!==a||e[7]!==u?(d={id:c,ref:a,pageTarget:u},e[5]=n.id,e[6]=a,e[7]=u,e[8]=d):d=e[8];const h=d,m=n.render;let g;e[9]!==m||e[10]!==n.description||e[11]!==n.settingKey||e[12]!==n.title||e[13]!==i||e[14]!==r?(g=p.jsx(m,{title:n.title,description:n.description,settingKey:n.settingKey,repoContext:i,scrollTo:r}),e[9]=m,e[10]=n.description,e[11]=n.settingKey,e[12]=n.title,e[13]=i,e[14]=r,e[15]=g):g=e[15];let _;return e[16]!==h||e[17]!==g?(_=p.jsx(Zzt.Provider,{value:h,children:g}),e[16]=h,e[17]=g,e[18]=_):_=e[18],_}"
+    },
+    {
+      "label": "gSa",
+      "utf8_half_open": [
+        11174986,
+        11175397
+      ],
+      "bytes": 411,
+      "sha256": "0a8daf25f1c6389329a2a26d7e5e7c099d9962fa4c770102acec8f9b3ff61bbb",
+      "text": "function gSa(t){const e=ne.c(10),{rows:n,repoContext:i,scrollTo:r}=t;let o;if(e[0]!==i||e[1]!==n||e[2]!==r){let c;e[4]!==i||e[5]!==r?(c=u=>p.jsx(mSa,{definition:u,repoContext:i,scrollTo:r},i===void 0?u.id:`${i.id}:${u.id}`),e[4]=i,e[5]=r,e[6]=c):c=e[6],o=n.map(c),e[0]=i,e[1]=n,e[2]=r,e[3]=o}else o=e[3];let a;return e[7]!==r||e[8]!==o?(a=p.jsx(Cki.Provider,{value:r,children:o}),e[7]=r,e[8]=o,e[9]=a):a=e[9],a}"
+    },
+    {
+      "label": "_5",
+      "utf8_half_open": [
+        11175515,
+        11177348
+      ],
+      "bytes": 1833,
+      "sha256": "fa0d903b29779836812ab149fdd35bee0ade6bf313f0dc8b6dfadeff32a75aab",
+      "text": "function _5(t){const e=ne.c(32),{tab:n,scope:i,repoContext:r,scrollTo:o}=t;let a;e[0]===Symbol.for(\"react.memo_cache_sentinel\")?(a={from:\"/auth-guard/settings\"},e[0]=a):a=e[0];const{scrollTo:c}=l_(a),u=n===\"advanced\"&&i===\"user\";let d;e[1]!==u?(d={enabled:u},e[1]=u,e[2]=d):d=e[2];const{organization:h,isLoading:m}=so(d),{data:g}=hy(),_=g===void 0?!1:g,v=o??c;if(bSa({activeTab:n,settingsScope:i,hasSelectedRepo:r!==void 0})){let L;return e[3]===Symbol.for(\"react.memo_cache_sentinel\")?(L=p.jsx(ap,{children:p.jsx(\"div\",{className:\"h-64 flex items-center justify-center\",children:p.jsx(ri,{type:\"setting-up\"})})}),e[3]=L):L=e[3],L}let x;if(e[4]!==h||e[5]!==_||e[6]!==m||e[7]!==i||e[8]!==n){let L;e[10]!==_?(L=F=>F.internalOnly!==!0||_,e[10]=_,e[11]=L):L=e[11];let B;e[12]!==h||e[13]!==m?(B=F=>mUi({definition:F,cloudOrganizationActive:m?void 0:h!==void 0&&fc(h)===\"cloud\"}),e[12]=h,e[13]=m,e[14]=B):B=e[14],x=Eba({tab:n,scope:i}).filter(L).filter(B),e[4]=h,e[5]=_,e[6]=m,e[7]=i,e[8]=n,e[9]=x}else x=e[9];const w=x;let E;e[15]!==m||e[16]!==u||e[17]!==r||e[18]!==w||e[19]!==v?(E=u&&m?p.jsx(\"div\",{className:\"flex h-64 items-center justify-center\",children:p.jsx(ri,{type:\"setting-up\"})}):p.jsx(gSa,{rows:w,repoContext:r,scrollTo:v}),e[15]=m,e[16]=u,e[17]=r,e[18]=w,e[19]=v,e[20]=E):E=e[20];const k=E;let I;e[21]!==n?(I=_Sa(n),e[21]=n,e[22]=I):I=e[22];const R=I;if(R===void 0)return k;let O;e[23]!==R.description||e[24]!==R.title?(O=p.jsx(Z3,{title:R.title,description:R.description}),e[23]=R.description,e[24]=R.title,e[25]=O):O=e[25];let D;e[26]!==R.rowLayout||e[27]!==k?(D=R.rowLayout===\"spaced\"?p.jsx(\"div\",{className:\"space-y-4\",children:k}):R.rowLayout===\"bare\"?k:p.jsx(rV,{children:k}),e[26]=R.rowLayout,e[27]=k,e[28]=D):D=e[28];let P;return e[29]!==O||e[30]!==D?(P=p.jsxs(ap,{children:[O,D]}),e[29]=O,e[30]=D,e[31]=P):P=e[31],P}"
+    },
+    {
+      "label": "a9a",
+      "utf8_half_open": [
+        11250105,
+        11253266
+      ],
+      "bytes": 3161,
+      "sha256": "f422a970a0f35cc780ae1a6a00093dbd752dd5fdae4604bd2b69562f574d3389",
+      "text": "function a9a({gates:t,workspaceRepoId:e,disabled:n}){const i=aa(),[r,o]=$.useState(\"\"),[a,c]=$.useState(0),u=$.useRef(null),d=$.useRef(null),h=$.useRef(null),{container:m,positionMethod:g}=hc(),_=jde(\"settings.search\")?.key,v=_?Zj(_):void 0;oi(\"settings.search\",()=>{if(n)return!1;u.current?.focus()});const x=$.useMemo(()=>[...yUi(t),...xUi(t)],[t]),w=!n&&r.trim()!==\"\";zf(w);const E=$.useMemo(()=>w?WZ({items:x,query:r,fields:{label:D=>D.label,description:D=>D.description??\"\",keywords:D=>D.keywords.join(\" \")},threshold:_Je}).slice(0,o9a):[],[x,r,w]),k=Math.min(a,Math.max(E.length-1,0)),I=()=>{o(\"\"),c(0)},R=D=>{wGt({navigate:i,target:D.target,replace:!0,currentRepoId:e}),I()},O=xd(D=>{if(w)if(D.key===\"ArrowDown\"||D.key===\"ArrowUp\"){D.preventDefault();const P=D.key===\"ArrowDown\"?1:-1,L=Math.min(Math.max(k+P,0),E.length-1);c(L),d.current?.querySelector(`[data-result-index=\"${L}\"]`)?.scrollIntoView({block:\"nearest\"})}else if(D.key===\"Enter\"){D.preventDefault();const P=E[k];P!==void 0&&R(P.item)}else D.key===\"Escape\"&&(D.preventDefault(),D.stopPropagation(),I())});return p.jsxs(X1,{open:w,onOpenChange:(D,P)=>{if(!D){if(P.reason===\"outside-press\"&&P.event.target instanceof Node&&h.current?.contains(P.event.target)){P.cancel();return}I()}},children:[p.jsxs(\"div\",{ref:h,className:\"relative w-full min-w-0\",children:[p.jsx(o_,{className:\"pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground\"}),p.jsx(Qo,{ref:u,value:r,onChange:D=>{o(D.target.value),c(0)},onKeyDown:O,placeholder:\"Search settings\",className:\"h-7 pl-8 pr-10\",spellCheck:!1,disabled:n}),r===\"\"&&!n&&v!==void 0&&p.jsx(\"kbd\",{\"aria-label\":\"Search settings shortcut\",className:\"pointer-events-none absolute right-2 top-1/2 inline-flex h-4 min-w-5 -translate-y-1/2 items-center justify-center gap-1 rounded-sm border border-border bg-muted px-1 text-[10px] font-medium leading-none text-muted-foreground shadow-xs [&>span]:inline-flex [&>span]:items-center [&>span]:pt-0 [&>span]:text-[10px] [&>span]:leading-none\",children:p.jsx(sFt,{parts:v})}),w&&p.jsx(\"button\",{onClick:I,className:\"absolute right-2 top-1/2 -translate-y-1/2 rounded-sm p-0.5 text-muted-foreground hover:text-foreground\",\"aria-label\":\"Clear settings search\",children:p.jsx(yl,{className:\"size-3.5\"})})]}),p.jsx(w1,{container:m,children:p.jsx(S1,{className:\"z-50\",anchor:h,align:\"end\",side:\"bottom\",sideOffset:6,positionMethod:g,children:p.jsx(E1,{className:\"w-(--anchor-width) space-y-1 rounded-lg ring-1 ring-popover-ring bg-sidebar-background p-1 text-popover-foreground shadow-md outline-none origin-(--transform-origin) data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0 transition-[opacity,scale] duration-100\",initialFocus:!1,children:p.jsxs(\"div\",{ref:d,className:\"flex max-h-[min(480px,var(--available-height))] flex-col gap-0.5 overflow-y-auto\",children:[E.map((D,P)=>p.jsx(l9a,{result:D,highlighted:P===k,index:P,onHover:()=>c(P),onPick:()=>R(D.item)},D.item.id)),E.length===0&&p.jsxs(\"div\",{className:\"px-2 py-1.5 text-xs text-muted-foreground\",children:['No settings match \"',r,'\"']})]})})})})]})}"
+    },
+    {
+      "label": "l9a",
+      "utf8_half_open": [
+        11253266,
+        11254395
+      ],
+      "bytes": 1129,
+      "sha256": "181b44930105ed18f7859c6bea6f498eca51ce00ad7d2d1a5ca087e95226bb8c",
+      "text": "function l9a(t){const e=ne.c(20),{result:n,highlighted:i,index:r,onHover:o,onPick:a}=t,c=n.item,u=c.icon,d=n.fieldMatches.label,h=i&&\"bg-sidebar-accent\";let m;e[0]!==h?(m=Xe(\"group flex w-full items-start gap-3 rounded-md px-2 py-1.5 text-left text-sm\",h),e[0]=h,e[1]=m):m=e[1];let g;e[2]!==u?(g=p.jsx(u,{className:\"mt-0.5 size-4 shrink-0 text-muted-foreground\"}),e[2]=u,e[3]=g):g=e[3];const _=d!==void 0;let v;e[4]!==c.label||e[5]!==d||e[6]!==_?(v=p.jsx(\"span\",{className:\"block truncate\",children:p.jsx(u2,{match:d,hasQuery:_,fallbackText:c.label})}),e[4]=c.label,e[5]=d,e[6]=_,e[7]=v):v=e[7];let x;e[8]!==c.tabLabel?(x=c.tabLabel!==void 0&&p.jsx(\"span\",{className:\"block truncate text-xs text-muted-foreground\",children:c.tabLabel}),e[8]=c.tabLabel,e[9]=x):x=e[9];let w;e[10]!==v||e[11]!==x?(w=p.jsxs(\"span\",{className:\"min-w-0 flex-1\",children:[v,x]}),e[10]=v,e[11]=x,e[12]=w):w=e[12];let E;return e[13]!==r||e[14]!==o||e[15]!==a||e[16]!==m||e[17]!==g||e[18]!==w?(E=p.jsxs(\"button\",{\"data-result-index\":r,onClick:a,onMouseMove:o,className:m,children:[g,w]}),e[13]=r,e[14]=o,e[15]=a,e[16]=m,e[17]=g,e[18]=w,e[19]=E):E=e[19],E}"
+    },
+    {
+      "label": "I9a",
+      "utf8_half_open": [
+        11265978,
+        11269620
+      ],
+      "bytes": 3642,
+      "sha256": "804b9589df24878747a81d9760a4dd78c0215910806575d3c9887344732f6f9e",
+      "text": "function I9a(t){const e=ne.c(43),{personalSections:n,repositorySections:i,repositories:r,activeRepoId:o,searchGates:a,searchRepoId:c,searchDisabled:u,showPersonalCloudSettings:d,showOrganization:h,showCloudRepositories:m,showLocalRepositories:g,repositoriesAreLoading:_,repoSettingsDisabled:v,onSelectRepo:x,onBack:w}=t;let E,k;e[0]===Symbol.for(\"react.memo_cache_sentinel\")?(E=p.jsx(pde,{className:\"size-4\"}),k=p.jsx(\"span\",{children:\"Back\"}),e[0]=E,e[1]=k):(E=e[0],k=e[1]);let I;e[2]!==w?(I=p.jsx(Xn,{asChild:!0,children:p.jsxs(\"button\",{onClick:w,className:\"flex items-center gap-1.5 rounded-md px-1.5 py-1 text-sm text-muted-foreground transition-colors hover:text-foreground\",tabIndex:-1,children:[E,k]})}),e[2]=w,e[3]=I):I=e[3];let R;e[4]===Symbol.for(\"react.memo_cache_sentinel\")?(R=p.jsx(ni,{side:\"right\",children:p.jsx(\"p\",{children:\"Esc\"})}),e[4]=R):R=e[4];let O;e[5]!==I?(O=p.jsx(\"div\",{className:\"flex h-8 shrink-0 items-center justify-end pt-2\",\"data-tauri-drag-region\":!0,children:p.jsxs(Jn,{delayDuration:100,children:[I,R]})}),e[5]=I,e[6]=O):O=e[6];let D;e[7]===Symbol.for(\"react.memo_cache_sentinel\")?(D=p.jsx(\"div\",{className:\"pt-1.5\",children:p.jsx(oOt,{stayInSettings:!0})}),e[7]=D):D=e[7];let P;e[8]!==u||e[9]!==a||e[10]!==c?(P=p.jsx(\"div\",{className:\"px-0.5 py-3\",children:p.jsx(a9a,{gates:a,workspaceRepoId:c,disabled:u})}),e[8]=u,e[9]=a,e[10]=c,e[11]=P):P=e[11];let L;e[12]===Symbol.for(\"react.memo_cache_sentinel\")?(L={className:\"scroll-mask-y\"},e[12]=L):L=e[12];let B;if(e[13]!==o||e[14]!==x||e[15]!==n||e[16]!==v||e[17]!==r||e[18]!==_||e[19]!==i||e[20]!==m||e[21]!==g||e[22]!==h){let z;e[24]!==o||e[25]!==x||e[26]!==v||e[27]!==r||e[28]!==_||e[29]!==i||e[30]!==m||e[31]!==g||e[32]!==h?(z=G=>p.jsxs(\"div\",{className:\"flex flex-col gap-5\",children:[p.jsxs(\"div\",{children:[p.jsx(\"div\",{className:\"px-2 py-1.5 text-xs text-muted-foreground\",children:G.label}),p.jsxs(\"div\",{className:\"flex flex-col gap-1\",children:[G.tabs.map(P9a),G.id===\"agents-environment\"&&h&&p.jsxs(p.Fragment,{children:[p.jsx(iH,{tab:WWt,workspaceRepoId:void 0,disabled:!1}),p.jsx(iH,{tab:HWt,workspaceRepoId:void 0,disabled:!1}),p.jsx(iH,{tab:VWt,workspaceRepoId:void 0,disabled:!1}),p.jsx(iH,{tab:UWt,workspaceRepoId:void 0,disabled:!1})]})]})]}),G.id===\"agents-environment\"&&p.jsxs(p.Fragment,{children:[m?p.jsx(m9a,{}):g?p.jsx(A9a,{repositories:r,repositorySections:i,activeRepoId:o,isLoading:_,disabled:v,onSelectRepo:x}):null,h&&p.jsxs(\"div\",{children:[p.jsx(\"div\",{className:\"px-2 py-1.5 text-xs text-muted-foreground\",children:\"Admin\"}),p.jsxs(\"div\",{className:\"flex flex-col gap-1\",children:[GWt.flatMap(O9a),p.jsx(k9a,{})]})]})]})]},G.id),e[24]=o,e[25]=x,e[26]=v,e[27]=r,e[28]=_,e[29]=i,e[30]=m,e[31]=g,e[32]=h,e[33]=z):z=e[33],B=n.map(z),e[13]=o,e[14]=x,e[15]=n,e[16]=v,e[17]=r,e[18]=_,e[19]=i,e[20]=m,e[21]=g,e[22]=h,e[23]=B}else B=e[23];let F;e[34]!==d?(F=d&&p.jsxs(\"div\",{children:[p.jsxs(\"div\",{className:\"flex items-center gap-1.5 px-2 py-1.5 text-xs text-muted-foreground\",children:[\"Cloud\",p.jsx(Qu,{variant:\"secondary\",className:\"px-1 py-0 text-[10px]\",children:\"Legacy\"})]}),p.jsxs(\"div\",{className:\"flex flex-col gap-1\",children:[zWt.flatMap(R9a),p.jsx(x9a,{})]})]}),e[34]=d,e[35]=F):F=e[35];let H;e[36]!==F||e[37]!==B?(H=p.jsx(f3,{className:\"flex-1\",useBlockDisplay:!0,viewportProps:L,children:p.jsxs(\"div\",{className:\"flex w-full flex-col gap-5 pb-3\",children:[B,F]})}),e[36]=F,e[37]=B,e[38]=H):H=e[38];let U;return e[39]!==H||e[40]!==O||e[41]!==P?(U=p.jsxs(\"div\",{className:\"flex w-64 flex-col border-r bg-background px-1.5 pb-3\",\"data-tauri-drag-region\":!0,children:[O,D,P,H]}),e[39]=H,e[40]=O,e[41]=P,e[42]=U):U=e[42],U}"
+    },
+    {
+      "label": "L9a",
+      "utf8_half_open": [
+        11269947,
+        11276202
+      ],
+      "bytes": 6255,
+      "sha256": "0c2e0b8af04327980ed1a04362a135143065e2e838fcbda29be83de6dc2b2a1d",
+      "text": "L9a=$.memo(function(){const e=ne.c(108),n=aa(),i=c3();let r;e[0]===Symbol.for(\"react.memo_cache_sentinel\")?(r={select:M9a},e[0]=r):r=e[0];const o=Nxe(r);let a;e[1]!==o?(a=S9a(o),e[1]=o,e[2]=a):a=e[2];const c=a;let u;e[3]===Symbol.for(\"react.memo_cache_sentinel\")?(u={select:j9a},e[3]=u):u=e[3];const d=Nxe(u);let h;e[4]===Symbol.for(\"react.memo_cache_sentinel\")?(h={strict:!1,select:F9a},e[4]=h):h=e[4];const m=iF(h),g=c===\"workspace\"?m:void 0;let _;e[5]===Symbol.for(\"react.memo_cache_sentinel\")?(_=[],e[5]=_):_=e[5],$.useEffect(B9a,_);const v=$si(),x=v.hasEntitlement,{organization:w,isError:E,isLoading:k}=so(),I=t9e(),{data:R}=hy(),O=R===void 0?!1:R,{data:D}=us(\"experimental_big_terminal_mode\"),{data:P}=bv(),B=k1e(P===void 0?[]:P),F=w?.kind===\"personal\"&&(x||v.isLoading&&c===\"organization\"),H=I.enabled||I.isLoading&&c===\"organizationSettings\";let U;e[6]!==w?(U=w!==void 0&&fc(w)===\"cloud\",e[6]=w,e[7]=U):U=e[7];const z=U;let G;e[8]!==w?(G=w!==void 0&&JO(w),e[8]=w,e[9]=G):G=e[9];const X=z&&!G,Q=!z,J=c===\"workspace\"?\"workspace\":\"user\";let te;e[10]!==J?(te=c9a(J),e[10]=J,e[11]=te):te=e[11];const Z=te,[se,ce]=$.useState($9a);g!==void 0&&g!==se&&ce(g);const ae=g!==void 0?B.find(Ft=>Ft.id===g):bUi({selectableRepos:B,lastViewedId:se}),de=ae?.id,ue=c===\"workspace\"?ae:void 0,pe=ue?.id,be=ue?.mainWorktreePath,he=ue?.name;let ge;e[12]!==pe||e[13]!==be||e[14]!==he?(ge={repoId:pe,mainWorktreePath:be,repoName:he},e[12]=pe,e[13]=be,e[14]=he,e[15]=ge):ge=e[15];const{data:ve,isLoading:ye}=gHi(ge),xe=ue!==void 0&&(ye||ve!==void 0&&ve.status!==\"completed\"&&ve.status!==\"completed-pull-recommended\"&&ve.status!==\"not-needed\");let ke;e[16]!==ue?(ke=ue?.mainWorktreePath!==void 0?[ue.mainWorktreePath]:[],e[16]=ue,e[17]=ke):ke=e[17],VEa(ke);let Se;e[18]!==w?(Se=w!==void 0&&fc(w)===\"cloud\",e[18]=w,e[19]=Se):Se=e[19];const De=Se,je=!De;let Ne;e[20]!==D||e[21]!==O||e[22]!==De||e[23]!==je?(Ne=dti({bigTerminalEnabled:D,hideUserEnvironment:De,hidePorts:je,internalEnabled:O,settingsScope:\"user\"}),e[20]=D,e[21]=O,e[22]=De,e[23]=je,e[24]=Ne):Ne=e[24];const Le=Ne;let ze;e[25]!==D||e[26]!==O?(ze=dti({bigTerminalEnabled:D,hideUserEnvironment:!1,hidePorts:!1,internalEnabled:O,settingsScope:\"workspace\"}),e[25]=D,e[26]=O,e[27]=ze):ze=e[27];const Ke=ze,Ze=D===!0;let Ye;e[28]!==w||e[29]!==E||e[30]!==k?(Ye=k||E?void 0:w!==void 0&&fc(w)===\"cloud\",e[28]=w,e[29]=E,e[30]=k,e[31]=Ye):Ye=e[31];const Qe=Q&&B.length>0;let Ue;e[32]!==O||e[33]!==I.enabled||e[34]!==F||e[35]!==Ze||e[36]!==Ye||e[37]!==Qe?(Ue={bigTerminalEnabled:Ze,internalEnabled:O,cloudSetupEnabled:F,organizationSettingsEnabled:I.enabled,cloudOrganizationActive:Ye,hasRepos:Qe},e[32]=O,e[33]=I.enabled,e[34]=F,e[35]=Ze,e[36]=Ye,e[37]=Qe,e[38]=Ue):Ue=e[38];const We=Ue;let Ve;e[39]!==n?(Ve=Ft=>{const{repoId:Dt,section:Xt}=Ft;n({to:BCe[Xt],params:{repoId:Dt},replace:!0}).fireAndForget()},e[39]=n,e[40]=Ve):Ve=e[40];const He=Ve;let it;e[41]!==d||e[42]!==n?(it=()=>{if(d!==void 0&&dPt(d)){n({to:`/settings/${ode[d]}`,replace:!0}).fireAndForget();return}n({to:\"/settings/user\",replace:!0}).fireAndForget()},e[41]=d,e[42]=n,e[43]=it):it=e[43];const ft=it;let gt;e[44]!==d||e[45]!==He?(gt=Ft=>{He({repoId:Ft,section:d??oYe})},e[44]=d,e[45]=He,e[46]=gt):gt=e[46];const Tt=gt;let Ct;e[47]!==n||e[48]!==i.history?(Ct=()=>{if(i.history.canGoBack()){i.history.go(-1);return}n({to:\"/\"}).fireAndForget()},e[47]=n,e[48]=i.history,e[49]=Ct):Ct=e[49];const _t=Ct,Vt=_t;oi(\"settings.close\",_t);let bt;e[50]!==d||e[51]!==He||e[52]!==ft||e[53]!==de||e[54]!==J?(bt=Ft=>{if(!Ft.system){if(bVe(Ft)){if(de===void 0)return;J!==\"workspace\"&&He({repoId:de,section:d??oYe});return}(VCt(Ft)||Ft.label===\"legacy database\")&&J!==\"user\"&&ft()}},e[50]=d,e[51]=He,e[52]=ft,e[53]=de,e[54]=J,e[55]=bt):bt=e[55];let wt;e[56]!==J?(wt=Ft=>J===\"user\"?VCt(Ft):bVe(Ft),e[56]=J,e[57]=wt):wt=e[57];let Nt;e[58]!==de||e[59]!==J||e[60]!==Z||e[61]!==bt||e[62]!==wt?(Nt={currentScope:J,currentLocality:Z,currentRepoId:de,canNavigateToSettingsSource:z9a,navigateToSettingsSource:bt,isCurrentSettingsSource:wt},e[58]=de,e[59]=J,e[60]=Z,e[61]=bt,e[62]=wt,e[63]=Nt):Nt=e[63];const Wt=Nt,Dn=Q?de:void 0;let _n;e[64]!==Vt||e[65]!==Tt||e[66]!==k||e[67]!==Le||e[68]!==g||e[69]!==Ke||e[70]!==We||e[71]!==B||e[72]!==X||e[73]!==Q||e[74]!==H||e[75]!==F||e[76]!==xe||e[77]!==Dn?(_n=p.jsx(I9a,{personalSections:Le,repositorySections:Ke,repositories:B,activeRepoId:g,searchGates:We,searchRepoId:Dn,searchDisabled:xe,showPersonalCloudSettings:F,showOrganization:H,showCloudRepositories:X,showLocalRepositories:Q,repositoriesAreLoading:k,repoSettingsDisabled:xe,onSelectRepo:Tt,onBack:Vt}),e[64]=Vt,e[65]=Tt,e[66]=k,e[67]=Le,e[68]=g,e[69]=Ke,e[70]=We,e[71]=B,e[72]=X,e[73]=Q,e[74]=H,e[75]=F,e[76]=xe,e[77]=Dn,e[78]=_n):_n=e[78];let Vn;e[79]!==w||e[80]!==J||e[81]!==c||e[82]!==xe||e[83]!==ue?(Vn=w!==void 0&&fc(w)===\"local\"&&c!==\"organization\"&&c!==\"organizationSettings\"&&!xe?p.jsx(h9a,{settingsScope:J,selectedRepo:ue}):null,e[79]=w,e[80]=J,e[81]=c,e[82]=xe,e[83]=ue,e[84]=Vn):Vn=e[84];let Zt;e[85]!==Vn?(Zt=p.jsx(\"div\",{className:\"flex h-10 shrink-0 items-center justify-end px-10\",\"data-tauri-drag-region\":!0,children:Vn}),e[85]=Vn,e[86]=Zt):Zt=e[86];let zt;e[87]!==ve?.status||e[88]!==ue?(zt=ve?.status===\"completed-pull-recommended\"&&ue&&p.jsx(e9a,{path:ue.mainWorktreePath}),e[87]=ve?.status,e[88]=ue,e[89]=zt):zt=e[89];let ct;e[90]!==xe||e[91]!==ue?(ct=xe&&ue!==void 0?p.jsx(YEa,{repositoryId:ue.id,repoName:ue.name,mainWorktreePath:ue.mainWorktreePath}):p.jsx(ade,{}),e[90]=xe,e[91]=ue,e[92]=ct):ct=e[92];let Pt;e[93]!==zt||e[94]!==ct?(Pt=p.jsxs(\"div\",{className:\"min-w-0 max-w-4xl pb-14\",children:[zt,ct]}),e[93]=zt,e[94]=ct,e[95]=Pt):Pt=e[95];let Rt;e[96]!==o||e[97]!==Pt?(Rt=p.jsx(\"div\",{className:\"min-h-0 flex-1 overflow-y-auto px-10 pb-8 pt-6\",children:Pt},o),e[96]=o,e[97]=Pt,e[98]=Rt):Rt=e[98];let Yt;e[99]!==Zt||e[100]!==Rt?(Yt=p.jsxs(\"div\",{className:\"flex min-w-0 flex-1 flex-col\",children:[Zt,Rt]}),e[99]=Zt,e[100]=Rt,e[101]=Yt):Yt=e[101];let on;e[102]!==_n||e[103]!==Yt?(on=p.jsxs(\"div\",{className:\"fixed inset-0 flex h-full w-full overflow-hidden bg-background\",children:[_n,Yt]}),e[102]=_n,e[103]=Yt,e[104]=on):on=e[104];let jn;return e[105]!==Wt||e[106]!==on?(jn=p.jsx(rho,{value:Wt,children:on}),e[105]=Wt,e[106]=on,e[107]=jn):jn=e[107],jn})"
+    },
+    {
+      "label": "M9a",
+      "utf8_half_open": [
+        11276203,
+        11276237
+      ],
+      "bytes": 34,
+      "sha256": "9bacf2b04e7e2445e9c98ace3824500a8bd0cd21bc8222473de171804c8cbf7a",
+      "text": "function M9a(t){return t.pathname}"
+    },
+    {
+      "label": "F9a",
+      "utf8_half_open": [
+        11276318,
+        11276350
+      ],
+      "bytes": 32,
+      "sha256": "597d8346993e848de775b679572c627b8b70c2d063608371fdde7dbffab7df70",
+      "text": "function F9a(t){return t.repoId}"
+    },
+    {
+      "label": "$9a",
+      "utf8_half_open": [
+        11276371,
+        11276399
+      ],
+      "bytes": 28,
+      "sha256": "b91f2a94bdc297f9053fb54b067f30e2fb0aaf778f3a2e43bd86565b50ce1e6d",
+      "text": "function $9a(){return gUi()}"
+    },
+    {
+      "label": "iCa",
+      "utf8_half_open": [
+        11278262,
+        11278356
+      ],
+      "bytes": 94,
+      "sha256": "72ef090aa4ed2cbb7f8d2ca7475500260ef57a49770e167818b20899c24543c1",
+      "text": "iCa=Ha({getParentRoute:()=>pee,path:\"/\",validateSearch:hkr,beforeLoad:({search:t})=>{nCa(t)}})"
+    }
+  ],
+  "production": [
+    {
+      "path": "src/settings/SettingsView.tsx",
+      "bytes": 18871,
+      "sha256": "b724a4d77e6d0d7b34d4ddead14e30ef7bf682610df6b8b31abf83034c39c0dc",
+      "blob": "f217baa97faf605fbb3dffb6e5e321739d2aab9d"
+    },
+    {
+      "path": "src/settings/SettingsSearch.tsx",
+      "bytes": 6809,
+      "sha256": "2530bb1a7ca14cf377c0629d6516bb8f1316ae29b961564ec8c13201ca01219c",
+      "blob": "fb476f3f7848907edab4adff98e68151f2ae6810"
+    },
+    {
+      "path": "src/settings/searchIndex.ts",
+      "bytes": 6101,
+      "sha256": "268082e3c2a83dd5911ebc59886309fd40c70a9cfd00357998d37bf0b504ba41",
+      "blob": "d9addcbb2988befc09a32ae45c46f4fcb60362bc"
+    },
+    {
+      "path": "src/settings/pages.ts",
+      "bytes": 6341,
+      "sha256": "bc7308514f2b9111b94f5697f27618f3be19ed5943c53faace5b23e11b95b2ca",
+      "blob": "a2b8be6a839fa0f380bf46f399b276296c92b88b"
+    },
+    {
+      "path": "src/settings/routes.ts",
+      "bytes": 12444,
+      "sha256": "fcab0b785a529fee1b6e325b7f525ed218a64b750204cf83df73521aece63e2d",
+      "blob": "fa0989b3d3c7fce56719c86cd3226c7121fd17f5"
+    },
+    {
+      "path": "src/settings/searchRows.generated.ts",
+      "bytes": 16789,
+      "sha256": "2976b53cb911f9f5e2fab20a99c9508e4b28321330adeda596fda30cd49766cf",
+      "blob": "305d8106d346660a23120282ababcf56dd3c16a2"
+    }
+  ],
+  "contract": "Within a mounted local Settings shell, visiting repo B remembers B. After navigating to a personal page, activating a repo-section search result targets B while it remains selectable; no history or a removed remembered repo falls back to the first selectable repo. Source: L9a -> bUi -> I9a -> a9a -> wGt. Row identity is propagated separately to _5 -> gSa -> mSa -> Eki. No original JS evaluated."
+}

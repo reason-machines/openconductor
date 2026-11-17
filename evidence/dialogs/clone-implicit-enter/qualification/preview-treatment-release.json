@@ -1,0 +1,18 @@
+{
+  "state": {
+    "server_id": "9b614d45-a3de-4c40-8293-6f038a63824c",
+    "port": 48733,
+    "state": "stopped",
+    "exit_code": null,
+    "reason_code": null,
+    "started_at": "2026-11-17T15:49:00.066Z",
+    "expires_at": "2026-11-18T03:49:00.120Z",
+    "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n127.0.0.1 - - [17/Nov/2026 15:49:08] \"GET /?mode=capability&treatment=1 HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:49:08] \"GET /fixture.css HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:49:08] \"GET /fixture.js HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:50:18] \"GET /?case=treatment-url-enter HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:50:18] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:50:18] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:51:04] \"GET /?case=treatment-location-enter HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:51:04] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:51:04] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:51:30] \"GET /?case=treatment-location-meta-enter HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:51:30] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:51:30] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:51:55] \"GET /?case=treatment-url-meta-enter HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:51:55] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:51:55] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:53:22] \"GET /?case=treatment-primary-click HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:53:22] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:53:22] \"GET /fixture.js HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:53:50] \"GET /?case=treatment-blank HTTP/1.1\" 200 -\n127.0.0.1 - - [17/Nov/2026 15:53:50] \"GET /fixture.css HTTP/1.1\" 304 -\n127.0.0.1 - - [17/Nov/2026 15:53:50] \"GET /fixture.js HTTP/1.1\" 304 -\n",
+    "listening": null
+  },
+  "tabClosed": true,
+  "observedManagedTabs": [],
+  "ownNamespaceBindFree": true,
+  "ownFixtureProcesses": [],
+  "releasedAt": "2026-11-17T15:54:56Z"
+}

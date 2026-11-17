@@ -38,6 +38,7 @@ interface Live {
   host: HTMLDivElement;
   ack: AckBatcher;
   opened: boolean;
+  copyCleanup?: () => void;
   /** The current attachment alone owns its host and resize observer. */
   attachment?: { detach: () => void; observer: ResizeObserver };
   appearance?: MutationObserver;
@@ -470,6 +471,15 @@ export function attachTab(id: string, container: HTMLElement): () => void {
       for (const f of attachFailureListeners) f(err);
       return () => {};
     }
+    const copy = (event: ClipboardEvent) => {
+      const selection = l.term.getSelection();
+      if (!selection) return;
+      event.preventDefault();
+      event.clipboardData?.setData("text/plain", selection.split("\n").map((line) => line.replace(/[ \t]+$/u, "")).join("\n"));
+    };
+    const terminalElement = l.term.element;
+    terminalElement?.addEventListener("copy", copy);
+    l.copyCleanup = () => terminalElement?.removeEventListener("copy", copy);
     l.opened = true;
   }
   const detach = () => {
@@ -571,6 +581,7 @@ export async function destroyWorkspaceTerminals(workspaceId: string): Promise<vo
 function dispose(id: string) {
   live.get(id)?.attachment?.detach();
   live.get(id)?.appearance?.disconnect();
+  live.get(id)?.copyCleanup?.();
   live.get(id)?.term.dispose();
   live.delete(id);
   findRequests.delete(id);

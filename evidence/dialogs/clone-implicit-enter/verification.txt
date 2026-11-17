@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "referenceRecords": 20,
+  "fullParentsRehashed": true,
+  "productReplacements": 5,
+  "archivedTestHarnesses": 3,
+  "frozenMountedTest": true,
+  "baseline": [
+    4,
+    2
+  ],
+  "mountedTreatment": [
+    25,
+    0
+  ],
+  "browserBaselineRecords": 8,
+  "browserTreatmentRecords": 8,
+  "fixtureInputs": 183,
+  "frozenBrowserSources": 5
+}

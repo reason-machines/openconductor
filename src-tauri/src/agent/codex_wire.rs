@@ -293,7 +293,14 @@ fn tool(item: &Value, started: bool) -> Option<Tool> {
                 text(item, "query").unwrap_or_default()
             ),
             json!({ "query": item.get("query") }),
-            None,
+            (!started && status == ToolStatus::Completed).then(|| {
+                let query = text(item, "query").unwrap_or_default();
+                if query.is_empty() {
+                    "Web search completed".to_owned()
+                } else {
+                    format!("Web search completed for: {query}")
+                }
+            }),
             None,
         ),
         "plan" => ("Plan".to_owned(), Value::Null, text(item, "text"), None),
@@ -616,3 +623,7 @@ mod tests {
         );
     }
 }
+
+#[cfg(test)]
+#[path = "../../../tests/chat-web-completion/native.rs"]
+mod web_search_completion_tests;
