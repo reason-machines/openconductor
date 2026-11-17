@@ -1,0 +1,15 @@
+{
+  "author": "Conductor Rebuild",
+  "main": "eef01e9b287472280fb3f4a585bc697d5f1f8f51",
+  "fixture": {
+    "path": "src/features/chat/prefixMcpStructuredResult.test.ts",
+    "sha256": "f4aa6a18b5f959d945011d70f9206a02f5802127c45b4e537950fa3daccec371"
+  },
+  "baseline_ToolRows_sha256": "e4283955d494e99d60206780669cc931164602501ee0441853661298a1274edb",
+  "generic16_preserved": {
+    "src/features/chat/genericStructuredResult.test.ts": "a7f43b70a5166674667b736f0dc4b90f7cd6077f9bef4478ef3f81c1fcce7e7f",
+    "src/features/chat/genericStructuredResult.inputs.json": "28f8d336ac39d0636169cb18cdd8421c885949f99c102073bc7fa34241a6ab1f"
+  },
+  "scratch_fixture_sha256": "77eeb1388e8bb69c09375ba87110a87e20eaaf7741d363a1fff00f20286d7704",
+  "migration": "Only relative import/ToolRows locator prefix changed from scratch to final location; all 18 scenario and assertion bodies unchanged."
+}
