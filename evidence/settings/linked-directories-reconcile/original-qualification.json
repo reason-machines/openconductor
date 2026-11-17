@@ -1,0 +1,21 @@
+{
+  "checked_main": "1d8c37ab634e4eca9f86d54c138dc73fb0ee3fb5",
+  "retained_full_bundle": "f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab",
+  "checks": {
+    "complete_policy": true,
+    "directory_recreate": true,
+    "array_comparison": true,
+    "query_schema": true,
+    "query_to_config": true,
+    "query_dispatch": true,
+    "runner_policy_join": true,
+    "idle_recreation": true,
+    "recreate_invoked": true,
+    "sdk_options": true
+  },
+  "limits": [
+    "Inert retained source only; no REA/native/runtime acquisition",
+    "Production command DB lookup not executed",
+    "No source edit or no-process GREEN yet"
+  ]
+}

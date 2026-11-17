@@ -368,14 +368,11 @@ impl ClaudeRunner {
         if let Some(live) = &chat.live {
             let st = live.state.lock().unwrap();
             if st.alive {
-                if live.directories != directories {
-                    return Err("Linked directories changed. Start a new Claude Code chat to apply them; live-session directory changes are not supported yet.".into());
-                }
-                if live.options == *options {
+                if live.directories == directories && live.options == *options {
                     return Ok(());
                 }
                 if !st.waiting.is_empty() {
-                    return Err("Wait for the current Claude Code turn to end before changing model, effort, Fast, Plan or Chrome mode.".into());
+                    return Err("Wait for the current Claude Code turn to end before changing linked directories, model, effort, Fast, Plan or Chrome mode.".into());
                 }
             }
             if let Some(id) = st.mapper.session_id() {
