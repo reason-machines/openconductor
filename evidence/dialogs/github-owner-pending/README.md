@@ -32,4 +32,29 @@ The fresh checkout lacked test dependencies. A bounded isolated nine-package fix
 
 The runtime retry control covers the existing organizations-error retry, **not** cached background-query refetch. The reference's owners-query `isLoading` rule and current `OwnersState` model are not claimed equivalent for all refetch/error states; this leaf preserves their existing current behavior rather than broadening the fix.
 
-The exclusive heavy slot ran sequentially from 19:39:41Z and was released at 19:42:15Z, before its 19:44:41Z deadline. `npm ci --ignore-scripts --no-audit --no-fund` **passed**; `npm run build` **passed** (branding, full TypeScript and production Vite; existing large-chunk warning only); `npm run lint:colors` **passed** (six checker tests, 1,274-file scan). [Results and release receipt](heavy-results.json) and byte-exact compressed logs are retained. Own heavy process readback was empty. Visible browser proof is **not yet run**; its separately serialized admission is being prepared. Live-original side-by-side, currently installed original identity, full-App, macOS/WebKit, native, real-provider and packaged inclusion are **not verified**. No native/Mac resource, credential, real repository creation or release custody was touched.
+The exclusive heavy slot ran sequentially from 19:39:41Z and was released at 19:42:15Z, before its 19:44:41Z deadline. `npm ci --ignore-scripts --no-audit --no-fund` **passed**; `npm run build` **passed** (branding, full TypeScript and production Vite; existing large-chunk warning only); `npm run lint:colors` **passed** (six checker tests, 1,274-file scan). [Results and release receipt](heavy-results.json) and byte-exact compressed logs are retained. Own heavy process readback was empty.
+
+## Frozen browser proof
+
+The [six-control plan](frozen-browser/PLAN.md), fixture and complete 186-input graphs were frozen before the browser opened. The two graphs differ only in the actual GitHubRepoDialog source. Unlike the Node fixture, this browser fixture includes the actual DialogFrame, Base UI portal, motion, KeybindingsProvider and production theme/styles. An identical thin adapter adds clearly labelled synthetic backend controls inside the actual modal; no real backend or full App is loaded. The CSP denies connections, form actions, images and frames.
+
+On Reason Cloud, the same six schedules produced **baseline 4/6 with two intended pending-Owner failures → treatment 6/6**. Baseline control 4 stopped at the enabled-state prerequisite, before any selection; the disabled baseline was never bypassed. Treatment preserved the original person request while Owner changed to team, kept primary disabled through the new availability check, made no duplicate after a real pointer attempt, retained the edited draft after rejection, retried with team and closed once with the team URL. Initial loading, idle selection, rejection without editing and successful resolution also passed on both sides.
+
+All 32 raw DOM readbacks and 17 assertion requests are archived byte-exact as individual strings in [the compressed receipt archive](frozen-browser/raw-readbacks.jsonl.gz), with source IDs, revisions, timestamps and hashes in [its manifest](frozen-browser/raw-readbacks-manifest.json). The audit recomputes every control and intermediate flow predicate from those original receipts; owner, disabled and request fields are not normalized. Real pointer click/submit events were trusted. Select changes use the observed real select's native value setter with input/change dispatch and actual value readback: this is **not a trusted native picker interaction**.
+
+Both matching pending screenshots were viewed and published:
+
+![Baseline: Owner disabled during creation](frozen-browser/baseline-pending.png)
+
+![Treatment: Owner editable; Creating remains disabled](frozen-browser/treatment-pending.png)
+
+```bash
+node evidence/dialogs/github-owner-pending/frozen-browser/build.mjs
+python3 evidence/dialogs/github-owner-pending/frozen-browser/verify.py
+```
+
+The first command built both bundles before browser admission; the second **passed** the frozen fixture/input identities, all 12 control verdicts, five intermediate flow readbacks and cleanup record. The browser ran within the admitted 19:49:41Z–20:04:41Z window. The owned tab was closed and preview stopped; tabs were empty, every own preview stopped/listening null, own server processes absent and an independent port-48733 bind passed. [Cleanup receipt](frozen-browser/cleanup.json): explicit release to ledger and the next Rust owner at **20:00:16Z**, more than four minutes before the deadline. No browser/server remains running.
+
+## Remaining limits
+
+Live-original side-by-side, currently installed original identity, full-App, macOS/WebKit, native, real-provider and packaged inclusion are **not verified**. The cached-background-refetch and native-picker limits above remain explicit. No native/Mac resource, credential, real repository creation or release custody was touched.
