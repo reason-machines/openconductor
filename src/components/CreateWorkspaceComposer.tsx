@@ -153,6 +153,25 @@ export function CreateWorkspaceComposer({
   const [branchSrc, setBranchSrc] = useState<SourceState<BranchDto>>({ status: "loading" });
   const [progress, send] = useReducer(reduceProgress, { step: "idle" });
   const repo = repos.find((r) => r.id === draft.repoId);
+  const [waitingForTargetFocus, setWaitingForTargetFocus] = useState(!startRepo);
+  // Hji/dQo: an arriving target restores focus only before the user navigates away.
+  useEffect(() => {
+    if (!waitingForTargetFocus) return;
+    const editor = composerInputRef.current;
+    if (repo && editor) {
+      setWaitingForTargetFocus(false);
+      editor.focus();
+      return;
+    }
+    const cancel = () => setWaitingForTargetFocus(false);
+    const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Tab") cancel(); };
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", cancel);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", cancel);
+    };
+  }, [repo, waitingForTargetFocus]);
   const prefix = useMemo(() => resolveBranchPrefix(prefixSettings, githubUsername), [prefixSettings, githubUsername]);
   const [branchAttempt, setBranchAttempt] = useState(0);
   const busy = stagingFiles > 0 || progress.step === "creating" || progress.step === "detecting_setup";
