@@ -1,0 +1,1 @@
+function SB(t,e){const s=t.sentAt??t.cancelledAt??t.createdAt,n=e.sentAt??e.cancelledAt??e.createdAt;return s!==n?s-n:t.createdAt-e.createdAt}

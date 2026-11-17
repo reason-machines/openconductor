@@ -1,0 +1,1 @@
+function DA(t,e){if(Itt(t,e.id))return t;const s=[...kh(t),e].sort(SB);return zd(t.userMessage.sessionId,t.id,s,Eh(t.userMessage.sessionId)?.toolUseOwnershipIndex)??void 0}

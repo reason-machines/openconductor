@@ -1,0 +1,184 @@
+(node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:82) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: abbreviated model search retains the cld result
+not ok 1 - abbreviated model search retains the cld result
+  ---
+  duration_ms: 4.005438
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/features/chat/modelPickerFuzzySearch.test.ts:48:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   {
+    -     agent: 'claude',
+    -     effort: 'high',
+    -     model: 'opus-5-1m'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      model: 'opus-5-1m'
+      effort: 'high'
+      agent: 'claude'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/features/chat/modelPickerFuzzySearch.test.ts:50:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: abbreviated model search retains the cdx result
+not ok 2 - abbreviated model search retains the cdx result
+  ---
+  duration_ms: 0.4816
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/features/chat/modelPickerFuzzySearch.test.ts:48:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   {
+    -     agent: 'codex',
+    -     effort: 'high',
+    -     model: 'gpt-5.6-sol'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      model: 'gpt-5.6-sol'
+      effort: 'high'
+      agent: 'codex'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/features/chat/modelPickerFuzzySearch.test.ts:50:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: abbreviated model search retains the gpt56 result
+not ok 3 - abbreviated model search retains the gpt56 result
+  ---
+  duration_ms: 0.429783
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/features/chat/modelPickerFuzzySearch.test.ts:48:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   {
+    -     agent: 'codex',
+    -     effort: 'high',
+    -     model: 'gpt-5.6-sol'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      model: 'gpt-5.6-sol'
+      effort: 'high'
+      agent: 'codex'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/src/features/chat/modelPickerFuzzySearch.test.ts:50:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: model search preserves the existing "opus" control
+ok 4 - model search preserves the existing "opus" control
+  ---
+  duration_ms: 0.205128
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing "codex" control
+ok 5 - model search preserves the existing "codex" control
+  ---
+  duration_ms: 0.184994
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing "opus claude" control
+ok 6 - model search preserves the existing "opus claude" control
+  ---
+  duration_ms: 0.146741
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing " CLAUDE\\t \\n opus " control
+ok 7 - model search preserves the existing " CLAUDE\\t \\n opus " control
+  ---
+  duration_ms: 0.133275
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing "" control
+ok 8 - model search preserves the existing "" control
+  ---
+  duration_ms: 0.077253
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing " \\t" control
+ok 9 - model search preserves the existing " \\t" control
+  ---
+  duration_ms: 0.287466
+  type: 'test'
+  ...
+# Subtest: model search preserves the existing "no matching model" control
+ok 10 - model search preserves the existing "no matching model" control
+  ---
+  duration_ms: 0.303742
+  type: 'test'
+  ...
+# Subtest: literal model search preserves source order and choice identity
+ok 11 - literal model search preserves source order and choice identity
+  ---
+  duration_ms: 0.233777
+  type: 'test'
+  ...
+# Subtest: provider identity still uses the explicit agent and callback precedence
+ok 12 - provider identity still uses the explicit agent and callback precedence
+  ---
+  duration_ms: 0.131886
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 9
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 247.694562

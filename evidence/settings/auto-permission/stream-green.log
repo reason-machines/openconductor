@@ -1,0 +1,13 @@
+   Compiling settings-auto-permission-unit v0.0.0 (/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/auto-permission-unit/current/harness)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.82s
+     Running unittests src/lib.rs (.oc-tmp/settings-auto-permission-binding/harness/target/debug/build/settings-auto-permission-unit/dda2fa8575ded66e/out/settings_auto_permission_unit-dda2fa8575ded66e)
+
+running 6 tests
+test agent::claude_stream::tests::control_requests_carry_their_id_and_subtype ... ok
+test agent::claude_stream::tests::permission_replies_allow_with_input_or_deny_with_reason ... ok
+test agent::claude_stream::tests::parses_permission_prompts_and_control_responses ... ok
+test agent::claude_stream::tests::unknown_events_are_kept_and_broken_lines_rejected ... ok
+test agent::claude_stream::tests::parses_a_session_from_init_to_result ... ok
+test agent::claude_stream::tests::user_turn_is_one_json_line ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 116 filtered out; finished in 0.00s

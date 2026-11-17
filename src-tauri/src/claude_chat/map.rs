@@ -132,7 +132,11 @@ impl TurnMapper {
                 .filter(|t| !t.trim().is_empty())
                 .or_else(|| self.api_error.as_ref().map(|e| e.message.clone()))
                 .unwrap_or_else(|| format!("Claude Code ended the turn: {}", r.subtype));
-            TurnEnd::Failed(message)
+            if r.is_error {
+                TurnEnd::ResultError(message)
+            } else {
+                TurnEnd::Failed(message)
+            }
         } else {
             TurnEnd::Completed
         };

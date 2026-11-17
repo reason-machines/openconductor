@@ -1,0 +1,130 @@
+{
+  "origin": "already-retained Conductor0.87.6 Bun sidecar from prior REA workflow; static literal fallback, not REA semantic/runtime proof",
+  "path": "~/oc-rea-scripts-runner/bunjs/app/conductor-runtime.js",
+  "bundle_bytes": 13025924,
+  "bundle_sha256": "f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab",
+  "binary_bytes": 76147184,
+  "binary_sha256": "5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d",
+  "spans": [
+    {
+      "label": "permission-selectors",
+      "start": 3505006,
+      "end": 3505357,
+      "bytes": 351,
+      "sha256": "32c23ca3cf083e6746887a2b641de2773fed5e753f0d5d9187e8231de771d011",
+      "source": "function Mc3(U) {\n  if (U.collaborationMode === \"plan\")\n    return \"plan\";\n  return zn4({ requiresToolApprovals: U.requiresToolApprovals, autoPermissionModeEnabled: U.autoPermissionModeEnabled });\n}\nfunction zn4({ requiresToolApprovals: U, autoPermissionModeEnabled: B }) {\n  if (!U)\n    return \"bypassPermissions\";\n  return B ? \"auto\" : \"default\";\n}\n"
+    },
+    {
+      "label": "live-reconciliation",
+      "start": 3506238,
+      "end": 3507410,
+      "bytes": 1172,
+      "sha256": "4b1a06374906f929f445df677fd7f5f97a1321f8a72499c44b8f6a5deee180ab",
+      "source": "async function Rc3(U, B) {\n  let G = Mc3(B);\n  if (G === U.currentPermissionMode)\n    return;\n  await U.queryResult.setPermissionMode(G), U.currentPermissionMode = G;\n}\nasync function CB5({ policy: U, live: B, config: G, canRecreate: D, forceRecreateReason: w, recreate: j, log: V }) {\n  let z = EB5(U), L = An4({ policy: U, live: B, config: G }), A = [...w === undefined ? [] : [w], ...L.map((q) => Nc3({ key: q, from: B.appliedConfig, to: G }))].join(\", \"), M = B, P = false, N = [];\n  if (L.length > 0 || w !== undefined)\n    if (D)\n      M = await j(A), P = true;\n    else\n      N = L, V.info(`[ClaudeAgentRunner] Keeping the running generator and applying these config changes at the next turn: ${A}`);\n  for (let q of z) {\n    let W = U[q];\n    if (W.kind !== \"live\" && W.kind !== \"liveIfSupported\")\n      continue;\n    if (WB5(G[q], M.appliedConfig[q]))\n      continue;\n    if (W.kind === \"liveIfSupported\" && !W.supportsLive(M, G))\n      continue;\n    await W.apply(M, G);\n  }\n  await Rc3(M, G);\n  let H = { ...G };\n  for (let q of N)\n    Oc3({ target: H, source: M.appliedConfig, key: q });\n  return M.appliedConfig = H, { live: M, recreated: P, deferred: N };\n}\n"
+    },
+    {
+      "label": "query-options-schema",
+      "start": 477289,
+      "end": 478684,
+      "bytes": 1395,
+      "sha256": "cb0adc52357e88367df567121ee414fd5805c767425641ec4d9b3dd99dcfa5ea",
+      "source": "n58 = WY4.and(O.object({ acpConfig: HY4.optional(), model: O.string().optional(), cwd: O.string(), workspaceId: O.string().optional(), host: eK.optional(), userMessageId: O.string().optional(), maxTurns: O.number().optional(), resume: O.string().optional(), turnId: O.string().optional(), codexGoal: O.object({ objective: O.string().optional().nullable(), status: EY4.optional().nullable(), tokenBudget: O.number().optional().nullable() }).optional(), conductorEnv: O.record(O.string(), O.string()).optional(), forgeAuth: qY4.optional(), ghToken: O.string().optional(), ghTokenExpiresAt: O.string().optional(), permissionMode: O.string().optional(), additionalDirectories: O.array(O.string()).optional(), fastMode: O.boolean().optional(), requiresToolApprovals: O.boolean().optional(), autoPermissionModeEnabled: O.boolean().optional(), initialClaudePermissionMode: O.union([O.literal(\"default\"), O.literal(\"auto\"), O.literal(\"bypassPermissions\")]).optional(), initialCodexApprovalPolicy: $j6.optional(), initialCodexSandboxMode: ej6.optional(), localExecutionMcpEnabled: O.boolean().optional(), getDiffCommentsEnabled: O.boolean().optional(), summaryToolsEnabled: O.boolean().optional(), mainWorktreePath: O.string().optional(), localMessageEnrichment: g58.optional(), agentParams: O.union([UV6, BV6, GV6, DV6]).optional(), showThinking: O.boolean().optional(), deliveryMode: J58.optional() }))"
+    },
+    {
+      "label": "query-request-schema",
+      "start": 484405,
+      "end": 484534,
+      "bytes": 129,
+      "sha256": "b5d06ad88ce6da2f2afb6bd1b9b28b584389412fcebfde5981fa8b68a81d2bee",
+      "source": "$Z = O.object({ type: O.literal(\"query\"), id: O.string(), agentType: uG, message: O.string(), prompt: O.string(), options: n58 })"
+    },
+    {
+      "label": "query-to-config",
+      "start": 12512199,
+      "end": 12513332,
+      "bytes": 1133,
+      "sha256": "4188276efef101a4b2413dc30ce260bf73fe9a225d8eada6b0eb7d67855b1e8f",
+      "source": "function BT4({ agentType: U11, options: B }) {\n  let G = U11 === \"claude\" && B.agentParams?.agentType === \"claude\" ? B.agentParams.chromeEnabled ?? false : false, D = U11 === \"claude\" && B.agentParams?.agentType === \"claude\" ? B.agentParams.claudePersonality : undefined;\n  return { collaborationMode: B.permissionMode === \"plan\" ? \"plan\" : \"default\", model: sU6({ agentType: U11, model: B.model }), thinkingLevel: ly7(U11, B.agentParams), claudePersonality: D, ultracode: dy7(U11, B.agentParams), acpAgentId: Zy7(U11, B.acpAgentId, B.agentParams), acpConfig: U11 === \"acp\" ? B.acpConfig : undefined, personality: py7(U11, B.agentParams), fastMode: B.fastMode ?? false, requiresToolApprovals: B.requiresToolApprovals ?? false, autoPermissionModeEnabled: B.autoPermissionModeEnabled ?? false, codexApprovalPolicy: B.initialCodexApprovalPolicy, codexSandboxMode: B.initialCodexSandboxMode, additionalDirectories: B.additionalDirectories, chromeEnabled: G, localExecutionMcpEnabled: B.localExecutionMcpEnabled === true, getDiffCommentsEnabled: B.getDiffCommentsEnabled === true, summaryToolsEnabled: B.summaryToolsEnabled === true };\n}\n"
+    },
+    {
+      "label": "query-handler",
+      "start": 12573043,
+      "end": 12577117,
+      "bytes": 4074,
+      "sha256": "bab0f96c83913a8294e168dff3466601d9ce3c65fb21d91fce26aead3aed397a",
+      "source": "async function gp5({ context: U11, pendingQuery: B, request: { id: G, agentType: D, message: w, prompt: j, options: V } }) {\n  let z = QP(D), L = V.cwd, A = B ?? PB6({ context: U11, sessionId: G });\n  try {\n    if (U11.pendingSessionLogCompression.delete(G), U11.persistSessionLogs)\n      await U11.sessionEventStore.decompressSession({ workspaceDir: L, sessionId: G });\n    let M = await U11.ensureWorkspace({ workspaceDir: L, options: V }), P = (I) => {\n      if (!A.signal.aborted)\n        return false;\n      return NV(\"query.cancelledBeforeSend\", { sessionId: G, stage: I }), true;\n    };\n    if (P(\"workspace_setup\"))\n      return;\n    let N = UT4(V), H = z === \"claude\" && N?.agentType === \"claude\" && N.shouldResetGenerator === true, q = N?.agentType === \"claude\" ? N.resumeSessionAt ?? undefined : undefined, W = ZB({ sessionId: G, agentType: z, workspaceDir: M.workspaceDir, configKey: M.configKey }), E = U11.sessions.get(G);\n    if (E !== undefined && E.agentType !== z) {\n      if (await U11.processManager.disconnect(E.processKey ?? ZB({ sessionId: G, agentType: E.agentType, workspaceDir: M.workspaceDir, configKey: M.configKey })), U11.sessions.has(G))\n        await nj({ context: U11, workspace: M, sessionId: G });\n    } else if (H && E !== undefined) {\n      if (n8(`Resetting workspace-backed session ${G} (resumeSessionAt=${q})`), await U11.processManager.disconnect(W), U11.sessions.has(G))\n        await nj({ context: U11, workspace: M, sessionId: G });\n    }\n    if (P(\"session_reset\"))\n      return;\n    let C = E === undefined, Q = BT4({ agentType: z, options: { model: V.model, permissionMode: V.permissionMode, fastMode: V.fastMode, requiresToolApprovals: V.requiresToolApprovals, autoPermissionModeEnabled: V.autoPermissionModeEnabled, ...C && V.initialClaudePermissionMode !== undefined ? { requiresToolApprovals: V.initialClaudePermissionMode !== \"bypassPermissions\", autoPermissionModeEnabled: V.initialClaudePermissionMode === \"auto\" } : {}, ...C && V.initialCodexApprovalPolicy !== undefined && V.initialCodexSandboxMode !== undefined ? { initialCodexApprovalPolicy: V.initialCodexApprovalPolicy, initialCodexSandboxMode: V.initialCodexSandboxMode } : {}, additionalDirectories: V.additionalDirectories, localExecutionMcpEnabled: V.localExecutionMcpEnabled, getDiffCommentsEnabled: V.getDiffCommentsEnabled, summaryToolsEnabled: V.summaryToolsEnabled, acpAgentId: V.acpAgentId, acpConfig: V.acpConfig, agentParams: N } }), T = await U11.processManager.claimActive({ key: W, start: async () => {\n      if (!U11.sessions.has(G))\n        await M.host.initializeSession({ sessionId: G, agentType: z, config: Q }), U11.sessions.set(G, { workspaceDir: L, agentType: z, collaborationMode: Q.collaborationMode, processKey: W });\n      await M.host.warmSession({ sessionId: G, config: Q, resume: V.resume, resumeSessionAt: q });\n    }, disconnect: async ({ expectsTerminalResponse: I } = {}) => {\n      await nj({ context: U11, workspace: M, sessionId: G, expectsTerminalResponse: I });\n    } }), b = false, k = U11.processManager.getBusyToken(W);\n    try {\n      if (P(\"session_warm\"))\n        return;\n      await M.host.sendUserMessage({ sessionId: G, id: typeof V.userMessageId === \"string\" ? V.userMessageId : Xp5.randomUUID(), message: w, agentMessage: j, turnId: typeof V.turnId === \"string\" ? V.turnId : undefined, resume: V.resume, resumeSessionAt: q, deliveryMode: V.deliveryMode, codexGoal: V.codexGoal, config: Q, ...V.localMessageEnrichment === undefined ? {} : { localMessageEnrichment: V.localMessageEnrichment }, ...V.additionalDirectories === undefined ? {} : { additionalDirectories: V.additionalDirectories } }), b = true;\n    } finally {\n      if (T.release(), b)\n        U11.processManager.markBusyIfIdleGenerationUnchanged({ key: W, token: k });\n    }\n  } catch (M) {\n    b5(`handleQuery error for ${G}:`, M), U11.rpcTunnel?.notify(cG.QUERY_ERROR, Hd5({ sessionId: G, agentType: z, error: M }));\n  } finally {\n    let M = U11.pendingQueries.get(G);\n    if (M?.delete(A), M?.size === 0)\n      U11.pendingQueries.delete(G);\n  }\n}\n"
+    },
+    {
+      "label": "plan-update",
+      "start": 12577165,
+      "end": 12577486,
+      "bytes": 321,
+      "sha256": "cd21bd4cb4922d020ada2d18640ada3a36f5f4ab087287358de4fa0489a329ed",
+      "source": "async function up5({ context: U11, request: { id: B, permissionMode: G } }) {\n  let D = U11.sessions.get(B);\n  if (!D)\n    return;\n  let w = U11.workspaces.get(D.workspaceDir);\n  if (!w)\n    return;\n  await w.host.updateSessionConfig({ sessionId: B, config: { collaborationMode: G === \"plan\" ? \"plan\" : \"default\" } });\n}\n"
+    },
+    {
+      "label": "runner-reconcile",
+      "start": 3528724,
+      "end": 3529729,
+      "bytes": 1005,
+      "sha256": "6429efd8745dd51f90e445dc533dc3abb894d8967e43b86522b0810502fb92ce",
+      "source": "  reconcileSessionConfig({ sessionId: U, live: B, config: G, workspaceSettingsBundle: D, canRecreate: w, callbacks: j, log: V }) {\n    return CB5({ policy: Ln4, live: B, config: G, canRecreate: w, forceRecreateReason: this.claudeOauthAuthFailedSessions.has(U) ? \"Claude rejected the brokered OAuth token\" : B.agentAuthGeneration !== this.agentAuthGeneration ? \"managed Claude credentials changed\" : ic3(B.claudeOauthTokenExpiresAt) ? \"brokered Claude OAuth token expiring\" : undefined, recreate: async (z) => {\n      V.info(`[ClaudeAgentRunner] Restarting generator for session ${U} (${z})`);\n      let L = this.resumeForRestart({ sessionId: U, live: B, workspaceSettingsBundle: D }), A = B.resolveTurn, M = B.rejectTurn;\n      B.resolveTurn = undefined, B.rejectTurn = undefined, this.stopLiveGenerator({ sessionId: U });\n      let P = await this.startGenerator(U, G, { resume: L, workspaceSettingsBundle: D });\n      return P.callbacks = j, P.resolveTurn = A, P.rejectTurn = M, P;\n    }, log: V });\n  }\n"
+    },
+    {
+      "label": "runner-message",
+      "start": 3532222,
+      "end": 3535159,
+      "bytes": 2937,
+      "sha256": "1a0a81fa8f554d888b5aabb8cde24e2913bdc4750b959c2897eec9fd57e662b0",
+      "source": "  async runUserMessage({ sessionId: U, message: B, config: G, callbacks: D, resume: w, resumeSessionAt: j, pendingStartCheckpoint: V }) {\n    let z = this.getSessionLogger(U), L, A;\n    try {\n      let C = this.prepareSessionStart({ sessionId: U, config: G, log: z });\n      L = C instanceof Promise ? await C : C, A = this.resolveLiveAfterPrepare({ sessionId: U, preFetchLive: L.live, preFetchStopGeneration: L.stopGeneration });\n    } finally {\n      this.releaseStopGeneration(U);\n    }\n    if (A.kind === \"cancelled\")\n      throw new d7(U);\n    let M = A.live, P = this.pendingResumeSessionAts.get(U), N = j ?? P;\n    if (!M) {\n      let C = w ?? (this.startedSessionIds.has(U) || N !== undefined || this.hasResumableTranscriptOnDisk({ sessionId: U, workspaceSettingsBundle: L.workspaceSettingsBundle }) ? U : undefined), Q = this.pendingGeneratorStarts.has(U), T = this.startGenerator(U, L.config, { resume: C, resumeSessionAt: N, workspaceSettingsBundle: L.workspaceSettingsBundle });\n      if (M = T instanceof Promise ? await T : T, M.resolveTurn !== undefined)\n        throw Ly({ userMessage: `A turn is already in progress for session ${U}`, details: { sessionId: U } });\n      if (N !== undefined && !Q)\n        this.pendingResumeSessionAts.delete(U);\n    } else if (M.resolveTurn !== undefined)\n      throw Ly({ userMessage: `A turn is already in progress for session ${U}`, details: { sessionId: U } });\n    let H = M, q, W = new Promise((C, Q) => {\n      H.resolveTurn = C, H.rejectTurn = Q, q = Q;\n    });\n    W.catch(() => {\n      return;\n    });\n    try {\n      if (M.callbacks = D, M = (await this.reconcileSessionConfig({ sessionId: U, live: M, config: L.config, workspaceSettingsBundle: L.workspaceSettingsBundle, canRecreate: !M.inProgress, callbacks: D, log: z })).live, M.agentAuthGeneration !== this.agentAuthGeneration && !M.inProgress)\n        M = (await this.reconcileSessionConfig({ sessionId: U, live: M, config: L.config, workspaceSettingsBundle: L.workspaceSettingsBundle, canRecreate: true, callbacks: D, log: z })).live;\n      if (this.liveSessions.get(U) !== M)\n        throw new d7(U);\n      this.disarmTurnSettlementWatchdog(M), this.setPendingStartCheckpoint({ sessionId: U, live: M, pendingStartCheckpoint: V }), AL({ source: \"workspace <> SDK\", sessionId: U, direction: \"downstream\", data: { type: \"sendUserMessage\", sessionId: U, message: B.slice(0, 200) } }), M.inProgress = true, await this.syncBackgroundTaskState(M, { taskSetChanged: false }).logErrorAndForget();\n    } catch (C) {\n      let Q = this.liveSessions.get(U);\n      if (Q !== undefined && Q.rejectTurn === q)\n        Q.resolveTurn = undefined, Q.rejectTurn = undefined, Q.inProgress = false;\n      throw C;\n    }\n    let E = crypto.randomUUID();\n    M.awaitedTurnUserMessageUuids.clear(), M.unconsumedSteerUserMessageUuids.clear(), M.awaitedTurnUserMessageUuids.add(E), M.sendMessage({ text: B, userMessageUuid: E }), await W;\n  }\n"
+    },
+    {
+      "label": "runner-warm",
+      "start": 3536139,
+      "end": 3537342,
+      "bytes": 1203,
+      "sha256": "083bc8502c6f4e88be58530b5ab5dc28c499b4973ea8db8967ba0633fce45a08",
+      "source": "  async warmSession({ sessionId: U, config: B, resume: G, resumeSessionAt: D }) {\n    let w = this.getSessionLogger(U), j, V;\n    try {\n      let L = this.prepareSessionStart({ sessionId: U, config: B, log: w });\n      j = L instanceof Promise ? await L : L, V = this.resolveLiveAfterPrepare({ sessionId: U, preFetchLive: j.live, preFetchStopGeneration: j.stopGeneration });\n    } finally {\n      this.releaseStopGeneration(U);\n    }\n    if (V.kind === \"cancelled\")\n      return;\n    let z = V.live;\n    if (!z) {\n      let L = G ?? (this.startedSessionIds.has(U) || D !== undefined || this.hasResumableTranscriptOnDisk({ sessionId: U, workspaceSettingsBundle: j.workspaceSettingsBundle }) ? U : undefined), A = this.pendingGeneratorStarts.has(U);\n      if (await this.startGenerator(U, j.config, { resume: L, resumeSessionAt: D, workspaceSettingsBundle: j.workspaceSettingsBundle }), D !== undefined && !A)\n        this.pendingResumeSessionAts.delete(U);\n      return;\n    }\n    if (z.resolveTurn !== undefined)\n      return;\n    await this.reconcileSessionConfig({ sessionId: U, live: z, config: j.config, workspaceSettingsBundle: j.workspaceSettingsBundle, canRecreate: !z.inProgress, log: w });\n  }\n"
+    },
+    {
+      "label": "config-schema",
+      "start": 1731589,
+      "end": 1732536,
+      "bytes": 947,
+      "sha256": "16467ac99dc77b4ed3936282a2232a4580741599d625cc22931c42d8344b368b",
+      "source": "OO = O.object({ collaborationMode: O.union([O.literal(\"default\"), O.literal(\"plan\")]), model: O.string(), harness: PO.optional(), claudePersonality: rm8.optional(), thinkingLevel: O.union([O.literal(\"none\"), O.literal(\"low\"), O.literal(\"medium\"), O.literal(\"high\"), O.literal(\"xhigh\"), O.literal(\"max\"), O.literal(\"ultra\")]), ultracode: O.boolean().optional(), acpAgentId: Zm8.optional(), acpConfig: nm8.optional(), personality: om8.optional().nullable(), fastMode: O.boolean().optional(), requiresToolApprovals: O.boolean().optional(), autoPermissionModeEnabled: O.boolean().optional(), codexApprovalPolicy: am8.optional(), codexSandboxMode: tm8.optional(), additionalDirectories: O.array(O.string()).optional(), chromeEnabled: O.boolean().optional(), localExecutionMcpEnabled: O.boolean().optional(), getDiffCommentsEnabled: O.boolean().optional(), summaryToolsEnabled: O.boolean().optional(), workspaceSettingsRevision: O.string().optional() })"
+    },
+    {
+      "label": "query-route",
+      "start": 12612057,
+      "end": 12612354,
+      "bytes": 297,
+      "sha256": "bdbf06eca8468818b8666407b2d7867c135447f5ab43889677bd033ff2bd2687",
+      "source": "U11.addMethod(jU.QUERY, async (B) => {\n      let { type: G, ...D } = $Z.parse(B), w = PB6({ context: this.createRouteContext(), sessionId: D.id });\n      await this.sessionLifecycleQueues.run(D.id, () => gp5({ context: this.createRouteContext(), pendingQuery: w, request: D }));\n      return;\n    "
+    },
+    {
+      "label": "permission-policy-kinds",
+      "start": 3507564,
+      "end": 3507704,
+      "bytes": 140,
+      "sha256": "f1af6ac5d499fb9470c332706f44c353e5af25e957561cd7f9fbbe942803b6ca",
+      "source": "Ln4 = { collaborationMode: { kind: \"derived\" }, requiresToolApprovals: { kind: \"derived\" }, autoPermissionModeEnabled: { kind: \"derived\" }, "
+    },
+    {
+      "label": "approved-plan-callback-excerpt",
+      "start": 3551900,
+      "end": 3552710,
+      "bytes": 810,
+      "sha256": "a7c6eda42fe1c02e47b0a23c8b1fe25b18ae4da540d5bcd21602a7018257837b",
+      "source": "      if (AL({ source: \"workspace <> SDK\", sessionId: U, direction: \"upstream\", data: { type: \"canUseTool\", toolName: Y, toolUseId: x.toolUseID } }), Y === \"ExitPlanMode\") {\n        let u = this.liveSessions.get(U), Z = await u?.callbacks?.onExitPlanMode?.(K);\n        if (Z?.approved) {\n          let n = zn4({ requiresToolApprovals: u?.appliedConfig.requiresToolApprovals, autoPermissionModeEnabled: u?.appliedConfig.autoPermissionModeEnabled });\n          if (u)\n            u.currentPermissionMode = n;\n          return { behavior: \"allow\", updatedInput: { ...K, planFilePath: Z.planFilePath, _targetMode: n }, updatedPermissions: [{ type: \"setMode\", mode: n, destination: \"session\" }] };\n        }\n        return { behavior: \"deny\", message: Z?.feedback ?? \"Plan not approved\", interrupt: true };\n      }\n",
+      "boundary": "complete ExitPlanMode branch within canUseTool callback, not complete startGenerator method"
+    }
+  ],
+  "retained_container_readback": {
+    "path": "/Users/sven/code/conductor-rea-work/Conductor.app/Contents/Resources/bin/.internal/conductor-runtime",
+    "bytes": 76147184,
+    "sha256": "5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d",
+    "bundle_start": 62734375,
+    "all_bundle_bytes_equal": true
+  }
+}

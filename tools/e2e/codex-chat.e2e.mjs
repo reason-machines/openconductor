@@ -169,10 +169,11 @@ async function waitFor(what, fn, timeoutMs = 30000) {
   throw new Error(`timed out waiting for ${what}; last: ${last instanceof Error ? last.message : JSON.stringify(last)}`);
 }
 
-async function screenshot(name, timeoutMs) {
-  const png = await wd("GET", "/screenshot", undefined, timeoutMs);
+async function screenshot(name, timeoutMs = 45000) {
+  // Share the repaint/deadline handling used by the main WebDriver flow runner.
+  const png = await startup.screenshot(timeoutMs);
   const file = join(out, `${name}.png`);
-  writeFileSync(file, Buffer.from(png, "base64"));
+  writeFileSync(file, png);
   console.log(`screenshot: ${file}`);
 }
 

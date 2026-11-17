@@ -151,6 +151,7 @@ type AssistantRow = Extract<RowView, { kind: "assistant" }>;
  * turn's final text as its preview.
  */
 export function foldAgentRows(rows: RowView[], activeTurn: string | null | undefined): DisplayRow[] {
+  const resultErrorTurns = new Set(rows.flatMap((r) => r.kind === "turn_end" && r.resultError ? [r.turnId] : []));
   const lastBlockStart = new Map<string, number>();
   rows.forEach((r, i) => {
     if (r.kind === "assistant" && rows[i - 1]?.kind === "assistant" && (rows[i - 1] as AssistantRow).message.turnId === r.message.turnId) return;
@@ -168,7 +169,9 @@ export function foldAgentRows(rows: RowView[], activeTurn: string | null | undef
     while (rows[i + 1]?.kind === "assistant" && (rows[i + 1] as AssistantRow).message.turnId === turnId) run.push(rows[++i] as AssistantRow);
     const parts = run.flatMap((r) => r.parts.map((part, j) => ({ key: part.kind === "tool" ? part.call.id : `${r.key}:${j}`, messageKey: r.key, part })));
     const last = run[run.length - 1]!;
-    const items = groupParts(parts, `${turnId}:${row.key}`, lastBlockStart.get(turnId) === i - run.length + 1);
+    // The error result is the terminal message. Do not promote older text to its preview.
+    const hasFinalText = !resultErrorTurns.has(turnId) && lastBlockStart.get(turnId) === i - run.length + 1;
+    const items = groupParts(parts, `${turnId}:${row.key}`, hasFinalText);
     const copyText = last.streaming ? "" : plainText(last.message);
     out.push({
       kind: "agent",
