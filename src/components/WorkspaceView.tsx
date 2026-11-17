@@ -359,6 +359,20 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     return unsubscribe;
   }, [chatId, agentId]);
 
+  // Recent-transcript chips also depend on the other chats' asynchronously restored messages.
+  const [, refreshRecentChats] = useState(0);
+  useEffect(() => {
+    if (transcript.messages.length !== 0) return;
+    const refresh = () => refreshRecentChats((revision) => revision + 1);
+    const unsubscribes = chatTabs.filter((tab) => tab.chatId !== chatId).map((tab) => {
+      const source = CHAT_AGENTS[reason ? savedAgent(tab.chatId) : "reason"];
+      return source.subscribe(source.chatId(tab.chatId), refresh);
+    });
+    // A source may finish restoring between rendering its snapshot and subscribing.
+    refresh();
+    return () => { for (const unsubscribe of unsubscribes) unsubscribe(); };
+  }, [chatId, chatTabs, reason, transcript.messages.length]);
+
   function pickAgent(next: ChatAgentId) {
     saveAgent(chatId, next);
     setPicked((p) => ({ ...p, [chatId]: next }));
