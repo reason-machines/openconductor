@@ -1,0 +1,62 @@
+(node:51) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:58) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: nonempty attachment attempt refocuses its live captured editor after settlement
+ok 1 - nonempty attachment attempt refocuses its live captured editor after settlement
+  ---
+  duration_ms: 11.921346
+  type: 'test'
+  ...
+# Subtest: an empty selection preserves the draft and does not focus
+ok 2 - an empty selection preserves the draft and does not focus
+  ---
+  duration_ms: 0.459738
+  type: 'test'
+  ...
+# Subtest: the local swallowed file-read error and retained draft remain visible
+ok 3 - the local swallowed file-read error and retained draft remain visible
+  ---
+  duration_ms: 0.534275
+  type: 'test'
+  ...
+# Subtest: detaching during a pending read does not refocus the old editor
+ok 4 - detaching during a pending read does not refocus the old editor
+  ---
+  duration_ms: 0.542786
+  type: 'test'
+  ...
+# Subtest: replacing the handle during a pending read never focuses the replacement
+ok 5 - replacing the handle during a pending read never focuses the replacement
+  ---
+  duration_ms: 0.654513
+  type: 'test'
+  ...
+# Subtest: an absent initial editor does not acquire a replacement after the read
+ok 6 - an absent initial editor does not acquire a replacement after the read
+  ---
+  duration_ms: 0.523679
+  type: 'test'
+  ...
+# Subtest: a pending attachment in one composer cannot focus a second composer
+ok 7 - a pending attachment in one composer cannot focus a second composer
+  ---
+  duration_ms: 0.50898
+  type: 'test'
+  ...
+# Subtest: an adapter rejection is not converted to a successful focus
+ok 8 - an adapter rejection is not converted to a successful focus
+  ---
+  duration_ms: 0.776271
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 741.145557

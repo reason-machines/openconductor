@@ -1,0 +1,1 @@
+async function PNi(){const t=dI().dialog;return t===void 0?(kt.error("File picker is not available on this device"),[]):await t.pickFiles({multiple:!0})??[]}

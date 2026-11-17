@@ -136,6 +136,7 @@ async function fixture(agentId: Agent) {
     const chatId = currentId;
     return evaluate<Callbacks>(callbacksSource, `{ attachFiles, removeAttachment, onSubmit, onCommand: (${commandSource}) }`, {
       session,
+      inputRef: { current: null },
       chatId,
       setAttachments: session.setAttachments,
       reason: agentId === "reason",

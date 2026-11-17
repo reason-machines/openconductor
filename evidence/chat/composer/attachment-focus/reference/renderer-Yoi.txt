@@ -1,0 +1,1 @@
+Yoi=SIr({logError:(t,e)=>Bt.error(t,e),reportAttachmentFailure:()=>zd.error("Failed to attach file")})

@@ -1,0 +1,205 @@
+{
+  "candidate": "COMPOSER-ATTACH-FOCUS-135",
+  "classification": "SOURCE_QUALIFICATION_ONLY",
+  "baseline": "217498aae38dfd63b97919b1a0ab4097462c691e",
+  "parent": {
+    "path": ".qa/create-suggestions-135/retained/renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "spans": [
+    {
+      "name": "PNi",
+      "file": "reference/renderer-PNi.txt",
+      "kind": "function",
+      "utf16": [
+        8600413,
+        8600570
+      ],
+      "utf8": [
+        8645887,
+        8646044
+      ],
+      "sha256": "e5be80bbfb5c903f649f69768eecc4a3b4d23697e12abbb35d51ca3a53115dfb",
+      "bytes": 157,
+      "completeSyntax": true
+    },
+    {
+      "name": "IIr",
+      "file": "reference/renderer-IIr.txt",
+      "kind": "function",
+      "utf16": [
+        170947,
+        172272
+      ],
+      "utf8": [
+        170951,
+        172276
+      ],
+      "sha256": "43a30e254356ac207623cd7f0c702231e4ba0af91b750245cd3a7968a9cc100c",
+      "bytes": 1325,
+      "completeSyntax": true
+    },
+    {
+      "name": "SIr",
+      "file": "reference/renderer-SIr.txt",
+      "kind": "function",
+      "utf16": [
+        168482,
+        169716
+      ],
+      "utf8": [
+        168486,
+        169720
+      ],
+      "sha256": "9a03787f63410426c581f802420b0af76fe51f23bee3a4d476c8ff73252782b7",
+      "bytes": 1234,
+      "completeSyntax": true
+    },
+    {
+      "name": "a7i",
+      "file": "reference/renderer-a7i.txt",
+      "kind": "function",
+      "utf16": [
+        7908545,
+        7910575
+      ],
+      "utf8": [
+        7953167,
+        7955197
+      ],
+      "sha256": "1d2035262820c7eff28a76dc6e567040454259df3011694f1fa26ab204a7194c",
+      "bytes": 2030,
+      "completeSyntax": true
+    },
+    {
+      "name": "lHt",
+      "file": "reference/renderer-lHt.txt",
+      "kind": "function",
+      "utf16": [
+        8373279,
+        8380719
+      ],
+      "utf8": [
+        8418728,
+        8426168
+      ],
+      "sha256": "2b86481687009f77ff169d0e5f52e349ee541b80a71c205e07d691862e938215",
+      "bytes": 7440,
+      "completeSyntax": true
+    },
+    {
+      "name": "n4o",
+      "file": "reference/renderer-n4o.txt",
+      "kind": "function",
+      "utf16": [
+        8229906,
+        8230287
+      ],
+      "utf8": [
+        8274538,
+        8274919
+      ],
+      "sha256": "914a8dc26db6ca57f1d9ba39bd03856db426a2878a475cb27d38ea2042037eb4",
+      "bytes": 381,
+      "completeSyntax": true
+    },
+    {
+      "name": "ITo",
+      "file": "reference/renderer-ITo.txt",
+      "kind": "expression",
+      "utf16": [
+        8609850,
+        8645853
+      ],
+      "utf8": [
+        8655325,
+        8691330
+      ],
+      "sha256": "402ecc13bb1fd4751d0ec047f818423c9e678deb9ba38b471961ad447100519f",
+      "bytes": 36005,
+      "completeSyntax": true
+    },
+    {
+      "name": "t4o",
+      "file": "reference/renderer-t4o.txt",
+      "kind": "class-expression",
+      "utf16": [
+        8225913,
+        8229905
+      ],
+      "utf8": [
+        8270545,
+        8274537
+      ],
+      "sha256": "39b5f3663a1fca0342d4136d0a94a2ff1ac55c782f8805b277ff9e14d91bbc90",
+      "bytes": 3992,
+      "completeSyntax": true
+    },
+    {
+      "name": "Yoi",
+      "file": "reference/renderer-Yoi.txt",
+      "kind": "expression",
+      "utf16": [
+        170067,
+        170169
+      ],
+      "utf8": [
+        170071,
+        170173
+      ],
+      "sha256": "ff49461b34f01f777fcc89cde99613591d90da121ef1f5f34c335e9bde3cdaa1",
+      "bytes": 102,
+      "completeSyntax": true
+    }
+  ],
+  "bindings": {
+    "originalHasCapturedEditorState": true,
+    "originalEditorReadyToState": true,
+    "originalLiveFocusGate": true,
+    "originalPickerToMutationToFocus": true,
+    "originalButtonUsesActualPicker": true,
+    "originalShortcutUsesSamePicker": true,
+    "originalMutationHookBound": true,
+    "originalPickerMultipleAndEmpty": true,
+    "originalMutationConvertsInput": true,
+    "originalLocalMutationDoesNotAwaitProcessing": true,
+    "originalManagedEditor": true,
+    "originalLifetimeCleanup": true,
+    "actualOnAttachBinding": true,
+    "actualComposerRejectsEmptyInput": true,
+    "actualParentAwait": true,
+    "actualSessionPreservesReadError": true,
+    "actualEditorDetachesThenDestroys": true
+  },
+  "currentFiles": [
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "sha256": "1e558c044ce5dda41a33420ef82ad00123af97adaed892f9336c77b9d1f84935"
+    },
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "sha256": "d110236404a7916fcb9de706eed42df54bcc87953a7358198e0b2974243789ae"
+    },
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "sha256": "7e8f7f7426164d2e707d9507a2af87336607b88db891fb864c55f28b8ab34fdf"
+    },
+    {
+      "path": "src/features/chat/composerSession.ts",
+      "sha256": "a0a476f36aca220e9b816654cf5175183af2602131e3fbfeb2d2dc17d40b95a4"
+    }
+  ],
+  "fixture": {
+    "path": "src/features/chat/composerAttachmentFocus.test.ts",
+    "sha256": "abd563456f9d1013f73f82fdf370d4efade85a689bbeb12318cbc1f738b44c56"
+  },
+  "limits": [
+    "Actual parent callback extracted without mounting full WorkspaceView",
+    "Real ComposerSession with inert local file-read, memory-storage and editor ports",
+    "Original local IIr resolves after launching processing, not proof of native staging success or its timing",
+    "Error control does not invent native write-error focus policy",
+    "No native picker, IPC, real focus, browser, provider or package acceptance",
+    "Original vendor code is inert data, never executed"
+  ]
+}

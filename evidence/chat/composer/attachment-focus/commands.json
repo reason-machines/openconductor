@@ -1,0 +1,69 @@
+{
+  "candidate": "COMPOSER-ATTACH-FOCUS-135",
+  "runner": "Conductor Rebuild",
+  "environment": "Reason cloud compute-linux-l; JavaScript source/inert boundary tests only",
+  "base": "2ada6e3e186391695cae1ce5694ac251a6323079",
+  "qualificationBaseline": "217498aae38dfd63b97919b1a0ab4097462c691e",
+  "fixtureSha256": "abd563456f9d1013f73f82fdf370d4efade85a689bbeb12318cbc1f738b44c56",
+  "checks": [
+    {
+      "command": "sha256sum -c .qa/composer-attachment-focus-qualified/frozen-before-run.sha256",
+      "result": "PASS before and after RED; final frozen fixture and production baseline unchanged",
+      "exit": 0
+    },
+    {
+      "command": "node --experimental-strip-types --test src/features/chat/composerAttachmentFocus.test.ts",
+      "phase": "baseline before production edits",
+      "result": "RED as intended: 7 pass / 1 assertion failure / 8 total; zero skips/cancellations",
+      "exit": 1,
+      "log": "baseline.tap.gz"
+    },
+    {
+      "command": "node --experimental-strip-types --test src/features/chat/composerAttachmentFocus.test.ts",
+      "phase": "treatment exact unchanged fixture",
+      "result": "PASS 8/8; zero skips/cancellations",
+      "exit": 0,
+      "log": "green.tap"
+    },
+    {
+      "command": "node --experimental-strip-types --test --test-concurrency=2 src/features/chat/composerPasteLifetime.test.ts src/features/chat/composerPasteFilePaths.test.ts src/features/chat/composerLongPaste.test.ts src/features/chat/composerCancelFocus.test.ts src/features/chat/composerAsyncSubmit.test.ts src/features/chat/composerSubmit.test.ts src/features/chat/composerAttachments.test.ts src/features/chat/composerAttachmentPreview.test.ts src/features/chat/composerAttachmentSettlement.test.ts src/features/chat/composerSession.test.ts src/features/chat/composerSuggestionKeys.test.ts src/features/chat/composerSuggestionPointer.test.ts",
+      "result": "PASS 131/131; zero skips/cancellations",
+      "exit": 0,
+      "log": "adjacent.tap"
+    },
+    {
+      "command": "npm run lint:colors",
+      "result": "PASS 6 checker tests and 1253-file source scan",
+      "exit": 0,
+      "log": "color-lint.log.gz"
+    },
+    {
+      "command": "node .qa/composer-attachment-focus-results/qualify-reference-local.mjs",
+      "result": "PASS 9 complete declarations / 17 bindings; all exact full-parent ranges; generated qualification.json identical to original packet",
+      "exit": 0,
+      "log": "source-verifier.txt",
+      "note": "Only original qualifier's directory constant rebound to extracted packet; existing retained vendor renderer parsed, never executed."
+    },
+    {
+      "command": "node evidence/chat/composer/attachment-focus/verify.mjs .qa/create-suggestions-135/retained/renderApp-D_fmY7hW.js",
+      "result": "PASS exact fixture, spans/ranges/hash/syntax, 17 joins, exact two-line production treatment and one inert adjacent port, read-only boundaries, TAP totals, lease-confined diff",
+      "exit": 0
+    },
+    {
+      "command": "npm run typecheck",
+      "result": "NOT_RUN pending serialized heavy-check slot"
+    },
+    {
+      "command": "npm run build",
+      "result": "NOT_RUN pending serialized heavy-check slot"
+    }
+  ],
+  "limits": [
+    "Actual callback extracted; WorkspaceView not mounted.",
+    "Real ComposerSession; inert file-read/storage/editor ports.",
+    "Original local mutation fires processing without awaiting it: no native staging-success/error-focus/timing parity.",
+    "No native/browser/TipTap/OS picker/macOS focus/provider/final-agent-input/installed-package behavior or containment proof.",
+    "No runtime/provider/package dispatch, acquisition, native build, watcher or duplicate page.",
+    "Published-head CI and independent parent integration are separate subsequent receipts."
+  ]
+}
