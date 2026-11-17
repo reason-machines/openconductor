@@ -1,0 +1,1 @@
+V5=t=>{let e;const s=new Set,n=(l,u)=>{const d=typeof l=="function"?l(e):l;if(!Object.is(d,e)){const h=e;e=u??(typeof d!="object"||d===null)?d:Object.assign({},e,d),s.forEach(p=>p(e,h))}},r=()=>e,a={setState:n,getState:r,getInitialState:()=>c,subscribe:l=>(s.add(l),()=>s.delete(l))},c=e=t(n,r,a);return a},Hs=t=>t?V5(t):V5,
