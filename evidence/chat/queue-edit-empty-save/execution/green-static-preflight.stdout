@@ -1,0 +1,1 @@
+{"status": "GREEN_STATIC_PREFLIGHT_PASS_NOT_ADMISSION", "checks_passed": 255, "fixture_sha256": "8739fb3f4ebbbdf4282b740ccce38f5a3572b213669b23a96016ec19535cb4e3", "treatment_sha256": "8aca2474747054e9ed35885873c6ca9a5e21c76f276c6fd38fa0a090d3f5a3ad", "fresh_main": "3e54efdd71f44ab888ebd18d8fe37870e806a4ba", "not_run": ["Node/test", "build", "browser/native"]}

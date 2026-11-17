@@ -696,6 +696,11 @@ function QueueRow({ id, text, userContent, attachmentNames, first, last, editing
     queueMicrotask(() => { editor.current?.focus("end"); });
   }, [editing, text, userContent]);
   if (editing) {
+    const canSave = value.trim().length > 0;
+    const save = (steer: boolean) => {
+      if (!canSave) return;
+      onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer });
+    };
     return (
       <li className="queue-row is-editing">
         <div className="queue-edit" role="group" aria-label="Edit queued message">
@@ -716,10 +721,10 @@ function QueueRow({ id, text, userContent, attachmentNames, first, last, editing
                 onQueue({ kind: "cancelEdit" });
               } else if (canSteer && hit("chat.queueEdit.saveAndSteer")) {
                 ev.preventDefault();
-                onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: true });
+                save(true);
               } else if (hit("chat.queueEdit.save")) {
                 ev.preventDefault();
-                onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: false });
+                save(false);
               }
             }}
           />
@@ -729,11 +734,11 @@ function QueueRow({ id, text, userContent, attachmentNames, first, last, editing
             Cancel
           </button>
           {canSteer ? (
-            <button type="button" className="chat-action" onClick={() => onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: true })}>
+            <button type="button" className="chat-action" disabled={!canSave} onClick={() => save(true)}>
               Save and steer
             </button>
           ) : null}
-          <button type="button" className="chat-action" onClick={() => onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: false })}>
+          <button type="button" className="chat-action" disabled={!canSave} onClick={() => save(false)}>
             Save
           </button>
         </span>

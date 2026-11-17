@@ -1,0 +1,122 @@
+[
+  {
+    "name": "JNi",
+    "utf8_half_open": [
+      8750085,
+      8760369
+    ],
+    "bytes": 10284,
+    "sha256": "775251f3c9074a8f60944335cd7c44d053c1472bb63987adc4b149d0d32828d1",
+    "completeSyntax": true
+  },
+  {
+    "name": "AAo",
+    "utf8_half_open": [
+      8725767,
+      8730190
+    ],
+    "bytes": 4423,
+    "sha256": "1427c2453126a3311e9a330ae73a6b88a491199c4005ea85406728357d53ebab",
+    "completeSyntax": true
+  },
+  {
+    "name": "GTo",
+    "utf8_half_open": [
+      8700675,
+      8708256
+    ],
+    "bytes": 7581,
+    "sha256": "8464862ead880f69f77258ee26be61216cbaa24692ba8cb5a02daf30365f8440",
+    "completeSyntax": true
+  },
+  {
+    "name": "TAo",
+    "utf8_half_open": [
+      8724033,
+      8725767
+    ],
+    "bytes": 1734,
+    "sha256": "9c9f9c15bc2b47268a8c9b44c7c40a23341d50664f15cb41a331c1c38625da14",
+    "completeSyntax": true
+  },
+  {
+    "name": "iAo",
+    "utf8_half_open": [
+      8712424,
+      8715111
+    ],
+    "bytes": 2687,
+    "sha256": "cdf84fdf5198174968fa88f6b171559912f640d866e94e6ca121c29de34b5ad6",
+    "completeSyntax": true
+  },
+  {
+    "name": "QTo",
+    "utf8_half_open": [
+      8708771,
+      8709972
+    ],
+    "bytes": 1201,
+    "sha256": "8c0e46309ba3be5690ff2ddb383c3f051553c959064caf7638f04767c50ddf33",
+    "completeSyntax": true
+  },
+  {
+    "name": "eAo",
+    "utf8_half_open": [
+      8710839,
+      8711830
+    ],
+    "bytes": 991,
+    "sha256": "0b03f7ec7197bd9c7d7393d63cfa165ebc1093bda3dc58cf991bd389d052358e",
+    "completeSyntax": true
+  },
+  {
+    "name": "lqn",
+    "utf8_half_open": [
+      8416669,
+      8416974
+    ],
+    "bytes": 305,
+    "sha256": "050ab8fc89d0bc707ac1ddc8a93bfedd004cdd1b45aef0c6f3a9c3a2615bf88a",
+    "completeSyntax": true
+  },
+  {
+    "name": "pTo",
+    "utf8_half_open": [
+      8651089,
+      8651387
+    ],
+    "bytes": 298,
+    "sha256": "43857a5137dcb06e3dd1a907ddae2ed7dfa36e1b060db6c9c166f2da02d7bf56",
+    "completeSyntax": true
+  },
+  {
+    "name": "Igo",
+    "utf8_half_open": [
+      7960624,
+      7962711
+    ],
+    "bytes": 2087,
+    "sha256": "8901e5a5646a8b0ffa156a33c5b9811c05d55914da8e322956a517ecd42d23c8",
+    "completeSyntax": true
+  },
+  {
+    "name": "lHt",
+    "utf8_half_open": [
+      8418728,
+      8426168
+    ],
+    "bytes": 7440,
+    "sha256": "2b86481687009f77ff169d0e5f52e349ee541b80a71c205e07d691862e938215",
+    "completeSyntax": true
+  },
+  {
+    "name": "z5o",
+    "utf8_half_open": [
+      8418434,
+      8418728
+    ],
+    "bytes": 294,
+    "sha256": "bf7875b3c816063f541089b7dc6e454e8db3bb0bfe86a0ecddd862392812ff0a",
+    "completeSyntax": true
+  }
+]

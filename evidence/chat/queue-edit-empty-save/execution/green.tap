@@ -1,0 +1,318 @@
+TAP version 13
+# (node:117) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: blank-button working/steer blank0 Save
+ok 1 - blank-button working/steer blank0 Save
+  ---
+  duration_ms: 13.2391
+  type: 'test'
+  ...
+# Subtest: blank-button working/steer blank0 Save and steer
+ok 2 - blank-button working/steer blank0 Save and steer
+  ---
+  duration_ms: 1.594831
+  type: 'test'
+  ...
+# Subtest: blank-save-key working/steer blank0
+ok 3 - blank-save-key working/steer blank0
+  ---
+  duration_ms: 2.391186
+  type: 'test'
+  ...
+# Subtest: blank-steer-key working/steer blank0
+ok 4 - blank-steer-key working/steer blank0
+  ---
+  duration_ms: 1.448591
+  type: 'test'
+  ...
+# Subtest: blank-button working/steer blank1 Save
+ok 5 - blank-button working/steer blank1 Save
+  ---
+  duration_ms: 1.60389
+  type: 'test'
+  ...
+# Subtest: blank-button working/steer blank1 Save and steer
+ok 6 - blank-button working/steer blank1 Save and steer
+  ---
+  duration_ms: 2.53999
+  type: 'test'
+  ...
+# Subtest: blank-save-key working/steer blank1
+ok 7 - blank-save-key working/steer blank1
+  ---
+  duration_ms: 1.26353
+  type: 'test'
+  ...
+# Subtest: blank-steer-key working/steer blank1
+ok 8 - blank-steer-key working/steer blank1
+  ---
+  duration_ms: 1.085665
+  type: 'test'
+  ...
+# Subtest: blank-button working/steer blank2 Save
+ok 9 - blank-button working/steer blank2 Save
+  ---
+  duration_ms: 2.549309
+  type: 'test'
+  ...
+# Subtest: blank-button working/steer blank2 Save and steer
+ok 10 - blank-button working/steer blank2 Save and steer
+  ---
+  duration_ms: 3.442219
+  type: 'test'
+  ...
+# Subtest: blank-save-key working/steer blank2
+ok 11 - blank-save-key working/steer blank2
+  ---
+  duration_ms: 1.515051
+  type: 'test'
+  ...
+# Subtest: blank-steer-key working/steer blank2
+ok 12 - blank-steer-key working/steer blank2
+  ---
+  duration_ms: 0.998265
+  type: 'test'
+  ...
+# Subtest: blank-button working/no-steer blank0 Save
+ok 13 - blank-button working/no-steer blank0 Save
+  ---
+  duration_ms: 1.170865
+  type: 'test'
+  ...
+# Subtest: blank-save-key working/no-steer blank0
+ok 14 - blank-save-key working/no-steer blank0
+  ---
+  duration_ms: 0.983867
+  type: 'test'
+  ...
+# Subtest: blank-button working/no-steer blank1 Save
+ok 15 - blank-button working/no-steer blank1 Save
+  ---
+  duration_ms: 0.879102
+  type: 'test'
+  ...
+# Subtest: blank-save-key working/no-steer blank1
+ok 16 - blank-save-key working/no-steer blank1
+  ---
+  duration_ms: 3.920063
+  type: 'test'
+  ...
+# Subtest: blank-button working/no-steer blank2 Save
+ok 17 - blank-button working/no-steer blank2 Save
+  ---
+  duration_ms: 0.990198
+  type: 'test'
+  ...
+# Subtest: blank-save-key working/no-steer blank2
+ok 18 - blank-save-key working/no-steer blank2
+  ---
+  duration_ms: 1.052417
+  type: 'test'
+  ...
+# Subtest: blank-button idle/paused blank0 Save
+ok 19 - blank-button idle/paused blank0 Save
+  ---
+  duration_ms: 0.979858
+  type: 'test'
+  ...
+# Subtest: blank-save-key idle/paused blank0
+ok 20 - blank-save-key idle/paused blank0
+  ---
+  duration_ms: 3.016787
+  type: 'test'
+  ...
+# Subtest: blank-button idle/paused blank1 Save
+ok 21 - blank-button idle/paused blank1 Save
+  ---
+  duration_ms: 0.910939
+  type: 'test'
+  ...
+# Subtest: blank-save-key idle/paused blank1
+ok 22 - blank-save-key idle/paused blank1
+  ---
+  duration_ms: 7.607013
+  type: 'test'
+  ...
+# Subtest: blank-button idle/paused blank2 Save
+ok 23 - blank-button idle/paused blank2 Save
+  ---
+  duration_ms: 13.659323
+  type: 'test'
+  ...
+# Subtest: blank-save-key idle/paused blank2
+ok 24 - blank-save-key idle/paused blank2
+  ---
+  duration_ms: 0.754649
+  type: 'test'
+  ...
+# Subtest: control/nonblank-save working/steer button
+ok 25 - control/nonblank-save working/steer button
+  ---
+  duration_ms: 1.937391
+  type: 'test'
+  ...
+# Subtest: control/nonblank-save working/steer key
+ok 26 - control/nonblank-save working/steer key
+  ---
+  duration_ms: 1.275327
+  type: 'test'
+  ...
+# Subtest: control/nonblank-save working/no-steer button
+ok 27 - control/nonblank-save working/no-steer button
+  ---
+  duration_ms: 1.120739
+  type: 'test'
+  ...
+# Subtest: control/nonblank-save working/no-steer key
+ok 28 - control/nonblank-save working/no-steer key
+  ---
+  duration_ms: 4.004353
+  type: 'test'
+  ...
+# Subtest: control/nonblank-save idle/paused button
+ok 29 - control/nonblank-save idle/paused button
+  ---
+  duration_ms: 1.770472
+  type: 'test'
+  ...
+# Subtest: control/nonblank-save idle/paused key
+ok 30 - control/nonblank-save idle/paused key
+  ---
+  duration_ms: 6.772352
+  type: 'test'
+  ...
+# Subtest: control/nonblank-steer button
+ok 31 - control/nonblank-steer button
+  ---
+  duration_ms: 1.313394
+  type: 'test'
+  ...
+# Subtest: control/cancel button
+ok 32 - control/cancel button
+  ---
+  duration_ms: 1.129933
+  type: 'test'
+  ...
+# Subtest: control/nonblank-steer key
+ok 33 - control/nonblank-steer key
+  ---
+  duration_ms: 3.483531
+  type: 'test'
+  ...
+# Subtest: control/cancel key
+ok 34 - control/cancel key
+  ---
+  duration_ms: 5.547628
+  type: 'test'
+  ...
+# Subtest: control/explicit-delete after Cancel
+ok 35 - control/explicit-delete after Cancel
+  ---
+  duration_ms: 1.822647
+  type: 'test'
+  ...
+# Subtest: control/ime "" meta=false
+ok 36 - control/ime "" meta=false
+  ---
+  duration_ms: 0.784983
+  type: 'test'
+  ...
+# Subtest: control/ime "" meta=true
+ok 37 - control/ime "" meta=true
+  ---
+  duration_ms: 0.66158
+  type: 'test'
+  ...
+# Subtest: control/ime "updated first" meta=false
+ok 38 - control/ime "updated first" meta=false
+  ---
+  duration_ms: 1.181706
+  type: 'test'
+  ...
+# Subtest: control/ime "updated first" meta=true
+ok 39 - control/ime "updated first" meta=true
+  ---
+  duration_ms: 0.655384
+  type: 'test'
+  ...
+# Subtest: control/no-steer hides opposite action and ordinary Save still works
+ok 40 - control/no-steer hides opposite action and ordinary Save still works
+  ---
+  duration_ms: 1.233853
+  type: 'test'
+  ...
+# Subtest: control/structured-file button
+ok 41 - control/structured-file button
+  ---
+  duration_ms: 2.463117
+  type: 'test'
+  ...
+# Subtest: control/structured-file key
+ok 42 - control/structured-file key
+  ---
+  duration_ms: 1.128632
+  type: 'test'
+  ...
+# Subtest: control/attachment-only-blank blank0 Save
+ok 43 - control/attachment-only-blank blank0 Save
+  ---
+  duration_ms: 0.716968
+  type: 'test'
+  ...
+# Subtest: control/attachment-only-blank blank1 Save
+ok 44 - control/attachment-only-blank blank1 Save
+  ---
+  duration_ms: 0.622428
+  type: 'test'
+  ...
+# Subtest: control/attachment-only-blank blank2 Save
+ok 45 - control/attachment-only-blank blank2 Save
+  ---
+  duration_ms: 4.443603
+  type: 'test'
+  ...
+# Subtest: control/attachment-only-blank blank0 Save and steer
+ok 46 - control/attachment-only-blank blank0 Save and steer
+  ---
+  duration_ms: 0.87687
+  type: 'test'
+  ...
+# Subtest: control/attachment-only-blank blank1 Save and steer
+ok 47 - control/attachment-only-blank blank1 Save and steer
+  ---
+  duration_ms: 1.28934
+  type: 'test'
+  ...
+# Subtest: control/attachment-only-blank blank2 Save and steer
+ok 48 - control/attachment-only-blank blank2 Save and steer
+  ---
+  duration_ms: 0.873482
+  type: 'test'
+  ...
+# Subtest: control/direct-reducer-deletion blank0
+ok 49 - control/direct-reducer-deletion blank0
+  ---
+  duration_ms: 0.197152
+  type: 'test'
+  ...
+# Subtest: control/direct-reducer-deletion blank1
+ok 50 - control/direct-reducer-deletion blank1
+  ---
+  duration_ms: 0.078824
+  type: 'test'
+  ...
+# Subtest: control/direct-reducer-deletion blank2
+ok 51 - control/direct-reducer-deletion blank2
+  ---
+  duration_ms: 0.075391
+  type: 'test'
+  ...
+1..51
+# tests 51
+# suites 0
+# pass 51
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1059.526654
