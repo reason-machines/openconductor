@@ -1,0 +1,110 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a working agent blocks archive until the user confirms
+ok 1 - a working agent blocks archive until the user confirms
+  ---
+  duration_ms: 5.171447
+  type: 'test'
+  ...
+# Subtest: cancelling and waiting sessions block archive too, as in Conductor's dYe
+ok 2 - cancelling and waiting sessions block archive too, as in Conductor's dYe
+  ---
+  duration_ms: 0.200296
+  type: 'test'
+  ...
+# Subtest: the running-agents dialog uses Conductor's copy
+ok 3 - the running-agents dialog uses Conductor's copy
+  ---
+  duration_ms: 1.13653
+  type: 'test'
+  ...
+# Subtest: a git operation in safe mode offers the discard retry; after it, the plain message
+ok 4 - a git operation in safe mode offers the discard retry; after it, the plain message
+  ---
+  duration_ms: 0.19153
+  type: 'test'
+  ...
+# Subtest: a missing directory reads as a corrupted workspace; anything else shows its message
+ok 5 - a missing directory reads as a corrupted workspace; anything else shows its message
+  ---
+  duration_ms: 0.227171
+  type: 'test'
+  ...
+# Subtest: archive events reach every listener until it unsubscribes
+ok 6 - archive events reach every listener until it unsubscribes
+  ---
+  duration_ms: 0.226233
+  type: 'test'
+  ...
+# Subtest: startArchive asks instead of archiving over a running agent, and archives once confirmed
+ok 7 - startArchive asks instead of archiving over a running agent, and archives once confirmed
+  ---
+  duration_ms: 0.276288
+  type: 'test'
+  ...
+# Subtest: startArchive hides the row first, then reports the result with its notices
+ok 8 - startArchive hides the row first, then reports the result with its notices
+  ---
+  duration_ms: 0.15516
+  type: 'test'
+  ...
+# Subtest: startArchive brings the row back and reports a failure with the mode it ran in
+ok 9 - startArchive brings the row back and reports a failure with the mode it ran in
+  ---
+  duration_ms: 0.396081
+  type: 'test'
+  ...
+# Subtest: outside the desktop app startArchive only hides the row
+ok 10 - outside the desktop app startArchive only hides the row
+  ---
+  duration_ms: 0.339576
+  type: 'test'
+  ...
+# Subtest: unarchive shows the row, recreates the worktree, then reruns setup
+ok 11 - unarchive shows the row, recreates the worktree, then reruns setup
+  ---
+  duration_ms: 0.295784
+  type: 'test'
+  ...
+# Subtest: unarchive of a row that was not archived reruns nothing
+ok 12 - unarchive of a row that was not archived reruns nothing
+  ---
+  duration_ms: 0.123398
+  type: 'test'
+  ...
+# Subtest: a failed unarchive puts the row away again and reports Conductor's message
+ok 13 - a failed unarchive puts the row away again and reports Conductor's message
+  ---
+  duration_ms: 0.171686
+  type: 'test'
+  ...
+# Subtest: outside the desktop app unarchive only shows the row
+ok 14 - outside the desktop app unarchive only shows the row
+  ---
+  duration_ms: 0.101193
+  type: 'test'
+  ...
+# Subtest: an unarchive blocked by an existing folder gets Conductor's directory-exists toast
+ok 15 - an unarchive blocked by an existing folder gets Conductor's directory-exists toast
+  ---
+  duration_ms: 0.14583
+  type: 'test'
+  ...
+# Subtest: the restore dialog uses Conductor's copy for each scenario
+ok 16 - the restore dialog uses Conductor's copy for each scenario
+  ---
+  duration_ms: 0.11988
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1780.542104

@@ -1,0 +1,1 @@
+function azr(t){return t.dispatch}const hNn=xd(t=>t.key==="Escape"&&!t.metaKey&&!t.ctrlKey&&!t.altKey&&!t.shiftKey);

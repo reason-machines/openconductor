@@ -70,9 +70,21 @@ function Highlight({ match, fallback }: { match?: FieldMatch; fallback: string }
   return <>{parts}</>;
 }
 
-function Menu({ label, icon, ariaLabel, children }: { label: string; icon: ReactNode; ariaLabel: string; children: (close: () => void) => ReactNode }) {
+function Menu({ label, icon, ariaLabel, keyboardNavigation, children }: { label: string; icon: ReactNode; ariaLabel: string; keyboardNavigation?: boolean; children: (close: () => void) => ReactNode }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const openingFocus = useRef<"first" | "last" | null>(null);
+  const typeahead = useRef({ text: "", at: 0, start: -1 });
+  const items = () => Array.from(ref.current?.querySelectorAll<HTMLButtonElement>('[role="menuitemcheckbox"]:not(:disabled)') ?? []);
+  const focusEdge = (edge: "first" | "last") => {
+    const options = items();
+    options[edge === "first" ? 0 : options.length - 1]?.focus({ preventScroll: true });
+  };
+  useEffect(() => {
+    if (open && openingFocus.current) focusEdge(openingFocus.current);
+    openingFocus.current = null;
+    typeahead.current = { text: "", at: 0, start: -1 };
+  }, [open]);
   useEffect(() => {
     if (!open) return;
     const onDown = (e: MouseEvent) => {
@@ -88,13 +100,47 @@ function Menu({ label, icon, ariaLabel, children }: { label: string; icon: React
   }, [open]);
   return (
     <div className="allws-menu" ref={ref}>
-      <button type="button" className="allws-filter" aria-label={ariaLabel} aria-haspopup="menu" aria-expanded={open} data-open={open || undefined} onClick={() => setOpen((o) => !o)}>
+      <button type="button" className="allws-filter" aria-label={ariaLabel} aria-haspopup="menu" aria-expanded={open} data-open={open || undefined} onClick={() => setOpen((o) => !o)} onKeyDown={keyboardNavigation ? (e) => {
+        if (e.nativeEvent.isComposing || e.which === 229 || (e.key !== "ArrowDown" && e.key !== "ArrowUp")) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const edge = e.key === "ArrowDown" ? "first" : "last";
+        if (open) focusEdge(edge);
+        else { openingFocus.current = edge; setOpen(true); }
+      } : undefined}>
         {icon}
         <span className="allws-filter-label">{label}</span>
         <ChevronDownIcon size={12} />
       </button>
       {open && (
-        <div className="allws-menu-pop" role="menu">
+        <div className="allws-menu-pop" role="menu" onKeyDown={keyboardNavigation ? (e) => {
+          if (e.nativeEvent.isComposing || e.which === 229) return;
+          const options = items();
+          if (!options.length) return;
+          const active = options.indexOf(document.activeElement as HTMLButtonElement);
+          let next: number;
+          if (e.key === "ArrowDown") next = (active + 1) % options.length;
+          else if (e.key === "ArrowUp") next = (active < 0 ? options.length - 1 : active - 1 + options.length) % options.length;
+          else if (e.key === "Home") next = 0;
+          else if (e.key === "End") next = options.length - 1;
+          else {
+            if (e.key.length !== 1 || e.ctrlKey || e.metaKey || e.altKey) return;
+            const now = Date.now();
+            let prefix = now - typeahead.current.at < 750 ? typeahead.current.text : "";
+            if (e.key === " " && !prefix) return; // Leave native checkbox activation intact.
+            const letter = e.key.toLowerCase();
+            const labels = options.map((option) => option.textContent?.replace(/^\s*✓\s*/, "").trim().toLowerCase() ?? "");
+            if (prefix === letter && labels.every((label) => label[0] !== label[1])) prefix = "";
+            const start = prefix ? typeahead.current.start : active;
+            prefix += letter;
+            next = options.findIndex((_, offset) => labels[(start + 1 + offset) % options.length].startsWith(prefix));
+            if (next >= 0) next = (start + 1 + next) % options.length;
+            typeahead.current = { text: next >= 0 ? prefix : "", at: now, start };
+          }
+          e.preventDefault();
+          e.stopPropagation();
+          options[next]?.focus({ preventScroll: true });
+        } : undefined}>
           {children(() => setOpen(false))}
         </div>
       )}
@@ -424,7 +470,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
               />
             </label>
             {showProjectFilter(repos, archivedRows) && (
-              <Menu ariaLabel="Projects" label={projectFilterLabel(repos, filters.projects)} icon={<FolderIcon size={14} />}>
+              <Menu ariaLabel="Projects" keyboardNavigation label={projectFilterLabel(repos, filters.projects)} icon={<FolderIcon size={14} />}>
                 {() => (
                   <>
                     <MenuCheck checked={filters.projects.length === 0} onClick={() => setFilters({ ...filters, projects: [] })}>

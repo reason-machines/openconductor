@@ -1,0 +1,9 @@
+{
+  "path": "src/palette/state.test.ts",
+  "beforeSha256": "e60e171f29350fb92c2d065eecb9aff8de4cdf73ec4f511f6f8bdc1968bb3707",
+  "afterSha256": "73d95c02f171b1db97c0a23b053d4c15f276d672a525e6bfd4b6248ce6acf855",
+  "beforeArchive": "state-test-before.ts.gz",
+  "oldText": "test(\"modified Home and End keep their text-field behavior\", () => {\n  for (const k of [\"Home\", \"End\"]) {\n    for (const modifier of [\"metaKey\", \"ctrlKey\", \"altKey\", \"shiftKey\"]) {\n      assert.equal(cmdFor(key(k, { [modifier]: true })), null);\n    }\n  }\n});",
+  "newText": "test(\"Home and End preserve modifier shortcuts while Shift navigates\", () => {\n  for (const k of [\"Home\", \"End\"]) {\n    for (const modifier of [\"metaKey\", \"ctrlKey\", \"altKey\"]) {\n      assert.equal(cmdFor(key(k, { [modifier]: true })), null);\n    }\n    assert.equal(cmdFor(key(k, { shiftKey: true })), k === \"Home\" ? \"first-item\" : \"last-item\");\n  }\n});",
+  "note": "All eight runtime modifier assertions retained: six meta/ctrl/alt null checks, two shifted endpoint expectations corrected using positive retained source and unchanged mounted regression."
+}

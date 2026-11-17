@@ -1,0 +1,293 @@
+(node:1339) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:1346) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: control: normal Project filter renders only Beta's repository group
+ok 1 - control: normal Project filter renders only Beta's repository group
+  ---
+  duration_ms: 2.657412
+  type: 'test'
+  ...
+# Subtest: filtered-out ordinary project rows consume no numbered position
+not ok 2 - filtered-out ordinary project rows consume no numbered position
+  ---
+  duration_ms: 1.504928
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/fresh-main/src/sidebar/sidebarProjectFilterNumbering.test.ts:46:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'alpha-row',
+        'beta-row'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'beta-row'
+  actual:
+    0: 'alpha-row'
+    1: 'beta-row'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/fresh-main/src/sidebar/sidebarProjectFilterNumbering.test.ts:47:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: the selected project's sole ordinary workspace has hint number one
+not ok 3 - the selected project's sole ordinary workspace has hint number one
+  ---
+  duration_ms: 0.401937
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/fresh-main/src/sidebar/sidebarProjectFilterNumbering.test.ts:50:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    2 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/fresh-main/src/sidebar/sidebarProjectFilterNumbering.test.ts:52:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: workspace.switchTo1 targets the selected project's sole workspace
+not ok 4 - workspace.switchTo1 targets the selected project's sole workspace
+  ---
+  duration_ms: 0.318633
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/fresh-main/src/sidebar/sidebarProjectFilterNumbering.test.ts:55:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'alpha-row'
+    - 'beta-row'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'beta-row'
+  actual: 'alpha-row'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/fresh-main/src/sidebar/sidebarProjectFilterNumbering.test.ts:56:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: workspace.switchTo2 has no target when the filtered sequence has one row
+not ok 5 - workspace.switchTo2 has no target when the filtered sequence has one row
+  ---
+  duration_ms: 0.187406
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/fresh-main/src/sidebar/sidebarProjectFilterNumbering.test.ts:59:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'beta-row'
+    - undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual: 'beta-row'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/fresh-main/src/sidebar/sidebarProjectFilterNumbering.test.ts:60:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: control: filtering leaves both loaded repositories and their rows intact
+ok 6 - control: filtering leaves both loaded repositories and their rows intact
+  ---
+  duration_ms: 0.331644
+  type: 'test'
+  ...
+# Subtest: mounted control: ordinary unfiltered producer renders hints 1/2 and dispatches both targets
+ok 7 - mounted control: ordinary unfiltered producer renders hints 1/2 and dispatches both targets
+  ---
+  duration_ms: 1083.870507
+  type: 'test'
+  ...
+# Subtest: mounted control: normal Beta radio propagates through app prefs and useAppStore without deleting loaded rows
+ok 8 - mounted control: normal Beta radio propagates through app prefs and useAppStore without deleting loaded rows
+  ---
+  duration_ms: 378.336932
+  type: 'test'
+  ...
+# Subtest: mounted Beta filter: the rendered, visible hint says Switch with Command-1
+not ok 9 - mounted Beta filter: the rendered, visible hint says Switch with Command-1
+  ---
+  duration_ms: 256.493577
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/fresh-main/src/sidebar/sidebarProjectFilterNumbering.test.ts:303:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          hints: [
+            {
+    +         label: 'Switch with Command-2',
+    -         label: 'Switch with Command-1',
+              state: 'visible',
+    +         text: '2'
+    -         text: '1'
+            }
+          ],
+          row: 'Beta row'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      row: 'Beta row'
+      hints:
+        0:
+          label: 'Switch with Command-1'
+          text: '1'
+          state: 'visible'
+  actual:
+    0:
+      row: 'Beta row'
+      hints:
+        0:
+          label: 'Switch with Command-2'
+          text: '2'
+          state: 'visible'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/fresh-main/src/sidebar/sidebarProjectFilterNumbering.test.ts:307:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: mounted Beta filter: actual numbered shortcut dispatch selects Beta on Command-1
+not ok 10 - mounted Beta filter: actual numbered shortcut dispatch selects Beta on Command-1
+  ---
+  duration_ms: 247.907701
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/fresh-main/src/sidebar/sidebarProjectFilterNumbering.test.ts:311:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        selection: {
+          kind: 'workspace',
+    +     repoId: 'alpha',
+    +     workspaceId: 'alpha-row'
+    -     repoId: 'beta',
+    -     workspaceId: 'beta-row'
+        },
+        type: 'select'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    type: 'select'
+    selection:
+      kind: 'workspace'
+      repoId: 'beta'
+      workspaceId: 'beta-row'
+  actual:
+    type: 'select'
+    selection:
+      kind: 'workspace'
+      repoId: 'alpha'
+      workspaceId: 'alpha-row'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/fresh-main/src/sidebar/sidebarProjectFilterNumbering.test.ts:315:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: mounted Beta filter: actual Command-2 dispatch has no selection target
+not ok 11 - mounted Beta filter: actual Command-2 dispatch has no selection target
+  ---
+  duration_ms: 298.4064
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/fresh-main/src/sidebar/sidebarProjectFilterNumbering.test.ts:319:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     selection: {
+    +       kind: 'workspace',
+    +       repoId: 'beta',
+    +       workspaceId: 'beta-row'
+    +     },
+    +     type: 'select'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      type: 'select'
+      selection:
+        kind: 'workspace'
+        repoId: 'beta'
+        workspaceId: 'beta-row'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/.oc-tmp/sidebar-project-filter-numbering/fresh-main/src/sidebar/sidebarProjectFilterNumbering.test.ts:323:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: mounted control: clearing normal filter restores both labels and targets unchanged
+ok 12 - mounted control: clearing normal filter restores both labels and targets unchanged
+  ---
+  duration_ms: 439.11665
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 5
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3304.935396

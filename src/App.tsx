@@ -691,7 +691,7 @@ export default function App() {
           repo={removingRepo}
           onClose={() => setRemovingRepoId(null)}
           onRemoved={() => {
-            setRemovingRepoId(null);
+            setRemovingRepoId((current) => current === removingRepo.id ? null : current);
             show("info", MISC_COPY.remove.removed);
             dispatch({ type: "removeRepo", repoId: removingRepo.id });
           }}
@@ -768,7 +768,7 @@ export default function App() {
           onConfirm={() => dispatch({ ...archiveOverAgents, stopRunningAgents: true })}
         />
       )}
-      {restoreRequest && <RestoreWorkspaceDialog request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
+      {restoreRequest && <RestoreWorkspaceDialog key={restoreRequest.workspaceId} request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
       {quitDialog}
     </div>
     <BrowserPreviewHost />

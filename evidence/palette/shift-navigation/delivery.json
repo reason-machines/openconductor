@@ -1,0 +1,60 @@
+{
+  "owner": "Conductor Rebuild / SAME15",
+  "baseMain": "6cc9a9c75cb2ee4cdec678bc51f6b2960dac2280",
+  "redExecutedMain": "426d3a3e1b528b1611c321a7c7054f2dd786a1a3",
+  "predecessor": {
+    "pr": 1437,
+    "merge": "cf084b8aef2213dc9f6f0f89f26dd22e7655289e"
+  },
+  "baselineProductionByteEqual": true,
+  "production": {
+    "path": "src/palette/state.ts",
+    "beforeArchive": "state-before.ts.gz",
+    "beforeSha256": "a9ae71fc1674838d961cdcacd7f3185b1ec5dc67326cbb00d002badef1b3a2fe",
+    "afterSha256": "aec2b7bf5a4e21d22e24409b43f7552f53338ba0f39e2f88ca823f3caa460533"
+  },
+  "unchangedProduction": {
+    "src/palette/CommandPalette.tsx": "9d7531a543787c61375f7816d20c945068bd8e6204c4f8efceab5fb8f1195db8",
+    "src/palette/PaletteHost.tsx": "78a4067ebb66ef016b7d5903c38e3b312bf8c569ffd5f00c2b11743b07fb8471"
+  },
+  "checks": {
+    "freshRed": [
+      43,
+      15,
+      28
+    ],
+    "frozenGreen": [
+      43,
+      43,
+      0
+    ],
+    "affected": [
+      521,
+      521,
+      0
+    ],
+    "typecheck": "passed",
+    "branding": "passed",
+    "build": "passed",
+    "retainedSourceRecords": 21,
+    "unchangedExistingFixtures": 41
+  },
+  "sideIssue": {
+    "number": 1442,
+    "url": "https://github.com/reason-machines/openconductor/issues/1442",
+    "baselineMain": "426d3a3e1b528b1611c321a7c7054f2dd786a1a3",
+    "baseline": [
+      23,
+      16,
+      7
+    ],
+    "optionalLegacyFixture": "evidence/palette/group-navigation/section-preservation.test.ts",
+    "note": "Seven ReferenceErrors reproduced on unmodified main; optional legacy fixture unchanged, not represented as passing."
+  },
+  "acceptance": {
+    "browser": "NOT_RUN",
+    "geometry": "NOT_RUN",
+    "native": "NOT_RUN",
+    "package": "NOT_RUN"
+  }
+}
