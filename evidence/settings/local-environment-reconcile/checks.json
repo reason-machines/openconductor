@@ -1,0 +1,65 @@
+{
+  "baseline": "c3c9ab420f62edb08159f6bcbbcc921ca57f52f3",
+  "red": {
+    "pass": 6,
+    "fail": 6,
+    "exit_code": 101
+  },
+  "green": {
+    "pass": 14,
+    "fail": 0,
+    "new_inline_option_tests": 2
+  },
+  "linked_directory_successor": 14,
+  "chrome_successor": 13,
+  "auto": 13,
+  "interaction": 7,
+  "stream": 6,
+  "launch": 1,
+  "fixture_sha256": "8e663e6df3a40c96f7854fdf6705434f26b593ab941f265e43bb7ce16f4fd0fc",
+  "driver_sha256": "87ce51b757f5c2a43a77525d4e0ced37b114add4d74abd9ec1f2b2fb5e15a79e",
+  "logs": {
+    "red": {
+      "path": "evidence/settings/local-environment-reconcile/logs/red.log.gz",
+      "raw_bytes": 5308,
+      "raw_sha256": "c78d8e0abeafef91eef489112e55faaacc58ef290fb7c2bdc38e4622e3928dbe",
+      "gzip_sha256": "04ad6a77c15981df5d811ed7b6006c751ab5cea282af8251541309a7fa7a74da"
+    },
+    "green": {
+      "path": "evidence/settings/local-environment-reconcile/logs/green.log.gz",
+      "raw_bytes": 3608,
+      "raw_sha256": "12bcfa0f9617f16e329b86bb95b34a0904512dbf0aa61a7009d269bdeeef1a52",
+      "gzip_sha256": "33fa7701d854dfe2908581342282636b39aa862be6d8cbb6d9f93be2cdff2f1d"
+    },
+    "adjacent": {
+      "path": "evidence/settings/local-environment-reconcile/logs/adjacent.log.gz",
+      "raw_bytes": 6362,
+      "raw_sha256": "7886060332550017ff4371da988ab24ceeeaa4faf3f2f65348735092cd9ad18b",
+      "gzip_sha256": "d1588cf0a413ef0ad6caa6f04bcb63fea3f061de1f413f321db9746e6e95882d"
+    },
+    "auto": {
+      "path": "evidence/settings/local-environment-reconcile/logs/auto.log.gz",
+      "raw_bytes": 2737,
+      "raw_sha256": "d7cc4b66e3c93b52b262730eb226c20950196e9029e86c10258134341cebc8aa",
+      "gzip_sha256": "1b6a05b272da9db162fd0c2b1a1cbdecd24b6f741386e579d1c8a40b0e7bd292"
+    },
+    "interact": {
+      "path": "evidence/settings/local-environment-reconcile/logs/interact.log.gz",
+      "raw_bytes": 1141,
+      "raw_sha256": "3ce1471d11813122d613e7833d7138cadb9943852811d5ac1e2dd7717a12c1ef",
+      "gzip_sha256": "86dd704917254ecab327136e41f4f20658a7583d7cc9f32b6449cb9ff27dd4ac"
+    },
+    "stream": {
+      "path": "evidence/settings/local-environment-reconcile/logs/stream.log.gz",
+      "raw_bytes": 1095,
+      "raw_sha256": "cdbb792ee8039fdf144d007a6270555be1d24f038fbfce9c2a1e6af4aa2d0e84",
+      "gzip_sha256": "a179d0d517f115bb1834fe6b514aa313817af08410d0f78d02873181f58dc028"
+    },
+    "launch": {
+      "path": "evidence/settings/local-environment-reconcile/logs/launch.log.gz",
+      "raw_bytes": 676,
+      "raw_sha256": "3539ff8098ae827a47943a5c612379c9ee43c20dd3a19b79a75feee65c090331",
+      "gzip_sha256": "1146b25f11f8974b3513fae75195274e810bef03b9b2841598166707741a2d49"
+    }
+  }
+}
