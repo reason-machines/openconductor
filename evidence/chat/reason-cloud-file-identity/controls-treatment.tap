@@ -1,0 +1,116 @@
+(node:94) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:101) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Read and NotebookRead keep the primary location object, including Session ID
+ok 1 - Read and NotebookRead keep the primary location object, including Session ID
+  ---
+  duration_ms: 1.931994
+  type: 'test'
+  ...
+# Subtest: split Write/Edit rows retain each diff's own location and Session ID
+ok 2 - split Write/Edit rows retain each diff's own location and Session ID
+  ---
+  duration_ms: 1.274139
+  type: 'test'
+  ...
+# Subtest: raw-input early return keeps name/input precedence and matching cloud identity
+ok 3 - raw-input early return keeps name/input precedence and matching cloud identity
+  ---
+  duration_ms: 0.168641
+  type: 'test'
+  ...
+# Subtest: raw-input relative file path retains explicitly reported identity
+ok 4 - raw-input relative file path retains explicitly reported identity
+  ---
+  duration_ms: 0.195363
+  type: 'test'
+  ...
+# Subtest: raw-input override never inherits an unrelated cloud location
+ok 5 - raw-input override never inherits an unrelated cloud location
+  ---
+  duration_ms: 0.197777
+  type: 'test'
+  ...
+# Subtest: raw-input exact raw match precedes another location's relative alias
+ok 6 - raw-input exact raw match precedes another location's relative alias
+  ---
+  duration_ms: 0.129811
+  type: 'test'
+  ...
+# Subtest: ambiguous relative aliases do not fabricate a target or Session ID
+ok 7 - ambiguous relative aliases do not fabricate a target or Session ID
+  ---
+  duration_ms: 0.157149
+  type: 'test'
+  ...
+# Subtest: a reported diff path supplies identity when the primary location is absent
+ok 8 - a reported diff path supplies identity when the primary location is absent
+  ---
+  duration_ms: 0.142726
+  type: 'test'
+  ...
+# Subtest: legacy incomplete path objects stay untyped rather than being made local
+ok 9 - legacy incomplete path objects stay untyped rather than being made local
+  ---
+  duration_ms: 0.367408
+  type: 'test'
+  ...
+# Subtest: explicit cloud absolute path equal to exact diff key cannot open locally: cloud-child
+ok 10 - explicit cloud absolute path equal to exact diff key cannot open locally: cloud-child
+  ---
+  duration_ms: 43.724578
+  type: 'test'
+  ...
+# Subtest: explicit cloud absolute path equal to exact diff key cannot open locally: cloud-parent
+ok 11 - explicit cloud absolute path equal to exact diff key cannot open locally: cloud-parent
+  ---
+  duration_ms: 8.749126
+  type: 'test'
+  ...
+# Subtest: explicit cloud relative path equal to local diff key cannot open locally
+ok 12 - explicit cloud relative path equal to local diff key cannot open locally
+  ---
+  duration_ms: 7.772993
+  type: 'test'
+  ...
+# Subtest: local target after cloud still opens the local diff
+ok 13 - local target after cloud still opens the local diff
+  ---
+  duration_ms: 6.70155
+  type: 'test'
+  ...
+# Subtest: untyped local absolute paths keep cwd normalization and viewer routing
+ok 14 - untyped local absolute paths keep cwd normalization and viewer routing
+  ---
+  duration_ms: 8.703379
+  type: 'test'
+  ...
+# Subtest: untyped outside-worktree absolute paths retain the literal cloud notice
+ok 15 - untyped outside-worktree absolute paths retain the literal cloud notice
+  ---
+  duration_ms: 6.708315
+  type: 'test'
+  ...
+# Subtest: untyped exact absolute diff matches keep legacy precedence
+ok 16 - untyped exact absolute diff matches keep legacy precedence
+  ---
+  duration_ms: 4.956709
+  type: 'test'
+  ...
+# Subtest: ChatPanel forwards the exact target object and original cloud string
+ok 17 - ChatPanel forwards the exact target object and original cloud string
+  ---
+  duration_ms: 2.225235
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 685.789382

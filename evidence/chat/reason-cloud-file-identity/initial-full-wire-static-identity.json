@@ -1,0 +1,131 @@
+{
+  "author": "Conductor Rebuild",
+  "checked_main": "74c004a95d7b10072f54f71ca611f22c50944f64",
+  "classification": "INITIAL_BROADER_STATIC_PROPOSAL_IDENTITY_ONLY_NOT_THE_EXECUTED_PROBE",
+  "production_files": {
+    "src/features/chat/reasonChat.ts": "06cb361e2298c25f708553ba1256a20d092318dc50e2bdd127db8a19736640fb",
+    "src/features/chat/reason.ts": "cb07a5ec7dc2a8406d9021848280cf9acc83445c371390b94c6a57a290b1cf5b",
+    "src/features/chat/reducer.ts": "9b4783c08f496b05ebdc99a141f52b13c06a4b46f3f1a240a780ef5535d22ec4",
+    "src/features/chat/persist.ts": "1c0cc086cd028248e27615fe6169c314ed1fe4d44bbdd4926dc6553099262441",
+    "src/features/chat/view.ts": "132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43",
+    "src/features/chat/conductorTools.ts": "05c3a85bed997b1114e1696d083855d4e39c5d614fe57ddeb0bade8bde7cc64a",
+    "src/features/chat/Transcript.tsx": "8b13f23d0fec69db4fa1311cb901fdf936c18a267f8f7f47f56aafca1747f1e8",
+    "src/features/chat/ToolRows.tsx": "399c0f2bd7bf1dbb57ae7c70252d6875e92e4414683146a8cd7964208259fb1b",
+    "src/components/WorkspaceView.tsx": "1e558c044ce5dda41a33420ef82ad00123af97adaed892f9336c77b9d1f84935",
+    "src-tauri/src/reason_acp/provider.rs": "13040f83f62c312683dce1433e24c79b37278546026efd1947b4d1a64fcb72ea",
+    "src-tauri/src/reason_acp/updates.rs": "a38f31d40f38a450cb9cdff0202977d8c4208ca6364907c16e0b497e27670db5",
+    "src-tauri/src/reason_acp/wire.rs": "96dee0f64c933bcaa9c60bc992f30a2fe190a625db540bfb8c350d6a4f6933dd",
+    "src-tauri/src/reason_acp/cli.rs": "74069ac8307234cc20376451965aab768a5e1ac6b018dea4a4c5f58f5c9b6300"
+  },
+  "rust_source_spans": [
+    {
+      "path": "src-tauri/src/reason_acp/provider.rs",
+      "name": "ProviderEvent",
+      "start_byte": 4222,
+      "end_byte": 5238,
+      "sha256": "d1eb52b7063bb26e81f7a696d9b085ed144f22ff46965816c1432ccceab3e8e2",
+      "text": "#[derive(Debug, Clone, PartialEq)]\npub enum ProviderEvent {\n    /// The chat's Reason Session id; persist it to resume after a restart.\n    SessionStarted {\n        session_id: String,\n    },\n    Agent(AgentEvent),\n    TurnEnded(TurnEnd),\n    Usage {\n        input_tokens: Option<u64>,\n        output_tokens: Option<u64>,\n    },\n    /// Something the app should tell the user about the chat, e.g. that a\n    /// requested model is not offered and Reason's default runs instead.\n    Notice(String),\n    /// The agent waits on the user: Reason asks to run a tool\n    /// (`session/request_permission`, answered with\n    /// [`ReasonProvider::answer_permission`]); Claude Code also asks to\n    /// approve a plan or answer questions (`crate::claude_chat::interact`).\n    PermissionRequested(PermissionRequest),\n    /// A request was answered or withdrawn.\n    PermissionResolved {\n        request_id: String,\n    },\n    /// The model and effort the chat's Session ran its last turn on.\n    SessionModel(RunningModel),\n}"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/provider.rs",
+      "name": "ModelOption",
+      "start_byte": 5313,
+      "end_byte": 5636,
+      "sha256": "03ac2a2fc9ae05b6b8baa841fdcd889a0f307f74211be42fb22e3da70f7dfbe4",
+      "text": "#[derive(Debug, Clone, PartialEq, Eq)]\npub struct ModelOption {\n    /// Reason model id, e.g. `byok:anthropic:claude-opus-5-5`; `default` is Auto.\n    pub value: String,\n    /// Reason's name for it, e.g. `Claude Opus 5.5`.\n    pub name: String,\n    /// e.g. `Claude \u00b7 Subscription`.\n    pub description: Option<String>,\n}"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/provider.rs",
+      "name": "ModelList",
+      "start_byte": 5701,
+      "end_byte": 5824,
+      "sha256": "f8a83d2abd727fe9d5dc740ecd4695571b3ab89476a271ab4f9562d7971a474a",
+      "text": "#[derive(Debug, Clone, PartialEq, Eq)]\npub struct ModelList {\n    pub current: String,\n    pub options: Vec<ModelOption>,\n}"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/provider.rs",
+      "name": "PermissionRequest",
+      "start_byte": 6793,
+      "end_byte": 7070,
+      "sha256": "09321da9190ed472344313cffdb560393c1ae725aa00cd5051a113e420e85b77",
+      "text": "#[derive(Debug, Clone, PartialEq)]\npub struct PermissionRequest {\n    /// Provider-made id the answer names.\n    pub request_id: String,\n    /// The tool call's title, e.g. `bash: rm -rf build`.\n    pub title: String,\n    pub options: Vec<PermissionOption>,\n    pub ask: Ask,\n}"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/provider.rs",
+      "name": "Ask",
+      "start_byte": 7367,
+      "end_byte": 7817,
+      "sha256": "3537232d55ad508bebfb0192b4cc24d480974c434000da4bb8a2637b6c3fef2b",
+      "text": "#[derive(Debug, Clone, PartialEq)]\npub enum Ask {\n    /// Run this tool call? `tool` is the tool's name (`Bash`) or ACP kind\n    /// (`execute`), empty when unknown; `input` its arguments, `Null` when\n    /// the agent sent none. Answered with one of the request's options.\n    Tool { tool: String, input: Value },\n    /// Approve this plan, or keep planning.\n    Plan { plan: String },\n    /// Answer these questions.\n    Questions(Vec<Question>),\n}"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/provider.rs",
+      "name": "Question",
+      "start_byte": 7819,
+      "end_byte": 7993,
+      "sha256": "3324709c6bfbb6861d39b1885ca62ff53ca77fb2c8c01ddacd5d7df1b1de0ef5",
+      "text": "#[derive(Debug, Clone, PartialEq)]\npub struct Question {\n    pub header: String,\n    pub question: String,\n    pub options: Vec<QuestionOption>,\n    pub multi_select: bool,\n}"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/provider.rs",
+      "name": "QuestionOption",
+      "start_byte": 7995,
+      "end_byte": 8119,
+      "sha256": "0e82487b1a71fd4aae4b7272637dbe15003c1c5915d3f7c242c79b8ff2dbb518",
+      "text": "#[derive(Debug, Clone, PartialEq)]\npub struct QuestionOption {\n    pub label: String,\n    pub description: Option<String>,\n}"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/provider.rs",
+      "name": "PermissionOption",
+      "start_byte": 8171,
+      "end_byte": 8380,
+      "sha256": "a015fa8d97a82ff2ad1ce59f86dc49f55e172410e643bea8b18d3c4671345a80",
+      "text": "#[derive(Debug, Clone, PartialEq)]\npub struct PermissionOption {\n    pub option_id: String,\n    pub name: String,\n    /// `allow_once`, `allow_always`, `reject_once` or `reject_always`.\n    pub kind: String,\n}"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/provider.rs",
+      "name": "TurnEnd",
+      "start_byte": 9000,
+      "end_byte": 9407,
+      "sha256": "7c016566fb942f1856fe419b7dfd1429a93474bad4afd32d33d6555e9e6f7071",
+      "text": "#[derive(Debug, Clone, PartialEq)]\npub enum TurnEnd {\n    Completed,\n    /// Stopped by the user.\n    Cancelled,\n    /// A follow-up sent during the turn took over the Session.\n    Superseded,\n    Failed(String),\n    /// Explicit Claude `result.is_error`, not inferred from a failure status or Stop.\n    /// It is the turn's terminal message, so preceding text is not its preview.\n    ResultError(String),\n}"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/provider.rs",
+      "name": "SessionInfo",
+      "start_byte": 9518,
+      "end_byte": 9674,
+      "sha256": "71952cec45debe57c31647153a278f7550819bd1d83efd2d126e4d63e5a25f51",
+      "text": "#[derive(Debug, Clone, PartialEq)]\npub struct SessionInfo {\n    pub session_id: String,\n    pub title: Option<String>,\n    pub updated_at: Option<String>,\n}"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/cli.rs",
+      "name": "RunningModel",
+      "start_byte": 13041,
+      "end_byte": 13298,
+      "sha256": "7cecaa958c2f9f4573aa51610f49feb3b4e3c95db6af07769061ddc126de08ef",
+      "text": "#[derive(Debug, Clone, PartialEq, Eq)]\npub struct RunningModel {\n    /// Reason model id, e.g. `byok:anthropic:claude-opus-5-5`.\n    pub model: String,\n    /// Reasoning effort, e.g. `high`; `None` when Reason reports none.\n    pub effort: Option<String>,\n}"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/provider.rs",
+      "name": "session-update-notification-arm-body",
+      "start_byte": 44306,
+      "end_byte": 45623,
+      "sha256": "a1bf1c48955cdef0656b3cced60bb6c2dd6d90f1557de0dae4ed76a34c57d3ee",
+      "text": "            let routed = {\n                let mut s = shared.lock().unwrap();\n                let sid = params[\"sessionId\"].as_str().unwrap_or_default();\n                let chat_id = s.by_session.get(sid).cloned();\n                chat_id.and_then(|id| {\n                    let c = s.chats.get_mut(&id)?;\n                    if let Some(cloud) = computer_is_cloud(&params[\"update\"]) {\n                        c.on_cloud = cloud;\n                    }\n                    let ctx = UpdateContext {\n                        cwd: &c.cwd,\n                        turn_running: c.turn.is_some(),\n                        in_text: c.turn.as_ref().is_some_and(|t| t.in_text),\n                        cloud_session: c.session_id.as_deref().filter(|_| c.on_cloud),\n                    };\n                    let ev = parse_update(&params[\"update\"], ctx)?;\n                    if let Some(t) = &mut c.turn {\n                        t.in_text = matches!(ev, AgentEvent::Text(_));\n                        if let AgentEvent::Error(e) = &ev {\n                            t.error = Some(e.clone());\n                        }\n                    }\n                    Some((id, ev))\n                })\n            };\n            if let Some((chat, ev)) = routed {\n                sink(&chat, ProviderEvent::Agent(ev));\n            }"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/updates.rs",
+      "start_byte": 0,
+      "end_byte": 11211,
+      "sha256": "a38f31d40f38a450cb9cdff0202977d8c4208ca6364907c16e0b497e27670db5"
+    },
+    {
+      "path": "src-tauri/src/reason_acp/wire.rs",
+      "start_byte": 0,
+      "end_byte": 6137,
+      "sha256": "96dee0f64c933bcaa9c60bc992f30a2fe190a625db540bfb8c350d6a4f6933dd"
+    }
+  ],
+  "statement": "Preserves the initial 14-span/13-file static closure. Whole wire.rs and provider/cli type declarations were read and identity-checked, but final admitted executed probe instead used source.json exact 8 Rust spans/12 files. This is not additional execution or compile evidence. No product edits."
+}

@@ -12,6 +12,7 @@ import { EllipsisIcon, MessageSquarePlusIcon, SplitIcon, Undo2Icon } from "../..
 import { turnMenuItems, TURN_MENU_TOOLTIP, TURN_MENU_TRIGGER_LABEL, type TurnMenuItem } from "./turnMenu.ts";
 import { LinkMenuNotify, LinkWithMenu } from "./LinkMenu.tsx";
 import type { ChatTranscript } from "./reducer.ts";
+import type { ReasonPath } from "./reason.ts";
 import { buildRows, isToolExpanded, type PartView, type ReportOrigin } from "./view.ts";
 import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBlock, type DisplayRow, type ToolSummary } from "./toolGroups.ts";
 import { Markdown, type MarkdownOptions } from "./markdown.ts";
@@ -60,7 +61,7 @@ export interface TranscriptProps {
   /** The workspace folder, so tool rows show paths inside it relative. */
   workspacePath?: string;
   /** A file badge in a tool row was clicked. */
-  onOpenFile?: (path: string) => void;
+  onOpenFile?: (path: string, target?: ReasonPath) => void;
   /** Clock for the footer's time of day (tests pin it). */
   now?: () => number;
   /** Toasts, e.g. a markdown link's "Copy link address" (LinkMenu.tsx). */
@@ -194,7 +195,7 @@ interface RowContext {
   resetDisabled: boolean;
   turnFooter?: (turnId: string) => ReactNode;
   workspacePath?: string;
-  onOpenFile?: (path: string) => void;
+  onOpenFile?: (path: string, target?: ReasonPath) => void;
   now: () => number;
   toolNow: () => number;
   notify?: TranscriptProps["notify"];
@@ -406,7 +407,7 @@ function Part({ partKey, part, preview = false, group, ctx }: { partKey: string;
               started: { open: ctx.isOpen(`${call.id}-started`), onToggle: () => ctx.onToggle(`${call.id}-started`) },
             } : undefined}
             workspacePath={ctx.workspacePath}
-            onOpenFile={ctx.onOpenFile}
+            onOpenFile={ctx.onOpenFile ? (path) => ctx.onOpenFile?.(path, call.tool.fileTarget) : undefined}
           />
         </div>
       );

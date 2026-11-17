@@ -1,0 +1,718 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Read and NotebookRead keep the primary location object, including Session ID
+ok 1 - Read and NotebookRead keep the primary location object, including Session ID
+  ---
+  duration_ms: 1.505279
+  type: 'test'
+  ...
+# Subtest: split Write/Edit rows retain each diff's own location and Session ID
+ok 2 - split Write/Edit rows retain each diff's own location and Session ID
+  ---
+  duration_ms: 1.299125
+  type: 'test'
+  ...
+# Subtest: raw-input early return keeps name/input precedence and matching cloud identity
+ok 3 - raw-input early return keeps name/input precedence and matching cloud identity
+  ---
+  duration_ms: 0.167384
+  type: 'test'
+  ...
+# Subtest: raw-input relative file path retains explicitly reported identity
+ok 4 - raw-input relative file path retains explicitly reported identity
+  ---
+  duration_ms: 0.134592
+  type: 'test'
+  ...
+# Subtest: raw-input override never inherits an unrelated cloud location
+ok 5 - raw-input override never inherits an unrelated cloud location
+  ---
+  duration_ms: 0.158238
+  type: 'test'
+  ...
+# Subtest: raw-input exact raw match precedes another location's relative alias
+ok 6 - raw-input exact raw match precedes another location's relative alias
+  ---
+  duration_ms: 0.165858
+  type: 'test'
+  ...
+# Subtest: ambiguous relative aliases do not fabricate a target or Session ID
+ok 7 - ambiguous relative aliases do not fabricate a target or Session ID
+  ---
+  duration_ms: 0.191892
+  type: 'test'
+  ...
+# Subtest: a reported diff path supplies identity when the primary location is absent
+ok 8 - a reported diff path supplies identity when the primary location is absent
+  ---
+  duration_ms: 0.149165
+  type: 'test'
+  ...
+# Subtest: legacy incomplete path objects stay untyped rather than being made local
+ok 9 - legacy incomplete path objects stay untyped rather than being made local
+  ---
+  duration_ms: 0.283129
+  type: 'test'
+  ...
+# Subtest: explicit cloud absolute path equal to exact diff key cannot open locally: cloud-child
+ok 10 - explicit cloud absolute path equal to exact diff key cannot open locally: cloud-child
+  ---
+  duration_ms: 40.182739
+  type: 'test'
+  ...
+# Subtest: explicit cloud absolute path equal to exact diff key cannot open locally: cloud-parent
+ok 11 - explicit cloud absolute path equal to exact diff key cannot open locally: cloud-parent
+  ---
+  duration_ms: 15.653454
+  type: 'test'
+  ...
+# Subtest: explicit cloud relative path equal to local diff key cannot open locally
+ok 12 - explicit cloud relative path equal to local diff key cannot open locally
+  ---
+  duration_ms: 11.887127
+  type: 'test'
+  ...
+# Subtest: local target after cloud still opens the local diff
+ok 13 - local target after cloud still opens the local diff
+  ---
+  duration_ms: 10.409307
+  type: 'test'
+  ...
+# Subtest: untyped local absolute paths keep cwd normalization and viewer routing
+ok 14 - untyped local absolute paths keep cwd normalization and viewer routing
+  ---
+  duration_ms: 12.242159
+  type: 'test'
+  ...
+# Subtest: untyped outside-worktree absolute paths retain the literal cloud notice
+ok 15 - untyped outside-worktree absolute paths retain the literal cloud notice
+  ---
+  duration_ms: 8.025157
+  type: 'test'
+  ...
+# Subtest: untyped exact absolute diff matches keep legacy precedence
+ok 16 - untyped exact absolute diff matches keep legacy precedence
+  ---
+  duration_ms: 7.843724
+  type: 'test'
+  ...
+# Subtest: ChatPanel forwards the exact target object and original cloud string
+ok 17 - ChatPanel forwards the exact target object and original cloud string
+  ---
+  duration_ms: 2.204942
+  type: 'test'
+  ...
+# (node:91) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: default Read preserves its primary location instead of a same-path child diff
+ok 18 - default Read preserves its primary location instead of a same-path child diff
+  ---
+  duration_ms: 0.918395
+  type: 'test'
+  ...
+# (node:99) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude Code, Reason and Codex give Conductor the same tool calls for one turn
+ok 19 - Claude Code, Reason and Codex give Conductor the same tool calls for one turn
+  ---
+  duration_ms: 3.916346
+  type: 'test'
+  ...
+# Subtest: Codex: the shell wrapper is dropped and single command actions become Read/Grep/LS (Conductor's Kst)
+ok 20 - Codex: the shell wrapper is dropped and single command actions become Read/Grep/LS (Conductor's Kst)
+  ---
+  duration_ms: 0.389421
+  type: 'test'
+  ...
+# Subtest: Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)
+ok 21 - Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)
+  ---
+  duration_ms: 0.255059
+  type: 'test'
+  ...
+# Subtest: Codex: MCP tool calls are mcp__server__tool with their arguments
+ok 22 - Codex: MCP tool calls are mcp__server__tool with their arguments
+  ---
+  duration_ms: 0.334645
+  type: 'test'
+  ...
+# Subtest: Reason: a tool with no Claude Code counterpart keeps its title for Conductor's generic row
+ok 23 - Reason: a tool with no Claude Code counterpart keeps its title for Conductor's generic row
+  ---
+  duration_ms: 0.199731
+  type: 'test'
+  ...
+# Subtest: row text: Read lines, Grep matches, generic summary
+ok 24 - row text: Read lines, Grep matches, generic summary
+  ---
+  duration_ms: 1.219021
+  type: 'test'
+  ...
+# Subtest: line counts follow a line diff
+ok 25 - line counts follow a line diff
+  ---
+  duration_ms: 0.222597
+  type: 'test'
+  ...
+# Subtest: every kind in Conductor's registry resolves by name or prefix (D1o, P1o)
+ok 26 - every kind in Conductor's registry resolves by name or prefix (D1o, P1o)
+  ---
+  duration_ms: 0.363008
+  type: 'test'
+  ...
+# Subtest: Skill and SlashCommand labels (_po, Cpo)
+ok 27 - Skill and SlashCommand labels (_po, Cpo)
+  ---
+  duration_ms: 0.334105
+  type: 'test'
+  ...
+# Subtest: a sub-agent row needs a type other than general-purpose (bpo vs Ypo)
+ok 28 - a sub-agent row needs a type other than general-purpose (bpo vs Ypo)
+  ---
+  duration_ms: 0.47988
+  type: 'test'
+  ...
+# Subtest: AskUserQuestion results (Tpo)
+ok 29 - AskUserQuestion results (Tpo)
+  ---
+  duration_ms: 0.786746
+  type: 'test'
+  ...
+# Subtest: task results parse from JSON and from Claude Code's text (epo, jki)
+ok 30 - task results parse from JSON and from Claude Code's text (epo, jki)
+  ---
+  duration_ms: 0.656109
+  type: 'test'
+  ...
+# Subtest: terminal output, background status and file names (Dpo, R0o, xZe)
+ok 31 - terminal output, background status and file names (Dpo, R0o, xZe)
+  ---
+  duration_ms: 0.237444
+  type: 'test'
+  ...
+# Subtest: swarm messages and wake-ups (qpo, Spo)
+ok 32 - swarm messages and wake-ups (qpo, Spo)
+  ---
+  duration_ms: 2.587919
+  type: 'test'
+  ...
+# Subtest: Codex collaboration calls (_0o)
+ok 33 - Codex collaboration calls (_0o)
+  ---
+  duration_ms: 0.705426
+  type: 'test'
+  ...
+# (node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a saved chat restores to the same messages and turn state
+ok 34 - a saved chat restores to the same messages and turn state
+  ---
+  duration_ms: 2.273715
+  type: 'test'
+  ...
+# Subtest: only changed messages are written; a turn's state rides on its first message
+ok 35 - only changed messages are written; a turn's state rides on its first message
+  ---
+  duration_ms: 0.425098
+  type: 'test'
+  ...
+# Subtest: rows carry the columns Conductor filters on
+ok 36 - rows carry the columns Conductor filters on
+  ---
+  duration_ms: 0.313111
+  type: 'test'
+  ...
+# Subtest: Reset chat deletes the dropped turns' rows
+ok 37 - Reset chat deletes the dropped turns' rows
+  ---
+  duration_ms: 0.48467
+  type: 'test'
+  ...
+# Subtest: a failed turn keeps its error; a turn running at quit comes back cancelled
+ok 38 - a failed turn keeps its error; a turn running at quit comes back cancelled
+  ---
+  duration_ms: 0.401602
+  type: 'test'
+  ...
+# Subtest: unreadable rows are skipped and messages take the chat's id
+ok 39 - unreadable rows are skipped and messages take the chat's id
+  ---
+  duration_ms: 0.215962
+  type: 'test'
+  ...
+# Subtest: the saver batches changes, writes one at a time, and retries a failed write on the next change
+ok 40 - the saver batches changes, writes one at a time, and retries a failed write on the next change
+  ---
+  duration_ms: 0.691677
+  type: 'test'
+  ...
+# Subtest: a Reset chat goes with the write that deletes the turns, and is retried until it is written
+ok 41 - a Reset chat goes with the write that deletes the turns, and is retried until it is written
+  ---
+  duration_ms: 0.401357
+  type: 'test'
+  ...
+# Subtest: a Reset chat that deletes nothing still writes the rewind
+ok 42 - a Reset chat that deletes nothing still writes the rewind
+  ---
+  duration_ms: 0.499893
+  type: 'test'
+  ...
+# (node:115) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude result wire usage survives final upserts, persistence and replay without duplication
+ok 43 - Claude result wire usage survives final upserts, persistence and replay without duplication
+  ---
+  duration_ms: 4.517434
+  type: 'test'
+  ...
+# Subtest: usage absence, explicit zero and partial counts remain distinct
+ok 44 - usage absence, explicit zero and partial counts remain distinct
+  ---
+  duration_ms: 0.968716
+  type: 'test'
+  ...
+# Subtest: an empty successful Reason turn is a retryable failure, not a timestamp-only reply
+ok 45 - an empty successful Reason turn is a retryable failure, not a timestamp-only reply
+  ---
+  duration_ms: 0.510263
+  type: 'test'
+  ...
+# Subtest: one chat shows a local home path, then a cloud /repo path in a follow-up
+ok 46 - one chat shows a local home path, then a cloud /repo path in a follow-up
+  ---
+  duration_ms: 5.78009
+  type: 'test'
+  ...
+# Subtest: a tool row updates in place and text after it starts a new block
+ok 47 - a tool row updates in place and text after it starts a new block
+  ---
+  duration_ms: 0.459603
+  type: 'test'
+  ...
+# Subtest: device_not_found fails the turn with the error, not a reply
+ok 48 - device_not_found fails the turn with the error, not a reply
+  ---
+  duration_ms: 0.224757
+  type: 'test'
+  ...
+# Subtest: a follow-up during a turn supersedes it; the end goes to the older turn
+ok 49 - a follow-up during a turn supersedes it; the end goes to the older turn
+  ---
+  duration_ms: 0.320369
+  type: 'test'
+  ...
+# Subtest: a mid-turn report is attributed to another session, never the user
+ok 50 - a mid-turn report is attributed to another session, never the user
+  ---
+  duration_ms: 0.218761
+  type: 'test'
+  ...
+# Subtest: Stop ends the turn cancelled with the prompt offered again; a failed call fails it
+ok 51 - Stop ends the turn cancelled with the prompt offered again; a failed call fails it
+  ---
+  duration_ms: 0.459887
+  type: 'test'
+  ...
+# Subtest: a stopped turn marks its prompt cancelled and records start and end times
+ok 52 - a stopped turn marks its prompt cancelled and records start and end times
+  ---
+  duration_ms: 0.452801
+  type: 'test'
+  ...
+# Subtest: a turn stopped before its prompt reached Reason ends cancelled, leaving earlier open turns running
+ok 53 - a turn stopped before its prompt reached Reason ends cancelled, leaving earlier open turns running
+  ---
+  duration_ms: 0.259887
+  type: 'test'
+  ...
+# Subtest: a notice is a system message in the running turn
+ok 54 - a notice is a system message in the running turn
+  ---
+  duration_ms: 0.145639
+  type: 'test'
+  ...
+# Subtest: attachments show by name under the prompt
+ok 55 - attachments show by name under the prompt
+  ---
+  duration_ms: 0.136572
+  type: 'test'
+  ...
+# Subtest: startTurn can take the turn id that names the turn's checkpoints
+ok 56 - startTurn can take the turn id that names the turn's checkpoints
+  ---
+  duration_ms: 0.078224
+  type: 'test'
+  ...
+# (node:123) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: wire JSON from the backend parses into the mirror types
+ok 57 - wire JSON from the backend parses into the mirror types
+  ---
+  duration_ms: 1.548371
+  type: 'test'
+  ...
+# Subtest: plainText joins text blocks only
+ok 58 - plainText joins text blocks only
+  ---
+  duration_ms: 0.193397
+  type: 'test'
+  ...
+# Subtest: upsert appends, then replaces in place
+ok 59 - upsert appends, then replaces in place
+  ---
+  duration_ms: 1.131781
+  type: 'test'
+  ...
+# Subtest: text_delta starts and grows text blocks without mutating the previous transcript
+ok 60 - text_delta starts and grows text blocks without mutating the previous transcript
+  ---
+  duration_ms: 0.253623
+  type: 'test'
+  ...
+# Subtest: text_delta grows thinking blocks
+ok 61 - text_delta grows thinking blocks
+  ---
+  duration_ms: 0.202001
+  type: 'test'
+  ...
+# Subtest: bad deltas are rejected without changes
+ok 62 - bad deltas are rejected without changes
+  ---
+  duration_ms: 0.181869
+  type: 'test'
+  ...
+# Subtest: events for another session are rejected
+ok 63 - events for another session are rejected
+  ---
+  duration_ms: 0.160775
+  type: 'test'
+  ...
+# Subtest: turn_status tracks the active turn and keeps the error
+ok 64 - turn_status tracks the active turn and keeps the error
+  ---
+  duration_ms: 0.217104
+  type: 'test'
+  ...
+# Subtest: transcriptFromMessages keeps this session's messages and lets later copies win
+ok 65 - transcriptFromMessages keeps this session's messages and lets later copies win
+  ---
+  duration_ms: 0.361
+  type: 'test'
+  ...
+# Subtest: sender fields parse from the wire and decide the origin
+ok 66 - sender fields parse from the wire and decide the origin
+  ---
+  duration_ms: 0.39928
+  type: 'test'
+  ...
+# Subtest: a session report arriving mid-turn leaves the active turn running
+ok 67 - a session report arriving mid-turn leaves the active turn running
+  ---
+  duration_ms: 0.187486
+  type: 'test'
+  ...
+# Subtest: turn status keeps start and end times
+ok 68 - turn status keeps start and end times
+  ---
+  duration_ms: 0.149075
+  type: 'test'
+  ...
+# Subtest: truncateAfterTurn keeps the turn and everything before it, and drops later turns' statuses
+ok 69 - truncateAfterTurn keeps the turn and everything before it, and drops later turns' statuses
+  ---
+  duration_ms: 0.356714
+  type: 'test'
+  ...
+# (node:131) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: turn usage sums distinct result messages only, replayed upserts replace rather than add
+ok 70 - turn usage sums distinct result messages only, replayed upserts replace rather than add
+  ---
+  duration_ms: 2.568228
+  type: 'test'
+  ...
+# Subtest: turn attribution uses the first truthy assistant model, not a later assistant or another turn
+ok 71 - turn attribution uses the first truthy assistant model, not a later assistant or another turn
+  ---
+  duration_ms: 0.565879
+  type: 'test'
+  ...
+# Subtest: turn attribution falls back only to its original user's snapshot, not steering, reports or system data
+ok 72 - turn attribution falls back only to its original user's snapshot, not steering, reports or system data
+  ---
+  duration_ms: 0.395206
+  type: 'test'
+  ...
+# Subtest: missing historical models stay unknown, even when a later steering message has a model
+ok 73 - missing historical models stay unknown, even when a later steering message has a model
+  ---
+  duration_ms: 0.265195
+  type: 'test'
+  ...
+# Subtest: historical turn models survive the existing full-message save and restore boundary
+ok 74 - historical turn models survive the existing full-message save and restore boundary
+  ---
+  duration_ms: 0.660573
+  type: 'test'
+  ...
+# Subtest: a streaming assistant message marks its last text part as streaming and has no footer yet
+ok 75 - a streaming assistant message marks its last text part as streaming and has no footer yet
+  ---
+  duration_ms: 0.329554
+  type: 'test'
+  ...
+# Subtest: an empty assistant message shows while streaming (typing state) and is dropped once the turn ends
+ok 76 - an empty assistant message shows while streaming (typing state) and is dropped once the turn ends
+  ---
+  duration_ms: 0.24282
+  type: 'test'
+  ...
+# Subtest: tool calls pair with their results and tool-result carriers never render as user messages
+ok 77 - tool calls pair with their results and tool-result carriers never render as user messages
+  ---
+  duration_ms: 0.535609
+  type: 'test'
+  ...
+# Subtest: a tool call with no result after its turn ended is interrupted
+ok 78 - a tool call with no result after its turn ended is interrupted
+  ---
+  duration_ms: 0.337616
+  type: 'test'
+  ...
+# Subtest: a mid-turn child-session report renders as a report, not user input, and the turn keeps streaming
+ok 79 - a mid-turn child-session report renders as a report, not user input, and the turn keeps streaming
+  ---
+  duration_ms: 0.456468
+  type: 'test'
+  ...
+# Subtest: a finished turn ends with a footer carrying its final text; a failed turn also offers retry with the prompt
+ok 80 - a finished turn ends with a footer carrying its final text; a failed turn also offers retry with the prompt
+  ---
+  duration_ms: 0.339844
+  type: 'test'
+  ...
+# Subtest: a user toggle on a tool row wins over the expand-by-default setting
+ok 81 - a user toggle on a tool row wins over the expand-by-default setting
+  ---
+  duration_ms: 0.098454
+  type: 'test'
+  ...
+# Subtest: Reset chat applies to every turn with a reply except the chat's last
+ok 82 - Reset chat applies to every turn with a reply except the chat's last
+  ---
+  duration_ms: 0.212543
+  type: 'test'
+  ...
+# Subtest: a stopped turn's prompt is marked cancelled (Conductor's "Cancelled" caption); others are not
+ok 83 - a stopped turn's prompt is marked cancelled (Conductor's "Cancelled" caption); others are not
+  ---
+  duration_ms: 0.161197
+  type: 'test'
+  ...
+# Subtest: a finished turn's footer carries when the turn started and ended
+ok 84 - a finished turn's footer carries when the turn started and ended
+  ---
+  duration_ms: 0.154992
+  type: 'test'
+  ...
+# (node:139) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: frozen source-valid inputs retain all local/cloud and return-to-local controls
+ok 85 - frozen source-valid inputs retain all local/cloud and return-to-local controls
+  ---
+  duration_ms: 0.916145
+  type: 'test'
+  ...
+# Subtest: actual Rust routing/wire and Reason listener keep one chat/session, reject unknown session
+ok 86 - actual Rust routing/wire and Reason listener keep one chat/session, reject unknown session
+  ---
+  duration_ms: 1.245283
+  type: 'test'
+  ...
+# Subtest: adapter/reducer preserve local/cloud path, parent/child session and result identity
+ok 87 - adapter/reducer preserve local/cloud path, parent/child session and result identity
+  ---
+  duration_ms: 2.64172
+  type: 'test'
+  ...
+# Subtest: save/restore preserves path and output identity in the same conversation
+ok 88 - save/restore preserves path and output identity in the same conversation
+  ---
+  duration_ms: 1.507937
+  type: 'test'
+  ...
+# Subtest: live file target: local-read-diff\#0 (local, diff)
+ok 89 - live file target: local-read-diff\#0 (local, diff)
+  ---
+  duration_ms: 108.713708
+  type: 'test'
+  ...
+# Subtest: live file target: local-read-viewer\#0 (local, viewer)
+ok 90 - live file target: local-read-viewer\#0 (local, viewer)
+  ---
+  duration_ms: 88.098209
+  type: 'test'
+  ...
+# Subtest: live file target: cloud-read-diff\#0 (cloud, diff)
+ok 91 - live file target: cloud-read-diff\#0 (cloud, diff)
+  ---
+  duration_ms: 43.311359
+  type: 'test'
+  ...
+# Subtest: live file target: cloud-read-viewer\#0 (cloud, viewer)
+ok 92 - live file target: cloud-read-viewer\#0 (cloud, viewer)
+  ---
+  duration_ms: 63.636669
+  type: 'test'
+  ...
+# Subtest: live file target: cloud-write-viewer\#0 (cloud, viewer)
+ok 93 - live file target: cloud-write-viewer\#0 (cloud, viewer)
+  ---
+  duration_ms: 40.642116
+  type: 'test'
+  ...
+# Subtest: live file target: cloud-edit-diff\#0 (cloud, diff)
+ok 94 - live file target: cloud-edit-diff\#0 (cloud, diff)
+  ---
+  duration_ms: 35.48459
+  type: 'test'
+  ...
+# Subtest: live file target: cloud-multiple-diffs\#0 (cloud, diff)
+ok 95 - live file target: cloud-multiple-diffs\#0 (cloud, diff)
+  ---
+  duration_ms: 31.589406
+  type: 'test'
+  ...
+# Subtest: live file target: cloud-multiple-diffs\#1 (cloud, diff)
+ok 96 - live file target: cloud-multiple-diffs\#1 (cloud, diff)
+  ---
+  duration_ms: 34.393914
+  type: 'test'
+  ...
+# Subtest: live file target: child-literal-viewer\#0 (cloud, viewer)
+ok 97 - live file target: child-literal-viewer\#0 (cloud, viewer)
+  ---
+  duration_ms: 21.834782
+  type: 'test'
+  ...
+# Subtest: live file target: child-literal-diff\#0 (cloud, diff)
+ok 98 - live file target: child-literal-diff\#0 (cloud, diff)
+  ---
+  duration_ms: 16.941323
+  type: 'test'
+  ...
+# Subtest: live file target: local-read-after-return\#0 (local, viewer)
+ok 99 - live file target: local-read-after-return\#0 (local, viewer)
+  ---
+  duration_ms: 29.433652
+  type: 'test'
+  ...
+# Subtest: live file target: local-write-after-return\#0 (local, viewer)
+ok 100 - live file target: local-write-after-return\#0 (local, viewer)
+  ---
+  duration_ms: 19.317547
+  type: 'test'
+  ...
+# Subtest: live file target: local-edit-after-return\#0 (local, diff)
+ok 101 - live file target: local-edit-after-return\#0 (local, diff)
+  ---
+  duration_ms: 23.270528
+  type: 'test'
+  ...
+# Subtest: restored file target: local-read-diff\#0 (local, diff)
+ok 102 - restored file target: local-read-diff\#0 (local, diff)
+  ---
+  duration_ms: 22.344361
+  type: 'test'
+  ...
+# Subtest: restored file target: local-read-viewer\#0 (local, viewer)
+ok 103 - restored file target: local-read-viewer\#0 (local, viewer)
+  ---
+  duration_ms: 23.359457
+  type: 'test'
+  ...
+# Subtest: restored file target: cloud-read-diff\#0 (cloud, diff)
+ok 104 - restored file target: cloud-read-diff\#0 (cloud, diff)
+  ---
+  duration_ms: 28.636123
+  type: 'test'
+  ...
+# Subtest: restored file target: cloud-read-viewer\#0 (cloud, viewer)
+ok 105 - restored file target: cloud-read-viewer\#0 (cloud, viewer)
+  ---
+  duration_ms: 20.321704
+  type: 'test'
+  ...
+# Subtest: restored file target: cloud-write-viewer\#0 (cloud, viewer)
+ok 106 - restored file target: cloud-write-viewer\#0 (cloud, viewer)
+  ---
+  duration_ms: 32.113847
+  type: 'test'
+  ...
+# Subtest: restored file target: cloud-edit-diff\#0 (cloud, diff)
+ok 107 - restored file target: cloud-edit-diff\#0 (cloud, diff)
+  ---
+  duration_ms: 24.177545
+  type: 'test'
+  ...
+# Subtest: restored file target: cloud-multiple-diffs\#0 (cloud, diff)
+ok 108 - restored file target: cloud-multiple-diffs\#0 (cloud, diff)
+  ---
+  duration_ms: 34.405205
+  type: 'test'
+  ...
+# Subtest: restored file target: cloud-multiple-diffs\#1 (cloud, diff)
+ok 109 - restored file target: cloud-multiple-diffs\#1 (cloud, diff)
+  ---
+  duration_ms: 15.878494
+  type: 'test'
+  ...
+# Subtest: restored file target: child-literal-viewer\#0 (cloud, viewer)
+ok 110 - restored file target: child-literal-viewer\#0 (cloud, viewer)
+  ---
+  duration_ms: 15.269928
+  type: 'test'
+  ...
+# Subtest: restored file target: child-literal-diff\#0 (cloud, diff)
+ok 111 - restored file target: child-literal-diff\#0 (cloud, diff)
+  ---
+  duration_ms: 23.139322
+  type: 'test'
+  ...
+# Subtest: restored file target: local-read-after-return\#0 (local, viewer)
+ok 112 - restored file target: local-read-after-return\#0 (local, viewer)
+  ---
+  duration_ms: 15.976188
+  type: 'test'
+  ...
+# Subtest: restored file target: local-write-after-return\#0 (local, viewer)
+ok 113 - restored file target: local-write-after-return\#0 (local, viewer)
+  ---
+  duration_ms: 31.24083
+  type: 'test'
+  ...
+# Subtest: restored file target: local-edit-after-return\#0 (local, diff)
+ok 114 - restored file target: local-edit-after-return\#0 (local, diff)
+  ---
+  duration_ms: 22.630147
+  type: 'test'
+  ...
+# Subtest: write frozen reproduction witnesses and exact extracted callback identities
+ok 115 - write frozen reproduction witnesses and exact extracted callback identities
+  ---
+  duration_ms: 1.585736
+  type: 'test'
+  ...
+1..115
+# tests 115
+# suites 0
+# pass 115
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4745.676038
