@@ -160,9 +160,18 @@ function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anc
     selected.hunks.length > 0 && isPreviewablePath(selected.path);
   const [isPreviewing, setIsPreviewing] = useState(isPreviewable);
   useEffect(() => { setIsPreviewing(isPreviewable); }, [selected.path, isPreviewable]);
-  // No effect on edit availability: Conductor keeps preview as the default even
-  // when the file is editable (isEditing=false is the default; ⌘E enters edit mode).
-  useKeybindings(isPreviewable ? { "workspace.toggleFileEdit": () => setIsPreviewing((p) => !p) } : {});
+  // parity:diff.edit-in-viewer — ⌘E read-only↔edit toggle for code files (GAP-DIFF-01).
+  // Conductor keeps preview as default for markdown/HTML; for code files, edit mode is
+  // active by default (matching Conductor's bji behaviour) and ⌘E toggles to read-only.
+  const [isEditing, setIsEditing] = useState(true);
+  useEffect(() => { setIsEditing(true); }, [selected.path]);
+  // Editable when edit is non-null and the file is not a previewable markdown/HTML file.
+  const isEditableCode = !isPreviewable && edit !== null;
+  // Retained hidden files keep their mode, but only the visible file owns ⌘E.
+  useKeybindings(isVisible ? {
+    ...(isPreviewable ? { "workspace.toggleFileEdit": () => setIsPreviewing((p) => !p) } : {}),
+    ...(isEditableCode ? { "workspace.toggleFileEdit": () => setIsEditing((p) => !p) } : {}),
+  } : {});
   return (
     <div className="oc-files" hidden={!isVisible} style={!isVisible ? { display: "none" } : undefined}>
       {notes?.(f)}
@@ -187,9 +196,10 @@ function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anc
         notify={notify}
         onDiscard={diff.canDiscard ? () => diff.askDiscard(f) : undefined}
         onShowWhitespace={() => update({ ignoreWhitespace: false })}
-        edit={edit}
+        edit={isEditableCode ? (isEditing ? edit : undefined) : edit}
         isPreviewing={isPreviewing}
         onTogglePreview={isPreviewable ? () => setIsPreviewing((p) => !p) : undefined}
+        onToggleEdit={isEditableCode ? () => setIsEditing((p) => !p) : undefined}
         worktree={diff.worktree}
         tools={<LayoutToggle value={opts.layout} onChange={(layout) => update({ layout })} />}
         options={

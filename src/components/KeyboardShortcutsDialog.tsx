@@ -17,9 +17,10 @@ import { partGlyph, shortcutParts, spoken } from "../keybindings/shortcut.ts";
 import type { Shortcut } from "../keybindings/types.ts";
 import { CloseIcon, KeyboardIcon, SearchIcon } from "./Icons";
 import { useBoolPref } from "../settings/useBoolPref";
-import { useDialogMotion } from "./motion/dialogMotion";
+import { DialogFrame } from "./DialogFrame";
 
 export const KEYBOARD_SHORTCUTS_DIALOG_ID = "keyboard-shortcuts-dialog";
+const KEYBOARD_SHORTCUTS_TITLE_ID = "keyboard-shortcuts-dialog-title";
 
 export function Keys({ shortcut }: { shortcut: Shortcut }) {
   return (
@@ -65,20 +66,12 @@ export function KeyboardShortcutsDialog({ onClose, overrides = {} }: { onClose: 
   const rows = useMemo(() => helpRows(overrides, undefined, cloudUI), [overrides, cloudUI]);
   const groups = useMemo(() => groupRows(rows), [rows]);
   const results = useMemo(() => searchRows(rows, query), [rows, query]);
-  const ref = useDialogMotion<HTMLDivElement>();
 
   return (
-    <div className="modal-backdrop" ref={ref} data-dialog-motion="dialog" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div
-        className="modal ks-dialog"
-        role="dialog"
-        aria-modal="true"
-        aria-label={HELP_DIALOG_TITLE}
-        data-dialog-id={KEYBOARD_SHORTCUTS_DIALOG_ID}
-        onKeyDown={(e) => e.key === "Escape" && onClose()}
-      >
+    <DialogFrame kind="dialog" titleId={KEYBOARD_SHORTCUTS_TITLE_ID} className="ks-dialog" onClose={onClose}>
+      <div data-dialog-id={KEYBOARD_SHORTCUTS_DIALOG_ID}>
         <div className="modal-header">
-          <h2 className="ks-heading"><KeyboardIcon size={20} />{HELP_DIALOG_TITLE}</h2>
+          <h2 id={KEYBOARD_SHORTCUTS_TITLE_ID} className="ks-heading"><KeyboardIcon size={20} />{HELP_DIALOG_TITLE}</h2>
           <button className="icon-btn" aria-label="Close" onClick={onClose}><CloseIcon size={16} /></button>
         </div>
         <div className="ks-search">
@@ -102,6 +95,6 @@ export function KeyboardShortcutsDialog({ onClose, overrides = {} }: { onClose: 
           )}
         </div>
       </div>
-    </div>
+    </DialogFrame>
   );
 }

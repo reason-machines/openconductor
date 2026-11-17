@@ -27,3 +27,33 @@ test("a file opens in editors and Finder, not in terminals or git clients (Condu
   for (const id of ["finder", "cursor", "vscode", "zed", "xcode"]) assert.equal(supportsFileOpen(id), true, id);
   for (const id of ["terminal", "iterm", "ghostty", "warp", "github-desktop", "fork"]) assert.equal(supportsFileOpen(id), false, id);
 });
+
+// GAP-OPEN-01: confirm every catalog entry returns the correct supportsFileOpen value.
+// Catalog has 37 apps (Conductor 0.87.6 REA, sX); Windsurf is absent from that evidence.
+test("supportsFileOpen covers every catalog entry — all code editors true, all folder/terminal apps false", () => {
+  // All Code-type apps (IconType::Code in mod.rs) support file open.
+  const editors = [
+    // Primary editors
+    "cursor", "vscode", "vscode-short", "zed", "zed-preview", "zed-nightly",
+    "vscodium", "devin", "sublime", "xcode",
+    // JetBrains
+    "pycharm", "pycharm-ce", "intellij", "intellij-ce", "intellij-ultimate",
+    "intellij-community", "android-studio", "rider", "rubymine", "webstorm",
+    "phpstorm", "goland", "datagrip",
+    // Newer additions
+    "trae", "antigravity",
+  ];
+  for (const id of editors) assert.equal(supportsFileOpen(id), true, `${id} should support file open`);
+
+  // Finder is always offered and reveals the file in Finder (folder open by the backend); treated as
+  // supporting file open in the frontend — the file menu submenu includes it (Conductor's `pLr`).
+  assert.equal(supportsFileOpen("finder"), true, "finder should support file open (reveals file in Finder)");
+
+  // Terminal apps: IconType::Terminal — folder only, no file-level open.
+  const terminals = ["ghostty", "alacritty", "iterm", "wezterm", "warp", "hyper", "terminal"];
+  for (const id of terminals) assert.equal(supportsFileOpen(id), false, `${id} should not support file open`);
+
+  // Git/diff clients: IconType::Folder — folder only.
+  const gitClients = ["github-desktop", "sourcetree", "fork", "kaleidoscope"];
+  for (const id of gitClients) assert.equal(supportsFileOpen(id), false, `${id} should not support file open`);
+});
