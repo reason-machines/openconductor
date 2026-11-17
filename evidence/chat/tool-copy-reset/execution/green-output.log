@@ -1,0 +1,62 @@
+(node:88) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:95) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: plan: confirmation survives 1500 and 1999ms, then resets at 2000ms
+ok 1 - plan: confirmation survives 1500 and 1999ms, then resets at 2000ms
+  ---
+  duration_ms: 49.675132
+  type: 'test'
+  ...
+# Subtest: plan: every successful copy retains its independent 2000ms reset
+ok 2 - plan: every successful copy retains its independent 2000ms reset
+  ---
+  duration_ms: 8.610036
+  type: 'test'
+  ...
+# Subtest: plan: exact caller payload, propagation and delayed-fulfillment controls
+ok 3 - plan: exact caller payload, propagation and delayed-fulfillment controls
+  ---
+  duration_ms: 3.946722
+  type: 'test'
+  ...
+# Subtest: plan: absent caller payload exposes no copy button
+ok 4 - plan: absent caller payload exposes no copy button
+  ---
+  duration_ms: 2.792278
+  type: 'test'
+  ...
+# Subtest: subagent: confirmation survives 1500 and 1999ms, then resets at 2000ms
+ok 5 - subagent: confirmation survives 1500 and 1999ms, then resets at 2000ms
+  ---
+  duration_ms: 8.253812
+  type: 'test'
+  ...
+# Subtest: subagent: every successful copy retains its independent 2000ms reset
+ok 6 - subagent: every successful copy retains its independent 2000ms reset
+  ---
+  duration_ms: 7.136096
+  type: 'test'
+  ...
+# Subtest: subagent: exact caller payload, propagation and delayed-fulfillment controls
+ok 7 - subagent: exact caller payload, propagation and delayed-fulfillment controls
+  ---
+  duration_ms: 3.89986
+  type: 'test'
+  ...
+# Subtest: subagent: absent caller payload exposes no copy button
+ok 8 - subagent: absent caller payload exposes no copy button
+  ---
+  duration_ms: 3.209485
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1316.791615

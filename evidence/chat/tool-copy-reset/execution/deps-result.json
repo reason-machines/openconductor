@@ -1,0 +1,42 @@
+{
+  "start_gate_utc": "2026-11-17T22:04:37.973139+00:00",
+  "free_bytes_before": 14339514368,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "manifest_pass": 21,
+  "processes_before": "  PID COMMAND\n    1 bwrap\n    2 bash\n    3 socat\n    4 socat\n    7 bash\n   75 bash\n   76 python3\n   77 ps\n",
+  "exit_code": 0,
+  "install_end_utc": "2026-11-17T22:04:58.401098+00:00",
+  "installed": {
+    "react": {
+      "version": "18.3.1",
+      "expected": "18.3.1",
+      "identity_pass": true,
+      "manifest_sha256": "d4e68a5c96babb20cad1daafea8b78822eae45b341552cf5418d06a5304fa64c"
+    },
+    "react-test-renderer": {
+      "version": "18.3.1",
+      "expected": "18.3.1",
+      "identity_pass": true,
+      "manifest_sha256": "e3b09e5a62e134d5241b520715de45b63ff3568ccbbeeeb70601607c3136c811"
+    },
+    "typescript": {
+      "version": "5.9.3",
+      "expected": "5.9.3",
+      "identity_pass": true,
+      "manifest_sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    }
+  },
+  "frozen_manifest_pass": true,
+  "processes_after": "  PID  PPID COMMAND\n    1     0 bwrap\n    2     1 bash\n    3     2 socat\n    4     2 socat\n    7     2 bash\n   75     7 bash\n   90    75 python3\n   91    90 ps\n",
+  "no_node_npm_survivors": true,
+  "retained_deps_size": "334744289\truntime/node_modules",
+  "free_bytes_after_cleanup": 13924601856,
+  "disk_delta_bytes": 414912512,
+  "RSS": "not measured; 768MiB Node heap cap configured, not a measured RSS ceiling",
+  "actual_release_utc": "2026-11-17T22:04:58.623903+00:00"
+}
