@@ -1,0 +1,191 @@
+(node:74) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: claude: removing settled A cannot remove or resurrect it when B finishes read
+ok 1 - claude: removing settled A cannot remove or resurrect it when B finishes read
+  ---
+  duration_ms: 176.395602
+  type: 'test'
+  ...
+# Subtest: reason: removing settled A cannot remove or resurrect it when B finishes read
+ok 2 - reason: removing settled A cannot remove or resurrect it when B finishes read
+  ---
+  duration_ms: 63.146489
+  type: 'test'
+  ...
+# Subtest: reason: removing settled A cannot remove or resurrect it when B finishes write
+ok 3 - reason: removing settled A cannot remove or resurrect it when B finishes write
+  ---
+  duration_ms: 39.461118
+  type: 'test'
+  ...
+# Subtest: local /clear during B read separates the replacement from late original-owner settlement
+ok 4 - local /clear during B read separates the replacement from late original-owner settlement
+  ---
+  duration_ms: 20.499996
+  type: 'test'
+  ...
+# Subtest: local /clear during persisted-attachment copy stops old-chat delivery without touching the replacement
+ok 5 - local /clear during persisted-attachment copy stops old-chat delivery without touching the replacement
+  ---
+  duration_ms: 31.390881
+  type: 'test'
+  ...
+# Subtest: navigation and remount preserve pending read and permit one later send
+ok 6 - navigation and remount preserve pending read and permit one later send
+  ---
+  duration_ms: 18.486279
+  type: 'test'
+  ...
+# Subtest: navigation and remount preserve pending write and permit one later send
+ok 7 - navigation and remount preserve pending write and permit one later send
+  ---
+  duration_ms: 24.228332
+  type: 'test'
+  ...
+# (node:89) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: an attached file goes to .context/attachments/<random 6>/<name> in the workspace
+ok 8 - an attached file goes to .context/attachments/<random 6>/<name> in the workspace
+  ---
+  duration_ms: 0.835228
+  type: 'test'
+  ...
+# Subtest: file names cannot leave their folder or hide
+ok 9 - file names cannot leave their folder or hide
+  ---
+  duration_ms: 0.185788
+  type: 'test'
+  ...
+# Subtest: UTF-8 text goes inline; binary and oversized files are pointed at by path
+ok 10 - UTF-8 text goes inline; binary and oversized files are pointed at by path
+  ---
+  duration_ms: 0.261829
+  type: 'test'
+  ...
+# Subtest: persisted attachment chips retain display, inline content and staged IDs
+ok 11 - persisted attachment chips retain display, inline content and staged IDs
+  ---
+  duration_ms: 1.228563
+  type: 'test'
+  ...
+# Subtest: malformed persisted chips and unsafe staged paths are not restored
+ok 12 - malformed persisted chips and unsafe staged paths are not restored
+  ---
+  duration_ms: 0.221978
+  type: 'test'
+  ...
+# Subtest: files over the size limit are refused with a reason
+ok 13 - files over the size limit are refused with a reason
+  ---
+  duration_ms: 0.132409
+  type: 'test'
+  ...
+# (node:97) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: long paste attaches 5001 UTF-16 code units as the original text/plain file
+ok 14 - long paste attaches 5001 UTF-16 code units as the original text/plain file
+  ---
+  duration_ms: 1.114172
+  type: 'test'
+  ...
+# Subtest: long paste attaches 91 newline-split lines as the original text/plain file
+ok 15 - long paste attaches 91 newline-split lines as the original text/plain file
+  ---
+  duration_ms: 0.277188
+  type: 'test'
+  ...
+# Subtest: long paste attaches surrogate pairs counted as two units as the original text/plain file
+ok 16 - long paste attaches surrogate pairs counted as two units as the original text/plain file
+  ---
+  duration_ms: 0.259619
+  type: 'test'
+  ...
+# Subtest: long paste attaches unnormalized clipboard text as the original text/plain file
+ok 17 - long paste attaches unnormalized clipboard text as the original text/plain file
+  ---
+  duration_ms: 0.137033
+  type: 'test'
+  ...
+# Subtest: empty text, exact thresholds, short text and a disabled setting stay on the editor path
+ok 18 - empty text, exact thresholds, short text and a disabled setting stay on the editor path
+  ---
+  duration_ms: 0.231113
+  type: 'test'
+  ...
+# Subtest: ordinary file and image clipboards take precedence over large text
+ok 19 - ordinary file and image clipboards take precedence over large text
+  ---
+  duration_ms: 0.201833
+  type: 'test'
+  ...
+# Subtest: valid atomic composer data keeps its editor path; malformed custom data falls back to text
+ok 20 - valid atomic composer data keeps its editor path; malformed custom data falls back to text
+  ---
+  duration_ms: 0.287534
+  type: 'test'
+  ...
+# (node:105) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:105) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: actual Composer and WorkspaceView submit handlers retain text and chips when native copy rejects
+ok 21 - actual Composer and WorkspaceView submit handlers retain text and chips when native copy rejects
+  ---
+  duration_ms: 3.946584
+  type: 'test'
+  ...
+# Subtest: actual submit snapshots atoms before asynchronous copy; later draft edits cannot retarget the sent file
+ok 22 - actual submit snapshots atoms before asynchronous copy; later draft edits cannot retarget the sent file
+  ---
+  duration_ms: 2.246782
+  type: 'test'
+  ...
+# Subtest: actual host generation invalidation sends nothing and previously copied paths do not gain a fabricated receipt
+ok 23 - actual host generation invalidation sends nothing and previously copied paths do not gain a fabricated receipt
+  ---
+  duration_ms: 2.087914
+  type: 'test'
+  ...
+# Subtest: actual attachment-only host send keeps transport bytes and only confirmed display targets
+ok 24 - actual attachment-only host send keeps transport bytes and only confirmed display targets
+  ---
+  duration_ms: 2.619127
+  type: 'test'
+  ...
+# Subtest: actual opposite send and slash interception preserve the scalar command contract
+ok 25 - actual opposite send and slash interception preserve the scalar command contract
+  ---
+  duration_ms: 1.164772
+  type: 'test'
+  ...
+# (node:113) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: constants match Conductor's draft-attachments store
+ok 26 - constants match Conductor's draft-attachments store
+  ---
+  duration_ms: 0.591224
+  type: 'test'
+  ...
+# Subtest: only paths below .context/attachments/ can be staged
+ok 27 - only paths below .context/attachments/ can be staged
+  ---
+  duration_ms: 0.150903
+  type: 'test'
+  ...
+# Subtest: each call maps to its Rust command with camelCase args
+ok 28 - each call maps to its Rust command with camelCase args
+  ---
+  duration_ms: 1.337846
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1739.761571
