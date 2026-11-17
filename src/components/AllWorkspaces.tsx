@@ -53,11 +53,20 @@ interface Props {
 function Highlight({ match, fallback }: { match?: FieldMatch; fallback: string }) {
   if (!match) return <>{fallback}</>;
   const marked = new Set(match.indices);
-  return (
-    <>
-      {Array.from(match.text).map((ch, i) => (marked.has(i) ? <mark key={i} className="allws-hit">{ch}</mark> : <span key={i}>{ch}</span>))}
-    </>
-  );
+  const parts: ReactNode[] = [];
+  let start = 0;
+  // Match indices use UTF-16 offsets. Slice contiguous runs in the same units,
+  // keeping surrogate pairs together instead of counting code points.
+  for (let end = 1; end <= match.text.length; end++) {
+    if (end === match.text.length || marked.has(end) !== marked.has(start)) {
+      const chunk = match.text.slice(start, end);
+      parts.push(marked.has(start)
+        ? <mark key={start} className="allws-hit">{chunk}</mark>
+        : <span key={start}>{chunk}</span>);
+      start = end;
+    }
+  }
+  return <>{parts}</>;
 }
 
 function Menu({ label, icon, ariaLabel, children }: { label: string; icon: ReactNode; ariaLabel: string; children: (close: () => void) => ReactNode }) {
