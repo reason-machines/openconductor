@@ -94,16 +94,16 @@ async function fixture() {
     act(() => input(field).props.onChange({ target: { value } }));
   }
   async function submit() {
-    await act(async () => { void renderer.root.findByType("form").props.onSubmit({ preventDefault() {} }); });
+    await act(async () => { void renderer.root.findByProps({ "data-primary-action": true }).props.onClick(); });
   }
   return {
     requests, picks, input, edit, submit,
-    primary: () => renderer.root.findByProps({ type: "submit" }),
+    primary: () => renderer.root.findByProps({ "data-primary-action": true }),
     async start() {
       edit("url", "https://github.com/acme/first.git");
       await submit();
       assert.equal(requests.length, 1);
-      assert.equal(renderer.root.findByProps({ type: "submit" }).props.disabled, true);
+      assert.equal(renderer.root.findByProps({ "data-primary-action": true }).props.disabled, true);
     },
     log(line: string) { act(() => progress(line)); },
     rendered: () => JSON.stringify(renderer.toJSON()),

@@ -1,0 +1,278 @@
+{
+  "author": "Conductor Rebuild / SAME6013",
+  "dedupe": "CLONE-IMPLICIT-ENTER-6013",
+  "disposition": "NO_READY: source-derived candidate; implicit-submit behavioral witness missing",
+  "main_checked": "217498aae38dfd63b97919b1a0ab4097462c691e",
+  "asset_sha256": {
+    "renderer": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "rea_lineage": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "source_records_verified": 20,
+  "records": [
+    {
+      "name": "los-complete",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1963117,
+        1968331
+      ],
+      "bytes": 5214,
+      "sha256": "f45ab83ee49f7c246b1ceefcba2d9e452cd43a978729d048d73baa37df8e1e32",
+      "file": "reference/renderer-los-complete.txt"
+    },
+    {
+      "name": "Qo-input-complete",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1934438,
+        1935171
+      ],
+      "bytes": 733,
+      "sha256": "6b9504583ed079f42f6117dda4d14156546bb96342af523c33f517b711803814",
+      "file": "reference/renderer-Qo-input-complete.txt"
+    },
+    {
+      "name": "clone-controller",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1962791,
+        1963071
+      ],
+      "bytes": 280,
+      "sha256": "a3fc872dce5bd359d1687b7936817ebfcbc6a12f53cc416cf8d9b85fe600ff60",
+      "file": "reference/renderer-clone-controller.txt"
+    },
+    {
+      "name": "kg-root",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1920416,
+        1920974
+      ],
+      "bytes": 558,
+      "sha256": "a5357ebcb8e6361cdcad2a38fb6d037f493276a73fd38e23e76968856b8bd1ce",
+      "file": "reference/renderer-kg-root.txt"
+    },
+    {
+      "name": "nd-content",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1914936,
+        1918578
+      ],
+      "bytes": 3642,
+      "sha256": "1597ff6b039d905738debd5d0b9ecff32d152e754a7a6816ef74a0c9cff653a2",
+      "file": "reference/renderer-nd-content.txt"
+    },
+    {
+      "name": "tt-complete",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1923125,
+        1923688
+      ],
+      "bytes": 563,
+      "sha256": "927f4db30521c31acc69e3030404188c6f52275c67c691ea7ff9af615f935d80",
+      "file": "reference/renderer-tt-complete.txt"
+    },
+    {
+      "name": "Qh",
+      "asset": "renderer",
+      "utf8_half_open": [
+        54795,
+        54803
+      ],
+      "bytes": 8,
+      "sha256": "1b194c6d61bdd2ba9511d896cec3c875d62548892f7010b52ebf7f8eb909fdc4",
+      "file": "reference/renderer-Qh.txt"
+    },
+    {
+      "name": "Rde",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1904644,
+        1905795
+      ],
+      "bytes": 1151,
+      "sha256": "0e1c8eabd9149ee24668748dcd73a520bf8a99916a6a77f61aa7688bdc375277",
+      "file": "reference/renderer-Rde.txt"
+    },
+    {
+      "name": "ca",
+      "asset": "index",
+      "utf8_half_open": [
+        3481691,
+        3481700
+      ],
+      "bytes": 9,
+      "sha256": "b33c810666a02b677b37fe77123d7655849b04c502a6ee58269b018118c62e0c",
+      "file": "reference/index-ca.txt"
+    },
+    {
+      "name": "Eg",
+      "asset": "index",
+      "utf8_half_open": [
+        3357920,
+        3357952
+      ],
+      "bytes": 32,
+      "sha256": "26b44773b03f216c4b5116ab6b6b37016ba77989a7fc5fbb6fcbe0dbb8d4eca2",
+      "file": "reference/index-Eg.txt"
+    },
+    {
+      "name": "Jk",
+      "asset": "index",
+      "utf8_half_open": [
+        3357953,
+        3358010
+      ],
+      "bytes": 57,
+      "sha256": "737a91537bf8e788e31864ee0c6b83e39ab07f72617d2ff78dfd11dc4e5ae89d",
+      "file": "reference/index-Jk.txt"
+    },
+    {
+      "name": "Oy",
+      "asset": "index",
+      "utf8_half_open": [
+        3358010,
+        3358105
+      ],
+      "bytes": 95,
+      "sha256": "f9472015c249f5c9afa129ef27222b209fa22c2f5e6f80c4da242f0f34c8755a",
+      "file": "reference/index-Oy.txt"
+    },
+    {
+      "name": "Hfe",
+      "asset": "index",
+      "utf8_half_open": [
+        3358153,
+        3358229
+      ],
+      "bytes": 76,
+      "sha256": "8f2fe649116c5f460b454a529b9e8c03c20c9e5a7c8342f90a424501c8c4391e",
+      "file": "reference/index-Hfe.txt"
+    },
+    {
+      "name": "mUt",
+      "asset": "index",
+      "utf8_half_open": [
+        3358230,
+        3358371
+      ],
+      "bytes": 141,
+      "sha256": "144b4d083764d94dc5b4a54bfbc15d3853732c19613ac053389462c95c89670d",
+      "file": "reference/index-mUt.txt"
+    },
+    {
+      "name": "vUt",
+      "asset": "index",
+      "utf8_half_open": [
+        3358371,
+        3358541
+      ],
+      "bytes": 170,
+      "sha256": "76d1a07ebbeb40f9ab061ad95019a4158cc7646faf05e4956b22a59a210efc4e",
+      "file": "reference/index-vUt.txt"
+    },
+    {
+      "name": "_Ut",
+      "asset": "index",
+      "utf8_half_open": [
+        3359217,
+        3359357
+      ],
+      "bytes": 140,
+      "sha256": "2c36a6ed732d18892dfefdba685d863f27064bc683cb7de285ef115e24365d64",
+      "file": "reference/index-_Ut.txt"
+    },
+    {
+      "name": "V_",
+      "asset": "index",
+      "utf8_half_open": [
+        3360752,
+        3386741
+      ],
+      "bytes": 25989,
+      "sha256": "77bd4bb1909c7387df8a580ba21be27b6ffd8a75e03ed9652c016d09564e0fe9",
+      "file": "reference/index-V_.txt"
+    },
+    {
+      "name": "nh",
+      "asset": "index",
+      "utf8_half_open": [
+        3393483,
+        3393608
+      ],
+      "bytes": 125,
+      "sha256": "278fa92a1196832de0fd6002ab85c9e1fcbdcf6455591306c5d094efa4f2fd4b",
+      "file": "reference/index-nh.txt"
+    },
+    {
+      "name": "TQt",
+      "asset": "index",
+      "utf8_half_open": [
+        3394706,
+        3394765
+      ],
+      "bytes": 59,
+      "sha256": "3d20839a0dfff54bd43aa0f0ed5cd862f1ff49678c9018fc4aae67b3825e56dd",
+      "file": "reference/index-TQt.txt"
+    },
+    {
+      "name": "modifier-constants",
+      "asset": "index",
+      "utf8_half_open": [
+        3359794,
+        3359924
+      ],
+      "bytes": 130,
+      "sha256": "d4e159d74b04fb610fb8619a0c80a0e1b217fa3a44113336d0fbed1e951e5bf5",
+      "file": "reference/index-modifier-constants.txt"
+    }
+  ],
+  "current_sources": [
+    {
+      "path": "src/components/CloneGitHubRepoDialog.tsx",
+      "main": "217498aae38dfd63b97919b1a0ab4097462c691e",
+      "sha256": "a08a7b7dafadf78d80589b7d7ad7cad22a132f18a26a497ca6744df53adc3fac",
+      "bytes": 6422
+    },
+    {
+      "path": "src/components/DialogFrame.tsx",
+      "main": "217498aae38dfd63b97919b1a0ab4097462c691e",
+      "sha256": "47734d523d725af2615c80a1f9995f28e78b2b2d8e6dd32a7303b97e69c670d5",
+      "bytes": 2509
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "main": "217498aae38dfd63b97919b1a0ab4097462c691e",
+      "sha256": "b9df8f72c86c6c4e1cc05cade6b4719cd3abf26e557e690ffd574cbe2231ecb5",
+      "bytes": 28914
+    }
+  ],
+  "source_contract": [
+    "los URL key callback matches only configured dialog.primaryAction, then prevents default and stops propagation before clone H.",
+    "nd also activates data-primary-action only when Qh matches that command.",
+    "Qh import ca joins TQt; nh resolves override or V_ default; modifiers are exact under _Ut.",
+    "Default dialog.primaryAction is logical Enter with meta. Blank/default override state must be controlled in any future witness.",
+    "los renders div/fragment fields, not a form. Rde default host is div. Qo forwards an input; tt forwards a native button.",
+    "Current CloneGitHubRepoDialog supplies a native form and submit button, with no Enter key handler. Its DialogFrame still uses the configured primary shortcut."
+  ],
+  "candidate": "With valid synthetic URL/location and default Cmd+Enter, ordinary Enter in either text field may activate native form submission in current OpenConductor. That path is not supplied by retained los markup.",
+  "missing_witness": "An already authorized browser-capable owner must press actual plain Enter in each focused field of an inert actual-component fixture, under controlled default shortcuts, count clone transport calls, and compare against Cmd+Enter/click/disabled/pending controls. No real clone or user-data mutation. Reference ancestor/default-action and active-override conditions must also be bound if claiming native reference behavior.",
+  "inert_dom_characterization": "Two JSDOM capability checks pass: synthetic keydown/keypress/keyup Enter yields zero submits in a plain native form, while button.click yields one. This shows JSDOM cannot faithfully reproduce the candidate through KeyboardEvent. These are not product regression passes.",
+  "rejected_or_equal_surfaces": [
+    "Clone progress isPending && log.length > 0 matches los; not a new gap.",
+    "RenameChat Rya explicit pending-disabled input and Enter handler agree in inspected caller props; no new discrepancy established.",
+    "Section Aya noncomposing Enter and emoji primary-shortcut propagation contract agree in inspected handlers; prior Section fixes are not reopened.",
+    "Repo icon bba/hba mutate then close immediately; no awaited-close fix justified.",
+    "Workspace rename late-success target guard remains rejected; original Sya unconditionally closes."
+  ],
+  "limits": [
+    "Original REA semantic renderer analysis previously exhausted its heap; only retained verified source bytes were read in this pass.",
+    "No Conductor JavaScript executed. No new capture, acquisition, installation, runtime dispatch, browser, native app, provider command, server, real clone or real-user mutation.",
+    "No product regression RED established; no production writer lease requested or used.",
+    "No production edits, PR, native/package acceptance or new watcher."
+  ]
+}

@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { folderExists, githubGitProtocol, githubRecentRepos, lastCloneDirectory, pickFolder, saveLastCloneDirectory } from "../backend";
 import { cloneRepository, defaultCloneDirectory, type RepositoryDto } from "../workspace/api";
 import {
@@ -54,8 +54,7 @@ export function CloneGitHubRepoDialog({ onClose, onCloned }: Props) {
     if (picked) setLocation(picked);
   }
 
-  async function submit(e?: FormEvent) {
-    e?.preventDefault();
+  async function submit() {
     if (pending) return;
     setError(null);
     const remoteUrl = url.trim();
@@ -85,7 +84,7 @@ export function CloneGitHubRepoDialog({ onClose, onCloned }: Props) {
         <h2 id="clone-project-title">Clone GitHub repo</h2>
         <p id="clone-project-description" className="sr-only">Choose a recent repo or paste a clone URL.</p>
       </div>
-      <form onSubmit={submit} className="modal-body clone-dialog">
+      <div className="modal-body clone-dialog">
         <label className="field">
           <span>Repository URL</span>
           <input
@@ -134,12 +133,12 @@ export function CloneGitHubRepoDialog({ onClose, onCloned }: Props) {
         )}
         {error && <div className="clone-error" role="alert">{error}</div>}
         <div className="modal-actions">
-          <button type="submit" className="btn btn-primary" data-primary-action disabled={!canClone(url.trim(), location.trim(), pending)}>
+          <button type="button" className="btn btn-primary" data-primary-action onClick={() => void submit()} disabled={!canClone(url.trim(), location.trim(), pending)}>
             {cloneButtonLabel(pending)}
             {!pending && <kbd className="clone-kbd">⌘↵</kbd>}
           </button>
         </div>
-      </form>
+      </div>
     </DialogFrame>
   );
 }
