@@ -1,0 +1,1 @@
+function V5s(t,e){let n=t.nextElementSibling;for(;n;){if(n.matches(e))return n;n=n.nextElementSibling}}

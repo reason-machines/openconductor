@@ -1,0 +1,115 @@
+{
+  "status": "HOSTED_ASSERTION_RED",
+  "head_sha": "4597be2537ada1bcc6c8fb0156a1abf11b28f917",
+  "run_id": 44029103322,
+  "job_id": 133856448308,
+  "url": "https://github.com/reason-machines/openconductor/actions/runs/44029103322/job/133856448308",
+  "fixture_sha256": "593c025f7fb0e8f7d75092dfc477ec824df0d33360b672f368ef60f8fbf8be7a",
+  "tests": {
+    "whole_suite": {
+      "tests": 4597,
+      "pass": 4591,
+      "fail": 6,
+      "skipped": 0
+    },
+    "frozen_fixture": {
+      "tests": 15,
+      "pass": 9,
+      "fail": 6
+    }
+  },
+  "failures": [
+    {
+      "name": "closed icon ArrowDown focuses finder with disabled rows",
+      "code": "ERR_ASSERTION",
+      "excerpt": [
+        "2026-11-17T06:11:22.1242757Z # Subtest: closed icon ArrowDown focuses finder with disabled rows ",
+        "2026-11-17T06:11:22.1305919Z not ok 2819 - closed icon ArrowDown focuses finder with disabled rows ",
+        "2026-11-17T06:11:22.1402730Z   location: '/home/runner/work/openconductor/openconductor/src/features/openIn/iconMenuTriggerArrows.test.ts:132:3'",
+        "2026-11-17T06:11:22.1407664Z   code: 'ERR_ASSERTION'",
+        "2026-11-17T06:11:22.1408369Z   expected: true",
+        "2026-11-17T06:11:22.1408680Z   actual: false"
+      ]
+    },
+    {
+      "name": "closed icon ArrowUp focuses copy-path with disabled rows",
+      "code": "ERR_ASSERTION",
+      "excerpt": [
+        "2026-11-17T06:11:22.1412527Z # Subtest: closed icon ArrowUp focuses copy-path with disabled rows ",
+        "2026-11-17T06:11:22.1413113Z not ok 2820 - closed icon ArrowUp focuses copy-path with disabled rows ",
+        "2026-11-17T06:11:22.1414732Z   location: '/home/runner/work/openconductor/openconductor/src/features/openIn/iconMenuTriggerArrows.test.ts:132:3'",
+        "2026-11-17T06:11:22.1417211Z   code: 'ERR_ASSERTION'",
+        "2026-11-17T06:11:22.1418306Z   expected: true",
+        "2026-11-17T06:11:22.1418615Z   actual: false"
+      ]
+    },
+    {
+      "name": "closed icon ArrowDown focuses cursor with disabled rows finder",
+      "code": "ERR_ASSERTION",
+      "excerpt": [
+        "2026-11-17T06:11:22.1431846Z # Subtest: closed icon ArrowDown focuses cursor with disabled rows finder",
+        "2026-11-17T06:11:22.1432522Z not ok 2821 - closed icon ArrowDown focuses cursor with disabled rows finder",
+        "2026-11-17T06:11:22.1434288Z   location: '/home/runner/work/openconductor/openconductor/src/features/openIn/iconMenuTriggerArrows.test.ts:132:3'",
+        "2026-11-17T06:11:22.1436903Z   code: 'ERR_ASSERTION'",
+        "2026-11-17T06:11:22.1437576Z   expected: true",
+        "2026-11-17T06:11:22.1438088Z   actual: false"
+      ]
+    },
+    {
+      "name": "closed icon ArrowUp focuses cursor with disabled rows copy-path",
+      "code": "ERR_ASSERTION",
+      "excerpt": [
+        "2026-11-17T06:11:22.2112596Z # Subtest: closed icon ArrowUp focuses cursor with disabled rows copy-path",
+        "2026-11-17T06:11:22.2152173Z not ok 2822 - closed icon ArrowUp focuses cursor with disabled rows copy-path",
+        "2026-11-17T06:11:22.2243691Z   location: '/home/runner/work/openconductor/openconductor/src/features/openIn/iconMenuTriggerArrows.test.ts:132:3'",
+        "2026-11-17T06:11:22.2246469Z   code: 'ERR_ASSERTION'",
+        "2026-11-17T06:11:22.2247137Z   expected: true",
+        "2026-11-17T06:11:22.2247441Z   actual: false"
+      ]
+    },
+    {
+      "name": "ArrowUp initial last-row focus does not leak into subsequent pointer opening",
+      "code": "ERR_ASSERTION",
+      "excerpt": [
+        "2026-11-17T06:11:22.2437600Z # Subtest: ArrowUp initial last-row focus does not leak into subsequent pointer opening",
+        "2026-11-17T06:11:22.2492680Z not ok 2823 - ArrowUp initial last-row focus does not leak into subsequent pointer opening",
+        "2026-11-17T06:11:22.2592194Z   location: '/home/runner/work/openconductor/openconductor/src/features/openIn/iconMenuTriggerArrows.test.ts:144:1'",
+        "2026-11-17T06:11:22.2851732Z     +   prevented: 0,",
+        "2026-11-17T06:11:22.2888887Z     +   stopped: 0",
+        "2026-11-17T06:11:22.2923063Z     -   prevented: 1,",
+        "2026-11-17T06:11:22.2951766Z     -   stopped: 1",
+        "2026-11-17T06:11:22.3061705Z   code: 'ERR_ASSERTION'",
+        "2026-11-17T06:11:22.3096016Z   expected:",
+        "2026-11-17T06:11:22.3141807Z     prevented: 1",
+        "2026-11-17T06:11:22.3151687Z     stopped: 1",
+        "2026-11-17T06:11:22.3187464Z   actual:",
+        "2026-11-17T06:11:22.3210998Z     prevented: 0",
+        "2026-11-17T06:11:22.3212891Z     stopped: 0"
+      ]
+    },
+    {
+      "name": "ArrowDown opening and Escape compose with ArrowUp reopening",
+      "code": "ERR_ASSERTION",
+      "excerpt": [
+        "2026-11-17T06:11:22.3461783Z # Subtest: ArrowDown opening and Escape compose with ArrowUp reopening",
+        "2026-11-17T06:11:22.3462326Z not ok 2824 - ArrowDown opening and Escape compose with ArrowUp reopening",
+        "2026-11-17T06:11:22.3552258Z   location: '/home/runner/work/openconductor/openconductor/src/features/openIn/iconMenuTriggerArrows.test.ts:159:1'",
+        "2026-11-17T06:11:22.3554252Z     +   prevented: 0,",
+        "2026-11-17T06:11:22.3554479Z     +   stopped: 0",
+        "2026-11-17T06:11:22.3554694Z     -   prevented: 1,",
+        "2026-11-17T06:11:22.3554906Z     -   stopped: 1",
+        "2026-11-17T06:11:22.3555477Z   code: 'ERR_ASSERTION'",
+        "2026-11-17T06:11:22.3555945Z   expected:",
+        "2026-11-17T06:11:22.3556141Z     prevented: 1",
+        "2026-11-17T06:11:22.3556341Z     stopped: 1",
+        "2026-11-17T06:11:22.3556537Z   actual:",
+        "2026-11-17T06:11:22.3556724Z     prevented: 0",
+        "2026-11-17T06:11:22.3556923Z     stopped: 0"
+      ]
+    }
+  ],
+  "typecheck": "PASS",
+  "build": "SKIPPED_AFTER_TEST_FAILURE",
+  "execution": "Automatic hosted CI only; no local JS, browser or native runtime.",
+  "limitations": "Mounted component with bounded DOM/native substitutes; not native parity."
+}

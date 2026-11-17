@@ -1,0 +1,287 @@
+(node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:89) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:89) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: control: initial attach opens once, fits, and mounts in its container
+ok 1 - control: initial attach opens once, fits, and mounts in its container
+  ---
+  duration_ms: 1.76223
+  type: 'test'
+  ...
+# Subtest: control: the active detach removes its mount and disconnects its observer
+ok 2 - control: the active detach removes its mount and disconnects its observer
+  ---
+  duration_ms: 0.641002
+  type: 'test'
+  ...
+# Subtest: stale detach must not remove a newer attachment in another container
+ok 3 - stale detach must not remove a newer attachment in another container
+  ---
+  duration_ms: 0.610082
+  type: 'test'
+  ...
+# Subtest: stale detach must not remove a newer attachment in the same container
+ok 4 - stale detach must not remove a newer attachment in the same container
+  ---
+  duration_ms: 0.67305
+  type: 'test'
+  ...
+# Subtest: replacing an attachment disconnects the old resize observer immediately
+ok 5 - replacing an attachment disconnects the old resize observer immediately
+  ---
+  duration_ms: 0.619173
+  type: 'test'
+  ...
+# (node:90) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tab shortcuts resolve inside the terminal
+ok 6 - tab shortcuts resolve inside the terminal
+  ---
+  duration_ms: 2.901579
+  type: 'test'
+  ...
+# Subtest: line-editing shortcuts resolve to commands that send shell bytes
+ok 7 - line-editing shortcuts resolve to commands that send shell bytes
+  ---
+  duration_ms: 0.409696
+  type: 'test'
+  ...
+# Subtest: ordinary typing reaches the shell untouched
+ok 8 - ordinary typing reaches the shell untouched
+  ---
+  duration_ms: 0.269548
+  type: 'test'
+  ...
+# Subtest: every command the terminal handles is in the registry
+ok 9 - every command the terminal handles is in the registry
+  ---
+  duration_ms: 0.260854
+  type: 'test'
+  ...
+# (node:96) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: bindCommands registers every default shortcut of a command
+ok 10 - bindCommands registers every default shortcut of a command
+  ---
+  duration_ms: 5.546056
+  type: 'test'
+  ...
+# Subtest: a bare-key shortcut does not fire while typing; its modifier shortcut does
+ok 11 - a bare-key shortcut does not fire while typing; its modifier shortcut does
+  ---
+  duration_ms: 0.294388
+  type: 'test'
+  ...
+# Subtest: a non-global command stays off while a dialog is open; a global one runs
+ok 12 - a non-global command stays off while a dialog is open; a global one runs
+  ---
+  duration_ms: 1.234075
+  type: 'test'
+  ...
+# Subtest: overrides replace the default shortcut
+ok 13 - overrides replace the default shortcut
+  ---
+  duration_ms: 0.244077
+  type: 'test'
+  ...
+# Subtest: undefined callbacks are skipped and the remover takes back only its own handlers
+ok 14 - undefined callbacks are skipped and the remover takes back only its own handlers
+  ---
+  duration_ms: 0.294395
+  type: 'test'
+  ...
+# Subtest: a callback returning false passes the key on
+ok 15 - a callback returning false passes the key on
+  ---
+  duration_ms: 0.142201
+  type: 'test'
+  ...
+# Subtest: unknown command ids throw
+ok 16 - unknown command ids throw
+  ---
+  duration_ms: 0.397229
+  type: 'test'
+  ...
+# Subtest: hidden chat bindings cannot cancel or attach from a center terminal
+ok 17 - hidden chat bindings cannot cancel or attach from a center terminal
+  ---
+  duration_ms: 0.262988
+  type: 'test'
+  ...
+# Subtest: focused chat shortcuts still work while its panel terminal has keyboard focus
+ok 18 - focused chat shortcuts still work while its panel terminal has keyboard focus
+  ---
+  duration_ms: 0.419331
+  type: 'test'
+  ...
+# Subtest: activeDialogIdFromDom: the last tagged dialog, else any modal, else none
+ok 19 - activeDialogIdFromDom: the last tagged dialog, else any modal, else none
+  ---
+  duration_ms: 0.39738
+  type: 'test'
+  ...
+# Subtest: a higher-priority binding runs first and passes the key on by returning false
+ok 20 - a higher-priority binding runs first and passes the key on by returning false
+  ---
+  duration_ms: 0.282687
+  type: 'test'
+  ...
+# (node:113) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a bare key is off while typing unless allowWhileTyping
+ok 21 - a bare key is off while typing unless allowWhileTyping
+  ---
+  duration_ms: 1.076483
+  type: 'test'
+  ...
+# Subtest: a modified key needs enableOnInputFocus or isGlobal while typing
+ok 22 - a modified key needs enableOnInputFocus or isGlobal while typing
+  ---
+  duration_ms: 0.184244
+  type: 'test'
+  ...
+# Subtest: terminal focus gates enableOnTerminalFocus and requireTerminalFocus
+ok 23 - terminal focus gates enableOnTerminalFocus and requireTerminalFocus
+  ---
+  duration_ms: 0.117699
+  type: 'test'
+  ...
+# Subtest: dialogs: only listed dialog ids, and nothing unlisted while a dialog is open
+ok 24 - dialogs: only listed dialog ids, and nothing unlisted while a dialog is open
+  ---
+  duration_ms: 0.125665
+  type: 'test'
+  ...
+# Subtest: higher priority runs first, then more modifiers; false passes on
+ok 25 - higher priority runs first, then more modifiers; false passes on
+  ---
+  duration_ms: 1.838428
+  type: 'test'
+  ...
+# Subtest: telemetry carries the dialog id and context only when present
+ok 26 - telemetry carries the dialog id and context only when present
+  ---
+  duration_ms: 0.254673
+  type: 'test'
+  ...
+# Subtest: held-key repeats are swallowed unless a handler allows repeat
+ok 27 - held-key repeats are swallowed unless a handler allows repeat
+  ---
+  duration_ms: 0.221807
+  type: 'test'
+  ...
+# Subtest: Escape blurs a focused input before any handler; not in the terminal
+ok 28 - Escape blurs a focused input before any handler; not in the terminal
+  ---
+  duration_ms: 0.152122
+  type: 'test'
+  ...
+# Subtest: recorder, lone modifiers, unfocused scopes and unregister all pass
+ok 29 - recorder, lone modifiers, unfocused scopes and unregister all pass
+  ---
+  duration_ms: 0.323839
+  type: 'test'
+  ...
+# Subtest: Backspace outside a text field is prevented even when nothing handles it
+ok 30 - Backspace outside a text field is prevented even when nothing handles it
+  ---
+  duration_ms: 0.353546
+  type: 'test'
+  ...
+# (node:114) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/cjs/loader:1430
+#   const err = new Error(message);
+#               ^
+# Error: Cannot find module 'react'
+# Require stack:
+# - /home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/keybindings/focusScope.test.ts
+#     at Function._resolveFilename (node:internal/modules/cjs/loader:1430:15)
+#     at defaultResolveImpl (node:internal/modules/cjs/loader:1040:19)
+#     at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1045:22)
+#     at Function._load (node:internal/modules/cjs/loader:1216:25)
+#     at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+#     at Module.require (node:internal/modules/cjs/loader:1527:12)
+#     at require (node:internal/modules/helpers:147:16)
+#     at file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/keybindings/focusScope.test.ts:9:15
+#     at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'MODULE_NOT_FOUND',
+#   requireStack: [
+#     '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/keybindings/focusScope.test.ts'
+#   ]
+# }
+# Node.js v22.23.4
+# Subtest: src/keybindings/focusScope.test.ts
+not ok 5 - src/keybindings/focusScope.test.ts
+  ---
+  duration_ms: 191.582324
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/keybindings/focusScope.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:126) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: registration defaults: input and terminal focus on, NORMAL priority, not global
+ok 32 - registration defaults: input and terminal focus on, NORMAL priority, not global
+  ---
+  duration_ms: 1.91747
+  type: 'test'
+  ...
+# Subtest: one binding per effective shortcut; call-site options win over the command's when
+ok 33 - one binding per effective shortcut; call-site options win over the command's when
+  ---
+  duration_ms: 0.337961
+  type: 'test'
+  ...
+# Subtest: Cmd+K opens the palette idle, while typing and inside the palette
+ok 34 - Cmd+K opens the palette idle, while typing and inside the palette
+  ---
+  duration_ms: 0.797126
+  type: 'test'
+  ...
+# Subtest: terminal-only commands need terminal focus
+ok 35 - terminal-only commands need terminal focus
+  ---
+  duration_ms: 0.141613
+  type: 'test'
+  ...
+# Subtest: Tab cycles palette tabs only while the palette is open
+ok 36 - Tab cycles palette tabs only while the palette is open
+  ---
+  duration_ms: 0.136324
+  type: 'test'
+  ...
+# Subtest: an open dialog blocks non-global commands
+ok 37 - an open dialog blocks non-global commands
+  ---
+  duration_ms: 0.196173
+  type: 'test'
+  ...
+# Subtest: bare keys need allowWhileTyping; Cmd chords and Cmd+1..9 fire while typing
+ok 38 - bare keys need allowWhileTyping; Cmd chords and Cmd+1..9 fire while typing
+  ---
+  duration_ms: 0.245249
+  type: 'test'
+  ...
+# Subtest: overrides rebind what resolves
+ok 39 - overrides rebind what resolves
+  ---
+  duration_ms: 0.168366
+  type: 'test'
+  ...
+1..39
+# tests 39
+# suites 0
+# pass 38
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 513.075032

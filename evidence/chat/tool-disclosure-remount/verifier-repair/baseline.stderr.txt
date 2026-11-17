@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/evidence/chat/tool-disclosure-remount/verify_baseline_root.py", line 36, in <module>
+    path = next(path for path in [key, key + '.ts', key + '.tsx', key + '/index.ts'] if path in entries)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+StopIteration

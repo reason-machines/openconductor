@@ -1,0 +1,115 @@
+{
+  "author": "Conductor Rebuild",
+  "checked_main": "070cad25c36e0cbf068313ea182a849249f0da3c",
+  "local_baseline": "11bdf9ad993898297e4d7b753d924bd4aea0e51f",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "recorded_app": "Conductor 0.87.6",
+  "assets": {
+    "index-BGEQ8YjU.js": {
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    },
+    "renderApp-D_fmY7hW.js": {
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    }
+  },
+  "reference_spans": {
+    "na": {
+      "path": "evidence/chat/collab-tool-visibility/reference/na.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1148057,
+        1148224
+      ],
+      "sha256": "7673a785165ce3c671210fa21a1e1a0a836ccda502ece16b01fe4cc93d6b87bb"
+    },
+    "Fa": {
+      "path": "evidence/chat/collab-tool-visibility/reference/Fa.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1148224,
+        1148305
+      ],
+      "sha256": "26475e8ddf9c5f5292ca8e385429f41b1893267e4599b2fef7055b93f51a7407"
+    },
+    "btt": {
+      "path": "evidence/chat/collab-tool-visibility/reference/btt.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1148305,
+        1148415
+      ],
+      "sha256": "6831a23f1c59e1c76445797aba43b4a075878a9750733048e5e3b7f8bd434e0a"
+    },
+    "uie": {
+      "path": "evidence/chat/collab-tool-visibility/reference/uie.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1148415,
+        1148596
+      ],
+      "sha256": "bba1207f3241d3cd24b8e70dceafa842f7d2b327961299151c9692888053b34e"
+    },
+    "bB": {
+      "path": "evidence/chat/collab-tool-visibility/reference/bB.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1152714,
+        1153123
+      ],
+      "sha256": "e7f1f75c7784f033a2be1c38499d83c69b2f64cdd628faf26c33d3781132ba0c"
+    },
+    "pie": {
+      "path": "evidence/chat/collab-tool-visibility/reference/pie.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1153123,
+        1153287
+      ],
+      "sha256": "77cf0f21c109c6b1cac5294cbfddda01782195633b56070cb0e03a002e8fde3e"
+    },
+    "Ntt": {
+      "path": "evidence/chat/collab-tool-visibility/reference/Ntt.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1153287,
+        1153746
+      ],
+      "sha256": "cd443cbf5241aaaaeeffb3075040bf244c9c0755b2a6885a2c5337057738650a"
+    },
+    "_jt": {
+      "path": "evidence/chat/collab-tool-visibility/reference/_jt.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1153746,
+        1154246
+      ],
+      "sha256": "1806109603caa218b2bc48dac7cb3ed18126790e4ec12f8d3bd578b765e17964"
+    }
+  },
+  "baseline_sources": {
+    "src/features/chat/toolGroups.ts": "48a1296f8eee26a42e81520dbee6ec44ba690062bd5e087f53082255e0968c5b",
+    "src/features/chat/view.ts": "dc3032c160c83d53fbfc08cbcd4fc88ff9abc99811f19f25f10dc7cb39010f6f",
+    "src/features/chat/reducer.ts": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+    "src/features/chat/types.ts": "3014952a29ee66057157191c8f8f91ec5bf3293cbaf06c179ea9752e4b3cbd97"
+  },
+  "frozen_regression": {
+    "path": "src/features/chat/summaryMessageCounts.test.ts",
+    "sha256": "921e88df037a2a0e20a989aeed21db5df54ef943027406f8bf1ebea3e9a095d7"
+  },
+  "baseline_result": {
+    "command": "node --experimental-strip-types --test --test-concurrency=1 src/features/chat/summaryMessageCounts.test.ts",
+    "exit": 1,
+    "passed": 6,
+    "failed": 4,
+    "skipped": 0
+  },
+  "limits": [
+    "Historical retained shipped-source evidence, not fresh REA/native observation.",
+    "Original renderer semantic analysis exhausted heap; index spans are retained static evidence.",
+    "No original extracted JavaScript executed. No app/native/provider/PTY/package runtime.",
+    "Tests exercise production reducer/buildRows/foldAgentRows, not mounted React or screenshots.",
+    "Only message counts are qualified; subagent counts and empty-thinking visibility are not changed."
+  ]
+}
