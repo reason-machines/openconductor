@@ -1,0 +1,1 @@
+function oVt(t){if(!t)return!1;const e=t.toLowerCase();return e.includes("please run /login")||e.includes("authentication_error")||t.includes("401")&&e.includes("invalid authentication credentials")}

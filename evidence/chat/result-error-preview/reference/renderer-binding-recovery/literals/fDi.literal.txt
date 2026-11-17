@@ -1,0 +1,1 @@
+function fDi({host:t,errorText:e}){return t!==void 0&&Su(t)&&dOo(e)}

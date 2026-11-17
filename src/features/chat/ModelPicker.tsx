@@ -82,12 +82,24 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
     const q = query.trim().toLowerCase();
     const words = q.split(/\s+/);
     const name = (f: ModelChoice) => itemLabel?.(f) ?? modelName?.(f.model) ?? modelDisplayName(f.model);
-    return q ? list.filter((f) => {
-      const agent = itemAgent?.(f) ?? f.agent ?? agentForModel(f.model);
+    if (!q) return list;
+    const matches = list.flatMap((choice) => {
+      const agent = itemAgent?.(choice) ?? choice.agent ?? agentForModel(choice.model);
       const agentLabel = agent === "reason" ? "Reason" : agent ? AGENT_LABEL[agent] : "";
-      const fields = [name(f), f.model, agentLabel, agent ? `${agent}:${f.model}` : ""].map((field) => field.toLowerCase());
-      return words.every((word) => fields.some((field) => fuzzysort.single(word, field) !== null));
-    }) : list;
+      const label = name(choice);
+      const qualifiedId = agent ? `${agent}:${choice.model}` : "";
+      const fields = [label, choice.model, agentLabel, qualifiedId].map((field) => field.toLowerCase());
+      return words.every((word) => fields.some((field) => fuzzysort.single(word, field) !== null))
+        ? [{ choice, text: `${label} ${agentLabel} ${qualifiedId || choice.model}` }] : [];
+    });
+    // Conductor's A7o uses lj's relevance order, including its exact-first
+    // partition, for both visible search results and Enter's first choice.
+    const ranked = fuzzysort.go(words.join(" "), matches, { key: "text" }).map((match) => match.obj);
+    const exact = (match: typeof matches[number]) => match.text.toLowerCase() === q;
+    const seen = new Set(ranked);
+    // Ranking must not remove a choice admitted by the existing field matcher.
+    return [...ranked.filter(exact), ...ranked.filter((match) => !exact(match)), ...matches.filter((match) => !seen.has(match))]
+      .map((match) => match.choice);
   }, [favorites, value, query, itemLabel, models, modelName, itemAgent]);
 
   useLayoutEffect(() => {

@@ -1,0 +1,6 @@
+[
+  {"id":"explicit error result","end":{"outcome":"failed","message":"Synthetic result failure.","resultError":true},"preview":false},
+  {"id":"success control","end":{"outcome":"completed"},"preview":true},
+  {"id":"stopping control","end":{"outcome":"cancelled"},"preview":true},
+  {"id":"failure subtype without an error result","end":{"outcome":"failed","message":"Synthetic result failure."},"preview":true}
+]

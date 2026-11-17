@@ -45,6 +45,8 @@ export interface ReasonTool {
 export interface ReasonTurnEnd {
   outcome: "completed" | "cancelled" | "superseded" | "failed";
   message?: string;
+  /** Only Claude's explicit error result, never inferred from outcome or error text. */
+  resultError?: true;
 }
 
 export type ReasonPayload = { chatId: string } & (
@@ -171,10 +173,10 @@ export function cancelUnsent(state: ReasonChatState, turnId: string, now = new D
 /** Turns still open after this one: a steered follow-up keeps the session working. */
 export const openTurns = (state: ReasonChatState): number => state.open.length;
 
-export function turnStatus(end: ReasonTurnEnd): { status: TurnStatus; error?: string } {
+export function turnStatus(end: ReasonTurnEnd): { status: TurnStatus; error?: string; resultError?: true } {
   switch (end.outcome) {
     case "failed":
-      return { status: "failed", error: end.message ?? "Reason reported an error." };
+      return { status: "failed", error: end.message ?? "Reason reported an error.", ...(end.resultError === true ? { resultError: true } : {}) };
     case "cancelled":
       return { status: "cancelled" };
     // The follow-up that took over carries the work on.
@@ -202,7 +204,7 @@ function closeTurn(state: ReasonChatState, turnId: string, end: ReasonTurnEnd, n
   const events: ChatEvent[] = [];
   // A stopped turn's prompt is marked cancelled, as Conductor's `session_messages.cancelled_at`.
   if (s.status === "cancelled") events.push({ type: "upsert", message: { ...turn.user, cancelledAt: at } });
-  events.push({ type: "turn_status", sessionId: state.chatId, turnId, status: s.status, ...(s.error !== undefined ? { error: s.error } : {}), at });
+  events.push({ type: "turn_status", sessionId: state.chatId, turnId, ...s, at });
   return { state: { ...state, open: state.open.filter((t) => t !== turn) }, events };
 }
 

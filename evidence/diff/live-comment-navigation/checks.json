@@ -1,0 +1,58 @@
+{
+  "author": "Conductor Rebuild",
+  "baseline": "91de35a7e10199675bc43d9b29516cd8ec18f4a0",
+  "frozen_fixture_checkpoint": "8ac30187",
+  "fixture_sha256": "76f19b8a6ade5f8d61ff6656efe2dce9a89970529da64fbff4831018bf63a08c",
+  "checks": {
+    "baseline": {
+      "pass": 3,
+      "fail": 6
+    },
+    "treatment": {
+      "pass": 9,
+      "fail": 0
+    },
+    "diff_suite": {
+      "pass": 570,
+      "fail": 0
+    },
+    "build": "PASS: branding + TypeScript + Vite",
+    "reference": "PASS: whole asset, 19 spans/23163 bytes, 44 bindings",
+    "diff_check": "PASS",
+    "browser_native": "NOT_RUN: explicit isolation"
+  },
+  "files": {
+    "src/features/diff/FileDiffView.tsx": {
+      "bytes": 24577,
+      "sha256": "305ccacb64c230bba3880d045b64aabc4889bbfac25668824b87b020810e0289"
+    },
+    "src/features/diff/CommentNav.tsx": {
+      "bytes": 5441,
+      "sha256": "26a8e353945fde59b225f13f7d22df2d97cb81407001bec790cc1cb5d4b1a359"
+    },
+    "evidence/diff/live-comment-navigation/red.log.gz": {
+      "bytes": 1008,
+      "sha256": "e11aa67ba15f775e2da766b9e579a4ffba2817c69c9b63fb382a7c9097deca42",
+      "uncompressed": {
+        "bytes": 7162,
+        "sha256": "e9cb44e0d8fddc135e725c87aeb7cf79e9e9861057ed7ffcacead4fad4cb4822"
+      }
+    },
+    "evidence/diff/live-comment-navigation/green.log.gz": {
+      "bytes": 541,
+      "sha256": "f178b09d0bccd7b230cc949db841caf2d58d7ceb7900883c0ea5c596ecd4bdf5",
+      "uncompressed": {
+        "bytes": 2176,
+        "sha256": "a1d9681d1176547f48d4c29aeb54fc9139c51492f251f2a843ad8ce93fe6b717"
+      }
+    },
+    "evidence/diff/live-comment-navigation/diff-suite.log.gz": {
+      "bytes": 20915,
+      "sha256": "649ec9f42be6e957cf44285d570514636d031f2eef3db68f5b893d82373a506b",
+      "uncompressed": {
+        "bytes": 131532,
+        "sha256": "faa2b1f7cd404db502c2d39714857bbc434652616faf41941f312d4546c72a72"
+      }
+    }
+  }
+}

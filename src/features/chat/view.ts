@@ -49,6 +49,7 @@ export type RowView =
       turnId: string;
       status: TurnStatus | undefined;
       error?: string;
+      resultError?: true;
       /** Text for "copy final message": the turn's last assistant text. */
       finalText?: string;
       /** Set when the turn failed or was cancelled and has a user prompt to send again. */
@@ -158,6 +159,7 @@ function turnEnd(t: ChatTranscript, turnId: string, turnMessages: ChatMessage[],
     turnId,
     status: state?.status,
     ...(state?.error !== undefined ? { error: state.error } : {}),
+    ...(state?.resultError ? { resultError: true } : {}),
     ...(finalText !== undefined ? { finalText } : {}),
     ...(canRetry && prompt ? { retryPrompt: retryUserPrompt(prompt) } : {}),
     ...(usage ? { usage } : {}),

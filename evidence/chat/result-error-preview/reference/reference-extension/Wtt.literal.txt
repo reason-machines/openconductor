@@ -1,0 +1,1 @@
+function Wtt(t){if(t.content.type==="assistant"&&"message"in t.content&&t.content.message){const e=t.content.message.content;if(Array.isArray(e)){const s=e.filter(n=>typeof n!="string"&&n.type==="text");if(s.length===1&&s[0].text.trim()==="Compacted")return!0}}return!1}

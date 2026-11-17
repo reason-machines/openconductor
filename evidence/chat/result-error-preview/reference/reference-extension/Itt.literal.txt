@@ -1,0 +1,1 @@
+function Itt(t,e){return kh(t).some(({id:s})=>s===e)}
