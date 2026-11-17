@@ -1,0 +1,84 @@
+{
+  "author": "Conductor Rebuild",
+  "main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+  "qualification_main": "ee7bb510506906a08e2acff5e196a484bffb1480",
+  "sources": [
+    {
+      "path": "src/settings/SettingsView.tsx",
+      "fresh_main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+      "sha256": "327694212be97cf95f31248064cb2a22f49736064dbd92d2db72ee94f86e87a7",
+      "matches_qualification": true,
+      "matches_worktree": true
+    },
+    {
+      "path": "src/settings/SettingsSearch.tsx",
+      "fresh_main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+      "sha256": "2530bb1a7ca14cf377c0629d6516bb8f1316ae29b961564ec8c13201ca01219c",
+      "matches_qualification": true,
+      "matches_worktree": true
+    },
+    {
+      "path": "src/settings/searchIndex.ts",
+      "fresh_main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+      "sha256": "268082e3c2a83dd5911ebc59886309fd40c70a9cfd00357998d37bf0b504ba41",
+      "matches_qualification": true,
+      "matches_worktree": true
+    },
+    {
+      "path": "src/settings/GeneralPage.tsx",
+      "fresh_main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+      "sha256": "9bca3756afdf671eaeb451d0269e61dd6aa12b37163081d3ec191a8f69a8efcb",
+      "matches_qualification": true,
+      "matches_worktree": true
+    },
+    {
+      "path": "src/settings/pages.ts",
+      "fresh_main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+      "sha256": "bc7308514f2b9111b94f5697f27618f3be19ed5943c53faace5b23e11b95b2ca",
+      "matches_qualification": true,
+      "matches_worktree": true
+    },
+    {
+      "path": "src/settings/routes.ts",
+      "fresh_main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+      "sha256": "fcab0b785a529fee1b6e325b7f525ed218a64b750204cf83df73521aece63e2d",
+      "matches_qualification": true,
+      "matches_worktree": true
+    },
+    {
+      "path": "src/settings/types.ts",
+      "fresh_main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+      "sha256": "ef5a5350bb14848487569820f547e8d1aca60aa03fd3af93f32b365c32be7f45",
+      "matches_qualification": true,
+      "matches_worktree": true
+    },
+    {
+      "path": "src/settings/searchRows.generated.ts",
+      "fresh_main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+      "sha256": "2976b53cb911f9f5e2fab20a99c9508e4b28321330adeda596fda30cd49766cf",
+      "matches_qualification": true,
+      "matches_worktree": true
+    },
+    {
+      "path": "src/keybindings/fuzzy.ts",
+      "fresh_main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+      "sha256": "1bcbf1f4058508f23d5d079235d5b96ed6ed800582aae6de50db6a182d5c2c1c",
+      "matches_qualification": true,
+      "matches_worktree": true
+    },
+    {
+      "path": "src/palette/PaletteHost.tsx",
+      "fresh_main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+      "sha256": "78a4067ebb66ef016b7d5903c38e3b312bf8c569ffd5f00c2b11743b07fb8471",
+      "matches_qualification": true,
+      "matches_worktree": true
+    },
+    {
+      "path": "src/palette/settingsRepository.test.ts",
+      "fresh_main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+      "sha256": "2d73bd75e4e74909e892746a0e886ae8a3454b0988f7d0bc7bd38990dbef24f4",
+      "matches_qualification": true,
+      "matches_worktree": true
+    }
+  ]
+}

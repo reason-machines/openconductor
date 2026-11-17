@@ -1,0 +1,25 @@
+{
+  "candidate": "TODO-WRITE-NONMIXED-HEADER-BE7",
+  "cases": [
+    {"id":"empty","todos":[],"headers":[["Todo list created","0 todos"]]},
+    {"id":"one-pending","todos":[{"content":"Inspect parser","status":"pending"}],"headers":[["Todo list created","1 todo"]]},
+    {"id":"many-pending","todos":[{"content":"Inspect parser","status":"pending"},{"content":"Run checks","status":"pending"}],"headers":[["Todo list created","2 todos"]]},
+    {"id":"one-complete","todos":[{"content":"Inspect parser","status":"completed"}],"headers":[["Todo list completed","1 todo"]]},
+    {"id":"all-complete","todos":[{"content":"Inspect parser","status":"completed"},{"content":"Run checks","status":"completed"}],"headers":[["Todo list completed","2 todos"]]},
+    {"id":"active-first","todos":[{"content":"Inspect parser","status":"in_progress"},{"content":"Run checks","status":"pending"}],"headers":[["Todo started","1. Inspect parser"]]},
+    {"id":"active-second","todos":[{"content":"Inspect parser","status":"pending"},{"content":"Run checks","status":"in_progress"}],"headers":[["Todo started","2. Run checks"]]},
+    {"id":"active-empty-fallback","todos":[{"content":"","status":"in_progress"}],"headers":[["Todo started","1. todo"]]},
+    {"id":"first-active-wins","todos":[{"content":"Inspect parser","status":"in_progress"},{"content":"Run checks","status":"in_progress"}],"headers":[["Todo started","1. Inspect parser"]]},
+    {"id":"some-completed-no-active","todos":[{"content":"Inspect parser","status":"completed"},{"content":"Run checks","status":"pending"}],"headers":[["Todo completed","2 todos"]]},
+    {"id":"running-input","status":"running","todos":[{"content":"Inspect parser","status":"in_progress"}],"headers":[["Todo started","1. Inspect parser"]]},
+    {"id":"failed-input","status":"failed","todos":[{"content":"検証 🌱","status":"completed"}],"headers":[["Todo list completed","1 todo"]]},
+    {"id":"mixed-write-control","todos":[{"content":"Inspect parser","status":"completed"},{"content":"Run checks","status":"in_progress"},{"content":"Ship","status":"pending"}],"headers":[["Todo completed","1/3 completed"],["Todo started","2. Run checks"]]},
+    {"id":"mixed-write-empty-active-control","todos":[{"content":"Inspect parser","status":"completed"},{"content":"","status":"in_progress"}],"headers":[["Todo completed","1/2 completed"],["Todo started","2. todo"]]},
+    {"id":"mixed-write-running-control","status":"running","todos":[{"content":"Inspect parser","status":"completed"},{"content":"Run checks","status":"in_progress"}],"headers":[["Todo completed","1/2 completed"],["Todo started","2. Run checks"]]},
+    {"id":"read-active-control","name":"TodoRead","todos":[{"content":"Read task","status":"in_progress"}],"headers":[["Todo started","1. Read task"]]},
+    {"id":"read-pending-control","name":"TodoRead","todos":[{"content":"Read task","status":"pending"}],"headers":[["Todo list created","1 todo"]]},
+    {"id":"read-complete-control","name":"TodoRead","todos":[{"content":"Read task","status":"completed"}],"headers":[["Todo list completed","1 todo"]]},
+    {"id":"read-empty-control","name":"TodoRead","todos":[],"headers":[["Update todos",null]]},
+    {"id":"read-partial-control","name":"TodoRead","todos":[{"content":"Read task","status":"completed"},{"content":"Pending","status":"pending"}],"headers":[["Todo completed","2 todos"]]}
+  ]
+}
