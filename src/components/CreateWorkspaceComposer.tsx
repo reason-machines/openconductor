@@ -44,8 +44,7 @@ import { usePresence } from "./motion/usePresence";
 import { Tooltip } from "./ui/Tooltip";
 import { ComposerAttachmentChip } from "../features/chat/ComposerAttachmentChip";
 import type { ComposerAttachment } from "../features/chat/composerAttachments";
-import { attachmentPath, inlineText, promptText, randomDir, rejectReason, safeFileName } from "../features/chat/composerAttachments";
-import { draftAttachmentsApi } from "../features/draft-attachments/api.ts";
+import { inlineText, rejectReason, safeFileName } from "../features/chat/composerAttachments";
 import type { PromptAttachment } from "../features/chat/reason";
 import { queuePending } from "../features/diff/ReviewButton";
 import { PaperclipIcon, PlusIcon } from "../features/chat/composerIcons";
@@ -131,9 +130,6 @@ export function CreateWorkspaceComposer({
   const [createPlanMode, setCreatePlanMode] = useState(false);
   /** Files attached in the create composer; delivered with the first message via queuePending. */
   const [createAttachments, setCreateAttachments] = useState<ComposerAttachment[]>([]);
-  const [draftWorkspaceId] = useState(() => crypto.randomUUID());
-  const pendingFiles = useRef(0);
-  const [stagingFiles, setStagingFiles] = useState(0);
   const [attachError, setAttachError] = useState<string | null>(null);
   const [attachPreviewEpoch, setAttachPreviewEpoch] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -150,7 +146,7 @@ export function CreateWorkspaceComposer({
   const repo = repos.find((r) => r.id === draft.repoId);
   const prefix = useMemo(() => resolveBranchPrefix(prefixSettings, githubUsername), [prefixSettings, githubUsername]);
   const [branchAttempt, setBranchAttempt] = useState(0);
-  const busy = stagingFiles > 0 || progress.step === "creating" || progress.step === "detecting_setup";
+  const busy = progress.step === "creating" || progress.step === "detecting_setup";
   useEffect(() => onBusyChange?.(busy), [busy, onBusyChange]);
   const { overrides } = useKeybindingOverrides();
   const submitKeys = [...effectiveShortcuts("chat.submitMessage", overrides), ...effectiveShortcuts("chat.submitOppositeFollowUp", overrides)];
@@ -208,46 +204,30 @@ export function CreateWorkspaceComposer({
     "chat.addAttachment": () => { if (!busy) fileInputRef.current?.click(); },
   });
 
-  /** Stage binary bytes under this draft's identity before a workspace exists. */
+  /**
+   * Read picked files and store as inline ComposerAttachments; text files get
+   * their content inlined; binary files get a size note. No staging: the
+   * workspace doesn't exist yet, so attachments travel via queuePending.
+   */
   async function attachFiles(files: File[]) {
-    if (progress.step === "creating" || progress.step === "detecting_setup") return;
-    pendingFiles.current++;
-    setStagingFiles(pendingFiles.current);
-    setAttachError(null);
-    try {
-      for (const file of files) {
-        const reject = rejectReason(file);
-        if (reject) { setAttachError(reject); continue; }
-        try {
-          const bytes = new Uint8Array(await file.arrayBuffer());
-          const name = safeFileName(file.name);
-          const text = inlineText(bytes);
-          let attachment: ComposerAttachment;
-          if (text !== null) attachment = { name, text, preview: "text" };
-          else {
-            const relativePath = attachmentPath(name, randomDir());
-            await draftAttachmentsApi.write({ draftWorkspaceId, relativePath, data: bytes });
-            attachment = { name: relativePath, label: name, text: promptText(bytes, relativePath), staged: relativePath };
-          }
-          setCreateAttachments((prev) => prev.some((a) => a.name === attachment.name) ? prev : [...prev, attachment]);
-        } catch (err) {
-          setAttachError(`Failed to attach ${file.name}: ${errorText(err)}`);
-        }
-      }
-    } finally {
-      pendingFiles.current--;
-      setStagingFiles(pendingFiles.current);
+    const errors: string[] = [];
+    const toAdd: ComposerAttachment[] = [];
+    for (const file of files) {
+      const reject = rejectReason(file);
+      if (reject) { errors.push(reject); continue; }
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      const name = safeFileName(file.name);
+      const textContent = inlineText(bytes);
+      toAdd.push(textContent !== null
+        ? { name, text: textContent, preview: "text" as const }
+        : { name, text: `The user attached a file (${bytes.length} bytes): ${name}` });
     }
-  }
-
-  /** Do not hand an agent a path until the existing store confirms its copy. */
-  async function materializeAttachments(workspacePath: string) {
-    if (!createAttachments.some((a) => a.staged)) return;
-    const report = await draftAttachmentsApi.materialize({ localWorkspaceId: draftWorkspaceId, workspacePath });
-    for (const attachment of createAttachments) {
-      if (!attachment.staged) continue;
-      const result = report.attachments.find((a) => a.relativePath === attachment.staged);
-      if (!result || result.error) throw new Error(result?.error ?? `Attachment was not copied: ${attachment.label ?? attachment.name}`);
+    if (errors.length > 0) setAttachError(errors.join(" "));
+    if (toAdd.length > 0) {
+      setCreateAttachments((prev) => {
+        const taken = new Set(prev.map((a) => a.name));
+        return [...prev, ...toAdd.filter((a) => !taken.has(a.name))];
+      });
     }
   }
 
@@ -267,7 +247,7 @@ export function CreateWorkspaceComposer({
 
   async function submit(e?: FormEvent, sectionId: string | undefined = choice.sectionId) {
     e?.preventDefault();
-    if (busy || pendingFiles.current > 0 || !repo || !canCreateIn(sectionsRef.current, sectionId)) return;
+    if (busy || !repo || !canCreateIn(sectionsRef.current, sectionId)) return;
     const built = buildCreateRequest(draft, prefix);
     if (!built.ok) return setErrors(built.errors);
     setErrors({});
@@ -287,7 +267,7 @@ export function CreateWorkspaceComposer({
       send({ type: "created", workspaceId: created.workspace.id });
       if (created.upstreamWarning) onWarning(created.upstreamWarning);
       const setupStarted = await startSetupScript(backendRepo, created, built.request.targetBranch);
-      // Keep creation busy through attachment materialization as well as setup.
+      send({ type: "setup_detected", started: setupStarted });
       // GAP-COMP-04 (plan mode): set initial plan mode on the new workspace's primary chat
       // when the user toggled it on in the create composer (REA a7i planMode prop, wt path).
       if (createPlanMode && draft.agent === "claude") {
@@ -333,20 +313,12 @@ export function CreateWorkspaceComposer({
         const queued: PromptAttachment[] = createAttachments.map(({ name, text: t, commentId }) =>
           commentId ? { name, text: t, commentId } : { name, text: t },
         );
-        try {
-          await materializeAttachments(path);
-          // WorkspaceView's pending-send path bypasses its normal copy barrier.
-          queuePending(id, { kind: "send", text, attachments: queued });
-        } catch (err) {
-          // Creation succeeded: expose it, keep the text editable, and never auto-send
-          // a missing file. The existing store retains failed staged copies.
-          queuePending(id, { kind: "draft", text });
-          onWarning(`Workspace created, but the first message was not sent. Reattach the files and retry: ${errorText(err)}`);
-        }
+        // kind "send" means WorkspaceView auto-submits on mount; it also calls
+        // renameAfterFirstMessage so we skip it below to avoid a double rename.
+        queuePending(id, { kind: "send", text, attachments: queued });
       } else if (firstSession) {
         seedTranscript(id, firstSession.message);
       }
-      send({ type: "setup_detected", started: setupStarted });
       dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });
       if (sectionId !== undefined) {
         // Assigning also unpins it (store `assignSection`); a section deleted meanwhile keeps the workspace unsectioned.
@@ -400,7 +372,7 @@ export function CreateWorkspaceComposer({
    * Evidence: Hji.txt `ca` callback + `Ei` keydown capture handler.
    */
   async function addToBacklog() {
-    if (busy || pendingFiles.current > 0 || !repo) return;
+    if (busy || !repo) return;
     const built = buildCreateRequest(draft, prefix);
     if (!built.ok) return setErrors(built.errors);
     setErrors({});
@@ -416,8 +388,6 @@ export function CreateWorkspaceComposer({
       send({ type: "created", workspaceId: created.workspace.id });
       if (created.upstreamWarning) onWarning(created.upstreamWarning);
       const backlogSetupStarted = await startSetupScript(backendRepo, created, built.request.targetBranch);
-      try { await materializeAttachments(created.workspace.path); }
-      catch (err) { onWarning(`Workspace created, but attachments could not be copied. Reattach the files: ${errorText(err)}`); }
       send({ type: "setup_detected", started: backlogSetupStarted });
       const { id, directoryName, branchName, path } = created.workspace;
       const { naming } = built.request;
@@ -523,8 +493,8 @@ export function CreateWorkspaceComposer({
             and /-slash triggers that Conductor wires to repository files are omitted here because
             they require an existing workspace checkout; the structural parity (TipTap vs textarea)
             is the gap being closed. Sub-gap 2 ("Link issue" in AddMenu) is not a gap: REA shows
-            allowIssueLinks=false in Conductor's a7i for Hji. Binary files use the existing
-            draft-attachments store, then materialize before the initial prompt is queued. */}
+            allowIssueLinks=false in Conductor's a7i for Hji. Sub-gap 3 (binary staging to
+            draft-attachments/ via draftWorkspaceId) is deferred pending backend support. */}
         <div className="create-editor">
           <ComposerEditor
             inputRef={composerInputRef}
@@ -550,8 +520,6 @@ export function CreateWorkspaceComposer({
                 attachment={a}
                 editorEpoch={attachPreviewEpoch}
                 onRemove={() => {
-                  if (busy) return;
-                  if (a.staged) void draftAttachmentsApi.remove({ localWorkspaceId: draftWorkspaceId, relativePath: a.staged }).catch((err) => setAttachError(errorText(err)));
                   setCreateAttachments((list) => list.filter((x) => x.name !== a.name));
                   setAttachPreviewEpoch((n) => n + 1);
                 }}
