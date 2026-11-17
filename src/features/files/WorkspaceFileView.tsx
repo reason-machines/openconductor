@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useBoolPrefWithSave } from "../../settings/useBoolPref.ts";
 import { invoke } from "@tauri-apps/api/core";
 import type { CodeViewItem, ThemeTypes } from "@pierre/diffs";
 import { CodeView, EditProvider, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
@@ -22,16 +23,19 @@ export interface WorkspaceFileViewProps {
   path: string;
   isVisible: boolean;
   readOnly: boolean;
+  /** 1-based line to scroll to on initial open (from SearchInFiles results). */
+  initialLine?: number;
 }
 
 export function WorkspaceFileView(props: WorkspaceFileViewProps) {
   return <WorkspaceFile key={JSON.stringify([props.worktree, props.path, props.readOnly])} {...props} />;
 }
 
-function WorkspaceFile({ worktree, path, isVisible, readOnly }: WorkspaceFileViewProps) {
+function WorkspaceFile({ worktree, path, isVisible, readOnly, initialLine }: WorkspaceFileViewProps) {
   const [load, setLoad] = useState<TextRead>({ kind: "loading" });
   const [attempt, setAttempt] = useState(0);
-  const [wrapLines, setWrapLines] = useState(true);
+  // parity:diff.appearance — wrap_lines pref persisted to conductor.db (Conductor: Te("wrap_lines",!0)).
+  const [wrapLines, setWrapLines] = useBoolPrefWithSave("wrap_lines");
   const textPath = isTextPath(path);
   useEffect(() => {
     if (!textPath) return;
@@ -64,7 +68,7 @@ function WorkspaceFile({ worktree, path, isVisible, readOnly }: WorkspaceFileVie
       {!textPath ? <p className="oc-file-note">This file cannot be displayed as text. Open it externally.</p> :
         load.kind === "loading" ? <p className="oc-file-note" role="status">Loading file…</p> :
         load.kind === "error" ? <div className="oc-file-note" role="alert">{load.message} <button className="link-btn" onClick={() => setAttempt((value) => value + 1)}>Retry</button></div> :
-        <WorkspaceTextCode key={`${edit !== undefined}:${edit?.generation ?? 0}`} path={path} text={load.text} edit={edit} isVisible={isVisible} wrapLines={wrapLines} />}
+        <WorkspaceTextCode key={`${edit !== undefined}:${edit?.generation ?? 0}`} path={path} text={load.text} edit={edit} isVisible={isVisible} wrapLines={wrapLines} initialLine={initialLine} />}
     </section>
   );
 }
@@ -83,15 +87,24 @@ function useThemeType(): ThemeTypes {
   return type;
 }
 
-function WorkspaceTextCode({ path, text, edit, isVisible, wrapLines }: {
+function WorkspaceTextCode({ path, text, edit, isVisible, wrapLines, initialLine }: {
   path: string;
   text: string;
   edit: FileEdit | undefined;
   isVisible: boolean;
   wrapLines: boolean;
+  /** 1-based line to scroll to once the view is ready (from SearchInFiles). */
+  initialLine?: number;
 }) {
   const view = useRef<CodeViewHandle<never, undefined> | null>(null);
   const initial = useRef(edit?.current() ?? text);
+  // Scroll to the initial line (1-based) once on mount — Conductor opens SearchInFiles
+  // results at the matched line; `instant` avoids jarring animation on file open.
+  useEffect(() => {
+    if (initialLine === undefined || initialLine < 1) return;
+    view.current?.scrollTo({ type: "line", id: path, lineNumber: initialLine, align: "center", behavior: "instant" });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const item = useMemo<CodeViewItem<never>>(() => ({
     id: path,
     type: "file",

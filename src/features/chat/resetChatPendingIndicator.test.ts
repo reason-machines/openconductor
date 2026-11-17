@@ -16,8 +16,8 @@ const allowed = new Set([
   "src/features/chat/ResetChatDialog.tsx",
   "src/features/chat/checkpoints.ts",
   "src/components/menu/menuIcons.tsx",
-  "src/components/motion/dialogMotion.ts",
 ].map((path) => resolve(sourceRoot, path)));
+const dialogFramePath = resolve(sourceRoot, "src/components/DialogFrame.tsx");
 
 function deferred() {
   let fulfill: () => void = () => { throw new Error("Uninitialized promise"); };
@@ -48,6 +48,21 @@ async function fixture() {
     }).outputText;
     const require = (name: string) => {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      // Stub DialogFrame — backdrop, motion and accessibility are DialogFrame's concern
+      if (resolve(dirname(filename), name) === dialogFramePath.slice(0, -4) ||
+          resolve(dirname(filename), name) === dialogFramePath) {
+        return {
+          DialogFrame: ({ titleId, descriptionId, onClose: df_onClose, children }: {
+            titleId: string; descriptionId?: string; onClose: () => void; children: unknown;
+          }) => React.createElement("div", {
+            role: "alertdialog",
+            "aria-modal": "true",
+            "aria-labelledby": titleId,
+            "aria-describedby": descriptionId,
+            onKeyDown: (e: { key: string }) => { if (e.key === "Escape") df_onClose(); },
+          }, children),
+        };
+      }
       const target = resolve(dirname(filename), name);
       const resolved = [target, `${target}.ts`, `${target}.tsx`].find((path) => allowed.has(path));
       assert.ok(resolved, `Unexpected import: ${name}`);
@@ -75,7 +90,7 @@ async function fixture() {
     dialog: () => renderer.root.findByProps({ role: "alertdialog" }),
     indicators: () => renderer.root.findByProps({ "data-primary-action": true }).findAll((node: { type: unknown; props: { width?: number; height?: number; "aria-hidden"?: string } }) =>
       node.type === "svg" && node.props.width === 16 && node.props.height === 16 && node.props["aria-hidden"] === "true"),
-    shortcuts: () => renderer.root.findByProps({ "data-primary-action": true }).findAllByProps({ className: "oc-alert-kbd" }),
+    shortcuts: () => renderer.root.findByProps({ "data-primary-action": true }).findAllByProps({ className: "project-confirmation-kbd" }),
     errors: () => renderer.root.findAllByProps({ className: "error small" }),
     close: async () => { await act(async () => { renderer.unmount(); }); },
   };

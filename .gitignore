@@ -13,3 +13,5 @@ __pycache__/
 .rea-work/
 .ara-state/
 .oc-tmp/
+# parity_check working snapshot directories (generated; never committed)
+.disclosure-baseline-*/

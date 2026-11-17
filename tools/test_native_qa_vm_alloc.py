@@ -644,5 +644,114 @@ class TestBuildAllocationArgvWithHardware(unittest.TestCase):
             alloc.build_allocation_argv(partial)
 
 
+class DisposeGuestDiskTests(unittest.TestCase):
+    """Cloud-safe tests for dispose_guest_disk; synthetic tempfiles only.
+
+    No VZ runtime, no real disk images, no native execution.
+    """
+
+    def setUp(self):
+        self._tmp = tempfile.mkdtemp()
+        self._staged = _make_staged_bundle(self._tmp)
+        self._disk = Path(self._tmp) / "disk.img"
+        self._aux = Path(self._tmp) / "aux.bin"
+        self._disk.write_bytes(b"d" * 64)
+        self._aux.write_bytes(b"a" * 32)
+
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self._tmp, ignore_errors=True)
+
+    def _make_alloc(self):
+        return alloc.produce_guest_allocation(
+            self._staged, self._disk, self._aux,
+            max_disk_bytes=4096, max_aux_bytes=4096,
+        )
+
+    def test_removes_disk_image(self):
+        a = self._make_alloc()
+        self.assertTrue(self._disk.exists())
+        alloc.dispose_guest_disk(a)
+        self.assertFalse(self._disk.exists())
+
+    def test_does_not_remove_aux_storage(self):
+        a = self._make_alloc()
+        alloc.dispose_guest_disk(a)
+        self.assertTrue(self._aux.exists())
+
+    def test_returns_receipt_with_matching_identity(self):
+        a = self._make_alloc()
+        receipt = alloc.dispose_guest_disk(a)
+        self.assertEqual(receipt.disk_path, a.disk.path)
+        self.assertEqual(receipt.disk_ino, a.disk.ino)
+        self.assertEqual(receipt.disk_dev, a.disk.dev)
+        self.assertEqual(receipt.disk_size, a.disk.size)
+
+    def test_receipt_host_filesystem_coverage_verified_is_false(self):
+        a = self._make_alloc()
+        receipt = alloc.dispose_guest_disk(a)
+        self.assertFalse(receipt.host_filesystem_coverage_verified)
+
+    def test_receipt_disk_identity_verified_before_removal_is_true(self):
+        a = self._make_alloc()
+        receipt = alloc.dispose_guest_disk(a)
+        self.assertTrue(receipt.disk_identity_verified_before_removal)
+
+    def test_receipt_toctou_note_non_empty(self):
+        a = self._make_alloc()
+        receipt = alloc.dispose_guest_disk(a)
+        self.assertTrue(receipt.toctou_note)
+        self.assertIn("TOCTOU", receipt.toctou_note)
+
+    def test_receipt_scope_does_not_claim_host_unmodified_as_observed(self):
+        a = self._make_alloc()
+        receipt = alloc.dispose_guest_disk(a)
+        # Must not assert an observation-based claim of host coverage.
+        self.assertIn("architectural claim", receipt.scope)
+        self.assertIn("not an observation", receipt.scope)
+
+    def test_receipt_disposed_at_is_parseable_iso_timestamp(self):
+        a = self._make_alloc()
+        receipt = alloc.dispose_guest_disk(a)
+        from datetime import datetime
+        # Must not raise.
+        datetime.fromisoformat(receipt.disposed_at)
+
+    def test_refuses_wrong_type(self):
+        with self.assertRaises(TypeError):
+            alloc.dispose_guest_disk("not an allocation")  # type: ignore[arg-type]
+
+    def test_refuses_when_disk_already_removed(self):
+        a = self._make_alloc()
+        self._disk.unlink()
+        with self.assertRaises(ValueError):
+            alloc.dispose_guest_disk(a)
+
+    def test_refuses_when_disk_size_changed_since_allocation(self):
+        a = self._make_alloc()
+        self._disk.write_bytes(b"d" * 128)  # size changed
+        with self.assertRaises(ValueError):
+            alloc.dispose_guest_disk(a)
+        # Disk must NOT have been removed: refusal happens before unlink.
+        self.assertTrue(self._disk.exists())
+
+    def test_refuses_when_disk_replaced_with_symlink(self):
+        a = self._make_alloc()
+        self._disk.unlink()
+        decoy = Path(self._tmp) / "decoy.img"
+        decoy.write_bytes(b"d" * 64)
+        self._disk.symlink_to(decoy)
+        with self.assertRaises(ValueError):
+            alloc.dispose_guest_disk(a)
+        # Decoy must survive: refusal happens before any removal attempt.
+        self.assertTrue(decoy.exists())
+
+    def test_double_dispose_raises_on_second_call(self):
+        a = self._make_alloc()
+        alloc.dispose_guest_disk(a)
+        with self.assertRaises(ValueError):
+            alloc.dispose_guest_disk(a)
+
+
 if __name__ == "__main__":
     unittest.main()
