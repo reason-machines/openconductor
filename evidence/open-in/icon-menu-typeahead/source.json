@@ -1,0 +1,351 @@
+{
+  "owner": "Conductor Rebuild SAME15",
+  "candidate": "ICON-MENU-TYPEAHEAD-SAME15",
+  "main_checked": "d90bed88174656d577adfa793d3850d28eaea7e2",
+  "asset": {
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "retained_rea_evidence_id": "ev_338577609e67c31212d529d59606e90597850528ea9a2f9559d23a4876c960d1"
+  },
+  "spans": [
+    {
+      "symbol": "bS",
+      "path": "reference/bS.txt",
+      "start_utf8_byte": 442176,
+      "end_utf8_byte": 442464,
+      "bytes": 288,
+      "sha256": "18396376badb2246c94a35966e5cfc32e34bff2afb988ec3d5fa13223ddf513b"
+    },
+    {
+      "symbol": "b0",
+      "path": "reference/b0.txt",
+      "start_utf8_byte": 442464,
+      "end_utf8_byte": 442538,
+      "bytes": 74,
+      "sha256": "798975a90dd20c7e224c48e4f3dbb581062e767db7b952218c8454e687e39816"
+    },
+    {
+      "symbol": "Z_",
+      "path": "reference/Z_.txt",
+      "start_utf8_byte": 443179,
+      "end_utf8_byte": 443233,
+      "bytes": 54,
+      "sha256": "8157d51b71802f3db0fba1b5c1210fa900918a10fdd0906cbadbe6c0dabef455"
+    },
+    {
+      "symbol": "Ice",
+      "path": "reference/Ice.txt",
+      "start_utf8_byte": 457546,
+      "end_utf8_byte": 457758,
+      "bytes": 212,
+      "sha256": "18f2a17b6aeccecb30698025d02f97fbb878ef208815438b8f03256cee41478b"
+    },
+    {
+      "symbol": "QOr",
+      "path": "reference/QOr.txt",
+      "start_utf8_byte": 457758,
+      "end_utf8_byte": 457832,
+      "bytes": 74,
+      "sha256": "96ba7748e664b85481e708a01650074976b7c567876f838c0c1a27812943b4e0"
+    },
+    {
+      "symbol": "xQe",
+      "path": "reference/xQe.txt",
+      "start_utf8_byte": 457832,
+      "end_utf8_byte": 458003,
+      "bytes": 171,
+      "sha256": "c75897506fed64bb87dbcc3095bf529aa8e8b545cd318d9643da69fc705f42ba"
+    },
+    {
+      "symbol": "r_",
+      "path": "reference/r_.txt",
+      "start_utf8_byte": 463925,
+      "end_utf8_byte": 464066,
+      "bytes": 141,
+      "sha256": "31b753c7878aff438af8428889564cdfe11a16d489289366b8b9fd738817e3e3"
+    },
+    {
+      "symbol": "FVe",
+      "path": "reference/FVe.txt",
+      "start_utf8_byte": 464209,
+      "end_utf8_byte": 464262,
+      "bytes": 53,
+      "sha256": "c50a8f38a9c2cd2d14db6935e43042612277b4c2cb83c75c1711fc1c85ad7864"
+    },
+    {
+      "symbol": "B6e",
+      "path": "reference/B6e.txt",
+      "start_utf8_byte": 464262,
+      "end_utf8_byte": 464312,
+      "bytes": 50,
+      "sha256": "af48c2b5b36cbaf71a03df4f2995cdc110afd416d70e091ab0fb0c3cec6d02a0"
+    },
+    {
+      "symbol": "fDr",
+      "path": "reference/fDr.txt",
+      "start_utf8_byte": 464312,
+      "end_utf8_byte": 464407,
+      "bytes": 95,
+      "sha256": "498792c82df6534e82d682e64f6e0ffa0cbde527b472f6a133084472ecc85d0b"
+    },
+    {
+      "symbol": "hDr",
+      "path": "reference/hDr.txt",
+      "start_utf8_byte": 464407,
+      "end_utf8_byte": 464618,
+      "bytes": 211,
+      "sha256": "3869a2cd6a8783dc9631db93f3f152dbdaf5d640b3ab13d53a3f7bfa0005f4e2"
+    },
+    {
+      "symbol": "sli",
+      "path": "reference/sli.txt",
+      "start_utf8_byte": 464816,
+      "end_utf8_byte": 464860,
+      "bytes": 44,
+      "sha256": "2ce005d3ca326d241a8b8602522d676c080f6f9654d22b897c99aa9f1efc6269"
+    },
+    {
+      "symbol": "mDr",
+      "path": "reference/mDr.txt",
+      "start_utf8_byte": 465439,
+      "end_utf8_byte": 465872,
+      "bytes": 433,
+      "sha256": "d37b81f399c6033b06eeecabe661ee77cc20a3e3047c974248c40fa674e5a7d4"
+    },
+    {
+      "symbol": "yDr",
+      "path": "reference/yDr.txt",
+      "start_utf8_byte": 466393,
+      "end_utf8_byte": 466400,
+      "bytes": 7,
+      "sha256": "03a131cd051b57ed6ec8e1bc5e24943c36744f181761569968524e03ef648f9e"
+    },
+    {
+      "symbol": "GSe",
+      "path": "reference/GSe.txt",
+      "start_utf8_byte": 467348,
+      "end_utf8_byte": 468599,
+      "bytes": 1251,
+      "sha256": "f0326d87e667ab11967b3d952b6bc761f3beb32a385f88c8330291a0b9024cae"
+    },
+    {
+      "symbol": "SLt",
+      "path": "reference/SLt.txt",
+      "start_utf8_byte": 531356,
+      "end_utf8_byte": 536840,
+      "bytes": 5484,
+      "sha256": "639dff80215201bdcf7b13dc95b69b4fb63010d8e480c03fadd009b46400570e"
+    },
+    {
+      "symbol": "$li",
+      "path": "reference/_dollar_li.txt",
+      "start_utf8_byte": 536840,
+      "end_utf8_byte": 538458,
+      "bytes": 1618,
+      "sha256": "a01ae63c2e4cea8770a3eefc4ff938fca383acd8e5a4e4ded39a3e952ec630b8"
+    },
+    {
+      "symbol": "r0i",
+      "path": "reference/r0i.txt",
+      "start_utf8_byte": 696510,
+      "end_utf8_byte": 697302,
+      "bytes": 792,
+      "sha256": "baea4757e6f5768448520d97492ee9e3fae86b82bfe1597f824df3826f58a619"
+    },
+    {
+      "symbol": "eXe",
+      "path": "reference/eXe.txt",
+      "start_utf8_byte": 697334,
+      "end_utf8_byte": 697857,
+      "bytes": 523,
+      "sha256": "ba099ff83e13b984073d4798b01efbdbedffa2e751967310814497bed1a4ca0b"
+    },
+    {
+      "symbol": "wD",
+      "path": "reference/wD.txt",
+      "start_utf8_byte": 698015,
+      "end_utf8_byte": 698570,
+      "bytes": 555,
+      "sha256": "a9f6d9eaac70ae3b8c9a4235e1807254a43dd79bedf7ff73182637ab8f9261ef"
+    },
+    {
+      "symbol": "Pu",
+      "path": "reference/Pu.txt",
+      "start_utf8_byte": 700703,
+      "end_utf8_byte": 701216,
+      "bytes": 513,
+      "sha256": "e6153e0780bcd6d512055d5af34ba5daa8e7eab9d69417825087e414f5489215"
+    },
+    {
+      "symbol": "m2",
+      "path": "reference/m2.txt",
+      "start_utf8_byte": 703921,
+      "end_utf8_byte": 705553,
+      "bytes": 1632,
+      "sha256": "24ae5b347aa847b6e07f6390a080c9eac18665c8e93e730450435bd1c4304490"
+    },
+    {
+      "symbol": "Sde",
+      "path": "reference/Sde.txt",
+      "start_utf8_byte": 705854,
+      "end_utf8_byte": 707350,
+      "bytes": 1496,
+      "sha256": "bcde61d268f35c26f4b5e28ea0eda54c276724af58e022fb8bc509841f6a68b8"
+    },
+    {
+      "symbol": "i$r",
+      "path": "reference/i_dollar_r.txt",
+      "start_utf8_byte": 707410,
+      "end_utf8_byte": 707781,
+      "bytes": 371,
+      "sha256": "4aac4fd96d9fc8fab3b5710bb4117daa38fef93f93e0c743249b8079ca16c1ab"
+    },
+    {
+      "symbol": "h0i",
+      "path": "reference/h0i.txt",
+      "start_utf8_byte": 707997,
+      "end_utf8_byte": 708089,
+      "bytes": 92,
+      "sha256": "ffc39182dce503d14e527d75a1f636b49978b76bd78c8642b2d6112d78dc69fb"
+    },
+    {
+      "symbol": "oF",
+      "path": "reference/oF.txt",
+      "start_utf8_byte": 721785,
+      "end_utf8_byte": 726746,
+      "bytes": 4961,
+      "sha256": "3af0f9db98413f4da5219d57588879f6409fca2dfb8daeb7aa5c6801cdb90500"
+    },
+    {
+      "symbol": "h2",
+      "path": "reference/h2.txt",
+      "start_utf8_byte": 2224899,
+      "end_utf8_byte": 2225573,
+      "bytes": 674,
+      "sha256": "ef11b076e80655dbde5fd5ecf4c2b5c7b8e5d5f69acf900c85e43d59f091a53d"
+    },
+    {
+      "symbol": "Sg",
+      "path": "reference/Sg.txt",
+      "start_utf8_byte": 2225579,
+      "end_utf8_byte": 2225950,
+      "bytes": 371,
+      "sha256": "febd4e7dd556a600317d00cd674617d216ac262f0d9fb290e5869c487e43fda6"
+    },
+    {
+      "symbol": "Tm",
+      "path": "reference/Tm.txt",
+      "start_utf8_byte": 2227703,
+      "end_utf8_byte": 2230674,
+      "bytes": 2971,
+      "sha256": "5c33f5317d683c7fbdf594f0a841fd72d21e39328cff1402c434aef01641b1d3"
+    },
+    {
+      "symbol": "Yc",
+      "path": "reference/Yc.txt",
+      "start_utf8_byte": 2231400,
+      "end_utf8_byte": 2232271,
+      "bytes": 871,
+      "sha256": "fc6a66a1627fad0823d832ba0c1d98b71986e104a02d93fd30c8f18baa7c6022"
+    },
+    {
+      "symbol": "cFn",
+      "path": "reference/cFn.txt",
+      "start_utf8_byte": 2686373,
+      "end_utf8_byte": 2687659,
+      "bytes": 1286,
+      "sha256": "e97a00b92f89f1593a47e40029d9dcad399c48304f42c2b34eedc1c3f986c248"
+    },
+    {
+      "symbol": "P9",
+      "path": "reference/P9.txt",
+      "start_utf8_byte": 2689481,
+      "end_utf8_byte": 2697526,
+      "bytes": 8045,
+      "sha256": "bf2bd3507c56618ed2d218f4c6efe656926ed3d4a523f8fd16ce5cffd153aede"
+    },
+    {
+      "symbol": "ove",
+      "path": "reference/ove.txt",
+      "start_utf8_byte": 442170,
+      "end_utf8_byte": 442175,
+      "bytes": 5,
+      "sha256": "d4363016a402c93f762cf89efb78d5b6b6548b6fd8a99967e233036311800a50"
+    },
+    {
+      "symbol": "dDr",
+      "path": "reference/dDr.txt",
+      "start_utf8_byte": 464066,
+      "end_utf8_byte": 464209,
+      "bytes": 143,
+      "sha256": "b515d71b97f320aeff710c08b8ba2687b3bbd4640aed12444778786c4fc9b689"
+    },
+    {
+      "symbol": "rli",
+      "path": "reference/rli.txt",
+      "start_utf8_byte": 464618,
+      "end_utf8_byte": 464772,
+      "bytes": 154,
+      "sha256": "a9d6c81be2b7ae7714a80c4bd6d24cb9369b9bf743988de1a40ad317621c362f"
+    },
+    {
+      "symbol": "pDr",
+      "path": "reference/pDr.txt",
+      "start_utf8_byte": 464860,
+      "end_utf8_byte": 465045,
+      "bytes": 185,
+      "sha256": "f8c29aa4dd221c8216a2c80b8d633fd7153028db3cc15e9886f39767eed94d95"
+    },
+    {
+      "symbol": "oli",
+      "path": "reference/oli.txt",
+      "start_utf8_byte": 465045,
+      "end_utf8_byte": 465126,
+      "bytes": 81,
+      "sha256": "b3a31e823059eb866af46d10a0c6e97695e5987388f261d4c75cb778131dd3e9"
+    },
+    {
+      "symbol": "BVe",
+      "path": "reference/BVe.txt",
+      "start_utf8_byte": 465126,
+      "end_utf8_byte": 465208,
+      "bytes": 82,
+      "sha256": "128ff73e9ebe0577ed93ce134e71efc6a5b3a87f69f3a8f75c4c6253278dfbd6"
+    },
+    {
+      "symbol": "lli",
+      "path": "reference/lli.txt",
+      "start_utf8_byte": 465249,
+      "end_utf8_byte": 465319,
+      "bytes": 70,
+      "sha256": "828aad23e01f386a3008c57660770a9813ce30c8a0972e03a7c23ba264a7d657"
+    },
+    {
+      "symbol": "gDr",
+      "path": "reference/gDr.txt",
+      "start_utf8_byte": 465872,
+      "end_utf8_byte": 465932,
+      "bytes": 60,
+      "sha256": "fa2a5541c72d505a37205f7d9c39ac159f03961748a08c1f57a43e2615f9ff1f"
+    },
+    {
+      "symbol": "Es",
+      "path": "reference/Es.txt",
+      "start_utf8_byte": 465319,
+      "end_utf8_byte": 465439,
+      "bytes": 120,
+      "sha256": "7156958a1130e2b3100ec1915a1525aa1e5f56622b5ad188c8774faad14f77ed"
+    },
+    {
+      "symbol": "b2",
+      "path": "reference/b2.txt",
+      "start_utf8_byte": 712430,
+      "end_utf8_byte": 716214,
+      "bytes": 3784,
+      "sha256": "b55e2ed69e189f806b0d68034b4d794aa02ff37bfe9474e36536bb29c1511f23"
+    }
+  ],
+  "missing": [],
+  "parse_diagnostics": 0,
+  "reference_execution": "NOT_RUN; inert syntax only"
+}

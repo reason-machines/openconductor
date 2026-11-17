@@ -1,0 +1,1 @@
+function rli(t,e){const n=t.charCodeAt(0),i=t.charCodeAt(1),r=t.charCodeAt(2);return n===111&&i===110&&r>=65&&r<=90&&(typeof e=="function"||typeof e>"u")}

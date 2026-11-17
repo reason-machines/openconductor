@@ -1,0 +1,7 @@
+{
+  "fresh_main": "073c7b4e2287598f795c350b8fdb5358122c4a06",
+  "baseline_main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+  "all_eight_relevant_files_identical": true,
+  "allowed_product_delta": "webSearch completed-success output expression plus approved cfg(test)/path hook only",
+  "treatment": "PASS: frozen12/12; synthetic native suite38/38; adjacent42/42"
+}
