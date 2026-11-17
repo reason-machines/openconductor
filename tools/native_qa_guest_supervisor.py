@@ -27,8 +27,12 @@ CLI (only inside a separately admitted guest, or with synthetic test commands):
   python3 -B -m tools.native_qa_guest_supervisor --plan <reviewed-plan.json>
 The strict schema-1 document has cwd, steps [{name, argv}], max_wall_seconds and
 output_limit_bytes. It returns one JSON terminal receipt, exit 0 only for command
-completion, 1 for other terminal outcomes, 2 for an invalid plan. This is not an
-acceptance certificate. No ownership survives the foreground invocation.
+completion, 1 for other terminal outcomes, 2 for an invalid plan. Expected OS
+observation/cleanup errors emit supervision_failed with step_receipts_complete
+false and no inferred step/cleanup facts; the library still raises those errors.
+An unavailable receipt stdout, SIGKILL or unknown programming error cannot promise
+a JSON receipt. This is not an acceptance certificate. No ownership survives the
+foreground invocation.
 """
 from __future__ import annotations
 
@@ -113,6 +117,7 @@ class SupervisorReceipt:
     steps: tuple[StepReceipt, ...]
     wall_seconds: float
     commands_passed: bool
+    step_receipts_complete: bool = True
     native_admission: bool = field(default=False, init=False)
     host_filesystem_coverage_verified: bool = field(default=False, init=False)
     guest_location_verified: bool = field(default=False, init=False)
@@ -271,6 +276,12 @@ def _run_step(step, plan, deadline, cancel):
             process.stderr.close()
 
 
+def _plan_sha256(plan):
+    # Self-consistency only, not guest identity, authority or acceptance.
+    plan_bytes = json.dumps(asdict(plan), sort_keys=True, separators=(",", ":")).encode()
+    return hashlib.sha256(plan_bytes).hexdigest()
+
+
 def supervise(plan: GuestPlan, *, cancel: threading.Event | None = None) -> SupervisorReceipt:
     """Await the entire finite sequence and teardown; return no live handle.
 
@@ -301,11 +312,8 @@ def supervise(plan: GuestPlan, *, cancel: threading.Event | None = None) -> Supe
             outcome = "cancelled"
         elif time.monotonic() >= deadline:
             outcome = "timed_out"
-    # Self-consistency only: this binds the receipt to the exact command plan,
-    # not to an authenticated guest, approved executable or acceptance witness.
-    plan_bytes = json.dumps(asdict(plan), sort_keys=True, separators=(",", ":")).encode()
     return SupervisorReceipt(
-        outcome, hashlib.sha256(plan_bytes).hexdigest(), tuple(steps),
+        outcome, _plan_sha256(plan), tuple(steps),
         time.monotonic() - start, outcome == "completed",
     )
 
@@ -354,7 +362,16 @@ def main(argv=None):
     try:
         for sig in (signal.SIGINT, signal.SIGTERM):
             previous[sig] = signal.signal(sig, lambda _sig, _frame: cancel.set())
-        receipt = supervise(plan, cancel=cancel)
+        start = time.monotonic()
+        try:
+            receipt = supervise(plan, cancel=cancel)
+        except (OSError, subprocess.TimeoutExpired):
+            # _run_step has attempted cleanup, not necessarily confirmed it.
+            # No exception text/argv or invented start/reap/EOF facts escape.
+            receipt = SupervisorReceipt(
+                "supervision_failed", _plan_sha256(plan), (),
+                time.monotonic() - start, False, step_receipts_complete=False,
+            )
         print(json.dumps(asdict(receipt), sort_keys=True), flush=True)
         return 0 if receipt.commands_passed else 1
     finally:

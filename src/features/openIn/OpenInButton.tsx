@@ -72,6 +72,7 @@ export function OpenInButton({ path, notify, variant = "split", showShortcutHint
   const presence = usePresence(open);
   const wrap = useRef<HTMLDivElement>(null);
   const menu = useRef<HTMLDivElement>(null);
+  const initialFocus = useRef<"first" | "last" | null>(null);
   const { overrides } = useKeybindingOverrides();
   const openKey = effectiveShortcuts("workspace.openInApp", overrides)[0];
   const openKeyText = openKey ? glyphs(openKey) : "";
@@ -117,13 +118,30 @@ export function OpenInButton({ path, notify, variant = "split", showShortcutHint
 
   useEffect(() => {
     if (!open) return;
-    menu.current?.querySelector<HTMLElement>('[role="menuitem"]')?.focus();
+    const edge = initialFocus.current;
+    initialFocus.current = null;
+    if (edge) {
+      const items = menu.current?.querySelectorAll<HTMLElement>('[role="menuitem"]:not([disabled])');
+      items?.[edge === "last" ? items.length - 1 : 0]?.focus();
+    } else {
+      menu.current?.querySelector<HTMLElement>('[role="menuitem"]')?.focus();
+    }
     const onDown = (e: MouseEvent) => {
       if (!wrap.current?.contains(e.target as Node)) close();
     };
     document.addEventListener("mousedown", onDown, true);
     return () => document.removeEventListener("mousedown", onDown, true);
   }, [open]);
+
+  // Conductor's icon trigger (SLt) opens at the enabled first/last row.
+  const onTriggerKey = (e: KeyboardEvent<HTMLButtonElement>) => {
+    if (split || open || noApps || e.defaultPrevented) return;
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+    e.preventDefault();
+    e.stopPropagation();
+    initialFocus.current = e.key === "ArrowUp" ? "last" : "first";
+    setOpen(true);
+  };
 
   // ArrowUp / ArrowDown move between rows and wrap (Conductor's `_vs`); Escape closes.
   const onMenuKey = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -181,6 +199,7 @@ export function OpenInButton({ path, notify, variant = "split", showShortcutHint
           aria-label="Open in..."
           aria-haspopup="menu"
           aria-expanded={open}
+          onKeyDown={onTriggerKey}
           onClick={() => setOpen((v) => !v)}
         >
           <ChevronDownIcon size={12} />

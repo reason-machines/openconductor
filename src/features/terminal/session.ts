@@ -38,6 +38,8 @@ interface Live {
   host: HTMLDivElement;
   ack: AckBatcher;
   opened: boolean;
+  /** The current attachment alone owns its host and resize observer. */
+  attachment?: { detach: () => void; observer: ResizeObserver };
   appearance?: MutationObserver;
   /**
    * Opened by the app, not the user (a workspace's first terminal, restored
@@ -456,6 +458,8 @@ export function onAttachFailure(f: (error: unknown) => void): () => void {
 export function attachTab(id: string, container: HTMLElement): () => void {
   const l = live.get(id);
   if (!l) return () => {};
+  l.attachment?.observer.disconnect();
+  l.attachment = undefined;
   container.appendChild(l.host);
   if (!l.opened) {
     try {
@@ -468,21 +472,25 @@ export function attachTab(id: string, container: HTMLElement): () => void {
     }
     l.opened = true;
   }
-  const refit = () => {
-    if (l.host.clientWidth > 0) l.fit.fit();
+  const detach = () => {
+    if (l.attachment?.detach !== detach) return;
+    l.attachment = undefined;
+    ro.disconnect();
+    l.host.remove();
   };
+  const refit = () => {
+    if (l.attachment?.detach === detach && l.host.clientWidth > 0) l.fit.fit();
+  };
+  const ro = new ResizeObserver(refit);
+  l.attachment = { detach, observer: ro };
+  ro.observe(container);
   refit();
   // A tab takes the keyboard when shown. A quiet tab's first showing lands a
   // moment after the workspace opens (it waits on the PTY listener), so it
   // leaves focus in a text field the user is typing in, such as the chat box.
   if (!(l.quiet && typingElsewhere())) l.term.focus();
   l.quiet = false;
-  const ro = new ResizeObserver(refit);
-  ro.observe(container);
-  return () => {
-    ro.disconnect();
-    l.host.remove();
-  };
+  return detach;
 }
 
 function writeInput(id: string, data: string) {
@@ -561,6 +569,7 @@ export async function destroyWorkspaceTerminals(workspaceId: string): Promise<vo
 }
 
 function dispose(id: string) {
+  live.get(id)?.attachment?.detach();
   live.get(id)?.appearance?.disconnect();
   live.get(id)?.term.dispose();
   live.delete(id);

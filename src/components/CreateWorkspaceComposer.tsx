@@ -208,6 +208,14 @@ export function CreateWorkspaceComposer({
     "chat.addAttachment": () => { if (!busy) fileInputRef.current?.click(); },
   });
 
+  // Hji binds Plan mode only while its editor is focused; the menu owns the same state.
+  useKeybindings({
+    "chat.togglePlanMode": () => {
+      if (draft.agent !== "claude" || busy || !composerInputRef.current?.focused()) return false;
+      setCreatePlanMode((value) => !value);
+    },
+  }, { enableOnDialogIds: eyebrowVariant === "attached" ? ["dialog"] : undefined });
+
   /** Stage binary bytes under this draft's identity before a workspace exists. */
   async function attachFiles(files: File[]) {
     if (progress.step === "creating" || progress.step === "detecting_setup") return;

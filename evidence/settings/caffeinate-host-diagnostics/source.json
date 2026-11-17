@@ -1,0 +1,52 @@
+{
+  "owner": "Conductor Rebuild / SAME49",
+  "scope": "SECRET-SAVE separate diagnostic lease: harness stage/name/message only",
+  "current_default_head": "cd5d2064765b8698f1c64795c703254053523cb9",
+  "local_head_before_diagnostic_edits": "8d05d005d960601185ef70e2d6dcd97e4385c49e",
+  "failing_pr": 1381,
+  "failing_pr_head": "4992c77a4111287f53d93c0f2a746c7513009c4e",
+  "failing_check_run_id": 133859978013,
+  "failing_job": "https://github.com/reason-machines/openconductor/actions/runs/44030187035/job/133859978013",
+  "observed_host_message": "Whole-main host failed before product assertion: {\"errors\":[],\"blocked\":[],\"unexpected\":[]}",
+  "underlying_hosted_failure_cause": "UNVERIFIED",
+  "pins_before_host_edit": {
+    "tests/settings/support/caffeinateHost.mjs": {
+      "sha256": "f3692e899aed2fd345fc65376420e9ccb8e2b811066bd764108eea9d2d2591dd",
+      "bytes": 12975
+    },
+    "src/features/settings/caffeinateConsumer.test.ts": {
+      "sha256": "f2b81da2a5ae93877ba38dbd41a08e504af1c81bae56177b4abe5dfb767fa5a1",
+      "bytes": 7534
+    },
+    "tests/settings/caffeinateConsumer.dom.test.mjs": {
+      "sha256": "8cabea40f8fe9af532fcbbf56dbdd8419407fb33e16c414604d18f40fb02761f",
+      "bytes": 10184
+    },
+    "tests/e2e/vite-fixture-server.mjs": {
+      "sha256": "8d260012b27441b37809d67db758e5f098133371c77d07113bab3a3468e639a0",
+      "bytes": 3924
+    },
+    "evidence/settings/caffeinate-consumer/baseline/manifest.json": {
+      "sha256": "e7e4557a048780587eb82a98331439a12677c4b9ea777335a1ae98be26c2ed3e",
+      "bytes": 114733
+    },
+    "evidence/settings/caffeinate-consumer/baseline/graph.tar.gz": {
+      "sha256": "800c4e4dbe3a7c3e72694d4c9077e193aed0e2b57b0cf5f48dbaa8efd69ee5c4",
+      "bytes": 1680749
+    },
+    "evidence/settings/caffeinate-host-diagnostics/frozen-regression.mjs": {
+      "sha256": "1777b03a07ce45e70b29cd087a19203b24aaec86e775608415ce2df82559eb1e",
+      "bytes": 2297
+    },
+    "src/features/settings/caffeinateHostDiagnostics.test.ts": {
+      "sha256": "c4ee00eac6edd3c88761d3e8a2f7d0902d150e23062fe43189ab8146e7f8b4ba",
+      "bytes": 3395
+    }
+  },
+  "recovered_original_frozen_fixture": {
+    "source_id": "ec27838f-a656-42b7-96e5-87e4efbdf52c",
+    "revision": 29838404,
+    "recovery": "Exact prior command heredoc bytes plus final newline; unchanged original six cases"
+  },
+  "real_browser_server_native_operations": 0
+}
