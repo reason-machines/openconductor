@@ -1,0 +1,21 @@
+{
+  "checked_utc": "2026-11-17T22:27:02.884024+00:00",
+  "main": "1e2500a959f68411be54cdca5c0473d0010b0559",
+  "branch": "reason/openconductor-window-drag-drop",
+  "merged_head": "4d3e4586e67931ccb15af8aef6e60a952beb7d50",
+  "before_sha256": "9fcfca0123de65aa4aa069a234904988d35f140253a86054971bb375838f4018",
+  "after_sha256": "01a4744126293c4602e628ea2737f2169654a43972e9d02486b881ca0ff10c6e",
+  "exact_frozen_proposal": true,
+  "same49_ScriptRow_sha256": "08aa5d6ea7686016791b717b2442045b342689d8a402572dbc2cf3a83c33c79b",
+  "same49_byte_equal": true,
+  "frozen_fixture_sha256": "03c71a53a888567759ea2100713d6379281c9077693b601db1f52915f81205dc",
+  "file_diff": "diff --git a/src/settings/rows/RepoScriptsRows.tsx b/src/settings/rows/RepoScriptsRows.tsx\nindex 3186608e0..5f3bf3dd0 100644\n--- a/src/settings/rows/RepoScriptsRows.tsx\n+++ b/src/settings/rows/RepoScriptsRows.tsx\n@@ -11,6 +11,9 @@\n //  - \"Want to share scripts with your team? Create a .conductor/settings.toml file\" while\n //    no shared settings set any script.\n import { usePendingEdit } from \"../../lib/persistence/producer.ts\";\n+import { useKeybindingOverrides } from \"../../keybindings/KeybindingsProvider\";\n+import { effectiveShortcuts } from \"../../keybindings/overrides\";\n+import { matchesEvent } from \"../../keybindings/shortcut\";\n import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from \"react\";\n import { openUrl } from \"../../backend\";\n import { scriptsConfig } from \"../../scripts/api\";\n@@ -319,6 +322,7 @@ function RunScriptDialog(props: {\n   onSave: (form: ScriptForm) => void;\n   onDelete: () => void;\n }) {\n+  const { overrides } = useKeybindingOverrides();\n   const [form, setForm] = useState(props.initial);\n   const [shown, setShown] = useState(false);\n   useEffect(() => {\n@@ -341,7 +345,7 @@ function RunScriptDialog(props: {\n           aria-label={title}\n           onKeyDown={(e) => {\n             if (e.key === \"Escape\") props.onCancel();\n-            if (e.key === \"Enter\" && (e.metaKey || e.ctrlKey)) {\n+            if (effectiveShortcuts(\"dialog.primaryAction\", overrides).some((key) => matchesEvent(key, e.nativeEvent))) {\n               e.preventDefault();\n               submit();\n             }\n@@ -373,7 +377,6 @@ function RunScriptDialog(props: {\n               value={form.commandLine}\n               autoFocus={props.mode === \"edit\"}\n               onChange={(commandLine) => setForm((f) => ({ ...f, commandLine }))}\n-              onModEnter={submit}\n             />\n           </div>\n           <div className=\"repo-dialog-footer\">\n",
+  "allowed_cpus": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "free_disk_bytes": 15727591424,
+  "green_ran": false
+}

@@ -1,0 +1,12 @@
+{
+  "admission": "RUN-SCRIPT-DIALOG-PRIMARY-1F-DEPS-20261117T222031444Z",
+  "released_utc": "2026-11-17T22:21:36.744243+00:00",
+  "exit": 0,
+  "cache_removed": true,
+  "own_pinned_node_modules_retained": true,
+  "frozen_fixture_sha256": "03c71a53a888567759ea2100713d6379281c9077693b601db1f52915f81205dc",
+  "rss_scope": "not sampled; heap768MiB configured, allocated private disk measured by frozen helper",
+  "visible_processes": "  PID  PPID  PGID STAT COMMAND\n    1     0     1 Ss   bwrap\n    2     1     1 S    bash\n    3     2     1 S    socat\n    4     2     1 S    socat\n    9     2     1 S    bash\n   76     9     1 S    bash\n   77    76     1 S    python3\n   78    77     1 R    ps\n",
+  "product_write": false,
+  "fixture_run": false
+}
