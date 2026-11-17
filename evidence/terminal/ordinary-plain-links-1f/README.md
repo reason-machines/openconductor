@@ -52,6 +52,10 @@ python3 evidence/terminal/ordinary-plain-links-1f/verify.py --renderer <retained
 
 **156 inert checks pass**: full original hashes, fifteen parent spans/caller-consumer joins, frozen fixture and receipt identities, exact original-loader reconstruction, unchanged remaining session (including encoded handler), one isolated official dependency/lock entry, installed-version source identity. Full original assets are retained outside git; their exact hashes/byte offsets are in `qualification.json`. The verifier requires those original assets, not a live Conductor app.
 
+## Hosted CI setup correction
+
+The first hosted head passed typecheck but hit one unrelated historical-graph **setup** failure after the new dependency changed the live package manifests. The [setup-only correction](ci-correction/README.md) preserves every historical graph hash and behavior assertion, installs the frozen graph's own dependencies on drift, and adds seven inert setup-edge controls. Thirty-nine focused link/setup controls pass. Original browser replay and full build remain pending corrected-head hosted CI; they are not claimed locally GREEN.
+
 ## Acceptance boundaries
 
 Local full typecheck/build **not run**: heavy checks remain serialized; exact-head hosted CI must pass before merging. No workflow or check was weakened.

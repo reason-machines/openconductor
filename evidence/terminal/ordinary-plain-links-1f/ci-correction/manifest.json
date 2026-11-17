@@ -1,0 +1,23 @@
+{
+  "author": "Conductor Rebuild",
+  "failed_published_head": "4cd28d5737067c23aab0e1ba5e466f842e38d3ca",
+  "fresh_default_checked": "74c004a95d7b10072f54f71ca611f22c50944f64",
+  "original_sha256": "f2b81da2a5ae93877ba38dbd41a08e504af1c81bae56177b4abe5dfb767fa5a1",
+  "original_setup_utf8_half_open": [
+    6372,
+    6695
+  ],
+  "new_setup_sha256": "dd5ff76f83e83114c81cc43127762586f6090cd3f877018de1b78f4a9f06c9b7",
+  "file_hashes": {
+    "evidence/terminal/ordinary-plain-links-1f/ci-correction/before.tap.gz": "f6c6ab5336205088913ed8179bb1a99cb1b74194505031705e98858ae4704578",
+    "evidence/terminal/ordinary-plain-links-1f/ci-correction/setup.tap.gz": "4292fa450da552b8bbe3c46ca5b98ac8cc86b3d885b3e805418acf446e2a699b",
+    "evidence/terminal/ordinary-plain-links-1f/ci-correction/adjacent.tap.gz": "c1cf19717c4dd953457ccd02765781a7f30caf39103379deb0ff62659c8684ba",
+    "evidence/terminal/ordinary-plain-links-1f/ci-correction/dependency-setup.test.mjs": "c118370999fdd61d0176090192e3983bafa1c1929a0a011555caadb1dfe644ce",
+    "tests/settings/caffeinateConsumer.dom.test.mjs": "8cabea40f8fe9af532fcbbf56dbdd8419407fb33e16c414604d18f40fb02761f",
+    "evidence/settings/caffeinate-consumer/baseline/graph.tar.gz": "800c4e4dbe3a7c3e72694d4c9077e193aed0e2b57b0cf5f48dbaa8efd69ee5c4",
+    "evidence/settings/caffeinate-consumer/baseline/manifest.json": "e7e4557a048780587eb82a98331439a12677c4b9ea777335a1ae98be26c2ed3e",
+    "src/features/terminal/ordinaryPlainLinks.test.ts": "f05513f25c8bd8bd2ceb137875a305d10a9f60111cf89c8cce9c06fa7aa1a0c2"
+  },
+  "local_browser_replay": "NOT_RUN; exact-head hosted CI pending",
+  "local_build": "NOT_RUN; exact-head hosted CI pending"
+}
