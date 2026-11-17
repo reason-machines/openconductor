@@ -1,0 +1,92 @@
+{
+  "candidate": "terminal-stale-attachment-cleanup-1f",
+  "checked_main": "bcb3ce4f0c0cf92f6a238c1cc6e4d0d54856a24f",
+  "source_sha256": "b0eac860b324dcc4539db87f12d93ba6cdc10bb1edd19ed2475cad0f3e0c32e0",
+  "fixture_sha256": "5f29c98db7b890125d9099afd034ed457c40085540d6e9cbab0d2d995b5bf271",
+  "fixture_bytes": 3801,
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "retained_artifact_provenance": [
+    {
+      "artifact": "index",
+      "name": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    },
+    {
+      "artifact": "renderer",
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    }
+  ],
+  "spans_verified": [
+    {
+      "symbol": "w9e",
+      "file": "reference/w9e.txt",
+      "utf8_half_open": [
+        6919236,
+        6922665
+      ],
+      "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32",
+      "bytes": 3429,
+      "retained_path": "evidence/terminal/ordinary-theme-refresh-1f/reference/w9e.txt"
+    },
+    {
+      "symbol": "dno",
+      "file": "reference/dno.txt",
+      "utf8_half_open": [
+        6915051,
+        6916770
+      ],
+      "sha256": "c1caf84211af0d4cdc09cc07d3b7ecfc9b0dde7cbfa84704e5f2ce24109fd318",
+      "bytes": 1719,
+      "retained_path": "evidence/terminal/ordinary-theme-refresh-1f/reference/dno.txt"
+    },
+    {
+      "symbol": "lno",
+      "file": "reference/lno.txt",
+      "utf8_half_open": [
+        6913120,
+        6914245
+      ],
+      "sha256": "f0ce60ce9b64bb20c9526c841aec24bf2620c9c8bf1973dd083e218e8f4fd4a5",
+      "bytes": 1125,
+      "boundary": "Full retained declaration uniquely rejoined to full original renderer bytes",
+      "retained_path": "evidence/terminal/ordinary-theme-refresh-1f/reference/lno.txt"
+    },
+    {
+      "symbol": "uVn",
+      "file": "reference/uVn.txt",
+      "utf8_half_open": [
+        6918617,
+        6918847
+      ],
+      "sha256": "ac48251fcbe99909fea8abc6d01ba6234dcb51496f742ee012debc4aa57c5e53",
+      "bytes": 230,
+      "boundary": "Unique declaration to next named top-level function; W5e includes its teardown registration",
+      "retained_path": "evidence/terminal/ordinary-theme-refresh-1f/reference/uVn.txt"
+    },
+    {
+      "symbol": "W5e",
+      "file": "reference/W5e.txt",
+      "utf8_half_open": [
+        6918847,
+        6919236
+      ],
+      "sha256": "7829aaf4a1fdf9ed7789f958496e3f7f7274f69cfbd31997aeb7ae99de28a881",
+      "bytes": 389,
+      "boundary": "Unique declaration to next named top-level function; W5e includes its teardown registration",
+      "retained_path": "evidence/terminal/ordinary-theme-refresh-1f/reference/W5e.txt"
+    }
+  ],
+  "limits": [
+    "No complete original app assets available for fresh rehash; complete-asset hashes are retained provenance only.",
+    "Reference JS read and hash-checked, never executed.",
+    "Synthetic DOM/xterm boundary; only unchanged OpenConductor attachTab extracted and executed.",
+    "No native, packaged-app, actual DOM, PTY, backend or integration verification.",
+    "Read-only production audit; no implementation change."
+  ],
+  "fixture_revision": 2,
+  "supersedes_fixture_sha256": "f85777f1b23a83176526194482a7a750512e19ea7045b5ab0db8755c0778d449",
+  "fixture_refinement": "Move baseline identity guard outside executable fixture; unchanged five case bodies now read working source so future GREEN can use identical test. No production edits or assertion changes."
+}

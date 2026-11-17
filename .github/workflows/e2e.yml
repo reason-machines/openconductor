@@ -132,6 +132,15 @@ jobs:
           path: ${{ runner.temp }}/e2e-binary
           retention-days: 14
 
+      - name: Upload per-suite runtime receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-receipts-${{ github.job }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/e2e-*/**/runtime-*.json
+          if-no-files-found: warn
+          retention-days: 14
+
   reason-chat:
     name: Reason chat through the built app (ubuntu-22.04)
     # WebDriver for Tauri apps exists on Linux (WebKitWebDriver) and Windows
@@ -316,4 +325,15 @@ jobs:
         with:
           name: e2e-flows
           path: ${{ runner.temp }}/e2e-flows
+          retention-days: 14
+      - name: Upload per-suite runtime receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-receipts-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/e2e-*/**/runtime-*.json
+            ${{ runner.temp }}/transcript-parity/runtime-*.json
+            ${{ runner.temp }}/slash-menu/runtime-*.json
+          if-no-files-found: warn
           retention-days: 14

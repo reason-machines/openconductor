@@ -1,0 +1,1643 @@
+(node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:99) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: bindCommands registers every default shortcut of a command
+ok 1 - bindCommands registers every default shortcut of a command
+  ---
+  duration_ms: 1.612761
+  type: 'test'
+  ...
+# Subtest: a bare-key shortcut does not fire while typing; its modifier shortcut does
+ok 2 - a bare-key shortcut does not fire while typing; its modifier shortcut does
+  ---
+  duration_ms: 0.370804
+  type: 'test'
+  ...
+# Subtest: a non-global command stays off while a dialog is open; a global one runs
+ok 3 - a non-global command stays off while a dialog is open; a global one runs
+  ---
+  duration_ms: 1.232593
+  type: 'test'
+  ...
+# Subtest: overrides replace the default shortcut
+ok 4 - overrides replace the default shortcut
+  ---
+  duration_ms: 0.245638
+  type: 'test'
+  ...
+# Subtest: undefined callbacks are skipped and the remover takes back only its own handlers
+ok 5 - undefined callbacks are skipped and the remover takes back only its own handlers
+  ---
+  duration_ms: 0.285983
+  type: 'test'
+  ...
+# Subtest: a callback returning false passes the key on
+ok 6 - a callback returning false passes the key on
+  ---
+  duration_ms: 0.138022
+  type: 'test'
+  ...
+# Subtest: unknown command ids throw
+ok 7 - unknown command ids throw
+  ---
+  duration_ms: 0.411102
+  type: 'test'
+  ...
+# Subtest: hidden chat bindings cannot cancel or attach from a center terminal
+ok 8 - hidden chat bindings cannot cancel or attach from a center terminal
+  ---
+  duration_ms: 0.241097
+  type: 'test'
+  ...
+# Subtest: focused chat shortcuts still work while its panel terminal has keyboard focus
+ok 9 - focused chat shortcuts still work while its panel terminal has keyboard focus
+  ---
+  duration_ms: 0.418824
+  type: 'test'
+  ...
+# Subtest: activeDialogIdFromDom: the last tagged dialog, else any modal, else none
+ok 10 - activeDialogIdFromDom: the last tagged dialog, else any modal, else none
+  ---
+  duration_ms: 0.40855
+  type: 'test'
+  ...
+# Subtest: a higher-priority binding runs first and passes the key on by returning false
+ok 11 - a higher-priority binding runs first and passes the key on by returning false
+  ---
+  duration_ms: 14.634654
+  type: 'test'
+  ...
+# (node:100) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: base commands share a scope with every group; groups do not share with each other
+ok 12 - base commands share a scope with every group; groups do not share with each other
+  ---
+  duration_ms: 0.765343
+  type: 'test'
+  ...
+# Subtest: a shortcut taken by a command in a shared scope is a conflict
+ok 13 - a shortcut taken by a command in a shared scope is a conflict
+  ---
+  duration_ms: 0.585106
+  type: 'test'
+  ...
+# Subtest: the same keys in unrelated scopes do not conflict
+ok 14 - the same keys in unrelated scopes do not conflict
+  ---
+  duration_ms: 0.349758
+  type: 'test'
+  ...
+# Subtest: a command never conflicts with itself
+ok 15 - a command never conflicts with itself
+  ---
+  duration_ms: 0.293588
+  type: 'test'
+  ...
+# Subtest: hidden fixed commands count, as in Conductor (palette Cmd+K vs clear scrollback)
+ok 16 - hidden fixed commands count, as in Conductor (palette Cmd+K vs clear scrollback)
+  ---
+  duration_ms: 0.232272
+  type: 'test'
+  ...
+# Subtest: additional default keys count (zoom in is Cmd+= as well as Cmd++)
+ok 17 - additional default keys count (zoom in is Cmd+= as well as Cmd++)
+  ---
+  duration_ms: 0.10742
+  type: 'test'
+  ...
+# Subtest: a physical binding conflicts with the event that presses it
+ok 18 - a physical binding conflicts with the event that presses it
+  ---
+  duration_ms: 0.431539
+  type: 'test'
+  ...
+# Subtest: overrides replace defaults on both sides
+ok 19 - overrides replace defaults on both sides
+  ---
+  duration_ms: 0.752861
+  type: 'test'
+  ...
+# (node:101) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a bare key is off while typing unless allowWhileTyping
+ok 20 - a bare key is off while typing unless allowWhileTyping
+  ---
+  duration_ms: 0.818154
+  type: 'test'
+  ...
+# Subtest: a modified key needs enableOnInputFocus or isGlobal while typing
+ok 21 - a modified key needs enableOnInputFocus or isGlobal while typing
+  ---
+  duration_ms: 0.16966
+  type: 'test'
+  ...
+# Subtest: terminal focus gates enableOnTerminalFocus and requireTerminalFocus
+ok 22 - terminal focus gates enableOnTerminalFocus and requireTerminalFocus
+  ---
+  duration_ms: 0.12077
+  type: 'test'
+  ...
+# Subtest: dialogs: only listed dialog ids, and nothing unlisted while a dialog is open
+ok 23 - dialogs: only listed dialog ids, and nothing unlisted while a dialog is open
+  ---
+  duration_ms: 0.123343
+  type: 'test'
+  ...
+# Subtest: higher priority runs first, then more modifiers; false passes on
+ok 24 - higher priority runs first, then more modifiers; false passes on
+  ---
+  duration_ms: 1.82915
+  type: 'test'
+  ...
+# Subtest: telemetry carries the dialog id and context only when present
+ok 25 - telemetry carries the dialog id and context only when present
+  ---
+  duration_ms: 0.254969
+  type: 'test'
+  ...
+# Subtest: held-key repeats are swallowed unless a handler allows repeat
+ok 26 - held-key repeats are swallowed unless a handler allows repeat
+  ---
+  duration_ms: 0.243352
+  type: 'test'
+  ...
+# Subtest: Escape blurs a focused input before any handler; not in the terminal
+ok 27 - Escape blurs a focused input before any handler; not in the terminal
+  ---
+  duration_ms: 0.161971
+  type: 'test'
+  ...
+# Subtest: recorder, lone modifiers, unfocused scopes and unregister all pass
+ok 28 - recorder, lone modifiers, unfocused scopes and unregister all pass
+  ---
+  duration_ms: 0.316141
+  type: 'test'
+  ...
+# Subtest: Backspace outside a text field is prevented even when nothing handles it
+ok 29 - Backspace outside a text field is prevented even when nothing handles it
+  ---
+  duration_ms: 0.368414
+  type: 'test'
+  ...
+# (node:123) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'fuzzysort' imported from /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/keybindings/fuzzy.ts
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.5
+# Subtest: src/keybindings/editor.test.ts
+not ok 4 - src/keybindings/editor.test.ts
+  ---
+  duration_ms: 295.303103
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/keybindings/editor.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:124) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/cjs/loader:1430
+#   const err = new Error(message);
+#               ^
+# Error: Cannot find module 'react'
+# Require stack:
+# - /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/keybindings/focusScope.test.ts
+#     at Function._resolveFilename (node:internal/modules/cjs/loader:1430:15)
+#     at defaultResolveImpl (node:internal/modules/cjs/loader:1040:19)
+#     at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1045:22)
+#     at Function._load (node:internal/modules/cjs/loader:1216:25)
+#     at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+#     at Module.require (node:internal/modules/cjs/loader:1527:12)
+#     at require (node:internal/modules/helpers:147:16)
+#     at file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/keybindings/focusScope.test.ts:9:15
+#     at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'MODULE_NOT_FOUND',
+#   requireStack: [
+#     '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/keybindings/focusScope.test.ts'
+#   ]
+# }
+# Node.js v22.23.5
+# Subtest: src/keybindings/focusScope.test.ts
+not ok 5 - src/keybindings/focusScope.test.ts
+  ---
+  duration_ms: 252.053961
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/keybindings/focusScope.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:139) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'fuzzysort' imported from /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/keybindings/help.test.ts
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.5
+# Subtest: src/keybindings/help.test.ts
+not ok 6 - src/keybindings/help.test.ts
+  ---
+  duration_ms: 470.432687
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/keybindings/help.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:145) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: probeFocus: input in path, outermost contenteditable, terminal, recorder
+ok 33 - probeFocus: input in path, outermost contenteditable, terminal, recorder
+  ---
+  duration_ms: 3.571243
+  type: 'test'
+  ...
+# Subtest: probeFocus: a data-keybinding-local list reads its own plain keys, like a text field
+ok 34 - probeFocus: a data-keybinding-local list reads its own plain keys, like a text field
+  ---
+  duration_ms: 0.228258
+  type: 'test'
+  ...
+# Subtest: a matching shortcut runs, stops propagation and sends telemetry
+ok 35 - a matching shortcut runs, stops propagation and sends telemetry
+  ---
+  duration_ms: 0.64097
+  type: 'test'
+  ...
+# Subtest: an unmatched key passes untouched; Backspace outside a field is prevented
+ok 36 - an unmatched key passes untouched; Backspace outside a field is prevented
+  ---
+  duration_ms: 0.18824
+  type: 'test'
+  ...
+# Subtest: a bare Escape waits for the bubble phase and is skipped if handled
+ok 37 - a bare Escape waits for the bubble phase and is skipped if handled
+  ---
+  duration_ms: 0.490211
+  type: 'test'
+  ...
+# Subtest: a bare Escape in a text field blurs it
+ok 38 - a bare Escape in a text field blurs it
+  ---
+  duration_ms: 0.153052
+  type: 'test'
+  ...
+# Subtest: the bubble listener ignores everything but a bare Escape
+ok 39 - the bubble listener ignores everything but a bare Escape
+  ---
+  duration_ms: 0.125009
+  type: 'test'
+  ...
+# Subtest: a key capture takes every key until removed
+ok 40 - a key capture takes every key until removed
+  ---
+  duration_ms: 0.399399
+  type: 'test'
+  ...
+# Subtest: removing a replaced capture keeps the newer one
+ok 41 - removing a replaced capture keeps the newer one
+  ---
+  duration_ms: 0.3161
+  type: 'test'
+  ...
+# Subtest: text input is blocked briefly after an Option chord runs
+ok 42 - text input is blocked briefly after an Option chord runs
+  ---
+  duration_ms: 2.223808
+  type: 'test'
+  ...
+# Subtest: a Command-Option chord does not block text input
+ok 43 - a Command-Option chord does not block text input
+  ---
+  duration_ms: 0.388124
+  type: 'test'
+  ...
+# Subtest: a held-key repeat with no repeatable handler is swallowed
+ok 44 - a held-key repeat with no repeatable handler is swallowed
+  ---
+  duration_ms: 0.165923
+  type: 'test'
+  ...
+# Subtest: installKeyListeners wires capture and bubble phases and removes them
+ok 45 - installKeyListeners wires capture and bubble phases and removes them
+  ---
+  duration_ms: 0.219097
+  type: 'test'
+  ...
+# (node:148) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: openDebugTools fires on physical ⌘⌥I (code=KeyI)
+ok 46 - openDebugTools fires on physical ⌘⌥I (code=KeyI)
+  ---
+  duration_ms: 1.268002
+  type: 'test'
+  ...
+# Subtest: openDebugTools fires even with a dialog open (isGlobal:true)
+ok 47 - openDebugTools fires even with a dialog open (isGlobal:true)
+  ---
+  duration_ms: 0.175867
+  type: 'test'
+  ...
+# Subtest: openDebugTools does not fire without the alt modifier
+ok 48 - openDebugTools does not fire without the alt modifier
+  ---
+  duration_ms: 0.146573
+  type: 'test'
+  ...
+# Subtest: openDebugTools shortcut override replaces ⌘⌥I
+ok 49 - openDebugTools shortcut override replaces ⌘⌥I
+  ---
+  duration_ms: 0.522406
+  type: 'test'
+  ...
+# Subtest: workspace.toggleCreateFrom fires on ⌘I
+ok 50 - workspace.toggleCreateFrom fires on ⌘I
+  ---
+  duration_ms: 0.21467
+  type: 'test'
+  ...
+# Subtest: workspace.toggleCreateFrom fires while typing (allowWhileTyping:true)
+ok 51 - workspace.toggleCreateFrom fires while typing (allowWhileTyping:true)
+  ---
+  duration_ms: 0.166616
+  type: 'test'
+  ...
+# Subtest: workspace.toggleCreateFrom skips when handler is undefined (picker disabled)
+ok 52 - workspace.toggleCreateFrom skips when handler is undefined (picker disabled)
+  ---
+  duration_ms: 0.152831
+  type: 'test'
+  ...
+# Subtest: workspace.toggleCreateFrom shortcut override replaces ⌘I
+ok 53 - workspace.toggleCreateFrom shortcut override replaces ⌘I
+  ---
+  duration_ms: 0.154613
+  type: 'test'
+  ...
+# (node:163) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: bad documents give no overrides
+ok 54 - bad documents give no overrides
+  ---
+  duration_ms: 1.780632
+  type: 'test'
+  ...
+# Subtest: shortcut parsing canonicalizes modifiers and rejects junk
+ok 55 - shortcut parsing canonicalizes modifiers and rejects junk
+  ---
+  duration_ms: 0.489957
+  type: 'test'
+  ...
+# Subtest: unknown, non-configurable and invalid entries are dropped
+ok 56 - unknown, non-configurable and invalid entries are dropped
+  ---
+  duration_ms: 0.449835
+  type: 'test'
+  ...
+# Subtest: legacy ids migrate to their replacements
+ok 57 - legacy ids migrate to their replacements
+  ---
+  duration_ms: 0.330654
+  type: 'test'
+  ...
+# Subtest: old cmd-enter setups regain Shift+Enter for new line
+ok 58 - old cmd-enter setups regain Shift+Enter for new line
+  ---
+  duration_ms: 0.564724
+  type: 'test'
+  ...
+# Subtest: serialize stores singles bare, lists as arrays, and deletes resets
+ok 59 - serialize stores singles bare, lists as arrays, and deletes resets
+  ---
+  duration_ms: 0.201667
+  type: 'test'
+  ...
+# Subtest: effective shortcuts fall back to key plus additionalKeys
+ok 60 - effective shortcuts fall back to key plus additionalKeys
+  ---
+  duration_ms: 0.414313
+  type: 'test'
+  ...
+# Subtest: store serializes concurrent updates without losing either
+ok 61 - store serializes concurrent updates without losing either
+  ---
+  duration_ms: 24.632492
+  type: 'test'
+  ...
+# (node:169) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: registry matches the extracted evidence with the requested OpenConductor loadout shortcuts
+ok 62 - registry matches the extracted evidence with the requested OpenConductor loadout shortcuts
+  ---
+  duration_ms: 2.911639
+  type: 'test'
+  ...
+# Subtest: five loadout shortcuts are Cmd1–5 while retained reference evidence stays CmdCtrl1–5
+ok 63 - five loadout shortcuts are Cmd1–5 while retained reference evidence stays CmdCtrl1–5
+  ---
+  duration_ms: 0.336247
+  type: 'test'
+  ...
+# Subtest: registry shape: 165 unique ids, known categories and modifiers
+ok 64 - registry shape: 165 unique ids, known categories and modifiers
+  ---
+  duration_ms: 0.531203
+  type: 'test'
+  ...
+# Subtest: every id in scopes, presets and aliases names a command
+ok 65 - every id in scopes, presets and aliases names a command
+  ---
+  duration_ms: 0.266185
+  type: 'test'
+  ...
+# Subtest: help shortcut defaults to Option+Command+/ (physical Slash)
+ok 66 - help shortcut defaults to Option+Command+/ (physical Slash)
+  ---
+  duration_ms: 0.156555
+  type: 'test'
+  ...
+# (node:179) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: registration defaults: input and terminal focus on, NORMAL priority, not global
+ok 67 - registration defaults: input and terminal focus on, NORMAL priority, not global
+  ---
+  duration_ms: 1.843249
+  type: 'test'
+  ...
+# Subtest: one binding per effective shortcut; call-site options win over the command's when
+ok 68 - one binding per effective shortcut; call-site options win over the command's when
+  ---
+  duration_ms: 0.316603
+  type: 'test'
+  ...
+# Subtest: Cmd+K opens the palette idle, while typing and inside the palette
+ok 69 - Cmd+K opens the palette idle, while typing and inside the palette
+  ---
+  duration_ms: 0.767226
+  type: 'test'
+  ...
+# Subtest: terminal-only commands need terminal focus
+ok 70 - terminal-only commands need terminal focus
+  ---
+  duration_ms: 0.131548
+  type: 'test'
+  ...
+# Subtest: Tab cycles palette tabs only while the palette is open
+ok 71 - Tab cycles palette tabs only while the palette is open
+  ---
+  duration_ms: 0.152336
+  type: 'test'
+  ...
+# Subtest: an open dialog blocks non-global commands
+ok 72 - an open dialog blocks non-global commands
+  ---
+  duration_ms: 0.200357
+  type: 'test'
+  ...
+# Subtest: bare keys need allowWhileTyping; Cmd chords and Cmd+1..9 fire while typing
+ok 73 - bare keys need allowWhileTyping; Cmd chords and Cmd+1..9 fire while typing
+  ---
+  duration_ms: 0.256472
+  type: 'test'
+  ...
+# Subtest: overrides rebind what resolves
+ok 74 - overrides rebind what resolves
+  ---
+  duration_ms: 0.138892
+  type: 'test'
+  ...
+# (node:187) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ⌘A outside a text field is swallowed
+ok 75 - ⌘A outside a text field is swallowed
+  ---
+  duration_ms: 2.827935
+  type: 'test'
+  ...
+# Subtest: ⌘A in an input, a textarea or a contenteditable element keeps its native meaning
+ok 76 - ⌘A in an input, a textarea or a contenteditable element keeps its native meaning
+  ---
+  duration_ms: 0.257144
+  type: 'test'
+  ...
+# Subtest: other keys are left alone
+ok 77 - other keys are left alone
+  ---
+  duration_ms: 0.245751
+  type: 'test'
+  ...
+# (node:188) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: parts are modifiers in ctrl, meta, shift, alt order, then the key
+ok 78 - parts are modifiers in ctrl, meta, shift, alt order, then the key
+  ---
+  duration_ms: 18.358126
+  type: 'test'
+  ...
+# Subtest: glyphs and spoken labels
+ok 79 - glyphs and spoken labels
+  ---
+  duration_ms: 0.2521
+  type: 'test'
+  ...
+# Subtest: search tokens include modifier aliases and glyphs
+ok 80 - search tokens include modifier aliases and glyphs
+  ---
+  duration_ms: 0.13004
+  type: 'test'
+  ...
+# Subtest: logical keys match case-insensitively with exact modifiers
+ok 81 - logical keys match case-insensitively with exact modifiers
+  ---
+  duration_ms: 0.54606
+  type: 'test'
+  ...
+# Subtest: symbols tolerate the Shift or Option that produced them
+ok 82 - symbols tolerate the Shift or Option that produced them
+  ---
+  duration_ms: 0.134414
+  type: 'test'
+  ...
+# Subtest: physical keys match by code whatever the layout types
+ok 83 - physical keys match by code whatever the layout types
+  ---
+  duration_ms: 0.103697
+  type: 'test'
+  ...
+# Subtest: sameShortcut is exact; equivalent bridges logical and physical
+ok 84 - sameShortcut is exact; equivalent bridges logical and physical
+  ---
+  duration_ms: 0.242148
+  type: 'test'
+  ...
+# Subtest: recording: Option letter chords become physical, dead keys are refused
+ok 85 - recording: Option letter chords become physical, dead keys are refused
+  ---
+  duration_ms: 0.362181
+  type: 'test'
+  ...
+# (node:203) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/cjs/loader:1430
+#   const err = new Error(message);
+#               ^
+# Error: Cannot find module 'typescript'
+# Require stack:
+# - /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/keybindings/workspaceRunClose.test.ts
+#     at Function._resolveFilename (node:internal/modules/cjs/loader:1430:15)
+#     at defaultResolveImpl (node:internal/modules/cjs/loader:1040:19)
+#     at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1045:22)
+#     at Function._load (node:internal/modules/cjs/loader:1216:25)
+#     at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+#     at Module.require (node:internal/modules/cjs/loader:1527:12)
+#     at require (node:internal/modules/helpers:147:16)
+#     at file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/keybindings/workspaceRunClose.test.ts:12:41
+#     at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'MODULE_NOT_FOUND',
+#   requireStack: [
+#     '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/keybindings/workspaceRunClose.test.ts'
+#   ]
+# }
+# Node.js v22.23.5
+# Subtest: src/keybindings/workspaceRunClose.test.ts
+not ok 14 - src/keybindings/workspaceRunClose.test.ts
+  ---
+  duration_ms: 264.621761
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/keybindings/workspaceRunClose.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:211) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'react' imported from /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/createSection.test.ts
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.5
+# Subtest: src/palette/createSection.test.ts
+not ok 15 - src/palette/createSection.test.ts
+  ---
+  duration_ms: 347.391032
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/createSection.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:218) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@tauri-apps/api' imported from /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/features/openIn/apps.ts
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.5
+# Subtest: src/palette/fromAppState.test.ts
+not ok 16 - src/palette/fromAppState.test.ts
+  ---
+  duration_ms: 326.96834
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/fromAppState.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:226) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@tauri-apps/api' imported from /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/features/openIn/apps.ts
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.5
+# Subtest: src/palette/gitPanelActions.test.ts
+not ok 17 - src/palette/gitPanelActions.test.ts
+  ---
+  duration_ms: 358.696289
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/gitPanelActions.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:235) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'react' imported from /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/moveToSection.test.ts
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.5
+# Subtest: src/palette/moveToSection.test.ts
+not ok 18 - src/palette/moveToSection.test.ts
+  ---
+  duration_ms: 425.379422
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/moveToSection.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:236) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@tauri-apps/api' imported from /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/features/openIn/apps.ts
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.5
+# Subtest: src/palette/openIn.test.ts
+not ok 19 - src/palette/openIn.test.ts
+  ---
+  duration_ms: 401.482406
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/openIn.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:250) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'react' imported from /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.5
+# Subtest: src/palette/paletteComposition.test.ts
+not ok 20 - src/palette/paletteComposition.test.ts
+  ---
+  duration_ms: 400.122967
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:259) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:259) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: Option+ArrowDown: next sibling group skips an empty disabled-result group
+ok 93 - Option+ArrowDown: next sibling group skips an empty disabled-result group
+  ---
+  duration_ms: 24.629151
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: next sibling group starts at its first enabled row
+ok 94 - Option+ArrowDown: next sibling group starts at its first enabled row
+  ---
+  duration_ms: 3.209996
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: previous group selects its first row, not its last
+ok 95 - Option+ArrowUp: previous group selects its first row, not its last
+  ---
+  duration_ms: 1.507034
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: previous sibling skips empty disabled-result groups
+ok 96 - Option+ArrowUp: previous sibling skips empty disabled-result groups
+  ---
+  duration_ms: 1.296375
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: last group falls back to one row forward
+ok 97 - Option+ArrowDown: last group falls back to one row forward
+  ---
+  duration_ms: 0.986751
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: last row falls back to ordinary forward wrap
+ok 98 - Option+ArrowDown: last row falls back to ordinary forward wrap
+  ---
+  duration_ms: 1.600848
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: first group falls back to one row backward
+ok 99 - Option+ArrowUp: first group falls back to one row backward
+  ---
+  duration_ms: 8.851268
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: first row falls back to ordinary backward wrap
+ok 100 - Option+ArrowUp: first row falls back to ordinary backward wrap
+  ---
+  duration_ms: 9.451591
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: no selected row falls back to the first item
+ok 101 - Option+ArrowDown: no selected row falls back to the first item
+  ---
+  duration_ms: 5.362919
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: no selected row falls back to the last item
+ok 102 - Option+ArrowUp: no selected row falls back to the last item
+  ---
+  duration_ms: 3.526458
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: a single group moves one row forward
+ok 103 - Option+ArrowDown: a single group moves one row forward
+  ---
+  duration_ms: 9.317437
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: a single group moves one row backward
+ok 104 - Option+ArrowUp: a single group moves one row backward
+  ---
+  duration_ms: 3.828301
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: empty list consumes navigation without selecting
+ok 105 - Option+ArrowDown: empty list consumes navigation without selecting
+  ---
+  duration_ms: 0.760053
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: leading empty groups do not shift next-group offsets
+ok 106 - Option+ArrowDown: leading empty groups do not shift next-group offsets
+  ---
+  duration_ms: 0.770463
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: leading empty groups do not shift previous-group offsets
+ok 107 - Option+ArrowUp: leading empty groups do not shift previous-group offsets
+  ---
+  duration_ms: 0.72896
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: Workspaces active to Archived group
+ok 108 - Option+ArrowDown: Workspaces active to Archived group
+  ---
+  duration_ms: 0.680914
+  type: 'test'
+  ...
+# Subtest: Option+ArrowUp: Workspaces Archived to active group
+ok 109 - Option+ArrowUp: Workspaces Archived to active group
+  ---
+  duration_ms: 0.705663
+  type: 'test'
+  ...
+# Subtest: Option+ArrowDown: Projects single group keeps ordinary wrap
+ok 110 - Option+ArrowDown: Projects single group keeps ordinary wrap
+  ---
+  duration_ms: 0.782465
+  type: 'test'
+  ...
+# Subtest: control: {} ArrowDown keeps existing row/end navigation
+ok 111 - control: {} ArrowDown keeps existing row/end navigation
+  ---
+  duration_ms: 0.771682
+  type: 'test'
+  ...
+# Subtest: control: {} ArrowUp keeps existing row/end navigation
+ok 112 - control: {} ArrowUp keeps existing row/end navigation
+  ---
+  duration_ms: 0.699451
+  type: 'test'
+  ...
+# Subtest: control: {"metaKey":true} ArrowDown keeps existing row/end navigation
+ok 113 - control: {"metaKey":true} ArrowDown keeps existing row/end navigation
+  ---
+  duration_ms: 0.669463
+  type: 'test'
+  ...
+# Subtest: control: {"metaKey":true} ArrowUp keeps existing row/end navigation
+ok 114 - control: {"metaKey":true} ArrowUp keeps existing row/end navigation
+  ---
+  duration_ms: 0.686287
+  type: 'test'
+  ...
+# Subtest: control: {} Home keeps existing row/end navigation
+ok 115 - control: {} Home keeps existing row/end navigation
+  ---
+  duration_ms: 0.689464
+  type: 'test'
+  ...
+# Subtest: control: {} End keeps existing row/end navigation
+ok 116 - control: {} End keeps existing row/end navigation
+  ---
+  duration_ms: 0.693818
+  type: 'test'
+  ...
+# Subtest: control: {"ctrlKey":true} n keeps existing row/end navigation
+ok 117 - control: {"ctrlKey":true} n keeps existing row/end navigation
+  ---
+  duration_ms: 0.663191
+  type: 'test'
+  ...
+# Subtest: control: {"ctrlKey":true} j keeps existing row/end navigation
+ok 118 - control: {"ctrlKey":true} j keeps existing row/end navigation
+  ---
+  duration_ms: 16.113828
+  type: 'test'
+  ...
+# Subtest: control: {"ctrlKey":true} p keeps existing row/end navigation
+ok 119 - control: {"ctrlKey":true} p keeps existing row/end navigation
+  ---
+  duration_ms: 10.361657
+  type: 'test'
+  ...
+# Subtest: control: {"ctrlKey":true} k keeps existing row/end navigation
+ok 120 - control: {"ctrlKey":true} k keeps existing row/end navigation
+  ---
+  duration_ms: 3.823076
+  type: 'test'
+  ...
+# Subtest: control: composing Option+ArrowDown {"isComposing":true} remains unconsumed
+ok 121 - control: composing Option+ArrowDown {"isComposing":true} remains unconsumed
+  ---
+  duration_ms: 8.004116
+  type: 'test'
+  ...
+# Subtest: control: composing Option+ArrowUp {"isComposing":true} remains unconsumed
+ok 122 - control: composing Option+ArrowUp {"isComposing":true} remains unconsumed
+  ---
+  duration_ms: 9.121588
+  type: 'test'
+  ...
+# Subtest: control: composing Option+ArrowDown {"keyCode":229} remains unconsumed
+ok 123 - control: composing Option+ArrowDown {"keyCode":229} remains unconsumed
+  ---
+  duration_ms: 8.109736
+  type: 'test'
+  ...
+# Subtest: control: composing Option+ArrowUp {"keyCode":229} remains unconsumed
+ok 124 - control: composing Option+ArrowUp {"keyCode":229} remains unconsumed
+  ---
+  duration_ms: 14.632523
+  type: 'test'
+  ...
+# Subtest: control: Enter selects the active item
+ok 125 - control: Enter selects the active item
+  ---
+  duration_ms: 2.37918
+  type: 'test'
+  ...
+# Subtest: control: Escape closes instead of navigating
+ok 126 - control: Escape closes instead of navigating
+  ---
+  duration_ms: 0.829334
+  type: 'test'
+  ...
+# Subtest: control: a custom Option shortcut still switches tabs
+ok 127 - control: a custom Option shortcut still switches tabs
+  ---
+  duration_ms: 5.495643
+  type: 'test'
+  ...
+# Subtest: control: unrelated Option input stays in the search field
+ok 128 - control: unrelated Option input stays in the search field
+  ---
+  duration_ms: 2.17932
+  type: 'test'
+  ...
+# (node:260) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@pierre/diffs' imported from /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteOpenInLifecycle.test.ts
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.5
+# Subtest: src/palette/paletteOpenInLifecycle.test.ts
+not ok 22 - src/palette/paletteOpenInLifecycle.test.ts
+  ---
+  duration_ms: 206.468583
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteOpenInLifecycle.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:275) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'react' imported from /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteOpenInTarget.test.ts
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.5
+# Subtest: src/palette/paletteOpenInTarget.test.ts
+not ok 23 - src/palette/paletteOpenInTarget.test.ts
+  ---
+  duration_ms: 417.252933
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteOpenInTarget.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:282) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'fuzzysort' imported from /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/keybindings/fuzzy.ts
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.5
+# Subtest: src/palette/paletteSettingsGroups.test.ts
+not ok 24 - src/palette/paletteSettingsGroups.test.ts
+  ---
+  duration_ms: 288.029533
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteSettingsGroups.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:323) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Projects returns the last-viewed workspace in that project, not its first or newest row
+ok 132 - Projects returns the last-viewed workspace in that project, not its first or newest row
+  ---
+  duration_ms: 0.655389
+  type: 'test'
+  ...
+# Subtest: Projects without a surviving recent visit opens the most recently updated workspace
+ok 133 - Projects without a surviving recent visit opens the most recently updated workspace
+  ---
+  duration_ms: 1.097465
+  type: 'test'
+  ...
+# Subtest: Projects preserves source order on a recency tie and has no target for an empty project
+ok 134 - Projects preserves source order on a recency tie and has no target for an empty project
+  ---
+  duration_ms: 0.144924
+  type: 'test'
+  ...
+# (node:333) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: recordViewedWorkspace puts the id first, drops its old place and keeps 5
+ok 135 - recordViewedWorkspace puts the id first, drops its old place and keeps 5
+  ---
+  duration_ms: 1.703899
+  type: 'test'
+  ...
+# Subtest: the list survives a save and a fresh load, beside other stored fields
+ok 136 - the list survives a save and a fresh load, beside other stored fields
+  ---
+  duration_ms: 0.3382
+  type: 'test'
+  ...
+# Subtest: a missing or malformed store reads as empty, and the load caps at 5
+ok 137 - a missing or malformed store reads as empty, and the load caps at 5
+  ---
+  duration_ms: 0.245939
+  type: 'test'
+  ...
+# (node:341) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: scores: exact > prefix > word-start initials > scattered; misses are 0
+ok 138 - scores: exact > prefix > word-start initials > scattered; misses are 0
+  ---
+  duration_ms: 1.399561
+  type: 'test'
+  ...
+# Subtest: token matching needs every token in some field
+ok 139 - token matching needs every token in some field
+  ---
+  duration_ms: 0.35413
+  type: 'test'
+  ...
+# Subtest: tabs cycle with wrap and skip Projects when hidden
+ok 140 - tabs cycle with wrap and skip Projects when hidden
+  ---
+  duration_ms: 0.194814
+  type: 'test'
+  ...
+# Subtest: All tab with empty query: recents (archived included, unknown ids dropped) then action groups in fixed order
+ok 141 - All tab with empty query: recents (archived included, unknown ids dropped) then action groups in fixed order
+  ---
+  duration_ms: 1.482632
+  type: 'test'
+  ...
+# Subtest: workspace actions are hidden without an active workspace
+ok 142 - workspace actions are hidden without an active workspace
+  ---
+  duration_ms: 0.292642
+  type: 'test'
+  ...
+# Subtest: All tab with a query: command groups ranked by their words, then Projects, then Workspaces (Conductor's `J1`)
+ok 143 - All tab with a query: command groups ranked by their words, then Projects, then Workspaces (Conductor's `J1`)
+  ---
+  duration_ms: 1.09148
+  type: 'test'
+  ...
+# Subtest: a query nothing matches keeps the All tab's Workspaces group with "No results found"
+ok 144 - a query nothing matches keeps the All tab's Workspaces group with "No results found"
+  ---
+  duration_ms: 0.303077
+  type: 'test'
+  ...
+# Subtest: group order follows the query's words: settings words put Settings first
+ok 145 - group order follows the query's words: settings words put Settings first
+  ---
+  duration_ms: 0.180661
+  type: 'test'
+  ...
+# Subtest: Workspaces tab lists non-archived workspaces newest first and caps results
+ok 146 - Workspaces tab lists non-archived workspaces newest first and caps results
+  ---
+  duration_ms: 0.430946
+  type: 'test'
+  ...
+# Subtest: Projects, Actions and Settings tabs
+ok 147 - Projects, Actions and Settings tabs
+  ---
+  duration_ms: 0.62195
+  type: 'test'
+  ...
+# Subtest: Workspaces tab archive filter stays independent from archived matches in All search
+ok 148 - Workspaces tab archive filter stays independent from archived matches in All search
+  ---
+  duration_ms: 0.281436
+  type: 'test'
+  ...
+# Subtest: All search appends matching archived workspaces after active matches
+ok 149 - All search appends matching archived workspaces after active matches
+  ---
+  duration_ms: 0.268687
+  type: 'test'
+  ...
+# Subtest: All search caps active and archived workspace matches separately
+ok 150 - All search caps active and archived workspace matches separately
+  ---
+  duration_ms: 0.536664
+  type: 'test'
+  ...
+# Subtest: All search orders each state by workspace updates instead of recent visits
+ok 151 - All search orders each state by workspace updates instead of recent visits
+  ---
+  duration_ms: 10.754336
+  type: 'test'
+  ...
+# Subtest: All search applies each state's cap after sorting by workspace updates
+ok 152 - All search applies each state's cap after sorting by workspace updates
+  ---
+  duration_ms: 0.425782
+  type: 'test'
+  ...
+# (node:351) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: command queries can span consecutive keyword aliases
+ok 153 - command queries can span consecutive keyword aliases
+  ---
+  duration_ms: 1.063623
+  type: 'test'
+  ...
+# Subtest: command queries can span the value and its keyword aliases
+ok 154 - command queries can span the value and its keyword aliases
+  ---
+  duration_ms: 0.15654
+  type: 'test'
+  ...
+# Subtest: combined aliases still require query characters in candidate order
+ok 155 - combined aliases still require query characters in candidate order
+  ---
+  duration_ms: 0.139628
+  type: 'test'
+  ...
+# Subtest: commands without aliases retain exact, prefix and missing-query behavior
+ok 156 - commands without aliases retain exact, prefix and missing-query behavior
+  ---
+  duration_ms: 0.164918
+  type: 'test'
+  ...
+# (node:357) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: scattered letters across command aliases stay below the palette threshold
+ok 157 - scattered letters across command aliases stay below the palette threshold
+  ---
+  duration_ms: 0.980416
+  type: 'test'
+  ...
+# Subtest: scattered letters across a setting and its aliases stay below the palette threshold
+ok 158 - scattered letters across a setting and its aliases stay below the palette threshold
+  ---
+  duration_ms: 0.174913
+  type: 'test'
+  ...
+# Subtest: a workspace-name query does not put scattered command and settings matches before the workspace
+ok 159 - a workspace-name query does not put scattered command and settings matches before the workspace
+  ---
+  duration_ms: 1.804735
+  type: 'test'
+  ...
+# Subtest: contiguous aliases and word starts remain searchable
+ok 160 - contiguous aliases and word starts remain searchable
+  ---
+  duration_ms: 0.504117
+  type: 'test'
+  ...
+# (node:367) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the actual palette callback retains the last workspace repository after Home and reload
+ok 161 - the actual palette callback retains the last workspace repository after Home and reload
+  ---
+  duration_ms: 2.695381
+  type: 'test'
+  ...
+# Subtest: the actual palette callback keeps the requested repository setting row
+ok 162 - the actual palette callback keeps the requested repository setting row
+  ---
+  duration_ms: 0.463618
+  type: 'test'
+  ...
+# Subtest: a resolved selected workspace takes precedence over the saved route
+ok 163 - a resolved selected workspace takes precedence over the saved route
+  ---
+  duration_ms: 0.287823
+  type: 'test'
+  ...
+# Subtest: no route, an invalid route or a removed repository falls back to the first repository
+ok 164 - no route, an invalid route or a removed repository falls back to the first repository
+  ---
+  duration_ms: 0.482555
+  type: 'test'
+  ...
+# Subtest: the saved route selects its repository even if that workspace is no longer in the sidebar
+ok 165 - the saved route selects its repository even if that workspace is no longer in the sidebar
+  ---
+  duration_ms: 0.206667
+  type: 'test'
+  ...
+# Subtest: an empty repository list has no Settings target
+ok 166 - an empty repository list has no Settings target
+  ---
+  duration_ms: 0.294483
+  type: 'test'
+  ...
+# Subtest: an unresolved or wrong-repository selection does not create a saved workspace route
+ok 167 - an unresolved or wrong-repository selection does not create a saved workspace route
+  ---
+  duration_ms: 0.171211
+  type: 'test'
+  ...
+# Subtest: resolved unstarted and failed workspaces still establish their repository route
+ok 168 - resolved unstarted and failed workspaces still establish their repository route
+  ---
+  duration_ms: 9.160503
+  type: 'test'
+  ...
+# Subtest: only a full matching archived workspace can establish the selected route
+ok 169 - only a full matching archived workspace can establish the selected route
+  ---
+  duration_ms: 0.354367
+  type: 'test'
+  ...
+# Subtest: stale unresolved selection leaves the previous persisted route intact
+ok 170 - stale unresolved selection leaves the previous persisted route intact
+  ---
+  duration_ms: 0.434142
+  type: 'test'
+  ...
+# Subtest: the authoritative recent writer preserves the route and ordinary tab fields through reload
+ok 171 - the authoritative recent writer preserves the route and ordinary tab fields through reload
+  ---
+  duration_ms: 0.293787
+  type: 'test'
+  ...
+# Subtest: saving a route preserves recents and sibling fields from the latest ordinary write
+ok 172 - saving a route preserves recents and sibling fields from the latest ordinary write
+  ---
+  duration_ms: 0.261694
+  type: 'test'
+  ...
+# Subtest: persisted route parsing rejects malformed fields and non-workspace paths
+ok 173 - persisted route parsing rejects malformed fields and non-workspace paths
+  ---
+  duration_ms: 0.192483
+  type: 'test'
+  ...
+# Subtest: workspace routes accept a trailing slash and search without decoding opaque IDs
+ok 174 - workspace routes accept a trailing slash and search without decoding opaque IDs
+  ---
+  duration_ms: 0.089963
+  type: 'test'
+  ...
+# Subtest: storage denial does not throw or prevent in-memory repository selection
+ok 175 - storage denial does not throw or prevent in-memory repository selection
+  ---
+  duration_ms: 0.193566
+  type: 'test'
+  ...
+# Subtest: user pages, provider pages and unknown rows keep their existing callback behavior
+ok 176 - user pages, provider pages and unknown rows keep their existing callback behavior
+  ---
+  duration_ms: 0.478225
+  type: 'test'
+  ...
+# (node:374) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'fuzzysort' imported from /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/keybindings/fuzzy.ts
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.5
+# Subtest: src/palette/settingsResultCap.test.ts
+not ok 31 - src/palette/settingsResultCap.test.ts
+  ---
+  duration_ms: 286.331889
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/settingsResultCap.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:381) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@tauri-apps/api' imported from /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/features/openIn/apps.ts
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.5
+# Subtest: src/palette/shortcutOrder.test.ts
+not ok 32 - src/palette/shortcutOrder.test.ts
+  ---
+  duration_ms: 492.916548
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/shortcutOrder.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:391) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: arrows, Enter and Escape drive the list
+ok 179 - arrows, Enter and Escape drive the list
+  ---
+  duration_ms: 0.82412
+  type: 'test'
+  ...
+# Subtest: Ctrl+J moves forward through results and wraps like Ctrl+N
+ok 180 - Ctrl+J moves forward through results and wraps like Ctrl+N
+  ---
+  duration_ms: 0.70967
+  type: 'test'
+  ...
+# Subtest: Ctrl+K moves backward through results and wraps like Ctrl+P
+ok 181 - Ctrl+K moves backward through results and wraps like Ctrl+P
+  ---
+  duration_ms: 0.372008
+  type: 'test'
+  ...
+# Subtest: Home selects the first result instead of moving only the text cursor
+ok 182 - Home selects the first result instead of moving only the text cursor
+  ---
+  duration_ms: 0.112521
+  type: 'test'
+  ...
+# Subtest: End selects the last result instead of moving only the text cursor
+ok 183 - End selects the last result instead of moving only the text cursor
+  ---
+  duration_ms: 0.100113
+  type: 'test'
+  ...
+# Subtest: modified Home and End keep their text-field behavior
+ok 184 - modified Home and End keep their text-field behavior
+  ---
+  duration_ms: 7.424633
+  type: 'test'
+  ...
+# Subtest: Tab and Shift+Tab switch tabs; Cmd+K closes; letters type
+ok 185 - Tab and Shift+Tab switch tabs; Cmd+K closes; letters type
+  ---
+  duration_ms: 0.289762
+  type: 'test'
+  ...
+# Subtest: rebinding the palette toggle changes what closes it
+ok 186 - rebinding the palette toggle changes what closes it
+  ---
+  duration_ms: 0.150903
+  type: 'test'
+  ...
+# Subtest: active row wraps and clamps
+ok 187 - active row wraps and clamps
+  ---
+  duration_ms: 0.291697
+  type: 'test'
+  ...
+# (node:392) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: All to Projects keeps the second selected project for Enter activation
+ok 188 - All to Projects keeps the second selected project for Enter activation
+  ---
+  duration_ms: 1.586206
+  type: 'test'
+  ...
+# Subtest: Projects to All keeps the selected project instead of selecting a command
+ok 189 - Projects to All keeps the selected project instead of selecting a command
+  ---
+  duration_ms: 0.277798
+  type: 'test'
+  ...
+# Subtest: a project absent from the destination falls back to its first result
+ok 190 - a project absent from the destination falls back to its first result
+  ---
+  duration_ms: 0.198078
+  type: 'test'
+  ...
+# Subtest: non-project tab transitions keep their existing initial selection
+ok 191 - non-project tab transitions keep their existing initial selection
+  ---
+  duration_ms: 0.192707
+  type: 'test'
+  ...
+# (node:407) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'react' imported from /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/viewArchivedReset.test.ts
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.5
+# Subtest: src/palette/viewArchivedReset.test.ts
+not ok 35 - src/palette/viewArchivedReset.test.ts
+  ---
+  duration_ms: 478.527761
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/viewArchivedReset.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:414) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: rows are newest first; Hiding archived leaves archived workspaces out
+ok 193 - rows are newest first; Hiding archived leaves archived workspaces out
+  ---
+  duration_ms: 2.005907
+  type: 'test'
+  ...
+# Subtest: Showing all lists archived workspaces in their own group; Only archived lists only them
+ok 194 - Showing all lists archived workspaces in their own group; Only archived lists only them
+  ---
+  duration_ms: 0.245404
+  type: 'test'
+  ...
+# Subtest: the project filter and the query narrow the rows
+ok 195 - the project filter and the query narrow the rows
+  ---
+  duration_ms: 0.69336
+  type: 'test'
+  ...
+# Subtest: rows are capped at 50 (Conductor's GHe)
+ok 196 - rows are capped at 50 (Conductor's GHe)
+  ---
+  duration_ms: 0.311979
+  type: 'test'
+  ...
+# Subtest: Clear filters shows under the empty list whenever a filter is set, Hiding archived included
+ok 197 - Clear filters shows under the empty list whenever a filter is set, Hiding archived included
+  ---
+  duration_ms: 0.124036
+  type: 'test'
+  ...
+# Subtest: the compact project filter reads All projects, the project's name, or a count
+ok 198 - the compact project filter reads All projects, the project's name, or a count
+  ---
+  duration_ms: 0.118604
+  type: 'test'
+  ...
+# Subtest: with no row highlighted, the first move picks the first or the last row
+ok 199 - with no row highlighted, the first move picks the first or the last row
+  ---
+  duration_ms: 0.219452
+  type: 'test'
+  ...
+1..199
+# tests 199
+# suites 0
+# pass 183
+# fail 16
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4375.729278

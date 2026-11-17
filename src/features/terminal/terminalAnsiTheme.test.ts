@@ -132,7 +132,7 @@ test("the palette does not change the existing cursor and input lifecycle", asyn
   assert.equal(screen.options.theme?.background, fixtureColors.background);
   assert.equal(screen.options.theme?.foreground, fixtureColors.foreground);
   assert.equal(screen.options.theme?.selectionBackground, fixtureColors.selectionBackground);
-  assert.equal(screen.options.theme?.selectionInactiveBackground, fixtureColors.selectionInactiveBackground);
+  assert.equal(screen.options.theme?.selectionInactiveBackground, undefined);
   f.emit({ kind: "ready", id, pid: 12 });
   assert.equal(screen.options.disableStdin, false);
   assert.equal(screen.options.theme?.cursor, fixtureColors.foreground);

@@ -1,0 +1,1704 @@
+{
+  "runId": 44043865749,
+  "attempt": 1,
+  "sourceSha": "6ceaa15f6d4bb5efb0ad5aa23acff3a6d8ae5ca9",
+  "workflowConclusion": "success",
+  "receiptQualification": "failed",
+  "streak": 0,
+  "reviewedCurrentMain": "c4089fef7d3e64c7a2de445c3bac5545cc5e7932",
+  "jobs": [
+    {
+      "id": 133904666840,
+      "key": "codex-chat",
+      "conclusion": "success",
+      "artifactId": 14311510050,
+      "artifactSha256": "186889115b8cfc20d44e67da09ce187484f0604da7ae412be8105a1bbca6e988"
+    },
+    {
+      "id": 133904666472,
+      "key": "reason-chat",
+      "conclusion": "success",
+      "artifactId": 14311476080,
+      "artifactSha256": "875e3fc45ae37dfd6a2979e2dbbd41e0078c39c655c29f79d056f545395360bb"
+    }
+  ],
+  "executions": [
+    {
+      "suite": "agent-binary-banner",
+      "run": {
+        "id": "44043865749",
+        "attempt": "1",
+        "job": "codex-chat",
+        "testedSha": "6ceaa15f6d4bb5efb0ad5aa23acff3a6d8ae5ca9"
+      },
+      "executable": {
+        "status": "observed",
+        "path": "/home/runner/work/openconductor/openconductor/src-tauri/target/debug/openconductor",
+        "sha256": "679c9c4863a462045c9b49eb854808f44412be96c9955ac85659b9761505816c"
+      },
+      "launchRoots": {
+        "home": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-binary-VCGHgw"
+        },
+        "project": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-binary-VCGHgw/proj"
+        }
+      },
+      "roots": {
+        "configFile": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-binary-VCGHgw/.openconductor/settings.toml"
+        },
+        "configDirectory": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-binary-VCGHgw/.openconductor"
+        },
+        "projects": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-binary-VCGHgw/proj"
+            }
+          ]
+        },
+        "worktrees": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-binary-VCGHgw/.local/share/com.reasonmachines.openconductor/workspaces/proj/e2e"
+            }
+          ]
+        },
+        "databases": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-binary-VCGHgw/.local/share/com.reasonmachines.openconductor/conductor.db"
+            },
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-binary-VCGHgw/.local/share/com.reasonmachines.openconductor/cache.db"
+            }
+          ]
+        },
+        "appData": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-binary-VCGHgw/.local/share/com.reasonmachines.openconductor"
+            }
+          ]
+        }
+      },
+      "initialPort": {
+        "number": 4444,
+        "listeners": [],
+        "released": true
+      },
+      "liveListener": {
+        "number": 4444,
+        "listeners": [
+          {
+            "table": "tcp",
+            "addressHex": "0100007F:115C",
+            "inode": "26920",
+            "ownerPid": 7595
+          }
+        ],
+        "released": false
+      },
+      "cleanup": {
+        "status": "observed_clean",
+        "survivors": [],
+        "portReleased": true
+      },
+      "survivors": []
+    },
+    {
+      "suite": "claude-chat",
+      "run": {
+        "id": "44043865749",
+        "attempt": "1",
+        "job": "codex-chat",
+        "testedSha": "6ceaa15f6d4bb5efb0ad5aa23acff3a6d8ae5ca9"
+      },
+      "executable": {
+        "status": "observed",
+        "path": "/home/runner/work/openconductor/openconductor/src-tauri/target/debug/openconductor",
+        "sha256": "679c9c4863a462045c9b49eb854808f44412be96c9955ac85659b9761505816c"
+      },
+      "launchRoots": {
+        "home": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-claude-lkNFWR"
+        },
+        "project": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-claude-lkNFWR/proj"
+        }
+      },
+      "roots": {
+        "configFile": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-claude-lkNFWR/.openconductor/settings.toml"
+        },
+        "configDirectory": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-claude-lkNFWR/.openconductor"
+        },
+        "projects": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-claude-lkNFWR/proj"
+            }
+          ]
+        },
+        "worktrees": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-claude-lkNFWR/.local/share/com.reasonmachines.openconductor/workspaces/proj/e2e"
+            }
+          ]
+        },
+        "databases": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-claude-lkNFWR/.local/share/com.reasonmachines.openconductor/conductor.db"
+            },
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-claude-lkNFWR/.local/share/com.reasonmachines.openconductor/cache.db"
+            }
+          ]
+        },
+        "appData": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-claude-lkNFWR/.local/share/com.reasonmachines.openconductor"
+            }
+          ]
+        }
+      },
+      "initialPort": {
+        "number": 4444,
+        "listeners": [],
+        "released": true
+      },
+      "liveListener": {
+        "number": 4444,
+        "listeners": [
+          {
+            "table": "tcp",
+            "addressHex": "0100007F:115C",
+            "inode": "26005",
+            "ownerPid": 6429
+          }
+        ],
+        "released": false
+      },
+      "cleanup": {
+        "status": "observed_clean",
+        "survivors": [],
+        "portReleased": true
+      },
+      "survivors": []
+    },
+    {
+      "suite": "codex-chat",
+      "run": {
+        "id": "44043865749",
+        "attempt": "1",
+        "job": "codex-chat",
+        "testedSha": "6ceaa15f6d4bb5efb0ad5aa23acff3a6d8ae5ca9"
+      },
+      "executable": {
+        "status": "observed",
+        "path": "/home/runner/work/openconductor/openconductor/src-tauri/target/debug/openconductor",
+        "sha256": "679c9c4863a462045c9b49eb854808f44412be96c9955ac85659b9761505816c"
+      },
+      "launchRoots": {
+        "home": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-codex-zkWk5n"
+        },
+        "project": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-codex-zkWk5n/proj"
+        }
+      },
+      "roots": {
+        "configFile": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-codex-zkWk5n/.openconductor/settings.toml"
+        },
+        "configDirectory": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-codex-zkWk5n/.openconductor"
+        },
+        "projects": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-codex-zkWk5n/proj"
+            }
+          ]
+        },
+        "worktrees": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-codex-zkWk5n/.local/share/com.reasonmachines.openconductor/workspaces/proj/e2e"
+            }
+          ]
+        },
+        "databases": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-codex-zkWk5n/.local/share/com.reasonmachines.openconductor/conductor.db"
+            },
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-codex-zkWk5n/.local/share/com.reasonmachines.openconductor/cache.db"
+            },
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-codex-zkWk5n/.config/google-chrome/GPUPersistentCache/GPUCache/WLD2S2BRQHH7W6D3HAABAZCEDYIEUYFQ/cache.db"
+            }
+          ]
+        },
+        "appData": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-codex-zkWk5n/.local/share/com.reasonmachines.openconductor"
+            },
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-codex-zkWk5n/.config/google-chrome/GPUPersistentCache/GPUCache/WLD2S2BRQHH7W6D3HAABAZCEDYIEUYFQ"
+            }
+          ]
+        }
+      },
+      "initialPort": {
+        "number": 4444,
+        "listeners": [],
+        "released": true
+      },
+      "liveListener": {
+        "number": 4444,
+        "listeners": [
+          {
+            "table": "tcp",
+            "addressHex": "0100007F:115C",
+            "inode": "19902",
+            "ownerPid": 4468
+          }
+        ],
+        "released": false
+      },
+      "cleanup": {
+        "status": "failed",
+        "survivors": [
+          {
+            "pid": 4472,
+            "startTicks": "147194"
+          },
+          {
+            "pid": 4592,
+            "startTicks": "150208"
+          },
+          {
+            "pid": 5175,
+            "startTicks": "150878"
+          },
+          {
+            "pid": 5482,
+            "startTicks": "151696"
+          },
+          {
+            "pid": 5584,
+            "startTicks": "151700"
+          },
+          {
+            "pid": 5589,
+            "startTicks": "151701"
+          },
+          {
+            "pid": 5590,
+            "startTicks": "151701"
+          },
+          {
+            "pid": 5715,
+            "startTicks": "151984"
+          },
+          {
+            "pid": 5716,
+            "startTicks": "151984"
+          },
+          {
+            "pid": 5745,
+            "startTicks": "152050"
+          },
+          {
+            "pid": 5809,
+            "startTicks": "152242"
+          },
+          {
+            "pid": 5833,
+            "startTicks": "152268"
+          },
+          {
+            "pid": 5840,
+            "startTicks": "152269"
+          },
+          {
+            "pid": 6004,
+            "startTicks": "152553"
+          },
+          {
+            "pid": 6275,
+            "startTicks": "153874"
+          }
+        ],
+        "portReleased": true
+      },
+      "survivors": [
+        {
+          "pid": 4472,
+          "ppid": 1,
+          "state": "S",
+          "startTicks": "147194",
+          "executable": "/home/runner/work/openconductor/openconductor/src-tauri/target/debug/openconductor",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 4592,
+          "ppid": 4472,
+          "state": "S",
+          "startTicks": "150208",
+          "executable": "/usr/lib/x86_64-linux-gnu/webkit2gtk-4.1/WebKitNetworkProcess",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 5175,
+          "ppid": 4472,
+          "state": "S",
+          "startTicks": "150878",
+          "executable": "/usr/bin/python3.10",
+          "cwd": "/tmp/oc-e2e-codex-zkWk5n/.local/share/com.reasonmachines.openconductor/workspaces/proj/e2e"
+        },
+        {
+          "pid": 5482,
+          "ppid": 4472,
+          "state": "S",
+          "startTicks": "151696",
+          "executable": "/usr/bin/dash",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 5584,
+          "ppid": 5482,
+          "state": "S",
+          "startTicks": "151700",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 5589,
+          "ppid": 5584,
+          "state": "S",
+          "startTicks": "151701",
+          "executable": "/usr/bin/cat",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 5590,
+          "ppid": 5584,
+          "state": "S",
+          "startTicks": "151701",
+          "executable": "/usr/bin/cat",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 5715,
+          "ppid": 5584,
+          "state": "S",
+          "startTicks": "151984",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 5716,
+          "ppid": 5584,
+          "state": "S",
+          "startTicks": "151984",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/proc/5808/fdinfo"
+        },
+        {
+          "pid": 5745,
+          "ppid": 4472,
+          "state": "S",
+          "startTicks": "152050",
+          "executable": "/usr/bin/python3.10",
+          "cwd": "/tmp/oc-e2e-codex-zkWk5n/.local/share/com.reasonmachines.openconductor/workspaces/proj/e2e"
+        },
+        {
+          "pid": 5809,
+          "ppid": 5716,
+          "state": "S",
+          "startTicks": "152242",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/proc/5808/fdinfo"
+        },
+        {
+          "pid": 5833,
+          "ppid": 5715,
+          "state": "S",
+          "startTicks": "152268",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 5840,
+          "ppid": 5584,
+          "state": "S",
+          "startTicks": "152269",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 6004,
+          "ppid": 4472,
+          "state": "S",
+          "startTicks": "152553",
+          "executable": "/usr/bin/python3.10",
+          "cwd": "/tmp/oc-e2e-codex-zkWk5n/.local/share/com.reasonmachines.openconductor/workspaces/proj/e2e"
+        },
+        {
+          "pid": 6275,
+          "ppid": 4472,
+          "state": "S",
+          "startTicks": "153874",
+          "executable": "/usr/bin/python3.10",
+          "cwd": "/tmp/oc-e2e-codex-zkWk5n/.local/share/com.reasonmachines.openconductor/workspaces/proj/e2e"
+        }
+      ]
+    },
+    {
+      "suite": "agent-binaries",
+      "run": {
+        "id": "44043865749",
+        "attempt": "1",
+        "job": "reason-chat",
+        "testedSha": "6ceaa15f6d4bb5efb0ad5aa23acff3a6d8ae5ca9"
+      },
+      "executable": {
+        "status": "observed",
+        "path": "/home/runner/work/openconductor/openconductor/src-tauri/target/debug/openconductor",
+        "sha256": "679c9c4863a462045c9b49eb854808f44412be96c9955ac85659b9761505816c"
+      },
+      "launchRoots": {
+        "home": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-agentbin-gNmSbX"
+        },
+        "project": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-agentbin-gNmSbX/proj"
+        }
+      },
+      "roots": {
+        "configFile": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-agentbin-gNmSbX/.openconductor/settings.toml"
+        },
+        "configDirectory": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-agentbin-gNmSbX/.openconductor"
+        },
+        "projects": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-agentbin-gNmSbX/proj"
+            }
+          ]
+        },
+        "worktrees": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-agentbin-gNmSbX/.local/share/com.reasonmachines.openconductor/workspaces/proj/e2e"
+            }
+          ]
+        },
+        "databases": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-agentbin-gNmSbX/.local/share/com.reasonmachines.openconductor/conductor.db"
+            },
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-agentbin-gNmSbX/.local/share/com.reasonmachines.openconductor/cache.db"
+            }
+          ]
+        },
+        "appData": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-agentbin-gNmSbX/.local/share/com.reasonmachines.openconductor"
+            }
+          ]
+        }
+      },
+      "initialPort": {
+        "number": 4444,
+        "listeners": [],
+        "released": true
+      },
+      "liveListener": {
+        "number": 4444,
+        "listeners": [
+          {
+            "table": "tcp",
+            "addressHex": "0100007F:115C",
+            "inode": "33078",
+            "ownerPid": 9744
+          }
+        ],
+        "released": false
+      },
+      "cleanup": {
+        "status": "observed_clean",
+        "survivors": [],
+        "portReleased": true
+      },
+      "survivors": []
+    },
+    {
+      "suite": "reason-cli-first-run",
+      "run": {
+        "id": "44043865749",
+        "attempt": "1",
+        "job": "reason-chat",
+        "testedSha": "6ceaa15f6d4bb5efb0ad5aa23acff3a6d8ae5ca9"
+      },
+      "executable": {
+        "status": "observed",
+        "path": "/home/runner/work/openconductor/openconductor/src-tauri/target/debug/openconductor",
+        "sha256": "679c9c4863a462045c9b49eb854808f44412be96c9955ac85659b9761505816c"
+      },
+      "launchRoots": {
+        "home": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-cli-first-run-vdIZjN"
+        },
+        "project": {
+          "status": "not_reported"
+        }
+      },
+      "roots": {
+        "configFile": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-cli-first-run-vdIZjN/.openconductor/settings.toml"
+        },
+        "configDirectory": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-cli-first-run-vdIZjN/.openconductor"
+        },
+        "projects": {
+          "status": "reported_by_app",
+          "paths": []
+        },
+        "worktrees": {
+          "status": "reported_by_app",
+          "paths": []
+        },
+        "databases": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-cli-first-run-vdIZjN/.local/share/com.reasonmachines.openconductor/conductor.db"
+            },
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-cli-first-run-vdIZjN/.local/share/com.reasonmachines.openconductor/cache.db"
+            }
+          ]
+        },
+        "appData": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-cli-first-run-vdIZjN/.local/share/com.reasonmachines.openconductor"
+            }
+          ]
+        }
+      },
+      "initialPort": {
+        "number": 4444,
+        "listeners": [],
+        "released": true
+      },
+      "liveListener": {
+        "number": 4444,
+        "listeners": [
+          {
+            "table": "tcp",
+            "addressHex": "0100007F:115C",
+            "inode": "25180",
+            "ownerPid": 6536
+          }
+        ],
+        "released": false
+      },
+      "cleanup": {
+        "status": "observed_clean",
+        "survivors": [],
+        "portReleased": true
+      },
+      "survivors": []
+    },
+    {
+      "suite": "codex-chat",
+      "run": {
+        "id": "44043865749",
+        "attempt": "1",
+        "job": "reason-chat",
+        "testedSha": "6ceaa15f6d4bb5efb0ad5aa23acff3a6d8ae5ca9"
+      },
+      "executable": {
+        "status": "observed",
+        "path": "/home/runner/work/openconductor/openconductor/src-tauri/target/debug/openconductor",
+        "sha256": "679c9c4863a462045c9b49eb854808f44412be96c9955ac85659b9761505816c"
+      },
+      "launchRoots": {
+        "home": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-codex-W0jTjI"
+        },
+        "project": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-codex-W0jTjI/proj"
+        }
+      },
+      "roots": {
+        "configFile": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-codex-W0jTjI/.openconductor/settings.toml"
+        },
+        "configDirectory": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-codex-W0jTjI/.openconductor"
+        },
+        "projects": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-codex-W0jTjI/proj"
+            }
+          ]
+        },
+        "worktrees": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-codex-W0jTjI/.local/share/com.reasonmachines.openconductor/workspaces/proj/e2e"
+            }
+          ]
+        },
+        "databases": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-codex-W0jTjI/.local/share/com.reasonmachines.openconductor/conductor.db"
+            },
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-codex-W0jTjI/.local/share/com.reasonmachines.openconductor/cache.db"
+            },
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-codex-W0jTjI/.config/google-chrome/GPUPersistentCache/GPUCache/WLD2S2BRQHH7W6D3HAABAZCEDYIEUYFQ/cache.db"
+            }
+          ]
+        },
+        "appData": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-codex-W0jTjI/.local/share/com.reasonmachines.openconductor"
+            },
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-codex-W0jTjI/.config/google-chrome/GPUPersistentCache/GPUCache/WLD2S2BRQHH7W6D3HAABAZCEDYIEUYFQ"
+            }
+          ]
+        }
+      },
+      "initialPort": {
+        "number": 4444,
+        "listeners": [],
+        "released": true
+      },
+      "liveListener": {
+        "number": 4444,
+        "listeners": [
+          {
+            "table": "tcp",
+            "addressHex": "0100007F:115C",
+            "inode": "27249",
+            "ownerPid": 8063
+          }
+        ],
+        "released": false
+      },
+      "cleanup": {
+        "status": "failed",
+        "survivors": [
+          {
+            "pid": 8991,
+            "startTicks": "44298"
+          },
+          {
+            "pid": 9093,
+            "startTicks": "44314"
+          },
+          {
+            "pid": 9098,
+            "startTicks": "44315"
+          },
+          {
+            "pid": 9099,
+            "startTicks": "44315"
+          },
+          {
+            "pid": 9117,
+            "startTicks": "44363"
+          },
+          {
+            "pid": 9118,
+            "startTicks": "44363"
+          },
+          {
+            "pid": 9165,
+            "startTicks": "44376"
+          },
+          {
+            "pid": 9268,
+            "startTicks": "44406"
+          },
+          {
+            "pid": 9282,
+            "startTicks": "44409"
+          }
+        ],
+        "portReleased": true
+      },
+      "survivors": [
+        {
+          "pid": 8991,
+          "ppid": 1,
+          "state": "S",
+          "startTicks": "44298",
+          "executable": "/usr/bin/dash",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 9093,
+          "ppid": 8991,
+          "state": "S",
+          "startTicks": "44314",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 9098,
+          "ppid": 9093,
+          "state": "S",
+          "startTicks": "44315",
+          "executable": "/usr/bin/cat",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 9099,
+          "ppid": 9093,
+          "state": "S",
+          "startTicks": "44315",
+          "executable": "/usr/bin/cat",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 9117,
+          "ppid": 9093,
+          "state": "S",
+          "startTicks": "44363",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 9118,
+          "ppid": 9093,
+          "state": "S",
+          "startTicks": "44363",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/proc/9163/fdinfo"
+        },
+        {
+          "pid": 9165,
+          "ppid": 9118,
+          "state": "S",
+          "startTicks": "44376",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/proc/9163/fdinfo"
+        },
+        {
+          "pid": 9268,
+          "ppid": 9117,
+          "state": "S",
+          "startTicks": "44406",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 9282,
+          "ppid": 9093,
+          "state": "S",
+          "startTicks": "44409",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        }
+      ]
+    },
+    {
+      "suite": "app-flows",
+      "run": {
+        "id": "44043865749",
+        "attempt": "1",
+        "job": "reason-chat",
+        "testedSha": "6ceaa15f6d4bb5efb0ad5aa23acff3a6d8ae5ca9"
+      },
+      "executable": {
+        "status": "observed",
+        "path": "/home/runner/work/openconductor/openconductor/src-tauri/target/debug/openconductor",
+        "sha256": "679c9c4863a462045c9b49eb854808f44412be96c9955ac85659b9761505816c"
+      },
+      "launchRoots": {
+        "home": {
+          "status": "observed",
+          "path": "/home/runner"
+        },
+        "project": {
+          "status": "not_reported"
+        }
+      },
+      "roots": {
+        "configFile": {
+          "status": "observed",
+          "path": "/home/runner/.openconductor/settings.toml"
+        },
+        "configDirectory": {
+          "status": "observed",
+          "path": "/home/runner/.openconductor"
+        },
+        "projects": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-kMrRyP/e2e-demo"
+            },
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-kMrRyP/e2e-demo"
+            }
+          ]
+        },
+        "worktrees": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/home/runner/.local/share/com.reasonmachines.openconductor/workspaces/e2e-demo/nairobi"
+            },
+            {
+              "status": "observed",
+              "path": "/home/runner/.local/share/com.reasonmachines.openconductor/workspaces/e2e-demo/paris"
+            },
+            {
+              "status": "observed",
+              "path": "/home/runner/.local/share/com.reasonmachines.openconductor/workspaces/e2e-demo/nairobi"
+            },
+            {
+              "status": "observed",
+              "path": "/home/runner/.local/share/com.reasonmachines.openconductor/workspaces/e2e-demo/paris"
+            }
+          ]
+        },
+        "databases": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/home/runner/.local/share/com.reasonmachines.openconductor/conductor.db"
+            },
+            {
+              "status": "observed",
+              "path": "/home/runner/.local/share/com.reasonmachines.openconductor/cache.db"
+            },
+            {
+              "status": "observed",
+              "path": "/home/runner/.config/microsoft-edge/GPUPersistentCache/GPUCache/H7A6QBWDULCV4QCQNM7T265DT5I4BA2E/cache.db"
+            },
+            {
+              "status": "observed",
+              "path": "/home/runner/.config/google-chrome/GPUPersistentCache/GPUCache/WLD2S2BRQHH7W6D3HAABAZCEDYIEUYFQ/cache.db"
+            }
+          ]
+        },
+        "appData": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/home/runner/.local/share/com.reasonmachines.openconductor"
+            },
+            {
+              "status": "observed",
+              "path": "/home/runner/.config/microsoft-edge/GPUPersistentCache/GPUCache/H7A6QBWDULCV4QCQNM7T265DT5I4BA2E"
+            },
+            {
+              "status": "observed",
+              "path": "/home/runner/.config/google-chrome/GPUPersistentCache/GPUCache/WLD2S2BRQHH7W6D3HAABAZCEDYIEUYFQ"
+            }
+          ]
+        }
+      },
+      "initialPort": {
+        "number": 4444,
+        "listeners": [],
+        "released": true
+      },
+      "liveListener": {
+        "number": 4444,
+        "listeners": [
+          {
+            "table": "tcp",
+            "addressHex": "0100007F:115C",
+            "inode": "36899",
+            "ownerPid": 11943
+          }
+        ],
+        "released": false
+      },
+      "cleanup": {
+        "status": "failed",
+        "survivors": [
+          {
+            "pid": 13478,
+            "startTicks": "62510"
+          },
+          {
+            "pid": 13626,
+            "startTicks": "62520"
+          },
+          {
+            "pid": 13631,
+            "startTicks": "62521"
+          },
+          {
+            "pid": 13632,
+            "startTicks": "62521"
+          },
+          {
+            "pid": 13817,
+            "startTicks": "62614"
+          },
+          {
+            "pid": 13818,
+            "startTicks": "62615"
+          },
+          {
+            "pid": 14101,
+            "startTicks": "62769"
+          },
+          {
+            "pid": 14125,
+            "startTicks": "62776"
+          },
+          {
+            "pid": 14127,
+            "startTicks": "62776"
+          },
+          {
+            "pid": 14130,
+            "startTicks": "62779"
+          },
+          {
+            "pid": 14183,
+            "startTicks": "62793"
+          },
+          {
+            "pid": 14184,
+            "startTicks": "62793"
+          },
+          {
+            "pid": 14273,
+            "startTicks": "62803"
+          },
+          {
+            "pid": 14522,
+            "startTicks": "62996"
+          },
+          {
+            "pid": 15538,
+            "startTicks": "64425"
+          },
+          {
+            "pid": 15643,
+            "startTicks": "64435"
+          },
+          {
+            "pid": 15647,
+            "startTicks": "64435"
+          },
+          {
+            "pid": 15648,
+            "startTicks": "64435"
+          },
+          {
+            "pid": 15658,
+            "startTicks": "64438"
+          },
+          {
+            "pid": 15659,
+            "startTicks": "64438"
+          },
+          {
+            "pid": 15661,
+            "startTicks": "64441"
+          },
+          {
+            "pid": 15685,
+            "startTicks": "64448"
+          },
+          {
+            "pid": 15692,
+            "startTicks": "64450"
+          }
+        ],
+        "portReleased": true
+      },
+      "survivors": [
+        {
+          "pid": 13478,
+          "ppid": 1,
+          "state": "S",
+          "startTicks": "62510",
+          "executable": "/usr/bin/dash",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 13626,
+          "ppid": 13478,
+          "state": "S",
+          "startTicks": "62520",
+          "executable": "/opt/microsoft/msedge/msedge",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 13631,
+          "ppid": 13626,
+          "state": "S",
+          "startTicks": "62521",
+          "executable": "/usr/bin/cat",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 13632,
+          "ppid": 13626,
+          "state": "S",
+          "startTicks": "62521",
+          "executable": "/usr/bin/cat",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 13817,
+          "ppid": 13626,
+          "state": "S",
+          "startTicks": "62614",
+          "executable": "/opt/microsoft/msedge/msedge",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 13818,
+          "ppid": 13626,
+          "state": "S",
+          "startTicks": "62615",
+          "executable": "/opt/microsoft/msedge/msedge",
+          "cwd": "/proc/14100/fdinfo"
+        },
+        {
+          "pid": 14101,
+          "ppid": 13818,
+          "state": "S",
+          "startTicks": "62769",
+          "executable": "/opt/microsoft/msedge/msedge",
+          "cwd": "/proc/14100/fdinfo"
+        },
+        {
+          "pid": 14125,
+          "ppid": 13817,
+          "state": "S",
+          "startTicks": "62776",
+          "executable": "/opt/microsoft/msedge/msedge",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 14127,
+          "ppid": 13626,
+          "state": "S",
+          "startTicks": "62776",
+          "executable": "/opt/microsoft/msedge/msedge",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 14130,
+          "ppid": 14101,
+          "state": "S",
+          "startTicks": "62779",
+          "executable": "/opt/microsoft/msedge/msedge",
+          "cwd": "/proc/14100/fdinfo"
+        },
+        {
+          "pid": 14183,
+          "ppid": 14101,
+          "state": "S",
+          "startTicks": "62793",
+          "executable": "/opt/microsoft/msedge/msedge",
+          "cwd": "/proc/14100/fdinfo"
+        },
+        {
+          "pid": 14184,
+          "ppid": 14101,
+          "state": "S",
+          "startTicks": "62793",
+          "executable": "/opt/microsoft/msedge/msedge",
+          "cwd": "/proc/14100/fdinfo"
+        },
+        {
+          "pid": 14273,
+          "ppid": 14101,
+          "state": "S",
+          "startTicks": "62803",
+          "executable": "/opt/microsoft/msedge/msedge",
+          "cwd": "/proc/14100/fdinfo"
+        },
+        {
+          "pid": 14522,
+          "ppid": 14101,
+          "state": "S",
+          "startTicks": "62996",
+          "executable": "/opt/microsoft/msedge/msedge",
+          "cwd": "/proc/14100/fdinfo"
+        },
+        {
+          "pid": 15538,
+          "ppid": 1,
+          "state": "S",
+          "startTicks": "64425",
+          "executable": "/usr/bin/dash",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 15643,
+          "ppid": 15538,
+          "state": "S",
+          "startTicks": "64435",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 15647,
+          "ppid": 15643,
+          "state": "S",
+          "startTicks": "64435",
+          "executable": "/usr/bin/cat",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 15648,
+          "ppid": 15643,
+          "state": "S",
+          "startTicks": "64435",
+          "executable": "/usr/bin/cat",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 15658,
+          "ppid": 15643,
+          "state": "S",
+          "startTicks": "64438",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 15659,
+          "ppid": 15643,
+          "state": "S",
+          "startTicks": "64438",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/proc/15660/fdinfo"
+        },
+        {
+          "pid": 15661,
+          "ppid": 15659,
+          "state": "S",
+          "startTicks": "64441",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/proc/15660/fdinfo"
+        },
+        {
+          "pid": 15685,
+          "ppid": 15658,
+          "state": "S",
+          "startTicks": "64448",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        },
+        {
+          "pid": 15692,
+          "ppid": 15643,
+          "state": "S",
+          "startTicks": "64450",
+          "executable": "/opt/google/chrome/chrome",
+          "cwd": "/home/runner/work/openconductor/openconductor"
+        }
+      ]
+    },
+    {
+      "suite": "model-picker",
+      "run": {
+        "id": "44043865749",
+        "attempt": "1",
+        "job": "reason-chat",
+        "testedSha": "6ceaa15f6d4bb5efb0ad5aa23acff3a6d8ae5ca9"
+      },
+      "executable": {
+        "status": "observed",
+        "path": "/home/runner/work/openconductor/openconductor/src-tauri/target/debug/openconductor",
+        "sha256": "679c9c4863a462045c9b49eb854808f44412be96c9955ac85659b9761505816c"
+      },
+      "launchRoots": {
+        "home": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-picker-aNgGE6"
+        },
+        "project": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-picker-aNgGE6/proj"
+        }
+      },
+      "roots": {
+        "configFile": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-picker-aNgGE6/.openconductor/settings.toml"
+        },
+        "configDirectory": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-picker-aNgGE6/.openconductor"
+        },
+        "projects": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-picker-aNgGE6/proj"
+            }
+          ]
+        },
+        "worktrees": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-picker-aNgGE6/.local/share/com.reasonmachines.openconductor/workspaces/proj/picker"
+            }
+          ]
+        },
+        "databases": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-picker-aNgGE6/.local/share/com.reasonmachines.openconductor/conductor.db"
+            },
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-picker-aNgGE6/.local/share/com.reasonmachines.openconductor/cache.db"
+            }
+          ]
+        },
+        "appData": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-picker-aNgGE6/.local/share/com.reasonmachines.openconductor"
+            }
+          ]
+        }
+      },
+      "initialPort": {
+        "number": 4444,
+        "listeners": [],
+        "released": true
+      },
+      "liveListener": {
+        "number": 4444,
+        "listeners": [
+          {
+            "table": "tcp",
+            "addressHex": "0100007F:115C",
+            "inode": "26946",
+            "ownerPid": 7056
+          }
+        ],
+        "released": false
+      },
+      "cleanup": {
+        "status": "observed_clean",
+        "survivors": [],
+        "portReleased": true
+      },
+      "survivors": []
+    },
+    {
+      "suite": "reason-chat",
+      "run": {
+        "id": "44043865749",
+        "attempt": "1",
+        "job": "reason-chat",
+        "testedSha": "6ceaa15f6d4bb5efb0ad5aa23acff3a6d8ae5ca9"
+      },
+      "executable": {
+        "status": "observed",
+        "path": "/home/runner/work/openconductor/openconductor/src-tauri/target/debug/openconductor",
+        "sha256": "679c9c4863a462045c9b49eb854808f44412be96c9955ac85659b9761505816c"
+      },
+      "launchRoots": {
+        "home": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-home-I0Iofk"
+        },
+        "project": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-home-I0Iofk/proj"
+        }
+      },
+      "roots": {
+        "configFile": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-home-I0Iofk/.openconductor/settings.toml"
+        },
+        "configDirectory": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-home-I0Iofk/.openconductor"
+        },
+        "projects": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-home-I0Iofk/proj"
+            }
+          ]
+        },
+        "worktrees": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-home-I0Iofk/.local/share/com.reasonmachines.openconductor/workspaces/proj/e2e"
+            },
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-home-I0Iofk/.local/share/com.reasonmachines.openconductor/workspaces/proj/moscow"
+            }
+          ]
+        },
+        "databases": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-home-I0Iofk/.local/share/com.reasonmachines.openconductor/conductor.db"
+            },
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-home-I0Iofk/.local/share/com.reasonmachines.openconductor/cache.db"
+            }
+          ]
+        },
+        "appData": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-home-I0Iofk/.local/share/com.reasonmachines.openconductor"
+            }
+          ]
+        }
+      },
+      "initialPort": {
+        "number": 4444,
+        "listeners": [],
+        "released": true
+      },
+      "liveListener": {
+        "number": 4444,
+        "listeners": [
+          {
+            "table": "tcp",
+            "addressHex": "0100007F:115C",
+            "inode": "17996",
+            "ownerPid": 4477
+          }
+        ],
+        "released": false
+      },
+      "cleanup": {
+        "status": "observed_clean",
+        "survivors": [],
+        "portReleased": true
+      },
+      "survivors": []
+    },
+    {
+      "suite": "slash-menu",
+      "run": {
+        "id": "44043865749",
+        "attempt": "1",
+        "job": "reason-chat",
+        "testedSha": "6ceaa15f6d4bb5efb0ad5aa23acff3a6d8ae5ca9"
+      },
+      "executable": {
+        "status": "observed",
+        "path": "/home/runner/work/openconductor/openconductor/src-tauri/target/debug/openconductor",
+        "sha256": "679c9c4863a462045c9b49eb854808f44412be96c9955ac85659b9761505816c"
+      },
+      "launchRoots": {
+        "home": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-slash-10ppn7"
+        },
+        "project": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-slash-10ppn7/proj"
+        }
+      },
+      "roots": {
+        "configFile": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-slash-10ppn7/.openconductor/settings.toml"
+        },
+        "configDirectory": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-slash-10ppn7/.openconductor"
+        },
+        "projects": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-slash-10ppn7/proj"
+            }
+          ]
+        },
+        "worktrees": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-slash-10ppn7/.local/share/com.reasonmachines.openconductor/workspaces/proj/e2e"
+            }
+          ]
+        },
+        "databases": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-slash-10ppn7/.local/share/com.reasonmachines.openconductor/conductor.db"
+            },
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-slash-10ppn7/.local/share/com.reasonmachines.openconductor/cache.db"
+            }
+          ]
+        },
+        "appData": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-slash-10ppn7/.local/share/com.reasonmachines.openconductor"
+            }
+          ]
+        }
+      },
+      "initialPort": {
+        "number": 4444,
+        "listeners": [],
+        "released": true
+      },
+      "liveListener": {
+        "number": 4444,
+        "listeners": [
+          {
+            "table": "tcp",
+            "addressHex": "0100007F:115C",
+            "inode": "34921",
+            "ownerPid": 11254
+          }
+        ],
+        "released": false
+      },
+      "cleanup": {
+        "status": "observed_clean",
+        "survivors": [],
+        "portReleased": true
+      },
+      "survivors": []
+    },
+    {
+      "suite": "transcript-parity",
+      "run": {
+        "id": "44043865749",
+        "attempt": "1",
+        "job": "reason-chat",
+        "testedSha": "6ceaa15f6d4bb5efb0ad5aa23acff3a6d8ae5ca9"
+      },
+      "executable": {
+        "status": "observed",
+        "path": "/home/runner/work/openconductor/openconductor/src-tauri/target/debug/openconductor",
+        "sha256": "679c9c4863a462045c9b49eb854808f44412be96c9955ac85659b9761505816c"
+      },
+      "launchRoots": {
+        "home": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-home-wMOurG"
+        },
+        "project": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-home-wMOurG/proj"
+        }
+      },
+      "roots": {
+        "configFile": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-home-wMOurG/.openconductor/settings.toml"
+        },
+        "configDirectory": {
+          "status": "observed",
+          "path": "/tmp/oc-e2e-home-wMOurG/.openconductor"
+        },
+        "projects": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-home-wMOurG/proj"
+            }
+          ]
+        },
+        "worktrees": {
+          "status": "reported_by_app",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-home-wMOurG/.local/share/com.reasonmachines.openconductor/workspaces/proj/lisbon"
+            }
+          ]
+        },
+        "databases": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-home-wMOurG/.local/share/com.reasonmachines.openconductor/conductor.db"
+            },
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-home-wMOurG/.local/share/com.reasonmachines.openconductor/cache.db"
+            }
+          ]
+        },
+        "appData": {
+          "status": "observed_open_fds",
+          "paths": [
+            {
+              "status": "observed",
+              "path": "/tmp/oc-e2e-home-wMOurG/.local/share/com.reasonmachines.openconductor"
+            }
+          ]
+        }
+      },
+      "initialPort": {
+        "number": 4444,
+        "listeners": [],
+        "released": true
+      },
+      "liveListener": {
+        "number": 4444,
+        "listeners": [
+          {
+            "table": "tcp",
+            "addressHex": "0100007F:115C",
+            "inode": "31526",
+            "ownerPid": 10491
+          }
+        ],
+        "released": false
+      },
+      "cleanup": {
+        "status": "observed_clean",
+        "survivors": [],
+        "portReleased": true
+      },
+      "survivors": []
+    }
+  ]
+}

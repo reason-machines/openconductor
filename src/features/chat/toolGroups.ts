@@ -3,11 +3,11 @@
 // index chunk):
 //
 // - Plan/question messages are protected previews and always stay inline.
-//   The final non-empty text is a preview unless a later request supersedes it.
+//   The final text-bearing message is a preview unless a later request supersedes it.
 // - The other items are batched between previews. A batch from 3 or more
 //   visible messages becomes one summary row; shorter batches stay as they are.
-// - A summary counts tool calls and other messages (text or thinking with
-//   content); its label leaves out zero counts.
+// - A summary counts tool calls and distinct tool-free messages (text or
+//   thinking with content); its label leaves out zero counts.
 // - Nothing collapses while the turn runs, or when "Don't collapse tool calls"
 //   is on. Otherwise a summary is closed until the user opens it.
 // Pure: no React, so `toolGroups.test.ts` covers it.
@@ -33,7 +33,7 @@ export interface KeyedPart {
   part: PartView;
 }
 
-/** `preview`: protected plan/question messages or the final text, drawn in full colour. */
+/** `preview`: protected plan/question messages or the final text-bearing message, drawn in full colour. */
 export type GroupedPart = ({ kind: "part"; preview?: boolean } & KeyedPart) | { kind: "summary"; summary: ToolSummary; parts: KeyedPart[] };
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
@@ -50,26 +50,29 @@ function visible(part: PartView): boolean {
   return part.kind === "tool" ? !part.hidden : part.text.trim().length > 0;
 }
 
-/** Index of the final text, unless a later protected message supersedes it. */
-function previewIndex(parts: KeyedPart[], protectedMessages: Set<string>): number {
+/** Final text-bearing message, unless a later protected message supersedes it. */
+function previewMessageKey(parts: KeyedPart[], protectedMessages: Set<string>): string | undefined {
   for (let i = parts.length - 1; i >= 0; i--) {
     const { part, messageKey } = parts[i]!;
-    if (protectedMessages.has(messageKey)) return -1;
-    if (part.kind === "text" && part.text.trim()) return i;
+    if (protectedMessages.has(messageKey)) return undefined;
+    if (part.kind === "text" && part.text.trim()) return messageKey;
   }
-  return -1;
+  return undefined;
 }
 
 function summarize(id: string, batch: KeyedPart[]): ToolSummary | undefined {
   let toolCallsCount = 0;
-  let otherMessagesCount = 0;
+  const otherMessages = new Set(batch.map((p) => p.messageKey));
   const toolNames: string[] = [];
-  for (const { part: p } of batch) {
+  for (const { part: p, messageKey } of batch) {
     if (p.kind === "tool") {
       toolCallsCount++;
+      // Text/thinking alongside a tool does not make a second message.
+      otherMessages.delete(messageKey);
       if (!toolNames.includes(p.call.name)) toolNames.push(p.call.name);
-    } else otherMessagesCount++;
+    }
   }
+  const otherMessagesCount = otherMessages.size;
   if (toolCallsCount === 0 && otherMessagesCount === 0) return undefined;
   return { id, toolCallsCount, otherMessagesCount, toolNames };
 }
@@ -85,7 +88,7 @@ export function groupParts(parts: KeyedPart[], keyPrefix: string, hasFinalText =
   const protectedMessages = new Set(items
     .filter(({ part }) => part.kind === "tool" && (part.call.name === "ExitPlanMode" || part.call.name === "AskUserQuestion"))
     .map(({ messageKey }) => messageKey));
-  const preview = hasFinalText ? previewIndex(items, protectedMessages) : -1;
+  const preview = hasFinalText ? previewMessageKey(items, protectedMessages) : undefined;
   const out: GroupedPart[] = [];
   let batch: KeyedPart[] = [];
   let batchStart = 0;
@@ -99,9 +102,9 @@ export function groupParts(parts: KeyedPart[], keyPrefix: string, hasFinalText =
     batch = [];
   };
   items.forEach((part, i) => {
-    if (i === preview || protectedMessages.has(part.messageKey)) {
+    if (part.messageKey === preview || protectedMessages.has(part.messageKey)) {
       flush();
-      out.push({ kind: "part", ...part, preview: true });
+      if (visible(part.part)) out.push({ kind: "part", ...part, preview: true });
       return;
     }
     if (batch.length === 0) batchStart = i;

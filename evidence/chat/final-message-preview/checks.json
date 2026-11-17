@@ -1,0 +1,49 @@
+{
+  "author": "Conductor Rebuild",
+  "source": "PASS retained asset and 33 exact spans; no vendor execution",
+  "baseline": {
+    "tests": 10,
+    "pass": 7,
+    "fail": 3,
+    "skipped": 0
+  },
+  "treatment": {
+    "tests": 10,
+    "pass": 10,
+    "fail": 0,
+    "skipped": 0
+  },
+  "adjacent": {
+    "tests": 107,
+    "pass": 107,
+    "fail": 0,
+    "skipped": 0
+  },
+  "frozen_fixture_sha256": "3a9bca3c929b42cd6064e459fd0836b04c36b22999d6a29604fbd7956daeb705",
+  "preservation": "PASS frozen baseline source/archive preflight",
+  "ci_fixture_correction": {
+    "initial_hosted_head": "edd1e3f7d71464fe906a3db51ff381fd0970f8ef",
+    "initial_hosted_tests": { "pass": 4753, "fail": 1 },
+    "unchanged_display_file_red": { "pass": 49, "fail": 1, "skipped": 0 },
+    "focused_green": { "pass": 159, "fail": 0, "skipped": 0 },
+    "extracted_react_static_rendering": "PASS distinct-message emphasis and same-message multipart filter off/on/raw immutability; leaf mocks, not full mounted acceptance",
+    "full_suite_head": "70f0ff5ee7ae2a921f075c7cb46dfc2ec6a45ac4",
+    "full_suite": {
+      "status": "PARTIAL",
+      "tests": 4756,
+      "pass": 4754,
+      "fail": 2,
+      "skipped": 0,
+      "failures": "Caffeinate baseline/current whole-main graph navigation timeouts before product assertions; cause unverified"
+    },
+    "production_and_frozen_fixture_unchanged": true
+  },
+  "local_full_typecheck_build": "PASS npm run typecheck and npm run build after CI fixture correction; no app/native admission",
+  "mounted": "NOT_RUN full mounted acceptance; extracted React static probe passes and full-suite browser graph is partial",
+  "native": "NOT_RUN",
+  "package": "NOT_RUN",
+  "screenshot": "NOT_RUN lane excludes runtime/native dispatch",
+  "changed_production_files": [
+    "src/features/chat/toolGroups.ts"
+  ]
+}

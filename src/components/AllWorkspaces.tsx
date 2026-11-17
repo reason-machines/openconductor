@@ -47,6 +47,7 @@ interface Props {
   sidebarVisible: boolean;
   dispatch: Dispatch<Action>;
   onCreateWorkspace: () => void;
+  onWorkspaceContextMenu?: (row: HomeRow, at: { x: number; y: number }) => void;
 }
 
 function Highlight({ match, fallback }: { match?: FieldMatch; fallback: string }) {
@@ -159,6 +160,7 @@ function Row({
   now,
   onOpen,
   dispatch,
+  onWorkspaceContextMenu,
 }: {
   row: HomeRow;
   showRepoIcon: boolean;
@@ -167,6 +169,7 @@ function Row({
   now: number;
   onOpen: () => void;
   dispatch: Dispatch<Action>;
+  onWorkspaceContextMenu?: Props["onWorkspaceContextMenu"];
 }) {
   const { workspace: ws, repo, archived, matches } = row;
   const tone = archived ? "is-archived" : isWorkspaceUnread(ws) ? "is-unread" : "";
@@ -185,6 +188,10 @@ function Row({
       data-selected={active || undefined}
       className="allws-row"
       onClick={onOpen}
+      onContextMenu={!archived && !unstarted && onWorkspaceContextMenu ? (event) => {
+        event.preventDefault();
+        onWorkspaceContextMenu(row, { x: event.clientX, y: event.clientY });
+      } : undefined}
       title={row.title}
     >
       <div className="allws-row-main">
@@ -237,7 +244,7 @@ function Row({
   );
 }
 
-export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch, onCreateWorkspace }: Props) {
+export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch, onCreateWorkspace, onWorkspaceContextMenu }: Props) {
   const { overrides } = useKeybindingOverrides();
   const [query, setQuery] = useState("");
   const repoIds = useMemo(() => new Set(repos.map((r) => r.id)), [repos]);
@@ -248,6 +255,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
   };
   const [limit, setLimit] = useState(PAGE_SIZE);
   const [activeKey, setActiveKey] = useState<string>();
+  const list = useRef<HTMLDivElement>(null);
   const sentinel = useRef<HTMLDivElement>(null);
   const now = Date.now();
   const showNumbers = useBoolPref("experimental_show_workspace_numbers");
@@ -279,6 +287,17 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
   useEffect(() => setActiveKey(flat[activeIndex]?.key), [activeIndex, flat]);
   useEffect(() => setActiveKey(undefined), [query]);
 
+  const selectedKey = flat[activeIndex]?.key;
+  useEffect(() => {
+    const row = list.current?.querySelector<HTMLElement>('[role="option"][aria-selected="true"]');
+    if (!row) return;
+    const group = row.closest(".allws-group");
+    if (group?.querySelector('[role="option"]') === row) {
+      group.querySelector<HTMLElement>(".allws-group-heading")?.scrollIntoView({ block: "nearest" });
+    }
+    row.scrollIntoView({ block: "nearest" });
+  }, [selectedKey, loading]);
+
   useEffect(() => {
     const el = sentinel.current;
     if (!el || !hasMore || typeof IntersectionObserver === "undefined") return;
@@ -301,16 +320,23 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
       if (entry) setActiveKey(entry.key);
       return;
     }
+    const ctrlLetter = e.ctrlKey && !e.metaKey && !e.altKey;
+    const ctrlNext = ctrlLetter && (e.key === "n" || e.key === "j");
+    const ctrlPrevious = ctrlLetter && (e.key === "p" || e.key === "k");
     if (flat.length === 0) {
-      if (e.key === "Enter" && !e.metaKey) e.preventDefault();
+      if ((e.key === "Enter" && !e.metaKey) || ctrlNext || ctrlPrevious ||
+        (e.altKey && (e.key === "ArrowDown" || e.key === "ArrowUp"))) e.preventDefault();
       return;
     }
-    if (e.key === "ArrowDown") {
+    if (e.key === "ArrowDown" || ctrlNext || e.key === "ArrowUp" || ctrlPrevious) {
       e.preventDefault();
-      setActiveKey(flat[Math.min(activeIndex + 1, flat.length - 1)].key);
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setActiveKey(flat[Math.max(activeIndex - 1, 0)].key);
+      const direction = e.key === "ArrowDown" || ctrlNext ? 1 : -1;
+      const nextGroup = e.altKey
+        ? groups[groups.findIndex((group) => group.rows.includes(flat[activeIndex].row)) + direction]
+        : undefined;
+      setActiveKey(nextGroup
+        ? `${nextGroup.bucket}:${nextGroup.rows[0].workspace.id}`
+        : flat[Math.max(0, Math.min(activeIndex + direction, flat.length - 1))].key);
     } else if (e.key === "Enter" && e.metaKey) {
       // workspace.startUnstartedWorkspace (⌘↩): open a backlog workspace from
       // the Home list (Conductor's "Backlog page" displayScope). Only fires for
@@ -402,7 +428,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
         </div>
       </div>
       <div className="allws-scroll">
-        <div className="allws-list" role="listbox" aria-label="Workspaces">
+        <div ref={list} className="allws-list" role="listbox" aria-label="Workspaces">
           {loading ? (
             <div className="allws-loading" role="status" aria-label="Loading workspaces">
               <RowStatusIcon status="working" size={16} />
@@ -430,6 +456,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
                           open(row);
                         }}
                         dispatch={dispatch}
+                        onWorkspaceContextMenu={onWorkspaceContextMenu}
                       />
                     );
                   })}

@@ -1,0 +1,9 @@
+unchanged five-case fixture: PASS
+retained REA span w9e: PASS
+retained REA span dno: PASS
+retained REA span lno: PASS
+retained REA span uVn: PASS
+retained REA span W5e: PASS
+fresh-main RED baseline 8e1c32c3f05efc1562177ea91ad3adccc940c7fe: PASS
+selection/startup source preservation: PASS
+Complete original app assets: NOT_REHASHED (retained full-asset provenance only)

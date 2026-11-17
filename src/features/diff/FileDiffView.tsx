@@ -139,9 +139,6 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
     view.current = h;
     setHandle(h);
   }, []);
-  const nav = useCommentNavigation(handle, file.path, anchors);
-  const refreshNav = useRef(nav.refresh);
-  refreshNav.current = nav.refresh;
   // Pierre upgrades this object in place when it loads the full file, so keep it per file.
   // With the whole file at hand it is a full diff instead, as in Conductor's tab.
   const meta = useMemo(() => (full ? fullDiffMeta(full, ignoreWhitespace) : processFile(toPatch(file), { isGitDiff: true })), [file, full, ignoreWhitespace]);
@@ -162,15 +159,31 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
     [shown, editing, ignoreWhitespace],
   );
   const movedAnchors = useRef(new Map<string, number | null>());
+  // Read the editor's live positions, not persisted anchors, before counting or
+  // navigating. Save/completion alone owns persistence (Conductor kqo → BMi).
+  const currentAnchors = useCallback(() => {
+    if (!editing) return anchors;
+    return anchors.flatMap((anchor) => {
+      const line = anchor.commentIds?.map((id) => movedAnchors.current.get(id)).find((value) => value !== undefined);
+      if (line === null) return [];
+      return [line === undefined || line === anchor.line ? anchor : { ...anchor, line }];
+    });
+  }, [anchors, editing]);
+  const nav = useCommentNavigation(handle, file.path, anchors, currentAnchors);
+  const refreshNav = useRef(nav.refresh);
+  refreshNav.current = nav.refresh;
   const persistAnchors = useRef(onPersistAnchors);
   persistAnchors.current = onPersistAnchors;
   const observeAnchors = useCallback((annotations: Array<{ lineNumber: number; metadata?: LineAnchor }> | undefined) => {
     if (annotations === undefined) return;
     for (const id of movedAnchors.current.keys()) movedAnchors.current.set(id, null);
+    for (const anchor of anchors) {
+      for (const id of anchor.commentIds ?? []) movedAnchors.current.set(id, null);
+    }
     for (const annotation of annotations) {
       for (const id of annotation.metadata?.commentIds ?? []) movedAnchors.current.set(id, annotation.lineNumber);
     }
-  }, []);
+  }, [anchors]);
   const onEditChange = useCallback((e: { file: { contents: string }; lineAnnotations?: Array<{ lineNumber: number; metadata?: LineAnchor }> }) => {
     latestEdit.current?.onChange(e.file.contents);
     observeAnchors(e.lineAnnotations);
