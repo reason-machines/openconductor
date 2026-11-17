@@ -1,0 +1,155 @@
+{
+  "producer": "Conductor Rebuild / BE7",
+  "purpose": "Inert retained original bytes only; no JS/REA/product execution",
+  "source_archive": "artifacts/glob-result-source-packet-be7.tar.gz",
+  "source_archive_sha256": "991f15ebf130ccb8e705fc74f612dbb46095bd6d73b420fbced1ffbcd94165bc",
+  "parent_asset": "renderApp-D_fmY7hW.js",
+  "parent_bytes": 11600457,
+  "parent_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "offset_convention": "zero-based half-open UTF-8 bytes",
+  "spans": [
+    {
+      "name": "Eve",
+      "file": "Eve.txt",
+      "utf8_half_open": [
+        2902730,
+        2902751
+      ],
+      "bytes": 21,
+      "sha256": "6b40f512211557286cb5627aa8dbe4c6d393faf4d92f8b83e87738e85e5be74f",
+      "kind": "exact binding initializer only"
+    },
+    {
+      "name": "qyi",
+      "file": "qyi.txt",
+      "utf8_half_open": [
+        2902810,
+        2902830
+      ],
+      "bytes": 20,
+      "sha256": "4d810091b0007f59d87015ad3dfce057971f4219355ae104623ffa9bdbcc96d3",
+      "kind": "exact binding initializer only"
+    },
+    {
+      "name": "_Bn",
+      "file": "_Bn.txt",
+      "utf8_half_open": [
+        2902831,
+        2902871
+      ],
+      "bytes": 40,
+      "sha256": "df2ee50ccae18e973388f34369e642e17949910513087210047727129aa67c51",
+      "kind": "exact binding initializer only"
+    },
+    {
+      "name": "bae",
+      "file": "bae.txt",
+      "utf8_half_open": [
+        2902895,
+        2902911
+      ],
+      "bytes": 16,
+      "sha256": "9b3840098861a9bccfb478e14d101491c141e47e46cf3bbfd6ef3fdbf3e863eb",
+      "kind": "exact binding initializer only"
+    },
+    {
+      "name": "selectors-prefix",
+      "file": "selectors-prefix.txt",
+      "utf8_half_open": [
+        2902726,
+        2902911
+      ],
+      "bytes": 185,
+      "sha256": "4c1ca9f92a6ff469c9873e119ab82f250882c6993b428432d81899e2bfca6129",
+      "kind": "original var prefix through bae; following comma/declarations excluded"
+    },
+    {
+      "name": "V5s",
+      "file": "V5s.txt",
+      "utf8_half_open": [
+        2912493,
+        2912596
+      ],
+      "bytes": 103,
+      "sha256": "5a2d07ad8cca2ca3e6d8579259c3abce613065479ca9a8ee01f465c6f13f1b67",
+      "kind": "complete function declaration"
+    },
+    {
+      "name": "W5s",
+      "file": "W5s.txt",
+      "utf8_half_open": [
+        2912596,
+        2912707
+      ],
+      "bytes": 111,
+      "sha256": "2ba1847659c9b5ecbd888e44016f682a37e1b8de1387e55edf5e8e6e73dcd02c",
+      "kind": "complete function declaration"
+    },
+    {
+      "name": "command-root-Xyi",
+      "file": "command-root-Xyi.txt",
+      "utf8_half_open": [
+        2903072,
+        2908580
+      ],
+      "bytes": 5508,
+      "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement"
+    },
+    {
+      "name": "command-input-B5s",
+      "file": "command-input-B5s.txt",
+      "utf8_half_open": [
+        2910380,
+        2910953
+      ],
+      "bytes": 573,
+      "sha256": "70fa9c07b0d8b605e648601e01cd266db15dadad0ac59b8cb5569cee58c02758",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement"
+    },
+    {
+      "name": "command-component-P6",
+      "file": "command-component-P6.txt",
+      "utf8_half_open": [
+        2912384,
+        2912493
+      ],
+      "bytes": 109,
+      "sha256": "9b57d93a69e00511c26ce27dfc26117a75a0a2f70492d5f3436f58f4351df3bc",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement; closes parent var statement"
+    },
+    {
+      "name": "Home-command-input-kI",
+      "file": "Home-command-input-kI.txt",
+      "utf8_half_open": [
+        2916816,
+        2917726
+      ],
+      "bytes": 910,
+      "sha256": "970dc084f87ebeb0e3f1220debf849ee4115e11f0be19c8442dab05ba688decf",
+      "kind": "complete const declaration plus displayName assignment"
+    },
+    {
+      "name": "m_a",
+      "file": "m_a.txt",
+      "utf8_half_open": [
+        10889115,
+        10920819
+      ],
+      "bytes": 31704,
+      "sha256": "cd07cfad2d86afe0717c73433656bd3f8d144b8e84dfd2368646ded0f30d1c3e",
+      "kind": "complete function declaration"
+    }
+  ],
+  "limits": [
+    "Retained archive, not fresh installed-app/device acquisition",
+    "Binding fragments are not entire declarations",
+    "No behavioral qualification or absence of global keyboard interception claimed"
+  ],
+  "m_a_readback_note": {
+    "path": "evidence/settings/theme-default/reachability/renderApp-3.txt",
+    "bytes": 31704,
+    "sha256": "cd07cfad2d86afe0717c73433656bd3f8d144b8e84dfd2368646ded0f30d1c3e",
+    "equals_raw_span_plus_LF": false
+  }
+}
