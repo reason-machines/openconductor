@@ -19,11 +19,18 @@ function deferred<T>() {
   return { promise, resolve, reject };
 }
 
-async function fixture({ page = false, path = "/synthetic/project", repos = true, setup = false, setupFails = false, section = false } = {}) {
+async function fixture({ agent = "reason", page = false, path = "/synthetic/project", repos = true, setup = false, setupFails = false, section = false, writeFails = false, copyFails = false, holdCopy = false, holdWrite = false, missingCopy = false, copyThrows = false } = {}) {
+  const keys = new Map<string, (() => unknown) | undefined>();
+  let editorFocused = false;
   const events: string[] = [];
   const warnings: string[] = [];
   const actions: { type: string; workspace?: { id: string }; sectionId?: string }[] = [];
   const pending = new Set<string>();
+  const staged = new Map<string, number[]>();
+  const copied = new Map<string, number[]>();
+  const queued: { kind: string; text: string; attachments?: { name: string; text: string }[] }[] = [];
+  const copyGate = deferred<void>();
+  const writeGate = deferred<void>();
   const creation = deferred<{ workspace: { id: string; directoryName: string; branchName: string; path: string } }>();
   const registration = deferred<{ id: string; root: string; defaultBranch: string }>();
   const modules = new Map<string, Record<string, unknown>>();
@@ -45,7 +52,7 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
       fileName: file,
       compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
     }).outputText, {
-      exports, console, crypto: { randomUUID: () => "pending-launch" },
+      exports, console, TextDecoder, TextEncoder, Uint8Array, crypto: { randomUUID: () => "pending-launch" },
       document: { activeElement: null }, HTMLElement: class {},
       require(name: string) {
         if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
@@ -59,10 +66,37 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
         if (name === "./motion/usePresence") return { usePresence: () => ({ mounted: true, attrs: {} }) };
         if (name === "./ui/Tooltip") return { Tooltip: ({ children }: { children: unknown }) => children };
         if (name === "../features/chat/ComposerAttachmentChip") return { ComposerAttachmentChip: () => null };
-        if (name === "../features/chat/composerAttachments") return { inlineText: async () => null, rejectReason: () => null, safeFileName: (s: string) => s };
-        if (name === "../features/diff/ReviewButton") return { queuePending: () => {} };
+        if (name === "../features/chat/composerAttachments") return load("src/features/chat/composerAttachments.ts");
+        if (name === "../draft-attachments/staging.ts") return load("src/features/draft-attachments/staging.ts");
+        if (name === "../features/draft-attachments/api.ts") return { draftAttachmentsApi: {
+          async write({ draftWorkspaceId, relativePath, data }: { draftWorkspaceId: string; relativePath: string; data: Uint8Array }) {
+            events.push("stage");
+            if (holdWrite) await writeGate.promise;
+            if (writeFails) throw new Error("Fixture staging failed");
+            staged.set(`${draftWorkspaceId}/${relativePath}`, Array.from(data));
+          },
+          async materialize({ localWorkspaceId, workspacePath }: { localWorkspaceId: string; workspacePath: string }) {
+            events.push("copy-start");
+            if (holdCopy) await copyGate.promise;
+            if (copyThrows) throw new Error("Fixture IPC copy refused");
+            if (missingCopy) return { attachments: [], stagingRemoved: false };
+            const attachments = Array.from(staged).filter(([key]) => key.startsWith(`${localWorkspaceId}/`)).map(([key, bytes]) => {
+              const relativePath = key.slice(localWorkspaceId.length + 1);
+              if (!copyFails) copied.set(`${workspacePath}/${relativePath}`, bytes);
+              return { relativePath, error: copyFails ? "Fixture copy failed" : null };
+            });
+            if (!copyFails) staged.clear();
+            events.push("copy-end");
+            return { attachments, stagingRemoved: !copyFails };
+          },
+          async remove({ localWorkspaceId, relativePath }: { localWorkspaceId: string; relativePath: string }) {
+            return staged.delete(`${localWorkspaceId}/${relativePath}`);
+          },
+        } };
+        if (name === "../features/diff/ReviewButton") return { queuePending: (_id: string, message: typeof queued[number]) => { queued.push(message); events.push("queue"); } };
         if (name === "../features/chat/composerIcons") return { PaperclipIcon: () => null, PlusIcon: () => null };
         if (name === "../features/chat/composer.css") return {};
+        if (name === "@tauri-apps/api/core") return { invoke: async () => {} };
         if (name === "../workspace/api") return {
           ensureRepository() {
             if (submitting) { events.push("register"); return registration.promise; }
@@ -88,7 +122,7 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
         if (name === "../workspace/firstMessage") return { renameAfterFirstMessage: () => events.push("rename") };
         if (name === "../features/chat/chatModelChoice") return { saveModelChoice: () => events.push("model") };
         if (name === "../features/chat/agentChoice") return { saveAgent: () => events.push("agent") };
-        if (name === "../workspace/launchModel") return { launchDefaults: () => ({ agent: "reason", model: "fixture", effort: "" }), loadoutPicks: () => [] };
+        if (name === "../workspace/launchModel") return { launchDefaults: () => ({ agent, model: "fixture", effort: "" }), loadoutPicks: () => [] };
         if (name === "../settings/agents/useLoadout") return { useLoadout: () => null };
         if (name === "../features/chat/loadoutChoices") return { loadoutChoices: () => [] };
         if (name === "../features/chat/ModelPicker") return { ModelPicker: () => null };
@@ -97,9 +131,31 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
         if (name === "./create/RepoSelect") return { RepoSelect: () => null };
         if (name === "./create/TargetBranchButton") return { TargetBranchButton: ({ onChange }: { onChange: (value: string) => void }) => React.createElement("input", { "aria-label": "Target branch", onChange }) };
         if (name === "./CreateFromPicker") return { CreateFromPicker: () => null };
-        if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }), useKeybindings: () => {} };
+        if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }), useKeybindings: (handlers: Record<string, (() => unknown) | undefined>) => { for (const [id, handler] of Object.entries(handlers)) keys.set(id, handler); } };
         if (name === "../keybindings/overrides") return { effectiveShortcuts: () => [] };
         if (name === "../keybindings/shortcut") return { glyphs: () => "", matchesEvent: () => false };
+        if (name.endsWith("/ComposerEditor.tsx") || name.endsWith("/ComposerEditor")) {
+          return {
+            ComposerEditor({ inputRef, value, onChange, onKeyDown }: Record<string, ((...a: unknown[]) => unknown) & string>) {
+              React.useLayoutEffect(() => {
+                const handle = {
+                  focus: () => { editorFocused = true; }, blur: () => { editorFocused = false; }, visible: () => true,
+                  focused: () => editorFocused, composing: () => false,
+                  selection: () => ({ text: String(value), start: 0, end: 0 }),
+                  replaceRange: () => false, insertFile: () => {}, deleteRange: () => false, newline: () => {},
+                };
+                Object.assign(inputRef, { current: handle });
+                return () => Object.assign(inputRef, { current: null });
+              }, []);
+              return React.createElement("textarea", {
+                "aria-label": "First message",
+                value,
+                onChange: (e: { target: { value: string } }) => onChange(e.target.value),
+                onKeyDown: (e: { nativeEvent: KeyboardEvent }) => onKeyDown(e.nativeEvent),
+              });
+            },
+          };
+        }
         throw new Error(`Unexpected launch-close dependency ${name}`);
       },
     });
@@ -128,7 +184,25 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
     if (typeof handler === "function") return handler(value);
   }
   return {
-    events, warnings, actions, pending,
+    events, warnings, actions, pending, staged, copied, queued, keys,
+    focusEditor(focused: boolean) { editorFocused = focused; },
+    async shortcut() {
+      const handler = keys.get("chat.togglePlanMode");
+      assert.equal(typeof handler, "function", "Create must register the displayed Plan mode command");
+      let result: unknown;
+      await act(async () => { result = handler?.(); });
+      return result;
+    },
+    async finishCopy() { await act(async () => copyGate.resolve()); },
+    async finishWrite() { await act(async () => writeGate.resolve()); },
+    chips: () => renderer.root.findAll((node: { type: unknown }) => typeof node.type === "function" && node.type.name === "ComposerAttachmentChip"),
+    async removeFirst() {
+      await act(async () => {
+        const chip = renderer.root.findAll((node: { type: unknown }) => typeof node.type === "function" && node.type.name === "ComposerAttachmentChip")[0];
+        assert.ok(chip);
+        chip.props.onRemove();
+      });
+    },
     get requests() { return requests; }, get closes() { return closes; },
     isOpen: () => renderer.root.findAllByType("form").length === 1,
     replacement: () => renderer.root.findAllByProps({ "data-screen": "replacement" }).length === 1,
@@ -140,9 +214,171 @@ async function fixture({ page = false, path = "/synthetic/project", repos = true
     replace() { act(() => setScreen("replacement")); },
     invalid() { act(() => send(renderer.root.findByProps({ "aria-label": "Target branch" }), "onChange", "bad..branch")); },
     message() { act(() => send(renderer.root.findByType("textarea"), "onChange", { target: { value: "First request" } })); },
+    async pasteFiles(files: Pick<File, "name" | "size" | "arrayBuffer">[]) {
+      let handled = false;
+      await act(async () => {
+        const editor = renderer.root.find((node: { type: unknown }) => typeof node.type === "function" && node.type.name === "ComposerEditor");
+        handled = editor.props.onPasteFiles(files as unknown as FileList);
+      });
+      return handled;
+    },
     dispose() { act(() => renderer.unmount()); },
   };
 }
+
+test("create composer leaves clipboard pastes without files to the shared editor", async () => {
+  const view = await fixture();
+  try {
+    view.message();
+    assert.equal(await view.pasteFiles([]), false, "plain text and custom atoms must reach ComposerEditor.handlePaste");
+    assert.match(view.rendered(), /First request/);
+    assert.equal(view.requests, 0);
+  } finally { view.dispose(); }
+});
+
+test("create composer still handles clipboard file attachments", async () => {
+  const view = await fixture();
+  try {
+    assert.equal(await view.pasteFiles([new File(["fixture"], "fixture.txt", { type: "text/plain" })]), true);
+    assert.equal(view.requests, 0);
+  } finally { view.dispose(); }
+});
+
+test("create composer stages exact binary bytes and finishes materialization before queueing", async () => {
+  const view = await fixture({ holdCopy: true });
+  try {
+    view.message();
+    const bytes = Uint8Array.of(137, 80, 78, 71, 0, 255);
+    await view.pasteFiles([new File([bytes], "disposable.png", { type: "image/png" })]);
+    assert.equal(view.staged.size, 1, "binary bytes must be staged before creation");
+    assert.deepEqual([...view.staged.values()][0], Array.from(bytes));
+    assert.equal(view.requests, 0);
+    await view.submit(); await view.registered(); await view.succeed();
+    assert.ok(view.events.includes("copy-start"));
+    assert.equal(view.queued.length, 0, "no prompt may name an uncopied file");
+    await view.finishCopy();
+    assert.equal(view.queued.length, 1);
+    const message = view.queued[0]!;
+    const attachment = message.attachments?.[0];
+    assert.equal(message.kind, "send");
+    assert.equal(message.text, "First request");
+    assert.match(attachment?.name ?? "", /^\.context\/attachments\/[a-z0-9]{6}\/disposable\.png$/);
+    assert.ok(attachment?.text.includes(attachment.name));
+    assert.deepEqual(view.copied.get(`/synthetic/created/${attachment?.name}`), Array.from(bytes));
+    assert.ok(view.events.indexOf("copy-end") < view.events.indexOf("queue"));
+    assert.equal(view.staged.size, 0);
+    assert.ok(!view.events.includes("seed") && !view.events.includes("rename"));
+  } finally { view.dispose(); }
+});
+
+test("create composer keeps nonbinary files inline without staging", async () => {
+  const view = await fixture();
+  try {
+    await view.pasteFiles([new File(["héllo\n"], "notes.txt", { type: "text/plain" })]);
+    await view.submit(); await view.registered(); await view.succeed();
+    assert.deepEqual(JSON.parse(JSON.stringify(view.queued[0]?.attachments)), [{ name: "notes.txt", text: "héllo\n" }]);
+    assert.ok(!view.events.includes("stage") && !view.events.includes("copy-start"));
+  } finally { view.dispose(); }
+});
+
+test("create composer blocks launch while an attachment read is pending", async () => {
+  const view = await fixture({ page: true });
+  const reading = deferred<ArrayBuffer>();
+  try {
+    await view.pasteFiles([{ name: "slow.bin", size: 2, arrayBuffer: () => reading.promise }]);
+    await view.submit();
+    assert.equal(view.pending.size, 0, "pending attachment work must not launch or dismiss");
+    assert.equal(view.isOpen(), true);
+    await act(async () => reading.resolve(Uint8Array.of(0, 255).buffer));
+    await view.submit(); await view.registered(); await view.succeed();
+    assert.equal(view.queued[0]?.kind, "send");
+    assert.equal(view.copied.size, 1);
+  } finally { reading.resolve(new ArrayBuffer(0)); view.dispose(); }
+});
+
+test("create composer surfaces staging failure without a phantom binary chip", async () => {
+  const view = await fixture({ writeFails: true });
+  try {
+    view.message();
+    await view.pasteFiles([new File([Uint8Array.of(0, 255)], "failed.bin")]);
+    assert.match(view.rendered(), /Fixture staging failed/);
+    assert.equal(view.staged.size, 0);
+    await view.submit(); await view.registered(); await view.succeed();
+    assert.equal(view.queued.length, 0);
+    assert.ok(view.events.includes("seed"), "original text-only launch is preserved");
+  } finally { view.dispose(); }
+});
+
+test("create composer does not auto-send a path when materialization fails", async () => {
+  const view = await fixture({ copyFails: true });
+  try {
+    view.message();
+    await view.pasteFiles([new File([Uint8Array.of(0, 255)], "failed.bin")]);
+    await view.submit(); await view.registered(); await view.succeed();
+    assert.equal(view.queued.filter(message => message.kind === "send").length, 0);
+    assert.equal(view.queued[0]?.kind, "draft", "keep the first message editable, not silently lost");
+    assert.equal(view.queued[0]?.text, "First request");
+    assert.equal(view.staged.size, 1, "failed materialization keeps the staged bytes");
+    assert.match(view.warnings.join(" "), /Fixture copy failed/);
+    assert.ok(view.actions.some(action => action.type === "addWorkspace"), "the created workspace is still reachable");
+    assert.ok(!view.events.includes("seed"));
+  } finally { view.dispose(); }
+});
+
+test("create composer blocks launch while the staging write is pending", async () => {
+  const view = await fixture({ page: true, holdWrite: true });
+  try {
+    await view.pasteFiles([new File([Uint8Array.of(0, 255)], "slow.bin")]);
+    await view.submit();
+    assert.equal(view.pending.size, 0);
+    assert.equal(view.chips().length, 0, "do not advertise an unfinished write");
+    await view.finishWrite();
+    await view.submit(); await view.registered(); await view.succeed();
+    assert.equal(view.copied.size, 1);
+    assert.equal(view.queued[0]?.kind, "send");
+  } finally { await view.finishWrite(); view.dispose(); }
+});
+
+test("same-name binary files use distinct paths and removing a chip deletes only its staged copy", async () => {
+  const view = await fixture();
+  try {
+    await view.pasteFiles([new File([Uint8Array.of(0, 1)], "same.bin"), new File([Uint8Array.of(0, 2)], "same.bin")]);
+    assert.equal(view.staged.size, 2);
+    const [first, second] = [...view.staged.keys()];
+    assert.notEqual(first, second);
+    await view.removeFirst();
+    assert.equal(view.staged.size, 1);
+    assert.ok(view.staged.has(second!));
+    await view.submit(); await view.registered(); await view.succeed();
+    assert.equal(view.queued[0]?.attachments?.length, 1);
+    assert.deepEqual([...view.copied.values()][0], [0, 2]);
+  } finally { view.dispose(); }
+});
+
+for (const mode of ["missingCopy", "copyThrows"] as const) {
+  test(`create composer stops automatic delivery on ${mode}`, async () => {
+    const view = await fixture({ [mode]: true });
+    try {
+      await view.pasteFiles([new File([Uint8Array.of(0, 255)], "missing.bin")]);
+      await view.submit(); await view.registered(); await view.succeed();
+      assert.equal(view.queued[0]?.kind, "draft");
+      assert.equal(view.queued[0]?.attachments, undefined);
+      assert.equal(view.staged.size, 1);
+      assert.ok(view.actions.some(action => action.type === "addWorkspace"));
+      assert.match(view.warnings.join(" "), /first message was not sent/);
+    } finally { view.dispose(); }
+  });
+}
+
+test("create composer rejects oversized files without reading or staging them", async () => {
+  const view = await fixture();
+  try {
+    await view.pasteFiles([{ name: "too-big.bin", size: 26 * 1024 * 1024, arrayBuffer: async () => { throw new Error("must not read oversized file"); } }]);
+    assert.match(view.rendered(), /larger than 25 MB/);
+    assert.equal(view.staged.size, 0);
+    assert.equal(view.chips().length, 0);
+  } finally { view.dispose(); }
+});
 
 test("accepted modal launch closes after pending registration and before repository registration settles", async () => {
   const view = await fixture();
@@ -352,9 +588,11 @@ async function backlogFixture() {
         if (name === "./ui/Tooltip") return { Tooltip: ({ children }: { children: unknown }) => children };
         if (name === "../features/chat/ComposerAttachmentChip") return { ComposerAttachmentChip: () => null };
         if (name === "../features/chat/composerAttachments") return { inlineText: () => null, rejectReason: () => null, safeFileName: (s: string) => s };
+        if (name === "../features/draft-attachments/api.ts") return { draftAttachmentsApi: {} };
         if (name === "../features/diff/ReviewButton") return { queuePending: () => {} };
         if (name === "../features/chat/composerIcons") return { PaperclipIcon: () => null, PlusIcon: () => null };
         if (name === "../features/chat/composer.css") return {};
+        if (name === "@tauri-apps/api/core") return { invoke: async () => {} };
         if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }), useKeybindings: () => {} };
         if (name === "../keybindings/overrides") return {
           effectiveShortcuts(id: string) {
@@ -370,6 +608,28 @@ async function backlogFixture() {
             return s.key.kind === "logical" && s.key.value === e.key && !!s.alt === !!e.altKey;
           },
         };
+        if (name.endsWith("/ComposerEditor.tsx") || name.endsWith("/ComposerEditor")) {
+          return {
+            ComposerEditor({ inputRef, value, onChange, onKeyDown }: Record<string, ((...a: unknown[]) => unknown) & string>) {
+              React.useLayoutEffect(() => {
+                const handle = {
+                  focus: () => {}, blur: () => {}, visible: () => true,
+                  focused: () => false, composing: () => false,
+                  selection: () => ({ text: String(value), start: 0, end: 0 }),
+                  replaceRange: () => false, insertFile: () => {}, deleteRange: () => false, newline: () => {},
+                };
+                Object.assign(inputRef, { current: handle });
+                return () => Object.assign(inputRef, { current: null });
+              }, []);
+              return React.createElement("textarea", {
+                "aria-label": "First message",
+                value,
+                onChange: (e: { target: { value: string } }) => onChange(e.target.value),
+                onKeyDown: (e: { nativeEvent: KeyboardEvent }) => onKeyDown(e.nativeEvent),
+              });
+            },
+          };
+        }
         throw new Error(`Unexpected backlog-fixture dependency ${name}`);
       },
     });
@@ -399,7 +659,9 @@ async function backlogFixture() {
     get creationFirstSession() { return creationFirstSession; },
     async altEnter() {
       await act(async () => {
-        const nativeEvent = { key: "Enter", altKey: true, isComposing: false } as unknown as KeyboardEvent;
+        // nativeEvent needs preventDefault/stopPropagation because ComposerEditor passes the native
+        // event directly to onKeyDown (no React synthetic wrapper), so the handler calls e.preventDefault().
+        const nativeEvent = { key: "Enter", altKey: true, isComposing: false, preventDefault() {}, stopPropagation() {} } as unknown as KeyboardEvent;
         send(
           renderer.root.findByType("textarea"),
           "onKeyDown",
@@ -437,3 +699,57 @@ test("Alt+Enter (addToBacklogFromComposer) creates workspace idle, sets backlog 
     assert.equal(view.closes, 1);
   } finally { view.dispose(); }
 });
+
+for (const page of [false, true]) {
+  test(`create Plan shortcut toggles the existing menu state while editor-focused (page=${page})`, async () => {
+    const view = await fixture({ page, agent: "claude" });
+    try {
+      view.focusEditor(true);
+      assert.match(view.rendered(), /Plan mode/);
+      await view.shortcut();
+      assert.match(view.rendered(), /Exit plan mode/);
+      await view.shortcut();
+      assert.doesNotMatch(view.rendered(), /Exit plan mode/);
+      assert.equal(view.requests, 0);
+      assert.equal(view.queued.length, 0);
+    } finally { view.dispose(); }
+  });
+}
+test("create Plan shortcut leaves an unfocused editor unchanged", async () => {
+  const view = await fixture({ page: true, agent: "claude" });
+  try {
+    view.focusEditor(false);
+    const handler = view.keys.get("chat.togglePlanMode");
+    if (handler) assert.equal(await view.shortcut(), false);
+    assert.doesNotMatch(view.rendered(), /Exit plan mode/);
+    view.focusEditor(true);
+    await view.shortcut();
+    assert.match(view.rendered(), /Exit plan mode/);
+    view.focusEditor(false);
+    assert.equal(await view.shortcut(), false);
+    assert.match(view.rendered(), /Exit plan mode/);
+  } finally { view.dispose(); }
+});
+test("create Plan shortcut does not change launch controls while creating", async () => {
+  const view = await fixture({ page: true, agent: "claude" });
+  try {
+    view.focusEditor(true);
+    await view.shortcut();
+    await view.submit();
+    assert.equal(await view.shortcut(), false);
+    assert.match(view.rendered(), /Exit plan mode/);
+    assert.equal(view.requests, 0);
+  } finally { view.dispose(); }
+});
+for (const agent of ["reason", "codex"]) {
+  test(`create Plan shortcut never exposes unsupported agent controls (${agent})`, async () => {
+    const view = await fixture({ page: true, agent });
+    try {
+      view.focusEditor(true);
+      const handler = view.keys.get("chat.togglePlanMode");
+      if (handler) assert.equal(await view.shortcut(), false);
+      assert.doesNotMatch(view.rendered(), /Exit plan mode/);
+      assert.equal(view.requests, 0);
+    } finally { view.dispose(); }
+  });
+}

@@ -20,7 +20,7 @@ interface Props {
 
 export function WorkspaceBranchHeader(props: Props) {
   const prefix = useBranchPrefix();
-  const branch = props.workspace.branch;
+  const branch = props.workspace.branch || props.workspace.placeholderBranchName || "";
   const label = prefix && branch.startsWith(prefix) ? branch.slice(prefix.length) : branch;
   if (props.workspace.status === "archived") {
     return <span className="chip" title={label}><BranchIcon size={12} /> {label}</span>;

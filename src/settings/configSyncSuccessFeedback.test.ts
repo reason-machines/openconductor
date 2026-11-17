@@ -4,7 +4,7 @@ import { createRequire } from "node:module";
 
 const { mount, act } = createRequire(import.meta.url)("./configSyncHarness.cjs");
 type View = ReturnType<typeof mount>;
-const dialogs = (view: View) => view.root().findAllByProps({ role: "dialog", "aria-label": "Sync agent configs" });
+const dialogs = (view: View) => view.root().findAllByProps({ role: "dialog", "aria-labelledby": "config-sync-title" });
 const primary = (view: View) => view.root().find((node: { type: unknown; props: Record<string, unknown> }) => node.type === "button" && node.props["data-primary-action"] === true);
 async function open(view: View) {
   await act(async () => { view.button("Sync").props.onClick(); });

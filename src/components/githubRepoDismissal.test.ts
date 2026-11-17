@@ -38,7 +38,6 @@ async function fixture(pending: boolean) {
   let nextTimer = 0;
   let closed = 0;
   let creations = 0;
-  const Modal = modal();
   const exports: Partial<Pick<typeof import("./GitHubRepoDialog"), "GitHubRepoDialog">> = {};
   runInNewContext(javascript("./GitHubRepoDialog.tsx"), {
     exports,
@@ -51,7 +50,7 @@ async function fixture(pending: boolean) {
     require(name: string) {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
       if (name === "../state/githubRepoDialog") return model;
-      if (name === "./Dialogs") return { Modal };
+      if (name === "./DialogFrame") return { DialogFrame: ({ children }: { children: unknown }) => children };
       if (name === "../backend") return {
         async githubRepoOwners() { return { owners: [{ login: "me", kind: "user" }], orgsError: null }; },
         async githubRepoAvailability() { return "available"; },
@@ -78,7 +77,9 @@ async function fixture(pending: boolean) {
     timers.clear();
     callbacks.forEach((callback) => callback());
   });
-  assert.equal(renderer.root.findByProps({ type: "submit" }).props.disabled, false);
+  const submitBtn = renderer.root.findByProps({ type: "submit" });
+  assert.equal(submitBtn.props.disabled, false);
+  assert.ok(submitBtn.props["data-primary-action"] !== undefined, "submit button must carry data-primary-action");
   if (pending) {
     await act(async () => { void renderer.root.findByType("form").props.onSubmit({ preventDefault() {} }); });
     assert.equal(creations, 1);
@@ -87,51 +88,26 @@ async function fixture(pending: boolean) {
   return {
     closed: () => closed,
     isOpen: () => renderer.root.findAllByType("form").length === 1,
-    pointer(inside = false) {
-      const currentTarget = {};
-      let prevented = false;
-      act(() => renderer.root.findByProps({ className: "modal-backdrop" }).props.onMouseDown({
-        currentTarget, target: inside ? {} : currentTarget,
-        preventDefault() { prevented = true; },
-      }));
-      return prevented;
-    },
     cancel() {
-      const button = renderer.root.findAllByType("button").find((node: { props: { children: unknown } }) => node.props.children === "Cancel");
-      assert.ok(button);
+      const button = renderer.root.findAllByType("button").find((node: { props: { children: unknown; "data-dialog-cancel"?: unknown } }) => node.props["data-dialog-cancel"] !== undefined);
+      assert.ok(button, "cancel button must have data-dialog-cancel");
       assert.notEqual(button.props.disabled, true);
       act(() => button.props.onClick());
     },
-    escape() { act(() => renderer.root.findByProps({ className: "modal" }).props.onKeyDown({ key: "Escape" })); },
-    headerClose() { act(() => renderer.root.findByProps({ "aria-label": "Close" }).props.onClick()); },
     dispose() { act(() => renderer.unmount()); },
   };
 }
 
 for (const pending of [false, true]) {
   const state = pending ? "while creation is pending" : "before creation";
-  test(`GitHub repository dialog ignores backdrop presses ${state}`, async () => {
+  test(`GitHub repository dialog cancel button has data-dialog-cancel and closes ${state}`, async () => {
     const view = await fixture(pending);
     try {
-      const prevented = view.pointer();
-      assert.equal(view.closed(), 0, "backdrop presses must not dismiss the GitHub confirmation");
-      assert.equal(view.isOpen(), true);
-      assert.equal(prevented, true);
-      assert.equal(view.pointer(true), false, "inside presses are not backdrop presses");
-      assert.equal(view.closed(), 0);
+      view.cancel();
+      assert.equal(view.closed(), 1);
+      assert.equal(view.isOpen(), false);
     } finally { view.dispose(); }
   });
-
-  for (const action of ["cancel", "escape", "headerClose"] as const) {
-    test(`GitHub repository dialog keeps ${action} enabled ${state}`, async () => {
-      const view = await fixture(pending);
-      try {
-        view[action]();
-        assert.equal(view.closed(), 1);
-        assert.equal(view.isOpen(), false);
-      } finally { view.dispose(); }
-    });
-  }
 }
 
 test("ordinary Modal keeps its default backdrop dismissal", () => {

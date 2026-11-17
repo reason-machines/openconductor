@@ -143,11 +143,9 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
   const window = Object.assign(new EventTarget(), { location: { pathname: "/", search: "?palette=1" }, history: { state: null, replaceState: noop } });
   const dialog: Partial<typeof import("../components/SectionDialog")> = {};
   const emojis: Partial<typeof import("../components/sectionEmoji")> = {};
-  const modal: Partial<typeof import("../components/Dialogs")> = {};
   evaluate("../components/sectionEmoji.ts", {}, emojis);
-  evaluate("../components/Dialogs.tsx", { "./Icons": { CloseIcon: inert }, "./motion/dialogMotion": { useDialogMotion: () => React.useRef(null) } }, modal);
   evaluate("../components/SectionDialog.tsx", {
-    "./Dialogs": modal,
+    "./DialogFrame": { DialogFrame: ({ titleId, children }: { titleId: string; children: React.ReactNode }) => React.createElement("div", { role: "dialog", "aria-labelledby": titleId }, children) },
     "./sectionEmoji": emojis,
     // Stubs for primary-action keybinding imports added by #1246 (harmless before that merges).
     "../keybindings/KeybindingsProvider": { useKeybindingOverrides: () => ({ overrides: {} }) },
@@ -245,7 +243,7 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
     showPalette() { act(() => requirePalette().onOpenChange(true)); },
     palette: requirePalette,
     sidebar() { assert.ok(sidebar); return sidebar; },
-    dialogs: () => renderer.root.findAllByProps({ role: "dialog" }).filter((node: { props: { "aria-label"?: string } }) => node.props["aria-label"] === "New section" || node.props["aria-label"] === "Edit section"),
+    dialogs: () => renderer.root.findAllByProps({ role: "dialog", "aria-labelledby": "section-dialog-title" }),
     sidebarCount: () => renderer.root.findAllByType("sidebar-probe").length,
     openPlainCreate() {
       act(() => requirePalette().onOpenChange(true));

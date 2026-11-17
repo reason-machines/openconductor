@@ -1,0 +1,61 @@
+Head: 33b690114cf25bbcb754e06b373349d9f94689b6
+Job: https://github.com/reason-machines/openconductor/actions/runs/44029746186/job/133858536048
+Command: node --test "src/**/*.test.ts" (.github/workflows/ci.yml frontend job)
+Result: 4586 passed, 1 failed. Typecheck passed; build was skipped after the test failure.
+2026-11-17T06:15:58.0829701Z # Subtest: cold retained source becomes eligible without another target update
+2026-11-17T06:15:58.0829989Z not ok 1628 - cold retained source becomes eligible without another target update
+2026-11-17T06:15:58.0830065Z   ---
+2026-11-17T06:15:58.0840741Z   duration_ms: 1370.511227
+2026-11-17T06:15:58.0840872Z   type: 'test'
+2026-11-17T06:15:58.0841308Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/recentColdHydration.test.ts:192:1'
+2026-11-17T06:15:58.0841445Z   failureType: 'testCodeFailure'
+2026-11-17T06:15:58.0841554Z   error: |-
+2026-11-17T06:15:58.0841745Z     cold source hydration must invalidate the empty target
+2026-11-17T06:15:58.0841851Z     + actual - expected
+2026-11-17T06:15:58.0841934Z
+2026-11-17T06:15:58.0842017Z     + []
+2026-11-17T06:15:58.0842109Z     - [
+2026-11-17T06:15:58.0842209Z     -   'source-a'
+2026-11-17T06:15:58.0842289Z     - ]
+2026-11-17T06:15:58.0842375Z
+2026-11-17T06:15:58.0842478Z   code: 'ERR_ASSERTION'
+2026-11-17T06:15:58.0842573Z   name: 'AssertionError'
+2026-11-17T06:15:58.0842669Z   expected:
+2026-11-17T06:15:58.0842769Z     0: 'source-a'
+2026-11-17T06:15:58.0842857Z   actual:
+2026-11-17T06:15:58.0842963Z   operator: 'deepStrictEqual'
+2026-11-17T06:15:58.0843052Z   stack: |-
+2026-11-17T06:15:58.0843561Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/recentColdHydration.test.ts:197:12)
+2026-11-17T06:15:58.0843742Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-17T06:15:58.0844012Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-17T06:15:58.0844098Z   ...
+2026-11-17T06:15:58.0844313Z # Subtest: cold assistant-only source remains ineligible
+2026-11-17T06:15:58.0844511Z ok 1629 - cold assistant-only source remains ineligible
+2026-11-17T06:15:58.0844600Z   ---
+2026-11-17T06:15:58.0844705Z   duration_ms: 994.491869
+2026-11-17T06:15:58.0844795Z   type: 'test'
+2026-11-17T06:15:58.0844879Z   ...
+2026-11-17T06:15:58.0845349Z # Subtest: hydrated source remains available after target round trip
+2026-11-17T06:15:58.0845589Z ok 1630 - hydrated source remains available after target round trip
+2026-11-17T06:15:58.0845673Z   ---
+2026-11-17T06:15:58.0845774Z   duration_ms: 789.702647
+2026-11-17T06:15:58.0845871Z   type: 'test'
+2026-11-17T06:15:58.0845950Z   ...
+2026-11-17T06:15:58.0846300Z # Subtest: mounted recent-chat chips retain both same-title source transcripts in one target
+2026-11-17T06:15:58.0846639Z ok 1631 - mounted recent-chat chips retain both same-title source transcripts in one target
+2026-11-17T06:15:58.0846722Z   ---
+2026-11-17T06:15:58.0846824Z   duration_ms: 1569.713432
+2026-11-17T06:15:58.0846915Z   type: 'test'
+2026-11-17T06:15:58.0847000Z   ...
+2026-11-17T06:15:58.0847358Z # Subtest: mounted distinct-title recent-chat chips retain their own bodies and readable labels
+2026-11-17T06:15:58.0847713Z ok 1632 - mounted distinct-title recent-chat chips retain their own bodies and readable labels
+2026-11-17T06:15:58.0847798Z   ---
+2026-11-17T06:15:58.0847891Z   duration_ms: 796.459801
+2026-11-17T06:15:58.0848124Z   type: 'test'
+2026-11-17T06:15:58.0848210Z   ...
+2026-11-17T06:15:58.0848648Z # Subtest: mounted recent-chat attachments remain isolated from another empty target and survive target switching
+2026-11-17T06:15:58.0849080Z ok 1633 - mounted recent-chat attachments remain isolated from another empty target and survive target switching
+2026-11-17T06:15:58.0849164Z   ---
+2026-11-17T06:15:58.0849264Z   duration_ms: 756.208249
+2026-11-17T06:15:58.0849538Z   type: 'test'
+2026-11-17T06:15:58.0849626Z   ...

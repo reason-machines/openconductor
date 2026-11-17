@@ -1,0 +1,278 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: local Claude Plan menu persists the selected chat's mode
+ok 1 - local Claude Plan menu persists the selected chat's mode
+  ---
+  duration_ms: 1557.00003
+  type: 'test'
+  ...
+# Subtest: local Claude Plan slash persists the selected chat's mode
+ok 2 - local Claude Plan slash persists the selected chat's mode
+  ---
+  duration_ms: 756.857179
+  type: 'test'
+  ...
+# Subtest: local Claude Plan shortcut persists the selected chat's mode
+ok 3 - local Claude Plan shortcut persists the selected chat's mode
+  ---
+  duration_ms: 568.321882
+  type: 'test'
+  ...
+# Subtest: a saved Claude Plan mode is read back and exits to default
+ok 4 - a saved Claude Plan mode is read back and exits to default
+  ---
+  duration_ms: 553.440126
+  type: 'test'
+  ...
+# Subtest: failed mode persistence retains the confirmed state and reports the error
+ok 5 - failed mode persistence retains the confirmed state and reports the error
+  ---
+  duration_ms: 568.027707
+  type: 'test'
+  ...
+# Subtest: reason does not claim a local Plan capability
+ok 6 - reason does not claim a local Plan capability
+  ---
+  duration_ms: 474.281269
+  type: 'test'
+  ...
+# Subtest: codex does not claim a local Plan capability
+ok 7 - codex does not claim a local Plan capability
+  ---
+  duration_ms: 486.030069
+  type: 'test'
+  ...
+# Subtest: busy Claude cannot change Plan mode
+ok 8 - busy Claude cannot change Plan mode
+  ---
+  duration_ms: 485.95383
+  type: 'test'
+  ...
+# Subtest: persisted active Plan accents its icon and label, not its shortcut
+ok 9 - persisted active Plan accents its icon and label, not its shortcut
+  ---
+  duration_ms: 449.021058
+  type: 'test'
+  ...
+# Subtest: inactive Plan retains ordinary icon and label presentation
+ok 10 - inactive Plan retains ordinary icon and label presentation
+  ---
+  duration_ms: 466.240424
+  type: 'test'
+  ...
+# Subtest: entering Plan accents the icon and label after the existing save confirms
+ok 11 - entering Plan accents the icon and label after the existing save confirms
+  ---
+  duration_ms: 569.892897
+  type: 'test'
+  ...
+# Subtest: exiting Plan removes the icon and label accent after the existing save confirms
+ok 12 - exiting Plan removes the icon and label accent after the existing save confirms
+  ---
+  duration_ms: 466.481642
+  type: 'test'
+  ...
+# Subtest: busy active Plan keeps its confirmed presentation and disabled guard
+ok 13 - busy active Plan keeps its confirmed presentation and disabled guard
+  ---
+  duration_ms: 471.597276
+  type: 'test'
+  ...
+# Subtest: Plan presentation changes add no capability to Codex or Reason
+ok 14 - Plan presentation changes add no capability to Codex or Reason
+  ---
+  duration_ms: 1051.855643
+  type: 'test'
+  ...
+# (node:91) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: bindCommands registers every default shortcut of a command
+ok 15 - bindCommands registers every default shortcut of a command
+  ---
+  duration_ms: 2.576841
+  type: 'test'
+  ...
+# Subtest: a bare-key shortcut does not fire while typing; its modifier shortcut does
+ok 16 - a bare-key shortcut does not fire while typing; its modifier shortcut does
+  ---
+  duration_ms: 3.418443
+  type: 'test'
+  ...
+# Subtest: a non-global command stays off while a dialog is open; a global one runs
+ok 17 - a non-global command stays off while a dialog is open; a global one runs
+  ---
+  duration_ms: 1.635258
+  type: 'test'
+  ...
+# Subtest: overrides replace the default shortcut
+ok 18 - overrides replace the default shortcut
+  ---
+  duration_ms: 0.259016
+  type: 'test'
+  ...
+# Subtest: undefined callbacks are skipped and the remover takes back only its own handlers
+ok 19 - undefined callbacks are skipped and the remover takes back only its own handlers
+  ---
+  duration_ms: 0.272777
+  type: 'test'
+  ...
+# Subtest: a callback returning false passes the key on
+ok 20 - a callback returning false passes the key on
+  ---
+  duration_ms: 0.13834
+  type: 'test'
+  ...
+# Subtest: unknown command ids throw
+ok 21 - unknown command ids throw
+  ---
+  duration_ms: 0.432642
+  type: 'test'
+  ...
+# Subtest: hidden chat bindings cannot cancel or attach from a center terminal
+ok 22 - hidden chat bindings cannot cancel or attach from a center terminal
+  ---
+  duration_ms: 0.225282
+  type: 'test'
+  ...
+# Subtest: focused chat shortcuts still work while its panel terminal has keyboard focus
+ok 23 - focused chat shortcuts still work while its panel terminal has keyboard focus
+  ---
+  duration_ms: 0.41353
+  type: 'test'
+  ...
+# Subtest: activeDialogIdFromDom: the last tagged dialog, else any modal, else none
+ok 24 - activeDialogIdFromDom: the last tagged dialog, else any modal, else none
+  ---
+  duration_ms: 0.409738
+  type: 'test'
+  ...
+# Subtest: a higher-priority binding runs first and passes the key on by returning false
+ok 25 - a higher-priority binding runs first and passes the key on by returning false
+  ---
+  duration_ms: 0.250158
+  type: 'test'
+  ...
+# (node:99) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a bare key is off while typing unless allowWhileTyping
+ok 26 - a bare key is off while typing unless allowWhileTyping
+  ---
+  duration_ms: 0.767212
+  type: 'test'
+  ...
+# Subtest: a modified key needs enableOnInputFocus or isGlobal while typing
+ok 27 - a modified key needs enableOnInputFocus or isGlobal while typing
+  ---
+  duration_ms: 0.169756
+  type: 'test'
+  ...
+# Subtest: terminal focus gates enableOnTerminalFocus and requireTerminalFocus
+ok 28 - terminal focus gates enableOnTerminalFocus and requireTerminalFocus
+  ---
+  duration_ms: 0.119365
+  type: 'test'
+  ...
+# Subtest: dialogs: only listed dialog ids, and nothing unlisted while a dialog is open
+ok 29 - dialogs: only listed dialog ids, and nothing unlisted while a dialog is open
+  ---
+  duration_ms: 0.120581
+  type: 'test'
+  ...
+# Subtest: higher priority runs first, then more modifiers; false passes on
+ok 30 - higher priority runs first, then more modifiers; false passes on
+  ---
+  duration_ms: 1.760318
+  type: 'test'
+  ...
+# Subtest: telemetry carries the dialog id and context only when present
+ok 31 - telemetry carries the dialog id and context only when present
+  ---
+  duration_ms: 0.236889
+  type: 'test'
+  ...
+# Subtest: held-key repeats are swallowed unless a handler allows repeat
+ok 32 - held-key repeats are swallowed unless a handler allows repeat
+  ---
+  duration_ms: 0.265401
+  type: 'test'
+  ...
+# Subtest: Escape blurs a focused input before any handler; not in the terminal
+ok 33 - Escape blurs a focused input before any handler; not in the terminal
+  ---
+  duration_ms: 0.14105
+  type: 'test'
+  ...
+# Subtest: recorder, lone modifiers, unfocused scopes and unregister all pass
+ok 34 - recorder, lone modifiers, unfocused scopes and unregister all pass
+  ---
+  duration_ms: 0.325852
+  type: 'test'
+  ...
+# Subtest: Backspace outside a text field is prevented even when nothing handles it
+ok 35 - Backspace outside a text field is prevented even when nothing handles it
+  ---
+  duration_ms: 0.354332
+  type: 'test'
+  ...
+# (node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: registration defaults: input and terminal focus on, NORMAL priority, not global
+ok 36 - registration defaults: input and terminal focus on, NORMAL priority, not global
+  ---
+  duration_ms: 1.832387
+  type: 'test'
+  ...
+# Subtest: one binding per effective shortcut; call-site options win over the command's when
+ok 37 - one binding per effective shortcut; call-site options win over the command's when
+  ---
+  duration_ms: 0.317761
+  type: 'test'
+  ...
+# Subtest: Cmd+K opens the palette idle, while typing and inside the palette
+ok 38 - Cmd+K opens the palette idle, while typing and inside the palette
+  ---
+  duration_ms: 0.775447
+  type: 'test'
+  ...
+# Subtest: terminal-only commands need terminal focus
+ok 39 - terminal-only commands need terminal focus
+  ---
+  duration_ms: 0.133222
+  type: 'test'
+  ...
+# Subtest: Tab cycles palette tabs only while the palette is open
+ok 40 - Tab cycles palette tabs only while the palette is open
+  ---
+  duration_ms: 0.128822
+  type: 'test'
+  ...
+# Subtest: an open dialog blocks non-global commands
+ok 41 - an open dialog blocks non-global commands
+  ---
+  duration_ms: 0.191142
+  type: 'test'
+  ...
+# Subtest: bare keys need allowWhileTyping; Cmd chords and Cmd+1..9 fire while typing
+ok 42 - bare keys need allowWhileTyping; Cmd chords and Cmd+1..9 fire while typing
+  ---
+  duration_ms: 0.239938
+  type: 'test'
+  ...
+# Subtest: overrides rebind what resolves
+ok 43 - overrides rebind what resolves
+  ---
+  duration_ms: 0.149195
+  type: 'test'
+  ...
+1..43
+# tests 43
+# suites 0
+# pass 43
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9831.121956

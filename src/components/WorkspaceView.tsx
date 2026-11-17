@@ -3,6 +3,7 @@ import type { OpenInTargetPublisher, WorkspaceOpenInTarget } from "../palette/fr
 import type { Repo, Workspace } from "../state/types";
 import { loadReposFromDb, type Action } from "../state/store";
 import { LinkedDirectoryPicker } from "../features/chat/LinkedDirectoryPicker.tsx";
+import { useScrollFollow } from "../features/chat/hooks/useScrollFollow.ts";
 import { mutateWorkspaceLinks, type LinkMutation } from "../features/chat/workspaceLinks.ts";
 import { ChevronIcon, RightSidebarIcon } from "./Icons";
 import { toggleRightPanel } from "./panelPrefs";
@@ -302,6 +303,10 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   /** A "Fork to new tab" is reading the chat's options. */
   const [forking, setForking] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const { isAtBottomRef } = useScrollFollow(scrollContainerRef);
+  /** Set to true before a user-initiated send so the next transcript effect force-scrolls. */
+  const forceScrollRef = useRef(false);
   const inputRef = useRef<ComposerEditorHandle>(null);
   const [mcpStatusChat, setMcpStatusChat] = useState<string | null>(null);
   useEffect(() => setMcpStatusChat(null), [chatId, agentId]);
@@ -332,6 +337,8 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   }, [chatId]);
 
   useEffect(() => {
+    // Switching chats should always land at the bottom of the new chat.
+    forceScrollRef.current = true;
     setSnapshot(agent.snapshot(runId));
     setResetTurn(null);
     const pendingMessage = takePendingMessage(chatId);
@@ -352,19 +359,43 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     return unsubscribe;
   }, [chatId, agentId]);
 
+  // Recent-transcript chips also depend on the other chats' asynchronously restored messages.
+  const [, refreshRecentChats] = useState(0);
+  useEffect(() => {
+    if (transcript.messages.length !== 0) return;
+    const refresh = () => refreshRecentChats((revision) => revision + 1);
+    const unsubscribes = chatTabs.filter((tab) => tab.chatId !== chatId).map((tab) => {
+      const source = CHAT_AGENTS[reason ? savedAgent(tab.chatId) : "reason"];
+      return source.subscribe(source.chatId(tab.chatId), refresh);
+    });
+    // A source may finish restoring between rendering its snapshot and subscribing.
+    refresh();
+    return () => { for (const unsubscribe of unsubscribes) unsubscribe(); };
+  }, [chatId, chatTabs, reason, transcript.messages.length]);
+
   function pickAgent(next: ChatAgentId) {
     saveAgent(chatId, next);
     setPicked((p) => ({ ...p, [chatId]: next }));
   }
 
+  // parity:chat.scroll-follow  BE7-17
+  // Scroll to bottom only when already at the bottom, or when the user just
+  // sent a message (forceScrollRef). Mirrors Conductor: a user who has
+  // scrolled up to review history is not dragged back down by agent updates.
   useEffect(() => {
-    endRef.current?.scrollIntoView({ block: "end" });
+    if (forceScrollRef.current || isAtBottomRef.current) {
+      endRef.current?.scrollIntoView({ block: "end" });
+      isAtBottomRef.current = true;
+    }
+    forceScrollRef.current = false;
   }, [transcript, waiting]);
 
   // Attachments (a review request, revert notes) go to the agent with the message and show by name.
   function submit(input: UserPrompt, mode: SendMode, attached: readonly TextAttachment[] = []) {
     const { text } = input;
     if (!text.trim() && attached.length === 0) return;
+    // User-initiated send: always scroll to bottom so the sent message is visible.
+    forceScrollRef.current = true;
     const first = main && !agent.snapshot(runId).transcript.messages.some((m) => m.role === "user");
     agent.submit(runId, cwd, input, mode, attached, repo.path || undefined, workspace.id);
     dispatch({ type: "touchWorkspace", repoId: repo.id, workspaceId: workspace.id, at: Date.now() });
@@ -472,11 +503,13 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
       copyModelChoice(chatId, id, agentId, config);
       if (agentId !== "reason") saveAgent(id, agentId);
       queuePending(id, { kind: "draft", text: "", attachments: [{ name: forkAttachmentName(title), text: fork.transcript }] });
-      await startSetupScript({ id: backendRepo.id, root: backendRepo.root, defaultBranch: backendRepo.defaultBranch }, { id, name: directoryName, path }, targetBranch);
+      // GAP-SB-01b/01c: capture startSetupScript return so the sidebar row dims
+      // while setup runs and clears immediately when no script starts.
+      const forkSetupStarted = await startSetupScript({ id: backendRepo.id, root: backendRepo.root, defaultBranch: backendRepo.defaultBranch }, { id, name: directoryName, path }, targetBranch);
       dispatch({
         type: "addWorkspace",
         repoId: repo.id,
-        workspace: { id, name: directoryName, branch: branchName, path, targetBranch, placeholderBranchName: null, userSetWorkspaceName: false, userSetBranchName: false, number: fork.created.number ?? null },
+        workspace: { id, name: directoryName, branch: branchName, path, targetBranch, placeholderBranchName: null, userSetWorkspaceName: false, userSetBranchName: false, number: fork.created.number ?? null, state: forkSetupStarted ? "setting_up" : "ready" },
       });
     } catch (e) {
       setAttachError(e instanceof Error ? e.message : "Failed to fork chat");
@@ -597,7 +630,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           {content}
         </div>
       ) : null}
-      <div className="chat-scroll" hidden={content !== null}>
+      <div className="chat-scroll" ref={scrollContainerRef} hidden={content !== null}>
         {review && !review.fork && !review.blank && (
           <div className="review-chat-info muted" role="note">
             Code review on {review.modelLabel}

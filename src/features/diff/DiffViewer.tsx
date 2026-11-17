@@ -3,7 +3,7 @@
 // right panel, and the selected file in an "All changes" tab in the main area.
 // Both read one useWorkspaceDiff state. The list is in ChangesList.tsx.
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { ConductorIcon } from "../../components/ConductorIcon";
 import type { ConductorIconName } from "../../components/conductorIcons.generated";
@@ -60,6 +60,11 @@ export function DiffTab({ diff, onClose, onLineClick, commentRange, anchors, ann
     if (empty) onClose?.();
   }, [empty, onClose]);
   const path = selected?.path;
+  // Selection visits, not filter-only visibility changes, refresh retained files.
+  const [visitCounts, setVisitCounts] = useState<Record<string, number>>({});
+  useLayoutEffect(() => {
+    if (path !== undefined) setVisitCounts((counts) => ({ ...counts, [path]: (counts[path] ?? 0) + 1 }));
+  }, [path]);
   const [visited, setVisited] = useState<{ revision: number; paths: string[] }>({ revision: redirectRevision, paths: [] });
   useEffect(() => {
     if (path === undefined) return;
@@ -98,6 +103,7 @@ export function DiffTab({ diff, onClose, onLineClick, commentRange, anchors, ann
       {files.map((file) => visited.paths.includes(file.path) && (
         <OpenFile key={JSON.stringify([diff.worktree, file.path, scope])} diff={diff} f={file} selected={file}
           isVisible={!diff.noMatchingFiles && file.path === selected.path}
+          visibleVisitCount={visitCounts[file.path] ?? 0}
           onLineClick={onLineClick} commentRange={commentRange} anchors={anchors} annotations={annotations} onPersistAnchors={onPersistAnchors} notes={notes} notify={notify} />
       ))}
     </div>
@@ -110,22 +116,27 @@ export function DiffTab({ diff, onClose, onLineClick, commentRange, anchors, ann
  * it; binary files have no lines. Keep the last successful same-key load during
  * a refresh or a transient failure, but only current contents may seed editing.
  */
-function useWholeFile(diff: WorkspaceDiff, selected: FileDiff, layout: DiffLayout): { file: FileDiff | null; current: boolean; refreshStatus: FileRefreshStatus | undefined } {
+function useWholeFile(diff: WorkspaceDiff, selected: FileDiff, layout: DiffLayout, isVisible: boolean, visibleVisitCount: number): { file: FileDiff | null; current: boolean; refreshStatus: FileRefreshStatus | undefined } {
   const key = JSON.stringify([
     diff.worktree, diff.target.branch, diff.target.remote,
     diff.turn ? ["turn", diff.turn.sessionId, diff.turn.turnId] : diff.opts.scope,
     selected.path, selected.old_path, selected.status, selected.binary, diff.opts.ignoreWhitespace,
   ]);
-  const [full, setFull] = useState<{ key: string; of: FileDiff; file: FileDiff } | null>(null);
+  const [full, setFull] = useState<{ key: string; of: FileDiff; file: FileDiff; attempt: number } | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [failure, setFailure] = useState<{ key: string; of: FileDiff; attempt: number } | null>(null);
   const wanted = (layout !== "file" || diff.opts.ignoreWhitespace) && !selected.binary && selected.hunks.length > 0;
+  const refreshedVisit = useRef(visibleVisitCount);
+  const settled = (full?.key === key && full.of === selected && full.attempt === attempt) ||
+    (failure?.key === key && failure.of === selected && failure.attempt === attempt);
   const loadFull = diff.loadFull;
   useEffect(() => {
     if (!wanted) return;
+    // This request also covers a visit arriving with changed metadata/layout.
+    refreshedVisit.current = visibleVisitCount;
     let live = true;
     loadFull(selected).then(
-      (file) => live && setFull({ key, of: selected, file }),
+      (file) => live && setFull({ key, of: selected, file, attempt }),
       () => live && setFailure({ key, of: selected, attempt }),
     );
     return () => {
@@ -134,8 +145,14 @@ function useWholeFile(diff: WorkspaceDiff, selected: FileDiff, layout: DiffLayou
     // loadFull is rebuilt every render; the file object changes whenever the diff reloads.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected, wanted, key, attempt]);
+  useEffect(() => {
+    // Like bji, wait for an in-flight load, then refetch once for a new visit.
+    if (!wanted || !isVisible || visibleVisitCount <= 1 || refreshedVisit.current === visibleVisitCount || !settled) return;
+    refreshedVisit.current = visibleVisitCount;
+    setAttempt((n) => n + 1);
+  }, [wanted, isVisible, visibleVisitCount, settled]);
   const file = wanted && full?.key === key ? full.file : null;
-  const current = file !== null && full?.of === selected;
+  const current = file !== null && full?.of === selected && full.attempt === attempt;
   const refreshStatus: FileRefreshStatus | undefined = file === null || current ? undefined
     : failure?.key === key && failure.of === selected && failure.attempt === attempt
       ? { type: "failed", onRetry: () => setAttempt((n) => n + 1) }
@@ -150,9 +167,9 @@ function isPreviewablePath(path: string): boolean {
   return PREVIEW_EXT.has(path.split(".").pop()?.toLowerCase() ?? "");
 }
 
-function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anchors, annotations, onPersistAnchors, notes, notify }: DiffTabProps & { f: FileDiff; selected: FileDiff; isVisible: boolean }) {
+function OpenFile({ diff, f, selected, isVisible, visibleVisitCount, onLineClick, commentRange, anchors, annotations, onPersistAnchors, notes, notify }: DiffTabProps & { f: FileDiff; selected: FileDiff; isVisible: boolean; visibleVisitCount: number }) {
   const { opts, update } = diff;
-  const { file: full, current, refreshStatus } = useWholeFile(diff, selected, opts.layout);
+  const { file: full, current, refreshStatus } = useWholeFile(diff, selected, opts.layout, isVisible, visibleVisitCount);
   const edit = useFileEdit(diff.worktree, selected.path, typeof opts.scope === "object" || diff.turn !== null ? null : editableContents(selected, opts.layout, opts.ignoreWhitespace, current ? full : null), diff.reloadQuietly);
   // parity:diff.edit-in-viewer — preview toggle for markdown/HTML in "file" layout.
   // Conductor's bji wires workspace.toggleFileEdit (⌘E) in the file-layout component.
@@ -160,9 +177,18 @@ function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anc
     selected.hunks.length > 0 && isPreviewablePath(selected.path);
   const [isPreviewing, setIsPreviewing] = useState(isPreviewable);
   useEffect(() => { setIsPreviewing(isPreviewable); }, [selected.path, isPreviewable]);
-  // No effect on edit availability: Conductor keeps preview as the default even
-  // when the file is editable (isEditing=false is the default; ⌘E enters edit mode).
-  useKeybindings(isPreviewable ? { "workspace.toggleFileEdit": () => setIsPreviewing((p) => !p) } : {});
+  // parity:diff.edit-in-viewer — ⌘E read-only↔edit toggle for code files (GAP-DIFF-01).
+  // Conductor keeps preview as default for markdown/HTML; for code files, edit mode is
+  // active by default (matching Conductor's bji behaviour) and ⌘E toggles to read-only.
+  const [isEditing, setIsEditing] = useState(true);
+  useEffect(() => { setIsEditing(true); }, [selected.path]);
+  // Editable when edit is non-null and the file is not a previewable markdown/HTML file.
+  const isEditableCode = !isPreviewable && edit !== null;
+  // Retained hidden files keep their mode, but only the visible file owns ⌘E.
+  useKeybindings(isVisible ? {
+    ...(isPreviewable ? { "workspace.toggleFileEdit": () => setIsPreviewing((p) => !p) } : {}),
+    ...(isEditableCode ? { "workspace.toggleFileEdit": () => setIsEditing((p) => !p) } : {}),
+  } : {});
   return (
     <div className="oc-files" hidden={!isVisible} style={!isVisible ? { display: "none" } : undefined}>
       {notes?.(f)}
@@ -187,9 +213,10 @@ function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anc
         notify={notify}
         onDiscard={diff.canDiscard ? () => diff.askDiscard(f) : undefined}
         onShowWhitespace={() => update({ ignoreWhitespace: false })}
-        edit={edit}
+        edit={isEditableCode ? (isEditing ? edit : undefined) : edit}
         isPreviewing={isPreviewing}
         onTogglePreview={isPreviewable ? () => setIsPreviewing((p) => !p) : undefined}
+        onToggleEdit={isEditableCode ? () => setIsEditing((p) => !p) : undefined}
         worktree={diff.worktree}
         tools={<LayoutToggle value={opts.layout} onChange={(layout) => update({ layout })} />}
         options={

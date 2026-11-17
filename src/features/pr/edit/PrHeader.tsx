@@ -5,7 +5,8 @@
 // (`pr_edit`, `pr_retarget`). After a save the PR lookup is refreshed; until
 // it answers the saved values are shown.
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Modal } from "../../../components/Dialogs";
+import { DialogFrame } from "../../../components/DialogFrame";
+import { CloseIcon } from "../../../components/Icons";
 import type { PrInfo } from "../types";
 import type { TargetBranch } from "../useTargetBranch";
 import { usePrBadgeMenu } from "../PrBadgeMenu";
@@ -44,16 +45,20 @@ function TitleDialog({ title, onSave, onClose }: { title: string; onSave: (t: st
     else onClose();
   };
   return (
-    <Modal title="Edit PR title" onClose={onClose}>
-      <form className="modal-body pr-title-dialog" onSubmit={submit}>
+    <DialogFrame kind="dialog" titleId="pr-edit-title-label" className="pr-title-dialog" onClose={onClose}>
+      <div className="modal-header">
+        <h2 id="pr-edit-title-label">Edit PR title</h2>
+        <button type="button" className="icon-btn" aria-label="Close" onClick={onClose}><CloseIcon size={16} /></button>
+      </div>
+      <form className="modal-body" onSubmit={submit}>
         <input autoFocus aria-label="PR title" placeholder="PR title" value={value} disabled={saving} onChange={(e) => setValue(e.target.value)} />
         {error && <p className="error small" role="alert">{error}</p>}
         <div className="modal-actions">
           <button type="button" className="btn" onClick={onClose} disabled={saving}>Cancel</button>
-          <button type="submit" className="btn btn-primary" disabled={!value.trim() || saving}>{saving ? "Saving..." : "Save"}</button>
+          <button type="submit" className="btn btn-primary" data-primary-action disabled={!value.trim() || saving}>{saving ? "Saving..." : "Save"}</button>
         </div>
       </form>
-    </Modal>
+    </DialogFrame>
   );
 }
 

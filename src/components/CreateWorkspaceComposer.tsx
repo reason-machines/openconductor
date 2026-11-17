@@ -1,4 +1,5 @@
-import { useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type Dispatch, type FormEvent, type KeyboardEvent } from "react";
+import { invoke } from "@tauri-apps/api/core";
+import { useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type Dispatch, type FormEvent } from "react";
 import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
 import { seedTranscript } from "./WorkspaceView";
@@ -43,13 +44,16 @@ import { usePresence } from "./motion/usePresence";
 import { Tooltip } from "./ui/Tooltip";
 import { ComposerAttachmentChip } from "../features/chat/ComposerAttachmentChip";
 import type { ComposerAttachment } from "../features/chat/composerAttachments";
-import { inlineText, rejectReason, safeFileName } from "../features/chat/composerAttachments";
+import { attachmentPath, inlineText, promptText, randomDir, rejectReason, safeFileName } from "../features/chat/composerAttachments";
+import { draftAttachmentsApi } from "../features/draft-attachments/api.ts";
 import type { PromptAttachment } from "../features/chat/reason";
 import { queuePending } from "../features/diff/ReviewButton";
 import { PaperclipIcon, PlusIcon } from "../features/chat/composerIcons";
 import type { NavSection } from "../state/navigationSections";
 import { CREATE_IN_SECTION, SECTION_ASSIGN_FAILED, canCreateIn, sectionChoice } from "../workspace/createInSection";
 import "../features/chat/composer.css";
+import { ComposerEditor, type ComposerEditorHandle } from "../features/chat/ComposerEditor.tsx";
+import type { PlanModeControl } from "../features/chat/useLocalPlanMode.ts";
 
 /**
  * Where the repo / branch / create-from row sits (Conductor's `eyebrowVariant`):
@@ -123,11 +127,20 @@ export function CreateWorkspaceComposer({
   const settings = loadout?.settings ?? null;
   const favorites = loadoutPicks(loadout?.slots ?? []);
   const modelEdited = useRef(false);
+  /** Whether the user toggled plan mode on before creating the workspace (REA a7i planMode). */
+  const [createPlanMode, setCreatePlanMode] = useState(false);
   /** Files attached in the create composer; delivered with the first message via queuePending. */
   const [createAttachments, setCreateAttachments] = useState<ComposerAttachment[]>([]);
+  const [draftWorkspaceId] = useState(() => crypto.randomUUID());
+  const pendingFiles = useRef(0);
+  const [stagingFiles, setStagingFiles] = useState(0);
   const [attachError, setAttachError] = useState<string | null>(null);
   const [attachPreviewEpoch, setAttachPreviewEpoch] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  /** Rich-text editor handle for the create composer's first-message field (Conductor: Hji uses ComposerEditor). */
+  const composerInputRef = useRef<ComposerEditorHandle>(null);
+  // Auto-focus the editor on mount (mirrors the textarea's autoFocus attribute).
+  useLayoutEffect(() => { composerInputRef.current?.focus(); }, []);
   const [draft, setDraft] = useState<CreateDraft>(() =>
     newDraft({ repoId: startRepo?.id ?? null, defaultBranch: startRepo?.defaultBranch ?? "main", cityName: suggestName(startRepo)?.name ?? "", ...launchDefaults(null) }),
   );
@@ -137,7 +150,7 @@ export function CreateWorkspaceComposer({
   const repo = repos.find((r) => r.id === draft.repoId);
   const prefix = useMemo(() => resolveBranchPrefix(prefixSettings, githubUsername), [prefixSettings, githubUsername]);
   const [branchAttempt, setBranchAttempt] = useState(0);
-  const busy = progress.step === "creating" || progress.step === "detecting_setup";
+  const busy = stagingFiles > 0 || progress.step === "creating" || progress.step === "detecting_setup";
   useEffect(() => onBusyChange?.(busy), [busy, onBusyChange]);
   const { overrides } = useKeybindingOverrides();
   const submitKeys = [...effectiveShortcuts("chat.submitMessage", overrides), ...effectiveShortcuts("chat.submitOppositeFollowUp", overrides)];
@@ -195,30 +208,54 @@ export function CreateWorkspaceComposer({
     "chat.addAttachment": () => { if (!busy) fileInputRef.current?.click(); },
   });
 
-  /**
-   * Read picked files and store as inline ComposerAttachments; text files get
-   * their content inlined; binary files get a size note. No staging: the
-   * workspace doesn't exist yet, so attachments travel via queuePending.
-   */
+  // Hji binds Plan mode only while its editor is focused; the menu owns the same state.
+  useKeybindings({
+    "chat.togglePlanMode": () => {
+      if (draft.agent !== "claude" || busy || !composerInputRef.current?.focused()) return false;
+      setCreatePlanMode((value) => !value);
+    },
+  }, { enableOnDialogIds: eyebrowVariant === "attached" ? ["dialog"] : undefined });
+
+  /** Stage binary bytes under this draft's identity before a workspace exists. */
   async function attachFiles(files: File[]) {
-    const errors: string[] = [];
-    const toAdd: ComposerAttachment[] = [];
-    for (const file of files) {
-      const reject = rejectReason(file);
-      if (reject) { errors.push(reject); continue; }
-      const bytes = new Uint8Array(await file.arrayBuffer());
-      const name = safeFileName(file.name);
-      const textContent = inlineText(bytes);
-      toAdd.push(textContent !== null
-        ? { name, text: textContent, preview: "text" as const }
-        : { name, text: `The user attached a file (${bytes.length} bytes): ${name}` });
+    if (progress.step === "creating" || progress.step === "detecting_setup") return;
+    pendingFiles.current++;
+    setStagingFiles(pendingFiles.current);
+    setAttachError(null);
+    try {
+      for (const file of files) {
+        const reject = rejectReason(file);
+        if (reject) { setAttachError(reject); continue; }
+        try {
+          const bytes = new Uint8Array(await file.arrayBuffer());
+          const name = safeFileName(file.name);
+          const text = inlineText(bytes);
+          let attachment: ComposerAttachment;
+          if (text !== null) attachment = { name, text, preview: "text" };
+          else {
+            const relativePath = attachmentPath(name, randomDir());
+            await draftAttachmentsApi.write({ draftWorkspaceId, relativePath, data: bytes });
+            attachment = { name: relativePath, label: name, text: promptText(bytes, relativePath), staged: relativePath };
+          }
+          setCreateAttachments((prev) => prev.some((a) => a.name === attachment.name) ? prev : [...prev, attachment]);
+        } catch (err) {
+          setAttachError(`Failed to attach ${file.name}: ${errorText(err)}`);
+        }
+      }
+    } finally {
+      pendingFiles.current--;
+      setStagingFiles(pendingFiles.current);
     }
-    if (errors.length > 0) setAttachError(errors.join(" "));
-    if (toAdd.length > 0) {
-      setCreateAttachments((prev) => {
-        const taken = new Set(prev.map((a) => a.name));
-        return [...prev, ...toAdd.filter((a) => !taken.has(a.name))];
-      });
+  }
+
+  /** Do not hand an agent a path until the existing store confirms its copy. */
+  async function materializeAttachments(workspacePath: string) {
+    if (!createAttachments.some((a) => a.staged)) return;
+    const report = await draftAttachmentsApi.materialize({ localWorkspaceId: draftWorkspaceId, workspacePath });
+    for (const attachment of createAttachments) {
+      if (!attachment.staged) continue;
+      const result = report.attachments.find((a) => a.relativePath === attachment.staged);
+      if (!result || result.error) throw new Error(result?.error ?? `Attachment was not copied: ${attachment.label ?? attachment.name}`);
     }
   }
 
@@ -238,7 +275,7 @@ export function CreateWorkspaceComposer({
 
   async function submit(e?: FormEvent, sectionId: string | undefined = choice.sectionId) {
     e?.preventDefault();
-    if (busy || !repo || !canCreateIn(sectionsRef.current, sectionId)) return;
+    if (busy || pendingFiles.current > 0 || !repo || !canCreateIn(sectionsRef.current, sectionId)) return;
     const built = buildCreateRequest(draft, prefix);
     if (!built.ok) return setErrors(built.errors);
     setErrors({});
@@ -258,7 +295,12 @@ export function CreateWorkspaceComposer({
       send({ type: "created", workspaceId: created.workspace.id });
       if (created.upstreamWarning) onWarning(created.upstreamWarning);
       const setupStarted = await startSetupScript(backendRepo, created, built.request.targetBranch);
-      send({ type: "setup_detected", started: setupStarted });
+      // Keep creation busy through attachment materialization as well as setup.
+      // GAP-COMP-04 (plan mode): set initial plan mode on the new workspace's primary chat
+      // when the user toggled it on in the create composer (REA a7i planMode prop, wt path).
+      if (createPlanMode && draft.agent === "claude") {
+        void invoke<unknown>("local_plan_mode_set", { chatId: created.workspace.id, workspaceId: created.workspace.id, mode: "plan" });
+      }
       const { id, directoryName, branchName, path } = created.workspace;
       const { naming, firstSession } = built.request;
       const ws = {
@@ -299,12 +341,20 @@ export function CreateWorkspaceComposer({
         const queued: PromptAttachment[] = createAttachments.map(({ name, text: t, commentId }) =>
           commentId ? { name, text: t, commentId } : { name, text: t },
         );
-        // kind "send" means WorkspaceView auto-submits on mount; it also calls
-        // renameAfterFirstMessage so we skip it below to avoid a double rename.
-        queuePending(id, { kind: "send", text, attachments: queued });
+        try {
+          await materializeAttachments(path);
+          // WorkspaceView's pending-send path bypasses its normal copy barrier.
+          queuePending(id, { kind: "send", text, attachments: queued });
+        } catch (err) {
+          // Creation succeeded: expose it, keep the text editable, and never auto-send
+          // a missing file. The existing store retains failed staged copies.
+          queuePending(id, { kind: "draft", text });
+          onWarning(`Workspace created, but the first message was not sent. Reattach the files and retry: ${errorText(err)}`);
+        }
       } else if (firstSession) {
         seedTranscript(id, firstSession.message);
       }
+      send({ type: "setup_detected", started: setupStarted });
       dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });
       if (sectionId !== undefined) {
         // Assigning also unpins it (store `assignSection`); a section deleted meanwhile keeps the workspace unsectioned.
@@ -358,7 +408,7 @@ export function CreateWorkspaceComposer({
    * Evidence: Hji.txt `ca` callback + `Ei` keydown capture handler.
    */
   async function addToBacklog() {
-    if (busy || !repo) return;
+    if (busy || pendingFiles.current > 0 || !repo) return;
     const built = buildCreateRequest(draft, prefix);
     if (!built.ok) return setErrors(built.errors);
     setErrors({});
@@ -374,6 +424,8 @@ export function CreateWorkspaceComposer({
       send({ type: "created", workspaceId: created.workspace.id });
       if (created.upstreamWarning) onWarning(created.upstreamWarning);
       const backlogSetupStarted = await startSetupScript(backendRepo, created, built.request.targetBranch);
+      try { await materializeAttachments(created.workspace.path); }
+      catch (err) { onWarning(`Workspace created, but attachments could not be copied. Reattach the files: ${errorText(err)}`); }
       send({ type: "setup_detected", started: backlogSetupStarted });
       const { id, directoryName, branchName, path } = created.workspace;
       const { naming } = built.request;
@@ -400,16 +452,18 @@ export function CreateWorkspaceComposer({
     }
   }
 
-  function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.nativeEvent.isComposing) return;
+  // ComposerEditor fires the native KeyboardEvent directly (no React synthetic wrapper).
+  function onKeyDown(e: globalThis.KeyboardEvent) {
+    if (e.isComposing) return;
     // ⌥↩ adds to backlog without opening a chat session (Conductor `workspace.addToBacklogFromComposer`).
-    if (backlogKeys.some((s) => matchesEvent(s, e.nativeEvent))) {
+    if (backlogKeys.some((s) => matchesEvent(s, e))) {
       e.preventDefault();
+      e.stopPropagation();
       void addToBacklog();
       return;
     }
-    // `chat.newLine` (Shift+Enter, or Enter under the ⌘Enter preset) falls through to the textarea.
-    if (submitKeys.some((s) => matchesEvent(s, e.nativeEvent))) {
+    // `chat.newLine` (Shift+Enter, or Enter under the ⌘Enter preset) falls through to the editor.
+    if (submitKeys.some((s) => matchesEvent(s, e))) {
       e.preventDefault();
       void submit();
     }
@@ -471,16 +525,31 @@ export function CreateWorkspaceComposer({
         }}
       />
       <div className="create-card">
-        <textarea
-          autoFocus
-          aria-label="First message"
-          className="create-editor"
-          value={draft.firstMessage}
-          placeholder={CREATE_PLACEHOLDER}
-          onChange={(e) => setDraft({ ...draft, firstMessage: e.target.value })}
-          onKeyDown={onKeyDown}
-          disabled={busy}
-        />
+        {/* GAP-COMP-04 (create.editor): replaced <textarea> with ComposerEditor (TipTap) to match
+            Conductor's Hji create-workspace composer, which uses the same rich-text editor as
+            the main chat composer (lHt with Conductor's ComposerEditor equivalent). The @-mention
+            and /-slash triggers that Conductor wires to repository files are omitted here because
+            they require an existing workspace checkout; the structural parity (TipTap vs textarea)
+            is the gap being closed. Sub-gap 2 ("Link issue" in AddMenu) is not a gap: REA shows
+            allowIssueLinks=false in Conductor's a7i for Hji. Binary files use the existing
+            draft-attachments store, then materialize before the initial prompt is queued. */}
+        <div className="create-editor">
+          <ComposerEditor
+            inputRef={composerInputRef}
+            value={draft.firstMessage}
+            placeholder={CREATE_PLACEHOLDER}
+            onChange={(v) => setDraft((d) => ({ ...d, firstMessage: v }))}
+            onSelection={() => {}}
+            onKeyDown={onKeyDown}
+            onFocus={() => {}}
+            onBlur={() => {}}
+            onPasteFiles={(files) => {
+              if (files.length === 0) return false;
+              void attachFiles(Array.from(files));
+              return true;
+            }}
+          />
+        </div>
         {createAttachments.length > 0 && (
           <div className="composer-attachments" aria-label="Attachments">
             {createAttachments.map((a) => (
@@ -489,6 +558,8 @@ export function CreateWorkspaceComposer({
                 attachment={a}
                 editorEpoch={attachPreviewEpoch}
                 onRemove={() => {
+                  if (busy) return;
+                  if (a.staged) void draftAttachmentsApi.remove({ localWorkspaceId: draftWorkspaceId, relativePath: a.staged }).catch((err) => setAttachError(errorText(err)));
                   setCreateAttachments((list) => list.filter((x) => x.name !== a.name));
                   setAttachPreviewEpoch((n) => n + 1);
                 }}
@@ -498,7 +569,13 @@ export function CreateWorkspaceComposer({
         )}
         <div className="create-card-bar">
           <CreateModelPicker value={draft} favorites={favorites} slots={loadoutChoices(loadout?.slots ?? [])} settings={settings} disabled={busy} onChange={chooseLaunch} />
-          <CreateAddMenu disabled={busy} hint={hint("chat.addAttachment") ?? ""} onAddAttachment={() => fileInputRef.current?.click()} />
+          <CreateAddMenu
+            disabled={busy}
+            hint={hint("chat.addAttachment") ?? ""}
+            planHint={hint("chat.togglePlanMode") ?? ""}
+            planMode={draft.agent === "claude" ? { isPlanMode: createPlanMode, disabled: busy, onToggle: () => setCreatePlanMode((v) => !v) } : undefined}
+            onAddAttachment={() => fileInputRef.current?.click()}
+          />
           <div className="create-split" role="group" aria-label="Create workspace">
             <button
               type="submit"
@@ -571,17 +648,20 @@ const CLAUDE_LAUNCH: LaunchPick = { model: "claude-code", effort: null, agent: "
  * The "+" add-attachment button in the create-composer footer.
  * Evidence: `a7i @7908848` — tooltip "Add attachments and more"; placed between
  * the model picker and Create in the `create-card-bar` footer.
+ * GAP-COMP-04: adds planMode prop (REA a7i planMode wt path) with keyboard navigation
+ * matching the main AddMenu.
  */
-function CreateAddMenu({ disabled, hint, onAddAttachment }: { disabled: boolean; hint: string; onAddAttachment: () => void }) {
+function CreateAddMenu({ disabled, hint, planHint, planMode, onAddAttachment }: { disabled: boolean; hint: string; planHint?: string; planMode?: PlanModeControl; onAddAttachment: () => void }) {
   const [open, setOpen] = useState(false);
   const popup = usePresence(open);
   const ref = useRef<HTMLSpanElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const focusEdge = useRef<"first" | null>(null);
+  const focusEdge = useRef<"first" | "last" | null>(null);
+  const menuItems = () => Array.from(ref.current?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]:not(:disabled)') ?? []);
   useLayoutEffect(() => {
     if (!open || focusEdge.current === null) return;
-    const item = ref.current?.querySelector<HTMLButtonElement>('[role="menuitem"]:not(:disabled)');
-    item?.focus();
+    const items = menuItems();
+    (focusEdge.current === "first" ? items[0] : items[items.length - 1])?.focus();
     focusEdge.current = null;
   }, [open]);
   return (
@@ -590,15 +670,28 @@ function CreateAddMenu({ disabled, hint, onAddAttachment }: { disabled: boolean;
       ref={ref}
       onBlur={(e) => { if (!ref.current?.contains(e.relatedTarget as Node)) setOpen(false); }}
       onKeyDown={(e) => {
-        if (e.key === "Escape" && open) {
+        if (e.nativeEvent?.isComposing) return;
+        const arrow = e.key === "ArrowDown" || e.key === "ArrowUp";
+        if (arrow || (open && (e.key === "Home" || e.key === "End"))) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!open) {
+            focusEdge.current = e.key === "ArrowDown" ? "first" : "last";
+            setOpen(true);
+          } else {
+            const items = menuItems();
+            if (items.length === 0) return;
+            const current = items.findIndex((item) => item === e.target);
+            let next = current + (e.key === "ArrowDown" ? 1 : -1);
+            if (e.key === "Home") next = 0;
+            else if (e.key === "End" || (current === -1 && e.key === "ArrowUp")) next = items.length - 1;
+            items[(next + items.length) % items.length]?.focus();
+          }
+        } else if (e.key === "Escape" && open) {
           e.preventDefault();
           e.stopPropagation();
           setOpen(false);
           triggerRef.current?.focus();
-        } else if ((e.key === "ArrowDown" || e.key === "ArrowUp") && !open) {
-          e.preventDefault();
-          focusEdge.current = "first";
-          setOpen(true);
         }
       }}
     >
@@ -611,7 +704,10 @@ function CreateAddMenu({ disabled, hint, onAddAttachment }: { disabled: boolean;
           aria-haspopup="menu"
           aria-expanded={open}
           disabled={disabled}
-          onClick={() => setOpen((o) => !o)}
+          onClick={(e) => {
+            if (!open && e?.detail === 0) focusEdge.current = "first";
+            setOpen((o) => !o);
+          }}
         >
           <PlusIcon size={16} strokeWidth={1.5} />
         </button>
@@ -628,6 +724,11 @@ function CreateAddMenu({ disabled, hint, onAddAttachment }: { disabled: boolean;
             <span className="oc-menu-item-label">Add attachment</span>
             <span className="oc-kbd-hint">{hint}</span>
           </button>
+          {planMode ? <button type="button" role="menuitem" className="oc-menu-item" disabled={planMode.disabled} title={planMode.disabled ? "Wait for the current Claude Code turn to end" : undefined} onClick={() => { setOpen(false); planMode.onToggle(); }}>
+            <svg className={planMode.isPlanMode ? "oc-plan-active" : undefined} width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3M9 12l3 3L22 5" /></svg>
+            <span className={`oc-menu-item-label${planMode.isPlanMode ? " oc-plan-active" : ""}`}>{planMode.isPlanMode ? "Exit plan mode" : "Plan mode"}</span>
+            {planHint ? <span className="oc-kbd-hint">{planHint}</span> : null}
+          </button> : null}
         </div>
       ) : null}
     </span>
