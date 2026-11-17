@@ -65,12 +65,12 @@ for (const [query, expected] of [
   });
 }
 
-test("literal model search preserves source order and choice identity", () => {
+test("literal model search ranks results and preserves choice identity", () => {
   const secondOpus: ModelChoice = { model: "opus-5-5-1m", effort: "max", fast: true, agent: "claude" };
   const matching = results("opus", [secondOpus, codex, opus]);
-  assert.deepEqual(matching, [secondOpus, opus]);
-  assert.equal(matching[0], secondOpus);
-  assert.equal(matching[1], opus);
+  assert.deepEqual(matching, [opus, secondOpus]);
+  assert.equal(matching[0], opus);
+  assert.equal(matching[1], secondOpus);
 });
 
 test("provider identity still uses the explicit agent and callback precedence", () => {

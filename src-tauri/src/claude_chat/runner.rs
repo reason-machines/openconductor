@@ -45,6 +45,9 @@ pub struct ChatOptions {
     #[serde(rename = "fastMode")]
     pub fast_mode: Option<bool>,
     pub permission_mode: Option<PermissionMode>,
+    /// Server-derived app preference, never accepted from chat IPC options.
+    #[serde(skip)]
+    pub chrome_enabled: Option<bool>,
 }
 
 impl ChatOptions {
@@ -55,6 +58,30 @@ impl ChatOptions {
             .ok_or("Claude Code launch settings must be an object to apply Fast mode.")?;
         object.insert("fastMode".into(), Value::Bool(fast));
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod option_tests {
+    use super::ChatOptions;
+
+    #[test]
+    fn chrome_snapshot_is_not_deserialized_from_ipc() {
+        for value in [false, true] {
+            let options: ChatOptions = serde_json::from_value(serde_json::json!({
+                "chrome_enabled": value, "chromeEnabled": value, "chrome": value
+            })).unwrap();
+            assert_eq!(options.chrome_enabled, None);
+        }
+    }
+
+    #[test]
+    fn chrome_snapshot_participates_in_the_reuse_key() {
+        let off = ChatOptions { chrome_enabled: Some(false), ..ChatOptions::default() };
+        let on = ChatOptions { chrome_enabled: Some(true), ..ChatOptions::default() };
+        assert_ne!(off, on);
+        assert_eq!(off.clone(), off);
+        assert_eq!(on.clone(), on);
     }
 }
 
@@ -348,7 +375,7 @@ impl ClaudeRunner {
                     return Ok(());
                 }
                 if !st.waiting.is_empty() {
-                    return Err("Wait for the current Claude Code turn to end before changing model, effort, Fast or Plan mode.".into());
+                    return Err("Wait for the current Claude Code turn to end before changing model, effort, Fast, Plan or Chrome mode.".into());
                 }
             }
             if let Some(id) = st.mapper.session_id() {
@@ -366,6 +393,7 @@ impl ClaudeRunner {
         launch.effort = options.effort.clone();
         options.apply_fast_mode(&mut launch.settings)?;
         if let Some(mode) = options.permission_mode { launch.permission_mode = mode; }
+        if let Some(chrome) = options.chrome_enabled { launch.chrome = chrome; }
         let mut session = ClaudeSession::spawn(&launch)
             .map_err(|e| format!("Could not start Claude Code: {e}"))?;
         let events = session.take_events();

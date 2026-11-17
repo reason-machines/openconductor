@@ -1,0 +1,80 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate": "CHAT.PREFIX-MCP-STRUCTURED-RESULT",
+  "checked_main": "eef01e9b287472280fb3f4a585bc697d5f1f8f51",
+  "rea_evidence": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "rea_gap": "Historical semantic renderer pass exhausted heap and skipped renderer; retained byte ranges, not new source-analysis/native acceptance.",
+  "parent": {
+    "name": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "spans": [
+    {
+      "name": "registry-dispatch",
+      "start": 7587305,
+      "end": 7588628,
+      "sha256": "82bf4797d8d524aad26778056a4701f782dd13d9238d46c756c192616dbb35fc",
+      "text": "function O1o({kind:t,registry:e}){if(t===void 0)return;const n=e[t];return n===\"unhandled\"?void 0:n}const D1o={Agent:\"sub-agent\",AskUserQuestion:\"ask-user-question\",Bash:\"bash\",BashOutput:\"bash-output\",Edit:\"edit\",EnterPlanMode:\"enter-plan-mode\",ExitPlanMode:\"exit-plan-mode\",Glob:\"glob\",Grep:\"grep\",ImageGeneration:\"image-generation\",LS:\"ls\",MultiEdit:\"multi-edit\",NotebookEdit:\"multi-edit\",NotebookRead:\"read\",Read:\"read\",ScheduleWakeup:\"schedule-wakeup\",SendMessage:\"send-message\",Skill:\"skill\",SlashCommand:\"slash-command\",Task:\"sub-agent\",TaskCreate:\"task-create\",TaskGet:\"task-get\",TaskList:\"task-list\",TaskUpdate:\"task-update\",Teammate:\"teammate\",Thinking:\"thinking\",TodoRead:\"todo\",TodoWrite:\"todo\",WebFetch:\"web\",WebSearch:\"web\",Write:\"write\",mcp__conductor__AskUserQuestion:\"ask-user-question\",mcp__conductor__DiffComment:\"diff-comment\",mcp__conductor__GetDiffComments:\"get-diff-comments\",mcp__conductor__GetTerminalOutput:\"get-terminal-output\",mcp__conductor__GetWorkspaceDiff:\"get-workspace-diff\",mcp__conductor__RunLocalCommand:\"run-local-command\",mcp__node_repl__js:\"node-repl-js\",\"sub-agent\":\"sub-agent\"},P1o=[[\"collab__\",\"codex-collab\"],[\"mcp__context7__\",\"context7-mcp\"],[\"mcp__linear__\",\"linear-mcp\"]];function L1o(t){const e=D1o[t];if(e!==void 0)return e;for(const[n,i]of P1o)if(t.startsWith(n))return i}"
+    },
+    {
+      "name": "registry",
+      "start": 7877182,
+      "end": 7877770,
+      "sha256": "94305b7588c4a5551656594289bc17ddb6934ed298cb76fc48181a2731105310",
+      "text": "const Qpo={\"ask-user-question\":Tpo,bash:Lki,\"bash-output\":N0o,\"codex-collab\":_0o,\"context7-mcp\":$ki,\"diff-comment\":Ipo,edit:F0o,\"enter-plan-mode\":mpo,\"exit-plan-mode\":gpo,\"get-diff-comments\":Opo,\"get-terminal-output\":Dpo,\"get-workspace-diff\":Npo,glob:dpo,grep:D0o,\"image-generation\":Vpo,\"linear-mcp\":Bki,ls:fpo,\"multi-edit\":$0o,\"node-repl-js\":Kpo,read:O0o,\"run-local-command\":I0o,\"schedule-wakeup\":Epo,\"send-message\":qpo,skill:vpo,\"slash-command\":kpo,\"sub-agent\":bpo,\"task-create\":npo,\"task-get\":lpo,\"task-list\":ipo,\"task-update\":cpo,teammate:Gpo,thinking:ppo,todo:G0o,web:upo,write:hpo};"
+    },
+    {
+      "name": "hIt",
+      "start": 7877770,
+      "end": 7878325,
+      "sha256": "8c45bb6e5892cce46330f820a54460ee896d1c14c19ad134dab20b9f20b75340",
+      "text": "function hIt(t){const e=ne.c(12),{toolCall:n,toolResult:i,toolResultCreatedAt:r,sessionId:o,localWorkspaceId:a}=t;let c;e[0]!==n.name?(c=O1o({kind:L1o(n.name),registry:Qpo}),e[0]=n.name,e[1]=c):c=e[1];const u=c;if(u===void 0){let h;return e[2]!==n||e[3]!==i?(h=p.jsx(aUt,{toolCall:n,toolResult:i}),e[2]=n,e[3]=i,e[4]=h):h=e[4],h}let d;return e[5]!==u||e[6]!==a||e[7]!==o||e[8]!==n||e[9]!==i||e[10]!==r?(d=p.jsx(u,{toolCall:n,toolResult:i,toolResultCreatedAt:r,sessionId:o,localWorkspaceId:a}),e[5]=u,e[6]=a,e[7]=o,e[8]=n,e[9]=i,e[10]=r,e[11]=d):d=e[11],d}"
+    },
+    {
+      "name": "Bki",
+      "start": 7865823,
+      "end": 7866755,
+      "sha256": "9d3a98fe3df51e7d2379f00381b684e8cfc92d5227dad63b6abf568027106653",
+      "text": "function Bki(t){const e=ne.c(20),{toolCall:n,toolResult:i}=t;let r;e[0]!==n.name?(r=Kzt(n.name),e[0]=n.name,e[1]=r):r=e[1];const o=r;let a;n.name===\"mcp__linear__get_issue\"&&n.input?.id&&(a=n.input.id);let c;e[2]!==o?(c=p.jsx(\"span\",{children:o}),e[2]=o,e[3]=c):c=e[3];let u;e[4]!==a?(u=a&&p.jsx(LD,{text:a}),e[4]=a,e[5]=u):u=e[5];let d;e[6]!==n.name?(d=p.jsxs(\"div\",{className:\"text-xs text-muted-foreground font-mono\",children:[\"Tool: \",n.name]}),e[6]=n.name,e[7]=d):d=e[7];let h;e[8]!==n||e[9]!==i?(h=p.jsx(V9e,{toolCall:n,toolResult:i}),e[8]=n,e[9]=i,e[10]=h):h=e[10];let m;e[11]!==d||e[12]!==h?(m=p.jsx(f3,{className:\"h-96\",children:p.jsxs(\"div\",{className:\"space-y-3\",children:[d,h]})}),e[11]=d,e[12]=h,e[13]=m):m=e[13];let g;return e[14]!==c||e[15]!==u||e[16]!==m||e[17]!==n||e[18]!==i?(g=p.jsx(iUt,{toolCall:n,toolResult:i,leftContent:c,rightContent:u,children:m}),e[14]=c,e[15]=u,e[16]=m,e[17]=n,e[18]=i,e[19]=g):g=e[19],g}"
+    },
+    {
+      "name": "$ki",
+      "start": 7866755,
+      "end": 7867791,
+      "sha256": "395f8770ad6679b65fab43d8352c5513e92b19f48fae6546e856c79976652730",
+      "text": "function $ki(t){const e=ne.c(20),{toolCall:n,toolResult:i}=t;let r;e[0]!==n.name?(r=Kzt(n.name),e[0]=n.name,e[1]=r):r=e[1];const o=r;let a;n.name===\"mcp__context7__resolve-library-id\"&&n.input?.libraryName?a=n.input.libraryName:n.name===\"mcp__context7__get-library-docs\"&&n.input?.topic&&(a=n.input.topic);let c;e[2]!==o?(c=p.jsx(\"span\",{children:o}),e[2]=o,e[3]=c):c=e[3];let u;e[4]!==a?(u=a&&p.jsx(LD,{text:a}),e[4]=a,e[5]=u):u=e[5];let d;e[6]!==n.name?(d=p.jsxs(\"div\",{className:\"text-xs text-muted-foreground font-mono\",children:[\"Tool: \",n.name]}),e[6]=n.name,e[7]=d):d=e[7];let h;e[8]!==n||e[9]!==i?(h=p.jsx(V9e,{toolCall:n,toolResult:i}),e[8]=n,e[9]=i,e[10]=h):h=e[10];let m;e[11]!==d||e[12]!==h?(m=p.jsx(f3,{className:\"h-96\",children:p.jsxs(\"div\",{className:\"space-y-3\",children:[d,h]})}),e[11]=d,e[12]=h,e[13]=m):m=e[13];let g;return e[14]!==c||e[15]!==u||e[16]!==m||e[17]!==n||e[18]!==i?(g=p.jsx(iUt,{toolCall:n,toolResult:i,leftContent:c,rightContent:u,children:m}),e[14]=c,e[15]=u,e[16]=m,e[17]=n,e[18]=i,e[19]=g):g=e[19],g}"
+    },
+    {
+      "name": "iUt",
+      "start": 7800630,
+      "end": 7801811,
+      "sha256": "91c4d89086192573e0336b45b952926daa9995014000a2c1b51e22b29c1d2189",
+      "text": "function iUt(t){const e=ne.c(21),{toolCall:n,toolResult:i,leftContent:r,rightContent:o,children:a}=t;let c;e[0]!==n.input||e[1]!==i?(c=n.input&&Object.keys(n.input).length>0||i&&i.content,e[0]=n.input,e[1]=i,e[2]=c):c=e[2];const u=c;let d;e[3]!==i?(d=i?.is_error&&i.content!==void 0?H9e(typeof i.content==\"string\"?i.content:JSON.stringify(i.content),U9e).text:void 0,e[3]=i,e[4]=d):d=e[4];const h=d,m=h!==void 0,g=m?\"text-destructive\":void 0;let _;e[5]!==g||e[6]!==n.name?(_=p.jsx(Ju,{name:n.name,className:g}),e[5]=g,e[6]=n.name,e[7]=_):_=e[7];const v=m?\"text-destructive\":void 0,x=m?\"text-destructive\":void 0;let w;e[8]!==h||e[9]!==m||e[10]!==o?(w=m?p.jsx(\"span\",{className:\"block truncate text-xs font-mono font-medium bg-destructive/10 px-1 py-0.5 rounded-md select-text\",children:h}):o,e[8]=h,e[9]=m,e[10]=o,e[11]=w):w=e[11];const E=!!u;let k;return e[12]!==a||e[13]!==r||e[14]!==_||e[15]!==v||e[16]!==x||e[17]!==w||e[18]!==E||e[19]!==n.id?(k=p.jsx(Mu,{icon:_,mainColor:v,rightContentColor:x,leftContent:r,contentAlignment:\"center\",rightContent:w,showContent:E,persistKey:n.id,children:a}),e[12]=a,e[13]=r,e[14]=_,e[15]=v,e[16]=x,e[17]=w,e[18]=E,e[19]=n.id,e[20]=k):k=e[20],k}"
+    },
+    {
+      "name": "V9e",
+      "start": 7864461,
+      "end": 7865823,
+      "sha256": "56f69b95cf3b1cffddb55a94b930bc5a21f94d0e6d209b570c0f49dff595576c",
+      "text": "function V9e(t){const e=ne.c(15),{toolCall:n,toolResult:i}=t;let r;e[0]!==i?(r=i?.content?typeof i.content==\"string\"?i.content:JSON.stringify(i.content,null,2):\"\",e[0]=i,e[1]=r):r=e[1];const o=r;let a;e[2]!==o?(a=H9e(o,U9e),e[2]=o,e[3]=a):a=e[3];const{text:c,wasTruncated:u}=a;let d;e[4]!==n.input?(d=n.input&&Object.keys(n.input).length>0&&p.jsxs(\"div\",{children:[p.jsx(\"div\",{className:\"text-xs font-medium text-muted-foreground mb-1\",children:\"Input:\"}),p.jsx(\"pre\",{className:\"m-0 p-0 text-xs font-mono whitespace-pre-wrap break-words text-muted-foreground\",children:JSON.stringify(n.input,null,2)})]}),e[4]=n.input,e[5]=d):d=e[5];let h;e[6]!==c||e[7]!==o||e[8]!==n.input||e[9]!==i||e[10]!==u?(h=i&&i.content&&p.jsxs(\"div\",{children:[n.input&&Object.keys(n.input).length>0&&p.jsx(\"div\",{className:\"text-xs font-medium text-muted-foreground mb-1 mt-3\",children:i.is_error?\"Error:\":\"Output:\"}),p.jsx(\"pre\",{className:Xe(\"m-0 p-0 text-xs font-mono whitespace-pre-wrap break-words\",i.is_error&&\"text-destructive\"),children:c}),u&&p.jsxs(\"div\",{className:\"text-xs text-muted-foreground mt-2 italic\",children:[\"Content truncated (\",o.length.toLocaleString(),\" chars total)\"]})]}),e[6]=c,e[7]=o,e[8]=n.input,e[9]=i,e[10]=u,e[11]=h):h=e[11];let m;return e[12]!==d||e[13]!==h?(m=p.jsxs(\"div\",{className:\"space-y-3\",children:[d,h]}),e[12]=d,e[13]=h,e[14]=m):m=e[14],m}"
+    },
+    {
+      "name": "H9e",
+      "start": 7795301,
+      "end": 7795403,
+      "sha256": "c1c05fe467eb42d9348b556faa81810d7e7e4c7f4d7fe03ec1d662d4ba0e32cb",
+      "text": "function H9e(t,e){return t.length<=e?{text:t,wasTruncated:!1}:{text:t.substring(0,e),wasTruncated:!0}}"
+    }
+  ],
+  "current_sources": {
+    "src/features/chat/ToolRows.tsx": "e4283955d494e99d60206780669cc931164602501ee0441853661298a1274edb",
+    "src/features/chat/conductorTools.ts": "05c3a85bed997b1114e1696d083855d4e39c5d614fe57ddeb0bade8bde7cc64a",
+    "src/features/chat/reason.ts": "cb07a5ec7dc2a8406d9021848280cf9acc83445c371390b94c6a57a290b1cf5b",
+    "src/features/chat/reducer.ts": "9b4783c08f496b05ebdc99a141f52b13c06a4b46f3f1a240a780ef5535d22ec4",
+    "src/features/chat/view.ts": "132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43",
+    "src/features/chat/persist.ts": "1c0cc086cd028248e27615fe6169c314ed1fe4d44bbdd4926dc6553099262441",
+    "src-tauri/src/claude_chat/map.rs": "76d8e4ea0e93b4fe624f5b25975bda8febfd2d18d01df9372772149ba58a6d52",
+    "src-tauri/src/reason_acp/wire.rs": "96dee0f64c933bcaa9c60bc992f30a2fe190a625db540bfb8c350d6a4f6933dd"
+  }
+}

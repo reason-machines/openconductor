@@ -1,0 +1,21 @@
+{
+  "source_ref": "eef01e9b287472280fb3f4a585bc697d5f1f8f51",
+  "runner_sha256": "08a1e9a2a69131faf5dd403a52ffa3ae5a900f89af5698459b02c426e22e45a1",
+  "commands_sha256": "9d910cfadabec60276e97b98dd342f790d02e1798505fe93d384700e32c1d11d",
+  "fixture_sha256": "f3c262c066bbb5dd717ccb6d10b4e04767130148908cf900e5eb5dfc1a148f9b",
+  "prefix_sha256": "cbfa3e0759de9821693c071eedf5d63ed557d61a3a71d780e7cc0be67bef605f",
+  "snapshot_assignment": "",
+  "transforms": [
+    "Result<(), String> -> Result<Option<ClaudeLaunch>, String>",
+    "early Ok(()) -> Ok(None)",
+    "stop before spawn; return prepared launch"
+  ],
+  "adapters": [
+    "PermissionMode DTO",
+    "ClaudeLaunch DTO",
+    "live state/mapper DTOs",
+    "counter-only session kill/wait",
+    "immediate async bool preference reader",
+    "launcher closure"
+  ]
+}
