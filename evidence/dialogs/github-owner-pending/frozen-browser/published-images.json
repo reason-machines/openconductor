@@ -1,0 +1,16 @@
+[
+  {
+    "uploaded": true,
+    "kind": "image",
+    "embed_url": "https://api.reasonmachines.com/media/pr-screenshots/4b5e7d61-4f50-4be4-a4ed-4809caada8e0/7245e8be889d48c65042fca3fb17b69e/e6bf3c21-954b-481d-b2e5-30e49ebdaed7.png",
+    "markdown": "![GitHub Owner baseline pending — disabled](https://api.reasonmachines.com/media/pr-screenshots/4b5e7d61-4f50-4be4-a4ed-4809caada8e0/7245e8be889d48c65042fca3fb17b69e/e6bf3c21-954b-481d-b2e5-30e49ebdaed7.png#w=1208&h=601)",
+    "note": "Uploaded. Put the returned markdown in the pull request body."
+  },
+  {
+    "uploaded": true,
+    "kind": "image",
+    "embed_url": "https://api.reasonmachines.com/media/pr-screenshots/4b5e7d61-4f50-4be4-a4ed-4809caada8e0/c24a2aee740f61418e6197c92e41d439/9f6d0910-bb48-473f-b10b-d5e9daec373a.png",
+    "markdown": "![GitHub Owner treatment pending — enabled](https://api.reasonmachines.com/media/pr-screenshots/4b5e7d61-4f50-4be4-a4ed-4809caada8e0/c24a2aee740f61418e6197c92e41d439/9f6d0910-bb48-473f-b10b-d5e9daec373a.png#w=1208&h=601)",
+    "note": "Uploaded. Put the returned markdown in the pull request body."
+  }
+]

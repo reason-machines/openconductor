@@ -1,0 +1,794 @@
+{
+  "file": "raw-readbacks.jsonl.gz",
+  "gzip_sha256": "55fe6ec6165c0cfeaa74b8f228a03c1de28c558704d6efefe65969e0d734e9a5",
+  "raw_jsonl_sha256": "d8e53dbfb4adedf59f1b0faca1c34b2fd2c716c64fc26592af99d67dc54826a8",
+  "records": 49,
+  "readbacks": 32,
+  "input_assertions": 17,
+  "sources": [
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "fa8cbaf4-be2c-47bc-8cad-5c858e954605",
+      "revision": 30164826,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:50:22.961Z",
+      "offset": 127,
+      "chars": 1071,
+      "sha256": "90b425efba592c93145d7cd899bb5a0168378a55af902f2d0976ec2034f5d548"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "c68c22f6-6312-4c43-8b2f-187ec19b28f0",
+      "revision": 30164936,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:50:48.410Z",
+      "offset": 183,
+      "chars": 331,
+      "sha256": "2581510009a832f25d2eb6df48f51ba208cf103c4b867ab90e6760954c492c21"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "8aca737c-184f-4126-a0fe-25aaa3524a66",
+      "revision": 30164941,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:50:49.838Z",
+      "offset": 164,
+      "chars": 432,
+      "sha256": "76c0bb61bf90b835f2b89481b6d532632c8b3c5cf2ec8f87cb122cea0b2d21ba"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "ebba56c5-12d5-4860-9891-2ff6a0bf24aa",
+      "revision": 30164997,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:51:04.613Z",
+      "offset": 134,
+      "chars": 533,
+      "sha256": "7ddeb30463e2752c027e2baa4af28dea4f03651c279e32e2cecb35c4109dcdef"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "30bb3495-243f-4ebf-8819-caecf55a8dc3",
+      "revision": 30165020,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:51:12.355Z",
+      "offset": 131,
+      "chars": 1111,
+      "sha256": "1a6b575288d6a25707d17bbd8c7814778b52f78db831de9885deff80a7dfe16c"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "658d7712-ac23-44d1-bda5-f6e91cacc4be",
+      "revision": 30165067,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:51:27.147Z",
+      "offset": 156,
+      "chars": 475,
+      "sha256": "a7b0fca632a4f50cef245388f89e8ef21d811460c82a4378496503b7214bfe9a"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "3e90f54a-4171-4d48-ac14-7333e373626f",
+      "revision": 30165070,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:51:28.708Z",
+      "offset": 86,
+      "chars": 882,
+      "sha256": "2d8d18a30e65739159ec0bdc261f89f247bbcfad98248621625b68df19c53a02"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "d3bb2d2e-f811-4d24-822a-52208f9f87aa",
+      "revision": 30165209,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:52:05.785Z",
+      "offset": 133,
+      "chars": 553,
+      "sha256": "84ce873da7bc10af0361a5adf68ef2306265e30f68d5757bbbe5a5b53a2dcbe8"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "afbfaebd-301d-4f28-8f7b-20a577adb2f0",
+      "revision": 30165231,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:52:13.856Z",
+      "offset": 156,
+      "chars": 386,
+      "sha256": "b54f73d89258006add746f2c25cb3fccb9eff9a90c78cc509fe141814284b9d7"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "6939ee43-3bbd-471d-b0dd-4835c89de644",
+      "revision": 30165238,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:52:15.313Z",
+      "offset": 86,
+      "chars": 810,
+      "sha256": "4271309a8d1ac695a899a7ca91b1e97cb5b1d2530c1474d05c55c4c727ce9510"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "169b78d5-49f0-4986-ab66-7d7fc79c546e",
+      "revision": 30165479,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:53:18.738Z",
+      "offset": 122,
+      "chars": 495,
+      "sha256": "e53e3d05965c2004514cbbf2ce95c5acf44fa2df1084e701c8cf89317ed8bd73"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "56c6af70-9281-485a-90ab-d8a41157e44d",
+      "revision": 30165543,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:53:28.642Z",
+      "offset": 156,
+      "chars": 299,
+      "sha256": "2b5477052e3cfde38ab62a0a5fca707321151b5d2085004c8d4cba6def5c2a82"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "d2857dc6-2e13-4c16-9158-d3aaeea0c1bc",
+      "revision": 30165552,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:53:29.893Z",
+      "offset": 86,
+      "chars": 869,
+      "sha256": "5a485f47af2f816b23fc2bde02cee0d2f03cbfcd8bfabab84e416e70a37b2cb3"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "cbb39274-48f8-4a98-b7e0-13b7e41be6bd",
+      "revision": 30165692,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:53:47.141Z",
+      "offset": 122,
+      "chars": 495,
+      "sha256": "e53e3d05965c2004514cbbf2ce95c5acf44fa2df1084e701c8cf89317ed8bd73"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "8b04bd16-8288-4f71-a66d-a610e5b4529f",
+      "revision": 30165861,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:54:05.721Z",
+      "offset": 156,
+      "chars": 374,
+      "sha256": "069967aede697fce6786d55fb8d8f54f11802e67ff5cda264e74f1c272201c44"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "d9058803-20f2-4607-9b99-aa3d349c643e",
+      "revision": 30165869,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:54:07.364Z",
+      "offset": 86,
+      "chars": 926,
+      "sha256": "c5a49d3851ab1babf170d6740966eac309aa1b4bd382b17637314db523669f2e"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "4e352857-b8b0-4849-a33f-ad8e11d7b6d8",
+      "revision": 30166015,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:54:28.159Z",
+      "offset": 122,
+      "chars": 495,
+      "sha256": "e53e3d05965c2004514cbbf2ce95c5acf44fa2df1084e701c8cf89317ed8bd73"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "666140bf-f3c3-418f-b31a-7679af1ba607",
+      "revision": 30166072,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:54:38.557Z",
+      "offset": 174,
+      "chars": 799,
+      "sha256": "2ca3f279f91ef2ae8df68cedb495e079688540f7a8d10425ae1ce3d9047953d9"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "776caaca-3524-4ccb-9617-5e6774092d23",
+      "revision": 30166116,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:54:47.139Z",
+      "offset": 156,
+      "chars": 354,
+      "sha256": "71e4359c6b84888b82a06280ea81621f4f2caa41c4851fcd26fabce8af38367c"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "c8a3b908-8318-4194-b073-cdbe08056ab4",
+      "revision": 30166121,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:54:48.217Z",
+      "offset": 86,
+      "chars": 823,
+      "sha256": "8b80bf6782be94cbfb4feb8855839135d0a532102d08c47a7db52f0f58550c29"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "3e4c132b-896d-425f-8bd8-1e632128f781",
+      "revision": 30166247,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:55:04.057Z",
+      "offset": 86,
+      "chars": 469,
+      "sha256": "3555d0e6ff686a984c08b6450cdd0906fe50ba5a3e49f0c070c1f1b4413b6023"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "7788d2f1-4512-4cea-9d52-30ed34f494bc",
+      "revision": 30166246,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:55:04.057Z",
+      "offset": 120,
+      "chars": 359,
+      "sha256": "f80d6c603027ccfd7910c1ce55c60154223512ad74bcd186ec4d52e016146647"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "6371ba77-2f36-46f5-baf4-efa1d73aa33d",
+      "revision": 30166338,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:55:15.513Z",
+      "offset": 135,
+      "chars": 534,
+      "sha256": "f100f8bdca1bede029d933c8efab03f7b7cc2fdcfbee8badf67c90aab857e5f6"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "8c84a490-a334-454e-8012-c33ea590cccf",
+      "revision": 30166398,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:55:21.449Z",
+      "offset": 121,
+      "chars": 571,
+      "sha256": "97671c71bf8fe00beb207b8fc09b01f99f7d11833255668435a0f74ffb638cb4"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "e83e8f31-a3e0-4b1c-9872-1896c4b760a3",
+      "revision": 30166445,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:55:30.461Z",
+      "offset": 156,
+      "chars": 475,
+      "sha256": "a7b0fca632a4f50cef245388f89e8ef21d811460c82a4378496503b7214bfe9a"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "b4540443-59e2-49d5-bf7d-f289d31e0e17",
+      "revision": 30166461,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:55:32.667Z",
+      "offset": 86,
+      "chars": 884,
+      "sha256": "aad0b6b289d7fda41aea8a167b3a33367c18d1158c7a4fc9e5315e669adf41b0"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "f218bbd9-3a37-48b0-b931-6adda0fd17c9",
+      "revision": 30166606,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:55:52.289Z",
+      "offset": 123,
+      "chars": 496,
+      "sha256": "1a9b04369fd2b6fcb693b0dec5ae5ed3835df0bf33230b61e19bc808ce9c7374"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "38da7a95-ddad-4447-83ba-5f59d8ea139a",
+      "revision": 30166728,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:56:13.812Z",
+      "offset": 156,
+      "chars": 386,
+      "sha256": "b54f73d89258006add746f2c25cb3fccb9eff9a90c78cc509fe141814284b9d7"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "9728f117-59be-486d-b633-e359b1e676c8",
+      "revision": 30166739,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:56:15.211Z",
+      "offset": 86,
+      "chars": 811,
+      "sha256": "2fd100066e65b712891547ce6db77dcb78d0d822304d9f8d5a5abd49668f879d"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "93960a9c-19e3-4e58-9388-46d66d358726",
+      "revision": 30167036,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:57:04.141Z",
+      "offset": 123,
+      "chars": 496,
+      "sha256": "1a9b04369fd2b6fcb693b0dec5ae5ed3835df0bf33230b61e19bc808ce9c7374"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "8b3f56a3-ee1e-45e8-8fed-57c8156f217d",
+      "revision": 30167092,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:57:14.348Z",
+      "offset": 513,
+      "chars": 651,
+      "sha256": "34a9ca3de285a693aa31326368a383e07bf481559decd29b7748da058b85bca0"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "a1be9210-a8cf-4c12-9679-600c0063d829",
+      "revision": 30167096,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:57:15.743Z",
+      "offset": 86,
+      "chars": 888,
+      "sha256": "3ab0b3ae6e106d45b044eba3d9aecf9172b92466e0a4373ba8b2e1df63ca764f"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "bf75de01-b495-4652-af53-713e79955954",
+      "revision": 30167135,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:57:19.987Z",
+      "offset": 156,
+      "chars": 425,
+      "sha256": "4658557a0438680d09fc61a461ce3acb9dfb407c4cb826f48752747116f25aab"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "cf04ec2a-1f0d-42fa-ae45-2d6ffaaaf81e",
+      "revision": 30167142,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:57:21.370Z",
+      "offset": 86,
+      "chars": 936,
+      "sha256": "6ffc79ad59d5d746493d4aa3c8ea93b78b58caab8cad905101c1beb891ab4615"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "f483d9ee-c557-496b-87c3-ee9771734bab",
+      "revision": 30167186,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:57:32.520Z",
+      "offset": 156,
+      "chars": 354,
+      "sha256": "46a3eaadf45d4467388807956c2aaa88d377e27d07e894ddc564b66258ca1598"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "9f20815b-28ad-4324-8edd-711ec607b2eb",
+      "revision": 30167194,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:57:33.862Z",
+      "offset": 86,
+      "chars": 923,
+      "sha256": "9eafd5aaefa798dc21656391fb57c8850349849939c4de4833edcb0921102534"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "234885e6-2a05-4bbf-b07d-92d428e537d6",
+      "revision": 30167248,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:57:44.034Z",
+      "offset": 156,
+      "chars": 443,
+      "sha256": "6cee2eab66bced53e8891faa617c9f79e3bd59630c5d539afbb7cd8e616732bf"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "c923ef48-6323-497b-9daf-288628b1552f",
+      "revision": 30167251,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:57:44.527Z",
+      "offset": 86,
+      "chars": 1043,
+      "sha256": "4c71514b668b8a304c5d4796f819cb4fceece58ed607265107d0337a08f5826a"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "a885cb00-a23b-42fb-a91e-15eac8d8aeeb",
+      "revision": 30167613,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:58:39.602Z",
+      "offset": 156,
+      "chars": 357,
+      "sha256": "a0ce820e66889f8b6ae87ded5825cc978d70c87d2e8cfa1c810eb8b2845ecb38"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "946a1144-0d71-417b-b05a-563c08ec16ff",
+      "revision": 30167632,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:58:42.411Z",
+      "offset": 86,
+      "chars": 1267,
+      "sha256": "8b3fb24cd4145f24b5316b5e154dc1b65ecebf68325506c41fe764cd397eb28f"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "32d1697b-c4cb-4c11-8675-87436898cd3f",
+      "revision": 30167706,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:58:50.904Z",
+      "offset": 156,
+      "chars": 434,
+      "sha256": "240b15419f9d84ce22fc17d05f03d42462fc88ce80f2427d4f35158a90131a9a"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "fc7e3702-f056-4fa5-a056-c64d3b28ca4f",
+      "revision": 30167711,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:58:52.212Z",
+      "offset": 86,
+      "chars": 1266,
+      "sha256": "c374333ffaa717d478b57bdf96bf3090a7767dbeb9a6eefd1ba16dda785e4f33"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "bafa3972-7022-4265-a3d2-c2c64065023e",
+      "revision": 30167797,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:59:06.341Z",
+      "offset": 123,
+      "chars": 496,
+      "sha256": "1a9b04369fd2b6fcb693b0dec5ae5ed3835df0bf33230b61e19bc808ce9c7374"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "22d2858e-7226-47a7-91ac-054df7bec225",
+      "revision": 30167856,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:59:17.547Z",
+      "offset": 156,
+      "chars": 374,
+      "sha256": "069967aede697fce6786d55fb8d8f54f11802e67ff5cda264e74f1c272201c44"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "92faaf82-500b-48a3-b7e9-d8284fb49f6e",
+      "revision": 30167866,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:59:18.635Z",
+      "offset": 86,
+      "chars": 927,
+      "sha256": "79c23f97568e0763f961735c0a5cba68d823b22b92a7539a112ed8ce93549683"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "eadfc0f7-acbf-43cf-a2c9-920eb0bfd79f",
+      "revision": 30167950,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:59:31.101Z",
+      "offset": 123,
+      "chars": 496,
+      "sha256": "1a9b04369fd2b6fcb693b0dec5ae5ed3835df0bf33230b61e19bc808ce9c7374"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "de1bf3f6-d963-4d87-b945-13bb02b39a02",
+      "revision": 30167982,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:59:39.602Z",
+      "offset": 175,
+      "chars": 801,
+      "sha256": "f9f2761f783c418ea128945ad68059ceaf3f644de3195c0766d45813980aed14"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "79ab9aa3-7741-41a3-9aae-89bdd8dae747",
+      "revision": 30168024,
+      "role": "tool_input",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:59:47.185Z",
+      "offset": 156,
+      "chars": 382,
+      "sha256": "02282ac79ed37af7bc0b596d87660301992898c043f486f1808dd4909ecd4cb4"
+    },
+    {
+      "session_id": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+      "title": "OpenConductor: Sol Workspace dialogs and onboarding",
+      "reason": {
+        "id": "e999727d-d91f-45bd-8aa4-a10b5edc30d9",
+        "name": "Conductor Rebuild"
+      },
+      "source_id": "52c6a53f-2eb2-47d5-ba88-f71b8c6a88bd",
+      "revision": 30168028,
+      "role": "tool_output",
+      "tool": "browser_use",
+      "created_at": "2026-11-17T19:59:48.414Z",
+      "offset": 86,
+      "chars": 860,
+      "sha256": "9a13f0155cf88fe03d5bc98e10d516453ed2ca6a05d52f1a10866cfa4d142769"
+    }
+  ]
+}

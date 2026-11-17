@@ -1,0 +1,4 @@
+/* Synthetic backend controls only; actual component/dialog/theme CSS is unchanged. */
+.owner-fixture-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding-bottom: 10px; border-bottom: 1px solid var(--border); font: 11px/18px system-ui, sans-serif; }
+.owner-fixture-controls span { flex-basis: 100%; color: var(--muted); }
+.owner-fixture-controls button { border: 1px solid var(--border); border-radius: 4px; padding: 3px 6px; }
