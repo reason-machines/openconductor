@@ -1,0 +1,1 @@
+var WJs=class{constructor(e=VJs,n={}){this._handler=e,this._options=n}activate(e){this._terminal=e;let n=this._options,i=n.urlRegex||HJs;this._linkProvider=this._terminal.registerLinkProvider(new $Js(this._terminal,i,this._handler,n))}dispose(){this._linkProvider?.dispose()}}

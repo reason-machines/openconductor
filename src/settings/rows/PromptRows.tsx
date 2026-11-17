@@ -6,8 +6,11 @@
 //    150 ms;
 //  - open: `pt-3`, a 120 px mono textarea (text-xs, px-3 py-2, `!border-input`)
 //    with Conductor's placeholder, saved 2 s after typing and on blur, trimmed
-//    (`fGt`; a blank value removes the key).
+//    (`fGt`; a blank edit preserves an explicit empty override; Reset removes it).
 // Saving writes the repository's `.conductor/settings.local.toml`.
+import { Menu } from "@base-ui/react/menu";
+import { EllipsisIcon } from "../../components/menu/menuIcons";
+import "../../components/sidebarActionsMenu.css";
 import { DialogFrame } from "../../components/DialogFrame";
 import { Markdown } from "../../features/chat/markdown";
 import { actionPromptPreview } from "../actionPromptPreview.ts";
@@ -37,6 +40,7 @@ function PromptRow({ spec, repoPath, effective }: { spec: PromptRowSpec; repoPat
   const current = effective?.prompts[spec.kind] ?? null;
   const [open, setOpen] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [actionsOpen, setActionsOpen] = useState(false);
   const [draft, setDraft] = useState(current?.value ?? "");
   const [error, setError] = useState<string | null>(null);
   const saved = useRef(current?.value);
@@ -47,14 +51,17 @@ function PromptRow({ spec, repoPath, effective }: { spec: PromptRowSpec; repoPat
     if (!focused.current) setDraft(current?.value ?? "");
   }, [current?.value]);
   const persist = useCallback(
-    async (text: string) => {
+    async (text: string | null) => {
       window.clearTimeout(timer.current);
-      const write = promptWrite(spec.kind, saved.current, text);
+      const write = text === null ? { key: `prompts.${spec.kind}` as const, value: null } : promptWrite(spec.kind, saved.current, text);
       if (!write) return;
       saved.current = write.value ?? undefined;
       setError(null);
-      await repoSettingsSetLocal(repoPath, write.key, write.value).then(notifyRepoSettingsChanged, (error) => {
-        setError("Failed to save custom prompt");
+      await repoSettingsSetLocal(repoPath, write.key, write.value).then((updated) => {
+        if (text === null) setDraft(updated.prompts[spec.kind]?.value ?? "");
+        notifyRepoSettingsChanged();
+      }, (error) => {
+        setError(text === null ? "Failed to reset custom prompt" : "Failed to save custom prompt");
         throw error;
       });
     },
@@ -78,6 +85,27 @@ function PromptRow({ spec, repoPath, effective }: { spec: PromptRowSpec; repoPat
           <path d="m6 9 6 6 6-6" />
         </svg>
       </button>
+      {current?.layer === "repo_local" && (
+        <span className="oc-prompt-actions" data-open={actionsOpen || undefined}>
+          <Menu.Root open={actionsOpen} onOpenChange={setActionsOpen}>
+            <Menu.Trigger type="button" className="btn btn-ghost" aria-label="Setting actions">
+              <EllipsisIcon />
+            </Menu.Trigger>
+            <Menu.Portal>
+              <Menu.Positioner className="sb-actions-positioner" side="bottom" align="end" sideOffset={4}>
+                <Menu.Popup className="sb-actions-popup" aria-label={`${spec.title} actions`}>
+                  <Menu.Item className="sb-actions-item" onClick={() => {
+                    setActionsOpen(false);
+                    focused.current = false;
+                    pending.change(null);
+                    pending.flush();
+                  }}>Reset</Menu.Item>
+                </Menu.Popup>
+              </Menu.Positioner>
+            </Menu.Portal>
+          </Menu.Root>
+        </span>
+      )}
       {open && (
         <div className="oc-prompt-panel" id={id}>
           <textarea

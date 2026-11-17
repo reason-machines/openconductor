@@ -1,0 +1,21 @@
+{
+  "real_config_sources": {
+    "crates/scripts/src/config/effective.rs": "8e946e686cb1274cbb76f3bf350cb9bf2931616a59c93642be7e7efa866e0c4e",
+    "crates/scripts/src/config/load.rs": "4265e8d54875140faef6f3b2b7196427b23689d630ccb5e6ce360085ad853da3",
+    "crates/scripts/src/config/mod.rs": "08fcfa12365c2d4a071d8e0ba0603470fe19b143a34cf07a60cb5ac1b71a6632",
+    "crates/scripts/src/config/run.rs": "0c1ce0d92b155be9ce73ef0199009b453cafb45350e2bd72c15643808c119d2a",
+    "crates/scripts/src/config/user.rs": "546186ef2a9768b4e23d8d17b3eff4501b88f8a3bf61edac68a15442a6b31beb"
+  },
+  "frozen_effective_sha256": "d3fd96d92d66d9ab92923aee2496042af93229776e249c4b2c9ba7c3f82ae33c",
+  "production_tests_sha256": "9007d0c80cb72a4abfa26cb29e9dcba5183ef2f873a65b9b0b5d21fad101e0c7",
+  "all_test_bodies_preserved": true,
+  "registration_only_transform": "#[test] attributes removed to call exact functions from binary",
+  "host_substitution": "std::fs RAII TempDir, no tempfile crate; all synthetic directories removed on Drop",
+  "cases_per_variant": 20,
+  "baseline_intended_assertion_failures": [
+    "prompts_blank_managed_value_keeps_precedence_and_source",
+    "prompts_blank_override_retains_source_and_reset_reveals_inherited"
+  ],
+  "probe_main_sha256": "e67c53fe455e3220406a22074e7aff3fb5b4bf8a208d48d8ff8cf64207f06d6b",
+  "limits": "Offline real config-module proof, not normal crate harness, Tauri or native persistence acceptance."
+}

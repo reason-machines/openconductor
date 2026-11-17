@@ -1,0 +1,333 @@
+{
+  "author": "Conductor Rebuild / SAME6013",
+  "dedupe": "QUICK-OPEN-PRIMARY-OVERRIDE-6013",
+  "main_checked": "9e3954625f01a9cb1a3ead3adbef429f27bcf099",
+  "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "asset_sha256": {
+    "renderer": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "spans": [
+    {
+      "name": "Dco",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7464819,
+        7465246
+      ],
+      "bytes": 427,
+      "sha256": "c9e5d3e49d1757b16a35595119647db1db8070d6f93e3bb38300f5c23e9b08e7",
+      "file": "reference/renderer-Dco.txt"
+    },
+    {
+      "name": "Pco",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7465246,
+        7468466
+      ],
+      "bytes": 3220,
+      "sha256": "b07a9b3c3c0471c781ca22d387fbf68c869223a1747a7fdf318e59d75330776a",
+      "file": "reference/renderer-Pco.txt"
+    },
+    {
+      "name": "qZ",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2914275,
+        2914884
+      ],
+      "bytes": 609,
+      "sha256": "75a269c7c20e940bc04bbeb355e5eb9e0b798fa9250024d69a2eab67b6fbe9b1",
+      "file": "reference/renderer-qZ.txt"
+    },
+    {
+      "name": "Y5s",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2914884,
+        2916816
+      ],
+      "bytes": 1932,
+      "sha256": "1f343b0f6340b44087d7914fc114f67311554dd62c7b60c549241f3645c4ea29",
+      "file": "reference/renderer-Y5s.txt"
+    },
+    {
+      "name": "kI",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2916816,
+        2917726
+      ],
+      "bytes": 910,
+      "sha256": "970dc084f87ebeb0e3f1220debf849ee4115e11f0be19c8442dab05ba688decf",
+      "file": "reference/renderer-kI.txt"
+    },
+    {
+      "name": "KV",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2913899,
+        2914275
+      ],
+      "bytes": 376,
+      "sha256": "61beeb6e4e35c064cdc7c60a0c70f912a36770c820c9adf22ba9f34272cd9926",
+      "file": "reference/renderer-KV.txt"
+    },
+    {
+      "name": "cmdk-Xyi",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2903072,
+        2908580
+      ],
+      "bytes": 5508,
+      "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92",
+      "file": "reference/renderer-cmdk-Xyi.txt"
+    },
+    {
+      "name": "cmdk-M5s",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2908581,
+        2910379
+      ],
+      "bytes": 1798,
+      "sha256": "391cdab329dc4b10bb7e6fd9215d12cff8a2319d49b20ac9a54a02cd10d124bf",
+      "file": "reference/renderer-cmdk-M5s.txt"
+    },
+    {
+      "name": "cmdk-B5s",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2910380,
+        2910953
+      ],
+      "bytes": 573,
+      "sha256": "70fa9c07b0d8b605e648601e01cd266db15dadad0ac59b8cb5569cee58c02758",
+      "file": "reference/renderer-cmdk-B5s.txt"
+    },
+    {
+      "name": "cmdk-exports",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2912384,
+        2912492
+      ],
+      "bytes": 108,
+      "sha256": "20b129f07752490e4c9ca33091b5d947173fb1de439bcda0f2b15b9e25deb4f6",
+      "file": "reference/renderer-cmdk-exports.txt"
+    },
+    {
+      "name": "override-store-parser-and-matcher",
+      "asset": "index",
+      "utf8_half_open": [
+        3388801,
+        3395496
+      ],
+      "bytes": 6695,
+      "sha256": "0ee7f9707c4b142235223d08b3a4840bbd753a473a0a6ff2797a00ed64c2bae6",
+      "file": "reference/index-override-store-parser-and-matcher.txt"
+    },
+    {
+      "name": "Qh",
+      "asset": "renderer",
+      "utf8_half_open": [
+        54795,
+        54803
+      ],
+      "bytes": 8,
+      "sha256": "1b194c6d61bdd2ba9511d896cec3c875d62548892f7010b52ebf7f8eb909fdc4",
+      "file": "reference/renderer-Qh.txt"
+    },
+    {
+      "name": "ca",
+      "asset": "index",
+      "utf8_half_open": [
+        3481691,
+        3481700
+      ],
+      "bytes": 9,
+      "sha256": "b33c810666a02b677b37fe77123d7655849b04c502a6ee58269b018118c62e0c",
+      "file": "reference/index-ca.txt"
+    },
+    {
+      "name": "Eg",
+      "asset": "index",
+      "utf8_half_open": [
+        3357920,
+        3357952
+      ],
+      "bytes": 32,
+      "sha256": "26b44773b03f216c4b5116ab6b6b37016ba77989a7fc5fbb6fcbe0dbb8d4eca2",
+      "file": "reference/index-Eg.txt"
+    },
+    {
+      "name": "Jk",
+      "asset": "index",
+      "utf8_half_open": [
+        3357953,
+        3358010
+      ],
+      "bytes": 57,
+      "sha256": "737a91537bf8e788e31864ee0c6b83e39ab07f72617d2ff78dfd11dc4e5ae89d",
+      "file": "reference/index-Jk.txt"
+    },
+    {
+      "name": "Oy",
+      "asset": "index",
+      "utf8_half_open": [
+        3358010,
+        3358105
+      ],
+      "bytes": 95,
+      "sha256": "f9472015c249f5c9afa129ef27222b209fa22c2f5e6f80c4da242f0f34c8755a",
+      "file": "reference/index-Oy.txt"
+    },
+    {
+      "name": "Hfe",
+      "asset": "index",
+      "utf8_half_open": [
+        3358153,
+        3358229
+      ],
+      "bytes": 76,
+      "sha256": "8f2fe649116c5f460b454a529b9e8c03c20c9e5a7c8342f90a424501c8c4391e",
+      "file": "reference/index-Hfe.txt"
+    },
+    {
+      "name": "mUt",
+      "asset": "index",
+      "utf8_half_open": [
+        3358230,
+        3358371
+      ],
+      "bytes": 141,
+      "sha256": "144b4d083764d94dc5b4a54bfbc15d3853732c19613ac053389462c95c89670d",
+      "file": "reference/index-mUt.txt"
+    },
+    {
+      "name": "vUt",
+      "asset": "index",
+      "utf8_half_open": [
+        3358371,
+        3358541
+      ],
+      "bytes": 170,
+      "sha256": "76d1a07ebbeb40f9ab061ad95019a4158cc7646faf05e4956b22a59a210efc4e",
+      "file": "reference/index-vUt.txt"
+    },
+    {
+      "name": "_Ut",
+      "asset": "index",
+      "utf8_half_open": [
+        3359217,
+        3359357
+      ],
+      "bytes": 140,
+      "sha256": "2c36a6ed732d18892dfefdba685d863f27064bc683cb7de285ef115e24365d64",
+      "file": "reference/index-_Ut.txt"
+    },
+    {
+      "name": "V_",
+      "asset": "index",
+      "utf8_half_open": [
+        3360752,
+        3386741
+      ],
+      "bytes": 25989,
+      "sha256": "77bd4bb1909c7387df8a580ba21be27b6ffd8a75e03ed9652c016d09564e0fe9",
+      "file": "reference/index-V_.txt"
+    },
+    {
+      "name": "nh",
+      "asset": "index",
+      "utf8_half_open": [
+        3393483,
+        3393608
+      ],
+      "bytes": 125,
+      "sha256": "278fa92a1196832de0fd6002ab85c9e1fcbdcf6455591306c5d094efa4f2fd4b",
+      "file": "reference/index-nh.txt"
+    },
+    {
+      "name": "TQt",
+      "asset": "index",
+      "utf8_half_open": [
+        3394706,
+        3394765
+      ],
+      "bytes": 59,
+      "sha256": "3d20839a0dfff54bd43aa0f0ed5cd862f1ff49678c9018fc4aae67b3825e56dd",
+      "file": "reference/index-TQt.txt"
+    },
+    {
+      "name": "modifier-constants",
+      "asset": "index",
+      "utf8_half_open": [
+        3359794,
+        3359924
+      ],
+      "bytes": 130,
+      "sha256": "d4e159d74b04fb610fb8619a0c80a0e1b217fa3a44113336d0fbed1e951e5bf5",
+      "file": "reference/index-modifier-constants.txt"
+    }
+  ],
+  "current_sources": [
+    {
+      "path": "src/components/QuickOpenDialog.tsx",
+      "sha256": "417b8cda0da9d6967b992bd6184fe846e015ee5078f7087044deb4fc2427455c",
+      "bytes": 5524
+    },
+    {
+      "path": "src/spotlight/quickOpen.ts",
+      "sha256": "fb3b30062ba52b4cd74a56047d4f44c9627c103bd2ee4127f499429368426b49",
+      "bytes": 4515
+    },
+    {
+      "path": "src/spotlight/spotlight.test.ts",
+      "sha256": "1c37d035f1d0546ae3cd56470c5118bf77fcb91738eca71825e3e43e181351cb",
+      "bytes": 6195
+    },
+    {
+      "path": "src/spotlight/recentFiles.ts",
+      "sha256": "266d31a9cc4a30c125913cfe816e120801baf746cc8992c0078f46177cbdec7b",
+      "bytes": 1731
+    },
+    {
+      "path": "src/keybindings/KeybindingsProvider.tsx",
+      "sha256": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6",
+      "bytes": 5566
+    },
+    {
+      "path": "src/keybindings/overrides.ts",
+      "sha256": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193",
+      "bytes": 8207
+    },
+    {
+      "path": "src/keybindings/shortcut.ts",
+      "sha256": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8",
+      "bytes": 5791
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "sha256": "b9df8f72c86c6c4e1cc05cade6b4719cd3abf26e557e690ffd574cbe2231ecb5",
+      "bytes": 28914
+    }
+  ],
+  "candidate": [
+    "Dco renders Pco through qZ; qZ/Y5s/KV select cmdk Xyi and forward its command input.",
+    "Pco input uses Qh(dialog.primaryAction,nativeEvent) before root fallback; matching prevents default/stops propagation and calls D(selectedPath,true).",
+    "Qh import alias ca resolves to TQt; TQt resolves current nh overrides and exact Hfe/_Ut matching.",
+    "Pco D requests diff only when the selected file has a change entry; this packet does not propose a change to that separate file-status contract.",
+    "kI forwards onKeyDown to P6.Input/B5s, which spreads it onto a native input. Xyi skips default-prevented/composing events; otherwise Enter invokes the selected item, whose onSelect calls D(path) in edit mode.",
+    "Current QuickOpenDialog ignores dialog.primaryAction overrides, delegating to hardcoded quickOpenKey(meta+Enter diff).",
+    "Proposed narrow regression: default primary diff, custom logical/physical/additional primary diff, removed default falls back to file, plain Enter file unless itself configured primary, navigation/click/empty controls unchanged."
+  ],
+  "status": "SOURCE CANDIDATE ONLY: exact seam collision clearance and mounted RED pending",
+  "limits": [
+    "Original JavaScript read as untrusted data, never executed",
+    "No REA/native acquisition; original semantic-renderer heap gap remains historical",
+    "No browser, heavy check, provider, backend, package, native operation or production edit"
+  ]
+}

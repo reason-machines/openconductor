@@ -73,6 +73,7 @@ function fixture({ enabled = true, desktop = true } = {}) {
     const module = { exports: {} }; modules.set(file, module);
     const { outputText } = ts.transpileModule(fs.readFileSync(source, 'utf8'), { fileName: source, compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021, jsx: ts.JsxEmit.ReactJSX } });
     function requireSource(name) {
+      if (name === '@xterm/addon-web-links') return deps(name);
       if (name === 'react' || name === 'react/jsx-runtime') return deps(name);
       if (name === 'react-dom') return { createPortal: children => children };
       if (Object.hasOwn(boundaries, name)) return boundaries[name];

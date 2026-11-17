@@ -1,0 +1,1 @@
+function sh(t){return mQe()?t instanceof HTMLElement||t instanceof mf(t).HTMLElement:!1}

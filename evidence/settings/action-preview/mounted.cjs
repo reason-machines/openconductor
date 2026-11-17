@@ -27,6 +27,8 @@ async function mount(options = {}) {
     const requireControlled = name => {
       if (name === 'react' || name === 'react/jsx-runtime') return require(name);
       if (name.endsWith('.css')) return {};
+      if (name === '@base-ui/react/menu') return { Menu: { Root: ({ children }) => children, Trigger: ({ children, ...props }) => React.createElement('button', props, children), Portal: () => null } };
+      if (name === '../../components/menu/menuIcons') return { EllipsisIcon: () => null };
       if (name === '../../lib/persistence/producer.ts') return { usePendingEdit: () => pending };
       if (name === '../repoSettings.ts') return { layerLabel: value => value, repoSettingsSetLocal: async (...args) => { saves.push(args); } };
       if (name === '../useRepoSettings.ts') return { useRepoSettings: () => effective, notifyRepoSettingsChanged() {} };
