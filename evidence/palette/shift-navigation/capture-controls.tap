@@ -1,0 +1,204 @@
+(node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:91) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a bare key is off while typing unless allowWhileTyping
+ok 1 - a bare key is off while typing unless allowWhileTyping
+  ---
+  duration_ms: 41.860981
+  type: 'test'
+  ...
+# Subtest: a modified key needs enableOnInputFocus or isGlobal while typing
+ok 2 - a modified key needs enableOnInputFocus or isGlobal while typing
+  ---
+  duration_ms: 0.210522
+  type: 'test'
+  ...
+# Subtest: terminal focus gates enableOnTerminalFocus and requireTerminalFocus
+ok 3 - terminal focus gates enableOnTerminalFocus and requireTerminalFocus
+  ---
+  duration_ms: 0.12353
+  type: 'test'
+  ...
+# Subtest: dialogs: only listed dialog ids, and nothing unlisted while a dialog is open
+ok 4 - dialogs: only listed dialog ids, and nothing unlisted while a dialog is open
+  ---
+  duration_ms: 0.127907
+  type: 'test'
+  ...
+# Subtest: higher priority runs first, then more modifiers; false passes on
+ok 5 - higher priority runs first, then more modifiers; false passes on
+  ---
+  duration_ms: 1.894757
+  type: 'test'
+  ...
+# Subtest: telemetry carries the dialog id and context only when present
+ok 6 - telemetry carries the dialog id and context only when present
+  ---
+  duration_ms: 0.244066
+  type: 'test'
+  ...
+# Subtest: held-key repeats are swallowed unless a handler allows repeat
+ok 7 - held-key repeats are swallowed unless a handler allows repeat
+  ---
+  duration_ms: 10.280014
+  type: 'test'
+  ...
+# Subtest: Escape blurs a focused input before any handler; not in the terminal
+ok 8 - Escape blurs a focused input before any handler; not in the terminal
+  ---
+  duration_ms: 0.233043
+  type: 'test'
+  ...
+# Subtest: recorder, lone modifiers, unfocused scopes and unregister all pass
+ok 9 - recorder, lone modifiers, unfocused scopes and unregister all pass
+  ---
+  duration_ms: 0.347622
+  type: 'test'
+  ...
+# Subtest: Backspace outside a text field is prevented even when nothing handles it
+ok 10 - Backspace outside a text field is prevented even when nothing handles it
+  ---
+  duration_ms: 0.375893
+  type: 'test'
+  ...
+# (node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: probeFocus: input in path, outermost contenteditable, terminal, recorder
+ok 11 - probeFocus: input in path, outermost contenteditable, terminal, recorder
+  ---
+  duration_ms: 2.14485
+  type: 'test'
+  ...
+# Subtest: probeFocus: a data-keybinding-local list reads its own plain keys, like a text field
+ok 12 - probeFocus: a data-keybinding-local list reads its own plain keys, like a text field
+  ---
+  duration_ms: 0.35896
+  type: 'test'
+  ...
+# Subtest: a matching shortcut runs, stops propagation and sends telemetry
+ok 13 - a matching shortcut runs, stops propagation and sends telemetry
+  ---
+  duration_ms: 6.897539
+  type: 'test'
+  ...
+# Subtest: an unmatched key passes untouched; Backspace outside a field is prevented
+ok 14 - an unmatched key passes untouched; Backspace outside a field is prevented
+  ---
+  duration_ms: 0.218846
+  type: 'test'
+  ...
+# Subtest: a bare Escape waits for the bubble phase and is skipped if handled
+ok 15 - a bare Escape waits for the bubble phase and is skipped if handled
+  ---
+  duration_ms: 28.299811
+  type: 'test'
+  ...
+# Subtest: a bare Escape in a text field blurs it
+ok 16 - a bare Escape in a text field blurs it
+  ---
+  duration_ms: 0.352972
+  type: 'test'
+  ...
+# Subtest: the bubble listener ignores everything but a bare Escape
+ok 17 - the bubble listener ignores everything but a bare Escape
+  ---
+  duration_ms: 0.280689
+  type: 'test'
+  ...
+# Subtest: a key capture takes every key until removed
+ok 18 - a key capture takes every key until removed
+  ---
+  duration_ms: 0.521878
+  type: 'test'
+  ...
+# Subtest: removing a replaced capture keeps the newer one
+ok 19 - removing a replaced capture keeps the newer one
+  ---
+  duration_ms: 0.355487
+  type: 'test'
+  ...
+# Subtest: text input is blocked briefly after an Option chord runs
+ok 20 - text input is blocked briefly after an Option chord runs
+  ---
+  duration_ms: 0.467726
+  type: 'test'
+  ...
+# Subtest: a Command-Option chord does not block text input
+ok 21 - a Command-Option chord does not block text input
+  ---
+  duration_ms: 0.400685
+  type: 'test'
+  ...
+# Subtest: a held-key repeat with no repeatable handler is swallowed
+ok 22 - a held-key repeat with no repeatable handler is swallowed
+  ---
+  duration_ms: 0.176541
+  type: 'test'
+  ...
+# Subtest: installKeyListeners wires capture and bubble phases and removes them
+ok 23 - installKeyListeners wires capture and bubble phases and removes them
+  ---
+  duration_ms: 0.242379
+  type: 'test'
+  ...
+# (node:103) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: registration defaults: input and terminal focus on, NORMAL priority, not global
+ok 24 - registration defaults: input and terminal focus on, NORMAL priority, not global
+  ---
+  duration_ms: 11.271701
+  type: 'test'
+  ...
+# Subtest: one binding per effective shortcut; call-site options win over the command's when
+ok 25 - one binding per effective shortcut; call-site options win over the command's when
+  ---
+  duration_ms: 0.574756
+  type: 'test'
+  ...
+# Subtest: Cmd+K opens the palette idle, while typing and inside the palette
+ok 26 - Cmd+K opens the palette idle, while typing and inside the palette
+  ---
+  duration_ms: 1.33886
+  type: 'test'
+  ...
+# Subtest: terminal-only commands need terminal focus
+ok 27 - terminal-only commands need terminal focus
+  ---
+  duration_ms: 0.158294
+  type: 'test'
+  ...
+# Subtest: Tab cycles palette tabs only while the palette is open
+ok 28 - Tab cycles palette tabs only while the palette is open
+  ---
+  duration_ms: 0.156548
+  type: 'test'
+  ...
+# Subtest: an open dialog blocks non-global commands
+ok 29 - an open dialog blocks non-global commands
+  ---
+  duration_ms: 0.31463
+  type: 'test'
+  ...
+# Subtest: bare keys need allowWhileTyping; Cmd chords and Cmd+1..9 fire while typing
+ok 30 - bare keys need allowWhileTyping; Cmd chords and Cmd+1..9 fire while typing
+  ---
+  duration_ms: 0.344128
+  type: 'test'
+  ...
+# Subtest: overrides rebind what resolves
+ok 31 - overrides rebind what resolves
+  ---
+  duration_ms: 0.242204
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2157.541418

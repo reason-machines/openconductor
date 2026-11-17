@@ -1,0 +1,781 @@
+(node:68) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:75) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: actual Composer synchronous submission still clears after delivery
+ok 1 - actual Composer synchronous submission still clears after delivery
+  ---
+  duration_ms: 1.697859
+  type: 'test'
+  ...
+# Subtest: actual Composer asynchronous submission leaves clearing to its successful owner
+ok 2 - actual Composer asynchronous submission leaves clearing to its successful owner
+  ---
+  duration_ms: 0.719285
+  type: 'test'
+  ...
+# Subtest: actual Composer asynchronous owner preserves a not-ready draft
+ok 3 - actual Composer asynchronous owner preserves a not-ready draft
+  ---
+  duration_ms: 0.581354
+  type: 'test'
+  ...
+# Subtest: actual Composer asynchronous owner preserves a rejected draft
+ok 4 - actual Composer asynchronous owner preserves a rejected draft
+  ---
+  duration_ms: 0.631287
+  type: 'test'
+  ...
+# (node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary draft chips do not open eagerly
+ok 5 - ordinary draft chips do not open eagerly
+  ---
+  duration_ms: 94.335754
+  type: 'test'
+  ...
+# Subtest: actual draft chip opens after 150ms, not before
+ok 6 - actual draft chip opens after 150ms, not before
+  ---
+  duration_ms: 33.157135
+  type: 'test'
+  ...
+# Subtest: leaving before the open delay never opens the preview
+ok 7 - leaving before the open delay never opens the preview
+  ---
+  duration_ms: 63.192352
+  type: 'test'
+  ...
+# Subtest: the 100ms close delay preserves pointer travel into the card
+ok 8 - the 100ms close delay preserves pointer travel into the card
+  ---
+  duration_ms: 25.403386
+  type: 'test'
+  ...
+# Subtest: an editor interaction epoch dismisses visible preview without changing attachment
+ok 9 - an editor interaction epoch dismisses visible preview without changing attachment
+  ---
+  duration_ms: 53.689399
+  type: 'test'
+  ...
+# Subtest: an editor epoch also cancels an outstanding delayed open
+ok 10 - an editor epoch also cancels an outstanding delayed open
+  ---
+  duration_ms: 40.938005
+  type: 'test'
+  ...
+# Subtest: replacement content cannot leave the previous text visible
+ok 11 - replacement content cannot leave the previous text visible
+  ---
+  duration_ms: 35.082915
+  type: 'test'
+  ...
+# Subtest: preview text remains text, never an executable HTML node
+ok 12 - preview text remains text, never an executable HTML node
+  ---
+  duration_ms: 16.788091
+  type: 'test'
+  ...
+# Subtest: historical or generic chips are not mistaken for original text
+ok 13 - historical or generic chips are not mistaken for original text
+  ---
+  duration_ms: 39.982306
+  type: 'test'
+  ...
+# Subtest: the original remove action retains its exact attachment
+ok 14 - the original remove action retains its exact attachment
+  ---
+  duration_ms: 20.492463
+  type: 'test'
+  ...
+# Subtest: unmount cancels pending open instead of publishing after departure
+ok 15 - unmount cancels pending open instead of publishing after departure
+  ---
+  duration_ms: 11.266558
+  type: 'test'
+  ...
+# Subtest: typed text metadata survives the existing persisted-chip boundary
+ok 16 - typed text metadata survives the existing persisted-chip boundary
+  ---
+  duration_ms: 0.27591
+  type: 'test'
+  ...
+# Subtest: unknown preview metadata does not turn a generic record into text
+ok 17 - unknown preview metadata does not turn a generic record into text
+  ---
+  duration_ms: 0.100937
+  type: 'test'
+  ...
+# Subtest: actual file intake marks exact inline text, not just the display filename
+ok 18 - actual file intake marks exact inline text, not just the display filename
+  ---
+  duration_ms: 1.13511
+  type: 'test'
+  ...
+# Subtest: actual file intake does not label binary, invalid UTF-8 or large placeholders as original text
+ok 19 - actual file intake does not label binary, invalid UTF-8 or large placeholders as original text
+  ---
+  duration_ms: 1.648356
+  type: 'test'
+  ...
+# (node:91) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: claude: removing settled A cannot remove or resurrect it when B finishes read
+ok 20 - claude: removing settled A cannot remove or resurrect it when B finishes read
+  ---
+  duration_ms: 145.390768
+  type: 'test'
+  ...
+# Subtest: reason: removing settled A cannot remove or resurrect it when B finishes read
+ok 21 - reason: removing settled A cannot remove or resurrect it when B finishes read
+  ---
+  duration_ms: 72.924578
+  type: 'test'
+  ...
+# Subtest: reason: removing settled A cannot remove or resurrect it when B finishes write
+ok 22 - reason: removing settled A cannot remove or resurrect it when B finishes write
+  ---
+  duration_ms: 26.689508
+  type: 'test'
+  ...
+# Subtest: local /clear during B read separates the replacement from late original-owner settlement
+ok 23 - local /clear during B read separates the replacement from late original-owner settlement
+  ---
+  duration_ms: 40.748535
+  type: 'test'
+  ...
+# Subtest: local /clear during persisted-attachment copy stops old-chat delivery without touching the replacement
+ok 24 - local /clear during persisted-attachment copy stops old-chat delivery without touching the replacement
+  ---
+  duration_ms: 30.68597
+  type: 'test'
+  ...
+# Subtest: navigation and remount preserve pending read and permit one later send
+ok 25 - navigation and remount preserve pending read and permit one later send
+  ---
+  duration_ms: 32.678547
+  type: 'test'
+  ...
+# Subtest: navigation and remount preserve pending write and permit one later send
+ok 26 - navigation and remount preserve pending write and permit one later send
+  ---
+  duration_ms: 60.033214
+  type: 'test'
+  ...
+# (node:99) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: an attached file goes to .context/attachments/<random 6>/<name> in the workspace
+ok 27 - an attached file goes to .context/attachments/<random 6>/<name> in the workspace
+  ---
+  duration_ms: 0.919699
+  type: 'test'
+  ...
+# Subtest: file names cannot leave their folder or hide
+ok 28 - file names cannot leave their folder or hide
+  ---
+  duration_ms: 0.270355
+  type: 'test'
+  ...
+# Subtest: UTF-8 text goes inline; binary and oversized files are pointed at by path
+ok 29 - UTF-8 text goes inline; binary and oversized files are pointed at by path
+  ---
+  duration_ms: 0.32053
+  type: 'test'
+  ...
+# Subtest: persisted attachment chips retain display, inline content and staged IDs
+ok 30 - persisted attachment chips retain display, inline content and staged IDs
+  ---
+  duration_ms: 1.257218
+  type: 'test'
+  ...
+# Subtest: malformed persisted chips and unsafe staged paths are not restored
+ok 31 - malformed persisted chips and unsafe staged paths are not restored
+  ---
+  duration_ms: 0.221914
+  type: 'test'
+  ...
+# Subtest: files over the size limit are refused with a reason
+ok 32 - files over the size limit are refused with a reason
+  ---
+  duration_ms: 0.127521
+  type: 'test'
+  ...
+# (node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: accepted keyboard cancellation stops then refocuses a blurred Composer
+ok 33 - accepted keyboard cancellation stops then refocuses a blurred Composer
+  ---
+  duration_ms: 334.471461
+  type: 'test'
+  ...
+# Subtest: keyboard cancellation preserves an already focused editor's selection
+ok 34 - keyboard cancellation preserves an already focused editor's selection
+  ---
+  duration_ms: 92.597325
+  type: 'test'
+  ...
+# Subtest: idle keyboard cancellation still declines without stopping or focusing
+ok 35 - idle keyboard cancellation still declines without stopping or focusing
+  ---
+  duration_ms: 132.882117
+  type: 'test'
+  ...
+# Subtest: pointer Stop retains its existing stop-only behavior
+ok 36 - pointer Stop retains its existing stop-only behavior
+  ---
+  duration_ms: 59.047352
+  type: 'test'
+  ...
+# Subtest: accepted cancellation still stops when the editor ref has detached
+ok 37 - accepted cancellation still stops when the editor ref has detached
+  ---
+  duration_ms: 41.456086
+  type: 'test'
+  ...
+# Subtest: keyboard cancellation isolates rich draft, attachment, queue, and another chat
+ok 38 - keyboard cancellation isolates rich draft, attachment, queue, and another chat
+  ---
+  duration_ms: 99.67725
+  type: 'test'
+  ...
+# (node:115) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: long paste attaches 5001 UTF-16 code units as the original text/plain file
+ok 39 - long paste attaches 5001 UTF-16 code units as the original text/plain file
+  ---
+  duration_ms: 5.521113
+  type: 'test'
+  ...
+# Subtest: long paste attaches 91 newline-split lines as the original text/plain file
+ok 40 - long paste attaches 91 newline-split lines as the original text/plain file
+  ---
+  duration_ms: 0.288834
+  type: 'test'
+  ...
+# Subtest: long paste attaches surrogate pairs counted as two units as the original text/plain file
+ok 41 - long paste attaches surrogate pairs counted as two units as the original text/plain file
+  ---
+  duration_ms: 0.272185
+  type: 'test'
+  ...
+# Subtest: long paste attaches unnormalized clipboard text as the original text/plain file
+ok 42 - long paste attaches unnormalized clipboard text as the original text/plain file
+  ---
+  duration_ms: 0.13273
+  type: 'test'
+  ...
+# Subtest: empty text, exact thresholds, short text and a disabled setting stay on the editor path
+ok 43 - empty text, exact thresholds, short text and a disabled setting stay on the editor path
+  ---
+  duration_ms: 0.216923
+  type: 'test'
+  ...
+# Subtest: ordinary file and image clipboards take precedence over large text
+ok 44 - ordinary file and image clipboards take precedence over large text
+  ---
+  duration_ms: 0.20352
+  type: 'test'
+  ...
+# Subtest: valid atomic composer data keeps its editor path; malformed custom data falls back to text
+ok 45 - valid atomic composer data keeps its editor path; malformed custom data falls back to text
+  ---
+  duration_ms: 0.382579
+  type: 'test'
+  ...
+# (node:123) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: returns clipboard text
+ok 46 - returns clipboard text
+  ---
+  duration_ms: 0.678293
+  type: 'test'
+  ...
+# Subtest: returns null for empty string
+ok 47 - returns null for empty string
+  ---
+  duration_ms: 0.183338
+  type: 'test'
+  ...
+# Subtest: returns null on read failure
+ok 48 - returns null on read failure
+  ---
+  duration_ms: 0.167302
+  type: 'test'
+  ...
+# Subtest: returns multiline paths unchanged
+ok 49 - returns multiline paths unchanged
+  ---
+  duration_ms: 0.115119
+  type: 'test'
+  ...
+# Subtest: returns whitespace-only text unchanged (not filtered)
+ok 50 - returns whitespace-only text unchanged (not filtered)
+  ---
+  duration_ms: 0.09642
+  type: 'test'
+  ...
+# (node:131) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:131) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: same-workspace chat tabs retain independent text/chips before and after debounce
+ok 51 - same-workspace chat tabs retain independent text/chips before and after debounce
+  ---
+  duration_ms: 2.916372
+  type: 'test'
+  ...
+# Subtest: delayed hydration cannot overwrite typing, clearing or injected draft chips, even after leaving
+ok 52 - delayed hydration cannot overwrite typing, clearing or injected draft chips, even after leaving
+  ---
+  duration_ms: 0.415461
+  type: 'test'
+  ...
+# Subtest: typing before hydration still restores untouched saved attachments
+ok 53 - typing before hydration still restores untouched saved attachments
+  ---
+  duration_ms: 0.277057
+  type: 'test'
+  ...
+# Subtest: late read completion stays with originating chat and blocks premature send
+ok 54 - late read completion stays with originating chat and blocks premature send
+  ---
+  duration_ms: 1.174523
+  type: 'test'
+  ...
+# Subtest: late write completion stays with originating chat and blocks premature send
+ok 55 - late write completion stays with originating chat and blocks premature send
+  ---
+  duration_ms: 0.572035
+  type: 'test'
+  ...
+# Subtest: failed binary copy sends nothing, retains text/chips, and retries already copied files without their removed staging
+ok 56 - failed binary copy sends nothing, retains text/chips, and retries already copied files without their removed staging
+  ---
+  duration_ms: 0.596301
+  type: 'test'
+  ...
+# Subtest: switch during copy cancels delivery, persists successful copy and retains retry on return
+ok 57 - switch during copy cancels delivery, persists successful copy and retains retry on return
+  ---
+  duration_ms: 0.355563
+  type: 'test'
+  ...
+# Subtest: duplicate submits are inhibited and edits during copy survive successful send
+ok 58 - duplicate submits are inhibited and edits during copy survive successful send
+  ---
+  duration_ms: 0.26777
+  type: 'test'
+  ...
+# Subtest: late read errors remain on the originating chat
+ok 59 - late read errors remain on the originating chat
+  ---
+  duration_ms: 0.477612
+  type: 'test'
+  ...
+# Subtest: unmount and remount during file write retain one owner and cannot orphan staged data
+ok 60 - unmount and remount during file write retain one owner and cannot orphan staged data
+  ---
+  duration_ms: 0.601797
+  type: 'test'
+  ...
+# Subtest: read/write rejection releases pending admission and failed copy releases send admission
+ok 61 - read/write rejection releases pending admission and failed copy releases send admission
+  ---
+  duration_ms: 0.663813
+  type: 'test'
+  ...
+# Subtest: existing fork and transcript error actions use the originating chat's error setter
+ok 62 - existing fork and transcript error actions use the originating chat's error setter
+  ---
+  duration_ms: 0.152339
+  type: 'test'
+  ...
+# Subtest: React uses the tested session owner, chat identity, and workspace-native staging identity
+ok 63 - React uses the tested session owner, chat identity, and workspace-native staging identity
+  ---
+  duration_ms: 1.148104
+  type: 'test'
+  ...
+# (node:139) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:139) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: actual Composer and WorkspaceView submit handlers retain text and chips when native copy rejects
+ok 64 - actual Composer and WorkspaceView submit handlers retain text and chips when native copy rejects
+  ---
+  duration_ms: 5.071007
+  type: 'test'
+  ...
+# Subtest: actual submit snapshots atoms before asynchronous copy; later draft edits cannot retarget the sent file
+ok 65 - actual submit snapshots atoms before asynchronous copy; later draft edits cannot retarget the sent file
+  ---
+  duration_ms: 2.297225
+  type: 'test'
+  ...
+# Subtest: actual host generation invalidation sends nothing and previously copied paths do not gain a fabricated receipt
+ok 66 - actual host generation invalidation sends nothing and previously copied paths do not gain a fabricated receipt
+  ---
+  duration_ms: 1.975656
+  type: 'test'
+  ...
+# Subtest: actual attachment-only host send keeps transport bytes and only confirmed display targets
+ok 67 - actual attachment-only host send keeps transport bytes and only confirmed display targets
+  ---
+  duration_ms: 3.235075
+  type: 'test'
+  ...
+# Subtest: actual opposite send and slash interception preserve the scalar command contract
+ok 68 - actual opposite send and slash interception preserve the scalar command contract
+  ---
+  duration_ms: 1.693811
+  type: 'test'
+  ...
+# (node:147) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: slash: Shift+ArrowDown/Up navigates suggestions before editor commands
+ok 69 - slash: Shift+ArrowDown/Up navigates suggestions before editor commands
+  ---
+  duration_ms: 277.198931
+  type: 'test'
+  ...
+# Subtest: slash: Shift+Enter selects the suggestion without sending or inserting a newline
+ok 70 - slash: Shift+Enter selects the suggestion without sending or inserting a newline
+  ---
+  duration_ms: 130.504948
+  type: 'test'
+  ...
+# Subtest: slash: Shift+Tab selects the suggestion without sending or inserting a newline
+ok 71 - slash: Shift+Tab selects the suggestion without sending or inserting a newline
+  ---
+  duration_ms: 101.89096
+  type: 'test'
+  ...
+# Subtest: slash: Meta+ArrowDown/Up navigates suggestions before editor commands
+ok 72 - slash: Meta+ArrowDown/Up navigates suggestions before editor commands
+  ---
+  duration_ms: 106.559813
+  type: 'test'
+  ...
+# Subtest: slash: Meta+Enter selects the suggestion without sending or inserting a newline
+ok 73 - slash: Meta+Enter selects the suggestion without sending or inserting a newline
+  ---
+  duration_ms: 64.417025
+  type: 'test'
+  ...
+# Subtest: slash: Meta+Tab selects the suggestion without sending or inserting a newline
+ok 74 - slash: Meta+Tab selects the suggestion without sending or inserting a newline
+  ---
+  duration_ms: 46.170572
+  type: 'test'
+  ...
+# Subtest: slash: Ctrl+ArrowDown/Up navigates suggestions before editor commands
+ok 75 - slash: Ctrl+ArrowDown/Up navigates suggestions before editor commands
+  ---
+  duration_ms: 33.491399
+  type: 'test'
+  ...
+# Subtest: slash: Ctrl+Enter selects the suggestion without sending or inserting a newline
+ok 76 - slash: Ctrl+Enter selects the suggestion without sending or inserting a newline
+  ---
+  duration_ms: 47.761802
+  type: 'test'
+  ...
+# Subtest: slash: Ctrl+Tab selects the suggestion without sending or inserting a newline
+ok 77 - slash: Ctrl+Tab selects the suggestion without sending or inserting a newline
+  ---
+  duration_ms: 32.628808
+  type: 'test'
+  ...
+# Subtest: slash: Alt+ArrowDown/Up navigates suggestions before editor commands
+ok 78 - slash: Alt+ArrowDown/Up navigates suggestions before editor commands
+  ---
+  duration_ms: 27.29295
+  type: 'test'
+  ...
+# Subtest: slash: Alt+Enter selects the suggestion without sending or inserting a newline
+ok 79 - slash: Alt+Enter selects the suggestion without sending or inserting a newline
+  ---
+  duration_ms: 33.854926
+  type: 'test'
+  ...
+# Subtest: slash: Alt+Tab selects the suggestion without sending or inserting a newline
+ok 80 - slash: Alt+Tab selects the suggestion without sending or inserting a newline
+  ---
+  duration_ms: 23.585625
+  type: 'test'
+  ...
+# Subtest: slash: unmodified arrows still navigate the open menu
+ok 81 - slash: unmodified arrows still navigate the open menu
+  ---
+  duration_ms: 30.175847
+  type: 'test'
+  ...
+# Subtest: slash: unmodified Enter reaches the existing suggestion selection path
+ok 82 - slash: unmodified Enter reaches the existing suggestion selection path
+  ---
+  duration_ms: 24.276864
+  type: 'test'
+  ...
+# Subtest: slash: modified Escape still dismisses the open menu
+ok 83 - slash: modified Escape still dismisses the open menu
+  ---
+  duration_ms: 38.765238
+  type: 'test'
+  ...
+# Subtest: slash: unrelated keys stay available to the editor
+ok 84 - slash: unrelated keys stay available to the editor
+  ---
+  duration_ms: 37.730364
+  type: 'test'
+  ...
+# Subtest: slash: composing events do not select a suggestion
+ok 85 - slash: composing events do not select a suggestion
+  ---
+  duration_ms: 30.044932
+  type: 'test'
+  ...
+# Subtest: mention: Shift+ArrowDown/Up navigates suggestions before editor commands
+ok 86 - mention: Shift+ArrowDown/Up navigates suggestions before editor commands
+  ---
+  duration_ms: 53.010653
+  type: 'test'
+  ...
+# Subtest: mention: Shift+Enter selects the suggestion without sending or inserting a newline
+ok 87 - mention: Shift+Enter selects the suggestion without sending or inserting a newline
+  ---
+  duration_ms: 48.031491
+  type: 'test'
+  ...
+# Subtest: mention: Shift+Tab selects the suggestion without sending or inserting a newline
+ok 88 - mention: Shift+Tab selects the suggestion without sending or inserting a newline
+  ---
+  duration_ms: 71.924931
+  type: 'test'
+  ...
+# Subtest: mention: Meta+ArrowDown/Up navigates suggestions before editor commands
+ok 89 - mention: Meta+ArrowDown/Up navigates suggestions before editor commands
+  ---
+  duration_ms: 59.999889
+  type: 'test'
+  ...
+# Subtest: mention: Meta+Enter selects the suggestion without sending or inserting a newline
+ok 90 - mention: Meta+Enter selects the suggestion without sending or inserting a newline
+  ---
+  duration_ms: 35.102497
+  type: 'test'
+  ...
+# Subtest: mention: Meta+Tab selects the suggestion without sending or inserting a newline
+ok 91 - mention: Meta+Tab selects the suggestion without sending or inserting a newline
+  ---
+  duration_ms: 37.190433
+  type: 'test'
+  ...
+# Subtest: mention: Ctrl+ArrowDown/Up navigates suggestions before editor commands
+ok 92 - mention: Ctrl+ArrowDown/Up navigates suggestions before editor commands
+  ---
+  duration_ms: 25.239685
+  type: 'test'
+  ...
+# Subtest: mention: Ctrl+Enter selects the suggestion without sending or inserting a newline
+ok 93 - mention: Ctrl+Enter selects the suggestion without sending or inserting a newline
+  ---
+  duration_ms: 23.482306
+  type: 'test'
+  ...
+# Subtest: mention: Ctrl+Tab selects the suggestion without sending or inserting a newline
+ok 94 - mention: Ctrl+Tab selects the suggestion without sending or inserting a newline
+  ---
+  duration_ms: 29.715441
+  type: 'test'
+  ...
+# Subtest: mention: Alt+ArrowDown/Up navigates suggestions before editor commands
+ok 95 - mention: Alt+ArrowDown/Up navigates suggestions before editor commands
+  ---
+  duration_ms: 25.917375
+  type: 'test'
+  ...
+# Subtest: mention: Alt+Enter selects the suggestion without sending or inserting a newline
+ok 96 - mention: Alt+Enter selects the suggestion without sending or inserting a newline
+  ---
+  duration_ms: 29.481346
+  type: 'test'
+  ...
+# Subtest: mention: Alt+Tab selects the suggestion without sending or inserting a newline
+ok 97 - mention: Alt+Tab selects the suggestion without sending or inserting a newline
+  ---
+  duration_ms: 49.592974
+  type: 'test'
+  ...
+# Subtest: mention: unmodified arrows still navigate the open menu
+ok 98 - mention: unmodified arrows still navigate the open menu
+  ---
+  duration_ms: 44.864378
+  type: 'test'
+  ...
+# Subtest: mention: unmodified Enter reaches the existing suggestion selection path
+ok 99 - mention: unmodified Enter reaches the existing suggestion selection path
+  ---
+  duration_ms: 38.839482
+  type: 'test'
+  ...
+# Subtest: mention: modified Escape still dismisses the open menu
+ok 100 - mention: modified Escape still dismisses the open menu
+  ---
+  duration_ms: 26.699086
+  type: 'test'
+  ...
+# Subtest: mention: unrelated keys stay available to the editor
+ok 101 - mention: unrelated keys stay available to the editor
+  ---
+  duration_ms: 42.511012
+  type: 'test'
+  ...
+# Subtest: mention: composing events do not select a suggestion
+ok 102 - mention: composing events do not select a suggestion
+  ---
+  duration_ms: 48.51555
+  type: 'test'
+  ...
+# Subtest: without suggestions Shift+Enter retains the configured newline action
+ok 103 - without suggestions Shift+Enter retains the configured newline action
+  ---
+  duration_ms: 31.72705
+  type: 'test'
+  ...
+# Subtest: without suggestions Enter retains the configured submit action
+ok 104 - without suggestions Enter retains the configured submit action
+  ---
+  duration_ms: 24.684801
+  type: 'test'
+  ...
+# (node:155) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: slash: initial pointer entry preserves keyboard highlight until movement is ready
+ok 105 - slash: initial pointer entry preserves keyboard highlight until movement is ready
+  ---
+  duration_ms: 93.565464
+  type: 'test'
+  ...
+# Subtest: slash: a fresh row entry after outside movement selects that row
+ok 106 - slash: a fresh row entry after outside movement selects that row
+  ---
+  duration_ms: 34.678147
+  type: 'test'
+  ...
+# Subtest: slash: movement within the hovered row does not overwrite a later keyboard selection
+ok 107 - slash: movement within the hovered row does not overwrite a later keyboard selection
+  ---
+  duration_ms: 62.968124
+  type: 'test'
+  ...
+# Subtest: slash: entering the selected row does not issue a redundant selection
+ok 108 - slash: entering the selected row does not issue a redundant selection
+  ---
+  duration_ms: 27.655279
+  type: 'test'
+  ...
+# Subtest: slash: picking before pointer readiness still chooses the exact item once
+ok 109 - slash: picking before pointer readiness still chooses the exact item once
+  ---
+  duration_ms: 64.471075
+  type: 'test'
+  ...
+# Subtest: slash: picking after pointer readiness keeps the exact existing action
+ok 110 - slash: picking after pointer readiness keeps the exact existing action
+  ---
+  duration_ms: 27.170539
+  type: 'test'
+  ...
+# Subtest: slash: re-enabling an empty menu resets pointer readiness
+ok 111 - slash: re-enabling an empty menu resets pointer readiness
+  ---
+  duration_ms: 11.943995
+  type: 'test'
+  ...
+# Subtest: slash: query presentation updates do not reset an already-ready pointer
+ok 112 - slash: query presentation updates do not reset an already-ready pointer
+  ---
+  duration_ms: 47.101238
+  type: 'test'
+  ...
+# Subtest: slash: external keyboard selection updates highlighting without pointer side effects
+ok 113 - slash: external keyboard selection updates highlighting without pointer side effects
+  ---
+  duration_ms: 35.897645
+  type: 'test'
+  ...
+# Subtest: slash: unmount before movement removes the pending document listener
+ok 114 - slash: unmount before movement removes the pending document listener
+  ---
+  duration_ms: 9.961884
+  type: 'test'
+  ...
+# Subtest: mention: initial pointer entry preserves keyboard highlight until movement is ready
+ok 115 - mention: initial pointer entry preserves keyboard highlight until movement is ready
+  ---
+  duration_ms: 23.057158
+  type: 'test'
+  ...
+# Subtest: mention: a fresh row entry after outside movement selects that row
+ok 116 - mention: a fresh row entry after outside movement selects that row
+  ---
+  duration_ms: 9.768537
+  type: 'test'
+  ...
+# Subtest: mention: movement within the hovered row does not overwrite a later keyboard selection
+ok 117 - mention: movement within the hovered row does not overwrite a later keyboard selection
+  ---
+  duration_ms: 29.359789
+  type: 'test'
+  ...
+# Subtest: mention: entering the selected row does not issue a redundant selection
+ok 118 - mention: entering the selected row does not issue a redundant selection
+  ---
+  duration_ms: 16.629308
+  type: 'test'
+  ...
+# Subtest: mention: picking before pointer readiness still chooses the exact item once
+ok 119 - mention: picking before pointer readiness still chooses the exact item once
+  ---
+  duration_ms: 33.860714
+  type: 'test'
+  ...
+# Subtest: mention: picking after pointer readiness keeps the exact existing action
+ok 120 - mention: picking after pointer readiness keeps the exact existing action
+  ---
+  duration_ms: 21.892938
+  type: 'test'
+  ...
+# Subtest: mention: re-enabling an empty menu resets pointer readiness
+ok 121 - mention: re-enabling an empty menu resets pointer readiness
+  ---
+  duration_ms: 25.402831
+  type: 'test'
+  ...
+# Subtest: mention: query presentation updates do not reset an already-ready pointer
+ok 122 - mention: query presentation updates do not reset an already-ready pointer
+  ---
+  duration_ms: 28.646283
+  type: 'test'
+  ...
+# Subtest: mention: external keyboard selection updates highlighting without pointer side effects
+ok 123 - mention: external keyboard selection updates highlighting without pointer side effects
+  ---
+  duration_ms: 8.517889
+  type: 'test'
+  ...
+# Subtest: mention: unmount before movement removes the pending document listener
+ok 124 - mention: unmount before movement removes the pending document listener
+  ---
+  duration_ms: 10.032517
+  type: 'test'
+  ...
+1..124
+# tests 124
+# suites 0
+# pass 124
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4900.913825

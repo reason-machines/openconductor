@@ -1,0 +1,453 @@
+(node:88) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:95) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:95) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: actual Composer synchronous submission still clears after delivery
+ok 1 - actual Composer synchronous submission still clears after delivery
+  ---
+  duration_ms: 1.674001
+  type: 'test'
+  ...
+# Subtest: actual Composer asynchronous submission leaves clearing to its successful owner
+ok 2 - actual Composer asynchronous submission leaves clearing to its successful owner
+  ---
+  duration_ms: 0.720492
+  type: 'test'
+  ...
+# Subtest: actual Composer asynchronous owner preserves a not-ready draft
+ok 3 - actual Composer asynchronous owner preserves a not-ready draft
+  ---
+  duration_ms: 0.658522
+  type: 'test'
+  ...
+# Subtest: actual Composer asynchronous owner preserves a rejected draft
+ok 4 - actual Composer asynchronous owner preserves a rejected draft
+  ---
+  duration_ms: 0.709323
+  type: 'test'
+  ...
+# (node:96) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary draft chips do not open eagerly
+ok 5 - ordinary draft chips do not open eagerly
+  ---
+  duration_ms: 123.821363
+  type: 'test'
+  ...
+# Subtest: actual draft chip opens after 150ms, not before
+ok 6 - actual draft chip opens after 150ms, not before
+  ---
+  duration_ms: 52.156402
+  type: 'test'
+  ...
+# Subtest: leaving before the open delay never opens the preview
+ok 7 - leaving before the open delay never opens the preview
+  ---
+  duration_ms: 49.788005
+  type: 'test'
+  ...
+# Subtest: the 100ms close delay preserves pointer travel into the card
+ok 8 - the 100ms close delay preserves pointer travel into the card
+  ---
+  duration_ms: 49.585247
+  type: 'test'
+  ...
+# Subtest: an editor interaction epoch dismisses visible preview without changing attachment
+ok 9 - an editor interaction epoch dismisses visible preview without changing attachment
+  ---
+  duration_ms: 51.218974
+  type: 'test'
+  ...
+# Subtest: an editor epoch also cancels an outstanding delayed open
+ok 10 - an editor epoch also cancels an outstanding delayed open
+  ---
+  duration_ms: 25.253705
+  type: 'test'
+  ...
+# Subtest: replacement content cannot leave the previous text visible
+ok 11 - replacement content cannot leave the previous text visible
+  ---
+  duration_ms: 33.139271
+  type: 'test'
+  ...
+# Subtest: preview text remains text, never an executable HTML node
+ok 12 - preview text remains text, never an executable HTML node
+  ---
+  duration_ms: 40.354794
+  type: 'test'
+  ...
+# Subtest: historical or generic chips are not mistaken for original text
+ok 13 - historical or generic chips are not mistaken for original text
+  ---
+  duration_ms: 47.131942
+  type: 'test'
+  ...
+# Subtest: the original remove action retains its exact attachment
+ok 14 - the original remove action retains its exact attachment
+  ---
+  duration_ms: 23.716212
+  type: 'test'
+  ...
+# Subtest: unmount cancels pending open instead of publishing after departure
+ok 15 - unmount cancels pending open instead of publishing after departure
+  ---
+  duration_ms: 34.525044
+  type: 'test'
+  ...
+# Subtest: typed text metadata survives the existing persisted-chip boundary
+ok 16 - typed text metadata survives the existing persisted-chip boundary
+  ---
+  duration_ms: 0.406611
+  type: 'test'
+  ...
+# Subtest: unknown preview metadata does not turn a generic record into text
+ok 17 - unknown preview metadata does not turn a generic record into text
+  ---
+  duration_ms: 0.182538
+  type: 'test'
+  ...
+# Subtest: actual file intake marks exact inline text, not just the display filename
+ok 18 - actual file intake marks exact inline text, not just the display filename
+  ---
+  duration_ms: 2.356239
+  type: 'test'
+  ...
+# Subtest: actual file intake does not label binary, invalid UTF-8 or large placeholders as original text
+ok 19 - actual file intake does not label binary, invalid UTF-8 or large placeholders as original text
+  ---
+  duration_ms: 1.029089
+  type: 'test'
+  ...
+# (node:111) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: claude: removing settled A cannot remove or resurrect it when B finishes read
+ok 20 - claude: removing settled A cannot remove or resurrect it when B finishes read
+  ---
+  duration_ms: 104.661263
+  type: 'test'
+  ...
+# Subtest: reason: removing settled A cannot remove or resurrect it when B finishes read
+ok 21 - reason: removing settled A cannot remove or resurrect it when B finishes read
+  ---
+  duration_ms: 65.908653
+  type: 'test'
+  ...
+# Subtest: reason: removing settled A cannot remove or resurrect it when B finishes write
+ok 22 - reason: removing settled A cannot remove or resurrect it when B finishes write
+  ---
+  duration_ms: 32.05448
+  type: 'test'
+  ...
+# Subtest: local /clear during B read separates the replacement from late original-owner settlement
+ok 23 - local /clear during B read separates the replacement from late original-owner settlement
+  ---
+  duration_ms: 33.298172
+  type: 'test'
+  ...
+# Subtest: local /clear during persisted-attachment copy stops old-chat delivery without touching the replacement
+ok 24 - local /clear during persisted-attachment copy stops old-chat delivery without touching the replacement
+  ---
+  duration_ms: 42.690622
+  type: 'test'
+  ...
+# Subtest: navigation and remount preserve pending read and permit one later send
+ok 25 - navigation and remount preserve pending read and permit one later send
+  ---
+  duration_ms: 28.74308
+  type: 'test'
+  ...
+# Subtest: navigation and remount preserve pending write and permit one later send
+ok 26 - navigation and remount preserve pending write and permit one later send
+  ---
+  duration_ms: 68.237915
+  type: 'test'
+  ...
+# (node:119) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: an attached file goes to .context/attachments/<random 6>/<name> in the workspace
+ok 27 - an attached file goes to .context/attachments/<random 6>/<name> in the workspace
+  ---
+  duration_ms: 0.883813
+  type: 'test'
+  ...
+# Subtest: file names cannot leave their folder or hide
+ok 28 - file names cannot leave their folder or hide
+  ---
+  duration_ms: 0.196374
+  type: 'test'
+  ...
+# Subtest: UTF-8 text goes inline; binary and oversized files are pointed at by path
+ok 29 - UTF-8 text goes inline; binary and oversized files are pointed at by path
+  ---
+  duration_ms: 0.297148
+  type: 'test'
+  ...
+# Subtest: persisted attachment chips retain display, inline content and staged IDs
+ok 30 - persisted attachment chips retain display, inline content and staged IDs
+  ---
+  duration_ms: 1.231693
+  type: 'test'
+  ...
+# Subtest: malformed persisted chips and unsafe staged paths are not restored
+ok 31 - malformed persisted chips and unsafe staged paths are not restored
+  ---
+  duration_ms: 0.23525
+  type: 'test'
+  ...
+# Subtest: files over the size limit are refused with a reason
+ok 32 - files over the size limit are refused with a reason
+  ---
+  duration_ms: 0.132334
+  type: 'test'
+  ...
+# (node:127) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: accepted keyboard cancellation stops then refocuses a blurred Composer
+ok 33 - accepted keyboard cancellation stops then refocuses a blurred Composer
+  ---
+  duration_ms: 298.048151
+  type: 'test'
+  ...
+# Subtest: keyboard cancellation preserves an already focused editor's selection
+ok 34 - keyboard cancellation preserves an already focused editor's selection
+  ---
+  duration_ms: 70.14358
+  type: 'test'
+  ...
+# Subtest: idle keyboard cancellation still declines without stopping or focusing
+ok 35 - idle keyboard cancellation still declines without stopping or focusing
+  ---
+  duration_ms: 123.762719
+  type: 'test'
+  ...
+# Subtest: pointer Stop retains its existing stop-only behavior
+ok 36 - pointer Stop retains its existing stop-only behavior
+  ---
+  duration_ms: 92.219129
+  type: 'test'
+  ...
+# Subtest: accepted cancellation still stops when the editor ref has detached
+ok 37 - accepted cancellation still stops when the editor ref has detached
+  ---
+  duration_ms: 89.333088
+  type: 'test'
+  ...
+# Subtest: keyboard cancellation isolates rich draft, attachment, queue, and another chat
+ok 38 - keyboard cancellation isolates rich draft, attachment, queue, and another chat
+  ---
+  duration_ms: 128.590118
+  type: 'test'
+  ...
+# (node:135) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: returns clipboard text
+ok 39 - returns clipboard text
+  ---
+  duration_ms: 0.675803
+  type: 'test'
+  ...
+# Subtest: returns null for empty string
+ok 40 - returns null for empty string
+  ---
+  duration_ms: 0.115638
+  type: 'test'
+  ...
+# Subtest: returns null on read failure
+ok 41 - returns null on read failure
+  ---
+  duration_ms: 0.16155
+  type: 'test'
+  ...
+# Subtest: returns multiline paths unchanged
+ok 42 - returns multiline paths unchanged
+  ---
+  duration_ms: 0.112497
+  type: 'test'
+  ...
+# Subtest: returns whitespace-only text unchanged (not filtered)
+ok 43 - returns whitespace-only text unchanged (not filtered)
+  ---
+  duration_ms: 0.097663
+  type: 'test'
+  ...
+# (node:143) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:143) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: same-workspace chat tabs retain independent text/chips before and after debounce
+ok 44 - same-workspace chat tabs retain independent text/chips before and after debounce
+  ---
+  duration_ms: 6.321186
+  type: 'test'
+  ...
+# Subtest: delayed hydration cannot overwrite typing, clearing or injected draft chips, even after leaving
+ok 45 - delayed hydration cannot overwrite typing, clearing or injected draft chips, even after leaving
+  ---
+  duration_ms: 0.49228
+  type: 'test'
+  ...
+# Subtest: typing before hydration still restores untouched saved attachments
+ok 46 - typing before hydration still restores untouched saved attachments
+  ---
+  duration_ms: 0.311182
+  type: 'test'
+  ...
+# Subtest: late read completion stays with originating chat and blocks premature send
+ok 47 - late read completion stays with originating chat and blocks premature send
+  ---
+  duration_ms: 1.143666
+  type: 'test'
+  ...
+# Subtest: late write completion stays with originating chat and blocks premature send
+ok 48 - late write completion stays with originating chat and blocks premature send
+  ---
+  duration_ms: 0.581948
+  type: 'test'
+  ...
+# Subtest: failed binary copy sends nothing, retains text/chips, and retries already copied files without their removed staging
+ok 49 - failed binary copy sends nothing, retains text/chips, and retries already copied files without their removed staging
+  ---
+  duration_ms: 0.610529
+  type: 'test'
+  ...
+# Subtest: switch during copy cancels delivery, persists successful copy and retains retry on return
+ok 50 - switch during copy cancels delivery, persists successful copy and retains retry on return
+  ---
+  duration_ms: 0.385107
+  type: 'test'
+  ...
+# Subtest: duplicate submits are inhibited and edits during copy survive successful send
+ok 51 - duplicate submits are inhibited and edits during copy survive successful send
+  ---
+  duration_ms: 0.253077
+  type: 'test'
+  ...
+# Subtest: late read errors remain on the originating chat
+ok 52 - late read errors remain on the originating chat
+  ---
+  duration_ms: 0.466054
+  type: 'test'
+  ...
+# Subtest: unmount and remount during file write retain one owner and cannot orphan staged data
+ok 53 - unmount and remount during file write retain one owner and cannot orphan staged data
+  ---
+  duration_ms: 0.57224
+  type: 'test'
+  ...
+# Subtest: read/write rejection releases pending admission and failed copy releases send admission
+ok 54 - read/write rejection releases pending admission and failed copy releases send admission
+  ---
+  duration_ms: 0.569973
+  type: 'test'
+  ...
+# Subtest: existing fork and transcript error actions use the originating chat's error setter
+ok 55 - existing fork and transcript error actions use the originating chat's error setter
+  ---
+  duration_ms: 0.142642
+  type: 'test'
+  ...
+# Subtest: React uses the tested session owner, chat identity, and workspace-native staging identity
+ok 56 - React uses the tested session owner, chat identity, and workspace-native staging identity
+  ---
+  duration_ms: 1.140175
+  type: 'test'
+  ...
+# (node:151) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# TAP version 13
+# \# (node:166) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# \# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# Subtest: actual session blocks read-pending B without clearing ready A or prose
+# ok 1 - actual session blocks read-pending B without clearing ready A or prose
+#   ---
+#   duration_ms: 3.923941
+#   type: 'test'
+#   ...
+# \# Subtest: actual session blocks write-pending B without clearing ready A or prose
+# ok 2 - actual session blocks write-pending B without clearing ready A or prose
+#   ---
+#   duration_ms: 0.604431
+#   type: 'test'
+#   ...
+# \# Subtest: failed B preserves ready A and explicit attachment-only delivery
+# ok 3 - failed B preserves ready A and explicit attachment-only delivery
+#   ---
+#   duration_ms: 0.576521
+#   type: 'test'
+#   ...
+# \# Subtest: workspace copy failure preserves draft and attachment for explicit retry
+# ok 4 - workspace copy failure preserves draft and attachment for explicit retry
+#   ---
+#   duration_ms: 0.462151
+#   type: 'test'
+#   ...
+# 1..4
+# \# tests 4
+# \# suites 0
+# \# pass 4
+# \# fail 0
+# \# cancelled 0
+# \# skipped 0
+# \# todo 0
+# \# duration_ms 235.094242
+# Subtest: four frozen Send-readiness controls execute against the actual ComposerSession
+ok 57 - four frozen Send-readiness controls execute against the actual ComposerSession
+  ---
+  duration_ms: 402.039994
+  type: 'test'
+  ...
+# (node:174) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: nativePathToFile
+    # Subtest: extracts basename from posix path and returns file bytes
+    ok 1 - extracts basename from posix path and returns file bytes
+      ---
+      duration_ms: 1.87944
+      type: 'test'
+      ...
+    # Subtest: extracts basename from windows path
+    ok 2 - extracts basename from windows path
+      ---
+      duration_ms: 0.198768
+      type: 'test'
+      ...
+    # Subtest: returns null when readFile throws (permission denied / path missing)
+    ok 3 - returns null when readFile throws (permission denied / path missing)
+      ---
+      duration_ms: 0.177317
+      type: 'test'
+      ...
+    # Subtest: returns null when readFile throws with not-found error
+    ok 4 - returns null when readFile throws with not-found error
+      ---
+      duration_ms: 0.222153
+      type: 'test'
+      ...
+    # Subtest: uses full path as name when no separator present
+    ok 5 - uses full path as name when no separator present
+      ---
+      duration_ms: 0.147621
+      type: 'test'
+      ...
+    # Subtest: does NOT use fetch or convertFileSrc (IPC-only path, regression guard)
+    ok 6 - does NOT use fetch or convertFileSrc (IPC-only path, regression guard)
+      ---
+      duration_ms: 0.160963
+      type: 'test'
+      ...
+    1..6
+ok 58 - nativePathToFile
+  ---
+  duration_ms: 3.745219
+  type: 'suite'
+  ...
+1..58
+# tests 63
+# suites 1
+# pass 63
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3048.845985
