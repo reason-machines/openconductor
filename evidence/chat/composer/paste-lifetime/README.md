@@ -54,7 +54,7 @@ Both **passed**. Without the optional parent argument, the verifier explicitly r
 
 ## Validation on Reason cloud
 
-Exact commands and exit codes are retained in `commands.json`; full logs are in this directory.
+Exact commands and exit codes are retained in `commands.json`; full logs are in this directory. Build, typecheck, color-lint and verifier logs are also lossless gzip, preserving original trailing whitespace/blank lines without weakening the diff whitespace check.
 
 - Dedicated frozen fixture: **6P/1F RED → 7/7 GREEN**, unchanged SHA above.
 - Adjacent clipboard/long-paste/cancel/async-submit/submit/attachments/session/suggestion tests: **124/124 PASS**, no failures, skips or cancellations.

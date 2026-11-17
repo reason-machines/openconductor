@@ -46,10 +46,10 @@
       "cancelled": 0,
       "log": "adjacent.tap"
     },
-    { "command": "npm run typecheck", "exitCode": 0, "log": "typecheck.log" },
-    { "command": "npm run build", "exitCode": 0, "result": "Branding, TypeScript and frontend Vite build passed; import/chunk advisories retained", "log": "build.log" },
-    { "command": "npm run lint:colors", "exitCode": 0, "result": "Six checker tests and source scan passed", "log": "color-lint.log" },
-    { "command": "node evidence/chat/composer/paste-lifetime/verify.mjs .qa/create-suggestions-135/retained/renderApp-D_fmY7hW.js", "exitCode": 0, "log": "verify.log" },
+    { "command": "npm run typecheck", "exitCode": 0, "log": "typecheck.log.gz" },
+    { "command": "npm run build", "exitCode": 0, "result": "Branding, TypeScript and frontend Vite build passed; import/chunk advisories retained", "log": "build.log.gz" },
+    { "command": "npm run lint:colors", "exitCode": 0, "result": "Six checker tests and source scan passed", "log": "color-lint.log.gz" },
+    { "command": "node evidence/chat/composer/paste-lifetime/verify.mjs .qa/create-suggestions-135/retained/renderApp-D_fmY7hW.js", "exitCode": 0, "log": "verify.log.gz" },
     { "command": "sha256sum -c evidence/chat/composer/paste-lifetime/SHA256SUMS", "exitCode": 0 },
     { "command": "git diff --check", "exitCode": 0 }
   ],
