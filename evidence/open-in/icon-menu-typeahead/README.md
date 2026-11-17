@@ -46,6 +46,14 @@ After treatment, the **same frozen27 passes 27/27**. All Open in tests pass **10
 
 The qualified fixture/evidence was preserved first in isolated commit `5f2af5074`, then replayed as `f790a9833` onto the actual #1454 squash. Product work remained in that separate main-based worktree, never appended to #1454.
 
+## Hosted CI correction and serialized heavy checks
+
+The first published head `1b8f00212cba5c2510630a93168ddeefbe5f3599` passed hosted typecheck and colour checks, but its full frontend step failed **5409/5410** before the build. The one top-level failure was the existing `dragRegion.test.ts` source contract: its `className="oi-menu"[^>]*` matcher stops at the new inline blur callback's arrow before reaching the unchanged drag opt-out attribute. Local reproduction was **6 pass / 1 intended assertion failure**.
+
+Move the existing `data-tauri-drag-region="false"` before the blur callback. No handler, attribute value, test or assertion changes. After that ordering-only correction, the unchanged drag tests plus all Open in tests pass **114/114**, with no skips/cancellations; the retained-source/frozen verifier remains **288 PASS**. The frozen27 SHA stays unchanged. `ci-correction/` preserves the raw RED, GREEN and source receipts.
+
+The admitted, single foreground heavy pipeline ran `npm run typecheck` followed by the default `npm run build` (branding, TypeScript, Vite), both **PASS**, ending **2026-11-17T16:43:56Z**. Vite took **45.98s**. The checked local `6e682d536` tree was byte-identical to published `1b8f00212`; these heavy results precede only the attribute ordering correction. No second heavy pipeline was started. Own heavy process receipt was empty and the slot was explicitly released to the ledger. The new published head must independently pass hosted CI before merging.
+
 ## Acceptance gaps and REA limits
 
 No browser/native runtime or package admission was granted. There is no screenshot: browser event propagation, real button default actions, physical typing/timing, geometry, VoiceOver, installed identity, actual launch/clipboard and packaged acceptance are **NOT_RUN**. Mounted callback checks are not physical-key or macOS proof. Earlier REA analyzer heap/zero-file parsing limitations remain recorded in their original packets; this inert AST pass encountered no new REA failure.

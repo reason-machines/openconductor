@@ -256,9 +256,9 @@ export function OpenInButton({ path, notify, variant = "split", showShortcutHint
         </button>
       </Tooltip>
       {presence.mounted && (
-        <div className="oi-menu" role="menu" aria-label="Open in" ref={menu} onKeyDown={onMenuKey}
+        <div className="oi-menu" role="menu" aria-label="Open in" ref={menu} onKeyDown={onMenuKey} data-tauri-drag-region="false"
           onBlur={(e) => { if (!split && !wrap.current?.contains(e.relatedTarget as Node | null)) clearTypeahead(); }}
-          data-tauri-drag-region="false" data-motion="popup" {...presence.attrs}>
+          data-motion="popup" {...presence.attrs}>
           {installed === null ? (
             <div className="oi-menu-note">Loading…</div>
           ) : apps.length === 0 ? (
