@@ -42,6 +42,16 @@ The initial fixture incorrectly assumed a persisted empty shortcut list disabled
 - `python3 evidence/dialogs/submit-prompt-pending-hint/verify.py` **passed**: original asset, eight complete source bindings, nineteen current source pins, immutable fixture, exact one-line product change and no legacy-test edits.
 - `npm run build` **passed** on local head `365558970b61bcc3c6a58c79311be6d40b85c035`, including branding, full TypeScript and Vite (65 seconds). Existing large-chunk warnings remain.
 - `npm run lint:colors` **passed**: six tests and 1,273-file scan. The sole heavy slot was released at **18:50:23.992649Z**, own compiler/build processes empty. Commands ran sequentially in the foreground.
-- Browser visible proof is **pending separate serialized admission**; no browser/server/native runtime was started for these checks.
+- `python3 evidence/dialogs/submit-prompt-pending-hint/audit_browser.py` **passed**: twelve complete original readbacks, actual served hashes, identical 28-input graphs, five frozen fixture sources, CSP and cleanup receipts. Browser baseline **4/6** (only the two expected pending-hint discrepancies) → same treatment controls **6/6 passed**.
 
-Source and mounted callback checks do not establish full-App, live-original, macOS/WebKit, native/provider or packaged behavior. Existing native/release custodians retain their lanes.
+## Visible proof and cleanup
+
+The inert Linux Chrome replay uses the actual component, keybinding provider, motion hook and unchanged production CSS/tokens. Only the backend import is replaced with the synthetic deferred opener. Both builds deny connects/forms via CSP. Default and custom pending controls use real pointer clicks; React's actual form submit is trusted and remains one request. Both pending hints disappear after treatment, while idle/rejection hints, draft values, resolution close and blank prevention are preserved.
+
+`browser-readbacks.ndjson` preserves twelve **original tool outputs verbatim** with their source IDs/revisions and decoded values. In the blank control the disabled button has `pointer-events:none`, so the real coordinate click hits its footer; the raw target is preserved, not claimed as a button click. There is no submit/request for that control. Inputs were set through their observed native value setters with normal bubbling input/change events and read back; no browser storage or network result was fabricated. Only observed fixture buttons settled the inert promise.
+
+Two inspected PNGs are retained and published in `media.json`: before, the disabled pending button still displays `⌘↵`; after, it displays only “Submitting...”. The Stone dark fixture setting and synthetic toolbar are explicit; this is not an animation/default-theme/full-App visual-parity claim.
+
+Sole runtime started **18:53:57.913Z**, deadline **19:08:57.913Z**. Explicit early cleanup/release **19:00:57.238358Z**: own tab closed, managed tabs `[]`, published preview stopped/listening null, worker-confirmed process group exit/free port, own server processes `[]`, separate command-network-namespace bind passed. That independent bind is not a substitute for the preview namespace's stopped/listening-null receipt. No runtime remains reserved.
+
+**Not run:** full-App, live-original side-by-side, macOS/WebKit, real backend/provider/native behavior and packaged inclusion. Existing native/release custodians retain their lanes; these source/mounted/Linux Chrome checks do not establish those acceptance gates.
