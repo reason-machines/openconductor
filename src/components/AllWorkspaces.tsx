@@ -313,14 +313,17 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
       if (entry) setActiveKey(entry.key);
       return;
     }
+    const ctrlLetter = e.ctrlKey && !e.metaKey && !e.altKey;
+    const ctrlNext = ctrlLetter && (e.key === "n" || e.key === "j");
+    const ctrlPrevious = ctrlLetter && (e.key === "p" || e.key === "k");
     if (flat.length === 0) {
-      if (e.key === "Enter" && !e.metaKey) e.preventDefault();
+      if ((e.key === "Enter" && !e.metaKey) || ctrlNext || ctrlPrevious) e.preventDefault();
       return;
     }
-    if (e.key === "ArrowDown") {
+    if (e.key === "ArrowDown" || ctrlNext) {
       e.preventDefault();
       setActiveKey(flat[Math.min(activeIndex + 1, flat.length - 1)].key);
-    } else if (e.key === "ArrowUp") {
+    } else if (e.key === "ArrowUp" || ctrlPrevious) {
       e.preventDefault();
       setActiveKey(flat[Math.max(activeIndex - 1, 0)].key);
     } else if (e.key === "Enter" && e.metaKey) {

@@ -1,0 +1,166 @@
+{
+  "unit": "HOME-CTRL-LETTER-NAVIGATION-271",
+  "producer": "Conductor Rebuild / Home271",
+  "reference_kind": "HISTORICAL_RETAINED_REA_SOURCE_NOT_REACQUIRED",
+  "qualification_main": "c821b27519ab1831cf62dce6d236337bf75cc3e0",
+  "qualification_component_sha256": "22ac2e190bcfab6a02b86d6f4d3ae74990a4965e428f76fef63654f728eca1b0",
+  "pre_patch_local_head": "a519e1738af95d3705b57e262d0d8846e42ab59f",
+  "reference_receipt": "evidence/home-keyboard-endpoints/retained-reference.json",
+  "reference_receipt_sha256": "a844bf663720caf0b3f8b2a209335bcddb64f305930fb67a1c7c4ae790489224",
+  "asset": {
+    "name": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "rea_parent_evidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "verified_spans": [
+    {
+      "name": "Home-UJo",
+      "kind": "complete function declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9863549,
+        9874571
+      ],
+      "utf16_half_open": [
+        9817995,
+        9829017
+      ],
+      "bytes": 11022,
+      "sha256": "58824b140436a668433f7e08fe26d2083c0e100d363cda5edb14150526a53030"
+    },
+    {
+      "name": "Home-command-root-KV",
+      "kind": "complete const declaration plus displayName assignment",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2913899,
+        2914275
+      ],
+      "utf16_half_open": [
+        2913453,
+        2913829
+      ],
+      "bytes": 376,
+      "sha256": "61beeb6e4e35c064cdc7c60a0c70f912a36770c820c9adf22ba9f34272cd9926"
+    },
+    {
+      "name": "command-root-Xyi",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2903072,
+        2908580
+      ],
+      "utf16_half_open": [
+        2902626,
+        2908134
+      ],
+      "bytes": 5508,
+      "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92"
+    },
+    {
+      "name": "Home-command-input-kI",
+      "kind": "complete const declaration plus displayName assignment",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2916816,
+        2917726
+      ],
+      "utf16_half_open": [
+        2916370,
+        2917280
+      ],
+      "bytes": 910,
+      "sha256": "970dc084f87ebeb0e3f1220debf849ee4115e11f0be19c8442dab05ba688decf"
+    },
+    {
+      "name": "command-input-B5s",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2910380,
+        2910953
+      ],
+      "utf16_half_open": [
+        2909934,
+        2910507
+      ],
+      "bytes": 573,
+      "sha256": "70fa9c07b0d8b605e648601e01cd266db15dadad0ac59b8cb5569cee58c02758"
+    },
+    {
+      "name": "Home-date-group-iJn",
+      "kind": "complete const declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9853380,
+        9854813
+      ],
+      "utf16_half_open": [
+        9807826,
+        9809259
+      ],
+      "bytes": 1433,
+      "sha256": "61151c52d3cdb19b23cde95477b57653c1ced39142e1735151b43b03bda14e2a"
+    },
+    {
+      "name": "Home-row-_Jo",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement; includes its terminating semicolon",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9845318,
+        9849951
+      ],
+      "utf16_half_open": [
+        9799764,
+        9804397
+      ],
+      "bytes": 4633,
+      "sha256": "e9d9cff5d2c849eeee2425d64cfb94bb6283ba19b2e3e836e07ab762510344ea"
+    }
+  ],
+  "P6_binding": {
+    "path": "evidence/home-ime/reference/command-component-P6.js.txt",
+    "bytes": 109,
+    "sha256": "9b57d93a69e00511c26ce27dfc26117a75a0a2f70492d5f3436f58f4351df3bc"
+  },
+  "original_scratch_fixture_sha256": "659e5894c742559bc1d9eef8183853745221d48e5b3d4176a721dee6177657dc",
+  "original_scratch_red_sha256": "48da63b0462797f6490b69c83f5932f361b83e64d74072e372fac3de4728f507",
+  "portable_fixture": "src/components/homeCtrlNavigation.test.ts",
+  "portable_fixture_sha256": "94b13df577538e95a8a443ac1279590113dceccf4b2cca5d9d7348bbeb7390ca",
+  "nine_case_bodies_and_assertions_preserved": true,
+  "port_only_changes": [
+    "absolute imports to repository-relative imports",
+    "baseline-pinned compile loader to production source relative to test"
+  ],
+  "portable_red": {
+    "passed": 3,
+    "failed": 6,
+    "exit_code": 1,
+    "sha256": "54b4879d724665618c9d34bdfbec3d20474dd510effd597023c5c148038b7f22"
+  },
+  "unchanged_green": {
+    "passed": 9,
+    "failed": 0,
+    "exit_code": 0,
+    "sha256": "f629402e47ff332cda18287a84cdc5db2a3aa02956c95fab2a1b60e9381dce30"
+  },
+  "adjacent": {
+    "passed": 173,
+    "failed": 0,
+    "exit_code": 0,
+    "sha256": "2acb7d49e76ef2a3c23c00f0dcf9a1d62c7e18f3dce5dab6a614e34da3c251d2"
+  },
+  "typecheck": {
+    "exit_code": 2,
+    "diagnostic": "TS2307 missing existing @tauri-apps/plugin-fs",
+    "sha256": "cc31e3d1158f3496498510849a83575e29a990001cdc78db84a5564214df281e"
+  },
+  "limits": [
+    "Combined Ctrl+Meta/Alt letters intentionally unchanged",
+    "No full DOM propagation/native key interception",
+    "No installation/runtime/browser/package/native/visual acceptance",
+    "Historical reference only; no new REA capture or reference JS evaluation"
+  ]
+}
