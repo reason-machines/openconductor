@@ -7,6 +7,7 @@ import { test } from "node:test";
 import { runInNewContext } from "node:vm";
 import * as React from "react";
 import ts from "typescript";
+import * as sectionSearchScore from "./search/score.ts";
 import type { ComponentProps } from "react";
 import type { Action, StoreStartup } from "../state/store";
 import type { AppState } from "../state/types";
@@ -38,6 +39,7 @@ function evaluate(file: string, imports: Readonly<Record<string, unknown>>, expo
   runInNewContext(javascript, {
     ...globals, exports, URLSearchParams, Date, console,
     require(name: string) {
+      if (name === "./search/score.ts") return sectionSearchScore;
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
       if (name === "../lib/persistence/producer.ts") return persistence;
       assert.ok(name in imports, `Unexpected ${file} dependency: ${name}`);

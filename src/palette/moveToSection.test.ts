@@ -42,6 +42,7 @@ function evaluate(file: string, imports: Readonly<Record<string, unknown>>, expo
   runInNewContext(javascript, {
     ...globals, exports, URLSearchParams, Date, console,
     require(name: string) {
+      if (name === "./search/score.ts") return searchScore;
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
       assert.ok(name in imports, `Unexpected ${file} dependency: ${name}`);
       return imports[name];
