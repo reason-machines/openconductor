@@ -46,6 +46,8 @@ pub enum ControlRequest {
 pub enum PermissionDecision {
     /// Run the tool with this input (the prompt's input, possibly edited).
     Allow { input: Value },
+    /// Approve a plan and restore the configured mode for the same turn.
+    AllowWithMode { input: Value, mode: PermissionMode },
     /// Refuse; `interrupt` also stops the turn.
     Deny { message: String, interrupt: bool },
 }
@@ -81,6 +83,10 @@ impl ClientMessage {
                 let answer = match decision {
                     PermissionDecision::Allow { input } => {
                         json!({"behavior": "allow", "updatedInput": input})
+                    }
+                    PermissionDecision::AllowWithMode { input, mode } => {
+                        json!({"behavior": "allow", "updatedInput": input,
+                            "updatedPermissions": [{"type": "setMode", "mode": mode.as_str(), "destination": "session"}]})
                     }
                     PermissionDecision::Deny { message, interrupt } => {
                         json!({"behavior": "deny", "message": message, "interrupt": interrupt})
