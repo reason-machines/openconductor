@@ -1,0 +1,519 @@
+{
+  "frontier": "COMPOSER-QUEUE-EDIT-RETURN-FOCUS-135",
+  "checked_utc": "2026-11-17T22:18:04.991866+00:00",
+  "checked_default_main": "1e2500a959f68411be54cdca5c0473d0010b0559",
+  "disposition": "SOURCE_CLOSED_NO_RECORDED_COLLISION_NOT_RUNTIME_REPRODUCED",
+  "checks_passed": 171,
+  "checks": [
+    "complete original renderer retained and SHA matches",
+    "fresh default main Tauri manifest original asset binding",
+    "JNi complete retained span identity",
+    "JNi full parent exact-byte range binding",
+    "JNi lies wholly in historically REA-analyzed slice",
+    "AAo complete retained span identity",
+    "AAo full parent exact-byte range binding",
+    "AAo lies wholly in historically REA-analyzed slice",
+    "GTo complete retained span identity",
+    "GTo full parent exact-byte range binding",
+    "GTo lies wholly in historically REA-analyzed slice",
+    "DTo complete retained span identity",
+    "DTo full parent exact-byte range binding",
+    "DTo lies wholly in historically REA-analyzed slice",
+    "corrected analyzed slice SHA matches original bytes",
+    "retained REA coordinate jsrg_unknown_0640ac1b830246547ffb6ec26748439d93ab31b293ec434539ac7f46d81b8815",
+    "retained REA coordinate jsrg_unknown_8e60d3bed747ca804798a2550af7d3cb9f97b32d2d7b7b74ed4753e6205ea58d",
+    "retained REA coordinate jsrg_unknown_1c476078b1becf5b79831de41444338396a5fb5f4552a53f13bfcd68628ea1ef",
+    "retained REA coordinate jsrg_unknown_a728105ff0665cc68edf3cefe4401045b1e8935d9e982d0a02ab702ce48aa756",
+    "retained REA coordinate jsrg_unknown_46d460ad0b6265b733a21416918f5121b6b0b11645d142b8e2d79060a4b41ee0",
+    "retained REA coordinate jsrg_unknown_5904ce63091478c17fa5e89011860dd944644a001178a7783eb0b6364345b0a0",
+    "retained REA coordinate jsrg_unknown_dbdf7acabcaabef9de788389c26b8b5be06e08e3be85add75ab18bd3ebe74b99",
+    "retained REA coordinate jsrg_unknown_5d3f71f3f23cb156d0b9a08db3644ba247d686d1f616328279f0a0db2e6bf0d5",
+    "retained REA coordinate jsrg_unknown_5e065fc642867f42dbdb36852ea9e18a292efdaa4612a1a8971e6a772a0c662c",
+    "retained REA coordinate jsrg_unknown_616a0896718d7869d79053c03feafc948a169d12ba81428dbe0f35123c62ab7b",
+    "retained REA coordinate jsrg_unknown_951027a275a900d9e366409cce33c5eace5b6b31b5909b4d8375c0aa2d39eed6",
+    "retained REA coordinate jsrg_unknown_b50b63921cb89d9b11da44e5fa7ac942835638a8a28225fe16e4aec1061360ad",
+    "retained REA coordinate jsrg_unknown_ceab61477a4b856b08783e50349da3d5307a12cdbc40afd25d288055c027ac0a",
+    "retained REA coordinate jsrg_unknown_e391af586f9c7b11be3ae57e14d6e92dc91ca9848f0b7a1cd42eb045df66cddf",
+    "retained REA coordinate jsrg_unknown_91c38de43229999f4cf5822f214a78403d98df4f2877e44dd89c844fc61f8de9",
+    "retained REA coordinate jsrg_unknown_c42cbc90f8438ef3f9ae64a27048e421f02b4a530946b41892008f2ec1a30ef1",
+    "retained REA coordinate jsrg_unknown_c8de08889c6998edd4255ee715adef45562e7c03bff9fea4c9f3906a2f3d7ebb",
+    "retained REA coordinate jsrg_unknown_dd871515ad3e3a4a27a8dc0da9e1f201e6ba6009a8a269ff7904259bdd113b12",
+    "retained REA coordinate jsrg_unknown_e1e1918300faabf28a72a19b26c121386fbf9bc1820521eb045e71982b9d2760",
+    "retained REA coordinate jsrg_unknown_e9be2bd64c5c42783f85d93550d31cec222717016512f103f9a3d020a7dc90d6",
+    "exact 20 historical REA site joins retained",
+    "real parent mounts queue from selected queued-edit identity",
+    "AAo receives actual edit identity",
+    "AAo forwards edit identity to actual GTo consumer",
+    "GTo receives edit identity and actual visible rows",
+    "GTo stores previous edit identity",
+    "edit exit effect reads previous identity before updating it",
+    "effect only triggers when previous edit existed and current is absent",
+    "effect requires that edited row still survives",
+    "effect tracks current edit identity and visible rows",
+    "selected row state is actual GTo state",
+    "selection is exposed as active descendant",
+    "focus effect ref is actually passed into presentation",
+    "actual DOM consumer receives list focus ref",
+    "actual DOM list exposes keyboard focus and active descendant",
+    "src/features/chat/Composer.tsx pinned main snapshot",
+    "src/features/chat/ComposerEditor.tsx pinned main snapshot",
+    "src/features/chat/queue.ts pinned main snapshot",
+    "src/features/chat/queueKeys.ts pinned main snapshot",
+    "src/components/WorkspaceView.tsx pinned main snapshot",
+    "src/features/chat/composerQueueFocus.test.ts pinned main snapshot",
+    "src/features/chat/composerQueueEditEmptySave.test.ts pinned main snapshot",
+    "main actual Composer passes live queue into panel",
+    "main panel edit identity determines which actual QueueRow becomes editor",
+    "main row mounts actual editor only while editing",
+    "main save button routes through existing guarded save action",
+    "main cancel button invokes existing cancel action",
+    "main save and cancel keyboard invoke same action routes",
+    "entry focus belongs only to editing layout branch",
+    "row returns a focusable surviving display row",
+    "no display-row ref or focus target in current row",
+    "no previous-edit restoration lifecycle exists in merged main QueuePanel",
+    "current row entry focus cannot implement exit focus",
+    "main workspace routes queue actions into actual active agent",
+    "session change remounts whole Composer, excluded lead",
+    "existing panel focus callback can target an exact row",
+    "reducer has distinct cancel and save dispatch routes",
+    "cancel reducer clears editing while preserving surviving items",
+    "save reducer clears editing before normal drain or steer",
+    "blank save guards from merged1474 remain present",
+    "merged1476 QueuePanel still has no previous-edit ref",
+    "merged1476 only effect is collapse capability reset",
+    "current checkout Composer equals fresh main byte for byte",
+    "historical adjacent evidence retained queue-edit-caret",
+    "historical adjacent evidence retained queue-focus-control",
+    "historical adjacent evidence retained first-visual-line",
+    "shipped history includes caret-entry1251",
+    "tracked and staged source remain unchanged",
+    "closure and base qualification share exact fresh-main identity",
+    "fresh main contains actual1476 squash merge",
+    "renderApp-D_fmY7hW.js complete retained asset identity",
+    "renderApp-D_fmY7hW.js fresh-main manifest exact identity",
+    "index-BGEQ8YjU.js complete retained asset identity",
+    "index-BGEQ8YjU.js fresh-main manifest exact identity",
+    "saveQueuedMessageEdit unique start delimiter",
+    "saveQueuedMessageEdit complete balanced source range",
+    "cancelQueuedMessageEdit unique start delimiter",
+    "cancelQueuedMessageEdit complete balanced source range",
+    "xyt unique start delimiter",
+    "xyt complete balanced source range",
+    "r9t unique start delimiter",
+    "r9t complete balanced source range",
+    "vyt unique start delimiter",
+    "vyt complete balanced source range",
+    "Sn unique start delimiter",
+    "Sn complete balanced source range",
+    "L_t unique start delimiter",
+    "L_t complete balanced source range",
+    "J_t unique start delimiter",
+    "J_t complete balanced source range",
+    "renderer-import-nc unique literal binding",
+    "renderer-import-Fri unique literal binding",
+    "index-export-client unique literal binding",
+    "index-export-edit-hook unique literal binding",
+    "index-client-instance unique literal binding",
+    "index-client-initialization unique literal binding",
+    "index-client-factory unique literal binding",
+    "index-transaction-owner unique literal binding",
+    "index-edit-hook-adapter unique literal binding",
+    "index H7t initializes same exported client through J_t",
+    "J_t routes factory with both local and remote adapters",
+    "L_t returns the Myt factory with actual store",
+    "Fri selector uses same live kt client",
+    "selector adapter returns session queuedEdit identity",
+    "Sn subscribes actual same client store",
+    "JNi reads edit state through actual selector",
+    "JNi routes normal Save to mode queue",
+    "JNi forwards normal Save callback to AAo",
+    "AAo forwards same normal Save callback to GTo",
+    "GTo normal Save row callback does not steer",
+    "JNi distinct cancel callback targets same session",
+    "JNi above-editor cancellation routes same callback",
+    "JNi editor cancellation routes same callback",
+    "normal successful Save edits exact existing message identity",
+    "normal queue Save does not invoke steer branch",
+    "successful Save alone sets completion flag",
+    "successful Save releases exact hold then finishes transaction",
+    "failed Save retains editing and original transaction",
+    "Cancel marks terminal ownership and exact session",
+    "Cancel releases exact hold then finishes transaction",
+    "Cancel path contains no row delete/steer/edit method",
+    "finish clears only the matching transaction",
+    "finish publishes absent queuedEdit to same session store",
+    "finish class does not mutate/remove queued message rows",
+    "same edit identity reaches GTo from live store",
+    "GTo old->absent guard excludes direct switch and mount",
+    "GTo surviving-row selection and list focus are coupled",
+    "selected row identity reaches presentation",
+    "selected row identity reaches actual row renderer",
+    "selected row drives actual DOM active descendant",
+    "focused ref is actual visible list DOM not editor",
+    "beginQueuedMessageEdit retained REA unknown site count",
+    "beginQueuedMessageEdit no promotion of ambiguous target into resolved graph",
+    "cancelQueuedMessageEdit retained REA unknown site count",
+    "cancelQueuedMessageEdit no promotion of ambiguous target into resolved graph",
+    "saveQueuedMessageEdit retained REA unknown site count",
+    "saveQueuedMessageEdit no promotion of ambiguous target into resolved graph",
+    "entry1251 shipped ancestor of fresh main",
+    "entry1251 no previous-edit exit lifecycle in shipped patch",
+    "1251 only changes entry editor focus argument in production diff",
+    "firstline1065 shipped ancestor of fresh main",
+    "firstline1065 no previous-edit exit lifecycle in shipped patch",
+    "1065 gated to no active queue edit",
+    "modifier1019 shipped ancestor of fresh main",
+    "modifier1019 no previous-edit exit lifecycle in shipped patch",
+    "stop1180 shipped ancestor of fresh main",
+    "stop1180 no previous-edit exit lifecycle in shipped patch",
+    "1180 gated to working stop, main input target",
+    "src/features/chat/Composer.tsx still exact fresh-main source",
+    "src/features/chat/ComposerEditor.tsx still exact fresh-main source",
+    "src/features/chat/queue.ts still exact fresh-main source",
+    "src/features/chat/queueKeys.ts still exact fresh-main source",
+    "src/components/WorkspaceView.tsx still exact fresh-main source",
+    "src/features/chat/composerQueueFocus.test.ts still exact fresh-main source",
+    "src/features/chat/composerQueueEditEmptySave.test.ts still exact fresh-main source",
+    "tracked product and staged changes absent"
+  ],
+  "failures": [],
+  "reference_assets": {
+    "renderer": {
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    }
+  },
+  "reference_spans": [
+    {
+      "name": "JNi",
+      "utf8_half_open": [
+        8750085,
+        8760369
+      ],
+      "bytes": 10284,
+      "sha256": "775251f3c9074a8f60944335cd7c44d053c1472bb63987adc4b149d0d32828d1",
+      "completeSyntax": true,
+      "method": "Existing complete-declaration receipt rebound to complete parent"
+    },
+    {
+      "name": "AAo",
+      "utf8_half_open": [
+        8725767,
+        8730190
+      ],
+      "bytes": 4423,
+      "sha256": "1427c2453126a3311e9a330ae73a6b88a491199c4005ea85406728357d53ebab",
+      "completeSyntax": true,
+      "method": "Existing complete-declaration receipt rebound to complete parent"
+    },
+    {
+      "name": "GTo",
+      "utf8_half_open": [
+        8700675,
+        8708256
+      ],
+      "bytes": 7581,
+      "sha256": "8464862ead880f69f77258ee26be61216cbaa24692ba8cb5a02daf30365f8440",
+      "completeSyntax": true,
+      "method": "Existing complete-declaration receipt rebound to complete parent"
+    },
+    {
+      "name": "DTo",
+      "utf8_half_open": [
+        8693089,
+        8694846
+      ],
+      "bytes": 1757,
+      "sha256": "37d80f9732f0433e47372cf59d52bb2eef850f8f6d544d6b16e9c3566c30823f",
+      "method": "Unique declaration through next function; string-aware balanced-delimiter verification, not JS parser execution"
+    }
+  ],
+  "main_sources": [
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "bytes": 34435,
+      "sha256": "5dde290a9c73845b334a4b0daa26733ae76ed06f037df770fdbee2062dcf238c",
+      "git_blob": "846947c4b3dc1692fa1c3d3b5bcdbb42e245747d"
+    },
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "bytes": 10216,
+      "sha256": "7e8f7f7426164d2e707d9507a2af87336607b88db891fb864c55f28b8ab34fdf",
+      "git_blob": "496cae9556c386dd33dc4c5e10c5826a018d6cd6"
+    },
+    {
+      "path": "src/features/chat/queue.ts",
+      "bytes": 12996,
+      "sha256": "f08c481457eaf0389259d148c62c1c592cfc95612dc6b7576cb4c7c415e1e1a1",
+      "git_blob": "ff24116ee335c6d67bb8134f3e09cb3d714775dd"
+    },
+    {
+      "path": "src/features/chat/queueKeys.ts",
+      "bytes": 2947,
+      "sha256": "5e0ddfb22b9538056868dce47113fce9445d781b5fa23fe49b96cc2b1492c193",
+      "git_blob": "f84789555b6e611c11e7fc7fda65122f76b76e41"
+    },
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "bytes": 102922,
+      "sha256": "4520e46b632d50ef6feaf78398ec08cf7e8a58697605067b707af50d3c1f8214",
+      "git_blob": "ad8c8e4b0588420c14013009fc1ecec49349ea03"
+    },
+    {
+      "path": "src/features/chat/composerQueueFocus.test.ts",
+      "bytes": 17746,
+      "sha256": "399ade20e426496ab14a385f0439ed97aaad13504c97bd0839e4fbea547892c6",
+      "git_blob": "f071bb3766f4b2f5e95267776cfc6100d611a951"
+    },
+    {
+      "path": "src/features/chat/composerQueueEditEmptySave.test.ts",
+      "bytes": 17423,
+      "sha256": "8739fb3f4ebbbdf4282b740ccce38f5a3572b213669b23a96016ec19535cb4e3",
+      "git_blob": "44643c4f4690922d5e83148d0f20f58cc031acca"
+    }
+  ],
+  "finding": "Retained JNi routes normal queue-mode Save and Cancel through the same live exported store; successful terminal finish clears queuedEdit without itself removing queue rows. On the resulting previous-edit-id to absent transition, GTo selects the prior row only if still present and focuses the actual DTo list DOM with that active descendant. Fresh merged main has entry editor focus, ArrowUp navigation and collapse reset, but no edit-exit row restoration. This is a source-qualified mismatch, not observed focus loss or native parity.",
+  "proposed_scope": "QueuePanel edit-exit lifecycle only, reusing existing exact-row focus callback. New actual-component fixture and new evidence; preserve QueueRow1474 guards, collapse1476, reducers, editor, keyboard registry and provider paths. No product change made.",
+  "conditional_oracle": "Mount complete actual Composer with real queue reducer and host-node focus ports. Enter middle row edit, then Cancel button/Escape or nonblank Save button/key without removing the row; surviving row must receive focus once. Controls: entry focus unchanged; other rows unchanged; save-and-steer/deletion removes row and must not focus absent node; rejected blank saves retain editor; no editing no focus; unrelated rerenders no focus;1476 shrink behavior unchanged. This is an unexecuted plan; exact assertion count is not frozen.",
+  "limits": [
+    "No new REA acquisition or code execution",
+    "Original queue REA no-match/graph-cap/ambiguous-target and native-producer limits retained",
+    "Old directory-subject digest-as-slice-file mismatch remains failed/superseded in corrected-binding.json",
+    "No fixture/test/product edits",
+    "No Node/version/test/build/typecheck/browser/native/package/provider runtime",
+    "No implementation or runtime admission",
+    "No native/browser focus parity claim",
+    "No exhaustive historical ownership clearance",
+    "No new syntax parser or semantic graph execution; new ranges use exact delimiters and lexical balance only",
+    "Backend survival/races are not claimed; the original consumer explicitly checks that the prior row survives",
+    "No new REA gap hit; historical ambiguous-target/no-match/graph cap and corrected directory-digest failure are preserved",
+    "#1476 actual squash merge included; package/native acceptance remains existing Root to sole E1 custody"
+  ],
+  "closure_checked_utc": "2026-11-17T22:18:05.263391+00:00",
+  "producer_spans": [
+    {
+      "name": "saveQueuedMessageEdit",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2359594,
+        2360741
+      ],
+      "bytes": 1147,
+      "sha256": "8c4abd227b26d1913c4c579fab71f7ccdce89b7814db3a32f7b8088cfbd29d67",
+      "method": "Unique exact delimiter range; string-aware lexical balancing, not JS parsing or target execution"
+    },
+    {
+      "name": "cancelQueuedMessageEdit",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2360741,
+        2361410
+      ],
+      "bytes": 669,
+      "sha256": "c5e1bc5aa65acb0d5d150e35d78c465ad642d9b08bcf03070f2f82251888b3cd",
+      "method": "Unique exact delimiter range; string-aware lexical balancing, not JS parsing or target execution"
+    },
+    {
+      "name": "xyt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2349415,
+        2352508
+      ],
+      "bytes": 3093,
+      "sha256": "0bf28eda31c7396081ab3e0812250dd572d92061d2e0ce9b109423f17a61a838",
+      "method": "Unique exact delimiter range; string-aware lexical balancing, not JS parsing or target execution"
+    },
+    {
+      "name": "r9t",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3142072,
+        3142190
+      ],
+      "bytes": 118,
+      "sha256": "304a8ef26c216f3bcf70e8dc70a35aceaf3f349474653794332c6512d699d3c6",
+      "method": "Unique exact delimiter range; string-aware lexical balancing, not JS parsing or target execution"
+    },
+    {
+      "name": "vyt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2332914,
+        2332977
+      ],
+      "bytes": 63,
+      "sha256": "dd51591cd265f0feae2f4900c03c3b31f3fdc7cd83ede438380173760c25179d",
+      "method": "Unique exact delimiter range; string-aware lexical balancing, not JS parsing or target execution"
+    },
+    {
+      "name": "Sn",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        769455,
+        769696
+      ],
+      "bytes": 241,
+      "sha256": "a13c88991891418fd23b26ee3c4157d12a43a8a9173fbe18f366227fc59f4ddf",
+      "method": "Unique exact delimiter range; string-aware lexical balancing, not JS parsing or target execution"
+    },
+    {
+      "name": "L_t",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2466708,
+        2467081
+      ],
+      "bytes": 373,
+      "sha256": "ac4a56b872aece703aa16551ad148b228b5ad6c2a10c4ac1a6acb7a6392d0a77",
+      "method": "Unique exact delimiter range; string-aware lexical balancing, not JS parsing or target execution"
+    },
+    {
+      "name": "J_t",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2482502,
+        2484595
+      ],
+      "bytes": 2093,
+      "sha256": "f5794670bdb7be91236d1361964f16a4ea4710c85ffea85dad63b4d38e0d3beb",
+      "method": "Unique exact delimiter range; string-aware lexical balancing, not JS parsing or target execution"
+    },
+    {
+      "name": "renderer-import-nc",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        53815,
+        53824
+      ],
+      "bytes": 9,
+      "sha256": "133a5b6d16e22ba854062a8d414c185a2af9b91da6ab5ff18cf4cf32da15cf26",
+      "literal": "aB as nc,",
+      "method": "Unique literal binding, inert source"
+    },
+    {
+      "name": "renderer-import-Fri",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        60716,
+        60726
+      ],
+      "bytes": 10,
+      "sha256": "1aae4ab9b1f20bb7ef0c985dbcbf37bc3a3027b846ded0342311625c83484c44",
+      "literal": "lD as Fri,",
+      "method": "Unique literal binding, inert source"
+    },
+    {
+      "name": "index-export-client",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3480205,
+        3480214
+      ],
+      "bytes": 9,
+      "sha256": "a64f60f398ddd257feb39e8f3385931180c1a948b1f5c25eaa36ebb04ad300c9",
+      "literal": "kt as aB,",
+      "method": "Unique literal binding, inert source"
+    },
+    {
+      "name": "index-export-edit-hook",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3487099,
+        3487109
+      ],
+      "bytes": 10,
+      "sha256": "8cae5df49703713081558c6e131c6cdaab857730e44263aa6e68d9829080adaa",
+      "literal": "r9t as lD,",
+      "method": "Unique literal binding, inert source"
+    },
+    {
+      "name": "index-client-instance",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3052196,
+        3052215
+      ],
+      "bytes": 19,
+      "sha256": "2d151d60e26a96f4cc5eb1a15c6bcb5bf01c8d5365b6a841ab6e9b9194762e3f",
+      "literal": "let kt=Xc.composer;",
+      "method": "Unique literal binding, inert source"
+    },
+    {
+      "name": "index-client-initialization",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3057236,
+        3057286
+      ],
+      "bytes": 50,
+      "sha256": "7787a5687f21b2a50af28347b527534943a5de3e87a2f1190472470a557b8479",
+      "literal": "return kt=e,m1t(e.refreshReviewCommentAttachments)",
+      "method": "Unique literal binding, inert source"
+    },
+    {
+      "name": "index-client-factory",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2364967,
+        2364991
+      ],
+      "bytes": 24,
+      "sha256": "6843dd4bf2b29edc15224f85e2c87c269948403770c5eb3e55a51b758500fe66",
+      "literal": "const Fyt=t=>new Myt(t);",
+      "method": "Unique literal binding, inert source"
+    },
+    {
+      "name": "index-transaction-owner",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2353039,
+        2353081
+      ],
+      "bytes": 42,
+      "sha256": "53867ed657136e54f2aca2254f3f24b2d9987f11ecf00cb5e611b61185ddafbe",
+      "literal": "this.queuedEdits=new xyt(e.drafts,e.store)",
+      "method": "Unique literal binding, inert source"
+    },
+    {
+      "name": "index-edit-hook-adapter",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2484814,
+        2484843
+      ],
+      "bytes": 29,
+      "sha256": "e6bc37fca19a42f3d31c4b36f99e415680c1a1f004781b274ced66a0253903a4",
+      "literal": "swt=Sn((t,e)=>vyt(t.state,e))",
+      "method": "Unique literal binding, inert source"
+    }
+  ],
+  "shipped_history": [
+    {
+      "label": "entry1251",
+      "commit": "04720aed99227aae398081e4f9f7cdc4d42f7442",
+      "bytes": 9028,
+      "sha256": "eef7970296bf6064b30cddd86bd42bd67cbb501fbf37d6f5211a5fd2d07415d8"
+    },
+    {
+      "label": "firstline1065",
+      "commit": "c25670504400771e2fb31e01560db249ea4bd06c",
+      "bytes": 5954,
+      "sha256": "f85bfd18abcf08ce7edc69b2b5bb6ee622a6d52eba5bea46ba918b4c71b8fbf5"
+    },
+    {
+      "label": "modifier1019",
+      "commit": "c2041a9273c17e0bbafa4326633002e75e311901",
+      "bytes": 11113,
+      "sha256": "8ee7df4dce34606e46413140b7e7c5cbb94527fe794767bb285b231ecaa7086f"
+    },
+    {
+      "label": "stop1180",
+      "commit": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+      "bytes": 3310,
+      "sha256": "e96da61d0f6b07ec28d8757e04e6acae129e004b15c8e4a385b4ff3dc00a2c2b"
+    }
+  ],
+  "collision": "Ledger 2026-11-17T22:13 no active cross-owner collision recorded in current nine-owner map; not exhaustive historical clearance."
+}

@@ -1,0 +1,1 @@
+{"checks_passed": 249, "fixture_sha256": "948310bd9247754387556adc910acec1cc3174c26bdff38b2dff3b65e0d77cad", "treatment_sha256": "5dde290a9c73845b334a4b0daa26733ae76ed06f037df770fdbee2062dcf238c", "allowed_affinity": [0, 1], "free_disk_bytes": 16606355456, "no_node_or_test_execution": true, "does_not_grant_runtime_admission": true}

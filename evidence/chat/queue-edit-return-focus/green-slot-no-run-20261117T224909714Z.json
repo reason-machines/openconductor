@@ -1,0 +1,45 @@
+{
+  "reservation": "COMPOSER-QUEUE-EDIT-RETURN-FOCUS-135-GREEN-20261117T224909714Z",
+  "classification": "NO_RUN",
+  "reason": "First tool observation after continuation was 2026-11-17T22:55:49.847981657Z, after 22:53:09.714Z expiry; expired slot not executed or extended. No runtime-green directory or output exists.",
+  "actual_start_utc": null,
+  "actual_test_end_utc": null,
+  "exit_code": null,
+  "case_outcomes": {
+    "executed": 0,
+    "not_run": 20
+  },
+  "node_invoked_this_turn": false,
+  "cleanup_action": "No runtime process group was created; current own-workload scan is empty. No kill required.",
+  "own_workload_processes": [],
+  "runtime_green_directory_exists": false,
+  "host": "ws-zh5pmwqtgx3uglxhwaae5q2k",
+  "allowed_cpu_affinity": [
+    0,
+    1
+  ],
+  "free_disk_bytes": 16559968256,
+  "head": "e62f6d4d8c2b4793bc9aeaed6f4c867e09439c8c",
+  "last_fetched_main_not_fresh_remote": "d435e2baba6552de85b12cac2544579d20c14ce1",
+  "pins_readback": {
+    "fixture": {
+      "path": ".qa/queue-edit-return-focus-135/composerQueueEditReturnFocus.test.ts",
+      "bytes": 21078,
+      "sha256": "e275647b5174feb78281ff3ae2c0a5c3c735ccf2207da9815e66a3d965bf86be"
+    },
+    "oracle": {
+      "path": ".qa/queue-edit-return-focus-135/frozen-oracle.json",
+      "bytes": 3690,
+      "sha256": "d9f1d9b1a11764422c57ad3dbba7331c09d2b90edcf4dc5b0f21b7368f840979"
+    },
+    "treatment": {
+      "path": "src/features/chat/Composer.tsx",
+      "bytes": 34875,
+      "sha256": "60484a0072e816fe61f4abbc19f236c3d5c9e1bc4807fe3d4bcd69bbf2a5d6c8"
+    }
+  },
+  "all_three_readback_pins_match": true,
+  "actual_release_utc": "2026-11-17T22:56:22.434692+00:00",
+  "no_survivors": true,
+  "new_runtime_authorization_required": true
+}

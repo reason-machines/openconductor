@@ -1,0 +1,29 @@
+{
+  "path": "src/features/chat/composerQueueEditReturnFocus.test.ts",
+  "bytes": 20921,
+  "sha256": "cd27a14b8206dbd3fce6ee28e135bd312285270ef040f3fe1456eba23d8b23a8",
+  "normalization": "Only import/type lookup paths and three comment lines; all other code/assertions exact",
+  "transforms": [
+    [
+      "// Source-only frozen fixture. Do not run without the canonical serialized slot.",
+      "// Permanent regression port; the original serialized RED/GREEN fixture is retained in evidence."
+    ],
+    [
+      "../../src/features/chat/",
+      "./"
+    ],
+    [
+      "../../src/keybindings/",
+      "../../keybindings/"
+    ],
+    [
+      "// Six predicted decisive semantic failures; none is an observed result yet.",
+      "// Six decisive cases: baseline failed each; the unchanged frozen GREEN passed all six."
+    ],
+    [
+      "// Fourteen frozen controls. Do not repair failures by weakening their assertions.",
+      "// Fourteen unchanged controls preserve queue state and negative focus boundaries."
+    ]
+  ],
+  "code_normalization_sha256": "e7656da30b7d25ebc5201fcf44574a59c0ea9ec1b82d9e3fe4d350cffe24410c"
+}

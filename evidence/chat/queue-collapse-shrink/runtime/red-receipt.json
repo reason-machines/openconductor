@@ -1,0 +1,40 @@
+{
+  "reservation": "COMPOSER-QUEUE-COLLAPSE-SHRINK-135-RED-20261117T215555120Z",
+  "phase": "red",
+  "start_deadline": "2026-11-17T21:57:55.120Z",
+  "started_utc": "2026-11-17T21:56:22.403664+00:00",
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "env",
+    "-u",
+    "COMPOSER_QUEUE_COLLAPSE_SOURCE_REF",
+    "NODE_OPTIONS=--max-old-space-size=768",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "src/features/chat/composerQueueCollapseShrink.test.ts"
+  ],
+  "fixture_sha256": "948310bd9247754387556adc910acec1cc3174c26bdff38b2dff3b65e0d77cad",
+  "source_sha256": "8aca2474747054e9ed35885873c6ca9a5e21c76f276c6fd38fa0a090d3f5a3ad",
+  "node_test_executed": true,
+  "groups": [
+    79,
+    122,
+    130
+  ],
+  "surviving_pids": [],
+  "static-preflight_exit_code": 0,
+  "node-capability_exit_code": 0,
+  "test_started_utc": "2026-11-17T21:56:22.686883+00:00",
+  "test_exit_code": 1,
+  "test_terminated_utc": "2026-11-17T21:56:23.754619+00:00",
+  "own_incremental_evidence_bytes": 9946,
+  "child_maxrss_kib_not_aggregate": 162116,
+  "actual_release_utc": "2026-11-17T21:56:23.754794+00:00"
+}

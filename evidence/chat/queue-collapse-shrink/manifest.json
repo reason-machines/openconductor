@@ -1,0 +1,172 @@
+[
+  {
+    "path": "README.md",
+    "bytes": 7876,
+    "sha256": "870c338a546dcafac12bcd162d53a1ecd68f070e068b1b9dbc22b1561dbbcfa0"
+  },
+  {
+    "path": "baseline/Composer.tsx.txt",
+    "bytes": 34236,
+    "sha256": "8aca2474747054e9ed35885873c6ca9a5e21c76f276c6fd38fa0a090d3f5a3ad"
+  },
+  {
+    "path": "baseline/composerQueueCollapseShrink.test.ts.txt",
+    "bytes": 16047,
+    "sha256": "948310bd9247754387556adc910acec1cc3174c26bdff38b2dff3b65e0d77cad"
+  },
+  {
+    "path": "baseline/request.json",
+    "bytes": 69645,
+    "sha256": "4a0bb1dff38f246e18c040ea5ea451943db05bc37685eada67c44b8cf80e50bf"
+  },
+  {
+    "path": "baseline/static-preflight-result.json",
+    "bytes": 258,
+    "sha256": "e5d8a3a0228aa00432372c004e42f55b447817f651ea7d4f62b2119ae6b38286"
+  },
+  {
+    "path": "green-request.json",
+    "bytes": 1640,
+    "sha256": "9ffab884c5574daa589ce0b2ea86e38fd87bc2c30b0b558e67535b9c8f17f3ba"
+  },
+  {
+    "path": "merged-main-binding.json",
+    "bytes": 3157,
+    "sha256": "528aecc7f2eeab503f7380d45259c2c83de40e905ee6558893400d0d8bcc7e08"
+  },
+  {
+    "path": "reference/AAo.txt",
+    "bytes": 4423,
+    "sha256": "1427c2453126a3311e9a330ae73a6b88a491199c4005ea85406728357d53ebab"
+  },
+  {
+    "path": "reference/DTo.txt",
+    "bytes": 1757,
+    "sha256": "37d80f9732f0433e47372cf59d52bb2eef850f8f6d544d6b16e9c3566c30823f"
+  },
+  {
+    "path": "reference/GTo.txt",
+    "bytes": 7581,
+    "sha256": "8464862ead880f69f77258ee26be61216cbaa24692ba8cb5a02daf30365f8440"
+  },
+  {
+    "path": "reference/JNi.txt",
+    "bytes": 10284,
+    "sha256": "775251f3c9074a8f60944335cd7c44d053c1472bb63987adc4b149d0d32828d1"
+  },
+  {
+    "path": "reference/PTo.txt",
+    "bytes": 1708,
+    "sha256": "4668eda4261f81f23c2d63733c93e27c372b766a90f5db169a634f607be1f0e7"
+  },
+  {
+    "path": "reference/corrected-binding.json",
+    "bytes": 19879,
+    "sha256": "7cc2bc3db49e26b16a19a8c178f92750b1cc4104566d7b181c6f15e674996db0"
+  },
+  {
+    "path": "reference/spans.json",
+    "bytes": 1532,
+    "sha256": "898e18c9bed0b073c846da60b8a595922a7d02e734a50466f8e58f38cdcef8c3"
+  },
+  {
+    "path": "runtime/green-node-capability.stderr",
+    "bytes": 176,
+    "sha256": "b862830b5c357a65f6f3442623a3f52c34df2847473d9353acb4c77ccccfbdf1"
+  },
+  {
+    "path": "runtime/green-node-capability.stdout",
+    "bytes": 44,
+    "sha256": "75ab94bec30a75504a4be56dd2013bf4d6863c4235417b0d5216877676839d5d"
+  },
+  {
+    "path": "runtime/green-preadmission.json",
+    "bytes": 681,
+    "sha256": "e3957dedffa502934d0c4fc8900308116465eeb5980a239addc1e178556798ec"
+  },
+  {
+    "path": "runtime/green-preflight.py.txt",
+    "bytes": 2949,
+    "sha256": "376765f0127b2dafebec563094695d0fc70ca01e0a49bcd91459238607b0ecec"
+  },
+  {
+    "path": "runtime/green-receipt.json",
+    "bytes": 1181,
+    "sha256": "247057f7628535250664129572c899dab8cc420ba9709598e1ef4266d7af0e06"
+  },
+  {
+    "path": "runtime/green-static-preflight.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "runtime/green-static-preflight.stdout",
+    "bytes": 334,
+    "sha256": "6ebf22922bad1d09028d71088c5db37e404b0185f82521debbc475ed95a32b7f"
+  },
+  {
+    "path": "runtime/green-test.stderr",
+    "bytes": 176,
+    "sha256": "a141315c8fedeb268c0ee983fcf3c45a1a81e4c3e5bb898a108ca99b51912039"
+  },
+  {
+    "path": "runtime/green-test.stdout",
+    "bytes": 3470,
+    "sha256": "fd7da82b6a3bcc1ddfa29b531f46af7bfa3ebdf501182e8d8a3cb21202d452e8"
+  },
+  {
+    "path": "runtime/preadmission-2155.json",
+    "bytes": 856,
+    "sha256": "486156a15868d39c8509ca738f742ae9c466578ea88e4c01ca6be473004c4e97"
+  },
+  {
+    "path": "runtime/red-node-capability.stderr",
+    "bytes": 176,
+    "sha256": "ce694a734408841745e6b97aebd61774cafb979dd1f3737dae863d5cdab40855"
+  },
+  {
+    "path": "runtime/red-node-capability.stdout",
+    "bytes": 44,
+    "sha256": "75ab94bec30a75504a4be56dd2013bf4d6863c4235417b0d5216877676839d5d"
+  },
+  {
+    "path": "runtime/red-preflight.py.txt",
+    "bytes": 2692,
+    "sha256": "3e2081d71b8bdbd2bef8e6e04a76c35afe1502ec5f5a4859eec9ea4ad56b6873"
+  },
+  {
+    "path": "runtime/red-receipt.json",
+    "bytes": 1177,
+    "sha256": "4d1373892bc57119da4e6858a3b235ec3325db676560176cc8389d148ef91e5a"
+  },
+  {
+    "path": "runtime/red-static-preflight.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "runtime/red-static-preflight.stdout",
+    "bytes": 256,
+    "sha256": "0e25055a5899668e3254f077685a25c915716b100bb0b352cbbb0a2a43b51d9e"
+  },
+  {
+    "path": "runtime/red-test.stderr",
+    "bytes": 176,
+    "sha256": "925a18624c6d47fe0a2d997ce88b5b56f41520c8b2fc3c4ed0d1631246efef5f"
+  },
+  {
+    "path": "runtime/red-test.stdout.gz",
+    "bytes": 1579,
+    "sha256": "298ebcf5de942ccfee1f17cc4bd96adecd842711bf3b167d799cedf2dcff6b4f"
+  },
+  {
+    "path": "runtime/runner.py.txt",
+    "bytes": 4214,
+    "sha256": "aac02ea551b4b7054adbeb813f29502de1877a3c4793d98d222f4b83ba49d400"
+  },
+  {
+    "path": "treatment-Composer.tsx.txt",
+    "bytes": 34435,
+    "sha256": "5dde290a9c73845b334a4b0daa26733ae76ed06f037df770fdbee2062dcf238c"
+  }
+]

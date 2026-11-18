@@ -1,0 +1,23 @@
+{
+  "released_utc": "2026-11-17T22:21:26.323354+00:00",
+  "status": "DEPENDENCIES_AND_CAPABILITY_ONLY",
+  "command": [
+    "npm",
+    "ci",
+    "--ignore-scripts",
+    "--omit=optional",
+    "--no-audit",
+    "--no-fund",
+    "--maxsockets=1",
+    "--fetch-retries=0",
+    "--cache",
+    ".oc-tmp/frontend-primary-delivery-prep-1f/private-npm-cache"
+  ],
+  "elapsed_install_seconds": 27.844,
+  "peak_private_allocated_bytes": 497393664,
+  "node_modules_owned_by": "SAME1F existing checkout",
+  "fixture_run": false,
+  "product_write": false,
+  "scripts_run": false,
+  "shared_tree": false
+}

@@ -1,0 +1,38 @@
+"""Non-Node immutable GREEN custody gates; does not grant execution admission."""
+from pathlib import Path
+import hashlib, json, os, shutil, subprocess
+D=Path('.qa/queue-collapse-shrink-135')
+r=json.loads((D/'fixture-freeze/request.json').read_text())
+g=json.loads((D/'green-request.json').read_text())
+checks=[]
+sha=lambda b:hashlib.sha256(b).hexdigest()
+def check(label, ok):
+    if not ok: raise AssertionError(label)
+    checks.append(label)
+def identity(pin):
+    b=Path(pin['path']).read_bytes()
+    check(pin['path'],len(b)==pin['bytes'] and sha(b)==pin['sha256'])
+identity(r['fixture'])
+check('inert frozen fixture identical',Path(r['fixture']['path']).read_bytes()==(D/'fixture-freeze/composerQueueCollapseShrink.test.ts.txt').read_bytes())
+identity(g['treatment'])
+check('frozen treatment identical',Path(g['treatment']['path']).read_bytes()==(D/'treatment-Composer.tsx.txt').read_bytes())
+for pin in r['source_pins']:
+    if pin['path']!=g['treatment']['path']: identity(pin)
+for dep in r['dependency_custody']:
+    for pin in dep['files']: identity(pin)
+for pin in r['package_contracts']: identity(pin)
+check('unchanged reference qualification',sha((D/'qualification.json').read_bytes())==r['reference_qualification_sha256'])
+check('unchanged reference spans',sha((D/'reference/spans.json').read_bytes())==r['reference_spans_sha256'])
+check('original REA receipt retained',Path('evidence/chat-queue/rea-queue-sites.json').read_bytes()==(D/'reference/original-rea-queue-sites.json').read_bytes())
+base=subprocess.check_output(['git','show','origin/main:src/features/chat/Composer.tsx'])
+check('fresh main retains baseline Composer',sha(base)==r['baseline_source']['sha256'])
+check('actual #1474 squash in main',subprocess.run(['git','merge-base','--is-ancestor',g['baseline_main'],'origin/main']).returncode==0)
+current=Path(g['treatment']['path']).read_text()
+check('QueueRow and all following code unchanged',current[current.index('interface RowProps {'):]==base.decode()[base.decode().index('interface RowProps {'):])
+check('all code before QueuePanel unchanged',current[:current.index('function QueuePanel(')]==base.decode()[:base.decode().index('function QueuePanel(')])
+check('only product diff is Composer',subprocess.check_output(['git','diff','--name-only'],text=True).splitlines()==['src/features/chat/Composer.tsx'])
+check('no staged changes',not subprocess.check_output(['git','diff','--cached','--name-only']).strip())
+check('CPU0 currently allowed',0 in os.sched_getaffinity(0))
+check('at least 4GiB free',shutil.disk_usage('.').free>=4*1024**3)
+check('whitespace',subprocess.run(['git','diff','--check']).returncode==0)
+print(json.dumps({'checks_passed':len(checks),'fixture_sha256':r['fixture']['sha256'],'treatment_sha256':g['treatment']['sha256'],'allowed_affinity':sorted(os.sched_getaffinity(0)),'free_disk_bytes':shutil.disk_usage('.').free,'no_node_or_test_execution':True,'does_not_grant_runtime_admission':True}))

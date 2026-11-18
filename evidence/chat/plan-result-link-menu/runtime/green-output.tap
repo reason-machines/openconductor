@@ -1,0 +1,80 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: plan custom menu copies the exact address http://example.com/a?q=one&b=two\#part
+ok 1 - plan custom menu copies the exact address http://example.com/a?q=one&b=two\#part
+  ---
+  duration_ms: 93.35151
+  type: 'test'
+  ...
+# Subtest: plan custom menu copies the exact address https://example.net/b?q=two\#end
+ok 2 - plan custom menu copies the exact address https://example.net/b?q=two\#end
+  ---
+  duration_ms: 9.808945
+  type: 'test'
+  ...
+# Subtest: plan inline-code URL uses the same custom link menu
+ok 3 - plan inline-code URL uses the same custom link menu
+  ---
+  duration_ms: 7.053311
+  type: 'test'
+  ...
+# Subtest: plan custom menu preserves clipboard-rejection feedback without navigation
+ok 4 - plan custom menu preserves clipboard-rejection feedback without navigation
+  ---
+  duration_ms: 6.987953
+  type: 'test'
+  ...
+# Subtest: updated plan reopens with the current link address, not stale result data
+ok 5 - updated plan reopens with the current link address, not stale result data
+  ---
+  duration_ms: 11.72654
+  type: 'test'
+  ...
+# Subtest: plan ordinary and modified clicks retain the existing system-opening anchor contract
+ok 6 - plan ordinary and modified clicks retain the existing system-opening anchor contract
+  ---
+  duration_ms: 5.647127
+  type: 'test'
+  ...
+# Subtest: plan workspace-file buttons retain their exact existing open-file route
+ok 7 - plan workspace-file buttons retain their exact existing open-file route
+  ---
+  duration_ms: 5.282415
+  type: 'test'
+  ...
+# Subtest: plan copy retains exact input payload, propagation and the existing 2000ms reset
+ok 8 - plan copy retains exact input payload, propagation and the existing 2000ms reset
+  ---
+  duration_ms: 6.95073
+  type: 'test'
+  ...
+# Subtest: plan keeps input/result selection and disclosure for {"status":"running"}
+ok 9 - plan keeps input/result selection and disclosure for {"status":"running"}
+  ---
+  duration_ms: 12.985473
+  type: 'test'
+  ...
+# Subtest: plan keeps input/result selection and disclosure for {"status":"done","isError":true}
+ok 10 - plan keeps input/result selection and disclosure for {"status":"done","isError":true}
+  ---
+  duration_ms: 16.079137
+  type: 'test'
+  ...
+# Subtest: empty plan does not acquire links, copy actions or result fallbacks
+ok 11 - empty plan does not acquire links, copy actions or result fallbacks
+  ---
+  duration_ms: 6.778119
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1875.441347

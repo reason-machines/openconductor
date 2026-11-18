@@ -1,0 +1,1 @@
+function Sn(t,e=yn){function s(n,r,i){const o=z.c(5);let a;o[0]!==r?(a=u=>t(u,r),o[0]=r,o[1]=a):a=o[1];const c=e(a);let l;return o[2]!==c||o[3]!==i?(l=u=>{const d=c(u);return i?i(d):d},o[2]=c,o[3]=i,o[4]=l):l=o[4],tt(n.store,yn(l))}return s}
