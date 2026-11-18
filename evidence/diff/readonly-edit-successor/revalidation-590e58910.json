@@ -1,0 +1,291 @@
+{
+  "author": "Conductor Rebuild",
+  "dedupe": "DIFF-READONLY-EDIT-AFFORDANCE-DE6-02",
+  "fresh_main": "590e58910884998e242cafb037f53286d4c7fb45",
+  "source_pins": {
+    "src/features/diff/DiffViewer.tsx": "b9385a977c26007391b9b47bb587c33d95045ed9e04b1b1240a031f411167e0f",
+    "src/features/diff/FileDiffView.tsx": "305ccacb64c230bba3880d045b64aabc4889bbfac25668824b87b020810e0289",
+    "src/features/diff/EditInViewer.ts": "40123ee435661c920d6c2e99c4301d2005aebe88f3668b4d02eab5ebdadc1d1c",
+    "src/features/diff/editable.ts": "507dcc18d52a721afa97ab453a6815a0ff656b109fb53ca91e9b6e3ba5efefde",
+    "src/features/diff/editorContents.ts": "412dd4af07a67e0b6b52758444533564eb6d686843c333560150373659c29523",
+    "src/features/diff/draftStorage.ts": "dc53d9cf4bab94e4427aceee03aefcc05a37c71115a7ce06e340a647814f69e5",
+    "src/features/diff/pierre.ts": "738f92c4dc768f7313c9ac8fd4ac22fc003f62578ec78f2c296129737925ab52",
+    "src/features/diff/copyFile.ts": "6ff8924a36728d90243e2ab0e4ab824326afb8030472b9a6b9c02d00888a203a",
+    "src/keybindings/bind.ts": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119",
+    "src/keybindings/dispatcher.ts": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197",
+    "package.json": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91",
+    "package-lock.json": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+  },
+  "fixture": {
+    "sha256": "30d82d680f50250682ce5769e5047495417e95d5ce52ac15eacecbdc728c20a7",
+    "bytes": 10648,
+    "all_original_cases_and_oracles_unchanged": true
+  },
+  "static_checks": 65,
+  "checks": [
+    {
+      "name": "unchanged original source pin: src/features/diff/DiffViewer.tsx",
+      "pass": true
+    },
+    {
+      "name": "matches fresh main: src/features/diff/DiffViewer.tsx",
+      "pass": true
+    },
+    {
+      "name": "unchanged original source pin: src/features/diff/FileDiffView.tsx",
+      "pass": true
+    },
+    {
+      "name": "matches fresh main: src/features/diff/FileDiffView.tsx",
+      "pass": true
+    },
+    {
+      "name": "unchanged original source pin: src/features/diff/EditInViewer.ts",
+      "pass": true
+    },
+    {
+      "name": "matches fresh main: src/features/diff/EditInViewer.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged original source pin: src/features/diff/editable.ts",
+      "pass": true
+    },
+    {
+      "name": "matches fresh main: src/features/diff/editable.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged original source pin: src/features/diff/editorContents.ts",
+      "pass": true
+    },
+    {
+      "name": "matches fresh main: src/features/diff/editorContents.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged original source pin: src/features/diff/draftStorage.ts",
+      "pass": true
+    },
+    {
+      "name": "matches fresh main: src/features/diff/draftStorage.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged original source pin: src/features/diff/pierre.ts",
+      "pass": true
+    },
+    {
+      "name": "matches fresh main: src/features/diff/pierre.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged original source pin: src/features/diff/copyFile.ts",
+      "pass": true
+    },
+    {
+      "name": "matches fresh main: src/features/diff/copyFile.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged original source pin: src/keybindings/bind.ts",
+      "pass": true
+    },
+    {
+      "name": "matches fresh main: src/keybindings/bind.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged original source pin: src/keybindings/dispatcher.ts",
+      "pass": true
+    },
+    {
+      "name": "matches fresh main: src/keybindings/dispatcher.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged original source pin: package.json",
+      "pass": true
+    },
+    {
+      "name": "matches fresh main: package.json",
+      "pass": true
+    },
+    {
+      "name": "unchanged original source pin: package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "matches fresh main: package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "complete retained bji hash",
+      "pass": true
+    },
+    {
+      "name": "complete retained bji bytes",
+      "pass": true
+    },
+    {
+      "name": "complete retained Mqo hash",
+      "pass": true
+    },
+    {
+      "name": "complete retained Mqo bytes",
+      "pass": true
+    },
+    {
+      "name": "complete retained jqo hash",
+      "pass": true
+    },
+    {
+      "name": "complete retained jqo bytes",
+      "pass": true
+    },
+    {
+      "name": "complete retained wrapper hash",
+      "pass": true
+    },
+    {
+      "name": "complete retained wrapper bytes",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: bji: F=Ld(t)!==\"write\"||w!==void 0||E",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: bji: U=R===\"text\"&&!n?.isBinary&&!H",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: bji: G=U&&n?.status!==\"deleted\"&&(I||L&&z),K=G&&!F&&d!==void 0",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: bji: contentEditable:K",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: bji: editable:Le",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: bji: oi(\"workspace.toggleFileEdit\",()=>!o||!I&&!L?!1:J?(te(\"edit\"),!0):I&&P&&i?(ve(\"diff\"),!0):!1",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: Mqo: editable:w",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: Mqo: if(c&&!i)",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: Mqo: if(RDt(i.path)!==void 0||v)",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: Mqo: if(w!==void 0&&i.newContent!==null)",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: Mqo: p.jsx(jqo,{localWorkspaceId:n,...w",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: jqo: contentEditable:g=!0",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: jqo: readOnly:!g",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: jqo: p.jsx(Tqo,{filePath:e,localWorkspaceId:t,viewStyle:i,hasDiff:m,contentEditable:g",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: kqo-wrapper: const Tqo=$.memo(function(e)",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: kqo-wrapper: o=p.jsx(kqo,{...e})",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: kqo-wrapper: contentEditable:d=!0",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: kqo-wrapper: Wt=d&&(Vt||!Nt)",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: kqo-wrapper: onKeyDown:d?J:void 0",
+      "pass": true
+    },
+    {
+      "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/source.json",
+      "pass": true
+    },
+    {
+      "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/README.md",
+      "pass": true
+    },
+    {
+      "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/reference/bji.txt",
+      "pass": true
+    },
+    {
+      "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/reference/Mqo.txt",
+      "pass": true
+    },
+    {
+      "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/reference/jqo.txt",
+      "pass": true
+    },
+    {
+      "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/new-inline-draft-remount/reference/editable-view-annotation-caller.txt",
+      "pass": true
+    },
+    {
+      "name": "historical input retained: .oc-tmp/readonly-edit-unit/src/features/diff/readOnlyEditAffordance.test.ts",
+      "pass": true
+    },
+    {
+      "name": "historical fixture hash",
+      "pass": true
+    },
+    {
+      "name": "historical fixture byte count",
+      "pass": true
+    },
+    {
+      "name": "placed baseline fixture is byte-identical",
+      "pass": true
+    },
+    {
+      "name": "proposal hash",
+      "pass": true
+    },
+    {
+      "name": "proposal bytes",
+      "pass": true
+    },
+    {
+      "name": "reviewed proposal applicable but unapplied",
+      "pass": true
+    },
+    {
+      "name": "optional historical-ref environment is not set",
+      "pass": true
+    }
+  ],
+  "current_semantic_red": "NOT_RUN",
+  "product_treatment": "UNAPPLIED",
+  "whole_renderer_and_index_assets": "ABSENT_AT_HISTORICAL_PATHS; RETAINED_COMPLETE_FUNCTION_HASHES_ONLY",
+  "browser_native_packaged": "NOT_RUN"
+}
