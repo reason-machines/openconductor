@@ -1,11 +1,11 @@
 {
   "checked_main": "5f7afadc1c50ee44aa21677b5ab0dd96b87cfb57",
-  "status": "IDENTICAL_GREEN20_PASS_PERMANENT_ADJACENT_NOT_YET_EXECUTED",
+  "status": "RED6F14P_IDENTICAL_GREEN20P_PERMANENT_PLUS_ADJACENT175P",
   "files": [
     {
       "path": "README.md",
-      "bytes": 4140,
-      "sha256": "847b5152a759995fa3b167e34d10a8837c9d1570cdedf56b5a9c8952f4d6c82e"
+      "bytes": 5083,
+      "sha256": "325e05f4cd78e084f0131f797fcf78395c4e491b6cc17941ce2f86590034a929"
     },
     {
       "path": "baseline/Composer.tsx.txt",
@@ -83,6 +83,11 @@
       "sha256": "3e30ad851258157e4e22f9f0d1874feef2691b5ade8deb4032cbb10cf3c1b7a6"
     },
     {
+      "path": "request-adjacent.json",
+      "bytes": 50153,
+      "sha256": "35a8e47baf3d9a8636edf36e892c93683adae8dec4e7abebd2f9ee5126329e6d"
+    },
+    {
       "path": "request-green.json",
       "bytes": 48019,
       "sha256": "0ecc67555b0d5ab38c1d6223974593d75a8080fe0ace46ca9e3384a7eedce2f6"
@@ -91,6 +96,26 @@
       "path": "request-red.json",
       "bytes": 68716,
       "sha256": "6fa2138fab61c48a2a0e668fa3d5a02517f3b64f4b6a67fd5443dc9d9d07885c"
+    },
+    {
+      "path": "runtime/adjacent-receipt.json",
+      "bytes": 2300,
+      "sha256": "ad7eeb622bf1b0b6be7a6de05defc6697ae0bfa5b82972cf78a0936412fc1bba"
+    },
+    {
+      "path": "runtime/adjacent-summary.json",
+      "bytes": 2826,
+      "sha256": "26674bff811c2206abd805480dc2afdd91db235645ae1df6140178bcf5eab370"
+    },
+    {
+      "path": "runtime/adjacent-test.stderr",
+      "bytes": 176,
+      "sha256": "6daf12f5f2b0dbf54fabb61c7bc35b5fd56f0bf9f69701dea135425d14e2868e"
+    },
+    {
+      "path": "runtime/adjacent-test.stdout",
+      "bytes": 32607,
+      "sha256": "4e9435f49414d48519f69ac08b83203b274144fed93af3a04360012a3bd55b6a"
     },
     {
       "path": "runtime/green-receipt.json",

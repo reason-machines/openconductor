@@ -60,16 +60,30 @@ session-switch, and steer focus negatives (#1479).
 
 ## Permanent regression / focused adjacent delivery
 
-The prepared permanent 20-case port is
+The permanent 20-case port is
 `src/features/chat/composerQueueSingletonDrag.test.ts`. All executable case
 bodies are byte-identical to the frozen fixture; only named relative imports
 and two comments differ. Its SHA-256 is
 `bc52c1ecb79557bb6a96c50c0c43be07efe1988117f43f53b7eeed6df018f935`.
 
-The permanent port plus six adjacent suites is **not yet executed**. It has a
-separate serialized request; do not interpret a source-only preparation receipt
-or the earlier identical GREEN as that seven-file check passing. No ready PR
-is opened before the focused regression/adjacent result.
+The permanent port plus six adjacent suites **passed 175/175**, exit 0, on
+2026-11-18 at 00:22:27.670329Z–00:22:36.318580Z. No failures, skips,
+cancellations, todos, setup errors, retries, or timeouts occurred. The suites
+passed 20 singleton cases, 20 edit-return-focus cases, 43 queue-focus cases,
+51 blank-edit-save cases, 18 collapse/shrink cases, 19 queue-reducer cases,
+and 4 queue-key/drop-order cases. Per-file TAP ranges and exact command are in
+`runtime/adjacent-summary.json`; complete output and receipt are alongside it.
+
+This separately admitted invocation used the same CPU0, 60-second timeout,
+5-second kill grace, and 768 MiB per-process Node heap bounds as RED/GREEN,
+with all five source-ref environment variables unset. All 250 pinned identities
+passed before and after. All 19 untouched source blobs matched actual main
+`5f7afadc1c50ee44aa21677b5ab0dd96b87cfb57`; the Composer difference remained
+exactly the one-line predicate, with outside-QueuePanel bytes unchanged.
+Cleanup/release was 00:22:36.319266Z, with no process-group survivors.
+Retained output was 32,783 bytes; child maximum RSS was 225,360 KiB, not an
+aggregate process-group cap. The only stderr was an experimental Node proxy
+warning, not a test failure.
 
 ## Verification limits
 
