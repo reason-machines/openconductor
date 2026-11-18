@@ -1,8 +1,8 @@
 [
   {
     "path": "README.md",
-    "bytes": 5466,
-    "sha256": "b65bd35e9eb92b5289f554cc5363687e7351a5df4980b22339c58dafcec076b8"
+    "bytes": 6603,
+    "sha256": "ab93773e28d424e2c1a8d9332a51ad7ef442409838d090c1da0a26ff67a2a78f"
   },
   {
     "path": "build_fixture.py",
@@ -28,6 +28,11 @@
     "path": "green-request.json",
     "bytes": 55946,
     "sha256": "6937ed5ac6316d1cf9ab186c45950cbae3a7919eb3e83ba738023cb4598d13b3"
+  },
+  {
+    "path": "green-verification.json",
+    "bytes": 1391,
+    "sha256": "a1b438db038e6be776e6f01872ae2e1de1a17f309b9e2745e05558d265e4fec2"
   },
   {
     "path": "main/Composer.tsx",
@@ -143,6 +148,21 @@
     "path": "run-red.py",
     "bytes": 4561,
     "sha256": "bb93089596253016e51db1949f909814723d96d73e13e8ee023e5746cfff6c53"
+  },
+  {
+    "path": "runtime-green/receipt.json",
+    "bytes": 1740,
+    "sha256": "ccf61c8d8caacd96999672bf0fe9a9509391e563c16973dd9d3d9c048f51236a"
+  },
+  {
+    "path": "runtime-green/test.stderr",
+    "bytes": 176,
+    "sha256": "b862830b5c357a65f6f3442623a3f52c34df2847473d9353acb4c77ccccfbdf1"
+  },
+  {
+    "path": "runtime-green/test.stdout",
+    "bytes": 3786,
+    "sha256": "79ebbfe2559c82fee77a505685be05d5b42a9cfd736e6d4318b2cd58925195ad"
   },
   {
     "path": "runtime-red/receipt.json",

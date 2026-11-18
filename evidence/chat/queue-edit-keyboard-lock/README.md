@@ -31,7 +31,7 @@ The fixture mounts the complete actual Composer with real queue reducers. It ent
 - Original fixture SHA-256: `ce6ccead15be69e2b780f02c04e29a97ee28104e5eaf6eb14ac8bb170d940e02`.
 - Oracle SHA-256: `466ada994d18d5b7d2f632f01998163d040c6fa17edf026ba2795a1ad8807b7c`.
 
-Original command (the unchanged fixture is scheduled separately for GREEN):
+Original command (executed unchanged for both RED and GREEN):
 
 ```bash
 taskset -c 0 timeout --signal=TERM --kill-after=5s 60s \
@@ -45,9 +45,17 @@ taskset -c 0 timeout --signal=TERM --kill-after=5s 60s \
 
 The permanent port is `src/features/chat/composerQueueEditKeyboardLock.test.ts`. Only its header and location-relative import specifiers differ from the frozen fixture; the remaining executable content is identical after import rebinding. The source receipt verifies that relation and that the product change is exactly the one-line predicate extension.
 
-**Passed:** source-only identity, import-rebinding, baseline/treatment equivalence and whitespace checks. The original RED TAP is preserved unchanged.
+**Passed:** source-only identity, import-rebinding, baseline/treatment equivalence and whitespace checks. The original RED TAP is preserved unchanged. `source-treatment.json` remains the historical pre-GREEN preparation receipt, not the current execution result.
 
-**Not run yet:** the original-fixture GREEN26, permanent regression runtime, hosted exact-head CI, browser, native or packaged-app verification. The original GREEN26 continuation stays in the existing serialized ledger queue; no additional runtime admission or native owner was created. Ready PR publication and hosted CI follow the admitted original GREEN result.
+**GREEN passed:** the identical original fixture executed once on the one-line treatment: **26/26 passed**, exit 0, no failures, skips, cancellations or setup errors. All 11 formerly failing cases and all 15 controls executed in the original order. The raw receipt and TAP are retained under `runtime-green/`; `green-verification.json` links their hashes and the permanent-port identity check.
+
+- Test: 2026-11-18 01:52:45.697465Z–01:52:46.916394Z.
+- Cleanup/release: 01:52:46.917089Z; zero owned process-group survivors.
+- All 266 frozen identities passed before and after; all 22 source bindings matched freshly fetched main `5100f02abdc1129050d5f020f8de552680fc2994`, allowing only the exact Composer guard.
+- Child maximum RSS 162,556 KiB, **not aggregate RSS or a group cap**; retained output 3,962 bytes. The preflight free-space observation was 16,520,966,144 bytes, above the 4 GiB floor; it is not a later free-space claim.
+- CPU 0, inherited nice 10 and `UV_THREADPOOL_SIZE=1`, 768 MiB heap per Node, original 60-second timeout/5-second kill grace/30-second cleanup bounds.
+
+**Not run locally:** the permanent-port runtime, full adjacent suites, build, browser, native or packaged-app verification. No second local runtime or native owner was created. The permanent port is covered by mandatory automatic hosted CI on the ready PR; its result must be checked on that exact head before merge.
 
 The existing automatic `CI` frontend job runs `node --test "src/**/*.test.ts"`, so it covers the permanent 26-case port and adjacent suites on the published head. Conditional workflow skips are not passing tests. Merge waits for every executed exact-head check to pass.
 
