@@ -1,0 +1,201 @@
+{
+  "candidate": "COMPOSER-QUEUE-EDIT-KEYBOARD-LOCK-135",
+  "checked_utc": "2026-11-18T00:38:02.862820+00:00",
+  "checked_default_main": "8f0f8707a529e17937cd8e9447b8b769b6bc5e21",
+  "classification": "SOURCE_QUALIFIED_CANDIDATE_NOT_RUNTIME_REPRODUCED",
+  "finding": "Retained real-Conductor chat propagates active queued edit id into a global early return in the actual queue list keyboard handler. Fresh main leaves displayed nonediting rows focusable and their real keyboard handlers can dispatch edit/delete/steer or consume navigation while another queued edit remains active. No runtime failure or native behavior is claimed.",
+  "scope": "Queue-row keyboard handling during any active queued edit only. Preserve edit-editor Save/Cancel/Save-and-steer, pointer buttons, dragging, ordering, provider behavior and all nonediting shortcuts.",
+  "parent": {
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "spans": [
+    {
+      "name": "JNi",
+      "utf8_half_open": [
+        8750085,
+        8760369
+      ],
+      "bytes": 10284,
+      "sha256": "775251f3c9074a8f60944335cd7c44d053c1472bb63987adc4b149d0d32828d1",
+      "completeSyntax": true,
+      "method": "Existing complete-declaration receipt rebound to complete parent"
+    },
+    {
+      "name": "AAo",
+      "utf8_half_open": [
+        8725767,
+        8730190
+      ],
+      "bytes": 4423,
+      "sha256": "1427c2453126a3311e9a330ae73a6b88a491199c4005ea85406728357d53ebab",
+      "completeSyntax": true,
+      "method": "Existing complete-declaration receipt rebound to complete parent"
+    },
+    {
+      "name": "GTo",
+      "utf8_half_open": [
+        8700675,
+        8708256
+      ],
+      "bytes": 7581,
+      "sha256": "8464862ead880f69f77258ee26be61216cbaa24692ba8cb5a02daf30365f8440",
+      "completeSyntax": true,
+      "method": "Existing complete-declaration receipt rebound to complete parent"
+    },
+    {
+      "name": "DTo",
+      "utf8_half_open": [
+        8693089,
+        8694846
+      ],
+      "bytes": 1757,
+      "sha256": "37d80f9732f0433e47372cf59d52bb2eef850f8f6d544d6b16e9c3566c30823f",
+      "method": "Unique declaration through next function; string-aware balanced-delimiter verification, not JS parser execution"
+    }
+  ],
+  "main_sources": [
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "bytes": 34901,
+      "sha256": "0bd7b4a6e8400474e5d78f547c04dfeb33d93f9279440ae8dc4c72f7e1a91904",
+      "git_blob": "7a44308086d7536c6f6435fa2a6ddd605013a2b3"
+    },
+    {
+      "path": "src/features/chat/queue.ts",
+      "bytes": 12996,
+      "sha256": "f08c481457eaf0389259d148c62c1c592cfc95612dc6b7576cb4c7c415e1e1a1",
+      "git_blob": "ff24116ee335c6d67bb8134f3e09cb3d714775dd"
+    },
+    {
+      "path": "src/features/chat/queueKeys.ts",
+      "bytes": 2947,
+      "sha256": "5e0ddfb22b9538056868dce47113fce9445d781b5fa23fe49b96cc2b1492c193",
+      "git_blob": "f84789555b6e611c11e7fc7fda65122f76b76e41"
+    },
+    {
+      "path": "src/features/chat/composerQueueFocus.test.ts",
+      "bytes": 17746,
+      "sha256": "399ade20e426496ab14a385f0439ed97aaad13504c97bd0839e4fbea547892c6",
+      "git_blob": "f071bb3766f4b2f5e95267776cfc6100d611a951"
+    },
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "bytes": 10216,
+      "sha256": "7e8f7f7426164d2e707d9507a2af87336607b88db891fb864c55f28b8ab34fdf",
+      "git_blob": "496cae9556c386dd33dc4c5e10c5826a018d6cd6"
+    },
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "bytes": 102922,
+      "sha256": "4520e46b632d50ef6feaf78398ec08cf7e8a58697605067b707af50d3c1f8214",
+      "git_blob": "ad8c8e4b0588420c14013009fc1ecec49349ea03"
+    },
+    {
+      "path": "src/features/chat/chatRuntime.ts",
+      "bytes": 33403,
+      "sha256": "ce7c3cb29940ccfa4fedce7e3b49d2c835db6644c9c40330bebbbf6111723816",
+      "git_blob": "bbda04115e743b9ab9ac49ad3ad155f1d351888a"
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "bytes": 28914,
+      "sha256": "b9df8f72c86c6c4e1cc05cade6b4719cd3abf26e557e690ffd574cbe2231ecb5",
+      "git_blob": "d914bdec2a9ac49031a8e4cdbe40d50a5148ade2"
+    }
+  ],
+  "checks_passed": 81,
+  "checks": [
+    "Normal remote-main read equals fetched source snapshot",
+    "Retained complete real-app renderer exact known identity",
+    "Current default-branch manifest binds this renderer",
+    "JNi retained complete declaration length/digest matches parent",
+    "JNi retained declaration starts/ends at stated bounds",
+    "JNi checked-in reference byte equality",
+    "AAo retained complete declaration length/digest matches parent",
+    "AAo retained declaration starts/ends at stated bounds",
+    "AAo checked-in reference byte equality",
+    "GTo retained complete declaration length/digest matches parent",
+    "GTo retained declaration starts/ends at stated bounds",
+    "GTo checked-in reference byte equality",
+    "DTo retained complete declaration length/digest matches parent",
+    "DTo retained declaration starts/ends at stated bounds",
+    "DTo checked-in reference byte equality",
+    "Historical corrected REA analyzed slice matches original renderer",
+    "Historical twenty REA coordinate joins retained without reinterpretation",
+    "Both handler and DOM consumer lie inside analyzed REA slice",
+    "Actual chat mounts AAo with active queued edit message id",
+    "AAo receives editingMessageId as i",
+    "AAo mounts actual GTo with same editingMessageId",
+    "GTo receives active edit id as o and computes global Z",
+    "Actual list-key handler returns before row selection while any edit is active",
+    "Reference global edit guard precedes editMessage",
+    "Reference global edit guard precedes deleteMessage",
+    "Reference global edit guard precedes steerMessage",
+    "Reference global edit guard precedes navigation ArrowDown",
+    "Reference global edit guard precedes navigation ArrowUp",
+    "Reference global edit guard precedes navigation Home",
+    "Reference global edit guard precedes navigation End",
+    "Reference global edit guard precedes navigation Escape",
+    "GTo binds actual guarded handler into DTo onListKeyDown",
+    "DTo receives handler without replacement",
+    "DTo connects it to real focusable Queued messages listbox",
+    "Current actual row-key handler ignores child/IME only",
+    "Current complete row-key handler has no active-edit check",
+    "Current actual row-key handler resolves real overridden shortcuts",
+    "Current actual row-key handler calls pure row resolver",
+    "Current handler dispatches resolved edit",
+    "Current handler dispatches resolved delete",
+    "Current handler dispatches resolved steer",
+    "Current handler consumes resolved row events",
+    "Current navigation reaches existing real focus port",
+    "Current list remains mounted while editing if expanded",
+    "Only matching row receives edit mode, other rows remain display rows",
+    "Actual row receives unguarded key callback",
+    "Actual displayed li stays keyboard-focusable and receives row callback",
+    "QueuePanel has no parent inert or disabled fieldset guard",
+    "Pure resolver receives no active edit state",
+    "Pure resolver can return edit",
+    "Pure resolver can return delete",
+    "Pure resolver can return steer",
+    "Reducer edit replaces active id with any existing queue id",
+    "Reducer delete removes target independently of another active edit",
+    "Reducer steer can emit steer effect with another edit still active",
+    "Existing test harness drives actual component row key handlers",
+    "Existing harness already supports active edit state",
+    "Existing harness proves ignored child/IME but lacks active-edit row-key target",
+    "Real-app edit producer calls beginQueuedMessageEdit",
+    "Reference actual list focus only selects a row",
+    "Reference queue focus change binds visual focus state only",
+    "Reference list focus forwards unchanged and blur only changes focus-within",
+    "Current actual Edit button resets draft then dispatches edit id",
+    "Current beginEdit changes active id without removing any row",
+    "Workspace actual Composer queue prop and action port remain bound",
+    "Reason runtime actual action port calls same queue reducer",
+    "Current edited row keeps unsaved draft in row-local state",
+    "Current queued editor blur and focus callbacks cannot dispatch save or cancel",
+    "Shared editor blur delegates only supplied callbacks, no implicit save/cancel",
+    "Actual queue list and display rows add no focus or blur transition handler",
+    "Row keys stay stable by message id through focus changes",
+    "Actual Composer focus method only queries and focuses the real row",
+    "Merged singleton rendered eligibility stays intact",
+    "Published regression unchanged from actual merged main: composerQueueSingletonDrag.test.ts",
+    "Published regression unchanged from actual merged main: composerQueueEditReturnFocus.test.ts",
+    "Published regression unchanged from actual merged main: composerQueueFocus.test.ts",
+    "Published regression unchanged from actual merged main: composerQueueEditEmptySave.test.ts",
+    "Published regression unchanged from actual merged main: composerQueueCollapseShrink.test.ts",
+    "Published regression unchanged from actual merged main: queue.test.ts",
+    "Published regression unchanged from actual merged main: queueKeys.test.ts",
+    "No tracked product or regression modification during preparation"
+  ],
+  "collision": "Ledger 87e0bf26 confirms same narrow row-handler ownership; private inert26 refinement/freeze only. No runtime request or reservation.",
+  "ordinary_producer_closure": "SOURCE-CLOSED: actual visible Edit A -> real actionStep/beginEdit -> row-local edited draft -> actual queued-editor onBlur no-op -> still-rendered focusable B -> actual row onKeyDown. No focus-triggered automatic save/cancel or manual editingId injection. DOM/editor focus adapters still require separately admitted runtime verification; no physical Tab or native behavior claim.",
+  "next_check_not_run": "Mount the actual complete Composer and real queue reducers. With q1 editing and q2 as event currentTarget, E/Delete/Steer and plain navigation must be unhandled without actions/effects/focus/draft loss; repeat configured shortcuts. Nonediting controls must still dispatch or navigate. Test editor save/cancel and child/IME negatives. Freeze case/oracle before any separately admitted execution.",
+  "limits": [
+    "Source-only Python/hash/text checks, no Node or JS parser execution.",
+    "Retained REA analyzed source, not a new Conductor capture or physical observation.",
+    "Historical REA graph cap, no-match, ambiguous receiver, missing range-helper and corrected digest limitations unchanged.",
+    "#1480 actual merge confirmed 8f0f8707a529e17937cd8e9447b8b769b6bc5e21; source rebound to current main. Candidate has no product edits/commits/PR stack.",
+    "No test, build, preview/browser, install, native, package, provider or agent execution; sole E1 native/package ownership unchanged."
+  ]
+}

@@ -1,0 +1,167 @@
+[
+  {
+    "path": "README.md",
+    "bytes": 5466,
+    "sha256": "b65bd35e9eb92b5289f554cc5363687e7351a5df4980b22339c58dafcec076b8"
+  },
+  {
+    "path": "build_fixture.py",
+    "bytes": 11476,
+    "sha256": "dd2eaa27489434e8988947baa2be1bb4efabccd7fcb48879a0dd36343252ffb5"
+  },
+  {
+    "path": "composerQueueEditKeyboardLock.test.ts",
+    "bytes": 20326,
+    "sha256": "ce6ccead15be69e2b780f02c04e29a97ee28104e5eaf6eb14ac8bb170d940e02"
+  },
+  {
+    "path": "freeze-receipt.json",
+    "bytes": 2703,
+    "sha256": "1ff9ad4d4a9359e3d40778d27c545e22e997d1f96d18eb946cdf9d385db0ae86"
+  },
+  {
+    "path": "freeze_source.py",
+    "bytes": 9352,
+    "sha256": "5d389319af69bb91acac4dbd8ce39cc34c3303b69b08a77acf7b0c616978af17"
+  },
+  {
+    "path": "green-request.json",
+    "bytes": 55946,
+    "sha256": "6937ed5ac6316d1cf9ab186c45950cbae3a7919eb3e83ba738023cb4598d13b3"
+  },
+  {
+    "path": "main/Composer.tsx",
+    "bytes": 34901,
+    "sha256": "0bd7b4a6e8400474e5d78f547c04dfeb33d93f9279440ae8dc4c72f7e1a91904"
+  },
+  {
+    "path": "main/ComposerEditor.tsx",
+    "bytes": 10216,
+    "sha256": "7e8f7f7426164d2e707d9507a2af87336607b88db891fb864c55f28b8ab34fdf"
+  },
+  {
+    "path": "main/WorkspaceView.tsx",
+    "bytes": 102922,
+    "sha256": "4520e46b632d50ef6feaf78398ec08cf7e8a58697605067b707af50d3c1f8214"
+  },
+  {
+    "path": "main/chatRuntime.ts",
+    "bytes": 33403,
+    "sha256": "ce7c3cb29940ccfa4fedce7e3b49d2c835db6644c9c40330bebbbf6111723816"
+  },
+  {
+    "path": "main/composerQueueFocus.test.ts",
+    "bytes": 17746,
+    "sha256": "399ade20e426496ab14a385f0439ed97aaad13504c97bd0839e4fbea547892c6"
+  },
+  {
+    "path": "main/queue.ts",
+    "bytes": 12996,
+    "sha256": "f08c481457eaf0389259d148c62c1c592cfc95612dc6b7576cb4c7c415e1e1a1"
+  },
+  {
+    "path": "main/queueKeys.ts",
+    "bytes": 2947,
+    "sha256": "5e0ddfb22b9538056868dce47113fce9445d781b5fa23fe49b96cc2b1492c193"
+  },
+  {
+    "path": "main/registry.ts",
+    "bytes": 28914,
+    "sha256": "b9df8f72c86c6c4e1cc05cade6b4719cd3abf26e557e690ffd574cbe2231ecb5"
+  },
+  {
+    "path": "manifest.json",
+    "bytes": 3209,
+    "sha256": "48c82b45d79be3e2856cf59682cc988d9609ea8db2c5150ce54f07fedf5e71f6"
+  },
+  {
+    "path": "oracle-draft.json",
+    "bytes": 12107,
+    "sha256": "466ada994d18d5b7d2f632f01998163d040c6fa17edf026ba2795a1ad8807b7c"
+  },
+  {
+    "path": "oracle-frozen.json",
+    "bytes": 12107,
+    "sha256": "466ada994d18d5b7d2f632f01998163d040c6fa17edf026ba2795a1ad8807b7c"
+  },
+  {
+    "path": "qualification.json",
+    "bytes": 11080,
+    "sha256": "58e6d0cbf738cc12f889087d78140e42146599f730fa08968ab1b7a7ead4c5cc"
+  },
+  {
+    "path": "qualify.py",
+    "bytes": 14938,
+    "sha256": "1f9af0ecd27faea0aea62870366eef0fae938b2f0eda2ea94a4f9c8e83a2f763"
+  },
+  {
+    "path": "red-request.json",
+    "bytes": 51800,
+    "sha256": "6ccc27f05c0cdc8ed86b7b0f3977c07fc9c33d739e5f904a3c040be819d716fa"
+  },
+  {
+    "path": "reference/AAo.txt",
+    "bytes": 4423,
+    "sha256": "1427c2453126a3311e9a330ae73a6b88a491199c4005ea85406728357d53ebab"
+  },
+  {
+    "path": "reference/DTo.txt",
+    "bytes": 1757,
+    "sha256": "37d80f9732f0433e47372cf59d52bb2eef850f8f6d544d6b16e9c3566c30823f"
+  },
+  {
+    "path": "reference/GTo.txt",
+    "bytes": 7581,
+    "sha256": "8464862ead880f69f77258ee26be61216cbaa24692ba8cb5a02daf30365f8440"
+  },
+  {
+    "path": "reference/JNi.txt",
+    "bytes": 10284,
+    "sha256": "775251f3c9074a8f60944335cd7c44d053c1472bb63987adc4b149d0d32828d1"
+  },
+  {
+    "path": "reference/corrected-binding.json",
+    "bytes": 19879,
+    "sha256": "7cc2bc3db49e26b16a19a8c178f92750b1cc4104566d7b181c6f15e674996db0"
+  },
+  {
+    "path": "reference/rea-queue-sites.json",
+    "bytes": 4228,
+    "sha256": "68212b169482b88e5b7ad7165efeacbb99692c0af89afeac591dbf7772a83997"
+  },
+  {
+    "path": "reference/spans.json",
+    "bytes": 1215,
+    "sha256": "ef2e2660eef998afe9a3d77a2b40023d150df8f14075a758648faac5c898975b"
+  },
+  {
+    "path": "run-green.py",
+    "bytes": 5204,
+    "sha256": "b9559820da1877f94883e8d6f0d28e7ef61d36efa723c912ae8cace9c93e04ea"
+  },
+  {
+    "path": "run-red.py",
+    "bytes": 4561,
+    "sha256": "bb93089596253016e51db1949f909814723d96d73e13e8ee023e5746cfff6c53"
+  },
+  {
+    "path": "runtime-red/receipt.json",
+    "bytes": 1731,
+    "sha256": "c95e1c145ce06002217d18ba59121bfd555ed7108da8e3b1d1f2c4ae4eaefeae"
+  },
+  {
+    "path": "runtime-red/test.stderr",
+    "bytes": 176,
+    "sha256": "d743bdfb59cd9e60a67bf5f42a6430a854426fe96c334df1780a560b69b6ddf3"
+  },
+  {
+    "path": "runtime-red/test.stdout.gz",
+    "bytes": 1576,
+    "sha256": "35e81978a9cabbb925d40789c3cd940f645e0cbe2733631eaa627583364cb6e7"
+  },
+  {
+    "path": "source-treatment.json",
+    "bytes": 1793,
+    "sha256": "cbc0cddbbf7d549c887e52b34dfe459bb1e27d657603915b35e540c708578270"
+  }
+]
