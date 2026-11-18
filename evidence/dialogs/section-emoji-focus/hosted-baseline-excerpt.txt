@@ -1,0 +1,225 @@
+2026-11-18T01:58:54.5053387Z   duration_ms: 20.000821
+2026-11-18T01:58:54.5053941Z   type: 'test'
+2026-11-18T01:58:54.5054475Z   ...
+2026-11-18T01:58:54.5055346Z # Subtest: section edit restarts composition without a stale dismissal timer
+2026-11-18T01:58:54.5110746Z ok 542 - section edit restarts composition without a stale dismissal timer
+2026-11-18T01:58:54.5131537Z   ---
+2026-11-18T01:58:54.5141892Z   duration_ms: 20.688787
+2026-11-18T01:58:54.5142484Z   type: 'test'
+2026-11-18T01:58:54.5142947Z   ...
+2026-11-18T01:58:54.5143803Z # Subtest: section edit preserves composing Enter, ordinary Enter and idle Escape
+2026-11-18T01:58:54.5145330Z ok 543 - section edit preserves composing Enter, ordinary Enter and idle Escape
+2026-11-18T01:58:54.5146101Z   ---
+2026-11-18T01:58:54.5146569Z   duration_ms: 46.707196
+2026-11-18T01:58:54.5147085Z   type: 'test'
+2026-11-18T01:58:54.5147587Z   ...
+2026-11-18T01:58:54.5148451Z # Subtest: section edit preserves explicit Cancel and clears its timer on unmount
+2026-11-18T01:58:54.5149707Z ok 544 - section edit preserves explicit Cancel and clears its timer on unmount
+2026-11-18T01:58:54.5150462Z   ---
+2026-11-18T01:58:54.5150980Z   duration_ms: 47.41262
+2026-11-18T01:58:54.5151747Z   type: 'test'
+2026-11-18T01:58:54.5152275Z   ...
+2026-11-18T01:58:54.9569800Z # Subtest: section emoji search appears only after opening the picker
+2026-11-18T01:58:54.9591940Z ok 545 - section emoji search appears only after opening the picker
+2026-11-18T01:58:54.9592818Z   ---
+2026-11-18T01:58:54.9593539Z   duration_ms: 231.292836
+2026-11-18T01:58:54.9594292Z   type: 'test'
+2026-11-18T01:58:54.9594895Z   ...
+2026-11-18T01:58:54.9595895Z # Subtest: section emoji search filters the existing choices for "rocket"
+2026-11-18T01:58:54.9597272Z ok 546 - section emoji search filters the existing choices for "rocket"
+2026-11-18T01:58:54.9598208Z   ---
+2026-11-18T01:58:54.9598826Z   duration_ms: 98.299965
+2026-11-18T01:58:54.9599513Z   type: 'test'
+2026-11-18T01:58:54.9600138Z   ...
+2026-11-18T01:58:54.9601409Z # Subtest: section emoji search filters the existing choices for " ROCKET "
+2026-11-18T01:58:54.9602861Z ok 547 - section emoji search filters the existing choices for " ROCKET "
+2026-11-18T01:58:54.9603882Z   ---
+2026-11-18T01:58:54.9604509Z   duration_ms: 95.067641
+2026-11-18T01:58:54.9605196Z   type: 'test'
+2026-11-18T01:58:54.9605812Z   ...
+2026-11-18T01:58:54.9606780Z # Subtest: section emoji search filters the existing choices for "launch"
+2026-11-18T01:58:54.9608218Z ok 548 - section emoji search filters the existing choices for "launch"
+2026-11-18T01:58:54.9621333Z   ---
+2026-11-18T01:58:54.9621718Z   duration_ms: 65.075044
+2026-11-18T01:58:54.9622153Z   type: 'test'
+2026-11-18T01:58:54.9622503Z   ...
+2026-11-18T01:58:54.9623319Z # Subtest: unmatched section emoji search shows the empty state without submitting
+2026-11-18T01:58:54.9624502Z ok 549 - unmatched section emoji search shows the empty state without submitting
+2026-11-18T01:58:54.9625214Z   ---
+2026-11-18T01:58:54.9625977Z   duration_ms: 54.003568
+2026-11-18T01:58:54.9626427Z   type: 'test'
+2026-11-18T01:58:54.9626769Z   ...
+2026-11-18T01:58:54.9627524Z # Subtest: selecting a filtered emoji closes the picker but saves only on Create
+2026-11-18T01:58:54.9628660Z ok 550 - selecting a filtered emoji closes the picker but saves only on Create
+2026-11-18T01:58:54.9629351Z   ---
+2026-11-18T01:58:54.9629694Z   duration_ms: 35.299594
+2026-11-18T01:58:54.9630101Z   type: 'test'
+2026-11-18T01:58:54.9630440Z   ...
+2026-11-18T01:58:54.9631411Z # Subtest: Remove emoji remains usable with no search results and omits emoji on Save
+2026-11-18T01:58:54.9632608Z ok 551 - Remove emoji remains usable with no search results and omits emoji on Save
+2026-11-18T01:58:54.9633330Z   ---
+2026-11-18T01:58:54.9633675Z   duration_ms: 46.129235
+2026-11-18T01:58:54.9634087Z   type: 'test'
+2026-11-18T01:58:54.9634426Z   ...
+2026-11-18T01:58:54.9635032Z # Subtest: section create preserves Cancel without submitting
+2026-11-18T01:58:54.9635905Z ok 552 - section create preserves Cancel without submitting
+2026-11-18T01:58:54.9636476Z   ---
+2026-11-18T01:58:54.9636809Z   duration_ms: 31.03817
+2026-11-18T01:58:54.9637206Z   type: 'test'
+2026-11-18T01:58:54.9637541Z   ...
+2026-11-18T01:58:54.9638126Z # Subtest: section edit preserves Cancel without submitting
+2026-11-18T01:58:54.9638947Z ok 553 - section edit preserves Cancel without submitting
+2026-11-18T01:58:54.9639572Z   ---
+2026-11-18T01:58:54.9639907Z   duration_ms: 68.414133
+2026-11-18T01:58:54.9640313Z   type: 'test'
+2026-11-18T01:58:54.9640642Z   ...
+2026-11-18T01:58:54.9641594Z # Subtest: section name keeps its trimmed-empty primary-button guard and Enter control
+2026-11-18T01:58:54.9643051Z ok 554 - section name keeps its trimmed-empty primary-button guard and Enter control
+2026-11-18T01:58:54.9643778Z   ---
+2026-11-18T01:58:54.9644117Z   duration_ms: 49.277541
+2026-11-18T01:58:54.9644530Z   type: 'test'
+2026-11-18T01:58:54.9644872Z   ...
+2026-11-18T01:58:54.9645674Z # Subtest: section create emoji search requests focus only while the picker is mounted
+2026-11-18T01:58:54.9646925Z not ok 555 - section create emoji search requests focus only while the picker is mounted
+2026-11-18T01:58:54.9647671Z   ---
+2026-11-18T01:58:54.9648015Z   duration_ms: 52.891166
+2026-11-18T01:58:54.9648421Z   type: 'test'
+2026-11-18T01:58:54.9649314Z   location: '/home/runner/work/openconductor/openconductor/src/components/sectionEmoji.test.ts:180:3'
+2026-11-18T01:58:54.9650276Z   failureType: 'testCodeFailure'
+2026-11-18T01:58:54.9650742Z   error: |-
+2026-11-18T01:58:54.9684822Z     Expected values to be strictly equal:
+2026-11-18T01:58:54.9685350Z     + actual - expected
+2026-11-18T01:58:54.9685737Z     
+2026-11-18T01:58:54.9686045Z     + undefined
+2026-11-18T01:58:54.9686384Z     - true
+2026-11-18T01:58:54.9686690Z     
+2026-11-18T01:58:54.9687002Z   code: 'ERR_ASSERTION'
+2026-11-18T01:58:54.9687399Z   name: 'AssertionError'
+2026-11-18T01:58:54.9687788Z   expected: true
+2026-11-18T01:58:54.9688165Z   operator: 'strictEqual'
+2026-11-18T01:58:54.9688557Z   stack: |-
+2026-11-18T01:58:54.9689426Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sectionEmoji.test.ts:189:14)
+2026-11-18T01:58:54.9690391Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-18T01:58:54.9690928Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-18T01:58:54.9691855Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-18T01:58:54.9692534Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-18T01:58:54.9693074Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-18T01:58:54.9693742Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-18T01:58:54.9694342Z   ...
+2026-11-18T01:58:54.9695012Z # Subtest: section edit emoji search requests focus only while the picker is mounted
+2026-11-18T01:58:54.9696005Z not ok 556 - section edit emoji search requests focus only while the picker is mounted
+2026-11-18T01:58:54.9706832Z   ---
+2026-11-18T01:58:54.9707657Z   duration_ms: 46.249376
+2026-11-18T01:58:54.9708226Z   type: 'test'
+2026-11-18T01:58:54.9709192Z   location: '/home/runner/work/openconductor/openconductor/src/components/sectionEmoji.test.ts:180:3'
+2026-11-18T01:58:54.9710284Z   failureType: 'testCodeFailure'
+2026-11-18T01:58:54.9710823Z   error: |-
+2026-11-18T01:58:54.9711589Z     Expected values to be strictly equal:
+2026-11-18T01:58:54.9712150Z     + actual - expected
+2026-11-18T01:58:54.9712631Z     
+2026-11-18T01:58:54.9713016Z     + undefined
+2026-11-18T01:58:54.9713464Z     - true
+2026-11-18T01:58:54.9713865Z     
+2026-11-18T01:58:54.9714295Z   code: 'ERR_ASSERTION'
+2026-11-18T01:58:54.9714838Z   name: 'AssertionError'
+2026-11-18T01:58:54.9715387Z   expected: true
+2026-11-18T01:58:54.9715846Z   operator: 'strictEqual'
+2026-11-18T01:58:54.9720094Z   stack: |-
+2026-11-18T01:58:54.9721412Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sectionEmoji.test.ts:189:14)
+2026-11-18T01:58:54.9791821Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-18T01:58:54.9812006Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-18T01:58:54.9822515Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-18T01:58:54.9852727Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-18T01:58:54.9862028Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-18T01:58:54.9863128Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-18T01:58:54.9864118Z   ...
+2026-11-18T01:58:55.0902643Z # Subtest: section create name input disables automatic correction and capitalization
+2026-11-18T01:58:55.0904634Z ok 557 - section create name input disables automatic correction and capitalization
+2026-11-18T01:58:55.0956700Z   ---
+2026-11-18T01:58:55.0957588Z   duration_ms: 192.277928
+2026-11-18T01:58:55.0958244Z   type: 'test'
+2026-11-18T01:58:55.0958771Z   ...
+2026-11-18T01:58:55.0959733Z # Subtest: section create name input keeps focus selection and the initial name
+2026-11-18T01:58:55.0961181Z ok 558 - section create name input keeps focus selection and the initial name
+2026-11-18T01:58:55.0962094Z   ---
+2026-11-18T01:58:55.0962578Z   duration_ms: 112.441604
+2026-11-18T01:58:55.0963163Z   type: 'test'
+2026-11-18T01:58:55.0963630Z   ...
+2026-11-18T01:58:55.0964505Z # Subtest: section create name input preserves trimmed submit before close
+2026-11-18T01:58:55.0965667Z ok 559 - section create name input preserves trimmed submit before close
+2026-11-18T01:58:55.0966503Z   ---
+2026-11-18T01:58:55.0966986Z   duration_ms: 68.068773
+2026-11-18T01:58:55.0967565Z   type: 'test'
+2026-11-18T01:58:55.0968027Z   ...
+2026-11-18T01:58:55.0968986Z # Subtest: section create name input preserves blank validation and IME-safe Enter
+2026-11-18T01:58:55.0970240Z ok 560 - section create name input preserves blank validation and IME-safe Enter
+2026-11-18T01:58:55.0971274Z   ---
+2026-11-18T01:58:55.0971768Z   duration_ms: 51.909355
+2026-11-18T01:58:55.0972350Z   type: 'test'
+2026-11-18T01:58:55.0972814Z   ...
+2026-11-18T01:58:55.0973635Z # Subtest: section create Cancel closes without submitting the name
+2026-11-18T01:58:55.0974674Z ok 561 - section create Cancel closes without submitting the name
+2026-11-18T01:58:55.0975446Z   ---
+2026-11-18T01:58:55.0975903Z   duration_ms: 39.706641
+2026-11-18T01:58:55.0976452Z   type: 'test'
+2026-11-18T01:58:55.0976933Z   ...
+2026-11-18T01:58:55.0977867Z # Subtest: section edit name input disables automatic correction and capitalization
+2026-11-18T01:58:55.0979159Z ok 562 - section edit name input disables automatic correction and capitalization
+2026-11-18T01:58:55.0980042Z   ---
+2026-11-18T01:58:55.0980509Z   duration_ms: 29.298884
+2026-11-18T01:58:55.0981223Z   type: 'test'
+2026-11-18T01:58:55.0981717Z   ...
+2026-11-18T01:58:55.0982604Z # Subtest: section edit name input keeps focus selection and the initial name
+2026-11-18T01:58:55.0984167Z ok 563 - section edit name input keeps focus selection and the initial name
+2026-11-18T01:58:55.0985046Z   ---
+2026-11-18T01:58:55.0985523Z   duration_ms: 42.345909
+2026-11-18T01:58:55.0986126Z   type: 'test'
+2026-11-18T01:58:55.0986587Z   ...
+2026-11-18T01:58:55.0987447Z # Subtest: section edit name input preserves trimmed submit before close
+2026-11-18T01:58:55.0988567Z ok 564 - section edit name input preserves trimmed submit before close
+2026-11-18T01:58:55.0989386Z   ---
+2026-11-18T01:58:55.0989841Z   duration_ms: 32.627664
+2026-11-18T01:58:55.0990426Z   type: 'test'
+2026-11-18T01:58:55.0990881Z   ...
+2026-11-18T01:58:55.0991972Z # Subtest: section edit name input preserves blank validation and IME-safe Enter
+2026-11-18T01:58:55.0993300Z ok 565 - section edit name input preserves blank validation and IME-safe Enter
+2026-11-18T01:58:55.0994181Z   ---
+2026-11-18T01:58:55.0994692Z   duration_ms: 30.52586
+2026-11-18T01:58:55.0995207Z   type: 'test'
+2026-11-18T01:58:55.0995699Z   ...
+2026-11-18T01:58:55.0996499Z # Subtest: section edit Cancel closes without submitting the name
+2026-11-18T01:58:55.0997526Z ok 566 - section edit Cancel closes without submitting the name
+2026-11-18T01:58:55.0998317Z   ---
+2026-11-18T01:58:55.0998824Z   duration_ms: 45.412833
+2026-11-18T01:58:55.0999435Z   type: 'test'
+2026-11-18T01:58:55.0999880Z   ...
+2026-11-18T01:58:55.8842582Z # Subtest: section writes retain their own error feedback when pending writes settle out of order
+2026-11-18T01:58:55.8862530Z ok 567 - section writes retain their own error feedback when pending writes settle out of order
+2026-11-18T01:58:55.8881689Z   ---
+2026-11-18T01:58:55.8911637Z   duration_ms: 568.915587
+2026-11-18T01:58:55.8941525Z   type: 'test'
+2026-11-18T01:58:55.8971360Z   ...
+2026-11-18T01:58:56.0922676Z # Subtest: a coalesced section write retains both create and edit failure callbacks
+2026-11-18T01:58:56.0962324Z ok 568 - a coalesced section write retains both create and edit failure callbacks
+2026-11-18T01:58:56.0963539Z   ---
+2026-11-18T01:58:56.0973433Z   duration_ms: 254.684928
+2026-11-18T01:58:56.0974304Z   type: 'test'
+2026-11-18T01:58:56.0974797Z   ...
+2026-11-18T01:58:56.2128619Z # Subtest: section create reports a rejected write after the actual dialog unmounts
+2026-11-18T01:58:56.2192158Z ok 569 - section create reports a rejected write after the actual dialog unmounts
+2026-11-18T01:58:56.2192964Z   ---
+2026-11-18T01:58:56.2193344Z   duration_ms: 210.858854
+2026-11-18T01:58:56.2193750Z   type: 'test'
+2026-11-18T01:58:56.2194098Z   ...
+2026-11-18T01:58:56.3677978Z # Subtest: section create keeps successful immediate close quiet
+2026-11-18T01:58:56.3724122Z ok 570 - section create keeps successful immediate close quiet
+2026-11-18T01:58:56.3761996Z   ---
+2026-11-18T01:58:56.3801776Z   duration_ms: 116.558081
+2026-11-18T01:58:56.3861879Z   type: 'test'
+2026-11-18T01:58:56.3901688Z   ...
+2026-11-18T01:58:56.6526839Z # Subtest: section create reloads a superseded layout without a failure toast
+2026-11-18T01:58:56.6560540Z ok 571 - section create reloads a superseded layout without a failure toast
+2026-11-18T01:58:56.6561520Z   ---
+2026-11-18T01:58:56.6561842Z   duration_ms: 163.336517
+2026-11-18T01:58:56.6562218Z   type: 'test'
+2026-11-18T01:58:56.6562503Z   ...
