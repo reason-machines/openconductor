@@ -1,0 +1,65 @@
+{
+  "reservation": "COMPOSER-QUEUE-EDIT-RETURN-FOCUS-135-ADJ-20261117T230603640Z",
+  "started_utc": "2026-11-17T23:10:41.784020+00:00",
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "env",
+    "-u",
+    "COMPOSER_QUEUE_EDIT_RETURN_FOCUS_SOURCE_REF",
+    "-u",
+    "COMPOSER_QUEUE_FOCUS_SOURCE_REF",
+    "-u",
+    "COMPOSER_QUEUE_EDIT_EMPTY_SOURCE_REF",
+    "-u",
+    "COMPOSER_QUEUE_COLLAPSE_SOURCE_REF",
+    "NODE_OPTIONS=--max-old-space-size=768",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "src/features/chat/composerQueueEditReturnFocus.test.ts",
+    "src/features/chat/composerQueueFocus.test.ts",
+    "src/features/chat/composerQueueEditEmptySave.test.ts",
+    "src/features/chat/composerQueueCollapseShrink.test.ts",
+    "src/features/chat/queue.test.ts",
+    "src/features/chat/queueKeys.test.ts"
+  ],
+  "test_executed": true,
+  "groups": [
+    81
+  ],
+  "surviving_pids": [],
+  "outside_queue_panel_unchanged": true,
+  "preflight": {
+    "utc": "2026-11-17T23:10:42.005890+00:00",
+    "host": "ws-zh5pmwqtgx3uglxhwaae5q2k",
+    "allowed_cpu_affinity": [
+      0,
+      1
+    ],
+    "free_disk_bytes": 16553533440,
+    "own_workloads": [],
+    "pins_verified": 244,
+    "main": "6792a09a2d4826a57d8afd7c7e4243de052529bf",
+    "node_executable": {
+      "path": "/usr/local/bin/node",
+      "bytes": 124827920,
+      "sha256": "fde6a4bf8d0562f7751d1a2d6cb9b417c4cfe107bbcb0aa3e9a24e125e348f48"
+    },
+    "node_capability_repeated": false
+  },
+  "test_started_utc": "2026-11-17T23:10:42.006019+00:00",
+  "exit_code": 0,
+  "test_terminated_utc": "2026-11-17T23:10:49.387805+00:00",
+  "all_postrun_pins_unchanged": true,
+  "child_maxrss_kib_not_aggregate": 226544,
+  "retained_output_bytes": 28963,
+  "actual_release_utc": "2026-11-17T23:10:49.569952+00:00",
+  "actual_unit_elapsed_seconds": 7.7863524470012635,
+  "relative_runtime_budget_seconds": 95
+}

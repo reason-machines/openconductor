@@ -1,0 +1,140 @@
+(node:117) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:124) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: unified: history has no nonfunctional Edit button or edit-mode shortcut
+ok 1 - unified: history has no nonfunctional Edit button or edit-mode shortcut
+  ---
+  duration_ms: 614.221046
+  type: 'test'
+  ...
+# Subtest: unified: turn has no nonfunctional Edit button or edit-mode shortcut
+ok 2 - unified: turn has no nonfunctional Edit button or edit-mode shortcut
+  ---
+  duration_ms: 402.008911
+  type: 'test'
+  ...
+# Subtest: unified: binary has no nonfunctional Edit button or edit-mode shortcut
+ok 3 - unified: binary has no nonfunctional Edit button or edit-mode shortcut
+  ---
+  duration_ms: 228.002186
+  type: 'test'
+  ...
+# Subtest: unified: deleted has no nonfunctional Edit button or edit-mode shortcut
+ok 4 - unified: deleted has no nonfunctional Edit button or edit-mode shortcut
+  ---
+  duration_ms: 520.108197
+  type: 'test'
+  ...
+# Subtest: unified: metadata has no nonfunctional Edit button or edit-mode shortcut
+ok 5 - unified: metadata has no nonfunctional Edit button or edit-mode shortcut
+  ---
+  duration_ms: 198.442966
+  type: 'test'
+  ...
+# Subtest: unified: editable code retains pointer and shortcut read-only round trips
+ok 6 - unified: editable code retains pointer and shortcut read-only round trips
+  ---
+  duration_ms: 181.860675
+  type: 'test'
+  ...
+# Subtest: split: history has no nonfunctional Edit button or edit-mode shortcut
+ok 7 - split: history has no nonfunctional Edit button or edit-mode shortcut
+  ---
+  duration_ms: 161.499666
+  type: 'test'
+  ...
+# Subtest: split: turn has no nonfunctional Edit button or edit-mode shortcut
+ok 8 - split: turn has no nonfunctional Edit button or edit-mode shortcut
+  ---
+  duration_ms: 174.402824
+  type: 'test'
+  ...
+# Subtest: split: binary has no nonfunctional Edit button or edit-mode shortcut
+ok 9 - split: binary has no nonfunctional Edit button or edit-mode shortcut
+  ---
+  duration_ms: 149.122492
+  type: 'test'
+  ...
+# Subtest: split: deleted has no nonfunctional Edit button or edit-mode shortcut
+ok 10 - split: deleted has no nonfunctional Edit button or edit-mode shortcut
+  ---
+  duration_ms: 117.422039
+  type: 'test'
+  ...
+# Subtest: split: metadata has no nonfunctional Edit button or edit-mode shortcut
+ok 11 - split: metadata has no nonfunctional Edit button or edit-mode shortcut
+  ---
+  duration_ms: 368.448394
+  type: 'test'
+  ...
+# Subtest: split: editable code retains pointer and shortcut read-only round trips
+ok 12 - split: editable code retains pointer and shortcut read-only round trips
+  ---
+  duration_ms: 160.805248
+  type: 'test'
+  ...
+# Subtest: file: history has no nonfunctional Edit button or edit-mode shortcut
+ok 13 - file: history has no nonfunctional Edit button or edit-mode shortcut
+  ---
+  duration_ms: 89.657129
+  type: 'test'
+  ...
+# Subtest: file: turn has no nonfunctional Edit button or edit-mode shortcut
+ok 14 - file: turn has no nonfunctional Edit button or edit-mode shortcut
+  ---
+  duration_ms: 99.014784
+  type: 'test'
+  ...
+# Subtest: file: binary has no nonfunctional Edit button or edit-mode shortcut
+ok 15 - file: binary has no nonfunctional Edit button or edit-mode shortcut
+  ---
+  duration_ms: 177.339173
+  type: 'test'
+  ...
+# Subtest: file: deleted has no nonfunctional Edit button or edit-mode shortcut
+ok 16 - file: deleted has no nonfunctional Edit button or edit-mode shortcut
+  ---
+  duration_ms: 99.377488
+  type: 'test'
+  ...
+# Subtest: file: metadata has no nonfunctional Edit button or edit-mode shortcut
+ok 17 - file: metadata has no nonfunctional Edit button or edit-mode shortcut
+  ---
+  duration_ms: 105.325442
+  type: 'test'
+  ...
+# Subtest: file: editable code retains pointer and shortcut read-only round trips
+ok 18 - file: editable code retains pointer and shortcut read-only round trips
+  ---
+  duration_ms: 115.975447
+  type: 'test'
+  ...
+# Subtest: whole-file markdown preview retains its independent source/preview shortcut
+ok 19 - whole-file markdown preview retains its independent source/preview shortcut
+  ---
+  duration_ms: 81.172299
+  type: 'test'
+  ...
+# Subtest: unified: loading full contents does not offer editing until ready
+ok 20 - unified: loading full contents does not offer editing until ready
+  ---
+  duration_ms: 150.262358
+  type: 'test'
+  ...
+# Subtest: split: loading full contents does not offer editing until ready
+ok 21 - split: loading full contents does not offer editing until ready
+  ---
+  duration_ms: 81.025449
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4991.084625

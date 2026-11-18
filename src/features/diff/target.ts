@@ -50,12 +50,12 @@ export type DiscardSource = "menu" | "view";
  * Scope a discard restores from, or null when it is not offered. The context
  * menu always discards against the "All changes" base, in every view (turn
  * view included: Conductor opens that menu with hasChanges set for every
- * changed file). The revert icons use the view's own scope and are hidden in
- * the per-turn view.
+ * changed file). The revert icons are offered only in All changes, never in
+ * Uncommitted, commit or per-turn views.
  */
 export function discardScope(source: DiscardSource, view: DiffScope, inTurn: boolean): DiffScope | null {
   if (source === "menu") return "all";
-  return inTurn || typeof view === "object" ? null : view;
+  return !inTurn && view === "all" ? "all" : null;
 }
 
 /** Right-panel tab and changes scope after Cmd+Alt+U: Uncommitted, or back to All changes if already there. */

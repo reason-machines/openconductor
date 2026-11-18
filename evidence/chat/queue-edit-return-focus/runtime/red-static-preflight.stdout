@@ -1,0 +1,35 @@
+{
+  "utc": "2026-11-17T22:39:16.238359+00:00",
+  "main": "d435e2baba6552de85b12cac2544579d20c14ce1",
+  "head": "de94570c693cbd6af3b022e98a987c9205705f6f",
+  "fixture": {
+    "path": ".qa/queue-edit-return-focus-135/composerQueueEditReturnFocus.test.ts",
+    "bytes": 21078,
+    "sha256": "e275647b5174feb78281ff3ae2c0a5c3c735ccf2207da9815e66a3d965bf86be"
+  },
+  "baseline_source": {
+    "path": "src/features/chat/Composer.tsx",
+    "bytes": 34435,
+    "sha256": "5dde290a9c73845b334a4b0daa26733ae76ed06f037df770fdbee2062dcf238c"
+  },
+  "source_pins": 15,
+  "installed_file_pins": 217,
+  "package_contracts": 2,
+  "checks_passed": 261,
+  "failures": [],
+  "host": {
+    "utc": "2026-11-17T22:39:16.238315+00:00",
+    "hostname": "ws-zh5pmwqtgx3uglxhwaae5q2k",
+    "allowed_cpu_affinity": [
+      0,
+      1
+    ],
+    "free_disk_bytes": 16586629120,
+    "own_workload_processes": [],
+    "own_active_runtime_reservation": null,
+    "own_fixture_runtime_started": false,
+    "preview_or_browser_started_this_unit": false
+  },
+  "node_or_parser_invoked": false,
+  "test_executed": false
+}

@@ -1,0 +1,132 @@
+{
+  "prepared_utc": "2026-11-17T23:59:05.460698+00:00",
+  "status": "PRODUCT_ONE_LINE_APPLIED_GREEN_NOT_ADMITTED_NOT_EXECUTED",
+  "checked_main": "5f7afadc1c50ee44aa21677b5ab0dd96b87cfb57",
+  "scope": "QueuePanel HTML draggable eligibility only; no handler, order, self-drop, focus, editor or queue mutation changes.",
+  "source_before_sha256": "60484a0072e816fe61f4abbc19f236c3d5c9e1bc4807fe3d4bcd69bbf2a5d6c8",
+  "source_after": {
+    "path": "src/features/chat/Composer.tsx",
+    "bytes": 34901,
+    "sha256": "0bd7b4a6e8400474e5d78f547c04dfeb33d93f9279440ae8dc4c72f7e1a91904"
+  },
+  "changes": {
+    "insertions": 1,
+    "deletions": 1
+  },
+  "outside_QueuePanel": {
+    "prefix_bytes": 26573,
+    "prefix_sha256": "5420b41b77fa1d29fd0ab4df62c6d1426788ab7fc2140b5e499c2e9f8dfd6316",
+    "suffix_bytes": 4079,
+    "suffix_sha256": "7be20e94f602bc05c3ac249044663d0ef1fd48c6e0ca14352f72c1cca8a82981",
+    "prefix_byte_identical": true,
+    "suffix_byte_identical": true
+  },
+  "fixture_and_oracle_unchanged": true,
+  "entry_reachability": {
+    "targets_1_to_6": "All reached the draggable assertion and failed true!==false. None contains a drag-start call, so no target handler-entry assertion was skipped after the first failure; there is no such assertion in those case bodies.",
+    "enabled_controls": "Cases 9/10/11/13 invoked only enabled multirow drag-start. Case 9 proved payload and own drag state; 10 distinct-target reorder; 11 self-drop; 13 drag-end cleanup.",
+    "green_scope": "Identical GREEN can prove all six render draggable=false and preserve enabled entry controls. It does not invoke a disabled singleton callback or prove physical/native gesture suppression. No handler guard is added or claimed tested.",
+    "per_case_start_calls": [
+      {
+        "id": 1,
+        "name": "singleton/initial visible row is not draggable",
+        "start_calls": 0
+      },
+      {
+        "id": 2,
+        "name": "singleton/expanded shrink to one disables remaining row",
+        "start_calls": 0
+      },
+      {
+        "id": 3,
+        "name": "singleton/collapsed shrink reveals non-draggable survivor",
+        "start_calls": 0
+      },
+      {
+        "id": 4,
+        "name": "singleton/Cancel edit restores focus but not dragging",
+        "start_calls": 0
+      },
+      {
+        "id": 5,
+        "name": "singleton/Save edit restores focus but not dragging",
+        "start_calls": 0
+      },
+      {
+        "id": 6,
+        "name": "singleton/session remount does not expose dragging",
+        "start_calls": 0
+      },
+      {
+        "id": 7,
+        "name": "control/empty queue renders no draggable row",
+        "start_calls": 0
+      },
+      {
+        "id": 8,
+        "name": "control/expanded multirow rows remain draggable",
+        "start_calls": 0
+      },
+      {
+        "id": 9,
+        "name": "control/enabled dragstart writes payload and sets own drag state",
+        "start_calls": 1
+      },
+      {
+        "id": 10,
+        "name": "control/enabled distinct-target drop preserves full reorder payload",
+        "start_calls": 1
+      },
+      {
+        "id": 11,
+        "name": "control/self drop is already a no-op",
+        "start_calls": 1
+      },
+      {
+        "id": 12,
+        "name": "control/foreign dragover and drop do not reorder",
+        "start_calls": 0
+      },
+      {
+        "id": 13,
+        "name": "control/dragend clears own drag state without reordering",
+        "start_calls": 1
+      },
+      {
+        "id": 14,
+        "name": "control/active edit disables other display rows",
+        "start_calls": 0
+      },
+      {
+        "id": 15,
+        "name": "control/collapsed multirow has no visible drag target",
+        "start_calls": 0
+      },
+      {
+        "id": 16,
+        "name": "control/1474 blank edit cannot save or begin dragging",
+        "start_calls": 0
+      },
+      {
+        "id": 17,
+        "name": "control/1476 singleton regrowth stays expanded and restores multirow dragging",
+        "start_calls": 0
+      },
+      {
+        "id": 18,
+        "name": "control/1479 removed edited row never receives return focus",
+        "start_calls": 0
+      },
+      {
+        "id": 19,
+        "name": "control/1479 session-key switch cannot focus old edited row",
+        "start_calls": 0
+      },
+      {
+        "id": 20,
+        "name": "control/1479 Save-and-steer removes edited row without return focus",
+        "start_calls": 0
+      }
+    ]
+  }
+}

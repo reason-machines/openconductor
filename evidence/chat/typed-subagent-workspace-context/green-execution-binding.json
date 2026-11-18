@@ -1,0 +1,94 @@
+{
+  "author": "Conductor Rebuild",
+  "recorded_utc": "2026-11-18T02:31:45.978670+00:00",
+  "status": "ACTUAL_GREEN_14_OF_14",
+  "fresh_main_before_execution": "590e58910884998e242cafb037f53286d4c7fb45",
+  "original_request_and_committed_source_unchanged": true,
+  "current_main_pins_verified_before_and_after_runtime": [
+    {
+      "path": "src/features/chat/ToolRows.tsx",
+      "bytes": 56918,
+      "sha256": "e81ddfb0bf3783aa00b7878a2a02f6d5da09860fe7b53fc93dcc3a7048819dd0"
+    },
+    {
+      "path": "src/features/chat/LinkMenu.tsx",
+      "bytes": 2345,
+      "sha256": "3967d74ecc5e5dd2d9f7fc9c5cba36ce0b614a2d4b535391701b7f246fec5cc9"
+    },
+    {
+      "path": "src/features/chat/conductorTools.ts",
+      "bytes": 31930,
+      "sha256": "775150d24fd147bba59c0da0173b67cd6e955c4dbfaec404c8378823e6e07bbe"
+    },
+    {
+      "path": "src/features/chat/toolIconData.ts",
+      "bytes": 31316,
+      "sha256": "ffe817145ad34b2934ebd204f17456b040d76f999f7758e8de1feba1388429f9"
+    },
+    {
+      "path": "src/features/chat/thinkingChip.ts",
+      "bytes": 453,
+      "sha256": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9"
+    },
+    {
+      "path": "src/features/chat/markdown.ts",
+      "bytes": 11557,
+      "sha256": "35c81f7d5094d4b4bf8c5b7dc85db4666ae9aed21a3be177471dfa69309698cb"
+    },
+    {
+      "path": "src/features/chat/mermaid.ts",
+      "bytes": 1010,
+      "sha256": "9d2e58993988bb9ecbf39b159683ee79243b127bacaa17843571e40891741bcf"
+    },
+    {
+      "path": "src/features/chat/markdownFrontmatter.ts",
+      "bytes": 1036,
+      "sha256": "651225608bdb1cd9256c241bac98fb22664c08505606bc73e2ed34f7f880891f"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2019,
+      "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 222962,
+      "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+    },
+    {
+      "path": "src/features/chat/Transcript.tsx",
+      "bytes": 21746,
+      "sha256": "4ba9fe4df5a852934890e19ac7de61f14fe8cdcbcf3652e60bbd18e925b271b4"
+    },
+    {
+      "path": "src/features/chat/typedSubagentLinks.test.ts",
+      "bytes": 15796,
+      "sha256": "27aab97bcf3c655965202e3acdb00732872aa41434991d5f3efc2412615454a7"
+    },
+    {
+      "path": "evidence/chat/typed-subagent-links.md",
+      "bytes": 8881,
+      "sha256": "ca026f4d7697d39a492cabc5d36d1375717beb553d4ac130844ba30d96e1691f"
+    },
+    {
+      "path": "src/features/chat/view.ts",
+      "bytes": 10115,
+      "sha256": "132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43"
+    },
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "bytes": 102922,
+      "sha256": "4520e46b632d50ef6feaf78398ec08cf7e8a58697605067b707af50d3c1f8214"
+    }
+  ],
+  "candidate_sha256": "ac18f431c7b2bbfac5455f2f2af50567675634a28606bc5bf733f6562bac6167",
+  "fixture_sha256": "e6c4da93039470df8a676b0bbd0a8947b15d0803bea0468a486330f61da04049",
+  "evidence_sha256": {
+    "green-result.json": "d70c0da730554d792efae0279931370670870c7de90e54afbbcca5bdad0fa4a1",
+    "green-output.tap": "aacae2e3e9289bcec16f850b1d628a0314753573364493487e15b362610543ea",
+    "green-request.json": "cb1c039a203add7fcd9cc9e0eeaf622f7ba5dcaaf92f331c2f0e58715d566edb",
+    "green_phase.py": "f83845690423ff6ddf0b5b10a6ba22e1d5771bf34cd17668b62c126a1685c78d"
+  },
+  "no_other_local_node_or_browser_native_run": true,
+  "limits": "React renderer and full production row/Markdown; backend, clipboard and menu portal adapted. No root WorkspaceView mount, real DOM, native opener, symlink confinement, installed package or visual proof."
+}

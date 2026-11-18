@@ -1,0 +1,1 @@
+function lli(t){return t!=null&&typeof t=="object"&&"nativeEvent"in t}

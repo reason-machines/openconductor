@@ -1,0 +1,331 @@
+{
+  "status": "SOURCE_ONLY_MAIN_INTEGRATION_VERIFIED",
+  "recorded_at_utc": "2026-11-18T02:17:21.161833+00:00",
+  "tested_treatment": "3382c0f5979e9617379e4faa22f40951d4afb934",
+  "integrated_base": "735db18c9141cb409b26d142b8d0a305edaf91c8",
+  "integration_head": "88b8d1bf422095330f3d8b256b75bd874d104f9e",
+  "integration": "Merged current main without conflicts to preserve already-shipped unrelated fixes. All 22 source/package bindings and frozen fixture remain identical to actual GREEN10; only documentation/evidence and main integration followed. Hosted CI must verify the exact published head.",
+  "green_input_checks": [
+    {
+      "path": "src/features/diff/useWorkspaceDiff.ts",
+      "bytes": 14876,
+      "sha256": "b0e52ca4eb7247b717796bbf989d3f7d966a320018c53ed2ccb0c5366d72cb30",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/diff/target.ts",
+      "bytes": 3262,
+      "sha256": "a8453124a87885544f7f65043c44765ec87f46f2fa9fe80140e8ee5f7a7c2e8a",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/diff/ChangesToolbar.tsx",
+      "bytes": 5244,
+      "sha256": "42df4f59dd58bd87420bf5ccb299f4751ffaa1ce2926fb17630d35abb646777d",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/diff/ChangesList.tsx",
+      "bytes": 11921,
+      "sha256": "9f12665d62163dc5440a161592af7b0a20d0fac71faf7a65d6de6421fc70f8cb",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/diff/DiffViewer.tsx",
+      "bytes": 13613,
+      "sha256": "b9385a977c26007391b9b47bb587c33d95045ed9e04b1b1240a031f411167e0f",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/diff/FileDiffView.tsx",
+      "bytes": 24577,
+      "sha256": "305ccacb64c230bba3880d045b64aabc4889bbfac25668824b87b020810e0289",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/diff/FileContextMenu.tsx",
+      "bytes": 4618,
+      "sha256": "a88f12448e5fa288a3c196418df9d6773c3de29435516e610d7e439ef46a60ab",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/diff/types.ts",
+      "bytes": 1711,
+      "sha256": "a3ebcbdbd00f86620d61cfa608a58061b64c686280a43dd2bb7d8bc5edd64254",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/diff/nav.ts",
+      "bytes": 5155,
+      "sha256": "f986ec599ffeaab0f6892382d1fa618522eca69f74b0f8827a6fa64c4a30b79c",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/diff/viewed.ts",
+      "bytes": 1634,
+      "sha256": "bab610927732331a545682412b89c206d55f3feee3ab3bf0af979f41535bcf60",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/diff/changesTree.ts",
+      "bytes": 2133,
+      "sha256": "17e591f08a7b271c7c6eac8dba1d3f952719b689efa2f5b9ca4dc7f218916b70",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/diff/changesFilter.ts",
+      "bytes": 1566,
+      "sha256": "d64fa6ad922c03292f7984e0e9e65ab637ca2e36d86401fcd7717f85f58a5d0a",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/diff/renameDisplayPath.ts",
+      "bytes": 442,
+      "sha256": "2035e03045b4d695c90f5fa9e650b3240a9b57542c33056c5cbf25c3357d9fc0",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/diff/fileCopyPaths.ts",
+      "bytes": 276,
+      "sha256": "2c7c8f3e06e40ee925d1c855aeba8a0c9456baebbd058a6a5553cc624b24f674",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/diff/copyFile.ts",
+      "bytes": 3005,
+      "sha256": "6ff8924a36728d90243e2ab0e4ab824326afb8030472b9a6b9c02d00888a203a",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/diff/pierre.ts",
+      "bytes": 8040,
+      "sha256": "738f92c4dc768f7313c9ac8fd4ac22fc003f62578ec78f2c296129737925ab52",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/files/tree.ts",
+      "bytes": 4448,
+      "sha256": "eb2af1ab025dbd6bf4e33a8e3c9a2916b13777f6396388008ff4f8ea81f330f2",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/keybindings/fuzzy.ts",
+      "bytes": 1478,
+      "sha256": "1bcbf1f4058508f23d5d079235d5b96ed6ed800582aae6de50db6a182d5c2c1c",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/lib/keyedCache.ts",
+      "bytes": 1298,
+      "sha256": "0c6aefc3593709b8696beec1846a9df00d7d6d839735ab35f9b9bdd4ffd4aad4",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "package.json",
+      "bytes": 2019,
+      "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 222962,
+      "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "evidence/diff/uncommitted-discard-affordance/deps-only.py",
+      "bytes": 8713,
+      "sha256": "1bbb799a1703a5a002260ade655efef0ae5f434c4e7548be4557521b09dadc18",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "evidence/diff/uncommitted-discard-affordance/frozen-v2.json",
+      "bytes": 5040,
+      "sha256": "4e4271969f98b034d7934c52983d4db09fcabefdbaf8fa50226ec049a09a346d",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "evidence/diff/uncommitted-discard-affordance/frozen-v1.mounted.test.mjs.txt",
+      "bytes": 12891,
+      "sha256": "356522ce6cc1a129b4e3536346e5c45e217d1cf6e6860cfef09cbe840e97f506",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": ".oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/red10.log",
+      "bytes": 32903,
+      "sha256": "1d6fe9519a1abc04f547999d35432905827eef7ff23f7c33f8da87dfe2aacb54",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": ".oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/red10-receipt.json",
+      "bytes": 7664,
+      "sha256": "f38a5259d728c5e917728936aac57fc189eec2a55b17376451124f784aa25c56",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": ".oc-tmp/uncommitted-discard-runtime/red10-v2.log",
+      "bytes": 7769,
+      "sha256": "f121e43bc4f47e4f4d215ba811ee15b5bdfe3ec78bd07125ced6404b6a33a7a9",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": ".oc-tmp/uncommitted-discard-runtime/red10-v2-receipt.json",
+      "bytes": 8603,
+      "sha256": "d85013df79977c8751700538edbf8fb80fbf55af32148f465a95463bfa90d077",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": ".oc-tmp/uncommitted-discard-runtime/red10-v2-classification.json",
+      "bytes": 6682,
+      "sha256": "0ba8783e934722e0ba505e2aa42bb66467980549dab92f93ed5e28a3ce7ed734",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": ".oc-tmp/uncommitted-discard-runtime/owns-node-modules.json",
+      "bytes": 427,
+      "sha256": "415699aae01a061db200171ff0bb3a10b5dfd2fc394aa1dd44ca1ddfc263db46",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": ".oc-tmp/uncommitted-discard-selector-v3.patch",
+      "bytes": 1161,
+      "sha256": "ebede2cf98411259270998fc9b5ddcad629d3aeaee0084ad00913b58ee814d4f",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": ".oc-tmp/uncommitted-discard-fixture-v2.mounted.test.mjs.txt",
+      "bytes": 12896,
+      "sha256": "f31ff7c6e2037ef63d953da8da49ab6f008270211a8c1e73172e2dd87fbfdd61",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": ".oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/deps-receipt.json",
+      "bytes": 1033,
+      "sha256": "0e1b9f21f03ebb4700e06ca7e0ffc94ad9f338c7ce873c2e07bb3ed6bad8844e",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": ".oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/lease.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": ".oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/npm-ci.log",
+      "bytes": 410,
+      "sha256": "71b1696f806fb5e3f16dc5e29bcded7428d095a90fc8259ecce21462cdfd9b8e",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": ".oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/owns-node-modules.json",
+      "bytes": 427,
+      "sha256": "d50b67a7ecd863d6d1b8f4761fac0df9749f6e742fb615e9162030515f377576",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": ".oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/recovery-readback.json",
+      "bytes": 4282,
+      "sha256": "03f641cb057b424b76e5c327b11de6b52d11c646ee8d54eb947b9e305a593505",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": ".oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/red10-v2-preflight-no-run.json",
+      "bytes": 3484,
+      "sha256": "2e168921574b629f864ab40931b8b1298eee5eb6b60183c58e800a1f778c3080",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "tests/diff/uncommittedDiscardAffordance.mounted.test.mjs",
+      "bytes": 13165,
+      "sha256": "a2aef693638daac179d28cfdce96dea63bb4022d9e06cb7e68731b732060402b",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": ".oc-tmp/uncommitted-discard-provisioner/v3/deps-only.py",
+      "bytes": 9232,
+      "sha256": "78861d873063538e9099e6a9c99bab9ea12fb90ba6d40e4b07c43443a5c8cb82",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "src/features/diff/target.test.ts",
+      "bytes": 3578,
+      "sha256": "2c331d805ccd1b4ea3b169c08ebff64e944a7b461505d9d2a2a41e2d1e26e00e",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "evidence/diff/uncommitted-discard-affordance/runtime/red10-v3.log",
+      "bytes": 6825,
+      "sha256": "45759cf9b6483c4b4547d259ce9a15f0631bef922e6e04c75a9a27f501dfb598",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "evidence/diff/uncommitted-discard-affordance/runtime/red10-v3-receipt.json",
+      "bytes": 15057,
+      "sha256": "5ce9086514e5bb49b5176831b421e3ccbd3129a85bfb4b0fc816ead93604e74e",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "evidence/diff/uncommitted-discard-affordance/runtime/red10-v3-classification.json",
+      "bytes": 5330,
+      "sha256": "e5cf0a862acb20d115a705b0ce8eadd9dfe89e07374e66a3741a338caa9e13e2",
+      "matches_executed_GREEN": true
+    },
+    {
+      "path": "evidence/diff/uncommitted-discard-affordance/source-treatment.json",
+      "bytes": 21537,
+      "sha256": "c86de3097fcd94672b9d9dad08f3dc2e2cbbf445fa28f5afb099dec8ba46f4ee",
+      "matches_executed_GREEN": true
+    }
+  ],
+  "workflow_bytes_match_GREEN_checkpoint": true,
+  "net_changed_files": [
+    ".github/workflows/ci.yml",
+    "evidence/diff/uncommitted-discard-affordance/README.md",
+    "evidence/diff/uncommitted-discard-affordance/baseline-target.ts.txt",
+    "evidence/diff/uncommitted-discard-affordance/deps-only.py",
+    "evidence/diff/uncommitted-discard-affordance/execution-v3.md",
+    "evidence/diff/uncommitted-discard-affordance/frozen-v1.mounted.test.mjs.txt",
+    "evidence/diff/uncommitted-discard-affordance/frozen-v2.json",
+    "evidence/diff/uncommitted-discard-affordance/frozen-v2.mounted.test.mjs.txt",
+    "evidence/diff/uncommitted-discard-affordance/frozen-v3.json",
+    "evidence/diff/uncommitted-discard-affordance/frozen.json",
+    "evidence/diff/uncommitted-discard-affordance/green-v3.md",
+    "evidence/diff/uncommitted-discard-affordance/permanent-regression.md",
+    "evidence/diff/uncommitted-discard-affordance/qualification.json",
+    "evidence/diff/uncommitted-discard-affordance/reference/Eji.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/reference/GPo.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/reference/Jqo.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/reference/NPo.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/reference/OPo.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/reference/Qls.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/reference/SBe.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/reference/Svs.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/reference/Wd.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/reference/_ws.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/reference/bji.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/reference/bys.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/reference/fLn.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/reference/iyi.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/reference/scs.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/reference/syi.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/reference/uF.js.txt",
+    "evidence/diff/uncommitted-discard-affordance/runtime-request.md",
+    "evidence/diff/uncommitted-discard-affordance/runtime/green10-v3-classification.json",
+    "evidence/diff/uncommitted-discard-affordance/runtime/green10-v3-receipt.json",
+    "evidence/diff/uncommitted-discard-affordance/runtime/green10-v3-supervisor.py",
+    "evidence/diff/uncommitted-discard-affordance/runtime/green10-v3.log.gz",
+    "evidence/diff/uncommitted-discard-affordance/runtime/red10-v3-classification.json",
+    "evidence/diff/uncommitted-discard-affordance/runtime/red10-v3-receipt.json",
+    "evidence/diff/uncommitted-discard-affordance/runtime/red10-v3.log.gz",
+    "evidence/diff/uncommitted-discard-affordance/selector-v3.md",
+    "evidence/diff/uncommitted-discard-affordance/source-treatment.json",
+    "evidence/diff/uncommitted-discard-affordance/source-treatment.md",
+    "evidence/diff/uncommitted-discard-affordance/superseded-target.test.ts.txt",
+    "evidence/diff/uncommitted-discard-affordance/verify-reference.py",
+    "src/features/diff/target.test.ts",
+    "src/features/diff/target.ts",
+    "tests/diff/uncommittedDiscardAffordance.mounted.test.mjs"
+  ],
+  "extra_local_runtime": false,
+  "native_visual_verification": false
+}

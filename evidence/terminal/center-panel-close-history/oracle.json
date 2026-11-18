@@ -1,0 +1,343 @@
+{
+  "author": "Conductor Rebuild",
+  "phase": "SOURCE_FROZEN_NOT_RUN",
+  "main": "234ec70ea89135b83f68f287330a3701d27f2b2d",
+  "rea_parent": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "assets": {
+    "renderer": {
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "archive_sha256": "991f15ebf130ccb8e705fc74f612dbb46095bd6d73b420fbced1ffbcd94165bc",
+  "reference_records": [
+    {
+      "asset": "index",
+      "name": "flag-default",
+      "utf8_half_open": [
+        279994,
+        280041
+      ],
+      "bytes": 47,
+      "sha256": "a73d34c6035473fd004e5e561037156f2ba66028c58242534e5673f623bc807d",
+      "file": "spans/flag-default.txt",
+      "existing_path": "evidence/terminal/center-panel-split-1f/spans/flag-default.txt"
+    },
+    {
+      "asset": "index",
+      "name": "flag-key",
+      "utf8_half_open": [
+        333797,
+        333840
+      ],
+      "bytes": 43,
+      "sha256": "0cf74e257921e33fa92063a89e85132f7121c1d4cdc0483cae6b8be0d9c4da50",
+      "file": "spans/flag-key.txt",
+      "existing_path": "evidence/terminal/center-panel-split-1f/spans/flag-key.txt"
+    },
+    {
+      "asset": "index",
+      "name": "flag-reader",
+      "utf8_half_open": [
+        391643,
+        391672
+      ],
+      "bytes": 29,
+      "sha256": "0f885f9cd6ca1563f342a8a8b783f7790575473b28a3200baf764beb2b9eec79",
+      "file": "spans/flag-reader.txt",
+      "existing_path": "evidence/terminal/center-panel-split-1f/spans/flag-reader.txt"
+    },
+    {
+      "asset": "index",
+      "name": "reader-export",
+      "utf8_half_open": [
+        3482046,
+        3482055
+      ],
+      "bytes": 9,
+      "sha256": "52aa65b4bc03ad70d41a2e195fa21a7f97e4195baa04d8bd0214ba35d810db2a",
+      "file": "spans/reader-export.txt",
+      "existing_path": "evidence/terminal/center-panel-split-1f/spans/reader-export.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "reader-import",
+      "utf8_half_open": [
+        55409,
+        55418
+      ],
+      "bytes": 9,
+      "sha256": "6e7020227908dfb119b18e580f05944c01b687d3e44ef596a5e1ce0e83d0189f",
+      "file": "spans/reader-import.txt",
+      "existing_path": "evidence/terminal/center-panel-split-1f/spans/reader-import.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "feature-wrapper",
+      "utf8_half_open": [
+        9811623,
+        9811878
+      ],
+      "bytes": 255,
+      "sha256": "88c6d181702b42be580d4e956b0cab6720508675d9cfedf72ef2e1d284f4bee6",
+      "file": "spans/feature-wrapper.txt",
+      "existing_path": "evidence/terminal/center-panel-split-1f/spans/feature-wrapper.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "center-layout-model-store",
+      "utf8_half_open": [
+        2138309,
+        2146610
+      ],
+      "bytes": 8301,
+      "sha256": "49940831049b7be2e1955de6a1a921e63163aca397e4fcb5910966c8431a3320",
+      "file": "spans/center-layout-model-store.txt",
+      "existing_path": "evidence/terminal/center-panel-split-1f/spans/center-layout-model-store.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "consumer-yYo",
+      "utf8_half_open": [
+        9727314,
+        9734923
+      ],
+      "bytes": 7609,
+      "sha256": "e4e86b58c9c18f8721fae2bb8c15c8186a0a40850e78a3aa1cad742f0ade4df8",
+      "file": "spans/consumer-yYo.txt",
+      "existing_path": "evidence/terminal/center-panel-split-1f/spans/consumer-yYo.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "group-surface-mounts",
+      "utf8_half_open": [
+        9811623,
+        9817374
+      ],
+      "bytes": 5751,
+      "sha256": "89a3e6f087adab0c0ca21cf0fc82d96b9a77cb725af7c240e7f5b6c763158fd1",
+      "file": "spans/group-surface-mounts.txt",
+      "existing_path": "evidence/terminal/center-panel-split-1f/spans/group-surface-mounts.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "layout-renderer",
+      "utf8_half_open": [
+        9713910,
+        9716519
+      ],
+      "bytes": 2609,
+      "sha256": "6c8e4db994ad1a814e1a21585c2aefd32b097b5b5f4baf4fe3870d6ee87e82e6",
+      "file": "spans/layout-renderer.txt",
+      "existing_path": "evidence/terminal/center-panel-split-1f/spans/layout-renderer.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "layout-ratios",
+      "utf8_half_open": [
+        9708040,
+        9708355
+      ],
+      "bytes": 315,
+      "sha256": "8f63ddd6f45a894e968c5dae2db381447a5b06618babd7b55548f7af8aaceecf",
+      "file": "spans/layout-ratios.txt",
+      "existing_path": "evidence/terminal/center-panel-split-1f/spans/layout-ratios.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "hFt",
+      "utf8_half_open": [
+        2160258,
+        2160912
+      ],
+      "path": "evidence/terminal/center-panel-close-history/reference/hFt.txt",
+      "bytes": 654,
+      "sha256": "08c4d2dc0d40f1b8e1815d8ae9571fbd10791851492869751ea184780de6faae"
+    },
+    {
+      "asset": "renderer",
+      "name": "g8i",
+      "utf8_half_open": [
+        7431219,
+        7436271
+      ],
+      "path": "evidence/terminal/center-panel-close-history/reference/g8i.txt",
+      "bytes": 5052,
+      "sha256": "d4d883350b67ac4866dc968c986ee5c5fc3c5fc9b3b847129363ba738d8999fc"
+    },
+    {
+      "asset": "renderer",
+      "name": "aYo",
+      "utf8_half_open": [
+        9711369,
+        9712495
+      ],
+      "path": "evidence/terminal/center-panel-close-history/reference/aYo.txt",
+      "bytes": 1126,
+      "sha256": "b7c66c1086d337cfe6b63e3d3d4cc1583ee655c1194cc33cfdb5fc6c3f3dde1e"
+    },
+    {
+      "asset": "renderer",
+      "name": "d8i",
+      "utf8_half_open": [
+        7421915,
+        7422947
+      ],
+      "path": "evidence/terminal/center-panel-close-history/reference/d8i.txt",
+      "bytes": 1032,
+      "sha256": "62620d635ec8259346cd4ff9877b69ceedf0815dfc2d007e3b76ca8a96fd664a"
+    },
+    {
+      "asset": "renderer",
+      "name": "dYo-fYo",
+      "utf8_half_open": [
+        9716664,
+        9723107
+      ],
+      "path": "evidence/terminal/center-panel-close-history/reference/dYo-fYo.txt",
+      "bytes": 6443,
+      "sha256": "4738e931effe19866e219f62e239724ae9343e3d29db1cfc1bd0bb3b6ce138e0"
+    },
+    {
+      "asset": "renderer",
+      "name": "pYo",
+      "utf8_half_open": [
+        9723455,
+        9725847
+      ],
+      "path": "evidence/terminal/center-panel-close-history/reference/pYo.txt",
+      "bytes": 2392,
+      "sha256": "9558e7bb431e0861f6e614c3423d30b992b32c8cdeb258526434d8d4a5643653"
+    },
+    {
+      "asset": "renderer",
+      "name": "JKo",
+      "utf8_half_open": [
+        9704882,
+        9707001
+      ],
+      "path": "evidence/terminal/center-panel-close-history/reference/JKo.txt",
+      "bytes": 2119,
+      "sha256": "9217bacbaabaed83767166780ab90a1691df6eecb622e840ffd9f27bd3cfa78d"
+    },
+    {
+      "asset": "renderer",
+      "name": "XKo-Nji",
+      "utf8_half_open": [
+        9701429,
+        9704882
+      ],
+      "path": "evidence/terminal/center-panel-close-history/reference/XKo-Nji.txt",
+      "bytes": 3453,
+      "sha256": "32c0e240e426c5f41db10a7ec888fd3a13382d4309ddf7796e0f0c37c40554b9"
+    },
+    {
+      "asset": "renderer",
+      "name": "d1e",
+      "utf8_half_open": [
+        6929046,
+        6930321
+      ],
+      "path": "evidence/terminal/center-panel-close-history/reference/d1e.txt",
+      "bytes": 1275,
+      "sha256": "a6969b63c3f6b5f087cc6f89c6c885447cf936f0e8c72bb2d8ba6518b12c5826"
+    },
+    {
+      "asset": "index",
+      "name": "local-host",
+      "utf8_half_open": [
+        2439,
+        2625
+      ],
+      "path": "evidence/terminal/center-panel-close-history/reference/local-host.txt",
+      "bytes": 186,
+      "sha256": "4f1f52fd1c480db92b04366e7306b935f4c7606407f397e86e6c8491333f7414"
+    },
+    {
+      "asset": "index",
+      "name": "Gr-zc",
+      "utf8_half_open": [
+        2803517,
+        2805969
+      ],
+      "path": "evidence/terminal/center-panel-close-history/reference/Gr-zc.txt",
+      "bytes": 2452,
+      "sha256": "499f641fafcb12a7c7c6a3ea9555198cebdbac09d06d660a545fa8017aa8a8d0"
+    },
+    {
+      "asset": "index",
+      "name": "Ps-sFt",
+      "utf8_half_open": [
+        3121822,
+        3127670
+      ],
+      "path": "evidence/terminal/center-panel-close-history/reference/Ps-sFt.txt",
+      "bytes": 5848,
+      "sha256": "ab1b990a212fccaf10b747c768343d4c740a20622e55663e752b225f9f459e13"
+    }
+  ],
+  "ordinary_caller": "enabled writable local grouped center terminal; visible d8i \u2192 yYo.te \u2192 Q before destruction",
+  "counterexample": {
+    "groups": [
+      [
+        "chat",
+        "terminal:A"
+      ],
+      [
+        "terminal:B"
+      ],
+      [
+        "terminal:C"
+      ]
+    ],
+    "view_order": [
+      "chat",
+      "terminal:C",
+      "terminal:B"
+    ],
+    "close": "terminal:B",
+    "expected": "terminal:C",
+    "current_source_fallback": "chat"
+  },
+  "test_contracts": [
+    "MRU across groups",
+    "stale closed skip",
+    "workspace isolation",
+    "empty structural fallback",
+    "inactive preserve",
+    "ordinary false unchanged",
+    "ordinary unset unchanged",
+    "history not persisted"
+  ],
+  "expected_original_red": {
+    "semantic_failures": [
+      1,
+      2
+    ],
+    "controls": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "setup_failure_is_not_semantic_red": true
+  },
+  "non_goals": [
+    "native/DOM focus",
+    "physical pointer propagation",
+    "PTY/process termination",
+    "keyboard close",
+    "other tab kinds",
+    "right-panel close",
+    "provider",
+    "old cache preservation or RED9"
+  ],
+  "product_applied": false,
+  "runtime_executed": false
+}

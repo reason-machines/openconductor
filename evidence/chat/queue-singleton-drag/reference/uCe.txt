@@ -1,0 +1,1 @@
+function uCe(t){const e=typeof t.isDragDisabled=="boolean"?!t.isDragDisabled:!0,n=!!t.disableInteractiveElementBlocking,i=!!t.shouldRespectForcePress;return an.createElement(wNi,C5e({},t,{isClone:!1,isEnabled:e,canDragInteractiveElements:n,shouldRespectForcePress:i}))}

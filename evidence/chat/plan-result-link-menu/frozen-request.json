@@ -1,0 +1,125 @@
+{
+  "author": "Conductor Rebuild",
+  "scope": "PLAN-RESULT-LINK-MENU-BE7",
+  "status": "FROZEN_UNRUN_NO_ADMISSION",
+  "checked_main": "d435e2baba6552de85b12cac2544579d20c14ce1",
+  "preceding_merge": {
+    "pr": 1477,
+    "sha": "d435e2baba6552de85b12cac2544579d20c14ce1",
+    "merged_at": "2026-11-17T22:27:27Z"
+  },
+  "source": {
+    "path": "source.json",
+    "sha256": "ad92dcf3ccf0e00c4b29b44be41ed03c13e95b1a403ea62150e5af617dd4a023",
+    "parents": 2,
+    "complete_spans": 20,
+    "static_checks": 50
+  },
+  "fixture": {
+    "path": "planResultLinkMenu.test.ts",
+    "bytes": 13501,
+    "sha256": "5cf6a425ac7dc485bf22278af2d0b3d06870d8c717ecc965dc0d73c4db42cd75",
+    "expected_cases": 11,
+    "predicted_failures": 5,
+    "predicted_controls": 6,
+    "only_expected_failure": "PLAN_RESULT_LINK_MUST_EXPOSE_CUSTOM_MENU",
+    "executed": false
+  },
+  "pins": [
+    {
+      "path": "src/features/chat/ToolRows.tsx",
+      "bytes": 56898,
+      "sha256": "562755550ca487766cfc8a8b08781edded583a1c3890e14719e3752a5d399188"
+    },
+    {
+      "path": "src/features/chat/LinkMenu.tsx",
+      "bytes": 2345,
+      "sha256": "3967d74ecc5e5dd2d9f7fc9c5cba36ce0b614a2d4b535391701b7f246fec5cc9"
+    },
+    {
+      "path": "src/features/chat/conductorTools.ts",
+      "bytes": 31930,
+      "sha256": "775150d24fd147bba59c0da0173b67cd6e955c4dbfaec404c8378823e6e07bbe"
+    },
+    {
+      "path": "src/features/chat/toolIconData.ts",
+      "bytes": 31316,
+      "sha256": "ffe817145ad34b2934ebd204f17456b040d76f999f7758e8de1feba1388429f9"
+    },
+    {
+      "path": "src/features/chat/thinkingChip.ts",
+      "bytes": 453,
+      "sha256": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9"
+    },
+    {
+      "path": "src/features/chat/markdown.ts",
+      "bytes": 11557,
+      "sha256": "35c81f7d5094d4b4bf8c5b7dc85db4666ae9aed21a3be177471dfa69309698cb"
+    },
+    {
+      "path": "src/features/chat/mermaid.ts",
+      "bytes": 1010,
+      "sha256": "9d2e58993988bb9ecbf39b159683ee79243b127bacaa17843571e40891741bcf"
+    },
+    {
+      "path": "src/features/chat/markdownFrontmatter.ts",
+      "bytes": 1036,
+      "sha256": "651225608bdb1cd9256c241bac98fb22664c08505606bc73e2ed34f7f880891f"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2019,
+      "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 222962,
+      "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+    },
+    {
+      "path": "src/features/chat/planResultLinkMenu.test.ts",
+      "bytes": 13501,
+      "sha256": "5cf6a425ac7dc485bf22278af2d0b3d06870d8c717ecc965dc0d73c4db42cd75"
+    }
+  ],
+  "dependency_identities": {
+    "react": "18.3.1",
+    "react-test-renderer": "18.3.1",
+    "typescript": "5.9.3",
+    "react-markdown": "9.1.0",
+    "remark-breaks": "4.0.0",
+    "remark-gfm": "4.0.1",
+    "remark-smartypants": "3.0.3",
+    "unist-util-visit": "5.2.0",
+    "lowlight": "3.3.0",
+    "highlight.js": "11.11.2"
+  },
+  "registry_hosts": [
+    "registry.npmjs.org"
+  ],
+  "product_edit": false,
+  "allowed_treatment_after_semantic_red": "Add existing Link={LinkWithMenu} only to plan Markdown. Do not add onOpenLink, change native opener, shared menu, payload, labels or result/provider selection.",
+  "command": "taskset -c 0 timeout --signal=TERM --kill-after=5s 60s env NODE_OPTIONS=--max-old-space-size=768 node --test --test-concurrency=1 src/features/chat/planResultLinkMenu.test.ts",
+  "dependency_command": "mkdir -p .runtime-tmp; TMPDIR=\"$PWD/.runtime-tmp\" taskset -c 0 nice -n 10 timeout --signal=TERM --kill-after=5s 300s env NODE_OPTIONS=--max-old-space-size=768 UV_THREADPOOL_SIZE=1 npm_config_jobs=1 npm ci --ignore-scripts --omit=optional --no-audit --no-fund --maxsockets=1 --cache=\"$PWD/.runtime-tmp/npm-cache\"",
+  "resource_request": {
+    "cpu": 0,
+    "node_old_space_mib": 768,
+    "estimated_rss_limit_mib": 1536,
+    "rss_measured": false,
+    "dependency_timeout_seconds": 300,
+    "test_timeout_seconds": 60,
+    "term_grace_seconds": 5,
+    "cleanup_seconds": 30,
+    "minimum_free_disk_gib": 4,
+    "dependency_incremental_disk_limit_gib": 2,
+    "test_output_limit_mib": 16
+  },
+  "limits": [
+    "UNRUN: frozen predictions are not RED proof; no Node/parser/version invocation yet",
+    "No browser/DOM/CSS, real menu portal, OS clipboard, Tauri or native opener exercised",
+    "Original default+tufte both source-bind to common link renderer; current plan has one pipeline, not a synthetic style matrix",
+    "Complete plan approval/provider/backend and installed-app parity are not covered by this isolated row fixture",
+    "No product edit before semantic RED; no install or runtime before distinct canonical admissions",
+    "Existing Root to sole E1 retains package/native custody; no release watcher"
+  ]
+}

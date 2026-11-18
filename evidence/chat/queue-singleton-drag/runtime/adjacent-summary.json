@@ -1,0 +1,108 @@
+{
+  "status": "PASS",
+  "tests": 175,
+  "passed": 175,
+  "failed": 0,
+  "skipped": 0,
+  "cancelled": 0,
+  "setup_errors": 0,
+  "timeout": false,
+  "invocations": 1,
+  "per_file": [
+    {
+      "file": "src/features/chat/composerQueueCollapseShrink.test.ts",
+      "tap_first": 1,
+      "tap_last": 18,
+      "tests": 18,
+      "passed": 18,
+      "failed": 0
+    },
+    {
+      "file": "src/features/chat/composerQueueEditEmptySave.test.ts",
+      "tap_first": 19,
+      "tap_last": 69,
+      "tests": 51,
+      "passed": 51,
+      "failed": 0
+    },
+    {
+      "file": "src/features/chat/composerQueueEditReturnFocus.test.ts",
+      "tap_first": 70,
+      "tap_last": 89,
+      "tests": 20,
+      "passed": 20,
+      "failed": 0
+    },
+    {
+      "file": "src/features/chat/composerQueueFocus.test.ts",
+      "tap_first": 90,
+      "tap_last": 132,
+      "tests": 43,
+      "passed": 43,
+      "failed": 0
+    },
+    {
+      "file": "src/features/chat/composerQueueSingletonDrag.test.ts",
+      "tap_first": 133,
+      "tap_last": 152,
+      "tests": 20,
+      "passed": 20,
+      "failed": 0
+    },
+    {
+      "file": "src/features/chat/queue.test.ts",
+      "tap_first": 153,
+      "tap_last": 171,
+      "tests": 19,
+      "passed": 19,
+      "failed": 0
+    },
+    {
+      "file": "src/features/chat/queueKeys.test.ts",
+      "tap_first": 172,
+      "tap_last": 175,
+      "tests": 4,
+      "passed": 4,
+      "failed": 0
+    }
+  ],
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "env",
+    "-u",
+    "COMPOSER_QUEUE_SINGLETON_DRAG_SOURCE_REF",
+    "-u",
+    "COMPOSER_QUEUE_EDIT_RETURN_FOCUS_SOURCE_REF",
+    "-u",
+    "COMPOSER_QUEUE_FOCUS_SOURCE_REF",
+    "-u",
+    "COMPOSER_QUEUE_EDIT_EMPTY_SOURCE_REF",
+    "-u",
+    "COMPOSER_QUEUE_COLLAPSE_SOURCE_REF",
+    "NODE_OPTIONS=--max-old-space-size=768",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "src/features/chat/composerQueueSingletonDrag.test.ts",
+    "src/features/chat/composerQueueEditReturnFocus.test.ts",
+    "src/features/chat/composerQueueFocus.test.ts",
+    "src/features/chat/composerQueueEditEmptySave.test.ts",
+    "src/features/chat/composerQueueCollapseShrink.test.ts",
+    "src/features/chat/queue.test.ts",
+    "src/features/chat/queueKeys.test.ts"
+  ],
+  "checked_main": "5f7afadc1c50ee44aa21677b5ab0dd96b87cfb57",
+  "test_started_utc": "2026-11-18T00:22:27.670329+00:00",
+  "test_terminated_utc": "2026-11-18T00:22:36.318580+00:00",
+  "actual_cleanup_release_utc": "2026-11-18T00:22:36.319266+00:00",
+  "permanent_cases_byte_identical_to_frozen": true,
+  "physical_drag_and_packaged_behavior": "NOT_VERIFIED",
+  "disabled_callback_suppression": "NOT_EXERCISED",
+  "source_scope": "one QueuePanel draggable predicate; callbacks and ordering unchanged"
+}

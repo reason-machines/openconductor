@@ -1,0 +1,1090 @@
+{
+  "author": "Conductor Rebuild",
+  "dedupe": "DIFF-READONLY-EDIT-AFFORDANCE-DE6-02",
+  "fresh_main": "750b8bf25b2193141eff0cfcad64776228bea076",
+  "source_pins": {
+    "src/features/diff/DiffViewer.tsx": "e3f0a4fe181a652650bbdab1e481bb359ae5b7b99588b64a1a14390b8c82e820",
+    "src/features/diff/FileDiffView.tsx": "305ccacb64c230bba3880d045b64aabc4889bbfac25668824b87b020810e0289",
+    "src/features/diff/EditInViewer.ts": "40123ee435661c920d6c2e99c4301d2005aebe88f3668b4d02eab5ebdadc1d1c",
+    "src/features/diff/editable.ts": "507dcc18d52a721afa97ab453a6815a0ff656b109fb53ca91e9b6e3ba5efefde",
+    "src/features/diff/editorContents.ts": "412dd4af07a67e0b6b52758444533564eb6d686843c333560150373659c29523",
+    "src/features/diff/draftStorage.ts": "dc53d9cf4bab94e4427aceee03aefcc05a37c71115a7ce06e340a647814f69e5",
+    "src/features/diff/pierre.ts": "738f92c4dc768f7313c9ac8fd4ac22fc003f62578ec78f2c296129737925ab52",
+    "src/features/diff/copyFile.ts": "6ff8924a36728d90243e2ab0e4ab824326afb8030472b9a6b9c02d00888a203a",
+    "src/keybindings/bind.ts": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119",
+    "src/keybindings/dispatcher.ts": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197",
+    "package.json": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91",
+    "package-lock.json": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992",
+    "../readonly-edit-unit/evidence/diff/readonly-edit-affordance/source.json": "8180d9ffbfbb4251e32d636d7f1c8200884c6de19e9c639dacb27b811889d5b7",
+    "../readonly-edit-unit/evidence/diff/readonly-edit-affordance/README.md": "374cc57ebb3a6798f47676091a70a6b2ce8f559ac0e7e6a4db32c4216c22133c",
+    "../readonly-edit-unit/evidence/diff/readonly-edit-affordance/reference/bji.txt": "2d2b8aac64bada5ead6bc143ac6bb272544791374a9b71b38e57eab55c8f5688",
+    "../readonly-edit-unit/evidence/diff/readonly-edit-affordance/reference/Mqo.txt": "ba9e64973b294335d69d20e19ffd1ef4eaf63f3c209dd380beacf5ecc509393c",
+    "../readonly-edit-unit/evidence/diff/readonly-edit-affordance/reference/jqo.txt": "3b57f4d3fb1c0ba90d3249cf522f66114602f79f79e85afbed10c08b16ba4741",
+    "../readonly-edit-unit/evidence/diff/new-inline-draft-remount/reference/editable-view-annotation-caller.txt": "b83b970b85f2e050656d5cdc5b27e3510df8d1907a3e8673924a901f7975e7e6",
+    "../readonly-edit-unit/src/features/diff/readOnlyEditAffordance.test.ts": "30d82d680f50250682ce5769e5047495417e95d5ce52ac15eacecbdc728c20a7",
+    "evidence/diff/readonly-edit-successor/runtime/red21-receipt.json": "e2e81f819bc6bf6b91c498900c75c8968baaca4e370d0d304223fba2e45fdb69",
+    "evidence/diff/readonly-edit-successor/runtime/red21.log.gz": "90b4cb2718cdb94c6eb2e5fa9cdfc886946335898ecccb607a920ba2423f26a6",
+    ".oc-tmp/readonly-edit-red21-runtime/red21-receipt.json": "e2e81f819bc6bf6b91c498900c75c8968baaca4e370d0d304223fba2e45fdb69",
+    ".oc-tmp/readonly-edit-red21-runtime/red21.log": "1f451638f440cf68433ff4664080dfefca34b62bf97d4fd4ebf98a25c4b2c0ab"
+  },
+  "candidate": {
+    "path": "src/features/diff/DiffViewer.tsx",
+    "commit": "df331f2a27b5a3eef8bc3bcc0027da9a704886b0",
+    "sha256": "e3f0a4fe181a652650bbdab1e481bb359ae5b7b99588b64a1a14390b8c82e820",
+    "baseline_sha256": "b9385a977c26007391b9b47bb587c33d95045ed9e04b1b1240a031f411167e0f",
+    "only_single_inverse_allowed": true
+  },
+  "fixture": {
+    "sha256": "30d82d680f50250682ce5769e5047495417e95d5ce52ac15eacecbdc728c20a7",
+    "bytes": 10648,
+    "all_original_cases_and_oracles_unchanged": true
+  },
+  "static_checks": 246,
+  "checks": [
+    {
+      "name": "original baseline verifier unchanged",
+      "pass": true
+    },
+    {
+      "name": "original RED supervisor unchanged",
+      "pass": true
+    },
+    {
+      "name": "only leased product file in candidate commit",
+      "pass": true
+    },
+    {
+      "name": "candidate exact hash",
+      "pass": true
+    },
+    {
+      "name": "one corrected predicate",
+      "pass": true
+    },
+    {
+      "name": "old predicate absent",
+      "pass": true
+    },
+    {
+      "name": "candidate matches committed bytes",
+      "pass": true
+    },
+    {
+      "name": "one-site inverse equals qualified RED source",
+      "pass": true
+    },
+    {
+      "name": "original source pin after single inverse: src/features/diff/DiffViewer.tsx",
+      "pass": true
+    },
+    {
+      "name": "original bytes match fresh main: src/features/diff/DiffViewer.tsx",
+      "pass": true
+    },
+    {
+      "name": "original source pin after single inverse: src/features/diff/FileDiffView.tsx",
+      "pass": true
+    },
+    {
+      "name": "original bytes match fresh main: src/features/diff/FileDiffView.tsx",
+      "pass": true
+    },
+    {
+      "name": "original source pin after single inverse: src/features/diff/EditInViewer.ts",
+      "pass": true
+    },
+    {
+      "name": "original bytes match fresh main: src/features/diff/EditInViewer.ts",
+      "pass": true
+    },
+    {
+      "name": "original source pin after single inverse: src/features/diff/editable.ts",
+      "pass": true
+    },
+    {
+      "name": "original bytes match fresh main: src/features/diff/editable.ts",
+      "pass": true
+    },
+    {
+      "name": "original source pin after single inverse: src/features/diff/editorContents.ts",
+      "pass": true
+    },
+    {
+      "name": "original bytes match fresh main: src/features/diff/editorContents.ts",
+      "pass": true
+    },
+    {
+      "name": "original source pin after single inverse: src/features/diff/draftStorage.ts",
+      "pass": true
+    },
+    {
+      "name": "original bytes match fresh main: src/features/diff/draftStorage.ts",
+      "pass": true
+    },
+    {
+      "name": "original source pin after single inverse: src/features/diff/pierre.ts",
+      "pass": true
+    },
+    {
+      "name": "original bytes match fresh main: src/features/diff/pierre.ts",
+      "pass": true
+    },
+    {
+      "name": "original source pin after single inverse: src/features/diff/copyFile.ts",
+      "pass": true
+    },
+    {
+      "name": "original bytes match fresh main: src/features/diff/copyFile.ts",
+      "pass": true
+    },
+    {
+      "name": "original source pin after single inverse: src/keybindings/bind.ts",
+      "pass": true
+    },
+    {
+      "name": "original bytes match fresh main: src/keybindings/bind.ts",
+      "pass": true
+    },
+    {
+      "name": "original source pin after single inverse: src/keybindings/dispatcher.ts",
+      "pass": true
+    },
+    {
+      "name": "original bytes match fresh main: src/keybindings/dispatcher.ts",
+      "pass": true
+    },
+    {
+      "name": "original source pin after single inverse: package.json",
+      "pass": true
+    },
+    {
+      "name": "original bytes match fresh main: package.json",
+      "pass": true
+    },
+    {
+      "name": "original source pin after single inverse: package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "original bytes match fresh main: package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "hook declares absent capability as undefined",
+      "pass": true
+    },
+    {
+      "name": "hook returns undefined for null text",
+      "pass": true
+    },
+    {
+      "name": "complete retained bji hash",
+      "pass": true
+    },
+    {
+      "name": "complete retained bji bytes",
+      "pass": true
+    },
+    {
+      "name": "complete retained Mqo hash",
+      "pass": true
+    },
+    {
+      "name": "complete retained Mqo bytes",
+      "pass": true
+    },
+    {
+      "name": "complete retained jqo hash",
+      "pass": true
+    },
+    {
+      "name": "complete retained jqo bytes",
+      "pass": true
+    },
+    {
+      "name": "complete retained wrapper hash",
+      "pass": true
+    },
+    {
+      "name": "complete retained wrapper bytes",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: bji: F=Ld(t)!==\"write\"||w!==void 0||E",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: bji: U=R===\"text\"&&!n?.isBinary&&!H",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: bji: G=U&&n?.status!==\"deleted\"&&(I||L&&z),K=G&&!F&&d!==void 0",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: bji: contentEditable:K",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: bji: editable:Le",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: bji: oi(\"workspace.toggleFileEdit\",()=>!o||!I&&!L?!1:J?(te(\"edit\"),!0):I&&P&&i?(ve(\"diff\"),!0):!1",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: Mqo: editable:w",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: Mqo: if(c&&!i)",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: Mqo: if(RDt(i.path)!==void 0||v)",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: Mqo: if(w!==void 0&&i.newContent!==null)",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: Mqo: p.jsx(jqo,{localWorkspaceId:n,...w",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: jqo: contentEditable:g=!0",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: jqo: readOnly:!g",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: jqo: p.jsx(Tqo,{filePath:e,localWorkspaceId:t,viewStyle:i,hasDiff:m,contentEditable:g",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: kqo-wrapper: const Tqo=$.memo(function(e)",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: kqo-wrapper: o=p.jsx(kqo,{...e})",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: kqo-wrapper: contentEditable:d=!0",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: kqo-wrapper: Wt=d&&(Vt||!Nt)",
+      "pass": true
+    },
+    {
+      "name": "retained parent/consumer join: kqo-wrapper: onKeyDown:d?J:void 0",
+      "pass": true
+    },
+    {
+      "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/source.json",
+      "pass": true
+    },
+    {
+      "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/README.md",
+      "pass": true
+    },
+    {
+      "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/reference/bji.txt",
+      "pass": true
+    },
+    {
+      "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/reference/Mqo.txt",
+      "pass": true
+    },
+    {
+      "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/reference/jqo.txt",
+      "pass": true
+    },
+    {
+      "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/new-inline-draft-remount/reference/editable-view-annotation-caller.txt",
+      "pass": true
+    },
+    {
+      "name": "historical input retained: .oc-tmp/readonly-edit-unit/src/features/diff/readOnlyEditAffordance.test.ts",
+      "pass": true
+    },
+    {
+      "name": "historical fixture hash",
+      "pass": true
+    },
+    {
+      "name": "historical fixture byte count",
+      "pass": true
+    },
+    {
+      "name": "all original case/assertion/helper bytes unchanged",
+      "pass": true
+    },
+    {
+      "name": "original proposal hash",
+      "pass": true
+    },
+    {
+      "name": "original proposal bytes",
+      "pass": true
+    },
+    {
+      "name": "reviewed one-site patch inverse applies",
+      "pass": true
+    },
+    {
+      "name": "optional historical-ref environment is not set",
+      "pass": true
+    },
+    {
+      "name": "RED receipt retained: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/runtime",
+      "pass": true
+    },
+    {
+      "name": "RED raw TAP retained losslessly: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/runtime",
+      "pass": true
+    },
+    {
+      "name": "RED receipt retained: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/.oc-tmp/readonly-edit-red21-runtime",
+      "pass": true
+    },
+    {
+      "name": "RED raw TAP retained losslessly: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/.oc-tmp/readonly-edit-red21-runtime",
+      "pass": true
+    },
+    {
+      "name": "qualified RED exited 1",
+      "pass": true
+    },
+    {
+      "name": "qualified RED source preflight count",
+      "pass": true
+    },
+    {
+      "name": "qualified RED had no drift",
+      "pass": true
+    },
+    {
+      "name": "qualified RED released its group",
+      "pass": true
+    },
+    {
+      "name": "original RED input census",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/DiffViewer.tsx",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/DiffViewer.tsx",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/FileDiffView.tsx",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/FileDiffView.tsx",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/EditInViewer.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/EditInViewer.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/editable.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/editable.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/editorContents.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/editorContents.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/draftStorage.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/draftStorage.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/pierre.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/pierre.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/copyFile.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/copyFile.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/keybindings/bind.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/keybindings/bind.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/keybindings/dispatcher.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/keybindings/dispatcher.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/package.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/package.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/revalidation-590e58910.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/revalidation-590e58910.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/historical-fixture.test.ts.txt",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/historical-fixture.test.ts.txt",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/historical-source.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/historical-source.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/plan.md",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/plan.md",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/red21-supervisor.py",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/red21-supervisor.py",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/minimal-proposal.UNAPPLIED.patch",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/minimal-proposal.UNAPPLIED.patch",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/qualification.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/qualification.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/verify-source-plan.py",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/verify-source-plan.py",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/runtime-request.md",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/runtime-request.md",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/reference/bji.txt",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/reference/bji.txt",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/reference/Mqo.txt",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/reference/Mqo.txt",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/reference/jqo.txt",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/reference/jqo.txt",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/reference/kqo-Tqo-complete.txt",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/reference/kqo-Tqo-complete.txt",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/readOnlyEditAffordance.test.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/readOnlyEditAffordance.test.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime/owns-node-modules.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime/owns-node-modules.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/.package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/.package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/react/package.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/react/package.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/react-test-renderer/package.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/react-test-renderer/package.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/typescript/package.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/typescript/package.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/@pierre/diffs/package.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/@pierre/diffs/package.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/fuzzysort/package.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/fuzzysort/package.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/useWorkspaceDiff.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/useWorkspaceDiff.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/target.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/target.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/ChangesToolbar.tsx",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/ChangesToolbar.tsx",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/ChangesList.tsx",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/ChangesList.tsx",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/DiffViewer.tsx",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/DiffViewer.tsx",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/FileDiffView.tsx",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/FileDiffView.tsx",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/FileContextMenu.tsx",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/FileContextMenu.tsx",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/types.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/types.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/nav.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/nav.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/viewed.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/viewed.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/changesTree.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/changesTree.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/changesFilter.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/changesFilter.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/renameDisplayPath.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/renameDisplayPath.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/fileCopyPaths.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/fileCopyPaths.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/copyFile.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/copyFile.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/pierre.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/pierre.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/files/tree.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/files/tree.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/keybindings/fuzzy.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/keybindings/fuzzy.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/lib/keyedCache.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/lib/keyedCache.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/package.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/package.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/deps-only.py",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/deps-only.py",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/frozen-v2.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/frozen-v2.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/frozen-v1.mounted.test.mjs.txt",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/frozen-v1.mounted.test.mjs.txt",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/red10.log",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/red10.log",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/red10-receipt.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/red10-receipt.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime/red10-v2.log",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime/red10-v2.log",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime/red10-v2-receipt.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime/red10-v2-receipt.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime/red10-v2-classification.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime/red10-v2-classification.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-selector-v3.patch",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-selector-v3.patch",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-fixture-v2.mounted.test.mjs.txt",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-fixture-v2.mounted.test.mjs.txt",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/deps-receipt.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/deps-receipt.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/lease.lock",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/lease.lock",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/npm-ci.log",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/npm-ci.log",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/owns-node-modules.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/owns-node-modules.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/recovery-readback.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/recovery-readback.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/red10-v2-preflight-no-run.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/red10-v2-preflight-no-run.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/tests/diff/uncommittedDiscardAffordance.mounted.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/tests/diff/uncommittedDiscardAffordance.mounted.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-provisioner/v3/deps-only.py",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-provisioner/v3/deps-only.py",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/target.test.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/target.test.ts",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/red10-v3.log.gz",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/red10-v3.log.gz",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/green10-v3-supervisor.py",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/green10-v3-supervisor.py",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/red10-v3.log",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/red10-v3.log",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/red10-v3-receipt.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/red10-v3-receipt.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/green10-v3-classification.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/green10-v3-classification.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/green10-v3.log.gz",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/green10-v3.log.gz",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/green10-v3-receipt.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/green10-v3-receipt.json",
+      "pass": true
+    },
+    {
+      "name": "RED input retained after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/red10-v3-classification.json",
+      "pass": true
+    },
+    {
+      "name": "RED input byte count after only candidate inverse: /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/red10-v3-classification.json",
+      "pass": true
+    }
+  ],
+  "baseline": {
+    "cases": 21,
+    "target_assertion_failures": 17,
+    "controls_passed": 4,
+    "harness_failures": 0,
+    "actual_release_utc": "2026-11-18T02:58:39.648492Z"
+  },
+  "current_green": "NOT_RUN",
+  "product_treatment": "APPLIED_EXACT_ONE_SITE",
+  "whole_renderer_and_index_assets": "ABSENT_AT_HISTORICAL_PATHS; RETAINED_COMPLETE_FUNCTION_HASHES_ONLY",
+  "browser_native_packaged": "NOT_RUN",
+  "source_only_preparation": {
+    "supervisor_mapping_exact": true,
+    "mapping": {
+      ".oc-tmp/readonly-edit-red21-runtime": ".oc-tmp/readonly-edit-green21-runtime",
+      "--execute-readonly-red21": "--execute-readonly-green21",
+      "\"red21.log\"": "\"green21.log\"",
+      "\"red21-receipt.json\"": "\"green21-receipt.json\"",
+      "\"READONLY_EDIT_RED21\"": "\"READONLY_EDIT_GREEN21\"",
+      "\"verify-source-plan.py\"": "\"verify-treatment.py\"",
+      "[\"static_checks\"] == 65": "[\"static_checks\"] == 246",
+      "result[\"baseline_head\"]": "result[\"candidate_head\"]"
+    },
+    "red_supervisor_sha256": "309a7930685fefd54fed27cd8bce8eee1d76146c821fe4993143016e0e1c91e2",
+    "green_supervisor_sha256": "128f2defa7c9472b539bdedc4c699bed39b7a51866ce723632643abd2a133a48",
+    "green_supervisor_bytes": 11452,
+    "python_sources_compile_without_execution_or_bytecode": 4,
+    "protected_discard_inputs_verified": 41,
+    "installed_identities_read_only_verified": [
+      {
+        "name": "react",
+        "version": "18.3.1",
+        "resolution_sri_and_real_placement_match": true
+      },
+      {
+        "name": "react-test-renderer",
+        "version": "18.3.1",
+        "resolution_sri_and_real_placement_match": true
+      },
+      {
+        "name": "typescript",
+        "version": "5.9.3",
+        "resolution_sri_and_real_placement_match": true
+      },
+      {
+        "name": "@pierre/diffs",
+        "version": "1.6.4",
+        "resolution_sri_and_real_placement_match": true
+      },
+      {
+        "name": "fuzzysort",
+        "version": "3.1.0",
+        "resolution_sri_and_real_placement_match": true
+      }
+    ],
+    "original_red_runtime_untouched": true,
+    "new_green_state_absent": true,
+    "node_install_cleanup_browser_native_publication": "NOT_RUN",
+    "additional_prepost_snapshot_paths": "7 historical originals, 2 original RED runtime files and their 2 archived copies",
+    "raw_tap_storage": "lossless gzip; original raw runtime bytes unchanged"
+  }
+}

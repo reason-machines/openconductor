@@ -1,0 +1,84 @@
+TAP version 13
+# (node:119) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: target/B Edit omitted after ordinary Edit A
+ok 1 - target/B Edit omitted after ordinary Edit A
+  ---
+  duration_ms: 15.867581
+  type: 'test'
+  ...
+# Subtest: target/B Edit omitted after editor blur and focus B
+ok 2 - target/B Edit omitted after editor blur and focus B
+  ---
+  duration_ms: 3.205708
+  type: 'test'
+  ...
+# Subtest: target/C Edit omitted after editor blur and focus C
+ok 3 - target/C Edit omitted after editor blur and focus C
+  ---
+  duration_ms: 5.69258
+  type: 'test'
+  ...
+# Subtest: target/blank A still omits B Edit
+ok 4 - target/blank A still omits B Edit
+  ---
+  duration_ms: 2.18786
+  type: 'test'
+  ...
+# Subtest: control/unlocked multirow Edit enters B
+ok 5 - control/unlocked multirow Edit enters B
+  ---
+  duration_ms: 2.900322
+  type: 'test'
+  ...
+# Subtest: control/unlocked singleton Edit remains available
+ok 6 - control/unlocked singleton Edit remains available
+  ---
+  duration_ms: 1.342504
+  type: 'test'
+  ...
+# Subtest: control/Cancel restores ordinary Edit eligibility
+ok 7 - control/Cancel restores ordinary Edit eligibility
+  ---
+  duration_ms: 2.740068
+  type: 'test'
+  ...
+# Subtest: control/Save restores ordinary Edit eligibility
+ok 8 - control/Save restores ordinary Edit eligibility
+  ---
+  duration_ms: 3.013973
+  type: 'test'
+  ...
+# Subtest: control/Save and steer preserves effect and eligibility
+ok 9 - control/Save and steer preserves effect and eligibility
+  ---
+  duration_ms: 2.832808
+  type: 'test'
+  ...
+# Subtest: control/blank Save and Cancel policy preserved
+ok 10 - control/blank Save and Cancel policy preserved
+  ---
+  duration_ms: 18.924723
+  type: 'test'
+  ...
+# Subtest: control/unlocked drag singleton and multirow preserved
+ok 11 - control/unlocked drag singleton and multirow preserved
+  ---
+  duration_ms: 1.621538
+  type: 'test'
+  ...
+# Subtest: control/active edit drag policy preserved
+ok 12 - control/active edit drag policy preserved
+  ---
+  duration_ms: 1.657915
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 907.529943

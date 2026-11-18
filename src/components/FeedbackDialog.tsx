@@ -55,7 +55,7 @@ export function FeedbackDialog({ appVersion, platform, onClose }: Props) {
           <div className="submit-prompt-footer">
             <button type="submit" className="submit-prompt-submit" disabled={!message.trim() || opening} data-primary-action>
               {opening ? COPY.opening : COPY.submit}
-              {key && <span className="submit-prompt-kbd">{glyphs(key)}</span>}
+              {!opening && key && <span className="submit-prompt-kbd">{glyphs(key)}</span>}
             </button>
           </div>
         </form>

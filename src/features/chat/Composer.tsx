@@ -583,6 +583,16 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
   const [dragged, setDragged] = useState<string | null>(null);
   const canCollapse = queue.items.length > 1;
   const ids = queue.items.map((m) => m.id);
+  const previousEditingId = useRef(queue.editingId);
+
+  // Restore the surviving edited row, not a removed row or another session.
+  useLayoutEffect(() => {
+    const previous = previousEditingId.current;
+    previousEditingId.current = queue.editingId;
+    if (previous !== null && queue.editingId === null && queue.items.some((m) => m.id === previous)) {
+      focus({ row: previous });
+    }
+  }, [queue.editingId, queue.items, focus]);
 
   useEffect(() => {
     if (!canCollapse) setCollapsed(false);
@@ -590,7 +600,7 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
 
   // The focused row's keys (the row itself, not its buttons): edit, delete, steer and moving between rows.
   function onRowKeyDown(e: KeyboardEvent<HTMLLIElement>, id: string) {
-    if (e.target !== e.currentTarget || e.nativeEvent.isComposing) return;
+    if (e.target !== e.currentTarget || e.nativeEvent.isComposing || queue.editingId !== null) return;
     const ev = e.nativeEvent;
     const hit = (command: QueueCommand) => keys(command).some((s) => matchesEvent(s, ev));
     const navigationKey = e.metaKey || e.ctrlKey || e.altKey || e.shiftKey ? "" : e.key;
@@ -613,7 +623,7 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
   }
 
   const drag = (id: string) => ({
-    draggable: queue.editingId === null,
+    draggable: queue.items.length > 1 && queue.editingId === null,
     onDragStart: (e: React.DragEvent) => {
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.setData("text/plain", id);
@@ -665,6 +675,7 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
               first={i === 0}
               last={i === queue.items.length - 1}
               editing={queue.editingId === m.id}
+              canStartEdit={queue.editingId === null}
               canSteer={canSteer}
               onQueue={onQueue}
               keys={keys}
@@ -686,6 +697,7 @@ interface RowProps {
   first: boolean;
   last: boolean;
   editing: boolean;
+  canStartEdit: boolean;
   canSteer: boolean;
   onQueue: (a: QueueAction) => void;
   keys: Keys;
@@ -694,7 +706,7 @@ interface RowProps {
   rowProps: React.LiHTMLAttributes<HTMLLIElement>;
 }
 
-function QueueRow({ id, text, userContent, attachmentNames, first, last, editing, canSteer, onQueue, keys, dragging, rowProps }: RowProps) {
+function QueueRow({ id, text, userContent, attachmentNames, first, last, editing, canStartEdit, canSteer, onQueue, keys, dragging, rowProps }: RowProps) {
   const [value, setValue] = useState(() => queuedUserDraft({ text, userContent }));
   const editor = useRef<ComposerEditorHandle>(null);
   useLayoutEffect(() => {
@@ -765,16 +777,18 @@ function QueueRow({ id, text, userContent, attachmentNames, first, last, editing
         <button type="button" className="chat-action" aria-label="Move down" disabled={last} onClick={() => onQueue({ kind: "move", id, by: 1 })}>
           ↓
         </button>
-        <button
-          type="button"
-          className="chat-action"
-          onClick={() => {
-            setValue(queuedUserDraft({ text, userContent }));
-            onQueue({ kind: "edit", id });
-          }}
-        >
-          Edit
-        </button>
+        {canStartEdit ? (
+          <button
+            type="button"
+            className="chat-action"
+            onClick={() => {
+              setValue(queuedUserDraft({ text, userContent }));
+              onQueue({ kind: "edit", id });
+            }}
+          >
+            Edit
+          </button>
+        ) : null}
         {canSteer ? (
           <button type="button" className="chat-action" title="Steer with queued message" onClick={() => onQueue({ kind: "steer", id })}>
             Steer

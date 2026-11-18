@@ -1,0 +1,132 @@
+TAP version 13
+# (node:119) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: singleton/initial visible row is not draggable
+ok 1 - singleton/initial visible row is not draggable
+  ---
+  duration_ms: 12.405545
+  type: 'test'
+  ...
+# Subtest: singleton/expanded shrink to one disables remaining row
+ok 2 - singleton/expanded shrink to one disables remaining row
+  ---
+  duration_ms: 4.026612
+  type: 'test'
+  ...
+# Subtest: singleton/collapsed shrink reveals non-draggable survivor
+ok 3 - singleton/collapsed shrink reveals non-draggable survivor
+  ---
+  duration_ms: 2.977841
+  type: 'test'
+  ...
+# Subtest: singleton/Cancel edit restores focus but not dragging
+ok 4 - singleton/Cancel edit restores focus but not dragging
+  ---
+  duration_ms: 3.094151
+  type: 'test'
+  ...
+# Subtest: singleton/Save edit restores focus but not dragging
+ok 5 - singleton/Save edit restores focus but not dragging
+  ---
+  duration_ms: 5.505785
+  type: 'test'
+  ...
+# Subtest: singleton/session remount does not expose dragging
+ok 6 - singleton/session remount does not expose dragging
+  ---
+  duration_ms: 2.314315
+  type: 'test'
+  ...
+# Subtest: control/empty queue renders no draggable row
+ok 7 - control/empty queue renders no draggable row
+  ---
+  duration_ms: 0.781017
+  type: 'test'
+  ...
+# Subtest: control/expanded multirow rows remain draggable
+ok 8 - control/expanded multirow rows remain draggable
+  ---
+  duration_ms: 1.18471
+  type: 'test'
+  ...
+# Subtest: control/enabled dragstart writes payload and sets own drag state
+ok 9 - control/enabled dragstart writes payload and sets own drag state
+  ---
+  duration_ms: 2.316542
+  type: 'test'
+  ...
+# Subtest: control/enabled distinct-target drop preserves full reorder payload
+ok 10 - control/enabled distinct-target drop preserves full reorder payload
+  ---
+  duration_ms: 5.061
+  type: 'test'
+  ...
+# Subtest: control/self drop is already a no-op
+ok 11 - control/self drop is already a no-op
+  ---
+  duration_ms: 2.645308
+  type: 'test'
+  ...
+# Subtest: control/foreign dragover and drop do not reorder
+ok 12 - control/foreign dragover and drop do not reorder
+  ---
+  duration_ms: 1.123722
+  type: 'test'
+  ...
+# Subtest: control/dragend clears own drag state without reordering
+ok 13 - control/dragend clears own drag state without reordering
+  ---
+  duration_ms: 1.731689
+  type: 'test'
+  ...
+# Subtest: control/active edit disables other display rows
+ok 14 - control/active edit disables other display rows
+  ---
+  duration_ms: 4.113928
+  type: 'test'
+  ...
+# Subtest: control/collapsed multirow has no visible drag target
+ok 15 - control/collapsed multirow has no visible drag target
+  ---
+  duration_ms: 5.934473
+  type: 'test'
+  ...
+# Subtest: control/1474 blank edit cannot save or begin dragging
+ok 16 - control/1474 blank edit cannot save or begin dragging
+  ---
+  duration_ms: 10.982436
+  type: 'test'
+  ...
+# Subtest: control/1476 singleton regrowth stays expanded and restores multirow dragging
+ok 17 - control/1476 singleton regrowth stays expanded and restores multirow dragging
+  ---
+  duration_ms: 2.110495
+  type: 'test'
+  ...
+# Subtest: control/1479 removed edited row never receives return focus
+ok 18 - control/1479 removed edited row never receives return focus
+  ---
+  duration_ms: 16.014189
+  type: 'test'
+  ...
+# Subtest: control/1479 session-key switch cannot focus old edited row
+ok 19 - control/1479 session-key switch cannot focus old edited row
+  ---
+  duration_ms: 2.414942
+  type: 'test'
+  ...
+# Subtest: control/1479 Save-and-steer removes edited row without return focus
+ok 20 - control/1479 Save-and-steer removes edited row without return focus
+  ---
+  duration_ms: 3.799328
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 975.180557

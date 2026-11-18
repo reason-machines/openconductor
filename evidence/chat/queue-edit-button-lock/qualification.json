@@ -1,0 +1,650 @@
+{
+  "candidate": "COMPOSER-QUEUE-EDIT-BUTTON-LOCK-135",
+  "state": "SOURCE_CLOSED_COLLISION_CLEAR_INERT_FUTURE_ONLY",
+  "checked_utc": "2026-11-18T00:58:25.153067+00:00",
+  "checked_main": "8f0f8707a529e17937cd8e9447b8b769b6bc5e21",
+  "source_sha256": "0bd7b4a6e8400474e5d78f547c04dfeb33d93f9279440ae8dc4c72f7e1a91904",
+  "parent_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "retained_rea_slice": {
+    "source": "renderApp-D_fmY7hW.js",
+    "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "utf8_half_open": [
+      8599657,
+      8761291
+    ],
+    "bytes": 161634,
+    "sha256": "e43f1cbced0bbad078e30162a1249c272d17e503215464a35115e73843572f88",
+    "generated_by": "recover-binding.mjs",
+    "site_bindings": [
+      {
+        "unknown_id": "jsrg_unknown_0640ac1b830246547ffb6ec26748439d93ab31b293ec434539ac7f46d81b8815",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 52518,
+        "operation": "retryMessage",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.retryMessage",
+        "renderer_utf8_half_open": [
+          8752757,
+          8752772
+        ],
+        "enclosing_declaration": "JNi",
+        "sha256": "c3e5510b587bfaec6fd49a9afc48cc03402be82effb6e756868bad02b31f209b"
+      },
+      {
+        "unknown_id": "jsrg_unknown_8e60d3bed747ca804798a2550af7d3cb9f97b32d2d7b7b74ed4753e6205ea58d",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 27397,
+        "operation": "retryMessage",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.retryMessage",
+        "renderer_utf8_half_open": [
+          8727630,
+          8727645
+        ],
+        "enclosing_declaration": "AAo",
+        "sha256": "c3e5510b587bfaec6fd49a9afc48cc03402be82effb6e756868bad02b31f209b"
+      },
+      {
+        "unknown_id": "jsrg_unknown_1c476078b1becf5b79831de41444338396a5fb5f4552a53f13bfcd68628ea1ef",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 55457,
+        "operation": "saveQueuedMessageEdit",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.saveQueuedMessageEdit",
+        "renderer_utf8_half_open": [
+          8755696,
+          8755720
+        ],
+        "enclosing_declaration": "JNi",
+        "sha256": "86d03e9ada7b40e6d6d40ba71058c37d741b38935e0af26de83e8dde260fc424"
+      },
+      {
+        "unknown_id": "jsrg_unknown_a728105ff0665cc68edf3cefe4401045b1e8935d9e982d0a02ab702ce48aa756",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 55080,
+        "operation": "saveQueuedMessageEdit",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.saveQueuedMessageEdit",
+        "renderer_utf8_half_open": [
+          8755319,
+          8755343
+        ],
+        "enclosing_declaration": "JNi",
+        "sha256": "86d03e9ada7b40e6d6d40ba71058c37d741b38935e0af26de83e8dde260fc424"
+      },
+      {
+        "unknown_id": "jsrg_unknown_46d460ad0b6265b733a21416918f5121b6b0b11645d142b8e2d79060a4b41ee0",
+        "reason": "ambiguous-target",
+        "line": 5,
+        "column": 39809,
+        "operation": "cancelSession",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "dS.cancelSession",
+        "renderer_utf8_half_open": [
+          8684240,
+          8684256
+        ],
+        "enclosing_declaration": "ITo",
+        "sha256": "a30a04b7b97708e9f32dc7d16d677adee4dff1e886ab5fb3d7895c4dd3d1106f"
+      },
+      {
+        "unknown_id": "jsrg_unknown_5904ce63091478c17fa5e89011860dd944644a001178a7783eb0b6364345b0a0",
+        "reason": "ambiguous-target",
+        "line": 5,
+        "column": 46647,
+        "operation": "cancelSession",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "dS.cancelSession",
+        "renderer_utf8_half_open": [
+          8691078,
+          8691094
+        ],
+        "enclosing_declaration": "ITo",
+        "sha256": "a30a04b7b97708e9f32dc7d16d677adee4dff1e886ab5fb3d7895c4dd3d1106f"
+      },
+      {
+        "unknown_id": "jsrg_unknown_dbdf7acabcaabef9de788389c26b8b5be06e08e3be85add75ab18bd3ebe74b99",
+        "reason": "ambiguous-target",
+        "line": 5,
+        "column": 22872,
+        "operation": "cancelSession",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "dS.cancelSession",
+        "renderer_utf8_half_open": [
+          8667303,
+          8667319
+        ],
+        "enclosing_declaration": "ITo",
+        "sha256": "a30a04b7b97708e9f32dc7d16d677adee4dff1e886ab5fb3d7895c4dd3d1106f"
+      },
+      {
+        "unknown_id": "jsrg_unknown_5d3f71f3f23cb156d0b9a08db3644ba247d686d1f616328279f0a0db2e6bf0d5",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 27147,
+        "operation": "cancelMessage",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.cancelMessage",
+        "renderer_utf8_half_open": [
+          8727380,
+          8727396
+        ],
+        "enclosing_declaration": "AAo",
+        "sha256": "c0dde8b912ac5c924a81e6a97e99a4bb5851537b8804bcfaa4564cf28b008aa0"
+      },
+      {
+        "unknown_id": "jsrg_unknown_5e065fc642867f42dbdb36852ea9e18a292efdaa4612a1a8971e6a772a0c662c",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 27544,
+        "operation": "setPaused",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.setPaused",
+        "renderer_utf8_half_open": [
+          8727777,
+          8727789
+        ],
+        "enclosing_declaration": "AAo",
+        "sha256": "778038a1003a8e0d154a5689796dc8d80c1c42bddc0f8d0643457e362fe8e0f6"
+      },
+      {
+        "unknown_id": "jsrg_unknown_616a0896718d7869d79053c03feafc948a169d12ba81428dbe0f35123c62ab7b",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 50997,
+        "operation": "drafts",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.drafts",
+        "renderer_utf8_half_open": [
+          8751236,
+          8751245
+        ],
+        "enclosing_declaration": "JNi",
+        "sha256": "e3b7fc311cd7cb505c0bf8427392f7245218bd506116be0cfacf8e895809b7f9"
+      },
+      {
+        "unknown_id": "jsrg_unknown_951027a275a900d9e366409cce33c5eace5b6b31b5909b4d8375c0aa2d39eed6",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 51038,
+        "operation": "drafts",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.drafts",
+        "renderer_utf8_half_open": [
+          8751277,
+          8751286
+        ],
+        "enclosing_declaration": "JNi",
+        "sha256": "e3b7fc311cd7cb505c0bf8427392f7245218bd506116be0cfacf8e895809b7f9"
+      },
+      {
+        "unknown_id": "jsrg_unknown_b50b63921cb89d9b11da44e5fa7ac942835638a8a28225fe16e4aec1061360ad",
+        "reason": "ambiguous-target",
+        "line": 5,
+        "column": 39610,
+        "operation": "drafts",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.drafts",
+        "renderer_utf8_half_open": [
+          8684041,
+          8684050
+        ],
+        "enclosing_declaration": "ITo",
+        "sha256": "e3b7fc311cd7cb505c0bf8427392f7245218bd506116be0cfacf8e895809b7f9"
+      },
+      {
+        "unknown_id": "jsrg_unknown_ceab61477a4b856b08783e50349da3d5307a12cdbc40afd25d288055c027ac0a",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 51076,
+        "operation": "drafts",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.drafts",
+        "renderer_utf8_half_open": [
+          8751315,
+          8751324
+        ],
+        "enclosing_declaration": "JNi",
+        "sha256": "e3b7fc311cd7cb505c0bf8427392f7245218bd506116be0cfacf8e895809b7f9"
+      },
+      {
+        "unknown_id": "jsrg_unknown_e391af586f9c7b11be3ae57e14d6e92dc91ca9848f0b7a1cd42eb045df66cddf",
+        "reason": "ambiguous-target",
+        "line": 5,
+        "column": 25696,
+        "operation": "drafts",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.drafts",
+        "renderer_utf8_half_open": [
+          8670127,
+          8670136
+        ],
+        "enclosing_declaration": "ITo",
+        "sha256": "e3b7fc311cd7cb505c0bf8427392f7245218bd506116be0cfacf8e895809b7f9"
+      },
+      {
+        "unknown_id": "jsrg_unknown_91c38de43229999f4cf5822f214a78403d98df4f2877e44dd89c844fc61f8de9",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 54361,
+        "operation": "beginQueuedMessageEdit",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.beginQueuedMessageEdit",
+        "renderer_utf8_half_open": [
+          8754600,
+          8754625
+        ],
+        "enclosing_declaration": "JNi",
+        "sha256": "f240f2d77014d9a0ec292c21d0a969271af923f11bcde60fdf03a61fb286dad7"
+      },
+      {
+        "unknown_id": "jsrg_unknown_c42cbc90f8438ef3f9ae64a27048e421f02b4a530946b41892008f2ec1a30ef1",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 54698,
+        "operation": "cancelQueuedMessageEdit",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.cancelQueuedMessageEdit",
+        "renderer_utf8_half_open": [
+          8754937,
+          8754963
+        ],
+        "enclosing_declaration": "JNi",
+        "sha256": "eadec006b0af5862845d74449ee677e3e3fc0ceb46e31e785aa134560f6b6747"
+      },
+      {
+        "unknown_id": "jsrg_unknown_c8de08889c6998edd4255ee715adef45562e7c03bff9fea4c9f3906a2f3d7ebb",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 27101,
+        "operation": "discardMessage",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.discardMessage",
+        "renderer_utf8_half_open": [
+          8727334,
+          8727351
+        ],
+        "enclosing_declaration": "AAo",
+        "sha256": "43083b744e9754113e5c40e3a5b4b20a5a8d570099e760d117f7516f69f7d666"
+      },
+      {
+        "unknown_id": "jsrg_unknown_dd871515ad3e3a4a27a8dc0da9e1f201e6ba6009a8a269ff7904259bdd113b12",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 27790,
+        "operation": "reorderMessages",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.reorderMessages",
+        "renderer_utf8_half_open": [
+          8728023,
+          8728041
+        ],
+        "enclosing_declaration": "AAo",
+        "sha256": "6002d4d5c3277910f3508ffb76b9ec667190e08f02db99e6661ab7b2fad39186"
+      },
+      {
+        "unknown_id": "jsrg_unknown_e1e1918300faabf28a72a19b26c121386fbf9bc1820521eb045e71982b9d2760",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 26874,
+        "operation": "steerMessage",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.steerMessage",
+        "renderer_utf8_half_open": [
+          8727107,
+          8727122
+        ],
+        "enclosing_declaration": "AAo",
+        "sha256": "6a3eb3a37ddc1dc8d75492459eb5707f78e762e1b95fcacdb99ee3ab52955e5f"
+      },
+      {
+        "unknown_id": "jsrg_unknown_e9be2bd64c5c42783f85d93550d31cec222717016512f103f9a3d020a7dc90d6",
+        "reason": "ambiguous-target",
+        "line": 5,
+        "column": 24441,
+        "operation": "sendMessage",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.sendMessage",
+        "renderer_utf8_half_open": [
+          8668872,
+          8668886
+        ],
+        "enclosing_declaration": "ITo",
+        "sha256": "44ff9574c423bc374d71423e4b63cb71e8adf5fcd38addbe7e6e1bbe6b0c9f9f"
+      }
+    ]
+  },
+  "spans": [
+    {
+      "name": "AAo",
+      "utf8_half_open": [
+        8725767,
+        8730190
+      ],
+      "bytes": 4423,
+      "sha256": "1427c2453126a3311e9a330ae73a6b88a491199c4005ea85406728357d53ebab",
+      "method": "String-aware balanced delimiter scan; no JS parser/runtime"
+    },
+    {
+      "name": "TAo",
+      "utf8_half_open": [
+        8724033,
+        8725767
+      ],
+      "bytes": 1734,
+      "sha256": "9c9f9c15bc2b47268a8c9b44c7c40a23341d50664f15cb41a331c1c38625da14",
+      "method": "String-aware balanced delimiter scan; no JS parser/runtime"
+    },
+    {
+      "name": "iAo",
+      "utf8_half_open": [
+        8712424,
+        8715111
+      ],
+      "bytes": 2687,
+      "sha256": "cdf84fdf5198174968fa88f6b171559912f640d866e94e6ca121c29de34b5ad6",
+      "method": "String-aware balanced delimiter scan; no JS parser/runtime"
+    },
+    {
+      "name": "QTo",
+      "utf8_half_open": [
+        8708771,
+        8709972
+      ],
+      "bytes": 1201,
+      "sha256": "8c0e46309ba3be5690ff2ddb383c3f051553c959064caf7638f04767c50ddf33",
+      "method": "String-aware balanced delimiter scan; no JS parser/runtime"
+    },
+    {
+      "name": "S3i",
+      "utf8_half_open": [
+        1920998,
+        1921053
+      ],
+      "bytes": 55,
+      "sha256": "ddd119d405884d670467e1c1690f8ae012c20705de121e26c34bc1f688939bf6",
+      "method": "String-aware balanced delimiter scan; no JS parser/runtime"
+    },
+    {
+      "name": "Es",
+      "utf8_half_open": [
+        465319,
+        465439
+      ],
+      "bytes": 120,
+      "sha256": "7156958a1130e2b3100ec1915a1525aa1e5f56622b5ad188c8774faad14f77ed",
+      "method": "String-aware balanced delimiter scan; no JS parser/runtime"
+    },
+    {
+      "name": "_Dr",
+      "utf8_half_open": [
+        465967,
+        466214
+      ],
+      "bytes": 247,
+      "sha256": "140b2b26f73e3414f1c5b11e225f37da7d275d3cbc90f29e17f6a83e817c6088",
+      "method": "String-aware balanced delimiter scan; no JS parser/runtime"
+    },
+    {
+      "name": "mDr",
+      "utf8_half_open": [
+        465439,
+        465872
+      ],
+      "bytes": 433,
+      "sha256": "d37b81f399c6033b06eeecabe661ee77cc20a3e3047c974248c40fa674e5a7d4",
+      "method": "String-aware balanced delimiter scan; no JS parser/runtime"
+    },
+    {
+      "name": "gDr",
+      "utf8_half_open": [
+        465872,
+        465932
+      ],
+      "bytes": 60,
+      "sha256": "fa2a5541c72d505a37205f7d9c39ac159f03961748a08c1f57a43e2615f9ff1f",
+      "method": "String-aware balanced delimiter scan; no JS parser/runtime"
+    },
+    {
+      "name": "tt forwardRef assignment",
+      "utf8_half_open": [
+        1923125,
+        1923712
+      ],
+      "bytes": 587,
+      "sha256": "9675a9385ebb0461b4c5254a558b4bb82368ababa1146cf9a6fca02d3921f72c",
+      "method": "Unique exact declaration through displayName terminator; parent byte binding, not a new REA graph"
+    },
+    {
+      "name": "p8t",
+      "utf8_half_open": [
+        463493,
+        463573
+      ],
+      "bytes": 80,
+      "sha256": "2aa17ace1b2f5a8acd872304ea623682b983c681ef725503c5bbb56c40283625",
+      "method": "Unique exact declaration through next function boundary; retained-parent byte binding, not REA graph/parser verification"
+    },
+    {
+      "name": "r_",
+      "utf8_half_open": [
+        463925,
+        464066
+      ],
+      "bytes": 141,
+      "sha256": "31b753c7878aff438af8428889564cdfe11a16d489289366b8b9fd738817e3e3",
+      "method": "Unique exact declaration through next function boundary; retained-parent byte binding, not REA graph/parser verification"
+    },
+    {
+      "name": "FVe",
+      "utf8_half_open": [
+        464209,
+        464262
+      ],
+      "bytes": 53,
+      "sha256": "c50a8f38a9c2cd2d14db6935e43042612277b4c2cb83c75c1711fc1c85ad7864",
+      "method": "Unique exact declaration through next function boundary; retained-parent byte binding, not REA graph/parser verification"
+    },
+    {
+      "name": "B6e",
+      "utf8_half_open": [
+        464262,
+        464312
+      ],
+      "bytes": 50,
+      "sha256": "af48c2b5b36cbaf71a03df4f2995cdc110afd416d70e091ab0fb0c3cec6d02a0",
+      "method": "Unique exact declaration through next function boundary; retained-parent byte binding, not REA graph/parser verification"
+    },
+    {
+      "name": "fDr",
+      "utf8_half_open": [
+        464312,
+        464407
+      ],
+      "bytes": 95,
+      "sha256": "498792c82df6534e82d682e64f6e0ffa0cbde527b472f6a133084472ecc85d0b",
+      "method": "Unique exact declaration through next function boundary; retained-parent byte binding, not REA graph/parser verification"
+    },
+    {
+      "name": "hDr",
+      "utf8_half_open": [
+        464407,
+        464618
+      ],
+      "bytes": 211,
+      "sha256": "3869a2cd6a8783dc9631db93f3f152dbdaf5d640b3ab13d53a3f7bfa0005f4e2",
+      "method": "Unique exact declaration through next function boundary; retained-parent byte binding, not REA graph/parser verification"
+    },
+    {
+      "name": "rli",
+      "utf8_half_open": [
+        464618,
+        464772
+      ],
+      "bytes": 154,
+      "sha256": "a9d6c81be2b7ae7714a80c4bd6d24cb9369b9bf743988de1a40ad317621c362f",
+      "method": "Unique exact declaration through next function boundary; retained-parent byte binding, not REA graph/parser verification"
+    },
+    {
+      "name": "uLt",
+      "utf8_half_open": [
+        464772,
+        464816
+      ],
+      "bytes": 44,
+      "sha256": "f4d3e89dd7a8d3d19e78c29ec0937b909d1a3af48b1736f715cdb6755ea1b2fc",
+      "method": "Unique exact declaration through next function boundary; retained-parent byte binding, not REA graph/parser verification"
+    },
+    {
+      "name": "pDr",
+      "utf8_half_open": [
+        464860,
+        465045
+      ],
+      "bytes": 185,
+      "sha256": "f8c29aa4dd221c8216a2c80b8d633fd7153028db3cc15e9886f39767eed94d95",
+      "method": "Unique exact declaration through next function boundary; retained-parent byte binding, not REA graph/parser verification"
+    },
+    {
+      "name": "oli",
+      "utf8_half_open": [
+        465045,
+        465126
+      ],
+      "bytes": 81,
+      "sha256": "b3a31e823059eb866af46d10a0c6e97695e5987388f261d4c75cb778131dd3e9",
+      "method": "Unique exact declaration through next function boundary; retained-parent byte binding, not REA graph/parser verification"
+    },
+    {
+      "name": "BVe",
+      "utf8_half_open": [
+        465126,
+        465208
+      ],
+      "bytes": 82,
+      "sha256": "128ff73e9ebe0577ed93ce134e71efc6a5b3a87f69f3a8f75c4c6253278dfbd6",
+      "method": "Unique exact declaration through next function boundary; retained-parent byte binding, not REA graph/parser verification"
+    },
+    {
+      "name": "lli",
+      "utf8_half_open": [
+        465249,
+        465319
+      ],
+      "bytes": 70,
+      "sha256": "828aad23e01f386a3008c57660770a9813ce30c8a0972e03a7c23ba264a7d657",
+      "method": "Unique exact declaration through next function boundary; retained-parent byte binding, not REA graph/parser verification"
+    },
+    {
+      "name": "cDr",
+      "utf8_half_open": [
+        463573,
+        463806
+      ],
+      "bytes": 233,
+      "sha256": "fe78322b24e810410f47419ae9be5c9a165d79b6e4399c09286e0fffbb4106cc",
+      "method": "Unique exact declaration through next function boundary; retained-parent byte binding, not REA graph/parser verification"
+    }
+  ],
+  "checks": {
+    "all prior 19 source claims remain pinned to the same main Composer": true,
+    "tt defaults intrinsic button and forwards rest props through r_": true,
+    "QTo visibility caller omits disabled for ordinary Edit": true,
+    "QTo forwards disabled and guards callbacks": true,
+    "S3i forwards the complete config into Es": true,
+    "Es selects mDr then _Dr without disabling unless explicitly requested": true,
+    "mDr forwards original props through gDr and p8t": true,
+    "state attributes cannot overwrite disabled or onClick": true,
+    "p8t keeps original props as the later spread": true,
+    "gDr plain prop object chooses r_": true,
+    "r_ no-base path clones original object through FVe": true,
+    "FVe plain object uses fDr and fDr keeps all ordinary fields": true,
+    "uLt does not classify prop object as a function": true,
+    "rli only wraps on-prefixed event fields, not disabled or type": true,
+    "oli event wrapper retains callback call": true,
+    "clone merge r_ chooses B6e for element props": true,
+    "B6e plain object uses hDr and ordinary values survive": true,
+    "empty intrinsic element cannot replace type disabled or guarded callback": true,
+    "pDr preserves incoming and existing callback chain": true,
+    "current matching editing flag has no global pointer eligibility port": true,
+    "pointer and keyboard are different dispatch sites": true,
+    "1480 drag policy preserved": true,
+    "1474 Save and Save-and-steer retain blank guard": true,
+    "no tracked diff staged or unstaged": true
+  },
+  "prior_checks": {
+    "actual GTo produces canStartEdit only without any active edit": true,
+    "actual GTo passes row predicate to its renderRow callback": true,
+    "AAo renderRow creates actual TAo": true,
+    "TAo forwards predicate unchanged to actual iAo": true,
+    "iAo nonediting edit visibility uses canStartEdit": true,
+    "actual edit action only rendered with predicate": true,
+    "QTo chooses actual Edit label and button constructor": true,
+    "QTo forwards the actual guarded click callback": true,
+    "QTo does not request an asChild replacement on tt": true,
+    "tt defaults to an intrinsic button when asChild is absent": true,
+    "tt passes button render and forwarded props to S3i": true,
+    "Es passes actual render element to clone path": true,
+    "intrinsic props survive mDr forwarding": true,
+    "current panel passes only matching-row editing flag": true,
+    "current displayed-row Edit button has no disabled or global-edit condition": true,
+    "current row has no global edit identity input": true,
+    "current normal edit producer resets row-local draft then dispatches edit": true,
+    "keyboard-lock remains separate unmodified handler": true,
+    "no tracked source modifications": true
+  },
+  "published_regressions": [
+    {
+      "path": "src/features/chat/composerQueueSingletonDrag.test.ts",
+      "bytes": 23667,
+      "sha256": "bc52c1ecb79557bb6a96c50c0c43be07efe1988117f43f53b7eeed6df018f935"
+    },
+    {
+      "path": "src/features/chat/composerQueueEditReturnFocus.test.ts",
+      "bytes": 20921,
+      "sha256": "cd27a14b8206dbd3fce6ee28e135bd312285270ef040f3fe1456eba23d8b23a8"
+    },
+    {
+      "path": "src/features/chat/composerQueueFocus.test.ts",
+      "bytes": 17746,
+      "sha256": "399ade20e426496ab14a385f0439ed97aaad13504c97bd0839e4fbea547892c6"
+    },
+    {
+      "path": "src/features/chat/composerQueueEditEmptySave.test.ts",
+      "bytes": 17423,
+      "sha256": "8739fb3f4ebbbdf4282b740ccce38f5a3572b213669b23a96016ec19535cb4e3"
+    },
+    {
+      "path": "src/features/chat/composerQueueCollapseShrink.test.ts",
+      "bytes": 16047,
+      "sha256": "948310bd9247754387556adc910acec1cc3174c26bdff38b2dff3b65e0d77cad"
+    },
+    {
+      "path": "src/features/chat/queue.test.ts",
+      "bytes": 10973,
+      "sha256": "11868cc6ae58421f1e58b284a60909fab2bcaf4d1b7de2f6e623cf6c32acd552"
+    },
+    {
+      "path": "src/features/chat/queueKeys.test.ts",
+      "bytes": 2754,
+      "sha256": "98503081aa4b4996ad27362bb558624208c076319135d404fc5f4f4e3855fce9"
+    }
+  ],
+  "collision": {
+    "clear_message_id": "87db3c8f-75ca-4ce1-8217-25c55378a7f3",
+    "final_confirmation_id": "2799e066-f468-4e5c-b733-d601cf1465e3",
+    "owner": "13576d11-76fb-4842-aa9b-c398f9ca26f3"
+  },
+  "finding": "Source mismatch in ordinary nonediting-row Edit visibility while any queued edit is active. Reference omits the Edit action; current QueueRow still renders an enabled button. This is independent of queued row-keyboard dispatch and is not runtime reproduction.",
+  "limits": [
+    "Queue declarations are retained REA-slice evidence; tt/S3i/Es/mDr/_Dr/gDr and all additional forwarding helpers are retained-parent-byte-bound only, outside that analyzed queue slice. No fresh REA graph or parser verification.",
+    "The exact intrinsic forwarding and disabled prop path is a source argument, not a live DOM/click/native observation.",
+    "No browser hover, physical focus, click, native, package, provider, RED, GREEN or fixture execution.",
+    "Keyboard RED26 remains the only prioritized runtime request. No pointer runtime request, product change or commit.",
+    "Future implementation must rebind fresh main after keyboard delivery and must preserve keyboard fix, Save/Cancel, blank Save, drag, row focusability, removal and reordering."
+  ]
+}

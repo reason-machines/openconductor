@@ -1,0 +1,58 @@
+{
+  "status": "INERT_PORT_PREPARED_NOT_EXECUTED",
+  "original_sha256": "8391b03a3f7317fbfcba7645d6a9b6e1ac922023d7fa73532c60e3e0e44aa752",
+  "permanent_sha256": "bc52c1ecb79557bb6a96c50c0c43be07efe1988117f43f53b7eeed6df018f935",
+  "permanent_bytes": 23667,
+  "case_count": 20,
+  "executable_cases_byte_identical": true,
+  "exact_replacements": [
+    {
+      "old": "// Frozen source fixture only; ledger admission required before any execution.",
+      "new": "// Permanent regression port; unchanged frozen RED/GREEN is retained in evidence."
+    },
+    {
+      "old": "../../src/features/chat/queue.ts",
+      "new": "./queue.ts"
+    },
+    {
+      "old": "../../src/features/chat/queueKeys.ts",
+      "new": "./queueKeys.ts"
+    },
+    {
+      "old": "../../src/features/chat/slashCommands.ts",
+      "new": "./slashCommands.ts"
+    },
+    {
+      "old": "../../src/features/chat/fileMentions.ts",
+      "new": "./fileMentions.ts"
+    },
+    {
+      "old": "../../src/features/chat/composerDocument.ts",
+      "new": "./composerDocument.ts"
+    },
+    {
+      "old": "../../src/features/chat/userContent.ts",
+      "new": "./userContent.ts"
+    },
+    {
+      "old": "../../src/keybindings/shortcut.ts",
+      "new": "../../keybindings/shortcut.ts"
+    },
+    {
+      "old": "../../src/keybindings/overrides.ts",
+      "new": "../../keybindings/overrides.ts"
+    },
+    {
+      "old": "../../src/features/chat/ComposerEditor.tsx",
+      "new": "./ComposerEditor.tsx"
+    },
+    {
+      "old": "typeof import(\"../../src/features/chat/Composer.tsx\")",
+      "new": "typeof import(\"./Composer.tsx\")"
+    },
+    {
+      "old": "// Frozen oracle: six target failures and fourteen control passes are predictions, not results.",
+      "new": "// Six singleton targets and fourteen enabled-path/regression controls."
+    }
+  ]
+}

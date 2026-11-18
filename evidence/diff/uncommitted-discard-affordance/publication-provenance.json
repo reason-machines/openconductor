@@ -1,0 +1,11 @@
+{
+  "recorded_at_utc": "2026-11-18T02:19:06.822507+00:00",
+  "publication_recovery": "Supported pr_open refused remote divergence without pushing. Fetched and merged the same assigned branch as instructed; no alternate publisher or force push.",
+  "remote_head": "b51f682547ab5ec85a3677555aee51543269856e",
+  "local_head_before_reconciliation": "fc6a28bd3c1fb50afcd598d4add1915fd6916bc7",
+  "historical_pr": 1412,
+  "historical_PR_role": "Merged provenance only, not this discard fix delivery",
+  "staged_content_delta_before_this_record": [],
+  "all_45_executed_GREEN_inputs_unchanged": true,
+  "runtime_repeated": false
+}

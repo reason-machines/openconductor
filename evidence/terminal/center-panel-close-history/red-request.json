@@ -1,0 +1,237 @@
+{
+  "author": "Conductor Rebuild",
+  "phase": "GROUPED_CENTER_CLOSE_ORIGINAL_RED_ONLY",
+  "main": "234ec70ea89135b83f68f287330a3701d27f2b2d",
+  "supervisor_sha256": "67ea024bd5c5cd652099c66f536dca2ae96667dfb7592ef74174f6b07441647c",
+  "command": [
+    "node",
+    "--experimental-strip-types",
+    "--test",
+    "--test-concurrency=1",
+    ".oc-tmp/center-close-history-1f/frozen/centerPanelCloseHistory.test.ts"
+  ],
+  "outer_command": "taskset -c 0 nice -n 10 timeout --signal=TERM --kill-after=5s 80s env UV_THREADPOOL_SIZE=1 NODE_OPTIONS=--max-old-space-size=768 SAME1F_GROUPED_CLOSE_RED_ADMISSION=<separate-exact-admission> python3 evidence/terminal/center-panel-close-history/red-supervisor.py",
+  "source_env": {
+    "OC_GROUPED_CLOSE_SOURCE_ROOT": ".oc-tmp/center-close-history-1f/baseline",
+    "OC_GROUPED_CLOSE_DEPENDENCY_ROOT": "."
+  },
+  "expected_packages": {
+    "react": "18.3.1",
+    "react-test-renderer": "18.3.1",
+    "typescript": "5.9.3"
+  },
+  "dependency_scope": "Existing own node_modules only after separate admission explicitly permits this new unit; no install, rescan or historical preservation claim.",
+  "product_paths": [
+    "src/features/workspace/centerPanelLayout.ts",
+    "src/features/workspace/CenterPanelGroups.tsx",
+    "src/components/WorkspaceView.tsx",
+    "src/features/terminal/shellIntegration.ts"
+  ],
+  "pins": [
+    {
+      "path": "src/features/workspace/centerPanelCloseHistory.test.ts",
+      "bytes": 12244,
+      "sha256": "70e227dc8bb0d169fd5ee549c5ae59e81c0b8c238c6b289616331f75cdc6ccab"
+    },
+    {
+      "path": ".oc-tmp/center-close-history-1f/frozen/centerPanelCloseHistory.test.ts",
+      "bytes": 12244,
+      "sha256": "70e227dc8bb0d169fd5ee549c5ae59e81c0b8c238c6b289616331f75cdc6ccab"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2019,
+      "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 222962,
+      "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+    },
+    {
+      "path": "evidence/terminal/center-panel-close-history/oracle.json",
+      "bytes": 9745,
+      "sha256": "454bb3f5659025782be44eb4974df33432e7ff61f4694d2d35eb3718598bb900"
+    },
+    {
+      "path": "evidence/terminal/center-panel-close-history/README.md",
+      "bytes": 4348,
+      "sha256": "639be3ba2f3cfe0f963fdd4e20f8ad21d3c467f1116e7798a837d446a161930b"
+    },
+    {
+      "path": "src/features/workspace/centerPanelLayout.ts",
+      "bytes": 9439,
+      "sha256": "b28c856f6448553f0a4901673c716815157e59010d4254b514165aa6fee8f381"
+    },
+    {
+      "path": "src/features/workspace/CenterPanelGroups.tsx",
+      "bytes": 4380,
+      "sha256": "02dc0493f6881a05db35c4479061dc66e564ff0421a1f076c6a1545424a53dce"
+    },
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "bytes": 102922,
+      "sha256": "4520e46b632d50ef6feaf78398ec08cf7e8a58697605067b707af50d3c1f8214"
+    },
+    {
+      "path": "src/features/terminal/shellIntegration.ts",
+      "bytes": 6998,
+      "sha256": "64a8d4249f53591366cd9c0e529a14cf3ec0d024a5b6dde5a12ed143aeae5cda"
+    },
+    {
+      "path": ".oc-tmp/center-close-history-1f/baseline/package-lock.json",
+      "bytes": 222962,
+      "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+    },
+    {
+      "path": ".oc-tmp/center-close-history-1f/baseline/package.json",
+      "bytes": 2019,
+      "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91"
+    },
+    {
+      "path": ".oc-tmp/center-close-history-1f/baseline/src/features/workspace/centerPanelLayout.ts",
+      "bytes": 9439,
+      "sha256": "b28c856f6448553f0a4901673c716815157e59010d4254b514165aa6fee8f381"
+    },
+    {
+      "path": ".oc-tmp/center-close-history-1f/baseline/src/features/workspace/CenterPanelGroups.tsx",
+      "bytes": 4380,
+      "sha256": "02dc0493f6881a05db35c4479061dc66e564ff0421a1f076c6a1545424a53dce"
+    },
+    {
+      "path": ".oc-tmp/center-close-history-1f/baseline/src/features/terminal/shellIntegration.ts",
+      "bytes": 6998,
+      "sha256": "64a8d4249f53591366cd9c0e529a14cf3ec0d024a5b6dde5a12ed143aeae5cda"
+    },
+    {
+      "path": ".oc-tmp/center-close-history-1f/baseline/src/components/WorkspaceView.tsx",
+      "bytes": 102922,
+      "sha256": "4520e46b632d50ef6feaf78398ec08cf7e8a58697605067b707af50d3c1f8214"
+    },
+    {
+      "path": "evidence/terminal/center-panel-close-history/reference/XKo-Nji.txt",
+      "bytes": 3453,
+      "sha256": "32c0e240e426c5f41db10a7ec888fd3a13382d4309ddf7796e0f0c37c40554b9"
+    },
+    {
+      "path": "evidence/terminal/center-panel-close-history/reference/Gr-zc.txt",
+      "bytes": 2452,
+      "sha256": "499f641fafcb12a7c7c6a3ea9555198cebdbac09d06d660a545fa8017aa8a8d0"
+    },
+    {
+      "path": "evidence/terminal/center-panel-close-history/reference/hFt.txt",
+      "bytes": 654,
+      "sha256": "08c4d2dc0d40f1b8e1815d8ae9571fbd10791851492869751ea184780de6faae"
+    },
+    {
+      "path": "evidence/terminal/center-panel-close-history/reference/pYo.txt",
+      "bytes": 2392,
+      "sha256": "9558e7bb431e0861f6e614c3423d30b992b32c8cdeb258526434d8d4a5643653"
+    },
+    {
+      "path": "evidence/terminal/center-panel-close-history/reference/d1e.txt",
+      "bytes": 1275,
+      "sha256": "a6969b63c3f6b5f087cc6f89c6c885447cf936f0e8c72bb2d8ba6518b12c5826"
+    },
+    {
+      "path": "evidence/terminal/center-panel-close-history/reference/dYo-fYo.txt",
+      "bytes": 6443,
+      "sha256": "4738e931effe19866e219f62e239724ae9343e3d29db1cfc1bd0bb3b6ce138e0"
+    },
+    {
+      "path": "evidence/terminal/center-panel-close-history/reference/local-host.txt",
+      "bytes": 186,
+      "sha256": "4f1f52fd1c480db92b04366e7306b935f4c7606407f397e86e6c8491333f7414"
+    },
+    {
+      "path": "evidence/terminal/center-panel-close-history/reference/d8i.txt",
+      "bytes": 1032,
+      "sha256": "62620d635ec8259346cd4ff9877b69ceedf0815dfc2d007e3b76ca8a96fd664a"
+    },
+    {
+      "path": "evidence/terminal/center-panel-close-history/reference/aYo.txt",
+      "bytes": 1126,
+      "sha256": "b7c66c1086d337cfe6b63e3d3d4cc1583ee655c1194cc33cfdb5fc6c3f3dde1e"
+    },
+    {
+      "path": "evidence/terminal/center-panel-close-history/reference/JKo.txt",
+      "bytes": 2119,
+      "sha256": "9217bacbaabaed83767166780ab90a1691df6eecb622e840ffd9f27bd3cfa78d"
+    },
+    {
+      "path": "evidence/terminal/center-panel-close-history/reference/g8i.txt",
+      "bytes": 5052,
+      "sha256": "d4d883350b67ac4866dc968c986ee5c5fc3c5fc9b3b847129363ba738d8999fc"
+    },
+    {
+      "path": "evidence/terminal/center-panel-close-history/reference/Ps-sFt.txt",
+      "bytes": 5848,
+      "sha256": "ab1b990a212fccaf10b747c768343d4c740a20622e55663e752b225f9f459e13"
+    },
+    {
+      "path": "evidence/terminal/center-panel-split-1f/spans/flag-default.txt",
+      "bytes": 47,
+      "sha256": "a73d34c6035473fd004e5e561037156f2ba66028c58242534e5673f623bc807d"
+    },
+    {
+      "path": "evidence/terminal/center-panel-split-1f/spans/flag-key.txt",
+      "bytes": 43,
+      "sha256": "0cf74e257921e33fa92063a89e85132f7121c1d4cdc0483cae6b8be0d9c4da50"
+    },
+    {
+      "path": "evidence/terminal/center-panel-split-1f/spans/flag-reader.txt",
+      "bytes": 29,
+      "sha256": "0f885f9cd6ca1563f342a8a8b783f7790575473b28a3200baf764beb2b9eec79"
+    },
+    {
+      "path": "evidence/terminal/center-panel-split-1f/spans/reader-export.txt",
+      "bytes": 9,
+      "sha256": "52aa65b4bc03ad70d41a2e195fa21a7f97e4195baa04d8bd0214ba35d810db2a"
+    },
+    {
+      "path": "evidence/terminal/center-panel-split-1f/spans/reader-import.txt",
+      "bytes": 9,
+      "sha256": "6e7020227908dfb119b18e580f05944c01b687d3e44ef596a5e1ce0e83d0189f"
+    },
+    {
+      "path": "evidence/terminal/center-panel-split-1f/spans/feature-wrapper.txt",
+      "bytes": 255,
+      "sha256": "88c6d181702b42be580d4e956b0cab6720508675d9cfedf72ef2e1d284f4bee6"
+    },
+    {
+      "path": "evidence/terminal/center-panel-split-1f/spans/center-layout-model-store.txt",
+      "bytes": 8301,
+      "sha256": "49940831049b7be2e1955de6a1a921e63163aca397e4fcb5910966c8431a3320"
+    },
+    {
+      "path": "evidence/terminal/center-panel-split-1f/spans/consumer-yYo.txt",
+      "bytes": 7609,
+      "sha256": "e4e86b58c9c18f8721fae2bb8c15c8186a0a40850e78a3aa1cad742f0ade4df8"
+    },
+    {
+      "path": "evidence/terminal/center-panel-split-1f/spans/group-surface-mounts.txt",
+      "bytes": 5751,
+      "sha256": "89a3e6f087adab0c0ca21cf0fc82d96b9a77cb725af7c240e7f5b6c763158fd1"
+    },
+    {
+      "path": "evidence/terminal/center-panel-split-1f/spans/layout-renderer.txt",
+      "bytes": 2609,
+      "sha256": "6c8e4db994ad1a814e1a21585c2aefd32b097b5b5f4baf4fe3870d6ee87e82e6"
+    },
+    {
+      "path": "evidence/terminal/center-panel-split-1f/spans/layout-ratios.txt",
+      "bytes": 315,
+      "sha256": "8f63ddd6f45a894e968c5dae2db381447a5b06618babd7b55548f7af8aaceecf"
+    }
+  ],
+  "not_admitted": [
+    "Node",
+    "tests",
+    "product delta",
+    "install",
+    "cache operations",
+    "old RED9",
+    "browser/native/provider/PTY",
+    "cleanup"
+  ]
+}

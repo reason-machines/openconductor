@@ -1,0 +1,81 @@
+{
+  "author": "Conductor Rebuild",
+  "dedupe": "DIFF-READONLY-EDIT-AFFORDANCE-DE6-02",
+  "created_at_utc": "2026-11-18T02:26:23.834200+00:00",
+  "fresh_main": "047fca64ed7857fe292bace0c4fa608e3a6dc827",
+  "status": "SOURCE_ONLY_REQUALIFIED; CURRENT_BASELINE_NOT_RUN; NO_RUNTIME_ADMISSION",
+  "retained_complete_functions": [
+    {
+      "name": "bji",
+      "asset": "renderer",
+      "utf8": [
+        9643145,
+        9646819
+      ],
+      "sha256": "2d2b8aac64bada5ead6bc143ac6bb272544791374a9b71b38e57eab55c8f5688",
+      "bytes": 3674
+    },
+    {
+      "name": "Mqo",
+      "asset": "renderer",
+      "utf8": [
+        9637614,
+        9641484
+      ],
+      "sha256": "ba9e64973b294335d69d20e19ffd1ef4eaf63f3c209dd380beacf5ecc509393c",
+      "bytes": 3870
+    },
+    {
+      "name": "jqo",
+      "asset": "renderer",
+      "utf8": [
+        9641484,
+        9642975
+      ],
+      "sha256": "3b57f4d3fb1c0ba90d3249cf522f66114602f79f79e85afbed10c08b16ba4741",
+      "bytes": 1491
+    }
+  ],
+  "retained_complete_wrapper": {
+    "bytes": 5791,
+    "sha256": "b83b970b85f2e050656d5cdc5b27e3510df8d1907a3e8673924a901f7975e7e6"
+  },
+  "all_19_recorded_parent_consumer_joins_present": true,
+  "historical_fixture": {
+    "sha256": "30d82d680f50250682ce5769e5047495417e95d5ce52ac15eacecbdc728c20a7",
+    "bytes": 10648,
+    "current_run": "NOT_RUN",
+    "no_new_case_bodies": true
+  },
+  "current_source_pins": {
+    "src/features/diff/DiffViewer.tsx": "b9385a977c26007391b9b47bb587c33d95045ed9e04b1b1240a031f411167e0f",
+    "src/features/diff/FileDiffView.tsx": "305ccacb64c230bba3880d045b64aabc4889bbfac25668824b87b020810e0289",
+    "src/features/diff/EditInViewer.ts": "40123ee435661c920d6c2e99c4301d2005aebe88f3668b4d02eab5ebdadc1d1c",
+    "src/features/diff/editable.ts": "507dcc18d52a721afa97ab453a6815a0ff656b109fb53ca91e9b6e3ba5efefde",
+    "src/features/diff/editorContents.ts": "412dd4af07a67e0b6b52758444533564eb6d686843c333560150373659c29523",
+    "src/features/diff/draftStorage.ts": "dc53d9cf4bab94e4427aceee03aefcc05a37c71115a7ce06e340a647814f69e5",
+    "src/features/diff/pierre.ts": "738f92c4dc768f7313c9ac8fd4ac22fc003f62578ec78f2c296129737925ab52",
+    "src/features/diff/copyFile.ts": "6ff8924a36728d90243e2ab0e4ab824326afb8030472b9a6b9c02d00888a203a",
+    "src/keybindings/bind.ts": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119",
+    "src/keybindings/dispatcher.ts": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197",
+    "package.json": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91",
+    "package-lock.json": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+  },
+  "proposal": {
+    "bytes": 638,
+    "sha256": "53b6cf35e600e6644442c5c11cf9c2850995f16ddd7b23305a598a5654ae7b63",
+    "applied": false,
+    "product_files_changed": false
+  },
+  "old_inputs_preserved": {
+    ".oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/source.json": "8180d9ffbfbb4251e32d636d7f1c8200884c6de19e9c639dacb27b811889d5b7",
+    ".oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/README.md": "374cc57ebb3a6798f47676091a70a6b2ce8f559ac0e7e6a4db32c4216c22133c",
+    ".oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/reference/bji.txt": "2d2b8aac64bada5ead6bc143ac6bb272544791374a9b71b38e57eab55c8f5688",
+    ".oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/reference/Mqo.txt": "ba9e64973b294335d69d20e19ffd1ef4eaf63f3c209dd380beacf5ecc509393c",
+    ".oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/reference/jqo.txt": "3b57f4d3fb1c0ba90d3249cf522f66114602f79f79e85afbed10c08b16ba4741",
+    ".oc-tmp/readonly-edit-unit/evidence/diff/new-inline-draft-remount/reference/editable-view-annotation-caller.txt": "b83b970b85f2e050656d5cdc5b27e3510df8d1907a3e8673924a901f7975e7e6",
+    ".oc-tmp/readonly-edit-unit/src/features/diff/readOnlyEditAffordance.test.ts": "30d82d680f50250682ce5769e5047495417e95d5ce52ac15eacecbdc728c20a7"
+  },
+  "full_raw_asset_present_at_original_manifest_paths": false,
+  "node_install_tests_build_browser_native_cleanup_publication": "NOT_RUN"
+}

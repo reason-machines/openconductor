@@ -1,0 +1,87 @@
+{
+  "key": "DIFF-UNCOMMITTED-DISCARD-AFFORDANCE-DE6-01",
+  "author": "Conductor Rebuild",
+  "version": 2,
+  "status": "FIXTURE_BOUNDARY_CORRECTED_NOT_EXECUTED",
+  "checked_main": "5f7afadc1c50ee44aa21677b5ab0dd96b87cfb57",
+  "previous_checkpoint": "568cbdf6eecc06304cc4c74bde33acdb647bb9e2",
+  "supersedes": {
+    "manifest": "evidence/diff/uncommitted-discard-affordance/frozen.json",
+    "fixture_snapshot": "evidence/diff/uncommitted-discard-affordance/frozen-v1.mounted.test.mjs.txt",
+    "sha256": "356522ce6cc1a129b4e3536346e5c45e217d1cf6e6860cfef09cbe840e97f506",
+    "bytes": 12891,
+    "observed_result": "SETUP_FAIL: ten cases failed before semantic assertions; not product RED",
+    "failure_output": {
+      "path": ".oc-tmp/uncommitted-discard-runtime/red10.log",
+      "sha256": "1d6fe9519a1abc04f547999d35432905827eef7ff23f7c33f8da87dfe2aacb54",
+      "bytes": 32903
+    },
+    "failure_receipt": {
+      "path": ".oc-tmp/uncommitted-discard-runtime/red10-receipt.json",
+      "sha256": "f38a5259d728c5e917728936aac57fc189eec2a55b17376451124f784aa25c56",
+      "bytes": 7664,
+      "actual_release_utc": "2026-11-17T23:21:07.447068Z"
+    }
+  },
+  "fixture": {
+    "path": "tests/diff/uncommittedDiscardAffordance.mounted.test.mjs",
+    "sha256": "f31ff7c6e2037ef63d953da8da49ab6f008270211a8c1e73172e2dd87fbfdd61",
+    "bytes": 12896,
+    "changed_line": 88,
+    "exact_replacement": {
+      "before": "useFileEdit: () => null",
+      "after": "useFileEdit: () => undefined"
+    },
+    "all_other_bytes_unchanged": true,
+    "ten_case_bodies_assertions_and_oracle_unchanged": true,
+    "context_menu_All_scope_and_zero_IO_assertions_unchanged": true
+  },
+  "boundary_contract": {
+    "path": "src/features/diff/EditInViewer.ts",
+    "sha256": "40123ee435661c920d6c2e99c4301d2005aebe88f3668b4d02eab5ebdadc1d1c",
+    "bytes": 6325,
+    "main_equal": true,
+    "line_bindings": [
+      { "line": 67, "meaning": "Unavailable editor returns undefined." },
+      { "line": 69, "text": "export function useFileEdit(worktree: string | null, path: string, onDisk: string | null, onSaved?: () => void): FileEdit | undefined {" },
+      { "line": 123, "text": "    () => (onDisk === null ? undefined : { current, generation, dirty, onChange, onSave, error })," }
+    ],
+    "consumer": {
+      "path": "src/features/diff/FileDiffView.tsx",
+      "sha256": "305ccacb64c230bba3880d045b64aabc4889bbfac25668824b87b020810e0289",
+      "lines": [154, 155, 156, 157, 158],
+      "meaning": "edit !== undefined enables editing; current() is then dereferenced. A null fixture return violates the real hook contract."
+    }
+  },
+  "unchanged_inputs": {
+    "all_19_loaded_product_files": "Match prior RED receipt hashes and actual fetched main; no product changes.",
+    "package_json_sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91",
+    "package_lock_sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992",
+    "deps_only_helper_sha256": "1bbb799a1703a5a002260ade655efef0ae5f434c4e7548be4557521b09dadc18",
+    "original_failure_files": "Left byte-identical at original paths; never overwritten by a v2 run.",
+    "owned_dependencies": "Retained for separately admitted RED; no cleanup or installation in fixture correction."
+  },
+  "fresh_RED_v2_request": {
+    "admitted": false,
+    "queue": "After actual release of ledger's current 6013 dependency phase; explicit new reservation required.",
+    "command": "node --experimental-strip-types --test tests/diff/uncommittedDiscardAffordance.mounted.test.mjs",
+    "supervisor": "Reuse unchanged deps-only.py limits/group_members/stop_group utilities; no new helper.",
+    "cpu": 0,
+    "nice": 10,
+    "UV_THREADPOOL_SIZE": 1,
+    "heap_mib": 768,
+    "child_timeout_s": 120,
+    "TERM_KILL_grace_s": 5,
+    "foreground_bash_timeout_s": 130,
+    "sampled_group_RSS_limit_bytes": 2147483648,
+    "free_disk_floor_bytes": 4294967296,
+    "sample_interval_s": 0.1,
+    "measurement_scope": "Userspace live-group RSS/free-space sampling plus termination, not kernel, burst, escaped-group or disk caps.",
+    "fresh_preconditions": "No own live Node/npm group; CPU0/free floor; current owned modules/marker/root and all five installed lock identities; fixture/helper/package/lock pins; actual fresh-main equality of all loaded product sources.",
+    "new_output": ".oc-tmp/uncommitted-discard-runtime/red10-v2.log",
+    "new_receipt": ".oc-tmp/uncommitted-discard-runtime/red10-v2-receipt.json",
+    "expected_semantic_RED": "Six row/header Uncommitted visibility failures; four context-menu All-scope controls pass. Setup errors do not qualify. All zero-IO assertions remain in place.",
+    "release": "Report actual start/end/exit, named outcomes, assertion vs setup failures, skips/unhandled errors, input/output hashes, resource scope, cleanup UTC and no survivors. Retain owned modules/marker; no automatic retry or GREEN."
+  },
+  "not_run": ["Node", "RED v2", "GREEN", "install", "product changes", "build", "browser", "native", "publication"]
+}

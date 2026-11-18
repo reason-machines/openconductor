@@ -1,0 +1,1 @@
+function oli(t){return t&&((...e)=>{const n=e[0];return lli(n)&&BVe(n),t(...e)})}
