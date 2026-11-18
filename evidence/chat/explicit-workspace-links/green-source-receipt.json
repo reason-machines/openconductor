@@ -1,0 +1,64 @@
+{
+  "author": "Conductor Rebuild",
+  "status": "SOURCE_ONLY_GREEN20_FROZEN_NOT_ADMITTED",
+  "committed_source": "9a615be52c140f17144618ce31c0d18b812f9169",
+  "checked_main": "daee1fc90825c1e7673f711ad1d8a5a5401b1959",
+  "request": {
+    "path": "green-request.json",
+    "bytes": 19308,
+    "sha256": "53b34e11c09c9296d236565b24252d0a66f78a6e1fe158a1003fc6e0ccf29bd3"
+  },
+  "supervisor": {
+    "path": "green_phase.py",
+    "bytes": 11216,
+    "sha256": "5c4c4ad8fffc2c78fd1a3e91a45b4f8d6369c7df32b6c3d543495721f07c4da3"
+  },
+  "binding": {
+    "path": "green-source-binding.json",
+    "bytes": 14007,
+    "sha256": "436303e1cb031ec0b10404f96f9770b0b43d8044755060e674ff269b4e769544"
+  },
+  "candidates": [
+    {
+      "path": "UNAPPLIED-markdown.ts",
+      "bytes": 12868,
+      "sha256": "725b9e40ba90d8d4f7b3fd0ba0b739d5a2f5332f92a95f6db001a77fe5892c95",
+      "product_path": "src/features/chat/markdown.ts"
+    },
+    {
+      "path": "UNAPPLIED-LinkMenu.tsx",
+      "bytes": 2530,
+      "sha256": "38d8ed5c2724dc6337159a0cf85c22c375a0c6c10b14f556a4e28afb982d1953",
+      "product_path": "src/features/chat/LinkMenu.tsx"
+    }
+  ],
+  "fixture": {
+    "path": "src/features/chat/explicitWorkspaceLinks.test.ts",
+    "bytes": 11808,
+    "sha256": "6dee0e6360521b4272cc0ce478258dc243fbe74c9c23c1badac311fc7a4cfb29"
+  },
+  "current_context_files": 17,
+  "frozen_runtime_inputs": 13,
+  "dependency_identities": 10,
+  "original_request_sha256": "33170b3692d82bedb7aaad1b5975547f1c85b8f5072b4aeb31c854f5b94cdfb1",
+  "exact_command": "taskset -c 0 timeout --signal=TERM --kill-after=5s 60s env NODE_OPTIONS=--max-old-space-size=768 node --test --test-concurrency=1 src/features/chat/explicitWorkspaceLinks.test.ts",
+  "bounds": {
+    "grant_seconds": 125,
+    "workload_seconds": 60,
+    "term_kill_seconds": 5,
+    "minimum_free_GiB": 4,
+    "maximum_output_MiB": 16,
+    "rss_measured": false
+  },
+  "foreground_metadata": {
+    "nice": 10,
+    "UV_THREADPOOL_SIZE": "1",
+    "outer_call_timeout_seconds": 125,
+    "created": "Capture once at actual foreground wrapper launch immediately before invoking green_phase.py",
+    "expires": "Exact same captured created UTC plus 125 seconds; never reset, extend or retry"
+  },
+  "static_check": "Mechanical source derivation and text guards passed; Python AST/compile/import/invocation not run in this lease.",
+  "target_executed": false,
+  "runtime_staged": false,
+  "original_red_files_modified": false
+}

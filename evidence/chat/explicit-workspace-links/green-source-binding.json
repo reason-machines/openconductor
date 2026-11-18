@@ -1,0 +1,410 @@
+{
+  "author": "Conductor Rebuild",
+  "unit": "CHAT-EXPLICIT-WORKSPACE-HREF-BE7",
+  "status": "SOURCE_ONLY_NO_GREEN_EXECUTION",
+  "original_capture": "750b8bf25b2193141eff0cfcad64776228bea076",
+  "fresh_default": "daee1fc90825c1e7673f711ad1d8a5a5401b1959",
+  "committed_source": "9a615be52c140f17144618ce31c0d18b812f9169",
+  "product_worktree": "product",
+  "current_context_bindings": [
+    {
+      "path": "src/features/chat/ToolRows.tsx",
+      "baseline": {
+        "path": "src/features/chat/ToolRows.tsx",
+        "bytes": 57106,
+        "sha256": "ac18f431c7b2bbfac5455f2f2af50567675634a28606bc5bf733f6562bac6167"
+      },
+      "treatment": {
+        "path": "src/features/chat/ToolRows.tsx",
+        "bytes": 57106,
+        "sha256": "ac18f431c7b2bbfac5455f2f2af50567675634a28606bc5bf733f6562bac6167"
+      },
+      "changed": false
+    },
+    {
+      "path": "src/features/chat/LinkMenu.tsx",
+      "baseline": {
+        "path": "src/features/chat/LinkMenu.tsx",
+        "bytes": 2345,
+        "sha256": "3967d74ecc5e5dd2d9f7fc9c5cba36ce0b614a2d4b535391701b7f246fec5cc9"
+      },
+      "treatment": {
+        "path": "src/features/chat/LinkMenu.tsx",
+        "bytes": 2530,
+        "sha256": "38d8ed5c2724dc6337159a0cf85c22c375a0c6c10b14f556a4e28afb982d1953"
+      },
+      "changed": true
+    },
+    {
+      "path": "src/features/chat/conductorTools.ts",
+      "baseline": {
+        "path": "src/features/chat/conductorTools.ts",
+        "bytes": 31930,
+        "sha256": "775150d24fd147bba59c0da0173b67cd6e955c4dbfaec404c8378823e6e07bbe"
+      },
+      "treatment": {
+        "path": "src/features/chat/conductorTools.ts",
+        "bytes": 31930,
+        "sha256": "775150d24fd147bba59c0da0173b67cd6e955c4dbfaec404c8378823e6e07bbe"
+      },
+      "changed": false
+    },
+    {
+      "path": "src/features/chat/toolIconData.ts",
+      "baseline": {
+        "path": "src/features/chat/toolIconData.ts",
+        "bytes": 31316,
+        "sha256": "ffe817145ad34b2934ebd204f17456b040d76f999f7758e8de1feba1388429f9"
+      },
+      "treatment": {
+        "path": "src/features/chat/toolIconData.ts",
+        "bytes": 31316,
+        "sha256": "ffe817145ad34b2934ebd204f17456b040d76f999f7758e8de1feba1388429f9"
+      },
+      "changed": false
+    },
+    {
+      "path": "src/features/chat/thinkingChip.ts",
+      "baseline": {
+        "path": "src/features/chat/thinkingChip.ts",
+        "bytes": 453,
+        "sha256": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9"
+      },
+      "treatment": {
+        "path": "src/features/chat/thinkingChip.ts",
+        "bytes": 453,
+        "sha256": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9"
+      },
+      "changed": false
+    },
+    {
+      "path": "src/features/chat/markdown.ts",
+      "baseline": {
+        "path": "src/features/chat/markdown.ts",
+        "bytes": 11557,
+        "sha256": "35c81f7d5094d4b4bf8c5b7dc85db4666ae9aed21a3be177471dfa69309698cb"
+      },
+      "treatment": {
+        "path": "src/features/chat/markdown.ts",
+        "bytes": 12868,
+        "sha256": "725b9e40ba90d8d4f7b3fd0ba0b739d5a2f5332f92a95f6db001a77fe5892c95"
+      },
+      "changed": true
+    },
+    {
+      "path": "src/features/chat/mermaid.ts",
+      "baseline": {
+        "path": "src/features/chat/mermaid.ts",
+        "bytes": 1010,
+        "sha256": "9d2e58993988bb9ecbf39b159683ee79243b127bacaa17843571e40891741bcf"
+      },
+      "treatment": {
+        "path": "src/features/chat/mermaid.ts",
+        "bytes": 1010,
+        "sha256": "9d2e58993988bb9ecbf39b159683ee79243b127bacaa17843571e40891741bcf"
+      },
+      "changed": false
+    },
+    {
+      "path": "src/features/chat/markdownFrontmatter.ts",
+      "baseline": {
+        "path": "src/features/chat/markdownFrontmatter.ts",
+        "bytes": 1036,
+        "sha256": "651225608bdb1cd9256c241bac98fb22664c08505606bc73e2ed34f7f880891f"
+      },
+      "treatment": {
+        "path": "src/features/chat/markdownFrontmatter.ts",
+        "bytes": 1036,
+        "sha256": "651225608bdb1cd9256c241bac98fb22664c08505606bc73e2ed34f7f880891f"
+      },
+      "changed": false
+    },
+    {
+      "path": "package.json",
+      "baseline": {
+        "path": "package.json",
+        "bytes": 2019,
+        "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91"
+      },
+      "treatment": {
+        "path": "package.json",
+        "bytes": 2019,
+        "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91"
+      },
+      "changed": false
+    },
+    {
+      "path": "package-lock.json",
+      "baseline": {
+        "path": "package-lock.json",
+        "bytes": 222962,
+        "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+      },
+      "treatment": {
+        "path": "package-lock.json",
+        "bytes": 222962,
+        "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+      },
+      "changed": false
+    },
+    {
+      "path": "src/features/chat/Transcript.tsx",
+      "baseline": {
+        "path": "src/features/chat/Transcript.tsx",
+        "bytes": 21746,
+        "sha256": "4ba9fe4df5a852934890e19ac7de61f14fe8cdcbcf3652e60bbd18e925b271b4"
+      },
+      "treatment": {
+        "path": "src/features/chat/Transcript.tsx",
+        "bytes": 21746,
+        "sha256": "4ba9fe4df5a852934890e19ac7de61f14fe8cdcbcf3652e60bbd18e925b271b4"
+      },
+      "changed": false
+    },
+    {
+      "path": "src/features/chat/typedSubagentLinks.test.ts",
+      "baseline": {
+        "path": "src/features/chat/typedSubagentLinks.test.ts",
+        "bytes": 15796,
+        "sha256": "27aab97bcf3c655965202e3acdb00732872aa41434991d5f3efc2412615454a7"
+      },
+      "treatment": {
+        "path": "src/features/chat/typedSubagentLinks.test.ts",
+        "bytes": 15796,
+        "sha256": "27aab97bcf3c655965202e3acdb00732872aa41434991d5f3efc2412615454a7"
+      },
+      "changed": false
+    },
+    {
+      "path": "evidence/chat/typed-subagent-links.md",
+      "baseline": {
+        "path": "evidence/chat/typed-subagent-links.md",
+        "bytes": 8881,
+        "sha256": "ca026f4d7697d39a492cabc5d36d1375717beb553d4ac130844ba30d96e1691f"
+      },
+      "treatment": {
+        "path": "evidence/chat/typed-subagent-links.md",
+        "bytes": 8881,
+        "sha256": "ca026f4d7697d39a492cabc5d36d1375717beb553d4ac130844ba30d96e1691f"
+      },
+      "changed": false
+    },
+    {
+      "path": "src/features/chat/view.ts",
+      "baseline": {
+        "path": "src/features/chat/view.ts",
+        "bytes": 10115,
+        "sha256": "132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43"
+      },
+      "treatment": {
+        "path": "src/features/chat/view.ts",
+        "bytes": 10115,
+        "sha256": "132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43"
+      },
+      "changed": false
+    },
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "baseline": {
+        "path": "src/components/WorkspaceView.tsx",
+        "bytes": 102922,
+        "sha256": "4520e46b632d50ef6feaf78398ec08cf7e8a58697605067b707af50d3c1f8214"
+      },
+      "treatment": {
+        "path": "src/components/WorkspaceView.tsx",
+        "bytes": 102922,
+        "sha256": "4520e46b632d50ef6feaf78398ec08cf7e8a58697605067b707af50d3c1f8214"
+      },
+      "changed": false
+    },
+    {
+      "path": "src/features/chat/typedSubagentWorkspaceContext.test.ts",
+      "baseline": {
+        "path": "src/features/chat/typedSubagentWorkspaceContext.test.ts",
+        "bytes": 12346,
+        "sha256": "e6c4da93039470df8a676b0bbd0a8947b15d0803bea0468a486330f61da04049"
+      },
+      "treatment": {
+        "path": "src/features/chat/typedSubagentWorkspaceContext.test.ts",
+        "bytes": 12346,
+        "sha256": "e6c4da93039470df8a676b0bbd0a8947b15d0803bea0468a486330f61da04049"
+      },
+      "changed": false
+    },
+    {
+      "path": "src/features/chat/planResultLinkMenu.test.ts",
+      "baseline": {
+        "path": "src/features/chat/planResultLinkMenu.test.ts",
+        "bytes": 13534,
+        "sha256": "5dd2a61d2e52d5b44b9a3c7d37b1dfb41c4e51a307df1eb307659b9331b8143a"
+      },
+      "treatment": {
+        "path": "src/features/chat/planResultLinkMenu.test.ts",
+        "bytes": 13534,
+        "sha256": "5dd2a61d2e52d5b44b9a3c7d37b1dfb41c4e51a307df1eb307659b9331b8143a"
+      },
+      "changed": false
+    }
+  ],
+  "fixture": {
+    "path": "src/features/chat/explicitWorkspaceLinks.test.ts",
+    "bytes": 11808,
+    "sha256": "6dee0e6360521b4272cc0ce478258dc243fbe74c9c23c1badac311fc7a4cfb29"
+  },
+  "baseline_runtime_pins": [
+    {
+      "path": "src/features/chat/ToolRows.tsx",
+      "bytes": 57106,
+      "sha256": "ac18f431c7b2bbfac5455f2f2af50567675634a28606bc5bf733f6562bac6167"
+    },
+    {
+      "path": "src/features/chat/LinkMenu.tsx",
+      "bytes": 2345,
+      "sha256": "3967d74ecc5e5dd2d9f7fc9c5cba36ce0b614a2d4b535391701b7f246fec5cc9"
+    },
+    {
+      "path": "src/features/chat/conductorTools.ts",
+      "bytes": 31930,
+      "sha256": "775150d24fd147bba59c0da0173b67cd6e955c4dbfaec404c8378823e6e07bbe"
+    },
+    {
+      "path": "src/features/chat/toolIconData.ts",
+      "bytes": 31316,
+      "sha256": "ffe817145ad34b2934ebd204f17456b040d76f999f7758e8de1feba1388429f9"
+    },
+    {
+      "path": "src/features/chat/thinkingChip.ts",
+      "bytes": 453,
+      "sha256": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9"
+    },
+    {
+      "path": "src/features/chat/markdown.ts",
+      "bytes": 11557,
+      "sha256": "35c81f7d5094d4b4bf8c5b7dc85db4666ae9aed21a3be177471dfa69309698cb"
+    },
+    {
+      "path": "src/features/chat/mermaid.ts",
+      "bytes": 1010,
+      "sha256": "9d2e58993988bb9ecbf39b159683ee79243b127bacaa17843571e40891741bcf"
+    },
+    {
+      "path": "src/features/chat/markdownFrontmatter.ts",
+      "bytes": 1036,
+      "sha256": "651225608bdb1cd9256c241bac98fb22664c08505606bc73e2ed34f7f880891f"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2019,
+      "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 222962,
+      "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+    },
+    {
+      "path": "src/features/chat/typedSubagentWorkspaceContext.test.ts",
+      "bytes": 12346,
+      "sha256": "e6c4da93039470df8a676b0bbd0a8947b15d0803bea0468a486330f61da04049"
+    },
+    {
+      "path": "src/features/chat/planResultLinkMenu.test.ts",
+      "bytes": 13501,
+      "sha256": "5cf6a425ac7dc485bf22278af2d0b3d06870d8c717ecc965dc0d73c4db42cd75"
+    },
+    {
+      "path": "src/features/chat/explicitWorkspaceLinks.test.ts",
+      "bytes": 11808,
+      "sha256": "6dee0e6360521b4272cc0ce478258dc243fbe74c9c23c1badac311fc7a4cfb29"
+    }
+  ],
+  "treatment_runtime_pins": [
+    {
+      "path": "src/features/chat/ToolRows.tsx",
+      "bytes": 57106,
+      "sha256": "ac18f431c7b2bbfac5455f2f2af50567675634a28606bc5bf733f6562bac6167"
+    },
+    {
+      "path": "src/features/chat/LinkMenu.tsx",
+      "bytes": 2530,
+      "sha256": "38d8ed5c2724dc6337159a0cf85c22c375a0c6c10b14f556a4e28afb982d1953"
+    },
+    {
+      "path": "src/features/chat/conductorTools.ts",
+      "bytes": 31930,
+      "sha256": "775150d24fd147bba59c0da0173b67cd6e955c4dbfaec404c8378823e6e07bbe"
+    },
+    {
+      "path": "src/features/chat/toolIconData.ts",
+      "bytes": 31316,
+      "sha256": "ffe817145ad34b2934ebd204f17456b040d76f999f7758e8de1feba1388429f9"
+    },
+    {
+      "path": "src/features/chat/thinkingChip.ts",
+      "bytes": 453,
+      "sha256": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9"
+    },
+    {
+      "path": "src/features/chat/markdown.ts",
+      "bytes": 12868,
+      "sha256": "725b9e40ba90d8d4f7b3fd0ba0b739d5a2f5332f92a95f6db001a77fe5892c95"
+    },
+    {
+      "path": "src/features/chat/mermaid.ts",
+      "bytes": 1010,
+      "sha256": "9d2e58993988bb9ecbf39b159683ee79243b127bacaa17843571e40891741bcf"
+    },
+    {
+      "path": "src/features/chat/markdownFrontmatter.ts",
+      "bytes": 1036,
+      "sha256": "651225608bdb1cd9256c241bac98fb22664c08505606bc73e2ed34f7f880891f"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2019,
+      "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 222962,
+      "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+    },
+    {
+      "path": "src/features/chat/typedSubagentWorkspaceContext.test.ts",
+      "bytes": 12346,
+      "sha256": "e6c4da93039470df8a676b0bbd0a8947b15d0803bea0468a486330f61da04049"
+    },
+    {
+      "path": "src/features/chat/planResultLinkMenu.test.ts",
+      "bytes": 13501,
+      "sha256": "5cf6a425ac7dc485bf22278af2d0b3d06870d8c717ecc965dc0d73c4db42cd75"
+    },
+    {
+      "path": "src/features/chat/explicitWorkspaceLinks.test.ts",
+      "bytes": 11808,
+      "sha256": "6dee0e6360521b4272cc0ce478258dc243fbe74c9c23c1badac311fc7a4cfb29"
+    }
+  ],
+  "original_request_sha256": "33170b3692d82bedb7aaad1b5975547f1c85b8f5072b4aeb31c854f5b94cdfb1",
+  "patch": {
+    "path": "UNAPPLIED-treatment.patch",
+    "bytes": 5541,
+    "sha256": "ebf101af31d9238a9c9cb042f86cdf3f58ba2514d793ceb3f45a3130362e0702"
+  },
+  "candidate_inverse": "Exact frozen patch reversed to all 17 complete current-main baselines; materialized reverse check passed in treatment-source-receipt.json",
+  "historical_plan_fixture_witness": {
+    "runtime": {
+      "path": "src/features/chat/planResultLinkMenu.test.ts",
+      "bytes": 13501,
+      "sha256": "5cf6a425ac7dc485bf22278af2d0b3d06870d8c717ecc965dc0d73c4db42cd75"
+    },
+    "current_main": {
+      "path": "src/features/chat/planResultLinkMenu.test.ts",
+      "bytes": 13534,
+      "sha256": "5dd2a61d2e52d5b44b9a3c7d37b1dfb41c4e51a307df1eb307659b9331b8143a"
+    },
+    "meaning": "Distinct original witnesses; no normalization, replacement, or new mismatch gate."
+  },
+  "runtime_staged": false,
+  "runtime_executed": false
+}

@@ -17,13 +17,18 @@ export const LinkMenuNotify = createContext<Notify | undefined>(undefined);
 export const COPIED_LINK_ADDRESS = "Copied address to clipboard";
 export const COPY_FAILED = "Failed to copy to clipboard";
 
-export function LinkWithMenu({ href, onOpenLink, children }: { href?: string; onOpenLink?: (href: string) => void; children?: ReactNode }) {
+export function LinkWithMenu({ href, onOpenLink, children, disabled }: { href?: string; onOpenLink?: (href: string) => void; children?: ReactNode; disabled?: boolean }) {
   const notify = useContext(LinkMenuNotify);
   const [at, setAt] = useState<{ x: number; y: number } | null>(null);
   const close = useCallback(() => setAt(null), []);
+  const openMenu = (e: { preventDefault: () => void; clientX: number; clientY: number }) => {
+    if (!href) return;
+    e.preventDefault();
+    setAt({ x: e.clientX, y: e.clientY });
+  };
   return (
     <>
-      <a
+      {disabled ? <span className="md-link" onContextMenu={openMenu}>{children}</span> : <a
         href={href}
         className="md-link"
         target="_blank"
@@ -33,14 +38,10 @@ export function LinkWithMenu({ href, onOpenLink, children }: { href?: string; on
           e.preventDefault();
           onOpenLink(href);
         }}
-        onContextMenu={(e) => {
-          if (!href) return;
-          e.preventDefault();
-          setAt({ x: e.clientX, y: e.clientY });
-        }}
+        onContextMenu={openMenu}
       >
         {children}
-      </a>
+      </a>}
       {at && href && (
         <ContextMenu at={at} label="Link actions" onClose={close}>
           <MenuItem

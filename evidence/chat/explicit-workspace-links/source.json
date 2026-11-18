@@ -1,0 +1,433 @@
+{
+  "author": "Conductor Rebuild",
+  "id": "CHAT-EXPLICIT-WORKSPACE-HREF-BE7",
+  "created_utc": "2026-11-18T02:46:37.625098+00:00",
+  "checked_main": "750b8bf25b2193141eff0cfcad64776228bea076",
+  "state": "SOURCE_ONLY_COLLISION_RESPONSE_PENDING_NOT_REPRODUCED",
+  "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "parents": {
+    "renderer": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "asset": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "spans": [
+    {
+      "asset": "renderer",
+      "name": "ROo",
+      "start_byte": 8870021,
+      "end_byte": 8872955,
+      "sha256": "4b020f575c8024708d1576ab02d0154a6690a710abe1fbe5e603fd7731e69afe",
+      "text": "const ROo=$.memo(function(e){const n=ne.c(51),{block:i,idx:r,messageId:o,potentialToolResultMessages:a,isPreviewMessage:c,sessionId:u,localWorkspaceId:d,subAgentExecutions:h}=e,m=c===void 0?!1:c;let g;n[0]!==h?(g=h===void 0?[]:h,n[0]=h,n[1]=g):g=n[1];const _=g,{data:v}=us(\"not_absolutely_right\"),{currentWorkspace:x}=Fp(),{data:w}=x,E=UDt(u)[0],k=fSe(u);let I;n[2]!==i?(I=i.type===\"tool_use\"?cTr(i):void 0,n[2]=i,n[3]=I):I=n[3];const R=I;if(!Mwr({block:i,potentialToolResultMessages:a}))return null;if(i.type===\"text\"&&\"text\"in i){let D,P;if(n[4]!==i.text||n[5]!==k||n[6]!==v){const H=kKn(i.text,v);D=k?roi(H):H,P=D.trim(),n[4]=i.text,n[5]=k,n[6]=v,n[7]=D,n[8]=P}else D=n[7],P=n[8];if(!P)return null;const L=!m,B=w?.workspacePath;let F;return n[9]!==d||n[10]!==D||n[11]!==L||n[12]!==B?(F=p.jsx(yOo,{\"data-searchable\":\"true\",children:p.jsx(xS,{text:D,muted:L,localWorkspaceId:d,workspacePath:B})}),n[9]=d,n[10]=D,n[11]=L,n[12]=B,n[13]=F):F=n[13],F}if(\"type\"in i&&i.type===\"thinking\"){let D,P;if(n[14]!==i.thinking||n[15]!==v?(D=kKn(i.thinking,v),P=D.trim(),n[14]=i.thinking,n[15]=v,n[16]=D,n[17]=P):(D=n[16],P=n[17]),!P)return null;const L=`${o}-thinking-${r}`;let B;n[18]!==D?(B={thinking:D},n[18]=D,n[19]=B):B=n[19];let F;n[20]!==L||n[21]!==B?(F={id:L,name:\"Thinking\",input:B},n[20]=L,n[21]=B,n[22]=F):F=n[22];const H=F;let U;return n[23]!==d||n[24]!==u||n[25]!==H?(U=p.jsx(\"div\",{className:\"w-full\",children:p.jsx(hIt,{toolCall:H,toolResult:null,sessionId:u,localWorkspaceId:d})}),n[23]=d,n[24]=u,n[25]=H,n[26]=U):U=n[26],U}if(i.type===\"tool_use\"&&R!==void 0){const D=\"id\"in i?i.id:\"\";let P;if(n[27]!==_||n[28]!==D){let G;n[30]!==D?(G=K=>K.parentToolUseId===D,n[30]=D,n[31]=G):G=n[31],P=_.find(G),n[27]=_,n[28]=D,n[29]=P}else P=n[29];const L=P;if(L){let G;return n[32]!==d||n[33]!==u||n[34]!==L?(G=p.jsx(\"div\",{className:\"w-full\",children:p.jsx(qNo,{subAgentExecution:L,sessionId:u,localWorkspaceId:d})}),n[32]=d,n[33]=u,n[34]=L,n[35]=G):G=n[35],G}let B;n[36]!==a||n[37]!==D?(B=TOo(D,a),n[36]=a,n[37]=D,n[38]=B):B=n[38];const F=B;if(F===null&&E?.toolUseId===D)return null;const H=F?.toolResult??null,U=F?.createdAt;let z;return n[39]!==d||n[40]!==u||n[41]!==H||n[42]!==U||n[43]!==R?(z=p.jsx(\"div\",{className:\"w-full\",children:p.jsx(hIt,{toolCall:R,toolResult:H,toolResultCreatedAt:U,sessionId:u,localWorkspaceId:d})}),n[39]=d,n[40]=u,n[41]=H,n[42]=U,n[43]=R,n[44]=z):z=n[44],z}if(i.type===\"fallback\"){const D=i.from?.model,P=i.to?.model;let L;n[45]!==D||n[46]!==P?(L=D&&P?`Switched from ${aAn(D)} to ${aAn(P)} for this response.`:\"Switched models for this response.\",n[45]=D,n[46]=P,n[47]=L):L=n[47];const B=L;let F;return n[48]!==B?(F=p.jsx(\"p\",{className:\"text-sm italic text-muted-foreground\",children:B}),n[48]=B,n[49]=F):F=n[49],F}let O;return n[50]===Symbol.for(\"react.memo_cache_sentinel\")?(O=p.jsx(\"p\",{className:\"text-sm italic text-muted-foreground\",children:\"This content could not be displayed.\"}),n[50]=O):O=n[50],O});"
+    },
+    {
+      "asset": "renderer",
+      "name": "xS",
+      "start_byte": 6550612,
+      "end_byte": 6551722,
+      "sha256": "9912a5bd7f235ac2351b161575bfcc4abb2fa3c9e7392ab0666833652c364c64",
+      "text": "const xS=t=>{const e=ne.c(12);let n,i,r,o,a,c;e[0]!==t?({text:a,className:n,muted:r,selectable:o,componentOverrides:i,...c}=t,e[0]=t,e[1]=n,e[2]=i,e[3]=r,e[4]=o,e[5]=a,e[6]=c):(n=e[1],i=e[2],r=e[3],o=e[4],a=e[5],c=e[6]);const u=r===void 0?!1:r,m=`prose prose-sm prose-invert antialiased ${(o===void 0?!0:o)?\"select-text\":\"select-none\"} text-pretty prose-headings:text-balance wrap-anywhere [&_pre:has(>[data-code-surface])]:border-0 [&_pre:has(>[data-code-surface])]:p-0`,_=`${u?`${m} prose-headings:text-muted-foreground prose-p:text-muted-foreground prose-strong:text-muted-foreground prose-em:text-muted-foreground prose-blockquote:text-muted-foreground prose-code:text-muted-foreground prose-pre:text-muted-foreground prose-ol:text-muted-foreground prose-ul:text-muted-foreground prose-li:text-muted-foreground prose-table:text-muted-foreground prose-th:text-muted-foreground prose-td:text-muted-foreground prose-hr:border-muted`:m} ${n||\"\"}`;let v;return e[7]!==i||e[8]!==_||e[9]!==a||e[10]!==c?(v=p.jsx(pEi,{text:a,className:_,componentOverrides:i,...c}),e[7]=i,e[8]=_,e[9]=a,e[10]=c,e[11]=v):v=e[11],v};"
+    },
+    {
+      "asset": "renderer",
+      "name": "dHn-and-pEi",
+      "start_byte": 6548274,
+      "end_byte": 6550420,
+      "sha256": "45aa2c06317fa200294c0100129d6e5c52be1deebc5e4dd68e5f89c84a6be5cd",
+      "text": "function dHn(t){const e=ne.c(5),{text:n,className:i,components:r,useRawHtml:o}=t,a=o?MXs:LXs;let c;return e[0]!==i||e[1]!==r||e[2]!==a||e[3]!==n?(c=p.jsx(WXs,{rehypePlugins:a,remarkPlugins:BXs,className:i,urlTransform:Dzs,components:r,children:n}),e[0]=i,e[1]=r,e[2]=a,e[3]=n,e[4]=c):c=e[4],c}const qXs=t=>{if(!t||t.host===gn)return!1;if(t.state===\"initializing\")return!0;const e=t.remoteState?.status;return e!==void 0&&e!==\"running\"&&e!==\"deleted\"},pEi=$.memo(function(e){const n=ne.c(32),{text:i,className:r,localWorkspaceId:o,workspacePath:a,componentOverrides:c,markdownFilePath:u}=e;let d;n[0]!==o?(d={localWorkspaceId:o},n[0]=o,n[1]=d):d=n[1];const{data:h,isPending:m}=Ms(d,ed(PXs)),g=h?.host;let _;n[2]!==o?(_={localWorkspaceId:o},n[2]=o,n[3]=_):_=n[3];const{data:v}=Ms(_,qXs),{navigateToFile:x}=Wd(o??\"\");let w;n[4]!==o||n[5]!==x?(w=o?U=>{const{path:z,lineNumber:G}=U;return x({path:z,mode:\"edit\",lineNumber:G})}:void 0,n[4]=o,n[5]=x,n[6]=w):w=n[6];const E=w;let k;n[7]!==E||n[8]!==h||n[9]!==a?(k=U=>{const{href:z,children:G}=U;return p.jsx(cEi,{href:z,onOpenFile:E,workspacePath:a,workspace:h,children:G})},n[7]=E,n[8]=h,n[9]=a,n[10]=k):k=n[10];const I=o!==void 0&&(m||(v??!1));let R;n[11]!==o||n[12]!==u||n[13]!==I||n[14]!==g||n[15]!==a?(R=zSi({markdownFilePath:u,localWorkspaceId:o,workspacePath:a,workspaceHost:g,isWorkspaceSourcePending:I}),n[11]=o,n[12]=u,n[13]=I,n[14]=g,n[15]=a,n[16]=R):R=n[16];let O;n[17]!==c||n[18]!==k||n[19]!==R?(O={...VXs,a:k,img:R,...c},n[17]=c,n[18]=k,n[19]=R,n[20]=O):O=n[20];const D=O,P=r??\"\";let L;n[21]!==i?(L=[i],n[21]=i,n[22]=L):L=n[22];let B,F;n[23]!==D||n[24]!==P||n[25]!==i?(F=()=>p.jsx(LJ,{context:\"Failed to render markdown message without raw HTML\",resetKeys:[i],fallbackRender:()=>p.jsx(GXs,{text:i,className:P}),children:p.jsx(dHn,{text:i,className:P,components:D,useRawHtml:!1})}),B=p.jsx(dHn,{text:i,className:P,components:D,useRawHtml:!0}),n[23]=D,n[24]=P,n[25]=i,n[26]=B,n[27]=F):(B=n[26],F=n[27]);let H;return n[28]!==B||n[29]!==L||n[30]!==F?(H=p.jsx(LJ,{context:\"Failed to render markdown message\",resetKeys:L,fallbackRender:F,children:B}),n[28]=B,n[29]=L,n[30]=F,n[31]=H):H=n[31],H});"
+    },
+    {
+      "asset": "renderer",
+      "name": "cEi",
+      "start_byte": 6541795,
+      "end_byte": 6544749,
+      "sha256": "e717f2df6de24cb5869f3bb7f9a89b457d75a87a26a630e90f2c7c479eca63cf",
+      "text": "function cEi(t){const e=ne.c(61),{href:n,children:i,onOpenFile:r,workspacePath:o,workspace:a}=t;if(!n){let w;return e[0]!==i?(w=p.jsx(p.Fragment,{children:i}),e[0]=i,e[1]=w):w=e[1],w}let c,u;e[2]!==n||e[3]!==r||e[4]!==o?(c=r&&o?RX(o,n):void 0,u=CXs({href:n,resolvedHref:c,workspacePath:o}),e[2]=n,e[3]=r,e[4]=o,e[5]=c,e[6]=u):(c=e[5],u=e[6]);const d=u;let h;e[7]!==c||e[8]!==a||e[9]!==o?(h=a!==void 0&&c!==void 0&&o!==void 0?{workspace:a,pathToOpen:c.absolutePath,boundaryPath:o}:void 0,e[7]=c,e[8]=a,e[9]=o,e[10]=h):h=e[10];const m=h;let g;e[11]!==n?(g=mce(n),e[11]=n,e[12]=g):g=e[12];const _=g;if(_?.type===\"onboarding_add_repository\"){let w;e[13]!==i?(w=p.jsx(\"button\",{type:\"button\",className:\"border-0 bg-transparent p-0 text-left font-[inherit] cursor-pointer hover:underline text-link-foreground transition-colors\",onClick:DXs,children:i}),e[13]=i,e[14]=w):w=e[14];let E;return e[15]!==d||e[16]!==w?(E=p.jsx(EQ,{copyAddress:d,children:w}),e[15]=d,e[16]=w,e[17]=E):E=e[17],E}if(_?.type===\"open-browser\"||_?.type===\"open-settings\"||_?.type===\"open-automation\"){let w;e[18]!==n?(w=()=>{eV(n)},e[18]=n,e[19]=w):w=e[19];let E;e[20]!==i||e[21]!==w?(E=p.jsx(\"button\",{type:\"button\",className:\"border-0 bg-transparent p-0 text-left font-[inherit] cursor-pointer hover:underline text-link-foreground transition-colors\",onClick:w,children:i}),e[20]=i,e[21]=w,e[22]=E):E=e[22];let k;return e[23]!==d||e[24]!==E?(k=p.jsx(EQ,{copyAddress:d,children:E}),e[23]=d,e[24]=E,e[25]=k):k=e[25],k}if(_?.type===\"open-workspace\"){let w;e[26]!==n?(w=()=>eV(n),e[26]=n,e[27]=w):w=e[27];let E;e[28]!==i||e[29]!==_.sessionId||e[30]!==_.workspaceId||e[31]!==w?(E=p.jsx(m9e,{workspaceId:_.workspaceId,sessionId:_.sessionId,onClick:w,children:i}),e[28]=i,e[29]=_.sessionId,e[30]=_.workspaceId,e[31]=w,e[32]=E):E=e[32];let k;return e[33]!==d||e[34]!==E?(k=p.jsx(EQ,{copyAddress:d,children:E}),e[33]=d,e[34]=E,e[35]=k):k=e[35],k}if(n.startsWith(\"#\")){let w;e[36]!==i||e[37]!==n?(w=p.jsx(OXs,{href:n,children:i}),e[36]=i,e[37]=n,e[38]=w):w=e[38];let E;return e[39]!==d||e[40]!==w?(E=p.jsx(EQ,{copyAddress:d,children:w}),e[39]=d,e[40]=w,e[41]=E):E=e[41],E}if(r&&c){let w;e[42]!==i||e[43]!==r||e[44]!==c?(w=p.jsx(IXs,{onOpenFile:r,resolvedHref:c,children:i}),e[42]=i,e[43]=r,e[44]=c,e[45]=w):w=e[45];let E;return e[46]!==d||e[47]!==m||e[48]!==w?(E=p.jsx(EQ,{copyAddress:d,copyLabel:\"Copy file path\",copyToastLabel:\"file path\",openInFinderTarget:m,children:w}),e[46]=d,e[47]=m,e[48]=w,e[49]=E):E=e[49],E}if(EXs(n)){let w;e[50]!==i?(w=p.jsx(\"span\",{className:\"text-link-foreground\",children:i}),e[50]=i,e[51]=w):w=e[51];let E;return e[52]!==d||e[53]!==w?(E=p.jsx(EQ,{copyAddress:d,copyLabel:\"Copy file path\",copyToastLabel:\"file path\",children:w}),e[52]=d,e[53]=w,e[54]=E):E=e[54],E}let v;e[55]!==i||e[56]!==n?(v=p.jsx(z5e,{url:n,children:i}),e[55]=i,e[56]=n,e[57]=v):v=e[57];let x;return e[58]!==d||e[59]!==v?(x=p.jsx(EQ,{copyAddress:d,children:v}),e[58]=d,e[59]=v,e[60]=x):x=e[60],x}"
+    },
+    {
+      "asset": "renderer",
+      "name": "inline-file-button",
+      "start_byte": 6540107,
+      "end_byte": 6541017,
+      "sha256": "0167fb99b5d88ec5dd548987668880f434345f3b8c776933d325582aae0b7fd3",
+      "text": "function IXs(t){const e=ne.c(12),{children:n,onOpenFile:i,resolvedHref:r}=t;let o;e[0]!==n||e[1]!==r.lineNumber?(o=AXs(n,r.lineNumber),e[0]=n,e[1]=r.lineNumber,e[2]=o):o=e[2];const a=o;let c;e[3]!==i||e[4]!==r.lineNumber||e[5]!==r.relativePath?(c=()=>{i({path:r.relativePath,lineNumber:r.lineNumber})},e[3]=i,e[4]=r.lineNumber,e[5]=r.relativePath,e[6]=c):c=e[6];const u=c,d=r.preservesInlineCode?\"border-0 bg-transparent p-0 text-left font-[inherit] cursor-pointer select-text hover:underline decoration-link-foreground [&_code]:text-link-foreground transition-colors\":\"border-0 bg-transparent p-0 text-left font-[inherit] cursor-pointer select-text hover:underline text-link-foreground transition-colors\",h=`Open ${r.absolutePath}`;let m;return e[7]!==a||e[8]!==u||e[9]!==d||e[10]!==h?(m=p.jsx(\"button\",{type:\"button\",className:d,onClick:u,title:h,children:a}),e[7]=a,e[8]=u,e[9]=d,e[10]=h,e[11]=m):m=e[11],m}"
+    },
+    {
+      "asset": "index",
+      "name": "resolver-helpers-and-WGt",
+      "start_byte": 822816,
+      "end_byte": 824586,
+      "sha256": "847d5fe390f1dec291a4ea864806b03ddfd251fd7fa05b10ef80054211280291",
+      "text": "function aKe(t){const e=t.match(/^(.+?):(\\d+)(?::\\d+)?$/);return e?{path:e[1],lineNumber:Number(e[2])}:{path:t}}const cKe=/^[a-zA-Z][a-zA-Z0-9+.-]*:/;function lKe(t){const e=t.search(/[?#]/);return e===-1?t:t.slice(0,e)}function _ne(t){const e=lKe(t);if(e.startsWith(\"conductor-file-code://\"))return{path:yS(e.slice(22)),preservesInlineCode:!0};if(e.startsWith(\"conductor-file://\"))return{path:yS(e.slice(17)),preservesInlineCode:!1};if(e.startsWith(\"file://\"))return{path:yS(e.slice(7)),preservesInlineCode:!1};if(!(e.startsWith(\"#\")||e.startsWith(\"//\")))return{path:yS(e),preservesInlineCode:!1}}function yS(t){try{return decodeURIComponent(t)}catch{return t}}function wne(t,e){const s=Qt.resolve(t),n=Qt.resolve(e);return s===n||s.startsWith(`${n}${Qt.sep}`)}function Ud(t,e){const s=Qt.resolve(t),n=Qt.isAbsolute(e)?Qt.resolve(e):Qt.resolve(t,e);if(wne(n,s))return{absolutePath:n,relativePath:Qt.relative(s,n)}}function uKe(t,e){return Ud(t,e)?.absolutePath}function Sne(t,e){return Ud(t,e)?.relativePath}function bne(t,e){const s=Sne(t,e);if(s===void 0)throw new Error(`File path \"${e}\" resolves outside the workspace`);return s}function dKe({workspacePath:t,attachmentPath:e}){const s=Sne(t,e);if(s)return s;const n=e.indexOf(\".context/\");return n===-1?e:e.slice(n)}function $Gt(t,e){return e.startsWith(\"/\")?e:t?uKe(t,e):void 0}const hKe=/^(?:\\/private)?\\/tmp\\/claude-\\d+\\//;function BGt(t){const e=_ne(t);if(!e||!Qt.isAbsolute(e.path))return;const s=Qt.resolve(e.path);return hKe.test(s)?s:void 0}function WGt(t,e){const s=_ne(e);if(!s)return;const n=aKe(s.path);if(cKe.test(n.path))return;const r=Ud(t,n.path);if(!(r===void 0||r.relativePath.length===0))return{...r,preservesInlineCode:s.preservesInlineCode,...n.lineNumber!==void 0&&{lineNumber:n.lineNumber}}}"
+    },
+    {
+      "asset": "index",
+      "name": "resolver-export",
+      "start_byte": 3483304,
+      "end_byte": 3483313,
+      "sha256": "95b2272fcf942bedd0434b2f3d999f229cce2cbd76f42b3eb1f68501a98f6c39",
+      "text": "WGt as fA"
+    },
+    {
+      "asset": "renderer",
+      "name": "resolver-import",
+      "start_byte": 56911,
+      "end_byte": 56919,
+      "sha256": "6ffceabd6c89ee9a984a46c22d3744c1435d82353cc09d5e6e702d9812abddb2",
+      "text": "fA as RX"
+    },
+    {
+      "asset": "renderer",
+      "name": "EXs",
+      "start_byte": 6537789,
+      "end_byte": 6537945,
+      "sha256": "469b1041444b32ab77ba79b69a0554fd788249583d12f42860f184e3c6f61a99",
+      "text": "function EXs(t){return t.startsWith(\"conductor-file://\")||t.startsWith(\"conductor-file-code://\")||!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(t)&&!t.startsWith(\"//\")}"
+    },
+    {
+      "asset": "renderer",
+      "name": "ppo",
+      "start_byte": 7847626,
+      "end_byte": 7848464,
+      "sha256": "b22037a3e13207ece6b4495c10cdf600a79588e27961b2308314e0e9e8b0fec2",
+      "text": "function ppo(t){const e=ne.c(13),{toolCall:n}=t;let i;e[0]!==n.input?.thinking?(i=n.input?.thinking?.trim()||\"\",e[0]=n.input?.thinking,e[1]=i):i=e[1];const r=i,{data:o}=us(\"garry_mode\");let a,c;e[2]===Symbol.for(\"react.memo_cache_sentinel\")?(a=p.jsx(Ju,{name:\"Thinking\"}),c=p.jsx(\"span\",{children:\"Thinking\"}),e[2]=a,e[3]=c):(a=e[2],c=e[3]);let u;e[4]!==r?(u=p.jsx(\"span\",{className:\"block truncate text-xs font-sans text-muted-foreground bg-muted px-1 py-0.5 rounded-md\",children:r}),e[4]=r,e[5]=u):u=e[5];const d=!o;let h;e[6]!==r?(h=p.jsx(xS,{text:r,muted:!0}),e[6]=r,e[7]=h):h=e[7];let m;return e[8]!==u||e[9]!==d||e[10]!==h||e[11]!==n.id?(m=p.jsx(Mu,{icon:a,leftContent:c,contentAlignment:\"center\",rightContent:u,defaultCollapsed:d,persistKey:n.id,contentClassName:\"\",children:h}),e[8]=u,e[9]=d,e[10]=h,e[11]=n.id,e[12]=m):m=e[12],m}"
+    }
+  ],
+  "main_files": {
+    "src/components/WorkspaceView.tsx": {
+      "bytes": 102922,
+      "sha256": "4520e46b632d50ef6feaf78398ec08cf7e8a58697605067b707af50d3c1f8214"
+    },
+    "src/features/chat/Transcript.tsx": {
+      "bytes": 21746,
+      "sha256": "4ba9fe4df5a852934890e19ac7de61f14fe8cdcbcf3652e60bbd18e925b271b4"
+    },
+    "src/features/chat/ToolRows.tsx": {
+      "bytes": 57106,
+      "sha256": "ac18f431c7b2bbfac5455f2f2af50567675634a28606bc5bf733f6562bac6167"
+    },
+    "src/features/chat/markdown.ts": {
+      "bytes": 11557,
+      "sha256": "35c81f7d5094d4b4bf8c5b7dc85db4666ae9aed21a3be177471dfa69309698cb"
+    },
+    "src/features/chat/LinkMenu.tsx": {
+      "bytes": 2345,
+      "sha256": "3967d74ecc5e5dd2d9f7fc9c5cba36ce0b614a2d4b535391701b7f246fec5cc9"
+    },
+    "src/features/chat/markdown.test.ts": {
+      "bytes": 17757,
+      "sha256": "c9478744dddf22401ae89f4c1e3b85d25fb4ac80c5c557ebe035b9ee4831028a"
+    },
+    "src/features/chat/typedSubagentWorkspaceContext.test.ts": {
+      "bytes": 12346,
+      "sha256": "e6c4da93039470df8a676b0bbd0a8947b15d0803bea0468a486330f61da04049"
+    }
+  },
+  "checks": [
+    {
+      "name": "renderer whole asset identity",
+      "pass": true
+    },
+    {
+      "name": "index whole asset identity",
+      "pass": true
+    },
+    {
+      "name": "ROo original-byte readback",
+      "pass": true
+    },
+    {
+      "name": "ROo retained SHA",
+      "pass": true
+    },
+    {
+      "name": "xS original-byte readback",
+      "pass": true
+    },
+    {
+      "name": "xS retained SHA",
+      "pass": true
+    },
+    {
+      "name": "dHn-and-pEi original-byte readback",
+      "pass": true
+    },
+    {
+      "name": "dHn-and-pEi retained SHA",
+      "pass": true
+    },
+    {
+      "name": "cEi original-byte readback",
+      "pass": true
+    },
+    {
+      "name": "cEi retained SHA",
+      "pass": true
+    },
+    {
+      "name": "inline-file-button original-byte readback",
+      "pass": true
+    },
+    {
+      "name": "inline-file-button retained SHA",
+      "pass": true
+    },
+    {
+      "name": "resolver-helpers-and-WGt original-byte readback",
+      "pass": true
+    },
+    {
+      "name": "resolver-helpers-and-WGt retained SHA",
+      "pass": true
+    },
+    {
+      "name": "resolver-export original-byte readback",
+      "pass": true
+    },
+    {
+      "name": "resolver-export retained SHA",
+      "pass": true
+    },
+    {
+      "name": "resolver-import original-byte readback",
+      "pass": true
+    },
+    {
+      "name": "EXs original-byte readback",
+      "pass": true
+    },
+    {
+      "name": "ppo original-byte readback",
+      "pass": true
+    },
+    {
+      "name": "reference ROo: children:p.jsx(xS,{text:D,muted:L,localWorkspaceId:d,workspacePath:B})",
+      "pass": true
+    },
+    {
+      "name": "reference xS: p.jsx(pEi,{text:a,className:_,componentOverrides:i,...c})",
+      "pass": true
+    },
+    {
+      "name": "reference dHn-and-pEi: components:r,children:n",
+      "pass": true
+    },
+    {
+      "name": "reference dHn-and-pEi: workspacePath:a,componentOverrides:c",
+      "pass": true
+    },
+    {
+      "name": "reference dHn-and-pEi: {navigateToFile:x}=Wd(o??\"\")",
+      "pass": true
+    },
+    {
+      "name": "reference dHn-and-pEi: return x({path:z,mode:\"edit\",lineNumber:G})",
+      "pass": true
+    },
+    {
+      "name": "reference dHn-and-pEi: p.jsx(cEi,{href:z,onOpenFile:E,workspacePath:a",
+      "pass": true
+    },
+    {
+      "name": "reference cEi: c=r&&o?RX(o,n):void 0",
+      "pass": true
+    },
+    {
+      "name": "reference cEi: if(r&&c)",
+      "pass": true
+    },
+    {
+      "name": "reference cEi: p.jsx(IXs,{onOpenFile:r,resolvedHref:c,children:i})",
+      "pass": true
+    },
+    {
+      "name": "reference cEi: if(EXs(n))",
+      "pass": true
+    },
+    {
+      "name": "reference cEi: p.jsx(z5e,{url:n,children:i})",
+      "pass": true
+    },
+    {
+      "name": "reference inline-file-button: i({path:r.relativePath,lineNumber:r.lineNumber})",
+      "pass": true
+    },
+    {
+      "name": "reference resolver-export: WGt as fA",
+      "pass": true
+    },
+    {
+      "name": "reference resolver-import: fA as RX",
+      "pass": true
+    },
+    {
+      "name": "reference resolver-helpers-and-WGt: function WGt(t,e){const s=_ne(e)",
+      "pass": true
+    },
+    {
+      "name": "reference resolver-helpers-and-WGt: if(cKe.test(n.path))return",
+      "pass": true
+    },
+    {
+      "name": "reference resolver-helpers-and-WGt: const r=Ud(t,n.path)",
+      "pass": true
+    },
+    {
+      "name": "reference resolver-helpers-and-WGt: r.relativePath.length===0",
+      "pass": true
+    },
+    {
+      "name": "reference resolver-helpers-and-WGt: if(!(e.startsWith(\"#\")||e.startsWith(\"//\")))",
+      "pass": true
+    },
+    {
+      "name": "reference resolver-helpers-and-WGt: function yS(t){try{return decodeURIComponent(t)}catch{return t}}",
+      "pass": true
+    },
+    {
+      "name": "reference resolver-helpers-and-WGt: function lKe(t){const e=t.search(/[?#]/)",
+      "pass": true
+    },
+    {
+      "name": "reference ppo: p.jsx(xS,{text:r,muted:!0})",
+      "pass": true
+    },
+    {
+      "name": "Thinking has no workspace context in reference",
+      "pass": true
+    },
+    {
+      "name": "src/components/WorkspaceView.tsx checkout matches checked main",
+      "pass": true
+    },
+    {
+      "name": "src/features/chat/Transcript.tsx checkout matches checked main",
+      "pass": true
+    },
+    {
+      "name": "src/features/chat/ToolRows.tsx checkout matches checked main",
+      "pass": true
+    },
+    {
+      "name": "src/features/chat/markdown.ts checkout matches checked main",
+      "pass": true
+    },
+    {
+      "name": "src/features/chat/LinkMenu.tsx checkout matches checked main",
+      "pass": true
+    },
+    {
+      "name": "src/features/chat/markdown.test.ts checkout matches checked main",
+      "pass": true
+    },
+    {
+      "name": "src/features/chat/typedSubagentWorkspaceContext.test.ts checkout matches checked main",
+      "pass": true
+    },
+    {
+      "name": "main src/components/WorkspaceView.tsx: const cwd = workspace.path ?? repo.path;",
+      "pass": true
+    },
+    {
+      "name": "main src/components/WorkspaceView.tsx: workspacePath={cwd}",
+      "pass": true
+    },
+    {
+      "name": "main src/components/WorkspaceView.tsx: onOpenFile={openFile ? (path, target) => openFile(",
+      "pass": true
+    },
+    {
+      "name": "main src/features/chat/Transcript.tsx: case \"text\": {",
+      "pass": true
+    },
+    {
+      "name": "main src/features/chat/Transcript.tsx: onOpenLink={(href) => void openUrl(href)}",
+      "pass": true
+    },
+    {
+      "name": "main src/features/chat/Transcript.tsx: workspacePath={ctx.workspacePath}",
+      "pass": true
+    },
+    {
+      "name": "main src/features/chat/Transcript.tsx: onOpenFile={ctx.onOpenFile}",
+      "pass": true
+    },
+    {
+      "name": "main src/features/chat/Transcript.tsx: Link={LinkWithMenu}",
+      "pass": true
+    },
+    {
+      "name": "main src/features/chat/markdown.ts: a: ({ href, children, node }) => {",
+      "pass": true
+    },
+    {
+      "name": "main src/features/chat/markdown.ts: const path = node?.properties[\"data-plain-file-path\"];",
+      "pass": true
+    },
+    {
+      "name": "main src/features/chat/markdown.ts: return Link\n        ? h(Link, { href, onOpenLink, children })",
+      "pass": true
+    },
+    {
+      "name": "main src/features/chat/LinkMenu.tsx: if (!href || !onOpenLink) return;",
+      "pass": true
+    },
+    {
+      "name": "main src/features/chat/LinkMenu.tsx: onOpenLink(href);",
+      "pass": true
+    },
+    {
+      "name": "explicit href branch lacks workspace resolution",
+      "pass": true
+    },
+    {
+      "name": "no tracked edits",
+      "pass": true
+    }
+  ],
+  "finding": "The normal assistant Markdown renderer receives workspacePath and onOpenFile, but its explicit href branch bypasses workspace resolution and supplies the href to LinkWithMenu/external open. Retained shipped source resolves accepted explicit hrefs through WGt to IXs and the workspace file navigation callback.",
+  "example": {
+    "text": "[source](src/a.ts)",
+    "workspacePath": "/repo",
+    "predicted_current": "external opener receives src/a.ts",
+    "reference_source_contract": "workspace file-navigation callback receives src/a.ts (OpenConductor existing callback uses /repo/src/a.ts)"
+  },
+  "proposed_boundary": [
+    "Explicit Markdown anchor navigation in markdown.ts only, a new focused regression, and focused evidence.",
+    "Preserve existing callback API and lexical containment; reject outside/root/protocol-relative/URL-scheme targets. Do not add native APIs or change provider/reducer/WorkspaceView/ToolRows.",
+    "The reference also handles single-name files, decode/query/fragment/line suffixes and synthetic file schemes. Scope and supported protocol behavior must be explicit before freezing a fixture. No guessed uri behavior.",
+    "File-menu/Finder parity is not proved or implicitly included. Do not silently intercept an existing file context-menu contract; examine LinkMenu before implementation."
+  ],
+  "rejected_leads": [
+    {
+      "name": "Thinking workspace props",
+      "reason": "Reference ppo has no workspace identity/path props, matching both current Thinking render paths; no divergence established."
+    },
+    {
+      "name": "No-callback file buttons",
+      "reason": "Source API-boundary divergence retained, but normal app no-callback reachability not established; not selected or leased."
+    }
+  ],
+  "not_run": [
+    "Frozen behavioral RED",
+    "Product patch",
+    "Node/transpile/typecheck/build",
+    "Browser",
+    "Native",
+    "Provider",
+    "New REA operation",
+    "New runtime reservation",
+    "Package/install containment"
+  ],
+  "limits": [
+    "Retained real-app extraction, not a new semantic/native observation; prior renderer semantic pass exhausted heap.",
+    "All outcomes here are byte/source checks; reference JavaScript and OpenConductor product code were not executed.",
+    "Ownership collision response and serialized runtime admission remain pending. Existing dependencies/evidence are unchanged."
+  ]
+}
