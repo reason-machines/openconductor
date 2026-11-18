@@ -1,0 +1,34 @@
+{
+  "candidate": "COMPOSER-QUEUE-EDIT-BUTTON-LOCK-135",
+  "state": "INERT_ORACLE_FIRST_DRAFT_NOT_EXECUTED_NOT_QUEUED",
+  "owner": "13576d11-76fb-4842-aa9b-c398f9ca26f3",
+  "checked_main": "8f0f8707a529e17937cd8e9447b8b769b6bc5e21",
+  "reference_policy": "GTo global editingMessageId absent -> canStartEdit -> TAo -> iAo L -> conditional QTo Edit. During another queued edit, ordinary-row Edit is omitted, not merely disabled. QTo optional disabled reaches an intrinsic button through retained-parent-bound helpers outside analyzed REA slice.",
+  "setup": "Mount complete actual Composer, seed with real submit/turnStarted, enter A through actual enabled rendered Edit callback and real actionStep reducer, change actual editor draft. Never inject editingId, stub QueueRow, or invoke absent/disabled callbacks.",
+  "cases": [
+    {"id":"target/B Edit omitted after ordinary Edit A", "class":"target", "assertion":"B has zero rendered ordinary Edit buttons; A and unsaved draft persist"},
+    {"id":"target/B Edit omitted after editor blur and focus B", "class":"target", "assertion":"Real editor blur prop and actual focusable-row port do not end A; B has zero Edit buttons"},
+    {"id":"target/C Edit omitted after editor blur and focus C", "class":"target", "assertion":"Same global visibility lock for a third existing row without reordering"},
+    {"id":"target/blank A still omits B Edit", "class":"target", "assertion":"Blank Save remains disabled and Cancel remains available; B has zero Edit buttons while A remains active"},
+    {"id":"control/unlocked multirow Edit enters B", "class":"control", "assertion":"Enabled ordinary B button dispatches actual edit q2 and preserves queue items"},
+    {"id":"control/unlocked singleton Edit remains available", "class":"control", "assertion":"Singleton drag restriction does not hide ordinary Edit"},
+    {"id":"control/Cancel restores ordinary Edit eligibility", "class":"control", "assertion":"Cancel A restores B Edit, does not save draft, no effects"},
+    {"id":"control/Save restores ordinary Edit eligibility", "class":"control", "assertion":"Save A persists draft, restores B Edit, no steer effect"},
+    {"id":"control/Save and steer preserves effect and eligibility", "class":"control", "assertion":"Save-and-steer A removes A, emits original effect, B Edit remains enabled"},
+    {"id":"control/blank Save and Cancel policy preserved", "class":"control", "assertion":"Blank Save and Save-and-steer stay disabled; Cancel works without invoking disabled callbacks"},
+    {"id":"control/unlocked drag singleton and multirow preserved", "class":"control", "assertion":"Singleton draggable false, multirow true; only rendered props are exercised"},
+    {"id":"control/active edit drag policy preserved", "class":"control", "assertion":"B and C draggable false while A editing; no drag callback or physical gesture claim"}
+  ],
+  "smallest_future_treatment_plan": [
+    "After keyboard RED26 delivery and fresh-main rebind, add a QueueRow ordinary Edit eligibility prop computed from queue.editingId === null in QueuePanel.",
+    "Conditionally render only the ordinary nonediting-row Edit action; preserve its existing callback for eligible rows. Do not substitute disabled-only UI for source omission.",
+    "No row-keyboard treatment here; preserve the separately delivered keyboard handler fix. No changes to edited-row Save/Cancel, blank Save, row tabIndex, dragging, removal, order, shared editor or WorkspaceView.",
+    "Future separately admitted original-fixture RED, smallest treatment, identical GREEN and relevant permanent/adjacent regressions before ready main PR and exact-head CI merge. No runtime request is created by this plan."
+  ],
+  "limits": [
+    "Draft test source is not parsed/transpiled/executed. Expected targets are predictions only; no actual RED or GREEN.",
+    "Renderer adapter supplies editor and DOM focus ports; no actual browser hover, CSS visibility, physical Tab/click/drag, native app or packaged identity proof.",
+    "tt and helper forwarding bodies are byte-bound to the retained full renderer, outside the REA-analyzed queue slice; no fresh graph or live Conductor observation.",
+    "Keyboard RED26 remains the sole prioritized queued runtime request. No pointer runtime request, product changes, commits, new builder or native dispatch."
+  ]
+}

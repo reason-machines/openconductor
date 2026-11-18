@@ -1,0 +1,1 @@
+function _Dr(t,e,n,i){if(e){if(typeof e=="function")return e(n,i);const r=r_(n,e.props);r.ref=n.ref;let o=e;return o?.$$typeof===bDr&&(o=$.Children.toArray(e)[0]),$.cloneElement(o,r)}if(t&&typeof t=="string")return vDr(t,n);throw new Error(jl(8))}

@@ -1,0 +1,1 @@
+function fDr(t){const e={...t};for(const n in e){const i=e[n];rli(n,i)&&(e[n]=oli(i))}return e}

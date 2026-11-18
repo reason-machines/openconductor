@@ -1,0 +1,167 @@
+{
+  "checked_utc": "2026-11-18T03:34:36.000398+00:00",
+  "fresh_default_branch": "daee1fc90825c1e7673f711ad1d8a5a5401b1959",
+  "candidate_commit": "0dfeb432828c32874740523b00fb40081f77c42f",
+  "product_sha256": "69e81ce24dad67fa052e28889a6cba0135617dac0cbc6faa863830cfd8a557cc",
+  "fixture_sha256": "ea01b50e82b91bc1052472c8b476fcf170049fe09da2aca38999226d836ee4fc",
+  "oracle_sha256": "714a8f23ea7733ec83f17633d9e0f99779d15663811335cf5fc1dc3e307735c7",
+  "permanent_port_sha256": "076547d732c62e0cdcc5cabbc268ac48c7a1aae2fb0c0ba84c1169437ae6f7ea",
+  "same_12_case_names": [
+    "target/B Edit omitted after ordinary Edit A",
+    "target/B Edit omitted after editor blur and focus B",
+    "target/C Edit omitted after editor blur and focus C",
+    "target/blank A still omits B Edit",
+    "control/unlocked multirow Edit enters B",
+    "control/unlocked singleton Edit remains available",
+    "control/Cancel restores ordinary Edit eligibility",
+    "control/Save restores ordinary Edit eligibility",
+    "control/Save and steer preserves effect and eligibility",
+    "control/blank Save and Cancel policy preserved",
+    "control/unlocked drag singleton and multirow preserved",
+    "control/active edit drag policy preserved"
+  ],
+  "inverse_exactly_restores_baseline": true,
+  "permanent_executable_content_after_import_rebinding_equal": true,
+  "frozen_original_fixture_oracle_unchanged": true,
+  "retained_reference_spans_verified": 23,
+  "fresh_default_whole_file_baseline_bindings": [
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "sha256": "02e3bcf5b74a06f0d9267f2dc47676cd7ddb12561626043275b82cb2f33b1982",
+      "bytes": 34929
+    },
+    {
+      "path": "src/features/chat/composerQueueFocus.test.ts",
+      "sha256": "399ade20e426496ab14a385f0439ed97aaad13504c97bd0839e4fbea547892c6",
+      "bytes": 17746
+    },
+    {
+      "path": "src/features/chat/queue.ts",
+      "sha256": "f08c481457eaf0389259d148c62c1c592cfc95612dc6b7576cb4c7c415e1e1a1",
+      "bytes": 12996
+    },
+    {
+      "path": "src/features/chat/queue.test.ts",
+      "sha256": "11868cc6ae58421f1e58b284a60909fab2bcaf4d1b7de2f6e623cf6c32acd552",
+      "bytes": 10973
+    },
+    {
+      "path": "src/features/chat/userContent.ts",
+      "sha256": "5bc4da24e8d193d68b85fd02f25c890ed6a2a44a3096ae51e008139900c3488c",
+      "bytes": 5105
+    },
+    {
+      "path": "src/features/chat/composerDocument.ts",
+      "sha256": "9228c3b05e08c41faffef50363e928d80636eda949003dbac34d197971d1a676",
+      "bytes": 2502
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "sha256": "b9df8f72c86c6c4e1cc05cade6b4719cd3abf26e557e690ffd574cbe2231ecb5",
+      "bytes": 28914
+    },
+    {
+      "path": "src/keybindings/shortcut.ts",
+      "sha256": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8",
+      "bytes": 5791
+    },
+    {
+      "path": "src/keybindings/overrides.ts",
+      "sha256": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193",
+      "bytes": 8207
+    },
+    {
+      "path": "src/features/chat/queueKeys.ts",
+      "sha256": "5e0ddfb22b9538056868dce47113fce9445d781b5fa23fe49b96cc2b1492c193",
+      "bytes": 2947
+    },
+    {
+      "path": "src/features/chat/slashCommands.ts",
+      "sha256": "f505f1a42b18162b37cc9adf46e2623bf47e61c77fdb77adb27a469cdb464c88",
+      "bytes": 9842
+    },
+    {
+      "path": "src/features/chat/composerSlashRange.ts",
+      "sha256": "7976d311ae93a640775995eaa184da9a754164ef483ddff9dee6e8e46cfb2902",
+      "bytes": 629
+    },
+    {
+      "path": "src/features/chat/fileMentions.ts",
+      "sha256": "82bcee9b4116b894fb5eb6ae2841c5b60f1f703db2907cb7347ae31bd5e79ca5",
+      "bytes": 2543
+    },
+    {
+      "path": "src/features/chat/types.ts",
+      "sha256": "28b0b229e3877338473a0232e678c479e6da4dfd3b59807e53b940e7469452d8",
+      "bytes": 3605
+    },
+    {
+      "path": "src/keybindings/types.ts",
+      "sha256": "20556563af7ebab6179ca9d0bf4912700fb967a4571f22d2baffaa98087433f7",
+      "bytes": 2072
+    },
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "sha256": "7e8f7f7426164d2e707d9507a2af87336607b88db891fb864c55f28b8ab34fdf",
+      "bytes": 10216
+    },
+    {
+      "path": "src/features/chat/composerQueueEditReturnFocus.test.ts",
+      "sha256": "cd27a14b8206dbd3fce6ee28e135bd312285270ef040f3fe1456eba23d8b23a8",
+      "bytes": 20921
+    },
+    {
+      "path": "src/features/chat/composerQueueEditEmptySave.test.ts",
+      "sha256": "8739fb3f4ebbbdf4282b740ccce38f5a3572b213669b23a96016ec19535cb4e3",
+      "bytes": 17423
+    },
+    {
+      "path": "src/features/chat/composerQueueCollapseShrink.test.ts",
+      "sha256": "948310bd9247754387556adc910acec1cc3174c26bdff38b2dff3b65e0d77cad",
+      "bytes": 16047
+    },
+    {
+      "path": "src/features/chat/queueKeys.test.ts",
+      "sha256": "98503081aa4b4996ad27362bb558624208c076319135d404fc5f4f4e3855fce9",
+      "bytes": 2754
+    },
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "sha256": "4520e46b632d50ef6feaf78398ec08cf7e8a58697605067b707af50d3c1f8214",
+      "bytes": 102922
+    },
+    {
+      "path": "src/features/chat/chatRuntime.ts",
+      "sha256": "ce7c3cb29940ccfa4fedce7e3b49d2c835db6644c9c40330bebbbf6111723816",
+      "bytes": 33403
+    },
+    {
+      "path": "src/features/chat/composerQueueEditKeyboardLock.test.ts",
+      "sha256": "add714c2d267afefc02b3b88ef8a4fb3e0a110021dd3082100012781c3b74c68",
+      "bytes": 20193
+    }
+  ],
+  "red": {
+    "passed": 8,
+    "failed": 4,
+    "skipped": 0,
+    "reachability": "State assertions after four failed visibility assertions were not reached."
+  },
+  "green": {
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "reachability": "All four visibility targets and their following retained-state assertions reached and passed."
+  },
+  "runtime_this_delivery_turn": "None. These are static byte/source/evidence checks, not reruns.",
+  "not_run_this_turn": [
+    "permanent port",
+    "adjacent/full frontend tests",
+    "typecheck",
+    "build",
+    "browser",
+    "native",
+    "package",
+    "provider"
+  ]
+}

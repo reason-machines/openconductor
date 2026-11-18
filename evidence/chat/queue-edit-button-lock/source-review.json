@@ -1,0 +1,124 @@
+{
+  "candidate": "COMPOSER-QUEUE-EDIT-BUTTON-LOCK-135",
+  "state": "SOURCE_ONLY_PROPOSAL_NOT_RUNTIME_REPRODUCED",
+  "source_lease_message": "81f88950-3f44-4947-b3fa-c6c4fda49b47",
+  "checked_utc": "2026-11-18T02:25:27.774932+00:00",
+  "fresh_main": "047fca64ed7857fe292bace0c4fa608e3a6dc827",
+  "checks": {
+    "global canStartEdit excludes any edit": true,
+    "ordinary edit producer routes shared edit state": true,
+    "TAo forwards eligibility without weakening": true,
+    "ordinary-row action eligibility uses canStartEdit": true,
+    "QTo omitted rather than disabled": true,
+    "current main retains keyboard guard": true,
+    "current main has no ordinary Edit eligibility port": true,
+    "current main ordinary Edit callback is unconditional": true,
+    "current main drag lock already covered": true,
+    "current main blank-save guards already covered": true
+  },
+  "retained_parent_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "retained_spans_verified": 23,
+  "baseline": {
+    "path": "src/features/chat/Composer.tsx",
+    "bytes": 34929,
+    "sha256": "02e3bcf5b74a06f0d9267f2dc47676cd7ddb12561626043275b82cb2f33b1982"
+  },
+  "fixture": {
+    "path": ".qa/queue-edit-button-lock-135/composerQueueEditButtonLock.test.ts",
+    "bytes": 20228,
+    "sha256": "ea01b50e82b91bc1052472c8b476fcf170049fe09da2aca38999226d836ee4fc"
+  },
+  "oracle": {
+    "path": ".qa/queue-edit-button-lock-135/oracle-draft.json",
+    "bytes": 4347,
+    "sha256": "714a8f23ea7733ec83f17633d9e0f99779d15663811335cf5fc1dc3e307735c7"
+  },
+  "proposal": {
+    "path": ".qa/queue-edit-button-lock-135/proposal-worktree/src/features/chat/Composer.tsx",
+    "sha256": "69e81ce24dad67fa052e28889a6cba0135617dac0cbc6faa863830cfd8a557cc"
+  },
+  "permanent_port": {
+    "path": ".qa/queue-edit-button-lock-135/proposal-worktree/src/features/chat/composerQueueEditButtonLock.test.ts",
+    "sha256": "076547d732c62e0cdcc5cabbc268ac48c7a1aae2fb0c0ba84c1169437ae6f7ea",
+    "normalized_executable_bytes_equal": true
+  },
+  "cases": [
+    {
+      "id": "target/B Edit omitted after ordinary Edit A",
+      "class": "target",
+      "assertion": "B has zero rendered ordinary Edit buttons; A and unsaved draft persist"
+    },
+    {
+      "id": "target/B Edit omitted after editor blur and focus B",
+      "class": "target",
+      "assertion": "Real editor blur prop and actual focusable-row port do not end A; B has zero Edit buttons"
+    },
+    {
+      "id": "target/C Edit omitted after editor blur and focus C",
+      "class": "target",
+      "assertion": "Same global visibility lock for a third existing row without reordering"
+    },
+    {
+      "id": "target/blank A still omits B Edit",
+      "class": "target",
+      "assertion": "Blank Save remains disabled and Cancel remains available; B has zero Edit buttons while A remains active"
+    },
+    {
+      "id": "control/unlocked multirow Edit enters B",
+      "class": "control",
+      "assertion": "Enabled ordinary B button dispatches actual edit q2 and preserves queue items"
+    },
+    {
+      "id": "control/unlocked singleton Edit remains available",
+      "class": "control",
+      "assertion": "Singleton drag restriction does not hide ordinary Edit"
+    },
+    {
+      "id": "control/Cancel restores ordinary Edit eligibility",
+      "class": "control",
+      "assertion": "Cancel A restores B Edit, does not save draft, no effects"
+    },
+    {
+      "id": "control/Save restores ordinary Edit eligibility",
+      "class": "control",
+      "assertion": "Save A persists draft, restores B Edit, no steer effect"
+    },
+    {
+      "id": "control/Save and steer preserves effect and eligibility",
+      "class": "control",
+      "assertion": "Save-and-steer A removes A, emits original effect, B Edit remains enabled"
+    },
+    {
+      "id": "control/blank Save and Cancel policy preserved",
+      "class": "control",
+      "assertion": "Blank Save and Save-and-steer stay disabled; Cancel works without invoking disabled callbacks"
+    },
+    {
+      "id": "control/unlocked drag singleton and multirow preserved",
+      "class": "control",
+      "assertion": "Singleton draggable false, multirow true; only rendered props are exercised"
+    },
+    {
+      "id": "control/active edit drag policy preserved",
+      "class": "control",
+      "assertion": "B and C draggable false while A editing; no drag callback or physical gesture claim"
+    }
+  ],
+  "expected_only": {
+    "visibility_targets": 4,
+    "controls": 8
+  },
+  "current_controls_not_new_gaps": [
+    "#1483 row-key handling lock",
+    "#1480 singleton and active-edit drag lock",
+    "blank Save/Save-and-steer guard",
+    "Cancel/Save/Save-and-steer queue effects",
+    "row focusability and edit-return focus"
+  ],
+  "scope": "Only QueuePanel\u2192QueueRow canStartEdit prop and conditional ordinary Edit rendering. No primary product change or source publication.",
+  "limits": [
+    "Retained REA queue declarations, not fresh inspection. Intrinsic/forwarding helpers remain bound to full retained renderer outside analyzed REA slice.",
+    "No JavaScript parse or execution, actual RED/GREEN, DOM hover/CSS, physical focus/click/Tab, native/package or provider verification.",
+    "The four targets remain predictions until serialized admission. Existing fixture/oracle remain byte-identical; historical status text is not an execution claim."
+  ]
+}
