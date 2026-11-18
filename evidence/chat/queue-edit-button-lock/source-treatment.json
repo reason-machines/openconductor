@@ -1,0 +1,97 @@
+{
+  "candidate": "COMPOSER-QUEUE-EDIT-BUTTON-LOCK-135",
+  "state": "SOURCE_TREATMENT_COMMITTED_GREEN_NOT_ADMITTED_NOT_RUN",
+  "source_lease": "06ffa90f-b6a1-406a-9e8d-7a8c85b3c8c4",
+  "checked_utc": "2026-11-18T03:00:35.276696+00:00",
+  "fresh_main": "750b8bf25b2193141eff0cfcad64776228bea076",
+  "candidate_commit": "0dfeb432828c32874740523b00fb40081f77c42f",
+  "candidate_branch": "proposal/queue-edit-button-lock-135",
+  "scope": "Only global ordinary Edit eligibility from QueuePanel to QueueRow and omission of the existing Edit button. No reducer/editor/save/cancel/steer/drag/row focus/remove/order/WorkspaceView/keyboard handling changes.",
+  "baseline": {
+    "path": "src/features/chat/Composer.tsx",
+    "bytes": 34929,
+    "sha256": "02e3bcf5b74a06f0d9267f2dc47676cd7ddb12561626043275b82cb2f33b1982"
+  },
+  "candidate_source": {
+    "path": ".qa/queue-edit-button-lock-135/proposal-worktree/src/features/chat/Composer.tsx",
+    "bytes": 35086,
+    "sha256": "69e81ce24dad67fa052e28889a6cba0135617dac0cbc6faa863830cfd8a557cc"
+  },
+  "fixture": {
+    "path": ".qa/queue-edit-button-lock-135/composerQueueEditButtonLock.test.ts",
+    "bytes": 20228,
+    "sha256": "ea01b50e82b91bc1052472c8b476fcf170049fe09da2aca38999226d836ee4fc"
+  },
+  "oracle": {
+    "path": ".qa/queue-edit-button-lock-135/oracle-draft.json",
+    "bytes": 4347,
+    "sha256": "714a8f23ea7733ec83f17633d9e0f99779d15663811335cf5fc1dc3e307735c7"
+  },
+  "permanent_port": {
+    "path": ".qa/queue-edit-button-lock-135/proposal-worktree/src/features/chat/composerQueueEditButtonLock.test.ts",
+    "bytes": 19859,
+    "sha256": "076547d732c62e0cdcc5cabbc268ac48c7a1aae2fb0c0ba84c1169437ae6f7ea"
+  },
+  "candidate_inverse_replacements": [
+    {
+      "from": "              canStartEdit={queue.editingId === null}\n",
+      "to": ""
+    },
+    {
+      "from": "  canStartEdit: boolean;\n",
+      "to": ""
+    },
+    {
+      "from": "function QueueRow({ id, text, userContent, attachmentNames, first, last, editing, canStartEdit, canSteer, onQueue, keys, dragging, rowProps }: RowProps)",
+      "to": "function QueueRow({ id, text, userContent, attachmentNames, first, last, editing, canSteer, onQueue, keys, dragging, rowProps }: RowProps)"
+    },
+    {
+      "from": "        {canStartEdit ? (\n          <button\n            type=\"button\"\n            className=\"chat-action\"\n            onClick={() => {\n              setValue(queuedUserDraft({ text, userContent }));\n              onQueue({ kind: \"edit\", id });\n            }}\n          >\n            Edit\n          </button>\n        ) : null}",
+      "to": "        <button\n          type=\"button\"\n          className=\"chat-action\"\n          onClick={() => {\n            setValue(queuedUserDraft({ text, userContent }));\n            onQueue({ kind: \"edit\", id });\n          }}\n        >\n          Edit\n        </button>"
+    }
+  ],
+  "checks": {
+    "original_282_pins_unchanged": true,
+    "fresh_main_23_whole_file_bindings": true,
+    "other_22_candidate_source_bindings_match_primary": true,
+    "inverse_restores_baseline_bytes": true,
+    "all_12_case_names_and_assertion_bytes_unchanged": true,
+    "permanent_port_normalized_executable_bytes_equal": true,
+    "candidate_commit_exactly_two_files": true,
+    "candidate_commit_diff_check": true,
+    "primary_tracked_and_staged_diff_empty": true,
+    "existing_1483_keyboard_guard_preserved": true
+  },
+  "actual_baseline": {
+    "outcome": "4 visibility assertion failures and 8 passing controls; all 12 executed, no skips/cancellations/setup failures",
+    "reachability_limit": "Assertions after the four failed visibility assertions were not reached in RED.",
+    "receipt": {
+      "path": ".qa/queue-edit-button-lock-135/proposal-worktree/pointer-review/runtime-red12/receipt.json",
+      "bytes": 1839,
+      "sha256": "2c53456f65ed883080e809b2b4c0d8d23ccd2d7c007f3fd174de0db359d7ae1f"
+    },
+    "tap": {
+      "path": ".qa/queue-edit-button-lock-135/proposal-worktree/pointer-review/runtime-red12/test.stdout",
+      "bytes": 6292,
+      "sha256": "407e02987199ed59ad5773f84c1fcad370967d4d896f2fd8a6c907b12b5d6b28"
+    },
+    "stderr": {
+      "path": ".qa/queue-edit-button-lock-135/proposal-worktree/pointer-review/runtime-red12/test.stderr",
+      "bytes": 176,
+      "sha256": "224ed812ab963e1058635c8e93696c1643f0d174312325b04ef5322babf4eb20"
+    }
+  },
+  "reference_limit": "Retained REA queue source; intrinsic and forwarding helpers are complete-renderer byte-bound outside analyzed REA slice. No live behavior or fresh graph claim.",
+  "not_run": [
+    "GREEN12",
+    "permanent regression",
+    "adjacent or full suite",
+    "typecheck",
+    "build",
+    "browser",
+    "native",
+    "package",
+    "provider"
+  ],
+  "publication": "None. Only the isolated worktree is committed; no primary branch commit or source publication."
+}

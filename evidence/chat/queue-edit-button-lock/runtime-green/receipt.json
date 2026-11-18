@@ -1,0 +1,56 @@
+{
+  "reservation": "COMPOSER-POINTER-EDIT135-GREEN12-20261118T032840888Z",
+  "started_utc": "2026-11-18T03:30:09.452864+00:00",
+  "request_sha256": "08a97bbb797b973d7c14f58bb56c0543d6b3a8fe853043dd068409fc4261a18d",
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "nice",
+    "-n",
+    "10",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "env",
+    "-u",
+    "COMPOSER_QUEUE_EDIT_KEYBOARD_LOCK_SOURCE_REF",
+    "UV_THREADPOOL_SIZE=1",
+    "NODE_OPTIONS=--max-old-space-size=768",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/queue-edit-button-lock-135/composerQueueEditButtonLock.test.ts"
+  ],
+  "cwd": ".qa/queue-edit-button-lock-135/proposal-worktree",
+  "node_test_executed": true,
+  "free_bytes_before": 16250109952,
+  "own_runtime_jobs_before": [],
+  "preflight_pin_checks": 291,
+  "actual_main": "daee1fc90825c1e7673f711ad1d8a5a5401b1959",
+  "source_equivalent_checks": 23,
+  "test_started_utc": "2026-11-18T03:30:10.324311+00:00",
+  "process_group": 111,
+  "exit_code": 0,
+  "test_terminated_utc": "2026-11-18T03:30:11.342288+00:00",
+  "surviving_pids": [],
+  "actual_cleanup_release_utc": "2026-11-18T03:30:11.342984+00:00",
+  "child_maxrss_kib_not_aggregate": 149512,
+  "rss_scope": "Child maximum RSS, not aggregate process-group RSS or a group cap; heap768MiB per Node process.",
+  "postrun_pin_checks": 291,
+  "outputs": [
+    {
+      "path": ".qa/queue-edit-button-lock-135/proposal-worktree/pointer-review/runtime-green12/test.stderr",
+      "bytes": 176,
+      "sha256": "42789f6af5c73e066789e3db71bbb7c772adf1aec4afd68db96358b022e218f8"
+    },
+    {
+      "path": ".qa/queue-edit-button-lock-135/proposal-worktree/pointer-review/runtime-green12/test.stdout",
+      "bytes": 2273,
+      "sha256": "f11b22ff3717915384add4ec6b2b48c5ec0a768fef291874ad4b6ed40586ba77"
+    }
+  ],
+  "retained_output_bytes": 2449,
+  "within_output_16mib": true
+}

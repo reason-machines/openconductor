@@ -1,0 +1,55 @@
+{
+  "reservation": "COMPOSER-POINTER-EDIT135-RED12-20261118T024907826Z",
+  "started_utc": "2026-11-18T02:50:27.645766+00:00",
+  "request_sha256": "1636324916d3de72512ea05b5c53678dac1c07f0d854383533cae10354d866a9",
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "nice",
+    "-n",
+    "10",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "env",
+    "-u",
+    "COMPOSER_QUEUE_EDIT_KEYBOARD_LOCK_SOURCE_REF",
+    "UV_THREADPOOL_SIZE=1",
+    "NODE_OPTIONS=--max-old-space-size=768",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    ".qa/queue-edit-button-lock-135/composerQueueEditButtonLock.test.ts"
+  ],
+  "node_test_executed": true,
+  "free_bytes_before": 16250576896,
+  "own_runtime_jobs_before": [],
+  "preflight_pin_checks": 282,
+  "actual_main": "750b8bf25b2193141eff0cfcad64776228bea076",
+  "source_equivalent_checks": 23,
+  "test_started_utc": "2026-11-18T02:50:29.006038+00:00",
+  "process_group": 108,
+  "exit_code": 1,
+  "test_terminated_utc": "2026-11-18T02:50:30.024160+00:00",
+  "surviving_pids": [],
+  "actual_cleanup_release_utc": "2026-11-18T02:50:30.024832+00:00",
+  "child_maxrss_kib_not_aggregate": 161196,
+  "rss_scope": "Child maximum RSS, not aggregate process-group RSS or a group cap; heap768MiB per Node process.",
+  "postrun_pin_checks": 282,
+  "outputs": [
+    {
+      "path": ".qa/queue-edit-button-lock-135/proposal-worktree/pointer-review/runtime-red12/test.stderr",
+      "bytes": 176,
+      "sha256": "224ed812ab963e1058635c8e93696c1643f0d174312325b04ef5322babf4eb20"
+    },
+    {
+      "path": ".qa/queue-edit-button-lock-135/proposal-worktree/pointer-review/runtime-red12/test.stdout",
+      "bytes": 6292,
+      "sha256": "407e02987199ed59ad5773f84c1fcad370967d4d896f2fd8a6c907b12b5d6b28"
+    }
+  ],
+  "retained_output_bytes": 6468,
+  "within_output_16mib": true
+}

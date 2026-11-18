@@ -1,0 +1,215 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { dirname, resolve } from "node:path";
+import { test } from "node:test";
+import { runInNewContext } from "node:vm";
+import * as Pierre from "@pierre/diffs";
+
+// Freeze before treatment. Real hook, toolbar, list, menu and file header;
+// deterministic data/chrome/CodeView boundaries, no Git/native operations.
+// Retained Conductor source is inert evidence, never imported or evaluated.
+const dependencies = createRequire(import.meta.url);
+const React = dependencies("react");
+const { act, create } = dependencies("react-test-renderer");
+const ts = dependencies("typescript");
+const root = resolve(".");
+const productPaths = new Set([
+  "src/features/diff/useWorkspaceDiff.ts", "src/features/diff/target.ts",
+  "src/features/diff/ChangesToolbar.tsx", "src/features/diff/ChangesList.tsx",
+  "src/features/diff/DiffViewer.tsx", "src/features/diff/FileDiffView.tsx",
+  "src/features/diff/FileContextMenu.tsx", "src/features/diff/types.ts",
+  "src/features/diff/nav.ts", "src/features/diff/viewed.ts",
+  "src/features/diff/changesTree.ts", "src/features/diff/changesFilter.ts",
+  "src/features/diff/renameDisplayPath.ts", "src/features/diff/fileCopyPaths.ts",
+  "src/features/diff/copyFile.ts", "src/features/diff/pierre.ts",
+  "src/features/files/tree.ts", "src/keybindings/fuzzy.ts", "src/lib/keyedCache.ts",
+].map((path) => resolve(root, path)));
+const file = {
+  path: "src/example.ts", old_path: null, status: "modified", binary: false,
+  additions: 1, deletions: 1,
+  hunks: [{ old_start: 1, new_start: 1, old_lines: 1, new_lines: 1, section: "", lines: [
+    { kind: "deletion", old_line: 1, new_line: null, text: "before" },
+    { kind: "addition", old_line: null, new_line: 1, text: "after" },
+  ] }],
+};
+const commit = { hash: "1234567890abcdef", message: "Selected commit", author: "Fixture", date: 1 };
+const text = (node) => typeof node === "string" ? node : (node?.children ?? []).map(text).join("");
+
+async function fixture(layout) {
+  const modules = new Map();
+  const storage = new Map([["openconductor.diff.options", JSON.stringify({ scope: "all", layout })]]);
+  const timers = new Set();
+  const nativeCalls = [];
+  const discardCalls = [];
+  const policies = [];
+  const reads = [];
+  const noop = () => {};
+  const forbidden = (name) => { nativeCalls.push(name); assert.fail(`Unexpected IO: ${name}`); };
+  const passthrough = ({ children }) => children;
+  const icon = () => null;
+  const menus = {
+    DropdownMenu: ({ children, onClose }) => React.createElement("mounted-menu", { onClose }, children),
+    ContextMenu: ({ children, onClose }) => React.createElement("mounted-context-menu", { onClose }, children),
+    MenuItem: ({ children, onSelect }) => React.createElement("button", { role: "menuitem", onClick: onSelect }, children),
+    MenuSeparator: icon, SubMenu: passthrough,
+  };
+  const boundaries = {
+    "../../components/ui/Tooltip.tsx": { Tooltip: passthrough },
+    "../../components/menu/ContextMenu.tsx": menus,
+    "../../components/menu/ContextMenu": menus,
+    "../../components/menu/menuIcons": { ArrowUpRightIcon: icon, CopyIcon: icon, EyeIcon: icon, Undo2Icon: icon },
+    "../../components/Icons.tsx": { CheckIcon: icon, CopyIcon: icon },
+    "../../components/ConductorIcon": { ConductorIcon: icon },
+    "../files/panelIcons": { SearchIcon: icon, XIcon: icon },
+    "../../home/dashboard.ts": { agoTime: () => "a moment ago" },
+    "../../backend": { inTauri: () => true },
+    "@tauri-apps/api/core": { invoke: (command) => forbidden(command) },
+    "../../keybindings/KeybindingsProvider.tsx": { useKeybindings: noop, useKeybindingOverrides: () => ({ overrides: {} }) },
+    "../../keybindings/overrides.ts": { effectiveShortcuts: () => [] },
+    "../../keybindings/shortcut.ts": { matchesEvent: () => false },
+    "../../keybindings/dispatcher.ts": { PRIORITY: { DIALOG: 10 } },
+    "../../settings/appPrefs": { useAppPrefs: () => ({ default_open_in: null }) },
+    "../openIn/OpenInButton": { AppIcon: icon },
+    "../openIn/apps": {
+      NUMBERED_ROWS: 9, defaultAppId: () => null, loadOpenInApps: async () => [], supportsFileOpen: () => true,
+      copyText: () => forbidden("clipboard"), openInApp: () => forbidden("openIn"),
+    },
+    "./api.ts": {
+      WHOLE_FILE_CONTEXT: 1000000,
+      loadWorkspaceDiff: async (_worktree, target, opts, extra) => {
+        reads.push({ target, scope: opts.scope, turn: extra?.turn ?? null }); return [file];
+      },
+      loadBranchCommits: async () => [commit],
+      discardFileChanges: (...args) => { discardCalls.push(args); assert.fail("No Git discard may be invoked"); },
+    },
+    "./useChangesPresentation.ts": { useChangesPresentation: () => ({ presentation: { filePathFilter: "", diffFileListMode: "flat" } }) },
+    "./wrapLinesPref.ts": { useWrapLinesPref: () => ({ value: true, save: noop }) },
+    "./EditInViewer.ts": { useFileEdit: () => undefined, editableContents: () => null, createEditor: () => forbidden("editor") },
+    "./useDiffTheme.ts": { useDiffTheme: () => "pierre-dark" },
+    "./CommentNav": { CommentNav: icon, useCommentNavigation: () => ({ refresh: noop }) },
+    "./commentMarkdown.ts": { CommentMarkdown: () => forbidden("preview") },
+    "./DiscardDialog": { RevertIcon: icon, DiscardDialog: () => null },
+    "./FilePathChip": {
+      splitPath: (path) => ({ directory: path.slice(0, path.lastIndexOf("/") + 1), fileName: path.slice(path.lastIndexOf("/") + 1) }),
+      FilePathChip: icon,
+    },
+    "./Whitespace": { WhitespaceOnly: icon, ViewOptionsMenu: icon },
+    "@pierre/diffs": Pierre,
+    "@pierre/diffs/react": { CodeView: React.forwardRef((_props, _ref) => React.createElement("mounted-code-view")), EditProvider: passthrough },
+  };
+  function load(filename) {
+    assert.ok(productPaths.has(filename), `Unexpected production dependency: ${filename}`);
+    if (modules.has(filename)) return modules.get(filename).exports;
+    const module = { exports: {} }; modules.set(filename, module);
+    const source = process.env.DIFF_DISCARD_BASELINE === "1" && filename.endsWith("/target.ts")
+      ? readFileSync("evidence/diff/uncommitted-discard-affordance/baseline-target.ts.txt", "utf8")
+      : readFileSync(filename, "utf8");
+    const javascript = ts.transpileModule(source, { fileName: filename, compilerOptions: {
+      jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true,
+    } }).outputText;
+    const require = (name) => {
+      if (name === "react" || name === "react/jsx-runtime" || name === "fuzzysort") return dependencies(name);
+      if (name.endsWith(".css")) return {};
+      if (Object.hasOwn(boundaries, name)) return boundaries[name];
+      const target = resolve(dirname(filename), name);
+      const found = [target, `${target}.ts`, `${target}.tsx`].find((path) => productPaths.has(path));
+      assert.ok(found, `Unexpected import: ${name}`); return load(found);
+    };
+    runInNewContext(`(function(require, module, exports) {\n${javascript}\n})`, {
+      localStorage: {
+        getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value),
+        removeItem: (key) => storage.delete(key),
+      },
+      document: { documentElement: { dataset: { theme: "dark" } } },
+      MutationObserver: class { observe() {} disconnect() {} },
+      setTimeout: (callback) => { timers.add(callback); return callback; }, clearTimeout: (callback) => timers.delete(callback),
+      console, Map, Set, Error,
+    }, { filename })(require, module, module.exports);
+    if (filename.endsWith("/target.ts")) {
+      const discardScope = module.exports.discardScope;
+      module.exports.discardScope = (...args) => { const result = discardScope(...args); policies.push({ args, result }); return result; };
+    }
+    return module.exports;
+  }
+  const { useWorkspaceDiff } = load(resolve(root, "src/features/diff/useWorkspaceDiff.ts"));
+  const { ChangesToolbar } = load(resolve(root, "src/features/diff/ChangesToolbar.tsx"));
+  const { ChangesList } = load(resolve(root, "src/features/diff/ChangesList.tsx"));
+  const { DiffTab } = load(resolve(root, "src/features/diff/DiffViewer.tsx"));
+  let diff;
+  function Harness() {
+    diff = useWorkspaceDiff({ workspaceId: "discard-fixture", worktree: "/fixture/repo", target: { branch: "develop", remote: "origin" } });
+    return React.createElement(React.Fragment, null,
+      React.createElement(ChangesToolbar, { diff, view: "flat", onViewChange: noop }),
+      React.createElement(ChangesList, { diff, worktree: "/fixture/repo", collapsed: new Set(), toggleDirectory: noop }),
+      React.createElement(DiffTab, { diff }));
+  }
+  let renderer;
+  await act(async () => { renderer = create(React.createElement(Harness)); });
+  await act(async () => { diff.openPath(file.path); });
+  const find = (label) => renderer.root.findAll((node) => node.type === "button" && node.props["aria-label"] === label);
+  const row = () => renderer.root.findByProps({ className: "oc-change-row" }).findAll((node) => node.type === "button" && node.props["aria-label"] === `Discard changes to ${file.path}`);
+  const header = () => renderer.root.findByProps({ className: "oc-file-header" }).findAll((node) => node.type === "button" && node.props["aria-label"] === `Discard changes to ${file.path}`);
+  async function choose(label) {
+    await act(async () => { find("Changes options")[0].props.onClick({ currentTarget: { getBoundingClientRect: () => ({ left: 0, top: 0, right: 1, bottom: 1 }) } }); });
+    const menu = renderer.root.findByType("mounted-menu");
+    const item = menu.findAll((node) => node.type === "button" && node.props.role === "menuitem" && text(node).startsWith(label));
+    assert.equal(item.length, 1, `actual normal scope option: ${label}`);
+    await act(async () => { item[0].props.onClick(); menu.props.onClose(); });
+  }
+  async function all() { await act(async () => { find("Back to all changes")[0].props.onClick(); }); assert.equal(diff.opts.scope, "all"); }
+  async function closePending() { await act(async () => { diff.askDiscard(null); }); assert.equal(diff.discarding, null); }
+  return {
+    row, header, choose, all, diff: () => diff,
+    async turn() { await act(async () => { diff.openTurnFile({ sessionId: "session", turnId: "turn" }, file.path); }); assert.notEqual(diff.turn, null); },
+    async queue(buttons) { assert.equal(buttons.length, 1); await act(async () => { buttons[0].props.onClick(); }); assert.equal(diff.discarding?.path, file.path); await closePending(); },
+    async menu() {
+      await act(async () => { renderer.root.findByProps({ className: "oc-change-row" }).props.onContextMenu({ preventDefault: noop, clientX: 1, clientY: 1 }); });
+      const menu = renderer.root.findByType("mounted-context-menu");
+      const items = menu.findAll((node) => node.type === "button" && node.props.role === "menuitem" && text(node) === "Discard changes");
+      assert.equal(items.length, 1, "context-menu Discard remains available");
+      const before = policies.length;
+      await act(async () => { items[0].props.onClick(); menu.props.onClose(); });
+      assert.equal(diff.discarding?.path, file.path, "menu still queues its confirmation");
+      const requests = policies.slice(before).filter((policy) => policy.args[0] === "menu");
+      assert.equal(requests.length, 1); assert.equal(requests[0].result, "all", "actual policy requests All-changes base");
+      await closePending();
+    },
+    async close() {
+      await act(async () => { renderer.unmount(); });
+      assert.deepEqual(discardCalls, [], "zero Git discard invocations");
+      assert.deepEqual(nativeCalls, [], "zero native/clipboard/provider invocations");
+      assert.equal(timers.size, 0, "polling timer ownership is released");
+      assert.ok(reads.length > 0, "real hook loaded the deterministic changed-file DTO");
+    },
+  };
+}
+
+for (const layout of ["unified", "split", "file"]) {
+  for (const surface of ["row", "header"]) {
+    test(`${layout}: actual All → Uncommitted → All hides only ${surface} discard`, async () => {
+      const f = await fixture(layout);
+      try {
+        await f.queue(f[surface]());
+        await f.choose("Uncommitted changes");
+        assert.equal(f.diff().opts.scope, "uncommitted");
+        assert.equal(f[surface]().length, 0, `${surface} discard must be absent in ordinary Uncommitted`);
+        await f.all(); await f.queue(f[surface]());
+      } finally { await f.close(); }
+    });
+  }
+}
+for (const scope of ["all", "uncommitted", "commit", "turn"]) {
+  test(`${scope}: actual context menu retains All-scope discard without IO`, async () => {
+    const f = await fixture("unified");
+    try {
+      if (scope === "uncommitted") await f.choose("Uncommitted changes");
+      if (scope === "commit") await f.choose("Selected commit");
+      if (scope === "turn") await f.turn();
+      if (scope === "commit" || scope === "turn") {
+        assert.equal(f.row().length, 0); assert.equal(f.header().length, 0);
+      }
+      await f.menu();
+    } finally { await f.close(); }
+  });
+}

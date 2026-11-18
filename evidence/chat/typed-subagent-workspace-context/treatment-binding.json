@@ -1,0 +1,298 @@
+{
+  "author": "Conductor Rebuild",
+  "scope": "TYPED-SUBAGENT-WORKSPACE-FILE-LINK-BE7",
+  "utc": "2026-11-18T02:15:25.691050+00:00",
+  "checked_main": "735db18c9141cb409b26d142b8d0a305edaf91c8",
+  "status": "SOURCE_ONLY_TREATMENT_GREEN14_UNRUN_NOT_ADMITTED",
+  "original_request_sha256": "db92f73e10dbdeefadbd61b8a0419c5fb920aacd2026e899441030ffb064f17c",
+  "red_supervisor_sha256": "d7517561013e424caf16a3dfb5c775dd9b19527fc1e3fb8682af751928a25fde",
+  "source_sha256": "bfd29b0219fc816f37b73bbdd2dee5357dc39878e69c06b2eb4bc99fb4e3f758",
+  "fixture": {
+    "path": "src/features/chat/typedSubagentWorkspaceContext.test.ts",
+    "bytes": 12346,
+    "sha256": "e6c4da93039470df8a676b0bbd0a8947b15d0803bea0468a486330f61da04049"
+  },
+  "frozen_patch": {
+    "path": "treatment.patch",
+    "bytes": 2118,
+    "sha256": "03e6f0ae156f6e1e50221e5929205f15651f1e1f52e2d0e60e1c3770cd06f5e5"
+  },
+  "candidate": {
+    "path": "src/features/chat/ToolRows.tsx",
+    "bytes": 57106,
+    "sha256": "ac18f431c7b2bbfac5455f2f2af50567675634a28606bc5bf733f6562bac6167"
+  },
+  "current_context_bindings": [
+    {
+      "path": "src/features/chat/ToolRows.tsx",
+      "red_main": {
+        "bytes": 56918,
+        "sha256": "e81ddfb0bf3783aa00b7878a2a02f6d5da09860fe7b53fc93dcc3a7048819dd0"
+      },
+      "treatment": {
+        "bytes": 57106,
+        "sha256": "ac18f431c7b2bbfac5455f2f2af50567675634a28606bc5bf733f6562bac6167"
+      },
+      "change": "three-site frozen patch"
+    },
+    {
+      "path": "src/features/chat/LinkMenu.tsx",
+      "red_main": {
+        "bytes": 2345,
+        "sha256": "3967d74ecc5e5dd2d9f7fc9c5cba36ce0b614a2d4b535391701b7f246fec5cc9"
+      },
+      "treatment": {
+        "bytes": 2345,
+        "sha256": "3967d74ecc5e5dd2d9f7fc9c5cba36ce0b614a2d4b535391701b7f246fec5cc9"
+      },
+      "change": "none"
+    },
+    {
+      "path": "src/features/chat/conductorTools.ts",
+      "red_main": {
+        "bytes": 31930,
+        "sha256": "775150d24fd147bba59c0da0173b67cd6e955c4dbfaec404c8378823e6e07bbe"
+      },
+      "treatment": {
+        "bytes": 31930,
+        "sha256": "775150d24fd147bba59c0da0173b67cd6e955c4dbfaec404c8378823e6e07bbe"
+      },
+      "change": "none"
+    },
+    {
+      "path": "src/features/chat/toolIconData.ts",
+      "red_main": {
+        "bytes": 31316,
+        "sha256": "ffe817145ad34b2934ebd204f17456b040d76f999f7758e8de1feba1388429f9"
+      },
+      "treatment": {
+        "bytes": 31316,
+        "sha256": "ffe817145ad34b2934ebd204f17456b040d76f999f7758e8de1feba1388429f9"
+      },
+      "change": "none"
+    },
+    {
+      "path": "src/features/chat/thinkingChip.ts",
+      "red_main": {
+        "bytes": 453,
+        "sha256": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9"
+      },
+      "treatment": {
+        "bytes": 453,
+        "sha256": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9"
+      },
+      "change": "none"
+    },
+    {
+      "path": "src/features/chat/markdown.ts",
+      "red_main": {
+        "bytes": 11557,
+        "sha256": "35c81f7d5094d4b4bf8c5b7dc85db4666ae9aed21a3be177471dfa69309698cb"
+      },
+      "treatment": {
+        "bytes": 11557,
+        "sha256": "35c81f7d5094d4b4bf8c5b7dc85db4666ae9aed21a3be177471dfa69309698cb"
+      },
+      "change": "none"
+    },
+    {
+      "path": "src/features/chat/mermaid.ts",
+      "red_main": {
+        "bytes": 1010,
+        "sha256": "9d2e58993988bb9ecbf39b159683ee79243b127bacaa17843571e40891741bcf"
+      },
+      "treatment": {
+        "bytes": 1010,
+        "sha256": "9d2e58993988bb9ecbf39b159683ee79243b127bacaa17843571e40891741bcf"
+      },
+      "change": "none"
+    },
+    {
+      "path": "src/features/chat/markdownFrontmatter.ts",
+      "red_main": {
+        "bytes": 1036,
+        "sha256": "651225608bdb1cd9256c241bac98fb22664c08505606bc73e2ed34f7f880891f"
+      },
+      "treatment": {
+        "bytes": 1036,
+        "sha256": "651225608bdb1cd9256c241bac98fb22664c08505606bc73e2ed34f7f880891f"
+      },
+      "change": "none"
+    },
+    {
+      "path": "package.json",
+      "red_main": {
+        "bytes": 2019,
+        "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91"
+      },
+      "treatment": {
+        "bytes": 2019,
+        "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91"
+      },
+      "change": "none"
+    },
+    {
+      "path": "package-lock.json",
+      "red_main": {
+        "bytes": 222962,
+        "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+      },
+      "treatment": {
+        "bytes": 222962,
+        "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+      },
+      "change": "none"
+    },
+    {
+      "path": "src/features/chat/Transcript.tsx",
+      "red_main": {
+        "bytes": 21746,
+        "sha256": "4ba9fe4df5a852934890e19ac7de61f14fe8cdcbcf3652e60bbd18e925b271b4"
+      },
+      "treatment": {
+        "bytes": 21746,
+        "sha256": "4ba9fe4df5a852934890e19ac7de61f14fe8cdcbcf3652e60bbd18e925b271b4"
+      },
+      "change": "none"
+    },
+    {
+      "path": "src/features/chat/typedSubagentLinks.test.ts",
+      "red_main": {
+        "bytes": 15796,
+        "sha256": "27aab97bcf3c655965202e3acdb00732872aa41434991d5f3efc2412615454a7"
+      },
+      "treatment": {
+        "bytes": 15796,
+        "sha256": "27aab97bcf3c655965202e3acdb00732872aa41434991d5f3efc2412615454a7"
+      },
+      "change": "none"
+    },
+    {
+      "path": "evidence/chat/typed-subagent-links.md",
+      "red_main": {
+        "bytes": 8881,
+        "sha256": "ca026f4d7697d39a492cabc5d36d1375717beb553d4ac130844ba30d96e1691f"
+      },
+      "treatment": {
+        "bytes": 8881,
+        "sha256": "ca026f4d7697d39a492cabc5d36d1375717beb553d4ac130844ba30d96e1691f"
+      },
+      "change": "none"
+    },
+    {
+      "path": "src/features/chat/view.ts",
+      "red_main": {
+        "bytes": 10115,
+        "sha256": "132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43"
+      },
+      "treatment": {
+        "bytes": 10115,
+        "sha256": "132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43"
+      },
+      "change": "none"
+    },
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "red_main": {
+        "bytes": 102922,
+        "sha256": "4520e46b632d50ef6feaf78398ec08cf7e8a58697605067b707af50d3c1f8214"
+      },
+      "treatment": {
+        "bytes": 102922,
+        "sha256": "4520e46b632d50ef6feaf78398ec08cf7e8a58697605067b707af50d3c1f8214"
+      },
+      "change": "none"
+    }
+  ],
+  "runtime_pins_unchanged": 11,
+  "dependencies_unchanged": 10,
+  "red_receipt_sha256": "0ac9ad364402d214c0aaf54689f3eec3f618de5a2207e856da06af1feb95e145",
+  "red_tap_sha256": "36736845a34f2809ac278520290bf41fce0cd3e7895256dc92cf36aa5ae9d63d",
+  "checks_passed": 81,
+  "checks": [
+    "frozen frozen-red-request.json",
+    "frozen typedSubagentWorkspaceContext.test.ts",
+    "frozen prop-forwarding-UNAPPLIED.patch",
+    "frozen source.json",
+    "frozen red_phase.py",
+    "actual RED and raw TAP",
+    "actual RED14 counters",
+    "fresh reviewed main",
+    "unchanged current main src/features/chat/ToolRows.tsx",
+    "unchanged current main src/features/chat/LinkMenu.tsx",
+    "unchanged current main src/features/chat/conductorTools.ts",
+    "unchanged current main src/features/chat/toolIconData.ts",
+    "unchanged current main src/features/chat/thinkingChip.ts",
+    "unchanged current main src/features/chat/markdown.ts",
+    "unchanged current main src/features/chat/mermaid.ts",
+    "unchanged current main src/features/chat/markdownFrontmatter.ts",
+    "unchanged current main package.json",
+    "unchanged current main package-lock.json",
+    "unchanged current main src/features/chat/Transcript.tsx",
+    "unchanged current main src/features/chat/typedSubagentLinks.test.ts",
+    "unchanged current main evidence/chat/typed-subagent-links.md",
+    "unchanged current main src/features/chat/view.ts",
+    "unchanged current main src/components/WorkspaceView.tsx",
+    "retained RED runtime src/features/chat/ToolRows.tsx",
+    "retained RED runtime src/features/chat/LinkMenu.tsx",
+    "retained RED runtime src/features/chat/conductorTools.ts",
+    "retained RED runtime src/features/chat/toolIconData.ts",
+    "retained RED runtime src/features/chat/thinkingChip.ts",
+    "retained RED runtime src/features/chat/markdown.ts",
+    "retained RED runtime src/features/chat/mermaid.ts",
+    "retained RED runtime src/features/chat/markdownFrontmatter.ts",
+    "retained RED runtime package.json",
+    "retained RED runtime package-lock.json",
+    "retained RED runtime src/features/chat/typedSubagentWorkspaceContext.test.ts",
+    "dependency receipt",
+    "retained dependency react",
+    "retained dependency react-test-renderer",
+    "retained dependency typescript",
+    "retained dependency react-markdown",
+    "retained dependency remark-breaks",
+    "retained dependency remark-gfm",
+    "retained dependency remark-smartypants",
+    "retained dependency unist-util-visit",
+    "retained dependency lowlight",
+    "retained dependency highlight.js",
+    "retained REA parent renderApp-D_fmY7hW.js",
+    "retained REA parent index-BGEQ8YjU.js",
+    "retained REA span ROo",
+    "retained REA span O1o-and-D1o",
+    "retained REA span L1o",
+    "retained REA span Qpo",
+    "retained REA span hIt",
+    "retained REA span xS",
+    "retained REA span dHn-and-pEi",
+    "retained REA span cEi",
+    "retained REA span renderer-import",
+    "retained REA span lTr",
+    "retained REA span cTr",
+    "retained REA span bpo",
+    "retained REA span path-recognition",
+    "retained REA span xXs",
+    "retained REA span inline-file-button",
+    "retained REA span resolver-helpers-and-WGt",
+    "retained REA span plugins-SXs",
+    "retained REA span plugins-BXs",
+    "retained REA span resolver-export",
+    "exactly three frozen substitutions",
+    "unique frozen substitution 67",
+    "unique frozen substitution 68",
+    "unique frozen substitution 69",
+    "exact frozen candidate",
+    "exact byte reversal to current main",
+    "git apply --reverse --check frozen patch",
+    "git diff --check",
+    "permanent fixture absent before exact copy",
+    "permanent fixture byte identical",
+    "new evidence source.json",
+    "new evidence red-request.json",
+    "new evidence red-result.json",
+    "new evidence red-output.tap",
+    "new evidence treatment.patch"
+  ],
+  "runtime_executed": false,
+  "green_executed": false,
+  "treatment": "Forward only workspacePath/onOpenFile at three existing ToolRows.tsx sites; no RowShell/rest, Raw, copy, resolver, external URL or menu changes."
+}

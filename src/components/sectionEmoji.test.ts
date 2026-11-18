@@ -175,3 +175,27 @@ test("section name keeps its trimmed-empty primary-button guard and Enter contro
     assert.equal(stopped, 1);
   } finally { view.close(); }
 });
+
+for (const mode of ["create", "edit"] as const) {
+  test(`section ${mode} emoji search requests focus only while the picker is mounted`, () => {
+    const data: SectionDialogMode = mode === "create"
+      ? { mode }
+      : { mode, sectionId: "section-a", name: "Existing", emoji: "\u{1f525}" };
+    const view = fixture(data);
+    try {
+      assert.equal(view.renderer().root.findAllByProps({ placeholder: "Search emoji" }).length, 0);
+      assert.equal(view.renderer().root.findByProps({ "aria-label": "Section name" }).props.autoFocus, true);
+      view.open();
+      assert.equal(view.search().props.autoFocus, true);
+      assert.equal(view.search().props.value, "");
+      assert.equal(view.submissions.length, 0);
+      assert.equal(view.closed(), 0);
+      view.open();
+      assert.equal(view.renderer().root.findAllByProps({ placeholder: "Search emoji" }).length, 0);
+      view.open();
+      assert.equal(view.search().props.autoFocus, true);
+      assert.equal(view.submissions.length, 0);
+      assert.equal(view.closed(), 0);
+    } finally { view.close(); }
+  });
+}

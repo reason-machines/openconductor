@@ -1,0 +1,116 @@
+{
+  "phase": "GREEN10-V3",
+  "classification": "QUALIFIED_TREATMENT_GREEN",
+  "child_exit": 0,
+  "tests": 10,
+  "pass": 10,
+  "fail": 0,
+  "skipped": 0,
+  "cancelled": 0,
+  "todo": 0,
+  "cases": [
+    {
+      "number": 1,
+      "name": "unified: actual All \u2192 Uncommitted \u2192 All hides only row discard",
+      "result": "PASS",
+      "target_reached": true,
+      "zero_git_native_clipboard_provider_calls": true,
+      "polling_timers_released": true,
+      "deterministic_DTO_read": true
+    },
+    {
+      "number": 2,
+      "name": "unified: actual All \u2192 Uncommitted \u2192 All hides only header discard",
+      "result": "PASS",
+      "target_reached": true,
+      "zero_git_native_clipboard_provider_calls": true,
+      "polling_timers_released": true,
+      "deterministic_DTO_read": true
+    },
+    {
+      "number": 3,
+      "name": "split: actual All \u2192 Uncommitted \u2192 All hides only row discard",
+      "result": "PASS",
+      "target_reached": true,
+      "zero_git_native_clipboard_provider_calls": true,
+      "polling_timers_released": true,
+      "deterministic_DTO_read": true
+    },
+    {
+      "number": 4,
+      "name": "split: actual All \u2192 Uncommitted \u2192 All hides only header discard",
+      "result": "PASS",
+      "target_reached": true,
+      "zero_git_native_clipboard_provider_calls": true,
+      "polling_timers_released": true,
+      "deterministic_DTO_read": true
+    },
+    {
+      "number": 5,
+      "name": "file: actual All \u2192 Uncommitted \u2192 All hides only row discard",
+      "result": "PASS",
+      "target_reached": true,
+      "zero_git_native_clipboard_provider_calls": true,
+      "polling_timers_released": true,
+      "deterministic_DTO_read": true
+    },
+    {
+      "number": 6,
+      "name": "file: actual All \u2192 Uncommitted \u2192 All hides only header discard",
+      "result": "PASS",
+      "target_reached": true,
+      "zero_git_native_clipboard_provider_calls": true,
+      "polling_timers_released": true,
+      "deterministic_DTO_read": true
+    },
+    {
+      "number": 7,
+      "name": "all: actual context menu retains All-scope discard without IO",
+      "result": "PASS",
+      "target_reached": true,
+      "zero_git_native_clipboard_provider_calls": true,
+      "polling_timers_released": true,
+      "deterministic_DTO_read": true
+    },
+    {
+      "number": 8,
+      "name": "uncommitted: actual context menu retains All-scope discard without IO",
+      "result": "PASS",
+      "target_reached": true,
+      "zero_git_native_clipboard_provider_calls": true,
+      "polling_timers_released": true,
+      "deterministic_DTO_read": true
+    },
+    {
+      "number": 9,
+      "name": "commit: actual context menu retains All-scope discard without IO",
+      "result": "PASS",
+      "target_reached": true,
+      "zero_git_native_clipboard_provider_calls": true,
+      "polling_timers_released": true,
+      "deterministic_DTO_read": true
+    },
+    {
+      "number": 10,
+      "name": "turn: actual context menu retains All-scope discard without IO",
+      "result": "PASS",
+      "target_reached": true,
+      "zero_git_native_clipboard_provider_calls": true,
+      "polling_timers_released": true,
+      "deterministic_DTO_read": true
+    }
+  ],
+  "control_evidence": "Each passing case awaits its fixture close() in finally; close asserts zero Git/native/clipboard/provider calls, zero owned timers, and deterministic DTO reads. Six cases reach the Uncommitted absence and return-to-All assertions; four menu cases assert All-scope confirmation. No counters are inferred from a failed setup.",
+  "raw_TAP": {
+    "path": ".oc-tmp/uncommitted-discard-runtime/green10-v3.log",
+    "bytes": 2511,
+    "sha256": "1560354e94ad456736e2c2b25622c5a67fe8fa356bebae2f16c39542302a8d9c"
+  },
+  "actual_release_utc": "2026-11-18T02:14:43.901667Z",
+  "verification_limits": [
+    "No native/browser/packaged-app run",
+    "No destructive Git action",
+    "No visual parity or screenshot",
+    "No additional local unit/typecheck/build"
+  ]
+}

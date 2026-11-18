@@ -1,0 +1,1 @@
+function Qls(t){if(t==="uncommitted")return{type:"uncommitted"};if(t.startsWith("commit~"))return{type:"commit",commitHash:t.slice(7)};if(t.startsWith("turn~")){const[,e,n]=t.split("~");if(e&&n)return{type:"turn",sessionId:e,turnId:n}}return{type:"all"}}

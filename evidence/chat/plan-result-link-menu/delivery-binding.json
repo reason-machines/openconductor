@@ -1,0 +1,77 @@
+{
+  "author": "Conductor Rebuild",
+  "checked_main": "8f0f8707a529e17937cd8e9447b8b769b6bc5e21",
+  "created_utc": "2026-11-18T01:29:26.302277+00:00",
+  "baseline_pins": [
+    {
+      "path": "src/features/chat/ToolRows.tsx",
+      "bytes": 56898,
+      "sha256": "562755550ca487766cfc8a8b08781edded583a1c3890e14719e3752a5d399188",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/features/chat/LinkMenu.tsx",
+      "bytes": 2345,
+      "sha256": "3967d74ecc5e5dd2d9f7fc9c5cba36ce0b614a2d4b535391701b7f246fec5cc9",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/features/chat/conductorTools.ts",
+      "bytes": 31930,
+      "sha256": "775150d24fd147bba59c0da0173b67cd6e955c4dbfaec404c8378823e6e07bbe",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/features/chat/toolIconData.ts",
+      "bytes": 31316,
+      "sha256": "ffe817145ad34b2934ebd204f17456b040d76f999f7758e8de1feba1388429f9",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/features/chat/thinkingChip.ts",
+      "bytes": 453,
+      "sha256": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/features/chat/markdown.ts",
+      "bytes": 11557,
+      "sha256": "35c81f7d5094d4b4bf8c5b7dc85db4666ae9aed21a3be177471dfa69309698cb",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/features/chat/mermaid.ts",
+      "bytes": 1010,
+      "sha256": "9d2e58993988bb9ecbf39b159683ee79243b127bacaa17843571e40891741bcf",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "src/features/chat/markdownFrontmatter.ts",
+      "bytes": 1036,
+      "sha256": "651225608bdb1cd9256c241bac98fb22664c08505606bc73e2ed34f7f880891f",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "package.json",
+      "bytes": 2019,
+      "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91",
+      "matches_frozen_baseline": true
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 222962,
+      "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992",
+      "matches_frozen_baseline": true
+    }
+  ],
+  "baseline_pins_match": true,
+  "permanent_fixture_path": "src/features/chat/planResultLinkMenu.test.ts",
+  "permanent_fixture_sha256": "5cf6a425ac7dc485bf22278af2d0b3d06870d8c717ecc965dc0d73c4db42cd75",
+  "permanent_byte_identical_to_frozen": true,
+  "candidate_sha256": "e81ddfb0bf3783aa00b7878a2a02f6d5da09860fe7b53fc93dcc3a7048819dd0",
+  "only_product_delta": "ToolRows plan Markdown Link={LinkWithMenu}",
+  "red_result_sha256": "26a79b6351f01aa2c71bd8e8d61a11f33041e07c19b619f5158612a4549f237c",
+  "green_result_sha256": "b800dc584a90d953c1ba6533371d9162ff93c36e520927131c6225e36f51b44a",
+  "hosted_permanent_adjacent_typecheck_build": "Not run locally; mandatory hosted frontend CI executes all src/**/*.test.ts plus typecheck/build",
+  "native_verification": "Not run; existing parent/sole E1 owns packaging and native verification"
+}
