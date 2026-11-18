@@ -1,0 +1,292 @@
+{
+  "status": "SOURCE-ONLY-REVIEW-REQUEST; NOT RUNTIME ADMISSION",
+  "unit": "CHAT-EXPLICIT-WORKSPACE-HREF-BE7",
+  "default_commit": "750b8bf25b2193141eff0cfcad64776228bea076",
+  "source_collision": "Explicit href unit and LinkMenu inert-render extension source-collision cleared exclusively to BE7; final source review and separate serialized grant still required",
+  "stage_on_admission_only": "explicitWorkspaceLinks.test.ts",
+  "fixture": {
+    "path": "src/features/chat/explicitWorkspaceLinks.test.ts",
+    "bytes": 11808,
+    "sha256": "6dee0e6360521b4272cc0ce478258dc243fbe74c9c23c1badac311fc7a4cfb29"
+  },
+  "source": {
+    "path": "source.json",
+    "bytes": 26142,
+    "sha256": "d1f968ad3ec7de16f9b3500183150f485915db725e17f002ddc623ea7bb17b92"
+  },
+  "source_verification": {
+    "path": "verification.json",
+    "bytes": 174,
+    "sha256": "3131bcb84c04e2f21841e93da7f0cc3531e4ae4f9181717f6e14eb7fefaa6985"
+  },
+  "plan": {
+    "path": "UNAPPLIED-PLAN.md",
+    "bytes": 9573,
+    "sha256": "2325502f6668d40602daae8b6ffc3d88803285e235e74421c92180e28ec21d5d"
+  },
+  "unapplied_treatment": {
+    "path": "UNAPPLIED-treatment.patch",
+    "bytes": 5541,
+    "sha256": "ebf101af31d9238a9c9cb042f86cdf3f58ba2514d793ceb3f45a3130362e0702"
+  },
+  "candidates": [
+    {
+      "path": "UNAPPLIED-markdown.ts",
+      "bytes": 12868,
+      "sha256": "725b9e40ba90d8d4f7b3fd0ba0b739d5a2f5332f92a95f6db001a77fe5892c95"
+    },
+    {
+      "path": "UNAPPLIED-LinkMenu.tsx",
+      "bytes": 2530,
+      "sha256": "38d8ed5c2724dc6337159a0cf85c22c375a0c6c10b14f556a4e28afb982d1953"
+    }
+  ],
+  "dependency_receipt_sha256": "7e38d215db21a0aff3e1ad4fb03c6e3cf82d5b852f9041a11c5c39f0ff02ce7f",
+  "command": "taskset -c 0 timeout --signal=TERM --kill-after=5s 60s env NODE_OPTIONS=--max-old-space-size=768 node --test --test-concurrency=1 src/features/chat/explicitWorkspaceLinks.test.ts",
+  "outer_supervisor": "nice -n 10 env UV_THREADPOOL_SIZE=1 python3 .ara-state/tmp/explicit-workspace-links/red_phase.py --admission-id <EXACT-GRANT> --created <UTC> --expires <UTC>",
+  "bounds": {
+    "grant_seconds": 125,
+    "workload_seconds": 60,
+    "term_kill_seconds": 5,
+    "minimum_free_GiB": 4,
+    "maximum_output_MiB": 16,
+    "rss_measured": false
+  },
+  "expected_red_source_prediction_only": {
+    "tests": 20,
+    "pass": 4,
+    "fail": 16,
+    "semantic_markers_at_least": 16
+  },
+  "pins": [
+    {
+      "path": "src/features/chat/ToolRows.tsx",
+      "bytes": 57106,
+      "sha256": "ac18f431c7b2bbfac5455f2f2af50567675634a28606bc5bf733f6562bac6167"
+    },
+    {
+      "path": "src/features/chat/LinkMenu.tsx",
+      "bytes": 2345,
+      "sha256": "3967d74ecc5e5dd2d9f7fc9c5cba36ce0b614a2d4b535391701b7f246fec5cc9"
+    },
+    {
+      "path": "src/features/chat/conductorTools.ts",
+      "bytes": 31930,
+      "sha256": "775150d24fd147bba59c0da0173b67cd6e955c4dbfaec404c8378823e6e07bbe"
+    },
+    {
+      "path": "src/features/chat/toolIconData.ts",
+      "bytes": 31316,
+      "sha256": "ffe817145ad34b2934ebd204f17456b040d76f999f7758e8de1feba1388429f9"
+    },
+    {
+      "path": "src/features/chat/thinkingChip.ts",
+      "bytes": 453,
+      "sha256": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9"
+    },
+    {
+      "path": "src/features/chat/markdown.ts",
+      "bytes": 11557,
+      "sha256": "35c81f7d5094d4b4bf8c5b7dc85db4666ae9aed21a3be177471dfa69309698cb"
+    },
+    {
+      "path": "src/features/chat/mermaid.ts",
+      "bytes": 1010,
+      "sha256": "9d2e58993988bb9ecbf39b159683ee79243b127bacaa17843571e40891741bcf"
+    },
+    {
+      "path": "src/features/chat/markdownFrontmatter.ts",
+      "bytes": 1036,
+      "sha256": "651225608bdb1cd9256c241bac98fb22664c08505606bc73e2ed34f7f880891f"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2019,
+      "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 222962,
+      "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+    },
+    {
+      "path": "src/features/chat/typedSubagentWorkspaceContext.test.ts",
+      "bytes": 12346,
+      "sha256": "e6c4da93039470df8a676b0bbd0a8947b15d0803bea0468a486330f61da04049"
+    },
+    {
+      "path": "src/features/chat/planResultLinkMenu.test.ts",
+      "bytes": 13501,
+      "sha256": "5cf6a425ac7dc485bf22278af2d0b3d06870d8c717ecc965dc0d73c4db42cd75"
+    },
+    {
+      "path": "src/features/chat/explicitWorkspaceLinks.test.ts",
+      "bytes": 11808,
+      "sha256": "6dee0e6360521b4272cc0ce478258dc243fbe74c9c23c1badac311fc7a4cfb29"
+    }
+  ],
+  "current_context_pins": [
+    {
+      "path": "src/features/chat/ToolRows.tsx",
+      "bytes": 57106,
+      "sha256": "ac18f431c7b2bbfac5455f2f2af50567675634a28606bc5bf733f6562bac6167"
+    },
+    {
+      "path": "src/features/chat/LinkMenu.tsx",
+      "bytes": 2345,
+      "sha256": "3967d74ecc5e5dd2d9f7fc9c5cba36ce0b614a2d4b535391701b7f246fec5cc9"
+    },
+    {
+      "path": "src/features/chat/conductorTools.ts",
+      "bytes": 31930,
+      "sha256": "775150d24fd147bba59c0da0173b67cd6e955c4dbfaec404c8378823e6e07bbe"
+    },
+    {
+      "path": "src/features/chat/toolIconData.ts",
+      "bytes": 31316,
+      "sha256": "ffe817145ad34b2934ebd204f17456b040d76f999f7758e8de1feba1388429f9"
+    },
+    {
+      "path": "src/features/chat/thinkingChip.ts",
+      "bytes": 453,
+      "sha256": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9"
+    },
+    {
+      "path": "src/features/chat/markdown.ts",
+      "bytes": 11557,
+      "sha256": "35c81f7d5094d4b4bf8c5b7dc85db4666ae9aed21a3be177471dfa69309698cb"
+    },
+    {
+      "path": "src/features/chat/mermaid.ts",
+      "bytes": 1010,
+      "sha256": "9d2e58993988bb9ecbf39b159683ee79243b127bacaa17843571e40891741bcf"
+    },
+    {
+      "path": "src/features/chat/markdownFrontmatter.ts",
+      "bytes": 1036,
+      "sha256": "651225608bdb1cd9256c241bac98fb22664c08505606bc73e2ed34f7f880891f"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2019,
+      "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 222962,
+      "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+    },
+    {
+      "path": "src/features/chat/Transcript.tsx",
+      "bytes": 21746,
+      "sha256": "4ba9fe4df5a852934890e19ac7de61f14fe8cdcbcf3652e60bbd18e925b271b4"
+    },
+    {
+      "path": "src/features/chat/typedSubagentLinks.test.ts",
+      "bytes": 15796,
+      "sha256": "27aab97bcf3c655965202e3acdb00732872aa41434991d5f3efc2412615454a7"
+    },
+    {
+      "path": "evidence/chat/typed-subagent-links.md",
+      "bytes": 8881,
+      "sha256": "ca026f4d7697d39a492cabc5d36d1375717beb553d4ac130844ba30d96e1691f"
+    },
+    {
+      "path": "src/features/chat/view.ts",
+      "bytes": 10115,
+      "sha256": "132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43"
+    },
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "bytes": 102922,
+      "sha256": "4520e46b632d50ef6feaf78398ec08cf7e8a58697605067b707af50d3c1f8214"
+    },
+    {
+      "path": "src/features/chat/typedSubagentWorkspaceContext.test.ts",
+      "bytes": 12346,
+      "sha256": "e6c4da93039470df8a676b0bbd0a8947b15d0803bea0468a486330f61da04049"
+    },
+    {
+      "path": "src/features/chat/planResultLinkMenu.test.ts",
+      "bytes": 13534,
+      "sha256": "5dd2a61d2e52d5b44b9a3c7d37b1dfb41c4e51a307df1eb307659b9331b8143a"
+    }
+  ],
+  "dependency_manifest_pins": {
+    "react": {
+      "name": "react",
+      "version": "18.3.1",
+      "expected": "18.3.1",
+      "identity_pass": true,
+      "manifest_sha256": "d4e68a5c96babb20cad1daafea8b78822eae45b341552cf5418d06a5304fa64c"
+    },
+    "react-test-renderer": {
+      "name": "react-test-renderer",
+      "version": "18.3.1",
+      "expected": "18.3.1",
+      "identity_pass": true,
+      "manifest_sha256": "e3b09e5a62e134d5241b520715de45b63ff3568ccbbeeeb70601607c3136c811"
+    },
+    "typescript": {
+      "name": "typescript",
+      "version": "5.9.3",
+      "expected": "5.9.3",
+      "identity_pass": true,
+      "manifest_sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    },
+    "react-markdown": {
+      "name": "react-markdown",
+      "version": "9.1.0",
+      "expected": "9.1.0",
+      "identity_pass": true,
+      "manifest_sha256": "a0679e19e3563d144bae1c9e7fbdbd66501792b5ba27cf10e6396ba78f01fe36"
+    },
+    "remark-breaks": {
+      "name": "remark-breaks",
+      "version": "4.0.0",
+      "expected": "4.0.0",
+      "identity_pass": true,
+      "manifest_sha256": "df633e5c230d648c90bbfdfe5e75d28a2492af508a38b8751d9faf28af0443c6"
+    },
+    "remark-gfm": {
+      "name": "remark-gfm",
+      "version": "4.0.1",
+      "expected": "4.0.1",
+      "identity_pass": true,
+      "manifest_sha256": "c199482a69355b610bd1ff225b097776d4a990445b11e5f4c618930dacc8c79d"
+    },
+    "remark-smartypants": {
+      "name": "remark-smartypants",
+      "version": "3.0.3",
+      "expected": "3.0.3",
+      "identity_pass": true,
+      "manifest_sha256": "b4b8eae0c5872dd65083a33323f0a64991e44f427509618cc67d1b3c15eb1423"
+    },
+    "unist-util-visit": {
+      "name": "unist-util-visit",
+      "version": "5.2.0",
+      "expected": "5.2.0",
+      "identity_pass": true,
+      "manifest_sha256": "6f544a847f95a9fcb7d8c1475e97998153fb933b72ee7a9dd60cb5f2abc845dd"
+    },
+    "lowlight": {
+      "name": "lowlight",
+      "version": "3.3.0",
+      "expected": "3.3.0",
+      "identity_pass": true,
+      "manifest_sha256": "7d376c50be6087225dd11041b7a3fc9b0551fef37d45f7d2a5a88cad3c55f391"
+    },
+    "highlight.js": {
+      "name": "highlight.js",
+      "version": "11.11.2",
+      "expected": "11.11.2",
+      "identity_pass": true,
+      "manifest_sha256": "24fbfcbf5932c773b37489c30cb69d1443a2e369e9782918564b5aff76e528dd"
+    }
+  },
+  "red_only": true,
+  "no_product_edits": true,
+  "no_runtime_staging_yet": true,
+  "no_install_probe_transpile_typecheck_build_browser_native_provider_or_retry": true,
+  "green_requires_separate_admission_and_identical_fixture": true
+}

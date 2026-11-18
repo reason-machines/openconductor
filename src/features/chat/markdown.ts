@@ -144,7 +144,7 @@ export interface MarkdownOptions {
   /** Opens a file link (its absolute path). */
   onOpenFile?: (path: string) => void;
   /** Draws links instead of a plain <a> (the transcript passes LinkMenu.tsx's right-click menu). */
-  Link?: ComponentType<{ href?: string; onOpenLink?: (href: string) => void; children?: ReactNode }>;
+  Link?: ComponentType<{ href?: string; onOpenLink?: (href: string) => void; children?: ReactNode; disabled?: boolean }>;
 }
 
 /** Conductor's `_Xs`: whether an inline-code value looks like a file path. */
@@ -156,9 +156,9 @@ export function looksLikePath(value: string): boolean {
   return path.startsWith("/") || path.startsWith("./") || (path.includes("/") && /\.[a-zA-Z0-9]{1,10}$/.test(path));
 }
 
-/** A normalized absolute file target strictly below the workspace, or undefined. */
-export function resolveWorkspacePath(value: string, workspacePath: string | undefined): string | undefined {
-  if (!workspacePath?.startsWith("/") || !looksLikePath(value) || /[\\\u0000]/.test(workspacePath)) return undefined;
+/** The shared lexical containment boundary; recognition belongs to each input. */
+function resolveContainedWorkspacePath(value: string, workspacePath: string | undefined): string | undefined {
+  if (!workspacePath?.startsWith("/") || /[\\\u0000]/.test(workspacePath)) return undefined;
   const normalize = (path: string) => {
     const segments: string[] = [];
     for (const segment of path.split("/")) {
@@ -172,6 +172,19 @@ export function resolveWorkspacePath(value: string, workspacePath: string | unde
   const path = value.replace(/:\d+(:\d+)?$/, "");
   const target = normalize(path.startsWith("/") ? path : `${root}/${path}`);
   return target !== root && target.startsWith(root === "/" ? "/" : `${root}/`) ? target : undefined;
+}
+
+/** A normalized absolute code/prose target strictly below the workspace. */
+export function resolveWorkspacePath(value: string, workspacePath: string | undefined): string | undefined {
+  return looksLikePath(value) ? resolveContainedWorkspacePath(value, workspacePath) : undefined;
+}
+
+/** Explicit hrefs need no prose path-shape heuristic, but retain URI boundaries. */
+function resolveWorkspaceHref(href: string, workspacePath: string | undefined): string | undefined {
+  let path = href.split(/[?#]/, 1)[0];
+  try { path = decodeURIComponent(path); } catch { /* Retain malformed escapes, like Conductor's yS. */ }
+  if (!path || path.startsWith("//") || /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(path) || /[\\\u0000]/.test(path)) return undefined;
+  return resolveContainedWorkspacePath(path, workspacePath);
 }
 
 export function markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link, notify }: MarkdownOptions = {}): Components {
@@ -200,8 +213,14 @@ export function markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link
           ? h(Fragment, null, children)
           : h("button", { type: "button", className: "md-file-link", title: `Open ${file}`, onClick: () => onOpenFile?.(file) }, children);
       }
+      const localHref = !!href && !href.startsWith("#") && !href.startsWith("//") && !/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(href);
+      const file = localHref ? resolveWorkspaceHref(href, workspacePath) : undefined;
+      const navigate = file !== undefined && onOpenFile ? () => onOpenFile(file) : undefined;
+      const disabled = localHref && !navigate;
+      if (disabled && !Link) return h("span", { className: "md-link" }, children);
+      const openLink = localHref ? navigate : onOpenLink;
       return Link
-        ? h(Link, { href, onOpenLink, children })
+        ? h(Link, { href, onOpenLink: openLink, children, disabled })
         : h(
             "a",
             {
@@ -210,9 +229,9 @@ export function markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link
               target: "_blank",
               rel: "noreferrer noopener",
               onClick: (e: { preventDefault: () => void }) => {
-                if (!href || !onOpenLink) return;
+                if (!href || !openLink) return;
                 e.preventDefault();
-                onOpenLink(href);
+                openLink(href);
               },
             },
             children,

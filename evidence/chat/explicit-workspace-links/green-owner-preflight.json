@@ -1,0 +1,88 @@
+{
+  "status": "PASS",
+  "checked_utc": "2026-11-18T03:47:22.646862+00:00",
+  "actual_fresh_main": "234ec70ea89135b83f68f287330a3701d27f2b2d",
+  "committed_source": "9a615be52c140f17144618ce31c0d18b812f9169",
+  "whole_baselines": 17,
+  "materialized_inverse_all17": true,
+  "original_runtime_pins": 13,
+  "protected_originals": 11,
+  "reference_assets": 2,
+  "dependency_manifest_identities": 10,
+  "physical_dependencies": {
+    "react": {
+      "device": 23,
+      "inode": 8278821,
+      "mtime_ns": 1794958713005537547,
+      "bytes": 999,
+      "sha256": "d4e68a5c96babb20cad1daafea8b78822eae45b341552cf5418d06a5304fa64c"
+    },
+    "react-test-renderer": {
+      "device": 23,
+      "inode": 8278614,
+      "mtime_ns": 1794958712661537530,
+      "bytes": 761,
+      "sha256": "e3b09e5a62e134d5241b520715de45b63ff3568ccbbeeeb70601607c3136c811"
+    },
+    "typescript": {
+      "device": 23,
+      "inode": 8265820,
+      "mtime_ns": 1794958711601537480,
+      "bytes": 3620,
+      "sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    },
+    "react-markdown": {
+      "device": 23,
+      "inode": 8278712,
+      "mtime_ns": 1794958712869537540,
+      "bytes": 4974,
+      "sha256": "a0679e19e3563d144bae1c9e7fbdbd66501792b5ba27cf10e6396ba78f01fe36"
+    },
+    "remark-breaks": {
+      "device": 23,
+      "inode": 8278439,
+      "mtime_ns": 1794958712385537517,
+      "bytes": 2255,
+      "sha256": "df633e5c230d648c90bbfdfe5e75d28a2492af508a38b8751d9faf28af0443c6"
+    },
+    "remark-gfm": {
+      "device": 23,
+      "inode": 8278424,
+      "mtime_ns": 1794958712369537516,
+      "bytes": 2984,
+      "sha256": "c199482a69355b610bd1ff225b097776d4a990445b11e5f4c618930dacc8c79d"
+    },
+    "remark-smartypants": {
+      "device": 23,
+      "inode": 8278380,
+      "mtime_ns": 1794958712233537510,
+      "bytes": 1556,
+      "sha256": "b4b8eae0c5872dd65083a33323f0a64991e44f427509618cc67d1b3c15eb1423"
+    },
+    "unist-util-visit": {
+      "device": 23,
+      "inode": 8265466,
+      "mtime_ns": 1794958711021537452,
+      "bytes": 2398,
+      "sha256": "6f544a847f95a9fcb7d8c1475e97998153fb933b72ee7a9dd60cb5f2abc845dd"
+    },
+    "lowlight": {
+      "device": 23,
+      "inode": 8289318,
+      "mtime_ns": 1794958716317537705,
+      "bytes": 2931,
+      "sha256": "7d376c50be6087225dd11041b7a3fc9b0551fef37d45f7d2a5a88cad3c55f391"
+    },
+    "highlight.js": {
+      "device": 23,
+      "inode": 8304956,
+      "mtime_ns": 1794958718269537798,
+      "bytes": 3568,
+      "sha256": "24fbfcbf5932c773b37489c30cb69d1443a2e369e9782918564b5aff76e528dd"
+    }
+  },
+  "primary_and_product_clean": true,
+  "free_bytes": 15847018496,
+  "supervisor_sha256": "5c4c4ad8fffc2c78fd1a3e91a45b4f8d6369c7df32b6c3d543495721f07c4da3",
+  "request_sha256": "53b34e11c09c9296d236565b24252d0a66f78a6e1fe158a1003fc6e0ccf29bd3"
+}
