@@ -1,0 +1,292 @@
+{
+  "author": "Conductor Rebuild",
+  "scope": "TYPED-SUBAGENT-WORKSPACE-FILE-LINK-BE7",
+  "utc": "2026-11-17T23:26:09.028034+00:00",
+  "checked_main": "5f7afadc1c50ee44aa21677b5ab0dd96b87cfb57",
+  "status": "SOURCE_ONLY_CANDIDATE_OWNERSHIP_RESPONSE_PENDING",
+  "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "parents": [
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  ],
+  "spans": [
+    {
+      "name": "ROo",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 8870021,
+      "end": 8872955,
+      "bytes": 2934,
+      "sha256": "4b020f575c8024708d1576ab02d0154a6690a710abe1fbe5e603fd7731e69afe",
+      "text": "const ROo=$.memo(function(e){const n=ne.c(51),{block:i,idx:r,messageId:o,potentialToolResultMessages:a,isPreviewMessage:c,sessionId:u,localWorkspaceId:d,subAgentExecutions:h}=e,m=c===void 0?!1:c;let g;n[0]!==h?(g=h===void 0?[]:h,n[0]=h,n[1]=g):g=n[1];const _=g,{data:v}=us(\"not_absolutely_right\"),{currentWorkspace:x}=Fp(),{data:w}=x,E=UDt(u)[0],k=fSe(u);let I;n[2]!==i?(I=i.type===\"tool_use\"?cTr(i):void 0,n[2]=i,n[3]=I):I=n[3];const R=I;if(!Mwr({block:i,potentialToolResultMessages:a}))return null;if(i.type===\"text\"&&\"text\"in i){let D,P;if(n[4]!==i.text||n[5]!==k||n[6]!==v){const H=kKn(i.text,v);D=k?roi(H):H,P=D.trim(),n[4]=i.text,n[5]=k,n[6]=v,n[7]=D,n[8]=P}else D=n[7],P=n[8];if(!P)return null;const L=!m,B=w?.workspacePath;let F;return n[9]!==d||n[10]!==D||n[11]!==L||n[12]!==B?(F=p.jsx(yOo,{\"data-searchable\":\"true\",children:p.jsx(xS,{text:D,muted:L,localWorkspaceId:d,workspacePath:B})}),n[9]=d,n[10]=D,n[11]=L,n[12]=B,n[13]=F):F=n[13],F}if(\"type\"in i&&i.type===\"thinking\"){let D,P;if(n[14]!==i.thinking||n[15]!==v?(D=kKn(i.thinking,v),P=D.trim(),n[14]=i.thinking,n[15]=v,n[16]=D,n[17]=P):(D=n[16],P=n[17]),!P)return null;const L=`${o}-thinking-${r}`;let B;n[18]!==D?(B={thinking:D},n[18]=D,n[19]=B):B=n[19];let F;n[20]!==L||n[21]!==B?(F={id:L,name:\"Thinking\",input:B},n[20]=L,n[21]=B,n[22]=F):F=n[22];const H=F;let U;return n[23]!==d||n[24]!==u||n[25]!==H?(U=p.jsx(\"div\",{className:\"w-full\",children:p.jsx(hIt,{toolCall:H,toolResult:null,sessionId:u,localWorkspaceId:d})}),n[23]=d,n[24]=u,n[25]=H,n[26]=U):U=n[26],U}if(i.type===\"tool_use\"&&R!==void 0){const D=\"id\"in i?i.id:\"\";let P;if(n[27]!==_||n[28]!==D){let G;n[30]!==D?(G=K=>K.parentToolUseId===D,n[30]=D,n[31]=G):G=n[31],P=_.find(G),n[27]=_,n[28]=D,n[29]=P}else P=n[29];const L=P;if(L){let G;return n[32]!==d||n[33]!==u||n[34]!==L?(G=p.jsx(\"div\",{className:\"w-full\",children:p.jsx(qNo,{subAgentExecution:L,sessionId:u,localWorkspaceId:d})}),n[32]=d,n[33]=u,n[34]=L,n[35]=G):G=n[35],G}let B;n[36]!==a||n[37]!==D?(B=TOo(D,a),n[36]=a,n[37]=D,n[38]=B):B=n[38];const F=B;if(F===null&&E?.toolUseId===D)return null;const H=F?.toolResult??null,U=F?.createdAt;let z;return n[39]!==d||n[40]!==u||n[41]!==H||n[42]!==U||n[43]!==R?(z=p.jsx(\"div\",{className:\"w-full\",children:p.jsx(hIt,{toolCall:R,toolResult:H,toolResultCreatedAt:U,sessionId:u,localWorkspaceId:d})}),n[39]=d,n[40]=u,n[41]=H,n[42]=U,n[43]=R,n[44]=z):z=n[44],z}if(i.type===\"fallback\"){const D=i.from?.model,P=i.to?.model;let L;n[45]!==D||n[46]!==P?(L=D&&P?`Switched from ${aAn(D)} to ${aAn(P)} for this response.`:\"Switched models for this response.\",n[45]=D,n[46]=P,n[47]=L):L=n[47];const B=L;let F;return n[48]!==B?(F=p.jsx(\"p\",{className:\"text-sm italic text-muted-foreground\",children:B}),n[48]=B,n[49]=F):F=n[49],F}let O;return n[50]===Symbol.for(\"react.memo_cache_sentinel\")?(O=p.jsx(\"p\",{className:\"text-sm italic text-muted-foreground\",children:\"This content could not be displayed.\"}),n[50]=O):O=n[50],O});"
+    },
+    {
+      "name": "O1o-and-D1o",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 7587305,
+      "end": 7588525,
+      "bytes": 1220,
+      "sha256": "9f3ff5dc1b79f4690ad7b89b8911acbd083c2b97a4b3268f14f18cd964972184",
+      "text": "function O1o({kind:t,registry:e}){if(t===void 0)return;const n=e[t];return n===\"unhandled\"?void 0:n}const D1o={Agent:\"sub-agent\",AskUserQuestion:\"ask-user-question\",Bash:\"bash\",BashOutput:\"bash-output\",Edit:\"edit\",EnterPlanMode:\"enter-plan-mode\",ExitPlanMode:\"exit-plan-mode\",Glob:\"glob\",Grep:\"grep\",ImageGeneration:\"image-generation\",LS:\"ls\",MultiEdit:\"multi-edit\",NotebookEdit:\"multi-edit\",NotebookRead:\"read\",Read:\"read\",ScheduleWakeup:\"schedule-wakeup\",SendMessage:\"send-message\",Skill:\"skill\",SlashCommand:\"slash-command\",Task:\"sub-agent\",TaskCreate:\"task-create\",TaskGet:\"task-get\",TaskList:\"task-list\",TaskUpdate:\"task-update\",Teammate:\"teammate\",Thinking:\"thinking\",TodoRead:\"todo\",TodoWrite:\"todo\",WebFetch:\"web\",WebSearch:\"web\",Write:\"write\",mcp__conductor__AskUserQuestion:\"ask-user-question\",mcp__conductor__DiffComment:\"diff-comment\",mcp__conductor__GetDiffComments:\"get-diff-comments\",mcp__conductor__GetTerminalOutput:\"get-terminal-output\",mcp__conductor__GetWorkspaceDiff:\"get-workspace-diff\",mcp__conductor__RunLocalCommand:\"run-local-command\",mcp__node_repl__js:\"node-repl-js\",\"sub-agent\":\"sub-agent\"},P1o=[[\"collab__\",\"codex-collab\"],[\"mcp__context7__\",\"context7-mcp\"],[\"mcp__linear__\",\"linear-mcp\"]];"
+    },
+    {
+      "name": "L1o",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 7588525,
+      "end": 7588936,
+      "bytes": 411,
+      "sha256": "38f9343e156728f1decb69430d406c3c1ff29482da74e69e24b6d5c538834f25",
+      "text": "function L1o(t){const e=D1o[t];if(e!==void 0)return e;for(const[n,i]of P1o)if(t.startsWith(n))return i}const M1o={WorkspaceSummary:\"Workspace summary\",ListComputers:\"List computers\",GetComputerConfiguration:\"Read computer configuration\",CreateComputerConfiguration:\"Create computer configuration\",GetComputerBuildStatus:\"Read computer build status\",UpdateRepositorySetupScript:\"Update repository setup script\"};"
+    },
+    {
+      "name": "Qpo",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 7877188,
+      "end": 7877770,
+      "bytes": 582,
+      "sha256": "200844523cd3dbdb0e9e1fde14816c920725a8cd8a6dca635a72d82483b989cc",
+      "text": "Qpo={\"ask-user-question\":Tpo,bash:Lki,\"bash-output\":N0o,\"codex-collab\":_0o,\"context7-mcp\":$ki,\"diff-comment\":Ipo,edit:F0o,\"enter-plan-mode\":mpo,\"exit-plan-mode\":gpo,\"get-diff-comments\":Opo,\"get-terminal-output\":Dpo,\"get-workspace-diff\":Npo,glob:dpo,grep:D0o,\"image-generation\":Vpo,\"linear-mcp\":Bki,ls:fpo,\"multi-edit\":$0o,\"node-repl-js\":Kpo,read:O0o,\"run-local-command\":I0o,\"schedule-wakeup\":Epo,\"send-message\":qpo,skill:vpo,\"slash-command\":kpo,\"sub-agent\":bpo,\"task-create\":npo,\"task-get\":lpo,\"task-list\":ipo,\"task-update\":cpo,teammate:Gpo,thinking:ppo,todo:G0o,web:upo,write:hpo};"
+    },
+    {
+      "name": "hIt",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 7877770,
+      "end": 7878325,
+      "bytes": 555,
+      "sha256": "8c45bb6e5892cce46330f820a54460ee896d1c14c19ad134dab20b9f20b75340",
+      "text": "function hIt(t){const e=ne.c(12),{toolCall:n,toolResult:i,toolResultCreatedAt:r,sessionId:o,localWorkspaceId:a}=t;let c;e[0]!==n.name?(c=O1o({kind:L1o(n.name),registry:Qpo}),e[0]=n.name,e[1]=c):c=e[1];const u=c;if(u===void 0){let h;return e[2]!==n||e[3]!==i?(h=p.jsx(aUt,{toolCall:n,toolResult:i}),e[2]=n,e[3]=i,e[4]=h):h=e[4],h}let d;return e[5]!==u||e[6]!==a||e[7]!==o||e[8]!==n||e[9]!==i||e[10]!==r?(d=p.jsx(u,{toolCall:n,toolResult:i,toolResultCreatedAt:r,sessionId:o,localWorkspaceId:a}),e[5]=u,e[6]=a,e[7]=o,e[8]=n,e[9]=i,e[10]=r,e[11]=d):d=e[11],d}"
+    },
+    {
+      "name": "xS",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 6550612,
+      "end": 6551722,
+      "bytes": 1110,
+      "sha256": "9912a5bd7f235ac2351b161575bfcc4abb2fa3c9e7392ab0666833652c364c64",
+      "text": "const xS=t=>{const e=ne.c(12);let n,i,r,o,a,c;e[0]!==t?({text:a,className:n,muted:r,selectable:o,componentOverrides:i,...c}=t,e[0]=t,e[1]=n,e[2]=i,e[3]=r,e[4]=o,e[5]=a,e[6]=c):(n=e[1],i=e[2],r=e[3],o=e[4],a=e[5],c=e[6]);const u=r===void 0?!1:r,m=`prose prose-sm prose-invert antialiased ${(o===void 0?!0:o)?\"select-text\":\"select-none\"} text-pretty prose-headings:text-balance wrap-anywhere [&_pre:has(>[data-code-surface])]:border-0 [&_pre:has(>[data-code-surface])]:p-0`,_=`${u?`${m} prose-headings:text-muted-foreground prose-p:text-muted-foreground prose-strong:text-muted-foreground prose-em:text-muted-foreground prose-blockquote:text-muted-foreground prose-code:text-muted-foreground prose-pre:text-muted-foreground prose-ol:text-muted-foreground prose-ul:text-muted-foreground prose-li:text-muted-foreground prose-table:text-muted-foreground prose-th:text-muted-foreground prose-td:text-muted-foreground prose-hr:border-muted`:m} ${n||\"\"}`;let v;return e[7]!==i||e[8]!==_||e[9]!==a||e[10]!==c?(v=p.jsx(pEi,{text:a,className:_,componentOverrides:i,...c}),e[7]=i,e[8]=_,e[9]=a,e[10]=c,e[11]=v):v=e[11],v};"
+    },
+    {
+      "name": "dHn-and-pEi",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 6548274,
+      "end": 6550420,
+      "bytes": 2146,
+      "sha256": "45aa2c06317fa200294c0100129d6e5c52be1deebc5e4dd68e5f89c84a6be5cd",
+      "text": "function dHn(t){const e=ne.c(5),{text:n,className:i,components:r,useRawHtml:o}=t,a=o?MXs:LXs;let c;return e[0]!==i||e[1]!==r||e[2]!==a||e[3]!==n?(c=p.jsx(WXs,{rehypePlugins:a,remarkPlugins:BXs,className:i,urlTransform:Dzs,components:r,children:n}),e[0]=i,e[1]=r,e[2]=a,e[3]=n,e[4]=c):c=e[4],c}const qXs=t=>{if(!t||t.host===gn)return!1;if(t.state===\"initializing\")return!0;const e=t.remoteState?.status;return e!==void 0&&e!==\"running\"&&e!==\"deleted\"},pEi=$.memo(function(e){const n=ne.c(32),{text:i,className:r,localWorkspaceId:o,workspacePath:a,componentOverrides:c,markdownFilePath:u}=e;let d;n[0]!==o?(d={localWorkspaceId:o},n[0]=o,n[1]=d):d=n[1];const{data:h,isPending:m}=Ms(d,ed(PXs)),g=h?.host;let _;n[2]!==o?(_={localWorkspaceId:o},n[2]=o,n[3]=_):_=n[3];const{data:v}=Ms(_,qXs),{navigateToFile:x}=Wd(o??\"\");let w;n[4]!==o||n[5]!==x?(w=o?U=>{const{path:z,lineNumber:G}=U;return x({path:z,mode:\"edit\",lineNumber:G})}:void 0,n[4]=o,n[5]=x,n[6]=w):w=n[6];const E=w;let k;n[7]!==E||n[8]!==h||n[9]!==a?(k=U=>{const{href:z,children:G}=U;return p.jsx(cEi,{href:z,onOpenFile:E,workspacePath:a,workspace:h,children:G})},n[7]=E,n[8]=h,n[9]=a,n[10]=k):k=n[10];const I=o!==void 0&&(m||(v??!1));let R;n[11]!==o||n[12]!==u||n[13]!==I||n[14]!==g||n[15]!==a?(R=zSi({markdownFilePath:u,localWorkspaceId:o,workspacePath:a,workspaceHost:g,isWorkspaceSourcePending:I}),n[11]=o,n[12]=u,n[13]=I,n[14]=g,n[15]=a,n[16]=R):R=n[16];let O;n[17]!==c||n[18]!==k||n[19]!==R?(O={...VXs,a:k,img:R,...c},n[17]=c,n[18]=k,n[19]=R,n[20]=O):O=n[20];const D=O,P=r??\"\";let L;n[21]!==i?(L=[i],n[21]=i,n[22]=L):L=n[22];let B,F;n[23]!==D||n[24]!==P||n[25]!==i?(F=()=>p.jsx(LJ,{context:\"Failed to render markdown message without raw HTML\",resetKeys:[i],fallbackRender:()=>p.jsx(GXs,{text:i,className:P}),children:p.jsx(dHn,{text:i,className:P,components:D,useRawHtml:!1})}),B=p.jsx(dHn,{text:i,className:P,components:D,useRawHtml:!0}),n[23]=D,n[24]=P,n[25]=i,n[26]=B,n[27]=F):(B=n[26],F=n[27]);let H;return n[28]!==B||n[29]!==L||n[30]!==F?(H=p.jsx(LJ,{context:\"Failed to render markdown message\",resetKeys:L,fallbackRender:F,children:B}),n[28]=B,n[29]=L,n[30]=F,n[31]=H):H=n[31],H});"
+    },
+    {
+      "name": "cEi",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 6541795,
+      "end": 6544749,
+      "bytes": 2954,
+      "sha256": "e717f2df6de24cb5869f3bb7f9a89b457d75a87a26a630e90f2c7c479eca63cf",
+      "text": "function cEi(t){const e=ne.c(61),{href:n,children:i,onOpenFile:r,workspacePath:o,workspace:a}=t;if(!n){let w;return e[0]!==i?(w=p.jsx(p.Fragment,{children:i}),e[0]=i,e[1]=w):w=e[1],w}let c,u;e[2]!==n||e[3]!==r||e[4]!==o?(c=r&&o?RX(o,n):void 0,u=CXs({href:n,resolvedHref:c,workspacePath:o}),e[2]=n,e[3]=r,e[4]=o,e[5]=c,e[6]=u):(c=e[5],u=e[6]);const d=u;let h;e[7]!==c||e[8]!==a||e[9]!==o?(h=a!==void 0&&c!==void 0&&o!==void 0?{workspace:a,pathToOpen:c.absolutePath,boundaryPath:o}:void 0,e[7]=c,e[8]=a,e[9]=o,e[10]=h):h=e[10];const m=h;let g;e[11]!==n?(g=mce(n),e[11]=n,e[12]=g):g=e[12];const _=g;if(_?.type===\"onboarding_add_repository\"){let w;e[13]!==i?(w=p.jsx(\"button\",{type:\"button\",className:\"border-0 bg-transparent p-0 text-left font-[inherit] cursor-pointer hover:underline text-link-foreground transition-colors\",onClick:DXs,children:i}),e[13]=i,e[14]=w):w=e[14];let E;return e[15]!==d||e[16]!==w?(E=p.jsx(EQ,{copyAddress:d,children:w}),e[15]=d,e[16]=w,e[17]=E):E=e[17],E}if(_?.type===\"open-browser\"||_?.type===\"open-settings\"||_?.type===\"open-automation\"){let w;e[18]!==n?(w=()=>{eV(n)},e[18]=n,e[19]=w):w=e[19];let E;e[20]!==i||e[21]!==w?(E=p.jsx(\"button\",{type:\"button\",className:\"border-0 bg-transparent p-0 text-left font-[inherit] cursor-pointer hover:underline text-link-foreground transition-colors\",onClick:w,children:i}),e[20]=i,e[21]=w,e[22]=E):E=e[22];let k;return e[23]!==d||e[24]!==E?(k=p.jsx(EQ,{copyAddress:d,children:E}),e[23]=d,e[24]=E,e[25]=k):k=e[25],k}if(_?.type===\"open-workspace\"){let w;e[26]!==n?(w=()=>eV(n),e[26]=n,e[27]=w):w=e[27];let E;e[28]!==i||e[29]!==_.sessionId||e[30]!==_.workspaceId||e[31]!==w?(E=p.jsx(m9e,{workspaceId:_.workspaceId,sessionId:_.sessionId,onClick:w,children:i}),e[28]=i,e[29]=_.sessionId,e[30]=_.workspaceId,e[31]=w,e[32]=E):E=e[32];let k;return e[33]!==d||e[34]!==E?(k=p.jsx(EQ,{copyAddress:d,children:E}),e[33]=d,e[34]=E,e[35]=k):k=e[35],k}if(n.startsWith(\"#\")){let w;e[36]!==i||e[37]!==n?(w=p.jsx(OXs,{href:n,children:i}),e[36]=i,e[37]=n,e[38]=w):w=e[38];let E;return e[39]!==d||e[40]!==w?(E=p.jsx(EQ,{copyAddress:d,children:w}),e[39]=d,e[40]=w,e[41]=E):E=e[41],E}if(r&&c){let w;e[42]!==i||e[43]!==r||e[44]!==c?(w=p.jsx(IXs,{onOpenFile:r,resolvedHref:c,children:i}),e[42]=i,e[43]=r,e[44]=c,e[45]=w):w=e[45];let E;return e[46]!==d||e[47]!==m||e[48]!==w?(E=p.jsx(EQ,{copyAddress:d,copyLabel:\"Copy file path\",copyToastLabel:\"file path\",openInFinderTarget:m,children:w}),e[46]=d,e[47]=m,e[48]=w,e[49]=E):E=e[49],E}if(EXs(n)){let w;e[50]!==i?(w=p.jsx(\"span\",{className:\"text-link-foreground\",children:i}),e[50]=i,e[51]=w):w=e[51];let E;return e[52]!==d||e[53]!==w?(E=p.jsx(EQ,{copyAddress:d,copyLabel:\"Copy file path\",copyToastLabel:\"file path\",children:w}),e[52]=d,e[53]=w,e[54]=E):E=e[54],E}let v;e[55]!==i||e[56]!==n?(v=p.jsx(z5e,{url:n,children:i}),e[55]=i,e[56]=n,e[57]=v):v=e[57];let x;return e[58]!==d||e[59]!==v?(x=p.jsx(EQ,{copyAddress:d,children:v}),e[58]=d,e[59]=v,e[60]=x):x=e[60],x}"
+    },
+    {
+      "name": "renderer-import",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 52991,
+      "end": 66495,
+      "bytes": 13504,
+      "sha256": "711b96377098ad3838934209f1710cb85acfc256abecae07605139daf0670ed5",
+      "text": "import{c as k6r,a as Zwe,u as _0,i as Su,G as hYe,g as NH,m as T6r,b as gu,s as A6r,p as I6r,d as R6r,e as bCt,f as N6r,h as pYe,l as pxe,j as nni,k as O6r,n as $4e,o as tVe,D as D6r,q as cQ,r as Hje,t as Z_e,v as ini,w as fce,x as P6r,y as p,z as $,R as an,A as cZ,B as c3,C as L6r,E as BA,F as M6r,H as l_,I as aa,J as jOt,K as rni,L as j6r,M as F6r,T as mxe,N as ne,O as qi,P as tl,Q as Ah,S as $U,U as Bt,V as gn,W as Kc,X as gD,Y as Fu,Z as Vo,_ as zo,$ as Fue,a0 as Bue,a1 as Xo,a2 as to,a3 as sni,a4 as So,a5 as _Ct,a6 as $ue,a7 as mYe,a8 as FOt,a9 as us,aa as zue,ab as uZ,ac as BOt,ad as OH,ae as B6r,af as gv,ag as oni,ah as $6r,ai as z6r,aj as U6r,ak as ani,al as FO,am as H6r,an as V6r,ao as zd,ap as W6r,aq as lni,ar as g6,as as Ao,at as cni,au as G6r,av as q6r,aw as y9,ax as K6r,ay as gYe,az as uni,aA as vCt,aB as nc,aC as Y6r,aD as Q6r,aE as X6r,aF as J6r,aG as ly,aH as Z6r,aI as Cg,aJ as Ms,aK as dni,aL as dZ,aM as gxe,aN as e4r,aO as t4r,aP as QO,aQ as $Ot,aR as n4r,aS as zOt,aT as i4r,aU as r4r,aV as bYe,aW as uI,aX as s4r,aY as dI,aZ as o4r,a_ as fni,a$ as a4r,b0 as l4r,b1 as c4r,b2 as u4r,b3 as d4r,b4 as f4r,b5 as h4r,b6 as p4r,b7 as m4r,b8 as UOt,b9 as Dk,ba as KM,bb as Jx,bc as g4r,bd as XA,be as _Ye,bf as b4r,bg as HOt,bh as hni,bi as bxe,bj as pni,bk as Kh,bl as mni,bm as gni,bn as _4r,bo as x9,bp as Xj,bq as v4r,br as hce,bs as Fae,bt as y4r,bu as bni,bv as _ni,bw as yg,bx as x4r,by as vni,bz as BO,bA as w4r,bB as fZ,bC as S4r,bD as VOt,bE as E4r,bF as WOt,bG as pce,bH as Jj,bI as C4r,bJ as yni,bK as k4r,bL as T4r,bM as A4r,bN as I4r,bO as W4,bP as Jh,bQ as vo,bR as xm,bS as xni,bT as R4r,bU as N4r,bV as O4r,bW as wni,bX as bf,bY as x1,bZ as GOt,b_ as qOt,b$ as D4r,c0 as vYe,c1 as P4r,c2 as fI,c3 as jp,c4 as nr,c5 as sH,c6 as nl,c7 as nVe,c8 as eSe,c9 as tSe,ca as Qh,cb as Xh,cc as L4r,cd as yCt,ce as Sni,cf as xCt,cg as tJ,ch as M4r,ci as wCt,cj as SCt,ck as j4r,cl as yYe,cm as Bae,cn as Eni,co as Cni,cp as hI,cq as ed,cr as I6,cs as iVe,ct as F4r,cu as so,cv as fc,cw as kni,cx as Tni,cy as B4r,cz as $4r,cA as Uue,cB as z4r,cC as nSe,cD as iSe,cE as Ani,cF as Ini,cG as Rni,cH as Hue,cI as U4r,cJ as H4r,cK as _xe,cL as ib,cM as Nni,cN as V4r,cO as k8,cP as W4r,cQ as G4r,cR as xYe,cS as rVe,cT as Zj,cU as YM,cV as wYe,cW as q4r,cX as WTn,cY as K4r,cZ as Y4r,c_ as mS,c$ as Oni,d0 as bD,d1 as XO,d2 as rSe,d3 as Dni,d4 as Q4r,d5 as Vx,d6 as sSe,d7 as Vue,d8 as X4r,d9 as oSe,da as au,db as aSe,dc as Pni,dd as pI,de as mI,df as J4r,dg as KOt,dh as Ld,di as YOt,dj as Wue,dk as q6t,dl as Lni,dm as bv,dn as Mni,dp as jni,dq as hZ,dr as Fni,ds as Gue,dt as Ko,du as dp,dv as Z4r,dw as eyr,dx as Y1,dy as eF,dz as SYe,dA as QOt,dB as bV,dC as lSe,dD as Tj,dE as Bni,dF as Pk,dG as vs,dH as $ni,dI as tyr,dJ as XOt,dK as nyr,dL as iyr,dM as ryr,dN as syr,dO as oyr,dP as EYe,dQ as zni,dR as ayr,dS as fp,dT as xg,dU as u3,dV as GTn,dW as lyr,dX as cyr,dY as cSe,dZ as qTn,d_ as Uni,d$ as uyr,e0 as dyr,e1 as fyr,e2 as vxe,e3 as uSe,e4 as JOt,e5 as ZOt,e6 as Hni,e7 as eDt,e8 as CYe,e9 as Vni,ea as Wni,eb as tDt,ec as Aj,ed as zU,ee as sVe,ef as Gni,eg as hyr,eh as nJ,ei as pyr,ej as myr,ek as rc,el as dSe,em as Yu,en as que,eo as nDt,ep as qni,eq as _D,er as iDt,es as kYe,et as Kue,eu as rDt,ev as Kni,ew as sDt,ex as oDt,ey as fSe,ez as Yni,eA as Qni,eB as Yue,eC as Xni,eD as av,eE as aDt,eF as Que,eG as Jni,eH as gyr,eI as byr,eJ as TYe,eK as Zni,eL as pZ,eM as eii,eN as Xue,eO as IX,eP as _yr,eQ as lDt,eR as tii,eS as nv,eT as nii,eU as vyr,eV as yyr,eW as iii,eX as mZ,eY as xyr,eZ as uc,e_ as vD,e$ as rii,f0 as wyr,f1 as _V,f2 as Syr,f3 as Eyr,f4 as eve,f5 as vV,f6 as Cyr,f7 as cDt,f8 as kyr,f9 as hSe,fa as uDt,fb as Vd,fc as dDt,fd as AYe,fe as Tyr,ff as Ayr,fg as Iyr,fh as N6,fi as pSe,fj as p2,fk as JO,fl as mSe,fm as yd,fn as fDt,fo as oVe,fp as sii,fq as Ryr,fr as Nyr,fs as Oyr,ft as gSe,fu as Dyr,fv as iJ,fw as KTn,fx as Pyr,fy as oii,fz as z4e,fA as RX,fB as ECt,fC as YTn,fD as aii,fE as Lyr,fF as Myr,fG as ZO,fH as jyr,fI as Fyr,fJ as Byr,fK as $yr,fL as zyr,fM as Uyr,fN as rJ,fO as lii,fP as IYe,fQ as Hyr,fR as hDt,fS as mce,fT as RYe,fU as yxe,fV as Vyr,fW as gce,fX as NYe,fY as OYe,fZ as cii,f_ as pDt,f$ as lv,g0 as $O,g1 as bSe,g2 as _Se,g3 as DYe,g4 as mDt,g5 as AO,g6 as vSe,g7 as uii,g8 as Wyr,g9 as Gyr,ga as dii,gb as fii,gc as N9,gd as CCt,ge as hii,gf as qyr,gg as pii,gh as qc,gi as ySe,gj as Kyr,gk as Yyr,gl as Sh,gm as Qyr,gn as U4e,go as uS,gp as gDt,gq as xSe,gr as Jue,gs as wSe,gt as Zue,gu as mii,gv as bce,gw as IO,gx as gii,gy as bDt,gz as Xyr,gA as Jyr,gB as Zyr,gC as exr,gD as L6e,gE as txr,gF as nxr,gG as bii,gH as _ii,gI as ixr,gJ as vii,gK as QTn,gL as ede,gM as rxr,gN as sxr,gO as _Dt,gP as vDt,gQ as PYe,gR as oxr,gS as axr,gT as tX,gU as q_,gV as yii,gW as lxr,gX as Rx,gY as cxr,gZ as XE,g_ as uxr,g$ as aVe,h0 as xii,h1 as XTn,h2 as JTn,h3 as dxr,h4 as _ce,h5 as wii,h6 as fxr,h7 as yDt,h8 as ZTn,h9 as hy,ha as rb,hb as xDt,hc as hxr,hd as cy,he as Sii,hf as j9,hg as kCt,hh as LYe,hi as xxe,hj as Eii,hk as Cii,hl as kii,hm as pxr,hn as MYe,ho as mxr,hp as gS,hq as gxr,hr as Ij,hs as SSe,ht as bxr,hu as _xr,hv as vxr,hw as yxr,hx as Tii,hy as lO,hz as Aii,hA as M6e,hB as Iii,hC as NU,hD as jYe,hE as FYe,hF as wDt,hG as BYe,hH as SDt,hI as ESe,hJ as Rii,hK as Nii,hL as xxr,hM as sJ,hN as Oii,hO as Dii,hP as Pii,hQ as $Ye,hR as EDt,hS as zYe,hT as Lii,hU as wxr,hV as Mii,hW as UYe,hX as Sxr,hY as jii,hZ as lVe,h_ as Rj,h$ as Fii,i0 as wxe,i1 as CSe,i2 as Bii,i3 as Exr,i4 as Cxr,i5 as kxr,i6 as $ii,i7 as zii,i8 as tde,i9 as kSe,ia as Uii,ib as Txr,ic as Hii,id as q3,ie as Axr,ig as TSe,ih as Vii,ii as Wii,ij as Gii,ik as Ixr,il as Rxr,im as eAn,io as Nxr,ip as Oxr,iq as Dxr,ir as Pxr,is as Lxr,it as Mxr,iu as jxr,iv as wA,iw as qii,ix as g9,iy as Kii,iz as Yii,iA as Qii,iB as Fxr,iC as Kb,iD as HYe,iE as Tle,iF as l3,iG as Bxr,iH as TCt,iI as Xii,iJ as $xr,iK as Jii,iL as Zii,iM as eri,iN as zxr,iO as Uxr,iP as Hxr,iQ as Vxr,iR as Wxr,iS as Gxr,iT as Sxe,iU as qxr,iV as CDt,iW as Kxr,iX as kDt,iY as kk,iZ as tri,i_ as VYe,i$ as Yxr,j0 as dS,j1 as nri,j2 as yV,j3 as Qxr,j4 as TDt,j5 as eD,j6 as tF,j7 as Xxr,j8 as Jxr,j9 as Zxr,ja as e5r,jb as $ae,jc as t5r,jd as n5r,je as iri,jf as i5r,jg as nde,jh as WYe,ji as r5r,jj as s5r,jk as ADt,jl as cVe,jm as oJ,jn as IDt,jo as o5r,jp as a5r,jq as GYe,jr as l5r,js as RDt,jt as ACt,ju as rri,jv as Exe,jw as sri,jx as qYe,jy as ori,jz as NDt,jA as c5r,jB as u5r,jC as d5r,jD as ODt,jE as f5r,jF as DDt,jG as h5r,jH as p5r,jI as ASe,jJ as KYe,jK as gZ,jL as m5r,jM as g5r,jN as b5r,jO as _5r,jP as ari,jQ as v5r,jR as y5r,jS as bZ,jT as x5r,jU as w5r,jV as ICt,jW as q8,jX as YYe,jY as PDt,jZ as S5r,j_ as lri,j$ as E5r,k0 as C5r,k1 as cri,k2 as nX,k3 as uVe,k4 as LDt,k5 as k5r,k6 as uri,k7 as MDt,k8 as T5r,k9 as dri,ka as fri,kb as hri,kc as A5r,kd as pri,ke as vce,kf as mri,kg as gri,kh as RCt,ki as dVe,kj as fVe,kk as I5r,kl as R5r,km as N5r,kn as O5r,ko as D5r,kp as P5r,kq as L5r,kr as M5r,ks as bri,kt as j5r,ku as jDt,kv as ISe,kw as _ri,kx as FDt,ky as F5r,kz as B5r,kA as $5r,kB as Nj,kC as tAn,kD as K6t,kE as nAn,kF as z5r,kG as vri,kH as yri,kI as xri,kJ as wri,kK as Sri,kL as U5r,kM as H5r,kN as BDt,kO as NX,kP as V5r,kQ as W5r,kR as G5r,kS as _A,kT as Eri,kU as QYe,kV as ide,kW as Cri,kX as $Dt,kY as RSe,kZ as q5r,k_ as K5r,k$ as Y5r,l0 as RO,l1 as kri,l2 as Q5r,l3 as Tri,l4 as X5r,l5 as J5r,l6 as Vje,l7 as Z5r,l8 as iAn,l9 as rAn,la as Wje,lb as Ari,lc as Iri,ld as Rri,le as ewr,lf as twr,lg as nwr,lh as iwr,li as Nri,lj as rwr,lk as swr,ll as Ori,lm as XYe,ln as zDt,lo as UDt,lp as owr,lq as Dri,lr as Pri,ls as NCt,lt as OCt,lu as DCt,lv as Lri,lw as Mri,lx as awr,ly as rde,lz as jri,lA as NQ,lB as lwr,lC as cwr,lD as Fri,lE as uwr,lF as dwr,lG as fwr,lH as hwr,lI as pwr,lJ as mwr,lK as gwr,lL as Bri,lM as bwr,lN as _wr,lO as vwr,lP as ywr,lQ as xwr,lR as wwr,lS as Swr,lT as HDt,lU as Ewr,lV as JYe,lW as Cwr,lX as sAn,lY as kwr,lZ as Twr,l_ as Awr,l$ as Iwr,m0 as $ri,m1 as Rwr,m2 as Nwr,m3 as zri,m4 as Owr,m5 as oAn,m6 as Dwr,m7 as Pwr,m8 as Uri,m9 as Hri,ma as Vri,mb as Lwr,mc as Mwr,md as aAn,me as jwr,mf as Fwr,mg as Bwr,mh as $wr,mi as zwr,mj as Uwr,mk as Hwr,ml as Vwr,mm as Wwr,mn as Gwr,mo as qwr,mp as Wri,mq as Kwr,mr as Ywr,ms as Qwr,mt as Gri,mu as PCt,mv as Xwr,mw as Oj,mx as Jwr,my as Zwr,mz as eSr,mA as tSr,mB as lAn,mC as cAn,mD as nSr,mE as iSr,mF as rSr,mG as sSr,mH as oSr,mI as aSr,mJ as VDt,mK as lSr,mL as cSr,mM as uSr,mN as dSr,mO as qri,mP as fSr,mQ as hSr,mR as uAn,mS as pSr,mT as mSr,mU as gSr,mV as bSr,mW as Kri,mX as _Sr,mY as WDt,mZ as vSr,m_ as ySr,m$ as xSr,n0 as wSr,n1 as SSr,n2 as ESr,n3 as CSr,n4 as kSr,n5 as TSr,n6 as NSe,n7 as OSe,n8 as ASr,n9 as LCt,na as ISr,nb as RSr,nc as NSr,nd as yce,ne as hVe,nf as OSr,ng as DSr,nh as PSr,ni as LSr,nj as MSr,nk as GDt,nl as jSr,nm as Yri,nn as FSr,no as BSr,np as $Sr,nq as iX,nr as Dj,ns as aJ,nt as zSr,nu as Qri,nv as qDt,nw as Cxe,nx as USr,ny as Xri,nz as HSr,nA as DSe,nB as nF,nC as sde,nD as VSr,nE as WSr,nF as GSr,nG as qSr,nH as dAn,nI as Tk,nJ as KDt,nK as YDt,nL as KSr,nM as YSr,nN as Jri,nO as pVe,nP as Zri,nQ as esi,nR as MCt,nS as tsi,nT as QSr,nU as ZN,nV as nsi,nW as XSr,nX as isi,nY as rsi,nZ as mVe,n_ as xce,n$ as QDt,o0 as ssi,o1 as JSr,o2 as ZSr,o3 as eEr,o4 as osi,o5 as XDt,o6 as asi,o7 as tEr,o8 as lsi,o9 as nEr,oa as iEr,ob as rEr,oc as fAn,od as csi,oe as sEr,of as JDt,og as oEr,oh as hAn,oi as aEr,oj as ZDt,ok as ePt,ol as wce,om as lJ,on as tPt,oo as nPt,op as jCt,oq as lEr,or as iPt,os as cEr,ot as uEr,ou as dEr,ov as ZYe,ow as fEr,ox as usi,oy as dsi,oz as hEr,oA as pEr,oB as mEr,oC as gEr,oD as bEr,oE as _Er,oF as vEr,oG as yEr,oH as xEr,oI as wEr,oJ as SEr,oK as EEr,oL as CEr,oM as kEr,oN as fsi,oO as TEr,oP as AEr,oQ as IEr,oR as REr,oS as hsi,oT as NEr,oU as psi,oV as msi,oW as gsi,oX as Gje,oY as bsi,oZ as j6e,o_ as Y6t,o$ as _si,p0 as OEr,p1 as DEr,p2 as PEr,p3 as LEr,p4 as MEr,p5 as jEr,p6 as FEr,p7 as H4e,p8 as BEr,p9 as vsi,pa as $Er,pb as gVe,pc as pAn,pd as Ale,pe as _Z,pf as rPt,pg as sPt,ph as bVe,pi as ysi,pj as oPt,pk as aPt,pl as lPt,pm as zEr,pn as FCt,po as _Ve,pp as UEr,pq as HEr,pr as VEr,ps as xsi,pt as WEr,pu as GEr,pv as qEr,pw as KEr,px as YEr,py as wsi,pz as f6,pA as mAn,pB as Ssi,pC as Esi,pD as QEr,pE as XEr,pF as JEr,pG as ZEr,pH as e9r,pI as t9r,pJ as eO,pK as n9r,pL as i9r,pM as r9r,pN as s9r,pO as Csi,pP as gAn,pQ as PSe,pR as o9r,pS as a9r,pT as l9r,pU as cPt,pV as c9r,pW as u9r,pX as ksi,pY as d9r,pZ as f9r,p_ as iS,p$ as h9r,q0 as p9r,q1 as m9r,q2 as g9r,q3 as b9r,q4 as Jw,q5 as BCt,q6 as _9r,q7 as qje,q8 as bAn,q9 as cJ,qa as v9r,qb as _An,qc as y9r,qd as x9r,qe as w9r,qf as S9r,qg as E9r,qh as C9r,qi as k9r,qj as T9r,qk as Tsi,ql as A9r,qm as I9r,qn as R9r,qo as N9r,qp as O9r,qq as D9r,qr as P9r,qs as L9r,qt as M9r,qu as j9r,qv as F9r,qw as B9r,qx as $9r,qy as vAn,qz as z9r,qA as yAn,qB as U9r,qC as H9r,qD as Asi,qE as V9r,qF as xAn,qG as W9r,qH as G9r,qI as q9r,qJ as K9r,qK as Y9r,qL as Q9r,qM as X9r,qN as J9r,qO as Z9r,qP as eCr,qQ as tCr,qR as nCr,qS as Isi,qT as vVe,qU as yVe,qV as iCr,qW as rCr,qX as sCr,qY as oCr,qZ as aCr,q_ as lCr,q$ as wAn,r0 as cCr,r1 as uCr,r2 as dCr,r3 as fCr,r4 as hCr,r5 as pCr,r6 as mCr,r7 as gCr,r8 as bCr,r9 as _Cr,ra as Rsi,rb as Nsi,rc as Osi,rd as SAn,re as vCr,rf as V4e,rg as yCr,rh as xCr,ri as Dsi,rj as wCr,rk as SCr,rl as Psi,rm as EAn,rn as ECr,ro as CCr,rp as kCr,rq as TCr,rr as ACr,rs as ICr,rt as CAn,ru as RCr,rv as NCr,rw as OCr,rx as DCr,ry as PCr,rz as LCr,rA as Lsi,rB as MCr,rC as jCr,rD as FCr,rE as Msi,rF as BCr,rG as $Cr,rH as zCr,rI as UCr,rJ as HCr,rK as Q6t,rL as VCr,rM as WCr,rN as GCr,rO as jsi,rP as qCr,rQ as KCr,rR as YCr,rS as QCr,rT as XCr,rU as Fsi,rV as JCr,rW as ZCr,rX as e8r,rY as kAn,rZ as t8r,r_ as n8r,r$ as X6t,s0 as i8r,s1 as J6t,s2 as r8r,s3 as s8r,s4 as o8r,s5 as a8r,s6 as l8r,s7 as c8r,s8 as u8r,s9 as d8r,sa as uPt,sb as Bsi,sc as f8r,sd as h8r,se as LSe,sf as p8r,sg as m8r,sh as ode,si as g8r,sj as $si,sk as b8r,sl as _8r,sm as v8r,sn as TAn,so as Z6t,sp as y8r,sq as xVe,sr as zsi,ss as x8r,st as w8r,su as kxe,sv as S8r,sw as E8r,sx as eQe,sy as tQe,sz as C8r,sA as k8r,sB as T8r,sC as Usi,sD as A8r,sE as $Ct,sF as Hsi,sG as I8r,sH as R8r,sI as Vsi,sJ as N8r,sK as O8r,sL as D8r,sM as zCt,sN as AAn,sO as Wsi,sP as P8r,sQ as L8r,sR as M8r,sS as j8r,sT as Gsi,sU as qsi,sV as F8r,sW as B8r,sX as $8r,sY as z8r,sZ as U8r,s_ as H8r,s$ as UCt,t0 as V8r,t1 as W8r,t2 as G8r,t3 as IAn,t4 as e4t,t5 as HCt,t6 as q8r,t7 as K8r,t8 as Y8r,t9 as Q8r,ta as X8r,tb as J8r,tc as Z8r,td as ekr,te as tkr,tf as nkr,tg as ikr,th as rkr,ti as skr,tj as okr,tk as akr,tl as lkr,tm as ckr,tn as MSe,to as ukr,tp as dPt,tq as VCt,tr as dkr,ts as fkr,tt as hkr,tu as pkr,tv as mkr,tw as gkr,tx as bkr,ty as _kr,tz as vkr,tA as ykr,tB as xkr,tC as wkr,tD as Skr,tE as Ekr,tF as Ckr,tG as kkr,tH as Tkr,tI as Akr,tJ as Ikr,tK as Rkr,tL as Nkr,tM as Okr,tN as Dkr,tO as Pkr,tP as Lkr,tQ as jSe,tR as df,tS as Mkr,tT as WCt,tU as jkr,tV as Fkr,tW as Bkr,tX as fPt,tY as hPt,tZ as $kr,t_ as vZ,t$ as zkr,u0 as Ukr,u1 as Hkr,u2 as Vkr,u3 as Ksi,u4 as Wkr,u5 as Ysi,u6 as Qsi,u7 as Xsi,u8 as Gkr,u9 as hM,ua as qkr,ub as Kkr,uc as Ykr,ud as Qkr,ue as Xkr,uf as Jkr,ug as Zkr,uh as e7r,ui as t7r,uj as n7r,uk as i7r,ul as r7r,um as s7r,un as o7r,uo as a7r,up as l7r,uq as c7r,ur as u7r,us as d7r,ut as f7r,uu as h7r,uv as p7r,uw as m7r,ux as g7r,uy as Sce,uz as b7r,uA as _7r,uB as v7r,uC as y7r,uD as x7r}from\"./index-BGEQ8YjU.js\";"
+    },
+    {
+      "name": "lTr",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 76433,
+      "end": 76538,
+      "bytes": 105,
+      "sha256": "ad793f6d731d3c98c9eee95b63d80e174dc9d21b5f98034389fbc187f2342a71",
+      "text": "function lTr(t){if(t&&typeof t==\"object\"&&!Array.isArray(t))return Object.fromEntries(Object.entries(t))}"
+    },
+    {
+      "name": "cTr",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 76538,
+      "end": 76601,
+      "bytes": 63,
+      "sha256": "b7e90c5047c22ae93d2fb72e4096106d5ff049309cf51206635dda9928f87627",
+      "text": "function cTr(t){return{id:t.id,name:t.name,input:lTr(t.input)}}"
+    },
+    {
+      "name": "bpo",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 7849789,
+      "end": 7852432,
+      "bytes": 2643,
+      "sha256": "2bc0c792897bdcdacfd3e7f5d27e4348c807edee2a95f27ffa0f786f859623e5",
+      "text": "function bpo(t){const e=ne.c(30),{toolCall:n,toolResult:i}=t,[r,o]=$.useState(!1),{currentWorkspace:a}=Fp(),{data:c}=a;if(!n.input||!n.input?.subagent_type||n.input?.subagent_type===\"general-purpose\"){const B=n;let F;return e[0]!==B||e[1]!==i?(F=p.jsx(Ypo,{toolCall:B,toolResult:i}),e[0]=B,e[1]=i,e[2]=F):F=e[2],F}const u=n.input?.subagent_type,d=n.input?.model,h=n.input?.description||\"\";let m;e[3]!==d||e[4]!==h?(m=a5r({description:h,model:d}),e[3]=d,e[4]=h,e[5]=m):m=e[5];const g=m,_=u,v=i&&i.content,x=i?.content;let w;e[6]!==x?(w=yZe(x),e[6]=x,e[7]=w):w=e[7];const E=w;let k;e[8]!==_?(k=p.jsx(Ju,{name:_}),e[8]=_,e[9]=k):k=e[9];let I;e[10]!==d?(I=d&&p.jsxs(p.Fragment,{children:[p.jsx(\"span\",{className:\"shrink-0 text-muted-foreground\",children:\"\u2022\"}),p.jsx(\"span\",{className:\"max-w-48 shrink-0 truncate\",children:IDt(d)})]}),e[10]=d,e[11]=I):I=e[11];let R;e[12]!==_||e[13]!==I?(R=p.jsxs(\"span\",{className:\"inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium\",children:[_,I]}),e[12]=_,e[13]=I,e[14]=R):R=e[14];let O;e[15]!==g?(O=g&&p.jsx(\"span\",{className:\"text-xs text-muted-foreground\",children:g}),e[15]=g,e[16]=O):O=e[16];const D=!!v;let P;e[17]!==v||e[18]!==E||e[19]!==r||e[20]!==c?.localId||e[21]!==c?.workspacePath?(P=v&&p.jsxs(\"div\",{className:\"space-y-2\",children:[p.jsxs(\"div\",{className:\"flex items-center justify-between border-b border-border pb-2\",children:[p.jsxs(\"div\",{className:\"flex items-center gap-2\",children:[p.jsx(\"button\",{onClick:()=>o(!1),className:Xe(\"px-2 py-1 text-xs font-medium rounded transition-colors\",r?\"text-muted-foreground hover:text-foreground\":\"bg-primary text-primary-foreground\"),children:\"Formatted\"}),p.jsx(\"button\",{onClick:()=>o(!0),className:Xe(\"px-2 py-1 text-xs font-medium rounded transition-colors\",r?\"bg-primary text-primary-foreground\":\"text-muted-foreground hover:text-foreground\"),children:\"Raw\"})]}),p.jsx(t0,{text:E,size:\"sm\",className:\"text-muted-foreground hover:text-foreground transition-colors\"})]}),p.jsx(f3,{className:\"h-96\",children:r?p.jsx(\"div\",{className:\"p-3 bg-muted rounded font-mono text-xs whitespace-pre-wrap break-words overflow-x-auto\",children:E}):p.jsx(\"div\",{className:\"break-words\",children:p.jsx(xS,{text:E,className:\"max-w-none break-words\",localWorkspaceId:c?.localId,workspacePath:c?.workspacePath})})})]}),e[17]=v,e[18]=E,e[19]=r,e[20]=c?.localId,e[21]=c?.workspacePath,e[22]=P):P=e[22];let L;return e[23]!==D||e[24]!==P||e[25]!==k||e[26]!==R||e[27]!==O||e[28]!==n.id?(L=p.jsx(Mu,{icon:k,leftContent:R,rightContent:O,showContent:D,persistKey:n.id,children:P}),e[23]=D,e[24]=P,e[25]=k,e[26]=R,e[27]=O,e[28]=n.id,e[29]=L):L=e[29],L}"
+    },
+    {
+      "name": "path-recognition",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 6536344,
+      "end": 6536620,
+      "bytes": 276,
+      "sha256": "37f5fc5f26f607b13b11a85fc88400aabf4bffed0429907890c5e9a17e4a14fe",
+      "text": "function _Xs(t){if(/\\s/.test(t))return!1;const e=aDt(t).path,n=/\\.[a-zA-Z0-9]{1,10}$/.test(e),i=e.startsWith(\"/\"),r=e.startsWith(\"./\"),o=e.includes(\"/\");return e.includes(\"://\")||e.startsWith(\"http\")||e.startsWith(\".\")&&!e.startsWith(\"./\")&&!e.includes(\"/\")?!1:!!(i||r||o&&n)}"
+    },
+    {
+      "name": "xXs",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 6536881,
+      "end": 6537542,
+      "bytes": 661,
+      "sha256": "8b1c879f39b3a3d131fd24a96c1f18035e8a9f73201cd95edeb60e077b4f2dfd",
+      "text": "function xXs(){return t=>{yS(t,\"inlineCode\",(e,n,i)=>{if(!i||n===void 0||i.type===\"link\")return;const r=e.value;if(!_Xs(r))return;const o={type:\"link\",url:`conductor-file-code://${r}`,children:[{type:\"inlineCode\",value:r}]};i.children.splice(n,1,o)}),yS(t,\"text\",(e,n,i)=>{if(!i||n===void 0||i.type===\"link\")return;const r=e.value,o=[...r.matchAll(vXs)];if(o.length===0)return;const a=[];let c=0;for(const u of o){const d=u[0],h=u.index;h>c&&a.push({type:\"text\",value:r.slice(c,h)}),a.push({type:\"link\",url:`conductor-file://${d}`,children:[{type:\"text\",value:d}]}),c=h+d.length}c<r.length&&a.push({type:\"text\",value:r.slice(c)}),i.children.splice(n,1,...a)})}}"
+    },
+    {
+      "name": "inline-file-button",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 6540107,
+      "end": 6541017,
+      "bytes": 910,
+      "sha256": "0167fb99b5d88ec5dd548987668880f434345f3b8c776933d325582aae0b7fd3",
+      "text": "function IXs(t){const e=ne.c(12),{children:n,onOpenFile:i,resolvedHref:r}=t;let o;e[0]!==n||e[1]!==r.lineNumber?(o=AXs(n,r.lineNumber),e[0]=n,e[1]=r.lineNumber,e[2]=o):o=e[2];const a=o;let c;e[3]!==i||e[4]!==r.lineNumber||e[5]!==r.relativePath?(c=()=>{i({path:r.relativePath,lineNumber:r.lineNumber})},e[3]=i,e[4]=r.lineNumber,e[5]=r.relativePath,e[6]=c):c=e[6];const u=c,d=r.preservesInlineCode?\"border-0 bg-transparent p-0 text-left font-[inherit] cursor-pointer select-text hover:underline decoration-link-foreground [&_code]:text-link-foreground transition-colors\":\"border-0 bg-transparent p-0 text-left font-[inherit] cursor-pointer select-text hover:underline text-link-foreground transition-colors\",h=`Open ${r.absolutePath}`;let m;return e[7]!==a||e[8]!==u||e[9]!==d||e[10]!==h?(m=p.jsx(\"button\",{type:\"button\",className:d,onClick:u,title:h,children:a}),e[7]=a,e[8]=u,e[9]=d,e[10]=h,e[11]=m):m=e[11],m}"
+    },
+    {
+      "name": "resolver-helpers-and-WGt",
+      "artifact": "index-BGEQ8YjU.js",
+      "start": 822816,
+      "end": 824586,
+      "bytes": 1770,
+      "sha256": "847d5fe390f1dec291a4ea864806b03ddfd251fd7fa05b10ef80054211280291",
+      "text": "function aKe(t){const e=t.match(/^(.+?):(\\d+)(?::\\d+)?$/);return e?{path:e[1],lineNumber:Number(e[2])}:{path:t}}const cKe=/^[a-zA-Z][a-zA-Z0-9+.-]*:/;function lKe(t){const e=t.search(/[?#]/);return e===-1?t:t.slice(0,e)}function _ne(t){const e=lKe(t);if(e.startsWith(\"conductor-file-code://\"))return{path:yS(e.slice(22)),preservesInlineCode:!0};if(e.startsWith(\"conductor-file://\"))return{path:yS(e.slice(17)),preservesInlineCode:!1};if(e.startsWith(\"file://\"))return{path:yS(e.slice(7)),preservesInlineCode:!1};if(!(e.startsWith(\"#\")||e.startsWith(\"//\")))return{path:yS(e),preservesInlineCode:!1}}function yS(t){try{return decodeURIComponent(t)}catch{return t}}function wne(t,e){const s=Qt.resolve(t),n=Qt.resolve(e);return s===n||s.startsWith(`${n}${Qt.sep}`)}function Ud(t,e){const s=Qt.resolve(t),n=Qt.isAbsolute(e)?Qt.resolve(e):Qt.resolve(t,e);if(wne(n,s))return{absolutePath:n,relativePath:Qt.relative(s,n)}}function uKe(t,e){return Ud(t,e)?.absolutePath}function Sne(t,e){return Ud(t,e)?.relativePath}function bne(t,e){const s=Sne(t,e);if(s===void 0)throw new Error(`File path \"${e}\" resolves outside the workspace`);return s}function dKe({workspacePath:t,attachmentPath:e}){const s=Sne(t,e);if(s)return s;const n=e.indexOf(\".context/\");return n===-1?e:e.slice(n)}function $Gt(t,e){return e.startsWith(\"/\")?e:t?uKe(t,e):void 0}const hKe=/^(?:\\/private)?\\/tmp\\/claude-\\d+\\//;function BGt(t){const e=_ne(t);if(!e||!Qt.isAbsolute(e.path))return;const s=Qt.resolve(e.path);return hKe.test(s)?s:void 0}function WGt(t,e){const s=_ne(e);if(!s)return;const n=aKe(s.path);if(cKe.test(n.path))return;const r=Ud(t,n.path);if(!(r===void 0||r.relativePath.length===0))return{...r,preservesInlineCode:s.preservesInlineCode,...n.lineNumber!==void 0&&{lineNumber:n.lineNumber}}}"
+    },
+    {
+      "name": "plugins-SXs",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 6537771,
+      "end": 6537788,
+      "bytes": 17,
+      "sha256": "76c32e69b65f24bc4a4f2aedefb35a591c103c5e8d6a4e48843490a2b5114d68",
+      "text": "SXs=[wXs,xXs,Rzs]",
+      "literal_binding": true
+    },
+    {
+      "name": "plugins-BXs",
+      "artifact": "renderApp-D_fmY7hW.js",
+      "start": 6545876,
+      "end": 6545912,
+      "bytes": 36,
+      "sha256": "474bb4840fe45fb3e4a82b88c2bbb4efa6083bf790f1a42a433fc0b428ee8f2d",
+      "text": "BXs=[jXs,FXs,UJe,HJe,TDs,...SXs,wzs]",
+      "literal_binding": true
+    },
+    {
+      "name": "resolver-export",
+      "artifact": "index-BGEQ8YjU.js",
+      "start": 3483304,
+      "end": 3483313,
+      "bytes": 9,
+      "sha256": "95b2272fcf942bedd0434b2f3d999f229cce2cbd76f42b3eb1f68501a98f6c39",
+      "text": "WGt as fA",
+      "literal_binding": true
+    }
+  ],
+  "current_source": [
+    {
+      "path": "src/features/chat/ToolRows.tsx",
+      "bytes": 56898,
+      "sha256": "562755550ca487766cfc8a8b08781edded583a1c3890e14719e3752a5d399188"
+    },
+    {
+      "path": "src/features/chat/Transcript.tsx",
+      "bytes": 21746,
+      "sha256": "4ba9fe4df5a852934890e19ac7de61f14fe8cdcbcf3652e60bbd18e925b271b4"
+    },
+    {
+      "path": "src/features/chat/conductorTools.ts",
+      "bytes": 31930,
+      "sha256": "775150d24fd147bba59c0da0173b67cd6e955c4dbfaec404c8378823e6e07bbe"
+    },
+    {
+      "path": "src/features/chat/markdown.ts",
+      "bytes": 11557,
+      "sha256": "35c81f7d5094d4b4bf8c5b7dc85db4666ae9aed21a3be177471dfa69309698cb"
+    },
+    {
+      "path": "src/features/chat/typedSubagentLinks.test.ts",
+      "bytes": 15796,
+      "sha256": "27aab97bcf3c655965202e3acdb00732872aa41434991d5f3efc2412615454a7"
+    },
+    {
+      "path": "evidence/chat/typed-subagent-links.md",
+      "bytes": 8881,
+      "sha256": "ca026f4d7697d39a492cabc5d36d1375717beb553d4ac130844ba30d96e1691f"
+    }
+  ],
+  "checks": [
+    "complete reference parent: renderApp-D_fmY7hW.js",
+    "complete reference parent: index-BGEQ8YjU.js",
+    "main identity",
+    "retained complete span: ROo",
+    "retained complete span: O1o-and-D1o",
+    "retained complete span: L1o",
+    "retained complete span: Qpo",
+    "retained complete span: hIt",
+    "retained complete span: xS",
+    "retained complete span: dHn-and-pEi",
+    "retained complete span: cEi",
+    "retained complete span: renderer-import",
+    "retained complete span: lTr",
+    "retained complete span: cTr",
+    "normal tool producer",
+    "Task normal registry",
+    "Agent normal registry",
+    "typed renderer binding",
+    "typed result content",
+    "formatted workspace identity",
+    "general-purpose excluded",
+    "formatted route",
+    "style forwards workspace props",
+    "workspace navigation callback",
+    "file renderer receives workspace",
+    "inline paths become link nodes",
+    "plain paths become link nodes",
+    "resolver import binding",
+    "file navigation requires context and accepted resolution",
+    "resolved file button",
+    "file button relative-path callback",
+    "file button absolute title",
+    "accepted target below root",
+    "transcript supplies context to rows",
+    "MoreRows receives workspace context",
+    "typed caller drops workspace props",
+    "typed Markdown lacks workspace props",
+    "formatted external link behavior already implemented",
+    "existing markdown requires workspace for code links",
+    "existing markdown file action",
+    "external-link predecessor excludes file links"
+  ],
+  "check_count": 41,
+  "finding": "The normal typed Task/Agent result caller drops existing workspacePath/onOpenFile before Formatted Markdown. Retained bpo forwards workspace identity/path through xS to the common file link renderer. No current mounted failure was executed.",
+  "recommended_boundary": "After existing plan unit and independent behavioral RED, forward current workspacePath/onOpenFile through SubagentRow to its existing Formatted Markdown; preserve absolute callback API, existing containment, external links, raw result, copy, disclosure and model/type labels. No shared Markdown/resolver or native opener change.",
+  "proposed_controls": [
+    "typed Task and Agent relative inline-code path",
+    "plain prose path with existing recognizer",
+    "absolute contained file path",
+    "Raw tab retains exact text and no links",
+    "workspace path/callback updates and two-row isolation",
+    "outside/root/no workspace context remain noninteractive",
+    "external URLs and generic/general-purpose controls unchanged"
+  ],
+  "product_edit": false,
+  "fixture_created": false,
+  "runtime_executed": false,
+  "limits": [
+    "Historical REA semantic analysis skipped full renderer on heap exhaustion; exact retained decoded shipped bytes only",
+    "No new REA, target runtime, filesystem/native/provider execution or installed identity proof",
+    "Menu/Finder/line-selection expansion not part of candidate",
+    "Ownership query sent to canonical ledger; no new reservation/admission/watch created"
+  ]
+}

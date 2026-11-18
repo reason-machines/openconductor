@@ -1,0 +1,29 @@
+--- a/src/features/chat/ToolRows.tsx
++++ b/src/features/chat/ToolRows.tsx
+@@ -1236,7 +1236,7 @@
+     case "codex-collab":
+       return <CollabRow name={name} input={input} result={result} isError={isError} />;
+     case "sub-agent":
+-      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={result} rawResult={rawResult} />;
++      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={result} rawResult={rawResult} workspacePath={workspacePath} onOpenFile={onOpenFile} />;
+       if (name.startsWith("mcp__linear__") || name.startsWith("mcp__context7__")) return <MoreRows {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
+       return <GenericRow {...{ tool, status, result, rawResult, isError, open, onToggle }} />;
+     default:
+@@ -1269,7 +1269,7 @@
+ }
+ 
+ /** `bpo`: a typed sub-agent (Explore, Plan, ...): its type and model, its description, its answer. */
+-function SubagentRow({ input, result, rawResult, ...shell }: ShellBase & { input: Record<string, unknown>; result?: string; rawResult?: unknown }) {
++function SubagentRow({ input, result, rawResult, workspacePath, onOpenFile, ...shell }: ShellBase & Pick<ToolRowProps, "workspacePath" | "onOpenFile"> & { input: Record<string, unknown>; result?: string; rawResult?: unknown }) {
+   const [raw, setRaw] = useState(false);
+   const type = s(input.subagent_type);
+   const model = s(input.model);
+@@ -1307,7 +1307,7 @@
+               </div>
+               <CopyIcon text={text} />
+             </div>
+-            <div className="oc-subagent-body">{raw ? <div className="oc-subagent-raw">{text}</div> : <Markdown text={text} className="oc-prose" onOpenLink={(href) => void openUrl(href)} Link={LinkWithMenu} />}</div>
++            <div className="oc-subagent-body">{raw ? <div className="oc-subagent-raw">{text}</div> : <Markdown text={text} className="oc-prose" workspacePath={workspacePath} onOpenFile={onOpenFile} onOpenLink={(href) => void openUrl(href)} Link={LinkWithMenu} />}</div>
+           </div>
+         ) : undefined
+       }

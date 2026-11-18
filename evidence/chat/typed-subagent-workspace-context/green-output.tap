@@ -1,0 +1,98 @@
+(node:140) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:147) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: typed Task formatted result forwards Inspect `src/a.ts`.
+ok 1 - typed Task formatted result forwards Inspect `src/a.ts`.
+  ---
+  duration_ms: 373.57071
+  type: 'test'
+  ...
+# Subtest: typed Agent formatted result forwards Inspect `./src/a.ts:12:4`.
+ok 2 - typed Agent formatted result forwards Inspect `./src/a.ts:12:4`.
+  ---
+  duration_ms: 127.64997
+  type: 'test'
+  ...
+# Subtest: typed Task formatted result forwards Inspect src/a.ts next.
+ok 3 - typed Task formatted result forwards Inspect src/a.ts next.
+  ---
+  duration_ms: 5.711709
+  type: 'test'
+  ...
+# Subtest: typed Agent formatted result forwards Inspect `/workspace/src/a.ts`.
+ok 4 - typed Agent formatted result forwards Inspect `/workspace/src/a.ts`.
+  ---
+  duration_ms: 6.979353
+  type: 'test'
+  ...
+# Subtest: typed structured result, not flattened fallback, supplies formatted file content
+ok 5 - typed structured result, not flattened fallback, supplies formatted file content
+  ---
+  duration_ms: 4.916074
+  type: 'test'
+  ...
+# Subtest: workspace and callback updates do not retain an old destination
+ok 6 - workspace and callback updates do not retain an old destination
+  ---
+  duration_ms: 9.866769
+  type: 'test'
+  ...
+# Subtest: returning from Raw and reopening keeps current formatted file context
+ok 7 - returning from Raw and reopening keeps current formatted file context
+  ---
+  duration_ms: 13.281262
+  type: 'test'
+  ...
+# Subtest: existing lexical guard rejects escape, root, sibling-prefix and URI-shaped code
+ok 8 - existing lexical guard rejects escape, root, sibling-prefix and URI-shaped code
+  ---
+  duration_ms: 11.941979
+  type: 'test'
+  ...
+# Subtest: missing workspace does not synthesize a file root
+ok 9 - missing workspace does not synthesize a file root
+  ---
+  duration_ms: 4.749125
+  type: 'test'
+  ...
+# Subtest: missing file callback produces no navigation side effect
+ok 10 - missing file callback produces no navigation side effect
+  ---
+  duration_ms: 4.316285
+  type: 'test'
+  ...
+# Subtest: Raw and result-copy retain exact result text, without file dispatch
+ok 11 - Raw and result-copy retain exact result text, without file dispatch
+  ---
+  duration_ms: 6.873294
+  type: 'test'
+  ...
+# Subtest: existing external link opener and Copy link address menu remain independent
+ok 12 - existing external link opener and Copy link address menu remain independent
+  ---
+  duration_ms: 9.262192
+  type: 'test'
+  ...
+# Subtest: untyped or generic subagent "" stays outside typed result UI
+ok 13 - untyped or generic subagent "" stays outside typed result UI
+  ---
+  duration_ms: 3.517582
+  type: 'test'
+  ...
+# Subtest: untyped or generic subagent "general-purpose" stays outside typed result UI
+ok 14 - untyped or generic subagent "general-purpose" stays outside typed result UI
+  ---
+  duration_ms: 3.731486
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8084.817426
