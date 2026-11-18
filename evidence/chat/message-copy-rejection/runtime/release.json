@@ -1,0 +1,11 @@
+{
+  "release": "2026-11-17T21:23:26.041574+00:00",
+  "node_npm_processes": [],
+  "dependencies_removed": true,
+  "cache_temp_removed": true,
+  "disk_free_bytes": 14177689600,
+  "fixture_sha256": "9a60c39ee956463257d6c35dd184923e6a35802179851cb21624470eb2b4a7d1",
+  "lock_sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992",
+  "product_sha256": "4ba9fe4df5a852934890e19ac7de61f14fe8cdcbcf3652e60bbd18e925b271b4",
+  "peak_rss": "not measured"
+}

@@ -1,0 +1,52 @@
+{
+  "phase": "red",
+  "reservation": "COMPOSER-QUEUE-SINGLETON-DRAG-135-RED-20261117T235448549Z",
+  "started_utc": "2026-11-17T23:56:02.981257+00:00",
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "env",
+    "-u",
+    "COMPOSER_QUEUE_SINGLETON_DRAG_SOURCE_REF",
+    "NODE_OPTIONS=--max-old-space-size=768",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    ".qa/queue-singleton-drag-135/composerQueueSingletonDrag.test.ts"
+  ],
+  "node_test_executed": true,
+  "groups": [
+    98
+  ],
+  "free_bytes_before": 16541933568,
+  "own_runtime_jobs_before": [],
+  "preflight_pin_checks": 241,
+  "checked_main": "5f7afadc1c50ee44aa21677b5ab0dd96b87cfb57",
+  "test_started_utc": "2026-11-17T23:56:03.269183+00:00",
+  "exit_code": 1,
+  "test_terminated_utc": "2026-11-17T23:56:04.390511+00:00",
+  "surviving_pids": [],
+  "actual_cleanup_release_utc": "2026-11-17T23:56:04.391214+00:00",
+  "child_maxrss_kib_not_aggregate": 161856,
+  "rss_scope": "Child maximum RSS; not aggregate process-group RSS or a group cap. Node heap768MiB per process.",
+  "postrun_pin_checks": 241,
+  "outputs": [
+    {
+      "path": ".qa/queue-singleton-drag-135/runtime-red/test.stderr",
+      "bytes": 175,
+      "sha256": "7cd75a6251f3ef8e3ac74dcabeec9ba0b97da204e829a5f6a4b7a0bd00985edd"
+    },
+    {
+      "path": ".qa/queue-singleton-drag-135/runtime-red/test.stdout",
+      "bytes": 10047,
+      "sha256": "840e537401f2a9a7fb25694e323b091899000d10040ec5d3ac3a76ff722ee358"
+    }
+  ],
+  "retained_output_bytes": 10222,
+  "within_output_16mib": true
+}

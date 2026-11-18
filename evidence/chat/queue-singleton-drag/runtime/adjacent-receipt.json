@@ -1,0 +1,69 @@
+{
+  "phase": "adjacent",
+  "reservation": "COMPOSER-QUEUE-SINGLETON-DRAG-135-ADJACENT-20261118T002218355Z",
+  "started_utc": "2026-11-18T00:22:27.372538+00:00",
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "env",
+    "-u",
+    "COMPOSER_QUEUE_SINGLETON_DRAG_SOURCE_REF",
+    "-u",
+    "COMPOSER_QUEUE_EDIT_RETURN_FOCUS_SOURCE_REF",
+    "-u",
+    "COMPOSER_QUEUE_FOCUS_SOURCE_REF",
+    "-u",
+    "COMPOSER_QUEUE_EDIT_EMPTY_SOURCE_REF",
+    "-u",
+    "COMPOSER_QUEUE_COLLAPSE_SOURCE_REF",
+    "NODE_OPTIONS=--max-old-space-size=768",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "src/features/chat/composerQueueSingletonDrag.test.ts",
+    "src/features/chat/composerQueueEditReturnFocus.test.ts",
+    "src/features/chat/composerQueueFocus.test.ts",
+    "src/features/chat/composerQueueEditEmptySave.test.ts",
+    "src/features/chat/composerQueueCollapseShrink.test.ts",
+    "src/features/chat/queue.test.ts",
+    "src/features/chat/queueKeys.test.ts"
+  ],
+  "node_test_executed": true,
+  "groups": [
+    100
+  ],
+  "free_bytes_before": 16535392256,
+  "own_runtime_jobs_before": [],
+  "preflight_pin_checks": 250,
+  "checked_main": "5f7afadc1c50ee44aa21677b5ab0dd96b87cfb57",
+  "frozen_main": "5f7afadc1c50ee44aa21677b5ab0dd96b87cfb57",
+  "outside_QueuePanel_byte_identical": true,
+  "actual_main_untouched_source_checks": 19,
+  "test_started_utc": "2026-11-18T00:22:27.670329+00:00",
+  "exit_code": 0,
+  "test_terminated_utc": "2026-11-18T00:22:36.318580+00:00",
+  "surviving_pids": [],
+  "actual_cleanup_release_utc": "2026-11-18T00:22:36.319266+00:00",
+  "child_maxrss_kib_not_aggregate": 225360,
+  "rss_scope": "Child maximum RSS; not aggregate process-group RSS or a group cap. Node heap768MiB per process.",
+  "postrun_pin_checks": 250,
+  "outputs": [
+    {
+      "path": ".qa/queue-singleton-drag-135/runtime-adjacent/test.stderr",
+      "bytes": 176,
+      "sha256": "6daf12f5f2b0dbf54fabb61c7bc35b5fd56f0bf9f69701dea135425d14e2868e"
+    },
+    {
+      "path": ".qa/queue-singleton-drag-135/runtime-adjacent/test.stdout",
+      "bytes": 32607,
+      "sha256": "4e9435f49414d48519f69ac08b83203b274144fed93af3a04360012a3bd55b6a"
+    }
+  ],
+  "retained_output_bytes": 32783,
+  "within_output_16mib": true
+}

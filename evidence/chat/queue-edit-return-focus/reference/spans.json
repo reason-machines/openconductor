@@ -1,0 +1,45 @@
+[
+  {
+    "name": "JNi",
+    "utf8_half_open": [
+      8750085,
+      8760369
+    ],
+    "bytes": 10284,
+    "sha256": "775251f3c9074a8f60944335cd7c44d053c1472bb63987adc4b149d0d32828d1",
+    "completeSyntax": true,
+    "method": "Existing complete-declaration receipt rebound to complete parent"
+  },
+  {
+    "name": "AAo",
+    "utf8_half_open": [
+      8725767,
+      8730190
+    ],
+    "bytes": 4423,
+    "sha256": "1427c2453126a3311e9a330ae73a6b88a491199c4005ea85406728357d53ebab",
+    "completeSyntax": true,
+    "method": "Existing complete-declaration receipt rebound to complete parent"
+  },
+  {
+    "name": "GTo",
+    "utf8_half_open": [
+      8700675,
+      8708256
+    ],
+    "bytes": 7581,
+    "sha256": "8464862ead880f69f77258ee26be61216cbaa24692ba8cb5a02daf30365f8440",
+    "completeSyntax": true,
+    "method": "Existing complete-declaration receipt rebound to complete parent"
+  },
+  {
+    "name": "DTo",
+    "utf8_half_open": [
+      8693089,
+      8694846
+    ],
+    "bytes": 1757,
+    "sha256": "37d80f9732f0433e47372cf59d52bb2eef850f8f6d544d6b16e9c3566c30823f",
+    "method": "Unique declaration through next function; string-aware balanced-delimiter verification, not JS parser execution"
+  }
+]

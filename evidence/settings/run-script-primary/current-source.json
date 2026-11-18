@@ -1,0 +1,192 @@
+{
+  "checked_utc": "2026-11-17T22:20:05.347889+00:00",
+  "main": "1e2500a959f68411be54cdca5c0473d0010b0559",
+  "equal": 35,
+  "total": 35,
+  "files": [
+    {
+      "path": "package-lock.json",
+      "equal": true,
+      "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+    },
+    {
+      "path": "package.json",
+      "equal": true,
+      "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91"
+    },
+    {
+      "path": "src/keybindings/KeybindingsProvider.tsx",
+      "equal": true,
+      "sha256": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6"
+    },
+    {
+      "path": "src/keybindings/bind.test.ts",
+      "equal": true,
+      "sha256": "e7d66f191a350162020c0e022bf22f6fdd3c439cf4fe4e8b837c24963d1de420"
+    },
+    {
+      "path": "src/keybindings/bind.ts",
+      "equal": true,
+      "sha256": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119"
+    },
+    {
+      "path": "src/keybindings/conflicts.test.ts",
+      "equal": true,
+      "sha256": "999b29fcf0710afc677aa79a2614531e904989622c2d90f35aaf5835a5306c8d"
+    },
+    {
+      "path": "src/keybindings/conflicts.ts",
+      "equal": true,
+      "sha256": "282562172120ea4406bd0fd8c9b74412ab003c93067b6222e2336b9ca2d4d68d"
+    },
+    {
+      "path": "src/keybindings/dispatcher.test.ts",
+      "equal": true,
+      "sha256": "e1e51ffd6d91e1cec3151c932c25a4a87d4b0d3fe5111683b810e0c1d1d43072"
+    },
+    {
+      "path": "src/keybindings/dispatcher.ts",
+      "equal": true,
+      "sha256": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197"
+    },
+    {
+      "path": "src/keybindings/editor.test.ts",
+      "equal": true,
+      "sha256": "f1b856e6bba3453c3113a99b7c1dee5936a51f7fc54705286d4dc276bca025e3"
+    },
+    {
+      "path": "src/keybindings/editor.ts",
+      "equal": true,
+      "sha256": "1cd26376c0a5438fd809c2632fdf3a6c615e91d0c98aa8beaa71419a55667425"
+    },
+    {
+      "path": "src/keybindings/focusScope.test.ts",
+      "equal": true,
+      "sha256": "7b8579d29d9d61c8c68e21b1f0ec94d9f2f4c891186f9012a66f49650ca3748b"
+    },
+    {
+      "path": "src/keybindings/fuzzy.ts",
+      "equal": true,
+      "sha256": "1bcbf1f4058508f23d5d079235d5b96ed6ed800582aae6de50db6a182d5c2c1c"
+    },
+    {
+      "path": "src/keybindings/help.test.ts",
+      "equal": true,
+      "sha256": "81366b2e88448dd84890e4b270abc3e7adc579efab28a228dacb77b0b5ab870c"
+    },
+    {
+      "path": "src/keybindings/help.ts",
+      "equal": true,
+      "sha256": "00a800eb96a3cbc6b207bf2e61a0df6dfd4f181584a906a940511af64da4af6c"
+    },
+    {
+      "path": "src/keybindings/listeners.test.ts",
+      "equal": true,
+      "sha256": "365482aba62355da9bd52d62eb0120b46b41213a5a08adf16a9dd8e3a086924c"
+    },
+    {
+      "path": "src/keybindings/listeners.ts",
+      "equal": true,
+      "sha256": "6944c63efcb6edee49d59d1ccdcfaed649902021946c8a8f60d50549fd89011a"
+    },
+    {
+      "path": "src/keybindings/m16Handlers.test.ts",
+      "equal": true,
+      "sha256": "b7d1ebf990457c9e1c0b0e03681eb6a6a623344c294457c32c6d88c50aaccc84"
+    },
+    {
+      "path": "src/keybindings/overrides.test.ts",
+      "equal": true,
+      "sha256": "7d324ccd881ec046af20beed0abf1e654b73174195bd86ebb654cab086f7af9e"
+    },
+    {
+      "path": "src/keybindings/overrides.ts",
+      "equal": true,
+      "sha256": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193"
+    },
+    {
+      "path": "src/keybindings/registry.test.ts",
+      "equal": true,
+      "sha256": "495fc6763a107ea709f398738f4822b820b9bcee1b9c54c6124558b15b1cf9f5"
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "equal": true,
+      "sha256": "b9df8f72c86c6c4e1cc05cade6b4719cd3abf26e557e690ffd574cbe2231ecb5"
+    },
+    {
+      "path": "src/keybindings/resolve.test.ts",
+      "equal": true,
+      "sha256": "38e2d32f6c82087f7395a6339ae82dd4ec36d4d2dbe06d0ffe7c15d7645294cf"
+    },
+    {
+      "path": "src/keybindings/resolve.ts",
+      "equal": true,
+      "sha256": "f8818d52d1af70bc788f5bda2d162b5b1634402592807bc78b5233ad4e1142bc"
+    },
+    {
+      "path": "src/keybindings/selectAll.test.ts",
+      "equal": true,
+      "sha256": "3d5dfcbd713fc5bcdc68c53089a726d8e3078ef91f90cecf93dae9b834915eed"
+    },
+    {
+      "path": "src/keybindings/selectAll.ts",
+      "equal": true,
+      "sha256": "508b26417d717f938eb118afbe8c0ff96873643cb4e5c0879467e5368e97db90"
+    },
+    {
+      "path": "src/keybindings/shortcut.test.ts",
+      "equal": true,
+      "sha256": "8ef3bcf7e1cb551f8a4ba191a62c5cf7df402743df219d9a87652ca0161b8b79"
+    },
+    {
+      "path": "src/keybindings/shortcut.ts",
+      "equal": true,
+      "sha256": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8"
+    },
+    {
+      "path": "src/keybindings/types.ts",
+      "equal": true,
+      "sha256": "20556563af7ebab6179ca9d0bf4912700fb967a4571f22d2baffaa98087433f7"
+    },
+    {
+      "path": "src/keybindings/workspaceRunClose.test.ts",
+      "equal": true,
+      "sha256": "b5f7caf2e0092e17faa12ece45ebadc3183c018897ddb568efd80022e2772bd3"
+    },
+    {
+      "path": "src/lib/persistence/owner.ts",
+      "equal": true,
+      "sha256": "f87f5fc8676576683a5e6c525d1948f1325ed497b65af690394a20ba6c504280"
+    },
+    {
+      "path": "src/lib/persistence/producer.ts",
+      "equal": true,
+      "sha256": "72f229a9207f6dcd595e8448181ea1fa446ce196c9574741a3fd487b26090a9c"
+    },
+    {
+      "path": "src/lib/persistence/restartPersistence.ts",
+      "equal": true,
+      "sha256": "931accd8ac4c43621ae0235e16000688587ce448acdfc2989284d098ebc70a03"
+    },
+    {
+      "path": "src/settings/repoScripts.ts",
+      "equal": true,
+      "sha256": "6746cf621b838649e97022d639c763765586a3b1bd10abfb182d2e11f02222c3"
+    },
+    {
+      "path": "src/settings/rows/RepoScriptsRows.tsx",
+      "equal": true,
+      "sha256": "9fcfca0123de65aa4aa069a234904988d35f140253a86054971bb375838f4018"
+    }
+  ],
+  "allowed_cpus": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "free_disk_bytes": 15834836992,
+  "node_invoked": false,
+  "frozen_fixture_sha256": "03c71a53a888567759ea2100713d6379281c9077693b601db1f52915f81205dc"
+}

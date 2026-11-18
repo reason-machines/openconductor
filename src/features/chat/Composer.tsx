@@ -581,7 +581,22 @@ interface QueuePanelProps {
 function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePanelProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [dragged, setDragged] = useState<string | null>(null);
+  const canCollapse = queue.items.length > 1;
   const ids = queue.items.map((m) => m.id);
+  const previousEditingId = useRef(queue.editingId);
+
+  // Restore the surviving edited row, not a removed row or another session.
+  useLayoutEffect(() => {
+    const previous = previousEditingId.current;
+    previousEditingId.current = queue.editingId;
+    if (previous !== null && queue.editingId === null && queue.items.some((m) => m.id === previous)) {
+      focus({ row: previous });
+    }
+  }, [queue.editingId, queue.items, focus]);
+
+  useEffect(() => {
+    if (!canCollapse) setCollapsed(false);
+  }, [canCollapse]);
 
   // The focused row's keys (the row itself, not its buttons): edit, delete, steer and moving between rows.
   function onRowKeyDown(e: KeyboardEvent<HTMLLIElement>, id: string) {
@@ -608,7 +623,7 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
   }
 
   const drag = (id: string) => ({
-    draggable: queue.editingId === null,
+    draggable: queue.items.length > 1 && queue.editingId === null,
     onDragStart: (e: React.DragEvent) => {
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.setData("text/plain", id);
@@ -641,12 +656,14 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
               Pause
             </button>
           )}
-          <button type="button" className="chat-action" aria-expanded={!collapsed} onClick={() => setCollapsed((c) => !c)}>
-            {collapsed ? "Expand queue" : "Collapse queue"}
-          </button>
+          {canCollapse ? (
+            <button type="button" className="chat-action" aria-expanded={!collapsed} onClick={() => setCollapsed((c) => !c)}>
+              {collapsed ? "Expand queue" : "Collapse queue"}
+            </button>
+          ) : null}
         </span>
       </div>
-      {collapsed ? null : (
+      {canCollapse && collapsed ? null : (
         <ol className="queue-list" aria-label="Queued messages" ref={listRef} data-keybinding-local="true">
           {queue.items.map((m, i) => (
             <QueueRow
@@ -696,6 +713,11 @@ function QueueRow({ id, text, userContent, attachmentNames, first, last, editing
     queueMicrotask(() => { editor.current?.focus("end"); });
   }, [editing, text, userContent]);
   if (editing) {
+    const canSave = value.trim().length > 0;
+    const save = (steer: boolean) => {
+      if (!canSave) return;
+      onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer });
+    };
     return (
       <li className="queue-row is-editing">
         <div className="queue-edit" role="group" aria-label="Edit queued message">
@@ -716,10 +738,10 @@ function QueueRow({ id, text, userContent, attachmentNames, first, last, editing
                 onQueue({ kind: "cancelEdit" });
               } else if (canSteer && hit("chat.queueEdit.saveAndSteer")) {
                 ev.preventDefault();
-                onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: true });
+                save(true);
               } else if (hit("chat.queueEdit.save")) {
                 ev.preventDefault();
-                onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: false });
+                save(false);
               }
             }}
           />
@@ -729,11 +751,11 @@ function QueueRow({ id, text, userContent, attachmentNames, first, last, editing
             Cancel
           </button>
           {canSteer ? (
-            <button type="button" className="chat-action" onClick={() => onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: true })}>
+            <button type="button" className="chat-action" disabled={!canSave} onClick={() => save(true)}>
               Save and steer
             </button>
           ) : null}
-          <button type="button" className="chat-action" onClick={() => onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: false })}>
+          <button type="button" className="chat-action" disabled={!canSave} onClick={() => save(false)}>
             Save
           </button>
         </span>

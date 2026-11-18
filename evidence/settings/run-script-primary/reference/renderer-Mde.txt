@@ -1,0 +1,1 @@
+function Mde(){const t=ne.c(2),e=$.useSyncExternalStore(q4r,WTn,WTn);let n;return t[0]!==e?(n=K4r(e),t[0]=e,t[1]=n):n=t[1],n}

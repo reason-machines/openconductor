@@ -1,0 +1,18 @@
+saveQueuedMessageEdit = async ({ mode: e, onEditCommitted: s, sessionId: n }) => { const r = this.editingTransaction(n); return r === void 0 ? nt("not-found") : (r.phase = "terminal", r.terminalOwner = "save", this.queuedEdits.publish(r, { status: "saving" }), await this.sessionTransactions.run(n, async () => { const i = this.deps.store.getState().sessions[n]?.queuedEdit; if (this.queuedEdits.get(n) !== r || i === void 0)
+    return nt("not-found"); const o = r.service; if (o === void 0)
+    return this.queuedEdits.finish(r), nt("not-cloud"); let a = !1; try {
+    const c = i.message.trim(), l = await o.editMessage({ attachmentIds: [...r.attachmentIds], keepEditHold: e === "steer", message: c, messageForAgent: c, messageId: r.messageId, sessionId: n });
+    return l.ok ? (a = !0, s?.({ message: c, previousMessage: i.originalMessage }), e === "steer" ? await o.steerMessage({ messageId: r.messageId, sessionId: n }) : l) : (r.phase = "editing", r.terminalOwner = void 0, this.queuedEdits.publish(r, { status: "editing" }), l);
+}
+catch {
+    return a || (r.phase = "editing", r.terminalOwner = void 0, this.queuedEdits.publish(r, { status: "editing" })), nt("unknown");
+}
+finally {
+    if (a)
+        try {
+            await o.releaseMessageEditHold({ messageId: r.messageId, sessionId: n });
+        }
+        finally {
+            this.queuedEdits.finish(r);
+        }
+} })); };

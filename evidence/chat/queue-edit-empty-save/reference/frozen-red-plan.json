@@ -1,0 +1,229 @@
+{
+  "frontier": "COMPOSER-QUEUE-EDIT-EMPTY-SAVE-135",
+  "owner": "13576d11-76fb-4842-aa9b-c398f9ca26f3",
+  "status": "PLAN_FROZEN_NOT_FIXTURE_OR_EXECUTED_RED",
+  "main": "c22e27d48a0940c5793842cfddc023b7e5f838c5",
+  "reference_binding_sha256": "7cc2bc3db49e26b16a19a8c178f92750b1cc4104566d7b181c6f15e674996db0",
+  "source_pins": [
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "sha256": "82aba37327b2ec32b96644fd0cf19923420b926ea9e2e2dbb4c4e851657da13a"
+    },
+    {
+      "path": "src/features/chat/composerQueueFocus.test.ts",
+      "sha256": "399ade20e426496ab14a385f0439ed97aaad13504c97bd0839e4fbea547892c6"
+    },
+    {
+      "path": "src/features/chat/queue.ts",
+      "sha256": "f08c481457eaf0389259d148c62c1c592cfc95612dc6b7576cb4c7c415e1e1a1"
+    },
+    {
+      "path": "src/features/chat/queue.test.ts",
+      "sha256": "11868cc6ae58421f1e58b284a60909fab2bcaf4d1b7de2f6e623cf6c32acd552"
+    },
+    {
+      "path": "src/features/chat/userContent.ts",
+      "sha256": "5bc4da24e8d193d68b85fd02f25c890ed6a2a44a3096ae51e008139900c3488c"
+    },
+    {
+      "path": "src/features/chat/composerDocument.ts",
+      "sha256": "9228c3b05e08c41faffef50363e928d80636eda949003dbac34d197971d1a676"
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "sha256": "b9df8f72c86c6c4e1cc05cade6b4719cd3abf26e557e690ffd574cbe2231ecb5"
+    },
+    {
+      "path": "src/keybindings/shortcut.ts",
+      "sha256": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8"
+    },
+    {
+      "path": "src/keybindings/overrides.ts",
+      "sha256": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193"
+    }
+  ],
+  "admission": "Only a frozen declarative spec. Fixture creation and serialized unit-test execution require Root/canonical queue clearance; no native/runtime admission inferred.",
+  "proposed_fixture_path_not_created": "src/features/chat/composerQueueEditEmptySave.test.ts",
+  "harness": {
+    "analogue": "src/features/chat/composerQueueFocus.test.ts at the pinned main",
+    "actual_components": "Transpile and mount the complete actual Composer.tsx with React/react-test-renderer. Reach its real local QueueRow through the actual QueuePanel tree. Do not export, replace, reimplement or extract its Save handlers into a lookalike.",
+    "editor_boundary": "Stub only ComposerEditor as in the established queue-focus fixture; capture that instance's current value/onChange/onKeyDown and drive the editing row instance, not the main draft editor. This exercises actual React QueueRow state but not Tiptap DOM/IME or native behavior.",
+    "real_helpers": [
+      "queue.emptyQueue",
+      "queue.actionStep",
+      "userContent.queuedUserDraft",
+      "userContent.submittedUserPrompt",
+      "composerDocument.writeComposerDraft",
+      "keybindings.effectiveShortcuts",
+      "keybindings.matchesEvent"
+    ],
+    "queue_host": "Use a React host with queue state. onQueue records the action, calls actual queue.actionStep(currentQueue, action), records effects, and sets the returned queue into that host. Stub no reducer result and do not preemptively block blank saves in the host.",
+    "side_boundaries": "Use the existing fixture's preference, tooltip, presence and suggestion boundaries only. Unexpected imports fail closed. onSubmit/onStop/provider/backend calls are assertion failures; no real Tauri, provider, timers or network.",
+    "queue_seed": {
+      "items": [
+        {
+          "id": "q1",
+          "text": "original first",
+          "attachments": [],
+          "createdAt": "2026-11-17T00:00:00Z"
+        },
+        {
+          "id": "q2",
+          "text": "original second",
+          "attachments": [],
+          "createdAt": "2026-11-17T00:00:01Z"
+        }
+      ],
+      "editingId": "q1",
+      "next": 3
+    },
+    "states": [
+      {
+        "status": "working",
+        "paused": false,
+        "canSteer": true,
+        "visible_save_actions": [
+          "Save",
+          "Save and steer"
+        ]
+      },
+      {
+        "status": "working",
+        "paused": false,
+        "canSteer": false,
+        "visible_save_actions": [
+          "Save"
+        ]
+      },
+      {
+        "status": "idle",
+        "paused": true,
+        "canSteer": true,
+        "visible_save_actions": [
+          "Save"
+        ]
+      }
+    ],
+    "blank_inputs": [
+      "",
+      " ",
+      " \n\t "
+    ]
+  },
+  "decisive_red_cases": [
+    {
+      "id": "blank-button",
+      "steps": [
+        "Mount each seed/state independently, then set actual editing-row ComposerEditor onChange to each blank input through React act.",
+        "Assert every relevant Save action is unavailable (absent or disabled).",
+        "Attempt a user-available enabled Save action only; do not call disabled callbacks programmatically."
+      ],
+      "expect": [
+        "No saveEdit action dispatched; no start/steer effect.",
+        "q1 and q2 exactly retained, editingId remains q1, blank editor draft remains editable."
+      ],
+      "predicted_unmodified_main": "Relevant buttons are enabled. Clicking dispatches saveEdit, and actual actionStep removes q1. Prediction only; not executed."
+    },
+    {
+      "id": "blank-save-key",
+      "steps": [
+        "Fresh mount for every state/input; clear editing row.",
+        "Dispatch unmodified Enter through that row's actual captured onKeyDown, using the real default registry."
+      ],
+      "expect": [
+        "preventDefault called; no saveEdit dispatch or effects.",
+        "q1/q2 retained and editingId q1."
+      ],
+      "predicted_unmodified_main": "Matched Enter is consumed but dispatches saveEdit and removes q1."
+    },
+    {
+      "id": "blank-steer-key",
+      "steps": [
+        "Fresh working/canSteer=true mount for every blank input.",
+        "Dispatch meta+Enter through the real row handler."
+      ],
+      "expect": [
+        "preventDefault called; no saveEdit dispatch, no steer/start, original items/edit state retained."
+      ],
+      "predicted_unmodified_main": "Matched shortcut dispatches steer=true saveEdit; blank item is removed instead of remaining editable."
+    }
+  ],
+  "unchanged_controls": [
+    {
+      "id": "nonblank-save",
+      "input": "updated first",
+      "expect": "One actual saveEdit steer=false action; queue item q1 updated once and retained; edit ends; q2 unchanged."
+    },
+    {
+      "id": "nonblank-steer",
+      "input": "updated first",
+      "state": "working/canSteer=true",
+      "expect": "One actual saveEdit steer=true action and one steer effect; q1 removed as committed, q2 unchanged."
+    },
+    {
+      "id": "cancel",
+      "input": "",
+      "action": "Cancel button and Escape independently",
+      "expect": "Actual cancelEdit preserves original queued text and attachments, ends edit, no send effect."
+    },
+    {
+      "id": "explicit-delete",
+      "state": "nonediting row via Cancel, still working",
+      "action": "Delete queued message q1",
+      "expect": "Actual delete removes q1, preserves q2; no change to explicit deletion semantics."
+    },
+    {
+      "id": "ime",
+      "inputs": [
+        "",
+        "updated first"
+      ],
+      "action": "Enter and meta+Enter with isComposing=true",
+      "expect": "No preventDefault, saveEdit dispatch or queue effects."
+    },
+    {
+      "id": "no-steer",
+      "state": "working/canSteer=false",
+      "expect": "Save and steer remains absent; nonblank ordinary Save still works; no accidental steer dispatch."
+    },
+    {
+      "id": "structured-file",
+      "draft_parts": [
+        {
+          "kind": "file",
+          "path": "src/main.ts",
+          "label": "main.ts",
+          "directory": false
+        }
+      ],
+      "expect": "Use real writeComposerDraft/submittedUserPrompt. Meaningful file atom remains saveable and serialized content is preserved, not mistaken for blank."
+    },
+    {
+      "id": "attachment-only-blank",
+      "seed_attachment": {
+        "name": "note.txt",
+        "text": "attached body"
+      },
+      "input": "",
+      "expect": "Blank UI save remains unavailable as reference pTo requires text independently of attachment count. q1 and its attachment remain; no reducer or attachment API change."
+    },
+    {
+      "id": "direct-reducer-deletion",
+      "action": "Call actual queue.saveEdit on a blank attachment-free edited item, separately from the mounted UI route",
+      "expect": "Existing direct reducer deletion contract still removes q1; do not modify/weaken existing queue.test.ts coverage."
+    }
+  ],
+  "planned_command_not_run": "timeout --signal=TERM --kill-after=5s 60s env NODE_OPTIONS=--max-old-space-size=768 COMPOSER_QUEUE_EDIT_EMPTY_SOURCE_REF=c22e27d48a0940c5793842cfddc023b7e5f838c5 node --test --test-concurrency=1 src/features/chat/composerQueueEditEmptySave.test.ts",
+  "resource_request_not_admission": "One serialized Node unit-test process, 60s plus 5s termination grace, heap cap 768 MiB; no install/build/browser/native/provider; no CPU reserved here. Existing dependencies only; missing dependency returns to coordinator rather than installing.",
+  "freeze_acceptance": "Before any first execution, implement only the approved fixture, require it to load full pinned Composer and real reducers as above, hash fixture and harness inputs, retain frozen bytes and typecheck/static-integrity evidence, then request exact serialized execution. For main moving later, rebind affected sources and dedupe before treatment.",
+  "implementation_gate": "Product edit only after this reference binding, actual executed intended RED, and exact collision clearance. This plan is not that RED or clearance.",
+  "not_run": [
+    "fixture implementation",
+    "behavioral RED/GREEN",
+    "product treatment",
+    "typecheck/build",
+    "browser/native/REA acquisition",
+    "provider/app runtime",
+    "publication or package dispatch"
+  ]
+}

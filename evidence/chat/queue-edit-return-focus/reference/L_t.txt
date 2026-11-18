@@ -1,0 +1,1 @@
+function L_t({remote:t,local:e,isCloudWorkspace:s,getSessionWorkspaceId:n}){const r=KW(),i=D_(),o=D_t(t,r,i),a=e===void 0?void 0:k_t({...e,drafts:t.drafts},r,i);return Fyt({remote:o,local:a,store:r,drafts:t.drafts,optimisticOverlay:i,getSenderId:t.getSenderId,getReviewCommentSessionIds:t.attachments.getReviewCommentSessionIds,isCloudWorkspace:s,getSessionWorkspaceId:n})}

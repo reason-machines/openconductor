@@ -1,0 +1,1 @@
+{"status": "STATIC_PREFLIGHT_PASS_NOT_RUNTIME_ADMISSION", "checks_passed": 267, "fixture_sha256": "8739fb3f4ebbbdf4282b740ccce38f5a3572b213669b23a96016ec19535cb4e3", "node_version": "NOT_EXECUTED_OR_VERIFIED", "not_run": ["Node", "fixture/test/RED/GREEN", "TS parser/typecheck/build", "browser/native/provider/acquisition"]}

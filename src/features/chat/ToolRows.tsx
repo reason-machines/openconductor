@@ -843,7 +843,7 @@ function CopyIcon({ text, tooltip = "Copy" }: { text: string; tooltip?: string }
         e.stopPropagation();
         void navigator.clipboard?.writeText(text).then(() => {
           setCopied(true);
-          setTimeout(() => setCopied(false), 1500);
+          setTimeout(() => setCopied(false), 2000);
         });
       }}
     >
