@@ -1,8 +1,9 @@
-import { useState, type Dispatch, type KeyboardEvent } from "react";
+import { useEffect, useState, type Dispatch, type KeyboardEvent } from "react";
 import type { Action } from "../state/store";
 import type { Workspace } from "../state/types";
 import { markUserSetBranchName, renameWorkspaceRecord } from "../backend";
 import { renameWorkspaceBranch } from "../workspace/api";
+import { appBrowserStorage } from "../lib/local-storage";
 import { ALSO_RENAME_BRANCH_KEY, canRenameBranch, planRename, renameDefault, renamedBranch } from "../state/workspaceRename";
 import { FolderIcon } from "./Icons";
 import { DialogFrame } from "./DialogFrame";
@@ -15,7 +16,7 @@ interface Props {
   onError: (message: string) => void;
 }
 
-function readAlsoRenameBranch(): boolean {
+function readLegacyAlsoRenameBranch(): boolean {
   try {
     return localStorage.getItem(ALSO_RENAME_BRANCH_KEY) === "true";
   } catch {
@@ -45,21 +46,36 @@ export function RenameWorkspaceDialog({ repoId, workspace: ws, dispatch, onClose
   const target = { directoryName, workspaceName: ws.name === directoryName ? null : ws.name };
   const initial = renameDefault(target);
   const [value, setValue] = useState(initial);
-  const [alsoRenameBranch, setAlsoRenameBranch] = useState(readAlsoRenameBranch);
+  const [alsoRenameBranch, setAlsoRenameBranch] = useState<boolean>();
   const [pending, setPending] = useState(false);
   const branchRenamable = canRenameBranch(ws.branch);
 
+  useEffect(() => {
+    let cancelled = false;
+    async function loadPreference() {
+      try {
+        const stored = await appBrowserStorage().getItem(ALSO_RENAME_BRANCH_KEY);
+        if (!cancelled) {
+          // Preserve pre-adapter preferences only when the canonical entry is absent.
+          setAlsoRenameBranch(stored === null ? readLegacyAlsoRenameBranch() : stored === "true");
+        }
+      } catch {
+        if (!cancelled) setAlsoRenameBranch(false);
+      }
+    }
+    void loadPreference();
+    return () => { cancelled = true; };
+  }, []);
+
   function toggleBranch(checked: boolean) {
     setAlsoRenameBranch(checked);
-    try {
-      localStorage.setItem(ALSO_RENAME_BRANCH_KEY, String(checked));
-    } catch {
+    void appBrowserStorage().setItem(ALSO_RENAME_BRANCH_KEY, String(checked)).catch(() => {
       /* preference only */
-    }
+    });
   }
 
   async function submit() {
-    if (pending) return;
+    if (pending || alsoRenameBranch === undefined) return;
     const name = value.trim();
     if (!name || name === initial) return onClose();
     const plan = planRename(target, name);
@@ -117,14 +133,14 @@ export function RenameWorkspaceDialog({ repoId, workspace: ws, dispatch, onClose
           spellCheck={false}
         />
         <label className="rename-ws-branch">
-          <input type="checkbox" checked={alsoRenameBranch} disabled={!branchRenamable} onChange={(e) => toggleBranch(e.target.checked)} />
+          <input type="checkbox" checked={alsoRenameBranch === true} disabled={!branchRenamable || alsoRenameBranch === undefined} onChange={(e) => toggleBranch(e.target.checked)} />
           Also rename branch
         </label>
         <div className="modal-actions">
           <button type="button" className="btn btn-ghost" onClick={onClose}>
             Cancel
           </button>
-          <button type="button" className="btn btn-primary" data-primary-action onClick={() => void submit()} disabled={pending}>
+          <button type="button" className="btn btn-primary" data-primary-action onClick={() => void submit()} disabled={pending || alsoRenameBranch === undefined}>
             {pending ? "Renaming..." : "OK"}
           </button>
         </div>
