@@ -1,0 +1,59 @@
+{
+  "key": "DIFF-UNCOMMITTED-DISCARD-AFFORDANCE-DE6-01",
+  "author": "Conductor Rebuild",
+  "version": 3,
+  "status": "SELECTOR_BINDINGS_CORRECTED_NOT_EXECUTED",
+  "checked_main": "06c5fefc9a13fbae9acb743c5d4cd1d1673689eb",
+  "supersedes": {
+    "manifest": "evidence/diff/uncommitted-discard-affordance/frozen-v2.json",
+    "fixture_snapshot": "evidence/diff/uncommitted-discard-affordance/frozen-v2.mounted.test.mjs.txt",
+    "sha256": "f31ff7c6e2037ef63d953da8da49ab6f008270211a8c1e73172e2dd87fbfdd61",
+    "bytes": 12896,
+    "observed_result": "4 context-menu controls passed; 6 All-scope selector failures before Uncommitted assertions. HARNESS failure, not semantic RED.",
+    "actual_release_utc": "2026-11-18T01:23:53.094716Z",
+    "original_runtime_artifacts": {
+      "red10-v2.log": {
+        "path": ".oc-tmp/uncommitted-discard-runtime/red10-v2.log",
+        "sha256": "f121e43bc4f47e4f4d215ba811ee15b5bdfe3ec78bd07125ced6404b6a33a7a9",
+        "bytes": 7769
+      },
+      "red10-v2-receipt.json": {
+        "path": ".oc-tmp/uncommitted-discard-runtime/red10-v2-receipt.json",
+        "sha256": "d85013df79977c8751700538edbf8fb80fbf55af32148f465a95463bfa90d077",
+        "bytes": 8603
+      },
+      "red10-v2-classification.json": {
+        "path": ".oc-tmp/uncommitted-discard-runtime/red10-v2-classification.json",
+        "sha256": "0ba8783e934722e0ba505e2aa42bb66467980549dab92f93ed5e28a3ce7ed734",
+        "bytes": 6682
+      }
+    }
+  },
+  "fixture": {
+    "path": "tests/diff/uncommittedDiscardAffordance.mounted.test.mjs",
+    "sha256": "a2aef693638daac179d28cfdce96dea63bb4022d9e06cb7e68731b732060402b",
+    "bytes": 13165,
+    "exact_replacements": [
+      {
+        "before": "  const row = () => find(`Discard changes to ${file.path}`);",
+        "after": "  const row = () => renderer.root.findByProps({ className: \"oc-change-row\" }).findAll((node) => node.type === \"button\" && node.props[\"aria-label\"] === `Discard changes to ${file.path}`);"
+      },
+      {
+        "before": "  const header = () => find(\"Discard changes\");",
+        "after": "  const header = () => renderer.root.findByProps({ className: \"oc-file-header\" }).findAll((node) => node.type === \"button\" && node.props[\"aria-label\"] === `Discard changes to ${file.path}`);"
+      }
+    ],
+    "case_bodies_sha256": "fb7c64475dd4d41efb4722df10479321f860115f8bb4002fd064f43f418868b3",
+    "all_ten_case_bodies_assertions_and_zero_IO_controls_unchanged": true
+  },
+  "boundaries": {
+    "row": "oc-change-row",
+    "header": "oc-file-header",
+    "shared_label": "Discard changes to ${file.path}",
+    "source_justification": [
+      "src/features/diff/ChangesList.tsx:99-106",
+      "src/features/diff/FileDiffView.tsx:333-345"
+    ]
+  },
+  "runtime": "Same existing RED10-v3 request/supervisor and bounds; no run or new gate in this source-preparation checkpoint."
+}

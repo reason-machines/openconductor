@@ -41,9 +41,9 @@ test("the context menu discards against the All changes base in every view", () 
   assert.deepEqual(scopeRequest(discardScope("menu", "uncommitted", true)!, target("develop")), { kind: "all", base: "develop", remote: "origin" });
 });
 
-test("revert icons use the view's scope and are off in the turn view", () => {
+test("revert icons are offered only in All changes outside the turn view", () => {
   assert.equal(discardScope("view", "all", false), "all");
-  assert.equal(discardScope("view", "uncommitted", false), "uncommitted");
+  assert.equal(discardScope("view", "uncommitted", false), null);
   assert.equal(discardScope("view", "all", true), null);
   assert.equal(discardScope("view", "uncommitted", true), null);
 });
