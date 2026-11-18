@@ -1,0 +1,1 @@
+function scs(t){return{activeTab:t.gitPanelTab??"tree",diffScope:Qls(t.gitDiff??"all")}}

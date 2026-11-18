@@ -1,0 +1,7 @@
+{
+  "file": "baseline.tap.gz",
+  "raw_bytes": 3823,
+  "raw_sha256": "cab2a44c9a0fe46d6b8285a4dd5dedabceb1063de8f2813f6a0a2f18ecd01da6",
+  "gzip_sha256": "b183b0df4214a5e25d79be003980efd72c3ac67cc8cd97eb969937aea5dd3594",
+  "reason": "Byte-exact archive preserves original assertion whitespace; no raw output trimmed or regenerated."
+}

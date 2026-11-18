@@ -1,0 +1,56 @@
+{
+  "author": "Conductor Rebuild",
+  "baseline": "eef01e9b287472280fb3f4a585bc697d5f1f8f51",
+  "origin": "existing retained Conductor 0.87.6 REA-subject sidecar; source-only, not executed vendor code",
+  "bundle_bytes": 13025924,
+  "bundle_sha256": "f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab",
+  "current_digest_read": "2026-11-17 direct confined openssl dgst -sha256 on existing Mac retained bundle; PASS",
+  "inherited_container_binding": {
+    "file": "evidence/settings/auto-permission/reference.json",
+    "sha256": "c919ff2c8387adc42fb90320171939677291634005c300179ee2a2a3b30b9bed",
+    "binary_bytes": 76147184,
+    "binary_sha256": "5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d",
+    "note": "Previously established full embedded-source identity to REA subject; no new acquisition or binary read in this repair."
+  },
+  "spans": [
+    {
+      "label": "policy",
+      "start": 3507564,
+      "end": 3508680,
+      "bytes": 1116,
+      "sha256": "84781653d6c5b6b714b3894522864da8755f2523d3784c73b8e21d7bcecbfdf2",
+      "source": "Ln4 = { collaborationMode: { kind: \"derived\" }, requiresToolApprovals: { kind: \"derived\" }, autoPermissionModeEnabled: { kind: \"derived\" }, model: { kind: \"live\", apply: async (U, B) => {\n    await U.queryResult.setModel(Fy(B.model, { env: U.modelRoutingEnv })), U.currentSdkModel = undefined;\n  } }, thinkingLevel: { kind: \"liveIfSupported\", supportsLive: (U, B) => Gn4(B.model, { env: U.modelRoutingEnv }), apply: async (U, B) => {\n    await U.queryResult.applyFlagSettings({ effortLevel: oB4(B.thinkingLevel) ?? null });\n  } }, claudePersonality: { kind: \"recreate\" }, ultracode: { kind: \"recreate\" }, fastMode: { kind: \"recreate\" }, additionalDirectories: { kind: \"recreate\" }, chromeEnabled: { kind: \"recreate\" }, localExecutionMcpEnabled: { kind: \"recreate\" }, getDiffCommentsEnabled: { kind: \"recreate\" }, summaryToolsEnabled: { kind: \"recreate\" }, workspaceSettingsRevision: { kind: \"recreate\" }, harness: { kind: \"ignored\" }, acpAgentId: { kind: \"ignored\" }, acpConfig: { kind: \"ignored\" }, personality: { kind: \"ignored\" }, codexApprovalPolicy: { kind: \"ignored\" }, codexSandboxMode: { kind: \"ignored\" } };"
+    },
+    {
+      "label": "helpers",
+      "start": 3505357,
+      "end": 3506238,
+      "bytes": 881,
+      "sha256": "0ef64bfa49baa63361302a7d0337206ee338caa5f0d36822f161beb072da8338",
+      "source": "function WB5(U, B) {\n  if (Array.isArray(U) || Array.isArray(B))\n    return JSON.stringify(U ?? []) === JSON.stringify(B ?? []);\n  return (U ?? false) === (B ?? false);\n}\nfunction EB5(U) {\n  let B = [];\n  for (let G in U)\n    B.push(G);\n  return B;\n}\nfunction Pc3({ policy: U, live: B, config: G, key: D }) {\n  let w = U[D];\n  switch (w.kind) {\n    case \"recreate\":\n      return true;\n    case \"liveIfSupported\":\n      return !w.supportsLive(B, G);\n    case \"live\":\n    case \"derived\":\n    case \"ignored\":\n      return false;\n  }\n}\nfunction An4({ policy: U, live: B, config: G }) {\n  return EB5(U).filter((D) => Pc3({ policy: U, live: B, config: G, key: D }) && !WB5(G[D], B.appliedConfig[D]));\n}\nfunction Oc3({ target: U, source: B, key: G }) {\n  U[G] = B[G];\n}\nfunction Nc3({ key: U, from: B, to: G }) {\n  return `${U}: ${JSON.stringify(B[U])} \\u2192 ${JSON.stringify(G[U])}`;\n}\n"
+    },
+    {
+      "label": "launch",
+      "start": 3550662,
+      "end": 3551633,
+      "bytes": 971,
+      "sha256": "9f3aba251b6e0e9b0a4836ae06645382e1b8f27a7d1eface9c1e707e125350ad",
+      "source": "b = { abortController: q, pathToClaudeCodeExecutable: W.claudeExecutablePath, executableArgs: W.executableArgs, cwd: this.workspaceDir, env: { ...W.env, CLAUDE_CODE_ENABLE_OPUS_4_7_FAST_MODE: \"1\" }, sessionStore: T, sessionStoreFlush: \"eager\", ...D ? { resume: G ?? U, sessionId: U, resumeSessionAt: D, forkSession: true } : G ? { resume: G } : { sessionId: U }, model: Fy(B.model, { env: this.getEffectiveEnv(w) }), thinking: HB5({ model: B.model, thinkingLevel: B.thinkingLevel }), effort: oB4(B.thinkingLevel), permissionMode: \"bypassPermissions\", systemPrompt: uc3({ summaryToolsEnabled: B.summaryToolsEnabled === true }), settingSources: qn4, plugins: this.getConductorSkillPlugins(), maxTurns: 1000, additionalDirectories: B.additionalDirectories ?? [], disallowedTools: [\"AskUserQuestion\"], toolAliases: { AskUserQuestion: \"mcp__conductor__AskUserQuestion\" }, ...E ? { settings: E } : {}, ...B.chromeEnabled ? { extraArgs: { chrome: null } } : {}, stderr: (Y) => {"
+    }
+  ],
+  "inherited_span_labels": [
+    "query-to-config",
+    "query-handler",
+    "query-options-schema",
+    "config-schema",
+    "live-reconciliation",
+    "runner-reconcile",
+    "runner-message",
+    "runner-warm"
+  ],
+  "limits": [
+    "No reference JS execution or new REA invocation.",
+    "Launch span is the relevant SDK-options excerpt, not complete startGenerator.",
+    "Reference policy recreates at an eligible idle turn; no mid-turn process interruption is claimed."
+  ]
+}

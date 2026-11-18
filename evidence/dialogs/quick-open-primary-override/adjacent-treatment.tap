@@ -1,0 +1,186 @@
+(node:91) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:98) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: bad documents give no overrides
+ok 1 - bad documents give no overrides
+  ---
+  duration_ms: 1.730545
+  type: 'test'
+  ...
+# Subtest: shortcut parsing canonicalizes modifiers and rejects junk
+ok 2 - shortcut parsing canonicalizes modifiers and rejects junk
+  ---
+  duration_ms: 0.406112
+  type: 'test'
+  ...
+# Subtest: unknown, non-configurable and invalid entries are dropped
+ok 3 - unknown, non-configurable and invalid entries are dropped
+  ---
+  duration_ms: 0.393654
+  type: 'test'
+  ...
+# Subtest: legacy ids migrate to their replacements
+ok 4 - legacy ids migrate to their replacements
+  ---
+  duration_ms: 0.296457
+  type: 'test'
+  ...
+# Subtest: old cmd-enter setups regain Shift+Enter for new line
+ok 5 - old cmd-enter setups regain Shift+Enter for new line
+  ---
+  duration_ms: 0.480985
+  type: 'test'
+  ...
+# Subtest: serialize stores singles bare, lists as arrays, and deletes resets
+ok 6 - serialize stores singles bare, lists as arrays, and deletes resets
+  ---
+  duration_ms: 0.189693
+  type: 'test'
+  ...
+# Subtest: effective shortcuts fall back to key plus additionalKeys
+ok 7 - effective shortcuts fall back to key plus additionalKeys
+  ---
+  duration_ms: 0.338587
+  type: 'test'
+  ...
+# Subtest: store serializes concurrent updates without losing either
+ok 8 - store serializes concurrent updates without losing either
+  ---
+  duration_ms: 15.722976
+  type: 'test'
+  ...
+# (node:106) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: parts are modifiers in ctrl, meta, shift, alt order, then the key
+ok 9 - parts are modifiers in ctrl, meta, shift, alt order, then the key
+  ---
+  duration_ms: 1.735688
+  type: 'test'
+  ...
+# Subtest: glyphs and spoken labels
+ok 10 - glyphs and spoken labels
+  ---
+  duration_ms: 0.246311
+  type: 'test'
+  ...
+# Subtest: search tokens include modifier aliases and glyphs
+ok 11 - search tokens include modifier aliases and glyphs
+  ---
+  duration_ms: 0.128999
+  type: 'test'
+  ...
+# Subtest: logical keys match case-insensitively with exact modifiers
+ok 12 - logical keys match case-insensitively with exact modifiers
+  ---
+  duration_ms: 0.539881
+  type: 'test'
+  ...
+# Subtest: symbols tolerate the Shift or Option that produced them
+ok 13 - symbols tolerate the Shift or Option that produced them
+  ---
+  duration_ms: 0.132694
+  type: 'test'
+  ...
+# Subtest: physical keys match by code whatever the layout types
+ok 14 - physical keys match by code whatever the layout types
+  ---
+  duration_ms: 0.100696
+  type: 'test'
+  ...
+# Subtest: sameShortcut is exact; equivalent bridges logical and physical
+ok 15 - sameShortcut is exact; equivalent bridges logical and physical
+  ---
+  duration_ms: 0.243037
+  type: 'test'
+  ...
+# Subtest: recording: Option letter chords become physical, dead keys are refused
+ok 16 - recording: Option letter chords become physical, dead keys are refused
+  ---
+  duration_ms: 0.356187
+  type: 'test'
+  ...
+# (node:114) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tokenScore prefers exact, then prefix, word start, substring, subsequence
+ok 17 - tokenScore prefers exact, then prefix, word start, substring, subsequence
+  ---
+  duration_ms: 0.924021
+  type: 'test'
+  ...
+# Subtest: empty query lists workspaces by recency, archived last
+ok 18 - empty query lists workspaces by recency, archived last
+  ---
+  duration_ms: 1.295566
+  type: 'test'
+  ...
+# Subtest: every token must match name, branch or repo
+ok 19 - every token must match name, branch or repo
+  ---
+  duration_ms: 0.307506
+  type: 'test'
+  ...
+# Subtest: name match beats branch-only match; ties go to recency
+ok 20 - name match beats branch-only match; ties go to recency
+  ---
+  duration_ms: 0.224167
+  type: 'test'
+  ...
+# Subtest: workspace results are capped
+ok 21 - workspace results are capped
+  ---
+  duration_ms: 0.237373
+  type: 'test'
+  ...
+# Subtest: recent files: newest first, deduplicated per repo and path, capped
+ok 22 - recent files: newest first, deduplicated per repo and path, capped
+  ---
+  duration_ms: 6.512338
+  type: 'test'
+  ...
+# Subtest: parseRecentFiles tolerates bad storage
+ok 23 - parseRecentFiles tolerates bad storage
+  ---
+  duration_ms: 0.35325
+  type: 'test'
+  ...
+# Subtest: rows: recents first for an empty query, without duplicates; query shows matches only
+ok 24 - rows: recents first for an empty query, without duplicates; query shows matches only
+  ---
+  duration_ms: 0.262716
+  type: 'test'
+  ...
+# Subtest: empty states depend on loading and query
+ok 25 - empty states depend on loading and query
+  ---
+  duration_ms: 0.283586
+  type: 'test'
+  ...
+# Subtest: highlight groups matched runs; splitPath separates dir and name
+ok 26 - highlight groups matched runs; splitPath separates dir and name
+  ---
+  duration_ms: 0.393304
+  type: 'test'
+  ...
+# Subtest: selection wraps at both ends
+ok 27 - selection wraps at both ends
+  ---
+  duration_ms: 0.243365
+  type: 'test'
+  ...
+# Subtest: keyboard flow
+ok 28 - keyboard flow
+  ---
+  duration_ms: 0.205113
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 626.879319

@@ -1,0 +1,215 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { dirname, resolve } from "node:path";
+import test from "node:test";
+import { runInNewContext } from "node:vm";
+import type { ITerminalOptions } from "@xterm/xterm";
+import type * as Session from "./session";
+import type { PtyEvent } from "./events";
+import type { PersistArgs } from "./restore";
+
+const deps = createRequire(resolve("package.json"));
+const ts: typeof import("typescript") = deps("typescript");
+const compiled = new Map<string, string>();
+type Exports = Record<string, unknown> & Partial<typeof Session>;
+const colors: Record<string, string> = { "--panel": "fixture-panel", "--text": "fixture-text", "--accent": "fixture-accent" };
+
+function fixture(failSpawn = false) {
+  let event: ((event: PtyEvent) => void) | undefined;
+  let pagehide = () => {};
+  let rejectSpawn = failSpawn;
+  let nextId = 0;
+  const writes: { id: string; data: string }[] = [];
+  const history: PersistArgs[] = [];
+  const screens: Screen[] = [];
+  const noop = () => {};
+  class Screen {
+    unicode = { activeVersion: "6" };
+    cols = 80;
+    rows = 24;
+    options: ITerminalOptions;
+    input: (data: string) => void = noop;
+    constructor(options: ITerminalOptions) {
+      this.options = { ...options, theme: { ...options.theme } };
+      screens.push(this);
+    }
+    loadAddon() {}
+    attachCustomKeyEventHandler() {}
+    onData(handler: (data: string) => void) { this.input = handler; }
+    onResize() {}
+    write(_data: string, done?: () => void) { done?.(); }
+    clear() {}
+    dispose() {}
+  }
+  const boundary: Record<string, unknown> = {
+    "@xterm/xterm": { Terminal: Screen },
+    "@xterm/addon-fit": { FitAddon: class { fit() {} dispose() {} } },
+    "@xterm/addon-unicode11": { Unicode11Addon: class {} },
+    "src/features/terminal/pty": {
+      onPtyEvent: async (callback: (event: PtyEvent) => void) => { event = callback; return noop; },
+      ptySpawn: async ({ id }: { id: string }) => { if (rejectSpawn) throw new Error("spawn failed"); return id; },
+      ptyWrite: async (id: string, data: string) => { writes.push({ id, data }); },
+      ptyPersistTerminalHistory: async (record: PersistArgs) => { history.push(record); },
+      ptyWriteMirror: async () => {}, ptyClearHistory: async () => {},
+      ptyKill: async () => {}, ptyResize: async () => {}, ptyAckBytes: async () => {},
+      ptyDeleteTerminalHistory: async () => {},
+    },
+    "src/features/terminal/localStorage": { subsystemStorage: () => ({ getItem: async () => null, setItem: async () => {} }) },
+    "src/settings/appPrefs": { getAppPrefs: () => ({ experimental_tab_freak_mode: false }) },
+    "src/features/terminal/font": { currentTerminalFont: () => ({ family: "monospace", size: 12 }), onTerminalFont: noop, TERMINAL_LINE_HEIGHT: 1.2 },
+    "src/features/terminal/scrollback": { currentScrollbackRows: () => 1000, onScrollbackRows: noop },
+  };
+  const modules = new Map<string, { exports: Exports }>();
+  function load(name: string): Exports {
+    name = name.replace(/\.tsx?$/, "");
+    const existing = modules.get(name);
+    if (existing) return existing.exports;
+    const file = name + ".ts";
+    let output = compiled.get(file);
+    if (output === undefined) {
+      output = ts.transpileModule(readFileSync(file, "utf8"), {
+        fileName: file, compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021 },
+      }).outputText;
+      compiled.set(file, output);
+    }
+    const module: { exports: Exports } = { exports: {} };
+    modules.set(name, module);
+    const require = (dep: string): unknown => {
+      if (dep === "react") return deps(dep);
+      const key = dep.startsWith(".") ? resolve(dirname(file), dep).slice(process.cwd().length + 1).replace(/\.tsx?$/, "") : dep;
+      return Object.prototype.hasOwnProperty.call(boundary, key) ? boundary[key] : load(key);
+    };
+    runInNewContext(`(function(require,module,exports){${output}\n})`, {
+      console, TextDecoder, TextEncoder, setTimeout, clearTimeout, crypto: { randomUUID: () => `cursor-fixture-${++nextId}` },
+      getComputedStyle: () => ({ getPropertyValue: (name: string) => colors[name] ?? "" }),
+      document: { documentElement: {}, createElement: () => ({ className: "", remove: noop }) },
+      window: { addEventListener: (type: string, callback: () => void) => { if (type === "pagehide") pagehide = callback; } },
+    }, { filename: file })(require, module, module.exports);
+    return module.exports;
+  }
+  const session = load("src/features/terminal/session");
+  assert.ok(session.openTab && session.getTabs && session.retryTab && session.closeTab);
+  const { openTab, getTabs, retryTab, closeTab } = session;
+  return {
+    openTab, getTabs, retryTab, closeTab, screens, writes,
+    allowSpawn: () => { rejectSpawn = false; },
+    emit: (e: PtyEvent) => { assert.ok(event); event(e); },
+    flushHistory: async () => { pagehide(); await new Promise<void>((resolve) => setImmediate(resolve)); return history; },
+  };
+}
+
+function themeOf(screen: { options: ITerminalOptions }) {
+  assert.ok(screen.options.theme);
+  return screen.options.theme;
+}
+
+function otherColors(screen: { options: ITerminalOptions }) {
+  const { cursor: _cursor, cursorAccent: _accent, ...rest } = themeOf(screen);
+  return rest;
+}
+
+test("a starting terminal requests a transparent cursor with the terminal background accent", async () => {
+  const f = fixture();
+  const id = await f.openTab("ws", "/workspace");
+  const screen = f.screens[0];
+  assert.equal(f.getTabs("ws").tabs[0].status, "starting");
+  assert.equal(themeOf(screen).cursor, "transparent");
+  assert.equal(themeOf(screen).cursorAccent, colors["--panel"]);
+  assert.equal(screen.options.cursorBlink, true);
+  f.closeTab("ws", id);
+});
+
+test("ready projects the foreground cursor without changing other terminal colors", async () => {
+  const f = fixture();
+  const id = await f.openTab("ws", "/workspace");
+  const before = otherColors(f.screens[0]);
+  f.emit({ kind: "ready", id, pid: 12 });
+  assert.equal(themeOf(f.screens[0]).cursor, colors["--text"]);
+  assert.equal(themeOf(f.screens[0]).cursorAccent, colors["--panel"]);
+  assert.equal(f.screens[0].options.disableStdin, false);
+  assert.deepEqual(otherColors(f.screens[0]), before);
+  f.closeTab("ws", id);
+});
+
+test("exit projects a transparent cursor without changing other terminal colors", async () => {
+  const f = fixture();
+  const id = await f.openTab("ws", "/workspace");
+  f.emit({ kind: "ready", id, pid: 12 });
+  const before = otherColors(f.screens[0]);
+  f.emit({ kind: "exit", id, exitCode: 0, signal: null });
+  assert.equal(f.getTabs("ws").tabs[0].status, "exited");
+  assert.equal(themeOf(f.screens[0]).cursor, "transparent");
+  assert.equal(themeOf(f.screens[0]).cursorAccent, colors["--panel"]);
+  assert.equal(f.screens[0].options.disableStdin, true);
+  assert.deepEqual(otherColors(f.screens[0]), before);
+  f.closeTab("ws", id);
+});
+
+test("failed spawn requests a transparent cursor", async () => {
+  const f = fixture(true);
+  await assert.rejects(f.openTab("ws", "/workspace"), /spawn failed/);
+  const id = f.getTabs("ws").tabs[0].id;
+  assert.equal(f.getTabs("ws").tabs[0].status, "spawn_error");
+  assert.equal(themeOf(f.screens[0]).cursor, "transparent");
+  assert.equal(themeOf(f.screens[0]).cursorAccent, colors["--panel"]);
+  f.closeTab("ws", id);
+});
+
+test("failed-spawn retry keeps the cursor transparent until ready", async () => {
+  const f = fixture(true);
+  await assert.rejects(f.openTab("ws", "/workspace"), /spawn failed/);
+  const id = f.getTabs("ws").tabs[0].id;
+  f.allowSpawn();
+  await f.retryTab(id);
+  assert.equal(f.getTabs("ws").tabs[0].status, "starting");
+  assert.equal(themeOf(f.screens[0]).cursor, "transparent");
+  f.emit({ kind: "ready", id, pid: 12 });
+  assert.equal(themeOf(f.screens[0]).cursor, colors["--text"]);
+  assert.equal(themeOf(f.screens[0]).cursorAccent, colors["--panel"]);
+  f.closeTab("ws", id);
+});
+
+test("a terminal's cursor lifecycle does not change its sibling's theme", async () => {
+  const f = fixture();
+  const first = await f.openTab("ws", "/workspace");
+  const second = await f.openTab("ws", "/workspace");
+  f.emit({ kind: "ready", id: first, pid: 12 });
+  f.emit({ kind: "ready", id: second, pid: 13 });
+  const secondColors = otherColors(f.screens[1]);
+  f.emit({ kind: "exit", id: first, exitCode: 0, signal: null });
+  assert.equal(themeOf(f.screens[0]).cursor, "transparent");
+  assert.equal(themeOf(f.screens[1]).cursor, colors["--text"]);
+  assert.equal(themeOf(f.screens[1]).cursorAccent, colors["--panel"]);
+  assert.deepEqual(otherColors(f.screens[1]), secondColors);
+  f.closeTab("ws", first);
+  f.closeTab("ws", second);
+});
+
+for (const priorInput of [false, true]) {
+  test(`cursor lifecycle preserves saved user-input metadata (${priorInput})`, async () => {
+    const f = fixture();
+    const id = await f.openTab("ws", "/workspace");
+    f.emit({ kind: "ready", id, pid: 12 });
+    if (priorInput) f.screens[0].input("previous input");
+    f.emit({ kind: "exit", id, exitCode: 0, signal: null });
+    const saved = (await f.flushHistory()).find((record) => record.id === id);
+    assert.ok(saved);
+    assert.equal(saved.hasReceivedUserInput, priorInput);
+    assert.deepEqual(f.writes, priorInput ? [{ id, data: "previous input" }] : []);
+    assert.equal(themeOf(f.screens[0]).cursor, "transparent");
+    f.closeTab("ws", id);
+  });
+}
+
+test("late events for a closed terminal cannot alter a surviving cursor theme", async () => {
+  const f = fixture();
+  const first = await f.openTab("ws", "/workspace");
+  const second = await f.openTab("ws", "/workspace");
+  f.emit({ kind: "ready", id: second, pid: 13 });
+  f.closeTab("ws", first);
+  f.emit({ kind: "exit", id: first, exitCode: 0, signal: null });
+  assert.equal(themeOf(f.screens[1]).cursor, colors["--text"]);
+  assert.equal(themeOf(f.screens[1]).cursorAccent, colors["--panel"]);
+  f.closeTab("ws", second);
+});

@@ -57,9 +57,9 @@ test("source-only: explicit and callback agent identities take precedence over m
   assert.ok(body[2].split(",").some((dependency) => dependency.trim() === "itemAgent"), "agent identity changes invalidate memoized results");
 });
 
-test("source-only: agent search preserves matching input order and unknown IDs", () => {
+test("source-only: agent search ranks matching models and preserves unknown IDs", () => {
   const secondOpus: ModelChoice = { model: "opus-5-5-1m", effort: null };
-  assert.deepEqual(results("claude", [secondOpus, codex, opus]), [secondOpus, opus]);
+  assert.deepEqual(results("claude", [secondOpus, codex, opus]), [opus, secondOpus]);
   const unknown: ModelChoice = { model: "custom-model", effort: null };
   assert.deepEqual(results("custom-model", [unknown]), [unknown]);
   assert.deepEqual(results("claude", [unknown]), []);
@@ -78,9 +78,9 @@ for (const [query, expected] of [
   });
 }
 
-test("source-only: multiword search preserves matching input order", () => {
+test("source-only: multiword search ranks matching models", () => {
   const secondOpus: ModelChoice = { model: "opus-5-5-1m", effort: null };
-  assert.deepEqual(results("opus claude", [secondOpus, codex, opus]), [secondOpus, opus]);
+  assert.deepEqual(results("opus claude", [secondOpus, codex, opus]), [opus, secondOpus]);
 });
 
 test("source-only: multiword search preserves explicit and callback agent precedence", () => {

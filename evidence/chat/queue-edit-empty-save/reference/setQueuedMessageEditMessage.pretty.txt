@@ -1,0 +1,1 @@
+setQueuedMessageEditMessage = ({ message: e, sessionId: s }) => { const n = this.editingTransaction(s); n !== void 0 && this.queuedEdits.publish(n, { message: e }); };

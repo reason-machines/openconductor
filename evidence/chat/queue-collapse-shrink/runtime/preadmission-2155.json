@@ -1,0 +1,24 @@
+{
+  "utc": "2026-11-17T21:54:47.350209+00:00",
+  "host": "ws-zh5pmwqtgx3uglxhwaae5q2k",
+  "kernel": "Linux",
+  "checkout_head": "73711e385fcac08f1a9c3efd7edcee5e55db6378",
+  "fresh_main": "5397204995280d90903e17dae3f391759bcde1d9",
+  "main_1474_ancestor": true,
+  "working_tree_equals_main": true,
+  "allowed_affinity": [
+    0,
+    1
+  ],
+  "free_disk_bytes": 16606826496,
+  "active_own_workload_processes": [],
+  "fixture_sha256": "948310bd9247754387556adc910acec1cc3174c26bdff38b2dff3b65e0d77cad",
+  "composer_sha256": "8aca2474747054e9ed35885873c6ca9a5e21c76f276c6fd38fa0a090d3f5a3ad",
+  "source_pin_count": 15,
+  "dependency_pin_count": 217,
+  "package_contract_count": 2,
+  "source_and_dependency_gates": "preflight passed immediately before receipt",
+  "own_runtime_reservations": [],
+  "node_or_test_invoked": false,
+  "runtime_admission": false
+}

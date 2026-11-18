@@ -1,0 +1,43 @@
+{
+  "reservation": "COMPOSER-QUEUE-EDIT-RETURN-FOCUS-135-RED-20261117T223842841Z",
+  "phase": "red",
+  "started_utc": "2026-11-17T22:39:16.065519+00:00",
+  "start_deadline": "2026-11-17T22:39:42.841Z",
+  "expires": "2026-11-17T22:42:42.841Z",
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "env",
+    "-u",
+    "COMPOSER_QUEUE_EDIT_RETURN_FOCUS_SOURCE_REF",
+    "NODE_OPTIONS=--max-old-space-size=768",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    ".qa/queue-edit-return-focus-135/composerQueueEditReturnFocus.test.ts"
+  ],
+  "node_test_executed": true,
+  "groups": [
+    78,
+    119,
+    128
+  ],
+  "surviving_pids": [],
+  "static-preflight_exit_code": 0,
+  "node-capability_exit_code": 0,
+  "test_started_utc": "2026-11-17T22:39:16.397881+00:00",
+  "test_exit_code": 1,
+  "test_terminated_utc": "2026-11-17T22:39:17.516598+00:00",
+  "fixture_sha256": "e275647b5174feb78281ff3ae2c0a5c3c735ccf2207da9815e66a3d965bf86be",
+  "source_sha256": "5dde290a9c73845b334a4b0daa26733ae76ed06f037df770fdbee2062dcf238c",
+  "current_head": "de94570c693cbd6af3b022e98a987c9205705f6f",
+  "child_maxrss_kib_not_aggregate": 162528,
+  "own_incremental_evidence_bytes": 13743,
+  "actual_release_utc": "2026-11-17T22:39:17.518943+00:00",
+  "released_before_expiry": true
+}

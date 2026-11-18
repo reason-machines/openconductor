@@ -1,0 +1,1 @@
+"dialog.primaryAction":{id:"dialog.primaryAction",key:he({key:"Enter",modifiers:Qe}),title:"Confirm dialog",configurable:!0,category:"General"}

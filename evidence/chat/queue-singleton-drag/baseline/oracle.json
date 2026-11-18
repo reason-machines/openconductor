@@ -1,0 +1,39 @@
+{
+  "candidate": "COMPOSER-QUEUE-SINGLETON-DRAG-135",
+  "phase": "ORACLE_BEFORE_FIXTURE_SOURCE_ONLY",
+  "checked_main": "5f7afadc1c50ee44aa21677b5ab0dd96b87cfb57",
+  "reference": "Retained real-Conductor REA/source JNi→AAo→GTo→OTo→uCe→wNi→Wko→jko. GTo disables sorting when visible rows <=1, not expanded, or editing; the actual consumer omits drag-handle props and rejects disabled reorder.",
+  "claim": "Singleton display rows must not expose enabled dragging. Current singleton self-drop/order preservation is already PARITY. No native/physical gesture or data-mutation defect is claimed.",
+  "harness_contract": {
+    "subject": "Full actual exported Composer mounting its actual QueuePanel and QueueRow, with actual queue reducers and dropOrder imports. No copied drag logic or product replacement.",
+    "seed": "Working active turn with real queued messages, normal enabled controls, no fabricated disabled state. Queue attachments remain carried by actual reducers.",
+    "ports": "Editor imperative focus and exact rendered-list focus ports are test boundaries. DataTransfer-shaped drag payload port records calls; it is not browser File/DataTransfer fabrication or native observation.",
+    "disabled_interaction": "Never call onDragStart when rendered draggable is false; assert the rendered affordance. On baseline where it is true, enabled dragstart may be invoked to observe the actual handler. Never invoke a disabled button callback.",
+    "assertions": "All case names, executable expectations, order and fixture bytes freeze before RED. Setup, import, transpile, skips, cancellations or unhandled errors do not count as semantic RED.",
+    "runtime": "No Node/parser/test/build/browser/native until an explicit serialized ledger admission. This oracle authorizes no runtime. Product treatment remains unstarted."
+  },
+  "cases": [
+    {"id":1,"name":"singleton/initial visible row is not draggable","prediction":"FAIL","expectation":"One visible q1, no collapse toggle, draggable false; queue/actions/effects unchanged."},
+    {"id":2,"name":"singleton/expanded shrink to one disables remaining row","prediction":"FAIL","expectation":"Delete q1 from working two-row queue via enabled Delete action; q2 survives, draggable false; preserve its attachment and no provider effects."},
+    {"id":3,"name":"singleton/collapsed shrink reveals non-draggable survivor","prediction":"FAIL","expectation":"Collapse two-row queue then actual turn completion drains q1; q2 visible, no expand toggle, draggable false; only the expected start effect."},
+    {"id":4,"name":"singleton/Cancel edit restores focus but not dragging","prediction":"FAIL","expectation":"Edit singleton then enabled Cancel; q1 is visible, focus restored once, draggable false; no content/effect change."},
+    {"id":5,"name":"singleton/Save edit restores focus but not dragging","prediction":"FAIL","expectation":"Edit singleton, change to nonblank text, enabled Save; q1 visible with new text, focus restored once, draggable false; no effect."},
+    {"id":6,"name":"singleton/session remount does not expose dragging","prediction":"FAIL","expectation":"Switch keyed Composer session from multirow queue to independently seeded singleton; singleton visible and draggable false; no leaked focus or action."},
+    {"id":7,"name":"control/empty queue renders no draggable row","prediction":"PASS","expectation":"No li row, no queue list or collapse toggle, no actions/effects."},
+    {"id":8,"name":"control/expanded multirow rows remain draggable","prediction":"PASS","expectation":"All three visible display rows draggable true, unchanged queue/actions/effects."},
+    {"id":9,"name":"control/enabled dragstart writes payload and sets own drag state","prediction":"PASS","expectation":"Enabled q2 dragstart writes text/plain q2 with move effect and q2 dragging class; no queue/provider action."},
+    {"id":10,"name":"control/enabled distinct-target drop preserves full reorder payload","prediction":"PASS","expectation":"Start q1 and drop onto q3; actual reorder action IDs q2,q3,q1; all original messages/attachments preserved by reducer; dragging cleared."},
+    {"id":11,"name":"control/self drop is already a no-op","prediction":"PASS","expectation":"Start enabled q2 and drop q2; no reorder action, items unchanged and dragging cleared. This is parity, not a target failure."},
+    {"id":12,"name":"control/foreign dragover and drop do not reorder","prediction":"PASS","expectation":"Without own dragstart, dragover not accepted; drop causes no reorder or item change. Do not invent an own drag by directly writing state."},
+    {"id":13,"name":"control/dragend clears own drag state without reordering","prediction":"PASS","expectation":"Start enabled q2 then dragend; dragging class cleared, no action/effect."},
+    {"id":14,"name":"control/active edit disables other display rows","prediction":"PASS","expectation":"Edit q2; q1/q3 display rows draggable false; editing li has no drag handlers. No disabled dragstart invoked."},
+    {"id":15,"name":"control/collapsed multirow has no visible drag target","prediction":"PASS","expectation":"Enabled Collapse action hides all rows/list, Expand restores enabled display rows with queue identity preserved."},
+    {"id":16,"name":"control/1474 blank edit cannot save or begin dragging","prediction":"PASS","expectation":"Blank edit disables Save and Save-and-steer, Enter/meta-Enter consumed without mutation; remaining display rows disabled; no disabled callbacks invoked."},
+    {"id":17,"name":"control/1476 singleton regrowth stays expanded and restores multirow dragging","prediction":"PASS","expectation":"Collapse two-row queue, completion shrinks to q2, actual queued submit adds q3; both rows visible/draggable, no Expand toggle; expected drain only."},
+    {"id":18,"name":"control/1479 removed edited row never receives return focus","prediction":"PASS","expectation":"Edit q2 then external actual remove reducer; q1/q3 visible, no removed-row focus/query, remaining rows draggable, no provider effect."},
+    {"id":19,"name":"control/1479 session-key switch cannot focus old edited row","prediction":"PASS","expectation":"Edit q2 then remount keyed Composer for another three-row session; no old display-row focus/query, new queue untouched, no actions beyond initial edit."},
+    {"id":20,"name":"control/1479 Save-and-steer removes edited row without return focus","prediction":"PASS","expectation":"Edit q2, nonblank Save-and-steer; q1/q3 remain draggable, expected steer effect and preserved attachments, no removed-target focus/query."}
+  ],
+  "predictions_only": {"target_failures":6,"controls_pass":14,"executed":0},
+  "scope_limits": ["No product edit", "No native drag acceptance", "No broad focus manager or drag framework replacement", "No overlapping owner or unreserved runtime", "Existing #1474/#1476/#1479 negatives preserved", "Package/native custody stays Root→sole E1"]
+}

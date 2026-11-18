@@ -1,0 +1,1 @@
+{"result": "PASS", "spans": 18, "frozen_test_unchanged": true, "product": "exact one-expression patch", "baseline": "7 pass / 2 intended failures", "treatment": "9/9 pass", "adjacent_before_after": "19/19 pass", "original_assets_checked": true}

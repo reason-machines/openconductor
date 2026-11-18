@@ -44,6 +44,8 @@ function fixture(failSpawn = false) {
   }
   const boundary: Record<string, unknown> = {
     "@xterm/xterm": { Terminal: Screen },
+    "@tauri-apps/plugin-dialog": { confirm: () => { throw new Error("No native dialog in terminal regression"); } },
+    "src/backend": { openUrl: () => { throw new Error("No browser in terminal regression"); } },
     "@xterm/addon-fit": { FitAddon: class { fit() {} dispose() {} } },
     "@xterm/addon-unicode11": { Unicode11Addon: class {} },
     "src/features/terminal/pty": {
@@ -76,6 +78,7 @@ function fixture(failSpawn = false) {
     const module: { exports: Exports } = { exports: {} };
     modules.set(name, module);
     const require = (dep: string): unknown => {
+      if (dep === "@xterm/addon-web-links") return deps(dep);
       if (dep === "react") return deps(dep);
       const key = dep.startsWith(".") ? resolve(dirname(file), dep).slice(process.cwd().length + 1).replace(/\.tsx?$/, "") : dep;
       return Object.prototype.hasOwnProperty.call(boundary, key) ? boundary[key] : load(key);

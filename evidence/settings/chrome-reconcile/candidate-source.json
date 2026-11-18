@@ -1,0 +1,21 @@
+{
+  "source_ref": "105d30225c67044b3ee2449e6bbe8b2450b13f3a",
+  "runner_sha256": "219aa90986defe21c8c73004a071f7152c4fdae97c607302c617c10c77c4715b",
+  "commands_sha256": "25ade991a1cb5d3d51c5ce1433bc624ee22d112b5810e74b4653d52bbbf4a37a",
+  "fixture_sha256": "f3c262c066bbb5dd717ccb6d10b4e04767130148908cf900e5eb5dfc1a148f9b",
+  "prefix_sha256": "d897b8fa3dba46c01b02633ba44e75f572fe391d589ab076b663ef9c229fbcb7",
+  "snapshot_assignment": "    options.chrome_enabled = Some(crate::app_prefs::commands::load(&db.0).await?.chrome_mode_enabled);\n",
+  "transforms": [
+    "Result<(), String> -> Result<Option<ClaudeLaunch>, String>",
+    "early Ok(()) -> Ok(None)",
+    "stop before spawn; return prepared launch"
+  ],
+  "adapters": [
+    "PermissionMode DTO",
+    "ClaudeLaunch DTO",
+    "live state/mapper DTOs",
+    "counter-only session kill/wait",
+    "immediate async bool preference reader",
+    "launcher closure"
+  ]
+}

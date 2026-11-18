@@ -1,0 +1,165 @@
+{
+  "status": "SOURCE_QUALIFIED_FIXTURE_FROZEN_UNRUN",
+  "main": "5397204995280d90903e17dae3f391759bcde1d9",
+  "parent_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "complete_spans_verified": 14,
+  "span_digests": [
+    {
+      "name": "registry-dispatch",
+      "start": 7587305,
+      "end": 7588628,
+      "sha256": "82bf4797d8d524aad26778056a4701f782dd13d9238d46c756c192616dbb35fc"
+    },
+    {
+      "name": "registry",
+      "start": 7877182,
+      "end": 7877770,
+      "sha256": "94305b7588c4a5551656594289bc17ddb6934ed298cb76fc48181a2731105310"
+    },
+    {
+      "name": "hIt",
+      "start": 7877770,
+      "end": 7878325,
+      "sha256": "8c45bb6e5892cce46330f820a54460ee896d1c14c19ad134dab20b9f20b75340"
+    },
+    {
+      "name": "V9e",
+      "start": 7864461,
+      "end": 7865823,
+      "sha256": "56f69b95cf3b1cffddb55a94b930bc5a21f94d0e6d209b570c0f49dff595576c"
+    },
+    {
+      "name": "H9e",
+      "start": 7795301,
+      "end": 7795403,
+      "sha256": "c1c05fe467eb42d9348b556faa81810d7e7e4c7f4d7fe03ec1d662d4ba0e32cb"
+    },
+    {
+      "name": "bpo",
+      "start": 7849789,
+      "end": 7852432,
+      "sha256": "2bc0c792897bdcdacfd3e7f5d27e4348c807edee2a95f27ffa0f786f859623e5"
+    },
+    {
+      "name": "Ypo",
+      "start": 7876722,
+      "end": 7877182,
+      "sha256": "0e00a2315c3a0b506452396169d158ebea85b046666dacf6d5164d7472224519"
+    },
+    {
+      "name": "aUt",
+      "start": 7874789,
+      "end": 7876722,
+      "sha256": "38fb3863839bfe721fc7a49ca63a1fcf9227d9f7494148f00e8698433b119cb2"
+    },
+    {
+      "name": "yZe",
+      "start": 7784153,
+      "end": 7784357,
+      "sha256": "cdae59170844aa87bf6d03fe1d14d0b4cbd84819163be066243a90fff7237307"
+    },
+    {
+      "name": "Mu",
+      "start": 7795403,
+      "end": 7798463,
+      "sha256": "2a88a2516341f7a98563d2f4b2a602ac9c0acc584282cd01cf54a011e3e4231d"
+    },
+    {
+      "name": "t0",
+      "start": 1793169,
+      "end": 1794797,
+      "sha256": "9e4e5cb96dda0b523c89505b4492941918848d3643470b6199b0a71ba8014b5e"
+    },
+    {
+      "name": "hZr",
+      "start": 1794797,
+      "end": 1794905,
+      "sha256": "73db96f11470171b67c4495eb52e07f55c2dd0b75647b4a7149e42c25e6be166"
+    },
+    {
+      "name": "l1",
+      "start": 739306,
+      "end": 739397,
+      "sha256": "232a30bd33deacf7baf3cf7cce95a19f385c2a361832a65b34bff3e1ecbf6f57"
+    },
+    {
+      "name": "gpo",
+      "start": 7848698,
+      "end": 7849789,
+      "sha256": "7ea61e4d130bc3f35bb22df0e16290a7b5111a2db87bffb04ca05a80407ecb99"
+    }
+  ],
+  "baseline": [
+    {
+      "path": "src/features/chat/ToolRows.tsx",
+      "bytes": 56898,
+      "sha256": "399c0f2bd7bf1dbb57ae7c70252d6875e92e4414683146a8cd7964208259fb1b"
+    },
+    {
+      "path": "src/features/chat/conductorTools.ts",
+      "bytes": 31930,
+      "sha256": "775150d24fd147bba59c0da0173b67cd6e955c4dbfaec404c8378823e6e07bbe"
+    },
+    {
+      "path": "src/features/chat/toolIconData.ts",
+      "bytes": 31316,
+      "sha256": "ffe817145ad34b2934ebd204f17456b040d76f999f7758e8de1feba1388429f9"
+    },
+    {
+      "path": "src/features/chat/thinkingChip.ts",
+      "bytes": 453,
+      "sha256": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9"
+    },
+    {
+      "path": "src/features/chat/typedSubagentRawResult.test.ts",
+      "bytes": 9735,
+      "sha256": "dea7a1df1432b2b325944f1bd9243ac056ea59aec9e7be2a00ccd23e6107ae79"
+    },
+    {
+      "path": "src/features/chat/typedSubagentErrorResult.test.ts",
+      "bytes": 9091,
+      "sha256": "c02bef14a8da8b334303870fc90fe33bad288f12f01dea3b58c00ae7c3e64dc3"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2019,
+      "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 222962,
+      "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+    }
+  ],
+  "fixture": {
+    "path": "src/features/chat/toolCopyReset.test.ts",
+    "bytes": 8538,
+    "sha256": "baca8d635d26f2c93f7cc97356fc232ae0cb780b86847b17449b5259e355105a"
+  },
+  "dependency_versions": {
+    "react": "18.3.1",
+    "react-test-renderer": "18.3.1",
+    "typescript": "5.9.3"
+  },
+  "exact_test_command": "taskset -c 0 timeout --signal=TERM --kill-after=5s 60s env NODE_OPTIONS=--max-old-space-size=768 node --test --test-concurrency=1 src/features/chat/toolCopyReset.test.ts",
+  "predicted_red": {
+    "failed": 4,
+    "passed": 4,
+    "failure_markers": [
+      "TOOL_COPY_RESET_MUST_NOT_FIRE_AT_1500",
+      "TOOL_COPY_FIRST_RESET_MUST_WAIT_UNTIL_2000"
+    ],
+    "unhandled_rejections": 0
+  },
+  "product_changes": "NONE; after qualified RED only, propose CopyIcon 1500->2000 and retain every legacy assertion with source-justified expected deadline2000 instead of1500 in two older tests.",
+  "not_exercised": [
+    "tests (including this fixture)",
+    "typecheck",
+    "build",
+    "browser",
+    "native",
+    "OS clipboard",
+    "provider",
+    "package"
+  ]
+}

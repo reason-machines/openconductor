@@ -38,14 +38,10 @@ impl ClaudeChats {
             .get_or_init(|| {
                 let settings_app = app.clone();
                 let launcher: Launcher = Arc::new(move |cwd, resume| {
-                    // Settings path, else the bundled copy (waits for its
-                    // download), else the CLI on PATH (agent_launch.rs).
-                    let exe = crate::agent_launch::launch(&settings_app, Agent::Claude)?;
                     let settings = settings_app.state::<SettingsService>();
                     // H5a: use claude_launch_for_chat() to wire all settings fields
                     // (model, effort, outputStyle, fastMode, ultracode, permission_mode).
                     let mut launch = settings.inner().claude_launch_for_chat(cwd)?;
-                    launch.executable = exe;
                     launch.resume = resume;
                     // H5c: inject login-shell PATH so Claude's Bash tool finds system
                     // tools when launched from Finder (mirrors codex_chat.rs:161).
@@ -60,11 +56,6 @@ impl ClaudeChats {
                                 .ok()
                         })
                         .is_some_and(|p| p.chrome_mode_enabled);
-                    // M7: apply local env vars from Settings > Environment and
-                    // .conductor/settings.toml; provider secrets in launch.env retain precedence.
-                    for (k, v) in crate::settings::effective::local_env_for_dir(cwd) {
-                        launch.env.set(&k, v.as_str());
-                    }
                     Ok(launch)
                 });
                 let emit_app = app.clone();
@@ -124,6 +115,9 @@ pub async fn claude_prompt(
         .get()
         .map_err(|e| e.to_string())?;
     let db = app.state::<crate::db::Db>();
+    // Chrome changes recreate an idle generator, just like other launch options.
+    // Read the authoritative preference each turn, not a caller-supplied value.
+    options.chrome_enabled = Some(crate::app_prefs::commands::load(&db.0).await?.chrome_mode_enabled);
     let mode =
         crate::local_plan_mode::load(&db.0, &logical_id, settings.models.default_plan_mode).await?;
     options.permission_mode = Some(crate::local_plan_mode::claude_permission(
@@ -133,6 +127,14 @@ pub async fn claude_prompt(
     let state = app.state::<ClaudeChats>();
     let runner = state.runner(&app);
     let cwd = state.cwds.lock().unwrap().get(&chat_id).cloned();
+    // Local settings changes recreate an idle generator. Capture once so the
+    // reuse key and the next launch use the same authoritative environment.
+    options.local_env = cwd.as_deref().map(|cwd| {
+        crate::settings::effective::local_env_for_dir(cwd)
+            .into_iter()
+            .map(|(key, value)| (key, crate::agent::SecretString::new(value)))
+            .collect()
+    });
     // Stop also covers the database lookup before dispatch.
     runner.expect_prompt(&chat_id);
     drop(mode_lease);
@@ -172,6 +174,15 @@ pub async fn claude_prompt(
         }
     };
     let (end, changes) = tauri::async_runtime::spawn_blocking(move || {
+        // Resolve once off the async runtime. Reuse and launch must compare and
+        // consume the same server-owned path, including reset to the bundle.
+        options.executable_path = match crate::agent_launch::launch(&app, Agent::Claude) {
+            Ok(path) => Some(path),
+            Err(error) => {
+                runner.abandon_prompt(&chat_id);
+                return Err(error);
+            }
+        };
         let target = match (&cwd, &turn) {
             (Some(workspace), Some(turn)) => Some(TurnTarget {
                 workspace,
@@ -180,7 +191,7 @@ pub async fn claude_prompt(
             }),
             _ => None,
         };
-        around_turn(target, || {
+        Ok(around_turn(target, || {
             runner.prompt_with_handoff(
                 &chat_id,
                 &text,
@@ -190,10 +201,10 @@ pub async fn claude_prompt(
                     let _ = on_handoff.send(());
                 })),
             )
-        })
+        }))
     })
     .await
-    .map_err(|e| e.to_string())?;
+    .map_err(|e| e.to_string())??;
     let mut out = wire::turn_end_json(&end);
     if let Some(files) = changes {
         out["turnChanges"] = serde_json::to_value(files).map_err(|e| e.to_string())?;

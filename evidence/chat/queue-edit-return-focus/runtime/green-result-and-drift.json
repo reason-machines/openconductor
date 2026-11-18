@@ -1,0 +1,50 @@
+{
+  "readback_utc": "2026-11-17T22:58:15.935132+00:00",
+  "test_exit_code": 0,
+  "passed": 20,
+  "failed": 0,
+  "skipped": 0,
+  "cancelled": 0,
+  "outcomes": [
+    "ok 1 - return-focus/Cancel middle row returns to that surviving row",
+    "ok 2 - return-focus/Escape middle row cancels and returns focus",
+    "ok 3 - return-focus/Save middle row commits text and returns focus",
+    "ok 4 - return-focus/Enter middle row saves and returns focus",
+    "ok 5 - return-focus/Cancel head row restores head rather than adjacent row",
+    "ok 6 - return-focus/Save head row restores head rather than adjacent row",
+    "ok 7 - control/edit entry keeps caret-at-end and does not focus a display row",
+    "ok 8 - control/rerender after edit exit does not repeat row focus",
+    "ok 9 - control/no edit mount and rerender leave focus and queue untouched",
+    "ok 10 - control/editing rerender does not focus a display row",
+    "ok 11 - control/direct edit switch does not restore the prior row",
+    "ok 12 - control/Save and steer removes edited row without querying or focusing it",
+    "ok 13 - control/deletion of edited row never restores a removed target",
+    "ok 14 - control/idle head drain after Save never restores the removed target",
+    "ok 15 - control/session-key switch cannot restore the previous session row",
+    "ok 16 - control/session remount with same editing ID performs entry focus only",
+    "ok 17 - control/1474 blank Save buttons remain disabled without invoking callbacks",
+    "ok 18 - control/1474 blank Enter and meta-Enter are consumed without save or focus",
+    "ok 19 - control/1476 collapsed shrink and regrowth remain expanded without row focus",
+    "ok 20 - control/re-enter after Cancel retains caret-at-end entry behavior"
+  ],
+  "all_postrun_pin_readbacks": 236,
+  "source_pins": 15,
+  "dependency_files": 217,
+  "package_contracts": 2,
+  "fixture_and_oracle_unchanged": true,
+  "surviving_pids": [],
+  "outputs": [
+    {
+      "path": ".qa/queue-edit-return-focus-135/runtime-green/test.stdout",
+      "bytes": 4318,
+      "sha256": "6d0ab7976b44b86e9340e4908db0e8787e2e8adc5e762efa880e62c8d483b2ec"
+    },
+    {
+      "path": ".qa/queue-edit-return-focus-135/runtime-green/test.stderr",
+      "bytes": 176,
+      "sha256": "642ec38f105a94f48c972645394118d9f4ef97e1f34d19aadaeb5a990775c9c6"
+    }
+  ],
+  "actual_release_utc": "2026-11-17T22:58:02.948924+00:00",
+  "child_maxrss_kib_not_aggregate": 161752
+}

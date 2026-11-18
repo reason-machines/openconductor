@@ -1,0 +1,1 @@
+function dDr(t){if(t.length===0)return cLt;if(t.length===1)return FVe(t[0]);let e=FVe(t[0]);for(let n=1;n<t.length;n+=1)e=B6e(e,t[n]);return e}

@@ -1,0 +1,86 @@
+{
+  "author": "Conductor Rebuild",
+  "scope": "PLAN-RESULT-LINK-MENU-BE7",
+  "phase": "GREEN11_QUEUED_UNRUN_REQUIRES_SEPARATE_ADMISSION",
+  "current_main": "5f7afadc1c50ee44aa21677b5ab0dd96b87cfb57",
+  "assigned_branch": "fix/chat-drag-drop-and-turn-changes-comment",
+  "base_binding": "Non-destructive main merge prepared without committing; net tree differs from current main only in the one ToolRows plan Markdown line.",
+  "original_request_sha256": "fc6fe0d6ce1c6cf029f26143e83ba863e529cf6c17f713af0519ab7f5f3e4b01",
+  "source_sha256": "ad92dcf3ccf0e00c4b29b44be41ed03c13e95b1a403ea62150e5af617dd4a023",
+  "fixture_sha256": "5cf6a425ac7dc485bf22278af2d0b3d06870d8c717ecc965dc0d73c4db42cd75",
+  "fixture_cases": 11,
+  "fixture_changed": false,
+  "red_receipt_sha256": "26a79b6351f01aa2c71bd8e8d61a11f33041e07c19b619f5158612a4549f237c",
+  "red_tap_sha256": "74efb782b5d87714be947c5e9d6496919c01f31f1090924188d389d7c911d9dc",
+  "observed_red": {
+    "exit_code": 1,
+    "tap_summary": {
+      "tests": 11,
+      "suites": 0,
+      "pass": 6,
+      "fail": 5,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "semantic_red_observed": true,
+    "actual_release_utc": "2026-11-18T00:01:30.484400+00:00",
+    "no_survivors": true
+  },
+  "dependency_receipt_sha256": "7e38d215db21a0aff3e1ad4fb03c6e3cf82d5b852f9041a11c5c39f0ff02ce7f",
+  "baseline_product_sha256": "562755550ca487766cfc8a8b08781edded583a1c3890e14719e3752a5d399188",
+  "candidate": {
+    "path": "candidate-ToolRows.tsx",
+    "product_path": "src/features/chat/ToolRows.tsx",
+    "bytes": 56918,
+    "sha256": "e81ddfb0bf3783aa00b7878a2a02f6d5da09860fe7b53fc93dcc3a7048819dd0"
+  },
+  "candidate_patch_sha256": "f87b277577ce9069559e2a83b8772136a4e3de25a8d6759b833bc272c022ed75",
+  "allowed_input_delta": "Only ToolRows.tsx: append Link={LinkWithMenu} on the plan Markdown; preserve all other ten runtime pins, original request and all ten retained dependency manifests.",
+  "runtime_staging": "Runtime remains baseline until separately admitted GREEN wrapper validates all baseline pins, then stages only the hashed candidate ToolRows.",
+  "command": "taskset -c 0 timeout --signal=TERM --kill-after=5s 60s env NODE_OPTIONS=--max-old-space-size=768 node --test --test-concurrency=1 src/features/chat/planResultLinkMenu.test.ts",
+  "bounds": {
+    "foreground_bash_seconds": 95,
+    "test_seconds": 60,
+    "kill_grace_seconds": 5,
+    "cleanup_seconds": 30,
+    "cpu": 0,
+    "per_node_heap_mib": 768,
+    "minimum_free_disk_gib": 4,
+    "output_limit_mib": 16,
+    "rss_measured": false,
+    "aggregate_rss_limit_claimed": false,
+    "dependency_install": false,
+    "separate_node_probe": false,
+    "single_attempt": true
+  },
+  "expected_green": {
+    "exit": 0,
+    "tests": 11,
+    "pass": 11,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "excluded": [
+    "secondary14 fixture",
+    "shared Markdown/parser",
+    "LinkMenu implementation",
+    "onOpenLink broadening",
+    "native/system opener changes",
+    "provider",
+    "build",
+    "browser/DOM portal",
+    "OS clipboard",
+    "native packaging",
+    "publication"
+  ],
+  "evidence_limits": [
+    "GREEN unrun; no passing behavioral claim for this treatment yet",
+    "React test renderer uses real complete production row, Markdown and LinkWithMenu modules; menu portal and clipboard/backend are adapters",
+    "Native/system opening remains an unchanged contract, not an exercised OS path",
+    "Fixture invokes Copy plan and records a 2000ms timer but does not invoke its reset callback",
+    "No synthetic default/tufte matrix; current app has one plan Markdown pipeline"
+  ]
+}

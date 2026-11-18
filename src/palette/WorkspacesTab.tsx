@@ -126,12 +126,13 @@ export function WorkspaceFilters({ repos, filters, onChange }: { repos: readonly
 }
 
 /** One row (Conductor's `SUi`): repo initial, optional W-<n>, display name, then the time or the agent's status. */
-export function WorkspaceRow({ row, active, showNumber, now, onHover, onChoose }: { row: HomeRow; active: boolean; showNumber: boolean; now: number; onHover: () => void; onChoose: () => void }) {
+export function WorkspaceRow({ id, row, active, showNumber, now, onHover, onChoose }: { id?: string; row: HomeRow; active: boolean; showNumber: boolean; now: number; onHover: () => void; onChoose: () => void }) {
   const { workspace: ws, repo, archived } = row;
   const status = homeStatus(ws.state, useWorkspaceAgentStatus(ws));
   const tone = archived ? "is-archived" : isWorkspaceUnread(ws) ? "is-unread" : "";
   return (
     <div
+      id={id}
       role="option"
       aria-selected={active}
       data-archived={archived || undefined}

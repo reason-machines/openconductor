@@ -1,0 +1,186 @@
+{
+  "author": "Conductor Rebuild / SAME6013",
+  "dedupe": "SUBMIT-PROMPT-PENDING-HINT-6013",
+  "main_checked": "a793c0f2f5c5d6f8f00860d31cec9053a0e99744",
+  "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "lineage": "evidence/dialogs/submit-prompt-rejection/reference.json",
+  "asset": {
+    "file": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "spans": [
+    {
+      "name": "W5a",
+      "utf8_half_open": [
+        11132912,
+        11134847
+      ],
+      "bytes": 1935,
+      "sha256": "5e4dffbfcd735c9743ea9899c0f8000746507f3aab3445f2f2ce7ae115c5d302",
+      "file": "reference/W5a.txt"
+    },
+    {
+      "name": "V5a",
+      "utf8_half_open": [
+        11132569,
+        11132912
+      ],
+      "bytes": 343,
+      "sha256": "b95634f1a9e7ebfc3457961f6bfe294474c683a21fb512054b9cd87d36710a9b",
+      "file": "reference/V5a.txt"
+    },
+    {
+      "name": "W5a-mount",
+      "utf8_half_open": [
+        11141121,
+        11141134
+      ],
+      "bytes": 13,
+      "sha256": "2996936d61ac023a751fbf5bf88ac376d1cacea177ecfe636f6304dc88d13700",
+      "file": "reference/W5a-mount.txt"
+    },
+    {
+      "name": "pending-children",
+      "utf8_half_open": [
+        11134660,
+        11134834
+      ],
+      "bytes": 174,
+      "sha256": "c3e2ca067137769f9c3c3a67d0e045f83fbaf2dab6a6891aaca4fbccc4312338",
+      "file": "reference/pending-children.txt"
+    },
+    {
+      "name": "tt",
+      "utf8_half_open": [
+        1923125,
+        1923712
+      ],
+      "bytes": 587,
+      "sha256": "9675a9385ebb0461b4c5254a558b4bb82368ababa1146cf9a6fca02d3921f72c",
+      "file": "reference/tt.txt"
+    },
+    {
+      "name": "S3i",
+      "utf8_half_open": [
+        1920998,
+        1921053
+      ],
+      "bytes": 55,
+      "sha256": "ddd119d405884d670467e1c1690f8ae012c20705de121e26c34bc1f688939bf6",
+      "file": "reference/S3i.txt"
+    },
+    {
+      "name": "native-button",
+      "utf8_half_open": [
+        465319,
+        466387
+      ],
+      "bytes": 1068,
+      "sha256": "7f39c0705567d476943e1872d89c8d230668965dfcc7da26017a0a4f910a8c5e",
+      "file": "reference/native-button.txt"
+    },
+    {
+      "name": "prop-composition",
+      "utf8_half_open": [
+        463925,
+        465319
+      ],
+      "bytes": 1394,
+      "sha256": "5cf6e4a5da9d8413f9d2419d993015f42636d077ad8f9cb8654e393d17cd7f06",
+      "file": "reference/prop-composition.txt"
+    }
+  ],
+  "current_sources": [
+    {
+      "path": "src/components/SubmitPromptDialog.tsx",
+      "sha256": "7615b3b7d060aee6a1205a56fd2e686767b1acc6b770d15bc1ad0b4085be8d8c"
+    },
+    {
+      "path": "src/components/submitPrompt.ts",
+      "sha256": "6fd371b34d841445a05cb0fa759e44248f3209124f0593811ffbc9cbb8d3cc5d"
+    },
+    {
+      "path": "src/components/helpMenuItems.ts",
+      "sha256": "aab847d1b8882752db7b45e9d106bd11fedef68e4eb796ad5424f7f196787103"
+    },
+    {
+      "path": "src/components/submitPromptSubmission.test.ts",
+      "sha256": "85cad10aa72044af3ed20b9b78cce9a9098fcf10826a5e117ac5e00d3da2d3de"
+    },
+    {
+      "path": "src/components/submitPrompt.test.ts",
+      "sha256": "53e04cb7e57fcee6da24aa96be8af0692cf07466213659dd64b9f5cb417c3866"
+    },
+    {
+      "path": "src/keybindings/KeybindingsProvider.tsx",
+      "sha256": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6"
+    },
+    {
+      "path": "src/keybindings/bind.ts",
+      "sha256": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119"
+    },
+    {
+      "path": "src/keybindings/conflicts.ts",
+      "sha256": "282562172120ea4406bd0fd8c9b74412ab003c93067b6222e2336b9ca2d4d68d"
+    },
+    {
+      "path": "src/keybindings/dispatcher.ts",
+      "sha256": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197"
+    },
+    {
+      "path": "src/keybindings/editor.ts",
+      "sha256": "1cd26376c0a5438fd809c2632fdf3a6c615e91d0c98aa8beaa71419a55667425"
+    },
+    {
+      "path": "src/keybindings/fuzzy.ts",
+      "sha256": "1bcbf1f4058508f23d5d079235d5b96ed6ed800582aae6de50db6a182d5c2c1c"
+    },
+    {
+      "path": "src/keybindings/help.ts",
+      "sha256": "00a800eb96a3cbc6b207bf2e61a0df6dfd4f181584a906a940511af64da4af6c"
+    },
+    {
+      "path": "src/keybindings/listeners.ts",
+      "sha256": "6944c63efcb6edee49d59d1ccdcfaed649902021946c8a8f60d50549fd89011a"
+    },
+    {
+      "path": "src/keybindings/overrides.ts",
+      "sha256": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193"
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "sha256": "b9df8f72c86c6c4e1cc05cade6b4719cd3abf26e557e690ffd574cbe2231ecb5"
+    },
+    {
+      "path": "src/keybindings/resolve.ts",
+      "sha256": "f8818d52d1af70bc788f5bda2d162b5b1634402592807bc78b5233ad4e1142bc"
+    },
+    {
+      "path": "src/keybindings/selectAll.ts",
+      "sha256": "508b26417d717f938eb118afbe8c0ff96873643cb4e5c0879467e5368e97db90"
+    },
+    {
+      "path": "src/keybindings/shortcut.ts",
+      "sha256": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8"
+    },
+    {
+      "path": "src/keybindings/types.ts",
+      "sha256": "20556563af7ebab6179ca9d0bf4912700fb967a4571f22d2baffaa98087433f7"
+    }
+  ],
+  "fixture_sha256": "680bec20893cda8756929862903cbf7157eb9931dc583281b2a766a22004199d",
+  "oracle": "Only idle button children include the shortcut hint; pending children are exactly Submitting....",
+  "joins": [
+    "Direct W5a mount; W5a sets r=true before awaiting V5a, catches failure, and clears pending in finally.",
+    "W5a button supplies r ? Submitting... : idle label and shortcut span.",
+    "tt passes supplied children through r_ and S3i into Es/mDr/gDr/_Dr/vDr; native button does not inject a hint.",
+    "Current component switches label while independently retaining key span; actual registry default is nonempty."
+  ],
+  "limits": [
+    "Retained REA source read as data, never executed. No new acquisition or native observation.",
+    "Own issue-draft adapter remains intentional; resolved opener is not an issue submission.",
+    "Mounted form callbacks with real provider/registry/glyphs; opener/motion/DOM listener ports are inert. No trusted keyboard, browser, native, full-App or package claim."
+  ],
+  "pre_freeze_v1": "Original fixture, log and hash retained: unsupported empty stored list was expected to disable the shortcut, but actual parseOverrides deliberately rejects empty lists and falls back to the default. Corrected this control to assert real stored-input fallback; both pending counterexample tests and every other test remain unchanged. Not counted as an intended RED or product defect."
+}

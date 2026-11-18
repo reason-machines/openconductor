@@ -1,0 +1,801 @@
+{
+  "author": "Conductor Rebuild",
+  "key": "DIFF-UNCOMMITTED-DISCARD-AFFORDANCE-DE6-01",
+  "status": "SOURCE_QUALIFIED_NO_IMPLEMENTATION_OR_RUNTIME_LEASE",
+  "checked_at": "2026-11-17T22:23:30.623155+00:00",
+  "main": "1e2500a959f68411be54cdca5c0473d0010b0559",
+  "branch": "fix/appearance-search-rows-and-terminal-font",
+  "preserved_head": "8caed4f901352e4ab51e3b1ae7c2ef164e720617",
+  "reference": {
+    "path": ".oc-tmp/q07-binding/renderer.inert.txt",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "origin": "Retained authorized REA-identified real Conductor 0.87.6 renderer from sven m5 max; no new acquisition or source execution. Existing tools/ui-map/REA-GAPS.md whole-renderer heap/timeout and literal-coverage limitations remain.",
+    "upstream_manifest": "evidence/diff/hidden-whitespace-editing/reference-source.json"
+  },
+  "spans": [
+    {
+      "name": "_ws",
+      "file": "reference/_ws.js.txt",
+      "utf8": [
+        2936428,
+        2942130
+      ],
+      "utf16": [
+        2935982,
+        2941680
+      ],
+      "bytes": 5702,
+      "sha256": "ca3a09d9cf237f4a6f331f64557d4db2a926d67079db5e1a0a9e4646bc2a8072",
+      "boundary_after": "function vws(t){return t.stopPropagation()}function yws(t){const e=ne.c(14),{mod"
+    },
+    {
+      "name": "Wd",
+      "file": "reference/Wd.js.txt",
+      "utf8": [
+        2148617,
+        2152120
+      ],
+      "utf16": [
+        2148220,
+        2151723
+      ],
+      "bytes": 3503,
+      "sha256": "8e3d8ea4ccd0b083eb63a3aeddf52d7fab109c51e9ee0fef202f4fb13d8857d8",
+      "boundary_after": "function Lcs(t){return{...t,activeTabType:\"session\",terminalTabId:void 0,special"
+    },
+    {
+      "name": "fLn",
+      "file": "reference/fLn.js.txt",
+      "utf8": [
+        2120696,
+        2120883
+      ],
+      "utf16": [
+        2120299,
+        2120486
+      ],
+      "bytes": 187,
+      "sha256": "e8d970bca0867a6360c79a7953dbf7c210445fc30635a605ad4e4aed28b5d131",
+      "boundary_after": "function Qls(t){if(t===\"uncommitted\")return{type:\"uncommitted\"};if(t.startsWith("
+    },
+    {
+      "name": "Qls",
+      "file": "reference/Qls.js.txt",
+      "utf8": [
+        2120883,
+        2121137
+      ],
+      "utf16": [
+        2120486,
+        2120740
+      ],
+      "bytes": 254,
+      "sha256": "7565701dc2ae8d026dff168ea4cc23498aed96940c0b6dd75534013b0c5dc031",
+      "boundary_after": "const yI=\"/auth-guard/main-layout/repository/$repositoryId/workspace/$localWorks"
+    },
+    {
+      "name": "uF",
+      "file": "reference/uF.js.txt",
+      "utf8": [
+        2123576,
+        2123732
+      ],
+      "utf16": [
+        2123179,
+        2123335
+      ],
+      "bytes": 156,
+      "sha256": "1e686e5bf6c8eae7632604da839c6c9364d318c210b55070d41667e65eb4c230",
+      "boundary_after": "function scs(t){return{activeTab:t.gitPanelTab??\"tree\",diffScope:Qls(t.gitDiff??"
+    },
+    {
+      "name": "scs",
+      "file": "reference/scs.js.txt",
+      "utf8": [
+        2123732,
+        2123820
+      ],
+      "utf16": [
+        2123335,
+        2123423
+      ],
+      "bytes": 88,
+      "sha256": "c6a8444d4f6983d7023e3d69dc577adb2e3a38a03e3f99d59de48bb200594ace",
+      "boundary_after": "function ocs(){const t=ne.c(1);let e;return t[0]===Symbol.for(\"react.memo_cache_"
+    },
+    {
+      "name": "bys",
+      "file": "reference/bys.js.txt",
+      "utf8": [
+        2840211,
+        2849411
+      ],
+      "utf16": [
+        2839767,
+        2848967
+      ],
+      "bytes": 9200,
+      "sha256": "d77fdd8a944737a5ecca9d41deefd024307cf526de8c871a25a7f91aa4a8c450",
+      "boundary_after": "function _ys(t){return t.path}function vys(t,e){return{linesAdded:t.linesAdded+e"
+    },
+    {
+      "name": "SBe",
+      "file": "reference/SBe.js.txt",
+      "utf8": [
+        2817273,
+        2818633
+      ],
+      "utf16": [
+        2816829,
+        2818189
+      ],
+      "bytes": 1360,
+      "sha256": "e51e48c06feabaa3a95846cc6dedf6ead390b9d8340f0d9a90790b5cfebd78fe",
+      "boundary_after": "function Y4s(t){const e=ne.c(41),{workspace:n,repo:i,isWorking:r,variant:o,isRea"
+    },
+    {
+      "name": "syi",
+      "file": "reference/syi.js.txt",
+      "utf8": [
+        2800964,
+        2806810
+      ],
+      "utf16": [
+        2800522,
+        2806366
+      ],
+      "bytes": 5846,
+      "sha256": "f569418d51f7b6b6bc45163ff43bc5b2f5839e2342871e43ce979f76a1611c5e",
+      "boundary_after": "function $4s(t){return t.stopPropagation()}function z4s(t){return t?.host}const "
+    },
+    {
+      "name": "iyi",
+      "file": "reference/iyi.js.txt",
+      "utf8": [
+        2798510,
+        2799815
+      ],
+      "utf16": [
+        2798070,
+        2799375
+      ],
+      "bytes": 1305,
+      "sha256": "5d7d68dd753eaedede7820ea46d47f063d115dc98b879f737647dd6604d4d9ab",
+      "boundary_after": "function zBt(t){const e=t.lastIndexOf(\"/\");return e===-1?{directory:\"\",fileName:"
+    },
+    {
+      "name": "Svs",
+      "file": "reference/Svs.js.txt",
+      "utf8": [
+        2702053,
+        2705864
+      ],
+      "utf16": [
+        2701617,
+        2705428
+      ],
+      "bytes": 3811,
+      "sha256": "2276321b09b5d62d934d1a391e9b0317407b6055d8276c73ab1a8334ff48a3aa",
+      "boundary_after": "const a4e=new Map;function _Be({action:t,localWorkspaceId:e,sessionId:n,warnOnMi"
+    },
+    {
+      "name": "Eji",
+      "file": "reference/Eji.js.txt",
+      "utf8": [
+        9658755,
+        9659872
+      ],
+      "utf16": [
+        9613227,
+        9614344
+      ],
+      "bytes": 1117,
+      "sha256": "019b1462190cfd8d6faadd7662fda51c14a685aec4d90094c12584ba1bceb686",
+      "boundary_after": "function sKo(t){const e=ne.c(65),{localWorkspaceId:n,titleActions:i}=t;let r;e[0"
+    },
+    {
+      "name": "Jqo",
+      "file": "reference/Jqo.js.txt",
+      "utf8": [
+        9652565,
+        9658452
+      ],
+      "utf16": [
+        9607037,
+        9612924
+      ],
+      "bytes": 5887,
+      "sha256": "0e24efc52f0ab809283b07a30fbb5e615db81ab56a03f12dad7e298d15a81a87",
+      "boundary_after": "function Zqo(t){return t.path}function eKo(t){return t.getViewedAt}function tKo("
+    },
+    {
+      "name": "bji",
+      "file": "reference/bji.js.txt",
+      "utf8": [
+        9643145,
+        9646819
+      ],
+      "utf16": [
+        9597617,
+        9601291
+      ],
+      "bytes": 3674,
+      "sha256": "2d2b8aac64bada5ead6bc143ac6bb272544791374a9b71b38e57eab55c8f5688",
+      "boundary_after": "const Fqo=t=>t?{workspacePath:t.workspacePath}:void 0;function _ji(t){const e=ne"
+    },
+    {
+      "name": "GPo",
+      "file": "reference/GPo.js.txt",
+      "utf8": [
+        8973445,
+        8975165
+      ],
+      "utf16": [
+        8927941,
+        8929661
+      ],
+      "bytes": 1720,
+      "sha256": "c08b2b57a86261a300c6d0a35c61f529842ed3e4fedeba4dbfbec7e071d83014",
+      "boundary_after": "function qPo(t){const e=ne.c(5),{heading:n,detail:i}=t;let r;e[0]!==i?(r=p.jsx(\""
+    },
+    {
+      "name": "NPo",
+      "file": "reference/NPo.js.txt",
+      "utf8": [
+        8961924,
+        8963208
+      ],
+      "utf16": [
+        8916422,
+        8917706
+      ],
+      "bytes": 1284,
+      "sha256": "9c4539afe7b84bcf4773d421760c7149b81f32b9f4480b3b5555ffe7c7993d7d",
+      "boundary_after": "function OPo(t){const e=ne.c(40),{filePath:n,localWorkspaceId:i,fileDiff:r,actio"
+    },
+    {
+      "name": "OPo",
+      "file": "reference/OPo.js.txt",
+      "utf8": [
+        8963208,
+        8965136
+      ],
+      "utf16": [
+        8917706,
+        8919634
+      ],
+      "bytes": 1928,
+      "sha256": "f99d273fd0ab942fbb53b5a553a000c5aad3511aedc5673493d38ccec674874c",
+      "boundary_after": "function DPo(){const t=ne.c(1);let e;return t[0]===Symbol.for(\"react.memo_cache_"
+    }
+  ],
+  "joins": {
+    "_ws": [
+      "{diffScope:o}=uF()",
+      "{setGitPanelState:a}=Wd(n)",
+      "a({gitPanelActiveTab:\"changes\",gitPanelDiffScope:pe})",
+      "Se=()=>I({type:\"uncommitted\"})"
+    ],
+    "Wd": [
+      "setGitPanelState:w",
+      "gitDiff:fLn(k.gitPanelDiffScope)"
+    ],
+    "fLn": [
+      "case\"uncommitted\":return\"uncommitted\""
+    ],
+    "Qls": [
+      "if(t===\"uncommitted\")return{type:\"uncommitted\"}"
+    ],
+    "uF": [
+      "select:scs"
+    ],
+    "scs": [
+      "diffScope:Qls(t.gitDiff??\"all\")"
+    ],
+    "bys": [
+      "{diffScope:h}=uF()",
+      "P=_V(i,h)",
+      "p.jsx(syi,{path:hn.path",
+      "showRevert:h.type!==\"turn\"",
+      "viewMode:h,type:\"gitPanel\""
+    ],
+    "SBe": [
+      "const x=c.type!==\"turn\"",
+      "showRevert:x",
+      "viewMode:c,type:\"gitPanel\""
+    ],
+    "syi": [
+      "viewMode:E",
+      "ue=v&&_&&m&&X",
+      "gt=ue&&p.jsx(iyi,",
+      "viewMode:E",
+      "hasChanges:!0,oldPath:x"
+    ],
+    "iyi": [
+      "if(!g?.intendedTargetBranch||!v?.remoteName||d.type!==\"all\")return null",
+      "nr.openDialog(Xue,",
+      "viewMode:d",
+      "children:\"Discard changes\""
+    ],
+    "Svs": [
+      "hasChanges:h",
+      "De=h&&!c&&p.jsxs",
+      "viewMode:{type:\"all\"}"
+    ],
+    "Eji": [
+      "{diffScope:c}=uF()",
+      "p.jsx(Jqo,",
+      "diffScope:c"
+    ],
+    "Jqo": [
+      "diffScope:a",
+      "p.jsx(bji,",
+      "viewMode:a"
+    ],
+    "bji": [
+      "p.jsx(GPo,",
+      "viewMode:r"
+    ],
+    "GPo": [
+      "(n.type===\"all\"||n.type===\"uncommitted\")",
+      "p.jsx(NPo,",
+      "revert:P&&r&&L?{workspacePath:r,workspaceHost:L,viewMode:n}:void 0"
+    ],
+    "NPo": [
+      "p.jsx(OPo,",
+      "actions:c"
+    ],
+    "OPo": [
+      "o.revert&&p.jsx(iyi,",
+      "viewMode:o.revert.viewMode"
+    ]
+  },
+  "main_sources": [
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "sha256": "4520e46b632d50ef6feaf78398ec08cf7e8a58697605067b707af50d3c1f8214",
+      "git_blob": "ad8c8e4b0588420c14013009fc1ecec49349ea03",
+      "bytes": 102922,
+      "spans": [
+        {
+          "lines": [
+            959,
+            983
+          ],
+          "sha256": "52783ca1eabe7212db13242faea9c4a14a4b8bd78637d1b61ba9299a554ed240"
+        },
+        {
+          "lines": [
+            1253,
+            1267
+          ],
+          "sha256": "da64c8862f2789c13c917b42c7f7c56986641286c37f87b01b077fdd3e2b6229"
+        }
+      ]
+    },
+    {
+      "path": "src/features/diff/ChangesToolbar.tsx",
+      "sha256": "42df4f59dd58bd87420bf5ccb299f4751ffaa1ce2926fb17630d35abb646777d",
+      "git_blob": "77d41aeabeb25d3ca7f92a1825f0887c018ad8c3",
+      "bytes": 5244,
+      "spans": [
+        {
+          "lines": [
+            11,
+            12
+          ],
+          "sha256": "7c4c6132678ec046aa95f85c68cd24bd6c677bd073444ce51feae790c4d1fa93"
+        },
+        {
+          "lines": [
+            36,
+            58
+          ],
+          "sha256": "641079a3bb66dafbe31a37d98144ae18b6a9a2089913ca152c5eac4bb5b1737d"
+        }
+      ]
+    },
+    {
+      "path": "src/features/diff/useWorkspaceDiff.ts",
+      "sha256": "b0e52ca4eb7247b717796bbf989d3f7d966a320018c53ed2ccb0c5366d72cb30",
+      "git_blob": "630e7453bd60f8b97fdc9d8862b4de1a9ffb4ce7",
+      "bytes": 14876,
+      "spans": [
+        {
+          "lines": [
+            61,
+            96
+          ],
+          "sha256": "ca6b0622fa0563418cc9579537c834a26fa6bd7d78f4211a7661e56323b5c27c"
+        },
+        {
+          "lines": [
+            243,
+            262
+          ],
+          "sha256": "b85b82abc0fbead26a17b3bbf8f50cb0bbac2ea2252ef4592ad065ef5db0b5d9"
+        },
+        {
+          "lines": [
+            286,
+            300
+          ],
+          "sha256": "4f86833374cf66d0037c1007a452aac4008fbc2c4adcaa4a7d9f5cb2faf77e3a"
+        }
+      ]
+    },
+    {
+      "path": "src/features/diff/target.ts",
+      "sha256": "46b8257d3ba50401dd428a6c86fda7e5fc1584eef902a2d3a1251f3d57ab29e5",
+      "git_blob": "4e558803796fef35dbd560f8ff31328aa4eaf558",
+      "bytes": 3251,
+      "spans": [
+        {
+          "lines": [
+            39,
+            64
+          ],
+          "sha256": "c66bed20f946e4805f97beef0b1978602eead05d665c641b68d784e1df485c28"
+        }
+      ]
+    },
+    {
+      "path": "src/features/diff/target.test.ts",
+      "sha256": "28e0cdf99ebeb1a624e0a65615a4d0f9fb6f3ac766a7dcd1689dde1dd1c9e740",
+      "git_blob": "7124428979fbf30af6964b3b89fbde1b909f3696",
+      "bytes": 3583,
+      "spans": [
+        {
+          "lines": [
+            24,
+            59
+          ],
+          "sha256": "3fdbbd36e9a8e02c8a9cd19a71d4f4d76c5e0181533fd5e994025067a6d5c497"
+        }
+      ]
+    },
+    {
+      "path": "src/features/diff/ChangesList.tsx",
+      "sha256": "9f12665d62163dc5440a161592af7b0a20d0fac71faf7a65d6de6421fc70f8cb",
+      "git_blob": "6c52de1d3c67ae1c1ed408e7054b0cb6b3916019",
+      "bytes": 11921,
+      "spans": [
+        {
+          "lines": [
+            100,
+            135
+          ],
+          "sha256": "36a4f7f7ee2689a281c98caa9e9bbe071e227023d4fbeae617a7459abdff8579"
+        }
+      ]
+    },
+    {
+      "path": "src/features/diff/FileContextMenu.tsx",
+      "sha256": "a88f12448e5fa288a3c196418df9d6773c3de29435516e610d7e439ef46a60ab",
+      "git_blob": "a452aa723047eb7a309f9429ca23e787968017fa",
+      "bytes": 4618,
+      "spans": [
+        {
+          "lines": [
+            118,
+            130
+          ],
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "path": "src/features/diff/DiffViewer.tsx",
+      "sha256": "b9385a977c26007391b9b47bb587c33d95045ed9e04b1b1240a031f411167e0f",
+      "git_blob": "06f6a0bcfd033465280669973fb24551704c3fcb",
+      "bytes": 13613,
+      "spans": [
+        {
+          "lines": [
+            200,
+            218
+          ],
+          "sha256": "bb7a9474dc6fa69ea43d2bb333aef8be4390d0ce00f16b07f599ccfce3f039ba"
+        },
+        {
+          "lines": [
+            239,
+            246
+          ],
+          "sha256": "01469f7facc1d0dc72f1ddcdd3ca546fdd182e496431d87da30457e459aeabe8"
+        }
+      ]
+    },
+    {
+      "path": "src/features/diff/FileDiffView.tsx",
+      "sha256": "305ccacb64c230bba3880d045b64aabc4889bbfac25668824b87b020810e0289",
+      "git_blob": "7b8cceee0153cf9ca368a75855cfb4920ff9e8f5",
+      "bytes": 24577,
+      "spans": [
+        {
+          "lines": [
+            337,
+            353
+          ],
+          "sha256": "38f596f60205a0437fa56f7058cfa9ebb05705058822ff9510f2ffc058ac22ae"
+        }
+      ]
+    },
+    {
+      "path": "src/features/diff/api.ts",
+      "sha256": "abbc4950ec46258c7cd76c447ce63f5a923b80a9d9313e6c13c2e4a6d02e5c7a",
+      "git_blob": "a62bee5f8a1af2c5e9963796ec742e50aac13083",
+      "bytes": 6498,
+      "spans": [
+        {
+          "lines": [
+            50,
+            62
+          ],
+          "sha256": "4acaa8a4c1ada5f34e8f2c9f556e628a4e7d04383befa75c1204076c24e08b3a"
+        }
+      ]
+    },
+    {
+      "path": "evidence/diff/target-ref.md",
+      "sha256": "f37be72876acaaa096264022c1e2de8a066322ccf0df031d9c1bbf5b05d3af35",
+      "git_blob": "82bb7beab9896426263e7e7fb9a212d9b19a09cb",
+      "bytes": 5090,
+      "spans": [
+        {
+          "lines": [
+            35,
+            58
+          ],
+          "sha256": "cef316e41662b82f89743eb274b3f0b01fc195b14e6cf10aeb438384ba769364"
+        }
+      ]
+    }
+  ],
+  "main_joins": {
+    "src/components/WorkspaceView.tsx": [
+      "<ChangesToolbar diff={diff}",
+      "<ChangesList diff={diff}",
+      "const diff = useWorkspaceDiff("
+    ],
+    "src/features/diff/ChangesToolbar.tsx": [
+      "onSelect={() => diff.update({ scope: \"uncommitted\" })}"
+    ],
+    "src/features/diff/useWorkspaceDiff.ts": [
+      "const next = { ...opts, ...patch }",
+      "setOpts(next)",
+      "if (patch.scope) setTurn(null)",
+      "const canDiscard = discardScope(\"view\", opts.scope, turn !== null) !== null;",
+      "const scope = f && discardScope(from, opts.scope, turn !== null);",
+      "setPending(f && scope ? { file: f, scope } : null);"
+    ],
+    "src/features/diff/target.ts": [
+      "if (source === \"menu\") return \"all\";",
+      "return inTurn || typeof view === \"object\" ? null : view;"
+    ],
+    "src/features/diff/target.test.ts": [
+      "assert.equal(discardScope(\"view\", \"uncommitted\", false), \"uncommitted\");"
+    ],
+    "src/features/diff/ChangesList.tsx": [
+      "{diff.canDiscard && <Tooltip content=\"Discard changes\">",
+      "onClick={() => diff.askDiscard(f)}",
+      "discard: () => diff.askDiscard(menuFile, \"menu\"),"
+    ],
+    "src/features/diff/FileContextMenu.tsx": [
+      "onSelect={actions.discard}",
+      "Discard changes"
+    ],
+    "src/features/diff/DiffViewer.tsx": [
+      "onDiscard={diff.canDiscard ? () => diff.askDiscard(f) : undefined}"
+    ],
+    "src/features/diff/FileDiffView.tsx": [
+      "{onDiscard && (",
+      "onClick={onDiscard}"
+    ],
+    "src/features/diff/api.ts": [
+      "scope: scopeRequest(scope, target)",
+      "invoke(\"diff_discard_file\""
+    ]
+  },
+  "finding": "For a normal local workspace with intended target branch and repo remote and at least one changed file, Uncommitted changes passes uncommitted scope to the compact/header iyi component, which returns null unless scope is all. Current discardScope(view,uncommitted,false) returns uncommitted, so both Changes-row hover and Diff header expose a discard action and set a pending uncommitted discard. Context-menu discard is intentionally all-scope in both and must remain available.",
+  "dedupe": {
+    "ledger_messages": [
+      "e96350e5-0bb8-406e-9c19-4fea66096208",
+      "a1d5639f-73a3-49b9-8732-e76bc9a84896"
+    ],
+    "collision": "NO_RECORDED_COLLISION; SAMEDE6 sole source qualifier; no fixture/product/runtime lease",
+    "shipped_history_file": "shipped-history.txt",
+    "inherited_wrong_oracle": "target.test.ts line46 expects uncommitted; target-ref.md documents the caller showRevert gate, but does not document the nested iyi all-only guard. Explicitly supersede this interpretation in new evidence after a new independent frozen regression is committed; do not silently treat the changed old assertion as unchanged proof.",
+    "excluded": [
+      "six sealed increments",
+      "RAW/MDX/dirty-preview/post-submit/comment bindings/read-only edit",
+      "comment-save and historical-content consumers",
+      "menu discard behavior",
+      "Git discard implementation",
+      "native/cloud/team UI"
+    ]
+  },
+  "minimal_future_files": [
+    "src/features/diff/target.ts",
+    "src/features/diff/target.test.ts (explicitly superseded uncommitted-view oracle only)",
+    "src/features/diff/uncommittedDiscardAffordance.test.ts (future; not created)",
+    "evidence/diff/uncommitted-discard-affordance/** (future)"
+  ],
+  "future_decisive_regression": [
+    "Freeze a new test before product treatment; invoke actual production hook/helper and mount actual ChangesList and DiffTab/FileDiffView with nonempty modified file data and a normal local workspace target/remote. Stub Git/native write boundary and assert zero invocations on all schedules.",
+    "Drive actual Changes options All\u2192Uncommitted, not a fabricated extra view. Expect no row/header discard action in Uncommitted; on baseline expect genuine visibility/assertion failures. Switch back to All and expect both actions to return.",
+    "Control commit and turn views: row/header discard remains absent. Preserve menu Discard in All/Uncommitted/commit/turn, which still requests all scope; do not gate it through view canDiscard.",
+    "Only after frozen regression RED and collision-scoped lease, narrow view discardScope to All/non-turn and explicitly revise the historical contrary assertion while documenting its supersession in new evidence; preserve historical evidence bytes and do not change Git scopeRequest or menu policy."
+  ],
+  "acceptance_gaps": [
+    "No behavior/oracle fixture created or run; no RED/GREEN claim.",
+    "No product edit, install, Node/typecheck/build/browser/native/provider/REA acquisition/publication retry/new owner/watcher.",
+    "No actual Git or filesystem discard; no package/visual/native parity established.",
+    "Upstream router, query fetching and existing metadata hooks are data boundaries; source closure establishes the exact normal scope propagation and local eligibility guard, not backend transport behavior."
+  ],
+  "preservation": {
+    "refs_file": "preserved-refs.txt",
+    "bundles": [
+      {
+        "path": ".oc-tmp/publication-recovery/raw-live-transport.bundle",
+        "bytes": 254443,
+        "sha256": "aa7f3e579a3b30e5869907e76f1a16bfba9e6f7e2d423ebee755b78031af1762"
+      },
+      {
+        "path": ".oc-tmp/publication-recovery/sealed-increments.bundle",
+        "bytes": 645040,
+        "sha256": "febae34249cf5e9a8f94945c77c121ab549f9bbc106961ab3a474c156a75ccc8"
+      }
+    ]
+  },
+  "checks": {
+    "passed": 143,
+    "failed": 0,
+    "names": [
+      "assigned branch preserved",
+      "sealed live integration preserved",
+      "tracked unstaged changes absent",
+      "tracked staged changes absent",
+      "retained whole renderer size",
+      "retained whole renderer digest",
+      "_ws: unique declaration start",
+      "_ws: complete end delimiter",
+      "_ws: literal slice identity",
+      "Wd: unique declaration start",
+      "Wd: complete end delimiter",
+      "Wd: literal slice identity",
+      "fLn: unique declaration start",
+      "fLn: complete end delimiter",
+      "fLn: literal slice identity",
+      "Qls: unique declaration start",
+      "Qls: complete end delimiter",
+      "Qls: literal slice identity",
+      "uF: unique declaration start",
+      "uF: complete end delimiter",
+      "uF: literal slice identity",
+      "scs: unique declaration start",
+      "scs: complete end delimiter",
+      "scs: literal slice identity",
+      "bys: unique declaration start",
+      "bys: complete end delimiter",
+      "bys: literal slice identity",
+      "SBe: unique declaration start",
+      "SBe: complete end delimiter",
+      "SBe: literal slice identity",
+      "syi: unique declaration start",
+      "syi: complete end delimiter",
+      "syi: literal slice identity",
+      "iyi: unique declaration start",
+      "iyi: complete end delimiter",
+      "iyi: literal slice identity",
+      "Svs: unique declaration start",
+      "Svs: complete end delimiter",
+      "Svs: literal slice identity",
+      "Eji: unique declaration start",
+      "Eji: complete end delimiter",
+      "Eji: literal slice identity",
+      "Jqo: unique declaration start",
+      "Jqo: complete end delimiter",
+      "Jqo: literal slice identity",
+      "bji: unique declaration start",
+      "bji: complete end delimiter",
+      "bji: literal slice identity",
+      "GPo: unique declaration start",
+      "GPo: complete end delimiter",
+      "GPo: literal slice identity",
+      "NPo: unique declaration start",
+      "NPo: complete end delimiter",
+      "NPo: literal slice identity",
+      "OPo: unique declaration start",
+      "OPo: complete end delimiter",
+      "OPo: literal slice identity",
+      "_ws: {diffScope:o}=uF()",
+      "_ws: {setGitPanelState:a}=Wd(n)",
+      "_ws: a({gitPanelActiveTab:\"changes\",gitPanelDiffScope:pe})",
+      "_ws: Se=()=>I({type:\"uncommitted\"})",
+      "Wd: setGitPanelState:w",
+      "Wd: gitDiff:fLn(k.gitPanelDiffScope)",
+      "fLn: case\"uncommitted\":return\"uncommitted\"",
+      "Qls: if(t===\"uncommitted\")return{type:\"uncommitted\"}",
+      "uF: select:scs",
+      "scs: diffScope:Qls(t.gitDiff??\"all\")",
+      "bys: {diffScope:h}=uF()",
+      "bys: P=_V(i,h)",
+      "bys: p.jsx(syi,{path:hn.path",
+      "bys: showRevert:h.type!==\"turn\"",
+      "bys: viewMode:h,type:\"gitPanel\"",
+      "SBe: const x=c.type!==\"turn\"",
+      "SBe: showRevert:x",
+      "SBe: viewMode:c,type:\"gitPanel\"",
+      "syi: viewMode:E",
+      "syi: ue=v&&_&&m&&X",
+      "syi: gt=ue&&p.jsx(iyi,",
+      "syi: viewMode:E",
+      "syi: hasChanges:!0,oldPath:x",
+      "iyi: if(!g?.intendedTargetBranch||!v?.remoteName||d.type!==\"all\")return null",
+      "iyi: nr.openDialog(Xue,",
+      "iyi: viewMode:d",
+      "iyi: children:\"Discard changes\"",
+      "Svs: hasChanges:h",
+      "Svs: De=h&&!c&&p.jsxs",
+      "Svs: viewMode:{type:\"all\"}",
+      "Eji: {diffScope:c}=uF()",
+      "Eji: p.jsx(Jqo,",
+      "Eji: diffScope:c",
+      "Jqo: diffScope:a",
+      "Jqo: p.jsx(bji,",
+      "Jqo: viewMode:a",
+      "bji: p.jsx(GPo,",
+      "bji: viewMode:r",
+      "GPo: (n.type===\"all\"||n.type===\"uncommitted\")",
+      "GPo: p.jsx(NPo,",
+      "GPo: revert:P&&r&&L?{workspacePath:r,workspaceHost:L,viewMode:n}:void 0",
+      "NPo: p.jsx(OPo,",
+      "NPo: actions:c",
+      "OPo: o.revert&&p.jsx(iyi,",
+      "OPo: viewMode:o.revert.viewMode",
+      "current-main snapshot read: src/components/WorkspaceView.tsx",
+      "current-main snapshot read: src/features/diff/ChangesToolbar.tsx",
+      "current-main snapshot read: src/features/diff/useWorkspaceDiff.ts",
+      "current-main snapshot read: src/features/diff/target.ts",
+      "current-main snapshot read: src/features/diff/target.test.ts",
+      "current-main snapshot read: src/features/diff/ChangesList.tsx",
+      "current-main snapshot read: src/features/diff/FileContextMenu.tsx",
+      "current-main snapshot read: src/features/diff/DiffViewer.tsx",
+      "current-main snapshot read: src/features/diff/FileDiffView.tsx",
+      "current-main snapshot read: src/features/diff/api.ts",
+      "current-main snapshot read: evidence/diff/target-ref.md",
+      "src/components/WorkspaceView.tsx: <ChangesToolbar diff={diff}",
+      "src/components/WorkspaceView.tsx: <ChangesList diff={diff}",
+      "src/components/WorkspaceView.tsx: const diff = useWorkspaceDiff(",
+      "src/features/diff/ChangesToolbar.tsx: onSelect={() => diff.update({ scope: \"uncommitted\" })}",
+      "src/features/diff/useWorkspaceDiff.ts: const next = { ...opts, ...patch }",
+      "src/features/diff/useWorkspaceDiff.ts: setOpts(next)",
+      "src/features/diff/useWorkspaceDiff.ts: if (patch.scope) setTurn(null)",
+      "src/features/diff/useWorkspaceDiff.ts: const canDiscard = discardScope(\"view\", opts.scope, turn !== null) !== null;",
+      "src/features/diff/useWorkspaceDiff.ts: const scope = f && discardScope(from, opts.scope, turn !== null);",
+      "src/features/diff/useWorkspaceDiff.ts: setPending(f && scope ? { file: f, scope } : null);",
+      "src/features/diff/target.ts: if (source === \"menu\") return \"all\";",
+      "src/features/diff/target.ts: return inTurn || typeof view === \"object\" ? null : view;",
+      "src/features/diff/target.test.ts: assert.equal(discardScope(\"view\", \"uncommitted\", false), \"uncommitted\");",
+      "src/features/diff/ChangesList.tsx: {diff.canDiscard && <Tooltip content=\"Discard changes\">",
+      "src/features/diff/ChangesList.tsx: onClick={() => diff.askDiscard(f)}",
+      "src/features/diff/ChangesList.tsx: discard: () => diff.askDiscard(menuFile, \"menu\"),",
+      "src/features/diff/FileContextMenu.tsx: onSelect={actions.discard}",
+      "src/features/diff/FileContextMenu.tsx: Discard changes",
+      "src/features/diff/DiffViewer.tsx: onDiscard={diff.canDiscard ? () => diff.askDiscard(f) : undefined}",
+      "src/features/diff/FileDiffView.tsx: {onDiscard && (",
+      "src/features/diff/FileDiffView.tsx: onClick={onDiscard}",
+      "src/features/diff/api.ts: scope: scopeRequest(scope, target)",
+      "src/features/diff/api.ts: invoke(\"diff_discard_file\"",
+      "target history original evidence contained",
+      "target history commit-scope increment contained",
+      "no targeted drift since first fresh fetch",
+      "original RAW product remains",
+      "original composed tip remains",
+      "two preserved publication bundles exist",
+      "source-only pass left tracked checkout unchanged"
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "version": "V2",
+  "fixture": "src/features/chat/imageGenerationRawResult.test.ts",
+  "fixture_sha256": "267a2f2e09ba9c7bf87cce71f7ac622ac46baa53a9864f166b0493069c537edb",
+  "baseline": "08be22cfcb0034e23171fe9b5f3b0a5df93585f3",
+  "source_manifest_sha256": "f5615a63e1eace06f5e183bdb3fc121f529026ced7dce7ecb4b6b9ddcc9444f4",
+  "controls": {
+    "src/features/chat/imageGenerationFallbackDisclosure.test.ts": "5e4784b0a627a43010eb3200022f19e6eec257f0d43995e20fdd99a0e127cdbd",
+    "src/features/chat/typedSubagentRawResult.test.ts": "dea7a1df1432b2b325944f1bd9243ac056ea59aec9e7be2a00ccd23e6107ae79",
+    "src/features/chat/genericStructuredResult.test.ts": "a7f43b70a5166674667b736f0dc4b90f7cd6077f9bef4478ef3f81c1fcce7e7f",
+    "src/features/chat/prefixMcpStructuredResult.test.ts": "f4aa6a18b5f959d945011d70f9206a02f5802127c45b4e537950fa3daccec371",
+    "src/features/chat/subagentFallbackStructuredResult.test.ts": "63d0454a0e67d18b893abef483e9b7b35403df94f43f96f008b3eb8ec522c65a",
+    "src/features/chat/conductorTools.ts": "05c3a85bed997b1114e1696d083855d4e39c5d614fe57ddeb0bade8bde7cc64a",
+    "src/features/chat/reason.ts": "cb07a5ec7dc2a8406d9021848280cf9acc83445c371390b94c6a57a290b1cf5b",
+    "src/features/chat/reducer.ts": "9b4783c08f496b05ebdc99a141f52b13c06a4b46f3f1a240a780ef5535d22ec4",
+    "src/features/chat/view.ts": "132e0b4fc1cf3dd49505f6c5489dfd093ace3f84567d0fa050dd11690d02bb43"
+  },
+  "disqualified_v1_sha256": "96dd51db6e42de014394d9091c8633627549fa5e7912242e1cd6bd2627cb8e42",
+  "v1_correction": "Only assert.equal(typeof production.opensByDefault, function) changed to assert.ok type narrowing; restored untouched baseline and reran before final V2 freeze. Cases and expectations unchanged."
+}

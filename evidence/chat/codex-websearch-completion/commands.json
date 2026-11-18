@@ -1,0 +1,43 @@
+{
+  "author": "Conductor Rebuild",
+  "computer": "Reason cloud computer362",
+  "baseline_main": "d90bed88174656d577adfa793d3850d28eaea7e2",
+  "implementation_main": "073c7b4e2287598f795c350b8fdb5358122c4a06",
+  "commands": [
+    {
+      "command": "CARGO_BUILD_JOBS=1 CARGO_TARGET_DIR=.ara-state/tmp/web-completion/target cargo build --offline --jobs 1 --manifest-path .ara-state/tmp/web-completion/harness/Cargo.toml",
+      "result": "PASS;9.60s;actual immutable Rust source baseline"
+    },
+    {
+      "command": "WEB_COMPLETION_PROBE=<baseline actual-source binary> node --test <frozen fixture copied unchanged beside source>",
+      "result": "Qualified RED:4PASS/8intended assertion failures;0cancelled/0skipped"
+    },
+    {
+      "command": "python3 tests/chat-web-completion/run.py --node-deps .ara-state/tmp/skill-slash-qualification/node_modules --target-dir .ara-state/tmp/web-completion/target --output .ara-state/tmp/web-completion/treatment",
+      "result": "PASS:12/12;0fail/0cancelled/0skipped;probecompile0.96s"
+    },
+    {
+      "command": "CARGO_BUILD_JOBS=1 CARGO_TARGET_DIR=.ara-state/tmp/web-completion/target cargo test --offline --jobs 1 --manifest-path .ara-state/tmp/web-completion/native-suite/Cargo.toml",
+      "result": "PASS:38/38;0fail/0ignored/0filtered;compile2.75s"
+    },
+    {
+      "command": "NODE_PATH=<existing dependencies> node --test src/features/chat/codex.test.ts src/features/chat/conductorTools.test.ts src/features/chat/webFetchPrompt.test.ts src/features/chat/webResultTruncation.test.ts",
+      "result": "PASS:42/42;0fail/0cancelled/0skipped"
+    },
+    {
+      "command": "python3 evidence/chat/codex-websearch-completion/verify.py --renderer <retainedrenderer> --index <retainedindex> --green .ara-state/tmp/web-completion/treatment",
+      "result": "PASS:2fullassets/23spans/24joins/frozen3/7unchangedconsumerfiles/preciseproductscope +12GREEN"
+    },
+    {
+      "command": "git diff origin/main --check",
+      "result": "PASS"
+    }
+  ],
+  "limits": [
+    "Synthetic native-event parser/mapper and real React only; no provider/app/Codex/Tauri/browser/native/package execution.",
+    "Existing env unit test runs synthetic sh printf with fixture variables; the suite is not process-free.",
+    "No local full Tauri build or full-chat completion; earlier full-chat timeout remains incomplete.",
+    "Source-original REA renderer analysis historically exhausted heap; retained exact bytes verified, not re-executed."
+  ],
+  "heavy_slot": "Explicitly released after foreground exit; own cargo/rustc/probe processes absent."
+}

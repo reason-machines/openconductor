@@ -1,9 +1,11 @@
 # Non-launching VM runner source prerequisite
 
-This separate AppKit target adds a closed configuration constructor and its own
-signing integration. It does not create a `VZVirtualMachine`, start a guest,
-open a guest image, install anything, or run the host OpenConductor app. Its
-entrypoint always exits with code 78. It is not an admitted executor.
+This separate AppKit target contains a closed configuration constructor, held
+resource ownership, a single-VM lifecycle adapter, and its own signing integration.
+The unchanged `OCVMAdmitNative()` gate refuses before resource acquisition or any
+VZ construction. Its normal entrypoint still exits 78, opens no guest image and
+starts no VM. It is not an admitted executor. No install, guest, OpenConductor,
+WebKit or provider operation is part of the portable checks.
 
 ## Configuration boundary
 
@@ -21,6 +23,51 @@ resource bounds, and runtime property names before calling VZ validation.
 Unknown runtime properties fail closed, including empty properties introduced
 by a newer SDK. The factory has no start operation. Its platform and attachment
 arguments are not an implemented resource-authorization boundary.
+
+## Owned invocation contract (behind closed admission)
+
+`Runner.main` parses arguments, checks the unconditional native gate, and only then
+can enter `OCVMOwnedInvocation`. There is no CLI, receipt or environment override.
+The invocation holds four distinct validated resources (disk, auxiliary storage,
+hardware model and machine ID) with close-on-exec FDs. Partial acquisition failure
+closes everything acquired so far; normal completion retains them through the
+configuration, VM and callbacks. Hardware identity data is read from the held FD
+with a 1 MiB limit rather than reopening its name.
+
+VZ disk and auxiliary-storage constructors accept **URLs, not these regular-file
+FDs**. Held/path snapshots before and after construction detect observed changes
+only. They cannot prevent a transient swap, concurrent mutation or VZ's later
+URL use. Atomic identity-through-use, resource custody and inherited capability
+control remain unimplemented admission prerequisites. No snapshot PASS closes
+that gap. The adapter does not acquire, create or provision a guest.
+
+The invocation calls the existing closed factory and owns exactly one
+`VZVirtualMachine` on the main serial queue. `Lifecycle.c` owns these serialized
+state transitions: prepared → starting → running → stopping → stopped. A bounded
+run/start budget is followed by one bounded stop budget; deadlines never extend
+on repeated requests. Start and stop callbacks are tracked independently. Wrong
+VM identities, regressing/zero clocks, overflowing deadlines, duplicates and
+out-of-order events refuse without mutating state. Late start completion cannot
+revive a stopping invocation. A successful stop callback is **not** a stopped
+observation: normal resource release requires no pending callbacks and a read of
+`VZVirtualMachineStateStopped` from the same retained VM.
+
+The current zero-channel profile has no workload/input/result protocol.
+`OCVMWorkloadChannelAvailable()` is hardcoded false. Even behind native admission,
+this branch requests an unsupported-workload stop without calling start. The
+start/stop adapter is source plumbing, not an enabled execution path. There is
+no guest-agent, socket, network, serial, console, directory-share or disk-result
+fallback. A separately reviewed integration/profile is required for real work.
+
+If stop is still unconfirmed when the stop budget expires (including an
+uncompleted start/stop callback), the process emits a bounded failure diagnostic
+with `native_admission=false` and `same_vm_stopped=false`, then exits 75 without
+normal owner unwinding. Process exit is not VM-stop proof. A confirmed observation
+also returns nonzero 78 with `workload_result=false` and a separate
+`vm_start_dispatched` flag. Under the current unsupported-channel branch this
+flag is false: observing a newly created, never-started VM stopped is **not**
+evidence of guest shutdown. It never reports workload success, isolation, parity
+or admission. Native T1–T12 remain unverified.
 
 The fixed resource sizes define construction policy, not a claim that a host
 has enough capacity or that a particular macOS guest supports the profile.
@@ -44,7 +91,10 @@ signed entitlement blob, rejecting extra, missing, false, and nonboolean
 values. Reading that blob is not kernel-enforcement proof. No executable in
 the bundle is run by the checker.
 
-The macOS CI job compiles the ARM64 macOS 15 target, signs it, and reads back
+Pull requests affecting this target run only the portable source checks. The
+compile/sign job remains workflow-dispatch-only; adding the PR trigger does not
+run it or authorize a dispatch. When explicitly dispatched, the macOS CI job
+compiles the ARM64 macOS 15 target, signs it, and reads back
 the signature. It never invokes the resulting executable. It uses no secrets,
 guest files, restore images, or provider credentials. No runner binary is
 installed or invoked. Successful main builds retain the signed bundle in the
@@ -144,8 +194,9 @@ integrity, effective confinement and native admission remain unproved.
 
 ## Source checks
 
-The following portable commands execute only synthetic construction callbacks
-and signing fixtures:
+The following portable commands execute only synthetic construction/lifecycle
+callbacks, temporary POSIX resource fixtures, source-wiring checks and signing
+fixtures. Their results are not Objective-C execution or native prevention proof:
 
 ```bash
 out=$(mktemp -d)
@@ -153,7 +204,17 @@ cc -std=c11 -Wall -Wextra -Werror -pedantic \
   native-qa-vm-runner/Profile.c native-qa-vm-runner/ProfileTests.c \
   -o "$out/profile-tests"
 "$out/profile-tests"
+cc -std=c11 -Wall -Wextra -Werror -pedantic \
+  native-qa-vm-runner/Lifecycle.c native-qa-vm-runner/LifecycleTests.c \
+  -o "$out/lifecycle-tests"
+"$out/lifecycle-tests"
+cc -std=c11 -Wall -Wextra -Werror -pedantic \
+  native-qa-vm-runner/ResourceValidator.c native-qa-vm-runner/HeldResources.c \
+  native-qa-vm-runner/Lifecycle.c native-qa-vm-runner/HeldResourcesTests.c \
+  -o "$out/held-resources-tests"
+"$out/held-resources-tests"
 rm -rf "$out"
+python3 -m unittest tools.test_native_qa_vm_runner_source -v
 python3 -W error::ResourceWarning -m unittest tools.test_native_qa_vm_signing tools.test_native_qa_vm_receipt -v
 bash -n scripts/package-native-qa-vm-runner.sh
 ```
@@ -173,7 +234,8 @@ Before any runtime can be considered, the missing work includes a prepared,
 compatible disposable guest; exact resource and backing-file identity with
 race handling; inherited-capability refusal; SDK and signature identity bound
 to the actual runner; effective native configuration and prevention controls;
-and sole-owner lifecycle handling through the same VM's actual stop.
+and native validation of the new sole-owner lifecycle handling through the same
+VM's actual stop. Portable state transitions do not establish that native behavior.
 T1–T12 must be exercised under a separately admitted native unit. The factory
 must remain unreachable from the entrypoint until those prerequisites are met.
 No guest-generated receipt or portable PASS can open that boundary.
@@ -189,6 +251,10 @@ unchanged. There is no native UI evidence because no app or guest was launched.
 - [Mac platform identity and auxiliary storage](https://developer.apple.com/documentation/virtualization/vzmacplatformconfiguration.md).
 - [Display construction](https://developer.apple.com/documentation/virtualization/vzmacgraphicsdisplayconfiguration/init(widthinpixels:heightinpixels:pixelsperinch:).md).
 - [USB controllers, macOS 15](https://developer.apple.com/documentation/virtualization/vzvirtualmachineconfiguration/usbcontrollers.md).
+- [VM serial-queue ownership](https://developer.apple.com/documentation/virtualization/vzvirtualmachine/init(configuration:queue:).md).
+- [VM stop completion and legal states](https://developer.apple.com/documentation/virtualization/vzvirtualmachine/stop(completionhandler:).md).
+- [URL-based disk attachment](https://developer.apple.com/documentation/virtualization/vzdiskimagestoragedeviceattachment.md).
+- [URL-based auxiliary storage](https://developer.apple.com/documentation/virtualization/vzmacauxiliarystorage.md).
 
 These are public SDK sources, not claims about Conductor's shipped behavior.
 No REA operation was needed or performed for this isolated infrastructure change.

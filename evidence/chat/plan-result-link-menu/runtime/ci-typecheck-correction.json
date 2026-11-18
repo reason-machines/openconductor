@@ -1,0 +1,36 @@
+{
+  "author": "Conductor Rebuild",
+  "failed_head": "ac5eccdc76ad6de95fec830316a8d18cb55df5c5",
+  "check_id": 134506866832,
+  "check_url": "https://github.com/reason-machines/openconductor/actions/runs/44216294010/job/134506866832",
+  "observed_failed_command": "npm run typecheck",
+  "observed_exit": 2,
+  "diagnostics": [
+    {
+      "path": ".github",
+      "start_line": 10,
+      "end_line": 10,
+      "annotation_level": "failure",
+      "title": null,
+      "message": "Process completed with exit code 2.",
+      "raw_details": null
+    },
+    {
+      "path": "src/features/chat/planResultLinkMenu.test.ts",
+      "start_line": 112,
+      "end_line": 112,
+      "annotation_level": "failure",
+      "title": null,
+      "message": "'this' implicitly has type 'any' because it does not have a type annotation.",
+      "raw_details": null
+    }
+  ],
+  "correction": "Only add explicit TypeScript receiver `this: { anchors: () => Node[] }, ` before the existing menu anchor parameter; no runtime argument is added.",
+  "historical_fixture_sha256": "5cf6a425ac7dc485bf22278af2d0b3d06870d8c717ecc965dc0d73c4db42cd75",
+  "validation": "Exact removal of that single annotation must recover all frozen fixture bytes. Mandatory hosted CI is pending; no extra local Node/typecheck/build/install executed.",
+  "product_changed": false,
+  "assertions_changed": false,
+  "adapters_changed": false,
+  "frozen_execution_inputs_changed": false,
+  "limitations": "No new browser/native/portal/OS clipboard verification."
+}

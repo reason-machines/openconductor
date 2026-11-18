@@ -1,0 +1,75 @@
+{
+  "author": "Conductor Rebuild",
+  "baseline": "9fec58cb697ab6947c4c9acd0e8ebd9295f1aab3",
+  "predecessor_pr": 1431,
+  "source_commit": "18444562a1c6f3e560903384bc6983dd1ed1025c",
+  "fixture_sha256": "267a2f2e09ba9c7bf87cce71f7ac622ac46baa53a9864f166b0493069c537edb",
+  "checks": {
+    "red": {
+      "status": "PASS_REPRODUCTION",
+      "pass": 12,
+      "intended_assertion_fail": 12,
+      "exit": 1
+    },
+    "focused": {
+      "status": "PASS",
+      "pass": 159,
+      "fail": 0,
+      "exit": 0
+    },
+    "full_chat_uncommitted": {
+      "status": "FAIL_SOURCE_INTEGRITY",
+      "pass": 1872,
+      "fail": 1,
+      "cause": "unchanged disclosureRemount requires candidate source matches HEAD; ToolRows and fixture were not yet committed"
+    },
+    "full_chat_committed": {
+      "status": "PASS",
+      "pass": 1873,
+      "fail": 0,
+      "skip": 0,
+      "cancel": 0,
+      "exit": 0
+    },
+    "typecheck": "PASS",
+    "build": "PASS",
+    "source": "PASS_2_PARENTS_11_SPANS_15_JOINS_9_CONTROLS",
+    "diff_check": "PASS"
+  },
+  "unchanged_successor_controls": {
+    "node24": "20b169940ed2f18c0ecb29918c5f1a1172fc08646e55b9858fe755dbde8de117",
+    "typedV3": "dea7a1df1432b2b325944f1bd9243ac056ea59aec9e7be2a00ccd23e6107ae79"
+  },
+  "raw_logs": {
+    "fresh-main-red.tap.gz": {
+      "bytes": 15958,
+      "sha256": "d097b8e3c8750c0c68c4b121d542dfcec0f0417a577bb7335d6103755779e975"
+    },
+    "fresh-main-adjacent.tap.gz": {
+      "bytes": 29620,
+      "sha256": "06284699b1dc64efd06258c6f877baab292ff194ef78def7cad1cd790eafbca9"
+    },
+    "fresh-main-full-chat.tap.gz": {
+      "bytes": 418941,
+      "sha256": "446f1f6c38895c398cb0e1b8a47a4949d491e6eda5d7a006c5f601eee3f04e52"
+    },
+    "fresh-main-committed-full-chat.tap.gz": {
+      "bytes": 522974,
+      "sha256": "12ab014e9fa69828b629c0906894c9fff0ee8b4ddc658e49a18ced87f0458e56"
+    },
+    "fresh-main-typecheck.log.gz": {
+      "bytes": 224,
+      "sha256": "91c9fe8679639260822d83ee7e81d6f3da39f84dad13a146ce6cfe8ac11c5994"
+    },
+    "fresh-main-build.log.gz": {
+      "bytes": 180316,
+      "sha256": "3786a3f2b72befbe4b020985662610ed401a58a7333eec5b7add49d6b092c454"
+    }
+  },
+  "acceptance": {
+    "browser": "NOT_RUN",
+    "native": "NOT_RUN",
+    "provider": "NOT_RUN",
+    "package": "UNVERIFIED"
+  }
+}

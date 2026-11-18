@@ -1,0 +1,392 @@
+(node:74) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pre-workspace lookup uses repository/ref/agent identity, not an existing workspace (page=false)
+not ok 1 - pre-workspace lookup uses repository/ref/agent identity, not an existing workspace (page=false)
+  ---
+  duration_ms: 566.236572
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:190:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   {
+    -     args: {
+    -       agentType: 'codex',
+    -       ref: 'main',
+    -       repositoryId: 'repo'
+    -     },
+    -     command: 'pre_workspace_completions'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      command: 'pre_workspace_completions'
+      args:
+        repositoryId: 'repo'
+        ref: 'main'
+        agentType: 'codex'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:194:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: @ selection inserts one file atom and trailing space without creating (page=false,key=Enter)
+not ok 2 - @ selection inserts one file atom and trailing space without creating (page=false,key=Enter)
+  ---
+  duration_ms: 230.148019
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:202:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:206:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: / selection inserts the reported command without submitting (page=false,key=Enter)
+not ok 3 - / selection inserts the reported command without submitting (page=false,key=Enter)
+  ---
+  duration_ms: 170.119557
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:212:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:216:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: @ selection inserts one file atom and trailing space without creating (page=false,key=Tab)
+not ok 4 - @ selection inserts one file atom and trailing space without creating (page=false,key=Tab)
+  ---
+  duration_ms: 125.02923
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:202:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:206:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: / selection inserts the reported command without submitting (page=false,key=Tab)
+not ok 5 - / selection inserts the reported command without submitting (page=false,key=Tab)
+  ---
+  duration_ms: 154.551958
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:212:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:216:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: directory selections preserve directory identity (page=false)
+not ok 6 - directory selections preserve directory identity (page=false)
+  ---
+  duration_ms: 142.752175
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:222:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:226:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Escape dismisses suggestions without closing the containing dialog (page=false)
+not ok 7 - Escape dismisses suggestions without closing the containing dialog (page=false)
+  ---
+  duration_ms: 117.154826
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:232:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:235:39)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: composition and unrelated keys do not submit or mutate (page=false)
+ok 8 - composition and unrelated keys do not submit or mutate (page=false)
+  ---
+  duration_ms: 117.575912
+  type: 'test'
+  ...
+# Subtest: no repository means no native lookup, no suggestions, and no create (page=false)
+ok 9 - no repository means no native lookup, no suggestions, and no create (page=false)
+  ---
+  duration_ms: 116.874129
+  type: 'test'
+  ...
+# Subtest: ordinary Enter keeps the existing create path (page=false)
+ok 10 - ordinary Enter keeps the existing create path (page=false)
+  ---
+  duration_ms: 137.086138
+  type: 'test'
+  ...
+# Subtest: pre-workspace lookup uses repository/ref/agent identity, not an existing workspace (page=true)
+not ok 11 - pre-workspace lookup uses repository/ref/agent identity, not an existing workspace (page=true)
+  ---
+  duration_ms: 122.206123
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:190:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   {
+    -     args: {
+    -       agentType: 'codex',
+    -       ref: 'main',
+    -       repositoryId: 'repo'
+    -     },
+    -     command: 'pre_workspace_completions'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      command: 'pre_workspace_completions'
+      args:
+        repositoryId: 'repo'
+        ref: 'main'
+        agentType: 'codex'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:194:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: @ selection inserts one file atom and trailing space without creating (page=true,key=Enter)
+not ok 12 - @ selection inserts one file atom and trailing space without creating (page=true,key=Enter)
+  ---
+  duration_ms: 109.250636
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:202:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:206:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: / selection inserts the reported command without submitting (page=true,key=Enter)
+not ok 13 - / selection inserts the reported command without submitting (page=true,key=Enter)
+  ---
+  duration_ms: 98.035088
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:212:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:216:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: @ selection inserts one file atom and trailing space without creating (page=true,key=Tab)
+not ok 14 - @ selection inserts one file atom and trailing space without creating (page=true,key=Tab)
+  ---
+  duration_ms: 97.231611
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:202:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:206:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: / selection inserts the reported command without submitting (page=true,key=Tab)
+not ok 15 - / selection inserts the reported command without submitting (page=true,key=Tab)
+  ---
+  duration_ms: 95.429778
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:212:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:216:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: directory selections preserve directory identity (page=true)
+not ok 16 - directory selections preserve directory identity (page=true)
+  ---
+  duration_ms: 107.441506
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:222:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:226:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Escape dismisses suggestions without closing the containing dialog (page=true)
+not ok 17 - Escape dismisses suggestions without closing the containing dialog (page=true)
+  ---
+  duration_ms: 96.457005
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:232:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.qa/create-suggestions-135/main/src/components/createWorkspaceSuggestions.test.ts:235:39)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: composition and unrelated keys do not submit or mutate (page=true)
+ok 18 - composition and unrelated keys do not submit or mutate (page=true)
+  ---
+  duration_ms: 96.684349
+  type: 'test'
+  ...
+# Subtest: no repository means no native lookup, no suggestions, and no create (page=true)
+ok 19 - no repository means no native lookup, no suggestions, and no create (page=true)
+  ---
+  duration_ms: 116.443766
+  type: 'test'
+  ...
+# Subtest: ordinary Enter keeps the existing create path (page=true)
+ok 20 - ordinary Enter keeps the existing create path (page=true)
+  ---
+  duration_ms: 110.068889
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 6
+# fail 14
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3272.570137

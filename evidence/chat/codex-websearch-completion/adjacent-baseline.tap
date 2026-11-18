@@ -1,0 +1,272 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a recorded turn becomes one assistant message with tools between its texts
+ok 1 - a recorded turn becomes one assistant message with tools between its texts
+  ---
+  duration_ms: 3.836211
+  type: 'test'
+  ...
+# Subtest: approvals are kept until answered or the turn ends
+ok 2 - approvals are kept until answered or the turn ends
+  ---
+  duration_ms: 0.504075
+  type: 'test'
+  ...
+# Subtest: consents (MCP elicitation, permissions) are kept until resolved or the turn ends
+ok 3 - consents (MCP elicitation, permissions) are kept until resolved or the turn ends
+  ---
+  duration_ms: 0.492801
+  type: 'test'
+  ...
+# Subtest: declined and failing tools are errors; failures end the turn with Codex's message
+ok 4 - declined and failing tools are errors; failures end the turn with Codex's message
+  ---
+  duration_ms: 0.274916
+  type: 'test'
+  ...
+# Subtest: prompts queue: content goes to the oldest open turn and turnEnded closes it
+ok 5 - prompts queue: content goes to the oldest open turn and turnEnded closes it
+  ---
+  duration_ms: 0.306184
+  type: 'test'
+  ...
+# Subtest: retry notices replace each other; other notices are separate system rows
+ok 6 - retry notices replace each other; other notices are separate system rows
+  ---
+  duration_ms: 0.190283
+  type: 'test'
+  ...
+# Subtest: a prompt that never reached Codex fails its own turn only
+ok 7 - a prompt that never reached Codex fails its own turn only
+  ---
+  duration_ms: 0.252285
+  type: 'test'
+  ...
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude Code, Reason and Codex give Conductor the same tool calls for one turn
+ok 8 - Claude Code, Reason and Codex give Conductor the same tool calls for one turn
+  ---
+  duration_ms: 3.19301
+  type: 'test'
+  ...
+# Subtest: Codex: the shell wrapper is dropped and single command actions become Read/Grep/LS (Conductor's Kst)
+ok 9 - Codex: the shell wrapper is dropped and single command actions become Read/Grep/LS (Conductor's Kst)
+  ---
+  duration_ms: 0.331419
+  type: 'test'
+  ...
+# Subtest: Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)
+ok 10 - Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)
+  ---
+  duration_ms: 0.457219
+  type: 'test'
+  ...
+# Subtest: Codex: MCP tool calls are mcp__server__tool with their arguments
+ok 11 - Codex: MCP tool calls are mcp__server__tool with their arguments
+  ---
+  duration_ms: 0.508093
+  type: 'test'
+  ...
+# Subtest: Reason: a tool with no Claude Code counterpart keeps its title for Conductor's generic row
+ok 12 - Reason: a tool with no Claude Code counterpart keeps its title for Conductor's generic row
+  ---
+  duration_ms: 0.24226
+  type: 'test'
+  ...
+# Subtest: row text: Read lines, Grep matches, generic summary
+ok 13 - row text: Read lines, Grep matches, generic summary
+  ---
+  duration_ms: 1.185516
+  type: 'test'
+  ...
+# Subtest: line counts follow a line diff
+ok 14 - line counts follow a line diff
+  ---
+  duration_ms: 0.223706
+  type: 'test'
+  ...
+# Subtest: every kind in Conductor's registry resolves by name or prefix (D1o, P1o)
+ok 15 - every kind in Conductor's registry resolves by name or prefix (D1o, P1o)
+  ---
+  duration_ms: 5.685035
+  type: 'test'
+  ...
+# Subtest: Skill and SlashCommand labels (_po, Cpo)
+ok 16 - Skill and SlashCommand labels (_po, Cpo)
+  ---
+  duration_ms: 0.365345
+  type: 'test'
+  ...
+# Subtest: a sub-agent row needs a type other than general-purpose (bpo vs Ypo)
+ok 17 - a sub-agent row needs a type other than general-purpose (bpo vs Ypo)
+  ---
+  duration_ms: 0.426966
+  type: 'test'
+  ...
+# Subtest: AskUserQuestion results (Tpo)
+ok 18 - AskUserQuestion results (Tpo)
+  ---
+  duration_ms: 0.398655
+  type: 'test'
+  ...
+# Subtest: task results parse from JSON and from Claude Code's text (epo, jki)
+ok 19 - task results parse from JSON and from Claude Code's text (epo, jki)
+  ---
+  duration_ms: 0.620634
+  type: 'test'
+  ...
+# Subtest: terminal output, background status and file names (Dpo, R0o, xZe)
+ok 20 - terminal output, background status and file names (Dpo, R0o, xZe)
+  ---
+  duration_ms: 0.236251
+  type: 'test'
+  ...
+# Subtest: swarm messages and wake-ups (qpo, Spo)
+ok 21 - swarm messages and wake-ups (qpo, Spo)
+  ---
+  duration_ms: 0.260995
+  type: 'test'
+  ...
+# Subtest: Codex collaboration calls (_0o)
+ok 22 - Codex collaboration calls (_0o)
+  ---
+  duration_ms: 0.600403
+  type: 'test'
+  ...
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary Claude WebFetch discloses exact prompt before the unchanged result: "Find the supported configuration keys."
+ok 23 - ordinary Claude WebFetch discloses exact prompt before the unchanged result: "Find the supported configuration keys."
+  ---
+  duration_ms: 400.515712
+  type: 'test'
+  ...
+# Subtest: ordinary Claude WebFetch discloses exact prompt before the unchanged result: "  Keep spacing.\\nAnd this line.  "
+ok 24 - ordinary Claude WebFetch discloses exact prompt before the unchanged result: "  Keep spacing.\\nAnd this line.  "
+  ---
+  duration_ms: 184.385205
+  type: 'test'
+  ...
+# Subtest: WebFetch keeps HTML-like prompt and result text literal
+ok 25 - WebFetch keeps HTML-like prompt and result text literal
+  ---
+  duration_ms: 174.119566
+  type: 'test'
+  ...
+# Subtest: WebFetch with missing prompt keeps its output-only disclosure
+ok 26 - WebFetch with missing prompt keeps its output-only disclosure
+  ---
+  duration_ms: 167.889583
+  type: 'test'
+  ...
+# Subtest: WebFetch with empty prompt keeps its output-only disclosure
+ok 27 - WebFetch with empty prompt keeps its output-only disclosure
+  ---
+  duration_ms: 132.99357
+  type: 'test'
+  ...
+# Subtest: completed WebSearch without prompt keeps its query and result disclosure
+ok 28 - completed WebSearch without prompt keeps its query and result disclosure
+  ---
+  duration_ms: 79.516774
+  type: 'test'
+  ...
+# Subtest: a completed WebFetch prompt alone does not open an empty result
+ok 29 - a completed WebFetch prompt alone does not open an empty result
+  ---
+  duration_ms: 68.710111
+  type: 'test'
+  ...
+# (node:108) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: web result cap matches shipped UTF-16 boundary: empty-fetch
+ok 30 - web result cap matches shipped UTF-16 boundary: empty-fetch
+  ---
+  duration_ms: 428.058552
+  type: 'test'
+  ...
+# Subtest: web result cap matches shipped UTF-16 boundary: short-fetch-prompt
+ok 31 - web result cap matches shipped UTF-16 boundary: short-fetch-prompt
+  ---
+  duration_ms: 227.516608
+  type: 'test'
+  ...
+# Subtest: web result cap matches shipped UTF-16 boundary: below-cap
+ok 32 - web result cap matches shipped UTF-16 boundary: below-cap
+  ---
+  duration_ms: 189.574695
+  type: 'test'
+  ...
+# Subtest: web result cap matches shipped UTF-16 boundary: exact-cap
+ok 33 - web result cap matches shipped UTF-16 boundary: exact-cap
+  ---
+  duration_ms: 116.013393
+  type: 'test'
+  ...
+# Subtest: web result cap matches shipped UTF-16 boundary: above-cap-fetch
+ok 34 - web result cap matches shipped UTF-16 boundary: above-cap-fetch
+  ---
+  duration_ms: 95.231062
+  type: 'test'
+  ...
+# Subtest: web result cap matches shipped UTF-16 boundary: above-cap-search
+ok 35 - web result cap matches shipped UTF-16 boundary: above-cap-search
+  ---
+  duration_ms: 64.377578
+  type: 'test'
+  ...
+# Subtest: web result cap matches shipped UTF-16 boundary: long-with-prompt
+ok 36 - web result cap matches shipped UTF-16 boundary: long-with-prompt
+  ---
+  duration_ms: 58.600433
+  type: 'test'
+  ...
+# Subtest: web result cap matches shipped UTF-16 boundary: astral-pair-completes-at-cap
+ok 37 - web result cap matches shipped UTF-16 boundary: astral-pair-completes-at-cap
+  ---
+  duration_ms: 66.952681
+  type: 'test'
+  ...
+# Subtest: web result cap matches shipped UTF-16 boundary: astral-pair-bisected-at-cap
+ok 38 - web result cap matches shipped UTF-16 boundary: astral-pair-bisected-at-cap
+  ---
+  duration_ms: 70.169271
+  type: 'test'
+  ...
+# Subtest: web result cap matches shipped UTF-16 boundary: astral-only
+ok 39 - web result cap matches shipped UTF-16 boundary: astral-only
+  ---
+  duration_ms: 61.224413
+  type: 'test'
+  ...
+# Subtest: web result cap matches shipped UTF-16 boundary: combining-crlf
+ok 40 - web result cap matches shipped UTF-16 boundary: combining-crlf
+  ---
+  duration_ms: 59.620541
+  type: 'test'
+  ...
+# Subtest: web result cap matches shipped UTF-16 boundary: literal-markup
+ok 41 - web result cap matches shipped UTF-16 boundary: literal-markup
+  ---
+  duration_ms: 45.66184
+  type: 'test'
+  ...
+# Subtest: web result cap matches shipped UTF-16 boundary: prompt-not-capped
+ok 42 - web result cap matches shipped UTF-16 boundary: prompt-not-capped
+  ---
+  duration_ms: 58.558818
+  type: 'test'
+  ...
+1..42
+# tests 42
+# suites 0
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2314.787842

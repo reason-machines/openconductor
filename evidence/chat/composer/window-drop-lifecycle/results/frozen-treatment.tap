@@ -1,0 +1,62 @@
+(node:56) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:63) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: original LNi enter contract: an empty native path list does not advertise a file drop
+ok 1 - original LNi enter contract: an empty native path list does not advertise a file drop
+  ---
+  duration_ms: 4.139368
+  type: 'test'
+  ...
+# Subtest: original LNi cleanup contract: unmount before registration resolves still unsubscribes once
+ok 2 - original LNi cleanup contract: unmount before registration resolves still unsubscribes once
+  ---
+  duration_ms: 1.573837
+  type: 'test'
+  ...
+# Subtest: control: nonempty enter shows overlay and leave clears it
+ok 3 - control: nonempty enter shows overlay and leave clears it
+  ---
+  duration_ms: 1.568905
+  type: 'test'
+  ...
+# Subtest: control: drop clears overlay and forwards the exact nonempty path list once
+ok 4 - control: drop clears overlay and forwards the exact nonempty path list once
+  ---
+  duration_ms: 1.510279
+  type: 'test'
+  ...
+# Subtest: control: empty drop clears overlay without attaching
+ok 5 - control: empty drop clears overlay without attaching
+  ---
+  duration_ms: 1.944979
+  type: 'test'
+  ...
+# Subtest: control: registration resolved before unmount unsubscribes once
+ok 6 - control: registration resolved before unmount unsubscribes once
+  ---
+  duration_ms: 1.337665
+  type: 'test'
+  ...
+# Subtest: control: a non-Tauri surface does not subscribe
+ok 7 - control: a non-Tauri surface does not subscribe
+  ---
+  duration_ms: 1.444518
+  type: 'test'
+  ...
+# Subtest: control: unavailable webview exits without a listener or native read
+ok 8 - control: unavailable webview exits without a listener or native read
+  ---
+  duration_ms: 1.406916
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 781.124018

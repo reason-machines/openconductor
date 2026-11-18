@@ -1,0 +1,12 @@
+{
+  "qualification_main": "c1e74c56f6bb7455bb59311797515138adc4a235",
+  "fresh_main": "74c004a95d7b10072f54f71ca611f22c50944f64",
+  "qualification_commit": "5680ce02845deba8ede6f560a3366ece15188541",
+  "frozen17_sha256": "994bb96693dcb54c21af2b3168a9b7b6ab1d66b095d0bd45c9dadc406a0dda51",
+  "scoped_delta": "No change in src/features/openIn or src/dragRegion.test.ts between qualification main and fresh main; checked with git diff.",
+  "production_scope": ["src/features/openIn/OpenInButton.tsx"],
+  "production_diff": {"additions": 12, "deletions": 0},
+  "existing_tests_and_loaders": "UNCHANGED",
+  "local_heavy_checks": "PENDING_SERIALIZED_ADMISSION_OR_EXACT_HOSTED_PIPELINE",
+  "browser_native_package": "NOT_RUN"
+}

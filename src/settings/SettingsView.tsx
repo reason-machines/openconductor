@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState, type MouseEvent, type ReactNode } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import { openUrl } from "../backend";
 import { AccountMenu } from "../components/AccountMenu";
 import { Tooltip } from "../components/ui/Tooltip";
@@ -112,6 +112,10 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
   };
 
   const repo = location.scope === "repo" ? repos.find((r) => r.id === location.repoId) : undefined;
+  const lastViewedRepoId = useRef<string>();
+  useEffect(() => {
+    if (repo) lastViewedRepoId.current = repo.id;
+  }, [repo]);
   const title =
     location.scope === "user" ? pageLabel(location.page) : location.scope === "org" ? ORG_HEADERS[location.page].title : REPO_SECTION_LABELS[location.section];
   const navButton = (to: SettingsLocation, label: string, className = "nav-item", icon?: ReactNode) => {
@@ -156,11 +160,11 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
     () => buildSearchIndex({ pages: groups.flatMap((g) => g.pages), agentTabs: AGENT_SEARCH_TABS, hasRepos: repos.length > 0, cloudUI }),
     [groups, repos.length, cloudUI],
   );
-  // Conductor's `wGt`: a repository section opens in the repository being viewed, else the first one.
+  // Conductor's `L9a` / `bUi` retain the last viewed repo across personal pages.
   const openResult = (item: SearchItem) => {
     const t = item.target;
     if (t.scope === "repo") {
-      const repoId = location.scope === "repo" ? location.repoId : repos[0]?.id;
+      const repoId = location.scope === "repo" ? location.repoId : (repos.find((r) => r.id === lastViewedRepoId.current) ?? repos[0])?.id;
       if (repoId) onNavigate({ scope: "repo", repoId, section: t.section });
     } else {
       onNavigate({ scope: "user", page: t.page });
@@ -393,8 +397,17 @@ export function scrollToRow(title: string, tries = 20) {
     const label = Array.from(document.querySelectorAll(".settings-page [data-settings-row]")).find((row) =>
       Array.from(row.querySelectorAll(".settings-row-label, h2, h3, label, strong")).some((el) => el.textContent?.trim() === title),
     );
-    if (label) label.scrollIntoView({ block: "start" });
-    else if (tries > 0) scrollToRow(title, tries - 1);
+    if (label) {
+      label.scrollIntoView({ block: "center" });
+      const frame = label.querySelector(":scope > [data-reveal-frame]") ?? label;
+      if (typeof frame.animate === "function") {
+        frame.animate([
+          { outline: "2px solid var(--ring)", outlineOffset: "8px", offset: 0 },
+          { outline: "2px solid var(--ring)", outlineOffset: "8px", offset: 0.55 },
+          { outline: "2px solid transparent", outlineOffset: "8px" },
+        ], { duration: 1400, easing: "ease-out" });
+      }
+    } else if (tries > 0) scrollToRow(title, tries - 1);
   });
 }
 

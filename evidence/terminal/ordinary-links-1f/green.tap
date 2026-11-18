@@ -1,0 +1,86 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary encoded Command-click warns before opening the exact target
+ok 1 - ordinary encoded Command-click warns before opening the exact target
+  ---
+  duration_ms: 792.096177
+  type: 'test'
+  ...
+# Subtest: ordinary encoded-link cancellation never reaches the opener
+ok 2 - ordinary encoded-link cancellation never reaches the opener
+  ---
+  duration_ms: 12.981944
+  type: 'test'
+  ...
+# Subtest: ordinary unmodified and Control-only encoded-link activation does nothing
+ok 3 - ordinary unmodified and Control-only encoded-link activation does nothing
+  ---
+  duration_ms: 10.140608
+  type: 'test'
+  ...
+# Subtest: ordinary encoded HTTP localhost target is preserved through confirmation
+ok 4 - ordinary encoded HTTP localhost target is preserved through confirmation
+  ---
+  duration_ms: 10.703145
+  type: 'test'
+  ...
+# Subtest: ordinary encoded links disable non-HTTP protocols
+ok 5 - ordinary encoded links disable non-HTTP protocols
+  ---
+  duration_ms: 14.26654
+  type: 'test'
+  ...
+# Subtest: ordinary invalid and non-web targets never reach the warning or opener
+ok 6 - ordinary invalid and non-web targets never reach the warning or opener
+  ---
+  duration_ms: 31.777705
+  type: 'test'
+  ...
+# Subtest: ordinary warning failures are handled without opening
+ok 7 - ordinary warning failures are handled without opening
+  ---
+  duration_ms: 8.469345
+  type: 'test'
+  ...
+# Subtest: ordinary opener failures are handled after approval
+ok 8 - ordinary opener failures are handled after approval
+  ---
+  duration_ms: 7.678283
+  type: 'test'
+  ...
+# Subtest: ordinary reattachment keeps one terminal and its encoded-link handler
+ok 9 - ordinary reattachment keeps one terminal and its encoded-link handler
+  ---
+  duration_ms: 6.71418
+  type: 'test'
+  ...
+# Subtest: ordinary starting and exited terminals keep the encoded-link handler
+ok 10 - ordinary starting and exited terminals keep the encoded-link handler
+  ---
+  duration_ms: 10.080549
+  type: 'test'
+  ...
+# Subtest: ordinary input remains gated by ready and exit states
+ok 11 - ordinary input remains gated by ready and exit states
+  ---
+  duration_ms: 7.994753
+  type: 'test'
+  ...
+# Subtest: ordinary terminal disposal and Unicode setup stay unchanged
+ok 12 - ordinary terminal disposal and Unicode setup stay unchanged
+  ---
+  duration_ms: 9.99553
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1386.702517

@@ -1,0 +1,349 @@
+{
+  "candidate": "CREATE-FAILURE-DRAFT-135",
+  "status": "SOURCE_ONLY_DISTINCT_RECOVERY_ACTION_GAP",
+  "main": "74c004a95d7b10072f54f71ca611f22c50944f64",
+  "parents": [
+    {
+      "asset": "renderer",
+      "path": ".qa/create-suggestions-135/retained/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    {
+      "asset": "index",
+      "path": ".qa/create-suggestions-135/retained/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  ],
+  "spans": [
+    {
+      "asset": "renderer",
+      "name": "pya",
+      "path": "reference/renderer-pya.txt",
+      "kind": "complete function",
+      "utf16": [
+        11003208,
+        11004365
+      ],
+      "utf8": [
+        11048998,
+        11050155
+      ],
+      "bytes": 1157,
+      "sha256": "27d0a88943cd8de48af79a7b8abedb669c287aec6606fd498636ee890f1c87fd"
+    },
+    {
+      "asset": "renderer",
+      "name": "WUi",
+      "path": "reference/renderer-WUi.txt",
+      "kind": "complete function",
+      "utf16": [
+        10989217,
+        10989632
+      ],
+      "utf8": [
+        11035007,
+        11035422
+      ],
+      "bytes": 415,
+      "sha256": "9985da403d9cc0790a90e3c581e52769ef76d4f721381f440c799bd2b06859e3"
+    },
+    {
+      "asset": "renderer",
+      "name": "oya",
+      "path": "reference/renderer-oya.txt",
+      "kind": "complete function",
+      "utf16": [
+        10989632,
+        11002945
+      ],
+      "utf8": [
+        11035422,
+        11048735
+      ],
+      "bytes": 13313,
+      "sha256": "5d1d20ebff606a7a1cedb8dd6989333df4f698cc74edfd6b5925dd3b0f2980f4"
+    },
+    {
+      "asset": "renderer",
+      "name": "Hji",
+      "path": "reference/renderer-Hji.txt",
+      "kind": "complete function",
+      "utf16": [
+        9725310,
+        9734397
+      ],
+      "utf8": [
+        9770840,
+        9779927
+      ],
+      "bytes": 9087,
+      "sha256": "3c5589cd46083bc08b635d4e752bfe1f93bc8456ae81e68c401dc6814948f567"
+    },
+    {
+      "asset": "renderer",
+      "name": "GCi",
+      "path": "reference/renderer-GCi.txt",
+      "kind": "complete function",
+      "utf16": [
+        7293770,
+        7295512
+      ],
+      "utf8": [
+        7336804,
+        7338546
+      ],
+      "bytes": 1742,
+      "sha256": "90a1292c67f965623a8a6714ec510e802c14af82ab228d036ac795ee777928a0"
+    },
+    {
+      "asset": "renderer",
+      "name": "qCi",
+      "path": "reference/renderer-qCi.txt",
+      "kind": "complete function",
+      "utf16": [
+        7296233,
+        7296742
+      ],
+      "utf8": [
+        7339267,
+        7339776
+      ],
+      "bytes": 509,
+      "sha256": "00378c761eef9a664a211e4209a0866ce8bcabf0092512e1a383566c1d6ba68e"
+    },
+    {
+      "asset": "renderer",
+      "name": "OVn",
+      "path": "reference/renderer-OVn.txt",
+      "kind": "complete function",
+      "utf16": [
+        7292415,
+        7292550
+      ],
+      "utf8": [
+        7335449,
+        7335584
+      ],
+      "bytes": 135,
+      "sha256": "1d9d5a5f887dc44016281f060b744ec32882600a2707cd351f29861bb62100b9"
+    },
+    {
+      "asset": "renderer",
+      "name": "n5",
+      "path": "reference/renderer-n5.txt",
+      "kind": "complete function",
+      "utf16": [
+        742088,
+        742218
+      ],
+      "utf8": [
+        742094,
+        742224
+      ],
+      "bytes": 130,
+      "sha256": "b280731ebf3267389f79cfebab908093fa21a7f4543797bcce436f0b2fcbe4f6"
+    },
+    {
+      "asset": "renderer",
+      "name": "l1",
+      "path": "reference/renderer-l1.txt",
+      "kind": "complete function",
+      "utf16": [
+        739302,
+        739393
+      ],
+      "utf8": [
+        739306,
+        739397
+      ],
+      "bytes": 91,
+      "sha256": "232a30bd33deacf7baf3cf7cce95a19f385c2a361832a65b34bff3e1ecbf6f57"
+    },
+    {
+      "asset": "renderer",
+      "name": "lXe",
+      "path": "reference/renderer-lXe.txt",
+      "kind": "complete function",
+      "utf16": [
+        739167,
+        739219
+      ],
+      "utf8": [
+        739171,
+        739223
+      ],
+      "bytes": 52,
+      "sha256": "5e967bde88f91185431c7e60f27a74b5c95d5cc23c100739a3d911bb1ff20642"
+    },
+    {
+      "asset": "index",
+      "name": "We",
+      "path": "reference/index-We.txt",
+      "kind": "complete function",
+      "utf16": [
+        549994,
+        550055
+      ],
+      "utf8": [
+        550006,
+        550067
+      ],
+      "bytes": 61,
+      "sha256": "79df8b3febb65a4d44a2e8cc65f4b53aa7176f0dee79c2bce4a366dd97eb9087"
+    },
+    {
+      "asset": "index",
+      "name": "Q0e",
+      "path": "reference/index-Q0e.txt",
+      "kind": "complete function",
+      "utf16": [
+        22597,
+        22693
+      ],
+      "utf8": [
+        22597,
+        22693
+      ],
+      "bytes": 96,
+      "sha256": "ef650097ef93c85a9024683f11a91682609f73342cc864d5b38713b1bc12e581"
+    },
+    {
+      "asset": "renderer",
+      "name": "QCi",
+      "path": "reference/renderer-QCi.txt",
+      "kind": "complete variable statement",
+      "utf16": [
+        7300181,
+        7300621
+      ],
+      "utf8": [
+        7343215,
+        7343655
+      ],
+      "bytes": 440,
+      "sha256": "49fca32b307001816f5d055350792b52a4b54ef28780f98873ce97766bb05c45"
+    },
+    {
+      "asset": "renderer",
+      "name": "index-import",
+      "path": "reference/renderer-index-import.txt",
+      "kind": "complete import declaration",
+      "utf16": [
+        52991,
+        66495
+      ],
+      "utf8": [
+        52991,
+        66495
+      ],
+      "bytes": 13504,
+      "sha256": "711b96377098ad3838934209f1710cb85acfc256abecae07605139daf0670ed5"
+    },
+    {
+      "asset": "index",
+      "name": "exports",
+      "path": "reference/index-exports.txt",
+      "kind": "complete export declaration",
+      "utf16": [
+        3479304,
+        3492618
+      ],
+      "utf8": [
+        3479840,
+        3493154
+      ],
+      "bytes": 13314,
+      "sha256": "710a19a503aab13b4d7560f27759db8f34c043680e13aefc77a5b1e289891530"
+    }
+  ],
+  "checks": {
+    "acceptedLocalAvailability": true,
+    "selectedLocalTargetForwarded": true,
+    "selectedTargetRecordedBeforeLaunch": true,
+    "currentRetainsSelectedRepo": true,
+    "capturedOriginalPrompt": true,
+    "pendingRegistrationBeforeClose": true,
+    "closeClearBeforeCreate": true,
+    "draftStoreReallyClears": true,
+    "createMutationAwaited": true,
+    "normalRejectCallsRecovery": true,
+    "pendingCleanup": true,
+    "inFlightResetsFinally": true,
+    "recoverOnlyTruthyPrompt": true,
+    "rcRendererImport": true,
+    "rcIndexExport": true,
+    "exactFormatter": true,
+    "recoverExactCapturedText": true,
+    "copyFailureIsContained": true,
+    "browserClipboardBranch": true,
+    "nativeClipboardBranch": true,
+    "nativeBranchDetection": true,
+    "currentModalDismisses": true,
+    "currentNormalRejectOnlyString": true,
+    "currentAppBothWarningsOnlyStrings": true,
+    "existingDetachedTestCoversOnlyReporting": true,
+    "existingFullPageTestCoversOnlyInline": true
+  },
+  "identities": [
+    {
+      "file": "src/components/CreateWorkspaceComposer.tsx",
+      "bytes": 38358,
+      "sha256": "989abb647db1ab993f0b6c8bf51a8108acb09abd2080e5ca0f889511d74ddb18"
+    },
+    {
+      "file": "src/components/CreateWorkspaceDialog.tsx",
+      "bytes": 2180,
+      "sha256": "85edc785f6dc05a9daafa966e4610b1b4165fb68e1d5a5596e02b80fdd219475"
+    },
+    {
+      "file": "src/components/CreateWorkspacePage.tsx",
+      "bytes": 1885,
+      "sha256": "90b197aea3a348d4fb49a2e7982bd8c67d8b3b46d70947e0566b65c4da6b3f6a"
+    },
+    {
+      "file": "src/components/createWorkspaceLaunchClose.test.ts",
+      "bytes": 43525,
+      "sha256": "25f0708ebb06af40f11688c0d495753bc9f95b87d2448b0afbcfd8ca9909ac25"
+    },
+    {
+      "file": "src/workspace/createFlow.ts",
+      "bytes": 9693,
+      "sha256": "c8c44d5552fdbf1d91ec4f65496ba820ee30cb7895c34944f228e76ce95e4a1c"
+    },
+    {
+      "file": "src/workspace/createFlow.test.ts",
+      "bytes": 8120,
+      "sha256": "5de5d4fd6f2a1aec8187dee160b09ca5db67fba792115075ba9e4e0c07d55c1d"
+    },
+    {
+      "file": "src/workspace/api.ts",
+      "bytes": 10709,
+      "sha256": "417f9882872c2f6a20314301635a2c029444d8bb1d6cf5677e0fdab5d95cd537"
+    },
+    {
+      "file": "src/App.tsx",
+      "bytes": 44104,
+      "sha256": "a927b0191092d0d9c6dca906f8a216afff2f2091abe45832308a84db9557000c"
+    },
+    {
+      "file": "src/components/Toast.tsx",
+      "bytes": 4974,
+      "sha256": "7b3690a70397c44a8fb1a1623c8bc6d083c5b8f4d104c4915975b951ea199b0d"
+    },
+    {
+      "file": "src/components/toastTiming.ts",
+      "bytes": 1085,
+      "sha256": "0fa3465690fba975bf2171b478cd90807e257df953e585a7319165aa9c4616ac"
+    }
+  ],
+  "limits": [
+    "Retained REA assets parsed as inert data; no original JavaScript executed",
+    "Native clipboard invocation is a source boundary, not OS clipboard proof",
+    "Normal pre-creation rejection only; no special post-creation remote error claims",
+    "No selected-target restoration defect: original records selected repo/resets override before launch",
+    "Full-page prompt remains in current component; missing detached-modal recovery is the named candidate",
+    "No attachment/paste/drop/terminal changes, runtime, heavy checks or product edits"
+  ]
+}

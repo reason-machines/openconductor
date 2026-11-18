@@ -45,6 +45,9 @@ jobs:
           NODE_ENV: development
           ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
         run: node --test "src/**/*.test.ts"
+      - name: Uncommitted discard mounted regression
+        timeout-minutes: 3
+        run: node --experimental-strip-types --test tests/diff/uncommittedDiscardAffordance.mounted.test.mjs
       - name: Window fill across interface zoom and resize
         run: node --test tests/e2e/window-fill.e2e.mjs
       - name: Native QA isolation verifier tests (no GUI)

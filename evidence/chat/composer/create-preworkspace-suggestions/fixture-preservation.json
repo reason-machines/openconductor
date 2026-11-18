@@ -1,0 +1,24 @@
+{
+  "historical_frozen20_sha256": "0eb33cd4b22788f5ed2004a958398e5a923ec17c75c8f0e3ae4ebea58e657193",
+  "frozen20_test_bodies_unchanged": true,
+  "adjacent": [
+    {
+      "path": "src/components/createWorkspaceLaunchClose.test.ts",
+      "sha256": "7e0af91637b9c61cd3ea7e9094341cf06392ea29d9df6db6ba032b2a48149713",
+      "bytes": 41479,
+      "unchanged_test_bodies": 24
+    },
+    {
+      "path": "src/components/createWorkspaceNewlineShortcut.test.ts",
+      "sha256": "e6039e73bf6ac3990af0a37519f18f2cf35a88088add9f14bcb6fb236b494223",
+      "bytes": 12599,
+      "unchanged_test_bodies": 5
+    },
+    {
+      "path": "src/components/createWorkspacePreparation.test.ts",
+      "sha256": "45117dbf453afc44baf987f2b468e6533bec9dca55326c8c43a93348111ddba2",
+      "bytes": 16162,
+      "unchanged_test_bodies": 9
+    }
+  ]
+}

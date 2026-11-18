@@ -1,0 +1,8 @@
+{
+  "head": "f45ab99045eeacb1b4336153b32a1b46cea24f27",
+  "default_build": "PASS: branding, full TypeScript and Vite (80s)",
+  "colors": "PASS: 6 checker tests and 1269-file scan",
+  "foreground_sequential": true,
+  "released": "2026-11-17T18:04:27Z",
+  "own_compiler_build_processes": []
+}

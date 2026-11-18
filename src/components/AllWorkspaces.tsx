@@ -48,21 +48,43 @@ interface Props {
   dispatch: Dispatch<Action>;
   onCreateWorkspace: () => void;
   onWorkspaceContextMenu?: (row: HomeRow, at: { x: number; y: number }) => void;
+  onArchivedWorkspaceContextMenu?: (row: HomeRow, at: { x: number; y: number }, unarchive: { pending: boolean; run: () => void }) => void;
 }
 
 function Highlight({ match, fallback }: { match?: FieldMatch; fallback: string }) {
   if (!match) return <>{fallback}</>;
   const marked = new Set(match.indices);
-  return (
-    <>
-      {Array.from(match.text).map((ch, i) => (marked.has(i) ? <mark key={i} className="allws-hit">{ch}</mark> : <span key={i}>{ch}</span>))}
-    </>
-  );
+  const parts: ReactNode[] = [];
+  let start = 0;
+  // Match indices use UTF-16 offsets. Slice contiguous runs in the same units,
+  // keeping surrogate pairs together instead of counting code points.
+  for (let end = 1; end <= match.text.length; end++) {
+    if (end === match.text.length || marked.has(end) !== marked.has(start)) {
+      const chunk = match.text.slice(start, end);
+      parts.push(marked.has(start)
+        ? <mark key={start} className="allws-hit">{chunk}</mark>
+        : <span key={start}>{chunk}</span>);
+      start = end;
+    }
+  }
+  return <>{parts}</>;
 }
 
-function Menu({ label, icon, ariaLabel, children }: { label: string; icon: ReactNode; ariaLabel: string; children: (close: () => void) => ReactNode }) {
+function Menu({ label, icon, ariaLabel, keyboardNavigation, children }: { label: string; icon: ReactNode; ariaLabel: string; keyboardNavigation?: boolean; children: (close: () => void) => ReactNode }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const openingFocus = useRef<"first" | "last" | null>(null);
+  const typeahead = useRef({ text: "", at: 0, start: -1 });
+  const items = () => Array.from(ref.current?.querySelectorAll<HTMLButtonElement>('[role="menuitemcheckbox"]:not(:disabled)') ?? []);
+  const focusEdge = (edge: "first" | "last") => {
+    const options = items();
+    options[edge === "first" ? 0 : options.length - 1]?.focus({ preventScroll: true });
+  };
+  useEffect(() => {
+    if (open && openingFocus.current) focusEdge(openingFocus.current);
+    openingFocus.current = null;
+    typeahead.current = { text: "", at: 0, start: -1 };
+  }, [open]);
   useEffect(() => {
     if (!open) return;
     const onDown = (e: MouseEvent) => {
@@ -78,13 +100,47 @@ function Menu({ label, icon, ariaLabel, children }: { label: string; icon: React
   }, [open]);
   return (
     <div className="allws-menu" ref={ref}>
-      <button type="button" className="allws-filter" aria-label={ariaLabel} aria-haspopup="menu" aria-expanded={open} data-open={open || undefined} onClick={() => setOpen((o) => !o)}>
+      <button type="button" className="allws-filter" aria-label={ariaLabel} aria-haspopup="menu" aria-expanded={open} data-open={open || undefined} onClick={() => setOpen((o) => !o)} onKeyDown={keyboardNavigation ? (e) => {
+        if (e.nativeEvent.isComposing || e.which === 229 || (e.key !== "ArrowDown" && e.key !== "ArrowUp")) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const edge = e.key === "ArrowDown" ? "first" : "last";
+        if (open) focusEdge(edge);
+        else { openingFocus.current = edge; setOpen(true); }
+      } : undefined}>
         {icon}
         <span className="allws-filter-label">{label}</span>
         <ChevronDownIcon size={12} />
       </button>
       {open && (
-        <div className="allws-menu-pop" role="menu">
+        <div className="allws-menu-pop" role="menu" onKeyDown={keyboardNavigation ? (e) => {
+          if (e.nativeEvent.isComposing || e.which === 229) return;
+          const options = items();
+          if (!options.length) return;
+          const active = options.indexOf(document.activeElement as HTMLButtonElement);
+          let next: number;
+          if (e.key === "ArrowDown") next = (active + 1) % options.length;
+          else if (e.key === "ArrowUp") next = (active < 0 ? options.length - 1 : active - 1 + options.length) % options.length;
+          else if (e.key === "Home") next = 0;
+          else if (e.key === "End") next = options.length - 1;
+          else {
+            if (e.key.length !== 1 || e.ctrlKey || e.metaKey || e.altKey) return;
+            const now = Date.now();
+            let prefix = now - typeahead.current.at < 750 ? typeahead.current.text : "";
+            if (e.key === " " && !prefix) return; // Leave native checkbox activation intact.
+            const letter = e.key.toLowerCase();
+            const labels = options.map((option) => option.textContent?.replace(/^\s*✓\s*/, "").trim().toLowerCase() ?? "");
+            if (prefix === letter && labels.every((label) => label[0] !== label[1])) prefix = "";
+            const start = prefix ? typeahead.current.start : active;
+            prefix += letter;
+            next = options.findIndex((_, offset) => labels[(start + 1 + offset) % options.length].startsWith(prefix));
+            if (next >= 0) next = (start + 1 + next) % options.length;
+            typeahead.current = { text: next >= 0 ? prefix : "", at: now, start };
+          }
+          e.preventDefault();
+          e.stopPropagation();
+          options[next]?.focus({ preventScroll: true });
+        } : undefined}>
           {children(() => setOpen(false))}
         </div>
       )}
@@ -101,10 +157,15 @@ function MenuCheck({ checked, onClick, children }: { checked: boolean; onClick: 
   );
 }
 
-function UnarchiveButton({ repoId, workspaceId, dispatch }: { repoId: string; workspaceId: string; dispatch: Dispatch<Action> }) {
+function useUnarchiveAction(repoId: string, workspaceId: string, dispatch: Dispatch<Action>, enabled: boolean) {
   const pendingRef = useRef(false);
   const [pending, setPending] = useState(false);
   useEffect(() => {
+    if (!enabled) {
+      pendingRef.current = false;
+      setPending(false);
+      return;
+    }
     const unsubscribe = onArchiveEvent<Action>((event) => {
       if (
         (event.type === "unarchived" || event.type === "unarchive-failed") &&
@@ -116,30 +177,34 @@ function UnarchiveButton({ repoId, workspaceId, dispatch }: { repoId: string; wo
       }
     });
     return () => { unsubscribe(); };
-  }, [repoId, workspaceId]);
-  const unarchive = () => {
-    if (pendingRef.current) return;
+  }, [repoId, workspaceId, enabled]);
+  const run = () => {
+    if (!enabled || pendingRef.current) return;
     pendingRef.current = true;
     setPending(true);
     dispatch({ type: "unarchiveWorkspace", repoId, workspaceId });
   };
+  return { pending, run };
+}
+
+function UnarchiveButton({ action }: { action: { pending: boolean; run: () => void } }) {
   return (
     <Tooltip content="Unarchive workspace">
       <button
         type="button"
         className="allws-unarchive"
         aria-label="Unarchive workspace"
-        disabled={pending}
+        disabled={action.pending}
         onClick={(event) => {
           event.stopPropagation();
           event.preventDefault();
-          unarchive();
+          action.run();
         }}
         onKeyDown={(event) => {
           if (event.key !== "Enter") return;
           event.stopPropagation();
           event.preventDefault();
-          unarchive();
+          action.run();
         }}
       >
         <span className="allws-unarchive-idle"><ArchiveIcon size={14} /></span>
@@ -161,6 +226,7 @@ function Row({
   onOpen,
   dispatch,
   onWorkspaceContextMenu,
+  onArchivedWorkspaceContextMenu,
 }: {
   row: HomeRow;
   showRepoIcon: boolean;
@@ -170,8 +236,10 @@ function Row({
   onOpen: () => void;
   dispatch: Dispatch<Action>;
   onWorkspaceContextMenu?: Props["onWorkspaceContextMenu"];
+  onArchivedWorkspaceContextMenu?: Props["onArchivedWorkspaceContextMenu"];
 }) {
   const { workspace: ws, repo, archived, matches } = row;
+  const unarchive = useUnarchiveAction(repo.id, ws.id, dispatch, archived);
   const tone = archived ? "is-archived" : isWorkspaceUnread(ws) ? "is-unread" : "";
   const label = workspaceNumberLabel(ws.number);
   // Conductor's Home row (`vJo`): the agent's or setup's status, else the last-activity time.
@@ -188,9 +256,11 @@ function Row({
       data-selected={active || undefined}
       className="allws-row"
       onClick={onOpen}
-      onContextMenu={!archived && !unstarted && onWorkspaceContextMenu ? (event) => {
+      onContextMenu={!unstarted && (archived ? onArchivedWorkspaceContextMenu : onWorkspaceContextMenu) ? (event) => {
         event.preventDefault();
-        onWorkspaceContextMenu(row, { x: event.clientX, y: event.clientY });
+        const at = { x: event.clientX, y: event.clientY };
+        if (archived) onArchivedWorkspaceContextMenu?.(row, at, unarchive);
+        else onWorkspaceContextMenu?.(row, at);
       } : undefined}
       title={row.title}
     >
@@ -229,7 +299,7 @@ function Row({
         <span className="allws-when">
           {archived ? (
             <span className="allws-archived" aria-label="Archived">
-              <UnarchiveButton repoId={repo.id} workspaceId={ws.id} dispatch={dispatch} />
+              <UnarchiveButton action={unarchive} />
             </span>
           ) : !matrix && showsActivityStatus(status) ? (
             <span className="allws-status" data-testid="home-workspace-status" data-status={status} data-color={rowStatusColor(status)} role="img" title={statusLabel} aria-label={statusLabel}>
@@ -244,12 +314,20 @@ function Row({
   );
 }
 
-export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch, onCreateWorkspace, onWorkspaceContextMenu }: Props) {
+export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch, onCreateWorkspace, onWorkspaceContextMenu, onArchivedWorkspaceContextMenu }: Props) {
   const { overrides } = useKeybindingOverrides();
   const [query, setQuery] = useState("");
   const repoIds = useMemo(() => new Set(repos.map((r) => r.id)), [repos]);
   const [filters, setFiltersState] = useState<HomeFilters>(() => loadFilters(repoIds));
+  const pendingFilterHydration = useRef(loading);
+  useEffect(() => {
+    if (loading || !pendingFilterHydration.current) return;
+    pendingFilterHydration.current = false;
+    // Desktop Home mounts before repository ids arrive; validate saved projects once ready.
+    setFiltersState(loadFilters(repoIds));
+  }, [loading, repoIds]);
   const setFilters = (f: HomeFilters) => {
+    pendingFilterHydration.current = false;
     setFiltersState(f);
     saveFilters(f);
   };
@@ -282,7 +360,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
   const flat = groups.flatMap((g) => g.rows.map((row) => ({ row, key: `${g.bucket}:${row.workspace.id}` })));
   const activeIndex = Math.max(0, flat.findIndex((entry) => entry.key === activeKey));
   const projectChoices = reposWithWorkspaces(repos, archivedRows);
-  const empty = emptyAction(repos, filters);
+  const empty = emptyAction(repos, filters, archivedRows);
 
   useEffect(() => setActiveKey(flat[activeIndex]?.key), [activeIndex, flat]);
   useEffect(() => setActiveKey(undefined), [query]);
@@ -392,7 +470,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
               />
             </label>
             {showProjectFilter(repos, archivedRows) && (
-              <Menu ariaLabel="Projects" label={projectFilterLabel(repos, filters.projects)} icon={<FolderIcon size={14} />}>
+              <Menu ariaLabel="Projects" keyboardNavigation label={projectFilterLabel(repos, filters.projects)} icon={<FolderIcon size={14} />}>
                 {() => (
                   <>
                     <MenuCheck checked={filters.projects.length === 0} onClick={() => setFilters({ ...filters, projects: [] })}>
@@ -457,6 +535,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
                         }}
                         dispatch={dispatch}
                         onWorkspaceContextMenu={onWorkspaceContextMenu}
+                        onArchivedWorkspaceContextMenu={onArchivedWorkspaceContextMenu}
                       />
                     );
                   })}

@@ -1,0 +1,11 @@
+{
+  "head": "f45ab99045eeacb1b4336153b32a1b46cea24f27",
+  "files": {
+    "src/components/QuickOpenDialog.tsx": "7a34d148c43e9082b5adbb784f107f7ee0b657d2ceee24284a99c1e07bdc1790",
+    "src/components/quickOpenPrimaryOverride.test.ts": "1a9c9be790116983b0891d3d4e2838e5e53de1989bd9dae140ef18acef1d347b",
+    "package.json": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91",
+    "package-lock.json": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992",
+    "tsconfig.json": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5",
+    "vite.config.ts": "36a961686ecadb0aabaff2566671cd804bb504bbbba77dd15f66b352f58fc968"
+  }
+}

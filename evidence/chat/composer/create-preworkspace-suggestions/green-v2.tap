@@ -1,0 +1,134 @@
+(node:361) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:368) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pre-workspace lookup uses repository/ref/agent identity, not an existing workspace (page=false)
+ok 1 - pre-workspace lookup uses repository/ref/agent identity, not an existing workspace (page=false)
+  ---
+  duration_ms: 648.081335
+  type: 'test'
+  ...
+# Subtest: @ selection inserts one file atom and trailing space without creating (page=false,key=Enter)
+ok 2 - @ selection inserts one file atom and trailing space without creating (page=false,key=Enter)
+  ---
+  duration_ms: 301.222767
+  type: 'test'
+  ...
+# Subtest: / selection inserts the reported command without submitting (page=false,key=Enter)
+ok 3 - / selection inserts the reported command without submitting (page=false,key=Enter)
+  ---
+  duration_ms: 220.197343
+  type: 'test'
+  ...
+# Subtest: @ selection inserts one file atom and trailing space without creating (page=false,key=Tab)
+ok 4 - @ selection inserts one file atom and trailing space without creating (page=false,key=Tab)
+  ---
+  duration_ms: 208.100172
+  type: 'test'
+  ...
+# Subtest: / selection inserts the reported command without submitting (page=false,key=Tab)
+ok 5 - / selection inserts the reported command without submitting (page=false,key=Tab)
+  ---
+  duration_ms: 184.310487
+  type: 'test'
+  ...
+# Subtest: directory selections preserve directory identity (page=false)
+ok 6 - directory selections preserve directory identity (page=false)
+  ---
+  duration_ms: 171.946921
+  type: 'test'
+  ...
+# Subtest: Escape dismisses suggestions without closing the containing dialog (page=false)
+ok 7 - Escape dismisses suggestions without closing the containing dialog (page=false)
+  ---
+  duration_ms: 205.999504
+  type: 'test'
+  ...
+# Subtest: composition and unrelated keys do not submit or mutate (page=false)
+ok 8 - composition and unrelated keys do not submit or mutate (page=false)
+  ---
+  duration_ms: 462.034569
+  type: 'test'
+  ...
+# Subtest: no repository means no native lookup, no suggestions, and no create (page=false)
+ok 9 - no repository means no native lookup, no suggestions, and no create (page=false)
+  ---
+  duration_ms: 214.313894
+  type: 'test'
+  ...
+# Subtest: ordinary Enter keeps the existing create path (page=false)
+ok 10 - ordinary Enter keeps the existing create path (page=false)
+  ---
+  duration_ms: 189.851443
+  type: 'test'
+  ...
+# Subtest: pre-workspace lookup uses repository/ref/agent identity, not an existing workspace (page=true)
+ok 11 - pre-workspace lookup uses repository/ref/agent identity, not an existing workspace (page=true)
+  ---
+  duration_ms: 179.872826
+  type: 'test'
+  ...
+# Subtest: @ selection inserts one file atom and trailing space without creating (page=true,key=Enter)
+ok 12 - @ selection inserts one file atom and trailing space without creating (page=true,key=Enter)
+  ---
+  duration_ms: 180.603964
+  type: 'test'
+  ...
+# Subtest: / selection inserts the reported command without submitting (page=true,key=Enter)
+ok 13 - / selection inserts the reported command without submitting (page=true,key=Enter)
+  ---
+  duration_ms: 179.7429
+  type: 'test'
+  ...
+# Subtest: @ selection inserts one file atom and trailing space without creating (page=true,key=Tab)
+ok 14 - @ selection inserts one file atom and trailing space without creating (page=true,key=Tab)
+  ---
+  duration_ms: 150.522854
+  type: 'test'
+  ...
+# Subtest: / selection inserts the reported command without submitting (page=true,key=Tab)
+ok 15 - / selection inserts the reported command without submitting (page=true,key=Tab)
+  ---
+  duration_ms: 186.433961
+  type: 'test'
+  ...
+# Subtest: directory selections preserve directory identity (page=true)
+ok 16 - directory selections preserve directory identity (page=true)
+  ---
+  duration_ms: 211.041666
+  type: 'test'
+  ...
+# Subtest: Escape dismisses suggestions without closing the containing dialog (page=true)
+ok 17 - Escape dismisses suggestions without closing the containing dialog (page=true)
+  ---
+  duration_ms: 147.838336
+  type: 'test'
+  ...
+# Subtest: composition and unrelated keys do not submit or mutate (page=true)
+ok 18 - composition and unrelated keys do not submit or mutate (page=true)
+  ---
+  duration_ms: 188.114622
+  type: 'test'
+  ...
+# Subtest: no repository means no native lookup, no suggestions, and no create (page=true)
+ok 19 - no repository means no native lookup, no suggestions, and no create (page=true)
+  ---
+  duration_ms: 223.338109
+  type: 'test'
+  ...
+# Subtest: ordinary Enter keeps the existing create path (page=true)
+ok 20 - ordinary Enter keeps the existing create path (page=true)
+  ---
+  duration_ms: 445.619506
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5283.700687

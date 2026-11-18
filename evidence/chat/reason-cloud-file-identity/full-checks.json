@@ -1,0 +1,19 @@
+{
+  "author": "Conductor Rebuild",
+  "build": {
+    "command": "npm run build",
+    "exit_code": 0,
+    "full_typecheck": "PASS",
+    "branding": "PASS",
+    "vite_seconds": 50.34
+  },
+  "colors": {
+    "command": "npm run lint:colors",
+    "exit_code": 0,
+    "source_files": 1266
+  },
+  "initial_build": "FAILED missing already-declared cache dependency; npm ci current unchanged lock; subsequent default build passed",
+  "own_pipeline_processes_at_release": [],
+  "second_rust_compile": false,
+  "provider_or_native_or_browser": false
+}

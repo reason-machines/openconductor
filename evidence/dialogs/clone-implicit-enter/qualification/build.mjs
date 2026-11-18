@@ -1,0 +1,15 @@
+import { build } from 'esbuild';
+import { resolve } from 'node:path';
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+const root = process.cwd(), out = resolve('.ara-state/clone-browser-6013');
+const io = resolve(out, 'io.ts');
+const result = await build({entryPoints:[resolve(out, 'entry.tsx')],bundle:true,outfile:resolve(out,'public/fixture.js'),platform:'browser',format:'iife',jsx:'automatic',metafile:true,define:{'process.env.NODE_ENV':'"development"'},plugins:[{name:'inert-io-only',setup(b){b.onResolve({filter:/^\.\.\/(backend|workspace\/api)$/},args=>args.importer===resolve('src/components/CloneGitHubRepoDialog.tsx')?{path:io}:undefined)}}]});
+const inputs=Object.keys(result.metafile.inputs);
+for(const input of inputs) if(input.startsWith('src/')&&(/backend|workspace\/api|tauri/.test(input)))throw Error('I/O boundary leaked: '+input);
+const paths=['src/components/CloneGitHubRepoDialog.tsx','src/components/DialogFrame.tsx','src/keybindings/KeybindingsProvider.tsx','src/keybindings/registry.ts'];
+const hashes=Object.fromEntries(paths.map(p=>[p,createHash('sha256').update(readFileSync(p)).digest('hex')]));
+writeFileSync(resolve(out,'bundle.json'), JSON.stringify({main:execFileSync('git',['rev-parse','origin/main'],{encoding:'utf8'}).trim(),sourceHashes:hashes,inputCount:inputs.length,inputs,externalNetwork:'CSP connect-src none; only stubbed IO imports'},null,2));
+writeFileSync(resolve(out,'public/index.html'), '<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'self\'; connect-src \'none\'; style-src \'self\' \'unsafe-inline\'; img-src \'none\'; script-src \'self\'; base-uri \'none\'; form-action \'none\'"><title>Clone keyboard witness</title><link rel="stylesheet" href="fixture.css"></head><body><div id="root"></div><script src="fixture.js"></script></body></html>');
+console.log(JSON.stringify({inputCount:inputs.length,sourceHashes:hashes,io:'stubbed, graph checked',main:execFileSync('git',['rev-parse','origin/main'],{encoding:'utf8'}).trim()},null,2));

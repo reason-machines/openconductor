@@ -1,0 +1,334 @@
+{
+  "candidate": "COMPOSER-QUEUE-EDIT-KEYBOARD-LOCK-135",
+  "state": "FROZEN_ORACLE_SOURCE_ONLY_NOT_EXECUTED",
+  "source_main": "8f0f8707a529e17937cd8e9447b8b769b6bc5e21",
+  "case_count": 26,
+  "cases": [
+    {
+      "name": "active-edit/nonediting-row/e",
+      "editingId": "q1",
+      "eventRow": "q2",
+      "key": "e",
+      "expected": {
+        "handled": false,
+        "actions": [],
+        "effects": [],
+        "focus": [],
+        "queueAndEditDraft": "unchanged"
+      },
+      "status": "NOT_RUN",
+      "setup": "ordinary actual button Edit A -> edit draft -> actual editor onBlur + focusable row B focus adapter -> actual B onKeyDown; no active edit prop injection"
+    },
+    {
+      "name": "active-edit/nonediting-row/Backspace",
+      "editingId": "q1",
+      "eventRow": "q2",
+      "key": "Backspace",
+      "expected": {
+        "handled": false,
+        "actions": [],
+        "effects": [],
+        "focus": [],
+        "queueAndEditDraft": "unchanged"
+      },
+      "status": "NOT_RUN",
+      "setup": "ordinary actual button Edit A -> edit draft -> actual editor onBlur + focusable row B focus adapter -> actual B onKeyDown; no active edit prop injection"
+    },
+    {
+      "name": "active-edit/nonediting-row/Enter",
+      "editingId": "q1",
+      "eventRow": "q2",
+      "key": "Enter",
+      "expected": {
+        "handled": false,
+        "actions": [],
+        "effects": [],
+        "focus": [],
+        "queueAndEditDraft": "unchanged"
+      },
+      "status": "NOT_RUN",
+      "setup": "ordinary actual button Edit A -> edit draft -> actual editor onBlur + focusable row B focus adapter -> actual B onKeyDown; no active edit prop injection"
+    },
+    {
+      "name": "active-edit/nonediting-row/ArrowDown",
+      "editingId": "q1",
+      "eventRow": "q2",
+      "key": "ArrowDown",
+      "expected": {
+        "handled": false,
+        "actions": [],
+        "effects": [],
+        "focus": [],
+        "queueAndEditDraft": "unchanged"
+      },
+      "status": "NOT_RUN",
+      "setup": "ordinary actual button Edit A -> edit draft -> actual editor onBlur + focusable row B focus adapter -> actual B onKeyDown; no active edit prop injection"
+    },
+    {
+      "name": "active-edit/nonediting-row/ArrowUp",
+      "editingId": "q1",
+      "eventRow": "q2",
+      "key": "ArrowUp",
+      "expected": {
+        "handled": false,
+        "actions": [],
+        "effects": [],
+        "focus": [],
+        "queueAndEditDraft": "unchanged"
+      },
+      "status": "NOT_RUN",
+      "setup": "ordinary actual button Edit A -> edit draft -> actual editor onBlur + focusable row B focus adapter -> actual B onKeyDown; no active edit prop injection"
+    },
+    {
+      "name": "active-edit/nonediting-row/Home",
+      "editingId": "q1",
+      "eventRow": "q2",
+      "key": "Home",
+      "expected": {
+        "handled": false,
+        "actions": [],
+        "effects": [],
+        "focus": [],
+        "queueAndEditDraft": "unchanged"
+      },
+      "status": "NOT_RUN",
+      "setup": "ordinary actual button Edit A -> edit draft -> actual editor onBlur + focusable row B focus adapter -> actual B onKeyDown; no active edit prop injection"
+    },
+    {
+      "name": "active-edit/nonediting-row/End",
+      "editingId": "q1",
+      "eventRow": "q2",
+      "key": "End",
+      "expected": {
+        "handled": false,
+        "actions": [],
+        "effects": [],
+        "focus": [],
+        "queueAndEditDraft": "unchanged"
+      },
+      "status": "NOT_RUN",
+      "setup": "ordinary actual button Edit A -> edit draft -> actual editor onBlur + focusable row B focus adapter -> actual B onKeyDown; no active edit prop injection"
+    },
+    {
+      "name": "active-edit/nonediting-row/Escape",
+      "editingId": "q1",
+      "eventRow": "q2",
+      "key": "Escape",
+      "expected": {
+        "handled": false,
+        "actions": [],
+        "effects": [],
+        "focus": [],
+        "queueAndEditDraft": "unchanged"
+      },
+      "status": "NOT_RUN",
+      "setup": "ordinary actual button Edit A -> edit draft -> actual editor onBlur + focusable row B focus adapter -> actual B onKeyDown; no active edit prop injection"
+    },
+    {
+      "name": "active-edit/remapped/chat.queue.editMessage",
+      "editingId": "q1",
+      "eventRow": "q2",
+      "key": "ArrowUp",
+      "modifiers": [
+        "ctrl"
+      ],
+      "override": "chat.queue.editMessage",
+      "expected": {
+        "handled": false,
+        "actions": [],
+        "effects": [],
+        "focus": [],
+        "queueAndEditDraft": "unchanged"
+      },
+      "status": "NOT_RUN",
+      "setup": "ordinary actual button Edit A -> edit draft -> actual editor onBlur + focusable row B focus adapter -> actual B onKeyDown; no active edit prop injection"
+    },
+    {
+      "name": "active-edit/remapped/chat.queue.deleteMessage",
+      "editingId": "q1",
+      "eventRow": "q2",
+      "key": "ArrowUp",
+      "modifiers": [
+        "ctrl"
+      ],
+      "override": "chat.queue.deleteMessage",
+      "expected": {
+        "handled": false,
+        "actions": [],
+        "effects": [],
+        "focus": [],
+        "queueAndEditDraft": "unchanged"
+      },
+      "status": "NOT_RUN",
+      "setup": "ordinary actual button Edit A -> edit draft -> actual editor onBlur + focusable row B focus adapter -> actual B onKeyDown; no active edit prop injection"
+    },
+    {
+      "name": "active-edit/remapped/chat.queue.steerMessage",
+      "editingId": "q1",
+      "eventRow": "q2",
+      "key": "ArrowUp",
+      "modifiers": [
+        "ctrl"
+      ],
+      "override": "chat.queue.steerMessage",
+      "expected": {
+        "handled": false,
+        "actions": [],
+        "effects": [],
+        "focus": [],
+        "queueAndEditDraft": "unchanged"
+      },
+      "status": "NOT_RUN",
+      "setup": "ordinary actual button Edit A -> edit draft -> actual editor onBlur + focusable row B focus adapter -> actual B onKeyDown; no active edit prop injection"
+    },
+    {
+      "name": "control/no-edit/e",
+      "editingId": null,
+      "eventRow": "q2",
+      "key": "e",
+      "expected": "Existing row-key dispatch/focus semantics retained; actual reducer effects observed, not provider calls.",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "control/no-edit/Backspace",
+      "editingId": null,
+      "eventRow": "q2",
+      "key": "Backspace",
+      "expected": "Existing row-key dispatch/focus semantics retained; actual reducer effects observed, not provider calls.",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "control/no-edit/Enter",
+      "editingId": null,
+      "eventRow": "q2",
+      "key": "Enter",
+      "expected": "Existing row-key dispatch/focus semantics retained; actual reducer effects observed, not provider calls.",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "control/no-edit/ArrowDown",
+      "editingId": null,
+      "eventRow": "q2",
+      "key": "ArrowDown",
+      "expected": "Existing row-key dispatch/focus semantics retained; actual reducer effects observed, not provider calls.",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "control/no-edit/ArrowUp",
+      "editingId": null,
+      "eventRow": "q2",
+      "key": "ArrowUp",
+      "expected": "Existing row-key dispatch/focus semantics retained; actual reducer effects observed, not provider calls.",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "control/no-edit/Home",
+      "editingId": null,
+      "eventRow": "q2",
+      "key": "Home",
+      "expected": "Existing row-key dispatch/focus semantics retained; actual reducer effects observed, not provider calls.",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "control/no-edit/End",
+      "editingId": null,
+      "eventRow": "q2",
+      "key": "End",
+      "expected": "Existing row-key dispatch/focus semantics retained; actual reducer effects observed, not provider calls.",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "control/no-edit/Escape",
+      "editingId": null,
+      "eventRow": "q2",
+      "key": "Escape",
+      "expected": "Existing row-key dispatch/focus semantics retained; actual reducer effects observed, not provider calls.",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "control/IME event ignored",
+      "expected": "Preserve established semantics; no command callback for ignored event.",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "control/child-target event ignored",
+      "expected": "Preserve established semantics; no command callback for ignored event.",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "control/unknown key ignored",
+      "expected": "Preserve established semantics; no command callback for ignored event.",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "control/edit editor Cancel preserved",
+      "expected": {
+        "setup": "Actual rendered Edit A, real reducer, unsaved local draft; actual editor keyboard callback.",
+        "handled": true,
+        "key": "Escape",
+        "metaKey": false,
+        "transition": "cancel only; original items retained; return focus q1"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "control/edit editor Save preserved",
+      "expected": {
+        "setup": "Actual rendered Edit A, real reducer, unsaved local draft; actual editor keyboard callback.",
+        "handled": true,
+        "key": "Enter",
+        "metaKey": false,
+        "transition": "save text only; item identity/order retained; return focus q1"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "control/edit editor Save-and-steer preserved",
+      "expected": {
+        "setup": "Actual rendered Edit A, real reducer, unsaved local draft; actual editor keyboard callback.",
+        "handled": true,
+        "key": "Enter",
+        "metaKey": true,
+        "transition": "save text and steer q1 once; q1 removed; no survivor focus"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "control/session remount has no leaked edit lock",
+      "expected": {
+        "setup": "Actual Edit A, change draft, focus B; keyed remount into ordinary nonediting second-session seed; focus B and press e.",
+        "handled": true,
+        "actions": [
+          {
+            "kind": "edit",
+            "id": "q2"
+          }
+        ],
+        "effects": [],
+        "activeEdit": "q2",
+        "focus": [
+          "edit"
+        ]
+      },
+      "status": "NOT_RUN"
+    }
+  ],
+  "host": "Use actual full Composer module and real queue reducers; callback ports only for observable focus/editor/presentation boundaries. Never evaluate retained vendor code.",
+  "preexecution": "Inert fixture/oracle freeze only under ledger 87e0bf26; no runtime request/new queue entry or Node grant. No product modification.",
+  "limits": "Not executed: no RED/GREEN, JS parser, physical Tab, browser/native behavior, package inclusion or release verification. Focus/editor ports remain explicit unit boundaries.",
+  "ordinary_reachable_setup": [
+    "Seed a nonediting working/paused queue with q1 and q2.",
+    "Invoke the actual rendered Edit button for q1; apply the actual action through real queue.actionStep. Do not seed editingId as the target-case setup.",
+    "Assert q1 editing UI exists and accepts an unsaved draft; q2 remains a displayed tabIndex=0 row with its actual row-key callback.",
+    "Deliver a focused row event to q2 through the actual mounted handler. The event/focus adapter is a unit boundary, not native Tab proof.",
+    "Assert row command/focus/event handling and q1 unsaved draft before and after. Nonediting controls use the identical event path."
+  ],
+  "collision": "Ledger 1749e4ef: no other row-handler owner identified; source-only ignored-path preparation permitted. No new runtime request.",
+  "frozen_utc": "2026-11-18T00:39:27.511936+00:00",
+  "ordinary_producer_closure": "Source closed by 81 checks on merged main: actual button/reducer, row-local draft, no-op queued-editor blur, shared editor delegates, list and displayed row have no focus/blur transition.",
+  "predicted_baseline": {
+    "targets": 11,
+    "controls": 15,
+    "status": "PREDICTION_ONLY_NOT_RED"
+  }
+}

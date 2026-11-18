@@ -5,6 +5,9 @@
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { Unicode11Addon } from "@xterm/addon-unicode11";
+import { WebLinksAddon } from "@xterm/addon-web-links";
+import { confirm } from "@tauri-apps/plugin-dialog";
+import { openUrl } from "../../backend";
 import { AckBatcher, type PtyEvent } from "./events";
 import {
   onPtyEvent,
@@ -38,6 +41,7 @@ interface Live {
   host: HTMLDivElement;
   ack: AckBatcher;
   opened: boolean;
+  copyCleanup?: () => void;
   /** The current attachment alone owns its host and resize observer. */
   attachment?: { detach: () => void; observer: ResizeObserver };
   appearance?: MutationObserver;
@@ -318,11 +322,28 @@ async function startTab(
       brightCyan: cssVar("--terminal-bright-cyan"),
       brightWhite: cssVar("--terminal-bright-white"),
     },
+    linkHandler: {
+      allowNonHttpProtocols: false,
+      activate: (event, url) => {
+        if (!event.metaKey) return;
+        let protocol: string;
+        try { protocol = new URL(url).protocol; } catch { return; }
+        if (protocol !== "http:" && protocol !== "https:") return;
+        void confirm(`Open this terminal link?\n\n${url}`, {
+          cancelLabel: "Cancel", kind: "warning", okLabel: "Open", title: "Open link?",
+        }).then((allowed) => {
+          if (allowed) return openUrl(url);
+        }).catch((error: unknown) => { console.error("Failed to open terminal link", error); });
+      },
+    },
   });
   term.loadAddon(new Unicode11Addon());
   term.unicode.activeVersion = "11";
   const fit = new FitAddon();
   term.loadAddon(fit);
+  term.loadAddon(new WebLinksAddon((event, url) => {
+    if (event.metaKey) void openUrl(url).catch((error: unknown) => { console.error("Failed to open terminal link", error); });
+  }));
   const host = document.createElement("div");
   host.className = "term-host";
   const ack = new AckBatcher((n) => void ptyAckBytes(id, n).catch(() => {}));
@@ -470,6 +491,15 @@ export function attachTab(id: string, container: HTMLElement): () => void {
       for (const f of attachFailureListeners) f(err);
       return () => {};
     }
+    const copy = (event: ClipboardEvent) => {
+      const selection = l.term.getSelection();
+      if (!selection) return;
+      event.preventDefault();
+      event.clipboardData?.setData("text/plain", selection.split("\n").map((line) => line.replace(/[ \t]+$/u, "")).join("\n"));
+    };
+    const terminalElement = l.term.element;
+    terminalElement?.addEventListener("copy", copy);
+    l.copyCleanup = () => terminalElement?.removeEventListener("copy", copy);
     l.opened = true;
   }
   const detach = () => {
@@ -571,6 +601,7 @@ export async function destroyWorkspaceTerminals(workspaceId: string): Promise<vo
 function dispose(id: string) {
   live.get(id)?.attachment?.detach();
   live.get(id)?.appearance?.disconnect();
+  live.get(id)?.copyCleanup?.();
   live.get(id)?.term.dispose();
   live.delete(id);
   findRequests.delete(id);

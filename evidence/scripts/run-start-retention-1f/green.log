@@ -1,0 +1,11 @@
+   Compiling oc-scripts v0.1.0 (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/crates/scripts)
+    Finished `test` profile [unoptimized] target(s) in 0.88s
+     Running unittests src/lib.rs (crates/scripts/target/debug/build/oc-scripts/19b84f3755ce5e9f/out/oc_scripts-19b84f3755ce5e9f)
+
+running 4 tests
+test runner::tests::retention_completed_output_remains_until_another_start ... ok
+test runner::tests::retention_new_start_preserves_selection_history_and_other_workspace ... ok
+test runner::tests::retention_new_task_clears_previous_workspace_run_before_setup_wait ... ok
+test runner::tests::retention_same_task_clears_old_transcript_and_exit_before_setup_wait ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 92 filtered out; finished in 0.00s

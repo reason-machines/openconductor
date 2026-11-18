@@ -1,0 +1,154 @@
+{
+  "utc": "2026-11-17T22:39:48.183482+00:00",
+  "classification": "SEMANTIC_RED_6_INTENDED_ASSERTION_FAILURES_14_CONTROLS_PASS",
+  "test_exit_code": 1,
+  "actual_runtime_release_utc": "2026-11-17T22:39:17.518943+00:00",
+  "outcomes": [
+    {
+      "number": 1,
+      "outcome": "FAIL",
+      "case": "return-focus/Cancel middle row returns to that surviving row"
+    },
+    {
+      "number": 2,
+      "outcome": "FAIL",
+      "case": "return-focus/Escape middle row cancels and returns focus"
+    },
+    {
+      "number": 3,
+      "outcome": "FAIL",
+      "case": "return-focus/Save middle row commits text and returns focus"
+    },
+    {
+      "number": 4,
+      "outcome": "FAIL",
+      "case": "return-focus/Enter middle row saves and returns focus"
+    },
+    {
+      "number": 5,
+      "outcome": "FAIL",
+      "case": "return-focus/Cancel head row restores head rather than adjacent row"
+    },
+    {
+      "number": 6,
+      "outcome": "FAIL",
+      "case": "return-focus/Save head row restores head rather than adjacent row"
+    },
+    {
+      "number": 7,
+      "outcome": "PASS",
+      "case": "control/edit entry keeps caret-at-end and does not focus a display row"
+    },
+    {
+      "number": 8,
+      "outcome": "PASS",
+      "case": "control/rerender after edit exit does not repeat row focus"
+    },
+    {
+      "number": 9,
+      "outcome": "PASS",
+      "case": "control/no edit mount and rerender leave focus and queue untouched"
+    },
+    {
+      "number": 10,
+      "outcome": "PASS",
+      "case": "control/editing rerender does not focus a display row"
+    },
+    {
+      "number": 11,
+      "outcome": "PASS",
+      "case": "control/direct edit switch does not restore the prior row"
+    },
+    {
+      "number": 12,
+      "outcome": "PASS",
+      "case": "control/Save and steer removes edited row without querying or focusing it"
+    },
+    {
+      "number": 13,
+      "outcome": "PASS",
+      "case": "control/deletion of edited row never restores a removed target"
+    },
+    {
+      "number": 14,
+      "outcome": "PASS",
+      "case": "control/idle head drain after Save never restores the removed target"
+    },
+    {
+      "number": 15,
+      "outcome": "PASS",
+      "case": "control/session-key switch cannot restore the previous session row"
+    },
+    {
+      "number": 16,
+      "outcome": "PASS",
+      "case": "control/session remount with same editing ID performs entry focus only"
+    },
+    {
+      "number": 17,
+      "outcome": "PASS",
+      "case": "control/1474 blank Save buttons remain disabled without invoking callbacks"
+    },
+    {
+      "number": 18,
+      "outcome": "PASS",
+      "case": "control/1474 blank Enter and meta-Enter are consumed without save or focus"
+    },
+    {
+      "number": 19,
+      "outcome": "PASS",
+      "case": "control/1476 collapsed shrink and regrowth remain expanded without row focus"
+    },
+    {
+      "number": 20,
+      "outcome": "PASS",
+      "case": "control/re-enter after Cancel retains caret-at-end entry behavior"
+    }
+  ],
+  "outputs": {
+    "node-capability.stderr": {
+      "bytes": 176,
+      "sha256": "e690c860ed775e245cf7d20bdd43a53defe126e076e1be9090810dafb78213fc"
+    },
+    "node-capability.stdout": {
+      "bytes": 44,
+      "sha256": "75ab94bec30a75504a4be56dd2013bf4d6863c4235417b0d5216877676839d5d"
+    },
+    "receipt.json": {
+      "bytes": 1341,
+      "sha256": "b10b67cad80e03b1632e12a37faf65e3bf9547077c8429998dd4ac8d6ba9b11f"
+    },
+    "static-preflight.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "static-preflight.stdout": {
+      "bytes": 1087,
+      "sha256": "64eb33ecc9846b61a4fc9513bdff6baaae5734c3cf017134f8e94b85d7d5401e"
+    },
+    "test.stderr": {
+      "bytes": 176,
+      "sha256": "79e446c69433aeaf31df44566c57aaee386bf6af04c57083fe3c9bf58d2b6f49"
+    },
+    "test.stdout": {
+      "bytes": 12260,
+      "sha256": "2ecbbd41998d7e7892a59246e8b680480518c2ce9d4b7992414808e0a845f415"
+    }
+  },
+  "bytegate_files": 235,
+  "source_files": 15,
+  "dependency_files": 217,
+  "package_files": 2,
+  "fixture_sha256": "e275647b5174feb78281ff3ae2c0a5c3c735ccf2207da9815e66a3d965bf86be",
+  "oracle_sha256": "d9f1d9b1a11764422c57ad3dbba7331c09d2b90edcf4dc5b0f21b7368f840979",
+  "source_sha256": "5dde290a9c73845b334a4b0daa26733ae76ed06f037df770fdbee2062dcf238c",
+  "drift": [],
+  "main": "d435e2baba6552de85b12cac2544579d20c14ce1",
+  "head": "de94570c693cbd6af3b022e98a987c9205705f6f",
+  "process_group_survivors": [],
+  "own_runtime_workloads": [],
+  "RSS_scope": "RUSAGE_CHILDREN ru_maxrss 162528 KiB is child high-water, NOT simultaneous process-group RSS or a group cap. NODE_OPTIONS heap limit is 768MiB per Node process; test runner and test child present.",
+  "output_bytes_before_supplement": 15084,
+  "free_disk_bytes": 16586530816,
+  "no_product_or_fixture_edit": true
+}

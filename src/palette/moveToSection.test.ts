@@ -42,6 +42,7 @@ function evaluate(file: string, imports: Readonly<Record<string, unknown>>, expo
   runInNewContext(javascript, {
     ...globals, exports, URLSearchParams, Date, console,
     require(name: string) {
+      if (name === "./search/score.ts") return searchScore;
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
       assert.ok(name in imports, `Unexpected ${file} dependency: ${name}`);
       return imports[name];
@@ -193,6 +194,7 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
     "./keybindings/KeybindingsProvider": { useKeybindings: noop, useKeybindingOverrides: () => ({ overrides: {} }) },
     "./keybindings/dispatcher": { PRIORITY: { DIALOG: 100 } },
     "./workspace/link": { copyWorkspaceLink: forbidden },
+    "./features/openIn/apps.ts": { copyText: forbidden },
     "./settings/pages": { USER_PAGES: [] },
     "./features/chat/ChatModelPicker.tsx": { OPEN_SETTINGS_EVENT: "unused-open-settings" },
     "./settings/routes": { resolveSettingsUrl: () => null, keptSearch: () => "" },

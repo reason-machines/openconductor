@@ -1,0 +1,120 @@
+{
+  "author": "Conductor Rebuild",
+  "phase": "RED10-V3",
+  "classification": "QUALIFIED_SEMANTIC_RED",
+  "cases": [
+    {
+      "number": 1,
+      "name": "unified: actual All \u2192 Uncommitted \u2192 All hides only row discard",
+      "tap_result": "FAIL",
+      "classification": "UNCOMMITTED_VISIBILITY_ASSERTION_REACHED",
+      "actual": 1,
+      "expected": 0,
+      "zero_Git_native_clipboard_provider_timer_release_DTO_read_controls": "finally reached and passed; no finally assertion replaced the case result"
+    },
+    {
+      "number": 2,
+      "name": "unified: actual All \u2192 Uncommitted \u2192 All hides only header discard",
+      "tap_result": "FAIL",
+      "classification": "UNCOMMITTED_VISIBILITY_ASSERTION_REACHED",
+      "actual": 1,
+      "expected": 0,
+      "zero_Git_native_clipboard_provider_timer_release_DTO_read_controls": "finally reached and passed; no finally assertion replaced the case result"
+    },
+    {
+      "number": 3,
+      "name": "split: actual All \u2192 Uncommitted \u2192 All hides only row discard",
+      "tap_result": "FAIL",
+      "classification": "UNCOMMITTED_VISIBILITY_ASSERTION_REACHED",
+      "actual": 1,
+      "expected": 0,
+      "zero_Git_native_clipboard_provider_timer_release_DTO_read_controls": "finally reached and passed; no finally assertion replaced the case result"
+    },
+    {
+      "number": 4,
+      "name": "split: actual All \u2192 Uncommitted \u2192 All hides only header discard",
+      "tap_result": "FAIL",
+      "classification": "UNCOMMITTED_VISIBILITY_ASSERTION_REACHED",
+      "actual": 1,
+      "expected": 0,
+      "zero_Git_native_clipboard_provider_timer_release_DTO_read_controls": "finally reached and passed; no finally assertion replaced the case result"
+    },
+    {
+      "number": 5,
+      "name": "file: actual All \u2192 Uncommitted \u2192 All hides only row discard",
+      "tap_result": "FAIL",
+      "classification": "UNCOMMITTED_VISIBILITY_ASSERTION_REACHED",
+      "actual": 1,
+      "expected": 0,
+      "zero_Git_native_clipboard_provider_timer_release_DTO_read_controls": "finally reached and passed; no finally assertion replaced the case result"
+    },
+    {
+      "number": 6,
+      "name": "file: actual All \u2192 Uncommitted \u2192 All hides only header discard",
+      "tap_result": "FAIL",
+      "classification": "UNCOMMITTED_VISIBILITY_ASSERTION_REACHED",
+      "actual": 1,
+      "expected": 0,
+      "zero_Git_native_clipboard_provider_timer_release_DTO_read_controls": "finally reached and passed; no finally assertion replaced the case result"
+    },
+    {
+      "number": 7,
+      "name": "all: actual context menu retains All-scope discard without IO",
+      "tap_result": "PASS",
+      "classification": "CONTEXT_MENU_ALL_SCOPE_CONTROL_PASS",
+      "actual": null,
+      "expected": null,
+      "zero_Git_native_clipboard_provider_timer_release_DTO_read_controls": "finally reached and passed; no finally assertion replaced the case result"
+    },
+    {
+      "number": 8,
+      "name": "uncommitted: actual context menu retains All-scope discard without IO",
+      "tap_result": "PASS",
+      "classification": "CONTEXT_MENU_ALL_SCOPE_CONTROL_PASS",
+      "actual": null,
+      "expected": null,
+      "zero_Git_native_clipboard_provider_timer_release_DTO_read_controls": "finally reached and passed; no finally assertion replaced the case result"
+    },
+    {
+      "number": 9,
+      "name": "commit: actual context menu retains All-scope discard without IO",
+      "tap_result": "PASS",
+      "classification": "CONTEXT_MENU_ALL_SCOPE_CONTROL_PASS",
+      "actual": null,
+      "expected": null,
+      "zero_Git_native_clipboard_provider_timer_release_DTO_read_controls": "finally reached and passed; no finally assertion replaced the case result"
+    },
+    {
+      "number": 10,
+      "name": "turn: actual context menu retains All-scope discard without IO",
+      "tap_result": "PASS",
+      "classification": "CONTEXT_MENU_ALL_SCOPE_CONTROL_PASS",
+      "actual": null,
+      "expected": null,
+      "zero_Git_native_clipboard_provider_timer_release_DTO_read_controls": "finally reached and passed; no finally assertion replaced the case result"
+    }
+  ],
+  "counts": {
+    "tests": 10,
+    "pass": 4,
+    "fail": 6,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "target_reached": true,
+  "return_to_All_after_Uncommitted": "Not reached in six failing cases because intended visibility assertion stopped each case; required for unchanged treatment GREEN.",
+  "main": "5100f02abdc1129050d5f020f8de552680fc2994",
+  "fixture_sha256": "a2aef693638daac179d28cfdce96dea63bb4022d9e06cb7e68731b732060402b",
+  "case_body_sha256": "fb7c64475dd4d41efb4722df10479321f860115f8bb4002fd064f43f418868b3",
+  "actual_start_utc": "2026-11-18T01:49:13.277765Z",
+  "child_start_utc": "2026-11-18T01:49:14.403206Z",
+  "child_end_utc": "2026-11-18T01:49:26.943158Z",
+  "actual_release_utc": "2026-11-18T01:49:26.943792Z",
+  "raw_sha256": "45759cf9b6483c4b4547d259ce9a15f0631bef922e6e04c75a9a27f501dfb598",
+  "receipt_sha256": "5ce9086514e5bb49b5176831b421e3ccbd3129a85bfb4b0fc816ead93604e74e",
+  "current_disk_status": "No present-free claim. During-run samples remained above4GiB; ledger pressure alert arrived after command returned.",
+  "product_applied": false,
+  "retry": false,
+  "GREEN": false
+}

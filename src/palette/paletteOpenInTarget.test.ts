@@ -5,6 +5,7 @@ import { test } from "node:test";
 import { runInNewContext } from "node:vm";
 import * as React from "react";
 import ts from "typescript";
+import * as sectionSearchScore from "./search/score.ts";
 import type { ComponentProps } from "react";
 import type { AppState, Workspace } from "../state/types.ts";
 import type { WorkspaceOpenInTarget } from "./fromAppState.ts";
@@ -28,6 +29,7 @@ function evaluate(file: string, imports: Readonly<Record<string, unknown>>, expo
   runInNewContext(javascript, {
     exports, console, Date,
     require(name: string) {
+      if (name === "./search/score.ts") return sectionSearchScore;
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
       assert.ok(name in imports, `Unexpected ${file} dependency: ${name}`);
       return imports[name];

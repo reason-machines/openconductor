@@ -1,0 +1,98 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: code_review: expanded action Preview displays the current unsaved draft without launching or saving
+ok 1 - code_review: expanded action Preview displays the current unsaved draft without launching or saving
+  ---
+  duration_ms: 164.606075
+  type: 'test'
+  ...
+# Subtest: create_pr: expanded action Preview displays the current unsaved draft without launching or saving
+ok 2 - create_pr: expanded action Preview displays the current unsaved draft without launching or saving
+  ---
+  duration_ms: 68.893965
+  type: 'test'
+  ...
+# Subtest: fix_errors: expanded action Preview displays the current unsaved draft without launching or saving
+ok 3 - fix_errors: expanded action Preview displays the current unsaved draft without launching or saving
+  ---
+  duration_ms: 57.425426
+  type: 'test'
+  ...
+# Subtest: resolve_merge_conflicts: expanded action Preview displays the current unsaved draft without launching or saving
+ok 4 - resolve_merge_conflicts: expanded action Preview displays the current unsaved draft without launching or saving
+  ---
+  duration_ms: 53.561495
+  type: 'test'
+  ...
+# Subtest: rename_branch: expanded action Preview displays the current unsaved draft without launching or saving
+ok 5 - rename_branch: expanded action Preview displays the current unsaved draft without launching or saving
+  ---
+  duration_ms: 46.265655
+  type: 'test'
+  ...
+# Subtest: General preferences explicitly suppress Preview even when expanded and customized
+ok 6 - General preferences explicitly suppress Preview even when expanded and customized
+  ---
+  duration_ms: 45.684636
+  type: 'test'
+  ...
+# Subtest: collapsed action editors expose no Preview and preserve the six-row order
+ok 7 - collapsed action editors expose no Preview and preserve the six-row order
+  ---
+  duration_ms: 40.117321
+  type: 'test'
+  ...
+# Subtest: preview uses the real TS builders with draft ""
+ok 8 - preview uses the real TS builders with draft ""
+  ---
+  duration_ms: 41.791878
+  type: 'test'
+  ...
+# Subtest: preview uses the real TS builders with draft "  \\n "
+ok 9 - preview uses the real TS builders with draft "  \\n "
+  ---
+  duration_ms: 39.570143
+  type: 'test'
+  ...
+# Subtest: preview uses the real TS builders with draft "  Synthetic action preferences.\\nKeep the final line.  "
+ok 10 - preview uses the real TS builders with draft "  Synthetic action preferences.\\nKeep the final line.  "
+  ---
+  duration_ms: 39.993989
+  type: 'test'
+  ...
+# Subtest: create_pr: bridge only sends the current draft and kind, never repository context
+ok 11 - create_pr: bridge only sends the current draft and kind, never repository context
+  ---
+  duration_ms: 40.259947
+  type: 'test'
+  ...
+# Subtest: resolve_merge_conflicts: bridge only sends the current draft and kind, never repository context
+ok 12 - resolve_merge_conflicts: bridge only sends the current draft and kind, never repository context
+  ---
+  duration_ms: 39.597458
+  type: 'test'
+  ...
+# Subtest: preview shows an IPC failure without action fallback, saving or stale Markdown
+ok 13 - preview shows an IPC failure without action fallback, saving or stale Markdown
+  ---
+  duration_ms: 44.524465
+  type: 'test'
+  ...
+# Subtest: closing and reopening isolates pending preview responses and uses the latest draft
+ok 14 - closing and reopening isolates pending preview responses and uses the latest draft
+  ---
+  duration_ms: 39.043012
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1143.141855

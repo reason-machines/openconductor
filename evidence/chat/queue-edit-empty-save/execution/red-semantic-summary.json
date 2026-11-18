@@ -1,0 +1,365 @@
+{
+  "status": "QUALIFIED_SEMANTIC_RED",
+  "tests": 51,
+  "passed": 21,
+  "failed": 30,
+  "decisive_failed": 24,
+  "attachment_only_availability_failed": 6,
+  "unaffected_controls_passed": 21,
+  "all_failures_are_assertions": true,
+  "cases": [
+    {
+      "number": 1,
+      "name": "blank-button working/steer blank0 Save",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 2,
+      "name": "blank-button working/steer blank0 Save and steer",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 3,
+      "name": "blank-save-key working/steer blank0",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 4,
+      "name": "blank-steer-key working/steer blank0",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 5,
+      "name": "blank-button working/steer blank1 Save",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 6,
+      "name": "blank-button working/steer blank1 Save and steer",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 7,
+      "name": "blank-save-key working/steer blank1",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 8,
+      "name": "blank-steer-key working/steer blank1",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 9,
+      "name": "blank-button working/steer blank2 Save",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 10,
+      "name": "blank-button working/steer blank2 Save and steer",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 11,
+      "name": "blank-save-key working/steer blank2",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 12,
+      "name": "blank-steer-key working/steer blank2",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 13,
+      "name": "blank-button working/no-steer blank0 Save",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 14,
+      "name": "blank-save-key working/no-steer blank0",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 15,
+      "name": "blank-button working/no-steer blank1 Save",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 16,
+      "name": "blank-save-key working/no-steer blank1",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 17,
+      "name": "blank-button working/no-steer blank2 Save",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 18,
+      "name": "blank-save-key working/no-steer blank2",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 19,
+      "name": "blank-button idle/paused blank0 Save",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 20,
+      "name": "blank-save-key idle/paused blank0",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 21,
+      "name": "blank-button idle/paused blank1 Save",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 22,
+      "name": "blank-save-key idle/paused blank1",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 23,
+      "name": "blank-button idle/paused blank2 Save",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 24,
+      "name": "blank-save-key idle/paused blank2",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 25,
+      "name": "control/nonblank-save working/steer button",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 26,
+      "name": "control/nonblank-save working/steer key",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 27,
+      "name": "control/nonblank-save working/no-steer button",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 28,
+      "name": "control/nonblank-save working/no-steer key",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 29,
+      "name": "control/nonblank-save idle/paused button",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 30,
+      "name": "control/nonblank-save idle/paused key",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 31,
+      "name": "control/nonblank-steer button",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 32,
+      "name": "control/cancel button",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 33,
+      "name": "control/nonblank-steer key",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 34,
+      "name": "control/cancel key",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 35,
+      "name": "control/explicit-delete after Cancel",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 36,
+      "name": "control/ime \"\" meta=false",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 37,
+      "name": "control/ime \"\" meta=true",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 38,
+      "name": "control/ime \"updated first\" meta=false",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 39,
+      "name": "control/ime \"updated first\" meta=true",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 40,
+      "name": "control/no-steer hides opposite action and ordinary Save still works",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 41,
+      "name": "control/structured-file button",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 42,
+      "name": "control/structured-file key",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 43,
+      "name": "control/attachment-only-blank blank0 Save",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 44,
+      "name": "control/attachment-only-blank blank1 Save",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 45,
+      "name": "control/attachment-only-blank blank2 Save",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 46,
+      "name": "control/attachment-only-blank blank0 Save and steer",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 47,
+      "name": "control/attachment-only-blank blank1 Save and steer",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 48,
+      "name": "control/attachment-only-blank blank2 Save and steer",
+      "passed": false,
+      "failure_kind": "semantic assertion"
+    },
+    {
+      "number": 49,
+      "name": "control/direct-reducer-deletion blank0",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 50,
+      "name": "control/direct-reducer-deletion blank1",
+      "passed": true,
+      "failure_kind": null
+    },
+    {
+      "number": 51,
+      "name": "control/direct-reducer-deletion blank2",
+      "passed": true,
+      "failure_kind": null
+    }
+  ],
+  "cleanup": {
+    "reservation": "SAME135-QUEUE-EMPTY-RED-20261117-211827",
+    "reserved_cpu": 0,
+    "start_deadline_utc": "2026-11-17T21:23:27.049443+00:00",
+    "started_preflight_utc": "2026-11-17T21:19:03.619018+00:00",
+    "fixture_sha256": "8739fb3f4ebbbdf4282b740ccce38f5a3572b213669b23a96016ec19535cb4e3",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=5s",
+      "60s",
+      "env",
+      "NODE_OPTIONS=--max-old-space-size=768",
+      "COMPOSER_QUEUE_EDIT_EMPTY_SOURCE_REF=c22e27d48a0940c5793842cfddc023b7e5f838c5",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "src/features/chat/composerQueueEditEmptySave.test.ts"
+    ],
+    "test_ran": true,
+    "disk_before_bytes": 16637497344,
+    "allowed_affinity": [
+      0,
+      1
+    ],
+    "static_preflight_exit": 0,
+    "node_capability_exit": 0,
+    "test_started_utc": "2026-11-17T21:19:03.807445+00:00",
+    "process_group": 88,
+    "test_exit": 1,
+    "test_terminated_utc": "2026-11-17T21:19:05.625102+00:00",
+    "max_child_rss_kib": 165272,
+    "leftover_pids_at_cleanup": [],
+    "disk_after_bytes": 16637386752,
+    "own_artifact_bytes": 91117,
+    "fixture_unchanged": true,
+    "actual_release_utc": "2026-11-17T21:19:05.626044+00:00"
+  },
+  "limitations": [
+    "Editor is a React boundary, not Tiptap/DOM/IME/native proof. IME cases exercise the actual row isComposing branch.",
+    "Real queue effects are inspected as data; provider/backend/start/steer execution is not allowed.",
+    "Presence, editor focus scheduling, preferences and visual-only boundaries are stubbed following the existing queue-focus harness.",
+    "Python checks source identity/markers/whitespace only; no TS parser/compiler, dependency loading or fixture execution ran."
+  ]
+}

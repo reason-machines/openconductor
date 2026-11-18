@@ -1,0 +1,62 @@
+[
+  {
+    "name": "ITo",
+    "asset": "renderer",
+    "kind": "variable",
+    "utf8_half_open": [
+      8655325,
+      8691330
+    ],
+    "bytes": 36005,
+    "sha256": "402ecc13bb1fd4751d0ec047f818423c9e678deb9ba38b471961ad447100519f",
+    "completeSyntax": true
+  },
+  {
+    "name": "saveQueuedMessageEdit",
+    "asset": "index",
+    "kind": "field",
+    "utf8_half_open": [
+      2359594,
+      2360741
+    ],
+    "bytes": 1147,
+    "sha256": "8c4abd227b26d1913c4c579fab71f7ccdce89b7814db3a32f7b8088cfbd29d67",
+    "completeSyntax": true
+  },
+  {
+    "name": "beginQueuedMessageEdit",
+    "asset": "index",
+    "kind": "field",
+    "utf8_half_open": [
+      2358454,
+      2359450
+    ],
+    "bytes": 996,
+    "sha256": "b7317e9105e4ce1efa935416b589dbfd853302f496de259ac0a5338406eb62c7",
+    "completeSyntax": true
+  },
+  {
+    "name": "setQueuedMessageEditMessage",
+    "asset": "index",
+    "kind": "field",
+    "utf8_half_open": [
+      2359450,
+      2359594
+    ],
+    "bytes": 144,
+    "sha256": "727784e872ffc513f6694ced6e0f9f87a104f4550100e81357ea2426136f3732",
+    "completeSyntax": true
+  },
+  {
+    "name": "forWorkspace",
+    "asset": "index",
+    "kind": "method",
+    "utf8_half_open": [
+      2363593,
+      2363691
+    ],
+    "bytes": 98,
+    "sha256": "bfd768850f6a00e79f7f75501e7b941fd1f950738268e0e31d13144aad10f4b6",
+    "completeSyntax": true
+  }
+]

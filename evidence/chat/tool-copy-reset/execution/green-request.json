@@ -1,0 +1,15 @@
+{
+  "main": "5397204995280d90903e17dae3f391759bcde1d9",
+  "fixed_toolrows_sha256": "562755550ca487766cfc8a8b08781edded583a1c3890e14719e3752a5d399188",
+  "fixture_sha256": "baca8d635d26f2c93f7cc97356fc232ae0cb780b86847b17449b5259e355105a",
+  "only_product_delta": "CopyIcon timeout1500\u21922000; all other bytes unchanged",
+  "exact_command": "taskset -c 0 timeout --signal=TERM --kill-after=5s 60s env NODE_OPTIONS=--max-old-space-size=768 node --test --test-concurrency=1 src/features/chat/toolCopyReset.test.ts",
+  "expected": {
+    "tests": 8,
+    "pass": 8,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "allow_no_other_pin_delta": true
+}

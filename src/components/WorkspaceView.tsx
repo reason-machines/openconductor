@@ -14,6 +14,7 @@ import { onChatRequest, takeChatRequest } from "../state/openChat";
 import { onGitPanelRequest, takeGitPanelRequest, type GitPanelTarget } from "../palette/gitPanelActions.ts";
 import { useWindowFocused } from "../state/useAutoUnread";
 import { Transcript } from "../features/chat/Transcript.tsx";
+import type { ReasonPath } from "../features/chat/reason.ts";
 import { configureReason, configureReasonDefault, reasonAvailable, reasonChatConfig, retryReasonAuth } from "../features/chat/reasonChat.ts";
 import { isSignInFailure } from "../features/chat/agentSignIn.ts";
 import { CHAT_AGENTS, saveAgent, savedAgent, type ChatAgentId } from "../features/chat/agents.ts";
@@ -190,8 +191,8 @@ interface ChatPanelProps extends Props {
   onRunningChange?: (running: boolean) => void;
   /** A file chip under a finished turn: open that file's changes from the turn. */
   openTurnFile: (turn: TurnRef, path: string) => void;
-  /** A file badge in a tool row (repository-relative path): open the file's changes when it has some. */
-  openFile?: (path: string) => void;
+  /** A tool-row file badge: retain its reported location when choosing a file destination. */
+  openFile?: (path: string, target?: ReasonPath) => void;
   /** Only the selected chat receives window-level drop/palette actions in split mode. */
   interactionActive?: boolean;
   /** Incremented by WorkspaceView when a palette linkIssue command arrives for this chat. */
@@ -679,7 +680,10 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
             resetDisabled={running || planWaiting !== undefined}
             turnFooter={agent.reset ? turnFooter : undefined}
             workspacePath={cwd}
-            onOpenFile={openFile ? (path) => openFile(path.startsWith(`${cwd}/`) ? path.slice(cwd.length + 1) : path) : undefined}
+            onOpenFile={openFile ? (path, target) => openFile(
+              target?.place === "cloud" ? path : path.startsWith(`${cwd}/`) ? path.slice(cwd.length + 1) : path,
+              target,
+            ) : undefined}
             // Conductor: any turn of a chat in a workspace that is not archived; disabled while a fork is made.
             onForkToNewTab={workspace.status !== "archived" ? (turnId: string) => void forkToTab(turnId) : undefined}
             // Conductor: any workspace with a local path that is not archived (M10: unfenced for all agents).
@@ -695,7 +699,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         <ResetChatDialog
           loadChangedCount={() => changedSinceTurn(invoke, cwd, runId, resetTurn)}
           onConfirm={(resetFiles) => (agent.reset ? agent.reset(runId, cwd, resetTurn, resetFiles) : Promise.resolve())}
-          onClose={() => setResetTurn(null)}
+          onClose={() => setResetTurn((current) => current === resetTurn ? null : current)}
         />
       ) : null}
       <PermissionRequests permissions={permissions} onAnswer={(requestId, answer) => {
@@ -1258,7 +1262,11 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
   const diffTarget = { branch: targetBranch({ prBase: prBase?.base ?? null, prMerged: prBase?.merged ?? false, intended: workspace.targetBranch, fallback: repo.defaultBranch }), remote: TARGET_REMOTE };
   const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, target: diffTarget, onLoaded, onOpen: openDiffTab });
   // H1/H6: file badge handler — open in diff if tracked, indicate cloud paths, fall back to file viewer.
-  const openFileOrViewer = useCallback((path: string) => {
+  const openFileOrViewer = useCallback((path: string, target?: ReasonPath) => {
+    if (target?.place === "cloud") {
+      notify?.("info", `${target.raw.split("/").pop() ?? target.raw} is a cloud file — not available locally`);
+      return;
+    }
     if (diff.files.some((f) => f.path === path)) { diff.openPath(path); return; }
     // Cloud/absolute paths not under the worktree cannot be opened locally (H6).
     if (path.startsWith("/") && (!workspace.path || !path.startsWith(workspace.path))) {

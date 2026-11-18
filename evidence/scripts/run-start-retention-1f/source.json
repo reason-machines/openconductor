@@ -1,0 +1,110 @@
+{
+  "author": "Conductor Rebuild",
+  "main_checked": "eef01e9b287472280fb3f4a585bc697d5f1f8f51",
+  "baseline_product_sha256": "a5b3cd686c24eee05b21a001cf4ae09cdb91a442b3667f9823a0d07930685119",
+  "reference_kind": "Retained Conductor 0.87.6 shipped frontend from original REA acquisition; inert literal reads, no new acquisition or app observation.",
+  "rea_acquisition": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "original_archive_attachment_id": "e78b8633-85a2-4561-a67c-ff7181b1d9fc",
+  "original_archive_sha256": "991f15ebf130ccb8e705fc74f612dbb46095bd6d73b420fbced1ffbcd94165bc",
+  "archive_member": "glob-result-source-packet/retained-reference/index-BGEQ8YjU.js",
+  "reference_bundle_sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+  "reference_spans": [
+    {
+      "path": "reference/start-process.txt",
+      "start": 2922827,
+      "end_exclusive": 2924948,
+      "sha256": "f33fec13741afd93513e5960305bae8829c67de8316ac3e79e3b188a83cb01cc",
+      "asset": "index-BGEQ8YjU.js"
+    },
+    {
+      "path": "reference/clear-workspace-runs.txt",
+      "start": 2931461,
+      "end_exclusive": 2932447,
+      "sha256": "127dab7fa5158b2b8f09e22701b6cdd5ecee0145c7a98ff491b4c597f7426bda",
+      "asset": "index-BGEQ8YjU.js"
+    },
+    {
+      "path": "reference/workspace-keys.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 2917394,
+      "end_exclusive": 2917557,
+      "sha256": "a5f5a5d6362e0966b07c3315e4a86f07186ac9a3cab3e9e341253d85be1fc591"
+    },
+    {
+      "path": "reference/kill-process.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 2921433,
+      "end_exclusive": 2922662,
+      "sha256": "5a3107a352a996728d1acf1f28045ca7ed8350d9e61fc24062ecf3fb2ff3a364"
+    },
+    {
+      "path": "reference/task-run-id.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 2933837,
+      "end_exclusive": 2933949,
+      "sha256": "9403297171e1ba8a8ba34060424ebdf1ed820ac3ff96c694de4405a670df0b97"
+    },
+    {
+      "path": "reference/index-export.txt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3484123,
+      "end_exclusive": 3484132,
+      "sha256": "782454771bf148f2f79b4740691ac68d42fbcc0ccc906b816321de7e18865977"
+    },
+    {
+      "path": "reference/renderer-import.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 57739,
+      "end_exclusive": 57747,
+      "sha256": "ea39fd570a2d4497e9acf83c28dc20bb9f39498beaa9a7e8765b597155e01030"
+    },
+    {
+      "path": "reference/renderer-state-bindings.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 7172488,
+      "end_exclusive": 7172999,
+      "sha256": "6c4abb6618a911e29f010c02aec005bf5bab3097918d64de8cc2dbcc6d0b64a2"
+    },
+    {
+      "path": "reference/renderer-output-body.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 7197052,
+      "end_exclusive": 7198197,
+      "sha256": "a47d4345b68d2d334fea23e3c87d6f8a1d7d94b1e1c12a1ba4af1faf3a07a5e3"
+    }
+  ],
+  "frozen_test_sha256": "c38741cb1a207636a93fc72d9084b6b0d2ad03b9ef296e99db5addd39213e6ba",
+  "failing_tests": [
+    "retention_new_task_clears_previous_workspace_run_before_setup_wait",
+    "retention_same_task_clears_old_transcript_and_exit_before_setup_wait"
+  ],
+  "control_tests": [
+    "retention_new_start_preserves_selection_history_and_other_workspace",
+    "retention_completed_output_remains_until_another_start"
+  ],
+  "test_boundary": "Actual RunManager::start with SetupState::Running and seeded completed records; no process/PTY spawn or setup_finished invocation.",
+  "exclusions": [
+    "No native snapshot/kill import/type/worker expectations",
+    "No PTY/provider/package/native/app execution",
+    "No UI or browser/screenshot verification",
+    "No full Rust suite (contains PTY process tests)",
+    "No manual workflows dispatched"
+  ],
+  "reference_assets": {
+    "index-BGEQ8YjU.js": {
+      "archive_member": "glob-result-source-packet/retained-reference/index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    },
+    "renderApp-D_fmY7hW.js": {
+      "archive_member": "glob-result-source-packet/retained-reference/renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    }
+  },
+  "unchanged_current_consumer_sha256": {
+    "src/components/ScriptsPanel.tsx": "092f31ca358a04510d9fd77e56dd0a6b65eed9e883d11d9208639ef13f9444f5",
+    "src/scripts/api.ts": "5ca2d39a35a3feed9f077a1ebfe531d0dd84d2df4213977b0bc55a425c6771f7",
+    "src/scripts/runTab.ts": "495c8f2d63c510b2494e0cb36d2f6a3ae1f7ee944d445f7687c0e028d561653f",
+    "src-tauri/src/scripts.rs": "81dcd218569193fb175fb48368177a83966a4eb0ec4d8c409c9876b687fd8095"
+  },
+  "stop_and_stale_completion_code": "Byte-for-byte preserved; no process stop failure or concurrent completion executed."
+}

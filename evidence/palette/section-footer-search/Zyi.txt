@@ -1,0 +1,1 @@
+function Zyi(t,e,n,i=[]){let r=$.useRef(),o=YEe();return DJ(()=>{var a;let c=(()=>{var d;for(let h of n){if(typeof h=="string")return h.trim();if(typeof h=="object"&&"current"in h)return h.current?(d=h.current.textContent)==null?void 0:d.trim():r.current}})(),u=i.map(d=>d.trim());o.value(t,c,u),(a=e.current)==null||a.setAttribute(bae,c),r.current=c}),r}

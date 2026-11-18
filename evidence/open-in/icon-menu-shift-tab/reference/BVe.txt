@@ -1,0 +1,1 @@
+function BVe(t){return t.preventBaseUIHandler=()=>{t.baseUIHandlerPrevented=!0},t}
