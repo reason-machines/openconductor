@@ -109,7 +109,7 @@ async function fixture(initialPlan: string, options: { reject?: boolean; status?
     head: () => withClass("oc-tool-head")[0]!,
     async toggle() { await event(this.head(), "onClick"); },
     async update(next: string) { plan = next; await act(async () => { renderer.update(React.createElement(Scene)); }); },
-    async menu(anchor = this.anchors()[0]!) {
+    async menu(this: { anchors: () => Node[] }, anchor = this.anchors()[0]!) {
       assert.equal(typeof anchor.props.onContextMenu, "function", "PLAN_RESULT_LINK_MUST_EXPOSE_CUSTOM_MENU");
       let prevented = 0;
       await event(anchor, "onContextMenu", { clientX: 40, clientY: 50, preventDefault: () => { prevented++; } });
