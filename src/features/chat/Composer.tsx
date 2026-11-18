@@ -623,7 +623,7 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
   }
 
   const drag = (id: string) => ({
-    draggable: queue.editingId === null,
+    draggable: queue.items.length > 1 && queue.editingId === null,
     onDragStart: (e: React.DragEvent) => {
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.setData("text/plain", id);
