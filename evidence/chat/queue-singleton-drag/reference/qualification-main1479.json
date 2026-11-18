@@ -1,0 +1,211 @@
+{
+  "candidate": "COMPOSER-QUEUE-SINGLETON-DRAG-135",
+  "checked_utc": "2026-11-17T23:26:07.366358+00:00",
+  "checked_default_main": "5f7afadc1c50ee44aa21677b5ab0dd96b87cfb57",
+  "classification": "SOURCE_QUALIFIED_CANDIDATE_NOT_RUNTIME_REPRODUCED",
+  "finding": "Retained real-Conductor visible queue producer computes singleton/nonexpanded/edit drag prohibition; OTo passes it through uCe to disabled drag-handle registration and guards reorder. Fresh main renders its singleton display row with draggable=true and an enabled native dragstart solely because editingId is null. Current drop and dropOrder already make singleton self-reorder a no-op: that part is source parity, not a claimed ordering defect. The candidate is restricted to entering/exposing drag state and affordance, not observed native behavior or data mutation.",
+  "parent": {
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "spans": [
+    {
+      "name": "JNi",
+      "utf8_half_open": [
+        8750085,
+        8760369
+      ],
+      "bytes": 10284,
+      "sha256": "775251f3c9074a8f60944335cd7c44d053c1472bb63987adc4b149d0d32828d1",
+      "completeSyntax": true,
+      "method": "Existing complete-declaration receipt rebound to complete parent"
+    },
+    {
+      "name": "AAo",
+      "utf8_half_open": [
+        8725767,
+        8730190
+      ],
+      "bytes": 4423,
+      "sha256": "1427c2453126a3311e9a330ae73a6b88a491199c4005ea85406728357d53ebab",
+      "completeSyntax": true,
+      "method": "Existing complete-declaration receipt rebound to complete parent"
+    },
+    {
+      "name": "GTo",
+      "utf8_half_open": [
+        8700675,
+        8708256
+      ],
+      "bytes": 7581,
+      "sha256": "8464862ead880f69f77258ee26be61216cbaa24692ba8cb5a02daf30365f8440",
+      "completeSyntax": true,
+      "method": "Existing complete-declaration receipt rebound to complete parent"
+    },
+    {
+      "name": "OTo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8691603,
+        8693089
+      ],
+      "bytes": 1486,
+      "sha256": "0ef67d20b05cc022f5cd48b55222ed36bce2402a9521dd205327932fca4243a8",
+      "method": "Exact unique declaration delimiters, inert source; not JS parser or semantic graph execution"
+    },
+    {
+      "name": "uCe",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8577291,
+        8577560
+      ],
+      "bytes": 269,
+      "sha256": "4ebb8c13e105cffc5301cf9681e09fde0d796d4332fa316c8d4b5721ef8fc0eb",
+      "method": "Exact unique declaration delimiters, inert source; not JS parser or semantic graph execution"
+    },
+    {
+      "name": "wNi",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8577186,
+        8577291
+      ],
+      "bytes": 105,
+      "sha256": "3e30ad851258157e4e22f9f0d1874feef2691b5ade8deb4032cbb10cf3c1b7a6",
+      "method": "Exact unique declaration delimiters, inert source; not JS parser or semantic graph execution"
+    },
+    {
+      "name": "jko",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8573235,
+        8574508
+      ],
+      "bytes": 1273,
+      "sha256": "4b87578b10128c9e4e7d40e3cc8d6b25837b9945fa0a2c3242c62150db658077",
+      "method": "Exact unique declaration delimiters, inert source; not JS parser or semantic graph execution"
+    },
+    {
+      "name": "Wko-binding",
+      "utf8_half_open": [
+        8577122,
+        8577186
+      ],
+      "bytes": 64,
+      "sha256": "4fe017f70b058e625fee53e5126f08368b0c7e1c0afbb744eaeeeb10582d4f4e",
+      "method": "Unique literal wrapper binding"
+    }
+  ],
+  "main_sources": [
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "bytes": 34875,
+      "sha256": "60484a0072e816fe61f4abbc19f236c3d5c9e1bc4807fe3d4bcd69bbf2a5d6c8"
+    },
+    {
+      "path": "src/features/chat/queue.ts",
+      "bytes": 12996,
+      "sha256": "f08c481457eaf0389259d148c62c1c592cfc95612dc6b7576cb4c7c415e1e1a1"
+    },
+    {
+      "path": "src/features/chat/queueKeys.ts",
+      "bytes": 2947,
+      "sha256": "5e0ddfb22b9538056868dce47113fce9445d781b5fa23fe49b96cc2b1492c193"
+    }
+  ],
+  "history": [
+    {
+      "sha": "1e2500a959f68411be54cdca5c0473d0010b0559",
+      "sha256": "134b87073a2ec0600f8dd6dd19ffc097a4a825df03448130f41ab9fba4f6e0ae"
+    },
+    {
+      "sha": "5397204995280d90903e17dae3f391759bcde1d9",
+      "sha256": "4354dc133eac698a0855931b464b9ed918f500c3cffdda3d4b0169bff47ff896"
+    },
+    {
+      "sha": "04720aed99227aae398081e4f9f7cdc4d42f7442",
+      "sha256": "d6139fc15c158307e5e455cf863cbcdce86200034cf5af00f23309879595cd5d"
+    },
+    {
+      "sha": "9923d277a0fb55b916f98adc5128025e1ce0fc4b",
+      "sha256": "2f1b103ed0de1cd0559235b5803a16d4b435eccaad7d7a8152e1ce3f72287e04"
+    },
+    {
+      "sha": "5f7afadc1c50ee44aa21677b5ab0dd96b87cfb57",
+      "sha256": "f5a4e6108b97e3c8d571227b8a024ae994808bc0af225092229e7d1dc00d6402"
+    }
+  ],
+  "checks_passed": 61,
+  "checks": [
+    "Fresh main is actual1479 merge",
+    "Complete retained renderer exact identity",
+    "Fresh main manifest binds retained real-app renderer",
+    "JNi complete existing declaration identity",
+    "AAo complete existing declaration identity",
+    "GTo complete existing declaration identity",
+    "OTo unique start delimiter",
+    "uCe unique start delimiter",
+    "wNi unique start delimiter",
+    "jko unique start delimiter",
+    "OTo declaration terminal bound",
+    "uCe declaration terminal bound",
+    "wNi declaration terminal bound",
+    "jko declaration terminal bound",
+    "Actual chat mounts AAo producer",
+    "Producer omits empty visible queue",
+    "Producer derives collapse from visible row count",
+    "Producer sends same visible rows and edit identity into GTo",
+    "Producer forwards started/finished callbacks to actual queue",
+    "Reference derives expanded/edit flags and all drag prohibitions",
+    "GTo sends computed flag to OTo rather than row presentation only",
+    "OTo binds same sortableDisabled to r",
+    "OTo passes flag into every rendered draggable",
+    "OTo exposes drag affordance only when enabled",
+    "OTo drops no-op when disabled or target is absent/unchanged",
+    "OTo enabled reorder uses current rows then producer",
+    "uCe inverts supplied disabled flag to isEnabled",
+    "uCe passes enabled value into actual wrapped draggable",
+    "wNi forwards props unchanged into Wko",
+    "Wko wrapper binding immediately wraps actual jko",
+    "Actual draggable destructures isEnabled into g",
+    "Actual draggable registers that enabled state",
+    "Actual drag handle is absent while disabled",
+    "Working Composer is byte-identical to merged main",
+    "Fresh-main queue drag enabled only by absent editor",
+    "Fresh-main dragstart writes native drag payload without count guard",
+    "Fresh-main drag props reach visible display row",
+    "Fresh-main collapsed multirow queue omits list",
+    "Fresh-main singleton remains visible after1476",
+    "Complete current native dragstart has no later count guard",
+    "Current dragover accepts only an already active own drag",
+    "Current drop guard already prevents singleton self-reorder",
+    "Current drop clears native own-drag state",
+    "Current dragend always clears own-drag state",
+    "Pure dropOrder independently preserves self and missing target order",
+    "Enabled multirow ordering preserves full id payload",
+    "Queue reducer routes reorder through existing identity-preserving path",
+    "No tracked edit introduced by source preparation",
+    "Historical corrected REA slice exact parent binding",
+    "All20 retained REA coordinate joins preserved",
+    "GTo and OTo declarations lie inside historical REA slice",
+    "1e2500a959 history is on fresh main",
+    "1e2500a959 does not add singleton drag guard",
+    "5397204995 history is on fresh main",
+    "5397204995 does not add singleton drag guard",
+    "04720aed99 history is on fresh main",
+    "04720aed99 does not add singleton drag guard",
+    "9923d277a0 history is on fresh main",
+    "9923d277a0 does not add singleton drag guard",
+    "5f7afadc1c history is on fresh main",
+    "5f7afadc1c does not add singleton drag guard"
+  ],
+  "collision": "Canonical ledger message fa66535f (2026-11-17): no other recorded queueDrag owner; SAME135 retains source-only qualification. This is current-map clearance, not exhaustive history.",
+  "limits": [
+    "No new REA, JS parser, Node, fixture, product edit, browser, native, build, provider or package execution.",
+    "Historical REA graph-cap/no-match/ambiguous-target/digest correction remain as originally recorded, not new success.",
+    "Full library sensor or native gesture execution not performed; source chain and no-drag-handle/reorder gates only.",
+    "1479 actual merge 5f7afadc1c50ee44aa21677b5ab0dd96b87cfb57 at 2026-11-17T23:23:00Z confirmed; this packet is its fresh-main source rebind. No next product treatment yet.",
+    "Root to sole E1 native/package custody remains unchanged."
+  ]
+}

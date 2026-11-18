@@ -1,0 +1,1074 @@
+TAP version 13
+# (node:108) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: shrink/collapsed completion 2-to-1 reveals the remaining row
+ok 1 - shrink/collapsed completion 2-to-1 reveals the remaining row
+  ---
+  duration_ms: 17.35646
+  type: 'test'
+  ...
+# Subtest: shrink/collapsed 2-to-1-to-2 regrows expanded
+ok 2 - shrink/collapsed 2-to-1-to-2 regrows expanded
+  ---
+  duration_ms: 3.24784
+  type: 'test'
+  ...
+# Subtest: shrink/singleton initially has no collapse toggle
+ok 3 - shrink/singleton initially has no collapse toggle
+  ---
+  duration_ms: 1.039802
+  type: 'test'
+  ...
+# Subtest: shrink/expanded completion 2-to-1 removes the toggle
+ok 4 - shrink/expanded completion 2-to-1 removes the toggle
+  ---
+  duration_ms: 1.637624
+  type: 'test'
+  ...
+# Subtest: shrink/collapsed explicit deletion 2-to-1 reveals the survivor
+ok 5 - shrink/collapsed explicit deletion 2-to-1 reveals the survivor
+  ---
+  duration_ms: 3.069297
+  type: 'test'
+  ...
+# Subtest: control/multiple rows initially expanded
+ok 6 - control/multiple rows initially expanded
+  ---
+  duration_ms: 1.02268
+  type: 'test'
+  ...
+# Subtest: control/collapsed multiple rows survive ordinary rerender
+ok 7 - control/collapsed multiple rows survive ordinary rerender
+  ---
+  duration_ms: 1.401027
+  type: 'test'
+  ...
+# Subtest: control/collapsed 3-to-2 stays collapsed
+ok 8 - control/collapsed 3-to-2 stays collapsed
+  ---
+  duration_ms: 4.035463
+  type: 'test'
+  ...
+# Subtest: control/reordering multiple collapsed rows preserves collapse
+ok 9 - control/reordering multiple collapsed rows preserves collapse
+  ---
+  duration_ms: 2.159206
+  type: 'test'
+  ...
+# Subtest: control/manual expand preserves complete queued items
+ok 10 - control/manual expand preserves complete queued items
+  ---
+  duration_ms: 2.088677
+  type: 'test'
+  ...
+# Subtest: control/zero-item unmount then new queue starts expanded
+ok 11 - control/zero-item unmount then new queue starts expanded
+  ---
+  duration_ms: 2.827491
+  type: 'test'
+  ...
+# Subtest: control/pause and resume while collapsed do not change count or collapse
+ok 12 - control/pause and resume while collapsed do not change count or collapse
+  ---
+  duration_ms: 1.65754
+  type: 'test'
+  ...
+# Subtest: control/ordinary queued edit still saves
+ok 13 - control/ordinary queued edit still saves
+  ---
+  duration_ms: 2.771567
+  type: 'test'
+  ...
+# Subtest: control/1474 blank Save stays disabled
+ok 14 - control/1474 blank Save stays disabled
+  ---
+  duration_ms: 2.87908
+  type: 'test'
+  ...
+# Subtest: control/1474 blank Save and steer stays disabled
+ok 15 - control/1474 blank Save and steer stays disabled
+  ---
+  duration_ms: 1.621142
+  type: 'test'
+  ...
+# Subtest: control/direct blank reducer deletion remains intentional
+ok 16 - control/direct blank reducer deletion remains intentional
+  ---
+  duration_ms: 0.197916
+  type: 'test'
+  ...
+# Subtest: control/no-steer retains collapse and both queued items
+ok 17 - control/no-steer retains collapse and both queued items
+  ---
+  duration_ms: 1.306675
+  type: 'test'
+  ...
+# Subtest: control/expanded 3-to-2 keeps both remaining rows visible
+ok 18 - control/expanded 3-to-2 keeps both remaining rows visible
+  ---
+  duration_ms: 1.374724
+  type: 'test'
+  ...
+# (node:117) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: blank-button working/steer blank0 Save
+ok 19 - blank-button working/steer blank0 Save
+  ---
+  duration_ms: 15.257601
+  type: 'test'
+  ...
+# Subtest: blank-button working/steer blank0 Save and steer
+ok 20 - blank-button working/steer blank0 Save and steer
+  ---
+  duration_ms: 1.694936
+  type: 'test'
+  ...
+# Subtest: blank-save-key working/steer blank0
+ok 21 - blank-save-key working/steer blank0
+  ---
+  duration_ms: 2.38644
+  type: 'test'
+  ...
+# Subtest: blank-steer-key working/steer blank0
+ok 22 - blank-steer-key working/steer blank0
+  ---
+  duration_ms: 1.548978
+  type: 'test'
+  ...
+# Subtest: blank-button working/steer blank1 Save
+ok 23 - blank-button working/steer blank1 Save
+  ---
+  duration_ms: 3.351985
+  type: 'test'
+  ...
+# Subtest: blank-button working/steer blank1 Save and steer
+ok 24 - blank-button working/steer blank1 Save and steer
+  ---
+  duration_ms: 2.580998
+  type: 'test'
+  ...
+# Subtest: blank-save-key working/steer blank1
+ok 25 - blank-save-key working/steer blank1
+  ---
+  duration_ms: 1.303189
+  type: 'test'
+  ...
+# Subtest: blank-steer-key working/steer blank1
+ok 26 - blank-steer-key working/steer blank1
+  ---
+  duration_ms: 1.04787
+  type: 'test'
+  ...
+# Subtest: blank-button working/steer blank2 Save
+ok 27 - blank-button working/steer blank2 Save
+  ---
+  duration_ms: 2.494054
+  type: 'test'
+  ...
+# Subtest: blank-button working/steer blank2 Save and steer
+ok 28 - blank-button working/steer blank2 Save and steer
+  ---
+  duration_ms: 3.636266
+  type: 'test'
+  ...
+# Subtest: blank-save-key working/steer blank2
+ok 29 - blank-save-key working/steer blank2
+  ---
+  duration_ms: 1.510763
+  type: 'test'
+  ...
+# Subtest: blank-steer-key working/steer blank2
+ok 30 - blank-steer-key working/steer blank2
+  ---
+  duration_ms: 2.391588
+  type: 'test'
+  ...
+# Subtest: blank-button working/no-steer blank0 Save
+ok 31 - blank-button working/no-steer blank0 Save
+  ---
+  duration_ms: 1.268725
+  type: 'test'
+  ...
+# Subtest: blank-save-key working/no-steer blank0
+ok 32 - blank-save-key working/no-steer blank0
+  ---
+  duration_ms: 0.923912
+  type: 'test'
+  ...
+# Subtest: blank-button working/no-steer blank1 Save
+ok 33 - blank-button working/no-steer blank1 Save
+  ---
+  duration_ms: 0.975162
+  type: 'test'
+  ...
+# Subtest: blank-save-key working/no-steer blank1
+ok 34 - blank-save-key working/no-steer blank1
+  ---
+  duration_ms: 4.03436
+  type: 'test'
+  ...
+# Subtest: blank-button working/no-steer blank2 Save
+ok 35 - blank-button working/no-steer blank2 Save
+  ---
+  duration_ms: 0.950137
+  type: 'test'
+  ...
+# Subtest: blank-save-key working/no-steer blank2
+ok 36 - blank-save-key working/no-steer blank2
+  ---
+  duration_ms: 0.980596
+  type: 'test'
+  ...
+# Subtest: blank-button idle/paused blank0 Save
+ok 37 - blank-button idle/paused blank0 Save
+  ---
+  duration_ms: 0.917366
+  type: 'test'
+  ...
+# Subtest: blank-save-key idle/paused blank0
+ok 38 - blank-save-key idle/paused blank0
+  ---
+  duration_ms: 3.134114
+  type: 'test'
+  ...
+# Subtest: blank-button idle/paused blank1 Save
+ok 39 - blank-button idle/paused blank1 Save
+  ---
+  duration_ms: 2.244049
+  type: 'test'
+  ...
+# Subtest: blank-save-key idle/paused blank1
+ok 40 - blank-save-key idle/paused blank1
+  ---
+  duration_ms: 7.653286
+  type: 'test'
+  ...
+# Subtest: blank-button idle/paused blank2 Save
+ok 41 - blank-button idle/paused blank2 Save
+  ---
+  duration_ms: 16.393815
+  type: 'test'
+  ...
+# Subtest: blank-save-key idle/paused blank2
+ok 42 - blank-save-key idle/paused blank2
+  ---
+  duration_ms: 0.814294
+  type: 'test'
+  ...
+# Subtest: control/nonblank-save working/steer button
+ok 43 - control/nonblank-save working/steer button
+  ---
+  duration_ms: 2.145045
+  type: 'test'
+  ...
+# Subtest: control/nonblank-save working/steer key
+ok 44 - control/nonblank-save working/steer key
+  ---
+  duration_ms: 2.616021
+  type: 'test'
+  ...
+# Subtest: control/nonblank-save working/no-steer button
+ok 45 - control/nonblank-save working/no-steer button
+  ---
+  duration_ms: 1.219543
+  type: 'test'
+  ...
+# Subtest: control/nonblank-save working/no-steer key
+ok 46 - control/nonblank-save working/no-steer key
+  ---
+  duration_ms: 1.387681
+  type: 'test'
+  ...
+# Subtest: control/nonblank-save idle/paused button
+ok 47 - control/nonblank-save idle/paused button
+  ---
+  duration_ms: 1.825575
+  type: 'test'
+  ...
+# Subtest: control/nonblank-save idle/paused key
+ok 48 - control/nonblank-save idle/paused key
+  ---
+  duration_ms: 7.798328
+  type: 'test'
+  ...
+# Subtest: control/nonblank-steer button
+ok 49 - control/nonblank-steer button
+  ---
+  duration_ms: 1.533061
+  type: 'test'
+  ...
+# Subtest: control/cancel button
+ok 50 - control/cancel button
+  ---
+  duration_ms: 1.336288
+  type: 'test'
+  ...
+# Subtest: control/nonblank-steer key
+ok 51 - control/nonblank-steer key
+  ---
+  duration_ms: 3.288756
+  type: 'test'
+  ...
+# Subtest: control/cancel key
+ok 52 - control/cancel key
+  ---
+  duration_ms: 5.946496
+  type: 'test'
+  ...
+# Subtest: control/explicit-delete after Cancel
+ok 53 - control/explicit-delete after Cancel
+  ---
+  duration_ms: 2.054519
+  type: 'test'
+  ...
+# Subtest: control/ime "" meta=false
+ok 54 - control/ime "" meta=false
+  ---
+  duration_ms: 0.74767
+  type: 'test'
+  ...
+# Subtest: control/ime "" meta=true
+ok 55 - control/ime "" meta=true
+  ---
+  duration_ms: 0.630594
+  type: 'test'
+  ...
+# Subtest: control/ime "updated first" meta=false
+ok 56 - control/ime "updated first" meta=false
+  ---
+  duration_ms: 4.365852
+  type: 'test'
+  ...
+# Subtest: control/ime "updated first" meta=true
+ok 57 - control/ime "updated first" meta=true
+  ---
+  duration_ms: 0.758512
+  type: 'test'
+  ...
+# Subtest: control/no-steer hides opposite action and ordinary Save still works
+ok 58 - control/no-steer hides opposite action and ordinary Save still works
+  ---
+  duration_ms: 2.677437
+  type: 'test'
+  ...
+# Subtest: control/structured-file button
+ok 59 - control/structured-file button
+  ---
+  duration_ms: 2.582982
+  type: 'test'
+  ...
+# Subtest: control/structured-file key
+ok 60 - control/structured-file key
+  ---
+  duration_ms: 1.297226
+  type: 'test'
+  ...
+# Subtest: control/attachment-only-blank blank0 Save
+ok 61 - control/attachment-only-blank blank0 Save
+  ---
+  duration_ms: 0.808932
+  type: 'test'
+  ...
+# Subtest: control/attachment-only-blank blank1 Save
+ok 62 - control/attachment-only-blank blank1 Save
+  ---
+  duration_ms: 1.256159
+  type: 'test'
+  ...
+# Subtest: control/attachment-only-blank blank2 Save
+ok 63 - control/attachment-only-blank blank2 Save
+  ---
+  duration_ms: 5.124866
+  type: 'test'
+  ...
+# Subtest: control/attachment-only-blank blank0 Save and steer
+ok 64 - control/attachment-only-blank blank0 Save and steer
+  ---
+  duration_ms: 0.778045
+  type: 'test'
+  ...
+# Subtest: control/attachment-only-blank blank1 Save and steer
+ok 65 - control/attachment-only-blank blank1 Save and steer
+  ---
+  duration_ms: 1.347048
+  type: 'test'
+  ...
+# Subtest: control/attachment-only-blank blank2 Save and steer
+ok 66 - control/attachment-only-blank blank2 Save and steer
+  ---
+  duration_ms: 0.836535
+  type: 'test'
+  ...
+# Subtest: control/direct-reducer-deletion blank0
+ok 67 - control/direct-reducer-deletion blank0
+  ---
+  duration_ms: 0.198066
+  type: 'test'
+  ...
+# Subtest: control/direct-reducer-deletion blank1
+ok 68 - control/direct-reducer-deletion blank1
+  ---
+  duration_ms: 0.078187
+  type: 'test'
+  ...
+# Subtest: control/direct-reducer-deletion blank2
+ok 69 - control/direct-reducer-deletion blank2
+  ---
+  duration_ms: 0.066926
+  type: 'test'
+  ...
+# (node:126) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: return-focus/Cancel middle row returns to that surviving row
+ok 70 - return-focus/Cancel middle row returns to that surviving row
+  ---
+  duration_ms: 21.227547
+  type: 'test'
+  ...
+# Subtest: return-focus/Escape middle row cancels and returns focus
+ok 71 - return-focus/Escape middle row cancels and returns focus
+  ---
+  duration_ms: 3.657468
+  type: 'test'
+  ...
+# Subtest: return-focus/Save middle row commits text and returns focus
+ok 72 - return-focus/Save middle row commits text and returns focus
+  ---
+  duration_ms: 6.940001
+  type: 'test'
+  ...
+# Subtest: return-focus/Enter middle row saves and returns focus
+ok 73 - return-focus/Enter middle row saves and returns focus
+  ---
+  duration_ms: 3.327025
+  type: 'test'
+  ...
+# Subtest: return-focus/Cancel head row restores head rather than adjacent row
+ok 74 - return-focus/Cancel head row restores head rather than adjacent row
+  ---
+  duration_ms: 2.678276
+  type: 'test'
+  ...
+# Subtest: return-focus/Save head row restores head rather than adjacent row
+ok 75 - return-focus/Save head row restores head rather than adjacent row
+  ---
+  duration_ms: 3.320783
+  type: 'test'
+  ...
+# Subtest: control/edit entry keeps caret-at-end and does not focus a display row
+ok 76 - control/edit entry keeps caret-at-end and does not focus a display row
+  ---
+  duration_ms: 1.723912
+  type: 'test'
+  ...
+# Subtest: control/rerender after edit exit does not repeat row focus
+ok 77 - control/rerender after edit exit does not repeat row focus
+  ---
+  duration_ms: 2.759732
+  type: 'test'
+  ...
+# Subtest: control/no edit mount and rerender leave focus and queue untouched
+ok 78 - control/no edit mount and rerender leave focus and queue untouched
+  ---
+  duration_ms: 1.740469
+  type: 'test'
+  ...
+# Subtest: control/editing rerender does not focus a display row
+ok 79 - control/editing rerender does not focus a display row
+  ---
+  duration_ms: 2.31637
+  type: 'test'
+  ...
+# Subtest: control/direct edit switch does not restore the prior row
+ok 80 - control/direct edit switch does not restore the prior row
+  ---
+  duration_ms: 5.986997
+  type: 'test'
+  ...
+# Subtest: control/Save and steer removes edited row without querying or focusing it
+ok 81 - control/Save and steer removes edited row without querying or focusing it
+  ---
+  duration_ms: 6.39284
+  type: 'test'
+  ...
+# Subtest: control/deletion of edited row never restores a removed target
+ok 82 - control/deletion of edited row never restores a removed target
+  ---
+  duration_ms: 5.32034
+  type: 'test'
+  ...
+# Subtest: control/idle head drain after Save never restores the removed target
+ok 83 - control/idle head drain after Save never restores the removed target
+  ---
+  duration_ms: 6.93186
+  type: 'test'
+  ...
+# Subtest: control/session-key switch cannot restore the previous session row
+ok 84 - control/session-key switch cannot restore the previous session row
+  ---
+  duration_ms: 3.067427
+  type: 'test'
+  ...
+# Subtest: control/session remount with same editing ID performs entry focus only
+ok 85 - control/session remount with same editing ID performs entry focus only
+  ---
+  duration_ms: 2.093804
+  type: 'test'
+  ...
+# Subtest: control/1474 blank Save buttons remain disabled without invoking callbacks
+ok 86 - control/1474 blank Save buttons remain disabled without invoking callbacks
+  ---
+  duration_ms: 1.51988
+  type: 'test'
+  ...
+# Subtest: control/1474 blank Enter and meta-Enter are consumed without save or focus
+ok 87 - control/1474 blank Enter and meta-Enter are consumed without save or focus
+  ---
+  duration_ms: 1.361277
+  type: 'test'
+  ...
+# Subtest: control/1476 collapsed shrink and regrowth remain expanded without row focus
+ok 88 - control/1476 collapsed shrink and regrowth remain expanded without row focus
+  ---
+  duration_ms: 14.735768
+  type: 'test'
+  ...
+# Subtest: control/re-enter after Cancel retains caret-at-end entry behavior
+ok 89 - control/re-enter after Cancel retains caret-at-end entry behavior
+  ---
+  duration_ms: 19.478427
+  type: 'test'
+  ...
+# (node:135) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ctrl+ArrowUp leaves the Composer's queue focus untouched
+ok 90 - Ctrl+ArrowUp leaves the Composer's queue focus untouched
+  ---
+  duration_ms: 368.463135
+  type: 'test'
+  ...
+# Subtest: unmodified ArrowUp at the start focuses the last queued row
+ok 91 - unmodified ArrowUp at the start focuses the last queued row
+  ---
+  duration_ms: 276.859263
+  type: 'test'
+  ...
+# Subtest: shiftKey+ArrowUp does not take queue focus
+ok 92 - shiftKey+ArrowUp does not take queue focus
+  ---
+  duration_ms: 152.169606
+  type: 'test'
+  ...
+# Subtest: metaKey+ArrowUp does not take queue focus
+ok 93 - metaKey+ArrowUp does not take queue focus
+  ---
+  duration_ms: 83.478099
+  type: 'test'
+  ...
+# Subtest: altKey+ArrowUp does not take queue focus
+ok 94 - altKey+ArrowUp does not take queue focus
+  ---
+  duration_ms: 108.868871
+  type: 'test'
+  ...
+# Subtest: ArrowUp preserves focus with non-start caret
+ok 95 - ArrowUp preserves focus with non-start caret
+  ---
+  duration_ms: 85.967354
+  type: 'test'
+  ...
+# Subtest: ArrowUp preserves focus with empty queue
+ok 96 - ArrowUp preserves focus with empty queue
+  ---
+  duration_ms: 74.755753
+  type: 'test'
+  ...
+# Subtest: shiftKey+ArrowDown on a queued row leaves navigation unhandled
+ok 97 - shiftKey+ArrowDown on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 90.385571
+  type: 'test'
+  ...
+# Subtest: metaKey+ArrowDown on a queued row leaves navigation unhandled
+ok 98 - metaKey+ArrowDown on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 73.891892
+  type: 'test'
+  ...
+# Subtest: ctrlKey+ArrowDown on a queued row leaves navigation unhandled
+ok 99 - ctrlKey+ArrowDown on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 69.411225
+  type: 'test'
+  ...
+# Subtest: altKey+ArrowDown on a queued row leaves navigation unhandled
+ok 100 - altKey+ArrowDown on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 87.12681
+  type: 'test'
+  ...
+# Subtest: shiftKey+ArrowUp on a queued row leaves navigation unhandled
+ok 101 - shiftKey+ArrowUp on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 68.317793
+  type: 'test'
+  ...
+# Subtest: metaKey+ArrowUp on a queued row leaves navigation unhandled
+ok 102 - metaKey+ArrowUp on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 56.221566
+  type: 'test'
+  ...
+# Subtest: ctrlKey+ArrowUp on a queued row leaves navigation unhandled
+ok 103 - ctrlKey+ArrowUp on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 56.872606
+  type: 'test'
+  ...
+# Subtest: altKey+ArrowUp on a queued row leaves navigation unhandled
+ok 104 - altKey+ArrowUp on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 71.487809
+  type: 'test'
+  ...
+# Subtest: shiftKey+Home on a queued row leaves navigation unhandled
+ok 105 - shiftKey+Home on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 82.43627
+  type: 'test'
+  ...
+# Subtest: metaKey+Home on a queued row leaves navigation unhandled
+ok 106 - metaKey+Home on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 42.973504
+  type: 'test'
+  ...
+# Subtest: ctrlKey+Home on a queued row leaves navigation unhandled
+ok 107 - ctrlKey+Home on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 48.024562
+  type: 'test'
+  ...
+# Subtest: altKey+Home on a queued row leaves navigation unhandled
+ok 108 - altKey+Home on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 39.775926
+  type: 'test'
+  ...
+# Subtest: shiftKey+End on a queued row leaves navigation unhandled
+ok 109 - shiftKey+End on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 59.679451
+  type: 'test'
+  ...
+# Subtest: metaKey+End on a queued row leaves navigation unhandled
+ok 110 - metaKey+End on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 49.793197
+  type: 'test'
+  ...
+# Subtest: ctrlKey+End on a queued row leaves navigation unhandled
+ok 111 - ctrlKey+End on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 41.788874
+  type: 'test'
+  ...
+# Subtest: altKey+End on a queued row leaves navigation unhandled
+ok 112 - altKey+End on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 37.075812
+  type: 'test'
+  ...
+# Subtest: shiftKey+Escape on a queued row leaves navigation unhandled
+ok 113 - shiftKey+Escape on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 47.177355
+  type: 'test'
+  ...
+# Subtest: metaKey+Escape on a queued row leaves navigation unhandled
+ok 114 - metaKey+Escape on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 41.804532
+  type: 'test'
+  ...
+# Subtest: ctrlKey+Escape on a queued row leaves navigation unhandled
+ok 115 - ctrlKey+Escape on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 47.773479
+  type: 'test'
+  ...
+# Subtest: altKey+Escape on a queued row leaves navigation unhandled
+ok 116 - altKey+Escape on a queued row leaves navigation unhandled
+  ---
+  duration_ms: 49.126069
+  type: 'test'
+  ...
+# Subtest: plain ArrowDown on a queued row keeps its navigation destination
+ok 117 - plain ArrowDown on a queued row keeps its navigation destination
+  ---
+  duration_ms: 30.169136
+  type: 'test'
+  ...
+# Subtest: plain ArrowUp on a queued row keeps its navigation destination
+ok 118 - plain ArrowUp on a queued row keeps its navigation destination
+  ---
+  duration_ms: 196.086701
+  type: 'test'
+  ...
+# Subtest: plain Home on a queued row keeps its navigation destination
+ok 119 - plain Home on a queued row keeps its navigation destination
+  ---
+  duration_ms: 94.877253
+  type: 'test'
+  ...
+# Subtest: plain End on a queued row keeps its navigation destination
+ok 120 - plain End on a queued row keeps its navigation destination
+  ---
+  duration_ms: 82.121027
+  type: 'test'
+  ...
+# Subtest: plain Escape on a queued row keeps its navigation destination
+ok 121 - plain Escape on a queued row keeps its navigation destination
+  ---
+  duration_ms: 79.902848
+  type: 'test'
+  ...
+# Subtest: configured Ctrl+ArrowUp still dispatches chat.queue.editMessage before raw navigation
+ok 122 - configured Ctrl+ArrowUp still dispatches chat.queue.editMessage before raw navigation
+  ---
+  duration_ms: 80.564917
+  type: 'test'
+  ...
+# Subtest: configured Ctrl+ArrowUp still dispatches chat.queue.deleteMessage before raw navigation
+ok 123 - configured Ctrl+ArrowUp still dispatches chat.queue.deleteMessage before raw navigation
+  ---
+  duration_ms: 53.180131
+  type: 'test'
+  ...
+# Subtest: configured Ctrl+ArrowUp still dispatches chat.queue.steerMessage before raw navigation
+ok 124 - configured Ctrl+ArrowUp still dispatches chat.queue.steerMessage before raw navigation
+  ---
+  duration_ms: 40.586665
+  type: 'test'
+  ...
+# Subtest: an unavailable modified steer shortcut remains unhandled
+ok 125 - an unavailable modified steer shortcut remains unhandled
+  ---
+  duration_ms: 74.008937
+  type: 'test'
+  ...
+# Subtest: row navigation ignores a child target event
+ok 126 - row navigation ignores a child target event
+  ---
+  duration_ms: 41.039035
+  type: 'test'
+  ...
+# Subtest: row navigation ignores a composition event
+ok 127 - row navigation ignores a composition event
+  ---
+  duration_ms: 46.319203
+  type: 'test'
+  ...
+# Subtest: entering edit mode calls focus(end) on the queue-edit editor
+ok 128 - entering edit mode calls focus(end) on the queue-edit editor
+  ---
+  duration_ms: 36.717718
+  type: 'test'
+  ...
+# Subtest: re-entering edit mode after cancel still calls focus(end)
+ok 129 - re-entering edit mode after cancel still calls focus(end)
+  ---
+  duration_ms: 45.91504
+  type: 'test'
+  ...
+# Subtest: switching to a different queued row calls focus(end) for that row
+ok 130 - switching to a different queued row calls focus(end) for that row
+  ---
+  duration_ms: 43.576677
+  type: 'test'
+  ...
+# Subtest: leaving edit mode does not call focus on the edit editor
+ok 131 - leaving edit mode does not call focus on the edit editor
+  ---
+  duration_ms: 70.158778
+  type: 'test'
+  ...
+# Subtest: starting in edit mode calls focus(end) on mount
+ok 132 - starting in edit mode calls focus(end) on mount
+  ---
+  duration_ms: 39.039221
+  type: 'test'
+  ...
+# (node:143) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: singleton/initial visible row is not draggable
+ok 133 - singleton/initial visible row is not draggable
+  ---
+  duration_ms: 12.463814
+  type: 'test'
+  ...
+# Subtest: singleton/expanded shrink to one disables remaining row
+ok 134 - singleton/expanded shrink to one disables remaining row
+  ---
+  duration_ms: 3.858417
+  type: 'test'
+  ...
+# Subtest: singleton/collapsed shrink reveals non-draggable survivor
+ok 135 - singleton/collapsed shrink reveals non-draggable survivor
+  ---
+  duration_ms: 2.981812
+  type: 'test'
+  ...
+# Subtest: singleton/Cancel edit restores focus but not dragging
+ok 136 - singleton/Cancel edit restores focus but not dragging
+  ---
+  duration_ms: 3.154432
+  type: 'test'
+  ...
+# Subtest: singleton/Save edit restores focus but not dragging
+ok 137 - singleton/Save edit restores focus but not dragging
+  ---
+  duration_ms: 5.381938
+  type: 'test'
+  ...
+# Subtest: singleton/session remount does not expose dragging
+ok 138 - singleton/session remount does not expose dragging
+  ---
+  duration_ms: 2.25404
+  type: 'test'
+  ...
+# Subtest: control/empty queue renders no draggable row
+ok 139 - control/empty queue renders no draggable row
+  ---
+  duration_ms: 0.794185
+  type: 'test'
+  ...
+# Subtest: control/expanded multirow rows remain draggable
+ok 140 - control/expanded multirow rows remain draggable
+  ---
+  duration_ms: 1.205798
+  type: 'test'
+  ...
+# Subtest: control/enabled dragstart writes payload and sets own drag state
+ok 141 - control/enabled dragstart writes payload and sets own drag state
+  ---
+  duration_ms: 2.432971
+  type: 'test'
+  ...
+# Subtest: control/enabled distinct-target drop preserves full reorder payload
+ok 142 - control/enabled distinct-target drop preserves full reorder payload
+  ---
+  duration_ms: 5.089423
+  type: 'test'
+  ...
+# Subtest: control/self drop is already a no-op
+ok 143 - control/self drop is already a no-op
+  ---
+  duration_ms: 2.709704
+  type: 'test'
+  ...
+# Subtest: control/foreign dragover and drop do not reorder
+ok 144 - control/foreign dragover and drop do not reorder
+  ---
+  duration_ms: 1.129167
+  type: 'test'
+  ...
+# Subtest: control/dragend clears own drag state without reordering
+ok 145 - control/dragend clears own drag state without reordering
+  ---
+  duration_ms: 1.753317
+  type: 'test'
+  ...
+# Subtest: control/active edit disables other display rows
+ok 146 - control/active edit disables other display rows
+  ---
+  duration_ms: 4.123246
+  type: 'test'
+  ...
+# Subtest: control/collapsed multirow has no visible drag target
+ok 147 - control/collapsed multirow has no visible drag target
+  ---
+  duration_ms: 5.809635
+  type: 'test'
+  ...
+# Subtest: control/1474 blank edit cannot save or begin dragging
+ok 148 - control/1474 blank edit cannot save or begin dragging
+  ---
+  duration_ms: 10.959925
+  type: 'test'
+  ...
+# Subtest: control/1476 singleton regrowth stays expanded and restores multirow dragging
+ok 149 - control/1476 singleton regrowth stays expanded and restores multirow dragging
+  ---
+  duration_ms: 2.102068
+  type: 'test'
+  ...
+# Subtest: control/1479 removed edited row never receives return focus
+ok 150 - control/1479 removed edited row never receives return focus
+  ---
+  duration_ms: 14.120687
+  type: 'test'
+  ...
+# Subtest: control/1479 session-key switch cannot focus old edited row
+ok 151 - control/1479 session-key switch cannot focus old edited row
+  ---
+  duration_ms: 2.489624
+  type: 'test'
+  ...
+# Subtest: control/1479 Save-and-steer removes edited row without return focus
+ok 152 - control/1479 Save-and-steer removes edited row without return focus
+  ---
+  duration_ms: 9.617064
+  type: 'test'
+  ...
+# (node:152) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: send mode: steering by default, the opposite key queues, non-steering agents always queue
+ok 153 - send mode: steering by default, the opposite key queues, non-steering agents always queue
+  ---
+  duration_ms: 0.865084
+  type: 'test'
+  ...
+# Subtest: idle submit starts a turn; blank text does nothing
+ok 154 - idle submit starts a turn; blank text does nothing
+  ---
+  duration_ms: 8.133645
+  type: 'test'
+  ...
+# Subtest: attachment-only messages start, steer, queue and survive a blank queue edit
+ok 155 - attachment-only messages start, steer, queue and survive a blank queue edit
+  ---
+  duration_ms: 0.821049
+  type: 'test'
+  ...
+# Subtest: while working, steer goes into the turn and queue waits for the turn to end
+ok 156 - while working, steer goes into the turn and queue waits for the turn to end
+  ---
+  duration_ms: 0.230875
+  type: 'test'
+  ...
+# Subtest: a completed turn sends the head, one per turn, in order
+ok 157 - a completed turn sends the head, one per turn, in order
+  ---
+  duration_ms: 0.259442
+  type: 'test'
+  ...
+# Subtest: a superseded turn keeps the session working and sends nothing
+ok 158 - a superseded turn keeps the session working and sends nothing
+  ---
+  duration_ms: 0.123359
+  type: 'test'
+  ...
+# Subtest: a failed turn pauses a non-empty queue; resume sends the head
+ok 159 - a failed turn pauses a non-empty queue; resume sends the head
+  ---
+  duration_ms: 0.226693
+  type: 'test'
+  ...
+# Subtest: a failed turn with nothing queued leaves the next message free to start
+ok 160 - a failed turn with nothing queued leaves the next message free to start
+  ---
+  duration_ms: 0.111847
+  type: 'test'
+  ...
+# Subtest: a cancelled turn does not pause: the head sends after the cancellation
+ok 161 - a cancelled turn does not pause: the head sends after the cancellation
+  ---
+  duration_ms: 0.390644
+  type: 'test'
+  ...
+# Subtest: Stop: second press is a hard stop; idle Stop does nothing
+ok 162 - Stop: second press is a hard stop; idle Stop does nothing
+  ---
+  duration_ms: 0.451387
+  type: 'test'
+  ...
+# Subtest: delete, reorder and move queued messages
+ok 163 - delete, reorder and move queued messages
+  ---
+  duration_ms: 0.417632
+  type: 'test'
+  ...
+# Subtest: deleting the last item while idle and paused leaves nothing to send
+ok 164 - deleting the last item while idle and paused leaves nothing to send
+  ---
+  duration_ms: 0.120162
+  type: 'test'
+  ...
+# Subtest: an edited head does not send until the edit is saved or cancelled
+ok 165 - an edited head does not send until the edit is saved or cancelled
+  ---
+  duration_ms: 0.186535
+  type: 'test'
+  ...
+# Subtest: save and steer sends the edited text into the running turn
+ok 166 - save and steer sends the edited text into the running turn
+  ---
+  duration_ms: 0.185132
+  type: 'test'
+  ...
+# Subtest: saving an edit as blank deletes the message
+ok 167 - saving an edit as blank deletes the message
+  ---
+  duration_ms: 0.159678
+  type: 'test'
+  ...
+# Subtest: steer a queued message: into the running turn, or start it when idle
+ok 168 - steer a queued message: into the running turn, or start it when idle
+  ---
+  duration_ms: 0.164489
+  type: 'test'
+  ...
+# Subtest: a queued message keeps its attachments until it sends
+ok 169 - a queued message keeps its attachments until it sends
+  ---
+  duration_ms: 0.133343
+  type: 'test'
+  ...
+# Subtest: a permission request holds the turn: follow-ups queue, Stop cancels, an answer resumes working
+ok 170 - a permission request holds the turn: follow-ups queue, Stop cancels, an answer resumes working
+  ---
+  duration_ms: 0.330719
+  type: 'test'
+  ...
+# Subtest: queue-panel actions run through actionStep (shared by the Reason and Codex chats)
+ok 171 - queue-panel actions run through actionStep (shared by the Reason and Codex chats)
+  ---
+  duration_ms: 0.200176
+  type: 'test'
+  ...
+# (node:160) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: E edits the focused row, ⌫ deletes it and focuses the next row, else the previous one
+ok 172 - E edits the focused row, ⌫ deletes it and focuses the next row, else the previous one
+  ---
+  duration_ms: 1.801978
+  type: 'test'
+  ...
+# Subtest: ↵ steers only when the agent can steer, then focuses the next row or the composer
+ok 173 - ↵ steers only when the agent can steer, then focuses the next row or the composer
+  ---
+  duration_ms: 0.222914
+  type: 'test'
+  ...
+# Subtest: arrows, Home and End move between rows; ↓ past the last row and Esc go to the composer
+ok 174 - arrows, Home and End move between rows; ↓ past the last row and Esc go to the composer
+  ---
+  duration_ms: 0.203229
+  type: 'test'
+  ...
+# Subtest: a drop puts the dragged row in the target's place
+ok 175 - a drop puts the dragged row in the target's place
+  ---
+  duration_ms: 0.16057
+  type: 'test'
+  ...
+1..175
+# tests 175
+# suites 0
+# pass 175
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8523.290389
