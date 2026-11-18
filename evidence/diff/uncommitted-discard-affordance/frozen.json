@@ -1,0 +1,30 @@
+{
+  "key": "DIFF-UNCOMMITTED-DISCARD-AFFORDANCE-DE6-01",
+  "author": "Conductor Rebuild",
+  "baseline": "1e2500a959f68411be54cdca5c0473d0010b0559",
+  "fixture": {
+    "path": "tests/diff/uncommittedDiscardAffordance.mounted.test.mjs",
+    "sha256": "356522ce6cc1a129b4e3536346e5c45e217d1cf6e6860cfef09cbe840e97f506",
+    "bytes": 12891
+  },
+  "dependencies": {
+    "lock": "package-lock.json",
+    "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992",
+    "requested_versions": {
+      "react": "18.3.1",
+      "react-test-renderer": "18.3.1",
+      "typescript": "5.9.3",
+      "@pierre/diffs": "1.6.4",
+      "fuzzysort": "3.1.0"
+    }
+  },
+  "held_live_ref": "refs/backup/de6-live-before-uncommitted-discard",
+  "held_live_sha": "8caed4f901352e4ab51e3b1ae7c2ef164e720617",
+  "status": "PRE_RUNTIME_FIXTURE_V1_NOT_EXECUTED",
+  "source": {
+    "checks": 143,
+    "spans": 17,
+    "span_bytes": 47022
+  },
+  "expected_red": "Six row/header Uncommitted visibility cases fail; four All-scope menu controls pass. No product treatment yet."
+}

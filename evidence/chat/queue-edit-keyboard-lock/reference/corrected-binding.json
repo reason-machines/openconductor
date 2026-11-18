@@ -1,0 +1,472 @@
+{
+  "frontier": "COMPOSER-QUEUE-EDIT-EMPTY-SAVE-135",
+  "disposition": "REFERENCE_BINDING_CORRECTED_STATIC_ONLY",
+  "checked_default_main": "c22e27d48a0940c5793842cfddc023b7e5f838c5",
+  "method": "Existing retained bytes plus source-owner record; inert TypeScript parse, no target evaluation or new acquisition.",
+  "supersedes": {
+    "path": "evidence/chat-queue/rea-queue-sites.json",
+    "evidence_id": "ev_755a9bca2e7b0cc56c59a7ec9448a8304509a7afea63ab4cca3524bf6ab090a2",
+    "field": "slice.sha256 as source file hash",
+    "recorded_digest": "2e082e3c60eaae37f162dabcd19360ce239e500a1ac0d3c687a20ada6c733ad5",
+    "reason": "Original receipt-construction command copied ev.subject.digest.sha256; retained REA subject.format is directory. That root digest was mislabeled as the slice file digest. Root digest itself is not disproved; file mapping now uses an independently measured digest. Historical receipt remains untouched."
+  },
+  "corrected_slice": {
+    "source": "renderApp-D_fmY7hW.js",
+    "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "utf8_half_open": [
+      8599657,
+      8761291
+    ],
+    "bytes": 161634,
+    "sha256": "e43f1cbced0bbad078e30162a1249c272d17e503215464a35115e73843572f88",
+    "generated_by": "recover-binding.mjs",
+    "site_bindings": [
+      {
+        "unknown_id": "jsrg_unknown_0640ac1b830246547ffb6ec26748439d93ab31b293ec434539ac7f46d81b8815",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 52518,
+        "operation": "retryMessage",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.retryMessage",
+        "renderer_utf8_half_open": [
+          8752757,
+          8752772
+        ],
+        "enclosing_declaration": "JNi",
+        "sha256": "c3e5510b587bfaec6fd49a9afc48cc03402be82effb6e756868bad02b31f209b"
+      },
+      {
+        "unknown_id": "jsrg_unknown_8e60d3bed747ca804798a2550af7d3cb9f97b32d2d7b7b74ed4753e6205ea58d",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 27397,
+        "operation": "retryMessage",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.retryMessage",
+        "renderer_utf8_half_open": [
+          8727630,
+          8727645
+        ],
+        "enclosing_declaration": "AAo",
+        "sha256": "c3e5510b587bfaec6fd49a9afc48cc03402be82effb6e756868bad02b31f209b"
+      },
+      {
+        "unknown_id": "jsrg_unknown_1c476078b1becf5b79831de41444338396a5fb5f4552a53f13bfcd68628ea1ef",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 55457,
+        "operation": "saveQueuedMessageEdit",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.saveQueuedMessageEdit",
+        "renderer_utf8_half_open": [
+          8755696,
+          8755720
+        ],
+        "enclosing_declaration": "JNi",
+        "sha256": "86d03e9ada7b40e6d6d40ba71058c37d741b38935e0af26de83e8dde260fc424"
+      },
+      {
+        "unknown_id": "jsrg_unknown_a728105ff0665cc68edf3cefe4401045b1e8935d9e982d0a02ab702ce48aa756",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 55080,
+        "operation": "saveQueuedMessageEdit",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.saveQueuedMessageEdit",
+        "renderer_utf8_half_open": [
+          8755319,
+          8755343
+        ],
+        "enclosing_declaration": "JNi",
+        "sha256": "86d03e9ada7b40e6d6d40ba71058c37d741b38935e0af26de83e8dde260fc424"
+      },
+      {
+        "unknown_id": "jsrg_unknown_46d460ad0b6265b733a21416918f5121b6b0b11645d142b8e2d79060a4b41ee0",
+        "reason": "ambiguous-target",
+        "line": 5,
+        "column": 39809,
+        "operation": "cancelSession",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "dS.cancelSession",
+        "renderer_utf8_half_open": [
+          8684240,
+          8684256
+        ],
+        "enclosing_declaration": "ITo",
+        "sha256": "a30a04b7b97708e9f32dc7d16d677adee4dff1e886ab5fb3d7895c4dd3d1106f"
+      },
+      {
+        "unknown_id": "jsrg_unknown_5904ce63091478c17fa5e89011860dd944644a001178a7783eb0b6364345b0a0",
+        "reason": "ambiguous-target",
+        "line": 5,
+        "column": 46647,
+        "operation": "cancelSession",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "dS.cancelSession",
+        "renderer_utf8_half_open": [
+          8691078,
+          8691094
+        ],
+        "enclosing_declaration": "ITo",
+        "sha256": "a30a04b7b97708e9f32dc7d16d677adee4dff1e886ab5fb3d7895c4dd3d1106f"
+      },
+      {
+        "unknown_id": "jsrg_unknown_dbdf7acabcaabef9de788389c26b8b5be06e08e3be85add75ab18bd3ebe74b99",
+        "reason": "ambiguous-target",
+        "line": 5,
+        "column": 22872,
+        "operation": "cancelSession",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "dS.cancelSession",
+        "renderer_utf8_half_open": [
+          8667303,
+          8667319
+        ],
+        "enclosing_declaration": "ITo",
+        "sha256": "a30a04b7b97708e9f32dc7d16d677adee4dff1e886ab5fb3d7895c4dd3d1106f"
+      },
+      {
+        "unknown_id": "jsrg_unknown_5d3f71f3f23cb156d0b9a08db3644ba247d686d1f616328279f0a0db2e6bf0d5",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 27147,
+        "operation": "cancelMessage",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.cancelMessage",
+        "renderer_utf8_half_open": [
+          8727380,
+          8727396
+        ],
+        "enclosing_declaration": "AAo",
+        "sha256": "c0dde8b912ac5c924a81e6a97e99a4bb5851537b8804bcfaa4564cf28b008aa0"
+      },
+      {
+        "unknown_id": "jsrg_unknown_5e065fc642867f42dbdb36852ea9e18a292efdaa4612a1a8971e6a772a0c662c",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 27544,
+        "operation": "setPaused",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.setPaused",
+        "renderer_utf8_half_open": [
+          8727777,
+          8727789
+        ],
+        "enclosing_declaration": "AAo",
+        "sha256": "778038a1003a8e0d154a5689796dc8d80c1c42bddc0f8d0643457e362fe8e0f6"
+      },
+      {
+        "unknown_id": "jsrg_unknown_616a0896718d7869d79053c03feafc948a169d12ba81428dbe0f35123c62ab7b",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 50997,
+        "operation": "drafts",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.drafts",
+        "renderer_utf8_half_open": [
+          8751236,
+          8751245
+        ],
+        "enclosing_declaration": "JNi",
+        "sha256": "e3b7fc311cd7cb505c0bf8427392f7245218bd506116be0cfacf8e895809b7f9"
+      },
+      {
+        "unknown_id": "jsrg_unknown_951027a275a900d9e366409cce33c5eace5b6b31b5909b4d8375c0aa2d39eed6",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 51038,
+        "operation": "drafts",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.drafts",
+        "renderer_utf8_half_open": [
+          8751277,
+          8751286
+        ],
+        "enclosing_declaration": "JNi",
+        "sha256": "e3b7fc311cd7cb505c0bf8427392f7245218bd506116be0cfacf8e895809b7f9"
+      },
+      {
+        "unknown_id": "jsrg_unknown_b50b63921cb89d9b11da44e5fa7ac942835638a8a28225fe16e4aec1061360ad",
+        "reason": "ambiguous-target",
+        "line": 5,
+        "column": 39610,
+        "operation": "drafts",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.drafts",
+        "renderer_utf8_half_open": [
+          8684041,
+          8684050
+        ],
+        "enclosing_declaration": "ITo",
+        "sha256": "e3b7fc311cd7cb505c0bf8427392f7245218bd506116be0cfacf8e895809b7f9"
+      },
+      {
+        "unknown_id": "jsrg_unknown_ceab61477a4b856b08783e50349da3d5307a12cdbc40afd25d288055c027ac0a",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 51076,
+        "operation": "drafts",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.drafts",
+        "renderer_utf8_half_open": [
+          8751315,
+          8751324
+        ],
+        "enclosing_declaration": "JNi",
+        "sha256": "e3b7fc311cd7cb505c0bf8427392f7245218bd506116be0cfacf8e895809b7f9"
+      },
+      {
+        "unknown_id": "jsrg_unknown_e391af586f9c7b11be3ae57e14d6e92dc91ca9848f0b7a1cd42eb045df66cddf",
+        "reason": "ambiguous-target",
+        "line": 5,
+        "column": 25696,
+        "operation": "drafts",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.drafts",
+        "renderer_utf8_half_open": [
+          8670127,
+          8670136
+        ],
+        "enclosing_declaration": "ITo",
+        "sha256": "e3b7fc311cd7cb505c0bf8427392f7245218bd506116be0cfacf8e895809b7f9"
+      },
+      {
+        "unknown_id": "jsrg_unknown_91c38de43229999f4cf5822f214a78403d98df4f2877e44dd89c844fc61f8de9",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 54361,
+        "operation": "beginQueuedMessageEdit",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.beginQueuedMessageEdit",
+        "renderer_utf8_half_open": [
+          8754600,
+          8754625
+        ],
+        "enclosing_declaration": "JNi",
+        "sha256": "f240f2d77014d9a0ec292c21d0a969271af923f11bcde60fdf03a61fb286dad7"
+      },
+      {
+        "unknown_id": "jsrg_unknown_c42cbc90f8438ef3f9ae64a27048e421f02b4a530946b41892008f2ec1a30ef1",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 54698,
+        "operation": "cancelQueuedMessageEdit",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.cancelQueuedMessageEdit",
+        "renderer_utf8_half_open": [
+          8754937,
+          8754963
+        ],
+        "enclosing_declaration": "JNi",
+        "sha256": "eadec006b0af5862845d74449ee677e3e3fc0ceb46e31e785aa134560f6b6747"
+      },
+      {
+        "unknown_id": "jsrg_unknown_c8de08889c6998edd4255ee715adef45562e7c03bff9fea4c9f3906a2f3d7ebb",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 27101,
+        "operation": "discardMessage",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.discardMessage",
+        "renderer_utf8_half_open": [
+          8727334,
+          8727351
+        ],
+        "enclosing_declaration": "AAo",
+        "sha256": "43083b744e9754113e5c40e3a5b4b20a5a8d570099e760d117f7516f69f7d666"
+      },
+      {
+        "unknown_id": "jsrg_unknown_dd871515ad3e3a4a27a8dc0da9e1f201e6ba6009a8a269ff7904259bdd113b12",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 27790,
+        "operation": "reorderMessages",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.reorderMessages",
+        "renderer_utf8_half_open": [
+          8728023,
+          8728041
+        ],
+        "enclosing_declaration": "AAo",
+        "sha256": "6002d4d5c3277910f3508ffb76b9ec667190e08f02db99e6661ab7b2fad39186"
+      },
+      {
+        "unknown_id": "jsrg_unknown_e1e1918300faabf28a72a19b26c121386fbf9bc1820521eb045e71982b9d2760",
+        "reason": "ambiguous-target",
+        "line": 7,
+        "column": 26874,
+        "operation": "steerMessage",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.steerMessage",
+        "renderer_utf8_half_open": [
+          8727107,
+          8727122
+        ],
+        "enclosing_declaration": "AAo",
+        "sha256": "6a3eb3a37ddc1dc8d75492459eb5707f78e762e1b95fcacdb99ee3ab52955e5f"
+      },
+      {
+        "unknown_id": "jsrg_unknown_e9be2bd64c5c42783f85d93550d31cec222717016512f103f9a3d020a7dc90d6",
+        "reason": "ambiguous-target",
+        "line": 5,
+        "column": 24441,
+        "operation": "sendMessage",
+        "coordinate_system": "1-based line, 0-based UTF16 column",
+        "property": "nc.sendMessage",
+        "renderer_utf8_half_open": [
+          8668872,
+          8668886
+        ],
+        "enclosing_declaration": "ITo",
+        "sha256": "44ff9574c423bc374d71423e4b63cb71e8adf5fcd38addbe7e6e1bbe6b0c9f9f"
+      }
+    ]
+  },
+  "source_owner_records": [
+    {
+      "session_id": "1a72a8da-f339-4b7b-ab11-f65a8514910a",
+      "source_id": "bde4ad1f-150f-4f12-96ec-29c0b99c1b32",
+      "revision": 21891147,
+      "window": [
+        0,
+        1376
+      ],
+      "total_chars": 1376
+    },
+    {
+      "session_id": "1a72a8da-f339-4b7b-ab11-f65a8514910a",
+      "source_id": "edb2ee10-d6cd-4afd-810b-0ed0adca5b84",
+      "revision": 21937397,
+      "window": [
+        0,
+        5000
+      ],
+      "total_chars": 31456
+    }
+  ],
+  "passed": 107,
+  "checks": [
+    "fresh fetched main matches rerun source qualification",
+    "all original source checks passed",
+    "only historical digest-as-file check failed",
+    "renderer full asset size and digest",
+    "renderer fresh-main original Tauri manifest",
+    "index full asset size and digest",
+    "index fresh-main original Tauri manifest",
+    "historical REA receipt preserved byte for byte",
+    "explicit original renderer byte range",
+    "correct file digest independently reproduced",
+    "old receipt digest is not accepted as file identity",
+    "valid UTF8 roundtrip",
+    "original function start boundary",
+    "original function end boundary",
+    "entire regenerated slice parses inertly",
+    "matches retained REA module end line7 column61052",
+    "original source-owner record assigns root subject digest to slice.sha256",
+    "retained original REA subject is directory not source module",
+    "retained original REA source module identity and bounds",
+    "retryMessage exact REA coordinate 7:52518",
+    "retryMessage byte roundtrip 52518",
+    "retryMessage exact REA coordinate 7:27397",
+    "retryMessage byte roundtrip 27397",
+    "saveQueuedMessageEdit exact REA coordinate 7:55457",
+    "saveQueuedMessageEdit byte roundtrip 55457",
+    "saveQueuedMessageEdit exact REA coordinate 7:55080",
+    "saveQueuedMessageEdit byte roundtrip 55080",
+    "cancelSession exact REA coordinate 5:39809",
+    "cancelSession byte roundtrip 39809",
+    "cancelSession exact REA coordinate 5:46647",
+    "cancelSession byte roundtrip 46647",
+    "cancelSession exact REA coordinate 5:22872",
+    "cancelSession byte roundtrip 22872",
+    "cancelMessage exact REA coordinate 7:27147",
+    "cancelMessage byte roundtrip 27147",
+    "setPaused exact REA coordinate 7:27544",
+    "setPaused byte roundtrip 27544",
+    "drafts exact REA coordinate 7:50997",
+    "drafts byte roundtrip 50997",
+    "drafts exact REA coordinate 7:51038",
+    "drafts byte roundtrip 51038",
+    "drafts exact REA coordinate 5:39610",
+    "drafts byte roundtrip 39610",
+    "drafts exact REA coordinate 7:51076",
+    "drafts byte roundtrip 51076",
+    "drafts exact REA coordinate 5:25696",
+    "drafts byte roundtrip 25696",
+    "beginQueuedMessageEdit exact REA coordinate 7:54361",
+    "beginQueuedMessageEdit byte roundtrip 54361",
+    "cancelQueuedMessageEdit exact REA coordinate 7:54698",
+    "cancelQueuedMessageEdit byte roundtrip 54698",
+    "discardMessage exact REA coordinate 7:27101",
+    "discardMessage byte roundtrip 27101",
+    "reorderMessages exact REA coordinate 7:27790",
+    "reorderMessages byte roundtrip 27790",
+    "steerMessage exact REA coordinate 7:26874",
+    "steerMessage byte roundtrip 26874",
+    "sendMessage exact REA coordinate 5:24441",
+    "sendMessage byte roundtrip 24441",
+    "both REA Save and steer sites bound to complete actual JNi owner",
+    "JNi whole-asset byte range and digest",
+    "JNi complete declaration syntax",
+    "AAo whole-asset byte range and digest",
+    "AAo complete declaration syntax",
+    "GTo whole-asset byte range and digest",
+    "GTo complete declaration syntax",
+    "TAo whole-asset byte range and digest",
+    "TAo complete declaration syntax",
+    "iAo whole-asset byte range and digest",
+    "iAo complete declaration syntax",
+    "QTo whole-asset byte range and digest",
+    "QTo complete declaration syntax",
+    "eAo whole-asset byte range and digest",
+    "eAo complete declaration syntax",
+    "lqn whole-asset byte range and digest",
+    "lqn complete declaration syntax",
+    "pTo whole-asset byte range and digest",
+    "pTo complete declaration syntax",
+    "Igo whole-asset byte range and digest",
+    "Igo complete declaration syntax",
+    "lHt whole-asset byte range and digest",
+    "lHt complete declaration syntax",
+    "z5o whole-asset byte range and digest",
+    "z5o complete declaration syntax",
+    "ITo whole-asset byte range and digest",
+    "ITo complete declaration syntax",
+    "saveQueuedMessageEdit whole-asset byte range and digest",
+    "saveQueuedMessageEdit complete declaration syntax",
+    "beginQueuedMessageEdit whole-asset byte range and digest",
+    "beginQueuedMessageEdit complete declaration syntax",
+    "setQueuedMessageEditMessage whole-asset byte range and digest",
+    "setQueuedMessageEditMessage complete declaration syntax",
+    "forWorkspace whole-asset byte range and digest",
+    "forWorkspace complete declaration syntax",
+    "src/features/chat/Composer.tsx fresh-main identity",
+    "src/features/chat/ComposerEditor.tsx fresh-main identity",
+    "src/components/WorkspaceView.tsx fresh-main identity",
+    "src/features/chat/chatRuntime.ts fresh-main identity",
+    "src/features/chat/agents.ts fresh-main identity",
+    "src/features/chat/queue.ts fresh-main identity",
+    "src/features/chat/queue.test.ts fresh-main identity",
+    "src/features/chat/userContent.ts fresh-main identity",
+    "evidence/chat-queue/README.md fresh-main identity",
+    "evidence/chat-queue/rea-queue-sites.json fresh-main identity",
+    "evidence/frontend/tauri-assets-manifest.json fresh-main identity",
+    "no tracked product worktree edits",
+    "tracked whitespace clean"
+  ],
+  "complete_declarations": 17,
+  "original_source_checks": 97,
+  "historical_failed_check_superseded_not_passed": [
+    "existing REA-analyzed slice byte identity"
+  ],
+  "source_finding": "Blank queued-edit Save and Save-and-steer are unavailable in retained Conductor UI (row, composer button, keyboard). Main QueueRow permits both and routes an empty no-attachment edit to remove(q,id). This is a static source mismatch, not an executed reproduction.",
+  "proposed_fix": "Composer.tsx QueueRow only: derive meaningful text from submittedUserPrompt(value).text.trim(), guard both save dispatch routes and disable both save buttons when blank. Preserve matched shortcut consumption and existing IME/cancel/delete/nonblank behavior. No reducer, native or provider changes.",
+  "decisive_red_plan_not_run": "Use actual mounted Composer QueueRow with a working/paused queue and q1 in edit mode. Clear to empty or whitespace; expect both Save actions unavailable and matched save/saveAndSteer keys consumed without dispatch, q1 and edit draft retained. Baseline predicts enabled buttons/saveEdit action->deletion. Same controls for nonblank Save/steer, Cancel, explicit Delete, canSteer=false, IME and meaningful structured atoms. Do not execute until collision/fixture admission.",
+  "limits": [
+    "Static complete source closure, not original-app runtime observation or executed RED.",
+    "Original directory digest is retained, not remeasured. No claim exact historical directory bytes were recovered.",
+    "No native/provider behavior or queue persistence/restoration claim.",
+    "No fixture or product edit, build/browser/native/REA invocation, implementation lease or runtime admission."
+  ]
+}

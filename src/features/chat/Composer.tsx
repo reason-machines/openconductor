@@ -600,7 +600,7 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
 
   // The focused row's keys (the row itself, not its buttons): edit, delete, steer and moving between rows.
   function onRowKeyDown(e: KeyboardEvent<HTMLLIElement>, id: string) {
-    if (e.target !== e.currentTarget || e.nativeEvent.isComposing) return;
+    if (e.target !== e.currentTarget || e.nativeEvent.isComposing || queue.editingId !== null) return;
     const ev = e.nativeEvent;
     const hit = (command: QueueCommand) => keys(command).some((s) => matchesEvent(s, ev));
     const navigationKey = e.metaKey || e.ctrlKey || e.altKey || e.shiftKey ? "" : e.key;

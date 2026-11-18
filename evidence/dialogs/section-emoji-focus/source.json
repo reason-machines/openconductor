@@ -1,0 +1,107 @@
+{
+  "owner": "6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+  "current_main": "5100f02abdc1129050d5f020f8de552680fc2994",
+  "scope": "SectionDialog emoji picker open -> search input autofocus only. No popover/dataset/search algorithm/submit mutation changes.",
+  "retained_REA": "historical ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "renderer": {
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "bytes": 11600457
+  },
+  "spans": [
+    {
+      "name": "kya",
+      "utf8_half_open": [
+        11054301,
+        11054936
+      ],
+      "bytes": 635,
+      "sha256": "3ebd4ff9b3f73088701dd554ccb401e5ad5a56f223729d87ff5e5e7d37cc2d94",
+      "file": "kya.txt"
+    },
+    {
+      "name": "Tya",
+      "utf8_half_open": [
+        11054936,
+        11056145
+      ],
+      "bytes": 1209,
+      "sha256": "27ab9fe6fc9eafa2055b7bd44b61365181da1af8fba0b4740b83e6dab28c49ac",
+      "file": "Tya.txt"
+    },
+    {
+      "name": "Aya",
+      "utf8_half_open": [
+        11056145,
+        11058891
+      ],
+      "bytes": 2746,
+      "sha256": "3217043d3c0b71c509cdd3c786d814a7f6045d159b05c1f0c1980535a42eddfa",
+      "file": "Aya.txt"
+    },
+    {
+      "name": "uUi",
+      "utf8_half_open": [
+        10839876,
+        10842357
+      ],
+      "bytes": 2481,
+      "sha256": "e66d5db5b7448f8477bf5174a1d826cbb4512e6d2f9decd4ced62b4cefed3eb3",
+      "file": "uUi.txt"
+    },
+    {
+      "name": "bCi-input",
+      "utf8_half_open": [
+        7265528,
+        7270238
+      ],
+      "bytes": 4710,
+      "sha256": "6b45c544633cedf60b8a56828e122f68328bb2f0ca699e3ae947864ea14abb53",
+      "file": "bCi-input.txt"
+    },
+    {
+      "name": "Es-prop-assembly",
+      "utf8_half_open": [
+        465319,
+        465872
+      ],
+      "bytes": 553,
+      "sha256": "f65ceed0d7c6f46d502adad8e48413e5146234389531f035cd40be2ebf1149e7",
+      "file": "Es-prop-assembly.txt"
+    }
+  ],
+  "main_inputs": {
+    "src/App.tsx": {
+      "git_blob": "4b8acf5a6039753329dc1c74e42cdd2be5ddbb0d",
+      "sha256": "e92b6d4418579c64b45a7dc596c0f41bd866be74f59469a395b134d57163f7ab",
+      "matches_main": true
+    },
+    "src/components/SectionDialog.tsx": {
+      "git_blob": "ef004ac2fbb52ceb3a8966545ca26f7c3d8f75bd",
+      "sha256": "329c511cbd62d38291a47e1881445aad724d8322738600fddfe2c8b40c9f4313",
+      "matches_main": true
+    },
+    "src/components/sectionEmoji.test.ts": {
+      "git_blob": "11b1cac76223438a9fc5b2ea1a898d1afc3cfba3",
+      "sha256": "a666cda4ee1a1bda0561e43d907be52267deebb1c100ad44425733043d4df599",
+      "matches_main": true
+    },
+    "src/components/sectionNameInput.test.ts": {
+      "git_blob": "8fb875df3a15f0f2417046c1a5527a01070fa9b4",
+      "sha256": "4dc5aa1e240c7582b3fab91c8e86bac80a9693b7f8839821b50c3c1ea16582ed",
+      "matches_main": true
+    },
+    "src/components/DialogFrame.tsx": {
+      "git_blob": "f9e68711951542413f61c0cfe75b5987f9bf28cb",
+      "sha256": "47734d523d725af2615c80a1f9995f28e78b2b2d8e6dd32a7303b97e69c670d5",
+      "matches_main": true
+    }
+  },
+  "source_observation": "kya -> Tya -> Aya mounts uUi only under open emoji picker; uUi passes autoFocus true through bCi rest props/validation props to Es input; main inline search input lacks autoFocus while name input has it.",
+  "behavior_status": "NOT_RUN: source-qualified missing autofocus prop; actual focus movement requires trusted browser check. No native claim.",
+  "candidate": "One autoFocus prop on existing Search emoji input.",
+  "controls": [
+    "Closed picker has no search input and initial name autofocus preserved.",
+    "Create/edit opening mounts search with autoFocus true without submitting or closing.",
+    "Existing 20-choice filter/select/remove/Cancel/Enter assertions unchanged."
+  ]
+}

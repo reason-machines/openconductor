@@ -1,0 +1,51 @@
+{
+  "reservation": "SAME135-ORIGINAL-RED26-ddfc-43493a01-8242-41a1-a105-b6c9348c275e",
+  "started_utc": "2026-11-18T01:33:07.595127+00:00",
+  "request_sha256": "6ccc27f05c0cdc8ed86b7b0f3977c07fc9c33d739e5f904a3c040be819d716fa",
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "env",
+    "-u",
+    "COMPOSER_QUEUE_EDIT_KEYBOARD_LOCK_SOURCE_REF",
+    "NODE_OPTIONS=--max-old-space-size=768",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    ".qa/queue-edit-keyboard-lock-135/composerQueueEditKeyboardLock.test.ts"
+  ],
+  "node_test_executed": true,
+  "free_bytes_before": 16527319040,
+  "own_runtime_jobs_before": [],
+  "preflight_pin_checks": 266,
+  "actual_main": "8f0f8707a529e17937cd8e9447b8b769b6bc5e21",
+  "source_equivalent_checks": 22,
+  "test_started_utc": "2026-11-18T01:33:08.870173+00:00",
+  "process_group": 107,
+  "exit_code": 1,
+  "test_terminated_utc": "2026-11-18T01:33:10.037414+00:00",
+  "surviving_pids": [],
+  "actual_cleanup_release_utc": "2026-11-18T01:33:10.038219+00:00",
+  "child_maxrss_kib_not_aggregate": 163308,
+  "rss_scope": "Child maximum RSS, not aggregate process-group RSS or group cap; heap768MiB per Node process.",
+  "postrun_pin_checks": 266,
+  "outputs": [
+    {
+      "path": ".qa/queue-edit-keyboard-lock-135/runtime-red/test.stderr",
+      "bytes": 176,
+      "sha256": "d743bdfb59cd9e60a67bf5f42a6430a854426fe96c334df1780a560b69b6ddf3"
+    },
+    {
+      "path": ".qa/queue-edit-keyboard-lock-135/runtime-red/test.stdout",
+      "bytes": 17551,
+      "sha256": "f5c1b46a7c035029554cb7a2f656ca6844c4ec104687feefb131c616d1bee568"
+    }
+  ],
+  "retained_output_bytes": 17727,
+  "within_output_16mib": true
+}

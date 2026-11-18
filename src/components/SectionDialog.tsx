@@ -98,6 +98,7 @@ export function SectionDialog({ data, onSubmit, onClose }: Props) {
                 aria-label="Search emoji"
                 placeholder="Search emoji"
                 value={emojiQuery}
+                autoFocus
                 onChange={(e) => setEmojiQuery(e.target.value)}
                 autoComplete="off"
                 autoCorrect="off"
