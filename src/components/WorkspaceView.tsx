@@ -585,7 +585,9 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
 
   /** Stages each file (Conductor's draft attachments); it reaches the workspace when the message is sent. */
   async function attachFiles(files: File[]) {
+    const box = inputRef.current;
     await session.attach(files, reason ? (relativePath, data) => draftAttachmentsApi.write({ draftWorkspaceId: workspace.id, relativePath, data }) : undefined);
+    if (files.length > 0 && inputRef.current === box) box?.focus();
   }
 
   /** Attaches files dropped from the OS window onto the app (Conductor's onDragDropEvent consumer 2). */
