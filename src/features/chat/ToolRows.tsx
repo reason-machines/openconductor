@@ -974,7 +974,7 @@ function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isErr
           bareContent
           content={
             <div className="oc-plan">
-              <Markdown text={plan} className="oc-prose" workspacePath={workspacePath} onOpenFile={onOpenFile} />
+              <Markdown text={plan} className="oc-prose" workspacePath={workspacePath} onOpenFile={onOpenFile} Link={LinkWithMenu} />
             </div>
           }
         />

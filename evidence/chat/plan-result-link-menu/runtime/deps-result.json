@@ -1,0 +1,132 @@
+{
+  "admission_id": "PLAN-RESULT-LINK-MENU-BE7-DEPS-20261117T233603120Z",
+  "created": "2026-11-17T23:38:29.006778+00:00",
+  "expires": "2026-11-17T23:46:29.006778+00:00",
+  "start_gate_utc": "2026-11-17T23:38:29.053356+00:00",
+  "host": "ws-yla3mf34ir4fjlhv3sgvoipp",
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "pins_before": 11,
+  "processes_before": [],
+  "free_bytes_before": 19483107328,
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "nice",
+    "-n",
+    "10",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "300s",
+    "env",
+    "NODE_OPTIONS=--max-old-space-size=768",
+    "UV_THREADPOOL_SIZE=1",
+    "npm_config_jobs=1",
+    "npm",
+    "ci",
+    "--ignore-scripts",
+    "--omit=optional",
+    "--no-audit",
+    "--no-fund",
+    "--maxsockets=1",
+    "--cache=/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/.ara-state/tmp/plan-result-links/runtime/.runtime-tmp/npm-cache"
+  ],
+  "rss_measured": false,
+  "RSS": "Not measured; 768MiB Node heap cap is not an RSS ceiling",
+  "disk_scope": "Private allocated tree polled each second; shared free-disk floor also polled",
+  "exit_code": 0,
+  "install_end_utc": "2026-11-17T23:38:48.352653+00:00",
+  "stop_reason": null,
+  "installed": {
+    "react": {
+      "name": "react",
+      "version": "18.3.1",
+      "expected": "18.3.1",
+      "identity_pass": true,
+      "manifest_sha256": "d4e68a5c96babb20cad1daafea8b78822eae45b341552cf5418d06a5304fa64c"
+    },
+    "react-test-renderer": {
+      "name": "react-test-renderer",
+      "version": "18.3.1",
+      "expected": "18.3.1",
+      "identity_pass": true,
+      "manifest_sha256": "e3b09e5a62e134d5241b520715de45b63ff3568ccbbeeeb70601607c3136c811"
+    },
+    "typescript": {
+      "name": "typescript",
+      "version": "5.9.3",
+      "expected": "5.9.3",
+      "identity_pass": true,
+      "manifest_sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    },
+    "react-markdown": {
+      "name": "react-markdown",
+      "version": "9.1.0",
+      "expected": "9.1.0",
+      "identity_pass": true,
+      "manifest_sha256": "a0679e19e3563d144bae1c9e7fbdbd66501792b5ba27cf10e6396ba78f01fe36"
+    },
+    "remark-breaks": {
+      "name": "remark-breaks",
+      "version": "4.0.0",
+      "expected": "4.0.0",
+      "identity_pass": true,
+      "manifest_sha256": "df633e5c230d648c90bbfdfe5e75d28a2492af508a38b8751d9faf28af0443c6"
+    },
+    "remark-gfm": {
+      "name": "remark-gfm",
+      "version": "4.0.1",
+      "expected": "4.0.1",
+      "identity_pass": true,
+      "manifest_sha256": "c199482a69355b610bd1ff225b097776d4a990445b11e5f4c618930dacc8c79d"
+    },
+    "remark-smartypants": {
+      "name": "remark-smartypants",
+      "version": "3.0.3",
+      "expected": "3.0.3",
+      "identity_pass": true,
+      "manifest_sha256": "b4b8eae0c5872dd65083a33323f0a64991e44f427509618cc67d1b3c15eb1423"
+    },
+    "unist-util-visit": {
+      "name": "unist-util-visit",
+      "version": "5.2.0",
+      "expected": "5.2.0",
+      "identity_pass": true,
+      "manifest_sha256": "6f544a847f95a9fcb7d8c1475e97998153fb933b72ee7a9dd60cb5f2abc845dd"
+    },
+    "lowlight": {
+      "name": "lowlight",
+      "version": "3.3.0",
+      "expected": "3.3.0",
+      "identity_pass": true,
+      "manifest_sha256": "7d376c50be6087225dd11041b7a3fc9b0551fef37d45f7d2a5a88cad3c55f391"
+    },
+    "highlight.js": {
+      "name": "highlight.js",
+      "version": "11.11.2",
+      "expected": "11.11.2",
+      "identity_pass": true,
+      "manifest_sha256": "24fbfcbf5932c773b37489c30cb69d1443a2e369e9782918564b5aff76e528dd"
+    }
+  },
+  "frozen_inputs_after": true,
+  "retained_pinned_deps": true,
+  "retained_allocated_bytes": 414842880,
+  "temp_removed": true,
+  "processes_after": [],
+  "owned_group_survivors": [],
+  "no_survivors": true,
+  "observed_private_peak_delta_bytes": 485384192,
+  "peak_sample_utc": "2026-11-17T23:38:47.352450+00:00",
+  "minimum_observed_free_bytes": 18996797440,
+  "free_bytes_after_cleanup": 19068280832,
+  "shared_free_disk_delta_bytes": 414826496,
+  "actual_release_utc": "2026-11-17T23:38:48.764035+00:00",
+  "released_before_expiry": true
+}
