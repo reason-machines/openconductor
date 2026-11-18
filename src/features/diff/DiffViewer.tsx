@@ -183,7 +183,7 @@ function OpenFile({ diff, f, selected, isVisible, visibleVisitCount, onLineClick
   const [isEditing, setIsEditing] = useState(true);
   useEffect(() => { setIsEditing(true); }, [selected.path]);
   // Editable when edit is non-null and the file is not a previewable markdown/HTML file.
-  const isEditableCode = !isPreviewable && edit !== null;
+  const isEditableCode = !isPreviewable && edit !== undefined;
   // Retained hidden files keep their mode, but only the visible file owns ⌘E.
   useKeybindings(isVisible ? {
     ...(isPreviewable ? { "workspace.toggleFileEdit": () => setIsPreviewing((p) => !p) } : {}),

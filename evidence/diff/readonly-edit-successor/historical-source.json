@@ -1,0 +1,150 @@
+{
+  "author": "Conductor Rebuild",
+  "dedupe": "DIFF-READONLY-EDIT-AFFORDANCE-DE6-01",
+  "baseline_main": "1d8c37ab634e4eca9f86d54c138dc73fb0ee3fb5",
+  "origin": "Retained REA-derived real Conductor 0.87.6; inert source only. No new capture or original code execution.",
+  "fixture": {
+    "path": "src/features/diff/readOnlyEditAffordance.test.ts",
+    "sha256": "30d82d680f50250682ce5769e5047495417e95d5ce52ac15eacecbdc728c20a7",
+    "baseline": {
+      "pass": 4,
+      "fail": 17
+    },
+    "treatment": {
+      "pass": 21,
+      "fail": 0
+    }
+  },
+  "upstream_manifest": "evidence/diff/hidden-whitespace-editing/reference-source.json",
+  "reference": {
+    "renderer": {
+      "path": ".oc-tmp/chip-reference/renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    },
+    "index": {
+      "path": ".rea-work/pzi-wzi-source-loan/index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    }
+  },
+  "spans": [
+    {
+      "name": "bji",
+      "asset": "renderer",
+      "utf8": [
+        9643145,
+        9646819
+      ],
+      "sha256": "2d2b8aac64bada5ead6bc143ac6bb272544791374a9b71b38e57eab55c8f5688"
+    },
+    {
+      "name": "Mqo",
+      "asset": "renderer",
+      "utf8": [
+        9637614,
+        9641484
+      ],
+      "sha256": "ba9e64973b294335d69d20e19ffd1ef4eaf63f3c209dd380beacf5ecc509393c"
+    },
+    {
+      "name": "jqo",
+      "asset": "renderer",
+      "utf8": [
+        9641484,
+        9642975
+      ],
+      "sha256": "3b57f4d3fb1c0ba90d3249cf522f66114602f79f79e85afbed10c08b16ba4741"
+    }
+  ],
+  "joins": [
+    [
+      "bji",
+      "F=Ld(t)!==\"write\"||w!==void 0||E"
+    ],
+    [
+      "bji",
+      "U=R===\"text\"&&!n?.isBinary&&!H"
+    ],
+    [
+      "bji",
+      "G=U&&n?.status!==\"deleted\"&&(I||L&&z),K=G&&!F&&d!==void 0"
+    ],
+    [
+      "bji",
+      "contentEditable:K"
+    ],
+    [
+      "bji",
+      "editable:Le"
+    ],
+    [
+      "bji",
+      "oi(\"workspace.toggleFileEdit\",()=>!o||!I&&!L?!1:J?(te(\"edit\"),!0):I&&P&&i?(ve(\"diff\"),!0):!1"
+    ],
+    [
+      "Mqo",
+      "editable:w"
+    ],
+    [
+      "Mqo",
+      "if(c&&!i)"
+    ],
+    [
+      "Mqo",
+      "if(RDt(i.path)!==void 0||v)"
+    ],
+    [
+      "Mqo",
+      "if(w!==void 0&&i.newContent!==null)"
+    ],
+    [
+      "Mqo",
+      "p.jsx(jqo,{localWorkspaceId:n,...w"
+    ],
+    [
+      "jqo",
+      "contentEditable:g=!0"
+    ],
+    [
+      "jqo",
+      "readOnly:!g"
+    ],
+    [
+      "jqo",
+      "p.jsx(Tqo,{filePath:e,localWorkspaceId:t,viewStyle:i,hasDiff:m,contentEditable:g"
+    ],
+    [
+      "kqo-wrapper",
+      "const Tqo=$.memo(function(e)"
+    ],
+    [
+      "kqo-wrapper",
+      "o=p.jsx(kqo,{...e})"
+    ],
+    [
+      "kqo-wrapper",
+      "contentEditable:d=!0"
+    ],
+    [
+      "kqo-wrapper",
+      "Wt=d&&(Vt||!Nt)"
+    ],
+    [
+      "kqo-wrapper",
+      "onKeyDown:d?J:void 0"
+    ]
+  ],
+  "complete_kqo_wrapper": {
+    "path": "evidence/diff/new-inline-draft-remount/reference/editable-view-annotation-caller.txt",
+    "role": "Contains complete kqo plus Tqo memo/error-boundary wrapper; wrapper spreads same props into kqo. Reused retained bytes; no new raw-asset range asserted.",
+    "bytes": 5791,
+    "sha256": "b83b970b85f2e050656d5cdc5b27e3510df8d1907a3e8673924a901f7975e7e6"
+  },
+  "limits": [
+    "Static source does not prove native UI/shortcut behavior.",
+    "No broader legacy editor, modern code-mode toggle semantics, preview family, permissions or save-path parity claimed.",
+    "The fixture replaces WorkspaceDiff inputs, CodeView render surface, theme/chrome/IO; real React viewer/editability/header and real key dispatcher are exercised.",
+    "No new REA call or REA gap; prior large-renderer analysis limits remain."
+  ]
+}

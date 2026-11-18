@@ -1,0 +1,700 @@
+{
+  "author": "Conductor Rebuild",
+  "phase": "READONLY_EDIT_RED21",
+  "admission": "READONLY-EDIT-DE6-RED21-20261118T025733493Z",
+  "actual_start_utc": "2026-11-18T02:58:30.897374Z",
+  "node_started": true,
+  "child_command": [
+    "node",
+    "--experimental-strip-types",
+    "--test",
+    "src/features/diff/readOnlyEditAffordance.test.ts"
+  ],
+  "visible_own_node_before": [],
+  "source_preflight": {
+    "author": "Conductor Rebuild",
+    "dedupe": "DIFF-READONLY-EDIT-AFFORDANCE-DE6-02",
+    "fresh_main": "590e58910884998e242cafb037f53286d4c7fb45",
+    "source_pins": {
+      "src/features/diff/DiffViewer.tsx": "b9385a977c26007391b9b47bb587c33d95045ed9e04b1b1240a031f411167e0f",
+      "src/features/diff/FileDiffView.tsx": "305ccacb64c230bba3880d045b64aabc4889bbfac25668824b87b020810e0289",
+      "src/features/diff/EditInViewer.ts": "40123ee435661c920d6c2e99c4301d2005aebe88f3668b4d02eab5ebdadc1d1c",
+      "src/features/diff/editable.ts": "507dcc18d52a721afa97ab453a6815a0ff656b109fb53ca91e9b6e3ba5efefde",
+      "src/features/diff/editorContents.ts": "412dd4af07a67e0b6b52758444533564eb6d686843c333560150373659c29523",
+      "src/features/diff/draftStorage.ts": "dc53d9cf4bab94e4427aceee03aefcc05a37c71115a7ce06e340a647814f69e5",
+      "src/features/diff/pierre.ts": "738f92c4dc768f7313c9ac8fd4ac22fc003f62578ec78f2c296129737925ab52",
+      "src/features/diff/copyFile.ts": "6ff8924a36728d90243e2ab0e4ab824326afb8030472b9a6b9c02d00888a203a",
+      "src/keybindings/bind.ts": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119",
+      "src/keybindings/dispatcher.ts": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197",
+      "package.json": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91",
+      "package-lock.json": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992"
+    },
+    "fixture": {
+      "sha256": "30d82d680f50250682ce5769e5047495417e95d5ce52ac15eacecbdc728c20a7",
+      "bytes": 10648,
+      "all_original_cases_and_oracles_unchanged": true
+    },
+    "static_checks": 65,
+    "checks": [
+      {
+        "name": "unchanged original source pin: src/features/diff/DiffViewer.tsx",
+        "pass": true
+      },
+      {
+        "name": "matches fresh main: src/features/diff/DiffViewer.tsx",
+        "pass": true
+      },
+      {
+        "name": "unchanged original source pin: src/features/diff/FileDiffView.tsx",
+        "pass": true
+      },
+      {
+        "name": "matches fresh main: src/features/diff/FileDiffView.tsx",
+        "pass": true
+      },
+      {
+        "name": "unchanged original source pin: src/features/diff/EditInViewer.ts",
+        "pass": true
+      },
+      {
+        "name": "matches fresh main: src/features/diff/EditInViewer.ts",
+        "pass": true
+      },
+      {
+        "name": "unchanged original source pin: src/features/diff/editable.ts",
+        "pass": true
+      },
+      {
+        "name": "matches fresh main: src/features/diff/editable.ts",
+        "pass": true
+      },
+      {
+        "name": "unchanged original source pin: src/features/diff/editorContents.ts",
+        "pass": true
+      },
+      {
+        "name": "matches fresh main: src/features/diff/editorContents.ts",
+        "pass": true
+      },
+      {
+        "name": "unchanged original source pin: src/features/diff/draftStorage.ts",
+        "pass": true
+      },
+      {
+        "name": "matches fresh main: src/features/diff/draftStorage.ts",
+        "pass": true
+      },
+      {
+        "name": "unchanged original source pin: src/features/diff/pierre.ts",
+        "pass": true
+      },
+      {
+        "name": "matches fresh main: src/features/diff/pierre.ts",
+        "pass": true
+      },
+      {
+        "name": "unchanged original source pin: src/features/diff/copyFile.ts",
+        "pass": true
+      },
+      {
+        "name": "matches fresh main: src/features/diff/copyFile.ts",
+        "pass": true
+      },
+      {
+        "name": "unchanged original source pin: src/keybindings/bind.ts",
+        "pass": true
+      },
+      {
+        "name": "matches fresh main: src/keybindings/bind.ts",
+        "pass": true
+      },
+      {
+        "name": "unchanged original source pin: src/keybindings/dispatcher.ts",
+        "pass": true
+      },
+      {
+        "name": "matches fresh main: src/keybindings/dispatcher.ts",
+        "pass": true
+      },
+      {
+        "name": "unchanged original source pin: package.json",
+        "pass": true
+      },
+      {
+        "name": "matches fresh main: package.json",
+        "pass": true
+      },
+      {
+        "name": "unchanged original source pin: package-lock.json",
+        "pass": true
+      },
+      {
+        "name": "matches fresh main: package-lock.json",
+        "pass": true
+      },
+      {
+        "name": "complete retained bji hash",
+        "pass": true
+      },
+      {
+        "name": "complete retained bji bytes",
+        "pass": true
+      },
+      {
+        "name": "complete retained Mqo hash",
+        "pass": true
+      },
+      {
+        "name": "complete retained Mqo bytes",
+        "pass": true
+      },
+      {
+        "name": "complete retained jqo hash",
+        "pass": true
+      },
+      {
+        "name": "complete retained jqo bytes",
+        "pass": true
+      },
+      {
+        "name": "complete retained wrapper hash",
+        "pass": true
+      },
+      {
+        "name": "complete retained wrapper bytes",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: bji: F=Ld(t)!==\"write\"||w!==void 0||E",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: bji: U=R===\"text\"&&!n?.isBinary&&!H",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: bji: G=U&&n?.status!==\"deleted\"&&(I||L&&z),K=G&&!F&&d!==void 0",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: bji: contentEditable:K",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: bji: editable:Le",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: bji: oi(\"workspace.toggleFileEdit\",()=>!o||!I&&!L?!1:J?(te(\"edit\"),!0):I&&P&&i?(ve(\"diff\"),!0):!1",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: Mqo: editable:w",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: Mqo: if(c&&!i)",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: Mqo: if(RDt(i.path)!==void 0||v)",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: Mqo: if(w!==void 0&&i.newContent!==null)",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: Mqo: p.jsx(jqo,{localWorkspaceId:n,...w",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: jqo: contentEditable:g=!0",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: jqo: readOnly:!g",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: jqo: p.jsx(Tqo,{filePath:e,localWorkspaceId:t,viewStyle:i,hasDiff:m,contentEditable:g",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: kqo-wrapper: const Tqo=$.memo(function(e)",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: kqo-wrapper: o=p.jsx(kqo,{...e})",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: kqo-wrapper: contentEditable:d=!0",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: kqo-wrapper: Wt=d&&(Vt||!Nt)",
+        "pass": true
+      },
+      {
+        "name": "retained parent/consumer join: kqo-wrapper: onKeyDown:d?J:void 0",
+        "pass": true
+      },
+      {
+        "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/source.json",
+        "pass": true
+      },
+      {
+        "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/README.md",
+        "pass": true
+      },
+      {
+        "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/reference/bji.txt",
+        "pass": true
+      },
+      {
+        "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/reference/Mqo.txt",
+        "pass": true
+      },
+      {
+        "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/readonly-edit-affordance/reference/jqo.txt",
+        "pass": true
+      },
+      {
+        "name": "historical input retained: .oc-tmp/readonly-edit-unit/evidence/diff/new-inline-draft-remount/reference/editable-view-annotation-caller.txt",
+        "pass": true
+      },
+      {
+        "name": "historical input retained: .oc-tmp/readonly-edit-unit/src/features/diff/readOnlyEditAffordance.test.ts",
+        "pass": true
+      },
+      {
+        "name": "historical fixture hash",
+        "pass": true
+      },
+      {
+        "name": "historical fixture byte count",
+        "pass": true
+      },
+      {
+        "name": "placed baseline fixture is byte-identical",
+        "pass": true
+      },
+      {
+        "name": "proposal hash",
+        "pass": true
+      },
+      {
+        "name": "proposal bytes",
+        "pass": true
+      },
+      {
+        "name": "reviewed proposal applicable but unapplied",
+        "pass": true
+      },
+      {
+        "name": "optional historical-ref environment is not set",
+        "pass": true
+      }
+    ],
+    "current_semantic_red": "NOT_RUN",
+    "product_treatment": "UNAPPLIED",
+    "whole_renderer_and_index_assets": "ABSENT_AT_HISTORICAL_PATHS; RETAINED_COMPLETE_FUNCTION_HASHES_ONLY",
+    "browser_native_packaged": "NOT_RUN"
+  },
+  "installed_identities": [
+    {
+      "name": "react",
+      "version": "18.3.1",
+      "version_resolution_sri_match": true,
+      "placement": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/react"
+    },
+    {
+      "name": "react-test-renderer",
+      "version": "18.3.1",
+      "version_resolution_sri_match": true,
+      "placement": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/react-test-renderer"
+    },
+    {
+      "name": "typescript",
+      "version": "5.9.3",
+      "version_resolution_sri_match": true,
+      "placement": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/typescript"
+    },
+    {
+      "name": "@pierre/diffs",
+      "version": "1.6.4",
+      "version_resolution_sri_match": true,
+      "placement": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/@pierre/diffs"
+    },
+    {
+      "name": "fuzzysort",
+      "version": "3.1.0",
+      "version_resolution_sri_match": true,
+      "placement": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/fuzzysort"
+    }
+  ],
+  "node_executable": "/usr/local/bin/node",
+  "baseline_head": "e97b9a3e563ab26dc9699be7d99ee403449313f0",
+  "pre_input_hashes": {
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/DiffViewer.tsx": {
+      "sha256": "b9385a977c26007391b9b47bb587c33d95045ed9e04b1b1240a031f411167e0f",
+      "bytes": 13613
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/FileDiffView.tsx": {
+      "sha256": "305ccacb64c230bba3880d045b64aabc4889bbfac25668824b87b020810e0289",
+      "bytes": 24577
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/EditInViewer.ts": {
+      "sha256": "40123ee435661c920d6c2e99c4301d2005aebe88f3668b4d02eab5ebdadc1d1c",
+      "bytes": 6325
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/editable.ts": {
+      "sha256": "507dcc18d52a721afa97ab453a6815a0ff656b109fb53ca91e9b6e3ba5efefde",
+      "bytes": 1362
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/editorContents.ts": {
+      "sha256": "412dd4af07a67e0b6b52758444533564eb6d686843c333560150373659c29523",
+      "bytes": 1825
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/draftStorage.ts": {
+      "sha256": "dc53d9cf4bab94e4427aceee03aefcc05a37c71115a7ce06e340a647814f69e5",
+      "bytes": 2190
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/pierre.ts": {
+      "sha256": "738f92c4dc768f7313c9ac8fd4ac22fc003f62578ec78f2c296129737925ab52",
+      "bytes": 8040
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/copyFile.ts": {
+      "sha256": "6ff8924a36728d90243e2ab0e4ab824326afb8030472b9a6b9c02d00888a203a",
+      "bytes": 3005
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/keybindings/bind.ts": {
+      "sha256": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119",
+      "bytes": 1925
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/keybindings/dispatcher.ts": {
+      "sha256": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197",
+      "bytes": 5180
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/package.json": {
+      "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91",
+      "bytes": 2019
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/package-lock.json": {
+      "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992",
+      "bytes": 222962
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/revalidation-590e58910.json": {
+      "sha256": "f5540e4d366e54501b98dcdd21c83b33c9256ba2addce8f99ef21b391e3de2b8",
+      "bytes": 8887
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/historical-fixture.test.ts.txt": {
+      "sha256": "30d82d680f50250682ce5769e5047495417e95d5ce52ac15eacecbdc728c20a7",
+      "bytes": 10648
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/historical-source.json": {
+      "sha256": "8180d9ffbfbb4251e32d636d7f1c8200884c6de19e9c639dacb27b811889d5b7",
+      "bytes": 3835
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/plan.md": {
+      "sha256": "67ad4dc99b4611213675c8fb315983bf8d3739c2d83ce990e4ecf281114424ab",
+      "bytes": 4784
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/red21-supervisor.py": {
+      "sha256": "309a7930685fefd54fed27cd8bce8eee1d76146c821fe4993143016e0e1c91e2",
+      "bytes": 11442
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/minimal-proposal.UNAPPLIED.patch": {
+      "sha256": "53b6cf35e600e6644442c5c11cf9c2850995f16ddd7b23305a598a5654ae7b63",
+      "bytes": 638
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/qualification.json": {
+      "sha256": "f5663883ffd20c9740ae69ac2f9b8f583bbeadecdc53d1c69d20382b3b332554",
+      "bytes": 4131
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/verify-source-plan.py": {
+      "sha256": "1fc19533e67e295801d0cda690347cb0db461f942184d42e2567f8d421ee9d93",
+      "bytes": 3762
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/runtime-request.md": {
+      "sha256": "76759cf3e451b3815bc63105e51d572fe248b58ab34125311931d65f6e536b54",
+      "bytes": 4905
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/reference/bji.txt": {
+      "sha256": "2d2b8aac64bada5ead6bc143ac6bb272544791374a9b71b38e57eab55c8f5688",
+      "bytes": 3674
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/reference/Mqo.txt": {
+      "sha256": "ba9e64973b294335d69d20e19ffd1ef4eaf63f3c209dd380beacf5ecc509393c",
+      "bytes": 3870
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/reference/jqo.txt": {
+      "sha256": "3b57f4d3fb1c0ba90d3249cf522f66114602f79f79e85afbed10c08b16ba4741",
+      "bytes": 1491
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/evidence/diff/readonly-edit-successor/reference/kqo-Tqo-complete.txt": {
+      "sha256": "b83b970b85f2e050656d5cdc5b27e3510df8d1907a3e8673924a901f7975e7e6",
+      "bytes": 5791
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/src/features/diff/readOnlyEditAffordance.test.ts": {
+      "sha256": "30d82d680f50250682ce5769e5047495417e95d5ce52ac15eacecbdc728c20a7",
+      "bytes": 10648
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime/owns-node-modules.json": {
+      "sha256": "415699aae01a061db200171ff0bb3a10b5dfd2fc394aa1dd44ca1ddfc263db46",
+      "bytes": 427
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/.package-lock.json": {
+      "sha256": "134a5889dfcdf399ebf4b343ad09eeb2d777ee118d271dd0dac9d22f1a131cf4",
+      "bytes": 194156
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/react/package.json": {
+      "sha256": "d4e68a5c96babb20cad1daafea8b78822eae45b341552cf5418d06a5304fa64c",
+      "bytes": 999
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/react-test-renderer/package.json": {
+      "sha256": "e3b09e5a62e134d5241b520715de45b63ff3568ccbbeeeb70601607c3136c811",
+      "bytes": 761
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/typescript/package.json": {
+      "sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6",
+      "bytes": 3620
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/@pierre/diffs/package.json": {
+      "sha256": "7109ad078c2892f40c3567a6b181a11fbbf312ad8fa6d826631c61d3fbd3bf6c",
+      "bytes": 2430
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/node_modules/fuzzysort/package.json": {
+      "sha256": "bf40b7bf4b6e59ca1b113ccaf87f3724527e7fc1ab683c6b713ca0e189eaf633",
+      "bytes": 774
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/useWorkspaceDiff.ts": {
+      "sha256": "b0e52ca4eb7247b717796bbf989d3f7d966a320018c53ed2ccb0c5366d72cb30",
+      "bytes": 14876
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/target.ts": {
+      "sha256": "a8453124a87885544f7f65043c44765ec87f46f2fa9fe80140e8ee5f7a7c2e8a",
+      "bytes": 3262
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/ChangesToolbar.tsx": {
+      "sha256": "42df4f59dd58bd87420bf5ccb299f4751ffaa1ce2926fb17630d35abb646777d",
+      "bytes": 5244
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/ChangesList.tsx": {
+      "sha256": "9f12665d62163dc5440a161592af7b0a20d0fac71faf7a65d6de6421fc70f8cb",
+      "bytes": 11921
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/DiffViewer.tsx": {
+      "sha256": "b9385a977c26007391b9b47bb587c33d95045ed9e04b1b1240a031f411167e0f",
+      "bytes": 13613
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/FileDiffView.tsx": {
+      "sha256": "305ccacb64c230bba3880d045b64aabc4889bbfac25668824b87b020810e0289",
+      "bytes": 24577
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/FileContextMenu.tsx": {
+      "sha256": "a88f12448e5fa288a3c196418df9d6773c3de29435516e610d7e439ef46a60ab",
+      "bytes": 4618
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/types.ts": {
+      "sha256": "a3ebcbdbd00f86620d61cfa608a58061b64c686280a43dd2bb7d8bc5edd64254",
+      "bytes": 1711
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/nav.ts": {
+      "sha256": "f986ec599ffeaab0f6892382d1fa618522eca69f74b0f8827a6fa64c4a30b79c",
+      "bytes": 5155
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/viewed.ts": {
+      "sha256": "bab610927732331a545682412b89c206d55f3feee3ab3bf0af979f41535bcf60",
+      "bytes": 1634
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/changesTree.ts": {
+      "sha256": "17e591f08a7b271c7c6eac8dba1d3f952719b689efa2f5b9ca4dc7f218916b70",
+      "bytes": 2133
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/changesFilter.ts": {
+      "sha256": "d64fa6ad922c03292f7984e0e9e65ab637ca2e36d86401fcd7717f85f58a5d0a",
+      "bytes": 1566
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/renameDisplayPath.ts": {
+      "sha256": "2035e03045b4d695c90f5fa9e650b3240a9b57542c33056c5cbf25c3357d9fc0",
+      "bytes": 442
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/fileCopyPaths.ts": {
+      "sha256": "2c7c8f3e06e40ee925d1c855aeba8a0c9456baebbd058a6a5553cc624b24f674",
+      "bytes": 276
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/copyFile.ts": {
+      "sha256": "6ff8924a36728d90243e2ab0e4ab824326afb8030472b9a6b9c02d00888a203a",
+      "bytes": 3005
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/pierre.ts": {
+      "sha256": "738f92c4dc768f7313c9ac8fd4ac22fc003f62578ec78f2c296129737925ab52",
+      "bytes": 8040
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/files/tree.ts": {
+      "sha256": "eb2af1ab025dbd6bf4e33a8e3c9a2916b13777f6396388008ff4f8ea81f330f2",
+      "bytes": 4448
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/keybindings/fuzzy.ts": {
+      "sha256": "1bcbf1f4058508f23d5d079235d5b96ed6ed800582aae6de50db6a182d5c2c1c",
+      "bytes": 1478
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/lib/keyedCache.ts": {
+      "sha256": "0c6aefc3593709b8696beec1846a9df00d7d6d839735ab35f9b9bdd4ffd4aad4",
+      "bytes": 1298
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/package.json": {
+      "sha256": "4bb4f30b331c3dcb97902768e412fd0a75a79420438795c11f4b8d6aaa422e91",
+      "bytes": 2019
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/package-lock.json": {
+      "sha256": "2203faf80f07760a020cb1c4aa3ef55e2c25db72a887c5c02808b0d2c2621992",
+      "bytes": 222962
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/deps-only.py": {
+      "sha256": "1bbb799a1703a5a002260ade655efef0ae5f434c4e7548be4557521b09dadc18",
+      "bytes": 8713
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/frozen-v2.json": {
+      "sha256": "4e4271969f98b034d7934c52983d4db09fcabefdbaf8fa50226ec049a09a346d",
+      "bytes": 5040
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/frozen-v1.mounted.test.mjs.txt": {
+      "sha256": "356522ce6cc1a129b4e3536346e5c45e217d1cf6e6860cfef09cbe840e97f506",
+      "bytes": 12891
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/red10.log": {
+      "sha256": "1d6fe9519a1abc04f547999d35432905827eef7ff23f7c33f8da87dfe2aacb54",
+      "bytes": 32903
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/red10-receipt.json": {
+      "sha256": "f38a5259d728c5e917728936aac57fc189eec2a55b17376451124f784aa25c56",
+      "bytes": 7664
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime/red10-v2.log": {
+      "sha256": "f121e43bc4f47e4f4d215ba811ee15b5bdfe3ec78bd07125ced6404b6a33a7a9",
+      "bytes": 7769
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime/red10-v2-receipt.json": {
+      "sha256": "d85013df79977c8751700538edbf8fb80fbf55af32148f465a95463bfa90d077",
+      "bytes": 8603
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime/red10-v2-classification.json": {
+      "sha256": "0ba8783e934722e0ba505e2aa42bb66467980549dab92f93ed5e28a3ce7ed734",
+      "bytes": 6682
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-selector-v3.patch": {
+      "sha256": "ebede2cf98411259270998fc9b5ddcad629d3aeaee0084ad00913b58ee814d4f",
+      "bytes": 1161
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-fixture-v2.mounted.test.mjs.txt": {
+      "sha256": "f31ff7c6e2037ef63d953da8da49ab6f008270211a8c1e73172e2dd87fbfdd61",
+      "bytes": 12896
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/deps-receipt.json": {
+      "sha256": "0e1b9f21f03ebb4700e06ca7e0ffc94ad9f338c7ce873c2e07bb3ed6bad8844e",
+      "bytes": 1033
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/lease.lock": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/npm-ci.log": {
+      "sha256": "71b1696f806fb5e3f16dc5e29bcded7428d095a90fc8259ecce21462cdfd9b8e",
+      "bytes": 410
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/owns-node-modules.json": {
+      "sha256": "d50b67a7ecd863d6d1b8f4761fac0df9749f6e742fb615e9162030515f377576",
+      "bytes": 427
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/recovery-readback.json": {
+      "sha256": "03f641cb057b424b76e5c327b11de6b52d11c646ee8d54eb947b9e305a593505",
+      "bytes": 4282
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-runtime.pre-v3-deps-20261118T002552310340Z/red10-v2-preflight-no-run.json": {
+      "sha256": "2e168921574b629f864ab40931b8b1298eee5eb6b60183c58e800a1f778c3080",
+      "bytes": 3484
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/tests/diff/uncommittedDiscardAffordance.mounted.test.mjs": {
+      "sha256": "a2aef693638daac179d28cfdce96dea63bb4022d9e06cb7e68731b732060402b",
+      "bytes": 13165
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/uncommitted-discard-provisioner/v3/deps-only.py": {
+      "sha256": "78861d873063538e9099e6a9c99bab9ea12fb90ba6d40e4b07c43443a5c8cb82",
+      "bytes": 9232
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/target.test.ts": {
+      "sha256": "2c331d805ccd1b4ea3b169c08ebff64e944a7b461505d9d2a2a41e2d1e26e00e",
+      "bytes": 3578
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/red10-v3.log.gz": {
+      "sha256": "78acc528047f4be2c52db1df32dc248883d9ea59094d0762ffe66c3333829b70",
+      "bytes": 973
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/green10-v3-supervisor.py": {
+      "sha256": "e187b0327cecf178c850da7dc9efb8e78d1dacb9d05245b8ae1f18989ac30068",
+      "bytes": 10880
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/red10-v3.log": {
+      "sha256": "45759cf9b6483c4b4547d259ce9a15f0631bef922e6e04c75a9a27f501dfb598",
+      "bytes": 6825
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/red10-v3-receipt.json": {
+      "sha256": "5ce9086514e5bb49b5176831b421e3ccbd3129a85bfb4b0fc816ead93604e74e",
+      "bytes": 15057
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/green10-v3-classification.json": {
+      "sha256": "aa484e54251f45d24b7d3479fcfdc8fd8d3159b7ae79f8033957d2f8eaff386b",
+      "bytes": 4032
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/green10-v3.log.gz": {
+      "sha256": "1dfa6ea6cfd2aa79925fbc51b0552fb158c9651f9abcaf2dbd0a03d2ac12eeaf",
+      "bytes": 574
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/green10-v3-receipt.json": {
+      "sha256": "495e433d30ba22e9090fce0a89f7c5ac44d14d3a9484545162a4e08ec1e1fbba",
+      "bytes": 18158
+    },
+    "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/evidence/diff/uncommitted-discard-affordance/runtime/red10-v3-classification.json": {
+      "sha256": "e5cf0a862acb20d115a705b0ce8eadd9dfe89e07374e66a3741a338caa9e13e2",
+      "bytes": 5330
+    }
+  },
+  "child_start_utc": "2026-11-18T02:58:31.364924Z",
+  "child_pgid": 113,
+  "child_end_utc": "2026-11-18T02:58:39.647938Z",
+  "child_exit": 1,
+  "group_survivors": [],
+  "actual_release_utc": "2026-11-18T02:58:39.648492Z",
+  "reason": "child-exit",
+  "released": true,
+  "peak_sampled_group_rss_bytes": 308363264,
+  "minimum_free_bytes": 13560709120,
+  "post_input_drift": [],
+  "visible_own_node_after": [],
+  "limits": {
+    "cpu": 0,
+    "nice": 10,
+    "UV_THREADPOOL_SIZE": 1,
+    "heap_MiB_per_Node": 768,
+    "child_s": 120,
+    "release_grace_s": 5,
+    "foreground_s": 130,
+    "sample_s": 0.1,
+    "sampled_group_rss_bytes": 2147483648,
+    "free_floor_bytes": 4294967296,
+    "sampled_output_bytes": 1048576,
+    "not_kernel_quotas": true
+  },
+  "classification": "UNCLASSIFIED_TAP_REQUIRED",
+  "cleanup_attempted": false,
+  "modules_and_marker_retained": true,
+  "cache_absent": true,
+  "raw_output": {
+    "bytes": 21936,
+    "sha256": "1f451638f440cf68433ff4664080dfefca34b62bf97d4fd4ebf98a25c4b2c0ab",
+    "path": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/readonly-edit-successor-047fca64/.oc-tmp/readonly-edit-red21-runtime/red21.log"
+  }
+}
